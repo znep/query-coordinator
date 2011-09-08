@@ -1,57 +1,56 @@
 ;(function($)
 {
-    if (blist.sidebarHidden.filter &&
-        blist.sidebarHidden.filter.filterDataset) { return; }
-
     var filterableTypes = _.compact(_.map(blist.datatypes, function(t, n)
     {
         return !$.isBlank(t.filterConditions) || _.any(t.subColumns, function(st)
             { return !$.isBlank(st.filterConditions); }) ? n : null;
     }));
 
-    var configName = 'filter.unifiedFilter';
-    var config = {
-        name: configName,
-        priority: 1,
-        title: 'Filter',
-        subtitle: 'Filter this dataset based on contents.',
-        noReset: true,
-        onlyIf: function()
+    $.Control.extend('pane_unifiedFilter', {
+        getTitle: function()
+        { return 'Filter'; },
+
+        getSubtitle: function()
+        { return 'Filter this dataset based on contents.'; },
+
+        isAvailable: function()
+        { return this.settings.view.visibleColumns.length > 0 && this.settings.view.valid; },
+
+        getDisabledSubtitle: function()
         {
-            return blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
-        },
-        disabledSubtitle: function()
-        {
-            return !blist.dataset.valid ? 'This view must be valid' :
+            return !this.settings.view.valid ? 'This view must be valid' :
                 'This view has no columns to filter';
         },
-        sections: [{
-            customContent: {
-                template: 'filterPane',
-                directive: {},
-                data: {},
-                callback: function($elem)
-                {
-                    $elem.unifiedFilter({
-                        datasets: [ blist.dataset ],
-                        filterableColumns: blist.dataset.columnsForType(filterableTypes)
-                    });
 
-                    blist.dataset.bind('columns_changed', function()
+        _getSections: function()
+        {
+            return [{
+                customContent: {
+                    template: 'filterPane',
+                    directive: {},
+                    data: {},
+                    callback: function($elem)
                     {
-                        $elem.trigger('columns_changed',
-                            { columns: blist.dataset.columnsForType(filterableTypes) });
-                    });
+                        var cpObj = this
+                        $elem.unifiedFilter({
+                            datasets: [ cpObj.settings.view ],
+                            filterableColumns: cpObj.settings.view.columnsForType(filterableTypes)});
 
-                    blist.dataset.bind('clear_temporary', function()
-                    {
-                        $elem.trigger('revert');
-                    });
+                        cpObj.settings.view.bind('columns_changed', function()
+                        {
+                            $elem.trigger('columns_changed',
+                                { columns: cpObj.settings.view.columnsForType(filterableTypes) });
+                        });
+
+                        cpObj.settings.view.bind('clear_temporary', function()
+                        { $elem.trigger('revert'); });
+                    }
                 }
-            }
-        }]
-    };
+            }];
+        }
+    }, {name: 'unifiedFilter', noReset: true}, 'controlPane');
 
-    $.gridSidebar.registerConfig(config, 'filter');
+    if ($.isBlank(blist.sidebarHidden.filter) || !blist.sidebarHidden.filter.filterDataset)
+    { $.gridSidebar.registerConfig('filter.unifiedFilter', 'pane_unifiedFilter', 1, 'filter'); }
 
 })(jQuery);

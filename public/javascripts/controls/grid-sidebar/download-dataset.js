@@ -1,42 +1,42 @@
 (function($)
 {
-    if (blist.sidebarHidden.exportSection &&
-        blist.sidebarHidden.exportSection.download) { return; }
+    $.Control.extend('pane_downloadDataset', {
+        getTitle: function()
+        { return 'Download'; },
 
-    var config =
-    {
-        name: 'export.downloadDataset',
-        priority: 1,
-        title: 'Download',
-        subtitle: 'Download a copy of this dataset in a static format',
-        onlyIf: function()
+        getSubtitle: function()
+        { return 'Download a copy of this dataset in a static format'; },
+
+        isAvailable: function()
+        { return this.settings.view.valid; },
+
+        getDisabledSubtitle: function()
+        { return 'This view must be valid'; },
+
+        _getSections: function()
         {
-            return blist.dataset.valid;
-        },
-        disabledSubtitle: function()
-        {
-            return 'This view must be valid';
-        },
-        sections: [
-            {
-                customContent: {
-                    template: 'downloadsTable',
-                    directive: $.templates.downloadsTable.directive,
-                    data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
-                            viewId: blist.dataset.id },
-                    callback: function($sect)
-                    {
-                        $sect.find('.downloadsList .item a').downloadToFormCatcher();
-                        $.templates.downloadsTable.postRender($sect);
+            return [
+                {
+                    customContent: {
+                        template: 'downloadsTable',
+                        directive: $.templates.downloadsTable.directive,
+                        data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
+                                viewId: this.settings.view.id },
+                        callback: function($sect)
+                        {
+                            $sect.find('.downloadsList .item a').downloadToFormCatcher();
+                            $.templates.downloadsTable.postRender($sect);
+                        }
                     }
                 }
-            }
-        ],
-        finishBlock: {
-            buttons: [$.gridSidebar.buttons.done]
-        }
-    };
+            ];
+        },
 
-    $.gridSidebar.registerConfig(config);
+        _getFinishButtons: function()
+        { return [$.controlPane.buttons.done]; }
+    }, {name: 'downloadDataset'}, 'controlPane');
+
+    if ($.isBlank(blist.sidebarHidden.exportSection) || !blist.sidebarHidden.exportSection.download)
+    { $.gridSidebar.registerConfig('export.downloadDataset', 'pane_downloadDataset', 1); }
 
 })(jQuery);

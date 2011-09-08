@@ -1,71 +1,73 @@
 (function($)
 {
-    if ((blist.dataset.signed === false) &&
-         blist.sidebarHidden.exportSection.signedDataset) { return; }
+    $.Control.extend('pane_signedDataset', {
+        getTitle: function()
+        { return 'Digital Signing'; },
 
-    var config =
-    {
-        name: 'export.signedDataset',
-        priority: 3,
-        title: 'Digital Signing',
-        subtitle: 'Export a version of this data whose integrity may later be verified.',
-        onlyIf: function()
-        { return blist.dataset.valid; },
-        disabledSubtitle: function()
+        getSubtitle: function()
+        { return 'Export a version of this data whose integrity may later be verified.'; },
+
+        isAvailable: function()
+        { return this.settings.view.valid; },
+
+        getDisabledSubtitle: function()
         {
-            return !blist.dataset.valid ? 'This view must be valid' :
+            return !this.settings.view.valid ? 'This view must be valid' :
                 'Only tabular data may be downloaded';
         },
-        sections: [
-            {
-                customContent: {
-                    template: 'signedDataset',
-                    callback: function($sect)
-                    {
-                        var $link = $sect.find('.signedDatasetLink');
 
-                        if (blist.dataset.owner.id == blist.currentUserId)
+        _getSections: function()
+        {
+            return [
+                {
+                    customContent: {
+                        template: 'signedDataset',
+                        callback: function($sect)
                         {
-                            // swap out the copy
-                            _.defer(function()
+                            var cpObj = this;
+                            var $link = $sect.find('.signedDatasetLink');
+
+                            if (cpObj.settings.view.owner.id == blist.currentUserId)
                             {
-                                $sect.find('.consumerText').hide();
-                                $sect.find('.publisherText').show();
-                            });
-                        }
-
-                        $link.click(function(event)
-                        {
-                            event.preventDefault();
-
-                            var $line = $link.closest('li');
-                            $line.addClass('loading');
-
-                            blist.dataset.getSignature(function(response)
+                                // swap out the copy
+                                _.defer(function()
                                 {
-                                    // Update UI
-                                    $sect.find('.datasetSignature')
-                                         .text(response.digest)
-                                         .closest('li')
-                                            .slideDown();
-                                    $line.removeClass('onlyChild loading');
-
-                                    // Kick off download
-                                    window.location = '/views/' + blist.dataset.id +
-                                        '/files/' + response.fileId;
+                                    $sect.find('.consumerText').hide();
+                                    $sect.find('.publisherText').show();
                                 });
-                        });
+                            }
 
-                        $sect.find('.datasetSignature').click(function()
-                        {
-                            $(this).select();
-                        });
+                            $link.click(function(event)
+                            {
+                                event.preventDefault();
+
+                                var $line = $link.closest('li');
+                                $line.addClass('loading');
+
+                                cpObj.settings.view.getSignature(function(response)
+                                    {
+                                        // Update UI
+                                        $sect.find('.datasetSignature').text(response.digest)
+                                             .closest('li').slideDown();
+                                        $line.removeClass('onlyChild loading');
+
+                                        // Kick off download
+                                        window.location = '/views/' + cpObj.settings.view.id +
+                                            '/files/' + response.fileId;
+                                    });
+                            });
+
+                            $sect.find('.datasetSignature').click(function() { $(this).select(); });
+                        }
                     }
                 }
-            }
-        ]
-    };
+            ];
+        }
+    }, {name: 'signedDataset'}, 'controlPane');
 
-    $.gridSidebar.registerConfig(config);
+    // Checking blist.dataset is kind of a hack here; but not sure how to avoid it
+    if ($.isBlank(blist.sidebarHidden.exportSection) || !blist.sidebarHidden.exportSection.signedDataset
+        || blist.dataset.signed !== false)
+    { $.gridSidebar.registerConfig('export.signedDataset', 'pane_signedDataset', 3); }
 
 })(jQuery);

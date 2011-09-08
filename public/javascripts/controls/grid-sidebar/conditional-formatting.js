@@ -1,8 +1,5 @@
 (function($)
 {
-    if (blist.sidebarHidden.visualize &&
-        blist.sidebarHidden.visualize.conditionalFormatting) { return; }
-
     var filterableTypes = _.compact(_.map(blist.datatypes, function(t, n)
     {
         return !$.isBlank(t.filterConditions) || _.any(t.subColumns, function(st)
@@ -12,13 +9,13 @@
     var subColumnShown = function(tcId)
     {
         if ($.isBlank(tcId)) { return false; }
-        return !_.isEmpty(blist.dataset.columnForTCID(tcId).renderType.subColumns);
+        return !_.isEmpty(this.settings.view.columnForTCID(tcId).renderType.subColumns);
     };
 
     var subColumns = function(tcId)
     {
         if ($.isBlank(tcId)) { return null; }
-        var c = blist.dataset.columnForTCID(tcId);
+        var c = this.settings.view.columnForTCID(tcId);
         var r = _.map(c.renderType.subColumns || {}, function(sc)
             { return {value: sc.name, text: sc.title}; });
         return _.isEmpty(r) ? null : r;
@@ -27,7 +24,7 @@
     var filterOperators = function(vals)
     {
         if ($.isBlank(vals.tableColumnId)) { return null; }
-        var type = blist.dataset.columnForTCID(vals.tableColumnId).renderType;
+        var type = this.settings.view.columnForTCID(vals.tableColumnId).renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
         if ($.isBlank(type.filterConditions)) { return null; }
@@ -35,11 +32,11 @@
             function(op) { return {value: op, text: type.filterConditions.details[op].text}; });
     };
 
-    var filterEditor = function(sidebarObj, $field, vals, curValue)
+    var filterEditor = function($field, vals, curValue)
     {
         if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
-        var col = blist.dataset.columnForTCID(vals.tableColumnId);
+        var col = this.settings.view.columnForTCID(vals.tableColumnId);
         var type = col.renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
@@ -55,10 +52,7 @@
         _.times(fc.editorCount, function(i)
         {
             if (i > 0)
-            {
-                $field.append($.tag({tagName: 'span',
-                    'class': ['joiner', type.name], contents: '&amp;'}));
-            }
+            { $field.append($.tag({tagName: 'span', 'class': ['joiner', type.name], contents: '&amp;'})); }
             var $editor = $.tag({tagName: 'div', 'class': ['editorWrapper', type.name]});
             $editor.blistEditor({type: type, editorInterface: editorInt,
                 row: null, value: _.isArray(curValue) ? curValue[i] : curValue,
@@ -74,11 +68,11 @@
         return true;
     };
 
-    var filterEditorRequired = function(sidebarObj, vals)
+    var filterEditorRequired = function(vals)
     {
         if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
-        var col = blist.dataset.columnForTCID(vals.tableColumnId);
+        var col = this.settings.view.columnForTCID(vals.tableColumnId);
         var type = col.renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
@@ -90,7 +84,7 @@
         return true;
     };
 
-    var filterEditorValue = function(sidebarObj, $field)
+    var filterEditorValue = function($field)
     {
         var $editor = $field.find('.editorWrapper');
         if ($editor.length < 1) { return null; }
@@ -100,8 +94,7 @@
         {
             var $t = $(this);
             var v = $t.blistEditor().currentValue();
-            if (_.isNull(v) &&
-                $t.blistEditor().type.name == 'checkbox')
+            if (_.isNull(v) && $t.blistEditor().type.name == 'checkbox')
             { v = '0'; }
 
             if (!$.isBlank(v)) { vals.push(v); }
@@ -113,7 +106,7 @@
         return vals;
     };
 
-    var filterEditorCleanup = function(sidebarObj, $field)
+    var filterEditorCleanup = function($field)
     {
         var $editor = $field.find('.editorWrapper');
         $editor.each(function()
@@ -127,12 +120,11 @@
         text: 'Use<br />this color<br />or this icon',
         type: 'radioGroup', name: 'conditionIndicator', defaultValue: 'color',
         options: [
-            {type: 'color', required: true,
-                name: 'color', defaultValue: '#bbffbb'},
-            {type: 'custom', required: true,
-                disabled: function()
-                { return !_.include(blist.dataset.metadata.availableDisplayTypes, 'map'); },
-                editorCallbacks: {create: function(sidebarObj, $field, vals, curValue)
+            {type: 'color', required: true, name: 'color', defaultValue: '#bbffbb'},
+            {type: 'custom', required: true, disabled: function()
+                { return !_.include(this.settings.view.metadata.availableDisplayTypes, 'map'); },
+                editorCallbacks: {
+                create: function($field, vals, curValue)
                 {
                     if (curValue)
                     { $field.append('<img src="' + curValue + '" /> '); }
@@ -145,9 +137,7 @@
                     $field.append('(<a>change</a>)<input type="hidden" name="' +
                         $field.attr('name') + '" />');
                     $field.find('a').data('ajaxupload', new AjaxUpload($field, {
-                        action: '/api/assets',
-                        autoSubmit: true,
-                        responseType: 'json',
+                        action: '/api/assets', autoSubmit: true, responseType: 'json',
                         onComplete: function(file, response)
                         {
                             var imgUrl = '/api/assets/' + response.id;
@@ -161,119 +151,129 @@
                                 .prop('checked', true).click();
                         }
                     }))
-                }, value: function(sidebarObj, $field)
-                { return $field.find('img').attr('src'); }},
+                },
+                value: function($field) { return $field.find('img').attr('src'); }},
                 name: 'icon'}
            ]
        };
 
-    var sidebar;
-    var configName = 'visualize.conditionalFormatting';
-    var config = {
-        name: configName,
-        priority: 10,
-        title: 'Conditional Formatting',
-        subtitle: 'Conditional Formatting allows you to change the background ' +
-            'color of rows based on custom criteria. Each row will be assigned ' +
-            'the color of the first matching condition.',
-        showCallback: function(sidebarObj) { sidebar = sidebarObj; },
-        onlyIf: function()
+    $.Control.extend('pane_conditionalFormatting', {
+        _init: function()
         {
-            return blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
+            var cpObj = this;
+            cpObj._super.apply(cpObj, arguments);
+            cpObj.settings.view.bind('clear_temporary', function() { cpObj.reset(); });
         },
-        disabledSubtitle: function()
+
+        getTitle: function()
+        { return 'Conditional Formatting'; },
+
+        getSubtitle: function()
         {
-            return !blist.dataset.valid ? 'This view must be valid' :
+            return 'Conditional Formatting allows you to change the background ' +
+                'color of rows based on custom criteria. Each row will be assigned ' +
+                'the color of the first matching condition.';
+        },
+
+        isAvailable: function()
+        { return this.settings.view.visibleColumns.length > 0 && this.settings.view.valid; },
+
+        getDisabledSubtitle: function()
+        {
+            return !this.settings.view.valid ? 'This view must be valid' :
                 'This view has no columns to filter';
         },
-        dataSource: blist.dataset,
-        sections: [{
-            title: 'Conditions',
-            fields: [
-                {type: 'repeater', minimum: 0, addText: 'Add New Rule',
-                name: 'metadata.conditionalFormatting',
-                field: {type: 'group', extraClass: 'conditionGroup', options: [
-                    conditionIndicator,
-                    {type: 'select', text: 'When', prompt: null,
-                        options: [{text: 'All Conditions', value: 'and'},
-                            {text: 'Any Condition', value: 'or'},
-                            {text: 'Always', value: 'always'}],
-                        name: 'condition.operator'},
-                    {type: 'repeater', minimum: 0, addText: 'Add Condition',
-                        name: 'condition.children',
-                        onlyIf: {field: 'condition.operator', value: 'always', negate: true},
-                        field: {type: 'group', options: [
-                        {type: 'columnSelect', text: 'Condition:', required: true,
-                            name: 'tableColumnId', isTableColumn: true,
-                            columns: {type: filterableTypes, hidden: false}},
-                        {type: 'select', name: 'subColumn',
-                            linkedField: 'tableColumnId', prompt: 'Select a sub-column',
-                            onlyIf: {field: 'tableColumnId', func: subColumnShown},
-                            options: subColumns},
-                        {type: 'select', name: 'operator', required: true,
-                            linkedField: ['tableColumnId', 'subColumn'],
-                            prompt: 'Select a comparison', options: filterOperators},
-                        {type: 'custom', required: true, name: 'value',
-                            linkedField: ['tableColumnId', 'subColumn', 'operator'],
-                            editorCallbacks: {create: filterEditor,
-                                required: filterEditorRequired,
-                                value: filterEditorValue,
-                                cleanup: filterEditorCleanup}}
-                    ]}}
-                ] } }
-            ]
-        }],
-        finishBlock: {
-            buttons: [
-                {text: 'Apply', isDefault: true, value: true},
-                $.gridSidebar.buttons.cancel
-            ]
-        }
-    };
 
-    config.dataPreProcess = function(data)
-    {
-        var md = $.extend(true, {}, data.metadata);
-        // Make them all consistent so they fit into the children pattern
-        _.each(md.conditionalFormatting || [], function(cf)
+        _getCurrentData: function()
+        { return this._super() || this.settings.view; },
+
+        _dataPreProcess: function(data)
         {
-            if (cf.condition === true)
-            { cf.condition = {operator: 'always'}; }
-            else if (!_.isArray(cf.condition.children))
+            var md = $.extend(true, {}, data.metadata);
+            // Make them all consistent so they fit into the children pattern
+            _.each(md.conditionalFormatting || [], function(cf)
             {
-                var newC = {children: [cf.condition], operator: 'and'};
-                cf.condition = newC;
-            }
-        });
-        return {metadata: md};
-    };
+                if (cf.condition === true)
+                { cf.condition = {operator: 'always'}; }
+                else if (!_.isArray(cf.condition.children))
+                {
+                    var newC = {children: [cf.condition], operator: 'and'};
+                    cf.condition = newC;
+                }
+            });
+            return {metadata: md};
+        },
 
-    config.finishCallback = function(sidebarObj, data, $pane, value)
-    {
-        if (!sidebarObj.baseFormHandler($pane, value)) { return; }
-
-        var resultObj = sidebarObj.getFormValues($pane);
-        var newMd = $.extend(true, {}, blist.dataset.metadata);
-        newMd.conditionalFormatting =
-            (resultObj.metadata || {}).conditionalFormatting;
-
-        // Clean up any conditionalFormatting items that only have one child
-        _.each(newMd.conditionalFormatting || [], function(cf)
+        _getSections: function()
         {
-            if (cf.condition.operator == 'always')
-            { cf.condition = true; }
-            else if (cf.condition.children.length < 2)
-            { cf.condition = cf.condition.children[0]; }
-        });
+            return [{
+                title: 'Conditions',
+                fields: [
+                    {type: 'repeater', minimum: 0, addText: 'Add New Rule',
+                    name: 'metadata.conditionalFormatting',
+                    field: {type: 'group', extraClass: 'conditionGroup', options: [
+                        conditionIndicator,
+                        {type: 'select', text: 'When', prompt: null,
+                            options: [{text: 'All Conditions', value: 'and'},
+                                {text: 'Any Condition', value: 'or'},
+                                {text: 'Always', value: 'always'}],
+                            name: 'condition.operator'},
+                        {type: 'repeater', minimum: 0, addText: 'Add Condition',
+                            name: 'condition.children',
+                            onlyIf: {field: 'condition.operator', value: 'always', negate: true},
+                            field: {type: 'group', options: [
+                            {type: 'columnSelect', text: 'Condition:', required: true,
+                                name: 'tableColumnId', isTableColumn: true,
+                                columns: {type: filterableTypes, hidden: false}},
+                            {type: 'select', name: 'subColumn',
+                                linkedField: 'tableColumnId', prompt: 'Select a sub-column',
+                                onlyIf: {field: 'tableColumnId', func: subColumnShown},
+                                options: subColumns},
+                            {type: 'select', name: 'operator', required: true,
+                                linkedField: ['tableColumnId', 'subColumn'],
+                                prompt: 'Select a comparison', options: filterOperators},
+                            {type: 'custom', required: true, name: 'value',
+                                linkedField: ['tableColumnId', 'subColumn', 'operator'],
+                                editorCallbacks: {create: filterEditor,
+                                    required: filterEditorRequired,
+                                    value: filterEditorValue,
+                                    cleanup: filterEditorCleanup}}
+                        ]}}
+                    ] } }
+                ]
+            }];
+        },
 
-        blist.dataset.update({metadata: newMd});
+        _getFinishButtons: function()
+        { return [ {text: 'Apply', isDefault: true, value: true}, $.controlPane.buttons.cancel ]; },
 
-        sidebarObj.finishProcessing();
-    };
+        _finish: function(data, value)
+        {
+            var cpObj = this;
+            if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
-    blist.dataset.bind('clear_temporary', function()
-        { if (!$.isBlank(sidebar)) { sidebar.refresh(configName); } });
+            var resultObj = cpObj._getFormValues();
+            var newMd = $.extend(true, {}, cpObj.settings.view.metadata);
+            newMd.conditionalFormatting = (resultObj.metadata || {}).conditionalFormatting;
 
-    $.gridSidebar.registerConfig(config);
+            // Clean up any conditionalFormatting items that only have one child
+            _.each(newMd.conditionalFormatting || [], function(cf)
+            {
+                if (cf.condition.operator == 'always')
+                { cf.condition = true; }
+                else if (cf.condition.children.length < 2)
+                { cf.condition = cf.condition.children[0]; }
+            });
+
+            cpObj.settings.view.update({metadata: newMd});
+
+            cpObj._finishProcessing();
+        }
+
+    }, {name: 'conditionalFormatting'}, 'controlPane');
+
+    if ($.isBlank(blist.sidebarHidden.visualize) ||
+        !blist.sidebarHidden.visualize.conditionalFormatting)
+    { $.gridSidebar.registerConfig('visualize.conditionalFormatting', 'pane_conditionalFormatting', 10); }
 
 })(jQuery);

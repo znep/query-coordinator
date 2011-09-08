@@ -31,7 +31,7 @@ this.Dataset = ServerModel.extend({
         this.registerEvent(['columns_changed', 'valid', 'query_change',
             'set_temporary', 'clear_temporary', 'row_change', 'blob_change',
             'row_count_change', 'column_resized', 'displayformat_change',
-            'displaytype_change', 'column_totals_changed', 'removed']);
+            'displaytype_change', 'column_totals_changed', 'removed', 'permissions_changed']);
 
         $.extend(this, v);
 
@@ -378,24 +378,35 @@ this.Dataset = ServerModel.extend({
     {
         var ds = this;
 
+        var success = function()
+        {
+            ds.trigger('permissions_changed');
+            if (_.isFunction(successCallback)) { successCallback.apply(ds, arguments); }
+        };
+
         if (!ds.isPublic())
         {
             ds.grants = ds.grants || [];
             ds.grants.push({type: (ds.type == 'form' ? 'contributor' : 'viewer'),
                 flags: ['public']});
 
-            ds.makeRequest({url: '/views/' + ds.id,
+            ds.makeRequest({url: '/views/' + ds.id, type: 'PUT',
                       params: {method: 'setPermission', value:
                          (ds.type == 'form' ? 'public.add' : 'public.read')},
-                    type: 'PUT',
-                    success: successCallback, error: errorCallback});
+                    success: success, error: errorCallback});
         }
-        else if (_.isFunction(successCallback)) { successCallback(); }
+        else { success(); }
     },
 
     makePrivate: function(successCallback, errorCallback)
     {
         var ds = this;
+
+        var success = function()
+        {
+            ds.trigger('permissions_changed');
+            if (_.isFunction(successCallback)) { successCallback.apply(ds, arguments); }
+        };
 
         if (ds.isPublic())
         {
@@ -405,9 +416,9 @@ this.Dataset = ServerModel.extend({
 
             ds.makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
                     params: {method: 'setPermission', value: 'private'},
-                    success: successCallback, error: errorCallback});
+                    success: success, error: errorCallback});
         }
-        else if (_.isFunction(successCallback)) { successCallback(); }
+        else { success(); }
     },
 
     notifyUsers: function(successCallback, errorCallback)

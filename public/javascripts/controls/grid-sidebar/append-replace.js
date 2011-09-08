@@ -1,120 +1,116 @@
 (function($)
 {
-    var skipHeader = {text: 'Skip Header', type: 'checkbox', name: 'skipHeader',
-                        wizard: 'Choose if you want header rows to be automatically ' +
-                        'detected and skipped, just like during import'};
+    var skipHeader = {text: 'Skip Header', type: 'checkbox', name: 'skipHeader'};
 
     var baseConfig =
     {
-        priority: 5,
-        onlyIf: function()
+        isAvailable: function()
         {
-            return _.all(blist.dataset.visibleColumns || [], function(c)
+            var cpObj = this;
+            return _.all(cpObj.settings.view.visibleColumns || [], function(c)
                 {
                     return !_.include(['document', 'document_obsolete',
-                        'photo', 'photo_obsolete', 'nested_table'],
-                        c.dataTypeName);
-                }) && blist.dataset.valid &&
-                    (!blist.dataset.temporary || blist.dataset.minorChange);
+                        'photo', 'photo_obsolete', 'nested_table'], c.dataTypeName);
+                }) && cpObj.settings.view.valid &&
+                    (!cpObj.settings.view.temporary || cpObj.settings.view.minorChange);
         },
-        disabledSubtitle: function()
+
+        getDisabledSubtitle: function()
         {
-            return !blist.dataset.valid ||
-                (blist.dataset.temporary && !blist.dataset.minorChange) ?
+            return !this.settings.view.valid ||
+                (this.settings.view.temporary && !this.settings.view.minorChange) ?
                 'This view must be valid and saved' :
                 'You cannot upload data into a dataset that contains a photo, ' +
                 'document, nested table, or tags column. ' +
                 'Please remove or hide such columns and try again, or ' +
                 'import this data as a new file.';
         },
-        sections: [
+
+        _getSections: function()
+        {
+            var mainSect =
             {
                 title: 'Select File',
                 fields: [
                     {text: 'File', type: 'file', name: 'uploadFile', required: true,
-                    fileTypes: ['CSV', 'TSV', 'XML', 'XLS', 'XLSX'],
-                    wizard: 'Choose a file to upload. For best results, ' +
-                        'the data file you select should have the same ' +
-                        'columns in the same order as the current dataset'}
+                    fileTypes: ['CSV', 'TSV', 'XML', 'XLS', 'XLSX']},
+                    skipHeader
                 ]
-            }
-        ],
-        finishBlock: {
-            buttons: [{text: 'Upload', isDefault: true, value: true},
-                $.gridSidebar.buttons.cancel],
-            wizard: "Now you're ready to upload new data to your dataset"
-        }
-    };
-
-    baseConfig.finishCallback = function(sidebarObj, data, $pane, value)
-    {
-        if (!sidebarObj.baseFormHandler($pane, value)) { return; }
-
-
-        // In theory, it would be nice to have append/replace functions on
-        // Dataset.  However, that is kind of difficult since it requires doing
-        // a form upload, which is tied rather tightly to the UI
-        var vals = sidebarObj.getFormValues($pane);
-        if (blist.dataset.type == 'blob')
-        { vals.uploadFile._settings.action = '/views/' + blist.dataset.id +
-            '.txt?method=replaceBlob'; }
-        else
-        { vals.uploadFile._settings.action = '/views/' + blist.dataset.id +
-            '/rows.txt?method=' + data.uploadType +
-            '&skip_headers=' + vals.skipHeader; }
-        vals.uploadFile._settings.onComplete = function(file, response)
-        {
-            sidebarObj.finishProcessing();
-            if (response.error)
+            };
+            if (this.settings.view.type == 'blob')
             {
-                $pane.find('.mainError').text(response.message);
+                delete mainSect.fields[0].fileTypes;
+                delete mainSect.fields[1];
             }
+            return [mainSect];
+        },
+
+        _getFinishButtons: function()
+        { return [{text: 'Upload', isDefault: true, value: true}, $.controlPane.buttons.cancel]; },
+
+        _finish: function(data, value)
+        {
+            var cpObj = this;
+            if (!cpObj._super.apply(this, arguments)) { return; }
+
+            // In theory, it would be nice to have append/replace functions on
+            // Dataset.  However, that is kind of difficult since it requires doing
+            // a form upload, which is tied rather tightly to the UI
+            var vals = cpObj._getFormValues();
+            if (cpObj.settings.view.type == 'blob')
+            { vals.uploadFile._settings.action = '/views/' + cpObj.settings.view.id +
+                '.txt?method=replaceBlob'; }
             else
+            { vals.uploadFile._settings.action = '/views/' + cpObj.settings.view.id +
+                '/rows.txt?method=' + data.uploadType + '&skip_headers=' + vals.skipHeader; }
+            vals.uploadFile._settings.onComplete = function(file, response)
             {
-                blist.dataset.reload();
-                sidebarObj.$dom().socrataAlert(
-                        {message: 'Your dataset has been updated', overlay: true});
-                sidebarObj.hide();
-            }
-        };
-        vals.uploadFile.submit();
+                cpObj._finishProcessing();
+                if (response.error)
+                { cpObj.$dom().find('.mainError').text(response.message); }
+                else
+                {
+                    cpObj.settings.view.reload();
+                    cpObj._showMessage('Your dataset has been updated');
+                    cpObj._hide();
+                }
+            };
+            vals.uploadFile.submit();
+        }
     };
 
 
-    if ($.isBlank(blist.sidebarHidden.edit) ||
-        !blist.sidebarHidden.edit.append)
+    var appendConfig = $.extend(true, {}, baseConfig);
+    appendConfig.getTitle = function() { return 'Append'; };
+    appendConfig._getCurrentData = function()
     {
-        var appendConfig = $.extend(true, {}, baseConfig);
-        appendConfig.name = 'edit.append';
-        appendConfig.title = 'Append';
-        appendConfig.dataSource = {uploadType: 'append'};
-        appendConfig.subtitle = 'Upload more data from a file that will be added ' +
-            'to the current dataset';
-        appendConfig.sections[0].fields.push(skipHeader);
+        var d = this._super();
+        if (!$.isBlank(d)) { return d; }
+        return {uploadType: 'append'};
+    };
+    appendConfig.getSubtitle = function() { return 'Upload more data from a file that will be added ' +
+        'to the current dataset'; };
 
-        $.gridSidebar.registerConfig(appendConfig);
-    }
+    $.Control.extend('pane_append', appendConfig, {name: 'append'}, 'controlPane');
+
+    if ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.append)
+    { $.gridSidebar.registerConfig('edit.append', 'pane_append', 5); }
 
 
-    if ($.isBlank(blist.sidebarHidden.edit) ||
-        !blist.sidebarHidden.edit.replace)
+    var replaceConfig = $.extend(true, {}, baseConfig);
+    replaceConfig.getTitle = function() { return 'Replace'; };
+    replaceConfig._getCurrentData = function()
     {
-        var replaceConfig = $.extend(true, {}, baseConfig);
-        replaceConfig.name = 'edit.replace';
-        replaceConfig.title = 'Replace';
-        replaceConfig.priority = 6;
-        replaceConfig.dataSource = {uploadType: 'replace'};
-        replaceConfig.subtitle = 'Upload a file that will replace all of the ' +
-            'rows in the current dataset (the original data will be lost).';
-        if (blist.dataset.type == 'blob')
-        {
-            delete replaceConfig.sections[0].fields[0].fileTypes;
-            replaceConfig.sections[0].fields[0].wizard = 'Choose a file to upload.';
-        }
-        else
-        { replaceConfig.sections[0].fields.push(skipHeader); }
+        var d = this._super();
+        if (!$.isBlank(d)) { return d; }
+        return {uploadType: 'replace'};
+    };
+    replaceConfig.getSubtitle = function() { return 'Upload a file that will replace all of the ' +
+        'rows in the current dataset (the original data will be lost).'; };
 
-        $.gridSidebar.registerConfig(replaceConfig);
-    }
+    $.Control.extend('pane_replace', replaceConfig, {name: 'replace'}, 'controlPane');
+
+    if ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.replace)
+    { $.gridSidebar.registerConfig('edit.replace', 'pane_replace', 6); }
 
 })(jQuery);

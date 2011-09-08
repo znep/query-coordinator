@@ -1,76 +1,79 @@
 (function($)
 {
-    if (blist.sidebarHidden.exportSection.subscribe) { return; }
+    $.Control.extend('pane_subscribe', {
+        getTitle: function()
+        { return 'Subscribe'; },
 
-    // Full path for RSS feed
-    var rssPath = blist.dataset.apiUrl + '/rows.rss';
+        getSubtitle: function()
+        { return 'Subscribe to this dataset to stay up to date'; },
 
-    var config =
-    {
-        name: 'export.subscribe',
-        priority: 6,
-        title: 'Subscribe',
-        subtitle: 'Subscribe to this dataset to stay up to date',
-        onlyIf: function()
+        isAvailable: function()
         {
-            return blist.dataset.isPublic() && blist.dataset.valid &&
-                (!blist.dataset.temporary || blist.dataset.minorChange);
+            return this.settings.view.isPublic() && this.settings.view.valid &&
+                (!this.settings.view.temporary || this.settings.view.minorChange);
         },
-        disabledSubtitle: function()
+
+        getDisabledSubtitle: function()
         {
-            return !blist.dataset.valid ||
-                (blist.dataset.temporary && !blist.dataset.minorChange) ?
+            return !this.settings.view.valid ||
+                (this.settings.view.temporary && !this.settings.view.minorChange) ?
                 'This view must be valid and saved' :
-                blist.dataset.isGrid() ?
+                this.settings.view.isGrid() ?
                     'This view must be public before it can be subscribed to' :
                     'Only tabular data may be subscribed to';
         },
-        noReset: true,
-        sections: [
-            {
-                customContent: {
-                    template: 'subscribeContent',
-                    directive: {
-                        '.feedItem': {
-                            'feedLink <- ': {
-                                '@class+': 'feedLink.itemClass',
-                                'a@href': function(e) {
-                                    return e.item.url + rssPath;
-                                },
-                                'a@class+': 'feedLink.name',
-                                '.text': 'feedLink.text',
-                                '.badge@src': 'feedLink.img',
-                                '.badge@alt': 'feedLink.name',
-                                '.badge@class+': 'feedLink.imgClass'
-                            }
-                        }
-                    },
-                    data: [
-                        {name: 'Google', url: 'http://fusion.google.com/add?feedurl=',
-                            img: 'http://buttons.googlesyndication.com/fusion/add.gif'},
-                        {name: 'Yahoo', url: 'http://add.my.yahoo.com/rss?url=',
-                            img: 'http://us.i1.yimg.com/us.yimg.com/i/us/my/addtomyyahoo4.gif'},
-                        {name: 'Bloglines', url: 'http://www.bloglines.com/sub/',
-                            img: 'http://www.bloglines.com/images/sub_modern5.gif'},
-                        {name: 'NewsGator', url: 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=',
-                            img: 'http://www.newsgator.com/images/ngsub1.gif'},
-                        {name: 'Netvibes', url: 'http://www.netvibes.com/subscribe.php?url=',
-                            img: 'http://www.netvibes.com/img/add2netvibes.gif'},
-                        {name: 'Pageflakes', url: 'http://www.pageflakes.com/subscribe.aspx?url=',
-                            img: 'http://www.pageflakes.com/subscribe2.gif'},
-                        {name: 'subscribe', url: '', img: '', imgClass: 'hide',
-                            text: '<span class="icon"></span>Download as RSS', itemClass: 'separated'},
-                        {name: 'other', url: 'feed:', itemClass: 'separated',
-                            img: '', imgClass: 'hide', text: 'Open in External Program'}
-                    ]
-                }
-            }
-        ],
-        finishBlock: {
-            buttons: [$.gridSidebar.buttons.done]
-        }
-    };
 
-    $.gridSidebar.registerConfig(config);
+        _getSections: function()
+        {
+            var cpObj = this;
+            return [
+                {
+                    customContent: {
+                        template: 'subscribeContent',
+                        directive: {
+                            '.feedItem': {
+                                'feedLink <- ': {
+                                    '@class+': 'feedLink.itemClass',
+                                    'a@href': function(e)
+                                        { return e.item.url + cpObj.settings.view.apiUrl + '/rows.rss'; },
+                                    'a@class+': 'feedLink.name',
+                                    '.text': 'feedLink.text',
+                                    '.badge@src': 'feedLink.img',
+                                    '.badge@alt': 'feedLink.name',
+                                    '.badge@class+': 'feedLink.imgClass'
+                                }
+                            }
+                        },
+                        data: [
+                            {name: 'Google', url: 'http://fusion.google.com/add?feedurl=',
+                                img: 'http://buttons.googlesyndication.com/fusion/add.gif'},
+                            {name: 'Yahoo', url: 'http://add.my.yahoo.com/rss?url=',
+                                img: 'http://us.i1.yimg.com/us.yimg.com/i/us/my/addtomyyahoo4.gif'},
+                            {name: 'Bloglines', url: 'http://www.bloglines.com/sub/',
+                                img: 'http://www.bloglines.com/images/sub_modern5.gif'},
+                            {name: 'NewsGator',
+                                url: 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=',
+                                img: 'http://www.newsgator.com/images/ngsub1.gif'},
+                            {name: 'Netvibes', url: 'http://www.netvibes.com/subscribe.php?url=',
+                                img: 'http://www.netvibes.com/img/add2netvibes.gif'},
+                            {name: 'Pageflakes', url: 'http://www.pageflakes.com/subscribe.aspx?url=',
+                                img: 'http://www.pageflakes.com/subscribe2.gif'},
+                            {name: 'subscribe', url: '', img: '', imgClass: 'hide',
+                                text: '<span class="icon"></span>Download as RSS', itemClass: 'separated'},
+                            {name: 'other', url: 'feed:', itemClass: 'separated',
+                                img: '', imgClass: 'hide', text: 'Open in External Program'}
+                        ]
+                    }
+                }
+            ];
+        },
+
+        _getFinishButtons: function()
+        { return [$.controlPane.buttons.done]; }
+
+    }, {name: 'subscribe', noReset: true}, 'controlPane');
+
+    if ($.isBlank(blist.sidebarHidden.exportSection) || !blist.sidebarHidden.exportSection.subscribe)
+    { $.gridSidebar.registerConfig('export.subscribe', 'pane_subscribe', 6); }
 
 })(jQuery);

@@ -347,7 +347,6 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/edit-redirect.js
     - public/javascripts/controls/grid-sidebar/embed-sdp.js
     - public/javascripts/controls/grid-sidebar/feed.js
-    - public/javascripts/controls/grid-sidebar/filter-dataset.js
     - public/javascripts/controls/grid-sidebar/form-create.js
     - public/javascripts/controls/grid-sidebar/map-create.js
     - public/javascripts/controls/grid-sidebar/permissions.js
@@ -355,6 +354,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/print-dataset.js
     - public/javascripts/controls/grid-sidebar/share-dataset.js
     - public/javascripts/controls/grid-sidebar/show-hide.js
+    - public/javascripts/controls/grid-sidebar/sort-rollUp.js
     - public/javascripts/controls/grid-sidebar/subscribe.js
     - public/javascripts/controls/grid-sidebar/signed-dataset.js
     - public/javascripts/controls/grid-sidebar/unified-filter.js

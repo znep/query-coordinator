@@ -1,78 +1,87 @@
 (function($)
 {
-    if (blist.sidebarHidden.manage &&
-        blist.sidebarHidden.manage.updateColumn) { return; }
+    var isLoading = false;
 
-    var configName = 'manage.columnOrder';
-    var config =
-    {
-        name: configName,
-        priority: 3,
-        title: 'Column Order',
-        subtitle: 'Change the order of your columns',
-        onlyIf: function()
+    $.Control.extend('pane_columnOrder', {
+        _init: function()
         {
-            return blist.dataset.valid && !_.isEmpty(blist.dataset.visibleColumns);
+            var cpObj = this;
+            cpObj._super.apply(cpObj, arguments);
+
+            cpObj.settings.view.bind('columns_changed', function()
+            {
+                if (isLoading) { return; }
+                cpObj.reset();
+            });
         },
-        disabledSubtitle: 'This view must be valid and must have visible columns.',
-        sections: [{
-            title: 'Columns',
-            customContent: {
-                template: 'columnOrderBlock',
-                directive: {
-                    'li.columnItem': {
-                        'column<-': {
-                            '.@data-columnId': 'column.id',
-                            '.name': 'column.name!',
-                            '.@class+': 'column.renderTypeName'
+
+        getTitle: function()
+        { return 'Column Order'; },
+
+        getSubtitle: function()
+        { return 'Change the order of your columns'; },
+
+        isAvailable: function()
+        {
+            return this.settings.view.valid &&
+                (!this.settings.view.temporary || this.settings.view.minorChange) &&
+                !_.isEmpty(this.settings.view.visibleColumns);
+        },
+
+        getDisabledSubtitle: function()
+        { return 'This view must be valid and must have visible columns.'; },
+
+        _getSections: function()
+        {
+            return [{
+                title: 'Columns',
+                customContent: {
+                    template: 'columnOrderBlock',
+                    directive: {
+                        'li.columnItem': {
+                            'column<-': {
+                                '.@data-columnId': 'column.id',
+                                '.name': 'column.name!',
+                                '.@class+': 'column.renderTypeName'
+                            }
                         }
-                    }
+                    },
+                    data: this.settings.view.visibleColumns
                 }
-            }
-        }],
-        showCallback: function(sidebarObj, $pane)
-        {
-            $pane.find('ul.columnsList').awesomereorder();
-            sidebar = sidebarObj;
+            }];
         },
-        finishBlock: {
-            buttons: [$.gridSidebar.buttons.done, $.gridSidebar.buttons.cancel]
+
+        shown: function()
+        {
+            this._super();
+            this.$dom().find('ul.columnsList').awesomereorder();
+        },
+
+        _getFinishButtons: function()
+        { return [$.controlPane.buttons.apply, $.controlPane.buttons.cancel]; },
+
+        _finish: function(data, value)
+        {
+            var cpObj = this;
+            if (!cpObj._super.apply(cpObj, arguments)) { return; }
+
+            var $columnsList = cpObj.$dom().find('.columnsList');
+            var columns = _.pluck(_.sortBy(cpObj.settings.view.visibleColumns, function(column)
+            {
+                return $columnsList.children('[data-columnId=' + column.id + ']').index();
+            }), 'id');
+
+            isLoading = true;
+            cpObj.settings.view.setVisibleColumns(columns, function()
+            {
+                cpObj._finishProcessing();
+                cpObj._hide();
+                isLoading = false;
+            });
         }
-    };
+    }, {name: 'columnOrder'}, 'controlPane');
 
-    var isLoading = false,
-        sidebar;
-    blist.dataset.bind('columns_changed', function()
-    {
-        if (isLoading) { return; }
-        updateColumns();
-        if (!$.isBlank(sidebar)) { sidebar.refresh(configName); }
-    });
-
-    var updateColumns = function()
-    {
-        // need to update in case the reference changes.
-        config.sections[0].customContent.data = blist.dataset.visibleColumns;
-    };
-    updateColumns();
-
-    config.finishCallback = function(sidebarObj, data, $pane, value)
-    {
-        var $columnsList = $pane.find('.columnsList');
-        var columns = _.pluck(_.sortBy(blist.dataset.visibleColumns, function(column)
-        {
-            return $columnsList.children('[data-columnId=' + column.id + ']').index();
-        }), 'id');
-
-        isLoading = true;
-        blist.dataset.setVisibleColumns(columns, function()
-        {
-            sidebarObj.finishProcessing();
-            sidebarObj.hide();
-            isLoading = false;
-        });
-    };
-
-    $.gridSidebar.registerConfig(config);
+    if ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.updateColumn)
+    { $.gridSidebar.registerConfig('manage.columnOrder', 'pane_columnOrder', 3); }
 
 })(jQuery);

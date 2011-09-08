@@ -1,54 +1,52 @@
 (function($)
 {
-    if (blist.sidebarHidden.about) { return; }
+    $.Control.extend('pane_about', {
+        getTitle: function()
+        { return 'About This Dataset'; },
 
-    var config =
-    {
-        name: 'about',
-        priority: 6,
-        title: 'About This Dataset',
-        sections: [
-            {
-                customContent: {
-                    template: 'aboutDataset',
-                    directive: {},
-                    data: {},
-                    callback: function($sect)
-                    {
-                        // IE7/8 can't handle the slideToggle.  It also gets
-                        // confused about the current state.
-                        var toggleAction = ($.browser.msie &&
-                            ($.browser.majorVersion <= 8)) ?
-                            'toggle' : 'slideToggle';
-
-                        $sect.find('.datasetAverageRating').each(function()
+        _getSections: function()
+        {
+            return [
+                {
+                    customContent: {
+                        template: 'aboutDataset',
+                        directive: {},
+                        data: {},
+                        callback: function($sect)
                         {
-                            blist.datasetControls.datasetRating($(this),
-                                $sect, true);
-                        });
+                            // IE7/8 can't handle the slideToggle.  It also gets
+                            // confused about the current state.
+                            var toggleAction = ($.browser.msie && ($.browser.majorVersion <= 8)) ?
+                                'toggle' : 'slideToggle';
 
-                        $.live('#gridSidebar_about .expander', 'click', function(event)
-                        {
-                            event.preventDefault();
-                            var $this = $(this);
+                            $sect.find('.datasetAverageRating').each(function()
+                            {
+                                blist.datasetControls.datasetRating($(this), $sect, true);
+                            });
 
-                            $this
-                                .toggleClass('expanded')
-                                .toggleClass('collapsed')
-                                .siblings('.sectionContent')[toggleAction]
-                                    ($this.hasClass('expanded'));
-                        });
+                            $sect.find('.expander').click(function(event)
+                            {
+                                event.preventDefault();
+                                var $this = $(this);
 
-                        $sect.find('.routingApproval .reasonBox').each(function()
-                        { blist.datasetControls.raReasonBox($(this)); });
+                                $this.toggleClass('expanded')
+                                    .toggleClass('collapsed')
+                                    .siblings('.sectionContent')[toggleAction]
+                                        ($this.hasClass('expanded'));
+                            });
 
-                        blist.datasetControls.datasetContact($sect);
+                            $sect.find('.routingApproval .reasonBox').each(function()
+                            { blist.datasetControls.raReasonBox($(this)); });
+
+                            blist.datasetControls.datasetContact($sect);
+                        }
                     }
                 }
-            }
-        ]
-    };
+            ];
+        }
+    }, {name: 'about'}, 'controlPane');
 
-    $.gridSidebar.registerConfig(config);
+    if (!blist.sidebarHidden.about)
+    { $.gridSidebar.registerConfig('about', 'pane_about'); }
 
 })(jQuery);

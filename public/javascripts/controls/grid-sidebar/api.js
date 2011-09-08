@@ -1,26 +1,29 @@
 (function($)
 {
-    if (blist.sidebarHidden.exportSection &&
-        blist.sidebarHidden.exportSection.api) { return; }
+    $.Control.extend('pane_api', {
+        getTitle: function()
+        { return 'API'; },
 
-    var config = {
-        name: 'export.api',
-        priority: 10,
-        title: 'API',
-        subtitle: 'Access this ' + blist.dataset.displayName + ' via SODA',
-        sections: [
-            {
-                customContent: {
-                    template: 'apiContentWrapper',
-                    directive: {
-                        'p@class+': 'pClass'
-                    },
-                    data: { pClass: 'sectionContent' }
+        getSubtitle: function()
+        { return 'Access this ' + this.settings.view.displayName + ' via SODA'; },
+
+        _getSections: function()
+        {
+            return [
+                {
+                    customContent: {
+                        template: 'apiContentWrapper',
+                        directive: {
+                            'p@class+': 'pClass'
+                        },
+                        data: { pClass: 'sectionContent' }
+                    }
                 }
-            }
-        ]
-    };
+            ];
+        }
+    }, {name: 'api'}, 'controlPane');
 
-    $.gridSidebar.registerConfig(config);
+    if ($.isBlank(blist.sidebarHidden.exportSection) || !blist.sidebarHidden.exportSection.api)
+    { $.gridSidebar.registerConfig('export.api', 'pane_api', 10); }
 
 })(jQuery);

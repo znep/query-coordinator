@@ -1,56 +1,20 @@
 (function($)
  {
-    if (blist.sidebarHidden.manage &&
-        blist.sidebarHidden.manage.sharing) { return; }
-
     // Construct what the core server considers a Grant
     var createGrantObject = function($line)
     {
         return {userId: $line.attr('data-uid'),
                 userEmail: $line.attr('data-email'),
-                type: $line.find('.type').val().toLowerCase()}
+                type: $line.find('.type').val().toLowerCase()};
     };
 
-    var commonError = function()
+    var commonError = function(cpObj)
     {
-        $('#gridSidebar_shareDataset .sharingFlash').addClass('error')
+        cpObj.$dom().find('.sharingFlash').addClass('error')
             .text('There was an error modifying your shares. Please try again later');
     };
 
-    // Send an update request to the C.S. to delete the grant
-    var removeShare = function(event)
-    {
-        event.preventDefault();
-        var $line = $(event.target).closest('.line');
-
-        blist.dataset.removeGrant(createGrantObject($line),
-            function()
-            {
-                $line.slideToggle();
-                updateShareText($line.closest('form'));
-            }, commonError);
-    };
-
-    var changeShare = function(event)
-    {
-        var $line = $(event.target).closest('.line');
-
-        var existingGrant = createGrantObject($line);
-
-        blist.dataset.replaceGrant(
-            $.extend({}, existingGrant, {type: $line.attr('data-currtype')}),
-            existingGrant,
-            function()
-            {
-                $('#gridSidebar_shareDataset .sharingFlash').removeClass('error')
-                    .addClass('notice')
-                    .text('Your permissions have been updated');
-                // Update the hidden type in case they update again
-                $line.attr('data-currtype', existingGrant.type);
-            }, commonError);
-    };
-
-    var grabShares = function(context, grants)
+    var grabShares = function(cpObj, $context, grants)
     {
         var shares = [];
         // Grab user object for each grant
@@ -59,179 +23,200 @@
             if (!$.isBlank(grant.userId))
             {
                 $.socrataServer.makeRequest({
-                    url: '/users/' + grant.userId + '.json',
-                    type: 'GET', data: {}, batch: true,
+                    url: '/users/' + grant.userId + '.json', type: 'GET', data: {}, batch: true,
                     success: function(response)
                     {
-                        shares.push($.extend({},response,
-                            {shareType: grant.type,
+                        shares.push($.extend({},response, {shareType: grant.type,
                              shareInherited: grant.inherited}));
                     }
                 });
             }
             else if (!$.isBlank(grant.userEmail))
             {
-                shares.push({userEmail: grant.userEmail,
-                    displayName: grant.userEmail,
-                    shareType: grant.type,
-                    shareInherited: grant.inherited});
+                shares.push({userEmail: grant.userEmail, displayName: grant.userEmail,
+                    shareType: grant.type, shareInherited: grant.inherited});
             }
         });
+
         // Then match up with the grants
-        $.socrataServer.sendBatch(function(response) { sharesRenderCallback(context, shares); });
-    };
-
-    var sharesRenderCallback = function(context, data)
-    {
-        var $ul = context.find('ul.itemsList');
-        $ul.empty();
-
-        // Pure render each of the shares out
-        _.each(data, function(share)
+        $.socrataServer.sendBatch(function(response)
         {
-            var $li = $.renderTemplate('sharesList', share, {
-                    '.name': 'displayName!',
-                    '.name@title': 'displayName!',
-                    'li@data-uid': 'id',
-                    'li@data-currtype': 'shareType',
-                    'li@data-email': 'userEmail',
-                    'li@class+': function(a) { return (a.context.shareInherited === true ? 'inherited' : '');  }
-                }),
-                shareType = $.capitalize(share.shareType);
+            var $ul = $context.find('ul.itemsList');
+            $ul.empty();
 
-            $li
-                .find('select.type')
-                    .val(shareType)
-                    .end()
-                .find('span.type')
-                    .text(shareType);
+            // Pure render each of the shares out
+            _.each(shares, function(share)
+            {
+                var $li = $.renderTemplate('sharesList', share, {
+                        '.name': 'displayName!',
+                        '.name@title': 'displayName!',
+                        'li@data-uid': 'id',
+                        'li@data-currtype': 'shareType',
+                        'li@data-email': 'userEmail',
+                        'li@class+': function(a)
+                            { return (a.context.shareInherited === true ? 'inherited' : '');  }
+                    }),
+                    shareType = $.capitalize(share.shareType);
 
-            if (!$.isBlank(share.profileImageUrlSmall))
-            { $li.find('.profileImage').css('background-image', 'url(' + share.profileImageUrlSmall + ')'); }
+                $li.find('select.type').val(shareType).end()
+                    .find('span.type').text(shareType);
 
-            $ul.append($li);
+                if (!$.isBlank(share.profileImageUrlSmall))
+                {
+                    $li.find('.profileImage').css('background-image',
+                        'url(' + share.profileImageUrlSmall + ')');
+                }
+
+                $ul.append($li);
+            });
+
+            _.defer(function(){ $ul.find('li > select').uniform(); });
+
+            $context.find('.type').change(function(event)
+            {
+                var $line = $(event.target).closest('.line');
+
+                var existingGrant = createGrantObject($line);
+
+                cpObj.settings.replaceGrant(
+                    $.extend({}, existingGrant, {type: $line.attr('data-currtype')}), existingGrant,
+                    function()
+                    {
+                        cpObj.$dom().find('.sharingFlash').removeClass('error').addClass('notice')
+                            .text('Your permissions have been updated');
+                        // Update the hidden type in case they update again
+                        $line.attr('data-currtype', existingGrant.type);
+                    }, function() { commonError(cpObj); });
+            });
+
+            $context.find('.removeShareLink').click(function(event)
+            {
+                // Send an update request to the C.S. to delete the grant
+                event.preventDefault();
+                var $line = $(event.target).closest('.line');
+
+                cpObj.settings.view.removeGrant(createGrantObject($line),
+                    function()
+                    {
+                        $line.slideToggle();
+                        updateShareText(cpObj, $line.closest('form'));
+                    }, function() { commonError(cpObj); });
+            });
         });
-
-        _.defer(function(){
-            $ul.find('li > select').uniform();
-        });
-
-        context.find('.type').change(changeShare);
-        context.find('.removeShareLink').click(removeShare);
     };
 
-    var updateShareText = function(context)
+    var updateShareText = function(cpObj, $context)
     {
-        var $span = context.find('.andSharedHint');
-        var $friends = context.find('.friendsHint');
+        var $span = $context.find('.andSharedHint');
+        var $friends = $context.find('.friendsHint');
 
-        var friends = blist.dataset.userGrants();
+        var friends = cpObj.settings.view.userGrants();
         if (friends.length == 0)
         {
             $span.addClass('hide');
-            context
-                .find('.noShares')
-                    .show().end()
-                .find('.shareNotifyLink')
-                    .hide();
+            $context.find('.noShares').show().end()
+                .find('.shareNotifyLink').hide();
         }
         else
         {
             $span.removeClass('hide');
-            $friends
-                .text((friends.length > 1) ? 'friends' : 'friend');
+            $friends.text((friends.length > 1) ? 'friends' : 'friend');
         }
     };
 
-    var displayName = blist.dataset.displayName;
-
-    var config =
-    {
-        name: 'manage.shareDataset',
-        priority: 8,
-        title: 'Sharing',
-        subtitle: 'Share this ' + displayName,
-        noReset: true,
-        onlyIf: function()
+    $.Control.extend('pane_shareDataset', {
+        _init: function()
         {
-            return blist.dataset.valid &&
-                (!blist.dataset.temporary || blist.dataset.minorChange);
+            var cpObj = this;
+            cpObj._super.apply(cpObj, arguments);
+            cpObj.settings.view.bind('permissions_changed', function() { cpObj.reset(); });
         },
-        disabledSubtitle: function()
+
+        getTitle: function()
+        { return 'Sharing'; },
+
+        getSubtitle: function()
+        { return 'Share this ' + this.settings.view.displayName; },
+
+        isAvailable: function()
         {
-            return 'This view must be valid and saved';
+            return this.settings.view.valid &&
+                (!this.settings.view.temporary || this.settings.view.minorChange);
         },
-        sections: [
-            {
-                customContent: {
-                    template: 'sharingForm',
-                    data: {},
-                    directive: {},
-                    callback: function($formElem)
-                    {
 
-                        $formElem.find('.shareDatasetButton').click(function(event)
+        getDisabledSubtitle: function()
+        { return 'This view must be valid and saved'; },
+
+        _getSections: function()
+        {
+            return [
+                {
+                    customContent: {
+                        template: 'sharingForm',
+                        data: {},
+                        directive: {},
+                        callback: function($formElem)
                         {
-                            event.preventDefault();
-                            if(_.isFunction(blist.dialog.sharing))
-                            { blist.dialog.sharing(event); }
-                        });
+                            var cpObj = this;
 
-                        $formElem.find('.shareNotifyLink').click(function(event)
-                        {
-                            event.preventDefault();
-                            blist.dataset.notifyUsers(function(responseData)
-                                { $formElem.find('.shareNoticeSent').fadeIn(); });
-                        });
-
-                        $formElem.find('.publicOrPrivate')
-                              .text(blist.dataset.isPublic() ? 'Public' : 'Private')
-                                  .end()
-                              .find('.datasetTypeName').text(displayName)
-                                  .end()
-                              .find('.datasetTypeNameUpcase')
-                                  .text(displayName.capitalize());
-
-                        // When this pane gets refreshed, update to reflect who it's shared with
-                        updateShareText($formElem);
-
-                        var grants = blist.dataset.userGrants();
-
-                        // If they have no shares
-                        if ($.isBlank(grants) || grants.length == 0)
-                        {
-                            _.defer(function(){
-                                $formElem.find('.loadingShares, .itemsList').hide();
-                                $formElem.find('.noShares').fadeIn();
+                            $formElem.find('.shareDatasetButton').click(function(event)
+                            {
+                                event.preventDefault();
+                                if ($.subKeyDefined(blist, 'dialog.sharing') &&
+                                    _.isFunction(blist.dialog.sharing))
+                                { blist.dialog.sharing(event); }
                             });
-                            return;
+
+                            $formElem.find('.shareNotifyLink').click(function(event)
+                            {
+                                event.preventDefault();
+                                cpObj.settings.view.notifyUsers(function(responseData)
+                                    { $formElem.find('.shareNoticeSent').fadeIn(); });
+                            });
+
+                            $formElem.find('.publicOrPrivate')
+                                  .text(cpObj.settings.view.isPublic() ? 'Public' : 'Private').end()
+                                  .find('.datasetTypeName').text(cpObj.settings.view.displayName).end()
+                                  .find('.datasetTypeNameUpcase')
+                                    .text(cpObj.settings.view.displayName.capitalize());
+
+                            // When this pane gets refreshed, update to reflect who it's shared with
+                            updateShareText(cpObj, $formElem);
+
+                            var grants = cpObj.settings.view.userGrants();
+
+                            // If they have no shares
+                            if ($.isBlank(grants) || grants.length == 0)
+                            {
+                                _.defer(function(){
+                                    $formElem.find('.loadingShares, .itemsList').hide();
+                                    $formElem.find('.noShares').fadeIn();
+                                });
+                                return;
+                            }
+
+                            _.defer(function(){ $formElem.find('.shareNotifyArea').fadeIn(); });
+
+                            // Start ajax for getting user names from UIDs
+                            grabShares(cpObj, $formElem, grants);
                         }
-
-                        _.defer(function(){
-                            $formElem.find('.shareNotifyArea').fadeIn();
-                        });
-
-                        // Start ajax for getting user names from UIDs
-                        grabShares($formElem, grants);
                     }
                 }
-            }
-        ],
-        showCallback: function(sidebarObj, $currentPane)
-        {
-            $currentPane
-                .find('.flash:not(.shareNoticeSent)')
-                    .removeClass('error notice')
-                    .text('')
-                .end()
-                .find('.shareNoticeSent')
-                    .hide();
+            ];
         },
-        finishBlock: {
-            buttons: [$.gridSidebar.buttons.done]
-        }
-    };
 
-    $.gridSidebar.registerConfig(config);
+        shown: function()
+        {
+            this._super();
+            this.$dom().find('.flash:not(.shareNoticeSent)').removeClass('error notice').text('').end()
+                .find('.shareNoticeSent').hide();
+        },
+
+        _getFinishButtons: function()
+        { return [$.controlPane.buttons.done]; }
+    }, {name: 'shareDataset', noReset: true}, 'controlPane');
+
+    if ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.sharing)
+    { $.gridSidebar.registerConfig('manage.shareDataset', 'pane_shareDataset', 8); }
 
  })(jQuery);

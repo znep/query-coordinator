@@ -100,6 +100,9 @@
                 };
                 sidebarObj.settings.view.bind('clear_temporary', setCurSize);
                 setCurSize();
+
+                sidebarObj.settings.view.bind('permissions_changed', function()
+                    { sidebarObj.updateEnabledSubPanes(); });
             }
 
             $domObj.resizable({

@@ -1,159 +1,157 @@
 (function($)
 {
-    if (blist.sidebarHidden.embed &&
-        blist.sidebarHidden.embed.formCreate) { return; }
-
-    var isEdit = blist.dataset.type == 'form';
-
-    var configName = 'embed.formCreate';
-    var config =
-    {
-        name: configName,
-        priority: 5,
-        title: 'Form',
-        subtitle: 'Forms allow you to gather data directly from your ' +
-            'website into a dataset',
-        onlyIf: function()
+    $.Control.extend('pane_formCreate', {
+        isAvailable: function()
         {
-            return _.any(blist.dataset.visibleColumns, function(c)
+            var cpObj = this;
+            return _.any(cpObj.settings.view.visibleColumns, function(c)
                 { return 'nested_table' != c.dataTypeName }) &&
-                (blist.dataset.valid || isEdit);
+                (cpObj.settings.view.valid || isEdit(cpObj));
         },
-        disabledSubtitle: function()
+
+        _getCurrentData: function()
         {
-            return !blist.dataset.valid ? 'This view must be valid' :
+            var d = this._super();
+            if (!$.isBlank(d)) { return d; }
+
+            if (!isEdit(this)) { return null; }
+
+            var view = this.settings.view.cleanCopy();
+            view.flags = view.flags || [];
+            if (this.settings.view.isPublic())
+            { view.flags.push('dataPublicAdd'); }
+            return view;
+        },
+
+        getTitle: function()
+        { return 'Form' },
+
+        getSubtitle: function()
+        { return 'Forms allow you to gather data directly from your website into a dataset' },
+
+        getDisabledSubtitle: function()
+        {
+            return !this.settings.view.valid ? 'This view must be valid' :
                 'This view must have visible columns to create a form';
         },
-        sections: [
+
+        _getSections: function()
+        {
+            return [
+                {
+                    title: 'Form Information',
+                    fields: [
+                        {type: 'text', text: 'Name', name: 'name', required: true, prompt: 'Enter a name'},
+                        {type: 'text', text: 'Success URL', name: 'displayFormat.successRedirect',
+                            extraClass: 'url', prompt: 'Enter a webpage URL'
+                        },
+                        {type: 'checkbox', text: 'Public?', name: 'flags.dataPublicAdd', defaultValue: true}
+                    ]
+                }
+            ];
+        },
+
+        _getFinishButtons: function()
+        {
+            return [isEdit(this) ? $.controlPane.buttons.update :
+                $.controlPane.buttons.create, $.controlPane.buttons.cancel];
+        },
+
+        _finish: function(data, value)
+        {
+            var cpObj = this;
+            if (!cpObj._super.apply(this, arguments)) { return; }
+
+            var view = $.extend(true, {displayFormat: null, displayType: 'form', metadata: {}},
+                cpObj._getFormValues(), {metadata: cpObj.settings.view.metadata});
+            view.metadata.renderTypeConfig.visible = {form: true};
+
+            var wasPublic = cpObj.settings.view.isPublic();
+            var isPublic = isPublicForm(view);
+            var doEdit = isEdit(cpObj);
+
+            view.metadata.availableDisplayTypes = ['form'];
+            cpObj.settings.view.update(view);
+
+            if (!doEdit)
             {
-                title: 'Form Information',
-                fields: [
-                    {type: 'text', text: 'Name', name: 'name', required: true,
-                        prompt: 'Enter a name',
-                        wizard: 'Enter a name for your form'
-                    },
-                    {type: 'text', text: 'Success URL',
-                        name: 'displayFormat.successRedirect',
-                        extraClass: 'url', prompt: 'Enter a webpage URL',
-                        wizard: 'Enter a URL for a page that should ' +
-                            'be displayed after the data is submitted'
-                    },
-                    {type: 'checkbox', text: 'Public?', name: 'flags.dataPublicAdd',
-                        defaultValue: true,
-                        wizard: 'Choose whether anyone can submit ' +
-                            'data via your form.  If not, only those given ' +
-                            'permission individually will be able to use it.'
+                var newView;
+                var finish = _.after(2, function()
+                {
+                    cpObj._finishProcessing();
+                    newView.redirectTo();
+                });
+
+                cpObj.settings.view.getParentDataset(function(parDS)
+                {
+                    if (!parDS.publicationAppendEnabled)
+                    {
+                        parDS.update({publicationAppendEnabled: true});
+                        parDS.save(finish,
+                            function(xhr) { cpObj._genericErrorHandler(xhr); },
+                            {publicationAppendEnabled: true});
                     }
-                ]
+                    else { finish(); }
+                });
+
+                cpObj.settings.view.saveNew(function(nv)
+                {
+                    newView = nv;
+                    finish();
+                },
+                function(xhr) { cpObj._genericErrorHandler(xhr); });
             }
-        ],
-        finishBlock: {
-            buttons: [isEdit ? $.gridSidebar.buttons.update :
-                $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
-            wizard: "Now you're ready to " +
-                (isEdit ? 'update your' : 'create a new') + ' form'
+            else
+            {
+                var updateView = function()
+                {
+                    cpObj.settings.view.save(function(newView)
+                    {
+                        cpObj._finishProcessing();
+
+                        if (!$.isBlank(cpObj.settings.renderTypeManager))
+                        {
+                            var $form = cpObj.settings.renderTypeManager.$domForType('form')
+                                .find('form.formView');
+                            var newRedirect = newView.displayFormat.successRedirect;
+                            if ($.isBlank(newRedirect))
+                            { newRedirect = $form.attr('data-defaultSuccessRedirect'); }
+                            var act = $form.attr('action');
+                            act = $.urlParam(act, 'successRedirect', escape(newRedirect));
+                            $form.attr('action', act);
+                        }
+
+                        // Global replace
+                        $('.currentViewName').text(newView.name);
+
+                        cpObj._showMessage('Your form has been updated');
+                        cpObj._hide();
+                    });
+                }
+
+                if (wasPublic !== isPublic)
+                {
+                    cpObj.settings.view['make' + (isPublic ? 'Public' : 'Private')](
+                        updateView);
+                }
+                else
+                { updateView(); }
+            }
         }
-    };
+    }, {name: 'formCreate'}, 'controlPane');
+
+
+    var isEdit = function(cpObj)
+    { return cpObj.settings.view.type == 'form'; };
 
     var isPublicForm = function(view)
     {
-        return _.any(view.grants || [], function(g)
-            { return g.type == 'contributor' &&
-                _.include(g.flags || [], 'public'); }) ||
-                _.include(view.flags || [], 'dataPublicAdd');
+        return _.include(view.flags || [], 'dataPublicAdd') ||
+            _.any(view.grants || [], function(g)
+                    { return g.type == 'contributor' && _.include(g.flags || [], 'public'); });
     };
 
-    config.dataSource = function()
-    {
-        if (!isEdit) { return null; }
-
-        var view = blist.dataset.cleanCopy();
-        view.flags = view.flags || [];
-        if (blist.dataset.isPublic())
-        { view.flags.push('dataPublicAdd'); }
-        return view;
-    };
-
-    config.finishCallback = function(sidebarObj, data, $pane, value)
-    {
-        if (!sidebarObj.baseFormHandler($pane, value)) { return; }
-
-        var view = $.extend({displayFormat: null, displayType: 'form'},
-            sidebarObj.getFormValues($pane), {metadata: blist.dataset.metadata});
-        view.metadata.renderTypeConfig.visible = {form: true};
-
-        var wasPublic = blist.dataset.isPublic();
-        var isPublic = isPublicForm(view);
-
-        view.metadata = $.extend(true, {}, blist.dataset.metadata);
-        view.metadata.availableDisplayTypes = ['form'];
-        blist.dataset.update(view);
-
-        if (!isEdit)
-        {
-            var newView;
-            var finish = _.after(2, function()
-            {
-                sidebarObj.finishProcessing();
-                newView.redirectTo();
-            });
-
-            blist.dataset.getParentDataset(function(parDS)
-            {
-                if (!parDS.publicationAppendEnabled)
-                {
-                    parDS.update({publicationAppendEnabled: true});
-                    parDS.save(finish,
-                        function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-                        {publicationAppendEnabled: true});
-                }
-                else { finish(); }
-            });
-
-            blist.dataset.saveNew(function(nv)
-            {
-                newView = nv;
-                finish();
-            },
-            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
-        }
-        else
-        {
-            var updateView = function()
-            {
-                blist.dataset.save(function(newView)
-                {
-                    sidebarObj.finishProcessing();
-
-                    var $form = blist.$container.renderTypeManager().$domForType('form')
-                        .find('form.formView');
-                    var newRedirect = newView.displayFormat.successRedirect;
-                    if ($.isBlank(newRedirect))
-                    { newRedirect = $form.attr('data-defaultSuccessRedirect'); }
-                    var act = $form.attr('action');
-                    act = $.urlParam(act, 'successRedirect', escape(newRedirect));
-                    $form.attr('action', act);
-
-                    $('.currentViewName').text(newView.name);
-
-                    sidebarObj.$dom().socrataAlert(
-                        {message: 'Your form has been updated', overlay: true});
-                    sidebarObj.hide();
-
-                    sidebarObj.addPane(configName);
-                });
-            }
-
-            if (wasPublic !== isPublic)
-            {
-                blist.dataset['make' + (isPublic ? 'Public' : 'Private')](
-                    updateView);
-            }
-            else
-            { updateView(); }
-        }
-    };
-
-    $.gridSidebar.registerConfig(config, 'form');
+    if ($.isBlank(blist.sidebarHidden.embed) || !blist.sidebarHidden.embed.formCreate)
+    { $.gridSidebar.registerConfig('embed.formCreate', 'pane_formCreate', 5, 'form'); }
 
 })(jQuery);

@@ -1,133 +1,113 @@
 (function($)
  {
-    if (blist.sidebarHidden.manage &&
-        blist.sidebarHidden.manage.permissions) { return; }
+    $.Control.extend('pane_datasetPermissions', {
+        getTitle: function()
+        { return 'Permissions'; },
 
-    var commonError = function()
-    {
-        $('#gridSidebar_datasetPermissions .sharingFlash').addClass('error')
-            .text('There was an error modifying your permissions. Please try again later');
-    };
+        getSubtitle: function()
+        { return 'Manage the permissions of this ' + this.settings.view.displayName; },
 
-    var togglePermissions = function($radio, $title)
-    {
-        blist.dataset[$radio.val()](
-            function()
-            {
-                $title.text(blist.dataset.isPublic() ? 'Public' : 'Private');
-                sidebar
-                    .updateEnabledSubPanes();
-                sidebar.refresh('manage.shareDataset');
-                $radio
-                    .socrataAlert({
-                        message: 'Your permissions have been saved', overlay: true
-                    });
-            },
-            function(request, textStatus, errorThrown)
-            {
-                $('#gridSidebar_datasetPermissions .sharingFlash').addClass('error')
-                    .text('There was an error modifying your dataset ' +
-                        'permissions. Please try again later');
-            }
-        );
-    };
-
-    var displayName     = blist.dataset.displayName,
-        $permissionForm = $('#gridSidebar_datasetPermissions .disabledFeatureFlags');
-
-    var sidebar;
-    var config =
-    {
-        name: 'manage.datasetPermissions',
-        priority: 7,
-        title: 'Permissions',
-        subtitle: 'Manage the permissions of this ' + displayName,
-        noReset: true,
-        onlyIf: function()
+        isAvailable: function()
         {
-            return blist.dataset.valid &&
-                (!blist.dataset.temporary || blist.dataset.minorChange);
+            return this.settings.view.valid &&
+                (!this.settings.view.temporary || this.settings.view.minorChange);
         },
-        disabledSubtitle: function()
+
+        getDisabledSubtitle: function()
+        { return 'This view must be valid and saved'; },
+
+        _getSections: function()
         {
-            return 'This view must be valid and saved';
-        },
-        sections: [
-            {
-                customContent: {
-                    template: 'datasetPermissions',
-                    data: {},
-                    directive: {},
-                    callback: function($formElem)
-                    {
-                        // If the publicness is inherited from the parent dataset,
-                        // they can't make it private
-                        var publicGrant = _.detect(blist.dataset.grants || [], function(grant)
-                            {
-                                return _.include(grant.flags || [], 'public');
-                            }),
-                            $publicText   = $formElem.find('.datasetPublicText'),
-                            $toggleForm   = $formElem.find('.togglePermissionsForm'),
-                            $toggleRadios = $toggleForm.find('.toggleDatasetPermissions');
-
-                        $publicText.text( blist.dataset.isPublic() ? 'Public' : 'Private' );
-
-                        // Only owned, parent-public datasets can be toggled
-                        if (blist.dataset.hasRight('update_view') &&
-                            ($.isBlank(publicGrant) || (publicGrant.inherited || false) == false))
+            var cpObj = this;
+            return [
+                {
+                    customContent: {
+                        template: 'datasetPermissions',
+                        data: {},
+                        directive: {},
+                        callback: function($formElem)
                         {
-                            $toggleRadios
-                                .change(function(event) {
-                                    togglePermissions($(event.target), $publicText);
+                            // If the publicness is inherited from the parent dataset,
+                            // they can't make it private
+                            var publicGrant = _.detect(cpObj.settings.view.grants || [], function(grant)
+                                { return _.include(grant.flags || [], 'public'); }),
+                                $publicText   = $formElem.find('.datasetPublicText'),
+                                $toggleForm   = $formElem.find('.togglePermissionsForm'),
+                                $toggleRadios = $toggleForm.find('.toggleDatasetPermissions');
+
+                            $publicText.text( cpObj.settings.view.isPublic() ? 'Public' : 'Private' );
+
+                            // Only owned, parent-public datasets can be toggled
+                            if (cpObj.settings.view.hasRight('update_view') &&
+                                ($.isBlank(publicGrant) || (publicGrant.inherited || false) == false))
+                            {
+                                $toggleRadios.change(function(event)
+                                {
+                                    var $radio = $(event.target);
+                                    cpObj.settings.view[$radio.val()](function()
+                                    {
+                                        $publicText.text(cpObj.settings.view.isPublic() ?
+                                            'Public' : 'Private');
+                                        $radio.socrataAlert({
+                                            message: 'Your permissions have been saved', overlay: true
+                                        });
+                                    },
+                                    function(request, textStatus, errorThrown)
+                                    {
+                                        cpObj.$dom().find('.sharingFlash').addClass('error')
+                                        .text('There was an error modifying your dataset ' +
+                                            'permissions. Please try again later');
+                                    });
                                 });
 
-                            _.defer(function() {
-                                $toggleRadios.uniform();
-                            });
-                        }
-                        else
-                        { $toggleForm.hide(); }
+                                _.defer(function() { $toggleRadios.uniform(); });
+                            }
+                            else
+                            { $toggleForm.hide(); }
 
-                        $formElem.find('.datasetTypeName').text(displayName);
-                        $formElem.find('.datasetTypeNameUpcase')
-                            .text(displayName.capitalize());
+                            $formElem.find('.datasetTypeName').text(this.settings.view.displayName);
+                            $formElem.find('.datasetTypeNameUpcase')
+                                .text(this.settings.view.displayName.capitalize());
+                        }
                     }
                 }
-            }
-        ],
-        showCallback: function(sidebarObj, $currentPane)
-        {
-            sidebar = sidebarObj;
-            $currentPane
-                .find('.flash')
-                    .removeClass('error')
-                    .text('')
-                .end();
+            ];
         },
-        finishBlock: {
-            buttons: [$.gridSidebar.buttons.update,
-                      $.gridSidebar.buttons.cancel]
-        }
-    };
 
-    config.finishCallback = function(sidebarObj, data, $pane, value)
-    {
-        if (!sidebarObj.baseFormHandler($pane, value)) { return; }
-
-        var formValues = sidebarObj.getFormValues($pane);
-        blist.dataset.disabledFeatureFlags = _.reject(_.keys(formValues),
-            function(key) { return formValues[key]; });
-
-        blist.dataset.save(function()
+        shown: function()
         {
-            sidebarObj.finishProcessing();
-            sidebarObj.$dom().socrataAlert(
-                {message: 'Your permissions have been saved', overlay: true});
-            sidebarObj.hide();
-        }, commonError);
-    };
+            this._super();
+            this.$dom().find('.flash').removeClass('error').text('');
+        },
 
-    $.gridSidebar.registerConfig(config);
+        _getFinishButtons: function()
+        { return [$.controlPane.buttons.update, $.controlPane.buttons.cancel]; },
+
+        _finish: function(data, value)
+        {
+            var cpObj = this
+            if (!cpObj._super.apply(this, arguments)) { return; }
+
+            var formValues = cpObj._getFormValues();
+            cpObj.settings.view.disabledFeatureFlags = _.reject(_.keys(formValues),
+                function(key) { return formValues[key]; });
+
+            cpObj.settings.view.save(function()
+            {
+                cpObj._finishProcessing();
+                cpObj._showMessage('Your permissions have been saved');
+                cpObj._hide();
+            },
+            function()
+            {
+                cpObj.find$('.sharingFlash').addClass('error')
+                    .text('There was an error modifying your permissions. Please try again later');
+            });
+        }
+    }, {name: 'datasetPermissions', noReset: true}, 'controlPane');
+
+    if ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.permissions)
+    { $.gridSidebar.registerConfig('manage.datasetPermissions', 'pane_datasetPermissions', 7); }
 
  })(jQuery);
 

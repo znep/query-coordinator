@@ -1,56 +1,56 @@
 (function($)
 {
-    if (blist.sidebarHidden.exportSection &&
-        blist.sidebarHidden.exportSection.print) { return; }
+    $.Control.extend('pane_printDataset', {
+        getTitle: function()
+        { return 'Print'; },
 
-    var config =
-    {
-        name: 'export.printDataset',
-        priority: 5,
-        title: 'Print',
-        subtitle: 'Export this dataset to a printable PDF format',
-        noReset: true,
-        onlyIf: function()
+        getSubtitle: function()
+        { return 'Export this dataset to a printable PDF format'; },
+
+        isAvailable: function()
+        { return this.settings.view.isGrid() && this.settings.view.valid; },
+
+        getDisabledSubtitle: function()
         {
-            return blist.dataset.isGrid() && blist.dataset.valid;
-        },
-        disabledSubtitle: function()
-        {
-            return !blist.dataset.valid ? 'This view must be valid' :
+            return !this.settings.view.valid ? 'This view must be valid' :
                 'Only tabular data may be printed';
         },
-        sections: [
-            {
-                customContent: {
-                    template: 'printForm',
-                    directive: {},
-                    data: {},
-                    callback: function($sect)
-                    {
-                        blist.namespace.fetch('blist.common');
-                        $sect.closest('form').attr('target', '_blank')
-                            .submit(blist.common.formInliner)
-                            .attr('method', 'post')
-                            .attr('action', '/views/INLINE/rows.pdf');
+
+        _getSections: function()
+        {
+            return [
+                {
+                    customContent: {
+                        template: 'printForm',
+                        directive: {},
+                        data: {},
+                        callback: function($sect)
+                        {
+                            blist.namespace.fetch('blist.common');
+                            $sect.closest('form').attr('target', '_blank')
+                                .submit(blist.common.formInliner)
+                                .attr('method', 'post')
+                                .attr('action', '/views/INLINE/rows.pdf');
+                        }
                     }
                 }
-            }
-        ],
-        finishBlock: {
-            buttons: [{text: 'Print', value: 'print', isDefault: true}, $.gridSidebar.buttons.cancel]
+            ];
         },
-        finishCallback: function(sidebarObj, data, $pane, value)
+
+        _getFinishButtons: function()
+        { return [{text: 'Print', value: 'print', isDefault: true}, $.controlPane.buttons.cancel]; },
+
+        _finish: function(data, value)
         {
             if (value === 'print')
-            {
-                $pane.find('.printForm').closest('form').submit();
-            }
+            { this.$dom().find('.printForm').closest('form').submit(); }
 
-            sidebarObj.finishProcessing();
-            sidebarObj.hide();
+            this._finishProcessing();
+            this._hide();
         }
-    };
+    }, {name: 'printDataset', noReset: true}, 'controlPane');
 
-    $.gridSidebar.registerConfig(config);
+    if ($.isBlank(blist.sidebarHidden.exportSection) || !blist.sidebarHidden.exportSection.print)
+    { $.gridSidebar.registerConfig('export.printDataset', 'pane_printDataset', 5); }
 
 })(jQuery);

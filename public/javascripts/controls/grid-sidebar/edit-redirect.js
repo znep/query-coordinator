@@ -1,24 +1,21 @@
 (function($)
 {
-    if (blist.sidebarHidden.edit &&
-        blist.sidebarHidden.edit.redirect) { return; }
+    $.Control.extend('pane_editRedirect', {
+        getTitle: function()
+        { return 'Edit'; },
 
-    var configName = 'edit';
-    var config =
-    {
-        name: configName,
-        priority: 1,
-        title: 'Edit',
-        sections: [{
-            customContent: {
-                callback: function($section)
-                {
-                    $section.append(blist.datasetControls.editPublishedMessage());
+        getSections: function()
+        {
+            return [{
+                customContent: {
+                    callback: function($section)
+                    { $section.append(blist.datasetControls.editPublishedMessage()); }
                 }
-            }
-        }]
-    };
+            }];
+        }
+    }, {name: 'edit'}, 'controlPane');
 
-    $.gridSidebar.registerConfig(config);
+    if ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.redirect)
+    { $.gridSidebar.registerConfig('edit', 'pane_editRedirect'); }
 
 })(jQuery);

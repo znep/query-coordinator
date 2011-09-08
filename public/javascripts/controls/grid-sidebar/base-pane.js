@@ -343,6 +343,7 @@
 
             cpObj._isDirty = true;
             cpObj._visible = false;
+            cpObj._isReady = true;
 
             cpObj.settings.view.bind('columns_changed', function()
             { updateColumnSelects(cpObj); });
@@ -381,6 +382,16 @@
         {
             var cpObj = this;
             var $pane = cpObj.$dom();
+
+            if (!cpObj._isReady)
+            {
+                if ($.isBlank(cpObj._cachedRender) || !$.isBlank(data))
+                { cpObj._cachedRender = {data: data, isTempData: isTempData}; }
+                cpObj._startProcessing();
+                return;
+            }
+
+            cpObj._finishProcessing();
 
             if (($.isBlank(data) || _.isEqual(data, cpObj._getCurrentData())) && !cpObj._isDirty)
             { return; }
@@ -495,7 +506,7 @@
                 $s.find('.sectionSelect').value(hasData);
             });
 
-            $pane.delegate('.formSection.selectable .sectionSelect', 'click', function(e)
+            $pane.find('.formSection.selectable .sectionSelect').bind('click', function(e)
             {
                 var $c = $(this);
                 _.defer(function()
@@ -504,14 +515,14 @@
 
             hookUpFields(cpObj, $pane);
 
-            $pane.delegate('.button.addValue', 'click', function(e)
+            $pane.find('.button.addValue').bind('click', function(e)
             {
                 e.preventDefault();
                 addRepeaterLine(cpObj, $(this));
             });
 
 
-            $pane.delegate('.finishButtons a', 'click', function(e)
+            $pane.find('.finishButtons a').bind('click', function(e)
             {
                 e.preventDefault();
                 var $button = $(this);
@@ -615,7 +626,7 @@
         { return data; },
 
         // Get configuration for the sections to display in the pane. See config above
-        getSections: function()
+        _getSections: function()
         { return []; },
 
         // List of buttons to display for the conclusion of the pane
@@ -823,6 +834,18 @@
         {
             this._finishProcessing();
             this.$dom().find('.mainError').text(JSON.parse(xhr.responseText).message);
+        },
+
+        _markReady: function()
+        {
+            var cpObj = this;
+            cpObj._isReady = true;
+            var cr = cpObj._cachedRender;
+            if (!$.isBlank(cr))
+            {
+                delete cpObj._cachedRender;
+                cpObj.render(cr.data, cr.isTempData);
+            }
         }
     }, {
         columnChoosers: null, // One or more dom nodes that can support enterColumnChoose and exitColumnChoose

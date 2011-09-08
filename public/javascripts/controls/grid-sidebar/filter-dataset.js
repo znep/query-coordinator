@@ -183,7 +183,7 @@
 
         var wasInvalid = !blist.dataset.valid;
 
-        blist.dataset.update(filterView);
+        blist.dataset.update(filterView, false, _.isEmpty(filterView.query.groupBys));
 
         // Show hidden columns if we are grouped
         _.each(config.sections, function(s)

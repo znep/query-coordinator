@@ -67,7 +67,7 @@
             // Set up y-axes
             _.each(chartObj._yColumns, function(cs, colIndex)
             {
-                var series = {name: $.htmlEscape(cs.data.name),
+                var series = {name: cs.data.name,
                     data: [], column: cs.data};
                 if (chartObj._chartType == 'donut')
                 {

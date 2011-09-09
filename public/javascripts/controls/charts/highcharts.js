@@ -18,12 +18,12 @@
         {
             var chartObj = this;
 
-            if (chartObj.settings.view.displayFormat.pointColor
+            if (chartObj._displayFormat.pointColor
                 && chartObj._valueColumns.length > 0
                 && !chartObj._gradient)
             {
                 chartObj._gradient = $.gradient(chartObj._numSegments,
-                    chartObj.settings.view.displayFormat.color || '#042656',
+                    chartObj._displayFormat.color || '#042656',
                     { maxValue: 80 });
             }
 
@@ -163,11 +163,10 @@
 
                 // First check if this should be subsumed into a remainder
                 if (!_.isNull(value) &&
-                    !_.isUndefined(chartObj.settings
-                        .view.displayFormat.pieJoinAngle) &&
+                    !_.isUndefined(chartObj._displayFormat.pieJoinAngle) &&
                     !$.isBlank(cs.data.aggregates.sum) &&
                     (value / cs.data.aggregates.sum) * 360 <
-                        chartObj.settings.view.displayFormat.pieJoinAngle)
+                        chartObj._displayFormat.pieJoinAngle)
                 { return; }
 
                 // Render point and cache it
@@ -208,7 +207,7 @@
             // Check if there are remainders to stick on the end
             if (!_.isUndefined(chartObj._seriesRemainders) &&
                 (Dataset.chart.types[chartObj._chartType].renderOther ||
-                chartObj.settings.view.displayFormat.renderOther))
+                chartObj._displayFormat.renderOther))
             {
                 // Create fake row for other value
                 var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
@@ -326,12 +325,12 @@
 
         generateFlyoutLayout: function(columns, valueColumn)
         {
-            var fCols = this.settings.view.displayFormat.fixedColumns;
+            var fCols = this._displayFormat.fixedColumns;
             var reqFields = [valueColumn];
-            if (this.settings.view.displayFormat.pointColor)
-            { reqFields.push(this.settings.view.displayFormat.pointColor); }
-            if (this.settings.view.displayFormat.pointSize)
-            { reqFields.push(this.settings.view.displayFormat.pointSize); }
+            if (this._displayFormat.pointColor)
+            { reqFields.push(this._displayFormat.pointColor); }
+            if (this._displayFormat.pointSize)
+            { reqFields.push(this._displayFormat.pointSize); }
             _.each(_.uniq(valueColumn.supplementalColumns || []), function(col)
             { reqFields.push({ tableColumnId: col }); });
             return this._super(_.compact(_.uniq(reqFields).concat(columns)));
@@ -340,17 +339,17 @@
 
     var createChart = function(chartObj)
     {
-        var xTitle = chartObj.settings.view.displayFormat.titleX;
-        var yTitle = chartObj.settings.view.displayFormat.titleY;
+        var xTitle = chartObj._displayFormat.titleX;
+        var yTitle = chartObj._displayFormat.titleY;
 
-        var legendPos = chartObj.settings.view.displayFormat.legend;
+        var legendPos = chartObj._displayFormat.legend;
 
         // Make a copy of colors so we don't reverse the original
         var colors;
-        if (!_.isUndefined(chartObj.settings.view.displayFormat.colors))
-        { colors = chartObj.settings.view.displayFormat.colors.slice(); }
-        else if (!_.isUndefined(chartObj.settings.view.displayFormat.color))
-        { colors = [ chartObj.settings.view.displayFormat.color ]; }
+        if (!_.isUndefined(chartObj._displayFormat.colors))
+        { colors = chartObj._displayFormat.colors.slice(); }
+        else if (!_.isUndefined(chartObj._displayFormat.color))
+        { colors = [ chartObj._displayFormat.color ]; }
         else
         {
             colors = _.map(chartObj._valueColumns, function(vc)
@@ -359,13 +358,13 @@
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;
-        if (seriesType == 'line' && chartObj.settings.view.displayFormat.smoothLine)
+        if (seriesType == 'line' && chartObj._displayFormat.smoothLine)
         { seriesType = 'spline'; }
         if (seriesType == 'timeline') { seriesType = 'line'; }
         if (seriesType == 'donut') { seriesType = 'pie'; }
         if (seriesType == 'bubble')
         {
-            if (chartObj.settings.view.displayFormat.showLine)
+            if (chartObj._displayFormat.showLine)
             { seriesType = 'line'; }
             else
             { seriesType = 'scatter'; }
@@ -389,9 +388,9 @@
 
                 var decimalPlaces = 2;
                 if (!xAxis
-                    && $.subKeyDefined(chartObj.settings.view.displayFormat,
+                    && $.subKeyDefined(chartObj._displayFormat,
                         'yAxis.formatter.decimalPlaces'))
-                { decimalPlaces = chartObj.settings.view.displayFormat.yAxis.formatter.decimalPlaces; }
+                { decimalPlaces = chartObj._displayFormat.yAxis.formatter.decimalPlaces; }
                 return blist.util.toHumaneNumber(num, decimalPlaces);
             };
             var maxLen = 20;
@@ -407,7 +406,7 @@
             { return; }
 
             var invertAxis = chartObj._chartType == 'bar';
-            var stacking = chartObj.settings.view.displayFormat.stacking;
+            var stacking = chartObj._displayFormat.stacking;
             if (!chartObj._hatchPattern)
             { chartObj._hatchPattern = $('<div class="hatchPattern"></div>'); }
 
@@ -483,13 +482,13 @@
                 });
                 delete chartObj._valueMarkers;
             }
-            if (!chartObj.settings.view.displayFormat.valueMarker || $.isBlank(chartObj.chart))
+            if (!chartObj._displayFormat.valueMarker || $.isBlank(chartObj.chart))
             { return; }
 
             if (!chartObj._valueMarkers)
             { chartObj._valueMarkers = []; }
 
-            _.each(chartObj.settings.view.displayFormat.valueMarker, function(marker, index)
+            _.each(chartObj._displayFormat.valueMarker, function(marker, index)
             {
                 var lineAt = parseFloat(marker.atValue);
                 if (!_.isNumber(lineAt)) { return; }
@@ -686,9 +685,9 @@
         if (!_.isEmpty(chartObj._xCategories))
         { chartConfig.xAxis.categories = chartObj._xCategories; }
 
-        if (chartObj.settings.view.displayFormat.yAxis)
+        if (chartObj._displayFormat.yAxis)
         {
-            var yAxis = chartObj.settings.view.displayFormat.yAxis;
+            var yAxis = chartObj._displayFormat.yAxis;
             if (_.isNumber(parseFloat(yAxis.min)))
             { chartConfig.yAxis.min = yAxis.min; }
             if (_.isNumber(parseFloat(yAxis.max)))
@@ -744,7 +743,7 @@
         var typeConfig = {stickyTracking: false, showInLegend: true};
 
         // Disable marker if no point size set
-        if (chartObj.settings.view.displayFormat.pointSize == '0')
+        if (chartObj._displayFormat.pointSize == '0')
         { typeConfig.marker = {enabled: false}; }
 
         // If we already loaded and are just re-rendering, don't animate
@@ -752,9 +751,8 @@
         { typeConfig.animation = false; }
 
         // Make sure lineSize is defined, so we don't hide the line by default
-        if (!_.isUndefined(chartObj.settings.view.displayFormat.lineSize))
-        { typeConfig.lineWidth = parseInt(chartObj.settings
-            .view.displayFormat.lineSize); }
+        if (!_.isUndefined(chartObj._displayFormat.lineSize))
+        { typeConfig.lineWidth = parseInt(chartObj._displayFormat.lineSize); }
 
         var tooltipTimeout;
         typeConfig.point = { events: {
@@ -791,8 +789,7 @@
         // Type config goes under the type name
         chartConfig.plotOptions[seriesType] = typeConfig;
 
-        if (chartObj.settings.view.displayFormat.stacking
-            && chartObj._yColumns.length > 1)
+        if (chartObj._displayFormat.stacking && chartObj._yColumns.length > 1)
         { chartConfig.plotOptions.series = $.extend(chartConfig.plotOptions.series,
                                                     { stacking: 'normal' }); }
 
@@ -893,7 +890,7 @@
         else if (isPieTypeChart)
         {
             point.name = point.name || point.x;
-            if (chartObj.settings.view.displayFormat.showPercentages)
+            if (chartObj._displayFormat.showPercentages)
             {
                 var percentage = (value/chartObj._seriesSums[seriesIndex])*100;
                 if (percentage < 1)
@@ -914,10 +911,9 @@
         }
 
         if (isPieTypeChart &&
-            !_.isUndefined(chartObj.settings.view.displayFormat.colors))
+            !_.isUndefined(chartObj._displayFormat.colors))
         {
-            point.color = chartObj.settings.view.displayFormat
-                .colors[point.x % chartObj.settings.view.displayFormat.colors.length];
+            point.color = chartObj._displayFormat.colors[point.x % chartObj._displayFormat.colors.length];
         }
         else if (chartObj._chartType == 'bubble')
         {

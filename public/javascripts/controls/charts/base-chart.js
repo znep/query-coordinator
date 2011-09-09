@@ -16,20 +16,21 @@
         _init: function()
         {
             this._super.apply(this, arguments);
-            this._chartType = this.settings.view.displayFormat.chartType;
+            this._chartType = this.settings.chartType || this._displayFormat.chartType;
             this._numSegments = 10;
             this._origData = { chartService: chartMapping[this._chartType] };
         },
 
         _getMixins: function(options)
         {
-            return [chartMapping[options.view.displayFormat.chartType]];
+            return [chartMapping[options.chartType ||
+                (options.displayFormat || options.view.displayFormat).chartType]];
         },
 
         initializeVisualization: function ()
         {
             var chartObj = this;
-            chartObj.initializeFlyouts(chartObj.settings.view.displayFormat.descriptionColumns);
+            chartObj.initializeFlyouts(chartObj._displayFormat.descriptionColumns);
         },
 
         getColumns: function()
@@ -37,7 +38,7 @@
             var chartObj = this;
             var view = chartObj.settings.view;
 
-            chartObj._valueColumns = _.map(view.displayFormat.valueColumns,
+            chartObj._valueColumns = _.map(chartObj._displayFormat.valueColumns,
                 function(vc)
                 {
                     var col = view.columnForTCID(vc.tableColumnId);
@@ -59,14 +60,14 @@
             });
 
             chartObj._fixedColumns =
-                _.map(view.displayFormat.fixedColumns || [],
+                _.map(chartObj._displayFormat.fixedColumns || [],
                     function(tcId) { return view.columnForTCID(tcId); });
             chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
             if (chartObj._chartType == 'bubble')
             { _.each(['pointColor', 'pointSize'], function(colName)
             {
-                var c = view.columnForTCID(view.displayFormat[colName]);
+                var c = view.columnForTCID(chartObj._displayFormat[colName]);
                 if (!$.isBlank(c) && !c.isMeta)
                 {
                     chartObj['_' + colName] = c;
@@ -107,7 +108,7 @@
 
         reloadVisualization: function()
         {
-            this._chartType = this.settings.view.displayFormat.chartType;
+            this._chartType = this.settings.chartType || this._displayFormat.chartType;
             this.initializeVisualization();
             this._super();
         },
@@ -124,16 +125,16 @@
         needsFullReset: function()
         {
             var chartObj = this;
-            var view = chartObj.settings.view;
             return !$.isBlank(chartObj._origData) &&
-                chartObj._origData.chartService != chartMapping[view.displayFormat.chartType];
+                chartObj._origData.chartService != chartMapping[chartObj.settings.chartType ||
+                chartObj._displayFormat.chartType];
         },
 
         initializeFlyouts: function(columns)
         {
             var chartObj = this;
             chartObj._flyoutConfig = {};
-            _.each(chartObj.settings.view.displayFormat.valueColumns,
+            _.each(chartObj._displayFormat.valueColumns,
                 function(vc, index)
                 {
                     var id = vc.tableColumnId;
@@ -182,7 +183,7 @@
 
         generateFlyoutLayout: function(columns, valueColumn)
         {
-            var fCols = this.settings.view.displayFormat.fixedColumns;
+            var fCols = this._displayFormat.fixedColumns;
             var titleId = fCols ? fCols[0] : null;
             columns = _.compact([valueColumn].concat(columns));
 

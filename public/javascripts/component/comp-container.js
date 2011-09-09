@@ -211,6 +211,7 @@
                 if (child._arrange)
                     child._arrange();
             });
+            this._super();
         }
     });
 
@@ -281,7 +282,7 @@
         wrap: function(child, wrapperConfig) {
             var parent = child.parent;
             if (!parent)
-                throw "Cannot wrap unparented child";
+                throw new Error("Cannot wrap unparented child");
             var position = child.next;
 
             parent._blockArrange = true;
@@ -303,13 +304,13 @@
          */
         unwrap: function(child) {
             if (child.prev || child.next)
-                throw "Cannot unwrap child with siblings";
+                throw new Error("Cannot unwrap child with siblings");
             var wrapper = child.parent;
             if (!wrapper)
-                throw "Cannot unwrap unparented child";
+                throw new Error("Cannot unwrap unparented child");
             var parent = wrapper.parent;
             if (!wrapper)
-                throw "Cannot unwrap child with root parent";
+                throw new Error("Cannot unwrap child with root parent");
 
             parent._blockArrange = true;
             try {

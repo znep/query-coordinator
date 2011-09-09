@@ -8,6 +8,8 @@
             currentObj._super.apply(currentObj, arguments);
             var $mainDom = $(currentObj.currentDom);
 
+            currentObj._displayFormat = currentObj.settings.displayFormat ||
+                currentObj.settings.view.displayFormat;
             $mainDom.resize(function(e) { doResize(currentObj, e); })
                 .bind('hide', function() { currentObj._hidden = true; })
                 .bind('show', function()
@@ -31,8 +33,7 @@
             currentObj._dataViews = [currentObj.settings.view];
 
             var viewsFetched = 0;
-            var viewsToLoad = (currentObj.settings.view
-                               .displayFormat.compositeMembers || []).length + 1;
+            var viewsToLoad = (currentObj._displayFormat.compositeMembers || []).length + 1;
 
             var datasetReady = function()
             {
@@ -41,7 +42,7 @@
                 { currentObj.loadLibraries(); }
             };
 
-            _.each(currentObj.settings.view.displayFormat.compositeMembers || [],
+            _.each(currentObj._displayFormat.compositeMembers || [],
             function(member_id, index)
             {
                 Dataset.createFromViewId(member_id, function(dataset)
@@ -146,7 +147,7 @@
                     {type: 'columnLabel', tableColumnId: dc.tableColumnId},
                     {type: 'columnData', tableColumnId: dc.tableColumnId}
                 ]};
-                if ((vizObj.settings.view.displayFormat || {}).flyoutsNoLabel)
+                if ((vizObj._displayFormat || {}).flyoutsNoLabel)
                 { row.fields.shift(); }
                 col.rows.push(row);
             });
@@ -251,6 +252,7 @@
             }
             delete vizObj._needsReload;
 
+            vizObj._displayFormat = vizObj.settings.displayFormat || vizObj.settings.view.displayFormat;
             if (vizObj.needsPageRefresh())
             {
                 // Now that visualizations are being done inline, reloading
@@ -444,7 +446,7 @@
 
             if (!$.isBlank(scripts))
             {
-                $.loadLibraries(scripts, function() {
+                blist.util.assetLoading.loadLibraries(scripts, function() {
                     vizObj._dynamicLibrariesLoaded = true;
                     callback();
                 });

@@ -11,10 +11,10 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
 
-            if (mapObj.settings.view.displayFormat.viewport)
+            if (mapObj._displayFormat.viewport)
             {
-                mapOptions.zoom = mapObj.settings.view.displayFormat.viewport.zoom;
-                var center = mapObj.settings.view.displayFormat.viewport.center;
+                mapOptions.zoom = mapObj._displayFormat.viewport.zoom;
+                var center = mapObj._displayFormat.viewport.center;
                 mapOptions.center = new google.maps.LatLng(center.lat, center.lng);
             }
 
@@ -566,7 +566,7 @@
         {
             var mapObj = this;
 
-            if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+            if (mapObj._displayFormat.plotStyle != 'rastermap')
             { return; }
 
             if (!mapObj._heatLayer)
@@ -729,13 +729,12 @@
             if ($.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
             { return; }
 
-            if (mapObj.settings.view.displayFormat.viewport)
+            if (mapObj._displayFormat.viewport)
             {
-                mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                mapObj.setViewport(mapObj._displayFormat.viewport);
                 _.defer(function() { mapObj.updateRowsByViewport(null, true); });
             }
-            else if (mapObj._boundsCounts > 1 ||
-                mapObj.settings.view.displayFormat.heatmap)
+            else if (mapObj._boundsCounts > 1 || mapObj._displayFormat.heatmap)
             { mapObj.map.fitBounds(mapObj._bounds); }
             else
             {

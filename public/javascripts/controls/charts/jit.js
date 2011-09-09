@@ -50,7 +50,7 @@
                     }
                     var xCol = chartObj._fixedColumns[0];
 
-                    var colors = chartObj.settings.view.displayFormat.colors;
+                    var colors = chartObj._displayFormat.colors;
                     var defaultColor = colors[row.id % 5];
 
                     var rowColor = (row.meta && row.meta.color) ||
@@ -99,7 +99,7 @@
                 var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
                 row[chartObj._fixedColumns[0].id] = 'Other';
                 row[valCol.id] = chartObj._remainder;
-                var colors = chartObj.settings.view.displayFormat.colors;
+                var colors = chartObj._displayFormat.colors;
                 var color = colors[chartObj.settings.view.totalRows % 5];
                 if ((chartObj.settings.view.highlights || {})[row.id])
                 { color = getHighlightColor(color); }

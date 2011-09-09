@@ -163,7 +163,7 @@
     var setUpHeatmap = function(mapObj)
     {
         var viewConfig = mapObj._byView[mapObj.settings.view.id];
-        var config = mapObj.settings.view.displayFormat.heatmap;
+        var config = mapObj._displayFormat.heatmap;
 
         if (config.type == 'custom')
         {
@@ -174,9 +174,9 @@
         }
 
         config.hideLayers = config.hideLayers ||
-            !mapObj.settings.view.displayFormat.layers
-            || mapObj.settings.view.displayFormat.layers.length == 0;
-        if (mapObj.settings.view.displayFormat.forceBasemap)
+            !mapObj._displayFormat.layers
+            || mapObj._displayFormat.layers.length == 0;
+        if (mapObj._displayFormat.forceBasemap)
         {
             config.hideLayers = false;
             config.ignoreTransforms = true;
@@ -237,7 +237,7 @@
 
     var fetchFeatureSet = function(mapObj)
     {
-        var config = mapObj.settings.view.displayFormat.heatmap;
+        var config = mapObj._displayFormat.heatmap;
 
         mapObj.startLoading();
         if (MAP_TYPE[config.type].jsonCache)
@@ -293,7 +293,7 @@
     var processRows = function(mapObj, rows)
     {
         var viewConfig = mapObj._byView[mapObj.settings.view.id];
-        var config = mapObj.settings.view.displayFormat.heatmap;
+        var config = mapObj._displayFormat.heatmap;
 
         var updatedFeatures = _(rows).chain().map(function(row, i)
         {
@@ -392,7 +392,7 @@
 
     var processFeatures = function(mapObj)
     {
-        var config = mapObj.settings.view.displayFormat.heatmap;
+        var config = mapObj._displayFormat.heatmap;
 
         mapObj._runningQuery = false;
         mapObj._featureDisplayName = mapObj._featureSet.displayFieldName;
@@ -409,7 +409,7 @@
         {
             if (!feature.attributes.NAME)
             { feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName]; }
-            if (mapObj.settings.view.displayFormat.forceBasemap && feature.oldGeometry)
+            if (mapObj._displayFormat.forceBasemap && feature.oldGeometry)
             {
                 feature.geometry = new esri.geometry.Polygon(feature.oldGeometry);
                 delete feature.oldGeometry;

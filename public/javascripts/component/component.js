@@ -8,24 +8,45 @@
 
     var Component = Class.extend({
         _init: function(properties) {
-            $.extend(this, properties);
-            if (!this.id)
-                this.id = 'c' + nextAutoID++;
-            else if (this.id.charAt[0] == 'c') {
-                var sequence = parseInt(this.id.substring(1));
+            var cObj = this;
+            cObj._properties = properties || {};
+            if (!cObj._properties.id)
+                cObj._properties.id = 'c' + nextAutoID++;
+            else if (cObj._properties.id.charAt[0] == 'c') {
+                var sequence = parseInt(cObj._properties.id.substring(1));
                 if (sequence > nextAutoID)
                     nextAutoID = sequence + 1;
             }
-            if (components[this.id])
-                throw "Duplicate component ID " + this.id;
-            components[this.id] = this;
-            if (_.isFunction(this._dataReady))
-                this._updateDataSource(properties, this._dataReady);
+            if (components[cObj._properties.id])
+                throw new Error("Duplicate component ID " + cObj._properties.id);
+            components[cObj._properties.id] = cObj;
+            if (_.isFunction(cObj._dataReady))
+                cObj._updateDataSource(properties, cObj._dataReady);
+            blist.util.assetLoading.loadAssets(cObj._getAssets(), function() { cObj._render(); });
+
+            // Need to listen for general resize events if we are the top component
+            $(window).bind('resize', function(e, source)
+            {
+                if (source == $.component) { return; }
+                if ($.isBlank(cObj.parent)) { cObj._arrange(); }
+            });
+        },
+
+        startLoading: function()
+        {
+            if (!$.isBlank(this.$dom))
+            { this.$dom.loadingSpinner().showHide(true); }
+        },
+
+        finishLoading: function()
+        {
+            if (!$.isBlank(this.$dom))
+            { this.$dom.loadingSpinner().showHide(false); }
         },
 
         destroy: function() {
             this.remove();
-            delete components[this.id];
+            delete components[this._properties.id];
         },
 
         /**
@@ -71,22 +92,39 @@
         },
 
         /**
+         * Javascript and CSS that needs to be loaded to render the component
+         */
+        _getAssets: function()
+        { return null; },
+
+        /**
          * Initialize DOM representation of this component.
          */
         _render: function() {
             var dom = this.dom;
             if (!dom)
-                dom = document.getElementById(this.id);
+                dom = document.getElementById(this._properties.id);
             if (!dom) {
                 dom = document.createElement('div');
-                dom.id = this.id;
+                dom.id = this._properties.id;
             }
             this.dom = dom;
+            this.$dom = $(dom);
             dom._comp = this;
             dom.className = 'socrata-component component-' + this.typeName;
             this._rendered = true;
-            if (typeof this.height == 'number')
-                $(this.dom).css('height', this.height);
+            if (typeof this._properties.height == 'number')
+                this.$dom.css('height', this._properties.height);
+            this.$dom.loadingSpinner();
+        },
+
+        /**
+         * Called when this component is resized, moved, added, etc. so it can update
+         */
+        _arrange: function()
+        {
+            if (!$.isBlank(this.$dom))
+            { this.$dom.trigger('resize', [$.component]); }
         },
 
         /**
@@ -96,7 +134,7 @@
         _move: function(parent, position) {
             // Confirm that position makes sense
             if (position && position.parent != parent)
-                throw "Illegal position -- new following sibling is not parented by new parent";
+                throw new Error("Illegal position -- new following sibling is not parented by new parent");
 
             // Ignore identity moves
             if (position ? position == this || position == this.next : parent.last == this)
@@ -142,10 +180,7 @@
          * Obtain the component's current public properties.
          */
         _propRead: function() {
-            return {
-                id: this.id,
-                type: this.typeName
-            };
+            return $.extend(true, {}, this._properties, { type: this.typeName });
         },
 
         /**

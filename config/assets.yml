@@ -69,6 +69,8 @@ javascripts:
     - public/javascripts/controls/editors/document-editor.js
     - public/javascripts/controls/editors/photo-editor.js
   configurator:
+    - public/javascripts/plugins/lab.js
+    - public/javascripts/util/asset-loading.js
     - public/javascripts/component/data-context.js
     - public/javascripts/component/template.js
     - public/javascripts/component/component.js
@@ -118,6 +120,8 @@ javascripts:
     - public/javascripts/component/input/site-search.js
     - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
+  data-rendering:
+    - public/javascripts/controls/render-type-manager.js
   shared-calendar:
     - public/javascripts/plugins/fullcalendar.js
     - public/javascripts/controls/rich-render-library.js
@@ -287,6 +291,7 @@ javascripts:
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/events.js
     - public/javascripts/plugins/lab.js
+    - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/feed-list.js
     - public/javascripts/controls/stars.js
@@ -322,6 +327,7 @@ javascripts:
     - public/javascripts/plugins/iscroll.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/plugins/lab.js
+    - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
@@ -398,6 +404,7 @@ javascripts:
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/plugins/lab.js
+    - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/dataset-bare.js
   render-view-minimum:
@@ -405,6 +412,7 @@ javascripts:
     - public/javascripts/util/humane-date.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/plugins/lab.js
+    - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/render-type-manager.js
   shared-metrics:
     - public/javascripts/plugins/daterangepicker.jquery.js
@@ -470,6 +478,7 @@ javascripts:
 
 dump:
   javascripts:
+    - data-rendering
     - shared-calendar
     - shared-chart
     - shared-map

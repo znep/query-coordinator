@@ -155,6 +155,7 @@
         defaults:
         {
             defaultTypes: null,
+            handleResize: true,
             view: null
         },
 
@@ -172,7 +173,6 @@
 
                 rtmObj.visibleTypes = {};
 
-                rtmObj._loadedAssets = {};
                 rtmObj.settings.view.bind('valid', function()
                 {
                     if (!_.isEmpty(rtmObj.visibleTypes))
@@ -216,12 +216,15 @@
 
                 _.each(defTypes, function(v, t) { if (v) { rtmObj.show(t); } });
 
-                $(window).bind('resize', function(e, source)
+                if (rtmObj.settings.handleResize)
                 {
-                    if (source == this) { return; }
-                    _.each(rtmObj.visibleTypes, function(v, t)
-                    { rtmObj.$domForType(t).trigger('resize', [this]); });
-                });
+                    $(window).bind('resize', function(e, source)
+                    {
+                        if (source == this) { return; }
+                        _.each(rtmObj.visibleTypes, function(v, t)
+                        { rtmObj.$domForType(t).trigger('resize', [this]); });
+                    });
+                }
             },
 
             $dom: function()
@@ -369,9 +372,6 @@
 
         var finishCallback = function()
         {
-            // Don't load these assets again
-            rtmObj._loadedAssets[typeInfo.name] = true;
-
             if (_.isFunction($.fn[typeInfo.initFunction]))
             {
                 $content[typeInfo.initFunction]($.extend({view: rtmObj.settings.view,
@@ -393,49 +393,9 @@
         else
         { $content.addClass('scrollContent'); }
 
-        if (!rtmObj._loadedAssets[typeInfo.name])
-        {
-            if (!$.isBlank(typeInfo.stylesheets))
-            {
-                var sheets = _.map(typeInfo.stylesheets, function(s)
-                {
-                    var sheet = translateUrls('/stylesheets/', [s.sheet || s]);
-                    if ($.isPlainObject(s)) { s.sheet = sheet[0]; }
-                    else { s = sheet[0]; }
-                    return s;
-                });
-                $.loadStylesheets(sheets, function() { $(window).resize(); });
-            }
-
-            // Lazy-load javascripts
-            if (_.isArray(typeInfo.javascripts) &&
-                typeInfo.javascripts.length > 0)
-            {
-                $.loadLibraries(translateUrls('/javascripts/',
-                    typeInfo.javascripts), finishCallback);
-            }
-            else { finishCallback(); }
-        }
-        else
-        { finishCallback(); }
+        blist.util.assetLoading.loadAssets(typeInfo, finishCallback, function() { $(window).resize(); });
 
         typeInfo._initialized = true;
-    };
-
-    var translateUrls = function(prefix, array)
-    {
-        return _.map(array, function(item)
-        {
-            if (item && !$.isBlank(item.assets))
-            { return blist.assets[item.assets]; }
-            else
-            {
-              // Preserve false/null/external links
-              if (item && ! item.startsWith('http') && !item.startsWith('/'))
-              { return prefix + item; }
-              return item;
-            }
-        });
     };
 
 })(jQuery);

@@ -12,10 +12,10 @@
                  enableClickableLogo: false,
                  enableSearchLogo: false};
 
-            if (mapObj.settings.view.displayFormat.viewport)
+            if (mapObj._displayFormat.viewport)
             {
-                mapOptions.zoom = mapObj.settings.view.displayFormat.viewport.zoom;
-                var center = mapObj.settings.view.displayFormat.viewport.center;
+                mapOptions.zoom = mapObj._displayFormat.viewport.zoom;
+                var center = mapObj._displayFormat.viewport.center;
                 mapOptions.center = new Microsoft.Maps.Location(
                     center.latitude || center.lat, center.longitude || center.lng);
             }
@@ -317,7 +317,7 @@
         {
             var mapObj = this;
 
-            if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+            if (mapObj._displayFormat.plotStyle != 'rastermap')
             { return; }
 
             if (!mapObj._heatLayer)
@@ -424,9 +424,9 @@
                 delete mapObj._viewportListener;
             }
 
-            if (mapObj.settings.view.displayFormat.viewport)
+            if (mapObj._displayFormat.viewport)
             {
-                mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                mapObj.setViewport(mapObj._displayFormat.viewport);
                 if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
                 { mapObj.updateRowsByViewport(null, true); }
             }

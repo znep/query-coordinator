@@ -69,11 +69,11 @@
         {
             var calObj = this;
             calObj._startCol = calObj.settings.view.columnForTCID(
-                calObj.settings.view.displayFormat.startDateTableId);
+                calObj._displayFormat.startDateTableId);
             calObj._endCol = calObj.settings.view.columnForTCID(
-                calObj.settings.view.displayFormat.endDateTableId);
+                calObj._displayFormat.endDateTableId);
             calObj._titleCol = calObj.settings.view.columnForTCID(
-                calObj.settings.view.displayFormat.titleTableId);
+                calObj._displayFormat.titleTableId);
         },
 
         closeFlyout: function($link)
@@ -91,8 +91,7 @@
 
         calObj.$dom().fullCalendar({aspectRatio: 2,
                 editable: calObj.settings.editEnabled && calObj.settings.view.hasRight('write'),
-                disableResizing: $.isBlank(calObj.settings.view
-                    .displayFormat.endDateTableId),
+                disableResizing: $.isBlank(calObj._displayFormat.endDateTableId),
                 viewClear: function()
                     { viewClear.apply(this, [calObj].concat($.makeArray(arguments))); },
                 eventClick: function()
@@ -117,8 +116,7 @@
                     { eventChange.apply(this, [calObj].concat($.makeArray(arguments))); }
                 });
 
-        calObj.initializeFlyouts(calObj.settings
-                .view.displayFormat.descriptionColumns);
+        calObj.initializeFlyouts(calObj._displayFormat.descriptionColumns);
 
         calObj.ready();
     };

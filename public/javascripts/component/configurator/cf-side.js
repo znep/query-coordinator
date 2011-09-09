@@ -64,6 +64,13 @@
 
             return false;
         });
+
+        if (!$.isBlank($ct[0].addEventListener))
+        {
+            _.each(['transitionend', 'oTransitionEnd', 'webkitTransitionEnd'],
+                function(t) { $ct[0].addEventListener(t, function() { $(window).resize(); }); });
+        };
+        $(window).resize();
     }
 
     $.cf.side = function(show) {

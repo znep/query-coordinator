@@ -2062,7 +2062,7 @@
             var isField = !$.isBlank(o.field);
             var isFunc = _.isFunction(o.func);
             if (!isField && !isFunc)
-            { throw 'Only field-value or func objects supported for section onlyIfs'; }
+            { throw new Error('Only field-value or func objects supported for section onlyIfs'); }
 
             if (isField)
             {

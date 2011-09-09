@@ -8,15 +8,16 @@
         _getMixins: function(options)
         {
             var mixins = [];
-            var mapService = options.view.displayFormat.type || 'google';
+            var df = options.displayFormat || options.view.displayFormat;
+            var mapService = df.type || 'google';
             if (mapService == 'heatmap' || options.view.isArcGISDataset())
             { mapService = 'esri'; }
             mixins.push(mapService);
 
             if (mapService == 'esri') { mixins.push('arcGISmap'); }
 
-            var plotStyle = options.view.displayFormat.plotStyle;
-            if (options.view.displayFormat.type == 'heatmap')
+            var plotStyle = df.plotStyle;
+            if (df.type == 'heatmap')
             { plotStyle  = 'heatmap'; }
             mixins.push(plotStyle);
 
@@ -52,8 +53,7 @@
             }
             else { mapObj.$dom().siblings('#mapLayers').addClass('hide'); }
 
-            mapObj.initializeFlyouts((mapObj.settings.view.displayFormat
-                .plot || {}).descriptionColumns);
+            mapObj.initializeFlyouts((mapObj._displayFormat.plot || {}).descriptionColumns);
 
             mapObj.populateLayers();
 
@@ -85,10 +85,10 @@
             });
 
             mapObj._origData = {
-                displayFormat: mapObj.settings.view.displayFormat,
-                mapType: mapObj.settings.view.displayFormat.type,
-                plotStyle: mapObj.settings.view.displayFormat.plotStyle,
-                layers: mapObj.settings.view.displayFormat.layers};
+                displayFormat: mapObj._displayFormat,
+                mapType: mapObj._displayFormat.type,
+                plotStyle: mapObj._displayFormat.plotStyle,
+                layers: mapObj._displayFormat.layers};
 
             mapObj._highlightColor = $.rgbToHex($.colorToObj(
                 blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
@@ -104,8 +104,7 @@
                 if (!mapObj._gradient)
                 {
                     mapObj._gradient = $.gradient(mapObj._numSegments,
-                            mapObj.settings.view.displayFormat.color ||
-                            "#0000ff");
+                            mapObj._displayFormat.color || "#0000ff");
                 }
 
                 mapObj.$legend({
@@ -126,7 +125,7 @@
         {
             var mapObj = this;
             var oldDF = $.extend({}, mapObj._origData.displayFormat);
-            var newDF = $.extend({}, mapObj.settings.view.displayFormat);
+            var newDF = $.extend({}, mapObj._displayFormat);
             _.each(['viewport'], function(property)
             { delete oldDF[property]; delete newDF[property]; });
 
@@ -136,9 +135,8 @@
         reloadSpecialCases: function()
         {
             var mapObj = this;
-            if (!_.isEqual(mapObj._origData.displayFormat.viewport,
-                           mapObj.settings.view.displayFormat.viewport))
-            { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+            if (!_.isEqual(mapObj._origData.displayFormat.viewport, mapObj._displayFormat.viewport))
+            { mapObj.setViewport(mapObj._displayFormat.viewport); }
         },
 
         reset: function()
@@ -158,19 +156,15 @@
         needsPageRefresh: function()
         {
             var od = this._origData || {};
-            var view = this.settings.view;
-            return od.mapType != view.displayFormat.type &&
-                od.mapType == 'bing';
+            return od.mapType != this._displayFormat.type && od.mapType == 'bing';
         },
 
         needsFullReset: function()
         {
             var od = this._origData || {};
-            var view = this.settings.view;
-            return view.displayFormat.type != od.mapType ||
-                view.displayFormat.plotStyle != od.plotStyle ||
-                !_.isEqual(view.displayFormat.layers,
-                        od.layers);
+            return this._displayFormat.type != od.mapType ||
+                this._displayFormat.plotStyle != od.plotStyle ||
+                !_.isEqual(this._displayFormat.layers, od.layers);
         },
 
         cleanVisualization: function()
@@ -201,14 +195,14 @@
             var mapObj = this;
 
             mapObj.populateLayers();
-            mapObj.initializeFlyouts((mapObj.settings.view.displayFormat
+            mapObj.initializeFlyouts((mapObj._displayFormat
                 .plot || {}).descriptionColumns);
 
             mapObj._origData = {
-                displayFormat: mapObj.settings.view.displayFormat,
-                mapType: mapObj.settings.view.displayFormat.type,
-                plotStyle: mapObj.settings.view.displayFormat.plotStyle,
-                layers: mapObj.settings.view.displayFormat.layers};
+                displayFormat: mapObj._displayFormat,
+                mapType: mapObj._displayFormat.type,
+                plotStyle: mapObj._displayFormat.plotStyle,
+                layers: mapObj._displayFormat.layers};
 
             mapObj._super();
         },
@@ -305,7 +299,7 @@
         generateFlyoutLayout: function(columns, titleId)
         {
             var mapObj = this;
-            var titleId = (mapObj.settings.view.displayFormat.plot || {}).titleId;
+            var titleId = (mapObj._displayFormat.plot || {}).titleId;
             if (_.isEmpty(columns) && $.isBlank(titleId))
             { return null; }
 
@@ -351,7 +345,7 @@
             var loc = rows[0][mapObj._byView[mapObj.settings.view.id]._locCol.lookup];
             if (loc.latitude && loc.longitude)
             {
-                if (mapObj.settings.view.displayFormat.type == 'bing')
+                if (mapObj._displayFormat.type == 'bing')
                 { $info.append($.tag({tagName: 'a', 'class': 'external_link',
                     href: 'http://www.bing.com/maps/?where1='+loc.latitude+','+loc.longitude,
                     target: '_blank', contents: 'View in Bing Maps'})); }
@@ -371,7 +365,7 @@
 
             if (mapObj._renderType == 'clusters') { return true; }
 
-            if (mapObj.settings.view.displayFormat.noLocations &&
+            if (mapObj._displayFormat.noLocations &&
                 _.isUndefined(row.feature))
             { return true; }
 
@@ -482,9 +476,9 @@
                     { details.size  = 10+(6*i); break; }
                 }
             }
-            if (mapObj.settings.view.displayFormat.color)
+            if (mapObj._displayFormat.color)
             {
-                var rgb = $.hexToRgb(mapObj.settings.view.displayFormat.color);
+                var rgb = $.hexToRgb(mapObj._displayFormat.color);
                 details.color = [ rgb.r, rgb.g, rgb.b ];
             }
             if (viewConfig._colorValueCol
@@ -715,7 +709,7 @@
 
             mapObj._currentViewport = vp;
             mapObj.settings.view.update({displayFormat: $.extend({},
-                mapObj.settings.view.displayFormat, { viewport: vp })}, false, true);
+                mapObj._displayFormat, { viewport: vp })}, false, true);
         },
 
         resizeHandle: function(event)
@@ -741,25 +735,25 @@
                     { return col.name.toUpperCase() == 'OBJECTID'; });
                 viewConfig._objectIdKey = (viewConfig._objectIdCol || {}).name;
 
-                if (!$.subKeyDefined(view.displayFormat, 'plot'))
+                if (!$.subKeyDefined(mapObj._displayFormat, 'plot'))
                 { return; }
 
                 // Preferred location column
-                if (!$.isBlank(view.displayFormat.plot.locationId))
+                if (!$.isBlank(mapObj._displayFormat.plot.locationId))
                 { viewConfig._locCol =
-                    view.columnForTCID(view.displayFormat.plot.locationId); }
+                    view.columnForTCID(mapObj._displayFormat.plot.locationId); }
 
                 viewConfig._redirectCol =
-                    view.columnForTCID(view.displayFormat.plot.redirectId);
+                    view.columnForTCID(mapObj._displayFormat.plot.redirectId);
 
                 viewConfig._iconCol =
-                    view.columnForTCID(view.displayFormat.plot.iconId);
+                    view.columnForTCID(mapObj._displayFormat.plot.iconId);
 
                 var aggs = {};
                 _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
                 {
                     var c = view.columnForTCID(
-                        view.displayFormat.plot[colName + 'Id']);
+                        mapObj._displayFormat.plot[colName + 'Id']);
                     if (!$.isBlank(c))
                     {
                         viewConfig['_' + colName + 'Col'] = c;
@@ -786,7 +780,7 @@
         {
             var mapObj = this;
 
-            if (mapObj.settings.view.displayFormat.plotStyle == 'heatmap'
+            if (mapObj._displayFormat.plotStyle == 'heatmap'
                 || mapObj._neverCluster)
             { return mapObj._super(); }
 
@@ -802,10 +796,10 @@
             _.each(viewsToRender, function(view, index)
             {
                 var viewport;
-                if (mapObj.settings.view.displayFormat.viewport && mapObj.currentZoom() >= 3)
+                if (mapObj._displayFormat.viewport && mapObj.currentZoom() >= 3)
                 {
-                    var isEsri = mapObj.settings.view.displayFormat.type == 'esri';
-                    viewport = mapObj.settings.view.displayFormat.viewport;
+                    var isEsri = mapObj._displayFormat.type == 'esri';
+                    viewport = mapObj._displayFormat.viewport;
                     if (isEsri && viewport.sr == 102100)
                     {
                         viewport =

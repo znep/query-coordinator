@@ -21,12 +21,12 @@
             dojo.addOnLoad(function()
             {
                 var options = {};
-                if (!$.isBlank(mapObj.settings.view.displayFormat.zoom))
-                { options.zoom = mapObj.settings.view.displayFormat.zoom; }
+                if (!$.isBlank(mapObj._displayFormat.zoom))
+                { options.zoom = mapObj._displayFormat.zoom; }
 
-                if (mapObj.settings.view.displayFormat.viewport)
+                if (mapObj._displayFormat.viewport)
                 {
-                    var viewport = mapObj.settings.view.displayFormat.viewport;
+                    var viewport = mapObj._displayFormat.viewport;
                     options.extent = mapObj.viewportToExtent(viewport);
                 }
                 mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
@@ -87,7 +87,7 @@
                         });
                 });
 
-                var layers = mapObj.settings.view.displayFormat.layers ||
+                var layers = mapObj._displayFormat.layers ||
                     mapObj.settings.defaultLayers;
                 if (!$.isArray(layers) || !layers.length)
                 {
@@ -180,8 +180,7 @@
         buildIdentifyTask: function()
         {
             var mapObj = this;
-            mapObj._identifyConfig =
-                mapObj.settings.view.displayFormat.identifyTask;
+            mapObj._identifyConfig = mapObj._displayFormat.identifyTask;
 // mapObj._identifyConfig = { // Test!
 //     url: "http://navigator.state.or.us/ArcGIS/rest/services/Projects/ARRA_Unemployment/MapServer",
 //     layerId: 2,
@@ -449,7 +448,7 @@
         {
             var mapObj = this;
 
-            if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+            if (mapObj._displayFormat.plotStyle != 'rastermap')
             { return; }
 
             if ($.browser.msie && parseInt($.browser.version) < 9)
@@ -683,7 +682,7 @@
         {
             var mapObj = this;
             if (!mapObj._bounds && mapObj._multipoint.points.length == 0
-                && !mapObj.settings.view.displayFormat.viewport)
+                && !mapObj._displayFormat.viewport)
             { return; }
             if (mapObj._viewportListener &&
                 $.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
@@ -703,9 +702,9 @@
                 var yadj = (extent.ymax - extent.ymin) * 0.05;
             }
 
-            if (mapObj.settings.view.displayFormat.viewport)
+            if (mapObj._displayFormat.viewport)
             {
-                mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                mapObj.setViewport(mapObj._displayFormat.viewport);
                 if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
                 { mapObj.updateRowsByViewport(); }
             }
@@ -924,7 +923,7 @@
                 borderWidth: customization.borderWidth || 1
             };
 
-            $.extend(symbolConfig, mapObj.settings.view.displayFormat.plot);
+            $.extend(symbolConfig, mapObj._displayFormat.plot);
             var symbolBackgroundColor =
                 new dojo.Color(symbolConfig.backgroundColor);
             symbolBackgroundColor.a = _.isUndefined(customization.opacity) ? 0.8
@@ -1108,7 +1107,7 @@
     var integrateLayersIntoMap = function(mapObj, webapp)
     {
         // Untested: Shifting position appropriately to correctly insert layers.
-        _.each(mapObj.settings.view.displayFormat.layers, function(layer, index)
+        _.each(mapObj._displayFormat.layers, function(layer, index)
         {
             if (layer.position && index > webapp.position)
             { layer.position += webmapp.layerCount-1; }

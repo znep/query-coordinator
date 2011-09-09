@@ -12,7 +12,7 @@ $.cf.edit.registerAction('add', {
     positionID: undefined,
 
     initialize: function(options) {
-        this.containerID = options.containerID || (options.container && options.container.id);
+        this.containerID = options.containerID || (options.container && options.container.properties().id);
         if (!this.containerID)
             throw "Cannot perform add without container reference";
         this.positionID = options.positionID || (options.position && options.position.id);

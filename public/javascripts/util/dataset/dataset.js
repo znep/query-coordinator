@@ -2294,8 +2294,8 @@ this.Dataset = ServerModel.extend({
 
             var getResult = function(v, cv)
             {
-                if (_.isString(v)) { v = v.toLowerCase(); }
-                if (_.isString(cv)) { cv = cv.toLowerCase(); }
+                if (_.isString(v)) { v = $.trim(v.toLowerCase()); }
+                if (_.isString(cv)) { cv = $.trim(cv.toLowerCase()); }
 
                 switch (c.operator.toLowerCase())
                 {

@@ -36,4 +36,7 @@ class TestPagesController < ApplicationController
     render :text => 'Oh no, evil code!'
   end
 
+  def cf
+  end
+
 end

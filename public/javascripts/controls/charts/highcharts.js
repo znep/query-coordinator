@@ -67,7 +67,7 @@
             // Set up y-axes
             _.each(chartObj._yColumns, function(cs, colIndex)
             {
-                var series = {name: $.htmlEscape(cs.data.name),
+                var series = {name: cs.data.name,
                     data: [], column: cs.data};
                 if (chartObj._chartType == 'donut')
                 {
@@ -467,7 +467,7 @@
         var drawValueMarker = function()
         {
             var invertAxis = chartObj._chartType == 'bar';
-            if (chartObj._valueMarker)
+            if (chartObj._valueMarker && chartObj._valueMarker.renderer)
             {
                 // This is a hackaround since it doesn't look like
                 // alignedObjects is ever supposed to be null.
@@ -506,13 +506,36 @@
 
             var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
 
-            chartObj._valueMarker = chartObj.chart.renderer.path(_.flatten(commands))
+            if (hasSVG)
+            { chartObj._valueMarker = chartObj.chart.renderer.path(_.flatten(commands))
                 .attr({
                     'zIndex': 10,
                     'stroke': chartObj.settings.view.displayFormat.yAxis.markerColor,
                     'stroke-width': thickStroke ? 2 : 1,
                     'stroke-dasharray': '9, 5'})
-                .add();
+                .add(); }
+            else
+            {
+                if (!chartObj._valueMarker || chartObj._valueMarker.length == 0)
+                {
+                    chartObj._valueMarker = $('<div />').css({ position: 'relative', 'zIndex': 10,
+                        'border-style': 'solid' });
+                    $(chartObj.chart.container).append(chartObj._valueMarker);
+                }
+                var cTop    = invertAxis ? commands[1][2] : commands[0][2];
+                var cLeft   = invertAxis ? commands[1][1] : commands[0][1];
+                var sAxis   = invertAxis ? 'height' : 'width';
+                var sAxis2  = invertAxis ? 'width' : 'height';
+                var sLength = invertAxis ? commands[0][2]-commands[1][2]
+                                         : commands[1][1]-commands[0][1];
+                var sWidth = thickStroke ? 2 : 1;
+                var changeset = { 'top': cTop+'px', left: cLeft+'px',
+                    'borderColor': chartObj.settings.view.displayFormat.yAxis.markerColor };
+                changeset[sAxis] = sLength + 'px';
+                changeset[sAxis2] = 0;
+                changeset.borderWidth = sWidth + 'px';
+                chartObj._valueMarker.css(changeset);
+            }
         };
 
         var chartRedraw = function(evt)

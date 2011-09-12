@@ -107,6 +107,7 @@
 
         reloadVisualization: function()
         {
+            this._chartType = this.settings.view.displayFormat.chartType;
             this.initializeVisualization();
             this._super();
         },

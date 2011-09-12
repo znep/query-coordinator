@@ -152,6 +152,12 @@ class ProfileController < ApplicationController
 
   # Note: was AccountsController#edit
   def edit_account
+    # redirect from generic to fully-qualified url
+    expected_path = "#{current_user.href}/account"
+    if request.path != expected_path
+      return redirect_to(expected_path, :status => 301)
+    end
+
     @user_links = UserLink.find(current_user.id)
     @app_tokens = current_user.app_tokens
   end
@@ -226,7 +232,7 @@ class ProfileController < ApplicationController
     # (for /profile/app_tokens support from dev.socrata.com)
     expected_path = "#{current_user.href}/app_tokens"
     if request.path != expected_path
-      redirect_to(expected_path, :status => 301)
+      return redirect_to(expected_path, :status => 301)
     end
 
     @user_links = UserLink.find(current_user.id)

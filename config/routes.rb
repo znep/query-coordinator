@@ -218,6 +218,8 @@ ActionController::Routing::Routes.draw do |map|
     profile.profile_account 'profile/:profile_name/:id/account',
        :action => 'edit_account', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/account',
+       :action => 'edit_account', :conditions => { :method => :get }
   end
 
   map.resources :profile, :member => {
@@ -283,7 +285,7 @@ ActionController::Routing::Routes.draw do |map|
   # Redirect bounce for metric snatching
   map.metric_redirect 'download/:id/:type', :controller => 'datasets',
     :action => 'download',
-    :requirements => {:id => UID_REGEXP},
+    :requirements => {:id => UID_REGEXP, :type => /.*/},
     :conditions => {:method => :get}
 
   # Short URLs

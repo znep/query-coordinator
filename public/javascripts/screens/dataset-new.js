@@ -250,22 +250,6 @@ $wizard.wizard({
             uniform: true,
             onInitialize: function($pane, paneConfig, state)
             {
-                // general validation
-                $('.newDatasetForm').validate({
-                    rules: {
-                        "view[attributionLink]": "customUrl",
-                        "view[esri_src]": 'customUrl'
-                    },
-                    messages: {
-                        "view[name]": "Dataset name is required.",
-                        "view[attributionLink]": "That does not appear to be a valid URL.",
-                        'view[esri_src]': 'A valid ESRI map layer URL is required.'
-                    },
-                    errorPlacement: function (label, $el) {
-                        $el.closest('.line').append(label);
-                    }
-                });
-
                 // hide/show sections based on new dataset type
                 if (state.type == 'esri')
                     $pane.find('.metadataForm > div:not(.mapLayerMetadata, .attachmentsMetadata, .privacyMetadata)').hide();
@@ -443,4 +427,21 @@ $wizard.wizard({
     }
 });
 
+
+    // general validation. here because once a validator
+    // for a form is created, you can't set a new validator.
+    var validator = $('.newDatasetForm').validate({
+        rules: {
+            "view[attributionLink]": "customUrl",
+            "view[esri_src]": 'customUrl'
+        },
+        messages: {
+            "view[name]": "Dataset name is required.",
+            "view[attributionLink]": "That does not appear to be a valid URL.",
+            'view[esri_src]': 'A valid ESRI map layer URL is required.'
+        },
+        errorPlacement: function (label, $el) {
+            $el.closest('.line').append(label);
+        }
+    });
 });

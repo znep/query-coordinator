@@ -222,6 +222,16 @@
                 .appendTo($screen.find('.' + section.renderTo));
         });
 
+        var updateExportLink = function()
+        {
+            if ($exportLink.length > 0)
+            {
+                $exportLink.attr('href', $exportLink.data('exportbase') +
+                    'start=' + startDate.getTime() + '&end=' + endDate.getTime() +
+                    '&slice=' + currentSlice);
+            }
+        };
+
         // Listen for a custom event to trigger data refresh
         $screen.bind('metricsTimeChanged', function(event, newStartDate, newEndDate, newSlice)
         {
@@ -241,12 +251,7 @@
             endDate         = newEndDate;
             currentSlice    = newSlice;
 
-            if ($exportLink.length > 0)
-            {
-                $exportLink.attr('href', $exportLink.data('exportbase') +
-                    'start=' + startDate.getTime() + '&end=' + endDate.getTime() +
-                    '&slice=' + currentSlice);
-            }
+            updateExportLink();
         });
 
         // Only charts need to listen to a time slice change
@@ -258,6 +263,7 @@
                     startDate, endDate, newSlice);
             }
             currentSlice = newSlice;
+            updateExportLink();
         });
 
         $screen.bind('metricsChartRedraw', function(event)

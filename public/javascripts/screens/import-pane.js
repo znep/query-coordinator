@@ -247,8 +247,6 @@ var updateLines = function($elems)
             $line.find('.mainLine a.options').hide();
 
             column = {
-                name:       oldColumn.name,
-                suggestion: oldColumn.suggestion,
                 type:       'location',
                 address:    getColumn($line.find('.locationAddressColumn').val()),
                 city:       getColumn(findOptionValue('city')),
@@ -506,11 +504,17 @@ var validateAll = function()
         });
     });
 
+    var validated = true;
     // show the list if necessary
     if ($warningsList.children().length > 0)
+    {
         $warningsSection[isShown ? 'slideDown' : 'show']();
+        validated = false;
+    }
     else
+    {
         $warningsSection[isShown ? 'slideUp' : 'hide']();
+    }
 
     // disable the button if necessary, but only after a defer in case
     // there are errors the moment the pane is loaded.
@@ -540,6 +544,8 @@ var validateAll = function()
             }
         }
     });
+
+    return validated;
 };
 
 // create a new toplevel column, optionally taking in an analysed
@@ -660,7 +666,8 @@ var wireEvents = function()
     $pane.delegate('.columnsList li input.columnName,' +
                    '.columnsList li select.columnTypeSelect,' +
                    '.columnsList li select.columnSourceSelect,' +
-                   '.columnsList li input[type=text]', 'change', function()
+                   '.columnsList li input[type=text]' +
+                   '.columnsList li .locationDetails .columnSelect', 'change', function()
     {
         updateLines($(this).closest('li.importColumn'));
         validateAll();
@@ -956,6 +963,14 @@ importNS.importColumnsPaneConfig = {
     },
     onNext: function($pane, state)
     {
+        // just to be sure, process everything one last time.
+        // browser dom events are finnicky
+        updateLines();
+        if (!validateAll())
+        {
+            return null; // prevent moving on
+        }
+
         state.importer = {};
         state.importer.importColumns = $.makeArray($columnsList.children().map(function()
         {

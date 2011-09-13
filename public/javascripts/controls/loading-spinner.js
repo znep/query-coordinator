@@ -57,7 +57,7 @@
                     this._$content.append($.tag({tagName: 'div', 'class': 'loadingSpinner'}));
                     this._$content.append($.tag({tagName: 'div', 'class': 'loadingMessage'}));
                     this._$content.append($.tag({tagName: 'div', 'class': ['loadingCountdown', 'hide'],
-                        contents: ['Retrying', {tagName: 'span', 'class': 'secondsSection', contents:
+                        contents: ['Checking', {tagName: 'span', 'class': 'secondsSection', contents:
                             [' in ', {tagName: 'span', 'class': 'seconds'}, ' seconds']},
                         '...']}));
                     this.$dom().append(this._$content);

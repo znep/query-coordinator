@@ -1708,7 +1708,7 @@ this.Dataset = ServerModel.extend({
                 newColOrder.push(c.id);
             });
 
-        if ($.isBlank(ds.query.groupBys))
+        if (_.isEmpty(ds.query.groupBys))
         {
             if (!$.isBlank(ds._origColOrder))
             { ds.setVisibleColumns(ds._origColOrder, null, true) }

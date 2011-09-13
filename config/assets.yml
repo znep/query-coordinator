@@ -166,8 +166,8 @@ javascripts:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
-    - public/javascripts/controls/grid-sidebar/base-pane.js
-    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/controls/panes/base-pane.js
+    - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/screens/admin-customizer.js
     - public/javascripts/screens/admin-browse-widget-create.js
   admin-users:
@@ -216,8 +216,8 @@ javascripts:
     - public/javascripts/controls/upload-dialog.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
-    - public/javascripts/controls/grid-sidebar/base-pane.js
-    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/controls/panes/base-pane.js
+    - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/screens/admin-customizer.js
     - public/javascripts/screens/admin-sdp-template.js
   admin-story:
@@ -228,8 +228,8 @@ javascripts:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
-    - public/javascripts/controls/grid-sidebar/base-pane.js
-    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/controls/panes/base-pane.js
+    - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/controls/stories.js
     - public/javascripts/screens/admin-customizer.js
     - public/javascripts/screens/admin-stories-appearance.js
@@ -331,35 +331,35 @@ javascripts:
     - public/javascripts/controls/stars.js
     - public/javascripts/controls/content-indicator.js
     - public/javascripts/controls/user-picker.js
-    - public/javascripts/controls/grid-sidebar/base-pane.js
-    - public/javascripts/controls/grid-sidebar/base-sidebar.js
-    - public/javascripts/controls/grid-sidebar/about-dataset.js
-    - public/javascripts/controls/grid-sidebar/add-column.js
-    - public/javascripts/controls/grid-sidebar/api.js
-    - public/javascripts/controls/grid-sidebar/append-replace.js
-    - public/javascripts/controls/grid-sidebar/calendar-create.js
-    - public/javascripts/controls/grid-sidebar/cell-feed.js
-    - public/javascripts/controls/grid-sidebar/chart-create.js
-    - public/javascripts/controls/grid-sidebar/column-order.js
-    - public/javascripts/controls/grid-sidebar/column-properties.js
-    - public/javascripts/controls/grid-sidebar/conditional-formatting.js
-    - public/javascripts/controls/grid-sidebar/download-dataset.js
-    - public/javascripts/controls/grid-sidebar/edit-redirect.js
-    - public/javascripts/controls/grid-sidebar/embed-sdp.js
-    - public/javascripts/controls/grid-sidebar/feed.js
-    - public/javascripts/controls/grid-sidebar/form-create.js
-    - public/javascripts/controls/grid-sidebar/map-create.js
-    - public/javascripts/controls/grid-sidebar/permissions.js
-    - public/javascripts/controls/grid-sidebar/plagiarize-dataset.js
-    - public/javascripts/controls/grid-sidebar/print-dataset.js
-    - public/javascripts/controls/grid-sidebar/share-dataset.js
-    - public/javascripts/controls/grid-sidebar/show-hide.js
-    - public/javascripts/controls/grid-sidebar/sort-rollUp.js
-    - public/javascripts/controls/grid-sidebar/subscribe.js
-    - public/javascripts/controls/grid-sidebar/signed-dataset.js
-    - public/javascripts/controls/grid-sidebar/unified-filter.js
-    - public/javascripts/controls/grid-sidebar/unified-filter-sidebar.js
-    - public/javascripts/controls/grid-sidebar/view-list.js
+    - public/javascripts/controls/panes/base-pane.js
+    - public/javascripts/controls/grid-sidebar.js
+    - public/javascripts/controls/panes/about-dataset.js
+    - public/javascripts/controls/panes/add-column.js
+    - public/javascripts/controls/panes/api.js
+    - public/javascripts/controls/panes/append-replace.js
+    - public/javascripts/controls/panes/calendar-create.js
+    - public/javascripts/controls/panes/cell-feed.js
+    - public/javascripts/controls/panes/chart-create.js
+    - public/javascripts/controls/panes/column-order.js
+    - public/javascripts/controls/panes/column-properties.js
+    - public/javascripts/controls/panes/conditional-formatting.js
+    - public/javascripts/controls/panes/download-dataset.js
+    - public/javascripts/controls/panes/edit-redirect.js
+    - public/javascripts/controls/panes/embed-sdp.js
+    - public/javascripts/controls/panes/feed.js
+    - public/javascripts/controls/panes/form-create.js
+    - public/javascripts/controls/panes/map-create.js
+    - public/javascripts/controls/panes/permissions.js
+    - public/javascripts/controls/panes/plagiarize-dataset.js
+    - public/javascripts/controls/panes/print-dataset.js
+    - public/javascripts/controls/panes/share-dataset.js
+    - public/javascripts/controls/panes/show-hide.js
+    - public/javascripts/controls/panes/sort-rollUp.js
+    - public/javascripts/controls/panes/subscribe.js
+    - public/javascripts/controls/panes/signed-dataset.js
+    - public/javascripts/controls/panes/unified-filter.js
+    - public/javascripts/controls/panes/unified-filter-sidebar.js
+    - public/javascripts/controls/panes/view-list.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/dataset-email.js
     - public/javascripts/controls/embed-form.js
@@ -379,8 +379,8 @@ javascripts:
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
-    - public/javascripts/controls/grid-sidebar/base-pane.js
-    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/controls/panes/base-pane.js
+    - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/pill-buttons.js
     - public/javascripts/screens/dataset-edit-rr.js
@@ -429,7 +429,7 @@ javascripts:
   unified-filter:
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/popup-select.js
-    - public/javascripts/controls/grid-sidebar/unified-filter.js
+    - public/javascripts/controls/panes/unified-filter.js
   stories:
     - public/javascripts/controls/stories.js
   featured_views:

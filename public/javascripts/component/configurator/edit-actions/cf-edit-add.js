@@ -29,13 +29,13 @@ $.cf.edit.registerAction('add', {
 
     commit: function() {
         // Obtain container
-        var container = $.component.get(this.containerID);
+        var container = $.component(this.containerID);
         if (!container)
             throw "Cannot commit add because container " + this.containerID + " has disappeared";
 
         // Obtain position
         if (this.positionID) {
-            var position = $.component.get(this.positionID);
+            var position = $.component(this.positionID);
             if (!position)
                 throw "Cannot commit add because following sibling " + this.positionID + " has disappeared";
         }
@@ -51,7 +51,7 @@ $.cf.edit.registerAction('add', {
     },
 
     rollback: function() {
-        var child = $.component.get(this.childTemplate.id);
+        var child = $.component(this.childTemplate.id);
         if (!child)
             throw "Cannot undo because component " + this.childTemplate.id + " has disappeared";
         child.destroy();

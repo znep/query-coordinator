@@ -42,6 +42,7 @@
                     this.initialize.apply(this, arguments);
                 else {
                     var component = this.create(arguments[i]);
+                    component._render();
                     if (!component.dom.parentNode)
                         throw "Unparented root component " + component.id;
                     this.roots.push(component);

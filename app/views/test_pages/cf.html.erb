@@ -8,14 +8,38 @@
 $(function() {
     $.cf({
         id: 'root',
-        type: 'container'
+        type: 'Container',
+        children: [
+            {
+                type: 'HorizontalContainer',
+                children: [
+                    {
+                        type: 'Text',
+                        html: 'Box A'
+                    }, {
+                        type: 'Text',
+                        html: 'Box B',
+                        weight: 3
+                    }, {
+                        type: 'Text',
+                        html: 'Box C'
+                    }
+                ]
+            }, {
+                type: 'Text',
+                html: 'Box D'
+            }, {
+                type: 'Text',
+                html: 'Box E'
+            }
+        ]
     });
 });
 </script>
 
 <% end %>
 
-<div class="socrata-container socrata-root" id="root"></div>
+<div class="socrata-root" id="root"></div>
 
 <% content_for :js_footer do %>
 <%= include_javascripts 'configurator' %>

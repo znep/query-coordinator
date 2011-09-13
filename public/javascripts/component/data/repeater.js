@@ -1,2 +1,2 @@
-$.component.Container.extend('Repeater', 'data', {
+$.component.Container.extend('Repeater', 'content', {
 });

@@ -119,7 +119,7 @@
                 <img class="userIcon" src="<%= user.profile_image_path('small')%>"
                   alt="<%= user.displayName %>" />
                 <span class="cellInner">
-                  <%= user.displayName %>
+                  <a href="<%= user.href %>"><%= user.displayName %></a>
                 </span>
               </td>
               <td class="email">

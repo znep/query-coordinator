@@ -2,19 +2,20 @@
 var assetNS = blist.namespace.fetch('blist.util.assetLoading');
 
 // Keep a hash of which files have finished processing
-var lazyLoadingAssets = {};
+var lazyLoadingAssets = {libraries: {}, stylesheets: {}, templates: {}};
 // Keep a hash of which files are in the middle of processing
-var lazyLoadedAssets = {};
+var lazyLoadedAssets = {libraries: {}, stylesheets: {}, templates: {}};
 // Keep track of when a callback is allowed to finish
 var lazyLoadingJobs = [];
 // Appropriate LAB instance
 var $lazyLoadLab;
 
-assetNS.loadAssets = function(assets, jsCallback, cssCallback)
+assetNS.loadAssets = function(assets, mainCallback, cssCallback)
 {
-    if (!$.subKeyDefined(assets, 'stylesheets') && !$.subKeyDefined(assets, 'javascripts'))
+    if (!$.subKeyDefined(assets, 'stylesheets') && !$.subKeyDefined(assets, 'javascripts') &&
+        !$.subKeyDefined(assets, 'templates'))
     {
-        if (_.isFunction(jsCallback)) { jsCallback(); }
+        if (_.isFunction(mainCallback)) { mainCallback(); }
         return;
     }
 
@@ -22,7 +23,7 @@ assetNS.loadAssets = function(assets, jsCallback, cssCallback)
     {
         var sheets = _.map(assets.stylesheets, function(s)
         {
-            var sheet = translateUrls('/stylesheets/', [s.sheet || s]);
+            var sheet = translateUrls('/styles/', [s.sheet || s], 'stylesheets');
             if ($.isPlainObject(s)) { s.sheet = sheet[0]; }
             else { s = sheet[0]; }
             return s;
@@ -30,9 +31,17 @@ assetNS.loadAssets = function(assets, jsCallback, cssCallback)
         assetNS.loadStylesheets(sheets, cssCallback);
     }
 
-    if (_.isArray(assets.javascripts) && assets.javascripts.length > 0)
-    { assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts), jsCallback); }
-    else if (_.isFunction(jsCallback)) { jsCallback(); }
+    var loadJS = _.isArray(assets.javascripts) && assets.javascripts.length > 0;
+    var loadTemplates = _.isArray(assets.templates) && assets.templates.length > 0;
+    var finished = _.after(loadJS && loadTemplates ? 2 : 1, function()
+        { if (_.isFunction(mainCallback)) { mainCallback(); } });
+
+    if (loadTemplates)
+    { assetNS.loadTemplates(translateUrls('/templates/', assets.templates, 'templates'), finished); }
+    if (loadJS)
+    { assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished); }
+
+    if (!loadTemplates && !loadJS) { finished(); }
 };
 
 // Lazy-load JS libraries
@@ -64,9 +73,9 @@ assetNS.loadLibraries = function(scriptQueue, callback)
     var loadingItems = [];
     _.each(queue, function(item)
     {
-        if (lazyLoadingAssets[item] || lazyLoadedAssets[item])
+        if (lazyLoadingAssets.libraries[item] || lazyLoadedAssets.libraries[item])
         {
-            if (lazyLoadingAssets[item])
+            if (lazyLoadingAssets.libraries[item])
                 found = true;
 
             return;
@@ -90,7 +99,7 @@ assetNS.loadLibraries = function(scriptQueue, callback)
             $lazyLoadLab = $lazyLoadLab.script(item);
             loadingItems.push(item);
         }
-        lazyLoadingAssets[item] = true;
+        lazyLoadingAssets.libraries[item] = true;
         found = true;
     });
 
@@ -109,15 +118,22 @@ assetNS.loadLibraries = function(scriptQueue, callback)
 
 assetNS.loadStylesheets = function(sheetQueue, callback)
 {
-    var sheets = _.reject($.arrayify(sheetQueue), function(item)
-    { return lazyLoadedAssets[item.sheet || item]; });
+    var sheets = _($.makeArray(sheetQueue)).chain()
+        .map(function(item) { return !$.subKeyDefined(item, 'sheet') ? {sheet: item} : item; })
+        .map(function(item)
+        {
+            return _.isArray(item.sheet) ? _.map(item.sheet, function(s)
+                { return $.extend({}, item, {sheet: s}); }) : item;
+        })
+        .flatten()
+        .reject(function(item) { return lazyLoadedAssets.stylesheets[item.sheet]; }).value();
 
     var loadedCount = 0;
     var reqCount = sheets.length;
     var sheetPieces = '';
     _.each(sheets, function(sheet)
     {
-        var url = sheet.sheet || sheet;
+        var url = sheet.sheet;
         // In dev, make the URL unique so we always reload to pick up changes
         if (blist.configuration.development)
         { url += (url.indexOf('?') >= 0 ? '&' : '?') + $.param({'_': (new Date()).valueOf()}); }
@@ -160,19 +176,62 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
                 }});
         }
 
-        lazyLoadedAssets[sheet] = true;
+        lazyLoadedAssets.stylesheets[sheet] = true;
+    });
+};
+
+assetNS.loadTemplates = function(templateQueue, callback)
+{
+    var templates = _.reject($.arrayify(templateQueue), function(item)
+        { return lazyLoadedAssets.templates[item]; });
+
+    if (templates.length < 1)
+    {
+        if (_.isFunction(callback)) { callback(); }
+        return;
+    }
+
+    var templPieces = '';
+    var insertTemplates = _.after(templates.length, function()
+    {
+        var $templates = $('#templates');
+        if ($templates.length < 1)
+        {
+            $('body').append($.tag({tagName: 'div', id: 'templates'}));
+            $templates = $('#templates');
+        }
+        $templates.append(templPieces);
+        if (_.isFunction(callback)) { callback(); }
+    });
+
+    _.each(templates, function(template)
+    {
+        var url = template;
+        // In dev, make the URL unique so we always reload to pick up changes
+        if (blist.configuration.development)
+        { url += (url.indexOf('?') >= 0 ? '&' : '?') + $.param({'_': (new Date()).valueOf()}); }
+
+        // Load it via Ajax and insert them all once they're ready
+        $.ajax({url: url, type: 'GET', success: function(resp)
+        {
+            templPieces += resp;
+            insertTemplates();
+        }});
+
+        lazyLoadedAssets.templates[template] = true;
     });
 };
 
 var checkLoadedLibraries = function(item)
 {
-    lazyLoadedAssets[item] = lazyLoadingAssets[item];
-    delete lazyLoadingAssets[item];
+    lazyLoadedAssets.libraries[item] = lazyLoadingAssets.libraries[item];
+    delete lazyLoadingAssets.libraries[item];
 
     var finishedJobs = [];
     _.each(lazyLoadingJobs, function(job)
     {
-        if (_.all(job.queue, function(queueItem) { return !_.isUndefined(lazyLoadedAssets[queueItem]); }))
+        if (_.all(job.queue, function(queueItem)
+        { return !_.isUndefined(lazyLoadedAssets.libraries[queueItem]); }))
         {
             if (_.isFunction(job.callback)) { job.callback(); }
             finishedJobs.push(job);
@@ -181,12 +240,12 @@ var checkLoadedLibraries = function(item)
     lazyLoadingJobs = _.without.apply(this, [lazyLoadingJobs].concat(finishedJobs));
 };
 
-var translateUrls = function(prefix, array)
+var translateUrls = function(prefix, array, type)
 {
     return _.map(array, function(item)
     {
-        if (item && !$.isBlank(item.assets))
-        { return blist.assets[item.assets]; }
+        if ($.subKeyDefined(item, 'assets') && $.subKeyDefined(blist, 'assets.' + type))
+        { return blist.assets[type][item.assets]; }
         else
         {
           // Preserve false/null/external links

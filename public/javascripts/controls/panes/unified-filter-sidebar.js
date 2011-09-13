@@ -50,7 +50,8 @@
         }
     }, {name: 'unifiedFilter', noReset: true}, 'controlPane');
 
-    if ($.isBlank(blist.sidebarHidden.filter) || !blist.sidebarHidden.filter.filterDataset)
+    if (!$.isBlank($.gridSidebar) && (!$.subKeyDefined(blist, 'sidebarHidden.filter.filterDataset') ||
+        !blist.sidebarHidden.filter.filterDataset))
     { $.gridSidebar.registerConfig('filter.unifiedFilter', 'pane_unifiedFilter', 1, 'filter'); }
 
 })(jQuery);

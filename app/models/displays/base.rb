@@ -66,7 +66,7 @@ class Displays::Base
       # Set common base variables communicating display configuration to JS
       js = <<END
 #{render_dataset_setup_js}
-blist.assets = #{ASSET_MAP.javascripts};
+blist.assets = {libraries: #{ASSET_MAP.javascripts}, stylesheets: #{STYLE_MAP.to_json}};
 $(function()
 {
     blist.$container = $('##{target_dom_id}');

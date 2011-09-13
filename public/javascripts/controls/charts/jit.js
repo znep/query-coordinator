@@ -148,7 +148,7 @@
 
         getRequiredJavascripts: function()
         {
-            var scripts = $.makeArray(blist.assets.jit);
+            var scripts = $.makeArray(blist.assets.libraries.jit);
             if ($.browser.msie)
             {
                 scripts.push(this.javascriptBase + 'plugins/excanvas.compiled.js');

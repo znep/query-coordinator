@@ -284,7 +284,7 @@
 </div>
 
 <% content_for :templates do %>
-<%= render(:partial => 'shared/grid_sidebar_templates') %>
+<%= render(:partial => 'templates/grid_sidebar') %>
 <%= render(:partial => 'show_hide_template') %>
 <%= render :partial => 'column_order_template' %>
 <div class="embedForm">
@@ -316,7 +316,7 @@
     Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.</p>
   </div>
 </div>
-<%= render :partial => 'unified_filter' %>
+<%= render :partial => 'templates/unified_filter' %>
 <% end %>
 
 <%- content_for :modals do -%>

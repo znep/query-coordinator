@@ -120,6 +120,9 @@ javascripts:
     - public/javascripts/component/input/site-search.js
     - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
+  base-control:
+    - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/controls/panes/base-pane.js
   data-rendering:
     - public/javascripts/controls/render-type-manager.js
   shared-calendar:
@@ -443,6 +446,7 @@ javascripts:
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/unified-filter.js
+    - public/javascripts/controls/panes/unified-filter-sidebar.js
   stories:
     - public/javascripts/controls/stories.js
   featured_views:
@@ -487,6 +491,9 @@ dump:
     - shared-blob
     - highcharts
     - jit
+    - unified-filter
+    - base-control
+    - shared-editors
 
 stylesheets:
   grid-sidebar:

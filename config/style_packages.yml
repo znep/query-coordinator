@@ -68,6 +68,9 @@ administration-view-moderation:
 - screen-administration-views
 administration-tos:
 - screen-administration-tos
+base-control:
+- control-pane
+- control-pane-custom
 browse-control:
 - screen-browse
 - rich-render-types

@@ -320,7 +320,7 @@
 
         getRequiredJavascripts: function()
         {
-            return blist.assets.highcharts;
+            return blist.assets.libraries.highcharts;
         },
 
         generateFlyoutLayout: function(columns, valueColumn)

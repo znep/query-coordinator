@@ -1,7 +1,10 @@
 $.component.Component.extend('Line chart', 'data', {
     _getAssets: function()
     {
-        return { javascripts: [{ assets: 'data-rendering' }] };
+        return {
+            javascripts: [{ assets: 'data-rendering' }],
+            stylesheets: ['/stylesheets/chart-screen.css', 'individual/rich-render-types.css']
+        };
     },
 
     _render: function()

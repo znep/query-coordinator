@@ -56,7 +56,7 @@
                 });
             });
             // No composite member views
-            datasetReady();
+            _.defer(datasetReady);
         },
 
         $dom: function()

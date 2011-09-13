@@ -7,9 +7,9 @@
             domId: 'calendarRenderType',
             initFunction: 'socrataCalendar',
             javascripts: [{ assets: 'shared-calendar' }],
-            stylesheets: ['/styles/individual/screen-calendar.css',
-              'fullcalendar.css',
-              '/styles/individual/rich-render-types.css'],
+            stylesheets: ['individual/screen-calendar.css',
+              '/stylesheets/fullcalendar.css',
+              'individual/rich-render-types.css'],
             scrollsInline: false
         },
 
@@ -18,8 +18,8 @@
             domId: 'chartRenderType',
             initFunction: 'socrataChart',
             javascripts: [{ assets: 'shared-chart' }],
-            stylesheets: ['chart-screen.css',
-                          '/styles/individual/rich-render-types.css'],
+            stylesheets: ['/stylesheets/chart-screen.css',
+                          'individual/rich-render-types.css'],
             scrollsInline: true
         },
 
@@ -40,8 +40,8 @@
             ],
             stylesheets: ['https://serverapi.arcgisonline.com/jsapi/arcgis' +
                 '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
-                '/styles/individual/screen-map.css',
-                '/styles/individual/rich-render-types.css'],
+                'individual/screen-map.css',
+                'individual/rich-render-types.css'],
             scrollsInline: true
         },
 
@@ -59,8 +59,8 @@
                         settings.fatrow));
             },
             javascripts: [{assets: 'shared-richRenderers'}],
-            stylesheets: [{sheet: '/styles/individual/render-type-images.css',
-                hasImages: true}, '/styles/individual/rich-render-types.css'],
+            stylesheets: [{sheet: 'individual/render-type-images.css', hasImages: true},
+                'individual/rich-render-types.css'],
             scrollsInline: false
         },
 
@@ -69,8 +69,8 @@
             domId: 'pageRenderType',
             initFunction: 'pageRenderType',
             javascripts: [{assets: 'shared-richRenderers'}],
-            stylesheets: [{sheet: '/styles/individual/render-type-images.css',
-                hasImages: true}, '/styles/individual/rich-render-types.css'],
+            stylesheets: [{sheet: 'individual/render-type-images.css', hasImages: true},
+                'individual/rich-render-types.css'],
             scrollsInline: false
         },
 
@@ -102,9 +102,8 @@
         href: {
             name: 'href',
             domId: 'staticRenderType',
-            stylesheets: [{sheet: '/styles/individual/about-dataset.css',
-                    hasSpecialSelectors: true},
-                '/styles/individual/screen-blob.css'],
+            stylesheets: [{sheet: 'individual/about-dataset.css', hasSpecialSelectors: true},
+                'individual/screen-blob.css'],
             javascripts: [{ assets: 'shared-blob' }],
             scrollsInline: false,
             initFunction: function($dom, settings)
@@ -118,9 +117,8 @@
         blob: {
             name: 'blob',
             domId: 'staticRenderType',
-            stylesheets: [{sheet: '/styles/individual/about-dataset.css',
-                    hasSpecialSelectors: true},
-                '/styles/individual/screen-blob.css'],
+            stylesheets: [{sheet: 'individual/about-dataset.css', hasSpecialSelectors: true},
+                'individual/screen-blob.css'],
             javascripts: [{ assets: 'shared-blob' }],
             scrollsInline: false,
             initFunction: function($dom, settings)

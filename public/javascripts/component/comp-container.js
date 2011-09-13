@@ -93,13 +93,13 @@
          * Synchronize child's position in the DOM.  Allows derivative containers to adjust position.
          */
         _moveChildDom: function(child) {
-            if (!this._rendered) {
-                if (child._rendered)
+            if (!this._initialized) {
+                if (child._initialized)
                     $(child.dom).remove();
                 return;
             }
-            if (!child._rendered)
-                child._render();
+            if (!child._initialized)
+                child._initDom();
             this.ct.insertBefore(child.dom, child.next && child.next.dom);
             this._arrange();
         },

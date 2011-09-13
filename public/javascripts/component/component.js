@@ -22,7 +22,9 @@
             components[cObj._properties.id] = cObj;
             if (_.isFunction(cObj._dataReady))
                 cObj._updateDataSource(properties, cObj._dataReady);
-            blist.util.assetLoading.loadAssets(cObj._getAssets(), function() { cObj._render(); });
+            cObj.startLoading();
+            blist.util.assetLoading.loadAssets(cObj._getAssets(), function()
+                { _.defer(function() { cObj._render(); }); });
 
             // Need to listen for general resize events if we are the top component
             $(window).bind('resize', function(e, source)
@@ -100,22 +102,35 @@
         /**
          * Initialize DOM representation of this component.
          */
-        _render: function() {
+        _initDom: function()
+        {
             var dom = this.dom;
             if (!dom)
-                dom = document.getElementById(this._properties.id);
-            if (!dom) {
+            { dom = document.getElementById(this._properties.id); }
+            if (!dom)
+            {
                 dom = document.createElement('div');
                 dom.id = this._properties.id;
             }
-            this.dom = dom;
-            this.$dom = $(dom);
-            dom._comp = this;
-            dom.className = 'socrata-component component-' + this.typeName;
-            this._rendered = true;
+            if ($.isBlank(this.dom))
+            {
+                this.dom = dom;
+                this.$dom = $(dom);
+                dom._comp = this;
+                dom.className = 'socrata-component component-' + this.typeName;
+            }
+            this._initialized = true;
+        },
+
+        /**
+         * Render the content for this component
+         */
+        _render: function() {
+            this._initDom();
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
             this.$dom.loadingSpinner();
+            this._rendered = true;
         },
 
         /**

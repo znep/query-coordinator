@@ -172,6 +172,8 @@ ActionController::Routing::Routes.draw do |map|
       :action => 'routing_approval_manage_save', :conditions => { :method => :post }
   end
 
+  map.resources :templates, :only => [ :show ]
+
   map.resource :browse, :controller => 'browse',
     :collection => {
       :embed => :get

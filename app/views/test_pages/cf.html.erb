@@ -54,7 +54,7 @@ $(function() {
 <% content_for :js_footer do %>
 <%= include_javascripts 'configurator' %>
 <script type="text/javascript">
-  blist.assets = <%= raw ASSET_MAP.javascripts %>;
+  blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw STYLE_MAP.to_json %>};
   blist.namespace.fetch('blist.configuration');
   blist.configuration.development = <%= Rails.env.development? %>;
 </script>

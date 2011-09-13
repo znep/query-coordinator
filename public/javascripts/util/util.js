@@ -265,6 +265,8 @@ $.renderTemplate = function(template, data, directive, keepText)
 {
     var $template = $('#templates > .' + template);
 
+    if ($template.length < 1) { throw 'No template found: ' + template; }
+
     if (_.isUndefined(data))
     {
         return !!keepText ? $template.html() : $template.clone().children();
@@ -287,8 +289,9 @@ $.renderTemplate = function(template, data, directive, keepText)
 
 $.compileTemplate = function(template, directive)
 {
-    var $templateCopy = $('#templates > .' + template)
-        .clone();
+    var $templateCopy = $('#templates > .' + template).clone();
+
+    if ($templateCopy.length < 1) { throw 'No template found: ' + template; }
 
     // pure needs a wrapping element
     $templateCopy.appendTo($('<div/>'));

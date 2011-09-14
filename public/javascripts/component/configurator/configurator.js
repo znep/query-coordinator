@@ -88,6 +88,9 @@
 
         // Find the component this mouse event addresses
         var target = event.target;
+        if ($(target).closest('.socrata-cf-properties-shell').length > 0)
+        { return; }
+
         while (target && !target._comp)
             target = target.parentNode;
 

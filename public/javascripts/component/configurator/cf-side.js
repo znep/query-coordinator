@@ -65,12 +65,21 @@
             return false;
         });
 
+        $properties = $.tag({tagName: 'div', 'class': 'properties'});
+        propertiesEditor = $properties.pane_propertiesEditor();
+        var $wrapper = $.tag({tagName: 'div',
+            'class': ['section', 'open', 'socrata-cf-properties-shell', 'hide'],
+            contents: [{tagName: 'h2', contents: propertiesEditor.getTitle()}]});
+        propertiesEditor.render();
+        $wrapper.append($properties);
+        $ct.append($wrapper);
+
         if (!$.isBlank($ct[0].addEventListener))
         {
             _.each(['transitionend', 'oTransitionEnd', 'webkitTransitionEnd'],
                 function(t) { $ct[0].addEventListener(t, function() { $(window).resize(); }); });
         };
-        $(window).resize();
+        _.defer(function() { $(window).resize(); });
     }
 
     $.cf.side = function(show) {
@@ -97,46 +106,44 @@
         visible = true;
     }
 
-    var propertiesFor;
     var $properties;
+    var propertiesEditor;
 
-    function closeProperties() {
-        if (!propertiesFor)
+    function closeProperties(callback)
+    {
+        if ($.isBlank(propertiesEditor.component))
+        {
+            if (_.isFunction(callback)) { callback(); }
             return;
-        var $old = $properties;
-        $properties
-            .stop()
-            .css({ top: $properties[0].offsetTop, width: $properties.width() })
-            .addClass('animating out')
-            .animate({ opacity: 0 }, 200, 'linear', function() {
-                $old.remove();
-            });
-        propertiesFor = undefined;
+        }
+        $properties.animate({ height: 0 }, 200, 'linear', function()
+                {
+                    $properties.css('height', '').closest('.socrata-cf-properties-shell').addClass('hide');
+                    propertiesEditor.component.setEditor(null);
+                    propertiesEditor.setComponent(null);
+                    if (_.isFunction(callback)) { callback(); }
+                });
     }
 
     function openProperties($dom) {
-        $properties = $('<div class="socrata-cf-properties-shell"></div>');
-        $properties
-            .css({ opacity: 0 })
-            .addClass('animating')
-            .append($dom);
-        $ct.append($properties);
-        $properties.css('opacity', 0).animate({ opacity: 1 }, 200, 'linear', function() {
-            $properties.removeClass('animating').css('opacity', '');
-        });
+        $properties.closest('.socrata-cf-properties-shell').removeClass('hide');
+        $properties.css('opacity', 0).animate({ opacity: 1 }, 200, 'linear', function()
+                { $properties.css('opacity', ''); });
     }
 
     $.extend($.cf.side, {
         properties: function(what) {
-            if (propertiesFor == what)
+            if (propertiesEditor.component == what)
                 return;
-            closeProperties();
-            if (what) {
-                propertiesFor = what;
-                if (what.propertiesUI)
-                    what = what.propertiesUI();
-                openProperties($(what));
-            }
+            closeProperties(function()
+            {
+                if (what)
+                {
+                    propertiesEditor.setComponent(what);
+                    what.setEditor(propertiesEditor);
+                    openProperties();
+                }
+            });
         }
     });
 })(jQuery);

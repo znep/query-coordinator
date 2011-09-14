@@ -189,15 +189,20 @@ body.socrata-page
 // Container for properties editors in the sidebar
 .socrata-cf-properties-shell
   position: relative
-  padding: 12px 8px 0 8px
-  &.animating.out
-    position: absolute
   .properties
     @include border-radius(4px)
     background: rgba(255, 255, 255, .75)
-    padding: 2px 6px
-    h3, p
-      margin: 4px 0 6px
+    margin: 0.25em 0.5em
+
+    &.controlPane
+      min-height: 5em
+
+    .formSection
+      .formHeader
+        color: #333333
+      &.collapsed .formHeader
+        color: #666666
+
 
 // Base/default styles shared by all components
 .socrata-component

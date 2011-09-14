@@ -24,7 +24,10 @@
                 cObj._updateDataSource(properties, cObj._dataReady);
             cObj.startLoading();
             blist.util.assetLoading.loadAssets(cObj._getAssets(), function()
-                { _.defer(function() { cObj._render(); }); });
+            {
+                cObj.finishLoading();
+                _.defer(function() { cObj._render(); });
+            });
 
             // Need to listen for general resize events if we are the top component
             $(window).bind('resize', function(e, source)
@@ -61,13 +64,6 @@
         },
 
         /**
-         * Retrieve a DOM element representing the root of this component's configuration user interface.
-         */
-        propertiesUI: function() {
-            return $('<div class="properties"><h3>' + this.catalogName + '</h3><p>This item has no configurable properties.</p></div>')[0];
-        },
-
-        /**
          * Unlink a child from its parent.
          */
         remove: function() {
@@ -91,6 +87,14 @@
          */
         _template: function(template) {
             return $.template(template, this._propertyResolver());
+        },
+
+        /**
+         * Returns a set of configurations for editing the properties of this element
+         */
+        configurationSchema: function()
+        {
+            return null;
         },
 
         /**

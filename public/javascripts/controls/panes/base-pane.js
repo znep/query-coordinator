@@ -415,6 +415,8 @@
             $pane.find('.line.custom').each(function() { cleanLine(cpObj, $(this)); });
             $pane.empty();
 
+            if (!cpObj.isAvailable()) { return; }
+
             if ($.isBlank(data))
             { data = cpObj._getCurrentData(); }
             else if (!isTempData)

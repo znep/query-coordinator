@@ -88,31 +88,17 @@
         <%- else -%>
           <%- @app_tokens.each do |token| -%>
             <div class="innerItem">
-              <a href="<%= @user.href %>/app_tokens/<%= token.id %>">
-                <%= render :partial => 'app_token_display', :locals => {
-                    :edit => false, :token => token
-                } %>
-              </a>
+              <%= render :partial => 'app_token_display', :locals => {
+                  :edit => false, :token => token
+              } %>
             </div>
           <%- end -%>
         <%- end -%>
       </div>
     <%- end -%>
 
-  <%# disable until feed is more interesting %>
-  <%- unless true -%>
-    <div class="newsFeed content">
-      <h2>News Feed</h2>
-      <div class="feed"></div>
-    </div>
-  <%- end -%>
   </div>
 </div>
-
-<%# content_for :templates do %>
-  <%# Disabled for now (forever?) %>
-  <%#= render :partial => 'datasets/feed_template', :locals => {:allow_comments => false} %>
-<%# end %>
 
 <%- unless @is_user_current -%>
 <% content_for :modals do %>

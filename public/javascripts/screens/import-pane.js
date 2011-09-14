@@ -504,24 +504,20 @@ var validateAll = function()
         });
     });
 
-    var validated = true;
     // show the list if necessary
     if ($warningsList.children().length > 0)
-    {
         $warningsSection[isShown ? 'slideDown' : 'show']();
-        validated = false;
-    }
     else
-    {
         $warningsSection[isShown ? 'slideUp' : 'hide']();
-    }
+
+    var validated = ($warningsList.children().filter('.error').length == 0);
 
     // disable the button if necessary, but only after a defer in case
     // there are errors the moment the pane is loaded.
     _.defer(function()
     {
         var $nextButton = $('.wizardButtons .nextButton');
-        if ($warningsList.children().filter('.error').length > 0)
+        if (!validated)
         {
             $nextButton.addClass('disabled');
             if ($.isBlank(nextButtonTip))

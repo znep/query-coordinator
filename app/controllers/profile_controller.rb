@@ -195,19 +195,20 @@ class ProfileController < ApplicationController
           end
         end
 
-        if params[:email_interests]
-          previous_interests = EmailInterest.find_under_user
-          to_delete = previous_interests.select { |i| !params[:email_interests][i.eventTag] }
-          to_create = []
-          params[:email_interests].each do |k,v|
-            if previous_interests.none? { |i| i.eventTag == k }
-              to_create << k
-            end
+        # In the case that they uncheck all of the interests, this hash is empty
+        # We still want to delete everything.
+        params[:email_interests] ||= {}
+        previous_interests = EmailInterest.find_under_user
+        to_delete = previous_interests.select { |i| !params[:email_interests][i.eventTag] }
+        to_create = []
+        params[:email_interests].each do |k,v|
+          if previous_interests.none? { |i| i.eventTag == k }
+            to_create << k
           end
-          CoreServer::Base.connection.batch_request do
-            to_delete.each { |interest| interest.delete(current_user.id) }
-            to_create.each { |interest| EmailInterest.create(current_user.id, interest) }
-          end
+        end
+        CoreServer::Base.connection.batch_request do
+          to_delete.each { |interest| interest.delete(current_user.id) }
+          to_create.each { |interest| EmailInterest.create(current_user.id, interest) }
         end
 
         # update other attributes

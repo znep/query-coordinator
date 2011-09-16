@@ -270,9 +270,10 @@ this.Dataset = ServerModel.extend({
         // it on this dataset; so make minorUpdate false
         if (!_.isEqual(newDS, ds._cleanUnsaveable(newDS)))
         { minorUpdate = false; }
-        var origCopy = cleanViewForSave(this);
+        var copyFunc = minorUpdate ? cleanViewForSave : cleanViewForCreate;
+        var origCopy = copyFunc(this);
         this._update(newDS, fullUpdate, fullUpdate);
-        if (!_.isEqual(origCopy, cleanViewForSave(this)))
+        if (!_.isEqual(origCopy, copyFunc(this)))
         { this._markTemporary(minorUpdate); }
     },
 
@@ -2799,14 +2800,14 @@ this.Dataset = ServerModel.extend({
         if (ds.isPublished() && ds.isDefault())
         {
             adjMD = $.extend(true, {}, md);
-            // Can't save name, columns, or any query but a single sort-by on published datasets
+            // Can't save name, columns, or any query but a sort-by on published datasets
             delete adjMD.columns;
             delete adjMD.name;
 
             // If they give us a blank query obj, don't do unnecessary modifications
             if (!$.isBlank(adjMD.query) && _.isEmpty(adjMD.query))
             { /* nothing */ }
-            else if ($.subKeyDefined(adjMD, 'query.orderBys') && adjMD.query.orderBys.length < 2)
+            else if ($.subKeyDefined(adjMD, 'query.orderBys'))
             {
                 adjMD.query = {orderBys: adjMD.query.orderBys};
             }

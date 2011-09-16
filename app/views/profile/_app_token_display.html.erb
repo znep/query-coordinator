@@ -13,8 +13,6 @@
       </span>
     </div>
   <%- end -%>
-  <%- if edit -%>
-  <%- end -%>
   <div class="appTokenContent">
     <%- ['name', 'description', 'organization', 'website'].each do |field| -%>
       <%- if token.data[field].present? -%>

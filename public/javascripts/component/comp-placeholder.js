@@ -1,8 +1,9 @@
 $.component.Component.extend('Placeholder', {
-    render: function() {
+    _render: function() {
         this._super();
         var $dom = $(this.dom);
-        $dom.addClass('socrata-placeholder');
+        var $insides = $('<div class="insides"></div>');
+        $dom.append($insides);
         if (this.height)
             $dom.css('height', this.height);
     }

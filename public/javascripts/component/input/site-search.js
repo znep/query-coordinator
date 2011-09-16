@@ -1,2 +1,2 @@
-$.component.Container.extend('Site search', 'content', {
+$.component.Container.extend('Site search', 'input', {
 });

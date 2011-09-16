@@ -116,11 +116,13 @@
                 </td>
               <%- end -%>
               <td class="user">
-                <img class="userIcon" src="<%= user.profile_image_path('small')%>"
-                  alt="<%= user.displayName %>" />
-                <span class="cellInner">
-                  <%= user.displayName %>
-                </span>
+                <a href="<%= user.href %>">
+                  <img class="userIcon" src="<%= user.profile_image_path('small')%>"
+                    alt="<%= user.displayName %>" />
+                  <span class="cellInner">
+                    <%= user.displayName %>
+                  </span>
+                </a>
               </td>
               <td class="email">
                 <span class="cellInner">

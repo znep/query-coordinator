@@ -1,2 +1,2 @@
-$.component.Container.extend('Popup filter', 'content', {
+$.component.Container.extend('Popup filter', 'input', {
 });

@@ -38,7 +38,7 @@
         }
 
         // Identify the container for a mouse event and execute a function on the container
-        function findContainer(event, fn) {
+        function findContainer(event) {
             // If the element is in edit chrome, ignore it
             var $top = $('.socrata-cf-top');
             if ($top.length && event.pageY < $top.offset().top + $top[0].offsetHeight)
@@ -73,10 +73,8 @@
                     ydist = 0;
 
                 // This is a hit
-                if (!xdist && !ydist) {
-                    fn(dom._comp);
-                    return true;
-                }
+                if (!xdist && !ydist)
+                   return dom._comp;
 
                 // Determine distance and record the container if closer than the previous container
                 var dist = Math.sqrt(xdist * xdist + ydist * ydist);
@@ -86,44 +84,117 @@
                 }
             }
 
-            if (closestContainer) {
-                fn(closestContainer);
-                return true;
+            return closestContainer;
+        }
+
+        // Identify the child within the container that we will drop relative to and the orientation of the drop
+        function findTarget(event, container) {
+            // Find the target sibling
+            var sibbounds;
+            var child = container.last;
+            while (child) {
+                if (child != placeholder) {
+                    var sibw = child.dom.offsetWidth;
+                    var sibh = child.dom.offsetHeight;
+                    sibbounds = $(child.dom).offset();
+
+                    sibbounds.right = sibbounds.left + sibw;
+                    sibbounds.bottom = sibbounds.top + sibh;
+                    if (container.horizontal) {
+                        if (event.pageX > sibbounds.left)
+                            break;
+                    } else if (event.pageY > sibbounds.top)
+                        break;
+                }
+                
+                child = child.prev;
             }
 
-            return false;
+            if (!child)
+                return {};
+
+            // Retrieve configuration for primary and secondary axis (depending on container layout)
+            var axisX = {
+                at: event.pageX,
+                from: 'left',
+                to: 'right'
+            };
+            var axisY = {
+                at: event.pageY,
+                from: 'top',
+                to: 'bottom'
+            };
+            if (container.horizontal)
+                var primary = axisX, secondary = axisY;
+            else
+                primary = axisY, secondary = axisX;
+
+            // Find orientation.  Secondary axis triggers if pointer is within 10% of child edge; primary axis
+            // otherwise
+            var secondaryAxisLength = sibbounds[secondary.to] - sibbounds[secondary.from];
+            var secondaryDropWidth = secondaryAxisLength / 10;
+            if (sibbounds[secondary.from] + secondaryDropWidth > secondary.at)
+                var orientation = secondary.from;
+            else if (sibbounds[secondary.to] - secondaryDropWidth < secondary.at)
+                orientation = secondary.to;
+            else {
+                var primaryAxisLength = sibbounds[primary.to] - sibbounds[primary.from];
+                var primaryAxisMidpoint = sibbounds[primary.from] + primaryAxisLength / 2;
+                if (primary.at < primaryAxisMidpoint)
+                    orientation = primary.from;
+                else
+                    orientation = primary.to;
+            }
+
+            return {
+                child: child,
+                orientation: orientation
+            };
         }
 
         // Handle mouse movement
         function onMouseMove(event) {
             setPosition(event);
+            
+            container = findContainer(event);
+            if (!container) {
+                if (placeholder)
+                    placeholder.remove();
+                return;
+            }
 
-            var accepted = findContainer(event, function(newContainer) {
-                container = newContainer;
-                if (!placeholder)
-                    placeholder = new $.component.Placeholder();
+            if (!placeholder)
+                placeholder = new $.component.Placeholder();
 
-                var siblings = container.ct.childNodes;
-                for (var i = siblings.length - 1; i >= 0; i--) {
-                    var sibling = siblings[i];
-                    if (!sibling._comp)
-                        continue;
+            var target = findTarget(event, container);
+            if (target) {
+                if (target.orientation == 'right' || target.orientation == 'bottom') {
+                    position = target.child.next;
+                    if (position == placeholder)
+                        position = placeholder.next;
+                } else
+                    position = target.child;
+            }
 
-                    // TODO -- favor x vs. y depending on container layout
-                    var offset = $(sibling).offset();
-                    if (offset.top + sibling.offsetHeight / 2 > event.pageY
-                        && offset.left + sibling.offsetWidth / 2 > event.pageX)
-                    {
-                        position = sibling._comp;
-                    }
-                }
+            container.add(placeholder, position);
+        }
 
-                if (position != placeholder)
-                    container.add(placeholder, position);
-            });
-
-            if (!accepted && placeholder)
-                placeholder.remove();
+        // Perform actual move after "drop" animation
+        function afterAddAnimation() {
+            $moving.remove();
+            placeholder.remove();
+            if (isNew)
+                $.cf.edit.execute('add', {
+                    container: container,
+                    position: position,
+                    type: type
+                });
+            else
+                $.cf.edit.execute('move', {
+                    container: container,
+                    position: position,
+                    child: child
+                });
         }
 
         // Handle mouse button release
@@ -142,21 +213,10 @@
             $moving.width($moving[0].offsetWidth).height($moving[0].offsetHeight)
                 .addClass('socrata-cf-adding').animate(to, 'fast', 'linear',
                     function() {
-                        $moving.remove();
-                        placeholder.remove();
-                        if (isNew) {
-                            $.cf.edit.execute('add', {
-                                container: container,
-                                position: position,
-                                type: type
-                            });
-                        } else {
-                            $.cf.edit.execute('move', {
-                                container: container,
-                                position: position,
-                                child: child
-                            });
-                        }
+                        // Defer final add because otherwise if this code crashes (which frequently it does during
+                        // component development) jQuery never terminates its animation timer, net result being a
+                        // highly annoying infinite loop of errors
+                        setTimeout(afterAddAnimation, 1);
                     }
                 );
 

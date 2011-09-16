@@ -472,8 +472,6 @@ stylesheets:
   grid-sidebar:
     - public/stylesheets/jquery.ui.resizable.css
     - public/stylesheets/ui.slider.css
-  displays-form:
-    - public/stylesheets/displays-form.css
   analytics-shared:
     - public/stylesheets/jquery-ui-1.8.4.custom.css
     - public/stylesheets/ui.daterangepicker.css

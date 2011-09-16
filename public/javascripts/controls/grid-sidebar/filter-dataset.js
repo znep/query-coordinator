@@ -132,7 +132,10 @@
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
         var filterView = sidebarObj.getFormValues($pane);
-        filterView.query = $.extend({}, blist.dataset.query, filterView.query || {});
+        var query = $.extend({}, blist.dataset.query);
+        query.orderBys = (filterView.query || {}).orderBys;
+        query.groupBys = (filterView.query || {}).groupBys;
+        filterView.query = query;
         _.each(filterView.query.orderBys || [], function(ob)
         {
             ob.ascending = (ob.ascending == 'true' || ob.ascending === true);

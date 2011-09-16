@@ -952,7 +952,7 @@
             prepFilterRemoval($filter, function()
             {
                 rootCondition.children = _.without(rootCondition.children,
-                    ($filter.data('unifiedFilter-condition') || {}).condition);
+                    $filter.data('unifiedFilter-condition'));
 
                 // Sometimes the filter loses its parent before it gets here
                 if ($filter.parent().length > 0)

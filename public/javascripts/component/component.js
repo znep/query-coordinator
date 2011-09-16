@@ -4,8 +4,6 @@
 (function($) {
     var nextAutoID = 1;
 
-    var components = {};
-
     var Component = Class.extend({
         _init: function(properties) {
             $.extend(this, properties);
@@ -16,12 +14,9 @@
                 if (sequence > nextAutoID)
                     nextAutoID = sequence + 1;
             }
-            this._render();
-            components[this.id] = this;
         },
 
         destroy: function() {
-            delete components[this.id];
             this.remove();
         },
 
@@ -35,13 +30,18 @@
         },
 
         /**
-         * Remove the component from its parent.
+         * Unlink a child from its parent.
          */
         remove: function() {
-            if (this.dom)
-                $(this.dom).remove();
-            if (this.parent)
-                this.parent._childRemoved(this);
+            var parent = this.parent;
+            if (parent) {
+                if (this.prev)
+                    this.prev.next = this.next;
+                if (this.next)
+                    this.next.prev = this.prev;
+                delete this.parent;
+                parent._childRemoved(this, this.prev, this.next);
+            }
         },
 
         /**
@@ -65,20 +65,49 @@
          * Lifecycle management -- called when a component is added to a container or its position has moved within
          * its container.
          */
-        _addedTo: function(parent) {
-            if (this.parent == parent)
-                return;
-            if (this.parent)
-                this.parent._childRemoved(this);
-            this.parent = parent;
-        },
+        _move: function(parent, position) {
+            // Confirm that position makes sense
+            if (position && position.parent != parent)
+                throw "Illegal position -- new following sibling is not parented by new parent";
 
-        /**
-         * Lifecycle management -- called when a component is removed from a container.
-         */
-        _removedFrom: function(parent) {
-            if (this.parent == parent)
-                delete this.parent;
+            // Ignore identity moves
+            if (position ? position == this || position == this.next : parent.last == this)
+                return;
+
+            var oldParent = this.parent;
+            var oldPrev = this.prev;
+            var oldNext = this.next;
+
+            // Nothing to do if we're already in position
+            if (oldParent == parent && oldNext == position)
+                return;
+
+            // Unlink from old position
+            if (oldPrev)
+                oldPrev.next = this.next;
+            if (oldNext)
+                oldNext.prev = this.prev;
+
+            // Link into new position
+            if (position)
+                this.prev = position.prev;
+            else {
+                this.prev = parent.last;
+                delete this.next;
+            }
+            if (this.prev)
+                this.prev.next = this;
+            this.next = position;
+            if (position)
+                position.prev = this;
+
+            // Update parent
+            if (oldParent != parent) {
+                this.parent = parent;
+                if (oldParent)
+                    oldParent._childRemoved(this, oldPrev, oldNext);
+            }
+            this.parent._childMoved(this, oldParent, oldPrev, oldNext);
         },
 
         /**
@@ -124,11 +153,10 @@
         return dom && dom._comp;
     }
 
-    $.extend($.component, {
-        Component: Component,
+    // That extra five characters is annoying in Firebug
+    $.comp = $.component;
 
-        get: function(id) {
-            return components[id];
-        }
+    $.extend($.component, {
+        Component: Component
     });
 })(jQuery);

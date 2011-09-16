@@ -664,7 +664,7 @@ class View < Model
     # If we have a display attempt to load the implementing class
     if dt
       begin
-        display_class = eval "Displays::#{dt.camelize}"
+        display_class = Displays.const_get(dt.camelize)
       rescue NameError
         Rails.logger.info "Ignoring invalid display type #{dt}"
       end

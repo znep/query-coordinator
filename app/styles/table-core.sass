@@ -206,26 +206,34 @@ img.blist-table-option-icon
 .blist-checkbox-on
   background-image: url(/stylesheets/images/content/table/check.png)
 
+.blist-tstars-wrapper,
+.blist-tstars-render-wrapper,
+.blist-tstars,
+.blist-tstar-on,
+.blist-tstar-off
+  height: 16px
+
 .blist-tstars-render-wrapper
-  display: inline-block
-  padding-left: 11px
-  div.drill-td &
-    padding-left: 0
+  display: block
+  padding: 0
 
 .blist-tstars-wrapper
+  float: left
+  margin-left: 0.5em
+  margin-right: 0.5em
   overflow: hidden
+  position: relative
   text-indent: -9999px
   line-height: 100px
 
 .blist-tstars
-  display: inline-block
+  display: block
 
 .blist-tstar-on
   background-image: url(/stylesheets/images/content/table/grid_stars_sprites.png)
   background-position: 0 0
   background-repeat: repeat-x
   float: left
-  height: 16px
   width: 16px
 
 .blist-tstar-off
@@ -233,10 +241,11 @@ img.blist-table-option-icon
   background-position: 0 -16.5px
   background-repeat: repeat-x
   float: left
-  height: 16px
   width: 16px
 
-div.blist-star-0,
+.blist-star-0
+  display: none
+
 .blist-table-editor.type-stars .star.star-clear
   background-position: left center
   background-repeat: no-repeat
@@ -244,10 +253,6 @@ div.blist-star-0,
   display: inline-block
   height: 16px
   width: 11px
-
-div.blist-star-0
-  float: left
-  margin-left: -11px
 
 .blist-table-editor.type-stars .star.star-clear
   background-image: url(/stylesheets/images/content/table/small_x.png)

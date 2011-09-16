@@ -150,5 +150,9 @@
         // show first story
         $storyTexts.filter(':first-child').fadeIn();
         $storyImages.filter(':first-child').fadeIn(homepageNS.autoadvanceInit);
+
+        // only rotate the carousel while the window is focused
+        window.onfocus = function() { homepageNS.autoadvanceInit() };
+        window.onblur  = function() { clearTimeout(autoadvancePtr) };
     });
 })(jQuery);

@@ -1,2 +1,2 @@
-$.component.Container.extend('Sort', 'content', {
+$.component.Container.extend('Sort', 'input', {
 });

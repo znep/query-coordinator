@@ -157,12 +157,20 @@ class ProfileController < ApplicationController
   def edit
     @user_links = UserLink.find(current_user.id)
     @app_tokens = current_user.app_tokens
+    @email_interests = EmailInterest.find_under_user
   end
 
   # Note: was AccountsController#edit
   def edit_account
+    # redirect from generic to fully-qualified url
+    expected_path = "#{current_user.href}/account"
+    if request.path != expected_path
+      return redirect_to(expected_path, :status => 301)
+    end
+
     @user_links = UserLink.find(current_user.id)
     @app_tokens = current_user.app_tokens
+    @email_interests = EmailInterest.find_under_user
   end
 
   def update_account
@@ -194,6 +202,22 @@ class ProfileController < ApplicationController
               end
             end
           end
+        end
+
+        # In the case that they uncheck all of the interests, this hash is empty
+        # We still want to delete everything.
+        params[:email_interests] ||= {}
+        previous_interests = EmailInterest.find_under_user
+        to_delete = previous_interests.select { |i| !params[:email_interests][i.eventTag] }
+        to_create = []
+        params[:email_interests].each do |k,v|
+          if previous_interests.none? { |i| i.eventTag == k }
+            to_create << k
+          end
+        end
+        CoreServer::Base.connection.batch_request do
+          to_delete.each { |interest| interest.delete(current_user.id) }
+          to_create.each { |interest| EmailInterest.create(current_user.id, interest) }
         end
 
         # update other attributes
@@ -228,6 +252,7 @@ class ProfileController < ApplicationController
   def edit_image
     @user_links = UserLink.find(current_user.id)
     @app_tokens = current_user.app_tokens
+    @email_interests = EmailInterest.find_under_user
   end
 
   def edit_app_tokens
@@ -235,11 +260,12 @@ class ProfileController < ApplicationController
     # (for /profile/app_tokens support from dev.socrata.com)
     expected_path = "#{current_user.href}/app_tokens"
     if request.path != expected_path
-      redirect_to(expected_path, :status => 301)
+      return redirect_to(expected_path, :status => 301)
     end
 
     @user_links = UserLink.find(current_user.id)
     @app_tokens = current_user.app_tokens
+    @email_interests = EmailInterest.find_under_user
     @token = AppToken.new
   end
 
@@ -279,6 +305,7 @@ class ProfileController < ApplicationController
       end
     end
     @user_links = UserLink.find(current_user.id)
+    @email_interests = EmailInterest.find_under_user
   end
 
   def delete_app_token

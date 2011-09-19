@@ -422,7 +422,7 @@
             _.each(rootCondition.children, function(condition)
             {
                 var newTCIDObj = {};
-                newTCIDObj[dataset.tableId] = condition.metadata.tableColumnId;
+                newTCIDObj[dataset.publicationGroup] = condition.metadata.tableColumnId;
                 condition.metadata.tableColumnId = newTCIDObj;
             });
 
@@ -566,7 +566,7 @@
         {
             var metadata = condition.metadata || {};
             // TODO: need to actually merge the datasets (how?) rather than just taking the first blindly
-            var column = dataset.columnForTCID(metadata.tableColumnId[dataset.tableId]);
+            var column = dataset.columnForTCID(metadata.tableColumnId[dataset.publicationGroup]);
 
             if (_.isUndefined(column))
             {
@@ -681,7 +681,7 @@
                         metadata.customValues = [];
                     }
 
-                    metadata.tableColumnId[dataset.tableId] = newColumn.tableColumnId;
+                    metadata.tableColumnId[dataset.publicationGroup] = newColumn.tableColumnId;
                     replaceFilter($filter, condition);
 
                     return true;
@@ -1244,7 +1244,7 @@
                 {
                     return !_.any(rootCondition.children, function(cond)
                     {
-                        return cond.metadata.tableColumnId[dataset.tableId] == col.tableColumnId;
+                        return cond.metadata.tableColumnId[dataset.publicationGroup] == col.tableColumnId;
                     })
                 });
                 if ($.isBlank(column))
@@ -1253,7 +1253,7 @@
                 }
             }
             newCondition.metadata.tableColumnId = newCondition.metadata.tableColumnId || {};
-            newCondition.metadata.tableColumnId[dataset.tableId] = column.tableColumnId;
+            newCondition.metadata.tableColumnId[dataset.publicationGroup] = column.tableColumnId;
 
             // do we have a composite column? if so get the most relevant subcolumn.
             if (!$.isBlank(column.renderType.subColumns))
@@ -1640,7 +1640,7 @@
                 var metadata = condition.metadata || {};
 
                 var children = [];
-                var column = dataset.columnForTCID(metadata.tableColumnId[dataset.tableId]);
+                var column = dataset.columnForTCID(metadata.tableColumnId[dataset.publicationGroup]);
                 var columnDefinition = {
                     type: 'column',
                     columnId: column.id
@@ -1750,7 +1750,8 @@
                         (ds.query.filterCondition !== rootCondition))
                     {
                         // we're not the default filter, need to push this on
-                        columnDefinition.columnId = ds.columnForTCID(metadata.tableColumnId[ds.tableId]).id;
+                        columnDefinition.columnId =
+                            ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).id;
 
                         var dsCondition = $.extend({}, condition);
                         dsCondition.children = $.extend(true, [], children);

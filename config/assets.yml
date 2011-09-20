@@ -79,6 +79,7 @@ javascripts:
     - public/javascripts/component/configurator/cf-top.js
     - public/javascripts/component/configurator/cf-side.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-move.js
     - public/javascripts/component/content/box.js
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js

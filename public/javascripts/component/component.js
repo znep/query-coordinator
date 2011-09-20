@@ -4,6 +4,8 @@
 (function($) {
     var nextAutoID = 1;
 
+    var components = {};
+
     var Component = Class.extend({
         _init: function(properties) {
             $.extend(this, properties);
@@ -14,10 +16,12 @@
                 if (sequence > nextAutoID)
                     nextAutoID = sequence + 1;
             }
+            components[this.id] = this;
         },
 
         destroy: function() {
             this.remove();
+            delete components[this.id];
         },
 
         /**
@@ -30,6 +34,13 @@
         },
 
         /**
+         * Retrieve a DOM element representing the root of this component's configuration user interface.
+         */
+        propertiesUI: function() {
+            return $('<div class="properties"><h3>' + this.catalogName + '</h3><p>This item has no configurable properties.</p></div>')[0];
+        },
+
+        /**
          * Unlink a child from its parent.
          */
         remove: function() {
@@ -39,8 +50,12 @@
                     this.prev.next = this.next;
                 if (this.next)
                     this.next.prev = this.prev;
+                var prev = this.prev;
+                var next = this.next;
                 delete this.parent;
-                parent._childRemoved(this, this.prev, this.next);
+                delete this.prev;
+                delete this.next;
+                parent._childRemoved(this, prev, next);
             }
         },
 
@@ -149,8 +164,7 @@
     $.component = function(id) {
         if (typeof id == 'number')
             id = 'c' + id;
-        var dom = document.getElementById(id);
-        return dom && dom._comp;
+        return components[id];
     }
 
     // That extra five characters is annoying in Firebug

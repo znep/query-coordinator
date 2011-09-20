@@ -12,6 +12,10 @@
         // Metadata for the component we're dragging for moves
         var child;
 
+        // Source information if this is a move (vs "add")
+        var oldContainer;
+        var oldPosition;
+
         // The component we're moving
         var $moving;
 
@@ -23,7 +27,7 @@
         var $containers;
 
         // The placeholder we use to indicate where a drag will land
-        var placeholder;
+        var placeholder = new $.component.Placeholder();
 
         // The current container taking receipt of the drop
         var container;
@@ -158,13 +162,14 @@
             
             container = findContainer(event);
             if (!container) {
-                if (placeholder)
+                if (isNew)
                     placeholder.remove();
+                else {
+                    container = oldContainer;
+                    oldContainer.add(placeholder, oldPosition);
+                }
                 return;
             }
-
-            if (!placeholder)
-                placeholder = new $.component.Placeholder();
 
             var target = findTarget(event, container);
             if (target) {
@@ -191,8 +196,10 @@
                 });
             else
                 $.cf.edit.execute('move', {
-                    container: container,
-                    position: position,
+                    newContainer: container,
+                    newPosition: position,
+                    oldContainer: oldContainer,
+                    oldPosition: oldPosition,
                     child: child
                 });
         }
@@ -230,8 +237,7 @@
 
         // Stop drag and revert dragged item to its home position
         function abortDrag() {
-            if (placeholder)
-                placeholder.remove();
+            placeholder.remove();
             $moving.animate($target.offset(), 200, 'linear', function() {
                 $moving.remove();
             });
@@ -267,20 +273,38 @@
         if (!setup())
             return;
 
+        // Initiate the drag
+        if (isNew) {
+            // Dragging from icon.  Create a copy to move around the screen
+            $moving = $('<div class="socrata-cf-drag-icon icon-' + type.typeName + '">' + $target.html() + '</div>');
+        } else {
+            // Drag existing component.  Create a shell into which we will put the rendered component
+            $moving = $('<div class="socrata-cf-drag-shell"></div>');
+            $moving.css({ width: $target[0].offsetWidth, height: $target[0].offsetHeight });
+
+            // Record the child's position
+            child = $target[0]._comp;
+            oldContainer = child.parent;
+            oldPosition = child.next;
+
+            // Replace the child with the placeholder
+            placeholder.weight = child.weight;
+            child.remove();
+            oldContainer.add(placeholder, oldPosition);
+
+            // Stick the child into the moving container
+            $moving.append($target);
+        }
+
         // Find all containers in the page that support drag/drop.  We will use this for hit-testing.  Reverse sort so
         // that during hit detection we encounter children before parents
         $containers = $('.socrata-container').closest('.socrata-component').filter(function() {
+            if ($(this).closest('.socrata-cf-drag-shell').length)
+                return false;
             return this._comp && this._comp.drag !== false;
         });
         Array.prototype.reverse.apply($containers);
 
-        // Initiate the drag
-        if (isNew) {
-            // Dragging from icon.  Create a copy to move around the screen
-            $moving = $('<div class="socrata-cf-drag-icon">' + $target.html() + '</div>');
-        } else {
-            // TODO - drag existing component
-        }
         setPosition(event);
         $(document.body).append($moving);
         $(document.body).mousemove(onMouseMove).mouseup(onMouseUp).click(onMouseClick);

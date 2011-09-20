@@ -114,6 +114,13 @@
         },
 
         /**
+         * Collect children into an array.
+         */
+        children: function() {
+            return this.map(function(child) { return child });
+        },
+
+        /**
          * Recursively apply a function to all descendants of this container.
          */
         visit: function(fn, scope) {
@@ -170,7 +177,7 @@
         }
     });
 
-    $.component.Container.extend('HorizontalContainer', {
+    $.component.Container.extend('Horizontal Container', {
         // A hint for drag implementation
         horizontal: true,
 

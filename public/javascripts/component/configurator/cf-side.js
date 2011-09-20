@@ -89,4 +89,47 @@
 
         visible = true;
     }
+
+    var propertiesFor;
+    var $properties;
+
+    function closeProperties() {
+        if (!propertiesFor)
+            return;
+        var $old = $properties;
+        $properties
+            .stop()
+            .css({ top: $properties[0].offsetTop, width: $properties.width() })
+            .addClass('animating out')
+            .animate({ opacity: 0 }, 200, 'linear', function() {
+                $old.remove();
+            });
+        propertiesFor = undefined;
+    }
+
+    function openProperties($dom) {
+        $properties = $('<div class="socrata-cf-properties-shell"></div>');
+        $properties
+            .css({ opacity: 0 })
+            .addClass('animating')
+            .append($dom);
+        $ct.append($properties);
+        $properties.css('opacity', 0).animate({ opacity: 1 }, 200, 'linear', function() {
+            $properties.removeClass('animating').css('opacity', '');
+        });
+    }
+
+    $.extend($.cf.side, {
+        properties: function(what) {
+            if (propertiesFor == what)
+                return;
+            closeProperties();
+            if (what) {
+                propertiesFor = what;
+                if (what.propertiesUI)
+                    what = what.propertiesUI();
+                openProperties($(what));
+            }
+        }
+    });
 })(jQuery);

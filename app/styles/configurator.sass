@@ -17,6 +17,7 @@ body.socrata-page
         opacity: 1
 
 .socrata-cf-top
+  z-index: 10000
   height: 24px
   padding: 4px 18px
   top: -32px
@@ -61,11 +62,12 @@ body.socrata-page
       float: left
 
 .socrata-cf-side
+  z-index: 10000
   // TODO - legacy webkit gradient background
-  background: -webkit-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -webkit-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), #ddddff
-  background: -moz-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -moz-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), #ddddff
-  background: -ms-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -ms-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), #ddddff
-  background: -o-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -o-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), #ddddff
+  background: -webkit-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -webkit-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
+  background: -moz-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -moz-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
+  background: -ms-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -ms-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
+  background: -o-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -o-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
   @include transition(right .2s linear)
   position: fixed
   top: 32px
@@ -82,29 +84,45 @@ body.socrata-page
         height: auto
     h2
       cursor: pointer
-      @include shadow(0px 1px 0px #f7f7f7)
+      //@include shadow(0px 1px 0px #f7f7f7)
       font-size: 14px
       padding: 2px 8px
       margin: 2px 0 4px 0
-      border-top: solid 1px rgba(0, 0, 0, .2)
-      border-bottom: solid 1px rgba(0, 0, 0, .2)
+      //border-top: solid 1px rgba(0, 0, 0, .2)
+      //border-bottom: solid 1px rgba(0, 0, 0, .2)
       text-shadow: black 0 1px 1px
       color: white
-      // TODO - legacy webkit gradient background
-      background: -webkit-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -webkit-linear-gradient(top, rgba(0, 0, 0, .4), rgba(0, 0, 0, .6))
-      background: -moz-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -moz-linear-gradient(top, rgba(0, 0, 0, .4), rgba(0, 0, 0, .6))
-      background: -ms-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -ms-linear-gradient(top, rgba(0, 0, 0, .4), rgba(0, 0, 0, .6))
-      background: -o-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -o-linear-gradient(top, rgba(0, 0, 0, .4), rgba(0, 0, 0, .6))
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(32, 32, 32, .8)), to(rgba(0, 0, 0, .8)))
+      background: -webkit-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
+      background: -moz-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
+      background: -ms-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
+      background: -o-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
+      opacity: .8
       &:hover
-        opacity: .8
+        opacity: 1
   .item
     float: left
     margin: 4px 0
-  .icon
+    opacity: .8
     &:hover
-      opacity: .9
+      opacity: 1
   .icon, .label
     cursor: move
+
+.socrata-cf-mask
+  z-index: 9999
+  background: rgba(255, 255, 255, .5)
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  pointer-events: none // TODO - emulate for IE < 9
+
+.socrata-cf-focal
+  z-index: 10000
+  @include box-shadow(0, 0, 12px, black)
+  position: relative
 
 // Representation of icons in palette and drag form of same
 .socrata-cf-side, .socrata-cf-drag-icon
@@ -115,7 +133,7 @@ body.socrata-page
     width: 48px
     height: 48px
     margin: 0 16px 6px 16px
-    background: rgba(0, 0, 0, .25)
+    background: url(/stylesheets/images/component/cf-icons.png) 10000px 10000px no-repeat, rgba(0, 0, 0, .25)
     display: block
     @include border-radius(6px)
     box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
@@ -126,6 +144,7 @@ body.socrata-page
     text-align: center
     font-size: 12px
     cursor: move
+    color: #dddddd
 
 // Transformation of new palette icon whilst animating into position
 .socrata-cf-drag-icon.socrata-cf-adding
@@ -137,48 +156,24 @@ body.socrata-page
     left: 16px
     width: auto
     height: auto
+    background-position: 100000px 100000px
   .label
     display: none
 
+// Icon dragged when creating new components
 .socrata-cf-drag-icon
   position: absolute
   z-index: 1000000
   &, *
     cursor: pointer !important
 
-.socrata-component
-  min-height: 50px // Default height; temporary?
-  background-color: rgba(0, 0, 0, .2) // Temporary
-  @include border-radius(4px) // Default or temporary?
-  margin-bottom: 8px
-  &:last-child
-    margin-bottom: 0
+// Shell dragged when moving existing components
+.socrata-cf-drag-shell
+  position: absolute
+  opacity: .8
+  z-index: 1000000
 
-.component-Container, .component-HorizontalContainer, .component-Box
-  height: auto
-
-.component-Box-inside
-  padding: 12px
-
-.component-HorizontalContainer
-  position: relative
-  overflow: hidden
-  & > .component-wrapper
-    position: relative
-    float: left
-    left: 100%
-    & > *
-      margin: 0 8px
-    &:first-child > *
-      margin-left: 0
-    &:last-child > *
-      margin-right: 0
-
-.component-Box
-  min-height: 100px // Default height; temporary?
-.component-Box-container
-  margin: 8px
-
+// Dragging placeholder
 .component-Placeholder
   position: relative
   .insides
@@ -190,3 +185,83 @@ body.socrata-page
     right: 0
     bottom: 0
     @include border-radius(4px) // Default or temporary?
+
+// Container for properties editors in the sidebar
+.socrata-cf-properties-shell
+  position: relative
+  padding: 12px 8px 0 8px
+  &.animating.out
+    position: absolute
+  .properties
+    @include border-radius(4px)
+    background: rgba(255, 255, 255, .75)
+    padding: 2px 6px
+    h3, p
+      margin: 4px 0 6px
+
+// Base/default styles shared by all components
+.socrata-component
+  min-height: 50px // Default height; temporary?
+  background-color: rgba(0, 0, 0, .2) // Temporary
+  @include border-radius(4px) // Default or temporary?
+  margin-bottom: 8px
+  &:last-child
+    margin-bottom: 0
+
+// Containers components
+.component-Container, .component-HorizontalContainer, .component-Box
+  height: auto
+.component-Box-inside
+  padding: 12px
+.component-HorizontalContainer
+  position: relative
+  & > .component-wrapper
+    position: relative
+    float: left
+    left: 100%
+    & > *
+      margin: 0 8px
+    &:first-child > *
+      margin-left: 0
+    &:last-child > *
+      margin-right: 0
+.component-Box
+  min-height: 100px // Default height; temporary?
+.component-Box-container
+  margin: 8px
+
+// Sprited icons
+$icon_slot: 0
+@mixin icon($name)
+  .icon-#{$name} .icon
+    background-position: -6px (-8px + -44px * $icon_slot)
+  $icon_slot: $icon_slot + 1
+@include icon(Box)
+@include icon(Catalog)
+@include icon(Comments)
+@include icon(Title)
+@include icon(Picture)
+@include icon(Related)
+@include icon(Text)
+@include icon(BarChart)
+@include icon(LineChart)
+@include icon(Map)
+@include icon(PieChart)
+@include icon(Repeater)
+@include icon(ScatterPlot)
+@include icon(Table)
+@include icon(Timeline)
+@include icon(TreeMap)
+@include icon(CreateChart)
+@include icon(CreateMap)
+@include icon(Download)
+@include icon(Embed)
+@include icon(HideShow)
+@include icon(InlineFilter)
+@include icon(PopupFilter)
+@include icon(Print)
+@include icon(RateVote)
+@include icon(SiteSearch)
+@include icon(DataSearch)
+@include icon(Sort)
+@include icon(SlideFilter)

@@ -140,6 +140,9 @@ private
       threads.compact.each{ |thread| thread.join }
     end
 
+    # Get a unique array of style packages required by the widgets to be displayed
+    page_config.stylesheets = page_config.contents.collect{ |widget| widget.stylesheets }.flatten.compact.uniq
+
     return page_config
   end
 

@@ -134,6 +134,9 @@ html-styles:
 - dataset-grid
 canvas:
 - canvas
+canvas-view-preview:
+- table-core
+- dataset-grid
 dataset-about-full:
 - about-dataset
 - screen-dataset

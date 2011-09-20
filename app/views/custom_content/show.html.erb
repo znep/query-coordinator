@@ -5,6 +5,11 @@
     <%= rendered_stylesheet_tag "canvas" %>
     <%= rendered_stylesheet_tag "homepage-show" if Canvas::Environment.context == :homepage &&
                                                    @page_config.default_styles %>
+    <%- if @page_config.stylesheets.present? -%>
+      <%- @page_config.stylesheets.each do |style_package| -%>
+        <%= rendered_stylesheet_tag style_package %>
+      <%- end -%>
+    <%- end -%>
     <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css"/>
   <% end %>
 

@@ -85,6 +85,10 @@ module Canvas
       return @properties
     end
 
+    def stylesheets
+      return nil
+    end
+
     def method_missing(key, *args)
       return @data[key]
     end
@@ -451,6 +455,10 @@ module Canvas
           @view = false
         end
       end
+    end
+
+    def stylesheets
+      ['canvas-view-preview']
     end
   protected
     self.default_properties = {

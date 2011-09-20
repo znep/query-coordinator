@@ -103,7 +103,7 @@
             }
 
             // Once we've gotten the columns, get total rows, then create the chart
-            chartObj.settings.view.getTotalRows(function()
+            chartObj._primaryView.getTotalRows(function()
                 { createChart(chartObj); });
         },
 
@@ -211,13 +211,13 @@
             {
                 // Create fake row for other value
                 var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
-                if ((chartObj.settings.view.highlights || {})[otherRow.id])
+                if ((chartObj._primaryView.highlights || {})[otherRow.id])
                 {
                     otherRow.sessionMeta = {highlight: true,
-                        highlightColumn: (chartObj.settings.view.highlightsColumn || {})[otherRow.id]};
+                        highlightColumn: (chartObj._primaryView.highlightsColumn || {})[otherRow.id]};
                 }
                 otherRow[chartObj._xColumn.lookup] = 'Other';
-                var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
+                var cf = _.detect(chartObj._primaryView.metadata.conditionalFormatting,
                     function(cf) { return cf.condition === true; });
                 if (cf) { otherRow.color = cf.color; }
 
@@ -264,7 +264,7 @@
             {
                 setCategories(chartObj);
 
-                if (chartObj.settings.view.snapshotting)
+                if (chartObj._primaryView.snapshotting)
                 {
                     prepareToSnapshot(chartObj);
                 }
@@ -722,12 +722,12 @@
 
             var labelLimit = Dataset.chart.types[chartObj._chartType].displayLimit.labels
                 || Dataset.chart.types[chartObj._chartType].displayLimit.points;
-            if (labelLimit && chartObj.settings.view.totalRows)
+            if (labelLimit && chartObj._primaryView.totalRows)
             {
                 // Magic Number is the width of chartObj.$dom().width() when the
                 // displayLimit configurations were determined.
                 var spaceAvailable = labelLimit * (chartObj.$dom().width() / 1440);
-                var numItems = chartObj.settings.view.totalRows;
+                var numItems = chartObj._primaryView.totalRows;
                 if (Dataset.chart.types[chartObj._chartType].displayLimit.points)
                 {
                     numItems = Math.min(numItems,
@@ -747,7 +747,7 @@
         { typeConfig.marker = {enabled: false}; }
 
         // If we already loaded and are just re-rendering, don't animate
-        if (chartObj._loadedOnce || chartObj.settings.view.snapshotting)
+        if (chartObj._loadedOnce || chartObj._primaryView.snapshotting)
         { typeConfig.animation = false; }
 
         // Make sure lineSize is defined, so we don't hide the line by default
@@ -761,8 +761,8 @@
                 clearTimeout(tooltipTimeout);
                 var $tooltip = customTooltip(chartObj, this);
                 if (!$.isBlank($tooltip.data('currentRow')))
-                { chartObj.settings.view.unhighlightRows($tooltip.data('currentRow')); }
-                chartObj.settings.view.highlightRows(this.row, null, this.column);
+                { chartObj._primaryView.unhighlightRows($tooltip.data('currentRow')); }
+                chartObj._primaryView.highlightRows(this.row, null, this.column);
                 $tooltip.data('currentRow', this.row);
             },
             mouseOut: function()
@@ -772,17 +772,17 @@
                 tooltipTimeout = setTimeout(function(){
                     if (!$tooltip.data('mouseover'))
                     {
-                        chartObj.settings.view.unhighlightRows(t.row);
+                        chartObj._primaryView.unhighlightRows(t.row);
                         $tooltip.hide();
                     }
                 }, 500);
             },
             click: function()
             {
-                if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + this.row.id))
-                { chartObj.settings.view.unhighlightRows(this.row, 'select'); }
+                if ($.subKeyDefined(chartObj._primaryView, 'highlightTypes.select.' + this.row.id))
+                { chartObj._primaryView.unhighlightRows(this.row, 'select'); }
                 else
-                { chartObj.settings.view.highlightRows(this.row, 'select', this.column); }
+                { chartObj._primaryView.highlightRows(this.row, 'select', this.column); }
             }
         }};
 
@@ -823,7 +823,7 @@
 
             chartObj._loadedOnce = true;
 
-            if (chartObj.settings.view.snapshotting)
+            if (chartObj._primaryView.snapshotting)
             {
                 prepareToSnapshot(chartObj);
             }
@@ -843,7 +843,7 @@
             chartObj._snapshot_timer = null;
         }
 
-        chartObj._snapshot_timer = setTimeout(chartObj.settings.view.takeSnapshot, 1000);
+        chartObj._snapshot_timer = setTimeout(chartObj._primaryView.takeSnapshot, 1000);
     };
 
     var xPoint = function(chartObj, row, ind)
@@ -965,7 +965,7 @@
         point.column = col;
         point.flyoutDetails = chartObj.renderFlyout(row,
             chartObj._valueColumns[seriesIndex].column.tableColumnId,
-            chartObj.settings.view);
+            chartObj._primaryView);
 
         return point;
     };
@@ -1245,7 +1245,7 @@
                     function()
                     {
                         var $tooltip = $(this);
-                        chartObj.settings.view.unhighlightRows($tooltip.data('currentRow'));
+                        chartObj._primaryView.unhighlightRows($tooltip.data('currentRow'));
                         $tooltip.data('mouseover', false).hide();
                     })
                 .data('events-attached', true);

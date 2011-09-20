@@ -98,14 +98,14 @@
             return $.template(template, this._propertyResolver());
         },
 
+        setEditor: function(editor)
+        {
+            this._propEditor = editor;
+        },
+
         /**
          * Returns a set of configurations for editing the properties of this element
          */
-        configurationSchema: function()
-        {
-            return null;
-        },
-
         configurationSchema: function()
         {
             return null;

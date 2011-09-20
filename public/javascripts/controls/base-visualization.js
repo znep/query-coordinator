@@ -8,8 +8,9 @@
             currentObj._super.apply(currentObj, arguments);
             var $mainDom = $(currentObj.currentDom);
 
+            currentObj._primaryView = currentObj.settings.view;
             currentObj._displayFormat = currentObj.settings.displayFormat ||
-                currentObj.settings.view.displayFormat;
+                currentObj._primaryView.displayFormat;
             $mainDom.resize(function(e) { doResize(currentObj, e); })
                 .bind('hide', function() { currentObj._hidden = true; })
                 .bind('show', function()
@@ -28,9 +29,8 @@
             currentObj._maxRows = 500;
 
             currentObj._byView = {};
-            currentObj._byView[currentObj.settings.view.id]
-                = { view: currentObj.settings.view };
-            currentObj._dataViews = [currentObj.settings.view];
+            currentObj._byView[currentObj._primaryView.id] = { view: currentObj._primaryView };
+            currentObj._dataViews = [currentObj._primaryView];
 
             var viewsFetched = 0;
             var viewsToLoad = (currentObj._displayFormat.compositeMembers || []).length + 1;
@@ -92,7 +92,7 @@
                         .siblings('.flyoutRenderer.template');
                 }
                 this.richRenderer = this._$flyoutTemplate.richRenderer({
-                    columnCount: 1, view: this.settings.view});
+                    columnCount: 1, view: this._primaryView});
             }
             return this._$flyoutTemplate;
         },
@@ -161,7 +161,7 @@
         {
             var vizObj = this;
 
-            var isPrimaryView = vizObj.settings.view == view;
+            var isPrimaryView = vizObj._primaryView == view;
             var $item = vizObj.$flyoutTemplate().clone()
                     .removeClass('template');
 
@@ -194,12 +194,12 @@
         // Used in a few places for non-dataset status
         startLoading: function()
         {
-            this.settings.view.trigger('request_start');
+            this._primaryView.trigger('request_start');
         },
 
         finishLoading: function()
         {
-            this.settings.view.trigger('request_finish');
+            this._primaryView.trigger('request_finish');
         },
 
         initializeVisualization: function()
@@ -230,19 +230,38 @@
             {
                 if (vizObj._obsolete) { return; }
                 if (fullReset) { handleChange(true); }
-                else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj.settings.view); }
+                else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj._primaryView); }
             };
             var handleQueryChange = function() { handleChange(true); };
 
             if (!vizObj._boundViewEvents)
             {
-                vizObj.settings.view
-                    .bind('query_change', handleQueryChange)
-                    .bind('row_change', handleRowChange)
-                    .bind('displayformat_change', handleChange);
+                vizObj._primaryView
+                    .bind('query_change', handleQueryChange, vizObj)
+                    .bind('row_change', handleRowChange, vizObj)
+                    .bind('displayformat_change', handleChange, vizObj);
 
                 vizObj._boundViewEvents = true;
             }
+        },
+
+        setView: function(newView)
+        {
+            var vizObj = this;
+            if (!$.isBlank(vizObj._primaryView))
+            {
+                vizObj._primaryView.unbind(null, null, vizObj);
+                vizObj._dataViews = _.without(vizObj._dataViews, vizObj._primaryView);
+                delete vizObj._byView[vizObj._primaryView.id];
+            }
+
+            vizObj._primaryView = newView;
+            vizObj._dataViews.unshift(vizObj._primaryView);
+            vizObj._byView[vizObj._primaryView.id] = vizObj._primaryView;
+            vizObj._boundViewEvents = false;
+
+            vizObj._requireRowReload = true;
+            vizObj.reload();
         },
 
         reload: function(newDF)
@@ -257,7 +276,7 @@
             delete vizObj._needsReload;
 
             vizObj._displayFormat = vizObj._savedDF ||
-                vizObj.settings.displayFormat || vizObj.settings.view.displayFormat;
+                vizObj.settings.displayFormat || vizObj._primaryView.displayFormat;
             if (vizObj.needsPageRefresh())
             {
                 // Now that visualizations are being done inline, reloading
@@ -291,8 +310,7 @@
         cleanVisualization: function()
         {
             var vizObj = this;
-            if (vizObj._requireRowReload)
-            { delete vizObj._requireRowReload; }
+            delete vizObj._requireRowReload;
             delete vizObj._flyoutLayout;
         },
 

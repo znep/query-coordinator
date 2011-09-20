@@ -44,19 +44,19 @@
 
             mapObj._iconSizes = {};
 
-            if (mapObj.settings.view.snapshotting)
+            if (mapObj._primaryView.snapshotting)
             {
                 var resetSnapTimer = function()
                 {
-                    if (!$.isBlank(mapObj.settings.view._snapshot_timeout))
+                    if (!$.isBlank(mapObj._primaryView._snapshot_timeout))
                     {
-                        clearTimeout(mapObj.settings.view._snapshot_timeout);
-                        mapObj.settings.view._snapshot_timeout = null;
+                        clearTimeout(mapObj._primaryView._snapshot_timeout);
+                        mapObj._primaryView._snapshot_timeout = null;
                     }
                 };
 
                 // Once the rows are loaded, look for the last 'onchangeview' event
-                mapObj.settings.view.bind('request_finish', function()
+                mapObj._primaryView.bind('request_finish', function()
                 {
                     // Clear any existing requests
                     resetSnapTimer();
@@ -69,11 +69,11 @@
                         function(event)
                         {
                             resetSnapTimer();
-                            mapObj.settings.view._snapshot_timeout = setTimeout(
-                                 mapObj.settings.view.takeSnapshot, 5000);
+                            mapObj._primaryView._snapshot_timeout = setTimeout(
+                                 mapObj._primaryView.takeSnapshot, 5000);
                         });
                     mapObj._snapshot_bound = true;
-                });
+                }, mapObj);
             }
 
             mapObj.mapLoaded();
@@ -200,18 +200,18 @@
                         { window.open(details.redirect_to); }
 
                         if (showInfoWindow(mapObj, event.target))
-                        { mapObj.settings.view.highlightRows(shape.rows, 'select'); }
+                        { mapObj._primaryView.highlightRows(shape.rows, 'select'); }
                     });
 
-                if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
+                if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
                                 'highlightTypes.select.' + r.id); }))
                 { showInfoWindow(mapObj, shape); }
 
                 Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
-                { mapObj.settings.view.highlightRows(details.rows); });
+                { mapObj._primaryView.highlightRows(details.rows); });
 
                 Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
-                { mapObj.settings.view.unhighlightRows(details.rows); });
+                { mapObj._primaryView.unhighlightRows(details.rows); });
             });
 
             shapes.startAnimation  = function() {};
@@ -415,7 +415,7 @@
         {
             var mapObj = this;
             if (mapObj._viewportListener &&
-                $.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                $.subKeyDefined(mapObj, '_primaryView.query.namedFilters.viewport'))
             { return; }
 
             if (mapObj._viewportListener)
@@ -427,7 +427,7 @@
             if (mapObj._displayFormat.viewport)
             {
                 mapObj.setViewport(mapObj._displayFormat.viewport);
-                if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                if (!$.subKeyDefined(mapObj, '_primaryView.query.namedFilters.viewport'))
                 { mapObj.updateRowsByViewport(null, true); }
             }
             else if (mapObj.map.entities.getLength() > 1)
@@ -650,10 +650,10 @@
         $box.find('#bing_infoContent img').click(function()
         {
             // Hide all selected rows
-            if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+            if ($.subKeyDefined(mapObj._primaryView, 'highlightTypes.select'))
             {
-                mapObj.settings.view.unhighlightRows(
-                    _.values(mapObj.settings.view.highlightTypes.select), 'select');
+                mapObj._primaryView.unhighlightRows(
+                    _.values(mapObj._primaryView.highlightTypes.select), 'select');
             }
             closeInfoWindow();
         });

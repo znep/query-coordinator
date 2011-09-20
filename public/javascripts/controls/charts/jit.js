@@ -68,7 +68,7 @@
                             row: row,
                             column: valCol,
                             flyoutDetails: chartObj.renderFlyout(row,
-                                valCol.tableColumnId, chartObj.settings.view)
+                                valCol.tableColumnId, chartObj._primaryView)
                         },
                         children: []
                     };
@@ -100,8 +100,8 @@
                 row[chartObj._fixedColumns[0].id] = 'Other';
                 row[valCol.id] = chartObj._remainder;
                 var colors = chartObj._displayFormat.colors;
-                var color = colors[chartObj.settings.view.totalRows % 5];
-                if ((chartObj.settings.view.highlights || {})[row.id])
+                var color = colors[chartObj._primaryView.totalRows % 5];
+                if ((chartObj._primaryView.highlights || {})[row.id])
                 { color = getHighlightColor(color); }
                 var item = {
                     id: -1,
@@ -112,11 +112,11 @@
                         row: {id: 'Other'},
                         column: valCol,
                         flyoutDetails: chartObj.renderFlyout(row,
-                            valCol.tableColumnId, chartObj.settings.view)
+                            valCol.tableColumnId, chartObj._primaryView)
                     },
                     children: []
                 };
-                if ((chartObj.settings.view.highlights || {})[row.id])
+                if ((chartObj._primaryView.highlights || {})[row.id])
                 { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
                 chartObj._jitData.children.push(item);
                 chartObj._otherAdded = true;
@@ -200,10 +200,10 @@
                   {
                       if (!$.isBlank(chartObj._curHighlight) &&
                           chartObj._curHighlight.id != node.data.row.id)
-                      { chartObj.settings.view.unhighlightRows(chartObj._curHighlight); }
+                      { chartObj._primaryView.unhighlightRows(chartObj._curHighlight); }
 
                       chartObj._curHighlight = node.data.row;
-                      chartObj.settings.view.highlightRows(node.data.row, null, node.data.column);
+                      chartObj._primaryView.highlightRows(node.data.row, null, node.data.column);
                   }
               },
               onMouseLeave: function(node)
@@ -215,16 +215,16 @@
                           setTimeout(function()
                           {
                               delete chartObj._rowLeaveTimer;
-                              chartObj.settings.view.unhighlightRows(node.data.row);
+                              chartObj._primaryView.unhighlightRows(node.data.row);
                           }, 100);
                   }
               },
               onClick: function(node)
               {
-                  if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + node.data.row.id))
-                  { chartObj.settings.view.unhighlightRows(node.data.row, 'select'); }
+                  if ($.subKeyDefined(chartObj._primaryView, 'highlightTypes.select.' + node.data.row.id))
+                  { chartObj._primaryView.unhighlightRows(node.data.row, 'select'); }
                   else
-                  { chartObj.settings.view.highlightRows(node.data.row, 'select',  node.data.column); }
+                  { chartObj._primaryView.highlightRows(node.data.row, 'select',  node.data.column); }
               }
             },
             Tips: {

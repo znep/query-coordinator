@@ -99,7 +99,7 @@
         columnsLoaded: function()
         {
             var mapObj = this;
-            if (mapObj._byView[mapObj.settings.view.id]._colorValueCol)
+            if (mapObj._byView[mapObj._primaryView.id]._colorValueCol)
             {
                 if (!mapObj._gradient)
                 {
@@ -108,7 +108,7 @@
                 }
 
                 mapObj.$legend({
-                    name: mapObj._byView[mapObj.settings.view.id]
+                    name: mapObj._byView[mapObj._primaryView.id]
                         ._colorValueCol.name,
                     gradient: _.map(mapObj._gradient,
                           function(c) { return "#"+$.rgbToHex(c); }
@@ -342,7 +342,7 @@
                 }));
             }
 
-            var loc = rows[0][mapObj._byView[mapObj.settings.view.id]._locCol.lookup];
+            var loc = rows[0][mapObj._byView[mapObj._primaryView.id]._locCol.lookup];
             if (loc.latitude && loc.longitude)
             {
                 if (mapObj._displayFormat.type == 'bing')
@@ -532,8 +532,8 @@
                 return 'point';
             })();
 
-            if (geoType == 'point' && mapObj.settings.view._rowClusterParents)
-            { details.clusterParent = mapObj.settings.view._rowClusterParents[row.sid]; }
+            if (geoType == 'point' && mapObj._primaryView._rowClusterParents)
+            { details.clusterParent = mapObj._primaryView._rowClusterParents[row.sid]; }
 
             var geometry;
             switch (geoType)
@@ -708,7 +708,7 @@
             { return; }
 
             mapObj._currentViewport = vp;
-            mapObj.settings.view.update({displayFormat: $.extend({},
+            mapObj._primaryView.update({displayFormat: $.extend({},
                 mapObj._displayFormat, { viewport: vp })}, false, true);
         },
 
@@ -720,7 +720,7 @@
         getColumns: function()
         {
             var mapObj = this;
-            var view = mapObj.settings.view;
+            var view = mapObj._primaryView;
 
             _.each(mapObj._dataViews, function(view)
             {
@@ -977,7 +977,7 @@
     {
         _.each(aggs, function(a, cId)
         {
-            var column = mapObj.settings.view.columnForID(cId);
+            var column = mapObj._primaryView.columnForID(cId);
             var difference = column.aggregates.maximum - column.aggregates.minimum;
             var granularity = difference / mapObj._numSegments;
 

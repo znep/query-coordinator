@@ -65,8 +65,8 @@
         {
             var mapObj = this;
 
-            if (_.isUndefined(mapObj._byView[mapObj.settings.view.id]._locCol) &&
-                !mapObj.settings.view.isArcGISDataset())
+            if (_.isUndefined(mapObj._byView[mapObj._primaryView.id]._locCol) &&
+                !mapObj._primaryView.isArcGISDataset())
             {
                 mapObj.errorMessage = 'Required columns missing';
                 return false;
@@ -113,10 +113,10 @@
         getFlyout: function(rows, details)
         {
             var mapObj = this;
-            var $flyout = mapObj._super(rows, details, mapObj.settings.view);
+            var $flyout = mapObj._super(rows, details, mapObj._primaryView);
             if ($.isBlank($flyout)) { return null; }
 
-            var viewConfig = mapObj._byView[mapObj.settings.view.id];
+            var viewConfig = mapObj._byView[mapObj._primaryView.id];
 
             $flyout.find('.richColumn').each(function()
             {
@@ -162,7 +162,7 @@
 
     var setUpHeatmap = function(mapObj)
     {
-        var viewConfig = mapObj._byView[mapObj.settings.view.id];
+        var viewConfig = mapObj._byView[mapObj._primaryView.id];
         var config = mapObj._displayFormat.heatmap;
 
         if (config.type == 'custom')
@@ -253,7 +253,7 @@
                     mapObj._featureSet = data;
                     reClassifyFeatures(mapObj);
                     processFeatures(mapObj);
-                    processRows(mapObj, mapObj.settings.view._rows);
+                    processRows(mapObj, mapObj._primaryView._rows);
                 }
             });
         }
@@ -272,7 +272,7 @@
                     {
                         mapObj._featureSet = featureSet;
                         processFeatures(mapObj);
-                        processRows(mapObj, mapObj.settings.view._rows);
+                        processRows(mapObj, mapObj._primaryView._rows);
                     });
         }
         mapObj._runningQuery = true;
@@ -292,7 +292,7 @@
 
     var processRows = function(mapObj, rows)
     {
-        var viewConfig = mapObj._byView[mapObj.settings.view.id];
+        var viewConfig = mapObj._byView[mapObj._primaryView.id];
         var config = mapObj._displayFormat.heatmap;
 
         var updatedFeatures = _(rows).chain().map(function(row, i)
@@ -434,7 +434,7 @@
     var findFeatureWithPoint = function(mapObj, datum)
     {
         var point;
-        var viewConfig = mapObj._byView[mapObj.settings.view.id];
+        var viewConfig = mapObj._byView[mapObj._primaryView.id];
 
         if (!datum[viewConfig._locCol.id]) { return null; }
         if (viewConfig._locCol.renderTypeName == 'location')

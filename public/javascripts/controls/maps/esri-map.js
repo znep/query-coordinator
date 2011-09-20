@@ -68,10 +68,10 @@
                         }
 
                         // Hide all selected rows
-                        if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+                        if ($.subKeyDefined(mapObj._primaryView, 'highlightTypes.select'))
                         {
-                            mapObj.settings.view.unhighlightRows(
-                                _.values(mapObj.settings.view.highlightTypes.select), 'select');
+                            mapObj._primaryView.unhighlightRows(
+                                _.values(mapObj._primaryView.highlightTypes.select), 'select');
                         }
                     });
 
@@ -154,9 +154,9 @@
                             });
 
                             mapObj.populateLayers();
-                            if (mapObj.settings.view.snapshotting)
+                            if (mapObj._primaryView.snapshotting)
                             {
-                                setTimeout(mapObj.settings.view.takeSnapshot, 2000);
+                                setTimeout(mapObj._primaryView.takeSnapshot, 2000);
                             }
                         }
                     });
@@ -298,7 +298,7 @@
             g.setAttributes({rows: details.rows, flyoutDetails: details.flyoutDetails,
                 dataView: details.dataView, clusterParent: details.clusterParent });
 
-            if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
+            if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
                             'highlightTypes.select.' + r.id); }))
             { showInfoWindow(mapObj, g); }
 
@@ -338,9 +338,9 @@
                 // when the point gets redrawn
                 $(dojoShape.rawNode).
                     mouseover(function()
-                    { mapObj.settings.view.highlightRows(details.rows); }).
+                    { mapObj._primaryView.highlightRows(details.rows); }).
                     mouseout(function()
-                    { mapObj.settings.view.unhighlightRows(details.rows); });
+                    { mapObj._primaryView.unhighlightRows(details.rows); });
             }
 
             return g;
@@ -469,10 +469,10 @@
 /*
             // TODO: This is stored code for tweaking the cosmetic relative heat strength
             // per point.
-            var totalHeat = mapObj._byView[mapObj.settings.view.id]._quantityCol
-                && mapObj._byView[mapObj.settings.view.id]._quantityCol.aggregates.sum;
+            var totalHeat = mapObj._byView[mapObj._primaryView.id]._quantityCol
+                && mapObj._byView[mapObj._primaryView.id]._quantityCol.aggregates.sum;
             if (!totalHeat)
-            { totalHeat = mapObj.settings.view.totalRows; }
+            { totalHeat = mapObj._primaryView.totalRows; }
 */
             mapObj._heatLayerMax = mapObj._heatLayer.store.max = 50; //totalHeat / 10;
 
@@ -685,7 +685,7 @@
                 && !mapObj._displayFormat.viewport)
             { return; }
             if (mapObj._viewportListener &&
-                $.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                $.subKeyDefined(mapObj, '_primaryView.query.namedFilters.viewport'))
             { return; }
 
             if (mapObj._viewportListener)
@@ -705,7 +705,7 @@
             if (mapObj._displayFormat.viewport)
             {
                 mapObj.setViewport(mapObj._displayFormat.viewport);
-                if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                if (!$.subKeyDefined(mapObj, '_primaryView.query.namedFilters.viewport'))
                 { mapObj.updateRowsByViewport(); }
             }
             else if (xadj == 0 || yadj == 0)
@@ -805,7 +805,7 @@
             { mapObj._multipoint = new esri.geometry.Multipoint (mapObj.map.spatialReference); }
             delete mapObj._segmentSymbols;
             delete mapObj._bounds;
-            delete mapObj._byView[mapObj.settings.view.id]._clusters;
+            delete mapObj._byView[mapObj._primaryView.id]._clusters;
             if ($.subKeyDefined(mapObj, 'map.infoWindow'))
             {
                 mapObj._resetInfoWindow = true;
@@ -999,7 +999,7 @@
     var handleGraphicClick = function(mapObj, evt)
     {
         if (isIdentifyTask(mapObj)) { return; }
-        if (mapObj._byView[mapObj.settings.view.id]._clusters)
+        if (mapObj._byView[mapObj._primaryView.id]._clusters)
         {
             dojo.disconnect(mapObj._viewportListener);
             mapObj.map.centerAndZoom(evt.graphic.geometry, mapObj.map.getLevel() + 1);
@@ -1014,7 +1014,7 @@
         {
             if (evt.graphic.attributes.rows.length < 1) { return; }
             if (showInfoWindow(mapObj, evt.graphic, evt.screenPoint))
-            { mapObj.settings.view.highlightRows(evt.graphic.attributes.rows, 'select'); }
+            { mapObj._primaryView.highlightRows(evt.graphic.attributes.rows, 'select'); }
         }
     };
 

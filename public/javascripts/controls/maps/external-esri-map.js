@@ -70,24 +70,24 @@
 
         transformFilterToLayerDefinition(viewConfig.view, layer, layer_id);
         viewConfig.view.bind('query_change', function()
-        { transformFilterToLayerDefinition(viewConfig.view, layer, layer_id); });
+        { transformFilterToLayerDefinition(viewConfig.view, layer, layer_id); }, mapObj);
 
         // If the primary dataset (which controls viewport) is server-rendered,
         // use the server rendered bounds.
-        if (mapObj.settings.view.renderWithArcGISServer()
-            && mapObj.settings.view.id == viewConfig.view.id)
+        if (mapObj._primaryView.renderWithArcGISServer()
+            && mapObj._primaryView.id == viewConfig.view.id)
         { adjustBounds(mapObj); }
 
         layer.setVisibleLayers([layer_id]);
         mapObj.map.addLayer(layer);
 
-        if (mapObj.settings.view.id != viewConfig.view.id
-            && mapObj.settings.view.renderWithArcGISServer())
+        if (mapObj._primaryView.id != viewConfig.view.id
+            && mapObj._primaryView.renderWithArcGISServer())
         { mapObj.map.reorderLayer(layer, mapObj.map.layerIds.length - 2); }
 
         //mapObj.populateDataLayers();
 
-        if (mapObj.settings.view.id != viewConfig.view.id)
+        if (mapObj._primaryView.id != viewConfig.view.id)
         { return; }
 
         viewConfig.mapServer.featureLayers = [new esri.layers.FeatureLayer(
@@ -142,7 +142,7 @@
         new esri.tasks.GeometryService('https://tasks.arcgisonline.com/' +
             'ArcGIS/rest/services/Geometry/GeometryServer')
             .project(encodeExtentToPoints(
-                mapObj._byView[mapObj.settings.view.id].mapServer.initialExtent),
+                mapObj._byView[mapObj._primaryView.id].mapServer.initialExtent),
                      mapObj.map.spatialReference,
                      function(points)
                      { mapObj.map.setExtent(decodeExtentFromPoints(points)); }

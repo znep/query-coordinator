@@ -29,7 +29,7 @@
 
         isValid: function()
         {
-            return Dataset.chart.isValid(this.settings.view, this._displayFormat, this._chartType);
+            return Dataset.chart.isValid(this._primaryView, this._displayFormat, this._chartType);
         },
 
         initializeVisualization: function ()
@@ -41,7 +41,7 @@
         getColumns: function()
         {
             var chartObj = this;
-            var view = chartObj.settings.view;
+            var view = chartObj._primaryView;
 
             chartObj._valueColumns = _.map(chartObj._displayFormat.valueColumns,
                 function(vc)
@@ -86,7 +86,7 @@
             if (!chartObj._gettingAggs)
             {
                 chartObj._gettingAggs = true;
-                chartObj.settings.view.getAggregates(function()
+                chartObj._primaryView.getAggregates(function()
                 {
                     calculateSegmentSizes(chartObj, customAggs);
                     chartObj.columnsLoaded();
@@ -175,7 +175,7 @@
                         .siblings('.flyoutRenderer.template.flyout'+id);
                 }
                 config.richRenderer = config.$template.richRenderer({
-                    columnCount: 1, view: chartObj.settings.view});
+                    columnCount: 1, view: chartObj._primaryView});
             }
             return chartObj._flyoutConfig[id].$template;
         },
@@ -215,7 +215,7 @@
         {
             var chartObj = this;
 
-            //var isPrimaryView = chartObj.settings.view == view;
+            //var isPrimaryView = chartObj._primaryView == view;
             var $item = chartObj.$flyoutTemplate(tcolId).clone()
                     .removeClass('template');
 
@@ -238,7 +238,7 @@
             if (_.intersect(['maximum', 'minimum'], a).length != 2)
             { return; }
 
-            var column = chartObj.settings.view.columnForID(cId);
+            var column = chartObj._primaryView.columnForID(cId);
             var difference = column.aggregates.maximum - column.aggregates.minimum;
             var granularity = difference / chartObj._numSegments;
 

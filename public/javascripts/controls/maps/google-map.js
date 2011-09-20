@@ -62,9 +62,9 @@
             StyledIconTypes.MARKER.defaults.color = 'ff776b';
 
             // For snapshotting
-            if (mapObj.settings.view.snapshotting)
+            if (mapObj._primaryView.snapshotting)
             {
-                mapObj.settings.view.bind('request_finish', function()
+                mapObj._primaryView.bind('request_finish', function()
                 {
                     if (!$.isBlank(mapObj._snapshot_event_bounds))
                     { return; }
@@ -83,7 +83,7 @@
                     google.maps.event.addListener(mapObj.map, 'tilesloaded', function(a){
                         clearSnapTimeout();
                         mapObj._snapshot_timeout = setTimeout(function()
-                            { mapObj.settings.view.takeSnapshot();  },
+                            { mapObj._primaryView.takeSnapshot();  },
                         2000);
                     });
 
@@ -92,7 +92,7 @@
                         // and wait for tiles again
                         clearSnapTimeout();
                     });
-                });
+                }, mapObj);
             }
 
             var $geocodeControl = $.tag({ tagName: 'div', id: 'geolocator_button',
@@ -413,10 +413,10 @@
                         function()
                         {
                             // Hide all selected rows
-                            if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+                            if ($.subKeyDefined(mapObj._primaryView, 'highlightTypes.select'))
                             {
-                                mapObj.settings.view.unhighlightRows(
-                                    _.values(mapObj.settings.view.highlightTypes.select), 'select');
+                                mapObj._primaryView.unhighlightRows(
+                                    _.values(mapObj._primaryView.highlightTypes.select), 'select');
                             }
                         });
                 }
@@ -448,10 +448,10 @@
                 function(evt)
                 {
                     if (showInfoWindow(evt.latLng))
-                    { mapObj.settings.view.highlightRows(details.rows, 'select'); }
+                    { mapObj._primaryView.highlightRows(details.rows, 'select'); }
                 });
 
-            if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
+            if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
                             'highlightTypes.select.' + r.id); }))
             { showInfoWindow(); }
 
@@ -462,7 +462,7 @@
                     clearTimeout(mapObj._hoverTimers[dupKey]);
                     delete mapObj._hoverTimers[dupKey];
                 }
-                mapObj.settings.view.highlightRows(details.rows);
+                mapObj._primaryView.highlightRows(details.rows);
             });
 
             google.maps.event.addListener(mapGeom, 'mouseout', function()
@@ -470,7 +470,7 @@
                 mapObj._hoverTimers[dupKey] = setTimeout(function()
                     {
                         delete mapObj._hoverTimers[dupKey];
-                        mapObj.settings.view.unhighlightRows(details.rows);
+                        mapObj._primaryView.unhighlightRows(details.rows);
                     }, 100);
             });
 
@@ -726,7 +726,7 @@
         adjustBounds: function()
         {
             var mapObj = this;
-            if ($.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+            if ($.subKeyDefined(mapObj, '_primaryView.query.namedFilters.viewport'))
             { return; }
 
             if (mapObj._displayFormat.viewport)

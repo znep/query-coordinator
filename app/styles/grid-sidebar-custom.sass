@@ -1,5 +1,11 @@
 #gridSidebar
 
+  #gridSidebar_edit
+    p
+      font-size: 1.3em
+      line-height: 1.2em
+      margin: 0 0.5em 1em
+
   #gridSidebar_feed
     .formSection
       padding: 0 0.2em
@@ -101,7 +107,7 @@
         pre
           font-size: 1.3em
 
-  #gridSidebar_moreViews
+  #gridSidebar_viewList
     .subtitleBlock
       display: none
 
@@ -189,6 +195,11 @@
           line-height: 1.2em
           margin-bottom: 0.3em
 
+        .pubDate
+          display: none
+          font-size: 1.2em
+          margin-bottom: 0.1em
+
         .authorLine
           @include clip-text
           color: $color_chrome_sidebar_text
@@ -216,6 +227,12 @@
           position: absolute
           right: 0.2em
           top: 0.2em
+
+        &.snapshot
+          .pubDate
+            display: block
+          .authorLine
+            display: none
 
   #gridSidebar_conditionalFormatting.sidebarPane
     .inputBlock.conditionGroup

@@ -62,8 +62,6 @@
                         { columnSorted(datasetObj, c, a); })
                     .bind('clear_filter', function(event, c)
                         { clearColumnFilter(datasetObj, c); })
-                    .bind('column_resized', function (event, c, f)
-                        { columnResized(datasetObj, c, f); })
                     .bind('column_moved', function (event, c, p)
                         { columnMove(datasetObj, c, p); })
                     .bind('column_name_dblclick', function(event, origEvent)
@@ -501,15 +499,6 @@
     {
         if (!datasetObj.settings._colTips) { datasetObj.settings._colTips = {}; }
         setupHeader(datasetObj, col, $(col.dom), datasetObj.settings._colTips);
-    };
-
-    var columnResized = function(datasetObj, col, isFinished)
-    {
-        if (isFinished)
-        {
-            if (!datasetObj.settings.view.temporary)
-            { datasetObj.settings.view.save(); }
-        }
     };
 
     var columnSorted = function(datasetObj, column, ascending)

@@ -1,13 +1,15 @@
 (function($)
 {
-    if (blist.sidebarHidden.savedViews) { return; }
+    if (blist.sidebarHidden.moreViews &&
+        blist.sidebarHidden.moreViews.views &&
+        blist.sidebarHidden.moreViews.snapshots) { return; }
 
     var PAGE_SIZE = 20;
 
-    var $section;
     var viewList;
+    var snapshotList;
 
-    $.live('#gridSidebar_moreViews .deleteViewLink', 'click', function(e)
+    $.live('#gridSidebar_viewList .deleteViewLink', 'click', function(e)
     {
         e.preventDefault();
 
@@ -39,34 +41,54 @@
         }
     });
 
-    var renderBlock;
-    var $moreLink;
-    var $scrollContainer;
-
-    var currentSort = 'popularity';
-    var currentShow = 'all';
-    var currentSearch;
-
-    var renderViews = function()
+    $.live('#gridSidebar_snapshotList .deleteViewLink', 'click', function(e)
     {
-        if (viewList.length < 1)
+        e.preventDefault();
+
+        var $li = $(this).closest('li');
+        var v = $li.data('view');
+        if (confirm('Are you sure you want to delete ' +
+            $.htmlEscape(v.name) + ' (snapshotted ' +
+                new Date((v.publicationDate || 0) * 1000).format('F d, Y g:ia') + ')?'))
+        {
+            var redirDS;
+            var deletedCallback = function()
+            {
+                $li.remove();
+                snapshotList.splice(_.indexOf(snapshotList, v), 1);
+
+                if (!$.isBlank(redirDS)) { redirDS.redirectTo(); }
+            };
+
+            if (blist.dataset.id == v.id)
+            {
+                blist.dataset.getPublishedDataset(function(pubDS)
+                { if (!$.isBlank(pubDS)) { redirDS = pubDS; } });
+            }
+            v.remove(deletedCallback);
+        }
+    });
+
+    var renderViews = function($section, list, options)
+    {
+        if (list.length < 1)
         {
             $section.addClass('noResults');
-            return;
+            return null;
         }
 
-        var items = viewList;
-        if (!$.isBlank(currentShow) && currentShow != 'all')
+        var items = list;
+        if (!$.isBlank(options.show) && options.show != 'all')
         {
-            items = _.select(items, function(v) { return v.type == currentShow; });
+            items = _.select(items, function(v) { return v.type == options.show; });
         }
 
-        if (!$.isBlank(currentSearch))
+        if (!$.isBlank(options.search))
         {
             items = _.select(items, function(v)
             {
-                return v.name.toLowerCase().indexOf(currentSearch) >= 0 ||
-                    v.owner.displayName.toLowerCase().indexOf(currentSearch) >= 0;
+                return v.name.toLowerCase().indexOf(options.search) >= 0 ||
+                    v.owner.displayName.toLowerCase().indexOf(options.search) >= 0;
             });
         }
 
@@ -82,14 +104,14 @@
 
         items = _.sortBy(items, function(v)
             {
-                if (currentSort.startsWith('date'))
+                if (options.sort.startsWith('date'))
                 {
                     return Math.max(v.viewLastModified, v.createdAt) *
-                        (currentSort == 'dateDescending' ? -1 : 1);
+                        (options.sort == 'dateDescending' ? -1 : 1);
                 }
-                else if (currentSort == 'alphaAscending')
+                else if (options.sort == 'alphaAscending')
                 { return v.name.toLowerCase(); }
-                else if (currentSort = 'popularity')
+                else if (options.sort == 'popularity')
                 {
                     var vc = v.viewCount || 0;
                     var len = 10;
@@ -97,37 +119,44 @@
                     return (v.owner.id == v.tableAuthor.id ? 'a' : 'z') +
                         vc + v.name.toLowerCase();
                 }
+                else if (options.sort == 'publicationDate')
+                { return (v.publicationDate || 0) * -1; }
             });
 
         var rendered = 0;
         var remaining = items.length;
-        renderBlock = function(skipAnimation)
+        var renderBlock = function(skipAnimation)
         {
             if (remaining <= 0) { return; }
             _.each(items.slice(rendered, rendered + PAGE_SIZE), function(v)
             {
-                var $li = $.renderTemplate('viewItemContainer', v, {
+                var $li = $.renderTemplate('viewItemContainer', {view: v, typeClass: options.typeClass}, {
                     '.viewIcon@title': function(a)
-                    { return a.context.displayName.capitalize(); },
+                    { return a.context.view.displayName.capitalize(); },
                     '.viewIcon@class+': function(a)
-                    { return 'type' + a.context.styleClass; },
-                    '.name': 'name',
-                    '.name@title': 'name',
-                    '.name@href': 'url',
+                    { return 'type' + a.context.view.styleClass; },
+                    '.nameLink@href': 'view.url',
+                    '.name': 'view.name',
+                    '.name@title': 'view.name',
+                    '.pubDate': function(a)
+                    {
+                        return new Date((a.context.view.publicationDate || 0) * 1000).format('F d, Y g:ia');
+                    },
                     '.authorLine .date': function(a)
                     {
                         return blist.util.humaneDate.getFromDate(
-                            Math.max(a.context.viewLastModified || 0,
-                                a.context.createdAt || 0) * 1000,
+                            Math.max(a.context.view.viewLastModified || 0,
+                                a.context.view.createdAt || 0) * 1000,
                             blist.util.humaneDate.DAY).capitalize();
                     },
-                    '.authorLine .author': 'owner.displayName',
-                    '.description': 'description',
+                    '.authorLine .author': 'view.owner.displayName',
+                    '.description': 'view.description',
                     '.deleteViewLink@class+': function(a)
                     {
-                        return _.include(a.context.rights, 'delete_view') ?
+                        return _.include(a.context.view.rights, 'delete_view') ?
                             '' : 'hide';
-                    }
+                    },
+                    '.viewItem@class+': 'typeClass'
                 });
 
                 $li.data('view', v);
@@ -148,6 +177,7 @@
 
             rendered += PAGE_SIZE;
             remaining -= PAGE_SIZE;
+            var $moreLink = $section.find('.moreLink');
             if (remaining > 0)
             {
                 $moreLink.removeClass('hide');
@@ -164,37 +194,41 @@
 
             if (!skipAnimation)
             {
-                $scrollContainer.animate({
+                var $scrollC = $section.closest('.scrollContent');
+                $scrollC.animate({
                     scrollTop: Math.min(
                         // either the height of the appended elements,
-                        $section.outerHeight(true) - $scrollContainer.height(),
+                        $section.outerHeight(true) - $scrollC.height(),
                         // or the height of the scroll container.
-                        $scrollContainer.scrollTop() + $scrollContainer.height() -
+                        $scrollC.scrollTop() + $scrollC.height() -
                             $moreLink.outerHeight(true))
                 }, 'slow');
             }
         };
 
         renderBlock(true);
+        return renderBlock;
     };
 
-    var setupSection = function()
+    var defaultSorts = [{ text: 'Popularity', name: 'popularity' },
+        { text: 'Most Recent', name: 'dateDescending' },
+        { text: 'Oldest to Newest', name: 'dateAscending' },
+        { text: 'A-Z', name: 'alphaAscending' }];
+
+    var setupSection = function($section, list, defaultOptions)
     {
+        var options = $.extend({show: 'all', sort: 'popularity', sortOptions: defaultSorts},
+            defaultOptions);
         var $sortMenu = $section.find('.sortMenu');
         $sortMenu.menu({
             menuButtonContents: 'Sort by',
             menuButtonTitle: 'Sort by',
-            contents: [
-                { text: 'Popularity', className: 'none checked',
-                    href: '#popularity' },
-                { text: 'Most Recent', className: 'none',
-                    href: '#dateDescending' },
-                { text: 'Oldest to Newest', className: 'none',
-                    href: '#dateAscending' },
-                { text: 'A-Z', className: 'none', href: '#alphaAscending' }
-            ]
+            contents: _.map(options.sortOptions, function(s)
+                { return {text: s.text, href: '#' + s.name,
+                    className: 'none' + (s.name == options.sort ? ' checked' : '')}; })
         });
 
+        var renderBlock;
         $sortMenu.find('.menuDropdown a').click(function(e)
         {
             e.preventDefault();
@@ -204,54 +238,57 @@
             $a.closest('.menuDropdown').find('.checked').removeClass('checked');
             $a.closest('li').addClass('checked');
 
-            currentSort = $.hashHref($a.attr('href'));
-            renderViews();
+            options.sort = $.hashHref($a.attr('href'));
+            renderBlock = renderViews($section, list, options);
         });
 
         var $showMenu = $section.find('.showMenu');
-        $showMenu.menu({
-            menuButtonContents: 'Show only',
-            menuButtonTitle: 'Show only',
-            contents: [
-                { text: 'All Views', className: 'none checked', href: '#all' },
-                { text: 'Charts', className: 'typeChart', href: '#chart',
-                    onlyIf: _.any(viewList,
-                        function(v) { return v.type == 'chart'; })},
-                { text: 'Maps', className: 'typeMap', href: '#map',
-                    onlyIf: _.any(viewList,
-                        function(v) { return v.type == 'map'; })},
-                { text: 'Calendars', className: 'typeCalendar', href: '#calendar',
-                    onlyIf: _.any(viewList,
-                        function(v) { return v.type == 'calendar'; })},
-                { text: 'Filtered Views', className: 'typeFilter', href: '#filter',
-                    onlyIf: _.any(viewList,
-                        function(v) { return v.type == 'filter'; })},
-                { text: 'Grouped Views', className: 'typeGrouped', href: '#grouped',
-                    onlyIf: _.any(viewList,
-                        function(v) { return v.type == 'grouped'; })},
-                { text: 'Forms', className: 'typeForm', href: '#form',
-                    onlyIf: _.any(viewList,
-                        function(v) { return v.type == 'form'; })}
-            ]
-        });
-
-        $showMenu.find('.menuDropdown a').click(function(e)
+        if (!$showMenu.hasClass('hide'))
         {
-            e.preventDefault();
-            var $a = $(this);
-            if ($a.closest('li').is('.checked')) { return; }
+            $showMenu.menu({
+                menuButtonContents: 'Show only',
+                menuButtonTitle: 'Show only',
+                contents: [
+                    { text: 'All Views', className: 'none checked', href: '#all' },
+                    { text: 'Charts', className: 'typeChart', href: '#chart',
+                        onlyIf: _.any(list,
+                            function(v) { return v.type == 'chart'; })},
+                    { text: 'Maps', className: 'typeMap', href: '#map',
+                        onlyIf: _.any(list,
+                            function(v) { return v.type == 'map'; })},
+                    { text: 'Calendars', className: 'typeCalendar', href: '#calendar',
+                        onlyIf: _.any(list,
+                            function(v) { return v.type == 'calendar'; })},
+                    { text: 'Filtered Views', className: 'typeFilter', href: '#filter',
+                        onlyIf: _.any(list,
+                            function(v) { return v.type == 'filter'; })},
+                    { text: 'Grouped Views', className: 'typeGrouped', href: '#grouped',
+                        onlyIf: _.any(list,
+                            function(v) { return v.type == 'grouped'; })},
+                    { text: 'Forms', className: 'typeForm', href: '#form',
+                        onlyIf: _.any(list,
+                            function(v) { return v.type == 'form'; })}
+                ]
+            });
 
-            currentShow = $.hashHref($a.attr('href'));
+            $showMenu.find('.menuDropdown a').click(function(e)
+            {
+                e.preventDefault();
+                var $a = $(this);
+                if ($a.closest('li').is('.checked')) { return; }
 
-            var $old = $a.closest('.menuDropdown').find('.checked');
-            $old.removeClass('checked')
-                .addClass('type' + $.hashHref($old.children('a').attr('href'))
-                    .capitalize());
-            $a.closest('li').addClass('checked')
-                .removeClass('type' + currentShow.capitalize());
+                options.show = $.hashHref($a.attr('href'));
 
-            renderViews();
-        });
+                var $old = $a.closest('.menuDropdown').find('.checked');
+                $old.removeClass('checked')
+                    .addClass('type' + $.hashHref($old.children('a').attr('href'))
+                        .capitalize());
+                $a.closest('li').addClass('checked')
+                    .removeClass('type' + options.show.capitalize());
+
+                renderBlock = renderViews($section, list, options);
+            });
+        }
 
         $section.find('.textPrompt')
             .example(function () { return $(this).attr('title'); });
@@ -265,8 +302,8 @@
             if ($search.is('.prompt')) { s = ''; }
             $clearSearch.toggle(!$.isBlank(s));
 
-            currentSearch = s;
-            renderViews();
+            options.search = s;
+            renderBlock = renderViews($section, list, options);
         };
 
         $clearSearch.click(function(e)
@@ -284,16 +321,23 @@
                 _.defer(doSearch);
             });
 
-        renderViews();
+        $section.find('.moreLink').click(function(e)
+        {
+            e.preventDefault();
+            if (_.isFunction(renderBlock))
+            { renderBlock(); }
+        });
+
+        renderBlock = renderViews($section, list, options);
     };
 
 
 
-    var allConfig =
+    var viewsConfig =
     {
-        name: 'moreViews',
+        name: 'moreViews.viewList',
         priority: 1,
-        title: 'More Views',
+        title: 'Views',
         subtitle: 'See existing filters, maps, charts and other views on this dataset',
         sections: [{
             customContent: {
@@ -307,16 +351,6 @@
                 callback: function($s, sidebarObj)
                 {
                     sidebarObj.startProcessing();
-                    $section = $s;
-                    $scrollContainer = $section.closest('.scrollContent');
-
-                    $moreLink = $section.find('.moreLink');
-                    $moreLink.click(function(e)
-                    {
-                        e.preventDefault();
-                        if (_.isFunction(renderBlock))
-                        { renderBlock(); }
-                    });
 
                     blist.dataset.getRelatedViews(
                         function(v)
@@ -325,13 +359,57 @@
 
                             viewList = v;
 
-                            setupSection();
+                            setupSection($s, viewList, {typeClass: 'view'});
                         });
                 }
             }
         }]
     };
 
-    $.gridSidebar.registerConfig(allConfig);
+    if (!blist.sidebarHidden.moreViews ||
+        !blist.sidebarHidden.moreViews.views)
+    { $.gridSidebar.registerConfig(viewsConfig); }
+
+
+    var snapshotsConfig =
+    {
+        name: 'moreViews.snapshotList',
+        priority: 2,
+        title: 'Dataset Snapshots',
+        subtitle: 'View previously published versions of this data',
+        sections: [{
+            customContent: {
+                template: 'itemsListBlock',
+                directive: {
+                    '.sortMenu@class+': 'hide',
+                    '.showMenu@class+': 'hide',
+                    '.emptyResult .type': '#{resultType}s'
+                },
+                data: {
+                    resultType: 'dataset',
+                    hide: 'hide'
+                },
+                callback: function($s, sidebarObj)
+                {
+                    sidebarObj.startProcessing();
+
+                    blist.dataset.getSnapshotDatasets(
+                        function(sd)
+                        {
+                            sidebarObj.finishProcessing();
+
+                            snapshotList = sd;
+
+                            setupSection($s, snapshotList, {typeClass: 'snapshot',
+                                sort: 'publicationDate'});
+                        });
+                }
+            }
+        }]
+    };
+
+    if (!blist.sidebarHidden.moreViews ||
+        !blist.sidebarHidden.moreViews.snapshots)
+    { $.gridSidebar.registerConfig(snapshotsConfig); }
 
 })(jQuery);

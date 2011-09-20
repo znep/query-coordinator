@@ -259,11 +259,15 @@
                 delete config.overlay;
             }
 
+            var hideTime = config.hideTime;
+            delete config.hideTime;
+
             if ($socrataAlert.isSocrataTip())
             { $socrataAlert.socrataTip().destroy(); }
 
             $socrataAlert.socrataTip(config);
-            setTimeout(function() { $socrataAlert.socrataTip().hide(); }, 5000);
+            if (!$.isBlank(hideTime))
+            { setTimeout(function() { $socrataAlert.socrataTip().hide(); }, hideTime); }
         });
     };
 
@@ -271,9 +275,22 @@
     // plugin defaults
     //
     $.fn.socrataAlert.defaults = {
+        hideTime: 5000,
         message: null,
         overlay: false,
         trigger: 'now'
+    };
+
+    $.fn.socrataTitleTip = function()
+    {
+        return this.each(function()
+        {
+            var $this = $(this);
+            // This is returning with &nbsp;, so replace them all with
+            // normal spaces
+            $this.socrataTip({ message: $this.attr('title').clean(),
+                shrinkToFit: false, killTitle: true });
+        });
     };
 
 })(jQuery);

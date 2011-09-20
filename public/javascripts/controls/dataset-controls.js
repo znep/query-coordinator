@@ -521,3 +521,58 @@ blist.datasetControls.raReasonBox = function($reasonBox)
         }
     });
 };
+
+blist.datasetControls.editPublishedMessage = function()
+{
+    return $.renderTemplate('editAlertTemplate', {}, {
+        '.editPublished@class+': function()
+            { return blist.dataset.copyPending ? 'hide' : ''; },
+        '.editMessage@class+': function()
+            { return blist.dataset.copyPending ? 'hide' : ''; },
+        '.copyingMessage@class+': function()
+            { return blist.dataset.copyPending ? '' : 'hide'; }
+    });
+};
+
+blist.datasetControls.hookUpPublishing = function($container)
+{
+    $container.find('.unpublished').socrataTitleTip();
+    $container.find('.snapshotted').socrataTitleTip();
+    $container.find('.publish').click(function(e)
+    {
+        e.preventDefault();
+        if ($(e.target).hasClass('disabled')) { return; }
+        blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); },
+            function()
+            {
+                $container.find('#datasetName').socrataTip({content: $.tag({tagName: 'p',
+                    'class': 'errorMessage',
+                    contents: ['There was an error publishing your dataset. Please ',
+                        {tagName: 'a', href: 'http://support.socrata.com', rel: 'external',
+                        contents: ['contact Socrata support']}]}),
+                    showSpike: false, trigger: 'now'});
+            });
+    });
+
+    blist.dataset.getPublishingAvailable(function(isAvail, unavailMsg)
+    {
+        var $pub = $container.find('.publish');
+        if (!isAvail)
+        { $pub.addClass('disabled').attr('title', unavailMsg); }
+        $pub.socrataTitleTip();
+    });
+
+    if (!blist.dataset.isPublished())
+    {
+        blist.dataset.getPublishedDataset(function(pub)
+        {
+            if (!$.isBlank(pub))
+            {
+                $container.find('#publishedLink')
+                    .attr('href', pub.url).find('.publishedName').text(pub.name);
+            }
+            else
+            { $container.find('#publishedLink').hide(); }
+        });
+    }
+};

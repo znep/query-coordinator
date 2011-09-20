@@ -328,7 +328,7 @@ class View < Model
   def meta_description
     if self.description.blank?
       desc = "View this dataset"
-      updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt)
+      updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt, true)
       if updated_at
         desc += ", last updated #{updated_at}"
       end
@@ -721,7 +721,8 @@ class View < Model
     # The user can modify the data if:
     # - This is a blist
     # - They can edit it
-    return (self.can_edit? && self.is_blist?)
+    # - It is unpublished
+    return (self.can_edit? && self.is_blist? && self.is_unpublished?)
   end
 
   def columns_for_datatypes(datatypes, include_hidden = false)
@@ -932,6 +933,34 @@ class View < Model
 
     path = "/#{self.class.name.pluralize.downcase}/#{id}/approval.json"
     CoreServer::Base.connection.create_request(path, opts.to_json)
+  end
+
+  # Publishing
+
+  def is_published?
+    publicationStage == 'published'
+  end
+
+  def is_unpublished?
+    publicationStage == 'unpublished'
+  end
+
+  def is_snapshotted?
+    publicationStage == 'snapshotted'
+  end
+
+  def can_edit_published?
+    has_rights?('update_view')
+  end
+
+  def unpublished_dataset
+    if @got_unpublished.nil?
+      path = "/#{self.class.name.pluralize.downcase}/#{id}.json?method=getPublicationGroup"
+      @unpublished = self.class.parse(CoreServer::Base.connection.get_request(path)).detect {|v|
+        v.is_blist? && v.is_unpublished?}
+      @got_unpublished = true
+    end
+    @unpublished
   end
 
   @@default_categories = {

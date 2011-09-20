@@ -440,10 +440,9 @@
                     selHideCols[cmObj.settings.column.id] = true;
                     _.each(selHideCols, function(v, colId)
                     {
-                        cmObj.settings.view.columnForID(colId)
-                            .hide(null, null, true);
+                        // Don't save changes, let the user do that
+                        cmObj.settings.view.columnForID(colId).hide();
                     });
-                    $.socrataServer.sendBatch(function() { cmObj.settings.view.updateColumns(); });
                 }
                 break;
             case 'delete-column':

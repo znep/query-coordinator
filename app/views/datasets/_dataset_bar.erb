@@ -1,5 +1,5 @@
 <div id="datasetBar" class="clearfix <%= @view.is_blist? ? 'dataset' : '' %>
-  <%= @view.can_edit? ? 'isEditable' : '' %>
+  <%= @view.can_modify_data? ? 'isEditable' : '' %>
   <%= local_assigns[:sidebar_position].present? ? 'sidebar-' + sidebar_position : '' %>">
   <%- if local_assigns[:link_back].present? -%>
     <a href="<%= @view.href %>" class="button leftArrowNoHover backToDatasetButton">
@@ -14,22 +14,53 @@
     </div>
     <div class="unsavedLine">
       <h2 id="unsavedTitle">Unsaved View</h2>
-      <%- if @view.has_rights?('update_view') -%>
+      <%- if @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
       <a href="#Save" title="Save current view" data-savingText="Saving..."
         class="save toolbarButton">Save</a>
       <%- end -%>
+      <%- if @view.is_published? -%>
       <a href="#SaveAs" title="Save view as..."
         class="saveAs toolbarButton">Save As...</a>
+      <%- end -%>
       <a href="#Revert" title="Revert to saved view"
         class="revert toolbarButton">Revert</a>
+      <%- if @view.is_unpublished? -%>
+      <span class="unpublishedRevert">These changes cannot be saved to a working copy of a dataset,
+        but can be made on the published dataset and saved as a view.</span>
+      <%- end -%>
+      <%- if @view.is_snapshotted? -%>
+      <span class="snapshottedRevert">Snapshotted datasets and views cannot be created or modified</span>
+      <%- end -%>
     </div>
+
+    <%- if @view.is_unpublished? -%>
+    <h3 class="unpublished" title="<%= "This is a copy of the dataset that allows you " +
+      "to make changes to it. It is not visible to others until you publish it."%>">[Working Copy]</h3>
+    <%- end -%>
     <h2 id="datasetName" class="clipText currentViewName"><%= @view.name %></h2>
+    <%- if @view.is_snapshotted? -%>
+    <h3 class="snapshotted" title="<%= "This is a previously published version of the dataset. It is" +
+      "archived and cannot be modified."%>">Snapshotted <%= blist_date_time(@view.publicationDate) %></h3>
+    <%- end -%>
+
+    <%- if @view.is_unpublished? && @view.can_edit_published?() -%>
+    <a href="#Publish" class="toolbarButton publish"
+      title="<%= "This dataset is a working copy and is not publicly available.
+        Once you have made the desired changes, this dataset should be published to
+        make it publicly available." %>">Publish Dataset</a>
+    <%- end -%>
+
     <div class="basedOnParent">
       Based on <a class="parentName"></a>
     </div>
     <div class="basedOnTemp">
-      Based on <a class="revertLink currentViewName" href="#revert"><%= @view.name %></a>
+      Based on <%= @view.is_unpublished? ? 'the working copy of ' : '' %>
+      <a class="revertLink currentViewName" href="#revert"><%= @view.name %></a>
     </div>
+
+    <%- if !@view.is_published? -%>
+    <a id="publishedLink">View the published <span class="publishedName">dataset</span></a>
+    <%- end -%>
 
     <div id="description">
       <p class="collapsed"><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || '(No description provided)'%></p>

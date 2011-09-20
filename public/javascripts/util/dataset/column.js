@@ -78,6 +78,11 @@ this.Column = ServerModel.extend({
         delete this._summary;
     },
 
+    canUpdate: function()
+    {
+        return (this.view.isUnpublished() || !this.view.isDefault()) && this.view.hasRight('update_column');
+    },
+
     save: function(successCallback, errorCallback)
     {
         var col = this;
@@ -91,7 +96,7 @@ this.Column = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
-        if (col.view.hasRight('update_column'))
+        if (col.canUpdate())
         {
             this.makeRequest({url: '/views/' + this.view.id +
                     '/columns/' + this.id + '.json', type: 'PUT',
@@ -114,12 +119,12 @@ this.Column = ServerModel.extend({
         return this.setVisible(true, successCallback, errorCallback, isBatch);
     },
 
-    hide: function(successCallback, errorCallback, isBatch)
+    hide: function(successCallback, errorCallback, isBatch, skipReq)
     {
-        return this.setVisible(false, successCallback, errorCallback, isBatch);
+        return this.setVisible(false, successCallback, errorCallback, isBatch, skipReq);
     },
 
-    setVisible: function(isVisible, successCallback, errorCallback, isBatch)
+    setVisible: function(isVisible, successCallback, errorCallback, isBatch, skipReq)
     {
         var col = this;
         if (col.hidden !== isVisible) { return false; }
@@ -140,7 +145,7 @@ this.Column = ServerModel.extend({
             else { col.view.updateColumns(); }
         }
 
-        if (col.view.hasRight('update_column'))
+        if (col.canUpdate() && !skipReq)
         {
             this.makeRequest({url: '/views/' + this.view.id + '/columns/' +
                 this.id + '.json', type: 'PUT',

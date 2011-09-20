@@ -709,8 +709,15 @@
         var editCell = function(cell, mode, newValue)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
-            // Don't start another edit yet; and make sure they can edit
-            if (isEdit[mode] || !canEdit()) { return false; }
+            // Don't start another edit yet
+            if (isEdit[mode]) { return false; }
+            // Make sure they can edit -- if not, trigger an event
+            if (!canEdit())
+            {
+                if (mode == DEFAULT_EDIT_MODE)
+                { $(cell).trigger('attempted_edit'); }
+                return false;
+            }
 
             var row = getRow(cell);
             var col = getColumn(cell);
@@ -726,11 +733,11 @@
                     'mode-' + mode + ' blist-table-util"></div>');
             $scrolls.append($curEditContainer);
             var realCol = model.columnForID(col.id);
+            if ($.isBlank(realCol.renderType.interfaceType)) { return; }
             var blistEditor = $curEditContainer.blistEditor(
                 {type: realCol.renderType, row: row, value: value, newValue: newValue,
                     format: realCol.format, customProperties: {dropDownList: realCol.dropDownList,
                         baseUrl: realCol.baseUrl()}});
-            if (!blistEditor) { return; }
 
             $curEditContainer.data('realColumn', realCol);
             configureEditor(cell, $curEditContainer, mode);
@@ -1420,6 +1427,8 @@
                 }
             }
             col.update({width: width});
+            // HACK
+            col.view._markTemporary(!col.view.isDefault() || !col.view.isPublished());
             adjustHeaderStyling($(col.dom), true);
             $this.trigger('column_resized', [col, isFinished]);
             updateColumnSelection();

@@ -241,6 +241,10 @@ protected
 
     if browse_options[:limitTo].present?
       case browse_options[:limitTo]
+      when 'unpublished'
+        search_options[:limitTo] = 'tables'
+        search_options[:datasetView] = 'dataset'
+        search_options[:publication_stage] = 'unpublished'
       when 'datasets'
         search_options[:limitTo] = 'tables'
         search_options[:datasetView] = 'dataset'

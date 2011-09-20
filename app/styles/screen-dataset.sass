@@ -23,10 +23,11 @@ html, body
     padding-bottom: 2.5em
 
   #infoBox
-    margin-right: 55em
+    margin-right: 59em
     min-height: 3em
     padding: 0.25em
       bottom: 0.4em
+      left: 45px
     position: relative
     z-index: 1
 
@@ -40,12 +41,21 @@ html, body
         position: absolute
         top: 0
 
-    #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent
+    #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent, .unpublished, #publishedLink
       margin: 0
-        left: 40px
-        right: 1em
+        right: 0.5em
+
+    .unpublished
+      display: inline
+      vertical-align: baseline
+      white-space: nowrap
+
+    .snapshotted
+      display: inline
+      vertical-align: baseline
 
     #datasetName, .unsavedLine h2
+      display: inline
       font-size: 1.6em
       font-weight: normal
       padding: 0
@@ -68,21 +78,27 @@ html, body
         position: absolute
         right: 0.3em
         top: -0.1em
-
         .ie7 & .icon
           font-size: 1000em
           overflow: hidden
           text-indent: 0
+
+    a.toolbarButton
+      @include button
+      font-size: 1.2em
+      margin-right: 0.5em
+      white-space: nowrap
+      &.publish
+        line-height: 20px
 
     .unsavedLine
       display: none
       h2
         display: inline
         margin-right: 1em
-      a.toolbarButton
-        @include button
-        font-size: 1.2em
-        margin-right: 0.5em
+      .unpublishedRevert, .snapshottedRevert
+        color: #999999
+        font-size: 1.1em
 
     .basedOnParent, .basedOnTemp
       color: #999999
@@ -93,6 +109,14 @@ html, body
     .basedOnParent.hasParent
       display: block
 
+    #publishedLink
+      display: block
+      font-size: 1.2em
+      line-height: 1.1em
+      margin:
+        bottom: 0.2em
+        top: 0.3em
+
   &.unsavedView
     background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
 
@@ -101,13 +125,17 @@ html, body
         display: block
       #datasetIcon .alertIcon
         display: block
-      #datasetName, #description.collapsed, .basedOnParent
+      #datasetName, .unpublished, .snapshotted, .publish, #description.collapsed, .basedOnParent, #publishedLink
         display: none
 
     &.dataset .save
       display: none
     &.dataset.minorChange .save
       display: inline
+    &.dataset .unpublishedRevert
+      display: inline
+    &.dataset.minorChange .unpublishedRevert
+      display: none
 
   #actionBox
     height: 100%
@@ -193,14 +221,15 @@ html, body
     bottom: 0
     position: absolute
     right: 0
-    width: 68em
+    width: 75em
     .ie7 &
-      width: 75em
+      width: 81em
 
   #sidebarOptions
     clear: right
 
     li a
+      background-color: #989898
       &.edit
         background-color: $sidebar_edit_tab_color_top
       &.moreViews
@@ -217,6 +246,8 @@ html, body
         background-color: $sidebar_embed_tab_color_top
       &.about
         background-color: $sidebar_about_tab_color_top
+      &.manage
+        background-color: $sidebar_manage_tab_color_top
 
       .alertIcon
         display: none
@@ -370,7 +401,7 @@ html, body
     display: none
   dl, dt, dd, ul, li, p, div
     display: inline
-    white-space: no-wrap
+    white-space: nowrap
   .starsControl
     background: none
     display: inline
@@ -406,6 +437,17 @@ html, body
 .invalidView
   #toolbarOptions, #editBar
     display: none
+
+.editAlert, .unpublishedAlert
+  p
+    font-size: 1.2em
+    line-height: 1.1em
+  .doneCopyingMessage
+    font-weight: bold
+  .button.close
+    margin:
+      left: 5em
+      top: 0.5em
 
 // Email view dialog
 .emailDatasetDialog

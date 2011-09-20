@@ -91,10 +91,29 @@
 
         if (!isEdit)
         {
-            blist.dataset.saveNew(function(newView)
+            var newView;
+            var finish = _.after(2, function()
             {
                 sidebarObj.finishProcessing();
                 newView.redirectTo();
+            });
+
+            blist.dataset.getParentDataset(function(parDS)
+            {
+                if (!parDS.publicationAppendEnabled)
+                {
+                    parDS.update({publicationAppendEnabled: true});
+                    parDS.save(finish,
+                        function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
+                        {publicationAppendEnabled: true});
+                }
+                else { finish(); }
+            });
+
+            blist.dataset.saveNew(function(nv)
+            {
+                newView = nv;
+                finish();
             },
             function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
         }

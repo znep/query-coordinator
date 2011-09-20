@@ -124,6 +124,8 @@ this.Dataset = ServerModel.extend({
         return _.detect(cell || {}, function(sr) { return sr.id == id; });
     },
 
+    isDefault: function() { return _.include(this.flags || [], 'default'); },
+
     isPublic: function()
     {
         var ds = this;
@@ -136,6 +138,16 @@ this.Dataset = ServerModel.extend({
     hasRight: function(right)
     {
         return _.include(this.rights, right);
+    },
+
+    canEditPublished: function()
+    {
+        return this.hasRight('update_view');
+    },
+
+    canUpdate: function()
+    {
+        return (this.isUnpublished() || !this.isDefault()) && this.hasRight('update_view');
     },
 
     isGrid: function()
@@ -170,6 +182,21 @@ this.Dataset = ServerModel.extend({
         return false;
     },
 
+    isPublished: function()
+    {
+        return this.publicationStage == 'published';
+    },
+
+    isUnpublished: function()
+    {
+        return this.publicationStage == 'unpublished';
+    },
+
+    isSnapshot: function()
+    {
+        return this.publicationStage == 'snapshotted';
+    },
+
     renderWithArcGISServer: function()
     {
         // Render everything using ArcGIS Server since we can't preemptively tell
@@ -182,7 +209,7 @@ this.Dataset = ServerModel.extend({
         return this.message || 'Columns required for this view are missing';
     },
 
-    save: function(successCallback, errorCallback)
+    save: function(successCallback, errorCallback, allowedKeys)
     {
         var ds = this;
         if (!ds.hasRight('update_view')) { return false; }
@@ -200,7 +227,7 @@ this.Dataset = ServerModel.extend({
         };
 
         this.makeRequest({url: '/views/' + this.id + '.json',
-            type: 'PUT', data: JSON.stringify(cleanViewForSave(this)),
+            type: 'PUT', data: JSON.stringify(cleanViewForSave(this, allowedKeys)),
             error: errorCallback,
             success: dsSaved
         });
@@ -238,9 +265,15 @@ this.Dataset = ServerModel.extend({
 
     update: function(newDS, fullUpdate, minorUpdate)
     {
-        var origCopy = cleanViewForSave(this);
+        var ds = this;
+        // If any updated key exists but is set to invalid, then we can't save
+        // it on this dataset; so make minorUpdate false
+        if (!_.isEqual(newDS, ds._cleanUnsaveable(newDS)))
+        { minorUpdate = false; }
+        var copyFunc = minorUpdate ? cleanViewForSave : cleanViewForCreate;
+        var origCopy = copyFunc(this);
         this._update(newDS, fullUpdate, fullUpdate);
-        if (!_.isEqual(origCopy, cleanViewForSave(this)))
+        if (!_.isEqual(origCopy, copyFunc(this)))
         { this._markTemporary(minorUpdate); }
     },
 
@@ -1353,6 +1386,120 @@ this.Dataset = ServerModel.extend({
         this._updateSnapshot('cropExisting', name, callback);
     },
 
+    // Publishing
+    makeUnpublishedCopy: function(successCallback, pendingCallback, errorCallback)
+    {
+        var ds = this;
+        if (ds.isDefault())
+        {
+            ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json',
+                params: {method: 'copy'}, type: 'POST',
+                pending: function()
+                {
+                    ds.copyPending = true;
+                    if (_.isFunction(pendingCallback)) { pendingCallback(); }
+                },
+                error: errorCallback,
+                success: function(r)
+                {
+                    delete ds.copyPending;
+                    var uc = new Dataset(r);
+                    if (_.isFunction(successCallback))
+                    { successCallback(uc); }
+                }});
+        }
+        else
+        {
+            ds.getParentDataset(function(parDS)
+            {
+                ds._startRequest();
+                parDS.makeUnpublishedCopy(function()
+                {
+                    ds._finishRequest();
+                    if (_.isFunction(successCallback))
+                    { successCallback.apply(ds, arguments); }
+                }, pendingCallback, errorCallback);
+            });
+        }
+    },
+
+    publish: function(successCallback, errorCallback)
+    {
+        var ds = this;
+        ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json', type: 'POST',
+            error: errorCallback,
+            success: function(r)
+            {
+                var pubDS = new Dataset(r);
+                if (_.isFunction(successCallback))
+                { successCallback(pubDS); }
+            }});
+    },
+
+    getPublishedDataset: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._publishedViews))
+        {
+            ds._loadPublicationViews(function()
+            {
+                callback(_.detect(ds._publishedViews, function(v) { return v.isDefault(); }));
+            });
+        }
+        else
+        {
+            callback(_.detect(ds._publishedViews, function(v) { return v.isDefault(); }));
+        }
+    },
+
+    getUnpublishedDataset: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._publishedViews))
+        {
+            ds._loadPublicationViews(function()
+            { callback(ds._unpublishedView); });
+        }
+        else
+        {
+            callback(ds._unpublishedView);
+        }
+    },
+
+    getPublishingAvailable: function(successCallback)
+    {
+        var ds = this;
+        if (ds.columnsForType('location').length < 1)
+        {
+            successCallback(true);
+            return;
+        }
+
+        ds.makeRequest({url: '/api/geocoding/' + ds.id + '.json', params: {method: 'pending'},
+            success: function(results)
+            {
+                successCallback(results.view < 1,
+                    'Rows in the location column are still geocoding. ' +
+                    'Please wait until they are finished to publish this dataset');
+            }});
+    },
+
+    getSnapshotDatasets: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._snapshotViews))
+        {
+            ds._loadPublicationViews(function()
+            {
+                callback(_.select(ds._snapshotViews, function(v) { return v.isDefault(); }));
+            });
+        }
+        else
+        {
+            callback(_.select(ds._snapshotViews, function(v) { return v.isDefault(); }));
+        }
+    },
+
     cleanFilters: function(excludeTemporary)
     {
         var ds = this;
@@ -1389,9 +1536,9 @@ this.Dataset = ServerModel.extend({
         return filters;
     },
 
-    cleanCopy: function()
+    cleanCopy: function(allowedKeys)
     {
-        var dsCopy = this._super();
+        var dsCopy = this._super(allowedKeys);
         if (!$.isBlank(dsCopy.query))
         {
             dsCopy.query.filterCondition = this.cleanFilters();
@@ -1446,7 +1593,14 @@ this.Dataset = ServerModel.extend({
         ds.originalViewId = ds.id;
 
         ds.type = getType(ds);
-        ds.styleClass = ds.type.capitalize();
+
+        if (ds.isUnpublished())
+        { ds.styleClass = 'Unpublished'; }
+        else if (ds.type == 'blist' && ds.isSnapshot())
+        { ds.styleClass = 'Snapshotted'; }
+        else
+        { ds.styleClass = ds.type.capitalize(); }
+
         if ($.isBlank(ds.displayType))
         {
             ds.displayType = {
@@ -2583,6 +2737,32 @@ this.Dataset = ServerModel.extend({
                 success: justCount ? processCount : processDS});
     },
 
+    _loadPublicationViews: function(callback)
+    {
+        var ds = this;
+        var processDS = function(views)
+        {
+            views = _.map(views, function(v)
+            {
+                if (v instanceof Dataset) { return v; }
+
+                var nv = new Dataset(v);
+                if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
+                return nv;
+            });
+
+            ds._publishedViews = _.select(views, function(v) { return v.isPublished(); });
+            ds._snapshotViews = _.select(views, function(v) { return v.isSnapshot(); });
+            // There should be only one
+            ds._unpublishedView = _.detect(views, function(v) { return v.isUnpublished(); });
+
+            if (_.isFunction(callback)) { callback(); }
+        };
+
+        ds.makeRequest({url: '/api/views/' + ds.id + '.json', pageCache: true, type: 'GET',
+                params: { method: 'getPublicationGroup' }, success: processDS});
+    },
+
     _setupDefaultSnapshotting: function(delay)
     {
         // by default, just wait til the rows are loaded
@@ -2631,6 +2811,29 @@ this.Dataset = ServerModel.extend({
         callback(response);
     },
 
+    _cleanUnsaveable: function(md)
+    {
+        var ds = this;
+        var adjMD = md;
+        if (ds.isPublished() && ds.isDefault())
+        {
+            adjMD = $.extend(true, {}, md);
+            // Can't save name, columns, or any query but a sort-by on published datasets
+            delete adjMD.columns;
+            delete adjMD.name;
+
+            // If they give us a blank query obj, don't do unnecessary modifications
+            if (!$.isBlank(adjMD.query) && _.isEmpty(adjMD.query))
+            { /* nothing */ }
+            else if ($.subKeyDefined(adjMD, 'query.orderBys'))
+            {
+                adjMD.query = {orderBys: adjMD.query.orderBys};
+            }
+            else { delete adjMD.query; }
+        }
+        return adjMD;
+    },
+
     _validKeys: {
         attribution: true,
         attributionLink: true,
@@ -2650,6 +2853,7 @@ this.Dataset = ServerModel.extend({
         name: true,
         originalViewId: true,
         privateMetadata: true,
+        publicationAppendEnabled: true,
         query: true,
         queryString: true,
         searchString: true,
@@ -2815,9 +3019,10 @@ function getDisplayName(ds)
     return retType;
 };
 
-function cleanViewForSave(ds)
+function cleanViewForSave(ds, allowedKeys)
 {
-    var dsCopy = ds.cleanCopy();
+    var dsCopy = ds.cleanCopy(allowedKeys);
+    dsCopy = ds._cleanUnsaveable(dsCopy);
 
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }

@@ -1,7 +1,7 @@
 (function($)
  {
-    if (blist.sidebarHidden.sharing)
-   { return; }
+    if (blist.sidebarHidden.manage &&
+        blist.sidebarHidden.manage.sharing) { return; }
 
     // Construct what the core server considers a Grant
     var createGrantObject = function($line)
@@ -147,7 +147,7 @@
 
     var config =
     {
-        name: 'edit.shareDataset',
+        name: 'manage.shareDataset',
         priority: 8,
         title: 'Sharing',
         subtitle: 'Share this ' + displayName,

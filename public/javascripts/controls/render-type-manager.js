@@ -84,9 +84,9 @@
                         columnDeleteEnabled: settings.editEnabled &&
                             settings.view.type == 'blist' &&
                             settings.view.hasRight('remove_column'),
-                        columnPropertiesEnabled: settings.editEnabled,
-                        columnNameEdit: settings.editEnabled &&
-                            (settings.view.type == 'blist' ||
+                        columnPropertiesEnabled: settings.columnEditEnabled,
+                        columnNameEdit: settings.columnEditEnabled &&
+                            (settings.view.isDefault() ||
                              settings.view.type == 'grouped') &&
                             settings.view.hasRight('update_column'),
                         showAddColumns: settings.editEnabled &&
@@ -374,7 +374,8 @@
 
             if (_.isFunction($.fn[typeInfo.initFunction]))
             {
-                $content[typeInfo.initFunction]($.extend({view: rtmObj.settings.view},
+                $content[typeInfo.initFunction]($.extend({view: rtmObj.settings.view,
+                        editEnabled: rtmObj.settings.editEnabled},
                     rtmObj.settings.common, rtmObj.settings[typeInfo.name],
                     defArgs));
             }

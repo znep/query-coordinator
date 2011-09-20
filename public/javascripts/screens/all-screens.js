@@ -84,4 +84,26 @@
             xhrObj.setRequestHeader('X-CSRF-Token', csrfToken);
         }
     });
+
+
+    // Fix dates for local timezone
+    $('.dateReplace').each(function()
+    {
+        var $d = $(this);
+        var fmt;
+        switch ($d.data('dateformat'))
+        {
+            case 'date_time':
+                fmt = 'M d, Y g:ia';
+                break;
+            case 'long_date':
+                fmt = 'F d, Y';
+                break;
+            case 'date':
+            default:
+                fmt = 'M d, Y';
+                break;
+        }
+        $d.text(new Date($d.data('rawdatetime') * 1000).format(fmt));
+    });
 });

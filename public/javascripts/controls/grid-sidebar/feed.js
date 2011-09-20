@@ -1,5 +1,8 @@
 (function($)
 {
+    if (blist.sidebarHidden.feed &&
+        blist.sidebarHidden.feed.discuss) { return; }
+
     var $feed, comments, views = [];
 
     var renderFeed = function(sidebarObj)

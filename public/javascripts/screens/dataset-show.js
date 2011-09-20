@@ -127,7 +127,9 @@ $(function()
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
         defaultTypes: defRen,
-        editEnabled: true,
+        editEnabled: blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular',
+        columnEditEnabled: blist.dataset.isUnpublished() || blist.dataset.isPublished() &&
+            !blist.dataset.isDefault(),
         common: {
             editColumnCallback: function(col)
             {
@@ -210,7 +212,7 @@ $(function()
     });
 
     datasetPageNS.$moreViewsTab = $('#sidebarOptions a.moreViews');
-    if (datasetPageNS.$moreViewsTab.is(':visible'))
+    if (datasetPageNS.sidebar.hasPane('moreViews.viewList'))
     {
         // Wait until other requests have been fired first
         _.defer(function ()
@@ -391,6 +393,90 @@ $(function()
         e.preventDefault();
         blist.dataset.reload();
     });
+
+    // Publishing
+    blist.datasetControls.hookUpPublishing($('#infoBox'));
+
+    blist.$container.bind('attempted_edit', function(e)
+    {
+        if (!blist.dataset.isPublished() || !blist.dataset.canEditPublished()) { return; }
+
+        var showTip = function()
+        {
+            $(e.target).socrataTip({content: blist.datasetControls.editPublishedMessage(),
+                showSpike: false, trigger: 'now'});
+        };
+        if (!blist.dataset.isDefault())
+        {
+            blist.dataset.getParentDataset(function(parDS)
+            { if (!$.isBlank(parDS) && parDS.canEditPublished()) { showTip(); } });
+        }
+        else { showTip(); }
+    });
+
+    $.live('.button.editPublished', 'click', function(e)
+    {
+        e.preventDefault();
+        var $t = $(this);
+        if ($t.hasClass('disabled')) { return; }
+
+        if ($t.closest('.bt-wrapper').length > 0)
+        { $t.closest('.bt-wrapper').data('socrataTip-$element').socrataTip().hide(); }
+
+        blist.dataset.getUnpublishedDataset(function(unpub)
+        {
+            if (!$.isBlank(unpub)) { unpub.redirectTo(); }
+            else
+            {
+                var wasPending = false;
+                blist.dataset.makeUnpublishedCopy(function(copyView)
+                {
+                    if (wasPending)
+                    {
+                        datasetPageNS.sidebar.show('edit');
+                        $('.editAlert').find('.editPublished, .doneCopyingMessage').removeClass('hide');
+                        $('.editAlert').find('.copyingMessage').addClass('hide');
+                    }
+                    else
+                    { copyView.redirectTo(); }
+                },
+                function()
+                {
+                    $('.editAlert').find('.editPublished, .editMessage').addClass('hide');
+                    $('.editAlert').find('.copyingMessage').removeClass('hide');
+                    wasPending = true;
+                },
+                function()
+                {
+                    if (wasPending)
+                    {
+                        datasetPageNS.sidebar.show('edit');
+                    }
+                    $('.editAlert').find('.errorMessage').removeClass('hide');
+                    $('.editAlert').find('.copyingMessage, .editPublished, .editMessage').addClass('hide');
+                });
+            }
+        });
+    });
+
+    // If this is a newly unpublished dataset on the first run, show a warning
+    if (blist.dataset.isUnpublished() && $.urlParam(window.location.href, 'firstRun') == 'true')
+    {
+        $('#infoBox #datasetName').socrataTip({trigger: 'now', showSpike: false, closeOnClick: false,
+            content: $.tag({tagName: 'div', 'class': 'unpublishedAlert', contents: [
+                {tagName: 'p', contents: 'This dataset is not yet published ' +
+                    'to allow you to make any necessary changes ' +
+                    'before making it available to everyone. It will not be visible until ' +
+                    'you publish this dataset.'},
+                {tagName: 'a', 'class': ['button', 'close'], contents: 'OK'}
+            ]})
+        });
+        $.live('.unpublishedAlert .close', 'click', function(e)
+        {
+            e.preventDefault();
+            $('#infoBox #datasetName').socrataTip().destroy();
+        });
+    }
 
     // Invalid views
 

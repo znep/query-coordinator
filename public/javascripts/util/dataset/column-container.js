@@ -158,7 +158,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
 
         update(cont, vizCols);
 
-        if ((cont.view || cont).hasRight('update_view') && !skipRequest)
+        if ((cont.view || cont).canUpdate() && !skipRequest)
         {
             if (needsReorder)
             {
@@ -180,9 +180,9 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         }
     };
 
-    props.cleanCopy = function()
+    props.cleanCopy = function(allowedKeys)
     {
-        var item = this._super();
+        var item = this._super(allowedKeys);
 
         if (!_.isUndefined(item[colSet]))
         {

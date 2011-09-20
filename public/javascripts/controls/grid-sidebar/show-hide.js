@@ -1,9 +1,9 @@
 (function($)
 {
-    if (blist.sidebarHidden.filter &&
-        blist.sidebarHidden.filter.showHide) { return; }
+    if (blist.sidebarHidden.manage &&
+        blist.sidebarHidden.manage.showHide) { return; }
 
-    var configName = 'filter.showHide';
+    var configName = 'manage.showHide';
     var config =
     {
         name: configName,
@@ -12,7 +12,7 @@
         subtitle: 'Adjust which columns are visible in this view',
         onlyIf: function()
         { return blist.dataset.valid; },
-        disabledSubtitle: 'This view must be valid',
+        disabledSubtitle: 'This view must be valid.',
         sections: [{
             title: 'Columns',
             customContent: {

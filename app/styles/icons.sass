@@ -45,7 +45,7 @@
   #{$subselector}
     @include text-hiding
     @include ie6-fix
-    background-image: url(/stylesheets/images/icons/menu_icons.png?2)
+    background-image: url(/stylesheets/images/icons/menu_icons.png?3)
     height: 13px
     width: 13px
     .ie6 &
@@ -172,6 +172,8 @@
     background-position: 0 -585px
   &.error #{$subselector}
     background-position: 0 -598px
+  &.typeUnpublished #{$subselector}
+    background-position: 0 -611px
 
 // icons/accordion_icons.png
 @mixin sprite-accordion-icons($subselector: '.icon')
@@ -194,7 +196,7 @@
   .alertIcon
     @include text-hiding
     @include ie6-fix
-    background-image: url(/stylesheets/images/icons/type_icons_30.png)
+    background-image: url(/stylesheets/images/icons/type_icons_30.png?1)
     height: 30px
     width: 30px
 
@@ -231,6 +233,10 @@
     background-position: 0 -420px
   &.typeHref #{$subselector}
     background-position: 0 -450px
+  &.typeUnpublished #{$subselector}
+    background-position: 0 -480px
+  &.typeSnapshotted #{$subselector}
+    background-position: 0 -510px
 
 // icons/type_icons_50.png
 @mixin sprite-type-icons-50($subselector: '.icon')
@@ -275,6 +281,10 @@
     background-position: 0 -700px
   &.typeHref #{$subselector}
     background-position: 0 -750px
+  &.typeUnpublished #{$subselector}
+    background-position: 0 -800px
+  &.typeSnapshotted #{$subselector}
+    background-position: 0 -850px
 
 // icons/feed_icons.png
 @mixin sprite-feed-icons($subselector: '.icon')
@@ -387,7 +397,8 @@
   .alertIcon,
   &.alert #{$subselector}
     background-position: 0 -104px
-  &.advanced #{$subselector}
+  &.advanced #{$subselector},
+  &.manage #{$subselector}
     background-position: 0 -117px
   &.pager #{$subselector},
   &.behavior #{$subselector}

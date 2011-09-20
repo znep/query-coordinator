@@ -6,7 +6,11 @@
     </a>
     <a class="aboutAuthorName" href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a>
     <p><em>created</em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
+    <%- if @view.is_snapshotted? -%>
+    <p><em>snapshotted</em> <span class="aboutUpdateDate"><%= blist_date(@view.publicationDate) %></span></p>
+    <%- else -%>
     <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
+    <%- end -%>
   </div>
 
   <%- if @view.has_rights?('update_view') -%>

@@ -64,7 +64,7 @@ this.Model = Class.extend({
 
     // Return a cleaned copy that has no functions, private keys, or anything
     // not valid outside the Model
-    cleanCopy: function()
+    cleanCopy: function(allowedKeys)
     {
         var that = this;
         var cleanObj = function(val, key)
@@ -93,10 +93,18 @@ this.Model = Class.extend({
             { return val; }
         };
 
+        if (_.isArray(allowedKeys))
+        {
+            var ak = {};
+            _.each(allowedKeys, function(a) { ak[a] = true; });
+            allowedKeys = ak;
+        }
+
         var obj = {};
         _.each(this, function(v, k)
         {
-            if (!_.isFunction(v) && !k.startsWith('_') && that._validKeys[k])
+            if (!_.isFunction(v) && !k.startsWith('_') && that._validKeys[k] &&
+                ($.isBlank(allowedKeys) || allowedKeys[k]))
             { obj[k] = cleanObj(v, k); }
         });
         return obj;

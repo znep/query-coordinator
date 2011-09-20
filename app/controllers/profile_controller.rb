@@ -43,7 +43,16 @@ class ProfileController < ApplicationController
       browse_options[:view_results] = view_results
       browse_options[:view_count] = browse_options[:limit] = view_results.length
     else
-      browse_options[:facets] = [view_types_facet, categories_facet]
+      if @is_user_current
+        browse_options[:publication_stage] = [ 'published', 'unpublished' ]
+
+        vtf = view_types_facet
+        vtf[:options].insert(1, {:text => 'Unpublished Datasets', :value => 'unpublished',
+                             :class => 'typeUnpublished'})
+        browse_options[:facets] = [vtf, categories_facet]
+      else
+        browse_options[:facets] = [view_types_facet, categories_facet]
+      end
 
       topic_chop = get_facet_cutoff(:topic)
       user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data

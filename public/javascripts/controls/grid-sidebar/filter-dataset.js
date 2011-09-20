@@ -133,8 +133,14 @@
 
         var filterView = sidebarObj.getFormValues($pane);
         var query = $.extend({}, blist.dataset.query);
-        query.orderBys = (filterView.query || {}).orderBys;
-        query.groupBys = (filterView.query || {}).groupBys;
+        if (!$.isBlank(filterView.query))
+        {
+            _.each(['orderBys', 'groupBys'], function(by)
+            {
+                if (!$.isBlank(filterView.query[by]))
+                { query[by] = filterView.query[by]; }
+            });
+        }
         filterView.query = query;
         _.each(filterView.query.orderBys || [], function(ob)
         {
@@ -186,6 +192,8 @@
 
         var wasInvalid = !blist.dataset.valid;
 
+        if (_.isEmpty(filterView.columns))
+        { delete filterView.columns; }
         blist.dataset.update(filterView, false, _.isEmpty(filterView.query.groupBys));
 
         // Show hidden columns if we are grouped

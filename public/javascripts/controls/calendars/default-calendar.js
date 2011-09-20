@@ -81,7 +81,7 @@
             $link.parents('.bt-wrapper').data('socrataTip-$element')
                 .socrataTip().hide();
         }
-    }, null, 'socrataVisualization');
+    }, {editEnabled: false}, 'socrataVisualization');
 
 
     // Private methods
@@ -90,7 +90,7 @@
         calObj._events = [];
 
         calObj.$dom().fullCalendar({aspectRatio: 2,
-                editable: calObj.settings.view.hasRight('write'),
+                editable: calObj.settings.editEnabled && calObj.settings.view.hasRight('write'),
                 disableResizing: $.isBlank(calObj.settings.view
                     .displayFormat.endDateTableId),
                 viewClear: function()

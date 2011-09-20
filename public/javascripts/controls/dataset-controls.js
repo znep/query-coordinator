@@ -538,10 +538,10 @@ blist.datasetControls.hookUpPublishing = function($container)
 {
     $container.find('.unpublished').socrataTitleTip();
     $container.find('.snapshotted').socrataTitleTip();
-    $container.find('.publish').socrataTitleTip();
     $container.find('.publish').click(function(e)
     {
         e.preventDefault();
+        if ($(e.target).hasClass('disabled')) { return; }
         blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); },
             function()
             {
@@ -552,6 +552,14 @@ blist.datasetControls.hookUpPublishing = function($container)
                         contents: ['contact Socrata support']}]}),
                     showSpike: false, trigger: 'now'});
             });
+    });
+
+    blist.dataset.getPublishingAvailable(function(isAvail, unavailMsg)
+    {
+        var $pub = $container.find('.publish');
+        if (!isAvail)
+        { $pub.addClass('disabled').attr('title', unavailMsg); }
+        $pub.socrataTitleTip();
     });
 
     if (!blist.dataset.isPublished())

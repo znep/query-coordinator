@@ -1466,6 +1466,24 @@ this.Dataset = ServerModel.extend({
         }
     },
 
+    getPublishingAvailable: function(successCallback)
+    {
+        var ds = this;
+        if (ds.columnsForType('location').length < 1)
+        {
+            successCallback(true);
+            return;
+        }
+
+        ds.makeRequest({url: '/api/geocoding/' + ds.id + '.json', params: {method: 'pending'},
+            success: function(results)
+            {
+                successCallback(results.view < 1,
+                    'Rows in the location column are still geocoding. ' +
+                    'Please wait until they are finished to publish this dataset');
+            }});
+    },
+
     getSnapshotDatasets: function(callback)
     {
         var ds = this;

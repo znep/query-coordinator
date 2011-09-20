@@ -417,7 +417,11 @@ $(function()
     $.live('.button.editPublished', 'click', function(e)
     {
         e.preventDefault();
-        if ($(this).hasClass('disabled')) { return; }
+        var $t = $(this);
+        if ($t.hasClass('disabled')) { return; }
+
+        if ($t.closest('.bt-wrapper').length > 0)
+        { $t.closest('.bt-wrapper').data('socrataTip-$element').socrataTip().hide(); }
 
         blist.dataset.getUnpublishedDataset(function(unpub)
         {

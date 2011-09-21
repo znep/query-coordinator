@@ -140,9 +140,10 @@ this.Dataset = ServerModel.extend({
         return _.include(this.rights, right);
     },
 
-    canEditPublished: function()
+    canEdit: function()
     {
-        return this.hasRight('update_view');
+        return (this.hasRight('write') || this.hasRight('add') || this.hasRight('delete')) &&
+            !this.isGrouped();
     },
 
     canUpdate: function()

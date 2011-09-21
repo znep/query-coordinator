@@ -43,11 +43,16 @@
       "archived and cannot be modified."%>">Snapshotted <%= blist_date_time(@view.publicationDate) %></h3>
     <%- end -%>
 
-    <%- if @view.is_unpublished? && @view.can_edit_published?() -%>
-    <a href="#Publish" class="toolbarButton publish"
-      title="<%= "This dataset is a working copy and is not publicly available.
+    <%- if @view.is_unpublished? -%>
+     <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
+       <%- if @view.can_publish?() -%>
+         title="<%= "This dataset is a working copy and is not publicly available.
         Once you have made the desired changes, this dataset should be published to
-        make it publicly available." %>">Publish Dataset</a>
+        make it publicly available." %>"
+      <%- else -%>
+        title="Only an owner or publisher can publish this dataset"
+      <%- end -%>
+        >Publish Dataset</a>
     <%- end -%>
 
     <div class="basedOnParent">

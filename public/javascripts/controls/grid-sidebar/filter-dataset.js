@@ -33,8 +33,9 @@
         disabledSubtitle: function()
         { return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
             'This view has no columns to roll-up or sort'; },
-        sections: [
+        sections: _.compact([
             // Group section
+            blist.dataset.isUnpublished() ? null :
             {
                 title: 'Roll-Ups & Drill-Downs', name: 'filterGroup',
                 type: 'selectable',
@@ -97,7 +98,7 @@
                 wizard: 'Do you want to sort this data?'
             }
 
-        ],
+        ]),
         finishBlock: {
             buttons: [
                 {text: 'Apply', isDefault: true, value: true},

@@ -25,8 +25,9 @@
       <a href="#Revert" title="Revert to saved view"
         class="revert toolbarButton">Revert</a>
       <%- if @view.is_unpublished? -%>
-      <span class="unpublishedRevert">These changes cannot be saved to a working copy of a dataset,
-        but can be made on the published dataset and saved as a view.</span>
+        <span class="unpublishedRevert">Changes to the data below are saved automatically.
+          Filters and searches cannot be saved to a working copy of a dataset.
+          Please create a view on a published dataset.</span>
       <%- end -%>
       <%- if @view.is_snapshotted? -%>
       <span class="snapshottedRevert">Snapshotted datasets and views cannot be created or modified</span>

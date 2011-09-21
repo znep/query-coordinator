@@ -436,6 +436,6 @@
         $(document.body).append($moving);
         $(document.body).mousemove(onMouseMove).mouseup(onMouseUp).click(onMouseClick);
 
-        $.cf.edit.focus(false);
+        $.cf.blur(true);
     }
 })(jQuery);

@@ -31,33 +31,6 @@
         });
     }
 
-    function unfocus(unmask) {
-        if (focal) {
-            $body.removeClass('socrata-cf-has-focal');
-            $(focal.dom).removeClass('socrata-cf-focal');
-            focal = undefined;
-        }
-        if ($mask && unmask) {
-            $mask.remove();
-            $mask = undefined;
-            $.cf.side.properties();
-        }
-    }
-
-    function focus(component) {
-        if (focal == component)
-            return;
-        unfocus(false);
-        focal = component;
-        $body.addClass('socrata-cf-has-focal');
-        $(focal.dom).addClass('socrata-cf-focal');
-        $.cf.side.properties(component);
-        if (!$mask) {
-            $mask = $('<div class="socrata-cf-mask"></div>');
-            $body.prepend($mask);
-        }
-    }
-
     function onBodyMouseMove(event) {
         if (!trackingMouseDown)
             return;
@@ -96,12 +69,12 @@
 
         // Simply unfocus if there is no target
         if (!target) {
-            unfocus(true);
+            $.cf.blur(true);
             return;
         }
 
         // Ensure focus is directed at the interaction component
-        focus(target._comp);
+        $.cf.focus(target._comp);
 
         // Listen for drag unless this is a root component
         if (target._comp.parent) {
@@ -129,17 +102,36 @@
                 $(document.body).toggleClass('configuring');
                 $(document.body)[edit ? 'bind' : 'unbind']('mousedown', onBodyMouseDown);
                 if (!edit)
-                    focus();
+                    $.cf.focus();
+            }
+        },
+
+        blur: function(unmask) {
+            if (focal) {
+                $body.removeClass('socrata-cf-has-focal');
+                $(focal.dom).removeClass('socrata-cf-focal');
+                focal = undefined;
+            }
+            if ($mask && unmask) {
+                $mask.remove();
+                $mask = undefined;
+                $.cf.side.properties();
+            }
+        },
+
+        focus: function(component) {
+            if (focal == component)
+                return;
+            $.cf.blur(false);
+            focal = component;
+            $body.addClass('socrata-cf-has-focal');
+            $(focal.dom).addClass('socrata-cf-focal');
+            $.cf.side.properties(component);
+            if (!$mask) {
+                $mask = $('<div class="socrata-cf-mask"></div>');
+                $body.prepend($mask);
             }
         }
-    });
 
-    $.extend($.cf.edit, {
-        focus: function(component) {
-            if (component)
-                focus(component);
-            else
-                unfocus(true);
-        }
-    })
+    });
 })(jQuery);

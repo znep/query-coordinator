@@ -1,18 +1,22 @@
+;(function() {
 $.component.Component.extend('Line chart', 'data', {
     isValid: function()
     {
         // Valid until loaded
-        return $.isBlank(this._rtm) ? true :
+        return $.isBlank(this._rtm) || !_.isFunction(this._rtm.$domForType('chart').socrataChart) ? true :
             this._rtm.$domForType('chart').socrataChart().isValid();
     },
 
     configurationSchema: function()
     {
-        if ($.isBlank(this._view)) { return null; }
-        return {schema: [{
-                fields: [{type: 'text', name: 'viewId', text: 'View ID', data: { '4x4uid': 'foo'}}]
-            }].concat(blist.configs.chart.configForType('line', {view: this._view, isEdit: true})),
-            view: this._view};
+        var retVal = {schema: [{
+            fields: [{type: 'text', name: 'viewId', required: true, text: 'View ID', data: { '4x4uid': 'foo'}}]
+        }],
+        view: this._view};
+        if ($.isBlank(this._view)) { return retVal; }
+        retVal.schema = retVal.schema
+            .concat(blist.configs.chart.configForType('line', {view: this._view}));
+        return retVal;
     },
 
     _getAssets: function()
@@ -28,46 +32,49 @@ $.component.Component.extend('Line chart', 'data', {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
 
-        if ($.isBlank(lcObj._properties.viewId)) { return; }
-
-        lcObj.startLoading();
-        Dataset.createFromViewId(lcObj._properties.viewId, function(view)
-        {
-            lcObj.finishLoading();
-            lcObj._view = view;
-            lcObj._rtm = lcObj.$contents.renderTypeManager({
-                handleResize: false,
-                view: view,
-                defaultTypes: 'chart',
-                chart: {
-                    chartType: 'line',
-                    displayFormat: lcObj._properties.displayFormat
-                }
-            });
-        });
+        updateProperties(lcObj, lcObj._properties);
     },
 
     _propWrite: function(properties)
     {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
-        if ($.isBlank(lcObj._rtm)) { return; }
 
-        if (!$.isBlank(properties.viewId) && ($.isBlank(lcObj._view) || lcObj._view.id != properties.viewId))
-        {
-            lcObj.startLoading();
-            if (!$.isBlank(lcObj._propEditor))
-            { lcObj._propEditor.setComponent(null); }
-            Dataset.createFromViewId(lcObj._properties.viewId, function(view)
-            {
-                lcObj.finishLoading();
-                lcObj._view = view;
-                if (!$.isBlank(lcObj._propEditor))
-                { lcObj._propEditor.setComponent(lcObj); }
-                lcObj._rtm.$domForType('chart').socrataChart().setView(lcObj._view);
-            });
-        }
-        else if (!$.isBlank(properties.displayFormat))
-        { lcObj._rtm.$domForType('chart').socrataChart().reload(this._properties.displayFormat); }
+        updateProperties(lcObj, properties);
     }
 });
+
+var updateProperties = function(lcObj, properties)
+{
+    if (!$.isBlank(properties.viewId) && ($.isBlank(lcObj._view) || lcObj._view.id != properties.viewId))
+    {
+        lcObj.startLoading();
+        if (!$.isBlank(lcObj._propEditor))
+        { lcObj._propEditor.setComponent(null); }
+        Dataset.createFromViewId(lcObj._properties.viewId, function(view)
+        {
+            lcObj.finishLoading();
+            lcObj._view = view;
+            if (!$.isBlank(lcObj._propEditor))
+            { lcObj._propEditor.setComponent(lcObj); }
+            if (!$.isBlank(lcObj._rtm))
+            { lcObj._rtm.$domForType('chart').socrataChart().setView(lcObj._view); }
+            else
+            {
+                lcObj._rtm = lcObj.$contents.renderTypeManager({
+                    handleResize: false,
+                    defaultTypes: 'chart',
+                    view: lcObj._view,
+                    chart: {
+                        chartType: 'line',
+                        displayFormat: lcObj._properties.displayFormat
+                    }
+                });
+            }
+        });
+    }
+    else if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._rtm))
+    { lcObj._rtm.$domForType('chart').socrataChart().reload(lcObj._properties.displayFormat); }
+};
+
+})(jQuery);

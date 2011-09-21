@@ -592,7 +592,7 @@
                 { cs.callback.call(cpObj, $sc, data); }
             });
 
-            $pane.submit(function(e)
+            cpObj._validator = $pane.submit(function(e)
                     {
                         if ($.isBlank($(this).attr('action')))
                         { e.preventDefault(); }

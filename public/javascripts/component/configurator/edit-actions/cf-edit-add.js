@@ -48,6 +48,7 @@ $.cf.edit.registerAction('add', {
 
         // Perform the actual add operation
         container.add(child, position);
+        $.cf.focus(child);
     },
 
     rollback: function() {

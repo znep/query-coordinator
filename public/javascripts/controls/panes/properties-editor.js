@@ -1,5 +1,5 @@
 ;(function($) {
-     $.Control.extend('pane_propertiesEditor', {
+    $.Control.extend('pane_propertiesEditor', {
         getTitle: function()
         { return 'Edit Component'; },
 
@@ -11,6 +11,19 @@
             this.component = newComp;
             this.reset();
             this.render();
+        },
+
+        render: function()
+        {
+            this._super.apply(this, arguments);
+
+            if (!$.isBlank(this.component))
+            {
+                if (this._validator.form())
+                { this.component.properties(this._getFormValues()); }
+                else
+                { this._validator.resetForm(); }
+            }
         },
 
         _getCurrentData: function()
@@ -35,7 +48,7 @@
 
         _changeHandler: function($field, event)
         {
-            if (!$.isBlank(this.component))
+            if (!$.isBlank(this.component) && $field.valid())
             { this.component.properties(this._getInputValue($field)); }
         }
      }, {name: 'propertiesEditor'}, 'controlPane');

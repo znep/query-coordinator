@@ -49,7 +49,11 @@
         _changeHandler: function($field, event)
         {
             if (!$.isBlank(this.component) && $field.valid())
-            { this.component.properties(this._getInputValue($field)); }
+            {
+                $.cf.edit.execute('properties',
+                        {componentID: this.component.properties().id,
+                            properties: this._getInputValue($field)});
+            }
         }
      }, {name: 'propertiesEditor'}, 'controlPane');
 })(jQuery);

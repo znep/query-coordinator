@@ -91,6 +91,7 @@ javascripts:
     - public/javascripts/component/configurator/edit-actions/cf-edit-remove.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-unwrap.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-wrap.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
     - public/javascripts/component/content/box.js
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js

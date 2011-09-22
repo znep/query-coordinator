@@ -435,7 +435,7 @@
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
     blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? ||
-      !@view.can_edit? %>;
+      !@view.can_edit? || current_user.blank? %>;
 
     <%# Manage %>
     blist.sidebarHidden.manage = blist.sidebarHidden.manage || {};

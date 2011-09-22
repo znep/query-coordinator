@@ -399,7 +399,9 @@ $(function()
 
     blist.$container.bind('attempted_edit', function(e)
     {
-        if (!blist.dataset.isPublished() || !blist.dataset.canEdit()) { return; }
+        if (!blist.dataset.isPublished() || !blist.dataset.canEdit() ||
+            $.isBlank(blist.currentUserId))
+        { return; }
 
         var showTip = function()
         {

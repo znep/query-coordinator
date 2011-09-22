@@ -127,8 +127,6 @@ javascripts:
   base-control:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/controls/panes/base-pane.js
-  data-rendering:
-    - public/javascripts/controls/render-type-manager.js
   shared-calendar:
     - public/javascripts/plugins/fullcalendar.js
     - public/javascripts/controls/rich-render-library.js
@@ -487,7 +485,6 @@ javascripts:
 
 dump:
   javascripts:
-    - data-rendering
     - shared-calendar
     - shared-chart
     - shared-map

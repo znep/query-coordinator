@@ -2,9 +2,7 @@
 $.component.Component.extend('Line chart', 'data', {
     isValid: function()
     {
-        // Valid until loaded
-        return $.isBlank(this._rtm) || !_.isFunction(this._rtm.$domForType('chart').socrataChart) ? true :
-            this._rtm.$domForType('chart').socrataChart().isValid();
+        return $.isBlank(this._chart) ? false : this._chart.isValid();
     },
 
     configurationSchema: function()
@@ -22,7 +20,7 @@ $.component.Component.extend('Line chart', 'data', {
     _getAssets: function()
     {
         return {
-            javascripts: [{ assets: 'data-rendering' }],
+            javascripts: [{ assets: 'shared-chart' }],
             stylesheets: ['/stylesheets/chart-screen.css', 'individual/rich-render-types.css']
         };
     },
@@ -57,24 +55,21 @@ var updateProperties = function(lcObj, properties)
             lcObj._view = view;
             if (!$.isBlank(lcObj._propEditor))
             { lcObj._propEditor.setComponent(lcObj); }
-            if (!$.isBlank(lcObj._rtm))
-            { lcObj._rtm.$domForType('chart').socrataChart().setView(lcObj._view); }
+            if (!$.isBlank(lcObj._chart))
+            { lcObj._chart.setView(lcObj._view); }
             else
             {
-                lcObj._rtm = lcObj.$contents.renderTypeManager({
-                    handleResize: false,
-                    defaultTypes: 'chart',
-                    view: lcObj._view,
-                    chart: {
-                        chartType: 'line',
-                        displayFormat: lcObj._properties.displayFormat
-                    }
+                lcObj._chart = lcObj.$contents.socrataChart({
+                    chartType: 'line',
+                    displayFormat: lcObj._properties.displayFormat,
+                    view: lcObj._view
                 });
+                lcObj._updateValidity();
             }
         });
     }
-    else if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._rtm))
-    { lcObj._rtm.$domForType('chart').socrataChart().reload(lcObj._properties.displayFormat); }
+    else if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._chart))
+    { lcObj._chart.reload(lcObj._properties.displayFormat); }
 };
 
 })(jQuery);

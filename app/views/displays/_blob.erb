@@ -9,7 +9,11 @@
   <%- end -%>
   </p>
   <div class="downloadBox">
-    <h5>Download</h5>
+    <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
+      <h5>External Link</h5>
+    <%- else -%>
+      <h5>Download</h5>
+    <%- end -%>
     <ul>
       <%- @view.blobs.each do |b| -%>
       <li><a class="button" href="<%= metric_redirect_path(:type => CGI.escape(b['type']), :id => @view.id) %>" target="_blank">

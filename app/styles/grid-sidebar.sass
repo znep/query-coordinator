@@ -511,6 +511,7 @@
           left: 0.75em
 
         &.colorArray
+          padding-left: 20px
           .line.color
             clear: none
             float: left
@@ -519,6 +520,19 @@
             position: static
             & + .line.color .inputWrapper
               padding-left: 0
+            .removeLink
+              bottom: 0.1em
+              top: auto
+            .inputWrapper
+              padding-left: 8.2em
+          .addValue
+            @include text-hiding
+            background: none
+            border: none
+            height: 14px
+            margin: 0
+            padding: 4px
+            width: 14px
 
       &.collapsed
         .formHeader

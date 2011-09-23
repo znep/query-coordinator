@@ -304,7 +304,7 @@
     configPie.fields.push(conditionalFormattingWarning);
     configPie.fields.push({type: 'repeater', text: 'Colors',
         field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-        minimum: 6, maximum: 6, lineClass: 'colorArray',
+        minimum: 5, lineClass: 'colorArray',
         wizard: 'Choose colors for the slices of your pie chart'});
 
     var configTimeline = basicConfig(Dataset.chart.types.timeline,

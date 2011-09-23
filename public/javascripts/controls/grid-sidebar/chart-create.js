@@ -287,7 +287,7 @@
     configDonut.fields.push(conditionalFormattingWarning);
     configDonut.fields.push({type: 'repeater', text: 'Colors',
         field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-        minimum: 6, maximum: 6, lineClass: 'colorArray',
+        minimum: 5, lineClass: 'colorArray',
         wizard: 'Choose colors for the slices of your donut chart'});
 
     var configPie = basicConfig(Dataset.chart.types.pie,
@@ -448,7 +448,7 @@
                 conditionalFormattingWarning,
                 {type: 'repeater', text: 'Colors',
                     field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-                    minimum: 5, maximum: 5, lineClass: 'colorArray'},
+                    minimum: 5, lineClass: 'colorArray'},
                 treemapRandomColorWarning
             ] },
             basicAdv(Dataset.chart.types.treemap, [flyoutControls]),

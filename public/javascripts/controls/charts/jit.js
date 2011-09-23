@@ -23,6 +23,7 @@
         renderData: function(rows)
         {
             var chartObj = this;
+            if (!chartObj.isValid()) { return; }
 
             var valCol = chartObj._valueColumns[0].column;
             var addRows = function(row)
@@ -82,7 +83,7 @@
                 };
 
             if (!chartObj._jitData)
-            { chartObj._jitData = { id: 'root', name: '', data: {}, children: [] }; }
+            { chartObj._jitData = { id: 'jitRoot_' + _.uniqueId(), name: '', data: {}, children: [] }; }
             else
             {
                 if (chartObj._otherAdded)
@@ -133,7 +134,8 @@
         {
             var chartObj = this;
             chartObj._super();
-            $(chartObj.chart.canvas.getElement()).parent().empty();
+            if (!$.isBlank(chartObj.chart))
+            { $(chartObj.chart.canvas.getElement()).parent().empty(); }
             delete chartObj.chart;
             delete chartObj._jitData;
         },

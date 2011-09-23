@@ -99,16 +99,11 @@ javascripts:
     - public/javascripts/component/content/related.js
     - public/javascripts/component/content/text.js
     - public/javascripts/component/content/title.js
-    - public/javascripts/component/data/bar-chart.js
     - public/javascripts/component/data/calendar.js
-    - public/javascripts/component/data/line-chart.js
+    - public/javascripts/component/data/charts.js
     - public/javascripts/component/data/map.js
-    - public/javascripts/component/data/pie-chart.js
     - public/javascripts/component/data/repeater.js
-    - public/javascripts/component/data/scatter-plot.js
     - public/javascripts/component/data/table.js
-    - public/javascripts/component/data/timeline.js
-    - public/javascripts/component/data/tree-map.js
     - public/javascripts/component/actions/comment.js
     - public/javascripts/component/actions/create-chart.js
     - public/javascripts/component/actions/create-map.js

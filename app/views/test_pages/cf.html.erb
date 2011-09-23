@@ -9,7 +9,7 @@
 <script>
 $(function() {
     $.cf({
-        id: 'root',
+        id: 'root-component-test',
         type: 'Container',
         children: [
             {
@@ -51,7 +51,7 @@ $(function() {
 
 <% end %>
 
-<div class="socrata-root" id="root"></div>
+<div class="socrata-root" id="root-component-test"></div>
 
 <% content_for :templates do %>
 <%= render(:partial => 'templates/grid_sidebar') %>

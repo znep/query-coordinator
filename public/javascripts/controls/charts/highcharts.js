@@ -117,7 +117,7 @@
         renderRow: function(row)
         {
             var chartObj = this;
-            if (!chartObj._columnsLoaded)
+            if (!chartObj._columnsLoaded || !chartObj.isValid())
             {
                 chartObj._pendingRows = chartObj._pendingRows || [];
                 chartObj._pendingRows.push(row);
@@ -202,7 +202,7 @@
         rowsRendered: function()
         {
             var chartObj = this;
-            if (!chartObj._columnsLoaded) { return; }
+            if (!chartObj._columnsLoaded || !chartObj.isValid()) { return; }
 
             // Check if there are remainders to stick on the end
             if (!_.isUndefined(chartObj._seriesRemainders) &&

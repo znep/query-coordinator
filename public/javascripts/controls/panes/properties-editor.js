@@ -18,12 +18,7 @@
             this._super.apply(this, arguments);
 
             if (!$.isBlank(this.component))
-            {
-                if (this._validator.form())
-                { this.component.properties(this._getFormValues()); }
-                else
-                { this._validator.resetForm(); }
-            }
+            { this.component.properties(this._getFormValues()); }
         },
 
         _getCurrentData: function()

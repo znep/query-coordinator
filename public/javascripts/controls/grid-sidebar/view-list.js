@@ -15,8 +15,7 @@
 
         var $li = $(this).closest('li');
         var v = $li.data('view');
-        if (confirm('Are you sure you want to delete ' +
-            $.htmlEscape(v.name) + '?'))
+        if (confirm('Are you sure you want to delete ' + v.name + '?'))
         {
             var redirDS;
             var deletedCallback = function()
@@ -136,7 +135,7 @@
                     '.viewIcon@class+': function(a)
                     { return 'type' + a.context.view.styleClass; },
                     '.nameLink@href': 'view.url',
-                    '.name': 'view.name',
+                    '.name': 'view.name!',
                     '.name@title': 'view.name',
                     '.pubDate': function(a)
                     {
@@ -149,8 +148,8 @@
                                 a.context.view.createdAt || 0) * 1000,
                             blist.util.humaneDate.DAY).capitalize();
                     },
-                    '.authorLine .author': 'view.owner.displayName',
-                    '.description': 'view.description',
+                    '.authorLine .author': 'view.owner.displayName!',
+                    '.description': 'view.description!',
                     '.deleteViewLink@class+': function(a)
                     {
                         return _.include(a.context.view.rights, 'delete_view') ?

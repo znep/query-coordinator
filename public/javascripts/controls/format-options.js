@@ -98,6 +98,7 @@
 
             config.$grid.bind('action-state-change', function(e)
             {
+                if (!$(e.target).isControlClass('blistEditor')) { return; }
                 config.formatEditor = $(e.target).blistEditor();
                 if (!config.formatEditor.supportsFormatting())
                 {

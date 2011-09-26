@@ -15,7 +15,7 @@ $.component.Component.extend('Inline filter', 'input', {
         if ($.isBlank(lcObj._properties.viewId)) { return; }
 
         lcObj.startLoading();
-        Dataset.createFromViewId(lcObj._properties.viewId, function(view)
+        $.dataContext.getContext(lcObj._properties.viewId, function(view)
         {
             lcObj.finishLoading();
             lcObj.$contents.pane_unifiedFilter({

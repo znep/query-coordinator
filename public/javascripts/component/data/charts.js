@@ -62,7 +62,7 @@ var updateProperties = function(lcObj, properties)
         lcObj.startLoading();
         if (!$.isBlank(lcObj._propEditor))
         { lcObj._propEditor.setComponent(null); }
-        Dataset.createFromViewId(lcObj._properties.viewId, function(view)
+        $.dataContext.getContext(lcObj._properties.viewId, function(view)
         {
             lcObj.finishLoading();
             lcObj._view = view;

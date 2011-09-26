@@ -402,7 +402,7 @@
 
         var drawNullBars = function()
         {
-            if (!_.include(['column', 'bar'], chartObj._chartType))
+            if (!_.include(['column', 'bar'], chartObj._chartType) || $.isBlank(chartObj.chart))
             { return; }
 
             var invertAxis = chartObj._chartType == 'bar';
@@ -477,7 +477,8 @@
                 chartObj._valueMarker.destroy();
                 delete chartObj._valueMarker;
             }
-            if (!$.subKeyDefined(chartObj.settings.view.displayFormat, 'yAxis.marker'))
+            if (!$.subKeyDefined(chartObj.settings.view.displayFormat, 'yAxis.marker') ||
+                    $.isBlank(chartObj.chart))
             { return; }
 
             var lineAt = parseFloat(chartObj.settings.view.displayFormat.yAxis.marker);
@@ -614,7 +615,7 @@
             delete chartConfig.xAxis.labels.formatter;
             chartConfig.tooltip = { formatter: function()
             {
-                return '<p><strong>' + this.series.name +
+                return $.isBlank(this) ? '' : '<p><strong>' + this.series.name +
                     (this.point.name && this.series.name != this.point.name ?
                         ': ' + this.point.name : '') + '</strong></p>' +
                     (this.point.subtitle ?
@@ -1038,7 +1039,7 @@
             return;
         }
 
-        if (!_.isUndefined(chartObj.chart))
+        if (!$.isBlank(chartObj.chart))
         {
             var p = chartObj.chart.get(point.id);
             if ($.isBlank(p))
@@ -1056,7 +1057,7 @@
                 p.update(point, false);
             }
         }
-        if (!_.isUndefined(chartObj.secondChart))
+        if (!$.isBlank(chartObj.secondChart))
         {
             var sp = chartObj.secondChart.get(point.id);
             if ($.isBlank(sp))

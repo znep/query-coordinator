@@ -1849,6 +1849,12 @@ SVGElement.prototype = {
 		}
 		width = bBox.width;
 		height = bBox.height;
+
+        // michael.chui@socrata.com: IE9 renders SVG text elements with excessive height
+        // in its bounding box. Forcing this down.
+        // Near as can be determined, this is an IE9 bug.
+        if (this.element.nodeName == 'text' && $.browser.msie)
+        { bBox.height *= 0.5; }
 			
 		// adjust for rotated text
 		if (rotation) {

@@ -104,21 +104,29 @@
                 {
                     $geolocator_prompt = $.tag({ tagName: 'div', id: 'geolocator',
                         contents: [{ tagName: 'input', 'class': 'textPrompt', type: 'text' },
+                                   { tagName: 'select', contents:
+                                       _.map(['auto', '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'],
+                                           function(text)
+                                           { return { tagName: 'option', contents: text }; })
+                                   },
                                    { tagName: 'a', 'class': 'button', contents: 'Go'},
                                    { tagName: 'a', 'class': 'my_location',
                                         title: 'Use current location' },
                                    { tagName: 'div', 'class': 'error' }]
                     });
+                    $geolocator_prompt.find('select').uniform();
                     $geolocator_prompt.css({ left: $geocodeControl.offset().left });
                     var doZoom = function(value)
                     {
+                        var radius = $geolocator_prompt.find('select option:selected').text();
                         if (value.match(/[+-]?\d+\.?\d*,[+-]?\d+\.?\d*/))
                         {
                             var coords = value.split(',');
-                            mapObj.zoomToLocation({ latlng: { lat: coords[0], lon: coords[1] }});
+                            mapObj.zoomToLocation({ latlng: { lat: coords[0], lon: coords[1] }},
+                                                  radius);
                         }
                         else
-                        { mapObj.zoomToLocation({ address: value }); }
+                        { mapObj.zoomToLocation({ address: value }, radius); }
                     };
 
                     $geolocator_prompt.find('input.textPrompt')
@@ -126,7 +134,8 @@
                         .keypress(function(evt)
                         { if (evt.which == 13) { doZoom($(this).val()); } });
                     $geolocator_prompt.find('a.my_location').click(function()
-                    { mapObj.zoomToLocation(); });
+                    { mapObj.zoomToLocation(null,
+                        $geolocator_prompt.find('select option:selected').text()); });
                     $geolocator_prompt.find('a.button').click(function()
                     { doZoom($(this).parent().find('input.textPrompt').val()); });
                     mapObj.$dom().parent().append($geolocator_prompt);
@@ -137,7 +146,7 @@
             mapObj.mapLoaded();
         },
 
-        zoomToLocation: function(where)
+        zoomToLocation: function(where, radius)
         {
             var mapObj = this;
             var aGoodZoomLevel = 17;
@@ -150,6 +159,22 @@
                     { latitude: latlng.lat(), longitude: latlng.lng() },
                     'geocodeMarker', { icon: '/images/pin.png' });
                 mapObj._geocodeMarker = mapObj._markers['geocodeMarker'];
+
+                if (radius = (radius || '').match(/(\d+)(\w+)/))
+                {
+                    if (radius[2] == 'mi')
+                    { radius = parseFloat(radius[1]) * 1609.344; } // Miles to meters.
+
+                    var northBound =
+                        google.maps.geometry.spherical.computeOffset(latlng, radius, 0);
+                    var southBound =
+                        google.maps.geometry.spherical.computeOffset(latlng, radius, 180);
+
+                    viewport = new google.maps.LatLngBounds(
+                        new google.maps.LatLng(southBound.lat(), latlng.lng() - 0.0001),
+                        new google.maps.LatLng(northBound.lat(), latlng.lng() + 0.0001)
+                    );
+                }
 
                 if (viewport)
                 { mapObj.map.fitBounds(viewport); }
@@ -812,7 +837,7 @@
 
             blist.util.googleCallback = this._setupLibraries;
             blist.util.googleCallbackMap = this;
-            return "https://maps.google.com/maps/api/js?sensor=true&callback=blist.util.googleCallback";
+            return "https://maps.google.com/maps/api/js?sensor=true&libraries=geometry&callback=blist.util.googleCallback";
         },
 
         _setupLibraries: function()

@@ -202,7 +202,7 @@ body.socrata-page
 // Base/default styles shared by all components
 .socrata-component
   min-height: 50px // Default height; temporary?
-  background-color: rgba(0, 0, 0, .2) // Temporary
+  background-color: rgba(0, 64, 128, .2) // Temporary
   @include border-radius(4px) // Default or temporary?
   margin-bottom: 8px
   &:last-child
@@ -220,15 +220,15 @@ body.socrata-page
     float: left
     left: 100%
     & > *
-      margin: 0 8px
+      margin: 0 0 0 16px
     &:first-child > *
       margin-left: 0
-    &:last-child > *
-      margin-right: 0
 .component-Box
   min-height: 100px // Default height; temporary?
 .component-Box-container
   margin: 8px
+.socrata-ct-clear
+  clear: both
 
 // Sprited icons
 $icon_slot: 0

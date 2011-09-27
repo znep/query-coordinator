@@ -1,2 +1,2 @@
-$.component.Container.extend('Line chart', 'data', {
+$.component.Component.extend('Line chart', 'data', {
 });

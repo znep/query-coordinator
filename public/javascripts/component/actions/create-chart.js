@@ -1,2 +1,2 @@
-$.component.Container.extend('Create chart', 'actions', {
+$.component.Component.extend('Create chart', 'actions', {
 });

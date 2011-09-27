@@ -1,2 +1,2 @@
-$.component.Container.extend('Scatter plot', 'data', {
+$.component.Component.extend('Scatter plot', 'data', {
 });

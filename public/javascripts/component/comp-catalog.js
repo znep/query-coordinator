@@ -26,7 +26,11 @@
                 throw "Component create without input properties";
             if (properties instanceof $.component.Component)
                 return properties;
-            var type = properties.type;
+            if (typeof properties == "string") {
+                var type = properties;
+                properties = {};
+            } else
+                type = properties.type;
             if (type == undefined)
                 throw "Component create without type property";
             var componentClass = $.component[camelize(properties.type)];

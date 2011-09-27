@@ -1,2 +1,2 @@
-$.component.Container.extend('Hide/show', 'actions', {
+$.component.Component.extend('Hide/show', 'actions', {
 });

@@ -1,2 +1,2 @@
-$.component.Container.extend('Table', 'data', {
+$.component.Component.extend('Table', 'data', {
 });

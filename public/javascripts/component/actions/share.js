@@ -1,2 +1,2 @@
-$.component.Container.extend('Share', 'actions', {
+$.component.Component.extend('Share', 'actions', {
 });

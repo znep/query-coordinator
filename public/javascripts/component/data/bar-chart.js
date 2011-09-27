@@ -1,2 +1,2 @@
-$.component.Container.extend('Bar chart', 'data', {
+$.component.Component.extend('Bar chart', 'data', {
 });

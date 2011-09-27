@@ -3,6 +3,9 @@
  */
 (function($) {
     $.component.Component.extend('Container', {
+        // A hint for drag implementation
+        horizontal: false,
+
         _init: function(properties) {
             var children = properties.children;
             if (children) {
@@ -19,10 +22,24 @@
          * @param position the node before which the child is added; default is end-of-list
          */
         add: function(child, position) {
-            if ($.isArray(child))
-                return _.map(child, function(child) {
+            if ($.isArray(child)) {
+                // Set flag to prevent layout as we recurse into arrays
+                if (!this._blockArrange)
+                    var arrange = this._blockArrange = true;
+
+                // Add the children
+                var result = _.map(child, function(child) {
                     return this.add(child, position);
                 }, this);
+
+                // Arrange if we're the owners of the arrange block
+                if (arrange) {
+                    this._blockArrange = false;
+                    this._arrange();
+                }
+
+                return result;
+            }
 
             if (!(child instanceof $.component.Component))
                 child = $.component.create(child);
@@ -76,16 +93,25 @@
          * Synchronize child's position in the DOM.  Allows derivative containers to adjust position.
          */
         _moveChildDom: function(child) {
+            if (!this._rendered) {
+                if (child._rendered)
+                    $(child.dom).remove();
+                return;
+            }
             if (!child._rendered)
                 child._render();
             this.ct.insertBefore(child.dom, child.next && child.next.dom);
+            this._arrange();
         },
 
         /**
          * Remove child from DOM.
          */
         _removeChildDom: function(child) {
+            if (!this._rendered)
+                return;
             this.ct.removeChild(child.dom);
+            this._arrange();
         },
 
         /**
@@ -121,6 +147,17 @@
         },
 
         /**
+         * Count the children in the container.
+         */
+        count: function() {
+            var count = 0;
+            this.each(function() {
+                count++;
+            });
+            return count;
+        },
+
+        /**
          * Recursively apply a function to all descendants of this container.
          */
         visit: function(fn, scope) {
@@ -147,6 +184,8 @@
             $(this.ct).addClass('socrata-container');
 
             this.each(this._moveChildDom, this);
+
+            this._arrange();
         },
 
         // Override to create separate container component
@@ -174,6 +213,14 @@
             if (children)
                 properties.children = children;
             return properties;
+        },
+
+        // Override to perform layout beyond simple DOM order
+        _arrange: function() {
+            this.each(function(child) {
+                if (child._arrange)
+                    child._arrange();
+            });
         }
     });
 
@@ -181,27 +228,19 @@
         // A hint for drag implementation
         horizontal: true,
 
+        // Override rendering to add a (eww) clearing element
         _render: function() {
             this._super();
-            this._arrange();
-        },
 
-        add: function(child, position) {
-            // Set flag to prevent layout as we recurse into arrays
-            if (!this._adding)
-                var arrange = this._adding = true;
-
-            // Perform the actual add
-            this._super(child, position);
-
-            // Position children
-            if (arrange) {
-                this._adding = false;
-                this._arrange();
+            var clear = this.dom.lastChild;
+            if (!clear || clear.className != 'socrata-ct-clear') {
+                $(this.dom).append('<div class="socrata-ct-clear"></div>');
+                clear = this.dom.lastChild;
             }
+            this._clear = clear;
         },
 
-        // Override child move to 1.) wrap child in extra div, and 2.) update layout
+        // Override child move to wrap child in extra div
         _moveChildDom: function(child) {
             if (!child._rendered)
                 child._render();
@@ -210,7 +249,7 @@
                 child.wrapper.className = 'component-wrapper';
                 child.wrapper.appendChild(child.dom);
             }
-            this.ct.insertBefore(child.wrapper, child.next && child.next.wrapper);
+            this.ct.insertBefore(child.wrapper, (child.next && child.next.wrapper) || this._clear);
             this._arrange();
         },
 
@@ -224,7 +263,7 @@
         },
 
         _arrange: function() {
-            if (this._adding)
+            if (this._blockArrange)
                 return;
             var totalWeight = 0;
             this.each(function(child) {
@@ -239,6 +278,58 @@
                 });
                 pos += weight;
             });
+            
+            this._super();
         }
     });
+
+    $.extend($.component.Container, {
+        /**
+         * Wrap a child component in a container.  This is used to create space for new components when performing
+         * layout into a space perpendicular to the parent container.
+         */
+        wrap: function(child, wrapperConfig) {
+            var parent = child.parent;
+            if (!parent)
+                throw "Cannot wrap unparented child";
+            var position = child.next;
+
+            parent._blockArrange = true;
+            try {
+                var wrapper = $.component.create(wrapperConfig);
+                wrapper.add(child);
+                parent.add(wrapper, position);
+                parent._blockArrange = false;
+                parent._arrange();
+            } finally {
+                parent._blockArrange = false;
+            }
+
+            return wrapper;
+        },
+
+        /**
+         * The inverse of wrap -- replaces a child's container with the child.
+         */
+        unwrap: function(child) {
+            if (child.prev || child.next)
+                throw "Cannot unwrap child with siblings";
+            var wrapper = child.parent;
+            if (!wrapper)
+                throw "Cannot unwrap unparented child";
+            var parent = wrapper.parent;
+            if (!wrapper)
+                throw "Cannot unwrap child with root parent";
+
+            parent._blockArrange = true;
+            try {
+                parent.add(child, wrapper.next);
+                wrapper.destroy();
+                parent._blockArrange = false;
+                parent._arrange();
+            } finally {
+                parent._blockArrange = false;
+            }
+        }
+    })
 })(jQuery);

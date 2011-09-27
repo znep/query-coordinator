@@ -1,2 +1,2 @@
-$.component.Container.extend('Calendar', 'data', {
+$.component.Component.extend('Calendar', 'data', {
 });

@@ -1,2 +1,2 @@
-$.component.Container.extend('Download', 'actions', {
+$.component.Component.extend('Download', 'actions', {
 });

@@ -1,2 +1,2 @@
-$.component.Container.extend('Slide filter', 'input', {
+$.component.Component.extend('Slide filter', 'input', {
 });

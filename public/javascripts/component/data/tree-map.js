@@ -1,2 +1,2 @@
-$.component.Container.extend('Tree map', 'data', {
+$.component.Component.extend('Tree map', 'data', {
 });

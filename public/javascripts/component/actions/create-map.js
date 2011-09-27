@@ -1,2 +1,2 @@
-$.component.Container.extend('Create map', 'actions', {
+$.component.Component.extend('Create map', 'actions', {
 });

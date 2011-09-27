@@ -1,2 +1,2 @@
-$.component.Container.extend('Pie chart', 'data', {
+$.component.Component.extend('Pie chart', 'data', {
 });

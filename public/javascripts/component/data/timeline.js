@@ -1,2 +1,2 @@
-$.component.Container.extend('Timeline', 'data', {
+$.component.Component.extend('Timeline', 'data', {
 });

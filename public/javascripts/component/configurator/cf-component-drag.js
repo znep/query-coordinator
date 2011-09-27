@@ -23,9 +23,6 @@
         var adjustX;
         var adjustY;
 
-        // All potential drop targets in the page, in reverse order
-        var $containers;
-
         // The placeholder we use to indicate where a drag will land
         var placeholder = new $.component.Placeholder();
 
@@ -35,10 +32,23 @@
         // The position in the container at which we drop
         var position;
 
+        // A wrapping container used to temporarily support drop into perpendicular orientation
+        var temporaryWrapper;
+
+        // The child node we wrapped
+        var wrapped;
+
         // Position the drag element
         function setPosition(event) {
             $moving.css('left', event.pageX + adjustX)
                 .css('top', event.pageY + adjustY);
+        }
+
+        // Test whether a container is a component wrapper (that is, a simple container that is not the root)
+        function isWrapper(container) {
+            return container
+                && (container.typeName == 'Container' || container.typeName == 'HorizontalContainer')
+                && container.parent;
         }
 
         // Identify the container for a mouse event and execute a function on the container
@@ -53,6 +63,15 @@
 
             var closestContainer;
             var closestContainerDistance = 1e9;
+
+            // Find all containers in the page that support drag/drop.  We will use this for hit-testing.  Reverse sort so
+            // that during hit detection we encounter children before parents
+            var $containers = $('.socrata-container').closest('.socrata-component').filter(function() {
+                if ($(this).closest('.socrata-cf-drag-shell').length)
+                    return false;
+                return this._comp && this._comp.drag !== false;
+            });
+            Array.prototype.reverse.apply($containers);
 
             // Scan containers to find the one that contains the event.  Also detect the container closest to the
             // mouse in case no containers hit
@@ -96,22 +115,28 @@
             // Find the target sibling
             var sibbounds;
             var child = container.last;
+            var prevSibbounds;
             while (child) {
-                if (child != placeholder) {
-                    var sibw = child.dom.offsetWidth;
-                    var sibh = child.dom.offsetHeight;
-                    sibbounds = $(child.dom).offset();
+                prevSibbounds = sibbounds;
 
-                    sibbounds.right = sibbounds.left + sibw;
-                    sibbounds.bottom = sibbounds.top + sibh;
-                    if (container.horizontal) {
-                        if (event.pageX > sibbounds.left)
-                            break;
-                    } else if (event.pageY > sibbounds.top)
+                var sibw = child.dom.offsetWidth;
+                var sibh = child.dom.offsetHeight;
+                sibbounds = $(child.dom).offset();
+
+                sibbounds.right = sibbounds.left + sibw;
+                sibbounds.bottom = sibbounds.top + sibh;
+                if (container.horizontal) {
+                    if (event.pageX > sibbounds.left)
                         break;
-                }
-                
+                } else if (event.pageY > sibbounds.top)
+                    break;
+
                 child = child.prev;
+            }
+
+            if (child == placeholder) {
+                child = child.next;
+                sibbounds = prevSibbounds;
             }
 
             if (!child)
@@ -119,11 +144,13 @@
 
             // Retrieve configuration for primary and secondary axis (depending on container layout)
             var axisX = {
+                horizontal: true,
                 at: event.pageX,
                 from: 'left',
                 to: 'right'
             };
             var axisY = {
+                horizontal: false,
                 at: event.pageY,
                 from: 'top',
                 to: 'bottom'
@@ -137,11 +164,14 @@
             // otherwise
             var secondaryAxisLength = sibbounds[secondary.to] - sibbounds[secondary.from];
             var secondaryDropWidth = secondaryAxisLength / 10;
-            if (sibbounds[secondary.from] + secondaryDropWidth > secondary.at)
+            if (sibbounds[secondary.from] + secondaryDropWidth > secondary.at) {
+                var axis = secondary;
                 var orientation = secondary.from;
-            else if (sibbounds[secondary.to] - secondaryDropWidth < secondary.at)
+            } else if (sibbounds[secondary.to] - secondaryDropWidth < secondary.at) {
+                axis = secondary;
                 orientation = secondary.to;
-            else {
+            } else {
+                axis = primary;
                 var primaryAxisLength = sibbounds[primary.to] - sibbounds[primary.from];
                 var primaryAxisMidpoint = sibbounds[primary.from] + primaryAxisLength / 2;
                 if (primary.at < primaryAxisMidpoint)
@@ -151,6 +181,8 @@
             }
 
             return {
+                horizontal: axis.horizontal,
+                perpendicular: axis == secondary,
                 child: child,
                 orientation: orientation
             };
@@ -162,17 +194,42 @@
             
             container = findContainer(event);
             if (!container) {
-                if (isNew)
-                    placeholder.remove();
-                else {
-                    container = oldContainer;
-                    oldContainer.add(placeholder, oldPosition);
-                }
+                placeholder.remove();
                 return;
             }
 
             var target = findTarget(event, container);
             if (target) {
+                // If orientation is perpendicular to the target container's orientation, we need to wrap the child's
+                // container -- unless the container is already a temporary wrapper, in which case we can simply unwrap
+                if (target.perpendicular && target.child) {
+                    if (container == temporaryWrapper) {
+                        // Reverting to original orientation within temporary wrapper -- lose the wrapper
+                        placeholder.remove();
+                        container = temporaryWrapper.parent;
+                        $.component.Container.unwrap(target.child);
+                        temporaryWrapper = undefined;
+                    } else {
+                        // If we have an existing temporary wrapper, it is no longer needed so record for unwrapping
+                        if (temporaryWrapper)
+                            var unwrap = temporaryWrapper;
+
+                        // Unwrap if it will give us a proper drop destination container; otherwise create a new
+                        // temporary wrapper
+                        if (isWrapper(container)
+                            && container.parent.horizontal == target.horizontal
+                            && container.count() <= (container == placeholder.parent ? 2 : 1)
+                        )
+                            // Ignore uneeded container -- grandparent has correct orientation
+                            container = container.parent;
+                        else {
+                            // Create a new temporary wrapper
+                            temporaryWrapper = $.component.Container.wrap(wrapped = target.child, { type: target.horizontal ? 'HorizontalContainer' : 'Container' });
+                            container = temporaryWrapper;
+                        }
+                    }
+                }
+
                 if (target.orientation == 'right' || target.orientation == 'bottom') {
                     position = target.child.next;
                     if (position == placeholder)
@@ -181,49 +238,117 @@
                     position = target.child;
             }
 
+            // At this point if a temporary wrapper is still in effect but it is not the target container, record
+            // for removal
+            if (temporaryWrapper && container != temporaryWrapper) {
+                unwrap = temporaryWrapper;
+                temporaryWrapper = undefined;
+            }
+
+            // Move the placeholder
             container.add(placeholder, position);
+
+            // Remove any unused temporary wrapper
+            if (unwrap)
+                $.component.Container.unwrap(unwrap.first);
         }
 
         // Perform actual move after "drop" animation
-        function afterAddAnimation() {
+        function afterDropAnimation() {
             $moving.remove();
             placeholder.remove();
-            if (isNew)
-                $.cf.edit.execute('add', {
-                    container: container,
-                    position: position,
-                    type: type
-                });
-            else
-                $.cf.edit.execute('move', {
-                    newContainer: container,
-                    newPosition: position,
-                    oldContainer: oldContainer,
-                    oldPosition: oldPosition,
-                    child: child
-                });
+
+            try {
+                $.cf.edit.beginTransaction();
+
+                // If we added a temporary wrapper, add operations to recreate current state
+                if (temporaryWrapper)
+                    $.cf.edit.executed('wrap', {
+                        containerTemplate: {
+                            id: temporaryWrapper.id,
+                            type: temporaryWrapper.type
+                        },
+                        child: wrapped
+                    });
+
+                // Perform the actual add or move
+                if (isNew)
+                    $.cf.edit.execute('add', {
+                        container: container,
+                        position: position,
+                        type: type
+                    });
+                else if (container)
+                    $.cf.edit.execute('move', {
+                        newContainer: container,
+                        newPosition: position,
+                        oldContainer: oldContainer,
+                        oldPosition: oldPosition,
+                        child: child
+                    });
+                else
+                    $.cf.edit.execute('remove', {
+                        component: child,
+                        container: oldContainer,
+                        position: oldPosition
+                    });
+
+                // If the old container was a wrapper that is no longer needed, remove it to keep our structure clean
+                if (isWrapper(oldContainer) && oldContainer.first == oldContainer.last)
+                    if (oldContainer.first)
+                        // Unwrap
+                        $.cf.edit.execute('unwrap', {
+                            childID: oldContainer.first.id,
+                            containerTemplate: {
+                                id: oldContainer.id,
+                                type: oldContainer.type
+                            }
+                        });
+                    else
+                        // Hmm, this was an empty container.  Shouldn't have happened.  Just remove it
+                        $.cf.edit.execute('remove', {
+                           node: oldContainer
+                        });
+
+                $.cf.edit.commit();
+            } finally {
+                // This call is ignored if we commit successfully
+                $.cf.edit.rollback();
+            }
         }
 
         // Handle mouse button release
         function onMouseUp(event) {
-            if (!container) {
+            // Simply abort the drag if nothing actually changes
+            if (isNew ? !container : container == oldContainer && position == oldPosition) {
                 abortDrag();
                 return;
             }
 
-            var to = $.extend($(placeholder.dom).offset(), {
-                width: placeholder.dom.offsetWidth,
-                height: placeholder.dom.offsetHeight,
-                opacity: .2
-            });
+            var width = $moving[0].offsetWidth;
+            var height = $moving[0].offsetHeight;
 
-            $moving.width($moving[0].offsetWidth).height($moving[0].offsetHeight)
-                .addClass('socrata-cf-adding').animate(to, 'fast', 'linear',
+            if (container)
+                var to = $.extend($(placeholder.dom).offset(), {
+                    width: placeholder.dom.offsetWidth,
+                    height: placeholder.dom.offsetHeight,
+                    opacity: .2
+                });
+            else
+                to = {
+                    opacity: 0
+                }
+
+            $moving
+                .width(width)
+                .height(height)
+                .addClass('socrata-cf-adding')
+                .animate(to, 200, 'linear',
                     function() {
                         // Defer final add because otherwise if this code crashes (which frequently it does during
                         // component development) jQuery never terminates its animation timer, net result being a
                         // highly annoying infinite loop of errors
-                        setTimeout(afterAddAnimation, 1);
+                        setTimeout(afterDropAnimation, 1);
                     }
                 );
 
@@ -237,10 +362,21 @@
 
         // Stop drag and revert dragged item to its home position
         function abortDrag() {
-            placeholder.remove();
-            $moving.animate($target.offset(), 200, 'linear', function() {
-                $moving.remove();
-            });
+            if (isNew) {
+                placeholder.remove();
+                $moving.animate($target.offset(), 200, 'linear', function() {
+                    $moving.remove();
+                });
+            } else {
+                oldContainer.add(placeholder, oldPosition);
+                $moving.animate($(placeholder.dom).offset, 200, 'linear', function() {
+                    $moving.remove();
+                    placeholder.remove();
+                    oldContainer.add(child, oldPosition);
+                });
+            }
+            if (temporaryWrapper)
+                $.component.Container.unwrap(wrapped);
             terminateDrag();
         }
 
@@ -296,17 +432,10 @@
             $moving.append($target);
         }
 
-        // Find all containers in the page that support drag/drop.  We will use this for hit-testing.  Reverse sort so
-        // that during hit detection we encounter children before parents
-        $containers = $('.socrata-container').closest('.socrata-component').filter(function() {
-            if ($(this).closest('.socrata-cf-drag-shell').length)
-                return false;
-            return this._comp && this._comp.drag !== false;
-        });
-        Array.prototype.reverse.apply($containers);
-
         setPosition(event);
         $(document.body).append($moving);
         $(document.body).mousemove(onMouseMove).mouseup(onMouseUp).click(onMouseClick);
+
+        $.cf.edit.focus(false);
     }
 })(jQuery);

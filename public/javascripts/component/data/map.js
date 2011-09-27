@@ -1,2 +1,2 @@
-$.component.Container.extend('Map', 'data', {
+$.component.Component.extend('Map', 'data', {
 });

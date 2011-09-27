@@ -1,2 +1,2 @@
-$.component.Container.extend('Rate/vote', 'actions', {
+$.component.Component.extend('Rate/vote', 'actions', {
 });

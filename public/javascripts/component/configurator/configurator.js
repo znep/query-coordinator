@@ -130,4 +130,13 @@
             }
         }
     });
+
+    $.extend($.cf.edit, {
+        focus: function(component) {
+            if (component)
+                focus(component);
+            else
+                unfocus(true);
+        }
+    })
 })(jQuery);

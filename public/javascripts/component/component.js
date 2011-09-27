@@ -16,6 +16,8 @@
                 if (sequence > nextAutoID)
                     nextAutoID = sequence + 1;
             }
+            if (components[this.id])
+                throw "Duplicate component ID " + this.id;
             components[this.id] = this;
         },
 

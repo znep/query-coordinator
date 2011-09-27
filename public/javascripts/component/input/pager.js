@@ -1,2 +1,2 @@
-$.component.Container.extend('Pager', 'input', {
+$.component.Component.extend('Pager', 'input', {
 });

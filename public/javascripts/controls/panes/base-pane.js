@@ -1475,7 +1475,7 @@
                 'data-min': min, 'data-max': max});
     };
 
-    renderLineItem.static = function(cpObj, contents, args, curValue)
+    renderLineItem['static'] = function(cpObj, contents, args, curValue)
     {
         var val = _.isFunction(args.item.value) ?
             args.item.value.call(cpObj, _.isEmpty(args.context.data) ? null : args.context.data) :

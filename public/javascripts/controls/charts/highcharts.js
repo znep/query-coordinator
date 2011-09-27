@@ -467,76 +467,161 @@
         var drawValueMarker = function()
         {
             var invertAxis = chartObj._chartType == 'bar';
-            if (chartObj._valueMarker && chartObj._valueMarker.renderer)
+            if (chartObj._valueMarkers && chartObj._valueMarkers[0].renderer)
             {
                 // This is a hackaround since it doesn't look like
                 // alignedObjects is ever supposed to be null.
                 // TODO: Chase down the Highcharts bug.
-                if (!chartObj._valueMarker.renderer.alignedObjects)
-                { chartObj._valueMarker.renderer.alignedObjects = []; }
-                chartObj._valueMarker.destroy();
-                delete chartObj._valueMarker;
-            }
-            if (!$.subKeyDefined(chartObj.settings.view.displayFormat, 'yAxis.marker') ||
-                    $.isBlank(chartObj.chart))
-            { return; }
-
-            var lineAt = parseFloat(chartObj.settings.view.displayFormat.yAxis.marker);
-            if (!_.isNumber(lineAt)) { return; }
-
-            var extremes = chartObj.chart.series[0].yAxis.getExtremes();
-            var percentage = (extremes.max - lineAt) / (extremes.max - extremes.min);
-            if (percentage > 1 || percentage < 0)
-            { return; }
-
-            var commands = [];
-            if (invertAxis)
-            {
-                var offsetLeft = ((1 - percentage) * chartObj.chart.plotWidth)
-                    + chartObj.chart.plotLeft;
-                commands.push(['M', offsetLeft, chartObj.chart.plotTop
-                    + chartObj.chart.plotHeight]);
-                commands.push(['L', offsetLeft, chartObj.chart.plotTop]);
-            }
-            else
-            {
-                var offsetTop = (percentage * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
-                commands.push(['M', chartObj.chart.plotLeft, offsetTop]);
-                commands.push(['L', chartObj.chart.plotLeft + chartObj.chart.plotWidth, offsetTop]);
-            }
-
-            var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
-
-            if (hasSVG)
-            { chartObj._valueMarker = chartObj.chart.renderer.path(_.flatten(commands))
-                .attr({
-                    'zIndex': 10,
-                    'stroke': chartObj.settings.view.displayFormat.yAxis.markerColor,
-                    'stroke-width': thickStroke ? 2 : 1,
-                    'stroke-dasharray': '9, 5'})
-                .add(); }
-            else
-            {
-                if (!chartObj._valueMarker || chartObj._valueMarker.length == 0)
+                _.each(chartObj._valueMarkers, function(marker)
                 {
-                    chartObj._valueMarker = $('<div />').css({ position: 'relative', 'zIndex': 10,
-                        'border-style': 'solid' });
-                    $(chartObj.chart.container).append(chartObj._valueMarker);
-                }
-                var cTop    = invertAxis ? commands[1][2] : commands[0][2];
-                var cLeft   = invertAxis ? commands[1][1] : commands[0][1];
-                var sAxis   = invertAxis ? 'height' : 'width';
-                var sAxis2  = invertAxis ? 'width' : 'height';
-                var sLength = invertAxis ? commands[0][2]-commands[1][2]
-                                         : commands[1][1]-commands[0][1];
-                var sWidth = thickStroke ? 2 : 1;
-                var changeset = { 'top': cTop+'px', left: cLeft+'px',
-                    'borderColor': chartObj.settings.view.displayFormat.yAxis.markerColor };
-                changeset[sAxis] = sLength + 'px';
-                changeset[sAxis2] = 0;
-                changeset.borderWidth = sWidth + 'px';
-                chartObj._valueMarker.css(changeset);
+                    if (!marker.renderer.alignedObjects)
+                    { marker.renderer.alignedObjects = []; }
+                    if (marker.handle)
+                    { marker.handle.destroy(); }
+                    marker.destroy();
+                });
+                delete chartObj._valueMarkers;
             }
+            if (!chartObj.settings.view.displayFormat.valueMarker || $.isBlank(chartObj.chart))
+            { return; }
+
+            if (!chartObj._valueMarkers)
+            { chartObj._valueMarkers = []; }
+
+            _.each(chartObj.settings.view.displayFormat.valueMarker, function(marker, index)
+            {
+                var lineAt = parseFloat(marker.atValue);
+                if (!_.isNumber(lineAt)) { return; }
+
+                var extremes = chartObj.chart.series[0].yAxis.getExtremes();
+                var percentage = (extremes.max - lineAt) / (extremes.max - extremes.min);
+                if (percentage > 1 || percentage < 0)
+                { return; }
+
+                var commands = [];
+                var handle;
+                if (invertAxis)
+                {
+                    var offsetLeft = ((1 - percentage) * chartObj.chart.plotWidth)
+                        + chartObj.chart.plotLeft;
+                    commands.push(['M', offsetLeft, chartObj.chart.plotTop
+                        + chartObj.chart.plotHeight]);
+                    commands.push(['L', offsetLeft, chartObj.chart.plotTop]);
+                    handle = [offsetLeft - 6, 3, 5];
+                }
+                else
+                {
+                    var offsetTop =
+                        (percentage * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
+                    commands.push(['M', chartObj.chart.plotLeft, offsetTop]);
+                    commands.push(['L', chartObj.chart.plotLeft+chartObj.chart.plotWidth, offsetTop]);
+                    handle = [chartObj.chart.plotLeft + chartObj.chart.plotWidth + 1,
+                              offsetTop - 1, 5];
+                }
+
+                var mouseover = function(event) {
+                    var $box = chartObj.$dom().siblings('#highcharts_tooltip');
+                    if ($box.length < 1)
+                    {
+                        chartObj.$dom().after('<div id="highcharts_tooltip"></div>');
+                        $box = chartObj.$dom().siblings('#highcharts_tooltip').hide();
+                    }
+
+                    var $container = $(chartObj.currentDom);
+                    var position;
+                    position = { 'top': event.clientY, 'left': event.clientX };
+                    if (invertAxis)
+                    { position.left = handle[0] + 10; }
+                    else
+                    { position.top = handle[1] + 10; }
+
+                    if (!hasSVG) { position.top += 10; }
+
+                    $box.empty()
+                        .append(marker.caption)
+                        .css({ top: position.top + 'px', left: position.left + 'px' })
+                        .show();
+
+                    if ($container.width() <= position.left + $box.width())
+                    { $box.css({ left: ($container.width() - $box.width() - 20) + 'px' }); }
+
+                    var too_low = $container.height() - (position.top + $box.height());
+                    if (too_low < 0)
+                    { $box.css({ top: (position.top + too_low - 20) + 'px' }); }
+                };
+
+                var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
+
+                if (hasSVG)
+                {
+                    chartObj._valueMarkers[index] =
+                        chartObj.chart.renderer.path(_.flatten(commands))
+                            .attr({
+                                'zIndex': 10,
+                                'stroke': marker.color,
+                                'stroke-width': thickStroke ? 2 : 1,
+                                'stroke-dasharray': '9, 5'})
+                            .add();
+                    if (!marker.caption) { return; }
+
+                    chartObj._valueMarkers[index].handle =
+                        chartObj.chart.renderer.circle.apply(chartObj.chart.renderer, handle)
+                            .attr({
+                                'zIndex': 10,
+                                'fill': marker.color
+                            })
+                            .add();
+                    _.each([chartObj._valueMarkers[index].element,
+                            chartObj._valueMarkers[index].handle.element], function(element)
+                    { $(element).hover(mouseover,
+                        function() { chartObj.$dom().siblings('#highcharts_tooltip').hide(); }); });
+                }
+                else
+                {
+                    if (!chartObj._valueMarkers[index] || chartObj._valueMarkers[index].length == 0)
+                    {
+                        chartObj._valueMarkers[index] =
+                            $('<div />').css({ position: 'relative', 'zIndex': 10,
+                                'border-style': 'solid' });
+                        $(chartObj.chart.container).append(chartObj._valueMarkers[index]);
+                    }
+                    var cTop    = invertAxis ? commands[1][2] : commands[0][2];
+                    var cLeft   = invertAxis ? commands[1][1] : commands[0][1];
+                    var sAxis   = invertAxis ? 'height' : 'width';
+                    var sAxis2  = invertAxis ? 'width' : 'height';
+                    var sLength = invertAxis ? commands[0][2]-commands[1][2]
+                                             : commands[1][1]-commands[0][1];
+                    var sWidth = thickStroke ? 2 : 1;
+                    var changeset = { 'top': cTop+'px', left: cLeft+'px',
+                        'borderColor': marker.color };
+                    changeset[sAxis] = sLength + 'px';
+                    changeset[sAxis2] = 0;
+                    changeset.borderWidth = sWidth + 'px';
+                    chartObj._valueMarkers[index].css(changeset);
+                    if (!marker.caption)
+                    {
+                        if (chartObj._valueMarkers[index].$handle)
+                        { chartObj._valueMarkers[index].$handle.remove(); }
+                        return;
+                    }
+
+                    if (!chartObj._valueMarkers[index].$handle
+                        || chartObj._valueMarkers[index].$handle.length == 0)
+                    {
+                        chartObj._valueMarkers[index].$handle =
+                            $('<div />').css({ position: 'relative', 'zIndex': 10,
+                                               width: '10px', height: '10px' });
+                        $(chartObj.chart.container).append(chartObj._valueMarkers[index].$handle);
+                    }
+                    chartObj._valueMarkers[index].$handle
+                        .css({ top: (handle[1] - 5) + 'px', left: (handle[0] - 5) + 'px',
+                               backgroundColor: marker.color })
+                    _.each([chartObj._valueMarkers[index],
+                            chartObj._valueMarkers[index].$handle], function($element)
+                    { $element.hover(mouseover,
+                        function() { chartObj.$dom().siblings('#highcharts_tooltip').hide(); }); });
+                }
+            });
         };
 
         var chartRedraw = function(evt)

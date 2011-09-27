@@ -186,6 +186,12 @@ Dataset.modules['chart'] =
 
         delete view.displayFormat.dataColumns;
 
+        if ($.subKeyDefined(view.displayFormat, 'yAxis.marker'))
+        {
+            view.displayFormat.valueMarker = [ { atValue: view.displayFormat.yAxis.marker,
+                                                 color: view.displayFormat.yAxis.markerColor }];
+        }
+
         if (view.displayFormat.chartType == 'treemap' && view.displayFormat.baseColor)
         {
             view.displayFormat.colors =

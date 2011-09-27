@@ -92,11 +92,25 @@
                 options: [ { type: 'static', name: '', value: 'Auto' },
                            { type: 'text', name: 'displayFormat.yAxis.max', prompt: 'Enter a number' }] },
             {text: 'Precision', type: 'slider', name: 'displayFormat.yAxis.formatter.decimalPlaces',
-                minimum: 0, maximum: 10, defaultValue: 2},
-            {type: 'group', options: [
-                {type: 'color', name: 'displayFormat.yAxis.markerColor',
-                    lineClass: 'colorCollapse', defaultValue: '#000000'},
-                {text: 'Value Marker', type: 'text', name: 'displayFormat.yAxis.marker'}]}
+                minimum: 0, maximum: 10, defaultValue: 2}
+        ]
+    };
+
+    var valueMarker = {
+        title: 'Value Marker', onlyIf: _.map(['treemap', 'pie', 'donut', ''],
+            function(type)
+            { return {field: 'displayFormat.chartType', value: type, negate: true}; }),
+        type: 'selectable', name: 'valueMarker',
+        fields: [
+            {type: 'repeater', name: 'displayFormat.valueMarker', addText: 'Add Marker', minimum: 0,
+                field: {type: 'group', options: [
+                    {type: 'group', options: [
+                        {type: 'color', name: 'color',
+                            lineClass: 'colorCollapse', defaultValue: '#000000'},
+                        {text: 'At Value', type: 'text', name: 'atValue'}]},
+                    {text: 'Caption', type: 'text', name: 'caption'}
+                ]}
+            }
         ]
     };
 
@@ -240,7 +254,7 @@
                         isTableColumn: true, notequalto: 'valueCol',
                         name: 'displayFormat.valueColumns.0.tableColumnId',
                         columns: {type: Dataset.chart.numericTypes, hidden: isEdit(cpObj)}
-                    }, pointSize(cpObj), pointColor(cpObj), baseColor ],
+                    }, pointSize(cpObj), pointColor(cpObj), baseColor ]
         };
     };
 
@@ -445,7 +459,8 @@
                 ] },
                 basicAdv(cpObj, Dataset.chart.types.treemap, [flyoutControls(cpObj)]),
 
-                yAxisFormatting
+                yAxisFormatting,
+                valueMarker
             ];
         },
 

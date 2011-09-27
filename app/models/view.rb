@@ -423,9 +423,9 @@ class View < Model
     return @blobs if !@blobs.nil?
 
     if is_blobby?
-      opts = { :filename => URI.escape(blobFilename) }
+      opts = { :filename => URI.escape(blobFilename || '') }
       b = {'href' => "/api/file_data/#{blobId}?#{opts.to_param}",
-        'type' => blobMimeType.gsub(/;.*/, ''), 'size' => blobFileSize}
+        'type' => (blobMimeType || '').gsub(/;.*/, ''), 'size' => blobFileSize}
       b['name'] =  blobFilename if blobFilename != name
       @blobs = [b]
     elsif is_href?
@@ -630,6 +630,12 @@ class View < Model
 
   def is_href?
     viewType == 'href'
+  end
+
+  def is_arcgis?
+    !metadata.blank? && !metadata.data['custom_fields'].blank? &&
+      !metadata.data['custom_fields']['Basic'].blank? &&
+      !metadata.data['custom_fields']['Basic']['Source'].blank?
   end
 
   def can_email?

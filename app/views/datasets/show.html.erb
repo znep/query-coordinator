@@ -419,7 +419,8 @@
     <%# More views %>
     blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
     blist.sidebarHidden.moreViews.views = <%= !@view.is_published? || !@view.is_tabular? %>;
-    blist.sidebarHidden.moreViews.snapshots = <%= @view.is_unpublished? || !@view.flag?('default') %>;
+    blist.sidebarHidden.moreViews.snapshots = <%= @view.is_unpublished? ||
+      !@view.flag?('default') || @view.is_arcgis? %>;
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};

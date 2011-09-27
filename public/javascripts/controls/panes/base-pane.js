@@ -208,7 +208,10 @@
                           special object named 'editorCallbacks',
                           with the following fields:
                           + create: Function to create the custom editor
+                          + required: Function that returns whether or not this field is required,
+                              mainly for validting if all fields in a block are valid
                           + value: Function that returns the value of the input
+                          + validate: Function that does validation and returns boolean of its validity
                           + cleanup: Function that does any required cleanup;
                               called when the editor is about to be removed
                   + name: required, HTML name of input.  This is the name the
@@ -620,6 +623,7 @@
                 .validate({ignore: ':hidden', errorElement: 'span',
                     errorPlacement: function($error, $element)
                         { $error.appendTo($element.closest('.line')); }});
+            $pane.data('form-validator', cpObj._validator);
 
             cpObj._isDirty = false;
             cpObj._visible = true;
@@ -732,6 +736,18 @@
             resetValidation(cpObj);
             cpObj.$dom().find('.mainError').text('');
             return true;
+        },
+
+        _isValid: function($input)
+        {
+            if ($input.hasClass('customWrapper'))
+            {
+                var customValidator = this._customCallbacks[$input.attr('data-customId')];
+                if (!$.isBlank(customValidator)) { customValidator = customValidator.validate; }
+                if (!_.isFunction(customValidator)) { return true; }
+                return customValidator.call(this, $input);
+            }
+            return $input.valid();
         },
 
         _getInputValue: function($input, results)
@@ -1787,6 +1803,17 @@
         { _.defer(function() { handlerProxy(event); }); };
 
         // deal with each field type manually
+        if ($field.hasClass('customWrapper'))
+        {
+            $field.find('input,select').each(function()
+                    {
+                        var $t = $(this);
+                        $t.change(handlerProxy);
+                        if ($.browser.msie && _.include(['checkbox', 'radio'], $t.attr('type')))
+                        { $field.click(handlerProxy); }
+                    });
+            $field.change(handlerProxy);
+        }
         if ($field.hasClass('sliderInput'))
         { $field.siblings('.sliderControl').bind('slide', deferredHandlerProxy); }
         else if ($field.hasClass('colorInput'))

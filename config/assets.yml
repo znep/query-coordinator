@@ -75,6 +75,7 @@ javascripts:
     - public/javascripts/component/data-context.js
     - public/javascripts/component/template.js
     - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/properties-editor.js
     - public/javascripts/controls/panes/chart-config.js
@@ -88,6 +89,7 @@ javascripts:
     - public/javascripts/component/configurator/cf-component-drag.js
     - public/javascripts/component/configurator/cf-top.js
     - public/javascripts/component/configurator/cf-side.js
+    - public/javascripts/component/context-picker.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-move.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-remove.js

@@ -43,7 +43,7 @@
 
         _changeHandler: function($field, event)
         {
-            if (!$.isBlank(this.component) && $field.valid())
+            if (!$.isBlank(this.component) && this._isValid($field))
             {
                 $.cf.edit.execute('properties',
                         {componentID: this.component.properties().id,

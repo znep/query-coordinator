@@ -155,6 +155,8 @@
                 {
                     doShow($this);
                 }
+                else if (config.showAll)
+                { processInput($this); }
             });
         });
     };
@@ -180,20 +182,34 @@
             processData($this, $this.data('awesomecomplete-config').staticData, term);
     };
 
+    var htmlEscape = function(text)
+    {
+        if (typeof text !== 'string') { return text; }
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    };
+
     var processData = function($this, data, term)
     {
+        var config = $this.data('awesomecomplete-config');
         var $list = $this.data('awesomecomplete-list');
         $list.empty().hide();
-        if (term === '')
+        if (!config.showAll && term === '')
             return;
 
-        var config = $this.data('awesomecomplete-config');
+        var terms = [ term ];
+        if (config.splitTerm)
+            terms = term.split(config.wordDelimiter);
 
         var results = [];
         for (var item = 0; item < data.length; item++)
         {
             var dataItem = jQuery.extend({}, data[item]);
             var matchCount = 0;
+            if (config.showAll && term === '') { matchCount++; }
 
             var maxFieldMatches = 0;
             var topMatch = null;
@@ -212,17 +228,15 @@
                     continue;
 
                 var dataString = dataItem[field].toString();
-                var terms = [ term ];
-                if (config.splitTerm)
-                    terms = term.split(config.wordDelimiter);
-
+                var adjTerms = [];
                 for (var j = 0; j < terms.length; j++)
                 {
                     if (terms[j] === '')
                         continue;
 
-                    terms[j] = terms[j].replace(/[\\*+?|{}()^$.#]/g, '\\$1');
-                    var regex = new RegExp('(' + terms[j] + ')', (config.ignoreCase ? 'ig' : 'g'));
+                    var modT = terms[j].replace(/([\\*+?|{}()^$.#])/g, '\\$1');
+                    var regex = new RegExp('(' + modT + ')', (config.ignoreCase ? 'ig' : 'g'));
+                    adjTerms.push(modT);
 
                     var matches = [];
                     if (matches = dataString.match(regex))
@@ -233,16 +247,28 @@
                         {
                             maxFieldMatches = matches.length;
                             topMatch = field;
-                            matchedTerms[j] = true;
+                            matchedTerms[adjTerms.length - 1] = true;
                         }
                     }
                 }
 
                 if (config.highlightMatches)
                 {
-                    var regex = new RegExp('(' + terms.join('|') + ')', (config.ignoreCase ? 'ig' : 'g'));
-                    dataItem[field] = dataString.replace(regex, '<span class="' + config.highlightClass + '">$1</span>');
+                    var regex = new RegExp('(' + adjTerms.join('|') + ')', (config.ignoreCase ? 'ig' : 'g'));
+                    var pieces = dataString.split(regex);
+                    for (var i = 0; i < pieces.length; i++)
+                    {
+                        pieces[i] = htmlEscape(pieces[i]);
+                        if (i % 2)
+                        {
+                            pieces[i] = '<span class="' + config.highlightClass + '">' +
+                                pieces[i] + '</span>';
+                        }
+                    }
+                    dataItem[field] = pieces.join('');
                 }
+                else
+                { dataItem[field] = htmlEscape(dataString); }
             }
 
             var matchedTermCount = 0;
@@ -269,7 +295,7 @@
 
         for (var i in results)
         {
-            $('<li>' + config.renderFunction(results[i].dataItem, results[i].topMatch, results[i].originalDataItem, config) + '</li>')
+            $('<li>' + config.renderFunction(results[i].dataItem, results[i].topMatch, config) + '</li>')
 				.data('awesomecomplete-dataItem', results[i].originalDataItem)
                 .data('awesomecomplete-value', config.valueFunction(results[i].originalDataItem, config))
                 .appendTo($list)
@@ -305,8 +331,17 @@
 
         if (config.forcePosition)
         {
-            $list.css('left', $this.position().left +
-                ($this.offsetParent().offset().left - $list.offsetParent().offset().left));
+            if (config.alignRight)
+            {
+                $list.css('right', $this.position().left +
+                        ($this.offsetParent().offset().left - $list.offsetParent().offset().left) -
+                        $list.outerWidth() + $this.outerWidth());
+            }
+            else
+            {
+                $list.css('left', $this.position().left +
+                    ($this.offsetParent().offset().left - $list.offsetParent().offset().left));
+            }
             $list.css('top', $this.position().top + $this.outerHeight(true) +
                 ($this.offsetParent().offset().top - $list.offsetParent().offset().top));
         }
@@ -316,9 +351,9 @@
     var defaultRenderFunction = function(dataItem, topMatch, config)
     {
         if ((topMatch === config.nameField) || (topMatch === null))
-            return '<p class="title">' + dataItem['name'] + '</p>';
+            return '<p class="title">' + dataItem[config.nameField] + '</p>';
         else
-            return '<p class="title">' + dataItem['name'] + '</p>' +
+            return '<p class="title">' + dataItem[config.nameField] + '</p>' +
                    '<p class="matchRow"><span class="matchedField">' + topMatch + '</span>: ' +
                         dataItem[topMatch] + '</p>';
     };
@@ -337,6 +372,7 @@
 
     $.fn.awesomecomplete.defaults = {
         activeItemClass: 'active',
+        alignRight: false,
         attachTo: undefined,
         blurFunction: function(list) {},
         dataMethod: undefined,
@@ -356,6 +392,7 @@
         suggestionListClass: "autocomplete",
         renderFunction: defaultRenderFunction,
         resultLimit: 10,
+        showAll: false,
         typingDelay: 0,
         valueFunction: defaultValueFunction,
         wordDelimiter: /[^\da-z]+/ig

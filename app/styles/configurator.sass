@@ -101,6 +101,10 @@ body.socrata-page
       opacity: .8
       &:hover
         opacity: 1
+
+    .autocomplete
+      left: 0
+
   .item
     float: left
     margin: 4px 0
@@ -202,6 +206,43 @@ body.socrata-page
       &.collapsed .formHeader
         color: #666666
 
+// Special control for dealing with component contexts
+.controlPane .formSection .line .customWrapper.contextPicker
+  background-image: url(/stylesheets/images/common/uniform_sprite.png)
+  background-position: -485px -130px
+  background-repeat: no-repeat
+  display: inline-block
+  height: 26px
+  line-height: 26px
+  vertical-align: bottom
+  .wrapper
+    background-image: url(/stylesheets/images/common/uniform_sprite.png)
+    background-position: right 0px
+    background-repeat: no-repeat
+    height: 22px
+    line-height: 26px
+    margin-left: 8px
+    padding:
+      bottom: 2px
+      left: 0
+      right: 25px
+      top: 1px
+  .textInput
+    background-color: #ffffff
+    border-color: #dddddd
+    @include border-radius(0)
+    @include box-shadow-none
+    cursor: pointer
+    padding: 0
+  .dropdownChooser
+    background: none
+    display: inline-block
+    height: 21px
+    position: absolute
+    right: 4px
+    top: 2px
+    width: 21px
+
 
 // Base/default styles shared by all components
 .socrata-component
@@ -259,14 +300,14 @@ $icon_slot: 0
 @include icon(Picture)
 @include icon(Related)
 @include icon(Text)
-@include icon(BarChart)
+@include icon(ColumnChart)
 @include icon(LineChart)
 @include icon(Map)
 @include icon(PieChart)
 @include icon(Repeater)
-@include icon(ScatterPlot)
+@include icon(BubbleChart)
 @include icon(Table)
-@include icon(Timeline)
+@include icon(TimeLine)
 @include icon(TreeMap)
 @include icon(CreateChart)
 @include icon(CreateMap)

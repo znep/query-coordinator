@@ -16,11 +16,7 @@ _.each(Dataset.chart.types, function(value, localChartType)
 
         configurationSchema: function()
         {
-            var retVal = {schema: [{
-                fields: [{type: 'text', name: 'viewId', required: true, text: 'View ID',
-                            data: { '4x4uid': 'req'}}]
-            }],
-            view: this._view};
+            var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: this._view};
             if ($.isBlank(this._view)) { return retVal; }
             retVal.schema = retVal.schema
                 .concat(blist.configs.chart.configForType(this._chartType, {view: this._view}));
@@ -57,31 +53,21 @@ _.each(Dataset.chart.types, function(value, localChartType)
 
 var updateProperties = function(lcObj, properties)
 {
-    if (!$.isBlank(properties.viewId) && ($.isBlank(lcObj._view) || lcObj._view.id != properties.viewId))
-    {
-        lcObj.startLoading();
-        if (!$.isBlank(lcObj._propEditor))
-        { lcObj._propEditor.setComponent(null); }
-        $.dataContext.getContext(lcObj._properties.viewId, function(view)
-        {
-            lcObj.finishLoading();
-            lcObj._view = view;
-            if (!$.isBlank(lcObj._propEditor))
-            { lcObj._propEditor.setComponent(lcObj); }
-            if (!$.isBlank(lcObj._chart))
-            { lcObj._chart.setView(lcObj._view); }
-            else
-            {
-                lcObj._chart = lcObj.$contents.socrataChart({
-                    chartType: lcObj._chartType,
-                    displayFormat: lcObj._properties.displayFormat,
-                    view: lcObj._view
-                });
-                lcObj._updateValidity();
-            }
-        });
-    }
-    else if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._chart))
+    if (!lcObj._updateDataSource(properties, function()
+                {
+                    if (!$.isBlank(this._chart))
+                    { this._chart.setView(this._view); }
+                    else
+                    {
+                        this._chart = this.$contents.socrataChart({
+                            chartType: this._chartType,
+                            displayFormat: this._properties.displayFormat,
+                            view: this._view
+                        });
+                        this._updateValidity();
+                    }
+                }) &&
+            !$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._chart))
     { lcObj._chart.reload(lcObj._properties.displayFormat); }
 };
 

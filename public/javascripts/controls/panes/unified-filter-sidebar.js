@@ -22,6 +22,12 @@
                 'This view has no columns to filter';
         },
 
+        setView: function()
+        {
+            this._super.apply(this, arguments);
+            this.reset();
+        },
+
         _getSections: function()
         {
             return [{

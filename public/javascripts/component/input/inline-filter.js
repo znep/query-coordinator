@@ -7,20 +7,34 @@ $.component.Component.extend('Inline filter', 'input', {
             templates: ['grid_sidebar', 'unified_filter']};
     },
 
+    configurationSchema: function()
+    {
+        var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: this._view};
+        return retVal;
+    },
+
     _render: function()
     {
-        var lcObj = this;
-        lcObj._super.apply(lcObj, arguments);
+        this._super.apply(this, arguments);
 
-        if ($.isBlank(lcObj._properties.viewId)) { return; }
+        this._updateDataSource(this._properties, renderUpdate);
+    },
 
-        lcObj.startLoading();
-        $.dataContext.getContext(lcObj._properties.viewId, function(view)
-        {
-            lcObj.finishLoading();
-            lcObj.$contents.pane_unifiedFilter({
-                view: view
-            }).render();
-        });
+    _propWrite: function(properties)
+    {
+        this._super.apply(this, arguments);
+
+        this._updateDataSource(properties, renderUpdate);
     }
 });
+
+var renderUpdate = function()
+{
+    if (!$.isBlank(this._uf))
+    { this._uf.setView(this._view); }
+    else
+    {
+        this._uf = this.$contents.pane_unifiedFilter({ view: this._view }).render();
+        this._updateValidity();
+    }
+};

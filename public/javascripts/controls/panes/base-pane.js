@@ -345,8 +345,11 @@
             cpObj._visible = false;
             cpObj._isReady = true;
 
-            cpObj.settings.view.bind('columns_changed', function()
-            { updateColumnSelects(cpObj); });
+            if (!$.isBlank(cpObj.settings.view))
+            {
+                cpObj.settings.view.bind('columns_changed', function()
+                { updateColumnSelects(cpObj); });
+            }
 
             cpObj.$dom().attr('id', 'controlPane_' + cpObj.settings.name + '_' + _.uniqueId())
                 .addClass('controlPane ' + cpObj.settings.name);
@@ -2050,7 +2053,7 @@
                 o.$field.change(showHideSection).keypress(showHideSection)
                     .click(showHideSection).attr('data-onlyIfInput', true);
             }
-            else if (isFunc && !_.isUndefined(cpObj.settings.view))
+            else if (isFunc && !$.isBlank(cpObj.settings.view))
             { cpObj.settings.view.bind('columns_changed', showHideSection); }
         });
 

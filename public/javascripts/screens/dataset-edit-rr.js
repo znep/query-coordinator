@@ -48,69 +48,77 @@ editRRNS.initSidebar = function()
         { return 'a' + ('000' + c.position).slice(-3); }
         return 'z' + c.name;
     };
-    var cols = _.sortBy(blist.dataset.realColumns, sortFunc);
 
-    var paletteConfig = {
-        name: 'palette',
-        title: 'Add Fields',
-        subtitle: 'Choose fields to add to your layout and then drag and drop them to the canvas where you would like them',
-        sections: [
+    $.Control.extend('pane_layoutPalette', {
+        getTitle: function()
+        { return 'Add Fields'; },
+
+        getSubtitle: function()
         {
-            title: 'Static',
-            customContent: {
-                template: 'staticPalette',
-                callback: function($sect)
-                {
-                    $sect.find('.fieldItem').each(function()
-                        { editRRNS.enableFieldItem($(this), true); });
-                }
-            }
+            return 'Choose fields to add to your layout and then drag and drop ' +
+                'them to the canvas where you would like them';
         },
+
+        _getSections: function()
         {
-            title: 'Labels',
-            customContent: {
-                template: 'labelPalette',
-                directive: {
-                    'li.columnItem': {
-                        'column<-': {
-                            '.columnLabel': 'column.name!',
-                            '.columnLabel@data-tcid': 'column.tableColumnId'
-                        }
+            var cols = _.sortBy(this.settings.view.realColumns, sortFunc);
+            return [
+            {
+                title: 'Static',
+                customContent: {
+                    template: 'staticPalette',
+                    callback: function($sect)
+                    {
+                        $sect.find('.fieldItem').each(function()
+                            { editRRNS.enableFieldItem($(this), true); });
                     }
-                },
-                data: cols,
-                callback: function($sect)
-                {
-                    $sect.find('.fieldItem').each(function()
-                        { editRRNS.enableFieldItem($(this), true); });
                 }
-            }
-        },
-        {
-            title: 'Fields',
-            customContent: {
-                template: 'fieldPalette',
-                directive: {
-                    'li.columnItem': {
-                        'column<-': {
-                            '.columnData': '(#{column.name!})',
-                            '.columnData@data-tcid': 'column.tableColumnId',
-                            '.columnData@class+':
-                                'columnId#{column.id} #{column.renderTypeName}'
+            },
+            {
+                title: 'Labels',
+                customContent: {
+                    template: 'labelPalette',
+                    directive: {
+                        'li.columnItem': {
+                            'column<-': {
+                                '.columnLabel': 'column.name!',
+                                '.columnLabel@data-tcid': 'column.tableColumnId'
+                            }
                         }
+                    },
+                    data: cols,
+                    callback: function($sect)
+                    {
+                        $sect.find('.fieldItem').each(function()
+                            { editRRNS.enableFieldItem($(this), true); });
                     }
-                },
-                data: cols,
-                callback: function($sect)
-                {
-                    $sect.find('.fieldItem').each(function()
-                        { editRRNS.enableFieldItem($(this), true); });
                 }
-            }
+            },
+            {
+                title: 'Fields',
+                customContent: {
+                    template: 'fieldPalette',
+                    directive: {
+                        'li.columnItem': {
+                            'column<-': {
+                                '.columnData': '(#{column.name!})',
+                                '.columnData@data-tcid': 'column.tableColumnId',
+                                '.columnData@class+':
+                                    'columnId#{column.id} #{column.renderTypeName}'
+                            }
+                        }
+                    },
+                    data: cols,
+                    callback: function($sect)
+                    {
+                        $sect.find('.fieldItem').each(function()
+                            { editRRNS.enableFieldItem($(this), true); });
+                    }
+                }
+            }];
         }
-        ]
-    };
-    $.gridSidebar.registerConfig(paletteConfig);
+    }, {name: 'palette'}, 'controlPane');
+    $.gridSidebar.registerConfig('palette', 'pane_layoutPalette');
 
     // Init and wire sidebar
     editRRNS.sidebar = $('#gridSidebar').gridSidebar({

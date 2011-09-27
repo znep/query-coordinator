@@ -225,190 +225,253 @@ blist.publish.generateEmbedCode = function(hash)
 };
 
 // Register the SDP sidebars !
-_.each([
-{
-    name: 'metadata',
-    priority: 1,
-    title: 'Template Metadata',
-    subtitle: 'Edit basic information about this Social Data Player Template',
-    noReset: true,
-    dataSource: publishNS.resolveCurrentThemeMeta,
-    showCallback: publishNS.updateCustomUI,
-    sections: [
+$.Control.extend('pane_sdpTmplMetadata', {
+    getTitle: function()
+    { return 'Template Metadata'; },
+
+    getSubtitle: function()
+    { return 'Edit basic information about this Social Data Player Template'; },
+
+    _getCurrentData: function()
+    { return this._super() || publishNS.resolveCurrentThemeMeta(); },
+
+    shown: function()
     {
-        title: 'Information', name: 'metadata',
-        fields: [
-        {   text: 'Name', name: '_name',
-            prompt: 'Name this Template',
-            type: 'text', required: true },
-        {   text: 'Description', name: 'description',
-            prompt: 'Record notes about this template here',
-            type: 'textarea' }]
-    }]
-},
-{
-    name: 'appearance',
-    priority: 2,
-    title: 'Template Appearance',
-    subtitle: 'Edit the appearance of this Social Data Player Template',
-    noReset: true,
-    dataSource: publishNS.resolveWorkingTheme,
-    showCallback: publishNS.updateCustomUI,
-    sections: [
-    {
-        title: 'Exterior', name: 'exterior',
-        fields: [
-        {   text: 'Width', name: 'publish.dimensions.width',
-            type: 'text', required: true, validateMin: 425 },
-        {   text: 'Height', name: 'publish.dimensions.height',
-            type: 'text', required: true, validateMin: 425 },
-        {   text: 'Powered By Text', name: 'publish.show_powered_by',
-            type: 'checkbox' }]
+        this._super();
+        publishNS.updateCustomUI();
     },
+
+    _getSections: function()
     {
-        title: 'Logo', name: 'logo',
-        customContent: {
-            template: 'logoEdit',
-            directive: {},
-            callback: publishNS.wireLogoEditor
-        }
+        return [
+        {
+            title: 'Information', name: 'metadata',
+            fields: [
+            {   text: 'Name', name: '_name',
+                prompt: 'Name this Template',
+                type: 'text', required: true },
+            {   text: 'Description', name: 'description',
+                prompt: 'Record notes about this template here',
+                type: 'textarea' }]
+        }];
+    }
+}, {name: 'metadata', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('metadata', 'pane_sdpTmplMetadata');
+
+$.Control.extend('pane_sdpTmplAppearance', {
+    getTitle: function()
+    { return 'Template Appearance'; },
+
+    getSubtitle: function()
+    { return 'Edit the appearance of this Social Data Player Template'; },
+
+    _getCurrentData: function()
+    { return this._super() || publishNS.resolveWorkingTheme(); },
+
+    shown: function()
+    {
+        this._super();
+        publishNS.updateCustomUI();
     },
+
+    _getSections: function()
     {
-        title: 'Color and Style', name: 'colors',
-        fields: [
-        {   text: 'Frame Color', name: 'frame.color',
-            type: 'color', advanced: true, showLabel: true },
-        {   text: 'Border Color', name: 'frame.border.color',
-            type: 'color', advanced: true, showLabel: true },
-        {   text: 'Button Color', name: '_menuButtonColor',
-            type: 'color', advanced: true, showLabel: true },
-        {   text: 'Toolbar Color', name: 'toolbar.color',
-            type: 'color', advanced: true, showLabel: true },
-        {   text: 'Find Field Color', name: 'toolbar.input_color',
-            type: 'color', advanced: true, showLabel: true },
-        {   type: 'group', text: 'Border Width', includeLabel: true,
-            lineClass: 'dimensions', options: [
-            {   type: 'text', name: 'frame.border.width.value', inputOnly: true },
-            {   type: 'select', name: 'frame.border.width.unit', inputOnly: true,
-                options: publishNS.dimensionOptions }] } ]
+        return [
+        {
+            title: 'Exterior', name: 'exterior',
+            fields: [
+            {   text: 'Width', name: 'publish.dimensions.width',
+                type: 'text', required: true, validateMin: 425 },
+            {   text: 'Height', name: 'publish.dimensions.height',
+                type: 'text', required: true, validateMin: 425 },
+            {   text: 'Powered By Text', name: 'publish.show_powered_by',
+                type: 'checkbox' }]
+        },
+        {
+            title: 'Logo', name: 'logo',
+            customContent: {
+                template: 'logoEdit',
+                directive: {},
+                callback: publishNS.wireLogoEditor
+            }
+        },
+        {
+            title: 'Color and Style', name: 'colors',
+            fields: [
+            {   text: 'Frame Color', name: 'frame.color',
+                type: 'color', advanced: true, showLabel: true },
+            {   text: 'Border Color', name: 'frame.border.color',
+                type: 'color', advanced: true, showLabel: true },
+            {   text: 'Button Color', name: '_menuButtonColor',
+                type: 'color', advanced: true, showLabel: true },
+            {   text: 'Toolbar Color', name: 'toolbar.color',
+                type: 'color', advanced: true, showLabel: true },
+            {   text: 'Find Field Color', name: 'toolbar.input_color',
+                type: 'color', advanced: true, showLabel: true },
+            {   type: 'group', text: 'Border Width', includeLabel: true,
+                lineClass: 'dimensions', options: [
+                {   type: 'text', name: 'frame.border.width.value', inputOnly: true },
+                {   type: 'select', name: 'frame.border.width.unit', inputOnly: true,
+                    options: publishNS.dimensionOptions }] } ]
+        },
+        {
+            title: 'Column Headers', name: 'columns',
+            onlyIf: { func: function() { return publishNS.viewIsGrid; } },
+            fields: [
+            {   text: 'Wrap Column Titles', name: 'grid.wrap_header_text',
+                type: 'checkbox' },
+            {   text: 'Bold Titles', name: 'grid.title_bold',
+                type: 'checkbox' },
+            {   type: 'group', text: 'Font Size', includeLabel: true,
+                lineClass: 'dimensions', options: [
+                {   type: 'text', name: 'grid.font.header_size.value', inputOnly: true },
+                {   type: 'select', name: 'grid.font.header_size.unit', inputOnly: true,
+                    options: publishNS.dimensionOptions }] } ]
+        },
+        {
+            title: 'Rows', name: 'rows',
+            onlyIf: { func: function() { return publishNS.viewIsGrid; } },
+            fields: [
+            {   text: 'Row Numbers', name: 'grid.row_numbers',
+                type: 'checkbox' },
+            {   type: 'group', text: 'Font Size', includeLabel: true,
+                lineClass: 'dimensions', options: [
+                {   type: 'text', name: 'grid.font.data_size.value', inputOnly: true },
+                {   type: 'select', name: 'grid.font.data_size.unit', inputOnly: true,
+                    options: publishNS.dimensionOptions }] },
+            {   text: 'Stripe Rows', name: '_zebraStriping',
+                type: 'checkbox' },
+            {   text: 'Stripe Color', name: 'grid.zebra',
+                type: 'color', advanced: true, showLabel: true } ]
+        },
+        {
+            title: 'Toolbars', name: 'toolbars',
+            fields: [
+            {   text: 'Dataset Title', name: 'frame.show_title',
+                type: 'checkbox' },
+            {   text: 'Orientation', name: 'frame.orientation',
+                type: 'radioSelect', options: [ 'downwards', 'upwards' ] } ]
+        }];
+    }
+}, {name: 'appearance', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('appearance', 'pane_sdpTmplAppearance');
+
+$.Control.extend('pane_sdpTmplBehavior', {
+    getTitle: function()
+    { return 'Behavior'; },
+
+    getSubtitle: function()
+    { return 'Edit the behavior of this Social Data Player Template'; },
+
+    _getCurrentData: function()
+    { return this._super() || publishNS.resolveWorkingTheme(); },
+
+    shown: function()
+    {
+        this._super();
+        publishNS.updateCustomUI();
     },
+
+    _getSections: function()
     {
-        title: 'Column Headers', name: 'columns',
-        onlyIf: { func: function() { return publishNS.viewIsGrid; } },
-        fields: [
-        {   text: 'Wrap Column Titles', name: 'grid.wrap_header_text',
-            type: 'checkbox' },
-        {   text: 'Bold Titles', name: 'grid.title_bold',
-            type: 'checkbox' },
-        {   type: 'group', text: 'Font Size', includeLabel: true,
-            lineClass: 'dimensions', options: [
-            {   type: 'text', name: 'grid.font.header_size.value', inputOnly: true },
-            {   type: 'select', name: 'grid.font.header_size.unit', inputOnly: true,
-                options: publishNS.dimensionOptions }] } ]
+        return [
+        {
+            title: 'Menu', name: 'sdp_menu',
+            fields: [
+            {   text: 'More Views', name: 'menu.options.more_views',
+                type: 'checkbox' },
+            {   text: 'Discuss', name: 'menu.options.comments',
+                type: 'checkbox' },
+            {   text: 'Downloads', name: 'menu.options.downloads',
+                type: 'checkbox' },
+            {   text: 'Embed', name: 'menu.options.embed',
+                type: 'checkbox' },
+            {   text: 'API', name: 'menu.options.api',
+                type: 'checkbox' },
+            {   text: 'Print', name: 'menu.options.print',
+                type: 'checkbox', onlyIf: publishNS.viewIsGrid },
+            {   text: 'About the SDP', name: 'menu.options.about_sdp',
+                type: 'checkbox' }]
+        },
+        {
+            title: 'General', name: 'general',
+            fields: [
+            {   text: 'Share Menu', name: 'menu.share',
+                type: 'checkbox' },
+            {   text: 'Full Screen', name: 'menu.fullscreen',
+                type: 'checkbox' },
+            {   text: 'Warn When Leaving', name: 'behavior.interstitial',
+                type: 'checkbox' },
+            {   value: 'Shows an alert notifying viewers that they are being ' +
+                       'redirected to another site when clicking external links',
+                type: 'static' }]
+        }];
+    }
+}, {name: 'behavior', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('behavior', 'pane_sdpTmplBehavior');
+
+$.Control.extend('pane_sdpTmplAdvanced', {
+    getTitle: function()
+    { return 'Advanced'; },
+
+    getSubtitle: function()
+    { return 'Edit some advanced features of this Social Data Player Template'; },
+
+    _getCurrentData: function()
+    { return this._super() || publishNS.resolveWorkingTheme(); },
+
+    shown: function()
+    {
+        this._super();
+        publishNS.updateCustomUI();
     },
+
+    _getSections: function()
     {
-        title: 'Rows', name: 'rows',
-        onlyIf: { func: function() { return publishNS.viewIsGrid; } },
-        fields: [
-        {   text: 'Row Numbers', name: 'grid.row_numbers',
-            type: 'checkbox' },
-        {   type: 'group', text: 'Font Size', includeLabel: true,
-            lineClass: 'dimensions', options: [
-            {   type: 'text', name: 'grid.font.data_size.value', inputOnly: true },
-            {   type: 'select', name: 'grid.font.data_size.unit', inputOnly: true,
-                options: publishNS.dimensionOptions }] },
-        {   text: 'Stripe Rows', name: '_zebraStriping',
-            type: 'checkbox' },
-        {   text: 'Stripe Color', name: 'grid.zebra',
-            type: 'color', advanced: true, showLabel: true } ]
+        return [
+        {
+            title: 'Google Analytics', name: 'analytics',
+            fields: [
+            {   text: 'GA Code', name: 'behavior.ga_code',
+                type: 'text' },
+            {   value: 'If you use Google Analytics you can embed your tracking ' +
+                       'code into your Social Data Player', type: 'static' }]
+        }];
+    }
+}, {name: 'advanced', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('advanced', 'pane_sdpTmplAdvanced');
+
+$.Control.extend('pane_sdpTmplEmbed', {
+    getTitle: function()
+    { return 'Embed'; },
+
+    getSubtitle: function()
+    { return 'Publish this Social Data Player on the web'; },
+
+    _getCurrentData: function()
+    { return this._super() || { code: publishNS.generateEmbedCode() }; },
+
+    shown: function()
+    {
+        this._super();
+        publishNS.updateCustomUI();
     },
+
+    _getSections: function()
     {
-        title: 'Toolbars', name: 'toolbars',
-        fields: [
-        {   text: 'Dataset Title', name: 'frame.show_title',
-            type: 'checkbox' },
-        {   text: 'Orientation', name: 'frame.orientation',
-            type: 'radioSelect', options: [ 'downwards', 'upwards' ] } ]
-    }]
-},
-{
-    name: 'behavior',
-    priority: 3,
-    title: 'Behavior',
-    subtitle: 'Edit the behavior of this Social Data Player Template',
-    noReset: true,
-    dataSource: publishNS.resolveWorkingTheme,
-    showCallback: publishNS.updateCustomUI,
-    sections: [
-    {
-        title: 'Menu', name: 'sdp_menu',
-        fields: [
-        {   text: 'More Views', name: 'menu.options.more_views',
-            type: 'checkbox' },
-        {   text: 'Discuss', name: 'menu.options.comments',
-            type: 'checkbox' },
-        {   text: 'Downloads', name: 'menu.options.downloads',
-            type: 'checkbox' },
-        {   text: 'Embed', name: 'menu.options.embed',
-            type: 'checkbox' },
-        {   text: 'API', name: 'menu.options.api',
-            type: 'checkbox' },
-        {   text: 'Print', name: 'menu.options.print',
-            type: 'checkbox', onlyIf: publishNS.viewIsGrid },
-        {   text: 'About the SDP', name: 'menu.options.about_sdp',
-            type: 'checkbox' }]
-    },
-    {
-        title: 'General', name: 'general',
-        fields: [
-        {   text: 'Share Menu', name: 'menu.share',
-            type: 'checkbox' },
-        {   text: 'Full Screen', name: 'menu.fullscreen',
-            type: 'checkbox' },
-        {   text: 'Warn When Leaving', name: 'behavior.interstitial',
-            type: 'checkbox' },
-        {   value: 'Shows an alert notifying viewers that they are being ' +
-                   'redirected to another site when clicking external links',
-            type: 'static' }]
-    }]
-},
-{
-    name: 'advanced',
-    priority: 3,
-    title: 'Advanced',
-    subtitle: 'Edit some advanced features of this Social Data Player Template',
-    noReset: true,
-    dataSource: publishNS.resolveWorkingTheme,
-    showCallback: publishNS.updateCustomUI,
-    sections: [
-    {
-        title: 'Google Analytics', name: 'analytics',
-        fields: [
-        {   text: 'GA Code', name: 'behavior.ga_code',
-            type: 'text' },
-        {   value: 'If you use Google Analytics you can embed your tracking ' +
-                   'code into your Social Data Player', type: 'static' }]
-    }]
-},
-{
-    name: 'embed',
-    priority: 4,
-    title: 'Embed',
-    subtitle: 'Publish this Social Data Player on the web',
-    noReset: true,
-    dataSource: function() { return { code: publishNS.generateEmbedCode() }; },
-    showCallback: publishNS.updateCustomUI,
-    sections: [
-    {
-        title: 'Embed Code', name: 'embedCode',
-        fields: [
-        {   text: 'Embed Code', name: 'code',
-            type: 'textarea' },
-        {   value: 'You have made changes to this template that have ' +
-                   'not yet been saved. They will not reflect in published ' +
-                   'until you save the template.', type: 'static', lineClass: 'changesWarning' }]
-    }]
-}], $.gridSidebar.registerConfig);
+        return [
+        {
+            title: 'Embed Code', name: 'embedCode',
+            fields: [
+            {   text: 'Embed Code', name: 'code',
+                type: 'textarea' },
+            {   value: 'You have made changes to this template that have ' +
+                       'not yet been saved. They will not reflect in published ' +
+                       'until you save the template.', type: 'static', lineClass: 'changesWarning' }]
+        }];
+    }
+}, {name: 'embed', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('embed', 'pane_sdpTmplEmbed');
 
 
 ////////////////////////////////////////////

@@ -193,80 +193,100 @@ if (blist.publish.customFacets)
     }));
 }
 
-_.each([
-{
-    name: 'filter',
-    priority: 1,
-    title: 'Filter',
-    subtitle: 'Choose the default filters',
-    noReset: true,
-    dataSource: catalogNS.widgetDataSource,
-    sections: filterSections
-},
-{
-    name: 'advanced',
-    priority: 3,
-    title: 'Advanced',
-    subtitle: 'Choose sorting and advanced options',
-    noReset: true,
-    dataSource: catalogNS.widgetDataSource,
-    sections: [
-    {
-        title: 'Sort Results', name: 'sort',
-        fields: [
-        {   text: 'Sort By', name: 'defaults.sortBy',
-            type: 'select', options: publishNS.selectOptions.sortBy },
-        {   text: 'Time Period', name: 'sortPeriod',
-            type: 'select', linkedField: 'defaults.sortBy', prompt: null,
-            options: function(val) {
-                var sortOpt = _.detect(publishNS.selectOptions.sortBy, function(item) {
-                    return item.value == val;
-                });
-                if (!(sortOpt && sortOpt.is_time_period))
-                { return 'disabled'; }
-                return publishNS.selectOptions.timePeriods;
-            }
-        },
-        {   text: 'Hide Sort Control', name: 'disable.sort',
-            type: 'checkbox' }]
-    },
-    {
-        title: 'Result Options', name: 'limit',
-        fields: [
-        {   text: 'Results Per Page', name: 'limit',
-            type: 'text' },
-        {   text: 'Disable Paging', name: 'disable.pagination',
-            type: 'checkbox' }]
-    }]
-},
-{
-    name: 'embed',
-    priority: 5,
-    title: 'Embed',
-    subtitle: 'Grab the embed code for your catalog widget',
-    noReset: true,
-    dataSource: catalogNS.widgetDataSource,
-    sections: [
-    {
-        customContent: {
-            template: 'embedForm',
-            directive: {},
-            data: {},
-            callback: function($formElem)
-            {
-                catalogNS.updateMinSizes();
-                publishNS.$embedForm = $formElem.find('.htmlCode');
-                publishNS.$embedForm.click(function() { $(this).select(); });
+$.Control.extend('pane_widgetCreateFilter', {
+    getTitle: function()
+    { return 'Filter'; },
 
-                $formElem.find('.sizeInput').change( function() {
-                    catalogNS.handleResizeRequest($(this), $formElem)
-                });
-                // Generate initial embed code
-                catalogNS.updateBrowseEmbedCode();
+    getSubtitle: function()
+    { return 'Choose the default filters'; },
+
+    _getCurrentData: function()
+    { return this._super() || catalogNS.widgetDataSource(); },
+
+    _getSections: function()
+    { return filterSections; }
+}, {name: 'filter', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('filter', 'pane_widgetCreateFilter');
+
+$.Control.extend('pane_widgetCreateAdvanced', {
+    getTitle: function()
+    { return 'Advanced'; },
+
+    getSubtitle: function()
+    { return 'Choose sorting and advanced options'; },
+
+    _getCurrentData: function()
+    { return this._super() || catalogNS.widgetDataSource(); },
+
+    _getSections: function()
+    {
+        return [
+        {
+            title: 'Sort Results', name: 'sort',
+            fields: [
+            {   text: 'Sort By', name: 'defaults.sortBy',
+                type: 'select', options: publishNS.selectOptions.sortBy },
+            {   text: 'Time Period', name: 'sortPeriod',
+                type: 'select', linkedField: 'defaults.sortBy', prompt: null,
+                options: function(val) {
+                    var sortOpt = _.detect(publishNS.selectOptions.sortBy, function(item) {
+                        return item.value == val;
+                    });
+                    if (!(sortOpt && sortOpt.is_time_period))
+                    { return 'disabled'; }
+                    return publishNS.selectOptions.timePeriods;
+                }
+            },
+            {   text: 'Hide Sort Control', name: 'disable.sort',
+                type: 'checkbox' }]
+        },
+        {
+            title: 'Result Options', name: 'limit',
+            fields: [
+            {   text: 'Results Per Page', name: 'limit',
+                type: 'text' },
+            {   text: 'Disable Paging', name: 'disable.pagination',
+                type: 'checkbox' }]
+        }]
+    }
+}, {name: 'advanced', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('advanced', 'pane_widgetCreateAdvanced');
+
+$.Control.extend('pane_widgetCreateEmbed', {
+    getTitle: function()
+    { return 'Embed'; },
+
+    getSubtitle: function()
+    { return 'Grab the embed code for your catalog widget'; },
+
+    _getCurrentData: function()
+    { return this._super() || catalogNS.widgetDataSource(); },
+
+    _getSections: function()
+    {
+        return [
+        {
+            customContent: {
+                template: 'embedForm',
+                directive: {},
+                data: {},
+                callback: function($formElem)
+                {
+                    catalogNS.updateMinSizes();
+                    publishNS.$embedForm = $formElem.find('.htmlCode');
+                    publishNS.$embedForm.click(function() { $(this).select(); });
+
+                    $formElem.find('.sizeInput').change( function() {
+                        catalogNS.handleResizeRequest($(this), $formElem)
+                    });
+                    // Generate initial embed code
+                    catalogNS.updateBrowseEmbedCode();
+                }
             }
-        }
-    }]
-}], $.gridSidebar.registerConfig);
+        }]
+    }
+}, {name: 'embed', noReset: true}, 'controlPane');
+$.gridSidebar.registerConfig('embed', 'pane_widgetCreateEmbed');
 
 $(function(){
 

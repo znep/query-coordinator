@@ -135,7 +135,7 @@
                         return;
                     }
                     $field.append('(<a>change</a>)<input type="hidden" name="' +
-                        $field.attr('name') + '" />');
+                        $field.attr('name') + '" value="' + curValue + '" />');
                     $field.find('a').data('ajaxupload', new AjaxUpload($field, {
                         action: '/api/assets', autoSubmit: true, responseType: 'json',
                         onComplete: function(file, response)

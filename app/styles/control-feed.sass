@@ -89,9 +89,11 @@ $feed_ui_color: #b3b3b3
             li a
               color: #888
 
-            .actionReply, .actionInappropriate
+            .actionReply, .actionInappropriate, .actionDelete
               float: left
               margin-right: 1em
+            .actionDelete
+              display: none
             .rateDown, .rateUp, .downRatings, .upRatings
               float: right
               margin-left: 0.5em
@@ -101,6 +103,12 @@ $feed_ui_color: #b3b3b3
             &.ownItem
               .actionInappropriate, .rateDown, .rateUp
                 display: none
+              .actionDelete
+                display: block
+
+            &.isModerator
+              .actionDelete
+                display: block
 
       &.view
         .feedCustom
@@ -134,6 +142,9 @@ $feed_ui_color: #b3b3b3
 
     .specialFeedItem
       background: url("/stylesheets/images/interface/owner_background.png") repeat-x
+
+    .itemDeleted
+      @include opacity(0.3)
 
   .newCommentForm
     clear: both

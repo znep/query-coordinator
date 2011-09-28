@@ -1216,6 +1216,18 @@ this.Dataset = ServerModel.extend({
                 success: addedComment, error: errorCallback});
     },
 
+    removeComment: function(commentId, successCallback, errorCallback)
+    {
+        var ds = this;
+        var com = ds._commentByID[commentId];
+
+        if ($.isBlank(com)) return;
+
+        ds.makeRequest({url: '/views/' + this.id + '/comments/' +
+                commentId + '.json', type: 'DELETE',
+                success: successCallback, error: errorCallback});
+    },
+
     flagComment: function(commentId, successCallback, errorCallback)
     {
         var ds = this;

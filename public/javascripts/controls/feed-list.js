@@ -16,7 +16,9 @@
             function(a) { return (!_.isUndefined(a.context.currentUserRating) &&
                                       a.context.currentUserRating.thumbUp === false) ? ' ratedDown' : ''; },
         '.commentActions@class+':
-            function(a) { return (a.context.user.id == blist.currentUserId) ? 'ownItem' : ''; }
+            function(a) { return _.compact([(a.context.user.id == blist.currentUserId) ? 'ownItem' : null,
+                                            ((!_.isUndefined(blist.currentUser) &&
+                                             _.include(blist.currentUser.rights, 'moderate_comments')) ? 'isModerator' : null)]).join(' '); }
     };
     var customDirectives = {
         comment: commentDirective,
@@ -49,8 +51,9 @@
         var feedDirectiveBase = {
             '.@class+': function(a)
                 {
-                    return opts.highlightCallback(a.item) ?
-                        a.item.itemType + ' specialFeedItem': a.item.itemType;
+                    return _.compact([(opts.highlightCallback(a.item) ?
+                        a.item.itemType + ' specialFeedItem': a.item.itemType),
+                        (a.item.itemDeleted ? 'itemDeleted' : null)]).join(' ');
                 },
             '.@data-itemId': 'feedItem.itemId',
             '.feedCommon@class+': 'feedItem.itemType',
@@ -317,6 +320,20 @@
                                         $this.addClass('disabled')
                                             .text('Flagged!').fadeIn();
                                     });
+                                }
+                            );
+                        });
+                    }
+                    else if ($this.is('.commentDeleteLink'))
+                    {
+                        blist.util.doAuthedAction('delete a comment', function()
+                        {
+                            opts.actionDelegate(targetCommentData, opts).removeComment(
+                                targetCommentData.itemId,
+                                function()
+                                {
+                                    targetCommentData.itemDeleted = true;
+                                    $this.closest('.feedItem').animate({opacity: 0.3}, 2000);
                                 }
                             );
                         });

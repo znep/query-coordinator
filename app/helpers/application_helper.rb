@@ -93,6 +93,11 @@ module ApplicationHelper
       '";</script>' + include_javascripts('errors')
   end
 
+  def current_user_js
+    serialized_user = safe_json(current_user) if current_user
+    return render :partial => 'shared/current_user', :locals => { :serialized_user => serialized_user }
+  end
+
 # styles
   def rendered_stylesheet_tag(stylesheet, media='all')
     if Rails.env == 'development'
@@ -376,5 +381,5 @@ module ApplicationHelper
 
   safe_helper :meta_tags, :jquery_include, :javascript_error_helper_tag, :create_pagination,
     :render_domain_template, :rendered_stylesheet_tag, :get_publish_embed_code_for_view,
-    :render_browse, :safe_json, :blist_date, :blist_date_time, :blist_long_date
+    :render_browse, :safe_json, :blist_date, :blist_date_time, :blist_long_date, :current_user_js
 end

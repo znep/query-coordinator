@@ -103,6 +103,13 @@ $wizard.wizard({
                     state.type = 'esri';
                     command.next('metadata');
                 });
+                $pane.find('.newKindList a.shapefile').click(function(event)
+                {
+                    event.preventDefault();
+
+                    state.type = 'shapefile';
+                    command.next('uploadFile');
+                });
                 $pane.find('.newKindList a.blobby').click(function(event)
                 {
                     event.preventDefault();
@@ -169,8 +176,19 @@ $wizard.wizard({
                 $pane.find('.uploadFileFormats').toggle(isBlist);
 
                 // uploader
-                var uploadEndpoint = isBlist ? '/imports2.txt?method=scan'
-                                             : '/imports2.txt?method=blob';
+                var uploadEndpoint = '/imports2.txt?method=';
+                if (state.type == 'blist')
+                {
+                    uploadEndpoint += 'scan';
+                }
+                else if (state.type == 'shapefile')
+                {
+                    uploadEndpoint += 'shape';
+                }
+                else
+                {
+                    uploadEndpoint += 'blob';
+                }
 
                 var $uploadThrobber = $pane.find('.uploadThrobber');
                 var uploader = blist.fileUploader({
@@ -180,8 +198,23 @@ $wizard.wizard({
                     onSubmit: function(id, fileName)
                     {
                         var ext = (fileName.indexOf('.') >= 0) ? fileName.replace(/.*\./, '') : '';
-                        if (!((state.type == 'blobby') || (ext && /^(tsv|csv|xls|xlsx)$/i.test(ext))))
+                        if (state.type == 'blobby') {
+                            // We'll accept any type for a blob.
+                        }
+                        else if (state.type == 'shapefile')
                         {
+                            if (!(ext &&/^(zip|kml)$/i.test(ext)))
+                            {
+                                // Only accept ZIP and KML for shapefile.
+                                $pane.find('.uploadFileName')
+                                    .val('Please choose a KML or ZIP file.')
+                                    .addClass('error');
+                                return false;
+                            }
+                        }
+                        else if (!(ext && /^(tsv|csv|xls|xlsx)$/i.test(ext)))
+                        {
+                            // For all other state.type, accept only data files.
                             $pane.find('.uploadFileName')
                                 .val('Please choose a CSV, TSV, XLS, or XLSX file.')
                                 .addClass('error');
@@ -211,7 +244,8 @@ $wizard.wizard({
                         {
                             $uploadThrobber.slideUp();
                             $pane.find('.uploadFileName')
-                                .val('There was a problem ' + ((state.type == 'blobby') ? 'uploading' : 'importing') +
+                                .val('There was a problem ' +
+                                     ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing') +
                                      ' that file. Please make sure it is valid.')
                                 .addClass('error');
                             return false;
@@ -393,7 +427,8 @@ $wizard.wizard({
                     }
                 };
 
-                if ((state.type == 'blist') || (state.type  == 'blobby') || (state.type == 'external'))
+                if ((state.type == 'blist') || (state.type  == 'blobby') || (state.type == 'external') ||
+                    (state.type == 'shapefile'))
                 {
                     saveFormMetadata();
                 }

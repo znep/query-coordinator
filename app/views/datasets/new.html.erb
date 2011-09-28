@@ -38,6 +38,14 @@
               </a>
             </li>
             <%- end -%>
+            <%- if CurrentDomain.module_enabled?(:geospatial) -%>
+            <li>
+              <a href="#shapefile" class="shapefile" title="Choose this if you have an ESRI shapefile which you would like to import into the catalog.">
+                <span class="icon"></span>
+                <p>Import an ESRI Shapefile</p>
+              </a>
+            </li>
+            <%- end -%>
             <li>
               <a href="#blobby" class="blobby" title="Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.">
                 <span class="icon"></span>

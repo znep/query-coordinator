@@ -80,31 +80,42 @@
       </div>
 
       <div class="editSection clearfix">
-        <div class="line clearfix">
-          <label>Email Notifications</label>
-          <span class="textItem">
-            Subscribe to individual events by checking the associated box.
-          </span>
-        </div>
-        <%- EmailInterest.specification.sort {|a, b| a.last[:description] <=> b.last[:description]}.each do |interest| -%>
-          <%- next if interest.last[:right] && !current_user.has_right?(interest.last[:right]) -%>
-          <div class="line emailInterestLine clearfix">
-            <label>&nbsp;</label>
-            <%= check_box_tag("email_interests[#{interest.first}]", true, @email_interests.any? { |i| i.eventTag == interest.first }) %>
-            <label class="description" for="email_interests_<%= interest.first %>"><%= interest.last[:description]%></label>
+        <%- unless Rails.env.production? -%>
+          <div class="line clearfix">
+            <label>Email Notifications</label>
+            <span class="textItem">
+              Subscribe to individual events by checking the associated box.
+            </span>
+          </div>
+          <%- EmailInterest.specification.sort {|a, b| a.last[:description] <=> b.last[:description]}.each do |interest| -%>
+            <%- next if interest.last[:right] && !current_user.has_right?(interest.last[:right]) -%>
+            <div class="line emailInterestLine clearfix">
+              <label>&nbsp;</label>
+              <%= check_box_tag("email_interests[#{interest.first}]", true, @email_interests.any? { |i| i.eventTag == interest.first }) %>
+              <label class="description" for="email_interests_<%= interest.first %>"><%= interest.last[:description]%></label>
+            </div>
+          <%- end -%>
+          <div class="line emailSubscribeLine clearfix">
+            <label>Other</label>
+            <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
+            <label for="user_email_subscribe" class="description">
+              Actions directly affecting you, such as comment replies and status updates
+            </label>
+            <p><%= CurrentDomain.strings.company %> respects your privacy, and will never send you
+               marketing emails through this list, or give your email to a third party. The emails
+               sent from this site include account notifications and updates to datasets that you
+               have created or subscribed to.</p>
+          </div>
+        <%- else -%>
+          <div class="line clearfix">
+            <label>Email Notifications</label>
+            <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
+            <p><%= CurrentDomain.strings.company %> respects your privacy, and will never send you
+               marketing emails through this list, or give your email to a third party. The emails
+               sent from this site include account notifications and updates to datasets that you
+               have created or subscribed to.</p>
           </div>
         <%- end -%>
-        <div class="line emailSubscribeLine clearfix">
-          <label>Other</label>
-          <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
-          <label for="user_email_subscribe" class="description">
-            Actions directly affecting you, such as comment replies and status updates
-          </label>
-          <p><%= CurrentDomain.strings.company %> respects your privacy, and will never send you
-             marketing emails through this list, or give your email to a third party. The emails
-             sent from this site include account notifications and updates to datasets that you
-             have created or subscribed to.</p>
-        </div>
       </div>
     </div>
 

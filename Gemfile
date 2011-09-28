@@ -6,7 +6,7 @@ gem "jammit", "0.5.4"
 
 gem "rails", "2.3.11", :require => nil
 gem "rack", "1.1.0"
-gem "json", "1.4.6"
+gem "json", "1.6.1"
 gem "erubis", ">= 2.6.4"
 gem "multipart-post", "1.0.1", :require => 'net/http/post/multipart'
 gem "hashie", "0.3.1"

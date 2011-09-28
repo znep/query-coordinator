@@ -78,7 +78,7 @@
 
                 var existingGrant = createGrantObject($line);
 
-                cpObj.settings.replaceGrant(
+                cpObj.settings.view.replaceGrant(
                     $.extend({}, existingGrant, {type: $line.attr('data-currtype')}), existingGrant,
                     function()
                     {

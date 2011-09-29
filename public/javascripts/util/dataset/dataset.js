@@ -492,7 +492,9 @@ this.Dataset = ServerModel.extend({
             });
         };
 
-        var hasFilters = $.subKeyDefined(ds, 'query.filterCondition') || !$.isBlank(ds.searchString);
+        var useInline = ds.type != 'map'
+                        || $.subKeyDefined(ds, 'query.filterCondition')
+                        || !$.isBlank(ds.searchString);
 
         if (params['max_lon'] < params['min_lon'])
         {
@@ -508,13 +510,13 @@ this.Dataset = ServerModel.extend({
             };
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
-                params: $.extend({}, params, { 'min_lon': -179.999999 }), inline: hasFilters,
+                params: $.extend({}, params, { 'min_lon': -179.999999 }), inline: useInline,
                 success: function(data) { _.each(data, translateCluster); callback(data); },
                 error: errorCallback
             });
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
-                params: $.extend({}, params, { 'max_lon': 179.999999 }), inline: hasFilters,
+                params: $.extend({}, params, { 'max_lon': 179.999999 }), inline: useInline,
                 success: function(data) { _.each(data, translateCluster); callback(data); },
                 error: errorCallback
             });
@@ -522,7 +524,7 @@ this.Dataset = ServerModel.extend({
         else
         { ds.makeRequest({
             url: '/views/' + ds.id + '/rows.json',
-            params: params, inline: hasFilters,
+            params: params, inline: useInline,
             success: function(data)
             {
                 _.each(data, translateCluster);

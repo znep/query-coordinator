@@ -37,9 +37,10 @@ class LogRefererMiddleware
           logger.debug "Invalid referrer url format; not logging."
         end
 
+        domain.downcase!
         if uri.nil?
           # noop
-        elsif uri.host == domain
+        elsif uri.host.downcase == domain
           logger.debug "Not logging same domain referal (#{domain})."
         elsif uri.host =~ /rpxnow.com$/
           logger.debug "Not logging RPX return logins."

@@ -19,6 +19,7 @@ class EmailInterest < Model
     'MAIL.FUTURE_ACCOUNT_CREATED' =>
       {right: 'manage_users',   description: 'A privileged account is provisioned for future use'},
     'MAIL.NEW_NOMINATION' =>   {description: 'A new nomination is created'},
+    'MAIL.NOMINATION_STATUS_CHANGED' => {description: 'Any nomination is moderated'},
     'MAIL.VIEW_MADE_PUBLIC' => {description: 'Any view is made public'},
   }
 end

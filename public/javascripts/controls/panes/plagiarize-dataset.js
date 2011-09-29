@@ -5,7 +5,14 @@
         {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
+        },
 
+        render: function()
+        {
+            var cpObj = this;
+            cpObj._super.apply(cpObj, arguments);
+
+            if (this._pickerHooked) { return; }
             var $friendSelect = cpObj.$dom().find('.friendSelect');
             $friendSelect.userPicker({
                 attachTo: $('#templates'),
@@ -15,6 +22,7 @@
                 valueFunction: function(user) { return user.email; },
                 limit: 25
             });
+            this._pickerHooked = true;
         },
 
         getTitle: function()

@@ -16,12 +16,10 @@
 
     <h2>General Information</h2>
 
-    <%- if @view.is_unpublished? || !@view.is_tabular? || @view.is_published? && !@view.is_blist? -%>
     <div class="line clearfix">
       <label for="view_name" class="required">Dataset Title</label>
       <%= text_field_tag("view[name]", @view.name, :title => "Enter a title", :class => "textPrompt") %>
     </div>
-    <%- end -%>
 
     <div class="line clearfix">
       <label for="view_description">Brief Description</label>

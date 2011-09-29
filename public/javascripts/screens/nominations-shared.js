@@ -30,7 +30,7 @@ $(function()
             }
             else
             {
-                blist.nominations.updateNomination(editId ,nomination);
+                blist.nominations.updateNomination(editId, nomination);
             }
         };
         if ($.isBlank(editId))
@@ -66,6 +66,7 @@ $(function()
                     .text(fStat.capitalize())
                     .closest('tr.item').removeClass('pending rejected approved')
                     .addClass(nom.status);
+                blist.nominations.map[id].status = nom.status;
             },
             function error(xhr)
             {

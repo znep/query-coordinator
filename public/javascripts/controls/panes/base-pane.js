@@ -1925,7 +1925,7 @@
         {
             var forAttr = $(this).parents('label').attr('for');
             if (!$.isBlank(forAttr))
-            { $pane.find('#' + $.safeId(forAttr)).click(); }
+            { cpObj.$dom().find('#' + $.safeId(forAttr)).click(); }
         };
 
         // Inputs inside labels are likely attached to radio buttons.

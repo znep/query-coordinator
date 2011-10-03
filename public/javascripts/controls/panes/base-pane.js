@@ -1045,7 +1045,7 @@
 
         var result = {id: item.name, name: item.name, title: item.prompt,
             disabled: isDisabled, 'data-isDisabled': isDisabled,
-            'class': [ {value: 'required', onlyIf: item.required &&
+            'class': [ 'inputItem', {value: 'required', onlyIf: item.required &&
                 !context.inRepeater},
                     {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt) &&
                         _.include(['text', 'textarea'], item.type)},
@@ -1190,7 +1190,7 @@
     renderLineItem.color = function(cpObj, contents, args, curValue)
     {
         var item = $.extend({}, args.item,
-            {defaultValue: $.arrayify(args.item.defaultValue || [])});
+            {defaultValue: $.arrayify(args.item.defaultValue || []), extraClass: 'colorInput'});
         var defColor = curValue ||
             item.defaultValue[args.context.repeaterIndex] ||
             item.defaultValue[0];
@@ -1700,6 +1700,26 @@
             .trigger('resetToDefault');
     };
 
+    var hookUpChangeHandler = function(cpObj, $field, handler)
+    {
+        var handlerProxy = function(event) { handler.call(cpObj, $field, event); };
+        var deferredHandlerProxy = function(event)
+        { _.defer(function() { handlerProxy(event); }); };
+
+        // deal with each field type manually
+        if ($field.hasClass('sliderInput'))
+        { $field.siblings('.sliderControl').bind('slide', deferredHandlerProxy); }
+        else if ($field.hasClass('colorInput'))
+        { $field.siblings('.colorControl').bind('color_change', deferredHandlerProxy); }
+        else if ($field.is('input[type=text],textarea,select,input[type=file]'))
+        { $field.change(handlerProxy); }
+        else if ($field.is('input[type=checkbox],input[type=radio]'))
+        {
+            $field.change(handlerProxy)
+            if ($.browser.msie) { $field.click(handlerProxy); }
+        }
+    };
+
     var hookUpFields = function(cpObj, $container)
     {
         //*** Text Prompts
@@ -1770,26 +1790,12 @@
         // Defined before default behaviors in case someone wants to
         // stop propagation for some reason.
         $container.find('[data-change]').each(function()
+        { hookUpChangeHandler(cpObj, $(this), cpObj._changeHandlers[$field.attr('data-change')]); });
+        if (_.isFunction(cpObj._changeHandler))
         {
-            var $field = $(this);
-            var handler = cpObj._changeHandlers[$field.attr('data-change')];
-            var handlerProxy = function(event) { handler.call(cpObj, $field, event); };
-            var deferredHandlerProxy = function(event)
-            { _.defer(function() { handlerProxy(event); }); };
-
-            // deal with each field type manually
-            if ($field.is('input[type=text],select,input[type=file]'))
-            { $field.change(handlerProxy); }
-            else if ($field.is('input[type=checkbox],input[type=radio]'))
-            {
-                $field.change(handlerProxy)
-                if ($.browser.msie) { $field.click(handlerProxy); }
-            }
-            else if ($field.hasClass('sliderInput'))
-            { $field.bind('slide', deferredHandlerProxy); }
-            else if ($field.hasClass('colorControl'))
-            { $field.bind('color_change', deferredHandlerProxy); }
-        });
+            $container.find('.inputItem').each(function()
+            { hookUpChangeHandler(cpObj, $(this), cpObj._changeHandler); });
+        }
 
 
         //*** Slider

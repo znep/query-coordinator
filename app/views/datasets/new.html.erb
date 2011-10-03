@@ -126,6 +126,24 @@
           </div>
           <hr/>
         </li>
+        <li class="importShapefilePane" data-wizardPaneName="importShapefile">
+          <div class="flash"></div>
+          <p class="headline">Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.</p>
+          <p class="subheadline">This shapefile contains <span class="featureCount"></span> features.</p>
+
+          <div class="commonForm shapefileForm">
+            <div class="shapefileData">
+              <div class="line clearfix">
+                <label for="shapefile_referenceSystem" class="required">Coordinate Reference System</label>
+                <%= text_field_tag("shapefile[referenceSystem]", '', :title => "Choose a coordinate reference system",
+                                   :class => "referenceSystem textPrompt required") %>
+                <div class="additionalHelp">Enter a coordinate reference system in the form
+                  "<a href="http://www.epsg-registry.org/">EPSG:<em>number</em></a>". You can look up
+                  EPSG codes at the <a href="http://www.epsg-registry.org/">EPSG Registry</a>.</div>
+              </div>
+            </div>
+          </div>
+        </li>
         <li class="workingPane" data-wizardPaneName="importing">
           <p class="headline">Importing your data...</p>
           <p class="importStatus subheadline"></p>

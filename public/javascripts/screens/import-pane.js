@@ -33,7 +33,11 @@ var scan,
     headersCount,
     nextButtonTip,
     isShown,
-    submitError;
+    submitError,
+    $referenceSystem,
+    $featureCount,
+    referenceSystem,
+    featureCount;
 
 // structs
 var importTypes = {
@@ -977,6 +981,74 @@ importNS.importColumnsPaneConfig = {
     }
 };
 
+importNS.importShapefilePaneConfig = {
+    uniform: true,
+    onInitialize: function($paneLocal, paneConfig, state, command)
+    {
+        // update global vars
+        scan = state.scan;
+        isShown = false;
+        wizardCommand = command;
+        $pane = $paneLocal;
+        $referenceSystem = $pane.find('#shapefile_referenceSystem');
+        $featureCount = $pane.find(".featureCount");
+        referenceSystem = scan.summary.referenceSystem;
+        featureCount = scan.summary.featureCount;
+
+        $referenceSystem
+            .prev('label').addClass('required').end()
+            .rules('add',
+            {
+                required: true,
+                coordinateReferenceSystem: true,
+                messages:
+                {
+                    required: 'You must choose a coordinate reference system for this shapefile.',
+                    coordinateReferenceSystem: 'Enter a valid coordinate reference system.'
+                }
+            });
+
+        // populate the dataset name field
+        $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
+
+        // populate the summary data
+        $featureCount.text(featureCount);
+        if (referenceSystem)
+        {
+            $referenceSystem.val(referenceSystem).removeClass("prompt");
+        }
+
+        // track user input for CRS
+        $referenceSystem.change(function(event)
+        {
+            referenceSystem = $referenceSystem.val();
+        });
+
+        // we are now past the first init, so start animating things
+        isShown = true;
+    },
+    onActivate: function($pane, paneConfig, state)
+    {
+        if (!$.isBlank(submitError))
+        {
+            $pane.find('.flash').text(submitError)
+                                .removeClass('warning notice')
+                                .addClass('error');
+        }
+        else
+        {
+            $pane.find('.flash').empty().removeClass('warning notice error');
+        }
+    },
+    onNext: function($pane, state)
+    {
+        state.importer = {}
+        state.importer.referenceSystem = referenceSystem;
+
+        return 'importing';
+    }
+};
+
 var handleColumn = function(column)
 {
     if (column.type == 'column')
@@ -1001,87 +1073,97 @@ importNS.importingPaneConfig = {
         $pane.loadingSpinner({showInitially: true});
 
         // let's figure out what to send to the server
-        var importer = state.importer;
-        var blueprint = {
-            skip: importer.headersCount
-        };
-
-        // the server expects something much like what importColumns already are
-        blueprint.columns = _.map(importer.importColumns, function(importColumn)
+        var importer, blueprint, translation;
+        importer = state.importer;
+        if (state.type == 'shapefile')
         {
-            return {
-                name: importColumn.name,
-                datatype: importColumn.dataType
+            blueprint = {
+                referenceSystem: importer.referenceSystem
             };
-        });
-
-        // translations are a bit more complex
-        var translation = '[' + _.map(importer.importColumns, function(importColumn)
+        }
+        else
         {
-            var column = importColumn.column;
-            var result;
+            blueprint = {
+                skip: importer.headersCount
+            };
 
-            // deal with the column values
-            if (_.isUndefined(column))
+            // the server expects something much like what importColumns already are
+            blueprint.columns = _.map(importer.importColumns, function(importColumn)
             {
-                result = '""';
-            }
-            else if (column.type == 'column')
-            {
-                result = handleColumn(column);
-            }
-            else if (column.type == 'location')
-            {
-                var addressPart = _.map(_.compact(
-                        [ column.address, column.city, column.state, column.zip ]), handleColumn).join(' + ", " + ');
-
-                var latLongPart;
-                if (!_.isUndefined(column.latitude) && !_.isUndefined(column.longitude))
-                {
-                    // yeah. this sucks. use a syntax highlighter.
-                    latLongPart = '"(" + ' + handleColumn(column.latitude) + ' + ", " + ' +
-                        handleColumn(column.longitude) + ' + ")"';
-                }
-
-                result = _.compact([addressPart, latLongPart]).join(' + ", " + ');
-            }
-            else if (column.type == 'composite')
-            {
-                result = _.map(column.sources, handleColumn).join(' + ');
-            }
-
-            // deal with transforms
-            _.each(importColumn.transforms || [], function(transform)
-            {
-                if (transform.type == 'findReplace')
-                {
-                    var regexExpr = transform.options.find;
-                    if (!transform.options.regex)
-                        regexExpr = regexExpr.replace(/(\\|\^|\$|\?|\*|\+|\.|\(|\)|\{|\})/g,
-                            function(match) { return '\\' + match; });
-
-                    result = '(' + result + ').replace(/' + regexExpr + '/g' +
-                        (!!transform.options.ignoreCase ? 'i' : '') + ', "' + transform.options.replace + '")';
-                }
-                else if (transform.type == 'customExpression')
-                {
-                    result = '(function(value){return ' + transform.options.expression + ';})(' + result + ')';
-                }
-                else
-                {
-                    result = transform.type + '(' + result + ')';
-                }
+                return {
+                    name: importColumn.name,
+                    datatype: importColumn.dataType
+                };
             });
 
-            return result;
-        }).join() + ']';
+            // translations are a bit more complex
+            translation = '[' + _.map(importer.importColumns, function(importColumn)
+            {
+                var column = importColumn.column;
+                var result;
+
+                // deal with the column values
+                if (_.isUndefined(column))
+                {
+                    result = '""';
+                }
+                else if (column.type == 'column')
+                {
+                    result = handleColumn(column);
+                }
+                else if (column.type == 'location')
+                {
+                    var addressPart = _.map(_.compact(
+                            [ column.address, column.city, column.state, column.zip ]), handleColumn).join(' + ", " + ');
+
+                    var latLongPart;
+                    if (!_.isUndefined(column.latitude) && !_.isUndefined(column.longitude))
+                    {
+                        // yeah. this sucks. use a syntax highlighter.
+                        latLongPart = '"(" + ' + handleColumn(column.latitude) + ' + ", " + ' +
+                            handleColumn(column.longitude) + ' + ")"';
+                    }
+
+                    result = _.compact([addressPart, latLongPart]).join(' + ", " + ');
+                }
+                else if (column.type == 'composite')
+                {
+                    result = _.map(column.sources, handleColumn).join(' + ');
+                }
+
+                // deal with transforms
+                _.each(importColumn.transforms || [], function(transform)
+                {
+                    if (transform.type == 'findReplace')
+                    {
+                        var regexExpr = transform.options.find;
+                        if (!transform.options.regex)
+                            regexExpr = regexExpr.replace(/(\\|\^|\$|\?|\*|\+|\.|\(|\)|\{|\})/g,
+                                function(match) { return '\\' + match; });
+
+                        result = '(' + result + ').replace(/' + regexExpr + '/g' +
+                            (!!transform.options.ignoreCase ? 'i' : '') + ', "' + transform.options.replace + '")';
+                    }
+                    else if (transform.type == 'customExpression')
+                    {
+                        result = '(function(value){return ' + transform.options.expression + ';})(' + result + ')';
+                    }
+                    else
+                    {
+                        result = transform.type + '(' + result + ')';
+                    }
+                });
+
+                return result;
+            }).join() + ']';
+        }
 
         // fire it all off. note that data is a form-encoded payload, not json.
         $pane.find('.importStatus').empty();
 
         $.socrataServer.makeRequest({
             type: 'post',
-            url: '/api/imports2.json',
+            url: '/api/imports2.json' + ((state.type == 'shapefile') ? "?method=shape" : ""),
             contentType: 'application/x-www-form-urlencoded',
             data: {
                 name: state.fileName, 

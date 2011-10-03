@@ -227,6 +227,14 @@
                     window.location.href = destination;
             });
 
+            $wizard.closest('form').submit(function(event)
+            {
+                event.preventDefault();
+                $nextButton.click();
+
+                return false; // for IE
+            });
+
         // sizing
             var adjustSize = function()
             {

@@ -183,7 +183,7 @@ $wizard.wizard({
                 }
                 else if (state.type == 'shapefile')
                 {
-                    uploadEndpoint += 'shape';
+                    uploadEndpoint += 'scanShape';
                 }
                 else
                 {
@@ -261,6 +261,10 @@ $wizard.wizard({
                                 state.scan = response;
                                 command.next('importColumns');
                             }
+                            else if (state.type == 'shapefile') {
+                                state.scan = response;
+                                command.next('importShapefile');
+                            }
                             else
                             {
                                 state.submittedView = new Dataset(response);
@@ -275,6 +279,7 @@ $wizard.wizard({
 
 
         'importColumns': blist.importer.importColumnsPaneConfig,
+        'importShapefile': blist.importer.importShapefilePaneConfig,
         'importing':     blist.importer.importingPaneConfig,
         'importWarnings':     blist.importer.importWarningsPaneConfig,
 
@@ -478,5 +483,13 @@ $wizard.wizard({
         errorPlacement: function (label, $el) {
             $el.closest('.line').append(label);
         }
+    });
+
+    $.validator.addMethod("coordinateReferenceSystem", function(value, element, param)
+    {
+        if (this.optional(element)) { return true; }
+
+        // Just check that it's an EPSG code in the format EPSG:<number>.
+        return /^EPSG:\d+$/i.test(value);
     });
 });

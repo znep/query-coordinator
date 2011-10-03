@@ -6,16 +6,21 @@ this.Model = Class.extend({
         var that = this;
         var listeners = {};
         var events = {};
+        var modelEvents = [];
 
         var verifyEvent = function(evName)
         { if (!events[evName]) { throw 'Event ' + evName + ' not registered'; } };
 
-        this.bind = function (evName, func)
+        this.bind = function (evName, func, model)
         {
             verifyEvent(evName);
             listeners[evName] = listeners[evName] || [];
             if (!_.include(listeners[evName], func) && _.isFunction(func))
-            { listeners[evName].push(func); }
+            {
+                listeners[evName].push(func);
+                if (!$.isBlank(model))
+                { modelEvents.push({name: evName, func: func, model: model}); }
+            }
             return that;
         };
 
@@ -29,12 +34,26 @@ this.Model = Class.extend({
             this.bind(evName, wrapper);
         };
 
-        this.unbind = function (evName, func)
+        this.unbind = function (evName, func, model)
         {
-            verifyEvent(evName);
+            if (!$.isBlank(evName))
+            { verifyEvent(evName); }
+
             if (!$.isBlank(func))
             { listeners[evName] = _.without(listeners[evName] || [], func); }
-            else
+            else if (!$.isBlank(model))
+            {
+                modelEvents = _.reject(modelEvents, function(obj)
+                {
+                    if (obj.model === model && ($.isBlank(evName) || evName === obj.name))
+                    {
+                        listeners[obj.name] = _.without(listeners[obj.name] || [], obj.func);
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            else if (!$.isBlank(evName))
             { listeners[evName] = []; }
             return that;
         };

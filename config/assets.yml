@@ -76,6 +76,7 @@ javascripts:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/properties-editor.js
+    - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-catalog.js
     - public/javascripts/component/comp-container.js
@@ -356,6 +357,7 @@ javascripts:
     - public/javascripts/controls/panes/append-replace.js
     - public/javascripts/controls/panes/calendar-create.js
     - public/javascripts/controls/panes/cell-feed.js
+    - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/panes/chart-create.js
     - public/javascripts/controls/panes/column-order.js
     - public/javascripts/controls/panes/column-properties.js
@@ -499,7 +501,7 @@ dump:
     - shared-editors
 
 stylesheets:
-  grid-sidebar:
+  base-control-third-party:
     - public/stylesheets/jquery.ui.resizable.css
     - public/stylesheets/ui.slider.css
   analytics-shared:

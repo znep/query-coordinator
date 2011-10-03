@@ -9,7 +9,7 @@
     var rollUpFunctions = function(colId)
     {
         if ($.isBlank(colId)) { return null; }
-        return this.settings.view.columnForID(colId).dataType.rollUpAggregates;
+        return this._view.columnForID(colId).dataType.rollUpAggregates;
     };
 
     $.Control.extend('pane_sortRollUp', {
@@ -24,23 +24,23 @@
 
         isAvailable: function()
         {
-            return isEdit(this) ? this.settings.view.realColumns.length > 0 :
-                this.settings.view.visibleColumns.length > 0 && this.settings.view.valid;
+            return isEdit(this) ? this._view.realColumns.length > 0 :
+                this._view.visibleColumns.length > 0 && this._view.valid;
         },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid && !isEdit(this) ? 'This view must be valid' :
+            return !this._view.valid && !isEdit(this) ? 'This view must be valid' :
                 'This view has no columns to roll-up or sort';
         },
 
         _getCurrentData: function()
-        { return this._super() || this.settings.view.cleanCopy(); },
+        { return this._super() || this._view.cleanCopy(); },
 
         _getSections: function()
         {
             var sects = [];
-            if (!this.settings.view.isUnpublished())
+            if (!this._view.isUnpublished())
             {
                 // Group section
                 sects.push({
@@ -51,13 +51,13 @@
                             field: {type: 'columnSelect', text: 'Group By',
                                 name: 'columnId', notequalto: 'groupColumn',
                                 columns: {type: groupableTypes,
-                                    hidden: isEdit(this) || this.settings.view.isGrouped()}}
+                                    hidden: isEdit(this) || this._view.isGrouped()}}
                         },
                         {type: 'repeater', addText: 'Add Roll-Up Column', minimum: 0, name: 'columns',
                             field: {type: 'group', options: [
                                 {type: 'columnSelect', text: 'Roll-Up', name: 'id', required: true,
                                     notequalto: 'rollUpColumn', columns: {type: groupableTypes,
-                                        hidden: isEdit(this) || this.settings.view.isGrouped()}},
+                                        hidden: isEdit(this) || this._view.isGrouped()}},
                                 {type: 'select', text: 'Function', required: true,
                                     name: 'format.grouping_aggregate', prompt: 'Select a function',
                                     linkedField: 'id', options: rollUpFunctions}
@@ -94,7 +94,7 @@
             cpObj._super();
             if (!cpObj._registeredChange)
             {
-                cpObj.settings.view.bind('query_change', function() { cpObj.reset(); });
+                cpObj._view.bind('query_change', function() { cpObj.reset(); }, cpObj);
                 cpObj._registeredChange = true;
             }
         },
@@ -108,7 +108,7 @@
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
             var filterView = cpObj._getFormValues();
-            var query = $.extend({}, cpObj.settings.view.query);
+            var query = $.extend({}, cpObj._view.query);
             if (!$.isBlank(filterView.query))
             {
                 _.each(['orderBys', 'groupBys'], function(by)
@@ -146,11 +146,11 @@
             // Make new columns have the correct format
             _.each(filterView.columns, function(c)
             {
-                var col = cpObj.settings.view.columnForID(c.id);
+                var col = cpObj._view.columnForID(c.id);
                 c.format = $.extend({}, col.format, c.format);
             });
 
-            _.each(cpObj.settings.view.realColumns, function(c)
+            _.each(cpObj._view.realColumns, function(c)
             {
                 if (!$.isBlank(c.format.grouping_aggregate) &&
                     !_.any(filterView.columns, function(fvc) { return fvc.id == c.id; }))
@@ -161,11 +161,11 @@
                 }
             });
 
-            var wasInvalid = !cpObj.settings.view.valid;
+            var wasInvalid = !cpObj._view.valid;
 
             if (_.isEmpty(filterView.columns))
             { delete filterView.columns; }
-            cpObj.settings.view.update(filterView, false, _.isEmpty(filterView.query.groupBys));
+            cpObj._view.update(filterView, false, _.isEmpty(filterView.query.groupBys));
 
             var finishCallback = function()
             {
@@ -175,9 +175,9 @@
                 if (_.isFunction(finalCallback)) { finalCallback(); }
             };
 
-            if (wasInvalid && cpObj.settings.view.type != 'blist')
+            if (wasInvalid && cpObj._view.type != 'blist')
             {
-                if (!cpObj.settings.view.save(finishCallback))
+                if (!cpObj._view.save(finishCallback))
                 { finishCallback(); }
             }
             else
@@ -187,7 +187,7 @@
     }, {name: 'sortRollUp'}, 'controlPane');
 
     var isEdit = function(cpObj)
-    { return 'grouped' == cpObj.settings.view.type && cpObj.settings.view.hasRight('update_view'); };
+    { return 'grouped' == cpObj._view.type && cpObj._view.hasRight('update_view'); };
 
     if ($.isBlank(blist.sidebarHidden.filter) || !blist.sidebarHidden.filter.filterDataset)
     { $.gridSidebar.registerConfig('filter.sortRollUp', 'pane_sortRollUp', 3, 'grouped'); }

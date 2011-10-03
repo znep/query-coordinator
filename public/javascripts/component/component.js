@@ -37,16 +37,25 @@
             });
         },
 
+        /**
+         * Whether or not this component can be rendered
+         */
+        isValid: function()
+        { return true; },
+
         startLoading: function()
         {
             if (!$.isBlank(this.$dom))
             { this.$dom.loadingSpinner().showHide(true); }
+            this._loading = true;
         },
 
         finishLoading: function()
         {
             if (!$.isBlank(this.$dom))
             { this.$dom.loadingSpinner().showHide(false); }
+            this._loading = false;
+            this._updateValidity();
         },
 
         destroy: function() {
@@ -97,6 +106,11 @@
             return null;
         },
 
+        configurationSchema: function()
+        {
+            return null;
+        },
+
         /**
          * Javascript and CSS that needs to be loaded to render the component
          */
@@ -122,6 +136,13 @@
                 this.$dom = $(dom);
                 dom._comp = this;
                 dom.className = 'socrata-component component-' + this.typeName;
+                this.$contents = $.tag({tagName: 'div', 'class': 'content-wrapper'});
+                this.$dom.append(this.$contents);
+                this.$dom.loadingSpinner({showInitially: this._loading});
+                this.$dom.append($.tag([{tagName: 'div', 'class': 'disabledOverlay'},
+                    {tagName: 'div', 'class': 'disabledMessage',
+                        contents: 'This component does not have a valid configuration'}]));
+                this._updateValidity();
             }
             this._initialized = true;
         },
@@ -133,7 +154,6 @@
             this._initDom();
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
-            this.$dom.loadingSpinner();
             this._rendered = true;
         },
 
@@ -144,6 +164,15 @@
         {
             if (!$.isBlank(this.$dom))
             { this.$dom.trigger('resize', [$.component]); }
+        },
+
+        /**
+         * Checks whether to hide or show the invalid overlay
+         */
+        _updateValidity: function()
+        {
+            if (!$.isBlank(this.$dom))
+            { this.$dom.toggleClass('disabled', !this._loading && !this.isValid()); }
         },
 
         /**
@@ -207,6 +236,9 @@
          * component dynamically applies the properties is implementation dependent.
          */
         _propWrite: function(properties) {
+            var cObj = this;
+            $.extend(true, cObj._properties, properties);
+            _.defer(function() { cObj._updateValidity(); });
         },
 
         /**

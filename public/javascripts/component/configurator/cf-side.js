@@ -48,7 +48,7 @@
             });
         });
 
-        $ct.mousedown(function(e) {
+        $ct.children('.section').mousedown(function(e) {
             if (e.which != 1)
                 return;
 

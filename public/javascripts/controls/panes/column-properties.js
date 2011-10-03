@@ -1,17 +1,17 @@
 (function($)
 {
-    var isDataset = function(cpObj) { return cpObj.settings.view.type == 'blist'; };
+    var isDataset = function(cpObj) { return cpObj._view.type == 'blist'; };
 
     var nameDisabled = function(col)
     {
         // allow rollup column to be re-named.
-        return !(isDataset(this) || this.settings.view.type == 'grouped') &&
+        return !(isDataset(this) || this._view.type == 'grouped') &&
             $.isBlank(col.format.grouping_aggregate) && $.isBlank(col.format.drill_down);
     };
 
     var canConvert = function(cpObj, col)
     {
-        if ($.isBlank(col) || !cpObj.settings.view.hasRight('update_column'))
+        if ($.isBlank(col) || !cpObj._view.hasRight('update_column'))
         { return false; }
 
         var convT = col.dataType.convertableTypes;
@@ -188,7 +188,7 @@
 
             cpObj._isReady = false;
             $.Tache.Get({url: '/api/rdfTerms.json', data: {type: 'property',
-                'class': (cpObj.settings.view.metadata || {}).rdfClass},
+                'class': (cpObj._view.metadata || {}).rdfClass},
                 success: function(rdfs)
                 {
                     _.each(rdfs, function(r)
@@ -207,7 +207,7 @@
         { return 'Update various properties on this column'; },
 
         isAvailable: function()
-        { return !this.settings.view.temporary || this.settings.view.minorChange; },
+        { return !this._view.temporary || this._view.minorChange; },
 
         getDisabledSubtitle: function()
         { return 'You cannot edit column properties for an unsaved view'; },
@@ -278,8 +278,8 @@
                                 // getLinkedColumnOptions is called.
                                 function(keyCol, notUsed, $field, curVal)
                                 {
-                                    return cpObj.settings.view.getLinkedColumnOptions.call(
-                                        cpObj.settings.view, keyCol, notUsed, $field, curVal);
+                                    return cpObj._view.getLinkedColumnOptions.call(
+                                        cpObj._view, keyCol, notUsed, $field, curVal);
                                 }
                         }
                     ]
@@ -474,7 +474,7 @@
             {
                 var keyColId = column.format.linkedKey;
                 var srcColId = column.format.linkedSource;
-                column.dataTypeName = cpObj.settings.view.
+                column.dataTypeName = cpObj._view.
                     getLinkSourceDataType(null, srcColId, keyColId).value;
             }
 

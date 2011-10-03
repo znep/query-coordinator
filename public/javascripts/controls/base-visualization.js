@@ -97,6 +97,9 @@
             return this._$flyoutTemplate;
         },
 
+        isValid: function()
+        { return true; },
+
         initializeFlyouts: function(columns)
         {
             var vizObj = this;
@@ -242,9 +245,10 @@
             }
         },
 
-        reload: function()
+        reload: function(newDF)
         {
             var vizObj = this;
+            vizObj._savedDF = newDF;
             if (vizObj._hidden)
             {
                 vizObj._needsReload = true;
@@ -252,7 +256,8 @@
             }
             delete vizObj._needsReload;
 
-            vizObj._displayFormat = vizObj.settings.displayFormat || vizObj.settings.view.displayFormat;
+            vizObj._displayFormat = vizObj._savedDF ||
+                vizObj.settings.displayFormat || vizObj.settings.view.displayFormat;
             if (vizObj.needsPageRefresh())
             {
                 // Now that visualizations are being done inline, reloading

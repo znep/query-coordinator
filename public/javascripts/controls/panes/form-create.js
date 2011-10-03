@@ -4,9 +4,9 @@
         isAvailable: function()
         {
             var cpObj = this;
-            return _.any(cpObj.settings.view.visibleColumns, function(c)
+            return _.any(cpObj._view.visibleColumns, function(c)
                 { return 'nested_table' != c.dataTypeName }) &&
-                (cpObj.settings.view.valid || isEdit(cpObj));
+                (cpObj._view.valid || isEdit(cpObj));
         },
 
         _getCurrentData: function()
@@ -16,9 +16,9 @@
 
             if (!isEdit(this)) { return null; }
 
-            var view = this.settings.view.cleanCopy();
+            var view = this._view.cleanCopy();
             view.flags = view.flags || [];
-            if (this.settings.view.isPublic())
+            if (this._view.isPublic())
             { view.flags.push('dataPublicAdd'); }
             return view;
         },
@@ -31,7 +31,7 @@
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ? 'This view must be valid' :
+            return !this._view.valid ? 'This view must be valid' :
                 'This view must have visible columns to create a form';
         },
 
@@ -63,15 +63,15 @@
             if (!cpObj._super.apply(this, arguments)) { return; }
 
             var view = $.extend(true, {displayFormat: null, displayType: 'form', metadata: {}},
-                cpObj._getFormValues(), {metadata: cpObj.settings.view.metadata});
+                cpObj._getFormValues(), {metadata: cpObj._view.metadata});
             view.metadata.renderTypeConfig.visible = {form: true};
 
-            var wasPublic = cpObj.settings.view.isPublic();
+            var wasPublic = cpObj._view.isPublic();
             var isPublic = isPublicForm(view);
             var doEdit = isEdit(cpObj);
 
             view.metadata.availableDisplayTypes = ['form'];
-            cpObj.settings.view.update(view);
+            cpObj._view.update(view);
 
             if (!doEdit)
             {
@@ -83,7 +83,7 @@
                     newView.redirectTo();
                 });
 
-                cpObj.settings.view.getParentDataset(function(parDS)
+                cpObj._view.getParentDataset(function(parDS)
                 {
                     if (!parDS.publicationAppendEnabled)
                     {
@@ -95,7 +95,7 @@
                     else { finish(); }
                 });
 
-                cpObj.settings.view.saveNew(function(nv)
+                cpObj._view.saveNew(function(nv)
                 {
                     newView = nv;
                     finish();
@@ -106,7 +106,7 @@
             {
                 var updateView = function()
                 {
-                    cpObj.settings.view.save(function(newView)
+                    cpObj._view.save(function(newView)
                     {
                         cpObj._finishProcessing();
 
@@ -133,7 +133,7 @@
 
                 if (wasPublic !== isPublic)
                 {
-                    cpObj.settings.view['make' + (isPublic ? 'Public' : 'Private')](updateView);
+                    cpObj._view['make' + (isPublic ? 'Public' : 'Private')](updateView);
                 }
                 else
                 { updateView(); }
@@ -143,7 +143,7 @@
 
 
     var isEdit = function(cpObj)
-    { return cpObj.settings.view.type == 'form'; };
+    { return cpObj._view.type == 'form'; };
 
     var isPublicForm = function(view)
     {

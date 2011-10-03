@@ -13,7 +13,7 @@
             .sortBy(function(t) { return t.priority; })
             .value();
 
-        if ($.isBlank((data || {}).parentId) && this.settings.view.hasDatasetLinkColumn())
+        if ($.isBlank((data || {}).parentId) && this._view.hasDatasetLinkColumn())
         {
             types.push({value: 'link', text: 'Link Column'});
         }
@@ -24,9 +24,9 @@
     $.Control.extend('pane_addColumn', {
         isAvailable: function()
         {
-            return this.settings.view.valid &&
-                (!this.settings.view.temporary || this.settings.view.minorChange) &&
-                this.settings.view.type == 'blist';
+            return this._view.valid &&
+                (!this._view.temporary || this._view.minorChange) &&
+                this._view.type == 'blist';
         },
 
         getTitle: function()
@@ -37,7 +37,7 @@
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ? 'This view must be valid' :
+            return !this._view.valid ? 'This view must be valid' :
                 'You cannot add a column to a view';
         },
 
@@ -69,7 +69,7 @@
                                 // getLinkedColumnOptions is called.
                                 function(keyCol, notUsed, $field, curVal)
                                 {
-                                    var v = this.settings.view;
+                                    var v = this._view;
                                     return v.getLinkedColumnOptions.call(v, keyCol, notUsed, $field, curVal);
                                 }
                         }
@@ -201,19 +201,19 @@
                 var keyColId = column.format.linkedKey;
                 var srcColId = column.format.linkedSource;
                 column.dataTypeName =
-                    cpObj.settings.view.getLinkSourceDataType(null, srcColId, keyColId).value;
+                    cpObj._view.getLinkSourceDataType(null, srcColId, keyColId).value;
             }
 
             if (!$.isBlank((data || {}).parentId))
             {
-                var parCol = cpObj.settings.view.columnForID(data.parentId);
+                var parCol = cpObj._view.columnForID(data.parentId);
                 parCol.addChildColumn(column,
                     function(nc) { columnCreated(cpObj, nc, finalCallback); },
                     function(xhr) { cpObj._genericErrorHandler(xhr); });
             }
             else
             {
-                cpObj.settings.view.addColumn(column,
+                cpObj._view.addColumn(column,
                     function(nc) { columnCreated(cpObj, nc, finalCallback); },
                     function(xhr) { cpObj._genericErrorHandler(xhr); });
             }
@@ -231,7 +231,7 @@
 
     var convertLocation = function(cpObj, column, finalCallback)
     {
-        cpObj.settings.view.addColumn(null, function(newCol)
+        cpObj._view.addColumn(null, function(newCol)
         {
             if (!$.isBlank(column.description))
             {
@@ -241,7 +241,7 @@
             }
             else { columnCreated(cpObj, newCol, finalCallback); }
             // Since we imported data, need to reload
-            cpObj.settings.view.reload();
+            cpObj._view.reload();
         },
         function(xhr) { cpObj._genericErrorHandler(xhr); },
         $.extend({method: 'addressify', deleteOriginalColumns: false,

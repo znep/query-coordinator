@@ -8,11 +8,11 @@
         { return 'Export this dataset to a printable PDF format'; },
 
         isAvailable: function()
-        { return this.settings.view.isGrid() && this.settings.view.valid; },
+        { return this._view.isGrid() && this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ? 'This view must be valid' :
+            return !this._view.valid ? 'This view must be valid' :
                 'Only tabular data may be printed';
         },
 

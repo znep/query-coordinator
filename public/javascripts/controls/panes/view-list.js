@@ -94,7 +94,7 @@
 
                 $li.data('view', v);
 
-                if (v.id == cpObj.settings.view.id)
+                if (v.id == cpObj._view.id)
                 { $li.addClass('current'); }
 
                 if (v.owner.id == v.tableAuthor.id)
@@ -289,9 +289,9 @@
                         if (!$.isBlank(redirDS)) { redirDS.redirectTo(); }
                     };
 
-                    if (cpObj.settings.view.id == v.id)
+                    if (cpObj._view.id == v.id)
                     {
-                        cpObj.settings.view.getParentDataset(function(parDS)
+                        cpObj._view.getParentDataset(function(parDS)
                         { if (!$.isBlank(parDS)) { redirDS = parDS; } });
                     }
                     v.remove(deletedCallback);
@@ -318,7 +318,7 @@
                         cpObj._startProcessing();
                         cpObj._$section = $s;
 
-                        cpObj.settings.view.getRelatedViews(
+                        cpObj._view.getRelatedViews(
                             function(v)
                             {
                                 cpObj._finishProcessing();
@@ -365,9 +365,9 @@
                         if (!$.isBlank(redirDS)) { redirDS.redirectTo(); }
                     };
 
-                    if (cpObj.settings.view.id == v.id)
+                    if (cpObj._view.id == v.id)
                     {
-                        cpObj.settings.view.getPublishedDataset(function(pubDS)
+                        cpObj._view.getPublishedDataset(function(pubDS)
                         { if (!$.isBlank(pubDS)) { redirDS = pubDS; } });
                     }
                     v.remove(deletedCallback);
@@ -401,7 +401,7 @@
                         cpObj._startProcessing();
                         cpObj._$section = $s;
 
-                        cpObj.settings.view.getSnapshotDatasets(
+                        cpObj._view.getSnapshotDatasets(
                             function(sd)
                             {
                                 cpObj._finishProcessing();

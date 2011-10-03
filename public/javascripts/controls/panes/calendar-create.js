@@ -5,7 +5,7 @@
         {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
-            cpObj.settings.view.bind('clear_temporary', function() { cpObj.reset(); });
+            cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
         },
 
         getTitle: function()
@@ -15,25 +15,25 @@
         { return 'Views with dates can be displayed in a monthly calendar format'; },
 
         _getCurrentData: function()
-        { return this._super() || this.settings.view; },
+        { return this._super() || this._view; },
 
         isAvailable: function()
         {
             var cpObj = this;
-            var dateCols = cpObj.settings.view.columnsForType(['date', 'calendar_date'], isEdit(cpObj));
-            var textCols = cpObj.settings.view.columnsForType('text', isEdit(cpObj));
+            var dateCols = cpObj._view.columnsForType(['date', 'calendar_date'], isEdit(cpObj));
+            var textCols = cpObj._view.columnsForType('text', isEdit(cpObj));
 
             return dateCols.length > 0 && textCols.length > 0 &&
-                (cpObj.settings.view.valid || isEdit(cpObj)) &&
-                (_.include(cpObj.settings.view.metadata.availableDisplayTypes, 'calendar') ||
-                    !cpObj.settings.view.isAltView());
+                (cpObj._view.valid || isEdit(cpObj)) &&
+                (_.include(cpObj._view.metadata.availableDisplayTypes, 'calendar') ||
+                    !cpObj._view.isAltView());
         },
 
         getDisabledSubtitle: function()
         {
-            return (!this.settings.view.valid && !isEdit(this)) ? 'This view must be valid' :
-                ((!_.include(this.settings.view.metadata.availableDisplayTypes, 'calendar') &&
-                this.settings.view.isAltView()) ?
+            return (!this._view.valid && !isEdit(this)) ? 'This view must be valid' :
+                ((!_.include(this._view.metadata.availableDisplayTypes, 'calendar') &&
+                this._view.isAltView()) ?
                 'A view may only have one visualization on it' :
                 'This view must have a date column and a text column');
         },
@@ -85,18 +85,18 @@
             if (!cpObj._super.apply(this, arguments)) { return; }
 
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {calendar: true}}}},
-                cpObj._getFormValues(), {metadata: cpObj.settings.view.metadata});
-            cpObj.settings.view.update(view);
+                cpObj._getFormValues(), {metadata: cpObj._view.metadata});
+            cpObj._view.update(view);
 
             var didCallback = false;
             if (isEdit(cpObj))
             {
                 // We need to show all columns when editing a view so that
                 // any filters/facets work properly
-                var colIds = _.pluck(cpObj.settings.view.realColumns, 'id');
+                var colIds = _.pluck(cpObj._view.realColumns, 'id');
                 if (colIds.length > 0)
                 {
-                    cpObj.settings.view.setVisibleColumns(colIds, finalCallback, true);
+                    cpObj._view.setVisibleColumns(colIds, finalCallback, true);
                     didCallback = true;
                 }
             }
@@ -108,7 +108,7 @@
     }, {name: 'calendarCreate'}, 'controlPane');
 
     var isEdit = function(cpObj)
-    { return _.include(cpObj.settings.view.metadata.availableDisplayTypes, 'calendar'); };
+    { return _.include(cpObj._view.metadata.availableDisplayTypes, 'calendar'); };
 
 
     if ($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.calendarCreate)

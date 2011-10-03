@@ -1,15 +1,10 @@
 ;(function($) {
      $.Control.extend('pane_propertiesEditor', {
+        getTitle: function()
+        { return 'Edit Component'; },
+
         isAvailable: function()
         { return !$.isBlank(this.component); },
-
-        getSections: function()
-        {
-            return [
-                { title: 'Edit ' + (this._component || {}).catalogName, fields: [
-                ] }
-            ];
-        },
 
         setComponent: function(newComp)
         {

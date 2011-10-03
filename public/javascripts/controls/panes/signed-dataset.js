@@ -8,11 +8,11 @@
         { return 'Export a version of this data whose integrity may later be verified.'; },
 
         isAvailable: function()
-        { return this.settings.view.valid; },
+        { return this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ? 'This view must be valid' :
+            return !this._view.valid ? 'This view must be valid' :
                 'Only tabular data may be downloaded';
         },
 
@@ -27,7 +27,7 @@
                             var cpObj = this;
                             var $link = $sect.find('.signedDatasetLink');
 
-                            if (cpObj.settings.view.owner.id == blist.currentUserId)
+                            if (cpObj._view.owner.id == blist.currentUserId)
                             {
                                 // swap out the copy
                                 _.defer(function()
@@ -44,7 +44,7 @@
                                 var $line = $link.closest('li');
                                 $line.addClass('loading');
 
-                                cpObj.settings.view.getSignature(function(response)
+                                cpObj._view.getSignature(function(response)
                                     {
                                         // Update UI
                                         $sect.find('.datasetSignature').text(response.digest)
@@ -52,7 +52,7 @@
                                         $line.removeClass('onlyChild loading');
 
                                         // Kick off download
-                                        window.location = '/views/' + cpObj.settings.view.id +
+                                        window.location = '/views/' + cpObj._view.id +
                                             '/files/' + response.fileId;
                                     });
                             });

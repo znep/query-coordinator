@@ -66,6 +66,20 @@ Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
     });
 };
 
+Dataset.chart.isValid = function(view, displayFormat, chartType)
+{
+    var foundCols = [];
+    _.each(displayFormat.fixedColumns || [], function(fc)
+    { foundCols.push(view.columnForTCID(fc)); });
+
+    _.each(displayFormat.valueColumns || [], function(vc)
+    { foundCols.push(view.columnForTCID(vc.tableColumnId)); });
+
+    var ct = Dataset.chart.types[chartType];
+    if ($.isBlank(ct)) { return false; }
+    return Dataset.chart.hasRequiredColumns(_.compact(foundCols), ct.requiredColumns);
+};
+
 Dataset.modules['chart'] =
 {
     supportsSnapshotting: function()
@@ -88,19 +102,7 @@ Dataset.modules['chart'] =
     _checkValidity: function()
     {
         if (!this._super()) { return false; }
-
-        var view = this;
-        var foundCols = [];
-        _.each(this.displayFormat.fixedColumns || [], function(fc)
-        { foundCols.push(view.columnForTCID(fc)); });
-
-        _.each(this.displayFormat.valueColumns || [], function(vc)
-        { foundCols.push(view.columnForTCID(vc.tableColumnId)); });
-
-        var ct = Dataset.chart.types[this.displayFormat.chartType];
-        if ($.isBlank(ct)) { return false; }
-        return Dataset.chart.hasRequiredColumns(_.compact(foundCols),
-            ct.requiredColumns);
+        return Dataset.chart.isValid(this, this.displayFormat, this.displayFormat.chartType);
     },
 
     _convertLegacy: function()

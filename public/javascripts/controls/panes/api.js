@@ -5,7 +5,7 @@
         { return 'API'; },
 
         getSubtitle: function()
-        { return 'Access this ' + this.settings.view.displayName + ' via SODA'; },
+        { return 'Access this ' + this._view.displayName + ' via SODA'; },
 
         _getSections: function()
         {

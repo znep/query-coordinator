@@ -1,8 +1,7 @@
 $.component.Container.extend('Box', 'content', {
     _getContainer: function() {
-        var ct = document.createElement('div');
-        ct.className = 'component-Box-container';
-        this.dom.appendChild(ct);
+        var ct = $.tag({tagName: 'div', 'class': 'component-Box-container'});
+        this.$contents.append(ct);
         return ct;
     }
 });

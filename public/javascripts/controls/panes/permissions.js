@@ -5,12 +5,12 @@
         { return 'Permissions'; },
 
         getSubtitle: function()
-        { return 'Manage the permissions of this ' + this.settings.view.displayName; },
+        { return 'Manage the permissions of this ' + this._view.displayName; },
 
         isAvailable: function()
         {
-            return this.settings.view.valid &&
-                (!this.settings.view.temporary || this.settings.view.minorChange);
+            return this._view.valid &&
+                (!this._view.temporary || this._view.minorChange);
         },
 
         getDisabledSubtitle: function()
@@ -29,24 +29,24 @@
                         {
                             // If the publicness is inherited from the parent dataset,
                             // they can't make it private
-                            var publicGrant = _.detect(cpObj.settings.view.grants || [], function(grant)
+                            var publicGrant = _.detect(cpObj._view.grants || [], function(grant)
                                 { return _.include(grant.flags || [], 'public'); }),
                                 $publicText   = $formElem.find('.datasetPublicText'),
                                 $toggleForm   = $formElem.find('.togglePermissionsForm'),
                                 $toggleRadios = $toggleForm.find('.toggleDatasetPermissions');
 
-                            $publicText.text( cpObj.settings.view.isPublic() ? 'Public' : 'Private' );
+                            $publicText.text( cpObj._view.isPublic() ? 'Public' : 'Private' );
 
                             // Only owned, parent-public datasets can be toggled
-                            if (cpObj.settings.view.hasRight('update_view') &&
+                            if (cpObj._view.hasRight('update_view') &&
                                 ($.isBlank(publicGrant) || (publicGrant.inherited || false) == false))
                             {
                                 $toggleRadios.change(function(event)
                                 {
                                     var $radio = $(event.target);
-                                    cpObj.settings.view[$radio.val()](function()
+                                    cpObj._view[$radio.val()](function()
                                     {
-                                        $publicText.text(cpObj.settings.view.isPublic() ?
+                                        $publicText.text(cpObj._view.isPublic() ?
                                             'Public' : 'Private');
                                         $radio.socrataAlert({
                                             message: 'Your permissions have been saved', overlay: true
@@ -65,9 +65,9 @@
                             else
                             { $toggleForm.hide(); }
 
-                            $formElem.find('.datasetTypeName').text(this.settings.view.displayName);
+                            $formElem.find('.datasetTypeName').text(this._view.displayName);
                             $formElem.find('.datasetTypeNameUpcase')
-                                .text(this.settings.view.displayName.capitalize());
+                                .text(this._view.displayName.capitalize());
                         }
                     }
                 }
@@ -89,10 +89,10 @@
             if (!cpObj._super.apply(this, arguments)) { return; }
 
             var formValues = cpObj._getFormValues();
-            cpObj.settings.view.disabledFeatureFlags = _.reject(_.keys(formValues),
+            cpObj._view.disabledFeatureFlags = _.reject(_.keys(formValues),
                 function(key) { return formValues[key]; });
 
-            cpObj.settings.view.save(function()
+            cpObj._view.save(function()
             {
                 cpObj._finishProcessing();
                 cpObj._showMessage('Your permissions have been saved');

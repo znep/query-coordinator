@@ -14,11 +14,11 @@
         { return 'Filter this dataset based on contents.'; },
 
         isAvailable: function()
-        { return this.settings.view.visibleColumns.length > 0 && this.settings.view.valid; },
+        { return this._view.visibleColumns.length > 0 && this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ? 'This view must be valid' :
+            return !this._view.valid ? 'This view must be valid' :
                 'This view has no columns to filter';
         },
 
@@ -33,17 +33,17 @@
                     {
                         var cpObj = this
                         $elem.unifiedFilter({
-                            datasets: [ cpObj.settings.view ],
-                            filterableColumns: cpObj.settings.view.columnsForType(filterableTypes)});
+                            datasets: [ cpObj._view ],
+                            filterableColumns: cpObj._view.columnsForType(filterableTypes)});
 
-                        cpObj.settings.view.bind('columns_changed', function()
+                        cpObj._view.bind('columns_changed', function()
                         {
                             $elem.trigger('columns_changed',
-                                { columns: cpObj.settings.view.columnsForType(filterableTypes) });
-                        });
+                                { columns: cpObj._view.columnsForType(filterableTypes) });
+                        }, cpObj);
 
-                        cpObj.settings.view.bind('clear_temporary', function()
-                        { $elem.trigger('revert'); });
+                        cpObj._view.bind('clear_temporary', function()
+                        { $elem.trigger('revert'); }, cpObj);
                     }
                 }
             }];

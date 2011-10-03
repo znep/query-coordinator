@@ -27,6 +27,11 @@
                 (options.displayFormat || options.view.displayFormat).chartType]];
         },
 
+        isValid: function()
+        {
+            return Dataset.chart.isValid(this.settings.view, this._displayFormat, this._chartType);
+        },
+
         initializeVisualization: function ()
         {
             var chartObj = this;

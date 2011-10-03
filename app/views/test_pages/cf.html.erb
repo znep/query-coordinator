@@ -1,4 +1,6 @@
 <% content_for :head do %>
+<%= include_stylesheets 'base-control-third-party' %>
+<%= rendered_stylesheet_tag 'base-control' %>
 <%= rendered_stylesheet_tag 'configurator' %>
 <% end %>
 
@@ -51,8 +53,13 @@ $(function() {
 
 <div class="socrata-root" id="root"></div>
 
+<% content_for :templates do %>
+<%= render(:partial => 'templates/grid_sidebar') %>
+<% end %>
+
 <% content_for :js_footer do %>
 <%= include_javascripts 'configurator' %>
+<%= include_javascripts 'shared-editors' %>
 <script type="text/javascript">
   blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw STYLE_MAP.to_json %>};
   blist.namespace.fetch('blist.configuration');

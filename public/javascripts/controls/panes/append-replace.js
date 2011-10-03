@@ -7,18 +7,18 @@
         isAvailable: function()
         {
             var cpObj = this;
-            return _.all(cpObj.settings.view.visibleColumns || [], function(c)
+            return _.all(cpObj._view.visibleColumns || [], function(c)
                 {
                     return !_.include(['document', 'document_obsolete',
                         'photo', 'photo_obsolete', 'nested_table'], c.dataTypeName);
-                }) && cpObj.settings.view.valid &&
-                    (!cpObj.settings.view.temporary || cpObj.settings.view.minorChange);
+                }) && cpObj._view.valid &&
+                    (!cpObj._view.temporary || cpObj._view.minorChange);
         },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ||
-                (this.settings.view.temporary && !this.settings.view.minorChange) ?
+            return !this._view.valid ||
+                (this._view.temporary && !this._view.minorChange) ?
                 'This view must be valid and saved' :
                 'You cannot upload data into a dataset that contains a photo, ' +
                 'document, nested table, or tags column. ' +
@@ -37,7 +37,7 @@
                     skipHeader
                 ]
             };
-            if (this.settings.view.type == 'blob')
+            if (this._view.type == 'blob')
             {
                 delete mainSect.fields[0].fileTypes;
                 delete mainSect.fields[1];
@@ -57,11 +57,11 @@
             // Dataset.  However, that is kind of difficult since it requires doing
             // a form upload, which is tied rather tightly to the UI
             var vals = cpObj._getFormValues();
-            if (cpObj.settings.view.type == 'blob')
-            { vals.uploadFile._settings.action = '/views/' + cpObj.settings.view.id +
+            if (cpObj._view.type == 'blob')
+            { vals.uploadFile._settings.action = '/views/' + cpObj._view.id +
                 '.txt?method=replaceBlob'; }
             else
-            { vals.uploadFile._settings.action = '/views/' + cpObj.settings.view.id +
+            { vals.uploadFile._settings.action = '/views/' + cpObj._view.id +
                 '/rows.txt?method=' + data.uploadType + '&skip_headers=' + vals.skipHeader; }
             vals.uploadFile._settings.onComplete = function(file, response)
             {
@@ -73,7 +73,7 @@
                     cpObj._showMessage('Your dataset has been updated');
                     cpObj._hide();
                     if (_.isFunction(finalCallback)) { finalCallback(); }
-                    cpObj.settings.view.reload();
+                    cpObj._view.reload();
                 }
             };
             vals.uploadFile.submit();

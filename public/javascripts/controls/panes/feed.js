@@ -28,7 +28,7 @@
 
                                 cpObj.$dom().find('.feedList .feed').feedList({
                                     comments: comments,
-                                    mainView: cpObj.settings.view,
+                                    mainView: cpObj._view,
                                     views: views,
                                     addCommentCallback: function(view, comment)
                                     {
@@ -43,19 +43,19 @@
                                 });
                             });
 
-                            cpObj.settings.view.getComments(function(responseData)
+                            cpObj._view.getComments(function(responseData)
                                 {
                                     comments = responseData;
                                     doRender();
                                 });
 
-                            cpObj.settings.view.getRelatedViews(function(relatedViews)
+                            cpObj._view.getRelatedViews(function(relatedViews)
                                 {
                                     views = views.concat(relatedViews);
                                     doRender();
                                 });
 
-                            cpObj.settings.view.getParentDataset(function(parDS)
+                            cpObj._view.getParentDataset(function(parDS)
                                 {
                                     if (!$.isBlank(parDS))
                                     { views = views.concat(parDS); }

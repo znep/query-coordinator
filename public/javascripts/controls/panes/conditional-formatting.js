@@ -9,13 +9,13 @@
     var subColumnShown = function(tcId)
     {
         if ($.isBlank(tcId)) { return false; }
-        return !_.isEmpty(this.settings.view.columnForTCID(tcId).renderType.subColumns);
+        return !_.isEmpty(this._view.columnForTCID(tcId).renderType.subColumns);
     };
 
     var subColumns = function(tcId)
     {
         if ($.isBlank(tcId)) { return null; }
-        var c = this.settings.view.columnForTCID(tcId);
+        var c = this._view.columnForTCID(tcId);
         var r = _.map(c.renderType.subColumns || {}, function(sc)
             { return {value: sc.name, text: sc.title}; });
         return _.isEmpty(r) ? null : r;
@@ -24,7 +24,7 @@
     var filterOperators = function(vals)
     {
         if ($.isBlank(vals.tableColumnId)) { return null; }
-        var type = this.settings.view.columnForTCID(vals.tableColumnId).renderType;
+        var type = this._view.columnForTCID(vals.tableColumnId).renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
         if ($.isBlank(type.filterConditions)) { return null; }
@@ -36,7 +36,7 @@
     {
         if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
-        var col = this.settings.view.columnForTCID(vals.tableColumnId);
+        var col = this._view.columnForTCID(vals.tableColumnId);
         var type = col.renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
@@ -72,7 +72,7 @@
     {
         if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
-        var col = this.settings.view.columnForTCID(vals.tableColumnId);
+        var col = this._view.columnForTCID(vals.tableColumnId);
         var type = col.renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
@@ -122,7 +122,7 @@
         options: [
             {type: 'color', required: true, name: 'color', defaultValue: '#bbffbb'},
             {type: 'custom', required: true, disabled: function()
-                { return !_.include(this.settings.view.metadata.availableDisplayTypes, 'map'); },
+                { return !_.include(this._view.metadata.availableDisplayTypes, 'map'); },
                 editorCallbacks: {
                 create: function($field, vals, curValue)
                 {
@@ -162,7 +162,7 @@
         {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
-            cpObj.settings.view.bind('clear_temporary', function() { cpObj.reset(); });
+            cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
         },
 
         getTitle: function()
@@ -176,16 +176,16 @@
         },
 
         isAvailable: function()
-        { return this.settings.view.visibleColumns.length > 0 && this.settings.view.valid; },
+        { return this._view.visibleColumns.length > 0 && this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ? 'This view must be valid' :
+            return !this._view.valid ? 'This view must be valid' :
                 'This view has no columns to filter';
         },
 
         _getCurrentData: function()
-        { return this._super() || this.settings.view; },
+        { return this._super() || this._view; },
 
         _dataPreProcess: function(data)
         {
@@ -253,7 +253,7 @@
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
             var resultObj = cpObj._getFormValues();
-            var newMd = $.extend(true, {}, cpObj.settings.view.metadata);
+            var newMd = $.extend(true, {}, cpObj._view.metadata);
             newMd.conditionalFormatting = (resultObj.metadata || {}).conditionalFormatting;
 
             // Clean up any conditionalFormatting items that only have one child
@@ -265,7 +265,7 @@
                 { cf.condition = cf.condition.children[0]; }
             });
 
-            cpObj.settings.view.update({metadata: newMd});
+            cpObj._view.update({metadata: newMd});
 
             cpObj._finishProcessing();
             if (_.isFunction(finalCallback)) { finalCallback(); }

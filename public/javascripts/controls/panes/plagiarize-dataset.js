@@ -18,7 +18,7 @@
                 attachTo: $('#templates'),
                 chooseCallback: function(user) { cpObj._thief = user; },
                 filterCallback: function(user)
-                { return user.id !== cpObj.settings.view.owner.id; },
+                { return user.id !== cpObj._view.owner.id; },
                 valueFunction: function(user) { return user.email; },
                 limit: 25
             });
@@ -37,8 +37,8 @@
 
         isAvailable: function()
         {
-            return this.settings.view.valid &&
-                (!this.settings.view.temporary || this.settings.view.minorChange);
+            return this._view.valid &&
+                (!this._view.temporary || this._view.minorChange);
         },
 
         getDisabledSubtitle: function()
@@ -49,7 +49,7 @@
             var userInput = {name: 'user', type: 'text', extraClass: 'friendSelect'};
             var fieldConfig = {};
 
-            if (this.settings.view.owner.id != blist.currentUserId)
+            if (this._view.owner.id != blist.currentUserId)
             {
                 fieldConfig = {type: 'group', options: [
                     {type: 'radioGroup', name: 'datasetThief', defaultValue: 'currentUser', options:
@@ -88,7 +88,7 @@
             var userId, successText;
             if (userText == 'Me')
             {
-                successText = 'You are now the owner of this ' + cpObj.settings.view.displayName;
+                successText = 'You are now the owner of this ' + cpObj._view.displayName;
                 userId = blist.currentUserId;
             }
             else
@@ -115,18 +115,18 @@
                 }
             }
 
-            cpObj.settings.view.changeOwner(userId, function success()
+            cpObj._view.changeOwner(userId, function success()
             {
                 // Reload the page to re-render all the html fragments
                 blist.util.railsFlash(successText);
                 if (_.isFunction(finalCallback)) { finalCallback(); }
-                cpObj.settings.view.redirectTo();
+                cpObj._view.redirectTo();
             },
             function error(xhr, text, error)
             {
                 var msg = (xhr.status == 404) ?  'No such user found.' :
                     ('There was a problem changing ownership of this ' +
-                        cpObj.settings.view.displayName + '. Please try again later.')
+                        cpObj._view.displayName + '. Please try again later.')
                 $error.text(msg);
             });
         }

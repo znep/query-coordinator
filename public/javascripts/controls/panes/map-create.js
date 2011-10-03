@@ -81,14 +81,14 @@
 
     var customHeatmap = function(cpObj)
     {
-        return cpObj.settings.view.displayFormat.heatmap &&
-               cpObj.settings.view.displayFormat.heatmap.type == 'custom';
+        return cpObj._view.displayFormat.heatmap &&
+               cpObj._view.displayFormat.heatmap.type == 'custom';
     };
 
     var sectionOnlyIf = {func: function()
         {
-            return this.settings.view.columnsForType('location', isEdit(this)).length > 0
-                || this.settings.view.isArcGISDataset();
+            return this._view.columnsForType('location', isEdit(this)).length > 0
+                || this._view.isArcGISDataset();
         }};
 
     // keep track that we only get domain map layers once.
@@ -157,19 +157,19 @@
     {
         var cpObj = this;
         var msg = 'A location column is required to create a map.';
-        var hasHiddenLoc = _.any(cpObj.settings.view.realColumns, function(c)
+        var hasHiddenLoc = _.any(cpObj._view.realColumns, function(c)
             { return c.dataTypeName == 'location' && c.hidden; });
         if (!hasHiddenLoc &&
             ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.addColumn))
         {
             var opts = [];
-            if (cpObj.settings.view.columnsForType('number').length > 1)
+            if (cpObj._view.columnsForType('number').length > 1)
             {
                 opts.push('you can <a href="#convertLatLong" ' +
                     'title="Convert latitude and longitude to a location">' +
                     'convert latitude and longitude data to a location column</a>');
             }
-            if (cpObj.settings.view.columnsForType('text').length > 0)
+            if (cpObj._view.columnsForType('text').length > 0)
             {
                 opts.push('you can <a href="#convertLoc" title="Convert to a location">' +
                     'convert addresses into a location column</a>');
@@ -198,7 +198,7 @@
         {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
-            cpObj.settings.view.bind('clear_temporary', function() { cpObj.reset(); });
+            cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
 
             cpObj.$dom().delegate('.showConditionalFormatting', 'click', function(e)
             {
@@ -210,9 +210,9 @@
             cpObj.$dom().delegate('.clearConditionalFormatting', 'click', function(e)
             {
                 e.preventDefault();
-                var metadata = $.extend(true, {}, cpObj.settings.view.metadata);
+                var metadata = $.extend(true, {}, cpObj._view.metadata);
                 delete metadata.conditionalFormatting;
-                cpObj.settings.view.update({ metadata: metadata });
+                cpObj._view.update({ metadata: metadata });
             });
 
             // Hook up clicks on the disabled message
@@ -238,7 +238,7 @@
                 }
 
                 // Listen for when they add a column, and then re-show this pane
-                cpObj.settings.view.once('columns_changed', function()
+                cpObj._view.once('columns_changed', function()
                 {
                     // If they hit Cancel from 'Create column' then this
                     // function might trigger some time later.  Make sure that
@@ -262,18 +262,18 @@
         { return 'Views with locations can be displayed as points on a map'; },
 
         _getCurrentData: function()
-        { return this._super() || this.settings.view; },
+        { return this._super() || this._view; },
 
         isAvailable: function()
         {
-            return (this.settings.view.valid || isEdit(this)) &&
-                (_.include(this.settings.view.metadata.availableDisplayTypes, 'map') ||
-                !this.settings.view.isAltView());
+            return (this._view.valid || isEdit(this)) &&
+                (_.include(this._view.metadata.availableDisplayTypes, 'map') ||
+                !this._view.isAltView());
         },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid && !isEdit(this) ?
+            return !this._view.valid && !isEdit(this) ?
                 'This view must be valid' :
                 'A view may only have one visualization on it';
         },
@@ -285,7 +285,7 @@
                     title: 'Map Setup',
                     onlyIf: $.extend({disable: true, disabledMessage: disabledMessage}, sectionOnlyIf),
                     fields: [
-                        !this.settings.view.isArcGISDataset() ?
+                        !this._view.isArcGISDataset() ?
                         {
                             text: 'Map Type', name: 'displayFormat.type', type: 'select',
                             required: true, prompt: 'Select a map type', options: mapTypes
@@ -318,7 +318,7 @@
                 {
                     title: 'Location',
                     onlyIf: [{field: 'displayFormat.type', value: 'esri'},
-                             { func: function() { return !this.settings.view.isArcGISDataset(); } },
+                             { func: function() { return !this._view.isArcGISDataset(); } },
                                 sectionOnlyIf],
                     fields: [
                         {text: 'Location', type: 'radioGroup', name: 'locationSection',
@@ -426,17 +426,17 @@
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {map: true}}}},
-                cpObj._getFormValues(), {metadata: cpObj.settings.view.metadata});
+                cpObj._getFormValues(), {metadata: cpObj._view.metadata});
 
             if (customHeatmap(cpObj))
             {
                 view.displayFormat.heatmap.type = 'custom';
-                view.displayFormat.heatmap.cache_url = cpObj.settings.view.displayFormat.heatmap.cache_url;
+                view.displayFormat.heatmap.cache_url = cpObj._view.displayFormat.heatmap.cache_url;
             }
 
-            if (view.displayFormat.type == cpObj.settings.view.displayFormat.type)
-            { view.displayFormat.viewport = cpObj.settings.view.displayFormat.viewport; }
-            else if (cpObj.settings.view.displayFormat.type == 'bing')
+            if (view.displayFormat.type == cpObj._view.displayFormat.type)
+            { view.displayFormat.viewport = cpObj._view.displayFormat.viewport; }
+            else if (cpObj._view.displayFormat.type == 'bing')
             {
                 blist.datasetControls.showSaveViewDialog(isEdit(cpObj) ?
                     'reloadUpdateDialog' : 'reloadSaveDialog', null, null,
@@ -449,17 +449,17 @@
                 return;
             }
 
-            cpObj.settings.view.update(view);
+            cpObj._view.update(view);
 
             var didCallback = false;
             if (isEdit(cpObj))
             {
                 // We need to show all columns when editing a view so that
                 // any filters/facets work properly
-                var colIds = _.pluck(cpObj.settings.view.realColumns, 'id');
+                var colIds = _.pluck(cpObj._view.realColumns, 'id');
                 if (colIds.length > 0)
                 {
-                    cpObj.settings.view.setVisibleColumns(colIds, finalCallback, true);
+                    cpObj._view.setVisibleColumns(colIds, finalCallback, true);
                     didCallback = true;
                 }
             }
@@ -471,7 +471,7 @@
     }, {name: 'mapCreate'}, 'controlPane');
 
     var isEdit = function(cpObj)
-    { return _.include(cpObj.settings.view.metadata.availableDisplayTypes, 'map'); };
+    { return _.include(cpObj._view.metadata.availableDisplayTypes, 'map'); };
 
     if ($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.mapCreate)
     { $.gridSidebar.registerConfig('visualize.mapCreate', 'pane_mapCreate', 2, 'map'); }

@@ -9,14 +9,14 @@
 
         isAvailable: function()
         {
-            return this.settings.view.isPublic() && this.settings.view.valid &&
-                (!this.settings.view.temporary || this.settings.view.minorChange);
+            return this._view.isPublic() && this._view.valid &&
+                (!this._view.temporary || this._view.minorChange);
         },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ||
-                (this.settings.view.temporary && !this.settings.view.minorChange) ?
+            return !this._view.valid ||
+                (this._view.temporary && !this._view.minorChange) ?
                 'This view must be valid and saved' :
                 'This view must be public before it can be published';
         },
@@ -65,7 +65,7 @@
                 var height = $embedForm.find('#embed_height').val();
                 var customizationId = $embedForm.find('#embed_template').val() || '';
 
-                window.open(cpObj.settings.view.url +
+                window.open(cpObj._view.url +
                     "/widget_preview?width=" + width + "&height=" + height +
                     "&customization_id=" + customizationId, "Preview");
             }

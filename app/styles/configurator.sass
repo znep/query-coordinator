@@ -104,10 +104,11 @@ body.socrata-page
     float: left
     margin: 4px 0
     opacity: .8
+    width: 80px
     &:hover
       opacity: 1
-  .icon, .label
-    cursor: move
+    .icon, .label
+      cursor: move
 
 .socrata-cf-mask
   z-index: 9999
@@ -125,10 +126,7 @@ body.socrata-page
   position: relative
 
 // Representation of icons in palette and drag form of same
-.socrata-cf-side, .socrata-cf-drag-icon
-  .item
-    width: 80px
-    display: block
+.socrata-cf-side .item, .socrata-cf-drag-icon
   .icon
     width: 48px
     height: 48px
@@ -206,6 +204,7 @@ body.socrata-page
 
 // Base/default styles shared by all components
 .socrata-component
+  @include disabled-overlay(33%)
   min-height: 50px // Default height; temporary?
   background-color: rgba(0, 64, 128, .2) // Temporary
   @include border-radius(4px) // Default or temporary?
@@ -213,6 +212,12 @@ body.socrata-page
   position: relative
   &:last-child
     margin-bottom: 0
+
+  .content-wrapper
+    height: 100%
+    width: 100%
+    &.controlPane
+      background-color: $color_chrome_sidebar_background
 
   .fullHeight
     height: 100%
@@ -242,8 +247,9 @@ body.socrata-page
 // Sprited icons
 $icon_slot: 0
 @mixin icon($name)
-  .icon-#{$name} .icon
-    background-position: -6px (-8px + -44px * $icon_slot)
+  .socrata-cf-side .item, .socrata-cf-drag-icon
+    &.icon-#{$name} .icon
+      background-position: -6px (-8px + -44px * $icon_slot)
   $icon_slot: $icon_slot + 1
 @include icon(Box)
 @include icon(Catalog)

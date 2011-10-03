@@ -348,11 +348,7 @@
             cpObj._visible = false;
             cpObj._isReady = true;
 
-            if (!$.isBlank(cpObj.settings.view))
-            {
-                cpObj.settings.view.bind('columns_changed', function()
-                { updateColumnSelects(cpObj); });
-            }
+            cpObj.setView(cpObj.settings.view);
 
             cpObj.$dom().attr('id', 'controlPane_' + cpObj.settings.name + '_' + _.uniqueId())
                 .addClass('controlPane ' + cpObj.settings.name);
@@ -367,6 +363,18 @@
                 this.$dom().append(this._$content);
             }
             return this._$content;
+        },
+
+        setView: function(newView)
+        {
+            var cpObj = this;
+            if (!$.isBlank(cpObj._view))
+            { cpObj._view.unbind(null, null, cpObj); }
+
+            cpObj._view = newView;
+            if ($.isBlank(newView)) { return; }
+
+            cpObj._view.bind('columns_changed', function() { updateColumnSelects(cpObj); }, cpObj);
         },
 
         // Whether or not the pane is available for interaction
@@ -698,6 +706,90 @@
             return true;
         },
 
+        _getInputValue: function($input, results)
+        {
+            var cpObj = this;
+            var $parents = $input.parents();
+
+            // If this is a radioBlock, we're actually interested in the values
+            // of the contained controls. otherwise, it's a radioSelect and we
+            // want the radio itself
+            if ($input.isInputType('radio') && $parents.hasClass('radioBlock'))
+            {
+                $input = $input.closest('.radioLine').find('label :input:not(.prompt)');
+                if ($input.length < 1) { return results; }
+            }
+
+            var value = inputValue(cpObj, $input);
+
+            var inputName = $input.attr('name');
+
+            results = results || {};
+            // Start the parent out as top-level results
+            var parObj = results;
+            var parArray;
+            var parIndex;
+            if ($parents.hasClass('repeater'))
+            {
+                var $repeaters = $parents.filter('.line.repeater');
+                for (var i = $repeaters.length - 1; i >= 0; i--)
+                {
+                    var $curRep = $repeaters.eq(i);
+                    // If this is in a repeater, then it is name-spaced
+                    // under the repeater.  Grab that name, and set up
+                    // an array for it
+                    var buttonName = $curRep.children('.button.addValue').attr('name');
+                    if (i != $repeaters.length - 1)
+                    { buttonName = buttonName.split('-').slice(0, -1).join('-'); }
+                    parArray = addFormValue(buttonName, [], parObj);
+
+                    var curName = (i == 0 ? $input :
+                        $repeaters.eq(i - 1).children('.button.addValue')).attr('name');
+                    // The name has a -num on the end that specifies order
+                    // in the array; grab that off to use as the index
+                    var p = curName.split('-');
+                    parIndex = p[p.length - 1];
+                    // Set up the object for this array index, and use
+                    // that as the parent
+                    if (!$.isBlank(parArray))
+                    { parObj = parArray[parIndex] || {}; }
+                }
+                inputName = inputName.split('-').slice(0, -1).join('-');
+
+                var $savedDataLine = $input.closest('.line[data-savedData]');
+                if ($savedDataLine.length > 0)
+                { $.extend(parObj, JSON.parse($savedDataLine.attr('data-savedData') || '{}')); }
+            }
+
+            // If this is a column select, then parse the value as a num,
+            // since it is a column ID
+            if (!$.isBlank(value) && ($input.tagName() == 'select') && $parents.hasClass('columnSelect'))
+            { value = parseInt(value); }
+
+            // Now add the value
+            addFormValue(inputName, value, parObj);
+
+            // If this is a select, check for extra data on the actual
+            // option element
+            if ($input.tagName() == 'select')
+            {
+                var $sel = $input.find('option:selected');
+                var ckeys = $sel.attr('data-customKeys');
+                if (!$.isBlank(ckeys))
+                {
+                    // If there are custom keys, loop through each one,
+                    // and add the value in
+                    _.each(ckeys.split(','), function(k)
+                    { addFormValue(k, $sel.attr('data-custom-' + k), parObj); });
+                }
+            }
+
+            if (!$.isBlank(parArray) && !_.isEmpty(parObj))
+            { parArray[parIndex] = parObj; }
+
+            return results;
+        },
+
         /* This turns a pane into an object with values based on the names
          * of the fields */
         _getFormValues: function()
@@ -722,116 +814,33 @@
                 var $input = $(this);
                 var $parents = $input.parents();
 
-                // If this is a radio input, then either skip it if not
-                // selected; or find the input associated with it
-                if ($input.isInputType('radio') && $parents.hasClass('radioLine'))
+                // If this is a radio input, then skip it if not selected
+                if ($input.isInputType('radio') && $parents.hasClass('radioLine') &&
+                    !$input.is(':checked'))
+                { return; }
+
+                // If it is a radioBlock, we need to find the real input
+                if ($input.isInputType('radio') && $parents.hasClass('radioBlock'))
                 {
-                    if (!$input.is(':checked')) { return; }
-
-                    // if this is a radioBlock, we're actually interested
-                    // in the values of the contained controls. otherwise,
-                    // it's a radioSelect and we want the radio itself
-                    if ($parents.hasClass('radioBlock'))
-                    {
-                        $input = $input.closest('.radioLine')
-                            .find('label :input:not(.prompt)');
-                        if ($input.length < 1) { return; }
-                    }
+                    $input = $input.closest('.radioLine').find('label :input:not(.prompt)');
+                    if ($input.length < 1) { return; }
                 }
-
-                var value = getInputValue(cpObj, $input);
-
-                var inputName = $input.attr('name');
 
                 // If this is in a group, then figure out if any required
                 // fields failed
                 if ($parents.hasClass('group'))
                 {
                     var failed = false;
-                    $input.closest('.inputBlock')
-                        .find('[data-isrequired]:visible:not(:disabled)')
+                    $input.closest('.inputBlock').find('[data-isrequired]:visible:not(:disabled)')
                         .each(function()
-                    {
-                        var v = getInputValue(cpObj, $(this));
-                        failed = failed || $.isBlank(v) || v === false;
-                    });
+                        {
+                            var v = inputValue(cpObj, $(this));
+                            failed = failed || $.isBlank(v) || v === false;
+                        });
                     if (failed) { return; }
                 }
 
-                // Start the parent out as top-level results
-                var parObj = results;
-                var parArray;
-                var parIndex;
-                if ($parents.hasClass('repeater'))
-                {
-                    var $repeaters = $parents.filter('.line.repeater');
-                    for (var i = $repeaters.length - 1; i >= 0; i--)
-                    {
-                        var $curRep = $repeaters.eq(i);
-                        // If this is in a repeater, then it is name-spaced
-                        // under the repeater.  Grab that name, and set up
-                        // an array for it
-                        var buttonName = $curRep
-                            .children('.button.addValue').attr('name');
-                        if (i != $repeaters.length - 1)
-                        {
-                            buttonName = buttonName.split('-')
-                                .slice(0, -1).join('-');
-                        }
-                        parArray = addFormValue(buttonName, [], parObj);
-
-                        var curName = (i == 0 ? $input :
-                            $repeaters.eq(i - 1).children('.button.addValue'))
-                            .attr('name');
-                        // The name has a -num on the end that specifies order
-                        // in the array; grab that off to use as the index
-                        var p = curName.split('-');
-                        parIndex = p[p.length - 1];
-                        // Set up the object for this array index, and use
-                        // that as the parent
-                        if (!$.isBlank(parArray))
-                        { parObj = parArray[parIndex] || {}; }
-                    }
-                    inputName = inputName.split('-').slice(0, -1).join('-');
-
-                    var $savedDataLine =
-                        $input.closest('.line[data-savedData]');
-                    if ($savedDataLine.length > 0)
-                    {
-                        $.extend(parObj, JSON.parse(
-                            $savedDataLine.attr('data-savedData') || '{}'));
-                    }
-                }
-
-                // If this is a column select, then parse the value as a num,
-                // since it is a column ID
-                if (!$.isBlank(value) && ($input.tagName() == 'select') &&
-                     $parents.hasClass('columnSelect'))
-                { value = parseInt(value); }
-
-                // Now add the value
-                addFormValue(inputName, value, parObj);
-
-                // If this is a select, check for extra data on the actual
-                // option element
-                if ($input.tagName() == 'select')
-                {
-                    var $sel = $input.find('option:selected');
-                    var ckeys = $sel.attr('data-customKeys');
-                    if (!$.isBlank(ckeys))
-                    {
-                        // If there are custom keys, loop through each one,
-                        // and add the value in
-                        _.each(ckeys.split(','), function(k)
-                        { addFormValue(k, $sel.attr('data-custom-' + k), parObj); });
-                    }
-                }
-
-                // Wait to add this to the parent array until the end,
-                // in case it failed the required checks and doesn't have
-                // anything real to be added
-                if (!$.isBlank(parArray) && !_.isEmpty(parObj))
-                { parArray[parIndex] = parObj; }
+                cpObj._getInputValue($input, results);
             });
 
             // Undo our hidden lines before returning
@@ -873,6 +882,7 @@
         view: null
     });
 
+
     var uniformUpdate = function(items)
     {
         if (!uniformEnabled) { return; }
@@ -906,7 +916,7 @@
         var p = name.split(':');
         name = p[p.length - 1];
 
-        if ($.isBlank(name) || $.isBlank(value)) { return null; }
+        if ($.isBlank(name)) { return null; }
 
         // Next pull apart the name into pieces.  For each level,
         // recurse down, creating empty objects if needed.
@@ -939,7 +949,7 @@
         {
             // If an object, then stick the value in at the last
             // element of the key
-            if (!$.isBlank(value) && $.isBlank(parObj[p[0]]))
+            if ($.isBlank(parObj[p[0]]))
             { parObj[p[0]] = value; }
             ret = parObj[p[0]];
         }
@@ -948,7 +958,7 @@
         return ret;
     };
 
-    var getInputValue = function(cpObj, $input)
+    var inputValue = function(cpObj, $input)
     {
         if ($input.hasClass('prompt')) { return null; }
 
@@ -1021,7 +1031,9 @@
 
     var renderColumnSelectOptions = function(cpObj, columnsObj, isTableColumn, curVal)
     {
-        var cols = cpObj.settings.view.columnsForType((columnsObj || {}).type,
+        if ($.isBlank(cpObj._view)) { return []; }
+
+        var cols = cpObj._view.columnsForType((columnsObj || {}).type,
             (columnsObj || {}).hidden);
 
         if (!_.isNumber(curVal) && _.isArray((columnsObj || {}).defaultNames))
@@ -2074,8 +2086,8 @@
                 o.$field.change(showHideSection).keypress(showHideSection)
                     .click(showHideSection).attr('data-onlyIfInput', true);
             }
-            else if (isFunc && !$.isBlank(cpObj.settings.view))
-            { cpObj.settings.view.bind('columns_changed', showHideSection); }
+            else if (isFunc && !$.isBlank(cpObj._view))
+            { cpObj._view.bind('columns_changed', showHideSection, cpObj); }
         });
 
         showHideSection();

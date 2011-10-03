@@ -95,7 +95,7 @@
                 event.preventDefault();
                 var $line = $(event.target).closest('.line');
 
-                cpObj.settings.view.removeGrant(createGrantObject($line),
+                cpObj._view.removeGrant(createGrantObject($line),
                     function()
                     {
                         $line.slideToggle();
@@ -110,7 +110,7 @@
         var $span = $context.find('.andSharedHint');
         var $friends = $context.find('.friendsHint');
 
-        var friends = cpObj.settings.view.userGrants();
+        var friends = cpObj._view.userGrants();
         if (friends.length == 0)
         {
             $span.addClass('hide');
@@ -129,19 +129,19 @@
         {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
-            cpObj.settings.view.bind('permissions_changed', function() { cpObj.reset(); });
+            cpObj._view.bind('permissions_changed', function() { cpObj.reset(); }, cpObj);
         },
 
         getTitle: function()
         { return 'Sharing'; },
 
         getSubtitle: function()
-        { return 'Share this ' + this.settings.view.displayName; },
+        { return 'Share this ' + this._view.displayName; },
 
         isAvailable: function()
         {
-            return this.settings.view.valid &&
-                (!this.settings.view.temporary || this.settings.view.minorChange);
+            return this._view.valid &&
+                (!this._view.temporary || this._view.minorChange);
         },
 
         getDisabledSubtitle: function()
@@ -170,20 +170,20 @@
                             $formElem.find('.shareNotifyLink').click(function(event)
                             {
                                 event.preventDefault();
-                                cpObj.settings.view.notifyUsers(function(responseData)
+                                cpObj._view.notifyUsers(function(responseData)
                                     { $formElem.find('.shareNoticeSent').fadeIn(); });
                             });
 
                             $formElem.find('.publicOrPrivate')
-                                  .text(cpObj.settings.view.isPublic() ? 'Public' : 'Private').end()
-                                  .find('.datasetTypeName').text(cpObj.settings.view.displayName).end()
+                                  .text(cpObj._view.isPublic() ? 'Public' : 'Private').end()
+                                  .find('.datasetTypeName').text(cpObj._view.displayName).end()
                                   .find('.datasetTypeNameUpcase')
-                                    .text(cpObj.settings.view.displayName.capitalize());
+                                    .text(cpObj._view.displayName.capitalize());
 
                             // When this pane gets refreshed, update to reflect who it's shared with
                             updateShareText(cpObj, $formElem);
 
-                            var grants = cpObj.settings.view.userGrants();
+                            var grants = cpObj._view.userGrants();
 
                             // If they have no shares
                             if ($.isBlank(grants) || grants.length == 0)

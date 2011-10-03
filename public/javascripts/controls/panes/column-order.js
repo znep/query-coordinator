@@ -8,11 +8,11 @@
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
 
-            cpObj.settings.view.bind('columns_changed', function()
+            cpObj._view.bind('columns_changed', function()
             {
                 if (isLoading) { return; }
                 cpObj.reset();
-            });
+            }, cpObj);
         },
 
         getTitle: function()
@@ -23,9 +23,9 @@
 
         isAvailable: function()
         {
-            return this.settings.view.valid &&
-                (!this.settings.view.temporary || this.settings.view.minorChange) &&
-                !_.isEmpty(this.settings.view.visibleColumns);
+            return this._view.valid &&
+                (!this._view.temporary || this._view.minorChange) &&
+                !_.isEmpty(this._view.visibleColumns);
         },
 
         getDisabledSubtitle: function()
@@ -46,7 +46,7 @@
                             }
                         }
                     },
-                    data: this.settings.view.visibleColumns
+                    data: this._view.visibleColumns
                 }
             }];
         },
@@ -66,13 +66,13 @@
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
             var $columnsList = cpObj.$dom().find('.columnsList');
-            var columns = _.pluck(_.sortBy(cpObj.settings.view.visibleColumns, function(column)
+            var columns = _.pluck(_.sortBy(cpObj._view.visibleColumns, function(column)
             {
                 return $columnsList.children('[data-columnId=' + column.id + ']').index();
             }), 'id');
 
             isLoading = true;
-            cpObj.settings.view.setVisibleColumns(columns, function()
+            cpObj._view.setVisibleColumns(columns, function()
             {
                 cpObj._finishProcessing();
                 cpObj._hide();

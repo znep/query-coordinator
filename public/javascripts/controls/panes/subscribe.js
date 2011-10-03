@@ -9,16 +9,16 @@
 
         isAvailable: function()
         {
-            return this.settings.view.isPublic() && this.settings.view.valid &&
-                (!this.settings.view.temporary || this.settings.view.minorChange);
+            return this._view.isPublic() && this._view.valid &&
+                (!this._view.temporary || this._view.minorChange);
         },
 
         getDisabledSubtitle: function()
         {
-            return !this.settings.view.valid ||
-                (this.settings.view.temporary && !this.settings.view.minorChange) ?
+            return !this._view.valid ||
+                (this._view.temporary && !this._view.minorChange) ?
                 'This view must be valid and saved' :
-                this.settings.view.isGrid() ?
+                this._view.isGrid() ?
                     'This view must be public before it can be subscribed to' :
                     'Only tabular data may be subscribed to';
         },
@@ -35,7 +35,7 @@
                                 'feedLink <- ': {
                                     '@class+': 'feedLink.itemClass',
                                     'a@href': function(e)
-                                        { return e.item.url + cpObj.settings.view.apiUrl + '/rows.rss'; },
+                                        { return e.item.url + cpObj._view.apiUrl + '/rows.rss'; },
                                     'a@class+': 'feedLink.name',
                                     '.text': 'feedLink.text',
                                     '.badge@src': 'feedLink.img',

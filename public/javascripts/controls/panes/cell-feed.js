@@ -13,10 +13,10 @@
                         template: 'cellFeedTitle',
                         directive: {
                             '.rowName': function(c)
-                            { return cpObj.settings.view.rowForID(c.context.rowId).index + 1; },
+                            { return cpObj._view.rowForID(c.context.rowId).index + 1; },
                             '.columnName': function(c)
                             {
-                                return $.htmlEscape(cpObj.settings.view.
+                                return $.htmlEscape(cpObj._view.
                                     columnForTCID(c.context.tableColumnId).name);
                             }
                         }
@@ -31,14 +31,14 @@
                         {
                             cpObj._cellPaneData = paneData;
                             cpObj._startProcessing();
-                            cpObj.settings.view.getComments(function(responseData)
+                            cpObj._view.getComments(function(responseData)
                             {
                                 cpObj._finishProcessing();
 
                                 $elem.find('.feed').feedList({
                                     comments: responseData,
                                     filterCategories: null,
-                                    mainView: cpObj.settings.view,
+                                    mainView: cpObj._view,
                                     commentCreateData: {rowId: paneData.rowId,
                                         tableColumnId: paneData.tableColumnId}
                                 });

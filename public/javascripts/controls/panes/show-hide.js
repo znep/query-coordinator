@@ -8,11 +8,11 @@
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
 
-            cpObj.settings.view.bind('columns_changed', function()
+            cpObj._view.bind('columns_changed', function()
             {
                 if (isLoading) { return; }
                 cpObj.reset();
-            });
+            }, cpObj);
         },
 
         getTitle: function()
@@ -22,7 +22,7 @@
         { return 'Adjust which columns are visible in this view'; },
 
         isAvailable: function()
-        { return this.settings.view.valid; },
+        { return this._view.valid; },
 
         getDisabledSubtitle: function()
         { return 'This view must be valid'; },
@@ -41,7 +41,7 @@
                 return 'z' + c.name;
             };
 
-            var cols = _(cpObj.settings.view.realColumns).chain()
+            var cols = _(cpObj._view.realColumns).chain()
                 .sortBy(sortFunc)
                 .map(function(c)
                 {
@@ -52,13 +52,13 @@
                 .flatten()
                 .value();
 
-            if (cpObj.settings.view.isGrouped())
+            if (cpObj._view.isGrouped())
             {
                 // Filter out columns that can't be displayed
                 cols = _.reject(cols, function(c)
                 {
                     return $.isBlank(c.format.grouping_aggregate) &&
-                        !_.any(cpObj.settings.view.query.groupBys, function(g)
+                        !_.any(cpObj._view.query.groupBys, function(g)
                             { return g.columnId == c.id; });
                 });
             }
@@ -126,18 +126,18 @@
                 }
             });
 
-            cols = _.sortBy(cols, function(cId) { return cpObj.settings.view.columnForID(cId).position; });
+            cols = _.sortBy(cols, function(cId) { return cpObj._view.columnForID(cId).position; });
 
             _.each(children, function(cols, id)
             {
-                var parCol = cpObj.settings.view.columnForID(id);
+                var parCol = cpObj._view.columnForID(id);
                 cols = _.sortBy(cols, function(cId)
                     { return parCol.childColumnForID(cId).position; });
                 parCol.setVisibleChildColumns(cols);
             });
 
             isLoading = true;
-            cpObj.settings.view.setVisibleColumns(cols, function()
+            cpObj._view.setVisibleColumns(cols, function()
             {
                 cpObj._finishProcessing();
                 cpObj._hide();

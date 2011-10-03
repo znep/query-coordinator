@@ -8,7 +8,7 @@
         { return 'Download a copy of this dataset in a static format'; },
 
         isAvailable: function()
-        { return this.settings.view.valid; },
+        { return this._view.valid; },
 
         getDisabledSubtitle: function()
         { return 'This view must be valid'; },
@@ -21,7 +21,7 @@
                         template: 'downloadsTable',
                         directive: $.templates.downloadsTable.directive,
                         data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
-                                viewId: this.settings.view.id },
+                                viewId: this._view.id },
                         callback: function($sect)
                         {
                             $sect.find('.downloadsList .item a').downloadToFormCatcher();

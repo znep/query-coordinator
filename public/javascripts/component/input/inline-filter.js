@@ -18,7 +18,7 @@ $.component.Component.extend('Inline filter', 'input', {
         Dataset.createFromViewId(lcObj._properties.viewId, function(view)
         {
             lcObj.finishLoading();
-            lcObj.$dom.pane_unifiedFilter({
+            lcObj.$contents.pane_unifiedFilter({
                 view: view
             }).render();
         });

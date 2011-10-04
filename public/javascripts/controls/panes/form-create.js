@@ -57,7 +57,7 @@
                 $.controlPane.buttons.create, $.controlPane.buttons.cancel];
         },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(this, arguments)) { return; }
@@ -79,6 +79,7 @@
                 var finish = _.after(2, function()
                 {
                     cpObj._finishProcessing();
+                    if (_.isFunction(finalCallback)) { finalCallback(); }
                     newView.redirectTo();
                 });
 
@@ -126,13 +127,13 @@
 
                         cpObj._showMessage('Your form has been updated');
                         cpObj._hide();
+                        if (_.isFunction(finalCallback)) { finalCallback(); }
                     });
                 }
 
                 if (wasPublic !== isPublic)
                 {
-                    cpObj.settings.view['make' + (isPublic ? 'Public' : 'Private')](
-                        updateView);
+                    cpObj.settings.view['make' + (isPublic ? 'Public' : 'Private')](updateView);
                 }
                 else
                 { updateView(); }

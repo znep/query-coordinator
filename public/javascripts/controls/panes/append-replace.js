@@ -48,7 +48,7 @@
         _getFinishButtons: function()
         { return [{text: 'Upload', isDefault: true, value: true}, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(this, arguments)) { return; }
@@ -70,9 +70,10 @@
                 { cpObj.$dom().find('.mainError').text(response.message); }
                 else
                 {
-                    cpObj.settings.view.reload();
                     cpObj._showMessage('Your dataset has been updated');
                     cpObj._hide();
+                    if (_.isFunction(finalCallback)) { finalCallback(); }
+                    cpObj.settings.view.reload();
                 }
             };
             vals.uploadFile.submit();

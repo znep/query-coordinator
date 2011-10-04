@@ -446,7 +446,7 @@
                     {requiresLogin: false}), $.controlPane.buttons.cancel];
         },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -488,6 +488,7 @@
 
                 cpObj._showMessage('Your column has been updated');
                 _.defer(function() { cpObj._hide(); });
+                if (_.isFunction(finalCallback)) { finalCallback(); }
             };
 
             col.update(column);

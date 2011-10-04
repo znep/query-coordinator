@@ -135,6 +135,7 @@
         allFeedData.sort(function(a, b) { return b.timestamp - a.timestamp; });
 
         var feedMap = {};
+        var feedData = [];
 
         // trim and tag
         var feedDataMap = function(item)
@@ -150,7 +151,7 @@
             feedMap[item.serialId] = item;
             return item;
         };
-        allFeedData = _.map(allFeedData, feedDataMap);
+        allFeedData = _.map(allFeedData, feedDataMap) || [];
 
         this.each(function()
         {
@@ -308,7 +309,7 @@
                     // Take action
                     if ($this.is('.commentInappropriateLink:not(.disabled)'))
                     {
-                        blist.util.doAuthedAction('flag a comment', function()
+                        blist.util.doAuthedAction('flag a comment', function(successCallback)
                         {
                             opts.actionDelegate(targetCommentData, opts).flagComment(
                                 targetCommentData.itemId,
@@ -320,13 +321,14 @@
                                         $this.addClass('disabled')
                                             .text('Flagged!').fadeIn();
                                     });
+                                    if (_.isFunction(successCallback)) { successCallback(); }
                                 }
                             );
                         });
                     }
                     else if ($this.is('.commentDeleteLink'))
                     {
-                        blist.util.doAuthedAction('delete a comment', function()
+                        blist.util.doAuthedAction('delete a comment', function(successCallback)
                         {
                             opts.actionDelegate(targetCommentData, opts).removeComment(
                                 targetCommentData.itemId,
@@ -334,6 +336,7 @@
                                 {
                                     targetCommentData.itemDeleted = true;
                                     $this.closest('.feedItem').animate({opacity: 0.3}, 2000);
+                                    if (_.isFunction(successCallback)) { successCallback(); }
                                 }
                             );
                         });
@@ -342,7 +345,7 @@
                              $this.is('.commentRateDownLink:not(.ratedDown)'))
                     {
                         var thumbsUp = $this.hasClass('commentRateUpLink');
-                        blist.util.doAuthedAction('rate a comment', function()
+                        blist.util.doAuthedAction('rate a comment', function(successCallback)
                         {
                             opts.actionDelegate(targetCommentData, opts).rateComment(
                                 targetCommentData.itemId, thumbsUp,
@@ -372,6 +375,8 @@
 
                                         $this.closest('li').siblings('.' + direction + 'Ratings').text(text);
                                     });
+
+                                    if (_.isFunction(successCallback)) { successCallback(); }
                                 }
                             );
                         });
@@ -422,7 +427,7 @@
                             commentData.parent = { id: parentCommentId };
                         }
 
-                        blist.util.doAuthedAction('post a comment', function()
+                        blist.util.doAuthedAction('post a comment', function(successCallback)
                         {
                             view.addComment(commentData,
                                 function(response)
@@ -469,6 +474,8 @@
                                     $this.closest('.newCommentForm').remove();
                                     if (_.isFunction(opts.addCommentCallback))
                                     { opts.addCommentCallback(view, newCommentData); }
+
+                                    if (_.isFunction(successCallback)) { successCallback(); }
                                 },
                                 function(resp)
                                 {

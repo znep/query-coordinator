@@ -533,16 +533,16 @@
 
                 cpObj._startProcessing();
 
-                var doCallback = function()
-                { cpObj._finish(data, $button.attr('data-value')); };
+                var doCallback = function(finalCallback)
+                { cpObj._finish(data, $button.attr('data-value'), finalCallback); };
 
                 if (!$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin'))
                 {
                     var msg = $button.attr('data-loginMsg') || cpObj.settings.defaultLoginMessage;
                     blist.util.inlineLogin.verifyUser(
-                        function(isSuccess)
+                        function(isSuccess, successCallback)
                         {
-                            if (isSuccess) { doCallback(); }
+                            if (isSuccess) { doCallback(successCallback); }
                             else
                             {
                                 $pane.find('.mainError').text(msg);
@@ -582,10 +582,10 @@
             cpObj._visible = true;
         },
 
-        reset: function()
+        reset: function(isSoft)
         {
             var cpObj = this;
-            if (cpObj.$dom().is('.noReset')) { return; }
+            if (isSoft && cpObj.$dom().is('.noReset')) { return; }
 
             // Re-rendering the pane is not really much worse than trying
             // to reset it; and we don't have to worry about reset and then
@@ -650,7 +650,7 @@
         { return []; },
 
         // Called when a finish button is clicked
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!value)

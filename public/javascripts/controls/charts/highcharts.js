@@ -236,6 +236,7 @@
                 otherPt.otherPt = true;
                 _.each(chartObj._seriesRemainders, function(sr, i)
                 {
+                    if ($.isBlank(sr)) { return; }
                     var col = chartObj._yColumns[i].data;
                     otherRow[col.id] = sr;
                     var point = yPoint(chartObj, otherRow, sr, i, otherPt, col);

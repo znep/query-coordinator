@@ -728,10 +728,10 @@ blist.util.doAuthedAction = function(actionText, callback)
     if (!$.isBlank(blist.util.inlineLogin))
     {
         blist.util.inlineLogin.verifyUser(
-            function(isSuccess)
+            function(isSuccess, successCallback)
             {
                 if (isSuccess)
-                    callback();
+                    callback(successCallback);
             }, 'You must be logged in to ' + actionText);
     }
     else

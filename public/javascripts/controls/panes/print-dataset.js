@@ -40,13 +40,14 @@
         _getFinishButtons: function()
         { return [{text: 'Print', value: 'print', isDefault: true}, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             if (value === 'print')
             { this.$dom().find('.printForm').closest('form').submit(); }
 
             this._finishProcessing();
             this._hide();
+            if (_.isFunction(finalCallback)) { finalCallback(); }
         }
     }, {name: 'printDataset', noReset: true}, 'controlPane');
 

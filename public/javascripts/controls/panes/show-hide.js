@@ -1,5 +1,7 @@
 (function($)
 {
+    var isLoading = false;
+
     $.Control.extend('pane_showHideColumns', {
         _init: function()
         {
@@ -102,7 +104,7 @@
         _getFinishButtons: function()
         { return [{text: 'Apply', isDefault: true, value: true}, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -140,6 +142,7 @@
                 cpObj._finishProcessing();
                 cpObj._hide();
                 isLoading = false;
+                if (_.isFunction(finalCallback)) { finalCallback(); }
             });
         }
     }, {name: 'showHide'}, 'controlPane');

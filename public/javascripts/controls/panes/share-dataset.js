@@ -164,7 +164,7 @@
                                 event.preventDefault();
                                 if ($.subKeyDefined(blist, 'dialog.sharing') &&
                                     _.isFunction(blist.dialog.sharing))
-                                { blist.dialog.sharing(event); }
+                                { blist.dialog.sharing(event, cpObj); }
                             });
 
                             $formElem.find('.shareNotifyLink').click(function(event)

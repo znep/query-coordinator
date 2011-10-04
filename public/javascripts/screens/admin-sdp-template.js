@@ -163,6 +163,7 @@ blist.publish.resolveCurrentThemeMeta = function()
 // events for logo upload
 blist.publish.wireLogoEditor = function($section)
 {
+    var cpObj = this;
     // restore normal styling, allow parser to see us
     $section.closest('.formSection').removeClass('custom');
 
@@ -181,7 +182,7 @@ blist.publish.wireLogoEditor = function($section)
                 $logoSelect.append('<option value="' + response['id'] + '">'+
                                     response['nameForOutput'] + '</option>');
                 $logoSelect.val(response['id']);
-                publishNS.handleValueChanged();
+                publishNS.handleValueChanged.call(cpObj);
             },
             null, ['jpg', 'jpeg', 'gif', 'png'], 'Image');
     });
@@ -241,6 +242,8 @@ $.Control.extend('pane_sdpTmplMetadata', {
         publishNS.updateCustomUI();
     },
 
+    _changeHandler: publishNS.handleValueChanged,
+
     _getSections: function()
     {
         return [
@@ -273,6 +276,8 @@ $.Control.extend('pane_sdpTmplAppearance', {
         this._super();
         publishNS.updateCustomUI();
     },
+
+    _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function()
     {
@@ -372,6 +377,8 @@ $.Control.extend('pane_sdpTmplBehavior', {
         publishNS.updateCustomUI();
     },
 
+    _changeHandler: publishNS.handleValueChanged,
+
     _getSections: function()
     {
         return [
@@ -426,6 +433,8 @@ $.Control.extend('pane_sdpTmplAdvanced', {
         publishNS.updateCustomUI();
     },
 
+    _changeHandler: publishNS.handleValueChanged,
+
     _getSections: function()
     {
         return [
@@ -456,6 +465,8 @@ $.Control.extend('pane_sdpTmplEmbed', {
         this._super();
         publishNS.updateCustomUI();
     },
+
+    _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function()
     {

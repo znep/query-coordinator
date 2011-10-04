@@ -60,7 +60,7 @@
         _getFinishButtons: function()
         { return [$.controlPane.buttons.apply, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -77,6 +77,7 @@
                 cpObj._finishProcessing();
                 cpObj._hide();
                 isLoading = false;
+                if (_.isFunction(finalCallback)) { finalCallback(); }
             });
         }
     }, {name: 'columnOrder'}, 'controlPane');

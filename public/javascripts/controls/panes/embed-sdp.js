@@ -52,7 +52,7 @@
         _getFinishButtons: function()
         { return [$.controlPane.buttons.done, { text: 'Preview', value: 'preview', isDefault: false }]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -69,6 +69,7 @@
                     "/widget_preview?width=" + width + "&height=" + height +
                     "&customization_id=" + customizationId, "Preview");
             }
+            if (_.isFunction(finalCallback)) { finalCallback(); }
         }
     }, {name: 'embedSdp', noReset: true}, 'controlPane');
 

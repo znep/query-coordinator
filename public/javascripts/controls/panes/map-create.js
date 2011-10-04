@@ -420,7 +420,7 @@
         _getFinishButtons: function()
         { return [$.controlPane.buttons.apply, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -444,23 +444,29 @@
                     {
                         cpObj._finishProcessing();
                         cpObj.reset();
+                        if (_.isFunction(finalCallback)) { finalCallback(); }
                     }, view);
                 return;
             }
 
             cpObj.settings.view.update(view);
 
+            var didCallback = false;
             if (isEdit(cpObj))
             {
                 // We need to show all columns when editing a view so that
                 // any filters/facets work properly
                 var colIds = _.pluck(cpObj.settings.view.realColumns, 'id');
                 if (colIds.length > 0)
-                { cpObj.settings.view.setVisibleColumns(colIds, null, true); }
+                {
+                    cpObj.settings.view.setVisibleColumns(colIds, finalCallback, true);
+                    didCallback = true;
+                }
             }
 
             cpObj._finishProcessing();
             cpObj.reset();
+            if (!didCallback && _.isFunction(finalCallback)) { finalCallback(); }
         }
     }, {name: 'mapCreate'}, 'controlPane');
 

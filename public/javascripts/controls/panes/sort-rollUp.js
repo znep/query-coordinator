@@ -90,18 +90,19 @@
 
         shown: function()
         {
-            this._super();
-            if (!this._registeredChange)
+            var cpObj = this;
+            cpObj._super();
+            if (!cpObj._registeredChange)
             {
-                this.settings.view.bind('query_change', function() { cpObj.reset(); });
-                this._registeredChange = true;
+                cpObj.settings.view.bind('query_change', function() { cpObj.reset(); });
+                cpObj._registeredChange = true;
             }
         },
 
         _getFinishButtons: function()
         { return [$.controlPane.buttons.apply, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -171,6 +172,7 @@
                 cpObj._finishProcessing();
 
                 _.defer(function() { cpObj.reset(); });
+                if (_.isFunction(finalCallback)) { finalCallback(); }
             };
 
             if (wasInvalid && cpObj.settings.view.type != 'blist')

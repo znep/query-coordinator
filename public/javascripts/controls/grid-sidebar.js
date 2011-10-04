@@ -440,7 +440,7 @@
         if ($.subKeyDefined(config, 'control'))
         {
             config.control.hidden();
-            config.control.reset();
+            config.control.reset(true);
         }
 
         if (outerConfig == sidebarObj._currentOuterPane)

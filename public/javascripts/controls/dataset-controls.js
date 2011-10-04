@@ -204,7 +204,7 @@ blist.datasetControls.datasetRating = function($star, $sect, enabled)
         enabled: enabled && !$.isBlank($star.data('rating-type')),
         onChange: function(value)
         {
-            blist.util.doAuthedAction('rate this dataset', function()
+            blist.util.doAuthedAction('rate this dataset', function(successCallback)
             {
                 blist.dataset.updateRating(
                     {
@@ -222,6 +222,7 @@ blist.datasetControls.datasetRating = function($star, $sect, enabled)
                                     .find('.totalTimesRated').text())) + 1);
                         }
                         $star.attr('title', '');
+                        if (_.isFunction(successCallback)) { successCallback(); }
                     }
                 );
             });

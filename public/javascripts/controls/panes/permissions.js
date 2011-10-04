@@ -83,7 +83,7 @@
         _getFinishButtons: function()
         { return [$.controlPane.buttons.update, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this
             if (!cpObj._super.apply(this, arguments)) { return; }
@@ -97,6 +97,7 @@
                 cpObj._finishProcessing();
                 cpObj._showMessage('Your permissions have been saved');
                 cpObj._hide();
+                if (_.isFunction(finalCallback)) { finalCallback(); }
             },
             function()
             {

@@ -68,7 +68,7 @@
         _getFinishButtons: function()
         { return [$.controlPane.buttons.apply, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -119,6 +119,7 @@
             {
                 // Reload the page to re-render all the html fragments
                 blist.util.railsFlash(successText);
+                if (_.isFunction(finalCallback)) { finalCallback(); }
                 cpObj.settings.view.dataset.redirectTo();
             },
             function error(xhr, text, error)

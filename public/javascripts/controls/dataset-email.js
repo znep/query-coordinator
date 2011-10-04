@@ -41,7 +41,7 @@
         });
     };
 
-    blist.dialog.sharing = function(e)
+    blist.dialog.sharing = function(e, owner)
     {
         e.preventDefault();
 
@@ -58,7 +58,7 @@
 
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
-        $('.emailDatasetDialog').jqmShow();
+        $('.emailDatasetDialog').data('owner', owner).jqmShow();
 
         $flash.removeClass('notice').removeClass('error').text('');
 
@@ -212,9 +212,12 @@
                 $form.closest('.emailDatasetContent').slideToggle();
                 $('.emailSuccess').slideToggle();
 
-                    // Update the sharing pane to reflect
-                if ($form.closest('.emailDatasetDialog').hasClass('ownerDialog'))
-                { $('#gridSidebar').gridSidebar().refresh('manage.shareDataset'); }
+                // Update the sharing pane to reflect
+                var owner = $form.closest('.emailDatasetDialog').data('owner') || {};
+                if (_.isFunction(owner.reset))
+                { owner.reset(); }
+                else if ($.subKeyDefined(blist, 'datasetPage.sidebar'))
+                { blist.datasetPage.sidebar.refresh('manage.shareDataset'); }
             };
 
             $.socrataServer.sendBatch(refreshCallback,

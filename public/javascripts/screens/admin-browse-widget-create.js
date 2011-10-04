@@ -203,6 +203,8 @@ $.Control.extend('pane_widgetCreateFilter', {
     _getCurrentData: function()
     { return this._super() || catalogNS.widgetDataSource(); },
 
+    _changeHandler: publishNS.handleValueChanged,
+
     _getSections: function()
     { return filterSections; }
 }, {name: 'filter', noReset: true}, 'controlPane');
@@ -217,6 +219,8 @@ $.Control.extend('pane_widgetCreateAdvanced', {
 
     _getCurrentData: function()
     { return this._super() || catalogNS.widgetDataSource(); },
+
+    _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function()
     {
@@ -261,6 +265,8 @@ $.Control.extend('pane_widgetCreateEmbed', {
 
     _getCurrentData: function()
     { return this._super() || catalogNS.widgetDataSource(); },
+
+    _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function()
     {

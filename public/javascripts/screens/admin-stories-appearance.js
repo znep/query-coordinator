@@ -69,6 +69,8 @@ $.Control.extend('pane_storiesTextbox', {
     _getCurrentData: function()
     { return this._super() || publishNS.resolveWorkingTheme(); },
 
+    _changeHandler: publishNS.handleValueChanged,
+
     _getSections: function()
     {
         return [
@@ -146,6 +148,8 @@ $.Control.extend('pane_storiesPager', {
     _getCurrentData: function()
     { return this._super() || publishNS.resolveWorkingTheme(); },
 
+    _changeHandler: publishNS.handleValueChanged,
+
     _getSections: function()
     {
         return [
@@ -175,6 +179,8 @@ $.Control.extend('pane_storiesOther', {
 
     _getCurrentData: function()
     { return this._super() || publishNS.resolveWorkingTheme(); },
+
+    _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function()
     {

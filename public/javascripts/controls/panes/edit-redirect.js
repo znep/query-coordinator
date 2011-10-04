@@ -4,7 +4,7 @@
         getTitle: function()
         { return 'Edit'; },
 
-        getSections: function()
+        _getSections: function()
         {
             return [{
                 customContent: {

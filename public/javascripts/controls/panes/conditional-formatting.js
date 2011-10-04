@@ -247,7 +247,7 @@
         _getFinishButtons: function()
         { return [ {text: 'Apply', isDefault: true, value: true}, $.controlPane.buttons.cancel ]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
@@ -268,6 +268,7 @@
             cpObj.settings.view.update({metadata: newMd});
 
             cpObj._finishProcessing();
+            if (_.isFunction(finalCallback)) { finalCallback(); }
         }
 
     }, {name: 'conditionalFormatting'}, 'controlPane');

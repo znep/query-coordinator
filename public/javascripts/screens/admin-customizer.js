@@ -282,7 +282,7 @@ blist.publish.handleValueChanged = function()
     { return; }
 
     // get values from current form section
-    var hash = publishNS.sidebar.getFormValues($('#gridSidebar .outerPane:visible'));
+    var hash = this._getFormValues();
 
     // merge changes in
     $.extend(true, publishNS.workingTheme, hash);
@@ -296,10 +296,6 @@ blist.publish.handleValueChanged = function()
 
     blist.publish.valueChangedFired = true;
     _.defer(function() { blist.publish.valueChangedFired = false; });
-};
-blist.publish.deferredHandleValueChanged = function()
-{
-    _.defer(function() { publishNS.handleValueChanged(); });
 };
 
 
@@ -329,16 +325,6 @@ $(function() { _.defer(function()
             publishNS.sidebar.show($a.attr('data-paneName'));
         });
     });
-
-    // Wire up all possible elements in the sidebars to refresh the preview
-    $.live('#gridSidebar input[type=text], #gridSidebar textarea, #gridSidebar select, #gridSidebar input[type=file], ' +
-           '#gridSidebar input[type=checkbox], #gridSidebar input[type=radio]',
-           'change', publishNS.handleValueChanged);
-    if ($.browser.msie)
-    { $.live('#gridSidebar input[type=checkbox], #gridSidebar input[type=radio]',
-             'click', publishNS.handleValueChanged); }
-    $.live('#gridSidebar .slider', 'slide', publishNS.deferredHandleValueChanged);
-    $.live('#gridSidebar .colorControl', 'color_change', publishNS.deferredHandleValueChanged);
 
     // Publishing action buttons
     $('.saveButton').click(function(event)

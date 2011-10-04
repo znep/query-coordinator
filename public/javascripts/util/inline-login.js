@@ -2,6 +2,9 @@ blist.namespace.fetch('blist.util.inlineLogin');
 
 blist.util.inlineLogin.verifyUser = function(callback, msg)
 {
+    // Since they logged-in/signed-up, we need to do a full reload once everything is done
+    var finalCallback = function() { window.location = window.location; };
+
     if (!blist.currentUserId)
     {
         var $login = $('#login');
@@ -16,7 +19,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     event.preventDefault();
                     $login.jqmHide();
-                    callback(false, true);
+                    callback(false);
                 }).end()
             .find('a.signupLink').unbind('click.inlineLogin')
                 .bind('click.inlineLogin', function (event)
@@ -47,7 +50,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     if (event.keyCode == 27)
                     {
                         $login.jqmHide();
-                        callback(false, true);
+                        callback(false);
                     }
                 })
                 .unbind('submit.inlineLogin')
@@ -73,7 +76,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                                 $('#header .userNav, #siteHeader .siteUserNav')
                                     .addClass('loggedInNav')
                                     .find('.signOutLink').removeClass('hide');
-                                callback(true, true);
+                                callback(true, finalCallback);
                             }
                         }
                     });
@@ -86,7 +89,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     event.preventDefault();
                     $signup.jqmHide();
-                    callback(false, true);
+                    callback(false);
                 }).end()
             .find('a#signup_submit').unbind('click.inlineLogin')
                 .bind('click.inlineLogin', function(event)
@@ -100,7 +103,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     if (event.keyCode == 27)
                     {
                         $signup.jqmHide();
-                        callback(false, true);
+                        callback(false);
                     }
                 })
                 .unbind('submit.inlineLogin')
@@ -162,13 +165,13 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 $('#header .userNav, #siteHeader .siteUserNav')
                     .addClass('loggedInNav')
                     .find('.signOutLink').removeClass('hide');
-                callback(true, true);
+                callback(true, finalCallback);
             }
         };
     }
     else
     {
-        callback(true, false);
+        callback(true);
     }
 };
 

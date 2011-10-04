@@ -180,7 +180,7 @@
         _getFinishButtons: function()
         { return [$.controlPane.buttons.create, $.controlPane.buttons.cancel]; },
 
-        _finish: function(data, value)
+        _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
             if (!cpObj._super.apply(this, arguments)) { return; }
@@ -193,7 +193,7 @@
             }
             else if (column.dataTypeName == 'location' && !$.isBlank(column.convert))
             {
-                convertLocation(cpObj, column);
+                convertLocation(cpObj, column, finalCallback);
                 return;
             }
             else if (column.dataTypeName == 'link')
@@ -208,37 +208,38 @@
             {
                 var parCol = cpObj.settings.view.columnForID(data.parentId);
                 parCol.addChildColumn(column,
-                    function(nc) { columnCreated(cpObj, nc); },
+                    function(nc) { columnCreated(cpObj, nc, finalCallback); },
                     function(xhr) { cpObj._genericErrorHandler(xhr); });
             }
             else
             {
                 cpObj.settings.view.addColumn(column,
-                    function(nc) { columnCreated(cpObj, nc); },
+                    function(nc) { columnCreated(cpObj, nc, finalCallback); },
                     function(xhr) { cpObj._genericErrorHandler(xhr); });
             }
         }
     }, {name: 'addColumn'}, 'controlPane');
 
 
-    var columnCreated = function(cpObj, newCol)
+    var columnCreated = function(cpObj, newCol, finalCallback)
     {
         cpObj._finishProcessing();
         cpObj._showMessage('Your column has been added');
         cpObj._hide();
+        if (_.isFunction(finalCallback)) { finalCallback(); }
     };
 
-    var convertLocation = function(cpObj, column)
+    var convertLocation = function(cpObj, column, finalCallback)
     {
         cpObj.settings.view.addColumn(null, function(newCol)
         {
             if (!$.isBlank(column.description))
             {
                 newCol.description = column.description;
-                newCol.save(function(nc) { columnCreated(cpObj, nc); },
+                newCol.save(function(nc) { columnCreated(cpObj, nc, finalCallback); },
                     function(xhr) { cpObj._genericErrorHandler(xhr); });
             }
-            else { columnCreated(cpObj, newCol); }
+            else { columnCreated(cpObj, newCol, finalCallback); }
             // Since we imported data, need to reload
             cpObj.settings.view.reload();
         },

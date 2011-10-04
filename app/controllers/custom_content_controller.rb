@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 class CustomContentController < ApplicationController
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet ]
@@ -87,9 +89,9 @@ private
 
   # around_filter for caching
   def cache_wrapper
-    cache_params = params.reject{ |k| k == 'controller' || k == 'action' }
-                         .merge({ 'domain' => CurrentDomain.cname,
-                                  'domain_updated' => CurrentDomain.default_config_updated_at })
+    cache_params = { 'domain' => CurrentDomain.cname,
+                     'domain_updated' => CurrentDomain.default_config_updated_at,
+                     'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas-#{params[:action]}", cache_params)
     @cached_fragment = read_fragment(@cache_key)
 

@@ -369,6 +369,8 @@
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
 
+            if (mapObj._renderType == 'clusters') { return true; }
+
             if (mapObj.settings.view.displayFormat.noLocations &&
                 _.isUndefined(row.feature))
             { return true; }

@@ -31,6 +31,16 @@ $(function() {
             }, {
                 type: 'Text',
                 html: 'Box E'
+            }, {
+                type: 'Repeater',
+                viewId: 'yxbb-meff',
+
+                children: [
+                    {
+                        type: 'Text',
+                        html: 'County <b>{1035}</b> has <b>{1027}%</b> uninsured'
+                    }
+                ]
             }
         ]
     });

@@ -19,6 +19,8 @@
             if (components[this.id])
                 throw "Duplicate component ID " + this.id;
             components[this.id] = this;
+            if (_.isFunction(this._dataReady))
+                this._updateDataSource(properties, this._dataReady);
         },
 
         destroy: function() {
@@ -62,10 +64,19 @@
         },
 
         /**
+         * Substitute insertion variables into a string.
+         */
+        _template: function(template) {
+            return $.template(template, this._propertyResolver());
+        },
+
+        /**
          * Initialize DOM representation of this component.
          */
         _render: function() {
-            var dom = document.getElementById(this.id);
+            var dom = this.dom;
+            if (!dom)
+                dom = document.getElementById(this.id);
             if (!dom) {
                 dom = document.createElement('div');
                 dom.id = this.id;
@@ -142,6 +153,48 @@
          * component dynamically applies the properties is implementation dependent.
          */
         _propWrite: function(properties) {
+        },
+
+        /**
+         * Obtain a function that can resolve substitution properties for this component's data context.
+         */
+        _propertyResolver: function() {
+            var parentResolver = this.parent ? this.parent._propertyResolver() : $.component.rootPropertyResolver;
+            var entity = this.entity;
+            if (entity)
+                return function(name) {
+                    var result = entity[name];
+                    if (result !== undefined)
+                        return result;
+                    return parentResolver(name);
+                };
+            return parentResolver;
+        },
+
+        /**
+         * Helper when updating the data source on a component. Not called automatically
+         * since not all components have a data source.
+         */
+        _updateDataSource: function(properties, callback)
+        {
+            var cObj = this;
+            if (!$.isBlank(properties.viewId) &&
+                    ($.isBlank(cObj._view) || cObj._view.id != properties.viewId))
+            {
+                cObj.startLoading();
+                if (!$.isBlank(cObj._propEditor))
+                { cObj._propEditor.setComponent(null); }
+                $.dataContext.getContext(properties.viewId, function(view)
+                {
+                    cObj.finishLoading();
+                    cObj._view = view;
+                    if (!$.isBlank(cObj._propEditor))
+                    { cObj._propEditor.setComponent(cObj); }
+                    if (_.isFunction(callback)) { callback.apply(cObj); }
+                });
+                return true;
+            }
+            return false;
         }
     });
 
@@ -173,6 +226,10 @@
     $.comp = $.component;
 
     $.extend($.component, {
-        Component: Component
+        Component: Component,
+
+        rootPropertyResolver: function(name) {
+            // TODO - page property pool?
+        }
     });
 })(jQuery);

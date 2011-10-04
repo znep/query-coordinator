@@ -197,19 +197,9 @@
         _propRead: function() {
             var properties = this._super();
             var children;
-            if (this._rendered)
-                // Rendered state
-                this.each(function(child) {
-                    (children || (children = [])).push(child.properties());
-                });
-            else if (this.children) {
-                // Pre-render state with children.  Ask instantiated components for properties, otherwise treat as raw
-                // property bag.  Note that we don't use each() because we don't want to trigger instantiation
-                children = this.children.slice();
-                for (var i = 0; i < children.length; children++)
-                    if (children[i] instanceof $.component.Component)
-                        children[i] = children[i].properties();
-            }
+            this.each(function(child) {
+                (children || (children = [])).push(child.properties());
+            });
             if (children)
                 properties.children = children;
             return properties;

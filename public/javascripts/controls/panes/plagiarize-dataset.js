@@ -120,7 +120,7 @@
                 // Reload the page to re-render all the html fragments
                 blist.util.railsFlash(successText);
                 if (_.isFunction(finalCallback)) { finalCallback(); }
-                cpObj.settings.view.dataset.redirectTo();
+                cpObj.settings.view.redirectTo();
             },
             function error(xhr, text, error)
             {

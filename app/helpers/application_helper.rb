@@ -95,7 +95,7 @@ module ApplicationHelper
 
   def current_user_js
     serialized_user = safe_json(current_user) if current_user
-    return render :partial => 'shared/current_user', :locals => { :serialized_user => serialized_user }
+    return render :partial => 'shared/current_user', :locals => { :current_user => current_user, :serialized_user => serialized_user }
   end
 
 # styles

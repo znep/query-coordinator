@@ -266,9 +266,6 @@ ActionController::Routing::Routes.draw do |map|
     ds.connect ':category/:view_name/:id/:row_id', :action => 'show',
       :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
         :category => /(\w|-)+/, :row_id => /\d+/}
-    ds.connect ':category/:view_name/:id/row_index/:row_index', :action => 'show',
-      :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-        :category => /(\w|-)+/, :row_index => /\d+/}
     ds.connect ':category/:view_name/:id/widget_preview', :action => 'widget_preview'
     ds.connect ':category/:view_name/:id/edit_rr', :action => 'edit_rr'
     ds.connect ':category/:view_name/:id/thumbnail', :action => 'thumbnail'

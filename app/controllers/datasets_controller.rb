@@ -27,6 +27,11 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
+    # ... comment this
+    unless params[:row_index].nil?
+      @row_index = params[:row_index].to_i rescue 0
+    end
+
     if !params[:row_id].nil? || !params[:row_index].nil?
       @row = !params[:row_id].nil? ? @view.get_row(params[:row_id]) :
         @view.get_row_by_index(params[:row_index])

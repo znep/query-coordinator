@@ -581,7 +581,7 @@
                     if (!chartObj._valueMarkers[index] || chartObj._valueMarkers[index].length == 0)
                     {
                         chartObj._valueMarkers[index] =
-                            $('<div />').css({ position: 'relative', 'zIndex': 10,
+                            $('<div />').css({ position: 'absolute', 'zIndex': 10,
                                 'border-style': 'solid' });
                         $(chartObj.chart.container).append(chartObj._valueMarkers[index]);
                     }

@@ -27,7 +27,10 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    # ... comment this
+    # We definitely don't want to have to look up the row index
+    # ever again, as that causes a full scan. Persist the
+    # index across calls, and make it part of the URL we generate
+    # for SEO.
     unless params[:row_index].nil?
       @row_index = params[:row_index].to_i rescue 0
     end

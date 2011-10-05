@@ -68,11 +68,11 @@
         getColumns: function()
         {
             var calObj = this;
-            calObj._startCol = calObj.settings.view.columnForTCID(
+            calObj._startCol = calObj._primaryView.columnForTCID(
                 calObj._displayFormat.startDateTableId);
-            calObj._endCol = calObj.settings.view.columnForTCID(
+            calObj._endCol = calObj._primaryView.columnForTCID(
                 calObj._displayFormat.endDateTableId);
-            calObj._titleCol = calObj.settings.view.columnForTCID(
+            calObj._titleCol = calObj._primaryView.columnForTCID(
                 calObj._displayFormat.titleTableId);
         },
 
@@ -90,7 +90,7 @@
         calObj._events = [];
 
         calObj.$dom().fullCalendar({aspectRatio: 2,
-                editable: calObj.settings.editEnabled && calObj.settings.view.hasRight('write'),
+                editable: calObj.settings.editEnabled && calObj._primaryView.hasRight('write'),
                 disableResizing: $.isBlank(calObj._displayFormat.endDateTableId),
                 viewClear: function()
                     { viewClear.apply(this, [calObj].concat($.makeArray(arguments))); },
@@ -129,20 +129,20 @@
 
     var eventClick = function(calObj, calEvent)
     {
-        if ($.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
-        { calObj.settings.view.unhighlightRows(calEvent.row, 'select'); }
+        if ($.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id))
+        { calObj._primaryView.unhighlightRows(calEvent.row, 'select'); }
         else
-        { calObj.settings.view.highlightRows(calEvent.row, 'select'); }
+        { calObj._primaryView.highlightRows(calEvent.row, 'select'); }
     };
 
     var eventMouseover = function(calObj, calEvent)
     {
-        calObj.settings.view.highlightRows(calEvent.row);
+        calObj._primaryView.highlightRows(calEvent.row);
     };
 
     var eventMouseout = function(calObj, calEvent)
     {
-        calObj.settings.view.unhighlightRows(calEvent.row);
+        calObj._primaryView.unhighlightRows(calEvent.row);
     };
 
     var eventRender = function(calObj, calEvent, element)
@@ -151,7 +151,7 @@
         {
             var $e = $(element);
             $e.socrataTip({content: calObj.renderFlyout(calEvent.row,
-                calObj.settings.view), closeOnClick: false,
+                calObj._primaryView), closeOnClick: false,
                 parent: calObj.$dom(),
                 shownCallback: function()
                 {
@@ -166,7 +166,7 @@
             _.defer(function()
             {
                 if ($.isBlank(calObj._curTip) &&
-                    $.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
+                    $.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id))
                 { $e.socrataTip().show(); }
             });
         }
@@ -189,7 +189,7 @@
 
     var eventChange = function(calObj, calEvent, dayDelta, minuteDelta, revertFunc)
     {
-        var view = calObj.settings.view;
+        var view = calObj._primaryView;
 
         // Make sure we have a start date, and make sure it either was originally
         //  set in the row, or is now different than the end date (meaning it

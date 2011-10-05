@@ -280,6 +280,8 @@
                 });
                 return true;
             }
+            else if ($.isBlank(properties.viewId) && $.isBlank(cObj._properties.viewId))
+            { delete cObj._view; }
             return false;
         }
     });

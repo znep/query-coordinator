@@ -334,6 +334,9 @@
             cpObj._super.apply(cpObj, arguments);
 
             cpObj.$dom().loadingSpinner({overlay: true});
+            cpObj.$dom().append($.tag([
+                    {tagName: 'div', 'class': 'disabledOverlay'},
+                    {tagName: 'p', 'class': 'disabledMessage'} ]));
 
             cpObj._selectOptions = {};
             cpObj._customCallbacks = {};
@@ -354,6 +357,16 @@
             cpObj.$dom().attr('id', 'controlPane_' + cpObj.settings.name + '_' + _.uniqueId())
                 .addClass('controlPane ' + cpObj.settings.name);
             if (cpObj.settings.noReset) { cpObj.$dom().addClass('noReset'); }
+        },
+
+        $content: function()
+        {
+            if ($.isBlank(this._$content))
+            {
+                this._$content = $.tag({tagName: 'form', 'class': 'commonForm'});
+                this.$dom().append(this._$content);
+            }
+            return this._$content;
         },
 
         // Whether or not the pane is available for interaction
@@ -384,7 +397,7 @@
         render: function(data, isTempData)
         {
             var cpObj = this;
-            var $pane = cpObj.$dom();
+            var $pane = cpObj.$content();
 
             if (!cpObj._isReady)
             {
@@ -399,8 +412,8 @@
             if (($.isBlank(data) || _.isEqual(data, cpObj._getCurrentData())) && !cpObj._isDirty)
             { return; }
 
-            cpObj.$dom().find('.line.custom').each(function() { cleanLine(cpObj, $(this)); });
-            cpObj.$dom().empty();
+            $pane.find('.line.custom').each(function() { cleanLine(cpObj, $(this)); });
+            $pane.empty();
 
             if ($.isBlank(data))
             { data = cpObj._getCurrentData(); }
@@ -569,7 +582,7 @@
                 { cs.callback.call(cpObj, $sc, data); }
             });
 
-            $pane.find('form').submit(function(e)
+            $pane.submit(function(e)
                     {
                         if ($.isBlank($(this).attr('action')))
                         { e.preventDefault(); }
@@ -1790,7 +1803,7 @@
         // Defined before default behaviors in case someone wants to
         // stop propagation for some reason.
         $container.find('[data-change]').each(function()
-        { hookUpChangeHandler(cpObj, $(this), cpObj._changeHandlers[$field.attr('data-change')]); });
+        { hookUpChangeHandler(cpObj, $(this), cpObj._changeHandlers[$(this).attr('data-change')]); });
         if (_.isFunction(cpObj._changeHandler))
         {
             $container.find('.inputItem').each(function()

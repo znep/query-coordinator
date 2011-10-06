@@ -203,11 +203,11 @@ $wizard.wizard({
                         }
                         else if (state.type == 'shapefile')
                         {
-                            if (!(ext &&/^(zip|kml)$/i.test(ext)))
+                            if (!(ext &&/^(zip|kml|kmz)$/i.test(ext)))
                             {
                                 // Only accept ZIP and KML for shapefile.
                                 $pane.find('.uploadFileName')
-                                    .val('Please choose a KML or ZIP file.')
+                                    .val('Please choose a KML, KMZ, or ZIP file.')
                                     .addClass('error');
                                 return false;
                             }

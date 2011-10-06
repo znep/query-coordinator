@@ -829,6 +829,7 @@
                         { return total + cluster.size; }, 0) < mapObj._maxRows; }
                     if (mapObj._neverCluster)
                     {
+                        mapObj._renderType = 'points';
                         mapObj.clearGeometries();
                         mapObj.getRowsForAllViews();
                         return;

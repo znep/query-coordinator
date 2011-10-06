@@ -13,6 +13,12 @@ this.Nomination = ServerModel.extend({
             success: callback, error: errorCallback});
     },
 
+    removeComment: function(commentId, successCallback, errorCallback)
+    {
+        this.makeRequest({url: this.selfUrl + '/comments.json',
+            type: 'DELETE', success: callback, error: errorCallback});
+    },
+
     contactOwner: function(message, callback, errorCallback)
     {
         this.makeRequest({url: this.selfUrl + '?method=notifyNominator',

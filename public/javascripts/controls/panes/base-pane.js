@@ -436,7 +436,7 @@
 
             var rData = {title: cpObj.getTitle(), subtitle: cpObj.getSubtitle(),
                 sections: cpObj._getSections(),
-                paneId: $pane.attr('id'), finishButtons: cpObj._getFinishButtons(), data: data || {}};
+                paneId: cpObj.$dom().attr('id'), finishButtons: cpObj._getFinishButtons(), data: data || {}};
 
             var sectionOnlyIfs = {};
             var customSections = {};

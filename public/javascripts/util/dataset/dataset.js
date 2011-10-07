@@ -110,9 +110,9 @@ this.Dataset = ServerModel.extend({
         else
         {
             var gotID = function(data) { successCallback(data[id]); };
-            ds.makeRequest({url: '/views/' + ds.id + '/rows.json',
+            ds.makeRequest({inline: true,
                 params: {method: 'getByIds', indexesOnly: true, ids: id},
-                success: gotID, type: 'POST'});
+                success: gotID});
         }
     },
 

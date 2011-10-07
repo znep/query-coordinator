@@ -155,9 +155,9 @@ $(function()
     var $dataGrid = datasetPageNS.rtManager.$domForType('table');
 
 
-    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
+    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly)
     {
-        if (!blist.dataset.metadata.renderTypeConfig.visible.page)
+        if (!updateOnly && !blist.dataset.metadata.renderTypeConfig.visible.page)
         {
             datasetPageNS.rtManager.setTypeConfig('page', {defaultRowId: rowId});
             blist.dataset.showRenderType('page');

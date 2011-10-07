@@ -62,17 +62,17 @@
                 return this._curPageIndex;
             },
 
-            pageChanged: function()
+            pageChanged: function(userInteraction)
             {
-                this.$dom().trigger('page_changed');
+                this.$dom().trigger('page_changed', [userInteraction]);
             },
 
-            displayPage: function(index)
+            displayPage: function(index, userInteraction)
             {
                 var navObj = this;
                 navObj._curPageIndex = index;
                 updateNavigation(navObj);
-                navObj.pageChanged();
+                navObj.pageChanged(userInteraction);
             }
         }
     });
@@ -90,16 +90,16 @@
             switch ($.hashHref($a.attr('href')))
             {
                 case 'start':
-                    navObj.displayPage(0);
+                    navObj.displayPage(0, true);
                     break;
                 case 'end':
-                    navObj.displayPage(-1);
+                    navObj.displayPage(-1, true);
                     break;
                 case 'previous':
-                    navObj.displayPage(navObj._curPageIndex - 1);
+                    navObj.displayPage(navObj._curPageIndex - 1, true);
                     break;
                 case 'next':
-                    navObj.displayPage(navObj._curPageIndex + 1);
+                    navObj.displayPage(navObj._curPageIndex + 1, true);
                     break;
             }
         });
@@ -109,7 +109,7 @@
             e.preventDefault();
             var $a = $(this);
             if ($a.parent().hasClass('active')) { return; }
-            navObj.displayPage($a.parent().data('pagenum'));
+            navObj.displayPage($a.parent().data('pagenum'), true);
         });
     };
 

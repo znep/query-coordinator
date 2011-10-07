@@ -200,10 +200,14 @@
                         { window.open(details.redirect_to); }
 
                         if (showInfoWindow(mapObj, event.target))
-                        { mapObj._primaryView.highlightRows(shape.rows, 'select'); }
+                        {
+                            mapObj._primaryView.highlightRows(shape.rows, 'select');
+                            $(document).trigger(blist.events.DISPLAY_ROW, [_.first(shape.rows).id, true]);
+                        }
                     });
 
-                if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
+                if (mapObj._infoOpen &&
+                        _.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
                                 'highlightTypes.select.' + r.id); }))
                 { showInfoWindow(mapObj, shape); }
 
@@ -468,7 +472,8 @@
             if (!mapObj._viewportHandler)
             {
                 mapObj._viewportHandler = function() {
-                    mapObj.updateDatasetViewport();
+                    mapObj.updateDatasetViewport(mapObj._isResize);
+                    delete mapObj._isResize;
                     mapObj.updateRowsByViewport(null, true);
                 };
             }
@@ -512,6 +517,13 @@
             var loc = new Microsoft.Maps.Location(viewport.center.latitude || viewport.center.lat,
                 viewport.center.longitude || viewport.center.lng);
             mapObj.map.setView({ center: loc, zoom: viewport.zoom});
+        },
+
+        fitPoint: function(point)
+        {
+            var p = new Microsoft.Maps.Location(point.latitude, point.longitude);
+            if (!this.map.getBounds().contains(p))
+            { this.map.setView({center: p}); }
         },
 
         showLayers: function()
@@ -575,8 +587,10 @@
             mapObj.$dom().siblings(':visible').each(function()
             { sibH += $(this).height(); });
             if (!$.isBlank(mapObj.map))
-            { mapObj.map.setOptions({ width: $par.width(),
-                                      height: $par.height() - sibH }); }
+            {
+                mapObj._isResize = true;
+                mapObj.map.setOptions({ width: $par.width(), height: $par.height() - sibH });
+            }
         },
 
         getRequiredJavascripts: function()
@@ -626,8 +640,7 @@
 
         $box.show().find("#bing_infoContent").empty()
             .append($flyout)
-            .prepend('<img src="https://www.google.com/intl/' +
-                     'en_us/mapfiles/iw_close.gif"/>');
+            .prepend('<img src="https://www.google.com/intl/en_us/mapfiles/iw_close.gif"/>');
 
         var x = pixel.x;
         var y = pixel.y;
@@ -649,6 +662,7 @@
 
         $box.find('#bing_infoContent img').click(function()
         {
+            mapObj._infoOpen = false;
             // Hide all selected rows
             if ($.subKeyDefined(mapObj._primaryView, 'highlightTypes.select'))
             {
@@ -662,6 +676,7 @@
 
         var l = Microsoft.Maps.Events.addHandler(mapObj.map, 'viewchange',
             function() { closeInfoWindow(); Microsoft.Maps.Events.removeHandler(l); });
+        mapObj._infoOpen = true;
 
         return true;
     };

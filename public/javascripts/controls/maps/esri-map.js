@@ -67,6 +67,7 @@
                             return;
                         }
 
+                        mapObj._infoOpen = false;
                         // Hide all selected rows
                         if ($.subKeyDefined(mapObj._primaryView, 'highlightTypes.select'))
                         {
@@ -298,7 +299,8 @@
             g.setAttributes({rows: details.rows, flyoutDetails: details.flyoutDetails,
                 dataView: details.dataView, clusterParent: details.clusterParent });
 
-            if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
+            if (mapObj._infoOpen &&
+                    _.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
                             'highlightTypes.select.' + r.id); }))
             { showInfoWindow(mapObj, g); }
 
@@ -735,7 +737,8 @@
                         mapObj._extentChanging = false;
                         return;
                     }
-                    mapObj.updateDatasetViewport();
+                    mapObj.updateDatasetViewport(mapObj._isResize);
+                    delete mapObj._isResize;
                     mapObj.updateRowsByViewport();
                 });
         },
@@ -771,6 +774,14 @@
             mapObj.map.setExtent(mapObj.viewportToExtent(viewport));
         },
 
+        fitPoint: function(point)
+        {
+            var p = esri.geometry.geographicToWebMercator(new esri.geometry.Point(
+                        {y: point.latitude, x: point.longitude, spatialReference: { wkid: 4326 }}));
+            if (!this.map.extent.contains(p))
+            { this.map.centerAt(p); }
+        },
+
         viewportToExtent: function(viewport)
         {
             var mapObj = this;
@@ -789,7 +800,10 @@
         {
             // ESRI can't handle being resized to 0
             if (!$.isBlank(this.map) && this.$dom().height() > 0 && this.map.extent)
-            { this.map.resize(); }
+            {
+                this._isResize = true;
+                this.map.resize();
+            }
         },
 
         clearGeometries: function()
@@ -993,6 +1007,7 @@
         }
 
         mapObj.map.infoWindow.setContent(flyout[0]).show(point);
+        mapObj._infoOpen = true;
         return true;
     };
 
@@ -1006,7 +1021,8 @@
             mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange', function()
             {
                 dojo.disconnect(mapObj._viewportListener);
-                mapObj.updateDatasetViewport();
+                mapObj.updateDatasetViewport(mapObj._isResize);
+                delete mapObj._isResize;
                 mapObj.updateRowsByViewport();
             });
         }
@@ -1014,7 +1030,11 @@
         {
             if (evt.graphic.attributes.rows.length < 1) { return; }
             if (showInfoWindow(mapObj, evt.graphic, evt.screenPoint))
-            { mapObj._primaryView.highlightRows(evt.graphic.attributes.rows, 'select'); }
+            {
+                mapObj._primaryView.highlightRows(evt.graphic.attributes.rows, 'select');
+                $(document).trigger(blist.events.DISPLAY_ROW,
+                        [_.first(evt.graphic.attributes.rows).id, true]);
+            }
         }
     };
 

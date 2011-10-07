@@ -45,8 +45,8 @@
                     { resizeHandle(prtObj); });
 
                 prtObj.navigation = $domObj.find('.navigation')
-                    .bind('page_changed', function()
-                        { renderCurrentRow(prtObj); })
+                    .bind('page_changed', function(e, userInteraction)
+                        { renderCurrentRow(prtObj, userInteraction); })
                     .navigation({pageSize: 1, view: prtObj.settings.view});
 
                 prtObj._shown = false;
@@ -55,6 +55,14 @@
                     if (!prtObj._shown) { return; }
                     prtObj.richRenderer.renderLayout();
                     renderCurrentRow(prtObj);
+                };
+                var rowsChanged = function()
+                {
+                    // Need to re-find current row ID
+                    if (!$.isBlank(prtObj._currentRowId))
+                    { prtObj.displayRowByID(prtObj._currentRowId); }
+                    else
+                    { renderCurrentRow(prtObj); }
                 };
                 var rowChange = function(rows, fullReset)
                 {
@@ -75,9 +83,9 @@
                 };
                 prtObj.settings.view
                     .bind('columns_changed', mainUpdate)
-                    .bind('query_change', mainUpdate)
+                    .bind('query_change', rowsChanged)
                     .bind('row_change', rowChange)
-                    .bind('row_count_change', mainUpdate);
+                    .bind('row_count_change', rowsChanged);
 
                 prtObj.$dom().bind('show', function()
                 {
@@ -92,20 +100,6 @@
 
                 if (!$.isBlank(prtObj.settings.defaultRowId))
                 { prtObj.displayRowByID(prtObj.settings.defaultRowId); }
-
-                prtObj.$content().bind(
-                    {'mouseenter': function(e)
-                        {
-                            var row = $(this).data('renderrow');
-                            if (!row.sessionMeta || !row.sessionMeta.highlight)
-                            { prtObj.settings.view.highlightRows(row); }
-                        },
-                    'mouseleave': function(e)
-                        {
-                            var row = $(this).data('renderrow');
-                            if (row.sessionMeta && row.sessionMeta.highlight)
-                            { prtObj.settings.view.unhighlightRows(row); }
-                        }});
             },
 
             $dom: function()
@@ -137,9 +131,10 @@
             {
                 var prtObj = this;
 
+                prtObj._currentRowId = rowId;
                 prtObj.settings.view.rowIndex(rowId, function(rowIndex)
                 {
-                    if ($.isBlank(rowIndex)) { throw 'No row for ' + rowId; }
+                    if ($.isBlank(rowIndex)) { rowIndex = 0; }
                     prtObj.navigation.displayPage(rowIndex);
                 });
             }
@@ -153,7 +148,7 @@
         prtObj.richRenderer.adjustLayout();
     };
 
-    var renderCurrentRow = function(prtObj)
+    var renderCurrentRow = function(prtObj, updateId)
     {
         if ($.isBlank(prtObj.navigation.currentPage()) || prtObj.settings.view.totalRows < 1)
         {
@@ -170,6 +165,8 @@
             if (rows.length != 1) { return; }
             var row = rows[0];
 
+            if (updateId) { prtObj._currentRowId = row.id; }
+            if (prtObj._shown) { prtObj.settings.view.highlightRows(row, 'select'); }
             prtObj.richRenderer.renderRow(prtObj.$content(), row, true);
             prtObj.richRenderer.adjustLayout();
         };

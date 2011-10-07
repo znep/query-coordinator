@@ -40,6 +40,8 @@
 
             mapObj._listeners.idle = google.maps.event.addListener(mapObj.map, 'idle', function()
                 {
+                    var isResize = mapObj._isResize;
+                    delete mapObj._isResize;
                     // Catch first idle to let us know the map is ready; we don't
                     // want to do anything until that happens
                     if (!mapObj._ready)
@@ -54,7 +56,7 @@
                     delete mapObj._boundsChanging;
                     delete mapObj._needsViewportUpdate;
 
-                    mapObj.updateDatasetViewport();
+                    mapObj.updateDatasetViewport(isResize);
                     mapObj.updateRowsByViewport(null, true);
                 });
 
@@ -412,6 +414,7 @@
                     google.maps.event.addListener(mapObj.infoWindow, 'closeclick',
                         function()
                         {
+                            mapObj._infoOpen = false;
                             // Hide all selected rows
                             if ($.subKeyDefined(mapObj._primaryView, 'highlightTypes.select'))
                             {
@@ -435,6 +438,7 @@
                 }
                 mapObj.infoWindow.setPosition(point);
                 mapObj.infoWindow.open(mapObj.map);
+                mapObj._infoOpen = true;
                 return true;
             };
 
@@ -448,10 +452,14 @@
                 function(evt)
                 {
                     if (showInfoWindow(evt.latLng))
-                    { mapObj._primaryView.highlightRows(details.rows, 'select'); }
+                    {
+                        mapObj._primaryView.highlightRows(details.rows, 'select');
+                        $(document).trigger(blist.events.DISPLAY_ROW, [_.first(details.rows).id, true]);
+                    }
                 });
 
-            if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
+            if (mapObj._infoOpen &&
+                    _.any(details.rows, function(r) { return $.subKeyDefined(mapObj._primaryView,
                             'highlightTypes.select.' + r.id); }))
             { showInfoWindow(); }
 
@@ -771,9 +779,15 @@
         setViewport: function(viewport)
         {
             var mapObj = this;
-            mapObj.map.setCenter(new google.maps.LatLng(
-                viewport.center.lat, viewport.center.lng));
+            mapObj.map.setCenter(new google.maps.LatLng(viewport.center.lat, viewport.center.lng));
             mapObj.map.setZoom(viewport.zoom);
+        },
+
+        fitPoint: function(point)
+        {
+            var llb = new google.maps.LatLngBounds();
+            llb = llb.extend(new google.maps.LatLng(point.latitude, point.longitude));
+            this.map.panToBounds(llb);
         },
 
         clearGeometries: function()
@@ -823,7 +837,9 @@
         resizeHandle: function(event)
         {
             if ($.subKeyDefined(window, 'google'))
-            { google.maps.event.trigger(this.map, 'resize'); }
+            {
+                this._isResize = true;
+                google.maps.event.trigger(this.map, 'resize'); }
         },
 
         getRequiredJavascripts: function()

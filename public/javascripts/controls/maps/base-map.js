@@ -358,34 +358,27 @@
             return $info;
         },
 
-        renderRow: function(row, view)
+        rowToPoint: function(row, view)
         {
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
 
-            if (mapObj._renderType == 'clusters') { return true; }
-
-            if (mapObj._displayFormat.noLocations &&
-                _.isUndefined(row.feature))
+            if (mapObj._displayFormat.noLocations && _.isUndefined(row.feature))
             { return true; }
 
             // A configured Location column always takes precedence.
             // _geoCol is and always will be a fallback.
             var locCol = viewConfig._locCol || viewConfig._geoCol;
 
-            if (_.isUndefined(row.feature) &&
-                _.isUndefined(locCol) &&
-                (_.isUndefined(viewConfig._latCol) ||
-                 _.isUndefined(viewConfig._longCol)))
+            if (_.isUndefined(row.feature) && _.isUndefined(locCol) &&
+                (_.isUndefined(viewConfig._latCol) || _.isUndefined(viewConfig._longCol)))
             {
                 mapObj.errorMessage = 'No columns defined';
                 return false;
             }
 
-            var isPoint = true;
+            var point = {isPoint: true};
 
-            var lat;
-            var longVal;
             if (!_.isUndefined(row.feature))
             {
                 var loc = row.feature.geometry;
@@ -393,11 +386,11 @@
                 { loc = esri.geometry.webMercatorToGeographic(loc); }
 
                 if (loc.type != 'point')
-                { isPoint = false; }
+                { point.isPoint = false; }
                 else
                 {
-                    lat = loc.y;
-                    longVal = loc.x;
+                    point.latitude = loc.y;
+                    point.longitude = loc.x;
                 }
             }
             else if (!$.isBlank(locCol))
@@ -406,37 +399,51 @@
                 if ($.isBlank(loc)) { return true; }
 
                 if (loc.geometry && (loc.geometry.rings || loc.geometry.paths))
-                { isPoint = false; }
+                { point.isPoint = false; }
                 else
                 {
-                    lat = parseFloat(loc.latitude);
-                    longVal = parseFloat(loc.longitude);
+                    point.latitude = parseFloat(loc.latitude);
+                    point.longitude = parseFloat(loc.longitude);
                 }
             }
             else
             {
-                lat = parseFloat(row[viewConfig._latCol.id]);
-                longVal = parseFloat(row[viewConfig._longCol.id]);
+                point.latitude = parseFloat(row[viewConfig._latCol.id]);
+                point.longitude = parseFloat(row[viewConfig._longCol.id]);
             }
 
             // Incomplete points will be safely ignored
-            if (isPoint &&
-                _.isNull(lat) || _.isNaN(lat) ||
-                _.isNull(longVal) || _.isNaN(longVal)) { return true; }
-            if (lat <= -90 || lat >= 90 || longVal <= -180 || longVal >= 180)
+            if (point.isPoint &&
+                _.isNull(point.latitude) || _.isNaN(point.latitude) ||
+                _.isNull(point.longitude) || _.isNaN(point.longitude)) { return true; }
+            if (point.latitude <= -90 || point.latitude >= 90 ||
+                    point.longitude <= -180 || point.longitude >= 180)
             {
                 mapObj.errorMessage = 'Latitude must be between -90 and 90, ' +
                     'and longitude must be between -180 and 180';
                 return false;
             }
 
+            return point;
+        },
+
+        renderRow: function(row, view)
+        {
+            var mapObj = this;
+            var viewConfig = mapObj._byView[view.id];
+
+            if (mapObj._renderType == 'clusters') { return true; }
+
+            var point = mapObj.rowToPoint(row, view);
+            if (_.isBoolean(point)) { return point; }
+
             if (!viewConfig._llKeys) viewConfig._llKeys = {};
             var rowKey;
-            if (isPoint)
+            if (point.isPoint)
             {
-                rowKey = lat.toString();
+                rowKey = point.latitude.toString();
                 rowKey += ',';
-                rowKey += longVal.toString();
+                rowKey += point.longitude.toString();
             }
             else if (row.feature)
             { rowKey = row.feature.attributes[viewConfig._objectIdKey]; }
@@ -516,6 +523,7 @@
                 });
             }
 
+            var locCol = viewConfig._locCol || viewConfig._geoCol;
             var geoType = (function() {
                 if (row.feature)
                 { return row.feature.geometry.type; }
@@ -539,7 +547,7 @@
             switch (geoType)
             {
                 case 'point':
-                    geometry = { latitude: lat, longitude: longVal };
+                    geometry = { latitude: point.latitude, longitude: point.longitude };
                     break;
                 case 'polygon':
                     geometry = { rings: row[locCol.id].geometry.rings };
@@ -614,6 +622,11 @@
         setViewport: function(viewport)
         {
             // Implement me
+        },
+
+        fitPoint: function(point)
+        {
+            // Implement me to fit the given point (latitude/longitude) into the viewport
         },
 
         updateRowsByViewport: function(viewport, wrapIDL)
@@ -691,7 +704,7 @@
             });
         },
 
-        updateDatasetViewport: function()
+        updateDatasetViewport: function(isAutomatic)
         {
             var mapObj = this;
             var vp = mapObj.getViewport();
@@ -700,12 +713,23 @@
             // it's just automatic.
             // Use the most recently set viewport
             var curVP = mapObj._currentViewport || {};
-            if (_.any(['xmin', 'ymin', 'ymax'], function(p)
+            if (isAutomatic || _.any(['xmin', 'ymin', 'ymax'], function(p)
                 {
                     return vp[p].toFixed(mapObj.settings.coordinatePrecision) ==
                         (parseFloat(curVP[p]) || 0).toFixed(mapObj.settings.coordinatePrecision);
                 }))
-            { return; }
+            {
+                // If automatic and we have selected rows, make sure at least one is
+                // in the viewport
+                if (!_.isEmpty((mapObj._primaryView.highlightTypes || {}).select))
+                {
+                    var p = mapObj.rowToPoint(_.first(_.values(
+                                    mapObj._primaryView.highlightTypes.select)), mapObj._primaryView);
+                    if ((p || {}).isPoint)
+                    { mapObj.fitPoint(p); }
+                }
+                return;
+            }
 
             mapObj._currentViewport = vp;
             mapObj._primaryView.update({displayFormat: $.extend({},

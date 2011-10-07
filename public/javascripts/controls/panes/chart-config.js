@@ -95,11 +95,7 @@
                                { type: 'text', name: 'displayFormat.yAxis.max', prompt: 'Enter a number',
                                     extraClass: 'number' }] },
                 {text: 'Precision', type: 'slider', name: 'displayFormat.yAxis.formatter.decimalPlaces',
-                    minimum: 0, maximum: 10, defaultValue: 2},
-                {type: 'group', options: [
-                    {type: 'color', name: 'displayFormat.yAxis.markerColor',
-                        lineClass: 'colorCollapse', defaultValue: '#000000'},
-                    {text: 'Value Marker', type: 'text', name: 'displayFormat.yAxis.marker'}]}
+                    minimum: 0, maximum: 10, defaultValue: 2}
             ]
         };
     };

@@ -440,6 +440,7 @@
 
             var sectionOnlyIfs = {};
             var customSections = {};
+            var curSectId;
             var directive = {
                 '.subtitle': 'subtitle',
                 '.subtitleBlock@class+': function(a)
@@ -447,12 +448,15 @@
                 '.formSection': {
                     'section<-sections': {
                         '@class+': function(arg)
-                        { return _.compact([arg.item.type, arg.item.name,
+                        {
+                            curSectId = _.uniqueId();
+                            return _.compact([arg.item.type, arg.item.name,
                             (!$.isBlank(arg.item.onlyIf) ||
                                 arg.item.type == 'hidden' ? 'hide' : ''),
                             (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ].concat(
                                 $.arrayify(arg.item.customClasses)))
-                            .join(' '); },
+                            .join(' ');
+                        },
                         '@data-onlyIf': function(arg)
                         {
                             if (!$.isBlank(arg.item.onlyIf))
@@ -473,15 +477,17 @@
                             }
                             return '';
                         },
-                        '@name': 'section.name',
+                        '@name': function(arg)
+                        { return (arg.item.name || '') + '_' + curSectId; },
                         '.formHeader': 'section.title',
-                        '.formHeader@for': 'section.name',
+                        '.formHeader@for': function(arg)
+                        { return (arg.item.name || '') + '_' + curSectId; },
                         '.formHeader@class+': function(arg)
-                        {
-                            return $.isBlank(arg.item.title) ? 'hide' : '';
-                        },
-                        '.sectionSelect@id': 'section.name',
-                        '.sectionSelect@name': 'section.name',
+                        { return $.isBlank(arg.item.title) ? 'hide' : ''; },
+                        '.sectionSelect@id': function(arg)
+                        { return (arg.item.name || '') + '_' + curSectId; },
+                        '.sectionSelect@name': function(arg)
+                        { return (arg.item.name || '') + '_' + curSectId; },
                         '.sectionContent+': function(a)
                         { return _.map(a.item.fields || [], function(f, i)
                             { return renderLine(cpObj,
@@ -1070,7 +1076,7 @@
         var isDisabled = _.isFunction(item.disabled) ?
             item.disabled.call(cpObj, context.data) : item.disabled;
 
-        var result = {id: item.name, name: item.name, title: item.prompt,
+        var result = {id: item.name + '_' + _.uniqueId(), name: item.name, title: item.prompt,
             disabled: isDisabled, 'data-isDisabled': isDisabled,
             'class': [ 'inputItem', {value: 'required', onlyIf: item.required &&
                 !context.inRepeater},

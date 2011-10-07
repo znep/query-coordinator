@@ -216,11 +216,11 @@
 
                 if (rtmObj.settings.handleResize)
                 {
-                    $(window).bind('resize', function(e, source)
+                    $(window).bind('resize', function(e, source, forceUpdate)
                     {
                         if (source == this) { return; }
                         _.each(rtmObj.visibleTypes, function(v, t)
-                        { rtmObj.$domForType(t).trigger('resize', [this]); });
+                        { rtmObj.$domForType(t).trigger('resize', [this, forceUpdate]); });
                     });
                 }
             },
@@ -391,7 +391,8 @@
         else
         { $content.addClass('scrollContent'); }
 
-        blist.util.assetLoading.loadAssets(typeInfo, finishCallback, function() { $(window).resize(); });
+        blist.util.assetLoading.loadAssets(typeInfo, finishCallback,
+            function() { $(window).trigger('resize', [null, true]); });
 
         typeInfo._initialized = true;
     };

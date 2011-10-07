@@ -8,6 +8,8 @@
 
         cleanVisualization: function()
         {
+            viewClear(this);
+
             var calObj = this;
             calObj._super();
 

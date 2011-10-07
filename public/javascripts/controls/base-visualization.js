@@ -11,7 +11,7 @@
             currentObj._primaryView = currentObj.settings.view;
             currentObj._displayFormat = currentObj.settings.displayFormat ||
                 currentObj._primaryView.displayFormat;
-            $mainDom.resize(function(e) { doResize(currentObj, e); })
+            $mainDom.resize(function(e, source, forceUpdate) { doResize(currentObj, e, forceUpdate); })
                 .bind('hide', function() { currentObj._hidden = true; })
                 .bind('show', function()
                 {
@@ -542,10 +542,10 @@
         }
     }, {view: null}, null, true);
 
-    var doResize = function(vizObj, e)
+    var doResize = function(vizObj, e, forceUpdate)
     {
-        if (vizObj._prevHeight == vizObj.$dom().height() &&
-                vizObj._prevWidth == vizObj.$dom().width())
+        if (!forceUpdate &&
+                vizObj._prevHeight == vizObj.$dom().height() && vizObj._prevWidth == vizObj.$dom().width())
         { return; }
 
         vizObj._prevHeight = vizObj.$dom().height();

@@ -58,7 +58,8 @@
 
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
-        $('.emailDatasetDialog').data('owner', owner).jqmShow();
+        $('.emailDatasetDialog').data('owner', owner);
+        $('.emailDatasetDialog').jqmShow();
 
         $flash.removeClass('notice').removeClass('error').text('');
 

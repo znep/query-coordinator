@@ -162,7 +162,7 @@ private
     @meta = {
       :title => CurrentDomain.strings.site_title,
       'og:title' => CurrentDomain.strings.site_title,
-      'og:site_name' => CurrentDomain.name,
+      'og:site_name' => CurrentDomain.strings.company,
       :description => CurrentDomain.strings.meta_description,
       'og:description' => CurrentDomain.strings.meta_description,
       'og:type' => 'article',

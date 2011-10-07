@@ -44,5 +44,5 @@ STYLE_PACKAGES = YAML.load_file("#{Rails.root}/config/style_packages.yml") || {}
 STYLE_MAP = {}
 STYLE_PACKAGES.each do |name, sheets|
   STYLE_MAP[name] = Rails.env == 'development' ? sheets.map { |req| "/styles/individual/#{req}.css" } :
-         "/styles/merged/#{name.to_s}.css#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}"
+         "/styles/merged/#{name.to_s}.css#{REVISION_NUMBER}"
 end

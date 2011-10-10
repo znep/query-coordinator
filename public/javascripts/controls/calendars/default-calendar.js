@@ -62,6 +62,30 @@
         {
             if (!_.isEmpty(this._events))
             {
+                var today = new Date();
+                var monthStart = today.clone();
+                monthStart.setHours(0);
+                monthStart.setMinutes(0);
+                monthStart.setSeconds(0);
+                monthStart.setMilliseconds(0);
+                monthStart.setDate(1);
+
+                var monthEnd = monthStart.clone();
+                monthEnd.setMonth(monthEnd.getMonth() + 1);
+
+                var closestDate = _(this._events).chain()
+                    .map(function(ev)
+                            {
+                                return [new Date(_.isNumber(ev.start) ? ev.start * 1000 : (ev.start || 0)),
+                                    new Date(_.isNumber(ev.end) ? ev.end * 1000 : (ev.end || 0))];
+                            })
+                    .flatten().sortBy(function(d)
+                            {
+                                if (d >= monthStart && d < monthEnd) { return 0; }
+                                return Math.abs(d - today);
+                            }).first().value();
+                this.$dom().fullCalendar('gotoDate', closestDate);
+
                 this.$dom().fullCalendar('addEventSource', this._events);
                 this._events = [];
             }

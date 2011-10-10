@@ -175,7 +175,8 @@
 
         currentZoom: function()
         {
-            return this.map.getLevel();
+            if (this.map)
+            { return this.map.getLevel(); }
         },
 
         buildIdentifyTask: function()

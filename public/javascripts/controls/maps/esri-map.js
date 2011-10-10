@@ -512,7 +512,7 @@
                 var $layer = $(layer._div);
                 srcHeatmap.onload = function(){
                     $layer.find("canvas").remove();
-                    $layer.children().each(function()
+                    $layer.children().each(function(index)
                     {
                         var esriTile = this;
                         var $esriTile = $(esriTile);
@@ -548,9 +548,16 @@
 
                         $esriTile.css('visibility', 'hidden');
                         if (width < 0 || height < 0) { return; }
-                        tileCtx.drawImage(srcHeatmap, position.left, position.top,
+                        try
+                        { tileCtx.drawImage(srcHeatmap, position.left, position.top,
                                                       width, height,
-                                                      dx, dy, width, height);
+                                                      dx, dy, width, height); }
+                        // Errors still seem to be getting thrown, but the map renders OK now.
+                        catch(err)
+                        { setTimeout(function() { tileCtx.drawImage(srcHeatmap,
+                                                      position.left, position.top,
+                                                      width, height,
+                                                      dx, dy, width, height); }, 100); }
 
                         $layer.append(tile);
                     });

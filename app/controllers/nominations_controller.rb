@@ -13,7 +13,13 @@ class NominationsController < ApplicationController
   end
 
   def show
-    @nom = Nomination.find(params[:id])
+    begin
+      @nom = Nomination.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This nomination cannot be found, or has been deleted.'
+      return render('shared/error', :status => :not_found)
+    end
+
     @user_session = UserSession.new unless current_user
   end
 

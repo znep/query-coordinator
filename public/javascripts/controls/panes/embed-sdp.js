@@ -57,6 +57,7 @@
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
+            cpObj._finishProcessing();
             var $embedForm = cpObj.$dom().find('.embedForm.commonForm');
             if ((value == 'preview') &&
                 (!cpObj.$dom().find('.button[data-value=preview]').hasClass('disabled')))

@@ -1,3 +1,12 @@
+@mixin has-action-link
+  a
+    @include sprite-menu-icons('&')
+    float: right
+    margin: 0.2em
+      top: 0.7em
+    &:hover
+      @include opacity(0.8)
+
 .headline
   font-size: 1.8em
   margin-top: 1em
@@ -14,7 +23,7 @@
   margin: 0 0 0.5em
 
 // PANE ZERO: choose type
-.newKindList
+.newKindList, .importTypeList
   margin: 2em auto 5em
   width: 71.6em
 
@@ -50,9 +59,20 @@
         display: block
         margin: 0 auto 1em
 
+      &.disabled
+        color: #888
+
+        &:hover
+          background-color: #f7f7f7
+
+        .icon
+          @include opacity(0.6)
+
       p
         font-size: 1.4em
         font-weight: bold
+.importTypeList
+  width: 46.4em
 
 // PANE ONE: upload
 .uploadFilePane
@@ -114,10 +134,9 @@
 
 // PANE ONE POINT FIVE: import columns
 .importColumnsPane
-  select option.special
-    font-style: italic
-
   .columnsListHeader
+    .columnHandleCell
+      width: 1em
     .columnNameCell
       width: 20.8em
     .columnTypeCell
@@ -134,6 +153,100 @@
         .icon
           float: left
           margin-right: 0.2em
+
+  .columnsList > li .mainLine
+    .columnHandleCell
+      @include drag-handle
+      height: 2em
+      margin-left: 0.4em
+      margin-right: 0.5em
+      padding: 0
+      position: relative
+      top: 0.8em
+      width: 0.6em
+
+    .columnNameCell
+      width: 25em
+      input[type=text]
+        font-size: 1.45em
+        width: 15em
+
+    .columnTypeCell
+      width: 22em
+
+      .uniform.selector
+        @include ie7-inline-block
+
+    .columnSourceCell
+      width: 22em
+
+      .uniform.selector
+        @include ie7-inline-block
+        max-width: 22em // in case they have ridiculously long column names
+        overflow: hidden
+
+    .columnActionCell
+      float: none
+      overflow: hidden
+      @include has-action-link
+
+.appendReplaceColumnsPane
+  .columnsListHeader
+    .columnSourceCell
+      width: 20.8em
+    .columnActionCell
+      width: 2em
+    .columnDestinationCell
+      width: 20.8em
+    .columnTypeCell
+      float: none
+      overflow: hidden
+
+  .columnsList > li .mainLine
+    .editableSection
+      width: 27.8em
+
+      > div
+        float: left
+
+      .columnSourceCell
+        width: 25em
+        select
+          width: 20.5em
+
+      .columnActionCell
+        width: 2em
+        @include has-action-link
+
+    .lockedSection
+      float: none
+      overflow: hidden
+      @include vertical-gradient(#ccc, #ddd)
+
+      > div
+        float: left
+        font-size: 1.3em
+        padding: 0.5em
+
+      .columnDestinationCell
+        width: 19em
+
+      .columnTypeCell
+        float: none
+        overflow: hidden
+
+.columnsPane
+  select option.special
+    font-style: italic
+
+  .columnsListHeader
+    margin-bottom: 0.2em
+    margin-top: 1em
+    > div
+      float: left
+      font-size: 1.2em
+      font-weight: bold
+      padding: 0.4em
 
   .columnsList
 
@@ -398,6 +511,7 @@
       top: 1px solid $color_chrome_box_border
     color: transparent
     height: 0
+
 
 #importTypesMessage
   margin-left: -25em

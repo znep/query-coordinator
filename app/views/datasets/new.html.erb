@@ -71,7 +71,7 @@
             <p class="uploadFileFormats">Supported formats are .csv, .tsv, .xls, and .xlsx.</p>
           </div>
         </li>
-        <li class="importColumnsPane" data-wizardPaneName="importColumns">
+        <li class="importColumnsPane columnsPane" data-wizardPaneName="importColumns">
           <div class="flash"></div>
           <p class="headline">Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.</p>
           <h2>Columns to import</h2>
@@ -323,125 +323,7 @@
       </div>
     </li>
   </ul>
-  <ul class="layersListLine">
-    <li class="importLayer">
-      <div class="mainLine line">
-        <div class="layerHandleCell importHandleCell"></div>
-        <div class="layerNameCell">
-          <span class="layerName"></span>
-        </div>
-        <div class="layerReferenceSystemCell">
-          <input type="text" class="layerReferenceSystem textPrompt required" title="Enter a coordinate reference system"/>
-        </div>
-      </div>
-    </li>
-  </ul>
-  <ul class="sourceColumnsListLine">
-    <li class="clearfix">
-      <a class="remove removeSourceColumnLineButton" href="#remove"><span class="icon">remove</span></a>
-      <div class="compositeColumnSourcePlaceholder" data-class="compositeColumnSourceSelect"></div>
-      <input type="text" class="staticSourceText"/>
-    </li>
-  </ul>
-  <ul class="columnTransformsListLine">
-    <li class="clearfix">
-      <a class="remove removeTransformLineButton" href="#remove"><span class="icon">remove</span></a>
-      <span class="thenText">then</span>
-      <select class="columnTransformOperation">
-        <option value="title">Make Title Case</option>
-        <option value="upper">Make UPPERCASE</option>
-        <option value="lower">Make lowercase</option>
-        <option value="toStateCode">Convert states to 2-letter codes</option>
-        <option value="findReplace">Find and Replace value...</option>
-        <option value="customExpression">Custom Javascript Expression...</option>
-      </select>
-      <div class="additionalTransformOptions">
-        <div class="findReplaceSection">
-          <label class="findTextLabel">find</label>
-          <input type="text" class="findText"/>
-          <label class="replaceTextLabel">and replace it with</label>
-          <input type="text" class="replaceText"/>
-          <input type="checkbox" class="caseSensitive"/>
-          <label class="caseSensitiveLabel">case sensitive</label>
-          <input type="checkbox" class="regex"/>
-          <label class="regexLabel">regex</label>
-        </div>
-        <div class="customExpressionSection">
-          <label class="customExpressionLabel"></label>
-          <input type="text" class="customExpression"/>
-          <a rel="external" href="http://dev.socrata.com/">How do I create a custom Javascript expression?</a>
-        </div>
-      </div>
-    </li>
-  </ul>
-  <div class="compositeDetails">
-    <h3>Combine Multiple Columns</h3>
-    <h4>Create one column out of many source columns:</h4>
-    <ul class="sourceColumnsList"></ul>
-    <a href="#newSourceColumn" class="button add newSourceColumnButton">
-      <span class="icon"></span>Add new source column
-    </a>
-  </div>
-  <div class="locationDetailsOriginal">
-    <h3>Location Source Columns</h3>
-    <h4>Addresses will be geocoded after import is complete.</h4>
-    <div class="clearfix">
-      <fieldset class="left">
-        <legend>Import Existing Address Columns</legend>
-        <div class="line locationAddressLine clearfix">
-          <label class="locationAddressLabel" for="locationAddressColumn">Street</label>
-          <div class="columnSourcePlaceholder" data-class="locationAddressColumn"></div>
-        </div>
-        <div class="line locationCityLine clearfix">
-          <label class="locationCityLabel" for="locationCityColumn">City</label>
-          <div class="optionGroup">
-            <input type="radio" name="locationCityToggle" class="locationSourceToggle" checked="checked"/>
-            <div class="columnSourcePlaceholder" data-class="locationCityColumn"></div>
-            <input type="radio" name="locationCityToggle" class="locationSourceToggle"/>
-            <input type="text" class="locationCityStatic textPrompt" title="Enter a custom value"/>
-          </div>
-        </div>
-        <div class="line locationStateLine clearfix">
-          <label class="locationStateLabel" for="locationStateColumn">State</label>
-          <div class="optionGroup">
-            <input type="radio" name="locationStateToggle" class="locationSourceToggle" checked="checked"/>
-            <div class="columnSourcePlaceholder" data-class="locationStateColumn"></div>
-            <input type="radio" name="locationStateToggle" class="locationSourceToggle"/>
-            <input type="text" class="locationStateStatic textPrompt" title="Enter a custom value"/>
-          </div>
-        </div>
-        <div class="line locationZipLine clearfix">
-          <label class="locationZipLabel" for="locationZipColumn">Zip</label>
-          <div class="optionGroup">
-            <input type="radio" name="locationZipToggle" class="locationSourceToggle" checked="checked"/>
-            <div class="columnSourcePlaceholder" data-class="locationZipColumn"></div>
-            <input type="radio" name="locationZipToggle" class="locationSourceToggle"/>
-            <input type="text" class="locationZipStatic textPrompt" title="Enter a custom value"/>
-          </div>
-        </div>
-      </fieldset>
-      <fieldset class="right">
-        <legend>Import Latitude and Longitude</legend>
-        <div class="line locationLatitudeLine clearfix">
-          <label class="locationLatitudeLabel">Latitude</label>
-          <div class="columnSourcePlaceholder" data-class="locationLatitudeColumn"></div>
-        </div>
-        <div class="line locationLongitudeLine clearfix">
-          <label class="locationLongitudeLabel">Longitude</label>
-          <div class="columnSourcePlaceholder" data-class="locationLongitudeColumn"></div>
-        </div>
-      </fieldset>
-    </div>
-  </div>
-  <div class="generalDetails">
-    <h3>Options</h3>
-    <h4>Perform the following transformation upon import:</h4>
-    <ul class="columnTransformsList">
-    </ul>
-    <a href="#newTransform" class="button add newColumnTransformButton">
-      <span class="icon"></span>Add new transform
-    </a>
-  </div>
+  <%= render :partial => 'import_common' %>
 <% end %>
 
 <% content_for :modals do %>

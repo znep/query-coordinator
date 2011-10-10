@@ -41,7 +41,7 @@ var scan,
     $layersList,
     layers;
 
-// structs
+// used for reducing selectable types down to import types
 var importTypes = {
     text: 'text',
     email: 'text',
@@ -215,11 +215,23 @@ var updateLines = function($elems)
 
         var column;
         var oldColumn = $line.data('column') || {};
+        var dsColumn = $line.data('dsColumn');
 
-        var importColumn = {
-            name: $line.find('.columnName').val(),
-            dataType: $line.find('.columnTypeSelect').val()
-        };
+        var importColumn;
+        if (_.isUndefined(dsColumn))
+        {
+            importColumn = {
+                name: $line.find('.columnName').val(),
+                dataType: $line.find('.columnTypeSelect').val()
+            };
+        }
+        else
+        {
+            importColumn = {
+                name: dsColumn.name,
+                dataType: dsColumn.dataTypeName // CR: renderTypeName?
+            };
+        }
 
         // some of these can toggle between text and select.
         var findOptionValue = function(option)
@@ -375,6 +387,7 @@ var validateAll = function()
         var column = $line.data('column');
         var importColumn = $line.data('importColumn');
         var importType = importTypes[importColumn.dataType];
+        var dsColumn = $line.data('dsColumn');
 
         // track names seen
         if (_.isUndefined(names[importColumn.name]))
@@ -386,7 +399,7 @@ var validateAll = function()
         if (_.isUndefined(column))
             return;
 
-        // validate data type (warning)
+        // validate data type
         if (importColumn.dataType == 'location')
         {
             // location requires special validation
@@ -435,8 +448,26 @@ var validateAll = function()
                 addValidationError(importColumn, 'warning', 'a composite column that will be created ' +
                     'out of multiple source columns, but it is currently set to import as <strong>' +
                     $.htmlEscape(importColumn.dataType) + '</strong>. Please be certain that combining ' +
-                    'the columns you have specified will yield a valid ' + importColumn.dataType + ' value,' +
-                    'or else change the type to <strong>text</strong> to import safely.');
+                    'the columns you have specified will yield a valid ' + importColumn.dataType + '.');
+            }
+        }
+        else if (!_.isUndefined(dsColumn))
+        {
+            // location and composite are still special, but otherwise if we're
+            // reimporting then the comparison is a bit different.
+            var dsImportType = importTypes[dsColumn.dataTypeName];
+            if ((column.suggestion != dsImportType) &&
+                (dsImportType != 'text'))
+            {
+                // warn about type mismatch, but only about upconvert, not downconvert
+                var invalidPercentage = Math.round(1000 *
+                    (1 - (column.types[dsImportType] / column.processed))) / 10.0;
+                addValidationError(importColumn, 'warning',
+                    'is a <strong>' + $.capitalize(dsColumn.dataTypeName) + '</strong>, but our ' +
+                    'analysis indicates that the source column you are trying to import into it is ' +
+                    'of type <strong>' + $.capitalize(column.suggestion) + '</strong>. Should you ' +
+                    'choose to import that column, roughly <strong>' + invalidPercentage + '%</strong> ' +
+                    'of your data will likely import incorrectly.');
             }
         }
         else if (column.suggestion != importType)
@@ -644,6 +675,22 @@ var newLayerLine = function(layer)
         $line.data('layer', layer);
     }
 
+var newReimportLine = function(column)
+{
+    var dsColumn = column[0];
+    var scanColumn = column[1];
+
+    var $line = $.renderTemplate('columnsListLine', dsColumn, {
+        '.columnDestinationCell': 'name!',
+        '.columnTypeCell': 'dataTypeName' // CR: or is it renderTypeName?
+    });
+    $columnsList.append($line);
+
+    $line.find('.columnSourceCell select').val(scanColumn.id);
+    $line.data('dsColumn', dsColumn);
+
+    $line.find('select, :radio').uniform();
+
     return $line;
 };
 
@@ -652,6 +699,24 @@ var emptyColumnsList = function()
 {
     $columnsList.empty();
     validateAll(); // go straight to validate; nothing to update.
+};
+
+var _updateRawLines = function(lines)
+{
+    var $lines = _.reduce(
+        _.rest(lines),
+        function($linesSoFar, $line) { return $linesSoFar.add($line); },
+        _.first(lines));
+    updateLines($lines);
+};
+
+var _finalizeAddColumns = function()
+{
+    validateAll();
+    wireEvents();
+    $columnsList.show();
+    $pane.find('.columnsToolbar').show();
+    $pane.find('.pendingColumnsMessage').hide();
 };
 
 // throw in all analysed columns, with location groups
@@ -683,25 +748,46 @@ var addDefaultColumns = function(flat)
 
     // now add the ones we haven't used as individual columns, plus our compositeColumns
     $.batchProcess(
-        availableColumns.concat(compositeColumns),
-        15,
-        newLine,
-        function(lines)
+        availableColumns.concat(compositeColumns), 15, newLine,
+        _updateRawLines, _finalizeAddColumns);
+};
+
+var addGuessedDatasetColumns = function()
+{
+    // attempt to reconstruct the correct setting if at all possible
+
+    var scanColumns = _.clone(columns);
+    var scanLocations = scan.summary.locations || [];
+
+    var ds = blist.importer.dataset;
+    var dsColumns = ds.visibleColumns;
+
+    var resultColumns;
+
+    // if we have exactly the same number of columns, just 1:1 map.
+    // what's the worst that could happen? (a lot)
+    if (scanColumns.length === dsColumns.length)
+    {
+        resultColumns = _.zip(dsColumns, scanColumns);
+    }
+    // see if we have a matching once we deal a bit with location
+    // columns.
+    else if ((scanLocations.length > 0) && (ds.columnsForType('location')))
+    {
+        
+    }
+    // okay, we're in trouble. do our best to match heuristically and
+    // hope the user notices if things have gone wrong.
+    else
+    {
+        var scanIdx = 0;
+        var resultColumns = _.map(dsColumns, function(dsColumn)
         {
-            var $lines = _.reduce(
-                _.rest(lines),
-                function($linesSoFar, $line) { return $linesSoFar.add($line); },
-                _.first(lines));
-            updateLines($lines);
-        },
-        function()
-        {
-            validateAll();
-            wireEvents();
-            $columnsList.show();
-            $pane.find('.columnsToolbar').show();
-            $pane.find('.pendingColumnsMessage').hide();
+
         });
+    }
+
+    $.batchProcess(resultColumns, 15, newReimportLine, _updateRawLines, _finalizeAddColumns);
 };
 
 // throw in all available columns just as text
@@ -734,7 +820,7 @@ var wireEvents = function()
     $pane.delegate('.columnsList li input.columnName,' +
                    '.columnsList li select.columnTypeSelect,' +
                    '.columnsList li select.columnSourceSelect,' +
-                   '.columnsList li input[type=text]' +
+                   '.columnsList li input[type=text],' +
                    '.columnsList li .locationDetails .columnSelect', 'change', function()
     {
         updateLines($(this).closest('li.importColumn'));
@@ -905,11 +991,15 @@ var wireEvents = function()
         setHeadersCountText();
     });
 
-    $columnsList.awesomereorder({
-        uiDraggableDefaults: {
-            handle: '.importHandleCell'
-        }
-    });
+    if (_.isFunction($columnsList.awesomereorder))
+    {
+        // awesomeReorder is simply not included on the append/replace page
+        $columnsList.awesomereorder({
+            uiDraggableDefaults: {
+                handle: '.importHandleCell'
+            }
+        });
+    }
 
     $('.importTypesMessageLink').click(function(event)
     {
@@ -919,116 +1009,270 @@ var wireEvents = function()
 };
 
 // config
+importNS.uploadFilePaneConfig = {
+    disableButtons: [ 'next' ],
+    onInitialize: function($pane, config, state, command)
+    {
+        // update text
+        var isBlist = state.type == 'blist';
+        $pane.find('.headline').text('Please choose a file to ' + (isBlist ? 'import' : 'upload'));
+        $pane.find('.uploadFileFormats').toggle(isBlist);
+
+        // uploader
+        var uploadEndpoint = '/imports2.txt?method=';
+        if (state.type == 'blist')
+        {
+            uploadEndpoint += 'scan';
+        }
+        else if (state.type == 'shapefile')
+        {
+            uploadEndpoint += 'scanShape';
+        }
+        else
+        {
+            uploadEndpoint += 'blob';
+        }
+
+        var $uploadThrobber = $pane.find('.uploadThrobber');
+        var uploader = blist.fileUploader({
+            element: $pane.find('.uploadFileButtonWrapper')[0],
+            action: uploadEndpoint,
+            multiple: false,
+            onSubmit: function(id, fileName)
+            {
+                var ext = (fileName.indexOf('.') >= 0) ? fileName.replace(/.*\./, '') : '';
+                if (state.type == 'blobby') {
+                    // We'll accept any type for a blob.
+                }
+                else if (state.type == 'shapefile')
+                {
+                    if (!(ext && /^(zip|kml|kmz)$/i.test(ext)))
+                    {
+                        // Only accept ZIP and KML for shapefile.
+                        $pane.find('.uploadFileName')
+                            .val('Please choose a KML, KMZ, or ZIP file.')
+                            .addClass('error');
+                        return false;
+                    }
+                }
+                else if (!(ext && /^(tsv|csv|xls|xlsx)$/i.test(ext)))
+                {
+                    // For all other state.type, accept only data files.
+                    $pane.find('.uploadFileName')
+                        .val('Please choose a CSV, TSV, XLS, or XLSX file.')
+                        .addClass('error');
+                    return false;
+                }
+                state.fileName = fileName; // save this off since the imports service needs it later
+
+                $pane.find('.uploadFileName')
+                    .val(fileName)
+                    .removeClass('error');
+
+                $uploadThrobber.slideDown()
+                               .find('.text').text('Uploading your file...');
+            },
+            onProgress: function(id, fileName, loaded, total)
+            {
+                if (loaded < total)
+                    $uploadThrobber.find('.text').text('Uploading your file (' +
+                                                       (Math.round(loaded / total * 1000) / 10) + '% of ' +
+                                                       uploader._formatSize(total) + ')...');
+                else
+                    $uploadThrobber.find('.text').text('Analyzing your file...');
+            },
+            onComplete: function(id, fileName, response)
+            {
+                if ($.isBlank(response) || _.isEmpty(response) || (response.error == true))
+                {
+                    $uploadThrobber.slideUp();
+                    $pane.find('.uploadFileName')
+                        .val('There was a problem ' +
+                             ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing') +
+                             ' that file. Please make sure it is valid.')
+                        .addClass('error');
+                    return false;
+                }
+
+                // if it happens too fast it's bewildering
+                setTimeout(function()
+                {
+                    $uploadThrobber.slideUp();
+                    $pane.find('.uploadFileName').val('No file selected yet.');
+                    if (state.type == 'blobby')
+                    {
+                        state.submittedView = new Dataset(response);
+                        command.next('metadata');
+                    }
+                    else
+                    {
+                        state.scan = response;
+                        command.next(state.afterUpload);
+                    }
+                }, 1000);
+            }
+        });
+    }
+};
+
+////////////////////////////////////////////////////
+// shared helpers between import + append/replace
+
+var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
+{
+    // update global vars
+    scan = state.scan;
+    isShown = false;
+    wizardCommand = command;
+    columns = scan.summary.columns;
+    locationGroups = scan.summary.locations;
+    $pane = $paneLocal;
+    $columnsList = $pane.find('.columnsList');
+    $warningsList = $pane.find('.columnWarningsList');
+    $warningsSection = $pane.find('.warningsSection');
+    $headersTable = $pane.find('.headersTable tbody');
+    $headersCount = $pane.find('.headersCount');
+    headersCount = scan.summary.headers;
+
+    // populate the dataset name field
+    $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
+
+    // give the columns id refs; type of column
+    _.each(columns, function(column, i)
+    {
+        column.id = i;
+        column.type = 'column';
+    });
+
+    // create an options hash for pure columns
+    columnSelectOptions = _.map(columns || [], function(column, i)
+    {
+        return { value: i, label: column.name };
+    });
+
+    // create an options hash for column-like options
+    sourceColumns = [];
+    sourceColumns.push({ value: '', label: '(No Source Column)', 'class': 'special' });
+    sourceColumns = sourceColumns.concat(columnSelectOptions);
+    sourceColumns.push({ value: 'composite', label: '(Combine Multiple Columns...)', 'class': 'special' });
+
+    // create a couple selects we can clone
+    $sourceDropDown = $.tag({
+        tagName: 'select',
+        'class': 'columnSourceSelect',
+        contents: optionsForSelect(sourceColumns)
+    });
+    $columnDropDown = $.tag({
+        tagName: 'select',
+        'class': 'columnSelect',
+        contents: optionsForSelect([{ value: '', label: '(No Source Column)',
+                                      'class': 'special' }].concat(columnSelectOptions))
+    });
+    $compositeColumnSourceDropDown = $.tag({
+        tagName: 'select',
+        'class': 'compositeColumnSourceSelect',
+        contents: optionsForSelect(columnSelectOptions.concat([{
+            value: '[static]', label: '(Insert static text...)', 'class': 'special' }]))
+    });
+
+    // add dropdowns to main template
+    $('#templates > .columnsListLine .columnSourceCell').empty().append($sourceDropDown);
+
+    // clone locations template and replace dropdowns
+    $('#templates > .locationDetails').remove();
+    var $locationTemplate = $('#templates > .locationDetailsOriginal').clone();
+    $locationTemplate.find('.columnSourcePlaceholder').each(function()
+    {
+        var $this = $(this);
+        var $dropDown = $columnDropDown.clone();
+        $this.replaceWith($dropDown);
+        $dropDown.addClass($this.attr('data-class'));
+    });
+    $locationTemplate.removeClass().addClass('locationDetails').appendTo('#templates');
+
+    // render out the sample data for the header section
+    _(Math.min(5, scan.summary.sample.length)).times(function(i)
+    {
+        $headersTable.append($.tag({
+            tagName: 'tr',
+            'class': { value: 'header', onlyIf: i < scan.summary.headers },
+            contents: _.map(scan.summary.sample[i], function(cell)
+                {
+                    return { tagName: 'td', contents: cell };
+                })
+        }));
+    });
+
+    // populate the number
+    setHeadersCountText();
+
+    // we are now past the first init, so start animating things
+    isShown = true;
+};
+
+var columnsPaneActivated = function($pane)
+{
+    if (!$.isBlank(submitError))
+    {
+        $pane.find('.flash').text(submitError)
+                            .removeClass('warning notice')
+                            .addClass('error');
+    }
+    else
+    {
+        $pane.find('.flash').empty().removeClass('warning notice error');
+    }
+};
+
+var setUpImportingPaneState = function(state)
+{
+    state.importer = {};
+    state.importer.importColumns = $.makeArray($columnsList.children().map(function()
+    {
+        return $.extend(true, {}, $(this).data('importColumn'));
+    }));
+    state.importer.headersCount = headersCount;
+};
+
+/////////////////
+// pane config
+
+importNS.appendReplaceColumnsPaneConfig = {
+    uniform: true,
+    skipValidation: true,
+    onInitialize: function($paneLocal, paneConfig, state, command)
+    {
+        prepareColumnsAndUI($paneLocal, paneConfig, state, command);
+
+        // add just the real dataset's columns
+        addGuessedDatasetColumns();
+    },
+    onActivate: columnsPaneActivated,
+    onNext: function($pane, state)
+    {
+        // as with import, double check here
+        updateLines();
+        if (!validateAll())
+        {
+            return null;
+        }
+
+        setUpImportingPaneState(state);
+        return 'importing';
+    }
+};
+
 importNS.importColumnsPaneConfig = {
     uniform: true,
     skipValidation: true,
     onInitialize: function($paneLocal, paneConfig, state, command)
     {
-        // update global vars
-        scan = state.scan;
-        isShown = false;
-        wizardCommand = command;
-        columns = scan.summary.columns;
-        locationGroups = scan.summary.locations;
-        $pane = $paneLocal;
-        $columnsList = $pane.find('.columnsList');
-        $warningsList = $pane.find('.columnWarningsList');
-        $warningsSection = $pane.find('.warningsSection');
-        $headersTable = $pane.find('.headersTable tbody');
-        $headersCount = $pane.find('.headersCount');
-        headersCount = scan.summary.headers;
-
-        // populate the dataset name field
-        $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
-
-        // give the columns id refs; type of column
-        _.each(columns, function(column, i)
-        {
-            column.id = i;
-            column.type = 'column';
-        });
-
-        // create an options hash for pure columns
-        columnSelectOptions = _.map(columns || [], function(column, i)
-        {
-            return { value: i, label: column.name };
-        });
-
-        // create an options hash for column-like options
-        sourceColumns = [];
-        sourceColumns.push({ value: '', label: '(No Source Column)', 'class': 'special' });
-        sourceColumns = sourceColumns.concat(columnSelectOptions);
-        sourceColumns.push({ value: 'composite', label: '(Combine Multiple Columns...)', 'class': 'special' });
-
-        // create a couple selects we can clone
-        $sourceDropDown = $.tag({
-            tagName: 'select',
-            'class': 'columnSourceSelect',
-            contents: optionsForSelect(sourceColumns)
-        });
-        $columnDropDown = $.tag({
-            tagName: 'select',
-            'class': 'columnSelect',
-            contents: optionsForSelect([{ value: '', label: '(No Source Column)',
-                                          'class': 'special' }].concat(columnSelectOptions))
-        });
-        $compositeColumnSourceDropDown = $.tag({
-            tagName: 'select',
-            'class': 'compositeColumnSourceSelect',
-            contents: optionsForSelect(columnSelectOptions.concat([{
-                value: '[static]', label: '(Insert static text...)', 'class': 'special' }]))
-        });
-
-        // add dropdowns to main template
-        $('#templates > .columnsListLine .columnSourceCell').empty().append($sourceDropDown);
-
-        // clone locations template and replace dropdowns
-        $('#templates > .locationDetails').remove();
-        var $locationTemplate = $('#templates > .locationDetailsOriginal').clone();
-        $locationTemplate.find('.columnSourcePlaceholder').each(function()
-        {
-            var $this = $(this);
-            var $dropDown = $columnDropDown.clone();
-            $this.replaceWith($dropDown);
-            $dropDown.addClass($this.attr('data-class'));
-        });
-        $locationTemplate.removeClass().addClass('locationDetails').appendTo('#templates');
+        prepareColumnsAndUI($paneLocal, paneConfig, state);
 
         // throw in our default set of suggestions
         addDefaultColumns();
-
-        // render out the sample data for the header section
-        _(Math.min(5, scan.summary.sample.length)).times(function(i)
-        {
-            $headersTable.append($.tag({
-                tagName: 'tr',
-                'class': { value: 'header', onlyIf: i < scan.summary.headers },
-                contents: _.map(scan.summary.sample[i], function(cell)
-                    {
-                        return { tagName: 'td', contents: cell };
-                    })
-            }));
-        });
-
-        // populate the number
-        setHeadersCountText();
-
-        // we are now past the first init, so start animating things
-        isShown = true;
     },
-    onActivate: function($pane, paneConfig, state)
-    {
-        if (!$.isBlank(submitError))
-        {
-            $pane.find('.flash').text(submitError)
-                                .removeClass('warning notice')
-                                .addClass('error');
-        }
-        else
-        {
-            $pane.find('.flash').empty().removeClass('warning notice error');
-        }
-    },
+    onActivate: columnsPaneActivated,
     onNext: function($pane, state)
     {
         // just to be sure, process everything one last time.
@@ -1039,12 +1283,8 @@ importNS.importColumnsPaneConfig = {
             return null; // prevent moving on
         }
 
-        state.importer = {};
-        state.importer.importColumns = $.makeArray($columnsList.children().map(function()
-        {
-            return $.extend(true, {}, $(this).data('importColumn'));
-        }));
-        state.importer.headersCount = headersCount;
+        state.operation = 'import';
+        setUpImportingPaneState(state);
         return 'importing';
     }
 };
@@ -1119,11 +1359,13 @@ importNS.importShapefilePaneConfig = {
         {
             return $.extend(true, {}, $(this).data('importLayer'));
         }));
+        state.operation = 'shapefile';
 
         return 'importing';
     }
 };
 
+// helper for importing pane (parsing columns)
 var handleColumn = function(column)
 {
     if (column.type == 'column')
@@ -1220,7 +1462,7 @@ importNS.importingPaneConfig = {
                     {
                         var regexExpr = transform.options.find;
                         if (!transform.options.regex)
-                            regexExpr = regexExpr.replace(/(\\|\^|\$|\?|\*|\+|\.|\(|\)|\{|\})/g,
+                            regexExpr = regexExpr.replace(/(\\|\^|\$|\?|\*|\+|\.|\(|\)|\{|\}\|)/g,
                                 function(match) { return '\\' + match; });
 
                         result = '(' + result + ').replace(/' + regexExpr + '/g' +
@@ -1243,21 +1485,36 @@ importNS.importingPaneConfig = {
         // fire it all off. note that data is a form-encoded payload, not json.
         $pane.find('.importStatus').empty();
 
+        var dataPayload = {
+            name: state.fileName,
+            translation: translation,
+            fileId: state.scan.fileId
+        };
+
+        if ((state.operation == 'import') || (state.operation == 'shapefile'))
+        {
+            dataPayload.blueprint = JSON.stringify(blueprint);
+        }
+
+        var isReimport = ((state.operation == 'append') || (state.operation == 'replace'));
+        if (isReimport)
+        {
+            $.extend(dataPayload, {
+                viewUid: blist.importer.dataset.id,
+                skip: blueprint.skip
+            });
+        }
+
         $.socrataServer.makeRequest({
             type: 'post',
-            url: '/api/imports2.json' + ((state.type == 'shapefile') ? "?method=shape" : ""),
+            url: '/api/imports2.json' + ((state.operation == 'import') ? '' : ('?method=' + state.operation)),
             contentType: 'application/x-www-form-urlencoded',
-            data: {
-                name: state.fileName, 
-                blueprint: JSON.stringify(blueprint),
-                translation: translation,
-                fileId: state.scan.fileId
-            },
+            data: dataPayload,
             success: function(response)
             {
                 state.submittedView = new Dataset(response);
                 command.next($.subKeyDefined(state.submittedView, 'metadata.warnings') ?
-                    'importWarnings' : 'metadata');
+                    'importWarnings' : (isReimport ? 'finish' : 'metadata'));
             },
             error: function(request)
             {

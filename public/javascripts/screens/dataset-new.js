@@ -94,6 +94,7 @@ $wizard.wizard({
                     event.preventDefault();
 
                     state.type = 'blist';
+                    state.afterUpload = 'importColumns';
                     command.next('uploadFile');
                 });
                 $pane.find('.newKindList a.mapLayer').click(function(event)
@@ -108,6 +109,7 @@ $wizard.wizard({
                     event.preventDefault();
 
                     state.type = 'shapefile';
+                    state.afterUpload = 'importShapefile';
                     command.next('uploadFile');
                 });
                 $pane.find('.newKindList a.blobby').click(function(event)
@@ -166,122 +168,11 @@ $wizard.wizard({
 
 
 
-        'uploadFile': {
-            disableButtons: [ 'next' ],
-            onInitialize: function($pane, config, state, command)
-            {
-                // update text
-                var isBlist = state.type == 'blist';
-                $pane.find('.headline').text('Please choose a file to ' + (isBlist ? 'import' : 'upload'));
-                $pane.find('.uploadFileFormats').toggle(isBlist);
-
-                // uploader
-                var uploadEndpoint = '/imports2.txt?method=';
-                if (state.type == 'blist')
-                {
-                    uploadEndpoint += 'scan';
-                }
-                else if (state.type == 'shapefile')
-                {
-                    uploadEndpoint += 'scanShape';
-                }
-                else
-                {
-                    uploadEndpoint += 'blob';
-                }
-
-                var $uploadThrobber = $pane.find('.uploadThrobber');
-                var uploader = blist.fileUploader({
-                    element: $pane.find('.uploadFileButtonWrapper')[0],
-                    action: uploadEndpoint,
-                    multiple: false,
-                    onSubmit: function(id, fileName)
-                    {
-                        var ext = (fileName.indexOf('.') >= 0) ? fileName.replace(/.*\./, '') : '';
-                        if (state.type == 'blobby') {
-                            // We'll accept any type for a blob.
-                        }
-                        else if (state.type == 'shapefile')
-                        {
-                            if (!(ext &&/^(zip|kml|kmz)$/i.test(ext)))
-                            {
-                                // Only accept ZIP and KML for shapefile.
-                                $pane.find('.uploadFileName')
-                                    .val('Please choose a KML, KMZ, or ZIP file.')
-                                    .addClass('error');
-                                return false;
-                            }
-                        }
-                        else if (!(ext && /^(tsv|csv|xls|xlsx)$/i.test(ext)))
-                        {
-                            // For all other state.type, accept only data files.
-                            $pane.find('.uploadFileName')
-                                .val('Please choose a CSV, TSV, XLS, or XLSX file.')
-                                .addClass('error');
-                            return false;
-                        }
-                        state.fileName = fileName; // save this off since the imports service needs it later
-
-                        $pane.find('.uploadFileName')
-                            .val(fileName)
-                            .removeClass('error');
-
-                        $uploadThrobber.slideDown()
-                                       .find('.text').text('Uploading your file...');
-                    },
-                    onProgress: function(id, fileName, loaded, total)
-                    {
-                        if (loaded < total)
-                            $uploadThrobber.find('.text').text('Uploading your file (' +
-                                                               (Math.round(loaded / total * 1000) / 10) + '% of ' +
-                                                               uploader._formatSize(total) + ')...');
-                        else
-                            $uploadThrobber.find('.text').text('Analyzing your file...');
-                    },
-                    onComplete: function(id, fileName, response)
-                    {
-                        if ($.isBlank(response) || _.isEmpty(response) || (response.error == true))
-                        {
-                            $uploadThrobber.slideUp();
-                            $pane.find('.uploadFileName')
-                                .val('There was a problem ' +
-                                     ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing') +
-                                     ' that file. Please make sure it is valid.')
-                                .addClass('error');
-                            return false;
-                        }
-
-                        // if it happens too fast it's bewildering
-                        setTimeout(function()
-                        {
-                            $uploadThrobber.slideUp();
-                            $pane.find('.uploadFileName').val('No file selected yet.');
-                            if (isBlist)
-                            {
-                                state.scan = response;
-                                command.next('importColumns');
-                            }
-                            else if (state.type == 'shapefile') {
-                                state.scan = response;
-                                command.next('importShapefile');
-                            }
-                            else
-                            {
-                                state.submittedView = new Dataset(response);
-                                command.next('metadata');
-                            }
-                        }, 1000);
-                    }
-                });
-            }
-        },
-
-
-
-        'importColumns': blist.importer.importColumnsPaneConfig,
+        'uploadFile':       blist.importer.uploadFilePaneConfig,
+        'importColumns':    blist.importer.importColumnsPaneConfig,
         'importShapefile': blist.importer.importShapefilePaneConfig,
-        'importing':     blist.importer.importingPaneConfig,
-        'importWarnings':     blist.importer.importWarningsPaneConfig,
+        'importing':        blist.importer.importingPaneConfig,
+        'importWarnings':   blist.importer.importWarningsPaneConfig,
 
 
 

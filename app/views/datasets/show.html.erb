@@ -317,6 +317,7 @@
   </div>
 </div>
 <%= render :partial => 'templates/unified_filter' %>
+<%= render :partial => 'append_replace' %>
 <% end %>
 
 <%- content_for :modals do -%>
@@ -412,15 +413,9 @@
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
-    blist.sidebarHidden.edit.append = <%= !@view.is_unpublished? || !@view.is_blist? ||
+    blist.sidebarHidden.edit.appendReplace = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add') ||
       !CurrentDomain.module_available?(:dataset_append) %>;
-    blist.sidebarHidden.edit.replace = <%= !@view.is_unpublished? && !@view.is_blobby? ||
-      @view.is_snapshotted? ||
-      !(@view.is_blist? || @view.is_blobby?) ||
-      !@view.has_rights?('add') ||
-      !@view.has_rights?('delete') ||
-      !CurrentDomain.module_available?(:dataset_refresh) %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
     blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? ||

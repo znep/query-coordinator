@@ -318,6 +318,13 @@ javascripts:
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/import-pane.js
     - public/javascripts/screens/dataset-new.js
+  dataset-edit:
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/plugins/fileuploader.js
+    - public/javascripts/plugins/blist.fileuploader.js
+    - public/javascripts/controls/wizard.js
+    - public/javascripts/screens/import-pane.js
+    - public/javascripts/screens/dataset-edit.js
   dataset-metrics:
     - public/javascripts/screens/dataset-metrics.js
   dataset-show:

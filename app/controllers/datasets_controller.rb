@@ -132,6 +132,7 @@ class DatasetsController < ApplicationController
     @view.register_opening(request.referrer)
   end
 
+# other actions
   def external
     view = View.find_external(params[:id])
 
@@ -310,6 +311,16 @@ class DatasetsController < ApplicationController
     render :layout => 'plain'
   end
 
+  def edit
+    @view = get_view(params[:id])
+    return render_404 if @view.nil? || @view.is_published?
+
+    unless @view.can_modify_data?
+      flash.now[:error] = "You do not have permission to modify this dataset."
+      return render_forbidden
+    end
+  end
+
   def edit_metadata
     @view = get_view(params[:id])
     return if @view.nil?
@@ -322,6 +333,15 @@ class DatasetsController < ApplicationController
       rescue CoreServer::CoreServerError => e
         flash.now[:error] = "An error occurred during your request: #{e.error_message}"
       end
+    end
+  end
+
+  def upload
+    @view = get_view(params[:id])
+    return if @view.nil?
+
+    if @current_user.nil? || !@view.can_edit?
+      return render_forbidden
     end
   end
 

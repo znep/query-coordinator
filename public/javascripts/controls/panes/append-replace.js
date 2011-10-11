@@ -40,7 +40,7 @@
             if (this._view.type == 'blob')
             {
                 delete mainSect.fields[0].fileTypes;
-                delete mainSect.fields[1];
+                mainSect.fields.length = 1;
             }
             return [mainSect];
         },

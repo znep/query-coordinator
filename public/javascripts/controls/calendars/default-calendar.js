@@ -76,8 +76,10 @@
                 var closestDate = _(this._events).chain()
                     .map(function(ev)
                             {
-                                return [new Date(_.isNumber(ev.start) ? ev.start * 1000 : (ev.start || 0)),
-                                    new Date(_.isNumber(ev.end) ? ev.end * 1000 : (ev.end || 0))];
+                                return [_.isString(ev.start) && ev.start !== '' ?
+                                        Date.parse(ev.start) : new Date((ev.start || 0) * 1000),
+                                    _.isString(ev.end) && ev.start !== '' ?
+                                        Date.parse(ev.end) : new Date((ev.end || 0) * 1000)];
                             })
                     .flatten().sortBy(function(d)
                             {

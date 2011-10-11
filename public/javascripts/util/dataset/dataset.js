@@ -39,13 +39,10 @@ this.Dataset = ServerModel.extend({
         // will be out-of-date...
         var selfUrl = '/views/' + this.id;
         Dataset.addProperties(this, ColumnContainer('column',
-                selfUrl + '.json', selfUrl + '/columns'), Dataset.prototype);
+                selfUrl + '.json', selfUrl + '/columns'), $.extend({}, this));
 
         if (!$.isBlank(this.approvalHistory))
-        {
-            Dataset.addProperties(this, Dataset.modules.approvalHistory,
-                Dataset.prototype);
-        }
+        { Dataset.addProperties(this, Dataset.modules.approvalHistory, $.extend({}, this)); }
 
         this.updateColumns();
 
@@ -653,6 +650,9 @@ this.Dataset = ServerModel.extend({
         {
             var loadAllRows = function()
             {
+                // If we got here, and totalRows is still blank, bail, because something
+                // has changed in the meantime and this load is just invalid
+                if ($.isBlank(ds.totalRows)) { return; }
                 _.each(reqs, function(req)
                 {
                     if (req.start >= ds.totalRows) { return false; }
@@ -1780,10 +1780,7 @@ this.Dataset = ServerModel.extend({
                 types.push(ds.type);
             }
             _.each(types, function(t)
-            {
-                Dataset.addProperties(ds, Dataset.modules[t] || {},
-                    Dataset.prototype);
-            });
+            { Dataset.addProperties(ds, Dataset.modules[t] || {}, $.extend({}, ds)); });
             ds._addedProperties = true;
         }
 

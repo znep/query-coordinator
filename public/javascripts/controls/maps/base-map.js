@@ -806,7 +806,10 @@
 
             if (mapObj._displayFormat.plotStyle == 'heatmap'
                 || mapObj._neverCluster)
-            { return mapObj._super(); }
+            {
+                mapObj._renderType = 'points';
+                return mapObj._super();
+            }
 
             var rowsToFetch = mapObj._maxRows;
             var nonStandardRender = function(view)

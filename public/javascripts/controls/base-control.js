@@ -57,7 +57,13 @@
                 {
                     var mix = modelHash.mixins[mn];
                     _.each($.makeArray(mix.dependsOn), addMixin);
-                    modelHash.model.addProperties(obj, mix.model, modelHash.model.prototype);
+                    // We want to layer all the mixins so they chain together via _super.
+                    // We can't just inherit from any prototype object, because that doesn't
+                    // change with each mixin added. Instead, we make a copy of this object
+                    // as it exists right now, and mixin the model on top of that. This
+                    // correctly adds just the new methods from mix.model, referencing the
+                    // previous version of the current object.
+                    modelHash.model.addProperties(obj, mix.model, $.extend({}, obj));
                     addedMixins[mn] = true;
                     $.extend(true, df, mix.defaults);
                 }

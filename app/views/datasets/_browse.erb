@@ -486,13 +486,13 @@
        <%- opts[:view_results].each do |v| -%>
        blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
        <%- end -%>
-       blist.browse.baseURL = '<%= opts[:base_url] %>';
+       blist.browse.baseURL = "<%= opts[:base_url] %>";
        <%- if opts[:xmin].present? -%>
        blist.browse.extents = {xmin: <%= opts[:xmin] %>, xmax: <%= opts[:xmax] %>,
            ymin: <%= opts[:ymin] %>, ymax: <%= opts[:ymax] %>};
        <%- end -%>
        <%- if opts[:q].present? -%>
-       blist.browse.query = '<%= opts[:q] %>';
+       blist.browse.query = "<%= opts[:q] %>";
        <%- end -%>
     });
   </script>

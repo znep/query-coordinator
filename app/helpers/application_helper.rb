@@ -351,18 +351,18 @@ module ApplicationHelper
     root_path = request.protocol + request.host_with_port
     embed_template =  "<div>"
     if options[:show_title]
-      embed_template += "<p style=\"margin-bottom:3px\"><a href=\"#{root_path + view.href}\" " +
+      embed_template += "<p style=\"margin-bottom:3px\"><a href=\"#{h(root_path + view.href)}\" " +
                         "target=\"_blank\" style=\"font-size:12px;font-weight:bold;" +
                         "text-decoration:none;color:#333333;font-family:arial;\">" +
                         "#{h(view.name)}</a></p>"
     end
-    embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
-                      "title=\"#{view.name}\" " +
-                      "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
-                      "/w/#{view.id}/#{variation.blank? ? 'default' : variation}?" +
+    embed_template += "<iframe width=\"#{h options[:dimensions][:width]}px\" " +
+                      "title=\"#{h view.name}\" " +
+                      "height=\"#{h options[:dimensions][:height]}px\" src=\"#{h root_path}" +
+                      "/w/#{h view.id}/#{variation.blank? ? 'default' : h(variation)}?" +
                       "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"" +
                       "#{!view.display.can_publish? || view.display.scrolls_inline? ? 'no' : 'auto'}\">" +
-                      "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
+                      "<a href=\"#{h(root_path + view.href)}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +

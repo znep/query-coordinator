@@ -308,6 +308,9 @@
             clear: both
             padding: 0.3em 0 0.5em
 
+            .uniform.radio
+              @include ie7-inline-block
+
             label
               bottom: 0.2em
               font-size: 1.4em
@@ -362,6 +365,9 @@
               font-size: 1.2em
               padding-bottom: 0.5em
               width: 7em
+
+            .uniform.selector
+              @include ie7-inline-block
 
             select
               width: 15em

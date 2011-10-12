@@ -438,7 +438,7 @@
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
 
     <%# Columm properties %>
-    blist.sidebarHidden.columnProperties = <%= @view.is_snapshotted? || !@view.is_tabular? %>;
+    blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};

@@ -239,6 +239,16 @@
             return cleanCol;
         },
 
+        _isReadOnly: function()
+        {
+            return this._view.isSnapshot() || this._view.isPublished() && this._view.isDefault();
+        },
+
+        _getReadOnlyMessage: function()
+        {
+            return 'Please make a working copy or view of this dataset to change column properties';
+        },
+
         _getSections: function()
         {
             var cpObj = this;

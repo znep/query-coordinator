@@ -128,8 +128,7 @@ $(function()
         view: blist.dataset,
         defaultTypes: defRen,
         editEnabled: blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular',
-        columnEditEnabled: blist.dataset.isUnpublished() || blist.dataset.isPublished() &&
-            !blist.dataset.isDefault(),
+        columnEditEnabled: true,
         common: {
             editColumnCallback: function(col)
             {

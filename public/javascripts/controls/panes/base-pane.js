@@ -435,8 +435,11 @@
             this._curData = data;
 
             var rData = {title: cpObj.getTitle(), subtitle: cpObj.getSubtitle(),
-                sections: cpObj._getSections(),
-                paneId: cpObj.$dom().attr('id'), finishButtons: cpObj._getFinishButtons(), data: data || {}};
+                sections: cpObj._getSections(), paneId: cpObj.$dom().attr('id'), data: data || {}};
+            if (!cpObj._isReadOnly())
+            { rData.finishButtons = cpObj._getFinishButtons(); }
+            else
+            { rData.readOnlyMessage = cpObj._getReadOnlyMessage(); }
 
             var sectionOnlyIfs = {};
             var customSections = {};
@@ -445,6 +448,9 @@
                 '.subtitle': 'subtitle',
                 '.subtitleBlock@class+': function(a)
                 { return $.isBlank(a.context.subtitle) ? 'hide' : ''; },
+                '.readOnlyMessage': 'readOnlyMessage',
+                '.readOnlyBlock@class+': function(a)
+                { return $.isBlank(a.context.readOnlyMessage) ? 'hide' : ''; },
                 '.formSection': {
                     'section<-sections': {
                         '@class+': function(arg)
@@ -656,6 +662,14 @@
 
         _dataPreProcess: function(data)
         { return data; },
+
+        // readOnly means finish buttons are hidden, all fields are disabled,
+        // text fields are put in read-only mode (selectable, not editable)
+        _isReadOnly: function()
+        { return false; },
+
+        _getReadOnlyMessage: function()
+        { return null; },
 
         // Get configuration for the sections to display in the pane. See config above
         _getSections: function()
@@ -1073,8 +1087,8 @@
     /* Get the common attributes from an item for use with $.tag */
     var commonAttrs = function(cpObj, item, context)
     {
-        var isDisabled = _.isFunction(item.disabled) ?
-            item.disabled.call(cpObj, context.data) : item.disabled;
+        var isDisabled = cpObj._isReadOnly() || (_.isFunction(item.disabled) ?
+            item.disabled.call(cpObj, context.data) : item.disabled);
 
         var result = {id: item.name + '_' + _.uniqueId(), name: item.name, title: item.prompt,
             disabled: isDisabled, 'data-isDisabled': isDisabled,
@@ -1375,19 +1389,13 @@
 
     renderLineItem.repeater = function(cpObj, contents, args, curValue)
     {
+        var isRO = cpObj._isReadOnly();
         if ($.isBlank(args.item.text))
         { contents.splice(0, contents.length); }
 
-        var templateLine = renderLine(cpObj, {item: $.extend({}, args.item.field,
-                    {lineClass: 'repeaterAdded'}),
-            context: $.extend({}, args.context, {repeaterIndex: 'templateId',
-                noTag: true, inRepeater: true})
-            });
         var removeButton = {tagName: 'a', href: '#remove',
             title: 'Remove', 'class': 'removeLink delete',
             contents: {tagName: 'span', 'class': 'icon'}};
-        templateLine.contents.unshift(removeButton);
-        templateLine = $.htmlEscape($.tag(templateLine, true));
 
         var populatedLength = 0;
         if ($.isBlank(args.item.field.name))
@@ -1406,8 +1414,10 @@
         curValue = _.select(curValue || [], function(v)
         { return checkRequiredData(cpObj, v, args.item.field); });
 
-        for (var i = 0; i < (curValue.length || populatedLength ||
-            args.item.minimum || 1); i++)
+        var numItems = curValue.length || populatedLength;
+        if (!isRO && numItems < 1)
+        { numItems = args.item.minimum || 1; }
+        for (var i = 0; i < numItems; i++)
         {
             var contextData = curValue[i] || args.context.data;
             var hasRequiredData =
@@ -1432,17 +1442,27 @@
                 }
             }
 
-            if (i >= args.item.minimum)
+            if (i >= args.item.minimum && !isRO)
             { l.contents.unshift(removeButton); }
 
             contents.push(l);
         }
 
-        contents.push($.button({text: args.item.addText || 'Add Value',
-            customAttrs: $.extend(commonAttrs(cpObj, args.item, args.context),
-                {'data-template': templateLine, 'data-count': i, 'data-dataValue': null,
-                'data-maximum': args.item.maximum}),
-            className: 'addValue', iconClass: 'add'}, true));
+        if (!isRO)
+        {
+            var templateLine = renderLine(cpObj, {item: $.extend({}, args.item.field,
+                        {lineClass: 'repeaterAdded'}),
+                context: $.extend({}, args.context, {repeaterIndex: 'templateId',
+                    noTag: true, inRepeater: true})
+                });
+            templateLine.contents.unshift(removeButton);
+            templateLine = $.htmlEscape($.tag(templateLine, true));
+            contents.push($.button({text: args.item.addText || 'Add Value',
+                customAttrs: $.extend(commonAttrs(cpObj, args.item, args.context),
+                    {'data-template': templateLine, 'data-count': i, 'data-dataValue': null,
+                        'data-maximum': args.item.maximum}),
+                className: 'addValue', iconClass: 'add'}, true));
+        }
     };
 
     renderLineItem.select = function(cpObj, contents, args, curValue, defValue)
@@ -1538,16 +1558,32 @@
     {
         var wrapper = _.last(contents);
         wrapper['class'].push('textWrapper');
-        wrapper.contents = $.extend(commonAttrs(cpObj, args.item, args.context),
-                {tagName: 'input', type: 'text', value: $.htmlEscape(curValue || defValue)});
+        var attrs = commonAttrs(cpObj, args.item, args.context);
+        if (cpObj._isReadOnly())
+        {
+            delete attrs.disabled;
+            attrs.readonly = 'readonly';
+        }
+        if (attrs.disabled || attrs.readonly)
+        { delete attrs.title; }
+        wrapper.contents = $.extend(attrs, {tagName: 'input', type: 'text',
+            value: $.htmlEscape(curValue || defValue)});
     };
 
     renderLineItem.textarea = function(cpObj, contents, args, curValue, defValue)
     {
         var wrapper = _.last(contents);
         wrapper['class'].push('textWrapper');
-        wrapper.contents = $.extend(commonAttrs(cpObj, args.item, args.context),
-            {tagName: 'textarea', contents: $.htmlEscape(curValue || defValue)});
+        var attrs = commonAttrs(cpObj, args.item, args.context);
+        if (cpObj._isReadOnly())
+        {
+            delete attrs.disabled;
+            attrs.readonly = 'readonly';
+        }
+        if (attrs.disabled || attrs.readonly)
+        { delete attrs.title; }
+        wrapper.contents = $.extend(attrs, {tagName: 'textarea',
+            contents: $.htmlEscape(curValue || defValue)});
     };
 
     /* Render a single input field */

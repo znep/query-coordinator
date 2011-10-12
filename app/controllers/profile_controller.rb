@@ -32,6 +32,7 @@ class ProfileController < ApplicationController
       use_federations: false,
       sortBy: 'newest',
       ignore_params: [ :id, :profile_name ],
+      view_type: 'table',
       row_count: 3
     }
 

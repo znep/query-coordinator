@@ -1761,6 +1761,10 @@ this.Dataset = ServerModel.extend({
         }
         ds.displayName = getDisplayName(ds);
 
+        // We always need searchString, or else it can re-appear due to the saved view
+        // having it set, and the temp view not having the key at all
+        ds.searchString = ds.searchString || null;
+
         // If we are an invalid filter, we're not really that invalid, because
         // the core server has already removed the offending clause. So just
         // ignore the message, and the view will load fine without the clause

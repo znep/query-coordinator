@@ -277,19 +277,19 @@ $(function()
         { $clearSearch.show(); }
     });
 
-    var clearSearchForm = function()
+    var resetSearchForm = function()
     {
-        $searchForm.find(':input').val('').blur();
-        $clearSearch.hide();
+        $searchForm.find(':input').focus().val(blist.dataset.searchString).blur();
+        $clearSearch.toggle(!$.isBlank(blist.dataset.searchString));
     };
 
     $clearSearch.click(function (e)
     {
         e.preventDefault();
-        clearSearchForm();
         blist.dataset.update({searchString: null});
+        resetSearchForm();
     }).hide();
-    blist.dataset.bind('clear_temporary', function() { clearSearchForm(); });
+    blist.dataset.bind('clear_temporary', function() { resetSearchForm(); });
 
     if (!$.isBlank(blist.dataset.searchString))
     {

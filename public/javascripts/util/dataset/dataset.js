@@ -3211,6 +3211,19 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback)
     }
 };
 
+Dataset.search = function(params, successCallback, errorCallback)
+{
+    $.socrataServer.makeRequest({pageCache: true, url: '/api/search/views.json', params: params,
+        success: function(results)
+        {
+            if (_.isFunction(successCallback))
+            {
+                successCallback({count: results.count, views: _.map(results.results, function(v)
+                        { return new Dataset(v.view); })});
+            }
+        }, error: errorCallback});
+};
+
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',
     'areachart', 'barchart', 'columnchart', 'linechart', 'piechart'];
 var MAP_TYPES = ['map', 'geomap', 'intensitymap'];

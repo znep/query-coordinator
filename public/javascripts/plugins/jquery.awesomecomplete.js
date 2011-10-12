@@ -73,26 +73,39 @@
                         break;
                     case 38:
                         event.preventDefault();
+                        var $newActive;
                         if ($active.length === 0)
                         {
-                            $list.children('li:last-child').addClass(config.activeItemClass);
+                            $newActive = $list.children('li:last-child');
                         }
                         else
                         {
-                            $active.prev().addClass(config.activeItemClass);
+                            $newActive = $active.prev();
                             $active.removeClass(config.activeItemClass);
                         }
+                        while (config.skipBlankValues && $newActive.length > 0 &&
+                                $.isBlank($newActive.data('awesomecomplete-value')))
+                        { $newActive = $newActive.prev(); }
+                        $newActive.addClass(config.activeItemClass);
                         break;
                     case 40:
                         event.preventDefault();
+                        var $newActive;
                         if ($active.length === 0)
                         {
-                            $list.children('li:first-child').addClass(config.activeItemClass);
+                            $newActive = $list.children('li:first-child');
                         }
                         else if ($active.is(':not(:last-child)'))
                         {
-                            $active.next().addClass(config.activeItemClass);
+                            $newActive = $active.next();
                             $active.removeClass(config.activeItemClass);
+                        }
+                        if (!$.isBlank($newActive))
+                        {
+                            while (config.skipBlankValues && $newActive.length > 0 &&
+                                    $.isBlank($newActive.data('awesomecomplete-value')))
+                            { $newActive = $newActive.next(); }
+                            $newActive.addClass(config.activeItemClass);
                         }
                         break;
                     case 27:
@@ -301,11 +314,21 @@
                 .appendTo($list)
                 .click(function()
                 {
-                    $this.val($(this).data('awesomecomplete-value'));
-                    config.onComplete($(this).data('awesomecomplete-dataItem'), $this);
+                    var $t = $(this);
+                    var v = $t.data('awesomecomplete-value');
+                    if (config.skipBlankValues && $.isBlank(v)) { return; }
+                    $this.val(v);
+                    config.onComplete($t.data('awesomecomplete-dataItem'), $this);
+                })
+                .mouseup(function(e)
+                {
+                    if (config.skipBlankValues && $.isBlank($(this).data('awesomecomplete-value')))
+                    { e.stopPropagation(); }
                 })
                 .mouseover(function()
                 {
+                    if (config.skipBlankValues && $.isBlank($(this).data('awesomecomplete-value')))
+                    { return; }
                     $(this).addClass(config.activeItemClass)
                            .siblings().removeClass(config.activeItemClass);
                 });
@@ -333,9 +356,10 @@
         {
             if (config.alignRight)
             {
-                $list.css('right', $this.position().left +
-                        ($this.offsetParent().offset().left - $list.offsetParent().offset().left) -
-                        $list.outerWidth() + $this.outerWidth());
+                var $ar = config.alignRight === true ? $this : config.alignRight;
+                $list.css('left', $ar.position().left +
+                        ($ar.offsetParent().offset().left - $list.offsetParent().offset().left) -
+                        $list.outerWidth(true) + $ar.outerWidth(true));
             }
             else
             {
@@ -393,6 +417,7 @@
         renderFunction: defaultRenderFunction,
         resultLimit: 10,
         showAll: false,
+        skipBlankValues: false,
         typingDelay: 0,
         valueFunction: defaultValueFunction,
         wordDelimiter: /[^\da-z]+/ig

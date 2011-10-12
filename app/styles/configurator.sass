@@ -243,6 +243,61 @@ body.socrata-page
     top: 2px
     width: 21px
 
+ul.contextPickerAutocomplete
+  background-color: #fff
+  border: 1px solid #777
+  display: block
+  list-style-type: none
+  margin: 0
+  overflow: hidden
+  padding: 0
+  position: absolute
+
+  .ie7 &
+    left: 0
+    top: 2.5em
+
+  li
+    border-top: 1px solid #aaa
+    cursor: pointer
+    padding: 0
+
+    &:first-child
+      border-top: none
+
+    div
+      padding: 4px
+        left: 14px
+
+    p
+      font-size: 1.2em
+      margin: 1px 4px
+      white-space: nowrap
+
+      .title
+        font-weight: bold
+
+      .matchRow
+        color: #666
+
+    span.matchedField
+      color: #999
+      padding-right: 0.5em
+
+    span.match
+      font-weight: bold
+
+    .titleSeparator
+      cursor: auto
+      font-size: 1.3em
+      font-weight: bold
+      padding-left: 4px
+
+    .serverItem
+      background-color: #e8e8ff
+
+    &.active div
+      background-color: #f7f7f7
 
 // Base/default styles shared by all components
 .socrata-component

@@ -75,8 +75,8 @@
           <div class="flash"></div>
           <p class="headline">Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.</p>
           <h2>Columns to import</h2>
-          <div class="columnsListHeader clearfix">
-            <div class="columnHandleCell"></div>
+          <div class="columnsListHeader importListHeader clearfix">
+            <div class="columnHandleCell importHandleCell"></div>
             <div class="columnNameCell">Name</div>
             <div class="columnTypeCell">Data Type</div>
             <div class="columnSourceCell">
@@ -88,7 +88,7 @@
             </div>
           </div>
           <p class="subheadline pendingColumnsMessage">Please wait while we load your columns...</p>
-          <ul class="columnsList">
+          <ul class="columnsList importList">
           </ul>
           <div class="columnsToolbar clearfix">
             <div class="presets">
@@ -129,20 +129,25 @@
         <li class="importShapefilePane" data-wizardPaneName="importShapefile">
           <div class="flash"></div>
           <p class="headline">Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.</p>
-          <p class="subheadline">This shapefile contains <span class="featureCount"></span> features.</p>
+          <p class="subheadline">This shapefile contains <span class="featureCount"></span> features in
+            <span class="layerCount"></span> layers.</p>
 
-          <div class="commonForm shapefileForm">
-            <div class="shapefileData">
-              <div class="line clearfix">
-                <label for="shapefile_referenceSystem" class="required">Coordinate Reference System</label>
-                <%= text_field_tag("shapefile[referenceSystem]", '', :title => "Choose a coordinate reference system",
-                                   :class => "referenceSystem textPrompt required") %>
-                <div class="additionalHelp">Enter a coordinate reference system in the form
-                  "<a href="http://www.epsg-registry.org/">EPSG:<em>number</em></a>". You can look up
-                  EPSG codes at the <a href="http://www.epsg-registry.org/">EPSG Registry</a>.</div>
-              </div>
-            </div>
+          <h2>Layers to import</h2>
+          <div class="layersListHeader importListHeader clearfix">
+            <div class="layerHandleCell importHandleCell"></div>
+            <div class="layerNameCell">Name</div>
+            <div class="layerReferenceSystemCell">Coordinate Reference System</div>
           </div>
+          <p class="subheadline pendingLayersMessage">Please wait while we load your layers...</p>
+          <ul class="layersList importList">
+          </ul>
+
+          <p class="seeEpsg">
+            Enter coordinate reference systems in the form
+            "<a href="http://www.epsg-registry.org/">EPSG:<em>number</em></a>". You can look up
+            EPSG codes at the <a href="http://www.epsg-registry.org/">EPSG Registry</a>.
+          </p>
+          <hr />
         </li>
         <li class="workingPane" data-wizardPaneName="importing">
           <p class="headline">Importing your data...</p>
@@ -296,7 +301,7 @@
   <ul class="columnsListLine">
     <li class="importColumn">
       <div class="mainLine">
-        <div class="columnHandleCell"></div>
+        <div class="columnHandleCell importHandleCell"></div>
         <div class="columnNameCell">
           <input type="text" class="columnName" title="Name this column"/>
         </div>
@@ -315,6 +320,19 @@
         <div class="compositeDetails"></div>
         <div class="locationDetails"></div>
         <div class="generalDetails"></div>
+      </div>
+    </li>
+  </ul>
+  <ul class="layersListLine">
+    <li class="importLayer">
+      <div class="mainLine line">
+        <div class="layerHandleCell importHandleCell"></div>
+        <div class="layerNameCell">
+          <span class="layerName"></span>
+        </div>
+        <div class="layerReferenceSystemCell">
+          <input type="text" class="layerReferenceSystem textPrompt required" title="Enter a coordinate reference system"/>
+        </div>
       </div>
     </li>
   </ul>

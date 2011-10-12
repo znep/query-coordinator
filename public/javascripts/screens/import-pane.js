@@ -34,10 +34,12 @@ var scan,
     nextButtonTip,
     isShown,
     submitError,
-    $referenceSystem,
     $featureCount,
+    $layerCount,
     referenceSystem,
-    featureCount;
+    featureCount,
+    $layersList,
+    layers;
 
 // structs
 var importTypes = {
@@ -203,7 +205,9 @@ var hideSubsection = function($line, section)
 var updateLines = function($elems)
 {
     if (_.isUndefined($elems))
+    {
         $elems = $columnsList.children();
+    }
 
     $elems.each(function()
     {
@@ -329,6 +333,28 @@ var updateLines = function($elems)
 
         $line.data('column', column);
         $line.data('importColumn', importColumn);
+    });
+};
+
+var updateLayerLines = function($elems)
+{
+    if (_.isUndefined($elems))
+    {
+        $elems = $layersList.children();
+    }
+
+    $elems.each(function()
+    {
+        var $line = $(this);
+
+        var oldLayer = $line.data('layer');
+        var importLayer = {
+            layerId: oldLayer.layerId,
+            name: oldLayer.name,
+            referenceSystem: $line.find('.layerReferenceSystem').val()
+        };
+
+        $line.data('importLayer', importLayer);
     });
 };
 
@@ -563,18 +589,60 @@ var newLine = function(column, overrides)
     if (!$.isBlank(column))
     {
         // allow for overrides that don't blow away the original data
-        var overridenColumn = $.extend({}, column, overrides);
+        var overriddenColumn = $.extend({}, column, overrides);
 
         // populate standard things
-        $line.find('.columnName').val(overridenColumn.name);
-        $line.find('.columnTypeSelect').val(overridenColumn.suggestion);
-        $line.find('.columnSourceCell select').val(overridenColumn.id);
+        $line.find('.columnName').val(overriddenColumn.name);
+        $line.find('.columnTypeSelect').val(overriddenColumn.suggestion);
+        $line.find('.columnSourceCell select').val(overriddenColumn.id);
 
         $line.data('column', column);
     }
 
     // styling
     $line.find('select, :radio').uniform();
+
+    return $line;
+};
+
+var newLayerLine = function(layer)
+{
+    // render template
+    var line = $.renderTemplate('layersListLine', undefined, undefined, true);
+    $layersList.append(line);
+    // grab that thing we just did
+    var $line = $layersList.children(':last');
+
+    // populate fields if we have a column
+    if (!$.isBlank(layer))
+    {
+        // populate standard things
+        $line.find('.layerName').text(layer.name);
+
+        var $layerReferenceSystem = $line.find('.layerReferenceSystem');
+        $layerReferenceSystem.attr('id', 'layerReferenceSystem_' + layer.id)
+            .example(function ()
+            {
+                return $(this).attr('title');
+            })
+            .rules('add',
+            {
+                required: true,
+                coordinateReferenceSystem: true,
+                messages:
+                {
+                    required: 'You must choose a coordinate reference system for this layer.',
+                    coordinateReferenceSystem: 'Enter a valid coordinate reference system.'
+                }
+            });
+
+        if (layer.referenceSystem)
+        {
+            $layerReferenceSystem.val(layer.referenceSystem).removeClass("prompt");
+        }
+
+        $line.data('layer', layer);
+    }
 
     return $line;
 };
@@ -839,7 +907,7 @@ var wireEvents = function()
 
     $columnsList.awesomereorder({
         uiDraggableDefaults: {
-            handle: '.columnHandleCell'
+            handle: '.importHandleCell'
         }
     });
 
@@ -989,40 +1057,42 @@ importNS.importShapefilePaneConfig = {
         scan = state.scan;
         isShown = false;
         wizardCommand = command;
+        layers = scan.summary.layers
         $pane = $paneLocal;
-        $referenceSystem = $pane.find('#shapefile_referenceSystem');
-        $featureCount = $pane.find(".featureCount");
-        referenceSystem = scan.summary.referenceSystem;
-        featureCount = scan.summary.featureCount;
-
-        $referenceSystem
-            .prev('label').addClass('required').end()
-            .rules('add',
-            {
-                required: true,
-                coordinateReferenceSystem: true,
-                messages:
-                {
-                    required: 'You must choose a coordinate reference system for this shapefile.',
-                    coordinateReferenceSystem: 'Enter a valid coordinate reference system.'
-                }
-            });
+        $layersList = $pane.find('.layersList');
+        $featureCount = $pane.find('.featureCount');
+        $layerCount = $pane.find('.layerCount');
+        featureCount = scan.summary.totalFeatureCount;
+        layerCount = scan.summary.layers.length;
 
         // populate the dataset name field
         $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
 
         // populate the summary data
         $featureCount.text(featureCount);
-        if (referenceSystem)
-        {
-            $referenceSystem.val(referenceSystem).removeClass("prompt");
-        }
+        $layerCount.text(layerCount);
 
-        // track user input for CRS
-        $referenceSystem.change(function(event)
+        _.each(layers, function(layer, i)
         {
-            referenceSystem = $referenceSystem.val();
+            layer.id = i
+            layer.type = 'layer';
+
+            newLayerLine(layer);
         });
+
+        $pane.delegate('.layersList li input.layerName', 'change', function()
+        {
+            updateLayerLines($(this).closest('li.importLayer'));
+        });
+
+        $layersList.awesomereorder({
+            uiDraggableDefaults: {
+                handle: '.importHandleCell'
+            }
+        });
+
+        $layersList.show();
+        $pane.find('.pendingLayersMessage').hide();
 
         // we are now past the first init, so start animating things
         isShown = true;
@@ -1042,8 +1112,13 @@ importNS.importShapefilePaneConfig = {
     },
     onNext: function($pane, state)
     {
+        updateLayerLines();
+
         state.importer = {}
-        state.importer.referenceSystem = referenceSystem;
+        state.importer.importLayers = $.makeArray($layersList.children().map(function()
+        {
+            return $.extend(true, {}, $(this).data('importLayer'));
+        }));
 
         return 'importing';
     }
@@ -1077,9 +1152,16 @@ importNS.importingPaneConfig = {
         importer = state.importer;
         if (state.type == 'shapefile')
         {
-            blueprint = {
-                referenceSystem: importer.referenceSystem
-            };
+            blueprint = {};
+
+            blueprint.layers = _.map(importer.importLayers, function(importLayer)
+            {
+                return {
+                    layerId: importLayer.layerId,
+                    name: importLayer.name,
+                    referenceSystem: importLayer.referenceSystem
+                }
+            });
         }
         else
         {

@@ -118,15 +118,6 @@
     font-style: italic
 
   .columnsListHeader
-    margin-bottom: 0.2em
-    margin-top: 1em
-    > div
-      float: left
-      font-size: 1.2em
-      font-weight: bold
-      padding: 0.4em
-    .columnHandleCell
-      width: 1em
     .columnNameCell
       width: 20.8em
     .columnTypeCell
@@ -145,40 +136,10 @@
           margin-right: 0.2em
 
   .columnsList
-    @include workspace
-    border: 1px solid #888
-    display: none
-    max-height: 50em
-    min-height: 20em
-    padding-bottom: 2em
-    position: relative
-    overflow-x: hidden
-    overflow-y: auto
 
     > li
-      border: 1px solid $color_chrome_box_border
-      clear: both
-      &.ui-draggable-dragging
-        @include box-shadow(0, 0, 0.5em, rgba(0, 0, 0, 0.6))
 
       .mainLine
-        background-color: #fff
-        height: 3.4em
-        @include vertical-gradient(#fff, #f6f6f6)
-
-        > div
-          float: left
-          padding: 0.4em
-
-        .columnHandleCell
-          @include drag-handle
-          height: 2em
-          margin-left: 0.4em
-          margin-right: 0.5em
-          padding: 0
-          position: relative
-          top: 0.8em
-          width: 0.6em
 
         .columnNameCell
           width: 25em
@@ -445,9 +406,58 @@
   p
     margin-bottom: 1em
 
+
+.importListHeader
+  margin-bottom: 0.2em
+  margin-top: 1em
+  > div
+    float: left
+    font-size: 1.2em
+    font-weight: bold
+    padding: 0.4em
+  .importHandleCell
+    width: 1em
+
+.importList
+  @include workspace
+  border: 1px solid #888
+  display: none
+  max-height: 50em
+  min-height: 20em
+  padding-bottom: 2em
+  position: relative
+  overflow-x: hidden
+  overflow-y: auto
+
+  > li
+    border: 1px solid $color_chrome_box_border
+    clear: both
+    &.ui-draggable-dragging
+      @include box-shadow(0, 0, 0.5em, rgba(0, 0, 0, 0.6))
+
+    .mainLine
+      background-color: #fff
+      height: 3.4em
+      @include vertical-gradient(#fff, #f6f6f6)
+
+      > div
+        float: left
+        padding: 0.4em
+
+      .importHandleCell
+        @include drag-handle
+        height: 2em
+        margin-left: 0.4em
+        margin-right: 0.5em
+        padding: 0
+        position: relative
+        top: 0.8em
+        width: 0.6em
+
+
 // PANE ONE POINT FIVE B
 .importShapefilePane
-  span.featureCount
+  span.featureCount, span.layerCount
     font-weight: bold
 
   .shapefileForm
@@ -459,6 +469,43 @@
 
     div.required
       margin-top: 1.5em
+
+  .layersListHeader
+    .layerNameCell
+      width: 20.8em
+
+  .layersList
+    > li
+      .mainLine
+
+        .layerNameCell
+          width: 25em
+          position: relative
+          top: 0.6em
+          .layerName
+            font-size: 1.45em
+            width: 15em
+
+        .layerReferenceSystemCell
+          width: 25em
+          input[type=text]
+            font-size: 1.45em
+            width: 15em
+
+        label.error
+          font-size: 1.2em
+          position: relative
+          top: 0.8em
+
+  p.seeEpsg
+    font-size: 1.4em
+    margin: 1em
+
+  hr
+    border: none
+      top: 1px solid $color_chrome_box_border
+    color: transparent
+    height: 0
 
 // PANE ONE POINT SEVEN FIVE
 .importWarningsPane

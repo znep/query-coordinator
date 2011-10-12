@@ -3036,9 +3036,8 @@ this.Dataset = ServerModel.extend({
         if (ds.isPublished() && ds.isDefault())
         {
             adjMD = $.extend(true, {}, md);
-            // Can't save name, columns, or any query but a sort-by on published datasets
+            // Can't save columns or any query but a sort-by on published datasets
             delete adjMD.columns;
-            delete adjMD.name;
 
             // If they give us a blank query obj, don't do unnecessary modifications
             if (!$.isBlank(adjMD.query) && _.isEmpty(adjMD.query))

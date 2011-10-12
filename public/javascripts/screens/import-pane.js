@@ -134,10 +134,10 @@ var getUsedColumns = function()
         var importColumn = $line.data('importColumn');
         var column = $line.data('column');
 
-        if (_.isUndefined(column))
+        if ($.isBlank(column))
             return; // this importColumn has no source column
 
-        if (importColumn.dataType == 'location')
+        if ((importColumn.dataType == 'location') && (column.type == 'location'))
             usedColumns = usedColumns.concat(_.values(column));
         else if (column.type == 'composite')
             usedColumns = usedColumns.concat(_.filter(column.sources, function(source)
@@ -178,16 +178,32 @@ var showSubsection = function($line, section)
             $this.attr('name', $this.attr('name') + id);
         });
 
-        // only the first time,populate location stuff from model
+        // only the first time, populate location stuff from model
+        var locationOptionSelector = '.locationTypeToggle.multipleColumns';;
         var column = $line.data('column');
-        if (!_.isUndefined(column) && (column.suggestion == 'location'))
+        if (!$.isBlank(column) && (column.suggestion == 'location'))
         {
-            _.each(column, function(originalColumn, field)
+            if (column.type == 'location')
             {
-                $section.find('.location' + $.capitalize(field) + 'Column')
-                    .val(originalColumn.id).trigger('change'); // and again here
-            });
+                _.each(column, function(originalColumn, field)
+                {
+                    $section.find('.location' + $.capitalize(field) + 'Column')
+                        .val(originalColumn.id).trigger('change'); // and again here
+                });
+            }
+            else
+            {
+                $section.find('.locationSingleColumn').val(column.id).trigger('change');
+                locationOptionSelector = '.locationTypeToggle.singleColumn';
+            }
         }
+
+        // if we have an option to select, go select it manually; otherwise events
+        // get too tangled
+        $section.find(locationOptionSelector)
+            .click()
+            .closest('.toggleSection').siblings('.toggleSection')
+                .next().hide();
 
         // uniform it
         $radios.add($section.find('select')).uniform();
@@ -247,7 +263,7 @@ var updateLines = function($elems)
         var getColumn = function(selectValue)
         {
             if ($.isBlank(selectValue))
-                return undefined;
+                return null;
 
             var result = columns[parseInt(selectValue)];
 
@@ -266,20 +282,27 @@ var updateLines = function($elems)
             $line.find('.mainLine .columnSourceSelect').closest('.uniform').hide();
             $line.find('.mainLine a.options').hide();
 
-            column = {
-                type:       'location',
-                address:    getColumn($line.find('.locationAddressColumn').val()),
-                city:       getColumn(findOptionValue('city')),
-                state:      getColumn(findOptionValue('state')),
-                zip:        getColumn(findOptionValue('zip')),
-                latitude:   getColumn($line.find('.locationLatitudeColumn').val()),
-                longitude:  getColumn($line.find('.locationLongitudeColumn').val())
-            };
-            _.each(column, function(v, k)
+            if ($line.find('.locationDetails .locationTypeToggle.multipleColumns').is(':checked'))
             {
-                if ($.isBlank(v))
-                    delete column[k];
-            });
+                column = {
+                    type:       'location',
+                    address:    getColumn($line.find('.locationAddressColumn').val()),
+                    city:       getColumn(findOptionValue('city')),
+                    state:      getColumn(findOptionValue('state')),
+                    zip:        getColumn(findOptionValue('zip')),
+                    latitude:   getColumn($line.find('.locationLatitudeColumn').val()),
+                    longitude:  getColumn($line.find('.locationLongitudeColumn').val())
+                };
+                _.each(column, function(v, k)
+                {
+                    if ($.isBlank(v))
+                        delete column[k];
+                });
+            }
+            else
+            {
+                column = getColumn($line.find('.locationSingleColumn').val());
+            }
         }
         else if (columnSourceValue == 'composite')
         {
@@ -396,13 +419,13 @@ var validateAll = function()
             names[importColumn.name].push(importColumn);
 
         // if we don't have a column, just bail. if we don't have an importColumn, we have serious issues.
-        if (_.isUndefined(column))
+        if ($.isBlank(column))
             return;
 
         // validate data type
-        if (importColumn.dataType == 'location')
+        if ((importColumn.dataType == 'location') && (column.type == 'location'))
         {
-            // location requires special validation
+            // composite location requires special validation
             _.each(column, function(originalColumn, field)
             {
                 // keep track that we've seen this column in a location field
@@ -674,6 +697,7 @@ var newLayerLine = function(layer)
 
         $line.data('layer', layer);
     }
+};
 
 var newReimportLine = function(column)
 {
@@ -957,6 +981,16 @@ var wireEvents = function()
         $this.closest('li').remove();
         updateLines($this.closest('li.importColumn'));
         validateAll();
+    });
+
+    // choose appropriate location import section
+    $pane.delegate('.columnsList li .locationDetails .locationTypeToggle', 'change', function(event)
+    {
+        var $section = $(this).closest('.toggleSection');
+
+        $section.siblings('.toggleSection')
+                .next()[isShown ? 'slideUp' : 'hide']();
+        $section.next()[isShown ? 'slideDown' : 'show']();
     });
 
     // autoselect radio when editing associated option
@@ -1427,7 +1461,7 @@ importNS.importingPaneConfig = {
                 var result;
 
                 // deal with the column values
-                if (_.isUndefined(column))
+                if ($.isBlank(column))
                 {
                     result = '""';
                 }

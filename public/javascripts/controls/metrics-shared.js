@@ -127,7 +127,17 @@ metricsNS.updateTopSearchesCallback = function($context, key)
        });
     }
 
-    metricsNS.updateTopListWrapper($context, data);
+    var searchMap = function(term, count, results)
+    {
+        results.push({
+            linkText: term,
+            value: count,
+            textValue: Highcharts.numberFormat(count, 0),
+            href: '/browse?q=' + term
+        });
+    };
+
+    metricsNS.updateTopListWrapper($context, data, searchMap);
 };
 
 // Need to do some extra work here because only UIDs are returned from balboa

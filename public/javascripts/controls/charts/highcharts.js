@@ -310,12 +310,18 @@
         resizeHandle: function()
         {
             var chartObj = this;
-            if (!chartObj.chart) { return; }
-            // This is a case-specific fix for ctrpilot.
-            if ($.browser.msie && ($.browser.majorVersion < 8)
-                && chartObj._chartType == 'column'
-                && chartObj.$dom().parents('.tickerLayoutChildren').length > 0)
-            { chartObj.reload(); }
+            if ($.isBlank(chartObj.chart) && !chartObj._isLoading) { return; }
+            // Defer because Highcharts  also catches the resize, and gets confused if
+            // it is in the middle of a reload
+            _.defer(function()
+            {
+                if (chartObj._chartType == 'pie' || chartObj._chartType == 'donut' ||
+                        // This is a case-specific fix for ctrpilot.
+                        $.browser.msie && ($.browser.majorVersion < 8)
+                        && chartObj._chartType == 'column'
+                        && chartObj.$dom().parents('.tickerLayoutChildren').length > 0)
+                { chartObj.reload(); }
+            });
         },
 
         getRequiredJavascripts: function()
@@ -370,7 +376,7 @@
             { seriesType = 'scatter'; }
         }
 
-        var clipFormatter = function(xAxis)
+        var clipFormatter = function(xAxis, value, maxLen)
         {
             var abbreviateNumbers = function(num)
             {
@@ -393,8 +399,8 @@
                 { decimalPlaces = chartObj._displayFormat.yAxis.formatter.decimalPlaces; }
                 return blist.util.toHumaneNumber(num, decimalPlaces);
             };
-            var maxLen = 20;
-            var v = abbreviateNumbers(this.value);
+            maxLen = maxLen || 20;
+            var v = abbreviateNumbers(value || this.value);
             if (v.length > maxLen)
             { return v.slice(0, maxLen) + '...'; }
             return v;
@@ -742,6 +748,17 @@
         // Set up config for this particular chart type
         var typeConfig = {stickyTracking: false, showInLegend: true};
 
+        if (seriesType == 'pie')
+        {
+            var w = chartObj.$dom().width();
+            var sizeRatio = w / chartObj.$dom().height();
+            typeConfig.size = (sizeRatio * 20 + 30) + '%';
+            var labelLength = sizeRatio * 5 + w / 50;
+            typeConfig.dataLabels = {formatter: function()
+                { return clipFormatter.apply(this, [false, this.point.name, labelLength]); },
+                    distance: sizeRatio * 7};
+        }
+
         // Disable marker if no point size set
         if (chartObj._displayFormat.pointSize == '0')
         { typeConfig.marker = {enabled: false}; }
@@ -822,6 +839,7 @@
             if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
 
             chartObj._loadedOnce = true;
+            delete chartObj._isLoading;
 
             if (chartObj._primaryView.snapshotting)
             {
@@ -829,6 +847,9 @@
             }
 
         };
+        // Need to know that we are in the process of loading, but because of the defer, it
+        // hasn't happened yet
+        chartObj._isLoading = true;
         // IE7 seems to have some problem creating the chart right away;
         // add a delay and it seems to work.  Do I know why (for either part)? No
         _.defer(function() { loadChart(); });

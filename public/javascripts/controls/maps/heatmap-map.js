@@ -61,6 +61,29 @@
             setUpHeatmap(this);
         },
 
+        getColumns: function()
+        {
+            if (!this._super.apply(this, arguments)) { return false; }
+
+            var viewConfig = this._byView[this._primaryView.id];
+            var config = this._displayFormat.heatmap;
+
+            config.aggregateMethod = (_.isUndefined(viewConfig._quantityCol)
+                || viewConfig._quantityCol.id == 'fake_quantity') ?
+                'count' : 'sum';
+
+            // Fools everything depending on quantityCol into recognizing it as a Count
+            if (config.aggregateMethod == 'count')
+            {
+                viewConfig._quantityCol = { 'id': 'fake_quantity', 'name': 'Count',
+                    renderType: blist.datatypes.number };
+            }
+
+            this.$legend({ name: viewConfig._quantityCol.name });
+
+            return true;
+        },
+
         renderData: function(rows)
         {
             var mapObj = this;
@@ -99,8 +122,7 @@
                 {type: 'label', text: 'Fill in quantity name'},
                 {type: 'label', text: 'Fill in quantity',
                     styles: {'font-weight': 'normal'}}
-            ], styles: $.extend({}, titleRow.styles,
-                {'font-size': '1.1em', 'font-weight': null})};
+            ], styles: $.extend({}, titleRow.styles, {'font-weight': null})};
             defLayout.columns[0].rows.splice(1, 0, quantityRow);
 
             // Adjust title styles
@@ -130,7 +152,8 @@
                 $quantLine.find('.staticLabel:first-child')
                     .text(viewConfig._quantityCol.name);
                 $quantLine.find('.staticLabel:last-child')
-                    .text(details.quantity);
+                    .text(viewConfig._quantityCol.renderType.renderer(details.quantity,
+                            viewConfig._quantityCol));
             });
 
             return $flyout;
@@ -193,14 +216,6 @@
         if (config.hideZoomSlider)
         { mapObj.map.hideZoomSlider(); }
 
-        config.aggregateMethod = (_.isUndefined(viewConfig._quantityCol)
-            || viewConfig._quantityCol.id == 'fake_quantity') ?
-            'count' : 'sum';
-
-        // Fools everything depending on quantityCol into recognizing it as a Count
-        if (config.aggregateMethod == 'count')
-        { viewConfig._quantityCol = { 'id': 'fake_quantity', 'name': 'Count' }; }
-
         if ($.isBlank(mapObj._segmentColors))
         {
             mapObj._segmentColors = [];
@@ -226,7 +241,6 @@
             }
 
             mapObj.$legend({
-                name: viewConfig._quantityCol.name,
                 gradient: _.map(mapObj._segmentColors, function(color)
                     { return color.toCss(false); })
             });
@@ -316,9 +330,9 @@
                 $.makeArray(feature.attributes.quantity);
 
             if (config.aggregateMethod == 'sum' && !row.invalid[viewConfig._quantityCol.id])
-            { feature.attributes.quantity.push(row[viewConfig._quantityCol.id]); }
+            { feature.attributes.quantity[ind] = row[viewConfig._quantityCol.id]; }
             if (config.aggregateMethod == 'count')
-            { feature.attributes.quantity.push('1'); }
+            { feature.attributes.quantity[ind] = '1'; }
 
             var redirectTarget;
             if (viewConfig._redirectCol)

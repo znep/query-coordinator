@@ -252,8 +252,11 @@
             }
             else
             {
-                // Open the last pane by default
-                sidebarObj.$currentOuterPane().find('.headerLink:not(.disabled):last').click();
+                // Open the last enabled pane by default, or the last one if none are enabled
+                var $a = sidebarObj.$currentOuterPane().find('.headerLink:not(.disabled):last');
+                if ($a.length < 1)
+                { $a = sidebarObj.$currentOuterPane().find('.headerLink:last'); }
+                sidebarObj.show(outerConfig.name + '.' + $a.attr('data-paneName'));
             }
 
             sidebarObj.settings.onSidebarShown(nameParts.primary, nameParts.secondary);

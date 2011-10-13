@@ -396,6 +396,12 @@
       .sectionContent
         display: none
 
+  .readOnly .formSection
+    &.selectable > .uniform.checker
+      display: none
+    &.selectable.collapsed
+      display: none
+
   .fullButton
     background-color: #fff
     border: 1px solid $color_chrome_box_border

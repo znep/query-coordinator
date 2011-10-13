@@ -529,6 +529,7 @@
             };
 
             $pane.append($.renderTemplate('sidebarPane', rData, directive));
+            $pane.toggleClass('readOnly', cpObj._isReadOnly());
 
             if ($pane.find('label.required').length > 0)
             { $pane.find('div.required').removeClass('hide'); }
@@ -544,12 +545,15 @@
                 $s.find('.sectionSelect').value(hasData);
             });
 
-            $pane.find('.formSection.selectable .sectionSelect').bind('click', function(e)
+            if (!cpObj._isReadOnly())
             {
-                var $c = $(this);
-                _.defer(function()
-                { $c.closest('.formSection').toggleClass('collapsed', !$c.value()); });
-            });
+                $pane.find('.formSection.selectable .sectionSelect').bind('click', function(e)
+                {
+                    var $c = $(this);
+                    _.defer(function()
+                    { $c.closest('.formSection').toggleClass('collapsed', !$c.value()); });
+                });
+            }
 
             hookUpFields(cpObj, $pane);
 
@@ -1334,7 +1338,7 @@
             var subLine = renderLine(cpObj, {context: $.extend({}, args.context,
                     {noTag: true, inputOnly: true}), item: opt, items: args.item.options, pos: i});
             var subLineDisabled = _.all(subLine, function(subline)
-            { return subline.contents.disabled; });
+            { return _.any($.makeArray(subline.contents), function(c) { return c.disabled; }); });
 
             var radioItem = $.extend({}, itemAttrs, {id: id, tagName: 'input', type: 'radio',
                 disabled: subLineDisabled,
@@ -1872,7 +1876,9 @@
         $container.find('.sliderControl').each(function()
         {
             var $slider = $(this);
-            $slider.slider({min: parseInt($slider.attr('data-min')),
+            $slider.slider({
+                disabled: $slider.siblings('input')[0].disabled,
+                min: parseInt($slider.attr('data-min')),
                 max: parseInt($slider.attr('data-max')),
                 value: parseInt($slider.siblings(':input').val())});
         })
@@ -1880,34 +1886,46 @@
 
 
         //*** Color Picker
-        $container.find('.colorControl:not(.advanced)').colorPicker().bind('color_change',
-            function(e, newColor)
-            {
-                $(this).css('background-color', newColor)
-                    .next(':input').val(newColor)
-                    .next('.colorControlLabel').text('#' + newColor);
-            })
-            .mousedown(function(e)
-            {
-                var $t = $(this);
-                $t.data('colorpicker-color', $t.next(':input').val());
-            });
-        $container.find('.colorControl.advanced').each(function()
+        $container.find('.colorControl').each(function()
         {
             var $picker = $(this);
-            var currentColor = '#' + ($picker.siblings(':input').val() || 'ffffff');
-            $picker.ColorPicker({
-                color: currentColor,
-                onChange: function(hsb, hex, rgb) {
-                    $picker.css('background-color', '#' + hex)
-                        .siblings('.colorControlLabel').text('#' + hex)
-                        .siblings(':input').val(hex.replace(/^#/, ''));
-                },
-                onHide: function()
-                { $picker.trigger('color_change'); } // mimic other picker's event
-            });
-            $picker.css('background-color', currentColor)
-                .siblings('.colorControlLabel').text(currentColor);
+            if ($picker.siblings('input')[0].disabled)
+            {
+                $picker.click(function(e) { e.preventDefault(); });
+                return;
+            }
+
+            if (!$picker.hasClass('advanced'))
+            {
+                $picker.colorPicker().bind('color_change',
+                function(e, newColor)
+                {
+                    $(this).css('background-color', newColor)
+                        .next(':input').val(newColor)
+                        .next('.colorControlLabel').text('#' + newColor);
+                })
+                .mousedown(function(e)
+                {
+                    var $t = $(this);
+                    $t.data('colorpicker-color', $t.next(':input').val());
+                });
+            }
+            else
+            {
+                var currentColor = '#' + ($picker.siblings(':input').val() || 'ffffff');
+                $picker.ColorPicker({
+                    color: currentColor,
+                    onChange: function(hsb, hex, rgb) {
+                        $picker.css('background-color', '#' + hex)
+                            .siblings('.colorControlLabel').text('#' + hex)
+                            .siblings(':input').val(hex.replace(/^#/, ''));
+                    },
+                    onHide: function()
+                    { $picker.trigger('color_change'); } // mimic other picker's event
+                });
+                $picker.css('background-color', currentColor)
+                    .siblings('.colorControlLabel').text(currentColor);
+            }
         });
 
 

@@ -175,7 +175,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         }
         else
         {
-            (cont.view || cont)._markTemporary();
+            (cont.view || cont)._markTemporary((cont.view || cont).isUnpublished());
             if (_.isFunction(callback)) { callback(); }
         }
     };

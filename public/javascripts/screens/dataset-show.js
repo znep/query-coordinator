@@ -575,6 +575,14 @@ $(function()
                             .attr('href', parDS.url)
                             .text(parDS.name);
                 }
+                else
+                {
+                    $('.basedOnParent')
+                        .addClass('hasParent')
+                        .find('.parentName')
+                            .attr('href', null)
+                            .text('a private view.')
+                }
             });
         }
 

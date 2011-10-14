@@ -121,6 +121,8 @@ http://www.socrata.com
 
   <%= include_javascripts 'base' %>
 
+  <%= render_view_js %>
+
   <%- if Rails.env != 'production' -%>
     <%= include_javascripts 'debug' %>
   <%- else -%>

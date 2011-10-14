@@ -98,6 +98,15 @@ module ApplicationHelper
     return render :partial => 'shared/current_user', :locals => { :current_user => current_user, :serialized_user => serialized_user }
   end
 
+  def render_view_js
+    return unless defined? @view_cache
+    content_tag :script, :type => 'text/javascript' do
+      # no really, the html is safe
+      ([ "blist.viewCache = {};".html_safe ] +
+        @view_cache.map{ |uid, view| "blist.viewCache['#{uid}'] = #{(view.is_a? View) ? (safe_json view).html_safe : view};".html_safe}).join("\n".html_safe).html_safe
+    end
+  end
+
 # styles
   def rendered_stylesheet_tag(stylesheet, media='all')
     if Rails.env == 'development'
@@ -381,5 +390,6 @@ module ApplicationHelper
 
   safe_helper :meta_tags, :jquery_include, :javascript_error_helper_tag, :create_pagination,
     :render_domain_template, :rendered_stylesheet_tag, :get_publish_embed_code_for_view,
-    :render_browse, :safe_json, :blist_date, :blist_date_time, :blist_long_date, :current_user_js
+    :render_browse, :safe_json, :blist_date, :blist_date_time, :blist_long_date, :current_user_js,
+    :render_view_js
 end

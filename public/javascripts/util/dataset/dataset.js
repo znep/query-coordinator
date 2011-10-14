@@ -3174,14 +3174,36 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
 
 Dataset.createFromViewId = function(id, successCallback, errorCallback)
 {
-    $.Tache.Get({
-        url: '/api/views/' + id + '.json',
-        success: function(view)
-            {
-                if(_.isFunction(successCallback))
-                { successCallback(new Dataset(view)) }
-            },
-        error: errorCallback});
+    var cachedView = blist.viewCache[id];
+    if (!_.isUndefined(cachedView))
+    {
+        if (cachedView === false)
+        {
+            errorCallback({
+                responseText: JSON.stringify({
+                    code: 'permission_denied',
+                    message: 'You do not have access to this view.'
+                })
+            });
+        }
+        else
+        {
+            successCallback(new Dataset(blist.viewCache[id]));
+        }
+    }
+    else
+    {
+        $.Tache.Get({
+            url: '/api/views/' + id + '.json',
+            success: function(view)
+                {
+                    var ds = new Dataset(view);
+                    blist.viewCache[id] = ds;
+                    if(_.isFunction(successCallback))
+                    { successCallback(ds); }
+                },
+            error: errorCallback});
+    }
 };
 
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',

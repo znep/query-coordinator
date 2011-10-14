@@ -35,6 +35,7 @@ javascripts:
     - public/javascripts/util/dataset/chart.js
     - public/javascripts/util/dataset/form.js
     - public/javascripts/util/dataset/map.js
+    - public/javascripts/util/view-cache.js
     - public/javascripts/util/styles.js
     - public/javascripts/util/templates.js
     - public/javascripts/util/datatypes.js

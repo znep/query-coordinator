@@ -68,6 +68,19 @@ class DatasetsController < ApplicationController
 
     # Shuffle the default tags into the keywords list
     @meta[:keywords] = @view.meta_keywords
+
+    # get stuff the js needs
+    needs_view_js @view.id, @view
+    if @view.has_modifying_parent_view?
+      begin
+        parent_view = @view.parent_view
+      rescue CoreServer::CoreServerError => e
+        if e.error_code == 'permission_denied' || e.error_code == 'authentication_required'
+          parent_view = false
+        end
+      end
+      needs_view_js @view.modifyingViewUid, parent_view
+    end
   end
 
   def blob

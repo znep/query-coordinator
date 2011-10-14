@@ -209,6 +209,10 @@ private
     end
   end
 
+  def needs_view_js(uid, view)
+    (@view_cache ||= {})[uid] = view
+  end
+
   # Custom logic for rendering a 404 page with our pretty templates.
   def render_optional_error_file(status_code)
     # Chicken and egg problem: When rendering some errors, such as a 404 page,

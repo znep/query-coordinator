@@ -359,6 +359,10 @@ class View < Model
     !self.query.nil? && !self.query.groupBys.nil? && self.query.groupBys.length > 0
   end
 
+  def has_modifying_parent_view?
+    !self.modifyingViewUid.nil?
+  end
+
   def last_updated_user
     begin
       return rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)

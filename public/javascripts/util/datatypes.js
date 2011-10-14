@@ -335,7 +335,7 @@ blist.namespace.fetch('blist.datatypes');
             typeStr + '">' + typeStr + '</span>&nbsp;') + $.htmlEscape(label);
 
         return inMenu ? label :
-            uriHelper([ 'callto://' + num.replace(/[\-()\s]/g, ''), label ], true);
+            uriHelper([ 'tel:' + num.replace(/[\-()\s]/g, ''), label ], true);
     };
 
     // URL

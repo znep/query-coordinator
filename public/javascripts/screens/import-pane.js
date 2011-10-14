@@ -51,7 +51,8 @@ var importTypes = {
     percent: 'percent',
     calendar_date: 'date',
     date: 'date',
-    checkbox: 'text'
+    checkbox: 'text',
+    location: 'text'
 };
 var locationTypes = {
     address: 'text',
@@ -712,9 +713,12 @@ var newReimportLine = function(column)
     });
     $columnsList.append($line);
 
-    $line.find('.columnSourceCell select').val(scanColumn.id);
     $line.data('dsColumn', dsColumn);
-    $line.data('column', scanColumn);
+    if (!$.isBlank(scanColumn))
+    {
+        $line.find('.columnSourceCell select').val(scanColumn.id);
+        $line.data('column', scanColumn);
+    }
 
     $line.find('select, :radio').uniform();
 
@@ -814,21 +818,91 @@ var addGuessedDatasetColumns = function()
         availableColumns = setAsideCompositeColumns(availableColumns, compositeColumns);
 
         var potentialResultColumns = availableColumns.concat(compositeColumns);
+        if (potentialResultColumns.length !== dsColumns.length)
+        {
+            // no? okay. maybe they imported the locations *and* kept the originals?
+            potentialResultColumns = _.clone(columns).concat(compositeColumns);
+        }
 
+        // see if either of the above worked
         if (potentialResultColumns.length == dsColumns.length)
         {
             resultColumns = _.zip(dsColumns, potentialResultColumns);
         }
     }
+
     // okay, we're in trouble. do our best to match heuristically and
     // hope the user notices if things have gone wrong.
-    else
+    if ($.isBlank(resultColumns))
     {
         var scanIdx = 0;
-        var resultColumns = _.map(dsColumns, function(dsColumn)
+        var guessedColumns = _.map(dsColumns, function(dsColumn, dsIdx)
         {
+            // if we have more scan than ds columns, be more tolerant of
+            // skipping; vice versa
 
+            if (scanColumns.length > dsColumns.length)
+            {
+                // if the while loop continues, we are skipping a scanColumn.
+                while ((scanColumns.length - scanIdx) > (dsColumns.length - dsIdx))
+                {
+                    var scanColumn = scanColumns[scanIdx];
+                    scanIdx++;
+
+                    // if the type is a complete mismatch, then we probably
+                    // don't want to do this.
+                    if (importTypes[dsColumn.dataTypeName] != importTypes[scanColumn.suggestion])
+                    {
+                        continue;
+                    }
+
+                    // otherwise apply more heuristics. haven't thought of any yet
+                    // that don't involve recursive backtracking, so otherwise just accept
+                    return scanColumn;
+                }
+
+                // we've hit crunch time since we've fallen out of that loop.
+                // submit what we have.
+                return scanColumns[scanIdx++];
+            }
+            else
+            {
+                var scanColumn = scanColumns[scanIdx];
+                if ($.isBlank(scanColumn))
+                {
+                    return null;
+                }
+
+                if ((scanColumns.length - scanIdx) >= (dsColumns.length - dsIdx))
+                {
+                    // if we're in crunch time we have no choice
+                    scanIdx++;
+                    return scanColumn;
+                }
+
+                // next see if column header name analysis might help. do a
+                // rough levenshtein with a ~50% difference allowance
+                if (dsColumn.name.heuristicDistance(scanColumn.name) < (dsColumn.name.length * 0.5))
+                {
+                    scanIdx++;
+                    return scanColumn;
+                }
+
+                // next see if we have an exact column type match, and that match
+                // isn't text. if so, maybe we can accept this result.
+                if ((dsColumn.dataTypeName === scanColumn.suggestion) &&
+                    (dsColumn.dataTypeName != 'text'))
+                {
+                    scanIdx++;
+                    return scanColumn;
+                }
+
+                // otherwise we're not too sure about this. let's punt on the
+                // match and try a later one.
+                return null;
+            }
         });
+        resultColumns = _.zip(dsColumns, guessedColumns);
     }
 
     $.batchProcess(resultColumns, 15, newReimportLine, _updateRawLines, _finalizeAddColumns);
@@ -1610,7 +1684,11 @@ importNS.importWarningsPaneConfig = {
 
         state.hadWarnings = true; // so that the metadata pane knows to go back by 2
     },
-    onNext: 'metadata',
+    onNext: function($pane, state)
+    {
+        return ((state.operation == 'append') || (state.operation == 'replace')) ?
+            'finish' : 'metadata';
+    },
     onPrev: function($pane, state)
     {
         state.submittedView.remove();

@@ -326,7 +326,9 @@ class DatasetsController < ApplicationController
 
   def edit
     @view = get_view(params[:id])
-    return render_404 if @view.nil? || @view.is_published?
+    return if @view.nil?
+
+    return render_404 if @view.published?
 
     unless @view.can_modify_data?
       flash.now[:error] = "You do not have permission to modify this dataset."

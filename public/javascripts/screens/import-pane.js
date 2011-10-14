@@ -1555,7 +1555,7 @@ importNS.importingPaneConfig = {
                 var result;
 
                 // deal with the column values
-                if ($.isBlank(column))
+                if ($.isBlank(column) || (column.type == 'static'))
                 {
                     result = '""';
                 }
@@ -1691,7 +1691,10 @@ importNS.importWarningsPaneConfig = {
     },
     onPrev: function($pane, state)
     {
-        state.submittedView.remove();
+        if ((state.operation != 'append') && (state.operation != 'replace'))
+        {
+            state.submittedView.remove();
+        }
         return 2; // go back two since we've imported.
     }
 }

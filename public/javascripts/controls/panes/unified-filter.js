@@ -1643,7 +1643,8 @@
                 var column = dataset.columnForTCID(metadata.tableColumnId[dataset.publicationGroup]);
                 var columnDefinition = {
                     type: 'column',
-                    columnId: column.id
+                    //columnId: column.id
+                    columnFieldName: column.fieldName
                 };
 
                 if (!_.isUndefined(metadata.subcolumn))
@@ -1750,8 +1751,8 @@
                         (ds.query.filterCondition !== rootCondition))
                     {
                         // we're not the default filter, need to push this on
-                        columnDefinition.columnId =
-                            ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).id;
+                        /*columnDefinition.columnId =
+                            ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).id;*/
 
                         var dsCondition = $.extend({}, condition);
                         dsCondition.children = $.extend(true, [], children);

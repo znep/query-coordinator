@@ -181,9 +181,11 @@ var showSubsection = function($line, section)
         // only the first time, populate location stuff from model
         var locationOptionSelector = '.locationTypeToggle.multipleColumns';;
         var column = $line.data('column');
-        if (!$.isBlank(column) && (column.suggestion == 'location'))
+        var dsColumn = $line.data('dsColumn');
+        if ((!$.isBlank(column) && (column.suggestion == 'location')) ||     // go into location if we are suggesting it
+            (!$.isBlank(dsColumn) && (dsColumn.dataTypeName == 'location'))) // or if we absolutely know we need it
         {
-            if (column.type == 'location')
+            if ($.isBlank(column) || (column.type == 'location'))
             {
                 _.each(column, function(originalColumn, field)
                 {
@@ -712,6 +714,7 @@ var newReimportLine = function(column)
 
     $line.find('.columnSourceCell select').val(scanColumn.id);
     $line.data('dsColumn', dsColumn);
+    $line.data('column', scanColumn);
 
     $line.find('select, :radio').uniform();
 
@@ -743,6 +746,28 @@ var _finalizeAddColumns = function()
     $pane.find('.pendingColumnsMessage').hide();
 };
 
+var setAsideCompositeColumns = function(availableColumns, compositeColumns)
+{
+    // achtung! we have to return availableColumns because we mutate it out-of-place!
+    _.each(scan.summary.locations || [], function(location, i)
+    {
+        var compositeColumn = {};
+        compositeColumn.name = 'Location ' + (i + 1);
+        compositeColumn.suggestion = 'location';
+        compositeColumn.type = 'location';
+
+        _.each(location, function(columnId, field)
+        {
+            compositeColumn[field] = columns[columnId];
+            availableColumns = _.without(availableColumns, columns[columnId]);
+        });
+
+        compositeColumns.push(compositeColumn);
+    });
+
+    return availableColumns;
+};
+
 // throw in all analysed columns, with location groups
 var addDefaultColumns = function(flat)
 {
@@ -753,21 +778,7 @@ var addDefaultColumns = function(flat)
     // don't run the composites scan if they want it flat
     if (flat !== true)
     {
-        _.each(scan.summary.locations || [], function(location, i)
-        {
-            var compositeColumn = {};
-            compositeColumn.name = 'Location ' + (i + 1);
-            compositeColumn.suggestion = 'location';
-            compositeColumn.type = 'location';
-
-            _.each(location, function(columnId, field)
-            {
-                compositeColumn[field] = columns[columnId];
-                availableColumns = _.without(availableColumns, columns[columnId]);
-            });
-
-            compositeColumns.push(compositeColumn);
-        });
+        availableColumns = setAsideCompositeColumns(availableColumns, compositeColumns);
     }
 
     // now add the ones we haven't used as individual columns, plus our compositeColumns
@@ -798,7 +809,16 @@ var addGuessedDatasetColumns = function()
     // columns.
     else if ((scanLocations.length > 0) && (ds.columnsForType('location')))
     {
-        
+        var availableColumns = _.clone(columns);
+        var compositeColumns = [];
+        availableColumns = setAsideCompositeColumns(availableColumns, compositeColumns);
+
+        var potentialResultColumns = availableColumns.concat(compositeColumns);
+
+        if (potentialResultColumns.length == dsColumns.length)
+        {
+            resultColumns = _.zip(dsColumns, potentialResultColumns);
+        }
     }
     // okay, we're in trouble. do our best to match heuristically and
     // hope the user notices if things have gone wrong.

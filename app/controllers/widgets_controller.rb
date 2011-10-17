@@ -54,6 +54,7 @@ class WidgetsController < ApplicationController
     @display = @view.display
     @is_mobile = is_mobile?
 
+    needs_view_js @view.id, @view
     if @view.is_form?
       render :action => 'show_form'
     else

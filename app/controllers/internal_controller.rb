@@ -178,18 +178,28 @@ class InternalController < ApplicationController
                            get_json_or_string(params['new-property_value']))
 
     else
-      CoreServer::Base.connection.batch_request do
-        if !params[:delete_properties].nil?
-          params[:delete_properties].each do |name, value|
-            if value == 'delete'
-              params[:properties].delete(name)
-              config.delete_property(name)
+      begin
+        CoreServer::Base.connection.batch_request do
+          if !params[:delete_properties].nil?
+            params[:delete_properties].each do |name, value|
+              if value == 'delete'
+                params[:properties].delete(name)
+                config.delete_property(name)
+              end
             end
           end
-        end
 
-        params[:properties].each do |name, value|
-          config.update_property(name, get_json_or_string(value))
+          params[:properties].each do |name, value|
+            config.update_property(name, get_json_or_string(value))
+          end
+        end
+      rescue CoreServer::CoreServerError => e
+        respond_to do |format|
+          format.html do
+            flash.now[:error] = e.error_message
+            return render 'shared/error', :status => :forbidden
+          end
+          format.data { return render json: { error: true, message: e.error_message } }
         end
       end
     end

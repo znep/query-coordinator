@@ -1094,7 +1094,8 @@
         var isDisabled = cpObj._isReadOnly() || (_.isFunction(item.disabled) ?
             item.disabled.call(cpObj, context.data) : item.disabled);
 
-        var result = {id: item.name + '_' + _.uniqueId(), name: item.name, title: item.prompt,
+        var result = {id: item.name + '_' + (item.uniqueId || _.uniqueId()),
+            name: item.name, title: item.prompt,
             disabled: isDisabled, 'data-isDisabled': isDisabled,
             'class': [ 'inputItem', {value: 'required', onlyIf: item.required &&
                 !context.inRepeater},
@@ -1607,7 +1608,8 @@
         var contents = [];
         if (!args.context.inputOnly)
         {
-            contents.push({tagName: 'label', 'for': args.item.name,
+            args.item.uniqueId = _.uniqueId();
+            contents.push({tagName: 'label', 'for': args.item.name + '_' + args.item.uniqueId,
                     'class': [{value: 'required', onlyIf: args.item.required &&
                         !args.context.inRepeater}],
                     contents: args.item.text});

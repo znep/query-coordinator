@@ -24,7 +24,7 @@
 
     <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
-      '/property', {:class => 'wide'}) do %>
+      '/property', {:class => 'wide', :id => 'propertyForm'}) do %>
       <div id="ace-editor"></div>
       <%= text_area_tag 'properties[' + @property_key + ']', h(@property), :style => 'display: none', :id => 'preText' %>
       <input type="submit" value="Save" id="saveButton"/>
@@ -67,7 +67,7 @@
       });
       window.editor = editor;
 
-      var $form = $('form');
+      var $form = $('form#propertyForm');
       var updateJsonVal = function()
       {
           var bespinVal = editor.getSession().getValue();

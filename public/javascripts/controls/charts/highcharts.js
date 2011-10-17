@@ -400,7 +400,7 @@
                 return blist.util.toHumaneNumber(num, decimalPlaces);
             };
             maxLen = maxLen || 20;
-            var v = abbreviateNumbers(value || this.value);
+            var v = abbreviateNumbers(!$.isBlank(value) ? value : this.value);
             if (v.length > maxLen)
             { return v.slice(0, maxLen) + '...'; }
             return v;

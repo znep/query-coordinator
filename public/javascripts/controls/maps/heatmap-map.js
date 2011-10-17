@@ -76,7 +76,7 @@
             if (config.aggregateMethod == 'count')
             {
                 viewConfig._quantityCol = { 'id': 'fake_quantity', 'name': 'Count',
-                    renderType: blist.datatypes.number };
+                    renderType: blist.datatypes.number, format: {} };
             }
 
             this.$legend({ name: viewConfig._quantityCol.name });

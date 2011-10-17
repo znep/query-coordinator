@@ -27,6 +27,8 @@ $(function()
             error: function(request)
             {
                 errorJson = JSON.parse(request.responseText);
+                $select.val($select.closest('.item').data('userrole'));
+                $.uniform.update($select);
                 $('.userNotice')
                     .removeClass('notice')
                     .addClass('error')

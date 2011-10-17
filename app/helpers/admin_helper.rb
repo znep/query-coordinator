@@ -3,14 +3,14 @@ module AdminHelper
     roles = User.roles_list
 
     out = "<select class='#{cssClass}' name='#{name}' id='#{id}'>"
-    out += "<option value='0'>none</option>" if includeNone
+    out << "<option value='0'>none</option>" if includeNone
 
     roles.each do |role|
-      out += "<option"
-      out += ' selected="selected"' if currentRole && role == currentRole
-      out += ">" + role.titleize + "</option>"
+      out << "<option value=\"#{role}\""
+      out << ' selected="selected"' if currentRole && role == currentRole
+      out << ">" + role.titleize + "</option>"
     end
-    out += "</select>"
+    out << "</select>"
   end
 
   def form_button(url_opts, button_text, opts = {}, button_opts = {})

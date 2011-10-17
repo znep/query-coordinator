@@ -385,10 +385,13 @@ class DatasetsController < ApplicationController
   def stats
     @view = get_view(params[:id])
     return if @view.nil?
+
     if !(@view.user_granted?(current_user) || \
         CurrentDomain.user_can?(current_user, :edit_others_datasets))
       return render_forbidden
     end
+
+    needs_view_js @view.id, @view
   end
 
   def form_success

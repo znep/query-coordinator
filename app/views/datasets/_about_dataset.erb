@@ -1,10 +1,8 @@
 <div class="aboutDataset">
   <div class="aboutHeader clearfix">
-    <a class="aboutAuthorImageLink" href="<%= @view.owner.href %>">
-      <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
-        src="<%= @view.owner.profile_image_path("medium") %>"/>
-    </a>
-    <a class="aboutAuthorName" href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a>
+    <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
+      src="<%= @view.owner.profile_image_path("medium") %>"/>
+    <p class="aboutAuthorName"><%= @view.owner.displayName %></p>
     <p><em>created</em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
     <%- if @view.is_snapshotted? -%>
     <p><em>snapshotted</em> <span class="aboutUpdateDate"><%= blist_date(@view.publicationDate) %></span></p>

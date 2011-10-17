@@ -132,8 +132,12 @@ protected
 
     result += "@mixin gradient_#{name}\n"
 
+    first_color = first_stop['color']
+    first_color = '#' + first_color if !first_color.start_with?('#')
+    last_color = last_stop['color']
+    last_color = '#' + last_color if !last_color.start_with?('#')
     # firefox
-    result += "  background: -moz-linear-gradient(0 0 270deg, ##{first_stop['color']}, ##{last_stop['color']}"
+    result += "  background: -moz-linear-gradient(0 0 270deg, #{first_color}, #{last_color}"
     prev_stop_position = 0
     stops.each do |stop|
       stop_position = (stop['position'] * 100).round
@@ -150,12 +154,12 @@ protected
 
     # webkit
     result += "  background: -webkit-gradient(linear, left top, left bottom," +
-              " from(##{first_stop['color']}), to(##{last_stop['color']})" +
-              stops.map{ |stop| ", color-stop(#{stop['position']},##{stop['color']})" }.join +
+              " from(#{first_color}), to(#{last_color})" +
+              stops.map{ |stop| ", color-stop(#{stop['position']},#{(stop['color'].start_with?('#') ? '' : '#') + stop['color']})" }.join +
               ")\n"
 
     # default background-color for fallback
-    result += "  background-color: ##{first_stop['color']}\n"
+    result += "  background-color: #{first_color}\n"
 
     return result
   end
@@ -184,7 +188,7 @@ protected
         elsif definition[key.to_sym] == 'color'
           if value.is_a? String
             # flat color
-            if value.match(/([0-9a-f]{3}){1,2}/i)
+            if value.match(/([0-9a-f]{3}){1,2}/i) && !value.start_with?('#')
               # hex color (prepend #)
               result += "$color_#{path}#{key}: ##{value}\n"
             else

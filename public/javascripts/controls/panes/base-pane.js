@@ -1901,24 +1901,25 @@
                 function(e, newColor)
                 {
                     $(this).css('background-color', newColor)
-                        .next(':input').val(newColor)
-                        .next('.colorControlLabel').text('#' + newColor);
+                        .siblings(':input').val(newColor)
+                        .siblings('.colorControlLabel').text(newColor);
                 })
                 .mousedown(function(e)
                 {
                     var $t = $(this);
-                    $t.data('colorpicker-color', $t.next(':input').val());
+                    $t.data('colorpicker-color', $t.siblings(':input').val());
                 });
             }
             else
             {
-                var currentColor = '#' + ($picker.siblings(':input').val() || 'ffffff');
+                var currentColor = ($picker.siblings(':input').val() || '#ffffff');
+                if (!currentColor.startsWith('#')) { currentColor = '#' + currentColor; }
                 $picker.ColorPicker({
                     color: currentColor,
                     onChange: function(hsb, hex, rgb) {
                         $picker.css('background-color', '#' + hex)
                             .siblings('.colorControlLabel').text('#' + hex)
-                            .siblings(':input').val(hex.replace(/^#/, ''));
+                            .siblings(':input').val('#' + hex);
                     },
                     onHide: function()
                     { $picker.trigger('color_change'); } // mimic other picker's event
@@ -2190,7 +2191,7 @@
         $newLine.find('.colorControl').each(function()
         {
             var $a = $(this);
-            var $i = $a.next(':input');
+            var $i = $a.siblings(':input');
             var colors = JSON.parse($i.attr('data-defaultValue') || '""');
             if (colors.length < 2) { return; }
 

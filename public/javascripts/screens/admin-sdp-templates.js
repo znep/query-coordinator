@@ -4,7 +4,7 @@
 
     var parseColor = function(color)
     {
-        return color.match(/^rgba/) ? color : ('#' + color);
+        return color.match(/^(rgba|#)/) ? color : ('#' + color);
     };
 
     $(function()

@@ -127,8 +127,9 @@ blist.publish.applicator = function(subapply, subhash)
                                 (cssProperty == 'color') ||
                                 (cssProperty == 'border-color'))
                         {
-                            publishNS.writeStyle(value['selector'], cssProperty,
-                                '#' + subhash[key]);
+                            var v = subhash[key];
+                            if (!v.startsWith('#')) { v = '#' + v; }
+                            publishNS.writeStyle(value['selector'], cssProperty, v);
                         }
                         else
                         {

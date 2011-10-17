@@ -110,6 +110,7 @@ class DatasetsController < ApplicationController
       @user_session = UserSession.new
     end
 
+    needs_view_js @view.id, @view
     render :layout => false
   end
 
@@ -378,6 +379,7 @@ class DatasetsController < ApplicationController
       return render_forbidden
     end
 
+    needs_view_js @view.id, @view
   end
 
   def stats

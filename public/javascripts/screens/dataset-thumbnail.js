@@ -19,7 +19,7 @@
     {
         $invalidMessage
             .addClass('error')
-            .text('For your privacy, only public datasets may be thumbnailed.' +
+            .text('For your privacy, only public datasets may be thumbnailed. ' +
                   'If you wish to have a preview image, please make this dataset ' +
                   'public from the Permissions pane of the Manage sidebar.');
         return;

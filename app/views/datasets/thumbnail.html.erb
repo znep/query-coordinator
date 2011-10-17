@@ -76,6 +76,7 @@
 </div>
 
 <% content_for :js_footer do %>
+  <%= render_view_js %>
   <script type="text/javascript">
     <%# So we have the blist.dataset object %>
     <%= raw @view.display.render_dataset_setup_js %>

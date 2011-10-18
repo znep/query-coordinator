@@ -17,8 +17,12 @@
         {
             this._super.apply(this, arguments);
 
-            if (!$.isBlank(this.component))
-            { this.component.properties(this._getFormValues()); }
+            var peObj = this;
+            _.defer(function()
+            {
+                if (!$.isBlank(peObj.component))
+                { peObj.component.properties(peObj._getFormValues()); }
+            });
         },
 
         _getCurrentData: function()
@@ -29,6 +33,7 @@
         _getSections: function()
         {
             var config = this.component.configurationSchema();
+            if (_.isArray(config)) { config.schema = config; }
             if (!$.subKeyDefined(config, 'schema'))
             {
                 return [

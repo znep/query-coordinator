@@ -19,6 +19,8 @@ base-sdp:
 - table-core
 - dataset-grid
 - control-feed
+components:
+- components
 configurator:
 - configurator
 print:

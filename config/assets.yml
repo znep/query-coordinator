@@ -75,6 +75,7 @@ javascripts:
     - public/javascripts/component/data-context.js
     - public/javascripts/component/template.js
     - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/properties-editor.js

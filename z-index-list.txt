@@ -3,6 +3,7 @@ MAIN SITE:
 1-8 dataset grid sidebar tabs
 9 dataset grid active sidebar tab
 50 menu button
+1000 configurator
 3000 modal dialog
 3001 modal dialog overlay
 9997 bt-wrapper

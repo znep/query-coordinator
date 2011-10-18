@@ -1,0 +1,44 @@
+// Base/default styles shared by all components
+.socrata-component
+  @include disabled-overlay(33%)
+  background-color: rgba(0, 64, 128, .2) // Temporary
+  @include border-radius(4px) // Default or temporary?
+  font-family: helvetica, arial, sans-serif
+  margin-bottom: 8px
+  position: relative
+  &:last-child
+    margin-bottom: 0
+
+  .content-wrapper
+    height: 100%
+    width: 100%
+    &.controlPane
+      background-color: $color_chrome_sidebar_background
+
+  .fullHeight
+    height: 100%
+
+// Containers components
+.component-Container, .component-HorizontalContainer, .component-Box
+  height: auto
+.component-Box-inside
+  padding: 12px
+.component-HorizontalContainer
+  position: relative
+  & > .component-wrapper
+    position: relative
+    float: left
+    left: 100%
+    & > *
+      margin: 0 0 0 16px
+    &.first-child > *
+      margin-left: 0
+.component-Box
+  min-height: 100px // Default height; temporary?
+.component-Box-container
+  margin: 8px
+.socrata-ct-clear
+  clear: both
+
+.component-Title h2
+  padding: 0.25em 0.5em

@@ -61,7 +61,11 @@
 
         // Find the component this mouse event addresses
         var target = event.target;
-        if ($(target).closest('.socrata-cf-mouse').length > 0)
+
+        // If they are interacting with the properties editor, let them
+        if ($(target).closest('.socrata-cf-mouse').length > 0 ||
+                $(target).closest('#color_selector').length > 0 ||
+                $(target).closest('.colorpicker').length > 0)
         { return; }
 
         while (target && !target._comp)

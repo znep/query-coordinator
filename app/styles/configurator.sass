@@ -17,7 +17,7 @@ body.socrata-page
         z-index: 2
 
 .socrata-cf-top
-  z-index: 10000
+  z-index: 1000
   height: 24px
   padding: 4px 18px
   top: -32px
@@ -63,7 +63,7 @@ body.socrata-page
     z-index: 1
 
 .socrata-cf-side
-  z-index: 10000
+  z-index: 1000
   // TODO - legacy webkit gradient background
   background: -webkit-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -webkit-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
   background: -moz-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -moz-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
@@ -116,7 +116,7 @@ body.socrata-page
       cursor: move
 
 .socrata-cf-mask
-  z-index: 9999
+  z-index: 999
   background: rgba(255, 255, 255, .5)
   position: absolute
   top: 0
@@ -126,7 +126,7 @@ body.socrata-page
   pointer-events: none // TODO - emulate for IE < 9
 
 .socrata-cf-focal
-  z-index: 10000
+  z-index: 1000
   @include box-shadow(0, 0, 12px, black)
   position: relative
 
@@ -298,48 +298,6 @@ ul.contextPickerAutocomplete
 
     &.active div
       background-color: #f7f7f7
-
-// Base/default styles shared by all components
-.socrata-component
-  @include disabled-overlay(33%)
-  min-height: 50px // Default height; temporary?
-  background-color: rgba(0, 64, 128, .2) // Temporary
-  @include border-radius(4px) // Default or temporary?
-  margin-bottom: 8px
-  position: relative
-  &:last-child
-    margin-bottom: 0
-
-  .content-wrapper
-    height: 100%
-    width: 100%
-    &.controlPane
-      background-color: $color_chrome_sidebar_background
-
-  .fullHeight
-    height: 100%
-
-// Containers components
-.component-Container, .component-HorizontalContainer, .component-Box
-  height: auto
-.component-Box-inside
-  padding: 12px
-.component-HorizontalContainer
-  position: relative
-  & > .component-wrapper
-    position: relative
-    float: left
-    left: 100%
-    & > *
-      margin: 0 0 0 16px
-    &.first-child > *
-      margin-left: 0
-.component-Box
-  min-height: 100px // Default height; temporary?
-.component-Box-container
-  margin: 8px
-.socrata-ct-clear
-  clear: both
 
 // Sprited icons
 $icon_slot: 0

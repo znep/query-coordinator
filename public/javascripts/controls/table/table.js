@@ -1348,7 +1348,7 @@
                     var right = left + width;
 
                     var isCtl = header.is('.blist-opener, ' +
-                        '.blist-table-row-handle, .blist-table-ghost');
+                        '.blist-table-row-handle, .blist-table-ghost, .blist-column-adder');
                     var isSizable = !isCtl && !header.is('.nested_table') &&
                         !(options.disableLastColumnResize &&
                             (i == ($headers.length - 1)));
@@ -1392,13 +1392,17 @@
                 {
                     hotHeader = hh;
                     hotHeaderMode = hhm;
+                    var $hh = $(hotHeader);
+                    var isNT = $hh.hasClass('blist-tdh');
                     if (hotHeaderMode == 2)
                     {
                         $outside.css('cursor', 'col-resize');
+                        if (isNT) { $hh.css('cursor', 'col-resize'); }
                     }
                     else
                     {
                         $outside.css('cursor', 'default');
+                        if (isNT) { $hh.css('cursor', 'default'); }
                     }
                 }
                 return foundRealHeader;

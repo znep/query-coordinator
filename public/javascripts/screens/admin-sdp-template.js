@@ -60,20 +60,25 @@ blist.publish.applyGradient = function(selector, hover, value)
     if (hover)
     { selector += ':hover'; }
 
+    var firstColor = value[0]['color'];
+    if (!firstColor.startsWith('#')) { firstColor = '#' + firstColor; }
+    var lastColor = value[1]['color'];
+    if (!lastColor.startsWith('#')) { lastColor = '#' + lastColor; }
+
     if (!$.support.linearGradient)
     {
         // ie/older
         widgetNS.setGhettoButtonImage((hover ? 'hover' : 'normal'), 'url(/ui/box.png?w=3&h=30&rx=1&ry=1&rw=1&fc=' +
-            value[0]['color'] + ',' + value[1]['color'] + ')')
+            firstColor.slice(1) + ',' + lastColor.slice(1) + ')')
     }
     else
     {
         // firefox
-        publishNS.writeStyle(selector, 'background', '-moz-linear-gradient(0 0 270deg, #' +
-            value[0]['color'] + ', #' + value[1]['color'] + ')');
+        publishNS.writeStyle(selector, 'background', '-moz-linear-gradient(0 0 270deg, ' +
+            firstColor + ', ' + lastColor + ')');
         // webkit
-        publishNS.writeStyle(selector, 'background', '-webkit-gradient(linear, left top, left bottom, from(#' +
-            value[0]['color'] + '), to(#' + value[1]['color'] + '))');
+        publishNS.writeStyle(selector, 'background', '-webkit-gradient(linear, left top, left bottom, from(' +
+            firstColor + '), to(' + lastColor + '))');
     }
 };
 

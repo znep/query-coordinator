@@ -131,7 +131,7 @@
               </td>
               <td class="role">
                 <%- if user.id == current_user.id -%>
-                  <span class="cellInner"><%= current_user.roleName.titleize %></span>
+                  <span class="cellInner"><%= (current_user.roleName || '').titleize %></span>
                 <%- else -%>
                   <span class="cellInner hide"><%= (user.roleName || '').titleize %></span>
                   <%= form_tag({:action => 'set_user_role'}, {:method => 'put'}) %>

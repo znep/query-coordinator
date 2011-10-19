@@ -14,6 +14,7 @@
 
             dojo.require("esri.arcgis.utils");
             dojo.require("esri.layers.FeatureLayer");
+            dojo.require("esri.layers.wms");
             dojo.require("esri.map");
             // Apparently dojo is not loaded at the same time jQuery is; so
             // while this plugin isn't called until jQuery onLoad, we still need
@@ -29,6 +30,11 @@
                     var viewport = mapObj._displayFormat.viewport;
                     options.extent = mapObj.viewportToExtent(viewport);
                 }
+
+                // The proxy is used only for WMS GetCapabilities requests, which
+                // is only needed for WMS layers.
+                esri.config.defaults.io.proxyUrl = "/api/proxy";
+
                 mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
 
                 dojo.connect(mapObj.map, 'onLoad', function()
@@ -96,6 +102,23 @@
                     return;
                 }
 
+                if (mapObj._wms)
+                {
+                    var wmsLayerNames = mapObj._wms.layers.split(",");
+
+                    _.each(wmsLayerNames, function(layerName)
+                    {
+                        layers.push({
+                            type: "wms",
+                            url: mapObj._wms.url,
+                            options: {
+                                visibleLayers: [ layerName ],
+                                imageFormat: "png"
+                            }
+                        });
+                    })
+                }
+
                 processWebappLayers(mapObj, _.select(layers, function(layer, index)
                 {
                     if (layer.url == 'webapp')
@@ -128,6 +151,10 @@
 
                         case "image":
                             constructor = esri.layers.ArcGISImageServiceLayer;
+                            break;
+
+                        case "wms":
+                            constructor = esri.layers.WMSLayer;
                             break;
 
                         default:

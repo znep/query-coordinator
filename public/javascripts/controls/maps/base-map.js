@@ -10,8 +10,10 @@
             var mixins = [];
             var df = options.displayFormat || options.view.displayFormat;
             var mapService = df.type || 'google';
-            if (mapService == 'heatmap' || options.view.isArcGISDataset())
-            { mapService = 'esri'; }
+            if (mapService == 'heatmap' || options.view.isArcGISDataset() || options.view.isGeoDataset())
+            {
+                mapService = 'esri';
+            }
             mixins.push(mapService);
 
             if (mapService == 'esri') { mixins.push('arcGISmap'); }
@@ -31,6 +33,11 @@
             mapObj._markers = {};
             mapObj._segments = {};
             mapObj._numSegments = 6;
+
+            if (mapObj._primaryView.isGeoDataset())
+            {
+                mapObj._wms = mapObj._primaryView.metadata.custom_fields.wms;
+            }
 
             if (mapObj.$dom().siblings('#mapLayers').length < 1)
             {

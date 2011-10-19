@@ -6,7 +6,7 @@
         front-end how to render data.  Available values: 'calendar', 'chart',
         'map', 'form'
     + viewType: set by core server, this defines whether a dataset is tabular data,
-        blobby data, or an href.  Possible values: 'tabular', 'blobby', 'href'
+        blobby data, or an href.  Possible values: 'tabular', 'blobby', 'href', 'geo'
     + type: set by this Model, it rolls up several pieces of data to give a simple
         type for the Dataset that code can check against.  Possible values:
         'blist', 'filter', 'grouped', 'chart', 'map', 'form', 'calendar',
@@ -178,6 +178,11 @@ this.Dataset = ServerModel.extend({
             return true;
         }
         return false;
+    },
+
+    isGeoDataset: function()
+    {
+        return (this.metadata && this.metadata.custom_fields && this.metadata.custom_fields.wms);
     },
 
     isPublished: function()

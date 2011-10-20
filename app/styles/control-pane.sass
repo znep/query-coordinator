@@ -26,6 +26,9 @@
   .formSection
     margin-bottom: 1em
     padding: 0
+    // Expand/collapse of sections would sometimes leave visual artifacts unless we add this
+    .ie7 &
+      position: relative
 
     > .uniform.checker, .sectionSelect
       display: none

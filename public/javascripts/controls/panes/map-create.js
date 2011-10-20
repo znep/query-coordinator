@@ -438,7 +438,7 @@
             { view.displayFormat.viewport = cpObj._view.displayFormat.viewport; }
             else if (cpObj._view.displayFormat.type == 'bing')
             {
-                blist.datasetControls.showSaveViewDialog(isEdit(cpObj) ?
+                blist.datasetControls.showSaveViewDialog(!cpObj._view.isDefault() && isEdit(cpObj) ?
                     'reloadUpdateDialog' : 'reloadSaveDialog', null, null,
                     function()
                     {
@@ -452,7 +452,7 @@
             cpObj._view.update(view);
 
             var didCallback = false;
-            if (isEdit(cpObj))
+            if (!cpObj._view.isDefault() && isEdit(cpObj))
             {
                 // We need to show all columns when editing a view so that
                 // any filters/facets work properly

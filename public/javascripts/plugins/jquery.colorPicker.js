@@ -36,45 +36,50 @@
 
   var buildSelector = function()
   {
-    selector = $("<div id='color_selector'></div>");
+      var selector = ['<div id="color_selector">'];
 
-     //add color pallete
-     $.each($.fn.colorPicker.defaultColors, function(j) {
-        var $curBox = $('<div class="color_block clearfix"></div>');
-        $.each(this, function(i){
-            swatch = $("<a href='#' class='color_swatch'><span class='inner'>&nbsp;</span></a>");
-            swatch.css("background-color", "#" + this);
-            swatch.bind("click", function(e)
-                { e.preventDefault(); changeColor($(this).css("background-color")) });
-            swatch.bind("mouseover", function(e)
-            {
-                $(this).addClass('hover');
-                $("input#color_value").val(toHex($(this).css("background-color")));
-            });
-            swatch.bind("mouseout", function(e)
-            {
-                $(this).removeClass('hover');
-                hexColor = toHex($(selectorOwner).data('colorpicker-color'));
-                $("input#color_value").val(hexColor);
-            });
-
-            swatch.appendTo($curBox);
-        });
-        $curBox.appendTo(selector);
+      //add color pallete
+      $.each($.fn.colorPicker.defaultColors, function(j)
+      {
+          selector.push('<div class="color_block clearfix">');
+          $.each(this, function(i)
+          {
+              selector.push('<a href="#" class="color_swatch" style="background-color:#', this, ';">',
+                  '<span class="inner">&nbsp;</span>',
+                  '</a>');
+          });
+          selector.push('</div>');
      });
 
      //add HEX value field
-     hex_field = $("<label for='color_value'>Hex</label><input type='text' size='8' id='color_value'/>");
-     hex_field.bind("keyup", function(event){
+     selector.push('<div id="color_custom">',
+             '<label for="color_value">Hex</label>',
+             '<input type="text" size="8" id="color_value"/>',
+             '</div>');
+
+     selector.push('</div>');
+
+     var $selector = $(selector.join(''));
+
+     $selector.find('input#color_value').bind("keyup", function(event){
       if(event.keyCode == 13) {changeColor($(this).val());}
       if(event.keyCode == 27) {toggleSelector()}
      });
 
-     $("<div id='color_custom'></div>").append(hex_field).appendTo(selector);
-
-     $("body").append(selector); 
-     selector.hide();
-
+     $selector.delegate('.color_swatch', 'click', function(e)
+          { e.preventDefault(); changeColor($(this).css("background-color")) })
+     .delegate('.color_swatch', 'mouseover', function(e)
+          {
+              $(this).addClass('hover');
+              $selector.find("input#color_value").val(toHex($(this).css("background-color")));
+          })
+     .delegate('.color_swatch', 'mouseout', function(e)
+          {
+              $(this).removeClass('hover');
+              $selector.find("input#color_value").val(toHex($(selectorOwner).data('colorpicker-color')));
+          });
+     $("body").append($selector);
+     $selector.hide();
   };
 
   var checkMouse = function(event)

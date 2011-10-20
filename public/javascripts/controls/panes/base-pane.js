@@ -1,6 +1,6 @@
 (function($)
 {
-    var uniformEnabled = true;
+    var uniformEnabled = function() { return !$.browser.msie || $.browser.majorVersion > 7; };
 
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
@@ -535,7 +535,11 @@
             { $pane.find('div.required').removeClass('hide'); }
 
             // Dynamically show/hide panes
-            _.each(sectionOnlyIfs, function(oif, uid) { hookUpSectionHiding(cpObj, oif, uid); });
+            // Pre-run these selectors, because for large panes, it can be slow in IE7
+            var $sections = cpObj.$dom().find('.formSection');
+            var $fields = cpObj.$dom().find('input, select, textarea');
+            _.each(sectionOnlyIfs, function(oif, uid)
+                    { hookUpSectionHiding(cpObj, oif, uid, $sections, $fields); });
 
             $pane.find('.formSection.selectable').each(function()
             {
@@ -909,7 +913,7 @@
 
     var uniformUpdate = function(items)
     {
-        if (!uniformEnabled) { return; }
+        if (!uniformEnabled()) { return; }
         if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
         { $.uniform.update(items); }
     };
@@ -2037,7 +2041,7 @@
 
 
         //*** Uniform Inputs
-        if (uniformEnabled && !$.isBlank($.uniform))
+        if (uniformEnabled() && !$.isBlank($.uniform))
         {
             // Defer uniform hookup so the pane can be added first and all
             // the styles applied before swapping them for uniform controls
@@ -2052,9 +2056,9 @@
         }
     };
 
-    var hookUpSectionHiding = function(cpObj, oif, uid)
+    var hookUpSectionHiding = function(cpObj, oif, uid, $sections, $inputs)
     {
-        var $section = cpObj.$dom().find('[data-onlyIf="' + uid + '"]');
+        var $section = $sections.filter('[data-onlyIf="' + uid + '"]');
 
         // Set up helper function
         var showHideSection = function()
@@ -2145,8 +2149,7 @@
             if (isField)
             {
                 // This isn't going to work if there is a section name...
-                o.$field = cpObj.$dom().find(':input[name="' +
-                    cpObj.$dom().attr('id') + ':' + o.field + '"]');
+                o.$field = $inputs.filter('[name="' + cpObj.$dom().attr('id') + ':' + o.field + '"]');
                 o.$field.change(showHideSection).keypress(showHideSection)
                     .click(showHideSection).attr('data-onlyIfInput', true);
             }

@@ -9,7 +9,7 @@ $.cf.edit.registerAction('unwrap', {
     containerTemplate: undefined,
 
     initialize: function(options) {
-        this.childID = options.childID || (options.child && options.child.id);
+        this.childID = options.childID || (options.child && options.child._properties.id);
         if (!this.childID)
             throw "Unwrap requires ID of child";
         this.containerTemplate = options.containerTemplate || (options.child && options.child.parent && options.child.properties());

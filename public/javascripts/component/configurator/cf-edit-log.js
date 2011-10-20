@@ -13,6 +13,7 @@
     }
 
     function notifyAll() {
+        $.cf.edit.dirty = !!done.length;
         _.each(listeners, notifyListener);
     }
 
@@ -154,6 +155,15 @@
                     notifyAll();
             }
             transaction = undefined;
+        },
+
+        /**
+         * Erase all edit state, optionally reverting to un-edited state.
+         */
+        reset: function() {
+            done = [];
+            undone = [];
+            notifyAll();
         }
     });
 })(jQuery);

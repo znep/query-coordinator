@@ -11,7 +11,7 @@
             var cObj = this;
             cObj._properties = properties || {};
             if (!cObj._properties.id)
-                cObj._properties.id = 'c' + nextAutoID++;
+                cObj._properties.id = $.component.allocateId();
             else if (cObj._properties.id.charAt[0] == 'c') {
                 var sequence = parseInt(cObj._properties.id.substring(1));
                 if (sequence > nextAutoID)
@@ -27,13 +27,6 @@
             {
                 cObj.finishLoading();
                 _.defer(function() { cObj._render(); });
-            });
-
-            // Need to listen for general resize events if we are the top component
-            $(window).bind('resize', function(e, source)
-            {
-                if (source == $.component) { return; }
-                if ($.isBlank(cObj.parent)) { cObj._arrange(); }
             });
         },
 
@@ -92,6 +85,18 @@
         },
 
         /**
+         * Put the component into design mode.
+         */
+        design: function(designing) {
+        },
+
+        /**
+         * Set active editing state.
+         */
+        edit: function(editing) {
+        },
+
+        /**
          * Substitute insertion variables into a string.
          */
         _template: function(template) {
@@ -130,6 +135,7 @@
                 dom = document.createElement('div');
                 dom.id = this._properties.id;
             }
+
             if ($.isBlank(this.dom))
             {
                 this.dom = dom;
@@ -144,6 +150,18 @@
                         contents: 'This component does not have a valid configuration'}]));
                 this._updateValidity();
             }
+
+            // Special handling for root components
+            if (!this.parent) {
+                // Need to listen for general resize events
+                var cObj = this;
+                $(window).bind('resize', function(e, source)
+                {
+                    if (source == $.component) { return; }
+                    cObj._arrange();
+                });
+            }
+
             this._initialized = true;
         },
 
@@ -246,8 +264,8 @@
          */
         _propertyResolver: function() {
             var parentResolver = this.parent ? this.parent._propertyResolver() : $.component.rootPropertyResolver;
-            var entity = this.entity;
-            if (entity)
+            var entity = this._properties.entity;
+            if (entity && !$.cf.designing)
                 return function(name) {
                     var result = entity[name];
                     if (result !== undefined)
@@ -318,6 +336,16 @@
 
         rootPropertyResolver: function(name) {
             // TODO - page property pool?
+        },
+
+        allocateId: function() {
+            return 'c' + nextAutoID++;
+        },
+
+        eachRoot: function(fn, scope) {
+            for (var i in components)
+                if (!components[i].parent)
+                    fn.call(scope || this, components[i]);
         }
     });
 })(jQuery);

@@ -61,7 +61,7 @@
 
         // Find the component this mouse event addresses
         var target = event.target;
-        if ($(target).closest('.socrata-cf-properties-shell').length > 0)
+        if ($(target).closest('.socrata-cf-mouse').length > 0)
         { return; }
 
         while (target && !target._comp)
@@ -76,8 +76,8 @@
         // Ensure focus is directed at the interaction component
         $.cf.focus(target._comp);
 
-        // Listen for drag unless this is a root component
-        if (target._comp.parent) {
+        // Listen for drag unless this is a root component or immobilized by container
+        if (target._comp.parent && target._comp.parent.drag !== false) {
             // Bind mouse events so we can detect drag-start
             $body.bind('mousemove.configurator-interaction', onBodyMouseMove);
             $body.bind('mouseup.configurator-interaction', onBodyMouseUp);
@@ -91,23 +91,54 @@
         return false;
     }
 
-    var inEditMode = false;
+    var designing = false;
+    var originalConfiguration;
 
     $.extend($.cf, {
         edit: function(edit) {
             edit = !!edit;
-            if (inEditMode != edit) {
-                inEditMode = edit;
+            if (designing != edit) {
+                designing = this.designing = edit;
                 $.cf.side(edit);
                 $(document.body).toggleClass('configuring');
                 $(document.body)[edit ? 'bind' : 'unbind']('mousedown', onBodyMouseDown);
                 if (!edit)
                     $.cf.focus();
+
+                if (designing)
+                    originalConfiguration = [];
+                $.component.eachRoot(function(root) {
+                    root.design(designing);
+                    if (originalConfiguration)
+                        originalConfiguration.push([ root, root.properties() ]);
+                });
             }
+        },
+
+        save: function() {
+            if (!$.cf.edit.dirty)
+                return;
+
+            // TODO -- actually save
+
+            $.cf.edit.reset();
+            this.edit(false);
+        },
+
+        cancel: function() {
+            if (originalConfiguration && $.cf.edit.dirty) {
+                _.each(originalConfiguration, function(pair) {
+                    pair[0].properties(pair[1]);
+                });
+                originalConfiguration = undefined;
+            }
+            $.cf.edit.reset();
+            this.edit(false);
         },
 
         blur: function(unmask) {
             if (focal) {
+                focal.edit(false);
                 $body.removeClass('socrata-cf-has-focal');
                 $(focal.dom).removeClass('socrata-cf-focal');
                 focal = undefined;
@@ -126,6 +157,7 @@
             focal = component;
             $body.addClass('socrata-cf-has-focal');
             $(focal.dom).addClass('socrata-cf-focal');
+            focal.edit(true);
             $.cf.side.properties(component);
             if (!$mask) {
                 $mask = $('<div class="socrata-cf-mask"></div>');

@@ -265,8 +265,8 @@
                 if (temporaryWrapper)
                     $.cf.edit.executed('wrap', {
                         containerTemplate: {
-                            id: temporaryWrapper.id,
-                            type: temporaryWrapper.type
+                            id: temporaryWrapper._properties.id,
+                            type: temporaryWrapper._properties.type
                         },
                         child: wrapped
                     });
@@ -298,9 +298,9 @@
                     if (oldContainer.first)
                         // Unwrap
                         $.cf.edit.execute('unwrap', {
-                            childID: oldContainer.first.id,
+                            childID: oldContainer.first._properties.id,
                             containerTemplate: {
-                                id: oldContainer.id,
+                                id: oldContainer._properties.id,
                                 type: oldContainer.type
                             }
                         });

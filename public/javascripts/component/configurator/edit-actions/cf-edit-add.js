@@ -15,7 +15,7 @@ $.cf.edit.registerAction('add', {
         this.containerID = options.containerID || (options.container && options.container.properties().id);
         if (!this.containerID)
             throw "Cannot perform add without container reference";
-        this.positionID = options.positionID || (options.position && options.position.id);
+        this.positionID = options.positionID || (options.position && options.position._properties.id);
         this.childTemplate = options.childTemplate;
         if (!options.childTemplate) {
             var type = options.type;

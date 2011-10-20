@@ -68,7 +68,7 @@
         $properties = $.tag({tagName: 'div', 'class': 'properties'});
         propertiesEditor = $properties.pane_propertiesEditor();
         var $wrapper = $.tag({tagName: 'div',
-            'class': ['section', 'open', 'socrata-cf-properties-shell', 'hide'],
+            'class': ['section', 'open', 'socrata-cf-properties-shell', 'socrata-cf-mouse', 'hide'],
             contents: [{tagName: 'h2', contents: propertiesEditor.getTitle()}]});
         propertiesEditor.render();
         $wrapper.append($properties);

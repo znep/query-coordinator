@@ -28,11 +28,11 @@ $.cf.edit.registerAction('remove', {
             this.componentTemplate = component.properties();
         }
 
-        this.containerID = options.containerID || (options.container && options.container.id);
+        this.containerID = options.containerID || (options.container && options.container._properties.id);
         if (!this.containerID)
             throw "Cannot remove component without parent";
 
-        this.positionID = options.positionID || (options.position && options.position.id);
+        this.positionID = options.positionID || (options.position && options.position._properties.id);
     },
 
     commit: function() {

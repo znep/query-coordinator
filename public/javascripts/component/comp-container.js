@@ -7,12 +7,14 @@
         horizontal: false,
 
         _init: function(properties) {
+            this._initializing = true;
             var children = properties.children;
             if (children) {
                 delete properties.children;
                 this.add(children);
             }
             this._super(properties);
+            delete this._initializing;
         },
 
         /**
@@ -171,6 +173,7 @@
         // Override destroy to propagate to children
         destroy: function() {
             this.each(function(child) {
+                delete child.parent;
                 child.destroy();
             });
             this._super();
@@ -196,13 +199,29 @@
         // Override Component._propRead to include children property
         _propRead: function() {
             var properties = this._super();
+            var children = this._readChildren();
+            if (children)
+                properties.children = children;
+            return properties;
+        },
+
+        // Extension point that retrieves the list of children for property extraction
+        _readChildren: function() {
             var children;
             this.each(function(child) {
                 (children || (children = [])).push(child.properties());
             });
-            if (children)
-                properties.children = children;
-            return properties;
+            return children;
+        },
+
+        // Override Component._propWrite to update children (currently brute replace)
+        _propWrite: function(properties) {
+            this._super(properties);
+            if (properties.children) {
+                while (this.first)
+                    this.first.destroy();
+                this.add(properties.children);
+            }
         },
 
         // Override to perform layout beyond simple DOM order
@@ -212,6 +231,13 @@
                     child._arrange();
             });
             this._super();
+        },
+
+        // Propagate design mode to children
+        design: function(designing) {
+            this.each(function(child) {
+                child.design(designing);
+            });
         }
     });
 
@@ -269,8 +295,13 @@
                 });
                 pos += weight;
             });
-            
+
             this._super();
+
+            if (this.first) {
+                $(this.dom).children('first-child').removeClass('first-child');
+                $(this.first.wrapper).addClass('first-child');
+            }
         }
     });
 

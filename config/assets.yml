@@ -78,6 +78,7 @@ javascripts:
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/properties-editor.js
     - public/javascripts/controls/panes/chart-config.js
+    - public/javascripts/controls/content-editable.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-catalog.js
     - public/javascripts/component/comp-container.js

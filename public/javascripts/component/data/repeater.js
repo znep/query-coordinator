@@ -3,23 +3,33 @@ $.component.Container.extend('Repeater', 'content', {
     length: 100,
 
     _init: function(properties) {
+        // Take my children and give them to a "clone" template that will repeat once for each object
+        var children = properties.children || [];
+        this._cloneProperties = {
+            id: 'clone',
+            children: children
+        };
+
+        // Ensure that all descendants have an ID.  This ID is prefixed during object rendering.
+        function allocateIds(children) {
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                if (child.id == undefined)
+                    child.id = $.component.allocateId();
+                if (child.children)
+                    allocateIds(child.children);
+            }
+        }
+        allocateIds(children);
+        delete properties.children;
+
+        // Normal object setup
         this._super(properties);
 
-        this._updateTemplate();
-        this._clones = new $.comp.Container({ id: this.id + '-clones' });
+        // Record keeping preparation
         this._map = [];
-    },
 
-    _render: function() {
-        // Bypass container's DOM management
-        $.component.Component.prototype._render.call(this);
-
-        var cloneDom = document.createElement('div');
-        cloneDom.id = this._clones.id;
-        this.dom.appendChild(cloneDom);
-
-        this._clones.dom = cloneDom;
-        this._clones._render();
+        this._idPrefix = this._properties.id + '-';
     },
 
     startLoading: function() {
@@ -28,11 +38,32 @@ $.component.Container.extend('Repeater', 'content', {
     finishLoading: function() {
     },
 
+    design: function(design) {
+        this._super();
+        if (this._designing)
+            this._cloneProperties.children = this._readChildren();
+        this._designing = design;
+        this._refresh();
+    },
+
+    _refresh: function() {
+        this._map = [];
+        while (this.first)
+            this.first.destroy();
+        if ($.cf.designing)
+            // Render actual children as direct descendants
+            this.add(this._cloneProperties.children);
+        else if (this._view) {
+            // Render records
+            var me = this;
+            this._view.getRows(this.position, this.length, function(rows) {
+                _.each(rows, me._setRow, me);
+            });
+        }
+    },
+
     _dataReady: function() {
-        var me = this;
-        this._view.getRows(this.position, this.length, function(rows) {
-            _.each(rows, me._setRow, me);
-        });
+        this._refresh();
     },
 
     _setRow: function(row) {
@@ -42,7 +73,7 @@ $.component.Container.extend('Repeater', 'content', {
             return;
 
         // Add ID prefix so repeated components will not clash
-        var prefix = this.id + '-' + row.index + '-';
+        var prefix = this._idPrefix + row.index + '-';
         function createTemplate(properties) {
             properties = _.clone(properties);
             properties.id = prefix + properties.id;
@@ -54,7 +85,7 @@ $.component.Container.extend('Repeater', 'content', {
             }
             return properties;
         }
-        var template = createTemplate(this._template);
+        var cloneProperties = createTemplate(this._cloneProperties);
 
         // Remove any existing row
         var map = this._map;
@@ -64,8 +95,8 @@ $.component.Container.extend('Repeater', 'content', {
         }
 
         // Create clone
-        template.entity = row;
-        var clone = map[index] = $.component.create(template);
+        cloneProperties.entity = row;
+        var clone = map[index] = new $.component.Repeater.Clone(cloneProperties);
 
         // Find position for clone
         var position;
@@ -73,24 +104,18 @@ $.component.Container.extend('Repeater', 'content', {
             position = map[i];
 
         // Insert the clone
-        this._clones.add(clone, position);
+        this._initializing = true;
+        this.add(clone, position);
+        delete this._initializing;
     },
 
-    _moveChildDom: function(child) {
-        this._updateTemplate();
-        // TODO -- update repeated -- do not call super
-    },
-
-    _removeChildDom: function(child) {
-        this._updateTemplate();
-        // TODO -- update repeated -- do not call super
-    },
-
-    // Update object template used to create repeated children
-    _updateTemplate: function() {
-        var template = $.component.Container.prototype._propRead.call(this);
-        template.type = 'container';
-        template.id = 'clone';
-        this._template = template;
+    _readChildren: function() {
+        if (this._designing)
+            return this._super();
+        return this._cloneProperties.children;
     }
+});
+
+$.component.Repeater.Clone = $.component.Container.extend({
+    // No special behavior for clones at the moment
 });

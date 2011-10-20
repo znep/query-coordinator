@@ -9,7 +9,7 @@ $.cf.edit.registerAction('wrap', {
     containerTemplate: undefined,
 
     initialize: function(options) {
-        this.childID = options.childID || (options.child && options.child.id);
+        this.childID = options.childID || (options.child && options.child._properties.id);
         if (!this.childID)
             throw "Wrap requires ID of child";
         this.containerTemplate = options.containerTemplate;

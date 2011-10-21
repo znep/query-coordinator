@@ -72,6 +72,7 @@ javascripts:
   configurator:
     - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
+    - public/javascripts/util/color.js
     - public/javascripts/component/data-context.js
     - public/javascripts/component/template.js
     - public/javascripts/plugins/jquery.colorPicker.js
@@ -81,6 +82,7 @@ javascripts:
     - public/javascripts/controls/panes/properties-editor.js
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/content-editable.js
+    - public/javascripts/component/util/style-config.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-catalog.js
     - public/javascripts/component/comp-container.js

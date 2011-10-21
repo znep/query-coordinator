@@ -38,9 +38,13 @@
                 start: row[calObj._startCol.lookup],
                 title: $.htmlStrip(row[calObj._titleCol.lookup]),
                 color: null,
+                className: null,
                 row: row};
             if ((row.sessionMeta || {}).highlight)
-            { ce.color = blist.styles.getReferenceProperty('itemHighlight', 'background-color'); }
+            {
+                ce.color = blist.styles.getReferenceProperty('itemHighlight', 'background-color');
+                ce.className = 'highlight';
+            }
 
             if (!$.isBlank(calObj._endCol))
             {

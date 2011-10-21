@@ -1838,7 +1838,7 @@
                     {
                         var inAny = false;
                         cpObj.settings.columnChoosers.each(function()
-                        { inAny = inAny || $.contains(this, e.target); });
+                        { inAny = inAny || (e.target != document && $.contains(this, e.target)); });
                         if (!inAny) { cancelSelect(); }
                     });
                 $link.addClass('inProcess');

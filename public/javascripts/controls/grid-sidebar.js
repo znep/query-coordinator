@@ -108,6 +108,7 @@
             $domObj.resizable({
                 handles: sidebarObj.settings.position == 'left' ? 'e' : 'w',
                 maxWidth: $(window).width() * 0.8, minWidth: 300,
+                start: function() { sidebarObj._inResize = true; },
                 stop: function() { resizeDone(sidebarObj); }});
         },
 
@@ -486,6 +487,7 @@
     /* Handle window resizing */
     var handleResize = function(sidebarObj)
     {
+        if (sidebarObj._inResize) { return; }
         _.defer(function()
         {
             if (sidebarObj.$dom().is(':hidden')) { return; }
@@ -497,6 +499,7 @@
     /* When user resize is finished */
     var resizeDone = function(sidebarObj)
     {
+        sidebarObj._inResize = false;
         // Unset left, b/c the resizable plugin sets it; but we are
         // right-positioned
         sidebarObj.$dom().css('left', '');

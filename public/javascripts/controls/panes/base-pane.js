@@ -1903,7 +1903,7 @@
 
             if (!$picker.hasClass('advanced'))
             {
-                $picker.colorPicker().bind('color_change',
+                $picker.bind('color_change',
                 function(e, newColor)
                 {
                     $(this).css('background-color', newColor)
@@ -1914,7 +1914,7 @@
                 {
                     var $t = $(this);
                     $t.data('colorpicker-color', $t.siblings(':input').val());
-                });
+                }).one('mousedown', function() { $picker.colorPicker(); });
             }
             else
             {

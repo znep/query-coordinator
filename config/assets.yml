@@ -283,6 +283,9 @@ javascripts:
     - public/javascripts/controls/feed-list.js
     - public/javascripts/screens/nominations-shared.js
     - public/javascripts/screens/nomination.js
+  screen-internal:
+    - public/javascripts/plugins/jquery.awesomecomplete.js
+    - public/javascripts/screens/internal.js
   screen-videos:
     - public/javascripts/plugins/jquery.quicksand.js
     - public/javascripts/screens/videos.js

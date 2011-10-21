@@ -40,6 +40,12 @@ class Domain < Model
     CoreServer::Base.connection.update_request(path, headers)
   end
 
+  def self.all
+    return @@all_domains if defined? @@all_domains
+    path = "/domains.json?method=all"
+    @@all_domains = parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def protocol
     self.httpsEnforced ? 'https' : 'http'
   end

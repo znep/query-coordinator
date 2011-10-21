@@ -45,9 +45,12 @@
         {
             var currentIndex = $pane.prevAll().length;
 
-            if ($.browser.msie && ($.browser.majorVersion < 8))
+            if (!$.support.svg)
             {
                 // IE7 and older have issues clipping charts correctly.
+                // also, idiot installations of IE9 that have been forced to use
+                // the IE7 renderer for some fucking reason
+                // LOOK AT US WE'RE USING MODERN TECHNOLOGY. IT'S STEAM POWERED OLOLOLOLOLOLOLOL
                 $tickerChildren.hide();
                 $pane.show();
                 $tickerChildrenContainer.height($pane.outerHeight(false));

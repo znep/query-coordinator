@@ -21,6 +21,9 @@
         "background-image:-moz-linear-gradient(left, red, blue);" /*Firefox 3.6*/
     ].join('');
 
+    $.support.svg = window.SVGAngle ||
+                    document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1");
+
     if (div.style.backgroundImage)
     {
         $.support.linearGradient = true;

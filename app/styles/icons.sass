@@ -704,6 +704,20 @@
   &.dataset_link #{$subselector}
     background-position: 0 -360px
 
+// Component type icons
+@mixin component-icons($subselector: '.icon', $namepart: 'icon')
+  $icon_slot: 0
+  @each $name in Box, Catalog, Comments, Title, Picture, Related, Text, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, CreateMap, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, SiteSearch, DataSearch, Sort, SlideFilter
+    &.#{$namepart}-#{$name} #{$subselector}
+      @include text-hiding
+      @include ie6-fix
+      background-image: url(/stylesheets/images/component/cf-icons.png)
+      background-repeat: no-repeat
+      background-position: -6px (-8px + -44px * $icon_slot)
+      height: 48px
+      width: 48px
+    $icon_slot: $icon_slot + 1
+
 // Login icons
 @mixin authentication-icons($subselector: '.icon')
   #{$subselector}

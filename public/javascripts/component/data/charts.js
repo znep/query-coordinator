@@ -5,6 +5,7 @@ _.each(Dataset.chart.types, function(value, localChartType)
     $.component.Component.extend(value.text.toLowerCase().capitalize(), 'data', {
         _init: function()
         {
+            this._needsOwnContext = true;
             this._super.apply(this, arguments);
             this._chartType = localChartType;
         },

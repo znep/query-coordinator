@@ -1,5 +1,6 @@
 // Base/default styles shared by all components
 .socrata-component
+  @include component-icons('> .disabledIcon', 'component')
   @include disabled-overlay(33%)
   background-color: rgba(0, 64, 128, .2) // Temporary
   @include border-radius(4px) // Default or temporary?
@@ -8,6 +9,19 @@
   position: relative
   &:last-child
     margin-bottom: 0
+
+  .disabledIcon
+    display: none
+    left: 50%
+    margin:
+      left: -24px
+      top: -24px
+    position: absolute
+    top: 50%
+    z-index: 81
+
+  &.disabled .disabledIcon
+    display: block
 
   .content-wrapper
     height: 100%

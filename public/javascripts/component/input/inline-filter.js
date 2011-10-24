@@ -1,4 +1,10 @@
 $.component.Component.extend('Inline filter', 'input', {
+    _init: function()
+    {
+        this._needsOwnContext = true;
+        this._super.apply(this, arguments);
+    },
+
     _getAssets: function()
     {
         return {

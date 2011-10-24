@@ -22,12 +22,19 @@
             components[cObj._properties.id] = cObj;
             if (_.isFunction(cObj._dataReady))
                 cObj._updateDataSource(properties, cObj._dataReady);
-            cObj.startLoading();
-            blist.util.assetLoading.loadAssets(cObj._getAssets(), function()
+
+            var doRender = function() { _.defer(function() { cObj._render(); }); };
+            var assets = cObj._getAssets();
+            if (!_.isEmpty(assets))
             {
-                cObj.finishLoading();
-                _.defer(function() { cObj._render(); });
-            });
+                cObj.startLoading();
+                blist.util.assetLoading.loadAssets(assets, function()
+                {
+                    cObj.finishLoading();
+                    doRender();
+                });
+            }
+            else { doRender(); }
         },
 
         /**
@@ -39,13 +46,20 @@
         startLoading: function()
         {
             if (!$.isBlank(this.$dom))
-            { this.$dom.loadingSpinner().showHide(true); }
+            {
+                if (!this._lsInit)
+                {
+                    this.$dom.loadingSpinner({showInitially: true});
+                    this._lsInit = true;
+                }
+                else { this.$dom.loadingSpinner().showHide(true); }
+            }
             this._loading = true;
         },
 
         finishLoading: function()
         {
-            if (!$.isBlank(this.$dom))
+            if (!$.isBlank(this.$dom) && this._lsInit)
             { this.$dom.loadingSpinner().showHide(false); }
             this._loading = false;
             this._updateValidity();
@@ -142,12 +156,14 @@
                 this.$dom = $(dom);
                 dom._comp = this;
                 dom.className = 'socrata-component component-' + this.typeName;
-                this.$contents = $.tag({tagName: 'div', 'class': 'content-wrapper'});
-                this.$dom.append(this.$contents);
-                this.$dom.loadingSpinner({showInitially: this._loading});
-                this.$dom.append($.tag([{tagName: 'div', 'class': 'disabledOverlay'},
-                    {tagName: 'div', 'class': 'disabledMessage',
-                        contents: 'This component does not have a valid configuration'}]));
+                if (this._needsOwnContext)
+                {
+                    this.$contents = $.tag({tagName: 'div', 'class': 'content-wrapper'});
+                    this.$dom.append(this.$contents);
+                }
+                else
+                { this.$contents = this.$dom; }
+                if (this._loading) { this.startLoading(); }
                 this._updateValidity();
             }
 
@@ -190,7 +206,18 @@
         _updateValidity: function()
         {
             if (!$.isBlank(this.$dom))
-            { this.$dom.toggleClass('disabled', !this._loading && !this.isValid()); }
+            {
+                var isDisabled = !this._loading && !this.isValid();
+                if (isDisabled && !this._disInit)
+                {
+                    this.$dom.append($.tag([{tagName: 'div', 'class': 'disabledOverlay'},
+                        {tagName: 'span', 'class': 'disabledIcon'},
+                        {tagName: 'div', 'class': 'disabledMessage',
+                            contents: 'This component does not have a valid configuration'}]));
+                    this._disInit = true;
+                }
+                this.$dom.toggleClass('disabled', isDisabled);
+            }
         },
 
         /**

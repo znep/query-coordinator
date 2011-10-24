@@ -268,6 +268,7 @@
         {
             var vizObj = this;
             vizObj._savedDF = newDF;
+
             if (vizObj._hidden)
             {
                 vizObj._needsReload = true;
@@ -277,6 +278,9 @@
 
             vizObj._displayFormat = vizObj._savedDF ||
                 vizObj.settings.displayFormat || vizObj._primaryView.displayFormat;
+
+            // If still loading libraries, don't try to reload
+            if (!vizObj._dynamicLibrariesLoaded) { return; }
             if (vizObj.needsPageRefresh())
             {
                 // Now that visualizations are being done inline, reloading
@@ -476,6 +480,7 @@
             }
             else
             {
+                vizObj._dynamicLibrariesLoaded = true;
                 callback();
             }
         },

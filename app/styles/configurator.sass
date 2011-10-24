@@ -106,6 +106,7 @@ body.socrata-page
       left: 0
 
   .item
+    @include component-icons
     float: left
     margin: 4px 0
     opacity: .8
@@ -136,7 +137,7 @@ body.socrata-page
     width: 48px
     height: 48px
     margin: 0 16px 6px 16px
-    background: url(/stylesheets/images/component/cf-icons.png) 10000px 10000px no-repeat, rgba(0, 0, 0, .25)
+    background: 10000px 10000px no-repeat, rgba(0, 0, 0, .25)
     display: block
     @include border-radius(6px)
     box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
@@ -165,6 +166,7 @@ body.socrata-page
 
 // Icon dragged when creating new components
 .socrata-cf-drag-icon
+  @include component-icons
   position: absolute
   z-index: 1000000
   &, *
@@ -298,40 +300,3 @@ ul.contextPickerAutocomplete
 
     &.active div
       background-color: #f7f7f7
-
-// Sprited icons
-$icon_slot: 0
-@mixin icon($name)
-  .socrata-cf-side .item, .socrata-cf-drag-icon
-    &.icon-#{$name} .icon
-      background-position: -6px (-8px + -44px * $icon_slot)
-  $icon_slot: $icon_slot + 1
-@include icon(Box)
-@include icon(Catalog)
-@include icon(Comments)
-@include icon(Title)
-@include icon(Picture)
-@include icon(Related)
-@include icon(Text)
-@include icon(ColumnChart)
-@include icon(LineChart)
-@include icon(Map)
-@include icon(PieChart)
-@include icon(Repeater)
-@include icon(BubbleChart)
-@include icon(Table)
-@include icon(TimeLine)
-@include icon(TreeMap)
-@include icon(CreateChart)
-@include icon(CreateMap)
-@include icon(Download)
-@include icon(Embed)
-@include icon(HideShow)
-@include icon(InlineFilter)
-@include icon(PopupFilter)
-@include icon(Print)
-@include icon(RateVote)
-@include icon(SiteSearch)
-@include icon(DataSearch)
-@include icon(Sort)
-@include icon(SlideFilter)

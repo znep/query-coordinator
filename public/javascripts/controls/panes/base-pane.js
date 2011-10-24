@@ -836,7 +836,7 @@
 
         /* This turns a pane into an object with values based on the names
          * of the fields */
-        _getFormValues: function()
+        _getFormValues: function(includeInvalid)
         {
             var cpObj = this;
             var results = {};
@@ -872,7 +872,7 @@
 
                 // If this is in a group, then figure out if any required
                 // fields failed
-                if ($parents.hasClass('group'))
+                if (!includeInvalid && $parents.hasClass('group'))
                 {
                     var failed = false;
                     $input.closest('.inputBlock').find('[data-isrequired]:visible:not(:disabled)')

@@ -393,12 +393,17 @@ class View < Model
 
   def federated_path(path)
     if federated?
-      protocol = federated_protocol(domainCName)
-      url_port = federated_port(domainCName)
-      "#{protocol}://#{domainCName}#{url_port}#{path}"
+      absolute_path(path)
     else
       path
     end
+  end
+
+  def absolute_path(path, current_domain = false)
+    protocol = federated_protocol(domainCName)
+    url_port = federated_port(domainCName)
+    domain = current_domain ? CurrentDomain.cname : domainCName
+    "#{protocol}://#{domain}#{url_port}#{path}"
   end
 
   def alt_href
@@ -413,10 +418,8 @@ class View < Model
     self.href + "/about"
   end
 
-  # argument port is deprecated
-  def rss(port = 80)
-    path = "/api/views/#{id}/rows.rss"
-    federated_path(path)
+  def rss
+    absolute_path("/api/views/#{id}/rows.rss", true)
   end
 
   def tweet

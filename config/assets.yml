@@ -385,13 +385,13 @@ javascripts:
     - public/javascripts/controls/panes/share-dataset.js
     - public/javascripts/controls/panes/show-hide.js
     - public/javascripts/controls/panes/sort-rollUp.js
-    - public/javascripts/controls/panes/subscribe.js
     - public/javascripts/controls/panes/signed-dataset.js
     - public/javascripts/controls/panes/unified-filter.js
     - public/javascripts/controls/panes/unified-filter-sidebar.js
     - public/javascripts/controls/panes/view-list.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/dataset-email.js
+    - public/javascripts/controls/dataset-subscribe.js
     - public/javascripts/controls/embed-form.js
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/format-options.js

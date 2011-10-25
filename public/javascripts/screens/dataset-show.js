@@ -328,6 +328,13 @@ $(function()
         { blist.dialog.sharing(event); }
     });
 
+    $('#shareOptions .subscribe').click(function(event)
+    {
+        event.preventDefault();
+        if(_.isFunction(blist.dialog.subscribe))
+        { blist.dialog.subscribe(event); }
+    });
+
     // Edit toolbar
     $('#editOptions .undo').click(function (event)
     {

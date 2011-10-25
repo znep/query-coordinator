@@ -27,6 +27,12 @@
       <%- if @view.is_published? -%>
       <li>
         <ul id="shareOptions">
+          <%- if @view.is_public? -%>
+            <li class="subscribe">
+              <a class="subscribe" href="#subscribe" title="Subscribe via Email">
+              <span class="icon">Subscribe to Changes</span></a>
+            </li>
+          <%- end -%>
           <li><a class="facebook" rel="external" title="Share on Facebook"
                 href="http://www.facebook.com/share.php?u=<%= CGI::escape("http://#{CurrentDomain.cname}#{@view.href}") %>">
             <span class="icon">Share on Facebook</span></a></li>
@@ -301,7 +307,6 @@
 <%= render :partial => 'permissions' %>
 <%= render :partial => 'api_access' %>
 <%= render :partial => 'signed_dataset' %>
-<%= render :partial => 'subscribe' %>
 <%= render :partial => 'fatrow_header_template' %>
 <div class="editAlertTemplate">
   <div class="editAlert">
@@ -321,6 +326,44 @@
 <% end %>
 
 <%- content_for :modals do -%>
+
+  <div class="subscribeToDataset modalDialog loading">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>Subscribe to this <span class="datasetTypeNameUpcase">Dataset</span></h2>
+
+    <div class="loadingOverlay">
+      <div class="loadingSpinner"></div>
+    </div>
+    <div class="rssSection">
+      <p><strong>To subscribe to this dataset via an RSS reader</strong>, use one of the following links:</p>
+      <p>
+        <%- rss_url = @view.rss -%>
+        <a class="subscribe" rel="external" href="<%= rss_url %>"><span class="icon"></span>Download as RSS</a>
+        <a rel="external" href="http://fusion.google.com/add?feedurl=<%= rss_url %>">
+          Add to Google Reader
+        </a>
+        <a href="feed:<%= rss_url %>">Open in External Program</a>
+      </p>
+    </div>
+    <div class="emailSection">
+      <div class="subscribeText">
+        <p><strong>To receive email notifications</strong> when new data is published, check
+           the Subscribe box below.</p>
+      </div>
+      <div class="unsubscribeText">
+        <p><strong>You are currently subscribed to this <span class"datasetTypeName">dataset</span>
+          via email</strong>, and will receive notifications when new data is published.</p>
+        <p>If you no longer wish to receive notifications, uncheck the Subscribe box below.</p>
+      </div>
+      <div>
+        <input type="checkbox" class="subscribeCheckbox" id="email_publish_subscribe" />
+        <label for="email_publish_subscribe">Subscribe via Email</label>
+      </div>
+    </div>
+    <ul class="actions clearfix">
+      <li><a href="#cancel" class="jqmClose button">Done</a></li>
+    </ul>
+  </div>
   <div class="emailDatasetDialog modalDialog<%= ' ownerDialog' if
     @view.has_rights?('grant') %>">
     <a href="#close" class="jqmClose modalDialogClose">Close</a>
@@ -334,7 +377,6 @@
         <li>
           <a href="#cancel" class="jqmClose button">Close</a>
         </li>
-        <li>
       </ul>
     </div>
     <div class="emailDatasetContent">

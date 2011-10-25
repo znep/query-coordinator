@@ -213,6 +213,9 @@ html, body
             display: inline-block
             margin-right: 0.5em
 
+            &.subscribe
+              margin-right: 1em
+
             .ie7 &
               display: block
               float: left
@@ -529,6 +532,46 @@ html, body
     height: 4em
     overflow: auto
     width: 25em
+
+// Subscribe to dataset dilago
+.subscribeToDataset
+
+  .loadingOverlay
+    display: none
+  &.loading
+    .loadingOverlay
+      display: block
+
+  p
+    margin-bottom: 1em
+
+  .rssSection
+    border-bottom: 1px solid $color_chrome_box_border
+    margin-bottom: 1.5em
+
+    a
+      margin-left: 2em
+      display: block
+      padding: 0.5em 0
+      &.subscribe
+        @include sprite-menu-icons
+        .icon
+          float: left
+          padding-right: 0.5em
+
+  label
+    font-size: 1.2em
+    position: relative
+    top: -0.3em
+
+  .unsubscribeText
+    display: none
+
+  &.subscribed
+    .subscribeText
+      display: none
+    .unsubscribeText
+      display: block
 
 // Other modals
 

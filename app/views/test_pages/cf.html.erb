@@ -10,6 +10,11 @@
 
 <script>
 $(function() {
+    $.dataContext.load({
+//      repeaterView: {type: 'view', viewId: 'yxbb-meff'},
+      mainView: {type: 'view', viewId: '5sdc-99x6'}
+    });
+
     $.cf({
         id: 'root-component-test',
         type: 'Container',
@@ -35,17 +40,37 @@ $(function() {
             }, {
                 type: 'Text',
                 html: 'Box E'
-            }, {
-                type: 'Repeater',
-                viewId: 'yxbb-meff',
-
-                children: [
-                    {
-                        type: 'Text',
-                        html: 'County <b>{1035}</b> has <b>{1027}%</b> uninsured'
-                    }
-                ]
+            },
+//            {
+//                type: 'Repeater',
+//                contextId: 'repeaterView',
+//
+//                children: [
+//                    {
+//                        type: 'Text',
+//                        html: 'County <b>{1035}</b> has <b>{1027}%</b> uninsured'
+//                    }
+//                ]
+//            },
+          {
+            type: 'InlineFilter',
+            contextId: 'mainView'
+          },
+          {
+            type: 'LineChart',
+            height: 500,
+            contextId: 'mainView',
+            displayFormat: {
+              fixedColumns: [3499],
+              legend: 'bottom',
+              lineSize: '2',
+              pointSize: '3',
+              smoothLine: false,
+              valueColumns: [
+                { color: '#00ff00', tableColumnId: 3501 }
+              ]
             }
+          }
         ]
     });
 });

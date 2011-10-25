@@ -17,10 +17,11 @@ _.each(Dataset.chart.types, function(value, localChartType)
 
         configurationSchema: function()
         {
-            var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: this._view};
-            if ($.isBlank(this._view)) { return retVal; }
+            var retVal = {schema: [{ fields: [$.cf.contextPicker()] }],
+                view: (this._dataContext || {}).view};
+            if ($.isBlank(this._dataContext)) { return retVal; }
             retVal.schema = retVal.schema
-                .concat(blist.configs.chart.configForType(this._chartType, {view: this._view}));
+                .concat(blist.configs.chart.configForType(this._chartType, {view: this._dataContext.view}));
             return retVal;
         },
 
@@ -57,13 +58,13 @@ var updateProperties = function(lcObj, properties)
     if (!lcObj._updateDataSource(properties, function()
                 {
                     if (!$.isBlank(this._chart))
-                    { this._chart.setView(this._view); }
+                    { this._chart.setView(this._dataContext.view); }
                     else
                     {
                         this._chart = this.$contents.socrataChart({
                             chartType: this._chartType,
                             displayFormat: this._properties.displayFormat,
-                            view: this._view
+                            view: this._dataContext.view
                         });
                         this._updateValidity();
                     }

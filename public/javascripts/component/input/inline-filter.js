@@ -15,7 +15,7 @@ $.component.Component.extend('Inline filter', 'input', {
 
     configurationSchema: function()
     {
-        var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: this._view};
+        var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: (this._dataContext || {}).view};
         return retVal;
     },
 
@@ -37,10 +37,10 @@ $.component.Component.extend('Inline filter', 'input', {
 var renderUpdate = function()
 {
     if (!$.isBlank(this._uf))
-    { this._uf.setView(this._view); }
+    { this._uf.setView(this._dataContext.view); }
     else
     {
-        this._uf = this.$contents.pane_unifiedFilter({ view: this._view }).render();
+        this._uf = this.$contents.pane_unifiedFilter({ view: this._dataContext.view }).render();
         this._updateValidity();
     }
 };

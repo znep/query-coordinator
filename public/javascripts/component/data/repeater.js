@@ -53,10 +53,10 @@ $.component.Container.extend('Repeater', 'content', {
         if ($.cf.designing)
             // Render actual children as direct descendants
             this.add(this._cloneProperties.children);
-        else if (this._view) {
+        else if ((this._dataContext || {}).view) {
             // Render records
             var me = this;
-            this._view.getRows(this.position, this.length, function(rows) {
+            this._dataContext.view.getRows(this.position, this.length, function(rows) {
                 _.each(rows, me._setRow, me);
             });
         }

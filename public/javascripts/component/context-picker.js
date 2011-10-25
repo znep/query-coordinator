@@ -2,7 +2,7 @@
 
 $.cf.contextPicker = function()
 {
-    return {name: 'viewId', required: true, text: 'View Data', type: 'custom',
+    return {name: 'contextId', required: true, text: 'View Data', type: 'custom',
         editorCallbacks: {create: picker, value: pickerValue, validate: pickerValidate}};
 };
 
@@ -13,15 +13,15 @@ var picker = function($field, vals, curValue)
     $field.append($wrapper);
 
     var $hiddenInput = $.tag({tagName: 'input', type: 'hidden', name: $field.attr('name'),
-        'class': 'required', data: {'custom-4x4uid': 'req'}, value: curValue});
+        'class': 'required', value: curValue});
     $field.append($hiddenInput);
 
-    var fullData = $.dataContext.availableContexts[curValue];
+    var fullData = $.dataContext.availableContexts[curValue] || {view: {}};
     var $textInput = $.tag({tagName: 'input', type: 'text', 'class': 'textInput',
-        value: $.htmlEscape((fullData || {}).name || curValue)});
+        value: $.htmlEscape(fullData.view.name || curValue)});
     $textInput.change(function(e)
         {
-            var v = ($textInput.data('fullData') || {}).id || $textInput.value();
+            var v = ($textInput.data('fullData') || {}).contextId || $textInput.value();
             if (!$.isBlank(v))
             {
                 var m = v.match(/^https?:\/\/.*\/(\w{4}-\w{4})(\?.*)*$/);
@@ -33,7 +33,8 @@ var picker = function($field, vals, curValue)
             if ($.isBlank($.dataContext.availableContexts[v]))
             {
                 e.stopPropagation();
-                $.dataContext.getContext(v, function() { $textInput.change(); },
+                $.dataContext.loadContext(v, {type: 'view', viewId: v},
+                    function() { $textInput.change(); },
                     function(xhr)
                     {
                         var validator = $hiddenInput.closest('form').data('form-validator');
@@ -60,11 +61,11 @@ var picker = function($field, vals, curValue)
     $wrapper.append($chooser);
 
     var searchDelayTimer;
-    var translateDS = function(ds)
+    var translateDS = function(dc)
     {
-        var d = {};
+        var d = {contextId: dc.id};
         _.each(['name', 'id', 'description', 'category', 'tags'], function(key)
-            { d[key] = ds[key]; });
+            { d[key] = dc.view[key]; });
         return d;
     };
     var matchScore = function(item, baseScore)
@@ -78,7 +79,7 @@ var picker = function($field, vals, curValue)
         $textInput.awesomecomplete({
             alignRight: $wrapper,
             attachTo: $field.closest('.controlPane'),
-            dontMatch: ['id'],
+            dontMatch: ['id', 'contextId'],
             forcePosition: true,
             showAll: true,
             skipBlankValues: true,
@@ -151,9 +152,13 @@ var picker = function($field, vals, curValue)
                                             isTitle: true, term: term});
                                         dataViews = dataViews.concat(curData);
                                     }
+                                    var curViews = {};
+                                    _.each($.dataContext.availableContexts, function(ac)
+                                        { if (!$.isBlank(ac.view)) { curViews[ac.view.id] = ac.view; } });
                                     var newData = _.map(_.reject(results.views, function(v)
-                                            { return !$.isBlank($.dataContext.availableContexts[v.id]); }),
-                                        function(v) { return $.extend({isServer: true}, translateDS(v)); });
+                                            { return !$.isBlank(curViews[v.id]); }),
+                                        function(v) { return $.extend({isServer: true},
+                                            translateDS({id: v.id, view: v})); });
                                     if (!_.isEmpty(newData))
                                     {
                                         if (!_.isEmpty(dataViews))
@@ -191,7 +196,7 @@ var pickerValidate = function($field)
     var $editor = $field.find('input[type=hidden]');
     if ($editor.length < 1) { return false; }
 
-    return $editor.valid();
+    return $editor.valid() && !$.isBlank($.dataContext.availableContexts[$editor.value()]);
 };
 
 })(jQuery);

@@ -3,7 +3,13 @@
         availableContexts: {},
         _contextsQueue: {},
 
-        getContext: function(id, successCallback, errorCallback)
+        load: function(configHash)
+        {
+            var dc = this;
+            _.each(configHash, function(c, id) { dc.loadContext(id, c); });
+        },
+
+        loadContext: function(id, config, successCallback, errorCallback)
         {
             var dc = this;
             if (!$.isBlank(dc.availableContexts[id]))
@@ -19,21 +25,44 @@
             }
 
             dc._contextsQueue[id] = [];
-            Dataset.createFromViewId(id, function(view)
-                {
-                    dc.availableContexts[id] = view;
-                    _.each(dc._contextsQueue[id], function(f)
-                        { if (_.isFunction(f.success)) { f.success(dc.availableContexts[id]); } });
-                    delete dc._contextsQueue[id];
-                    if (_.isFunction(successCallback)) { successCallback(dc.availableContexts[id]); }
-                },
-                function(xhr)
-                {
-                    _.each(dc._contextsQueue[id], function(f)
-                        { if (_.isFunction(f.error)) { f.error(xhr); } });
-                    delete dc._contextsQueue[id];
-                    if (_.isFunction(errorCallback)) { errorCallback(xhr); }
-                });
+            switch (config.type)
+            {
+                case 'view':
+                    Dataset.createFromViewId(config.viewId, function(view)
+                        {
+                            dc.availableContexts[id] = {id: id, view: view};
+                            _.each(dc._contextsQueue[id], function(f)
+                                { if (_.isFunction(f.success)) { f.success(dc.availableContexts[id]); } });
+                            delete dc._contextsQueue[id];
+                            if (_.isFunction(successCallback)) { successCallback(dc.availableContexts[id]); }
+                        },
+                        function(xhr)
+                        {
+                            _.each(dc._contextsQueue[id], function(f)
+                                { if (_.isFunction(f.error)) { f.error(xhr); } });
+                            delete dc._contextsQueue[id];
+                            if (_.isFunction(errorCallback)) { errorCallback(xhr); }
+                        });
+            }
+        },
+
+        getContext: function(id, successCallback, errorCallback)
+        {
+            var dc = this;
+            if (!$.isBlank(dc.availableContexts[id]))
+            {
+                if (_.isFunction(successCallback))
+                { _.defer(function() { successCallback(dc.availableContexts[id]); }); }
+                return true;
+            }
+
+            if (!$.isBlank(dc._contextsQueue[id]))
+            {
+                dc._contextsQueue[id].push({success: successCallback, error: errorCallback});
+                return true;
+            }
+
+            return false;
         }
     };
 })(jQuery);

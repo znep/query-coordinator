@@ -309,24 +309,26 @@
         _updateDataSource: function(properties, callback)
         {
             var cObj = this;
-            if (!$.isBlank(properties.viewId) &&
-                    ($.isBlank(cObj._view) || cObj._view.id != properties.viewId))
+            if (!$.isBlank(properties.contextId) &&
+                    ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.contextId))
             {
-                cObj.startLoading();
-                if (!$.isBlank(cObj._propEditor))
-                { cObj._propEditor.setComponent(null); }
-                $.dataContext.getContext(properties.viewId, function(view)
+                if ($.dataContext.getContext(properties.contextId, function(dc)
+                    {
+                        cObj.finishLoading();
+                        cObj._dataContext = dc;
+                        if (!$.isBlank(cObj._propEditor))
+                        { cObj._propEditor.setComponent(cObj); }
+                        if (_.isFunction(callback)) { callback.apply(cObj); }
+                    }))
                 {
-                    cObj.finishLoading();
-                    cObj._view = view;
+                    cObj.startLoading();
                     if (!$.isBlank(cObj._propEditor))
-                    { cObj._propEditor.setComponent(cObj); }
-                    if (_.isFunction(callback)) { callback.apply(cObj); }
-                });
+                    { cObj._propEditor.setComponent(null); }
+                }
                 return true;
             }
-            else if ($.isBlank(properties.viewId) && $.isBlank(cObj._properties.viewId))
-            { delete cObj._view; }
+            else if ($.isBlank(properties.contextId) && $.isBlank(cObj._properties.contextId))
+            { delete cObj._dataContext; }
             return false;
         }
     });

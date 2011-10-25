@@ -925,6 +925,9 @@
                 },
                 function()
                 {
+                    if (!mapObj._animation)
+                    { mapObj._animation = {}; }
+
                     _.defer(function()
                         { mapObj.handleClustersLoaded([], view); });
                     var executable = views.shift();

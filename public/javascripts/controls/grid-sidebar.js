@@ -401,6 +401,7 @@
     {
         var nameParts = getConfigNames(paneName);
         var outerConfig = paneConfigs[nameParts.primary];
+        if (outerConfig == null) { return; }
         return (outerConfig.subPanes || {})[nameParts.secondary] || paneConfigs[nameParts.secondary];
     };
 

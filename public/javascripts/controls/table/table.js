@@ -4145,6 +4145,8 @@
 
         // Monitor model events
 
+        var table = this;
+        var curView;
         // Need to listen for view to be set
         $this.bind('dataset_ready', function(event, newModel)
         {
@@ -4152,49 +4154,56 @@
 
             var isReady = function()
             {
-                dsReady = true;
-                initMeta();
-                renderHeader();
-                renderFooter();
-                initRows();
+                if (!dsReady)
+                {
+                    initMeta();
+                    renderHeader();
+                    renderFooter();
+                    initRows();
 
+                    // Bind to events on the DOM that are thrown by the model
+                    $this.bind('columns_changed', function()
+                            {
+                                // This seem a bit heavy-handed...
+                                initMeta();
+                                renderHeader();
+                                renderFooter();
+                                initRows();
+                            })
+                        .bind('rows_changed', function(event)
+                            {
+                                begin("updateRows");
+                                initRows();
+                                end("updateRows");
+                            })
+                        .bind('selection_change', function(event, rows)
+                            {
+                                begin("selectionChange");
+                                updateRowSelection(rows);
+                                end("selectionChange");
+                            })
+                        .bind('show', function()
+                            {
+                                initMeta();
+                                renderHeader();
+                                renderFooter();
+                                initRows();
+                            });
+                }
+
+                dsReady = true;
+
+                if (!$.isBlank(curView))
+                { curView.unbind(null, null, table); }
+                curView = model.view;
                 // Request comment indicators
                 model.view.getCommentLocations();
 
                 model.view.bind('row_change', function(rows)
-                        { updateRows(rows); })
-                    .bind('query_change', updateHeader)
-                    .bind('column_resized', configureWidths)
-                    .bind('column_totals_changed', renderFooter);
-
-                // Bind to events on the DOM that are thrown by the model
-                $this.bind('columns_changed', function()
-                        {
-                            // This seem a bit heavy-handed...
-                            initMeta();
-                            renderHeader();
-                            renderFooter();
-                            initRows();
-                        })
-                    .bind('rows_changed', function(event)
-                        {
-                            begin("updateRows");
-                            initRows();
-                            end("updateRows");
-                        })
-                    .bind('selection_change', function(event, rows)
-                        {
-                            begin("selectionChange");
-                            updateRowSelection(rows);
-                            end("selectionChange");
-                        })
-                    .bind('show', function()
-                        {
-                            initMeta();
-                            renderHeader();
-                            renderFooter();
-                            initRows();
-                        });
+                        { updateRows(rows); }, table)
+                    .bind('query_change', updateHeader, table)
+                    .bind('column_resized', configureWidths, table)
+                    .bind('column_totals_changed', renderFooter, table);
 
             };
 
@@ -4214,7 +4223,6 @@
         $this.blistModel(options.model);
 
 
-        var table = this;
         var isDisabled = false;
         var blistTableObj = function()
         {

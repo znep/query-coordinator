@@ -562,6 +562,7 @@ $(function()
     blist.$container.renderTypeManager({view: blist.dataset,
         editEnabled: false,
         table: {
+            columnHideEnabled: false,
             showRowNumbers: widgetNS.theme['grid']['row_numbers'],
             showRowHandle: widgetNS.theme['grid']['row_numbers'],
             manualResize: true,

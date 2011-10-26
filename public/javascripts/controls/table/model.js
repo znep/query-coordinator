@@ -74,30 +74,33 @@ blist.namespace.fetch('blist.data');
             if (newOpt)
             {
                 var wasDS = !$.isBlank(this.view);
+                if (wasDS)
+                { this.view.unbind(null, null, this); }
+
                 $.extend(curOptions, newOpt);
                 if (!$.isBlank(curOptions.view))
                 {
                     this.view = curOptions.view;
                     this.view.bind('row_count_change', function()
-                            { configureActive(); })
+                            { configureActive(); }, this)
                         .bind('clear_temporary', function()
                             {
                                 resetUndo();
                                 collapseAll();
                                 configureActive();
-                            })
+                            }, this)
                         .bind('query_change', function()
                             {
                                 resetUndo();
                                 collapseAll();
                                 configureActive();
-                            })
+                            }, this)
                         .bind('columns_changed', function()
                             {
                                 resetUndo();
                                 trCols = null;
                                 $(listeners).trigger('columns_changed');
-                            })
+                            }, this)
                         // Dataset doesn't know about weird constructed
                         // child rows, so whenever a parent changes, fire
                         // all the fake children
@@ -112,9 +115,16 @@ blist.namespace.fetch('blist.data');
                                             [r.childRows]);
                                     }
                                 });
-                            });
-                    if (!wasDS)
-                    { $(listeners).trigger('dataset_ready', [self]); }
+                            }, this);
+                    $(listeners).trigger('dataset_ready', [self]);
+                }
+                if (wasDS)
+                {
+                    trCols = null;
+                    resetUndo();
+                    collapseAll();
+                    configureActive();
+                    $(listeners).trigger('columns_changed');
                 }
             }
             return this;

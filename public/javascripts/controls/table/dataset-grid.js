@@ -31,6 +31,7 @@
         {
             addColumnCallback: function(parentId) {},
             columnDeleteEnabled: false,
+            columnHideEnabled: true,
             columnNameEdit: false,
             columnPropertiesEnabled: false,
             editColumnCallback: function(columnId, parentId) {},
@@ -87,8 +88,7 @@
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
-                        filterMinChars: 0,
-                        view: datasetObj.settings.view});
+                        filterMinChars: 0});
 
                 $.live('#' + $datasetGrid.attr('id') +
                     ' .blist-table-row-handle', 'mouseover',
@@ -106,7 +106,9 @@
                     ' .blist-table-row-numbers a', 'click',
                     function(e) { rowMenuHandler(datasetObj, e); });
 
-                datasetObj.settings._model = $datasetGrid.blistModel();
+                datasetObj._model = $datasetGrid.blistModel();
+
+                datasetObj.setView(datasetObj.settings.view);
 
                 $(document).bind('cell_feed_shown', function(e, rowId, tcId)
                 {
@@ -125,6 +127,17 @@
                 return this._$dom;
             },
 
+            setView: function(newView)
+            {
+                this._view = newView;
+                this._model.options({view: newView});
+            },
+
+            isValid: function()
+            {
+                return !$.isBlank(this._view);
+            },
+
             drillDown: function(drillLink)
             {
                 var datasetObj = this;
@@ -136,7 +149,7 @@
                 if ($.isBlank(filterColumnId) || filterValue == '')
                 { return false; }
 
-                var view = datasetObj.settings.view.cleanCopy();
+                var view = datasetObj._view.cleanCopy();
 
                 // Now construct our beautiful filter
                 var filter;
@@ -184,7 +197,7 @@
 
                 var drillDownCallBack = function(newView)
                 {
-                    datasetObj.settings.view.update(newView, true);
+                    datasetObj._view.update(newView, true);
                 };
 
                 var otherGroupBys = _.select(view.query.groupBys || [], function(g)
@@ -259,15 +272,15 @@
                     }
                     delete view.query.groupBys;
 
-                    currentColumns = datasetObj.settings.view.realColumns;
-                    if (datasetObj.settings.view.type == 'blist')
-                    { parentColumns = datasetObj.settings.view.realColumns; }
+                    currentColumns = datasetObj._view.realColumns;
+                    if (datasetObj._view.type == 'blist')
+                    { parentColumns = datasetObj._view.realColumns; }
                     if (!_.isUndefined(parentColumns))
                     { revealDrillDownCallBack(); }
 
-                    if (datasetObj.settings.view.type != 'blist')
+                    if (datasetObj._view.type != 'blist')
                     {
-                        datasetObj.settings.view.getParentDataset(function(parDS)
+                        datasetObj._view.getParentDataset(function(parDS)
                         {
                             if (!$.isBlank(parDS))
                             {
@@ -279,7 +292,7 @@
                                 // We can't get to the parent, so we're stuck with
                                 // what we've got...
                                 parentColumns =
-                                    datasetObj.settings.view.realColumns;
+                                    datasetObj._view.realColumns;
                                 revealDrillDownCallBack();
                             }
                         });
@@ -317,7 +330,7 @@
                 var options = [];
                 if (!isSubRow)
                 {
-                    options.push('<li class="pageView"><a href="', this.settings.view.url, '/', row.id,
+                    options.push('<li class="pageView"><a href="', this._view.url, '/', row.id,
                             '" class="noInterstitial noRedirPrompt">View Single Row Data</a></li>');
                 }
                 if (this.settings.editEnabled && context.permissions.canDelete)
@@ -361,7 +374,7 @@
 
     var rowMenuOpenCallback = function(datasetObj, $menu)
     {
-        $menu.find('li.pageView').toggle(!datasetObj.settings._model.hasSelectedRows());
+        $menu.find('li.pageView').toggle(!datasetObj._model.hasSelectedRows());
     };
 
     /* Handle clicks in the row menus */
@@ -393,18 +406,18 @@
         }
 
         var $menu = $link.closest('.rowMenu');
-        var model = datasetObj.settings._model;
+        var model = datasetObj._model;
         switch (action)
         {
             case 'row-delete':
                 if (!$.isBlank(s[2]))
                 {
-                    var col = datasetObj.settings.view.columnForID(s[2]);
+                    var col = datasetObj._view.columnForID(s[2]);
                     model.removeChildRows(model.getByID(rowId), col);
                 }
                 else
                 {
-                    model.selectRow(datasetObj.settings.view.rowForID(rowId));
+                    model.selectRow(datasetObj._view.rowForID(rowId));
                     model.removeRows(_.keys(model.selectedRows));
                 }
                 break;
@@ -417,7 +430,7 @@
 
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {
-        var model = datasetObj.settings._model;
+        var model = datasetObj._model;
         if (!column || row.level > 0) { return; }
         if (column.id == 'rowNumberCol')
         {
@@ -457,7 +470,7 @@
                     var $tdh = $(tdh);
                     if ($tdh.find('a.menuLink').length > 0) { return true; }
                     var parColId = $tdh.attr('parentColId');
-                    var parCol = datasetObj.settings.view.columnForID(parColId);
+                    var parCol = datasetObj._view.columnForID(parColId);
                     if (!$.isBlank(parCol))
                     {
                         var colId = $tdh.attr('colId');
@@ -477,6 +490,7 @@
 
         $col.columnMenu({column: col, $menuTrigger: $menuLink,
             columnDeleteEnabled: datasetObj.settings.columnDeleteEnabled,
+            columnHideEnabled: datasetObj.settings.columnHideEnabled,
             columnPropertiesEnabled: datasetObj.settings.columnPropertiesEnabled,
             editColumnCallback: datasetObj.settings.editColumnCallback,
             selectedColumns: function()
@@ -484,7 +498,7 @@
                 return $(datasetObj.currentGrid).blistTableAccessor()
                     .getSelectedColumns();
             },
-            view: datasetObj.settings.view});
+            view: datasetObj._view});
 
         if (tipsRef)
         {
@@ -513,20 +527,20 @@
 
     var columnMove = function(datasetObj, col, newPos)
     {
-        var visColIds = _.pluck(datasetObj.settings.view.visibleColumns, 'id');
+        var visColIds = _.pluck(datasetObj._view.visibleColumns, 'id');
         var oldPos = _.indexOf(visColIds, col.id);
         // Stick the column in the new spot, then remove it from the old
         visColIds.splice(newPos, 0, col.id);
         visColIds.splice((newPos < oldPos ? oldPos + 1 : oldPos), 1);
 
-        datasetObj.settings.view.setVisibleColumns(visColIds, null,
-            datasetObj.settings.view.temporary);
+        datasetObj._view.setVisibleColumns(visColIds, null,
+            datasetObj._view.temporary);
     };
 
     var columnNameEdit = function(datasetObj, event, origEvent)
     {
         if (!datasetObj.settings.columnNameEdit ||
-            datasetObj.settings.view.temporary)
+            datasetObj._view.temporary)
         { return; }
 
         var $target = $(origEvent.currentTarget).find('.blist-th-name');
@@ -577,7 +591,7 @@
             return;
         }
 
-        var col = datasetObj.settings.view.columnForID($th.data('column').id);
+        var col = datasetObj._view.columnForID($th.data('column').id);
         col.update({name: newName});
         $input.attr('disabled', 'disabled');
 

@@ -139,6 +139,9 @@ screen-videos:
 screen-videos-popup:
 - strip-chrome
 - screen-videos-popup
+grid:
+- table-core
+- dataset-grid
 html-styles:
 - table-core
 - dataset-grid

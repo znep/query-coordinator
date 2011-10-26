@@ -142,6 +142,7 @@ javascripts:
     - public/javascripts/controls/table/table_nav.js
     - public/javascripts/controls/scrollable.js
     - public/javascripts/controls/column-menu.js
+    - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/table/dataset-grid.js
   shared-map:
     - public/javascripts/plugins/StyledMarker.js

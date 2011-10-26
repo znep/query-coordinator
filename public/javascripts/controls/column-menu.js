@@ -62,6 +62,9 @@
                 { features.remove = true; }
 
 
+                if (cmObj.settings.columnHideEnabled)
+                { features.hide = true; }
+
                 if (cmObj.settings.columnPropertiesEnabled)
                 { features.properties = true; }
 
@@ -103,12 +106,16 @@
                         // need to add a separator.
                         menu.contents.push({tagName: 'li',
                             'class': ['filterSeparator', 'separator',
-                                'singleItem']});
+                                'singleItem', {value: 'hide',
+                                    onlyIf: !(features.hide || features.remove || features.properties)}]});
                     }
-                    menu.contents.push({tagName: 'li', 'class': 'hideCol',
-                        contents: {tagName: 'a', href: '#hide-column',
-                            contents: {tagName: 'span', 'class': 'highlight',
-                                contents: 'Hide Column'}}});
+                    if (features.hide)
+                    {
+                        menu.contents.push({tagName: 'li', 'class': 'hideCol',
+                            contents: {tagName: 'a', href: '#hide-column',
+                                contents: {tagName: 'span', 'class': 'highlight',
+                                    contents: 'Hide Column'}}});
+                    }
 
                     if (features.remove)
                     {

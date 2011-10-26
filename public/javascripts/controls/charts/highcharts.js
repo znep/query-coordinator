@@ -654,8 +654,7 @@
                 borderWidth: 1 },
             plotOptions: {},
             title: { text: null },
-            xAxis: { title:
-                { enabled: xTitle !== '' && !_.isUndefined(xTitle), text: xTitle,
+            xAxis: { title: { text: $.isBlank(xTitle) ? null : xTitle,
                     style: { backgroundColor: '#ffffff',
                         border: '1px solid #909090', padding: '3px' } },
                 dateTimeLabelFormats: {
@@ -664,7 +663,7 @@
                     month: '%b %Y'
                 }, labels: {formatter: function() { return clipFormatter.apply(this, [true]); }} },
             yAxis: { title:
-                { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle,
+                { text: $.isBlank(yTitle) ? null : yTitle,
                     style: { backgroundColor: '#ffffff',
                         border: '1px solid #909090', padding: '3px' } },
                 labels: {formatter: clipFormatter} }

@@ -311,6 +311,8 @@
             { return null; }
 
             var layout = mapObj._super(columns);
+            if ($.isBlank(layout))
+            { layout = {columns: [{rows: []}]}; }
             var col = layout.columns[0];
 
             // Title row

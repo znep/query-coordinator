@@ -128,6 +128,9 @@ blist.namespace.fetch('blist.datatypes');
     // Money
     var renderMoney = function(value, column)
     {
+        if (_.isString(value))
+        { value = value.replace(/[^0-9\.\-\+]/g, ''); }
+
         return numberHelper(value, (column.format.precision || 2),
             column.format.precisionStyle,
             blist.datatypes.money.currencies[column.format.currency || 'USD'],

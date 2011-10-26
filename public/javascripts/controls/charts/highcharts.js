@@ -390,7 +390,7 @@
                 if (!_.isNumber(num) && !(num.match && num.match(/^[-+]?[0-9,]*\.?[0-9]+$/)))
                 { return num; }
 
-                if (num.match && num.match(/,/)) { num = num.replace(/[^0-9\.]/g, ''); }
+                if (_.isString(num)) { num = num.replace(/[^0-9\.\+\-]/g, ''); }
 
                 var decimalPlaces = 2;
                 if (!xAxis

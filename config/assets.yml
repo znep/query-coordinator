@@ -20,6 +20,7 @@ javascripts:
     - public/javascripts/controls/loading-spinner.js
     - public/javascripts/util/namespace.js
     - public/javascripts/util/util.js
+    - public/javascripts/util/events.js
     - public/javascripts/util/base-model.js
     - public/javascripts/util/socrata-server.js
     - public/javascripts/util/compat.js
@@ -80,7 +81,6 @@ javascripts:
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/properties-editor.js
-    - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/content-editable.js
     - public/javascripts/component/util/style-config.js
     - public/javascripts/component/component.js
@@ -151,6 +151,7 @@ javascripts:
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/util/color.js
+    - public/javascripts/controls/panes/map-config.js
     - public/javascripts/controls/maps/base-map.js
     - public/javascripts/controls/maps/esri-map.js
     - public/javascripts/controls/maps/external-esri-map.js
@@ -160,6 +161,7 @@ javascripts:
   shared-chart:
     - public/javascripts/util/color.js
     - public/javascripts/util/humane-number.js
+    - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/charts/base-chart.js
@@ -183,7 +185,6 @@ javascripts:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/util/color.js
-    - public/javascripts/util/events.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/screens/admin-customizer.js
@@ -233,7 +234,6 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/upload-dialog.js
     - public/javascripts/util/color.js
-    - public/javascripts/util/events.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/screens/admin-customizer.js
@@ -245,7 +245,6 @@ javascripts:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/util/color.js
-    - public/javascripts/util/events.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/controls/stories.js
@@ -260,7 +259,6 @@ javascripts:
     - public/javascripts/screens/admin-collapse-nav.js
   browse-control:
     - public/javascripts/plugins/jquery.tagcloud.js
-    - public/javascripts/util/events.js
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/expander.js
@@ -270,7 +268,6 @@ javascripts:
     - public/javascripts/screens/browse.js
   screen-nominations:
     - public/javascripts/plugins/ajaxupload.js
-    - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/base-model.js
     - public/javascripts/util/socrata-server.js
@@ -279,7 +276,6 @@ javascripts:
     - public/javascripts/screens/nominations.js
   screen-nomination:
     - public/javascripts/util/inline-login.js
-    - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/serialize.js
     - public/javascripts/plugins/ajaxupload.js
@@ -301,7 +297,6 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/controls/embed-form.js
     - public/javascripts/util/humane-date.js
-    - public/javascripts/util/events.js
     - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/dataset-controls.js
@@ -348,7 +343,6 @@ javascripts:
     - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
-    - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/inline-login.js
     - public/javascripts/util/konami.js
@@ -379,6 +373,7 @@ javascripts:
     - public/javascripts/controls/panes/embed-sdp.js
     - public/javascripts/controls/panes/feed.js
     - public/javascripts/controls/panes/form-create.js
+    - public/javascripts/controls/panes/map-config.js
     - public/javascripts/controls/panes/map-create.js
     - public/javascripts/controls/panes/permissions.js
     - public/javascripts/controls/panes/plagiarize-dataset.js
@@ -406,7 +401,6 @@ javascripts:
     - public/javascripts/screens/dataset-edit-metadata.js
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
-    - public/javascripts/util/events.js
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
@@ -419,7 +413,6 @@ javascripts:
     - public/javascripts/plugins/jquery.imgareaselect.js
     - public/javascripts/screens/dataset-thumbnail.js
   screen-bare-dataset:
-    - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/dataset-controls.js
@@ -428,7 +421,6 @@ javascripts:
     - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/dataset-bare.js
   render-view-minimum:
-    - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/plugins/lab.js

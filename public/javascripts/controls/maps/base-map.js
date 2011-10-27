@@ -26,6 +26,11 @@
             return mixins;
         },
 
+        isValid: function()
+        {
+            return Dataset.map.isValid(this._primaryView, this._displayFormat);
+        },
+
         initializeVisualization: function ()
         {
             var mapObj = this;
@@ -157,7 +162,8 @@
             // We need to change the ID so that maps (such as ESRI) recognize
             // something has changed, and reload properly
             mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
-            $(mapObj.currentDom).socrataMap(mapObj.settings);
+            $(mapObj.currentDom).socrataMap($.extend({}, mapObj.settings, {view: mapObj._primaryView,
+                displayFormat: mapObj._displayFormat}));
         },
 
         needsPageRefresh: function()
@@ -813,6 +819,8 @@
         {
             var mapObj = this;
 
+            if (!mapObj.isValid()) { return; }
+
             if (mapObj._displayFormat.plotStyle == 'heatmap'
                 || mapObj._neverCluster)
             {
@@ -858,7 +866,7 @@
                 mapObj._renderType = 'clusters';
                 view.getClusters( viewport ||
                     { 'xmin': -180, 'xmax': 180,
-                      'ymin': -90,  'ymax': 90 }, function(data)
+                      'ymin': -90,  'ymax': 90 }, mapObj._displayFormat, function(data)
                 {
                     if (_.isUndefined(mapObj._neverCluster))
                     { mapObj._neverCluster = _.reduce(data, function(total, cluster)

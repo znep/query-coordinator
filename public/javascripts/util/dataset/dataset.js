@@ -451,7 +451,7 @@ this.Dataset = ServerModel.extend({
         { successCallback(); }
     },
 
-    getClusters: function(viewport, successCallback, errorCallback)
+    getClusters: function(viewport, displayFormat, successCallback, errorCallback)
     {
         var ds = this;
         if (!ds._clusters)
@@ -496,8 +496,16 @@ this.Dataset = ServerModel.extend({
 
         var useInline = ds.type != 'map'
                         || $.subKeyDefined(ds, 'query.filterCondition')
-                        || !$.isBlank(ds.searchString);
+                        || !$.isBlank(ds.searchString)
+                        || (!$.isBlank(displayFormat) && !_.isEqual(displayFormat, ds.displayFormat));
 
+        var reqData;
+        if (useInline)
+        {
+            reqData = ds.cleanCopy();
+            if (!$.isBlank(displayFormat)) { reqData.displayFormat = displayFormat; }
+            reqData = JSON.stringify(reqData);
+        }
         if (params['max_lon'] < params['min_lon'])
         {
             var viewportsLeft = 2;
@@ -512,13 +520,15 @@ this.Dataset = ServerModel.extend({
             };
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
-                params: $.extend({}, params, { 'min_lon': -179.999999 }), inline: useInline,
+                params: $.extend({}, params, { 'min_lon': -179.999999 }),
+                data: reqData, inline: useInline,
                 success: function(data) { _.each(data, translateCluster); callback(data); },
                 error: errorCallback
             });
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
-                params: $.extend({}, params, { 'max_lon': 179.999999 }), inline: useInline,
+                params: $.extend({}, params, { 'max_lon': 179.999999 }),
+                data: reqData, inline: useInline,
                 success: function(data) { _.each(data, translateCluster); callback(data); },
                 error: errorCallback
             });
@@ -526,7 +536,7 @@ this.Dataset = ServerModel.extend({
         else
         { ds.makeRequest({
             url: '/views/' + ds.id + '/rows.json',
-            params: params, inline: useInline,
+            params: params, data: reqData, inline: useInline,
             success: function(data)
             {
                 _.each(data, translateCluster);

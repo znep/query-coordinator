@@ -58,6 +58,24 @@ Dataset.map.toBing = {
     }
 };
 
+Dataset.map.isValid = function(view, displayFormat)
+{
+    if (view.isArcGISDataset()) { return true; }
+    if (view.isGeoDataset()) { return true; }
+    if ($.isBlank(displayFormat.noLocations) &&
+        ($.isBlank(displayFormat.plot) ||
+         ($.isBlank(displayFormat.plot.latitudeId) ||
+          $.isBlank(displayFormat.plot.longitudeId)) &&
+         $.isBlank(displayFormat.plot.locationId))) { return false; }
+
+    var latCol = view.columnForTCID(displayFormat.plot.latitudeId);
+    var longCol = view.columnForTCID(displayFormat.plot.longitudeId);
+    var locCol = view.columnForTCID(displayFormat.plot.locationId);
+
+    return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol)) ||
+        displayFormat.noLocations;
+};
+
 Dataset.modules['map'] =
 {
     supportsSnapshotting: function()
@@ -67,19 +85,8 @@ Dataset.modules['map'] =
 
     _checkValidity: function()
     {
-        if (this.isArcGISDataset()) { return true; }
-        if (this.isGeoDataset()) { return true; }
-        if ($.isBlank(this.displayFormat.noLocations) &&
-            ($.isBlank(this.displayFormat.plot.latitudeId) ||
-            $.isBlank(this.displayFormat.plot.longitudeId)) &&
-            $.isBlank(this.displayFormat.plot.locationId)) { return false; }
-
-        var latCol = this.columnForTCID(this.displayFormat.plot.latitudeId);
-        var longCol = this.columnForTCID(this.displayFormat.plot.longitudeId);
-        var locCol = this.columnForTCID(this.displayFormat.plot.locationId);
-
-        return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol)) ||
-            this.displayFormat.noLocations;
+        if (!this._super()) { return false; }
+        return Dataset.map.isValid(this, this.displayFormat);
     },
 
     _convertLegacy: function()

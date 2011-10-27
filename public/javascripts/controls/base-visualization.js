@@ -172,11 +172,14 @@
             if (vizObj.hasFlyout())
             { vizObj.richRenderer.renderRow($item, row, true); }
 
-            $item.append($.tag({tagName: 'a',
-                href: view.url + '/' + row.id,
-                target: isPrimaryView ? null : '_blank',
-                'class': ['viewRow', 'noInterstitial', 'noRedirPrompt'],
-                contents: 'View details for this row'}));
+            if (vizObj.settings.showRowLink)
+            {
+                $item.append($.tag({tagName: 'a',
+                    href: view.url + '/' + row.id,
+                    target: isPrimaryView ? null : '_blank',
+                    'class': ['viewRow', 'noInterstitial', 'noRedirPrompt'],
+                    contents: 'View details for this row'}));
+            }
             return $item;
         },
 
@@ -261,7 +264,7 @@
             vizObj._boundViewEvents = false;
 
             vizObj._requireRowReload = true;
-            vizObj.reload();
+            vizObj.reload({});
         },
 
         reload: function(newDF)
@@ -545,7 +548,7 @@
                 { return view.totalRows ? total + view.totalRows : total; }, 0);
             return vizObj._totalRows;
         }
-    }, {view: null}, null, true);
+    }, {view: null, showRowLink: true}, null, true);
 
     var doResize = function(vizObj, e, forceUpdate)
     {

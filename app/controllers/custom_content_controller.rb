@@ -64,7 +64,8 @@ class CustomContentController < ApplicationController
     headers['Content-Type'] = 'text/css'
 
     cache_key = app_helper.cache_key("canvas-stylesheet-#{params[:page_type]}-#{params[:config_name]}",
-                                     { 'domain' => CurrentDomain.cname })
+                                     { 'domain' => CurrentDomain.cname,
+                                       'config_updated' => CurrentDomain.configuration(:custom_content).updatedAt })
     sheet = Rails.cache.read(cache_key)
 
     if sheet.nil?
@@ -79,7 +80,7 @@ class CustomContentController < ApplicationController
       prepare_config(page_config, false)
 
       sheet = build_stylesheet(page_config.contents)
-      Rails.cache.write(cache_key, sheet)
+      Rails.cache.write(cache_key, sheet, :expires_in => 12.minutes)
     end
 
     render :text => sheet, :content_type => 'text/css'

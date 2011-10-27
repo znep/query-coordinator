@@ -80,6 +80,13 @@ module CoreServer
 
   protected
     def log(request)
+      # Useful if you want to find out why a request is being made
+      # begin
+      #   raise Exception.new
+      # rescue Exception => ex
+      #   Rails.logger.info ex.backtrace.join("\n")
+      # end
+
       if block_given?
         result = nil
         ms = Benchmark.ms { result = yield }

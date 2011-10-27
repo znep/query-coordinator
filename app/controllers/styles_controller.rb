@@ -120,7 +120,12 @@ protected
       tmpdir_path = File.join(Dir.tmpdir, 'blist_style_cache')
       Dir.mkdir(tmpdir_path) unless Dir.exist? tmpdir_path
 
-      cache_key = Digest::MD5.hexdigest(stylesheet_filename + File.new(stylesheet_filename).mtime.to_s)
+      includes_cache_key = STYLE_PACKAGES['includes'].map do |include|
+        File.new(File.join(Rails.root, 'app/styles', "#{include}.sass")).mtime.to_s
+      end.join
+
+      cache_key = Digest::MD5.hexdigest(stylesheet_filename + includes_cache_key +
+                    File.new(stylesheet_filename).mtime.to_s)
       cache_path = File.join(tmpdir_path, cache_key)
 
       if File.exist?(cache_path)

@@ -52,7 +52,8 @@ var importTypes = {
     calendar_date: 'date',
     date: 'date',
     checkbox: 'text',
-    location: 'text'
+    location: 'text',
+    html: 'text'
 };
 var locationTypes = {
     address: 'text',
@@ -62,6 +63,11 @@ var locationTypes = {
     latitude: 'number',
     longitude: 'number'
 };
+var forbiddenTypes = [
+    'document', 'document_obsolete',
+    'photo', 'photo_obsolete',
+    'nested_table'
+];
 
 // helpers
 
@@ -248,7 +254,7 @@ var updateLines = function($elems)
         {
             importColumn = {
                 name: dsColumn.name,
-                dataType: dsColumn.dataTypeName // CR: renderTypeName?
+                dataType: dsColumn.dataTypeName
             };
         }
 
@@ -422,7 +428,7 @@ var validateAll = function()
             names[importColumn.name].push(importColumn);
 
         // if we don't have a column, just bail. if we don't have an importColumn, we have serious issues.
-        if ($.isBlank(column))
+        if ($.isBlank(column) || (column.type == 'static'))
             return;
 
         // validate data type
@@ -489,7 +495,7 @@ var validateAll = function()
                 var invalidPercentage = Math.round(1000 *
                     (1 - (column.types[dsImportType] / column.processed))) / 10.0;
                 addValidationError(importColumn, 'warning',
-                    'is a <strong>' + $.capitalize(dsColumn.dataTypeName) + '</strong>, but our ' +
+                    'a <strong>' + $.capitalize(dsColumn.dataTypeName) + '</strong>, but our ' +
                     'analysis indicates that the source column you are trying to import into it is ' +
                     'of type <strong>' + $.capitalize(column.suggestion) + '</strong>. Should you ' +
                     'choose to import that column, roughly <strong>' + invalidPercentage + '%</strong> ' +
@@ -709,12 +715,20 @@ var newReimportLine = function(column)
 
     var $line = $.renderTemplate('columnsListLine', dsColumn, {
         '.columnDestinationCell': 'name!',
-        '.columnTypeCell': 'dataTypeName' // CR: or is it renderTypeName?
+        '.columnTypeCell': 'dataType.title'
     });
     $columnsList.append($line);
 
     $line.data('dsColumn', dsColumn);
-    if (!$.isBlank(scanColumn))
+    if (_.include(forbiddenTypes, dsColumn.dataTypeName))
+    {
+        $line.find('.columnSourceCell')
+            .empty()
+            .append($.tag({ tagName: 'div', 'class': 'forbiddenColumnType',
+                            contents: 'This column cannot be imported into.' }));
+        $line.find('.columnActionCell').hide();
+    }
+    else if (!$.isBlank(scanColumn))
     {
         $line.find('.columnSourceCell select').val(scanColumn.id);
         $line.data('column', scanColumn);
@@ -791,6 +805,7 @@ var addDefaultColumns = function(flat)
         _updateRawLines, _finalizeAddColumns);
 };
 
+// TODO: Also factor in forbidden columns!
 var addGuessedDatasetColumns = function()
 {
     // attempt to reconstruct the correct setting if at all possible
@@ -1158,7 +1173,16 @@ importNS.uploadFilePaneConfig = {
         }
         else
         {
-            uploadEndpoint += 'blob';
+            // if we're dealing with an existing blobby view, we have to do something
+            // different from if we're doing a new one
+            if ((state.operation == 'replace') && !_.isUndefined(blist.importer.dataset))
+            {
+                uploadEndpoint = '/views/' + blist.importer.dataset.id + '.txt?method=replaceBlob';
+            }
+            else
+            {
+                uploadEndpoint += 'blob';
+            }
         }
 
         var $uploadThrobber = $pane.find('.uploadThrobber');
@@ -1230,7 +1254,7 @@ importNS.uploadFilePaneConfig = {
                     if (state.type == 'blobby')
                     {
                         state.submittedView = new Dataset(response);
-                        command.next('metadata');
+                        command.next(state.afterUpload || 'metadata');
                     }
                     else
                     {
@@ -1250,10 +1274,11 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
 {
     // update global vars
     scan = state.scan;
+    scan.summary.sample = scan.summary.sample || [];
     isShown = false;
     wizardCommand = command;
-    columns = scan.summary.columns;
-    locationGroups = scan.summary.locations;
+    columns = scan.summary.columns || [];
+    locationGroups = scan.summary.locations || [];
     $pane = $paneLocal;
     $columnsList = $pane.find('.columnsList');
     $warningsList = $pane.find('.columnWarningsList');
@@ -1396,6 +1421,12 @@ importNS.importColumnsPaneConfig = {
     onInitialize: function($paneLocal, paneConfig, state, command)
     {
         prepareColumnsAndUI($paneLocal, paneConfig, state);
+
+        if (columns.length === 0)
+        {
+            _finalizeAddColumns()
+            return; // nothin to do!
+        }
 
         // throw in our default set of suggestions
         addDefaultColumns();
@@ -1590,7 +1621,7 @@ importNS.importingPaneConfig = {
                     {
                         var regexExpr = transform.options.find;
                         if (!transform.options.regex)
-                            regexExpr = regexExpr.replace(/(\\|\^|\$|\?|\*|\+|\.|\(|\)|\{|\}\|)/g,
+                            regexExpr = regexExpr.replace(/(\\|\^|\$|\?|\*|\+|\.|\(|\)|\{|\}|\|)/g,
                                 function(match) { return '\\' + match; });
 
                         result = '(' + result + ').replace(/' + regexExpr + '/g' +

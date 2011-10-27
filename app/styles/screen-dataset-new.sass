@@ -213,6 +213,10 @@
         width: 25em
         select
           width: 20.5em
+        .forbiddenColumnType
+          font-size: 1.2em
+          font-weight: bold
+          padding: 0.7em 0.4em 0
 
       .columnActionCell
         width: 2em
@@ -250,39 +254,6 @@
 
   .columnsList
     > li
-      .mainLine
-        .columnNameCell
-          width: 25em
-          input[type=text]
-            font-size: 1.45em
-            width: 15em
-
-        .columnTypeCell
-          width: 22em
-
-          .uniform.selector
-            @include ie7-inline-block
-
-        .columnSourceCell
-          width: 22em
-
-          .uniform.selector
-            @include ie7-inline-block
-            max-width: 22em // in case they have ridiculously long column names
-            overflow: hidden
-
-        .columnActionCell
-          float: none
-          overflow: hidden
-
-          a
-            @include sprite-menu-icons('&')
-            float: right
-            margin: 0.2em
-              top: 0.7em
-            &:hover
-              @include opacity(0.8)
-
       .detailsLine
         @include vertical-gradient(#f6f6f6, #ddd)
 

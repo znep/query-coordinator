@@ -18,9 +18,7 @@
                     directive: {}
                 }
             }];
-        },
-
-        _finish: function(data, value, finalCallback) {}
+        }
     }, {name: 'appendReplace', noReset: true}, 'controlPane');
 
     if ($.isBlank(blist.sidebarHidden.edit) || !blist.sidebarHidden.edit.appendReplace)

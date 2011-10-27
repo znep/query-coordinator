@@ -91,7 +91,7 @@
             on importing data for a detailed explanation on how the importer handles data.</p>
         </li>
         <li class="finishPane" data-wizardPaneName="finish">
-          <p class="headline">Your Dataset has been created.</p>
+          <p class="headline">Your Dataset has been updated.</p>
           <p class="subheadline">Click on Finish to see it!</p>
         </li>
       </ul>
@@ -128,7 +128,6 @@
   <script type="text/javascript">
     blist.namespace.fetch('blist.importer');
     blist.importer.dataset = new Dataset(<%= safe_json(@view) %>);
-    blist.importer.canReplace = <%= @view.has_rights?('delete') %>;
   </script>
   <%= include_javascripts 'dataset-edit' %>
 <% end %>

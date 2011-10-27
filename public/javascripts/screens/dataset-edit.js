@@ -9,22 +9,7 @@ var $wizard = $('.appendReplaceWizard');
 $wizard.wizard({
     onCancel: function($pane, state)
     {
-        var redirectToProfile = function()
-        {
-            window.location.href = '/profile';
-        };
-
-        if (!_.isUndefined(state.submittedView))
-        {
-            // well, if we fail we probably don't have anything we can delete anyway
-            state.submittedView.remove(redirectToProfile, redirectToProfile);
-        }
-        else
-        {
-            redirectToProfile();
-        }
-
-        return false;
+        blist.importer.dataset.redirectTo();
     },
     paneConfig: {
 
@@ -32,12 +17,20 @@ $wizard.wizard({
             disableButtons: [ 'next' ],
             onInitialize: function($pane, config, state, command)
             {
+                var isBlobby = blist.importer.dataset.viewType == 'blobby';
+
                 // permissions
-                if (!blist.importer.canReplace)
+                if (!_.include(blist.importer.dataset.rights, 'delete'))
                 {
                     $pane.find('.importTypeList a.replace')
                         .addClass('disabled')
                         .attr('title', 'You do not have sufficient privileges to replace the data in this dataset.');
+                }
+                if (blist.importer.dataset.viewType == 'blobby')
+                {
+                    $pane.find('.importTypeList a.append')
+                        .addClass('disabled')
+                        .attr('title', 'You cannot append into a blobby dataset.');
                 }
 
                 // tooltips
@@ -50,25 +43,24 @@ $wizard.wizard({
                 });
 
                 // actions
-                state.type = 'blist'; // necessarily this is what we're dealing with
+                state.type = isBlobby ? 'blobby' : 'blist';
                 $pane.find('.importTypeList a.append').click(function(event)
                 {
                     event.preventDefault();
+                    if ($(this).hasClass('disabled')) return;
 
                     state.operation = 'append';
-                    state.afterUpload = 'appendReplaceColumns';
+                    state.afterUpload = isBlobby ? 'finish' : 'appendReplaceColumns';
                     command.next('uploadFile');
                 });
                 $pane.find('.importTypeList a.replace').click(function(event)
                 {
                     event.preventDefault();
+                    if ($(this).hasClass('disabled')) return;
 
-                    if (!$(this).hasClass('disabled'))
-                    {
-                        state.operation = 'replace';
-                        state.afterUpload = 'appendReplaceColumns';
-                        command.next('uploadFile');
-                    }
+                    state.operation = 'replace';
+                    state.afterUpload = isBlobby ? 'finish' : 'appendReplaceColumns';
+                    command.next('uploadFile');
                 });
 
             },

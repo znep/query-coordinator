@@ -331,7 +331,7 @@ class DatasetsController < ApplicationController
 
     return render_404 if @view.published?
 
-    unless @view.can_modify_data?
+    unless @view.can_modify_data? || @view.is_blobby?
       flash.now[:error] = "You do not have permission to modify this dataset."
       return render_forbidden
     end
@@ -349,15 +349,6 @@ class DatasetsController < ApplicationController
       rescue CoreServer::CoreServerError => e
         flash.now[:error] = "An error occurred during your request: #{e.error_message}"
       end
-    end
-  end
-
-  def upload
-    @view = get_view(params[:id])
-    return if @view.nil?
-
-    if @current_user.nil? || !@view.can_edit?
-      return render_forbidden
     end
   end
 

@@ -3182,7 +3182,7 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback)
     var cachedView = blist.viewCache[id];
     if (!_.isUndefined(cachedView))
     {
-        if (cachedView === false)
+        if ((cachedView === false) && _.isFunction(errorCallback))
         {
             errorCallback({
                 responseText: JSON.stringify({
@@ -3191,7 +3191,7 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback)
                 })
             });
         }
-        else
+        else if ((cachedView !== false) && _.isFunction(successCallback))
         {
             successCallback(new Dataset(blist.viewCache[id]));
         }

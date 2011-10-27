@@ -1,19 +1,23 @@
+require 'tmpdir'
+require 'digest/md5'
+
 class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :hook_auth_controller, :sync_logged_in_cookie
 
   def individual
-    includes = get_includes
-
     if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-)+$/)
       stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.sass")
       if File.exist?(stylesheet_filename)
         headers['Content-Type'] = 'text/css'
         stylesheet = File.read(stylesheet_filename)
 
-        render :text => Sass::Engine.new(includes + stylesheet,
-                                         :style => :nested,
-                                         :cache => false,
-                                         :load_paths => ["#{Rails.root}/app/styles"]).render
+        with_development_cache(stylesheet_filename) do
+          includes = get_includes
+          Sass::Engine.new(includes + stylesheet,
+                           :style => :nested,
+                           :cache => false,
+                           :load_paths => ["#{Rails.root}/app/styles"]).render
+        end
       else
         # Someone asked for a stylesheet that didn't exist.
         render :nothing => true, :status => :not_found, :content_type => 'text/css'
@@ -109,6 +113,27 @@ protected
              get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
 
     return result
+  end
+
+  def with_development_cache(stylesheet_filename)
+    if Rails.env.development?
+      tmpdir_path = File.join(Dir.tmpdir, 'blist_style_cache')
+      Dir.mkdir(tmpdir_path) unless Dir.exist? tmpdir_path
+
+      cache_key = Digest::MD5.hexdigest(stylesheet_filename + File.new(stylesheet_filename).mtime.to_s)
+      cache_path = File.join(tmpdir_path, cache_key)
+
+      if File.exist?(cache_path)
+        Rails.logger.info "Reading cached stylesheet from #{cache_path}"
+        render :text => File.open(cache_path).readlines.join("\n")
+      else
+        result = yield
+        File.open(cache_path, 'w'){ |f| f.write result }
+        render :text => result
+      end
+    else
+      render :text => yield
+    end
   end
 
   def get_gradient_definition(name, value)

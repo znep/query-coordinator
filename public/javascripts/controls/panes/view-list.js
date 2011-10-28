@@ -44,7 +44,7 @@
                 }
                 else if (cpObj._currentSort == 'alphaAscending')
                 { return v.name.toLowerCase(); }
-                else if (cpObj._currentSort = 'popularity')
+                else if (cpObj._currentSort == 'popularity')
                 {
                     var vc = v.viewCount || 0;
                     var len = 10;

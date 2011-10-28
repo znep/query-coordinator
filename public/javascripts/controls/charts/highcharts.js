@@ -731,7 +731,11 @@
             {
                 // Magic Number is the width of chartObj.$dom().width() when the
                 // displayLimit configurations were determined.
-                var spaceAvailable = labelLimit * (chartObj.$dom().width() / 1440);
+                var spaceAvailable;
+                if (chartObj._chartType == 'bar')
+                { spaceAvailable = labelLimit * (chartObj.$dom().height() / 514); }
+                else
+                { spaceAvailable = labelLimit * (chartObj.$dom().width() / 1440); }
                 var numItems = chartObj._primaryView.totalRows;
                 if (Dataset.chart.types[chartObj._chartType].displayLimit.points)
                 {

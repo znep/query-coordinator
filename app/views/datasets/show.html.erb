@@ -29,7 +29,7 @@
         <ul id="shareOptions">
           <%- if @view.is_public? && @view.is_tabular? -%>
             <li class="subscribe">
-              <a class="subscribe" href="#subscribe" title="Subscribe via Email">
+              <a class="subscribe" href="#subscribe" title="Subscribe via Email or RSS">
               <span class="icon">Subscribe to Changes</span></a>
             </li>
           <%- end -%>
@@ -472,6 +472,7 @@
     blist.sidebarHidden.manage.permissions = <%= @view.is_snapshotted? ||
       !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
+    blist.sidebarHidden.manage.deleteDataset = <%= !@view.has_rights?('delete_view') %>
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;

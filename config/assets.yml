@@ -368,6 +368,7 @@ javascripts:
     - public/javascripts/controls/panes/column-order.js
     - public/javascripts/controls/panes/column-properties.js
     - public/javascripts/controls/panes/conditional-formatting.js
+    - public/javascripts/controls/panes/delete-dataset.js
     - public/javascripts/controls/panes/download-dataset.js
     - public/javascripts/controls/panes/edit-redirect.js
     - public/javascripts/controls/panes/embed-sdp.js

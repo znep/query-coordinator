@@ -3271,7 +3271,7 @@ function getDisplayName(ds)
     switch (ds.type)
     {
         case 'blist':
-            retType = 'dataset';
+            retType = ds.isPublished() ? 'dataset' : 'working copy';
             break;
         case 'filter':
             retType = 'filtered view';

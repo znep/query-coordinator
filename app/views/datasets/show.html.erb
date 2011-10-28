@@ -27,7 +27,7 @@
       <%- if @view.is_published? -%>
       <li>
         <ul id="shareOptions">
-          <%- if @view.is_public? -%>
+          <%- if @view.is_public? && @view.is_tabular? -%>
             <li class="subscribe">
               <a class="subscribe" href="#subscribe" title="Subscribe via Email">
               <span class="icon">Subscribe to Changes</span></a>

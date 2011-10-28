@@ -19,10 +19,15 @@
             cu.removeEmailInterest(PublishEvent, blist.dataset.id, finished);
         }
         else {
+            if (!cu) {
+                $.uniform.update($checkbox.prop('checked', false));
+            }
             blist.util.doAuthedAction('subscribe to a dataset', function() {
-                cu = new User(blist.currentUser);
+                cu = new User({id: blist.currentUserId});
                 $dialog.addClass('loading');
                 cu.addEmailInterest(PublishEvent, blist.dataset.id, finished);
+
+                $.uniform.update($checkbox.prop('checked', true));
             });
         }
     });
@@ -36,7 +41,7 @@
             var finished = function(interest) {
                 if (interest) {
                     $dialog.removeClass('unsubscribed').addClass('subscribed');
-                    $checkbox.prop('checked', true);
+                    $.uniform.update($checkbox.prop('checked', true));
                 }
                 $dialog.removeClass('loading');
 

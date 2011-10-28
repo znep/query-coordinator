@@ -104,7 +104,8 @@
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {map: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
 
-            if (customHeatmap(cpObj))
+            if ($.subKeyDefined(cpObj, 'view.displayFormat.heatmap.type')
+                && cpObj.view.displayFormat.heatmap.type == 'custom')
             {
                 view.displayFormat.heatmap.type = 'custom';
                 view.displayFormat.heatmap.cache_url = cpObj._view.displayFormat.heatmap.cache_url;

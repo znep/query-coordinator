@@ -19,19 +19,19 @@ $.cf.edit.registerAction('move', {
 
     initialize: function(options) {
         var child = options.child;
-        this.childID = (child && child._properties.id) || options.childID;
+        this.childID = (child && child.id) || options.childID;
         if (!this.childID)
             throw "Cannot perform move without child reference";
 
-        this.newContainerID = options.newContainerID || (options.newContainer && options.newContainer._properties.id);
+        this.newContainerID = options.newContainerID || (options.newContainer && options.newContainer.id);
         if (!this.newContainerID)
             throw "Cannot perform move without new container reference";
-        this.newPositionID = options.newPositionID || (options.newPosition && options.newPosition._properties.id);
+        this.newPositionID = options.newPositionID || (options.newPosition && options.newPosition.id);
 
-        this.oldContainerID = options.oldContainerID || (options.oldContainer && options.oldContainer._properties.id);
+        this.oldContainerID = options.oldContainerID || (options.oldContainer && options.oldContainer.id);
         if (!this.oldContainerID)
             throw "Cannot perform move without old container reference";
-        this.oldPositionID = options.oldPositionID || (options.oldPosition && options.oldPosition._properties.id);
+        this.oldPositionID = options.oldPositionID || (options.oldPosition && options.oldPosition.id);
     },
 
     commit: function() {

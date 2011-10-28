@@ -29,13 +29,7 @@ $.component.Container.extend('Repeater', 'content', {
         // Record keeping preparation
         this._map = [];
 
-        this._idPrefix = this._properties.id + '-';
-    },
-
-    startLoading: function() {
-    },
-
-    finishLoading: function() {
+        this._idPrefix = this.id + '-';
     },
 
     design: function(design) {

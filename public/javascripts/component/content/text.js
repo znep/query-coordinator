@@ -36,7 +36,7 @@ $.component.Component.extend('Text', 'content', {
         } else if (wasEditable) {
             var newHtml = this.$contents[0].innerHTML;
             if (newHtml != this._properties.html)
-                $.cf.edit.execute('properties', { componentID: this._properties.id, properties: { html: newHtml }});
+                $.cf.edit.execute('properties', { componentID: this.id, properties: { html: newHtml }});
             else
                 this.$contents.html(this._template(this._properties.html));
         }

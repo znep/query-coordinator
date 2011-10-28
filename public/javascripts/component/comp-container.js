@@ -9,11 +9,9 @@
         _init: function(properties) {
             this._initializing = true;
             var children = properties.children;
-            if (children) {
-                delete properties.children;
-                this.add(children);
-            }
+            delete properties.children;
             this._super(properties);
+            if (children) { this.add(children); }
             delete this._initializing;
         },
 
@@ -73,7 +71,7 @@
             }
 
             // Synchronize DOM
-            if ((oldParent != this || oldNext != child.next) && this._rendered)
+            if ((oldParent != this || oldNext != child.next) && this._initialized)
                 this._moveChildDom(child);
         },
 
@@ -100,9 +98,12 @@
                     $(child.dom).remove();
                 return;
             }
-            if (!child._initialized)
-                child._initDom();
-            this.ct.insertBefore(child.dom, child.next && child.next.dom);
+            if (!child._rendered)
+                child._render();
+            if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
+            { child.next.$dom.before(child.$dom); }
+            else
+            { this.$ct.append(child.$dom); }
             this._arrange();
         },
 
@@ -112,7 +113,7 @@
         _removeChildDom: function(child) {
             if (!this._rendered)
                 return;
-            this.ct.removeChild(child.dom);
+            child.$dom.remove();
             this._arrange();
         },
 
@@ -183,8 +184,8 @@
         _render: function() {
             this._super();
 
-            this.ct = this._getContainer();
-            $(this.ct).addClass('socrata-container');
+            this.$ct = this._getContainer();
+            this.$ct.addClass('socrata-container');
 
             this.each(this._moveChildDom, this);
 
@@ -193,7 +194,7 @@
 
         // Override to create separate container component
         _getContainer: function() {
-            return this.dom;
+            return this.$dom;
         },
 
         // Override Component._propRead to include children property
@@ -254,7 +255,7 @@
                 $(this.dom).append('<div class="socrata-ct-clear"></div>');
                 clear = this.dom.lastChild;
             }
-            this._clear = clear;
+            this._$clear = $(clear);
         },
 
         // Override child move to wrap child in extra div
@@ -265,15 +266,22 @@
                 child.wrapper = document.createElement('div');
                 child.wrapper.className = 'component-wrapper';
                 child.wrapper.appendChild(child.dom);
+                child.$wrapper = $(child.wrapper);
             }
-            this.ct.insertBefore(child.wrapper, (child.next && child.next.wrapper) || this._clear);
+            if ($.subKeyDefined(child, 'next.$wrapper') &&
+                    child.next.$wrapper.parent().index(this.$ct) >= 0)
+            { child.next.$wrapper.before(child.$wrapper); }
+            else if (!$.isBlank(this._$clear))
+            { this._$clear.before(child.$wrapper); }
+            else
+            { this.$ct.append(child.$wrapper); }
             this._arrange();
         },
 
         // Override child remove to 1.) unwrap child, and 2.) update layout
         _removeChildDom: function(child) {
             if (child.wrapper) {
-                this.ct.removeChild(child.wrapper);
+                $child.wrapper.remove();
                 delete child.wrapper;
             }
             this._arrange();

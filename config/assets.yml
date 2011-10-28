@@ -100,6 +100,8 @@ javascripts:
     - public/javascripts/component/configurator/edit-actions/cf-edit-wrap.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
     - public/javascripts/component/content/box.js
+    - public/javascripts/component/content/paged-container.js
+    - public/javascripts/component/content/carousel-container.js
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js
     - public/javascripts/component/content/picture.js

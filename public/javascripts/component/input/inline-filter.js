@@ -21,9 +21,10 @@ $.component.Component.extend('Inline filter', 'input', {
 
     _render: function()
     {
-        this._super.apply(this, arguments);
+        if (!this._super.apply(this, arguments)) { return false; }
 
         this._updateDataSource(this._properties, renderUpdate);
+        return true;
     },
 
     _propWrite: function(properties)

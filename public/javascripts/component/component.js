@@ -6,35 +6,39 @@
 
     var components = {};
 
-    var Component = Class.extend({
+    var Component = Model.extend({
         _init: function(properties) {
             var cObj = this;
+            cObj._super.apply(this, arguments);
             cObj._properties = properties || {};
-            if (!cObj._properties.id)
-                cObj._properties.id = $.component.allocateId();
-            else if (cObj._properties.id.charAt[0] == 'c') {
-                var sequence = parseInt(cObj._properties.id.substring(1));
+            cObj.id = cObj._properties.id;
+            if (!cObj.id)
+                cObj.id = $.component.allocateId();
+            // If we're given an id in the form c\d+, then make sure our
+            // automatically-generated IDs start later, so they don't overlap
+            else if (cObj.id.charAt[0] == 'c') {
+                var sequence = parseInt(cObj.id.substring(1));
                 if (sequence > nextAutoID)
                     nextAutoID = sequence + 1;
             }
-            if (components[cObj._properties.id])
-                throw new Error("Duplicate component ID " + cObj._properties.id);
-            components[cObj._properties.id] = cObj;
+            if (components[cObj.id])
+                throw new Error("Duplicate component ID " + cObj.id);
+            components[cObj.id] = cObj;
             if (_.isFunction(cObj._dataReady))
                 cObj._updateDataSource(properties, cObj._dataReady);
 
-            var doRender = function() { _.defer(function() { cObj._render(); }); };
             var assets = cObj._getAssets();
             if (!_.isEmpty(assets))
             {
+                cObj._loadingAssets = true;
                 cObj.startLoading();
                 blist.util.assetLoading.loadAssets(assets, function()
                 {
                     cObj.finishLoading();
-                    doRender();
+                    delete cObj._loadingAssets;
+                    if (cObj._needsRender) { _.defer(function () { cObj._render(); }); }
                 });
             }
-            else { doRender(); }
         },
 
         /**
@@ -67,7 +71,7 @@
 
         destroy: function() {
             this.remove();
-            delete components[this._properties.id];
+            delete components[this.id];
         },
 
         /**
@@ -143,11 +147,11 @@
         {
             var dom = this.dom;
             if (!dom)
-            { dom = document.getElementById(this._properties.id); }
+            { dom = document.getElementById(this.id); }
             if (!dom)
             {
                 dom = document.createElement('div');
-                dom.id = this._properties.id;
+                dom.id = this.id;
             }
 
             if ($.isBlank(this.dom))
@@ -184,11 +188,19 @@
         /**
          * Render the content for this component
          */
-        _render: function() {
+        _render: function()
+        {
             this._initDom();
+            if (this._loadingAssets)
+            {
+                this._needsRender = true;
+                return false;
+            }
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
+            delete this._needsRender;
             this._rendered = true;
+            return true;
         },
 
         /**
@@ -273,7 +285,7 @@
          * Obtain the component's current public properties.
          */
         _propRead: function() {
-            return $.extend(true, {}, this._properties, { type: this.typeName });
+            return $.extend(true, {}, this._properties, { type: this.typeName, id: this.id });
         },
 
         /**
@@ -341,7 +353,7 @@
             name = arguments[0], prop = arguments[1];
         else if (arguments.length == 3)
             name = arguments[0], category = arguments[1], prop = arguments[2];
-        var result = Class.extend.call(this, prop);
+        var result = Model.extend.call(this, prop);
         result.extend = Component.extend;
         if (name) {
             result.catalogName = result.prototype.catalogName = name;

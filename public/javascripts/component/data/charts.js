@@ -38,9 +38,10 @@ _.each(Dataset.chart.types, function(value, localChartType)
             var lcObj = this;
             if (!_.isNumber(lcObj._properties.height))
             { lcObj._properties.height = 300; }
-            lcObj._super.apply(lcObj, arguments);
+            if (!lcObj._super.apply(lcObj, arguments)) { return false; }
 
             updateProperties(lcObj, lcObj._properties);
+            return true;
         },
 
         _propWrite: function(properties)

@@ -252,6 +252,9 @@ $(function()
         var $a = $(this);
         var ds = getDS($a);
         var href = $a.attr('href');
+        var description = ds.description;
+        if (description && description.length > 128)
+        { description = description.substring(0, 128) + '...'; }
 
         var $modal = $('.externalDomainNotice');
         $modal.find('.leavingLink').attr('href', href).text(href);
@@ -259,6 +262,8 @@ $(function()
         $modal.find('.datasetType').text(ds.displayName);
         $modal.find('.externalDomain').attr('href', ds.domainUrl)
             .text(ds.domainCName);
+        $modal.find('.dsName').text(ds.name).end()
+              .find('.dsDesc').text(description);
         $modal.jqmShow();
     });
 

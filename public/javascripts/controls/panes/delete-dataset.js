@@ -40,10 +40,23 @@
             var cpObj = this;
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
+            var onRemoved = function()
+            {
+                // too weird to try to use the callback here, since it won't work
+                // if the dataset's been deleted. the grid page will fetch it onload
+                // anyway, so count on that to return. otherwise, we have sane behavior
+                // anyway.
+                var possibleViewObj = cpObj._view._modifyingView || cpObj._view._parent;
+                if (_.isUndefined(possibleViewObj))
+                    window.location.href = '/profile';
+                else
+                    possibleViewObj.redirectTo();
+            };
+
             cpObj._finishProcessing();
             prettyConfirm('This will delete the ' + cpObj._view.displayName + ' permanently. ' +
                 'There is no undo! Are you sure you wish to proceed?',
-                function() { cpObj._view.remove(function() { window.location.href = '/profile'; }); })
+                function() { cpObj._view.remove(onRemoved); })
         }
 
     }, {name: 'deleteDataset'}, 'controlPane');

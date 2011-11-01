@@ -14,6 +14,7 @@ gem "sass", "~>3.1"
 gem "stomp", "1.1.6"
 gem "hoptoad_notifier", "~> 2.4"
 gem "money", ">= 3.1.5"
+gem "graylog2_exceptions"
 
 gem "thin", :group => :development
 gem "ruby-debug19", :group => :development

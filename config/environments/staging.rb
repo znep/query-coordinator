@@ -22,3 +22,5 @@ config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'webapp' }
 
 # Disable delivery errors, bad email addresses will be ignored
 # config.action_mailer.raise_delivery_errors = false
+
+config.middleware.insert_after 'ActionController::Failsafe', "Graylog2Exceptions", :hostname => 'graylog2.sea1.socrata.com', :facility => 'frontend'

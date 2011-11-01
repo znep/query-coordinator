@@ -25,3 +25,5 @@ ENV['RAILS_ASSET_ID'] = ''
 # Static asset hosting example: (you'll probably want to redir these to 127.0.0.1 ...)
 #config.action_controller.asset_host = StaticAssetBalancer.new("dev1.socratas.com",
 #    "dev2.socratas.com", "dev3.socratas.com", "dev4.socratas.com")
+
+#config.middleware.insert_after 'ActionController::Failsafe', "Graylog2Exceptions", :hostname => 'graylog2.sea1.socrata.com', :facility => 'frontend'

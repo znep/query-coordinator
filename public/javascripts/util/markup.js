@@ -32,6 +32,10 @@
     */
     $.tag = function(attrs, keepAsString)
     {
+        // First check for any blanks/failed conditionals
+        attrs = tag_parseConditionalElement(attrs);
+        if (attrs === false) { return null; }
+
         // deal with toplevel array case
         if (_.isArray(attrs))
         {
@@ -46,9 +50,6 @@
         }
 
         // normal case
-        attrs = tag_parseConditionalElement(attrs);
-        if (attrs === false) { return null; }
-
         var result = '<' + attrs.tagName.toLowerCase();
 
         _.each(attrs, function(value, key)

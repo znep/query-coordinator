@@ -2,7 +2,6 @@
 .socrata-component
   @include component-icons('> .disabledIcon', 'component')
   @include disabled-overlay(33%)
-  background-color: rgba(0, 64, 128, .2) // Temporary
   @include border-radius(4px) // Default or temporary?
   font-family: helvetica, arial, sans-serif
   margin-bottom: 8px
@@ -56,5 +55,81 @@
 .component-Carousel
   overflow: hidden
 
+// Specific component styles
 .component-Title h2
   padding: 0.25em 0.5em
+
+.component-Pager
+  padding: 0.5em 0
+  .radioWrapper
+    display: inline-block
+    margin: 0.2em 0.5em
+    div.uniform.radio
+      margin-right: 0.2em
+    label
+      font-size: 1.2em
+      line-height: 18px
+
+  .navigateLink
+    font-size: 1.2em
+    margin: 0.2em 0.5em
+    &.disabled
+      color: $color_buttons_disabled_text
+      cursor: auto
+  .navigateInfo
+    display: inline-block
+    span
+      font-size: 1.2em
+      font-weight: bold
+      padding: 0 0.1em
+  .navigatePaging
+    display: inline-block
+    .pageLink, .currentPage, .pageFillIn
+      font-size: 1.2em
+      margin: 0 0.1em
+    .currentPage
+      font-weight: bold
+
+  .pillButtons
+    display: inline-block
+    .childLink
+      font-size: 1.1em
+      height: 13px
+      line-height: 14px
+      .icon
+        display: inline-block
+        margin-right: 0.5em
+        vertical-align: top
+        @include ie7-inline-block
+      .ie7 & .icon
+        float: left
+      &.noText .icon
+        margin-right: 0
+
+  .sidebarTabs
+    display: inline-block
+    li
+      float: left
+      margin-left: 0.6em
+      position: relative
+      a
+        background-color: #989898
+        @include border-radius(0.35em)
+        color: #fff
+        display: block
+        font-size: 1em
+        height: 13px
+        line-height: 16px
+        padding: 0.4em 0.6em 0.5em
+        .icon
+          display: inline-block
+          margin-right: 0.4em
+          vertical-align: top
+          @include ie7-inline-block
+        .ie7 & .icon
+          float: left
+        &.noText .icon
+          margin-right: 0
+        &.active
+          @include box-shadow(0, 0, 6px, rgba(106, 154, 255, 0.9))
+          font-weight: bold

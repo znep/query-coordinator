@@ -159,7 +159,8 @@
                 this.dom = dom;
                 this.$dom = $(dom);
                 dom._comp = this;
-                dom.className = 'socrata-component component-' + this.typeName;
+                dom.className = 'socrata-component component-' + this.typeName + ' ' +
+                    (this._properties.customClass || '');
                 if (this._needsOwnContext)
                 {
                     this.$contents = $.tag({tagName: 'div', 'class': 'content-wrapper'});

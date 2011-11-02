@@ -311,7 +311,7 @@ protected
     browse_options[:user_params] = user_params.reject{ |k| ignore_params.include? k }
 
     if browse_options[:view_results].nil?
-      view_results = Clytemnestra::Sentinel.search_views(browse_options[:search_options])
+      view_results = Clytemnestra.search_views(browse_options[:search_options])
       browse_options[:view_count] = view_results.count
       browse_options[:view_results] = view_results.results
     end

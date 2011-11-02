@@ -1,17 +1,14 @@
 module Clytemnestra
-  # Performs all the searching against Clytemnestra
-  class Sentinel
-    def self.search_users(opts)
-      path = "/search/users.json?#{opts.to_core_param}"
-      result = CoreServer::Base.connection.get_request(path, {})
-      UserSearchResult.from_result(result)
-    end
+  def self.search_users(opts)
+    path = "/search/users.json?#{opts.to_core_param}"
+    result = CoreServer::Base.connection.get_request(path, {})
+    UserSearchResult.from_result(result)
+  end
 
-    def self.search_views(opts, use_batch = false)
-      path = "/search/views.json?#{opts.to_core_param}"
-      result = CoreServer::Base.connection.get_request(path, {}, use_batch)
-      ViewSearchResult.from_result(result)
-    end
+  def self.search_views(opts, use_batch = false)
+    path = "/search/views.json?#{opts.to_core_param}"
+    result = CoreServer::Base.connection.get_request(path, {}, use_batch)
+    ViewSearchResult.from_result(result)
   end
 
   # A view, with rows that match the search query

@@ -80,7 +80,7 @@ class AdministrationController < ApplicationController
     @roles_list = User.roles_list
     if !params[:username].blank?
       @search = params[:username]
-      @user_search_results = Clytemnestra::Sentinel.search_users(:q => params[:username]).results
+      @user_search_results = Clytemnestra.search_users(:q => params[:username]).results
       @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
     else
       @admins = find_privileged_users.sort{|x,y| (x.displayName || x.email).downcase <=>
@@ -261,7 +261,7 @@ class AdministrationController < ApplicationController
         return
       end
     else
-      views = Clytemnestra::Sentinel.search_views(
+      views = Clytemnestra.search_views(
         { :limit => 1, :nofederate => true, :limitTo => 'tables', :datasetView => 'dataset' }).results
       @view = views.first unless views.nil?
     end
@@ -759,11 +759,11 @@ class AdministrationController < ApplicationController
     # We only support one template for now, so assume it is the first one
     @approval_template = Approval.find()[0]
 
-    @appr_results = Clytemnestra::Sentinel.search_views(
+    @appr_results = Clytemnestra.search_views(
       {:for_approver => true, :for_user => current_user.id, :limit => 1})
     @appr_count = @appr_results.count
 
-    @stuck_results = Clytemnestra::Sentinel.search_views(
+    @stuck_results = Clytemnestra.search_views(
       {:limit => 5, :for_approver => true, :sortBy => 'approval'})
     @stuck_count = @stuck_results.count
     @stuck_results = @stuck_results.results.select {|v| v.is_stuck?(@approval_template)}
@@ -784,7 +784,7 @@ class AdministrationController < ApplicationController
     @use_federations = Federation.find.select {|f| f.acceptedUserId.present? &&
         f.sourceDomainCName != CurrentDomain.cname }.length > 0
 
-    @view_results = Clytemnestra::Sentinel.search_views(@opts)
+    @view_results = Clytemnestra.search_views(@opts)
 
     @view_count = @view_results.count
     @view_results = @view_results.results

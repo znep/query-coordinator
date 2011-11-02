@@ -401,7 +401,7 @@ module Canvas
         end
       end
 
-      search_response = Clytemnestra::Sentinel.search_views(search_options)
+      search_response = Clytemnestra.search_views(search_options)
       @view_count = search_response.count
       @view_results = search_response.results
     end
@@ -435,7 +435,7 @@ module Canvas
         end
 
         begin
-          search_response = Clytemnestra::Sentinel.search_views(search_options)
+          search_response = Clytemnestra.search_views(search_options)
 
           if search_response.count == 0
             @view = false

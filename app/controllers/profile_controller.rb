@@ -401,7 +401,7 @@ private
       ]
       CoreServer::Base.connection.batch_request do
         stats.each do |s|
-          Clytemnestra::Sentinel.search_views(base_req.merge(s[:params]), true)
+          Clytemnestra.search_views(base_req.merge(s[:params]), true)
         end
       end.each_with_index do |r, i|
         p = JSON.parse(r['response'], {:max_nesting => 25})

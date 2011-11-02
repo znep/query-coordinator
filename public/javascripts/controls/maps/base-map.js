@@ -647,6 +647,7 @@
         updateRowsByViewport: function(viewport, wrapIDL)
         {
             var mapObj = this;
+            if (mapObj._displayFormat.plotStyle == 'heatmap') { return; }
             if (!viewport || !viewport.xmin) { viewport = mapObj.getViewport(); }
             if (!$.subKeyDefined(viewport, 'xmin'))
             {

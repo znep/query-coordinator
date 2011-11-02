@@ -14,6 +14,7 @@ class ProfileController < ApplicationController
     ### @createdOnDomain = Domain.findById(@user.data['createdOnDomainId'])
 
     prepare_profile
+    return if @user.nil?
     # See if it matches the authoritative URL; if not, redirect
     if request.path != @user.href
       # Log redirects in development
@@ -272,6 +273,7 @@ class ProfileController < ApplicationController
 
   def show_app_token
     prepare_profile
+    return if @user.nil?
     @token = AppToken.find_by_id(params[:id], params[:token_id])
   end
 
@@ -369,12 +371,30 @@ private
 
   def prepare_profile
     user_id = params[:id]
-    if (!current_user || user_id != current_user.id)
-      @is_user_current = false
-      @user = User.find_profile(user_id)
-    else
-      @is_user_current = true
-      @user = current_user
+    begin
+      if (!current_user || user_id != current_user.id)
+        @is_user_current = false
+        @user = User.find_profile(user_id)
+      else
+        @is_user_current = true
+        @user = current_user
+      end
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This user cannot be found, or has been deleted.'
+      render 'shared/error', :status => :not_found
+      return
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required'
+        require_user(true)
+        return
+      elsif e.error_code == 'permission_denied'
+        render_forbidden(e.error_message)
+        return
+      else
+        flash.now[:error] = e.error_message
+        render 'shared/error', :status => :internal_server_error
+        return
+      end
     end
 
     @current_state = {'user' => @user.id, 'domain' => CurrentDomain.cname}

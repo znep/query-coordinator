@@ -228,7 +228,7 @@ ActionController::Routing::Routes.draw do |map|
     :create_friend => :get,
     :delete_friend => :get
     # :update_account => :put has been moved to the https block below, because it sends a password in cleartext.
-  }
+  }, :only => :index
 
   map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}

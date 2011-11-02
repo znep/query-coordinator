@@ -130,7 +130,7 @@ class DatasetsController < ApplicationController
     [:filter, :sort, :search_string].each{ |key| @state_param[key] = params[key] unless params[key].nil? }
     @state_param = @state_param.to_param
 
-    if @view.is_tabular?
+    if @view.is_tabular? && !@view.is_form?
       begin
         # get rows
         @per_page = 50

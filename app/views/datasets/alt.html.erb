@@ -22,6 +22,8 @@
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- is_blist = @view.is_blist? %>
 <%- is_tabular = @view.is_tabular? -%>
+<%- is_form = @view.is_form? -%>
+<%- is_grid = is_tabular && !is_form -%>
 
 <div class="contentBox">
   <%= display_standard_flashes %>
@@ -46,7 +48,7 @@
     <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
   <%- end -%>
     <li><a href=""></a></li>
-    <%- if is_tabular -%>
+    <%- if is_grid -%>
       <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
       <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
       <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
@@ -58,11 +60,11 @@
 
   <h1><%= @view.name %></h1>
   <% if @view.parent_dataset && (@view.parent_dataset != @view) %>
-    <p>This is a filtered view based on <%= link_to @view.parent_dataset.name, @view.parent_dataset.alt_href %>.</p>
+    <p>This is a <%= @view.display.name.downcase %> based on <%= link_to @view.parent_dataset.name, @view.parent_dataset.alt_href %>.</p>
   <% end %>
 
   <div class="dataGridWrapper">
-    <%- if is_tabular -%>
+    <%- if is_grid -%>
     <table id="dataGrid">
       <%= render(:partial => 'alt_tbody',
         :locals => {:columns => @viewable_columns,
@@ -77,11 +79,13 @@
       </tfoot>
       <%- end -%>
     </table>
+    <%- elsif is_form -%>
+      <%= render(:partial => 'displays/form_view') %>
     <%- else -%>
       <%= render(:partial => 'displays/blob') %>
     <%- end -%>
   </div>
-  <%- if is_tabular -%>
+  <%- if is_grid -%>
   <div id="pagination links" style="margin: 20px;">
     <%= create_pagination(@row_count, @per_page, @page, @view.href + '/alt?' + @state_param) %>
   </div>
@@ -93,7 +97,7 @@
                :locals => {:static_links => true}) %>
   </div>
 
-<%- if is_tabular -%>
+<%- if is_grid -%>
   <%- form_tag @view.alt_href, :method => :get do -%>
     <h2>Filter</h2>
     <ul>

@@ -548,7 +548,7 @@ class View < Model
     user_shares = Hash.new
     filtered_grants.each do |g|
       user_id = g.userId.nil? ? g.userEmail : g.userId
-      s = Share.new(g.type.capitalize, user_id, 
+      s = Share.new((g.type || '').capitalize, user_id,
                     g.userId.nil? ? g.userEmail : users[g.userId].displayName, users[g.userId],
                     !g.userId.nil?, false)
       user_shares[user_id] = s

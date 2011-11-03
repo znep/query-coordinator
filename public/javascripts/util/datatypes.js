@@ -568,7 +568,7 @@ blist.namespace.fetch('blist.datatypes');
                         '" title="', $.htmlStrip(matchVal.description || ''), '" />');
             }
         }
-        if (view.endsWith('text'))
+        if (plainText || view.endsWith('text'))
         { result.push($.htmlStrip(matchVal.description || '')); }
         if (!plainText)
         { result.push('</span>'); }

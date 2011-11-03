@@ -21,10 +21,8 @@
         {
             var cpObj = this;
             var dateCols = cpObj._view.columnsForType(['date', 'calendar_date'], isEdit(cpObj));
-            var textCols = cpObj._view.columnsForType('text', isEdit(cpObj));
 
-            return dateCols.length > 0 && textCols.length > 0 &&
-                (cpObj._view.valid || isEdit(cpObj)) &&
+            return dateCols.length > 0 && (cpObj._view.valid || isEdit(cpObj)) &&
                 (_.include(cpObj._view.metadata.availableDisplayTypes, 'calendar') ||
                     !cpObj._view.isAltView());
         },
@@ -54,7 +52,7 @@
                         {text: 'Ending Date', name: 'displayFormat.endDateTableId',
                             type: 'columnSelect', notequalto: 'dateCol', isTableColumn: true,
                             columns: {type: ['calendar_date', 'date'], hidden: isEdit(cpObj),
-                                defaultNames: ['end date', 'end']}
+                                noDefault: true, defaultNames: ['end date', 'end']}
                         }
                     ]
                 },
@@ -63,7 +61,10 @@
                     fields: [
                         {text: 'Event Title', name: 'displayFormat.titleTableId',
                             type: 'columnSelect', required: true, isTableColumn: true,
-                            columns: {type: 'text', hidden: isEdit(cpObj), defaultNames: ['title']}
+                            columns: {type: ['calendar_date', 'dataset_link', 'date', 'drop_down_list',
+                                'email', 'flag', 'html', 'location',  'money', 'number', 'percent',
+                                'phone', 'stars', 'text', 'url'], hidden: isEdit(cpObj),
+                                defaultNames: ['title']}
                         },
                         {type: 'repeater', name: 'displayFormat.descriptionColumns',
                             field: {text: 'Details', name: 'tableColumnId',

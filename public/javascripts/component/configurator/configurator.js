@@ -16,21 +16,6 @@
     // The mask used to lighten components other than the focal component
     var $mask;
 
-    $.cf = function() {
-        $body.addClass('socrata-page');
-        $.cf.top();
-
-        // Set timeout here so top menu animates in.  Delete if we decide that's undesirable
-        setTimeout(function() {
-            $(document.body).addClass('configurable');
-        }, 1);
-
-        var roots = arguments;
-        $(function() {
-            $.component.initialize.apply($.component, roots);
-        });
-    }
-
     function onBodyMouseMove(event) {
         if (!trackingMouseDown)
             return;
@@ -99,6 +84,32 @@
     var originalConfiguration;
 
     $.extend($.cf, {
+        initialize: function($top)
+        {
+            $top.append($.tag({tagName: 'div', 'class': 'edit-mode', contents: [
+                {tagName: 'a', href: '#save', 'class': 'save', contents: 'save'},
+                {tagName: 'a', href: '#cancel', 'class': 'cancel', contents: 'cancel'},
+                {tagName: 'a', href: '#undo', 'class': 'undo', contents: 'undo'},
+                {tagName: 'a', href: '#redo', 'class': 'redo', contents: 'redo'},
+            ]}));
+
+            $top.find('.edit-mode a').click(function(e)
+                {
+                    e.preventDefault();
+                    var action = $.hashHref($(this).attr('href'));
+                    var prefix = action == 'undo' || action == 'redo' ? $.cf.edit : $.cf;
+                    $.cf[action]();
+                });
+
+            $.cf.edit.registerListener(function(undoable, redoable) {
+                $top.toggleClass('can-save', $.cf.edit.dirty === true);
+                $top.toggleClass('can-undo', undoable);
+                $top.toggleClass('can-redo', redoable);
+            });
+
+            $.cf.edit(true);
+        },
+
         edit: function(edit) {
             edit = !!edit;
             if (designing != edit) {

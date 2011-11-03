@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
-  <%= include_stylesheets 'base-control-third-party' %>
+  <%= rendered_stylesheet_tag 'base-control-third-party' %>
   <%= rendered_stylesheet_tag 'dataset-show' %>
 
   <meta name="viewport" content="width=1024, user-scalable=no, maximum-scale=1.0" />

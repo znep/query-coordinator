@@ -1,12 +1,6 @@
 <% content_for :head do %>
-<%= include_stylesheets 'colorpicker' %>
-<%= include_stylesheets 'base-control-third-party' %>
-<%= rendered_stylesheet_tag 'base-control' %>
 <%= rendered_stylesheet_tag 'components' %>
-<%= rendered_stylesheet_tag 'configurator' %>
 <% end %>
-
-<% if User.current_user %>
 
 <script>
 $(function() {
@@ -15,7 +9,7 @@ $(function() {
       mainView: {type: 'view', viewId: '5sdc-99x6'}
     });
 
-    $.cf({
+    $.component.initialize({
         id: 'root-component-test',
         type: 'Container',
         children: [
@@ -76,17 +70,11 @@ $(function() {
 });
 </script>
 
-<% end %>
-
 <div class="socrata-root" id="root-component-test"></div>
 
-<% content_for :templates do %>
-<%= render(:partial => 'templates/grid_sidebar') %>
-<% end %>
-
 <% content_for :js_footer do %>
-<%= include_javascripts 'configurator' %>
-<%= include_javascripts 'shared-editors' %>
+<%= current_user_js %>
+<%= include_javascripts 'canvas' %>
 <script type="text/javascript">
   blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw STYLE_MAP.to_json %>};
   blist.namespace.fetch('blist.configuration');

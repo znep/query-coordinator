@@ -34,6 +34,11 @@ this.User = ServerModel.extend({
         return base;
     },
 
+    hasRight: function(right)
+    {
+        return _.include(this.rights, right);
+    },
+
     /* TODO: Not used yet
     addFriend: function(user, successCallback, errorCallback)
     {

@@ -1,9 +1,17 @@
 $.component.Component.extend('Text', 'content', {
+    _getAssets: function()
+    {
+        return {
+            javascripts: [{ assets: 'content-editable' }]
+        };
+    },
+
     _render: function() {
-        this._super();
+        if (!this._super.apply(this, arguments)) { return false; }
         var html = this._properties.html;
         if (html)
             this.$contents.html(this._template(html));
+        return true;
     },
 
     _propRead: function() {

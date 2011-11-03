@@ -5,7 +5,7 @@ class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :set_meta, :hook_auth_controller, :sync_logged_in_cookie
 
   def individual
-    if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-)+$/)
+    if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-|\.)+$/)
       stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.sass")
       if File.exist?(stylesheet_filename)
         headers['Content-Type'] = 'text/css'
@@ -19,8 +19,14 @@ class StylesController < ApplicationController
                            :load_paths => ["#{Rails.root}/app/styles"]).render
         end
       else
-        # Someone asked for a stylesheet that didn't exist.
-        render :nothing => true, :status => :not_found, :content_type => 'text/css'
+        # Maybe it is a plain CSS file
+        stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.css")
+        if File.exist?(stylesheet_filename)
+          render :content_type => 'text/css', :text => File.read(stylesheet_filename)
+        else
+          # Someone asked for a stylesheet that didn't exist.
+          render :nothing => true, :status => :not_found, :content_type => 'text/css'
+        end
       end
     else
       # someone's up to no good.
@@ -43,10 +49,20 @@ class StylesController < ApplicationController
           Rails.cache.write(includes_cache_key, includes)
         end
 
-        sheets = STYLE_PACKAGES[params[:stylesheet]].map{ |sheet|
-                   File.read("#{Rails.root}/app/styles/#{sheet}.sass") }.join("\n")
+        sass_sheets = []
+        css_sheets = []
+        STYLE_PACKAGES[params[:stylesheet]].each do |sheet|
+          fname = "#{Rails.root}/app/styles/#{sheet}.sass"
+          if File.exist?(fname)
+            sass_sheets.push(File.read(fname))
+          else
+            fname = "#{Rails.root}/app/styles/#{sheet}.css"
+            css_sheets.push(File.read(fname))
+          end
+        end
 
-        rendered_styles = Sass::Engine.new(includes + sheets,
+        rendered_styles = css_sheets.join("\n")
+        rendered_styles += Sass::Engine.new(includes + sass_sheets.join("\n"),
                                            :style => :compressed,
                                            :cache => false,
                                            :load_paths => ["#{Rails.root}/app/styles"]).render

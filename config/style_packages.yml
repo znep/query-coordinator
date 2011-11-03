@@ -23,8 +23,16 @@ components:
 - components
 configurator:
 - configurator
+base-control-third-party:
+- jquery.ui.resizable
+- ui.slider
+colorpicker:
+- colorpicker
 print:
 - print
+analytics-shared:
+- jquery-ui-1.8.4.custom
+- ui.daterangepicker
 strip-chrome:
 - strip-chrome
 screen-login:

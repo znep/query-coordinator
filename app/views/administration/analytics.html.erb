@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-analytics-screen' %>
-  <%= include_stylesheets 'analytics-shared' %>
+  <%= rendered_stylesheet_tag 'analytics-shared' %>
   <title>Site Analytics - Overview | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 

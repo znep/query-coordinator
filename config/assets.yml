@@ -70,35 +70,16 @@ javascripts:
     - public/javascripts/controls/upload-dialog.js
     - public/javascripts/controls/editors/document-editor.js
     - public/javascripts/controls/editors/photo-editor.js
-  configurator:
+  canvas:
     - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
-    - public/javascripts/util/color.js
     - public/javascripts/component/data-context.js
     - public/javascripts/component/template.js
-    - public/javascripts/plugins/jquery.colorPicker.js
-    - public/javascripts/plugins/colorpicker.js
-    - public/javascripts/plugins/jquery.awesomecomplete.js
-    - public/javascripts/controls/panes/base-pane.js
-    - public/javascripts/controls/panes/properties-editor.js
-    - public/javascripts/controls/content-editable.js
-    - public/javascripts/component/util/style-config.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-catalog.js
     - public/javascripts/component/comp-container.js
     - public/javascripts/component/comp-placeholder.js
-    - public/javascripts/component/configurator/configurator.js
-    - public/javascripts/component/configurator/cf-edit-log.js
-    - public/javascripts/component/configurator/cf-component-drag.js
-    - public/javascripts/component/configurator/cf-top.js
-    - public/javascripts/component/configurator/cf-side.js
-    - public/javascripts/component/context-picker.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-move.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-remove.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-unwrap.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-wrap.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
+    - public/javascripts/component/configurator-hook.js
     - public/javascripts/component/content/box.js
     - public/javascripts/component/content/paged-container.js
     - public/javascripts/component/content/carousel-container.js
@@ -129,6 +110,25 @@ javascripts:
     - public/javascripts/component/input/site-search.js
     - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
+  configurator:
+    - public/javascripts/util/color.js
+    - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/plugins/colorpicker.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
+    - public/javascripts/controls/panes/base-pane.js
+    - public/javascripts/controls/panes/properties-editor.js
+    - public/javascripts/component/util/style-config.js
+    - public/javascripts/component/configurator/configurator.js
+    - public/javascripts/component/configurator/cf-edit-log.js
+    - public/javascripts/component/configurator/cf-component-drag.js
+    - public/javascripts/component/configurator/cf-side.js
+    - public/javascripts/component/context-picker.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-move.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-remove.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-unwrap.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-wrap.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
   base-control:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/controls/panes/base-pane.js
@@ -178,6 +178,8 @@ javascripts:
     - public/javascripts/controls/page-render-type.js
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
+  content-editable:
+    - public/javascripts/controls/content-editable.js
   admin-select-dataset:
     - public/javascripts/screens/admin-select-dataset.js
   admin-datasets:
@@ -500,18 +502,10 @@ dump:
     - shared-table-render
     - shared-richRenderers
     - shared-blob
+    - content-editable
     - highcharts
     - jit
     - unified-filter
     - base-control
     - shared-editors
-
-stylesheets:
-  base-control-third-party:
-    - public/stylesheets/jquery.ui.resizable.css
-    - public/stylesheets/ui.slider.css
-  analytics-shared:
-    - public/stylesheets/jquery-ui-1.8.4.custom.css
-    - public/stylesheets/ui.daterangepicker.css
-  colorpicker:
-    - public/stylesheets/colorpicker.css
+    - configurator

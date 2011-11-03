@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= include_stylesheets 'analytics-shared' %>
+  <%= rendered_stylesheet_tag 'analytics-shared' %>
   <%= rendered_stylesheet_tag 'internal' %>
   <%= rendered_stylesheet_tag 'internal-metrics' %>
   <title>Internal Panel | <%= CurrentDomain.strings.site_title %></title>

@@ -402,7 +402,8 @@ ActionController::Routing::Routes.draw do |map|
     map.connect '/test_page/:action', :controller => 'test_pages'
   end
 
-  map.root :controller => "custom_content", :action => "homepage"
+  #map.connect '*path', :controller => "custom_content", :action => "page"
+  map.root :controller => "custom_content", :action => "homepage" # Required to define root_path
 
   # See how all your routes lay out with "rake routes"
 end

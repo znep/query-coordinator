@@ -1,0 +1,35 @@
+<% content_for :head do %>
+<title><%= @page.name %></title>
+<%= include_stylesheets 'colorpicker' %>
+<%= include_stylesheets 'base-control-third-party' %>
+<%= rendered_stylesheet_tag 'base-control' %>
+<%= rendered_stylesheet_tag 'components' %>
+<%= rendered_stylesheet_tag 'configurator' %>
+<% end %>
+
+<% if User.current_user %>
+
+<script>
+$(function() {
+    $.dataContext.load(<%= raw @page.data.to_json %>);
+    $.cf(<%= raw @page.content.to_json %>);
+});
+</script>
+
+<% end %>
+
+<%= raw @page.render %>
+
+<% content_for :templates do %>
+<%= render(:partial => 'templates/grid_sidebar') %>
+<% end %>
+
+<% content_for :js_footer do %>
+<%= include_javascripts 'configurator' %>
+<%= include_javascripts 'shared-editors' %>
+<script type="text/javascript">
+  blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw STYLE_MAP.to_json %>};
+  blist.namespace.fetch('blist.configuration');
+  blist.configuration.development = <%= Rails.env.development? %>;
+</script>
+<% end %>

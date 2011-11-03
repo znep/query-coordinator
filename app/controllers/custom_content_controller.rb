@@ -86,6 +86,18 @@ class CustomContentController < ApplicationController
     render :text => sheet, :content_type => 'text/css'
   end
 
+  def page
+    path = "/#{params[:path].join '/'}"
+    @page = Page[path]
+    unless @page
+      if path == '/'
+        homepage
+      else
+        render_404
+      end
+    end
+  end
+
 private
 
   # around_filter for caching

@@ -5,11 +5,20 @@ module ActiveSupport
         # this allows caching of the fact that there is nothing in the remote cache
         NULL = 'remote_cache_store:null'
 
+        # Keep track of all classes that are extending this module
+        ThreadKeys = []
+
         def with_local_cache
           Thread.current[thread_local_key] = MemoryStore.new
           yield
         ensure
           Thread.current[thread_local_key] = nil
+        end
+
+        # Store off the thread key for this class, to use for per-request init
+        # and reset
+        def self.extended(base)
+          ThreadKeys.push(base.thread_local_key)
         end
 
         def middleware
@@ -21,10 +30,14 @@ module ActiveSupport
               end
 
               def call(env)
-                Thread.current[:#{thread_local_key}] = MemoryStore.new
+                ThreadKeys.each do |tkey|
+                  Thread.current[tkey] = MemoryStore.new
+                end
                 @app.call(env)
               ensure
-                Thread.current[:#{thread_local_key}] = nil
+                ThreadKeys.each do |tkey|
+                  Thread.current[tkey] = nil
+                end
               end
             EOS
             klass
@@ -90,10 +103,11 @@ module ActiveSupport
           super
         end
 
+        def thread_local_key
+          @thread_local_key ||= "#{self.class.name.underscore}_local_cache".gsub("/", "_").to_sym
+        end
+
         private
-          def thread_local_key
-            @thread_local_key ||= "#{self.class.name.underscore}_local_cache".gsub("/", "_").to_sym
-          end
 
           def local_cache
             Thread.current[thread_local_key]

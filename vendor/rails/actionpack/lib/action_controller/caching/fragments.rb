@@ -50,15 +50,17 @@ module ActionController #:nodoc:
 
       # Writes <tt>content</tt> to the location signified by <tt>key</tt> (see <tt>expire_fragment</tt> for acceptable formats)
       def write_fragment(key, content, options = nil)
-        return content unless cache_configured?
+        return_value = (content.is_a? Hash) ? content[:layout] : content
+        return return_value unless cache_configured?
+
+        key = fragment_cache_key(key)
 
         self.class.benchmark "Cached fragment miss: #{key}" do
-          key = fragment_cache_key(key)
           content = content.html_safe.to_str if content.respond_to?(:html_safe)
           cache_store.write(key, content, options)
         end
 
-        content
+        return_value
       end
 
       # Reads a cached fragment from the location signified by <tt>key</tt> (see <tt>expire_fragment</tt> for acceptable formats)
@@ -66,9 +68,17 @@ module ActionController #:nodoc:
         return unless cache_configured?
 
         key = fragment_cache_key(key)
+
         self.class.benchmark "Cached fragment hit: #{key}" do
           result = cache_store.read(key, options)
-          result.respond_to?(:html_safe) ? result.html_safe : result
+
+          if result.is_a? Hash
+            safe_result = {}
+            result.each{ |k, v| safe_result[k] = (v.respond_to?(:html_safe) ? v.html_safe : v ) }
+            safe_result
+          else
+            result.respond_to?(:html_safe) ? result.html_safe : result
+          end
         end
       end
 

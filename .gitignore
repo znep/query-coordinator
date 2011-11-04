@@ -1,5 +1,6 @@
 public/packages
 public/cache
+public/geodata
 vendor/bundler_gems
 vendor/bundle
 .bundle

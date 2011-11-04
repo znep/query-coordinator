@@ -119,23 +119,7 @@ module ActionView
         ivar = "@content_for_#{name}"
         content = capture(&block) if block_given?
         instance_variable_set(ivar, "#{instance_variable_get(ivar)}#{content}".html_safe)
-        @_subset_content_for[name] << content if content && @_subset_content_for
         nil
-      end
-
-      def cache_with_content_for
-        @_subset_content_for = Hash.new{ |h, k| h[k] = ActiveSupport::SafeBuffer.new }
-        yield
-      ensure
-        @_subset_content_for = nil
-      end
-
-      def content_for_to_cache
-        if defined? @_subset_content_for
-          @_subset_content_for.dup
-        else
-          @_content_for.reject{ |k, v| k == :layout }.to_hash
-        end
       end
 
       # Use an alternate output buffer for the duration of the block.

@@ -309,7 +309,7 @@
         var viewConfig = mapObj._byView[mapObj._primaryView.id];
         var config = mapObj._displayFormat.heatmap;
 
-        var updatedFeatures = _(rows).chain().map(function(row, i)
+        var decorateFeature = function(row, i)
         {
             var feature = findFeatureWithPoint(mapObj, row);
             if ($.isBlank(feature)) { return null; }
@@ -347,7 +347,22 @@
                 feature.attributes.redirect_to;
 
             return feature;
-        }).compact().uniq().value();
+        };
+
+        // IE wannabe performance monitor: you make baby Ritchie cry
+        var updatedFeatures = [];
+        $.batchProcess(_.toArray(rows), 10, decorateFeature,
+            function(batch)
+            { updatedFeatures = updatedFeatures.concat(_(batch).chain().compact().uniq().value()); },
+            function()
+            { afterRowDecoration(mapObj, updatedFeatures); }
+        );
+    };
+
+    var afterRowDecoration = function(mapObj, updatedFeatures)
+    {
+        var viewConfig = mapObj._byView[mapObj._primaryView.id];
+        var config = mapObj._displayFormat.heatmap;
 
         // Converts array to value if array; otherwise, just returns value.
         var getValue = function(e)

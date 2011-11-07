@@ -434,7 +434,7 @@
             mapObj._featuresTransformed = true;
         }
 
-        _.each(mapObj._featureSet.features, function(feature)
+        $.batchProcess(mapObj._featureSet.features, 10, function(feature)
         {
             if (!feature.attributes.NAME)
             { feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName]; }
@@ -446,18 +446,19 @@
 
             mapObj.renderGeometry('polygon', feature.geometry, feature.attributes.NAME,
                 { rows: [], opacity: 0 });
+        }, null, function()
+        {
+            mapObj.adjustBounds();
+
+            if (config.hideLayers || config.transformFeatures ||
+                (!config.ignoreTransforms &&
+                    MAP_TYPE[config.type].transformFeatures))
+            { if (mapObj.hideLayers) { mapObj.hideLayers(); } }
+
+            mapObj.finishLoading();
+
+            mapObj._featuresRendered = true;
         });
-
-        mapObj.adjustBounds();
-
-        if (config.hideLayers || config.transformFeatures ||
-            (!config.ignoreTransforms &&
-                MAP_TYPE[config.type].transformFeatures))
-        { if (mapObj.hideLayers) { mapObj.hideLayers(); } }
-
-        mapObj.finishLoading();
-
-        mapObj._featuresRendered = true;
     };
 
     var findFeatureWithPoint = function(mapObj, datum)

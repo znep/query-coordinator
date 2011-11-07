@@ -53,7 +53,10 @@ var importTypes = {
     date: 'date',
     checkbox: 'text',
     location: 'text',
-    html: 'text'
+    html: 'text',
+    star: 'number',
+    flag: 'text',
+    dataset_link: 'text'
 };
 var locationTypes = {
     address: 'text',

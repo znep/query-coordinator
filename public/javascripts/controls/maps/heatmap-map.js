@@ -502,7 +502,7 @@
         return _.detect(mapObj._featureSet.features, function(feature)
         {
             if (point instanceof esri.geometry.Point)
-            { return feature.geometry.contains(point); }
+            { return (feature.oldGeometry || feature.geometry).contains(point); }
             else
             {
                 var featureName = feature.attributes['NAME']

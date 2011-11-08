@@ -44,6 +44,10 @@
     {
         $.device.android = true;
     }
+    if ($.device.iphone || $.device.android)
+    {
+        $.device.mobile = true;
+    }
 
 })(jQuery);
 

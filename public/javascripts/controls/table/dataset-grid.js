@@ -96,6 +96,14 @@
                 $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
                     function() { datasetObj.settings.addColumnCallback(); });
 
+                if ($.device.mobile)
+                {
+                    $.live('#' + $datasetGrid.attr('id') + ' .drillDown', 'touchend',
+                        function(){
+                            datasetObj.drillDown(this);
+                        });
+                }
+
                 $.live('#' + $datasetGrid.attr('id') + ' .drillDown', 'click',
                     function(e){
                         e.preventDefault();

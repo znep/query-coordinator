@@ -9,7 +9,7 @@
             javascripts: [{ assets: 'shared-calendar' }],
             stylesheets: ['individual/screen-calendar.css',
               '/stylesheets/fullcalendar.css',
-              'individual/rich-render-types.css'],
+              'merged/rich-render-bundle.css'],
             scrollsInline: false
         },
 
@@ -19,7 +19,7 @@
             initFunction: 'socrataChart',
             javascripts: [{ assets: 'shared-chart' }],
             stylesheets: ['/stylesheets/chart-screen.css',
-                          'individual/rich-render-types.css'],
+                          'merged/rich-render-bundle.css'],
             scrollsInline: true
         },
 
@@ -41,7 +41,7 @@
             stylesheets: ['https://serverapi.arcgisonline.com/jsapi/arcgis' +
                 '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
                 'individual/screen-map.css',
-                'individual/rich-render-types.css'],
+                'merged/rich-render-bundle.css'],
             scrollsInline: true
         },
 
@@ -59,8 +59,8 @@
                         settings.fatrow));
             },
             javascripts: [{assets: 'shared-richRenderers'}],
-            stylesheets: [{sheet: 'individual/render-type-images.css', hasImages: true},
-                'individual/rich-render-types.css'],
+            stylesheets: [{sheet: 'merged/rich-images-bundle.css', hasImages: true},
+                'merged/rich-render-bundle.css'],
             scrollsInline: false
         },
 
@@ -69,8 +69,8 @@
             domId: 'pageRenderType',
             initFunction: 'pageRenderType',
             javascripts: [{assets: 'shared-richRenderers'}],
-            stylesheets: [{sheet: 'individual/render-type-images.css', hasImages: true},
-                'individual/rich-render-types.css'],
+            stylesheets: [{sheet: 'merged/rich-images-bundle.css', hasImages: true},
+                'merged/rich-render-bundle.css'],
             scrollsInline: false
         },
 

@@ -84,6 +84,10 @@ base-control:
 browse-control:
 - screen-browse
 - rich-render-types
+rich-render-bundle:
+- rich-render-types
+rich-images-bundle:
+- render-type-images
 dataset-new:
 - screen-dataset-new
 display-form:

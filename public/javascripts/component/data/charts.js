@@ -29,7 +29,7 @@ _.each(Dataset.chart.types, function(value, localChartType)
         {
             return {
                 javascripts: [{ assets: 'shared-chart' }],
-                stylesheets: ['/stylesheets/chart-screen.css', 'individual/rich-render-types.css']
+                stylesheets: ['/stylesheets/chart-screen.css', {assets: 'rich-render-bundle'}]
             };
         },
 

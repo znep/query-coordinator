@@ -30,8 +30,8 @@ $.component.Component.extend('Map', 'data', {
             ],
             stylesheets: ['https://serverapi.arcgisonline.com/jsapi/arcgis' +
                 '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
-                'individual/screen-map.css',
-                'individual/rich-render-types.css']
+                {assets: 'display-map'},
+                {assets: 'rich-render-bundle'}]
         };
     },
 

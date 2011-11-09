@@ -86,12 +86,18 @@ browse-control:
 - rich-render-types
 rich-render-bundle:
 - rich-render-types
-rich-images-bundle:
+render-images-bundle:
 - render-type-images
-dataset-new:
-- screen-dataset-new
+display-blob:
+- screen-blob
+display-calendar:
+- screen-calendar
 display-form:
 - screen-form
+display-map:
+- screen-map
+dataset-new:
+- screen-dataset-new
 dataset-show:
 - control-pane
 - control-pane-custom
@@ -162,6 +168,8 @@ canvas:
 canvas-view-preview:
 - table-core
 - dataset-grid
+dataset-about-minimal:
+- about-dataset
 dataset-about-full:
 - about-dataset
 - screen-dataset

@@ -1,4 +1,4 @@
-// Styles needed for the top edit bar, before everything else is load
+// Styles needed for the top edit bar, before everything else is loaded
 body.socrata-page
   #siteHeader
     @include transition(padding-top .2s linear)
@@ -72,6 +72,7 @@ body.socrata-page
   font-family: helvetica, arial, sans-serif
   margin-bottom: 8px
   position: relative
+  min-height: 1em
   &:last-child
     margin-bottom: 0
 
@@ -113,6 +114,8 @@ body.socrata-page
       margin-left: 0
 .component-Box
   min-height: 100px // Default height; temporary?
+  border: solid 1px #cecece
+  background-color: white
 .component-Box-container
   margin: 8px
 .socrata-ct-clear
@@ -198,3 +201,7 @@ body.socrata-page
         &.active
           @include box-shadow(0, 0, 6px, rgba(106, 154, 255, 0.9))
           font-weight: bold
+
+.component-Text
+  font-size: 1.4em
+  padding: 2px

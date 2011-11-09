@@ -281,8 +281,8 @@
         // Override child remove to 1.) unwrap child, and 2.) update layout
         _removeChildDom: function(child) {
             if (child.wrapper) {
-                $child.wrapper.remove();
-                delete child.wrapper;
+                child.$wrapper.remove();
+                delete child.$wrapper;
             }
             this._arrange();
         },

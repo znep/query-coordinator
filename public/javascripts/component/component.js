@@ -16,9 +16,9 @@
                 cObj.id = $.component.allocateId();
             // If we're given an id in the form c\d+, then make sure our
             // automatically-generated IDs start later, so they don't overlap
-            else if (cObj.id.charAt[0] == 'c') {
+            else if (cObj.id.charAt(0) == 'c') {
                 var sequence = parseInt(cObj.id.substring(1));
-                if (sequence > nextAutoID)
+                if (sequence >= nextAutoID)
                     nextAutoID = sequence + 1;
             }
             if (components[cObj.id])
@@ -386,7 +386,7 @@
 
         eachRoot: function(fn, scope) {
             for (var i in components)
-                if (!components[i].parent)
+                if (!components[i].parent && components[i]._persist !== false)
                     fn.call(scope || this, components[i]);
         }
     });

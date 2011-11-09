@@ -3,13 +3,6 @@
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
 
-<script>
-$(function() {
-    $.dataContext.load(<%= raw @page.data.to_json %>);
-    $.component.initialize(<%= raw @page.content.to_json %>);
-});
-</script>
-
 <%= raw @page.render %>
 
 <% content_for :js_footer do %>
@@ -19,5 +12,11 @@ $(function() {
   blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw STYLE_MAP.to_json %>};
   blist.namespace.fetch('blist.configuration');
   blist.configuration.development = <%= Rails.env.development? %>;
+  var page = blist.configuration.page = <%= raw @page.to_json %>;
+
+  $(function() {
+      $.dataContext.load(page.data);
+      $.component.initialize(page.content);
+  });
 </script>
 <% end %>

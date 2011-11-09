@@ -43,7 +43,7 @@
             this.roots = [];
             for (var i = 0; i < arguments.length; i++)
                 if ($.isArray(arguments[i]))
-                    this.initialize.apply(this, arguments);
+                    this.initialize.apply(this, arguments[i]);
                 else {
                     var component = this.create(arguments[i]);
                     component._render();

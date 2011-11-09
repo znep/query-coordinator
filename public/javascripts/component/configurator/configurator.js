@@ -80,6 +80,11 @@
         return false;
     }
 
+    function exitEditMode() {
+        $.cf.edit.reset();
+        $.cf.edit(false);
+    }
+
     var designing = false;
     var originalConfiguration;
 
@@ -98,7 +103,7 @@
                     e.preventDefault();
                     var action = $.hashHref($(this).attr('href'));
                     var prefix = action == 'undo' || action == 'redo' ? $.cf.edit : $.cf;
-                    $.cf[action]();
+                    prefix[action]();
                 });
 
             $.cf.edit.registerListener(function(undoable, redoable) {
@@ -131,13 +136,39 @@
         },
 
         save: function() {
-            if (!$.cf.edit.dirty)
-                return;
+            if ($.cf.edit.dirty) {
+                var spinner = $('.socrata-page').loadingSpinner({overlay: true});
+                spinner.showHide(true);
+                var page = blist.configuration.page;
+                var content = [];
+                $.component.eachRoot(function(root) {
+                    content.push(root._propRead());
+                });
+                if (content.length == 1)
+                    page.content = content[0];
+                else
+                    page.content = content;
+                $.ajax({
+                    type: 'POST',
+                    url: '/id/pages',
+                    data: JSON.stringify(page),
+                    dataType: 'json',
+                    contentType: 'text/json',
 
-            // TODO -- actually save
+                    complete: function() {
+                        spinner.showHide(false);
+                    },
 
-            $.cf.edit.reset();
-            this.edit(false);
+                    success: function() {
+                        exitEditMode();
+                    },
+
+                    error: function() {
+                        // TODO -- what to do with error?
+                    }
+                });
+            } else
+                exitEditMode();
         },
 
         cancel: function() {
@@ -147,8 +178,8 @@
                 });
                 originalConfiguration = undefined;
             }
-            $.cf.edit.reset();
-            this.edit(false);
+
+            exitEditMode();
         },
 
         blur: function(unmask) {

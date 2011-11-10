@@ -76,7 +76,7 @@ $(function() {
 <%= current_user_js %>
 <%= include_javascripts 'canvas' %>
 <script type="text/javascript">
-  blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw STYLE_MAP.to_json %>};
+  blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
   blist.namespace.fetch('blist.configuration');
   blist.configuration.development = <%= Rails.env.development? %>;
 </script>

@@ -121,6 +121,15 @@ module ApplicationHelper
     end
   end
 
+  def stylesheet_assets
+    sheet_map = {}
+    STYLE_PACKAGES.each do |name, sheets|
+      sheet_map[name] = Rails.env == 'development' ? sheets.map { |req| "/styles/individual/#{req}.css" } :
+        "/styles/merged/#{name.to_s}.css?#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}"
+    end
+    sheet_map
+  end
+
 # TOP OF PAGE
 
   # Display a standardized flash error message.

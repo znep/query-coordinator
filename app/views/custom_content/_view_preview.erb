@@ -13,7 +13,7 @@
     <%- allow_once do -%>
       <script type="text/javascript">
         blist.assets = blist.assets ||
-          {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw STYLE_MAP.to_json %>};
+          {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
         blist.namespace.fetch('blist.configuration');
         blist.configuration.development = <%= Rails.env.development? %>;
       </script>

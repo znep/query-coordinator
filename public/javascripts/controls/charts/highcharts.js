@@ -57,6 +57,8 @@
                 });
                 chartObj._yColumns.push(obj);
             });
+            if (chartObj._displayFormat.stacking)
+            { chartObj._yColumns = chartObj._yColumns.reverse(); }
 
             chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
                 { return col.data.aggregates.sum; });
@@ -361,6 +363,8 @@
             colors = _.map(chartObj._valueColumns, function(vc)
             { return vc.color; });
         }
+        if (chartObj._displayFormat.stacking)
+        { colors = colors.reverse(); }
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;
@@ -810,8 +814,11 @@
         chartConfig.plotOptions[seriesType] = typeConfig;
 
         if (chartObj._displayFormat.stacking && chartObj._yColumns.length > 1)
-        { chartConfig.plotOptions.series = $.extend(chartConfig.plotOptions.series,
-                                                    { stacking: 'normal' }); }
+        {
+            chartConfig.plotOptions.series =
+                $.extend(chartConfig.plotOptions.series, { stacking: 'normal' });
+            chartConfig.legend.reversed = true;
+        }
 
         $.extend(chartConfig, { tooltip: { enabled: false }});
 
@@ -988,7 +995,7 @@
         point.row = row;
         point.column = col;
         point.flyoutDetails = chartObj.renderFlyout(row,
-            chartObj._valueColumns[seriesIndex].column.tableColumnId,
+            chartObj._yColumns[seriesIndex].data.tableColumnId,
             chartObj._primaryView);
 
         return point;

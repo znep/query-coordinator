@@ -10,6 +10,7 @@
         _init: function(properties) {
             var cObj = this;
             cObj._super.apply(this, arguments);
+            cObj._eventKeys = {};
             cObj._properties = properties || {};
             cObj.id = cObj._properties.id;
             if (!cObj.id)
@@ -135,6 +136,30 @@
         },
 
         /**
+         * Override registerEvent to keep track of field names per event
+         */
+        registerEvent: function(evHashes)
+        {
+            var cObj = this;
+            if (!$.isPlainObject(evHashes))
+            { throw new Error('registerEvent requires a hash of event names to array of field names'); }
+
+            var evNames = [];
+            _.each(evHashes, function(fields, name)
+            {
+                evNames.push(name);
+                cObj._eventKeys[name] = $.makeArray(fields);
+            });
+            return cObj._super(evNames);
+        },
+
+        /**
+         * Allow other components/configurator to inspect events & their keys
+         */
+        getEvents: function()
+        { return this._eventKeys; },
+
+        /**
          * Javascript and CSS that needs to be loaded to render the component
          */
         _getAssets: function()
@@ -160,7 +185,7 @@
                 this.$dom = $(dom);
                 dom._comp = this;
                 dom.className = 'socrata-component component-' + this.typeName + ' ' +
-                    (this._properties.customClass || '');
+                    (this._properties.customClass || '') + ' ' + (this._properties.hidden ? 'hide' : '');
                 if (this._needsOwnContext)
                 {
                     this.$contents = $.tag({tagName: 'div', 'class': 'content-wrapper'});
@@ -192,11 +217,12 @@
         _render: function()
         {
             this._initDom();
-            if (this._loadingAssets)
+            if (this._loadingAssets || this._properties.hidden)
             {
                 this._needsRender = true;
                 return false;
             }
+
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
             delete this._needsRender;
@@ -296,6 +322,22 @@
         _propWrite: function(properties) {
             var cObj = this;
             $.extend(true, cObj._properties, properties);
+
+            if (!$.isBlank(cObj.$dom))
+            {
+                if (!cObj._properties.hidden && cObj.$dom.hasClass('hide'))
+                {
+                    cObj.$dom.removeClass('hide');
+                    cObj.$contents.trigger('show');
+                    if (cObj._needsRender) { cObj._render(); }
+                }
+                else if (cObj._properties.hidden && !cObj.$dom.hasClass('hide'))
+                {
+                    cObj.$dom.addClass('hide');
+                    cObj.$contents.trigger('hide');
+                }
+            }
+
             _.defer(function() { cObj._updateValidity(); });
         },
 
@@ -362,7 +404,7 @@
             $.component.registerCatalogType(result);
         }
         return result;
-    }
+    };
 
     $.component = function(id) {
         if (typeof id == 'number')
@@ -388,6 +430,89 @@
             for (var i in components)
                 if (!components[i].parent && components[i]._persist !== false)
                     fn.call(scope || this, components[i]);
+        },
+
+        eachFunctional: function(fn, scope) {
+            for (var i in functionalComponents)
+                fn.call(scope || this, functionalComponents[i]);
         }
     });
+
+    // Set up the catalog registry here, since it is required for Component.extend to actually work
+    var catalog = {};
+
+    $.extend($.component, {
+        registerCatalogType: function(type) {
+            $.component[type.typeName = type.prototype.typeName = type.catalogName.camelize()] = type;
+            if (type.catalogCategory) {
+                var category = catalog[type.catalogCategory];
+                if (!category)
+                    category = catalog[type.catalogCategory] = { id: type.catalogCategory, name: type.catalogCategory.camelize(), entries: [] };
+                category.entries.push(type);
+            }
+        },
+
+        create: function(properties) {
+            if (properties == undefined)
+                throw "Component create without input properties";
+            if (properties instanceof $.component.Component)
+                return properties;
+            if (typeof properties == "string") {
+                var type = properties;
+                properties = {};
+            } else
+                type = properties.type;
+            if (type == undefined)
+                throw "Component create without type property";
+            var componentClass = $.component[properties.type.camelize()];
+            if (!componentClass)
+                throw "Invalid component type " + type;
+            return new componentClass(properties);
+        },
+
+        initialize: function() {
+            this.roots = [];
+            for (var i = 0; i < arguments.length; i++)
+                if ($.isArray(arguments[i]))
+                    this.initialize.apply(this, arguments[i]);
+                else {
+                    var component = this.create(arguments[i]);
+                    component._render();
+                    if (!component.dom.parentNode)
+                        throw "Unparented root component " + component.id;
+                    this.roots.push(component);
+                }
+        },
+
+        catalog: catalog
+    });
+
+    // Set up the base of FunctionalComponents so everything can use them
+    var functionalComponents = {};
+
+    Component.extend('FunctionalComponent', {
+        _init: function()
+        {
+            this._super.apply(this, arguments);
+            functionalComponents[this.id] = this;
+            var cObj = this;
+            // We don't have render, so call propWrite instead
+            _.defer(function() { cObj.properties(cObj._properties); });
+        },
+
+        destroy: function()
+        {
+            this._super.apply(this, arguments);
+            delete functionalComponents[this.id];
+        },
+
+        startLoading: function() {},
+        finishLoading: function() {},
+        remove: function() {},
+        _initDom: function() {},
+        _render: function() {},
+        _arrange: function() {},
+        _move: function() {}
+    });
+
 })(jQuery);

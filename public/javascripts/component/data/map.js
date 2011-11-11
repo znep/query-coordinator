@@ -5,6 +5,7 @@ $.component.Component.extend('Map', 'data', {
     {
         this._needsOwnContext = true;
         this._super.apply(this, arguments);
+        this.registerEvent({display_row: ['dataContext', 'row']});
     },
 
     isValid: function()
@@ -42,6 +43,11 @@ $.component.Component.extend('Map', 'data', {
         { lcObj._properties.height = 300; }
         if (!lcObj._super.apply(lcObj, arguments)) { return false; }
 
+        lcObj.$contents.bind('display_row', function(e, args)
+        {
+            lcObj.trigger('display_row',
+                [{dataContext: lcObj._dataContext, row: (args || {}).row}]);
+        });
         updateProperties(lcObj, lcObj._properties);
         return true;
     },

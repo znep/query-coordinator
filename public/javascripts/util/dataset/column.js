@@ -206,6 +206,12 @@ this.Column = ServerModel.extend({
     filter: function(value, subColumnType)
     {
         var col = this;
+        if ($.isBlank(value))
+        {
+            col.clearFilter();
+            return;
+        }
+
         var query = $.extend(true, {}, col.view.query);
 
         // If there is already a filter for this column, clear it out

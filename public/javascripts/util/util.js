@@ -58,6 +58,12 @@ String.prototype.clean = function()
     return this.replace(/\xa0/g, ' ');
 };
 
+String.prototype.camelize = function()
+{
+    return _.map(this.split(/[\W_]/), function(item)
+            { return item.substring(0, 1).toUpperCase() + item.substring(1); }).join('');
+};
+
 /* from wikibooks: http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#JavaScript */
 String.prototype.levenshtein = function(other)
 {
@@ -435,6 +441,53 @@ $.keyValueToObject = function(key, value)
     var temp = {};
     temp[key] = value;
     return temp;
+};
+
+// goes to a deep location in an object. pass in true
+// as the first arg to force creation of undefined
+// objects on the way to your destination.
+// From https://github.com/clint-tseng/kor.events/blob/master/kor.events.js#L217
+$.deepGet = function(/* [create], obj, keys* */)
+{
+    var idx = 0;
+    var create = false;
+
+    if (arguments[0] === true)
+    {
+        idx++;
+        create = true;
+    }
+
+    var obj = arguments[idx++];
+
+    for (; idx < arguments.length; idx++)
+    {
+        var key = arguments[idx];
+        if (_.isUndefined(obj[key]))
+            if (!create)
+                return undefined;
+            else
+                obj[key] = {};
+
+        obj = obj[key];
+    }
+
+    return obj;
+};
+
+$.deepSet = function(/* obj, value, keys* */)
+{
+    var obj = arguments[0];
+    var value = arguments[1];
+    for (var i = 2; i < arguments.length - 1; i++)
+    {
+        var key = arguments[i];
+        if (_.isUndefined(obj[key]))
+            obj[key] = {};
+
+        obj = obj[key];
+    }
+    obj[_.last(arguments)] = value;
 };
 
 $.subKeyDefined = function(obj, keystring)

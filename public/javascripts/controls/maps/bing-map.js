@@ -202,6 +202,7 @@
                         if (showInfoWindow(mapObj, event.target))
                         {
                             mapObj._primaryView.highlightRows(shape.rows, 'select');
+                            mapObj.$dom().trigger('display_row', [{row: _.first(shape.rows)}]);
                             $(document).trigger(blist.events.DISPLAY_ROW, [_.first(shape.rows).id, true]);
                         }
                     });
@@ -668,6 +669,7 @@
             {
                 mapObj._primaryView.unhighlightRows(
                     _.values(mapObj._primaryView.highlightTypes.select), 'select');
+                mapObj.$dom().trigger('display_row', [{row: null}]);
             }
             closeInfoWindow();
         });

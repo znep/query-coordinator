@@ -37,7 +37,7 @@ $.component.Component.extend('Pager', 'input', {
                 delete cObj._context;
                 return;
             }
-            cObj._context.bind('child_shown', function(newChild)
+            cObj._context.bind('child_shown', function(args)
             {
                 var curIndex = cObj._context.visibleIndex();
                 var childList = cObj._context.children();
@@ -101,10 +101,10 @@ $.component.Component.extend('Pager', 'input', {
                 else if (($statusItem = cObj.$contents.find('.childLink')).length > 0)
                 {
                     $statusItem.removeClass('active');
-                    $statusItem.filter('[href$=' + newChild.id + ']').addClass('active');
+                    $statusItem.filter('[href$=' + args.newChild.id + ']').addClass('active');
                 }
                 else
-                { $.uniform.update(cObj.$contents.find('input[id$=_' + newChild.id + ']').click()); }
+                { $.uniform.update(cObj.$contents.find('input[id$=_' + args.newChild.id + ']').click()); }
             }, cObj);
         }
     },

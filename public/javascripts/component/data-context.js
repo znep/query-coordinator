@@ -37,6 +37,9 @@
                 case 'view':
                     Dataset.createFromViewId(config.viewId, function(view)
                         {
+                            if (!$.isBlank(config.query))
+                            { view.update({query: $.extend(true, {}, view.query, config.query)}); }
+
                             dc.availableContexts[id] = {id: id, view: view};
                             _.each(dc._contextsQueue[id], function(f)
                                 { if (_.isFunction(f.success)) { f.success(dc.availableContexts[id]); } });

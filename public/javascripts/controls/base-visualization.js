@@ -223,11 +223,8 @@
                 if (vizObj._obsolete) { return; }
                 if (forceRowReload === true)
                 { vizObj._requireRowReload = true; }
-                if (!vizObj._pendingReload && !vizObj._initialLoad)
-                {
-                    vizObj._pendingReload = true;
-                    _.defer(function() { vizObj.reload(); });
-                }
+                if (!vizObj._initialLoad)
+                { _.defer(function() { vizObj.reload(); }); }
             };
             var handleRowChange = function(rows, fullReset)
             {
@@ -296,7 +293,6 @@
 
             if (vizObj.needsFullReset())
             {
-                delete vizObj._pendingReload;
                 vizObj.reset();
                 return;
             }
@@ -306,7 +302,6 @@
             if (!vizObj._requireRowReload && vizObj.noReload())
             {
                 vizObj.reloadSpecialCases();
-                delete vizObj._pendingReload;
                 return;
             }
 
@@ -518,14 +513,12 @@
                         if (rowsToFetch <= 0 || !executable)
                         {
                             delete vizObj._initialLoad;
-                            delete vizObj._pendingReload;
                         }
                     },
                     function()
                     {
                         // On error clear these variables so more requests will be triggered
                         delete vizObj._initialLoad;
-                        delete vizObj._pendingReload;
                     });
 
                     viewsToCount--;

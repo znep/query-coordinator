@@ -1,7 +1,7 @@
 class Page < SodaModel
   def render
-    '<div class="socrata-root" id="socrata-root"></div>'
-    
+    '<div class="socrata-root" id="' + content['id'] + '"></div>'
+
     # TODO - actual render
   end
 

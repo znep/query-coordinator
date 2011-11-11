@@ -420,6 +420,7 @@
                             {
                                 mapObj._primaryView.unhighlightRows(
                                     _.values(mapObj._primaryView.highlightTypes.select), 'select');
+                                mapObj.$dom().trigger('display_row', [{row: null}]);
                             }
                         });
                 }
@@ -454,6 +455,7 @@
                     if (showInfoWindow(evt.latLng))
                     {
                         mapObj._primaryView.highlightRows(details.rows, 'select');
+                        mapObj.$dom().trigger('display_row', [{row: _.first(details.rows)}]);
                         $(document).trigger(blist.events.DISPLAY_ROW, [_.first(details.rows).id, true]);
                     }
                 });

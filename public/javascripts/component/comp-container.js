@@ -44,6 +44,11 @@
             if (!(child instanceof $.component.Component))
                 child = $.component.create(child);
 
+            // We want to initialize any functional components, but they go into their own store
+            // and not into the DOM
+            if (child instanceof $.component.FunctionalComponent)
+            { return null; }
+
             child._move(this, position);
 
             return child;

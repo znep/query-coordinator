@@ -4,7 +4,7 @@ $.component.Container.extend('PagedContainer', {
     _init: function()
     {
         this._super.apply(this, arguments);
-        this.registerEvent('child_shown');
+        this.registerEvent({child_shown: 'newChild'});
     },
 
     visibleChild: function(newChild)
@@ -58,7 +58,7 @@ $.component.Container.extend('PagedContainer', {
         child.properties({height: this._properties.height});
         if (!child._rendered) { child._render(); }
         child.$dom.removeClass('hide');
-        this.trigger('child_shown', [child]);
+        this.trigger('child_shown', [{newChild: child}]);
         child.$contents.trigger('show');
         if (_.isFunction(finalCallback)) { finalCallback(); }
     },

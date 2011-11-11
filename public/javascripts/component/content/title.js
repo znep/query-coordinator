@@ -22,8 +22,8 @@ $.component.Component.extend('Title', 'content', {
 
     _render: function()
     {
-        this._super.apply(this, arguments);
-        this.$title.text(this._properties.text);
+        if (!this._super.apply(this, arguments)) { return false; }
+        this.$title.text($.isBlank(this._properties.text) ? '' : this._properties.text);
         this.$title.css(blist.configs.styles.convertProperties(this._properties));
     },
 

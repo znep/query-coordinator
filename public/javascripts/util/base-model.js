@@ -5,11 +5,11 @@ this.Model = Class.extend({
     {
         var that = this;
         var listeners = {};
-        var events = {};
         var modelEvents = [];
+        that._events = {};
 
         var verifyEvent = function(evName)
-        { if (!events[evName]) { throw 'Event ' + evName + ' not registered'; } };
+        { if (!that._events[evName]) { throw 'Event ' + evName + ' not registered'; } };
 
         this.bind = function (evName, func, model)
         {
@@ -68,17 +68,18 @@ this.Model = Class.extend({
             return that;
         };
 
-        // Events must be registered before they can be used.  Hopefully this
-        // will prevent bugs due to typos, or assuming an event is available
-        // that is never fired
-        this.registerEvent = function(evName)
-        {
-            _.each($.makeArray(evName), function(e) { events[e] = true; });
-            return that;
-        };
-
         this.availableEvents = function()
-        { return _.keys(events).sort(); };
+        { return _.keys(that._events).sort(); };
+    },
+
+    // Events must be registered before they can be used.  Hopefully this
+    // will prevent bugs due to typos, or assuming an event is available
+    // that is never fired
+    registerEvent: function(evName)
+    {
+        var mObj = this;
+        _.each($.makeArray(evName), function(e) { mObj._events[e] = true; });
+        return mObj;
     },
 
     // Return a cleaned copy that has no functions, private keys, or anything

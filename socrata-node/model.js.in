@@ -1,0 +1,19 @@
+(function() {
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var Class = require('class');
+    var env = require('environment');
+
+    var document = {
+        location: {
+            toString: function() { return env.base.url; },
+            hostname: env.base.hostname,
+            protocol: env.base.protocol,
+            port: env.base.port
+        }
+    };
+
+#include "model.src.js"
+})();

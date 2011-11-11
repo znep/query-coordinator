@@ -1,14 +1,5 @@
 (function(){
 
-if (typeof blist === 'undefined')
-{
-    var _ = require('underscore');
-    var $ = require('blist-util');
-    var blist = require('blist-compat');
-
-    var Model = require('model');
-}
-
 // Global so that batches work together
 var batchRequests = [];
 

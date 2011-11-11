@@ -1,27 +1,5 @@
 (function(){
 
-if (typeof blist === 'undefined')
-{
-    var _ = require('underscore');
-    var $ = require('blist-util');
-    var blist = require('blist-compat');
-
-    var Class = require('class');
-    var env = require('environment');
-
-    var baseUrl = env.base.url,
-        hostname = env.base.hostname,
-        protocol = env.base.protocol,
-        port = env.base.port;
-}
-else
-{
-    var baseUrl = document.location,
-        hostname = document.location.hostname,
-        protocol = document.location.protocol,
-        port = document.location.port;
-}
-
 var Model = Class.extend({
     _init: function()
     {
@@ -154,12 +132,13 @@ var Model = Class.extend({
 
     _generateBaseUrl: function(domain, isShort)
     {
-        var domain = hostname;
+        var loc = document.location;
+        var domain = $.isBlank(domain) ? loc.hostname : domain;
         if (isShort) { domain = domain.replace(/www\./, ''); }
-        var base = (isShort ? '' : (protocol + '//')) + domain;
+        var base = (isShort ? '' : (loc.protocol + '//')) + domain;
 
-        if (port && port != 80)
-        { base += ':' + port; }
+        if (loc.port && loc.port != 80)
+        { base += ':' + loc.port; }
 
         return base;
     },
@@ -173,4 +152,3 @@ else
 { module.exports = Model; }
 
 })();
-

@@ -1,0 +1,14 @@
+(function() {
+    var blist = {
+        datatypes: {},
+        namespace: {
+            fetch: function() {}
+        }
+    };
+    module.exports = blist.datatypes;
+
+    var _ = require('underscore');
+    var jQuery = require('blist-util');
+
+#include "datatypes.src.js"
+})();

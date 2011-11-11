@@ -1,0 +1,9 @@
+(function() {
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var Column = require('column');
+
+#include "column-container.src.js"
+})();

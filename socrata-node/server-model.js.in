@@ -1,0 +1,9 @@
+(function() {
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var Model = require('model');
+
+#include "server-model.src.js"
+})();

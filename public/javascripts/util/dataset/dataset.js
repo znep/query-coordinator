@@ -1,15 +1,5 @@
 (function(){
 
-if (typeof blist === 'undefined')
-{
-    var _ = require('underscore');
-    var $ = require('blist-util');
-    var blist = require('blist-compat');
-
-    var ServerModel = require('server-model');
-    var ColumnContainer = require('column-container');
-}
-
 /* Properties on Dataset:
 
     + displayType: from core server, this can be set by the client to tell the

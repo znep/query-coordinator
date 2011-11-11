@@ -206,7 +206,15 @@ $(function()
             _.defer(function()
             {
                 var newOpts = $.extend({}, opts, {q: escape($search.val())});
-                if ($.isBlank(newOpts.q)) { delete newOpts.q; }
+                if ($.isBlank(newOpts.q))
+                {
+                    delete newOpts.q;
+                }
+                else
+                {
+                    delete newOpts.sortPeriod;
+                    newOpts.sortBy = 'relevance';
+                }
                 doBrowse(newOpts);
             });
         };

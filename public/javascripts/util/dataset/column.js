@@ -1,6 +1,31 @@
 (function(){
 
-this.Column = ServerModel.extend({
+if (typeof blist === 'undefined')
+{
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var ServerModel = require('server-model');
+    var ColumnContainer = function()
+    {
+        require('column-container').call(arguments);
+    }
+
+    var isDataset = function(obj)
+    {
+        return obj instanceof require('dataset');
+    }
+}
+else
+{
+    var isDataset = function(obj)
+    {
+        return obj instanceof Dataset;
+    }
+}
+
+var Column = ServerModel.extend({
     _init: function (c, parent)
     {
         this._super();
@@ -12,7 +37,7 @@ this.Column = ServerModel.extend({
             this.parentColumn = parent;
             this.view = parent.view;
         }
-        else if (parent instanceof Dataset)
+        else if (isDataset(parent))
         { this.view = parent; }
 
         if (this.dataTypeName == 'nested_table')
@@ -421,5 +446,10 @@ Column.sanitizeName = function(colName)
     sname = sname.replace(/_+/gi, "_");
     return sname;
 };
+
+if (blist.inBrowser)
+{ this.Column = Column; }
+else
+{ module.exports = Column; }
 
 })();

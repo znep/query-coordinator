@@ -1,9 +1,18 @@
 (function(){
 
+if (typeof blist === 'undefined')
+{
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var Model = require('model');
+}
+
 // Global so that batches work together
 var batchRequests = [];
 
-this.ServerModel = Model.extend({
+var ServerModel = Model.extend({
     _init: function ()
     {
         this._super();
@@ -204,6 +213,14 @@ this.ServerModel = Model.extend({
     }
 });
 
-$.socrataServer = new ServerModel();
+if (blist.inBrowser)
+{
+    this.ServerModel = ServerModel;
+    $.socrataServer = new ServerModel();
+}
+else
+{
+    module.exports = ServerModel;
+}
 
 })();

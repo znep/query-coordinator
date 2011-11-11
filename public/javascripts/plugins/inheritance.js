@@ -8,7 +8,7 @@
   var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 
   // The base Class implementation (does nothing)
-  this.Class = function(){};
+  var Class = function(){};
 
   // Create a new Class that inherits from this class
   Class.extend = function(prop) {
@@ -69,4 +69,11 @@
 
     return Class;
   };
+
+  if (typeof blist !== 'undefined')
+  { this.Class = Class; }
+  else
+  { module.exports = Class; }
+
 })();
+

@@ -25,3 +25,6 @@ blist.namespace.fetch = function (nsString)
     }
     return curNS;
 };
+
+// Let scripts know that we're in-browser
+blist.inBrowser = true;

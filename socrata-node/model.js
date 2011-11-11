@@ -1,0 +1,1 @@
+../public/javascripts/util/base-model.js

@@ -1,6 +1,15 @@
 (function(){
 
-this.ColumnContainer = function(colName, selfUrl, urlBase)
+if (typeof blist === 'undefined')
+{
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var Column = require('column');
+}
+
+var ColumnContainer = function(colName, selfUrl, urlBase)
 {
     var _columnIDLookup = {};
     var _columnTCIDLookup = {};
@@ -277,5 +286,10 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
 
     return props;
 };
+
+if (blist && blist.inBrowser)
+{ this.ColumnContainer = ColumnContainer; }
+else
+{ module.exports = ColumnContainer; }
 
 })();

@@ -1,6 +1,28 @@
 (function(){
 
-this.Model = Class.extend({
+if (typeof blist === 'undefined')
+{
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var Class = require('class');
+    var env = require('environment');
+
+    var baseUrl = env.base.url,
+        hostname = env.base.hostname,
+        protocol = env.base.protocol,
+        port = env.base.port;
+}
+else
+{
+    var baseUrl = document.location,
+        hostname = document.location.hostname,
+        protocol = document.location.protocol,
+        port = document.location.port;
+}
+
+var Model = Class.extend({
     _init: function()
     {
         var that = this;
@@ -132,13 +154,12 @@ this.Model = Class.extend({
 
     _generateBaseUrl: function(domain, isShort)
     {
-        var loc = document.location;
-        var domain = $.isBlank(domain) ? loc.hostname : domain;
+        var domain = hostname;
         if (isShort) { domain = domain.replace(/www\./, ''); }
-        var base = (isShort ? '' : (loc.protocol + '//')) + domain;
+        var base = (isShort ? '' : (protocol + '//')) + domain;
 
-        if (loc.port && loc.port != 80)
-        { base += ':' + loc.port; }
+        if (port && port != 80)
+        { base += ':' + port; }
 
         return base;
     },
@@ -146,4 +167,10 @@ this.Model = Class.extend({
     _validKeys: {}
 });
 
+if (blist.inBrowser)
+{ this.Model = Model; }
+else
+{ module.exports = Model; }
+
 })();
+

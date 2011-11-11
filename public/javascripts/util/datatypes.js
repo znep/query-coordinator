@@ -1,4 +1,17 @@
-blist.namespace.fetch('blist.datatypes');
+(function() {
+
+if (typeof blist === 'undefined')
+{
+    var blist = { datatypes: {} };
+    module.exports = blist.datatypes;
+
+    var _ = require('underscore');
+    var jQuery = require('blist-util');
+}
+else
+{
+    blist.namespace.fetch('blist.datatypes');
+}
 
 (function($) {
 
@@ -1407,3 +1420,6 @@ blist.namespace.fetch('blist.datatypes');
     });
 
 })(jQuery);
+
+})();
+

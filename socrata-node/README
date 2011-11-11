@@ -1,0 +1,14 @@
+h1. Socrata-node
+
+Uses our existing dataset model from the frontend codebase to enable powerful API scripting via Node.js.
+
+h2. Requirements
+
+Runs on Node.js 0.4.0 and above.
+
+h2. Dependencies
+
+Install the following npm packages:
+* underscore
+* restler
+

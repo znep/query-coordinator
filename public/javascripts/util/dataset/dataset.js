@@ -1,5 +1,15 @@
 (function(){
 
+if (typeof blist === 'undefined')
+{
+    var _ = require('underscore');
+    var $ = require('blist-util');
+    var blist = require('blist-compat');
+
+    var ServerModel = require('server-model');
+    var ColumnContainer = require('column-container');
+}
+
 /* Properties on Dataset:
 
     + displayType: from core server, this can be set by the client to tell the
@@ -23,7 +33,7 @@
         really invalidate most actions like sharing, embedding, etc.
 */
 
-this.Dataset = ServerModel.extend({
+var Dataset = ServerModel.extend({
     _init: function (v)
     {
         this._super();
@@ -3316,5 +3326,10 @@ function cleanViewForCreate(ds)
 
     return dsCopy;
 };
+
+if (blist.inBrowser)
+{ this.Dataset = Dataset; }
+else
+{ module.exports = Dataset; }
 
 })();

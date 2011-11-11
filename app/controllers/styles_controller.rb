@@ -141,7 +141,7 @@ protected
       end.join
 
       cache_key = Digest::MD5.hexdigest(stylesheet_filename + includes_cache_key +
-                    File.new(stylesheet_filename).mtime.to_s)
+                    File.new(stylesheet_filename).mtime.to_s + CurrentDomain.cname)
       cache_path = File.join(tmpdir_path, cache_key)
 
       if File.exist?(cache_path)

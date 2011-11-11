@@ -69,6 +69,15 @@
                     function(tcId) { return view.columnForTCID(tcId); });
             chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
+            chartObj._seriesColumns = _.compact(_.map(chartObj._displayFormat.seriesColumns || [],
+                    function(sc)
+                    {
+                        var r = {};
+                        r.column = view.columnForTCID(sc.tableColumnId);
+                        if ($.isBlank(r.column)) { return null; }
+                        return r;
+                    }));
+
             if (chartObj._chartType == 'bubble')
             { _.each(['pointColor', 'pointSize'], function(colName)
             {
@@ -105,6 +114,7 @@
 
             delete chartObj._fixedColumns;
             delete chartObj._valueColumns;
+            delete chartObj._seriesColumns;
             delete chartObj._pointSize;
             delete chartObj._pointColor;
             delete chartObj._gradient;
@@ -190,7 +200,8 @@
         {
             var fCols = this._displayFormat.fixedColumns;
             var titleId = fCols ? fCols[0] : null;
-            columns = _.compact([valueColumn].concat(columns));
+            columns = _.compact((this._displayFormat.seriesColumns || [])
+                    .concat([valueColumn]).concat(columns));
 
             // Override if you want a different layout
             if (_.isEmpty(columns)) { return null; }

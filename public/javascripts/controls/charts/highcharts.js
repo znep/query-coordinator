@@ -27,6 +27,8 @@
                     { maxValue: 80 });
             }
 
+            chartObj._dataGrouping = !_.isEmpty(chartObj._seriesColumns);
+
             // Set up x-axis
             if (_.isArray(chartObj._fixedColumns) &&
                 chartObj._fixedColumns.length == 1)
@@ -36,6 +38,7 @@
 
             // Cache data
             chartObj._seriesCache = [];
+            chartObj._seriesByVal = {};
 
             chartObj._rowIndices = {};
 
@@ -60,33 +63,10 @@
             if (chartObj._displayFormat.stacking)
             { chartObj._yColumns = chartObj._yColumns.reverse(); }
 
+            // FIXME: Remainders happen to work if you don't have seriesColumns; otherwise, they won't
             chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
                 { return col.data.aggregates.sum; });
             chartObj._seriesSums = chartObj._seriesRemainders.slice();
-
-            var colCount = chartObj._yColumns.length;
-
-            // Set up y-axes
-            _.each(chartObj._yColumns, function(cs, colIndex)
-            {
-                var series = {name: cs.data.name,
-                    data: [], column: cs.data};
-                if (chartObj._chartType == 'donut')
-                {
-                    var segment = 100 / (chartObj._yColumns.length + 1);
-                    $.extend(series, {
-                        innerSize:    Math.round(segment * (colIndex+1)) + '%',
-                        size:         Math.round(segment * (colIndex+2)) + '%',
-                        showInLegend: colIndex == 0,
-                        dataLabels:   { enabled: colIndex == colCount - 1 }
-                    });
-                }
-                if (!_.isUndefined(chartObj.chart))
-                { chartObj.chart.addSeries(series, false); }
-                if (!_.isUndefined(chartObj.secondChart))
-                { chartObj.secondChart.addSeries(series, false); }
-                chartObj._seriesCache.push(series);
-            });
 
             // Adjust scale to make sure series are synched with axis
             if (!_.isUndefined(chartObj.chart))
@@ -105,8 +85,7 @@
             }
 
             // Once we've gotten the columns, get total rows, then create the chart
-            chartObj._primaryView.getTotalRows(function()
-                { createChart(chartObj); });
+            chartObj._primaryView.getTotalRows(function() { createChart(chartObj); });
         },
 
         handleRowsLoaded: function()
@@ -126,11 +105,20 @@
                 return true;
             }
 
+            var xCat;
+            if (!$.isBlank(chartObj._xColumn))
+            { xCat = renderCellText(row, chartObj._xColumn); }
+
             // See if there is an existing index
             var ri = chartObj._rowIndices[row.id];
             var hasRI = true;
             if (!$.isBlank(chartObj._xCategories))
             {
+                if ($.isBlank(ri) && chartObj._dataGrouping)
+                {
+                    var existI = _.indexOf(chartObj._xCategories, xCat);
+                    if (existI > -1) { ri = {x: existI}; }
+                }
                 if ($.isBlank(ri))
                 {
                     hasRI = false;
@@ -149,32 +137,29 @@
 
             if (!_.isUndefined(chartObj._xCategories))
             {
-                var xCat = basePt.x;
-                xCat = row[chartObj._xColumn.lookup];
-                xCat = renderXValue(xCat, chartObj._xColumn);
                 if (hasRI) { chartObj._xCategories[ri] = xCat; }
                 else { chartObj._xCategories.splice(ri, 0, xCat); }
             }
 
             var hasPoints = false;
-            // Render data for each series
-            _.each(chartObj._yColumns, function(cs, i)
+            var renderPoint = function(colSet, series)
             {
-                var value = parseFloat(row[cs.data.id]);
+                var value = parseFloat(row[colSet.data.id]);
                 if (_.isNaN(value)) { value = null; }
 
                 // First check if this should be subsumed into a remainder
+                // FIXME: Doesn't really work with series cols
                 if (!_.isNull(value) &&
                     !_.isUndefined(chartObj._displayFormat.pieJoinAngle) &&
-                    !$.isBlank(cs.data.aggregates.sum) &&
-                    (value / cs.data.aggregates.sum) * 360 <
+                    !$.isBlank(colSet.data.aggregates.sum) &&
+                    (value / colSet.data.aggregates.sum) * 360 <
                         chartObj._displayFormat.pieJoinAngle)
                 { return; }
 
                 // Render point and cache it
                 // NOTE: There is an assumption that _xCategories will be
                 // appropriately populated by this point in the yPoint code.
-                var point = yPoint(chartObj, row, value, i, basePt, cs.data);
+                var point = yPoint(chartObj, row, value, series.index, basePt, colSet);
                 if (_.isNull(point)) { return; }
 
                 if ($.isBlank(point.y))
@@ -185,13 +170,26 @@
                 }
                 else if (chartObj._nullCache && !$.isBlank(point.y))
                 {
-                    _.each(chartObj._nullCache, function(n)
-                        { addPoint(chartObj, n, i); });
+                    _.each(chartObj._nullCache, function(n) { addPoint(chartObj, n, i); });
                     chartObj._nullCache = undefined;
                 }
-                addPoint(chartObj, point, i);
+                addPoint(chartObj, point, series.index);
 
                 hasPoints = true;
+            };
+
+            // Render data for each series
+            _.each(chartObj._yColumns, function(yc)
+            {
+                var seriesVals = [yc.data.name];
+                _.each(chartObj._seriesColumns, function(sc)
+                    { seriesVals.push(renderCellText(row, sc.column)); });
+                var seriesVal = _.compact(seriesVals).join(', ');
+                var series = chartObj._seriesByVal[seriesVal];
+                if ($.isBlank(series))
+                { series = createSeries(chartObj, seriesVal); }
+
+                renderPoint(yc, series);
             });
 
             // We failed to have any points; remove the x-category
@@ -235,16 +233,17 @@
                 }
                 var otherPt = xPoint(chartObj, otherRow, oInd);
                 otherPt.otherPt = true;
+                // FIXME: Doesn't work with series col
                 _.each(chartObj._seriesRemainders, function(sr, i)
                 {
                     if ($.isBlank(sr)) { return; }
-                    var col = chartObj._yColumns[i].data;
-                    otherRow[col.id] = sr;
-                    var point = yPoint(chartObj, otherRow, sr, i, otherPt, col);
+                    var colSet = chartObj._yColumns[i];
+                    otherRow[colSet.data.lookup] = sr;
+                    var point = yPoint(chartObj, otherRow, sr, i, otherPt, colSet);
                     addPoint(chartObj, point, i, true)
                 });
 
-                var numSeries = chartObj._seriesRemainders.length;
+                var numSeries = chartObj._seriesCache.length;
                 for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
                 {
                     var reindex = function(datum, index)
@@ -291,10 +290,12 @@
             delete chartObj._pendingRows;
             delete chartObj._seriesRemainders;
             delete chartObj._seriesCache;
+            delete chartObj._seriesByVal;
             delete chartObj._rowIndices;
             delete chartObj._curMin;
             delete chartObj._curMax;
             delete chartObj._loadedOnce;
+            delete chartObj._dataGrouping;
 
             if (!_.isUndefined(chartObj.chart))
             {
@@ -344,6 +345,37 @@
             return this._super(_.compact(_.uniq(reqFields).concat(columns)));
         }
     }, null, 'socrataChart');
+
+    var createSeries = function(chartObj, name)
+    {
+        var series = {name: name, data: [], index: chartObj._seriesCache.length};
+        if (chartObj._chartType == 'donut')
+        {
+            var segment = 100 / ((chartObj._seriesCache.length + 1) + 1);
+            $.extend(series, {
+                innerSize:    Math.round(segment * (series.index + 1)) + '%',
+                size:         Math.round(segment * (series.index + 2)) + '%',
+                showInLegend: series.index == 0,
+                dataLabels:   { enabled: true }
+            });
+            if (chartObj._seriesCache.length > 0)
+            { _.last(chartObj._seriesCache).dataLabels.enabled = false; }
+            _.each(chartObj._seriesCache, function(s, i)
+            {
+                s.innerSize = Math.round(segment * (i + 1)) + '%';
+                s.size = Math.round(segment * (i + 2)) + '%';
+            });
+        }
+
+        if (!_.isUndefined(chartObj.chart))
+        { chartObj.chart.addSeries(series, false); }
+        if (!_.isUndefined(chartObj.secondChart))
+        { chartObj.secondChart.addSeries(series, false); }
+        chartObj._seriesCache.push(series);
+        chartObj._seriesByVal[name] = series;
+
+        return series;
+    };
 
     var createChart = function(chartObj)
     {
@@ -686,14 +718,6 @@
 
         if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
 
-        // If we already have data loaded, use it
-        if (!_.isEmpty(chartObj._seriesCache))
-        { chartConfig.series = chartObj._seriesCache; }
-
-        // If we already have categories loaded, use it
-        if (!_.isEmpty(chartObj._xCategories))
-        { chartConfig.xAxis.categories = chartObj._xCategories; }
-
         if (chartObj._displayFormat.yAxis)
         {
             var yAxis = chartObj._displayFormat.yAxis;
@@ -813,7 +837,7 @@
         // Type config goes under the type name
         chartConfig.plotOptions[seriesType] = typeConfig;
 
-        if (chartObj._displayFormat.stacking && chartObj._yColumns.length > 1)
+        if (chartObj._displayFormat.stacking && (chartObj._yColumns.length > 1 || chartObj._dataGrouping))
         {
             chartConfig.plotOptions.series =
                 $.extend(chartConfig.plotOptions.series, { stacking: 'normal' });
@@ -830,7 +854,16 @@
         // Create the chart
         chartObj.startLoading();
 
-        var loadChart = function() {
+        var loadChart = function()
+        {
+            // If we already have data loaded, use it
+            if (!_.isEmpty(chartObj._seriesCache))
+            { chartConfig.series = chartObj._seriesCache; }
+
+            // If we already have categories loaded, use it
+            if (!_.isEmpty(chartObj._xCategories))
+            { chartConfig.xAxis.categories = chartObj._xCategories; }
+
             chartObj.chart = new Highcharts.Chart(chartConfig);
 
             if (!chartObj._categoriesLoaded)
@@ -903,7 +936,7 @@
         return pt;
     };
 
-    var yPoint = function(chartObj, row, value, seriesIndex, basePt, col)
+    var yPoint = function(chartObj, row, value, seriesIndex, basePt, colSet)
     {
         var isPieTypeChart = _.include(['pie', 'donut'], chartObj._chartType);
         if (_.isNull(value) && isPieTypeChart)
@@ -914,9 +947,8 @@
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
 
-        var colSet = chartObj._yColumns[seriesIndex];
         if (!_.isUndefined(colSet.title) && !_.isNull(row))
-        { point.name = $.htmlEscape(row[colSet.title.id]); }
+        { point.name = renderCellText(row, colSet.title); }
 
         else if (isPieTypeChart)
         {
@@ -938,7 +970,7 @@
         {
             point.subtitle = '';
             _.each(colSet.metadata, function(c)
-            { point.subtitle += $.htmlEscape(row[c.id]); });
+            { point.subtitle += renderCellText(row, c); });
         }
 
         if (isPieTypeChart &&
@@ -954,7 +986,7 @@
                 var pCol = chartObj._pointColor;
                 point.label.color = pCol.name;
                 for (var i = 0; i < chartObj._numSegments; i++)
-                { if (parseFloat(row[pCol.id]) <= chartObj._segments[pCol.id][i])
+                { if (parseFloat(row[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
                     {
                         point.fillColor = "#"+$.rgbToHex(chartObj._gradient[i]);
                         point.states.hover = $.extend(point.states.hover,
@@ -968,7 +1000,7 @@
                 var pCol = chartObj._pointSize;
                 point.label.size = pCol.name;
                 for (var i = 0; i < chartObj._numSegments; i++)
-                { if (parseFloat(row[pCol.id]) <= chartObj._segments[pCol.id][i])
+                { if (parseFloat(row[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
                     {
                         point.radius = 4+(4*i);
                         point.states.hover = $.extend(point.states.hover,
@@ -989,22 +1021,21 @@
         }
 
         var sm = row.sessionMeta || {};
-        if (sm.highlight && ($.isBlank(sm.highlightColumn) || sm.highlightColumn == col.id))
+        if (sm.highlight && ($.isBlank(sm.highlightColumn) || sm.highlightColumn == colSet.data.id))
         { point.selected = true; }
 
         point.row = row;
-        point.column = col;
+        point.column = colSet.data;
         point.flyoutDetails = chartObj.renderFlyout(row,
-            chartObj._yColumns[seriesIndex].data.tableColumnId,
-            chartObj._primaryView);
+            colSet.data.tableColumnId, chartObj._primaryView);
 
         return point;
     };
 
     // Handle rendering values for different column types here
-    var renderXValue = function(val, col)
+    var renderCellText = function(row, col)
     {
-        return col.renderType.renderer(val, col, true);
+        return col.renderType.renderer(row[col.lookup], col, true);
     };
 
     var isDateTime = function(chartObj)

@@ -509,7 +509,7 @@
         var drawValueMarker = function()
         {
             var invertAxis = chartObj._chartType == 'bar';
-            if (chartObj._valueMarkers && chartObj._valueMarkers[0].renderer)
+            if (!_.isEmpty(chartObj._valueMarkers) && chartObj._valueMarkers[0].renderer)
             {
                 // This is a hackaround since it doesn't look like
                 // alignedObjects is ever supposed to be null.

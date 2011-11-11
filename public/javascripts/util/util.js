@@ -108,6 +108,16 @@ String.prototype.heuristicDistance = function(other)
                .levenshtein(other.replace(/^[a-z0-9]/ig, '').toLowerCase());
 };
 
+Function.prototype.curry = function()
+{
+    var f = this;
+    var appliedArgs = Array.prototype.slice.call(arguments);
+    return function()
+    {
+        return f.apply(this, appliedArgs.concat(Array.prototype.slice.call(arguments)));
+    };
+};
+
 // jQuery defs
 
 (function($) {

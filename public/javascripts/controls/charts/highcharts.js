@@ -506,15 +506,40 @@
             });
         };
 
-        var drawValueMarker = function()
+        var drawValueMarkers = function()
         {
+            if (!chartObj._displayFormat.valueMarker)
+            { return; }
+
             var invertAxis = chartObj._chartType == 'bar';
             if (!_.isEmpty(chartObj._valueMarkers) && chartObj._valueMarkers[0].renderer)
+            { chartObj._valueMarkers = []; }
+
+            chartObj._valueMarkers = _drawMarkers(invertAxis, chartObj._displayFormat.valueMarker,
+                chartObj._valueMarkers);
+        };
+
+        var drawDomainMarkers = function()
+        {
+            if (!chartObj._displayFormat.domainMarker)
+            { return; }
+
+            var invertAxis = chartObj._chartType != 'bar';
+            if (!chartObj._domainMarkers)
+            { chartObj._domainMarkers = []; }
+
+            chartObj._domainMarkers = _drawMarkers(invertAxis, chartObj._displayFormat.domainMarker,
+                chartObj._domainMarkers);
+        };
+
+        var _drawMarkers = function(invertAxis, format, markerStore)
+        {
+            if (markerStore[0] && markerStore[0].renderer)
             {
                 // This is a hackaround since it doesn't look like
                 // alignedObjects is ever supposed to be null.
                 // TODO: Chase down the Highcharts bug.
-                _.each(chartObj._valueMarkers, function(marker)
+                _.each(markerStore, function(marker)
                 {
                     if (!marker.renderer.alignedObjects)
                     { marker.renderer.alignedObjects = []; }
@@ -522,15 +547,12 @@
                     { marker.handle.destroy(); }
                     marker.destroy();
                 });
-                delete chartObj._valueMarkers;
+                markerStore = [];
             }
-            if (!chartObj._displayFormat.valueMarker || $.isBlank(chartObj.chart))
+            if ($.isBlank(chartObj.chart))
             { return; }
 
-            if (!chartObj._valueMarkers)
-            { chartObj._valueMarkers = []; }
-
-            _.each(chartObj._displayFormat.valueMarker, function(marker, index)
+            _.each(format, function(marker, index)
             {
                 var lineAt = parseFloat(marker.atValue);
                 if (!_.isNumber(lineAt)) { return; }
@@ -596,7 +618,7 @@
 
                 if (hasSVG)
                 {
-                    chartObj._valueMarkers[index] =
+                    markerStore[index] =
                         chartObj.chart.renderer.path(_.flatten(commands))
                             .attr({
                                 'zIndex': 10,
@@ -606,26 +628,26 @@
                             .add();
                     if (!marker.caption) { return; }
 
-                    chartObj._valueMarkers[index].handle =
+                    markerStore[index].handle =
                         chartObj.chart.renderer.circle.apply(chartObj.chart.renderer, handle)
                             .attr({
                                 'zIndex': 10,
                                 'fill': marker.color
                             })
                             .add();
-                    _.each([chartObj._valueMarkers[index].element,
-                            chartObj._valueMarkers[index].handle.element], function(element)
+                    _.each([markerStore[index].element,
+                            markerStore[index].handle.element], function(element)
                     { $(element).hover(mouseover,
                         function() { chartObj.$dom().siblings('#highcharts_tooltip').hide(); }); });
                 }
                 else
                 {
-                    if (!chartObj._valueMarkers[index] || chartObj._valueMarkers[index].length == 0)
+                    if (!markerStore[index] || markerStore[index].length == 0)
                     {
-                        chartObj._valueMarkers[index] =
+                        markerStore[index] =
                             $('<div />').css({ position: 'absolute', 'zIndex': 10,
                                 'border-style': 'solid' });
-                        $(chartObj.chart.container).append(chartObj._valueMarkers[index]);
+                        $(chartObj.chart.container).append(markerStore[index]);
                     }
                     var cTop    = invertAxis ? commands[1][2] : commands[0][2];
                     var cLeft   = invertAxis ? commands[1][1] : commands[0][1];
@@ -639,37 +661,40 @@
                     changeset[sAxis] = sLength + 'px';
                     changeset[sAxis2] = 0;
                     changeset.borderWidth = sWidth + 'px';
-                    chartObj._valueMarkers[index].css(changeset);
+                    markerStore[index].css(changeset);
                     if (!marker.caption)
                     {
-                        if (chartObj._valueMarkers[index].$handle)
-                        { chartObj._valueMarkers[index].$handle.remove(); }
+                        if (markerStore[index].$handle)
+                        { markerStore[index].$handle.remove(); }
                         return;
                     }
 
-                    if (!chartObj._valueMarkers[index].$handle
-                        || chartObj._valueMarkers[index].$handle.length == 0)
+                    if (!markerStore[index].$handle
+                        || markerStore[index].$handle.length == 0)
                     {
-                        chartObj._valueMarkers[index].$handle =
+                        markerStore[index].$handle =
                             $('<div />').css({ position: 'relative', 'zIndex': 10,
                                                width: '10px', height: '10px' });
-                        $(chartObj.chart.container).append(chartObj._valueMarkers[index].$handle);
+                        $(chartObj.chart.container).append(markerStore[index].$handle);
                     }
-                    chartObj._valueMarkers[index].$handle
+                    markerStore[index].$handle
                         .css({ top: (handle[1] - 5) + 'px', left: (handle[0] - 5) + 'px',
                                backgroundColor: marker.color })
-                    _.each([chartObj._valueMarkers[index],
-                            chartObj._valueMarkers[index].$handle], function($element)
+                    _.each([markerStore[index],
+                            markerStore[index].$handle], function($element)
                     { $element.hover(mouseover,
                         function() { chartObj.$dom().siblings('#highcharts_tooltip').hide(); }); });
                 }
             });
+
+            return markerStore;
         };
 
         var chartRedraw = function(evt)
         {
             setTimeout(drawNullBars, 500); // Wait for animation to finish before running.
-            drawValueMarker();
+            drawValueMarkers();
+            drawDomainMarkers();
         };
 
         // Main config

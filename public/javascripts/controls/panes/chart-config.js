@@ -100,13 +100,13 @@
         };
     };
 
-    var valueMarker = function(chart, options)
+    var _marker = function(which, chart, options)
     {
         return {
-            title: 'Value Marker', onlyIf: onlyIfForChart(chart, options, false),
-            type: 'selectable', name: 'valueMarker',
+            title: $.capitalize(which) + ' Marker', onlyIf: onlyIfForChart(chart, options, false),
+            type: 'selectable', name: which + 'Marker',
             fields: [
-                {type: 'repeater', name: 'displayFormat.valueMarker', addText: 'Add Marker', minimum: 0,
+                {type: 'repeater', name: 'displayFormat.' + which + 'Marker', addText: 'Add Marker', minimum: 0,
                     field: {type: 'group', options: [
                         {type: 'group', options: [
                             {type: 'color', name: 'color',
@@ -118,6 +118,9 @@
             ]
         };
     };
+
+    var valueMarker =  _marker.curry('value');
+    var domainMarker = {};// _marker.curry('domain');
 
     var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: 'Show %s' };
 
@@ -342,7 +345,8 @@
                     basicData(chart, options, Dataset.chart.numericTypes, 'Value'),
                     basicAdv(chart, options, [legendPos, showLines, showPoints, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
-                    valueMarker(chart, options));
+                    valueMarker(chart, options),
+                    domainMarker(chart, options));
                 break;
 
 
@@ -354,7 +358,8 @@
                     basicAdv(chart, options, [legendPos, stacking('bar'), renderOther,
                         flyoutControls(options)]),
                     yAxisFormatting(chart, options),
-                    valueMarker(chart, options));
+                    valueMarker(chart, options),
+                    domainMarker(chart, options));
                 break;
 
 
@@ -365,7 +370,8 @@
                     dataBubble(options),
                     basicAdv(chart, options, [legendPos, showLine, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
-                    valueMarker(chart, options));
+                    valueMarker(chart, options),
+                    domainMarker(chart, options));
                 break;
 
             // Column chart
@@ -376,7 +382,8 @@
                     basicAdv(chart, options,
                         [legendPos, stacking('column'), renderOther, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
-                    valueMarker(chart, options));
+                    valueMarker(chart, options),
+                    domainMarker(chart, options));
                 break;
 
 
@@ -399,7 +406,8 @@
                             type: 'checkbox', defaultValue: false},
                          flyoutControls(options)]),
                     yAxisFormatting(chart, options),
-                    valueMarker(chart, options));
+                    valueMarker(chart, options),
+                    domainMarker(chart, options));
                 break;
 
 
@@ -419,7 +427,8 @@
                     dataTimeline(options),
                     basicAdv(chart, options, [legendPos, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
-                    valueMarker(chart, options));
+                    valueMarker(chart, options),
+                    domainMarker(chart, options));
                 break;
 
 

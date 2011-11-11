@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 var repl = require('repl');
+var sys = require('sys');
 
 require.paths.unshift(__dirname);
 
-var Dataset = require('dataset');
-var env = require('environment');
 var util = require('blist-util');
-var sys = require('sys');
 
 util.extend(repl.start('socrata> ').context, {
-    Dataset: Dataset,
-    env: env,
+    Dataset: require('dataset'),
+    Future: require('future'),
+
+    env: require('environment'),
     sys: sys,
     inspect: sys.inspect
 });

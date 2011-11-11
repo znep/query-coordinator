@@ -44,12 +44,16 @@ $.component.Container.extend('Repeater', 'content', {
         this._map = [];
         while (this.first)
             this.first.destroy();
+        var view;
         if ($.cf.designing)
             // Render actual children as direct descendants
             this.add(this._cloneProperties.children);
-        else if ((this._dataContext || {}).view) {
+        else if (view = (this._dataContext || {}).view) {
             // Render records
             var me = this;
+            var columnMap = this.columnMap = {};
+            for (var i = 0; i < view.columns.length; i++)
+                columnMap[view.columns[i].id] = view.columns[i].fieldName;
             this._dataContext.view.getRows(this.position, this.length, function(rows) {
                 _.each(rows, me._setRow, me);
             });
@@ -73,7 +77,9 @@ $.component.Container.extend('Repeater', 'content', {
             properties.id = prefix + properties.id;
             var children = properties.children;
             if (children) {
-                children = properties.children = properties.children.slice();
+                if (!$.isArray(children))
+                    children = [ children ];
+                children = properties.children = children.slice();
                 for (var i = 0; i < children.length; i++)
                     children[i] = createTemplate(children[i]);
             }
@@ -88,13 +94,21 @@ $.component.Container.extend('Repeater', 'content', {
             map[index] = undefined;
         }
 
+        // Create entity TODO - mapping will be unnecessary w/ SODA 2
+        var entity = {};
+        _.each(this.columnMap, function(to, from) {
+            entity[to] = row[from];
+            if (entity[to] == undefined)
+                entity[to] = null;
+        });
+        cloneProperties.entity = entity;
+
         // Create clone
-        cloneProperties.entity = row;
         var clone = map[index] = new $.component.Repeater.Clone(cloneProperties);
 
         // Find position for clone
         var position;
-        for (var i = index + 1; !position && i < map.length; i++)
+        for (i = index + 1; !position && i < map.length; i++)
             position = map[i];
 
         // Insert the clone

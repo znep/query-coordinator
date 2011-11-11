@@ -14,14 +14,14 @@
             if (pieces) {
                 var fn = [
                     'if (!_.isFunction(resolver)) { var obj = resolver; resolver = function(name) { return obj[name] } };',
-                    'return ['
+                    'var temp; return ['
                 ];
                 for (var i = 0; i < pieces.length; i++) {
                     if (i)
                         fn.push(',');
                     if (pieces[i] == '{' && pieces[i + 2] == '}') {
                         var prop = escape(pieces[i + 1]);
-                        fn.push('(resolver("' + prop + '") || "{' + prop + '}")');
+                        fn.push('((temp = resolver("' + prop + '")) === undefined ? "{' + prop + '}" : temp)');
                         i += 2;
                     } else
                         fn.push('"' + escape(pieces[i]) + '"');

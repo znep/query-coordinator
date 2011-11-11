@@ -16,7 +16,7 @@
             if (type.catalogCategory) {
                 var category = catalog[type.catalogCategory];
                 if (!category)
-                    category = catalog[type.catalogCategory] = { name: camelize(type.catalogCategory), entries: [] };
+                    category = catalog[type.catalogCategory] = { id: type.catalogCategory, name: camelize(type.catalogCategory), entries: [] };
                 category.entries.push(type);
             }
         },

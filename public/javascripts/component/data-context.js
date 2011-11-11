@@ -1,7 +1,14 @@
 ;(function($) {
-    $.dataContext = {
+    $.dataContext = new (Model.extend({
         availableContexts: {},
         _contextsQueue: {},
+
+        _init: function() {
+            this._super();
+
+            // Note that unavailable isn't used yet as you cannot delete datasets
+            this.registerEvent([ 'available', 'unavailable', 'error' ]);
+        },
 
         load: function(configHash)
         {
@@ -35,6 +42,7 @@
                                 { if (_.isFunction(f.success)) { f.success(dc.availableContexts[id]); } });
                             delete dc._contextsQueue[id];
                             if (_.isFunction(successCallback)) { successCallback(dc.availableContexts[id]); }
+                            $.dataContext.trigger('available', [ id, view ]);
                         },
                         function(xhr)
                         {
@@ -42,6 +50,7 @@
                                 { if (_.isFunction(f.error)) { f.error(xhr); } });
                             delete dc._contextsQueue[id];
                             if (_.isFunction(errorCallback)) { errorCallback(xhr); }
+                            $.dataContext.trigger('error', [ id, view ]);
                         });
             }
         },
@@ -64,5 +73,5 @@
 
             return false;
         }
-    };
+    }));
 })(jQuery);

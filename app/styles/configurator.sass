@@ -69,22 +69,30 @@
 
 // Representation of icons in palette and drag form of same
 .socrata-cf-side .item, .socrata-cf-drag-icon
-  .icon
-    width: 48px
-    height: 48px
-    margin: 0 16px 6px 16px
+  &.label-only
+    width: auto
+  .bulb
     background: 10000px 10000px no-repeat, rgba(0, 0, 0, .25)
     display: block
     @include border-radius(6px)
     box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
     -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
     -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
+    margin: 0 16px 6px 16px
+  .icon
+    width: 48px
+    height: 48px
   .label
     display: block
     text-align: center
     font-size: 12px
     cursor: move
     color: #dddddd
+    &.bulb
+      line-height: 24px
+      padding: 0 8px
+      color: #f8f8f8
+      margin: 0 6px 6px 6px
 
 // Transformation of new palette icon whilst animating into position
 .socrata-cf-drag-icon.socrata-cf-adding

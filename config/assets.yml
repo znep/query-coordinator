@@ -94,6 +94,7 @@ javascripts:
     - public/javascripts/component/data/map.js
     - public/javascripts/component/data/repeater.js
     - public/javascripts/component/data/table.js
+    - public/javascripts/component/data/property.js
     - public/javascripts/component/actions/comment.js
     - public/javascripts/component/actions/create-chart.js
     - public/javascripts/component/actions/create-map.js

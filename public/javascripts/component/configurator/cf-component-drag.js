@@ -9,6 +9,9 @@
         // Metadata for the component we're dragging for creates
         var type;
 
+        // Template for children if this is a new item
+        var childTemplate;
+
         // Metadata for the component we're dragging for moves
         var child;
 
@@ -276,7 +279,7 @@
                     $.cf.edit.execute('add', {
                         container: container,
                         position: position,
-                        type: type
+                        childTemplate: childTemplate
                     });
                 else if (container)
                     $.cf.edit.execute('move', {
@@ -398,6 +401,7 @@
             if (!type)
                 return false;
             isNew = match[1] == "icon";
+            childTemplate = $.extend({ type: type.typeName }, $target.data());
 
             // Compute the offset for positioning the element relative to the mouse
             var offset = $target.offset();

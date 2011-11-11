@@ -20,19 +20,50 @@
             $.component.catalog.input
         ];
 
-        _.each(paletteCatalog, function(section) {
-            var html = [ '<div class="section', section.open ? ' open' : '', '"><h2>', section.name, '</h2><ul>' ];
+        function createSection(section, createEntry) {
+            // Structure
+            var html = [ '<div class="section side-section-', section.id, section.open ? ' open' : '', '"><h2>', section.name, '</h2><ul>' ];
+
+            // Components
             for (var i = 0; i < section.entries.length; i++) {
                 var entry = section.entries[i];
-                html.push('<li class="item icon-', entry.typeName, '"><span class="icon"></span><span class="label">', entry.catalogName, '</span></li>');
+                createEntry(entry, html);
             }
+
+            // Add to DOM
             html.push('</ul></div>');
             var $section = $(html.join(''));
-            $ct.append($section);
+            var $oldSection = $ct.find('.section.side-section-' + section.id);
+            if ($oldSection.length)
+                $oldSection.replaceWith($section);
+            else {
+                var $propertiesShell = $ct.find('.socrata-cf-properties-shell');
+                if ($propertiesShell.length)
+                    $propertiesShell.before($section);
+                else
+                    $ct.append($section);
+            }
+
+            // Events
             var $items = $section.find('ul');
             $section.bind('collapse', function() {
                 $items.animate({ height: 0 }, 200, 'linear');
                 $section.removeClass('open');
+            }).mousedown(function(e) {
+                if (e.which != 1)
+                    return;
+
+                // Ignore events in headers which interact independently
+                var $target = $(e.target);
+                if ($target.closest('h2').length)
+                    return;
+
+                // Initiate icon drag
+                var $icon = $target.closest('.item');
+                if ($icon.length)
+                    new $.cf.ComponentDrag($icon, e);
+
+                return false;
             }).find('h2').click(function() {
                 if ($section.is('.open'))
                     $section.trigger('collapse');
@@ -43,26 +74,21 @@
                     $items.height(0);
                     $items.animate({ height: height }, 200, 'linear');
                 }
-                
+
                 $ct.find('.open').not(this.parentNode).trigger('collapse');
             });
-        });
+        }
 
-        $ct.children('.section').mousedown(function(e) {
-            if (e.which != 1)
-                return;
-
-            // Ignore events in headers which interact independently
-            var $target = $(e.target);
-            if ($target.closest('h2').length)
-                return;
-
-            // Initiate icon drag
-            var $icon = $target.closest('.item');
-            if ($icon.length)
-                new $.cf.ComponentDrag($icon, e);
-
-            return false;
+        _.each(paletteCatalog, function(section) {
+            createSection(section, function(entry, html) {
+                html.push(
+                    '<li class="item icon-',
+                    entry.typeName,
+                    '"><span class="icon bulb"></span><span class="label">',
+                    entry.catalogName,
+                    '</span></li>'
+                );
+            });
         });
 
         $properties = $.tag({tagName: 'div', 'class': 'properties'});
@@ -80,6 +106,38 @@
                 function(t) { $ct[0].addEventListener(t, function() { $(window).resize(); }); });
         };
         _.defer(function() { $(window).resize(); });
+
+        function update(id, dataset) {
+            createSection({
+                id: dataset.id,
+                name: dataset.name + ' Properties',
+                entries: _.filter(dataset.columns, function(column) {
+                    return column.dataTypeName != 'meta_data';
+                })
+            }, function(property, html) {
+                html.push(
+                    '<li class="item icon-Property label-only" data-dataset="',
+                    $.htmlEscape(id),
+                    '" data-name="',
+                    $.htmlEscape(property.fieldName),
+                    '"><span class="label bulb">',
+                    $.htmlEscape(property.name),
+                    '</span></li>'
+                );
+            });
+        }
+
+        $.dataContext.bind('available', function(id, dataset) {
+            dataset.bind('columns_changed', function() { update(id, dataset); });
+            update(id, dataset);
+        }).bind('unavailable', function() {
+            dataset.unbind('columns_changed', update);
+            $cf.find('.section-' + id).remove();
+        });
+
+        _.each($.dataContext.availableContexts, function(dataset, id) {
+            $.dataContext.trigger('available', [ id, dataset.view ]);
+        })
     }
 
     $.cf.side = function(show) {

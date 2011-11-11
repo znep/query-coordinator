@@ -4,11 +4,22 @@
     <p>The facet <%= target_facet %> is currently empty.</p>
   </div>
 <%- else -%>
-  <ul id="<%= widget.elem_id %>" class="facetList clearfix">
-    <%- widget.facet_values.each do |facet_value| -%>
-      <li><a href="/facet/<%= target_facet %>/<%= CGI.escape facet_value %>">
-        <%= facet_value %>
-      </a></li>
-    <%- end -%>
-  </ul>
+  <%- if widget.properties.alpha_index -%>
+    <div id="<%= widget.elem_id %>" class="facetList clearfix">
+      <ul class="alphaIndex">
+        <%- widget.by_alpha.keys.sort.each do |char| -%>
+          <li><a href="#<%= char %>"><%= char %></a></li>
+        <%- end -%>
+      </ul>
+      <%- ('a'..'z').each do |char| -%>
+        <%- next unless widget.by_alpha.has_key? char -%>
+        <a class="alphaIndexAnchor" name="<%= char %>"><%= char %></a>
+        <%= render :partial => 'facet_list_listing', :locals => { :facet_values => widget.by_alpha[char],
+            :elem_id => "#{widget.elem_id}_#{char}", :target_facet => target_facet} %>
+      <%- end -%>
+    </div>
+  <%- else -%>
+    <%= render :partial => 'facet_list_listing', :locals => { :facet_values => widget.facet_values,
+        :elem_id => widget.elem_id, :target_facet => target_facet } %>
+  <%- end -%>
 <%- end -%>

@@ -225,7 +225,7 @@ module Canvas
   end
 
   class FacetList < CanvasWidget
-    attr_reader :facet_values
+    attr_reader :facet_values, :by_alpha
 
     def prepare!
       config = CurrentDomain.configuration('metadata')
@@ -242,9 +242,17 @@ module Canvas
       @facet_values = [] and return if field.nil? || field.options.nil?
 
       @facet_values = field.options[0..self.properties.maximum]
+
+      if self.properties.alpha_index
+        @by_alpha = @facet_values.reduce({}) do |by_alpha, val|
+          (by_alpha[val[0,1].downcase] ||= []) << val
+          by_alpha
+        end
+      end
     end
   protected
     self.default_properties = {
+      alpha_index: false,
       style: {
         orientation: 'horizontal'
       },

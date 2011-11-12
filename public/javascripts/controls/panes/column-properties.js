@@ -483,6 +483,14 @@
             if (col.isLinked())
             {
                 var keyColId = column.format.linkedKey;
+                if (_.isNumber(keyColId))
+                {
+                    var keyCol = this._view.columnForID(keyColId);
+                    if (keyCol != null)
+                    {
+                        column.format.linkedKey = keyCol.fieldName;
+                    }
+                }
                 var srcColId = column.format.linkedSource;
                 column.dataTypeName = cpObj._view.
                     getLinkSourceDataType(null, srcColId, keyColId).value;

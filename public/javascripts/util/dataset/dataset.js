@@ -1461,7 +1461,7 @@ var Dataset = ServerModel.extend({
                     {
                         if (c.canBeLinkSource())
                         {
-                            opt = {value: String(c.id), text: c.name,
+                            opt = {value: String(c.fieldName), text: c.name,
                                 dataType: c.dataTypeName};
                             cldo.push(opt);
                         }
@@ -3173,7 +3173,7 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
                 {
                     if (c.canBeDatasetLink())
                     {
-                        opt = {value: String(c.id), text: c.name};
+                        opt = {value: String(c.fieldName), text: c.name};
                         if (useRdfKeyAsDefault && opt.value === rdfSubject)
                         {
                             opt.selected = true;

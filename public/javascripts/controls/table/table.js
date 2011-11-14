@@ -859,6 +859,7 @@
         var handleEditEnd = function(event, isSave, origEvent, mode)
         {
             endEdit(isSave, mode);
+            origEvent = origEvent || {};
             if (origEvent.type == 'keydown')
             {
                 // If they hit esc or F2,

@@ -37,6 +37,7 @@
     {
         editObj._curVal = fileId;
         updateButtons(editObj);
+        editObj.$dom().trigger('edit_end', [true]);
     };
 
     var updateButtons = function(editObj)

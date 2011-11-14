@@ -120,7 +120,8 @@
     };
 
     var valueMarker =  _marker.curry('value');
-    var domainMarker = {};// _marker.curry('domain');
+    var domainMarker = function() { return { onlyIf: { func: function() { return false; } } }; };
+    // var domainMarker = _marker.curry('domain');
 
     var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: 'Show %s' };
 

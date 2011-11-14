@@ -19,7 +19,7 @@
 
 <%- if CurrentDomain.user_can?(current_user, 'manage_stories') -%>
 <div class="contentBox withLeftNavigation">
-  <a href="home/story/new" class="button newButton newStoryButton rightArrow">Create a New Story<span class="icon"></span></a>
+  <a href="<%= url_for :action => :new_story %>" class="button newButton newStoryButton rightArrow">Create a New Story<span class="icon"></span></a>
   <h2>Manage Story Content</h2>
 
   <%= display_standard_flashes %>
@@ -58,7 +58,7 @@
             </td>
             <td class="actions">
               <span class="loading"></span>
-              <a href="home/story/<%= story.id %>" class="editStoryButton button">
+              <a href="<%= url_for :action => :edit_story, :id => story.id %>" class="editStoryButton button">
                 <span class="icon"></span>Edit
               </a>
               <%- if index > 0 -%>
@@ -80,7 +80,7 @@
 </div>
 
 <div class="contentBox withLeftNavigation">
-  <a href="home/stories/appearance" class="button newButton storyAppearanceButton rightArrow">Customize Now<span class="icon"></span></a>
+  <a href="<%= url_for :action => :update_stories_appearance %>" class="button newButton storyAppearanceButton rightArrow">Customize Now<span class="icon"></span></a>
   <h2>Customize Story Appearance</h2>
 </div>
 <%- end -%>
@@ -194,7 +194,7 @@
   <div id="selectDataset" class="modalDialog">
     <a href="#close" class="jqmClose modalDialogClose">Close</a>
     <h2>Choose a Dataset to feature</h2>
-    <iframe src="select_dataset?nofederate=true&suppressed_facets[]=domain" frameBorder="0"></iframe>
+    <iframe src="<%= url_for :action => :select_dataset %>?nofederate=true&suppressed_facets[]=domain" frameBorder="0"></iframe>
   </div>
   <div id="setThumbnail" class="modalDialog">
     <a href="#close" class="jqmClose modalDialogClose">Close</a>

@@ -1260,9 +1260,15 @@
         if ($.isBlank(ri)) { return; }
 
         if (!_.isUndefined(chartObj.chart))
-        { chartObj.chart.get(point.id).remove(); }
+        {
+            var p = chartObj.chart.get(point.id);
+            if (!$.isBlank(p)) { p.remove(); }
+        }
         if (!_.isUndefined(chartObj.secondChart))
-        { chartObj.secondChart.get(point.id).remove(); }
+        {
+            var sp = chartObj.secondChart.get(point.id);
+            if (!$.isBlank(sp)) { sp.remove(); }
+        }
 
         if (!isOther)
         { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }

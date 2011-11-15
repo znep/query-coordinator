@@ -11,4 +11,5 @@ h2. Dependencies
 Install the following npm packages:
 * underscore
 * restler
+* mime
 

@@ -4,7 +4,7 @@
         base: {
             url: 'https://socrata.dev:9443',
             hostname: 'socrata.dev',
-            protocol: 'https',
+            protocol: 'https:',
             port: 9443
         },
         includes: {

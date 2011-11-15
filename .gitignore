@@ -7,3 +7,4 @@ vendor/bundle
 .*.swp
 .DS_Store
 socrata-node/DEPEND
+socrata-node/node_modules

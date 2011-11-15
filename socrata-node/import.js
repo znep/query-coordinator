@@ -15,9 +15,6 @@
                 url: '/api/imports2.txt?method=scan',
                 method: 'post',
                 multipart: true,
-                headers: {
-                    'X-File-Name': filename
-                },
                 data: {
                     file: rest.file(filename, filename, null, null, mime.lookup(filename))
                 },
@@ -60,7 +57,7 @@
             this.locations.forEach(function(loc)
             {
                 var translation = [ loc.address, loc.city, loc.state, loc.zip ]
-                                    .filter(function(v) { return v; }) // compact
+                                    .filter(function(v) { return !!v; }) // compact
                                     .map(function(_, i) { return 'col' + (i + 1); })
                                     .join(' + ", " + ');
                 if (loc.latitude && loc.longitude)

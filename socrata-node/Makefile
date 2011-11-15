@@ -1,7 +1,15 @@
-all: $(basename $(wildcard *.js.in))
-
-clean: $(wildcard *.js.in)
-	rm -f $(basename $^)
-
-%.js: %.js.in
-	cpp -P -C $^ $@
+SOURCES=$(wildcard *.js.in)                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                              
+all: $(basename $(SOURCES))                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                              
+clean: $(SOURCES)                                                                                                                                                                                                                             
+        rm -f $(basename $^)                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                              
+%.js: %.js.in                                                                                                                                                                                                                                 
+        cpp -P -C $< $@                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                              
+DEPEND:                                                                                                                                                                                                                                       
+        rm -f DEPEND                                                                                                                                                                                                                          
+        for js in $(SOURCES); do cpp -M $$js | sed 's/\.js\.o/.js/' >> DEPEND; done                                                                                                                                                           
+                                                                                                                                                                                                                                              
+include DEPEND

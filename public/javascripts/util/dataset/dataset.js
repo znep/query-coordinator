@@ -494,7 +494,7 @@ var Dataset = ServerModel.extend({
             });
         };
 
-        var useInline = ds.type != 'map'
+        var useInline = ds.isDefault()
                         || $.subKeyDefined(ds, 'query.filterCondition')
                         || !$.isBlank(ds.searchString)
                         || (!$.isBlank(displayFormat) && !_.isEqual(displayFormat, ds.displayFormat));

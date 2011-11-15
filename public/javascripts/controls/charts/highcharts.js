@@ -534,7 +534,7 @@
 
         var _drawMarkers = function(invertAxis, format, markerStore)
         {
-            if (markerStore[0] && markerStore[0].renderer)
+            if (!_.isEmpty(markerStore) && markerStore[0].renderer)
             {
                 // This is a hackaround since it doesn't look like
                 // alignedObjects is ever supposed to be null.
@@ -550,7 +550,10 @@
                 markerStore = [];
             }
             if ($.isBlank(chartObj.chart))
-            { return; }
+            { return null; }
+
+            if ($.isBlank(markerStore))
+            { markerStore = []; }
 
             _.each(format, function(marker, index)
             {

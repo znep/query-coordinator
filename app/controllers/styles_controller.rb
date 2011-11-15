@@ -9,9 +9,9 @@ class StylesController < ApplicationController
       stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.sass")
       if File.exist?(stylesheet_filename)
         headers['Content-Type'] = 'text/css'
-        stylesheet = File.read(stylesheet_filename)
 
         with_development_cache(stylesheet_filename) do
+          stylesheet = File.read(stylesheet_filename)
           includes = get_includes
           Sass::Engine.new(includes + stylesheet,
                            :style => :nested,

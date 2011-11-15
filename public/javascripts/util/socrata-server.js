@@ -28,8 +28,9 @@ var ServerModel = Model.extend({
         {
             return function(d, ts, xhr)
             {
+                var s = (xhr || {}).status;
                 // Support retry responses from core server
-                if ((xhr || {}).status == 202)
+                if (s == 202)
                 {
                     var retryTime = req.retryTime || 5000;
                     model.trigger('request_status', [((d || {}).details || {}).message ||
@@ -55,6 +56,8 @@ var ServerModel = Model.extend({
                     setTimeout(function() { isCache ? $.Tache.Get(req) : $.ajax(req); }, retryTime);
                     return;
                 }
+                else if (s >= 500 && s < 600)
+                { throw new Error('There was a problem with our servers'); }
 
                 model._finishRequest();
                 if (_.isFunction(callback)) { callback.apply(this, arguments); }

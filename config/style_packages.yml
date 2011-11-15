@@ -105,7 +105,6 @@ dataset-show:
 - table-core
 - dataset-grid
 - control-feed
-- splash
 - about-dataset
 - screen-dataset
 dataset-alt:

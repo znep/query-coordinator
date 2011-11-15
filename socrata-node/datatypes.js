@@ -10,7 +10,7 @@
     module.exports = blist.datatypes;
 
     var _ = require('underscore');
-    var jQuery = require('blist-util');
+    var jQuery = require(__dirname + '/blist-util');
 
 blist.namespace.fetch('blist.datatypes');
 

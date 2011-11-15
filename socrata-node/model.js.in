@@ -1,10 +1,10 @@
 (function() {
     var _ = require('underscore');
-    var $ = require('blist-util');
-    var blist = require('blist-compat');
+    var $ = require(__dirname + '/blist-util');
+    var blist = require(__dirname + '/blist-compat');
 
-    var Class = require('class');
-    var env = require('environment');
+    var Class = require(__dirname + '/class');
+    var env = require(__dirname + '/environment');
 
     var document = {
         location: {

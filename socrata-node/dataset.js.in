@@ -1,10 +1,10 @@
 (function() {
     var _ = require('underscore');
-    var $ = require('blist-util');
-    var blist = require('blist-compat');
+    var $ = require(__dirname + '/blist-util');
+    var blist = require(__dirname + '/blist-compat');
 
-    var ServerModel = require('server-model');
-    var ColumnContainer = require('column-container');
+    var ServerModel = require(__dirname + '/server-model');
+    var ColumnContainer = require(__dirname + '/column-container');
 
 #include "dataset.src.js"
 })();

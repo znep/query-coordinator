@@ -1,7 +1,8 @@
 (function()
 {
-    var env = require('environment');
     var rest = require('restler');
+
+    var env = require(__dirname + '/environment');
 
     // util things
     var util = {};

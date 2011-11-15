@@ -2,7 +2,7 @@
 {
     module.exports = {
         inBrowser: false,
-        datatypes: require('datatypes'),
+        datatypes: require(__dirname + '/datatypes'),
         util: {
             patterns: {
                 UID: /^\w{4}-\w{4}$/

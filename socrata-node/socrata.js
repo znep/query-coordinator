@@ -1,9 +1,9 @@
 (function() {
     module.exports = {
-        env: require('environment'),
-        util: require('blist-util'),
-        Dataset: require('dataset'),
-        Import: require('import')
+        env: require(__dirname + '/environment'),
+        util: require(__dirname + '/blist-util'),
+        Dataset: require(__dirname + '/dataset'),
+        Import: require(__dirname + '/import')
     };
 })();
 

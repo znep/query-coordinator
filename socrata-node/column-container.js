@@ -2,10 +2,10 @@
 
 (function() {
     var _ = require('underscore');
-    var $ = require('blist-util');
-    var blist = require('blist-compat');
+    var $ = require(__dirname + '/blist-util');
+    var blist = require(__dirname + '/blist-compat');
 
-    var Column = require('column');
+    var Column = require(__dirname + '/column');
 
 (function(){
 

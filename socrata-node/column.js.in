@@ -1,17 +1,17 @@
 (function() {
     var _ = require('underscore');
-    var $ = require('blist-util');
-    var blist = require('blist-compat');
+    var $ = require(__dirname + '/blist-util');
+    var blist = require(__dirname + '/blist-compat');
 
-    var ServerModel = require('server-model');
+    var ServerModel = require(__dirname + '/server-model');
     var ColumnContainer = function()
     {
-        require('column-container').call(arguments);
+        require(__dirname + '/column-container').call(arguments);
     };
 
     var isDataset = function(obj)
     {
-        return obj instanceof require('dataset');
+        return obj instanceof require(__dirname + '/dataset');
     };
 
 #include "column.src.js"

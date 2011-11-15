@@ -2,9 +2,9 @@
     var mime = require('mime');
     var rest = require('restler');
 
-    var util = require('blist-util');
-    var ServerModel = require('server-model');
-    var Dataset = require('dataset');
+    var util = require(__dirname + '/blist-util');
+    var ServerModel = require(__dirname + '/server-model');
+    var Dataset = require(__dirname + '/dataset');
 
     var server = new ServerModel();
 

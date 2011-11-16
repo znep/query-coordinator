@@ -1,4 +1,7 @@
-*.tar
-log/*
+*.tgz
+log/*.log
 z-index-list.txt
 README
+dev-server
+nbproject
+.git

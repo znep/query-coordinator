@@ -867,8 +867,8 @@
                                 sr: viewport.spatialReference.wkid
                             };
                         }
-                        mapObj.updateRowsByViewport(viewport, !isEsri);
                     }
+                    mapObj.updateDatasetViewport(false);
 
                     view.getClusters(function(data)
                     {

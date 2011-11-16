@@ -526,8 +526,7 @@
         {
             var mapObj = this;
             mapObj._super();
-            if (!mapObj._animation && mapObj._renderType == 'points')
-            { mapObj.clearGeometries(); }
+            mapObj.clearGeometries();
 
             mapObj._hideBingTiles = false;
         },

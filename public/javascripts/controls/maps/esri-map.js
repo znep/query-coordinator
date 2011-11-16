@@ -827,8 +827,7 @@
                 mapObj._resetInfoWindow = true;
                 mapObj.map.infoWindow.hide();
             }
-            if (!mapObj._animation && mapObj._renderType == 'points')
-            { mapObj.clearGeometries(); }
+            mapObj.clearGeometries();
         },
 
         reset: function()

@@ -792,8 +792,7 @@
         cleanVisualization: function()
         {
             var mapObj = this;
-            if (!mapObj._animation && mapObj._renderType == 'points')
-            { mapObj.clearGeometries(); }
+            mapObj.clearGeometries();
             mapObj._super();
             if (mapObj.infoWindow !== undefined) { mapObj.infoWindow.close(); }
 

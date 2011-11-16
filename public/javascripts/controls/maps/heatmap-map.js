@@ -101,8 +101,7 @@
             if (mapObj._runningQuery) { return; }
 
             // In case they were cleared
-            processFeatures(mapObj);
-            processRows(mapObj, rows);
+            processFeatures(mapObj, function() { processRows(mapObj, rows); });
         },
 
         generateFlyoutLayout: function(columns)
@@ -266,8 +265,8 @@
                 load: function(data, ioArgs) {
                     mapObj._featureSet = data;
                     reClassifyFeatures(mapObj);
-                    processFeatures(mapObj);
-                    processRows(mapObj, mapObj._primaryView._rows);
+                    processFeatures(mapObj,
+                        function() { processRows(mapObj, mapObj._primaryView._rows); });
                 }
             });
         }
@@ -285,8 +284,8 @@
                 .execute(query, function(featureSet)
                     {
                         mapObj._featureSet = featureSet;
-                        processFeatures(mapObj);
-                        processRows(mapObj, mapObj._primaryView._rows);
+                        processFeatures(mapObj,
+                            function() { processRows(mapObj, mapObj._primaryView._rows); });
                     });
         }
         mapObj._runningQuery = true;
@@ -414,12 +413,14 @@
                 redirect_to: feature.attributes.redirect_to
             };
 
+            if (!feature.attributes.NAME)
+            { feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName]; }
             mapObj.renderGeometry('polygon', feature.geometry,
                 feature.attributes.NAME, details);
         });
     };
 
-    var processFeatures = function(mapObj)
+    var processFeatures = function(mapObj, callback)
     {
         var config = mapObj._displayFormat.heatmap;
 
@@ -458,6 +459,7 @@
             mapObj.finishLoading();
 
             mapObj._featuresRendered = true;
+            callback();
         });
     };
 

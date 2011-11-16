@@ -22,6 +22,7 @@ class UserLink < Model
   end
 
   @@link_types = [
+    ["MY_COMPANY", "My Company"],
     ["MY_SITE", "My Site"],
     ["BLOG", "My Blog"],
     ["TWITTER", "Twitter"],

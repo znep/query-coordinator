@@ -451,6 +451,30 @@ var Dataset = ServerModel.extend({
         { successCallback(); }
     },
 
+    getClusters: function(successCallback, errorCallback)
+    {
+        var ds = this;
+
+        // To minimize having to make changes to the service files.
+        var transformClusters = function(cluster)
+        {
+            cluster.size = cluster.count;
+            cluster.centroid = { lon: cluster.point.lon, lat: cluster.point.lat };
+        };
+
+        ds.makeRequest({
+            params: {method: 'clustered'},
+            inline: true,
+            success: function(data)
+                {
+                    _.each(data, transformClusters);
+                    successCallback(data);
+                },
+            error: errorCallback
+        });
+    },
+
+/*
     getClusters: function(viewport, displayFormat, successCallback, errorCallback)
     {
         var ds = this;
@@ -546,6 +570,7 @@ var Dataset = ServerModel.extend({
             error: errorCallback
         }); }
     },
+*/
 
     // Callback may be called multiple times with smaller batches of rows
     getRows: function(start, len, successCallback, errorCallback)

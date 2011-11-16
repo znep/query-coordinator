@@ -532,10 +532,6 @@
                                                  cluster.centroid.lon)
             });
 
-            var boundary = new google.maps.Polygon({map: null });
-            boundary.setPaths([_.map(cluster.polygon, function(vertex)
-                { return new google.maps.LatLng(vertex.lat, vertex.lon); })]);
-
             graphic.heatStrength  = cluster.size;
             graphic.clusterParent = cluster.parent;
             graphic.clusterId     = cluster.id;
@@ -555,14 +551,9 @@
 
             google.maps.event.addListener(graphic, 'click', function(evt)
             {
-                // evt.latLng if it's not a point; pull .position for points
                 mapObj.map.setCenter(evt.latLng || graphic.position);
                 mapObj.map.setZoom(mapObj.map.getZoom() + 1);
             });
-            google.maps.event.addListener(graphic, 'mouseover', function(evt)
-            { boundary.setMap(mapObj.map); });
-            google.maps.event.addListener(graphic, 'mouseout', function(evt)
-            { boundary.setMap(null); });
 
             mapObj._bounds.extend(graphic.getPosition());
             mapObj._boundsCounts++;

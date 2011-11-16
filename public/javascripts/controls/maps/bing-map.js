@@ -248,26 +248,13 @@
             var dupKey = shape.getLocation().toString();
             if (mapObj._markers[dupKey])
             {
-                mapObj._animation.olds = _.reject(mapObj._animation.olds, function(marker)
-                    { return marker == mapObj._markers[dupKey]; });
+                //mapObj._animation.olds = _.reject(mapObj._animation.olds, function(marker)
+                    //{ return marker == mapObj._markers[dupKey]; });
                 return mapObj._markers[dupKey];
             }
 
             mapObj._markers[dupKey] = shape;
             mapObj.map.entities.push(shape);
-
-            var darkBG = mapObj.currentZoom() < 5;
-            var boundary = new Microsoft.Maps.Polygon(_.map(cluster.polygon, function(vertex)
-                { return new Microsoft.Maps.Location(vertex.lat, vertex.lon); }),
-                {
-                    fillColor: darkBG ? new Microsoft.Maps.Color(51, 173, 216, 230)
-                                      : new Microsoft.Maps.Color(51, 0, 0, 255),
-                    strokeColor: darkBG ? new Microsoft.Maps.Color(128, 155, 155, 155)
-                                        : new Microsoft.Maps.Color(255, 0, 0, 0),
-                    strokeThickness: 3,
-                    visible: false
-                });
-            mapObj.map.entities.push(boundary);
 
             Microsoft.Maps.Events.addHandler(shape, 'click',
                 function(event)
@@ -275,10 +262,6 @@
                     mapObj.map.setView({ center: shape.getLocation(),
                                          zoom: mapObj.map.getZoom() + 1 });
                 });
-            Microsoft.Maps.Events.addHandler(shape, 'mouseover',
-                function(event) { boundary.setOptions({ visible: true }); });
-            Microsoft.Maps.Events.addHandler(shape, 'mouseout',
-                function(event) { boundary.setOptions({ visible: false }); });
 
             var offset = $((shape['cm1001_er_etr'] || {}).dom).offset();
             offset.top  += (shape.getHeight() - 3);
@@ -289,29 +272,6 @@
             $('body').append(label.hide());
 
             shape._$label = label;
-            shape._boundary = boundary;
-
-            shape.startAnimation  = function() { label.hide(); };
-            shape.finishAnimation = function()
-            {
-                if (!shape['cm1001_er_etr']) { return; }
-                var $dom = $(shape['cm1001_er_etr'].dom);
-                var bcOffset = blist.$container.offset();
-                if (offset.top < bcOffset.top
-                    || offset.top + label.height() > bcOffset.top + blist.$container.height()
-                    || offset.left < bcOffset.left
-                    || offset.left + label.width() > bcOffset.left + blist.$container.width())
-                { return; }
-                label.show();
-            };
-            shape.clusterDestroy  = function()
-            {
-                if (!mapObj._markers[dupKey]) { return; }
-                mapObj.map.entities.remove(mapObj._markers[dupKey]);
-                mapObj._markers[dupKey]._$label.remove();
-                mapObj.map.entities.remove(mapObj._markers[dupKey]._boundary);
-                delete mapObj._markers[dupKey];
-            };
 
             return shape;
         },

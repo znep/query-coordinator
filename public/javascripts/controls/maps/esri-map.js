@@ -410,19 +410,6 @@
 
             graphic.textGraphic = textGraphic;
 
-            var boundaryGraphic = new esri.Graphic();
-            boundaryGraphic.setGeometry(esri.geometry.geographicToWebMercator(
-                new esri.geometry.Polygon({ rings: [ _.map(cluster.polygon,
-                function(point) { return [point.lon, point.lat]; }) ],
-                spatialReference: { wkid: 4326 }})));
-            boundaryGraphic.setSymbol(getESRIMapSymbol(mapObj, 'polygon',
-                { borderWidth: 3, color: '#0000dd', opacity: 0.2 }));
-
-            graphic.boundaryGraphic = boundaryGraphic;
-
-            graphic.setAttributes({ clusterId: cluster.id, clusterParent: cluster.parent });
-
-            mapObj._graphicsLayer.add(boundaryGraphic);
             mapObj._graphicsLayer.add(graphic);
             mapObj._graphicsLayer.add(textGraphic);
 
@@ -434,43 +421,11 @@
             {
                 mapObj.map.graphics.remove(this);
                 mapObj.map.graphics.remove(this.textGraphic);
-                mapObj.map.graphics.remove(this.boundaryGraphic);
             };
-
-
-            if (mapObj._animation.direction != 'none')
-            { _.each([graphic, textGraphic], function(g) { g.hide(); }); }
-            boundaryGraphic.hide();
-
-            var dojoShapes = _.compact([graphic.getDojoShape(),
-                                        graphic.textGraphic.getDojoShape()]);
-            _.each(dojoShapes, function(dojoShape)
-            { $(dojoShape.rawNode).hover(
-                function(event)
-                {
-                    mapObj.$dom().find('div .container').css('cursor', 'pointer');
-                    graphic.boundaryGraphic.show();
-                    if (!graphic.boundaryGraphic.mouseleaveSet)
-                    {
-                        var dojoShape = graphic.boundaryGraphic.getDojoShape();
-                        $(dojoShape.rawNode).mouseleave(function(event)
-                            { graphic.boundaryGraphic.hide(); });
-                        graphic.boundaryGraphic.mouseleaveSet = true;
-                    }
-                },
-                function(event)
-                { mapObj.$dom().find('div .container').css('cursor', 'default'); });
-            });
 
             mapObj._multipoint.addPoint(geometry);
             graphic.heatStrength = cluster.size;
             graphic.isCluster = true;
-
-            //var offset = cluster.radius / Math.SQRT2;
-            //graphic.clusterBounds = new esri.geometry.Extent(
-                //geometry.x - offset, geometry.y - offset,
-                //geometry.x + offset, geometry.y + offset,
-                //new esri.SpatialReference({ wkid: 102100 }));
 
             return graphic;
         },

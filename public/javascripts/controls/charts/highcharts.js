@@ -549,7 +549,7 @@
                 });
                 markerStore = [];
             }
-            if ($.isBlank(chartObj.chart))
+            if ($.isBlank(chartObj.chart) || _.isEmpty(chartObj.chart.series))
             { return null; }
 
             if ($.isBlank(markerStore))

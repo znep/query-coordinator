@@ -839,7 +839,11 @@
                 view.getTotalRows(function()
                 {
                     if (view.totalRows <= mapObj._maxRows)
-                    { mapObj._neverCluster = true; mapObj.getRowsForAllViews(); }
+                    {
+                        mapObj._neverCluster = true;
+                        mapObj.getRowsForAllViews();
+                        return;
+                    }
 
                     var viewport;
                     if (mapObj._displayFormat.viewport)
@@ -868,14 +872,12 @@
 
                     view.getClusters(function(data)
                     {
-if (data.length > 1000) { console.error('data.length = ', data.length, ' > 1000'); return; }
                         _.defer(function() { mapObj.handleClustersLoaded(data, view); });
 
                         var executable = views.shift();
                         if (executable) { executable(); }
                         mapObj.totalRowsForAllViews();
                         delete mapObj._initialLoad;
-                        delete mapObj._pendingReload;
                     },
                     function()
                     {
@@ -885,7 +887,6 @@ if (data.length > 1000) { console.error('data.length = ', data.length, ' > 1000'
                         if (executable) { executable(); }
                         // On error clear these variables so more requests will be triggered
                         delete mapObj._initialLoad;
-                        delete mapObj._pendingReload;
                     });
                 });
 

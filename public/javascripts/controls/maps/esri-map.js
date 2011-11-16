@@ -423,6 +423,17 @@
                 mapObj.map.graphics.remove(this.textGraphic);
             };
 
+            var dojoShapes = _.compact([graphic.getDojoShape(),
+                                        graphic.textGraphic.getDojoShape()]);
+            _.each(dojoShapes, function(dojoShape)
+            { $(dojoShape.rawNode).hover(
+                function(event)
+                { mapObj.$dom().find('div .container').css('cursor', 'pointer'); },
+                function(event)
+                { mapObj.$dom().find('div .container').css('cursor', 'default'); });
+            });
+
+
             mapObj._multipoint.addPoint(geometry);
             graphic.heatStrength = cluster.size;
             graphic.isCluster = true;

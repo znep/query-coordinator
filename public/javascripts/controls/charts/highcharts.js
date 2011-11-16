@@ -418,7 +418,7 @@
             {
                 // This check comes first because it's simpler than a regex.
                 if (xAxis && chartObj._xColumn)
-                { return chartObj._xColumn.renderType.renderer(num, chartObj._xColumn); }
+                { return chartObj._xColumn.renderType.renderer(num, chartObj._xColumn, true); }
 
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.

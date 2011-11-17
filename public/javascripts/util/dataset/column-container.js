@@ -4,6 +4,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 {
     var _columnIDLookup = {};
     var _columnTCIDLookup = {};
+    var _columnFieldNameLookup = {};
 
     var capName = colName.capitalize();
     var colSet = colName + 's';
@@ -11,6 +12,8 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
     // Convenience methods
     var forID = function(item, id) { return item[colName + 'ForID'](id); };
+    var forTCID = function(item, id) { return item[colName + 'ForTCID'](id); };
+    var forField = function(item, id) { return item[colName + 'ForFieldName'](id); };
     var update = function(item, nc, ff, uo)
     { return item['update' + capSet](nc, ff, uo); };
     var realSet = function(item) { return item['real' + capSet]; };
@@ -30,6 +33,20 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         return _columnTCIDLookup[parseInt(tcId)];
     };
 
+    // defines: columnForFieldName, childColumnForFieldName
+    props[colName + 'ForFieldName'] = function(fName)
+    {
+        return _columnFieldNameLookup[fName.toString()];
+    };
+
+    // defines: columnForIdentifier, childColumnForIdentifier
+    props[colName + 'ForIdentifier'] = function(ident)
+    {
+        if ($.isBlank(ident)) { return null; }
+        return _.isNumber(ident) || (ident || '').match(/^\d+$/) ?
+            (forID(this, ident) || forTCID(this, ident)) : forField(this, ident);
+    };
+
     // defines: clearColumn, clearChildColumn
     // Removes a column from the model without doing anything on the server;
     // use removeColumns or Column.remove for that
@@ -41,6 +58,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         delete _columnIDLookup[col.id];
         delete _columnIDLookup[col.lookup];
         delete _columnTCIDLookup[col.tableColumnId];
+        delete _columnFieldNameLookup[col.fieldName];
         update(this);
     };
 
@@ -253,6 +271,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
         _columnIDLookup = {};
         _columnTCIDLookup = {};
+        _columnFieldNameLookup = {};
         this[colSet] = _.map(this[colSet], function(c, i)
             {
                 if (!(c instanceof Column))
@@ -261,6 +280,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                 if (c.lookup != c.id)
                 { _columnIDLookup[c.lookup] = c; }
                 _columnTCIDLookup[c.tableColumnId] = c;
+                _columnFieldNameLookup[c.fieldName] = c;
                 if (!$.isBlank(cont.accessType))
                 { c.setAccessType(cont.accessType); }
                 return c;

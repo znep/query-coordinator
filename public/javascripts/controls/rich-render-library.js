@@ -208,8 +208,8 @@
                             _.each(r.fields, function(f)
                             {
                                 if (f.type != 'columnData') { return; }
-                                var c = rrObj.settings.view.columnForTCID(
-                                    f.tableColumnId)
+                                var c = rrObj.settings.view.columnForIdentifier(
+                                    f.fieldName || f.tableColumnId)
                                 if (!$.isBlank(c) && !c.hidden) { cols.push(c); }
                             });
                         }
@@ -256,7 +256,7 @@
     var addField = function(rrObj, field, $parent)
     {
         var col = field.column ||
-            rrObj.settings.view.columnForTCID(field.tableColumnId);
+            rrObj.settings.view.columnForIdentifier(field.fieldName || field.tableColumnId);
         if (field.type.startsWith('column') && ($.isBlank(col) || col.hidden)) { return; }
 
         var commonAttrs = getStyles(field);

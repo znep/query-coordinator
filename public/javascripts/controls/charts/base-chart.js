@@ -46,13 +46,13 @@
             chartObj._valueColumns = _.map(chartObj._displayFormat.valueColumns,
                 function(vc)
                 {
-                    var col = view.columnForTCID(vc.tableColumnId);
+                    var col = view.columnForIdentifier(vc.fieldName || vc.tableColumnId);
                     if ($.isBlank(col)) { return null; }
                     vc = $.extend({}, vc);
                     vc.column = col;
                     vc.supplementalColumns = _.compact(
                         _.map(vc.supplementalColumns || [],
-                            function(sc) { return view.columnForTCID(sc); }));
+                            function(sc) { return view.columnForIdentifier(sc); }));
                     return vc;
                 });
             chartObj._valueColumns = _.compact(chartObj._valueColumns);
@@ -66,14 +66,14 @@
 
             chartObj._fixedColumns =
                 _.map(chartObj._displayFormat.fixedColumns || [],
-                    function(tcId) { return view.columnForTCID(tcId); });
+                    function(tcId) { return view.columnForIdentifier(tcId); });
             chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
             chartObj._seriesColumns = _.compact(_.map(chartObj._displayFormat.seriesColumns || [],
                     function(sc)
                     {
                         var r = {};
-                        r.column = view.columnForTCID(sc.tableColumnId);
+                        r.column = view.columnForIdentifier(sc.fieldName || sc.tableColumnId);
                         if ($.isBlank(r.column)) { return null; }
                         return r;
                     }));
@@ -81,7 +81,7 @@
             if (chartObj._chartType == 'bubble')
             { _.each(['pointColor', 'pointSize'], function(colName)
             {
-                var c = view.columnForTCID(chartObj._displayFormat[colName]);
+                var c = view.columnForIdentifier(chartObj._displayFormat[colName]);
                 if (!$.isBlank(c) && !c.isMeta)
                 {
                     chartObj['_' + colName] = c;
@@ -154,10 +154,11 @@
             _.each(chartObj._displayFormat.valueColumns,
                 function(vc, index)
                 {
-                    var id = vc.tableColumnId;
+                    var col = chartObj._primaryView.columnForIdentifier(vc.fieldName ||vc.tableColumnId);
+                    if ($.isBlank(col)) { return; }
+                    var id = col.tableColumnId;
                     var config = chartObj._flyoutConfig[id] = {};
 
-                    config.column = vc;
                     config.layout = chartObj.generateFlyoutLayout(columns, vc);
 
                     if ($.isBlank(config.richRenderer))
@@ -177,14 +178,14 @@
             if (!chartObj._flyoutConfig[id].$template)
             {
                 var config = chartObj._flyoutConfig[id];
-                config.$template = chartObj.$dom().siblings('.flyout'+id);
+                config.$template = chartObj.$dom().siblings('.flyout' + id);
                 if (config.$template.length == 0)
                 {
                     chartObj.$dom().after($.tag({tagName: 'div',
-                        'class': ['template', 'row', 'flyout'+id,
+                        'class': ['template', 'row', 'flyout' + id,
                             'richRendererContainer', 'flyoutRenderer']}));
                     config.$template = chartObj.$dom()
-                        .siblings('.flyoutRenderer.template.flyout'+id);
+                        .siblings('.flyoutRenderer.template.flyout' + id);
                 }
                 config.richRenderer = config.$template.richRenderer({
                     columnCount: 1, view: chartObj._primaryView});
@@ -215,7 +216,7 @@
             if (!$.isBlank(titleId))
             {
                 col.rows.unshift({fields: [{type: 'columnData',
-                    tableColumnId: titleId}
+                    tableColumnId: titleId, fieldName: titleId}
                 ], styles: {'border-bottom': '1px solid #666666',
                     'font-size': '1.2em', 'font-weight': 'bold',
                     'margin-bottom': '0.75em', 'padding-bottom': '0.2em'}});

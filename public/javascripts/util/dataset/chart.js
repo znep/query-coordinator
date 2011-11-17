@@ -72,10 +72,10 @@ Dataset.chart.isValid = function(view, displayFormat, chartType)
 
     var foundCols = [];
     _.each(displayFormat.fixedColumns || [], function(fc)
-    { foundCols.push(view.columnForTCID(fc)); });
+    { foundCols.push(view.columnForIdentifier(fc)); });
 
     _.each(displayFormat.valueColumns || [], function(vc)
-    { foundCols.push(view.columnForTCID(vc.tableColumnId)); });
+    { foundCols.push(view.columnForIdentifier(vc.fieldName || vc.tableColumnId)); });
 
     var ct = Dataset.chart.types[chartType];
     if ($.isBlank(ct)) { return false; }
@@ -148,8 +148,7 @@ Dataset.modules['chart'] =
                 _.isArray(view.displayFormat.dataColumns) &&
                 view.displayFormat.dataColumns.length > 0)
             {
-                var firstCol = view.columnForTCID(
-                    view.displayFormat.dataColumns[0]);
+                var firstCol = view.columnForTCID(view.displayFormat.dataColumns[0]);
                 if (!$.isBlank(firstCol) && !_.include(Dataset.chart.numericTypes,
                     firstCol.renderTypeName))
                 {

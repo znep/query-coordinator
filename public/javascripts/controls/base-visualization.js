@@ -150,8 +150,8 @@
             _.each(columns, function(dc)
             {
                 var row = {fields: [
-                    {type: 'columnLabel', tableColumnId: dc.tableColumnId},
-                    {type: 'columnData', tableColumnId: dc.tableColumnId}
+                    {type: 'columnLabel', tableColumnId: dc.tableColumnId, fieldName: dc.fieldName},
+                    {type: 'columnData', tableColumnId: dc.tableColumnId, fieldName: dc.fieldName}
                 ]};
                 if ((vizObj._displayFormat || {}).flyoutsNoLabel)
                 { row.fields.shift(); }

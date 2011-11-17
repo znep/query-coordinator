@@ -103,6 +103,25 @@
     var addQuery = function(ds, query)
     {
         if ($.isBlank(query)) { return; }
+        query = $.extend(true, {}, query);
+
+        // Translate fieldNames
+        if (!$.isBlank(query.orderBys))
+        {
+            query.orderBys = _.select(query.orderBys, function(ob)
+            {
+                if ($.subKeyDefined(ob, 'expression.fieldName'))
+                {
+                    var c = ds.columnForFieldName(ob.expression.fieldName);
+                    if ($.isBlank(c)) { return false; }
+                    ob.expression.columnId = c.id;
+                    delete ob.expression.fieldName;
+                    return true;
+                }
+                return true;
+            });
+        }
+
         ds.update({query: $.extend(true, {}, ds.query, query)});
     };
 })(jQuery);

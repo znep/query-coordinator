@@ -341,7 +341,7 @@
             if (this._displayFormat.pointSize)
             { reqFields.push(this._displayFormat.pointSize); }
             _.each(_.uniq(valueColumn.supplementalColumns || []), function(col)
-            { reqFields.push({ tableColumnId: col }); });
+            { reqFields.push({ tableColumnId: col, fieldName: col }); });
             return this._super(_.compact(_.uniq(reqFields).concat(columns)));
         }
     }, null, 'socrataChart');

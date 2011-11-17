@@ -28,11 +28,11 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
                         cObj._destComponent.properties(p);
                     }
 
-                    if ($.subKeyDefined(cObj, '_destContext.view'))
+                    if ($.subKeyDefined(cObj, '_destContext.dataset'))
                     {
                         _.each(cObj._properties.transformations, function(t)
                         {
-                            var dc = cObj._destContext.view.columnForID(t.destColFilter);
+                            var dc = cObj._destContext.dataset.columnForID(t.destColFilter);
                             if ($.isBlank(dc)) { return; }
                             dc.filter(getValue(t, args));
                         });
@@ -56,9 +56,9 @@ var getValue = function(trans, args)
 {
     var v;
     if (!$.isBlank(trans.sourceColumn) && !$.isBlank(args.row) &&
-        $.subKeyDefined(args, 'dataContext.view'))
+        $.subKeyDefined(args, 'dataContext.dataset'))
     {
-        var c = args.dataContext.view.columnForID(trans.sourceColumn);
+        var c = args.dataContext.dataset.columnForID(trans.sourceColumn);
         if (!$.isBlank(c))
         { v = c.renderType.renderer(args.row[c.lookup], c, true); }
     }

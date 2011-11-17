@@ -127,16 +127,22 @@
             });
         }
 
-        $.dataContext.bind('available', function(id, dataset) {
-            dataset.bind('columns_changed', function() { update(id, dataset); });
-            update(id, dataset);
-        }).bind('unavailable', function() {
-            dataset.unbind('columns_changed', update);
-            $cf.find('.section-' + id).remove();
+        $.dataContext.bind('available', function(context) {
+            if ($.subKeyDefined(context, 'dataset'))
+            {
+                context.dataset.bind('columns_changed', function() { update(context.id, context.dataset); });
+                update(context.id, context.dataset);
+            }
+        }).bind('unavailable', function(context) {
+            if ($.subKeyDefined(context, 'dataset'))
+            {
+                context.dataset.unbind('columns_changed', update);
+                $cf.find('.section-' + context.id).remove();
+            }
         });
 
-        _.each($.dataContext.availableContexts, function(dataset, id) {
-            $.dataContext.trigger('available', [ id, dataset.view ]);
+        _.each($.dataContext.availableContexts, function(context) {
+            $.dataContext.trigger('available', [ context ]);
         })
     }
 

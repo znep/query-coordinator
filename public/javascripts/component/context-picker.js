@@ -16,9 +16,9 @@ var picker = function($field, vals, curValue)
         'class': 'required', value: curValue});
     $field.append($hiddenInput);
 
-    var fullData = $.dataContext.availableContexts[curValue] || {view: {}};
+    var fullData = $.dataContext.availableContexts[curValue] || {dataset: {}};
     var $textInput = $.tag({tagName: 'input', type: 'text', 'class': 'textInput',
-        value: $.htmlEscape(fullData.view.name || curValue)});
+        value: $.htmlEscape((fullData.dataset || {}).name || curValue)});
     $textInput.change(function(e)
         {
             var v = ($textInput.data('fullData') || {}).contextId || $textInput.value();
@@ -33,14 +33,14 @@ var picker = function($field, vals, curValue)
             if ($.isBlank($.dataContext.availableContexts[v]))
             {
                 e.stopPropagation();
-                $.dataContext.loadContext(v, {type: 'view', viewId: v},
+                $.dataContext.loadContext(v, {type: 'dataset', datasetId: v},
                     function() { $textInput.change(); },
                     function(xhr)
                     {
                         var validator = $hiddenInput.closest('form').data('form-validator');
                         var errors = {};
                         errors[$hiddenInput.attr('name')] = xhr.status == 404 ?
-                            'This view is not valid' : 'There was an error';
+                            'This dataset is not valid' : 'There was an error';
                         if ($.isBlank(validator))
                         { alert(_.first(_.values(errors))); }
                         else
@@ -65,7 +65,7 @@ var picker = function($field, vals, curValue)
     {
         var d = {contextId: dc.id};
         _.each(['name', 'id', 'description', 'category', 'tags'], function(key)
-            { d[key] = dc.view[key]; });
+            { d[key] = dc.dataset[key]; });
         return d;
     };
     var matchScore = function(item, baseScore)
@@ -154,11 +154,14 @@ var picker = function($field, vals, curValue)
                                     }
                                     var curViews = {};
                                     _.each($.dataContext.availableContexts, function(ac)
-                                        { if (!$.isBlank(ac.view)) { curViews[ac.view.id] = ac.view; } });
+                                        {
+                                            if (!$.isBlank(ac.dataset))
+                                            { curViews[ac.dataset.id] = ac.dataset; }
+                                        });
                                     var newData = _.map(_.reject(results.views, function(v)
                                             { return !$.isBlank(curViews[v.id]); }),
                                         function(v) { return $.extend({isServer: true},
-                                            translateDS({id: v.id, view: v})); });
+                                            translateDS({id: v.id, dataset: v})); });
                                     if (!_.isEmpty(newData))
                                     {
                                         if (!_.isEmpty(dataViews))

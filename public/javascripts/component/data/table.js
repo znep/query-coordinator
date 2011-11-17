@@ -15,7 +15,7 @@ $.component.Component.extend('Table', 'data', {
     configurationSchema: function()
     {
         // TODO: more config
-        return {schema: [{ fields: [$.cf.contextPicker()] }], view: (this._dataContext || {}).view};
+        return {schema: [{ fields: [$.cf.contextPicker()] }], view: (this._dataContext || {}).dataset};
     },
 
     _getAssets: function()
@@ -51,10 +51,10 @@ var updateProperties = function(lcObj, properties)
     lcObj._updateDataSource(properties, function()
         {
             if (!$.isBlank(this._table))
-            { this._table.setView(this._dataContext.view); }
+            { this._table.setView(this._dataContext.dataset); }
             else
             {
-                this._table = this.$contents.datasetGrid({view: this._dataContext.view,
+                this._table = this.$contents.datasetGrid({view: this._dataContext.dataset,
                     columnHideEnabled: false,
                     columnPropertiesEnabled: false,
                     editEnabled: false

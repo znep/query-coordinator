@@ -68,6 +68,8 @@ Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
 
 Dataset.chart.isValid = function(view, displayFormat, chartType)
 {
+    if ($.isBlank(view)) { return false; }
+
     var foundCols = [];
     _.each(displayFormat.fixedColumns || [], function(fc)
     { foundCols.push(view.columnForTCID(fc)); });

@@ -16,9 +16,9 @@ $.component.Component.extend('Map', 'data', {
     configurationSchema: function()
     {
         var retVal = {schema: [{ fields: [$.cf.contextPicker()] }],
-            view: (this._dataContext || {}).view};
+            view: (this._dataContext || {}).dataset};
         if ($.isBlank(this._dataContext)) { return retVal; }
-        retVal.schema = retVal.schema.concat(blist.configs.map.config({view: this._dataContext.view}));
+        retVal.schema = retVal.schema.concat(blist.configs.map.config({view: this._dataContext.dataset}));
         return retVal;
     },
 
@@ -66,13 +66,13 @@ var updateProperties = function(lcObj, properties)
     if (!lcObj._updateDataSource(properties, function()
         {
             if (!$.isBlank(this._map))
-            { this._map.setView(this._dataContext.view); }
+            { this._map.setView(this._dataContext.dataset); }
             else
             {
                 this._map = this.$contents.socrataMap({
                     showRowLink: false,
                     displayFormat: this._properties.displayFormat,
-                    view: this._dataContext.view
+                    view: this._dataContext.dataset
                 });
                 this._updateValidity();
             }

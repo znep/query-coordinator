@@ -60,6 +60,7 @@ Dataset.map.toBing = {
 
 Dataset.map.isValid = function(view, displayFormat)
 {
+    if ($.isBlank(view)) { return false; }
     if (view.isArcGISDataset()) { return true; }
     if (view.isGeoDataset()) { return true; }
     if ($.isBlank(displayFormat.noLocations) &&

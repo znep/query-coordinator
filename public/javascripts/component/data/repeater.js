@@ -48,7 +48,7 @@ $.component.Container.extend('Repeater', 'content', {
         if ($.cf.designing)
             // Render actual children as direct descendants
             this.add(this._cloneProperties.children);
-        else if (view = (this._dataContext || {}).view) {
+        else if (view = (this._dataContext || {}).dataset) {
             // Render records
             var me = this;
             var columnMap = this.columnMap = {};

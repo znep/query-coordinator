@@ -29,8 +29,11 @@
             currentObj._maxRows = 500;
 
             currentObj._byView = {};
-            currentObj._byView[currentObj._primaryView.id] = { view: currentObj._primaryView };
-            currentObj._dataViews = [currentObj._primaryView];
+            if (!$.isBlank(currentObj._primaryView))
+            {
+                currentObj._byView[currentObj._primaryView.id] = { view: currentObj._primaryView };
+                currentObj._dataViews = [currentObj._primaryView];
+            }
 
             var viewsFetched = 0;
             var viewsToLoad = (currentObj._displayFormat.compositeMembers || []).length + 1;
@@ -319,6 +322,8 @@
         reloadVisualization: function()
         {
             var vizObj = this;
+            if (!vizObj.isValid()) { return; }
+
             vizObj.getRowsForAllViews();
 
             if (vizObj.getColumns())
@@ -441,6 +446,8 @@
             // needs some of the code we just loaded
             vizObj._librariesLoaded = function()
             {
+                if (!vizObj.isValid()) { return; }
+
                 vizObj.initializeVisualization();
 
                 vizObj._initialLoad = true;

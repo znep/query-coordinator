@@ -31,30 +31,52 @@
                 return;
             }
 
+            var doneLoading = function(newContext)
+            {
+                _.each(dc._contextsQueue[newContext.id], function(f)
+                    { if (_.isFunction(f.success)) { f.success(dc.availableContexts[newContext.id]); } });
+                delete dc._contextsQueue[newContext.id];
+                if (_.isFunction(successCallback)) { successCallback(dc.availableContexts[newContext.id]); }
+                $.dataContext.trigger('available', [ newContext ]);
+            };
+            var errorLoading = function(id)
+            {
+                _.each(dc._contextsQueue[id], function(f) { if (_.isFunction(f.error)) { f.error(xhr); } });
+                delete dc._contextsQueue[id];
+                if (_.isFunction(errorCallback)) { errorCallback(xhr); }
+                $.dataContext.trigger('error', [ id ]);
+            };
+
             dc._contextsQueue[id] = [];
             switch (config.type)
             {
-                case 'view':
-                    Dataset.createFromViewId(config.viewId, function(view)
+                case 'dataset':
+                    Dataset.createFromViewId(config.datasetId, function(dataset)
                         {
-                            if (!$.isBlank(config.query))
-                            { view.update({query: $.extend(true, {}, view.query, config.query)}); }
+                            addQuery(dataset, config.query);
 
-                            dc.availableContexts[id] = {id: id, view: view};
-                            _.each(dc._contextsQueue[id], function(f)
-                                { if (_.isFunction(f.success)) { f.success(dc.availableContexts[id]); } });
-                            delete dc._contextsQueue[id];
-                            if (_.isFunction(successCallback)) { successCallback(dc.availableContexts[id]); }
-                            $.dataContext.trigger('available', [ id, view ]);
+                            dc.availableContexts[id] = {id: id, type: config.type, dataset: dataset};
+                            doneLoading(dc.availableContexts[id]);
                         },
                         function(xhr)
+                        { errorLoading(id); });
+                    break;
+                case 'datasetList':
+                    Dataset.search(config.search, function(results)
                         {
-                            _.each(dc._contextsQueue[id], function(f)
-                                { if (_.isFunction(f.error)) { f.error(xhr); } });
-                            delete dc._contextsQueue[id];
-                            if (_.isFunction(errorCallback)) { errorCallback(xhr); }
-                            $.dataContext.trigger('error', [ id, view ]);
-                        });
+                            dc.availableContexts[id] = {id: id, type: config.type,
+                                count: results.count, datasetList: _.map(results.views, function(ds)
+                                    {
+                                        addQuery(ds, config.query);
+                                        var c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id};
+                                        dc.availableContexts[c.id] = c;
+                                        return c;
+                                    })};
+                            doneLoading(dc.availableContexts[id]);
+                        },
+                        function(xhr)
+                        { errorLoading(id); });
+                    break;
             }
         },
 
@@ -77,4 +99,10 @@
             return false;
         }
     }));
+
+    var addQuery = function(ds, query)
+    {
+        if ($.isBlank(query)) { return; }
+        ds.update({query: $.extend(true, {}, ds.query, query)});
+    };
 })(jQuery);

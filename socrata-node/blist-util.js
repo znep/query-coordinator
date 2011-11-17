@@ -197,13 +197,26 @@
 
         var success = function(response)
         {
-            response = JSON.parse(response);
+            try
+            {
+                response = JSON.parse(response);
+            }
+            catch(ex)
+            {
+                console.error('ERR: could not parse:\n' + response + '\nReason: ' + ex);
+            }
 
             if (opts.success)
                 opts.success(response);
         };
         var complete = opts.complete || function(){};
         var path = env.base.url + opts.url;
+
+        if (opts.type && !opts.method)
+            opts.method = opts.type;
+
+        if (env.debugRequests)
+            console.log('Request: ' + path + '; ' + opts.method + '; ' + require('sys').inspect(opts.data));
 
         rest.request(path, opts)
             .on('success', success)

@@ -832,7 +832,9 @@
             if ($.subKeyDefined(window, 'google'))
             {
                 this._isResize = true;
-                google.maps.event.trigger(this.map, 'resize'); }
+                if (!$.isBlank(this.map))
+                { google.maps.event.trigger(this.map, 'resize'); }
+            }
         },
 
         getRequiredJavascripts: function()

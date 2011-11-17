@@ -75,6 +75,12 @@
         if (!obj || typeof obj !== 'object')
             return false;
 
+        // Not own constructor property must be Object (catches Array)
+        if (obj.constructor &&
+                !hasOwnProperty.call(obj, "constructor") &&
+                !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf"))
+            return false;
+
         var key;
         for (key in obj) {}
 

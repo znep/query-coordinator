@@ -123,7 +123,15 @@
                 ob.ascending = (ob.ascending == 'true' || ob.ascending === true);
                 ob.expression.type = 'column';
             });
-            _.each(filterView.query.groupBys || [], function(gb) { gb.type = 'column'; });
+            if (!_.isEmpty(filterView.query.groupBys))
+            {
+                filterView.query.groupBys = _.select(filterView.query.groupBys,
+                        function(gb)
+                        {
+                            gb.type = 'column';
+                            return !$.isBlank(gb.columnId);
+                        });
+            }
 
             filterView.columns = filterView.columns || [];
 

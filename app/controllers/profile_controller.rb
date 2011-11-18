@@ -210,7 +210,9 @@ class ProfileController < ApplicationController
         # We still want to delete everything.
         params[:email_interests] ||= {}
         previous_interests = EmailInterest.find_under_user
-        to_delete = previous_interests.select { |i| !params[:email_interests][i.eventTag] }
+        to_delete = previous_interests.select do |interest|
+          interest.extraInfo == '*' && !params[:email_interests][interest.eventTag]
+        end
         to_create = []
         params[:email_interests].each do |k,v|
           if previous_interests.none? { |i| i.eventTag == k }

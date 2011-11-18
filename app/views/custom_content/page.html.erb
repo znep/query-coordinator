@@ -12,10 +12,11 @@
   blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
   blist.namespace.fetch('blist.configuration');
   blist.configuration.development = <%= Rails.env.development? %>;
-  var page = blist.configuration.page = <%= raw @page.to_json %>;
 
   $(function() {
+      var page = blist.configuration.page = <%= raw @page.to_json %>;
       $.dataContext.load(page.data);
+      $.locale.initialize(page.locale);
       $.component.initialize(page.content);
   });
 </script>

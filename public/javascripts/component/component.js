@@ -345,9 +345,11 @@
          * Obtain a function that can resolve substitution properties for this component's data context.
          */
         _propertyResolver: function() {
+            if ($.cf.designing)
+                return function() {};
             var parentResolver = this.parent ? this.parent._propertyResolver() : $.component.rootPropertyResolver;
             var entity = this._properties.entity;
-            if (entity && !$.cf.designing)
+            if (entity)
                 return function(name) {
                     var result = entity[name];
                     if (result !== undefined)
@@ -385,6 +387,20 @@
             else if ($.isBlank(properties.contextId) && $.isBlank(cObj._properties.contextId))
             { delete cObj._dataContext; }
             return false;
+        },
+
+        /**
+         * List all template substitution tokens for this component hierarchy.  Default implementation scans all
+         * string properties.  If this is not appropriate then override.
+         */
+        listTemplateSubstitutions: function(list) {
+            _.each(_.values(this._properties), function(propertyValue) {
+                if (typeof propertyValue == 'string') {
+                    var matcher = /\{([^}]+)\}/g;
+                    while (match = matcher.exec(propertyValue))
+                        list.push(match[1]);
+                }
+            });
         }
     });
 
@@ -419,7 +435,8 @@
         Component: Component,
 
         rootPropertyResolver: function(name) {
-            // TODO - page property pool?
+            if (name.charAt(0) == '@')
+                return $.locale(name.substring(1));
         },
 
         allocateId: function() {

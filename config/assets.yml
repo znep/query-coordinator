@@ -76,6 +76,7 @@ javascripts:
     - public/javascripts/component/util/style-config.js
     - public/javascripts/component/data-context.js
     - public/javascripts/component/template.js
+    - public/javascripts/component/locale.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-container.js
     - public/javascripts/component/comp-placeholder.js
@@ -124,6 +125,7 @@ javascripts:
     - public/javascripts/component/configurator/cf-edit-log.js
     - public/javascripts/component/configurator/cf-component-drag.js
     - public/javascripts/component/configurator/cf-side.js
+    - public/javascripts/component/configurator/cf-translate.js
     - public/javascripts/component/context-picker.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-move.js

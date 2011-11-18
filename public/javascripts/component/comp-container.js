@@ -244,6 +244,14 @@
             this.each(function(child) {
                 child.design(designing);
             });
+        },
+        
+        // Propagate substitution parameter scan
+        listTemplateSubstitutions: function(list) {
+            this._super(list);
+            this.each(function(child) {
+                child.listTemplateSubstitutions(list);
+            });
         }
     });
 

@@ -244,3 +244,45 @@ ul.contextPickerAutocomplete
 
     &.active div
       background-color: #f7f7f7
+
+.socrata-cf-translator
+  z-index: 1001
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  background-color: black
+  background-color: rgba(0, 0, 0, .8)
+  overflow: scroll
+  padding: 32px
+  color: white
+  h2
+    color: white
+    font-weight: bold
+    font-size: 22px
+    margin-bottom: 10px
+    a
+      color: white
+      font-size: 14px
+      margin-left: 12px
+      font-weight: normal
+  th, td
+    font-size: 14px
+    font-weight: bold
+    padding: 2px 6px
+    &.global
+      text-align: center
+    white-space: nowrap
+  th input
+    font-weight: bold
+  .autocomplete
+    color: #333
+    min-height: 0
+  input
+    border: none
+    width: 100%
+    background-color: #f0f0f0
+    background-color: rgba(255, 255, 255, .9375)
+    &:focus
+      background-color: white

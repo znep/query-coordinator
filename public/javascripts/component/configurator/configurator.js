@@ -96,6 +96,7 @@
                 {tagName: 'a', href: '#cancel', 'class': 'cancel', contents: 'cancel'},
                 {tagName: 'a', href: '#undo', 'class': 'undo', contents: 'undo'},
                 {tagName: 'a', href: '#redo', 'class': 'redo', contents: 'redo'},
+                {tagName: 'a', href: '#translate', 'class': 'translate', contents: 'translate' }
             ]}));
 
             $top.find('.edit-mode a').click(function(e)
@@ -148,6 +149,7 @@
                     page.content = content[0];
                 else
                     page.content = content;
+                page.locale = $.locale.updated();
                 $.ajax({
                     type: 'POST',
                     url: '/id/pages',
@@ -160,6 +162,7 @@
                     },
 
                     success: function() {
+                        $.locale.initialize(page.locale);
                         exitEditMode();
                     },
 

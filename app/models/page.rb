@@ -16,4 +16,8 @@ class Page < SodaModel
   def data
     @update_data['data'] || @data['data']
   end
+
+  def locale
+    @update_data['locale'] || @data['locale']
+  end
 end

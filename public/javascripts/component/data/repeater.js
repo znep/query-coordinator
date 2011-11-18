@@ -74,7 +74,7 @@ $.component.Container.extend('Repeater', 'content', {
         var prefix = this._idPrefix + row.index + '-';
         function createTemplate(properties) {
             properties = _.clone(properties);
-            properties.id = prefix + properties.id;
+            properties.id = prefix + (properties.id || (properties.id = $.component.allocateId()));
             var children = properties.children;
             if (children) {
                 if (!$.isArray(children))

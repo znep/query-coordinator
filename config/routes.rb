@@ -406,7 +406,8 @@ ActionController::Routing::Routes.draw do |map|
   if Rails.env.development?
     # This action is a superset of the following action.  Eventually it will supplant altogether but we still need
     # the map.root call so that root_path and related variables are defined
-    map.connect '*path', :controller => "custom_content", :action => "page"
+    # Revert pending automatic dataset maintenance
+    #map.connect '*path', :controller => "custom_content", :action => "page"
   end
   map.root :controller => "custom_content", :action => "homepage" # Required to define root_path
 

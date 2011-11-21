@@ -4,7 +4,7 @@ $(function()
 {
     blist.metrics.datasetPostfix = '/stats';
     var screen = $('#analyticsDataContainer').metricsScreen(
-        $.extend(true, blist.metrics.sitewideShared,
+        $.extend({}, blist.metrics.sitewideShared,
     {
         chartSections:  [
             {id: 'performanceChart',

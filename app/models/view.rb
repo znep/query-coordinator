@@ -42,7 +42,7 @@ class View < Model
   def self.categories
     categories = CurrentDomain.configuration('view_categories').properties
     map = @@default_categories.clone
-    categories.each { |c, enabled| map[c.titleize_if_necessary] = c.titleize_if_necessary if enabled }
+    categories.each { |c, o| map[c.titleize_if_necessary] = c.titleize_if_necessary if o.enabled }
     return map
   end
 

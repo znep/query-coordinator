@@ -189,12 +189,14 @@
         <colgroup>
           <col class="name" />
           <col class="parent" />
+          <col class="shown" />
           <col class="actions" />
         </colgroup>
         <thead>
           <tr>
             <th class="name"><div>Category Name</div><span class="icon"></span></th>
             <th class="parent"><div>Parent</div><span class="icon"></span></th>
+            <th class="shown"><div>Shown?</div><span class="icon"></span></th>
             <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
           </tr>
         </thead>
@@ -210,6 +212,13 @@
                 <span class="cellInner">
                   <%- if value.kind_of? Hashie::Mash -%>
                     <%= value['parent'] %>
+                  <%- end -%>
+                </span>
+              </td>
+              <td class="shown">
+                <span class="cellInner">
+                  <%- if value.kind_of? Hashie::Mash -%>
+                    <%= value['enabled'] ? "Yes" : "No" %>
                   <%- end -%>
                 </span>
               </td>
@@ -229,6 +238,9 @@
                 <select name="new_category_parent" class="newCategorySelect">
                   <%= options_for_select(@categories.map{|k,v| k}.unshift('')) %>
                 </select>
+              </td>
+              <td class="shown">
+                <input name="new_category_displayed" type="checkbox" checked="true" />
               </td>
               <td class="actions">
                 <input class="button newCategoryButton" type="submit" value="Add New Category" />

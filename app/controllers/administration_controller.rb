@@ -541,6 +541,7 @@ class AdministrationController < ApplicationController
   def create_category
     new_category = params[:new_category]
     new_category_parent = params[:new_category_parent]
+    new_category_displayed = params[:new_category_displayed]
 
     if new_category.blank?
       flash[:error] = "Please enter a name to create a new category"
@@ -561,7 +562,7 @@ class AdministrationController < ApplicationController
     # Create a property with
     # name: category, value: { parent: parent_category, enabled: true }
     # where parent is optional
-    prop_val = { :enabled => true }
+    prop_val = { :enabled => new_category_displayed }
     if !new_category_parent.blank?
       prop_val[:parent] = new_category_parent.titleize_if_necessary
     end

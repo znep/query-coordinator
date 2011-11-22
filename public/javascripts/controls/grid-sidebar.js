@@ -349,7 +349,8 @@
                 paneConfigs[nameParts.secondary];
             if ($.isBlank(config)) { return false; }
 
-            return $.isBlank(config.control) ? false : config.control.isAvailable();
+            if ($.isBlank(config.control)) { sidebarObj.addPane(paneName); }
+            return config.control.isAvailable();
         }
     }, {
         defaultLoginMessage: 'You must be signed in',

@@ -127,7 +127,7 @@
                     ]
                 },
                 {
-                    title: 'Use Existing US Address Columns',
+                    title: 'Use Existing Address Columns',
                     onlyIf: {field: 'dataTypeName', value: 'location'},
                     type: 'selectable',
                     name: 'addressSection',

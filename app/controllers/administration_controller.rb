@@ -541,7 +541,7 @@ class AdministrationController < ApplicationController
   def create_category
     new_category = params[:new_category]
     new_category_parent = params[:new_category_parent]
-    new_category_displayed = params[:new_category_displayed]
+    new_category_displayed = params[:new_category_displayed] == "1"
 
     if new_category.blank?
       flash[:error] = "Please enter a name to create a new category"

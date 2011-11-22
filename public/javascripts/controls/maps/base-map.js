@@ -131,6 +131,9 @@
         mapLoaded: function()
         {
             // This is called once a map has been loaded, as type-appropriate
+            this._mapLoaded = true;
+            if (this._initialLoad)
+            { this.getRowsForAllViews(); }
         },
 
         noReload: function()
@@ -819,6 +822,7 @@
         {
             var mapObj = this;
 
+            if (!mapObj._mapLoaded) { return; }
             if (!mapObj.isValid()) { return; }
 
             if (mapObj._displayFormat.plotStyle == 'heatmap'

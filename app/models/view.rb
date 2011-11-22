@@ -85,6 +85,12 @@ class View < Model
     self.columns.find{ |c| c.id == column_id }
   end
 
+  def column_by_id_or_field_name(column_id_or_field_name)
+    self.columns.find{ |c|
+      c.id == column_id_or_field_name.to_i ||
+      c.fieldName == column_id_or_field_name }
+  end
+
   def visible_columns
     self.columns.reject {|c| c.flag?('hidden')}.sort_by {|c| c.position}
   end
@@ -790,7 +796,7 @@ class View < Model
 
   def row_identifier
     if (!metadata.nil? && !metadata.rowIdentifier.nil?)
-      rdf_row_ident_col = column_by_id(metadata.rowIdentifier.to_i)
+      rdf_row_ident_col = column_by_id_or_field_name(metadata.rowIdentifier)
       if !rdf_row_ident_col.nil?
         return rdf_row_ident_col.name
       end

@@ -163,12 +163,19 @@ module DatasetsHelper
     options = []
     sel = nil
     options.push(['--None--', 0])
+    use_field_name = (selected_rdf_subject.to_i == 0)
     cols.each do |m|
       if (m.renderTypeName == 'text' || m.renderTypeName == 'url' ||
           m.renderTypeName == 'number')
-        options.push([m.name, m.id])
-        if (m.id.to_s() == selected_rdf_subject)
-          sel = m.id
+        options.push([m.name, use_field_name ?  m.fieldName : m.id])
+        if (use_field_name)
+          if (m.fieldName == selected_rdf_subject)
+            sel = m.fieldName
+          end
+        else
+          if (m.id.to_s() == selected_rdf_subject)
+            sel = m.id
+          end
         end
       end
     end

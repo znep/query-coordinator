@@ -41,7 +41,33 @@ var renderUpdate = function()
     { this._uf.setView(this._dataContext.dataset); }
     else
     {
-        this._uf = this.$contents.pane_unifiedFilter({ view: this._dataContext.dataset }).render();
+        var rc;
+        var minimal = false;
+        if (!$.isBlank(this._properties.columnFilter))
+        {
+            var cf = this._template(this._properties.columnFilter);
+            var tcIds = {};
+            var c = this._dataContext.dataset.columnForIdentifier(cf.column);
+            if (!$.isBlank(c))
+            { tcIds[this._dataContext.dataset.publicationGroup] = c.tableColumnId; }
+            rc = {
+                type: 'operator',
+                value: 'AND',
+                children: [{
+                    type: 'operator',
+                    value: 'OR',
+                    metadata: $.extend({operator: 'EQUALS'}, cf, { tableColumnId: tcIds })
+                }],
+                metadata: {
+                    advanced: false,
+                    unifiedVersion: 2
+                }
+            };
+            minimal = true;
+        }
+
+        this._uf = this.$contents.pane_unifiedFilter({ view: this._dataContext.dataset,
+            rootCondition: rc, minimalDisplay: minimal }).render();
         this._updateValidity();
     }
 };

@@ -40,6 +40,7 @@
                         var cpObj = this
                         $elem.unifiedFilter({
                             datasets: [ cpObj._view ],
+                            rootCondition: cpObj.settings.rootCondition,
                             filterableColumns: cpObj._view.columnsForType(filterableTypes)});
 
                         cpObj._view.bind('columns_changed', function()

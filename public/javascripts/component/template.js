@@ -15,7 +15,7 @@
                 var fn = [
                     'if (!_.isFunction(resolver))',
                     '{ var obj = resolver; resolver = function(name)',
-                        '{ return $.deepGet.apply($, [obj].concat(name.split("."))); } };',
+                        '{ return $.deepGetStringField(obj, name); } };',
                     'var temp; return ['
                 ];
                 for (var i = 0; i < pieces.length; i++) {

@@ -277,6 +277,10 @@
         var filterableColumns = options.filterableColumns; // this will change so save it off
         var rootCondition = options.rootCondition; // note: this may be null/undef
 
+        // Use a consistent ID to keep track of our particular query in each dataset
+        var queryId = 'unifiedFilter' + _.uniqueId();
+        var queryOwned = false;
+
     /////////////////////////////////////
     // DATASET-SPECIFIC UTIL
 
@@ -485,6 +489,7 @@
             {
                 // extend this only if we have to and it exists (otherwise {} registers as !undefined)
                 rootCondition = $.extend(true, {}, dataset.query.filterCondition);
+                queryOwned = true;
             }
 
             if (!_.isUndefined(rootCondition))
@@ -690,7 +695,7 @@
             });
 
             var validOperators = scrubFilterOperators(
-                getRenderType(column, metadata.subcolumn).filterConditions);
+                getRenderType(column, metadata.subcolumn).filterConditions || {});
             $filter.find('.operator').popupSelect({
                 choices: validOperators,
                 listContainerClass: 'popupOperatorSelect',
@@ -879,7 +884,7 @@
                 });
 
             // dump in values
-            if (metadata.multiSelect === false)
+            if (metadata.multiSelect === false && !metadata.forceValue)
             {
                 // add in "no filter" line; it's a radioline
                 addFilterLine(noFilterValue, column, condition, $filter, filterUniqueId,
@@ -933,7 +938,16 @@
                 }
 
                 // freeform line
-                addFilterLine('', column, condition, $filter, filterUniqueId, { freeform: true });
+                if (!metadata.restrictedValues)
+                { addFilterLine('', column, condition, $filter, filterUniqueId, { freeform: true }); }
+
+                if (_.isEmpty(condition.children) && metadata.forceValue)
+                {
+                    _.defer(function()
+                    {
+                        $.uniform.update($filter.find('.filterLineToggle:first').click());
+                    });
+                }
             }
 
             // data
@@ -1048,6 +1062,7 @@
                 var renderType = column.renderType;
                 if ($.subKeyDefined(column.renderType, 'subColumns.' + metadata.subcolumn))
                 { renderType = column.renderType.subColumns[metadata.subcolumn]; }
+                if ($.isBlank(renderType.filterConditions)) { return; }
 
                 var editorInt = renderType.filterConditions.details[metadata.operator].interfaceType;
 
@@ -1621,18 +1636,39 @@
             var $filterConditions = $pane.find('.filterCondition');
             $filterConditions.removeClass('countInvalid');
 
-            // TODO: rethink how to merge into existing filters (mount point)
             var datasetConditions = {};
+            var datasetQueries = {};
             _.each(datasets, function(ds)
             {
-                datasetConditions[ds.id] = {
+                // OK, we need to play nice with existing queries...
+                var query = $.extend(true, {}, ds.query);
+                var curFC;
+                var newRoot = {
                     type: 'operator',
-                    value: rootCondition.value,
                     children: [],
                     metadata: {
                         unifiedVersion: 2
                     }
                 };
+
+                // If we own the whole query, then use it or set it up
+                if (queryOwned)
+                { curFC = query.filterConditions = query.filterConditions || newRoot; }
+                else
+                {
+                    // If not, find our corner of filter-space by name; set it up if necessary
+                    if ($.isBlank(query.namedFilters)) { query.namedFilters = {}; }
+                    curFC = query.namedFilters[queryId] = query.namedFilters[queryId] || newRoot;
+                }
+
+                curFC.children.length = 0;
+                curFC.value = rootCondition.value;
+
+                // Whew; now that we're done setting everything up, store off the actual filter
+                // we'll be working with; and also the top-level condition so we can properly
+                // call update() later
+                datasetConditions[ds.id] = curFC;
+                datasetQueries[ds.id] = query;
             });
 
             $filterConditions.each(function()
@@ -1748,17 +1784,13 @@
                 // go through each dataset we have, update if necessary
                 _.each(datasets, function(ds)
                 {
-                    if (!$.subKeyDefined(ds, 'query.filterCondition') ||
-                        (ds.query.filterCondition !== rootCondition))
-                    {
-                        // we're not the default filter, need to push this on
-                        columnDefinition.columnId =
-                            ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).id;
+                    // Adjust for this dataset
+                    columnDefinition.columnId =
+                        ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).id;
 
-                        var dsCondition = $.extend({}, condition);
-                        dsCondition.children = $.extend(true, [], children);
-                        datasetConditions[ds.id].children.push(dsCondition);
-                    }
+                    var dsCondition = $.extend({}, condition);
+                    dsCondition.children = $.extend(true, [], children);
+                    datasetConditions[ds.id].children.push(dsCondition);
                 });
 
                 if (children.length > 0)
@@ -1775,19 +1807,8 @@
                     !_.isEqual(cleanFilter($.extend(true, {}, ds.query.filterCondition)),
                                cleanFilter($.extend(true, {}, rootCondition))))
                 {
-                    var processedFilterCondition = rootCondition;
-
-                    if (!$.subKeyDefined(ds, 'query.filterCondition') ||
-                        (ds.query.filterCondition !== rootCondition))
-                    {
-                        // we're not on the default filter; need to use specific condition
-                        processedFilterCondition = datasetConditions[ds.id];
-                    }
-
                     // fire it off
-                    ds.update(
-                        { query: $.extend({}, ds.query,
-                            { filterCondition: $.extend(true, {}, processedFilterCondition) })});
+                    ds.update({ query: datasetQueries[ds.id] });
 
                     isDirty = true;
                 }

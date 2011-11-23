@@ -362,7 +362,8 @@
         {
             if ($.isBlank(this._$content))
             {
-                this._$content = $.tag({tagName: 'form', 'class': 'commonForm'});
+                this._$content = $.tag({tagName: 'form', 'class': ['commonForm',
+                    {value: 'minimal', onlyIf: this.settings.minimalDisplay}]});
                 this.$dom().append(this._$content);
             }
             return this._$content;

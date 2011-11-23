@@ -363,7 +363,7 @@
             var entity = this._properties.entity;
             if (entity)
                 return function(name) {
-                    var result = entity[name];
+                    var result = $.deepGetStringField(entity, name);
                     if (result !== undefined)
                         return result;
                     return parentResolver(name);

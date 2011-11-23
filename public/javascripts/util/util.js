@@ -500,6 +500,9 @@ $.deepSet = function(/* obj, value, keys* */)
     obj[_.last(arguments)] = value;
 };
 
+$.deepGetStringField = function(obj, field)
+{ return $.deepGet.apply($, [obj].concat(field.split("."))); };
+
 $.subKeyDefined = function(obj, keystring)
 {
     if ($.isBlank(obj) || !_.isString(keystring))

@@ -42,6 +42,17 @@
         return false;
     });
 
+    $.validator.addMethod("coordinateReferenceSystem", function(value, element)
+    {
+        if (this.optional(element))
+        {
+            return true;
+        }
+
+        // Just check that it's an EPSG code in the format EPSG:<number>.
+        return /^EPSG:\d+$/i.test(value);
+    });
+
     var loggedInCookie = $.cookies.get('logged_in');
     if (loggedInCookie && loggedInCookie == "true")
     {

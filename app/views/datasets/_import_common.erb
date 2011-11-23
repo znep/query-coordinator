@@ -3,10 +3,19 @@
     <div class="mainLine line">
       <div class="layerHandleCell importHandleCell"></div>
       <div class="layerNameCell">
-        <span class="layerName"></span>
+        <input type="text" class="layerName textPrompt required" title="Name this column"/>
+      </div>
+      <div class="layerCrsAutoDetectCell">
+        <input type="checkbox" class="layerCrsAutoDetect" title="Auto-detect reference system"/>
+        <label>
+          Auto-detect
+        </label>
       </div>
       <div class="layerReferenceSystemCell">
-        <input type="text" class="layerReferenceSystem textPrompt required" title="Enter a coordinate reference system"/>
+        <label>
+          or
+        </label>
+        <input type="text" class="layerReferenceSystem" title="Enter a coordinate reference system"/>
       </div>
     </div>
   </li>

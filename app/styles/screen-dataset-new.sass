@@ -594,22 +594,37 @@
 
         .layerNameCell
           width: 25em
-          position: relative
-          top: 0.6em
-          .layerName
-            font-size: 1.45em
-            width: 15em
-
-        .layerReferenceSystemCell
-          width: 25em
           input[type=text]
             font-size: 1.45em
             width: 15em
 
+        .layerCrsAutoDetectCell
+          width: 12em
+          position: relative
+          top: 0.4em
+          label
+            bottom: 0.2em
+            font-size: 1.45em
+            position: relative
+
+        .layerReferenceSystemCell
+          width: 25em
+          label
+            bottom: 0.1em
+            font-weight: bold
+            position: relative
+            text-transform: uppercase
+          input[type=text]
+            font-size: 1.45em
+            left: 1em
+            position: relative
+            width: 15em
+
         label.error
           font-size: 1.2em
+          left: 1em
           position: relative
-          top: 0.8em
+          top: 1em
 
   p.seeEpsg
     font-size: 1.4em

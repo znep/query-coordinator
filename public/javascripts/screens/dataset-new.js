@@ -375,12 +375,4 @@ $wizard.wizard({
             $el.closest('.line').append(label);
         }
     });
-
-    $.validator.addMethod("coordinateReferenceSystem", function(value, element, param)
-    {
-        if (this.optional(element)) { return true; }
-
-        // Just check that it's an EPSG code in the format EPSG:<number>.
-        return /^EPSG:\d+$/i.test(value);
-    });
 });

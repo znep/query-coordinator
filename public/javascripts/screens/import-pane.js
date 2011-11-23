@@ -397,9 +397,17 @@ var updateLayerLines = function($elems)
         var oldLayer = $line.data('layer');
         var importLayer = {
             layerId: oldLayer.layerId,
-            name: oldLayer.name,
-            referenceSystem: $line.find('.layerReferenceSystem').val()
+            name: $line.find('.layerName').val(),
         };
+
+        if ($line.find('.layerCrsAutoDetect').prop('checked'))
+        {
+            importLayer.referenceSystem = null;
+        }
+        else
+        {
+            importLayer.referenceSystem = $line.find('.layerReferenceSystem').val();
+        }
 
         $line.data('importLayer', importLayer);
     });
@@ -558,7 +566,7 @@ var validateAll = function()
             '</strong> of your columns are named &ldquo;tags&rdquo;. Columns may not be named ' +
             '&ldquo;tags&rdquo;.');
     }
-    
+
     // validate name missing (error)
     var emptyNameColumns = _.flatten(_.select(names, function(columns, name) { return $.isBlank(name.trim()); }));
     if (emptyNameColumns.length > 1)
@@ -683,10 +691,10 @@ var newLayerLine = function(layer)
     if (!$.isBlank(layer))
     {
         // populate standard things
-        $line.find('.layerName').text(layer.name);
-
-        var $layerReferenceSystem = $line.find('.layerReferenceSystem');
-        $layerReferenceSystem.attr('id', 'layerReferenceSystem_' + layer.id)
+        var $layerName = $line.find('.layerName');
+        $layerName
+            .attr('id', 'layerName_' + layer.id)
+            .attr('id', 'layerName_' +layer.id)
             .example(function ()
             {
                 return $(this).attr('title');
@@ -694,18 +702,61 @@ var newLayerLine = function(layer)
             .rules('add',
             {
                 required: true,
+                messages:
+                {
+                    required: 'You must enter a name for this layer.'
+                }
+            });
+
+        if (layer.name)
+        {
+            $layerName.val(layer.name).removeClass("prompt");
+        }
+
+        var layerReferenceSystemId = 'layerReferenceSystem_' + layer.id;
+        var $layerReferenceSystem = $line.find('.layerReferenceSystem');
+        $layerReferenceSystem
+            .attr('id', layerReferenceSystemId)
+            .attr('name', layerReferenceSystemId)
+            .prop('disabled', true)
+            .rules('add',
+            {
                 coordinateReferenceSystem: true,
                 messages:
                 {
-                    required: 'You must choose a coordinate reference system for this layer.',
                     coordinateReferenceSystem: 'Enter a valid coordinate reference system.'
                 }
             });
 
         if (layer.referenceSystem)
         {
-            $layerReferenceSystem.val(layer.referenceSystem).removeClass("prompt");
+            $layerReferenceSystem.val(layer.referenceSystem);
         }
+
+        $line.find('layerReferenceSystemCell label').attr('for', layerReferenceSystemId);
+
+        var layerCrsAutoDetectId = 'layerCrsAutoDetect_' + layer.id;
+        var $layerCrsAutoDetect = $line.find('.layerCrsAutoDetect');
+        $layerCrsAutoDetect
+            .attr('id', layerCrsAutoDetectId)
+            .attr('name', layerCrsAutoDetectId)
+            .prop('checked', true)
+            .click(function ()
+            {
+                if ($(this).prop('checked'))
+                {
+                    $layerReferenceSystem
+                        .val(layer.referenceSystem || '')
+                        .prop('disabled', true)
+                        .valid()
+                }
+                else
+                {
+                    $layerReferenceSystem.prop('disabled', false);
+                }
+            });
+
+        $line.find('.layerCrsAutoDetectCell label').attr('for', layerCrsAutoDetectId);
 
         $line.data('layer', layer);
     }
@@ -1482,7 +1533,7 @@ importNS.importShapefilePaneConfig = {
             newLayerLine(layer);
         });
 
-        $pane.delegate('.layersList li input.layerName', 'change', function()
+        $pane.delegate('.layersList li input', 'change', function()
         {
             updateLayerLines($(this).closest('li.importLayer'));
         });

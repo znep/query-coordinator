@@ -3,6 +3,9 @@ requires = %w{view}
 requires.each{ |r| require File.join(Rails.root, 'app/models', r) }
 require 'clytemnestra'
 
+require 'rss/2.0'
+require 'timeout'
+
 module Canvas
 
 # GENERAL
@@ -222,6 +225,30 @@ module Canvas
     def prepare!
       @fragment = CurrentDomain.templates['data_splash']
     end
+  end
+
+  class ExternalFeed < CanvasWidget
+    attr_reader :error_message, :feed_items
+
+    def prepare!
+      begin
+        Timeout::timeout(2) do
+          @feed_items = RSS::Parser.parse(self.properties.feedUrl).items[0...self.properties.maxItems]
+        end
+      rescue Timeout::Error
+        @error_message = 'The requested feed did not respond in time.'
+      rescue OpenURI::HTTPError, RSS::NotWellFormedError => ex
+        @error_message = ex.message
+      end
+    end
+
+  protected
+    self.default_properties = {
+      feedUrl: nil,
+      maxItems: 5,
+      show: [ { type: 'title', link: true }, { type: 'description' } ],
+      updateEvery: 60 # in minutes # NOTIMPLEMENTED
+    }
   end
 
   class FacetList < CanvasWidget

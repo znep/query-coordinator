@@ -18,4 +18,14 @@ module CustomContentHelper
     end
   end
 
+  # Widget-specific helpers
+  def maybe_link_to(text, url, maeby)
+    if maeby
+      link_to(h(text), h(url))
+    else
+      h(text)
+    end
+  end
+
+  safe_helper :maybe_link_to
 end

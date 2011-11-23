@@ -32,6 +32,8 @@
             };
             //event_debugger();
 
+            Microsoft.Maps.Events.addHandler(mapObj.map, 'tiledownloadcomplete', function()
+            { mapObj.mapLoaded(); });
             Microsoft.Maps.Events.addHandler(mapObj.map, 'mousedown', function()
             { mapObj._mouseActive = true; });
             Microsoft.Maps.Events.addHandler(mapObj.map, 'mouseup', function()
@@ -75,8 +77,6 @@
                     mapObj._snapshot_bound = true;
                 }, mapObj);
             }
-
-            mapObj.mapLoaded();
         },
 
         currentZoom: function()

@@ -47,6 +47,7 @@
                     if (!mapObj._ready)
                     {
                         mapObj._ready = true;
+                        mapObj.mapLoaded();
                         // On initial zoom, save off viewport
                         if ($.isBlank(mapObj._currentViewport))
                         { mapObj._currentViewport = mapObj.getViewport(); }
@@ -144,8 +145,6 @@
                 }
             });
             mapObj.map.controls[google.maps.ControlPosition.TOP_LEFT].push($geocodeControl[0]);
-
-            mapObj.mapLoaded();
         },
 
         zoomToLocation: function(where, radius)

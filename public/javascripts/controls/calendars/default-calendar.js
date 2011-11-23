@@ -37,7 +37,7 @@
             var ce = {id: row.id,
                 start: row[calObj._startCol.lookup],
                 title: calObj._titleCol.renderType.renderer(row[calObj._titleCol.lookup],
-                        calObj._titleCol, true),
+                        calObj._titleCol, true, false, true),
                 color: null,
                 className: null,
                 row: row};

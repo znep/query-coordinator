@@ -418,7 +418,7 @@
             {
                 // This check comes first because it's simpler than a regex.
                 if (xAxis && chartObj._xColumn)
-                { return chartObj._xColumn.renderType.renderer(num, chartObj._xColumn, true); }
+                { return chartObj._xColumn.renderType.renderer(num, chartObj._xColumn, true, false, true); }
 
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.
@@ -1063,7 +1063,7 @@
     // Handle rendering values for different column types here
     var renderCellText = function(row, col)
     {
-        return col.renderType.renderer(row[col.lookup], col, true);
+        return col.renderType.renderer(row[col.lookup], col, true, false, true);
     };
 
     var isDateTime = function(chartObj)

@@ -7,8 +7,12 @@ blist.namespace.fetch('blist.datatypes');
     /* Textual types */
 
     // Text & base textual
-    var renderText = function(value, column, plainText, inMenu)
-    { return $.htmlEscape(inMenu ? $.htmlStrip(value) : value); };
+    var renderText = function(value, column, plainText, inMenu, skipEscape)
+    {
+        var v = inMenu ? $.htmlStrip(value) : value;
+        // Can we get rid of htmlEscape here?
+        return skipEscape ? v : $.htmlEscape(v);
+    };
 
     // HTML
     var renderHtml = function(value, col, plainText, inMenu)

@@ -123,6 +123,12 @@
                 {
                     hasRI = false;
                     ri = {x: chartObj._xCategories.length};
+                    if (!$.isBlank(chartObj._xColumn.sortAscending))
+                    {
+                        var items = chartObj._xCategories.slice();
+                        if (!chartObj._xColumn.sortAscending) { items = items.reverse(); }
+                        ri.x = _.sortedIndex(items, xCat);
+                    }
                 }
                 ri = ri.x;
             }
@@ -131,6 +137,7 @@
 
             // Get useable value for x-axis
             var basePt = xPoint(chartObj, row, ri);
+
             // Null dates can't really be rendered in a timeline; not sure
             // if that holds for other chart types, though
             if (isDateTime(chartObj) && $.isBlank(basePt.x)) { return true; }
@@ -138,7 +145,12 @@
             if (!_.isUndefined(chartObj._xCategories))
             {
                 if (hasRI) { chartObj._xCategories[ri] = xCat; }
-                else { chartObj._xCategories.splice(ri, 0, xCat); }
+                else
+                {
+                    chartObj._xCategories.splice(ri, 0, xCat);
+                    _.each(chartObj._rowIndices, function(obj, id)
+                            { if (id != row.id && obj.x >= ri) { obj.x += 1; } });
+                }
             }
 
             var hasPoints = false;
@@ -173,7 +185,7 @@
                     _.each(chartObj._nullCache, function(n) { addPoint(chartObj, n, i); });
                     chartObj._nullCache = undefined;
                 }
-                addPoint(chartObj, point, series.index);
+                addPoint(chartObj, point, series.index, false, chartObj._dataGrouping ? ri : null);
 
                 hasPoints = true;
             };
@@ -242,24 +254,24 @@
                     var point = yPoint(chartObj, otherRow, sr, i, otherPt, colSet);
                     addPoint(chartObj, point, i, true)
                 });
-
-                var numSeries = chartObj._seriesCache.length;
-                for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
-                {
-                    var reindex = function(datum, index)
-                    { datum.x = index; };
-                    if (!$.isBlank(chartObj.chart))
-                    { _.each(chartObj.chart.series[seriesIndex].data, reindex); }
-                    if (!$.isBlank(chartObj.secondChart))
-                    { _.each(chartObj.secondChart.series[seriesIndex].data, reindex); }
-                    _.each(chartObj._seriesCache[seriesIndex].data, reindex);
-                }
-
-                if (!$.isBlank(chartObj.chart))
-                { chartObj.chart.redraw(); }
-                if (!$.isBlank(chartObj.secondChart))
-                { chartObj.secondChart.redraw(); }
             }
+
+            var numSeries = chartObj._seriesCache.length;
+            for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
+            {
+                var reindex = function(datum, index)
+                { datum.x = index; };
+                if (!$.isBlank(chartObj.chart))
+                { _.each(chartObj.chart.series[seriesIndex].data, reindex); }
+                if (!$.isBlank(chartObj.secondChart))
+                { _.each(chartObj.secondChart.series[seriesIndex].data, reindex); }
+                _.each(chartObj._seriesCache[seriesIndex].data, reindex);
+            }
+
+            if (!$.isBlank(chartObj.chart))
+            { chartObj.chart.redraw(); }
+            if (!$.isBlank(chartObj.secondChart))
+            { chartObj.secondChart.redraw(); }
 
             if (!_.isUndefined(chartObj.chart))
             {
@@ -1202,7 +1214,7 @@
         });
     };
 
-    var addPoint = function(chartObj, point, seriesIndex, isOther)
+    var addPoint = function(chartObj, point, seriesIndex, isOther, pointIndex)
     {
         var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
         if (isOther && point.y == 0)
@@ -1241,8 +1253,16 @@
         if ($.isBlank(ri))
         {
             chartObj._rowIndices[point.row.id] = chartObj._rowIndices[point.row.id] || {};
-            chartObj._rowIndices[point.row.id][seriesIndex] = chartObj._seriesCache[seriesIndex].data.length;
-            chartObj._seriesCache[seriesIndex].data.push(point);
+            var newI = !$.isBlank(pointIndex) ? pointIndex :
+                chartObj._seriesCache[seriesIndex].data.length;
+            chartObj._rowIndices[point.row.id][seriesIndex] = newI;
+            chartObj._seriesCache[seriesIndex].data.splice(newI, 0, point);
+            for (var i = newI + 1; i < chartObj._seriesCache[seriesIndex].data.length; i++)
+            {
+                var p = chartObj._seriesCache[seriesIndex].data[i];
+                if (!$.isBlank(p))
+                { chartObj._rowIndices[p.row.id][seriesIndex] = i; }
+            }
         }
         else
         {

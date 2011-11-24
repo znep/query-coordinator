@@ -90,7 +90,8 @@ assetNS.loadLibraries = function(scriptQueue, callback)
             {
                 // In dev, make the URL unique so we always reload to pick
                 // up changes
-                url += (item.indexOf('?') >= 0 ? '&' : '?') + $.param({'_': (new Date()).valueOf()});
+                url += (item.indexOf('?') >= 0 ? '&' : '?') +
+                    $.param({'_': (new Date()).valueOf().toString().slice(0, 9)});
             }
             $lazyLoadLab = $lazyLoadLab.script(url).wait(function() { checkLoadedLibraries(item); });
         }
@@ -136,7 +137,10 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
         var url = sheet.sheet;
         // In dev, make the URL unique so we always reload to pick up changes
         if (blist.configuration.development)
-        { url += (url.indexOf('?') >= 0 ? '&' : '?') + $.param({'_': (new Date()).valueOf()}); }
+        {
+            url += (url.indexOf('?') >= 0 ? '&' : '?') +
+                $.param({'_': (new Date()).valueOf().toString().slice(0, 9)});
+        }
 
         // So... using the second method to grab stylesheets via Ajax and insert
         // them into the head manually mostly works, and gives us a callback when
@@ -163,7 +167,7 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
         {
             // Otherwise, we can load it via Ajax and insert them all once they're
             // ready
-            $.ajax({url: url, type: 'GET', contentType: 'text/css',
+            $.socrataServer.makeRequest({url: url, contentType: 'text/css', pageCache: true,
                 dataType: 'text', success: function(resp)
                 {
                     sheetPieces += resp;
@@ -209,16 +213,21 @@ assetNS.loadTemplates = function(templateQueue, callback)
         var url = template;
         // In dev, make the URL unique so we always reload to pick up changes
         if (blist.configuration.development)
-        { url += (url.indexOf('?') >= 0 ? '&' : '?') + $.param({'_': (new Date()).valueOf()}); }
+        {
+            url += (url.indexOf('?') >= 0 ? '&' : '?') +
+                $.param({'_': (new Date()).valueOf().toString().slice(0, 9)});
+        }
 
         // Load it via Ajax and insert them all once they're ready
-        $.ajax({url: url, type: 'GET', success: function(resp)
-        {
-            templPieces += resp;
-            insertTemplates();
-        }});
+        $.socrataServer.makeRequest({url: url, pageCache: true, dataType: 'text', contentType: 'text/html',
+            success: function(resp)
+            {
+                if (!lazyLoadedAssets.templates[template])
+                { templPieces += resp; }
+                insertTemplates();
+                lazyLoadedAssets.templates[template] = true;
+            }});
 
-        lazyLoadedAssets.templates[template] = true;
     });
 };
 

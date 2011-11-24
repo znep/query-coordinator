@@ -40,7 +40,9 @@ $.component.Container.extend('Repeater', 'content', {
         this._refresh();
     },
 
-    _refresh: function() {
+    _refresh: function()
+    {
+        var cObj = this;
         this._map = [];
         while (this.first)
             this.first.destroy();
@@ -50,13 +52,16 @@ $.component.Container.extend('Repeater', 'content', {
             this.add(this._cloneProperties.children);
         else if (view = (this._dataContext || {}).dataset) {
             // Render records
-            var me = this;
             var columnMap = this.columnMap = {};
             for (var i = 0; i < view.columns.length; i++)
                 columnMap[view.columns[i].id] = view.columns[i].fieldName;
-            this._dataContext.view.getRows(this.position, this.length, function(rows) {
-                _.each(rows, me._setRow, me);
+            this._dataContext.dataset.getRows(this.position, this.length, function(rows) {
+                _.each(rows, function(r) { cObj._setRow(r, r.index); });
             });
+        }
+        else if ($.subKeyDefined(this, '_dataContext.datasetList'))
+        {
+            _.each(this._dataContext.datasetList, function(ds, i) { cObj._setRow(ds, i); });
         }
     },
 
@@ -64,14 +69,15 @@ $.component.Container.extend('Repeater', 'content', {
         this._refresh();
     },
 
-    _setRow: function(row) {
+    _setRow: function(row, index)
+    {
         // Calculate the index in current set of rows and ignore if outside current window
-        var index = row.index - this.position;
-        if (index < 0 || index >= this.length)
+        var adjIndex = index - this.position;
+        if (adjIndex < 0 || adjIndex >= this.length)
             return;
 
         // Add ID prefix so repeated components will not clash
-        var prefix = this._idPrefix + row.index + '-';
+        var prefix = this._idPrefix + index + '-';
         function createTemplate(properties) {
             properties = _.clone(properties);
             properties.id = prefix + (properties.id || (properties.id = $.component.allocateId()));
@@ -89,9 +95,9 @@ $.component.Container.extend('Repeater', 'content', {
 
         // Remove any existing row
         var map = this._map;
-        if (map[index]) {
-            map[index].remove();
-            map[index] = undefined;
+        if (map[adjIndex]) {
+            map[adjIndex].remove();
+            map[adjIndex] = undefined;
         }
 
         // Create entity TODO - mapping will be unnecessary w/ SODA 2
@@ -102,13 +108,14 @@ $.component.Container.extend('Repeater', 'content', {
                 entity[to] = null;
         });
         cloneProperties.entity = entity;
+        cloneProperties.childContextId = row.id;
 
         // Create clone
-        var clone = map[index] = new $.component.Repeater.Clone(cloneProperties);
+        var clone = map[adjIndex] = new $.component.Repeater.Clone(cloneProperties);
 
         // Find position for clone
         var position;
-        for (i = index + 1; !position && i < map.length; i++)
+        for (var i = adjIndex + 1; !position && i < map.length; i++)
             position = map[i];
 
         // Insert the clone

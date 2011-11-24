@@ -13,7 +13,9 @@
             var pieces = template.match(/({|}|[^{}]+)/mg);
             if (pieces) {
                 var fn = [
-                    'if (!_.isFunction(resolver)) { var obj = resolver; resolver = function(name) { return obj[name] } };',
+                    'if (!_.isFunction(resolver))',
+                    '{ var obj = resolver; resolver = function(name)',
+                        '{ return $.deepGet.apply($, [obj].concat(name.split("."))); } };',
                     'var temp; return ['
                 ];
                 for (var i = 0; i < pieces.length; i++) {

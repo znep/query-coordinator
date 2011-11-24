@@ -65,14 +65,17 @@ var updateProperties = function(lcObj, properties)
                     {
                         this._chart = this.$contents.socrataChart({
                             chartType: this._chartType,
-                            displayFormat: this._properties.displayFormat,
+                            displayFormat:
+                                lcObj._template(lcObj._properties.displayFormat, lcObj._dataContext.dataset),
                             view: this._dataContext.dataset
                         });
                         this._updateValidity();
                     }
                 }) &&
             !$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._chart))
-    { lcObj._chart.reload(lcObj._properties.displayFormat); }
+    {
+        lcObj._chart.reload(lcObj._template(lcObj._properties.displayFormat, lcObj._dataContext.dataset));
+    }
 };
 
 })(jQuery);

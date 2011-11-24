@@ -118,8 +118,20 @@
         /**
          * Substitute insertion variables into a string.
          */
-        _template: function(template) {
-            return $.template(template, this._propertyResolver());
+        _template: function(template, resolver)
+        {
+            var cObj = this;
+            if (_.isString(template))
+            { return $.template(template, resolver || this._propertyResolver()); }
+            else if (_.isArray(template))
+            { return _.map(template, function(t) { return cObj._template(t, resolver); }); }
+            else if ($.isPlainObject(template))
+            {
+                var o = {};
+                _.each(template, function(v, k) { o[k] = cObj._template(v, resolver); });
+                return o;
+            }
+            else { return template; }
         },
 
         setEditor: function(editor)

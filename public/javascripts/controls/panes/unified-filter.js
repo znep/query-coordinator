@@ -941,11 +941,19 @@
                 if (!metadata.restrictedValues)
                 { addFilterLine('', column, condition, $filter, filterUniqueId, { freeform: true }); }
 
-                if (_.isEmpty(condition.children) && metadata.forceValue)
+                if (metadata.forceValue && _.isEmpty(condition.children))
                 {
                     _.defer(function()
                     {
                         $.uniform.update($filter.find('.filterLineToggle:first').click());
+                    });
+                }
+
+                if (metadata.multiSelect !== false && metadata.selectAll && _.isEmpty(condition.children))
+                {
+                    _.defer(function()
+                    {
+                        $.uniform.update($filter.find('.filterLineToggle').click());
                     });
                 }
             }

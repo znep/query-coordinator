@@ -43,8 +43,8 @@
 
             if (!(child instanceof $.component.Component))
             {
-                if (!$.isBlank(this._properties.childContextId) && $.isBlank(child.contextId))
-                { child.contextId = this._properties.childContextId; }
+                if ($.isBlank(child.contextId))
+                { child.contextId = this._properties.childContextId || this._properties.contextId; }
                 child = $.component.create(child);
             }
 

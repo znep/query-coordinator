@@ -39,7 +39,7 @@
                     {
                         var cpObj = this
                         $elem.unifiedFilter({
-                            datasets: [ cpObj._view ],
+                            datasets: cpObj.settings.datasets || [ cpObj._view ],
                             rootCondition: cpObj.settings.rootCondition,
                             filterableColumns: cpObj._view.columnsForType(filterableTypes)});
 

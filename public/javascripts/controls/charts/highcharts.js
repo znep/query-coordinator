@@ -193,7 +193,9 @@
             // Render data for each series
             _.each(chartObj._yColumns, function(yc)
             {
-                var seriesVals = [yc.data.name];
+                var seriesVals = [];
+                if (!chartObj._dataGrouping || chartObj._yColumns.length > 1)
+                { seriesVals.push(yc.data.name); }
                 _.each(chartObj._seriesColumns, function(sc)
                     { seriesVals.push(renderCellText(row, sc.column)); });
                 var seriesVal = _.compact(seriesVals).join(', ');

@@ -41,16 +41,30 @@ var renderUpdate = function()
     { this._uf.setView(this._dataContext.dataset); }
     else
     {
-        var rc;
-        var minimal = false;
+        var opts = {};
+        switch (this._dataContext.type)
+        {
+            case 'dataset':
+                opts.datasets = [ this._dataContext.dataset ];
+                break;
+            case 'datasetList':
+                opts.datasets = _.pluck(this._dataContext.datasetList, 'dataset');
+                break;
+        }
+
         if (!$.isBlank(this._properties.columnFilter))
         {
             var cf = this._template(this._properties.columnFilter);
             var tcIds = {};
-            var c = this._dataContext.dataset.columnForIdentifier(cf.column);
-            if (!$.isBlank(c))
-            { tcIds[this._dataContext.dataset.publicationGroup] = c.tableColumnId; }
-            rc = {
+            opts.datasets = _.select(opts.datasets, function(ds)
+            {
+                var c = ds.columnForIdentifier(cf.column);
+                if (!$.isBlank(c))
+                { tcIds[ds.publicationGroup] = c.tableColumnId; }
+                return !$.isBlank(c);
+            });
+
+            opts.rootCondition = {
                 type: 'operator',
                 value: 'AND',
                 children: [{
@@ -63,11 +77,13 @@ var renderUpdate = function()
                     unifiedVersion: 2
                 }
             };
-            minimal = true;
+            opts.minimalDisplay = true;
         }
 
-        this._uf = this.$contents.pane_unifiedFilter({ view: this._dataContext.dataset,
-            rootCondition: rc, minimalDisplay: minimal }).render();
+        if (opts.datasets.length < 1) { return; }
+        opts.view = _.first(opts.datasets);
+
+        this._uf = this.$contents.pane_unifiedFilter(opts).render();
         this._updateValidity();
     }
 };

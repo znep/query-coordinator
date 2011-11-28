@@ -360,14 +360,23 @@
             if ($.cf.designing)
                 return function() {};
             var parentResolver = this.parent ? this.parent._propertyResolver() : $.component.rootPropertyResolver;
+            var dc = this._dataContext || {};
+            var dcResolver = function(name) {
+                var result = $.deepGetStringField(dc, name);
+                if (result !== undefined)
+                    return result;
+                return parentResolver(name);
+            };
             var entity = this._properties.entity;
             if (entity)
                 return function(name) {
                     var result = $.deepGetStringField(entity, name);
                     if (result !== undefined)
                         return result;
+                    if (!_.isEmpty(dc)) { return dcResolver(name); }
                     return parentResolver(name);
                 };
+            if (!_.isEmpty(dc)) { return dcResolver; }
             return parentResolver;
         },
 

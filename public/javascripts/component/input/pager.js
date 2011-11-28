@@ -26,12 +26,12 @@ $.component.Component.extend('Pager', 'input', {
     _setUpBinding: function()
     {
         var cObj = this;
-        if (!$.isBlank(cObj._properties.pagedContainerId) &&
-            ($.isBlank(cObj._context) || cObj._context.id != cObj._properties.pagedContainerId))
+        var adjId = (cObj._properties.parentPrefix || '') + (cObj._properties.pagedContainerId || '');
+        if (!$.isBlank(adjId) && ($.isBlank(cObj._context) || cObj._context.id != adjId))
         {
             if (!$.isBlank(cObj._context))
             { cObj._context.unbind(null, null, cObj); }
-            cObj._context = $.component(cObj._properties.pagedContainerId);
+            cObj._context = $.component(adjId);
             if (!(cObj._context instanceof $.component.PagedContainer))
             {
                 delete cObj._context;

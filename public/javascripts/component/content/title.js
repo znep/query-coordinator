@@ -22,9 +22,16 @@ $.component.Component.extend('Title', 'content', {
 
     _render: function()
     {
-        if (!this._super.apply(this, arguments)) { return false; }
-        this.$title.text($.isBlank(this._properties.text) ? '' : this._properties.text);
-        this.$title.css(blist.configs.styles.convertProperties(this._properties));
+        var cObj = this;
+        if (!cObj._super.apply(cObj, arguments)) { return false; }
+        var doRender = function()
+        {
+            cObj.$title.text($.isBlank(cObj._properties.text) ? '' : cObj._template(cObj._properties.text));
+            cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
+        }
+        if (!$.isBlank(cObj._properties.contextId))
+        { cObj._updateDataSource(cObj._properties, doRender); }
+        else { doRender(); }
     },
 
     _propWrite: function(properties)

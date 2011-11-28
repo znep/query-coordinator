@@ -58,12 +58,10 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
                 {
-                    var success = _.all(cObj._template(cObj._properties.excludeFilter,
-                            cObj._dataContext.dataset), function(v, k)
+                    var success = _.all(cObj._template(cObj._properties.excludeFilter), function(v, k)
                         { return !_.include($.makeArray(v), $.deepGetStringField(c, k)); }) &&
                         ($.isBlank(cObj._properties.includeFilter) ? true :
-                                   _.any(cObj._template(cObj._properties.includeFilter,
-                                           cObj._dataContext.dataset), function(v, k)
+                                   _.any(cObj._template(cObj._properties.includeFilter), function(v, k)
                                        { return _.include($.makeArray(v), $.deepGetStringField(c, k)); }));
                     if (success) { cObj._setRow(cObj._dataContext, i, {column: c}); }
                 });
@@ -100,6 +98,7 @@ $.component.Container.extend('Repeater', 'content', {
         var prefix = this._idPrefix + index + '-';
         function createTemplate(properties) {
             properties = _.clone(properties);
+            properties.parentPrefix = prefix;
             properties.id = prefix + (properties.id || (properties.id = $.component.allocateId()));
             var children = properties.children;
             if (children) {

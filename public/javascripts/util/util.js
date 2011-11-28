@@ -473,6 +473,18 @@ $.deepGet = function(/* [create], obj, keys* */)
     for (; idx < arguments.length; idx++)
     {
         var key = arguments[idx];
+        if (key == '[]' && _.isArray(obj))
+        {
+            var result;
+            var remArgs = $.makeArray(arguments).slice(idx + 1);
+            for (var i = 0; i < obj.length; i++)
+            {
+                result = $.deepGet.apply($, _.compact([create ? true : null, obj[i]]).concat(remArgs));
+                if (!create && !$.isBlank(result)) { break; }
+            }
+            return result;
+        }
+
         if (_.isUndefined(obj[key]))
             if (!create)
                 return undefined;

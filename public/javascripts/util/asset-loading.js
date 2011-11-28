@@ -180,7 +180,7 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
                 }});
         }
 
-        lazyLoadedAssets.stylesheets[sheet] = true;
+        lazyLoadedAssets.stylesheets[sheet.sheet] = true;
     });
 };
 

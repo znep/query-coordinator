@@ -826,7 +826,7 @@ class View < Model
       return custom_image('thumb')
     elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
       url_port = (port == 80) ? '' : ':' + port.to_s
-      protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
+      protocol = federated? ? "//#{domainCName}#{url_port}" : ''
       return "#{protocol}/api/views/#{self.id}/snapshots/page?size=thumb"
     end
     nil

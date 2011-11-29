@@ -9,7 +9,7 @@ blist.namespace.fetch('blist.datatypes');
     // Text & base textual
     var renderText = function(value, column, plainText, inMenu, skipEscape)
     {
-        var v = inMenu ? $.htmlStrip(value) : value;
+        var v = inMenu ? $.htmlStrip(value) : ($.isBlank(value) ? '' : value);
         // Can we get rid of htmlEscape here?
         return skipEscape ? v : $.htmlEscape(v);
     };

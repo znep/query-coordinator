@@ -806,7 +806,9 @@
                       className: 'matchAnyOrAll' + (condition.value == 'AND' ? ' checked' : '') }
                 ],
                 menuButtonClass: 'filterOptionsMenuButton options',
-                menuButtonContents: ''
+                menuButtonContents: '',
+                onOpen: function() { $filter.addClass('menuOpen'); },
+                onClose: function() { $filter.removeClass('menuOpen'); }
             })
                 .find('.menuEntry a').click(function(event)
                 {

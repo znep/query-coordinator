@@ -32,7 +32,9 @@
 </ul>
 <div class="feedItem_comment">
   <ul class="commentActions clearfix">
-    <li class="actionReply"><a class="commentReplyLink" href="#reply">Reply</a></li>
+    <%- if allow_comments -%>
+      <li class="actionReply"><a class="commentReplyLink" href="#reply">Reply</a></li>
+    <%- end -%>
     <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate">Inappropriate</a></li>
     <li class="actionDelete"><a class="commentDeleteLink" href="#delete">Delete</a></li>
     <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="Rate this comment down"></a></li>

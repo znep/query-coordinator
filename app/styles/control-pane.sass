@@ -34,12 +34,12 @@
       display: none
       margin-right: 0.4em
 
-      .ie7 &
-        position: absolute
-        + .formHeader
-          left: 2.3em
-          margin-left: 0
-          position: relative
+    .ie7 &.selectable .sectionSelect
+      position: absolute
+      + .formHeader
+        left: 2.3em
+        margin-left: 0
+        position: relative
 
     &.selectable > .uniform.checker, &.selectable .sectionSelect
       display: inline-block
@@ -113,6 +113,8 @@
         position: absolute
         top: 0.5em
         width: 6.7em
+        .ie7 &
+          width: 7em
 
       .inputWrapper
         display: block

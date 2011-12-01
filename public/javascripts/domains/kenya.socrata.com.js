@@ -26,4 +26,18 @@
         $(window).resize();
     });
     $('.tabContainer .tabs li:first-child a').click();
+
+    // featured datasets height
+    var $boxes = $('.featureBox');
+    var $gqwl2 = $('.featuredViews .featuredView:first');
+    var resizeBoxes = function()
+    {
+        $boxes.height($gqwl2.height());
+    };
+    _.defer(function()
+    {
+        resizeBoxes();
+        $(window).resize(function() { _.defer(resizeBoxes); });
+    });
+
 })})(jQuery);

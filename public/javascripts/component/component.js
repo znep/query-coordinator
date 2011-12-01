@@ -177,6 +177,16 @@
         _getAssets: function()
         { return null; },
 
+        _isVisible: function()
+        {
+            if ($.isBlank(this.$dom)) { return false; }
+
+            var t = this.$dom.offset().top;
+            var scrollT = $(document).scrollTop();
+            var mainH = $(window).height();
+            return t < scrollT + (mainH * 1.1) && t + this.$dom.height() > scrollT - (mainH * 0.1);
+        },
+
         /**
          * Initialize DOM representation of this component.
          */
@@ -207,10 +217,19 @@
                 { this.$contents = this.$dom; }
                 if (this._loading) { this.startLoading(); }
                 this._updateValidity();
+
+                if (this._delayUntilVisible)
+                {
+                    var cObj = this;
+                    $(document).scroll(_.throttle(function()
+                        {
+                            if (cObj._needsRender && cObj._isVisible()) { cObj._render(); }
+                        }, 300));
+                }
             }
 
             // Special handling for root components
-            if (!this.parent) {
+            if (!this.parent && !this._resizeBound) {
                 // Need to listen for general resize events
                 var cObj = this;
                 $(window).bind('resize', function(e, source)
@@ -218,6 +237,7 @@
                     if (source == $.component) { return; }
                     cObj._arrange();
                 });
+                this._resizeBound = true;
             }
 
             this._initialized = true;
@@ -229,14 +249,16 @@
         _render: function()
         {
             this._initDom();
-            if (this._loadingAssets || this._properties.hidden)
+            if (typeof this._properties.height == 'number')
+                this.$dom.css('height', this._properties.height);
+
+            if (this._loadingAssets || this._properties.hidden ||
+                    (this._delayUntilVisible && !this._isVisible()))
             {
                 this._needsRender = true;
                 return false;
             }
 
-            if (typeof this._properties.height == 'number')
-                this.$dom.css('height', this._properties.height);
             delete this._needsRender;
             this._rendered = true;
             return true;
@@ -263,11 +285,14 @@
                 {
                     this.$dom.append($.tag([{tagName: 'div', 'class': 'disabledOverlay'},
                         {tagName: 'span', 'class': 'disabledIcon'},
-                        {tagName: 'div', 'class': 'disabledMessage',
-                            contents: 'This component does not have a valid configuration'}]));
+                        {tagName: 'div', 'class': ['disabledMessage', 'badConfig'],
+                            contents: 'This component does not have a valid configuration'},
+                        {tagName: 'div', 'class': ['disabledMessage', 'notReady'],
+                            contents: 'Loading, please wait...'}]));
                     this._disInit = true;
                 }
                 this.$dom.toggleClass('disabled', isDisabled);
+                this.$dom.toggleClass('notRendered', !this._rendered);
             }
         },
 

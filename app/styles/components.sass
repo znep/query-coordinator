@@ -76,7 +76,17 @@ body.socrata-page
   &:last-child
     margin-bottom: 0
 
+  &.disabled .notReady
+    display: none
+
+  &.disabled.notRendered
+    .notReady
+      display: block
+    .badConfig
+      display: none
+
   .disabledIcon
+    @include rounded-ends
     left: 50%
     margin:
       left: -24px
@@ -86,6 +96,7 @@ body.socrata-page
     z-index: 81
 
   &.disabled .disabledIcon
+    background-color: #666666
     display: block
 
   .content-wrapper

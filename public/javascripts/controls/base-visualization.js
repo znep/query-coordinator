@@ -501,8 +501,6 @@
             var viewsToRender = _.reject(vizObj._dataViews, function(view)
                 { return nonStandardRender(view); });
 
-            var views = [];
-            var viewsToCount = viewsToRender.length;
             _.each(viewsToRender, function(view, index)
             {
                 var loadRows;
@@ -512,28 +510,20 @@
                     {
                         _.defer(function()
                             { vizObj.handleRowsLoaded(data, view); });
-                        rowsToFetch -= view.totalRows ? view.totalRows
-                                                      : data.length;
-                        var executable = views.shift();
-                        if (executable) { executable(); }
+                        rowsToFetch -= view.totalRows ? view.totalRows : data.length;
                         vizObj.totalRowsForAllViews();
-                        if (rowsToFetch <= 0 || !executable)
-                        {
-                            delete vizObj._initialLoad;
-                        }
-                    },
-                    function()
-                    {
-                        // On error clear these variables so more requests will be triggered
                         delete vizObj._initialLoad;
-                    });
-
-                    viewsToCount--;
-                    if (viewsToCount == 0)
+                    },
+                    function(errObj)
                     {
-                        var executable = views.shift();
-                        if (executable) { executable(); }
-                    }
+                        // If we were cancelled, and didn't respond to the event that caused a cancel,
+                        // then re-try this request. Otherwise just clear initialLoad, and it will
+                        // respond normally.
+                        if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled &&
+                            (vizObj._initialLoad || !vizObj._boundViewEvents))
+                        { loadRows(); }
+                        else if (vizObj._boundViewEvents) { delete vizObj._initialLoad; }
+                    });
                 };
                 loadRows();
             });

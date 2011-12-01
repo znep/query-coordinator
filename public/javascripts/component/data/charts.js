@@ -6,6 +6,7 @@ _.each(Dataset.chart.types, function(value, localChartType)
         _init: function()
         {
             this._needsOwnContext = true;
+            this._delayUntilVisible = true;
             this._super.apply(this, arguments);
             this._chartType = localChartType;
         },

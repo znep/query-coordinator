@@ -411,6 +411,7 @@
         }
         if (chartObj._displayFormat.stacking)
         { colors = colors.reverse(); }
+        colors = _.compact(colors);
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;
@@ -758,7 +759,7 @@
         if (_.include(['line', 'area', 'timeline', 'bubble'], chartObj._chartType))
         { chartConfig.chart.marginBottom = legendPos == 'bottom' ? 120 : 90; }
 
-        if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
+        if (!_.isEmpty(colors)) { chartConfig.colors = colors; }
 
         if (chartObj._displayFormat.yAxis)
         {
@@ -914,7 +915,7 @@
             { chartObj.chart.setSize(chartObj.chart.chartWidth,
                                      chartObj.chart.chartHeight, false); }
 
-            if (!_.isUndefined(colors))
+            if (!_.isEmpty(colors))
             {
                 // Set colors after chart is created so they don't get merged
                 // with the default colors; we want to override them, instead
@@ -1016,7 +1017,7 @@
         }
 
         if (isPieTypeChart &&
-            !_.isUndefined(chartObj._displayFormat.colors))
+            !_.isEmpty(chartObj._displayFormat.colors))
         {
             point.color = chartObj._displayFormat.colors[point.x % chartObj._displayFormat.colors.length];
         }

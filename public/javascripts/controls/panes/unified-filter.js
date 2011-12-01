@@ -945,7 +945,8 @@
                 {
                     _.defer(function()
                     {
-                        $.uniform.update($filter.find('.filterLineToggle:first').click());
+                        $.uniform.update($filter.find('.filterLineToggle:first').value(true));
+                        parseFilters();
                     });
                 }
 
@@ -953,7 +954,8 @@
                 {
                     _.defer(function()
                     {
-                        $.uniform.update($filter.find('.filterLineToggle').click());
+                        $.uniform.update($filter.find('.filterLineToggle').value(true));
+                        parseFilters();
                     });
                 }
             }

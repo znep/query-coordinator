@@ -4,6 +4,7 @@ $.component.Component.extend('Table', 'data', {
     _init: function()
     {
         this._needsOwnContext = true;
+        this._delayUntilVisible = true;
         this._super.apply(this, arguments);
     },
 

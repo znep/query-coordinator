@@ -2156,7 +2156,8 @@ var Dataset = ServerModel.extend({
                 // skip this one, and only use the latest
                 if (ds._curMetaReq != reqId)
                 {
-                    if (_.isFunction(errorCallback)) { _.defer(errorCallback); }
+                    if (_.isFunction(errorCallback))
+                    { _.defer(function() { errorCallback({cancelled: true}); }); }
                     return;
                 }
                 delete ds._curMetaReq;

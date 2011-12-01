@@ -71,7 +71,7 @@
                     options:  data
                 }),
                 success: function(response) {
-                    $container.removeClass('modified');
+                    $container.removeClass('modified error');
                     if (response.error)
                     { error(response.message); }
                 },

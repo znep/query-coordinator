@@ -466,7 +466,7 @@ class AdministrationController < ApplicationController
       return (render json: {error: true, message: 'No such fieldset exists'})
     end
 
-    field = fieldset.fields.detect{ |f| f['name'].downcase == params[:field].downcase }
+    field = fieldset.fields.detect{ |f| f['name'].downcase == params[:field].to_s.downcase }
     if field.nil?
       return (render json: {error: true, message: 'No such field exists'})
     end

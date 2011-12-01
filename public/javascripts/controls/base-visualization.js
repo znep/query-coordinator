@@ -7,6 +7,7 @@
             var currentObj = this;
             currentObj._super.apply(currentObj, arguments);
             var $mainDom = $(currentObj.currentDom);
+            $mainDom.addClass('visualization');
 
             currentObj._primaryView = currentObj.settings.view;
             currentObj._displayFormat = currentObj.settings.displayFormat ||
@@ -27,6 +28,7 @@
             $domObj.siblings('#vizError').hide();
 
             currentObj._maxRows = 500;
+            currentObj._renderedRows = 0;
 
             currentObj._byView = {};
             if (!$.isBlank(currentObj._primaryView))
@@ -98,6 +100,17 @@
                     columnCount: 1, view: this._primaryView});
             }
             return this._$flyoutTemplate;
+        },
+
+        $noDataMessage: function()
+        {
+            if ($.isBlank(this._$noData))
+            {
+                this._$noData = $.tag({tagName: 'div', 'class': ['noDataMessage', 'hide'],
+                    contents: 'No data available'});
+                $(this.currentDom).append(this._$noData);
+            }
+            return this._$noData;
         },
 
         isValid: function()
@@ -317,6 +330,7 @@
             var vizObj = this;
             delete vizObj._requireRowReload;
             delete vizObj._flyoutLayout;
+            vizObj._renderedRows = 0;
         },
 
         reloadVisualization: function()
@@ -390,6 +404,7 @@
             _.each(rows, function(r)
             {
                 var result = vizObj.renderRow(r, view);
+                if (result) { vizObj._renderedRows++; }
                 addedRows = addedRows || result;
                 badPoints = badPoints || !result;
             });
@@ -414,6 +429,8 @@
 
         rowsRendered: function()
         {
+            this.$noDataMessage().toggleClass('hide', this._renderedRows > 0);
+
             // Implement me if you want to do something after all the rows
             // are rendered
         },

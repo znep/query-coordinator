@@ -216,6 +216,7 @@
         rowsRendered: function()
         {
             var chartObj = this;
+            chartObj._super();
             if (!chartObj._columnsLoaded || !chartObj.isValid()) { return; }
 
             // Check if there are remainders to stick on the end

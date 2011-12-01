@@ -67,6 +67,8 @@
 
         rowsRendered: function()
         {
+            this._super();
+
             if (!_.isEmpty(this._events))
             {
                 var today = new Date();

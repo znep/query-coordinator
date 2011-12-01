@@ -600,6 +600,7 @@
 
         rowsRendered: function()
         {
+            this._super();
             this.dataRendered();
         },
 

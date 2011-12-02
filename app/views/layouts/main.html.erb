@@ -82,6 +82,11 @@ http://www.socrata.com
       <div id="siteHeader" class="clearfix">
         <%= render_domain_template(@page_custom_header || 'header_full') %>
       </div>
+      <%- if Rails.env.staging? -%>
+        <p style="margin-left: 2em">
+          Running: <%= REVISION_NUMBER %>, deployed <%= Time.at(REVISION_DATE) %>
+        </p>
+      <%- end -%>
 
       <a name="content"></a>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>

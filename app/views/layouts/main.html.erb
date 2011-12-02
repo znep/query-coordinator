@@ -82,10 +82,23 @@ http://www.socrata.com
       <div id="siteHeader" class="clearfix">
         <%= render_domain_template(@page_custom_header || 'header_full') %>
       </div>
-      <%- if Rails.env.staging? -%>
+      <%- unless Rails.env.production? -%>
         <p style="margin-left: 2em">
           Running: <%= REVISION_NUMBER %>, deployed <%= Time.at(REVISION_DATE) %>
         </p>
+      <%- end -%>
+
+      <%- unless Rails.env.production?
+        begin
+          teapot = CoreServer::Base.connection.get_request("/teapots/short_and_stout")
+          flash, message = 'warning', 'Connected to new backend'
+        rescue CoreServer::ResourceNotFound => ex
+          flash, message = 'error', 'Connected to old backend!'
+        end
+      -%>
+        <div class="flash <%= flash %>" style="margin-left: 2em; width: 20em">
+          <%= message %>
+        </div>
       <%- end -%>
 
       <a name="content"></a>

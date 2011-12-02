@@ -66,7 +66,8 @@ class User < Model
 
   def href
     Rails.logger.warn("Missing id for user.href: #{self.to_json}") if id.nil?
-    "/profile/#{displayName.convert_to_url}/#{id}"
+    Rails.logger.warn("Missing displayName for user.href: #{self.to_json}") if displayName.nil?
+    "/profile/#{(displayName || '-').convert_to_url}/#{id}"
   end
 
   def self.href(member_name, member_id)

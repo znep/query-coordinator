@@ -108,7 +108,7 @@ this.User = ServerModel.extend({
     getProfileUrl: function()
     {
         var user = this;
-        return '/profile/' + $.urlSafe(user.displayName) + '/' + user.id;
+        return '/profile/' + $.urlSafe(user.displayName || '-') + '/' + user.id;
     }
 });
 

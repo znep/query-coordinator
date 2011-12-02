@@ -134,9 +134,11 @@ module CoreServer
 
       # pass in the server session cookie
       if !@cookies.nil?
-        server_session_cookie = @cookies[:socrata_session]
-        if !server_session_cookie.nil?
-          request.add_field 'Cookie', "socrata_session=#{server_session_cookie}"
+        [:socrata_session, :serverid].each do |cookie_to_copy|
+          cookie_value = @cookies[cookie_to_copy]
+          if !cookie_value.nil?
+            request.add_field 'Cookie', "#{cookie_to_copy.to_s}=#{cookie_value}"
+          end
         end
       end
 

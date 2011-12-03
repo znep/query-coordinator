@@ -82,11 +82,6 @@ http://www.socrata.com
       <div id="siteHeader" class="clearfix">
         <%= render_domain_template(@page_custom_header || 'header_full') %>
       </div>
-      <%- unless Rails.env.production? -%>
-        <p style="margin-left: 2em">
-          Running: <%= REVISION_NUMBER %>, deployed <%= Time.at(REVISION_DATE) %>
-        </p>
-      <%- end -%>
 
       <%- unless Rails.env.production?
         begin

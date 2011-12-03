@@ -83,19 +83,6 @@ http://www.socrata.com
         <%= render_domain_template(@page_custom_header || 'header_full') %>
       </div>
 
-      <%- unless Rails.env.production?
-        begin
-          teapot = CoreServer::Base.connection.get_request("/teapots/short_and_stout")
-          flash, message = 'warning', 'Connected to new backend'
-        rescue CoreServer::ResourceNotFound => ex
-          flash, message = 'error', 'Connected to old backend!'
-        end
-      -%>
-        <div class="flash <%= flash %>" style="margin-left: 2em; width: 20em">
-          <%= message %>
-        </div>
-      <%- end -%>
-
       <a name="content"></a>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
       <%- if @suppress_content_wrapper -%>

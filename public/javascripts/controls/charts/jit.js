@@ -80,6 +80,7 @@
                     { chartObj._jitData.children.push(item); }
                     else
                     { chartObj._jitData.children.splice(exIndex, 0, item); }
+                    chartObj._renderedRows++;
                 };
 
             if (!chartObj._jitData)
@@ -94,6 +95,12 @@
                 }
             }
             _.each(rows, addRows);
+
+            if (chartObj._renderedRows < 1)
+            {
+                chartObj.rowsRendered();
+                return;
+            }
 
             if (chartObj._remainder > chartObj._totalSum * 0.005)
             {
@@ -128,6 +135,7 @@
 
             chartObj.chart.loadJSON(chartObj._jitData);
             chartObj.chart.refresh();
+            chartObj.rowsRendered();
         },
 
         cleanVisualization: function()

@@ -307,7 +307,7 @@
                         _.each(condition.children || [], function(subcondition, j)
                         {
                             var checkBetween = fsckLegacy_checkBetween(subcondition);
-                            if (_.isObject(checkBetween))
+                            if ($.isPlainObject(checkBetween))
                             {
                                 condition.children[j] = checkBetween;
                             }
@@ -1663,7 +1663,7 @@
 
                 // If we own the whole query, then use it or set it up
                 if (queryOwned)
-                { curFC = query.filterConditions = query.filterConditions || newRoot; }
+                { curFC = query.filterCondition = query.filterCondition || newRoot; }
                 else
                 {
                     // If not, find our corner of filter-space by name; set it up if necessary

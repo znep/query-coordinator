@@ -460,7 +460,8 @@
 
         var drawNullBars = function()
         {
-            if (!_.include(['column', 'bar'], chartObj._chartType) || $.isBlank(chartObj.chart))
+            if (!_.include(['column', 'bar'], chartObj._chartType) || $.isBlank(chartObj.chart) ||
+                    chartObj._renderedRows < 1)
             { return; }
 
             var invertAxis = chartObj._chartType == 'bar';
@@ -528,7 +529,7 @@
             { return; }
 
             var invertAxis = chartObj._chartType == 'bar';
-            if (!_.isEmpty(chartObj._valueMarkers) && chartObj._valueMarkers[0].renderer)
+            if (!chartObj._valueMarkers)
             { chartObj._valueMarkers = []; }
 
             chartObj._valueMarkers = _drawMarkers(invertAxis, chartObj._displayFormat.valueMarker,

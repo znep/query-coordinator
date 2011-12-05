@@ -37,7 +37,7 @@
             var ce = {id: row.id,
                 start: row[calObj._startCol.lookup],
                 title: calObj._titleCol.renderType.renderer(row[calObj._titleCol.lookup],
-                        calObj._titleCol, true, false, true),
+                        calObj._titleCol, true, false, null, true),
                 color: null,
                 className: null,
                 row: row};
@@ -69,6 +69,7 @@
         {
             this._super();
 
+            this.$dom().toggleClass('hide', this._renderedRows < 1);
             if (!_.isEmpty(this._events))
             {
                 var today = new Date();

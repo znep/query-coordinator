@@ -11,6 +11,8 @@
             var cObj = this;
             cObj._super.apply(this, arguments);
             cObj._eventKeys = {};
+            cObj.registerEvent({'start_loading': [], 'finish_loading': []});
+
             cObj._properties = properties || {};
             cObj.id = cObj._properties.id;
             if (!cObj.id)
@@ -50,7 +52,7 @@
 
         startLoading: function()
         {
-            if (!$.isBlank(this.$dom))
+            if (!this._loadingSuspended && !$.isBlank(this.$dom))
             {
                 if (!this._lsInit)
                 {
@@ -60,6 +62,7 @@
                 else { this.$dom.loadingSpinner().showHide(true); }
             }
             this._loading = true;
+            this.trigger('start_loading');
         },
 
         finishLoading: function()
@@ -67,7 +70,24 @@
             if (!$.isBlank(this.$dom) && this._lsInit)
             { this.$dom.loadingSpinner().showHide(false); }
             this._loading = false;
+            this.trigger('finish_loading');
             this._updateValidity();
+        },
+
+        suspendLoading: function(doSuspend)
+        {
+            this._loadingSuspended = doSuspend;
+            if (!this._loading) { return; }
+            if (!$.isBlank(this.$dom))
+            {
+                if (this._lsInit)
+                { this.$dom.loadingSpinner().showHide(!doSuspend); }
+                else if (!doSuspend)
+                {
+                    this.$dom.loadingSpinner({showInitially: true});
+                    this._lsInit = true;
+                }
+            }
         },
 
         destroy: function() {

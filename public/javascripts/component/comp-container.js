@@ -10,7 +10,10 @@
             this._initializing = true;
             var children = properties.children;
             delete properties.children;
+
             this._super(properties);
+            this._childrenLoading = {};
+
             if (children) { this.add(children); }
             delete this._initializing;
         },
@@ -53,9 +56,37 @@
             if (child instanceof $.component.FunctionalComponent)
             { return null; }
 
+            var cObj = this;
+            child.bind('start_loading', function()
+                {
+                    cObj._childrenLoading[this.id] = true;
+                    cObj._adjustLoading();
+                })
+                .bind('finish_loading', function()
+                {
+                    delete cObj._childrenLoading[this.id];
+                    cObj._adjustLoading();
+                });
+
             child._move(this, position);
 
             return child;
+        },
+
+        _adjustLoading: function()
+        {
+            if (_.size(this._childrenLoading) > 1 && !this._loadingForChildren)
+            {
+                this._loadingForChildren = true;
+                this.each(function(child) { child.suspendLoading(true); });
+                this.startLoading();
+            }
+            else if (this._loadingForChildren)
+            {
+                this._loadingForChildren = false;
+                this.each(function(child) { child.suspendLoading(false); });
+                this.finishLoading();
+            }
         },
 
         /**

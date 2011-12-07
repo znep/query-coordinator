@@ -259,6 +259,13 @@
                 });
                 this._resizeBound = true;
             }
+            else if (!this._resizeBound)
+            {
+                // A resize directly on the contents means we've already handled everything that
+                // matters; so stop it from going up to the window and causing cascading reflows
+                this.$contents.resize(function(e) { e.stopPropagation(); });
+                this._resizeBound = true;
+            }
 
             this._initialized = true;
         },

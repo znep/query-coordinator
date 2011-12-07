@@ -474,7 +474,7 @@
                 if (vizObj.getColumns())
                 { vizObj.columnsLoaded(); }
 
-                $(window).resize();
+                $(vizObj.currentDom).resize();
             };
 
             var scripts = vizObj.getRequiredJavascripts();

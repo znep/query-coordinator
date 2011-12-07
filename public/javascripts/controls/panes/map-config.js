@@ -17,10 +17,9 @@
         // Yes, the names are kinda inaccurate, but eh. We live with it.
         var plotStyles = [
             {text: 'Point Map', value: 'point'},
-            {text: 'Boundary Map', value: 'heatmap'}
+            {text: 'Boundary Map', value: 'heatmap'},
+            {text: 'Heat Map', value: 'rastermap'}
         ];
-        if (mapType == 'esri')
-        { plotStyles.push({text: 'Heat Map', value: 'rastermap'}); }
         return plotStyles;
     };
 

@@ -151,9 +151,10 @@ javascripts:
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/table/dataset-grid.js
   shared-map:
-    - public/javascripts/plugins/StyledMarker.js
-    - public/javascripts/plugins/markerwithlabel.js
+    - public/javascripts/plugins/OpenLayers.js
+    - public/javascripts/plugins/proj4js.js
     - public/javascripts/plugins/heatmap.js
+    - public/javascripts/plugins/heatmap-openlayers.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/util/color.js
@@ -164,6 +165,8 @@ javascripts:
     - public/javascripts/controls/maps/google-map.js
     - public/javascripts/controls/maps/bing-map.js
     - public/javascripts/controls/maps/heatmap-map.js
+    - public/javascripts/controls/maps/openlayers-map.js
+    - public/javascripts/controls/maps/rastermap-map.js
   shared-chart:
     - public/javascripts/util/color.js
     - public/javascripts/util/humane-number.js

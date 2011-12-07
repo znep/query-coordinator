@@ -297,15 +297,6 @@
 
             // If still loading libraries, don't try to reload
             if (!vizObj._dynamicLibrariesLoaded) { return; }
-            if (vizObj.needsPageRefresh())
-            {
-                // Now that visualizations are being done inline, reloading
-                // the page is not going to work. The sidebar (or similar)
-                // should handle prompting the user and doing a reload if
-                // appropriate. Here, we just bail because there is no point
-                // to refreshing
-                return;
-            }
 
             if (vizObj.needsFullReset())
             {
@@ -338,7 +329,7 @@
             var vizObj = this;
             if (!vizObj.isValid()) { return; }
 
-            vizObj.getRowsForAllViews();
+            vizObj.getDataForAllViews();
 
             if (vizObj.getColumns())
             {
@@ -350,12 +341,6 @@
         reset: function()
         {
             // Implement how to do a full reset
-        },
-
-        needsPageRefresh: function()
-        {
-            // Override if you need to whitelist against reloading
-            return false;
         },
 
         noReload: function()
@@ -469,7 +454,7 @@
 
                 vizObj._initialLoad = true;
 
-                vizObj.getRowsForAllViews();
+                vizObj.getDataForAllViews();
 
                 if (vizObj.getColumns())
                 { vizObj.columnsLoaded(); }
@@ -507,42 +492,45 @@
             }
         },
 
-        getRowsForAllViews: function()
+        getDataForAllViews: function()
         {
             var vizObj = this;
 
-            var rowsToFetch = vizObj._maxRows;
             var nonStandardRender = function(view)
                 { return view.renderWithArcGISServer() };
 
             var viewsToRender = _.reject(vizObj._dataViews, function(view)
                 { return nonStandardRender(view); });
 
-            _.each(viewsToRender, function(view, index)
+            vizObj._rowsLoaded = 0;
+            _.each(viewsToRender, function(view) { vizObj.getDataForView(view); });
+        },
+
+        getDataForView: function(view)
+        {
+            var vizObj = this;
+            var viewConfig = vizObj._byView[view.id];
+            var rowsToFetch = vizObj._maxRows - vizObj._rowsLoaded;
+            if (rowsToFetch <= 0) { return; }
+
+            view.getRows(0, rowsToFetch, function(data)
             {
-                var loadRows;
-                loadRows = function()
-                {
-                    view.getRows(0, rowsToFetch, function(data)
-                    {
-                        _.defer(function()
-                            { vizObj.handleRowsLoaded(data, view); });
-                        rowsToFetch -= view.totalRows ? view.totalRows : data.length;
-                        vizObj.totalRowsForAllViews();
-                        delete vizObj._initialLoad;
-                    },
-                    function(errObj)
-                    {
-                        // If we were cancelled, and didn't respond to the event that caused a cancel,
-                        // then re-try this request. Otherwise just clear initialLoad, and it will
-                        // respond normally.
-                        if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled &&
-                            (vizObj._initialLoad || !vizObj._boundViewEvents))
-                        { loadRows(); }
-                        else if (vizObj._boundViewEvents) { delete vizObj._initialLoad; }
-                    });
-                };
-                loadRows();
+                _.defer(function()
+                    { vizObj.handleRowsLoaded(data, view); });
+                vizObj._rowsLoaded += view.totalRows ? view.totalRows
+                                                     : data.length;
+                vizObj.totalRowsForAllViews();
+                delete vizObj._initialLoad;
+            },
+            function(errObj)
+            {
+                // If we were cancelled, and didn't respond to the event that caused a cancel,
+                // then re-try this request. Otherwise just clear initialLoad, and it will
+                // respond normally.
+                if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled &&
+                    (vizObj._initialLoad || !vizObj._boundViewEvents))
+                { vizObj.getDataForView(view); }
+                else if (vizObj._boundViewEvents) { delete vizObj._initialLoad; }
             });
         },
 

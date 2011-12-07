@@ -451,6 +451,7 @@ var Dataset = ServerModel.extend({
         { successCallback(); }
     },
 
+/*
     getClusters: function(successCallback, errorCallback)
     {
         var ds = this;
@@ -473,8 +474,8 @@ var Dataset = ServerModel.extend({
             error: errorCallback
         });
     },
+*/
 
-/*
     getClusters: function(viewport, displayFormat, successCallback, errorCallback)
     {
         var ds = this;
@@ -500,6 +501,7 @@ var Dataset = ServerModel.extend({
 
         var translateCluster = function(c)
         {
+            c.childBoxes = _.pluck(c.children, 'box');
             c.children = _.pluck(c.children, 'id');
             c.points   = _.pluck(c.points,  'sid');
             c.parent   = ds._clusters[c.pathToRoot[0]];
@@ -516,6 +518,7 @@ var Dataset = ServerModel.extend({
               if (vertex.lon == 180)       { vertex.lon -= 0.000001; }
               else if (vertex.lon == -180) { vertex.lon += 0.000001; }
             });
+            c.leafNode = c.points.length > 0;
         };
 
         var useInline = ds.isDefault()
@@ -570,7 +573,6 @@ var Dataset = ServerModel.extend({
             error: errorCallback
         }); }
     },
-*/
 
     // Callback may be called multiple times with smaller batches of rows
     getRows: function(start, len, successCallback, errorCallback)

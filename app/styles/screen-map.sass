@@ -5,7 +5,7 @@
   position: absolute
   right: 1.5em
   top: 4em
-  z-index: 25
+  z-index: 1000
 
   a
     color: #333333
@@ -51,12 +51,12 @@
   position: absolute
   left: 1.5em
   bottom: 4em
-  z-index: 25
+  z-index: 1000
 
 #mapLegend .color_swatch
   cursor: default
 
-$geolocator_margin_top: 18px
+$geolocator_margin_top: 6px
 
 #geolocator_button
   background-image: url(/images/gmaps.png)
@@ -125,15 +125,7 @@ $geolocator_margin_top: 18px
   .titlebar .hide_infowindow
     margin-top: 0
 
-.mapInfoContainer
-  height: 100%
-  max-height: 20em
-  max-width: 25em
-  min-width: 15em
-  overflow: auto
-  .infowindow &
-    font-size: 0.8333em
-
+.olFramedCloudPopupContent
   .infoPaging
     text-align: center
     margin:
@@ -237,7 +229,7 @@ $geolocator_margin_top: 18px
   position: absolute
   white-space: nowrap
 
-.infowindow, #bing_infoWindow, .mapInfoContainer
+.infowindow, #bing_infoWindow, .mapInfoContainer, .olFramedCloudPopupContent
   .external_link
     display: block
     text-align: center

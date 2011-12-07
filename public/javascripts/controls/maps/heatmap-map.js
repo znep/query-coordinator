@@ -212,9 +212,6 @@
         { mapObj._featureSet = undefined; }
         mapObj._origHeatmapConfig = config;
 
-        if (config.hideZoomSlider)
-        { mapObj.map.hideZoomSlider(); }
-
         if ($.isBlank(mapObj._segmentColors))
         {
             mapObj._segmentColors = [];
@@ -352,9 +349,9 @@
         var updatedFeatures = [];
         $.batchProcess(_.toArray(rows), 10, decorateFeature,
             function(batch)
-            { updatedFeatures = updatedFeatures.concat(_(batch).chain().compact().uniq().value()); },
+            { updatedFeatures = updatedFeatures.concat(_.compact(batch)); },
             function()
-            { afterRowDecoration(mapObj, updatedFeatures); }
+            { afterRowDecoration(mapObj, _.uniq(updatedFeatures)); }
         );
     };
 
@@ -409,6 +406,7 @@
                 flyoutDetails: {name: feature.attributes.NAME,
                     quantity: feature.attributes.quantity},
                 rows: feature.attributes.rows,
+                dataView: mapObj._primaryView,
                 color: mapObj._segmentColors[segmentIndex].toHex(),
                 redirect_to: feature.attributes.redirect_to
             };
@@ -427,7 +425,7 @@
         mapObj._runningQuery = false;
         mapObj._featureDisplayName = mapObj._featureSet.displayFieldName;
 
-        if (mapObj._featuresRendered) { return; }
+        if (mapObj._featuresRendered) { callback(); return; }
 
         if (!mapObj._featuresTransformed)
         {
@@ -446,7 +444,7 @@
             }
 
             mapObj.renderGeometry('polygon', feature.geometry, feature.attributes.NAME,
-                { rows: [], opacity: 0 });
+                { dataView: mapObj._primaryView, rows: [], opacity: 0 });
         }, null, function()
         {
             mapObj.adjustBounds();

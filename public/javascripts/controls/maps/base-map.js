@@ -4,19 +4,55 @@
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame;
 
+    blist.namespace.fetch('blist.openLayers');
+
+    blist.openLayers.ZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoomBar, {
+        draw: function(px)
+        {
+            // derived from PanZoomBar source, because it's the only way to change
+            // these sizes. because of course.
+
+            OpenLayers.Control.prototype.draw.apply(this, arguments);
+            px = this.position.clone();
+            this.buttons = [];
+
+            var padding = new OpenLayers.Size(-2, -2);
+
+            // HACK HACK HACK HACK HCAK HCAK HCAKHCAKHC AKHACKHAC HKACK HACKH ACHKACHK
+            var sz = new OpenLayers.Size(21, 21);
+            this._addButton('zoomin', 'zoom-plus-mini.png', px.add(padding.w, padding.h), sz);
+            var centered = this._addZoomBar(px.add(padding.w + 1, padding.h + 19));
+            this._addButton('zoomout', 'zoom-minus-mini.png', centered.add(-1, 2), sz);
+
+            return this.div;
+        },
+
+        CLASS_NAME: "blist.openLayers.ZoomBar"
+    });
+
+    var geographicProjection = new OpenLayers.Projection('EPSG:4326');
+
+    // TODO: There is probably a better way to do this caching.
+    Proj4js.defs["EPSG:2926"] = "+proj=lcc +lat_1=48.73333333333333 +lat_2=47.5 +lat_0=47 +lon_0=-120.8333333333333 +x_0=500000.0001016001 +y_0=0 +ellps=GRS80 +to_meter=0.3048006096012192 +no_defs";
+    Proj4js.defs["EPSG:102100"] = "+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null";
+
     $.Control.extend('socrataMap', {
         _getMixins: function(options)
         {
             var mixins = [];
             var df = options.displayFormat || options.view.displayFormat;
             var mapService = df.type || 'google';
-            if (mapService == 'heatmap' || options.view.isArcGISDataset() || options.view.isGeoDataset())
+            if (mapService == 'heatmap' || options.view.isArcGISDataset())
             {
                 mapService = 'esri';
             }
+            else if (options.view.isGeoDataset())
+            {
+                mapService = 'openlayers';
+            }
             mixins.push(mapService);
 
-            if (mapService == 'esri') { mixins.push('arcGISmap'); }
+            if (options.view.isArcGISDataset()) { mixins.push('arcGISmap'); }
 
             var plotStyle = df.plotStyle;
             if (df.type == 'heatmap')
@@ -35,7 +71,6 @@
         {
             var mapObj = this;
 
-            mapObj._markers = {};
             mapObj._segments = {};
             mapObj._numSegments = 6;
 
@@ -67,34 +102,6 @@
 
             mapObj.initializeFlyouts((mapObj._displayFormat.plot || {}).descriptionColumns);
 
-            mapObj.populateLayers();
-
-            $.live('.mapInfoContainer .infoPaging a', 'click', function(event)
-            {
-                event.preventDefault();
-
-                var $a = $(this);
-                if ($a.hasClass('disabled')) { return; }
-
-                var $paging = $a.parent();
-                var action = $.hashHref($a.attr('href')).toLowerCase();
-
-                var $rows = $paging.siblings('.row');
-                var $curRow = $rows.filter(':visible');
-
-                var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
-                if (newIndex < 0) { return; }
-                if (newIndex >= $rows.length) { return; }
-
-                $curRow.addClass('hide');
-                $rows.eq(newIndex).removeClass('hide');
-
-                $paging.find('a').removeClass('disabled');
-                if (newIndex <= 0)
-                { $paging.find('.previous').addClass('disabled'); }
-                if (newIndex >= $rows.length - 1)
-                { $paging.find('.next').addClass('disabled'); }
-            });
 
             mapObj._origData = {
                 displayFormat: mapObj._displayFormat,
@@ -106,6 +113,207 @@
                 blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
 
             mapObj.ready();
+
+            mapObj.initializeMap();
+        },
+
+        initializeMap: function()
+        {
+            var mapObj = this;
+
+            var mapOptions =
+            {
+                theme: '/stylesheets/openlayers/style.css',
+                projection: 'EPSG:900913',
+                displayProjection: geographicProjection,
+                units: 'm',
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                  20037508.34,  20037508.34),
+                maxResolution: 156543.0339,
+                numZoomLevels: 21
+            }
+
+            OpenLayers.ImgPath = '/images/openlayers/';
+            OpenLayers.ProxyHost = '/api/proxy?proxyUrl=';
+
+            mapObj.map = new OpenLayers.Map(mapObj.$dom()[0], mapOptions);
+
+            mapObj.map.removeControl(mapObj.map.getControlsByClass('OpenLayers.Control.PanZoom')[0]);
+            mapObj.map.addControl(new blist.openLayers.ZoomBar());
+            mapObj.map.addControl(new OpenLayers.Control.MousePosition()); // FIXME: Remove.
+
+            mapObj.initializeBaseLayers();
+            mapObj.populateLayers();
+
+            if (!mapObj._markers)
+            { mapObj._markers = {}; }
+
+            if (!mapObj._displayLayers)
+            { mapObj._displayLayers = []; }
+
+            mapObj.initializeEvents();
+
+            mapObj.mapLoaded();
+        },
+
+        initializeEvents: function()
+        {
+            var mapObj = this;
+
+            mapObj.map.events.register('moveend', mapObj.map, function()
+            {
+                if (mapObj._initialLoad) { return; }
+                if (mapObj._boundsChanging)
+                { delete mapObj._boundsChanging; delete mapObj._isResize; return; }
+
+                mapObj.updateDatasetViewport(mapObj._isResize);
+                mapObj.updateRowsByViewport();
+                delete mapObj._isResize;
+            });
+
+            mapObj._hoverTimers = {};
+            if ($.subKeyDefined(mapObj, '_displayFormat.identifyTask') &&
+                    $.subKeyDefined(mapObj._displayFormat.identifyTask, 'url') &&
+                    $.subKeyDefined(mapObj._displayFormat.identifyTask, 'layerId') &&
+                    $.subKeyDefined(mapObj._displayFormat.identifyTask, 'attributes') &&
+                    mapObj._displayFormat.identifyTask.attributes.length > 0)
+            {
+                mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
+                mapObj._identifyParameters.tolerance = 3;
+                mapObj._identifyParameters.returnGeometry = false;
+                mapObj._identifyParameters.layerIds =
+                    [mapObj._displayFormat.identifyTask.layerId];
+                mapObj._identifyParameters.layerOption =
+                    esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+                mapObj._identifyParameters.width  = mapObj.map.getSize().w;
+                mapObj._identifyParameters.height = mapObj.map.getSize().h;
+
+                mapObj.map.events.register('click', mapObj.map, function(evt)
+                {
+                    var offsetTop = $(mapObj.map.div).offset().top;
+                    var lonlat = layer.getLonLatFromViewPortPx(
+                        new OpenLayers.Pixel(evt.clientX, evt.clientY + offsetTop));
+                    var geometry = new esri.geometry.Point(lonlat.lon, lonlat.lat, sr);
+                    var extent = mapObj.map.getExtent();
+                    extent = new esri.geometry.Extent(extent.left, extent.bottom,
+                                                      extent.right, extent.top);
+
+                    mapObj._identifyParameters.geometry = geometry;
+                    mapObj._identifyParameters.mapExtent = extent;
+
+                    new esri.tasks.IdentifyTask(mapObj._displayFormat.identifyTask.url)
+                        .execute(mapObj._identifyParameters,
+                        function(idResults)
+                        {
+                            var closeBox = function()
+                            { if (viewConfig._popup)
+                                {
+                                    mapObj.map.removePopup(viewConfig._popup);
+                                    viewConfig._popup.destroy();
+                                    viewConfig._popup = null;
+                                }
+                            };
+                            closeBox();
+                            if (idResults.length < 1) { return; }
+
+                            var feature = idResults[0].feature;
+                            var info = _.map(mapObj._displayFormat.identifyTask.attributes,
+                                function(attribute)
+                                { return attribute.text + ': ' +
+                                    feature.attributes[attribute.key]; }).join('<br />');
+
+                            // FIXME: There is some randomly occuring bug where this.size is not set.
+                            // See external-esri-map for details.
+                            var popup = new OpenLayers.Popup.FramedCloud(null,
+                                lonlat, null, info, null, true, closeBox);
+                            viewConfig._popup = popup;
+                            mapObj.map.addPopup(popup);
+                        });
+                });
+            }
+            else
+            {
+                $.live("image, path", 'click', function(evt)
+                {
+                    var features = findFeatureFromEvent(mapObj, evt);
+                    if (_.isEmpty(features)) { return null; }
+                    _.each(features, function(datum)
+                    {
+                        var feature = datum.feature;
+                        var layer = datum.layer;
+                        if (layer.dataViewConfig._renderType == 'clusters')
+                        {
+                            mapObj.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+                            if (mapObj.currentZoom()
+                                < mapObj.map.getZoomForExtent(feature.attributes.bbox))
+                            { mapObj.map.zoomToExtent(feature.attributes.bbox); }
+                            else
+                            { mapObj.map.zoomIn(); }
+                        }
+                        else
+                        {
+                            layer.dataViewConfig._selectControl.select(feature);
+                            var dupKey = feature.attributes.dupKey;
+                            if (!$.isBlank(mapObj._hoverTimers[dupKey]))
+                            {
+                                clearTimeout(mapObj._hoverTimers[dupKey]);
+                                delete mapObj._hoverTimers[dupKey];
+                            }
+                            mapObj._primaryView.highlightRows(feature.attributes.rows, 'select');
+                        }
+                    });
+                });
+            }
+            $.live("circle, image, path, text", 'mouseover', function(evt)
+            {
+                var features = findFeatureFromEvent(mapObj, evt);
+                if (_.isEmpty(features)) { return null; }
+                _.each(features, function(datum)
+                {
+                    var feature = datum.feature;
+                    var layer = datum.layer;
+                    if (layer.dataViewConfig._renderType == 'clusters')
+                    { layer.dataViewConfig._clusterBoundaries
+                        .addFeatures(feature.attributes.boundary()); }
+                    else
+                    {
+                        var dupKey = feature.attributes.dupKey;
+                        if (!$.isBlank(mapObj._hoverTimers[dupKey]))
+                        {
+                            clearTimeout(mapObj._hoverTimers[dupKey]);
+                            delete mapObj._hoverTimers[dupKey];
+                        }
+                        mapObj._primaryView.highlightRows(feature.attributes.rows);
+                    }
+                });
+            });
+            $.live("circle, image, path, text", 'mouseout', function(evt)
+            {
+                var features = findFeatureFromEvent(mapObj, evt);
+                if (_.isEmpty(features)) { return null; }
+                _.each(features, function(datum)
+                {
+                    var feature = datum.feature;
+                    var layer = datum.layer;
+                    if (layer.dataViewConfig._renderType == 'clusters')
+                    { layer.dataViewConfig._clusterBoundaries.removeAllFeatures(); }
+                    else
+                    {
+                        var dupKey = feature.attributes.dupKey;
+                        mapObj._hoverTimers[dupKey] = setTimeout(function()
+                            {
+                                delete mapObj._hoverTimers[dupKey];
+                                mapObj._primaryView.unhighlightRows(feature.attributes.rows);
+                            }, 100);
+                    }
+                });
+            });
+        },
+
+        currentZoom: function()
+        {
+            if (this.map)
+            { return this.map.getZoom(); }
         },
 
         columnsLoaded: function()
@@ -131,9 +339,8 @@
         mapLoaded: function()
         {
             // This is called once a map has been loaded, as type-appropriate
-            this._mapLoaded = true;
-            if (this._initialLoad)
-            { this.getRowsForAllViews(); }
+            if (this._primaryView.snapshotting)
+            { setTimeout(this._primaryView.takeSnapshot, 2000); }
         },
 
         noReload: function()
@@ -157,6 +364,7 @@
         reset: function()
         {
             var mapObj = this;
+            mapObj.clearGeometries();
             mapObj._markers = {};
             $(mapObj.currentDom).removeData('socrataMap');
             mapObj.$dom().empty();
@@ -169,24 +377,24 @@
                 displayFormat: mapObj._displayFormat}));
         },
 
-        needsPageRefresh: function()
-        {
-            var od = this._origData || {};
-            return od.mapType != this._displayFormat.type && od.mapType == 'bing';
-        },
-
+        // Read: Mixins changed. TODO: Rewrite how mixins work.
         needsFullReset: function()
         {
             var od = this._origData || {};
             return this._displayFormat.type != od.mapType ||
-                this._displayFormat.plotStyle != od.plotStyle ||
-                !_.isEqual(this._displayFormat.layers, od.layers);
+                this._displayFormat.plotStyle != od.plotStyle;
+        },
+
+        clearGeometries: function()
+        {
+            _.each(this._displayLayers, function(displayLayer)
+            { displayLayer.removeAllFeatures(); });
         },
 
         cleanVisualization: function()
         {
             var mapObj = this;
-            if (mapObj._requireRowReload)
+            if (mapObj._requireRowReload && !mapObj._byView[mapObj._primaryView.id]._viewportChanged)
             { delete mapObj._neverCluster; }
 
             mapObj._super();
@@ -201,8 +409,18 @@
                 { delete viewConfig[prop]; });
             });
 
-            if (!mapObj._animation)
-            { mapObj._markers = {}; }
+            if (mapObj._baseLayers)
+            { _.each(mapObj._baseLayers, function(layer) { layer.destroy(false); }); }
+
+            mapObj._markers = {};
+            _.each(mapObj._byView, function(viewConfig)
+            {
+                if (viewConfig._renderType == 'points'
+                    && !$.subKeyDefined(viewConfig, '_animation.finished')) // FIXME: Hack.
+                { viewConfig._displayLayer.removeAllFeatures(); }
+                if (viewConfig._clusterBoundaries)
+                { viewConfig._clusterBoundaries.removeAllFeatures(); }
+            });
             delete mapObj._gradient;
         },
 
@@ -210,6 +428,7 @@
         {
             var mapObj = this;
 
+            mapObj.initializeBaseLayers();
             mapObj.populateLayers();
             mapObj.initializeFlyouts((mapObj._displayFormat
                 .plot || {}).descriptionColumns);
@@ -226,7 +445,7 @@
         populateLayers: function()
         {
             var mapObj = this;
-            var layers = mapObj.getLayers();
+            var layers = mapObj._baseLayers;
             if (layers.length < 2) { return; }
 
             var $layers = mapObj.$dom().siblings('#mapLayers');
@@ -234,14 +453,15 @@
             $layersList.empty();
             _.each(layers, function(l)
             {
-                var lId = 'mapLayer_' + l.id;
+                var lId = 'mapLayer_' + l.name;
                 $layersList.append('<li data-layerid="' + l.id + '"' +
                     '><input type="checkbox" id="' + lId +
-                    '"' + (l.visible ? ' checked="checked"' : '') +
+                    '"' + (l.visibility ? ' checked="checked"' : '') +
                     ' /><label for="' + lId + '">' + l.name + '</label><br />' +
                     '<span class="sliderControl" data-min="0" data-max="100" ' +
                     'data-origvalue="' +
-                    (mapObj.map.getLayer(l.id).opacity*100) + '" /></li>');
+                    (l.opacity*100) + '" /></li>');
+                $layersList.find('li:last').data('layer', l);
             });
             $layersList.find('.sliderControl').each(function()
             {
@@ -257,18 +477,31 @@
                 $slider.bind('slide', function(event, ui)
                 {
                     var $_this = $(this);
-                    mapObj.map.getLayer($_this.parent()
-                        .attr('data-layerid')).setOpacity(ui.value/100);
+                    $_this.parent().data('layer').setOpacity(ui.value/100);
                     $_this.next(':input').val(ui.value);
                 });
             });
 
             var reorderLayers = function(event, ui)
             {
-                var layer = mapObj.map.getLayer(ui.item.attr('data-layerid'));
+                var layer = $(ui.item).data('layer');
+                if (!layer) { return; }
                 var index = $layersList.find('li').index(ui.item);
-                if (layer)
-                { mapObj.map.reorderLayer(layer, index); }
+
+                var oldBaseLayer, newBaseLayer;
+                if (index == 0)
+                { oldBaseLayer = mapObj.map.baseLayer; newBaseLayer = layer; }
+                else if (mapObj.map.getLayerIndex(layer) == 0)
+                { oldBaseLayer = mapObj.map.layers[0]; newBaseLayer = mapObj.map.layers[1]; }
+
+                if (oldBaseLayer && newBaseLayer)
+                {
+                    mapObj.map.setBaseLayer(newBaseLayer);
+                    newBaseLayer.setIsBaseLayer(true);
+                    oldBaseLayer.setIsBaseLayer(false);
+                    oldBaseLayer.setVisibility(true);
+                }
+                mapObj.map.setLayerIndex(layer, index);
             };
             $layersList.sortable({containment: 'parent',
                 placeholder: 'ui-state-highlight',
@@ -279,36 +512,40 @@
             $layers.find(':checkbox').click(function(e)
             {
                 var $check = $(e.currentTarget);
-                mapObj.setLayer($check.attr('id').replace(/^mapLayer_/, ''),
-                    $check.value());
+                $check.parent().data('layer').setVisibility($check.value());
             });
 
             $layers.removeClass('hide');
         },
 
-        setLayer: function(layerId, isDisplayed)
-        {
-            // Implement me
-        },
-
-        getLayers: function()
-        {
-            return [];
-        },
-
         handleClustersLoaded: function(clusters, view)
         {
-            this.renderClusters(clusters, view);
+            var mapObj = this;
+            var viewConfig = mapObj._byView[view.id];
+            if (!viewConfig._clusterBoundaries)
+            {
+                viewConfig._clusterBoundaries = new OpenLayers.Layer.Vector();
+                mapObj.map.addLayer(viewConfig._clusterBoundaries);
+                mapObj.map.setLayerIndex(viewConfig._clusterBoundaries,
+                    mapObj.map.layers.indexOf(viewConfig._displayLayer));
+            }
+            mapObj.renderClusters(clusters, view);
         },
 
         renderClusters: function(clusters, view)
         {
             var mapObj = this;
+            var viewConfig = mapObj._byView[view.id];
 
-            _.each(clusters, function(cluster) { mapObj.renderCluster(cluster, {}); });
+            _.each(clusters, function(cluster)
+            { mapObj.renderCluster(cluster, { dataView: view }); });
 
             mapObj.dataRendered();
-            mapObj._lastClusterSet = _.map(clusters, function(cluster) { return cluster.id; });
+            viewConfig._lastClusterSet = _.map(clusters, function(cluster) { return cluster.id; });
+
+            // If no animations or it's a gather animation, clear it out.
+            if (viewConfig._animation.direction == 'none')
+            { viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); }
         },
 
         generateFlyoutLayout: function(columns, titleId)
@@ -359,6 +596,7 @@
                 }));
             }
 
+            if (!mapObj._byView[mapObj._primaryView.id]._locCol) { return $info; }
             var loc = rows[0][mapObj._byView[mapObj._primaryView.id]._locCol.lookup];
             if (loc.latitude && loc.longitude)
             {
@@ -497,14 +735,11 @@
                 {
                     if (parseFloat(row[viewConfig._sizeValueCol.id]) <=
                         mapObj._segments[viewConfig._sizeValueCol.id][i])
-                    { details.size  = 10+(6*i); break; }
+                    { details.size = i + 1; break; }
                 }
             }
             if (mapObj._displayFormat.color)
-            {
-                var rgb = $.hexToRgb(mapObj._displayFormat.color);
-                details.color = [ rgb.r, rgb.g, rgb.b ];
-            }
+            { details.color = mapObj._displayFormat.color; }
             if (viewConfig._colorValueCol
                 && mapObj._segments[viewConfig._colorValueCol.id])
             {
@@ -514,7 +749,7 @@
                         mapObj._segments[viewConfig._colorValueCol.id][i])
                     {
                         var rgb = mapObj._gradient[i];
-                        details.color = [ rgb.r, rgb.g, rgb.b ];
+                        details.color = $.rgbToHex(rgb);
                         break;
                     }
                 }
@@ -577,50 +812,276 @@
             details.dataView = view;
 
             var graphic = mapObj.renderGeometry(geoType, geometry, rowKey, details);
-            if (mapObj._animation)
-            { mapObj._animation.news.push(graphic); }
+            if (viewConfig._animation)
+            { viewConfig._animation.news.push(graphic); }
 
             return graphic;
         },
 
+        enqueueGeometry: function()
+        {
+            if (!this._geometryQueue)
+            { this._geometryQueue = []; }
+            this._geometryQueue.push(arguments);
+        },
+
         renderGeometry: function(geoType, geometry, dupKey, details)
         {
-            // Implement me
+            var mapObj = this;
+            var viewConfig = mapObj._byView[(details.dataView || mapObj._primaryView).id];
+
+            var marker, newMarker;
+            if (mapObj._markers[dupKey])
+            {
+                marker = mapObj._markers[dupKey];
+                if (marker.style.externalGraphic != details.icon)
+                {
+                    marker = null;
+                    newMarker = true;
+                    viewConfig._displayLayer.removeFeatures([mapObj._markers[dupKey]]);
+                    delete mapObj._markers[dupKey];
+                }
+            }
+            else
+            { newMarker = true; }
+
+            var hasHighlight = _.any(details.rows, function(r)
+                { return r.sessionMeta && r.sessionMeta.highlight; });
+            if (geoType == 'point')
+            {
+                var lonlat;
+                if (geometry instanceof OpenLayers.LonLat)
+                { lonlat = geometry; }
+                else
+                { lonlat = new OpenLayers.LonLat(geometry.longitude, geometry.latitude); }
+                lonlat.transform(geographicProjection, mapObj.map.getProjectionObject());
+
+                if (!marker)
+                { marker = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)); }
+                else
+                { marker.move(lonlat); }
+
+                marker.attributes.clusterParent = details.clusterParent;
+                if (details.dataView)
+                { marker.attributes.flyout = mapObj.getFlyout(details.rows,
+                    details.flyoutDetails, details.dataView); }
+
+                if (!details.icon && (details.size || details.color))
+                {
+                    marker.style = marker.style || {};
+                    if (details.size)
+                    { marker.style.pointRadius = 6 + (2 * details.size); }
+                    if (details.color)
+                    {
+                        marker.style.fillColor = hasHighlight ? '#' + mapObj._highlightColor
+                                                              : details.color;
+                        marker.style.strokeWidth = 1;
+                        marker.style.pointRadius = marker.style.pointRadius || 6;
+                    }
+                }
+                else
+                { marker.style = iconCache(mapObj, details.icon, marker, hasHighlight); }
+            }
+            else if (geoType == 'polyline')
+            {
+                var geo = new OpenLayers.Geometry.LineString(
+                    _.map(geometry.paths, function(point, p)
+                    { return new OpenLayers.Geometry.Point(point.x, point.y); }));
+                marker = new OpenLayers.Feature.Vector(geo.transform(
+                    new OpenLayers.Projection('EPSG:900913'), mapObj.map.getProjectionObject()), {},
+                    { stroke: true, strokeColor: '#000000' }
+                );
+            }
+            else if (geoType == 'polygon')
+            {
+                var geo = new OpenLayers.Geometry.Polygon(_.map(geometry.rings, function(ring, r)
+                    { return new OpenLayers.Geometry.LinearRing( _.map(ring, function(point, p)
+                        {
+                            var point = geometry.getPoint(r, p);
+                            return new OpenLayers.Geometry.Point(point.x || point[0],
+                                                                 point.y || point[1]);
+                        }));
+                    }));
+                marker = new OpenLayers.Feature.Vector(geo.transform(
+                    new OpenLayers.Projection('EPSG:900913'), mapObj.map.getProjectionObject()), {},
+                    { fillColor: hasHighlight ? '#' + mapObj._highlightColor
+                                              : (details.color || "#FF00FF"),
+                      fillOpacity: _.isUndefined(details.opacity) ? 0.8 : details.opacity,
+                      strokeColor: '#000000', strokeOpacity: 0.5 }
+                );
+                marker.attributes.flyout = mapObj.getFlyout(details.rows,
+                    details.flyoutDetails, details.dataView);
+                marker.attributes.redirects_to = details.redirect_to;
+            }
+
+            marker.attributes.heatStrength = 1;
+            marker.attributes.rows = details.rows;
+            marker.attributes.dupKey = dupKey;
+
+            if (newMarker)
+            {
+                mapObj._markers[dupKey] = marker;
+                viewConfig._displayLayer.addFeatures([marker]);
+            }
+            else
+            { viewConfig._displayLayer.drawFeature(marker); }
+
+            return marker;
         },
 
         renderCluster: function(cluster, details)
         {
-            // Implement me
-        },
+            var mapObj = this;
+            var viewConfig = mapObj._byView[details.dataView.id];
 
-        renderHeat: function()
-        {
-            // Implement me
+            if (cluster.size <= 0) { return; }
+
+            var cluster_icon = '/images/map_cluster_';
+            var size;
+            if (cluster.size < 100)
+            { cluster_icon += 'small.png'; size = 37; }
+            else if (cluster.size < 1000)
+            { cluster_icon += 'med.png';   size = 45; }
+            else
+            { cluster_icon += 'large.png'; size = 65; }
+
+            var lonlat = new OpenLayers.LonLat(cluster.centroid.lon, cluster.centroid.lat)
+                .transform(geographicProjection, mapObj.map.getProjectionObject());
+
+            var boundary = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(
+                    _.map(cluster.polygon, function(vertex)
+                    { return new OpenLayers.Geometry.Point(vertex.lon, vertex.lat); }))]).transform(
+                geographicProjection, mapObj.map.getProjectionObject()), {},
+                { fillColor: '#0000dd', fillOpacity: 0.2, strokeWidth: 3, strokeColor: '#000088' });
+
+            var bbox = new OpenLayers.Bounds(cluster.box.lon1, cluster.box.lat1,
+                                             cluster.box.lon2, cluster.box.lat2)
+                        .transform(geographicProjection, mapObj.map.getProjectionObject());
+
+            var marker = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
+                { bbox: bbox, isCluster: true },
+                { externalGraphic: cluster_icon,
+                  graphicWidth: size, graphicHeight: size,
+                  graphicXOffset: -(size/2), graphicYOffset: -(size/2),
+                  label: ''+cluster.size, cursor: 'pointer'
+                } );
+
+            marker.attributes.heatStrength = cluster.size;
+            marker.attributes.clusterParent = cluster.parent;
+            marker.attributes.clusterId = cluster.id;
+
+            marker.attributes.boundary = function()
+            {
+                if (this.boundaries) { return this.boundaries; }
+
+                // If there are no children, just use the provided polygon.
+                if (_.isEmpty(cluster.childBoxes))
+                { this.boundaries = [boundary]; return this.boundaries; }
+
+                // If the size of the bbox is small or thin, don't bother.
+                var nwPixel = viewConfig._displayLayer.getViewPortPxFromLonLat(
+                    new OpenLayers.LonLat(cluster.box.lon1, cluster.box.lat1).transform(
+                        geographicProjection, mapObj.map.getProjectionObject()));
+                var sePixel = viewConfig._displayLayer.getViewPortPxFromLonLat(
+                    new OpenLayers.LonLat(cluster.box.lon2, cluster.box.lat2).transform(
+                        geographicProjection, mapObj.map.getProjectionObject()));
+                var bboxWidth  = Math.abs(sePixel.x - nwPixel.x);
+                var bboxHeight = Math.abs(sePixel.y - nwPixel.y);
+                marker.attributes.bboxArea = bboxWidth * bboxHeight;
+                marker.attributes.bboxRatio = bboxWidth / bboxHeight;
+
+                // This catches 1-point clusters, too, which are of area 0 and ratio NaN.
+                // Current role model for "too big" is USGS Earthquakes, Carribean 55-point cluster.
+                if (marker.attributes.bboxArea < 100000)
+                { this.boundaries = [boundary]; return this.boundaries; }
+                if (marker.attributes.bboxRatio < 0.01)
+                { this.boundaries = [boundary]; return this.boundaries; }
+
+                // Alright, build from child boxes.
+                this.boundaries = _.map(cluster.childBoxes, function(box)
+                {
+                    var bbox = new OpenLayers.Bounds(box.lon1, box.lat1,
+                                                     box.lon2, box.lat2)
+                        .transform(geographicProjection, mapObj.map.getProjectionObject());
+                    return new OpenLayers.Feature.Vector(bbox.toGeometry(), {},
+                        { fillColor: '#00dd00', fillOpacity: 0.2,
+                          strokeWidth: 2, strokeColor: '#008800'  });
+                });
+
+                // And add some lines.
+                var lines = new OpenLayers.Geometry.MultiLineString(_.map(this.boundaries,
+                    function(child)
+                    {
+                        var childCenter = child.geometry.getBounds().getCenterLonLat();
+                        return new OpenLayers.Geometry.LineString([
+                            new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
+                            new OpenLayers.Geometry.Point(childCenter.lon, childCenter.lat)
+                        ]);
+                    }));
+                this.boundaries = this.boundaries.concat(new OpenLayers.Feature.Vector(lines));
+
+                return this.boundaries;
+            };
+
+            if (viewConfig._animation.direction == 'spread')
+            { marker.style.display = 'none'; }
+
+            viewConfig._displayLayer.addFeatures([marker]);
+            if (viewConfig._animation)
+            { viewConfig._animation.news.push(marker); }
+
+            return marker;
         },
 
         rowsRendered: function()
         {
-            this._super();
             this.dataRendered();
         },
 
         dataRendered: function()
         {
-            this.adjustBounds();
-            this.renderHeat();
-            this._lastRenderType = this._renderType;
-            this._lastZoomLevel = this.currentZoom();
+            var mapObj = this;
+
+            if (mapObj._geometryQueue)
+            { _.each(mapObj._geometryQueue,
+                function(item) { mapObj.renderGeometry.apply(mapObj, item); }); }
+
+            mapObj.adjustBounds();
+            mapObj.runAnimation();
+            _.each(mapObj._byView, function(viewConfig)
+            { viewConfig._lastRenderType = viewConfig._renderType; });
+            mapObj._lastZoomLevel = mapObj.currentZoom();
         },
 
         adjustBounds: function()
         {
-            // Implement if desired to adjust map bounds after data is rendered
+            var mapObj = this;
+            if ($.subKeyDefined(mapObj, '_primaryView.query.namedFilters.viewport'))
+            { return; }
+
+            mapObj._boundsChanging = true;
+            if (mapObj._displayFormat.viewport)
+            { mapObj.setViewport(mapObj._displayFormat.viewport); }
+            else
+            {
+                var bounds = _.reduce(mapObj._displayLayers,
+                    function(memo, layer) { memo.extend(layer.getDataExtent()); return memo; },
+                    new OpenLayers.Bounds());
+                mapObj.map.zoomToExtent(bounds);
+            }
         },
 
         getViewport: function()
         {
             var mapObj = this;
-            var vp = mapObj.getCustomViewport();
+            var extent = mapObj.map.getExtent().transform(mapObj.map.getProjectionObject(),
+                                                          geographicProjection).toArray();
+            var vp = { xmin: extent[0], ymin: extent[1], xmax: extent[2], ymax: extent[3] };
+
+
             if (!$.isBlank(vp))
             {
                 _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
@@ -632,19 +1093,19 @@
             return vp;
         },
 
-        getCustomViewport: function()
-        {
-            // Implement me
-        },
-
         setViewport: function(viewport)
         {
-            // Implement me
+            var bounds = new OpenLayers.Bounds(viewport.xmin, viewport.ymin,
+                                               viewport.xmax, viewport.ymax);
+            this.map.zoomToExtent(bounds.transform(geographicProjection,
+                                                   this.map.getProjectionObject()));
         },
 
         fitPoint: function(point)
         {
-            // Implement me to fit the given point (latitude/longitude) into the viewport
+            var p = new OpenLayers.LonLat(point.longitude, point.latitude);
+            if (!this.map.getExtent().containsLonLat(p))
+            { this.map.setCenter(p); }
         },
 
         updateRowsByViewport: function(viewport, wrapIDL)
@@ -720,6 +1181,7 @@
                 query.namedFilters = $.extend(true, query.namedFilters || {},
                     { viewport: filterCondition });
                 view.update({query: query}, false, true);
+                viewConfig._viewportChanged = true;
             });
         },
 
@@ -758,6 +1220,7 @@
         resizeHandle: function(event)
         {
             // Implement if you need to do anything on resize
+            this._isResize = true;
         },
 
         getColumns: function()
@@ -819,89 +1282,230 @@
             return true;
         },
 
-        getRowsForAllViews: function()
+        getDataForAllViews: function()
         {
             var mapObj = this;
 
-            if (!mapObj._mapLoaded) { return; }
             if (!mapObj.isValid()) { return; }
 
-            if (mapObj._displayFormat.plotStyle == 'heatmap'
-                || mapObj._neverCluster)
-            { return mapObj._super(); }
-
-            var rowsToFetch = mapObj._maxRows;
-            var nonStandardRender = function(view)
-                { return view.renderWithArcGISServer() };
-
-            var viewsToRender = _.reject(mapObj._dataViews, function(view)
-                { return nonStandardRender(view); });
-
-            var views = [];
-            var viewsToCount = viewsToRender.length;
-            _.each(viewsToRender, function(view, index)
+            if (mapObj._displayFormat.plotStyle == 'heatmap')
             {
-                view.getTotalRows(function()
+                mapObj._renderType = 'points';
+                mapObj._byView[mapObj._primaryView.id]._neverCluster = true;
+            }
+
+            mapObj._super();
+        },
+
+        getDataForView: function(view)
+        {
+            var mapObj = this;
+            var viewConfig = mapObj._byView[view.id];
+
+            if (!viewConfig._displayLayer)
+            {
+                viewConfig._displayLayer = mapObj.buildViewLayer(view);
+                mapObj.map.addLayer(viewConfig._displayLayer);
+            }
+            if (viewConfig._neverCluster) { return mapObj._super(view); }
+
+            viewConfig._renderType = 'clusters';
+            view.getClusters(mapObj._displayFormat.viewport ||
+                { 'xmin': -180, 'xmax': 180,
+                  'ymin': -90,  'ymax': 90 }, mapObj._displayFormat, function(data)
+            {
+                if (_.isUndefined(viewConfig._neverCluster))
+                { viewConfig._neverCluster = _.reduce(data, function(total, cluster)
+                    { return total + cluster.size; }, 0) < mapObj._maxRows; }
+                if (viewConfig._neverCluster)
                 {
-                    if (view.totalRows <= mapObj._maxRows)
-                    {
-                        mapObj._neverCluster = true;
-                        mapObj.getRowsForAllViews();
-                        return;
-                    }
-
-                    var viewport;
-                    if (mapObj._displayFormat.viewport)
-                    {
-                        var isEsri = mapObj._displayFormat.type == 'esri';
-                        viewport = mapObj._displayFormat.viewport;
-                        if (isEsri && viewport.sr == 102100)
-                        {
-                            viewport =
-                                esri.geometry.webMercatorToGeographic(new esri.geometry.Extent(
-                                    viewport.xmin,
-                                    viewport.ymin,
-                                    viewport.xmax,
-                                    viewport.ymax,
-                                    new esri.SpatialReference({ wkid: viewport.sr })))
-                            viewport = {
-                                xmin: viewport.xmin,
-                                ymin: viewport.ymin,
-                                xmax: viewport.xmax,
-                                ymax: viewport.ymax,
-                                sr: viewport.spatialReference.wkid
-                            };
-                        }
-                    }
-                    mapObj.updateDatasetViewport(false);
-
-                    view.getClusters(function(data)
-                    {
-                        _.defer(function() { mapObj.handleClustersLoaded(data, view); });
-
-                        var executable = views.shift();
-                        if (executable) { executable(); }
-                        mapObj.totalRowsForAllViews();
-                        delete mapObj._initialLoad;
-                    },
-                    function()
-                    {
-                        _.defer(function()
-                            { mapObj.handleClustersLoaded([], view); });
-                        var executable = views.shift();
-                        if (executable) { executable(); }
-                        // On error clear these variables so more requests will be triggered
-                        delete mapObj._initialLoad;
-                    });
-                });
-
-                viewsToCount--;
-                if (viewsToCount == 0)
-                {
-                    var executable = views.shift();
-                    if (executable) { executable(); }
+                    viewConfig._renderType = 'points';
+                    mapObj.clearGeometries();
+                    mapObj.getDataForView(view);
+                    return;
                 }
+
+                if (!mapObj._displayFormat.viewport)
+                {
+                    var boundsObj = _.reduce(data, function(memo, cluster)
+                        {
+                            var bounds = new OpenLayers.Bounds(cluster.box.lon1, cluster.box.lat1,
+                                                               cluster.box.lon2, cluster.box.lat2);
+                            if (!memo) { return bounds; }
+                            else { memo.extend(bounds); return memo; }
+                        }, null).toArray();
+                    var vp = { xmin: boundsObj[0], ymin: boundsObj[1],
+                               xmax: boundsObj[2], ymax: boundsObj[3] };
+                    mapObj._displayFormat.viewport = vp;
+                    mapObj.getDataForView(view);
+                    return;
+                }
+
+                if (_.all(data, function(cluster) { return (cluster.points || []).length > 0; }))
+                {
+                    if (_.isUndefined(viewConfig._unclusterLevel))
+                    { viewConfig._unclusterLevel = mapObj.currentZoom(); }
+                    else if (viewConfig._unclusterLevel < mapObj.currentZoom())
+                    {
+                        viewConfig._renderType = 'points';
+                        var rowIds = _.flatten(_.pluck(data, 'points'));
+                        var rowsToLoad = rowIds.length;
+                        view.getRowsByIds(rowIds, function(data)
+                        {
+                            if (_.size(view._rowIDLookup) == rowsToLoad)
+                            { mapObj.handleRowsLoaded(view._rowIDLookup, view); }
+                        }, function()
+                        {
+                            // On error clear these variables so more requests will be triggered
+                            delete mapObj._initialLoad;
+                        });
+                    }
+                }
+                else
+                { delete viewConfig._unclusterLevel; }
+
+                mapObj.initializeAnimation(data, view);
+
+                if (viewConfig._renderType == 'clusters')
+                { _.defer(function() { mapObj.handleClustersLoaded(data, view); }); }
+
+                mapObj.totalRowsForAllViews();
+                delete mapObj._initialLoad;
+            },
+            function()
+            {
+                _.defer(function()
+                    { mapObj.handleClustersLoaded([], view); });
+                // On error clear these variables so more requests will be triggered
+                delete mapObj._initialLoad;
             });
+        },
+
+        buildViewLayer: function(view)
+        {
+            var mapObj = this;
+            var viewConfig = mapObj._byView[view.id];
+            var layer = viewConfig._displayLayer = new OpenLayers.Layer.Vector();
+            viewConfig._displayLayer.dataView = view;
+            viewConfig._displayLayer.dataViewConfig = viewConfig;
+
+            mapObj._displayLayers.push(viewConfig._displayLayer);
+
+            viewConfig._selectControl = new OpenLayers.Control.SelectFeature(layer,
+                { onSelect: function(feature) { onFeatureSelect(mapObj, feature,
+                    function(evt) { onFeatureUnselect(mapObj); }); },
+                  onUnselect: function(feature) { onFeatureUnselect(mapObj, feature); } });
+            mapObj.map.addControl(viewConfig._selectControl);
+
+            return layer;
+        },
+
+        initializeAnimation: function(data, view)
+        {
+            var mapObj = this;
+            var viewConfig = mapObj._byView[view.id];
+
+            viewConfig._animation = { news: [] };
+            if (mapObj._displayFormat.plotStyle != 'point') { return; }
+
+            viewConfig._animation.olds = _.clone(viewConfig._displayLayer.features);
+
+            if (
+                // First load
+                _.isUndefined(mapObj._lastZoomLevel)
+                // Zoomed further than animations can handle TODO: Verify line unnecessary.
+                //|| Math.abs(mapObj.currentZoom() - mapObj._lastZoomLevel) > 1
+                // Panned
+                || mapObj.currentZoom() == mapObj._lastZoomLevel
+                // Same set of clusters as the last zoom level.
+                || (_.all([viewConfig._renderType, viewConfig._lastRenderType],
+                        function(type) { return type == 'clusters'; })
+                    && _.all(data, function(cluster)
+                    { return _.include(viewConfig._lastClusterSet || [], cluster.id); }))
+                // Points do not animate into other points.
+                || _.all([viewConfig._renderType, viewConfig._lastRenderType],
+                        function(type) { return type == 'points'; }))
+            { viewConfig._animation.direction = 'none'; }
+            else if (mapObj.currentZoom() < mapObj._lastZoomLevel)
+            { viewConfig._animation.direction = 'gather'; }
+            else
+            { viewConfig._animation.direction = 'spread'; }
+        },
+
+        runAnimation: function()
+        {
+            var mapObj = this;
+
+            // If two views are going in different directions, we're kinda fucked anyways.
+            var direction = _.detect(mapObj._byView, function(viewConfig)
+                { return viewConfig._animation
+                        && !viewConfig._animation.finished
+                        && viewConfig._animation.direction != 'none'; });
+            direction = ((direction || {})._animation || {}).direction;
+
+            // Either there's only one view, or nothing is going to happen.
+            if (!direction) { return; }
+
+            var animKey  = direction == 'spread' ? 'news' : 'olds';
+            var otherKey = direction == 'gather' ? 'news' : 'olds';
+            var animations = _.reduce(mapObj._byView, function(memo, viewConfig)
+            {
+                if (viewConfig._animation.direction == 'none')
+                { return memo; }
+
+                return memo.concat(_.compact(_.map(viewConfig._animation[animKey],
+                    function(feature)
+                    {
+                        if (!feature.attributes.clusterParent) { return; }
+
+                        var animation = { duration: 1000 };
+                        animation.feature = feature;
+                        var otherNode = _.detect(viewConfig._animation[otherKey], function(m)
+                        { return feature.attributes.clusterParent.id == m.attributes.clusterId; });
+
+                        if (!otherNode && !$.subKeyDefined(feature, 'attributes.clusterParent'))
+                        { return; }
+
+                        var otherNodeLonLat =
+                            new OpenLayers.LonLat(feature.attributes.clusterParent.centroid.lon,
+                                                  feature.attributes.clusterParent.centroid.lat)
+                                .transform(geographicProjection, mapObj.map.getProjectionObject());
+
+                        if (direction == 'spread')
+                        {
+                            animation.from = otherNode
+                                                ? otherNode.geometry.getBounds().getCenterLonLat()
+                                                : otherNodeLonLat;
+                            animation.to   = feature.geometry.getBounds().getCenterLonLat();
+                        }
+                        else
+                        {
+                            animation.to = otherNode
+                                                ? otherNode.geometry.getBounds().getCenterLonLat()
+                                                : otherNodeLonLat;
+                            animation.from = feature.geometry.getBounds().getCenterLonLat();
+                        }
+
+                        return animation;
+                    })));
+            }, []);
+
+            if (direction == 'spread')
+            {
+                _.each(mapObj._byView, function(viewConfig)
+                {
+                    viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds);
+                    _.each(viewConfig._animation.news, function(feature)
+                    { delete feature.style.display; });
+                });
+            }
+            animate(animations, function() { _.each(mapObj._byView, function(viewConfig)
+                {
+                    viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds);
+                    _.each(viewConfig._animation.news, function(feature)
+                    { viewConfig._displayLayer.drawFeature(feature); });
+                    viewConfig._animation.finished = true;
+                }); });
         },
 
         $legend: function(options)
@@ -997,5 +1601,163 @@
             mapObj._delayedRenderData = [];
         }
     };
+
+    var onFeatureSelect = function(mapObj, feature, closeBoxCallback)
+    {
+        if ((feature.attributes || {}).redirects_to)
+        { window.open(feature.attributes.redirects_to); return; }
+        if (!feature.attributes.flyout)
+        { return null; }
+
+        if (mapObj._popup) { closeBoxCallback(); }
+
+        var popup = new OpenLayers.Popup.FramedCloud(null,
+            feature.geometry.getBounds().getCenterLonLat(), null,
+            feature.attributes.flyout[0].innerHTML, null, true, closeBoxCallback);
+        mapObj._popup = popup;
+        mapObj.map.addPopup(popup);
+
+        $('.olFramedCloudPopupContent .infoPaging a').click(function(event)
+        {
+            event.preventDefault();
+
+            var $a = $(this);
+            if ($a.hasClass('disabled')) { return; }
+
+            var $paging = $a.parent();
+            var action = $.hashHref($a.attr('href')).toLowerCase();
+
+            var $rows = $paging.siblings('.row');
+            var $curRow = $rows.filter(':visible');
+
+            var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
+            if (newIndex < 0) { return; }
+            if (newIndex >= $rows.length) { return; }
+
+            $curRow.addClass('hide');
+            $rows.eq(newIndex).removeClass('hide');
+
+            $paging.find('a').removeClass('disabled');
+            if (newIndex <= 0)
+            { $paging.find('.previous').addClass('disabled'); }
+            if (newIndex >= $rows.length - 1)
+            { $paging.find('.next').addClass('disabled'); }
+        });
+    };
+
+    var onFeatureUnselect = function(mapObj)
+    {
+        mapObj.map.removePopup(mapObj._popup);
+        mapObj._popup.destroy();
+        mapObj._popup = null;
+    };
+
+    var iconCache = function(mapObj, url, feature, hasHighlight)
+    {
+        if (!mapObj._iconCache)
+        { mapObj._iconCache = {}; }
+
+        if (!url)
+        { url = '/images/openlayers/marker.png'; }
+
+        var key = url;
+        if (hasHighlight) { key += '|highlight=true'; }
+
+        if (!mapObj._iconCache[key])
+        {
+            mapObj._iconCache[key] = { externalGraphic: url, features: [] };
+            var image = new Image();
+            image.onload = function()
+            {
+                var sf = mapObj.settings.iconScaleFactor;
+                var width = hasHighlight ? image.width * sf : image.width;
+                var height = hasHighlight ? image.height * sf : image.height;
+
+                $.extend(mapObj._iconCache[key], {
+                    graphicWidth: width, graphicHeight: height,
+                    graphicXOffset: -(width / 2), graphicYOffset: -height
+                });
+
+                var features = mapObj._iconCache[key].features.concat(feature);
+                _.each(features, function(f)
+                {
+                    f.style = mapObj._iconCache[key];
+                    if (f.layer) { f.layer.drawFeature(f); }
+                });
+                mapObj._iconCache[key].features = [];
+            };
+            image.src = url;
+        }
+        else
+        { mapObj._iconCache[key].features.push(feature); }
+
+        return mapObj._iconCache[key];
+    };
+
+    var findFeatureFromEvent = function(mapObj, evt)
+    {
+        return _(mapObj._displayLayers).chain()
+            .map(function(layer)
+                { return { layer: layer, feature: layer.getFeatureFromEvent(evt) }; })
+            .reject(function(datum)
+                { return !datum.feature; })
+            .value();
+    };
+
+    var animate = function(animations, callback)
+    {
+        var startTime = $.now();
+        var interval;
+        var step = function()
+        {
+            if (requestAnimationFrame && animations.length > 0)
+            { requestAnimationFrame( step ); }
+
+            animations = _.reject(animations, function(animation, index)
+            {
+                if (!animation.finished)
+                {
+                    var p = ($.now() - startTime) / animation.duration;
+                    animation.finished = p >= 1;
+                    var delta = function(start, end)
+                    {
+                        var pos = ((-Math.cos(p*Math.PI)/2) + 0.5);
+                        return start + ((end - start) * pos);
+                    };
+                    var lonlat = new OpenLayers.LonLat(
+                                               delta(animation.from.lon, animation.to.lon),
+                                               delta(animation.from.lat, animation.to.lat));
+                    animation.feature.move(lonlat);
+                    return false;
+                }
+                animation.feature.move(animation.to);
+                if (_.isFunction(animation.callback))
+                { animation.callback(); }
+                return true;
+            });
+
+            if (animations.length == 0)
+            {
+                if (!requestAnimationFrame)
+                { clearInterval( interval ); }
+                if (_.isFunction(callback))
+                { callback(); }
+            }
+        };
+        if (requestAnimationFrame)
+        { requestAnimationFrame( step ); }
+        else
+        { interval = setInterval( step, 13 ); }
+    };
+
+/*
+    window.mapObj = function() { window.mapObj = blist.datasetPage.rtManager.$domForType('map').socrataMap(); }
+    window.zoomIn = function() { if (_.isFunction(window.mapObj)){window.mapObj();} window.mapObj.map.zoomIn(); };
+    window.zoomOut = function() { if (_.isFunction(window.mapObj)){window.mapObj();} window.mapObj.map.zoomOut(); };
+    window.viewConfig = function() { if (_.isFunction(window.mapObj)){window.mapObj();} window.viewConfig = mapObj._byView[mapObj._primaryView.id]; };
+    window.hideFeature = function(feature) { feature.style.display = 'none'; feature.layer.drawFeature(feature); };
+    window.showFeature = function(feature) { delete feature.style.display; feature.layer.drawFeature(feature); };
+*/
+
 
 })(jQuery);

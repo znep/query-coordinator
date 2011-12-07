@@ -88,7 +88,7 @@ class CustomContentController < ApplicationController
 
   def page
     path = "/#{params[:path].join '/'}"
-    @page = Page[path]
+    @page = Page[path] if CurrentDomain.module_available?('canvas2')
     unless @page
       if path == '/'
         homepage

@@ -1085,6 +1085,10 @@ var Dataset = ServerModel.extend({
             }
         };
 
+        // If aggregates are stale, clear them all out to avoid confusion
+        if (ds._aggregatesStale)
+        { _.each(ds.realColumns, function(c) { c.aggregates = {}; }); }
+
         var isStale = ds._aggregatesStale ||
             _.any(customAggs || {}, function(aList, cId)
             {

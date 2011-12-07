@@ -672,6 +672,13 @@ blist.namespace.fetch('blist.datatypes');
         comparable: {
             orderedList: ['EQUALS', 'NOT_EQUALS', 'IS_BLANK', 'IS_NOT_BLANK']
         },
+        check: {
+            details: {
+                'IS_BLANK': { text: 'is not checked' },
+                'IS_NOT_BLANK': { text: 'is checked' }
+            },
+            orderedList: ['IS_BLANK', 'IS_NOT_BLANK']
+        },
         blob: {
             details: {
                 'IS_BLANK': { text: 'is empty' },
@@ -1168,7 +1175,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-            filterConditions: filterGroups.comparable,
+            filterConditions: filterGroups.check,
             filterValue: valueFilterCheckbox,
             isInlineEdit: true,
             priority: 11,

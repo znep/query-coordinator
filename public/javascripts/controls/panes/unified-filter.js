@@ -579,6 +579,10 @@
         var renderCondition = function(condition)
         {
             var metadata = condition.metadata || {};
+            // If we don't have metadata, then something we can't handle slipped in among
+            // our valid items. Ignore it for now...
+            if (_.isEmpty(metadata)) { return; }
+
             // TODO: need to actually merge the datasets (how?) rather than just taking the first blindly
             var column = dataset.columnForTCID(metadata.tableColumnId[dataset.publicationGroup]);
 

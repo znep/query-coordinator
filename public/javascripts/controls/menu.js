@@ -116,7 +116,7 @@
         $(document).trigger('click.menu');
 
         // cache the original height before we bump things out to measure
-        var $par = $(opts.parentContainer);
+        var $par = $.isBlank(opts.parentContainer) ? $menuContainer.scrollParent() : $(opts.parentContainer);
         var parOffset = $par.offset() || {top: 0, left: 0};
         var origContainerBottom = $par.height() + parOffset.top;
         var origContainerRight = $par.width() + parOffset.left;
@@ -227,6 +227,6 @@
         menuButtonTitle: 'Menu',
         onOpen: function($menuContainer) {},
         onClose: function($menuContainer) {},
-        parentContainer: document
+        parentContainer: null
     };
 })(jQuery);

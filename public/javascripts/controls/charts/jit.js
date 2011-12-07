@@ -146,6 +146,9 @@
             { $(chartObj.chart.canvas.getElement()).parent().empty(); }
             delete chartObj.chart;
             delete chartObj._jitData;
+            delete chartObj._remainder;
+            delete chartObj._preRemainder;
+            delete chartObj._totalSum;
         },
 
         resizeHandle: function()

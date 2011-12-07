@@ -476,6 +476,7 @@
             $pane
                 .find('.noFilterConditionsText').show()
                 .siblings().remove();
+            rootCondition = undefined;
             renderQueryFilters();
         });
 
@@ -495,6 +496,14 @@
             if (!_.isUndefined(rootCondition))
             {
                 // great, we have a real filter to work with.
+
+                // Handle the case when a namedFilter was stuck under an AND
+                if (_.isEmpty(rootCondition.metadata))
+                {
+                    var found = _.detect(rootCondition.children, function(c)
+                            { return _.isNumber((c.metadata || {}).unifiedVersion); });
+                    if (!$.isBlank(found)) { rootCondition = found; }
+                }
 
                 // if we have something completely nonsensical, check v1 (which also checks v2)
                 // otherwise, check v2
@@ -1185,8 +1194,6 @@
                     'for': inputId,
                     contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                     {
-                        valueObjPart = getFilterValue(valueObjPart, column, metadata);
-
                         var response = (i > 0) ? ' and ' : '';
                         if ((options.textOnly === true))
                         {
@@ -1671,7 +1678,7 @@
                     curFC = query.namedFilters[queryId] = query.namedFilters[queryId] || newRoot;
                 }
 
-                curFC.children.length = 0;
+                curFC.children = [];
                 curFC.value = rootCondition.value;
 
                 // Whew; now that we're done setting everything up, store off the actual filter

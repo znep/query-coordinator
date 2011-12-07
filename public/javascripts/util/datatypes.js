@@ -46,9 +46,9 @@ blist.namespace.fetch('blist.datatypes');
     {
         if ($.isBlank(value)) { return ''; }
 
+        var origValue = value.toString();
         if (_.isString(mask) && (mask !== ''))
         {
-            origValue = value.toString();
             value = '';
 
             while (origValue.length && mask.length)
@@ -88,6 +88,7 @@ blist.namespace.fetch('blist.datatypes');
             {
                 // Skip this if we already have a number as it is slow
                 value = parseFloat(value);
+                if (_.isNaN(value)) { return origValue; }
             }
 
             if (precisionStyle == 'scientific')

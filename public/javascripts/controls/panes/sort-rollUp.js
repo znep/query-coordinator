@@ -75,7 +75,7 @@
                         field: {type: 'group', options: [
                             {type: 'columnSelect', text: 'Column',
                                 name: 'expression.columnId', required: true, notequalto: 'sortColumn',
-                                columns: {type: sortableTypes, hidden: isEdit(this)}},
+                                columns: {type: sortableTypes}},
                             {type: 'select', text: 'Direction',
                                 name: 'ascending', prompt: null, options: [
                                     {text: 'Ascending', value: 'true'},

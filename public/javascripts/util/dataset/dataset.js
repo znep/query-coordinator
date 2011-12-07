@@ -1713,14 +1713,21 @@ var Dataset = ServerModel.extend({
             });
             if (newFilters.length > 0)
             {
-                if ($.isBlank(filters))
-                { filters = {children: [], type: 'operator', value: 'AND'}; }
-                else if (filters.type != 'operator' || filters.value != 'AND')
+                if ($.isBlank(filters) && newFilters.length == 1)
                 {
-                    filters = {type: 'operator', value: 'AND',
-                        children: [filters]};
+                    filters = _.first(newFilters);
                 }
-                filters.children = (filters.children || []).concat(newFilters);
+                else
+                {
+                    if ($.isBlank(filters))
+                    { filters = {children: [], type: 'operator', value: 'AND'}; }
+                    else if (filters.type != 'operator' || filters.value != 'AND')
+                    {
+                        filters = {type: 'operator', value: 'AND',
+                            children: [filters]};
+                    }
+                    filters.children = (filters.children || []).concat(newFilters);
+                }
             }
         }
         return filters;

@@ -251,7 +251,7 @@
                 // FIXME: Doesn't work with series col
                 _.each(chartObj._seriesRemainders, function(sr, i)
                 {
-                    if ($.isBlank(sr)) { return; }
+                    if ($.isBlank(sr) || $.isBlank(chartObj._seriesCache[i])) { return; }
                     var colSet = chartObj._yColumns[i];
                     otherRow[colSet.data.lookup] = sr;
                     var point = yPoint(chartObj, otherRow, sr, i, otherPt, colSet);
@@ -434,7 +434,10 @@
             {
                 // This check comes first because it's simpler than a regex.
                 if (xAxis && chartObj._xColumn)
-                { return chartObj._xColumn.renderType.renderer(num, chartObj._xColumn, true, false, true); }
+                {
+                    return chartObj._xColumn.renderType.renderer(num,
+                            chartObj._xColumn, true, false, true);
+                }
 
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.
@@ -707,7 +710,7 @@
                 }
             });
 
-            return markerStore;
+            return _.compact(markerStore);
         };
 
         var chartRedraw = function(evt)
@@ -1080,7 +1083,9 @@
     // Handle rendering values for different column types here
     var renderCellText = function(row, col)
     {
-        return col.renderType.renderer(row[col.lookup], col, true, false, true);
+        var renderer = row.invalid[col.lookup] ? blist.datatypes.invalid.renderer :
+            col.renderType.renderer;
+        return renderer(row[col.lookup], col, true, false, true);
     };
 
     var isDateTime = function(chartObj)

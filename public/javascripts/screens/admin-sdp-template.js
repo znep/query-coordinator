@@ -191,6 +191,11 @@ blist.publish.wireLogoEditor = function($section)
             },
             null, ['jpg', 'jpeg', 'gif', 'png'], 'Image');
     });
+
+    $section.find('#gridSidebar_appearance_logo\\:_logoSelect').change(function(event)
+    {
+        publishNS.handleValueChanged.call(cpObj);
+    });
 };
 
 // wire up some custom behaviors into the sidebar
@@ -204,7 +209,7 @@ blist.publish.updateCustomUI = function()
     $('.publisherHeader h1').text('Editing ' + publishNS.workingThemeMeta.name);
 
     // update logoSelect to appropriate value
-    var $select = $('#gridSidebar_appearance #gridSidebar_appearance_logo\\:_logoSelect')
+    var $select = $('#gridSidebar_appearance_logo\\:_logoSelect')
                       .val(publishNS.workingTheme._logoSelect);
     if (!_.isUndefined($.uniform.update)) { $.uniform.update($select); }
 
@@ -673,6 +678,7 @@ blist.publish.saveCustomization = function(callback)
             publishNS.currentThemeMeta.name = response.name;
 
             publishNS.initCustomization();
+            publishNS.updateCustomUI();
 
             callback();
         },

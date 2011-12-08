@@ -14,8 +14,7 @@
                     '.type a': '#{downloadType}',
                     '.type a@href': function(args)
                     {
-                        return '/views/' + args.context.viewId + '/rows.' +
-                        args.item.toLowerCase() + '?accessType=DOWNLOAD';
+                        return args.context.view.downloadUrl(args.item);
                     }
                     // TODO: add download count when supported
                 }

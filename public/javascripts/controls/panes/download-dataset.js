@@ -21,7 +21,7 @@
                         template: 'downloadsTable',
                         directive: $.templates.downloadsTable.directive,
                         data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
-                                viewId: this._view.id },
+                                view: this._view },
                         callback: function($sect)
                         {
                             $sect.find('.downloadsList .item a').downloadToFormCatcher();

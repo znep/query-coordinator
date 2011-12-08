@@ -1166,6 +1166,11 @@ var Dataset = ServerModel.extend({
         this.makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
     },
 
+    downloadUrl: function(type)
+    {
+        return '/api/views/' + this.id + '/rows.' + type.toLowerCase() + '?accessType=DOWNLOAD';
+    },
+
     _getCommentCacheKey: function(comment)
     {
         return $.isBlank(comment.rowId) ? this.id :

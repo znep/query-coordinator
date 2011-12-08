@@ -425,7 +425,7 @@ class View < Model
   end
 
   def rss
-    absolute_path("/api/views/#{id}/rows.rss", true)
+    absolute_path("/api/views/#{id}/rows.rss", !federated?)
   end
 
   def tweet

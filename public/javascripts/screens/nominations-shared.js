@@ -54,6 +54,21 @@ $(function()
         return nom.status;
     };
 
+    blist.nominations.delete = function(id, attachmentId, successCallback)
+    {
+        var type = attachmentId ? 'attachment' : 'suggestion';
+        if (confirm('Are you sure you want to delete this ' + type + '?'))
+        {
+            blist.nominations.map[id].delete(attachmentId, successCallback,
+                function error(xhr)
+                {
+                    alert('Error deleting ' + type + ': ' +
+                        JSON.parse(xhr.responseText).message);
+                }
+            );
+        }
+    };
+
     blist.nominations.moderate = function(id, status, $container)
     {
         blist.nominations.map[id].moderate(status,

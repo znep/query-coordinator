@@ -28,26 +28,21 @@ $(function()
         e.preventDefault();
         var $t = $(this);
         var isFile = $t.closest('.attachments').length > 0;
-        var type = isFile ? 'attachment' : 'suggestion';
-        if (confirm('Are you sure you want to delete this ' + type + '?'))
+        var $item = $t.closest('tr.item');
+        var id = $item.attr('data-nominationId');
+        if (isFile)
         {
-            var $item = $t.closest('tr.item');
-            var id = $item.attr('data-nominationId');
-            var url = '/api/nominations/' + id;
-            if (isFile)
-            { url += '/attachments/' + $t.closest('li').attr('data-attachmentId'); }
-            url += '.json';
-            $.ajax({url: url, type: 'DELETE',
-                error: function(xhr)
-                {
-                    alert('Error deleting ' + type + ': ' +
-                        JSON.parse(xhr.responseText).message);
-                },
-                success: function()
-                {
-                    if (isFile) { $t.closest('li').remove(); }
-                    else { $item.remove(); }
-                }});
+            blist.nominations.delete(id, $t.closest('li').attr('data-attachmentId'),
+                function() {
+                    $t.closest('li').remove();
+                }
+            );
+        }
+        else
+        {
+            blist.nominations.delete(id, null, function() {
+                $item.remove();
+            });
         }
     });
 

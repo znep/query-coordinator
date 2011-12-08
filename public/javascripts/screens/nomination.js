@@ -93,6 +93,16 @@ $(function()
         blist.nominations.moderate(nom.id, status, $('.nomModerationContainer'));
     });
 
+    $('.nomModerationContainer .delete').click(function(e)
+    {
+        e.preventDefault();
+        var $t = $(this);
+        var status = $t.attr('data-status');
+        blist.nominations.delete(nom.id, null, function() {
+            window.location = '/nominate';
+        });
+    });
+
     var flash = function(message, level)
     {
         level || (level = 'notice');

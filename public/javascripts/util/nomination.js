@@ -13,6 +13,17 @@ this.Nomination = ServerModel.extend({
             success: callback, error: errorCallback});
     },
 
+    delete: function(attachmentId, successCallback, errorCallback)
+    {
+        var url = this.selfUrl;
+        if (attachmentId) {
+            url += '/attachments/' + attachmentId;
+        }
+
+        this.makeRequest({url: url + '.json', type: 'DELETE',
+          success: successCallback, error: errorCallback});
+    },
+
     removeComment: function(commentId, successCallback, errorCallback)
     {
         this.makeRequest({url: this.selfUrl + '/comments.json',

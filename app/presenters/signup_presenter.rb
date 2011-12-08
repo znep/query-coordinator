@@ -24,13 +24,18 @@ class SignupPresenter < Presenter
   end
 
   def create
-    if accept_terms
-      create_user && login!
-    else
+    if password != passwordConfirm
+      @errors << "Passwords do not match."
+    end
+    if !accept_terms
       @errors << "You must accept the terms of service and privacy policy."
     end
+    if @errors.empty?
+      create_user && login!
+      return true
+    end
 
-    return @errors.empty?
+    false
   end
 
 protected

@@ -707,8 +707,8 @@
                 selectedItems: column
             });
 
-            var validOperators = scrubFilterOperators(
-                getRenderType(column, metadata.subcolumn).filterConditions || {});
+            var renderType = getRenderType(column, metadata.subcolumn);
+            var validOperators = scrubFilterOperators(renderType.filterConditions || {});
             $filter.find('.operator').popupSelect({
                 choices: validOperators,
                 listContainerClass: 'popupOperatorSelect',
@@ -909,12 +909,16 @@
             {
                 // special case these since they have no actual values
                 var cachedContents = column.cachedContents || {};
-                addFilterLine({ item: 'blank', count: cachedContents['null'] }, column,
-                              condition, $filter, filterUniqueId, { textOnly: true,
-                              selected: _.any(condition.children || [], function(child) { return child.value == 'IS_BLANK'; }) });
-                addFilterLine({ item: 'not blank', count: cachedContents['non_null'] }, column,
-                              condition, $filter, filterUniqueId, { textOnly: true,
-                              selected: _.any(condition.children || [], function(child) { return child.value == 'IS_NOT_BLANK'; }) });
+                addFilterLine({ item: renderType.filterConditions.details.IS_BLANK
+                    .text.replace(/^is\s/, ''), data: 'IS_BLANK',
+                    count: cachedContents['null'] }, column, condition, $filter, filterUniqueId,
+                    { textOnly: true, selected: _.any(condition.children || [], function(child)
+                        { return child.value == 'IS_BLANK'; }) });
+                addFilterLine({ item: renderType.filterConditions.details.IS_NOT_BLANK
+                    .text.replace(/^is\s/, ''), data: 'IS_NOT_BLANK',
+                    count: cachedContents['non_null'] }, column, condition, $filter, filterUniqueId,
+                    { textOnly: true, selected: _.any(condition.children || [], function(child)
+                        { return child.value == 'IS_NOT_BLANK'; }) });
             }
             else
             {
@@ -1085,7 +1089,11 @@
                 var renderType = column.renderType;
                 if ($.subKeyDefined(column.renderType, 'subColumns.' + metadata.subcolumn))
                 { renderType = column.renderType.subColumns[metadata.subcolumn]; }
-                if ($.isBlank(renderType.filterConditions)) { return; }
+
+                // If we don't know about this operator, then bail
+                if ($.isBlank(renderType.filterConditions) ||
+                    $.isBlank(renderType.filterConditions.details[metadata.operator]))
+                { return; }
 
                 var editorInt = renderType.filterConditions.details[metadata.operator].interfaceType;
 
@@ -1230,7 +1238,8 @@
                 }
 
                 // data
-                $line.data('unifiedFilter-value', valueObj.item);
+                $line.data('unifiedFilter-value',
+                        !$.isBlank(valueObj.data) ? valueObj.data : valueObj.item);
             }
 
             // events
@@ -1727,7 +1736,7 @@
                         // is_blank and is_not_blank are special
                         children.push({
                             type: 'operator',
-                            value: 'IS_' + value.replace(' ', '_').toUpperCase(),
+                            value: value,
                             children: [ columnDefinition ]
                         });
                         return;

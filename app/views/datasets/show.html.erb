@@ -456,7 +456,7 @@
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
     blist.sidebarHidden.edit.appendReplace = <%= (!@view.is_unpublished? && !@view.is_blobby?) ||
-      !@view.flag?('default') || !@view.has_rights?('add') %>;
+      @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add') %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
     blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? ||

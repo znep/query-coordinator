@@ -40,7 +40,7 @@ $(function()
         }
         else
         {
-            blist.nominations.delete(id, null, function() {
+            blist.nominations.remove(id, null, function() {
                 $item.remove();
             });
         }

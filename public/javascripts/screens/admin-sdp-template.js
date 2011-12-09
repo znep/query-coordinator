@@ -679,7 +679,6 @@ blist.publish.saveCustomization = function(callback)
             publishNS.currentThemeMeta.name = response.name;
 
             publishNS.initCustomization();
-            publishNS.updateCustomUI();
 
             callback();
         },

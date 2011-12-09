@@ -336,6 +336,8 @@ $(function() { _.defer(function()
         publishNS.saveCustomization(function()
         {
             publishNS.applyCustomizationToPreview(publishNS.workingTheme);
+            if (_.isFunction(publishNS.updateCustomUI))
+            { publishNS.updateCustomUI(); }
 
             $('.headerBar').removeClass('unsaved noRevert');
             $('.publisherActions .loadingIcon').hide();
@@ -346,6 +348,8 @@ $(function() { _.defer(function()
         event.preventDefault();
         publishNS.initCustomization();
         publishNS.applyCustomizationToPreview(publishNS.workingTheme);
+        if (_.isFunction(publishNS.updateCustomUI))
+        { publishNS.updateCustomUI(); }
     });
 
     // Warn on leaving

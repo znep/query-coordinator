@@ -494,14 +494,13 @@
                     {
                         position = {
                             'top': chartObj.chart.plotHeight - chartObj.chart.plotTop
-                                - datum.graphic.attr('x'),
+                                - datum.graphic.attr('x') + datum.barW / 2,
                             'left': chartObj.chart.plotLeft,
                             'width': chartObj.chart.plotWidth,
                             'height': datum.graphic.attr('width')
                         };
                         if (stacking)
                         {
-                            position['top'] -= position['height']/2 + 3;
                             position['left'] += stacks[index];
                             position['width'] -= stacks[index];
                         }
@@ -535,8 +534,8 @@
             if (!chartObj._valueMarkers)
             { chartObj._valueMarkers = []; }
 
-            chartObj._valueMarkers = _drawMarkers(invertAxis, chartObj._displayFormat.valueMarker,
-                chartObj._valueMarkers);
+            chartObj._valueMarkers = _drawMarkers(invertAxis, false, chartObj._displayFormat.valueMarker,
+                chartObj._valueMarkers, chartObj.chart.series[0].yAxis);
         };
 
         var drawDomainMarkers = function()
@@ -548,11 +547,12 @@
             if (!chartObj._domainMarkers)
             { chartObj._domainMarkers = []; }
 
-            chartObj._domainMarkers = _drawMarkers(invertAxis, chartObj._displayFormat.domainMarker,
-                chartObj._domainMarkers);
+            chartObj._domainMarkers = _drawMarkers(invertAxis, !invertAxis,
+                    chartObj._displayFormat.domainMarker,
+                    chartObj._domainMarkers, chartObj.chart.xAxis[0]);
         };
 
-        var _drawMarkers = function(invertAxis, format, markerStore)
+        var _drawMarkers = function(invertAxis, zeroAtTop, format, markerStore, axis)
         {
             if (!_.isEmpty(markerStore) && markerStore[0].renderer)
             {
@@ -577,11 +577,24 @@
 
             _.each(format, function(marker, index)
             {
-                var lineAt = parseFloat(marker.atValue);
+                var lineAt = marker.atValue;
+                if (axis.isXAxis && !_.isEmpty(chartObj._xCategories))
+                {
+                    // Attempt to look up value
+                    var v = chartObj._xColumn.renderType.renderer(lineAt,
+                        chartObj._xColumn, true, false, true);
+                    var i = _.indexOf(chartObj._xCategories, v);
+                    if (i < 0 && v > _.first(chartObj._xCategories) &&
+                        v < _.last(chartObj._xCategories))
+                    { i = _.sortedIndex(chartObj._xCategories, v) - 0.5; }
+                    if (i > -1) { lineAt = i; }
+                }
+                lineAt = parseFloat(lineAt);
                 if (!_.isNumber(lineAt)) { return; }
 
-                var extremes = chartObj.chart.series[0].yAxis.getExtremes();
-                var percentage = (extremes.max - lineAt) / (extremes.max - extremes.min);
+                var extremes = axis.getExtremes();
+                var percentage = (zeroAtTop ? (lineAt - extremes.min) : (extremes.max - lineAt)) /
+                    (extremes.max - extremes.min);
                 if (percentage > 1 || percentage < 0)
                 { return; }
 
@@ -594,16 +607,16 @@
                     commands.push(['M', offsetLeft, chartObj.chart.plotTop
                         + chartObj.chart.plotHeight]);
                     commands.push(['L', offsetLeft, chartObj.chart.plotTop]);
-                    handle = [offsetLeft - 6, 3, 5];
+                    handle = [offsetLeft, 10, 5];
                 }
                 else
                 {
                     var offsetTop =
                         (percentage * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
                     commands.push(['M', chartObj.chart.plotLeft, offsetTop]);
-                    commands.push(['L', chartObj.chart.plotLeft+chartObj.chart.plotWidth, offsetTop]);
+                    commands.push(['L', chartObj.chart.plotLeft + chartObj.chart.plotWidth, offsetTop]);
                     handle = [chartObj.chart.plotLeft + chartObj.chart.plotWidth + 1,
-                              offsetTop - 1, 5];
+                              offsetTop, 5];
                 }
 
                 var mouseover = function(event) {
@@ -616,11 +629,7 @@
 
                     var $container = $(chartObj.currentDom);
                     var position;
-                    position = { 'top': event.clientY, 'left': event.clientX };
-                    if (invertAxis)
-                    { position.left = handle[0] + 10; }
-                    else
-                    { position.top = handle[1] + 10; }
+                    position = { 'top': handle[1] + 10, 'left': event.clientX };
 
                     if (!hasSVG) { position.top += 10; }
 

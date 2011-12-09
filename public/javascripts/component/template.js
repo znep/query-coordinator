@@ -23,7 +23,9 @@
                         fn.push(',');
                     if (pieces[i] == '{' && pieces[i + 2] == '}') {
                         var prop = escape(pieces[i + 1]);
-                        fn.push('((temp = resolver("' + prop + '")) === undefined ? "{' + prop + '}" : temp && temp.indexOf("{") == -1 ? temp : $.template(temp, resolver))');
+                        fn.push('((temp = resolver("' + prop + '")) === undefined ? "{' + prop +
+                                    '}" : temp && (!temp.indexOf || temp.indexOf("{") == -1) ? ' +
+                                    'temp : $.template(temp, resolver))');
                         i += 2;
                     } else
                         fn.push('"' + escape(pieces[i]) + '"');

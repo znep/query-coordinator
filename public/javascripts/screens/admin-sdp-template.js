@@ -192,7 +192,8 @@ blist.publish.wireLogoEditor = function($section)
             null, ['jpg', 'jpeg', 'gif', 'png'], 'Image');
     });
 
-    $section.find('#gridSidebar_appearance_logo\\:_logoSelect').change(function(event)
+    $section.find('#gridSidebar_appearance_logo\\:_logoSelect',
+                  '#gridSidebar_appearance_logo\\:logo.href').change(function(event)
     {
         publishNS.handleValueChanged.call(cpObj);
     });

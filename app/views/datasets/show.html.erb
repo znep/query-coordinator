@@ -1,5 +1,7 @@
 <% content_for :head do %>
+  <%- if @view.is_tabular? -%>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%- end -%>
   <%= rendered_stylesheet_tag 'base-control-third-party' %>
   <%= rendered_stylesheet_tag 'dataset-show' %>
 

@@ -13,7 +13,7 @@ this.Nomination = ServerModel.extend({
             success: callback, error: errorCallback});
     },
 
-    delete: function(attachmentId, successCallback, errorCallback)
+    remove: function(attachmentId, successCallback, errorCallback)
     {
         var url = this.selfUrl;
         if (attachmentId) {

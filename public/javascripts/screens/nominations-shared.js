@@ -54,12 +54,12 @@ $(function()
         return nom.status;
     };
 
-    blist.nominations.delete = function(id, attachmentId, successCallback)
+    blist.nominations.remove = function(id, attachmentId, successCallback)
     {
         var type = attachmentId ? 'attachment' : 'suggestion';
         if (confirm('Are you sure you want to delete this ' + type + '?'))
         {
-            blist.nominations.map[id].delete(attachmentId, successCallback,
+            blist.nominations.map[id].remove(attachmentId, successCallback,
                 function error(xhr)
                 {
                     alert('Error deleting ' + type + ': ' +

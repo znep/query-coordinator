@@ -32,7 +32,7 @@ $(function()
         var id = $item.attr('data-nominationId');
         if (isFile)
         {
-            blist.nominations.delete(id, $t.closest('li').attr('data-attachmentId'),
+            blist.nominations.remove(id, $t.closest('li').attr('data-attachmentId'),
                 function() {
                     $t.closest('li').remove();
                 }

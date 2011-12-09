@@ -98,7 +98,7 @@ $(function()
         e.preventDefault();
         var $t = $(this);
         var status = $t.attr('data-status');
-        blist.nominations.delete(nom.id, null, function() {
+        blist.nominations.remove(nom.id, null, function() {
             window.location = '/nominate';
         });
     });

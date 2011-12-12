@@ -76,7 +76,7 @@
 
             if (mapObj._primaryView.isGeoDataset())
             {
-                mapObj._wms = mapObj._primaryView.metadata.custom_fields.wms;
+                mapObj._geo = mapObj._primaryView.metadata.custom_fields.geo;
             }
 
             if (mapObj.$dom().siblings('#mapLayers').length < 1)

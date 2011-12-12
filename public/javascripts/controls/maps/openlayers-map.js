@@ -43,26 +43,9 @@
     });
 
     $.Control.registerMixin('openlayers', {
-        initializeVisualization: function()
+        initializeBaseLayers: function()
         {
-            this._super();
-
             var mapObj = this;
-
-            var mapOptions =
-            {
-                theme: '/stylesheets/openlayers/style.css',
-                projection: 'EPSG:900913',
-                units: 'm',
-                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
-                maxResolution: 156543.0339,
-                numZoomLevels: 21
-            };
-
-            OpenLayers.ImgPath = '/images/openlayers/';
-            OpenLayers.ProxyHost = '/api/proxy?proxyUrl=';
-
-            mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);
 
             var getDataBbox = function()
             {
@@ -71,11 +54,11 @@
                     var dataBbox = OpenLayers.Bounds.fromString(mapObj._geo.bbox);
                     var bboxProjection = new OpenLayers.Projection(mapObj._geo.bboxCrs);
 
-                    return dataBbox.transform(bboxProjection, new OpenLayers.Projection(mapOptions.projection));
+                    return dataBbox.transform(bboxProjection, new OpenLayers.Projection(mapObj.map.projection));
                 }
                 else
                 {
-                    return mapObtions.maxExtent;
+                    return mapObj.map.maxExtent;
                 }
             }
 
@@ -114,14 +97,16 @@
 
                 var getWmsOptions = function(layerName, params, options)
                 {
+                    var maxExtent = mapObj.map.maxExtent;
+
                     var result = {
                         url: mapObj._geo.owsUrl,
                         isBaseLayer: false,
                         transitionEffect: 'resize',
                         opacity: 0.4,
                         tileSize: new OpenLayers.Size(256, 256),
-                        tileOrigin: new OpenLayers.LonLat(mapOptions.maxExtent.left,
-                            mapOptions.maxExtent.bottom),
+                        tileOrigin: new OpenLayers.LonLat(maxExtent.left,
+                            maxExtent.bottom),
                         maxExtent: getDataBbox(),
                         params: {
                             layers: mapObj._geo.namespace + ':' + layerName,
@@ -293,89 +278,7 @@
 
             mapObj.map.addControl(new OpenLayers.Control.LayerSwitcher());
 
-            mapObj._markerLayer = new OpenLayers.Layer.Markers('Markers');
-            mapObj.map.addLayer(mapObj._markerLayer);
-
             mapObj.map.zoomToExtent(getDataBbox());
-            mapObj.mapLoaded();
-        },
-
-        currentZoom: function()
-        {
-            if (this.map)
-            { return this.map.getZoom(); }
-        },
-
-        renderGeometry: function(geoType, geometry, dupKey, details)
-        {
-            var mapObj = this;
-
-            var size = new OpenLayers.Size(21,25);
-            var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-            var icon = new OpenLayers.Icon('/images/openlayers/marker.png',size,offset);
-
-            var lonlat = new OpenLayers.LonLat(geometry.longitude, geometry.latitude).transform(
-                new OpenLayers.Projection('EPSG:4326'), mapObj.map.getProjectionObject());
-            var marker = new OpenLayers.Marker( lonlat, icon );
-
-            mapObj._markerLayer.addMarker(marker);
-            mapObj._bounds.extend(lonlat);
-
-            return marker;
-        },
-
-        renderCluster: function(cluster, details)
-        {
-        },
-
-        setAnimationOlds: function()
-        {
-        },
-
-        dataRendered: function()
-        {
-            this._super();
-        },
-
-        adjustBounds: function()
-        {
-            this.map.zoomToExtent(this._bounds);
-        },
-
-        getCustomViewport: function()
-        {
-        },
-
-        setViewport: function(viewport)
-        {
-        },
-
-        fitPoint: function(point)
-        {
-        },
-
-        showLayers: function()
-        {
-        },
-
-        hideLayers: function()
-        {
-        },
-
-        clearGeometries: function()
-        {
-        },
-
-        cleanVisualization: function()
-        {
-        },
-
-        reset: function()
-        {
-        },
-
-        resizeHandle: function()
-        {
         },
 
         getRequiredJavascripts: function()
@@ -403,17 +306,5 @@
             return new OpenLayers.Layer.WMS(name, options.url, options.params, options);
         }
     }, {defaultZoom: 13}, 'socrataMap');
-
-    var showInfoWindow = function(mapObj, shape)
-    {
-    };
-
-    var closeInfoWindow = function()
-    {
-    };
-
-    var animate = function(animations, callback)
-    {
-    };
 
 })(jQuery);

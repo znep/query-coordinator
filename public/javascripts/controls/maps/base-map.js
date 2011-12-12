@@ -1456,7 +1456,7 @@
             var otherKey = direction == 'gather' ? 'news' : 'olds';
             var animations = _.reduce(mapObj._byView, function(memo, viewConfig)
             {
-                if (viewConfig._animation.direction == 'none')
+                if (!viewConfig._animation || viewConfig._animation.direction == 'none')
                 { return memo; }
 
                 return memo.concat(_.compact(_.map(viewConfig._animation[animKey],

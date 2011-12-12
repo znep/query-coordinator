@@ -1101,10 +1101,17 @@
 
         setViewport: function(viewport)
         {
+            if (_.isEqual(viewport, this.getViewport())) { return; }
             var bounds = new OpenLayers.Bounds(viewport.xmin, viewport.ymin,
                                                viewport.xmax, viewport.ymax);
+
+            // Hack: zoomToExtent's getCenterLonLat goes nuts if it tries to capture an
+            // extent that goes past the dateline. This triggers an if-statement inside.
+            var tmp = this.map.baseLayer.wrapDateLine;
+            this.map.baseLayer.wrapDateLine = true;
             this.map.zoomToExtent(bounds.transform(geographicProjection,
                                                    this.map.getProjectionObject()));
+            this.map.baseLayer.wrapDateLine = tmp;
         },
 
         fitPoint: function(point)

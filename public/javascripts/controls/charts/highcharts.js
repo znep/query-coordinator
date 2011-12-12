@@ -47,7 +47,7 @@
             chartObj._yColumns = [];
             _.each(chartObj._valueColumns, function(vc)
             {
-                var obj = {data: vc.column};
+                var obj = {data: vc.column, color: vc.color};
                 _.each(vc.supplementalColumns || [], function(sc)
                 {
                     if (sc.renderTypeName == 'text' && $.isBlank(obj.title))
@@ -201,7 +201,7 @@
                 var seriesVal = _.compact(seriesVals).join(', ');
                 var series = chartObj._seriesByVal[seriesVal];
                 if ($.isBlank(series))
-                { series = createSeries(chartObj, seriesVal); }
+                { series = createSeries(chartObj, seriesVal, yc); }
 
                 renderPoint(yc, series);
             });
@@ -311,6 +311,7 @@
             delete chartObj._curMax;
             delete chartObj._loadedOnce;
             delete chartObj._dataGrouping;
+            chartObj._recheckColors = true;
 
             if (!_.isUndefined(chartObj.chart))
             {
@@ -361,9 +362,55 @@
         }
     }, null, 'socrataChart');
 
-    var createSeries = function(chartObj, name)
+    var getColor = function(chartObj, id, obj)
+    {
+        if ($.isBlank(chartObj._availableColors) || chartObj._recheckColors)
+        {
+            // Make a copy of colors so we don't reverse the original
+            var colors;
+            if (!_.isUndefined(chartObj._displayFormat.colors))
+            { colors = chartObj._displayFormat.colors.slice(); }
+            else if (!_.isUndefined(chartObj._displayFormat.color))
+            { colors = [ chartObj._displayFormat.color ]; }
+            else
+            {
+                colors = _.map(chartObj._valueColumns, function(vc)
+                { return vc.color; });
+            }
+            if (chartObj._displayFormat.stacking)
+            { colors = colors.reverse(); }
+            colors = _.compact(colors);
+
+            if ($.isBlank(chartObj._availableColors) ||
+                    (chartObj._origColors || {}).dataId != chartObj._primaryView.id ||
+                    !_.isEqual(colors, (chartObj._origColors || {}).colors))
+            {
+                delete chartObj._recheckColors;
+                delete chartObj._colorIndex;
+                chartObj._origColors = {colors: colors.slice(), dataId: chartObj._primaryView.id};
+                chartObj._availableColors = colors;
+            }
+        }
+
+        chartObj._colorIndex = chartObj._colorIndex || {};
+        if (!$.subKeyDefined(chartObj._colorIndex, id))
+        {
+            if ($.subKeyDefined(obj, 'color') && _.include(chartObj._availableColors, obj.color))
+            {
+                chartObj._colorIndex[id] = obj.color;
+                chartObj._availableColors = _.without(chartObj._availableColors, obj.color);
+            }
+            else
+            { chartObj._colorIndex[id] = chartObj._availableColors.shift(); }
+        }
+
+        return chartObj._colorIndex[id];
+    }
+
+    var createSeries = function(chartObj, name, yCol)
     {
         var series = {name: name, data: [], index: chartObj._seriesCache.length};
+        series.color = getColor(chartObj, series.name, yCol);
         if (chartObj._chartType == 'donut')
         {
             var segment = 100 / ((chartObj._seriesCache.length + 1) + 1);
@@ -398,21 +445,6 @@
         var yTitle = chartObj._displayFormat.titleY;
 
         var legendPos = chartObj._displayFormat.legend;
-
-        // Make a copy of colors so we don't reverse the original
-        var colors;
-        if (!_.isUndefined(chartObj._displayFormat.colors))
-        { colors = chartObj._displayFormat.colors.slice(); }
-        else if (!_.isUndefined(chartObj._displayFormat.color))
-        { colors = [ chartObj._displayFormat.color ]; }
-        else
-        {
-            colors = _.map(chartObj._valueColumns, function(vc)
-            { return vc.color; });
-        }
-        if (chartObj._displayFormat.stacking)
-        { colors = colors.reverse(); }
-        colors = _.compact(colors);
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;
@@ -773,8 +805,6 @@
         if (_.include(['line', 'area', 'timeline', 'bubble'], chartObj._chartType))
         { chartConfig.chart.marginBottom = legendPos == 'bottom' ? 120 : 90; }
 
-        if (!_.isEmpty(colors)) { chartConfig.colors = colors; }
-
         if (chartObj._displayFormat.yAxis)
         {
             var yAxis = chartObj._displayFormat.yAxis;
@@ -928,13 +958,6 @@
             if (chartObj._chartType == 'bar')
             { chartObj.chart.setSize(chartObj.chart.chartWidth,
                                      chartObj.chart.chartHeight, false); }
-
-            if (!_.isEmpty(colors))
-            {
-                // Set colors after chart is created so they don't get merged
-                // with the default colors; we want to override them, instead
-                chartObj.chart.options.colors = colors;
-            }
 
             if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
 
@@ -1130,7 +1153,6 @@
                     { return secondChartSelect(chartObj, event); }
                 }
             },
-            colors: chartObj.chart.options.colors,
             credits: { enabled: false },
             legend: { enabled: false },
             plotOptions: { line: {

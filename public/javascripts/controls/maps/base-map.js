@@ -1763,14 +1763,4 @@
         { interval = setInterval( step, 13 ); }
     };
 
-/*
-    window.mapObj = function() { window.mapObj = blist.datasetPage.rtManager.$domForType('map').socrataMap(); }
-    window.zoomIn = function() { if (_.isFunction(window.mapObj)){window.mapObj();} window.mapObj.map.zoomIn(); };
-    window.zoomOut = function() { if (_.isFunction(window.mapObj)){window.mapObj();} window.mapObj.map.zoomOut(); };
-    window.viewConfig = function() { if (_.isFunction(window.mapObj)){window.mapObj();} window.viewConfig = mapObj._byView[mapObj._primaryView.id]; };
-    window.hideFeature = function(feature) { feature.style.display = 'none'; feature.layer.drawFeature(feature); };
-    window.showFeature = function(feature) { delete feature.style.display; feature.layer.drawFeature(feature); };
-*/
-
-
 })(jQuery);

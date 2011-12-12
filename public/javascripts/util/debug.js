@@ -80,3 +80,16 @@ $(function ()
       blist.debug.cache = $.Tache.Data;
     }
 });
+
+window.mapDebugger = function()
+{
+    window.mapObj = blist.datasetPage.rtManager.$domForType('map').socrataMap();
+    window.viewConfig = mapObj._byView[mapObj._primaryView.id];
+
+    window.zoomLevel = function() { console.log(window.mapObj.currentZoom()); };
+    window.zoomIn = function() { window.mapObj.map.zoomIn(); };
+    window.zoomOut = function() { window.mapObj.map.zoomOut(); };
+    window.hideFeature = function(feature) { feature.style.display = 'none'; feature.layer.drawFeature(feature); };
+
+    delete window.mapDebugger;
+};

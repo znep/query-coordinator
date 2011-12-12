@@ -87,6 +87,7 @@ blist.namespace.fetch('blist.datatypes');
             if (!_.isNumber(value))
             {
                 // Skip this if we already have a number as it is slow
+                if (_.isString(value)) { value = value.replace(/[^0-9\.\+\-]/g, ''); }
                 value = parseFloat(value);
                 if (_.isNaN(value)) { return origValue; }
             }

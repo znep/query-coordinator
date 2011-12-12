@@ -63,6 +63,36 @@
             if (chartObj._displayFormat.stacking)
             { chartObj._yColumns = chartObj._yColumns.reverse(); }
 
+            // If we're using data grouping to determine series, they might have
+            // varying amounts of data. In that case, we want to sort them
+            // by the most populous series first
+            if (chartObj._dataGrouping)
+            {
+                var rows = [{invalid: {}}];
+                _.each(chartObj._seriesColumns, function(sc)
+                {
+                    var newRows = [];
+                    _.each(rows, function(r)
+                    {
+                        _.each((sc.column.cachedContents || {}).top, function(topItem)
+                        {
+                            r = $.extend({}, r);
+                            r[sc.column.lookup] = topItem.item;
+                            newRows.push(r);
+                        });
+                    });
+                    rows = newRows;
+                });
+                _.each(chartObj._yColumns, function(yc)
+                {
+                    _.each(rows, function(r)
+                    {
+                        var seriesVal = getSeriesName(chartObj, yc, r);
+                        createSeries(chartObj, seriesVal, yc);
+                    });
+                });
+            }
+
             // FIXME: Remainders happen to work if you don't have seriesColumns; otherwise, they won't
             chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
                 { return col.data.aggregates.sum; });
@@ -193,12 +223,7 @@
             // Render data for each series
             _.each(chartObj._yColumns, function(yc)
             {
-                var seriesVals = [];
-                if (!chartObj._dataGrouping || chartObj._yColumns.length > 1)
-                { seriesVals.push(yc.data.name); }
-                _.each(chartObj._seriesColumns, function(sc)
-                    { seriesVals.push(renderCellText(row, sc.column)); });
-                var seriesVal = _.compact(seriesVals).join(', ');
+                var seriesVal = getSeriesName(chartObj, yc, row);
                 var series = chartObj._seriesByVal[seriesVal];
                 if ($.isBlank(series))
                 { series = createSeries(chartObj, seriesVal, yc); }
@@ -406,6 +431,16 @@
 
         return chartObj._colorIndex[id];
     }
+
+    var getSeriesName = function(chartObj, yCol, row)
+    {
+        var seriesVals = [];
+        if (!chartObj._dataGrouping || chartObj._yColumns.length > 1)
+        { seriesVals.push(yCol.data.name); }
+        _.each(chartObj._seriesColumns, function(sc)
+            { seriesVals.push(renderCellText(row, sc.column)); });
+        return _.compact(seriesVals).join(', ');
+    };
 
     var createSeries = function(chartObj, name, yCol)
     {
@@ -1307,7 +1342,7 @@
         }
         else
         {
-            if (!isOther)
+            if (!isOther && !$.isBlank(chartObj._seriesCache[seriesIndex].data[ri]))
             { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
             chartObj._seriesCache[seriesIndex].data[ri] = point;
         }

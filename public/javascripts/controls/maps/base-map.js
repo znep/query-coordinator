@@ -885,6 +885,7 @@
             }
             else if (geoType == 'polyline')
             {
+                // TODO: When we actually use this code, throw this all out.
                 var geo = new OpenLayers.Geometry.LineString(
                     _.map(geometry.paths, function(point, p)
                     { return new OpenLayers.Geometry.Point(point.x, point.y); }));
@@ -895,21 +896,26 @@
             }
             else if (geoType == 'polygon')
             {
-                var geo = new OpenLayers.Geometry.Polygon(_.map(geometry.rings, function(ring, r)
-                    { return new OpenLayers.Geometry.LinearRing( _.map(ring, function(point, p)
-                        {
-                            var point = geometry.getPoint(r, p);
-                            return new OpenLayers.Geometry.Point(point.x || point[0],
-                                                                 point.y || point[1]);
+                if (newMarker)
+                {
+                    var geo = new OpenLayers.Geometry.Polygon(_.map(geometry.rings, function(ring, r)
+                        { return new OpenLayers.Geometry.LinearRing( _.map(ring, function(point, p)
+                            {
+                                var point = geometry.getPoint(r, p);
+                                return new OpenLayers.Geometry.Point(point.x || point[0],
+                                                                     point.y || point[1]);
+                            }));
                         }));
-                    }));
-                marker = new OpenLayers.Feature.Vector(geo.transform(
-                    new OpenLayers.Projection('EPSG:900913'), mapObj.map.getProjectionObject()), {},
-                    { fillColor: hasHighlight ? '#' + mapObj._highlightColor
-                                              : (details.color || "#FF00FF"),
-                      fillOpacity: _.isUndefined(details.opacity) ? 0.8 : details.opacity,
-                      strokeColor: '#000000', strokeOpacity: 0.5 }
-                );
+                    marker = new OpenLayers.Feature.Vector(geo.transform(
+                        new OpenLayers.Projection('EPSG:900913'), mapObj.map.getProjectionObject()));
+                }
+                marker.style = {
+                    fillColor: hasHighlight ? '#' + mapObj._highlightColor
+                                            : (details.color || "#FF00FF"),
+                    fillOpacity: _.isUndefined(details.opacity) ? 0.8 : details.opacity,
+                    strokeColor: '#000000', strokeOpacity: 0.5
+                };
+
                 marker.attributes.flyout = mapObj.getFlyout(details.rows,
                     details.flyoutDetails, details.dataView);
                 marker.attributes.redirects_to = details.redirect_to;

@@ -1,5 +1,7 @@
 <% content_for :head do %>
+  <%- if @view.is_tabular? -%>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%- end -%>
   <%= rendered_stylesheet_tag 'dataset-alt' %>
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
@@ -43,7 +45,9 @@
         <li><a href="<%= append_dataset_path(@view.id) %>?type=replace">Replace Rows via Upload...</a></li>
       <%- end -%>
     <%- end -%>
+    <%- if @view.is_tabular? -%>
     <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
+    <%- end -%>
   <%- socialize_menu_options(@view).each do |item| -%>
     <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
   <%- end -%>

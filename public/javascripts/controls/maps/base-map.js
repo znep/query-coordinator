@@ -867,21 +867,20 @@
                 { marker.attributes.flyout = mapObj.getFlyout(details.rows,
                     details.flyoutDetails, details.dataView); }
 
-                if (!details.icon && (details.size || details.color))
+                if (details.icon)
+                { marker.style = iconCache(mapObj, details.icon, marker, hasHighlight); }
+                else
                 {
                     marker.style = marker.style || {};
+                    marker.style.fillColor = hasHighlight ? '#' + mapObj._highlightColor
+                                                          : details.color || '#0000ff';
+                    marker.style.strokeColor = '#ffffff';
+                    marker.style.strokeWidth = 1;
+                    marker.style.pointRadius = marker.style.pointRadius || 6;
+
                     if (details.size)
                     { marker.style.pointRadius = 6 + (2 * details.size); }
-                    if (details.color)
-                    {
-                        marker.style.fillColor = hasHighlight ? '#' + mapObj._highlightColor
-                                                              : details.color;
-                        marker.style.strokeWidth = 1;
-                        marker.style.pointRadius = marker.style.pointRadius || 6;
-                    }
                 }
-                else
-                { marker.style = iconCache(mapObj, details.icon, marker, hasHighlight); }
             }
             else if (geoType == 'polyline')
             {

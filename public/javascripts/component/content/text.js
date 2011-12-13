@@ -8,27 +8,28 @@ $.component.Component.extend('Text', 'content', {
 
     _render: function() {
         if (!this._super.apply(this, arguments)) { return false; }
-        var html = this._properties.html;
-        if (html)
-            this.$contents.html(this._template(html));
-        return true;
-    },
 
-    _propRead: function() {
-        var result = this._super();
-        result.html = this._properties.html;
-        return result;
+        var cObj = this;
+        var doRender = function()
+        {
+            var html = cObj._properties.html;
+            if (!$.isBlank(html) && cObj.$dom.attr('contentEditable') != 'true')
+            { html = cObj._template(html); }
+            if (cObj._properties.isPlainText)
+            { html = html.plainTextToHtml(); }
+            cObj.$contents.html(html);
+            cObj.$contents.css(blist.configs.styles.convertProperties(cObj._properties));
+        }
+        if (!$.isBlank(cObj._properties.contextId))
+        { cObj._updateDataSource(cObj._properties, doRender); }
+        else { doRender(); }
+
+        return true;
     },
 
     _propWrite: function(properties) {
         this._super(properties);
-        var html = properties.html;
-        if (html !== undefined) {
-            this._properties.html = html;
-            if ($(this.dom).attr('contentEditable') != 'true')
-                html = this._template(html);
-            this.$contents.html(html);
-        }
+        if (!_.isEmpty(properties)) { this._render(); }
     },
 
     edit: function(editable) {

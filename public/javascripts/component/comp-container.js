@@ -226,6 +226,7 @@
 
             this.$ct = this._getContainer();
             this.$ct.addClass('socrata-container');
+            this.$contents.css(blist.configs.styles.convertProperties(this._properties));
 
             this.each(this._moveChildDom, this);
 
@@ -340,11 +341,11 @@
                 return;
             var totalWeight = 0;
             this.each(function(child) {
-                totalWeight += child.weight || 1;
+                totalWeight += child.properties().weight || 1;
             });
             var pos = 0;
             this.each(function(child) {
-                var weight = child.weight || 1;
+                var weight = child.properties().weight || 1;
                 $(child.wrapper).css({
                     marginLeft: -(100 - pos / totalWeight * 100) + '%',
                     width: (weight / totalWeight * 100) + '%'

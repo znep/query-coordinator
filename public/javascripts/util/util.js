@@ -64,6 +64,11 @@ String.prototype.camelize = function()
             { return item.substring(0, 1).toUpperCase() + item.substring(1); }).join('');
 };
 
+String.prototype.plainTextToHtml = function()
+{
+    return ('<p>' + this.replace(/\n/g, '</p><p>') + '</p>').replace(/<p><\/p>/g, '<p>&nbsp;</p>');
+};
+
 /* from wikibooks: http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#JavaScript */
 String.prototype.levenshtein = function(other)
 {

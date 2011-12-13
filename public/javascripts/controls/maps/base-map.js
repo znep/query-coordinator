@@ -518,6 +518,18 @@
             $layers.removeClass('hide');
         },
 
+        hideLayers: function()
+        {
+            _.each(this._baseLayers, function(layer)
+            { layer.setVisibility(false); });
+        },
+
+        showLayers: function()
+        {
+            _.each(this._baseLayers, function(layer)
+            { layer.setVisibility(true); });
+        },
+
         handleClustersLoaded: function(clusters, view)
         {
             var mapObj = this;

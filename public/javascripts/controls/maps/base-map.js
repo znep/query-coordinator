@@ -1083,8 +1083,10 @@
         getViewport: function()
         {
             var mapObj = this;
-            var extent = mapObj.map.getExtent().transform(mapObj.map.getProjectionObject(),
-                                                          geographicProjection).toArray();
+            var extent = mapObj.map.getExtent();
+            if (!extent) { return null; }
+            extent = extent.transform(mapObj.map.getProjectionObject(), geographicProjection)
+                           .toArray();
             var vp = { xmin: extent[0], ymin: extent[1], xmax: extent[2], ymax: extent[3] };
 
 
@@ -1101,7 +1103,7 @@
 
         setViewport: function(viewport)
         {
-            if (_.isEqual(viewport, this.getViewport())) { return; }
+            if (_.isEqual(viewport, this.getViewport() || {})) { return; }
             var bounds = new OpenLayers.Bounds(viewport.xmin, viewport.ymin,
                                                viewport.xmax, viewport.ymax);
 

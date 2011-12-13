@@ -544,7 +544,7 @@
             viewConfig._lastClusterSet = _.map(clusters, function(cluster) { return cluster.id; });
 
             // If no animations or it's a gather animation, clear it out.
-            if (viewConfig._animation.direction == 'none')
+            if (viewConfig._animation && viewConfig._animation.direction == 'none')
             { viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); }
         },
 
@@ -1032,7 +1032,7 @@
                 return this.boundaries;
             };
 
-            if (viewConfig._animation.direction == 'spread')
+            if (viewConfig._animation && viewConfig._animation.direction == 'spread')
             { marker.style.display = 'none'; }
 
             viewConfig._displayLayer.addFeatures([marker]);
@@ -1322,7 +1322,11 @@
                 viewConfig._displayLayer = mapObj.buildViewLayer(view);
                 mapObj.map.addLayer(viewConfig._displayLayer);
             }
-            if (viewConfig._neverCluster) { return mapObj._super(view); }
+            if (viewConfig._neverCluster)
+            {
+                mapObj.initializeAnimation(null, view);
+                return mapObj._super(view);
+            }
 
             viewConfig._renderType = 'clusters';
             view.getClusters(mapObj._displayFormat.viewport ||
@@ -1422,6 +1426,7 @@
 
             viewConfig._animation = { news: [] };
             if (mapObj._displayFormat.plotStyle != 'point') { return; }
+            if (_.isEmpty(data)) { return; }
 
             viewConfig._animation.olds = _.clone(viewConfig._displayLayer.features);
 

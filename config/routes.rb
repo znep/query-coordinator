@@ -408,7 +408,7 @@ ActionController::Routing::Routes.draw do |map|
   # the map.root call so that root_path and related variables are defined
   map.with_options(:controller => 'custom_content') do |canvas|
     canvas.connect '/template/:id', :action => 'template'
-    # canvas.connect '*path', :action => 'page'
+    canvas.connect '*path', :action => 'page'
     canvas.root :action => 'homepage' # Required to define root_path
   end
 

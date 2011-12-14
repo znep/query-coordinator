@@ -1315,7 +1315,7 @@
 
             if (mapObj._displayFormat.plotStyle == 'heatmap')
             {
-                mapObj._renderType = 'points';
+                mapObj._byView[mapObj._primaryView.id]._renderType = 'points';
                 mapObj._byView[mapObj._primaryView.id]._neverCluster = true;
             }
 

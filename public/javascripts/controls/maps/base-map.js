@@ -938,6 +938,7 @@
             marker.attributes.heatStrength = 1;
             marker.attributes.rows = details.rows;
             marker.attributes.dupKey = dupKey;
+            marker.attributes.boundary = function() { return []; };
 
             if (newMarker)
             {

@@ -566,7 +566,7 @@
             var componentClass = $.component[properties.type.camelize()];
             if (!componentClass)
                 throw "Invalid component type " + type;
-            return new componentClass(properties);
+            return new componentClass($.extend(true, {}, properties));
         },
 
         initialize: function() {

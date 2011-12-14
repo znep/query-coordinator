@@ -100,8 +100,10 @@
             // because processRows uses mapObj._rows for initial processing.
             if (mapObj._runningQuery) { return; }
 
-            // In case they were cleared
-            processFeatures(mapObj, function() { processRows(mapObj, rows); });
+            if (mapObj._featuresRendered)
+            { processRows(mapObj, rows); }
+            else
+            { processFeatures(mapObj, function() { processRows(mapObj, rows); }); }
         },
 
         generateFlyoutLayout: function(columns)
@@ -426,6 +428,7 @@
         mapObj._featureDisplayName = mapObj._featureSet.displayFieldName;
 
         if (mapObj._featuresRendered) { callback(); return; }
+        mapObj._featuresRendered = true;
 
         if (!mapObj._featuresTransformed)
         {
@@ -455,8 +458,6 @@
             { if (mapObj.hideLayers) { mapObj.hideLayers(); } }
 
             mapObj.finishLoading();
-
-            mapObj._featuresRendered = true;
             callback();
         });
     };

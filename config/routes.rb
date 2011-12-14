@@ -405,7 +405,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # This action is a superset of the following action.  Eventually it will supplant altogether but we still need
   # the map.root call so that root_path and related variables are defined
-  #map.connect '*path', :controller => "custom_content", :action => "page"
+  map.connect '*path', :controller => "custom_content", :action => "page"
   map.root :controller => "custom_content", :action => "homepage" # Required to define root_path
 
   # See how all your routes lay out with "rake routes"

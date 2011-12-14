@@ -2,7 +2,7 @@ require 'digest/md5'
 
 class CustomContentController < ApplicationController
   before_filter :check_lockdown
-  around_filter :cache_wrapper, :except => [ :stylesheet ]
+  around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
   skip_before_filter :require_user
   include BrowseActions
 
@@ -87,13 +87,25 @@ class CustomContentController < ApplicationController
   end
 
   def page
-    path = "/#{params[:path].join '/'}"
-    @page = Page[path] if CurrentDomain.module_available?('canvas2')
-    unless @page
-      if path == '/'
-        homepage
-      else
-        render_404
+    # TODO: This should include the locale (whenever we figure out how that is specified)
+    cache_params = { 'domain' => CurrentDomain.cname,
+                     'domain_updated' => CurrentDomain.default_config_updated_at,
+                     'params' => Digest::MD5.hexdigest(params.sort.to_json) }
+    @cache_key = app_helper.cache_key("canvas2-page", cache_params)
+    @cached_fragment = read_fragment(@cache_key)
+
+    if @cached_fragment.nil?
+      path = "/#{params[:path].join '/'}"
+      if CurrentDomain.module_available?('canvas2')
+        @page = Page[path]
+      end
+      unless @page
+        if path == '/'
+          self.action_name = 'homepage'
+          homepage
+        else
+          render_404
+        end
       end
     end
   end

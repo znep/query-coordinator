@@ -50,17 +50,35 @@
             dc._contextsQueue[id] = [];
             switch (config.type)
             {
-                case 'dataset':
-                    Dataset.createFromViewId(config.datasetId, function(dataset)
+                case 'row':
+                    loadDataset(config, function(ds)
+                    {
+                        ds.getRows(0, 1, function(r)
                         {
-                            addQuery(dataset, config.query);
+                            r = _.first(r);
+                            if ($.isBlank(r))
+                            {
+                                errorLoading(id);
+                                return;
+                            }
 
-                            dc.availableContexts[id] = {id: id, type: config.type, dataset: dataset};
+                            // Fake support for row fieldNames
+                            var fr = {};
+                            _.each(ds.visibleColumns, function(c) { fr[c.fieldName] = r[c.lookup]; });
+                            dc.availableContexts[id] = {id: id, type: config.type, row: fr};
                             doneLoading(dc.availableContexts[id]);
-                        },
-                        function(xhr)
-                        { errorLoading(id); });
+                        });
+                    });
                     break;
+
+                case 'dataset':
+                    loadDataset(config, function(ds)
+                    {
+                        dc.availableContexts[id] = {id: id, type: config.type, dataset: ds};
+                        doneLoading(dc.availableContexts[id]);
+                    });
+                    break;
+
                 case 'datasetList':
                     Dataset.search(config.search, function(results)
                         {
@@ -124,4 +142,31 @@
 
         ds.update({query: $.extend(true, {}, ds.query, query)});
     };
+
+    var loadDataset = function(config, callback)
+    {
+        if ($.subKeyDefined(config, 'datasetId'))
+        {
+            Dataset.createFromViewId(config.datasetId, function(dataset)
+                {
+                    addQuery(dataset, config.query);
+                    callback(dataset);
+                },
+                function(xhr)
+                { errorLoading(id); });
+        }
+        else if ($.subKeyDefined(config, 'search'))
+        {
+            Dataset.search($.extend({}, config.search, {limit: 1}), function(results)
+            {
+                if (results.count < 1) { return; }
+                var ds = _.first(results.views);
+                addQuery(ds, config.query);
+                callback(ds);
+            },
+            function(xhr)
+            { errorLoading(id); });
+        }
+    };
+
 })(jQuery);

@@ -37,9 +37,10 @@
     </div>
   </div>
 
-  <%- approval = Approval.find()[0] -%>
-  <%- if module_available?(:routing_approval) && approval.present? && current_user.present? &&
+  <%- if module_available?(:routing_approval) && current_user.present? &&
     (current_user.can_approve? || @view.has_rights?('update_view')) -%>
+  <%- approval = Approval.find()[0] -%>
+  <%- if approval.present? -%>
   <%- next_stage = @view.next_approval_stage(approval) -%>
   <%- @users = {}
     (CoreServer::Base.connection.batch_request do
@@ -127,6 +128,7 @@
       <%- end -%>
     </ul>
   </div>
+  <%- end -%>
   <%- end -%>
   <%- end -%>
 

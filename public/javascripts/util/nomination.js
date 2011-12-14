@@ -26,8 +26,8 @@ this.Nomination = ServerModel.extend({
 
     removeComment: function(commentId, successCallback, errorCallback)
     {
-        this.makeRequest({url: this.selfUrl + '/comments.json',
-            type: 'DELETE', success: callback, error: errorCallback});
+        this.makeRequest({url: this.selfUrl + '/comments/' + commentId + '.json',
+            type: 'DELETE', success: successCallback, error: errorCallback});
     },
 
     contactOwner: function(message, callback, errorCallback)

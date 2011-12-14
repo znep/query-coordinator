@@ -188,7 +188,7 @@ metricsNS.chartDefaults = {
         labels: {
             align: 'left',
             formatter: function() {
-                return Highcharts.numberFormat(this.value, 0);
+                return this.value;
             },
             y: -2,
             x: 2

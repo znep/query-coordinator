@@ -552,7 +552,10 @@
             _.each(clusters, function(cluster)
             { mapObj.renderCluster(cluster, { dataView: view }); });
 
-            mapObj.dataRendered();
+            mapObj._renderedRows += _.reduce(clusters, function(memo, cluster)
+            { return memo + cluster.size; }, 0);
+
+            mapObj.rowsRendered();
             viewConfig._lastClusterSet = _.map(clusters, function(cluster) { return cluster.id; });
 
             // If no animations or it's a gather animation, clear it out.
@@ -1055,12 +1058,8 @@
 
         rowsRendered: function()
         {
-            this.dataRendered();
-        },
-
-        dataRendered: function()
-        {
             var mapObj = this;
+            mapObj._super();
 
             if (mapObj._geometryQueue)
             { _.each(mapObj._geometryQueue,

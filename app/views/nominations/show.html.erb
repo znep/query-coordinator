@@ -98,13 +98,12 @@
   <%= render :partial => 'datasets/feed_template', :locals => {:allow_comments => true} %>
 <%- end -%>
 
+<%= current_user_js %>
+
 <%- content_for :js_footer do -%>
   <%= include_javascripts 'screen-nomination' %>
   <script type='text/javascript'>
     blist.namespace.fetch('blist.nominations');
     blist.nomination = new Nomination(<%= safe_json(@nom) %>);
-    <%- if current_user.present? -%>
-    blist.currentUserId = '<%= current_user.id %>';
-    <%- end -%>
   </script>
 <%- end -%>

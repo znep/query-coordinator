@@ -461,6 +461,31 @@ var Dataset = ServerModel.extend({
         { successCallback(); }
     },
 
+/*
+    getClusters: function(successCallback, errorCallback)
+    {
+        var ds = this;
+
+        // To minimize having to make changes to the service files.
+        var transformClusters = function(cluster)
+        {
+            cluster.size = cluster.count;
+            cluster.centroid = { lon: cluster.point.lon, lat: cluster.point.lat };
+        };
+
+        ds.makeRequest({
+            params: {method: 'clustered'},
+            inline: true,
+            success: function(data)
+                {
+                    _.each(data, transformClusters);
+                    successCallback(data);
+                },
+            error: errorCallback
+        });
+    },
+*/
+
     getClusters: function(viewport, displayFormat, successCallback, errorCallback)
     {
         var ds = this;
@@ -486,6 +511,7 @@ var Dataset = ServerModel.extend({
 
         var translateCluster = function(c)
         {
+            c.childBoxes = _.pluck(c.children, 'box');
             c.children = _.pluck(c.children, 'id');
             c.points   = _.pluck(c.points,  'sid');
             c.parent   = ds._clusters[c.pathToRoot[0]];
@@ -502,9 +528,10 @@ var Dataset = ServerModel.extend({
               if (vertex.lon == 180)       { vertex.lon -= 0.000001; }
               else if (vertex.lon == -180) { vertex.lon += 0.000001; }
             });
+            c.leafNode = c.points.length > 0;
         };
 
-        var useInline = ds.type != 'map'
+        var useInline = ds.isDefault()
                         || $.subKeyDefined(ds, 'query.filterCondition')
                         || !$.isBlank(ds.searchString)
                         || (!$.isBlank(displayFormat) && !_.isEqual(displayFormat, ds.displayFormat));
@@ -1069,6 +1096,10 @@ var Dataset = ServerModel.extend({
                 if (_.isFunction(callback)) { callback(); }
             }
         };
+
+        // If aggregates are stale, clear them all out to avoid confusion
+        if (ds._aggregatesStale)
+        { _.each(ds.realColumns, function(c) { c.aggregates = {}; }); }
 
         var isStale = ds._aggregatesStale ||
             _.any(customAggs || {}, function(aList, cId)
@@ -1698,14 +1729,21 @@ var Dataset = ServerModel.extend({
             });
             if (newFilters.length > 0)
             {
-                if ($.isBlank(filters))
-                { filters = {children: [], type: 'operator', value: 'AND'}; }
-                else if (filters.type != 'operator' || filters.value != 'AND')
+                if ($.isBlank(filters) && newFilters.length == 1)
                 {
-                    filters = {type: 'operator', value: 'AND',
-                        children: [filters]};
+                    filters = _.first(newFilters);
                 }
-                filters.children = (filters.children || []).concat(newFilters);
+                else
+                {
+                    if ($.isBlank(filters))
+                    { filters = {children: [], type: 'operator', value: 'AND'}; }
+                    else if (filters.type != 'operator' || filters.value != 'AND')
+                    {
+                        filters = {type: 'operator', value: 'AND',
+                            children: [filters]};
+                    }
+                    filters.children = (filters.children || []).concat(newFilters);
+                }
             }
         }
         return filters;
@@ -2141,7 +2179,8 @@ var Dataset = ServerModel.extend({
                 // skip this one, and only use the latest
                 if (ds._curMetaReq != reqId)
                 {
-                    if (_.isFunction(errorCallback)) { _.defer(errorCallback); }
+                    if (_.isFunction(errorCallback))
+                    { _.defer(function() { errorCallback({cancelled: true}); }); }
                     return;
                 }
                 delete ds._curMetaReq;

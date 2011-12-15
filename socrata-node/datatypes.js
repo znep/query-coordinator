@@ -21,8 +21,12 @@ blist.namespace.fetch('blist.datatypes');
     /* Textual types */
 
     // Text & base textual
-    var renderText = function(value, column, plainText, inMenu)
-    { return $.htmlEscape(inMenu ? $.htmlStrip(value) : value); };
+    var renderText = function(value, column, plainText, inMenu, context, skipEscape)
+    {
+        var v = inMenu ? $.htmlStrip(value) : ($.isBlank(value) ? '' : value);
+        // Can we get rid of htmlEscape here?
+        return skipEscape ? v : $.htmlEscape(v);
+    };
 
     // HTML
     var renderHtml = function(value, col, plainText, inMenu)
@@ -30,7 +34,7 @@ blist.namespace.fetch('blist.datatypes');
         if ($.isBlank(value)) { return ''; }
         if (plainText || inMenu) { return $.htmlStrip(value); }
         // Add an extra wrapper so we can tweak the display to something
-        // reasoanble
+        // reasonable
         return '<span class="blist-html">' + value + '</span>';
     };
 
@@ -56,9 +60,9 @@ blist.namespace.fetch('blist.datatypes');
     {
         if ($.isBlank(value)) { return ''; }
 
+        var origValue = value.toString();
         if (_.isString(mask) && (mask !== ''))
         {
-            origValue = value.toString();
             value = '';
 
             while (origValue.length && mask.length)
@@ -98,6 +102,7 @@ blist.namespace.fetch('blist.datatypes');
             {
                 // Skip this if we already have a number as it is slow
                 value = parseFloat(value);
+                if (_.isNaN(value)) { return origValue; }
             }
 
             if (precisionStyle == 'scientific')
@@ -681,6 +686,13 @@ blist.namespace.fetch('blist.datatypes');
         comparable: {
             orderedList: ['EQUALS', 'NOT_EQUALS', 'IS_BLANK', 'IS_NOT_BLANK']
         },
+        check: {
+            details: {
+                'IS_BLANK': { text: 'is not checked' },
+                'IS_NOT_BLANK': { text: 'is checked' }
+            },
+            orderedList: ['IS_BLANK', 'IS_NOT_BLANK']
+        },
         blob: {
             details: {
                 'IS_BLANK': { text: 'is empty' },
@@ -1177,7 +1189,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-            filterConditions: filterGroups.comparable,
+            filterConditions: filterGroups.check,
             filterValue: valueFilterCheckbox,
             isInlineEdit: true,
             priority: 11,

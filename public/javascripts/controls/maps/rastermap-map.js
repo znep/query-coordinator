@@ -101,7 +101,7 @@
             return true;
         },
 
-        dataRendered: function()
+        rowsRendered: function()
         {
             var mapObj = this;
             mapObj._super();

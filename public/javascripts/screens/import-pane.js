@@ -1650,18 +1650,26 @@ importNS.importingPaneConfig = {
                 }
                 else if (column.type == 'location')
                 {
-                    var addressPart = _.map(_.compact(
-                            [ column.address, column.city, column.state, column.zip ]), handleColumn).join(' + ", " + ');
-
-                    var latLongPart;
-                    if (!_.isUndefined(column.latitude) && !_.isUndefined(column.longitude))
-                    {
-                        // yeah. this sucks. use a syntax highlighter.
-                        latLongPart = '"(" + ' + handleColumn(column.latitude) + ' + ", " + ' +
-                            handleColumn(column.longitude) + ' + ")"';
-                    }
-
-                    result = _.compact([addressPart, latLongPart]).join(' + ", " + ');
+					// we're using js to build a js expression that will build a json blob.
+					// BWAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+					result = [];
+					result.push('JSON.stringify({');
+					if (!_.isUndefined(column.latitude) && !_.isUndefined(column.longitude))
+					{
+						result.push('latitude:' + handleColumn(column.latitude) + ',');
+						result.push('longitude:' + handleColumn(column.longitude) + ',');
+					}
+					result.push(	'human_address:{');
+					if (!_.isUndefined(column.address))
+						result.push(	'address:' + handleColumn(column.address) + ',');
+					if (!_.isUndefined(column.city))
+						result.push(	'city:' + handleColumn(column.city) + ',');
+					if (!_.isUndefined(column.state))
+						result.push(	'state:' + handleColumn(column.state) + ',');
+					if (!_.isUndefined(column.zip))
+						result.push(	'zip:' + handleColumn(column.zip));
+					result.push('}})');
+					return result.join('');
                 }
                 else if (column.type == 'composite')
                 {

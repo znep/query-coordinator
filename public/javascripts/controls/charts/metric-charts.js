@@ -188,7 +188,11 @@ metricsNS.chartDefaults = {
         labels: {
             align: 'left',
             formatter: function() {
-                return this.value;
+                if (this.value >= 1000) {
+                    return Highcharts.numberFormat(this.value, 0);
+                } else {
+                    return this.value;
+                }
             },
             y: -2,
             x: 2

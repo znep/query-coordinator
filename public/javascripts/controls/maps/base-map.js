@@ -233,7 +233,7 @@
             }
             else
             {
-                $.live("image, path", 'click', function(evt)
+                $.live("circle, image, path, text", 'click', function(evt)
                 {
                     var features = findFeatureFromEvent(mapObj, evt);
                     if (_.isEmpty(features)) { return null; }

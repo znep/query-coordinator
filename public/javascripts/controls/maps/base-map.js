@@ -1042,7 +1042,10 @@
                             new OpenLayers.Geometry.Point(childCenter.lon, childCenter.lat)
                         ]);
                     }));
-                this.boundaries = this.boundaries.concat(new OpenLayers.Feature.Vector(lines));
+                var lineBkgs = lines.clone();
+                this.boundaries.push(new OpenLayers.Feature.Vector(lineBkgs, {},
+                    { strokeWidth: 3, strokeColor: '#ffffff' }));
+                this.boundaries.push(new OpenLayers.Feature.Vector(lines));
 
                 return this.boundaries;
             };

@@ -556,6 +556,16 @@
             { return memo + cluster.size; }, 0);
 
             mapObj.rowsRendered();
+
+            if (_.all(viewConfig._displayLayer.features, function(feature)
+                { return !feature.onScreen(); }))
+            {
+                viewConfig._fetchPoints = true;
+                mapObj.getDataForView(view);
+                delete viewConfig._fetchPoints;
+                return;
+            }
+
             viewConfig._lastClusterSet = _.map(clusters, function(cluster) { return cluster.id; });
 
             // If no animations or it's a gather animation, clear it out.
@@ -1336,10 +1346,13 @@
                 viewConfig._displayLayer = mapObj.buildViewLayer(view);
                 mapObj.map.addLayer(viewConfig._displayLayer);
             }
-            if (viewConfig._neverCluster)
+            if (viewConfig._neverCluster || viewConfig._fetchPoints)
             {
                 mapObj.initializeAnimation(null, view);
-                return mapObj._super(view);
+                mapObj._super(view);
+                if (viewConfig._fetchPoints)
+                { delete viewConfig._fetchPoints; }
+                return;
             }
 
             viewConfig._renderType = 'clusters';
@@ -1407,10 +1420,10 @@
             },
             function()
             {
-                _.defer(function()
-                    { mapObj.handleClustersLoaded([], view); });
                 // On error clear these variables so more requests will be triggered
                 delete mapObj._initialLoad;
+                viewConfig._fetchPoints = true;
+                mapObj.getDataForView(view);
             });
         },
 

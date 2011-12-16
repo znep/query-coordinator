@@ -5804,26 +5804,22 @@ function Chart (options, callback) {
 			
 			// iOS
 			ePos = e.touches ? e.touches.item(0) : e;
-			
-			// in certain cases, get mouse position
-			if (e.type != 'mousemove' || win.opera) { // only Opera needs position on mouse move, see below
-				chartPosition = getPosition(container);
-			}
+
+            // aiden.scandella@socrata.com 2011-12-16
+            // backport the layerX/layerY deprecation fixes
+            chartPosition = getPosition(container);
+            var chartPosLeft = chartPosition.left;
+            var chartPosTop = chartPosition.top;
 
 			// chartX and chartY
 			if (isIE) { // IE including IE9 that has chartX but in a different meaning
 				e.chartX = e.x;
 				e.chartY = e.y;
 			} else {
-				if (ePos.layerX === UNDEFINED) { // Opera and iOS
-					e.chartX = ePos.pageX - chartPosition.left;
-					e.chartY = ePos.pageY - chartPosition.top;
-				} else {
-					e.chartX = e.layerX;
-					e.chartY = e.layerY;
-				}
+                e.chartX = ePos.pageX - chartPosLeft;
+                e.chartY = ePos.pageY - chartPosTop;
 			}
-			
+
 			return e;
 		}
 		

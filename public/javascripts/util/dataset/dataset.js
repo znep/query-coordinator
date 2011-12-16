@@ -1446,7 +1446,7 @@ var Dataset = ServerModel.extend({
                 pageCache: true, type: 'GET',
                 error: function(req)
                 {
-                    alert('Fail to get columns from dataset ' + viewUid);
+                    alert(JSON.parse(req.responseText).message);
                 },
                 success: function(linkedDataset)
                 {
@@ -3156,7 +3156,7 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
         $.Tache.Get({url: '/api/views/' + viewUid + '.json',
             error: function(req)
             {
-                alert('Fail to get columns from dataset ' + viewUid);
+                alert(JSON.parse(req.responseText).message);
            },
             success: function(linkedDataset)
             {

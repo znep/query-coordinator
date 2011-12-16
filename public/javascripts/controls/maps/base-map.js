@@ -819,6 +819,12 @@
             return true;
         },
 
+        handleRowsLoaded: function()
+        {
+            if (this._renderType != 'points') { return; }
+            else { this._super.apply(this, arguments); }
+        },
+
         getRowsForAllViews: function()
         {
             var mapObj = this;
@@ -828,7 +834,12 @@
 
             if (mapObj._displayFormat.plotStyle == 'heatmap'
                 || mapObj._neverCluster)
-            { return mapObj._super(); }
+            {
+                mapObj._renderType = 'points';
+                return mapObj._super();
+            }
+            else
+            { mapObj._renderType = 'clusters'; }
 
             var rowsToFetch = mapObj._maxRows;
             var nonStandardRender = function(view)

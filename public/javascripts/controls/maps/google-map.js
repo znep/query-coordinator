@@ -40,6 +40,7 @@
 
             mapObj._listeners.idle = google.maps.event.addListener(mapObj.map, 'idle', function()
                 {
+                    if (mapObj._gInfoBoxPanning) { return; }
                     var isResize = mapObj._isResize;
                     delete mapObj._isResize;
                     // Catch first idle to let us know the map is ready; we don't
@@ -436,8 +437,16 @@
                     else if ($.subKeyDefined(mapGeom, 'getPosition'))
                     { point = mapGeom.getPosition(); }
                 }
+                if (mapObj._gInfoBoxPanning) { return; }
                 mapObj.infoWindow.setPosition(point);
                 mapObj.infoWindow.open(mapObj.map);
+                mapObj._gInfoBoxDonePanning = google.maps.event.addListener(mapObj.map, 'idle',
+                    function()
+                    {
+                        delete mapObj._gInfoBoxPanning;
+                        google.maps.event.removeListener(mapObj._gInfoBoxDonePanning);
+                    });
+                mapObj._gInfoBoxPanning = true;
                 mapObj._infoOpen = true;
                 return true;
             };

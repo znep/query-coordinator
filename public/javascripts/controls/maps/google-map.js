@@ -437,15 +437,17 @@
                     else if ($.subKeyDefined(mapGeom, 'getPosition'))
                     { point = mapGeom.getPosition(); }
                 }
-                if (mapObj._gInfoBoxPanning) { return; }
+                if (mapObj._gInfoBoxPanning) { return true; }
                 mapObj.infoWindow.setPosition(point);
                 mapObj.infoWindow.open(mapObj.map);
+                var donePanning = function()
+                {
+                    delete mapObj._gInfoBoxPanning;
+                    google.maps.event.removeListener(mapObj._gInfoBoxDonePanning);
+                };
                 mapObj._gInfoBoxDonePanning = google.maps.event.addListener(mapObj.map, 'idle',
-                    function()
-                    {
-                        delete mapObj._gInfoBoxPanning;
-                        google.maps.event.removeListener(mapObj._gInfoBoxDonePanning);
-                    });
+                    donePanning);
+                setTimeout(donePanning, 2000);
                 mapObj._gInfoBoxPanning = true;
                 mapObj._infoOpen = true;
                 return true;

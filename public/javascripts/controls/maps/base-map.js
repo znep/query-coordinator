@@ -305,6 +305,13 @@
         {
             var mapObj = this;
 
+            if ($.subKeyDefined(mapObj._primaryView, 'highlightTypes.select'))
+            {
+                mapObj._primaryView.unhighlightRows(
+                    _.values(mapObj._primaryView.highlightTypes.select), 'select');
+                mapObj.$dom().trigger('display_row', [{row: null}]);
+            }
+
             _.each(clusters, function(cluster) { mapObj.renderCluster(cluster, {}); });
 
             mapObj.dataRendered();

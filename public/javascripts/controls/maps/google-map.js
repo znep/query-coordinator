@@ -410,7 +410,7 @@
                 if (!mapObj.infoWindow)
                 {
                     mapObj.infoWindow =
-                        new google.maps.InfoWindow({maxWidth: 300});
+                        new google.maps.InfoWindow({maxWidth: 300, disableAutoPan: true});
                     google.maps.event.addListener(mapObj.infoWindow, 'closeclick',
                         function()
                         {

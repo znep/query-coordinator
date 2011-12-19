@@ -233,7 +233,7 @@
             }
             else
             {
-                $.live("circle, image, path, text", 'click', function(evt)
+                $.live("circle, image, path, text, oval, rect", 'click', function(evt)
                 {
                     var features = findFeatureFromEvent(mapObj, evt);
                     if (_.isEmpty(features)) { return null; }
@@ -264,7 +264,7 @@
                     });
                 });
             }
-            $.live("circle, image, path, text", 'mouseover', function(evt)
+            $.live("circle, image, path, text, oval, rect", 'mouseover', function(evt)
             {
                 var features = findFeatureFromEvent(mapObj, evt);
                 if (_.isEmpty(features)) { return null; }
@@ -287,7 +287,7 @@
                     }
                 });
             });
-            $.live("circle, image, path, text", 'mouseout', function(evt)
+            $.live("circle, image, path, text, oval, rect", 'mouseout', function(evt)
             {
                 var features = findFeatureFromEvent(mapObj, evt);
                 if (_.isEmpty(features)) { return null; }

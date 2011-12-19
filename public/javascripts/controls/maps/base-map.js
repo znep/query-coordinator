@@ -885,7 +885,7 @@
                 { marker = new OpenLayers.Feature.Vector(
                     new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)); }
                 else
-                { marker.move(lonlat); } // FIXME: This is wrong.
+                { marker.geometry = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat); }
 
                 marker.attributes.clusterParent = details.clusterParent;
                 if (details.dataView)

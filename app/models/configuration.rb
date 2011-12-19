@@ -49,13 +49,13 @@ class Configuration < Model
 
   def update_property(name, value)
     data['properties'].detect {|p| p['name'] == name}['value'] = value
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{name}.json"
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape(name)}.json"
     CoreServer::Base.connection.
       update_request(url, {'name' => name, 'value' => value}.to_json)
   end
 
   def delete_property(name, is_internal = false)
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{name}.json"
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape(name)}.json"
     CoreServer::Base.connection.
       delete_request(url, '')
   end

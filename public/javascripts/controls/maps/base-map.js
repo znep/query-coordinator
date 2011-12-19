@@ -1081,6 +1081,30 @@
 
             mapObj.adjustBounds();
             mapObj.runAnimation();
+
+            // Create a copy of features on the wrong side of the dateline
+            // and wrap around their X coordinate.
+            // TODO: Wishing OpenLayers would do this automatically.
+            if (mapObj._datelineHack)
+            {
+                _.each(mapObj._byView, function(viewConfig)
+                {
+                    var left = viewConfig._displayLayer.getExtent().left;
+                    var difference
+                        = (Math.abs(left)/left) * viewConfig._displayLayer.maxExtent.getWidth();
+                    var features = _(viewConfig._displayLayer.features).chain()
+                        .select(function(f) { return !f.onScreen(); })
+                        .map(function(f) {
+                            return new OpenLayers.Feature.Vector(
+                                new OpenLayers.Geometry.Point(f.geometry.x + difference,
+                                                              f.geometry.y),
+                                $.extend({}, f.attributes, { datelineHack: true }),
+                                f.style);
+                        }).value();
+                    viewConfig._displayLayer.addFeatures(features);
+                });
+            }
+
             _.each(mapObj._byView, function(viewConfig)
             { viewConfig._lastRenderType = viewConfig._renderType; });
             mapObj._lastZoomLevel = mapObj.currentZoom();
@@ -1113,6 +1137,25 @@
                            .toArray();
             var vp = { xmin: extent[0], ymin: extent[1], xmax: extent[2], ymax: extent[3] };
 
+            // Test for wraparound.
+            // Weird fact: cloning the extent above to minimize calcs didn't work.
+            // Could be a mistake on my part. Doesn't make sense.
+            var xmin =
+                mapObj.map.baseLayer.getViewPortPxFromLonLat(new OpenLayers.LonLat(vp.xmin, vp.ymin)
+                    .transform(geographicProjection, mapObj.map.getProjectionObject()));
+            var xmax =
+                mapObj.map.baseLayer.getViewPortPxFromLonLat(new OpenLayers.LonLat(vp.xmax, vp.ymin)
+                    .transform(geographicProjection, mapObj.map.getProjectionObject()));
+            var size = mapObj.map.getSize();
+
+            // If each boundary is onscreen and within 10 pixels of the edge, yay.
+            if (xmin.x > 10 && xmin.x < size.w)
+            { vp.xmin = -180; }
+            if (xmax.x > 0 && Math.abs(xmax.x - size.w) > 10)
+            { vp.xmax = 180; }
+
+            // OpenLayers can't display both sides of the dateline at once normally.
+            mapObj._datelineHack = vp.xmin > vp.xmax;
 
             if (!$.isBlank(vp))
             {

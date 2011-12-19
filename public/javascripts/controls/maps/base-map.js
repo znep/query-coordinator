@@ -885,7 +885,7 @@
                 { marker = new OpenLayers.Feature.Vector(
                     new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)); }
                 else
-                { marker.move(lonlat); }
+                { marker.move(lonlat); } // FIXME: This is wrong.
 
                 marker.attributes.clusterParent = details.clusterParent;
                 if (details.dataView)
@@ -1491,7 +1491,12 @@
             direction = ((direction || {})._animation || {}).direction;
 
             // Either there's only one view, or nothing is going to happen.
-            if (!direction) { return; }
+            if (!direction)
+            {
+                _.each(mapObj._byView, function(viewConfig)
+                { viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); });
+                return;
+            }
 
             var animKey  = direction == 'spread' ? 'news' : 'olds';
             var otherKey = direction == 'gather' ? 'news' : 'olds';

@@ -30,13 +30,12 @@ module Canvas
   end
 
   class CanvasWidget
-    attr_reader :elem_id
-    attr_accessor :binding
+    attr_accessor :elem_id, :binding
 
     def initialize(data, id_prefix = '')
       @data = data
+      @id_prefix = id_prefix
       @elem_id = "#{id_prefix}_#{self.class.name.split(/::/).last}"
-      @binding = Environment.bindings
 
       load_properties(@data.properties)
     end
@@ -77,6 +76,10 @@ module Canvas
       return @children ||= CanvasWidget.from_config(@data.children, @elem_id)
     end
 
+    def passthrough?
+      return false
+    end
+
     def can_prepare?
       return true
     end
@@ -91,14 +94,30 @@ module Canvas
       threads.compact.each{ |thread| thread.join }
     end
 
+    def clone(idx = nil)
+      id_prefix = @id_prefix
+      id_prefix += "_#{idx}" if idx
+
+      stormtrooper = self.class.new @data.clone, id_prefix
+      stormtrooper.children = stormtrooper.children.map{ |child| child.clone } if stormtrooper.has_children?
+      return stormtrooper
+    end
+
     def binding
       return @binding
     end
 
+    def bind(views)
+      @binding = views
+      self.children.each{ |child| child.bind(views) } if self.has_children?
+    end
+
+    def prepare_bindings!
+      self.children.each{ |child| child.prepare_bindings! } if self.has_children?
+    end
+
     def get_view
-      if self.properties.viewBinding
-        return self.binding[self.properties.viewBinding].views.first
-      elsif self.properties.viewUid
+      if self.properties.viewUid
         begin
           return View.find self.properties.viewUid
         rescue CoreServer::ResourceNotFound
@@ -106,13 +125,13 @@ module Canvas
         rescue CoreServer::CoreServerError
           return nil
         end
+      elsif self.binding
+        return self.binding.first
       end
     end
 
     def get_views
-      if self.properties.viewBinding
-        return self.binding[self.properties.viewBinding].views
-      elsif self.properties.viewUids
+      if self.properties.viewUids
         begin
           return View.find_multiple self.properties.viewUids
         rescue CoreServer::ResourceNotFound
@@ -120,6 +139,8 @@ module Canvas
         rescue CoreServer::CoreServerError
           return []
         end
+      elsif self.binding
+        return self.binding[self.properties.viewBinding]
       end
     end
 
@@ -166,6 +187,10 @@ module Canvas
       return current
     end
 
+    def children=(children)
+      @children = children
+    end
+
     self.default_properties = {}
     self.style_definition = []
     self.content_definition = []
@@ -176,6 +201,58 @@ module Canvas
       local_properties.deep_symbolize_keys!
       @properties = Hashie::Mash.new self.default_properties.deep_merge(local_properties)
     end
+  end
+
+# WIDGETS (CONTROL FLOW)
+
+  class ControlFlowWidget < CanvasWidget
+    def passthrough?
+      return true
+    end
+  end
+
+  class Binding < ControlFlowWidget
+    def prepare_bindings!
+      binding = Environment.bindings[self.properties.dataBinding]
+      self.children.each do |child|
+        child.bind(binding.views)
+      end
+    end
+  protected
+    self.default_properties = {
+      dataBinding: nil
+    }
+  end
+
+  class Repeater < ControlFlowWidget
+    def prepare_bindings!
+      binding = Environment.bindings[self.properties.dataBinding]
+
+      i = 0
+      existing_children = self.children.dup
+      self.children = binding.views.take(self.properties.limit).map do |view|
+        existing_children.map do |existing_child|
+          child = existing_child.clone(i += 1)
+          child.bind([ view ])
+          child
+        end
+      end.flatten
+    end
+
+    # ULTRAHACK ALERT BUT IT SHOULD WORK FOR NOW
+    def stylesheet
+      result = super
+      matcher = Regexp.new "^(##{@elem_id}\\d+)"
+
+      return (1..self.properties.limit).to_a.map do |i|
+        result.gsub(matcher, "\\1_#{i}")
+      end
+    end
+  protected
+    self.default_properties = {
+      dataBinding: nil,
+      limit: 5
+    }
   end
 
 # WIDGETS (LAYOUT)
@@ -480,7 +557,6 @@ module Canvas
       column: nil,
       descriptor: 'widget',
       query: nil,
-      viewBinding: nil,
       viewUid: nil
     }
   end
@@ -537,7 +613,9 @@ module Canvas
     attr_reader :view
 
     def prepare!
-      if self.properties.viewUid.nil? && self.properties.viewBinding.nil?
+      @view = self.get_view
+
+      if @view.nil?
         search_options = self.properties.searchOptions.merge({ limit: 1, page: 1 })
 
         if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
@@ -560,8 +638,6 @@ module Canvas
           # some configurations of catalog search can actually return a 404
           @view = false
         end
-      else
-        @view = self.get_view
       end
     end
 
@@ -584,7 +660,6 @@ module Canvas
       style: {
         height: { value: 30, unit: 'em' }
       },
-      viewBinding: nil,
       viewFilterGroup: nil,
       viewUid: nil
     }

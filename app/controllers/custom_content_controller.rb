@@ -4,7 +4,6 @@ class CustomContentController < ApplicationController
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet ]
   skip_before_filter :require_user
-  include BrowseActions
 
   def homepage
     Canvas::Environment.context = :homepage
@@ -179,6 +178,8 @@ private
         binding_threads.each{ |thread| thread.join }
         Canvas::Environment.bindings = bindings
       end
+
+      page_config.contents.each{ |widget| widget.prepare_bindings! }
 
       threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_prepare? }
       threads.compact.each{ |thread| thread.join }

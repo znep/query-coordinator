@@ -98,8 +98,9 @@ module Canvas
       id_prefix = @id_prefix
       id_prefix += "_#{idx}" if idx
 
-      stormtrooper = self.class.new @data.clone, id_prefix
-      stormtrooper.children = stormtrooper.children.map{ |child| child.clone } if stormtrooper.has_children?
+      jango_fett = self.class
+      stormtrooper = jango_fett.new @data.clone, id_prefix
+      stormtrooper.children = self.children.map{ |child| child.clone } if stormtrooper.has_children?
       return stormtrooper
     end
 
@@ -113,7 +114,9 @@ module Canvas
     end
 
     def prepare_bindings!
-      self.children.each{ |child| child.prepare_bindings! } if self.has_children?
+      return unless self.has_children?
+      threads = self.children.map{ |child| Thread.new{ child.prepare_bindings! } }
+      threads.each{ |thread| thread.join }
     end
 
     def get_view
@@ -214,13 +217,33 @@ module Canvas
   class Binding < ControlFlowWidget
     def prepare_bindings!
       binding = Environment.bindings[self.properties.dataBinding]
+
       self.children.each do |child|
         child.bind(binding.views)
       end
+
+      self.children.each{ |child| child.prepare_bindings! }
     end
   protected
     self.default_properties = {
       dataBinding: nil
+    }
+  end
+
+  # takes a view that's bound to it and rebinds children
+  # with related views
+  class RelatedViews < ControlFlowWidget
+    def prepare_bindings!
+      return unless self.binding
+      view = self.binding.first
+      views = view.find_related(0, self.properties.limit, self.properties.sortBy)
+
+      self.children.each{ |child| child.bind(views) }
+    end
+  protected
+    self.default_properties = {
+      limit: 10,
+      sortBy: 'most-accessed'
     }
   end
 
@@ -237,6 +260,8 @@ module Canvas
           child
         end
       end.flatten
+
+      self.children.each{ |child| child.prepare_bindings! }
     end
 
     # ULTRAHACK ALERT BUT IT SHOULD WORK FOR NOW
@@ -581,21 +606,26 @@ module Canvas
 
     def prepare!
       @current_page = (Environment.params[:viewList] || {})[:page].to_i || 1
+      @view_results = self.get_views
 
-      search_options = self.properties.searchOptions
-      search_options[:page] = @current_page || 1
+      if @view_results.nil?
+        search_options = self.properties.searchOptions
+        search_options[:page] = @current_page || 1
 
-      if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
-        if self.properties.facetStyle == 'metadata'
-          search_options[:metadata_tag] = Environment.metadata_tag
-        elsif self.properties.facetStyle == 'search'
-          search_options[:q] = Environment.facet_value
+        if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
+          if self.properties.facetStyle == 'metadata'
+            search_options[:metadata_tag] = Environment.metadata_tag
+          elsif self.properties.facetStyle == 'search'
+            search_options[:q] = Environment.facet_value
+          end
         end
-      end
 
-      search_response = Clytemnestra.search_views(search_options)
-      @view_count = search_response.count
-      @view_results = search_response.results
+        search_response = Clytemnestra.search_views(search_options)
+        @view_count = search_response.count
+        @view_results = search_response.results
+      else
+        @view_count = 0 # FIXME
+      end
     end
   protected
     self.default_properties = {

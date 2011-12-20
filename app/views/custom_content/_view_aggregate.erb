@@ -1,2 +1,2 @@
-<%= content_tag((widget.properties.tag || 'div'), pluralize(widget.value, h(widget.properties.descriptor)),
-		:class => 'static', :id => widget.elem_id) %>
+<%= content_tag(widget.properties.tag, pluralize(widget.value, h(widget.properties.descriptor)),
+		:class => widget.properties.classNames.join(' '), :id => widget.elem_id) %>

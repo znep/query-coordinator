@@ -554,9 +554,11 @@ module Canvas
   protected
     self.default_properties = {
       aggregate: 'count',
+      classNames: [],
       column: nil,
       descriptor: 'widget',
       query: nil,
+      tag: 'div',
       viewUid: nil
     }
   end

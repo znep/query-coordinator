@@ -393,6 +393,14 @@ class AdministrationController < ApplicationController
     end
   end
 
+  def wkt_to_wkid
+    json = JSON.parse(Net::HTTP.get(
+      URI("http://prj2epsg.org/search.json?mode=wkt&terms=#{CGI.escape params[:wkt]}")))
+    respond_to do |format|
+      format.data { render :json => json }
+    end
+  end
+
   #
   # Dataset-level metadata (custom fields, categories)
   #

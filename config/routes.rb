@@ -87,6 +87,7 @@ ActionController::Routing::Routes.draw do |map|
       :datasets => :get,
       :select_dataset => :get,
       :verify_layer_url => :get,
+      :wkt_to_wkid => :get,
       :home => :get,
       :metadata => :get,
       :views => :get,

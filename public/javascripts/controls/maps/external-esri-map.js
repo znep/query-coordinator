@@ -123,6 +123,20 @@
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
 
+            var wkid;
+            if (view.metadata.custom_fields.Basic['Spatial Reference wkid'])
+            { wkid = 'EPSG:' + view.metadata.custom_fields.Basic['Spatial Reference wkid']; }
+            else if (view.metadata.custom_fields.Basic['Spatial Reference wkt'])
+            {
+                var url = '/admin/wkt_to_wkid?wkt='
+                    + encodeURI(blist.dataset.metadata.custom_fields.Basic['Spatial Reference wkt']);
+                $.getJSON(url, function(data) {
+                    if (data.exact)
+                    { viewConfig._externalLayer.externalMapProjection
+                        = new OpenLayers.Projection('EPSG:' + data.codes[0].code); }
+                });
+            }
+
             var tmp = view.metadata.custom_fields.Basic.Source.split('/');
             var layer_id = tmp.pop();
             var url = tmp.join('/') + '/export';
@@ -131,8 +145,7 @@
                     url,
                     { layers: "show:"+layer_id, transparent: true,
                       internalMapProjection: mapObj.map.getProjectionObject(),
-                      externalMapProjection: new OpenLayers.Projection('EPSG:'
-                        + view.metadata.custom_fields.Basic['Spatial Reference wkid']),
+                      externalMapProjection: wkid && new OpenLayers.Projection(wkid),
                       onloadCallback: function() { layer.filterWith(view); mapObj.adjustBounds(); }
                     },
                     { ratio: 1, isBaseLayer: false });

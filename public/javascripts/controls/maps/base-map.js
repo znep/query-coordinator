@@ -1537,7 +1537,8 @@
             if (!direction)
             {
                 _.each(mapObj._byView, function(viewConfig)
-                { viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); });
+                { _.isFunction(viewConfig._displayLayer.removeFeatures) &&
+                    viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); });
                 return;
             }
 

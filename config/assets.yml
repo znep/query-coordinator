@@ -126,6 +126,7 @@ javascripts:
     - public/javascripts/component/configurator/cf-component-drag.js
     - public/javascripts/component/configurator/cf-side.js
     - public/javascripts/component/configurator/cf-translate.js
+    - public/javascripts/component/configurator/template.js
     - public/javascripts/component/context-picker.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-move.js
@@ -133,6 +134,8 @@ javascripts:
     - public/javascripts/component/configurator/edit-actions/cf-edit-unwrap.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-wrap.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
+  component-instantiator:
+    - public/javascripts/screens/template-instantiation.js
   base-control:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/controls/panes/base-pane.js

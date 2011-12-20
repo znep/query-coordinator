@@ -2,23 +2,32 @@
  * The application "tool bar".
  */
 (function($) {
-    var DEFAULT_SIDE_WIDTH = 258;
 
     var $ct;
     var visible = false;
 
     function render() {
-        var width = DEFAULT_SIDE_WIDTH; // TODO
+        var width = $.cf.configuration().sidebarWidth;
 
-        $ct = $('<div class="socrata-cf-side" style="width: ' + width + 'px; right: -' + width + 'px"></div>');
-        $(document.body).append($ct);
+        if (!$ct) {
+            $ct = $('<div class="socrata-cf-side" style="width: ' + width + 'px; right: -' + width + 'px"></div>');
+            $(document.body).append($ct);
+        }
+        else {
+            $ct.empty();
+        }
 
-        var paletteCatalog = [
-            $.extend($.component.catalog.content, { open: true }),
-            $.component.catalog.data,
-            $.component.catalog.actions,
-            $.component.catalog.input
-        ];
+        var paletteCatalog;
+        if ($.cf.configuration().canAdd) {
+            paletteCatalog = [
+                $.extend($.component.catalog.content, { open: true }),
+                $.component.catalog.data,
+                $.component.catalog.actions,
+                $.component.catalog.input
+            ];
+        } else {
+            paletteCatalog = [];
+        }
 
         function createSection(section, createEntry) {
             // Structure
@@ -181,12 +190,12 @@
             return;
         }
         $properties.animate({ height: 0 }, 200, 'linear', function()
-                {
-                    $properties.css('height', '').closest('.socrata-cf-properties-shell').addClass('hide');
-                    propertiesEditor.component.setEditor(null);
-                    propertiesEditor.setComponent(null);
-                    if (_.isFunction(callback)) { callback(); }
-                });
+            {
+                $properties.css('height', '').closest('.socrata-cf-properties-shell').addClass('hide');
+                propertiesEditor.component.setEditor(null);
+                propertiesEditor.setComponent(null);
+                if (_.isFunction(callback)) { callback(); }
+            });
     }
 
     function openProperties($dom) {
@@ -208,6 +217,10 @@
                     openProperties();
                 }
             });
+        },
+
+        reset: function() {
+            render();
         }
     });
 })(jQuery);

@@ -81,6 +81,15 @@ class ApplicationController < ActionController::Base
     super(CurrentDomain.cname + path)
   end
 
+  def require_right(right)
+    if CurrentDomain.user_can?(current_user, right)
+      return true
+    else
+      render_forbidden
+      return false
+    end
+  end
+
 protected
   def render_403
     render_error(403)

@@ -31,7 +31,7 @@ $.component.Component.extend('Text', 'content', {
         }
     },
 
-    design: function(editable) {
+    edit: function(editable) {
         var wasEditable = this.$contents.attr('contentEditable') == 'true';
 
         this.$contents.editable({ edit: editable });

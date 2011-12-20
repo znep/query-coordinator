@@ -21,6 +21,9 @@ base-sdp:
 - control-feed
 components:
 - components
+component-instantiator:
+- components
+- component-instantiator
 configurator:
 - configurator
 base-control-third-party:

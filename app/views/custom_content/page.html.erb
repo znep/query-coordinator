@@ -5,19 +5,6 @@
 
 <%= raw @page.render %>
 
-<% content_for :js_footer do %>
-<%= current_user_js %>
-<%= include_javascripts 'canvas' %>
-<script type="text/javascript">
-  blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
-  blist.namespace.fetch('blist.configuration');
-  blist.configuration.development = <%= Rails.env.development? %>;
-
-  $(function() {
-      var page = blist.configuration.page = <%= raw @page.to_json %>;
-      $.dataContext.load(page.data);
-      $.locale.initialize(page.locale);
-      $.component.initialize(page.content);
-  });
-</script>
-<% end %>
+<%- content_for :js_footer do -%>
+  <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
+<%- end -%>

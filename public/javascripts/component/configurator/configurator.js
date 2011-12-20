@@ -3,6 +3,7 @@
  */
 (function($) {
     var $body = $(document.body);
+    var DEFAULT_SIDE_WIDTH = 258;
 
     // This is the current focal component, if any
     var focal;
@@ -41,6 +42,11 @@
         // best response
         if (trackingMouseDown) {
             onBodyMouseMove(event);
+            return false;
+        }
+
+        // Don't track right-clicks
+        if (event.which == 3) {
             return false;
         }
 
@@ -87,10 +93,21 @@
 
     var designing = false;
     var originalConfiguration;
+    var options;
+
+    var defaultOptions = {
+        canAdd: true,     // Can you add new components?
+        canDrag: true,    // Can you drag components around?
+        editOnly: false,  // Are components always in edit mode?
+        mask: true,       // Mask out the background when editing a component?
+        sidebarWidth: DEFAULT_SIDE_WIDTH
+    };
 
     $.extend($.cf, {
-        initialize: function($top)
+        initialize: function($top, opts)
         {
+            $.cf.configuration(opts);
+
             $top.append($.tag({tagName: 'div', 'class': 'edit-mode', contents: [
                 {tagName: 'a', href: '#save', 'class': 'save', contents: 'save'},
                 {tagName: 'a', href: '#cancel', 'class': 'cancel', contents: 'cancel'},
@@ -114,6 +131,14 @@
             });
 
             $.cf.edit(true);
+        },
+
+        // todo: checks?
+        configuration: function(opts) {
+            if (opts) {
+                options = $.extend({}, defaultOptions, opts);
+            }
+            return options;
         },
 
         edit: function(edit) {
@@ -208,7 +233,7 @@
             $(focal.dom).addClass('socrata-cf-focal');
             focal.edit(true);
             $.cf.side.properties(component);
-            if (!$mask) {
+            if (!$mask && $.cf.configuration().mask) {
                 $mask = $('<div class="socrata-cf-mask"></div>');
                 $body.prepend($mask);
             }

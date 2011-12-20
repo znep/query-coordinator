@@ -3,7 +3,7 @@ require 'digest/md5'
 class CustomContentController < ApplicationController
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet ]
-  skip_before_filter :require_user
+  skip_before_filter :require_user, :except => [ :template ]
 
   def homepage
     Canvas::Environment.context = :homepage
@@ -95,6 +95,12 @@ class CustomContentController < ApplicationController
         render_404
       end
     end
+  end
+
+  before_filter :only => [:template] { |c| c.require_right(:create_pages) }
+  def template
+    @templet = Template[params[:id]] if CurrentDomain.module_available?('canvas2')
+    return(render_404) unless @templet
   end
 
 private

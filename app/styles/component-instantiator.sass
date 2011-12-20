@@ -1,0 +1,41 @@
+$labelwidth: 10em
+
+.instantiating
+  .socrata-cf-top
+    .save, .cancel
+      display: none
+
+#insertionForm
+  div.line
+    line-height: 2em
+    margin-top: 2em
+    min-height: 2em
+
+    &:first-child
+      margin-top: 0
+
+    .tooltip
+      display: none
+
+    label
+      width: $labelwidth
+
+    .socrata-component
+      background-color: white
+      border: 1px dashed $color_chrome_box_border
+      min-width: 20em
+
+    &.actions
+      margin-top: 3em
+
+      .button.default
+        margin-right: 1em
+
+  .component-Title
+    min-height: 2.5em
+
+  .component-Text
+    min-height: 5em
+
+  h2
+    margin-top: 0

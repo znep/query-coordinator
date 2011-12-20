@@ -18,6 +18,7 @@ module Canvas
       attr_accessor :page_config
       attr_accessor :params
       attr_accessor :request
+      attr_accessor :bindings
 
       def metadata_tag
         return nil unless Environment.context == :facet_page
@@ -30,10 +31,12 @@ module Canvas
 
   class CanvasWidget
     attr_reader :elem_id
+    attr_accessor :binding
 
     def initialize(data, id_prefix = '')
       @data = data
       @elem_id = "#{id_prefix}_#{self.class.name.split(/::/).last}"
+      @binding = Environment.bindings
 
       load_properties(@data.properties)
     end
@@ -86,6 +89,38 @@ module Canvas
       return unless self.has_children?
       threads = self.children.map{ |child| Thread.new{ child.prepare! } if child.can_prepare? }
       threads.compact.each{ |thread| thread.join }
+    end
+
+    def binding
+      return @binding
+    end
+
+    def get_view
+      if self.properties.viewBinding
+        return self.binding[self.properties.viewBinding].views.first
+      elsif self.properties.viewUid
+        begin
+          return View.find self.properties.viewUid
+        rescue CoreServer::ResourceNotFound
+          return nil
+        rescue CoreServer::CoreServerError
+          return nil
+        end
+      end
+    end
+
+    def get_views
+      if self.properties.viewBinding
+        return self.binding[self.properties.viewBinding].views
+      elsif self.properties.viewUids
+        begin
+          return View.find_multiple self.properties.viewUids
+        rescue CoreServer::ResourceNotFound
+          return []
+        rescue CoreServer::CoreServerError
+          return []
+        end
+      end
     end
 
     def properties
@@ -460,7 +495,7 @@ module Canvas
     attr_reader :view
 
     def prepare!
-      if self.properties.viewUid.nil?
+      if self.properties.viewUid.nil? && self.properties.viewBinding.nil?
         search_options = self.properties.searchOptions.merge({ limit: 1, page: 1 })
 
         if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
@@ -484,13 +519,7 @@ module Canvas
           @view = false
         end
       else
-        begin
-          @view = (View.find self.properties.viewUid) || false
-        rescue CoreServer::ResourceNotFound
-          @view = false
-        rescue CoreServer::CoreServerError
-          @view = false
-        end
+        @view = self.get_view
       end
     end
 
@@ -513,6 +542,7 @@ module Canvas
       style: {
         height: { value: 30, unit: 'em' }
       },
+      viewBinding: nil,
       viewFilterGroup: nil,
       viewUid: nil
     }

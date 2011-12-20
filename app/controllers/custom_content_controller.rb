@@ -151,6 +151,35 @@ private
 
     # ready whatever we might need
     if prepare
+      if page_config.dataBindings
+        bindings = {}
+        binding_threads = page_config.dataBindings.map do |key, properties|
+          Thread.new do
+            binding = bindings[key.to_s] = Hashie::Mash.new
+            binding.properties = properties
+
+            if properties.type == 'search'
+              begin
+                binding.views = Clytemnestra.search_views(properties.searchOptions.to_hash).results
+              rescue CoreServer::ResourceNotFound
+                # some configurations of catalog search can actually return a 404
+                binding.views = []
+              end
+            elsif properties.type == 'uid'
+              begin
+                binding.views = View.find(properties.viewUid)
+              rescue CoreServer::ResourceNotFound
+                binding.views = []
+              rescue CoreServer::CoreServerError
+                binding.views = []
+              end
+            end
+          end
+        end
+        binding_threads.each{ |thread| thread.join }
+        Canvas::Environment.bindings = bindings
+      end
+
       threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_prepare? }
       threads.compact.each{ |thread| thread.join }
     end

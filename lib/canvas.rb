@@ -443,6 +443,48 @@ module Canvas
     }
   end
 
+  class ViewAggregate < CanvasWidget
+    attr_reader :value
+
+    def can_render?
+      return !@value.nil?
+    end
+
+    def prepare!
+      view = self.get_view
+      column = view.column_by_id_or_field_name(self.properties.column)
+      return value = nil if column.nil?
+
+      request_body = {
+        'name' => view.name,
+        'columns' => [{
+          'id' => column.id,
+          'name' => column.name,
+          'format' => {
+            'aggregate' => self.properties.aggregate
+          }
+        }],
+        'originalViewId' => view.id
+      }
+
+      # TODO: query
+
+      url = "/views/INLINE/rows.json?method=getAggregates"
+      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json))
+      @value = aggregates.first['value']
+    end
+
+  protected
+    self.default_properties = {
+      aggregate: 'count',
+      column: nil,
+      descriptor: 'widget',
+      query: nil,
+      viewBinding: nil,
+      viewUid: nil
+    }
+  end
+
   class ViewFilter < CanvasWidget
   protected
     self.default_properties = {

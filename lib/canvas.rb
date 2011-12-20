@@ -222,7 +222,7 @@ module Canvas
         child.bind(binding.views)
       end
 
-      self.children.each{ |child| child.prepare_bindings! }
+      super
     end
   protected
     self.default_properties = {
@@ -243,7 +243,7 @@ module Canvas
   protected
     self.default_properties = {
       limit: 10,
-      sortBy: 'most-accessed'
+      sortBy: 'most_accessed'
     }
   end
 
@@ -261,17 +261,7 @@ module Canvas
         end
       end.flatten
 
-      self.children.each{ |child| child.prepare_bindings! }
-    end
-
-    # ULTRAHACK ALERT BUT IT SHOULD WORK FOR NOW
-    def stylesheet
-      result = super
-      matcher = Regexp.new "^(##{@elem_id}\\d+)"
-
-      return (1..self.properties.limit).to_a.map do |i|
-        result.gsub(matcher, "\\1_#{i}")
-      end
+      super
     end
   protected
     self.default_properties = {
@@ -698,5 +688,16 @@ module Canvas
     self.style_definition = [
       { data: 'style.height', selector: '.fullHeight', css: 'height', hasUnit: true }
     ]
+  end
+
+  # UTIL
+
+  # class we can use to fake out the binding step to not try and do anything
+  module Util
+    class FakeView
+      def find_related(page, limit = 10, sortBy = 'most_accessed')
+        return []
+      end
+    end
   end
 end

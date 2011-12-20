@@ -183,6 +183,27 @@ private
 
       threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_prepare? }
       threads.compact.each{ |thread| thread.join }
+    else
+      if page_config.dataBindings
+        # we're not actually going to prepare anything, but we need to fake some
+        # bindings so that the stylesheet lines up
+        bindings = {}
+        page_config.dataBindings.each do |key, properties|
+          limit =
+            if properties.type == 'search'
+              properties.searchOptions.limit
+            else
+              1
+            end
+          bindings[key.to_s] = Hashie::Mash.new({
+            properties: properties,
+            views: (1..limit).map{ Canvas::Util::FakeView.new }
+          })
+        end
+
+        Canvas::Environment.bindings = bindings
+        page_config.contents.each{ |widget| widget.prepare_bindings! } # don't bother multithreading; ain't nothing gonna happen
+      end
     end
 
     # Get a unique array of style packages required by the widgets to be displayed

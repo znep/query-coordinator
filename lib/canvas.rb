@@ -74,13 +74,17 @@ module Canvas
       return @children ||= CanvasWidget.from_config(@data.children, @elem_id)
     end
 
-    def can_render?
+    def can_prepare?
       return true
+    end
+
+    def can_render?
+      return self.can_prepare?
     end
 
     def prepare!
       return unless self.has_children?
-      threads = self.children.map{ |child| Thread.new{ child.prepare! } if child.can_render? }
+      threads = self.children.map{ |child| Thread.new{ child.prepare! } if child.can_prepare? }
       threads.compact.each{ |thread| thread.join }
     end
 
@@ -306,9 +310,8 @@ module Canvas
   class FeaturedViews < CanvasWidget
     attr_reader :featured_views
 
-    # allow us to get featured views at all but not to render if we are there are none
     def can_render?
-      return @featured_views.nil? || !@featured_views.empty?
+      return !@featured_views.empty?
     end
 
     def prepare!
@@ -359,8 +362,7 @@ module Canvas
     attr_reader :stories
 
     def can_render?
-      # allow us to get stories at all but not to render if we are there are none
-      return @stories.nil? || !@stories.empty?
+      return !@stories.empty?
     end
 
     def prepare!

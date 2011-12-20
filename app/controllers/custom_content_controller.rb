@@ -151,7 +151,7 @@ private
 
     # ready whatever we might need
     if prepare
-      threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_render? }
+      threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_prepare? }
       threads.compact.each{ |thread| thread.join }
     end
 

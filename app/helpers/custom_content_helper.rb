@@ -9,7 +9,7 @@ module CustomContentHelper
       if config.type == 'html'
         # take the contents and just dump it in
         return render :text => config.properties.content
-      elsif config.can_render?
+      elsif config.can_prepare? && config.can_render?
         file_name = File.join(Rails.root, 'app/views/custom_content', "_#{config.type.gsub(/[^a-z_]/, '')}.erb")
         return '' unless File.exist? file_name
 

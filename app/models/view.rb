@@ -41,13 +41,14 @@ class View < Model
 
   def find_related(page, limit = 10, sort_by = 'most_accessed')
     params = {
+      method: 'getByTableId',
       tableId: self.tableId,
       page: page,
       count: limit, # the core server is super consistent
-      sort_by: sort_by
+      sortBy: sort_by
     }
-    path = "/#{self.name.pluralize.downcase}.json?" + params.to_param
-    parse(CoreServer::Base.connection.get_request(path))
+    path = "/views.json?" + params.to_param
+    View.parse(CoreServer::Base.connection.get_request(path))
   end
 
   def self.categories

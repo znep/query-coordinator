@@ -1,7 +1,11 @@
 <div id="<%= widget.elem_id %>" class="viewList">
   <%- if widget.view_count == 0 -%>
     <p>There are currently no <strong><%= Canvas::Environment.facet_value %></strong> views
-       in <strong><%= @page_config.facet_friendly_name %></strong>.</p>
+      <%- if Canvas::Environment.context == :page -%>
+        matching this query.
+      <%- else -%>
+        in <strong><%= @page_config.facet_friendly_name %></strong>.</p>
+      <%- end -%>
   <%- else -%>
     <ul>
       <%- widget.view_results.each do |view| -%>

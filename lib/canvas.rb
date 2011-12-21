@@ -143,7 +143,7 @@ module Canvas
           return []
         end
       elsif self.binding
-        return self.binding[self.properties.viewBinding]
+        return self.binding
       end
     end
 
@@ -234,10 +234,10 @@ module Canvas
   # with related views
   class RelatedViews < ControlFlowWidget
     def prepare_bindings!
-      return unless self.binding
-      view = self.binding.first
-      views = view.find_related(0, self.properties.limit, self.properties.sortBy)
+      view = self.get_view
+      return if view.nil?
 
+      views = view.find_related(1, self.properties.limit, self.properties.sortBy)
       self.children.each{ |child| child.bind(views) }
     end
   protected
@@ -614,7 +614,7 @@ module Canvas
         @view_count = search_response.count
         @view_results = search_response.results
       else
-        @view_count = 0 # FIXME
+        @view_count = -1 # FIXME
       end
     end
   protected

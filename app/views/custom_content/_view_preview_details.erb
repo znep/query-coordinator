@@ -15,14 +15,18 @@
         <img class="aboutAuthorImage" alt="<%= widget.view.owner.displayName %>"
           src="<%= widget.view.owner.profile_image_path(field.avatar_size || "medium") %>"/>
       <%- end -%>
-      <%= link_to((field.text || h(widget.view.owner.displayName)).html_safe, widget.view.owner.href, :class => 'author') %>
+      <%- if field.show_name -%>
+        <%= link_to((field.text || h(widget.view.owner.displayName)).html_safe, widget.view.owner.href, :class => 'author') %>
+      <%- end -%>
     <%- when 'created_at' -%>
       <%= content_tag((field.tagType || 'span'), HumaneDateHelper.humane_date(widget.view.createdAt), :class => 'createdAt') %>
     <%- when 'link' -%>
       <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
     <%- when 'rating' -%>
-      <div class="starsControl averageRating" data-rating="<%= widget.view.averageRating %>">
-        <%= widget.view.averageRating %>
+      <div class="averageRating">
+        <div class="starsControl" data-rating="<%= widget.view.averageRating %>">
+          <%= widget.view.averageRating %>
+        </div>
       </div>
 
       <%- content_for :js_footer do -%>
@@ -31,7 +35,7 @@
 
           <script type="text/javascript">
             // activator for stars widget of all view preview metadata
-            $('.viewPreview .averageRating').stars({
+            $('.viewPreview .averageRating .starsControl').stars({
                 enabled: false
             });
           </script>
@@ -57,6 +61,8 @@
         <div class="customMetadata"><%= raw field.text || field.metadata_field %>
           <%= metadata_value || field.empty_text %></div>
       <%- end -%>
+    <%- when 'view_count' -%>
+      <%= content_tag((field.tagType || 'span'), widget.view.viewCount, :class => 'viewCount') %>
     <%- when 'static' -%>
       <%= content_tag((field.tagType || 'p'), field.text.html_safe, :class => 'static') %>
     <%- end -%>

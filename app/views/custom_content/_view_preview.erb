@@ -1,5 +1,5 @@
 <%- if widget.view -%>
-  <div id="<%= widget.elem_id %>" class="viewPreview clearfix"<%= raw " data-viewfiltergroup=\"#{widget.properties.viewFilterGroup}\"" unless widget.properties.viewFilterGroup.nil? %>>
+  <div id="<%= widget.elem_id %>" class="<%= widget.properties.classNames.join(' ') %>"<%= raw " data-viewfiltergroup=\"#{widget.properties.viewFilterGroup}\"" unless widget.properties.viewFilterGroup.nil? %>>
     <%= render :partial => 'view_preview_details',
                :locals => { widget: widget, details: widget.properties.metadata.above } %>
     <div class="viewPreviewContainer">

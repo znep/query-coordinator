@@ -15,6 +15,11 @@ class AccountsController < ApplicationController
     @body_class = 'signup'
     @token = params[:inviteToken] || ""
 
+    if current_user_session
+      current_user_session.destroy
+      @current_user = nil
+    end
+
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json

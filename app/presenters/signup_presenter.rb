@@ -31,8 +31,7 @@ class SignupPresenter < Presenter
       @errors << "You must accept the terms of service and privacy policy."
     end
     if @errors.empty?
-      create_user && login!
-      return true
+      return (create_user && login!)
     end
 
     false

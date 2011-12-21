@@ -24,6 +24,12 @@ class UserSessionsController < ApplicationController
 
   def create
     @body_id = 'login'
+
+    if current_user_session
+      current_user_session.destroy
+      @current_user = nil
+    end
+
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json

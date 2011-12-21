@@ -10,8 +10,33 @@
         </p>
         <%= link_to 'More&hellip;'.html_safe, widget.view.href + '#pane=about', :class => 'moreLink' %>
       </div>
+    <%- when 'author' -%>
+      <%- if field.show_avatar -%>
+        <img class="aboutAuthorImage" alt="<%= widget.view.owner.displayName %>"
+          src="<%= widget.view.owner.profile_image_path(field.avatar_size || "medium") %>"/>
+      <%- end -%>
+      <%= link_to((field.text || h(widget.view.owner.displayName)).html_safe, widget.view.owner.href, :class => 'author') %>
+    <%- when 'created_at' -%>
+      <%= content_tag((field.tagType || 'span'), HumaneDateHelper.humane_date(widget.view.createdAt), :class => 'createdAt') %>
     <%- when 'link' -%>
-      <%= link_to (field.text.html_safe || widget.view.name), widget.view.href, :class => 'viewLink' %>
+      <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
+    <%- when 'rating' -%>
+      <div class="starsControl averageRating" data-rating="<%= widget.view.averageRating %>">
+        <%= widget.view.averageRating %>
+      </div>
+
+      <%- content_for :js_footer do -%>
+        <%- allow_once do -%>
+          <%= include_javascripts 'stars' %>
+
+          <script type="text/javascript">
+            // activator for stars widget of all view preview metadata
+            $('.viewPreview .averageRating').stars({
+                enabled: false
+            });
+          </script>
+        <%- end -%>
+      <%- end -%>
     <%- when 'tags' -%>
       <div class="tags">
         <%= raw field.text || 'Tags:' %>

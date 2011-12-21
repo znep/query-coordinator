@@ -476,6 +476,8 @@ javascripts:
     - public/javascripts/controls/ticker_layout.js
   feed-list:
     - public/javascripts/controls/feed-list.js
+  stars:
+    - public/javascripts/controls/stars.js
   public-analytics:
     - public/javascripts/screens/sitewide-analytics-shared.js
     - public/javascripts/screens/public-analytics.js

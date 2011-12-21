@@ -31,7 +31,7 @@ module HumaneDateHelper
     [5806080000, 'last century', 'next century'] # 60*60*24*7*4*12*100*2
   ]
 
-  def duration_in_words(from_date, to_date=Time.now, granularity=HUMANE_DATE_GRANULARITY[:day])
+  def self.duration_in_words(from_date, to_date=Time.now, granularity=HUMANE_DATE_GRANULARITY[:day])
     raise "Invalid time duration" unless to_date > from_date
 
     duration = (to_date - from_date).to_i
@@ -39,7 +39,7 @@ module HumaneDateHelper
     humane_date((to_date - duration.seconds).to_i)
   end
 
-  def humane_date(epoch_secs, granularity = HUMANE_DATE_GRANULARITY[:minute])
+  def self.humane_date(epoch_secs, granularity = HUMANE_DATE_GRANULARITY[:minute])
     if epoch_secs.nil? || epoch_secs == 0
       return 'None'
     end

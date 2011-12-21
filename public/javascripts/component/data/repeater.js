@@ -3,11 +3,13 @@ $.component.Container.extend('Repeater', 'content', {
     length: 100,
 
     _init: function(properties) {
+        this._delayUntilVisible = true;
         // Take my children and give them to a "clone" template that will repeat once for each object
         var children = properties.children || [];
         this._cloneProperties = {
             id: 'clone',
-            children: children
+            children: children,
+            styles: properties.childStyles
         };
 
         // Ensure that all descendants have an ID.  This ID is prefixed during object rendering.
@@ -30,6 +32,16 @@ $.component.Container.extend('Repeater', 'content', {
         this._map = [];
 
         this._idPrefix = this.id + '-';
+    },
+
+    _initDom: function()
+    {
+        this._super.apply(this, arguments);
+        if ($.isBlank(this._properties.height))
+        {
+            this._tempHeight = 500;
+            this.$dom.css('height', this._tempHeight);
+        }
     },
 
     design: function(design) {
@@ -70,8 +82,7 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 // Render records
                 var columnMap = this.columnMap = {};
-                for (var i = 0; i < view.columns.length; i++)
-                    columnMap[view.columns[i].id] = view.columns[i].fieldName;
+                _.each(view.visibleColumns, function(c) { columnMap[c.id] = c.fieldName; });
                 this._dataContext.dataset.getRows(this.position, this.length, function(rows) {
                     _.each(rows, function(r) { cObj._setRow(r, r.index); });
                 });
@@ -83,8 +94,25 @@ $.component.Container.extend('Repeater', 'content', {
         }
     },
 
-    _dataReady: function() {
-        this._refresh();
+    _render: function() {
+        if (!this._super.apply(this, arguments)) { return false; }
+        var cObj = this;
+
+        var doRender = function()
+        {
+            if (!$.isBlank(cObj._tempHeight))
+            {
+                cObj.$dom.css('height', '');
+                // Hack: This triggers a re-show of items
+                $(document).scroll();
+            }
+            if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
+            cObj._refresh();
+        }
+        if (!cObj._updateDataSource(cObj._properties, doRender))
+        { doRender(); }
+
+        return true;
     },
 
     _setRow: function(row, index, entity)
@@ -99,7 +127,9 @@ $.component.Container.extend('Repeater', 'content', {
         function createTemplate(properties) {
             properties = _.clone(properties);
             properties.parentPrefix = prefix;
-            properties.id = prefix + (properties.id || (properties.id = $.component.allocateId()));
+            properties.htmlClass = $.makeArray(properties.htmlClass);
+            properties.htmlClass.push('id-' + properties.id);
+            properties.id = prefix + (properties.id || $.component.allocateId());
             var children = properties.children;
             if (children) {
                 if (!$.isArray(children))
@@ -126,11 +156,24 @@ $.component.Container.extend('Repeater', 'content', {
             if (entity[to] == undefined)
                 entity[to] = null;
         });
+        if ($.isBlank(entity._repeaterIndex)) { entity._repeaterIndex = index; }
         cloneProperties.entity = entity;
         cloneProperties.childContextId = row.id;
 
         // Create clone
         var clone = map[adjIndex] = new $.component.Repeater.Clone(cloneProperties);
+
+        // Terrible hack; but core server doesn't support regexes in queries,
+        // so this is the easiest way to skip some rows. This also doesn't
+        // handle the fact that the number of rendered rows doesn't match up
+        // directly with the position & length anymore; so it will probably not
+        // behave properly if more than a page of data is present
+        if (!$.isBlank(this._properties.valueRegex))
+        {
+            var r = new RegExp(this._properties.valueRegex.regex);
+            var v = clone._template(this._properties.valueRegex.value);
+            if (!r.test(v)) { return; }
+        }
 
         // Find position for clone
         var position;

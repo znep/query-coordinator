@@ -18,11 +18,18 @@ $.component.Component.extend('Text', 'content', {
             if (cObj._properties.isPlainText)
             { html = html.plainTextToHtml(); }
             cObj.$contents.html(html);
+
+            if (!$.isBlank(cObj._properties.htmlClass))
+            {
+                var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
+                cObj.$contents.removeClass(comp);
+                cObj.$contents.addClass(cObj._template(comp));
+            }
+
             cObj.$contents.css(blist.configs.styles.convertProperties(cObj._properties));
         }
-        if (!$.isBlank(cObj._properties.contextId))
-        { cObj._updateDataSource(cObj._properties, doRender); }
-        else { doRender(); }
+        if (!cObj._updateDataSource(cObj._properties, doRender))
+        { doRender(); }
 
         return true;
     },

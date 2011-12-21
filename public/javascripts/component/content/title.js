@@ -29,9 +29,8 @@ $.component.Component.extend('Title', 'content', {
             cObj.$title.text($.isBlank(cObj._properties.text) ? '' : cObj._template(cObj._properties.text));
             cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
         }
-        if (!$.isBlank(cObj._properties.contextId))
-        { cObj._updateDataSource(cObj._properties, doRender); }
-        else { doRender(); }
+        if (!cObj._updateDataSource(cObj._properties, doRender))
+        { doRender(); }
     },
 
     _propWrite: function(properties)

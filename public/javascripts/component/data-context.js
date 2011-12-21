@@ -51,32 +51,27 @@
             switch (config.type)
             {
                 case 'row':
-                    loadDataset(config, function(ds)
+                    loadDataset(dc, id, config, function(ds)
                     {
-                        ds.getRows(0, 1, function(r)
+                        loadRow(ds, function(row)
                         {
-                            r = _.first(r);
-                            if ($.isBlank(r))
+                            if ($.isBlank(row))
+                            { errorLoading(id); }
+                            else
                             {
-                                errorLoading(id);
-                                return;
+                                dc.availableContexts[id] = {id: id, type: config.type, row: row};
+                                doneLoading(dc.availableContexts[id]);
                             }
-
-                            // Fake support for row fieldNames
-                            var fr = {};
-                            _.each(ds.visibleColumns, function(c) { fr[c.fieldName] = r[c.lookup]; });
-                            dc.availableContexts[id] = {id: id, type: config.type, row: fr};
-                            doneLoading(dc.availableContexts[id]);
                         });
-                    });
+                    }, errorLoading);
                     break;
 
                 case 'dataset':
-                    loadDataset(config, function(ds)
+                    loadDataset(dc, id, config, function(ds)
                     {
                         dc.availableContexts[id] = {id: id, type: config.type, dataset: ds};
                         doneLoading(dc.availableContexts[id]);
-                    });
+                    }, errorLoading);
                     break;
 
                 case 'datasetList':
@@ -123,10 +118,13 @@
         if ($.isBlank(query)) { return; }
         query = $.extend(true, {}, query);
 
+        var q = $.extend(true, {orderBys: []}, ds.query);
+        _.each(query, function(v, k) { if (k != 'orderBys') { q[k] = $.extend(true, {}, q[k], v); } });
+
         // Translate fieldNames
         if (!$.isBlank(query.orderBys))
         {
-            query.orderBys = _.select(query.orderBys, function(ob)
+            _.each(query.orderBys, function(ob)
             {
                 if ($.subKeyDefined(ob, 'expression.fieldName'))
                 {
@@ -134,18 +132,35 @@
                     if ($.isBlank(c)) { return false; }
                     ob.expression.columnId = c.id;
                     delete ob.expression.fieldName;
-                    return true;
                 }
-                return true;
+                q.orderBys.push(ob);
             });
         }
 
-        ds.update({query: $.extend(true, {}, ds.query, query)});
+        ds.update({query: q});
     };
 
-    var loadDataset = function(config, callback)
+    var loadDataset = function(dc, id, config, callback, errorCallback)
     {
-        if ($.subKeyDefined(config, 'datasetId'))
+        if ($.subKeyDefined(config, 'contextId'))
+        {
+            dc.getContext(config.contextId, function(context)
+            {
+                if (context.type != 'dataset')
+                {
+                    errorCallback(id);
+                    return;
+                }
+                var ds = context.dataset;
+                if (!$.isBlank(config.query))
+                {
+                    ds = new Dataset(ds.cleanCopy());
+                    addQuery(ds, config.query);
+                }
+                callback(ds);
+            });
+        }
+        else if ($.subKeyDefined(config, 'datasetId'))
         {
             Dataset.createFromViewId(config.datasetId, function(dataset)
                 {
@@ -153,7 +168,7 @@
                     callback(dataset);
                 },
                 function(xhr)
-                { errorLoading(id); });
+                { errorCallback(id); });
         }
         else if ($.subKeyDefined(config, 'search'))
         {
@@ -165,8 +180,26 @@
                 callback(ds);
             },
             function(xhr)
-            { errorLoading(id); });
+            { errorCallback(id); });
         }
+    };
+
+    var loadRow = function(dataset, callback)
+    {
+        dataset.getRows(0, 1, function(r)
+        {
+            r = _.first(r);
+            if ($.isBlank(r))
+            {
+                callback(null);
+                return false;
+            }
+
+            // Fake support for row fieldNames
+            var fr = {};
+            _.each(dataset.visibleColumns, function(c) { fr[c.fieldName] = r[c.lookup]; });
+            callback(fr);
+        });
     };
 
 })(jQuery);

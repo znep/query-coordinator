@@ -712,6 +712,9 @@ module Canvas
         orderBy: 'most_accessed',
         page: 1
       },
+      metadata: [ # TODO(never): if canvas were to live i'd merge this with ViewPreview's..
+        { type: 'name' }, { type: 'type' }
+      ],
       pagination: true,
       respectFacet: true,
       resultCount: true

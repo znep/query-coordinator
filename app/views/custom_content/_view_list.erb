@@ -10,8 +10,26 @@
     <ul>
       <%- widget.view_results.each do |view| -%>
         <li class="clearfix">
-          <span class="viewName"><%= link_to view.name, view.href %></span>
-          <span class="viewType type<%= view.display.type.capitalize %>"><span class="icon"></span></span>
+          <%- widget.properties.metadata.each do |field| -%>
+            <%- case field.type -%>
+            <%- when 'name' -%>
+              <span class="viewName"><%= link_to view.name, view.href %></span>
+            <%- when 'type' -%>
+              <span class="viewType type<%= view.display.type.capitalize %>"><span class="icon"></span></span>
+            <%- when 'author' -%>
+              <span class="viewAuthor">
+                <%- if field.show_avatar -%>
+                  <img class="aboutAuthorImage" alt="<%= view.owner.displayName %>"
+                    src="<%= view.owner.profile_image_path(field.avatar_size || "small") %>"/>
+                <%- end -%>
+                <%- if field.show_name -%>
+                  <%= link_to view.owner.displayName, view.owner.href %>
+                <%- end -%>
+              </span>
+            <%- when 'view_count' -%>
+              <span class="viewViewCount"><%= view.viewCount %></span>
+            <%- end -%>
+          <%- end -%>
         </li>
       <%- end -%>
     </ul>

@@ -94,13 +94,10 @@ module Canvas
       threads.compact.each{ |thread| thread.join }
     end
 
-    def clone(idx = nil)
-      id_prefix = @id_prefix
-      id_prefix += "_#{idx}" if idx
-
+    def clone(id_prefix = @id_prefix)
       jango_fett = self.class
       stormtrooper = jango_fett.new @data.clone, id_prefix
-      stormtrooper.children = self.children.map{ |child| child.clone } if stormtrooper.has_children?
+      stormtrooper.children = self.children.map{ |child| child.clone(stormtrooper.id_prefix) } if stormtrooper.has_children?
       return stormtrooper
     end
 
@@ -178,6 +175,7 @@ module Canvas
     end
 
   protected
+    attr_accessor :id_prefix
     class_inheritable_accessor :default_properties, :style_definition, :content_definition
 
     def find_property(key)
@@ -255,7 +253,7 @@ module Canvas
       existing_children = self.children.dup
       self.children = binding.views.take(self.properties.limit).map do |view|
         existing_children.map do |existing_child|
-          child = existing_child.clone(i += 1)
+          child = existing_child.clone("#{existing_child.id_prefix}_#{i += 1}")
           child.bind([ view ])
           child
         end

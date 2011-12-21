@@ -23,7 +23,7 @@ test:
 staging:
   coreservice_uri: http://vm01.ord1.socrata.com:8081
   google_analytics_id: UA-9046230-2
-  max_core_server_requests: 15
+  max_core_server_requests: 1000000
   <<: *default
 
 # www.socrata.com

@@ -39,11 +39,13 @@ module ApplicationHelper
 
 # FRAGMENT HELPERS
 
-  def allow_once(&block)
+  # provide a key if you have a snippet in multiple locations of code
+  # (eg :fb_js_sdk, the facebook js library); otherwise don't worry about it
+  def allow_once(key = nil, &block)
     return unless block_given?
     @_allowed_blocks = [] unless defined? @_allowed_blocks
 
-    signature = block.source_location.join(':')
+    signature = key || block.source_location.join(':')
     return if @_allowed_blocks.include? signature
     @_allowed_blocks << signature
     block.call

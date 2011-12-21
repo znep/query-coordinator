@@ -380,6 +380,42 @@ module Canvas
     }
   end
 
+  class FacebookShare < CanvasWidget
+    attr_reader :fb_opts
+
+    def prepare!
+      temp = {}
+
+      # if we're databound, take those as default
+      view = self.get_view
+      if !view.nil?
+        temp['href'] = Environment.request.protocol + Environment.request.host_with_port + view.href
+      end
+
+      # always respect these if they're provided
+      temp.merge!(self.properties.to_hash
+                   .only('action', 'href', 'layout', 'send', 'show-faces', 'width')
+                   .delete_if{ |k, v| v.nil? })
+
+      # if we've gotten here without an href, plug in the current page
+      temp['href'] = Environment.request.protocol + Environment.request.host_with_port + Environment.request.path if temp[:href].blank?
+
+      # copy over to final hash with appropriate key
+      @fb_opts = {}
+      temp.each{ |k, v| @fb_opts["data-#{k}"] = v }
+    end
+  protected
+    # refer to http://developers.facebook.com/docs/reference/plugins/like/ to learn about these keys
+    self.default_properties = {
+      action: 'recommend',
+      href: nil, # nil for current page, string for custom
+      layout: 'button_count',
+      send: false,
+      :'show-faces' => true,
+      width: 450
+    }
+  end
+
   class FacetList < CanvasWidget
     attr_reader :facet_values, :by_alpha
 
@@ -564,14 +600,14 @@ module Canvas
       # if we're databound, take those as default
       view = self.get_view
       if !view.nil?
-        temp[:text] = view.name
-        temp[:url] = Environment.request.protocol + Environment.request.host_with_port + "/d/#{view.id}"
+        temp['text'] = view.name
+        temp['url'] = Environment.request.protocol + Environment.request.host_with_port + "/d/#{view.id}"
       end
 
       # always respect these if they're provided
-      temp.merge(self.properties
-                   .only(:text, :url, :size)
-                   .delete_if{ |k, v| v.nil? || ((k == :size) && (v != 'large')) })
+      temp.merge!(self.properties.to_hash
+                   .only('text', 'url', 'size')
+                   .delete_if{ |k, v| v.nil? || ((k == 'size') && (v != 'large')) })
 
       # copy over to final hash with appropriate key
       @twitter_opts = {}

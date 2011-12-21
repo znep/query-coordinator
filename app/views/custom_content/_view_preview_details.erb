@@ -35,8 +35,13 @@
 
           <script type="text/javascript">
             // activator for stars widget of all view preview metadata
-            $('.viewPreview .averageRating .starsControl').stars({
-                enabled: false
+            $('.viewPreview .averageRating .starsControl').each(function()
+            {
+                var $this = $(this);
+                $this.stars({
+                    enabled: false,
+                    value: $this.attr('data-rating')
+                });
             });
           </script>
         <%- end -%>

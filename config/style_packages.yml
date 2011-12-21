@@ -164,6 +164,7 @@ html-styles:
 - dataset-grid
 canvas:
 - canvas
+- control-feed
 canvas-view-preview:
 - table-core
 - dataset-grid

@@ -1,5 +1,5 @@
 # autoload is not threadsafe, so require everything we might need
-requires = %w{view}
+requires = %w{view comment}
 requires.each{ |r| require File.join(Rails.root, 'app/models', r) }
 require 'clytemnestra'
 
@@ -464,6 +464,29 @@ module Canvas
   protected
     self.default_properties = {
       featured_views: []
+    }
+  end
+
+  class Feed < CanvasWidget
+    attr_reader :js_opts
+
+    def prepare!
+      view = self.get_view
+
+      # grab data that we'll need. for now, comments-only
+      comments = view.comments
+
+      @js_opts = {
+        comments: comments,
+        mainView: view
+      }.merge(self.properties.controlOptions)
+    end
+  protected
+    self.default_properties = {
+      controlOptions: {
+        filterCategories: nil
+        # see feed-list.js default options
+      }
     }
   end
 

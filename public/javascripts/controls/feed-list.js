@@ -206,12 +206,20 @@
 
             var showMoreItems = function(fullReset)
             {
+                var thisPageSize = opts.pageSize;
+                if (fullReset)
+                {
+                    // fullReset is synonymous with "load the first page"
+                    thisPageSize = opts.firstPageSize || opts.pageSize;
+                    firstPage = false;
+                }
+
                 var itemsShown = $feedList.children().length;
                 $feedList.append(
                     $.renderTemplate('feedItem', feedData.slice(
-                        itemsShown, itemsShown + opts.pageSize), feedDirective));
+                        itemsShown, itemsShown + thisPageSize), feedDirective));
 
-                var remainingItems = feedData.length - itemsShown - opts.pageSize;
+                var remainingItems = feedData.length - itemsShown - thisPageSize;
                 $moreItemsButton.show();
                 if (remainingItems <= 0)
                     $moreItemsButton.hide();
@@ -534,6 +542,7 @@
             // by default highlight items that have to do with the blist owner
             return blist.dataset && (feedItem.user.id == blist.dataset.tableAuthor.id);
         },
+        firstPageSize: null, // if not specified, defaults to pageSize
         mainView: null,
         pageSize: 20,
         replyPageLimit: 2,

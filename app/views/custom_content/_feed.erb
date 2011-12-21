@@ -1,0 +1,27 @@
+<div id="<%= widget.elem_id %>" class="clearfix"></div>
+
+<%- content_for :js_footer do -%>
+  <%- allow_once do -%>
+    <%= include_javascripts 'feed-list' %>
+  <%- end -%>
+  <script type="text/javascript">
+    // activator for feed widget <%= widget.elem_id %>
+    $(function()
+    {
+        var targetSelector = '#<%= widget.elem_id %>';
+        var options = <%= safe_json(widget.js_opts) %>;
+
+        var $feedListTemplate = $.renderTemplate('feedList');
+
+        $(targetSelector)
+            .append($feedListTemplate)
+            .feedList(options);
+    });
+  </script>
+<%- end -%>
+
+<%- allow_once do -%>
+  <%- content_for :templates do -%>
+    <%= render :partial => 'datasets/feed_template', :locals => { :allow_comments => false } %>
+  <%- end -%>
+<%- end -%>

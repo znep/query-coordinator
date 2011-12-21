@@ -209,7 +209,7 @@
             }
             catch(ex)
             {
-                console.error('ERR: could not parse:\n' + response + '\nReason: ' + ex);
+                console.log('ERR: could not parse:\n' + response + '\nReason: ' + ex);
             }
 
             if (opts.success)

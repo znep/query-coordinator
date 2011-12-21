@@ -37,6 +37,9 @@
           </script>
         <%- end -%>
       <%- end -%>
+    <%- when 'parent' -%>
+      <%- parent = widget.view.parent_view -%>
+      <%= link_to (field.text || h(parent.name)).html_safe, parent.href, :class => 'parentViewLink' unless parent.nil? %>
     <%- when 'tags' -%>
       <div class="tags">
         <%= raw field.text || 'Tags:' %>

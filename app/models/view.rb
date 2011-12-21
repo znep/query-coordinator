@@ -584,7 +584,7 @@ class View < Model
     if is_blist? || ((is_href? || is_blobby?) && flag?("default"))
       @parent_dataset = self
     else
-      url = "/#{self.class.name.pluralize.downcase}/#{id}.json?method=getDefaultView&accessType=WEBSITE"
+      url = "/views/#{id}.json?method=getDefaultView&accessType=WEBSITE"
       begin
         @parent_dataset = View.parse(CoreServer::Base.connection.get_request(url))
       rescue CoreServer::CoreServerError => e
@@ -593,6 +593,8 @@ class View < Model
         else
           raise e
         end
+      rescue CoreServer::ResourceNotFound => e
+        @parent_dataset = nil
       end
     end
     return @parent_dataset
@@ -604,7 +606,7 @@ class View < Model
     if modifyingViewUid.present?
       @parent_view = View.find modifyingViewUid
     else
-      @parent_view = parent_dataset
+      @parent_view = self.parent_dataset
     end
     return @parent_view
   end

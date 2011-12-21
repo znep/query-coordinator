@@ -30,6 +30,20 @@ class Hash
     end
   end
 
+  def merge_sum(other)
+    result = self.dup
+
+    other.each do |key, value|
+      if result.has_key? key
+        result[key] += value
+      else
+        result[key] = value
+      end
+    end
+
+    return result
+  end
+
   def deep_value_at(keys)
     current = self
     keys.each{ |key| current = current[key] unless current.nil? }

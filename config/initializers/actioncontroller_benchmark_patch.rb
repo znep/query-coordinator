@@ -47,24 +47,18 @@ module ActionController
       if logger
         ms = [Benchmark.ms { perform_action_without_core_benchmark }, 0.01].max
         logging_view          = defined?(@view_runtime)
-        logging_active_record = Object.const_defined?("ActiveRecord") && ActiveRecord::Base.connected?
         logging_core_server   = Object.const_defined?("CoreServer")
 
         log_message  = 'Completed in %.0fms' % ms
 
-        if logging_view || logging_active_record || logging_core_server
+        if logging_view || logging_core_server
           log_message << " ("
           log_message << view_runtime if logging_view
 
-          if logging_active_record
-            log_message << ", " if logging_view
-            log_message << active_record_runtime
-          end
-
           if logging_core_server
             core_stats = core_server_stats
-            log_message << ", " if (logging_view || logging_active_record)
-            log_message << "Core Server: %i req/%.0f ms" % [core_stats[:requests], core_stats[:runtime]]
+            log_message << ", " if logging_view
+            log_message << "Core Server: %i req/%.0f ms" % [total_requests(core_stats[:requests]), core_stats[:runtime]]
           end
 
           log_message << ")"
@@ -76,12 +70,12 @@ module ActionController
         logger.info(log_message)
         response.headers["X-Runtime"] = "%.0f" % ms
 
-        if too_many_core_server_requests(core_stats[:requests])
+        if core_stats[:requests].any?{ |thread, count| too_many_core_server_requests(count) }
           # Raise an exception just for Hoptoad. Yes, that's ugly, but
           # getting the right data without doing it is uglier, and we're
           # likely to want to re-raise the exception regardless.
           begin
-            raise CoreServer::TooManyRequests.new(self, action_name, core_stats[:requests])
+            raise CoreServer::TooManyRequests.new(self, action_name, core_stats[:requests][Thread.current.object_id])
           rescue CoreServer::TooManyRequests => e
             notify_hoptoad(e)
             raise unless Rails.env.production?
@@ -93,24 +87,18 @@ module ActionController
       end
     end
 
+    def total_requests(requests)
+      requests.reduce(0){ |s, p| s + p.last }
+    end
+
     def render_with_core_benchmark(options = nil, extra_options = {}, &block)
       if logger
-        if Object.const_defined?("ActiveRecord") && ActiveRecord::Base.connected?
-          db_runtime = ActiveRecord::Base.connection.reset_runtime
-        end
-
         if Object.const_defined?("CoreServer")
           core_counters = CoreServer::Base.connection.reset_counters
         end
 
         render_output = nil
         @view_runtime = Benchmark.ms { render_output = render_without_core_benchmark(options, extra_options, &block) }
-
-        if Object.const_defined?("ActiveRecord") && ActiveRecord::Base.connected?
-          @db_rt_before_render = db_runtime
-          @db_rt_after_render = ActiveRecord::Base.connection.reset_runtime
-          @view_runtime -= @db_rt_after_render
-        end
 
         if Object.const_defined?("CoreServer")
           @core_rt_before_render = core_counters
@@ -139,8 +127,8 @@ module ActionController
       core_runtime += @core_rt_after_render[:runtime] if @core_rt_after_render
 
       core_requests = counters[:requests]
-      core_requests += @core_rt_before_render[:requests] if @core_rt_before_render
-      core_requests += @core_rt_after_render[:requests] if @core_rt_after_render
+      core_requests.merge_sum(@core_rt_before_render[:requests]) if @core_rt_before_render
+      core_requests.merge_sum(@core_rt_after_render[:requests]) if @core_rt_after_render
 
       {:runtime => core_runtime, :requests => core_requests}
     end

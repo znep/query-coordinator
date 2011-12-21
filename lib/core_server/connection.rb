@@ -7,7 +7,7 @@ module CoreServer
       @logger = logger
       @cookies = cookies
       @runtime = 0
-      @request_count = 0
+      @request_count = {}
       @batching = false
     end
 
@@ -142,7 +142,7 @@ module CoreServer
         end
       end
 
-      @request_count += 1
+      @request_count[Thread.current.object_id] = (@request_count[Thread.current.object_id] || 0) + 1
 
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname
@@ -195,7 +195,7 @@ module CoreServer
     end
 
     def reset_request_count
-      count, @request_count = @request_count, 0
+      count, @request_count = @request_count, {}
       count
     end
   end

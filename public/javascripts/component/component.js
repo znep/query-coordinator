@@ -244,6 +244,8 @@
                 }
                 else
                 { this.$contents = this.$dom; }
+                if (!$.isBlank(this._properties.htmlClass))
+                { this.$contents.addClass($.makeArray(this._properties.htmlClass).join(' ')); }
                 if (this._loading) { this.startLoading(); }
                 this._updateValidity();
 
@@ -448,25 +450,48 @@
         _updateDataSource: function(properties, callback)
         {
             var cObj = this;
-            if (!$.isBlank(properties.contextId) &&
-                    ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.contextId))
+            var gotDC = function(dc)
             {
-                if ($.dataContext.getContext(properties.contextId, function(dc)
-                    {
-                        cObj.finishLoading();
-                        cObj._dataContext = dc;
-                        if (!$.isBlank(cObj._propEditor))
-                        { cObj._propEditor.setComponent(cObj); }
-                        if (_.isFunction(callback)) { callback.apply(cObj); }
-                    }))
+                cObj.finishLoading();
+                cObj._dataContext = dc;
+                if (!$.isBlank(cObj._propEditor))
+                { cObj._propEditor.setComponent(cObj); }
+                if (_.isFunction(callback)) { callback.apply(cObj); }
+            };
+            var startDCGet = function()
+            {
+                cObj.startLoading();
+                if (!$.isBlank(cObj._propEditor))
+                { cObj._propEditor.setComponent(null); }
+            };
+
+            if (!$.isBlank(properties.context) &&
+                    ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.context.id))
+            {
+                // Hmm; maybe this is taking templating a bit too far?
+                var c = cObj._template(properties.context);
+                var id = c.id;
+                if ($.isBlank(id))
                 {
-                    cObj.startLoading();
-                    if (!$.isBlank(cObj._propEditor))
-                    { cObj._propEditor.setComponent(null); }
+                    id = cObj.id + '_' + _.uniqueId();
+                    c.id = id;
                 }
+                startDCGet();
+                $.dataContext.loadContext(id, c, gotDC);
                 return true;
             }
-            else if ($.isBlank(properties.contextId) && $.isBlank(cObj._properties.contextId))
+            else if (!$.isBlank(properties.contextId) &&
+                    ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.contextId))
+            {
+                if ($.dataContext.getContext(properties.contextId, gotDC))
+                {
+                    startDCGet();
+                    return true;
+                }
+                return false;
+            }
+            else if ($.isBlank(properties.context) && $.isBlank(cObj._properties.context) &&
+                    $.isBlank(properties.contextId) && $.isBlank(cObj._properties.contextId))
             { delete cObj._dataContext; }
             return false;
         },

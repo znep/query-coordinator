@@ -138,12 +138,14 @@
                     $(child.dom).remove();
                 return;
             }
-            if (!child._rendered)
-                child._render();
+            if (!child._initialized)
+                child._initDom();
             if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
             { child.next.$dom.before(child.$dom); }
             else
             { this.$ct.append(child.$dom); }
+            if (this._rendered && !child._rendered)
+                child._render();
             this._arrange();
         },
 
@@ -222,7 +224,7 @@
 
         // Override render to render children as well
         _render: function() {
-            this._super();
+            if (!this._super()) { return false; }
 
             this.$ct = this._getContainer();
             this.$ct.addClass('socrata-container');
@@ -231,6 +233,7 @@
             this.each(this._moveChildDom, this);
 
             this._arrange();
+            return true;
         },
 
         // Override to create separate container component
@@ -297,7 +300,7 @@
 
         // Override rendering to add a (eww) clearing element
         _render: function() {
-            this._super();
+            if (!this._super()) { return false; }
 
             var clear = this.dom.lastChild;
             if (!clear || clear.className != 'socrata-ct-clear') {
@@ -305,12 +308,13 @@
                 clear = this.dom.lastChild;
             }
             this._$clear = $(clear);
+            return true;
         },
 
         // Override child move to wrap child in extra div
         _moveChildDom: function(child) {
-            if (!child._rendered)
-                child._render();
+            if (!child._initialized)
+                child._initDom();
             if (!child.wrapper) {
                 child.wrapper = document.createElement('div');
                 child.wrapper.className = 'component-wrapper';
@@ -324,6 +328,8 @@
             { this._$clear.before(child.$wrapper); }
             else
             { this.$ct.append(child.$wrapper); }
+            if (this._rendered && !child._rendered)
+                child._render();
             this._arrange();
         },
 

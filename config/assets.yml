@@ -20,6 +20,7 @@ javascripts:
     - public/javascripts/controls/base-control.js
     - public/javascripts/controls/loading-spinner.js
     - public/javascripts/util/util.js
+    - public/javascripts/util/color.js
     - public/javascripts/util/events.js
     - public/javascripts/util/base-model.js
     - public/javascripts/util/socrata-server.js
@@ -114,7 +115,6 @@ javascripts:
     - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
   configurator:
-    - public/javascripts/util/color.js
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
@@ -160,7 +160,6 @@ javascripts:
     - public/javascripts/plugins/heatmap-openlayers.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
-    - public/javascripts/util/color.js
     - public/javascripts/controls/panes/map-config.js
     - public/javascripts/controls/maps/base-map.js
     - public/javascripts/controls/maps/esri-map.js
@@ -171,7 +170,6 @@ javascripts:
     - public/javascripts/controls/maps/openlayers-map.js
     - public/javascripts/controls/maps/rastermap-map.js
   shared-chart:
-    - public/javascripts/util/color.js
     - public/javascripts/util/humane-number.js
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
@@ -198,7 +196,6 @@ javascripts:
   admin-browse-widget:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
-    - public/javascripts/util/color.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/screens/admin-customizer.js
@@ -247,7 +244,6 @@ javascripts:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/upload-dialog.js
-    - public/javascripts/util/color.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/screens/admin-customizer.js
@@ -258,7 +254,6 @@ javascripts:
   admin-stories-appearance:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
-    - public/javascripts/util/color.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/controls/stories.js

@@ -3,6 +3,11 @@
 $.component.Component.extend('Title', 'content', {
     configurationSchema: function()
     {
+        if ($.isBlank(this._cachedTextStyle) && !$.isBlank(this.$title))
+        {
+            this._cachedTextStyle = blist.configs.styles.getStyles('text', this.$title),
+            this._cachedPaddingStyle = blist.configs.styles.getStyles('padding', this.$title)
+        }
         return [this._cachedTextStyle, this._cachedPaddingStyle];
     },
 
@@ -10,8 +15,6 @@ $.component.Component.extend('Title', 'content', {
     {
         this.$contents.empty().append($.tag({tagName: 'h2'}));
         this.$title = this.$contents.find('h2');
-        this._cachedTextStyle = blist.configs.styles.getStyles('text', this.$title),
-        this._cachedPaddingStyle = blist.configs.styles.getStyles('padding', this.$title)
     },
 
     _initDom: function()
@@ -36,9 +39,8 @@ $.component.Component.extend('Title', 'content', {
               cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties));
             }
         }
-        if (!$.isBlank(cObj._properties.contextId))
-        { cObj._updateDataSource(cObj._properties, doRender); }
-        else { doRender(); }
+        if (!cObj._updateDataSource(cObj._properties, doRender))
+        { doRender(); }
     },
 
     _propWrite: function(properties)

@@ -555,6 +555,37 @@ module Canvas
     }
   end
 
+  class TwitterShare < CanvasWidget
+    attr_reader :twitter_opts
+
+    def prepare!
+      temp = {}
+
+      # if we're databound, take those as default
+      view = self.get_view
+      if !view.nil?
+        temp[:text] = view.name
+        temp[:url] = Environment.request.protocol + Environment.request.host_with_port + "/d/#{view.id}"
+      end
+
+      # always respect these if they're provided
+      temp.merge(self.properties
+                   .only(:text, :url, :size)
+                   .delete_if{ |k, v| v.nil? || ((k == :size) && (v != 'large')) })
+
+      # copy over to final hash with appropriate key
+      @twitter_opts = {}
+      temp.each{ |k, v| @twitter_opts["data-#{k}"] = v }
+    end
+  protected
+    self.default_properties = {
+      lang: 'en',
+      text: nil, # nil for current page, string for custom
+      url: nil, # nil for current page, string for custom
+      size: nil # nil for normal, 'large' for large
+    }
+  end
+
   class ViewAggregate < CanvasWidget
     attr_reader :value
 

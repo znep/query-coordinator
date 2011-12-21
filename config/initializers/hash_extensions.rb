@@ -41,4 +41,12 @@ class Hash
       value.to_core_query(namespace ? "#{namespace}[#{key}]" : key)
     end.sort * '&'
   end
+
+  def except(*blacklist)
+    self.reject{ |key| blacklist.include?(key) }
+  end
+
+  def only(*whitelist)
+    self.reject{ |key| !whitelist.include?(key) }
+  end
 end

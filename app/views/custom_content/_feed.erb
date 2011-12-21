@@ -12,7 +12,7 @@
     {
         var targetSelector = '#<%= widget.elem_id %>';
         var options = <%= safe_json(widget.js_opts) %>;
-        options.mainView = blist.viewCache['<%= widget.main_view.id %>']
+        options.mainView = blist.viewCache['<%= widget.main_view.id %>'];
 
         var $feedListTemplate = $.renderTemplate('feedList');
 

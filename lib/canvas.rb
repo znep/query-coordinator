@@ -412,7 +412,7 @@ module Canvas
       layout: 'button_count',
       send: false,
       :'show-faces' => true,
-      width: 450
+      width: 100
     }
   end
 
@@ -538,6 +538,33 @@ module Canvas
     self.default_properties = {
       content: '',
       contentForFacet: {}
+    }
+  end
+
+  # PROBABLY SHOULD HAVEDONE ALL THE VIEWM ETADATA THIS WAY OH WEL TOO LATE
+  class BoundLink < CanvasWidget
+    attr_reader :href, :text
+
+    def can_render?
+      return !@href.blank?
+    end
+
+    def prepare!
+      view = self.get_view
+      return if view.nil?
+
+      @href = view.href
+      @href += '?' + self.properties.queryParams.to_param unless self.properties.queryParams.empty?
+      @href += '#' + self.properties.hashParams.to_param unless self.properties.hashParams.empty?
+
+      @text = self.properties.text || view.name
+    end
+  protected
+    self.default_properties = {
+      classNames: [ 'boundLink' ],
+      text: nil, # leave nil for view name
+      hashParams: {},
+      queryParams: {}
     }
   end
 
@@ -758,6 +785,7 @@ module Canvas
     end
   protected
     self.default_properties = {
+      classNames: [ 'viewPreview', 'clearfix' ],
       facetStyle: 'metadata',
       metadata: {
         above: [ ],

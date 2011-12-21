@@ -209,7 +209,7 @@
         <ul class="metaDataList">
           <li><em>Rating:</em> <%= comment.viewRating.nil? ? "No rating" : "#{comment.viewRating.to_i} out of 5" %></li>
           <li><em>Author:</em> <%= comment.user.displayName %></li>
-          <li><em>Posted:</em> <%= humane_date(comment.createdAt) %></li>
+          <li><em>Posted:</em> <%= HumaneDateHelper.humane_date(comment.createdAt) %></li>
         </ul>
         <p><%= comment.body %></p>
       </div>

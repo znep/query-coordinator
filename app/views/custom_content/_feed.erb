@@ -1,5 +1,7 @@
 <div id="<%= widget.elem_id %>" class="clearfix"></div>
 
+<%- needs_view_js(widget.main_view.id, widget.main_view) -%>
+
 <%- content_for :js_footer do -%>
   <%- allow_once do -%>
     <%= include_javascripts 'feed-list' %>
@@ -10,6 +12,7 @@
     {
         var targetSelector = '#<%= widget.elem_id %>';
         var options = <%= safe_json(widget.js_opts) %>;
+        options.mainView = blist.viewCache['<%= widget.main_view.id %>']
 
         var $feedListTemplate = $.renderTemplate('feedList');
 

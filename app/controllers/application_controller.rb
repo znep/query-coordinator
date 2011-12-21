@@ -210,7 +210,7 @@ private
   end
 
   def needs_view_js(uid, view)
-    (@view_cache ||= {})[uid] = view
+    (@view_cache ||= {})[uid] ||= view
   end
 
   # Custom logic for rendering a 404 page with our pretty templates.

@@ -468,17 +468,16 @@ module Canvas
   end
 
   class Feed < CanvasWidget
-    attr_reader :js_opts
+    attr_reader :js_opts, :main_view
 
     def prepare!
-      view = self.get_view
+      @main_view = self.get_view
 
       # grab data that we'll need. for now, comments-only
-      comments = view.comments
+      comments = @main_view.comments
 
       @js_opts = {
-        comments: comments,
-        mainView: view
+        comments: comments
       }.merge(self.properties.controlOptions)
     end
   protected

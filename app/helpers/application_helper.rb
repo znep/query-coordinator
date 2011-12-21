@@ -98,6 +98,10 @@ module ApplicationHelper
     return render :partial => 'shared/current_user', :locals => { :current_user => current_user, :serialized_user => serialized_user }
   end
 
+  def needs_view_js(uid, view)
+    (@view_cache ||= {})[uid] ||= view
+  end
+
   def render_view_js
     return unless defined? @view_cache
     content_tag :script, :type => 'text/javascript' do

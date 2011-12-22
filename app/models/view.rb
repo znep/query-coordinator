@@ -786,7 +786,7 @@ class View < Model
   def rdf_subject
     if (!metadata.nil? && !metadata.rdfSubject.nil?)
       rdfSubj = metadata.rdfSubject
-      rdfSubjCol = column_by_id(rdfSubj.to_i)
+      rdfSubjCol = column_by_id_or_field_name(rdfSubj)
       if !rdfSubjCol.nil?
         return rdfSubjCol.name
       end

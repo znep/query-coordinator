@@ -397,7 +397,7 @@ var updateLayerLines = function($elems)
         var oldLayer = $line.data('layer');
         var importLayer = {
             layerId: oldLayer.layerId,
-            name: $line.find('.layerName').val(),
+            name: $line.find('.layerName').val()
         };
 
         if ($line.find('.layerCrsAutoDetect').prop('checked'))

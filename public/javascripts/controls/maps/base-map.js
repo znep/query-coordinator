@@ -900,11 +900,11 @@
                     marker.style.fillColor = hasHighlight ? '#' + mapObj._highlightColor
                                                           : details.color || '#0000ff';
                     marker.style.strokeColor = '#ffffff';
-                    marker.style.strokeWidth = 1;
-                    marker.style.pointRadius = marker.style.pointRadius || 6;
+                    marker.style.strokeWidth = 2;
+                    marker.style.pointRadius = marker.style.pointRadius || 5;
 
                     if (details.size)
-                    { marker.style.pointRadius = 6 + (2 * details.size); }
+                    { marker.style.pointRadius = 5 + (2 * details.size); }
                 }
             }
             else if (geoType == 'polyline')

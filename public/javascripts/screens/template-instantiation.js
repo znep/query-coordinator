@@ -51,32 +51,14 @@
         $.cf.configuration({});
         $.cf.side.reset();
         spinner.showHide(false);
+    })
+
+    $.cf.initialize($('.socrata-cf-top'), configuratorOptions);
+
+    _.defer(function() {
+        $form.find('.socrata-component:first').trigger('mousedown');
     });
 
-    // todo: there must be a better way to do this
-    var componentsLoading = function() {
-        var loading = 0;
-        $.component.eachRoot(function(component) {
-            if (component._loading) {
-                loading++;
-            }
-        });
-        return loading > 0;
-    };
-
-    var beginEditOnComponentLoad = function() {
-        if (componentsLoading()) {
-            var loadingTimer = setTimeout(beginEditOnComponentLoad, 100);
-        }
-        else {
-            clearTimeout(loadingTimer);
-            $.cf.initialize($('.socrata-cf-top'), configuratorOptions);
-            _.defer(function() {
-                $form.find('.socrata-component:first').trigger('mousedown');
-            });
-        }
-    };
-    beginEditOnComponentLoad();
     $body.addClass('instantiating');
 
 })(jQuery);

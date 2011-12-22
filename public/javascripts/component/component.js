@@ -40,6 +40,7 @@
                     cObj.finishLoading();
                     delete cObj._loadingAssets;
                     if (cObj._needsRender) { _.defer(function () { cObj._render(); }); }
+                    if (cObj._needsEdit) { _.defer(function () { cObj.edit(true); }); }
                 });
             }
         },
@@ -133,6 +134,14 @@
          * Set active editing state.
          */
         edit: function(editing) {
+            if (this._loadingAssets)
+            {
+                this._needsEdit = true;
+                return false;
+            }
+
+            delete this._needsEdit;
+            return true;
         },
 
         /**

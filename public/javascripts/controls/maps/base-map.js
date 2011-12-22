@@ -6,30 +6,6 @@
 
     blist.namespace.fetch('blist.openLayers');
 
-    blist.openLayers.ZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoomBar, {
-        draw: function(px)
-        {
-            // derived from PanZoomBar source, because it's the only way to change
-            // these sizes. because of course.
-
-            OpenLayers.Control.prototype.draw.apply(this, arguments);
-            px = this.position.clone();
-            this.buttons = [];
-
-            var padding = new OpenLayers.Size(-2, -2);
-
-            // HACK HACK HACK HACK HCAK HCAK HCAKHCAKHC AKHACKHAC HKACK HACKH ACHKACHK
-            var sz = new OpenLayers.Size(21, 21);
-            this._addButton('zoomin', 'zoom-plus-mini.png', px.add(padding.w, padding.h), sz);
-            var centered = this._addZoomBar(px.add(padding.w + 1, padding.h + 19));
-            this._addButton('zoomout', 'zoom-minus-mini.png', centered.add(-1, 2), sz);
-
-            return this.div;
-        },
-
-        CLASS_NAME: "blist.openLayers.ZoomBar"
-    });
-
     var geographicProjection = new OpenLayers.Projection('EPSG:4326');
 
     // TODO: There is probably a better way to do this caching.
@@ -141,6 +117,10 @@
             mapObj.map.removeControl(mapObj.map.getControlsByClass('OpenLayers.Control.PanZoom')[0]);
             mapObj.map.addControl(new blist.openLayers.ZoomBar());
             mapObj.map.addControl(new OpenLayers.Control.MousePosition()); // FIXME: Remove.
+
+            if (mapObj._displayFormat.type == 'bing')
+            { mapObj.map.getControlsByClass('OpenLayers.Control.PanZoomBar')[0]
+                .zoomStopHeight = 12; }
 
             mapObj.initializeBaseLayers();
             mapObj.populateLayers();

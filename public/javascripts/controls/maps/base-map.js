@@ -239,7 +239,6 @@
                                 clearTimeout(mapObj._hoverTimers[dupKey]);
                                 delete mapObj._hoverTimers[dupKey];
                             }
-                            mapObj._primaryView.highlightRows(feature.attributes.rows, 'select');
                         }
                     });
                 });
@@ -835,11 +834,15 @@
             var mapObj = this;
             var viewConfig = mapObj._byView[(details.dataView || mapObj._primaryView).id];
 
+            var hasHighlight = _.any(details.rows, function(r)
+                { return r.sessionMeta && r.sessionMeta.highlight; });
+
             var marker, newMarker;
             if (mapObj._markers[dupKey])
             {
                 marker = mapObj._markers[dupKey];
-                if (marker.style.externalGraphic != details.icon)
+                if (hasHighlight != marker.style.hasHighlight
+                    || marker.style.externalGraphic != details.icon)
                 {
                     marker = null;
                     newMarker = true;
@@ -850,8 +853,6 @@
             else
             { newMarker = true; }
 
-            var hasHighlight = _.any(details.rows, function(r)
-                { return r.sessionMeta && r.sessionMeta.highlight; });
             if (geoType == 'point')
             {
                 var lonlat;
@@ -1462,7 +1463,7 @@
 
             viewConfig._selectControl = new OpenLayers.Control.SelectFeature(layer,
                 { onSelect: function(feature) { onFeatureSelect(mapObj, feature,
-                    function(evt) { onFeatureUnselect(mapObj); }); },
+                    function(evt) { onFeatureUnselect(mapObj, feature); }); },
                   onUnselect: function(feature) { onFeatureUnselect(mapObj, feature); } });
             mapObj.map.addControl(viewConfig._selectControl);
 
@@ -1683,6 +1684,10 @@
     {
         if ((feature.attributes || {}).redirects_to)
         { window.open(feature.attributes.redirects_to); return; }
+        mapObj._primaryView.highlightRows(feature.attributes.rows, 'select');
+        mapObj.$dom().trigger('display_row', [{row: _.first(feature.attributes.rows)}]);
+        $(document).trigger(blist.events.DISPLAY_ROW, [_.first(feature.attributes.rows).id, true]);
+
         if (!feature.attributes.flyout)
         { return null; }
 
@@ -1722,8 +1727,9 @@
         });
     };
 
-    var onFeatureUnselect = function(mapObj)
+    var onFeatureUnselect = function(mapObj, feature)
     {
+        if (feature) { mapObj._primaryView.unhighlightRows(feature.attributes.rows, 'select'); }
         mapObj.map.removePopup(mapObj._popup);
         mapObj._popup.destroy();
         mapObj._popup = null;
@@ -1754,6 +1760,9 @@
                     graphicWidth: width, graphicHeight: height,
                     graphicXOffset: -(width / 2), graphicYOffset: -height
                 });
+
+                if (hasHighlight)
+                { mapObj._iconCache[key].hasHighlight = true; }
 
                 var features = mapObj._iconCache[key].features.concat(feature);
                 _.each(features, function(f)

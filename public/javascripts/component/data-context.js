@@ -2,6 +2,7 @@
     $.dataContext = new (Model.extend({
         availableContexts: {},
         _contextsQueue: {},
+        _preLoadQueue: {},
 
         _init: function() {
             this._super();
@@ -47,7 +48,8 @@
                 $.dataContext.trigger('error', [ id ]);
             };
 
-            dc._contextsQueue[id] = [];
+            dc._contextsQueue[id] = dc._preLoadQueue[id] || [];
+            delete dc._preLoadQueue[id];
             switch (config.type)
             {
                 case 'row':
@@ -136,15 +138,17 @@
                 q.orderBys.push(ob);
             });
         }
+        if (_.isEmpty(q.orderBys)) { delete q.orderBys; }
 
         ds.update({query: q});
     };
 
     var loadDataset = function(dc, id, config, callback, errorCallback)
     {
+        config = $.template(config, $.component.rootPropertyResolver);
         if ($.subKeyDefined(config, 'contextId'))
         {
-            dc.getContext(config.contextId, function(context)
+            if (!dc.getContext(config.contextId, function(context)
             {
                 if (context.type != 'dataset')
                 {
@@ -154,11 +158,21 @@
                 var ds = context.dataset;
                 if (!$.isBlank(config.query))
                 {
-                    ds = new Dataset(ds.cleanCopy());
+                    ds = ds.clone();
                     addQuery(ds, config.query);
                 }
                 callback(ds);
-            });
+            }))
+            {
+                // When loading the initial hash, we might have references in
+                // the wrong order; so make an attempt to wait until that one
+                // is loaded (or at least registered)
+                var args = arguments;
+                dc._preLoadQueue[config.contextId] = dc._preLoadQueue[config.contextId] || [];
+                dc._preLoadQueue[config.contextId].push(
+                    { success: function() { loadDataset.apply(this, args); },
+                        error: errorCallback });
+            }
         }
         else if ($.subKeyDefined(config, 'datasetId'))
         {

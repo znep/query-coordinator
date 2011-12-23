@@ -149,18 +149,7 @@
          */
         _template: function(template, resolver)
         {
-            var cObj = this;
-            if (_.isString(template))
-            { return $.template(template, resolver || this._propertyResolver()); }
-            else if (_.isArray(template))
-            { return _.map(template, function(t) { return cObj._template(t, resolver); }); }
-            else if ($.isPlainObject(template))
-            {
-                var o = {};
-                _.each(template, function(v, k) { o[k] = cObj._template(v, resolver); });
-                return o;
-            }
-            else { return template; }
+            return $.template(template, resolver || this._propertyResolver());
         },
 
         setEditor: function(editor)
@@ -538,12 +527,27 @@
     // That extra five characters is annoying in Firebug
     $.comp = $.component;
 
+    var queryParams;
+
     $.extend($.component, {
         Component: Component,
 
         rootPropertyResolver: function(name) {
             if (name.charAt(0) == '@')
                 return $.locale(name.substring(1));
+            else if (name.charAt(0) == '?')
+            {
+                if ($.isBlank(queryParams))
+                {
+                    queryParams = {};
+                    _.each(window.location.search.substring(1).split('&'), function(p)
+                        {
+                            var s = p.split('=');
+                            queryParams[s[0]] = s[1];
+                        });
+                }
+                return queryParams[name.substring(1)] || name;
+            }
         },
 
         allocateId: function() {

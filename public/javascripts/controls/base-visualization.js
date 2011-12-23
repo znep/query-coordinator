@@ -264,7 +264,12 @@
         setView: function(newView)
         {
             var vizObj = this;
-            if (!$.isBlank(vizObj._primaryView))
+            var hadView = !$.isBlank(vizObj._primaryView);
+            if (hadView && !$.isBlank(newView) && newView.id == vizObj._primaryView.id ||
+                    !hadView && $.isBlank(newView))
+            { return; }
+
+            if (hadView)
             {
                 vizObj._primaryView.unbind(null, null, vizObj);
                 vizObj._dataViews = _.without(vizObj._dataViews, vizObj._primaryView);
@@ -277,7 +282,7 @@
             vizObj._boundViewEvents = false;
 
             vizObj._requireRowReload = true;
-            vizObj.reload({});
+            vizObj.reload(hadView ? {} : null);
         },
 
         reload: function(newDF)

@@ -51,6 +51,7 @@
 
     // The dummy class constructor
     function Class() {
+        this.Class = Class;
       // All construction is actually done in the init method
       if ( !initializing && this._init )
         this._init.apply(this, arguments);

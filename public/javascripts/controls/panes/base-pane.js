@@ -2152,7 +2152,7 @@
                 if (!$.isBlank($firstField))
                 {
                     $firstField.toggleClass('sectionDisabled-' +
-                        $section.attr('name'), !isHidden && isDisabled);
+                        $section.attr('name'), !$section.hasClass('selectable') && !isHidden && isDisabled);
                 }
 
                 $section.toggleClass('hide', isHidden);

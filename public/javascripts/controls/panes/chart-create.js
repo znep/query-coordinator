@@ -79,12 +79,6 @@
 
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
-            // We don't support configuring series columns, but we want to preserve them if manually set
-            if (!_.isEmpty(cpObj._view.displayFormat.seriesColumns))
-            {
-                view.displayFormat.seriesColumns = cpObj._view.displayFormat.seriesColumns;
-                view.displayFormat.colors = cpObj._view.displayFormat.colors;
-            }
 
             var addColumn = function(tcid)
             {

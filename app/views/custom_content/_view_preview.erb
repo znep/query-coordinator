@@ -9,6 +9,8 @@
                :locals => { widget: widget, details: widget.properties.metadata.below } %>
   </div>
 
+  <%- needs_view_js(widget.view.id, widget.view) -%>
+
   <%- content_for :js_footer do -%>
     <%- allow_once do -%>
       <script type="text/javascript">
@@ -25,21 +27,22 @@
       $(function()
       {
           var targetSelector = "#<%= widget.elem_id %>";
-          var view = new Dataset(<%= raw safe_json widget.view %>);
+          Dataset.createFromViewId('<%= widget.view.id %>', function(view)
+          {
+              var $container = $(targetSelector);
 
-          var $container = $(targetSelector);
+              $container.data('viewPreview-dataset', view);
 
-          $container.data('viewPreview-dataset', view);
+              var spinner = $container.find('.viewPreviewContainer').loadingSpinner({model: view});
 
-          var spinner = $container.find('.viewPreviewContainer').loadingSpinner({model: view});
-
-          $container.children('.viewPreviewContainer').renderTypeManager({
-              view: view,
-              editEnabled: false,
-              common: {
-                  showRowHandle: false,
-                  manualResize: false
-              }
+              $container.children('.viewPreviewContainer').renderTypeManager({
+                  view: view,
+                  editEnabled: false,
+                  common: {
+                      showRowHandle: false,
+                      manualResize: false
+                  }
+              });
           });
       });
     </script>

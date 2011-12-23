@@ -658,6 +658,8 @@ module Canvas
 
     def prepare!
       view = self.get_view
+      return value = nil if view.nil?
+
       column = view.column_by_id_or_field_name(self.properties.column)
       return value = nil if column.nil?
 

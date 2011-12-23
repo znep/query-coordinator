@@ -691,6 +691,10 @@ blist.util.doAuthedAction = function(actionText, callback)
                     callback(successCallback);
             }, 'You must be logged in to ' + actionText);
     }
+    else if (!blist.currentUserId)
+    {
+        window.location = '/login';
+    }
     else
     {
         callback();

@@ -142,6 +142,10 @@ http://www.socrata.com
       blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
     <%- end -%>
 
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = "<%= current_user.id %>";
+    <%- end -%>
+
     try {
       if ((self !== top) && (self.location.hostname !== top.location.hostname))
         top.location = self.document.location;

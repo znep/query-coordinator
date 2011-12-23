@@ -33,9 +33,6 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
-    <%- if !current_user.nil? -%>
-      blist.currentUserId = '<%= current_user.id %>';
-    <%- end -%>
     blist.namespace.fetch('blist.profile');
     blist.profile.profileUserId = '<%= @user.id %>';
   </script>

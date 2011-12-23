@@ -12,13 +12,16 @@
     {
         var targetSelector = '#<%= widget.elem_id %>';
         var options = <%= safe_json(widget.js_opts) %>;
-        options.mainView = blist.viewCache['<%= widget.main_view.id %>'];
+        Dataset.createFromViewId('<%= widget.main_view.id %>', function(mainView)
+        {
+            options.mainView = mainView;
 
-        var $feedListTemplate = $.renderTemplate('feedList');
+            var $feedListTemplate = $.renderTemplate('feedList');
 
-        $(targetSelector)
-            .append($feedListTemplate)
-            .feedList(options);
+            $(targetSelector)
+                .append($feedListTemplate)
+                .feedList(options);
+        });
     });
   </script>
 <%- end -%>

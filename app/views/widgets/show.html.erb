@@ -197,9 +197,6 @@
 
     <%= raw @display.render_inline_setup_js('renderTypeContainer', self) %>
     blist.namespace.fetch('blist.widget');
-    <%- if !current_user.nil? -%>
-      blist.currentUserId = "<%= current_user.id %>";
-    <%- end -%>
 
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';

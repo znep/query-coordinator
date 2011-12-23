@@ -3,7 +3,6 @@
     <%- content_for :js_footer do -%>
       <script type="text/javascript">
         blist.currentUser = new User(<%= serialized_user %>);
-        blist.currentUserId = '<%= current_user.id %>';
       </script>
     <%- end -%>
   <%- end -%>

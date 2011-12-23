@@ -24,9 +24,6 @@
 <% content_for :js_footer do %>
   <script type="text/javascript">
     blist.dataset = new Dataset(<%= safe_json(@view) %>);
-    <%- if !current_user.nil? -%>
-      blist.currentUserId = '<%= current_user.id %>';
-    <%- end -%>
   </script>
   <%= include_javascripts 'dataset-about-full' %>
 <% end %>

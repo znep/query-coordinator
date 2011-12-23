@@ -85,7 +85,7 @@ $wizard.wizard({
         'uploadFile':           blist.importer.uploadFilePaneConfig,
         'appendReplaceColumns': blist.importer.appendReplaceColumnsPaneConfig,
         'importing':            blist.importer.importingPaneConfig,
-        'importWarnings':       blist.importer.importWarningsPaneConfig,
+        'importWarnings':       $.extend({}, blist.importer.importWarningsPaneConfig, { disableButtons: [ 'cancel', 'prev' ] }),
 
         'finish': {
             disableButtons: [ 'cancel', 'prev' ],

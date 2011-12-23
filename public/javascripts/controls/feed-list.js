@@ -478,10 +478,15 @@
                                                 .prepend(compiledFeedDirectiveNest([newCommentData]));
                                     }
 
-                                    $this.closest('.feed').find('.noResults').addClass('hide');
+                                    var $feed = $this.closest('.feed');
+
+                                    $feed.find('.noResults').addClass('hide');
                                     $this.closest('.newCommentForm').remove();
                                     if (_.isFunction(opts.addCommentCallback))
                                     { opts.addCommentCallback(view, newCommentData); }
+
+                                    if (opts.alwaysShowNewCommentForm === true)
+                                    { createCommentForm($feed.find('.noResults'), opts.mainView); }
 
                                     if (_.isFunction(successCallback)) { successCallback(); }
                                 },
@@ -507,13 +512,22 @@
 
                     if ($this.siblings('.newCommentForm').length === 0)
                     {
-                        var $newCom = $.renderTemplate('feedItem_newComment');
-                        $newCom.find('.postNewCommentButton')
-                            .data('view', getData($this).opts.mainView);
-                        $this.after($newCom);
-                        $this.siblings('.newCommentForm').find('#newCommentBody').focus();
+                        createCommentForm($this, getData($this).opts.mainView);
                     }
                 });
+
+                var createCommentForm = function($after, mainView)
+                {
+                    var $newCom = $.renderTemplate('feedItem_newComment');
+                    $newCom.find('.postNewCommentButton').data('view', mainView);
+                    $after.after($newCom);
+                    $after.siblings('.newCommentForm').find('#newCommentBody').focus();
+                };
+
+                if (opts.alwaysShowNewCommentForm === true)
+                {
+                    createCommentForm($this.find('.noResults'), opts.mainView);
+                }
             }
         });
     };
@@ -533,6 +547,7 @@
         actionDelegate: function(targetComment, opts) {
             return getView(targetComment.viewId, opts);
         },
+        alwaysShowNewCommentForm: false,
         bindCommentEvents: true,
         commentCreateData: {},
         comments: [],

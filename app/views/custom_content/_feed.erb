@@ -20,7 +20,8 @@
 
             $(targetSelector)
                 .append($feedListTemplate)
-                .feedList(options);
+                .find('.feed')
+                    .feedList(options);
         });
     });
   </script>

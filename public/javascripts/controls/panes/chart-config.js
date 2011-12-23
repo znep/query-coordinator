@@ -237,6 +237,30 @@
         };
     };
 
+    var seriesData = function(chart, options, colTypes)
+    {
+        var oif = onlyIfForChart(chart, options, false);
+        oif.push({disable: true, func: function()
+            {
+                return (!$.isBlank(options.view) && ($.isBlank(options.view.totalRows) ||
+                    options.view.totalRows <= 500))
+            },
+            disabledMessage: 'Data grouping is only available for data under 500 rows. ' +
+            'Please filter the data to within that limit.'});
+        return {
+            title: 'Data Series Grouping', type: 'selectable', name: chart.value + 'SeriesData',
+            onlyIf: oif,
+            fields: [
+                {type: 'repeater', minimum: 1, addText: 'Add Series Column',
+                    name: 'displayFormat.seriesColumns',
+                    field: {text: 'Group by', type: 'columnSelect',
+                            notequalto: 'valueCol', isTableColumn: true,
+                            name: 'tableColumnId', columns: {type: colTypes, hidden: options.isEdit}}
+                }
+            ]
+        };
+    };
+
     var basicAdv = function(chart, options, fields)
     {
         return {
@@ -344,6 +368,7 @@
                 result.push(
                     basicConfig(chart, options, Dataset.chart.textualTypes, 'Categories'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Value'),
+                    seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, showLines, showPoints, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
@@ -356,6 +381,7 @@
                 result.push(
                     basicConfig(chart, options, Dataset.chart.textualTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
+                    seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, stacking('bar'), renderOther,
                         flyoutControls(options)]),
                     yAxisFormatting(chart, options),
@@ -369,6 +395,7 @@
                 result.push(
                     configBubble(options),
                     dataBubble(options),
+                    seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, showLine, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
@@ -380,6 +407,7 @@
                 result.push(
                     basicConfig(chart, options, Dataset.chart.textualTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
+                    seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options,
                         [legendPos, stacking('column'), renderOther, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
@@ -402,6 +430,7 @@
                 result.push(
                     configLine(options),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Value'),
+                    seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, showLines, showPoints,
                             {text: 'Smooth Line', name: 'displayFormat.smoothLine',
                             type: 'checkbox', defaultValue: false},
@@ -426,6 +455,7 @@
                 result.push(
                     configTimeline(options),
                     dataTimeline(options),
+                    seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),

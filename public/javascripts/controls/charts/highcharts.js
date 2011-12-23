@@ -85,7 +85,19 @@
             }
 
             // Once we've gotten the columns, get total rows, then create the chart
-            chartObj._primaryView.getTotalRows(function() { createChart(chartObj); });
+            var getTotalRows;
+            getTotalRows = function()
+            {
+                chartObj._primaryView.getTotalRows(function() { createChart(chartObj); },
+                    function(obj)
+                    {
+                        if ($.subKeyDefined(obj, 'cancelled') && obj.cancelled)
+                        { getTotalRows(); }
+                        else
+                        { throw new Error('There was a problem getting the total rows for the chart'); }
+                    });
+            };
+            getTotalRows();
         },
 
         handleRowsLoaded: function()

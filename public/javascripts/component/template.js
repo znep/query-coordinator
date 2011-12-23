@@ -1,7 +1,22 @@
 (function($) {
     var cache = {};
 
-    $.template = function(template, resolver) {
+    $.template = function(template, resolver)
+    {
+        if (_.isString(template))
+        { return templateString(template, resolver); }
+        else if (_.isArray(template))
+        { return _.map(template, function(t) { return $.template(t, resolver); }); }
+        else if ($.isPlainObject(template))
+        {
+            var o = {};
+            _.each(template, function(v, k) { o[k] = $.template(v, resolver); });
+            return o;
+        }
+        else { return template; }
+    };
+
+    var templateString = function(template, resolver) {
         if (template == undefined)
             template = '';
         var compiled = cache[template];

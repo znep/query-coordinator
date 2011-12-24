@@ -9,7 +9,6 @@
     var geographicProjection = new OpenLayers.Projection('EPSG:4326');
 
     // TODO: There is probably a better way to do this caching.
-    Proj4js.defs["EPSG:2926"] = "+proj=lcc +lat_1=48.73333333333333 +lat_2=47.5 +lat_0=47 +lon_0=-120.8333333333333 +x_0=500000.0001016001 +y_0=0 +ellps=GRS80 +to_meter=0.3048006096012192 +no_defs";
     Proj4js.defs["EPSG:102100"] = "+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null";
 
     $.Control.extend('socrataMap', {

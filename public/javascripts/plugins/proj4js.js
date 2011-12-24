@@ -967,6 +967,35 @@ Proj4js.Proj = Proj4js.Class({
               default: //alert("Unrecognized parameter: " + paramName);
           } // switch()
       } // for paramArray
+
+      if (!this.to_meter)
+      {
+          switch (this.units)
+          {
+              case 'km':     this.to_meter = 1000.; break;
+              case 'm':      this.to_meter = 1.; break;
+              case 'dm':     this.to_meter = 1/10; break;
+              case 'cm':     this.to_meter = 1/100; break;
+              case 'mm':     this.to_meter = 1/1000; break;
+              case 'kmi':    this.to_meter = 1852.0; break;
+              case 'in':     this.to_meter = 0.0254; break;
+              case 'ft':     this.to_meter = 0.3048; break;
+              case 'yd':     this.to_meter = 0.9144; break;
+              case 'mi':     this.to_meter = 1609.344; break;
+              case 'fath':   this.to_meter = 1.8288; break;
+              case 'ch':     this.to_meter = 20.1168; break;
+              case 'link':   this.to_meter = 0.201168; break;
+              case 'us-in':  this.to_meter = 1./39.37; break;
+              case 'us-ft':  this.to_meter = 0.304800609601219; break;
+              case 'us-yd':  this.to_meter = 0.914401828803658; break;
+              case 'us-ch':  this.to_meter = 20.11684023368047; break;
+              case 'us-mi':  this.to_meter = 1609.347218694437; break;
+              case 'ind-yd': this.to_meter = 0.91439523; break;
+              case 'ind-ft': this.to_meter = 0.30479841; break;
+              case 'ind-ch': this.to_meter = 20.11669506; break;
+          }
+      }
+
       this.deriveConstants();
   },
 

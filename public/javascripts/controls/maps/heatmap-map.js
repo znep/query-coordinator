@@ -178,8 +178,8 @@
 
         reloadVisualization: function()
         {
-            setUpHeatmap(this);
             this._super();
+            setUpHeatmap(this);
         }
     }, null, 'socrataMap');
 

@@ -507,6 +507,12 @@
             { layer.setVisibility(true); });
         },
 
+        handleRowsLoaded: function(rows, view)
+        {
+            if (this._renderType != 'points') { return; }
+            else { this._super.apply(this, arguments); }
+        },
+
         handleClustersLoaded: function(clusters, view)
         {
             var mapObj = this;
@@ -1370,6 +1376,7 @@
             }
             if (viewConfig._neverCluster || viewConfig._fetchPoints)
             {
+                viewConfig._renderType = 'points';
                 mapObj.initializeAnimation(null, view);
                 mapObj._super(view);
                 if (viewConfig._fetchPoints)

@@ -175,7 +175,7 @@
 
     var eventMouseover = function(calObj, calEvent)
     {
-        calObj._primaryView.highlightRows(calEvent.row);
+        _.defer(function() { calObj._primaryView.highlightRows(calEvent.row); });
     };
 
     var eventMouseout = function(calObj, calEvent)

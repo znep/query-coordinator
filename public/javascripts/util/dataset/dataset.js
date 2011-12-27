@@ -529,7 +529,16 @@ var Dataset = ServerModel.extend({
         var reqData;
         if (useInline)
         {
-            reqData = ds.cleanCopy();
+            if ($.subKeyDefined(ds, 'query.namedFilters.viewport'))
+            {
+                var tmp = ds.query.namedFilters.viewport;
+                delete ds.query.namedFilters.viewport;
+                reqData = ds.cleanCopy();
+                ds.query.namedFilters.viewport = tmp;
+            }
+            else
+            { reqData = ds.cleanCopy(); }
+
             if (!$.isBlank(displayFormat)) { reqData.displayFormat = displayFormat; }
             reqData = JSON.stringify(reqData);
         }

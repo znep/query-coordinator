@@ -58,6 +58,7 @@
 
             dc._contextsQueue[id] = dc._preLoadQueue[id] || [];
             delete dc._preLoadQueue[id];
+            config = $.stringSubstitute(config, $.component.rootPropertyResolver);
             switch (config.type)
             {
                 case 'row':
@@ -87,6 +88,11 @@
                 case 'datasetList':
                     Dataset.search(config.search, function(results)
                         {
+                            if (results.count < 1)
+                            {
+                                errorLoading(id);
+                                return;
+                            }
                             dc.availableContexts[id] = {id: id, type: config.type,
                                 count: results.count, datasetList: _.map(results.views, function(ds)
                                     {
@@ -153,7 +159,6 @@
 
     var loadDataset = function(dc, id, config, callback, errorCallback)
     {
-        config = $.stringSubstitute(config, $.component.rootPropertyResolver);
         if ($.subKeyDefined(config, 'contextId'))
         {
             if (!dc.getContext(config.contextId, function(context)

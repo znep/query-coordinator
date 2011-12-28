@@ -241,7 +241,7 @@
                 if (this._delayUntilVisible)
                 {
                     var cObj = this;
-                    $(document).scroll(_.throttle(function()
+                    $(window).scroll(_.throttle(function()
                         {
                             if (cObj._needsRender && cObj._isVisible()) { cObj._render(); }
                         }, 300));

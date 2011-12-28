@@ -350,8 +350,7 @@
             // We need to change the ID so that maps (such as ESRI) recognize
             // something has changed, and reload properly
             mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
-            $(mapObj.currentDom).socrataMap($.extend({}, mapObj.settings, {view: mapObj._primaryView,
-                displayFormat: mapObj._displayFormat}));
+            $(mapObj.currentDom).socrataMap($.extend({}, mapObj.settings, {view: mapObj._primaryView}));
         },
 
         // Read: Mixins changed. TODO: Rewrite how mixins work.

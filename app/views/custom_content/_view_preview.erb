@@ -20,6 +20,12 @@
       <%= include_javascripts 'render-view-minimum' %>
     <%- end -%>
 
+    <%- if widget.view.display.is_a? Displays::Table -%>
+      <%- allow_once do -%>
+        <%= rendered_stylesheet_tag 'grid' %>
+      <%- end -%>
+    <%- end -%>
+
     <script type="text/javascript">
       // activator for viewPreview widget <%= widget.elem_id %>
       $(function()

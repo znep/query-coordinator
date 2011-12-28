@@ -509,7 +509,7 @@
 
         handleRowsLoaded: function(rows, view)
         {
-            if (this._renderType != 'points') { return; }
+            if (this._byView[view.id]._renderType != 'points') { return; }
             else { this._super.apply(this, arguments); }
         },
 

@@ -248,7 +248,7 @@
     {
         var applyFilters = function()
         {
-            var filterCond = view.query.filterCondition;
+            var filterCond = view.cleanFilters(true);
             if (_.isEmpty(filterCond)) { return '1=1'; }
 
             var template = {

@@ -76,7 +76,7 @@ javascripts:
     - public/javascripts/util/asset-loading.js
     - public/javascripts/component/util/style-config.js
     - public/javascripts/component/data-context.js
-    - public/javascripts/component/template.js
+    - public/javascripts/util/string-substitute.js
     - public/javascripts/component/locale.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-container.js

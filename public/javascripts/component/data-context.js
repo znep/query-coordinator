@@ -153,7 +153,7 @@
 
     var loadDataset = function(dc, id, config, callback, errorCallback)
     {
-        config = $.template(config, $.component.rootPropertyResolver);
+        config = $.stringSubstitute(config, $.component.rootPropertyResolver);
         if ($.subKeyDefined(config, 'contextId'))
         {
             if (!dc.getContext(config.contextId, function(context)

@@ -54,7 +54,7 @@ var renderUpdate = function()
 
         if (!$.isBlank(this._properties.columnFilter))
         {
-            var cf = this._template(this._properties.columnFilter);
+            var cf = this._stringSubstitute(this._properties.columnFilter);
             var tcIds = {};
             opts.datasets = _.select(opts.datasets, function(ds)
             {

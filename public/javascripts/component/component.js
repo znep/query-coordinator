@@ -147,9 +147,9 @@
         /**
          * Substitute insertion variables into a string.
          */
-        _template: function(template, resolver)
+        _stringSubstitute: function(obj, resolver)
         {
-            return $.template(template, resolver || this._propertyResolver());
+            return $.stringSubstitute(obj, resolver || this._propertyResolver());
         },
 
         setEditor: function(editor)
@@ -458,7 +458,7 @@
                     ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.context.id))
             {
                 // Hmm; maybe this is taking templating a bit too far?
-                var c = cObj._template(properties.context);
+                var c = cObj._stringSubstitute(properties.context);
                 var id = c.id;
                 if ($.isBlank(id))
                 {

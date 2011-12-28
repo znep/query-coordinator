@@ -1,28 +1,28 @@
 (function($) {
     var cache = {};
 
-    $.template = function(template, resolver)
+    $.stringSubstitute = function(obj, resolver)
     {
-        if (_.isString(template))
-        { return templateString(template, resolver); }
-        else if (_.isArray(template))
-        { return _.map(template, function(t) { return $.template(t, resolver); }); }
-        else if ($.isPlainObject(template))
+        if (_.isString(obj))
+        { return resolveString(obj, resolver); }
+        else if (_.isArray(obj))
+        { return _.map(obj, function(t) { return $.stringSubstitute(t, resolver); }); }
+        else if ($.isPlainObject(obj))
         {
             var o = {};
-            _.each(template, function(v, k) { o[k] = $.template(v, resolver); });
+            _.each(obj, function(v, k) { o[k] = $.stringSubstitute(v, resolver); });
             return o;
         }
-        else { return template; }
+        else { return obj; }
     };
 
-    var templateString = function(template, resolver) {
-        if (template == undefined)
-            template = '';
-        var compiled = cache[template];
+    var resolveString = function(string, resolver) {
+        if (string == undefined)
+            string = '';
+        var compiled = cache[string];
         if (!compiled) {
             var fn = function() { return ''; };
-            var pieces = template.match(/({|}|[^{}]+)/mg);
+            var pieces = string.match(/({|}|[^{}]+)/mg);
             if (pieces) {
                 var props = [];
                 for (var i = 0; i < pieces.length; i++) {
@@ -44,7 +44,7 @@
                 }
                 fn = resBuilder(props);
             }
-            compiled = cache[template] = fn;
+            compiled = cache[string] = fn;
         }
         if (resolver)
             return compiled(resolver);
@@ -74,7 +74,7 @@
                 else
                 {
                     temp = !$.isBlank(temp) && (!temp.indexOf || temp.indexOf('{') == -1) ?
-                        temp : $.template(temp, resolver);
+                        temp : $.stringSubstitute(temp, resolver);
                     if (!$.isBlank(p.regex))
                     { temp = temp.replace(new RegExp(p.regex), p.repl); }
                 }

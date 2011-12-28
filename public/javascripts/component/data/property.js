@@ -9,7 +9,7 @@ $.component.Component.extend('Property', {
         var name = this._properties.name;
         var html = name ? "{" + this._properties.name + "}" : "?";
         if (!$.cf.designing)
-            html = this._template(html);
+            html = this._stringSubstitute(html);
         this.$contents.html("<span class='dataset-property'>" + html + "</span>");
     },
 

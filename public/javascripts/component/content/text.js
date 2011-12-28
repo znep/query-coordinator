@@ -14,7 +14,7 @@ $.component.Component.extend('Text', 'content', {
         {
             var html = cObj._properties.html;
             if (!$.isBlank(html) && cObj.$dom.attr('contentEditable') != 'true')
-            { html = cObj._template(html); }
+            { html = cObj._stringSubstitute(html); }
             if (cObj._properties.isPlainText)
             { html = html.plainTextToHtml(); }
             cObj.$contents.html(html);
@@ -23,7 +23,7 @@ $.component.Component.extend('Text', 'content', {
             {
                 var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
                 cObj.$contents.removeClass(comp);
-                cObj.$contents.addClass(cObj._template(comp));
+                cObj.$contents.addClass(cObj._stringSubstitute(comp));
             }
 
             cObj.$contents.css(blist.configs.styles.convertProperties(cObj._properties));
@@ -55,7 +55,7 @@ $.component.Component.extend('Text', 'content', {
             if (newHtml != this._properties.html)
                 $.cf.edit.execute('properties', { componentID: this.id, properties: { html: newHtml }});
             else
-                this.$contents.html(this._template(this._properties.html));
+                this.$contents.html(this._stringSubstitute(this._properties.html));
         }
     }
 });

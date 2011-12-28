@@ -67,7 +67,7 @@ var updateProperties = function(lcObj, properties)
                         this._chart = this.$contents.socrataChart({
                             chartType: this._chartType,
                             displayFormat:
-                                lcObj._template(lcObj._properties.displayFormat),
+                                lcObj._stringSubstitute(lcObj._properties.displayFormat),
                             view: this._dataContext.dataset
                         });
                         this._updateValidity();
@@ -75,7 +75,7 @@ var updateProperties = function(lcObj, properties)
                 }) &&
             !$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._chart))
     {
-        lcObj._chart.reload(lcObj._template(lcObj._properties.displayFormat));
+        lcObj._chart.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));
     }
 };
 

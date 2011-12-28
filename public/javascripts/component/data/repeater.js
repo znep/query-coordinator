@@ -70,10 +70,12 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
                 {
-                    var success = _.all(cObj._template(cObj._properties.excludeFilter), function(v, k)
+                    var success = _.all(cObj._stringSubstitute(cObj._properties.excludeFilter),
+                        function(v, k)
                         { return !_.include($.makeArray(v), $.deepGetStringField(c, k)); }) &&
                         ($.isBlank(cObj._properties.includeFilter) ? true :
-                                   _.any(cObj._template(cObj._properties.includeFilter), function(v, k)
+                                   _.any(cObj._stringSubstitute(cObj._properties.includeFilter),
+                                       function(v, k)
                                        { return _.include($.makeArray(v), $.deepGetStringField(c, k)); }));
                     if (success) { cObj._setRow(cObj._dataContext, i, {column: c}); }
                 });
@@ -171,7 +173,7 @@ $.component.Container.extend('Repeater', 'content', {
         if (!$.isBlank(this._properties.valueRegex))
         {
             var r = new RegExp(this._properties.valueRegex.regex);
-            var v = clone._template(this._properties.valueRegex.value);
+            var v = clone._stringSubstitute(this._properties.valueRegex.value);
             if (!r.test(v)) { return; }
         }
 

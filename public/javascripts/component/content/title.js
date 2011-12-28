@@ -33,7 +33,8 @@ $.component.Component.extend('Title', 'content', {
         var doRender = function()
         {
             if (cObj.$title) {
-              cObj.$title.text($.isBlank(cObj._properties.text) ? '' : cObj._template(cObj._properties.text));
+              cObj.$title.text($.isBlank(cObj._properties.text) ? '' :
+                      cObj._stringSubstitute(cObj._properties.text));
               cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
             } else if (cObj.$edit) {
               cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties));

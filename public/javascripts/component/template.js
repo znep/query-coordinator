@@ -75,7 +75,7 @@
                 {
                     temp = !$.isBlank(temp) && (!temp.indexOf || temp.indexOf('{') == -1) ?
                         temp : $.template(temp, resolver);
-                    if (!$.isBlank(p.regex))
+                    if (!$.isBlank(temp) && !$.isBlank(p.regex))
                     { temp = temp.replace(new RegExp(p.regex), p.repl); }
                 }
                 a.push(temp);

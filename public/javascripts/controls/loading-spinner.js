@@ -86,7 +86,10 @@
             {
                 var spObj = this;
                 if (!$.isBlank(message))
-                { spObj.$content().find('.loadingMessage').removeClass('hide').text(message); }
+                {
+                    spObj.$content().find('.loadingMessage').removeClass('hide')
+                        .html(message.plainTextToHtml());
+                }
                 if (!$.isBlank(countdown))
                 {
                     var $sec = spObj.$content().find('.loadingCountdown').removeClass('hide')

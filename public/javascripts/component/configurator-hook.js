@@ -37,7 +37,8 @@
         });
     };
 
-    if (!$.isBlank(blist.currentUser) && blist.currentUser.hasRight('edit_pages'))
+    if (!$.isBlank(blist.currentUser) && blist.currentUser.hasRight('edit_pages') &&
+            blist.currentUser.isAdmin())
     {
         $(document.body).addClass('socrata-page');
         $.cf.top();

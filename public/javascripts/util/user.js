@@ -19,6 +19,9 @@ this.User = ServerModel.extend({
         return (this.rights || []).length > 0;
     },
 
+    isAdmin: function()
+    { return _.include(this.flags, 'admin'); },
+
     nameAndOrEmail: function()
     {
         var base = "";

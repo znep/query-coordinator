@@ -620,12 +620,31 @@ Proj4js.Proj = Proj4js.Class({
         return;
       }
 
+      var closure = this;
+      $.ajax({contentType: 'application/json', dataType: 'json',
+          url: '/api/geo?method=getCrs&crsCode=' + this.srsCode,
+          success: function(data)
+          {
+              var proj4 = data.proj4s || data.proj4;
+              if (proj4)
+              {
+                  Proj4js.defs[closure.srsCode] = proj4;
+                  closure.defsLoaded();
+              }
+              else
+              { closure.loadFromService(); }
+          },
+          error: function() { closure.loadFromService(); }
+      });
+
+      //michael.chui@socrata.com: commenting out below as a before-time.
+      // Replaced it all with above.
       //else check for def on the server
-      var url = Proj4js.getScriptLocation() + 'defs/' + this.srsAuth.toUpperCase() + this.srsProjNumber + '.js';
-      Proj4js.loadScript(url, 
-                Proj4js.bind(this.defsLoaded, this),
-                Proj4js.bind(this.loadFromService, this),
-                Proj4js.bind(this.checkDefsLoaded, this) );
+      //var url = Proj4js.getScriptLocation() + 'defs/' + this.srsAuth.toUpperCase() + this.srsProjNumber + '.js';
+      //Proj4js.loadScript(url, 
+                //Proj4js.bind(this.defsLoaded, this),
+                //Proj4js.bind(this.loadFromService, this),
+                //Proj4js.bind(this.checkDefsLoaded, this) );
     },
 
 /**

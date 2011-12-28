@@ -106,7 +106,7 @@
     $.extend($.cf, {
         initialize: function($top, opts)
         {
-            $.cf.configuration(opts);
+            $.cf.configuration(opts || {});
 
             $top.append($.tag({tagName: 'div', 'class': 'edit-mode', contents: [
                 {tagName: 'a', href: '#save', 'class': 'save', contents: 'save'},

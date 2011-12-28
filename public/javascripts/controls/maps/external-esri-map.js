@@ -68,10 +68,6 @@
     {
         viewConfig.view.trigger('row_count_change');
 
-        transformFilterToLayerDefinition(viewConfig.view, layer, layer_id);
-        viewConfig.view.bind('query_change', function()
-        { transformFilterToLayerDefinition(viewConfig.view, layer, layer_id); }, mapObj);
-
         // If the primary dataset (which controls viewport) is server-rendered,
         // use the server rendered bounds.
         if (mapObj._primaryView.renderWithArcGISServer()
@@ -104,6 +100,10 @@
             {
                 dojo.connect(featureLayer, 'onLoad', function()
                 {
+                    transformFilterToLayerDefinition(viewConfig.view, layer, layer_id);
+                    viewConfig.view.bind('query_change', function()
+                    { transformFilterToLayerDefinition(viewConfig.view, layer, layer_id); }, mapObj);
+
                     viewConfig._identifyConfig.attributes[featureLayer.layerId] = _.map(
                         featureLayer.fields, function(field)
                         { return {key:field.name, text:field.alias}; });
@@ -190,7 +190,7 @@
     {
         var applyFilters = function()
         {
-            var filterCond = view.query.filterCondition;
+            var filterCond = view.cleanFilters(true);
             if (_.isEmpty(filterCond)) { return '1=1'; }
 
             var template = {

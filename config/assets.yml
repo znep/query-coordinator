@@ -458,6 +458,7 @@ javascripts:
   unified-filter:
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/popup-select.js
+    - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/unified-filter.js
     - public/javascripts/controls/panes/unified-filter-sidebar.js
   stories:

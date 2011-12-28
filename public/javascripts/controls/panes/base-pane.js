@@ -647,7 +647,7 @@
         {
             var cpObj = this;
             var $fsVis = cpObj.$dom().find('.formSection').filter(':visible');
-            var $fsVisDis = $fsVis.filter('.disabled');
+            var $fsVisDis = $fsVis.filter('.sectionDisabled');
             // Hide finish buttons if no visible & enabled sections
             cpObj.$dom().find('.finishButtons').toggleClass('hide', $fsVis.length == $fsVisDis.length)
                 // Disable submit button if not all visible & required fields filled in
@@ -2151,7 +2151,7 @@
                 // is related to it being disabled
                 if (!$.isBlank($firstField))
                 {
-                    $firstField.toggleClass('sectionDisabled-' +
+                    $firstField.toggleClass('sectionDisabled sectionDisabled-' +
                         $section.attr('name'), !$section.hasClass('selectable') && !isHidden && isDisabled);
                 }
 

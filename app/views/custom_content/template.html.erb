@@ -1,31 +1,43 @@
 <% content_for :head do %>
 <title><%= @templet.name %></title>
-<%= rendered_stylesheet_tag 'component-instantiator' %>
+<%= rendered_stylesheet_tag 'template-instantiator' %>
 <%= rendered_stylesheet_tag 'colorpicker' %>
 <%= rendered_stylesheet_tag 'base-control-third-party' %>
 <%= rendered_stylesheet_tag 'base-control' %>
 <%= rendered_stylesheet_tag 'configurator' %>
 <% end %>
 
-<div class="templateCanvas">
-  <h1>Create a New <%= @templet.name %></h1>
-  <form class="commonForm" id="insertionForm">
-    <%- @templet.insertions.each do |insertion| -%>
-      <div class="line clearfix">
-        <div class="tooltip"><%= raw insertion['tooltip'] %></div>
-        <label for="<%= insertion['id'] %>">
-          <%= insertion['name'] %>
-        </label>
-        <div class="socrata-insertion" id="<%= insertion['id'] %>"></div>
-      </div>
-    <%- end -%>
+<div class="templateCreation wizard">
+  <ul class="clearfix">
+    <li class="templateCanvas" data-wizardpanename="template">
+      <h1>Create a New <%= @templet.name %></h1>
+      <form class="commonForm" id="insertionForm">
+        <%- @templet.insertions.each do |insertion| -%>
+          <div class="line clearfix insertion">
+            <div class="tooltip"><%= raw insertion['tooltip'] %></div>
+            <label for="<%= insertion['id'] %>">
+              <%= insertion['name'] %>
+            </label>
+            <div class="insertion-container">
+              <div class="socrata-insertion" id="<%= insertion['id'] %>"></div>
+            </div>
+          </div>
+        <%- end -%>
+        <div class="advancedSection">
+          <%- [[@templet.title, 'Page Name'], [@templet.path, 'URL']].each do |pair| -%>
+            <%- if pair.first[:editable] || pair.first[:visible] -%>
+              <div class="line clearfix">
+                <label for="<%= pair.first[:id] %>"><%= pair.last %></label>
+                <div id="<%= pair.first[:id] %>"></div>
+              </div>
+            <%- end -%>
+          <%- end -%>
+        </div>
+      </form>
+    </li>
 
-    <div class="line clearfix actions">
-      <label>&nbsp;</label>
-      <a class="button default createTheThing" href="#next">Create</a>
-      <a class="button" href="#cancel">Cancel</a>
-    </div>
-  </form>
+    <li data-wizardpanename="rendered"></li>
+  </ul>
 </div>
 
 <div class="socrata-root"></div>
@@ -38,5 +50,5 @@
   <%= render :partial => 'canvas_js', :locals => { :page => @templet.page, :template => @templet } %>
   <%= include_javascripts 'configurator' %>
   <%= include_javascripts 'shared-editors' %>
-  <%= include_javascripts 'component-instantiator' %>
+  <%= include_javascripts 'template-instantiator' %>
 <%- end -%>

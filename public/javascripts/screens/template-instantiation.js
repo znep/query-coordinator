@@ -3,60 +3,111 @@
  */
 (function($) {
 
-    var $canvas = $('div.templateCanvas');
-    var $form = $('#insertionForm');
-    var $renderTo = $('div.socrata-root');
-    var $body = $(document.body);
+    var $form     = $('#insertionForm'),
+        $renderTo = $('div.socrata-root'),
+        $wizard   = $('div.templateCreation'),
+        $body     = $(document.body);
 
-    var configuratorOptions = {
-        canAdd: false,
+    $.cf.configuration({
+        mask:false,
         editOnly: true,
-        mask: false
-    };
+        sidebar: false
+    });
+    $.cf.edit(true);
 
-    $form.find('div.line').hover(function() {
-        var $t = $(this);
-        $t.find('.socrata-component').socrataTip({
-            content: $t.find('div.tooltip').html()
-        }).show();
-    }, function() {
-        $(this).find('.socrata-component').socrataTip().hide();
+    // Simulate a click into the first form element
+    _.defer(function() {
+        // $form.find('.socrata-component:first').trigger('mousedown');
     });
 
-    // todo: disable when required fields are missing
-    var $createButton = $form.find('a.createTheThing');
+    $wizard.wizard({
+        paneConfig: {
+            'template': {
+                onActivate: function($pane, config, state) {
+                    _.each(state.insertionTips || [], function(tip) {
+                        tip.enable();
+                    });
+                },
 
-    $createButton.click(function(event) {
-        event.preventDefault();
+                onInitialize: function($pane, config, state, command) {
+                    state.insertionTips = [];
+                    $pane.find('div.insertion').each(function() {
+                        var $t = $(this);
+                        state.insertionTips.push(
+                            $t.find('div.insertion-container').socrataTip({
+                                content: $t.find('div.tooltip').html()
+                            })
+                        );
+                    });
+                },
 
-        var spinner = $body.loadingSpinner();
-        spinner.showHide(true);
-        $canvas.fadeOut(function() {
-            $canvas.remove();
-            $renderTo.fadeIn();
-        });
+                onLeave: function($pane, config, state)
+                {
+                    _.each(state.insertionTips || [], function(tip)
+                    {
+                        tip.hide();
+                        tip.disable();
+                    });
+                },
 
-        $body.removeClass('instantiating');
+                onNext: function($pane, state) {
+                    $body.removeClass('instantiating');
 
-        var insertions = [];
-        $.component.eachRoot(function(root) {
-            insertions.push(root.properties());
-            // de-register components
-            root.destroy();
-        });
-        blist.configuration.page = $.cf.template(blist.configuration.template,
-            insertions, $renderTo);
+                    var pageName = $.component('t_pageTitle').asString(),
+                        pagePath = $.component('t_pagePath').asString();
 
-        // reset configuration
-        $.cf.configuration({});
-        $.cf.side.reset();
-        spinner.showHide(false);
-    })
+                    var insertions = [];
+                    $.component.eachRoot(function(root) {
+                        insertions.push(root.properties());
+                        // de-register components
+                        root.destroy();
+                    });
 
-    $.cf.initialize($('.socrata-cf-top'), configuratorOptions);
+                    var templatron = new $.component.PageTemplate({ insertions: insertions });
 
-    _.defer(function() {
-        $form.find('.socrata-component:first').trigger('mousedown');
+                    // TODO: Data, Locale, Community
+                    var page = blist.configuration.page = {
+                        content: templatron.render($renderTo),
+                        name: pageName,
+                        'status': 'published', // TODO: not always
+                        path: pagePath,
+                        template: blist.configuration.template.identifier
+                    };
+
+                    // reset configuration
+                    $.cf.edit(false);
+                    $.cf.initialize($('div.socrata-cf-top'), {
+                        edit: false
+                    });
+
+                    return 'rendered';
+                }
+            },
+
+            'rendered': {
+                isFinish: true,
+
+                onActivate: function($pane) {
+                    $pane.append($renderTo);
+                },
+
+                onAnimatedIn: function() {
+                    $wizard.replaceWith($renderTo);
+                },
+
+                onNext: function() {
+                    $.cf.save();
+                    return false;
+                }
+            }
+        },
+
+        onCancel: function($pane, state) {
+            // TODO: Something more appropriate than this?
+            window.location.href = '/profile';
+        },
+
+        finishText: 'Create'
     });
 
     $body.addClass('instantiating');

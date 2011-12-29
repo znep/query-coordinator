@@ -21,9 +21,6 @@ base-sdp:
 - control-feed
 components:
 - components
-component-instantiator:
-- components
-- component-instantiator
 configurator:
 - configurator
 base-control-third-party:
@@ -159,6 +156,9 @@ screen-videos:
 screen-videos-popup:
 - strip-chrome
 - screen-videos-popup
+template-instantiator:
+- components
+- template-instantiator
 grid:
 - table-core
 - dataset-grid

@@ -11,7 +11,7 @@
             var cObj = this;
             cObj._super.apply(this, arguments);
             cObj._eventKeys = {};
-            cObj.registerEvent({'start_loading': [], 'finish_loading': []});
+            cObj.registerEvent({'start_loading': [], 'finish_loading': [], 'update_properties': []});
 
             cObj._properties = properties || {};
             cObj.id = cObj._properties.id;
@@ -271,11 +271,20 @@
         },
 
         /**
+         * Whether the component should be included in the dom tree
+         */
+        _isRenderable: function()
+        {
+            return true;
+        },
+
+        /**
          * Render the content for this component
          */
         _render: function()
         {
             var cObj = this;
+            if (!this._isRenderable()) { return false; }
             this._initDom();
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
@@ -397,6 +406,7 @@
         _propWrite: function(properties) {
             var cObj = this;
             $.extend(true, cObj._properties, properties);
+            cObj.trigger('update_properties');
 
             if (!$.isBlank(cObj.$dom))
             {
@@ -617,7 +627,7 @@
                 else {
                     var component = this.create(arguments[i]);
                     component._render();
-                    if (!component.dom.parentNode)
+                    if (component._isRenderable() && !component.dom.parentNode)
                         throw "Unparented root component " + component.id;
                     this.roots.push(component);
                 }
@@ -651,7 +661,11 @@
         _initDom: function() {},
         _render: function() {},
         _arrange: function() {},
-        _move: function() {}
+        _move: function() {},
+        _isRenderable: function()
+        {
+            return false;
+        }
     });
 
 })(jQuery);

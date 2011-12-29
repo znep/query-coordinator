@@ -39,17 +39,23 @@
         // positioning
             var animateHoriz = function()
             {
-                $paneContainer.animate({ marginLeft: -1 * $currentPane.position().left }, function()
+                $paneContainer.stop().animate({ marginLeft: -1 * $currentPane.position().left }, function()
                 {
                     // animation is done; hide the gone-pane
                     $currentPane.siblings().detach();
                     $paneContainer.css('marginLeft', 0);
+
+                    var paneConfig = opts.paneConfig[$currentPane.data('wizardpanename')] || {};
+                    if (_.isFunction(paneConfig.onAnimatedIn)) {
+                        paneConfig.onAnimatedIn($currentPane);
+                    }
                 });
+
                 animateVert();
             };
             var animateVert = function()
             {
-                $wizard.animate({ height: $currentPane.outerHeight(true) }, function()
+                $wizard.stop().animate({ height: $currentPane.outerHeight(true) }, function()
                 {
                     _.defer(function() { $wizard.css('height', ''); });
                 });
@@ -115,7 +121,7 @@
                 }
                 if (_.isString(nextAttr))
                 {
-                    $nextPane = $panes.filter('[data-wizardPaneName="' + nextAttr + '"]:first');
+                    $nextPane = $panes.filter('[data-wizardpanename="' + nextAttr + '"]:first');
                 }
                 else if (_.isUndefined(nextAttr))
                 {
@@ -144,7 +150,7 @@
             // the plugin consumer expects, and readying the general UI state.
             var activatePane = function($pane, state)
             {
-                var paneConfig = opts.paneConfig[$pane.attr('data-wizardPaneName')] || {};
+                var paneConfig = opts.paneConfig[$pane.data('wizardpanename')] || {};
 
                 // init command obj for consumers to trigger pane actions
                 var commandObj = {
@@ -265,7 +271,7 @@
         nextText: 'Next',
         onCancel: '#cancel', // either string (url path), or function (handle it yourself)
         paneConfig: {},
-        // keys are values of data-wizardPaneName elems that correlate; subkeys are:
+        // keys are values of data-wizardpanename elems that correlate; subkeys are:
         //   * disableButtons: [ 'prev', 'next' ]
         //   * isFinish: true/false
         //   * skipValidation: true/false
@@ -275,8 +281,8 @@
         //   * onInitialize: function($paneObject, paneConfig, state, commandObject)
         //     + fires before onActivate the very first time a pane is activated
         //   * onNext: one of:
-        //             + string => wizardPaneName to go to
-        //             + function($paneObject, state) => return wizardPaneName to go to
+        //             + string => wizardpanename to go to
+        //             + function($paneObject, state) => return wizardpanename to go to
         //             + leave unconfigured => next pane in the original list
         //   * onPrev: one of:
         //             + int => go back some number of stack items

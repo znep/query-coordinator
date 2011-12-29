@@ -7,6 +7,14 @@ class Template < SodaModel
     @data['name']
   end
 
+  def path
+    @data['path'].merge(:url => true, :id => 't_pagePath', :visible => true)
+  end
+
+  def title
+    @data['title'].merge(:visible => true, :id => 't_pageTitle')
+  end
+
   def content
     @data['content']
   end
@@ -17,7 +25,9 @@ class Template < SodaModel
 
   def page
     {
-      content: insertions.map{ |ins| insertion_line(ins) }
+      content: insertions.map{ |ins| insertion_line(ins) } +
+        [title, path].map{ |h| h.merge(:type => 'PartialText') }
+        # TODO: Not always partial text
     }
   end
 
@@ -26,7 +36,7 @@ class Template < SodaModel
     @insertions ||= get_insertions(content)
   end
 
-  private
+private
   def get_insertions(tree)
     if tree.kind_of? Hash
       if tree['type'] == 'insertion'

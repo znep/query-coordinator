@@ -120,7 +120,6 @@ javascripts:
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/properties-editor.js
-    - public/javascripts/component/util/style-config.js
     - public/javascripts/component/configurator/configurator.js
     - public/javascripts/component/configurator/cf-edit-log.js
     - public/javascripts/component/configurator/cf-component-drag.js
@@ -134,7 +133,10 @@ javascripts:
     - public/javascripts/component/configurator/edit-actions/cf-edit-unwrap.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-wrap.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
-  component-instantiator:
+    - public/javascripts/component/design/partial-text.js
+    - public/javascripts/component/functional/string-resolver.js
+  template-instantiator:
+    - public/javascripts/controls/wizard.js
     - public/javascripts/screens/template-instantiation.js
   base-control:
     - public/javascripts/plugins/jquery.colorPicker.js

@@ -99,7 +99,9 @@
         canAdd: true,     // Can you add new components?
         canDrag: true,    // Can you drag components around?
         editOnly: false,  // Are components always in edit mode?
+        edit: true,       // Start edit mode once initalized?
         mask: true,       // Mask out the background when editing a component?
+        sidebar: true,    // Show the sidebar?
         sidebarWidth: DEFAULT_SIDE_WIDTH
     };
 
@@ -130,7 +132,7 @@
                 $top.toggleClass('can-redo', redoable);
             });
 
-            $.cf.edit(true);
+            $.cf.edit($.cf.configuration().edit);
         },
 
         // todo: checks?
@@ -145,8 +147,9 @@
             edit = !!edit;
             if (designing != edit) {
                 designing = this.designing = edit;
-                $.cf.side(edit);
-                $(document.body).toggleClass('configuring');
+                $.cf.side(!$.cf.configuration().sidebar ? false : edit);
+                if (!$.cf.configuration().editOnly)
+                    $(document.body).toggleClass('configuring');
                 $(document.body)[edit ? 'bind' : 'unbind']('mousedown', onBodyMouseDown);
                 if (!edit)
                     $.cf.focus();
@@ -187,6 +190,23 @@
                     },
 
                     success: function() {
+                        var historyDone = function() {
+                            if (page.path && window.location.pathname != page.path) {
+                                if (_.isFunction(window.history.pushState)) {
+                                    window.history.pushState({}, page.name, page.path);
+                                }
+                                else {
+                                    window.location.pathname = page.path;
+                                }
+                            }
+                        }
+                        // clear the rails page cache
+                        $.ajax({
+                            type: 'POST',
+                            url: '/protected/page_edit',
+                            success: historyDone
+                        });
+
                         $.locale.initialize(page.locale);
                         exitEditMode();
                     },
@@ -220,7 +240,8 @@
             if ($mask && unmask) {
                 $mask.remove();
                 $mask = undefined;
-                $.cf.side.properties();
+                if ($.cf.configuration().sidebar)
+                    $.cf.side.properties();
             }
         },
 
@@ -232,7 +253,8 @@
             $body.addClass('socrata-cf-has-focal');
             $(focal.dom).addClass('socrata-cf-focal');
             focal.edit(true);
-            $.cf.side.properties(component);
+            if ($.cf.configuration().sidebar)
+                $.cf.side.properties(component);
             if (!$mask && $.cf.configuration().mask) {
                 $mask = $('<div class="socrata-cf-mask"></div>');
                 $body.prepend($mask);

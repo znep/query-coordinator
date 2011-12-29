@@ -3,18 +3,14 @@
 $.component.Component.extend('Title', 'content', {
     configurationSchema: function()
     {
-        if ($.isBlank(this._cachedTextStyle) && !$.isBlank(this.$title))
-        {
-            this._cachedTextStyle = blist.configs.styles.getStyles('text', this.$title),
-            this._cachedPaddingStyle = blist.configs.styles.getStyles('padding', this.$title)
-        }
         return [this._cachedTextStyle, this._cachedPaddingStyle];
     },
 
     _initTitle: function()
     {
-        this.$contents.empty().append($.tag({tagName: 'h2'}));
-        this.$title = this.$contents.find('h2');
+        var cObj = this;
+        cObj.$contents.empty().append($.tag({tagName: 'h2'}));
+        cObj.$title = cObj.$contents.find('h2');
     },
 
     _initDom: function()
@@ -30,6 +26,11 @@ $.component.Component.extend('Title', 'content', {
     {
         var cObj = this;
         if (!cObj._super.apply(cObj, arguments)) { return false; }
+        if ($.isBlank(cObj._cachedTextStyle) && !$.isBlank(cObj.$title))
+        {
+            cObj._cachedTextStyle = blist.configs.styles.getStyles('text', cObj.$title),
+            cObj._cachedPaddingStyle = blist.configs.styles.getStyles('padding', cObj.$title)
+        }
         var doRender = function()
         {
             if (cObj.$title) {
@@ -47,14 +48,11 @@ $.component.Component.extend('Title', 'content', {
     _propWrite: function(properties)
     {
         this._super(properties);
-        var text = properties.text;
-        if (text !== undefined && this.$title) {
-            this.$title.text(text);
-        }
         if (!_.isEmpty(properties)) { this._render(); }
     },
 
     edit: function(editable) {
+        if (!this._super.apply(this, arguments)) { return false; }
         var wasEditable = this.$contents.data('editing');
 
         this.$contents.toggleClass('socrata-cf-mouse', editable);
@@ -81,6 +79,10 @@ $.component.Component.extend('Title', 'content', {
             this._initTitle();
             this._render();
         }
+    },
+
+    asString: function() {
+      return this._stringSubstitute(this._properties.text);
     }
 });
 

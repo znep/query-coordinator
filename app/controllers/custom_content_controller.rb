@@ -121,6 +121,12 @@ class CustomContentController < ApplicationController
     return(render_404) unless @templet
   end
 
+  before_filter :only => [:clear_page_cache] { |c| c.require_right(:edit_pages) }
+  def clear_page_cache
+    Page.clear_cache!
+    render :nothing => true
+  end
+
 private
 
   # around_filter for caching

@@ -134,8 +134,12 @@
         if ($.isBlank(query)) { return; }
         query = $.extend(true, {}, query);
 
-        var q = $.extend(true, {orderBys: []}, ds.query);
-        _.each(query, function(v, k) { if (k != 'orderBys') { q[k] = $.extend(true, {}, q[k], v); } });
+        var q = $.extend(true, {orderBys: [], groupBys: []}, ds.query);
+        _.each(query, function(v, k)
+            {
+                if (!_.include(['orderBys', 'groupBys'], k))
+                { q[k] = $.extend(true, _.isArray(v) ? [] : {}, q[k], v); }
+            });
 
         // Translate fieldNames
         if (!$.isBlank(query.orderBys))
@@ -153,6 +157,22 @@
             });
         }
         if (_.isEmpty(q.orderBys)) { delete q.orderBys; }
+
+        if (!$.isBlank(query.groupBys))
+        {
+            _.each(query.groupBys, function(gb)
+            {
+                if ($.subKeyDefined(gb, 'fieldName'))
+                {
+                    var c = ds.columnForFieldName(gb.fieldName);
+                    if ($.isBlank(c)) { return false; }
+                    gb.columnId = c.id;
+                    delete gb.fieldName;
+                }
+                q.groupBys.push(gb);
+            });
+        }
+        if (_.isEmpty(q.groupBys)) { delete q.groupBys; }
 
         ds.update({query: q});
     };

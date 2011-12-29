@@ -93,19 +93,25 @@ class CustomContentController < ApplicationController
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)
     @cached_fragment = read_fragment(@cache_key)
 
+    path = "/#{params[:path].join '/'}"
+    # Make sure action name is always changed for homepage, even if cached
+    self.action_name = 'homepage' if path == '/'
     if @cached_fragment.nil?
-      path = "/#{params[:path].join '/'}"
       if CurrentDomain.module_available?('canvas2')
         @page = Page[path]
       end
       unless @page
         if path == '/'
-          self.action_name = 'homepage'
           homepage
         else
           render_404
         end
       end
+    else
+      # When we're rendering a cached item, force it to use the page action,
+      # since we may have manipulated the action name to be homepage, and there
+      # is no such view
+      render :action => 'page'
     end
   end
 

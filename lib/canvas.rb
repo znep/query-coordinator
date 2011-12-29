@@ -126,7 +126,7 @@ module Canvas
           return nil
         end
       elsif self.binding
-        return self.binding.first
+        return self.binding.views.first
       end
     end
 
@@ -140,7 +140,7 @@ module Canvas
           return []
         end
       elsif self.binding
-        return self.binding
+        return self.binding.views
       end
     end
 
@@ -217,7 +217,7 @@ module Canvas
       binding = Environment.bindings[self.properties.dataBinding]
 
       self.children.each do |child|
-        child.bind(binding.views)
+        child.bind(binding)
       end
 
       super
@@ -236,7 +236,7 @@ module Canvas
       return if view.nil?
 
       views = view.find_related(1, self.properties.limit, self.properties.sortBy)
-      self.children.each{ |child| child.bind(views) }
+      self.children.each{ |child| child.bind(Hashie::Mash.new({ views: views })) }
     end
   protected
     self.default_properties = {
@@ -254,7 +254,7 @@ module Canvas
       self.children = binding.views.take(self.properties.limit).map do |view|
         existing_children.map do |existing_child|
           child = existing_child.clone("#{existing_child.id_prefix}_#{i += 1}")
-          child.bind([ view ])
+          child.bind(Hashie::Mash.new({ views: [ view ] }))
           child
         end
       end.flatten
@@ -306,6 +306,33 @@ module Canvas
   end
 
 # WIDGETS (CONTENT)
+
+  # PROBABLY SHOULD HAVEDONE ALL THE VIEWM ETADATA THIS WAY OH WEL TOO LATE
+  class BoundLink < CanvasWidget
+    attr_reader :href, :text
+
+    def can_render?
+      return !@href.blank?
+    end
+
+    def prepare!
+      view = self.get_view
+      return if view.nil?
+
+      @href = view.href
+      @href += '?' + self.properties.queryParams.to_param unless self.properties.queryParams.empty?
+      @href += '#' + self.properties.hashParams.to_param unless self.properties.hashParams.empty?
+
+      @text = self.properties.text || view.name
+    end
+  protected
+    self.default_properties = {
+      classNames: [ 'boundLink' ],
+      text: nil, # leave nil for view name
+      hashParams: {},
+      queryParams: {}
+    }
+  end
 
   class Breadcrumb < CanvasWidget
   protected
@@ -541,30 +568,19 @@ module Canvas
     }
   end
 
-  # PROBABLY SHOULD HAVEDONE ALL THE VIEWM ETADATA THIS WAY OH WEL TOO LATE
-  class BoundLink < CanvasWidget
-    attr_reader :href, :text
+  class Pager < CanvasWidget
+    attr_reader :binding, :current_page
 
     def can_render?
-      return !@href.blank?
+      return self.binding && !self.binding.empty?
     end
 
     def prepare!
-      view = self.get_view
-      return if view.nil?
-
-      @href = view.href
-      @href += '?' + self.properties.queryParams.to_param unless self.properties.queryParams.empty?
-      @href += '#' + self.properties.hashParams.to_param unless self.properties.hashParams.empty?
-
-      @text = self.properties.text || view.name
+      @current_page = Environment.request.params[self.binding.properties.paramGroup]['page'].to_i rescue 1
     end
   protected
     self.default_properties = {
-      classNames: [ 'boundLink' ],
-      text: nil, # leave nil for view name
-      hashParams: {},
-      queryParams: {}
+      label: ''
     }
   end
 

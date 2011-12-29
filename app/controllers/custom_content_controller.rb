@@ -177,7 +177,13 @@ private
 
             if properties.type == 'search'
               begin
-                binding.views = Clytemnestra.search_views(properties.searchOptions.to_hash).results
+                search_options = properties.searchOptions.to_hash
+                if properties.paramGroup && request.params.has_key?(properties.paramGroup)
+                  search_options.merge!(request.params[properties.paramGroup])
+                end
+
+                results = Clytemnestra.search_views(search_options)
+                binding.views, binding.count = results.results, results.count
               rescue CoreServer::ResourceNotFound
                 # some configurations of catalog search can actually return a 404
                 binding.views = []

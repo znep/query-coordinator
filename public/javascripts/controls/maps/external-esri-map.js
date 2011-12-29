@@ -105,8 +105,10 @@
                     { transformFilterToLayerDefinition(viewConfig.view, layer, layer_id); }, mapObj);
 
                     viewConfig._identifyConfig.attributes[featureLayer.layerId] = _.map(
-                        featureLayer.fields, function(field)
-                        { return {key:field.name, text:field.alias}; });
+                        _.reject(featureLayer.fields, function(field)
+                        { return (_.detect(blist.dataset.realColumns,
+                            function(col) { return field.name == col.name; }) || {}).hidden; }),
+                        function(field) { return {key:field.name, text:field.alias}; });
                     featureLayersLoaded++;
 
                     if (featureLayersLoaded >=viewConfig.mapServer.featureLayers.length)

@@ -6,8 +6,9 @@ class Page < SodaModel
   end
 
   def self.[](path)
-    unless defined? @@path_store
+    if !(defined? @@path_store) || !(defined? @@path_time) || (Time.now - @@path_time > 15.minute)
       @@path_store = {}
+      @@path_time = Time.now
       ds = pages_data
       ds.each { |k, v| @@path_store[k] = true }
     end

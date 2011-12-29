@@ -415,6 +415,7 @@
         {
             var mapObj = this;
 
+            mapObj._boundsChanging = true;
             mapObj.initializeBaseLayers();
             mapObj.populateLayers();
             mapObj.initializeFlyouts((mapObj._displayFormat

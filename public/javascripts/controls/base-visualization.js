@@ -106,9 +106,15 @@
         {
             if ($.isBlank(this._$noData))
             {
-                this._$noData = $.tag({tagName: 'div', 'class': ['noDataMessage', 'hide'],
-                    contents: 'No data available'});
-                $(this.currentDom).append(this._$noData);
+                var $noData = $(this.currentDom).find('.noDataMessage');
+                if ($noData.length == 0)
+                {
+                    this._$noData = $.tag({tagName: 'div', 'class': ['noDataMessage', 'hide'],
+                        contents: 'No data available'});
+                    $(this.currentDom).append(this._$noData);
+                }
+                else
+                { this._$noData = $noData; }
             }
             return this._$noData;
         },

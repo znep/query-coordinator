@@ -293,6 +293,14 @@
             { return this.map.getZoom(); }
         },
 
+        zoomDistance: function()
+        {
+            if (_.isUndefined(mapObj._lastZoomLevel))
+            { return 0; }
+            else
+            { return Math.abs(mapObj.currentZoom() - mapObj._lastZoomLevel); }
+        },
+
         columnsLoaded: function()
         {
             var mapObj = this;
@@ -1376,10 +1384,12 @@
                 viewConfig._displayLayer = mapObj.buildViewLayer(view);
                 mapObj.map.addLayer(viewConfig._displayLayer);
             }
+
             if (viewConfig._neverCluster || viewConfig._fetchPoints)
             {
                 viewConfig._renderType = 'points';
-                mapObj.initializeAnimation(null, view);
+                if (!viewConfig._animation)
+                { mapObj.initializeAnimation(null, view); }
                 mapObj._super(view);
                 if (viewConfig._fetchPoints)
                 { delete viewConfig._fetchPoints; }
@@ -1418,7 +1428,21 @@
                     return;
                 }
 
-                if (_.all(data, function(cluster) { return (cluster.points || []).length > 0; }))
+                var rowsAvailable = _.reduce(data, function(memo, cluster)
+                    { return memo + cluster.size; }, 0);
+
+                // The divide by 2 is fairly arbitrary; I just didn't want the threshold so high.
+                if (rowsAvailable <= mapObj._maxRows / 2)
+                {
+                    viewConfig._fetchPoints = true;
+                    viewConfig._renderType = 'points';
+                    mapObj.initializeAnimation(data, view);
+                    mapObj.getDataForView(view);
+                    delete viewConfig._fetchPoints;
+                    return;
+                }
+
+                if (_.all(data, function(cluster) { return cluster.leafNode; }))
                 {
                     if (_.isUndefined(viewConfig._unclusterLevel))
                     { viewConfig._unclusterLevel = mapObj.currentZoom(); }
@@ -1491,8 +1515,6 @@
             if (
                 // First load
                 _.isUndefined(mapObj._lastZoomLevel)
-                // Zoomed further than animations can handle TODO: Verify line unnecessary.
-                //|| Math.abs(mapObj.currentZoom() - mapObj._lastZoomLevel) > 1
                 // Panned
                 || mapObj.currentZoom() == mapObj._lastZoomLevel
                 // Same set of clusters as the last zoom level.
@@ -1691,9 +1713,15 @@
     {
         if ((feature.attributes || {}).redirects_to)
         { window.open(feature.attributes.redirects_to); return; }
-        mapObj._primaryView.highlightRows(feature.attributes.rows, 'select');
-        mapObj.$dom().trigger('display_row', [{row: _.first(feature.attributes.rows)}]);
-        $(document).trigger(blist.events.DISPLAY_ROW, [_.first(feature.attributes.rows).id, true]);
+
+        if (!_.isEmpty(feature.attributes.rows))
+        {
+            mapObj._primaryView.highlightRows(feature.attributes.rows, 'select');
+            mapObj.$dom().trigger('display_row',
+                [{row: _.first(feature.attributes.rows)}]);
+            $(document).trigger(blist.events.DISPLAY_ROW,
+                [_.first(feature.attributes.rows).id, true]);
+        }
 
         if (!feature.attributes.flyout)
         { return null; }

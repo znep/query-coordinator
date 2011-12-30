@@ -137,6 +137,10 @@
                 });
             }
 
+            var opacity;
+            if ($.subKeyDefined(view, 'metadata.custom_fields.drawingInfo.transparency'))
+            { opacity = parseInt(view.metadata.custom_fields.drawingInfo.transparency, 10) / 100; }
+
             var tmp = view.metadata.custom_fields.Basic.Source.split('/');
             var layer_id = tmp.pop();
             var url = tmp.join('/') + '/export';
@@ -148,7 +152,7 @@
                       externalMapProjection: wkid && new OpenLayers.Projection(wkid),
                       onloadCallback: function() { layer.filterWith(view); mapObj.adjustBounds(); }
                     },
-                    { ratio: 1, isBaseLayer: false });
+                    { opacity: opacity, ratio: 1, isBaseLayer: false });
 
             viewConfig._identifyParameters = new esri.tasks.IdentifyParameters();
             viewConfig._identifyParameters.tolerance = 3;

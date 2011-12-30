@@ -710,6 +710,18 @@ module Canvas
     }
   end
 
+  class ViewEmbed < CanvasWidget
+    attr_reader :view
+
+    def can_render?
+      return !@view.nil?
+    end
+
+    def prepare!
+      @view = self.get_view
+    end
+  end
+
   class ViewFilter < CanvasWidget
   protected
     self.default_properties = {

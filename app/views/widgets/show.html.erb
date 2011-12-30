@@ -10,6 +10,7 @@
 
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
 
+  <%= rendered_stylesheet_tag 'embed-form' %>
   <link type="text/css" rel="stylesheet" href="/styles/widget/<%= @theme_id %>.css" />
 <% end %>
 

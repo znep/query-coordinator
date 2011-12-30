@@ -162,6 +162,8 @@ screen-videos-popup:
 grid:
 - table-core
 - dataset-grid
+embed-form:
+- embed-form
 html-styles:
 - table-core
 - dataset-grid

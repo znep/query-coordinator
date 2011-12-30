@@ -476,7 +476,7 @@ var Dataset = ServerModel.extend({
     },
 */
 
-    getClusters: function(viewport, displayFormat, successCallback, errorCallback)
+    getClusters: function(viewport, displayFormat, minDistance, successCallback, errorCallback)
     {
         var ds = this;
         if (!ds._clusters)
@@ -492,12 +492,16 @@ var Dataset = ServerModel.extend({
         { params[new_prop] = viewport[old_prop] });
 
         params['target_node_clusters'] = 50;
-        params['min_distance_between_clusters'] = Math.min(viewport.xmax - viewport.xmin,
-                                                           viewport.ymax - viewport.ymin) / 10;
-        if (params['min_distance_between_clusters'] > 5)
-        { params['min_distance_between_clusters'] = 5; }
-        else if (params['min_distance_between_clusters'] > 1)
-        { params['min_distance_between_clusters'] = 1; }
+        params['min_distance_between_clusters'] = minDistance;
+        if (!params['min_distance_between_clusters'])
+        {
+            params['min_distance_between_clusters'] = Math.min(viewport.xmax - viewport.xmin,
+                                                               viewport.ymax - viewport.ymin) / 10;
+            if (params['min_distance_between_clusters'] > 5)
+            { params['min_distance_between_clusters'] = 5; }
+            else if (params['min_distance_between_clusters'] > 1)
+            { params['min_distance_between_clusters'] = 1; }
+        }
 
         var translateCluster = function(c)
         {

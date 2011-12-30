@@ -301,6 +301,22 @@
             { return Math.abs(mapObj.currentZoom() - mapObj._lastZoomLevel); }
         },
 
+        getLatitudinalDistanceForViewportPixels: function(pixels)
+        {
+            var mapObj = this;
+            var extent = mapObj.map.getExtent();
+            if (!extent) { return null; }
+
+            var topLonLat = new OpenLayers.LonLat(extent.left, extent.top);
+            var topPixel = mapObj.map.getViewPortPxFromLonLat(topLonLat);
+            var botLonLat = mapObj.map.getLonLatFromViewPortPx(topPixel.add(0, pixels));
+
+            topLonLat.transform(mapObj.map.getProjectionObject(), geographicProjection);
+            botLonLat.transform(mapObj.map.getProjectionObject(), geographicProjection);
+
+            return Math.abs(topLonLat.lat - botLonLat.lat);
+        },
+
         columnsLoaded: function()
         {
             var mapObj = this;
@@ -1398,10 +1414,14 @@
                 return;
             }
 
+            // Size of a medium cluster, to minimize cluster overlap.
+            var pixels = 45;
+
             viewConfig._renderType = 'clusters';
             view.getClusters(mapObj._displayFormat.viewport ||
                 { 'xmin': -180, 'xmax': 180,
-                  'ymin': -90,  'ymax': 90 }, mapObj._displayFormat, function(data)
+                  'ymin': -90,  'ymax': 90 }, mapObj._displayFormat,
+                mapObj.getLatitudinalDistanceForViewportPixels(pixels), function(data)
             {
                 if (_.isUndefined(viewConfig._neverCluster))
                 { viewConfig._neverCluster = _.reduce(data, function(total, cluster)

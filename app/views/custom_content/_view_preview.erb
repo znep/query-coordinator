@@ -22,9 +22,11 @@
       <%= include_javascripts 'render-view-minimum' %>
     <%- end -%>
 
-    <%- if widget.view.display.is_a? Displays::Table -%>
+    <%- if widget.view.visible_display_types.include? 'table' -%>
       <%- allow_once do -%>
-        <%= rendered_stylesheet_tag 'grid' %>
+        <%- content_for :head do -%>
+          <%= rendered_stylesheet_tag 'grid' %>
+        <%- end -%>
       <%- end -%>
     <%- end -%>
 

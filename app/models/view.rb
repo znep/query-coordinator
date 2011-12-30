@@ -736,6 +736,15 @@ class View < Model
     return adt
   end
 
+  def visible_display_types
+    visible_types = metadata.data['renderTypeConfig']['visible'] rescue nil
+    if visible_types.nil?
+      return [ displayType ]
+    else
+      return visible_types.keys
+    end
+  end
+
   # A human readable form of what the view type is, e.g. 'Dataset' rather than 'Table'
   def display_name
     d = display

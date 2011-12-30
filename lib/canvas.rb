@@ -425,7 +425,7 @@ module Canvas
                    .delete_if{ |k, v| v.nil? })
 
       # if we've gotten here without an href, plug in the current page
-      temp['href'] = Environment.request.protocol + Environment.request.host_with_port + Environment.request.path if temp[:href].blank?
+      temp['href'] = Environment.request.protocol + Environment.request.host_with_port + Environment.request.path if temp['href'].blank?
 
       # copy over to final hash with appropriate key
       @fb_opts = {}

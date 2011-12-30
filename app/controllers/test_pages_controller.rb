@@ -39,4 +39,22 @@ class TestPagesController < ApplicationController
   def cf
   end
 
+  def kill_all_views
+    return render :text => "you weren't sure" unless params[:are_you_sure] == 'yes'
+    return render_403 unless current_user
+
+    views = Clytemnestra.search_views({ for_user: current_user.id, limit: 20 }).results
+    count = 0
+
+    while !views.empty?
+      count += views.size
+      threads = views.map{ |view| Thread.new{ View.delete(view.id) } }
+      threads.each{ |thread| thread.join }
+
+      views = Clytemnestra.search_views({ for_user: current_user.id, limit: 20 }).results
+    end
+
+    return render :text => "#{count} deleted"
+  end
+
 end

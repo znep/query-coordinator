@@ -301,11 +301,12 @@
             { return Math.abs(mapObj.currentZoom() - mapObj._lastZoomLevel); }
         },
 
-        getLatitudinalDistanceForViewportPixels: function(pixels)
+        getLatitudinalDistanceForViewportPixels: function(viewport, pixels)
         {
             var mapObj = this;
             var extent = mapObj.map.getExtent();
-            if (!extent) { return null; }
+            if (!extent) { return null; } // If the map isn't loaded, just give up.
+            extent = viewport || extent;
 
             var topLonLat = new OpenLayers.LonLat(extent.left, extent.top);
             var topPixel = mapObj.map.getViewPortPxFromLonLat(topLonLat);
@@ -1417,11 +1418,13 @@
             // Size of a medium cluster, to minimize cluster overlap.
             var pixels = 45;
 
+            var viewport = mapObj._displayFormat.viewport || { 'xmin': -180, 'xmax': 180,
+                                                               'ymin': -90,  'ymax': 90 };
+
             viewConfig._renderType = 'clusters';
-            view.getClusters(mapObj._displayFormat.viewport ||
-                { 'xmin': -180, 'xmax': 180,
-                  'ymin': -90,  'ymax': 90 }, mapObj._displayFormat,
-                mapObj.getLatitudinalDistanceForViewportPixels(pixels), function(data)
+            view.getClusters(viewport, mapObj._displayFormat,
+                mapObj.getLatitudinalDistanceForViewportPixels(viewport, pixels),
+                function(data)
             {
                 if (_.isUndefined(viewConfig._neverCluster))
                 { viewConfig._neverCluster = _.reduce(data, function(total, cluster)

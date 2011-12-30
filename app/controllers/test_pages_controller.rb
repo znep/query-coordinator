@@ -43,15 +43,21 @@ class TestPagesController < ApplicationController
     return render :text => "you weren't sure" unless params[:are_you_sure] == 'yes'
     return render_403 unless current_user
 
-    views = Clytemnestra.search_views({ for_user: current_user.id, limit: 20 }).results
+    q = {for_user: current_user.id, datasetView: 'dataset', limitTo: 'tables',
+      publication_stage: ['published', 'unpublished'], sortBy: 'alpha', nofederate: true, limit: 1}
+    pages = (Clytemnestra.search_views(q).count / 20.0).ceil
     count = 0
+    q[:limit] = 20
 
-    while !views.empty?
+    while pages > 0
+      q['page'] = pages
+      views = Clytemnestra.search_views(q).results
       count += views.size
+
       threads = views.map{ |view| Thread.new{ View.delete(view.id) } }
       threads.each{ |thread| thread.join }
 
-      views = Clytemnestra.search_views({ for_user: current_user.id, limit: 20 }).results
+      pages -= 1
     end
 
     return render :text => "#{count} deleted"

@@ -1,2 +1,7 @@
-<%= content_tag(widget.properties.tag, pluralize(widget.value, h(widget.properties.descriptor)),
-		:class => widget.properties.classNames.join(' '), :id => widget.elem_id) %>
+<%-
+  options = { :class => widget.properties.classNames.join(' '), :id => widget.elem_id }
+  options[:href] = widget.properties.url if widget.properties.url
+-%>
+
+
+<%= content_tag(widget.properties.tag, pluralize(widget.value, h(widget.properties.descriptor)), options) %>

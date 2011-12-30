@@ -21,7 +21,13 @@
     <%- when 'created_at' -%>
       <%= content_tag((field.tagType || 'span'), HumaneDateHelper.humane_date(widget.view.createdAt), :class => 'createdAt') %>
     <%- when 'link' -%>
-      <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
+      <%- if field.tagType -%>
+        <%- content_tag(field.tagType) do -%>
+          <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
+        <%- end -%>
+      <%- else -%>
+        <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
+      <%- end -%>
     <%- when 'rating' -%>
       <div class="averageRating">
         <div class="starsControl" data-rating="<%= widget.view.averageRating %>">

@@ -51,6 +51,8 @@
                       manualResize: false
                   }
               });
+
+              _.defer(function() { view.registerOpening(document.referrer); });
           });
       });
     </script>

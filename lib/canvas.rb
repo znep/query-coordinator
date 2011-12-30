@@ -277,6 +277,16 @@ module Canvas
     }
   end
 
+  class Popup < CanvasWidget
+  protected
+    self.default_properties = {
+      buttonClassNames: [],
+      buttonText: '',
+      contentClassNames: [],
+      contentTitle: ''
+    }
+  end
+
   class TickerLayout < CanvasWidget
   protected
     self.default_properties = {

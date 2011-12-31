@@ -275,6 +275,7 @@
          */
         _render: function()
         {
+            var cObj = this;
             this._initDom();
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
@@ -284,6 +285,16 @@
             {
                 this._needsRender = true;
                 return false;
+            }
+
+            if (!$.isBlank(cObj._properties.htmlClass))
+            {
+                cObj._updateDataSource(cObj._properties, function()
+                {
+                    var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
+                    cObj.$contents.removeClass(comp);
+                    cObj.$contents.addClass(cObj._stringSubstitute(comp));
+                });
             }
 
             delete this._needsRender;

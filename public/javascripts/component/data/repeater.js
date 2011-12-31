@@ -9,6 +9,7 @@ $.component.Container.extend('Repeater', 'content', {
         this._cloneProperties = {
             id: 'clone',
             children: children,
+            htmlClass: properties.childHtmlClass,
             styles: properties.childStyles
         };
 

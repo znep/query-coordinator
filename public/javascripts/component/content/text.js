@@ -19,13 +19,6 @@ $.component.Component.extend('Text', 'content', {
             { html = html.plainTextToHtml(); }
             cObj.$contents.html(html);
 
-            if (!$.isBlank(cObj._properties.htmlClass))
-            {
-                var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
-                cObj.$contents.removeClass(comp);
-                cObj.$contents.addClass(cObj._stringSubstitute(comp));
-            }
-
             cObj.$contents.css(blist.configs.styles.convertProperties(cObj._properties));
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))

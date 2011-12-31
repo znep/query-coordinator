@@ -30,12 +30,19 @@
                     if (pieces[i] == '{' && pieces[i + 2] == '}') {
                         p.orig = pieces[i + 1];
                         p.prop = p.orig;
-                        var m = p.prop.match(/(.*)\s+\/(\S*)\/(\S*)\/$/);
+                        var m = p.prop.match(/(.*)\s+\|\|\s*(.*)$/);
+                        if (!_.isEmpty(m))
+                        {
+                            p.prop = m[1];
+                            p.fallback = m[2];
+                        }
+                        m = p.prop.match(/(.*)\s+\/(\S*)\/(.*)\/([gi]*)$/);
                         if (!_.isEmpty(m))
                         {
                             p.prop = m[1];
                             p.regex = m[2];
                             p.repl = m[3];
+                            p.modifiers = m[4];
                         }
                         i += 2;
                     } else
@@ -70,13 +77,18 @@
                     continue;
                 }
                 var temp = resolver(p.prop);
-                if (_.isUndefined(temp)) { temp = '{' + p.orig + '}'; }
+                if (_.isUndefined(temp))
+                {
+                    if (!_.isUndefined(p.fallback))
+                    { temp = p.fallback; }
+                    else { temp = '{' + p.orig + '}'; }
+                }
                 else
                 {
                     temp = !$.isBlank(temp) && (!temp.indexOf || temp.indexOf('{') == -1) ?
                         temp : $.stringSubstitute(temp, resolver);
                     if (!$.isBlank(temp) && !$.isBlank(p.regex))
-                    { temp = temp.replace(new RegExp(p.regex), p.repl); }
+                    { temp = temp.replace(new RegExp(p.regex, p.modifiers), p.repl); }
                 }
                 a.push(temp);
             }

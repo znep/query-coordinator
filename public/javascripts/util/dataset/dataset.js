@@ -491,7 +491,7 @@ var Dataset = ServerModel.extend({
                  'ymax': 'max_lat'}, function(new_prop, old_prop)
         { params[new_prop] = viewport[old_prop] });
 
-        params['target_node_clusters'] = 50;
+        params['target_node_clusters'] = 250;
         params['min_distance_between_clusters'] = minDistance;
         if (!params['min_distance_between_clusters'])
         {

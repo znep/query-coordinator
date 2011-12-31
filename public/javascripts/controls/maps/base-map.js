@@ -301,21 +301,15 @@
             { return Math.abs(mapObj.currentZoom() - mapObj._lastZoomLevel); }
         },
 
-        getLatitudinalDistanceForViewportPixels: function(viewport, pixels)
+        getMinDistanceForViewportPixels: function(viewport, pixels)
         {
-            var mapObj = this;
-            var extent = mapObj.map.getExtent();
-            if (!extent) { return null; } // If the map isn't loaded, just give up.
-            extent = viewport || extent;
+            // Maximum number of divisions that can be made of the pixelspace available.
+            var numDivisions = Math.min(this.$dom().height(),
+                                        this.$dom().width()) / pixels;
 
-            var topLonLat = new OpenLayers.LonLat(extent.left, extent.top);
-            var topPixel = mapObj.map.getViewPortPxFromLonLat(topLonLat);
-            var botLonLat = mapObj.map.getLonLatFromViewPortPx(topPixel.add(0, pixels));
-
-            topLonLat.transform(mapObj.map.getProjectionObject(), geographicProjection);
-            botLonLat.transform(mapObj.map.getProjectionObject(), geographicProjection);
-
-            return Math.abs(topLonLat.lat - botLonLat.lat);
+            // Divide the viewport using the max number of divisions.
+            return Math.min(viewport.ymax - viewport.ymin,
+                            viewport.xmax - viewport.xmin) / numDivisions;
         },
 
         columnsLoaded: function()
@@ -1096,6 +1090,11 @@
             mapObj.adjustBounds();
             mapObj.runAnimation();
 
+            // This. Is such. A hack.
+            _.each(mapObj._byView, function(viewConfig)
+            { $('circle', viewConfig._displayLayer.div).filter(function()
+                { return !viewConfig._displayLayer.getFeatureById(this._featureId); }).remove(); });
+
             // Create a copy of features on the wrong side of the dateline
             // and wrap around their X coordinate.
             // TODO: Wishing OpenLayers would do this automatically.
@@ -1423,7 +1422,7 @@
 
             viewConfig._renderType = 'clusters';
             view.getClusters(viewport, mapObj._displayFormat,
-                mapObj.getLatitudinalDistanceForViewportPixels(viewport, pixels),
+                mapObj.getMinDistanceForViewportPixels(viewport, pixels),
                 function(data)
             {
                 if (_.isUndefined(viewConfig._neverCluster))

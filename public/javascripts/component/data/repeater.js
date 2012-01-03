@@ -107,7 +107,7 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 cObj.$dom.css('height', '');
                 // Hack: This triggers a re-show of items
-                $(document).scroll();
+                $(window).scroll();
             }
             if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
             cObj._refresh();

@@ -59,7 +59,7 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
 	},
 	destroy: function() {
         // for now, nothing special to do here. 
-        OpenLayers.Layer.Grid.prototype.destroy.apply(this, arguments);  
+        OpenLayers.Layer.prototype.destroy.apply(this, arguments);
     },
 	CLASS_NAME: "OpenLayers.Layer.Heatmap"
 });

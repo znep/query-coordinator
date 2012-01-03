@@ -289,6 +289,11 @@
                 _.each(chartObj._seriesRemainders, function(sr, i)
                 {
                     if ($.isBlank(sr) || $.isBlank(chartObj._seriesCache[i])) { return; }
+                    var percentage = (sr / chartObj._seriesSums[i]);
+                    // If the remainder is less than .01%, not worth rendering
+                    // due to calculation rounding errors
+                    if (percentage < 0.0001) { return; }
+
                     var colSet = chartObj._yColumns[i];
                     otherRow[colSet.data.lookup] = sr;
                     var point = yPoint(chartObj, otherRow, sr, i, otherPt, colSet);

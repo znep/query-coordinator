@@ -1137,7 +1137,7 @@
                 var bounds = _.reduce(mapObj._displayLayers,
                     function(memo, layer) { memo.extend(layer.getDataExtent()); return memo; },
                     new OpenLayers.Bounds());
-                if (bounds.centerLonLat) // Quick way to check for validity of bounds.
+                if (!_.isUndefined(bounds.left)) // Quick way to check for validity of bounds.
                 { mapObj.map.zoomToExtent(bounds); }
             }
         },

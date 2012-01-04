@@ -211,7 +211,6 @@
                 {
                     // fullReset is synonymous with "load the first page"
                     thisPageSize = opts.firstPageSize || opts.pageSize;
-                    firstPage = false;
                 }
 
                 var itemsShown = $feedList.children().length;

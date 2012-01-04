@@ -1,4 +1,4 @@
 <div id="<%= widget.elem_id %>" class="pager clearfix">
   <span><%= widget.properties.label %></span>
-  <%= create_pagination widget.binding.count, (widget.binding.count.to_f / widget.binding.properties.searchOptions.limit).ceil, widget.current_page, '', '', widget.binding.properties.paramGroup.nil? ? 'page' : "#{widget.binding.properties.paramGroup}[page]" %>
+  <%= create_pagination widget.binding.count, widget.binding.properties.searchOptions.limit, widget.current_page, '', '', widget.binding.properties.paramGroup.nil? ? 'page' : "#{widget.binding.properties.paramGroup}[page]" %>
 </div>

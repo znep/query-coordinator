@@ -24,11 +24,11 @@ var Model = Class.extend({
     {
         var that = this;
         var listeners = {};
-        var events = {};
         var modelEvents = [];
+        that._events = {};
 
         var verifyEvent = function(evName)
-        { if (!events[evName]) { throw 'Event ' + evName + ' not registered'; } };
+        { if (!that._events[evName]) { throw 'Event ' + evName + ' not registered'; } };
 
         this.bind = function (evName, func, model)
         {
@@ -87,17 +87,18 @@ var Model = Class.extend({
             return that;
         };
 
-        // Events must be registered before they can be used.  Hopefully this
-        // will prevent bugs due to typos, or assuming an event is available
-        // that is never fired
-        this.registerEvent = function(evName)
-        {
-            _.each($.makeArray(evName), function(e) { events[e] = true; });
-            return that;
-        };
-
         this.availableEvents = function()
-        { return _.keys(events).sort(); };
+        { return _.keys(that._events).sort(); };
+    },
+
+    // Events must be registered before they can be used.  Hopefully this
+    // will prevent bugs due to typos, or assuming an event is available
+    // that is never fired
+    registerEvent: function(evName)
+    {
+        var mObj = this;
+        _.each($.makeArray(evName), function(e) { mObj._events[e] = true; });
+        return mObj;
     },
 
     // Return a cleaned copy that has no functions, private keys, or anything
@@ -148,6 +149,49 @@ var Model = Class.extend({
         return obj;
     },
 
+    // Return a fully-instantiated copy
+    clone: function(parents)
+    {
+        var that = this;
+
+        var cloneObj = function(val, key)
+        {
+            if (val instanceof Model)
+            { return val.clone(parents); }
+
+            else if (_.isArray(val))
+            {
+                // Flags are special, because they're not really an array in
+                // that order doesn't matter. To keep them consistent, sort them
+                if (key == 'flags')
+                { return val.slice().sort(); }
+                else
+                { return _.map(val, function(v) { return cloneObj(v); }); }
+            }
+
+            else if ($.isPlainObject(val))
+            {
+                var obj = {};
+                _.each(val, function(v, k) { obj[k] = cloneObj(v, k); });
+                return obj;
+            }
+
+            else
+            { return val; }
+        };
+
+        parents = $.makeArray(parents);
+        parents.push(that);
+
+        var obj = {};
+        _.each(this, function(v, k)
+        {
+            if (!_.isFunction(v) && !that._cloneExclude[k] && !_.include(parents, v))
+            { obj[k] = cloneObj(v, k); }
+        });
+        return new that.Class(obj);
+    },
+
     _generateBaseUrl: function(domain, isShort)
     {
         var loc = document.location;
@@ -161,7 +205,8 @@ var Model = Class.extend({
         return base;
     },
 
-    _validKeys: {}
+    _validKeys: {},
+    _cloneExclude: {_super: true}
 });
 
 if (blist.inBrowser)

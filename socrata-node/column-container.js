@@ -221,6 +221,13 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         return item;
     };
 
+    props.clone = function()
+    {
+        this._cloneExclude['real' + capSet] = true;
+        this._cloneExclude['visible' + capSet] = true;
+        return this._super.apply(this, arguments);
+    };
+
     props.setAccessType = function(accessType)
     {
         this._super(accessType);

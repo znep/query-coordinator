@@ -192,7 +192,7 @@ var Dataset = ServerModel.extend({
 
     isGeoDataset: function()
     {
-        return (this.metadata && this.metadata.custom_fields && this.metadata.custom_fields.wms);
+        return (this.metadata && this.metadata.custom_fields && this.metadata.custom_fields.geo);
     },
 
     isPublished: function()
@@ -486,7 +486,7 @@ var Dataset = ServerModel.extend({
     },
 */
 
-    getClusters: function(viewport, displayFormat, successCallback, errorCallback)
+    getClusters: function(viewport, displayFormat, minDistance, successCallback, errorCallback)
     {
         var ds = this;
         if (!ds._clusters)
@@ -502,12 +502,16 @@ var Dataset = ServerModel.extend({
         { params[new_prop] = viewport[old_prop] });
 
         params['target_node_clusters'] = 50;
-        params['min_distance_between_clusters'] = Math.min(viewport.xmax - viewport.xmin,
-                                                           viewport.ymax - viewport.ymin) / 10;
-        if (params['min_distance_between_clusters'] > 5)
-        { params['min_distance_between_clusters'] = 5; }
-        else if (params['min_distance_between_clusters'] > 1)
-        { params['min_distance_between_clusters'] = 1; }
+        params['min_distance_between_clusters'] = minDistance;
+        if (!params['min_distance_between_clusters'])
+        {
+            params['min_distance_between_clusters'] = Math.min(viewport.xmax - viewport.xmin,
+                                                               viewport.ymax - viewport.ymin) / 10;
+            if (params['min_distance_between_clusters'] > 5)
+            { params['min_distance_between_clusters'] = 5; }
+            else if (params['min_distance_between_clusters'] > 1)
+            { params['min_distance_between_clusters'] = 1; }
+        }
 
         var translateCluster = function(c)
         {
@@ -539,7 +543,16 @@ var Dataset = ServerModel.extend({
         var reqData;
         if (useInline)
         {
-            reqData = ds.cleanCopy();
+            if ($.subKeyDefined(ds, 'query.namedFilters.viewport'))
+            {
+                var tmp = ds.query.namedFilters.viewport;
+                delete ds.query.namedFilters.viewport;
+                reqData = ds.cleanCopy();
+                ds.query.namedFilters.viewport = tmp;
+            }
+            else
+            { reqData = ds.cleanCopy(); }
+
             if (!$.isBlank(displayFormat)) { reqData.displayFormat = displayFormat; }
             reqData = JSON.stringify(reqData);
         }
@@ -1176,6 +1189,11 @@ var Dataset = ServerModel.extend({
         this.makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
     },
 
+    downloadUrl: function(type)
+    {
+        return '/api/views/' + this.id + '/rows.' + type.toLowerCase() + '?accessType=DOWNLOAD';
+    },
+
     _getCommentCacheKey: function(comment)
     {
         return $.isBlank(comment.rowId) ? this.id :
@@ -1456,7 +1474,7 @@ var Dataset = ServerModel.extend({
                 pageCache: true, type: 'GET',
                 error: function(req)
                 {
-                    alert('Fail to get columns from dataset ' + viewUid);
+                    alert(JSON.parse(req.responseText).message);
                 },
                 success: function(linkedDataset)
                 {
@@ -1471,7 +1489,7 @@ var Dataset = ServerModel.extend({
                     {
                         if (c.canBeLinkSource())
                         {
-                            opt = {value: String(c.id), text: c.name,
+                            opt = {value: String(c.fieldName), text: c.name,
                                 dataType: c.dataTypeName};
                             cldo.push(opt);
                         }
@@ -1688,6 +1706,27 @@ var Dataset = ServerModel.extend({
                     'Rows in the location column are still geocoding. ' +
                     'Please wait until they are finished to publish this dataset');
             }});
+    },
+
+    waitForPublishingAvailable: function(successCallback, timeout)
+    {
+        var ds = this;
+
+        var waitForSuccess = function()
+        {
+            ds.getPublishingAvailable(function(available)
+            {
+                if (!available)
+                {
+                    setTimeout(waitForSuccess, timeout || 5000);
+                }
+                else
+                {
+                    successCallback();
+                }
+            });
+        };
+        waitForSuccess();
     },
 
     getSnapshotDatasets: function(callback)
@@ -2148,7 +2187,7 @@ var Dataset = ServerModel.extend({
         this._pendingRowReqs = [];
         // Tell pending requests they are being cancelled
         _.each(pending, function(p)
-            { if (_.isFunction(p.errorCallback)) { p.errorCallback(); } });
+            { if (_.isFunction(p.errorCallback)) { p.errorCallback({cancelled: true}); } });
         this._rowIDLookup = {};
         _.each(this.columns || [], function(c) { c.invalidateData(); });
         this.trigger('row_change', [invRows, true]);
@@ -3166,7 +3205,7 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
         $.Tache.Get({url: '/api/views/' + viewUid + '.json',
             error: function(req)
             {
-                alert('Fail to get columns from dataset ' + viewUid);
+                alert(JSON.parse(req.responseText).message);
            },
             success: function(linkedDataset)
             {
@@ -3183,7 +3222,7 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
                 {
                     if (c.canBeDatasetLink())
                     {
-                        opt = {value: String(c.id), text: c.name};
+                        opt = {value: String(c.fieldName), text: c.name};
                         if (useRdfKeyAsDefault && opt.value === rdfSubject)
                         {
                             opt.selected = true;

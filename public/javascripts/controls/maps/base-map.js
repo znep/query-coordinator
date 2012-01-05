@@ -1785,6 +1785,20 @@
             if (newIndex >= $rows.length - 1)
             { $paging.find('.next').addClass('disabled'); }
         });
+
+        // FIXME: This is copied and pasted from base-viz#initializeFlyouts.
+        // This should be fixed by a popup refactor.
+        $('.flyoutRenderer .viewRow').click(function(e)
+        {
+            var $a = $(this);
+            // Open a new page if it's not the same view.
+            if ($a.attr('target') == '_blank') { return; }
+            e.preventDefault();
+            mapObj.closeFlyout($a);
+            var href = $a.attr('href');
+            $(document).trigger(blist.events.DISPLAY_ROW,
+                [href.slice(href.lastIndexOf('/') + 1)]);
+        });
     };
 
     var onFeatureUnselect = function(mapObj, feature)

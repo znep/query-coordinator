@@ -1367,8 +1367,8 @@
 
                 if (!_.isEmpty(aggs))
                 {
-                    if (!view._delayRenderData) { view._delayRenderData = 0; }
-                    view._delayRenderData++;
+                    if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
+                    mapObj._delayRenderData++;
 
                     view.getAggregates(function()
                     { calculateSegmentSizes(mapObj, aggs); }, aggs);

@@ -364,6 +364,7 @@
             mapObj._markers = {};
             $(mapObj.currentDom).removeData('socrataMap');
             mapObj.map.destroy();
+            delete mapObj.map;
             mapObj.$dom().empty();
             mapObj._obsolete = true;
             if (mapObj._legend) { mapObj._legend.$dom.hide(); }

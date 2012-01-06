@@ -1089,12 +1089,15 @@
                 function(item) { mapObj.renderGeometry.apply(mapObj, item); }); }
 
             mapObj.adjustBounds();
-            mapObj.runAnimation();
-
-            // This. Is such. A hack.
-            _.each(mapObj._byView, function(viewConfig)
-            { $('circle', viewConfig._displayLayer.div).filter(function()
-                { return !viewConfig._displayLayer.getFeatureById(this._featureId); }).remove(); });
+            mapObj.runAnimation(function()
+            {
+                // This. Is such. A hack.
+                _.each(mapObj._byView, function(viewConfig)
+                { $('circle', viewConfig._displayLayer.div)
+                    .filter(function()
+                        { return !viewConfig._displayLayer.getFeatureById(this._featureId); })
+                    .remove(); });
+            });
 
             // Create a copy of features on the wrong side of the dateline
             // and wrap around their X coordinate.
@@ -1558,7 +1561,7 @@
             { viewConfig._animation.direction = 'spread'; }
         },
 
-        runAnimation: function()
+        runAnimation: function(callback)
         {
             var mapObj = this;
 
@@ -1576,6 +1579,8 @@
                 { _.isFunction(viewConfig._displayLayer.removeFeatures) &&
                     viewConfig._animation &&
                     viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); });
+                if (_.isFunction(callback))
+                { callback(); }
                 return;
             }
 
@@ -1638,6 +1643,8 @@
                     _.each(viewConfig._animation.news, function(feature)
                     { viewConfig._displayLayer.drawFeature(feature); });
                     viewConfig._animation.finished = true;
+                    if (_.isFunction(callback))
+                    { callback(); }
                 }); });
         },
 

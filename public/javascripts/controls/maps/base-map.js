@@ -541,13 +541,6 @@
         {
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
-            if (!viewConfig._clusterBoundaries)
-            {
-                viewConfig._clusterBoundaries = new OpenLayers.Layer.Vector();
-                mapObj.map.addLayer(viewConfig._clusterBoundaries);
-                mapObj.map.setLayerIndex(viewConfig._clusterBoundaries,
-                    mapObj.map.layers.indexOf(viewConfig._displayLayer));
-            }
             mapObj.renderClusters(clusters, view);
         },
 
@@ -1405,6 +1398,8 @@
             if (!viewConfig._displayLayer)
             {
                 viewConfig._displayLayer = mapObj.buildViewLayer(view);
+                viewConfig._clusterBoundaries = new OpenLayers.Layer.Vector();
+                mapObj.map.addLayer(viewConfig._clusterBoundaries);
                 mapObj.map.addLayer(viewConfig._displayLayer);
             }
 

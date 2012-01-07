@@ -1197,6 +1197,7 @@
         fitPoint: function(point)
         {
             var p = new OpenLayers.LonLat(point.longitude, point.latitude);
+            p.transform(geographicProjection, this.map.getProjectionObject());
             if (!this.map.getExtent().containsLonLat(p))
             { this.map.setCenter(p); }
         },

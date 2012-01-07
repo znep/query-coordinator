@@ -774,7 +774,7 @@
                         mapObj._segments[viewConfig._colorValueCol.id][i])
                     {
                         var rgb = mapObj._gradient[i];
-                        details.color = $.rgbToHex(rgb);
+                        details.color = '#' + $.rgbToHex(rgb);
                         break;
                     }
                 }
@@ -900,7 +900,7 @@
                 {
                     marker.style = marker.style || {};
                     marker.style.fillColor = hasHighlight ? '#' + mapObj._highlightColor
-                                                          : '#' + details.color || '#0000ff';
+                                                          : details.color || '#0000ff';
                     marker.style.strokeColor = '#ffffff';
                     marker.style.strokeWidth = 2;
                     marker.style.pointRadius = marker.style.pointRadius || 5;

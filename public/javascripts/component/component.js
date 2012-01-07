@@ -141,7 +141,41 @@
             }
 
             delete this._needsEdit;
+
+            if (this._supportsCustomEditors() && this._properties.editor)
+            {
+                var cObj = this;
+                if (editing) {
+                    cObj._prepareCustomEdit();
+                    cObj.$customEditContents = $.tag({
+                        tagName: 'div', 'class': 'socrata-component-edit'
+                    });
+                    cObj.$contents.append(cObj.$customEditContents);
+
+                    // todo: get value other than asString
+                    var props = $.extend(true, {}, cObj._properties.editor, {
+                        value: cObj.asString(),
+                        type: blist.datatypes[cObj._properties.editor.dataType]
+                    });
+                    cObj._customEditor = cObj.$customEditContents
+                        .blistEditor(props);
+                }
+                else {
+                    cObj._customEditor.finishEdit();
+                    cObj._customEditFinished(cObj._customEditor);
+                    cObj.$customEditContents.remove();
+                }
+                // todo: do we always want to bail here?
+                return false;
+            }
             return true;
+        },
+
+        /**
+         * Called before a custom editor takes over
+         */
+        _prepareCustomEdit: function() {
+            this.$contents.empty();
         },
 
         /**
@@ -277,6 +311,12 @@
         {
             return true;
         },
+
+        /**
+         * Whether the component can use blist editors
+         */
+        _supportsCustomEditors: function()
+        { return false; },
 
         /**
          * Render the content for this component

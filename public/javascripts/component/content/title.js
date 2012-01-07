@@ -34,11 +34,11 @@ $.component.Component.extend('Title', 'content', {
         var doRender = function()
         {
             if (cObj.$title) {
-              cObj.$title.text($.isBlank(cObj._properties.text) ? '' :
-                      cObj._stringSubstitute(cObj._properties.text));
-              cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
+                cObj.$title.text($.isBlank(cObj._properties.text) ? '' :
+                    cObj._stringSubstitute(cObj._properties.text));
+                cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
             } else if (cObj.$edit) {
-              cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties));
+                cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties));
             }
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))
@@ -49,6 +49,18 @@ $.component.Component.extend('Title', 'content', {
     {
         this._super(properties);
         if (!_.isEmpty(properties)) { this._render(); }
+    },
+
+    // Allow blist editors to be used
+    _supportsCustomEditors: function()
+    { return true; },
+
+    _customEditFinished: function(editor)
+    {
+        $.cf.edit.execute('properties', { componentID: this.id,
+            properties: { text: editor.currentValue() }});
+        this._initTitle();
+        this._render();
     },
 
     edit: function(editable) {

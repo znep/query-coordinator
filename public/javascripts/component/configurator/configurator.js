@@ -97,7 +97,6 @@
 
     var defaultOptions = {
         canAdd: true,     // Can you add new components?
-        canDrag: true,    // Can you drag components around?
         editOnly: false,  // Are components always in edit mode?
         edit: true,       // Start edit mode once initalized?
         mask: true,       // Mask out the background when editing a component?

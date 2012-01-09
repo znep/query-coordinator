@@ -13,12 +13,11 @@
         editOnly: true,
         sidebar: false
     });
-    $.cf.edit(true);
 
-    // Simulate a click into the first form element
-    _.defer(function() {
-        // $form.find('.socrata-component:first').trigger('mousedown');
-    });
+    $(document).bind('canvas_initialized', _.once(function() {
+        $.cf.edit(true);
+        $form.find('.socrata-component:visible:first').trigger('mousedown');
+    }));
 
     $wizard.wizard({
         paneConfig: {

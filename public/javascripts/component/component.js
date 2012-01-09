@@ -671,6 +671,8 @@
                         throw "Unparented root component " + component.id;
                     this.roots.push(component);
                 }
+
+            $(document).trigger('canvas_initialized');
         },
 
         catalog: catalog

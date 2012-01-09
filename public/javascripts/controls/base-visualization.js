@@ -194,7 +194,7 @@
             if (vizObj.hasFlyout())
             { vizObj.richRenderer.renderRow($item, row, true); }
 
-            if (vizObj.settings.showRowLink)
+            if (vizObj.settings.showRowLink && !vizObj._primaryView.displayFormat.hideRowLink)
             {
                 $item.append($.tag({tagName: 'a',
                     href: view.url + '/' + row.id,

@@ -1086,7 +1086,7 @@
             {
                 // This. Is such. A hack.
                 _.each(mapObj._byView, function(viewConfig)
-                { $('circle', viewConfig._displayLayer.div)
+                { $('circle, image, path, oval, rect', viewConfig._displayLayer.div)
                     .filter(function()
                         { return !viewConfig._displayLayer.getFeatureById(this._featureId); })
                     .remove(); });

@@ -40,10 +40,14 @@ ul.wizardButtons
     .component-Title, .component-Text
       background-color: white
       border: 1px dashed $color_chrome_box_border
-      min-width: 20em
 
       &.socrata-cf-focal
         @include shadow(0 0 0 #fff)
+    .component-Title
+      min-width: 250px
+    .component-Text
+      min-width: 246px
+
 
   .component-Title
     min-height: 2.5em
@@ -54,8 +58,12 @@ ul.wizardButtons
   .component-PartialText
     padding: 0.5em
 
-  h2
-    margin-top: 0
+  .socrata-component
+    input[type="text"]
+      @include box-shadow-none
+      border: 0
+      &:focus, &:active, &:hover
+        @include box-shadow-none
 
   .advancedSection
     margin-top: 2em

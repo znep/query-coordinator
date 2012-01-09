@@ -53,10 +53,16 @@
         // Find the component this mouse event addresses
         var target = event.target;
 
+        var $target = $(target),
+            mouseTrap = $target.closest('.socrata-cf-mouse').length > 0;
+
         // If they are interacting with the properties editor, let them
-        if ($(target).closest('.socrata-cf-mouse').length > 0 ||
-                $(target).closest('#color_selector').length > 0 ||
-                $(target).closest('.colorpicker').length > 0)
+        // Or, if the component explicitly disables mouse interaction
+        // (by adding the socrata-cf-mouse class) and we're *not*
+        // in editOnly mode, don't fire events
+        if ((mouseTrap && !$.cf.configuration().editOnly) ||
+             $target.closest('#color_selector').length > 0 ||
+             $target.closest('.colorpicker').length > 0 )
         { return; }
 
         while (target && !target._comp)
@@ -71,6 +77,13 @@
         // Ensure focus is directed at the interaction component
         $.cf.focus(target._comp);
 
+        // We let this pass through above so that we can properly
+        // track focus, but we stillwant to disable drag-tracking since
+        // the component specifically disabled it
+        if (mouseTrap && $.cf.configuration().editOnly)
+        { return; }
+
+
         // Listen for drag unless this is a root component or immobilized by container
         if (target._comp.parent && target._comp.parent.drag !== false) {
             // Bind mouse events so we can detect drag-start
@@ -83,7 +96,7 @@
             startY = event.pageY;
         }
 
-        return false;
+        return;
     }
 
     function exitEditMode() {
@@ -147,9 +160,8 @@
             if (designing != edit) {
                 designing = this.designing = edit;
                 $.cf.side(!$.cf.configuration().sidebar ? false : edit);
-                if (!$.cf.configuration().editOnly)
-                    $(document.body).toggleClass('configuring');
-                $(document.body)[edit ? 'bind' : 'unbind']('mousedown', onBodyMouseDown);
+                $body.toggleClass('configuring');
+                $body[edit ? 'on' : 'off']('mousedown', onBodyMouseDown);
                 if (!edit)
                     $.cf.focus();
 
@@ -157,6 +169,8 @@
                     originalConfiguration = [];
                 $.component.eachRoot(function(root) {
                     root.design(designing);
+                    if ($.cf.configuration().editOnly)
+                        root.edit(designing);
                     if (originalConfiguration)
                         originalConfiguration.push([ root, root.properties() ]);
                 });
@@ -231,7 +245,9 @@
 
         blur: function(unmask) {
             if (focal) {
-                focal.edit(false);
+                focal.editFocus(false);
+                if (!$.cf.configuration().editOnly)
+                  focal.edit(false);
                 $body.removeClass('socrata-cf-has-focal');
                 $(focal.dom).removeClass('socrata-cf-focal');
                 focal = undefined;
@@ -251,7 +267,9 @@
             focal = component;
             $body.addClass('socrata-cf-has-focal');
             $(focal.dom).addClass('socrata-cf-focal');
-            focal.edit(true);
+            if (!$.cf.configuration().editOnly)
+                focal.edit(true);
+            focal.editFocus(true);
             if ($.cf.configuration().sidebar)
                 $.cf.side.properties(component);
             if (!$mask && $.cf.configuration().mask) {

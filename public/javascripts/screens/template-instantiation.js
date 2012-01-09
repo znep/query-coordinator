@@ -16,7 +16,14 @@
 
     $(document).bind('canvas_initialized', _.once(function() {
         $.cf.edit(true);
-        $form.find('.socrata-component:visible:first').trigger('mousedown');
+        $form.find('div.insertion-container.insertion-required input').addClass('required');
+        $form.validate({
+            errorPlacement: function(lbl, $el) {
+                lbl.insertAfter($el.closest('div.insertion-container'));
+                $.debug("EL", $el);
+                $.debug("LB", lbl);
+            }
+        });
     }));
 
     $wizard.wizard({
@@ -57,6 +64,7 @@
 
                     var insertions = [];
                     $.component.eachRoot(function(root) {
+                        root.edit(false);
                         insertions.push(root.properties());
                         // de-register components
                         root.destroy();

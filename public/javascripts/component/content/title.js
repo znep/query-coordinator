@@ -59,15 +59,28 @@ $.component.Component.extend('Title', 'content', {
 
     _customEditFinished: function(editor)
     {
-        $.cf.edit.execute('properties', { componentID: this.id,
-            properties: { text: editor.currentValue() }});
         this._initTitle();
+        this._render();
     },
 
     design: function()
     {
         this._super.apply(this, arguments);
         this._render();
+    },
+
+    _valueKey: function()
+    { return 'text'; },
+
+    editFocus: function(focused) {
+        if (!this._super.apply(this, arguments)) { return false; }
+
+        // don't care about focusin
+        if (focused) return;
+
+        var newText = this.$edit.value();
+        if (newText != this._properties.text)
+            this._updatePrimaryValue(newText);
     },
 
     edit: function(editable) {
@@ -89,18 +102,14 @@ $.component.Component.extend('Title', 'content', {
             }
         }
         else if (wasEditable) {
-            var newText = this.$edit.value();
             this.$contents.empty();
             delete this.$edit;
-            this._initTitle();
-
-            if (newText != this._properties.text)
-              $.cf.edit.execute('properties', { componentID: this.id, properties: { text: newText }});
+            this._customEditFinished();
         }
     },
 
     asString: function() {
-      return this._stringSubstitute(this._properties.text);
+        return this._stringSubstitute(this._properties.text);
     }
 });
 

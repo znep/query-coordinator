@@ -175,6 +175,37 @@
         },
 
         /**
+         * Component received or lost focus in edit mode.
+         * Usually used to update properties
+         */
+        editFocus: function(focused) {
+            if (focused) return true;
+
+            // Update properties from custom editor
+            if (this._supportsCustomEditors() && this._properties.editor) {
+                this._updatePrimaryValue(this._customEditor.currentValue());
+                return false;
+            }
+            return true;
+        },
+
+        _updatePrimaryValue: function(value) {
+            var propKey = this._valueKey(),
+                properties = {};
+            if ($.isBlank(propKey)) return;
+
+            properties[propKey] = value;
+            this._executePropertyUpdate(properties);
+        },
+
+        _executePropertyUpdate: function(properties) {
+            $.cf.edit.execute('properties', {
+                componentID: this.id,
+                properties: properties
+            });
+        },
+
+        /**
          * Called before a custom editor takes over
          */
         _prepareCustomEdit: function() {
@@ -187,6 +218,13 @@
         _stringSubstitute: function(obj, resolver)
         {
             return $.stringSubstitute(obj, resolver || this._propertyResolver());
+        },
+
+        /**
+         * Indicate what key in the component's properties holds the 'value'
+         * Used for setting the initial value based on string resolving
+         */
+        _valueKey: function() {
         },
 
         setEditor: function(editor)

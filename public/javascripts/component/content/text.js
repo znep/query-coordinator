@@ -32,6 +32,18 @@ $.component.Component.extend('Text', 'content', {
         if (!_.isEmpty(properties)) { this._render(); }
     },
 
+    _valueKey: function()
+    { return 'html'; },
+
+    editFocus: function(focused) {
+        if (!this._super.apply(this, arguments)) { return false; }
+        if (focused) return;
+
+        var newHtml = this.$contents[0].innerHTML;
+        if (newHtml != this._properties.html)
+            this._updatePrimaryValue(newHtml);
+    },
+
     edit: function(editable) {
         if (!this._super.apply(this, arguments)) { return false; }
         var wasEditable = this.$contents.attr('contentEditable') == 'true';
@@ -44,11 +56,7 @@ $.component.Component.extend('Text', 'content', {
             if (!wasEditable)
                 this.$contents.html(this._properties.html);
         } else if (wasEditable) {
-            var newHtml = this.$contents[0].innerHTML;
-            if (newHtml != this._properties.html)
-                $.cf.edit.execute('properties', { componentID: this.id, properties: { html: newHtml }});
-            else
-                this.$contents.html(this._stringSubstitute(this._properties.html));
+            this.$contents.html(this._stringSubstitute(this._properties.html));
         }
     }
 });

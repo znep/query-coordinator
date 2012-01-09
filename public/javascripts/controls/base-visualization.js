@@ -391,7 +391,7 @@
                 if (!this._delayedRenderData) { this._delayedRenderData = []; }
                 var _this = this;
                 this._delayedRenderData.push(function()
-                    { _this.renderData(rows); });
+                    { _this.renderData(rows, view); });
                 return;
             }
 

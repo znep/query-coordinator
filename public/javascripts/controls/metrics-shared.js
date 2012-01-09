@@ -133,7 +133,7 @@ metricsNS.updateTopSearchesCallback = function($context, key)
             linkText: term,
             value: count,
             textValue: Highcharts.numberFormat(count, 0),
-            href: '/browse?q=' + term
+            href: '/browse?q=' + escape(term)
         });
     };
 

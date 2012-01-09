@@ -597,7 +597,7 @@ $(function()
         $.renderTemplate(
             'downloadsTable',
             { downloadTypes: $.templates.downloadsTable.downloadTypes,
-              viewId: blist.dataset.id },
+              view: blist.dataset },
             $.templates.downloadsTable.directive));
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 

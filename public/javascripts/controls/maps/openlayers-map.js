@@ -100,10 +100,9 @@
                     var maxExtent = mapObj.map.maxExtent;
 
                     var result = {
-                        url: mapObj._geo.owsUrl,
+                        url: '/api/proxy?' + mapObj._geo.owsUrl + '?',
                         isBaseLayer: false,
                         transitionEffect: 'resize',
-                        opacity: 0.4,
                         tileSize: new OpenLayers.Size(256, 256),
                         tileOrigin: new OpenLayers.LonLat(maxExtent.left,
                             maxExtent.bottom),
@@ -154,7 +153,6 @@
                         {
                             buffer: 0,
                             maxExtent: feature.bounds,
-                            opacity: 0.7
                         });
 
                     return mapObj._createWmsLayer(layerName, options);

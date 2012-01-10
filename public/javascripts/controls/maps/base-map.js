@@ -1488,12 +1488,9 @@
                     {
                         viewConfig._renderType = 'points';
                         var rowIds = _.flatten(_.pluck(data, 'points'));
-                        var rowsToLoad = rowIds.length;
-                        view.getRowsByIds(rowIds, function(data)
-                        {
-                            if (_.size(view._rowIDLookup) == rowsToLoad)
-                            { mapObj.handleRowsLoaded(view._rowIDLookup, view); }
-                        }, function()
+                        var callback = _.after(Math.floor(rowIds.length / 100),
+                            function(data) { mapObj.handleRowsLoaded(view._rowIDLookup, view); });
+                        view.getRowsByIds(rowIds, callback, function()
                         {
                             // On error clear these variables so more requests will be triggered
                             delete mapObj._initialLoad;

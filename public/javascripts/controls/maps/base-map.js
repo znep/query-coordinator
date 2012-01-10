@@ -872,7 +872,7 @@
                 }
             }
             else
-            { newMarker = true; }
+            { newMarker = true; viewConfig._adjustBounds = true; }
 
             if (geoType == 'point')
             {
@@ -887,7 +887,10 @@
                 { marker = new OpenLayers.Feature.Vector(
                     new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)); }
                 else
-                { marker.geometry = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat); }
+                {
+                    marker.geometry = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+                    viewConfig._adjustBounds = true;
+                }
 
                 marker.attributes.clusterParent = details.clusterParent;
                 if (details.dataView)
@@ -1069,6 +1072,8 @@
             if (viewConfig._animation)
             { viewConfig._animation.news.push(marker); }
 
+            viewConfig._adjustBounds = true;
+
             return marker;
         },
 
@@ -1131,11 +1136,19 @@
             { mapObj.setViewport(mapObj._displayFormat.viewport); }
             else
             {
-                var bounds = _.reduce(mapObj._displayLayers,
+                var displayLayers = _(mapObj._byView).chain()
+                    .select(function(viewConfig) { return viewConfig._adjustBounds; })
+                    .map(function(viewConfig)  {  return viewConfig._displayLayer; })
+                    .value();
+                if (_.isEmpty(displayLayers)) return;
+
+                var bounds = _.reduce(displayLayers,
                     function(memo, layer) { memo.extend(layer.getDataExtent()); return memo; },
                     new OpenLayers.Bounds());
                 if (!_.isUndefined(bounds.left)) // Quick way to check for validity of bounds.
                 { mapObj.map.zoomToExtent(bounds); }
+
+                _.each(mapObj._byView, function(viewConfig) { viewConfig._adjustBounds = false; });
             }
         },
 

@@ -31,8 +31,8 @@
                     var arrange = this._blockArrange = true;
 
                 // Add the children
-                var result = _.map(child, function(child) {
-                    return this.add(child, position);
+                var result = _.map(child.slice(), function(c) {
+                    return this.add(c, position);
                 }, this);
 
                 // Arrange if we're the owners of the arrange block
@@ -219,6 +219,8 @@
                 delete child.parent;
                 child.destroy();
             });
+            delete this.first;
+            delete this.last;
             this._super();
         },
 
@@ -280,6 +282,7 @@
 
         // Propagate design mode to children
         design: function(designing) {
+            this._super.apply(this, arguments);
             this.each(function(child) {
                 child.design(designing);
             });

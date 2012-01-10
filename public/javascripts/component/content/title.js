@@ -31,15 +31,17 @@ $.component.Component.extend('Title', 'content', {
             cObj._cachedTextStyle = blist.configs.styles.getStyles('text', cObj.$title),
             cObj._cachedPaddingStyle = blist.configs.styles.getStyles('padding', cObj.$title)
         }
+
         var doRender = function()
         {
-            if (cObj.$title) {
-                cObj.$title.text($.isBlank(cObj._properties.text) ? '' :
-                    cObj._stringSubstitute(cObj._properties.text));
+            if (cObj.$title)
+            {
+                var t = $.isBlank(cObj._properties.text) ? '' : cObj._properties.text;
+                cObj.$title.text(cObj._designing ? t : cObj._stringSubstitute(t));
                 cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
-            } else if (cObj.$edit) {
-                cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties));
             }
+            else if (cObj.$edit)
+            { cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties)); }
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))
         { doRender(); }
@@ -60,6 +62,11 @@ $.component.Component.extend('Title', 'content', {
         $.cf.edit.execute('properties', { componentID: this.id,
             properties: { text: editor.currentValue() }});
         this._initTitle();
+    },
+
+    design: function()
+    {
+        this._super.apply(this, arguments);
         this._render();
     },
 
@@ -83,13 +90,12 @@ $.component.Component.extend('Title', 'content', {
         }
         else if (wasEditable) {
             var newText = this.$edit.value();
-            if (newText != this._properties.text)
-              $.cf.edit.execute('properties', { componentID: this.id, properties: { text: newText }});
-
             this.$contents.empty();
             delete this.$edit;
             this._initTitle();
-            this._render();
+
+            if (newText != this._properties.text)
+              $.cf.edit.execute('properties', { componentID: this.id, properties: { text: newText }});
         }
     },
 

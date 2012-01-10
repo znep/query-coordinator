@@ -77,7 +77,7 @@
                     continue;
                 }
                 var temp = resolver(p.prop);
-                if (_.isUndefined(temp))
+                if ($.isBlank(temp))
                 {
                     if (!_.isUndefined(p.fallback))
                     { temp = p.fallback; }
@@ -85,7 +85,7 @@
                 }
                 else
                 {
-                    temp = !$.isBlank(temp) && (!temp.indexOf || temp.indexOf('{') == -1) ?
+                    temp = !temp.indexOf || temp.indexOf('{') == -1 ?
                         temp : $.stringSubstitute(temp, resolver);
                     if (!$.isBlank(temp) && !$.isBlank(p.regex))
                     { temp = temp.replace(new RegExp(p.regex, p.modifiers), p.repl); }

@@ -240,13 +240,16 @@
     var seriesData = function(chart, options, colTypes)
     {
         var oif = onlyIfForChart(chart, options, false);
-        oif.push({disable: true, func: function()
-            {
-                return (!$.isBlank(options.view) && ($.isBlank(options.view.totalRows) ||
-                    options.view.totalRows <= 500))
-            },
-            disabledMessage: 'Data grouping is only available for data under 500 rows. ' +
-            'Please filter the data to within that limit.'});
+        if (!$.isBlank(oif))
+        {
+            oif.push({disable: true, func: function()
+                {
+                    return (!$.isBlank(options.view) && ($.isBlank(options.view.totalRows) ||
+                            options.view.totalRows <= 500))
+                },
+                disabledMessage: 'Data grouping is only available for data under 500 rows. ' +
+                'Please filter the data to within that limit.'});
+        }
         return {
             title: 'Data Series Grouping', type: 'selectable', name: chart.value + 'SeriesData',
             onlyIf: oif,

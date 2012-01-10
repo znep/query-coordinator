@@ -94,6 +94,7 @@
         destroy: function() {
             this.remove();
             delete components[this.id];
+            this._destroyed = true;
         },
 
         /**
@@ -109,6 +110,7 @@
          * Unlink a child from its parent.
          */
         remove: function() {
+            $(window).unbind('scroll.component-' + this.id);
             var parent = this.parent;
             if (parent) {
                 if (this.prev)
@@ -128,6 +130,7 @@
          * Put the component into design mode.
          */
         design: function(designing) {
+            this._designing = designing;
         },
 
         /**
@@ -275,9 +278,10 @@
                 if (this._delayUntilVisible)
                 {
                     var cObj = this;
-                    $(window).scroll(_.throttle(function()
+                    $(window).bind('scroll.component-' + cObj.id, _.throttle(function()
                         {
-                            if (cObj._needsRender && cObj._isVisible()) { cObj._render(); }
+                            if (!cObj._destroyed && cObj._needsRender && cObj._isVisible())
+                            { cObj._render(); }
                         }, 300));
                 }
             }
@@ -607,7 +611,7 @@
                             queryParams[s[0]] = unescape(s[1]);
                         });
                 }
-                return queryParams[name.substring(1)] || name;
+                return queryParams[name.substring(1)];
             }
         },
 

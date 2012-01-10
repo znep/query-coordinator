@@ -45,11 +45,17 @@ $.component.Container.extend('Repeater', 'content', {
         }
     },
 
-    design: function(design) {
-        this._super();
+    design: function() {
+        // If we were designing, update from the edited config
         if (this._designing)
             this._cloneProperties.children = this._readChildren();
-        this._designing = design;
+        this._super.apply(this, arguments);
+        this._delayUntilVisible = !this._designing;
+        if (this._designing)
+        {
+            // If we're designing, make sure we're fully rendered
+            this._render();
+        }
         this._refresh();
     },
 
@@ -57,9 +63,12 @@ $.component.Container.extend('Repeater', 'content', {
     {
         var cObj = this;
         this._map = [];
-        while (this.first)
-            this.first.destroy();
-        delete this._realContainer;
+        if (!$.isBlank(this._realContainer))
+        {
+            this._realContainer.destroy();
+            delete this._realContainer;
+        }
+        while (this.first) { this.first.destroy(); }
 
         var view;
         if ($.cf.designing)
@@ -175,7 +184,11 @@ $.component.Container.extend('Repeater', 'content', {
         {
             var r = new RegExp(this._properties.valueRegex.regex);
             var v = clone._stringSubstitute(this._properties.valueRegex.value);
-            if (!r.test(v)) { return; }
+            if (!r.test(v))
+            {
+                clone.destroy();
+                return;
+            }
         }
 
         // Find position for clone
@@ -200,4 +213,5 @@ $.component.Container.extend('Repeater', 'content', {
 
 $.component.Repeater.Clone = $.component.Container.extend({
     // No special behavior for clones at the moment
+    _persist: false
 });

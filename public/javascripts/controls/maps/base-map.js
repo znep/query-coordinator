@@ -211,7 +211,7 @@
             }
             else
             {
-                $.live("circle, image, path, text, oval, rect", 'click', function(evt)
+                $.live("circle, image, path, text, oval, rect, shape", 'click', function(evt)
                 {
                     var features = findFeatureFromEvent(mapObj, evt);
                     if (_.isEmpty(features)) { return null; }
@@ -241,7 +241,7 @@
                     });
                 });
             }
-            $.live("circle, image, path, text, oval, rect", 'mouseover', function(evt)
+            $.live("circle, image, path, text, oval, rect, shape", 'mouseover', function(evt)
             {
                 var features = findFeatureFromEvent(mapObj, evt);
                 if (_.isEmpty(features)) { return null; }
@@ -264,7 +264,7 @@
                     }
                 });
             });
-            $.live("circle, image, path, text, oval, rect", 'mouseout', function(evt)
+            $.live("circle, image, path, text, oval, rect, shape", 'mouseout', function(evt)
             {
                 var features = findFeatureFromEvent(mapObj, evt);
                 if (_.isEmpty(features)) { return null; }
@@ -1091,7 +1091,7 @@
             {
                 // This. Is such. A hack.
                 _.each(mapObj._byView, function(viewConfig)
-                { $('circle, image, path, oval, rect', viewConfig._displayLayer.div)
+                { $('circle, image, path, oval, rect, shape', viewConfig._displayLayer.div)
                     .filter(function()
                         { return !viewConfig._displayLayer.getFeatureById(this._featureId); })
                     .remove(); });

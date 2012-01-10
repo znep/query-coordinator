@@ -1,7 +1,7 @@
 /**
  * The application "edit bar".
  */
-(function($) {
+$(function() {
     $.cf = {};
 
     $.cf.top = function() {
@@ -46,4 +46,4 @@
         _.defer(function() { $(document.body).addClass('configurable'); });
     }
 
-})(jQuery);
+});

@@ -470,7 +470,7 @@
          * Obtain a function that can resolve substitution properties for this component's data context.
          */
         _propertyResolver: function() {
-            if ($.cf.designing)
+            if (this._designing)
                 return function() {};
             var parentResolver = this.parent ? this.parent._propertyResolver() : $.component.rootPropertyResolver;
             var dc = this._dataContext || {};

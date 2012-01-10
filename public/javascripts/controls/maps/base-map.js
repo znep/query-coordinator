@@ -1132,7 +1132,8 @@
             { return; }
 
             mapObj._boundsChanging = true;
-            if (mapObj._displayFormat.viewport)
+            if (mapObj._displayFormat.viewport
+                && _.any(mapObj._byView, function(viewConfig) { return viewConfig._adjustBounds; }))
             { mapObj.setViewport(mapObj._displayFormat.viewport); }
             else
             {
@@ -1147,9 +1148,8 @@
                     new OpenLayers.Bounds());
                 if (!_.isUndefined(bounds.left)) // Quick way to check for validity of bounds.
                 { mapObj.map.zoomToExtent(bounds); }
-
-                _.each(mapObj._byView, function(viewConfig) { viewConfig._adjustBounds = false; });
             }
+            _.each(mapObj._byView, function(viewConfig) { viewConfig._adjustBounds = false; });
         },
 
         getViewport: function()

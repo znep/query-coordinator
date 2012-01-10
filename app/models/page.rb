@@ -1,8 +1,7 @@
 class Page < SodaModel
   def render
-    '<div class="socrata-root" id="' + content['id'] + '"></div>'
-
-    # TODO - actual render
+    Canvas2::DataContext.load(data)
+    [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render}.join('')
   end
 
   def content

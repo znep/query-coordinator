@@ -172,6 +172,26 @@ class View < Model
     return data, viewable_columns, aggregates, row_count
   end
 
+  def get_rows(per_page, page = 1, conditions = {})
+    params = { :method => 'getByIds',
+               :asHashes => true,
+               :accessType => 'WEBSITE',
+               :start => (page - 1) * per_page,
+               :length => per_page }
+
+    merged_conditions = self.query.cleaned.deep_merge(conditions)
+    request_body = {
+      'name' => self.name,
+      'searchString' => merged_conditions.delete('searchString'),
+      'query' => merged_conditions,
+      'originalViewId' => self.id
+    }.to_json
+
+    url = "/views/INLINE/rows.json?#{params.to_param}"
+    return JSON.parse(CoreServer::Base.connection.create_request(url, request_body),
+                      {:max_nesting => 25})
+  end
+
   def get_rows_by_ids(ids, req_body = nil)
     id_params = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
 

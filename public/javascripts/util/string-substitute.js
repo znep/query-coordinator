@@ -3,6 +3,8 @@
 
     $.stringSubstitute = function(obj, resolver)
     {
+        if ($.isBlank(obj))
+        { return ''; }
         if (_.isString(obj))
         { return resolveString(obj, resolver); }
         else if (_.isArray(obj))
@@ -53,9 +55,7 @@
             }
             compiled = cache[string] = fn;
         }
-        if (resolver)
-            return compiled(resolver);
-        return compiled;
+        return compiled(resolver);
     };
 
     var resBuilder = function(props)
@@ -64,7 +64,7 @@
         {
             if (!_.isFunction(resolver))
             {
-                var obj = resolver;
+                var obj = resolver || {};
                 resolver = function(name) { return $.deepGetStringField(obj, name); };
             }
             var a = [];

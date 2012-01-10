@@ -4,8 +4,14 @@ $.component.Container.extend('Repeater', 'content', {
 
     _init: function(properties) {
         this._delayUntilVisible = true;
+
         // Take my children and give them to a "clone" template that will repeat once for each object
         var children = properties.children || [];
+        delete properties.children;
+
+        // Normal object setup
+        this._super(properties);
+
         this._cloneProperties = {
             id: 'clone',
             children: children,
@@ -25,10 +31,6 @@ $.component.Container.extend('Repeater', 'content', {
             }
         }
         allocateIds(children);
-        delete properties.children;
-
-        // Normal object setup
-        this._super(properties);
 
         // Record keeping preparation
         this._map = [];
@@ -95,16 +97,16 @@ $.component.Container.extend('Repeater', 'content', {
         {
             if (this._properties.repeaterType == 'column')
             {
+                var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
+                var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
                 _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
                 {
-                    var success = _.all(cObj._stringSubstitute(cObj._properties.excludeFilter),
-                        function(v, k)
+                    if (_.all(exF, function(v, k)
                         { return !_.include($.makeArray(v), $.deepGetStringField(c, k)); }) &&
                         ($.isBlank(cObj._properties.includeFilter) ? true :
-                                   _.any(cObj._stringSubstitute(cObj._properties.includeFilter),
-                                       function(v, k)
-                                       { return _.include($.makeArray(v), $.deepGetStringField(c, k)); }));
-                    if (success) { cObj._setRow(cObj._dataContext, i, {column: c}); }
+                                   _.any(incF, function(v, k)
+                                       { return _.include($.makeArray(v), $.deepGetStringField(c, k)); })))
+                    { cObj._setRow(cObj._dataContext, i, {column: c}); }
                 });
             }
             else

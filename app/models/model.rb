@@ -9,7 +9,8 @@ class Model
 
   def initialize(data = {})
     @data = data
-    @update_data = {}
+    self.data = @data
+    self.update_data = {}
   end
 
   # Override super.id and return the id of the model
@@ -160,7 +161,7 @@ class Model
   def define_value_accessor(attribute)
     self.class.class_eval <<-EOS, __FILE__, __LINE__
       def #{attribute}
-        @update_data['#{attribute}'] || @data['#{attribute}']
+        update_data['#{attribute}'] || @data['#{attribute}']
       end
     EOS
   end

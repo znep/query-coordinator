@@ -43,6 +43,20 @@
                     if (cObj._needsEdit) { _.defer(function () { cObj.edit(true); }); }
                 });
             }
+
+            // Allow configuring static properties via dynamic code
+            if (cObj._properties.setup) {
+                _(cObj._properties.setup).each(function(definitions, key) {
+                    var props = {};
+                    _(definitions).each(function(template, propName) {
+                        template.type || (template.type = 'StringResolver');
+                        var resolver = $.component.create(template);
+                        props[propName] = resolver.asString();
+                    });
+                    cObj[key](props);
+                });
+                delete properties.setup;
+            }
         },
 
         /**

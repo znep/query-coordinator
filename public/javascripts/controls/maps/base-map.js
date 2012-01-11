@@ -405,7 +405,7 @@
             _.each(mapObj._byView, function(viewConfig)
             {
                 viewConfig._llKeys = {};
-                _.each(['_locCol', '_latCol', '_longCol', '_iconCol', '_quantityCol',
+                _.each(['_locCol', '_geoCol', '_latCol', '_longCol', '_iconCol', '_quantityCol',
                         '_sizeValueCol', '_colorValueCol', '_redirectCol'], function(prop)
                 { delete viewConfig[prop]; });
             });

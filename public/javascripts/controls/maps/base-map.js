@@ -1481,6 +1481,7 @@
                     return;
                 }
 
+/*
                 if (_.all(data, function(cluster) { return cluster.leafNode; }))
                 {
                     if (_.isUndefined(viewConfig._unclusterLevel))
@@ -1500,6 +1501,7 @@
                 }
                 else
                 { delete viewConfig._unclusterLevel; }
+*/
 
                 mapObj.initializeAnimation(data, view);
 

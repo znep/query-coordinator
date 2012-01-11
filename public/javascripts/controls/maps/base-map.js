@@ -447,7 +447,7 @@
         populateLayers: function()
         {
             var mapObj = this;
-            var layers = mapObj._baseLayers;
+            var layers = mapObj._baseLayers || [];
             if (layers.length < 2) { return; }
 
             var $layers = mapObj.$dom().siblings('#mapLayers');

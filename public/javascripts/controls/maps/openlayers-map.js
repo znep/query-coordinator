@@ -298,6 +298,11 @@
             return 'https://maps.google.com/maps/api/js?sensor=true&libraries=geometry&callback=blist.util.googleCallback';
         },
 
+        getDataForAllViews: function ()
+        {
+            // Just kidding!
+        },
+
         _setupLibraries: function()
         {
             // Grab a reference to the current object (this) from a global

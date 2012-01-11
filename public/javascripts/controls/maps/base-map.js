@@ -7,6 +7,7 @@
     blist.namespace.fetch('blist.openLayers');
 
     var geographicProjection = new OpenLayers.Projection('EPSG:4326');
+    var killAnimation = false;
 
     Proj4js.defs["EPSG:102100"] = "+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null";
 
@@ -1643,6 +1644,7 @@
                     { delete feature.style.display; });
                 });
             }
+            setTimeout(function() { killAnimation = true; }, 2000);
             animate(animations, function() { _.each(mapObj._byView, function(viewConfig)
                 {
                     viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds);
@@ -1889,7 +1891,7 @@
 
             animations = _.reject(animations, function(animation, index)
             {
-                if (!animation.finished)
+                if (!animation.finished && !killAnimation)
                 {
                     var p = ($.now() - startTime) / animation.duration;
                     animation.finished = p >= 1;
@@ -1916,6 +1918,7 @@
                 { clearInterval( interval ); }
                 if (_.isFunction(callback))
                 { callback(); }
+                killAnimation = false;
             }
         };
         if (requestAnimationFrame)

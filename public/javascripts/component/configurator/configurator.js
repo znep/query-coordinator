@@ -36,6 +36,37 @@
         trackingMouseDown = false;
     }
 
+    var focusOnTarget = function(target) {
+        while (target && !target._comp)
+            target = target.parentNode;
+
+        // Simply unfocus if there is no target
+        if (!target) {
+            $.cf.blur(true);
+            return false;
+        }
+
+        // Ensure focus is directed at the interaction component
+        $.cf.focus(target._comp);
+        return target;
+    };
+
+    // We need to notify components that they lost focus
+    // as the browser will jump away on Tab
+    var onBodyKeyDown = function(event) {
+        if (event.which == 9) {
+            _.defer(function() {
+                var active = document.activeElement;
+                if (active) {
+                    focusOnTarget(active);
+                }
+                else {
+                    $.cf.blur(true);
+                }
+            });
+        }
+    };
+
     function onBodyMouseDown(event) {
         // The only way we should get to this is if user presses button, moves pointer out of browser, releases button,
         // moves pointer back into browser, and releases button.  Simply continuing our prior operation seems like the
@@ -65,24 +96,14 @@
              $target.closest('.colorpicker').length > 0 )
         { return; }
 
-        while (target && !target._comp)
-            target = target.parentNode;
-
-        // Simply unfocus if there is no target
-        if (!target) {
-            $.cf.blur(true);
-            return;
-        }
-
-        // Ensure focus is directed at the interaction component
-        $.cf.focus(target._comp);
+        target = focusOnTarget(target);
+        if (!target) { return; }
 
         // We let this pass through above so that we can properly
-        // track focus, but we stillwant to disable drag-tracking since
+        // track focus, but we still want to disable drag-tracking since
         // the component specifically disabled it
         if (mouseTrap && $.cf.configuration().editOnly)
         { return; }
-
 
         // Listen for drag unless this is a root component or immobilized by container
         if (target._comp.parent && target._comp.parent.drag !== false) {
@@ -162,6 +183,7 @@
                 $.cf.side(!$.cf.configuration().sidebar ? false : edit);
                 $body.toggleClass('configuring');
                 $body[edit ? 'on' : 'off']('mousedown', onBodyMouseDown);
+                $body[edit ? 'on' : 'off']('keydown', onBodyKeyDown);
                 if (!edit)
                     $.cf.focus();
 

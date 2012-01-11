@@ -15,10 +15,10 @@
         <%- @templet.insertions.each do |insertion| -%>
           <div class="line clearfix insertion">
             <div class="tooltip"><%= raw insertion['tooltip'] %></div>
-            <label for="<%= insertion['id'] %>">
+            <label for="<%= insertion['id'] %>" class="left <%= ' required' if insertion['required'] %>">
               <%= insertion['name'] %>
             </label>
-            <div class="insertion-container">
+            <div class="insertion-container<%= ' insertion-required' if insertion['required'] %>">
               <div class="socrata-insertion" id="<%= insertion['id'] %>"></div>
             </div>
           </div>
@@ -27,7 +27,7 @@
           <%- [[@templet.title, 'Page Name'], [@templet.path, 'URL']].each do |pair| -%>
             <%- if pair.first[:editable] || pair.first[:visible] -%>
               <div class="line clearfix">
-                <label for="<%= pair.first[:id] %>"><%= pair.last %></label>
+                <label class="left" for="<%= pair.first[:id] %>"><%= pair.last %></label>
                 <div id="<%= pair.first[:id] %>"></div>
               </div>
             <%- end -%>

@@ -20,8 +20,6 @@
         $form.validate({
             errorPlacement: function(lbl, $el) {
                 lbl.insertAfter($el.closest('div.insertion-container'));
-                $.debug("EL", $el);
-                $.debug("LB", lbl);
             }
         });
     }));

@@ -2,7 +2,7 @@ require 'digest/md5'
 
 class CustomContentController < ApplicationController
   before_filter :check_lockdown
-  around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
+  around_filter :cache_wrapper, :except => [ :stylesheet, :page, :clear_page_cache ]
   skip_before_filter :require_user, :except => [ :template ]
 
   def homepage

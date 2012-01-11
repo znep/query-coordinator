@@ -8,9 +8,10 @@ $.component.Component.extend('Title', 'content', {
 
     _initTitle: function()
     {
-        var cObj = this;
-        cObj.$contents.empty().append($.tag({tagName: 'h2'}));
-        cObj.$title = cObj.$contents.find('h2');
+        var cObj = this,
+            tag = cObj._properties.tagName || 'h2';
+        cObj.$contents.empty().append($.tag({tagName: tag}));
+        cObj.$title = cObj.$contents.find(tag);
     },
 
     _initDom: function()
@@ -95,6 +96,7 @@ $.component.Component.extend('Title', 'content', {
                 this.$edit = $.tag({
                     tagName: 'input', type: 'text',
                     'class': 'titleInput',
+                    name: 'input_' + this.id,
                     value: this._properties.text
                 });
                 this.$contents.empty().append(this.$edit);

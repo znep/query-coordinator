@@ -1,8 +1,10 @@
 /**
  * The application "edit bar".
  */
+
+$.cf = {};
+
 $(function() {
-    $.cf = {};
 
     $.cf.top = function() {
         var $top = $.tag({tagName: 'div', 'class': 'socrata-cf-top', contents:

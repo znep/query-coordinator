@@ -45,6 +45,12 @@
     $.Control.registerMixin('openlayers', {
         initializeBaseLayers: function()
         {
+            // let us make POST requests with OpenLayers (for things like WFS)
+            var appToken = blist.configuration.appToken;
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            OpenLayers.ProxyHost = '/api/proxy?app_token' + escape(appToken) +
+                '&authenticity_token=' + escape(csrfToken) + '&proxyUrl=';
+
             var mapObj = this;
 
             var getDataBbox = function()

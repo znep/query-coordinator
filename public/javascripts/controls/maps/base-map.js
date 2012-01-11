@@ -1215,7 +1215,7 @@
             { this.map.setCenter(p); }
         },
 
-        updateRowsByViewport: function(viewport, wrapIDL)
+        updateRowsByViewport: function(viewport)
         {
             var mapObj = this;
             if (mapObj._displayFormat.plotStyle == 'heatmap') { return; }
@@ -1267,7 +1267,7 @@
 
                 var query = $.extend(true, {}, view.query);
                 var filterCondition = {temporary: true, displayTypes: ['map']};
-                if (!wrapIDL || viewport.xmin < viewport.xmax)
+                if (viewport.xmin < viewport.xmax)
                 {
                     filterCondition = $.extend(filterCondition,
                         buildFilterCondition(viewport));

@@ -1441,8 +1441,7 @@
                 function(data)
             {
                 if (_.isUndefined(viewConfig._neverCluster))
-                { viewConfig._neverCluster = _.reduce(data, function(total, cluster)
-                    { return total + cluster.size; }, 0) < mapObj._maxRows; }
+                { viewConfig._neverCluster = view.totalRows < mapObj._maxRows; }
                 if (viewConfig._neverCluster)
                 {
                     viewConfig._renderType = 'points';

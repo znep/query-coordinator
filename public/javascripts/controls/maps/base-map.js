@@ -337,7 +337,7 @@
         {
             // This is called once a map has been loaded, as type-appropriate
             if (this._primaryView.snapshotting)
-            { setTimeout(this._primaryView.takeSnapshot, 2000); }
+            { setTimeout(this._primaryView.takeSnapshot, 3000); }
         },
 
         noReload: function()

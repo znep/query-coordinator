@@ -152,7 +152,7 @@
                         },
                         {
                             buffer: 0,
-                            maxExtent: feature.bounds,
+                            maxExtent: feature.bounds
                         });
 
                     return mapObj._createWmsLayer(layerName, options);

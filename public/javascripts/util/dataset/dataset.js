@@ -527,6 +527,7 @@ var Dataset = ServerModel.extend({
 
         var useInline = ds.isDefault()
                         || $.subKeyDefined(ds, 'query.filterCondition')
+                        || ds.cleanFilters()
                         || !$.isBlank(ds.searchString)
                         || (!$.isBlank(displayFormat) && !_.isEqual(displayFormat, ds.displayFormat));
 

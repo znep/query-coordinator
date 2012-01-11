@@ -91,5 +91,30 @@ window.mapDebugger = function()
     window.zoomOut = function() { window.mapObj.map.zoomOut(); };
     window.hideFeature = function(feature) { feature.style.display = 'none'; feature.layer.drawFeature(feature); };
 
+    window.timestamp = function() { return new Date().getTime(); };
+    window.animations = [];
+    window.animationDebugger = function() { return {
+        log: [],
+        timestamps: function() { return _.pluck(this.log, 'timestamp'); },
+        get: function(index) { return this.log[index].timestamp; },
+        totalMS: function() {
+            var times = this.timestamps();
+            return _.last(times) - _.first(times);
+        },
+        transitions: function() {
+            var _this = this;
+            return _.map(this.log, function(item, index)
+            {
+                if (index == 0) { return 0; }
+                return _this.get(index) - _this.get(index - 1);
+            });
+        }
+    }; };
+    window.newAnimationSet = function(animationConfig)
+    { window.animations.push( $.extend(animationDebugger(),
+        { config: animationConfig, startAt: timestamp() } )); };
+    window.rememberAnimation = function(stuff)
+    { _.last(window.animations).log.push($.extend({ timestamp: timestamp() }, stuff)); };
+
     delete window.mapDebugger;
 };

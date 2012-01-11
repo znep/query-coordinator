@@ -654,6 +654,14 @@ $.batchProcess = function(array, batchSize, eachItem, eachBatch, onComplete)
     }
 };
 
+$.extract = function(obj, prop)
+{
+    var result = {};
+    _.each(obj, function(value, key)
+    { result[key] = value[prop]; });
+    return result;
+};
+
 // gives you a faster jquery this on each iter
 jQuery.fn.quickEach = (function() {
     var jq = jQuery([1]);

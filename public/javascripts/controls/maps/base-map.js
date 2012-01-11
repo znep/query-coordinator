@@ -1885,11 +1885,16 @@
     {
         var startTime = $.now();
         var interval;
+        var debugging = !_.isUndefined(window.animations);
+        if (debugging)
+        { window.newAnimationSet($.extract(mapObj._byView, '_animation')); }
+
         var step = function()
         {
             if (requestAnimationFrame && animations.length > 0)
             { requestAnimationFrame( step ); }
 
+            if (debugging) { window.rememberAnimation({ left: animations.length }); }
             animations = _.reject(animations, function(animation, index)
             {
                 if (!animation.finished && !killAnimation)

@@ -323,8 +323,9 @@ module ApplicationHelper
                   CurrentDomain.module_enabled?(options[:ifModuleEnabled])
 
     text = options[:text]
-    options.delete(:text)
-    options.delete(:ifModuleEnabled)
+    text = text.html_safe if options[:safe] == true
+    options = options.except(:text, :ifModuleEnabled, :safe,
+                             'text','ifModuleEnabled','safe')
     return content_tag('a', text, options)
   end
 

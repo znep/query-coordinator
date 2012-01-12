@@ -50,6 +50,11 @@
             if (geoType != 'point') { return; }
             var viewConfig = mapObj._byView[details.dataView.id];
 
+            if (viewConfig._idList && viewConfig._idList[dupKey])
+            { return true; }
+            if (!viewConfig._idList) { viewConfig._idList = {}; }
+            viewConfig._idList[dupKey] = true;
+
             var lonlat = new OpenLayers.LonLat(geometry.longitude, geometry.latitude).transform(
                 geographicProjection, mapObj.map.getProjectionObject());
             viewConfig._dataStore.push(lonlat);

@@ -179,6 +179,14 @@
 
     var loadDataset = function(dc, id, config, callback, errorCallback)
     {
+        var gotDS = function(ds)
+        {
+            addQuery(ds, config.query);
+            if (config.getTotal)
+            { ds.getTotalRows(function() { callback(ds); }, function() { errorCallback(id); }) }
+            else { callback(ds); }
+        };
+
         if ($.subKeyDefined(config, 'contextId'))
         {
             if (!dc.getContext(config.contextId, function(context)
@@ -188,13 +196,7 @@
                     errorCallback(id);
                     return;
                 }
-                var ds = context.dataset;
-                if (!$.isBlank(config.query))
-                {
-                    ds = ds.clone();
-                    addQuery(ds, config.query);
-                }
-                callback(ds);
+                gotDS(context.dataset.clone());
             }))
             {
                 // When loading the initial hash, we might have references in
@@ -209,11 +211,7 @@
         }
         else if ($.subKeyDefined(config, 'datasetId'))
         {
-            Dataset.createFromViewId(config.datasetId, function(dataset)
-                {
-                    addQuery(dataset, config.query);
-                    callback(dataset);
-                },
+            Dataset.createFromViewId(config.datasetId, function(dataset) { gotDS(dataset); },
                 function(xhr)
                 { errorCallback(id); });
         }
@@ -222,9 +220,7 @@
             Dataset.search($.extend({}, config.search, {limit: 1}), function(results)
             {
                 if (results.count < 1) { return; }
-                var ds = _.first(results.views);
-                addQuery(ds, config.query);
-                callback(ds);
+                gotDS(_.first(results.views));
             },
             function(xhr)
             { errorCallback(id); });

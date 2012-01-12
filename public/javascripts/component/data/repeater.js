@@ -71,7 +71,7 @@ $.component.Container.extend('Repeater', 'content', {
         while (this.first) { this.first.destroy(); }
 
         var view;
-        if ($.cf.designing)
+        if (this._designing)
             // Render actual children as direct descendants
             this.add(this._cloneProperties.children);
         else if (view = (this._dataContext || {}).dataset)

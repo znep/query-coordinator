@@ -838,7 +838,15 @@
                     day: '%e %b',
                     week: '%e %b',
                     month: '%b %Y'
-                }, labels: {formatter: function() { return clipFormatter.apply(this, [true]); }} },
+                }, labels: {formatter: function()
+                    {
+                        var v = this.value;
+                        var m = (chartObj._displayFormat.xAxisFormatter || '')
+                            .match(/^\/(\S*)\/(.*)\/([gi]*)$/);
+                        if (!_.isEmpty(m))
+                        { v = v.replace(new RegExp(m[1], m[3]), m[2]); }
+                        return clipFormatter(true, v);
+                    }} },
             yAxis: { title:
                 { text: $.isBlank(yTitle) ? null : yTitle,
                     style: { backgroundColor: '#ffffff',

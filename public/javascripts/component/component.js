@@ -394,12 +394,14 @@
 
             if (!$.isBlank(cObj._properties.htmlClass))
             {
-                cObj._updateDataSource(cObj._properties, function()
+                var tmplClass = function()
                 {
                     var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
                     cObj.$contents.removeClass(comp);
                     cObj.$contents.addClass(cObj._stringSubstitute(comp));
-                });
+                };
+                if (!cObj._updateDataSource(cObj._properties, tmplClass))
+                { tmplClass(); }
             }
 
             delete this._needsRender;

@@ -295,7 +295,8 @@ module Canvas
         divider: '/',
         type: 'incremental'
       },
-      rotationInterval: 9
+      rotationInterval: 9,
+      rotationType: 'slide'
     }
   end
 

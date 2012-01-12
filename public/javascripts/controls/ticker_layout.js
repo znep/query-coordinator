@@ -65,8 +65,17 @@
                 {
                     totalHeight -= $(this).outerHeight(false);
                 });
-                $firstChild.stop().animate({ marginTop: totalHeight }, 1000);
-                $tickerChildrenContainer.stop().animate({ height: $pane.outerHeight(false) }, 1000);
+
+                if (opts.rotationType == 'slide')
+                {
+                    $firstChild.stop().animate({ marginTop: totalHeight }, 1000);
+                    $tickerChildrenContainer.stop().animate({ height: $pane.outerHeight(false) }, 1000);
+                }
+                else if (opts.rotationType == 'instant')
+                {
+                    $firstChild.css('margin-top', totalHeight);
+                    $tickerChildrenContainer.height($pane.outerHeight(false));
+                }
             }
 
             $currentChildName.text(opts.childTitles[currentIndex]);

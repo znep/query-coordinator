@@ -407,8 +407,6 @@ ActionController::Routing::Routes.draw do |map|
   # This action is a superset of the following action.  Eventually it will supplant altogether but we still need
   # the map.root call so that root_path and related variables are defined
   map.with_options(:controller => 'custom_content') do |canvas|
-    canvas.connect '/protected/page_edit', :action => 'clear_page_cache',
-      :conditions => { :method => :post }
     canvas.connect '/template/:id', :action => 'template'
     canvas.connect '*path', :action => 'page'
     canvas.root :action => 'homepage' # Required to define root_path

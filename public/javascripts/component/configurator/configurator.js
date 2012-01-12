@@ -225,23 +225,14 @@
                     },
 
                     success: function() {
-                        var historyDone = function() {
-                            if (page.path && window.location.pathname != page.path) {
-                                if (_.isFunction(window.history.pushState)) {
-                                    window.history.pushState({}, page.name, page.path);
-                                }
-                                else {
-                                    window.location.pathname = page.path;
-                                }
+                        if (page.path && window.location.pathname != page.path) {
+                            if (_.isFunction(window.history.pushState)) {
+                                window.history.pushState({}, page.name, page.path);
+                            }
+                            else {
+                                window.location.pathname = page.path;
                             }
                         }
-                        // clear the rails page cache
-                        $.ajax({
-                            type: 'POST',
-                            url: '/protected/page_edit',
-                            success: historyDone
-                        });
-
                         $.locale.initialize(page.locale);
                         exitEditMode();
                     },

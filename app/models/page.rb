@@ -17,15 +17,15 @@ class Page < SodaModel
     @update_data['locale'] || @data['locale']
   end
 
-  def self.[](path)
-    if !(defined? @@path_store) || !(defined? @@path_time) || (Time.now - @@path_time > 15.minute)
+  def self.[](path, mtime)
+    if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)
       @@path_store = {}
-      @@path_time = Time.now
+      @@path_time = mtime
     end
 
     unless @@path_store[CurrentDomain.cname]
       @@path_store[CurrentDomain.cname] = {}
-      ds = pages_data
+      ds = pages_data(mtime)
       ds.each { |k, v| @@path_store[CurrentDomain.cname][k] = true }
     end
 
@@ -33,18 +33,13 @@ class Page < SodaModel
       return nil
     end
 
-    ds = pages_data if ds.blank?
+    ds = pages_data(mtime) if ds.blank?
     ds[path]
   end
 
-  def self.clear_cache!
-    @@path_store.delete(CurrentDomain.cname) if defined? @@path_store
-    Rails.cache.delete(generate_cache_key)
-  end
-
 private
-  def self.pages_data
-    cache_key = generate_cache_key
+  def self.pages_data(mtime)
+    cache_key = generate_cache_key(mtime)
     ds = Rails.cache.read(cache_key)
 
     if ds.nil?
@@ -53,13 +48,16 @@ private
       contents.each do |c|
         ds[c.path] = c
       end
-      Rails.cache.write(cache_key, ds, :expires_in => 15.minutes)
+      Rails.cache.write(cache_key, ds)
     end
     ds
   end
 
-  def self.generate_cache_key
-    app_helper.cache_key("page-dataset", { 'domain' => CurrentDomain.cname })
+  def self.generate_cache_key(mtime)
+    app_helper.cache_key("page-dataset", {
+      'domain' => CurrentDomain.cname,
+      'updated' => mtime
+    })
   end
 
   def self.app_helper

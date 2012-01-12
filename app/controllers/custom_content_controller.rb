@@ -2,7 +2,7 @@ require 'digest/md5'
 
 class CustomContentController < ApplicationController
   before_filter :check_lockdown
-  around_filter :cache_wrapper, :except => [ :stylesheet, :page, :clear_page_cache ]
+  around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
   skip_before_filter :require_user, :except => [ :template ]
 
   def homepage
@@ -86,8 +86,10 @@ class CustomContentController < ApplicationController
   end
 
   def page
+    pages_time = VersionAuthority.resource('pages')
     # TODO: This should include the locale (whenever we figure out how that is specified)
     cache_params = { 'domain' => CurrentDomain.cname,
+                     'pages_updated' => pages_time,
                      'domain_updated' => CurrentDomain.default_config_updated_at,
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)
@@ -98,7 +100,7 @@ class CustomContentController < ApplicationController
     self.action_name = 'homepage' if path == '/'
     if @cached_fragment.nil?
       if CurrentDomain.module_available?('canvas2')
-        @page = Page[path]
+        @page = Page[path, pages_time]
       end
       unless @page
         if path == '/'
@@ -119,12 +121,6 @@ class CustomContentController < ApplicationController
   def template
     @templet = Template[params[:id]] if CurrentDomain.module_available?('canvas2')
     return(render_404) unless @templet
-  end
-
-  before_filter :only => [:clear_page_cache] { |c| c.require_right(:edit_pages) }
-  def clear_page_cache
-    Page.clear_cache!
-    render :nothing => true
   end
 
 private

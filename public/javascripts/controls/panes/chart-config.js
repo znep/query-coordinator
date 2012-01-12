@@ -60,6 +60,8 @@
 
     var showLine = {text: 'Draw a Line', name: 'displayFormat.showLine', type: 'checkbox' };
 
+    var dataLabels = {text: 'Data Labels', name: 'displayFormat.dataLabels', type: 'checkbox' };
+
     var conditionalFormattingWarning = {type: 'note',
         value: 'Colors may be overridden using <a href="#Conditional Formatting" ' +
                'class="showConditionalFormatting">Conditional Formatting</a>. Click ' +
@@ -434,7 +436,7 @@
                     configLine(options),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Value'),
                     seriesData(chart, options, Dataset.chart.textualTypes),
-                    basicAdv(chart, options, [legendPos, showLines, showPoints,
+                    basicAdv(chart, options, [legendPos, showLines, showPoints, dataLabels,
                             {text: 'Smooth Line', name: 'displayFormat.smoothLine',
                             type: 'checkbox', defaultValue: false},
                          flyoutControls(options)]),

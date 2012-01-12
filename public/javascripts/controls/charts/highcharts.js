@@ -929,6 +929,9 @@
                     distance: sizeRatio * 7};
         }
 
+        if (seriesType == 'line' && chartObj._displayFormat.dataLabels)
+        { typeConfig.dataLabels = { enabled: true }; }
+
         // Disable marker if no point size set
         if (chartObj._displayFormat.pointSize == '0')
         { typeConfig.marker = {enabled: false}; }

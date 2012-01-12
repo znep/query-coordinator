@@ -16,6 +16,7 @@
             delete calObj._startCol;
             delete calObj._endCol;
             delete calObj._titleCol;
+            delete calObj._closestDate;
         },
 
         reloadVisualization: function()
@@ -83,20 +84,22 @@
                 var monthEnd = monthStart.clone();
                 monthEnd.setMonth(monthEnd.getMonth() + 1);
 
-                var closestDate = _(this._events).chain()
+                var dates = _(this._events).chain()
                     .map(function(ev)
                             {
+                                if (_.isDate(ev)) { return ev; }
                                 return [_.isString(ev.start) && ev.start !== '' ?
                                         Date.parse(ev.start) : new Date((ev.start || 0) * 1000),
                                     _.isString(ev.end) && ev.start !== '' ?
                                         Date.parse(ev.end) : new Date((ev.end || 0) * 1000)];
                             })
-                    .flatten().sortBy(function(d)
+                    .flatten().value().concat(this._closestDate);
+                this._closestDate = _(dates).chain().sortBy(function(d)
                             {
                                 if (d >= monthStart && d < monthEnd) { return 0; }
                                 return Math.abs(d - today);
                             }).first().value();
-                this.$dom().fullCalendar('gotoDate', closestDate);
+                this.$dom().fullCalendar('gotoDate', this._closestDate);
 
                 this.$dom().fullCalendar('addEventSource', this._events);
                 this._events = [];

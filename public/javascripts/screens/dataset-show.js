@@ -247,7 +247,7 @@ $(function()
     }
 
     // Pop a sidebar right away if they ask for it
-    var paneName = $.urlParam(window.location.href, 'pane');
+    var paneName = $.urlParam(window.location.href, 'pane') || blist.defaultPane;
     if (_.isString(paneName))
     { datasetPageNS.sidebar.show(paneName); }
     else if (blist.dataset.visibleColumns &&

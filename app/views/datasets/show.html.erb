@@ -23,6 +23,7 @@
 <%= display_standard_flashes %>
 
 <%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
+<%- default_pane = CurrentDomain.property(:default_pane, :sidebar) -%>
 <% content_for :dataset_actions do %>
   <div id="actionBox" class="clearfix">
     <ul id="toolbarOptions" class="clearfix">
@@ -444,7 +445,8 @@
     blist.initialRowId = "<%= @row['sid'] %>";
     <%- end -%>
 
-    blist.sidebarPosition = '<%= sidebar_position %>';
+    blist.sidebarPosition = "<%= sidebar_position %>";
+    blist.defaultPane = "<%= default_pane %>";
 
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');

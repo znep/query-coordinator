@@ -899,26 +899,6 @@
             }
             else
             { chartConfig.xAxis.labels.rotation = 340; }
-
-            var labelLimit = Dataset.chart.types[chartObj._chartType].displayLimit.labels
-                || Dataset.chart.types[chartObj._chartType].displayLimit.points;
-            if (labelLimit && chartObj._primaryView.totalRows)
-            {
-                // Magic Number is the width of chartObj.$dom().width() when the
-                // displayLimit configurations were determined.
-                var spaceAvailable;
-                if (chartObj._chartType == 'bar')
-                { spaceAvailable = labelLimit * (chartObj.$dom().height() / 514); }
-                else
-                { spaceAvailable = labelLimit * (chartObj.$dom().width() / 1440); }
-                var numItems = chartObj._primaryView.totalRows;
-                if (Dataset.chart.types[chartObj._chartType].displayLimit.points)
-                {
-                    numItems = Math.min(numItems,
-                        Dataset.chart.types[chartObj._chartType].displayLimit.points);
-                }
-                chartConfig.xAxis.labels.step = Math.ceil(numItems / spaceAvailable);
-            }
         }
 
 
@@ -1481,6 +1461,31 @@
         return $box;
     };
 
+    var calculateXAxisStepSize = function(chartObj, numCategories)
+    {
+        var labelLimit = Dataset.chart.types[chartObj._chartType].displayLimit.labels
+            || Dataset.chart.types[chartObj._chartType].displayLimit.points;
+        if (labelLimit)
+        {
+            // Magic Number is the width of chartObj.$dom().width() when the
+            // displayLimit configurations were determined.
+            var spaceAvailable;
+            if (chartObj._chartType == 'bar')
+            { spaceAvailable = labelLimit * (chartObj.$dom().height() / 514); }
+            else
+            { spaceAvailable = labelLimit * (chartObj.$dom().width() / 1440); }
+            var numItems = numCategories;
+            if (Dataset.chart.types[chartObj._chartType].displayLimit.points)
+            {
+                numItems = Math.min(numItems,
+                    Dataset.chart.types[chartObj._chartType].displayLimit.points);
+            }
+            return Math.ceil(numItems / spaceAvailable);
+        }
+        else
+        { return null; }
+    };
+
     var setCategories = function(chartObj)
     {
         // Make sure data is cleaned, or sometimes setCategories will throw an error
@@ -1488,6 +1493,9 @@
         // Now that we have data, make sure the axes are updated
         chartObj.chart.redraw();
         chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
+        chartObj.chart.xAxis[0].options.labels.step
+            = calculateXAxisStepSize(chartObj, chartObj._xCategories.length);
+        chartObj.chart.xAxis[0].redraw();
         chartObj._categoriesLoaded = true;
     };
 

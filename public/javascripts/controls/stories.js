@@ -72,6 +72,7 @@
         // set up the pager as appropriate
         var $storyTexts = $('.storyTexts').children();
         var $storyImages = $('.storyImages').children();
+        var $storyLink = $storiesContainer.children('.storyLink');
         var storyCount = $storyTexts.length;
 
         _(storyCount).times(function(i)
@@ -128,16 +129,29 @@
             if ($this.hasClass('selected')) { return; }
 
             var idxToActivate = $this.prevAll().length + 1;
+            var $textToActivate = $storyTexts.filter(':nth-child(' + idxToActivate + ')');
 
             // animate text
             $storyTexts.filter(':visible').fadeOut();
-            $storyTexts.filter(':nth-child(' + idxToActivate + ')').fadeIn();
+            $textToActivate.fadeIn();
 
             // animate images
             var storiesContainerWidth = $storiesContainer.width();
             var $lastImage = $storyImages.filter(':visible');
             var $nextImage = $storyImages.filter(':nth-child(' + idxToActivate + ')');
             animateSlices($storiesContainer, storiesContainerWidth, $lastImage, $nextImage, $slices);
+
+            // set link if relevant
+            var customization = JSON.parse($textToActivate.attr('data-storycustomization'));
+            if (customization.link)
+            {
+                $storyLink.attr('href', customization.link);
+                $storyLink.css('display', 'block');
+            }
+            else
+            {
+                $storyLink.hide();
+            }
 
             // change selected page
             $storyPagers.removeClass('selected');

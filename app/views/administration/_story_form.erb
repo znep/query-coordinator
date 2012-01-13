@@ -19,8 +19,13 @@
     </div>
   </div>
 <%- end -%>
+<div class="line linkLine">
+  <label for="story_link">Story Link URL</label>
+  <input type="text" name="story[link]" id="story_link" value="<%= @story.customization['link'] unless @story.nil? %>"/>
+  <p>URL of the webpage you would like this story to link to when clicked</p>
+</div>
 <div class="line colorLine">
-  <label for="story_background_color" class="required">Background Color</label>
+  <label for="story_backgroundColor" class="required">Background Color</label>
   <input type="text" name="story[backgroundColor]" id="story_backgroundColor"
     value="<%= @story.customization['backgroundColor'] unless @story.nil? %>" class="required"/>
   <p>6-character hex; eg #036adf</p>

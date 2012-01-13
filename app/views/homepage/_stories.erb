@@ -15,6 +15,9 @@
     <%- end -%>
   </ul>
   <div class="storyTextbox"></div>
+  <%= content_tag('a', '', :class => 'storyLink',
+                           :style => ('display:block' unless stories.first.customization['link'].blank?),
+                           :href => stories.first.customization['link']) unless stories.empty? %>
   <ul class="storyImages">
     <%- stories.each do |story| -%>
       <%- bg_color = story.customization['backgroundColor'] -%>

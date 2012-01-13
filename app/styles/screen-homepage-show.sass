@@ -28,6 +28,7 @@ $is_customizer: false !default
       @if $stories_orientation == 'right'
         right: 0
       width: $stories_box_width
+      z-index: 5
 
       h2
         color: $color_stories_box_headline_color
@@ -65,7 +66,7 @@ $is_customizer: false !default
   .storyPager
     position: absolute
     text-align: center
-    z-index: 4
+    z-index: 6
 
     @if ($stories_pager_type == 'bullets') or ($is_customizer == true)
       @include story-pager-glyphs(a, $stories_pager_disposition)
@@ -119,6 +120,13 @@ $is_customizer: false !default
       position: absolute
       width: 100%
       z-index: 3
+
+  .storyLink
+    display: none
+    height: $stories_height
+    position: absolute
+    width: 100%
+    z-index: 4
 
   .storyImages
     position: absolute

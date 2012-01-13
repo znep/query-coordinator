@@ -1023,7 +1023,7 @@ private
     end
 
     customization = story.customization || {}
-    [:backgroundColor].each do |key|
+    [:backgroundColor, :link].each do |key|
       unless story_params[key].nil?
         customization[key.to_s] = story_params[key]
         story_params.delete(key)

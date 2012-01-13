@@ -1493,8 +1493,8 @@
         // Now that we have data, make sure the axes are updated
         chartObj.chart.redraw();
         chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
-        chartObj.chart.xAxis[0].options.labels.step
-            = calculateXAxisStepSize(chartObj, chartObj._xCategories.length);
+        chartObj.chart.xAxis[0].options.labels.step = calculateXAxisStepSize(chartObj,
+            (chartObj._xCategories || []).length || chartObj._primaryView.totalRows);
         chartObj.chart.xAxis[0].redraw();
         chartObj._categoriesLoaded = true;
     };

@@ -7887,6 +7887,11 @@ Point.prototype = {
 			series = point.series;
 	
 		point.config = options;
+
+        // michael.chui@socrata.com 2012-01-13
+        // Our code sometimes passes undefined in, and we consider it to be equivalent to null. 
+        if (options === void 0)
+        { options = null; }
 		
 		// onedimensional array input
 		if (isNumber(options) || options === null) {

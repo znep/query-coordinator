@@ -299,7 +299,7 @@ div.olControlSaveFeaturesItemInactive {
  */
 
 .olCursorWait {
-    cursor: wait;
+    /* cursor: wait; */
 }
 .olDragDown {
     cursor: move;

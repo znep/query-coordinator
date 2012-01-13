@@ -150,8 +150,7 @@
               </a>
 
             <%- when 'location' -%>
-              <%- human_address =
-                cell[column.sub_type_index('human_address')] -%>
+              <%- human_address = cell['human_address'] -%>
               <%- pieces = [] -%>
 
               <%- if !human_address.nil? -%>
@@ -167,8 +166,8 @@
               <%- pieces << csz if !csz.blank? -%>
               <%- end -%>
 
-              <%- lat = cell[column.sub_type_index('latitude')] -%>
-              <%- long = cell[column.sub_type_index('longitude')] -%>
+              <%- lat = cell['latitude'] -%>
+              <%- long = cell['longitude'] -%>
               <%- if !lat.blank? || !long.blank? -%>
               <%- pieces << '(' + (lat || '') + '&deg;, ' + (long || '') + '&deg;)' -%>
               <%- end -%>

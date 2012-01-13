@@ -1691,6 +1691,11 @@
                     curFC = query.namedFilters[queryId] = query.namedFilters[queryId] || newRoot;
                 }
 
+                // If we're going to be saving this filter, make sure it is marked as something
+                // we can handle
+                if (!$.subKeyDefined(curFC, 'metadata.unifiedVersion'))
+                { curFC.metadata = { unifiedVersion: 2 }; }
+
                 curFC.children = [];
                 curFC.value = rootCondition.value;
 

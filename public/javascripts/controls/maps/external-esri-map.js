@@ -11,6 +11,8 @@
                 delete params[property];
             });
             this.layerId = params.layers.split(':')[1];
+            if (url.match(/nycopendata.esri.com/)) // Hopefully, this can be taken out one day.
+            { this.projection = this.internalMapProjection; }
 
             dojo.require('esri.arcgis.utils');
             dojo.require('esri.layers.FeatureLayer');
@@ -140,6 +142,8 @@
             var opacity;
             if ($.subKeyDefined(view, 'metadata.custom_fields.drawingInfo.transparency'))
             { opacity = parseInt(view.metadata.custom_fields.drawingInfo.transparency, 10) / 100; }
+            if (opacity == 0) // Hopefully, this can be taken out one day.
+            { opacity = 1; }
 
             var tmp = view.metadata.custom_fields.Basic.Source.split('/');
             var layer_id = tmp.pop();

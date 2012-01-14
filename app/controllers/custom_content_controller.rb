@@ -191,7 +191,7 @@ private
                 end
 
                 results = Clytemnestra.search_views(search_options)
-                binding.views, binding.count = results.results, results.count
+                binding.views, binding.result_count = results.results, results.count
               rescue CoreServer::ResourceNotFound
                 # some configurations of catalog search can actually return a 404
                 binding.views = []

@@ -1645,7 +1645,11 @@
                     { delete feature.style.display; });
                 });
             }
-            setTimeout(function() { killAnimation = true; }, 2000);
+            setTimeout(function()
+            {
+                killAnimation = true;
+                _.each(animations, function(animation) { animation.feature.move(animation.to); });
+            }, 2000);
             animate(animations, function() { _.each(mapObj._byView, function(viewConfig)
                 {
                     viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds);
@@ -1891,6 +1895,8 @@
 
         var step = function()
         {
+            if (killAnimation) { killAnimation = false; return; }
+
             if (requestAnimationFrame && animations.length > 0)
             { requestAnimationFrame( step ); }
 

@@ -673,7 +673,7 @@
                     { i = _.sortedIndex(chartObj._xCategories, v) - 0.5; }
                     if (i > -1) { lineAt = i; }
                 }
-                lineAt = parseFloat(lineAt);
+                lineAt = parseFloat(lineAt.replace(/[^0-9\.\+\-]/, ''));
                 if (!_.isNumber(lineAt)) { return; }
 
                 var extremes = axis.getExtremes();

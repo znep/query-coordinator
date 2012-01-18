@@ -1122,7 +1122,11 @@
             }
 
             _.each(mapObj._byView, function(viewConfig)
-            { viewConfig._lastRenderType = viewConfig._renderType; });
+            {
+                viewConfig._lastRenderType = viewConfig._renderType;
+                if (viewConfig._clusterBoundaries)
+                { viewConfig._clusterBoundaries.removeAllFeatures(); }
+            });
             mapObj._lastZoomLevel = mapObj.currentZoom();
         },
 

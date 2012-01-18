@@ -18,6 +18,7 @@ class Page < SodaModel
   end
 
   def self.[](path, mtime)
+    mtime ||= Time.now.to_i.to_s
     if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)
       @@path_store = {}
       @@path_time = mtime

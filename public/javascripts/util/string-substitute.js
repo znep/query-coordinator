@@ -85,6 +85,9 @@
                 }
                 else
                 {
+                    if ($.isPlainObject(temp))
+                    { temp = _.map(temp, function(v, k) { return k + ': ' + v; }) }
+                    if (_.isArray(temp)) { temp = temp.join(', '); }
                     temp = !temp.indexOf || temp.indexOf('{') == -1 ?
                         temp : $.stringSubstitute(temp, resolver);
                     if (!$.isBlank(temp) && !$.isBlank(p.regex))

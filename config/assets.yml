@@ -46,6 +46,7 @@ javascripts:
     - public/javascripts/controls/text-prompt.js
     - public/javascripts/controls/values.js
     - public/javascripts/controls/dropdown-menu.js
+    - public/javascripts/controls/menu.js
     - public/javascripts/screens/all-screens.js
   shared-editors:
     - public/javascripts/util/humane-number.js
@@ -88,6 +89,7 @@ javascripts:
     - public/javascripts/component/content/carousel-container.js
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js
+    - public/javascripts/component/content/menu.js
     - public/javascripts/component/content/picture.js
     - public/javascripts/component/content/related.js
     - public/javascripts/component/content/text.js
@@ -270,7 +272,6 @@ javascripts:
     - public/javascripts/screens/admin-collapse-nav.js
   browse-control:
     - public/javascripts/plugins/jquery.tagcloud.js
-    - public/javascripts/controls/menu.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/expander.js
     - public/javascripts/controls/stars.js
@@ -313,7 +314,6 @@ javascripts:
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/feed-list.js
     - public/javascripts/controls/stars.js
-    - public/javascripts/controls/menu.js
     - public/javascripts/controls/scrollTabs.js
     - public/javascripts/controls/form-inliner.js
     - public/javascripts/controls/render-type-manager.js
@@ -357,7 +357,6 @@ javascripts:
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/inline-login.js
     - public/javascripts/util/konami.js
-    - public/javascripts/controls/menu.js
     - public/javascripts/controls/wizard-prompt.js
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/form-inliner.js
@@ -413,7 +412,6 @@ javascripts:
     - public/javascripts/screens/dataset-edit-metadata.js
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
-    - public/javascripts/controls/menu.js
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/panes/base-pane.js
@@ -443,7 +441,6 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/highcharts.src.js
     - public/javascripts/controls/charts/metric-charts.js
-    - public/javascripts/controls/menu.js
     - public/javascripts/controls/metrics-shared.js
     - public/javascripts/controls/metrics.js
   internal-metrics:
@@ -464,7 +461,6 @@ javascripts:
     - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
   unified-filter:
-    - public/javascripts/controls/menu.js
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/unified-filter.js

@@ -88,6 +88,7 @@ javascripts:
     - public/javascripts/component/content/carousel-container.js
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js
+    - public/javascripts/component/content/fixed-container.js
     - public/javascripts/component/content/picture.js
     - public/javascripts/component/content/related.js
     - public/javascripts/component/content/text.js
@@ -510,6 +511,8 @@ javascripts:
     - public/javascripts/plugins/ace/mode-html.js
   worker-json:
     - public/javascripts/plugins/ace/worker-json.js
+  waypoints:
+    - public/javascripts/plugins/waypoints.js
 
 
 dump:
@@ -527,3 +530,4 @@ dump:
     - base-control
     - shared-editors
     - configurator
+    - waypoints

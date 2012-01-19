@@ -15,7 +15,7 @@
                         template: 'feedList',
                         directive: {},
                         data: {},
-                        callback: function($elem, sidebarObj)
+                        callback: function($elem)
                         {
                             var cpObj = this;
                             cpObj._startProcessing();

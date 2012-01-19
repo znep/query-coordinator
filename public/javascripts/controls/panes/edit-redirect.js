@@ -9,7 +9,16 @@
             return [{
                 customContent: {
                     callback: function($section)
-                    { $section.append(blist.datasetControls.editPublishedMessage()); }
+                    {
+                        var cpObj = this;
+                        cpObj._startProcessing();
+                        blist.dataset.getUnpublishedDataset(function(workingCopy)
+                        {
+                            var hasWorkingCopy = !$.isBlank(workingCopy);
+                            $section.append(blist.datasetControls.editPublishedMessage(hasWorkingCopy));
+                            cpObj._finishProcessing();
+                        });
+                    }
                 }
             }];
         }

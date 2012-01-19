@@ -523,7 +523,7 @@ blist.datasetControls.raReasonBox = function($reasonBox)
     });
 };
 
-blist.datasetControls.editPublishedMessage = function()
+blist.datasetControls.editPublishedMessage = function(hasWorkingCopy)
 {
     return $.renderTemplate('editAlertTemplate', {}, {
         '.editPublished@class+': function()
@@ -531,7 +531,9 @@ blist.datasetControls.editPublishedMessage = function()
         '.editMessage@class+': function()
             { return blist.dataset.copyPending ? 'hide' : ''; },
         '.copyingMessage@class+': function()
-            { return blist.dataset.copyPending ? '' : 'hide'; }
+            { return blist.dataset.copyPending ? '' : 'hide'; },
+        '.workingCopyStatus': function()
+            { return hasWorkingCopy ? 'is available' : 'can be made' }
     });
 };
 

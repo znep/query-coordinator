@@ -469,6 +469,7 @@ javascripts:
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/controls/panes/unified-filter.js
     - public/javascripts/controls/panes/unified-filter-sidebar.js
+  # these can be removed with canvas 1.0, i think
   stories:
     - public/javascripts/controls/stories.js
   featured_views:
@@ -479,8 +480,11 @@ javascripts:
     - public/javascripts/controls/feed-list.js
   stars:
     - public/javascripts/controls/stars.js
+  inline-login:
+    - public/javascripts/util/inline-login.js
   embed-form:
     - public/javascripts/controls/embed-form.js
+  # end remove
   public-analytics:
     - public/javascripts/screens/sitewide-analytics-shared.js
     - public/javascripts/screens/public-analytics.js

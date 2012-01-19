@@ -6,6 +6,10 @@
   <%- allow_once do -%>
     <%= include_javascripts 'feed-list' %>
   <%- end -%>
+  <%- allow_once :inline_login do -%>
+    <%= include_javascripts 'inline-login' %>
+  <%- end -%>
+
   <script type="text/javascript">
     // activator for feed widget <%= widget.elem_id %>
     $(function()
@@ -29,6 +33,6 @@
 
 <%- allow_once do -%>
   <%- content_for :templates do -%>
-    <%= render :partial => 'datasets/feed_template', :locals => { :allow_comments => false } %>
+    <%= render :partial => 'datasets/feed_template', :locals => { :allow_comments => widget.properties.allowComments } %>
   <%- end -%>
 <%- end -%>

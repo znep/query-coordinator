@@ -556,6 +556,7 @@ module Canvas
     end
   protected
     self.default_properties = {
+      allowComments: false,
       controlOptions: {
         filterCategories: nil
         # see feed-list.js default options
@@ -593,6 +594,9 @@ module Canvas
     self.default_properties = {
       label: ''
     }
+  end
+
+  class InlineLogin < CanvasWidget
   end
 
   class Stories < CanvasWidget

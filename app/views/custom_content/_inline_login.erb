@@ -1,0 +1,5 @@
+<%- @user_session = UserSession.new -%>
+
+<%- content_for :modals do -%>
+  <%= render :partial => 'datasets/inline_login' %>
+<%- end -%>

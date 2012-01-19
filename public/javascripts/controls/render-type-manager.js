@@ -99,6 +99,39 @@
             scrollsInline: true
         },
 
+        manyTable: {
+            name: 'manyTable',
+            domId: 'gridRenderType',
+            javascripts: [{ assets: 'shared-table-render' }],
+            initFunction: function($dom, settings)
+            {
+                // TODO: Hardcoded to "0" for now to select the first child view,
+                // but this will need to be variable based on which layer the user
+                // wants to view tabular data for.
+                var tableNumber = settings.tableNumber || 0;
+
+                Dataset.createFromViewId(settings.view.childViews[tableNumber], function (dataset)
+                {
+                    $dom.datasetGrid($.extend({view: dataset,
+                        columnDeleteEnabled: settings.editEnabled &&
+                            dataset.type == 'blist' &&
+                            dataset.hasRight('remove_column'),
+                        columnPropertiesEnabled: settings.columnEditEnabled,
+                        columnNameEdit: settings.columnEditEnabled &&
+                            (dataset.isDefault() ||
+                             dataset.type == 'grouped') &&
+                            dataset.hasRight('update_column'),
+                        showAddColumns: settings.editEnabled &&
+                            dataset.type == 'blist' &&
+                            dataset.hasRight('add_column'),
+                        editEnabled: settings.editEnabled},
+                        settings.common,
+                        settings.table));
+                });
+            },
+            scrollsInline: true
+        },
+
         href: {
             name: 'href',
             domId: 'staticRenderType',

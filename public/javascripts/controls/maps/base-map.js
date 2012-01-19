@@ -109,7 +109,6 @@
             }
 
             OpenLayers.ImgPath = '/images/openlayers/';
-            OpenLayers.ProxyHost = '/api/proxy?proxyUrl=';
 
             mapObj.map = new OpenLayers.Map(mapObj.$dom()[0], mapOptions);
 

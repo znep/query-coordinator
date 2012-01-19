@@ -48,8 +48,6 @@
             // let us make POST requests with OpenLayers (for things like WFS)
             var appToken = blist.configuration.appToken;
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
-            OpenLayers.ProxyHost = '/api/proxy?app_token' + escape(appToken) +
-                '&authenticity_token=' + escape(csrfToken) + '&proxyUrl=';
 
             var mapObj = this;
 
@@ -106,7 +104,7 @@
                     var maxExtent = mapObj.map.maxExtent;
 
                     var result = {
-                        url: '/api/proxy?' + mapObj._geo.owsUrl + '?',
+                        url: mapObj._geo.owsUrl,
                         isBaseLayer: false,
                         transitionEffect: 'resize',
                         tileSize: new OpenLayers.Size(256, 256),

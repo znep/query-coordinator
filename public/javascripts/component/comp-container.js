@@ -240,7 +240,7 @@
 
         // Override to create separate container component
         _getContainer: function() {
-            return this.$dom;
+            return this.$contents;
         },
 
         // Override Component._propRead to include children property

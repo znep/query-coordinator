@@ -296,9 +296,7 @@
     </a>
     <dl class="sectionContent">
       <dt>Resource Name</dt>
-      <dd><span class="hardWrap">
-        <%= @view.resourceName.present? ? @view.resourceName : '(none)' %>
-      </span></dd>
+      <dd><span class="hardWrap"><%= @view.resourceName.present? ? @view.resourceName : '(none)' %></span></dd>
       <dt>Row Identifier</dt>
       <dd>
         <%= @view.row_identifier.present? ? @view.row_identifier : '(none)' %>

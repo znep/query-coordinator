@@ -484,8 +484,11 @@
                                     if (_.isFunction(opts.addCommentCallback))
                                     { opts.addCommentCallback(view, newCommentData); }
 
-                                    if (opts.alwaysShowNewCommentForm === true)
-                                    { createCommentForm($feed.find('.noResults'), opts.mainView); }
+                                    if ((opts.alwaysShowNewCommentForm === true) &&
+                                        ($feed.find('.newCommentForm').length === 0))
+                                    {
+                                        createCommentForm($feed.find('.noResults'), opts.mainView);
+                                    }
 
                                     if (_.isFunction(successCallback)) { successCallback(); }
                                 },
@@ -512,6 +515,7 @@
                     if ($this.siblings('.newCommentForm').length === 0)
                     {
                         createCommentForm($this, getData($this).opts.mainView);
+                        $this.siblings('.newCommentForm').find('#newCommentBody').focus();
                     }
                 });
 
@@ -520,7 +524,6 @@
                     var $newCom = $.renderTemplate('feedItem_newComment');
                     $newCom.find('.postNewCommentButton').data('view', mainView);
                     $after.after($newCom);
-                    $after.siblings('.newCommentForm').find('#newCommentBody').focus();
                 };
 
                 if (opts.alwaysShowNewCommentForm === true)

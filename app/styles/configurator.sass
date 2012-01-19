@@ -5,6 +5,8 @@
   background: -moz-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -moz-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
   background: -ms-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -ms-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
   background: -o-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -o-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
+  .noLinearGradient &
+    background: url(/stylesheets/images/component/cf-background.png)
   @include transition(right .2s linear)
   position: fixed
   top: 32px
@@ -34,9 +36,11 @@
       background: -moz-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
       background: -ms-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
       background: -o-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-      opacity: .8
+      .noLinearGradient &
+        background: #222
+      @include opacity(.8)
       &:hover
-        opacity: 1
+        @include opacity(1)
 
     .autocomplete
       left: 0
@@ -45,10 +49,10 @@
     @include component-icons
     float: left
     margin: 4px 0
-    opacity: .8
+    @include opacity(.8)
     width: 80px
     &:hover
-      opacity: 1
+      @include opacity(1)
     .icon, .label
       cursor: move
 
@@ -119,7 +123,7 @@
 // Shell dragged when moving existing components
 .socrata-cf-drag-shell
   position: absolute
-  opacity: .8
+  @include opacity(0.8)
   z-index: 1000000
 
 // Dragging placeholder

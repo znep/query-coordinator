@@ -1,7 +1,5 @@
 function trackError(msg, url, line)
 {
-    if (blistEnv != 'production')
-    { alert('Tracking error at ' + url + ': ' + msg + ':' + line); }
     if (blistEnv == 'staging' || blistEnv == 'production')
     {
         try

@@ -194,7 +194,8 @@ class AdministrationController < ApplicationController
       ],
       moderation: 'any',
       nofederate: 'true',
-      suppress_dataset_creation: true
+      suppress_dataset_creation: true,
+      view_type: 'table'
     })
   end
 

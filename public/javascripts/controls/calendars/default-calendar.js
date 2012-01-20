@@ -84,7 +84,7 @@
                 var monthEnd = monthStart.clone();
                 monthEnd.setMonth(monthEnd.getMonth() + 1);
 
-                var dates = _(this._events).chain()
+                var dates = _.compact(_(this._events).chain()
                     .map(function(ev)
                             {
                                 if (_.isDate(ev)) { return ev; }
@@ -93,7 +93,7 @@
                                     _.isString(ev.end) && ev.start !== '' ?
                                         Date.parse(ev.end) : new Date((ev.end || 0) * 1000)];
                             })
-                    .flatten().value().concat(this._closestDate);
+                    .flatten().value().concat(this._closestDate));
                 this._closestDate = _(dates).chain().sortBy(function(d)
                             {
                                 if (d >= monthStart && d < monthEnd) { return 0; }

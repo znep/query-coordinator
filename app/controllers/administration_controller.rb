@@ -9,7 +9,9 @@ class AdministrationController < ApplicationController
   def datasets
     @processed_browse = process_browse(request, {
       browse_in_container: true,
-      admin: true
+      admin: true,
+      view_type: 'table',
+      limit: 30
     })
   end
 

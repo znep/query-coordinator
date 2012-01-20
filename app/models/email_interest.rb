@@ -16,6 +16,8 @@ class EmailInterest < Model
     'MAIL.ACCOUNT_CREATED_FROM_FUTURE_ACCOUNT' =>
       {right: 'manage_users',   description: 'A user creates their privileged account'},
     'MAIL.ANY_VIEW_CREATED' => {description: 'Any view is created'},
+    'MAIL.COMMENT_NEEDS_MODERATION' =>
+      {right: 'moderate_comments', description: 'A comment is submitted requiring moderation'},
     'MAIL.FUTURE_ACCOUNT_CREATED' =>
       {right: 'manage_users',   description: 'A privileged account is provisioned for future use'},
     'MAIL.NEW_NOMINATION' =>   {description: 'A new nomination is created'},

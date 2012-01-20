@@ -73,7 +73,11 @@
       <li>
         <form id="searchForm" action="#">
           <span class="icon"></span>
-          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
+          <input type="text" class="searchField textPrompt" title="Find in this Dataset"
+          <%- if params[:q] -%>
+            value="<%= params[:q] %>"
+          <%- end -%>
+          />
           <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
         </form>
       </li>

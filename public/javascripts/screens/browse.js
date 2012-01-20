@@ -166,6 +166,7 @@ $(function()
         var ds = getDS($results);
         $results.rowSearchRenderType({ highlight: searchRegex,
             rows: ds.rowResults, view: ds,
+            query: blist.browse.query,
             totalRowResults: ds.rowResultCount });
 
         var $display = $results.find('.rowSearchRenderType');

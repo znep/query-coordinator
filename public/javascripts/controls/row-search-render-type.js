@@ -25,6 +25,7 @@
             highlight: null,
             rows: null,
             view: null,
+            query: null,
             usingTemplate: '.rowSearchRenderType'
         },
 
@@ -91,7 +92,9 @@
             .find('.rowResultCountText')
                 .text((rsObj.settings.rows || []).length).end()
             .find('.totalResultCountText')
-                .text(rsObj.settings.totalRowResults);
+                .text(rsObj.settings.totalRowResults).end()
+            .find('.rowSearchLink')
+                .attr('href', rsObj.settings.view.fullUrl + '?q=' + rsObj.settings.query);
 
         _.each(rsObj.settings.rows, function(r) { renderNewRow(rsObj, r); });
     };

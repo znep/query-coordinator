@@ -45,6 +45,10 @@ class DatasetsController < ApplicationController
       end
     end
 
+    if params[:q]
+      @view.searchString = params[:q]
+    end
+
     if !current_user
       @user_session = UserSession.new
     end

@@ -166,7 +166,7 @@ $(function()
         });
     };
 
-    _.each(blist.nominations.items, blist.nominations.addNomination);
+    _.each(blist.nominations.items, function(item) { blist.nominations.addNomination(item); });
 
 
     $('.nominateLink.hasUser').click(function(e)

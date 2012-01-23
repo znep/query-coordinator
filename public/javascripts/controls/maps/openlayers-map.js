@@ -134,7 +134,23 @@
 
                 // Setup the basic feature protocol that will be used
                 // for retrieving vector feature data.
-                featureProtocol = new OpenLayers.Protocol.WFS({
+                var AuthenticatingFeatureProtocol = new OpenLayers.Class(OpenLayers.Protocol.WFS.v1_1_0,
+                {
+                    read: function(options)
+                    {
+                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                        options = OpenLayers.Util.extend({}, options);
+                        options.headers = OpenLayers.Util.extend({
+                            'X-App-Token': blist.configuration.appToken,
+                            'X-CSRF-Token': csrfToken
+                        }, options.headers);
+
+                        return OpenLayers.Protocol.WFS.v1_1_0.prototype.read.apply(this, [options]);
+                    }
+                })
+
+                var featureProtocol = new AuthenticatingFeatureProtocol({
                     featureNS: 'http://' + mapObj._geo.namespace,
                     featureType: layerNames,
                     maxFeatures: 1,

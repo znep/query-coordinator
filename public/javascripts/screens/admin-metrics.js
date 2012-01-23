@@ -22,11 +22,18 @@ $(function()
                 ]
             }
         ],
-        topListSections: blist.metrics.sitewideShared.topListSections.concat({
-            id: 'topApps', displayName: 'Top Applications',
-            heading: 'Requests', renderTo: 'leftColumn',
-            callback: blist.metrics.topAppTokensCallback, top: 'APPLICATIONS'
-        })
+        topListSections: blist.metrics.sitewideShared.topListSections.concat(
+            {
+                id: 'topApps', displayName: 'Top Applications',
+                heading: 'Requests', renderTo: 'leftColumn',
+                callback: blist.metrics.topAppTokensCallback, top: 'APPLICATIONS'
+            },
+            {
+                id: 'topDownloads', displayName: 'Top Downloads',
+                heading: 'Downloads', renderTo: 'rightColumn',
+                callback: blist.metrics.topDatasetsCallback, top: 'DOWNLOADS'
+            }
+        )
     }));
 
     $('#analyticsTimeControl').metricsTimeControl({

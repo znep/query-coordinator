@@ -1,4 +1,6 @@
 package_path: packages
+package_assets: on
+compress_assets: off
 
 javascripts:
   base:

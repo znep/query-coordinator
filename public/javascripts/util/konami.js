@@ -95,4 +95,4 @@ var Konami = function() {
 	                }
 	}
 	return konami;
-}
+};

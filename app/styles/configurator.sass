@@ -65,11 +65,15 @@
   bottom: 0
   left: 0
   pointer-events: none // TODO - emulate for IE < 9
+  .ie7 &, .ie8 &
+    background: url(/stylesheets/images/content/1px-0.5-transparent.png)
 
 .socrata-cf-focal
   z-index: 1000
   @include box-shadow(0, 0, 12px, black)
   position: relative
+  .ie7 &, .ie8 &
+    border: 2px dashed $color_chrome_box_border
 
 // Representation of icons in palette and drag form of same
 .socrata-cf-side .item, .socrata-cf-drag-icon

@@ -849,7 +849,7 @@ module Canvas
       viewUid: nil
     }
     self.style_definition = [
-      { data: 'style.height', selector: '.fullHeight', css: 'height', hasUnit: true }
+      { data: 'style.height', selector: '.renderTypeNode .fullHeight', css: 'height', hasUnit: true }
     ]
   end
 

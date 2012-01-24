@@ -25,6 +25,7 @@
          * @param position the node before which the child is added; default is end-of-list
          */
         add: function(child, position) {
+            if ($.isBlank(child)) return;
             if ($.isArray(child)) {
                 // Set flag to prevent layout as we recurse into arrays
                 if (!this._blockArrange)

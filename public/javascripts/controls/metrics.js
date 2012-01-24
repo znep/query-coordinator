@@ -308,7 +308,7 @@
             var parts       = value.split(opts.separator),
                 startDate   = Date.parse(parts[0]).setTimezoneOffset(0),
                 endDate     = (parts.length > 1) ?
-                    Date.parse(parts[1]).setTimezoneOffset(0) : startDate;
+                    Date.parse(parts[1]).setTimezoneOffset(0) : startDate.clone();
 
             var sliceDepth;
             _.each(opts.rolloverDays, function(roll)

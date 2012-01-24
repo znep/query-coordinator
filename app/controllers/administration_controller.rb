@@ -7,11 +7,21 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def datasets
+    vtf = view_types_facet
+    vtf[:options].insert(1, {
+      :text => 'Unpublished Datasets', :value => 'unpublished',
+      :class => 'typeUnpublished'})
+    facets = [
+      vtf,
+      categories_facet,
+      topics_facet
+    ]
     @processed_browse = process_browse(request, {
-      browse_in_container: true,
       admin: true,
+      browse_in_container: true,
+      facets: facets,
+      limit: 30,
       view_type: 'table',
-      limit: 30
     })
   end
 

@@ -33,6 +33,7 @@ http://www.socrata.com
 
   <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="<%= CurrentDomain.strings.site_title %>" /> 
+  <%= auto_discovery_link_tag(:rss, '/catalog.rss', :title => 'Subscribe to Datasets') %>
 
   <!--[if IE]>
   <style type="text/css">

@@ -138,6 +138,14 @@ $browse_background_color: #ffffff
         margin:
           right: 4.5em
           top: 0
+        a
+          @include sprite-menu-icons
+          .icon
+            display: inline-block
+            position: relative
+            left: 0.5em
+            top: 0.1em
+            @include ie7-inline-block
     &.hasSort .titleContainer h2
       margin-right: 15em
 

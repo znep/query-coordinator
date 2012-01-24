@@ -28,29 +28,38 @@
           @include transition-property(opacity)
         &:hover .button
           opacity: 1
-      td.author .cellInner
-        display: inline-block
-        line-height: 24px
-        padding-left: 0.7em
-        vertical-align: bottom
-      td.comment .cellInner
-        color: #666
-        font-size: 0.8em
-        font-weight: bold
-        margin-bottom: 0.4em
-      td.status .cellInner
-        display: inline-block
-        font-size: 1.4em
-        font-weight: bold
-        text-transform: capitalize
-        margin-right: 0.5em
-        width: 5em
-        @include ie7-inline-block
-        .ie7 &
-          padding-bottom: 0.7em
+      td
+        @include clip-text
+      td.author
+        max-width: 6em
+        .cellInner
+          display: inline-block
+          line-height: 24px
+          padding-left: 0.7em
+          vertical-align: bottom
+      td.comment
+        max-width: 20em
+        .cellInner
+          color: #666
+          font-size: 0.8em
+          font-weight: bold
+          margin-bottom: 0.4em
+      td.dataset
+        max-width: 20em
+      td.status
+        .cellInner
+          display: inline-block
+          font-size: 1.4em
+          font-weight: bold
+          text-transform: capitalize
+          margin-right: 0.5em
+          width: 5em
+          @include ie7-inline-block
+          .ie7 &
+            padding-bottom: 0.7em
 
-        .loading
-          @include throbber-icon
+          .loading
+            @include throbber-icon
 
 .noResultsMessage
   display: none

@@ -131,7 +131,6 @@ DEPENDENCIES
   hashie (= 0.3.1)
   hoptoad_notifier (~> 2.4)
   jammit (= 0.5.4)
-  json (= 1.4.6)
   money (~> 3.7.1)
   multipart-post (= 1.0.1)
   rack (~> 1.4.0)

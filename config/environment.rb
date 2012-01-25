@@ -5,91 +5,82 @@ require File.expand_path('../application', __FILE__)
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.14' unless defined? RAILS_GEM_VERSION
+# RAILS_GEM_VERSION = '2.3.14' unless defined? RAILS_GEM_VERSION
 YAML::ENGINE.yamler = 'syck'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
-Rails::Initializer.run do |config|
-  config.middleware.use "HealthCheckMiddleware"
+module Frontend
+  class Application < Rails::Application
+    config.middleware.use "HealthCheckMiddleware"
 
-  # Settings in config/environments/* take precedence over those specified here.
-  # Application configuration should go into files in config/initializers
-  # -- all .rb files in that directory are automatically loaded.
-  # See Rails::Configuration for more options.
+    # Settings in config/environments/* take precedence over those specified here.
+    # Application configuration should go into files in config/initializers
+    # -- all .rb files in that directory are automatically loaded.
+    # See Rails::Configuration for more options.
 
-  # Skip frameworks you're not going to use. To use Rails without a database
-  # you must remove the Active Record framework.
-  # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
-  config.frameworks -= [ :active_record, :action_mailer ]
-
-  # request_store only caches things in-memory for a single request
-  # config.cache_store = :mem_cache_store
+    # request_store only caches things in-memory for a single request
+    # config.cache_store = :mem_cache_store
 
 
-  # Only load the plugins named here, in the order given. By default, all plugins 
-  # in vendor/plugins are loaded in alphabetical order.
-  # :all can be used as a placeholder for all plugins not explicitly named
-  # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
+    # Only load the plugins named here, in the order given. By default, all plugins 
+    # in vendor/plugins are loaded in alphabetical order.
+    # :all can be used as a placeholder for all plugins not explicitly named
+    # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
-  # Add additional load paths for your own custom dirs
-  config.autoload_paths += %W( #{Rails.root}/app/presenters )
-  config.autoload_paths += %W( #{Rails.root}/lib )
+    # Add additional load paths for your own custom dirs
+    config.autoload_paths += %W( #{Rails.root}/app/presenters )
+    config.autoload_paths += %W( #{Rails.root}/lib )
 
-  # Force all environments to use the same logger level
-  # (by default production uses :info, the others :debug)
-  # config.log_level = :debug
+    # Force all environments to use the same logger level
+    # (by default production uses :info, the others :debug)
+    # config.log_level = :debug
 
-  # Make Time.zone default to the specified zone, and make Active Record store time values
-  # in the database in UTC, and return them converted to the specified local zone.
-  # Run "rake -D time" for a list of tasks for finding time zone names. Comment line to use default local time.
-  config.time_zone = 'UTC'
+    # Make Time.zone default to the specified zone, and make Active Record store time values
+    # in the database in UTC, and return them converted to the specified local zone.
+    # Run "rake -D time" for a list of tasks for finding time zone names. Comment line to use default local time.
+    config.time_zone = 'UTC'
 
-  # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
-  # All files from config/locales/*.rb,yml are added automatically.
-  # config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
-  # config.i18n.default_locale = :de
+    # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
+    # All files from config/locales/*.rb,yml are added automatically.
+    # config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
+    # config.i18n.default_locale = :de
 
-  # Your secret key for verifying cookie session data integrity.
-  # If you change this key, all old sessions will become invalid!
-  # Make sure the secret is at least 30 characters and all random, 
-  # no regular words or you'll be exposed to dictionary attacks.
-  config.action_controller.session = {
-    :session_key => '_blist_session_id',
-    :cookie_only => false,
-    :session_http_only => true,
-    :secret      => ')c)]? ?+7?BpJ4qbKi8@-D)T`@]])x'
-  }
+    # Your secret key for verifying cookie session data integrity.
+    # If you change this key, all old sessions will become invalid!
+    # Make sure the secret is at least 30 characters and all random, 
+    # no regular words or you'll be exposed to dictionary attacks.
+    # config.action_controller.session = {
+    #   :session_key => '_blist_session_id',
+    #   :cookie_only => false,
+    #   :session_http_only => true,
+    #   :secret      => ')c)]? ?+7?BpJ4qbKi8@-D)T`@]])x'
+    # }
 
-  # Use the database for sessions instead of the cookie-based default,
-  # which shouldn't be used to store highly confidential information
-  # (create the session table with "rake db:sessions:create")
-  # config.action_controller.session_store = :active_record_store
-  config.action_controller.session_store = :blist_cookie_store
+    # Use the database for sessions instead of the cookie-based default,
+    # which shouldn't be used to store highly confidential information
+    # (create the session table with "rake db:sessions:create")
+    # config.action_controller.session_store = :active_record_store
+    # config.action_controller.session_store = :blist_cookie_store
 
-  # Store cached pages in a subdirectory "cache" of public/
-  # This allows us to easily blow away the entire cache without getting
-  # rid of any real public resources, at the expense of slightly more
-  # complex Apache rewrite rules
-  config.action_controller.page_cache_directory = File.join(Rails.root, 'public', 'cache/')
+    # Store cached pages in a subdirectory "cache" of public/
+    # This allows us to easily blow away the entire cache without getting
+    # rid of any real public resources, at the expense of slightly more
+    # complex Apache rewrite rules
+    config.action_controller.page_cache_directory = File.join(Rails.root, 'public', 'cache/')
 
-  # Use SQL instead of Active Record's schema dumper when creating the test database.
-  # This is necessary if your schema can't be completely dumped by the schema dumper,
-  # like if you have constraints or database-specific column types
-  # config.active_record.schema_format = :sql
+    # Use SQL instead of Active Record's schema dumper when creating the test database.
+    # This is necessary if your schema can't be completely dumped by the schema dumper,
+    # like if you have constraints or database-specific column types
+    # config.active_record.schema_format = :sql
 
-  # Activate observers that should always be running
-  # Please note that observers generated using script/generate observer need to have an _observer suffix
-  # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
-
-
-  # Gems should now be specified through Bundler
-  # Edit Gemfile instead of here!
-  # They can be installed with "bundle install" on new installations
+    # Activate observers that should always be running
+    # Please note that observers generated using script/generate observer need to have an _observer suffix
+    # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
+  end
+>>>>>>> SPARTA: Remove old vendored rails and plugins
 end
-
-ActiveSupport::JSON.backend = "JSONGem"
 
 Mime::Type.register "application/rdf+xml", :rdf
 Mime::Type.register "application/vnd.ms-excel", :xls

@@ -14,6 +14,9 @@
             this._super(properties);
             this._childrenLoading = {};
 
+            // Make sure to start any data source updates so that we have our
+            // contextId assigned before creating children
+            this._updateDataSource(this._properties);
             if (children) { this.add(children); }
             delete this._initializing;
         },

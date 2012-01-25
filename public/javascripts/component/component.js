@@ -583,6 +583,7 @@
                 {
                     id = cObj.id + '_' + _.uniqueId();
                     c.id = id;
+                    properties.contextId = id;
                 }
                 startDCGet();
                 $.dataContext.loadContext(id, c, gotDC);

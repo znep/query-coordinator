@@ -93,7 +93,7 @@
                 html.push(
                     '<li class="item icon-',
                     entry.typeName,
-                    '"><span class="icon bulb"></span><span class="label">',
+                    '"><span class="bulb"><span class="icon"></span></span><span class="label">',
                     entry.catalogName,
                     '</span></li>'
                 );

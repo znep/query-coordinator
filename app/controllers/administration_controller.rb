@@ -21,6 +21,7 @@ class AdministrationController < ApplicationController
       browse_in_container: true,
       facets: facets,
       limit: 30,
+      nofederate: true,
       view_type: 'table',
     })
   end

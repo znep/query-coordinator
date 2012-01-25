@@ -2,7 +2,7 @@
 {
     // rendering
     var directive = {
-        'tbody .item': {
+        'tr.item': {
             'comment<-': {
                 '.@data-commentid': 'comment.id',
                 '.@data-commentstatus': 'comment.status',
@@ -15,8 +15,8 @@
                 '.dataset .cellInner@href': 'comment.view.url',
                 '.dataset .cellInner': 'comment.view.name!',
                 '.status .cellInner': 'comment.status',
-                '.status .approveComment@class+': function(c) { return (c.item.status == 'approved') ? 'disabled' : '' },
-                '.status .rejectComment@class+': function(c) { return (c.item.status == 'rejected') ? 'disabled' : '' }
+                '.status .approveComment@class+': function(c) { return (c.item.status == 'approved') ? 'disabled' : ''; },
+                '.status .rejectComment@class+': function(c) { return (c.item.status == 'rejected') ? 'disabled' : ''; }
             }
         }
     };
@@ -28,26 +28,39 @@
         dataType: 'json',
         success: function(response)
         {
-            _.each(response, function(comment)
-            {
-                comments[comment.id] = $.extend({}, comment, { user: new User(comment.user),
-                                                               view: new Dataset(comment.view) });
-            });
-            $('.tableContainer').append(
-                $.renderTemplate('moderationsTable', _.values(comments), directive));
+            var $target = $('div.tableContainer tbody');
 
-            $('.commentModerationList.gridList').combinationList({
-                headerContainerSelector: '.gridListWrapper',
-                initialSort: [[1, 1]],
-                scrollableBody: false,
-                selectable: false,
-                sortGrouping: false,
-                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'autoDateTime'},
-                    2: {sorter: 'text'}, 3: {sorter: 'text'}},
-                sortTextExtraction: function(node) {
-                    return $(node).find('.cellInner').text();
-                }
-            });
+            // set up the model code
+            var eachItem = function(comment) {
+                var commie = $.extend({}, comment, { user: new User(comment.user),
+                                                    view: new Dataset(comment.view) });
+                comments[comment.id] = commie;
+                return commie;
+            };
+
+            // render some of the rows into the table
+            var eachBatch = function(batch) {
+                $target.append($.renderTemplate('moderationItem', batch, directive).children('tr'));
+            };
+
+            // set up the table sort
+            var complete = function() {
+                $('.commentModerationList.gridList').combinationList({
+                    headerContainerSelector: '.gridListWrapper',
+                    initialSort: [[1, 1]],
+                    scrollableBody: false,
+                    selectable: false,
+                    sortGrouping: false,
+                    sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'autoDateTime'},
+                        2: {sorter: 'text'}, 3: {sorter: 'text'}},
+                    sortTextExtraction: function(node) {
+                        return $(node).find('.cellInner').text();
+                    }
+                });
+            };
+
+            // gogogo
+            $.batchProcess(response, 10, eachItem, eachBatch, complete);
         }
     });
 

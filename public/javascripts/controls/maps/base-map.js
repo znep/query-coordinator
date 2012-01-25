@@ -1534,9 +1534,15 @@
             mapObj._displayLayers.push(viewConfig._displayLayer);
 
             viewConfig._selectControl = new OpenLayers.Control.SelectFeature(layer,
-                { onSelect: function(feature) { onFeatureSelect(mapObj, feature,
-                    function(evt) { onFeatureUnselect(mapObj, feature); }); },
-                  onUnselect: function(feature) { onFeatureUnselect(mapObj, feature); } });
+                { onSelect: function(feature) {
+                    onFeatureSelect(mapObj, feature, function(evt)
+                        { feature.layer.dataViewConfig._selectControl.unselect(feature); });
+                    },
+                  onUnselect: function(feature) {
+                    if (feature)
+                    { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
+                    mapObj.closePopup();
+                } });
             mapObj.map.addControl(viewConfig._selectControl);
 
             return layer;
@@ -1665,6 +1671,71 @@
                 }); });
         },
 
+        showPopup: function(lonlat, contents, options)
+        {
+            var mapObj = this;
+
+            options = options || {};
+            var closeBoxCallback = _.isFunction(options.closeBoxCallback)
+                ? options.closeBoxCallback : function() {};
+
+            if (mapObj._popup && !options.keepOpen) { mapObj.closePopup(); }
+
+            var popup = new OpenLayers.Popup.FramedCloud(null,
+                lonlat, null, contents, null, true, options.closeBoxCallback);
+            mapObj._popup = popup;
+            mapObj.map.addPopup(popup);
+
+            $('.olFramedCloudPopupContent')
+                .on('click', '.infoPaging a', function(event)
+                {
+                    event.preventDefault();
+
+                    var $a = $(this);
+                    if ($a.hasClass('disabled')) { return; }
+
+                    var $paging = $a.parent();
+                    var action = $.hashHref($a.attr('href')).toLowerCase();
+
+                    var $rows = $paging.siblings('.row');
+                    var $curRow = $rows.filter(':visible');
+
+                    var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
+                    if (newIndex < 0) { return; }
+                    if (newIndex >= $rows.length) { return; }
+
+                    $curRow.addClass('hide');
+                    $rows.eq(newIndex).removeClass('hide');
+
+                    $paging.find('a').removeClass('disabled');
+                    if (newIndex <= 0)
+                    { $paging.find('.previous').addClass('disabled'); }
+                    if (newIndex >= $rows.length - 1)
+                    { $paging.find('.next').addClass('disabled'); }
+                })
+                .on('click', '.flyoutRenderer .viewRow', function(e)
+                {
+                    var $a = $(this);
+                    // Open a new page if it's not the same view.
+                    if ($a.attr('target') == '_blank') { return; }
+                    e.preventDefault();
+                    mapObj.closeFlyout($a);
+                    var href = $a.attr('href');
+                    $(document).trigger(blist.events.DISPLAY_ROW,
+                        [href.slice(href.lastIndexOf('/') + 1)]);
+                });
+
+        },
+
+        closePopup: function()
+        {
+            var mapObj = this;
+
+            mapObj.map.removePopup(mapObj._popup);
+            mapObj._popup.destroy();
+            mapObj._popup = null;
+        },
+
         $legend: function(options)
         {
             var mapObj = this;
@@ -1776,62 +1847,9 @@
         if (!feature.attributes.flyout)
         { return null; }
 
-        if (mapObj._popup) { closeBoxCallback(); }
-
-        var popup = new OpenLayers.Popup.FramedCloud(null,
-            feature.geometry.getBounds().getCenterLonLat(), null,
-            feature.attributes.flyout[0].innerHTML, null, true, closeBoxCallback);
-        mapObj._popup = popup;
-        mapObj.map.addPopup(popup);
-
-        $('.olFramedCloudPopupContent .infoPaging a').click(function(event)
-        {
-            event.preventDefault();
-
-            var $a = $(this);
-            if ($a.hasClass('disabled')) { return; }
-
-            var $paging = $a.parent();
-            var action = $.hashHref($a.attr('href')).toLowerCase();
-
-            var $rows = $paging.siblings('.row');
-            var $curRow = $rows.filter(':visible');
-
-            var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
-            if (newIndex < 0) { return; }
-            if (newIndex >= $rows.length) { return; }
-
-            $curRow.addClass('hide');
-            $rows.eq(newIndex).removeClass('hide');
-
-            $paging.find('a').removeClass('disabled');
-            if (newIndex <= 0)
-            { $paging.find('.previous').addClass('disabled'); }
-            if (newIndex >= $rows.length - 1)
-            { $paging.find('.next').addClass('disabled'); }
-        });
-
-        // FIXME: This is copied and pasted from base-viz#initializeFlyouts.
-        // This should be fixed by a popup refactor.
-        $('.flyoutRenderer .viewRow').click(function(e)
-        {
-            var $a = $(this);
-            // Open a new page if it's not the same view.
-            if ($a.attr('target') == '_blank') { return; }
-            e.preventDefault();
-            mapObj.closeFlyout($a);
-            var href = $a.attr('href');
-            $(document).trigger(blist.events.DISPLAY_ROW,
-                [href.slice(href.lastIndexOf('/') + 1)]);
-        });
-    };
-
-    var onFeatureUnselect = function(mapObj, feature)
-    {
-        if (feature) { mapObj._primaryView.unhighlightRows(feature.attributes.rows, 'select'); }
-        mapObj.map.removePopup(mapObj._popup);
-        mapObj._popup.destroy();
-        mapObj._popup = null;
+        mapObj.showPopup(feature.geometry.getBounds().getCenterLonLat(),
+                         feature.attributes.flyout[0].innerHTML,
+                         { closeBoxCallback: closeBoxCallback });
     };
 
     var iconCache = function(mapObj, url, feature, hasHighlight)

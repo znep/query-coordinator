@@ -199,6 +199,7 @@
                 // Basically, toss out clicks that aren't on tiles.
                 if (evt.originalTarget.parentNode
                     && evt.originalTarget.parentNode.parentNode != layer.div) { return; }
+                if ($(evt.originalTarget).hasClass('olPopupCloseBox')) { return; }
 
                 var pixel = mapObj.map.events.getMousePosition(evt);
                 var sr = new esri.SpatialReference({ wkid: mapObj.map.getProjection().split(':')[1]});
@@ -222,58 +223,21 @@
                 viewConfig._identifyParameters.mapExtent = extent;
                 viewConfig._identifyParameters.layerDefinitions = layerDefs;
 
+                lonlat.lat -= offsetLat;
+                mapObj.showPopup(lonlat, 'Loading...');
+
                 new esri.tasks.IdentifyTask(url.replace(/\/export$/, ''))
                     .execute(viewConfig._identifyParameters, function(idResults)
                     {
-                        var closeBox = function()
-                        { if (viewConfig._popup)
-                            {
-                                mapObj.map.removePopup(viewConfig._popup);
-                                viewConfig._popup.destroy();
-                                viewConfig._popup = null;
-                            }
-                        };
-                        closeBox();
-
-                        if (_.isEmpty(idResults)) { return; }
+                        if (_.isEmpty(idResults)) { mapObj.closePopup(); return; }
 
                         var flyoutContent = mapObj.getFlyout(_.map(idResults,
                             function(res) { return res.feature; }), {}, view);
                         if (flyoutContent)
                         { flyoutContent = flyoutContent[0].innerHTML; }
 
-                        lonlat.lat -= offsetLat;
-                        var popup = new OpenLayers.Popup.FramedCloud(null,
-                            lonlat, null, flyoutContent, null, true, closeBox);
-                        viewConfig._popup = popup;
-                        mapObj.map.addPopup(popup);
-
-                        $('.olFramedCloudPopupContent .infoPaging a').click(function(event)
-                        {
-                            event.preventDefault();
-
-                            var $a = $(this);
-                            if ($a.hasClass('disabled')) { return; }
-
-                            var $paging = $a.parent();
-                            var action = $.hashHref($a.attr('href')).toLowerCase();
-
-                            var $rows = $paging.siblings('.row');
-                            var $curRow = $rows.filter(':visible');
-
-                            var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
-                            if (newIndex < 0) { return; }
-                            if (newIndex >= $rows.length) { return; }
-
-                            $curRow.addClass('hide');
-                            $rows.eq(newIndex).removeClass('hide');
-
-                            $paging.find('a').removeClass('disabled');
-                            if (newIndex <= 0)
-                            { $paging.find('.previous').addClass('disabled'); }
-                            if (newIndex >= $rows.length - 1)
-                            { $paging.find('.next').addClass('disabled'); }
-                        });
+                        mapObj.showPopup(lonlat, flyoutContent,
+                            { closeBoxCallback: function() { mapObj.closePopup(); } });
                     });
             });
 

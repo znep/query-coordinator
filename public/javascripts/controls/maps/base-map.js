@@ -168,9 +168,10 @@
 
                 mapObj.map.events.register('click', mapObj.map, function(evt)
                 {
-                    var offsetTop = $(mapObj.map.div).offset().top;
+                    var sr = new esri.SpatialReference(
+                        { wkid: mapObj.map.getProjection().split(':')[1]});
                     var lonlat = layer.getLonLatFromViewPortPx(
-                        new OpenLayers.Pixel(evt.clientX, evt.clientY + offsetTop));
+                        mapObj.map.events.getMousePosition(evt));
                     var geometry = new esri.geometry.Point(lonlat.lon, lonlat.lat, sr);
                     var extent = mapObj.map.getExtent();
                     extent = new esri.geometry.Extent(extent.left, extent.bottom,

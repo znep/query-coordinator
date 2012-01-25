@@ -26,6 +26,14 @@
 
                 dojo.connect(layer.featureLayer, 'onLoad', function()
                 {
+                    if ($.subKeyDefined(layer, 'featureLayer.renderer.infos'))
+                    {
+                        layer._suggestedTolerance = Math.max.apply(null,
+                            _(layer.featureLayer.renderer.infos).chain()
+                            .map(function(info) { return [info.symbol.height, info.symbol.width]; })
+                            .flatten().compact().value());
+                    }
+
                     if (layer._metadataReady)
                     { layer.onloadCallback(); }
                     else
@@ -154,12 +162,31 @@
                     { layers: "show:"+layer_id, transparent: true,
                       internalMapProjection: mapObj.map.getProjectionObject(),
                       externalMapProjection: wkid && new OpenLayers.Projection(wkid),
-                      onloadCallback: function() { layer.filterWith(view); mapObj.adjustBounds(); }
+                      onloadCallback: function() {
+                        if (viewConfig._identifyParameters && layer._suggestedTolerance)
+                        { viewConfig._identifyParameters.tolerance = layer._suggestedTolerance; }
+                        layer.filterWith(view); mapObj.adjustBounds();
+                      }
                     },
                     { opacity: opacity, ratio: 1, isBaseLayer: false });
 
+            var symbolSize = 3;
+            if (view.metadata.custom_fields['drawingInfo.renderer'])
+            {
+                var symbolDimensions = [symbolSize];
+                if (view.metadata.custom_fields['drawingInfo.renderer']['symbol.width'])
+                { symbolDimensions.push(parseInt(
+                    view.metadata.custom_fields['drawingInfo.renderer']['symbol.width']), 10); }
+                if (view.metadata.custom_fields['drawingInfo.renderer']['symbol.height'])
+                { symbolDimensions.push(parseInt(
+                    view.metadata.custom_fields['drawingInfo.renderer']['symbol.height']), 10); }
+                symbolSize = Math.max.apply(null, symbolDimensions);
+            }
+            if (viewConfig._externalLayer._suggestedTolerance)
+            { symbolSize = Math.max(symbolSize, viewConfig._externalLayer._suggestedTolerance); }
+
             viewConfig._identifyParameters = new esri.tasks.IdentifyParameters();
-            viewConfig._identifyParameters.tolerance = 3;
+            viewConfig._identifyParameters.tolerance = symbolSize;
             viewConfig._identifyParameters.returnGeometry = true;
             viewConfig._identifyParameters.layerOption =
                 esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
@@ -173,14 +200,20 @@
                 if (evt.originalTarget.parentNode
                     && evt.originalTarget.parentNode.parentNode != layer.div) { return; }
 
-                var offsetTop = $(layer.div).offset().top;
+                var pixel = mapObj.map.events.getMousePosition(evt);
                 var sr = new esri.SpatialReference({ wkid: mapObj.map.getProjection().split(':')[1]});
-                var lonlat = layer.getLonLatFromViewPortPx(
-                    new OpenLayers.Pixel(evt.clientX, evt.clientY + offsetTop));
+                var lonlat = layer.getLonLatFromViewPortPx(pixel);
                 var geometry = new esri.geometry.Point(lonlat.lon, lonlat.lat, sr);
-                var extent = mapObj.map.getExtent();
-                extent = new esri.geometry.Extent(extent.left, extent.bottom,
-                                                  extent.right, extent.top);
+
+                // On first load, the map is offset somehow.
+                pixel.y = mapObj.map.getSize().h / 2;
+                var offsetLat = layer.getLonLatFromViewPortPx(pixel).lat - mapObj.map.getCenter().lat;
+                viewConfig._offsetLat = offsetLat;
+                geometry.y -= offsetLat;
+                var extent = layer.getExtent();
+                extent = new esri.geometry.Extent(extent.left, extent.bottom + offsetLat,
+                                                  extent.right, extent.top + offsetLat);
+
                 var layerDefs = [];
                 if (layer.layerDefs)
                 { for (var i in layer.layerDefs) { layerDefs[i] = layer.layerDefs[i]; } }
@@ -202,17 +235,45 @@
                         };
                         closeBox();
 
+                        if (_.isEmpty(idResults)) { return; }
+
                         var flyoutContent = mapObj.getFlyout(_.map(idResults,
                             function(res) { return res.feature; }), {}, view);
                         if (flyoutContent)
                         { flyoutContent = flyoutContent[0].innerHTML; }
 
-                        // FIXME: There is some randomly occuring bug where this.size is not set.
-                        // I haven't found how this can occur yet; it's probably a bug in OpenLayers.
+                        lonlat.lat -= offsetLat;
                         var popup = new OpenLayers.Popup.FramedCloud(null,
                             lonlat, null, flyoutContent, null, true, closeBox);
                         viewConfig._popup = popup;
                         mapObj.map.addPopup(popup);
+
+                        $('.olFramedCloudPopupContent .infoPaging a').click(function(event)
+                        {
+                            event.preventDefault();
+
+                            var $a = $(this);
+                            if ($a.hasClass('disabled')) { return; }
+
+                            var $paging = $a.parent();
+                            var action = $.hashHref($a.attr('href')).toLowerCase();
+
+                            var $rows = $paging.siblings('.row');
+                            var $curRow = $rows.filter(':visible');
+
+                            var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
+                            if (newIndex < 0) { return; }
+                            if (newIndex >= $rows.length) { return; }
+
+                            $curRow.addClass('hide');
+                            $rows.eq(newIndex).removeClass('hide');
+
+                            $paging.find('a').removeClass('disabled');
+                            if (newIndex <= 0)
+                            { $paging.find('.previous').addClass('disabled'); }
+                            if (newIndex >= $rows.length - 1)
+                            { $paging.find('.next').addClass('disabled'); }
+                        });
                     });
             });
 

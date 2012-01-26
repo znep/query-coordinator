@@ -57,6 +57,8 @@
                 });
                 delete properties.setup;
             }
+
+            _.defer(function() { $.component.globalNotifier.trigger('component_added', [cObj]); });
         },
 
         /**
@@ -109,6 +111,8 @@
             this.remove();
             delete components[this.id];
             this._destroyed = true;
+            var cObj = this;
+            _.defer(function() { $.component.globalNotifier.trigger('component_removed', [cObj]); });
         },
 
         /**
@@ -692,6 +696,15 @@
     var catalog = {};
 
     $.extend($.component, {
+        globalNotifier: new (Model.extend(
+        {
+            _init: function()
+            {
+                this._super.apply(this, arguments);
+                this.registerEvent(['component_added', 'component_removed'])
+            }
+        }))(),
+
         registerCatalogType: function(type) {
             $.component[type.typeName = type.prototype.typeName = type.catalogName.camelize()] = type;
             if (type.catalogCategory) {

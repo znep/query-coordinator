@@ -4,7 +4,7 @@ $.component.Container.extend('PagedContainer', {
     _init: function()
     {
         this._super.apply(this, arguments);
-        this.registerEvent({child_shown: 'newChild'});
+        this.registerEvent({child_shown: 'newChild', child_added: 'child', child_removed: 'child'});
     },
 
     visibleChild: function(newChild)
@@ -91,6 +91,12 @@ $.component.Container.extend('PagedContainer', {
         cObj._super();
     },
 
+    _childRemoved: function(child)
+    {
+        this._super.apply(this, arguments);
+        this.trigger('child_removed', [{child: child}]);
+    },
+
     _moveChildDom: function(child)
     {
         if (!this._initialized)
@@ -103,7 +109,10 @@ $.component.Container.extend('PagedContainer', {
         if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
         { child.next.$dom.before(child.$dom); }
         else
-        { this.$ct.append(child.$dom); }
+        {
+            this.$ct.append(child.$dom);
+            this.trigger('child_added', [{child: child}]);
+        }
         this._arrange();
     }
 });

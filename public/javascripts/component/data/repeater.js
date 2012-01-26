@@ -9,6 +9,7 @@ $.component.Container.extend('Repeater', 'content', {
         this._cloneProperties = {
             id: 'clone',
             children: children,
+            // TODO: Get rid of these out of templates so we can remove them
             htmlClass: properties.childHtmlClass,
             styles: properties.childStyles
         };
@@ -134,6 +135,15 @@ $.component.Container.extend('Repeater', 'content', {
         if (adjIndex < 0 || adjIndex >= this.length)
             return;
 
+        // Create entity TODO - mapping will be unnecessary w/ SODA 2
+        entity = entity || {};
+        _.each(this.columnMap, function(to, from) {
+            entity[to] = row[from];
+            if (entity[to] == undefined)
+                entity[to] = null;
+        });
+
+        if ($.isBlank(entity._repeaterIndex)) { entity._repeaterIndex = index; }
         // Add ID prefix so repeated components will not clash
         var prefix = this._idPrefix + index + '-';
         function createTemplate(properties) {
@@ -152,7 +162,9 @@ $.component.Container.extend('Repeater', 'content', {
             }
             return properties;
         }
-        var cloneProperties = createTemplate(this._cloneProperties);
+        var cloneProperties = createTemplate($.extend({},
+                    this._stringSubstitute(this._properties.childProperties, entity),
+                    this._cloneProperties));
 
         // Remove any existing row
         var map = this._map;
@@ -161,14 +173,6 @@ $.component.Container.extend('Repeater', 'content', {
             map[adjIndex] = undefined;
         }
 
-        // Create entity TODO - mapping will be unnecessary w/ SODA 2
-        entity = entity || {};
-        _.each(this.columnMap, function(to, from) {
-            entity[to] = row[from];
-            if (entity[to] == undefined)
-                entity[to] = null;
-        });
-        if ($.isBlank(entity._repeaterIndex)) { entity._repeaterIndex = index; }
         cloneProperties.entity = entity;
         cloneProperties.childContextId = row.id;
 

@@ -98,7 +98,7 @@
                             var viewport = results[0].geometry.viewport;
                             var sw = viewport.getSouthWest();
                             var ne = viewport.getNorthEast();
-                            viewport = new OpenLayers.Bounds(sw.lng(), ne.lat(), ne.lng(), sw.lat());
+                            viewport = new OpenLayers.Bounds(sw.lng(), sw.lat(), ne.lng(), ne.lat());
 
                             control.zoomToLocation(lonlat, viewport);
                             break;
@@ -171,6 +171,7 @@
                 .transform(new OpenLayers.Projection('EPSG:4326'), this.map.getProjectionObject());
             this.map.setCenter(lonlat2);
 
+            viewport = viewport || bounds;
             if (viewport)
             { this.map.zoomToExtent(viewport.transform(new OpenLayers.Projection('EPSG:4326'),
                                                        this.map.getProjectionObject())); }

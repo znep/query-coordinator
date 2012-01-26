@@ -108,6 +108,8 @@ class CustomContentController < ApplicationController
         else
           render_404
         end
+      else
+        self.action_name = 'page'
       end
     else
       # When we're rendering a cached item, force it to use the page action,

@@ -67,7 +67,6 @@
                     delete cObj._childrenLoading[this.id];
                     cObj._adjustLoading();
                 });
-
             child._move(this, position);
 
             return child;
@@ -158,6 +157,7 @@
             }
             if (!child._initialized)
                 child._initDom();
+
             if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
             { child.next.$dom.before(child.$dom); }
             else if (!$.isBlank(this.$ct))
@@ -360,6 +360,7 @@
         _removeChildDom: function(child) {
             if (child.$wrapper) {
                 child.$wrapper.remove();
+                delete child.wrapper;
                 delete child.$wrapper;
             }
             this._arrange();
@@ -404,6 +405,8 @@
 
             parent._blockArrange = true;
             try {
+                if (wrapperConfig.weight === undefined)
+                    wrapperConfig.weight = child.properties().weight;
                 var wrapper = $.component.create(wrapperConfig);
                 wrapper.add(child);
                 parent.add(wrapper, position);

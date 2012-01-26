@@ -194,7 +194,22 @@
         // Handle mouse movement
         function onMouseMove(event) {
             setPosition(event);
-            
+
+            // If the movement is over the placeholder, do not consider moving the component.  This alleviates
+            // "jumpies" that occur when the component switches positions repeatedly because of its own presence in
+            // the layout.
+            // TODO - does not solve issue completely & may make drag/drop feel less responsive.  Research further
+            if (placeholder.$dom) {
+                phoffset = placeholder.$dom.offset();
+                if (
+                    event.pageX >= phoffset.left
+                    && event.pageX < phoffset.left + placeholder.dom.offsetWidth
+                    && event.pageY >= phoffset.top
+                    && event.pageY < phoffset.top + placeholder.dom.offsetHeight
+                )
+                    return;
+            }
+
             container = findContainer(event);
             if (!container) {
                 placeholder.remove();
@@ -417,6 +432,11 @@
         if (isNew) {
             // Dragging from icon.  Create a copy to move around the screen
             $moving = $('<div class="socrata-cf-drag-icon icon-' + type.typeName + '">' + $target.html() + '</div>');
+            var mockChild = $.comp.create(childTemplate);
+            mockChild._render();
+            placeholder.weight = mockChild.weight;
+            placeholder.become(mockChild);
+            mockChild.destroy();
         } else {
             // Drag existing component.  Create a shell into which we will put the rendered component
             $moving = $('<div class="socrata-cf-drag-shell"></div>');
@@ -429,6 +449,7 @@
 
             // Replace the child with the placeholder
             placeholder.weight = child.weight;
+            placeholder.become(child);
             child.remove();
             oldContainer.add(placeholder, oldPosition);
 

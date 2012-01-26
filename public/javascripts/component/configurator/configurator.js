@@ -117,9 +117,9 @@
             trackingMouseDown = true;
             startX = event.pageX;
             startY = event.pageY;
-        }
 
-        return;
+            return false;
+        }
     }
 
     function exitEditMode() {

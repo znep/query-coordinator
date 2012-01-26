@@ -3,7 +3,22 @@ $.component.Component.extend('Placeholder', {
 
     _render: function() {
         this._super();
-        var $insides = $('<div class="insides"></div>');
-        this.$contents.append($insides);
+        this.$contents.append(this.$insides);
+    },
+
+    become: function(component) {
+        this._initInsides();
+        this.$insides.html(
+            component.$dom
+                .clone()
+                .find('*')
+                .removeAttr('id')
+                .end()
+        );
+    },
+
+    _initInsides: function() {
+        if (!this.$insides)
+            this.$insides = $('<div class="insides"></div>');
     }
 });

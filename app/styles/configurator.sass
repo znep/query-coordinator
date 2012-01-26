@@ -133,15 +133,20 @@
 // Dragging placeholder
 .component-Placeholder
   position: relative
+  overflow: hidden
   .insides
     border: dashed 2px #888888
     background-color: #eeeeee
-    position: absolute
     top: 0
     left: 0
     right: 0
     bottom: 0
+    overflow: hidden
     @include border-radius(4px) // Default or temporary?
+    & > *
+      visibility: hidden
+      position: static
+      margin-bottom: -4px
 
 // Container for properties editors in the sidebar
 .socrata-cf-properties-shell

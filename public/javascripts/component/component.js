@@ -573,31 +573,33 @@
                 { cObj._propEditor.setComponent(null); }
             };
 
-            if (!$.isBlank(properties.context) &&
-                    ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.context.id))
-            {
-                // Hmm; maybe this is taking templating a bit too far?
-                var c = cObj._stringSubstitute(properties.context);
-                var id = c.id;
-                if ($.isBlank(id))
-                {
-                    id = cObj.id + '_' + _.uniqueId();
-                    c.id = id;
-                    properties.contextId = id;
-                }
-                startDCGet();
-                $.dataContext.loadContext(id, c, gotDC);
-                return true;
-            }
-            else if (!$.isBlank(properties.contextId) &&
+            if ((!$.isBlank(properties.context) || !$.isBlank(properties.contextId)) &&
                     ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.contextId))
             {
-                if ($.dataContext.getContext(properties.contextId, gotDC))
+                if (!$.isBlank(properties.contextId))
                 {
+                    if ($.dataContext.getContext(properties.contextId, gotDC))
+                    {
+                        startDCGet();
+                        return true;
+                    }
+                    return false;
+                }
+                else if (!$.isBlank(properties.context))
+                {
+                    // Hmm; maybe this is taking templating a bit too far?
+                    var c = cObj._stringSubstitute(properties.context);
+                    var id = c.id;
+                    if ($.isBlank(id))
+                    {
+                        id = cObj.id + '_' + _.uniqueId();
+                        c.id = id;
+                        properties.contextId = id;
+                    }
                     startDCGet();
+                    $.dataContext.loadContext(id, c, gotDC);
                     return true;
                 }
-                return false;
             }
             else if ($.isBlank(properties.context) && $.isBlank(cObj._properties.context) &&
                     $.isBlank(properties.contextId) && $.isBlank(cObj._properties.contextId))

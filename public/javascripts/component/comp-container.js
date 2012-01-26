@@ -8,16 +8,12 @@
 
         _init: function(properties) {
             this._initializing = true;
-            var children = properties.children;
+            this._childrenToLoad = properties.children;
             delete properties.children;
 
             this._super(properties);
             this._childrenLoading = {};
 
-            // Make sure to start any data source updates so that we have our
-            // contextId assigned before creating children
-            this._updateDataSource(this._properties);
-            if (children) { this.add(children); }
             delete this._initializing;
         },
 
@@ -50,7 +46,7 @@
 
             if (!(child instanceof $.component.Component))
             {
-                if ($.isBlank(child.contextId))
+                if ($.isBlank(child.contextId) && $.isBlank(child.context))
                 { child.contextId = this._properties.childContextId || this._properties.contextId; }
                 child = $.component.create(child);
             }
@@ -91,6 +87,24 @@
                 this.each(function(child) { child.suspendLoading(false); });
                 this.finishLoading();
             }
+        },
+
+        _addChildren: function()
+        {
+            // Make sure to start any data source updates so that we have our
+            // contextId assigned before creating children
+            if (!$.isBlank(this._childrenToLoad))
+            {
+                this._updateDataSource(this._properties);
+                this.add(this._childrenToLoad);
+                delete this._childrenToLoad;
+            }
+        },
+
+        _move: function()
+        {
+            this._super.apply(this, arguments);
+            this._addChildren();
         },
 
         /**
@@ -146,7 +160,7 @@
                 child._initDom();
             if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
             { child.next.$dom.before(child.$dom); }
-            else
+            else if (!$.isBlank(this.$ct))
             { this.$ct.append(child.$dom); }
             if (this._rendered && !child._rendered)
                 child._render();
@@ -231,6 +245,8 @@
         // Override render to render children as well
         _render: function() {
             if (!this._super()) { return false; }
+
+            this._addChildren();
 
             this.$ct = this._getContainer();
             this.$ct.addClass('socrata-container');
@@ -333,7 +349,7 @@
             { child.next.$wrapper.before(child.$wrapper); }
             else if (!$.isBlank(this._$clear))
             { this._$clear.before(child.$wrapper); }
-            else
+            else if (!$.isBlank(this.$ct))
             { this.$ct.append(child.$wrapper); }
             if (this._rendered && !child._rendered)
                 child._render();

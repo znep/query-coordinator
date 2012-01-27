@@ -1234,6 +1234,12 @@
     {
         if ($.isBlank(chartObj.secondChart)) { return; }
 
+        if (chartObj._displayFormat.detailBounds)
+        {
+            adjustDetailBounds(chartObj, chartObj._displayFormat.detailBounds.min,
+                chartObj._displayFormat.detailBounds.max);
+            return;
+        }
         if ($.isBlank(chartObj._curMin))
         {
             var extremes = chartObj.secondChart.xAxis[0].getExtremes();
@@ -1248,6 +1254,8 @@
     var secondChartSelect = function(chartObj, event)
     {
         var eAxis = event.xAxis[0];
+        chartObj._primaryView.update({ displayFormat: $.extend({}, chartObj._displayFormat,
+            { detailBounds: { min: eAxis.min, max: eAxis.max }}) }, false, true);
         adjustDetailBounds(chartObj, eAxis.min, eAxis.max);
         return false;
     };

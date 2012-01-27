@@ -1577,6 +1577,8 @@
             { viewConfig._animation.direction = 'gather'; }
             else
             { viewConfig._animation.direction = 'spread'; }
+
+            animated = false;
         },
 
         runAnimation: function(callback)
@@ -1658,6 +1660,7 @@
             setTimeout(function()
             {
                 killAnimation = true;
+                if (_.isFunction(window.killingAnimations)) { window.killingAnimations(); }
                 _.each(animations, function(animation) { animation.feature.move(animation.to); });
             }, 2000);
             animate(animations, function() { _.each(mapObj._byView, function(viewConfig)
@@ -1907,13 +1910,16 @@
             .value();
     };
 
+    var animated = false;
     var animate = function(animations, callback)
     {
+        if (animated) { return; }
+        animated = true;
         var startTime = $.now();
         var interval;
         var debugging = !_.isUndefined(window.animations);
         if (debugging)
-        { window.newAnimationSet($.extract(mapObj._byView, '_animation')); }
+        { window.newAnimationSet($.extract(mapObj._byView, '_animation'), animations.length); }
 
         var step = function()
         {

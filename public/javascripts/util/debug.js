@@ -110,11 +110,12 @@ window.mapDebugger = function()
             });
         }
     }; };
-    window.newAnimationSet = function(animationConfig)
+    window.newAnimationSet = function(animationConfig, num)
     { window.animations.push( $.extend(animationDebugger(),
-        { config: animationConfig, startAt: timestamp() } )); };
+        { config: animationConfig, toAnimate: num, startAt: timestamp() } )); };
     window.rememberAnimation = function(stuff)
     { _.last(window.animations).log.push($.extend({ timestamp: timestamp() }, stuff)); };
+    window.killingAnimations = function() { _.last(window.animations).killedAt = timestamp(); };
 
     delete window.mapDebugger;
 };

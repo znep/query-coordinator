@@ -79,7 +79,7 @@
         var $element = $(element);
         var validator = this;
         $element.attr('data-custom-validlayerurl', 'verifying');
-        $.getJSON("/admin/verify_layer_url", {'url': value}, function(data)
+        $.getJSON("/proxy/verify_layer_url", {'url': value}, function(data)
             {
                 if (data.value)
                 {

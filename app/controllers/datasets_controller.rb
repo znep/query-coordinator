@@ -434,6 +434,23 @@ class DatasetsController < ApplicationController
     @page_custom_footer = 'footer'
   end
 
+  # Make sure that the url provided actually returns a layer of some kind.
+  def verify_layer_url
+    response = fetch_layer_info(params[:url])
+    respond_to do |format|
+      format.data { render :json => response.to_json }
+    end
+  end
+
+  # Convert a wkt to a wkid.
+  def wkt_to_wkid
+    json = JSON.parse(Net::HTTP.get(
+      URI("http://prj2epsg.org/search.json?mode=wkt&terms=#{CGI.escape params[:wkt]}")))
+    respond_to do |format|
+      format.data { render :json => json }
+    end
+  end
+
 protected
   def get_view(id)
     begin
@@ -624,5 +641,34 @@ protected
 
   def post_asset(file)
     JSON.parse(CoreServer::Base.connection.multipart_post_file('/assets', file))
+  end
+
+private
+  def fetch_layer_info(layer_url)
+    begin
+      uri = URI.parse(URI.extract(layer_url).first)
+      uri.query = "f=json"
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+      layer_info = JSON.parse(http.get(uri.request_uri).body)
+    rescue SocketError, URI::InvalidURIError, JSON::ParserError
+      error = "url invalid"
+    end
+    error = 'url invalid' if layer_info && (layer_info['error'] \
+                                          || !layer_info['spatialReference'])
+
+    if error
+      return { 'error' => error }
+    else
+      title = layer_info['documentInfo']['Title'] if layer_info['documentInfo']
+      title = uri.path.slice(uri.path.index('services')+8..-1) if title.blank?
+
+      layer = {}
+      layer['text']  = "#{title} (#{uri.host})"
+      layer['value'] = uri.to_s.sub /\?.*$/, ''
+      layer['data']  = { 'type' => layer_info['tileInfo'] ? 'tile' : 'dynamic' }
+
+      return layer
+    end
   end
 end

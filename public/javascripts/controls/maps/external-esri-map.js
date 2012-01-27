@@ -138,20 +138,31 @@
             { wkid = 'EPSG:' + view.metadata.custom_fields.Basic['Spatial Reference wkid']; }
             else if (view.metadata.custom_fields.Basic['Spatial Reference wkt'])
             {
-                var url = '/admin/wkt_to_wkid?wkt='
+                if (view.displayFormat.projection)
+                { viewConfig._externalLayer.externalMapProjection
+                    = new OpenLayers.Projection('EPSG:' + view.displayFormat.projection); }
+                else
+                {
+                    var url = '/proxy/wkt_to_wkid?wkt='
                     + encodeURI(blist.dataset.metadata.custom_fields.Basic['Spatial Reference wkt']);
-                $.getJSON(url, function(data) {
-                    if (data.exact)
-                    { viewConfig._externalLayer.externalMapProjection
-                        = new OpenLayers.Projection('EPSG:' + data.codes[0].code); }
-                });
+                    $.getJSON(url, function(data) {
+                        if (data.exact)
+                        {
+                            viewConfig._externalLayer.externalMapProjection
+                                = new OpenLayers.Projection('EPSG:' + data.codes[0].code);
+                            view.update({ displayFormat: $.extend({}, view.displayFormat,
+                                { projection: data.codes[0].code }) }, false, false);
+                            view.save();
+                        }
+                    });
+                }
             }
 
             var opacity;
             if ($.subKeyDefined(view, 'metadata.custom_fields.drawingInfo.transparency'))
             { opacity = parseInt(view.metadata.custom_fields.drawingInfo.transparency, 10) / 100; }
-            if (opacity == 0) // Hopefully, this can be taken out one day.
-            { opacity = 1; }
+            if (opacity == 0) // ArcGIS Server defaults transparency to 0, resulting in many datasets
+            { opacity = 1; }  // created with this default when they don't mean it.
 
             var tmp = view.metadata.custom_fields.Basic.Source.split('/');
             var layer_id = tmp.pop();

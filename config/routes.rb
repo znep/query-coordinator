@@ -86,8 +86,6 @@ ActionController::Routing::Routes.draw do |map|
       :sdp_templates => :get,
       :datasets => :get,
       :select_dataset => :get,
-      :verify_layer_url => :get,
-      :wkt_to_wkid => :get,
       :home => :get,
       :metadata => :get,
       :views => :get,
@@ -288,6 +286,14 @@ ActionController::Routing::Routes.draw do |map|
   map.metric_redirect 'download/:id/:type', :controller => 'datasets',
     :action => 'download',
     :requirements => {:id => UID_REGEXP, :type => /.*/},
+    :conditions => {:method => :get}
+
+  map.connect 'proxy/verify_layer_url', :controller => 'datasets',
+    :action => 'verify_layer_url',
+    :conditions => {:method => :get}
+
+  map.connect 'proxy/wkt_to_wkid', :controller => 'datasets',
+    :action => 'wkt_to_wkid',
     :conditions => {:method => :get}
 
   # Short URLs

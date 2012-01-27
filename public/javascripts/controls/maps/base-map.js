@@ -1101,7 +1101,7 @@
             // Create a copy of features on the wrong side of the dateline
             // and wrap around their X coordinate.
             // TODO: Wishing OpenLayers would do this automatically.
-            if (mapObj._datelineHack)
+            if (mapObj._datelineHack && viewConfig._displayLayer)
             {
                 _.each(mapObj._byView, function(viewConfig)
                 {

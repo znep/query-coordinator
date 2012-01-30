@@ -1,5 +1,5 @@
 <%- if @show_search_form -%>
-  <% form_tag(root_path, :method => :get, :class => "search") do %>
+  <%= form_tag(root_path, :method => :get, :class => "search") do %>
     <p>
       <label for="search">Search for Public Datasets</label>
       <input type="text" class="textPrompt" name="search"

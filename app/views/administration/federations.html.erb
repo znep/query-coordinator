@@ -41,7 +41,7 @@
    <div class="availableTargetDomains">
      <p class="explanation">The following is a list of domains you may begin data federation with. Once you click publish, an administrator from the target domain must accept your request.</p>
      <%- @domains.each do |d| -%>
-      <% form_tag({:action => 'create_federation'}, {:method => 'post', :class => 'newFederationForm'}) do %>
+      <%= form_tag({:action => 'create_federation'}, {:method => 'post', :class => 'newFederationForm'}) do %>
         <label class="domain"><%= d.cname %></label>
         <%= hidden_field_tag('new_federation[target_domain]', d.cname) %>
         <%= submit_tag 'Publish', :class => 'button' %>
@@ -97,14 +97,14 @@
                 <%- accepted = f.acceptedUserId.present? -%>
                 <span class="cellInner"><%= accepted ? 'Accepted' : 'Pending' %></span>
                 <%- if f.targetDomainCName == CurrentDomain.cname %>
-                  <% form_button({:action => :accept_federation, :id => f.id}, 'Accept',
+                  <%= form_button({:action => :accept_federation, :id => f.id}, 'Accept',
                        {}, {:class => 'button' + (accepted ? ' disabled' : '')}) %>
-                  <% form_button({:action => :reject_federation, :id => f.id}, 'Reject',
+                  <%= form_button({:action => :reject_federation, :id => f.id}, 'Reject',
                        {}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
                 <%- end -%>
               </td>
               <td class="delete">
-                <% form_button({:action => :delete_federation, :id => f.id}, 'Terminate',
+                <%= form_button({:action => :delete_federation, :id => f.id}, 'Terminate',
                      {:method => :delete}) %>
               </td>
             </tr>

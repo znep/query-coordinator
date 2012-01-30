@@ -30,7 +30,7 @@
       <%- end -%>
 
       <h2>Create a domain:</h2>
-      <% form_tag('/internal/orgs/' + @org.id.to_s + '/domains') do %>
+      <%= form_tag('/internal/orgs/' + @org.id.to_s + '/domains') do %>
         <%= hidden_field_tag 'domain[organizationId]', @org.id.to_s %>
         <div class='line'>
           <label>Name:</label>

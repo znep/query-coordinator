@@ -59,8 +59,7 @@ class WidgetCustomization < Model
   def customization
     # the server doesn't parse the JSON for us, so do it ourselves.
     if @customization_hash.nil?
-      hash = JSON.parse(@data['customization'])
-      hash.deep_symbolize_keys!
+      hash = JSON.parse(@data['customization']).deep_symbolize_keys
       @customization_hash = WidgetCustomization.merge_theme_with_default(hash, hash[:version] || 0)
     end
 

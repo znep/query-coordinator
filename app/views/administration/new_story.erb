@@ -15,7 +15,7 @@
   <div class="adminHeader homemgmt">
     <span class="icon"></span>
     <h1>Create a New Story</h1>
-    <%- form_tag({:action => 'create_story'}, :method => :post, :multipart => true, :class => 'commonForm') do -%>
+    <%= form_tag({:action => 'create_story'}, :method => :post, :multipart => true, :class => 'commonForm') do -%>
       <%= render :partial => 'story_form' %>
     <%- end -%>
   </div>

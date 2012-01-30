@@ -2,7 +2,7 @@
   <a href="#close" class="jqmClose modalDialogClose">Close</a>
   <h2>Create a new Template</h2>
 
-  <% form_tag '/admin/sdp_templates', :method => 'post', :class => 'newTemplateForm commonForm' do %>
+  <%= form_tag '/admin/sdp_templates', :method => 'post', :class => 'newTemplateForm commonForm' do %>
     <div class="line clearfix">
       <label for="newTemplateName">New Template Name</label>
       <input type="text" id="newTemplateName" name="new_template_name" class="required"/>

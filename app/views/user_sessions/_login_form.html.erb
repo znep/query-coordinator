@@ -15,7 +15,7 @@
       <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
     </p>
   </div>
-  <%- form_for @user_session do |f| -%>
-    <%= render :partial => 'user_sessions/login_form_data.html.erb', :locals => {:f => f} %>
+  <%= form_for @user_session do |f| %>
+    <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
   <%- end -%>
 </div>

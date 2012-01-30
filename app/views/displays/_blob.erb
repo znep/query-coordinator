@@ -16,7 +16,7 @@
     <%- end -%>
     <ul>
       <%- @view.blobs.each do |b| -%>
-      <li><a class="button" href="<%= metric_redirect_path(:type => CGI.escape(b['type']), :id => @view.id) %>" target="_blank">
+      <li><a class="button" href="<%= metric_redirect_path(:type => b['type'], :id => @view.id) %>" target="_blank">
         <%- s = b['size'].is_a?(Numeric) ?
         number_to_human_size(b['size'], :locale => :en) : b['size'] -%>
         <%- if !b['name'].blank? -%>

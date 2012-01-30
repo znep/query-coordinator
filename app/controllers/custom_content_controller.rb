@@ -4,6 +4,7 @@ class CustomContentController < ApplicationController
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
   skip_before_filter :require_user, :except => [ :template ]
+  skip_before_filter :hook_auth_controller, :set_user, :sync_logged_in_cookie, :only => [:stylesheet]
 
   def homepage
     Canvas::Environment.context = :homepage
@@ -97,7 +98,7 @@ class CustomContentController < ApplicationController
 
     @minimal_render = params['no_render'] == 'true'
 
-    path = "/#{params[:path].join '/'}"
+    path = "/#{params[:path]}"
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if path == '/'
     if @cached_fragment.nil?

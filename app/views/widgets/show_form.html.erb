@@ -12,7 +12,7 @@
 
 <%- if @view.display.valid? -%>
   <%- if @display.can_publish? -%>
-    <%= render(:partial => @display.render_partial) %>
+    <%= render(:partial => @display.render_partial) if @display.render_partial %>
   <%- end -%>
 <%- else -%>
   <div class="viewErrorContainer content">

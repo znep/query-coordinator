@@ -89,7 +89,7 @@
   </div>
 
 <%- if is_grid -%>
-  <%- form_tag @view.alt_href, :method => :get, :id => 'queryForm' do -%>
+  <%= form_tag @view.alt_href, :method => :get, :id => 'queryForm' do -%>
     <h2>Filter</h2>
     <ul>
       <%- @viewable_columns.each do |column| -%>
@@ -135,7 +135,7 @@
 <%- if !@conditions.empty? || !params[:search_string].blank? -%>
   <h2>Save this view</h2>
   <%- if current_user -%>
-    <%- form_tag (save_filter_dataset_path(@view.id) + '?' + @state_param) do -%>
+    <%= form_tag (save_filter_dataset_path(@view.id) + '?' + @state_param) do -%>
       <%= hidden_field_tag 'query_json', @query_json %>
       <%= label_tag "Name" %>
       <%= text_field_tag "name" %>
@@ -162,7 +162,7 @@
   <% if @view.module_enabled? :allow_comments %>
     <a name="comments"></a>
     <h2>Post a Comment</h2>
-    <%- form_tag(post_comment_dataset_path(@view.id)) do -%>
+    <%= form_tag(post_comment_dataset_path(@view.id)) do -%>
     <%= hidden_field_tag 'redirect_to', '/alt#comments' %>
       <% field_set_tag do %>
         <%= label_tag "comment[viewRating]", "My Rating" %>
@@ -218,7 +218,7 @@
         @view.is_shared? %>
     </h4>
     <%- if can_share -%>
-    <% form_tag(url_for(:controller => :datasets,
+    <%= form_tag(url_for(:controller => :datasets,
       :action => :modify_permission)) do %>
     <%= hidden_field_tag 'permission_type', @view.is_public? ?
       'private' : 'public.' + @view.display.public_perm_type %>

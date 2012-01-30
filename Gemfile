@@ -1,6 +1,6 @@
 source :gemcutter
 
-gem "jammit", "0.5.4"
+gem "jammit", "~>0.6.5"
 
 gem "rails", "3.2.0", :require => nil
 gem "rack", "~>1.4.0"
@@ -12,6 +12,9 @@ gem "stomp", "1.1.6"
 gem "hoptoad_notifier", "~> 2.4"
 gem "money", "~> 3.7.1"
 gem "graylog2_exceptions"
+gem "rack-ssl-enforcer"
+gem 'memcache-client', '~>1.8.5'
+gem 'rinku', :require => 'rails_rinku'
 
 gem "thin", :group => :development
 gem "ruby-debug19", :group => :development

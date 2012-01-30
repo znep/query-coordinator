@@ -1,4 +1,4 @@
-module ActionController
+module ActionDispatch
   class Request < Rack::Request
     def core_session
       @env['blist.core-session'] ||= CoreSession.new

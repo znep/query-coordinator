@@ -61,7 +61,7 @@ module DatasetsHelper
         " selected=\"selected\" class=\"default\"" : ""
       out += "<option value=\"#{font[1]}\"#{selected}>#{font[0]}</option>"
     end
-    out
+    out.html_safe
   end
 
   # Create a drop down menu of formatting font sizes
@@ -77,7 +77,7 @@ module DatasetsHelper
         " selected=\"selected\" class=\"default\"" : ""
       out += "<option value=\"#{size[1]}\"#{selected}>#{size[0]}</option>"
     end
-    out
+    out.html_safe
   end
 
   def seo_render(cell, column)
@@ -152,7 +152,7 @@ module DatasetsHelper
       ret = h(cell.to_s)
     end
 
-    ret
+    ret.html_safe
   end
 
   # include only url and text column types.
@@ -218,6 +218,4 @@ module DatasetsHelper
 
     domain_metadata
   end
-
-  safe_helper :font_select_options, :font_size_select_options, :seo_render
 end

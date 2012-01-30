@@ -1,8 +1,6 @@
 require 'json'
 
 class Model
-  extend ActiveSupport::Memoizable
-
   attr_accessor :data
   attr_accessor :update_data
 
@@ -18,10 +16,9 @@ class Model
     data['id']
   end
 
-  def new_record?
-    id.nil?
+  def persisted?
+    !@id.nil?
   end
-
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
@@ -185,6 +182,10 @@ class Model
   def deep_clone
     # Hack...
     self.class.parse(self.to_json)
+  end
+
+  def as_json(options={})
+    data_hash
   end
 
   def flag?(flag_name)
@@ -380,14 +381,15 @@ private
   # Mark one or more attributes as non-serializable -- that is, they shouldn't be
   # serialized back to the core server
   def self.non_serializable(*attributes)
-    write_inheritable_attribute("non_serializable",
-                                Set.new(attributes.map(&:to_s)) +
-                                  (non_serializable_attributes || []))
+    # write_inheritable_attribute("non_serializable",
+    #                             Set.new(attributes.map(&:to_s)) +
+    #                               (non_serializable_attributes || []))
   end
 
   # Obtain a list of all non-serializable attributes
   def self.non_serializable_attributes
-    read_inheritable_attribute("non_serializable") || Array.new
+    # read_inheritable_attribute("non_serializable") || Array.new
+    Array.new
   end
 
 end

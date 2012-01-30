@@ -146,7 +146,7 @@ protected
 
       if File.exist?(cache_path)
         Rails.logger.info "Reading cached stylesheet from #{cache_path}"
-        render :text => File.open(cache_path).readlines.join("\n")
+        render :text => File.read(cache_path)
       else
         result = yield
         File.open(cache_path, 'w'){ |f| f.write result }

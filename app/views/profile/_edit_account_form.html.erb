@@ -3,7 +3,7 @@
 
   <%= display_standard_flashes %>
   <%- openid_identifiers = current_user.openid_identifiers -%>
-  <% form_tag(update_account_profile_url, :method => 'put',
+  <%= form_tag(update_account_profile_url, :method => 'put',
        :class => 'commonForm' + (openid_identifiers.empty? ? '' : ' hasOpenId'),
        :id => 'editAccountForm') do %>
     <div class="editArea">

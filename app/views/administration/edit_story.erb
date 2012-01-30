@@ -16,7 +16,7 @@
     <span class="icon"></span>
     <h1>Edit Story Content</h1>
     <%= display_standard_flashes %>
-    <%- form_tag '', :method => :post, :multipart => true, :class => 'commonForm' do -%>
+    <%= form_tag '', :method => :post, :multipart => true, :class => 'commonForm' do -%>
       <%= render :partial => 'story_form' %>
     <%- end -%>
   </div>

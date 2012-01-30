@@ -1,4 +1,5 @@
 require 'stomp'
+require 'singleton'
 
 class MetricQueue
   include Singleton

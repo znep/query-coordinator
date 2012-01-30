@@ -36,7 +36,7 @@
     </div>
 
     <div class="buttonArea">
-      <%- form_tag "/oauth/do_authorize?#{@oauth_params.to_param}" do -%>
+      <%= form_tag "/oauth/do_authorize?#{@oauth_params.to_param}" do -%>
         <input type="submit" value="Allow" class="button default"/>
       <%- end -%>
       <a href="<%= @redirect_uri %>" class="button">Cancel</a>

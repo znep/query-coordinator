@@ -42,7 +42,7 @@
 
           <div id="staticRenderType" class="fullHeight renderTypeNode">
             <%- if @display.can_publish? -%>
-              <%= render(:partial => @display.render_partial) %>
+              <%= render(:partial => @display.render_partial) if @display.render_partial %>
             <%- end -%>
           </div>
 
@@ -121,7 +121,7 @@
     </div>
     <%- if @view.can_print? -%>
     <div class="widgetContentSection widgetContent_print">
-      <% form_tag("/views/INLINE/rows.pdf", :method => :post,
+      <%= form_tag("/views/INLINE/rows.pdf", :method => :post,
         :target => "_blank", :class => 'commonForm needsInlineView') do %>
         <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
       <% end %>

@@ -33,8 +33,12 @@
 # "rake secret" and set the key in config/environment.rb.
 #
 # Note that changing digest or secret invalidates all existing sessions!
+#
+require 'rack/session/abstract/id' unless defined? Rack::Session::Abstract::ID
+require 'action_dispatch/middleware/session/abstract_store'
+
 class BlistCookieStore
-  include ActionController::Session::AbstractStore::SessionUtils
+  include ActionDispatch::Session::StaleSessionCheck
 
   # Cookies can typically store 4096 bytes.
   MAX = 4096
@@ -50,7 +54,7 @@ class BlistCookieStore
 
   CORE_SESSION_KEY = "blist.core-session".freeze
   ENV_SESSION_KEY = "rack.session".freeze
-  ENV_SESSION_OPTIONS_KEY = "rack.session.options".freeze
+  ENV_SESSION_OPTIONS_KEY = Rack::Session::Abstract::ENV_SESSION_OPTIONS_KEY
 
   # Raised when storing more than 4K of session data.
   class CookieOverflow < StandardError; end
@@ -95,12 +99,12 @@ class BlistCookieStore
       core_data = env[CORE_SESSION_KEY]
       session_data = env[ENV_SESSION_KEY]
       options = env[ENV_SESSION_OPTIONS_KEY]
-      request = ActionController::Request.new(env)
+      request = ActionDispatch::Request.new(env)
 
       save_cookie = false
 
-      if !(options[:secure] && !request.ssl?) && (!session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) || session_data.send(:loaded?) || options[:expire_after])
-        session_data.send(:load!) if session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) && !session_data.loaded?
+      if !(options[:secure] && !request.ssl?) && (!session_data.is_a?(Rack::Session::Abstract::SessionHash) || session_data.send(:loaded?) || options[:expire_after])
+        session_data.send(:load!) if session_data.is_a?(Rack::Session::Abstract::SessionHash) && !session_data.loaded?
         persistent_session_id!(session_data)
         session_data = marshal(session_data.to_hash)
         save_cookie = true
@@ -129,11 +133,15 @@ class BlistCookieStore
     [status, headers, body]
   end
 
+  # Called via handle_unverified_request
+  def destroy_session(env, sid, options)
+  end
+
   private
     # who knows where in the labyrinth this could be called?
     def prepare!(env)
-      env[ENV_SESSION_KEY] = ActionController::Session::AbstractStore::SessionHash.new(self, env)
-      env[ENV_SESSION_OPTIONS_KEY] = @default_options.dup
+      env[ENV_SESSION_KEY] = Rack::Session::Abstract::SessionHash.new(self, env)
+      env[ENV_SESSION_OPTIONS_KEY] = Rack::Session::Abstract::OptionsHash.new(self, env, @default_options)
       env[CORE_SESSION_KEY] = ::CoreSession.new(self, env)
     end
 
@@ -144,8 +152,8 @@ class BlistCookieStore
     end
 
     def load_core_session(env)
-      request = Rack::Request.new(env)
-      cookie_data = request.cookies[@key]
+      request = ActionDispatch::Request.new(env)
+      cookie_data = request.cookie_jar[@key]
       return ::CoreSession.unmangle_core_session_from_cookie(cookie_data)
     end
 
@@ -162,15 +170,15 @@ class BlistCookieStore
       env[ENV_SESSION_OPTIONS_KEY][:id]
     end
 
-    def exists?(env)
+    def session_exists?(env)
       current_session_id(env).present?
     end
 
     def unpacked_cookie_data(env)
       env["action_dispatch.request.unsigned_session_cookie"] ||= begin
         stale_session_check! do
-          request = Rack::Request.new(env)
-          cookie_data = request.cookies[@key]
+          request = ActionDispatch::Request.new(env)
+          cookie_data = request.cookie_jar[@key]
 
           # The wonderful thing about Base64 standards is that there are so
           # many to choose from: http://en.wikipedia.org/wiki/Base64
@@ -206,15 +214,11 @@ class BlistCookieStore
       nil
     end
 
-    def destroy(env = nil)
-      # to comply with base class or some stupid shit
-    end
-
     def ensure_session_key(key)
       if key.blank?
         raise ArgumentError, 'A key is required to write a ' +
           'cookie containing the session data. Use ' +
-          'config.action_controller.session = { :key => ' +
+          'config.session = { :key => ' +
           '"_myapp_session", :secret => "some secret phrase" } in ' +
           'config/environment.rb'
       end
@@ -238,7 +242,7 @@ class BlistCookieStore
 
       if secret.length < SECRET_MIN_LENGTH
         raise ArgumentError, "Secret should be something secure, " +
-          "like \"#{ActiveSupport::SecureRandom.hex(16)}\".  The value you " +
+          "like \"#{::SecureRandom.hex(16)}\".  The value you " +
           "provided, \"#{secret}\", is shorter than the minimum length " +
           "of #{SECRET_MIN_LENGTH} characters"
       end
@@ -250,7 +254,7 @@ class BlistCookieStore
     end
 
     def generate_sid
-      ActiveSupport::SecureRandom.hex(16)
+      ::SecureRandom.hex(16)
     end
 
     def persistent_session_id!(data)

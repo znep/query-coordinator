@@ -13,7 +13,7 @@
     <%- if @modules.nil? || @modules.size <= 0 -%>
       <p>No modules found.</p>
     <%- else -%>
-      <% form_tag "/internal/modules/bulk", :class => 'wide' do %>
+      <%= form_tag "/internal/modules/bulk", :class => 'wide' do %>
         <div class='line'>
           <label><strong>Module</strong></label>
           <%- @tiers.each do |tier| -%>
@@ -37,7 +37,7 @@
       <%- end -%>
 
       <h2>Add a module</h2>
-      <% form_tag "/internal/modules" do %>
+      <%= form_tag "/internal/modules" do %>
         <div class='line'>
           <label>Name:</label>
           <input type="text" name="mod[name]" />

@@ -295,7 +295,7 @@ class AdministrationController < ApplicationController
   end
 
   def sdp_set_default_template
-    configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
+    configuration = ::Configuration.find_by_type('site_theme',  true, request.host, false)[0]
     begin
       customization = WidgetCustomization.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -741,7 +741,7 @@ class AdministrationController < ApplicationController
     if config.nil?
       opts = { 'name' => 'Catalog Configuration', 'default' => true,
         'type' => 'catalog', 'domainCName' => CurrentDomain.cname }
-      config = Configuration.create(opts)
+      config = ::Configuration.create(opts)
     end
 
     params[:catalog].each do |k, v|
@@ -1051,7 +1051,7 @@ private
       opts['parentId'] = parentId
     end
 
-    config = Configuration.create(opts)
+    config = ::Configuration.create(opts)
 
     # Copy over the original, merged values
     CoreServer::Base.connection.batch_request do
@@ -1077,13 +1077,13 @@ private
   end
 
   def get_configuration(type='site_theme', merge=false)
-    Configuration.find_by_type(type, true, CurrentDomain.cname, merge).first
+    ::Configuration.find_by_type(type, true, CurrentDomain.cname, merge).first
   end
 
   def get_or_create_configuration(type, opts)
     config = get_configuration(type)
     if config.nil?
-      config = Configuration.create({'type' => type, 'default' => true,
+      config = ::Configuration.create({'type' => type, 'default' => true,
         'domainCName' => CurrentDomain.cname}.merge(opts))
     end
     config

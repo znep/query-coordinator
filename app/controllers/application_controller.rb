@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_user_session
   layout 'main'
 
-  filter_parameter_logging 'password'
-
   rescue_from('CoreServer::ResourceNotFound') { |exception| render_404 }
 
   # See ActionController::RequestForgeryProtection for details
@@ -175,7 +173,7 @@ private
       :description => CurrentDomain.strings.meta_description,
       'og:description' => CurrentDomain.strings.meta_description,
       'og:type' => 'article',
-      'og:url' => request.request_uri
+      'og:url' => request.url
     }
 
     logo_square = CurrentDomain.theme[:images][:logo_square]
@@ -199,7 +197,7 @@ private
   end
 
   def store_location
-    session[:return_to] = request.request_uri
+    session[:return_to] = request.url
   end
 
   def redirect_back_or_default(path)

@@ -10,5 +10,5 @@ HoptoadNotifier.configure do |config|
   config.params_filters << "password"
   config.params_filters << "passwordConfirm"
 
-  config.ignore       << CoreServer::ResourceNotFound
+  # config.ignore       << CoreServer::ResourceNotFound
 end

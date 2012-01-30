@@ -24,7 +24,7 @@
       domain.</p>
 
       <h2>Domain/Aliases:</h2>
-      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/aliases' do %>
         <div class='line'>
           <label>Primary CName</label>
@@ -45,7 +45,7 @@
           a.name.downcase <=> b.name.downcase :
           (a.default ? -1 : 1)} -%>
       <h2>Theme Configurations:</h2>
-      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/default_site_config' do %>
       <ul>
         <%- sorted_configs.each do |conf| -%>
@@ -75,7 +75,7 @@
       </ul>
 
       <h2>Add Configurations:</h2>
-      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/site_config' do %>
         <div class='line'>
           <label>Name</label>
@@ -102,7 +102,7 @@
       <% end %>
 
       <h2>Features:</h2>
-      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/feature' do %>
         <%- @domain.features.each do |feature, enabled| -%>
         <div class='line'>
@@ -117,7 +117,7 @@
       <% end %>
 
       <h2>Add Feature</h2>
-      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/feature' do %>
         <div class='line'>
           <input type="text" name="new-feature_name" />
@@ -138,7 +138,7 @@
       <% end %>
 
       <h2>Add an account module</h2>
-      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/account_modules' do %>
         <div class='line'>
           <label>Module:</label>

@@ -260,7 +260,7 @@ class View < Model
       url += '?' + params.to_param
     end
     escape_object(JSON.parse(CoreServer::Base.connection.get_request(url), {:max_nesting => 25})).
-      to_json.html_safe!
+      to_json.html_safe
   end
 
   def self.notify_all_of_changes(id)
@@ -403,9 +403,8 @@ class View < Model
   end
 
   def is_public?
-    display.is_public?
+    @_is_public ||= display.is_public?
   end
-  memoize :is_public?
 
   def is_private?
     grants.nil? || grants.length == 0
@@ -447,8 +446,7 @@ class View < Model
 
   # argument port is deprecated
   def href(port = 80)
-    path = "/#{(self.category || 'dataset').convert_to_url}/#{name.convert_to_url}/#{id}"
-    federated_path(path)
+    @_href ||= federated_path("/#{(self.category || 'dataset').convert_to_url}/#{name.convert_to_url}/#{id}")
   end
 
   def federated_path(path)
@@ -1188,6 +1186,4 @@ class View < Model
 
 
   private
-
-  memoize :href
 end

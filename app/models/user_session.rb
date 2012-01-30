@@ -8,6 +8,9 @@ require 'cgi'
 #
 # Unlike AuthLogic, our backend is our core server, accessed via HTTP requests.
 class UserSession
+  include ActiveModel::Validations
+  include ActiveModel::Conversion
+
   class << self
     # Check to see if we've been provided a controller instance already.
     # Many things won't work if this is false.
@@ -91,19 +94,6 @@ class UserSession
     @remember_me = (value == '1')
   end
 
-  # Stub out the errors class to make error handling on views happy.
-  # Right now, we're wrapping ActiveResource::Errors but not actually
-  # handling any validations, so don't expect this to work - just expect
-  # it not to crash.
-  def errors
-    @errors ||= SessionErrors.new(self)
-  end
-
-  # Return true if the session hasn't been saved yet.
-  def new_record?
-    new_session != false
-  end
-
   # Look up the authentication token based on the user's cookie information.
   # This function is typically called on every request cycle - we're given
   # a token representing an authenticated session, and we need to validate it
@@ -125,6 +115,10 @@ class UserSession
     end
 
     return user
+  end
+  # Return true if the session hasn't been saved yet.
+  def persisted?
+    !@new_session.blank?
   end
 
   def self.expiration_from_core_response(response)
@@ -306,4 +300,4 @@ class NotActivatedError < StandardError
   end
 end
 
-class SessionErrors < ActiveResource::Errors; end
+# class SessionErrors < ActiveResource::Errors; end

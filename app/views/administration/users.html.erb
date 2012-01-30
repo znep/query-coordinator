@@ -147,9 +147,9 @@
                 <td class="actions">
                   <%- unless user.id == current_user.id -%>
                     <span class="loading"></span>
-                    <% form_button({ :action => 'set_user_role', :user_id => user.id, :role => 0 },
+                    <%= form_button({ :action => 'set_user_role', :user_id => user.id, :role => 0 },
                                     'Remove', {:method => :put}, {:class => 'button removeButton'}) %>
-                    <% form_button({ :action => 'reset_user_password', :user_id => user.id },
+                    <%= form_button({ :action => 'reset_user_password', :user_id => user.id },
                                     'Reset Password', {}, {:class => 'button resetPasswordButton'}) %>
                   <%- end -%>
                 </td>
@@ -204,7 +204,7 @@
                 </td>
                 <td class="actions">
                   <span class="loading"></span>
-                  <% form_button({ :action => 'delete_future_user', :id => user.id }, 'Remove',
+                  <%= form_button({ :action => 'delete_future_user', :id => user.id }, 'Remove',
                        {:method => :delete}, {:class => 'button removeButton'}) %>
                 </td>
               </tr>

@@ -354,11 +354,11 @@
                       <div class="moderateActions">
                         <span class="textStatus"><%= v.moderation_status %></span>
                         <%- if v.moderationStatus.nil? || !v.moderationStatus -%>
-                          <% form_button({ :action => 'set_view_moderation_status',
+                          <%= form_button({ :action => 'set_view_moderation_status',
                                            :id => v.id, :approved => 'yes' }, t('controls.browse.actions.moderation.accept')) %>
                         <%- end -%>
                         <%- if v.moderationStatus.nil? || v.moderationStatus -%>
-                          <% form_button({ :action => 'set_view_moderation_status',
+                          <%= form_button({ :action => 'set_view_moderation_status',
                                            :id => v.id, :approved => 'no' }, t('controls.browse.actions.moderation.reject')) %>
                         <%- end -%>
                       </div>

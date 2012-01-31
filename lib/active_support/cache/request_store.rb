@@ -5,21 +5,20 @@ module ActiveSupport
     #  It never stores data, so nothing is cached across requests
     class RequestStore < Store
 
-      def initialize
+      def initialize(options = {})
+        @options = options
         extend Strategy::LocalCache
       end
 
-      def write(key, value, options = nil)
-        nil
-      end
+        protected
+        # The LocalStore will call super when it doesn't find anything,
+        # so we nil these out to keep it from falling back to the (abstract)
+        # base Store class
+        def read_entry(key, options)
+        end
 
-      def read(name, options = nil)
-        nil
-      end
-
-      def exist?(key, options = nil)
-        false
-      end
+        def write_entry(key, entry, options)
+        end
     end
   end
 end

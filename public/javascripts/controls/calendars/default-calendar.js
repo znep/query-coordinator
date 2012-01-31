@@ -1,6 +1,13 @@
 (function($)
 {
     $.Control.extend('socrataCalendar', {
+        _init: function()
+        {
+            this._super.apply(this, arguments);
+            // Hack for Oregon; too many meetings
+            this._maxRows = 1000;
+        },
+
         initializeVisualization: function()
         {
             setUpCalendar(this);

@@ -162,7 +162,8 @@
             { child.next.$dom.before(child.$dom); }
             else if (!$.isBlank(this.$ct))
             { this.$ct.append(child.$dom); }
-            if (this._rendered && !child._rendered)
+            if (child.$dom.parent().length > 0 &&
+                    this._rendered && !child._rendered)
                 child._render();
             this._arrange();
         },
@@ -351,7 +352,8 @@
             { this._$clear.before(child.$wrapper); }
             else if (!$.isBlank(this.$ct))
             { this.$ct.append(child.$wrapper); }
-            if (this._rendered && !child._rendered)
+            if (child.$wrapper.parent().length > 0 &&
+                    this._rendered && !child._rendered)
                 child._render();
             this._arrange();
         },

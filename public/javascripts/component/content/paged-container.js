@@ -108,7 +108,7 @@ $.component.Container.extend('PagedContainer', {
         if (!child._initialized) { child._initDom(); }
         if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
         { child.next.$dom.before(child.$dom); }
-        else
+        else if (!$.isBlank(this.$ct))
         {
             this.$ct.append(child.$dom);
             this.trigger('child_added', [{child: child}]);

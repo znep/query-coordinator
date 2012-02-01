@@ -51,7 +51,7 @@
 
             if (mapObj._primaryView.isGeoDataset())
             {
-                mapObj._geo = mapObj._primaryView.metadata.custom_fields.geo;
+                mapObj._geo = mapObj._primaryView.metadata.geo;
             }
 
             if (mapObj.$dom().siblings('#mapLayers').length < 1)

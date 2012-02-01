@@ -182,7 +182,7 @@ var Dataset = ServerModel.extend({
 
     isGeoDataset: function()
     {
-        return (this.metadata && this.metadata.custom_fields && this.metadata.custom_fields.geo);
+        return (this.metadata && this.metadata.geo);
     },
 
     isPublished: function()

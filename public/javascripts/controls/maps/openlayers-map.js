@@ -95,6 +95,7 @@
 
             var featureProtocol = null;
             var getOverlayLayer = null;
+            var manipulableLayers = [];
             if (mapObj._geo)
             {
                 var layerNames = mapObj._geo.layers.split(',');
@@ -208,6 +209,7 @@
 
                     case 'wms':
                         layer = mapObj._createWmsLayer(i, layer.options);
+                        manipulableLayers.push(layer);
                         break;
 
                     default:
@@ -294,7 +296,7 @@
                 getFeature.activate();
             }
 
-            mapObj.map.addControl(new OpenLayers.Control.LayerSwitcher());
+            mapObj.populateLayers(manipulableLayers);
 
             mapObj.map.zoomToExtent(getDataBbox());
         },

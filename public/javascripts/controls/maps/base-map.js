@@ -121,7 +121,7 @@
                 .zoomStopHeight = 12; }
 
             mapObj.initializeBaseLayers();
-            mapObj.populateLayers();
+            mapObj.populateLayers(mapObj._baseLayers);
 
             if (!mapObj._markers)
             { mapObj._markers = {}; }
@@ -431,7 +431,7 @@
 
             mapObj._boundsChanging = true;
             mapObj.initializeBaseLayers();
-            mapObj.populateLayers();
+            mapObj.populateLayers(mapObj._baseLayers);
             mapObj.initializeFlyouts((mapObj._displayFormat
                 .plot || {}).descriptionColumns);
 
@@ -444,10 +444,10 @@
             mapObj._super();
         },
 
-        populateLayers: function()
+        populateLayers: function(layers)
         {
             var mapObj = this;
-            var layers = mapObj._baseLayers || [];
+            layers = layers || [];
             if (layers.length < 2) { return; }
 
             var $layers = mapObj.$dom().siblings('#mapLayers');
@@ -456,13 +456,14 @@
             _.each(layers, function(l)
             {
                 var lId = 'mapLayer_' + l.name;
+                var opacity = _.isNull(l.opacity) ? 1 : l.opacity;
                 $layersList.append('<li data-layerid="' + l.id + '"' +
                     '><input type="checkbox" id="' + lId +
                     '"' + (l.visibility ? ' checked="checked"' : '') +
                     ' /><label for="' + lId + '">' + l.name + '</label><br />' +
                     '<span class="sliderControl" data-min="0" data-max="100" ' +
                     'data-origvalue="' +
-                    (l.opacity*100) + '" /></li>');
+                    (opacity*100) + '" /></li>');
                 $layersList.find('li:last').data('layer', l);
             });
             $layersList.find('.sliderControl').each(function()

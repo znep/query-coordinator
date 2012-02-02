@@ -100,7 +100,8 @@ class UserSession
   # and look up the user associated with that token.
   def find_token
     if core_session.valid?(true) # true to force load
-      user = User.find(core_session.user_id, {'Cookie' => "_blist_session_id=#{core_session.to_s}"})
+      user = User.find(core_session.user_id,
+                       {'Cookie' => "#{::CoreServer::Connection.cookie_name}=#{core_session.to_s}"})
       UserSession.update_current_user(user, core_session)
     elsif !cookies['remember_token'].blank?
       response = post_cookie_authentication
@@ -124,7 +125,7 @@ class UserSession
   def self.expiration_from_core_response(response)
     if response.is_a?(Net::HTTPSuccess)
       response.get_fields('set-cookie').each do |cookie_header|
-        if match = /\b_blist_session_id=([A-Za-z0-9%\-|]+)/.match(cookie_header)
+        if match = /\b#{::CoreServer::Connection.cookie_name}=([A-Za-z0-9%\-|]+)/.match(cookie_header)
           core_data = ::CoreSession.unmangle_core_session_from_cookie(match[1])
           expiration_data = core_data.split[1].to_i
           return expiration_data - Time.now.to_i

@@ -1,6 +1,6 @@
 require 'rack/ssl-enforcer'
 
-Rails.application.config.middleware.insert_before BlistCookieStore, "CoreServerConnectionMiddleware"
+Rails.application.config.middleware.insert_before SocrataCookieStore, "CoreServerConnectionMiddleware"
 Rails.application.config.middleware.insert_after CoreServerConnectionMiddleware, "CurrentDomainMiddleware"
 Rails.application.config.middleware.insert_after CurrentDomainMiddleware, "LocaleMiddleware"
 Rails.application.config.middleware.insert_after LocaleMiddleware, "LogRefererMiddleware"

@@ -1,4 +1,6 @@
 class CoreSession
+  include ActionDispatch::Session::StaleSessionCheck
+
   attr_accessor :user_id, :expiration, :salt, :signature
 
   def initialize(by, env)
@@ -9,7 +11,7 @@ class CoreSession
 
   def to_s
     if valid? && loaded?
-      CGI.escape(Base64.encode64("#{user_id} #{expiration.to_i} #{salt} #{signature}").gsub(/\n/, ''))
+      Base64.encode64("#{user_id} #{expiration.to_i} #{salt} #{signature}").gsub(/\n/, '')
     else
       ""
     end
@@ -112,32 +114,15 @@ private
     end
   end
 
-  def stale_session_check!
-    yield
-  rescue ArgumentError => argument_error
-    if argument_error.message =~ %r{undefined class/module ([\w:]*\w)}
-      begin
-        # Note that the regexp does not allow $1 to end with a :
-        $1.constantize
-      rescue LoadError, NameError => const_error
-        raise ActionController::SessionRestoreErrror("Session contains objects whose class definition isn\\'t available.\nRemember to require the classes for all objects kept in the session.\n(Original exception: \#{const_error.message} [\#{const_error.class}])\n")
-      end
-
-      retry
-    else
-      raise
-    end
-  end
-
   def self.unmangle_core_session_from_cookie(cookie_data)
-    core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
+    core_data  = cookie_data.gsub('"', '') if cookie_data
 
     if core_data.present?
       # Screw you, Commons Codec. Now that we're using a nice, URL-safe encoding,
       # it appears that the codec doesn't properly pad the Base64 text to be a
       # multiple of 4 characters.
       extra_equals_necessary = (4 - (core_data.length % 4)) % 4
-      return Base64.decode64(core_data + ('=' * extra_equals_necessary))
+      return Base64.decode64(core_data+ ('=' * extra_equals_necessary))
     else
       return nil
     end

@@ -2,6 +2,9 @@ module CoreServer
   class Connection
     cattr_accessor :cache
     cattr_accessor :env
+    cattr_accessor :cookie_name
+
+    @@cookie_name = "_core_session_id".freeze
 
     def initialize(logger = nil, cookies = nil)
       @logger = logger
@@ -136,7 +139,7 @@ module CoreServer
     def generic_request(request, json = nil, custom_headers = {})
       requestor = User.current_user
       if requestor && requestor.session_token
-        request['Cookie'] = "_blist_session_id=#{requestor.session_token.to_s}"
+        request['Cookie'] = "#{@@cookie_name}=#{requestor.session_token.to_s}"
       end
 
       # pass in the server session cookie

@@ -37,7 +37,7 @@
 require 'rack/session/abstract/id' unless defined? Rack::Session::Abstract::ID
 require 'action_dispatch/middleware/session/abstract_store'
 
-class BlistCookieStore
+class SocrataCookieStore
   include ActionDispatch::Session::StaleSessionCheck
 
   # Cookies can typically store 4096 bytes.
@@ -46,13 +46,14 @@ class BlistCookieStore
 
   DEFAULT_OPTIONS = {
     :key          => '_session_id',
+    :core_key     => '_core_session_id',
     :domain       => nil,
     :path         => "/",
     :expire_after => nil,
     :httponly     => true
   }.freeze
 
-  CORE_SESSION_KEY = "blist.core-session".freeze
+  CORE_SESSION_KEY = "socrata.core-session".freeze
   ENV_SESSION_KEY = "rack.session".freeze
   ENV_SESSION_OPTIONS_KEY = Rack::Session::Abstract::ENV_SESSION_OPTIONS_KEY
 
@@ -77,6 +78,9 @@ class BlistCookieStore
     # The session_key option is required.
     ensure_session_key(options[:key])
     @key = options.delete(:key).freeze
+
+    ensure_session_key(options[:core_key])
+    @core_key = options.delete(:core_key).freeze
 
     # The secret option is required.
     ensure_secret_secure(options[:secret])
@@ -103,7 +107,10 @@ class BlistCookieStore
 
       save_cookie = false
 
-      if !(options[:secure] && !request.ssl?) && (!session_data.is_a?(Rack::Session::Abstract::SessionHash) || session_data.send(:loaded?) || options[:expire_after])
+      if !(options[:secure] && !request.ssl?) &&
+          (!session_data.is_a?(Rack::Session::Abstract::SessionHash) ||
+            session_data.send(:loaded?) ||
+            options[:expire_after])
         session_data.send(:load!) if session_data.is_a?(Rack::Session::Abstract::SessionHash) && !session_data.loaded?
         persistent_session_id!(session_data)
         session_data = marshal(session_data.to_hash)
@@ -111,22 +118,26 @@ class BlistCookieStore
       end
 
       if !core_data.is_a?(CoreSession) || core_data.send(:loaded?) || options[:expire_after]
-        core_data.send(:load!) if core_data.is_a?(CoreSession) && !core_data.send(:loaded?)
-        core_data = core_data.to_s
-        save_cookie = true
+        save_core_cookie = true
       end
 
-      if save_cookie
-        raise CookieOverflow if (session_data.size + core_data.size) > MAX
+      [
+        [save_cookie, session_data, @key],
+        [save_core_cookie, core_data, @core_key]
+      ].each do |persist|
+        if persist.first
+          raise CookieOverflow if (persist[1].size) > MAX
 
-        cookie = Hash.new
-        cookie[:value] = session_data.to_s || ''
-        cookie[:value] = core_data.to_s + '||' + cookie[:value] unless core_data.nil?
-        unless options[:expire_after].nil?
-          cookie[:expires] = Time.now + options[:expire_after]
+          cookie = Hash.new
+          cookie[:value] = persist[1].to_s || ''
+          unless options[:expire_after].nil?
+            cookie[:expires] = Time.now + options[:expire_after]
+          end
+
+          if (cookie[:expires] || (cookie[:value] != request.cookies[persist.last]))
+            Rack::Utils.set_cookie_header!(headers, persist.last, cookie.merge(options))
+          end
         end
-
-        Rack::Utils.set_cookie_header!(headers, @key, cookie.merge(options))
       end
     end
 
@@ -153,14 +164,14 @@ class BlistCookieStore
 
     def load_core_session(env)
       request = ActionDispatch::Request.new(env)
-      cookie_data = request.cookie_jar[@key]
+      cookie_data = request.cookie_jar[@core_key]
       return ::CoreSession.unmangle_core_session_from_cookie(cookie_data)
     end
 
     def extract_session_id(env)
       if data = unpacked_cookie_data(env)
         persistent_session_id!(data) unless data.empty?
-        return data[:session_id]
+        return data['session_id']
       else
         return nil
       end
@@ -179,24 +190,7 @@ class BlistCookieStore
         stale_session_check! do
           request = ActionDispatch::Request.new(env)
           cookie_data = request.cookie_jar[@key]
-
-          # The wonderful thing about Base64 standards is that there are so
-          # many to choose from: http://en.wikipedia.org/wiki/Base64
-          # 
-          # It turns out that the core server, when writing out the
-          # _blist_session_id cookie, uses a "MIME" form of URL encoding where the
-          # 63rd and 64th characters in the encoding are '+' and '/', respectively.
-          # Rails, in its infinite wisdom, prefers a URL-encoding-safe variant of
-          # Base64, which translates the '+' to it's URL-safe "%2B" and '/' into
-          # "%2F". Trying to decode a string with a + or / fails, and when we CGI
-          # unescape the +, it became a space character instead, failing the digest
-          # check.
-          #
-          # This is a total hack - we should figure out a better solution.
-          cookie_data = cookie_data.gsub('+', '%2B') if cookie_data
-          cookie_data = cookie_data.gsub('/', '%2F') if cookie_data
-
-          core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
+          session_data = cookie_data.gsub('"' ,'') if cookie_data
           unmarshal(session_data) || {}
         end
       end
@@ -267,7 +261,7 @@ class BlistCookieStore
 
     def requires_session_id?(data)
       if data
-        data.respond_to?(:key?) && !data.key?(:session_id)
+        data.respond_to?(:key?) && !data.key?('session_id')
       else
         true
       end

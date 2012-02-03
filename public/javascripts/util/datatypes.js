@@ -628,21 +628,21 @@ blist.namespace.fetch('blist.datatypes');
     // controls/maps/external-esri-map.js#transformFilterToLayerDefinition
     // -- michael.chui@socrata.com
     var filterOptions = {
-        'EQUALS': { text: 'is', editorCount: 1 },
-        'NOT_EQUALS': { text: 'is not', editorCount: 1 },
+        'EQUALS': { text: $.t('core.filters.informal.equals'), editorCount: 1 },
+        'NOT_EQUALS': { text: $.t('core.filters.informal.not_equals'), editorCount: 1 },
 
-        'STARTS_WITH': { text: 'starts with', editorCount: 1 },
-        'CONTAINS': { text: 'contains', editorCount: 1 },
-        'NOT_CONTAINS': { text: 'does not contain', editorCount: 1 },
+        'STARTS_WITH': { text: $.t('core.filters.informal.starts_with'), editorCount: 1 },
+        'CONTAINS': { text: $.t('core.filters.informal.contains'), editorCount: 1 },
+        'NOT_CONTAINS': { text: $.t('core.filters.informal.not_contains'), editorCount: 1 },
 
-        'LESS_THAN': { text: 'is less than', editorCount: 1 },
-        'LESS_THAN_OR_EQUALS': { text: 'is less than or equal to', editorCount: 1 },
-        'GREATER_THAN': { text: 'is greater than', editorCount: 1 },
-        'GREATER_THAN_OR_EQUALS': { text: 'is greater than or equal to', editorCount: 1 },
-        'BETWEEN': { text: 'is between', editorCount: 2 },
+        'LESS_THAN': { text: $.t('core.filters.informal.less_than'), editorCount: 1 },
+        'LESS_THAN_OR_EQUALS': { text: $.t('core.filters.informal.less_than_or_equals'), editorCount: 1 },
+        'GREATER_THAN': { text: $.t('core.filters.informal.greater_than'), editorCount: 1 },
+        'GREATER_THAN_OR_EQUALS': { text: $.t('core.filters.informal.greater_than_or_equals'), editorCount: 1 },
+        'BETWEEN': { text: $.t('core.filters.informal.between'), editorCount: 2 },
 
-        'IS_BLANK': { text: 'is blank', editorCount: 0 },
-        'IS_NOT_BLANK': { text: 'is not blank', editorCount: 0 }
+        'IS_BLANK': { text: $.t('core.filters.informal.is_blank'), editorCount: 0 },
+        'IS_NOT_BLANK': { text: $.t('core.filters.informal.is_not_blank'), editorCount: 0 }
     };
 
     // filter details shouldn't specify an interfaceType here, because individual types

@@ -113,8 +113,9 @@ module ApplicationHelper
     end
   end
 
+  DEFAULT_TRANSLATIONS = [ LocalePart.core ]
   def needs_translation(part)
-    (@required_translation_parts ||= Set.new) << part
+    (@required_translation_parts ||= Set.new(DEFAULT_TRANSLATIONS)) << part
   end
 
   def render_translations

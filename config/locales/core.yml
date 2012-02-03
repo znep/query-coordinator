@@ -1,0 +1,29 @@
+en:
+  core:
+    filters:
+      formal:
+        equals: equals
+        not_equals: does not equal
+        starts_with: starts with
+        contains: contains
+        not_contains: does not contain
+        less_than: less than
+        less_than_or_equals: less than or equal to
+        greater_than: greater than
+        greater_than_or_equals: greater than or equal to
+        between: between
+        is_blank: is blank
+        is_not_blank: is not blank
+      informal:
+        equals: is
+        not_equals: is not
+        starts_with: starts with
+        contains: contains
+        not_contains: does not contain
+        less_than: is less than
+        less_than_or_equals: is at most
+        greater_than: is greater than
+        greater_than_or_equals: is at least
+        between: is between
+        is_blank: is blank
+        is_not_blank: is not blank

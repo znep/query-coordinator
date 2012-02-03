@@ -170,7 +170,7 @@ $wizard.wizard({
 
         'uploadFile':       blist.importer.uploadFilePaneConfig,
         'importColumns':    blist.importer.importColumnsPaneConfig,
-        'importShapefile': blist.importer.importShapefilePaneConfig,
+        'importShapefile':  blist.importer.importShapefilePaneConfig,
         'importing':        blist.importer.importingPaneConfig,
         'importWarnings':   blist.importer.importWarningsPaneConfig,
 
@@ -288,6 +288,13 @@ $wizard.wizard({
 
                 // fire things off
                 var viewData = formToViewMetadata(state.metadataForm);
+                // if the submittedView contains metadata, e.g. the core server
+                // populated some fields for us (in the case of shapefiles, this
+                // is critical), persist them.
+                if (viewData.metadata && state.submittedView && state.submittedView.metadata)
+                {
+                    $.extend(viewData, {metadata: state.submittedView.metadata});
+                }
 
                 var successCallback = function(createdView)
                 {

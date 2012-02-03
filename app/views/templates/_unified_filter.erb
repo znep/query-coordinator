@@ -1,58 +1,57 @@
+<%- needs_translation LocalePart.controls.filter -%>
+
 <div class="filterPane">
   <div class="initialFilterMode">
-    <p>Never created a filter before? Watch a short tutorial video
-       <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">here</a>.</p>
+    <p><%= t 'controls.filter.main.tutorial_html' %></p>
     <p class="orText">or</p>
     <a href="#newCondition" class="addFilterConditionButton">
-      Click here to add your first filter condition
+      <%= t 'controls.filter.actions.first_condition' %>
     </a>
   </div>
   <div class="normalFilterMode">
     <div class="menu advanced filterOptionsMenu mainFilterOptionsMenu"></div>
 
     <div class="advancedStateLine notAdvancedLine">
-      <span class="advancedStateText">You are in simplified mode.</span>
-      <a class="advancedStateLink advancedOnLink" href="#advanced">Go advanced now?</a>
+      <span class="advancedStateText"><%= t 'controls.filter.main.simplified_message' %></span>
+      <a class="advancedStateLink advancedOnLink" href="#advanced">
+        <%= t 'controls.filter.main.simplified_toggle' %>
+      </a>
     </div>
     <div class="advancedStateLine editModeAdvancedOffLine">
-      <span class="advancedStateText">Users will start in simplified mode.</span>
-      This means that they will be unable to add new conditions,
-      change the columns or operators of filters, or access the
-      advanced menus on filters.
-      <a class="advancedStateLink advancedOnLink" href="#advanced">Change the default back to advanced.</a>
+      <span class="advancedStateText"><%= t 'controls.filter.edit_default.simplified_header' %></span>
+      <%= t 'controls.filter.edit_default.simplified_body' %>
+      <a class="advancedStateLink advancedOnLink" href="#advanced">
+        <%= t 'controls.filter.edit_default.simplified_toggle' %>
+      </a>
     </div>
     <div class="advancedStateLine editModeAdvancedOnLine">
-      <span class="advancedStateText">Users will start in advanced mode.</span>
-      This means that they will have full access to the options
-      available on the filter. For a more curated experience, you
-      can try the simplified mode.
-      <a class="advancedStateLink advancedOffLink" href="#notAdvanced">Change the default to simplified.</a>
+      <span class="advancedStateText"><%= t 'controls.filter.edit_default.advanced_header' %></span>
+      <%= t 'controls.filter.edit_default.advanced_body' %>
+      <a class="advancedStateLink advancedOffLink" href="#notAdvanced">
+        <%= t 'controls.filter.edit_default.advanced_toggle' %>
+      </a>
     </div>
 
     <div class="filterConditions">
-      <div class="noFilterConditionsText">No conditions defined yet.</div>
+      <div class="noFilterConditionsText"><%= t 'controls.filter.main.no_conditions' %></div>
     </div>
 
     <a class="button add advanced addFilterConditionButton">
       <span class="icon"></span>
-      Add a New Filter Condition
+      <%= t 'controls.filter.actions.new_condition_button' %>
     </a>
   </div>
 
   <%- if @view.present? && @view.has_rights?('update_view') -%>
     <div class="editFilterBlock">
       <div class="normalModeMessage">
-        <p>As a publisher of this view, you may define the default set
-           of filters visitors will be presented with:</p>
-        <a class="editFilter button" href="#edit">Edit Default Filter</a>
+        <p><%= t 'controls.filter.edit_default.mode_message' %></p>
+        <a class="editFilter button" href="#edit"><%= t 'controls.filter.edit_default.mode_button' %></a>
       </div>
       <div class="editModeMessage">
-        <p>Use the tools above to create filters, adjust presented values,
-           select the number of automatically suggested values the filter
-           will attempt to present, and so on. When you are satisfied with
-           the options being presented, click on Done below to save it:</p>
-        <a class="saveEditedFilter button default" href="#save">Done</a>
-        <a class="discardEditedFilter button" href="#cancel">Cancel</a>
+        <p><%= t 'controls.filter.edit_default.instructions' %></p>
+        <a class="saveEditedFilter button default" href="#save"><%= t 'controls.filter.edit_default.done_button' %></a>
+        <a class="discardEditedFilter button" href="#cancel"><%= t 'controls.filter.edit_default.cancel_button' %></a>
         <span class="savingEditedFilterSpinner"></span>
       </div>
     </div>
@@ -60,7 +59,7 @@
 </div>
 <div class="filterCondition">
   <div class="filterCondition sectionContent">
-    <a class="filterRemoveButton advanced remove" href="#close"><span class="icon">Remove filter</span></a>
+    <a class="filterRemoveButton advanced remove" href="#close"><span class="icon"><%= t 'controls.filter.actions.remove_filter' %></span></a>
     <div class="filterHeadline">
       <a class="filterExpander downArrow"><span class="icon"></span></a>
       <a class="filterLink columnName" href="#change"></a>
@@ -72,7 +71,7 @@
       <div class="autogenerated">
         <div class="autogeneratedPropertiesOverlay"></div>
         <div class="autogeneratedProperties">
-          <p>Show up to <select class="autogeneratedCount"><%= options_for_select((1..20).to_a) %></select> suggested values</p>
+          <div class="countLine"><%= t 'controls.filter.edit_default.manual_suggested_html' %></div>
         </div>
       </div>
     </div>

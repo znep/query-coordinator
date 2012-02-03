@@ -237,11 +237,20 @@
                 {
                     var selectedFeature = event.feature;
 
-                    var popupText = "";
-                    _.each(selectedFeature.attributes, function(value, key)
+                    var popupText = _.map(selectedFeature.attributes, function(value, key)
                     {
-                        popupText += key + ': ' + value + '<br />';
-                    })
+                        if (key == '_SocrataID' || key == 'bbox') { return; }
+                        return $.tag({
+                            tagName: 'p',
+                            contents: [ {
+                                tagName: 'span', 'class': 'property',
+                                contents: key + ':'
+                            }, {
+                                tagName: 'span', 'class': 'value',
+                                contents: value
+                            } ]
+                        }, true);
+                    }).join('');
 
                     var bounds = getFeature.pixelToBounds(getFeature.handlers.click.evt.xy);
 

@@ -98,7 +98,7 @@
 
             var mapOptions =
             {
-                theme: '/stylesheets/openlayers/style.css',
+                theme: null,
                 projection: 'EPSG:900913',
                 displayProjection: geographicProjection,
                 units: 'm',

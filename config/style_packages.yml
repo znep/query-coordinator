@@ -96,6 +96,7 @@ display-form:
 - screen-form
 display-map:
 - screen-map
+- openlayers
 dataset-new:
 - screen-dataset-new
 dataset-show:

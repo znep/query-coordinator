@@ -133,9 +133,9 @@ module ApplicationHelper
                    " href=\"/styles/individual/#{req}.css\"/>" }.
         join("\n").html_safe
     else
-      return "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
+      return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
              " href=\"/styles/merged/#{stylesheet.to_s}.css?" +
-             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>".html_safe
+             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>").html_safe
     end
   end
 

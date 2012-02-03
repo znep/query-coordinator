@@ -33,6 +33,7 @@
     <div id="templates">
       <%= render :partial => 'fatrow_header_template' %>
     </div>
+    <%= render_translations %>
 
     <%= include_javascripts 'base' %>
 
@@ -41,7 +42,6 @@
     <%- end -%>
 
     <%= render_view_js %>
-    <%= render_translations %>
 
     <script type="text/javascript">
       blist.namespace.fetch('blist.snapshot');

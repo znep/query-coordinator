@@ -120,8 +120,8 @@ module ApplicationHelper
 
   def render_translations
     if @required_translation_parts.present?
-      content_tag :script, :type => 'text/javascript' do
-        "blist.translations = #{safe_json(LocaleCache.render_translations(@required_translation_parts)).html_safe};".html_safe
+      content_tag :div, :id => 'translations', :'data-locale' => I18n.locale do
+        LocaleCache.render_translations(@required_translation_parts).to_json
       end
     end
   end

@@ -55,6 +55,7 @@ http://www.socrata.com
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
   </div>
+  <%= render_translations %>
 
   <%# Libraries for use with BeautyTip %>
   <!--[if IE]>
@@ -67,7 +68,6 @@ http://www.socrata.com
   <%= include_javascripts 'base' %>
 
   <%= render_view_js %>
-  <%= render_translations %>
 
   <% if Rails.env != 'production' %>
       <%= include_javascripts 'debug' %>

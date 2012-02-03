@@ -42,7 +42,6 @@ http://www.socrata.com
   <%= rendered_stylesheet_tag 'base' %>
 
   <%= render_view_js %>
-  <%= render_translations %>
 
   <%= jquery_include %>
   <%= javascript_error_helper_tag %>
@@ -79,6 +78,7 @@ http://www.socrata.com
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
   </div>
+  <%= render_translations %>
 
   <%# Libraries for use with BeautyTip %>
   <!--[if IE]>

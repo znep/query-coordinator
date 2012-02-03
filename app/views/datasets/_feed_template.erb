@@ -1,20 +1,22 @@
+<%- needs_translation LocalePart.controls.feed -%>
+
 <div class="cellFeedTitle">
-  <h3>Comments for row <span class="rowName"></span>, column <span class="columnName"></span></h3>
+  <h3><%= t 'controls.feed.header.cell_comment_header_html' %></h3>
 </div>
 
 <div class="feedList">
   <div class="feed">
     <div class="feedFilterLine">
-      <span class="text">Show</span>
+      <span class="text"><%= t 'controls.feed.header.feed_filter_label' %></span>
       <select class="feedFilter"></select>
     </div>
     <%- if allow_comments -%>
-      <a href="#post" class="button feedNewCommentButton">Add Comment</a>
+      <a href="#post" class="button feedNewCommentButton"><%= t 'controls.feed.header.add_comment' %></a>
     <%- end -%>
-    <div class="moderationNotice">Your comment has been submitted and is pending moderation</div>
+    <div class="moderationNotice"><%= t 'controls.feed.header.pending_moderation' %></div>
     <ul class="feedList"></ul>
     <a href="#showMore" class="feedMoreItemsLink fullButton"></a>
-    <span class="noResults hide">There are no items to display</span>
+    <span class="noResults hide"><%= t 'controls.feed.listing.no_results' %></span>
   </div>
 </div>
 <ul class="feedItem">
@@ -27,28 +29,28 @@
     <div class="feedCustom"></div>
     <p class="feedTimestamp"></p>
     <ul class="feedChildren"></ul>
-    <a href="#allReplies" class="replyViewAllLink">View all replies</a>
+    <a href="#allReplies" class="replyViewAllLink"><%= t 'controls.feed.listing.all_replies' %></a>
   </li>
 </ul>
 <div class="feedItem_comment">
   <ul class="commentActions clearfix">
     <%- if allow_comments -%>
-      <li class="actionReply"><a class="commentReplyLink" href="#reply">Reply</a></li>
+    <li class="actionReply"><a class="commentReplyLink" href="#reply"><%= t 'controls.feed.comment_actions.reply' %></a></li>
     <%- end -%>
-    <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate">Inappropriate</a></li>
-    <li class="actionDelete"><a class="commentDeleteLink" href="#delete">Delete</a></li>
-    <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="Rate this comment down"></a></li>
-    <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="Rate this comment up"></a></li>
+    <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate"><%= t 'controls.feed.comment_actions.inappropriate' %></a></li>
+    <li class="actionDelete"><a class="commentDeleteLink" href="#delete"><%= t 'controls.feed.comment_actions.delete' %></a></li>
+    <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="<%= t 'controls.feed.comment_actions.rate_down' %>"></a></li>
+    <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="<%= t 'controls.feed.comment_actions.rate_up' %>"></a></li>
     <li class="downRatings"></li>
     <li class="upRatings"></li>
   </ul>
 </div>
 <div class="feedItem_reply">
   <ul class="commentActions clearfix">
-    <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate">Inappropriate</a></li>
-    <li class="actionDelete"><a class="commentDeleteLink" href="#delete">Delete</a></li>
-    <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="Rate this comment down"></a></li>
-    <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="Rate this comment up"></a></li>
+    <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate"><%= t 'controls.feed.comment_actions.inappropriate' %></a></li>
+    <li class="actionDelete"><a class="commentDeleteLink" href="#delete"><%= t 'controls.feed.comment_actions.delete' %></a></li>
+    <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="%= t 'controls.feed.comment_actions.rate_down' %>"></a></li>
+    <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="<%= t 'controls.feed.comment_actions.rate_up' %>"></a></li>
     <li class="downRatings"></li>
     <li class="upRatings"></li>
   </ul>
@@ -62,10 +64,10 @@
 </div>
 <div class="feedItem_newComment">
   <div class="newCommentForm">
-    <label for="newCommentBody">New Comment:</label>
+    <label for="newCommentBody"><%= t 'controls.feed.comment_form.header' %>:</label>
     <textarea name="newCommentBody" id="newCommentBody"></textarea>
     <div class="error"></div>
-    <a class="button postNewCommentButton" href="#post">Post</a>
-    <a class="button cancelNewCommentButton" href="#cancel">Cancel</a>
+    <a class="button postNewCommentButton" href="#post"><%= t 'controls.feed.comment_form.post_button' %></a>
+    <a class="button cancelNewCommentButton" href="#cancel"><%= t 'controls.feed.comment_form.cancel_button' %></a>
   </div>
 </div>

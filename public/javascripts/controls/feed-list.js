@@ -2,7 +2,7 @@
 {
     var commentDirective = {
         '.commentActions .commentInappropriateLink':
-            function(a) { return a.context.commentFlagged ? 'Flagged' : 'Inappropriate'; },
+            function(a) { return a.context.commentFlagged ? $.t('controls.feed.comment_actions.already_marked_inappropriate') : $.t('controls.feed.comment_actions.inappropriate'); },
         '.commentActions .commentInappropriateLink@class+':
             function(a) { return a.context.commentFlagged ? 'disabled' : ''; },
         '.commentActions .upRatings':
@@ -85,7 +85,9 @@
                     '.feedChildren@class+': function(a)
                     { return (_.isUndefined(a.item.children) ||
                              (a.item.childCount === 0)) ? 'hide' : ''; },
-                    '.replyViewAllLink': 'View all #{feedItem.childCount} replies',
+                    '.replyViewAllLink': function(a)
+                    { return $.t('controls.feed.listing.all_replies_with_count',
+                                 { count: a.item.childCount }); },
                     '.replyViewAllLink@class+': function(a)
                     { return (_.isUndefined(a.item.children) ||
                              (a.item.childCount <= opts.replyPageLimit)) ? 'hide' : ''; }
@@ -120,7 +122,7 @@
             return {
                 itemType: 'view',
                 itemId: view.id,
-                body: 'created a ' + view.displayName + ':',
+                body: $.t('controls.feed.listing.user_create_action', { thing: view.displayName }),
                 timestamp: view.createdAt,
                 viewName: view.name,
                 viewType: 'type' + view.styleClass,
@@ -223,10 +225,10 @@
                 if (remainingItems <= 0)
                     $moreItemsButton.hide();
                 else if (remainingItems == 1)
-                    $moreItemsButton.text('View last item');
+                    $moreItemsButton.text($.t('controls.feed.listing.last_item'));
                 else
-                    $moreItemsButton.text('View next ' +
-                        Math.min(remainingItems, opts.pageSize) + ' items');
+                    $moreItemsButton.text($.t('controls.feed.listing.next_item_page',
+                                              { count: Math.min(remainingItems, opts.pageSize) }));
 
                 if (!fullReset)
                 {
@@ -316,7 +318,7 @@
                     // Take action
                     if ($this.is('.commentInappropriateLink:not(.disabled)'))
                     {
-                        blist.util.doAuthedAction('flag a comment', function(successCallback)
+                        blist.util.doAuthedAction($.t('controls.feed.authed_actions.flag_comment'), function(successCallback)
                         {
                             opts.actionDelegate(targetCommentData, opts).flagComment(
                                 targetCommentData.itemId,
@@ -326,7 +328,7 @@
                                     $this.fadeOut(function()
                                     {
                                         $this.addClass('disabled')
-                                            .text('Flagged!').fadeIn();
+                                            .text($.t('controls.feed.comment_actions.marked_inappropriate')).fadeIn();
                                     });
                                     if (_.isFunction(successCallback)) { successCallback(); }
                                 }
@@ -335,7 +337,7 @@
                     }
                     else if ($this.is('.commentDeleteLink'))
                     {
-                        blist.util.doAuthedAction('delete a comment', function(successCallback)
+                        blist.util.doAuthedAction($.t('controls.feed.authed_actions.delete_comment'), function(successCallback)
                         {
                             opts.actionDelegate(targetCommentData, opts).removeComment(
                                 targetCommentData.itemId,
@@ -352,7 +354,7 @@
                              $this.is('.commentRateDownLink:not(.ratedDown)'))
                     {
                         var thumbsUp = $this.hasClass('commentRateUpLink');
-                        blist.util.doAuthedAction('rate a comment', function(successCallback)
+                        blist.util.doAuthedAction($.t('controls.feed.authed_actions.rate_comment'), function(successCallback)
                         {
                             opts.actionDelegate(targetCommentData, opts).rateComment(
                                 targetCommentData.itemId, thumbsUp,
@@ -407,7 +409,7 @@
 
                     // either the field is already blank, or we confirm it's okay.
                     if ($.isBlank($this.siblings('#newCommentBody').val()) ||
-                        confirm('Are you sure? Your comment will be lost.'))
+                        confirm($.t('controls.feed.comment_actions.delete_confirm')))
                     {
                         $this.closest('.newCommentForm').remove();
                     }
@@ -434,7 +436,7 @@
                             commentData.parent = { id: parentCommentId };
                         }
 
-                        blist.util.doAuthedAction('post a comment', function(successCallback)
+                        blist.util.doAuthedAction($.t('controls.feed.authed_actions.post_comment'), function(successCallback)
                         {
                             view.addComment(commentData,
                                 function(response)
@@ -503,7 +505,7 @@
                     else
                     {
                         $this.siblings('.error')
-                            .text('The comment body cannot be empty.').slideDown();
+                            .text($.t('controls.feed.comment_form.empty_body_error')).slideDown();
                     }
                 });
 

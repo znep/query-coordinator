@@ -1,0 +1,56 @@
+en:
+  controls:
+    feed:
+      header:
+        cell_comment_header_html: Comments for row <span class="rowName"></span>, column <span class="columnName"></span>
+        feed_filter_label: Show
+        add_comment: Add Comment
+        pending_moderation: Your comment is submitted and is pending moderation
+      listing:
+        no_results: There are no items to display
+        all_replies: View all replies
+        all_replies_with_count: View all %{count} replies
+        next_item_page: View next %{count} items
+        last_item: View last item
+        user_create_action: "created a %{thing}\:"
+      comment_actions:
+        reply: Reply
+        inappropriate: Inappropriate
+        already_marked_inappropriate: Flagged
+        marked_inappropriate: Flagged!
+        delete: Delete
+        delete_confirm: Are you sure? Your comment will be lost.
+        rate_down: Rate this comment down
+        rate_up: Rate this comment up
+      comment_form:
+        header: New Comment
+        post_button: Post
+        cancel_button: Cancel
+        empty_body_error: The comment body cannot be empty.
+      authed_actions:
+        flag_comment: flag a comment
+        delete_comment: delete a comment
+        rate_comment: rate a comment
+        post_comment: post a comment
+
+wtf:
+  controls:
+    feed:
+      header:
+        cell_comment_header_html: The lowdown on row <span class="rowName"></span>, column <span class="columnName"></span>
+        feed_filter_label: Gimme
+        add_comment: Talk, fool!
+        pending_moderation: People gotta approve your comment, man
+      listing:
+        no_results: Ain't got nothin to show!
+        all_replies: Hand it all over
+      comment_actions:
+        reply: Respond
+        inappropriate: Wtf is this
+        delete: Trash
+        rate_down: Props
+        rate_up: Eff that
+      comment_form:
+        header: Say things
+        post_button: Go
+        cancel_button: Never mind

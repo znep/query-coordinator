@@ -114,18 +114,14 @@
                 Dataset.createFromViewId(settings.view.childViews[tableNumber], function (dataset)
                 {
                     $dom.datasetGrid($.extend({view: dataset,
-                        columnDeleteEnabled: settings.editEnabled &&
-                            dataset.type == 'blist' &&
-                            dataset.hasRight('remove_column'),
-                        columnPropertiesEnabled: settings.columnEditEnabled,
+                        columnDeleteEnabled: false,
+                        columnPropertiesEnabled: false,
                         columnNameEdit: settings.columnEditEnabled &&
                             (dataset.isDefault() ||
                              dataset.type == 'grouped') &&
                             dataset.hasRight('update_column'),
-                        showAddColumns: settings.editEnabled &&
-                            dataset.type == 'blist' &&
-                            dataset.hasRight('add_column'),
-                        editEnabled: settings.editEnabled},
+                        showAddColumns: false,
+                        editEnabled: false},
                         settings.common,
                         settings.table));
                 });

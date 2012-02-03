@@ -12,6 +12,12 @@ module LocaleCache
       locales[locale] = en_translations.deep_merge(translations)
     end
 
+    # set en as the fallback for all other locales
+    I18n.backend.class.send(:include, I18n::Backend::Fallbacks)
+    locales.each do |locale, _|
+      I18n.fallbacks.map(locale => 'en') unless locale == 'en'
+    end
+
     # init cache
     @cache = {}
   end

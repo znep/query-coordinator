@@ -23,7 +23,7 @@ Frontend::Application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
 
-  config.middleware.insert_after 'ActionController::Failsafe', "Graylog2Exceptions", :hostname => 'graylog2.sea1.socrata.com', :facility => 'frontend'
+  config.middleware.use "Graylog2Exceptions", :hostname => 'graylog2.sea1.socrata.com', :facility => 'frontend'
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH
 

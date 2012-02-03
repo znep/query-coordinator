@@ -2,6 +2,8 @@ require 'rack/ssl-enforcer'
 
 Rails.configuration.middleware.insert_before BlistCookieStore, "CoreServerConnectionMiddleware"
 Rails.configuration.middleware.insert_after CoreServerConnectionMiddleware, "CurrentDomainMiddleware"
+Rails.configuration.middleware.insert_after CurrentDomainMiddleware, "LocaleMiddleware"
+Rails.configuration.middleware.insert_after LocaleMiddleware, "LogRefererMiddleware"
 Rails.configuration.middleware.insert_after CurrentDomainMiddleware, Rack::SslEnforcer,
   :https_port => APP_CONFIG['ssl_port'],
   :http_port => APP_CONFIG['http_port'],

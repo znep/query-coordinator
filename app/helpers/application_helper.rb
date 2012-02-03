@@ -113,6 +113,18 @@ module ApplicationHelper
     end
   end
 
+  def needs_translation(part)
+    (@required_translation_parts ||= Set.new) << part
+  end
+
+  def render_translations
+    if @required_translation_parts.present?
+      content_tag :script, :type => 'text/javascript' do
+        "blist.translations = #{safe_json(LocaleCache.render_translations(@required_translation_parts)).html_safe};".html_safe
+      end
+    end
+  end
+
 # styles
   def rendered_stylesheet_tag(stylesheet, media='all')
     if Rails.env == 'development'

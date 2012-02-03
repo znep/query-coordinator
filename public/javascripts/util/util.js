@@ -242,6 +242,14 @@ $.live = function(selector, type, fn)
     return $obj;
 };
 
+// TODO: not integrated with component locale stuffing
+$.t = function(key, data)
+{
+    var result = $.deepGetStringField(blist.translations, key)
+                      .replace(/%{[^}]+}/, function(dataKey) { return data[dataKey.slice(2, -1)]; });
+    return key.endsWith('_html') ? result : $.htmlStrip(result);
+};
+
 /* Do a deep compact on any object.  For any array, run a normal compact on
  * the array; then deep compact all sub-values.  For an object, leave out blank
  * values; and deep compact all the non-blank ones */

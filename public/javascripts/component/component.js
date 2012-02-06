@@ -321,8 +321,12 @@
                     (this._properties.customClass || '') + ' ' + (this._properties.hidden ? 'hide' : '');
                 if (this._needsOwnContext)
                 {
-                    this.$contents = $.tag({tagName: 'div', 'class': 'content-wrapper'});
-                    this.$dom.append(this.$contents);
+                    this.$contents = this.$dom.children('.content-wrapper');
+                    if (this.$contents.length < 1)
+                    {
+                        this.$contents = $.tag({tagName: 'div', 'class': 'content-wrapper'});
+                        this.$dom.append(this.$contents);
+                    }
                 }
                 else
                 { this.$contents = this.$dom; }
@@ -386,6 +390,15 @@
             var cObj = this;
             if (!this._isRenderable()) { return false; }
             this._initDom();
+            // Not fully working yet
+//            if (this.$dom.hasClass('serverRendered'))
+//            {
+//                this.$dom.removeClass('serverRendered');
+//                this._rendered = true;
+//                delete this._needsRender;
+//                return false;
+//            }
+
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
 

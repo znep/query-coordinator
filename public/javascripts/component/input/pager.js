@@ -154,6 +154,9 @@ $.component.Component.extend('Pager', 'input', {
                 });
                 cObj.$contents.find('input').uniform();
             }
+
+            var vId = cObj._context.visibleId();
+            if (!$.isBlank(vId)) { adjustIndex(cObj, vId); }
         }
         cObj._updateValidity();
     },
@@ -164,6 +167,76 @@ $.component.Component.extend('Pager', 'input', {
         if (!_.isEmpty(properties)) { this._render(); }
     }
 });
+
+var adjustIndex = function(cObj, newChildId)
+{
+    var curIndex = cObj._context.visibleIndex();
+    var childList = cObj._context.children();
+    var $statusItem;
+    var $navLinks;
+    if (($navLinks = cObj.$contents.find('.navigateLink')).length > 0)
+    {
+        $navLinks.filter('.prevLink').toggleClass('disabled',
+            cObj._properties.navigateWrap === false && curIndex == 0);
+        $navLinks.filter('.nextLink').toggleClass('disabled',
+            cObj._properties.navigateWrap === false && curIndex == (childList.length - 1));
+    }
+    if (($statusItem = cObj.$contents.find('.navigateInfo')).length > 0)
+    {
+        $statusItem.find('.currentItem').text(curIndex + 1);
+        $statusItem.find('.totalCount').text(childList.length);
+    }
+    else if (($statusItem = cObj.$contents.find('.navigatePaging')).length > 0)
+    {
+        $statusItem.empty();
+        var windowLimit = cObj._properties.pagingWindow || 4;
+        var minI = Math.max(0, curIndex - windowLimit);
+        var maxI = Math.min(childList.length - 1, curIndex + windowLimit);
+
+        if (minI > 0)
+        {
+            $statusItem.append($.tag({tagName: 'a', href: '#0', 'class': 'pageLink',
+                contents: 1}));
+            if (minI > 1)
+            {
+                $statusItem.append($.tag({tagName: 'span',
+                    'class': 'pageFillIn', contents: '&hellip;'}));
+            }
+        }
+
+        for (var i = minI; i <= maxI; i++)
+        {
+            if (i == curIndex)
+            {
+                $statusItem.append($.tag({tagName: 'span', 'class': 'currentPage',
+                    contents: i + 1}));
+            }
+            else
+            {
+                $statusItem.append($.tag({tagName: 'a', href: '#' + i, 'class': 'pageLink',
+                    contents: i + 1}));
+            }
+        }
+
+        if (maxI < childList.length - 1)
+        {
+            if (maxI < childList.length - 2)
+            {
+                $statusItem.append($.tag({tagName: 'span',
+                    'class': 'pageFillIn', contents: '&hellip;'}));
+            }
+            $statusItem.append($.tag({tagName: 'a', href: '#' + (childList.length - 1),
+                'class': 'pageLink', contents: childList.length}));
+        }
+    }
+    else if (($statusItem = cObj.$contents.find('.childLink')).length > 0)
+    {
+        $statusItem.removeClass('active');
+        $statusItem.filter('[href$=' + newChildId + ']').addClass('active');
+    }
+    else
+    { $.uniform.update(cObj.$contents.find('input[id$=_' + newChildId + ']').click()); }
+};
 
 var setUpComponent = function(cObj, adjId)
 {
@@ -176,74 +249,7 @@ var setUpComponent = function(cObj, adjId)
         return;
     }
     cObj._context.bind('child_shown', function(args)
-    {
-        var curIndex = cObj._context.visibleIndex();
-        var childList = cObj._context.children();
-        var $statusItem;
-        var $navLinks;
-        if (($navLinks = cObj.$contents.find('.navigateLink')).length > 0)
-        {
-            $navLinks.filter('.prevLink').toggleClass('disabled',
-                cObj._properties.navigateWrap === false && curIndex == 0);
-            $navLinks.filter('.nextLink').toggleClass('disabled',
-                cObj._properties.navigateWrap === false && curIndex == (childList.length - 1));
-        }
-        if (($statusItem = cObj.$contents.find('.navigateInfo')).length > 0)
-        {
-            $statusItem.find('.currentItem').text(curIndex + 1);
-            $statusItem.find('.totalCount').text(childList.length);
-        }
-        else if (($statusItem = cObj.$contents.find('.navigatePaging')).length > 0)
-        {
-            $statusItem.empty();
-            var windowLimit = cObj._properties.pagingWindow || 4;
-            var minI = Math.max(0, curIndex - windowLimit);
-            var maxI = Math.min(childList.length - 1, curIndex + windowLimit);
-
-            if (minI > 0)
-            {
-                $statusItem.append($.tag({tagName: 'a', href: '#0', 'class': 'pageLink',
-                    contents: 1}));
-                if (minI > 1)
-                {
-                    $statusItem.append($.tag({tagName: 'span',
-                        'class': 'pageFillIn', contents: '&hellip;'}));
-                }
-            }
-
-            for (var i = minI; i <= maxI; i++)
-            {
-                if (i == curIndex)
-                {
-                    $statusItem.append($.tag({tagName: 'span', 'class': 'currentPage',
-                        contents: i + 1}));
-                }
-                else
-                {
-                    $statusItem.append($.tag({tagName: 'a', href: '#' + i, 'class': 'pageLink',
-                        contents: i + 1}));
-                }
-            }
-
-            if (maxI < childList.length - 1)
-            {
-                if (maxI < childList.length - 2)
-                {
-                    $statusItem.append($.tag({tagName: 'span',
-                        'class': 'pageFillIn', contents: '&hellip;'}));
-                }
-                $statusItem.append($.tag({tagName: 'a', href: '#' + (childList.length - 1),
-                    'class': 'pageLink', contents: childList.length}));
-            }
-        }
-        else if (($statusItem = cObj.$contents.find('.childLink')).length > 0)
-        {
-            $statusItem.removeClass('active');
-            $statusItem.filter('[href$=' + args.newChild.id + ']').addClass('active');
-        }
-        else
-        { $.uniform.update(cObj.$contents.find('input[id$=_' + args.newChild.id + ']').click()); }
-    }, cObj);
+    { adjustIndex(cObj, args.newChild.id); }, cObj);
     cObj._context.bind('child_added', function() { cObj._render(); }, cObj);
     cObj._context.bind('child_removed', function() { cObj._render(); }, cObj);
 };

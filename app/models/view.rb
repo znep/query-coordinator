@@ -192,6 +192,26 @@ class View < Model
                       {:max_nesting => 25})
   end
 
+  def get_total_rows(conditions = {})
+    params = { :method => 'getByIds',
+               :accessType => 'WEBSITE',
+               :meta => true,
+               :start => 0,
+               :length => 1 }
+
+    merged_conditions = self.query.cleaned.deep_merge(conditions)
+    request_body = {
+      'name' => self.name,
+      'searchString' => merged_conditions.delete('searchString'),
+      'query' => merged_conditions,
+      'originalViewId' => self.id
+    }.to_json
+
+    url = "/views/INLINE/rows.json?#{params.to_param}"
+    return JSON.parse(CoreServer::Base.connection.create_request(url, request_body),
+                      {:max_nesting => 25})['meta']['totalRows']
+  end
+
   def get_rows_by_ids(ids, req_body = nil)
     id_params = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
 
@@ -457,7 +477,11 @@ class View < Model
   end
 
   def rss
-    absolute_path("/api/views/#{id}/rows.rss", !federated?)
+    download_url('rss')
+  end
+
+  def download_url(ext = 'json')
+    absolute_path("/api/views/#{id}/rows.#{ext}", !federated?)
   end
 
   def tweet

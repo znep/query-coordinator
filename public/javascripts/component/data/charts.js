@@ -64,6 +64,7 @@ var updateProperties = function(lcObj, properties)
                     { this._chart.setView(this._dataContext.dataset); }
                     else
                     {
+                        this.$contents.empty();
                         this._chart = this.$contents.socrataChart({
                             chartType: this._chartType,
                             displayFormat:

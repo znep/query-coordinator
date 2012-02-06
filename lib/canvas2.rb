@@ -104,8 +104,10 @@ module Canvas2
               temp = p.has_key?('fallback') ? p['fallback'] : '{' + p['orig'] + '}'
             else
                if p.has_key?('regex')
+                 # Woo, backslash
+                 repl = p['repl'].gsub(/\$(\d)/, '\\\\\1')
                  r = Regexp.new(p['regex'], p['modifiers'].include?('i'))
-                 temp = p['modifiers'].include?('g') ? temp.gsub(r, p['repl']) : temp.sub(r, p['repl'])
+                 temp = p['modifiers'].include?('g') ? temp.gsub(r, repl) : temp.sub(r, repl)
                end
             end
             v = temp
@@ -137,7 +139,11 @@ module Canvas2
         get_dataset(config) do |ds|
           available_contexts[id] = {id: id, type: config['type'], dataset: ds}
           if (defined? @@pending_contexts) && (((@@pending_contexts || {})[id]).is_a? Array)
-            @@pending_contexts[id].each {|req| req[:callback].call(ds)}
+            @@pending_contexts[id].each do |req|
+              ds_new = ds.deep_clone
+              got_dataset(ds_new, req[:config])
+              req[:callback].call(ds_new)
+            end
             @@pending_contexts.delete(id)
           end
         end
@@ -195,7 +201,7 @@ module Canvas2
       if !config['contextId'].blank?
         context = available_contexts[config['contextId']]
         if !context.blank?
-          ds = context[:dataset].deep_dup
+          ds = context[:dataset].deep_clone
         else
           @@pending_contexts ||= {}
           @@pending_contexts[config['contextId']] ||= []
@@ -207,34 +213,46 @@ module Canvas2
         rescue CoreServer::ResourceNotFound
         rescue CoreServer::CoreServerError
         end
+      elsif !config['search'].blank?
+        search_response = Clytemnestra.search_views(config['search'].merge({'limit' => 1}))
+        ds = search_response.results.first
       end
       if !ds.blank?
-        add_query(ds, config['query'])
+        got_dataset(ds, config)
         yield(ds)
       end
       ds
     end
 
+    def self.got_dataset(ds, config)
+      add_query(ds, config['query'])
+      ds.data['totalRows'] = ds.get_total_rows if config['getTotal']
+    end
   end
 
   class CanvasWidget
     attr_accessor :id, :parent
 
-    def initialize(props, resolver_context = nil)
+    def initialize(props, parent = nil, resolver_context = nil)
       @properties = props
       @resolver_context = resolver_context
       @properties['id'] ||= Canvas2::Util.allocate_id
       self.id = @properties['id']
+      self.parent = parent
 
       if @properties.has_key?('context')
         c_id = 'context-' + self.id
-        DataContext.load_context(c_id, @properties['context'])
+        DataContext.load_context(c_id, string_substitute(@properties['context']))
         @context = DataContext.available_contexts[c_id]
       end
     end
 
     def properties
       return @properties
+    end
+
+    def resolver_context
+      return @resolver_context
     end
 
     def method_missing(key, *args)
@@ -247,8 +265,26 @@ module Canvas2
       @context
     end
 
+    def string_substitute(text, special_resolver = nil)
+      Util.string_substitute(text, special_resolver || resolver)
+    end
+
     def render
-      '<div class="component-' + @properties['type'] + '" id="' + self.id + '">' + self.class.to_s + '</div>'
+      c, fully_rendered = render_contents
+      html_class = string_substitute(@properties['htmlClass'].is_a?(Array) ?
+                                     @properties['htmlClass'].join(' ') : @properties['htmlClass'])
+      t = '<div class="socrata-component component-' + @properties['type'] + ' ' +
+        (@properties['customClass'] || '') + (@needs_own_context ? '' : (' ' + html_class)) +
+        (fully_rendered ? ' serverRendered' : '') +
+        '" id="' + self.id + '">'
+      t += '<div class="content-wrapper ' + html_class + '">' if @needs_own_context
+      t += c
+      t += '</div>' if @needs_own_context
+      t += '</div>'
+    end
+
+    def render_contents
+      [self.class.to_s, false]
     end
 
     def resolver
@@ -261,18 +297,18 @@ module Canvas2
       end
     end
 
-    def self.from_config(config, resolver_context = nil)
+    def self.from_config(config, parent = nil, resolver_context = nil)
       if config.is_a? Array
         i = 0
         return config.map do |config_item|
           i += 1
-          CanvasWidget.from_config(config_item, resolver_context)
+          CanvasWidget.from_config(config_item, parent, resolver_context)
         end
       else
         # eg 'two_column_layout' ==> 'TwoColumnLayout'
         klass_name = config['type'].gsub(/^(.)|(_.)/){ |str| str[-1].upcase }
         begin
-          return Canvas2.const_get(klass_name).new(config, resolver_context)
+          return Canvas2.const_get(klass_name).new(config, parent, resolver_context)
         rescue NameError => ex
           throw "There is no Canvas2 widget of type '#{config['type']}'."
         end
@@ -281,14 +317,14 @@ module Canvas2
   end
 
   class Container < CanvasWidget
-    def initialize(props, resolver_context = nil)
-      super(props, resolver_context)
+    def initialize(props, parent = nil, resolver_context = nil)
+      super(props, parent, resolver_context)
       # Reference the children here so they are instantiated, and get IDs
       children
     end
 
     def has_children?
-      return @properties['children'].is_a? Array
+      return @children.is_a?(Array) || @properties['children'].is_a?(Array)
     end
 
     def children
@@ -297,14 +333,11 @@ module Canvas2
         @properties['children'].map do |c|
           c['contextId'] = @properties['childContextId'] || @properties['contextId'] if c['contextId'].blank?
           c
-        end)
-      @children.each {|c| c.parent = self}
+        end, self)
     end
 
-    def render
-      t = '<div class="socrata-container component-' + @properties['type'] + '" id="' + self.id + '">'
-      children.each {|c| t += c.render} if has_children?
-      t += '</div>'
+    def render_contents
+      [has_children? ? children.map {|c| c.render}.join('') : '', true]
     end
 
   protected
@@ -314,64 +347,98 @@ module Canvas2
   end
 
   class HorizontalContainer < Container
+    def render_contents
+      t = ''
+      if has_children?
+        total_weight = children.reduce(0.0) {|sum, c| sum + (c.properties['weight'] || 1)}
+        pos = 0.0
+        children.each_with_index do |c, i|
+          w = c.properties['weight'] || 1
+          t += '<div class="component-wrapper' + (i == 0 ? ' first-child' : '') + '"' +
+            ' style="margin-left:' + (-(100 - pos / total_weight * 100)).round(2).to_s + '%;' +
+            'width:' + (w / total_weight * 100).round(2).to_s + '%;"' +
+            '>' + c.render + '</div>'
+          pos += w
+        end
+      end
+      [t += '<div class="socrata-ct-clear"></div>', true]
+    end
   end
 
   class Repeater < Container
-    def initialize(props, resolver_context = nil)
+    def initialize(props, parent = nil, resolver_context = nil)
       # Can't modify original properties (except to add an ID, if needed); so
       # we render with a copy
+      @orig_props = props
       dup_props = props.dup
       dup_props.delete('children')
-      super(dup_props, resolver_context)
+      super(dup_props, parent, resolver_context)
       props['id'] = @properties['id']
 
       allocate_ids(props['children'])
       @clone_props = {
         'id' => 'clone',
         'children' => props['children'],
+        'htmlClass' => props['childHtmlClass'],
+        'styles' => props['childStyles'],
         'type' => 'Container'
       }
     end
 
-    def render
-      t = '<div class="socrata-container component-' + @properties['type'] + '" id="' + self.id + '">'
+    def render_contents
+      t = ''
       if !context.blank?
         col_map = {}
+        all_c = []
         case context[:type]
         when 'datasetList'
-          context[:datasetList].each_with_index {|ds, i| t += add_row(ds, i)}
+          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i)}
         when 'dataset'
           if @properties['repeaterType'] == 'column'
-            ex_f = Util.string_substitute(@properties['excludeFilter'], resolver)
-            inc_f = Util.string_substitute(@properties['includeFilter'], resolver)
+            ex_f = string_substitute(@properties['excludeFilter'])
+            inc_f = string_substitute(@properties['includeFilter'])
             context[:dataset].visible_columns.each_with_index do |c, i|
               if ex_f.all? {|k, v| !(Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))} &&
                 (@properties['includeFilter'].blank? ||
                  inc_f.any? {|k, v| (Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))})
-                t += add_row(context, i, {column: c})
+                all_c << add_row(context, i, {column: c})
               end
             end
           else
             context[:dataset].visible_columns.each {|c| col_map[c.id.to_s] = c.fieldName}
             rows = context[:dataset].get_rows(100).each_with_index do |r, i|
-              t += add_row(r, i, col_map)
+              all_c << add_row(r, i, col_map)
             end
           end
         end
+        all_c.compact!
+        if all_c.length > 0
+          cont_config = @properties['container'] || {'type' => 'Container'}
+          @orig_props['container'] = cont_config
+          real_c = CanvasWidget.from_config(cont_config, self)
+          real_c.children = all_c
+          t += real_c.render
+        end
       end
-      t += '</div>'
+      [t, true]
     end
 
   protected
     def add_row(row, index, col_map = {})
-      resolutions = {}
+      resolutions = {'_repeaterIndex' => index}
       col_map.each {|id, fieldName| resolutions[fieldName] = row[id]}
 
-      copy = create_copy(@clone_props, self.id + '-' + index.to_s + '-')
+      child_props = string_substitute(@properties['childProperties'], resolutions)
+      copy = create_copy({}.deep_merge(child_props.is_a?(Hash) ? child_props : {}).deep_merge(@clone_props),
+                         self.id + '-' + index.to_s + '-')
       copy['childContextId'] = row[:id]
-      c = CanvasWidget.from_config(copy, resolutions)
-      c.parent = self
-      c.render
+      c = CanvasWidget.from_config(copy, self, resolutions)
+      if @properties.has_key?('valueRegex')
+        r = Regexp.new(@properties['valueRegex']['regex'])
+        v = c.string_substitute(@properties['valueRegex']['value'])
+        return nil if r.match(v).blank?
+      end
+      c
     end
 
     def allocate_ids(components)
@@ -383,6 +450,8 @@ module Canvas2
 
     def create_copy(component, id_prefix)
       new_c = component.clone
+      new_c['htmlClass'] = new_c['htmlClass'].is_a?(Array) ? new_c['htmlClass'] : [new_c['htmlClass']].compact
+      new_c['htmlClass'] << 'id-' + new_c['id']
       new_c['id'] = id_prefix + new_c['id']
       if new_c['children'].is_a? Array
         new_c['children'] = new_c['children'].map {|c| create_copy(c, id_prefix)}
@@ -392,36 +461,79 @@ module Canvas2
   end
 
   class Title < CanvasWidget
-    def render
-      '<div class="component-Title" id="' + self.id + '"><h2>' +
-        Util.string_substitute(self.text, resolver) + '</h2></div>'
+    def render_contents
+      ['<h2>' + string_substitute(self.text) + '</h2>', true]
     end
   end
 
   class Text < CanvasWidget
-    def render
-      '<div class="component-Text" id="' + self.id + '">' +
-        Util.string_substitute(self.html, resolver) + '</div>'
+    def render_contents
+      [string_substitute(self.html), true]
     end
   end
 
   class LineChart < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
   end
   class ColumnChart < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+  end
+
+  class Map < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
   end
 
   class Table < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+  end
+
+  class Menu < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
   end
 
   class Download < CanvasWidget
+    def render_contents
+       ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +
+         'Download this data</a>', true]
+    end
   end
 
   class InlineFilter < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
   end
 
   class Pager < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
   end
 
   class PagedContainer < Container
+  end
+
+  class FixedContainer < Container
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
   end
 end

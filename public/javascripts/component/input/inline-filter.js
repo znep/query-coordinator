@@ -24,7 +24,8 @@ $.component.Component.extend('Inline filter', 'input', {
     {
         if (!this._super.apply(this, arguments)) { return false; }
 
-        this._updateDataSource(this._properties, renderUpdate);
+        if (!this._updateDataSource(this._properties, renderUpdate))
+        { this.$contents.empty(); }
         return true;
     },
 
@@ -42,6 +43,8 @@ var renderUpdate = function()
     { this._uf.setView(this._dataContext.dataset); }
     else
     {
+        this.$contents.empty();
+
         var opts = {};
         switch (this._dataContext.type)
         {

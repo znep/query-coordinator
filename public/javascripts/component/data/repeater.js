@@ -125,7 +125,8 @@ $.component.Container.extend('Repeater', 'content', {
         }
     },
 
-    _render: function() {
+    _render: function()
+    {
         if (!this._super.apply(this, arguments)) { return false; }
         var cObj = this;
 

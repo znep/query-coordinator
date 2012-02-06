@@ -182,9 +182,14 @@ class Model
     data_hash.to_json(options)
   end
 
+  def deep_clone
+    # Hack...
+    self.class.parse(self.to_json)
+  end
+
   def flag?(flag_name)
     flags = data['flags']
-    !flags.nil? && flags.include?(flag_name) 
+    !flags.nil? && flags.include?(flag_name)
   end
 
   def set_flag(flag)

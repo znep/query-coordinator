@@ -160,7 +160,7 @@
 
             if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
             { child.next.$dom.before(child.$dom); }
-            else if (!$.isBlank(this.$ct))
+            else if (!$.isBlank(this.$ct) && child.$dom.parent().index(this.$ct) < 0)
             { this.$ct.append(child.$dom); }
             if (child.$dom.parent().length > 0 &&
                     this._rendered && !child._rendered)
@@ -323,8 +323,8 @@
         horizontal: true,
 
         // Override rendering to add a (eww) clearing element
-        _render: function() {
-            if (!this._super()) { return false; }
+        _initDom: function() {
+            this._super.apply(this, arguments);
 
             var clear = this.dom.lastChild;
             if (!clear || clear.className != 'socrata-ct-clear') {
@@ -332,7 +332,6 @@
                 clear = this.dom.lastChild;
             }
             this._$clear = $(clear);
-            return true;
         },
 
         // Override child move to wrap child in extra div
@@ -340,10 +339,19 @@
             if (!child._initialized)
                 child._initDom();
             if (!child.wrapper) {
-                child.wrapper = document.createElement('div');
-                child.wrapper.className = 'component-wrapper';
-                child.wrapper.appendChild(child.dom);
-                child.$wrapper = $(child.wrapper);
+                var $w = child.$dom.parent('.component-wrapper');
+                if ($w.length < 1)
+                {
+                    child.wrapper = document.createElement('div');
+                    child.wrapper.className = 'component-wrapper';
+                    child.wrapper.appendChild(child.dom);
+                    child.$wrapper = $(child.wrapper);
+                }
+                else
+                {
+                    child.$wrapper = $w;
+                    child.wrapper = $w[0];
+                }
             }
             if ($.subKeyDefined(child, 'next.$wrapper') &&
                     child.next.$wrapper.parent().index(this.$ct) >= 0)

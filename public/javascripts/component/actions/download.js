@@ -4,8 +4,12 @@ $.component.Component.extend('Download', 'actions', {
         this._super.apply(this, arguments);
         if ($.isBlank(this.$link))
         {
-            this.$link = $.tag({tagName: 'a', 'class': 'button', ref: 'external'});
-            this.$contents.append(this.$link);
+            this.$link = this.$contents.children('a.button');
+            if (this.$link.length < 1)
+            {
+                this.$link = $.tag({tagName: 'a', 'class': 'button', rel: 'external'});
+                this.$contents.append(this.$link);
+            }
         }
     },
 

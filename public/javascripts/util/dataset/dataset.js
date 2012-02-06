@@ -2026,10 +2026,10 @@ var Dataset = ServerModel.extend({
                 !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { delete ds.totalRows; }
-            ds.trigger('query_change');
             ds._aggregatesStale = true;
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
+            ds.trigger('query_change');
         }
         else if (!_.isEqual(oldCondFmt, ds.metadata.conditionalFormatting))
         {

@@ -565,9 +565,7 @@
             var gotDC = function(dc)
             {
                 cObj.finishLoading();
-                cObj._dataContext = dc;
-                if (!$.isBlank(cObj._propEditor))
-                { cObj._propEditor.setComponent(cObj); }
+                cObj._setDataContext(dc);
                 if (_.isFunction(callback)) { callback.apply(cObj); }
             };
             var startDCGet = function()
@@ -609,6 +607,13 @@
                     $.isBlank(properties.contextId) && $.isBlank(cObj._properties.contextId))
             { delete cObj._dataContext; }
             return false;
+        },
+
+        _setDataContext: function(dc)
+        {
+            this._dataContext = dc;
+            if (!$.isBlank(this._propEditor))
+            { this._propEditor.setComponent(this); }
         },
 
         /**

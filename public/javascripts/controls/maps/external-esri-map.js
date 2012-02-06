@@ -207,11 +207,6 @@
 
             mapObj.map.events.register('click', layer, function(evt)
             {
-                // Basically, toss out clicks that aren't on tiles.
-                if (evt.originalTarget.parentNode
-                    && evt.originalTarget.parentNode.parentNode != layer.div) { return; }
-                if ($(evt.originalTarget).hasClass('olPopupCloseBox')) { return; }
-
                 var pixel = mapObj.map.events.getMousePosition(evt);
                 var sr = new esri.SpatialReference({ wkid: mapObj.map.getProjection().split(':')[1]});
                 var lonlat = layer.getLonLatFromViewPortPx(pixel);

@@ -1686,7 +1686,8 @@
             if (mapObj._popup && !options.keepOpen) { mapObj.closePopup(); }
 
             var popup = new OpenLayers.Popup.FramedCloud(null,
-                lonlat, null, contents, null, true, options.closeBoxCallback);
+                lonlat, null, contents, null, true,
+                function(evt) { new jQuery.Event(evt).stopPropagation(); closeBoxCallback(); });
             mapObj._popup = popup;
             mapObj.map.addPopup(popup);
 

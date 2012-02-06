@@ -177,6 +177,7 @@
                         if (viewConfig._identifyParameters && layer._suggestedTolerance)
                         { viewConfig._identifyParameters.tolerance = layer._suggestedTolerance; }
                         layer.filterWith(view); mapObj.adjustBounds();
+                        delete mapObj._initialLoad;
                       }
                     },
                     { opacity: opacity, ratio: 1, isBaseLayer: false });

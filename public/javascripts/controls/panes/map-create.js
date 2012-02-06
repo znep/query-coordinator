@@ -73,6 +73,16 @@
         _getCurrentData: function()
         { return this._super() || this._view; },
 
+        _dataPreProcess: function(view)
+        {
+            var cleanView = view.cleanCopy();
+            // In ESRI datasets, the base layer is not set automatically, which results in a
+            // blank selection in the sidebar. We fill it in with the default base layer here.
+            if (!cleanView.displayFormat.layers)
+            { cleanView.displayFormat.layers = [{type:'tile', url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'}]; }
+            return cleanView;
+        },
+
         isAvailable: function()
         {
             return (this._view.valid || isEdit(this)) &&

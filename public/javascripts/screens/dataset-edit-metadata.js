@@ -30,6 +30,11 @@
             }
     });
 
+    $form.on('change', 'input, select', function(event)
+    {
+        $form.find('.submitButton').toggleClass('disabled', !$form.valid());
+    });
+
     var toggleFunction = $('html').hasClass('ie7') ?
         'toggle' : 'slideToggle';
     $('.toggleFieldsetLink').click(function(event)
@@ -167,6 +172,8 @@
     $('.submitButton').click(function(event)
     {
         event.preventDefault();
+        if ($(this).is('.disabled'))
+        { return; }
         preSubmitCustomRdf();
         if ($form.valid())
         {

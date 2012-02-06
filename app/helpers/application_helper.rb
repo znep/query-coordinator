@@ -119,10 +119,8 @@ module ApplicationHelper
   end
 
   def render_translations
-    if @required_translation_parts.present?
-      content_tag :div, :id => 'translations', :'data-locale' => I18n.locale do
-        LocaleCache.render_translations(@required_translation_parts).to_json
-      end
+    content_tag :div, :id => 'translations', :'data-locale' => I18n.locale do
+      LocaleCache.render_translations(@required_translation_parts || DEFAULT_TRANSLATIONS).to_json
     end
   end
 

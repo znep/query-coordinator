@@ -53,7 +53,7 @@
         <%- if @view.available_display_types.length > 1 -%>
         <ul id="renderTypeOptions" class="pillButtons">
 
-          <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list'} -%>
+          <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list', 'manyTable' => 'set of tables'} -%>
           <%- url_types = {'fatrow' => 'richList'} -%>
           <%- @view.available_display_types.clone.
             push('template').each do |type| -%>

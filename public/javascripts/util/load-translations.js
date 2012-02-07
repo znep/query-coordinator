@@ -1,4 +1,4 @@
 ;(function()
 {
-    blist.translations = JSON.parse(document.getElementById('translations').firstChild.textContent);
+    blist.translations = JSON.parse($('#translations').html());
 })();

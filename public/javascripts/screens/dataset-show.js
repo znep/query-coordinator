@@ -151,7 +151,8 @@ $(function()
         page: { defaultRowId: blist.initialRowId }
     });
 
-    var $dataGrid = datasetPageNS.rtManager.$domForType('table');
+    var $dataGrid = datasetPageNS.rtManager.$domForType(
+        blist.dataset.isGeoDataset() ? 'manyTable' : 'table');
 
 
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly)

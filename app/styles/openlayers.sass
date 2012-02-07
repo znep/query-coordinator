@@ -217,12 +217,15 @@ div
  * When a potential text is bigger than the image it move the image
  * with some headers (closes #3154)
 
-.olControlPanZoomBar
+.blistopenLayersZoomBar
   background: transparent url(/stylesheets/images/interface/zoom_gutter.png) no-repeat
   height: 277px
   left: 10px !important
   top: 10px !important
   width: 25px
+  &.small
+    background: none
+    height: 38px
   &:hover
     background-position: -25px 0
   div

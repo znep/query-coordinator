@@ -3,6 +3,32 @@
     blist.namespace.fetch('blist.openLayers');
 
     blist.openLayers.ZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoomBar, {
+        destroy: function()
+        {
+            if (this.sliderEvents)
+            { OpenLayers.Control.PanZoomBar.prototype.destroy.apply(this, arguments); return; }
+
+            this.map.events.un({
+                "changebaselayer": this.redraw,
+                scope: this
+            });
+
+            OpenLayers.Control.PanZoom.prototype.destroy.apply(this, arguments);
+
+            delete this.mouseDragStart;
+            delete this.zoomStart;
+        },
+
+        redraw: function()
+        {
+            if (this.div != null)
+            {
+                this.removeButtons();
+                if (this.sliderEvents) { this._removeZoomBar(); }
+            }
+            this.draw();
+        },
+
         draw: function(px)
         {
             // derived from PanZoomBar source, because it's the only way to change
@@ -14,14 +40,29 @@
 
             var padding = new OpenLayers.Size(-2, -2);
 
+            // Magic number is height as specified in openlayers.sass.
+            var small = $(this.map.div).height() < 277;
+
             // HACK HACK HACK HACK HCAK HCAK HCAKHCAKHC AKHACKHAC HKACK HACKH ACHKACHK
             var sz = new OpenLayers.Size(21, 21);
             this._addButton('zoomin', 'zoom-plus-mini.png', px.add(padding.w, padding.h), sz);
-            var centered = this._addZoomBar(px.add(padding.w + 1, padding.h + 19));
-            this._addButton('zoomout', 'zoom-minus-mini.png', centered.add(-1, 2), sz);
+            if (small)
+            {
+                $(this.div).addClass('small');
+                this._addButton('zoomout', 'zoom-minus-mini.png',
+                    px.add(padding.w, padding.h + 19), sz);
+            }
+            else
+            {
+                $(this.div).removeClass('small');
+                var centered = this._addZoomBar(px.add(padding.w + 1, padding.h + 19));
+                this._addButton('zoomout', 'zoom-minus-mini.png', centered.add(-1, 2), sz);
+            }
 
             return this.div;
-        }
+        },
+
+        CLASS_NAME: "blist.openLayers.ZoomBar"
     });
 
     blist.openLayers.Map = OpenLayers.Class(OpenLayers.Map, {

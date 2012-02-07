@@ -8,6 +8,7 @@
     //   combination-list.js
     $.templates.downloadsTable = {
         downloadTypes: [ 'CSV', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
+        geoDownloadTypes: [ 'KML', 'KMZ', 'Shapefile', 'Original' ],
         directive: {
             'tbody .item': {
                 'downloadType<-downloadTypes': {

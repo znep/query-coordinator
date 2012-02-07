@@ -1182,6 +1182,10 @@ var Dataset = ServerModel.extend({
 
     downloadUrl: function(type)
     {
+        if (this.isGeoDataset())
+        {
+            return this.metadata.geo.owsUrl + '?method=export&format=' + type;
+        }
         return '/api/views/' + this.id + '/rows.' + type.toLowerCase() + '?accessType=DOWNLOAD';
     },
 

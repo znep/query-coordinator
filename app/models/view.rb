@@ -659,6 +659,10 @@ class View < Model
     viewType == 'href'
   end
 
+  def is_geo?
+    viewType == 'geo'
+  end
+
   def is_arcgis?
     !metadata.blank? && !metadata.data['custom_fields'].blank? &&
       !metadata.data['custom_fields']['Basic'].blank? &&

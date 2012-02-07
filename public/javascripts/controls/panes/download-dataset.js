@@ -15,16 +15,21 @@
 
         _getSections: function()
         {
+            var types = this._view.isGeoDataset() ?
+                        $.templates.downloadsTable.geoDownloadTypes :
+                        $.templates.downloadsTable.downloadTypes;
+            var catchForm = !this._view.isGeoDataset();
             return [
                 {
                     customContent: {
                         template: 'downloadsTable',
                         directive: $.templates.downloadsTable.directive,
-                        data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
+                        data: { downloadTypes: types,
                                 view: this._view },
                         callback: function($sect)
                         {
-                            $sect.find('.downloadsList .item a').downloadToFormCatcher();
+                            if (catchForm)
+                            { $sect.find('.downloadsList .item a').downloadToFormCatcher(); }
                             $.templates.downloadsTable.postRender($sect);
                         }
                     }

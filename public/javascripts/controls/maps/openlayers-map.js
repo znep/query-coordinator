@@ -183,6 +183,7 @@
                 {
                     layers.push({
                         type: 'wms',
+                        name: layerName,
                         options: getWmsOptions(layerName)
                     });
                 });
@@ -208,7 +209,7 @@
                         break;
 
                     case 'wms':
-                        layer = mapObj._createWmsLayer(i, layer.options);
+                        layer = mapObj._createWmsLayer(layer.name, layer.options);
                         manipulableLayers.push(layer);
                         break;
 
@@ -305,7 +306,9 @@
                 getFeature.activate();
             }
 
-            mapObj.populateLayers(manipulableLayers);
+            mapObj._baseLayers = [mapObj.map.baseLayer];
+            mapObj._dataLayers = manipulableLayers;
+            mapObj.populateLayers();
 
             mapObj.map.zoomToExtent(getDataBbox());
         },

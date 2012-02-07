@@ -62,7 +62,8 @@
                     'Layer Options' +
                     '</a>' +
                     '<div class="contentBlock hide">' +
-                    '<h3>Layers</h3><ul></ul>' +
+                    '<h3 class="base">Base Layers</h3><ul class="base"></ul>' +
+                    '<h3 class="data">Data Layers</h3><ul class="data"></ul>' +
                     '</div>' +
                     '</div>');
                 mapObj.$dom().siblings('#mapLayers').find('a.toggleLayers')
@@ -121,7 +122,7 @@
                 .zoomStopHeight = 12; }
 
             mapObj.initializeBaseLayers();
-            mapObj.populateLayers(mapObj._baseLayers);
+            mapObj.populateLayers();
 
             if (!mapObj._markers)
             { mapObj._markers = {}; }
@@ -431,7 +432,7 @@
 
             mapObj._boundsChanging = true;
             mapObj.initializeBaseLayers();
-            mapObj.populateLayers(mapObj._baseLayers);
+            mapObj.populateLayers();
             mapObj.initializeFlyouts((mapObj._displayFormat
                 .plot || {}).descriptionColumns);
 
@@ -444,28 +445,43 @@
             mapObj._super();
         },
 
-        populateLayers: function(layers)
+        populateLayers: function()
         {
             var mapObj = this;
-            layers = layers || [];
-            if (layers.length < 2) { return; }
 
             var $layers = mapObj.$dom().siblings('#mapLayers');
             var $layersList = $layers.find('ul');
+            var $baseLayers = $layers.find('ul.base');
+            var $dataLayers = $layers.find('ul.data');
+            mapObj._dataLayers = mapObj._dataLayers || [];
+
+            if (mapObj._baseLayers.length < 2)
+            { $baseLayers.hide(); $('h3.base').hide(); }
+            if (mapObj._dataLayers.length < 2)
+            { $dataLayers.hide(); $('h3.data').hide(); }
+
+            if (mapObj._baseLayers.length < 2 && mapObj._dataLayers.length < 2)
+            { return; }
+
             $layersList.empty();
-            _.each(layers, function(l)
+            var processLayer = function(l)
             {
                 var lId = 'mapLayer_' + l.name;
                 var opacity = _.isNull(l.opacity) ? 1 : l.opacity;
-                $layersList.append('<li data-layerid="' + l.id + '"' +
+                $layerSet.append('<li data-layerid="' + l.id + '"' +
                     '><input type="checkbox" id="' + lId +
                     '"' + (l.visibility ? ' checked="checked"' : '') +
                     ' /><label for="' + lId + '">' + l.name + '</label><br />' +
                     '<span class="sliderControl" data-min="0" data-max="100" ' +
                     'data-origvalue="' +
                     (opacity*100) + '" /></li>');
-                $layersList.find('li:last').data('layer', l);
-            });
+                $layerSet.find('li:last').data('layer', l);
+            };
+            var $layerSet = $baseLayers;
+            _.each(mapObj._baseLayers, processLayer);
+            $layerSet = $dataLayers;
+            _.each(mapObj._dataLayers, processLayer);
+
             $layersList.find('.sliderControl').each(function()
             {
                 var $slider = $(this);

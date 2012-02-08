@@ -82,8 +82,6 @@ $(function()
 
             var finished = function(id)
             {
-                if (!id && $.deepGet(blist.dataset.metadata, 'renderTypeConfig.active.' + rt))
-                { delete blist.dataset.metadata.renderTypeConfig.active[rt]; }
                 // Would call show on renderTypeManager; but updating the
                 // dataset fires an event that RTM listens to. Except that if
                 // we have a dt/rt mismatch, then just run a show
@@ -95,8 +93,7 @@ $(function()
                     var newMD = $.extend({}, blist.dataset.metadata);
                     $.deepSet(newMD, id, 'renderTypeConfig', 'active', rt, 'id');
                     blist.dataset.update({metadata: newMD});
-                    if (datasetPageNS.rtManager.visibleTypes[rt])
-                    { datasetPageNS.rtManager.hide(rt, true); }
+                    datasetPageNS.rtManager.hide(rt);
                     datasetPageNS.rtManager.show(rt);
                 }
                 else

@@ -262,6 +262,21 @@
                 rtmObj.visibleTypes[type] = true;
                 if (!rtmObj.settings.view.valid) { return; }
 
+                // if we have multiple possible child views,
+                // and we've already initialized this type with a child
+                // view that is different from the one in the dataset's
+                // metadata (to be displayed), then reset the render type
+                var activeId = $.deepGetStringField(rtmObj.settings.view,
+                    'metadata.renderTypeConfig.active.' + type + '.id');
+                if (activeId && typeInfo.activeView &&
+                    typeInfo.activeView.id != activeId)
+                {
+                    typeInfo._assetsLoaded = true;
+                    delete typeInfo._initialized;
+                    if (_.isFunction(typeInfo.reset))
+                    { typeInfo.reset(); }
+                }
+
                 initType(rtmObj, type, defArgs);
 
                 if (typeInfo.$dom.is(':visible')) { return; }
@@ -274,18 +289,11 @@
                 $(window).resize();
             },
 
-            hide: function(type, reset)
+            hide: function(type)
             {
                 var rtmObj = this;
 
                 var typeInfo = getConfig(rtmObj, type);
-                if (reset)
-                {
-                    typeInfo._assetsLoaded = true;
-                    delete typeInfo._initialized;
-                    if (_.isFunction(typeInfo.reset))
-                    { typeInfo.reset(); }
-                }
 
                 delete rtmObj.visibleTypes[type];
 
@@ -394,6 +402,8 @@
         {
             rtmObj.settings.view.getViewForDisplay(type, function(view)
             {
+                typeInfo.activeView = view;
+
                 if (_.isFunction($.fn[typeInfo.initFunction]))
                 {
                     $content[typeInfo.initFunction]($.extend({view: view,

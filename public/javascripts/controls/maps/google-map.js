@@ -197,6 +197,8 @@
         {
             var mapObj = this;
 
+            OpenLayers.Layer.Google.v3.repositionMapElements = function() {};
+
             mapObj._baseLayers = [new OpenLayers.Layer.Google('Google', { isBaseLayer: true })];
             mapObj.map.addLayers(mapObj._baseLayers);
         },

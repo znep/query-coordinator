@@ -141,6 +141,7 @@
                                 { $(box).fadeOut(300, callback); }
                             }
                 });
+                sTipObj._opts = $domObj[0]._opts;
             },
 
             $dom: function()
@@ -160,6 +161,28 @@
             {
                 if (this._visible)
                 { this.$dom().btOff(); }
+            },
+
+            refreshSize: function()
+            {
+                // ......uhhhh
+                var sTipObj = this;
+                var oldHideFunction = sTipObj._opts.hideTip;
+                sTipObj._opts.hideTip = function(box, callback)
+                {
+                    sTipObj._visible = false;
+                    $(box).hide();
+                    _.defer(function()
+                    {
+                        callback();
+                        _.defer(function()
+                        {
+                            sTipObj.show();
+                            sTipObj._opts.hideTip = oldHideFunction;
+                        });
+                    });
+                };
+                sTipObj.hide();
             },
 
             /* These are used to temporarily hide/show the tooltip without fully

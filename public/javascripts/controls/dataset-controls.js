@@ -523,18 +523,133 @@ blist.datasetControls.raReasonBox = function($reasonBox)
     });
 };
 
-blist.datasetControls.editPublishedMessage = function(hasWorkingCopy)
+blist.datasetControls.editPublishedMessage = function()
 {
-    return $.renderTemplate('editAlertTemplate', {}, {
-        '.editPublished@class+': function()
-            { return blist.dataset.copyPending ? 'hide' : ''; },
-        '.editMessage@class+': function()
-            { return blist.dataset.copyPending ? 'hide' : ''; },
-        '.copyingMessage@class+': function()
-            { return blist.dataset.copyPending ? '' : 'hide'; },
-        '.workingCopyStatus': function()
-            { return hasWorkingCopy ? 'is available' : 'can be made' }
+    var id = 'editPublishedMessage' + _.uniqueId();
+    var $container = $.tag({
+        tagName: 'div',
+        'class': 'editPublishedMessage',
+        id: id, // bt is pretty retarded
+        contents: {
+            tagName: 'div',
+            'class': 'throbber'
+        }
     });
+
+    var firstRun = true;
+    var finish = function(data, copyInProgress)
+    {
+        var copyPending = blist.datasetControls.copyPending || copyInProgress;
+
+        // depending on whether time has passed, we might not have been added
+        // to dom yet. on the other hand, bt kind of blows, so we can't just
+        // blindly use $container
+        var $target = $('#' + id);
+        if ($target.length === 0)
+            $target = $container;
+
+        if (($target.length === 0) || (!firstRun && ($target.closest('body').length === 0)))
+            return; // if the node no longer exists, there's naught to do
+
+        if ($target.find('.doneCopyingMessage').is(':visible'))
+            return; // if the copy is done, there's no status checking to be done
+
+        // actually do the message update
+        $target
+            .empty()
+            .append($.renderTemplate('editAlertTemplate', data, {
+                '.editPublished@class+': function()
+                    { return copyPending ? 'hide' : ''; },
+                '.editMessage@class+': function()
+                    { return copyPending ? 'hide' : ''; },
+                '.copyingMessage@class+': function()
+                    { return copyPending ? '' : 'hide'; },
+                '.workingCopyStatus': 'status',
+                '.additionalCopyingMessage': 'message'
+            }));
+
+        // bt is kind of a massive pile of shit
+        // 1. doesn't figure out dom change and resize tip
+        // 2. provides no method for resizing tips
+        // 3. recycles the dom element so you can't grab it from self
+        // so we grab the thing, grab that thing's thing, then
+        // rewrite the thing so we can hide the thing, then reshow
+        // the thing and restore the rewritten thing.
+        // but that's all in socrata-messaging now, so this is a hollow
+        // rant, isn't it?
+        var $wrapperObj = $target.closest('.bt-wrapper');
+        if ($wrapperObj.length > 0)
+        {
+            $origDomObj = $wrapperObj.data('socrataTip-$element');
+            var tipObj = $origDomObj.data('socrataTip');
+            tipObj.refreshSize();
+        }
+
+        // ping again in 30 seconds.
+        if (!blist.dataset._unpublishedView)
+        {
+            window.setTimeout(function()
+            {
+                // TODO: If the user has more than one message open at once, dedupe request
+                // (but n is <= 2 anyway so i'm not going to prioritize this)
+                updateOperationStatus(); // blindly do this; start of this function will tell us whether to bail
+            }, 30000);
+        }
+
+        firstRun = false;
+    };
+
+    var wasEverInProgress = false;
+    var updateOperationStatus = function()
+    {
+        blist.dataset.getOperationStatuses(function(statuses)
+        {
+            var data = {};
+            var copyInProgress = false;
+
+            var dateify = function(timestamp)
+            {
+                return blist.util.humaneDate.getFromDate(new Date(timestamp * 1000));
+            };
+
+            switch (statuses.copying.copyStatus)
+            {
+                case 'finished':
+                    data.status = wasEverInProgress ? 'is available' : 'can be made';
+                    break;
+                case 'queued':
+                    data.message = 'It is in line waiting to be processed ' +
+                                   '(queued ' + dateify(statuses.copying.queuedAt) + '; ' +
+                                   statuses.copying.totalQueued + ' total in line)';
+                    copyInProgress = true;
+                    break;
+                case 'processing':
+                    data.message = 'It is currently being processed ' +
+                                   '(started ' + dateify(statuses.copying.startedAt) + ')';
+                    copyInProgress = true;
+                    break;
+                case 'failed':
+                    data.status = 'can be made';
+            }
+
+            wasEverInProgress = wasEverInProgress || copyInProgress;
+            finish(data, copyInProgress);
+        });
+    };
+
+    blist.dataset.getUnpublishedDataset(function(workingCopy)
+    {
+        if ($.isBlank(workingCopy))
+        {
+            updateOperationStatus();
+        }
+        else
+        {
+            finish({ status: 'is available' }, false);
+        }
+    });
+
+    return $container;
 };
 
 blist.datasetControls.hookUpPublishing = function($container)

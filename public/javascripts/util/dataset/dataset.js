@@ -1622,9 +1622,9 @@ var Dataset = ServerModel.extend({
                 success: function(r)
                 {
                     delete ds.copyPending;
-                    var uc = new Dataset(r);
+                    ds._unpublishedView = new Dataset(r);
                     if (_.isFunction(successCallback))
-                    { successCallback(uc); }
+                    { successCallback(ds._unpublishedView); }
                 }});
         }
         else
@@ -1738,6 +1738,16 @@ var Dataset = ServerModel.extend({
         {
             callback(_.select(ds._snapshotViews, function(v) { return v.isDefault(); }));
         }
+    },
+
+    getOperationStatuses: function(callback)
+    {
+        var ds = this;
+        ds.makeRequest({
+            url: '/views/' + ds.id,
+            params: {method: 'operationStatuses'},
+            success: callback
+        });
     },
 
     cleanFilters: function(excludeTemporary)

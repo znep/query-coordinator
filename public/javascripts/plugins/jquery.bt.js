@@ -100,6 +100,9 @@ jQuery.bt = {version: '0.9.5-rc1'};
     return this.each(function(index) {
   
       var opts = jQuery.extend(false, jQuery.bt.defaults, jQuery.bt.options, options);
+
+      // clint.tseng@socrata.com: allow outside access of opts for hacky shit
+      this._opts = opts;
   
       // clean up the options
       opts.spikeLength = numb(opts.spikeLength);

@@ -78,7 +78,9 @@
             javascripts: [{assets: 'shared-richRenderers'}],
             reset: function()
             {
-                this.$dom.children('.renderContent').removeData().children('.content').empty().removeData();
+                this.$dom.children('.renderContent').removeData()
+                    .children('.content').empty().removeData().end()
+                    .children('.navigation').removeData();
             },
             stylesheets: [{assets: 'render-images-bundle', hasImages: true},
                 {assets: 'rich-render-bundle'}],

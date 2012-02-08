@@ -93,7 +93,8 @@ $(function()
                     var newMD = $.extend({}, blist.dataset.metadata);
                     $.deepSet(newMD, id, 'renderTypeConfig', 'active', rt, 'id');
                     blist.dataset.update({metadata: newMD});
-                    datasetPageNS.rtManager.hide(rt);
+                    if (datasetPageNS.rtManager.visibleTypes[rt])
+                    { datasetPageNS.rtManager.hide(rt); }
                     datasetPageNS.rtManager.show(rt);
                 }
                 else

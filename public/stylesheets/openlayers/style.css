@@ -27,6 +27,7 @@ div.olLayerDiv {
 }
 .olLayerGoogleV3.olLayerGooglePoweredBy {
     bottom: 15px !important;
+    display: none;
 }
 .olControlAttribution {
     font-size: smaller;

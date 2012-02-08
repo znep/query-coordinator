@@ -60,6 +60,12 @@
                         settings.fatrow));
             },
             javascripts: [{assets: 'shared-richRenderers'}],
+            reset: function()
+            {
+                this.$dom.children('.renderContent').removeData()
+                    .children('.columnHeaders, .rowList').empty().end()
+                    .children('.templateRow').removeData().empty();
+            },
             stylesheets: [{assets: 'render-images-bundle', hasImages: true},
                 {assets: 'rich-render-bundle'}],
             scrollsInline: false
@@ -70,6 +76,10 @@
             domId: 'pageRenderType',
             initFunction: 'pageRenderType',
             javascripts: [{assets: 'shared-richRenderers'}],
+            reset: function()
+            {
+                this.$dom.children('.renderContent').removeData().children('.content').empty().removeData();
+            },
             stylesheets: [{assets: 'render-images-bundle', hasImages: true},
                 {assets: 'rich-render-bundle'}],
             scrollsInline: false
@@ -97,34 +107,9 @@
                         settings.common,
                         settings.table));
             },
-            scrollsInline: true
-        },
-
-        manyTable: {
-            name: 'manyTable',
-            domId: 'gridRenderType',
-            javascripts: [{ assets: 'shared-table-render' }],
-            initFunction: function($dom, settings)
+            reset: function()
             {
-                // TODO: Hardcoded to "0" for now to select the first child view,
-                // but this will need to be variable based on which layer the user
-                // wants to view tabular data for.
-                var tableNumber = settings.tableNumber || 0;
-
-                Dataset.createFromViewId(settings.view.childViews[tableNumber], function (dataset)
-                {
-                    $dom.datasetGrid($.extend({view: dataset,
-                        columnDeleteEnabled: false,
-                        columnPropertiesEnabled: false,
-                        columnNameEdit: settings.columnEditEnabled &&
-                            (dataset.isDefault() ||
-                             dataset.type == 'grouped') &&
-                            dataset.hasRight('update_column'),
-                        showAddColumns: false,
-                        editEnabled: false},
-                        settings.common,
-                        settings.table));
-                });
+                  this.$dom.children('.renderContent').empty().removeData().removeClass('blist-table');
             },
             scrollsInline: true
         },
@@ -289,11 +274,18 @@
                 $(window).resize();
             },
 
-            hide: function(type)
+            hide: function(type, reset)
             {
                 var rtmObj = this;
 
                 var typeInfo = getConfig(rtmObj, type);
+                if (reset)
+                {
+                    typeInfo._assetsLoaded = true;
+                    delete typeInfo._initialized;
+                    if (_.isFunction(typeInfo.reset))
+                    { typeInfo.reset(); }
+                }
 
                 delete rtmObj.visibleTypes[type];
 
@@ -400,20 +392,24 @@
 
         var finishCallback = function()
         {
-            if (_.isFunction($.fn[typeInfo.initFunction]))
+            rtmObj.settings.view.getViewForDisplay(type, function(view)
             {
-                $content[typeInfo.initFunction]($.extend({view: rtmObj.settings.view,
-                        editEnabled: rtmObj.settings.editEnabled},
-                    rtmObj.settings.common, rtmObj.settings[typeInfo.name],
-                    defArgs));
-            }
-            else if (_.isFunction(typeInfo.initFunction))
-            {
-                typeInfo.initFunction($content, rtmObj.settings);
-            }
-            // Else: no init function specified!
+                if (_.isFunction($.fn[typeInfo.initFunction]))
+                {
+                    $content[typeInfo.initFunction]($.extend({view: view,
+                            editEnabled: rtmObj.settings.editEnabled},
+                        rtmObj.settings.common, rtmObj.settings[typeInfo.name],
+                        defArgs));
+                }
+                else if (_.isFunction(typeInfo.initFunction))
+                {
+                    typeInfo.initFunction($content, $.extend({}, rtmObj.settings,
+                        {view: view}));
+                }
+                // Else: no init function specified!
 
-            $content.trigger('show');
+                $content.trigger('show');
+            });
         };
 
         if (!typeInfo.scrollsInline)
@@ -421,8 +417,13 @@
         else
         { $content.addClass('scrollContent'); }
 
-        blist.util.assetLoading.loadAssets(typeInfo, finishCallback,
-            function() { $(window).trigger('resize', [null, true]); });
+        if (typeInfo._assetsLoaded)
+        { finishCallback(); }
+        else
+        {
+            blist.util.assetLoading.loadAssets(typeInfo, finishCallback,
+                function() { $(window).trigger('resize', [null, true]); });
+        }
 
         typeInfo._initialized = true;
     };

@@ -200,6 +200,11 @@ var Dataset = ServerModel.extend({
         return this.publicationStage == 'snapshotted';
     },
 
+    isImmutable: function()
+    {
+        return this.isGeoDataset();
+    },
+
     renderWithArcGISServer: function()
     {
         // Render everything using ArcGIS Server since we can't preemptively tell
@@ -1425,6 +1430,46 @@ var Dataset = ServerModel.extend({
         else { callback(ds._relatedViews); }
     },
 
+    getViewForDisplay: function(type, callback)
+    {
+        // in most cases, it's just the dataset
+        var vft = this._childViewsForType(type);
+        if (!vft)
+        {
+            callback(this);
+            return;
+        }
+
+        // figure out which underlying view to show
+        var typeDisplay = $.deepGet(true, this, 'metadata',
+                'renderTypeConfig', 'active', type);
+        if (!typeDisplay.id)
+        { typeDisplay.id = vft[0]; }
+
+        this._getChildView(typeDisplay.id, callback);
+    },
+
+    getChildOptionsForType: function(type, callback)
+    {
+        var ds = this;
+        var children = ds._childViewsForType(type);
+        if (!children)
+        { callback([ds]); }
+        else
+        {
+            var options = [];
+            _.each(children, function(childUid) {
+                ds._getChildView(childUid, function(child) {
+                    options.push(child);
+                }, true);
+            });
+            ds.sendBatch(function() {
+                // success
+                callback(options);
+            });
+        }
+    },
+
     redirectTo: function(urlparams)
     {
         var qs = '';
@@ -1925,6 +1970,46 @@ var Dataset = ServerModel.extend({
         ds.shortUrl = ds._generateShortUrl(true);
         ds.apiUrl = ds._generateApiUrl();
         ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
+    },
+
+    _getChildView: function(uid, callback, isBatch)
+    {
+        if (!this.childViews)
+        { throw "No such child view"; }
+
+        this._childViews || (this._childViews = {});
+        if (!this._childViews[uid])
+        {
+            var self = this;
+            Dataset.createFromViewId(uid, function(ds) {
+                self._childViews[uid] = ds;
+                callback(ds);
+            }, undefined, isBatch);
+        }
+        else
+        {
+            callback(this._childViews[uid]);
+        }
+    },
+
+    _childViewsForType: function(type)
+    {
+        // for now, geo (atlas) datasets are the only kind with
+        // (possibly) multiple underlying tables
+        if (!this.isGeoDataset())
+        { return false; }
+
+        // but if we're displaying it as a map, there's only one
+        // map to show
+        if (type == 'map')
+        { return false; }
+
+        // we can only switch if they're trying to display a tabular-ish
+        // grid thing
+        if (!_.include(['table', 'fatrow', 'page'], type))
+        { return false; }
+
+        return this.childViews;
     },
 
     _update: function(newDS, forceFull, updateColOrder, masterUpdate)
@@ -3282,7 +3367,7 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
-Dataset.createFromViewId = function(id, successCallback, errorCallback)
+Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch)
 {
     var cachedView = blist.viewCache[id];
     if (!_.isUndefined(cachedView))
@@ -3303,7 +3388,7 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback)
     }
     else
     {
-        $.Tache.Get({
+        $.socrataServer.makeRequest({
             url: '/api/views/' + id + '.json',
             success: function(view)
                 {
@@ -3312,6 +3397,8 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback)
                     if(_.isFunction(successCallback))
                     { successCallback(ds); }
                 },
+            batch: isBatch,
+            pageCache: !isBatch,
             error: errorCallback});
     }
 };

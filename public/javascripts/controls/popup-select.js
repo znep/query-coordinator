@@ -37,10 +37,18 @@
                 var itemId = _.uniqueId();
                 items[itemId] = choice;
 
+                var isSelected;
+                if (_.isFunction(opts.isSelected))
+                { isSelected = opts.isSelected(choice); }
+                else
+                {
+                    isSelected = _.include($.arrayify(opts.selectedItems), choice);
+                }
+
                 var $item = $.tag({
                     tagName: 'li',
                     'class': [ 'none', // so icons default to blank
-                               { value: 'checked', onlyIf: _.include($.arrayify(opts.selectedItems), choice) } ],
+                               { value: 'checked', onlyIf: isSelected } ],
                     'data-itemid': itemId,
                     contents: [{
                         tagName: 'span',
@@ -92,6 +100,10 @@
                             $item.addClass('checked');
                         }
                     }
+                    else if (opts.canDeselect)
+                    {
+                        $item.removeClass('checked');
+                    }
 
                     // maintain an internal representation of what's selected for _selectedItems
                     data.selectedItems = $.makeArray($item.siblings().andSelf().filter('.checked').map(function()
@@ -135,8 +147,10 @@
     };
 
     $.fn.popupSelect.defaults = {
+        canDeselect: false,
         choices: [],
         dismissOnClick: true,
+        isSelected: null,
         listContainerClass: [],
         multiselect: false,
         onShowCallback: null,

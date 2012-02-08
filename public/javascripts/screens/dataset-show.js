@@ -64,20 +64,81 @@ $(function()
     if ($('#renderTypeOptions').length > 0)
     {
         // Render types
-        $('#renderTypeOptions').pillButtons({multiState: true, defaultSelector: null});
+        $('#renderTypeOptions').pillButtons({multiState: true, defaultSelector: null,
+            hasClickHandler: function($button)
+            {
+                return $button.data('popupSelect-tip');
+            }
+        });
         $.live('#renderTypeOptions a', 'click', function(e)
         {
             e.preventDefault();
-            var rt = $.urlParam($(this).attr('href'), 'defaultRender');
+            var $button = $(this);
+            var rt = $.urlParam($button.attr('href'), 'defaultRender');
             if (rt == 'richList') { rt = 'fatrow'; }
-            // Would call show on renderTypeManager; but updating the
-            // dataset fires an event that RTM listens to. Except that if
-            // we have a dt/rt mismatch, then just run a show
-            if (blist.dataset.metadata.renderTypeConfig.visible[rt] !=
-                datasetPageNS.rtManager.visibleTypes[rt])
-            { datasetPageNS.rtManager.toggle(rt); }
-            else
-            { blist.dataset.toggleRenderType(rt); }
+
+            if ($button.data('popupSelect-tip'))
+            { return; }
+
+            var finished = function(id)
+            {
+                if (!id && $.deepGet(blist.dataset.metadata, 'renderTypeConfig.active.' + rt))
+                { delete blist.dataset.metadata.renderTypeConfig.active[rt]; }
+                // Would call show on renderTypeManager; but updating the
+                // dataset fires an event that RTM listens to. Except that if
+                // we have a dt/rt mismatch, then just run a show
+                if (blist.dataset.metadata.renderTypeConfig.visible[rt] !=
+                    datasetPageNS.rtManager.visibleTypes[rt])
+                { datasetPageNS.rtManager.toggle(rt); }
+                else if (id)
+                {
+                    var newMD = $.extend({}, blist.dataset.metadata);
+                    $.deepSet(newMD, id, 'renderTypeConfig', 'active', rt, 'id');
+                    blist.dataset.update({metadata: newMD});
+                    if (datasetPageNS.rtManager.visibleTypes[rt])
+                    { datasetPageNS.rtManager.hide(rt, true); }
+                    datasetPageNS.rtManager.show(rt);
+                }
+                else
+                { blist.dataset.toggleRenderType(rt); }
+            };
+
+            if ($button.data('noChildren'))
+            { finished(); return; }
+
+            blist.dataset.getChildOptionsForType(rt, function(options)
+            {
+                if (options.length > 1)
+                {
+                    $button.toggleClass('active', blist.dataset.metadata.renderTypeConfig.visible[rt])
+                        .popupSelect({
+                        canDeselect: true,
+                        choices: options,
+                        isSelected: function(option) {
+                            return $.deepGetStringField(blist.dataset.metadata,
+                                'renderTypeConfig.visible.' + rt) &&
+                                (option.id == $.deepGetStringField(blist.dataset.metadata,
+                                'renderTypeConfig.active.' + rt + '.id'));
+                        },
+                        prompt: 'Select a layer:',
+                        renderer: function(option) {
+                            return option.name;
+                        },
+                        selectCallback: function(option, checked) {
+                            if (checked)
+                            { finished(option.id); }
+                            else
+                            { finished(); }
+                            return checked;
+                        }
+                    }).data('popupSelect-tip').show();
+                }
+                else
+                {
+                    $button.data('noChildren', true);
+                    finished();
+                }
+            });
         });
     }
 
@@ -127,8 +188,9 @@ $(function()
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
         defaultTypes: defRen,
-        editEnabled: blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular',
-        columnEditEnabled: true,
+        editEnabled: !blist.dataset.isImmutable() &&
+            (blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular'),
+        columnEditEnabled: !blist.dataset.isImmutable(),
         common: {
             editColumnCallback: function(col)
             {
@@ -151,9 +213,7 @@ $(function()
         page: { defaultRowId: blist.initialRowId }
     });
 
-    var $dataGrid = datasetPageNS.rtManager.$domForType(
-        blist.dataset.isGeoDataset() ? 'manyTable' : 'table');
-
+    var $dataGrid = datasetPageNS.rtManager.$domForType('table')
 
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly)
     {

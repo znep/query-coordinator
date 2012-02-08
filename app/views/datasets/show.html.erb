@@ -53,14 +53,13 @@
         <%- if @view.available_display_types.length > 1 -%>
         <ul id="renderTypeOptions" class="pillButtons">
 
-          <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list', 'manyTable' => 'set of tables'} -%>
+          <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list'} -%>
           <%- url_types = {'fatrow' => 'richList'} -%>
           <%- @view.available_display_types.clone.
             push('template').each do |type| -%>
           <li><a
             href="<%= @view.href %>?defaultRender=<%= url_types[type] || type %>"
-            class="<%= type %> noRedirPrompt
-              <%= type == 'template' ? 'hide' : '' %>"
+            class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
             title="View as a <%= title_types[type] || type %>">
             <span class="icon"></span>
           </a></li>
@@ -194,7 +193,7 @@
       <%= render(:partial => @view.display.render_partial) %>
     </div>
 
-    <%- if @view.is_tabular? && !@view.is_form? -%>
+    <%- if ( @view.is_tabular? || @view.is_geo? ) && !@view.is_form? -%>
     <div id="fatRowRenderType" data-renderType="fatrow"
       class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
       <div class="columnHeaders"></div>

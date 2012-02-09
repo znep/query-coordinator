@@ -1750,7 +1750,12 @@ importNS.importingPaneConfig = {
             pending: function(response)
             {
                 if ($.subKeyDefined(response, 'details.progress'))
-                  $pane.find('.importStatus').text(response.details.progress + ' rows imported so far.');
+                {
+                    var message = response.details.progress + ' rows imported so far.';
+                    if ($.subKeyDefined(response, 'details.layer'))
+                        message = "Layer " + response.details.layer + ": " + message;
+                    $pane.find('.importStatus').text(message);
+                }
             }
         });
     }

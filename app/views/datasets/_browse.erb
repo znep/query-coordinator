@@ -272,7 +272,9 @@
 
                   <%- if opts[:grid_items][:nameDesc] -%>
                     <td class="nameDesc">
-                      <a href="<%= v.href(opts[:port]) %>" class="name"
+                      <a href="<%= opts[:url_override].present? ?
+                                   v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last] :
+                                   v.href(opts[:port]) %>" class="name"
                         rel="<%= rel_type %>"><%= v.name %></a>
                       <%- if !v.category.blank? -%>
                       <span class="category infoItem"><%= v.category %></span>

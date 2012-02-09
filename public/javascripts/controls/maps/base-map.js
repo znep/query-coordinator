@@ -1624,7 +1624,11 @@
             viewConfig._selectControl = new OpenLayers.Control.SelectFeature(layer,
                 { onSelect: function(feature) {
                     onFeatureSelect(mapObj, feature, function(evt)
-                        { feature.layer.dataViewConfig._selectControl.unselect(feature); });
+                        {
+                            if (!feature.layer)
+                            { feature = mapObj._markers[feature.attributes.dupKey]; }
+                            feature.layer.dataViewConfig._selectControl.unselect(feature);
+                        });
                     },
                   onUnselect: function(feature) {
                     if (feature)

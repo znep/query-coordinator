@@ -23,6 +23,12 @@
             OpenLayers.Control.prototype.initialize.apply(this, arguments);
         },
 
+        destroy: function()
+        {
+            $(this.map.div).siblings('#mapTypes').empty();
+            OpenLayers.Control.prototype.destroy.apply(this, arguments);
+        },
+
         draw: function(px)
         {
             if (_.isEmpty(this.layers)) { return; }

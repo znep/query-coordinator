@@ -19,7 +19,7 @@
             <li>
             <%- cp = opts[:user_params].reject{ |k| k == :q } -%>
             <%- opts[:facets].each { |facet| cp.delete(facet[:param]) } -%>
-            <a href="<%= opts[:base_url] + '?' + cp.to_param %>">Clear All Options</a>
+            <a href="<%= opts[:base_url] + '?' + cp.to_param %>"><%= t('controls.browse.actions.clear_all') %></a>
             </li>
           </ul>
         </div>
@@ -38,7 +38,7 @@
                   <%- if facet[:use_icon] -%>
                     <span class="icon"></span>
                   <%- end -%>
-                  (All)
+                  <%= t('controls.browse.actions.clear_facet') %>
                 </a></li>
               <%- end -%>
               <%- facet[:options].each do |facet_option| -%>
@@ -74,7 +74,7 @@
                 </a>
               <%- end -%>
             </div>
-            <a class="moreLink" href="#More <%= facet[:title] %>">View all</a>
+            <a class="moreLink" href="#More <%= facet[:title] %>"><%= t('controls.browse.actions.all_options') %></a>
             <%- end -%>
           <%- else -%>
             <%- if opts[facet[:param]].present? -%>
@@ -93,10 +93,10 @@
     <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
              CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
     <div class="createDatasetBox infoBox">
-      <h3>Create or upload your own dataset</h3>
+      <h3><%= t('controls.browse.actions.create_dataset') %></h3>
       <div class="buttonContainer">
-        <a class="button next" href="/datasets/new" title="Create a new dataset">
-          <%= opts[:browse_in_container] ? 'Create a new Dataset' : 'Create' %><span class="icon"></span>
+        <a class="button next" href="/datasets/new" title="<%= t('controls.browse.actions.create_dataset_short') %>">
+          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_short') : t('controls.browse.actions.create_dataset_verb') %><span class="icon"></span>
         </a>
       </div>
     </div>
@@ -118,7 +118,7 @@
       <%- if !opts[:browse_in_container] -%>
         <div class="titleContainer">
           <h2 title="<%= opts[:title] %>"><%= opts[:title] %>
-            <a href="/catalog.rss" class="subscribe">
+            <a href="/catalog.rss" class="subscribe" title="<%= t('controls.browse.actions.subscribe') %>">
               <span class="icon"></span>
             </a>
           </h2>
@@ -130,12 +130,12 @@
           <ul class="viewTypeOptions pillButtons">
             <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
                             {:view_type => 'table', :page => opts[:page]}).to_param %>"
-              class="list<%= ' active' if opts[:view_type] != 'rich' %>" title="View as a compact list">
+              class="list<%= ' active' if opts[:view_type] != 'rich' %>" title="<%= t('controls.browse.actions.compact_list') %>">
               <span class="icon"></span>
             </a></li>
             <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
                             {:view_type => 'rich', :page => opts[:page]}).to_param %>"
-              class="fatrow<%= ' active' if opts[:view_type] == 'rich' %>" title="View as a rich list">
+              class="fatrow<%= ' active' if opts[:view_type] == 'rich' %>" title="<%= t('controls.browse.actions.rich_list') %>">
               <span class="icon"></span>
             </a></li>
           </ul>
@@ -143,7 +143,7 @@
 
         <%- if sort_shown -%>
           <div class="sortOptions">
-            <label for="browseSortType" class="sortLabel">Sort By</label>
+            <label for="browseSortType" class="sortLabel"><%= t('controls.browse.sort_title') %></label>
             <select id="browseSortType" class="sortType" name="sortType">
               <%- opts[:sort_opts].each do |so| -%>
                 <%- next if !so[:requires].nil? && opts[so[:requires]].nil? -%>
@@ -152,11 +152,11 @@
               <%- end -%>
             </select>
             <%- time_opts = [
-              { :value => 'week', :name => 'This week' },
-              { :value => 'month', :name => 'This month' },
-              { :value => 'year', :name => 'This year' }
+              { :value => 'week', :name => t('controls.browse.sort_periods.week') },
+              { :value => 'month', :name => t('controls.browse.sort_periods.month') },
+              { :value => 'year', :name => t('controls.browse.sort_periods.year') }
             ] -%>
-            <label for="browseSortPeriod" class="sortLabel">Sort Period</label>
+            <label for="browseSortPeriod" class="sortLabel"><%= t('controls.browse.sort_period_title') %></label>
             <select class="sortPeriod<%= ' hide' unless show_time_period %>" name="sortPeriod" id="browseSortPeriod">
               <%- time_opts.each do |to| -%>
                 <option value="<%= to[:value] %>"<%= ' selected="selected"' if to[:value] == opts[:sortPeriod] %>>
@@ -174,10 +174,10 @@
             <span class="message"><%= opts[:no_results_text] %></span>
             <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
                   CurrentDomain.module_enabled?(:community_creation)) && !opts[:suppress_dataset_creation] -%>
-                  <a class="button createLink" href="/datasets/new">Create New Dataset</a>
+                  <a class="button createLink" href="/datasets/new"><%= t('controls.browse.actions.create_dataset_short') %></a>
             <%- end -%>
             <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
-              <a class="button suggestLink" href="/nominate">Suggest a Dataset</a>
+              <a class="button suggestLink" href="/nominate"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
             <%- end -%>
           </div>
         <%- else -%>
@@ -249,7 +249,7 @@
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
                     <td class="index">
-                      <a class="expander" title="Click to expand" href="#Expand">
+                      <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
                         <span class="icon"></span>
                       </a>
                       <span class="value"><%= start_index + i %>.</span>
@@ -264,7 +264,7 @@
                       <%- if v.federated? -%>
                         <a href="<%= v.href(opts[:port]) %>" rel="<%= rel_type %>">
                           <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
-                            'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
+                            t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
                         </a>
                       <%- end -%>
                     </td>
@@ -295,7 +295,8 @@
                       <%- end -%>
                       <% if v.federated? %>
                         <div class="federation-source infoItem">
-                          Provided by <a href="http://<%= v.domainCName %>"><%= v.domainCName %></a>
+                          <%= t('controls.browse.listing.federation_source_html',
+                                :source_link => link_to(v.domainCName, "//#{v.domainCName}")) %>
                         </div>
                       <% end %>
 
@@ -328,18 +329,19 @@
                       <a href="<%= v.href(opts[:port]) %>" class="nameLink" rel="<%= rel_type %>">
                         <%- if opts[:use_federations] && v.federated? -%>
                           <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
-                            'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
+                            t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
                         <%- end -%>
                         <span class="name"><%= v.name %></span>
                       </a>
                       <% if v.federated? %>
                         <div class="federation-source">
-                          Provided by <a href="http://<%= v.domainCName %>"><%= v.domainCName %></a>
+                          <%= t('controls.browse.listing.federation_source_html',
+                                :source_link => link_to(v.domainCName, "//#{v.domainCName}")) %>
                         </div>
                       <% end %>
                       <div class="expandBlock">
                         <div class="description collapsed"><%= v.description %></div>
-                        <a class="expander" title="Click to expand" href="#Expand">
+                        <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
                           <span class="icon"></span>
                         </a>
                       </div>
@@ -353,11 +355,11 @@
                         <span class="textStatus"><%= v.moderation_status %></span>
                         <%- if v.moderationStatus.nil? || !v.moderationStatus -%>
                           <% form_button({ :action => 'set_view_moderation_status',
-                                           :id => v.id, :approved => 'yes' }, 'Approve') %>
+                                           :id => v.id, :approved => 'yes' }, t('controls.browse.actions.moderation.accept')) %>
                         <%- end -%>
                         <%- if v.moderationStatus.nil? || v.moderationStatus -%>
                           <% form_button({ :action => 'set_view_moderation_status',
-                                           :id => v.id, :approved => 'no' }, 'Reject') %>
+                                           :id => v.id, :approved => 'no' }, t('controls.browse.actions.moderation.reject')) %>
                         <%- end -%>
                       </div>
                     </td>
@@ -366,7 +368,7 @@
                   <%- if opts[:grid_items][:popularity] -%>
                     <td class="popularity">
                       <span class="visits"><%= pluralize(number_with_delimiter(v.viewCount,
-                        {:locale => 'en'}), 'view') %></span>
+                        {:locale => 'en'}), t('core.analytics.visit')) %></span>
                     </td>
                   <%- end -%>
 
@@ -381,7 +383,7 @@
                     <td class="rss">
                       <%- if v.is_tabular? && !v.is_form? -%>
                       <a href="<%= v.rss %>" class="subscribe"
-                        title="Subscribe to changes on this view"><span class="icon"></span></a>
+                        title="t('controls.browse.actions.dataset_subscribe')"><span class="icon"></span></a>
                       <%- end -%>
                     </td>
                   <%- end -%>
@@ -404,9 +406,9 @@
     <%- if !opts[:browse_in_container] &&
             CurrentDomain.module_enabled?(:dataset_nomination) -%>
     <div class="suggestBox infoBox">
-      <h3>Didn't find what you're looking for? Suggest a dataset</h3>
+      <h3><%= t('controls.browse.actions.suggest_dataset') %></h3>
       <div class="buttonContainer">
-        <a class="button next" href="/nominate">Suggest<span class="icon"></span></a>
+        <a class="button next" href="/nominate"><%= t('controls.browse.actions.suggest_dataset_verb') %><span class="icon"></span></a>
       </div>
     </div>
   <%- end -%>
@@ -416,37 +418,35 @@
 
 <%- content_for :modals do -%>
   <div class="browseOptionsDialog modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <a href="#close" class="jqmClose modalDialogClose"><%= t('core.dialogs.close') %></a>
     <div class="optionsContent"></div>
   </div>
 
   <div class="extentChooser modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
-    <p class="modalParagraph">
-      Drag the markers to set a bounding box to find only datasets contained in that box
-    </p>
+    <a href="#close" class="jqmClose modalDialogClose"><%= t('core.dialogs.close') %></a>
+    <p class="modalParagraph"><%= t('controls.browse.facets.extents.set_extents_instructions') %></p>
     <div class="mapContainer"></div>
     <ul class="actions clearfix">
       <li>
         <a class="jqmClose button cancel"
-          href="#cancel"><span class="icon"></span>Cancel</a>
+          href="#cancel"><span class="icon"></span><%= t('core.dialogs.cancel') %></a>
       </li>
       <li>
         <a class="button accept" href="#">
           <span class="icon"></span>
-          Find datasets
+          <%= t('controls.browse.facets.extents.submit_button') %>
         </a>
       </li>
     </ul>
   </div>
 
   <div class="externalDomainNotice modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <a href="#close" class="jqmClose modalDialogClose"><%= t('core.dialogs.close') %></a>
     <h2>
-      You are leaving <span class="serverName"><%= CurrentDomain.cname %></span>
+      <%= t('core.interstitial.leaving_notice_html', :site_name => CurrentDomain.cname) %>
     </h2>
-    <p>This <span class="datasetType">dataset</span> is hosted by
-    <a href="#" rel="external" class="externalDomain">another domain</a>.
+    <p>
+      <%= t('core.interstitial.leaving_explanation_html') %>
     </p>
     <div class="nameDescription">
       <p class="dsName"></p>
@@ -459,13 +459,13 @@
       <li>
         <a class="noInterstitial default button accept" href="#" rel="external">
           <span class="icon"></span>
-          Continue
+          <%= t('core.dialogs.continue') %>
         </a>
       </li>
       <li>
         <a class="jqmClose button cancel" href="#cancel">
           <span class="icon"></span>
-          Cancel
+          <%= t('core.dialogs.cancel') %>
         </a>
       </li>
     </ul>
@@ -476,12 +476,19 @@
 <div class="expandedInfo">
   <div class="actions">
     <a class="permissions button" href="#Permissions"
-      title="Change the public visibility">Make <span class="permType"></span></a>
-    <a class="delete button" href="#Delete" title="Delete this item">Delete</a>
-    <a class="about button" href="#About" title="About this dataset">About</a>
+      title="t('controls.browse.actions.permissions.title')">
+      <%= t('controls.browse.actions.permissions.button_html',
+            :visibility => '<span class="permType"></span>') %>
+    </a>
+    <a class="delete button" href="#Delete" title="<%= t('controls.browse.actions.delete.title') %>">
+      <%= t('controls.browse.actions.delete.button') %>
+    </a>
+    <a class="about button" href="#About" title="<%= t('controls.browse.actions.about.title') %>">
+      <%= t('controls.browse.actions.about.button') %>
+    </a>
     <div class="share menu"></div>
   </div>
-  <div class="comments" title="Number of comments">
+  <div class="comments" title="<%= t('controls.browse.listing.comment_count') %>">
     <span class="icon"></span><span class="value"></span>
   </div>
   <div class="starsControl datasetAverageRating"></div>

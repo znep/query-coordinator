@@ -1,0 +1,105 @@
+en:
+  controls:
+    browse:
+      facets:
+        view_types_title: View Types
+        view_types_singular_title: type
+        view_types:
+          datasets: Datasets
+          href: External Datasets
+          blob: Files and Documents
+          filters: Filtered Views
+          charts: Charts
+          maps: Maps
+          calendars: Calendars
+          forms: Forms
+        categories_title: Categories
+        categories_singular_title: category
+        topics_title: Topics
+        topics_singular_title: topic
+        # federation is the process of sharing datasets across Socrata-powered sites
+        federated_domains_title: Federated Domains
+        federated_domains_singular_title: domain
+        # this is displayed on the administration panel only
+        moderation_status_title: Moderation Status
+        moderation_status_singular_title: moderation
+        moderation_status:
+          pending: Pending
+          accepted: Accepted
+          rejected: Rejected
+        extents_title: Within Geographical Area
+        extents:
+          set_extents_link: Set geographical area
+          set_extents_instructions: Drag the markers to set a bounding box to find only datasets contained in that box
+          submit_button: Find datasets
+          # this is the text that is shown when the user has picked a geographical area
+          extents_set_message: within an area
+      sort_title: Sort By
+      sorts:
+        relevance: Most Relevant
+        most_accessed: Most Accessed
+        alpha: Alphabetical
+        newest: Newest
+        oldest: Oldest
+        rating: Highest Rated
+        comments: Most Comments
+      sort_period_title: Sort Period
+      sort_periods:
+        week: This week
+        month: This month
+        year: This year
+      title:
+        default: Search & Browse Datasets and Views
+        result:
+          # the ultimate result here is eg:
+          # Results for "search term", matching type of Maps and category of Education
+          main: Results %{body}
+          term: for "%{term}"
+          facet_main: matching %{body}
+          facet: %{facet_type} of %{facet_value}
+      listing:
+        no_results: No Results
+        result_count: Showing %{this} of %{total}
+        federation_source: Federated from %{source}
+        # same as above but with a link. no particular reason the wording is different.
+        federation_source_html: Provided by %{source_link}
+        comment_count: Number of comments
+      row_results:
+        title_html: "Showing <span class=\"rowResultCountText\"></span> of <span class=\"totalResultCountText\"></span> matching rows <a href=\"#\" class=\"rowSearchLink\">(view results)</a>:"
+        more_link: More
+        less_link: Less
+      actions:
+        clear_all: Clear All Options
+        # (eg "don't filter, show me all results"):
+        clear_facet: (All)
+        # if there are too many options to list inline, this link pops a window with all options
+        all_options: View All
+        create_dataset: Create or upload your own dataset
+        # this is shown as a button to the right of the above text:
+        create_dataset_verb: Create
+        # this is shown in lieu of the above as a button in limited space situations:
+        create_dataset_short: Create a new Dataset
+        # same logic for these three as create_dataset:
+        suggest_dataset: Didn't find what you're looking for? Suggest a dataset.
+        suggest_dataset_verb: Suggest
+        suggest_dataset_short: Suggest a Dataset
+        # subscribe via rss to entire catalog:
+        subscribe: Subscribe
+        # subscribe via rss to changes on an individual dataset:
+        dataset_subscribe: Subscribe to changes on this view
+        compact_list: View as a compact list
+        rich_list: View as a rich list
+        expand_section: Click to expand
+        moderation:
+          accept: Accept
+          reject: Reject
+        permissions:
+          title: Change the public visibility
+          # eg "Make public"
+          button_html: Make %{visibility}
+        delete:
+          title: Delete this item
+          button: Delete
+        about:
+          title: About this Dataset
+          button: About

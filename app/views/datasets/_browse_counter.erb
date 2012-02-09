@@ -1,1 +1,5 @@
-<div class="resultCount">Showing <%= opts[:view_results].length %> of <%= opts[:view_count] %></div>
+<div class="resultCount">
+  <%= t('controls.browse.listing.result_count',
+        :this => opts[:view_results].length,
+        :total => opts[:view_count]) %>
+</div>

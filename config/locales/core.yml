@@ -27,3 +27,12 @@ en:
         between: is between
         is_blank: is blank
         is_not_blank: is not blank
+    analytics:
+      visit: view
+    dialogs:
+      close: Close
+      cancel: Cancel
+      continue: Continue
+    interstitial:
+      leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
+      leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.

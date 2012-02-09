@@ -1,20 +1,15 @@
 <div class="rowSearchRenderType hide">
   <div class="columnHeaders"></div>
   <div class="rowResultCountDisplay">
-    <span>Showing <span class="rowResultCountText"></span>
-      of <span class="totalResultCountText"></span>
-      matching rows
-      <a href="#" class="rowSearchLink">(view results)</a>
-      :
-    </span>
+    <span><%= t('controls.browse.row_results.title_html') %></span>
   </div>
   <div class="rowList"></div>
   <div class="fader"></div>
   <div class="expandHint downArrow">
     <a class="expandRowResults" href="#Expand">
       <span class="icon"></span>
-      <span class="expandText">More</span>
-      <span class="collapseText">Less</span>
+      <span class="expandText"><%= t('controls.browse.row_results.more_link') %></span>
+      <span class="collapseText"><%= t('controls.browse.row_results.less_link') %></span>
     </a>
   </div>
   <div class="templateRow row clearfix"></div>

@@ -231,3 +231,57 @@ body.socrata-page
     position: fixed
     top: 0
     z-index: 500
+
+
+.socrata-component .dataTableWrapper
+  background-color: #ffffff
+  margin-bottom: 5em
+  overflow: auto
+
+  .dataTable
+    border-right: 1px solid #e2e2e2
+    border-top: 1px solid #d0d0d0
+
+  thead th
+    background-color: #e8e8e8
+
+  th, td
+    font-size: 1.2em
+    padding: 0.2em
+    &.type_nested_table
+      padding: 0
+
+  td .dataTable
+    background-color: #ffffff
+    font-size: 0.8em
+    margin: -1px
+
+  td, th
+    border-left: 1px solid #e2e2e2
+    border-bottom: 1px solid #d0d0d0
+
+  tr.even
+    > td, > th
+      background-color: #f6f6ff
+
+  .pagination
+    margin: 1em auto
+    text-align: center
+    a
+      font-size: 1.2em
+      margin: 0 0.25em
+    .active
+      color: #333333
+      cursor: auto
+      font-weight: bold
+
+    .prevLink
+      margin-right: 0.5em
+    .prevLink, .firstLink
+      border-right: 1px solid #333333
+      padding-right: 0.5em
+    .nextLink
+      margin-left: 0.5em
+    .nextLink, .lastLink
+      border-left: 1px solid #333333
+      padding-left: 0.5em

@@ -58,6 +58,10 @@ class Column < Model
     return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
+  def render_type
+    @render_type ||= RenderType.new(renderTypeName)
+  end
+
   def is_sortable?
     return client_type != "nested_table" &&
       client_type != "photo_obsolete" &&

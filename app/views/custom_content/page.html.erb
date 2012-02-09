@@ -5,7 +5,7 @@
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
 
-<%= raw @page.render %>
+<%= raw @page.render(!@minimal_render) %>
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>

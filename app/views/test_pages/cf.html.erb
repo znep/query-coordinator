@@ -2,82 +2,41 @@
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
 
-<script>
-$(function() {
-    $.dataContext.load({
-//      repeaterView: {type: 'view', viewId: 'yxbb-meff'},
-      mainView: {type: 'view', viewId: '5sdc-99x6'}
-    });
+<%-
+dc = {
+  ds1: {type: 'dataset', datasetId: 'r5by-xub9'},
+  ds2: {type: 'dataset', datasetId: 'ig2g-cynv'},
+  ds3: {type: 'dataset', datasetId: '2u7y-hjvg'}
+}
 
-    $.component.initialize({
-        id: 'root-component-test',
-        type: 'Container',
-        children: [
-            {
-                type: 'HorizontalContainer',
-                children: [
-                    {
-                        type: 'Text',
-                        html: 'Box A'
-                    }, {
-                        type: 'Text',
-                        html: 'Box B',
-                        weight: 3
-                    }, {
-                        type: 'Text',
-                        html: 'Box C'
-                    }
-                ]
-            }, {
-                type: 'Text',
-                html: 'Box D'
-            }, {
-                type: 'Text',
-                html: 'Box E'
-            },
-//            {
-//                type: 'Repeater',
-//                contextId: 'repeaterView',
-//
-//                children: [
-//                    {
-//                        type: 'Text',
-//                        html: 'County <b>{1035}</b> has <b>{1027}%</b> uninsured'
-//                    }
-//                ]
-//            },
-          {
-            type: 'InlineFilter',
-            contextId: 'mainView'
-          },
-          {
-            type: 'LineChart',
-            height: 500,
-            contextId: 'mainView',
-            displayFormat: {
-              fixedColumns: [3499],
-              legend: 'bottom',
-              lineSize: '2',
-              pointSize: '3',
-              smoothLine: false,
-              valueColumns: [
-                { color: '#00ff00', tableColumnId: 3501 }
-              ]
-            }
-          }
-        ]
-    });
-});
-</script>
+components = {
+  type: 'Container',
+  id: 'test-root',
+  children: [
+  {
+    type: 'Table',
+    contextId: 'ds1'
+  },
+  {
+    type: 'Table',
+    contextId: 'ds2'
+  },
+  {
+    type: 'Table',
+    contextId: 'ds3'
+  }
+  ]
+}
 
-<div class="socrata-root" id="root-component-test"></div>
+@page = Page.new({data: dc, content: components, path: '/test_page/cf'}.with_indifferent_access)
+-%>
+
+<%= raw @page.render(!@minimal_render) %>
+
+<%- content_for :js_footer do -%>
+  <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil } %>
+<%- end -%>
 
 <% content_for :js_footer do %>
 <%= current_user_js %>
-<%= include_javascripts 'canvas' %>
-<script type="text/javascript">
-  blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
-  blist.namespace.fetch('blist.configuration');
-  blist.configuration.development = <%= Rails.env.development? %>;
-</script>
 <% end %>

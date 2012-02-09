@@ -1,7 +1,12 @@
 class Page < SodaModel
-  def render
-    Canvas2::DataContext.load(data)
-    [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render}.join('')
+  def render(full = true)
+    if full
+      Canvas2::Util.set_path(path)
+      Canvas2::DataContext.load(data)
+      [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render}.join('')
+    else
+      '<div id="' + content['id'] + '"></div>'
+    end
   end
 
   def content

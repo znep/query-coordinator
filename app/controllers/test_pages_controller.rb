@@ -37,6 +37,8 @@ class TestPagesController < ApplicationController
   end
 
   def cf
+    Canvas2::Util.set_params(params)
+    @minimal_render = params['no_render'] == 'true'
   end
 
   def kill_all_views

@@ -172,12 +172,13 @@ class View < Model
     return data, viewable_columns, aggregates, row_count
   end
 
-  def get_rows(per_page, page = 1, conditions = {})
+  def get_rows(per_page, page = 1, conditions = {}, include_meta = false)
     params = { :method => 'getByIds',
                :asHashes => true,
                :accessType => 'WEBSITE',
                :start => (page - 1) * per_page,
-               :length => per_page }
+               :length => per_page,
+               :meta => include_meta}
 
     merged_conditions = self.query.cleaned.deep_merge(conditions)
     request_body = {
@@ -188,8 +189,9 @@ class View < Model
     }.to_json
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
-    return JSON.parse(CoreServer::Base.connection.create_request(url, request_body),
-                      {:max_nesting => 25})
+    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body, {}, true),
+                        {:max_nesting => 25})
+    {rows: include_meta ? result['data'] : result, meta: include_meta ? result['meta'] : nil}
   end
 
   def get_total_rows(conditions = {})

@@ -69,20 +69,7 @@
 
   <div class="dataGridWrapper">
     <%- if is_grid -%>
-    <table id="dataGrid">
-      <%= render(:partial => 'alt_tbody',
-        :locals => {:columns => @viewable_columns,
-        :rows => @data, :start_page => @page, :parent_id => '0'}) %>
-      <%- unless @aggregates.nil? or @aggregates.none? -%>
-      <tfoot>
-        <tr>
-        <%= render(:partial => 'alt_tfooter',
-          :locals => {:columns => @viewable_columns,
-          :aggregates => @aggregates}) %>
-        </tr>
-      </tfoot>
-      <%- end -%>
-    </table>
+      <%= raw RenderType.table_html('dataGrid', @viewable_columns, @data, @view, @page, @aggregates) %>
     <%- elsif is_form -%>
       <%= render(:partial => 'displays/form_view') %>
     <%- else -%>

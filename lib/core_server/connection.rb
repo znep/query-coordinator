@@ -41,11 +41,18 @@ module CoreServer
       end
     end
 
-    def create_request(path, payload = "{}", custom_headers = {})
+    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false)
       if @batching
        @batch_queue << {:url => path, :body => payload, :requestType => 'POST'}
       else
-        generic_request(Net::HTTP::Post.new(path), payload, custom_headers).body
+        result_body = cache_req ? cache.read("#{CurrentDomain.cname}:#{path}:#{payload}") : nil
+        if result_body.nil?
+          result_body = generic_request(Net::HTTP::Post.new(path),
+                                        payload, custom_headers).body
+          cache.write("#{CurrentDomain.cname}:#{path}:#{payload}", result_body) if cache_req
+        end
+
+        result_body
       end
     end
 

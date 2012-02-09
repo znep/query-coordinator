@@ -95,6 +95,8 @@ class CustomContentController < ApplicationController
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)
     @cached_fragment = read_fragment(@cache_key)
 
+    @minimal_render = params['no_render'] == 'true'
+
     path = "/#{params[:path].join '/'}"
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if path == '/'

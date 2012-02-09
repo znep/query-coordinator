@@ -25,7 +25,24 @@ module Canvas2
     end
 
     def self.set_params(params)
-      @@page_params = params
+      @@page_params = params.reject {|k, v| k == 'controller' || k == 'action' || k == 'path'}
+    end
+
+    def self.page_params
+      @@page_params
+    end
+
+    def self.set_path(path)
+      @@page_path = path
+    end
+
+    def self.page_path
+      @@page_path
+    end
+
+    def self.component_data_page(c_id)
+      return 1 if @@page_params.nil?
+      c_id == @@page_params['data_component'] ? (@@page_params['data_page'] || '1').to_i : 1
     end
 
     def self.base_resolver
@@ -52,7 +69,25 @@ module Canvas2
       obj
     end
 
+    def self.app_helper
+      AppHelper.instance
+    end
+
+    def self.render_partial(partial, assigns={})
+      view = ActionView::Base.new(Rails::Configuration.new.view_path)
+      ActionView::Base.included_modules.each { |helper| view.extend helper }
+      view.extend ApplicationHelper
+      view.render(partial, assigns)
+    end
+
   private
+    class AppHelper
+      include ActionView::Helpers::TagHelper
+      include ActionView::Helpers::UrlHelper
+      include Singleton
+      include ApplicationHelper
+    end
+
     def self.resolve_string(str, resolver)
       @@resolve_cache ||= {}
       compiled = @@resolve_cache[str]
@@ -149,7 +184,7 @@ module Canvas2
         end
       when 'row'
         get_dataset(config) do |ds|
-          r = ds.get_rows(1)[0]
+          r = ds.get_rows(1)[:rows][0]
           fr = {}
           ds.visible_columns.each {|c| fr[c.fieldName] = r[c.id.to_s]}
           available_contexts[id] = {id: id, type: config['type'], row: fr}
@@ -172,6 +207,8 @@ module Canvas2
       end
 
       (query['orderBys'] || []).each do |ob|
+        ob = ob.clone
+        ob['expression'] = ob['expression'].clone
         if defined? ob['expression']['fieldName']
           c = ds.column_by_id_or_field_name(ob['expression']['fieldName'])
           break if c.blank?
@@ -183,6 +220,7 @@ module Canvas2
       q.delete('orderBys') if q['orderBys'].empty?
 
       (query['groupBys'] || []).each do |gb|
+        gb = gb.clone
         if defined? gb['fieldName']
           c = ds.column_by_id_or_field_name(gb['fieldName'])
           break if c.blank?
@@ -193,7 +231,7 @@ module Canvas2
       end
       q.delete('groupBys') if q['groupBys'].empty?
 
-      ds.query.data.deep_merge!(query)
+      ds.query.data.deep_merge!(q)
     end
 
     def self.get_dataset(config, &callback)
@@ -255,10 +293,6 @@ module Canvas2
       return @resolver_context
     end
 
-    def method_missing(key, *args)
-      return @properties[key.to_s]
-    end
-
     def context
       @context ||= DataContext.available_contexts[@properties['contextId']] if
         @properties.has_key?('contextId')
@@ -305,10 +339,8 @@ module Canvas2
           CanvasWidget.from_config(config_item, parent, resolver_context)
         end
       else
-        # eg 'two_column_layout' ==> 'TwoColumnLayout'
-        klass_name = config['type'].gsub(/^(.)|(_.)/){ |str| str[-1].upcase }
         begin
-          return Canvas2.const_get(klass_name).new(config, parent, resolver_context)
+          return Canvas2.const_get(config['type']).new(config, parent, resolver_context)
         rescue NameError => ex
           throw "There is no Canvas2 widget of type '#{config['type']}'."
         end
@@ -406,7 +438,7 @@ module Canvas2
             end
           else
             context[:dataset].visible_columns.each {|c| col_map[c.id.to_s] = c.fieldName}
-            rows = context[:dataset].get_rows(100).each_with_index do |r, i|
+            rows = context[:dataset].get_rows(100)[:rows].each_with_index do |r, i|
               all_c << add_row(r, i, col_map)
             end
           end
@@ -462,41 +494,72 @@ module Canvas2
 
   class Title < CanvasWidget
     def render_contents
-      ['<h2>' + string_substitute(self.text) + '</h2>', true]
+      ['<h2>' + string_substitute(@properties['text']) + '</h2>', true]
     end
   end
 
   class Text < CanvasWidget
     def render_contents
-      [string_substitute(self.html), true]
+      [string_substitute(@properties['html']), true]
     end
   end
 
-  class LineChart < CanvasWidget
+  class DataRenderer < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true
       super(props, parent, resolver_context)
     end
-  end
-  class ColumnChart < CanvasWidget
-    def initialize(props, parent = nil, resolver_context = nil)
-      @needs_own_context = true
-      super(props, parent, resolver_context)
+
+    def render_contents
+      ds = !context.blank? ? context[:dataset] : nil
+      return ['', false] if ds.blank?
+
+      page_size = 20
+      current_page = Util.component_data_page(self.id)
+      row_results = ds.get_rows(page_size, current_page, {}, true)
+
+      t = '<div class="dataTableWrapper">'
+      t += RenderType.table_html(self.id, ds.visible_columns, row_results[:rows], ds,
+                                (current_page - 1) * page_size)
+
+      # Paging
+      path = Util.page_path
+      params = Util.page_params.clone
+      params['data_component'] = self.id
+      path += '?' + params.map {|k, v| k + '=' + v}.join('&')
+      t += Util.app_helper.create_pagination_without_xss_safety(
+        row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
+
+      t += '</div>'
     end
   end
 
-  class Map < CanvasWidget
-    def initialize(props, parent = nil, resolver_context = nil)
-      @needs_own_context = true
-      super(props, parent, resolver_context)
-    end
+  class AreaChart < DataRenderer
+  end
+  class BarChart < DataRenderer
+  end
+  class BubbleChart < DataRenderer
+  end
+  class ColumnChart < DataRenderer
+  end
+  class DonutChart < DataRenderer
+  end
+  class LineChart < DataRenderer
+  end
+  class PieChart < DataRenderer
+  end
+  class TimelineChart < DataRenderer
+  end
+  class TreemapChart < DataRenderer
   end
 
-  class Table < CanvasWidget
-    def initialize(props, parent = nil, resolver_context = nil)
-      @needs_own_context = true
-      super(props, parent, resolver_context)
-    end
+  class Calendar < DataRenderer
+  end
+
+  class Map < DataRenderer
+  end
+
+  class Table < DataRenderer
   end
 
   class Menu < CanvasWidget

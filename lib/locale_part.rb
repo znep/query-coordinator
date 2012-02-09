@@ -3,7 +3,15 @@ class LocalePart
     LocalePart.new(method.to_s)
   end
 
-  def method_missing(method)
+  def self.from_array(parts)
+    return nil if parts.blank?
+
+    result = nil
+    parts.each{ |part| result = LocalePart.new(part, result) }
+    return result
+  end
+
+  def method_missing(method, *arguments)
     LocalePart.new(method.to_s, self)
   end
 

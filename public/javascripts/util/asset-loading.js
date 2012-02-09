@@ -1,19 +1,20 @@
 ;(function($) {
 var assetNS = blist.namespace.fetch('blist.util.assetLoading');
 
-// Keep a hash of which files have finished processing
-var lazyLoadingAssets = {libraries: {}, stylesheets: {}, templates: {}};
 // Keep a hash of which files are in the middle of processing
+var lazyLoadingAssets = {libraries: {}, stylesheets: {}, templates: {}, translations: {}};
+// Keep a hash of which files have finished processing
 var lazyLoadedAssets = {libraries: {}, stylesheets: {}, templates: {}};
 // Keep track of when a callback is allowed to finish
-var lazyLoadingJobs = [];
+var lazyLoadingAssetJobs = [];
+var lazyLoadingTranslationJobs = [];
 // Appropriate LAB instance
 var $lazyLoadLab;
 
 assetNS.loadAssets = function(assets, mainCallback, cssCallback)
 {
     if (!$.subKeyDefined(assets, 'stylesheets') && !$.subKeyDefined(assets, 'javascripts') &&
-        !$.subKeyDefined(assets, 'templates'))
+        !$.subKeyDefined(assets, 'templates') && !$.subKeyDefined(assets, 'templates'))
     {
         if (_.isFunction(mainCallback)) { mainCallback(); }
         return;
@@ -33,13 +34,16 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
 
     var loadJS = _.isArray(assets.javascripts) && assets.javascripts.length > 0;
     var loadTemplates = _.isArray(assets.templates) && assets.templates.length > 0;
-    var finished = _.after(loadJS && loadTemplates ? 2 : 1, function()
+    var loadTranslations = _.isArray(assets.translations) && assets.translations.length > 0;
+    var finished = _.after(_.compact([loadJS, loadTemplates, loadTranslations]).length, function()
         { if (_.isFunction(mainCallback)) { mainCallback(); } });
 
     if (loadTemplates)
     { assetNS.loadTemplates(translateUrls('/templates/', assets.templates, 'templates'), finished); }
     if (loadJS)
     { assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished); }
+    if (loadTranslations)
+    { assetNS.loadTranslations(assets.translations, finished); }
 
     if (!loadTemplates && !loadJS) { finished(); }
 };
@@ -67,7 +71,7 @@ assetNS.loadLibraries = function(scriptQueue, callback)
 
     // add on the job even though we might remove it later, since order isn't guaranteed
     var job = { queue: queue, callback: callback };
-    lazyLoadingJobs.push(job);
+    lazyLoadingAssetJobs.push(job);
 
     var found = false; // found keeps track of whether we have pending jobs
     var loadingItems = [];
@@ -112,9 +116,27 @@ assetNS.loadLibraries = function(scriptQueue, callback)
 
     if (!found)
     {
-        lazyLoadingJobs = _.without(lazyLoadingJobs, job);
+        lazyLoadingAssetJobs = _.without(lazyLoadingAssetJobs, job);
         if (_.isFunction(callback)) { callback(); }
     }
+};
+
+var checkLoadedLibraries = function(item)
+{
+    lazyLoadedAssets.libraries[item] = lazyLoadingAssets.libraries[item];
+    delete lazyLoadingAssets.libraries[item];
+
+    var finishedJobs = [];
+    _.each(lazyLoadingAssetJobs, function(job)
+    {
+        if (_.all(job.queue, function(queueItem)
+        { return !_.isUndefined(lazyLoadedAssets.libraries[queueItem]); }))
+        {
+            if (_.isFunction(job.callback)) { job.callback(); }
+            finishedJobs.push(job);
+        }
+    });
+    lazyLoadingAssetJobs = _.without.apply(this, [lazyLoadingAssetJobs].concat(finishedJobs));
 };
 
 assetNS.loadStylesheets = function(sheetQueue, callback)
@@ -231,22 +253,46 @@ assetNS.loadTemplates = function(templateQueue, callback)
     });
 };
 
-var checkLoadedLibraries = function(item)
+// TODO: translation globbing. but i'm not convinced that more than one translation
+// will be requested at a time, ever.
+assetNS.loadTranslations = function(translations, callback)
 {
-    lazyLoadedAssets.libraries[item] = lazyLoadingAssets.libraries[item];
-    delete lazyLoadingAssets.libraries[item];
-
-    var finishedJobs = [];
-    _.each(lazyLoadingJobs, function(job)
+    var trackedTranslations = _.filter($.arrayify(translations), function(translation)
     {
-        if (_.all(job.queue, function(queueItem)
-        { return !_.isUndefined(lazyLoadedAssets.libraries[queueItem]); }))
-        {
-            if (_.isFunction(job.callback)) { job.callback(); }
-            finishedJobs.push(job);
-        }
+        if ($.subKeyDefined(blist.translations, translation))
+            return false; // we already have this
+        if (lazyLoadingAssets.translations[translation] === true)
+            return true; // we're already working on this
+
+        lazyLoadingAssets.translations[translation] = true;
+
+        $.socrataServer.makeRequest({
+            url: '/' + blist.locale + '/translations/' + translation.replace(/\./g, '/'),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(response)
+            {
+                $.extend(true, blist.translations, response);
+                checkTranslationJobs();
+            }
+        });
+        return true;
     });
-    lazyLoadingJobs = _.without.apply(this, [lazyLoadingJobs].concat(finishedJobs));
+
+    lazyLoadingTranslationJobs.push({ queue: trackedTranslations, callback: callback });
+};
+var checkTranslationJobs = function()
+{
+    lazyLoadingTranslationJobs = _.filter(lazyLoadingTranslationJobs, function(job)
+    {
+        if (_.all(job.queue, function(translation)
+            { return $.subKeyDefined(blist.translations, translation); }))
+        {
+            job.callback();
+            return false;
+        }
+        return true;
+    });
 };
 
 var translateUrls = function(prefix, array, type)

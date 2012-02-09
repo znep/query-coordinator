@@ -173,6 +173,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resources :templates, :only => [ :show ]
+  map.connect '/translations/*locale_parts', :controller => 'translations', :action => 'get'
 
   map.resource :browse, :controller => 'browse',
     :collection => {

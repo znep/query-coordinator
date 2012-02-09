@@ -240,24 +240,28 @@
         ready: function()
         {
             var vizObj = this;
-            var handleChange = function(forceRowReload)
-            {
-                if (vizObj._obsolete) { return; }
-                if (forceRowReload === true)
-                { vizObj._requireRowReload = true; }
-                if (!vizObj._initialLoad)
-                { _.defer(function() { vizObj.reload(); }); }
-            };
-            var handleRowChange = function(rows, fullReset)
-            {
-                if (vizObj._obsolete) { return; }
-                if (fullReset) { handleChange(true); }
-                else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj._primaryView); }
-            };
-            var handleQueryChange = function() { handleChange(true); };
 
             if (!vizObj._boundViewEvents)
             {
+                var handleChange = function(forceRowReload)
+                {
+                    if (vizObj._obsolete) { return; }
+                    if (forceRowReload === true)
+                    { vizObj._requireRowReload = true; }
+                    if (!vizObj._initialLoad)
+                    { _.defer(function() { vizObj.reload(); }); }
+                };
+                var handleRowChange = function(rows, fullReset)
+                {
+                    if (vizObj._obsolete) { return; }
+                    if (fullReset) { handleChange(true); }
+                    else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj._primaryView); }
+                };
+                var handleQueryChange = function() {
+                    if (vizObj._updatingViewport) return;
+                    handleChange(true);
+                };
+
                 vizObj._primaryView
                     .bind('query_change', handleQueryChange, vizObj)
                     .bind('row_change', handleRowChange, vizObj)
@@ -323,8 +327,20 @@
                 return;
             }
 
-            vizObj.cleanVisualization();
-            vizObj.reloadVisualization();
+            if (vizObj._updatingViewport)
+            {
+                vizObj.getDataForAllViews();
+                delete vizObj._updatingViewport;
+            }
+            else if (vizObj._willfullyIgnoreReload)
+            {
+                delete vizObj._willfullyIgnoreReload;
+            }
+            else
+            {
+                vizObj.cleanVisualization();
+                vizObj.reloadVisualization();
+            }
         },
 
         cleanVisualization: function()

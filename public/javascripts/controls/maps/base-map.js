@@ -280,7 +280,7 @@
             }
             else
             {
-                $.live("circle, image, path, text, oval, rect, shape", 'click', function(evt)
+                mapObj.$dom().on('click', 'circle, image, path, text, oval, rect, shape', function(evt)
                 {
                     var features = findFeatureFromEvent(mapObj, evt);
                     if (_.isEmpty(features)) { return null; }
@@ -310,7 +310,7 @@
                     });
                 });
             }
-            $.live("circle, image, path, text, oval, rect, shape", 'mouseover', function(evt)
+            mapObj.$dom().on('mouseover', 'circle, image, path, text, oval, rect, shape', function(evt)
             {
                 var features = findFeatureFromEvent(mapObj, evt);
                 if (_.isEmpty(features)) { return null; }
@@ -333,7 +333,7 @@
                     }
                 });
             });
-            $.live("circle, image, path, text, oval, rect, shape", 'mouseout', function(evt)
+            mapObj.$dom().on('mouseout', 'circle, image, path, text, oval, rect, shape', function(evt)
             {
                 var features = findFeatureFromEvent(mapObj, evt);
                 if (_.isEmpty(features)) { return null; }
@@ -1376,6 +1376,7 @@
                 { delete query.namedFilters.viewport; }
                 query.namedFilters = $.extend(true, query.namedFilters || {},
                     { viewport: filterCondition });
+                mapObj._updatingViewport = true;
                 view.update({query: query}, false, true);
                 viewConfig._viewportChanged = true;
             });
@@ -1409,6 +1410,7 @@
             }
 
             mapObj._currentViewport = vp;
+            mapObj._willfullyIgnoreReload = true;
             mapObj._primaryView.update({displayFormat: $.extend({},
                 mapObj._displayFormat, { viewport: vp })}, false, true);
         },

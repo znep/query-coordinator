@@ -199,7 +199,16 @@
 
             OpenLayers.Layer.Google.v3.repositionMapElements = function() {};
 
-            mapObj._baseLayers = [new OpenLayers.Layer.Google('Google', { isBaseLayer: true })];
+            var mtSwitcher = mapObj.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0]
+                .registerMapType('Satellite', new OpenLayers.Layer.Google('Google Satellite',
+                    { isBaseLayer: true, type: google.maps.MapTypeId.SATELLITE }))
+                .registerMapType('Terrain', new OpenLayers.Layer.Google('Google Terrain',
+                    { isBaseLayer: true, type: google.maps.MapTypeId.TERRAIN }));
+
+            mapObj._baseLayers = [new OpenLayers.Layer.Google('Google Roadmap',
+                { isBaseLayer: true })];
+            mtSwitcher.registerMapType('Roadmap', mapObj._baseLayers[0]);
+            mtSwitcher.setCurrentMapType('Roadmap');
             mapObj.map.addLayers(mapObj._baseLayers);
         },
 

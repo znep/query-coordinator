@@ -11,6 +11,68 @@
 
     Proj4js.defs["EPSG:102100"] = "+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null";
 
+    blist.openLayers.MapTypeSwitcher = OpenLayers.Class(OpenLayers.Control, {
+
+        EVENT_TYPES: ['maptypechange'],
+
+        initialize: function()
+        {
+            this.layers = {};
+            this.EVENT_TYPES = blist.openLayers.MapTypeSwitcher.prototype.EVENT_TYPES.concat(
+                               OpenLayers.Control.prototype.EVENT_TYPES);
+            OpenLayers.Control.prototype.initialize.apply(this, arguments);
+        },
+
+        draw: function(px)
+        {
+            if (_.isEmpty(this.layers)) { return; }
+
+            var $dom = $(this.map.div).siblings('#mapTypes');
+            if ($dom.length == 0)
+            {
+                $(this.map.div).before('<div id="mapTypes"></div>');
+                $dom = $(this.map.div).siblings('#mapTypes');
+            }
+
+            $dom.empty();
+            var _this = this;
+            _.each(_.keys(this.layers), function(maptype)
+            {
+                $dom.append('<a'
+                    + (maptype == _this.currentMapType ? ' class="current"' : '')
+                    +'>' + maptype + '</a>');
+            });
+            $dom.on('click', 'a', function() { _this.switchMapType($(this).text()); });
+        },
+
+        registerMapType: function(maptype, layer)
+        {
+            this.layers[maptype] = layer;
+            if (_.size(this.layers) == 1) { this.currentMapType = maptype; }
+            this.draw();
+            return this;
+        },
+
+        setCurrentMapType: function(maptype)
+        {
+            this.currentMapType = maptype;
+            this.draw();
+        },
+
+        switchMapType: function(maptype)
+        {
+            if (maptype == this.currentMapType) { return; }
+            if (this.map.getLayerIndex(this.layers[maptype]) == -1)
+            { this.map.addLayers([this.layers[maptype]]); }
+            this.events.triggerEvent('maptypechange');
+            this.map.setBaseLayer(this.layers[maptype]);
+            this.currentMapType = maptype;
+            this.draw();
+        },
+
+        CLASS_NAME: 'blist.openLayers.MapTypeSwitcher'
+    });
+
     $.Control.extend('socrataMap', {
         _getMixins: function(options)
         {
@@ -115,10 +177,11 @@
 
             mapObj.map.removeControl(mapObj.map.getControlsByClass('OpenLayers.Control.PanZoom')[0]);
             mapObj.map.addControl(new blist.openLayers.ZoomBar());
+            mapObj.map.addControl(new blist.openLayers.MapTypeSwitcher());
             mapObj.map.addControl(new OpenLayers.Control.MousePosition()); // FIXME: Remove.
 
             if (mapObj._displayFormat.type == 'bing')
-            { mapObj.map.getControlsByClass('OpenLayers.Control.PanZoomBar')[0]
+            { mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0]
                 .zoomStopHeight = 12; }
 
             mapObj.initializeBaseLayers();
@@ -142,6 +205,7 @@
             mapObj.map.events.register('moveend', mapObj.map, function()
             {
                 if (mapObj._initialLoad) { return; }
+                if (mapObj._ignoreMoveEnd) { delete mapObj._ignoreMoveEnd; return; }
                 if (mapObj._boundsChanging)
                 { delete mapObj._boundsChanging; delete mapObj._isResize; return; }
 
@@ -149,6 +213,9 @@
                 mapObj.updateRowsByViewport();
                 delete mapObj._isResize;
             });
+
+            mapObj.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0].events
+                .register('maptypechange', null, function() { mapObj._ignoreMoveEnd = true;});
 
             mapObj._hoverTimers = {};
             if ($.subKeyDefined(mapObj, '_displayFormat.identifyTask') &&

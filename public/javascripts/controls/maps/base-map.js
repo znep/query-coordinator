@@ -323,6 +323,7 @@
                         .addFeatures(feature.attributes.boundary()); }
                     else
                     {
+                        if (feature.attributes.animating) { return; }
                         var dupKey = feature.attributes.dupKey;
                         if (!$.isBlank(mapObj._hoverTimers[dupKey]))
                         {
@@ -345,6 +346,7 @@
                     { layer.dataViewConfig._clusterBoundaries.removeAllFeatures(); }
                     else
                     {
+                        if (feature.attributes.animating) { return; }
                         var dupKey = feature.attributes.dupKey;
                         mapObj._hoverTimers[dupKey] = setTimeout(function()
                             {
@@ -1747,7 +1749,11 @@
             {
                 killAnimation = true;
                 if (_.isFunction(window.killingAnimations)) { window.killingAnimations(); }
-                _.each(animations, function(animation) { animation.feature.move(animation.to); });
+                _.each(animations, function(animation)
+                {
+                    animation.feature.move(animation.to);
+                    animation.feature.attributes.animating = false;
+                });
             }, 2000);
             animate(animations, function() { _.each(mapObj._byView, function(viewConfig)
                 {
@@ -2020,6 +2026,7 @@
             {
                 if (!animation.finished && !killAnimation)
                 {
+                    animation.feature.attributes.animating = true;
                     var p = ($.now() - startTime) / animation.duration;
                     animation.finished = p >= 1;
                     var delta = function(start, end)
@@ -2033,6 +2040,7 @@
                     animation.feature.move(lonlat);
                     return false;
                 }
+                animation.feature.attributes.animating = false;
                 animation.feature.move(animation.to);
                 if (_.isFunction(animation.callback))
                 { animation.callback(); }

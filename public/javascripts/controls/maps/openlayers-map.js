@@ -188,7 +188,7 @@
                             'X-CSRF-Token': csrfToken
                         }, options.headers);
 
-                        return OpenLayers.Protocol.WFS.v1_1_0.prototype.read.apply(this, [options]);
+                        return OpenLayers.Protocol.WFS.v1_1_0.prototype.read.call(this, options);
                     }
                 })
 

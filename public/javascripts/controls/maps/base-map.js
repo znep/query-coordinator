@@ -183,7 +183,6 @@
 
             mapObj.map = new OpenLayers.Map(mapObj.$dom()[0], mapOptions);
 
-            mapObj.map.removeControl(mapObj.map.getControlsByClass('OpenLayers.Control.PanZoom')[0]);
             mapObj.map.addControl(new blist.openLayers.ZoomBar());
             mapObj.map.addControl(new blist.openLayers.MapTypeSwitcher());
             mapObj.map.addControl(new OpenLayers.Control.MousePosition()); // FIXME: Remove.

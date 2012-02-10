@@ -288,6 +288,13 @@
             }
             else
             {
+                var unselectFeature = function(feature)
+                {
+                    if (feature && feature.layer)
+                    { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
+                    mapObj.closePopup();
+                };
+
                 mapObj.$dom().on('click', 'circle, image, path, text, oval, rect, shape', function(evt)
                 {
                     var features = findFeatureFromEvent(mapObj, evt);
@@ -307,7 +314,12 @@
                         }
                         else
                         {
-                            layer.dataViewConfig._selectControl.select(feature);
+                            onFeatureSelect(mapObj, feature, function(evt)
+                                {
+                                    if (!feature.layer)
+                                    { feature = mapObj._markers[feature.attributes.dupKey]; }
+                                    unselectFeature(feature);
+                                });
                             var dupKey = feature.attributes.dupKey;
                             if (!$.isBlank(mapObj._hoverTimers[dupKey]))
                             {
@@ -1628,22 +1640,6 @@
             viewConfig._displayLayer.dataViewConfig = viewConfig;
 
             mapObj._displayLayers.push(viewConfig._displayLayer);
-
-            viewConfig._selectControl = new OpenLayers.Control.SelectFeature(layer,
-                { onSelect: function(feature) {
-                    onFeatureSelect(mapObj, feature, function(evt)
-                        {
-                            if (!feature.layer)
-                            { feature = mapObj._markers[feature.attributes.dupKey]; }
-                            feature.layer.dataViewConfig._selectControl.unselect(feature);
-                        });
-                    },
-                  onUnselect: function(feature) {
-                    if (feature)
-                    { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
-                    mapObj.closePopup();
-                } });
-            mapObj.map.addControl(viewConfig._selectControl);
 
             return layer;
         },

@@ -457,9 +457,10 @@
 
     <%# More views %>
     blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
-    blist.sidebarHidden.moreViews.views = <%= !@view.is_published? || !@view.is_tabular? %>;
+    blist.sidebarHidden.moreViews.views = <%= !@view.is_published? ||
+      (!@view.is_tabular? && !@view.is_geo?) %>;
     blist.sidebarHidden.moreViews.snapshots = <%= @view.is_unpublished? ||
-      !@view.flag?('default') || @view.is_arcgis? %>;
+      !@view.flag?('default') || @view.is_arcgis? || @view.is_geo? %>;
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};

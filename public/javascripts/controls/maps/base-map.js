@@ -173,6 +173,8 @@
                 units: 'm',
                 maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
                                                   20037508.34,  20037508.34),
+                restrictedExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                         20037508.34,  20037508.34),
                 maxResolution: 156543.0339,
                 numZoomLevels: 21
             }

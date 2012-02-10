@@ -46,8 +46,18 @@
 
         setMetadata: function(metadata)
         {
+            var layer = this;
             this.metadata = metadata;
-            this.initialExtent = this.convertEsriToOpenLayers(metadata.initialExtent);
+            if (!this.externalMapProjection.proj.readyToUse)
+            { this.externalMapProjection.proj.queue.push(function()
+                { layer.setInitialExtent(); }); }
+            else
+            { this.setInitialExtent(); }
+        },
+
+        setInitialExtent: function()
+        {
+            this.initialExtent = this.convertEsriToOpenLayers(this.metadata.initialExtent);
             if (this._featureLayerReady)
             { this.onloadCallback(); }
             else

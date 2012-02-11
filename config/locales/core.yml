@@ -36,3 +36,42 @@ en:
     interstitial:
       leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.
+
+it:
+  core:
+    filters:
+      formal:
+        equals: uguale
+        not_equals: non uguale
+        starts_with: inizia con
+        contains: contiene
+        not_contains: non contiene
+        less_than: minore di
+        less_than_or_equals: minore o uguale di
+        greater_than: maggiore di
+        greater_than_or_equals: maggiore o uguale di
+        between: tra
+        is_blank: vuoto
+        is_not_blank: non vuoto
+      informal:
+        equals: "&egrave;"
+        not_equals: "non &egrave;"
+        starts_with: inzia con
+        contains: contiene
+        not_contains: non contiene
+        less_than: "&egrave; minore di"
+        less_than_or_equals: "&egrave; al massimo"
+        greater_than: "&egrave; maggiore di"
+        greater_than_or_equals: "&egrave; almeno"
+        between: "&egrave; tra"
+        is_blank: "&egrave; vuoto"
+        is_not_blank: "non &egrave; vuoto"
+    analytics:
+      visit: vista
+    dialogs:
+      close: chiudi
+      cancel: cancella
+      continue: continua
+    interstitial:
+      leaving_notice_html: "Stai lasciando <span class=\"serverName\">%{site_name}</span>"
+      leaving_explanation_html: "Questo  <span class=\"datasetType\">dataset</span> &egrave; ospitato da <a href=\"\#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."

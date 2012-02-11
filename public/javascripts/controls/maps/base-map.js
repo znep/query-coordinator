@@ -1534,7 +1534,11 @@
                 viewConfig._renderType = 'points';
                 if (!viewConfig._animation)
                 { mapObj.initializeAnimation(null, view); }
+                if (view.displayFormat.viewport
+                    && !$.subKeyDefined(view, 'query.namedFilters.viewport'))
+                { mapObj.updateRowsByViewport(view.displayFormat.viewport); }
                 mapObj._super(view);
+                mapObj.setViewport(view.displayFormat.viewport);
                 if (viewConfig._fetchPoints)
                 { delete viewConfig._fetchPoints; }
                 return;

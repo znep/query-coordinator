@@ -45,7 +45,7 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
     if (loadTranslations)
     { assetNS.loadTranslations(assets.translations, finished); }
 
-    if (!loadTemplates && !loadJS) { finished(); }
+    if (!loadTemplates && !loadJS && !loadTranslations) { finished(); }
 };
 
 // Lazy-load JS libraries
@@ -279,7 +279,13 @@ assetNS.loadTranslations = function(translations, callback)
         return true;
     });
 
-    lazyLoadingTranslationJobs.push({ queue: trackedTranslations, callback: callback });
+    if (trackedTranslations.length > 0)
+    {
+        lazyLoadingTranslationJobs.push({ queue: trackedTranslations,
+            callback: callback });
+    }
+    else if (_.isFunction(callback))
+    { callback(); }
 };
 var checkTranslationJobs = function()
 {

@@ -318,7 +318,7 @@ module Canvas2
     end
 
     def render_contents
-      [self.class.to_s, false]
+      ['', false]
     end
 
     def resolver

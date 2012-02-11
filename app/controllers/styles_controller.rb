@@ -275,17 +275,17 @@ protected
   @@site_theme_parse = {
     :links     => { :normal      => 'color',
                     :visited     => 'color' },
-    :buttons   => {:active       => { :background  => 'color',
+    :buttons   => { :active      => { :background  => 'color',
                                       :border      => 'color',
                                       :shadow      => 'color',
                                       :text        => 'color' },
-                   :disabled     => { :background  => 'color',
+                    :disabled    => { :background  => 'color',
                                       :border      => 'color',
                                       :text        => 'color' },
-                   :default      => { :background  => 'color',
+                    :default     => { :background  => 'color',
                                       :border      => 'color',
                                       :text        => 'color' },
-                   :default_disabled =>
+                    :default_disabled =>
                                     { :background  => 'color',
                                       :border      => 'color',
                                       :text        => 'color' } },

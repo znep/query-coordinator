@@ -64,6 +64,11 @@ en:
         # same as above but with a link. no particular reason the wording is different.
         federation_source_html: Provided by %{source_link}
         comment_count: Number of comments
+        table_header:
+          name: Name
+          popularity: Popularity
+          type: Type
+          rss: RSS
       row_results:
         title_html: "Showing <span class=\"rowResultCountText\"></span> of <span class=\"totalResultCountText\"></span> matching rows <a href=\"#\" class=\"rowSearchLink\">(view results)</a>:"
         more_link: More

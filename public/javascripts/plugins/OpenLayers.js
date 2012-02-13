@@ -44609,6 +44609,7 @@ OpenLayers.Layer.Bing = OpenLayers.Class(OpenLayers.Layer.XYZ, {
         }
         var quadKey = quadDigits.join("");
         var url = this.selectUrl('' + x + y + z, this.url);
+        url = url.replace('http://', 'https://'); // michael.chui@socrata.com
 
         return OpenLayers.String.format(url, {'quadkey': quadKey});
     },
@@ -44641,9 +44642,12 @@ OpenLayers.Layer.Bing = OpenLayers.Class(OpenLayers.Layer.XYZ, {
                 }
             }
         }
+        // michael.chui@socrata.com: Make this a secure call if it exists.
+        var logoUrl = metadata.brandLogoUri;
+        if (logoUrl.replace) { logoUrl = logoUrl.replace('http://', 'https://'); }
         this.attribution = OpenLayers.String.format(this.attributionTemplate, {
             type: this.type.toLowerCase(),
-            logo: metadata.brandLogoUri,
+            logo: logoUrl,
             copyrights: copyrights
         });
         this.map && this.map.events.triggerEvent("changelayer", {

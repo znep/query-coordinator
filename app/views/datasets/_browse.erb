@@ -220,7 +220,7 @@
                   <th class="domainIcon"></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:nameDesc] -%>
-                  <th class="nameDesc">Name</th>
+                  <th class="nameDesc"><%= t('controls.browse.listing.table_header.name') %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:largeImage] -%>
                   <th class="largeImage"></th>
@@ -232,13 +232,13 @@
                   <th class="datasetActions"><%= opts[:dataset_actions] %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:popularity] -%>
-                  <th class="popularity">Popularity</th>
+                  <th class="popularity"><%= t('controls.browse.listing.table_header.popularity') %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:type] -%>
-                  <th class="type">Type</th>
+                  <th class="type"><%= t('controls.browse.listing.table_header.type') %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:rss] -%>
-                  <th class="rss">RSS</th>
+                  <th class="rss"><%= t('controls.browse.listing.table_header.rss') %></th>
                 <%- end -%>
               </tr>
             </thead>

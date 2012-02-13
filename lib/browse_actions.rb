@@ -302,7 +302,7 @@ protected
     browse_options[:header_config]  = catalog_config.header
     browse_options[:footer_config]  = catalog_config.footer
 
-    browse_options[:sort_opts] ||= @@default_browse_sort_opts
+    browse_options[:sort_opts] ||= default_browse_sort_opts
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
     # get the subset relevant to various things
@@ -364,6 +364,18 @@ private
     end
   end
 
+  def default_browse_sort_opts
+    [
+      { value: 'relevance', name: I18n.t('controls.browse.sorts.relevance') },
+      { value: 'most_accessed', name: I18n.t('controls.browse.sorts.most_accessed'), is_time_period: true },
+      { value: 'alpha', name: I18n.t('controls.browse.sorts.alpha') },
+      { value: 'newest', name: I18n.t('controls.browse.sorts.newest') },
+      { value: 'oldest', name: I18n.t('controls.browse.sorts.oldest') },
+      { value: 'rating', name: I18n.t('controls.browse.sorts.rating') },
+      { value: 'comments', name: I18n.t('controls.browse.sorts.comments') }
+    ]
+  end
+
   # Unused for now, but this will refresh the cutoffs from the configs service
   def self.clear_cutoff_cache(cname = nil)
     @@cutoff_store.delete(cname || CurrentDomain.cname)
@@ -376,16 +388,6 @@ private
     :topic => 5
   }
   @@cutoff_store = {}
-
-  @@default_browse_sort_opts = [
-    { value: 'relevance', name: I18n.t('controls.browse.sorts.relevance') },
-    { value: 'most_accessed', name: I18n.t('controls.browse.sorts.most_accessed'), is_time_period: true },
-    { value: 'alpha', name: I18n.t('controls.browse.sorts.alpha') },
-    { value: 'newest', name: I18n.t('controls.browse.sorts.newest') },
-    { value: 'oldest', name: I18n.t('controls.browse.sorts.oldest') },
-    { value: 'rating', name: I18n.t('controls.browse.sorts.rating') },
-    { value: 'comments', name: I18n.t('controls.browse.sorts.comments') }
-  ]
 
   @@numeric_options = [ :limit, :page ]
   @@boolean_options = [ :nofederate ]

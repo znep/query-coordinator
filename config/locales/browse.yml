@@ -140,73 +140,73 @@ it:
           submit_button: Cerca i datasets
           # this is the text that is shown when the user has picked a geographical area
           extents_set_message: dentro un area
-        sort_title: Ordinato per
-        sorts:
-          relevance: "Pi&ugrave; rilevante"
-          most_accessed: "Pi&ugrave; acceduto"
-          alpha: "Alfabetico"
-          newest: "Pi&ugrave; nuovo"
-          oldest: "Pi&ugrave; vecchio"
-          rating: "Con voto pi&ugrave; alto"
-          comments: "Pi&ugrave; commentati"
-        sort_period_title: "Periodo dell'ordinamento"
-        sort_periods:
-          week: Questa settimana
-          month: Questo mese
-          year: "Quest'anno"
-        title:
-          default: Cerca e Sfoglia Datasets e Viste
-          result:
-            # the ultimate result here is eg:
-            # Results for "search term", matching type of Maps and category of Education
-            main: Risultati %{body}
-            term: "per \"%{term}\""
-            facet_main: corrispondenze %{body}
-            facet: %{facet_type} di %{facet_value}
-        listing:
-          no_results: Nessun risultato
-          result_count: %{this} di %{total}
-          federation_source: Federato da %{source}
-          # same as above but with a link. no particular reason the wording is different.
-          federation_source_html: Fornito da %{source_link}
-          comment_count: Numero di commenti
-        row_results:
-          title_html: "Mostrando <span class=\"rowResultCountText\"></span> di <span class=\"totalResultCountText\"></span> righe corrispondenti <a href=\"#\" class=\"rowSearchLink\">(view results)</a>:"
-          more_link: Ancora
-          less_link: Meno
-        actions:
-          clear_all: Elimina tutte le opzioni
-          # (eg "don't filter, show me all results"):
-          clear_facet: (Tutti)
-          # if there are too many options to list inline, this link pops a window with all options
-          all_options: Vedi Tutti
-          create_dataset: Crea o carica il tuo dataset
-          # this is shown as a button to the right of the above text:
-          create_dataset_verb: Crea
-          # this is shown in lieu of the above as a button in limited space situations:
-          create_dataset_short: Crea un nuovo Dataset
-          # same logic for these three as create_dataset:
-          suggest_dataset: Non trovi quello che stavi cercando ? Suggerisci un dataset.
-          suggest_dataset_verb: Suggerisci
-          suggest_dataset_short: Suggerisci un Dataset
-          # subscribe via rss to entire catalog:
-          subscribe: Sottoscrivi
-          # subscribe via rss to changes on an individual dataset:
-          dataset_subscribe: Sottoscrivi le modifiche a questa vista
-          compact_list: Visualizza come lista compatta
-          rich_list: Visualizza come lista espansa
-          expand_section: Clicca per espandere
-          moderation:
-            accept: Accetta
-            reject: Respingi
-          permissions:
-            title: "Cambia la visibilit&agrave;"
-            # eg "Make public"
-            button_html: Rendi %{visibility}
-          delete:
-            title: Cancella questo item
-            button: Cancella
-          about:
-            title: Informazioni sul Dataset
-            button: Informazioni
+      sort_title: Ordinato per
+      sorts:
+        relevance: "Pi&ugrave; rilevante"
+        most_accessed: "Pi&ugrave; acceduto"
+        alpha: "Alfabetico"
+        newest: "Pi&ugrave; nuovo"
+        oldest: "Pi&ugrave; vecchio"
+        rating: "Con voto pi&ugrave; alto"
+        comments: "Pi&ugrave; commentati"
+      sort_period_title: "Periodo dell'ordinamento"
+      sort_periods:
+        week: Questa settimana
+        month: Questo mese
+        year: "Quest'anno"
+      title:
+        default: Cerca e Sfoglia Datasets e Viste
+        result:
+          # the ultimate result here is eg:
+          # Results for "search term", matching type of Maps and category of Education
+          main: Risultati %{body}
+          term: "per \"%{term}\""
+          facet_main: corrispondenze %{body}
+          facet: %{facet_type} di %{facet_value}
+      listing:
+        no_results: Nessun risultato
+        result_count: %{this} di %{total}
+        federation_source: Federato da %{source}
+        # same as above but with a link. no particular reason the wording is different.
+        federation_source_html: Fornito da %{source_link}
+        comment_count: Numero di commenti
+      row_results:
+        title_html: "Mostrando <span class=\"rowResultCountText\"></span> di <span class=\"totalResultCountText\"></span> righe corrispondenti <a href=\"#\" class=\"rowSearchLink\">(view results)</a>:"
+        more_link: Ancora
+        less_link: Meno
+      actions:
+        clear_all: Elimina tutte le opzioni
+        # (eg "don't filter, show me all results"):
+        clear_facet: (Tutti)
+        # if there are too many options to list inline, this link pops a window with all options
+        all_options: Vedi Tutti
+        create_dataset: Crea o carica il tuo dataset
+        # this is shown as a button to the right of the above text:
+        create_dataset_verb: Crea
+        # this is shown in lieu of the above as a button in limited space situations:
+        create_dataset_short: Crea un nuovo Dataset
+        # same logic for these three as create_dataset:
+        suggest_dataset: Non trovi quello che stavi cercando ? Suggerisci un dataset.
+        suggest_dataset_verb: Suggerisci
+        suggest_dataset_short: Suggerisci un Dataset
+        # subscribe via rss to entire catalog:
+        subscribe: Sottoscrivi
+        # subscribe via rss to changes on an individual dataset:
+        dataset_subscribe: Sottoscrivi le modifiche a questa vista
+        compact_list: Visualizza come lista compatta
+        rich_list: Visualizza come lista espansa
+        expand_section: Clicca per espandere
+        moderation:
+          accept: Accetta
+          reject: Respingi
+        permissions:
+          title: "Cambia la visibilit&agrave;"
+          # eg "Make public"
+          button_html: Rendi %{visibility}
+        delete:
+          title: Cancella questo item
+          button: Cancella
+        about:
+          title: Informazioni sul Dataset
+          button: Informazioni
 

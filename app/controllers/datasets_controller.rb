@@ -333,11 +333,10 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    return render_404 if @view.published?
+    return render_404 if (@view.is_published? && @view.is_blist?)
 
-    unless @view.can_modify_data? || @view.is_blobby?
-      flash.now[:error] = "You do not have permission to modify this dataset."
-      return render_forbidden
+    unless @view.can_replace?
+      return render_forbidden("You do not have permission to modify this dataset.")
     end
   end
 

@@ -587,6 +587,8 @@
   .layersListHeader
     .layerNameCell
       width: 20.8em
+    .layerReferenceSystemCell
+      width: 34em
 
   .layersList
     > li
@@ -608,6 +610,7 @@
             position: relative
 
         .layerReferenceSystemCell
+          margin-right: 3em
           width: 25em
           label
             bottom: 0.1em
@@ -618,6 +621,10 @@
             font-size: 1.45em
             left: 1em
             position: relative
+            width: 15em
+
+        .layerReplacingCell
+          .layerReplaceDropdown
             width: 15em
 
         label.error
@@ -635,6 +642,13 @@
       top: 1px solid $color_chrome_box_border
     color: transparent
     height: 0
+
+  .layerReplacingCell
+    @include opacity(0)
+    @include transition(opacity .2s)
+
+  &.childViewsLoaded .layerReplacingCell
+    @include opacity(1)
 
 // PANE ONE POINT SEVEN FIVE
 .importWarningsPane

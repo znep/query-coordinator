@@ -17,7 +17,8 @@ $wizard.wizard({
             disableButtons: [ 'next' ],
             onInitialize: function($pane, config, state, command)
             {
-                var isBlobby = blist.importer.dataset.viewType == 'blobby';
+                var isBlobby = blist.importer.dataset.viewType == 'blobby',
+                    isGeo = blist.importer.dataset.isGeoDataset();
 
                 // permissions
                 if (!_.include(blist.importer.dataset.rights, 'delete'))
@@ -26,11 +27,12 @@ $wizard.wizard({
                         .addClass('disabled')
                         .attr('title', 'You do not have sufficient privileges to replace the data in this dataset.');
                 }
-                if (blist.importer.dataset.viewType == 'blobby')
+                if (isBlobby || isGeo)
                 {
                     $pane.find('.importTypeList a.append')
                         .addClass('disabled')
-                        .attr('title', 'You cannot append into a blobby dataset.');
+                        .attr('title', 'You cannot append into a ' +
+                            (isBlobby ? 'blobby' : 'map layer') + ' dataset.');
                 }
 
                 // tooltips
@@ -43,7 +45,8 @@ $wizard.wizard({
                 });
 
                 // actions
-                state.type = isBlobby ? 'blobby' : 'blist';
+                state.type = isBlobby ? 'blobby' :
+                    (isGeo ? 'shapefile' : 'blist');
                 $pane.find('.importTypeList a.append').click(function(event)
                 {
                     event.preventDefault();
@@ -59,7 +62,8 @@ $wizard.wizard({
                     if ($(this).hasClass('disabled')) return;
 
                     state.operation = 'replace';
-                    state.afterUpload = isBlobby ? 'finish' : 'appendReplaceColumns';
+                    state.afterUpload = isBlobby ? 'finish' :
+                        (isGeo ? 'importShapefile' : 'appendReplaceColumns');
                     command.next('uploadFile');
                 });
 
@@ -83,6 +87,7 @@ $wizard.wizard({
         },
 
         'uploadFile':           blist.importer.uploadFilePaneConfig,
+        'importShapefile':      blist.importer.importShapefilePaneConfig,
         'appendReplaceColumns': blist.importer.appendReplaceColumnsPaneConfig,
         'importing':            blist.importer.importingPaneConfig,
         'importWarnings':       $.extend({}, blist.importer.importWarningsPaneConfig, { disableButtons: [ 'cancel', 'prev' ] }),

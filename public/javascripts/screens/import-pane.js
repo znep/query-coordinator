@@ -409,6 +409,12 @@ var updateLayerLines = function($elems)
             importLayer.referenceSystem = $line.find('.layerReferenceSystem').val();
         }
 
+        var replacingUid = $line.find('.layerReplaceDropdown').val();
+        if (!$.isBlank(replacingUid))
+        {
+            importLayer.replacingUid = replacingUid;
+        }
+
         $line.data('importLayer', importLayer);
     });
 };
@@ -694,14 +700,12 @@ var newLayerLine = function(layer)
         var $layerName = $line.find('.layerName');
         $layerName
             .attr('id', 'layerName_' + layer.id)
-            .attr('id', 'layerName_' +layer.id)
             .example(function ()
             {
                 return $(this).attr('title');
             })
             .rules('add',
             {
-                required: true,
                 messages:
                 {
                     required: 'You must enter a name for this layer.'
@@ -1549,6 +1553,47 @@ importNS.importShapefilePaneConfig = {
 
         // we are now past the first init, so start animating things
         isShown = true;
+
+        // if we're replacing layers, let the user choose how they line up
+        if (!_.isUndefined(blist.importer.dataset))
+        {
+            blist.importer.dataset.getChildOptionsForType('table', function(children)
+            {
+                var options = _.map(children, function(child)
+                {
+                    return $.tag({ tagName: 'option', value: child.id,
+                                   contents: child.name }, true);
+                }).join('');
+
+                $layersList.children('li').each(function(index)
+                {
+                    $(this).find('.layerReplaceDropdown')
+                        .attr('id', 'layerReplaceSelect_' + index)
+                        .append(options)
+                        .prop('selectedIndex', index + 1);
+                }).on('change', 'select.layerReplaceDropdown', function(event)
+                {
+                    // make sure they don't select the same layer twice
+                    var $t = $(event.target),
+                        uid = $t.val();
+                    if (!$.isBlank(uid))
+                    {
+                        $t.closest('li').siblings('li').each(function()
+                        {
+                            var $select = $(this).find('select.layerReplaceDropdown');
+                            if ($select.val() == uid)
+                            {
+                                $select.prop('selectedIndex', 0);
+                                $.uniform.update('select.layerReplaceDropdown');
+                            }
+                        });
+                    }
+                });
+
+                $.uniform.update('select.layerReplaceDropdown');
+                $pane.addClass('childViewsLoaded');
+            });
+        }
     },
     onActivate: function($pane, paneConfig, state)
     {
@@ -1572,8 +1617,7 @@ importNS.importShapefilePaneConfig = {
         {
             return $.extend(true, {}, $(this).data('importLayer'));
         }));
-        state.operation = 'shapefile';
-
+        state.operation = !_.isUndefined(blist.importer.dataset) ? 'replaceShapefile' : 'shapefile';
         return 'importing';
     }
 };
@@ -1614,7 +1658,8 @@ importNS.importingPaneConfig = {
                 return {
                     layerId: importLayer.layerId,
                     name: importLayer.name,
-                    referenceSystem: importLayer.referenceSystem
+                    referenceSystem: importLayer.referenceSystem,
+                    replacingUid: importLayer.replacingUid
                 }
             });
         }
@@ -1650,26 +1695,26 @@ importNS.importingPaneConfig = {
                 }
                 else if (column.type == 'location')
                 {
-					// we're using js to build a js expression that will build a json blob.
-					// BWAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-					result = [];
-					result.push('JSON.stringify({');
-					if (!_.isUndefined(column.latitude) && !_.isUndefined(column.longitude))
-					{
-						result.push('latitude:' + handleColumn(column.latitude) + ',');
-						result.push('longitude:' + handleColumn(column.longitude) + ',');
-					}
-					result.push(	'human_address:{');
-					if (!_.isUndefined(column.address))
-						result.push(	'address:' + handleColumn(column.address) + ',');
-					if (!_.isUndefined(column.city))
-						result.push(	'city:' + handleColumn(column.city) + ',');
-					if (!_.isUndefined(column.state))
-						result.push(	'state:' + handleColumn(column.state) + ',');
-					if (!_.isUndefined(column.zip))
-						result.push(	'zip:' + handleColumn(column.zip));
-					result.push('}})');
-					return result.join('');
+                    // we're using js to build a js expression that will build a json blob.
+                    // BWAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+                    result = [];
+                    result.push('JSON.stringify({');
+                    if (!_.isUndefined(column.latitude) && !_.isUndefined(column.longitude))
+                    {
+                      result.push('latitude:' + handleColumn(column.latitude) + ',');
+                      result.push('longitude:' + handleColumn(column.longitude) + ',');
+                    }
+                    result.push(	'human_address:{');
+                    if (!_.isUndefined(column.address))
+                      result.push(	'address:' + handleColumn(column.address) + ',');
+                    if (!_.isUndefined(column.city))
+                      result.push(	'city:' + handleColumn(column.city) + ',');
+                    if (!_.isUndefined(column.state))
+                      result.push(	'state:' + handleColumn(column.state) + ',');
+                    if (!_.isUndefined(column.zip))
+                      result.push(	'zip:' + handleColumn(column.zip));
+                    result.push('}})');
+                    return result.join('');
                 }
                 else if (column.type == 'composite')
                 {
@@ -1712,12 +1757,12 @@ importNS.importingPaneConfig = {
             fileId: state.scan.fileId
         };
 
-        if ((state.operation == 'import') || (state.operation == 'shapefile'))
+        if ((state.operation == 'import') || (state.type == 'shapefile'))
         {
             dataPayload.blueprint = JSON.stringify(blueprint);
         }
 
-        var isReimport = ((state.operation == 'append') || (state.operation == 'replace'));
+        var isReimport = _.include(['append', 'replace', 'replaceShapefile'], state.operation);
         if (isReimport)
         {
             $.extend(dataPayload, {

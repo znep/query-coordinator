@@ -41,6 +41,30 @@
             <p class="uploadFileFormats">Supported formats are .csv, .tsv, .xls, and .xlsx.</p>
           </div>
         </li>
+        <li class="importShapefilePane" data-wizardpanename="importShapefile">
+          <div class="flash"></div>
+          <p class="headline">Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.</p>
+          <p class="subheadline">This shapefile contains <span class="featureCount"></span> features in
+            <span class="layerCount"></span> layers.</p>
+
+          <h2>Layers to import</h2>
+          <div class="layersListHeader importListHeader clearfix">
+            <div class="layerHandleCell importHandleCell"></div>
+            <div class="layerNameCell">Name</div>
+            <div class="layerReferenceSystemCell">Coordinate Reference System</div>
+            <div class="layerReplacingCell">Replace Layer</div>
+          </div>
+          <p class="subheadline pendingLayersMessage">Please wait while we load your layers...</p>
+          <ul class="layersList importList">
+          </ul>
+
+          <p class="seeEpsg">
+            Enter coordinate reference systems in the form
+            "<a href="http://www.epsg-registry.org/">EPSG:<em>number</em></a>". You can look up
+            EPSG codes at the <a href="http://www.epsg-registry.org/">EPSG Registry</a>.
+          </p>
+          <hr />
+        </li>
         <li class="appendReplaceColumnsPane columnsPane" data-wizardpanename="appendReplaceColumns">
           <div class="flash"></div>
           <p class="headline">How does the data in &ldquo;<span class="fileName"></span>&rdquo; relate to your dataset?</p>

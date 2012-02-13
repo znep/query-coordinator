@@ -464,8 +464,8 @@
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
-    blist.sidebarHidden.edit.appendReplace = <%= (!@view.is_unpublished? && !@view.is_blobby?) ||
-      @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add') %>;
+    blist.sidebarHidden.edit.appendReplace = <%= (!@view.is_unpublished? && !@view.is_geo? &&
+      !@view.is_blobby?) || @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add') %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
     blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? ||
@@ -476,7 +476,7 @@
     blist.sidebarHidden.manage.updateColumn = <%= @view.is_snapshotted? || !@view.is_tabular? ||
       @view.is_form? %>;
     blist.sidebarHidden.manage.showHide = <%= @view.is_snapshotted? || !@view.is_tabular? ||
-      @view.is_form? %>;
+      @view.is_form? || @view.is_geo? %>;
     blist.sidebarHidden.manage.sharing = <%= @view.is_snapshotted? || !@view.has_rights?('grant') %>;
     blist.sidebarHidden.manage.permissions = <%= @view.is_snapshotted? ||
       !@view.has_rights?('update_view') %>;

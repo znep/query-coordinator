@@ -706,7 +706,7 @@ class View < Model
   end
 
   def is_geo?
-    viewType == 'geo'
+    metadata.present? && metadata.data['geo'].present?
   end
 
   def is_arcgis?
@@ -1053,6 +1053,10 @@ class View < Model
       @got_unpublished = true
     end
     @unpublished
+  end
+
+  def can_replace?
+    can_modify_data? || is_blobby? || is_geo?
   end
 
   @@default_categories = {

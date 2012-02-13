@@ -121,7 +121,7 @@ $.component.Container.extend('Repeater', 'content', {
         }
         else if ($.subKeyDefined(this, '_dataContext.datasetList'))
         {
-            _.each(this._dataContext.datasetList, function(ds, i) { cObj._setRow(ds, i); });
+            _.each(this._dataContext.datasetList, function(ds, i) { cObj._setRow(ds, i, ds); });
         }
     },
 
@@ -207,7 +207,9 @@ $.component.Container.extend('Repeater', 'content', {
         {
             var r = new RegExp(this._properties.valueRegex.regex);
             var v = clone._stringSubstitute(this._properties.valueRegex.value);
-            if (!r.test(v))
+            var result = r.test(v);
+            if (this._properties.valueRegex.invert) { result = !result; }
+            if (!result)
             {
                 clone.destroy();
                 return;

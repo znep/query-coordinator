@@ -12,7 +12,7 @@ en:
         all_replies_with_count: View all %{count} replies
         next_item_page: View next %{count} items
         last_item: View last item
-        user_create_action: "created a %{thing}\:"
+        user_create_action: "created a %{thing}:"
       comment_actions:
         reply: Reply
         inappropriate: Inappropriate

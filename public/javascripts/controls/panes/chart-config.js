@@ -127,6 +127,24 @@
 
     var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: 'Show %s' };
 
+    var errorBars = function(chart, options)
+    {
+        return { title: 'Error Bars', onlyIf: onlyIfForChart(chart, options, false),
+            type: 'selectable', name: 'errorBars',
+            fields: [
+                {text: 'Low', name: 'displayFormat.plot.errorBarLow', required: true,
+                    type: 'columnSelect', isTableColumn: true, notequalto: 'errorBar',
+                    columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
+                },
+                {text: 'High', name: 'displayFormat.plot.errorBarHigh', required: true,
+                    type: 'columnSelect', isTableColumn: true, notequalto: 'errorBar',
+                    columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
+                },
+                {text: 'Color', name: 'displayFormat.errorBarColor',
+                    type: 'color', defaultValue: '#ff0000'}]
+        };
+    };
+
 
     /*** Helpers ***/
 
@@ -391,6 +409,7 @@
                         flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
+                    errorBars(chart, options),
                     domainMarker(chart, options));
                 break;
 
@@ -417,6 +436,7 @@
                         [legendPos, stacking('column'), renderOther, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
+                    errorBars(chart, options),
                     domainMarker(chart, options));
                 break;
 

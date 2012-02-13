@@ -119,3 +119,8 @@ window.mapDebugger = function()
 
     delete window.mapDebugger;
 };
+
+window.chartDebugger = function()
+{
+    window.chartObj = blist.datasetPage.rtManager.$domForType('chart').socrataChart();
+};

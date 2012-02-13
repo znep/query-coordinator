@@ -90,6 +90,16 @@
                 }
             }); }
 
+            if ($.subKeyDefined(chartObj, '_displayFormat.plot'))
+            {
+                chartObj._errorBarConfig = {
+                    low: view.columnForIdentifier(chartObj._displayFormat.plot.errorBarLow),
+                    high: view.columnForIdentifier(chartObj._displayFormat.plot.errorBarHigh)
+                };
+                if (!(chartObj._errorBarConfig.low && chartObj._errorBarConfig.high))
+                { delete chartObj._errorBarConfig; }
+            }
+
             // Was getting two reloads in a row that triggered this call twice on a Revert,
             // which made the chart load blank. So de-dupe request
             if (!chartObj._gettingAggs)

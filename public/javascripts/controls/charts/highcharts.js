@@ -636,7 +636,37 @@
                     chartObj._domainMarkers, chartObj.chart.xAxis[0]);
         };
 
-        var _drawMarkers = function(invertAxis, zeroAtTop, format, markerStore, axis)
+        var drawErrorBars = function()
+        {
+            if (!chartObj._errorBarConfig)
+            { return; }
+
+            var invertAxis = chartObj._chartType != 'bar';
+            if (!chartObj._errorBars)
+            { chartObj._errorBars = []; }
+
+            var errorBars = _(chartObj.chart.series).chain()
+                .pluck('data')
+                .map(function(series, index)
+                { return _.map(series, function(datum) {
+                    return {
+                        atValue: chartObj._xCategories ? chartObj._xCategories[datum.x] : datum.x,
+                        seriesOffset: datum.barX + (datum.barW / 2) - 2,
+                        color: chartObj._displayFormat.errorBarColor,
+                        low: datum.row && datum.row[chartObj._errorBarConfig.low.lookup],
+                        high: datum.row && datum.row[chartObj._errorBarConfig.high.lookup]
+                    };
+                }); })
+                .flatten()
+                .reject(function(errorBar)
+                    { return $.isBlank(errorBar.low) || $.isBlank(errorBar.high); })
+                .value();
+
+            chartObj._errorBars = _drawMarkers(invertAxis, !invertAxis, errorBars,
+                chartObj._errorBars, chartObj.chart.xAxis[0], chartObj.chart.series[0].yAxis);
+        };
+
+        var _drawMarkers = function(invertAxis, zeroAtTop, format, markerStore, axis, otherAxis)
         {
             if (!_.isEmpty(markerStore) && markerStore[0].renderer)
             {
@@ -647,6 +677,8 @@
                 {
                     if (!marker.renderer.alignedObjects)
                     { marker.renderer.alignedObjects = []; }
+                    if (marker.bars)
+                    { _.invoke(marker.bars, 'destroy'); }
                     if (marker.handle)
                     { marker.handle.destroy(); }
                     marker.destroy();
@@ -659,8 +691,17 @@
             if ($.isBlank(markerStore))
             { markerStore = []; }
 
+            var getPercentage = function(value, extremes, _zeroAtTop)
+            {
+                if (_.isString(value)) { value = parseFloat(value.replace(/[^0-9\.\+\-]/, '')); }
+                return (_zeroAtTop ? (value - extremes.min) : (extremes.max - value)) /
+                    (extremes.max - extremes.min);
+            };
+
             _.each(format, function(marker, index)
             {
+                var isErrorBar = !(_.isUndefined(marker.low) || _.isUndefined(marker.high));
+
                 var lineAt = marker.atValue;
                 if (axis.isXAxis && !_.isEmpty(chartObj._xCategories))
                 {
@@ -676,32 +717,54 @@
                 if (_.isString(lineAt)) { lineAt = parseFloat(lineAt.replace(/[^0-9\.\+\-]/, '')); }
                 if (!_.isNumber(lineAt)) { return; }
 
-                var extremes = axis.getExtremes();
-                var percentage = (zeroAtTop ? (lineAt - extremes.min) : (extremes.max - lineAt)) /
-                    (extremes.max - extremes.min);
+                var percentage = getPercentage(lineAt, axis.getExtremes(), zeroAtTop);
                 if (percentage > 1 || percentage < 0)
                 { return; }
 
+                // FIXME: This will not work for line charts.
+                var size = $.subKeyDefined(chartObj, 'chart.series.0.data.0')
+                    ? chartObj.chart.series[0].data[0].graphic.attr('width')
+                    : 4; // Magic number: A decent width for the error bar in case the dynamic fails.
                 var commands = [];
                 var handle;
                 if (invertAxis)
                 {
-                    var offsetLeft = ((1 - percentage) * chartObj.chart.plotWidth)
-                        + chartObj.chart.plotLeft;
+                    var offsetLeft = isErrorBar
+                        ? chartObj.chart.plotLeft + Math.ceil(marker.seriesOffset)
+                        : ((1 - percentage) * chartObj.chart.plotWidth) + chartObj.chart.plotLeft;
                     commands.push(['M', offsetLeft, chartObj.chart.plotTop
                         + chartObj.chart.plotHeight]);
                     commands.push(['L', offsetLeft, chartObj.chart.plotTop]);
                     handle = [offsetLeft, 10, 5];
+
+                    if (isErrorBar)
+                    {
+                        commands[0][2] = (getPercentage(marker.low, otherAxis.getExtremes())
+                            * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
+                        commands[1][2] = (getPercentage(marker.high, otherAxis.getExtremes())
+                            * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
+                    }
                 }
                 else
                 {
-                    var offsetTop =
-                        (percentage * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
+                    var offsetTop = isErrorBar
+                        ? chartObj.chart.plotTop
+                            + (chartObj.chart.plotHeight - Math.ceil(marker.seriesOffset))
+                        : (percentage * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
                     commands.push(['M', chartObj.chart.plotLeft, offsetTop]);
                     commands.push(['L', chartObj.chart.plotLeft + chartObj.chart.plotWidth, offsetTop]);
                     handle = [chartObj.chart.plotLeft + chartObj.chart.plotWidth + 1,
                               offsetTop, 5];
+
+                    if (isErrorBar)
+                    {
+                        commands[0][1] = ((1 - getPercentage(marker.low, otherAxis.getExtremes(), false))
+                            * chartObj.chart.plotWidth) + chartObj.chart.plotLeft;
+                        commands[1][1] = ((1 - getPercentage(marker.high,otherAxis.getExtremes(), false))
+                            * chartObj.chart.plotWidth) + chartObj.chart.plotLeft;
+                    }
                 }
+
 
                 var mouseover = function(event) {
                     var $box = chartObj.$dom().siblings('#highcharts_tooltip');
@@ -732,16 +795,39 @@
 
                 var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
 
+                var lowBar, highBar;
+                if (isErrorBar)
+                {
+                    if (invertAxis)
+                    { lowBar = [['M', commands[0][1] - (size/2) - 1, commands[0][2]],
+                                ['L', commands[1][1] + (size/2) + 1, commands[0][2]]];
+                      highBar = [['M', commands[0][1] - (size/2) - 1, commands[1][2]],
+                                 ['L', commands[1][1] + (size/2) + 1, commands[1][2]]]; }
+                    else
+                    { lowBar = [['M', commands[0][1], commands[0][2] - (size/2) - 1],
+                                ['L', commands[0][1], commands[1][2] + (size/2) + 1]];
+                      highBar = [['M', commands[1][1], commands[0][2] - (size/2) - 1],
+                                 ['L', commands[1][1], commands[1][2] + (size/2) + 1]]; }
+                }
+
                 if (hasSVG)
                 {
-                    markerStore[index] =
-                        chartObj.chart.renderer.path(_.flatten(commands))
-                            .attr({
-                                'zIndex': 10,
-                                'stroke': marker.color,
-                                'stroke-width': thickStroke ? 2 : 1,
-                                'stroke-dasharray': '9, 5'})
-                            .add();
+                    var attrs = { 'zIndex': 10,
+                                  'stroke': marker.color,
+                                  'stroke-width': thickStroke ? 2 : 1 };
+                    markerStore[index] = chartObj.chart.renderer.path(_.flatten(commands))
+                        .attr(attrs)
+                        .add();
+                    if (!isErrorBar)
+                    { markerStore[index].attr({'stroke-dasharray': '9, 5'}); }
+                    else
+                    {
+                        markerStore[index].bars = [
+                            chartObj.chart.renderer.path(_.flatten(lowBar)).attr(attrs).add(),
+                            chartObj.chart.renderer.path(_.flatten(highBar)).attr(attrs).add()
+                        ];
+                    }
+
                     if (!marker.caption) { return; }
 
                     markerStore[index].handle =
@@ -765,19 +851,40 @@
                                 'border-style': 'solid' });
                         $(chartObj.chart.container).append(markerStore[index]);
                     }
-                    var cTop    = invertAxis ? commands[1][2] : commands[0][2];
-                    var cLeft   = invertAxis ? commands[1][1] : commands[0][1];
-                    var sAxis   = invertAxis ? 'height' : 'width';
-                    var sAxis2  = invertAxis ? 'width' : 'height';
-                    var sLength = invertAxis ? commands[0][2]-commands[1][2]
-                                             : commands[1][1]-commands[0][1];
-                    var sWidth = thickStroke ? 2 : 1;
-                    var changeset = { 'top': cTop+'px', left: cLeft+'px',
-                        'borderColor': marker.color };
-                    changeset[sAxis] = sLength + 'px';
-                    changeset[sAxis2] = 0;
-                    changeset.borderWidth = sWidth + 'px';
-                    markerStore[index].css(changeset);
+                    var buildChangeSet = function(svgCmds, errorBar)
+                    {
+                        var direc   = errorBar ? !invertAxis : invertAxis;
+                        var cTop    = direc && !errorBar ? svgCmds[1][2] : svgCmds[0][2];
+                        var cLeft   = direc ? svgCmds[1][1] : svgCmds[0][1];
+                        var sAxis   = direc ? 'height' : 'width';
+                        var sAxis2  = direc ? 'width' : 'height';
+                        var sLength = direc ? svgCmds[0][2]-svgCmds[1][2]
+                                            : svgCmds[1][1]-svgCmds[0][1];
+                        var sWidth = thickStroke ? 2 : 1;
+                        var changeset = { 'top': cTop+'px', left: cLeft+'px',
+                            'borderColor': marker.color };
+                        changeset[sAxis] = Math.abs(sLength) + 'px';
+                        changeset[sAxis2] = 0;
+                        changeset.borderWidth = sWidth + 'px';
+                        return changeset;
+                    };
+                    markerStore[index].css(buildChangeSet(commands));
+
+                    if (markerStore[index].$bars)
+                    { markerStore[index].$bars.remove(); }
+
+                    if (isErrorBar)
+                    {
+                        _.each([lowBar, highBar], function(cmds)
+                        {
+                            var bar = $('<div />').css({ position: 'absolute', 'zIndex': 10,
+                                'border-style': 'solid' }).addClass('errorBar');
+                            bar.css(buildChangeSet(cmds, true));
+                            $(chartObj.chart.container).append(bar);
+                        });
+                        markerStore[index].$bars = $(chartObj.chart.container).find('.errorBar');
+                    }
+
                     if (!marker.caption)
                     {
                         if (markerStore[index].$handle)
@@ -811,6 +918,7 @@
             setTimeout(drawNullBars, 500); // Wait for animation to finish before running.
             drawValueMarkers();
             drawDomainMarkers();
+            drawErrorBars();
         };
 
         // Main config

@@ -1,6 +1,6 @@
 ;(function() {
 
-_.each(Dataset.chart.types, function(value, localChartType)
+_.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, localChartType)
 {
     $.component.Component.extend(value.text.toLowerCase().capitalize(), 'data', {
         _init: function()
@@ -8,7 +8,7 @@ _.each(Dataset.chart.types, function(value, localChartType)
             this._needsOwnContext = true;
             this._delayUntilVisible = true;
             this._super.apply(this, arguments);
-            this._chartType = localChartType;
+            this._chartType = this._stringSubstitute(this._properties.chartType) || localChartType;
         },
 
         isValid: function()
@@ -51,6 +51,7 @@ _.each(Dataset.chart.types, function(value, localChartType)
             var lcObj = this;
             lcObj._super.apply(lcObj, arguments);
 
+            this._chartType = this._stringSubstitute(this._properties.chartType) || this._chartType;
             updateProperties(lcObj, properties);
         }
     });
@@ -64,6 +65,7 @@ var updateProperties = function(lcObj, properties)
                     { this._chart.setView(this._dataContext.dataset); }
                     else
                     {
+                        this._chartType = this._stringSubstitute(this._properties.chartType) || this._chartType;
                         this.$contents.empty();
                         this._chart = this.$contents.socrataChart({
                             chartType: this._chartType,

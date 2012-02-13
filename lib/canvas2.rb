@@ -424,7 +424,7 @@ module Canvas2
         all_c = []
         case context[:type]
         when 'datasetList'
-          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i)}
+          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone)}
         when 'dataset'
           if @properties['repeaterType'] == 'column'
             ex_f = string_substitute(@properties['excludeFilter'])
@@ -456,8 +456,8 @@ module Canvas2
     end
 
   protected
-    def add_row(row, index, col_map = {})
-      resolutions = {'_repeaterIndex' => index}
+    def add_row(row, index, col_map = {}, resolutions = {})
+      resolutions['_repeaterIndex'] = index
       col_map.each {|id, fieldName| resolutions[fieldName] = row[id]}
 
       child_props = string_substitute(@properties['childProperties'], resolutions)
@@ -468,7 +468,9 @@ module Canvas2
       if @properties.has_key?('valueRegex')
         r = Regexp.new(@properties['valueRegex']['regex'])
         v = c.string_substitute(@properties['valueRegex']['value'])
-        return nil if r.match(v).blank?
+        result = r.match(v).blank?
+        result = !result if @properties['valueRegex']['invert']
+        return nil if result
       end
       c
     end
@@ -530,10 +532,13 @@ module Canvas2
       t += Util.app_helper.create_pagination_without_xss_safety(
         row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
 
+      t += '<a href="' + ds.alt_href + '" class="altViewLink">Accessibly explore the data</a>'
       t += '</div>'
     end
   end
 
+  class Chart < DataRenderer
+  end
   class AreaChart < DataRenderer
   end
   class BarChart < DataRenderer

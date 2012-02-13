@@ -124,7 +124,7 @@
                     type: 'esri',
                     options:{
                         isBaseLayer: true,
-                        url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
+                        url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
                         transitionEffect: 'resize',
                         projection: 'EPSG:102100',
                         tileSize: new OpenLayers.Size(256, 256),

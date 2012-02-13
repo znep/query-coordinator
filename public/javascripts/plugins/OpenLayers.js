@@ -44414,7 +44414,7 @@ OpenLayers.Layer.OSM = OpenLayers.Class(OpenLayers.Layer.XYZ, {
      name: "OpenStreetMap",
      attribution: "Data CC-By-SA by <a href='http://openstreetmap.org/'>OpenStreetMap</a>",
      sphericalMercator: true,
-     url: 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
+     url: 'https://tile.openstreetmap.org/${z}/${x}/${y}.png',
      clone: function(obj) {
          if (obj == null) {
              obj = new OpenLayers.Layer.OSM(
@@ -44551,7 +44551,7 @@ OpenLayers.Layer.Bing = OpenLayers.Class(OpenLayers.Layer.XYZ, {
             jsonp: this._callbackId,
             include: "ImageryProviders"
         }, this.metadataParams);
-        var url = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/" +
+        var url = "https://dev.virtualearth.net/REST/v1/Imagery/Metadata/" +
             this.type + "?" + OpenLayers.Util.getParameterString(params);
         var script = document.createElement("script");
         script.type = "text/javascript";
@@ -61767,7 +61767,7 @@ OpenLayers.Layer.OSM = OpenLayers.Class(OpenLayers.Layer.XYZ, {
      name: "OpenStreetMap",
      attribution: "Data CC-By-SA by <a href='http://openstreetmap.org/'>OpenStreetMap</a>",
      sphericalMercator: true,
-     url: 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
+     url: 'https://tile.openstreetmap.org/${z}/${x}/${y}.png',
      clone: function(obj) {
          if (obj == null) {
              obj = new OpenLayers.Layer.OSM(

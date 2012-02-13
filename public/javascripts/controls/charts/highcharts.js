@@ -758,7 +758,7 @@
                 }
                 else
                 {
-                    if (!markerStore[index] || markerStore[index].length == 0)
+                    if (!markerStore[index] || markerStore[index].parent().length == 0)
                     {
                         markerStore[index] =
                             $('<div />').css({ position: 'absolute', 'zIndex': 10,

@@ -77,7 +77,7 @@
     <%- end -%>
   </div>
   <%- if is_grid -%>
-  <div id="pagination links" style="margin: 20px;">
+  <div id="pagination">
     <%= create_pagination(@row_count, @per_page, @page, @view.href + '/alt?' + @state_param) %>
   </div>
   <%- end -%>
@@ -89,7 +89,7 @@
   </div>
 
 <%- if is_grid -%>
-  <%- form_tag @view.alt_href, :method => :get do -%>
+  <%- form_tag @view.alt_href, :method => :get, :id => 'queryForm' do -%>
     <h2>Filter</h2>
     <ul>
       <%- @viewable_columns.each do |column| -%>

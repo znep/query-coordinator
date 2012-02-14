@@ -123,7 +123,7 @@ $(function()
         {
             e.preventDefault();
             var $t = $(this);
-            if (confirm('Are you sure you want to delete ' + ds.name + '?'))
+            if (confirm($.t('controls.browse.actions.delete.confirm', { dataset: ds.name })))
             {
                 ds.remove(function() { $t.closest('tr.item').remove(); });
             }
@@ -240,16 +240,16 @@ $(function()
         }
         else
         {
-            if ($t.text() == 'View all')
+            if ($t.text() == $.t('controls.browse.actions.all_options'))
             {
                 // grammar nazis: fewer? sounds weird, probably more correct
-                $t.text('View less');
+                $t.text($.t('controls.browse.actions.less_options'));
                 $options.hide().removeClass('hide').slideDown();
             }
             else
             {
                 $options.slideUp();
-                $t.text('View all');
+                $t.text($.t('controls.browse.actions.all_options'));
             }
         }
     });

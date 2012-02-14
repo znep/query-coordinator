@@ -79,6 +79,7 @@ en:
         clear_facet: (All)
         # if there are too many options to list inline, this link pops a window with all options
         all_options: View All
+        less_options: View Less
         create_dataset: Create or upload your own dataset
         # this is shown as a button to the right of the above text:
         create_dataset_verb: Create
@@ -105,6 +106,7 @@ en:
         delete:
           title: Delete this item
           button: Delete
+          confirm: Are you sure you want to delete %{dataset}?
         about:
           title: About this Dataset
           button: About

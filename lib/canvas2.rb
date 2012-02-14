@@ -604,4 +604,10 @@ module Canvas2
       super(props, parent, resolver_context)
     end
   end
+
+  class EventConnector < CanvasWidget
+    def render
+      ''
+    end
+  end
 end

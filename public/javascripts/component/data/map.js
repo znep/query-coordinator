@@ -71,6 +71,7 @@ var updateProperties = function(lcObj, properties)
             { this._map.setView(this._dataContext.dataset); }
             else
             {
+                this.$contents.empty();
                 this._map = this.$contents.socrataMap({
                     showRowLink: false,
                     displayFormat: this._properties.displayFormat,

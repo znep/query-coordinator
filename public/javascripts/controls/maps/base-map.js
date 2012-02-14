@@ -1529,16 +1529,18 @@
                 mapObj.map.addLayer(viewConfig._displayLayer);
             }
 
+            var viewport = mapObj._displayFormat.viewport || { 'xmin': -180, 'xmax': 180,
+                                                               'ymin': -90,  'ymax': 90 };
+
             if (viewConfig._neverCluster || viewConfig._fetchPoints)
             {
                 viewConfig._renderType = 'points';
                 if (!viewConfig._animation)
                 { mapObj.initializeAnimation(null, view); }
-                if (view.displayFormat.viewport
-                    && !$.subKeyDefined(view, 'query.namedFilters.viewport'))
-                { mapObj.updateRowsByViewport(view.displayFormat.viewport); }
+                if (viewport && !$.subKeyDefined(view, 'query.namedFilters.viewport'))
+                { mapObj.updateRowsByViewport(viewport); }
                 mapObj._super(view);
-                mapObj.setViewport(view.displayFormat.viewport);
+                mapObj.setViewport(viewport);
                 if (viewConfig._fetchPoints)
                 { delete viewConfig._fetchPoints; }
                 return;
@@ -1546,9 +1548,6 @@
 
             // Size of a medium cluster, to minimize cluster overlap.
             var pixels = 45;
-
-            var viewport = mapObj._displayFormat.viewport || { 'xmin': -180, 'xmax': 180,
-                                                               'ymin': -90,  'ymax': 90 };
 
             viewConfig._renderType = 'clusters';
             view.getClusters(viewport, mapObj._displayFormat,

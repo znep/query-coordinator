@@ -1,3 +1,8 @@
+# autoload is not threadsafe, so require everything we might need
+requires = %w{view query format render_type}
+requires.each{ |r| require File.join(Rails.root, 'app/models', r) }
+require 'clytemnestra'
+
 module Canvas2
 
 # GENERAL
@@ -174,12 +179,15 @@ module Canvas2
         get_dataset(config) do |ds|
           available_contexts[id] = {id: id, type: config['type'], dataset: ds}
           if (defined? @@pending_contexts) && (((@@pending_contexts || {})[id]).is_a? Array)
-            @@pending_contexts[id].each do |req|
-              ds_new = ds.deep_clone
-              got_dataset(ds_new, req[:config])
-              req[:callback].call(ds_new)
+            threads = @@pending_contexts[id].map do |req|
+              Thread.new do
+                ds_new = ds.deep_clone
+                got_dataset(ds_new, req[:config])
+                req[:callback].call(ds_new)
+              end
             end
             @@pending_contexts.delete(id)
+            threads.each { |thread| thread.join }
           end
         end
       when 'row'
@@ -193,9 +201,10 @@ module Canvas2
     end
 
     def self.load(config)
-      config.each do |id, config_item|
-        DataContext.load_context(id, config_item)
+      threads = config.map do |id, config_item|
+        Thread.new { DataContext.load_context(id, config_item) }
       end
+      threads.each{ |thread| thread.join }
     end
 
   private
@@ -335,8 +344,8 @@ module Canvas2
       if config.is_a? Array
         i = 0
         return config.map do |config_item|
-          i += 1
-          CanvasWidget.from_config(config_item, parent, resolver_context)
+            i += 1
+            CanvasWidget.from_config(config_item, parent, resolver_context)
         end
       else
         begin
@@ -369,7 +378,9 @@ module Canvas2
     end
 
     def render_contents
-      [has_children? ? children.map {|c| c.render}.join('') : '', true]
+      return ['', true] if !has_children?
+      threads = children.map {|c| Thread.new { c.render }}
+      [threads.map {|thread| thread.value}.join(''), true]
     end
 
   protected
@@ -424,7 +435,7 @@ module Canvas2
         all_c = []
         case context[:type]
         when 'datasetList'
-          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone)}
+          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }
         when 'dataset'
           if @properties['repeaterType'] == 'column'
             ex_f = string_substitute(@properties['excludeFilter'])

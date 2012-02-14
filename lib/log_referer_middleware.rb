@@ -41,7 +41,7 @@ class LogRefererMiddleware
         if uri.nil?
           # noop
         elsif uri.host.downcase == domain
-          logger.debug "Not logging same domain referal (#{domain})."
+          # logger.debug "Not logging same domain referal (#{domain})."
         elsif uri.host =~ /rpxnow.com$/
           logger.debug "Not logging RPX return logins."
         else

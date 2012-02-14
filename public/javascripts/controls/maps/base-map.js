@@ -181,11 +181,7 @@
 
             OpenLayers.ImgPath = '/images/openlayers/';
 
-            mapObj.map = new OpenLayers.Map(mapObj.$dom()[0], mapOptions);
-
-            mapObj.map.addControl(new blist.openLayers.ZoomBar());
-            mapObj.map.addControl(new blist.openLayers.MapTypeSwitcher());
-            mapObj.map.addControl(new OpenLayers.Control.MousePosition()); // FIXME: Remove.
+            mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);
 
             if (mapObj._displayFormat.type == 'bing')
             { mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0]

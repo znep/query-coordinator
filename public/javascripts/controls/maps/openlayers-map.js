@@ -68,18 +68,15 @@
     blist.openLayers.Map = OpenLayers.Class(OpenLayers.Map, {
         initialize: function(div, options)
         {
-            // add our defaults on top of the user's
-            options = $.extend({}, {
-                controls: []
-            }, options);
+            options.controls = [
+                new OpenLayers.Control.Attribution(),
+                new OpenLayers.Control.Navigation(),
+                new blist.openLayers.ZoomBar(),
+                new blist.openLayers.MapTypeSwitcher()
+            ];
 
             // call the default constructor but with no theme or controls; we'll add our own
             OpenLayers.Map.prototype.initialize.apply(this, [div, options]);
-
-            this.addControl(new OpenLayers.Control.Attribution());
-            this.addControl(new OpenLayers.Control.Navigation());
-            this.addControl(new OpenLayers.Control.LayerSwitcher()); // TODO: sidebar config instead possibly?
-            this.addControl(new blist.openLayers.ZoomBar());
         }
     });
 
@@ -87,7 +84,6 @@
         initializeBaseLayers: function()
         {
             // let us make POST requests with OpenLayers (for things like WFS)
-            var appToken = blist.configuration.appToken;
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
             var mapObj = this;
@@ -180,8 +176,6 @@
                 {
                     read: function(options)
                     {
-                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
                         options = OpenLayers.Util.extend({}, options);
                         options.headers = OpenLayers.Util.extend({
                             'X-App-Token': blist.configuration.appToken,

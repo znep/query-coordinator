@@ -1538,6 +1538,7 @@
                     && !$.subKeyDefined(view, 'query.namedFilters.viewport'))
                 { mapObj.updateRowsByViewport(view.displayFormat.viewport); }
                 mapObj._super(view);
+                mapObj._boundsChanging = true;
                 mapObj.setViewport(view.displayFormat.viewport);
                 if (viewConfig._fetchPoints)
                 { delete viewConfig._fetchPoints; }

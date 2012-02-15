@@ -143,6 +143,9 @@
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
 
+            if (viewConfig._externalLayer)
+            { return viewConfig._externalLayer; }
+
             var wkid;
             if (view.metadata.custom_fields.Basic['Spatial Reference wkid'])
             { wkid = 'EPSG:' + view.metadata.custom_fields.Basic['Spatial Reference wkid']; }

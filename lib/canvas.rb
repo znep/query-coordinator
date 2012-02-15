@@ -176,7 +176,7 @@ module Canvas
 
   protected
     attr_accessor :id_prefix
-    class_inheritable_accessor :default_properties, :style_definition, :content_definition
+    class_attribute :default_properties, :style_definition, :content_definition
 
     def find_property(key)
       current = @properties
@@ -198,8 +198,7 @@ module Canvas
 
   private
     def load_properties(data)
-      local_properties = data.to_hash rescue {}
-      local_properties.deep_symbolize_keys!
+      local_properties = (data.to_hash rescue {}).deep_symbolize_keys
       @properties = Hashie::Mash.new self.default_properties.deep_merge(local_properties)
     end
   end
@@ -359,8 +358,7 @@ module Canvas
     attr_reader :processed_browse
 
     def prepare!
-      browse_options = self.properties.browseOptions.to_hash
-      browse_options.deep_symbolize_keys!
+      browse_options = self.properties.browseOptions.to_hash.deep_symbolize_keys
 
       if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
         if self.properties.facetStyle == 'metadata'

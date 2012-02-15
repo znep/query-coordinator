@@ -5,7 +5,7 @@
 <div class="contentBox">
   <h2>Upload a New Dataset</h2>
 
-  <% form_tag("/imports.txt?redirect=true&authenticity_token=#{CGI::escape(form_authenticity_token)}",
+  <%= form_tag("/imports.txt?redirect=true&authenticity_token=#{CGI::escape(form_authenticity_token)}",
               :id => "importForm", :multipart => true, :class => 'commonForm') do %>
       <p class="errorMessage"></p>
       <p class="information">Please choose a file to import as a Socrata dataset. Supported formats are .csv, .tsv, .xml, .xls, and .xlsx.</p>

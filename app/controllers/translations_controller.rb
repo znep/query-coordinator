@@ -4,7 +4,7 @@ class TranslationsController < ApplicationController
   def get
     return render_404 if params[:locale_parts].empty?
 
-    result = LocaleCache.render_translations([LocalePart.from_array(params[:locale_parts])])
+    result = LocaleCache.render_translations([LocalePart.from_array(params[:locale_parts].split('/'))])
     return render_404 if result.nil?
 
     render :json => result, :content_type => 'application/json'

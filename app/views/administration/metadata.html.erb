@@ -51,7 +51,7 @@
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
         <%# TODO: Don't skip these %>
         <%- next if fieldset.hidden -%>
-        <% form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, 'Remove', 
+        <%= form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, 'Remove', 
              {:method => :delete}, {:class => 'button removeFieldsetButton remove'}) %>
         <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <div class="gridListWrapper">
@@ -118,25 +118,25 @@
                       </td>
                       <td class="actions">
                         <span class="loading"></span>
-                        <% form_button({ :action => 'toggle_metadata_option', :fieldset => fs_index,
+                        <%= form_button({ :action => 'toggle_metadata_option', :fieldset => fs_index,
                                          :index => index, :option => 'required'},
                                         'Make ' + (required ? 'Optional' : 'Required'),
                                        {:method => :put}, {:class => 'button toggleRequired toggleButton'}) %>
-                        <% form_button({ :action => 'toggle_metadata_option', :fieldset => fs_index,
+                        <%= form_button({ :action => 'toggle_metadata_option', :fieldset => fs_index,
                                          :index => index, :option => 'private'},
                                         'Make ' + (privstatus ? 'Public' : 'Private'),
                                        {:method => :put}, {:class => 'button togglePrivate toggleButton'}) %>
-                        <% form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
+                        <%= form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
                                          :index => index, :field => field.name, :direction => 'up'},
                                          'Up', {:method => :put},
                                          {:class => 'button moveButton upButton' +
                                           ((index == 0) ? ' disabled' : '') }) %>
-                        <% form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
+                        <%= form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
                                          :index => index, :field => field.name, :direction => 'down'},
                                          'Down', {:method => :put},
                                          {:class => 'button moveButton downButton' +
                                           ((index == fieldset['fields'].length-1) ? ' disabled' : '')}) %>
-                        <% form_button({ :action => 'delete_metadata_field', :fieldset => fs_index,
+                        <%= form_button({ :action => 'delete_metadata_field', :fieldset => fs_index,
                                          :index => index}, 'Remove', {:method => :delete},
                                        {:class => 'button removeField remove'}) %>
                       </td>
@@ -223,7 +223,7 @@
                 </span>
               </td>
               <td class="actions">
-                <% form_button({ :action => 'delete_category', :category => category }, 'Remove', 
+                <%= form_button({ :action => 'delete_category', :category => category }, 'Remove', 
                      {:method => :delete}, {:class => 'button removeField remove'}) %>
               </td>
             </tr>

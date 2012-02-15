@@ -34,7 +34,7 @@
       <p>No properties for this configuration</p>
 
       <%- else -%>
-      <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+      <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
         '/property', {:class => 'wide configProperties'}) do %>
         <%- @config.data['properties'].sort{ |a, b| a['name'] <=> b['name'] }.each do |prop| -%>
@@ -74,7 +74,7 @@
     <%- end -%>
 
     <h2>Add Property</h2>
-    <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+    <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
       '/property', {:class => 'wide newProperty'}) do %>
       <div class='line'>

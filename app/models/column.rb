@@ -294,7 +294,7 @@ class Column < Model
     col['description'] = CGI.escapeHTML(self.description)
     col['format'] ||= {}
 
-    return col.to_json.html_safe!
+    return col.to_json.html_safe
   end
 
   def viewable_children

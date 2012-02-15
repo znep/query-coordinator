@@ -1,5 +1,5 @@
 <%- if @show_search_form -%>
-  <% form_tag(root_path, :method => :get, :class => "search") do %>
+  <%= form_tag(root_path, :method => :get, :class => "search") do %>
     <label for="search"><%= CurrentDomain.strings.search_prompt %></label>
     <input type="text" class="textPrompt searchField" name="search"
       title="<%= CurrentDomain.strings.search_prompt %>"

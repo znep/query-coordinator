@@ -28,6 +28,4 @@ module CustomContentHelper
       h(text)
     end
   end
-
-  safe_helper :maybe_link_to
 end

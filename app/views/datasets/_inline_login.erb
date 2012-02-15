@@ -18,7 +18,7 @@
   <a href="#close" class="jqmClose modalDialogClose">Close</a>
   <h2>We're glad you want to join Socrata!</h2>
 
-  <% form_for :signup, @signup, :url => account_path, :html => {:id => 'signupForm',
+  <%= form_for :signup, :url => account_path, :html => {:id => 'signupForm',
               :class => 'commonForm', :multipart => true} do |f| %>
    <%= render :partial => "accounts/signup_form_data_new", :locals => { :f => f, :is_modal => true } %>
   <% end %>

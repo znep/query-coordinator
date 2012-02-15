@@ -13,7 +13,7 @@
 <div class="thirdPartyLinks">
   <%- RpxController.auth_providers.each do |provider| -%>
     <%- action_url = "#{provider[:rpx_url]}?token_url=#{return_url}" -%>
-    <% form_tag action_url, :method => 'post' do %>
+    <%= form_tag action_url, :method => 'post' do %>
       <%- if provider[:openid_identifier] -%>
         <%= hidden_field_tag :openid_identifier, provider[:openid_identifier] %>
       <%- end -%>

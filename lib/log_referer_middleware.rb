@@ -29,12 +29,12 @@ class LogRefererMiddleware
       end
 
       if ref.blank?
-        logger.debug "Blank referrer, not logging."
+        # logger.debug "Blank referrer, not logging."
       else
         begin
           uri = URI::parse(ref)
         rescue URI::InvalidURIError
-          logger.debug "Invalid referrer url format; not logging."
+          logger.debug "Invalid referrer url format '#{ref}'; not logging."
         end
 
         domain.downcase!

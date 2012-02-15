@@ -17,7 +17,7 @@
     <p class="signupDisclaimer"><%= raw CurrentDomain.strings.disclaimer %></p>
   <%- end -%>
 
-  <% form_for :signup, @signup, :url => account_path,
+  <%= form_for :signup, :url => account_path,
      :html => {:id => 'signupForm', :class => 'commonForm', :multipart => true} do |f| %>
     <%= render :partial => 'accounts/signup_form_data', :locals => {:f => f} %>
   <% end %>

@@ -22,7 +22,7 @@
       </a>
     </h1>
 
-    <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+    <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
       '/property', {:class => 'wide', :id => 'propertyForm'}) do %>
       <div id="ace-editor"></div>

@@ -63,7 +63,7 @@ module ApplicationHelper
       # If the key is namespaced, assume XHTML+RDFa
       qualifier = key.to_s.match(/^.+\:.+/) ? 'property' : 'name'
       %Q[<meta #{qualifier}="#{key.to_s}" content="#{escape_once(value)}" />]
-    end.join("\n")
+    end.join("\n").html_safe
   end
 
   # Returns the meta keyword tags for this view that we'll use in headers
@@ -75,10 +75,10 @@ module ApplicationHelper
 # js
   def jquery_include
     if Rails.env.development?
-      return '<script src="/javascripts/jquery-1.7.1.js" type="text/javascript" ' +
-        'charset="utf-8"></script>'
+      return ('<script src="/javascripts/jquery-1.7.1.js" type="text/javascript" ' +
+        'charset="utf-8"></script>').html_safe
     else
-      return <<-EOS
+      str = <<-EOS
         <script type="text/javascript">
           document.write([
             "\\<script src='",
@@ -87,12 +87,13 @@ module ApplicationHelper
           ].join(''));
         </script>
       EOS
+      str.html_safe
     end
   end
 
   def javascript_error_helper_tag
-    return '<script type="text/javascript">blistEnv = "' + Rails.env +
-      '";</script>' + include_javascripts('errors')
+    return ('<script type="text/javascript">blistEnv = "' + Rails.env +
+      '";</script>').html_safe + include_javascripts('errors')
   end
 
   def current_user_js
@@ -109,7 +110,7 @@ module ApplicationHelper
     content_tag :script, :type => 'text/javascript' do
       # no really, the html is safe
       ([ "blist.viewCache = {};".html_safe ] +
-        @view_cache.map{ |uid, view| "blist.viewCache['#{uid}'] = #{(view.is_a? View) ? (safe_json view).html_safe : view};".html_safe}).join("\n".html_safe).html_safe
+        @view_cache.map{ |uid, view| "blist.viewCache['#{uid}'] = #{(view.is_a? View) ? (safe_json view).html_safe : view};".html_safe}).join("\n").html_safe
     end
   end
 
@@ -130,11 +131,11 @@ module ApplicationHelper
       return STYLE_PACKAGES[stylesheet.to_s].
         map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
                    " href=\"/styles/individual/#{req}.css\"/>" }.
-        join("\n")
+        join("\n").html_safe
     else
-      return "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
+      return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
              " href=\"/styles/merged/#{stylesheet.to_s}.css?" +
-             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>"
+             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>").html_safe
     end
   end
 
@@ -193,7 +194,7 @@ module ApplicationHelper
       r += Time.at(time).strftime("%b %d, %Y")
       r += '</span>' if !no_html
     end
-    return r
+    return r.html_safe
   end
 
   def blist_date_time(time, no_html = false)
@@ -204,7 +205,7 @@ module ApplicationHelper
       r += Time.at(time).strftime("%b %d, %Y %I:%M%P")
       r += '</span>' if !no_html
     end
-    return r
+    return r.html_safe
   end
 
   def blist_long_date(time, no_html = false)
@@ -215,7 +216,7 @@ module ApplicationHelper
       r += Time.at(time).strftime("%B %d, %Y")
       r += '</span>' if !no_html
     end
-    return r
+    return r.html_safe
   end
 
   def friendly_relative_time(time_str)
@@ -287,6 +288,7 @@ module ApplicationHelper
     end
 
     out += "</div>"
+    out.html_safe
   end
 
   def link_to_url(url, *args)
@@ -311,10 +313,10 @@ module ApplicationHelper
     textual_extent = "Northwest: (#{nwLat}, #{nwLong}); " +
       "Southeast: (#{seLat}, #{seLong})"
 
-    "<img src='https://maps.google.com/maps/api/staticmap?path=" +
+    ("<img src='https://maps.google.com/maps/api/staticmap?path=" +
       "color:black%7Cweight:3%7Cfillcolor:0xFFFF0033%7C#{path_data}" +
       "&size=512x512&sensor=false' width='100%' title='#{textual_extent}' " +
-      "alt='#{textual_extent}' />"
+      "alt='#{textual_extent}' />").html_safe
   end
 
 # THEME HELPERS
@@ -366,7 +368,7 @@ module ApplicationHelper
       end.join('')
     end
 
-    return tmpl
+    return tmpl.html_safe
   end
 
 # MISC 
@@ -381,7 +383,7 @@ module ApplicationHelper
     end
 
     # generate a new tracking ID param set
-    tracking_params = { :cur => ActiveSupport::SecureRandom.base64(9).slice(0..10).gsub(/\//, '-').gsub(/\+/, '_') }
+    tracking_params = { :cur => ::SecureRandom.base64(9).slice(0..10).gsub(/\//, '-').gsub(/\+/, '_') }
     tracking_params[:from] = from_tracking_id unless from_tracking_id.blank?
 
     root_path = request.protocol + request.host_with_port
@@ -404,7 +406,7 @@ module ApplicationHelper
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
         "Powered by Socrata</a></p>"
     end
-    embed_template += "</div>"
+    (embed_template + "</div>").html_safe
   end
 
   def render_browse(options)
@@ -412,11 +414,6 @@ module ApplicationHelper
   end
 
   def safe_json(obj)
-    'JSON.parse($.htmlUnescape("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))'
+    ('JSON.parse($.htmlUnescape("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))').html_safe
   end
-
-  safe_helper :meta_tags, :jquery_include, :javascript_error_helper_tag, :create_pagination,
-    :render_domain_template, :rendered_stylesheet_tag, :get_publish_embed_code_for_view,
-    :render_browse, :safe_json, :blist_date, :blist_date_time, :blist_long_date, :current_user_js,
-    :render_view_js
 end

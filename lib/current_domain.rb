@@ -1,4 +1,5 @@
 require 'hashie'
+require 'core_server/errors'
 
 class CurrentDomain
   REFRESH_CHECK_TIME = 10

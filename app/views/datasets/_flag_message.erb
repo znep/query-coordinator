@@ -1,6 +1,6 @@
 <div class="aboutDataset_contact">
   <div class="contactOwnerFormWrapper">
-    <% form_tag(url_for({:controller => 'datasets', :action => "math_validate"}),
+    <%= form_tag(url_for({:controller => 'datasets', :action => "math_validate"}),
       :class => 'contactOwnerForm') do %>
       <%= hidden_field_tag 'method', 'flag' %>
       <div class="lined">
@@ -46,7 +46,7 @@
         end
         
         output = sprintf('%s %s %s', num1, operation, num2)
-        encoded = ActiveSupport::Base64.encode64(output.center(20))
+        encoded = ::Base64.encode64(output.center(20))
           %> 
         <div><label for="noSpam" class="required">What is <%= output %> as a word?</label></div>
         <input class="noSpamAnswer" type="text" name="user_answer" />

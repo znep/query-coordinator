@@ -174,13 +174,11 @@ protected
     if options[:force_default]
       user_params = {}
     else
-      user_params = request.params.dup.to_hash
-      user_params.deep_symbolize_keys!
+      user_params = request.params.dup.to_hash.deep_symbolize_keys
     end
 
     # grab configured params
-    configured_params = (catalog_config.default_params || {}).to_hash
-    configured_params.deep_symbolize_keys!
+    configured_params = (catalog_config.default_params || {}).to_hash.deep_symbolize_keys
 
     # next deal with options
     default_options = {
@@ -193,8 +191,7 @@ protected
       view_type: 'table'
     }
 
-    configured_options = catalog_config.to_hash
-    configured_options.deep_symbolize_keys!
+    configured_options = catalog_config.to_hash.deep_symbolize_keys
     configured_options.delete(:default_params)
 
     browse_options = default_options

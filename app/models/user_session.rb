@@ -8,6 +8,9 @@ require 'cgi'
 #
 # Unlike AuthLogic, our backend is our core server, accessed via HTTP requests.
 class UserSession
+  include ActiveModel::Validations
+  include ActiveModel::Conversion
+
   class << self
     # Check to see if we've been provided a controller instance already.
     # Many things won't work if this is false.
@@ -91,26 +94,14 @@ class UserSession
     @remember_me = (value == '1')
   end
 
-  # Stub out the errors class to make error handling on views happy.
-  # Right now, we're wrapping ActiveResource::Errors but not actually
-  # handling any validations, so don't expect this to work - just expect
-  # it not to crash.
-  def errors
-    @errors ||= SessionErrors.new(self)
-  end
-
-  # Return true if the session hasn't been saved yet.
-  def new_record?
-    new_session != false
-  end
-
   # Look up the authentication token based on the user's cookie information.
   # This function is typically called on every request cycle - we're given
   # a token representing an authenticated session, and we need to validate it
   # and look up the user associated with that token.
   def find_token
     if core_session.valid?(true) # true to force load
-      user = User.find(core_session.user_id, {'Cookie' => "_blist_session_id=#{core_session.to_s}"})
+      user = User.find(core_session.user_id,
+                       {'Cookie' => "#{::CoreServer::Connection.cookie_name}=#{core_session.to_s}"})
       UserSession.update_current_user(user, core_session)
     elsif !cookies['remember_token'].blank?
       response = post_cookie_authentication
@@ -126,11 +117,15 @@ class UserSession
 
     return user
   end
+  # Return true if the session hasn't been saved yet.
+  def persisted?
+    !@new_session.blank?
+  end
 
   def self.expiration_from_core_response(response)
     if response.is_a?(Net::HTTPSuccess)
       response.get_fields('set-cookie').each do |cookie_header|
-        if match = /\b_blist_session_id=([A-Za-z0-9%\-|]+)/.match(cookie_header)
+        if match = /\b#{::CoreServer::Connection.cookie_name}=([A-Za-z0-9%\-|]+)/.match(cookie_header)
           core_data = ::CoreSession.unmangle_core_session_from_cookie(match[1])
           expiration_data = core_data.split[1].to_i
           return expiration_data - Time.now.to_i
@@ -306,4 +301,4 @@ class NotActivatedError < StandardError
   end
 end
 
-class SessionErrors < ActiveResource::Errors; end
+# class SessionErrors < ActiveResource::Errors; end

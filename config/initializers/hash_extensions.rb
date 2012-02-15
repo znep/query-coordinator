@@ -1,10 +1,6 @@
 # Add all of these  R E C U R S I V E  methods to Hash!
 
 class Hash
-  def deep_symbolize_keys!
-    self.symbolize_keys!
-    self.values.select{ |value| value.is_a? Hash }.each{ |hash| hash.deep_symbolize_keys! }
-  end
 
   def deep_merge(other)
     result = self.dup

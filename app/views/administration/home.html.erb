@@ -62,14 +62,14 @@
                 <span class="icon"></span>Edit
               </a>
               <%- if index > 0 -%>
-                <% form_button({:action => 'move_story', :id => story.id, :other => @stories[index-1].id},
+                <%= form_button({:action => 'move_story', :id => story.id, :other => @stories[index-1].id},
                                'Up', {:method => :put}) %>
               <%- end -%>
               <%- if index < @stories.length-1 %>
-                <% form_button({:action => 'move_story', :id => @stories[index+1].id, :other => story.id},
+                <%= form_button({:action => 'move_story', :id => @stories[index+1].id, :other => story.id},
                                'Down', {:method => :put}) %>
               <%- end -%>
-              <% form_button({:action => 'delete_story', :id => story.id}, 'Delete',
+              <%= form_button({:action => 'delete_story', :id => story.id}, 'Delete',
                              {:method => :delete}, {:class => 'deleteStoryButton button'}) %>
             </td>
           </tr>

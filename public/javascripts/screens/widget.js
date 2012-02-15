@@ -586,9 +586,10 @@ $(function()
         }
     });
 
-    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
+    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly)
     {
-        blist.$container.renderTypeManager().show('page', {defaultRowId: rowId});
+        if (!updateOnly && !blist.dataset.metadata.renderTypeConfig.visible.page)
+        { blist.$container.renderTypeManager().show('page', {defaultRowId: rowId}); }
     });
 
 

@@ -120,6 +120,7 @@
             if (mapObj._primaryView.isGeoDataset())
             {
                 mapObj._geo = mapObj._primaryView.metadata.geo;
+                mapObj._pubDate = mapObj._primaryView.publicationDate;
             }
 
             if (mapObj.$dom().siblings('#mapLayers').length < 1)

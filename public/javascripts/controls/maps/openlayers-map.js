@@ -152,6 +152,7 @@
                         params: {
                             layers: mapObj._geo.namespace + ':' + layerName,
                             format: 'image/png',
+                            _soc_pubDate: mapObj._pubDate,
                             tiled: true,
                             transparent: true
                         }
@@ -159,7 +160,7 @@
 
                     if (params)
                     {
-                        result.params = $.extend(result.params, params);
+                        $.extend(result.params, params);
                     }
 
                     if (options)

@@ -10,7 +10,7 @@
     <div class="outerContainer">
       <div id="renderTypeContainer">
         <div id="staticRenderType" class="fullHeight renderTypeNode hide">
-          <%= render (:partial => @view.display.render_partial) if @view.display.render_partial %>
+          <%= render(:partial => @view.display.render_partial) if @view.display.render_partial %>
         </div>
 
         <%- if @view.is_tabular? && !@view.is_form? -%>

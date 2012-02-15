@@ -4,7 +4,7 @@
 
   <%= display_standard_flashes %>
 
-  <% form_for @user_session, :html => { :class => "commonForm" } do |f| %>
+  <%= form_for @user_session, :html => { :class => "commonForm" } do |f| %>
     <%= render :partial => "user_sessions/login_form_data_new", :locals => { :f => f } %>
   <% end %>
 

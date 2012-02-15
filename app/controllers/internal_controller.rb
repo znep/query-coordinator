@@ -26,21 +26,21 @@ class InternalController < ApplicationController
   def show_domain
     @domain = Domain.find(params[:id])
     @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
-    @configs = Configuration.find_by_type(nil, false, params[:id], false)
+    @configs = ::Configuration.find_by_type(nil, false, params[:id], false)
   end
 
   def show_config
     @domain = Domain.find(params[:domain_id])
-    @config = Configuration.find_unmerged(params[:id])
+    @config = ::Configuration.find_unmerged(params[:id])
     if !@config.parentId.nil?
-      @parent_config = Configuration.find(@config.parentId.to_s)
+      @parent_config = ::Configuration.find(@config.parentId.to_s)
       @parent_domain = Domain.find(@parent_config.domainCName)
     end
   end
 
   def show_property
     @domain = Domain.find(params[:domain_id])
-    @config = Configuration.find_unmerged(params[:config_id])
+    @config = ::Configuration.find_unmerged(params[:config_id])
     @property_key = params[:property_id]
     @property = @config.data['properties'].detect {|p| p['name'] == @property_key}['value']
   end
@@ -77,14 +77,14 @@ class InternalController < ApplicationController
       if parentConfigId.blank?
         parentConfigId = nil
       else
-        parentConfigId = Configuration.find_by_type('site_theme', true,
+        parentConfigId = ::Configuration.find_by_type('site_theme', true,
                                                     parentConfigId)[0].id
       end
 
-      site_theme = Configuration.create({'name' => 'Current theme',
+      site_theme = ::Configuration.create({'name' => 'Current theme',
         'default' => true, 'type' => 'site_theme', 'parentId' => parentConfigId,
         'domainCName' => domain.cname})
-      Configuration.create({'name' => 'Feature set',
+      ::Configuration.create({'name' => 'Feature set',
         'default' => true, 'type' => 'feature_set', 'domainCName' => domain.cname})
 
       site_theme.create_property('sdp_template', WidgetCustomization.create_default!.uid)
@@ -106,7 +106,7 @@ class InternalController < ApplicationController
 
       parent_id = params[:config][:parentId]
       parent_id = nil if parent_id.blank?
-      config = Configuration.create({'name' => conf_name,
+      config = ::Configuration.create({'name' => conf_name,
         'default' => params[:config][:default].present?,
         'type' => params[:config][:type], 'parentId' => parent_id,
         'domainCName' => params[:domain_id]})
@@ -120,7 +120,7 @@ class InternalController < ApplicationController
   end
 
   def set_default_site_config
-    Configuration.update_attributes!(params['default-site-config'],
+    ::Configuration.update_attributes!(params['default-site-config'],
                                      {'default' => true})
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
@@ -130,7 +130,7 @@ class InternalController < ApplicationController
   end
 
   def set_features
-    config = Configuration.find_by_type('feature_set', true, params[:domain_id])[0]
+    config = ::Configuration.find_by_type('feature_set', true, params[:domain_id])[0]
     if !params['new-feature_name'].blank?
       config.create_property(params['new-feature_name'],
                              params['new-feature_enabled'] == 'enabled')
@@ -171,7 +171,7 @@ class InternalController < ApplicationController
 
 
   def set_property
-    config = Configuration.find(params[:id])
+    config = ::Configuration.find(params[:id])
 
     if !params['new-property_name'].blank?
       config.create_property(params['new-property_name'],

@@ -54,12 +54,12 @@ Frontend::Application.routes do
     get :sdp_templates
     get :datasets
     get :select_dataset
-    get :home
-    get :metadata
+    get :home, :as => 'home_administration'
+    get :metadata, :as => 'metadata_administration'
     get :views
-    get :save_featured_views
+    put :save_featured_views
     get :catalog_widget
-    get :routing_approval
+    get :routing_approval, :as => 'routing_approval_administration'
     match '/tos', :via => [:get, :post]
 
     put '/users/:user_id/promote/:role', :action => 'set_user_role'
@@ -148,24 +148,24 @@ Frontend::Application.routes do
     get 'w/:id', :action => 'show'
   end
 
-  resources :datasets,
-    :collection => {
-      :upload => :get,
-      :external => :get,
-      :external_download => :get
-    },
-    :member => {
-      :about => :get,
-      :math_validate => :post,
-      :save_filter => :post,
-      :modify_permission => :post,
-      :post_comment => :post,
-      :email => [:get, :post],
-      :append => :get,
-      :contact => :get,
-      :thumbnail => :get
-    },
-    :only => [ :show, :new ]
+  resources :datasets, :only => [ :show, :new ] do
+    collection do
+      get :upload
+      get :external
+      get :external_download
+    end
+    member do
+      get :about
+      post :math_validate
+      post :save_filter
+      post :modify_permission
+      post :post_comment
+      match :email, :via => [:get, :post]
+      get :append
+      get :contact
+      get :thumbnail
+    end
+  end
 
   # Dataset SEO URLs (only add here if the action has a view with it;
   # otherwise just add to the :member key in the datasets resource above.)
@@ -229,11 +229,11 @@ Frontend::Application.routes do
     :conditions => {:uid => UID_REGEXP}
 
   scope :protocol => "https", :port => APP_CONFIG['ssl_port'] || 443 do
-    match '/login', :to => 'user_sessions#new', :as => 'login'
     match '/login.json', :to => 'user_sessions#create', :format => 'json', :as => 'login_json'
+    match '/login', :to => 'user_sessions#new', :as => 'login'
     match '/logout', :to => 'user_sessions#destroy', :as => 'logout'
-    match '/signup', :to => 'accounts#new', :as => 'signup'
     match '/signup.json', :to => 'accounts#create', :format => 'json', :as => 'signup_json'
+    match '/signup', :to => 'accounts#new', :as => 'signup'
     match '/accounts.json', :to => 'accounts#update', :format => 'json', :as => 'accounts_json'
     match '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
     match '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'

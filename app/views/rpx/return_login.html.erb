@@ -33,7 +33,7 @@
             </p>
           </div>
 
-          <% form_for :signup, @signup, :url => rpx_signup_path,
+          <%= form_for @signup, :url => rpx_signup_path,
             :html => {:id => 'signupForm', :multipart => true} do |f| %>
             <%= render :partial => 'accounts/signup_form_data',
               :locals => { :f => f, :hide_password => true } %>

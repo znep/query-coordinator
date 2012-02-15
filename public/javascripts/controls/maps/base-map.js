@@ -487,6 +487,8 @@
 
             mapObj.$dom().siblings('#mapLayers').addClass('hide');
 
+            mapObj.closePopup();
+
             _.each(mapObj._byView, function(viewConfig)
             {
                 viewConfig._llKeys = {};
@@ -1832,6 +1834,8 @@
         closePopup: function()
         {
             var mapObj = this;
+
+            if (!mapObj._popup) { return; }
 
             mapObj.map.removePopup(mapObj._popup);
             mapObj._popup.destroy();

@@ -60,13 +60,13 @@ module Canvas2
     end
 
     def self.deep_get(obj, field)
-      obj = obj.data if obj.is_a?(Model)
+      obj = obj.data if obj.respond_to?('data')
       obj = obj.with_indifferent_access
       keys = field.split('.')
       i = 0
       while i < keys.length do
         k = keys[i]
-        obj = obj.data if obj.is_a?(Model)
+        obj = obj.data if obj.respond_to?('data')
         return nil if obj[k].blank?
         obj = obj[k]
         i += 1
@@ -176,7 +176,7 @@ module Canvas2
             available_contexts[c[:id]] = c
           end}
       when 'dataset'
-        get_dataset(config) do |ds|
+        if !get_dataset(config) do |ds|
           available_contexts[id] = {id: id, type: config['type'], dataset: ds}
           if (defined? @@pending_contexts) && (((@@pending_contexts || {})[id]).is_a? Array)
             threads = @@pending_contexts[id].map do |req|
@@ -190,21 +190,30 @@ module Canvas2
             threads.each { |thread| thread.join }
           end
         end
+          return false
+        end
       when 'row'
         get_dataset(config) do |ds|
           r = ds.get_rows(1)[:rows][0]
+
+          if r.nil?
+            return false if config['required']
+            break
+          end
+
           fr = {}
           ds.visible_columns.each {|c| fr[c.fieldName] = r[c.id.to_s]}
           available_contexts[id] = {id: id, type: config['type'], row: fr}
         end
       end
+      return true
     end
 
     def self.load(config)
       threads = config.map do |id, config_item|
         Thread.new { DataContext.load_context(id, config_item) }
       end
-      threads.each{ |thread| thread.join }
+      threads.map { |thread| thread.value }.reduce(true) {|accum, v| accum && v}
     end
 
   private
@@ -258,17 +267,20 @@ module Canvas2
         begin
           ds = View.find(config['datasetId'])
         rescue CoreServer::ResourceNotFound
+          return false if config['required']
         rescue CoreServer::CoreServerError
+          return false if config['required']
         end
       elsif !config['search'].blank?
         search_response = Clytemnestra.search_views(config['search'].merge({'limit' => 1}))
         ds = search_response.results.first
+        return false if ds.nil? && config['required']
       end
       if !ds.blank?
         got_dataset(ds, config)
         yield(ds)
       end
-      ds
+      return true
     end
 
     def self.got_dataset(ds, config)
@@ -435,7 +447,7 @@ module Canvas2
         all_c = []
         case context[:type]
         when 'datasetList'
-          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }
+          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, {}, ds.clone) }
         when 'dataset'
           if @properties['repeaterType'] == 'column'
             ex_f = string_substitute(@properties['excludeFilter'])
@@ -540,7 +552,7 @@ module Canvas2
       params = Util.page_params.clone
       params['data_component'] = self.id
       path += '?' + params.map {|k, v| k + '=' + v}.join('&')
-      t += Util.app_helper.create_pagination_without_xss_safety(
+      t += Util.app_helper.create_pagination(
         row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
 
       t += '<a href="' + ds.alt_href + '" class="altViewLink">Accessibly explore the data</a>'
@@ -587,7 +599,8 @@ module Canvas2
 
   class Download < CanvasWidget
     def render_contents
-       ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +
+      return ['', true] if context.nil?
+      ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +
          'Download this data</a>', true]
     end
   end

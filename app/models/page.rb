@@ -2,7 +2,7 @@ class Page < SodaModel
   def render(full = true)
     if full
       Canvas2::Util.set_path(path)
-      Canvas2::DataContext.load(data)
+      return if !Canvas2::DataContext.load(data)
       [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render}.join('')
     else
       '<div id="' + content['id'] + '"></div>'

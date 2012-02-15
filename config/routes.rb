@@ -252,6 +252,11 @@ Frontend::Application.routes do
 
   match '/opensearch.xml' => 'open_search#show'
 
+  # Non-production environments get a special controller for test actions
+  unless Rails.env.production?
+    match '/test_page/:action', :controller => 'test_pages'
+  end
+
   # Custom pages, catalogs, facets
   scope :controller => 'custom_content' do
     # Canvas 1
@@ -267,11 +272,6 @@ Frontend::Application.routes do
     match '/template/:id', :action => 'template'
     match '*path', :action => 'page'
     root :action => 'homepage'
-  end
-
-  # Non-production environments get a special controller for test actions
-  unless Rails.env.production?
-    match '/test_page/:action', :controller => 'test_pages'
   end
 
   # See how all your routes lay out with "rake routes"

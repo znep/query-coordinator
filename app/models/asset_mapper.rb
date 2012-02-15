@@ -7,9 +7,9 @@ class AssetMapper
         @asset_map[type] = {}
         package_list.each do |package_name|
           if Rails.env.development?
-            @asset_map[type][package_name] = config[type][package_name].map {
+            @asset_map[type][package_name] = config[type][package_name].map do
               |item| item.sub(STRIP_PREFIX, '')
-            }
+            end
           else
             @asset_map[type][package_name] = "/#{config['package_path']}/#{package_name}.js?#{Time.now().to_i.to_s}"
           end
@@ -19,10 +19,7 @@ class AssetMapper
   end
 
   def javascripts
-    if @mapped_js.nil?
-      @mapped_js = @asset_map['javascripts'].to_json
-    end
-    @mapped_js
+    @_javascripts ||= @asset_map['javascripts'].to_json
   end
 
 # Jammit needs the path relative to Rails root, but that's

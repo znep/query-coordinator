@@ -1,2 +1,0 @@
-class Actee < User
-end

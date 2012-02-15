@@ -197,7 +197,7 @@ private
   end
 
   def store_location
-    session[:return_to] = request.url
+    session[:return_to] = request.fullpath
   end
 
   def redirect_back_or_default(path)

@@ -177,6 +177,11 @@ it:
         # same as above but with a link. no particular reason the wording is different.
         federation_source_html: Fornito da %{source_link}
         comment_count: Numero di commenti
+        table_header:
+          name: Nome
+          popularity: "Popolarit&agrave;"
+          type: Tipo
+          rss: RSS
       row_results:
         title_html: "Mostrando <span class=\"rowResultCountText\"></span> di <span class=\"totalResultCountText\"></span> righe corrispondenti <a href=\"#\" class=\"rowSearchLink\">(view results)</a>:"
         more_link: Ancora

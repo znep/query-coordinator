@@ -480,7 +480,7 @@
     <a class="permissions button" href="#Permissions"
       title="t('controls.browse.actions.permissions.title')">
       <%= t('controls.browse.actions.permissions.button_html',
-            :visibility => '<span class="permType"></span>') %>
+            :visibility => '<span class="permType"></span>'.html_safe) %>
     </a>
     <a class="delete button" href="#Delete" title="<%= t('controls.browse.actions.delete.title') %>">
       <%= t('controls.browse.actions.delete.button') %>

@@ -605,7 +605,7 @@
                     ($.isBlank(cObj._dataContext) || _.any($.makeArray(cObj._dataContext), function(dc)
                                                            { return !_.include(cIds, dc.id); })))
             {
-                if (!$.isBlank(cIds))
+                if (!_.isEmpty(cIds))
                 {
                     var finishDC = gotDCGen(cIds.length);
                     if (_(cIds).chain().map(function(cId)

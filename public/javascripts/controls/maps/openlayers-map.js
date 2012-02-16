@@ -81,25 +81,6 @@
     });
 
     $.Control.registerMixin('openlayers', {
-        initializeMap: function()
-        {
-            var mapObj = this;
-            mapObj._super();
-
-            if (mapObj._primaryView._childViews.length > 1)
-            {
-                mapObj._primaryView.getChildOptionsForType('table', function(views)
-                {
-                    if (mapObj._dataLayers)
-                    {
-                        _.each(mapObj._dataLayers, function(layer, index)
-                        { if (index < views.length) { layer.name = views[index].name; } });
-                        mapObj.populateLayers();
-                    }
-                });
-            }
-        },
-
         initializeBaseLayers: function()
         {
             // let us make POST requests with OpenLayers (for things like WFS)
@@ -238,10 +219,6 @@
                 {
                     layers.push({
                         type: 'wms',
-                        name: mapObj._primaryView._childViews
-                            ? mapObj._primaryView._childViews[mapObj._primaryView.childViews[index]]
-                                .name
-                            : null,
                         options: getWmsOptions(layerName)
                     });
                 });
@@ -267,7 +244,7 @@
                         break;
 
                     case 'wms':
-                        layer = mapObj._createWmsLayer(layer.name, layer.options);
+                        layer = mapObj._createWmsLayer(null, layer.options);
                         manipulableLayers.push(layer);
                         break;
 
@@ -366,7 +343,7 @@
 
             mapObj._baseLayers = [mapObj.map.baseLayer];
             mapObj._dataLayers = manipulableLayers;
-            mapObj.populateLayers();
+            fetchLayerNames(mapObj);
 
             mapObj.map.zoomToExtent(getDataBbox());
         },
@@ -401,5 +378,15 @@
             return new OpenLayers.Layer.WMS(name, options.url, options.params, options);
         }
     }, {defaultZoom: 13}, 'socrataMap');
+
+    var fetchLayerNames = function(mapObj)
+    {
+        mapObj._primaryView.getChildOptionsForType('table', function(views)
+        {
+            _.each(mapObj._dataLayers, function(layer, index)
+            { if (index < views.length) { layer.name = views[index].name; } });
+            mapObj.populateLayers();
+        });
+    };
 
 })(jQuery);

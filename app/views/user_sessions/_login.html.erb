@@ -6,8 +6,7 @@
 </ul>
 
 
-<% form_for @user_session do |f| %>
+<%= form_for @user_session do |f| %>
   <%= render :partial => 'user_sessions/login_form_data', :locals => { :f => f } %>
 <% end %>
-
 

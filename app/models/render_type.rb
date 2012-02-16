@@ -20,7 +20,7 @@ class RenderType
     when 'url'
       url = cell['url']
       url = 'http://' + url if (!url.blank? && url.index('/') != 0 && !url.match(/^([a-z]+):/i))
-      desc = CGI.escapeHTML(cell['description']) || url
+      desc = CGI.escapeHTML(cell['description'] || url || '')
 
       ret = '<a href="' + url.to_s + '">' + desc + '</a>' if !url.blank? || !desc.blank?
 
@@ -28,13 +28,13 @@ class RenderType
       ret = '<a href="mailto:' + CGI.escape(cell) + '">' + CGI.escapeHTML(cell) + '</a>'
 
     when 'phone'
-      ret = CGI.escapeHTML(cell['phone_number']) || ''
+      ret = CGI.escapeHTML(cell['phone_number'] || '')
       phone_type = cell['phone_type']
       ret += '(' + phone_type + ')' if !phone_type.nil?
 
     when 'drop_down_list', 'picklist'
       column.dropDown.values.each do |option|
-        ret = CGI.escapeHTML(option['description']) if option['id'] == cell
+        ret = CGI.escapeHTML(option['description'] || '') if option['id'] == cell
       end
 
     when 'number'
@@ -98,9 +98,9 @@ class RenderType
         ret = '<a href="/views/' + dataset.id + '/' +
           (is_new ? '' : 'obsolete_') + 'files/' + cell[id_i] +
           (is_new && params.length > 0 ? '?' + params.join('&') : '') + '">' +
-          CGI.escapeHTML(cell[name_i]) + '</a>' +
+          CGI.escapeHTML(cell[name_i] || '') + '</a>' +
           ' (' + number_to_human_size(cell[size_i], {:locale => 'en'}) + ')' +
-          ' (' + CGI.escapeHTML(cell[type_i]) + ')'
+          ' (' + CGI.escapeHTML(cell[type_i] || '') + ')'
         end
 
     when 'photo', 'photo_obsolete'
@@ -114,7 +114,7 @@ class RenderType
       human_address = cell['human_address']
       pieces = []
 
-      if !human_address.nil?
+      if !human_address.blank?
         address = JSON.parse(human_address)
 
         pieces << CGI.escapeHTML(address['address']) if !address['address'].blank?

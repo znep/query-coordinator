@@ -62,20 +62,22 @@ $.component.Container.extend('Repeater', 'content', {
         this._refresh();
     },
 
-    _setDataContext: function()
+    _clearDataContext: function()
     {
         var cObj = this;
         // Unbind anything old
         if ($.subKeyDefined(this, '_dataContext.dataset'))
-        { this._dataContext.dataset.unbind(null, null, this); }
+        { _.each($.makeArray(this._dataContext), function(dc) { dc.dataset.unbind(null, null, cObj); }); }
+        this._super.apply(this, arguments);
+    },
 
+    _addDataContext: function(dc)
+    {
+        var cObj = this;
         this._super.apply(this, arguments);
 
-        if ($.subKeyDefined(this, '_dataContext.dataset') &&
-                this._properties.repeaterType != 'column')
-        {
-            this._dataContext.dataset.bind('query_change', function() { cObj._refresh(); }, this);
-        }
+        if ($.subKeyDefined(dc, 'dataset') && this._properties.repeaterType != 'column')
+        { dc.dataset.bind('query_change', function() { cObj._refresh(); }, this); }
     },
 
     _refresh: function()

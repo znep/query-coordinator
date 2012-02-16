@@ -315,8 +315,14 @@ module Canvas2
     end
 
     def context
-      @context ||= DataContext.available_contexts[@properties['contextId']] if
-        @properties.has_key?('contextId')
+      if @properties.has_key?('contextId') && @context.blank?
+        if @properties['contextId'].is_a?(Array)
+          @context = []
+          @properties['contextId'].each {|cId| @context << DataContext.available_contexts[cId]}
+        else
+          @context = DataContext.available_contexts[@properties['contextId']]
+        end
+      end
       @context
     end
 
@@ -346,7 +352,12 @@ module Canvas2
       parent_resolver = !self.parent.blank? ? self.parent.resolver() : Util.base_resolver()
       lambda do |name|
         v = Util.deep_get((@resolver_context || {}), name)
-        v = Util.deep_get((context || {}), name) if v.blank?
+        c = context || {}
+        if c.is_a?(Array)
+          c = {}
+          context.each {|dc| c[dc.id] = dc}
+        end
+        v = Util.deep_get(c, name) if v.blank?
         v = parent_resolver.call(name) if v.blank?
         v
       end

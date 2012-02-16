@@ -124,7 +124,7 @@
                         isBaseLayer: true,
                         url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
                         transitionEffect: 'resize',
-                        projection: 'EPSG:102100',
+                        projection: 'EPSG:102113',
                         tileSize: new OpenLayers.Size(256, 256),
                         tileOrigin: new OpenLayers.LonLat(-20037508.342787, 20037508.342787),
                         maxExtent: new OpenLayers.Bounds(-20037508.34, -19971868.8804086, 20037508.34, 19971868.8804086)
@@ -226,6 +226,7 @@
                 });
             }
 
+            OpenLayers.Layer.Google.v3.repositionMapElements = function() {};
             for (var i = 0; i < layers.length; i++)
             {
                 var layer = layers[i];

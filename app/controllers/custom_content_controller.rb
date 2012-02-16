@@ -135,6 +135,7 @@ private
   def cache_wrapper
     cache_params = { 'domain' => CurrentDomain.cname,
                      'domain_updated' => CurrentDomain.default_config_updated_at,
+                     'locale' => I18n.locale,
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas-#{params[:action]}", cache_params)
     @cached_fragment = read_fragment(@cache_key)
@@ -179,6 +180,7 @@ private
     Canvas::Environment.params = params
     Canvas::Environment.page_config = page_config.reject{ |key| key == 'contents' }
     Canvas::Environment.request = request
+    Canvas::Environment.locale_config = I18n.config
 
     # ready whatever we might need
     if prepare
@@ -186,6 +188,8 @@ private
         bindings = {}
         binding_threads = page_config.dataBindings.map do |key, properties|
           Thread.new do
+            Canvas::Environment.prepare_thread!
+
             binding = bindings[key.to_s] = Hashie::Mash.new
             binding.properties = properties
 
@@ -219,7 +223,7 @@ private
 
       page_config.contents.each{ |widget| widget.prepare_bindings! }
 
-      threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_prepare? }
+      threads = page_config.contents.map{ |widget| Thread.new{ Canvas::Environment.prepare_thread!; widget.prepare! } if widget.can_prepare? }
       threads.compact.each{ |thread| thread.join }
     else
       if page_config.dataBindings

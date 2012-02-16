@@ -17,7 +17,7 @@
 <%= form_for @user_session, :url => rpx_login_path do |f| %>
   <%# Save off the form fields from the signup side, in case they change their mind
       and go create a new account. %>
-  <% fields_for :signup, @signup do |signup|  %>
+  <%= fields_for :signup, @signup do |signup|  %>
     <%= signup.hidden_field :openIdIdentifierId %>
     <%= signup.hidden_field :firstName %>
     <%= signup.hidden_field :lastName %>

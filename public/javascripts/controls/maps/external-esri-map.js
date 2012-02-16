@@ -282,7 +282,10 @@
         {
             var attrMap = {};
             _.each(dataView.realColumns, function(col)
-            { attrMap[col.name] = col.lookup; });
+            {
+                attrMap[col.name] = col.lookup;
+                attrMap[col.description] = col.lookup;
+            });
 
             var rows = _.map(features, function(feature)
             {

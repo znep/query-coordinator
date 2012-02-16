@@ -435,7 +435,7 @@ module Canvas2
         all_c = []
         case context[:type]
         when 'datasetList'
-          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone)}
+          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, {}, ds.clone)}
         when 'dataset'
           if @properties['repeaterType'] == 'column'
             ex_f = string_substitute(@properties['excludeFilter'])

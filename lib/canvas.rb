@@ -19,12 +19,17 @@ module Canvas
       attr_accessor :params
       attr_accessor :request
       attr_accessor :bindings
+      attr_accessor :locale_config
 
       def metadata_tag
         return nil unless Environment.context == :facet_page
         return Environment.page_config.metadata_fieldset + '_' +
                Environment.page_config.metadata_field + ':' +
                Environment.facet_value
+      end
+
+      def prepare_thread!
+        I18n.config = Environment.locale_config
       end
     end
   end
@@ -90,7 +95,7 @@ module Canvas
 
     def prepare!
       return unless self.has_children?
-      threads = self.children.map{ |child| Thread.new{ child.prepare! } if child.can_prepare? }
+      threads = self.children.map{ |child| Thread.new{ Environment.prepare_thread!; child.prepare! } if child.can_prepare? }
       threads.compact.each{ |thread| thread.join }
     end
 
@@ -112,7 +117,7 @@ module Canvas
 
     def prepare_bindings!
       return unless self.has_children?
-      threads = self.children.map{ |child| Thread.new{ child.prepare_bindings! } }
+      threads = self.children.map{ |child| Thread.new{ Environment.prepare_thread!; child.prepare_bindings! } }
       threads.each{ |thread| thread.join }
     end
 

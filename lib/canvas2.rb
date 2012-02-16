@@ -587,7 +587,8 @@ module Canvas2
 
   class Download < CanvasWidget
     def render_contents
-       ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +
+      return ['', true] if context.nil?
+      ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +
          'Download this data</a>', true]
     end
   end

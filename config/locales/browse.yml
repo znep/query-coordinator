@@ -41,6 +41,7 @@ en:
         alpha: Alphabetical
         newest: Newest
         oldest: Oldest
+        last_modified: Recently Updated
         rating: Highest Rated
         comments: Most Comments
       sort_period_title: Sort Period

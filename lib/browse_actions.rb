@@ -368,6 +368,7 @@ private
       { value: 'alpha', name: I18n.t('controls.browse.sorts.alpha') },
       { value: 'newest', name: I18n.t('controls.browse.sorts.newest') },
       { value: 'oldest', name: I18n.t('controls.browse.sorts.oldest') },
+      { value: 'last_modified', name: I18n.t('controls.browse.sorts.last_modified') },
       { value: 'rating', name: I18n.t('controls.browse.sorts.rating') },
       { value: 'comments', name: I18n.t('controls.browse.sorts.comments') }
     ]

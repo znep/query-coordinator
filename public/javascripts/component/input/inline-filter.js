@@ -45,16 +45,19 @@ var renderUpdate = function()
     {
         this.$contents.empty();
 
-        var opts = {};
-        switch (this._dataContext.type)
+        var opts = {datasets: []};
+        _.each($.makeArray(this._dataContext), function(dc)
         {
-            case 'dataset':
-                opts.datasets = [ this._dataContext.dataset ];
-                break;
-            case 'datasetList':
-                opts.datasets = _.pluck(this._dataContext.datasetList, 'dataset');
-                break;
-        }
+            switch (dc.type)
+            {
+                case 'dataset':
+                    opts.datasets.push(dc.dataset);
+                    break;
+                case 'datasetList':
+                    opts.datasets = opts.datasets.concat(_.pluck(dc.datasetList, 'dataset'));
+                    break;
+            }
+        });
 
         if (!$.isBlank(this._properties.columnFilter))
         {

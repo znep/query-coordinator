@@ -549,6 +549,11 @@
                 return function() {};
             var parentResolver = this.parent ? this.parent._propertyResolver() : $.component.rootPropertyResolver;
             var dc = this._dataContext || {};
+            if (_.isArray(dc))
+            {
+                dc = {};
+                _.each(this._dataContext, function(d) { dc[d.id] = d; });
+            }
             var dcResolver = function(name) {
                 var result = $.deepGetStringField(dc, name);
                 if (result !== undefined)
@@ -575,25 +580,36 @@
         _updateDataSource: function(properties, callback)
         {
             var cObj = this;
-            var gotDC = function(dc)
+            var gotDCGen = function(count)
             {
-                cObj.finishLoading();
-                cObj._setDataContext(dc);
-                if (_.isFunction(callback)) { callback.apply(cObj); }
+                var finishCallback = _.after(count, function()
+                {
+                    cObj.finishLoading();
+                    if (_.isFunction(callback)) { callback.apply(cObj); }
+                });
+                cObj._clearDataContext();
+                return function(dc)
+                {
+                    cObj._addDataContext(dc);
+                    finishCallback();
+                };
             };
+
             var startDCGet = function()
             {
                 cObj.startLoading();
-                if (!$.isBlank(cObj._propEditor))
-                { cObj._propEditor.setComponent(null); }
             };
 
-            if ((!$.isBlank(properties.context) || !$.isBlank(properties.contextId)) &&
-                    ($.isBlank(cObj._dataContext) || cObj._dataContext.id != properties.contextId))
+            var cIds = $.makeArray(properties.contextId);
+            if ((!$.isBlank(properties.context) || !$.isBlank(cIds)) &&
+                    ($.isBlank(cObj._dataContext) || _.any($.makeArray(cObj._dataContext), function(dc)
+                                                           { return !_.include(cIds, dc.id); })))
             {
-                if (!$.isBlank(properties.contextId))
+                if (!$.isBlank(cIds))
                 {
-                    if ($.dataContext.getContext(properties.contextId, gotDC))
+                    var finishDC = gotDCGen(cIds.length);
+                    if (_(cIds).chain().map(function(cId)
+                                { return $.dataContext.getContext(cId, finishDC); }).include(true).value())
                     {
                         startDCGet();
                         return true;
@@ -612,7 +628,7 @@
                         properties.contextId = id;
                     }
                     startDCGet();
-                    $.dataContext.loadContext(id, c, gotDC);
+                    $.dataContext.loadContext(id, c, gotDCGen(1));
                     return true;
                 }
             }
@@ -622,9 +638,25 @@
             return false;
         },
 
-        _setDataContext: function(dc)
+        _clearDataContext: function()
         {
-            this._dataContext = dc;
+            delete this._dataContext;
+            if (!$.isBlank(this._propEditor))
+            { this._propEditor.setComponent(null); }
+        },
+
+        _addDataContext: function(dc)
+        {
+            if (_.any($.makeArray(this._dataContext), function(curDC) { return curDC.id == dc.id; }))
+            { return; }
+
+            if ($.isBlank(this._dataContext))
+            { this._dataContext = dc; }
+            else
+            {
+                this._dataContext = $.makeArray(this._dataContext);
+                this._dataContext.push(dc);
+            }
             if (!$.isBlank(this._propEditor))
             { this._propEditor.setComponent(this); }
         },

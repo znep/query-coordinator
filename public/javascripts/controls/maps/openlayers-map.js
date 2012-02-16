@@ -88,6 +88,8 @@
 
             var mapObj = this;
 
+            var mtSwitcher = mapObj.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0];
+
             var getDataBbox = function()
             {
                 if (mapObj._geo && mapObj._geo.bbox)
@@ -233,14 +235,17 @@
                 {
                     case 'google':
                         layer = new OpenLayers.Layer.Google('Google', layer.options);
+                        mtSwitcher.registerMapType('Google', layer);
                         break;
 
                     case 'bing':
                         layer = new OpenLayers.Layer.Bing(layer.options);
+                        mtSwitcher.registerMapType('Bing', layer);
                         break;
 
                     case 'esri':
                         layer = new OpenLayers.Layer.ArcGISCache('Esri', layer.options.url, layer.options);
+                        mtSwitcher.registerMapType('ESRI', layer);
                         break;
 
                     case 'wms':
@@ -255,6 +260,8 @@
 
                 mapObj.map.addLayer(layer)
             }
+
+            mtSwitcher.setCurrentMapType('Google');
 
             if (featureProtocol)
             {

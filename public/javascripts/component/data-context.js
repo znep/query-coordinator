@@ -42,7 +42,7 @@
             };
             var errorLoading = function(id)
             {
-                _.each(dc._contextsQueue[id], function(f) { if (_.isFunction(f.error)) { f.error(xhr); } });
+                _.each(dc._contextsQueue[id], function(f) { if (_.isFunction(f.error)) { f.error(); } });
                 delete dc._contextsQueue[id];
                 if (_.isFunction(errorCallback)) { errorCallback(xhr); }
                 $.dataContext.trigger('error', [ id ]);
@@ -219,7 +219,11 @@
         {
             Dataset.search($.extend({}, config.search, {limit: 1}), function(results)
             {
-                if (results.count < 1) { return; }
+                if (results.count < 1)
+                {
+                    errorCallback(id);
+                    return;
+                }
                 gotDS(_.first(results.views));
             },
             function(xhr)

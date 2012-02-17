@@ -409,16 +409,19 @@
                 return false;
             }
 
-            if (!$.isBlank(cObj._properties.htmlClass))
+            if (cObj._properties.requiresContext || !$.isBlank(cObj._properties.htmlClass))
             {
-                var tmplClass = function()
+                var finishedDCGet = function()
                 {
+                    if (cObj._properties.requiresContext && $.isBlank(cObj._dataContext))
+                    { cObj.properties({hidden: true}); }
+
                     var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
                     cObj.$contents.removeClass(comp);
                     cObj.$contents.addClass(cObj._stringSubstitute(comp));
                 };
-                if (!cObj._updateDataSource(cObj._properties, tmplClass))
-                { tmplClass(); }
+                if (!cObj._updateDataSource(cObj._properties, finishedDCGet))
+                { finishedDCGet(); }
             }
 
             delete this._needsRender;
@@ -588,17 +591,23 @@
                     if (_.isFunction(callback)) { callback.apply(cObj); }
                 });
                 cObj._clearDataContext();
-                return function(dc)
-                {
-                    cObj._addDataContext(dc);
-                    finishCallback();
+                return {
+                    success: function(dc)
+                    {
+                        cObj._addDataContext(dc);
+                        finishCallback();
+                    },
+                    error: function()
+                    {
+                        // We're just going to say we're done; it is up to the component
+                        // to detect no dataContext exists
+                        finishCallback();
+                    }
                 };
             };
 
             var startDCGet = function()
-            {
-                cObj.startLoading();
-            };
+            { cObj.startLoading(); };
 
             var cIds = $.makeArray(properties.contextId);
             if ((!$.isBlank(properties.context) || !$.isBlank(cIds)) &&
@@ -609,7 +618,14 @@
                 {
                     var finishDC = gotDCGen(cIds.length);
                     if (_(cIds).chain().map(function(cId)
-                                { return $.dataContext.getContext(cId, finishDC); }).include(true).value())
+                        {
+                            if (!$.dataContext.getContext(cId, finishDC.success, finishDC.error))
+                            {
+                                finishDC.error();
+                                return false;
+                            }
+                            return true;
+                        }).include(true).value())
                     {
                         startDCGet();
                         return true;
@@ -628,7 +644,8 @@
                         properties.contextId = id;
                     }
                     startDCGet();
-                    $.dataContext.loadContext(id, c, gotDCGen(1));
+                    var finishDC = gotDCGen(1);
+                    $.dataContext.loadContext(id, c, finishDC.success, finishDC.error);
                     return true;
                 }
             }

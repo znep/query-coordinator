@@ -60,22 +60,24 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
 var updateProperties = function(lcObj, properties)
 {
     if (!lcObj._updateDataSource(properties, function()
-                {
-                    if (!$.isBlank(this._chart))
-                    { this._chart.setView(this._dataContext.dataset); }
-                    else
-                    {
-                        this._chartType = this._stringSubstitute(this._properties.chartType) || this._chartType;
-                        this.$contents.empty();
-                        this._chart = this.$contents.socrataChart({
-                            chartType: this._chartType,
-                            displayFormat:
-                                lcObj._stringSubstitute(lcObj._properties.displayFormat),
-                            view: this._dataContext.dataset
-                        });
-                        this._updateValidity();
-                    }
-                }) &&
+    {
+        if ($.isBlank(this._dataContext)) { return; }
+
+        if (!$.isBlank(this._chart))
+        { this._chart.setView(this._dataContext.dataset); }
+        else
+        {
+            this._chartType = this._stringSubstitute(this._properties.chartType) || this._chartType;
+            this.$contents.empty();
+            this._chart = this.$contents.socrataChart({
+                chartType: this._chartType,
+                displayFormat:
+                    lcObj._stringSubstitute(lcObj._properties.displayFormat),
+                view: this._dataContext.dataset
+            });
+            this._updateValidity();
+        }
+    }) &&
             !$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._chart))
     {
         lcObj._chart.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));

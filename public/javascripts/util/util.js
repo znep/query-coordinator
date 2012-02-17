@@ -498,7 +498,7 @@ $.deepGet = function(/* [create], obj, keys* */)
             return result;
         }
 
-        if (_.isUndefined(obj[key]))
+        if (obj[key] == null) // null or undefined
             if (!create)
                 return undefined;
             else

@@ -341,7 +341,7 @@ module Canvas2
       t += '<div class="content-wrapper ' + html_class + '">' if @needs_own_context
       t += c
       t += '</div>' if @needs_own_context
-      t += '</div>'
+      [t += '</div>', fully_rendered]
     end
 
     def render_contents
@@ -403,7 +403,8 @@ module Canvas2
     def render_contents
       return ['', true] if !has_children?
       threads = children.map {|c| Thread.new { c.render }}
-      [threads.map {|thread| thread.value}.join(''), true]
+      results = threads.map {|thread| thread.value};
+      [results.map {|r| r[0]}.join(''), results.reduce(true) {|memo, r| memo && r[1]}]
     end
 
   protected
@@ -415,19 +416,22 @@ module Canvas2
   class HorizontalContainer < Container
     def render_contents
       t = ''
+      fully_rendered = true
       if has_children?
         total_weight = children.reduce(0.0) {|sum, c| sum + (c.properties['weight'] || 1)}
         pos = 0.0
         children.each_with_index do |c, i|
           w = c.properties['weight'] || 1
+          r = c.render
           t += '<div class="component-wrapper' + (i == 0 ? ' first-child' : '') + '"' +
             ' style="margin-left:' + (-(100 - pos / total_weight * 100)).round(2).to_s + '%;' +
             'width:' + (w / total_weight * 100).round(2).to_s + '%;"' +
-            '>' + c.render + '</div>'
+            '>' + r[0] + '</div>'
+          fully_rendered &&= r[1]
           pos += w
         end
       end
-      [t += '<div class="socrata-ct-clear"></div>', true]
+      [t += '<div class="socrata-ct-clear"></div>', fully_rendered]
     end
   end
 
@@ -453,6 +457,7 @@ module Canvas2
 
     def render_contents
       t = ''
+      fully_rendered = true
       if !context.blank?
         col_map = {}
         all_c = []
@@ -483,10 +488,12 @@ module Canvas2
           @orig_props['container'] = cont_config
           real_c = CanvasWidget.from_config(cont_config, self)
           real_c.children = all_c
-          t += real_c.render
+          r = real_c.render
+          t += r[0]
+          fully_rendered &&= r[1]
         end
       end
-      [t, true]
+      [t, fully_rendered]
     end
 
   protected
@@ -518,7 +525,8 @@ module Canvas2
 
     def create_copy(component, id_prefix)
       new_c = component.clone
-      new_c['htmlClass'] = new_c['htmlClass'].is_a?(Array) ? new_c['htmlClass'] : [new_c['htmlClass']].compact
+      new_c['htmlClass'] = new_c['htmlClass'].is_a?(Array) ? new_c['htmlClass'].clone :
+        [new_c['htmlClass']].compact
       new_c['htmlClass'] << 'id-' + new_c['id']
       new_c['id'] = id_prefix + new_c['id']
       if new_c['children'].is_a? Array
@@ -642,7 +650,7 @@ module Canvas2
 
   class EventConnector < CanvasWidget
     def render
-      ''
+      ['', false]
     end
   end
 end

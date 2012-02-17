@@ -41,7 +41,7 @@ $.component.Container.extend('Repeater', 'content', {
     _initDom: function()
     {
         this._super.apply(this, arguments);
-        if ($.isBlank(this._properties.height))
+        if ($.isBlank(this._properties.height) && (this._isDirty && !this.$dom.hasClass('serverRendered')))
         {
             this._tempHeight = 500;
             this.$dom.css('height', this._tempHeight);

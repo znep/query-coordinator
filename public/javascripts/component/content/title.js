@@ -10,8 +10,12 @@ $.component.Component.extend('Title', 'content', {
     {
         var cObj = this,
             tag = cObj._properties.tagName || 'h2';
-        cObj.$contents.empty().append($.tag({tagName: tag}));
         cObj.$title = cObj.$contents.find(tag);
+        if (cObj.$title.length < 1)
+        {
+            cObj.$contents.empty().append($.tag({tagName: tag}));
+            cObj.$title = cObj.$contents.find(tag);
+        }
     },
 
     _initDom: function()

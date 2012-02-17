@@ -27,6 +27,8 @@
             if (components[cObj.id])
                 throw new Error("Duplicate component ID " + cObj.id);
             components[cObj.id] = cObj;
+            cObj._isDirty = true;
+
             if (_.isFunction(cObj._dataReady))
                 cObj._updateDataSource(properties, cObj._dataReady);
 
@@ -317,8 +319,8 @@
                 this.dom = dom;
                 this.$dom = $(dom);
                 dom._comp = this;
-                dom.className = 'socrata-component component-' + this.typeName + ' ' +
-                    (this._properties.customClass || '') + ' ' + (this._properties.hidden ? 'hide' : '');
+                this.$dom.addClass('socrata-component component-' + this.typeName + ' ' +
+                    (this._properties.customClass || '') + ' ' + (this._properties.hidden ? 'hide' : ''));
                 if (this._needsOwnContext)
                 {
                     this.$contents = this.$dom.children('.content-wrapper');
@@ -388,16 +390,16 @@
         _render: function()
         {
             var cObj = this;
-            if (!this._isRenderable()) { return false; }
+            if (!this._isRenderable() || !this._isDirty) { return false; }
             this._initDom();
-            // Not fully working yet
-//            if (this.$dom.hasClass('serverRendered'))
-//            {
-//                this.$dom.removeClass('serverRendered');
-//                this._rendered = true;
-//                delete this._needsRender;
-//                return false;
-//            }
+            if (this.$dom.hasClass('serverRendered'))
+            {
+                this.$dom.removeClass('serverRendered');
+                this._rendered = true;
+                this._isDirty = false;
+                delete this._needsRender;
+                return false;
+            }
 
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
@@ -426,6 +428,7 @@
 
             delete this._needsRender;
             this._rendered = true;
+            this._isDirty = false;
             return true;
         },
 
@@ -434,6 +437,7 @@
          */
         _arrange: function()
         {
+            this._isDirty = true;
             if (!$.isBlank(this.$dom))
             { this.$dom.trigger('resize', [$.component]); }
         },
@@ -521,9 +525,11 @@
          * Set the component's properties.  Only properties for which a key is present are written.  Whether the
          * component dynamically applies the properties is implementation dependent.
          */
-        _propWrite: function(properties) {
+        _propWrite: function(properties)
+        {
             var cObj = this;
             $.extend(true, cObj._properties, properties);
+            cObj._isDirty = true;
             cObj.trigger('update_properties');
 
             if (!$.isBlank(cObj.$dom))
@@ -658,6 +664,7 @@
         _clearDataContext: function()
         {
             delete this._dataContext;
+            this._isDirty = true;
             if (!$.isBlank(this._propEditor))
             { this._propEditor.setComponent(null); }
         },
@@ -674,6 +681,7 @@
                 this._dataContext = $.makeArray(this._dataContext);
                 this._dataContext.push(dc);
             }
+            this._isDirty = true;
             if (!$.isBlank(this._propEditor))
             { this._propEditor.setComponent(this); }
         },

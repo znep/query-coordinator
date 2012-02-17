@@ -221,7 +221,7 @@ Frontend::Application.routes do
   # For screenshotting only
 
   # The /version page
-  get '/version' => 'version#index'
+  get '/version(.:format)' => 'version#index'
 
   # Auth/login/register paths
   match '/forgot_password', :to => 'accounts#forgot_password', :as => 'forgot_password'

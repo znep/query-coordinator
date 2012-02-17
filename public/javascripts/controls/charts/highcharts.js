@@ -915,6 +915,8 @@
 
         var chartRedraw = function(evt)
         {
+            if (!$.subKeyDefined(chartObj, 'chart.series.0')) { return; }
+
             setTimeout(drawNullBars, 500); // Wait for animation to finish before running.
             drawValueMarkers();
             drawDomainMarkers();

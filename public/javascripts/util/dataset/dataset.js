@@ -185,6 +185,11 @@ var Dataset = ServerModel.extend({
         return (this.metadata && this.metadata.geo);
     },
 
+    isBlobby: function()
+    {
+        return (this.type == 'blob');
+    },
+
     isPublished: function()
     {
         return this.publicationStage == 'published';
@@ -202,7 +207,7 @@ var Dataset = ServerModel.extend({
 
     isImmutable: function()
     {
-        return this.isGeoDataset();
+        return (this.isBlobby() || this.isGeoDataset());
     },
 
     renderWithArcGISServer: function()
@@ -288,7 +293,7 @@ var Dataset = ServerModel.extend({
     reload: function(successCallback, errorCallback)
     {
         var ds = this;
-        if (ds.type == 'blob')
+        if (ds.isBlobby())
         {
             ds.trigger('blob_change');
             return;

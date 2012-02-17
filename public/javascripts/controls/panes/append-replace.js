@@ -6,8 +6,11 @@
 
 
         getSubtitle: function()
-        { return 'Upload a new data file whose contents will be added to ' +
-            'or replace your current data.'; },
+        {
+            return 'Upload a new data file whose contents will ' +
+                   (blist.dataset.isImmutable() ? '' : 'be added to or ') +
+                   'replace your current data.';
+        },
 
         _getSections: function()
         {

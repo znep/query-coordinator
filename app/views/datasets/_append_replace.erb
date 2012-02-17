@@ -1,6 +1,6 @@
 <div class="appendReplace">
   <a href="<%= @view.href %>/edit" class="button appendReplaceButton rightArrow">
     <span class="icon"></span>
-    Launch the Append and Replace wizard
+    Launch the <%= 'Append and ' if @view.is_tabular? %>Replace wizard
   </a>
 </div>

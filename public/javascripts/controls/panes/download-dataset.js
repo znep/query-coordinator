@@ -15,21 +15,53 @@
 
         _getSections: function()
         {
-            var types = this._view.isGeoDataset() ?
-                        $.templates.downloadsTable.geoDownloadTypes :
-                        $.templates.downloadsTable.downloadTypes;
+            var _view = this._view;
+            var type = this._view.isGeoDataset() ? 'geo' : 'normal';
             var catchForm = !this._view.isGeoDataset();
             return [
                 {
                     customContent: {
-                        template: 'downloadsTable',
-                        directive: $.templates.downloadsTable.directive,
-                        data: { downloadTypes: types,
+                        template: 'downloadsSectionContent',
+                        directive: $.templates.downloadsTable.directive[type],
+                        data: { downloadTypes: $.templates.downloadsTable.downloadTypes[type],
+                                layerDownloadTypes: $.templates.downloadsTable.downloadTypes['normal'],
                                 view: this._view },
                         callback: function($sect)
                         {
                             if (catchForm)
                             { $sect.find('.downloadsList .item a').downloadToFormCatcher(); }
+
+                            if (_view.isGeoDataset()) {
+                                _view.getChildOptionsForType('table', function(views) {
+                                    var hookupLinks = function(uid) {
+                                        $sect.find('.layerDownloadsContent .item a').each(function() {
+                                            var $link = $(this);
+                                            var childView = _.detect(views, function(view) {
+                                                return view.id == uid;
+                                            });
+                                            $link.attr('href', childView.downloadUrl($link.data('type')));
+                                        });
+                                    };
+
+                                    hookupLinks(views[0].id);
+
+                                    if (views.length > 1)
+                                    {
+                                        $sect.find('.layerTableDownloads')
+                                            .find('.layerChooser')
+                                            .append(_.map(views, function(view) {
+                                                return $.tag({
+                                                    tagName: 'option',
+                                                    contents: view.name, 'data-uid': view.id
+                                                }, true);
+                                            }).join(''))
+                                            .change(function() {
+                                                hookupLinks($(this).find('option:selected').data('uid'));
+                                            })
+                                            .end().addClass('hasChoices');
+                                    }
+                                });
+                            }
                             $.templates.downloadsTable.postRender($sect);
                         }
                     }

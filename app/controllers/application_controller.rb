@@ -153,7 +153,7 @@ private
     unless current_user_session && !force_login
       store_location
       flash[:notice] = "You must be logged in to access this page"
-      redirect_to login_path
+      redirect_to login_url
       return false
     end
   end

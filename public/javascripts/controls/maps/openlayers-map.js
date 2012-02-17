@@ -187,7 +187,7 @@
 
                         return OpenLayers.Protocol.WFS.v1_1_0.prototype.read.call(this, options);
                     }
-                })
+                });
 
                 var featureProtocol = new AuthenticatingFeatureProtocol({
                     featureNS: 'http://' + mapObj._geo.namespace,
@@ -288,10 +288,10 @@
                             tagName: 'p',
                             contents: [ {
                                 tagName: 'span', 'class': 'property',
-                                contents: key + ':'
+                                contents: $.htmlEscape(key) + ':'
                             }, {
                                 tagName: 'span', 'class': 'value',
-                                contents: value
+                                contents: $.htmlEscape(value)
                             } ]
                         }, true);
                     }).join('');

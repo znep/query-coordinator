@@ -6,19 +6,35 @@
     //   Downloads Table; renders a table with downloadable types for a view
     // DEPENDENCIES:
     //   combination-list.js
+    var downloadTypesDirective = function(typeName, isDynamic) {
+        var directive = {};
+        directive['downloadType<-' + typeName] = {
+            '.type a': '#{downloadType}',
+            '.type a@data-type': '#{downloadType}',
+            '.type a@href': function(args)
+            {
+                if (isDynamic) { return '#download'; }
+                return args.context.view.downloadUrl(args.item);
+            }
+            // TODO: add download count when supported
+        };
+        return directive;
+    };
+
     $.templates.downloadsTable = {
-        downloadTypes: [ 'CSV', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
-        geoDownloadTypes: [ 'KML', 'KMZ', 'Shapefile', 'Original' ],
+        downloadTypes: {
+            'normal': [ 'CSV', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
+            'geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ]
+        },
         directive: {
-            'tbody .item': {
-                'downloadType<-downloadTypes': {
-                    '.type a': '#{downloadType}',
-                    '.type a@href': function(args)
-                    {
-                        return args.context.view.downloadUrl(args.item);
-                    }
-                    // TODO: add download count when supported
-                }
+            'normal': {
+                '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
+            },
+            'geo': {
+                '.downloadsTable .downloadsList tbody .item':
+                    downloadTypesDirective('downloadTypes'),
+                '.layerDownloadsContent .downloadsList tbody .item':
+                    downloadTypesDirective('layerDownloadTypes', true)
             }
         },
         postRender: function($elem)

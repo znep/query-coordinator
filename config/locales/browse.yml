@@ -150,13 +150,13 @@ it:
           extents_set_message: dentro un area
       sort_title: Ordinato per
       sorts:
-        relevance: "Pi&ugrave; rilevante"
-        most_accessed: "Pi&ugrave; acceduto"
+        relevance: "Più rilevante"
+        most_accessed: "Più acceduto"
         alpha: "Alfabetico"
-        newest: "Pi&ugrave; nuovo"
-        oldest: "Pi&ugrave; vecchio"
-        rating: "Con voto pi&ugrave; alto"
-        comments: "Pi&ugrave; commentati"
+        newest: "Più nuovo"
+        oldest: "Più vecchio"
+        rating: "Con voto più alto"
+        comments: "Più commentati"
       sort_period_title: "Periodo dell'ordinamento"
       sort_periods:
         week: Questa settimana
@@ -180,7 +180,7 @@ it:
         comment_count: Numero di commenti
         table_header:
           name: Nome
-          popularity: "Popolarit&agrave;"
+          popularity: "Popolarità"
           type: Tipo
           rss: RSS
       row_results:
@@ -213,7 +213,7 @@ it:
           accept: Accetta
           reject: Respingi
         permissions:
-          title: "Cambia la visibilit&agrave;"
+          title: "Cambia la visibilità"
           # eg "Make public"
           button_html: Rendi %{visibility}
         delete:

@@ -256,8 +256,12 @@
                         if (flyoutContent)
                         { flyoutContent = flyoutContent[0].innerHTML; }
 
-                        mapObj.showPopup(lonlat, flyoutContent,
-                            { closeBoxCallback: function() { mapObj.closePopup(); } });
+                        mapObj.showPopup(lonlat, flyoutContent);
+                    },
+                    function(error)
+                    {
+                        if (error.dojoType == 'timeout')
+                        { mapObj.showPopup(lonlat, 'Request for this data timed out.'); }
                     });
             });
 

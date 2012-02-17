@@ -1782,7 +1782,7 @@
 
             options = options || {};
             var closeBoxCallback = _.isFunction(options.closeBoxCallback)
-                ? options.closeBoxCallback : function() {};
+                ? options.closeBoxCallback : function() { mapObj.closePopup(); };
 
             if (mapObj._popup && !options.keepOpen) { mapObj.closePopup(); }
 

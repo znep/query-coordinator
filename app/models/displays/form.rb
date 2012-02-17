@@ -23,4 +23,8 @@ class Displays::Form < Displays::Base
   def public_perm_type
     'add'
   end
+
+  def name
+    I18n.t('core.view_types.form')
+  end
 end

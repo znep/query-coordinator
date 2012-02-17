@@ -5,7 +5,7 @@ class Displays::Href < Displays::Base
   end
 
   def name
-    'External dataset'
+    I18n.t('core.view_types.href')
   end
 
   def scrolls_inline?

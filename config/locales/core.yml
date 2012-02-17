@@ -1,5 +1,15 @@
 en:
   core:
+    view_types:
+      blob: non-tabular file or document
+      calendar: calendar
+      chart: chart
+      filter: filtered view
+      form: form
+      group: grouped view
+      href: external dataset
+      map: map
+      table: table
     filters:
       formal:
         equals: equals

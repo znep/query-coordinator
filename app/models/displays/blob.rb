@@ -15,7 +15,7 @@ class Displays::Blob < Displays::Base
     end
 
     def name
-      'Non-tabular file or document'
+      I18n.t('core.view_types.blob')
     end
 
     def display_type

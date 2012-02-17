@@ -5,11 +5,11 @@ class Displays::Table < Displays::Base
 
   def name
     if @view.is_blist?
-      'table'
+      I18n.t('core.view_types.table')
     elsif @view.is_grouped?
-      'grouped view'
+      I18n.t('core.view_types.group')
     else
-      'filtered view'
+      I18n.t('core.view_types.filter')
     end
   end
 

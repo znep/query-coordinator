@@ -486,16 +486,27 @@ $.deepGet = function(/* [create], obj, keys* */)
     for (; idx < arguments.length; idx++)
     {
         var key = arguments[idx];
-        if (key == '[]' && _.isArray(obj))
+        if (_.isArray(obj))
         {
-            var result;
-            var remArgs = $.makeArray(arguments).slice(idx + 1);
-            for (var i = 0; i < obj.length; i++)
+            var m = key.match(/^\[(\w*)=?(\w*)\]$/);
+            if (!$.isBlank(m))
             {
-                result = $.deepGet.apply($, _.compact([create ? true : null, obj[i]]).concat(remArgs));
-                if (!create && !$.isBlank(result)) { break; }
+                var arrayKey = m[1];
+                var arrayVal = m[2];
+                var checkVals = !$.isBlank(arrayKey) && !$.isBlank(arrayVal);
+
+                var result;
+                var remArgs = $.makeArray(arguments).slice(idx + 1);
+                for (var i = 0; i < obj.length; i++)
+                {
+                    var arrayItem = obj[i];
+                    if (checkVals && arrayItem[arrayKey] != arrayVal) { continue; }
+                    result = $.deepGet.apply($, _.compact([create ? true : null, arrayItem])
+                            .concat(remArgs));
+                    if (!create && !$.isBlank(result)) { break; }
+                }
+                return result;
             }
-            return result;
         }
 
         if (obj[key] == null) // null or undefined

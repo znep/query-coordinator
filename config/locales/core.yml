@@ -54,18 +54,18 @@ it:
         is_blank: vuoto
         is_not_blank: non vuoto
       informal:
-        equals: "&egrave;"
-        not_equals: "non &egrave;"
+        equals: "è"
+        not_equals: "non è"
         starts_with: inzia con
         contains: contiene
         not_contains: non contiene
-        less_than: "&egrave; minore di"
-        less_than_or_equals: "&egrave; al massimo"
-        greater_than: "&egrave; maggiore di"
-        greater_than_or_equals: "&egrave; almeno"
-        between: "&egrave; tra"
-        is_blank: "&egrave; vuoto"
-        is_not_blank: "non &egrave; vuoto"
+        less_than: "è minore di"
+        less_than_or_equals: "è al massimo"
+        greater_than: "è maggiore di"
+        greater_than_or_equals: "è almeno"
+        between: "è tra"
+        is_blank: "è vuoto"
+        is_not_blank: "non è vuoto"
     analytics:
       visit: vista
     dialogs:
@@ -74,4 +74,4 @@ it:
       continue: continua
     interstitial:
       leaving_notice_html: "Stai lasciando <span class=\"serverName\">%{site_name}</span>"
-      leaving_explanation_html: "Questo  <span class=\"datasetType\">dataset</span> &egrave; ospitato da <a href=\"\#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."
+      leaving_explanation_html: "Questo  <span class=\"datasetType\">dataset</span> è ospitato da <a href=\"\#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."

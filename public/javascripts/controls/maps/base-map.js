@@ -206,6 +206,8 @@
         {
             var mapObj = this;
 
+            mapObj.events = { changedVisibility: function() {} };
+
             mapObj.map.events.register('moveend', mapObj.map, function()
             {
                 if (mapObj._initialLoad) { return; }
@@ -583,8 +585,11 @@
                 $slider.bind('slide', function(event, ui)
                 {
                     var $_this = $(this);
-                    $_this.parent().data('layer').setOpacity(ui.value/100);
+                    var layer = $_this.parent().data('layer')
+                    var newOpacity = ui.value/100;
+                    layer.setOpacity(newOpacity);
                     $_this.next(':input').val(ui.value);
+                    mapObj.events.changedVisibility(layer, newOpacity > 0);
                 });
             });
 
@@ -618,7 +623,9 @@
             $layers.find(':checkbox').click(function(e)
             {
                 var $check = $(e.currentTarget);
-                $check.parent().data('layer').setVisibility($check.value());
+                var layer = $check.parent().data('layer')
+                layer.setVisibility($check.value());
+                mapObj.events.changedVisibility(layer, $check.value());
             });
 
             $layers.removeClass('hide');

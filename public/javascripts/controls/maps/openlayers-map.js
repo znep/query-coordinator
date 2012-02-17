@@ -145,6 +145,7 @@
 
                     var result = {
                         url: mapObj._geo.owsUrl,
+                        atlasId: layerName,
                         isBaseLayer: false,
                         transitionEffect: 'resize',
                         tileSize: new OpenLayers.Size(256, 256),
@@ -277,6 +278,8 @@
                     single: false
                 });
 
+                mapObj._getFeature = getFeature;
+
                 getFeature.events.register('featureselected', this, function(event)
                 {
                     var selectedFeature = event.feature;
@@ -356,6 +359,28 @@
             mapObj.map.zoomToExtent(getDataBbox());
         },
 
+        initializeEvents: function()
+        {
+            var mapObj = this;
+            mapObj._super();
+
+            mapObj.events.changedVisibility = function()
+            {
+                var featureType = _(mapObj._dataLayers).chain()
+                    .map(function(layer, index)
+                        {
+                            if (layer.visibility
+                                && (_.isNull(layer.opacity) || layer.opacity > 0))
+                            { return layer.atlasId; }
+                            else
+                            { return null; }
+                        })
+                    .compact()
+                    .value();
+                mapObj._getFeature.protocol.setFeatureType(featureType);
+            };
+        },
+
         getRequiredJavascripts: function()
         {
             // This is a terrible hack; but we need to know if Google
@@ -383,7 +408,9 @@
 
         _createWmsLayer: function(name, options)
         {
-            return new OpenLayers.Layer.WMS(name, options.url, options.params, options);
+            var layer = new OpenLayers.Layer.WMS(name, options.url, options.params, options);
+            layer.atlasId = options.atlasId;
+            return layer;
         }
     }, {defaultZoom: 13}, 'socrataMap');
 

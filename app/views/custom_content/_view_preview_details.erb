@@ -20,6 +20,8 @@
       <%- end -%>
     <%- when 'created_at' -%>
       <%= content_tag((field.tagType || 'span'), HumaneDateHelper.humane_date(widget.view.createdAt), :class => 'createdAt') %>
+    <%- when 'updated_at' -%>
+      <%= content_tag((field.tagType || 'span'), HumaneDateHelper.humane_date(widget.view.createdAt), :class => 'updatedAt') %>
     <%- when 'link' -%>
       <%- if field.tagType -%>
         <%- content_tag(field.tagType) do -%>

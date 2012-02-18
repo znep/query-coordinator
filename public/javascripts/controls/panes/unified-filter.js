@@ -609,6 +609,11 @@
                 return;
             }
 
+            // If this a composite column without a subcolumn defined, force
+            // it; we can't filter effectively without it
+            if (!_.isEmpty(column.subColumnTypes) && $.isBlank(metadata.subcolumn))
+            { metadata.subcolumn = column.subColumnTypes[0]; }
+
             // render the main bits
             var $filter = $.renderTemplate('filterCondition', { metadata: metadata, column: column }, {
                 '.filterCondition@class+': function() { return (metadata.expanded === false) ? 'collapsed' : 'expanded'; },

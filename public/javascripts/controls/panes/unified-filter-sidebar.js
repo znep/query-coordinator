@@ -8,18 +8,18 @@
 
     $.Control.extend('pane_unifiedFilter', {
         getTitle: function()
-        { return 'Filter'; },
+        { return $.t('controls.filter.main.filter'); },
 
         getSubtitle: function()
-        { return 'Filter this dataset based on contents.'; },
+        { return $.t('controls.filter.main.filter_based_on_contents'); },
 
         isAvailable: function()
         { return this._view.visibleColumns.length > 0 && this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid ? 'This view must be valid' :
-                'This view has no columns to filter';
+            return !this._view.valid ? $.t('controls.filter.main.view_must_be_valid') :
+                $.t('controls.filter.main.view_has_no_columns');
         },
 
         setView: function()

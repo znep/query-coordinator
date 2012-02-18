@@ -8,6 +8,10 @@ en:
         simplified_toggle: Go advanced now?
         no_conditions: No conditions defined yet.
         no_suggestions: There are no suggested values for this column and operator.
+        filter: Filter
+        filter_based_on_contents: Filter this dataset based on contents.
+        view_must_be_valid: This view must be valid
+        view_has_no_columns: This view has no columns to filter
       actions:
         first_condition: Click here to add your first filter condition
         new_condition_button: Add a New Filter Condition
@@ -53,6 +57,10 @@ it:
         simplified_toggle: "Accedi alla modalità avanzata."
         no_conditions: Nessuna condizione ancora definita.
         no_suggestions: Nessun valore suggerito per questa colonna e per questa criterio.
+        filter: Filtra
+        filter_based_on_contents: Filtra questo set di dati in base al contenuto
+        view_must_be_valid: Questo punto di vista deve essere valido
+        view_has_no_columns: Questo punto di vista non ha colonne per filtrare
       actions:
         first_condition: Clicca qui per aggiungere la tua prima condizione di filtro.
         new_condition_button: Aggiungi un nuovo filtro.

@@ -1,7 +1,7 @@
 <%- unless opts[:disable][:search] -%>
   <form class="searchSection">
     <span class="icon"></span>
-    <input type="text" name="browseSearch" title="Search"
+    <input type="text" name="browseSearch" title="<%= I18n.t('controls.browse.search') %>"
       class="textPrompt searchBox" value="<%= opts[:q] %>" />
     <%- if opts[:q].present? -%>
     <%- cp = opts[:user_params].reject{ |k| k == :q } -%>

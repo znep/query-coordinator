@@ -1,6 +1,7 @@
 en:
   controls:
     browse:
+      search: Search
       facets:
         view_types_title: View Types
         view_types_singular_title: type
@@ -115,6 +116,7 @@ en:
 it:
   controls:
     browse:
+      search: Cerca
       facets:
         view_types_title: Tipi di viste
         view_types_singular_title: tipi
@@ -193,6 +195,7 @@ it:
         clear_facet: (Tutti)
         # if there are too many options to list inline, this link pops a window with all options
         all_options: Vedi Tutti
+        less_options: Vedi Meno
         create_dataset: Crea o carica il tuo dataset
         # this is shown as a button to the right of the above text:
         create_dataset_verb: Crea

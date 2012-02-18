@@ -4,7 +4,7 @@
   <%- end -%>
   <div class="downloadsTable">
     <div class="gridListWrapper">
-      <%= render :partial => 'downloads_table_inner' %>
+      <%= render :partial => 'datasets/downloads_table_inner' %>
     </div>
   </div>
   <%- if @view.is_geo? -%>
@@ -12,7 +12,7 @@
     <label class="formHeader">Download Tabular Layers</label>
     <select id="layerChooserForTabular" class="layerChooser"></select>
     <div class="layerDownloadsContent gridListWrapper">
-      <%= render :partial => 'downloads_table_inner' %>
+      <%= render :partial => 'datasets/downloads_table_inner' %>
     </div>
   </div>
   <%- end -%>

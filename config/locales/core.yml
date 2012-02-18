@@ -49,6 +49,16 @@ en:
 
 it:
   core:
+    view_types:
+      blob: file scaricabile
+      calendar: calendario
+      chart: grafico
+      filter: visualizzazione filtrata
+      form: formare
+      group: visualizzazione in gruppi
+      href: legame
+      map: mappa
+      table: tabella
     filters:
       formal:
         equals: uguale

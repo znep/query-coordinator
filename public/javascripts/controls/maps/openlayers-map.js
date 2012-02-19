@@ -382,7 +382,10 @@
             mapObj._dataLayers = manipulableLayers;
             fetchLayerNames(mapObj);
 
-            mapObj.map.zoomToExtent(getDataBbox());
+            if (mapObj._displayFormat.viewport)
+            { mapObj.setViewport(mapObj._displayFormat.viewport); }
+            else
+            { mapObj.map.zoomToExtent(getDataBbox()); }
         },
 
         initializeEvents: function()
@@ -422,7 +425,8 @@
 
         getDataForAllViews: function ()
         {
-            // Just kidding!
+            // Allow the moveend event to do its thing, and that's it.
+            delete this._initialLoad;
         },
 
         _setupLibraries: function()

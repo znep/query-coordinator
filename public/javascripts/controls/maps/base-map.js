@@ -221,7 +221,9 @@
             });
 
             mapObj.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0].events
-                .register('maptypechange', null, function() { mapObj._ignoreMoveEnd = true;});
+                .register('maptypechange', null, function() { mapObj._ignoreMoveEnd = true; });
+            mapObj.map.getControlsByClass('OpenLayers.Control.Attribution')[0].events
+                .register('attributionupdated', null, function() { mapObj.fixMapLayers(); });
 
             mapObj._hoverTimers = {};
             if ($.subKeyDefined(mapObj, '_displayFormat.identifyTask') &&
@@ -534,6 +536,21 @@
             mapObj._super();
         },
 
+        fixMapLayers: function()
+        {
+            var mapObj = this;
+
+            var $layers = mapObj.$dom().siblings('#mapLayers');
+            var $bottom = $(mapObj.map.getControlsByClass('OpenLayers.Control.Attribution')[0].div);
+            var height = ($bottom.filter(':visible').length == 0)
+                ? mapObj.$dom().height() - 20 : $bottom.position().top - 10;
+            height -= $layers.position().top + $layers.padding().top + $layers.padding().bottom;
+            $layers.css('max-height', height);
+            $layers.find('.contentBlock').css({
+                'max-height': height-$layers.find('.toggleLayers').height(),
+                'overflow': 'auto'});
+        },
+
         populateLayers: function()
         {
             var mapObj = this;
@@ -551,6 +568,8 @@
 
             if (mapObj._baseLayers.length < 2 && mapObj._dataLayers.length < 2)
             { return; }
+
+            mapObj.fixMapLayers();
 
             $layersList.empty();
             var processLayer = function(l)

@@ -65,11 +65,37 @@
         CLASS_NAME: "blist.openLayers.ZoomBar"
     });
 
+    blist.openLayers.Attribution = OpenLayers.Class(OpenLayers.Control.Attribution, {
+        initialize: function()
+        {
+            this.EVENT_TYPES = ['attributionupdated'].concat(
+                               OpenLayers.Control.prototype.EVENT_TYPES);
+            OpenLayers.Control.Attribution.prototype.initialize.apply(this, arguments);
+        },
+
+        updateAttribution: function()
+        {
+            var control = this;
+            OpenLayers.Control.Attribution.prototype.updateAttribution.apply(this, arguments);
+
+            var imgs = this.div.getElementsByTagName('img');
+            var toLoad = imgs.length;
+            for (var i = 0; i < toLoad; i++)
+            { imgs[i].onload = function() {
+                toLoad--;
+                if (toLoad == 0)
+                { control.events.triggerEvent('attributionupdated'); }
+            }; }
+            if (toLoad == 0)
+            { this.events.triggerEvent('attributionupdated'); }
+        }
+    });
+
     blist.openLayers.Map = OpenLayers.Class(OpenLayers.Map, {
         initialize: function(div, options)
         {
             options.controls = [
-                new OpenLayers.Control.Attribution(),
+                new blist.openLayers.Attribution(),
                 new OpenLayers.Control.Navigation(),
                 new blist.openLayers.ZoomBar(),
                 new blist.openLayers.MapTypeSwitcher()

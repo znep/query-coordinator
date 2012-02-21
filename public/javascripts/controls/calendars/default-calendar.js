@@ -66,7 +66,7 @@
             var $fc = calObj.$dom();
             var exEvent = $fc.fullCalendar('clientEvents', ce.id);
             if (exEvent.length > 0)
-            { $fc.fullCalendar('updateEvent', $.extend(_.first(exEvent), ce)); }
+            { $.extend(_.first(exEvent), ce); }
             else
             { calObj._events.push(ce); }
 
@@ -111,6 +111,7 @@
                 this.$dom().fullCalendar('addEventSource', this._events);
                 this._events = [];
             }
+            this.$dom().fullCalendar('refetchEvents');
         },
 
         getColumns: function()

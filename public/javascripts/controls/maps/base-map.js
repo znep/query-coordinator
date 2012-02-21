@@ -305,12 +305,15 @@
                         var layer = datum.layer;
                         if (layer.dataViewConfig._renderType == 'clusters')
                         {
-                            mapObj.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
                             if (mapObj.currentZoom()
                                 < mapObj.map.getZoomForExtent(feature.attributes.bbox))
                             { mapObj.map.zoomToExtent(feature.attributes.bbox); }
                             else
-                            { mapObj.map.zoomIn(); }
+                            {
+                                mapObj.map.setCenter(
+                                    feature.geometry.getBounds().getCenterLonLat(),
+                                    mapObj.currentZoom() + 1);
+                            }
                         }
                         else
                         {

@@ -26,7 +26,7 @@
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
       '/property', {:class => 'wide', :id => 'propertyForm'}) do %>
       <div id="ace-editor"></div>
-      <%= text_area_tag 'properties[' + @property_key + ']', h(@property), :style => 'display: none', :id => 'preText' %>
+      <%= text_area_tag 'properties[' + @property_key + ']', @property, :style => 'display: none', :id => 'preText' %>
       <input type="submit" value="Save" id="saveButton"/>
       <div class="flash notice hide saveMessage">Configuration Saved</div>
     <%- end -%>
@@ -74,7 +74,7 @@
 
           if (!$.isBlank($.trim(bespinVal)) || confirm('Do you want to clear this field?'))
           {
-              $form.find('textarea').val(isJson ? bespinVal : JSON.stringify(bespinVal));
+              $form.find('textarea').val(bespinVal);
           }
       };
 

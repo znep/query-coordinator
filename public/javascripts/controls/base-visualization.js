@@ -245,11 +245,19 @@
             {
                 var handleChange = function(forceRowReload)
                 {
-                    if (vizObj._obsolete) { return; }
+                    if (vizObj._obsolete || vizObj._doingReload) { return; }
                     if (forceRowReload === true)
                     { vizObj._requireRowReload = true; }
                     if (!vizObj._initialLoad)
-                    { _.defer(function() { vizObj.reload(); }); }
+                    {
+                        // Skip another changes this same render cycle
+                        vizObj._doingReload = true;
+                        _.defer(function()
+                        {
+                            delete vizObj._doingReload;
+                            vizObj.reload();
+                        });
+                    }
                 };
                 var handleRowChange = function(rows, fullReset)
                 {

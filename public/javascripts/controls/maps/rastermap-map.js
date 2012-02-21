@@ -55,6 +55,7 @@
             if (!viewConfig._idList) { viewConfig._idList = {}; }
             viewConfig._idList[dupKey] = true;
 
+            viewConfig._rowsChanged = true;
             var lonlat = new OpenLayers.LonLat(geometry.longitude, geometry.latitude).transform(
                 geographicProjection, mapObj.map.getProjectionObject());
             viewConfig._dataStore.push(lonlat);
@@ -103,6 +104,7 @@
                 viewConfig._bounds.extend(new OpenLayers.LonLat(lon, lat));
             });
 
+            viewConfig._rowsChanged = true;
             return true;
         },
 
@@ -112,7 +114,11 @@
             mapObj._super();
 
             _.each(mapObj._byView, function(viewConfig)
-            { viewConfig._heatmapLayer.setDataSet({ max: 50, data: viewConfig._dataStore }); });
+            {
+                if (viewConfig._rowsChanged)
+                { viewConfig._heatmapLayer.setDataSet({ max: 50, data: viewConfig._dataStore }); }
+                viewConfig._rowsChanged = false;
+            });
         },
 
         adjustBounds: function()

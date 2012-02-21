@@ -596,10 +596,10 @@ $(function()
     // downloads
     $('.widgetContent_downloads').append(
         $.renderTemplate(
-            'downloadsTable',
-            { downloadTypes: $.templates.downloadsTable.downloadTypes,
+            'downloadsSectionContent',
+            { downloadTypes: $.templates.downloadsTable.downloadTypes.normal,
               view: blist.dataset },
-            $.templates.downloadsTable.directive));
+            $.templates.downloadsTable.directive.normal));
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
     $.live('.feed .commentActions a, .feedNewCommentButton', 'click', function(event)

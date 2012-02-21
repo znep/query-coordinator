@@ -329,12 +329,6 @@
 
             vizObj.$dom().siblings('#vizError').hide().text('');
 
-            if (!vizObj._requireRowReload && vizObj.noReload())
-            {
-                vizObj.reloadSpecialCases();
-                return;
-            }
-
             if (vizObj._updatingViewport)
             {
                 vizObj.getDataForAllViews();
@@ -376,17 +370,6 @@
         reset: function()
         {
             // Implement how to do a full reset
-        },
-
-        noReload: function()
-        {
-            // Override if you need to whitelist against reloading
-            return false;
-        },
-
-        reloadSpecialCases: function()
-        {
-            // Implement if noReload will be true, but things still need to happen
         },
 
         needsFullReset: function()

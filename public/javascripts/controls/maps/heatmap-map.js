@@ -168,6 +168,7 @@
             _.each((mapObj._featureSet || {}).features || [], function(feature)
             {
                 delete feature.attributes.description;
+                delete feature.attributes.quantities;
                 delete feature.attributes.quantity;
                 delete feature.attributes.redirect_to;
             });
@@ -324,13 +325,13 @@
             });
             feature.attributes.rows[ind] = row;
 
-            feature.attributes.quantity =
-                $.makeArray(feature.attributes.quantity);
+            feature.attributes.quantities = $.makeArray(feature.attributes.quantities);
 
+            // Maintain as strings for precision calcs later.
             if (config.aggregateMethod == 'sum' && !row.invalid[viewConfig._quantityCol.id])
-            { feature.attributes.quantity[ind] = row[viewConfig._quantityCol.id]; }
+            { feature.attributes.quantities[ind] = row[viewConfig._quantityCol.id]; }
             if (config.aggregateMethod == 'count')
-            { feature.attributes.quantity[ind] = '1'; }
+            { feature.attributes.quantities[ind] = '1'; }
 
             var redirectTarget;
             if (viewConfig._redirectCol)
@@ -365,18 +366,15 @@
         // Converts array to value if array; otherwise, just returns value.
         var getValue = function(e)
         {
-            if (!e.attributes.quantity)
+            if (_.isEmpty(e.attributes.quantities))
             { return null; }
 
-            if (!_.isArray(e.attributes.quantity))
-            { return parseFloat(e.attributes.quantity); }
-
-            e.attributes.quantity = _.compact(e.attributes.quantity);
+            e.attributes.quantities = _.compact(e.attributes.quantities);
 
             // aggregateMethod count just sums up 1s.
             var quantityPrecision = 0;
             e.attributes.quantity = _.reduce(
-                e.attributes.quantity, function(m, v)
+                e.attributes.quantities, function(m, v)
                 {
                     var precision = v.indexOf('.') > -1
                                     ? v.length-v.lastIndexOf('.')-1 : 0;

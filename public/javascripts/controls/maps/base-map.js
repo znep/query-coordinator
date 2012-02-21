@@ -433,24 +433,6 @@
             { setTimeout(this._primaryView.takeSnapshot, 3000); }
         },
 
-        noReload: function()
-        {
-            var mapObj = this;
-            var oldDF = $.extend({}, mapObj._origData.displayFormat);
-            var newDF = $.extend({}, mapObj._displayFormat);
-            _.each(['viewport'], function(property)
-            { delete oldDF[property]; delete newDF[property]; });
-
-            return _.isEqual(oldDF, newDF);
-        },
-
-        reloadSpecialCases: function()
-        {
-            var mapObj = this;
-            if (!_.isEqual(mapObj._origData.displayFormat.viewport, mapObj._displayFormat.viewport))
-            { mapObj.setViewport(mapObj._displayFormat.viewport); }
-        },
-
         reset: function()
         {
             var mapObj = this;

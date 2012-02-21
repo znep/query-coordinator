@@ -502,7 +502,7 @@ module Canvas2
       col_map.each {|id, fieldName| resolutions[fieldName] = row[id]}
 
       child_props = string_substitute(@properties['childProperties'], resolutions)
-      copy = create_copy({}.deep_merge(child_props.is_a?(Hash) ? child_props : {}).deep_merge(@clone_props),
+      copy = create_copy({}.deep_merge(@clone_props).deep_merge(child_props.is_a?(Hash) ? child_props : {}),
                          self.id + '-' + index.to_s + '-')
       copy['childContextId'] = row[:id]
       c = CanvasWidget.from_config(copy, self, resolutions)

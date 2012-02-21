@@ -1270,7 +1270,7 @@
     {
         var renderer = row.invalid[col.lookup] ? blist.datatypes.invalid.renderer :
             col.renderType.renderer;
-        return renderer(row[col.lookup], col, true, false, true);
+        return renderer(row[col.lookup], col, true, false, {}, true);
     };
 
     var isDateTime = function(chartObj)

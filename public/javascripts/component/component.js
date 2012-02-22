@@ -240,6 +240,17 @@
             return $.stringSubstitute(obj, resolver || this._propertyResolver());
         },
 
+        _evalIf: function(ifValue)
+        {
+            var cObj = this;
+            return _.all($.makeArray(ifValue), function(v)
+            {
+                var r = !$.isBlank(cObj._stringSubstitute('{' + (v.key || v) + ' ||}'));
+                if (v.negate) { r = !r; }
+                return r;
+            });
+        },
+
         /**
          * Indicate what key in the component's properties holds the 'value'
          * Used for setting the initial value based on string resolving
@@ -411,11 +422,13 @@
                 return false;
             }
 
-            if (cObj._properties.requiresContext || !$.isBlank(cObj._properties.htmlClass))
+            if (cObj._properties.requiresContext || cObj._properties.ifValue ||
+                    !$.isBlank(cObj._properties.htmlClass))
             {
                 var finishedDCGet = function()
                 {
-                    if (cObj._properties.requiresContext && $.isBlank(cObj._dataContext))
+                    if (cObj._properties.requiresContext && $.isBlank(cObj._dataContext) ||
+                            cObj._properties.ifValue && !cObj._evalIf(cObj._properties.ifValue))
                     { cObj.properties({hidden: true}); }
 
                     var comp = $.makeArray(cObj._properties.htmlClass).join(' ');

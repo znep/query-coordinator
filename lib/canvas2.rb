@@ -330,13 +330,23 @@ module Canvas2
       Util.string_substitute(text, special_resolver || resolver)
     end
 
+    def eval_if(if_value)
+      [if_value].flatten.all? do |v|
+        r = !string_substitute('{' + (v['key'] || v) + ' ||}').blank?
+        r = !r if v['negate']
+        r
+      end
+    end
+
     def render
       c, fully_rendered = render_contents
       html_class = string_substitute(@properties['htmlClass'].is_a?(Array) ?
                                      @properties['htmlClass'].join(' ') : @properties['htmlClass'])
+      is_hidden = @properties['hidden'] || @properties['requiresContext'] && context.blank? ||
+        @properties['ifValue'] && !eval_if(@properties['ifValue'])
       t = '<div class="socrata-component component-' + @properties['type'] + ' ' +
-        (@properties['customClass'] || '') + (@needs_own_context ? '' : (' ' + html_class)) +
-        (fully_rendered ? ' serverRendered' : '') +
+        (is_hidden ? ' hide' : '') + (@properties['customClass'] || '') +
+        (@needs_own_context ? '' : (' ' + html_class)) + (fully_rendered ? ' serverRendered' : '') +
         '" id="' + self.id + '">'
       t += '<div class="content-wrapper ' + html_class + '">' if @needs_own_context
       t += c

@@ -954,7 +954,10 @@
 
             var graphic = mapObj.renderGeometry(geoType, geometry, rowKey, details);
             if (viewConfig._animation)
-            { viewConfig._animation.news.push(graphic); }
+            {
+                viewConfig._animation.news.push(graphic);
+                viewConfig._animation.olds = _.without(viewConfig._animation.olds, graphic);
+            }
 
             return graphic;
         },

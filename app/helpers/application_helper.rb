@@ -115,13 +115,13 @@ module ApplicationHelper
   end
 
   DEFAULT_TRANSLATIONS = [ LocalePart.core ]
-  def needs_translation(part)
-    (@required_translation_parts ||= Set.new(DEFAULT_TRANSLATIONS)) << part
-  end
-
-  def render_translations
-    content_tag :div, :id => 'translations', :'data-locale' => I18n.locale do
-      LocaleCache.render_translations(@required_translation_parts || DEFAULT_TRANSLATIONS).to_json
+  def render_translations(part = nil)
+    @rendered_translations ||= Set.new()
+    to_render = [part].concat(DEFAULT_TRANSLATIONS).compact.reject {|t| @rendered_translations.include?(t)}
+    return '' if to_render.empty?
+    @rendered_translations = @rendered_translations.merge(to_render)
+    content_tag :div, :class => 'translations', :'data-locale' => I18n.locale do
+      LocaleCache.render_translations(to_render).to_json
     end
   end
 

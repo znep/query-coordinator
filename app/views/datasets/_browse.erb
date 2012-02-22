@@ -1,5 +1,3 @@
-<%- needs_translation LocalePart.controls.browse -%>
-
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'browse-control' %>
 <% end %>
@@ -503,6 +501,8 @@
 </div>
 <%= render :partial => 'browse/row_search_templates' %>
 <% end %>
+
+<%= render_translations LocalePart.controls.browse %>
 
 <% content_for :js_footer do %>
   <script type='text/javascript'>

@@ -776,7 +776,7 @@
 
                     var $container = $(chartObj.currentDom);
                     var position;
-                    position = { 'top': handle[1] + 10, 'left': event.clientX };
+                    position = { 'top': handle[1] + 10, 'left': event.clientX - $container.offset().left };
 
                     if (!hasSVG) { position.top += 10; }
 

@@ -3,7 +3,7 @@ class Page < SodaModel
     if full
       Canvas2::Util.set_path(path)
       return if !Canvas2::DataContext.load(data)
-      [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render}.join('')
+      [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render[0]}.join('')
     else
       '<div id="' + content['id'] + '"></div>'
     end

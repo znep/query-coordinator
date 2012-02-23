@@ -169,7 +169,7 @@ class UserSession
   # the core server. On success, the core server returns a JSON payload
   # representing the logged-in user; we can use this to instantiate the User
   # model object w/o making a separate request.
-  def save(&block)
+  def save(wants_response = false)
     result = false
     response = post_core_authentication
     if response.is_a?(Net::HTTPSuccess)
@@ -191,7 +191,7 @@ class UserSession
     end
 
     yield result if result && block_given?
-    result
+    return wants_response ? response : result
   end
 
   def destroy

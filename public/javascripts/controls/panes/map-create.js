@@ -121,20 +121,7 @@
                 view.displayFormat.heatmap.cache_url = cpObj._view.displayFormat.heatmap.cache_url;
             }
 
-            if (view.displayFormat.type == cpObj._view.displayFormat.type)
-            { view.displayFormat.viewport = cpObj._view.displayFormat.viewport; }
-            else if (cpObj._view.displayFormat.type == 'bing')
-            {
-                blist.datasetControls.showSaveViewDialog(!cpObj._view.isDefault() && isEdit(cpObj) ?
-                    'reloadUpdateDialog' : 'reloadSaveDialog', null, null,
-                    function()
-                    {
-                        cpObj._finishProcessing();
-                        cpObj.reset();
-                        if (_.isFunction(finalCallback)) { finalCallback(); }
-                    }, view);
-                return;
-            }
+            view.displayFormat.viewport = cpObj._view.displayFormat.viewport;
 
             cpObj._view.update(view);
 

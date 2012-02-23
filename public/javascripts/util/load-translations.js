@@ -1,8 +1,6 @@
 ;(function($)
 {
-    var $translations = $('div.translations');
-    blist.translations = {};
-    $translations.each(function()
-    { $.extend(blist.translations, JSON.parse($(this).html())); });
+    var $translations = $('#translations');
+    blist.translations = JSON.parse($translations.html());
     blist.locale = $translations.attr('data-locale');
 })(jQuery);

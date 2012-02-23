@@ -317,7 +317,9 @@
                         }
                         else
                         {
-                            onFeatureSelect(mapObj, feature, function(evt)
+                            var lonlat = layer.getLonLatFromViewPortPx(
+                                mapObj.map.events.getMousePosition(evt));
+                            onFeatureSelect(mapObj, feature, lonlat, function(evt)
                                 {
                                     if (!feature.layer)
                                     { feature = mapObj._markers[feature.attributes.dupKey]; }
@@ -1953,7 +1955,7 @@
         }
     };
 
-    var onFeatureSelect = function(mapObj, feature, closeBoxCallback)
+    var onFeatureSelect = function(mapObj, feature, lonlat, closeBoxCallback)
     {
         if ((feature.attributes || {}).redirects_to)
         { window.open(feature.attributes.redirects_to); return; }
@@ -1970,8 +1972,7 @@
         if (!feature.attributes.flyout)
         { return null; }
 
-        mapObj.showPopup(feature.geometry.getBounds().getCenterLonLat(),
-                         feature.attributes.flyout[0].innerHTML,
+        mapObj.showPopup(lonlat, feature.attributes.flyout[0].innerHTML,
                          { closeBoxCallback: closeBoxCallback });
     };
 

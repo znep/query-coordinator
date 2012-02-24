@@ -713,6 +713,10 @@ class View < Model
       !metadata.data['custom_fields']['Basic']['Source'].blank?
   end
 
+  def is_immutable?
+    is_blobby? || is_geo?
+  end
+
   def can_email?
     is_tabular?
   end

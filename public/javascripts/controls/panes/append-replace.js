@@ -2,7 +2,9 @@
 {
     $.Control.extend('pane_appendReplace', {
         getTitle: function()
-        { return 'Append and Replace'; },
+        {
+            return (blist.dataset.isImmutable() ? '' : 'Append and ') + 'Replace';
+        },
 
 
         getSubtitle: function()

@@ -9,7 +9,7 @@
 
 <div class="contentBox fixedWidth">
   <form class="appendReplaceForm">
-    <h1>Append and Replace data</h1>
+    <h1><%= "Append and " unless @view.is_immutable? %>Replace data</h1>
 
     <%= display_standard_flashes %>
 

@@ -192,7 +192,12 @@ var Dataset = ServerModel.extend({
 
     isGeoDataset: function()
     {
-        return (this.metadata && this.metadata.custom_fields && this.metadata.custom_fields.geo);
+        return (this.metadata && this.metadata.geo);
+    },
+
+    isBlobby: function()
+    {
+        return (this.type == 'blob');
     },
 
     isPublished: function()
@@ -208,6 +213,11 @@ var Dataset = ServerModel.extend({
     isSnapshot: function()
     {
         return this.publicationStage == 'snapshotted';
+    },
+
+    isImmutable: function()
+    {
+        return (this.isBlobby() || this.isGeoDataset());
     },
 
     renderWithArcGISServer: function()
@@ -293,7 +303,7 @@ var Dataset = ServerModel.extend({
     reload: function(successCallback, errorCallback)
     {
         var ds = this;
-        if (ds.type == 'blob')
+        if (ds.isBlobby())
         {
             ds.trigger('blob_change');
             return;
@@ -501,7 +511,7 @@ var Dataset = ServerModel.extend({
                  'ymax': 'max_lat'}, function(new_prop, old_prop)
         { params[new_prop] = viewport[old_prop] });
 
-        params['target_node_clusters'] = 50;
+        params['target_node_clusters'] = 250;
         params['min_distance_between_clusters'] = minDistance;
         if (!params['min_distance_between_clusters'])
         {
@@ -537,6 +547,7 @@ var Dataset = ServerModel.extend({
 
         var useInline = ds.isDefault()
                         || $.subKeyDefined(ds, 'query.filterCondition')
+                        || ds.cleanFilters()
                         || !$.isBlank(ds.searchString)
                         || (!$.isBlank(displayFormat) && !_.isEqual(displayFormat, ds.displayFormat));
 
@@ -898,7 +909,7 @@ var Dataset = ServerModel.extend({
         this.trigger('row_change', [[parRow || row]]);
     },
 
-    saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback)
+    saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback, useBatch)
     {
         var ds = this;
         var parCol;
@@ -934,7 +945,7 @@ var Dataset = ServerModel.extend({
         }
 
         ds._pendingRowEdits[key] = [];
-        ds._serverSaveRow(reqObj);
+        ds._serverSaveRow(reqObj, useBatch);
     },
 
     removeRows: function(rowIds, parRowId, parColId,
@@ -1191,6 +1202,10 @@ var Dataset = ServerModel.extend({
 
     downloadUrl: function(type)
     {
+        if (this.isGeoDataset())
+        {
+            return this.metadata.geo.owsUrl + '?method=export&format=' + type;
+        }
         return '/api/views/' + this.id + '/rows.' + type.toLowerCase() + '?accessType=DOWNLOAD';
     },
 
@@ -1430,6 +1445,46 @@ var Dataset = ServerModel.extend({
         else { callback(ds._relatedViews); }
     },
 
+    getViewForDisplay: function(type, callback)
+    {
+        // in most cases, it's just the dataset
+        var vft = this._childViewsForType(type);
+        if (!vft)
+        {
+            callback(this);
+            return;
+        }
+
+        // figure out which underlying view to show
+        var typeDisplay = $.deepGet(true, this, 'metadata',
+                'renderTypeConfig', 'active', type);
+        if (!typeDisplay.id)
+        { typeDisplay.id = vft[0]; }
+
+        this._getChildView(typeDisplay.id, callback);
+    },
+
+    getChildOptionsForType: function(type, callback)
+    {
+        var ds = this;
+        var children = ds._childViewsForType(type);
+        if (!children)
+        { callback([ds]); }
+        else
+        {
+            var options = [];
+            _.each(children, function(childUid) {
+                ds._getChildView(childUid, function(child) {
+                    options.push(child);
+                }, true);
+            });
+            ds.sendBatch(function() {
+                // success
+                callback(options);
+            });
+        }
+    },
+
     redirectTo: function(urlparams)
     {
         var qs = '';
@@ -1627,9 +1682,9 @@ var Dataset = ServerModel.extend({
                 success: function(r)
                 {
                     delete ds.copyPending;
-                    var uc = new Dataset(r);
+                    ds._unpublishedView = new Dataset(r);
                     if (_.isFunction(successCallback))
-                    { successCallback(uc); }
+                    { successCallback(ds._unpublishedView); }
                 }});
         }
         else
@@ -1743,6 +1798,16 @@ var Dataset = ServerModel.extend({
         {
             callback(_.select(ds._snapshotViews, function(v) { return v.isDefault(); }));
         }
+    },
+
+    getOperationStatuses: function(callback)
+    {
+        var ds = this;
+        ds.makeRequest({
+            url: '/views/' + ds.id,
+            params: {method: 'operationStatuses'},
+            success: callback
+        });
     },
 
     cleanFilters: function(excludeTemporary)
@@ -1922,6 +1987,46 @@ var Dataset = ServerModel.extend({
         ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
     },
 
+    _getChildView: function(uid, callback, isBatch)
+    {
+        if (!this.childViews)
+        { throw "No such child view"; }
+
+        this._childViews || (this._childViews = {});
+        if (!this._childViews[uid])
+        {
+            var self = this;
+            Dataset.createFromViewId(uid, function(ds) {
+                self._childViews[uid] = ds;
+                callback(ds);
+            }, undefined, isBatch);
+        }
+        else
+        {
+            callback(this._childViews[uid]);
+        }
+    },
+
+    _childViewsForType: function(type)
+    {
+        // for now, geo (atlas) datasets are the only kind with
+        // (possibly) multiple underlying tables
+        if (!this.isGeoDataset())
+        { return false; }
+
+        // but if we're displaying it as a map, there's only one
+        // map to show
+        if (type == 'map')
+        { return false; }
+
+        // we can only switch if they're trying to display a tabular-ish
+        // grid thing
+        if (!_.include(['table', 'fatrow', 'page'], type))
+        { return false; }
+
+        return this.childViews;
+    },
+
     _update: function(newDS, forceFull, updateColOrder, masterUpdate)
     {
         var ds = this;
@@ -2035,10 +2140,10 @@ var Dataset = ServerModel.extend({
                 !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { delete ds.totalRows; }
-            ds.trigger('query_change');
             ds._aggregatesStale = true;
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
+            ds.trigger('query_change');
         }
         else if (!_.isEqual(oldCondFmt, ds.metadata.conditionalFormatting))
         {
@@ -2188,6 +2293,8 @@ var Dataset = ServerModel.extend({
         // Tell pending requests they are being cancelled
         _.each(pending, function(p)
             { if (_.isFunction(p.errorCallback)) { p.errorCallback({cancelled: true}); } });
+        delete this._curMetaReq;
+        delete this._curMetaReqMeta;
         this._rowIDLookup = {};
         _.each(this.columns || [], function(c) { c.invalidateData(); });
         this.trigger('row_change', [invRows, true]);
@@ -3275,7 +3382,7 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
-Dataset.createFromViewId = function(id, successCallback, errorCallback)
+Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch)
 {
     var cachedView = blist.viewCache[id];
     if (!_.isUndefined(cachedView))
@@ -3296,7 +3403,7 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback)
     }
     else
     {
-        $.Tache.Get({
+        $.socrataServer.makeRequest({
             url: '/api/views/' + id + '.json',
             success: function(view)
                 {
@@ -3305,6 +3412,8 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback)
                     if(_.isFunction(successCallback))
                     { successCallback(ds); }
                 },
+            batch: isBatch,
+            pageCache: !isBatch,
             error: errorCallback});
     }
 };

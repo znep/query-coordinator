@@ -9,7 +9,7 @@
 
     util.isBlank = function(obj)
     {
-        return (obj === null) || (obj === undefined);
+        return (obj === null) || (obj === undefined) || (obj === '');
     };
 
     util.makeArray = function(obj)
@@ -238,6 +238,8 @@
         Get: util.makeRequest
     };
     util.ajax = util.makeRequest;
+
+    util.t = function() { };
 
     module.exports = util;
 

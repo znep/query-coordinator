@@ -899,7 +899,7 @@ var Dataset = ServerModel.extend({
         this.trigger('row_change', [[parRow || row]]);
     },
 
-    saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback)
+    saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback, useBatch)
     {
         var ds = this;
         var parCol;
@@ -935,7 +935,7 @@ var Dataset = ServerModel.extend({
         }
 
         ds._pendingRowEdits[key] = [];
-        ds._serverSaveRow(reqObj);
+        ds._serverSaveRow(reqObj, useBatch);
     },
 
     removeRows: function(rowIds, parRowId, parColId,

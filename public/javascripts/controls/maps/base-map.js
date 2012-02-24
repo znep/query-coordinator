@@ -1611,28 +1611,6 @@
                     return;
                 }
 
-/*
-                if (_.all(data, function(cluster) { return cluster.leafNode; }))
-                {
-                    if (_.isUndefined(viewConfig._unclusterLevel))
-                    { viewConfig._unclusterLevel = mapObj.currentZoom(); }
-                    else if (viewConfig._unclusterLevel < mapObj.currentZoom())
-                    {
-                        viewConfig._renderType = 'points';
-                        var rowIds = _.flatten(_.pluck(data, 'points'));
-                        var callback = _.after(Math.floor(rowIds.length / 100),
-                            function(data) { mapObj.handleRowsLoaded(view._rowIDLookup, view); });
-                        view.getRowsByIds(rowIds, callback, function()
-                        {
-                            // On error clear these variables so more requests will be triggered
-                            delete mapObj._initialLoad;
-                        });
-                    }
-                }
-                else
-                { delete viewConfig._unclusterLevel; }
-*/
-
                 mapObj.initializeAnimation(data, view);
 
                 if (viewConfig._renderType == 'clusters')

@@ -29,7 +29,7 @@ class CurrentDomainMiddleware
       current_domain = CurrentDomain.set(host)
 
       # Check every n minutes if the current domain needs to be refreshed
-      if !Rails.env.development? && CurrentDomain.needs_refresh_check?(host)
+      if CurrentDomain.needs_refresh_check?(host)
         logger.debug("Checking memcache to see if domain '#{host}' needs update")
         CurrentDomain.check_for_theme_update(host)
         CurrentDomain.flag_refresh_checked!(host)

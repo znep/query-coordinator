@@ -187,36 +187,26 @@ module ApplicationHelper
 # DATE HELPERS
 
   def blist_date(time, no_html = false)
-    r = nil
-    if time && time != 0
-      r = no_html ? '' :
-        '<span class="dateReplace" data-dateFormat="date" data-rawDateTime="' + time.to_s + '">'
-      r += Time.at(time).strftime("%b %d, %Y")
-      r += '</span>' if !no_html
-    end
-    return r.html_safe
+    date_span(time, 'date', '%b %d, %Y', no_html)
   end
 
   def blist_date_time(time, no_html = false)
-    r = nil
-    if time && time != 0
-      r = no_html ? '' :
-        '<span class="dateReplace" data-dateFormat="date_time" data-rawDateTime="' + time.to_s + '">'
-      r += Time.at(time).strftime("%b %d, %Y %I:%M%P")
-      r += '</span>' if !no_html
-    end
-    return r.html_safe
+    date_span(time, 'date_time', '%b %d, %Y %I:%M%P', no_html)
   end
 
   def blist_long_date(time, no_html = false)
+    date_span(time, 'long_date', '%B %d, %Y', no_html)
+  end
+
+  def date_span(time, date_format, format_string, no_html)
     r = nil
     if time && time != 0
       r = no_html ? '' :
-        '<span class="dateReplace" data-dateFormat="long_date" data-rawDateTime="' + time.to_s + '">'
-      r += Time.at(time).strftime("%B %d, %Y")
-      r += '</span>' if !no_html
+        "<span class=\"dateReplace\" data-dateFormat=\"#{date_format}\" data-rawDateTime=\"#{time.to_s}\">"
+      r << Time.at(time).strftime(format_string)
+      r << '</span>' if !no_html
     end
-    return r.html_safe
+    return r.html_safe if r
   end
 
   def friendly_relative_time(time_str)

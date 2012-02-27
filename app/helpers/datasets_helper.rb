@@ -93,10 +93,12 @@ module DatasetsHelper
       ret = value.strftime('%c')
 
     when 'drop_down_list', 'picklist', 'dataset_link'
-      column.dropDown.values.each do |option|
-      if option['id'] == cell
-        ret = h(option['description'])
-      end
+      if column.dropDown
+        column.dropDown.values.each do |option|
+          if option['id'] == cell
+            ret = h(option['description'])
+          end
+        end
       end
 
     when 'document', 'document_obsolete'
@@ -152,7 +154,7 @@ module DatasetsHelper
       ret = h(cell.to_s)
     end
 
-    ret.html_safe
+    ret.html_safe if ret
   end
 
   # include only url and text column types.

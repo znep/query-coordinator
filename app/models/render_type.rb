@@ -127,7 +127,7 @@ class RenderType
 
       lat = cell['latitude']
       long = cell['longitude']
-      pieces << '(' + (lat || '') + '&deg;, ' + (long || '') + '&deg;)' if !lat.blank? || !long.blank?
+      pieces << '(' + (lat || '').to_s + '&deg;, ' + (long || '').to_s + '&deg;)' if !lat.blank? || !long.blank?
 
       ret = pieces.compact.join('<br />')
 
@@ -145,52 +145,54 @@ class RenderType
   end
 
   def self.table_html(t_id, vis_cols, rows, ds, page_adjust = 0, aggregates = nil)
+    return unless vis_cols
     t = '<table class="dataTable" id="' + t_id + '"><thead><tr>'
-    t += '<th scope="col" id="' + t_id + '_header_row_number" class="rowNumber">Row number</th>'
+    t << '<th scope="col" id="' + t_id + '_header_row_number" class="rowNumber">Row number</th>'
     vis_cols.each do |column|
-      t += '<th scope="col" id="' + t_id + '_header_' + column.fieldName + '" class="' +
+      t << '<th scope="col" id="' + t_id + '_header_' + column.fieldName + '" class="' +
         column.dataTypeName + '"' +
         (column.is_nested_table ? ' colspan="' + (column.viewable_children.length + 1).to_s + '"' : '') +
         '>' + CGI.escapeHTML(column.name) + '</th>'
     end
-    t += '</tr></thead><tbody>'
+    t << '</tr></thead><tbody>'
     rows.each_with_index do |r, i|
-      t += '<tr class="' + (i % 2 == 0 ? 'odd' : 'even') + '">'
+      t << '<tr class="' + (i % 2 == 0 ? 'odd' : 'even') + '">'
       row_index = i + 1 + page_adjust
-      t += '<th scope="row" header="' + t_id + '_header_row_number" class="row_number">' +
+      t << '<th scope="row" header="' + t_id + '_header_row_number" class="row_number">' +
         row_index.to_s + '</th>'
       vis_cols.each do |column|
-        t += '<td header="' + t_id + '_header_' + column.fieldName +
+        t << '<td header="' + t_id + '_header_' + column.fieldName +
           '" class="type_' + column.client_type + '"' +
           (column.is_nested_table ? ' colspan="' +
            (column.viewable_children.length + 1).to_s + '"' : '') + '>'
         cell = r[column.id.to_s]
-        t += column.render_type.cell_html(cell, column, ds, {parent_id: t_id, row_index: row_index})
-        t += '</td>'
+        t << column.render_type.cell_html(cell, column, ds, {parent_id: t_id, row_index: row_index})
+        t << '</td>'
       end
-      t += '</tr>'
+      t << '</tr>'
     end
-    t += '</tbody>'
+    t << '</tbody>'
     unless aggregates.nil? or aggregates.none?
-      t += '<tfoot><tr>'
-      t += footer_html(aggregates, vis_cols)
-      t += '</tr></tfoot>'
+      t << '<tfoot><tr>'
+      t << footer_html(aggregates, vis_cols)
+      t << '</tr></tfoot>'
       end
-    t += '</table>'
+    t << '</table>'
   end
 
   def self.footer_html(aggregates, vis_cols, skip_title = false)
+    return unless vis_cols
     t = '<th>'
-    t += 'Totals' if !skip_title
-    t += '</th>'
+    t << 'Totals' if !skip_title
+    t << '</th>'
     vis_cols.each do |column|
       if column.is_nested_table
-        t += footer_html(aggregates, column.viewable_children, true)
+        t << footer_html(aggregates, column.viewable_children, true)
       else
-        t += '<th>'
+        t << '<th>'
         agg = aggregates.find{|aggregate| aggregate['columnId'] == column.id}
-        t += CGI.escapeHTML(agg['value'].to_s) if !agg.nil?
-        t += '</th>'
+        t << CGI.escapeHTML(agg['value'].to_s) if !agg.nil?
+        t << '</th>'
       end
     end
     t

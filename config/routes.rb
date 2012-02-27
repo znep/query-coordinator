@@ -120,6 +120,8 @@ Frontend::Application.routes do
 
   scope :controller => 'profile', :path => '/profile',
         :constraints => {:id => UID_REGEXP, :profile_name => /(\w|-)+/} do
+    get ':profile_name/:id/create_friend', :action => 'create_friend'
+    get ':profile_name/:id/delete_friend', :action => 'delete_friend'
     # Profile SEO urls (only add here if the action has a view with it;
     # otherwise just add to the :member key in the profile resource above.)
     get ':profile_name/:id', :action => 'show'
@@ -135,11 +137,12 @@ Frontend::Application.routes do
     get 'account', :action => 'edit_account'
   end
 
-  resources :profile, :member => {
-    :create_friend => :get,
-    :delete_friend => :get
-    # :update_account => :put has been moved to the https block below, because it sends a password in cleartext.
-  }, :only => :index
+  resources :profile do
+    member do
+      get :create_friend
+      get :delete_friend
+    end
+  end
 
   scope :controller => 'widgets', :constraints => {:id => UID_REGEXP} do
     get 'widgets/:id/:customization_id', :action => 'show'

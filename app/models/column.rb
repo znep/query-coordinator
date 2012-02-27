@@ -299,9 +299,13 @@ class Column < Model
 
   def viewable_children
     if @view_children.nil?
-      @view_children = childColumns.each_with_index {|c, i| c.data_position = i}.
-        select {|c| !c.flag?('hidden') && c.dataTypeName != 'meta_data'}.
-        sort_by {|c| c.position}
+      if childColumns
+        @view_children = childColumns.each_with_index {|c, i| c.data_position = i}.
+          select {|c| !c.flag?('hidden') && c.dataTypeName != 'meta_data'}.
+          sort_by {|c| c.position}
+      else
+        @view_children = []
+      end
     end
     return @view_children
   end

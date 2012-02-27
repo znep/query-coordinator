@@ -23,12 +23,12 @@
       </a>
     <%- elsif !current_user.nil? -%>
       <%- if !(@user.my_friend?) -%>
-        <a href="<%= create_friend_profile_path %>" class="followButton button smallButton add">
+        <a href="<%= url_for(:action => 'create_friend') %>" class="followButton button smallButton add">
           <span class="icon"></span>
           <span class="linkText">Follow</span>
         </a>
       <%- else -%>
-        <a href="<%= delete_friend_profile_path %>" class="followButton button smallButton remove">
+        <a href="<%= url_for(:action => 'delete_friend') %>" class="followButton button smallButton remove">
           <span class="icon"></span>
           <span class="linkText">Unfollow</span>
         </a>

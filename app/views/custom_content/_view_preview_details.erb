@@ -79,8 +79,7 @@
       <div class="tags">
         <%= raw field.text || 'Tags:' %>
         <%- if widget.view.tags.is_a? Array -%>
-          <%= raw(widget.view.tags.map{ |tag| link_to h(tag), { :controller => 'browse',
-              :action => 'show', :tags => h(tag) } }.join(field.separator || ', ')) %>
+          <%= raw(widget.view.tags.map{ |tag| link_to h(tag), browse_path(:tags => h(tag)) }.join(field.separator || ', ')) %>
         <%- else -%>
           (none)
         <%- end -%>

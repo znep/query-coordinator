@@ -23,10 +23,35 @@
             OpenLayers.Control.prototype.initialize.apply(this, arguments);
         },
 
+        setMap: function()
+        {
+            OpenLayers.Control.prototype.setMap.apply(this, arguments);
+
+            this.map.events.on({
+                scope: this,
+                'changebaselayer': this.redraw
+            });
+        },
+
         destroy: function()
         {
             $(this.map.div).siblings('#mapTypes').empty();
+            this.map.events.un({ 'changebaselayer': this.redraw });
             OpenLayers.Control.prototype.destroy.apply(this, arguments);
+        },
+
+        redraw: function(evtObj)
+        {
+            var _this = this;
+            if (evtObj)
+            {
+                _.each(this.layers, function(layer, maptype)
+                {
+                    if (evtObj.layer == layer)
+                    { _this.currentMapType = maptype; }
+                });
+            }
+            this.draw();
         },
 
         draw: function(px)
@@ -54,15 +79,8 @@
         registerMapType: function(maptype, layer)
         {
             this.layers[maptype] = layer;
-            if (_.size(this.layers) == 1) { this.currentMapType = maptype; }
-            this.draw();
+            this.redraw();
             return this;
-        },
-
-        setCurrentMapType: function(maptype)
-        {
-            this.currentMapType = maptype;
-            this.draw();
         },
 
         switchMapType: function(maptype)
@@ -72,8 +90,6 @@
             { this.map.addLayers([this.layers[maptype]]); }
             this.events.triggerEvent('maptypechange');
             this.map.setBaseLayer(this.layers[maptype]);
-            this.currentMapType = maptype;
-            this.draw();
         },
 
         CLASS_NAME: 'blist.openLayers.MapTypeSwitcher'
@@ -184,9 +200,16 @@
 
             mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);
 
-            if (mapObj._displayFormat.type == 'bing')
-            { mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0]
-                .zoomStopHeight = 12; }
+            mapObj.map.events.register('changebaselayer', null, function(evtObj)
+            {
+                // This is intended for Bing maps, but may need extension in the future.
+                if (evtObj.layer.numZoomLevels < 21)
+                {
+                    var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
+                    zoombar.zoomStopHeight = 12;
+                    zoombar.redraw();
+                }
+            });
 
             mapObj.initializeBaseLayers();
             mapObj.populateLayers();

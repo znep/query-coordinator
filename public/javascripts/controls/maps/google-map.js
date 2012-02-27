@@ -208,7 +208,6 @@
             mapObj._baseLayers = [new OpenLayers.Layer.Google('Google Roadmap',
                 { isBaseLayer: true })];
             mtSwitcher.registerMapType('Roadmap', mapObj._baseLayers[0]);
-            mtSwitcher.setCurrentMapType('Roadmap');
             mapObj.map.addLayers(mapObj._baseLayers);
         },
 

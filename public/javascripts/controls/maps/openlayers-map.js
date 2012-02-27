@@ -289,8 +289,6 @@
                 mapObj.map.addLayer(layer)
             }
 
-            mtSwitcher.setCurrentMapType('Google');
-
             if (featureProtocol)
             {
                 var selectedVectors = new OpenLayers.Layer.Vector('Selection',

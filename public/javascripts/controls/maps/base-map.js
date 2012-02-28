@@ -202,13 +202,12 @@
 
             mapObj.map.events.register('changebaselayer', null, function(evtObj)
             {
-                // This is intended for Bing maps, but may need extension in the future.
-                if (evtObj.layer.numZoomLevels < 21)
-                {
-                    var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
-                    zoombar.zoomStopHeight = 12;
-                    zoombar.redraw();
-                }
+                var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
+                // Magic number: height that we want the zoombarDiv to be at.
+                // Calculated as zoom_gutter.png (277) minus button heights (21) minus padding (2)
+                // 277 - (2*21) - (2*2) = 231
+                zoombar.zoomStopHeight = 231 / evtObj.layer.numZoomLevels;
+                zoombar.redraw();
             });
 
             mapObj.initializeBaseLayers();

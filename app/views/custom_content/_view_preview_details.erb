@@ -24,7 +24,7 @@
       <%= content_tag((field.tagType || 'span'), HumaneDateHelper.humane_date(widget.view.createdAt), :class => 'updatedAt') %>
     <%- when 'link' -%>
       <%- if field.tagType -%>
-        <%- content_tag(field.tagType) do -%>
+        <%= content_tag(field.tagType) do %>
           <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
         <%- end -%>
       <%- else -%>

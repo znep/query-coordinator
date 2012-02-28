@@ -1,16 +1,11 @@
 (function($)
 {
     $.Control.extend('socrataCalendar', {
-        _init: function()
-        {
-            this._super.apply(this, arguments);
-            // Hack for Oregon; too many meetings
-            this._maxRows = 1000;
-        },
-
         initializeVisualization: function()
         {
             setUpCalendar(this);
+            this._queryInterval = 1;
+            this._autoJump = true;
         },
 
         cleanVisualization: function()
@@ -23,20 +18,24 @@
             delete calObj._startCol;
             delete calObj._endCol;
             delete calObj._titleCol;
-            delete calObj._closestDate;
-        },
 
-        reloadVisualization: function()
-        {
-            var calObj = this;
-            calObj.$dom().fullCalendar('destroy');
-            setUpCalendar(calObj);
+            calObj._autoJump = true;
 
-            calObj._super();
+            cleanEvents(calObj);
         },
 
         resizeHandle: function()
-        { this.$dom().fullCalendar('render'); },
+        {
+            this._ignoreViewChanges = true;
+            this.$dom().fullCalendar('render');
+            delete this._ignoreViewChanges;
+        },
+
+        reset: function()
+        {
+            this._super.apply(this, arguments);
+            this._autoJump = true;
+        },
 
         renderRow: function(row)
         {
@@ -77,41 +76,56 @@
         {
             this._super();
 
-            this.$dom().toggleClass('hide', this._renderedRows < 1);
+            this._ignoreViewChanges = true;
             if (!_.isEmpty(this._events))
             {
-                var today = new Date();
-                var monthStart = today.clone();
-                monthStart.setHours(0);
-                monthStart.setMinutes(0);
-                monthStart.setSeconds(0);
-                monthStart.setMilliseconds(0);
-                monthStart.setDate(1);
+                if (this._autoJump)
+                {
+                    var dates = _.compact(_(this._events).chain()
+                        .map(function(ev)
+                                {
+                                    if (_.isDate(ev)) { return ev; }
+                                    return [_.isString(ev.start) && ev.start !== '' ?
+                                            Date.parse(ev.start) : new Date((ev.start || 0) * 1000),
+                                        _.isString(ev.end) && ev.start !== '' ?
+                                            Date.parse(ev.end) : new Date((ev.end || 0) * 1000)];
+                                })
+                        .flatten().value().concat(this._closestDate));
 
-                var monthEnd = monthStart.clone();
-                monthEnd.setMonth(monthEnd.getMonth() + 1);
+                    // If we've got something in the current view, then just stay where we are
+                    // Only jump if nothing is visible
+                    var calView = this.$dom().fullCalendar('getView');
+                    var startDate = calView.start.clone();
+                    var endDate = calView.end.clone();
+                    if (!_.any(dates, function(d) { return d >= startDate && d < endDate; }))
+                    {
+                        var today = new Date();
+                        var monthStart = today.clone();
+                        monthStart.setHours(0);
+                        monthStart.setMinutes(0);
+                        monthStart.setSeconds(0);
+                        monthStart.setMilliseconds(0);
+                        monthStart.setDate(1);
 
-                var dates = _.compact(_(this._events).chain()
-                    .map(function(ev)
-                            {
-                                if (_.isDate(ev)) { return ev; }
-                                return [_.isString(ev.start) && ev.start !== '' ?
-                                        Date.parse(ev.start) : new Date((ev.start || 0) * 1000),
-                                    _.isString(ev.end) && ev.start !== '' ?
-                                        Date.parse(ev.end) : new Date((ev.end || 0) * 1000)];
-                            })
-                    .flatten().value().concat(this._closestDate));
-                this._closestDate = _(dates).chain().sortBy(function(d)
-                            {
-                                if (d >= monthStart && d < monthEnd) { return 0; }
-                                return Math.abs(d - today);
-                            }).first().value();
-                this.$dom().fullCalendar('gotoDate', this._closestDate);
+                        var monthEnd = monthStart.clone();
+                        monthEnd.setMonth(monthEnd.getMonth() + 1);
+
+                        this._closestDate = _(dates).chain().sortBy(function(d)
+                                {
+                                    if (d >= monthStart && d < monthEnd) { return 0; }
+                                    return Math.abs(d - today);
+                                }).first().value();
+                        this.$dom().fullCalendar('gotoDate', this._closestDate);
+                    }
+                    // Once we've rendered once, don't auto-jump again
+                    this._autoJump = false;
+                }
 
                 this.$dom().fullCalendar('addEventSource', this._events);
                 this._events = [];
             }
             this.$dom().fullCalendar('refetchEvents');
+            delete this._ignoreViewChanges;
         },
 
         getColumns: function()
@@ -123,12 +137,47 @@
                 calObj._displayFormat.endDateTableId);
             calObj._titleCol = calObj._primaryView.columnForTCID(
                 calObj._displayFormat.titleTableId);
+
+            return true;
         },
 
         closeFlyout: function($link)
         {
             $link.parents('.bt-wrapper').data('socrataTip-$element')
                 .socrataTip().hide();
+        },
+
+        getDataForView: function(view)
+        {
+            if ($.isBlank(this._startCol))
+            {
+                this._needsData = true;
+                return;
+            }
+
+            updateQuery(this, view);
+            this._super.apply(this, arguments);
+        },
+
+        handleRowsLoaded: function(rows, view)
+        {
+            if (rows.length < 1 && this._autoJump)
+            {
+                // If no rows, re-request with larger timespan
+                this._queryInterval++;
+                this.getDataForAllViews();
+            }
+            else { this._super.apply(this, arguments); }
+        },
+
+        columnsLoaded: function()
+        {
+            this._super.apply(this, arguments);
+            if (this._needsData)
+            {
+                delete this._needsData;
+                this.getDataForAllViews();
+            }
         }
     }, {editEnabled: false}, 'socrataVisualization');
 
@@ -138,9 +187,12 @@
     {
         calObj._events = [];
 
+        calObj._ignoreViewChanges = true;
         calObj.$dom().fullCalendar({aspectRatio: 2,
                 editable: calObj.settings.editEnabled && calObj._primaryView.hasRight('write'),
                 disableResizing: $.isBlank(calObj._displayFormat.endDateTableId),
+                viewDisplay: function()
+                    { viewDisplay.apply(this, [calObj].concat($.makeArray(arguments))); },
                 viewClear: function()
                     { viewClear.apply(this, [calObj].concat($.makeArray(arguments))); },
                 eventClick: function()
@@ -168,6 +220,96 @@
         calObj.initializeFlyouts(calObj._displayFormat.descriptionColumns);
 
         calObj.ready();
+        delete calObj._ignoreViewChanges;
+    };
+
+    var cleanEvents = function(calObj)
+    {
+        calObj.$dom().fullCalendar('removeEvents');
+        delete calObj._closestDate;
+        calObj._queryInterval = 1;
+        calObj._renderedRows = 0;
+    };
+
+    var dateToFilterValue = function(date, col)
+    {
+        return date.toString(col.renderType.stringFormat);
+    };
+
+    var updateQuery = function(calObj, view)
+    {
+        var calView = calObj.$dom().fullCalendar('getView');
+        var startDate = calView.start.clone();
+        var endDate = calView.end.clone();
+        var startCol = calObj._startCol;
+        var endCol = calObj._endCol;
+        var query = $.extend(true, {}, view.query);
+
+        switch (calObj._queryInterval)
+        {
+            case 1:
+                // Already good
+                break;
+            case 2:
+                // 6 months
+                startDate.setMonth(startDate.getMonth() - 3)
+                endDate.setMonth(endDate.getMonth() + 3)
+                break;
+            case 3:
+                // Two years
+                startDate.setFullYear(startDate.getFullYear() - 1)
+                endDate.setFullYear(endDate.getFullYear() + 1)
+                break;
+            default:
+                // Request everything
+                startDate = null;
+                endDate = null;
+                break;
+        }
+
+        var filterCondition;
+        if (!$.isBlank(startDate) && !$.isBlank(endDate))
+        {
+            filterCondition = { temporary: true, displayTypes: ['calendar'],
+                type: 'operator', value: 'OR',
+                children: _.map(_.compact([startCol, endCol]), function(col)
+                    {
+                        return { type: 'operator', value: 'BETWEEN', children: [
+                            { type: 'column', columnFieldName: col.fieldName },
+                            { type: 'literal', value: dateToFilterValue(startDate, col) },
+                            { type: 'literal', value: dateToFilterValue(endDate, col) }
+                        ] };
+                    })
+            };
+            if (!$.isBlank(startCol) && !$.isBlank(endCol))
+            {
+                filterCondition.children.push({ type: 'operator', value: 'AND', children: [
+                    { type: 'operator', value: 'LESS_THAN', children: [
+                        { type: 'column', columnFieldName: startCol.fieldName },
+                        { type: 'literal', value: dateToFilterValue(startDate, startCol) }
+                    ] },
+                    { type: 'operator', value: 'GREATER_THAN', children: [
+                        { type: 'column', columnFieldName: endCol.fieldName },
+                        { type: 'literal', value: dateToFilterValue(endDate, endCol) }
+                    ] }
+                ] });
+            }
+        }
+
+        if ((query.namedFilters || {}).calViewport)
+        { delete query.namedFilters.calViewport; }
+        query.namedFilters = $.extend(true, query.namedFilters || {}, { calViewport: filterCondition });
+        calObj._ignoreViewChanges = true;
+        view.update({query: query}, false, true);
+        delete calObj._ignoreViewChanges;
+    };
+
+    var viewDisplay = function(calObj, calView)
+    {
+        if (calObj._ignoreViewChanges) { return; }
+        // Force remove everything when reloading events to avoid annoying flicker
+        cleanEvents(calObj);
+        calObj.getDataForAllViews();
     };
 
     var viewClear = function(calObj, calView)

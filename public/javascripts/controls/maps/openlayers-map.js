@@ -423,7 +423,8 @@
 
         getDataForAllViews: function ()
         {
-            // Allow the moveend event to do its thing, and that's it.
+            this._super();
+            // Then allow the moveend event to do its thing, and that's it.
             delete this._initialLoad;
         },
 

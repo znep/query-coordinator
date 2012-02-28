@@ -113,7 +113,9 @@
       clear: both
       display: none
       font-size: 1.1em
-      margin-top: 2em
+      margin:
+        bottom: 0.5em
+        top: 2em
       text-align: center
 
       .icon
@@ -131,6 +133,12 @@
       margin-bottom: 2em
       margin-top: 2.1em
       text-align: center
+
+      .type
+        display: none
+      @each $type in blist, shapefile
+        &.#{$type} .type-#{$type}
+          display: inline
 
 // PANE ONE POINT FIVE: import columns
 .importColumnsPane

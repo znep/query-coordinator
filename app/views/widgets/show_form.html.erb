@@ -16,7 +16,7 @@
   <%- end -%>
 <%- else -%>
   <div class="viewErrorContainer content">
-    <%- if current_user.id == @view.owner.id -%>
+    <%- if current_user && current_user.id == @view.owner.id -%>
     <div class="viewError"><%= @view.message %></div>
     <ul class="actionButtons clearfix">
       <li><a href="<%= @view.href %>" rel="external"

@@ -1217,7 +1217,7 @@ importNS.uploadFilePaneConfig = {
         // update text
         var isBlist = state.type == 'blist';
         $pane.find('.headline').text('Please choose a file to ' + (isBlist ? 'import' : 'upload'));
-        $pane.find('.uploadFileFormats').toggle(isBlist);
+        $pane.find('.uploadFileFormats').addClass(state.type);
 
         // uploader
         var uploadEndpoint = '/imports2.txt?method=';
@@ -1435,6 +1435,11 @@ var columnsPaneActivated = function($pane)
     }
 };
 
+var columnsPaneDeactivated = function($pane)
+{
+    submitError = null;
+};
+
 var setUpImportingPaneState = function(state)
 {
     state.importer = {};
@@ -1470,7 +1475,8 @@ importNS.appendReplaceColumnsPaneConfig = {
 
         setUpImportingPaneState(state);
         return 'importing';
-    }
+    },
+    onPrev: columnsPaneDeactivated
 };
 
 importNS.importColumnsPaneConfig = {
@@ -1503,7 +1509,8 @@ importNS.importColumnsPaneConfig = {
         state.operation = 'import';
         setUpImportingPaneState(state);
         return 'importing';
-    }
+    },
+    onPrev: columnsPaneDeactivated
 };
 
 importNS.importShapefilePaneConfig = {
@@ -1619,7 +1626,8 @@ importNS.importShapefilePaneConfig = {
         }));
         state.operation = !_.isUndefined(blist.importer.dataset) ? 'replaceShapefile' : 'shapefile';
         return 'importing';
-    }
+    },
+    onPrev: columnsPaneDeactivated
 };
 
 // helper for importing pane (parsing columns)
@@ -1643,6 +1651,7 @@ importNS.importingPaneConfig = {
         if (state.importingActivated)
             return;
         state.importingActivated = true;
+        submitError = null;
 
         $pane.loadingSpinner({showInitially: true});
 

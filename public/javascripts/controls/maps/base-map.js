@@ -248,115 +248,52 @@
                 .register('attributionupdated', null, function() { mapObj.fixMapLayers(); });
 
             mapObj._hoverTimers = {};
-            if ($.subKeyDefined(mapObj, '_displayFormat.identifyTask') &&
-                    $.subKeyDefined(mapObj._displayFormat.identifyTask, 'url') &&
-                    $.subKeyDefined(mapObj._displayFormat.identifyTask, 'layerId') &&
-                    $.subKeyDefined(mapObj._displayFormat.identifyTask, 'attributes') &&
-                    mapObj._displayFormat.identifyTask.attributes.length > 0)
+            var unselectFeature = function(feature)
             {
-                mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
-                mapObj._identifyParameters.tolerance = 3;
-                mapObj._identifyParameters.returnGeometry = false;
-                mapObj._identifyParameters.layerIds =
-                    [mapObj._displayFormat.identifyTask.layerId];
-                mapObj._identifyParameters.layerOption =
-                    esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
-                mapObj._identifyParameters.width  = mapObj.map.getSize().w;
-                mapObj._identifyParameters.height = mapObj.map.getSize().h;
+                if (feature && feature.layer)
+                { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
+                mapObj.closePopup();
+            };
 
-                mapObj.map.events.register('click', mapObj.map, function(evt)
-                {
-                    var sr = new esri.SpatialReference(
-                        { wkid: mapObj.map.getProjection().split(':')[1]});
-                    var lonlat = layer.getLonLatFromViewPortPx(
-                        mapObj.map.events.getMousePosition(evt));
-                    var geometry = new esri.geometry.Point(lonlat.lon, lonlat.lat, sr);
-                    var extent = mapObj.map.getExtent();
-                    extent = new esri.geometry.Extent(extent.left, extent.bottom,
-                                                      extent.right, extent.top);
-
-                    mapObj._identifyParameters.geometry = geometry;
-                    mapObj._identifyParameters.mapExtent = extent;
-
-                    new esri.tasks.IdentifyTask(mapObj._displayFormat.identifyTask.url)
-                        .execute(mapObj._identifyParameters,
-                        function(idResults)
-                        {
-                            var closeBox = function()
-                            { if (viewConfig._popup)
-                                {
-                                    mapObj.map.removePopup(viewConfig._popup);
-                                    viewConfig._popup.destroy();
-                                    viewConfig._popup = null;
-                                }
-                            };
-                            closeBox();
-                            if (idResults.length < 1) { return; }
-
-                            var feature = idResults[0].feature;
-                            var info = _.map(mapObj._displayFormat.identifyTask.attributes,
-                                function(attribute)
-                                { return attribute.text + ': ' +
-                                    feature.attributes[attribute.key]; }).join('<br />');
-
-                            // FIXME: There is some randomly occuring bug where this.size is not set.
-                            // See external-esri-map for details.
-                            var popup = new OpenLayers.Popup.FramedCloud(null,
-                                lonlat, null, info, null, true, closeBox);
-                            viewConfig._popup = popup;
-                            mapObj.map.addPopup(popup);
-                        });
-                });
-            }
-            else
+            mapObj.$dom().on('click', 'circle, image, path, text, oval, rect, shape', function(evt)
             {
-                var unselectFeature = function(feature)
+                var features = findFeatureFromEvent(mapObj, evt);
+                if (_.isEmpty(features)) { return null; }
+                _.each(features, function(datum)
                 {
-                    if (feature && feature.layer)
-                    { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
-                    mapObj.closePopup();
-                };
-
-                mapObj.$dom().on('click', 'circle, image, path, text, oval, rect, shape', function(evt)
-                {
-                    var features = findFeatureFromEvent(mapObj, evt);
-                    if (_.isEmpty(features)) { return null; }
-                    _.each(features, function(datum)
+                    var feature = datum.feature;
+                    var layer = datum.layer;
+                    if (layer.dataViewConfig._renderType == 'clusters')
                     {
-                        var feature = datum.feature;
-                        var layer = datum.layer;
-                        if (layer.dataViewConfig._renderType == 'clusters')
-                        {
-                            if (mapObj.currentZoom()
-                                < mapObj.map.getZoomForExtent(feature.attributes.bbox))
-                            { mapObj.map.zoomToExtent(feature.attributes.bbox); }
-                            else
-                            {
-                                mapObj.map.setCenter(
-                                    feature.geometry.getBounds().getCenterLonLat(),
-                                    mapObj.currentZoom() + 1);
-                            }
-                        }
+                        if (mapObj.currentZoom()
+                            < mapObj.map.getZoomForExtent(feature.attributes.bbox))
+                        { mapObj.map.zoomToExtent(feature.attributes.bbox); }
                         else
                         {
-                            var lonlat = layer.getLonLatFromViewPortPx(
-                                mapObj.map.events.getMousePosition(evt));
-                            onFeatureSelect(mapObj, feature, lonlat, function(evt)
-                                {
-                                    if (!feature.layer)
-                                    { feature = mapObj._markers[feature.attributes.dupKey]; }
-                                    unselectFeature(feature);
-                                });
-                            var dupKey = feature.attributes.dupKey;
-                            if (!$.isBlank(mapObj._hoverTimers[dupKey]))
-                            {
-                                clearTimeout(mapObj._hoverTimers[dupKey]);
-                                delete mapObj._hoverTimers[dupKey];
-                            }
+                            mapObj.map.setCenter(
+                                feature.geometry.getBounds().getCenterLonLat(),
+                                mapObj.currentZoom() + 1);
                         }
-                    });
+                    }
+                    else
+                    {
+                        var lonlat = layer.getLonLatFromViewPortPx(
+                            mapObj.map.events.getMousePosition(evt));
+                        onFeatureSelect(mapObj, feature, lonlat, function(evt)
+                            {
+                                if (!feature.layer)
+                                { feature = mapObj._markers[feature.attributes.dupKey]; }
+                                unselectFeature(feature);
+                            });
+                        var dupKey = feature.attributes.dupKey;
+                        if (!$.isBlank(mapObj._hoverTimers[dupKey]))
+                        {
+                            clearTimeout(mapObj._hoverTimers[dupKey]);
+                            delete mapObj._hoverTimers[dupKey];
+                        }
+                    }
                 });
-            }
+            });
             mapObj.$dom().on('mouseover', 'circle, image, path, text, oval, rect, shape', function(evt)
             {
                 var features = findFeatureFromEvent(mapObj, evt);

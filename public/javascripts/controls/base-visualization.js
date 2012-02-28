@@ -245,7 +245,7 @@
             {
                 var handleChange = function(forceRowReload)
                 {
-                    if (vizObj._obsolete || vizObj._doingReload) { return; }
+                    if (vizObj._obsolete || vizObj._doingReload || vizObj._ignoreViewChanges) { return; }
                     if (forceRowReload === true)
                     { vizObj._requireRowReload = true; }
                     if (!vizObj._initialLoad)
@@ -300,6 +300,7 @@
             vizObj._boundViewEvents = false;
 
             vizObj._requireRowReload = true;
+            vizObj._viewChanged = true;
             vizObj.reload(hadView ? {} : null);
         },
 
@@ -323,6 +324,7 @@
 
             if (vizObj.needsFullReset())
             {
+                delete vizObj._viewChanged;
                 vizObj.reset();
                 return;
             }
@@ -375,7 +377,7 @@
         needsFullReset: function()
         {
             // Override if you need to do a bigger reset
-            return false;
+            return this._viewChanged || false;
         },
 
         handleRowsLoaded: function(rows, view)

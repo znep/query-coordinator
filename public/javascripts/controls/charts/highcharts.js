@@ -93,10 +93,13 @@
                 });
             }
 
-            // FIXME: Remainders happen to work if you don't have seriesColumns; otherwise, they won't
-            chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
-                { return col.data.aggregates.sum; });
-            chartObj._seriesSums = chartObj._seriesRemainders.slice();
+            if (!chartObj._dataGrouping)
+            {
+                // FIXME: Remainders happen to work if you don't have seriesColumns; otherwise, they won't
+                chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
+                        { return col.data.aggregates.sum; });
+                chartObj._seriesSums = chartObj._seriesRemainders.slice();
+            }
 
             // Adjust scale to make sure series are synched with axis
             if (!_.isUndefined(chartObj.chart))
@@ -1474,11 +1477,12 @@
         }
         else
         {
-            if (!isOther && !$.isBlank(chartObj._seriesCache[seriesIndex].data[ri]))
+            if (!isOther && !$.isBlank(chartObj._seriesRemainders) &&
+                    !$.isBlank(chartObj._seriesCache[seriesIndex].data[ri]))
             { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
             chartObj._seriesCache[seriesIndex].data[ri] = point;
         }
-        if (!isOther)
+        if (!isOther && !$.isBlank(chartObj._seriesRemainders))
         { chartObj._seriesRemainders[seriesIndex] -= point.y; }
     };
 
@@ -1498,7 +1502,7 @@
             if (!$.isBlank(sp)) { sp.remove(); }
         }
 
-        if (!isOther)
+        if (!isOther && !$.isBlank(chartObj._seriesRemainders))
         { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
         chartObj._seriesCache[seriesIndex].data.splice(ri, 1);
         delete chartObj._rowIndices[point.row.id][seriesIndex];

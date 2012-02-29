@@ -323,6 +323,8 @@
 
     var eventClick = function(calObj, calEvent)
     {
+        if (!$(this).isSocrataTip())
+        { renderEventFlyout(calObj, calEvent, this); }
         if ($.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id))
         { calObj._primaryView.unhighlightRows(calEvent.row, 'select'); }
         else
@@ -341,19 +343,9 @@
 
     var eventRender = function(calObj, calEvent, element)
     {
-        if (!$.isBlank(calObj.hasFlyout()))
+        if (calObj.hasFlyout())
         {
             var $e = $(element);
-            $e.socrataTip({content: calObj.renderFlyout(calEvent.row,
-                calObj._primaryView), closeOnClick: false,
-                parent: calObj.$dom(),
-                shownCallback: function()
-                {
-                    if (!$.isBlank(calObj._curTip)) { calObj._curTip.hide(); }
-                    calObj._curTip = $e.socrataTip();
-                },
-                trigger: 'click', isSolo: true});
-
             // Wait until next cycle before checking, because we hit a case where the events
             // are re-rendered due to an unhighlight before the select highlight is applied;
             // and we want to make sure everything is ready before we check & display
@@ -361,7 +353,12 @@
             {
                 if ($.isBlank(calObj._curTip) &&
                     $.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id))
-                { $e.socrataTip().show(); }
+                {
+                    if ($e.isSocrataTip())
+                    { $e.socrataTip().show(); }
+                    else
+                    { renderEventFlyout(calObj, calEvent, $e); }
+                }
             });
         }
     };
@@ -406,4 +403,18 @@
 
         view.saveRow(calEvent.row.id, null, null, null, revertFunc);
     };
+
+    var renderEventFlyout = function(calObj, calEvent, element)
+    {
+        var $e = $(element);
+        $e.socrataTip({content: calObj.renderFlyout(calEvent.row, calObj._primaryView),
+            closeOnClick: false, parent: calObj.$dom(),
+            shownCallback: function()
+            {
+                if (!$.isBlank(calObj._curTip)) { calObj._curTip.hide(); }
+                calObj._curTip = $e.socrataTip();
+            },
+            trigger: 'click', isSolo: true}).show();
+    };
+
 })(jQuery);

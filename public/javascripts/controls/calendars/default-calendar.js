@@ -231,9 +231,12 @@
         calObj._renderedRows = 0;
     };
 
-    var dateToFilterValue = function(date, col)
+    var dateToServerValue = function(date, col)
     {
-        return date.toString(col.renderType.stringFormat);
+        var d = date.valueOf() / 1000;
+        if (!$.isBlank(col.renderType.stringFormat))
+        { d = date.toString(col.renderType.stringFormat); }
+        return d;
     };
 
     var updateQuery = function(calObj, view)
@@ -276,8 +279,8 @@
                     {
                         return { type: 'operator', value: 'BETWEEN', children: [
                             { type: 'column', columnFieldName: col.fieldName },
-                            { type: 'literal', value: dateToFilterValue(startDate, col) },
-                            { type: 'literal', value: dateToFilterValue(endDate, col) }
+                            { type: 'literal', value: dateToServerValue(startDate, col) },
+                            { type: 'literal', value: dateToServerValue(endDate, col) }
                         ] };
                     })
             };
@@ -286,11 +289,11 @@
                 filterCondition.children.push({ type: 'operator', value: 'AND', children: [
                     { type: 'operator', value: 'LESS_THAN', children: [
                         { type: 'column', columnFieldName: startCol.fieldName },
-                        { type: 'literal', value: dateToFilterValue(startDate, startCol) }
+                        { type: 'literal', value: dateToServerValue(startDate, startCol) }
                     ] },
                     { type: 'operator', value: 'GREATER_THAN', children: [
                         { type: 'column', columnFieldName: endCol.fieldName },
-                        { type: 'literal', value: dateToFilterValue(endDate, endCol) }
+                        { type: 'literal', value: dateToServerValue(endDate, endCol) }
                     ] }
                 ] });
             }
@@ -391,20 +394,14 @@
              (!$.isBlank(calEvent.end) &&
                 calEvent.start.valueOf() != calEvent.end.valueOf())))
         {
-            var d = calEvent.start.valueOf() / 1000;
-            if (!$.isBlank(calObj._startCol.renderType.stringFormat))
-            { d = calEvent.start.toString(
-                calObj._startCol.renderType.stringFormat); }
-            view.setRowValue(d, calEvent.row.id, calObj._startCol.id);
+            view.setRowValue(dateToServerValue(calEvent.start, calObj._startCol),
+                    calEvent.row.id, calObj._startCol.id);
         }
 
         if (!$.isBlank(calObj._endCol) && !$.isBlank(calEvent.end))
         {
-            var d = calEvent.end.valueOf() / 1000;
-            if (!$.isBlank(calObj._endCol.renderType.stringFormat))
-            { d = calEvent.end.toString(
-                calObj._endCol.renderType.stringFormat); }
-            view.setRowValue(d, calEvent.row.id, calObj._endCol.id);
+            view.setRowValue(dateToServerValue(calEvent.end, calObj._endCol),
+                    calEvent.row.id, calObj._endCol.id);
         }
 
         view.saveRow(calEvent.row.id, null, null, null, revertFunc);

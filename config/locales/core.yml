@@ -1,4 +1,8 @@
 en:
+  support:
+    array:
+      two_words_connector: " and "
+      last_word_connector: ", and "
   core:
     view_types:
       blob: non-tabular file or document
@@ -48,6 +52,10 @@ en:
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.
 
 it:
+  support:
+    array:
+      two_words_connector: " e "
+      last_word_connector: ", e "
   core:
     view_types:
       blob: file scaricabile

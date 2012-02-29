@@ -140,9 +140,12 @@ class DatasetsController < ApplicationController
         @per_page = 50
         @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
       rescue CoreServer::CoreServerError => e
-        if e.error_code == 'invalid_request'
+        case e.error_code
+        when 'invalid_request'
           flash.now[:error] = e.error_message
           return (render 'shared/error', :status => :invalid_request)
+        when 'permission_denied'
+          return render_forbidden
         end
       end
     end
@@ -263,12 +266,12 @@ class DatasetsController < ApplicationController
 # end alt actions
 
   def math_validate
-    return if params['equation_token'].blank?
+    return (render :nothing => true) if params['equation_token'].blank?
 
     @view = get_view(params[:id])
-    return if @view.nil?
+    return (render :nothing => true) if @view.nil?
 
-    equation_parts = ActiveSupport::Base64.decode64(params['equation_token']).strip.split(/\s+/)
+    equation_parts = ::Base64.decode64(params['equation_token']).strip.split(/\s+/)
     str_to_num = {
       'zero'  => 0,
       'one'   => 1,

@@ -228,19 +228,23 @@
         {
             var mapObj = this;
 
-            mapObj.events = { changedVisibility: function() {} };
-
             mapObj.map.events.register('moveend', mapObj.map, function()
             {
-                if (mapObj._initialLoad) { return; }
-                if (mapObj._ignoreMoveEnd) { delete mapObj._ignoreMoveEnd; return; }
-                if (mapObj._boundsChanging)
-                { delete mapObj._boundsChanging; delete mapObj._isResize; return; }
+                if (_.any([mapObj._initialLoad, mapObj._ignoreMoveEnd, mapObj._boundsChanging]))
+                {
+                    if (mapObj._boundsChanging)
+                    { delete mapObj._isResize; }
+                    delete mapObj._ignoreMoveEnd;
+                    delete mapObj._boundsChanging;
+                    return;
+                }
 
                 mapObj.updateDatasetViewport(mapObj._isResize);
                 mapObj.updateRowsByViewport();
                 delete mapObj._isResize;
             });
+
+            mapObj.events = { changedVisibility: function() {} };
 
             mapObj.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0].events
                 .register('maptypechange', null, function() { mapObj._ignoreMoveEnd = true; });

@@ -60,6 +60,7 @@ en:
           facet_main: matching %{body}
           facet: %{facet_type} of %{facet_value}
       listing:
+        share_this_dataset: Share this Dataset
         no_results: No Results
         result_count: Showing %{this} of %{total}
         federation_source: Federated from %{source}
@@ -174,6 +175,7 @@ it:
           facet_main: corrispondenze %{body}
           facet: %{facet_type} di %{facet_value}
       listing:
+        share_this_dataset: Condividi questo set di dati
         no_results: Nessun risultato
         result_count: %{this} di %{total}
         federation_source: Federato da %{source}

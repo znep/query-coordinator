@@ -67,7 +67,7 @@ it:
         remove_filter: Rimuovi il filtro.
         confirm_modify: Con questa operazione verranno rimossi tutti i valori per il filtro impostato. Sicuro di voler procedere ?
         select_column: "Seleziona la colonna per cui filtrare:"
-        select_operation: "Seleziona un criterio per il fitro:"
+        select_operation: "Seleziona un criterio per il filtro:"
         select_subcolumn: "Seleziona la parte di %{name} per cui filtrare:"
         disable_filter: Non filtrare.
       menu:

@@ -95,7 +95,7 @@ it:
         is_blank: "è vuoto"
         is_not_blank: "non è vuoto"
     analytics:
-      visit: vista
+      visit: visualizzazioni
     dialogs:
       close: chiudi
       cancel: cancella

@@ -301,16 +301,19 @@
                 });
             }
 
-            var numSeries = chartObj._seriesCache.length;
-            for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
+            if (!chartObj._dataGrouping)
             {
-                var reindex = function(datum, index)
-                { datum.x = index; };
-                if (!$.isBlank(chartObj.chart))
-                { _.each(chartObj.chart.series[seriesIndex].data, reindex); }
-                if (!$.isBlank(chartObj.secondChart))
-                { _.each(chartObj.secondChart.series[seriesIndex].data, reindex); }
-                _.each(chartObj._seriesCache[seriesIndex].data, reindex);
+                var numSeries = chartObj._seriesCache.length;
+                for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
+                {
+                    var reindex = function(datum, index)
+                    { datum.x = index; };
+                    if (!$.isBlank(chartObj.chart))
+                    { _.each(chartObj.chart.series[seriesIndex].data, reindex); }
+                    if (!$.isBlank(chartObj.secondChart))
+                    { _.each(chartObj.secondChart.series[seriesIndex].data, reindex); }
+                    _.each(chartObj._seriesCache[seriesIndex].data, reindex);
+                }
             }
 
             if (!$.isBlank(chartObj.chart))
@@ -556,19 +559,22 @@
             if (!chartObj._hatchPattern)
             { chartObj._hatchPattern = $('<div class="hatchPattern"></div>'); }
 
-            var stacks;
+            var stacks = [];
             if (stacking)
             {
-                stacks = _.map(chartObj.chart.series[0].data, function(datum, index)
+                _.each(chartObj.chart.series, function(serie)
                 {
-                    return _.reduce(chartObj.chart.series, function(total, serie)
-                        { return total + serie.data[index].graphic.attr('height'); }, 0);
+                    _.each(serie.data, function(datum)
+                    {
+                        stacks[datum.x] = stacks[datum.x] || 0;
+                        stacks[datum.x] += datum.graphic.attr('height');
+                    });
                 });
             }
 
             _.each(chartObj.chart.series, function(serie)
             {
-                _.each(serie.data, function(datum, index)
+                _.each(serie.data, function(datum)
                 {
                     if (!datum.isNull) { return; }
                     if (datum.$nullDiv) { datum.$nullDiv.remove(); }
@@ -585,8 +591,8 @@
                         };
                         if (stacking)
                         {
-                            position['left'] += stacks[index];
-                            position['width'] -= stacks[index];
+                            position['left'] += stacks[datum.x];
+                            position['width'] -= stacks[datum.x];
                         }
                     }
                     else
@@ -599,7 +605,7 @@
                         };
                         if (stacking)
                         {
-                            position['height'] -= stacks[index];
+                            position['height'] -= stacks[datum.x];
                         }
                     }
 

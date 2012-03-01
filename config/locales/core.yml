@@ -4,6 +4,7 @@ en:
       two_words_connector: " and "
       last_word_connector: ", and "
   core:
+    or: or
     view_types:
       blob: non-tabular file or document
       calendar: calendar
@@ -57,6 +58,7 @@ it:
       two_words_connector: " e "
       last_word_connector: ", e "
   core:
+    or: o
     view_types:
       blob: file scaricabile
       calendar: calendario

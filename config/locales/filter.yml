@@ -51,7 +51,7 @@ it:
   controls:
     filter:
       main:
-        tutorial_html: "Mai creato un filtro prima ? Guarda una breve video guida <a href=\/videos/popup#basic-filtering\" rel=\"video\" class=\"noRedirPrompt\">qui</a>."
+        tutorial_html: "Mai creato un filtro prima ? Guarda una breve video guida <a href=\"/videos/popup#basic-filtering\" rel=\"video\" class=\"noRedirPrompt\">qui</a>."
         or: o
         simplified_message: "Modalità semplificata."
         simplified_toggle: "Accedi alla modalità avanzata."

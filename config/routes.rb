@@ -105,12 +105,18 @@ Frontend::Application.routes do
   resources :templates, :only => [ :show ]
   get '/translations/*locale_parts' => 'translations#get'
 
-  resource :browse, :controller => 'browse',
-    :collection => {
-      :embed => :get
-  }
+  resource :browse, :controller => 'browse' do
+    collection do
+      get :embed
+    end
+  end
+
   resources :nominate, :controller => 'nominations', :only => [ :index, :show, :new ]
-  resources :videos, :only => [ :index ], :collection => { :popup => :get }
+  resources :videos, :only => [ :index ] do
+    collection do
+      get :popup
+    end
+  end
 
   # For legacy support reasons, make /home and /datasets go somewhere reasonable
   get '/home' => 'profile#index'

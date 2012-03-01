@@ -24,6 +24,12 @@
             cleanEvents(calObj);
         },
 
+        reloadVisualization: function()
+        {
+            this.initializeFlyouts(this._displayFormat.descriptionColumns);
+            this._super.apply(this, arguments);
+        },
+
         resizeHandle: function()
         {
             this._ignoreViewChanges = true;
@@ -323,7 +329,7 @@
 
     var eventClick = function(calObj, calEvent)
     {
-        if (!$(this).isSocrataTip())
+        if (!$(this).isSocrataTip() && calObj.hasFlyout())
         { renderEventFlyout(calObj, calEvent, this); }
         if ($.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id))
         { calObj._primaryView.unhighlightRows(calEvent.row, 'select'); }

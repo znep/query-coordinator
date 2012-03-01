@@ -34,7 +34,7 @@ module CoreServer
             # getting the right data without doing it is uglier, and we're
             # likely to want to re-raise the exception regardless.
             begin
-              raise CoreServer::TooManyRequests.new(self, action_name, core_stats[:requests][Thread.current.object_id])
+              raise CoreServer::TooManyRequests.new(self, action_name, core_counters[:requests][Thread.current.object_id])
             rescue CoreServer::TooManyRequests => e
               notify_hoptoad(e)
               raise unless Rails.env.production?

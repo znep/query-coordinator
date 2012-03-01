@@ -389,7 +389,7 @@
                     <td class="rss">
                       <%- if v.is_tabular? && !v.is_form? -%>
                       <a href="<%= v.rss %>" class="subscribe"
-                        title="t('controls.browse.actions.dataset_subscribe')"><span class="icon"></span></a>
+                        title="<%= t('controls.browse.actions.dataset_subscribe') %>"<span class="icon"></span></a>
                       <%- end -%>
                     </td>
                   <%- end -%>

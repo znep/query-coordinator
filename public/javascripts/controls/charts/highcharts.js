@@ -441,7 +441,7 @@
         }
 
         chartObj._colorIndex = chartObj._colorIndex || {};
-        if (!$.subKeyDefined(chartObj._colorIndex, id))
+        if (!chartObj._colorIndex.hasOwnProperty(id))
         {
             if ($.subKeyDefined(obj, 'color') && _.include(chartObj._availableColors, obj.color))
             {

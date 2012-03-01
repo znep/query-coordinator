@@ -9,7 +9,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_user_session
   layout 'main'
 
-  rescue_from('CoreServer::ResourceNotFound') { |exception| render_404 }
+  rescue_from CoreServer::ResourceNotFound, :with => :render_404
+  rescue_from ActionView::MissingTemplate, :with => :render_406
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -95,6 +96,10 @@ protected
 
   def render_404
     render_error(404)
+  end
+
+  def render_406
+    render_error(406)
   end
 
   def render_500

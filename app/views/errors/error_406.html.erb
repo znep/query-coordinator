@@ -1,0 +1,20 @@
+<% content_for :head do %>
+  <title><%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
+<% end %>
+
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1>Page not found.</h1>
+  </div>
+  <div class="contentBoxInner clearfix notFound">
+    <div class="icon errorIcon"></div>
+
+    <p class="subheadline">We&rsquo;re really sorry, but the page you is not available in the requested format.</p>
+
+    <div class="goSomewhere">
+      <a href="javascript:history.back(1)" class="button default">Back</a>
+      <span class="labelText">to where you came from.</span>
+    </div>
+  </div>
+</div>

@@ -24,6 +24,10 @@ class Displays::Form < Displays::Base
     'add'
   end
 
+  def type
+    'form'
+  end
+
   def name
     I18n.t('core.view_types.form')
   end

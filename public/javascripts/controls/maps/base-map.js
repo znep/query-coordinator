@@ -9,6 +9,8 @@
     var geographicProjection = new OpenLayers.Projection('EPSG:4326');
     var killAnimation = false;
 
+    var animationOff = true;
+
     Proj4js.defs["EPSG:102100"] = "+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null";
 
     blist.openLayers.MapTypeSwitcher = OpenLayers.Class(OpenLayers.Control, {
@@ -241,6 +243,11 @@
 
                 mapObj.updateDatasetViewport(mapObj._isResize);
                 mapObj.updateRowsByViewport();
+
+                // For when animations are turned off.
+                _.each(mapObj._byView, function(viewConfig)
+                { if (!viewConfig._animation && viewConfig._renderType == 'clusters')
+                    { viewConfig._displayLayer.removeAllFeatures(); } });
                 delete mapObj._isResize;
             });
 
@@ -629,6 +636,11 @@
         {
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
+
+            // For when animations are turned off.
+            _.each(mapObj._byView, function(viewConfig)
+            { if (!viewConfig._animation)
+                { viewConfig._displayLayer.removeAllFeatures(); } });
 
             _.each(clusters, function(cluster)
             { mapObj.renderCluster(cluster, { dataView: view }); });
@@ -1606,6 +1618,7 @@
 
         initializeAnimation: function(data, view)
         {
+            if (animationOff) { return; }
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
 

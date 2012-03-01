@@ -245,6 +245,8 @@ $.live = function(selector, type, fn)
 // TODO: not integrated with component locale stuffing
 $.t = function(key, data)
 {
+    if (!$.subKeyDefined(blist.translations, key))
+    { return '(no translation available)'; }
     var result = $.deepGetStringField(blist.translations, key)
                       .replace(/%{[^}]+}/, function(dataKey) { return data[dataKey.slice(2, -1)]; });
     return key.endsWith('_html') ? result : $.htmlStrip(result);

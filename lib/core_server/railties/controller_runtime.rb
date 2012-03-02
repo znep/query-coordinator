@@ -36,7 +36,7 @@ module CoreServer
             begin
               raise CoreServer::TooManyRequests.new(self, action_name, core_counters[:requests][Thread.current.object_id])
             rescue CoreServer::TooManyRequests => e
-              notify_hoptoad(e)
+              notify_airbrake(e)
               raise unless Rails.env.production?
             end
           end

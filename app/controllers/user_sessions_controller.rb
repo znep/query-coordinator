@@ -3,7 +3,7 @@ class UserSessionsController < ApplicationController
   protect_from_forgery :except => [:rpx]
 
   def index
-    HoptoadNotifier.notify(
+    Airbrake.notify(
       :error_class => "Deprecation",
       :error_message => "Called UserSessionsController#index - deprecated function",
       :request => { :params => params }

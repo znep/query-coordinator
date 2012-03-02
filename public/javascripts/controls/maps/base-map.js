@@ -1529,7 +1529,11 @@
                 { mapObj.initializeAnimation(null, view); }
                 if (view.displayFormat.viewport
                     && !$.subKeyDefined(view, 'query.namedFilters.viewport'))
-                { mapObj.updateRowsByViewport(viewport); }
+                {
+                    mapObj.updateRowsByViewport(viewport);
+                    // This isn't a viewport update; we're setting it for the first time.
+                    delete mapObj._updatingViewport;
+                }
                 mapObj._super(view);
                 mapObj._boundsChanging = true;
                 mapObj.setViewport(viewport);

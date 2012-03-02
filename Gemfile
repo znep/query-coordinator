@@ -2,7 +2,7 @@ source :gemcutter
 
 gem "jammit", "~>0.6.5"
 
-gem "rails", "3.2.1", :require => nil
+gem "rails", "~>3.2.2", :require => nil
 gem "rack", "~>1.4.0"
 gem "erubis", ">= 2.6.4"
 gem "multipart-post", "1.0.1", :require => 'net/http/post/multipart'

@@ -319,6 +319,27 @@
                 }
             }
 
+            chartObj._seriesCache = _.reject(chartObj._seriesCache, function(serie)
+                    {
+                        var toRem = _.isEmpty(serie.data);
+                        if (toRem)
+                        {
+                            delete chartObj._seriesByVal[serie.name];
+                            if (!$.isBlank(chartObj.chart))
+                            {
+                                var existS = chartObj.chart.get(serie.name);
+                                if (!$.isBlank(existS)) { existS.remove(); }
+                            }
+                            if (!$.isBlank(chartObj.secondChart))
+                            {
+                                existS = chartObj.secondChart.get(serie.name);
+                                if (!$.isBlank(existS)) { existS.remove(); }
+                            }
+                        }
+                        return toRem;
+                    });
+            _.each(chartObj._seriesCache, function(serie, i) { serie.index = i; });
+
             if (!$.isBlank(chartObj.chart))
             { chartObj.chart.redraw(); }
             if (!$.isBlank(chartObj.secondChart))
@@ -453,7 +474,7 @@
         }
 
         return chartObj._colorIndex[id];
-    }
+    };
 
     var getSeriesName = function(chartObj, yCol, row)
     {
@@ -467,7 +488,7 @@
 
     var createSeries = function(chartObj, name, yCol)
     {
-        var series = {name: name, data: [], index: chartObj._seriesCache.length};
+        var series = {id: name, name: name, data: [], index: chartObj._seriesCache.length};
         series.color = getColor(chartObj, series.name, yCol);
         if (chartObj._chartType == 'donut')
         {

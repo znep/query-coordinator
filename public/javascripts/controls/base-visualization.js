@@ -331,20 +331,20 @@
 
             vizObj.$dom().siblings('#vizError').hide().text('');
 
-            if (vizObj._updatingViewport)
+            if (_.any([vizObj._updatingViewport, vizObj._willfullyIgnoreReload]))
             {
-                vizObj.getDataForAllViews();
+                if (vizObj._updatingViewport)
+                { vizObj.getDataForAllViews(); }
+                else if (vizObj._willfullyIgnoreReload)
+                {
+                    // Hack for now. Purpose is to refresh all the existing rows with DF changes,
+                    // without prompting a full reload of the rows.
+                    // Will be done at the datalayer level in maps rewrite.
+                    _.each(vizObj._dataViews, function(view)
+                    { vizObj.renderData(view._rows, view); });
+                }
                 delete vizObj._updatingViewport;
-            }
-            else if (vizObj._willfullyIgnoreReload)
-            {
                 delete vizObj._willfullyIgnoreReload;
-
-                // Hack for now. Purpose is to refresh all the existing rows with DF changes,
-                // without prompting a full reload of the rows.
-                // Will be done at the datalayer level in maps rewrite.
-                _.each(vizObj._dataViews, function(view)
-                { vizObj.renderData(view._rows, view); });
             }
             else
             {

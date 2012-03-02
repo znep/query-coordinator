@@ -76,10 +76,12 @@
             var width = $embedForm.find(config.widthSelector).val();
             var height = $embedForm.find(config.heightSelector).val();
             var variation = $embedForm.find(config.templateSelector).val();
-            $embedForm.find(config.textareaSelector)
-                .text(template.replace('#width#', width)
-                              .replace('#height#', height)
-                              .replace('#variation#', variation));
+            var text = template.replace('#width#', width)
+                               .replace('#height#', height)
+                               .replace('#variation#', variation);
+            _.defer(function() {
+                $embedForm.find(config.textareaSelector).text(text);
+            });
 
             // Restrict size to >= 425x425 px
             if (parseInt(width,10) < 425 || parseInt(height,10) < 425 ||

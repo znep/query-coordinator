@@ -293,7 +293,7 @@ $wizard.wizard({
                 // is critical), persist them.
                 if (viewData.metadata && state.submittedView && state.submittedView.metadata)
                 {
-                    $.extend(viewData, {metadata: state.submittedView.metadata});
+                    $.extend(true, viewData, {metadata: state.submittedView.metadata});
                 }
 
                 var successCallback = function(createdView)

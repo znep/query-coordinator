@@ -81,7 +81,10 @@
                             newRows.push(r);
                         });
                     });
-                    rows = newRows;
+                    if (chartObj._displayFormat.sortSeries)
+                    { rows = _.sortBy(newRows, function(r) { return r[sc.column.lookup]; }); }
+                    else
+                    { rows = newRows; }
                 });
                 _.each(chartObj._yColumns, function(yc)
                 {

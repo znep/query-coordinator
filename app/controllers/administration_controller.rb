@@ -88,7 +88,8 @@ class AdministrationController < ApplicationController
   # Manage Users and User Roles
   #
 
-  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users, :delete_future_user] {|c| c.check_auth_level('manage_users')}
+  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users,
+                          :delete_future_user, :re_enable_user] {|c| c.check_auth_level('manage_users')}
   def users
     @roles_list = User.roles_list
     if !params[:username].blank?
@@ -130,6 +131,15 @@ class AdministrationController < ApplicationController
       error_message = "There was an error sending the password reset email."
     end
     handle_button_response(success, error_message, "Password reset email sent", :users)
+  end
+
+  def re_enable_user
+    if User.re_enable_permissions(params[:user_id])
+      success = true
+    else
+      error_message = "There was an error enabling that user account."
+    end
+    handle_button_response(success, error_message, "Account successfully re-enabled", :users)
   end
 
   def bulk_create_users

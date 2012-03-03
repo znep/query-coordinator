@@ -26,6 +26,10 @@ class User < Model
     return parse(CoreServer::Base.connection.update_request("/users.json?method=promote&name=#{username}&role=#{role}"))
   end
 
+  def self.re_enable_permissions(username)
+    return parse(CoreServer::Base.connection.update_request("/users.json?method=reEnablePermissions&name=#{username}"))
+  end
+
   def self.reset_password(login)
     req = Net::HTTP::Post.new('/users')
     req.set_form_data({'method' => 'forgotPassword', 'login' => login})

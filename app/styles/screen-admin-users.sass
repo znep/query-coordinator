@@ -66,10 +66,28 @@
           display: none
         input.button
           font-size: 0.8em
+        .enableAccount
+          display: none
         &.isWorking
           .loading
             display: inline-block
             @include ie7-inline-block
+
+      tr.disabled
+        td.user, td.email
+          color: #aaa
+          font-style: italic
+        td.email
+          @include warning-icon-medium
+          .icon
+            float: left
+            margin-right: 1em
+          .cellInner
+            position: relative
+            top: 3px
+        td.actions
+          .enableAccount
+            display: inline
 
   .tableContainer
     .noResultsMessage

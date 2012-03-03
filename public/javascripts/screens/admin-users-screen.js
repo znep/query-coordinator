@@ -68,6 +68,15 @@ $(function()
         workingSelector: '.actions'
     });
 
+    $userTable.find('.actions .enableAccountButton').adminButton({
+        callback: function(response, $row)
+        {
+            $row.removeClass('disabled');
+            fadeMessage(response.message);
+        },
+        workingSelector: '.actions'
+    });
+
     $userTable.combinationList(comboDefaults);
 
     $futuresTable

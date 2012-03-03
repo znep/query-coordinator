@@ -65,6 +65,7 @@ Frontend::Application.routes do
     put '/users/:user_id/promote/:role', :action => 'set_user_role'
     put '/users/update', :action => 'set_user_role'
     post '/users/:user_id/reset_password', :action => 'reset_user_password'
+    post '/users/:user_id/enable_account', :action => 're_enable_user'
     delete '/users/future/:id/delete', :action => 'delete_future_user'
     post '/users/bulk_create', :action => 'bulk_create_users'
     post '/sdp_templates', :action => 'sdp_template_create'

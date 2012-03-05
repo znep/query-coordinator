@@ -53,7 +53,7 @@
     // - ignoreTransforms: ignores default transformations in MAP_TYPE
     // - transformFeatures: custom transforms at view level
     $.Control.registerMixin('heatmap', {
-        mapLoaded: function()
+        initializeMap: function()
         {
             this._super();
             if (_.isFunction(MAP_TYPE)) { MAP_TYPE = MAP_TYPE(); }
@@ -454,6 +454,11 @@
                 (!config.ignoreTransforms &&
                     MAP_TYPE[config.type].transformFeatures))
             { if (mapObj.hideLayers) { mapObj.hideLayers(); } }
+
+            var renderedRows = _.size(mapObj._primaryView._rows);
+            if (renderedRows >= mapObj._maxRows
+                || renderedRows >= mapObj._primaryView.totalRows)
+            { mapObj.mapElementLoaded(); }
 
             mapObj.finishLoading();
             callback();

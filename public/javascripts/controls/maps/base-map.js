@@ -201,6 +201,7 @@
             OpenLayers.ImgPath = '/images/openlayers/';
 
             mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);
+            mapObj._mapElementsLoading = mapObj._dataViews.length;
 
             mapObj.map.events.register('changebaselayer', null, function(evtObj)
             {
@@ -222,8 +223,6 @@
             { mapObj._displayLayers = []; }
 
             mapObj.initializeEvents();
-
-            mapObj.mapLoaded();
         },
 
         initializeEvents: function()
@@ -398,11 +397,21 @@
             }
         },
 
+        mapElementLoaded: function()
+        {
+            this._mapElementsLoading--;
+            if (!this._mapLoaded && this._mapElementsLoading <= 0)
+            {
+                this.mapLoaded();
+                this._mapLoaded = true;
+            }
+        },
+
         mapLoaded: function()
         {
             // This is called once a map has been loaded, as type-appropriate
             if (this._primaryView.snapshotting)
-            { setTimeout(this._primaryView.takeSnapshot, 3000); }
+            { setTimeout(this._primaryView.takeSnapshot, 2000); }
         },
 
         reset: function()
@@ -825,6 +834,8 @@
 
             if (!viewConfig._llKeys[rowKey])
             { viewConfig._llKeys[rowKey] = { rows: [] }; }
+            else
+            { viewConfig._requestedRows--; } // Duplicates are non-requests; for snapshotting.
 
             var ri = viewConfig._llKeys[rowKey].rows.length;
             _.each(viewConfig._llKeys[rowKey].rows, function(cachedRow, i)
@@ -1221,6 +1232,19 @@
                 viewConfig._lastRenderType = viewConfig._renderType;
                 if (viewConfig._clusterBoundaries)
                 { viewConfig._clusterBoundaries.removeAllFeatures(); }
+
+                // Only clusters on a point map.
+                if (viewConfig._renderType == 'clusters')
+                { mapObj.mapElementLoaded(); }
+                // Only points on a point map.
+                else if (viewConfig._displayLayer
+                    && !mapObj._featureSet && !viewConfig._heatmapLayer)
+                {
+                    var renderedRows = viewConfig._displayLayer.features.length;
+                    if (renderedRows >= _.size(viewConfig._llKeys)
+                        && renderedRows >= viewConfig._requestedRows)
+                    { mapObj.mapElementLoaded(); }
+                }
             });
             mapObj._lastZoomLevel = mapObj.currentZoom();
         },

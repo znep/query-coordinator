@@ -3,7 +3,7 @@
     var geographicProjection = new OpenLayers.Projection('EPSG:4326');
 
     $.Control.registerMixin('rastermap', {
-        mapLoaded: function()
+        initializeMap: function()
         {
             this._super();
 
@@ -40,6 +40,9 @@
                     { "element":mapObj.currentDom, "radius":25, "visible":true });
             viewConfig._dataStore = [];
             viewConfig._bounds = new OpenLayers.Bounds();
+
+            // For snapshotting.
+            viewConfig._renderedRows = 0;
             
             return layer;
         },
@@ -49,6 +52,7 @@
             var mapObj = this;
             if (geoType != 'point') { return; }
             var viewConfig = mapObj._byView[details.dataView.id];
+            viewConfig._renderedRows++;
 
             if (viewConfig._idList && viewConfig._idList[dupKey])
             { return true; }
@@ -118,6 +122,15 @@
                 if (viewConfig._rowsChanged)
                 { viewConfig._heatmapLayer.setDataSet({ max: 50, data: viewConfig._dataStore }); }
                 viewConfig._rowsChanged = false;
+
+                if (viewConfig._renderType == 'clusters')
+                { mapObj.mapElementLoaded(); }
+                else
+                {
+                    if (viewConfig._renderedRows >= viewConfig.view.totalRows
+                        || viewConfig._renderedRows >= viewConfig._requestedRows)
+                    { mapObj.mapElementLoaded(); }
+                }
             });
         },
 

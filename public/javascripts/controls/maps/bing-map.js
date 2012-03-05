@@ -16,6 +16,9 @@
             mapObj._baseLayers = [new OpenLayers.Layer.Bing(options)];
             mtSwitcher.registerMapType('Road', mapObj._baseLayers[0]);
             mapObj.map.addLayers(mapObj._baseLayers);
+
+            mapObj._mapElementsLoading++;
+            mapObj._baseLayers[0].events.register('loadend', mapObj, mapObj.mapElementLoaded);
         }
     }, {defaultZoom: 13}, 'socrataMap');
 })(jQuery);

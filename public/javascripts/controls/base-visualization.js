@@ -539,8 +539,10 @@
             var rowsToFetch = vizObj._maxRows - vizObj._rowsLoaded;
             if (rowsToFetch <= 0) { return; }
 
+            viewConfig._requestedRows = rowsToFetch;
             view.getRows(0, rowsToFetch, function(data)
             {
+                viewConfig._requestedRows = Math.min(view.totalRows, viewConfig._requestedRows);
                 _.defer(function()
                     { vizObj.handleRowsLoaded(data, view); });
                 vizObj._rowsLoaded += view.totalRows ? view.totalRows

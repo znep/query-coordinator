@@ -209,6 +209,9 @@
                 { isBaseLayer: true })];
             mtSwitcher.registerMapType('Roadmap', mapObj._baseLayers[0]);
             mapObj.map.addLayers(mapObj._baseLayers);
+
+            // loadend check is in adjustBounds, because GMaps likes to be special.
+            mapObj._mapElementsLoading++;
         },
 
         initializeMap: function()
@@ -227,6 +230,22 @@
                     mapObj.enqueueGeometry('point', evt.lonlat,
                         'geocodeMarker', { icon: '/images/pin.png' });
                 });
+        },
+
+        adjustBounds: function()
+        {
+            var mapObj = this;
+            mapObj._super();
+
+            if (mapObj._mapElementsLoading > 0)
+            {
+                var listener = google.maps.event.addListener(mapObj._baseLayers[0].mapObject,
+                    'tilesloaded', function()
+                {
+                    mapObj.mapElementLoaded();
+                    google.maps.event.removeListener(listener);
+                });
+            }
         },
 
         getRequiredJavascripts: function()

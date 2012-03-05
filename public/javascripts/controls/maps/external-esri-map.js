@@ -195,6 +195,8 @@
                     },
                     { opacity: opacity, ratio: 1, isBaseLayer: false });
 
+            layer.events.register('loadend', mapObj, mapObj.mapElementLoaded);
+
             var symbolSize = 3;
             if (view.metadata.custom_fields['drawingInfo.renderer'])
             {

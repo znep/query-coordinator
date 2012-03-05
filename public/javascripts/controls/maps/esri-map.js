@@ -25,6 +25,10 @@
                     mapObj.map.setLayerIndex(baseLayer, i);
                     return baseLayer;
                 });
+
+            mapObj._mapElementsLoading += mapObj._baseLayers.length;
+            _.each(mapObj._baseLayers, function(layer)
+            { layer.events.register('loadend', mapObj, mapObj.mapElementLoaded); });
         }
     }, {
         defaultLayers: [{type:'tile', url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'}],

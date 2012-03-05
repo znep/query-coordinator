@@ -288,6 +288,12 @@
 
                 mapObj.map.addLayer(layer)
             }
+            _.each(manipulableLayers, function(layer)
+            { layer.events.register('loadend', mapObj, mapObj.mapElementLoaded); });
+
+            mapObj._mapElementsLoading++;
+            if (!(mapObj.map.baseLayer instanceof OpenLayers.Layer.Google))
+            { mapObj.map.baseLayer.events.register('loadend', mapObj, mapObj.mapElementLoaded); }
 
             if (featureProtocol)
             {
@@ -384,6 +390,16 @@
             { mapObj.setViewport(mapObj._displayFormat.viewport); }
             else
             { mapObj.map.zoomToExtent(getDataBbox()); }
+
+            if (mapObj.map.baseLayer instanceof OpenLayers.Layer.Google)
+            {
+                var listener = google.maps.event.addListener(mapObj.map.baseLayer.mapObject,
+                    'tilesloaded', function()
+                {
+                    mapObj.mapElementLoaded();
+                    google.maps.event.removeListener(listener);
+                });
+            }
         },
 
         initializeEvents: function()

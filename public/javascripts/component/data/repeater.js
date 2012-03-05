@@ -1,3 +1,5 @@
+(function($) {
+
 $.component.Container.extend('Repeater', 'content', {
     position: 0,
     length: 100,
@@ -46,7 +48,7 @@ $.component.Container.extend('Repeater', 'content', {
         if ($.isBlank(this._properties.height) && (this._isDirty && !this.$dom.hasClass('serverRendered')))
         {
             this._tempHeight = 500;
-            this.$dom.css('height', this._tempHeight);
+            this.$dom.css('min-height', this._tempHeight);
         }
     },
 
@@ -93,6 +95,16 @@ $.component.Container.extend('Repeater', 'content', {
         }
         while (this.first) { this.first.destroy(); }
 
+        var doneWithRows = function()
+        {
+            _.defer(function()
+            {
+                var newViewPercent = getViewPercent(cObj);
+                if (cObj._viewPercent && newViewPercent != cObj._viewPercent)
+                { $(window).scrollTop(cObj._viewPercent * cObj.$dom.height() + cObj.$dom.offset().top); }
+            });
+        };
+
         var view;
         if (this._designing)
             // Render actual children as direct descendants
@@ -103,6 +115,7 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
                 var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
+                var callback = _.after(this._dataContext.dataset.visibleColumns, doneWithRows);
                 _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
                 {
                     if (_.all(exF, function(v, k)
@@ -110,7 +123,8 @@ $.component.Container.extend('Repeater', 'content', {
                         ($.isBlank(cObj._properties.includeFilter) ? true :
                                    _.any(incF, function(v, k)
                                        { return _.include($.makeArray(v), $.deepGetStringField(c, k)); })))
-                    { cObj._setRow(cObj._dataContext, i, {column: c}); }
+                    { cObj._setRow(cObj._dataContext, i, {column: c}, callback); }
+                    else { callback(); }
                 });
             }
             else
@@ -119,13 +133,15 @@ $.component.Container.extend('Repeater', 'content', {
                 var columnMap = this.columnMap = {};
                 _.each(view.visibleColumns, function(c) { columnMap[c.id] = c.fieldName; });
                 this._dataContext.dataset.getRows(this.position, this.length, function(rows) {
-                    _.each(rows, function(r) { cObj._setRow(r, r.index); });
+                    var callback = _.after(rows.length, doneWithRows);
+                    _.each(rows, function(r) { cObj._setRow(r, r.index, null, callback); });
                 });
             }
         }
         else if ($.subKeyDefined(this, '_dataContext.datasetList'))
         {
-            _.each(this._dataContext.datasetList, function(ds, i) { cObj._setRow(ds, i, ds); });
+            var callback = _.after(this._dataContext.datasetList.length, doneWithRows);
+            _.each(this._dataContext.datasetList, function(ds, i) { cObj._setRow(ds, i, ds, callback); });
         }
     },
 
@@ -134,11 +150,15 @@ $.component.Container.extend('Repeater', 'content', {
         if (!this._super.apply(this, arguments)) { return false; }
         var cObj = this;
 
+        // Only do this on first load
+        if ($.isBlank(cObj._viewPercent))
+        { cObj._viewPercent = getViewPercent(cObj); }
+
         var doRender = function()
         {
             if (!$.isBlank(cObj._tempHeight))
             {
-                cObj.$dom.css('height', '');
+                cObj.$dom.css('min-height', '');
                 // Hack: This triggers a re-show of items
                 $(window).scroll();
             }
@@ -151,7 +171,7 @@ $.component.Container.extend('Repeater', 'content', {
         return true;
     },
 
-    _setRow: function(row, index, entity)
+    _setRow: function(row, index, entity, callback)
     {
         // Calculate the index in current set of rows and ignore if outside current window
         var adjIndex = index - this.position;
@@ -216,6 +236,7 @@ $.component.Container.extend('Repeater', 'content', {
             if (!result)
             {
                 clone.destroy();
+                if (_.isFunction(callback)) { callback(); }
                 return;
             }
         }
@@ -230,6 +251,7 @@ $.component.Container.extend('Repeater', 'content', {
         if ($.isBlank(this._realContainer))
         { this._realContainer = this.add(this._properties.container || {type: 'Container'}); }
         this._realContainer.add(clone, position);
+        if (_.isFunction(callback)) { callback(); }
         delete this._initializing;
     },
 
@@ -244,3 +266,9 @@ $.component.Repeater.Clone = $.component.Container.extend({
     // No special behavior for clones at the moment
     _persist: false
 });
+
+var getViewPercent = function(cObj)
+{
+    return Math.max(0, $(window).scrollTop() - cObj.$dom.offset().top) / cObj.$dom.height();
+};
+})(jQuery);

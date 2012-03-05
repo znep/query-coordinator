@@ -395,6 +395,8 @@
                           function(c) { return "#"+$.rgbToHex(c); }
                 )});
             }
+            else
+            { mapObj._legend && mapObj._legend.$dom.hide(); }
         },
 
         mapElementLoaded: function()

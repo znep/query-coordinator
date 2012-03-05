@@ -14,6 +14,11 @@ class UserSessionsController < ApplicationController
   end
 
   def new
+    # They got redirected here from an insecure page, most likely
+    if current_user_session
+      Rails.logger.warn("User landed on login page but was already logged in: #{current_user_session.inspect}")
+      return redirect_back_or_default('/')
+    end
     @body_id = 'login'
     @user_session = UserSession.new
     if params[:referer_redirect]

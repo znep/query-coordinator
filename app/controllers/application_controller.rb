@@ -3,7 +3,8 @@
 
 class ApplicationController < ActionController::Base
   before_filter :hook_auth_controller,  :create_core_server_connection, :disable_frame_embedding,
-    :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie, :require_user, :set_user, :set_meta, :force_utf8_params
+    :adjust_format, :patch_microsoft_office, :redirect_logged_in_users_to_https, :sync_logged_in_cookie,
+    :require_user, :set_user, :set_meta, :force_utf8_params
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -31,6 +32,8 @@ class ApplicationController < ActionController::Base
       current_user_session.destroy
     end
     cookies.delete :remember_token
+    cookies.delete :logged_in
+
     @current_user = nil
     @current_user_session = nil
 
@@ -148,6 +151,16 @@ private
 
   def disable_frame_embedding
     headers['X-Frame-Options'] = 'SAMEORIGIN'
+  end
+
+  def redirect_logged_in_users_to_https
+    if cookies[:logged_in] && !request.ssl?
+      if Rails.env.development?
+        https_port = ":#{APP_CONFIG['ssl_port']}"
+      end
+      redirect_to "https://#{request.host}#{https_port}#{request.fullpath}"
+      return false
+    end
   end
 
   def sync_logged_in_cookie

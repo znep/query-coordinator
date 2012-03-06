@@ -1137,7 +1137,7 @@
                     {
                         $line.append($.tag({
                             tagName: 'span',
-                            contents: 'and',
+                            contents: $.t('core.and'),
                             'class': 'conjunction'
                         }));
                     }

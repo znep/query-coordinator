@@ -245,6 +245,14 @@
             <tbody>
               <%- start_index = (opts[:page] - 1) * opts[:limit] + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
+                <%- view_url = v.href(opts[:port])
+                    begin
+                      if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?
+                        view_url = v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last]
+                      end
+                    rescue
+                      # Chomp Chomp
+                    end -%>
                 <tr class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
@@ -262,7 +270,7 @@
                   <%- if opts[:grid_items][:domainIcon] -%>
                     <td class="domainIcon">
                       <%- if v.federated? -%>
-                        <a href="<%= v.href(opts[:port]) %>" rel="<%= rel_type %>">
+                        <a href="<%= view_url %>" rel="<%= rel_type %>">
                           <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
                             t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
                         </a>
@@ -272,15 +280,7 @@
 
                   <%- if opts[:grid_items][:nameDesc] -%>
                     <td class="nameDesc">
-                      <%- url = v.href(opts[:port])
-                          begin
-                            if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?
-                              url = v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last]
-                            end
-                          rescue
-                            # Chomp Chomp
-                          end -%>
-                      <a href="<%= url %>" class="name"
+                      <a href="<%= view_url %>" class="name"
                         rel="<%= rel_type %>"><%= v.name %></a>
                       <%- if !v.category.blank? -%>
                       <span class="category infoItem"><%= v.category %></span>
@@ -332,7 +332,7 @@
 
                   <%- if opts[:grid_items][:richSection] -%>
                     <td class="richSection">
-                      <a href="<%= v.href(opts[:port]) %>" class="nameLink" rel="<%= rel_type %>">
+                      <a href="<%= view_url %>" class="nameLink" rel="<%= rel_type %>">
                         <%- if opts[:use_federations] && v.federated? -%>
                           <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
                             t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
@@ -381,7 +381,7 @@
                   <%- if opts[:grid_items][:type] -%>
                     <td class="type type<%= v.display.type.capitalize %>"
                       title="<%= v.display.name.capitalize %>">
-                      <a href="<%= v.href(opts[:port]) %>"><div class="icon"></div></a>
+                      <a href="<%= view_url %>"><div class="icon"></div></a>
                     </td>
                   <%- end -%>
 

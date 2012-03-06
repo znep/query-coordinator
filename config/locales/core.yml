@@ -4,6 +4,7 @@ en:
       two_words_connector: " and "
       last_word_connector: ", and "
   core:
+    and: and
     or: or
     view_types:
       blob: non-tabular file or document
@@ -58,6 +59,7 @@ it:
       two_words_connector: " e "
       last_word_connector: ", e "
   core:
+    and: e
     or: o
     view_types:
       blob: file scaricabile

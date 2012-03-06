@@ -8,11 +8,12 @@
             mapObj._baseLayers = _.map(mapObj._displayFormat.layers || mapObj.settings.defaultLayers,
                 function(layer, i)
                 {
-                    var name = layer.url.match(/services\/([A-Za-z0-9_]+)\/MapServer/)[1]
-                        .replace(/_/g, ' ');
-                    var baseLayer = new OpenLayers.Layer.ArcGISCache(name, layer.url, {
+                    var url = layer.custom_url || layer.url;
+                    url = url.replace(/\/$/, '');
+                    var name = url.match(/\/([A-Za-z0-9_]+)\/MapServer/)[1].replace(/_/g, ' ');
+                    var baseLayer = new OpenLayers.Layer.ArcGISCache(name, url, {
                         isBaseLayer: i == 0,
-                        url: layer.url,
+                        url: url,
                         opacity: (layer.options || {}).opacity || 1.0,
                         projection: 'EPSG:102100',
                         tileSize: new OpenLayers.Size(256, 256),

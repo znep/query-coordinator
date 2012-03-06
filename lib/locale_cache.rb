@@ -29,7 +29,7 @@ module LocaleCache
   def self.render_translations(relevant_parts)
     self.load! unless @cache # in dev env, this class gets reloaded and the cache needs rebuilding
 
-    cache_key = relevant_parts.map{ |part| part.to_s }.sort.join('!')
+    cache_key = relevant_parts.map{ |part| part.to_s }.sort.join('!') + ":#{I18n.locale}"
     return @cache[cache_key] if @cache.has_key? cache_key
 
     result = {}

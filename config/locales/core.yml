@@ -71,8 +71,8 @@ it:
       table: tabella
     filters:
       formal:
-        equals: uguale
-        not_equals: non uguale
+        equals: uguale a
+        not_equals: diverso da
         starts_with: inizia con
         contains: contiene
         not_contains: non contiene
@@ -84,18 +84,18 @@ it:
         is_blank: vuoto
         is_not_blank: non vuoto
       informal:
-        equals: "è"
-        not_equals: "non è"
-        starts_with: inzia con
+        equals: uguale a
+        not_equals: diverso da
+        starts_with: inizia con
         contains: contiene
         not_contains: non contiene
-        less_than: "è minore di"
-        less_than_or_equals: "è al massimo"
-        greater_than: "è maggiore di"
-        greater_than_or_equals: "è almeno"
-        between: "è tra"
-        is_blank: "è vuoto"
-        is_not_blank: "non è vuoto"
+        less_than: minore di
+        less_than_or_equals: minore o uguale di
+        greater_than: maggiore di
+        greater_than_or_equals: maggiore o uguale di
+        between: tra
+        is_blank: vuoto
+        is_not_blank: non vuoto
     analytics:
       visit: visualizzazioni
     dialogs:

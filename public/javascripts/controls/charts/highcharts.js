@@ -246,6 +246,17 @@
                 if ($.isBlank(series))
                 { series = createSeries(chartObj, seriesVal, yc); }
 
+                // If we have multiple points for the same series at the same
+                // x-coordinate, we don't want them overwriting each other
+                // randomly; so we bail on duplicates (without removing the
+                // xCategory from the array); but we still want to allow
+                // updates for the row actually rendered at this point
+                if (!$.subKeyDefined(chartObj._rowIndices, row.id + '.' + series.index) &&
+                    _.any(series.data, function(datum) { return datum.x == basePt.x; }))
+                {
+                    hasPoints = true;
+                    return;
+                }
                 renderPoint(yc, series);
             });
 

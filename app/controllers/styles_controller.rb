@@ -2,7 +2,8 @@ require 'tmpdir'
 require 'digest/md5'
 
 class StylesController < ApplicationController
-  skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie
+  skip_before_filter :require_user, :set_user, :set_meta,
+    :redirect_logged_in_users_to_https, :sync_logged_in_cookie
 
   def individual
     if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-|\.)+$/)

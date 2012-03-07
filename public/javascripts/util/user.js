@@ -80,8 +80,8 @@ this.User = ServerModel.extend({
     {
         var user = this;
         user.makeRequest({url: '/users/' + user.id + '/email_interests.json',
-            data: JSON.stringify({eventTag: tag.toUpperCase(), extraInfo: info}),
-            type: 'POST', success: callback });
+            params: { interest: JSON.stringify({eventTag: tag.toUpperCase(), extraInfo: info}) },
+            type: 'POST', dataType: 'jsonp', success: callback });
     },
 
     getEmailInterest: function(tag, info, callback)
@@ -89,7 +89,7 @@ this.User = ServerModel.extend({
         var user = this;
         user.makeRequest({url: '/users/' + user.id + '/email_interests/' + tag.toUpperCase(),
             params: { extraInfo: info },
-            type: 'GET', pageCache: true, success: callback });
+            type: 'GET', dataType: 'jsonp', pageCache: true, success: callback });
     },
 
     removeEmailInterest: function(tag, info, callback)
@@ -97,7 +97,7 @@ this.User = ServerModel.extend({
         var user = this;
         user.makeRequest({url: '/users/' + user.id + '/email_interests/' + tag.toUpperCase(),
             params: { extraInfo: info },
-            type: 'DELETE', pageCache: false, success: callback });
+            type: 'DELETE', dataType: 'jsonp', pageCache: false, success: callback });
     },
 
     getProfileImageUrl: function(size)

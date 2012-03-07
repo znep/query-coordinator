@@ -270,7 +270,8 @@ var Dataset = ServerModel.extend({
         }
 
         this.makeRequest({url: '/views.json', type: 'POST',
-            data: JSON.stringify(ds),
+            dataType: 'jsonp',
+            params: { view: JSON.stringify(ds) },
             error: errorCallback,
             success: dsCreated
         });
@@ -1166,7 +1167,7 @@ var Dataset = ServerModel.extend({
     updateRating: function(rating, successCallback, errorCallback)
     {
         this.makeRequest({url: '/views/' + this.id + '/ratings.json',
-            type: 'POST', data: JSON.stringify(rating),
+            type: 'POST', params: { rating: JSON.stringify(rating) }, dataType: 'jsonp',
             success: successCallback, error: errorCallback});
     },
 
@@ -1293,7 +1294,7 @@ var Dataset = ServerModel.extend({
         };
 
         ds.makeRequest({url: '/views/' + ds.id + '/comments.json',
-                type: 'POST', data: JSON.stringify(comment),
+                type: 'POST', dataType:'jsonp', params: { comment: JSON.stringify(comment) },
                 success: addedComment, error: errorCallback});
     },
 
@@ -1305,7 +1306,7 @@ var Dataset = ServerModel.extend({
         if ($.isBlank(com)) return;
 
         ds.makeRequest({url: '/views/' + this.id + '/comments/' +
-                commentId + '.json', type: 'DELETE',
+                commentId + '.json', type: 'DELETE', dataType: 'jsonp',
                 success: successCallback, error: errorCallback});
     },
 
@@ -1321,8 +1322,8 @@ var Dataset = ServerModel.extend({
         }
 
         ds.makeRequest({url: '/views/' + this.id + '/comments/' +
-                commentId + '.json', type: 'PUT',
-                data: JSON.stringify({ flags: [ 'flag' ] }),
+                commentId + '.json', type: 'PUT', dataType: 'jsonp',
+                params: { method: 'flag' },
                 success: successCallback, error: errorCallback});
     },
 
@@ -1345,7 +1346,7 @@ var Dataset = ServerModel.extend({
         }
 
         ds.makeRequest({url: '/views/' + ds.id + '/comments/' +
-                commentId + '/ratings.json', params: {thumbsUp: thumbsUp},
+                commentId + '/ratings.json', dataType: 'jsonp', params: {thumbsUp: thumbsUp},
                 type: 'POST', success: successCallback, error: errorCallback});
     },
 

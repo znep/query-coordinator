@@ -538,7 +538,7 @@ module Canvas
         fv.href = real_view.href
 
         # HACK: URL override for featured views
-        if self.properties.urlOverride
+        if self.properties && self.properties.urlOverride
           begin
             if !real_view.merged_metadata['custom_fields'][self.properties.urlOverride.first][self.properties.urlOverride.last].blank?
               fv.href = real_view.merged_metadata['custom_fields'][self.properties.urlOverride.first][self.properties.urlOverride.last]

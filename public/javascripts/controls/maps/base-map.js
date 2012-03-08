@@ -184,13 +184,11 @@
 
                 var $layers = mapObj.$dom().siblings('#mapLayers');
                 $layers.find('a.button').click(function() {
-                    mapObj._primaryView.makeRequest({ url: '/api/views', type: 'GET',
-                        success: function(data)
+                    Dataset.search({ limitTo: 'maps' },
+                        function(data)
                         {
-                            var views = _(data).chain()
-                                .select(function(view) { return view.displayType == 'map'; })
-                                .reject(function(view) { return view.viewType == 'geo'; })
-                                .value();
+                            var views = _.reject(data.views,
+                                function(view) { return view.viewType == 'geo'; });
                             var $select = $.tag({ tagName: 'li', contents: [{ tagName: 'select',
                                 contents: _.map(views, function(obj)
                                 { return { tagName: 'option', value: obj.id, contents: obj.name }; })
@@ -217,7 +215,7 @@
                             }).uniform();
                             $layers.find('ul.data').show().append($select);
                         }
-                    });
+                    );
                 });
 
             }
@@ -1466,27 +1464,30 @@
                 viewConfig._iconCol =
                     view.columnForTCID(mapObj._displayFormat.plot.iconId);
 
-                var aggs = {};
-                _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
+                if (view == mapObj._primaryView)
                 {
-                    var c = view.columnForTCID(
-                        view.displayFormat.plot[colName + 'Id']);
-                    if (!$.isBlank(c))
+                    var aggs = {};
+                    _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
                     {
-                        viewConfig['_' + colName + 'Col'] = c;
-                        aggs[c.id] = ['maximum', 'minimum'];
-                        if (colName == 'quantity')
-                        { aggs[c.id].push('sum'); }
+                        var c = view.columnForTCID(
+                            mapObj._displayFormat.plot[colName + 'Id']);
+                        if (!$.isBlank(c))
+                        {
+                            viewConfig['_' + colName + 'Col'] = c;
+                            aggs[c.id] = ['maximum', 'minimum'];
+                            if (colName == 'quantity')
+                            { aggs[c.id].push('sum'); }
+                        }
+                    });
+
+                    if (!_.isEmpty(aggs))
+                    {
+                        if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
+                        mapObj._delayRenderData++;
+
+                        view.getAggregates(function()
+                        { calculateSegmentSizes(mapObj, aggs); }, aggs);
                     }
-                });
-
-                if (!_.isEmpty(aggs))
-                {
-                    if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
-                    mapObj._delayRenderData++;
-
-                    view.getAggregates(function()
-                    { calculateSegmentSizes(mapObj, aggs); }, aggs);
                 }
             });
 

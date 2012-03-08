@@ -547,6 +547,7 @@
 
             if (!$.isBlank(cObj.$dom))
             {
+                cObj.$dom.removeClass('serverRendered');
                 if (!cObj._properties.hidden && cObj.$dom.hasClass('hide'))
                 {
                     cObj.$dom.removeClass('hide');
@@ -628,7 +629,7 @@
             var startDCGet = function()
             { cObj.startLoading(); };
 
-            var cIds = $.makeArray(properties.contextId);
+            var cIds = cObj._stringSubstitute($.makeArray(properties.contextId));
             if ((!$.isBlank(properties.context) || !$.isBlank(cIds)) &&
                     ($.isBlank(cObj._dataContext) || _.any($.makeArray(cObj._dataContext), function(dc)
                                                            { return !_.include(cIds, dc.id); })))

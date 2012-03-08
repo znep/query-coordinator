@@ -181,7 +181,7 @@ module Canvas2
           if (defined? @@pending_contexts) && (((@@pending_contexts || {})[id]).is_a? Array)
             threads = @@pending_contexts[id].map do |req|
               Thread.new do
-                ds_new = ds.deep_clone
+                ds_new = ds.deep_clone(View)
                 got_dataset(ds_new, req[:config])
                 req[:callback].call(ds_new)
               end
@@ -257,7 +257,7 @@ module Canvas2
       if !config['contextId'].blank?
         context = available_contexts[config['contextId']]
         if !context.blank?
-          ds = context[:dataset].deep_clone
+          ds = context[:dataset].deep_clone(View)
         else
           @@pending_contexts ||= {}
           @@pending_contexts[config['contextId']] ||= []

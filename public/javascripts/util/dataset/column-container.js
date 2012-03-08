@@ -283,6 +283,8 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             {
                 if (!(c instanceof Column))
                 { c = new Column(c, cont); }
+                else if ($.isBlank(c.view))
+                { c.setParent(cont); }
                 _columnIDLookup[c.id] = c;
                 if (c.lookup != c.id)
                 { _columnIDLookup[c.lookup] = c; }

@@ -288,9 +288,12 @@
         var isDirty = false; // keep track of whether we've ever deviated from saved
         var isEdit = false;  // keep track of whether we're in edit mode
 
-        // pull some things out of options for easier access
-        var datasets = options.datasets;
-        var dataset = datasets[0]; // grab the first one; eg fsckLegacy only makes sense for one anyway
+        // Pull some things out of options for easier access. Create unique IDs
+        // for each dataset because with components & dataContext, you might
+        // have multiple instances of the same dataset loaded
+        var datasets = _.map(options.datasets, function(ds)
+                { return {dataset: ds, ufID: ds.id + '_' + _.uniqueId()}; });
+        var dataset = datasets[0].dataset; // grab the first one; eg fsckLegacy only makes sense for one anyway
         var filterableColumns = options.filterableColumns; // this will change so save it off
         var rootCondition = options.rootCondition; // note: this may be null/undef
 
@@ -1359,10 +1362,14 @@
                 if ($.subKeyDefined(aggCC, 'top'))
                 {
                     aggCC.top = aggCC.top.sort(function(a, b)
-                            { return (a.item == b.item ? 0 : a.item > b.item ? 1 : -1); });
+                    {
+                        return (a.item == b.item ? 0 : (a.item > b.item ? 1 : -1) *
+                            (metadata.reverseSort ? -1 : 1));
+                    });
                     if (!metadata.sortAlphabetically)
                     {
-                        aggCC.top = aggCC.top.sort(function(a, b) { return b.count - a.count; });
+                        aggCC.top = aggCC.top.sort(function(a, b)
+                            { return (b.count - a.count) * (metadata.reverseSort ? -1 : 1); });
                     }
                 }
                 if (_.isFunction(callback)) { callback(aggCC); }
@@ -1395,8 +1402,9 @@
                 finalProcess();
             };
 
-            _.each(datasets, function(ds)
+            _.each(datasets, function(ufDS)
             {
+                var ds = ufDS.dataset;
                 var c = ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]);
                 if (!$.subKeyDefined(c, 'cachedContents'))
                 {
@@ -1779,10 +1787,10 @@
 
             var datasetConditions = {};
             var datasetQueries = {};
-            _.each(datasets, function(ds)
+            _.each(datasets, function(ufDS)
             {
                 // OK, we need to play nice with existing queries...
-                var query = $.extend(true, {}, ds.query);
+                var query = $.extend(true, {}, ufDS.dataset.query);
                 var curFC;
                 var newRoot = {
                     type: 'operator',
@@ -1813,8 +1821,8 @@
                 // Whew; now that we're done setting everything up, store off the actual filter
                 // we'll be working with; and also the top-level condition so we can properly
                 // call update() later
-                datasetConditions[ds.id] = curFC;
-                datasetQueries[ds.id] = query;
+                datasetConditions[ufDS.ufID] = curFC;
+                datasetQueries[ufDS.ufID] = query;
             });
 
             $filterConditions.each(function()
@@ -1928,15 +1936,16 @@
                 condition.children = $.extend(true, [], children);
 
                 // go through each dataset we have, update if necessary
-                _.each(datasets, function(ds)
+                _.each(datasets, function(ufDS)
                 {
+                    var ds = ufDS.dataset;
                     // Adjust for this dataset
                     columnDefinition.columnId =
                         ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).id;
 
-                    var dsCondition = $.extend({}, condition);
+                    var dsCondition = $.extend(true, {}, condition);
                     dsCondition.children = $.extend(true, [], children);
-                    datasetConditions[ds.id].children.push(dsCondition);
+                    datasetConditions[ufDS.ufID].children.push(dsCondition);
                 });
 
                 if (children.length > 0)
@@ -1947,14 +1956,15 @@
 
             // now let's see how clean we are. if we're clean, no need to update the dataset.
             // TODO: can't really just blindly iterate through this with one isDirty. rethink.
-            _.each(datasets, function(ds)
+            _.each(datasets, function(ufDS)
             {
+                var ds = ufDS.dataset;
                 if (isDirty ||
                     !_.isEqual(cleanFilter($.extend(true, {}, ds.query.filterCondition)),
                                cleanFilter($.extend(true, {}, rootCondition))))
                 {
                     // fire it off
-                    ds.update({ query: datasetQueries[ds.id] });
+                    ds.update({ query: datasetQueries[ufDS.ufID] });
 
                     isDirty = true;
                 }

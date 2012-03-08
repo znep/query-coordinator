@@ -1,5 +1,4 @@
 MAIN SITE:
-
 1-8 dataset grid sidebar tabs
 9 dataset grid active sidebar tab
 50 menu button
@@ -13,12 +12,10 @@ MAIN SITE:
 
 
 DATASETv2:
-
 99 toolbar
 
 
 SIDEBAR:
-
 1 remove link for repeaters
 50 modal (surrounding) overlay
 60 pane overlay
@@ -29,12 +26,21 @@ SIDEBAR:
 
 
 WIDGET:
-
 50 subheader
 51 header
 2998: main menu dropdown
 
 
 CONTROLS:
-
 3001 color_selector
+
+
+DATA RENDERING:
+999 map data
+1000 mapLayers, mapLegend
+1004 map controls
+
+
+CANVAS:
+1500 FixedContainer
+2000 canvas edit bar

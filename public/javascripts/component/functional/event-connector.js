@@ -5,50 +5,78 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
     {
         var cObj = this;
         var oldEvent = cObj._properties.sourceEvent;
-        cObj._super.apply(cObj, arguments);
+        var parSuper = cObj._super;
 
-        if (properties.sourceComponentId != (cObj._sourceComponent || {}).id)
+        var doUpdate = function()
         {
-            if (!$.isBlank(cObj._sourceComponent))
-            { cObj._sourceComponent.unbind(null, null, this); }
-            cObj._sourceComponent = $.component(properties.sourceComponentId);
-            oldEvent = null;
-        }
+            parSuper.call(cObj, cObj._stringSubstitute(properties));
 
-        if (oldEvent != properties.sourceEvent && !$.isBlank(cObj._sourceComponent))
-        {
-            cObj._sourceComponent.unbind(oldEvent, null, cObj);
-            cObj._sourceComponent.bind(properties.sourceEvent, function(args)
-                {
-                    if (!$.isBlank(cObj._destComponent))
-                    {
-                        var p = {};
-                        _.each(cObj._properties.transformations, function(t)
-                        { $.deepSet.apply($, [p, getValue(t, args)].concat(t.destProperty.split('.'))); });
-                        cObj._destComponent.properties(p);
-                    }
+            var srcCompId = (cObj._properties.parentPrefix || '') +
+                cObj._properties.sourceComponentId;
+            if (srcCompId != (cObj._sourceComponent || {}).id)
+            {
+                if (!$.isBlank(cObj._sourceComponent))
+                { cObj._sourceComponent.unbind(null, null, this); }
+                cObj._sourceComponent = $.component(srcCompId);
+                oldEvent = null;
+            }
 
-                    if ($.subKeyDefined(cObj, '_destContext.dataset'))
+            if (oldEvent != cObj._properties.sourceEvent && !$.isBlank(cObj._sourceComponent))
+            {
+                cObj._sourceComponent.unbind(oldEvent, null, cObj);
+                cObj._sourceComponent.bind(cObj._properties.sourceEvent,
+                    function(args)
                     {
-                        _.each(cObj._properties.transformations, function(t)
+                        if (!$.isBlank(cObj._destComponent))
                         {
-                            var dc = cObj._destContext.dataset.columnForID(t.destColFilter);
-                            if ($.isBlank(dc)) { return; }
-                            dc.filter(getValue(t, args));
-                        });
-                    }
-                }, cObj);
-        }
+                            var p = {};
+                            _.each(cObj._properties.transformations, function(t)
+                            {
+                                $.deepSet.apply($, [p, getValue(t, args)].concat(t.destProperty.split('.')));
+                            });
+                            cObj._destComponent.properties(p);
+                        }
 
-        if (properties.destComponentId != (cObj._destComponent || {}).id)
-        { cObj._destComponent = $.component(properties.destComponentId); }
+                        if ($.subKeyDefined(cObj, '_destContext.dataset'))
+                        {
+                            _.each(cObj._properties.transformations, function(t)
+                            {
+                                var colParts = t.destColFilter.split(':');
+                                var dc = cObj._destContext.dataset.columnForIdentifier(colParts[0]);
+                                if ($.isBlank(dc)) { return; }
+                                var v = getValue(t, args);
+                                if (colParts.length > 2)
+                                {
+                                    var o = {};
+                                    var orig = o;
+                                    for (var i = 2; i < colParts.length - 1; i++)
+                                    {
+                                        o[colParts[i]] = {};
+                                        o = o[colParts[i]];
+                                    }
+                                    o[colParts[i]] = v;
+                                    v = orig;
+                                }
+                                dc.filter(v, colParts[1]);
+                            });
+                        }
+                    }, cObj);
+            }
 
-        if (properties.destContextId != (cObj._destContext || {}).id)
-        {
-            delete cObj._destContext;
-            $.dataContext.getContext(properties.destContextId, function(dc)
-            { cObj._destContext = dc; });
-        }
+            var destCompId = (cObj._properties.parentPrefix || '') + cObj._properties.destComponentId;
+            if (destCompId != (cObj._destComponent || {}).id)
+            { cObj._destComponent = $.component(destCompId); }
+
+            if (cObj._properties.destContextId != (cObj._destContext || {}).id)
+            {
+                delete cObj._destContext;
+                $.dataContext.getContext(cObj._properties.destContextId, function(dc)
+                { cObj._destContext = dc; });
+            }
+        };
+
+        if (!cObj._updateDataSource(properties, doUpdate))
+        { doUpdate(); }
     }
 });
 
@@ -58,7 +86,7 @@ var getValue = function(trans, args)
     if (!$.isBlank(trans.sourceColumn) && !$.isBlank(args.row) &&
         $.subKeyDefined(args, 'dataContext.dataset'))
     {
-        var c = args.dataContext.dataset.columnForID(trans.sourceColumn);
+        var c = args.dataContext.dataset.columnForIdentifier(trans.sourceColumn);
         if (!$.isBlank(c))
         { v = c.renderType.renderer(args.row[c.lookup], c, true); }
     }

@@ -7,13 +7,7 @@ var Column = ServerModel.extend({
 
         $.extend(this, c);
 
-        if (parent instanceof Column)
-        {
-            this.parentColumn = parent;
-            this.view = parent.view;
-        }
-        else // if (parent instanceof Dataset) // NOTE: if this ever becomes not the case, fixme for Node
-        { this.view = parent; }
+        this.setParent(parent);
 
         if (this.dataTypeName == 'nested_table')
         {
@@ -203,6 +197,17 @@ var Column = ServerModel.extend({
         else if (oldAgg !== col.format.aggregate) { col.view.aggregatesChanged(); }
     },
 
+    setParent: function(parent)
+    {
+        if (parent instanceof Column)
+        {
+            this.parentColumn = parent;
+            this.view = parent.view;
+        }
+        else // if (parent instanceof Dataset) // NOTE: if this ever becomes not the case, fixme for Node
+        { this.view = parent; }
+    },
+
     filter: function(value, subColumnType)
     {
         var col = this;
@@ -220,6 +225,10 @@ var Column = ServerModel.extend({
         var colItem = { type: 'column', columnId: col.id };
         if (!$.isBlank(subColumnType) && _.isString(subColumnType))
         { colItem.value = subColumnType.toUpperCase(); };
+
+        // Special handling for human_address in location
+        if (col.renderTypeName == 'location' && !$.isBlank(subColumnType) && $.isPlainObject(value))
+        { value = JSON.stringify(value); }
 
         // Update the parent view with the new filter
         var filterItem = { type: 'operator', value: 'EQUALS', children: [

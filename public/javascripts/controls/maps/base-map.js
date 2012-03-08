@@ -13,6 +13,9 @@
 
     Proj4js.defs["EPSG:102100"] = "+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null";
 
+    var isNormalMap
+        = function(_view) { return !_.isUndefined((_view.displayFormat || {}).plotStyle); };
+
     blist.openLayers.MapTypeSwitcher = OpenLayers.Class(OpenLayers.Control, {
 
         EVENT_TYPES: ['maptypechange'],
@@ -187,18 +190,15 @@
                             var views = _(data).chain()
                                 .select(function(view) { return view.displayType == 'map'; })
                                 .reject(function(view) { return view.viewType == 'geo'; })
-                                .map(function(view) { return { name: view.name, id: view.id }; })
                                 .value();
                             var $select = $.tag({ tagName: 'li', contents: [{ tagName: 'select',
                                 contents: _.map(views, function(obj)
-                                { return '<option value="' + obj.id + '">' +
-                                    obj.name + '</option>'; })
+                                { return { tagName: 'option', value: obj.id, contents: obj.name }; })
                                 }]
                             });
                             $select.find('select').change(function()
                             {
                                 var uid = $select.find('option:selected').val();
-                                if (!uid.match(/[a-z0-9]{4}-[a-z0-9]{4}/)) { return; }
                                 mapObj._primaryView.update({ displayFormat:
                                     $.extend({}, mapObj._displayFormat, { compositeMembers:
                                         (mapObj._displayFormat.compositeMembers || []).concat(uid) })
@@ -844,8 +844,9 @@
                     { details.size = i + 1; break; }
                 }
             }
-            if (view.displayFormat.color)
-            { details.color = view.displayFormat.color; }
+            var color = (isNormalMap(view) ? view.displayFormat : mapObj._displayFormat).color;
+            if (color)
+            { details.color = color; }
             if (viewConfig._colorValueCol
                 && mapObj._segments[viewConfig._colorValueCol.id])
             {

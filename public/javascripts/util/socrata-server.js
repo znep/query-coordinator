@@ -73,34 +73,6 @@ var ServerModel = Model.extend({
         { req.params = $.extend({accessType: model.accessType}, req.params); }
         else { $.debug('making call without accessType!', req); }
 
-        if (req.dataType == 'jsonp')
-        {
-            // Always use secure connection
-            if (req.url.indexOf(blist.secureUrl) < 0)
-            { req.url = blist.secureUrl + req.url; }
-
-            if ($.isBlank(req.params.method))
-            {
-                var method;
-                switch (req.type.toLowerCase())
-                {
-                    case 'post':
-                        req.params.method = 'create';
-                        break;
-                    case 'put':
-                        req.params.method = 'update';
-                        break;
-                    case 'delete':
-                        req.params.method = 'delete';
-                        break;
-                    default:
-                        // it's a get, just let it do its thing
-                        break;
-                }
-            }
-        }
-
-
         if (!$.isBlank(req.params))
         {
              req.url += (req.url.indexOf('?') >= 0 ? '&' : '?') +

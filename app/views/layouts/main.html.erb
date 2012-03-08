@@ -136,7 +136,6 @@ http://www.socrata.com
   <%- end -%>
 
   <script type="text/javascript">
-    blist.secureUrl = "https://<%= request.host %>:<%= APP_CONFIG['ssl_port'] %>";
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
 

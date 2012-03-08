@@ -23,4 +23,7 @@
    <%= render :partial => "accounts/signup_form_data_new", :locals => { :f => f, :is_modal => true } %>
   <% end %>
 
+  <script type="text/javascript">
+    blist.secureUrl = "https://<%= request.host %>:<%= APP_CONFIG['ssl_port'] %>";
+  </script>
 </div>

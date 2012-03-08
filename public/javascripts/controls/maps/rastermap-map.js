@@ -6,6 +6,7 @@
         initializeMap: function()
         {
             this._super();
+            this.$dom().siblings('#mapLayers').hide();
 
             if ($.browser.msie && parseInt($.browser.version) < 9)
             {

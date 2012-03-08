@@ -125,7 +125,8 @@
         initializeFlyouts: function(columns)
         {
             var vizObj = this;
-            vizObj._flyoutLayout = vizObj.generateFlyoutLayout(columns);
+            vizObj._flyoutLayout = vizObj.generateFlyoutLayout(columns,
+                (vizObj._displayFormat || {}).flyoutsNoLabel, vizObj._primaryView);
             // Getting the template initializes RR
             if ($.isBlank(vizObj.richRenderer)) { vizObj.$flyoutTemplate(); }
             vizObj.richRenderer.setConfig(vizObj._flyoutLayout);
@@ -159,7 +160,7 @@
             return !$.isBlank(this._flyoutLayout);
         },
 
-        generateFlyoutLayout: function(columns)
+        generateFlyoutLayout: function(columns, noLabel, view)
         {
             var vizObj = this;
             // Override if you want a different layout
@@ -172,7 +173,7 @@
                     {type: 'columnLabel', tableColumnId: dc.tableColumnId, fieldName: dc.fieldName},
                     {type: 'columnData', tableColumnId: dc.tableColumnId, fieldName: dc.fieldName}
                 ]};
-                if ((vizObj._displayFormat || {}).flyoutsNoLabel)
+                if (noLabel)
                 { row.fields.shift(); }
                 col.rows.push(row);
             });
@@ -182,17 +183,40 @@
         renderFlyout: function(row, view)
         {
             var vizObj = this;
+            var viewConfig = vizObj._byView[view.id];
 
             var isPrimaryView = vizObj._primaryView == view;
-            var $item = vizObj.$flyoutTemplate().clone()
-                    .removeClass('template');
+            var $item;
+            if (isPrimaryView)
+            { $item = vizObj.$flyoutTemplate().clone().removeClass('template'); }
+            else
+            {
+                if (!viewConfig._$flyoutTemplate)
+                {
+                    viewConfig._$flyoutTemplate = vizObj.$dom()
+                        .siblings('.flyoutRenderer.template[data-viewId="' + view.id + '"]');
+                    if (viewConfig._$flyoutTemplate.length < 1)
+                    {
+                        vizObj.$dom().after($.tag({tagName: 'div', 'data-viewId': view.id,
+                            'class': ['template', 'row',
+                                'richRendererContainer', 'flyoutRenderer'] }));
+                        viewConfig._$flyoutTemplate = vizObj.$dom()
+                            .siblings('.flyoutRenderer.template[data-viewId="' + view.id + '"]');
+                    }
+                    viewConfig.richRenderer = viewConfig._$flyoutTemplate.richRenderer({
+                        columnCount: 1, view: view });
+                    viewConfig.richRenderer.setConfig(vizObj.generateFlyoutLayout(
+                        (view.displayFormat.plot || {}).descriptionColumns,
+                        view.displayFormat.flyoutsNoLabel, view));
+                    viewConfig.richRenderer.renderLayout();
+                }
+                $item = viewConfig._$flyoutTemplate.clone().removeClass('template');
+            }
 
-            // In composite views, we don't have a displayFormat, so there are no
-            // bits to show. Just point them at the row data in full.
-            if (!isPrimaryView)
-            { $item.empty(); }
-            if (vizObj.hasFlyout())
+            if (isPrimaryView && vizObj.hasFlyout())
             { vizObj.richRenderer.renderRow($item, row, true); }
+            if (!isPrimaryView && viewConfig.richRenderer)
+            { viewConfig.richRenderer.renderRow($item, row, true); }
 
             if (vizObj.settings.showRowLink && !vizObj._primaryView.displayFormat.hideRowLink)
             {
@@ -263,17 +287,19 @@
                 {
                     if (vizObj._obsolete) { return; }
                     if (fullReset) { handleChange(true); }
-                    else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj._primaryView); }
+                    else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, this); }
                 };
                 var handleQueryChange = function() {
                     if (vizObj._updatingViewport) return;
                     handleChange(true);
                 };
 
-                vizObj._primaryView
+                _.each(vizObj._dataViews, function(view)
+                { view
                     .bind('query_change', handleQueryChange, vizObj)
                     .bind('row_change', handleRowChange, vizObj)
                     .bind('displayformat_change', handleChange, vizObj);
+                });
 
                 vizObj._boundViewEvents = true;
             }

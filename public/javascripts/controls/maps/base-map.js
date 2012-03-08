@@ -97,6 +97,22 @@
         CLASS_NAME: 'blist.openLayers.MapTypeSwitcher'
     });
 
+    // This should be a contrib back into OpenLayers source.
+    // The correct way to manipulate Layer/Vector.js stuff is its root container.
+    OpenLayers.Layer.Vector.prototype.setOpacity = function(opacity)
+    {
+        if (opacity != this.opacity) {
+            this.opacity = opacity;
+            this.renderer.root.style.opacity = opacity;
+            if (this.map != null) {
+                this.map.events.triggerEvent("changelayer", {
+                    layer: this,
+                    property: "opacity"
+                });
+            }
+        }
+    };
+
     $.Control.extend('socrataMap', {
         _getMixins: function(options)
         {
@@ -144,13 +160,15 @@
             if (mapObj.$dom().siblings('#mapLayers').length < 1)
             {
                 mapObj.$dom()
-                    .before('<div id="mapLayers" class="commonForm hide">' +
+                    .before('<div id="mapLayers" class="commonForm">' +
                     '<a href="#toggleLayers" class="toggleLayers">' +
                     'Layer Options' +
                     '</a>' +
                     '<div class="contentBlock hide">' +
                     '<h3 class="base">Base Layers</h3><ul class="base"></ul>' +
                     '<h3 class="data">Data Layers</h3><ul class="data"></ul>' +
+                    '<a class="button addValue add"><span class="icon"></span>' +
+                        'Add Dataset Layer</a>' +
                     '</div>' +
                     '</div>');
                 mapObj.$dom().siblings('#mapLayers').find('a.toggleLayers')
@@ -160,8 +178,49 @@
                         mapObj.$dom().siblings('#mapLayers')
                             .find('.contentBlock').toggleClass('hide');
                     });
+
+                var $layers = mapObj.$dom().siblings('#mapLayers');
+                $layers.find('a.button').click(function() {
+                    mapObj._primaryView.makeRequest({ url: '/api/views', type: 'GET',
+                        success: function(data)
+                        {
+                            var views = _(data).chain()
+                                .select(function(view) { return view.displayType == 'map'; })
+                                .reject(function(view) { return view.viewType == 'geo'; })
+                                .map(function(view) { return { name: view.name, id: view.id }; })
+                                .value();
+                            var $select = $.tag({ tagName: 'li', contents: [{ tagName: 'select',
+                                contents: _.map(views, function(obj)
+                                { return '<option value="' + obj.id + '">' +
+                                    obj.name + '</option>'; })
+                                }]
+                            });
+                            $select.find('select').change(function()
+                            {
+                                var uid = $select.find('option:selected').val();
+                                if (!uid.match(/[a-z0-9]{4}-[a-z0-9]{4}/)) { return; }
+                                mapObj._primaryView.update({ displayFormat:
+                                    $.extend({}, mapObj._displayFormat, { compositeMembers:
+                                        (mapObj._displayFormat.compositeMembers || []).concat(uid) })
+                                });
+                                Dataset.createFromViewId(uid, function(dataset)
+                                {
+                                    mapObj._dataViews.push(dataset)
+                                    mapObj._byView[dataset.id] = { view: dataset };
+                                    if (mapObj.getColumns())
+                                    {
+                                        mapObj._boundViewEvents = false;
+                                        mapObj.ready();
+                                    }
+                                    mapObj.getDataForAllViews();
+                                });
+                            }).uniform();
+                            $layers.find('ul.data').show().append($select);
+                        }
+                    });
+                });
+
             }
-            else { mapObj.$dom().siblings('#mapLayers').addClass('hide'); }
 
             mapObj.initializeFlyouts((mapObj._displayFormat.plot || {}).descriptionColumns);
 
@@ -258,98 +317,9 @@
                 .register('attributionupdated', null, function() { mapObj.fixMapLayers(); });
 
             mapObj._hoverTimers = {};
-            var unselectFeature = function(feature)
-            {
-                if (feature && feature.layer)
-                { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
-                mapObj.closePopup();
-            };
 
-            mapObj.$dom().on('click', 'circle, image, path, text, oval, rect, shape', function(evt)
-            {
-                var features = findFeatureFromEvent(mapObj, evt);
-                if (_.isEmpty(features)) { return null; }
-                _.each(features, function(datum)
-                {
-                    var feature = datum.feature;
-                    var layer = datum.layer;
-                    if (layer.dataViewConfig._renderType == 'clusters')
-                    {
-                        if (mapObj.currentZoom()
-                            < mapObj.map.getZoomForExtent(feature.attributes.bbox))
-                        { mapObj.map.zoomToExtent(feature.attributes.bbox); }
-                        else
-                        {
-                            mapObj.map.setCenter(
-                                feature.geometry.getBounds().getCenterLonLat(),
-                                mapObj.currentZoom() + 1);
-                        }
-                    }
-                    else
-                    {
-                        var lonlat = layer.getLonLatFromViewPortPx(
-                            mapObj.map.events.getMousePosition(evt));
-                        onFeatureSelect(mapObj, feature, lonlat, function(evt)
-                            {
-                                if (!feature.layer)
-                                { feature = mapObj._markers[feature.attributes.dupKey]; }
-                                unselectFeature(feature);
-                            });
-                        var dupKey = feature.attributes.dupKey;
-                        if (!$.isBlank(mapObj._hoverTimers[dupKey]))
-                        {
-                            clearTimeout(mapObj._hoverTimers[dupKey]);
-                            delete mapObj._hoverTimers[dupKey];
-                        }
-                    }
-                });
-            });
-            mapObj.$dom().on('mouseover', 'circle, image, path, text, oval, rect, shape', function(evt)
-            {
-                var features = findFeatureFromEvent(mapObj, evt);
-                if (_.isEmpty(features)) { return null; }
-                _.each(features, function(datum)
-                {
-                    var feature = datum.feature;
-                    var layer = datum.layer;
-                    if (layer.dataViewConfig._renderType == 'clusters')
-                    { layer.dataViewConfig._clusterBoundaries
-                        .addFeatures(feature.attributes.boundary()); }
-                    else
-                    {
-                        if (feature.attributes.animating) { return; }
-                        var dupKey = feature.attributes.dupKey;
-                        if (!$.isBlank(mapObj._hoverTimers[dupKey]))
-                        {
-                            clearTimeout(mapObj._hoverTimers[dupKey]);
-                            delete mapObj._hoverTimers[dupKey];
-                        }
-                        mapObj._primaryView.highlightRows(feature.attributes.rows);
-                    }
-                });
-            });
-            mapObj.$dom().on('mouseout', 'circle, image, path, text, oval, rect, shape', function(evt)
-            {
-                var features = findFeatureFromEvent(mapObj, evt);
-                if (_.isEmpty(features)) { return null; }
-                _.each(features, function(datum)
-                {
-                    var feature = datum.feature;
-                    var layer = datum.layer;
-                    if (layer.dataViewConfig._renderType == 'clusters')
-                    { layer.dataViewConfig._clusterBoundaries.removeAllFeatures(); }
-                    else
-                    {
-                        if (feature.attributes.animating) { return; }
-                        var dupKey = feature.attributes.dupKey;
-                        mapObj._hoverTimers[dupKey] = setTimeout(function()
-                            {
-                                delete mapObj._hoverTimers[dupKey];
-                                mapObj._primaryView.unhighlightRows(feature.attributes.rows);
-                            }, 100);
-                    }
-                });
-            });
+            mapObj.map.events.register('mousemove', mapObj,
+                function(evt) { mapObj._lastClickAt = mapObj.map.events.getMousePosition(evt); });
         },
 
         currentZoom: function()
@@ -527,7 +497,7 @@
             var $layersList = $layers.find('ul');
             var $baseLayers = $layers.find('ul.base');
             var $dataLayers = $layers.find('ul.data');
-            mapObj._dataLayers = mapObj._dataLayers || [];
+            mapObj._dataLayers = mapObj._dataLayers || mapObj._displayLayers || [];
 
             if (mapObj._baseLayers.length < 2)
             { $baseLayers.hide(); $('h3.base').hide(); }
@@ -547,16 +517,21 @@
                 $layerSet.append('<li data-layerid="' + l.id + '"' +
                     '><input type="checkbox" id="' + lId +
                     '"' + (l.visibility ? ' checked="checked"' : '') +
-                    ' /><label for="' + lId + '">' + l.name + '</label><br />' +
-                    '<span class="sliderControl" data-min="0" data-max="100" ' +
-                    'data-origvalue="' +
-                    (opacity*100) + '" /></li>');
+                    ' /><label for="' + lId + '">' + l.name + '</label>' +
+                    '<br /><span class="sliderControl" data-min="0" data-max="100" ' +
+                    'data-origvalue="' + (opacity*100) + '" />' +
+                    '</li>');
                 $layerSet.find('li:last').data('layer', l);
             };
             var $layerSet = $baseLayers;
             _.each(mapObj._baseLayers, processLayer);
             $layerSet = $dataLayers;
             _.each(mapObj._dataLayers, processLayer);
+
+            if (mapObj._baseLayers.length >= 2)
+            { $baseLayers.show(); $('h3.base').show(); }
+            if (mapObj._dataLayers.length >= 2)
+            { $dataLayers.show(); $('h3.data').show(); }
 
             $layersList.find('.sliderControl').each(function()
             {
@@ -677,14 +652,14 @@
             { viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); }
         },
 
-        generateFlyoutLayout: function(columns, titleId)
+        generateFlyoutLayout: function(columns, noLabel, view)
         {
             var mapObj = this;
-            var titleId = (mapObj._displayFormat.plot || {}).titleId;
+            var titleId = (view.displayFormat.plot || {}).titleId;
             if (_.isEmpty(columns) && $.isBlank(titleId))
             { return null; }
 
-            var layout = mapObj._super(columns);
+            var layout = mapObj._super(columns, noLabel);
             if ($.isBlank(layout))
             { layout = {columns: [{rows: []}]}; }
             var col = layout.columns[0];
@@ -725,8 +700,8 @@
                 }));
             }
 
-            if (!mapObj._byView[mapObj._primaryView.id]._locCol) { return $info; }
-            var loc = rows[0][mapObj._byView[mapObj._primaryView.id]._locCol.lookup];
+            if (!mapObj._byView[dataView.id]._locCol) { return $info; }
+            var loc = rows[0][mapObj._byView[dataView.id]._locCol.lookup];
             if (loc.latitude && loc.longitude)
             {
                 if (mapObj._displayFormat.type == 'bing')
@@ -869,8 +844,8 @@
                     { details.size = i + 1; break; }
                 }
             }
-            if (mapObj._displayFormat.color)
-            { details.color = mapObj._displayFormat.color; }
+            if (view.displayFormat.color)
+            { details.color = view.displayFormat.color; }
             if (viewConfig._colorValueCol
                 && mapObj._segments[viewConfig._colorValueCol.id])
             {
@@ -1494,7 +1469,7 @@
                 _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
                 {
                     var c = view.columnForTCID(
-                        mapObj._displayFormat.plot[colName + 'Id']);
+                        view.displayFormat.plot[colName + 'Id']);
                     if (!$.isBlank(c))
                     {
                         viewConfig['_' + colName + 'Col'] = c;
@@ -1530,6 +1505,103 @@
             }
 
             mapObj._super();
+
+            mapObj.buildSelectControl();
+        },
+
+        buildSelectControl: function()
+        {
+            var mapObj = this;
+
+            if (!mapObj._selectControl)
+            {
+                var unselectFeature = function(feature)
+                {
+                    if (feature && feature.layer)
+                    { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
+                    mapObj.closePopup();
+                };
+
+                // FIXME: Polymorphism, where art thou?
+                mapObj._selectControl = new OpenLayers.Control.SelectFeature(mapObj._displayLayers,
+                { 'hover': true, 'callbacks': {
+                    'click': function(feature)
+                    {
+                        var layer = feature.layer;
+                        var view = layer.dataView;
+                        var viewConfig = layer.dataViewConfig;
+
+                        if (viewConfig._renderType == 'clusters')
+                        {
+                            if (mapObj.currentZoom()
+                                < mapObj.map.getZoomForExtent(feature.attributes.bbox))
+                            { mapObj.map.zoomToExtent(feature.attributes.bbox); }
+                            else
+                            {
+                                mapObj.map.setCenter(
+                                    feature.geometry.getBounds().getCenterLonLat(),
+                                    mapObj.currentZoom() + 1);
+                            }
+                        }
+                        else
+                        {
+                            var lonlat = layer.getLonLatFromViewPortPx(mapObj._lastClickAt);
+                            onFeatureSelect(mapObj, feature, lonlat, function(evt)
+                                {
+                                    if (!feature.layer)
+                                    { feature = mapObj._markers[feature.attributes.dupKey]; }
+                                    unselectFeature(feature);
+                                });
+                            var dupKey = view.id + feature.attributes.dupKey;
+                            if (!$.isBlank(mapObj._hoverTimers[dupKey]))
+                            {
+                                clearTimeout(mapObj._hoverTimers[dupKey]);
+                                delete mapObj._hoverTimers[dupKey];
+                            }
+                        }
+                    },
+                    'over': function(feature)
+                    {
+                        var view = feature.layer.dataView;
+                        var viewConfig = feature.layer.dataViewConfig;
+
+                        if (viewConfig._renderType == 'clusters')
+                        { viewConfig._clusterBoundaries
+                            .addFeatures(feature.attributes.boundary()); }
+                        else
+                        {
+                            var dupKey = view.id + feature.attributes.dupKey;
+                            if (!$.isBlank(mapObj._hoverTimers[dupKey]))
+                            {
+                                clearTimeout(mapObj._hoverTimers[dupKey]);
+                                delete mapObj._hoverTimers[dupKey];
+                            }
+                            view.highlightRows(feature.attributes.rows);
+                        }
+                    },
+                    'out': function(feature)
+                    {
+                        var view = feature.layer.dataView;
+                        var viewConfig = feature.layer.dataViewConfig;
+
+                        if (viewConfig._renderType == 'clusters')
+                        { viewConfig._clusterBoundaries.removeAllFeatures(); }
+                        else
+                        {
+                            var dupKey = view.id + feature.attributes.dupKey;
+                            mapObj._hoverTimers[dupKey] = setTimeout(function()
+                                {
+                                    delete mapObj._hoverTimers[dupKey];
+                                    view.unhighlightRows(feature.attributes.rows);
+                                }, 100);
+                        }
+                    }
+                }});
+                mapObj.map.addControl(mapObj._selectControl);
+                mapObj._selectControl.activate();
+            }
+            else
+            { mapObj._selectControl.setLayer(mapObj._displayLayers); }
         },
 
         getDataForView: function(view)
@@ -1572,7 +1644,7 @@
             var pixels = 45;
 
             viewConfig._renderType = 'clusters';
-            view.getClusters(viewport, mapObj._displayFormat,
+            view.getClusters(viewport, view.displayFormat,
                 mapObj.getMinDistanceForViewportPixels(viewport, pixels),
                 function(data)
             {
@@ -1637,11 +1709,15 @@
         {
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
-            var layer = viewConfig._displayLayer = new OpenLayers.Layer.Vector();
+            var layer = viewConfig._displayLayer = new OpenLayers.Layer.Vector(view.name);
             viewConfig._displayLayer.dataView = view;
             viewConfig._displayLayer.dataViewConfig = viewConfig;
 
             mapObj._displayLayers.push(viewConfig._displayLayer);
+
+            // Yes, this is ridiculous. Yes, it will be fixed in the rewrite.
+            mapObj._dataLayers.push(viewConfig._displayLayer);
+            mapObj.populateLayers();
 
             return layer;
         },
@@ -1946,7 +2022,7 @@
 
         if (!_.isEmpty(feature.attributes.rows))
         {
-            mapObj._primaryView.highlightRows(feature.attributes.rows, 'select');
+            feature.layer.dataView.highlightRows(feature.attributes.rows, 'select');
             mapObj.$dom().trigger('display_row',
                 [{row: _.first(feature.attributes.rows)}]);
             $(document).trigger(blist.events.DISPLAY_ROW,

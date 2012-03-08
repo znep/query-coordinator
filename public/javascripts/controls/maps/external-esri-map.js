@@ -125,6 +125,12 @@
 
     // This entire file's purpose has been deprecated since we have GeometryType
     $.Control.registerMixin('arcGISmap', {
+        initializeMap: function()
+        {
+            this._super();
+            this.$dom().siblings('#mapLayers').hide();
+        },
+
         getDataForAllViews: function()
         {
             var mapObj = this;

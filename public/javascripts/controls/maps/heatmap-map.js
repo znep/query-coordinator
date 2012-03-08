@@ -58,6 +58,8 @@
             this._super();
             if (_.isFunction(MAP_TYPE)) { MAP_TYPE = MAP_TYPE(); }
 
+            this.$dom().siblings('#mapLayers').hide();
+
             setUpHeatmap(this);
         },
 
@@ -106,10 +108,10 @@
             { processFeatures(mapObj, function() { processRows(mapObj, rows); }); }
         },
 
-        generateFlyoutLayout: function(columns)
+        generateFlyoutLayout: function(columns, noLabel, view)
         {
             var mapObj = this;
-            var defLayout = mapObj._super(columns, 'fake');
+            var defLayout = mapObj._super(columns, noLabel, view);
             if ($.isBlank(defLayout)) { return null; }
 
             // Adjust title

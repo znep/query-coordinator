@@ -13,9 +13,9 @@ Dataset.map.isValid = function(view, displayFormat)
           $.isBlank(displayFormat.plot.longitudeId)) &&
          $.isBlank(displayFormat.plot.locationId))) { return false; }
 
-    var latCol = view.columnForTCID(displayFormat.plot.latitudeId);
-    var longCol = view.columnForTCID(displayFormat.plot.longitudeId);
-    var locCol = view.columnForTCID(displayFormat.plot.locationId);
+    var latCol = view.columnForIdentifier(displayFormat.plot.latitudeId);
+    var longCol = view.columnForIdentifier(displayFormat.plot.longitudeId);
+    var locCol = view.columnForIdentifier(displayFormat.plot.locationId);
 
     return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol)) ||
         displayFormat.noLocations;

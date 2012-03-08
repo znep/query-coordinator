@@ -58,7 +58,7 @@
             this._super();
             if (_.isFunction(MAP_TYPE)) { MAP_TYPE = MAP_TYPE(); }
 
-            this.$dom().siblings('#mapLayers').hide();
+            this.$dom().siblings('.mapLayers').hide();
 
             setUpHeatmap(this);
         },
@@ -155,7 +155,7 @@
                 $quantLine.find('.staticLabel:first-child')
                     .text(viewConfig._quantityCol.name);
                 $quantLine.find('.staticLabel:last-child')
-                    .text(viewConfig._quantityCol.renderType.renderer(details.quantity,
+                    .html(viewConfig._quantityCol.renderType.renderer(details.quantity,
                             viewConfig._quantityCol));
             });
 
@@ -173,6 +173,7 @@
                 delete feature.attributes.quantities;
                 delete feature.attributes.quantity;
                 delete feature.attributes.redirect_to;
+                delete feature.attributes.rows;
             });
 
             delete mapObj._featuresRendered;

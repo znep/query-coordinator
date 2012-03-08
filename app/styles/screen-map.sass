@@ -1,4 +1,4 @@
-#mapTypes
+.mapTypes
   position: absolute
   right: 1.5em
   top: 1.5em
@@ -15,7 +15,7 @@
     cursor: default
     color: black
 
-#mapLayers
+.mapLayers
   background-color: #ffffff
   border: 1px solid #333333
   padding: 0.5em
@@ -61,7 +61,7 @@
   .contentBlock
     width: 16.8em
 
-#mapLayers li
+.mapLayers li
   margin: 0.5em 0
   padding: 0.3em
   min-width: 11.1em
@@ -80,7 +80,7 @@
     select
       width: 100%
 
-#mapLegend
+.mapLegend
   background-color: #ffffff
   border: 1px solid #333333
   padding: 0.5em
@@ -89,18 +89,18 @@
   bottom: 4em
   z-index: 1000
 
-#mapLegend .color_swatch
+.mapLegend .color_swatch
   cursor: default
 
 $geolocator_margin_top: 6px
 
-#geolocator_button
+.geolocator_button
   width: 30px
   height: 30px
   margin-top: $geolocator_margin_top
   cursor: pointer
 
-#geolocator
+.geolocator
   position: absolute
   top: $geolocator_margin_top
   width: 265px
@@ -197,46 +197,8 @@ $geolocator_margin_top: 6px
       margin-top: -908px
 
 .pageRenderType
-  #mapLegend, #mapLayers
+  .mapLegend, .mapLayers
     display: none
-
-#bing_infoWindow
-  z-index: 1000
-  position: absolute
-
-  #bing_infoBeak
-    background: url('/images/bing-beaks.gif')
-    width: 18px
-    height: 35px
-    margin-top: 3px
-    float: left
-
-  #bing_infoContent
-    background-color: white
-    padding: 10px
-    border: solid 1px #888888
-    margin-left: 16px
-
-    img
-      cursor: pointer
-      position: absolute
-      right: 4px
-      top: 4px
-
-#bing_infoWindow.right
-
-  #bing_infoBeak
-    background-position: 0 34px
-    position: absolute
-    right: 0
-    top: 0
-
-  #bing_infoContent
-    margin-left: 0
-    margin-right: 17px
-
-    img
-      right: 22px
 
 .google_cluster_labels
   color: white
@@ -263,7 +225,7 @@ $geolocator_margin_top: 6px
   position: absolute
   white-space: nowrap
 
-.infowindow, #bing_infoWindow, .mapInfoContainer, .olFramedCloudPopupContent
+.infowindow, .mapInfoContainer, .olFramedCloudPopupContent
   .external_link
     display: block
     text-align: center

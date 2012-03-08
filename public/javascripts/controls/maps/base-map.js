@@ -40,7 +40,7 @@
 
         destroy: function()
         {
-            $(this.map.div).siblings('#mapTypes').empty();
+            $(this.map.div).siblings('.mapTypes').empty();
             this.map.events.un({ 'changebaselayer': this.redraw });
             OpenLayers.Control.prototype.destroy.apply(this, arguments);
         },
@@ -63,11 +63,11 @@
         {
             if (_.isEmpty(this.layers)) { return; }
 
-            var $dom = $(this.map.div).siblings('#mapTypes');
+            var $dom = $(this.map.div).siblings('.mapTypes');
             if ($dom.length == 0)
             {
-                $(this.map.div).before('<div id="mapTypes"></div>');
-                $dom = $(this.map.div).siblings('#mapTypes');
+                $(this.map.div).before('<div class="mapTypes"></div>');
+                $dom = $(this.map.div).siblings('.mapTypes');
             }
 
             $dom.empty();
@@ -160,10 +160,10 @@
                 mapObj._pubDate = mapObj._primaryView.publicationDate;
             }
 
-            if (mapObj.$dom().siblings('#mapLayers').length < 1)
+            if (mapObj.$dom().siblings('.mapLayers').length < 1)
             {
                 mapObj.$dom()
-                    .before('<div id="mapLayers" class="commonForm">' +
+                    .before('<div class="mapLayers" class="commonForm">' +
                     '<a href="#toggleLayers" class="toggleLayers">' +
                     'Layer Options' +
                     '</a>' +
@@ -174,15 +174,15 @@
                         'Add Dataset Layer</a>' +
                     '</div>' +
                     '</div>');
-                mapObj.$dom().siblings('#mapLayers').find('a.toggleLayers')
+                mapObj.$dom().siblings('.mapLayers').find('a.toggleLayers')
                     .click(function(e)
                     {
                         e.preventDefault();
-                        mapObj.$dom().siblings('#mapLayers')
+                        mapObj.$dom().siblings('.mapLayers')
                             .find('.contentBlock').toggleClass('hide');
                     });
 
-                var $layers = mapObj.$dom().siblings('#mapLayers');
+                var $layers = mapObj.$dom().siblings('.mapLayers');
                 $layers.find('a.button').click(function() {
                     Dataset.search({ limitTo: 'maps' },
                         function(data)
@@ -426,7 +426,7 @@
 
             mapObj._super();
 
-            mapObj.$dom().siblings('#mapLayers').addClass('hide');
+            mapObj.$dom().siblings('.mapLayers').addClass('hide');
 
             mapObj.closePopup();
 
@@ -476,7 +476,7 @@
         {
             var mapObj = this;
 
-            var $layers = mapObj.$dom().siblings('#mapLayers');
+            var $layers = mapObj.$dom().siblings('.mapLayers');
             var $bottom = $(mapObj.map.getControlsByClass('OpenLayers.Control.Attribution')[0].div);
             var height = ($bottom.filter(':visible').length == 0)
                 ? mapObj.$dom().height() - 20 : $bottom.position().top - 10;
@@ -491,7 +491,7 @@
         {
             var mapObj = this;
 
-            var $layers = mapObj.$dom().siblings('#mapLayers');
+            var $layers = mapObj.$dom().siblings('.mapLayers');
             var $layersList = $layers.find('ul');
             var $baseLayers = $layers.find('ul.base');
             var $dataLayers = $layers.find('ul.data');
@@ -1455,20 +1455,20 @@
                 // Preferred location column
                 if (!$.isBlank(mapObj._displayFormat.plot.locationId))
                 { viewConfig._locCol =
-                    view.columnForTCID(mapObj._displayFormat.plot.locationId); }
+                    view.columnForIdentifier(mapObj._displayFormat.plot.locationId); }
 
                 viewConfig._redirectCol =
-                    view.columnForTCID(mapObj._displayFormat.plot.redirectId);
+                    view.columnForIdentifier(mapObj._displayFormat.plot.redirectId);
 
                 viewConfig._iconCol =
-                    view.columnForTCID(mapObj._displayFormat.plot.iconId);
+                    view.columnForIdentifier(mapObj._displayFormat.plot.iconId);
 
                 if (view == mapObj._primaryView)
                 {
                     var aggs = {};
                     _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
                     {
-                        var c = view.columnForTCID(
+                        var c = view.columnForIdentifier(
                             mapObj._displayFormat.plot[colName + 'Id']);
                         if (!$.isBlank(c))
                         {
@@ -1920,6 +1920,9 @@
             mapObj.map.removePopup(mapObj._popup);
             mapObj._popup.destroy();
             mapObj._popup = null;
+
+            mapObj.$dom().trigger('display_row', [{row: null}]);
+            $(document).trigger(blist.events.DISPLAY_ROW, [null, true]);
         },
 
         $legend: function(options)
@@ -1932,9 +1935,9 @@
             if (!mapObj._legend)
             { mapObj._legend = { minimum: '', maximum: '' }; }
 
-            if (!mapObj.$dom().siblings('#mapLegend').length)
+            if (!mapObj.$dom().siblings('.mapLegend').length)
             {
-                mapObj.$dom().before('<div id="mapLegend">' +
+                mapObj.$dom().before('<div class="mapLegend">' +
                     '<div class="contentBlock">' +
                     '<h3></h3><div style="width: ' +
                     (mapObj._numSegments*SWATCH_WIDTH) +
@@ -1945,7 +1948,7 @@
                     '</div></div>');
             }
             if (!mapObj._legend.$dom)
-            { mapObj._legend.$dom = $('#mapLegend').hide(); }
+            { mapObj._legend.$dom = mapObj.$dom().siblings('.mapLegend').hide(); }
 
             if (options.name)
             { mapObj._legend.$dom.find('h3').text(options.name); }

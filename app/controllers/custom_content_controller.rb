@@ -4,8 +4,7 @@ class CustomContentController < ApplicationController
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
   skip_before_filter :require_user, :except => [ :template ]
-  skip_before_filter :hook_auth_controller, :set_user, :sync_logged_in_cookie,
-    :redirect_logged_in_users_to_https, :only => [:stylesheet]
+  skip_before_filter :hook_auth_controller, :set_user, :sync_logged_in_cookie, :only => [:stylesheet]
 
   def homepage
     Canvas::Environment.context = :homepage

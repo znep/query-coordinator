@@ -622,9 +622,8 @@
             var viewConfig = mapObj._byView[view.id];
 
             // For when animations are turned off.
-            _.each(mapObj._byView, function(viewConfig)
-            { if (!viewConfig._animation)
-                { viewConfig._displayLayer.removeAllFeatures(); } });
+            if (!viewConfig._animation)
+            { viewConfig._displayLayer.removeAllFeatures(); }
 
             _.each(clusters, function(cluster)
             { mapObj.renderCluster(cluster, { dataView: view }); });

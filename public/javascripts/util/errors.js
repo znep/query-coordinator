@@ -1,26 +1,25 @@
+(function() {
+
 function trackError(msg, url, line)
 {
-    if (blistEnv == 'staging' || blistEnv == 'production')
+    try
     {
-        try
-        {
-            $.ajax({
-                data: {
-                    date: new Date(),
-                    message: msg,
-                    url: url,
-                    line: line
-                },
-                global: false,
-                type: 'POST',
-                url: '/errors'
-            })
-        }
-        catch(ignore) {}
+        $.ajax({
+            data: {
+                date: new Date(),
+                message: msg,
+                url: url,
+                line: line
+            },
+            global: false,
+            type: 'POST',
+            url: '/errors'
+        })
     }
+    catch(ignore) {}
 };
 
-if (blistEnv != 'development')
+if (blistEnv == 'staging')
 {
     // We'd like to catch errors on events; but jQuery 1.4 changed error handling,
     // and we can no longer easily wrap everything by hooking proxy.
@@ -39,7 +38,7 @@ if (blistEnv != 'development')
             catch(ex)
             {
                 trackError(ex.message, ex.fileName, ex.lineNumber);
-                if (blistEnv != 'production') { throw ex; }
+                throw ex;
             }
         };
         fn = wrappedFn;
@@ -52,6 +51,8 @@ if (blistEnv != 'development')
     window.onerror = function(msg, url, lineNo)
     {
         trackError(msg, url, lineNo);
-        return blistEnv == 'production';
+        return false;
     }
 }
+
+})();

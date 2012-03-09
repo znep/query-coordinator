@@ -20,6 +20,11 @@
   margin-top: 1em
 
   .commentModerationList
+    .dataset
+      max-width: 25em
+      @include clip-text
+    .status
+      min-width: 20em
     tbody
       tr
         .button
@@ -28,8 +33,6 @@
           @include transition-property(opacity)
         &:hover .button
           opacity: 1
-      td
-        @include clip-text
       td.author
         max-width: 6em
         .cellInner

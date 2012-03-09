@@ -43,7 +43,7 @@
             chartObj._rowIndices = {};
 
             // Grab all remaining cols; pick out numeric columns for data,
-            // and associate all following non-nuneric columns with that line
+            // and associate all following non-numeric columns with that line
             chartObj._yColumns = [];
             _.each(chartObj._valueColumns, function(vc)
             {
@@ -86,39 +86,23 @@
                     else
                     { rows = newRows; }
                 });
+
                 _.each(chartObj._yColumns, function(yc)
                 {
                     _.each(rows, function(r)
-                    {
-                        var seriesVal = getSeriesName(chartObj, yc, r);
-                        createSeries(chartObj, seriesVal, yc);
-                    });
+                    { createSeries(chartObj, getSeriesName(chartObj, yc, r), yc, r); });
                 });
             }
 
-            if (!chartObj._dataGrouping)
-            {
-                // FIXME: Remainders happen to work if you don't have seriesColumns; otherwise, they won't
-                chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
-                        { return col.data.aggregates.sum; });
-                chartObj._seriesSums = chartObj._seriesRemainders.slice();
-            }
+            chartObj._columnsReady = true;
+
+            loadSeriesSums(chartObj);
 
             // Adjust scale to make sure series are synched with axis
             if (!_.isUndefined(chartObj.chart))
             { chartObj.chart.xAxis[0].setScale(); }
             if (!_.isUndefined(chartObj.secondChart))
             { chartObj.secondChart.xAxis[0].setScale(); }
-
-            // Register columns as loaded, render data if needed
-            chartObj._columnsLoaded = true;
-            if (!_.isUndefined(chartObj._pendingRows))
-            {
-                _.each(chartObj._pendingRows,
-                    function(r) { chartObj.renderRow(r); });
-                delete chartObj._pendingRows;
-                chartObj.rowsRendered();
-            }
 
             // Once we've gotten the columns, get total rows, then create the chart
             var getTotalRows;
@@ -140,6 +124,7 @@
         {
             if (!_.isEmpty(this._xCategories))
             { this._xCategories = _.without(this._xCategories, 'Other'); }
+            loadSeriesSums(this);
             this._super.apply(this, arguments);
         },
 
@@ -190,52 +175,50 @@
             // if that holds for other chart types, though
             if (isDateTime(chartObj) && $.isBlank(basePt.x)) { return true; }
 
-            if (!_.isUndefined(chartObj._xCategories))
+            var setXCategory = function()
             {
-                if (hasRI) { chartObj._xCategories[ri] = xCat; }
-                else
+                if (!_.isUndefined(chartObj._xCategories))
                 {
-                    chartObj._xCategories.splice(ri, 0, xCat);
-                    _.each(chartObj._rowIndices, function(obj, id)
-                            { if (id != row.id && obj.x >= ri) { obj.x += 1; } });
+                    if (hasRI) { chartObj._xCategories[ri] = xCat; }
+                    else
+                    {
+                        chartObj._xCategories.splice(ri, 0, xCat);
+                        _.each(chartObj._rowIndices, function(obj, id)
+                                { if (id != row.id && obj.x >= ri) { obj.x += 1; } });
+                    }
                 }
-            }
+            };
 
-            var hasPoints = false;
-            var renderPoint = function(colSet, series)
+            var renderPoint = function(series)
             {
-                var value = parseFloat(row[colSet.data.id]);
+                var value = parseFloat(row[series.yColumn.data.id]);
                 if (_.isNaN(value)) { value = null; }
 
-                // First check if this should be subsumed into a remainder
-                // FIXME: Doesn't really work with series cols
-                if (!_.isNull(value) &&
-                    !_.isUndefined(chartObj._displayFormat.pieJoinAngle) &&
-                    !$.isBlank(colSet.data.aggregates.sum) &&
-                    (value / colSet.data.aggregates.sum) * 360 <
-                        chartObj._displayFormat.pieJoinAngle)
-                { return; }
-
-                // Render point and cache it
-                // NOTE: There is an assumption that _xCategories will be
-                // appropriately populated by this point in the yPoint code.
-                var point = yPoint(chartObj, row, value, series.index, basePt, colSet);
-                if (_.isNull(point)) { return; }
-
-                if ($.isBlank(point.y))
+                var finishRenderPoint = function()
                 {
-                    if (!chartObj._nullCache) { chartObj._nullCache = []; }
-                    chartObj._nullCache.push(point);
-                    return;
-                }
-                else if (chartObj._nullCache && !$.isBlank(point.y))
-                {
-                    _.each(chartObj._nullCache, function(n) { addPoint(chartObj, n, i); });
-                    chartObj._nullCache = undefined;
-                }
-                addPoint(chartObj, point, series.index, false, chartObj._dataGrouping ? ri : null);
+                    // First check if this should be subsumed into a remainder
+                    if (chartObj._useRemainders && !_.isNull(value) &&
+                        !_.isUndefined(chartObj._displayFormat.pieJoinAngle) &&
+                        !$.isBlank(chartObj._seriesSums[series.groupId][series.yColumn.data.id]) &&
+                        (value / chartObj._seriesSums[series.groupId][series.yColumn.data.id]) * 360 <
+                            chartObj._displayFormat.pieJoinAngle)
+                    { return; }
 
-                hasPoints = true;
+                    // Render point and cache it
+                    var point = yPoint(chartObj, row, value, series, basePt);
+                    if (_.isNull(point)) { return; }
+
+                    addPoint(chartObj, point, series, false, chartObj._dataGrouping ? ri : null);
+                    // When we really add a point, make sure the x-category is in the array.
+                    // Set hasRI so additional calls don't keep inserting it
+                    setXCategory();
+                    hasRI = true;
+                };
+
+                if ($.isBlank(chartObj._seriesSums[series.groupId]))
+                { getSeriesSums(chartObj, series, finishRenderPoint); }
+                else
+                { finishRenderPoint(); }
             };
 
             // Render data for each series
@@ -244,25 +227,20 @@
                 var seriesVal = getSeriesName(chartObj, yc, row);
                 var series = chartObj._seriesByVal[seriesVal];
                 if ($.isBlank(series))
-                { series = createSeries(chartObj, seriesVal, yc); }
+                {
+                    series = createSeries(chartObj, seriesVal, yc, row);
+                    getSeriesSums(chartObj, series);
+                }
 
                 // If we have multiple points for the same series at the same
                 // x-coordinate, we don't want them overwriting each other
-                // randomly; so we bail on duplicates (without removing the
-                // xCategory from the array); but we still want to allow
+                // randomly; so we bail on duplicates; but we still want to allow
                 // updates for the row actually rendered at this point
                 if (!$.subKeyDefined(chartObj._rowIndices, row.id + '.' + series.index) &&
                     _.any(series.data, function(datum) { return datum.x == basePt.x; }))
-                {
-                    hasPoints = true;
-                    return;
-                }
-                renderPoint(yc, series);
+                { return; }
+                renderPoint(series);
             });
-
-            // We failed to have any points; remove the x-category
-            if (!hasPoints && !_.isUndefined(chartObj._xCategories))
-            { chartObj._xCategories.splice(ri, 1); }
 
             return true;
         },
@@ -273,18 +251,25 @@
             chartObj._super();
             if (!chartObj._columnsLoaded || !chartObj.isValid()) { return; }
 
+            var chartRedrawCount = 1;
+            var doChartRedraw = function()
+            {
+                if (--chartRedrawCount <= 0)
+                {
+                    if (!$.isBlank(chartObj.chart))
+                    { chartObj.chart.redraw(); }
+                    if (!$.isBlank(chartObj.secondChart))
+                    { chartObj.secondChart.redraw(); }
+                }
+            };
+
             // Check if there are remainders to stick on the end
-            if (!_.isUndefined(chartObj._seriesRemainders) &&
+            if (chartObj._useRemainders && !_.isEmpty(chartObj._seriesRemainders) &&
                 (Dataset.chart.types[chartObj._chartType].renderOther ||
                 chartObj._displayFormat.renderOther))
             {
                 // Create fake row for other value
-                var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
-                if ((chartObj._primaryView.highlights || {})[otherRow.id])
-                {
-                    otherRow.sessionMeta = {highlight: true,
-                        highlightColumn: (chartObj._primaryView.highlightsColumn || {})[otherRow.id]};
-                }
+                var otherRow = { invalid: {}, error: {}, changed: {} };
                 otherRow[chartObj._xColumn.lookup] = 'Other';
                 var cf = _.detect(chartObj._primaryView.metadata.conditionalFormatting,
                     function(cf) { return cf.condition === true; });
@@ -300,21 +285,41 @@
                         chartObj._xCategories.push('Other');
                     }
                 }
-                var otherPt = xPoint(chartObj, otherRow, oInd);
-                otherPt.otherPt = true;
-                // FIXME: Doesn't work with series col
-                _.each(chartObj._seriesRemainders, function(sr, i)
+                _.each(chartObj._seriesCache, function(series)
                 {
-                    if ($.isBlank(sr) || $.isBlank(chartObj._seriesCache[i])) { return; }
-                    var percentage = (sr / chartObj._seriesSums[i]);
-                    // If the remainder is less than .01%, not worth rendering
-                    // due to calculation rounding errors
-                    if (percentage < 0.0001) { return; }
+                    var seriesRow = $.extend(true, {}, otherRow, series.seriesValues);
+                    seriesRow.id = 'Other_' + series.yColumn.data.id + '_' +
+                    _.map(_.keys(series.seriesValues).sort(), function(sk)
+                        { return sk + ':' + series.seriesValues[sk]; }).join('_') || 'default';
+                    if ((chartObj._primaryView.highlights || {})[seriesRow.id])
+                    {
+                        seriesRow.sessionMeta = {highlight: true,
+                            highlightColumn: (chartObj._primaryView.highlightsColumn || {})[seriesRow.id]};
+                    }
+                    var otherPt = xPoint(chartObj, seriesRow, oInd);
+                    otherPt.otherPt = true;
 
-                    var colSet = chartObj._yColumns[i];
-                    otherRow[colSet.data.lookup] = sr;
-                    var point = yPoint(chartObj, otherRow, sr, i, otherPt, colSet);
-                    addPoint(chartObj, point, i, true)
+                    var renderOther = function()
+                    {
+                        var sr = chartObj._seriesRemainders[series.groupId][series.yColumn.data.id];
+                        if ($.isBlank(sr)) { return; }
+                        var percentage = (sr /
+                            chartObj._seriesSums[series.groupId][series.yColumn.data.id]);
+                        // If the remainder is less than .01%, not worth rendering
+                        // due to calculation rounding errors
+                        if (percentage < 0.0001) { return; }
+
+                        seriesRow[series.yColumn.data.lookup] = sr;
+                        var point = yPoint(chartObj, seriesRow, sr, series, otherPt);
+                        addPoint(chartObj, point, series, true);
+                        doChartRedraw();
+                    };
+
+                    chartRedrawCount++;
+                    if ($.isBlank(chartObj._seriesRemainders[series.groupId]))
+                    { getSeriesSums(chartObj, series, renderOther); }
+                    else
+                    { renderOther(); }
                 });
             }
 
@@ -354,10 +359,7 @@
                     });
             _.each(chartObj._seriesCache, function(serie, i) { serie.index = i; });
 
-            if (!$.isBlank(chartObj.chart))
-            { chartObj.chart.redraw(); }
-            if (!$.isBlank(chartObj.secondChart))
-            { chartObj.secondChart.redraw(); }
+            doChartRedraw();
 
             if (!_.isUndefined(chartObj.chart))
             {
@@ -384,6 +386,7 @@
             delete chartObj._categoriesLoaded;
             delete chartObj._xColumn;
             delete chartObj._yColumns;
+            delete chartObj._columnsReady;
             delete chartObj._columnsLoaded;
             delete chartObj._pendingRows;
             delete chartObj._seriesRemainders;
@@ -500,9 +503,15 @@
         return _.compact(seriesVals).join(', ');
     };
 
-    var createSeries = function(chartObj, name, yCol)
+    var createSeries = function(chartObj, name, yCol, row)
     {
-        var series = {id: name, name: name, data: [], index: chartObj._seriesCache.length};
+        var series = {id: name, name: name, data: [], seriesValues: {}, index: chartObj._seriesCache.length,
+            yColumn: yCol, groupId: _.map(chartObj._seriesColumns,
+                    function(sc) { return renderCellText(row, sc.column); }).join('|') || 'default'
+        };
+        _.each(chartObj._seriesColumns, function(sc)
+                { series.seriesValues[sc.column.lookup] = row[sc.column.lookup]; });
+
         series.color = getColor(chartObj, series.name, yCol);
         if (chartObj._chartType == 'donut')
         {
@@ -530,6 +539,121 @@
         chartObj._seriesByVal[name] = series;
 
         return series;
+    };
+
+    var loadSeriesSums = function(chartObj)
+    {
+        if (!chartObj._columnsReady || $.isBlank(chartObj._totalRows)) { return; }
+
+        chartObj._useRemainders = _.include(['pie', 'donut'], chartObj._chartType) ||
+            chartObj._totalRows > chartObj._maxRows;
+
+        var columnsDoneLoading = function()
+        {
+            // Register columns as loaded, render data if needed
+            chartObj._columnsLoaded = true;
+            if (!_.isUndefined(chartObj._pendingRows))
+            {
+                _.each(chartObj._pendingRows, function(r) { chartObj.renderRow(r); });
+                delete chartObj._pendingRows;
+                chartObj.rowsRendered();
+            }
+        };
+
+        var gotSeriesSums = function()
+        { if (--seriesSumsCount <= 0) { columnsDoneLoading(); } };
+        var seriesSumsCount = 1;
+
+        if (chartObj._dataGrouping)
+        {
+            _.each(chartObj._seriesCache, function(series)
+            {
+                seriesSumsCount++;
+                getSeriesSums(chartObj, series, function() { gotSeriesSums(); });
+            });
+        }
+        else
+        {
+            _.each(chartObj._yColumns, function(yc)
+            {
+                seriesSumsCount++;
+                getSeriesSums(chartObj, {yColumn: yc, groupId: 'default'}, function() { gotSeriesSums(); });
+            });
+        }
+
+        gotSeriesSums();
+    };
+
+    var getSeriesSums = function(chartObj, series, callback)
+    {
+        // Take set of series grouping values, get sum for all yColumns
+        // Cache by series grouping vals, so can lookup for each yCol
+        chartObj._seriesRemainders = chartObj._seriesRemainders || {};
+        chartObj._seriesSums = chartObj._seriesSums || {};
+        if (!chartObj._useRemainders)
+        {
+            chartObj._seriesRemainders[series.groupId] = {};
+            chartObj._seriesRemainders[series.groupId][series.yColumn.data.id] = 0;
+            chartObj._seriesSums[series.groupId] = $.extend(true, {},
+                    chartObj._seriesRemainders[series.groupId]);
+            if (_.isFunction(callback)) { _.defer(callback); }
+            return;
+        }
+
+        if (chartObj._seriesRemainders.hasOwnProperty(series.groupId)
+                && !$.isBlank(chartObj._seriesRemainders[series.groupId][series.yColumn.data.id]))
+        {
+            if (_.isFunction(callback)) { _.defer(callback); }
+            return;
+        }
+
+        if ($.isBlank(series.seriesValues))
+        {
+            var srCache = chartObj._seriesRemainders[series.groupId] = {};
+            _.each(chartObj._yColumns, function(col)
+                    { srCache[col.data.id] = col.data.aggregates.sum; });
+            chartObj._seriesSums[series.groupId] = $.extend(true, {},
+                    chartObj._seriesRemainders[series.groupId]);
+            if (_.isFunction(callback)) { _.defer(callback); }
+            return;
+        }
+
+        chartObj._seriesRemaindersPending = chartObj._seriesRemaindersPending || {};
+        if (_.isArray(chartObj._seriesRemaindersPending[series.groupId]))
+        {
+            chartObj._seriesRemaindersPending[series.groupId].push(callback);
+            return;
+        }
+        else
+        { chartObj._seriesRemaindersPending[series.groupId] = []; }
+
+        var newDS = chartObj._primaryView.clone();
+        var fc = {type: 'operator', value: 'AND', children: []};
+        _.each(chartObj._seriesColumns, function(sc)
+            {
+                fc.children.push({type: 'operator', value: 'EQUALS', children: [
+                    { type: 'column', columnFieldName: sc.column.fieldName },
+                    { type: 'literal', value: series.seriesValues[sc.column.lookup] }
+                ]});
+            });
+        var query = $.extend(true, {namedFilters: {}}, newDS.query);
+        query.namedFilters.chartSeriesGroup = fc;
+        newDS.update({query: query});
+
+        var customAggs = {};
+        _.each(chartObj._yColumns, function(c) { customAggs[c.data.id] = ['sum']; });
+        newDS.getAggregates(function()
+        {
+            var srCache = chartObj._seriesRemainders[series.groupId] = {};
+            _.each(chartObj._yColumns, function(c)
+                { srCache[c.data.id] = newDS.columnForID(c.data.id).aggregates.sum; });
+            chartObj._seriesSums[series.groupId] = $.extend(true, {},
+                chartObj._seriesRemainders[series.groupId]);
+
+            if (_.isFunction(callback)) { callback(); }
+            _.each(chartObj._seriesRemaindersPending[series.groupId], function(srp) { srp(); });
+            delete chartObj._seriesRemaindersPending[series.groupId];
+        }, customAggs);
     };
 
     var createChart = function(chartObj)
@@ -1213,26 +1337,26 @@
         return pt;
     };
 
-    var yPoint = function(chartObj, row, value, seriesIndex, basePt, colSet)
+    var yPoint = function(chartObj, row, value, series, basePt)
     {
         var isPieTypeChart = _.include(['pie', 'donut'], chartObj._chartType);
         if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
-        var point = {y: value || 0, label: {}, id: row.id + '_' + seriesIndex};
+        var point = {y: value || 0, label: {}, id: row.id + '_' + series.index};
         point.isNull = _.isNull(value);
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
 
-        if (!_.isUndefined(colSet.title) && !_.isNull(row))
-        { point.name = renderCellText(row, colSet.title); }
+        if (!_.isUndefined(series.yColumn.title) && !_.isNull(row))
+        { point.name = renderCellText(row, series.yColumn.title); }
 
         else if (isPieTypeChart)
         {
             point.name = point.name || point.x;
             if (chartObj._displayFormat.showPercentages)
             {
-                var percentage = (value/chartObj._seriesSums[seriesIndex])*100;
+                var percentage = (value/chartObj._seriesSums[series.groupId][series.yColumn.data.id])*100;
                 if (percentage < 1)
                 { percentage = '<1'; }
                 else
@@ -1241,12 +1365,12 @@
             }
         }
 
-        else { point.name = chartObj._seriesCache[seriesIndex].name; }
+        else { point.name = chartObj._seriesCache[series.index].name; }
 
-        if (!_.isUndefined(colSet.metadata) && !_.isNull(row))
+        if (!_.isUndefined(series.yColumn.metadata) && !_.isNull(row))
         {
             point.subtitle = '';
-            _.each(colSet.metadata, function(c)
+            _.each(series.yColumn.metadata, function(c)
             { point.subtitle += renderCellText(row, c); });
         }
 
@@ -1298,13 +1422,13 @@
         }
 
         var sm = row.sessionMeta || {};
-        if (sm.highlight && ($.isBlank(sm.highlightColumn) || sm.highlightColumn == colSet.data.id))
+        if (sm.highlight && ($.isBlank(sm.highlightColumn) || sm.highlightColumn == series.yColumn.data.id))
         { point.selected = true; }
 
         point.row = row;
-        point.column = colSet.data;
+        point.column = series.yColumn.data;
         point.flyoutDetails = chartObj.renderFlyout(row,
-            colSet.data.tableColumnId, chartObj._primaryView);
+            series.yColumn.data.tableColumnId, chartObj._primaryView);
 
         return point;
     };
@@ -1460,12 +1584,12 @@
         });
     };
 
-    var addPoint = function(chartObj, point, seriesIndex, isOther, pointIndex)
+    var addPoint = function(chartObj, point, series, isOther, pointIndex)
     {
-        var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
+        var ri = (chartObj._rowIndices[point.row.id] || {})[series.index];
         if (isOther && point.y == 0)
         {
-            removePoint(chartObj, point, seriesIndex, isOther);
+            removePoint(chartObj, point, series, isOther);
             return;
         }
 
@@ -1473,12 +1597,12 @@
         {
             var p = chartObj.chart.get(point.id);
             if ($.isBlank(p))
-            { chartObj.chart.series[seriesIndex].addPoint(point, false); }
+            { chartObj.chart.series[series.index].addPoint(point, false); }
             else if (p.color != point.color)
             {
                 // Workaround for Highcharts; color doesn't update, so do a full remove/replace
                 p.remove(false);
-                chartObj.chart.series[seriesIndex].addPoint(point, false);
+                chartObj.chart.series[series.index].addPoint(point, false);
             }
             else
             {
@@ -1491,7 +1615,7 @@
         {
             var sp = chartObj.secondChart.get(point.id);
             if ($.isBlank(sp))
-            { chartObj.secondChart.series[seriesIndex].addPoint(point, false); }
+            { chartObj.secondChart.series[series.index].addPoint(point, false); }
             else
             { sp.update(point, false); }
         }
@@ -1500,30 +1624,35 @@
         {
             chartObj._rowIndices[point.row.id] = chartObj._rowIndices[point.row.id] || {};
             var newI = !$.isBlank(pointIndex) ? pointIndex :
-                chartObj._seriesCache[seriesIndex].data.length;
-            chartObj._rowIndices[point.row.id][seriesIndex] = newI;
-            chartObj._seriesCache[seriesIndex].data.splice(newI, 0, point);
-            for (var i = newI + 1; i < chartObj._seriesCache[seriesIndex].data.length; i++)
+                chartObj._seriesCache[series.index].data.length;
+            chartObj._rowIndices[point.row.id][series.index] = newI;
+            chartObj._seriesCache[series.index].data.splice(newI, 0, point);
+            for (var i = newI + 1; i < chartObj._seriesCache[series.index].data.length; i++)
             {
-                var p = chartObj._seriesCache[seriesIndex].data[i];
+                var p = chartObj._seriesCache[series.index].data[i];
                 if (!$.isBlank(p))
-                { chartObj._rowIndices[p.row.id][seriesIndex] = i; }
+                { chartObj._rowIndices[p.row.id][series.index] = i; }
             }
         }
         else
         {
-            if (!isOther && !$.isBlank(chartObj._seriesRemainders) &&
-                    !$.isBlank(chartObj._seriesCache[seriesIndex].data[ri]))
-            { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
-            chartObj._seriesCache[seriesIndex].data[ri] = point;
+            if (chartObj._useRemainders && !isOther && !$.isBlank(chartObj._seriesRemainders) &&
+                    !$.isBlank(chartObj._seriesRemainders[series.groupId]) &&
+                    !$.isBlank(chartObj._seriesCache[series.index].data[ri]))
+            {
+                chartObj._seriesRemainders[series.groupId][series.yColumn.data.id] +=
+                    chartObj._seriesCache[series.index].data[ri].y;
+            }
+            chartObj._seriesCache[series.index].data[ri] = point;
         }
-        if (!isOther && !$.isBlank(chartObj._seriesRemainders))
-        { chartObj._seriesRemainders[seriesIndex] -= point.y; }
+        if (chartObj._useRemainders && !isOther && !$.isBlank(chartObj._seriesRemainders) &&
+                        !$.isBlank(chartObj._seriesRemainders[series.groupId]))
+        { chartObj._seriesRemainders[series.groupId][series.yColumn.data.id] -= point.y; }
     };
 
-    var removePoint = function(chartObj, point, seriesIndex, isOther)
+    var removePoint = function(chartObj, point, series, isOther)
     {
-        var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
+        var ri = (chartObj._rowIndices[point.row.id] || {})[series.index];
         if ($.isBlank(ri)) { return; }
 
         if (!_.isUndefined(chartObj.chart))
@@ -1537,14 +1666,18 @@
             if (!$.isBlank(sp)) { sp.remove(); }
         }
 
-        if (!isOther && !$.isBlank(chartObj._seriesRemainders))
-        { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
-        chartObj._seriesCache[seriesIndex].data.splice(ri, 1);
-        delete chartObj._rowIndices[point.row.id][seriesIndex];
-        for (var i = ri; i < chartObj._seriesCache[seriesIndex].data.length; i++)
+        if (chartObj._useRemainders && !isOther && !$.isBlank(chartObj._seriesRemainders) &&
+                !$.isBlank(chartObj._seriesRemainders[series.groupId]))
         {
-            var p = chartObj._seriesCache[seriesIndex].data[i];
-            chartObj._rowIndices[p.row.id][seriesIndex] = i;
+            chartObj._seriesRemainders[series.groupId][series.yColumn.data.id] +=
+                chartObj._seriesCache[series.index].data[ri].y;
+        }
+        chartObj._seriesCache[series.index].data.splice(ri, 1);
+        delete chartObj._rowIndices[point.row.id][series.index];
+        for (var i = ri; i < chartObj._seriesCache[series.index].data.length; i++)
+        {
+            var p = chartObj._seriesCache[series.index].data[i];
+            chartObj._rowIndices[p.row.id][series.index] = i;
         }
     };
 

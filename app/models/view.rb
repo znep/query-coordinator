@@ -1069,6 +1069,7 @@ class View < Model
     "" => "-- No License --",
     "PUBLIC_DOMAIN" => "Public Domain",
     "OPEN_DATABASE_LICENSE" => "Open Database License",
+    "IODL" => "Italian Open Data License 2.0",
     "CC" => "Creative Commons"
   }
 
@@ -1086,6 +1087,7 @@ class View < Model
     "" => "-- No License --",
     "PUBLIC_DOMAIN" => "Public Domain",
     "OPEN_DATABASE_LICENSE" => "Open Database License",
+    "IODL" => "Italian Open Data License 2.0",
     "CC" => "Creative Commons",
     "CC0_10" => "1.0 Universal",
     "CC_30_BY" => "Attribution 3.0 Unported",

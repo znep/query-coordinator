@@ -62,7 +62,7 @@
     var creativeSelected = $licenseId.val().match(/^CC/);
 
     //  move over relevant options, choose CC if relevant
-    $licenseType.append($licenseId.children('option:first,option[value=CC],option[value=PUBLIC_DOMAIN]'));
+    $licenseType.append($licenseId.children('option:not([value^=CC_]):not([value^=CC0])'));
     if (creativeSelected)
     {
         $licenseType.val('CC');

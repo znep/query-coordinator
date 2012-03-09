@@ -17,7 +17,7 @@
             OpenLayers.Control.prototype.draw.apply(this, arguments);
             px = this.position;
 
-            var $geocodeControl = $.tag({ tagName: 'div', class: 'geolocator_button',
+            var $geocodeControl = $.tag({ tagName: 'div', 'class': 'geolocator_button',
                 title: 'Navigate to location' });
             var $div = $(this.div);
             $div.append($geocodeControl);
@@ -27,7 +27,7 @@
                 var $geolocator_prompt = $div.find('.geolocator');
                 if ($geolocator_prompt.length == 0)
                 {
-                    $geolocator_prompt = $.tag({ tagName: 'div', class: 'geolocator',
+                    $geolocator_prompt = $.tag({ tagName: 'div', 'class': 'geolocator',
                         contents: [{ tagName: 'input', 'class': 'textPrompt', type: 'text' },
                                    { tagName: 'select', contents:
                                        _.map(['auto', '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'],

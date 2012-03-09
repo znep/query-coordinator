@@ -6,6 +6,7 @@
 
   $(function() {
       var page = blist.configuration.page = <%= raw page.to_json %>;
+      blist.configuration.pageVariables = <%= safe_json(Canvas2::Util.page_vars) %>;
       $.dataContext.load(page.data);
       $.locale.initialize(page.locale);
       $.component.initialize(page.content);

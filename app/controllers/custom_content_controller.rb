@@ -95,6 +95,7 @@ class CustomContentController < ApplicationController
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)
     @cached_fragment = read_fragment(@cache_key)
+    return render_404 if @cached_fragment == '404'
 
     @minimal_render = params['no_render'] == 'true'
 
@@ -103,8 +104,9 @@ class CustomContentController < ApplicationController
     self.action_name = 'homepage' if path == '/'
     if @cached_fragment.nil?
       Canvas2::Util.set_params(params)
+      Canvas2::Util.set_path(path)
       if CurrentDomain.module_available?('canvas2')
-        @page = Page[path, pages_time]
+        @page, @vars = Page[path, pages_time]
       end
       unless @page
         if path == '/'
@@ -114,6 +116,15 @@ class CustomContentController < ApplicationController
         end
       else
         self.action_name = 'page'
+        begin
+          render :action => 'page'
+        # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
+        # but Rails ignores it and passes it all the way up without rescuing
+        # unless I rescue a generic Exception
+        rescue Exception => e
+          write_fragment(@cache_key, '404', :expires_in => 15.minutes)
+          render_404
+        end
       end
     else
       # When we're rendering a cached item, force it to use the page action,

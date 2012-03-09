@@ -5,7 +5,12 @@
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
 
-<%= raw @page.render(!@minimal_render) %>
+<%- render_result = @page.render(@vars, !@minimal_render) -%>
+<%- if render_result == false -%>
+<%- raise Canvas2::NoContentError.new -%>
+
+<%- else -%>
+<%= raw render_result %>
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
@@ -14,4 +19,6 @@
 <%- end -%>
 <%- content_for :js_footer do -%>
   <%= current_user_js %>
-<%- end -%>
+<%- end -%><%# if render_result %>
+
+<%- end -%><%# prerendered_cache %>

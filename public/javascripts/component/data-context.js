@@ -46,14 +46,6 @@
                 delete dc._contextsQueue[id];
                 if (_.isFunction(errorCallback)) { errorCallback(xhr); }
                 $.dataContext.trigger('error', [ id ]);
-                // HACK HACK HACK  Would be great to do this checks in Rails,
-                // so we don't end up loading a bunch of data anyway, and avoid
-                // the initial flash of loading
-                if (config.required)
-                {
-                    $('body').html($.tag({tagName: 'iframe', width: '100%', height: '100%',
-                        src: '/not_found'}));
-                }
             };
 
             dc._contextsQueue[id] = dc._preLoadQueue[id] || [];

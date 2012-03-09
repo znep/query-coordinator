@@ -5,6 +5,9 @@ require 'clytemnestra'
 
 module Canvas2
 
+  class NoContentError < StandardError
+  end
+
 # GENERAL
 
   class Util
@@ -31,10 +34,20 @@ module Canvas2
 
     def self.set_params(params)
       @@page_params = params.reject {|k, v| k == 'controller' || k == 'action' || k == 'path'}
+      add_vars(@@page_params)
     end
 
     def self.page_params
       @@page_params
+    end
+
+    def self.add_vars(vars)
+      @@page_vars ||= {}
+      @@page_vars.merge!(vars)
+    end
+
+    def self.page_vars
+      @@page_vars
     end
 
     def self.set_path(path)
@@ -42,7 +55,7 @@ module Canvas2
     end
 
     def self.page_path
-      @@page_path
+      defined? @@page_path ? @@page_path : nil
     end
 
     def self.component_data_page(c_id)
@@ -52,8 +65,8 @@ module Canvas2
 
     def self.base_resolver
       lambda do |name|
-        if name[0] == '?' && defined? @@page_params
-          return deep_get(@@page_params, name.slice(1, name.length))
+        if name[0] == '?' && defined? @@page_vars
+          return deep_get(@@page_vars || {}, name.slice(1, name.length))
         end
         nil
       end

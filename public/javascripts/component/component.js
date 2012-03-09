@@ -754,12 +754,16 @@
             {
                 if ($.isBlank(queryParams))
                 {
-                    queryParams = {};
-                    _.each(window.location.search.substring(1).split('&'), function(p)
-                        {
-                            var s = p.split('=');
-                            queryParams[s[0]] = unescape(s[1]);
-                        });
+                    queryParams = blist.configuration.pageVariables;
+                    if ($.isBlank(queryParams))
+                    {
+                        queryParams = {};
+                        _.each(window.location.search.substring(1).split('&'), function(p)
+                            {
+                                var s = p.split('=');
+                                queryParams[s[0]] = unescape(s[1]);
+                            });
+                    }
                 }
                 return queryParams[name.substring(1)];
             }

@@ -133,6 +133,10 @@ protected
     return name
   end
 
+  def meter(name)
+    ActiveSupport::Notifications.instrument :meter, :measurement => name
+  end
+
 private
   # Allow access to the current controller from the UserSession model.
   # UserSession itself is an ActiveRecord-like model, but it's mostly

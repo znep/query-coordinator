@@ -38,6 +38,7 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new(params[:user_session])
     response = @user_session.save(true)
     if response.is_a?(Net::HTTPSuccess)
+      meter 'login.success'
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       respond_to do |format|
         format.html { redirect_back_or_default(profile_index_path) }
@@ -46,6 +47,7 @@ class UserSessionsController < ApplicationController
       end
     else
       default_response = 'Unable to login with that email and password; please try again'
+      meter 'login.failure'
       if response.is_a?(Net::HTTPForbidden)
         response_error = JSON.parse(response.body)
         notice = response_error['message'] || default_response

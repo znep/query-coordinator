@@ -16,5 +16,6 @@ gem "rack-ssl-enforcer"
 gem 'memcache-client', '~>1.8.5'
 gem 'rinku', :require => 'rails_rinku'
 
+gem 'statsd-ruby', :require => 'statsd', :get => 'git://github.com/sectioneight/statsd-ruby.git'
 gem "thin", :group => :development
 gem "ruby-debug19", :group => :development

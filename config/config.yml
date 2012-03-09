@@ -7,6 +7,7 @@ default: &default
   rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
   app_token: U29jcmF0YS0td2VraWNrYXNz0
+  statsd_enabled: false
 
 # Local development
 development:

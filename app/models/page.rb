@@ -71,8 +71,10 @@ private
             # be chivalrous
             Thread.pass
 
-            Airbrake.notify(:error_class => 'Canvas Routing Error',
-                            :error_message => "Canvas Routing Error: Routing collision, skipping #{c.path}")
+            Airbrake.notify(:error_class => "Canvas Routing Error on #{CurrentDomain.cname}",
+                            :error_message => "Canvas Routing Error on #{CurrentDomain.cname}: Routing collision, skipping #{c.path}",
+                           :session => {:domain => CurrentDomain.cname},
+                           :parameters => {:duplicate_config => c})
           end
         else
           cur_obj[':page'] = c

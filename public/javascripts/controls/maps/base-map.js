@@ -45,6 +45,16 @@
             OpenLayers.Control.prototype.destroy.apply(this, arguments);
         },
 
+        activate: function()
+        {
+            $(this.map.div).siblings('.mapTypes').show();
+        },
+
+        deactivate: function()
+        {
+            $(this.map.div).siblings('.mapTypes').hide();
+        },
+
         redraw: function(evtObj)
         {
             var _this = this;
@@ -595,12 +605,14 @@
         {
             _.each(this._baseLayers, function(layer)
             { layer.setVisibility(false); });
+            this.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0].deactivate();
         },
 
         showLayers: function()
         {
             _.each(this._baseLayers, function(layer)
             { layer.setVisibility(true); });
+            this.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0].activate();
         },
 
         handleRowsLoaded: function(rows, view)

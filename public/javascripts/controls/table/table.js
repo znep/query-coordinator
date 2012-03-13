@@ -3595,7 +3595,7 @@
         var $dropIndicator;
         var findHeaderDragPosition = function(event)
         {
-            var x = event.pageX;
+            var x = event.originalEvent.pageX;
             var $headers = $('.blist-th:not' +
                 '(.ui-draggable-dragging, .blist-table-ghost)', $header);
             if (x < $headers.eq(0).offset().left) { return 0; }

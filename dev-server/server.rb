@@ -5,34 +5,6 @@ require 'timeout'
 
 TEMP_CACHE_DIR='/tmp/apache-dev-server-cache'
 
-def is_port_open?(host, port)
-  begin
-    Timeout::timeout(1) do
-      begin
-        s = TCPSocket.new(host, port)
-        s.close
-        return true
-      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-      end
-    end
-  rescue Timout::Error
-  end
-
-  return false
-end
-
-def check_servers
-  servers = [{:host => 'localhost', :port => 3000, :name => 'Web'},
-             {:host => 'localhost', :port => 8080, :name => 'Core'}]
-
-  servers.each do |server|
-    unless is_port_open?(server[:host], server[:port])
-      STDERR.puts "You must run a #{server[:name]} instance on #{server[:host]}:#{server[:port]}"
-      exit 1
-    end
-  end
-end
-
 def check_args
   if ARGV.size != 1
     return false
@@ -61,7 +33,6 @@ if check_args
 
   case ARGV[0]
   when 'start'
-    check_servers
     if !File.exists?("#{DEV_DIR}/var/apache2.pid")
       clean_mod_cache_directory!(:force => true)
       puts "All running; starting Apache."

@@ -80,7 +80,7 @@
                 $dom = $(this.map.div).siblings('.mapTypes');
             }
 
-            $dom.empty();
+            $dom.show().empty();
             var _this = this;
             _.each(_.keys(this.layers), function(maptype)
             {

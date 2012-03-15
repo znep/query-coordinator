@@ -9749,7 +9749,8 @@ var ColumnSeries = extendClass(Series, {
 			data = series.data,
 			closestPoints = series.closestPoints,
 			categoryWidth = mathAbs(
-				data[1] ? data[closestPoints].plotX - data[closestPoints - 1].plotX : 
+                    // JS: This seems to make bars different sizes for different series, which looks terrible; so calculate them all in the same manner
+//				data[1] ? data[closestPoints].plotX - data[closestPoints - 1].plotX : 
 				chart.plotSizeX / (categories ? categories.length : 1)
 			),
 			groupPadding = categoryWidth * options.groupPadding,

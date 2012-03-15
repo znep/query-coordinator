@@ -361,10 +361,8 @@
                             contents: {tagName: 'a', href: (f.isMatching ?
                                     '#clear-filter-column_' : '#filter-column_') +
                                     (isSubCol ? cs.subColumnType : '') + ':' + f.escapedValue + '|',
-                                title: f.titleValue + (f.count > 1 ?
-                                    ' (' + f.count + ')' : ''),
-                                'class': 'clipText', contents: f.renderedValue +
-                                    (f.count > 1 ? ' (' + f.count + ')' : '')}});
+                                title: f.titleValue ,
+                                'class': 'clipText', contents: f.renderedValue }});
                     });
             }
             if (sumSections.length > 0)

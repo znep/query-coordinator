@@ -221,7 +221,7 @@
                     { return; }
 
                     addPoint(chartObj, point, series, false, chartObj._dataGrouping ? ri : null);
-                    doChartRedraw(chartObj);
+                    doChartRedraw(chartObj, true);
                 };
 
                 chartObj._chartRedrawCount++;
@@ -253,108 +253,9 @@
                 renderPoint(series);
             });
 
-            doChartRedraw(chartObj);
+            doChartRedraw(chartObj, true);
 
             return true;
-        },
-
-        rowsRendered: function()
-        {
-            var chartObj = this;
-            chartObj._super();
-            if (!chartObj._columnsLoaded || !chartObj.isValid()) { return; }
-
-            chartObj._chartRedrawCount++;
-
-            // Check if there are remainders to stick on the end
-            if (chartObj._useRemainders && !_.isEmpty(chartObj._seriesRemainders))
-            {
-                // Create fake row for other value
-                var otherRow = { invalid: {}, error: {}, changed: {} };
-                otherRow[chartObj._xColumn.lookup] = 'Other';
-                var cf = _.detect(chartObj._primaryView.metadata.conditionalFormatting,
-                    function(cf) { return cf.condition === true; });
-                if (cf) { otherRow.color = cf.color; }
-
-                var oInd;
-                if (!_.isUndefined(chartObj._xCategories))
-                {
-                    oInd = _.indexOf(chartObj._xCategories, 'Other');
-                    if (oInd < 0)
-                    {
-                        oInd = chartObj._xCategories.length;
-                        chartObj._xCategories.push('Other');
-                    }
-                }
-                _.each(chartObj._seriesCache, function(series)
-                {
-                    var seriesRow = $.extend(true, {}, otherRow, series.seriesValues);
-                    seriesRow.id = 'Other_' + series.yColumn.data.id + '_' +
-                    _.map(_.keys(series.seriesValues).sort(), function(sk)
-                        { return sk + ':' + series.seriesValues[sk]; }).join('_') || 'default';
-                    if ((chartObj._primaryView.highlights || {})[seriesRow.id])
-                    {
-                        seriesRow.sessionMeta = {highlight: true,
-                            highlightColumn: (chartObj._primaryView.highlightsColumn || {})[seriesRow.id]};
-                    }
-                    var otherPt = xPoint(chartObj, seriesRow, oInd);
-                    otherPt.otherPt = true;
-
-                    var renderOther = function()
-                    {
-                        var sr = chartObj._seriesRemainders[series.groupId][series.yColumn.data.id];
-                        if ($.isBlank(sr)) { return; }
-                        var percentage = (sr /
-                            chartObj._seriesSums[series.groupId][series.yColumn.data.id]);
-                        // If the remainder is less than .01%, not worth rendering
-                        // due to calculation rounding errors
-                        if (percentage < 0.0001) { return; }
-
-                        seriesRow[series.yColumn.data.lookup] = sr;
-                        var point = yPoint(chartObj, seriesRow, sr, series, otherPt);
-                        addPoint(chartObj, point, series, true);
-                        doChartRedraw(chartObj);
-                    };
-
-                    chartObj._chartRedrawCount++;
-                    if ($.isBlank(chartObj._seriesRemainders[series.groupId]))
-                    { getSeriesSums(chartObj, series, renderOther); }
-                    else
-                    { renderOther(); }
-                });
-            }
-
-            if (!chartObj._dataGrouping && !isDateTime(chartObj))
-            {
-                var numSeries = chartObj._seriesCache.length;
-                for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
-                {
-                    var reindex = function(datum, index)
-                    { datum.x = index; };
-                    if (!$.isBlank(chartObj.chart))
-                    { _.each(chartObj.chart.series[seriesIndex].data, reindex); }
-                    if (!$.isBlank(chartObj.secondChart))
-                    { _.each(chartObj.secondChart.series[seriesIndex].data, reindex); }
-                    _.each(chartObj._seriesCache[seriesIndex].data, reindex);
-                }
-            }
-
-            doChartRedraw(chartObj);
-
-            if (!_.isUndefined(chartObj.chart))
-            {
-                setCategories(chartObj);
-
-                if (chartObj._primaryView.snapshotting)
-                {
-                    prepareToSnapshot(chartObj);
-                }
-            }
-            if (!_.isUndefined(chartObj.secondChart))
-            {
-                chartObj.secondChart.xAxis[0].setCategories(chartObj._xCategories, true);
-                setInitialDetailBounds(chartObj);
-            }
         },
 
         cleanVisualization: function()
@@ -474,15 +375,24 @@
         return chartObj._colorIndex[id];
     };
 
-    var doChartRedraw = function(chartObj)
+    var doChartRedraw = function(chartObj, callRowsRendered)
     {
         if (chartObj._chartRedrawCount <= 0) { return; }
+        if (callRowsRendered) { chartObj._needsRowsRendered = true; }
         if (--chartObj._chartRedrawCount == 0)
         {
-            if (!$.isBlank(chartObj.chart))
-            { chartObj.chart.redraw(); }
-            if (!$.isBlank(chartObj.secondChart))
-            { chartObj.secondChart.redraw(); }
+            if (chartObj._needsRowsRendered)
+            {
+                delete chartObj._needsRowsRendered;
+                rowsRendered(chartObj);
+            }
+            else
+            {
+                if (!$.isBlank(chartObj.chart))
+                { chartObj.chart.redraw(); }
+                if (!$.isBlank(chartObj.secondChart))
+                { chartObj.secondChart.redraw(); }
+            }
         }
     };
 
@@ -569,7 +479,6 @@
             {
                 _.each(chartObj._pendingRows, function(r) { chartObj.renderRow(r); });
                 delete chartObj._pendingRows;
-                chartObj.rowsRendered();
             }
         };
 
@@ -1326,6 +1235,103 @@
         // IE7 seems to have some problem creating the chart right away;
         // add a delay and it seems to work.  Do I know why (for either part)? No
         _.defer(function() { loadChart(); });
+    };
+
+    var rowsRendered = function(chartObj)
+    {
+        if (!chartObj._columnsLoaded || !chartObj.isValid()) { return; }
+
+        chartObj._chartRedrawCount++;
+
+        // Check if there are remainders to stick on the end
+        if (chartObj._useRemainders && !_.isEmpty(chartObj._seriesRemainders))
+        {
+            // Create fake row for other value
+            var otherRow = { invalid: {}, error: {}, changed: {} };
+            otherRow[chartObj._xColumn.lookup] = 'Other';
+            var cf = _.detect(chartObj._primaryView.metadata.conditionalFormatting,
+                function(cf) { return cf.condition === true; });
+            if (cf) { otherRow.color = cf.color; }
+
+            var oInd;
+            if (!_.isUndefined(chartObj._xCategories))
+            {
+                oInd = _.indexOf(chartObj._xCategories, 'Other');
+                if (oInd < 0)
+                {
+                    oInd = chartObj._xCategories.length;
+                    chartObj._xCategories.push('Other');
+                }
+            }
+            _.each(chartObj._seriesCache, function(series)
+            {
+                var seriesRow = $.extend(true, {}, otherRow, series.seriesValues);
+                seriesRow.id = 'Other_' + series.yColumn.data.id + '_' +
+                _.map(_.keys(series.seriesValues).sort(), function(sk)
+                    { return sk + ':' + series.seriesValues[sk]; }).join('_') || 'default';
+                if ((chartObj._primaryView.highlights || {})[seriesRow.id])
+                {
+                    seriesRow.sessionMeta = {highlight: true,
+                        highlightColumn: (chartObj._primaryView.highlightsColumn || {})[seriesRow.id]};
+                }
+                var otherPt = xPoint(chartObj, seriesRow, oInd);
+                otherPt.otherPt = true;
+
+                var renderOther = function()
+                {
+                    var sr = chartObj._seriesRemainders[series.groupId][series.yColumn.data.id];
+                    if ($.isBlank(sr)) { return; }
+                    var percentage = (sr /
+                        chartObj._seriesSums[series.groupId][series.yColumn.data.id]);
+                    // If the remainder is less than .01%, not worth rendering
+                    // due to calculation rounding errors
+                    if (percentage < 0.0001) { return; }
+
+                    seriesRow[series.yColumn.data.lookup] = sr;
+                    var point = yPoint(chartObj, seriesRow, sr, series, otherPt);
+                    addPoint(chartObj, point, series, true);
+                    doChartRedraw(chartObj);
+                };
+
+                chartObj._chartRedrawCount++;
+                if ($.isBlank(chartObj._seriesRemainders[series.groupId]))
+                { getSeriesSums(chartObj, series, renderOther); }
+                else
+                { renderOther(); }
+            });
+        }
+
+        if (!chartObj._dataGrouping && !isDateTime(chartObj))
+        {
+            var numSeries = chartObj._seriesCache.length;
+            for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
+            {
+                var reindex = function(datum, index)
+                { datum.x = index; };
+                if (!$.isBlank(chartObj.chart))
+                { _.each(chartObj.chart.series[seriesIndex].data, reindex); }
+                if (!$.isBlank(chartObj.secondChart))
+                { _.each(chartObj.secondChart.series[seriesIndex].data, reindex); }
+                _.each(chartObj._seriesCache[seriesIndex].data, reindex);
+            }
+        }
+
+        doChartRedraw(chartObj);
+
+        if (!_.isUndefined(chartObj.chart))
+        {
+            setCategories(chartObj);
+
+            if (chartObj._primaryView.snapshotting)
+            {
+                prepareToSnapshot(chartObj);
+            }
+        }
+        if (!_.isUndefined(chartObj.secondChart))
+        {
+            chartObj.secondChart.xAxis[0].setCategories(chartObj._xCategories, true);
+            setInitialDetailBounds(chartObj);
+        }
     };
 
     // Once the chart's ready to draw, let' take a picture

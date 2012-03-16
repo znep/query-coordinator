@@ -9759,7 +9759,8 @@ var ColumnSeries = extendClass(Series, {
 			optionPointWidth = options.pointWidth,
 			pointPadding = defined(optionPointWidth) ? (pointOffsetWidth - optionPointWidth) / 2 : 
 				pointOffsetWidth * options.pointPadding,
-			pointWidth = pick(optionPointWidth, pointOffsetWidth - 2 * pointPadding),
+            // JS: Show things no matter what
+			pointWidth = mathMax(1, pick(optionPointWidth, pointOffsetWidth - 2 * pointPadding)),
 			colIndex = (reversedXAxis ? columnCount - 
 				series.columnIndex : series.columnIndex) || 0,
 			pointXOffset = pointPadding + (groupPadding + colIndex *

@@ -267,9 +267,7 @@
             chartObj._chartRedrawCount++;
 
             // Check if there are remainders to stick on the end
-            if (chartObj._useRemainders && !_.isEmpty(chartObj._seriesRemainders) &&
-                (Dataset.chart.types[chartObj._chartType].renderOther ||
-                chartObj._displayFormat.renderOther))
+            if (chartObj._useRemainders && !_.isEmpty(chartObj._seriesRemainders))
             {
                 // Create fake row for other value
                 var otherRow = { invalid: {}, error: {}, changed: {} };
@@ -326,7 +324,7 @@
                 });
             }
 
-            if (!chartObj._dataGrouping)
+            if (!chartObj._dataGrouping && !isDateTime(chartObj))
             {
                 var numSeries = chartObj._seriesCache.length;
                 for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
@@ -560,8 +558,8 @@
     {
         if (!chartObj._columnsReady || $.isBlank(chartObj._totalRows)) { return; }
 
-        chartObj._useRemainders = _.include(['pie', 'donut'], chartObj._chartType) ||
-            chartObj._totalRows > chartObj._maxRows;
+        chartObj._useRemainders = (Dataset.chart.types[chartObj._chartType].renderOther ||
+                chartObj._displayFormat.renderOther && chartObj._totalRows > chartObj._maxRows);
 
         var columnsDoneLoading = function()
         {

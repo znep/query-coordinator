@@ -143,12 +143,14 @@ module Canvas2
             if temp.blank?
               temp = p.has_key?('fallback') ? p['fallback'] : '{' + p['orig'] + '}'
             else
-               if p.has_key?('regex')
-                 # Woo, backslash
-                 repl = p['repl'].gsub(/\$(\d)/, '\\\\\1')
-                 r = Regexp.new(p['regex'], p['modifiers'].include?('i'))
-                 temp = p['modifiers'].include?('g') ? temp.gsub(r, repl) : temp.sub(r, repl)
-               end
+              temp = temp.map {|k, v| k + ': ' + v.to_s} if temp.is_a?(Hash)
+              temp = temp.join(', ') if temp.is_a?(Array)
+              if p.has_key?('regex')
+                # Woo, backslash
+                repl = p['repl'].gsub(/\$(\d)/, '\\\\\1')
+                r = Regexp.new(p['regex'], p['modifiers'].include?('i'))
+                temp = p['modifiers'].include?('g') ? temp.gsub(r, repl) : temp.sub(r, repl)
+              end
             end
             v = temp
           end

@@ -37,7 +37,10 @@ $.component.Container.extend('Repeater', 'content', {
 
         this._idPrefix = this.id + '-';
         if ($.subKeyDefined(this, '_properties.container.id'))
-        { this._properties.container.id = this._idPrefix + this._properties.container.id; }
+        {
+            this._properties.container.id = (this._properties.parentPrefix || '') +
+                this._properties.container.id;
+        }
     },
 
     _initDom: function()

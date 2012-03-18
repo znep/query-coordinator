@@ -1185,10 +1185,13 @@
             {
                 // This. Is such. A hack.
                 _.each(mapObj._byView, function(viewConfig)
-                { $('circle, image, path, oval, rect, shape', viewConfig._displayLayer.div)
-                    .filter(function()
-                        { return !viewConfig._displayLayer.getFeatureById(this._featureId); })
-                    .remove(); });
+                {
+                    if (!viewConfig._displayLayer) { return; }
+                    $('circle, image, path, oval, rect, shape', viewConfig._displayLayer.div)
+                        .filter(function()
+                            { return !viewConfig._displayLayer.getFeatureById(this._featureId); })
+                        .remove();
+                });
             });
 
             // Create a copy of features on the wrong side of the dateline
@@ -1784,7 +1787,8 @@
             if (!direction)
             {
                 _.each(mapObj._byView, function(viewConfig)
-                { _.isFunction(viewConfig._displayLayer.removeFeatures) &&
+                { viewConfig._displayLayer &&
+                    _.isFunction(viewConfig._displayLayer.removeFeatures) &&
                     viewConfig._animation &&
                     viewConfig._displayLayer.removeFeatures(viewConfig._animation.olds); });
                 if (_.isFunction(callback))

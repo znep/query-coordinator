@@ -228,7 +228,7 @@
                 if ($.isBlank(chartObj._seriesSums) || !chartObj._seriesSums.hasOwnProperty(series.groupId))
                 { getSeriesSums(chartObj, series, finishRenderPoint); }
                 else
-                { finishRenderPoint(); }
+                { _.defer(finishRenderPoint); }
             };
 
             // Render data for each series

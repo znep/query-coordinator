@@ -98,10 +98,13 @@ class RenderType
         ret = '<a href="/views/' + dataset.id + '/' +
           (is_new ? '' : 'obsolete_') + 'files/' + cell[id_i] +
           (is_new && params.length > 0 ? '?' + params.join('&') : '') + '">' +
-          CGI.escapeHTML(cell[name_i] || '') + '</a>' +
-          ' (' + number_to_human_size(cell[size_i], {:locale => 'en'}) + ')' +
-          ' (' + CGI.escapeHTML(cell[type_i] || '') + ')'
+          CGI.escapeHTML(cell[name_i] || '') + '</a>'
+        if !cell[size_i].nil?
+          ret +=
+            ' (' + number_to_human_size(cell[size_i], {:locale => 'en'}) + ')'
         end
+        ret += ' (' + CGI.escapeHTML(cell[type_i] || '') + ')'
+      end
 
     when 'photo', 'photo_obsolete'
       url = '/views/' + dataset.id + '/' +

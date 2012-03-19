@@ -103,7 +103,9 @@ class RenderType
           ret +=
             ' (' + number_to_human_size(cell[size_i], {:locale => 'en'}) + ')'
         end
-        ret += ' (' + CGI.escapeHTML(cell[type_i] || '') + ')'
+        if !cell[type_i].nil?
+          ret += ' (' + CGI.escapeHTML(cell[type_i] || '') + ')'
+        end
       end
 
     when 'photo', 'photo_obsolete'

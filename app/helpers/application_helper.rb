@@ -122,8 +122,15 @@ module ApplicationHelper
     to_render = [part].concat(DEFAULT_TRANSLATIONS).compact.reject {|t| @rendered_translations.include?(t)}
     return '' if to_render.empty?
     @rendered_translations = @rendered_translations.merge(to_render)
-    content_tag :div, :class => 'translations', :'data-locale' => I18n.locale do
-      LocaleCache.render_translations(to_render).to_json
+    content_tag :script, :type => 'text/javascript' do
+      <<-EOS
+        if (typeof blistTranslations == 'undefined') blistTranslations = [];
+        blistTranslations.push(function()
+        {
+            return #{safe_json(LocaleCache.render_translations(to_render))};
+        });
+      EOS
+        .html_safe
     end
   end
 

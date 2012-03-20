@@ -137,7 +137,8 @@ http://www.socrata.com
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');
-    blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
+    blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
+    blist.locale = "<%= I18n.locale %>";
 
     <%- if DOWNTIME.should_display(DateTime.now) -%>
       blist.configuration.maintenance_hash = '<%= raw DOWNTIME.hash %>';

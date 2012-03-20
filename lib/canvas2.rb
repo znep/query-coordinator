@@ -443,10 +443,10 @@ module Canvas2
       t = ''
       fully_rendered = true
       if has_children?
-        total_weight = children.reduce(0.0) {|sum, c| sum + (c.properties['weight'] || 1)}
+        total_weight = children.reduce(0.0) {|sum, c| sum + (c.properties['weight'] || 1).to_f}
         pos = 0.0
         children.each_with_index do |c, i|
-          w = c.properties['weight'] || 1
+          w = (c.properties['weight'] || 1).to_f
           r = c.render
           t += '<div class="component-wrapper' + (i == 0 ? ' first-child' : '') + '"' +
             ' style="margin-left:' + (-(100 - pos / total_weight * 100)).round(2).to_s + '%;' +

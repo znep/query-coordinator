@@ -282,7 +282,7 @@ Frontend::Application.routes do
     # Canvas 2
     match '/template/:id', :action => 'template'
     match '*path', :action => 'page'
-    root :action => 'homepage'
+    root :action => 'page'
   end
 
   # See how all your routes lay out with "rake routes"

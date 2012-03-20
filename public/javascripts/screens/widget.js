@@ -210,7 +210,7 @@ blist.widget.paneHandlers = {
 
                 // This is returning with &nbsp;, so replace them all with
                 // normal spaces
-                $this.socrataTip({ message: $this.attr('title').clean(),
+                $this.socrataTip({ message: ($this.attr('title') || '').clean(),
                     shrinkToFit: false, killTitle: true });
             });
 

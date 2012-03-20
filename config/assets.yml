@@ -21,6 +21,7 @@ javascripts:
     - public/javascripts/controls/base-control.js
     - public/javascripts/controls/loading-spinner.js
     - public/javascripts/util/util.js
+    - public/javascripts/util/base64.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
     - public/javascripts/util/base-model.js

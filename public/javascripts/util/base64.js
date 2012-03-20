@@ -23,6 +23,11 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// 2012-03-20 clint.tseng@socrata.com: wrap to not pollute global as much
+
+(function() {
+blist.namespace.fetch('blist.util');
+
 function StringBuffer()
 { 
     this.buffer = []; 
@@ -215,3 +220,6 @@ Base64DecodeEnumerator.prototype =
         }
     }
 };
+
+blist.util.base64 = Base64;
+})();

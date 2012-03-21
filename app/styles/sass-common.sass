@@ -284,6 +284,9 @@ $row_zebra_color: #f6f6f6
   .ie7 &
     display: inline
     zoom: 1
+    // clearfix in IE7 still has a block element :after, so it continues to wrap
+    &:after
+      display: inline
 
 @mixin drag-handle
   background-image: url(/stylesheets/images/interface/drag_handle.png)

@@ -301,16 +301,6 @@
         _getAssets: function()
         { return null; },
 
-        _isVisible: function()
-        {
-            if ($.isBlank(this.$dom)) { return false; }
-
-            var t = this.$dom.offset().top;
-            var scrollT = $(document).scrollTop();
-            var mainH = $(window).height();
-            return t < scrollT + (mainH * 1.1) && t + this.$dom.height() > scrollT - (mainH * 0.1);
-        },
-
         /**
          * Initialize DOM representation of this component.
          */
@@ -351,11 +341,16 @@
                 if (this._delayUntilVisible)
                 {
                     var cObj = this;
-                    $(window).bind('scroll.component-' + cObj.id, _.throttle(function()
+                    cObj.$dom.waypoint({delayRefresh: true, offset: '100%', checkTop: true,
+                    handler: function()
+                    {
+                        if (!cObj._destroyed && cObj._needsRender)
                         {
-                            if (!cObj._destroyed && cObj._needsRender && cObj._isVisible())
-                            { cObj._render(); }
-                        }, 300));
+                            delete cObj._delayUntilVisible;
+                            cObj.$dom.waypoint('destroy');
+                            cObj._render();
+                        }
+                    }});
                 }
             }
 
@@ -415,8 +410,7 @@
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
 
-            if (this._loadingAssets || this._properties.hidden ||
-                    (this._delayUntilVisible && !this._isVisible()))
+            if (this._loadingAssets || this._properties.hidden || this._delayUntilVisible)
             {
                 this._needsRender = true;
                 return false;
@@ -442,6 +436,7 @@
             delete this._needsRender;
             this._rendered = true;
             this._isDirty = false;
+            $.component.sizeRenderRefresh();
             return true;
         },
 
@@ -451,8 +446,6 @@
         _arrange: function()
         {
             this._isDirty = true;
-            if (!$.isBlank(this.$dom))
-            { this.$dom.trigger('resize', [$.component]); }
         },
 
         /**
@@ -529,9 +522,11 @@
 
         /**
          * Obtain the component's current public properties.
+         * This is not a deep extend (which is a bit more expensive), so the
+         * results should be used only for reference
          */
         _propRead: function() {
-            return $.extend(true, {}, this._properties, { type: this.typeName, id: this.id });
+            return $.extend({}, this._properties, { type: this.typeName, id: this.id });
         },
 
         /**
@@ -541,6 +536,7 @@
         _propWrite: function(properties)
         {
             var cObj = this;
+            properties = $.extend(true, {}, properties);
             $.extend(true, cObj._properties, properties);
             cObj._isDirty = true;
             cObj.trigger('update_properties');
@@ -772,6 +768,8 @@
         allocateId: function() {
             return 'c' + nextAutoID++;
         },
+
+        sizeRenderRefresh: _.debounce(function() { $.waypoints('refresh'); }, 200),
 
         eachRoot: function(fn, scope) {
             for (var i in components)

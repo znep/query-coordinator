@@ -160,9 +160,9 @@
                 child._initDom();
 
             if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
-            { child.next.$dom.before(child.$dom); }
+            { child.next.$dom.parent()[0].insertBefore(child.$dom[0], child.next.$dom[0]); }
             else if (!$.isBlank(this.$ct) && child.$dom.parent().index(this.$ct) < 0)
-            { this.$ct.append(child.$dom); }
+            { this.$ct[0].appendChild(child.$dom[0]); }
             if (child.$dom.parent().length > 0 &&
                     this._rendered && !child._rendered)
                 child._render();
@@ -356,11 +356,11 @@
             }
             if ($.subKeyDefined(child, 'next.$wrapper') &&
                     child.next.$wrapper.parent().index(this.$ct) >= 0)
-            { child.next.$wrapper.before(child.$wrapper); }
+            { child.next.$wrapper.parent()[0].insertBefore(child.$wrapper[0], child.next.$wrapper[0]); }
             else if (!$.isBlank(this._$clear))
-            { this._$clear.before(child.$wrapper); }
+            { this._$clear.parent()[0].insertBefore(child.$wrapper[0], this._$clear[0]); }
             else if (!$.isBlank(this.$ct))
-            { this.$ct.append(child.$wrapper); }
+            { this.$ct[0].appendChild(child.$wrapper[0]); }
             if (child.$wrapper.parent().length > 0 &&
                     this._rendered && !child._rendered)
                 child._render();

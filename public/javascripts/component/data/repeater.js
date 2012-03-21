@@ -105,6 +105,7 @@ $.component.Container.extend('Repeater', 'content', {
                 var newViewPercent = getViewPercent(cObj);
                 if (cObj._viewPercent && newViewPercent != cObj._viewPercent)
                 { $(window).scrollTop(cObj._viewPercent * cObj.$dom.height() + cObj.$dom.offset().top); }
+                $.component.sizeRenderRefresh();
             });
         };
 

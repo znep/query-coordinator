@@ -76,6 +76,7 @@ javascripts:
     - public/javascripts/controls/editors/photo-editor.js
   canvas:
     - public/javascripts/plugins/lab.js
+    - public/javascripts/plugins/waypoints.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/component/util/style-config.js
     - public/javascripts/component/data-context.js

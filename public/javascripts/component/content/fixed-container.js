@@ -1,11 +1,6 @@
 $.component.Container.extend('FixedContainer', 'content', {
     _needsOwnContext: true,
 
-    _getAssets: function()
-    {
-        return { javascripts: [{ assets: 'waypoints' }] };
-    },
-
     _render: function()
     {
         var cObj = this;

@@ -121,9 +121,14 @@ Support:
 
 				// Get a list of all waypoints that were crossed since last scroll move.
 				pointsHit = $.grep(this.waypoints, function(el, i) {
-					return isDown ?
+					return (isDown ?
 						(el.offset > that.oldScroll && el.offset <= newScroll) :
-						(el.offset <= that.oldScroll && el.offset > newScroll);
+						(el.offset <= that.oldScroll && el.offset > newScroll)) ||
+                        (el.options.checkTop ?
+                         (isDown ?
+                          (el.topOffset > that.oldScroll && el.topOffset <= newScroll) :
+                          (el.topOffset <= that.oldScroll && el.topOffset > newScroll))
+                         : false);
 				}),
 				len = pointsHit.length;
 				
@@ -327,7 +332,9 @@ Support:
 			});
 			
 			// Need to re-sort+refresh the waypoints array after new elements are added.
-			$[wps]('refresh');
+            if (!options || !options.delayRefresh) {
+                $[wps]('refresh');
+            }
 			
 			return this;
 		},
@@ -414,6 +421,9 @@ Support:
 					o.offset = o.element.offset().top - contextOffset
 						+ contextScroll - adjustment;
 
+                    if (o.options.checkTop) {
+                        o.topOffset = o.element.offset().top - contextOffset + contextScroll;
+                    }
 					/*
 					An element offset change across the current scroll point triggers
 					the event, just as if we scrolled past it unless prevented by an
@@ -432,6 +442,9 @@ Support:
 					else if (!oldOffset && contextScroll > o.offset) {
 						triggerWaypoint(o, ['down']);
 					}
+                    else if (o.options.checkTop && o.offset < c.oldScroll && c.oldScroll < o.topOffset) {
+                        triggerWaypoint(o, ['down']);
+                    }
 				});
 				
 				// Keep waypoints sorted by offset value.
@@ -609,7 +622,9 @@ Support:
 		continuous: true,
 		offset: 0,
 		triggerOnce: false,
-		context: window
+		context: window,
+        delayRefresh: false,
+        checkTop: false
 	};
 	
 	

@@ -64,10 +64,10 @@
               </colgroup>
               <thead>
                 <tr>
-                  <th class="required"><div>&nbsp;</div></th>
-                  <th class="name"><div>Field Name</div><span class="icon"></span></th>
-                  <th class="options"><div>Allowed Values</div><span class="icon"></span></th>
-                  <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
+                  <th class="required" scope="col"><div>&nbsp;</div></th>
+                  <th class="name" scope="col"><div>Field Name</div><span class="icon"></span></th>
+                  <th class="options" scope="col"><div>Allowed Values</div><span class="icon"></span></th>
+                  <th class="actions" scope="col"><div>&nbsp;</div><span class="icon"></span></th>
                 </tr>
               </thead>
               <tbody>
@@ -79,7 +79,7 @@
                       <td class="required">
                           <span class="requiredField"></span>
                       </td>
-                      <td class="name">
+                      <td class="name" scope="row">
                         <span class="cellInner">
                           <%= field.displayName || field.name %>
                         </span>

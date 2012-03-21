@@ -52,11 +52,11 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="user">Submitted by</th>
-            <th class="details">Details</th>
-            <th class="attachments">Files</th>
-            <th class="rating">Rating</th>
-            <th class="status">Status</th>
+            <th class="user" scope="col">Submitted by</th>
+            <th class="details" scope="col">Details</th>
+            <th class="attachments" scope="col">Files</th>
+            <th class="rating" scope="col">Rating</th>
+            <th class="status" scope="col">Status</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -79,7 +79,7 @@
 <table class="nominationItem">
   <tbody>
     <tr class="item">
-      <td class="user">
+      <td class="user" scope="row">
         <%- if !current_user.nil? &&
                 current_user.has_right?('edit_nominations') -%>
         <a href="#Remove" title="Delete this suggestion" class="delete"></a>

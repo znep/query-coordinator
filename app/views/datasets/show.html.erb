@@ -240,15 +240,15 @@
                 <thead>
                   <tr>
                     <%- c.viewable_children.each do |cc| -%>
-                    <th><%= cc.name %></th>
+                    <th scope="col"><%= cc.name %></th>
                     <%- end -%>
                   </tr>
                 </thead>
                 <tbody>
                   <%- (cell || []).each do |cr| -%>
                   <tr>
-                    <%- c.viewable_children.each do |cc| -%>
-                    <td><%= seo_render(cr[cc.id], cc) %></td>
+                    <%- c.viewable_children.each_with_index do |cc, i| -%>
+                    <td<%= ' scope="row"' if i == 0 %>><%= seo_render(cr[cc.id], cc) %></td>
                     <%- end -%>
                   </tr>
                   <%- end -%>

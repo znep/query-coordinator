@@ -63,18 +63,18 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="source"><div>Source Domain</div><span class="icon"></span></th>
-            <th class="target"><div>Target Domain</div><span class="icon"></span></th>
-            <th class="dataset"><div>Dataset</div><span class="icon"></span></th>
-            <th class="acceptedBy"><div>Accepted By</div><span class="icon"></span></th>
-            <th class="status"><div>Status</div><span class="icon"></span></th>
-            <th class="delete"><div>Terminate</div><span class="icon"></span></th>
+            <th class="source" scope="col"><div>Source Domain</div><span class="icon"></span></th>
+            <th class="target" scope="col"><div>Target Domain</div><span class="icon"></span></th>
+            <th class="dataset" scope="col"><div>Dataset</div><span class="icon"></span></th>
+            <th class="acceptedBy" scope="col"><div>Accepted By</div><span class="icon"></span></th>
+            <th class="status" scope="col"><div>Status</div><span class="icon"></span></th>
+            <th class="delete" scope="col"><div>Terminate</div><span class="icon"></span></th>
           </tr>
         </thead>
         <tbody>
           <%- @federations.each do |f| -%>
             <tr class="item">
-              <td class="source">
+              <td class="source" scope="row">
                 <span class="cellInner"><%= f.sourceDomainCName %></span>
               </td>
               <td class="target">

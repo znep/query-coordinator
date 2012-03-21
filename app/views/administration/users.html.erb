@@ -94,11 +94,11 @@
           <tr>
             <%#Enable once we have bulk ops %>
             <%- if @existing_user_actions && false -%>
-              <th class="select"></th>
+              <th class="select" scope="col"></th>
             <%- end -%>
-            <th class="user"><div>Name</div><span class="icon"></span></th>
-            <th class="email"><div>Email</div><span class="icon"></span></th>
-            <th class="role"><div>Role</div><span class="icon"></span></th>
+            <th class="user" scope="col"><div>Name</div><span class="icon"></span></th>
+            <th class="email" scope="col"><div>Email</div><span class="icon"></span></th>
+            <th class="role" scope="col"><div>Role</div><span class="icon"></span></th>
             <%- if @existing_user_actions -%>
               <th class="actions">Actions</th>
             <%- end -%>
@@ -115,7 +115,7 @@
                   <%- end -%>
                 </td>
               <%- end -%>
-              <td class="user">
+              <td class="user" scope="row">
                 <a href="<%= user.href %>">
                   <img class="userIcon" src="<%= user.profile_image_path('small')%>"
                     alt="<%= user.displayName %>" />

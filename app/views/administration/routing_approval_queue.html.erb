@@ -63,13 +63,13 @@
           </colgroup>
           <thead>
             <tr>
-              <th class="index"></th>
+              <th class="index" scope="col"></th>
               <%- if @use_federations -%>
-              <th class="domainIcon"></th>
+              <th class="domainIcon" scope="col"></th>
               <%- end -%>
-              <th class="nameDesc">Dataset</th>
-              <th class="stage"></th>
-              <th class="actions"></th>
+              <th class="nameDesc" scope="col">Dataset</th>
+              <th class="stage" scope="col"></th>
+              <th class="actions" scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -77,7 +77,7 @@
             <tr class="item collapsed <%= v.is_stuck?(@approval_template) ?
               'stuck' : ''%>"
               data-viewId="<%= v.id %>">
-              <td class="index">
+              <td class="index" scope="row">
                 <a class="expander" title="Click to expand" href="#Expand">
                   <span class="icon"></span>
                 </a>

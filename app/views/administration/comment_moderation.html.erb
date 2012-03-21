@@ -33,10 +33,10 @@
           </colgroup>
           <thead>
             <tr>
-              <th class="author"><div>Author</div><span class="icon"></span></th>
-              <th class="comment"><div>Comment</div><span class="icon"></span></th>
-              <th class="dataset"><div>Dataset</div><span class="icon"></span></th>
-              <th class="status"><div>Status</div><span class="icon"></span></th>
+              <th class="author" scope="col"><div>Author</div><span class="icon"></span></th>
+              <th class="comment" scope="col"><div>Comment</div><span class="icon"></span></th>
+              <th class="dataset" scope="col"><div>Dataset</div><span class="icon"></span></th>
+              <th class="status" scope="col"><div>Status</div><span class="icon"></span></th>
             </tr>
           </thead>
           <tbody>
@@ -52,7 +52,7 @@
 <%- content_for :templates do -%>
   <table class="moderationItem">
     <tr class="item">
-      <td class="author"><a href="#" class="profileLink" rel="external">
+      <td class="author" scope="row"><a href="#" class="profileLink" rel="external">
         <img alt="author image"/><span class="cellInner"></span>
       </a></td>
       <td class="comment"><div class="cellInner"></div><p class="commentBody"></p></td>

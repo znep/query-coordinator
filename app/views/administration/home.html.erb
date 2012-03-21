@@ -34,16 +34,16 @@
       </colgroup>
       <thead>
         <tr>
-          <th class="image"><div>Image</div></th>
-          <th class="contents"><div>Contents</div><span class="icon"></span></th>
-          <th class="date"><div>Date Published</div><span class="icon"></span></th>
-          <th class="actions"><div></div></th>
+          <th class="image" scope="col"><div>Image</div></th>
+          <th class="contents" scope="col"><div>Contents</div><span class="icon"></span></th>
+          <th class="date" scope="col"><div>Date Published</div><span class="icon"></span></th>
+          <th class="actions" scope="col"><div></div></th>
         </tr>
       </thead>
       <tbody>
         <%- @stories.each_with_index do |story, index| -%>
           <tr>
-            <td class="image">
+            <td class="image" scope="row">
               <div class="imagePreview"><div class="imagePreviewWrapper">
                 <img src="/assets/<%= story.imageId %>" alt="<%= story.headline %>"/>
               </div></div>

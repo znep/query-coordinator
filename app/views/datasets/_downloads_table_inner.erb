@@ -8,15 +8,15 @@
   </colgroup>
   <thead>
     <tr>
-      <th class="type"><div>Download As</div><span class="icon"></span></th>
+      <th class="type" scope="col"><div>Download As</div><span class="icon"></span></th>
       <%- if we_support_download_count_yet -%>
-        <th class="downloads"><div>Downloads</div><span class="icon"></span></th>
+        <th class="downloads" scope="col"><div>Downloads</div><span class="icon"></span></th>
       <%- end -%>
     </tr>
   </thead>
   <tbody>
     <tr class="item">
-      <td class="type"><div class="cellInner"><a rel="external" class="noInterstitial"></a></div></td>
+      <td class="type" scope="row"><div class="cellInner"><a rel="external" class="noInterstitial"></a></div></td>
       <%- if we_support_download_count_yet -%>
         <td class="downloads"><div class="cellInner"></div></td>
       <%- end -%>

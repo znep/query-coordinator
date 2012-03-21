@@ -214,31 +214,31 @@
             <thead>
               <tr>
                 <%- if opts[:grid_items][:index] -%>
-                  <th class="index"></th>
+                  <th class="index" scope="col"></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:domainIcon] -%>
-                  <th class="domainIcon"></th>
+                  <th class="domainIcon" scope="col"></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:nameDesc] -%>
-                  <th class="nameDesc"><%= t('controls.browse.listing.table_header.name') %></th>
+                  <th class="nameDesc" scope="col"><%= t('controls.browse.listing.table_header.name') %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:largeImage] -%>
-                  <th class="largeImage"></th>
+                  <th class="largeImage" scope="col"></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:richSection] -%>
-                  <th class="richSection"></th>
+                  <th class="richSection" scope="col"></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:datasetActions] -%>
-                  <th class="datasetActions"><%= opts[:dataset_actions] %></th>
+                  <th class="datasetActions" scope="col"><%= opts[:dataset_actions] %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:popularity] -%>
-                  <th class="popularity"><%= t('controls.browse.listing.table_header.popularity') %></th>
+                  <th class="popularity" scope="col"><%= t('controls.browse.listing.table_header.popularity') %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:type] -%>
-                  <th class="type"><%= t('controls.browse.listing.table_header.type') %></th>
+                  <th class="type" scope="col"><%= t('controls.browse.listing.table_header.type') %></th>
                 <%- end -%>
                 <%- if opts[:grid_items][:rss] -%>
-                  <th class="rss"><%= t('controls.browse.listing.table_header.rss') %></th>
+                  <th class="rss" scope="col"><%= t('controls.browse.listing.table_header.rss') %></th>
                 <%- end -%>
               </tr>
             </thead>
@@ -256,7 +256,7 @@
                 <tr class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
-                    <td class="index">
+                    <td class="index" scope="row">
                       <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
                         <span class="icon"></span>
                       </a>

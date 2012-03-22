@@ -1,0 +1,83 @@
+en:
+  screens:
+    about:
+      created: created
+      snapshotted: snapshotted
+      updated: updated
+      edit_metadata: Edit Metadata
+      view_full_page: View Full Page
+      description: Description
+      activity: Activity
+      community: Community
+      your: Your
+      raters: Raters
+      visits: Visits
+      downloads: Downloads
+      comments: Comments
+      contributors: Contributors
+      view_statistics: View Statistics
+      category: Category
+      none: (none)
+      permissions: Permissions
+      public: Public
+      private: Private
+      tags: Tags
+      permalink: Permalink
+      short_url: Short URL
+      attachments: Attachments
+      licensing: Licensing and Attribution
+      data_provided_by: Data Provided By
+      source_link: Source Link
+      license: License
+      terms_of_use: Terms of Use
+      spatial_extent: Spatial Extent
+      semantics: Semantics and RDF
+      row_class: Row Class
+      subject_column: Subject Column
+      permanent_links: Permanent Links
+      resource_name: Resource Name
+      row_identifier: Row Identifier
+      flag_dataset: Flag Dataset
+      contact_dataset_owner: Contact Dataset Owner
+
+it:
+  screens:
+    about:
+      created: creato
+      snapshotted: eseguito il backup
+      updated: aggiornato
+      edit_metadata: Modificare i Metadati
+      view_full_page: Visualizza la Pagina Completa
+      description: Descrizione
+      activity: Attività
+      community: Comunità
+      your: Il tuo
+      raters: Votanti
+      visits: Visite
+      downloads: Downloads
+      comments: Commenti
+      contributors: Aiutante
+      view_statistics: Visualizza le Statistiche
+      category: Categoria
+      none: (nessuno)
+      permissions: Visibilità
+      public: Pubblica
+      private: Privati
+      tags: Tags
+      permalink: Permalink
+      short_url: Short URL
+      attachments: Allegati
+      licensing: Proprietà e Licenza
+      data_provided_by: Dati forniti da
+      source_link: Origine dato
+      license: Licenza
+      terms_of_use: Terms of Use
+      spatial_extent: Regione
+      semantics: Semantica and RDF
+      row_class: Row Class
+      subject_column: Subject Column
+      permanent_links: Permanent Links
+      resource_name: Resource Name
+      row_identifier: Row Identifier
+      flag_dataset: Contrassegna Dataset
+      contact_dataset_owner: Contatti

@@ -3,20 +3,20 @@
     <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
       src="<%= @view.owner.profile_image_path("medium") %>"/>
     <p class="aboutAuthorName"><%= @view.owner.displayName %></p>
-    <p><em>created</em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
+    <p><em><%= t('screens.about.created') %></em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
     <%- if @view.is_snapshotted? -%>
-    <p><em>snapshotted</em> <span class="aboutUpdateDate"><%= blist_date(@view.publicationDate) %></span></p>
+    <p><em><%= t('screens.about.snapshotted') %></em> <span class="aboutUpdateDate"><%= blist_date(@view.publicationDate) %></span></p>
     <%- else -%>
-    <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
+    <p><em><%= t('screens.about.updated') %></em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
     <%- end -%>
   </div>
 
   <%- if @view.has_rights?('update_view') -%>
-    <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton">Edit Metadata</a>
+    <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
   <%- end -%>
 
   <%- unless local_assigns[:full_page] -%>
-    <a href="<%= @view.href %>/about" class="viewFullLink fullButton">View Full Page</a>
+    <a href="<%= @view.href %>/about" class="viewFullLink fullButton"><%= t('screens.about.view_full_page') %></a>
   <%- end -%>
 
   <%- if @view.custom_image.present? -%>
@@ -30,10 +30,10 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Description
+      <%= t('screens.about.description') %>
     </a>
     <div class="sectionContent">
-      <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || "(none)" %></p>
+      <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || t('screens.about.none') %></p>
     </div>
   </div>
 
@@ -135,17 +135,17 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Activity
+      <%= t('screens.about.activity') %>
     </a>
     <dl class="sectionContent">
       <%- (CurrentDomain.properties.rating_types || ["rating"]).each do |rating_type| -%>
-        <dt>Community <%= rating_type.titleize %></dt>
+        <dt><%= t('screens.about.community') %> <%= rating_type.titleize %></dt>
         <dd class="clearfix">
           <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>">
             <%= @view.average_rating(rating_type) %>
           </div>
         </dd>
-        <dt>Your <%= rating_type.titleize %></dt>
+        <dt><%= t('screens.about.your') %> <%= rating_type.titleize %></dt>
         <dd class="clearfix">
           <div class="starsControl blueStars datasetAverageRating" data-rating-type="<%= rating_type %>"
             data-rating="<%= @view.user_rating(rating_type) %>">
@@ -153,19 +153,19 @@
           </div>
         </dd>
       <%- end -%>
-      <dt>Raters</dt>
+      <dt><%= t('screens.about.raters') %></dt>
       <dd class="totalTimesRated"><%= @view.totalTimesRated %></dd>
-      <dt>Visits</dt>
+      <dt><%= t('screens.about.visits') %></dt>
       <dd><%= @view.viewCount %></dd>
-      <dt>Downloads</dt>
+      <dt><%= t('screens.about.downloads') %></dt>
       <dd><%= @view.downloadCount %></dd>
-      <dt>Comments</dt>
+      <dt><%= t('screens.about.comments') %></dt>
       <dd class="numberOfComments"><%= @view.numberOfComments %></dd>
-      <dt>Contributors</dt>
+      <dt><%= t('screens.about.contributors') %></dt>
       <dd><%= @view.contributor_users.length %></dd>
       <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
         <dt class="widenedItem">
-          <%= link_to 'View Statistics', "#{@view.href}/stats" %>
+          <%= link_to t('screens.about.view_statistics'), "#{@view.href}/stats" %>
         </dt>
         <dd>&nbsp;</dd>
       <%- end -%>
@@ -178,11 +178,11 @@
       Meta
     </a>
     <dl class="sectionContent">
-      <dt>Category</dt>
-      <dd><%= @view.category || '(none)' %></dd>
-      <dt>Permissions</dt>
-      <dd><%= @view.is_public? ? 'Public' : 'Private' %></dd>
-      <dt>Tags</dt>
+      <dt><%= t('screens.about.category') %></dt>
+      <dd><%= @view.category || t('screens.about.none') %></dd>
+      <dt><%= t('screens.about.permissions') %></dt>
+      <dd><%= @view.is_public? ? t('screens.about.public') : t('controls.browse.about.private') %></dd>
+      <dt><%= t('screens.about.tags') %></dt>
       <dd><span class="wrap"><%= @view.tag_display_string %></span></dd>
     </dl>
   </div>
@@ -193,10 +193,10 @@
       Links
     </a>
     <dl class="sectionContent">
-      <dt>Permalink</dt>
+      <dt><%= t('screens.about.permalink') %></dt>
       <dd><span class="hardWrap"><%= link_to_url request.protocol +
         request.host_with_port + @view.href, :rel => 'external' %></span></dd>
-      <dt>Short URL</dt>
+      <dt><%= t('screens.about.short_url') %></dt>
       <dd><span class="hardWrap"><%= link_to_url request.protocol +
         request.host_with_port + @view.short_href,
         :rel => 'external' %></span></dd>
@@ -207,7 +207,7 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Attachments
+      <%= t('screens.about.attachments') %>
     </a>
     <ul class="sectionContent">
       <%- @view.metadata.attachments.each do |attachment| -%>
@@ -223,20 +223,20 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Licensing and Attribution
+       <%= t('screens.about.licensing') %>
     </a>
     <dl class="sectionContent">
-      <dt>Data Provided By</dt>
-      <dd><%= @view.property_or_default(['attribution']) || '(none)' %></dd>
-      <dt>Source Link</dt>
+      <dt><%= t('screens.about.data_provided_by') %></dt>
+      <dd><%= @view.property_or_default(['attribution']) || t('screens.about.none') %></dd>
+      <dt><%= t('screens.about.source_link') %></dt>
       <dd><%= @view.property_or_default(['attributionLink']).blank? ?
-                '(none)' :
+                t('screens.about.none') :
                 link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow external') %></dd>
       <%- if @view.property_or_default(['license']) -%>
-        <dt>License</dt>
+        <dt><%= t('screens.about.license') %></dt>
         <dd>
           <%- if @view.property_or_default(['license']).nil? -%>
-            (none)
+            <%= t('screens.about.none') %>
           <%- elsif @view.property_or_default(['license', 'logoUrl']).blank? -%>
             <%= @view.property_or_default(['license', 'name']) %>
           <%- else -%>
@@ -247,7 +247,7 @@
         </dd>
       <%- end -%>
       <%- if @view.property_or_default(['termsAndConditions']) -%>
-        <dt>Terms of Use</dt>
+        <dt><%= t('screens.about.terms_of_use') %></dt>
         <dd><span class="wrap"><%= @view.property_or_default(['termsAndConditions']) %></span></dd>
       <%- end -%>
     </dl>
@@ -257,7 +257,7 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Spatial Extent
+      <%= t('screens.about.spatial_extent') %>
     </a>
     <div class="sectionContent">
       <%- extent = extent_html(@view.data['northWest']['lat'],
@@ -274,15 +274,15 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Semantics and RDF
+      <%= t('screens.about.semantics') %>
     </a>
     <dl class="sectionContent">
-      <dt>Row Class</dt>
+      <dt><%= t('screens.about.row_class') %></dt>
       <dd><span class="hardWrap">
-        <%= @view.rdf_class_display_name.present? ? @view.rdf_class_display_name : '(none)' %></span></dd>
-      <dt>Subject Column</dt>
+        <%= @view.rdf_class_display_name.present? ? @view.rdf_class_display_name : t('screens.about.none') %></span></dd>
+      <dt><%= t('screens.about.subject_column') %></dt>
       <dd>
-        <%= @view.rdf_subject.present? ? @view.rdf_subject : '(none)' %>
+        <%= @view.rdf_subject.present? ? @view.rdf_subject : t('screens.about.none') %>
       </dd>
     </dl>
   </div>
@@ -292,14 +292,14 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Permanent Links
+      <%= t('screens.about.permanent_links') %>
     </a>
     <dl class="sectionContent">
-      <dt>Resource Name</dt>
-      <dd><span class="hardWrap"><%= @view.resourceName.present? ? @view.resourceName : '(none)' %></span></dd>
-      <dt>Row Identifier</dt>
+      <dt><%= t('screens.about.resource_name') %></dt>
+      <dd><span class="hardWrap"><%= @view.resourceName.present? ? @view.resourceName : t('screens.about.none') %></span></dd>
+      <dt><%= t('screens.about.row_identifier') %></dt>
       <dd>
-        <%= @view.row_identifier.present? ? @view.row_identifier : '(none)' %>
+        <%= @view.row_identifier.present? ? @view.row_identifier : t('screens.about.none') %>
       </dd>
     </dl>
   </div>
@@ -344,13 +344,13 @@
     <div class="flash"></div>
     <dl class="sectionContent contactOwnerLinks">
       <dt class="widenedItem">
-      <%= link_to 'Flag Dataset', local_assigns[:static_links] ?
+      <%= link_to t('screens.about.flag_dataset'), local_assigns[:static_links] ?
         contact_dataset_path(@view.id) : '#flag',
         :class => 'contactButton', 'data-select' => '' %>
       </dt>
       <dd>&nbsp;</dd>
       <dt class="widenedItem">
-      <%= link_to 'Contact Dataset Owner', local_assigns[:static_links] ?
+      <%= link_to t('screens.about.contact_dataset_owner'), local_assigns[:static_links] ?
         contact_dataset_path(@view.id) : '#contact',
             {:class => 'contactButton', 'data-select' => 'other'} %>
       </dt>

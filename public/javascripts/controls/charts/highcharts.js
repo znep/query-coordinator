@@ -218,7 +218,10 @@
                         !$.isBlank(chartObj._seriesSums[series.groupId][series.yColumn.data.id]) &&
                         (value / chartObj._seriesSums[series.groupId][series.yColumn.data.id]) * 360 <
                             chartObj._displayFormat.pieJoinAngle)
-                    { return; }
+                    {
+                        doChartRedraw(chartObj, true);
+                        return;
+                    }
 
                     addPoint(chartObj, point, series, false, chartObj._dataGrouping ? ri : null);
                     doChartRedraw(chartObj, true);
@@ -388,10 +391,14 @@
             }
             else
             {
-                if (!$.isBlank(chartObj.chart))
-                { chartObj.chart.redraw(); }
-                if (!$.isBlank(chartObj.secondChart))
-                { chartObj.secondChart.redraw(); }
+                // Defer, because otherwise sometimes chart is just blank
+                _.defer(function()
+                {
+                    if (!$.isBlank(chartObj.chart))
+                    { chartObj.chart.redraw(); }
+                    if (!$.isBlank(chartObj.secondChart))
+                    { chartObj.secondChart.redraw(); }
+                });
             }
         }
     };
@@ -548,7 +555,8 @@
         chartObj._seriesRemaindersPending = chartObj._seriesRemaindersPending || {};
         if (_.isArray(chartObj._seriesRemaindersPending[series.groupId]))
         {
-            chartObj._seriesRemaindersPending[series.groupId].push(callback);
+            if (_.isFunction(callback))
+            { chartObj._seriesRemaindersPending[series.groupId].push(callback); }
             return;
         }
         else
@@ -828,7 +836,7 @@
                 { return; }
 
                 // FIXME: This will not work for line charts.
-                var size = $.subKeyDefined(chartObj, 'chart.series.0.data.0')
+                var size = $.subKeyDefined(chartObj, 'chart.series.0.data.0.graphic')
                     ? chartObj.chart.series[0].data[0].graphic.attr('width')
                     : 4; // Magic number: A decent width for the error bar in case the dynamic fails.
                 var commands = [];
@@ -1267,8 +1275,8 @@
             {
                 var seriesRow = $.extend(true, {}, otherRow, series.seriesValues);
                 seriesRow.id = 'Other_' + series.yColumn.data.id + '_' +
-                _.map(_.keys(series.seriesValues).sort(), function(sk)
-                    { return sk + ':' + series.seriesValues[sk]; }).join('_') || 'default';
+                (_.map(_.keys(series.seriesValues).sort(), function(sk)
+                    { return sk + ':' + series.seriesValues[sk]; }).join('_') || 'default');
                 if ((chartObj._primaryView.highlights || {})[seriesRow.id])
                 {
                     seriesRow.sessionMeta = {highlight: true,
@@ -1280,12 +1288,20 @@
                 var renderOther = function()
                 {
                     var sr = chartObj._seriesRemainders[series.groupId][series.yColumn.data.id];
-                    if ($.isBlank(sr)) { return; }
+                    if ($.isBlank(sr))
+                    {
+                        doChartRedraw(chartObj);
+                        return;
+                    }
                     var percentage = (sr /
                         chartObj._seriesSums[series.groupId][series.yColumn.data.id]);
                     // If the remainder is less than .01%, not worth rendering
                     // due to calculation rounding errors
-                    if (percentage < 0.0001) { return; }
+                    if (percentage < 0.0001)
+                    {
+                        doChartRedraw();
+                        return;
+                    }
 
                     seriesRow[series.yColumn.data.lookup] = sr;
                     var point = yPoint(chartObj, seriesRow, sr, series, otherPt);
@@ -1816,14 +1832,9 @@
 
     var setCategories = function(chartObj)
     {
-        // Make sure data is cleaned, or sometimes setCategories will throw an error
-        _.each(chartObj.chart.series, function(s) { s.cleanData(); });
-        // Now that we have data, make sure the axes are updated
-        chartObj.chart.redraw();
-        chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
         chartObj.chart.xAxis[0].options.labels.step = calculateXAxisStepSize(chartObj,
             (chartObj._xCategories || []).length || chartObj._primaryView.totalRows);
-        chartObj.chart.xAxis[0].redraw();
+        chartObj.chart.xAxis[0].setCategories(chartObj._xCategories);
         chartObj._categoriesLoaded = true;
     };
 

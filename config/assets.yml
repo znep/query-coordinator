@@ -166,7 +166,6 @@ javascripts:
     - public/javascripts/plugins/proj4js.js
     - public/javascripts/plugins/heatmap.js
     - public/javascripts/plugins/heatmap-openlayers.js
-    - public/javascripts/plugins/tile.stamen.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/panes/map-config.js

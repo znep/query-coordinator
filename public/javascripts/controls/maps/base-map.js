@@ -110,6 +110,20 @@
         CLASS_NAME: 'blist.openLayers.MapTypeSwitcher'
     });
 
+    blist.openLayers.Stamen = OpenLayers.Class(OpenLayers.Layer.OSM, {
+        initialize: function(name, options) {
+            var hosts = _.map(["", "a.", "b.", "c.", "d."], function(subdomain)
+            { return "http://" + subdomain + "tile.stamen.com/"
+                + (options.stamenType || 'watercolor') + "/${z}/${x}/${y}.jpg"; });
+            options = OpenLayers.Util.extend({
+                "numZoomLevels":    16,
+                "buffer":           0,
+                "transitionEffect": "resize"
+            }, options);
+            return OpenLayers.Layer.OSM.prototype.initialize.call(this, name, hosts, options);
+        }
+    });
+
     blist.openLayers.StamenControl = OpenLayers.Class(OpenLayers.Control, {
 
         initialize: function()
@@ -141,7 +155,7 @@
             {
                 this._activated = true;
                 if (!this._layer)
-                { this.map.addLayer(this._layer = new OpenLayers.Layer.Stamen('watercolor')); }
+                { this.map.addLayer(this._layer = new blist.openLayers.Stamen(null, { stamenType: 'toner', numZoomLevels: 20 } )); }
                 this._baseLayer = this.map.baseLayer;
                 this.map.setBaseLayer(this._layer);
             }

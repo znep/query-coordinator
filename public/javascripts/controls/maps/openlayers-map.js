@@ -98,9 +98,11 @@
                 new blist.openLayers.Attribution(),
                 new OpenLayers.Control.Navigation(),
                 new blist.openLayers.ZoomBar(),
-                new blist.openLayers.MapTypeSwitcher(),
-                new blist.openLayers.StamenControl()
+                new blist.openLayers.MapTypeSwitcher()
             ];
+
+            if (window.location.href.indexOf('watercolor') > window.location.href.indexOf('?'))
+            { options.controls.push(new blist.openLayers.StamenControl()); }
 
             // call the default constructor but with no theme or controls; we'll add our own
             OpenLayers.Map.prototype.initialize.apply(this, [div, options]);

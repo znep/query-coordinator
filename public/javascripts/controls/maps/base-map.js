@@ -110,6 +110,46 @@
         CLASS_NAME: 'blist.openLayers.MapTypeSwitcher'
     });
 
+    blist.openLayers.StamenControl = OpenLayers.Class(OpenLayers.Control, {
+
+        initialize: function()
+        {
+            this._layers = {};
+            this.autoActivate = true;
+            OpenLayers.Control.prototype.initialize.apply(this, arguments);
+        },
+
+        draw: function()
+        {
+            this.handler = new OpenLayers.Handler.Keyboard( this, {
+                'keyup': this.toggleOff,
+                'keydown': this.watercolor });
+        },
+
+        toggleOff: function()
+        {
+            if (this._activated)
+            {
+                this.map.setBaseLayer(this._baseLayer);
+                this._activated = false;
+            }
+        },
+
+        watercolor: function(evt)
+        {
+            if (!this._activated && evt.keyCode && evt.keyCode == 87) // 'w'
+            {
+                this._activated = true;
+                if (!this._layer)
+                { this.map.addLayer(this._layer = new OpenLayers.Layer.Stamen('watercolor')); }
+                this._baseLayer = this.map.baseLayer;
+                this.map.setBaseLayer(this._layer);
+            }
+        },
+
+        CLASS_NAME: 'blist.openLayers.StamenControl'
+    });
+
     // This should be a contrib back into OpenLayers source.
     // The correct way to manipulate Layer/Vector.js stuff is its root container.
     OpenLayers.Layer.Vector.prototype.setOpacity = function(opacity)

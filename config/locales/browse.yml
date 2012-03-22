@@ -1,6 +1,7 @@
 en:
   controls:
     browse:
+      back_to_dataset: Back to Dataset
       search: Search
       facets:
         view_types_title: View Types
@@ -117,6 +118,7 @@ en:
 it:
   controls:
     browse:
+      back_to_dataset: Torna a Dataset
       search: Cerca
       facets:
         view_types_title: Tipi di viste

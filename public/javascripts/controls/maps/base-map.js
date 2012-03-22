@@ -155,7 +155,7 @@
             {
                 this._activated = true;
                 if (!this._layer)
-                { this.map.addLayer(this._layer = new blist.openLayers.Stamen(null, { stamenType: 'toner', numZoomLevels: 20 } )); }
+                { this.map.addLayer(this._layer = new blist.openLayers.Stamen()); }
                 this._baseLayer = this.map.baseLayer;
                 this.map.setBaseLayer(this._layer);
             }

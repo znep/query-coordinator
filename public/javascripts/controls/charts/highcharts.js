@@ -1684,7 +1684,6 @@
             var p = chartObj.chart.get(point.id);
             if ($.isBlank(p))
             { chartObj.chart.series[series.index].addPoint(point, false); }
-            {
             else
             {
                 if (point.selected && !p.selected) { p.select(true, true); }

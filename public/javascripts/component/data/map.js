@@ -74,14 +74,14 @@ var updateProperties = function(lcObj, properties)
                 this.$contents.empty();
                 this._map = this.$contents.socrataMap({
                     showRowLink: false,
-                    displayFormat: this._properties.displayFormat,
+                    displayFormat: this._stringSubstitute(this._properties.displayFormat),
                     view: this._dataContext.dataset
                 });
                 this._updateValidity();
             }
         }) &&
             !$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
-    { lcObj._map.reload(lcObj._properties.displayFormat); }
+    { lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat)); }
 };
 
 })(jQuery);

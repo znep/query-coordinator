@@ -60,6 +60,7 @@ $.component.Container.extend('PagedContainer', {
         child.$dom.removeClass('hide');
         this.trigger('child_shown', [{newChild: child}]);
         child.$contents.trigger('show');
+        $.component.sizeRenderRefresh();
         if (_.isFunction(finalCallback)) { finalCallback(); }
     },
 

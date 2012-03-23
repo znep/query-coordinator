@@ -7926,6 +7926,8 @@ Point.prototype = {
 			point.x = series.autoIncrement();
 		}
 		
+        // We updated a point, so make sure the graphic is redrawn
+        delete point.graphic;
 	},
 	
 	/**

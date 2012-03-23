@@ -124,8 +124,6 @@
 
         handleRowsLoaded: function()
         {
-            if (!_.isEmpty(this._xCategories))
-            { this._xCategories = _.without(this._xCategories, 'Other'); }
             loadSeriesSums(this);
             this._super.apply(this, arguments);
         },
@@ -185,11 +183,7 @@
                 {
                     if (hasRI) { chartObj._xCategories[ri] = xCat; }
                     else
-                    {
-                        chartObj._xCategories.splice(ri, 0, xCat);
-                        _.each(chartObj._rowIndices, function(obj, id)
-                                { if (id != row.id && obj.x >= ri) { obj.x += 1; } });
-                    }
+                    { spliceCategory(chartObj, ri, xCat, row.id); }
                 }
             };
 
@@ -376,6 +370,43 @@
         }
 
         return chartObj._colorIndex[id];
+    };
+
+    var spliceCategory = function(chartObj, ind, newItem, curRowId)
+    {
+        var isRemove = newItem === null || newItem === undefined;
+        if (isRemove)
+        { chartObj._xCategories.splice(ind, 1); }
+        else
+        { chartObj._xCategories.splice(ind, 0, newItem); }
+
+        var riObj = _.detect(chartObj._rowIndices, function(obj)
+        { if (obj.x == ind) { return obj; } });
+
+        _.each(chartObj._seriesCache, function(series)
+        {
+            var d = series.data[riObj[series.id]];
+            if (isRemove)
+            { removePoint(chartObj, d, series, d.otherPt); }
+            // I guess we should probably do something in the else case, but
+            // hopefully Highcharts will die before I get to that
+        });
+
+        var adjRowInd = {};
+        _.each(chartObj._rowIndices, function(obj, id)
+        {
+            if (id == curRowId)
+            {
+                adjRowInd[id] = obj;
+                return;
+            }
+            if (isRemove && obj.x == ind) { return; }
+            if (obj.x >= ind)
+            { obj.x += (isRemove ? -1 : 1); }
+            adjRowInd[id] = obj;
+        });
+        chartObj._rowIndices = adjRowInd;
+
     };
 
     var doChartRedraw = function(chartObj, callRowsRendered)
@@ -1041,7 +1072,7 @@
         var chartConfig =
         {
             chart: {
-                animation: true,
+                animation: false,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); }, redraw: chartRedraw },
@@ -1265,7 +1296,11 @@
             if (!_.isUndefined(chartObj._xCategories))
             {
                 oInd = _.indexOf(chartObj._xCategories, 'Other');
-                if (oInd < 0)
+                var isLastItem = oInd == chartObj._xCategories.length - 1;
+                // Make sure 'Other' is always the last element
+                if (oInd >= 0 && !isLastItem)
+                { spliceCategory(chartObj, oInd); }
+                if (!isLastItem)
                 {
                     oInd = chartObj._xCategories.length;
                     chartObj._xCategories.push('Other');
@@ -1649,12 +1684,7 @@
             var p = chartObj.chart.get(point.id);
             if ($.isBlank(p))
             { chartObj.chart.series[series.index].addPoint(point, false); }
-            else if (p.color != point.color)
             {
-                // Workaround for Highcharts; color doesn't update, so do a full remove/replace
-                p.remove(false);
-                chartObj.chart.series[series.index].addPoint(point, false);
-            }
             else
             {
                 if (point.selected && !p.selected) { p.select(true, true); }

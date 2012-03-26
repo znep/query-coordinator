@@ -206,6 +206,18 @@
 
                 var finishRenderPoint = function()
                 {
+                    // If we have multiple points for the same series at the same
+                    // x-coordinate, we don't want them overwriting each other
+                    // randomly; so we bail on duplicates; but we still want to allow
+                    // updates for the row actually rendered at this point
+                    if ((!chartObj._rowIndices.hasOwnProperty(row.id) ||
+                            !chartObj._rowIndices[row.id].hasOwnProperty(series.id)) &&
+                        _.any(series.data, function(datum) { return datum.x == basePt.x; }))
+                    {
+                        doChartRedraw(chartObj);
+                        return;
+                    }
+
                     // Check if this should be subsumed into a remainder
                     if (chartObj._useRemainders && !_.isNull(value) &&
                         !_.isUndefined(chartObj._displayFormat.pieJoinAngle) &&
@@ -239,14 +251,6 @@
                     if ($.isBlank(series)) { return; }
                 }
 
-                // If we have multiple points for the same series at the same
-                // x-coordinate, we don't want them overwriting each other
-                // randomly; so we bail on duplicates; but we still want to allow
-                // updates for the row actually rendered at this point
-                if ((!chartObj._rowIndices.hasOwnProperty(row.id) ||
-                        !chartObj._rowIndices[row.id].hasOwnProperty(series.id)) &&
-                    _.any(series.data, function(datum) { return datum.x == basePt.x; }))
-                { return; }
                 renderPoint(series);
             });
 
@@ -706,7 +710,8 @@
                     _.each(serie.data, function(datum)
                     {
                         stacks[datum.x] = stacks[datum.x] || 0;
-                        stacks[datum.x] += datum.graphic.attr('height');
+                        if (!$.isBlank(datum.graphic))
+                        { stacks[datum.x] += datum.graphic.attr('height'); }
                     });
                 });
             }

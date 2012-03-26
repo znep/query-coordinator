@@ -7927,7 +7927,11 @@ Point.prototype = {
 		}
 		
         // We updated a point, so make sure the graphic is redrawn
-        delete point.graphic;
+        if (point.hasOwnProperty('graphic'))
+        {
+            point.graphic.destroy();
+            delete point.graphic;
+        }
 	},
 	
 	/**

@@ -1932,7 +1932,7 @@
             var closeBoxCallback = _.isFunction(options.closeBoxCallback)
                 ? options.closeBoxCallback : function() { mapObj.closePopup(); };
 
-            if (mapObj._popup && !options.keepOpen) { mapObj.closePopup(); }
+            if (mapObj._popup && !options.keepOpen) { mapObj.closePopup(true); }
 
             var popup = new OpenLayers.Popup.FramedCloud(null,
                 lonlat, null, contents, null, true,
@@ -1981,7 +1981,7 @@
 
         },
 
-        closePopup: function()
+        closePopup: function(suppressUnselect)
         {
             var mapObj = this;
 
@@ -1991,8 +1991,11 @@
             mapObj._popup.destroy();
             mapObj._popup = null;
 
-            mapObj.$dom().trigger('display_row', [{row: null}]);
-            $(document).trigger(blist.events.DISPLAY_ROW, [null, true]);
+            if (!suppressUnselect)
+            {
+                mapObj.$dom().trigger('display_row', [{row: null}]);
+                $(document).trigger(blist.events.DISPLAY_ROW, [null, true]);
+            }
         },
 
         $legend: function(options)

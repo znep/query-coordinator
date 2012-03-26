@@ -108,7 +108,7 @@ http://www.socrata.com
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
 
-  <div id="templates">
+  <div id="templates" style="display:none">
     <%= render :partial => 'shared/control_templates' %>
     <%= yield :templates %>
   </div>
@@ -157,7 +157,7 @@ http://www.socrata.com
     }
   </script>
 
-  <div id="modals">
+  <div id="modals" style="display:none">
     <%= yield :modals %>
 
     <div class="modalDialog" id="jqmAlert">

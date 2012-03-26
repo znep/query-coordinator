@@ -190,7 +190,7 @@ it:
           type: Tipo
           rss: RSS
       row_results:
-        title_html: "Mostrando <span class=\"rowResultCountText\"></span> di <span class=\"totalResultCountText\"></span> righe corrispondenti <a href=\"#\" class=\"rowSearchLink\">(view results)</a>:"
+        title_html: "Mostrando <span class=\"rowResultCountText\"></span> di <span class=\"totalResultCountText\"></span> righe corrispondenti:"
         more_link: Ancora
         less_link: Meno
       actions:

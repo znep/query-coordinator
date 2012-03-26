@@ -229,29 +229,29 @@ $(function()
         var $t = $(this);
         var $options = $t.siblings('.moreOptions');
 
-        if ($options.hasClass('cloud'))
+        if ($t.text() == $.t('controls.browse.actions.all_options'))
         {
-            var $dialog = $('.browseOptionsDialog');
-            var $c = $dialog.find('.optionsContent');
-            $c.empty().append($options.children().clone());
-            if ($c.find('[rel]').length > 0)
-            { $c.find('a').tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } }); }
-            $dialog.jqmShow();
+            // grammar nazis: fewer? sounds weird, probably more correct
+            $t.text($.t('controls.browse.actions.less_options'));
+            $options.hide().removeClass('hide').slideDown();
         }
         else
         {
-            if ($t.text() == $.t('controls.browse.actions.all_options'))
-            {
-                // grammar nazis: fewer? sounds weird, probably more correct
-                $t.text($.t('controls.browse.actions.less_options'));
-                $options.hide().removeClass('hide').slideDown();
-            }
-            else
-            {
-                $options.slideUp();
-                $t.text($.t('controls.browse.actions.all_options'));
-            }
+            $options.slideUp();
+            $t.text($.t('controls.browse.actions.all_options'));
         }
+    });
+
+    $browse.find('.facetSection .cloudLink').click(function(event)
+    {
+        event.preventDefault();
+        var $dialog = $('#browseDialog_' + $(this).attr('rel'));
+        $dialog.find('.optionsContent a').tagcloud({
+            size: { start: 1.2, end: 2.8, unit: 'em' }
+        });
+        $dialog.jqmShow();
+
+        _.defer(function() { $dialog.find('.optionsContent a:first').focus(); });
     });
 
     $.live('a[rel*=externalDomain]', 'click', function(e)

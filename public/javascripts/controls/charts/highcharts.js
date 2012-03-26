@@ -294,7 +294,7 @@
         resizeHandle: function()
         {
             var chartObj = this;
-            if ($.isBlank(chartObj.chart) && !chartObj._isLoading) { return; }
+            if ($.isBlank(chartObj.chart) || chartObj._isLoading) { return; }
             // Defer because Highcharts  also catches the resize, and gets confused if
             // it is in the middle of a reload
             _.defer(function()
@@ -1334,7 +1334,7 @@
                     // due to calculation rounding errors
                     if (percentage < 0.0001)
                     {
-                        doChartRedraw();
+                        doChartRedraw(chartObj);
                         return;
                     }
 

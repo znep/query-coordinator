@@ -1104,11 +1104,9 @@ var Dataset = ServerModel.extend({
                 { c.aggregates[a.name] = $.isBlank(a.value) ? null : parseFloat(a.value); }
             });
 
+            ds._aggregatesStale = false;
             if ($.isBlank(customAggs))
-            {
-                ds._aggregatesStale = false;
-                if (_.isFunction(callback)) { callback(); }
-            }
+            { if (_.isFunction(callback)) { callback(); } }
         };
 
         // If aggregates are stale, clear them all out to avoid confusion
@@ -1122,6 +1120,11 @@ var Dataset = ServerModel.extend({
                 if ($.isBlank(col)) { return true; }
                 return _.any($.makeArray(aList),
                     function(a) { return $.isBlank(col.aggregates[a]); });
+            }) || $.isBlank(customAggs) &&
+            _.any(ds.visibleColumns, function(c)
+            {
+                return $.subKeyDefined(c.format.aggregate) &&
+                    $.isBlank(c.aggregates[c.format.aggregate]);
             });
 
         if (isStale)

@@ -358,7 +358,8 @@
             _.defer(function()
             {
                 if ($.isBlank(calObj._curTip) &&
-                    $.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id))
+                    $.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id) &&
+                    $e.parents('body').length > 0)
                 {
                     if ($e.isSocrataTip())
                     { $e.socrataTip().show(); }

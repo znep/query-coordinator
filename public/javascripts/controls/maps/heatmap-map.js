@@ -81,7 +81,7 @@
                     renderType: blist.datatypes.number, format: {} };
             }
 
-            this.$legend({ name: viewConfig._quantityCol.name });
+            this.$legend({ name: config.quantityName || viewConfig._quantityCol.name });
 
             return true;
         },
@@ -153,7 +153,7 @@
                 // Fill in quantity
                 var $quantLine = $col.find('.richLine:nth-child(2)');
                 $quantLine.find('.staticLabel:first-child')
-                    .text(viewConfig._quantityCol.name);
+                    .text(mapObj._displayFormat.heatmap.quantityName || viewConfig._quantityCol.name);
                 $quantLine.find('.staticLabel:last-child')
                     .html(viewConfig._quantityCol.renderType.renderer(details.quantity,
                             viewConfig._quantityCol));

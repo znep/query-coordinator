@@ -1311,9 +1311,14 @@
                     .value();
                 if (_.isEmpty(displayLayers)) return;
 
-                var bounds = _.reduce(displayLayers,
-                    function(memo, layer) { memo.extend(layer.getDataExtent()); return memo; },
-                    new OpenLayers.Bounds());
+                var bounds = _.reduce(displayLayers, function(memo, layer)
+                    {
+                        if (memo)
+                        { memo.extend(layer.getDataExtent()); return memo; }
+                        else
+                        { return layer.getDataExtent(); }
+                    },
+                    null);
                 if (!_.isUndefined(bounds.left)) // Quick way to check for validity of bounds.
                 { mapObj.map.zoomToExtent(bounds); }
             }

@@ -85,36 +85,37 @@
             setAutorotate();
         };
 
-        _.defer(function()
-        {
-            activatePane($activePane);
-            $tickerChildren.css('visibility', 'visible');
+        activatePane($activePane);
+        $tickerChildren.css('visibility', 'visible');
 
-            // wire up pagers
-            var $incrementalPager = $ticker.find('.incrementalPager');
-            if ($incrementalPager.length > 0)
+        // wire up pagers
+        var $incrementalPager = $ticker.find('.incrementalPager');
+        if ($incrementalPager.length > 0)
+        {
+            $incrementalPager.find('.prevPageButton').click(function(event)
             {
-                $incrementalPager.find('.prevPageButton').click(function(event)
+                event.preventDefault();
+                var $prevPane = $activePane.prev();
+                if ($prevPane.length === 0)
                 {
-                    event.preventDefault();
-                    var $prevPane = $activePane.prev();
-                    if ($prevPane.length === 0)
-                    {
-                        return;
-                    }
-                    activatePane($prevPane);
-                });
-                $incrementalPager.find('.nextPageButton').click(function(event)
+                    return;
+                }
+                activatePane($prevPane);
+            });
+            $incrementalPager.find('.nextPageButton').click(function(event)
+            {
+                event.preventDefault();
+                var $nextPane = $activePane.next();
+                if ($nextPane.length === 0)
                 {
-                    event.preventDefault();
-                    var $nextPane = $activePane.next();
-                    if ($nextPane.length === 0)
-                    {
-                        return;
-                    }
-                    activatePane($nextPane);
-                });
-            }
-        });
+                    return;
+                }
+                activatePane($nextPane);
+            });
+        }
+
+        // When RTM adds a node and shows it, it triggers a window resize; so
+        // re-show the current item to get the correct size
+        $(window).one('resize', function() { activatePane($activePane); });
     };
 })(jQuery);

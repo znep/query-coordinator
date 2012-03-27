@@ -11,13 +11,13 @@
             this.registerEvent([ 'available', 'unavailable', 'error' ]);
         },
 
-        load: function(configHash)
+        load: function(configHash, existingContexts)
         {
             var dc = this;
-            _.each(configHash, function(c, id) { dc.loadContext(id, c); });
+            _.each(configHash, function(c, id) { dc.loadContext(id, c, null, null, existingContexts); });
         },
 
-        loadContext: function(id, config, successCallback, errorCallback)
+        loadContext: function(id, config, successCallback, errorCallback, existingContexts)
         {
             var dc = this;
             if (!$.isBlank(dc.availableContexts[id]))
@@ -51,6 +51,30 @@
             dc._contextsQueue[id] = dc._preLoadQueue[id] || [];
             delete dc._preLoadQueue[id];
             config = $.stringSubstitute(config, $.component.rootPropertyResolver);
+
+            // If we have an existing item that has all the context data, then short-circuit
+            // and do the bit of updating required to use the context
+            existingContexts = existingContexts || {};
+            if (existingContexts.hasOwnProperty(id) && existingContexts[id].type == config.type)
+            {
+                var curC = dc.availableContexts[id] = existingContexts[id];
+                if (!$.isBlank(curC.dataset) && !(curC.dataset instanceof Dataset))
+                { curC.dataset = new Dataset(curC.dataset); }
+
+                if (!_.isEmpty(curC.datasetList))
+                {
+                    curC.datasetList = _.map(curC.datasetList, function(dl)
+                    {
+                        var c = {type: 'dataset', dataset: new Dataset(dl.dataset), id: dl.id};
+                        dc.availableContexts[c.id] = c;
+                        return c;
+                    });
+                }
+
+                doneLoading(curC);
+                return;
+            }
+
             switch (config.type)
             {
                 case 'row':

@@ -5,13 +5,14 @@
   blist.configuration.development = <%= Rails.env.development? %>;
 
   $(function() {
-      var page = blist.configuration.page = <%= raw page.to_json %>;
+      var page = blist.configuration.page = <%= safe_json(page) %>;
       blist.configuration.pageVariables = <%= safe_json(Canvas2::Util.page_vars) %>;
-      $.dataContext.load(page.data);
+      blist.configuration.availableContexts = <%= safe_json(Canvas2::DataContext.available_contexts) %>;
+      $.dataContext.load(page.data, blist.configuration.availableContexts);
       $.locale.initialize(page.locale);
       $.component.initialize(page.content);
       <%- if template -%>
-      blist.configuration.template = <%= raw template.to_json %>;
+      blist.configuration.template = <%= safe_json(template) %>;
       <%- end -%>
   });
 </script>

@@ -327,12 +327,13 @@
         _initDom: function() {
             this._super.apply(this, arguments);
 
-            var clear = this.dom.lastChild;
-            if (!clear || clear.className != 'socrata-ct-clear') {
-                $(this.dom).append('<div class="socrata-ct-clear"></div>');
-                clear = this.dom.lastChild;
+            var $clear = this.$dom.children('.socrata-ct-clear');
+            if ($clear.length < 1)
+            {
+                this.$dom.append('<div class="socrata-ct-clear"></div>');
+                $clear = $(this.dom.lastChild);
             }
-            this._$clear = $(clear);
+            this._$clear = $clear;
         },
 
         // Override child move to wrap child in extra div

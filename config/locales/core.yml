@@ -45,6 +45,7 @@ en:
         is_not_blank: is not blank
     analytics:
       visit: view
+      visits: views
     dialogs:
       close: Close
       cancel: Cancel
@@ -100,6 +101,7 @@ it:
         is_not_blank: non vuoto
     analytics:
       visit: visualizzazioni
+      visits: visualizzazioni
     dialogs:
       close: chiudi
       cancel: cancella

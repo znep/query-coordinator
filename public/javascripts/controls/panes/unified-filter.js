@@ -139,7 +139,7 @@
                 {
                     return (op == 'IS_BLANK' || op == 'IS_NOT_BLANK') ? null :
                         {value: op, text: fc.details[op].text};
-                })).concat({ value: 'blank?', text: 'is blank?' });
+                })).concat({ value: 'blank?', text: $.t('core.filters.informal.is_blank') });
     };
 
     var getFilterValue = function(value, column, metadata)

@@ -669,6 +669,10 @@
                             chartObj._xColumn, true, false, true);
                 }
 
+                if ($.subKeyDefined(chartObj, '_displayFormat.yAxis.formatter.abbreviate')
+                    && !chartObj._displayFormat.yAxis.formatter.abbreviate)
+                { return num; }
+
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.
                 // xColumn numbers will come back as strings, but may be intended as strings.

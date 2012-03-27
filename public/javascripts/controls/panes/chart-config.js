@@ -96,8 +96,10 @@
                     options: [ { type: 'static', name: 'yAxisMaxAuto', value: 'Auto' },
                                { type: 'text', name: 'displayFormat.yAxis.max', prompt: 'Enter a number',
                                     extraClass: 'number' }] },
-                {text: 'Precision', type: 'slider', name: 'displayFormat.yAxis.formatter.decimalPlaces',
-                    minimum: 0, maximum: 10, defaultValue: 2}
+                {text: 'Precision', type: 'slider', minimum: 0, maximum: 10, defaultValue: 2,
+                    name: 'displayFormat.yAxis.formatter.decimalPlaces' },
+                {text: 'Abbreviate', type: 'checkbox', defaultValue: true,
+                    name: 'displayFormat.yAxis.formatter.abbreviate'}
             ]
         };
     };

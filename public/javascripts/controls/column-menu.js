@@ -87,17 +87,17 @@
                             'class': ['sortAsc', 'singleItem'],
                             contents: {tagName: 'a', href: '#column-sort-asc',
                                 contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: 'Sort Ascending'}}});
+                                    contents: $.t('controls.grid.sort_ascending')}}});
                         menu.contents.push({tagName: 'li',
                             'class': ['sortDesc', 'singleItem'],
                             contents: {tagName: 'a', href: '#column-sort-desc',
                                 contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: 'Sort Descending'}}});
+                                    contents: $.t('controls.grid.sort_descending')}}});
                         menu.contents.push({tagName: 'li',
                             'class': ['sortClear', 'singleItem'],
                             contents: {tagName: 'a', href: '#column-sort-clear',
                                 contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: 'Clear Sort'}}});
+                                    contents: $.t('controls.grid.clear_sort')}}});
                     }
 
                     if (features.sort || features.filter)
@@ -114,7 +114,7 @@
                         menu.contents.push({tagName: 'li', 'class': 'hideCol',
                             contents: {tagName: 'a', href: '#hide-column',
                                 contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: 'Hide Column'}}});
+                                    contents: $.t('controls.grid.hide_column')}}});
                     }
 
                     if (features.remove)
@@ -122,7 +122,7 @@
                         menu.contents.push({tagName: 'li', 'class': 'delete',
                             contents: {tagName: 'a', href: '#delete-column',
                                 contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: 'Delete Column'}}});
+                                    contents: $.t('controls.grid.delete_column')}}});
                     }
 
                     if (features.properties)
@@ -135,7 +135,7 @@
                             'singleItem'], contents: {tagName: 'a',
                                 href: '#edit-column',
                                 contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: 'Edit Column Properties'}}});
+                                    contents: $.t('controls.grid.edit_column_properties')}}});
                     }
 
                     menu.contents.push({tagName: 'li', 'class': 'footer',
@@ -270,7 +270,7 @@
         var filterItem = {tagName: 'li', 'class': ['autofilter', 'submenu',
             'singleItem'], contents: [{tagName: 'a', 'class': 'submenuLink',
                 href: '#', contents: {tagName: 'span', 'class': 'highlight',
-                    contents: 'Filter This Column'}}]};
+                    contents: $.t('controls.grid.filter_this_column')}}]};
         var menuItem = {tagName: 'ul', 'class': ['menu', 'optionMenu'],
             contents: []};
         filterItem.contents.push(menuItem);
@@ -281,7 +281,7 @@
             menuItem.contents.push({tagName: 'li', 'class': 'clearFilter',
                 contents: {tagName: 'a', href: '#clear-filter-column',
                     contents: {tagName: 'span', 'class': 'highlight',
-                        contents: 'Clear Column Filter'}}});
+                        contents: $.t('controls.grid.clear_column_filter')}}});
             if ($.isBlank(summary))
             {
                 summary = {curVal: { topFrequencies:
@@ -291,11 +291,11 @@
 
         // Previous button for scrolling
         menuItem.contents.push({tagName: 'li', 'class': ['button', 'prev'],
-            contents: {tagName: 'a', href: '#pref', title: 'Previous',
+            contents: {tagName: 'a', href: '#pref', title: $.t('controls.grid.previous'),
                 contents: {tagName: 'div', 'class': 'outerWrapper',
                     contents: {tagName: 'div', 'class': 'midWrapper',
                         contents: {tagName: 'span', 'class': 'innerWrapper',
-                            contents: 'Previous'}}}}});
+                            contents: $.t('controls.grid.previous')}}}}});
 
         // Sort type keys in a specific order for URL and phone
         var typeKeys = _.keys(summary);
@@ -475,11 +475,7 @@
     {
         columns = $.makeArray(columns);
         var multiCols = columns.length > 1;
-        if (confirm('Do you want to delete the ' +
-            (multiCols ? columns.length + ' selected columns' :
-                'selected column') + '? All data in ' +
-            (multiCols ? 'these columns' : 'this column') +
-            ' will be removed!'))
+        if (confirm(multiCols ? $.t('controls.grid.delete_warning_multi_column') : $.t('controls.grid.delete_warning_single_column')))
         {
             if (_.isEmpty(columns) &&
                 !$.isBlank(cmObj.settings.column.parentColumn))

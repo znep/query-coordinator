@@ -339,12 +339,12 @@
                 if (!isSubRow)
                 {
                     options.push('<li class="pageView"><a href="', this._view.url, '/', row.id,
-                            '" class="noInterstitial noRedirPrompt">View Single Row Data</a></li>');
+                            '" class="noInterstitial noRedirPrompt">' + $.t('controls.grid.view_single_row') + '</a></li>');
                 }
                 if (this.settings.editEnabled && context.permissions.canDelete)
                 {
                     options.push('<li class="delete"><a href="#row-delete_',
-                            row.id, colAdjust, '">Delete Row</a></li>');
+                            row.id, colAdjust, '">' + $.t('controls.grid.delete_row') + '</a></li>');
                 }
 
                 if (_.isEmpty(options) || row.type == 'blank') { return; }
@@ -511,7 +511,7 @@
         if (tipsRef)
         {
             blist.datasetControls.columnTip(col, $col, tipsRef, true);
-            $col.find('.menuLink').socrataTip({message: 'Click for Menu',
+            $col.find('.menuLink').socrataTip({message: $.t('controls.grid.click_for_menu'),
                     parent: 'body'});
         }
     };
@@ -587,7 +587,7 @@
         var newName = $input.val();
         if (newName === '')
         {
-            alert('You must enter a name for this column');
+            alert($.t('controls.grid.must_enter_name'));
             $th.addClass('error');
             return;
         }

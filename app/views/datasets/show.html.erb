@@ -439,6 +439,8 @@
 
 <%= current_user_js %>
 
+<%= render_translations LocalePart.controls.grid %>
+
 <% content_for :js_footer do %>
   <script type="text/javascript">
     $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner({model: blist.dataset}); });

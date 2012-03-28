@@ -1,4 +1,5 @@
-#!/usr/bin/env python -u
+#!/bin/sh
+''''exec python -u -- "$0" ${1+"$@"} # '''
 #
 # Rewrite rules for Socrata, with specific emphasis on multiple domain names
 # Our logic for handling static page caching was getting out of hand; we had

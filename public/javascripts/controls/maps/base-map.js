@@ -254,9 +254,10 @@
                             var views = _.reject(data.views,
                                 function(view) { return view.viewType == 'geo'; });
                             var $select = $.tag({ tagName: 'li', contents: [{ tagName: 'select',
-                                contents: _.map(views, function(obj)
+                                contents: [{ tagName: 'option', contents: 'Select a map' }].concat(
+                                _.map(views, function(obj)
                                 { return { tagName: 'option', value: obj.id, contents: obj.name }; })
-                                }]
+                                )}]
                             });
                             $select.find('select').change(function()
                             {

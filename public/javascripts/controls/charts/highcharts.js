@@ -1661,7 +1661,7 @@
         overviewAxis.removePlotBand('mask-before');
         overviewAxis.addPlotBand({
             id: 'mask-before',
-            from: overviewExtremes.min,
+            from: overviewExtremes.min || 0,
             to: min,
             color: 'rgba(0, 0, 0, 0.2)'
         });
@@ -1678,7 +1678,7 @@
         overviewAxis.addPlotBand({
             id: 'mask-after',
             from: max,
-            to: overviewExtremes.max,
+            to: overviewExtremes.max || 4105065600, // reasonable default of 2100-01-31
             color: 'rgba(0, 0, 0, 0.2)'
         });
     };

@@ -563,32 +563,39 @@
         /**
          * Obtain a function that can resolve substitution properties for this component's data context.
          */
-        _propertyResolver: function() {
-            if (this._designing)
+        _propertyResolver: function()
+        {
+            var cObj = this;
+            if (cObj._designing)
                 return function() {};
-            var parentResolver = this.parent ? this.parent._propertyResolver() : $.component.rootPropertyResolver;
-            var dc = this._dataContext || {};
-            if (_.isArray(dc))
+            var parentResolver = this.parent ? this.parent._propertyResolver() :
+                $.component.rootPropertyResolver;
+            var keyedDC = {};
+            _.each($.makeArray(cObj._dataContext), function(d) { keyedDC[d.id] = d; });
+            var dcResolver = function(name)
             {
-                dc = {};
-                _.each(this._dataContext, function(d) { dc[d.id] = d; });
-            }
-            var dcResolver = function(name) {
-                var result = $.deepGetStringField(dc, name);
+                var result = $.deepGetStringField(keyedDC, name);
+                if (result !== undefined)
+                    return result;
+                _.any($.makeArray(cObj._dataContext), function(dc)
+                {
+                    result = $.deepGetStringField(dc, name);
+                    return result !== undefined;
+                });
                 if (result !== undefined)
                     return result;
                 return parentResolver(name);
             };
-            var entity = this._properties.entity;
+            var entity = cObj._properties.entity;
             if (entity)
                 return function(name) {
                     var result = $.deepGetStringField(entity, name);
                     if (result !== undefined)
                         return result;
-                    if (!_.isEmpty(dc)) { return dcResolver(name); }
+                    if (!_.isEmpty(cObj._dataContext)) { return dcResolver(name); }
                     return parentResolver(name);
                 };
-            if (!_.isEmpty(dc)) { return dcResolver; }
+            if (!_.isEmpty(cObj._dataContext)) { return dcResolver; }
             return parentResolver;
         },
 

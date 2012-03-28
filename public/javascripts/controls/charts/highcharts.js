@@ -40,6 +40,7 @@
             // Cache data
             chartObj._seriesCache = [];
             chartObj._seriesPotentials = [];
+            chartObj._seriesOrder = [];
             chartObj._seriesByVal = {};
 
             chartObj._rowIndices = {};
@@ -273,6 +274,7 @@
             delete chartObj._seriesRemainders;
             delete chartObj._seriesCache;
             delete chartObj._seriesPotentials;
+            delete chartObj._seriesOrder;
             delete chartObj._seriesByVal;
             delete chartObj._rowIndices;
             delete chartObj._curMin;
@@ -458,6 +460,7 @@
                 { series.seriesValues[sc.column.lookup] = row[sc.column.lookup]; });
 
         chartObj._seriesPotentials.push(series);
+        chartObj._seriesOrder.push(name);
         chartObj._seriesByVal[series.name] = series;
 
         return series;
@@ -475,22 +478,25 @@
             return null;
         }
 
-        series.index = chartObj._seriesCache.length;
+        var sIndex = 0;
+        for (var i = 0; i < chartObj._seriesOrder.length; i++)
+        {
+            if (chartObj._seriesOrder[i] == series.name)
+            { break; }
+            if (chartObj._seriesOrder[i] == (chartObj._seriesCache[sIndex] || {}).name)
+            { sIndex++; }
+        }
+        series.index = sIndex;
         series.color = getColor(chartObj, series.name, series.yColumn);
+        chartObj._seriesCache.splice(series.index, 0, series);
 
         if (chartObj._chartType == 'donut')
         {
-            var segment = 100 / ((chartObj._seriesCache.length + 1) + 1);
-            $.extend(series, {
-                innerSize:    Math.round(segment * (series.index + 1)) + '%',
-                size:         Math.round(segment * (series.index + 2)) + '%',
-                showInLegend: series.index == 0,
-                dataLabels:   { enabled: true }
-            });
-            if (chartObj._seriesCache.length > 0)
-            { _.last(chartObj._seriesCache).dataLabels.enabled = false; }
+            var segment = 100 / (chartObj._seriesCache.length + 1);
             _.each(chartObj._seriesCache, function(s, i)
             {
+                s.showInLegend = i == 0;
+                s.dataLabels = { enabled: i == chartObj._seriesCache.length - 1 };
                 s.innerSize = Math.round(segment * (i + 1)) + '%';
                 s.size = Math.round(segment * (i + 2)) + '%';
             });
@@ -500,8 +506,6 @@
         { chartObj.chart.addSeries(series, false); }
         if (!_.isUndefined(chartObj.secondChart))
         { chartObj.secondChart.addSeries(series, false); }
-
-        chartObj._seriesCache.push(series);
 
         return series;
     };

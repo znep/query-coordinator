@@ -53,23 +53,6 @@ en:
     interstitial:
       leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.
-  controls:
-    grid:
-      sort_ascending: Sort Ascending
-      sort_descending: Sort Descending
-      clear_sort: Clear Sort
-      hide_column: Hide Column
-      delete_column: Delete Column
-      edit_column_properties: Edit Column Properties
-      filter_this_column: Filter This Column
-      clear_column_filter: Clear Column Filter
-      previous: Previous
-      delete_warning_single_column: "Do you want to delete the selected column? All data in this column will be removed!"
-      delete_warning_multi_column: "Do you want to delete the selected columns? All data in these columns will be removed!"
-      view_single_row: View Single Row Data
-      delete_row: Delete Row
-      click_for_menu: Click for Menu
-      must_enter_name: You must enter a name for this column
 
 it:
   support:
@@ -126,20 +109,3 @@ it:
     interstitial:
       leaving_notice_html: "Stai lasciando <span class=\"serverName\">%{site_name}</span>"
       leaving_explanation_html: "Questo  <span class=\"datasetType\">dataset</span> è ospitato da <a href=\"\#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."
-  controls:
-    grid:
-      sort_ascending: Ordinamento crescente
-      sort_descending: Ordinamento Discendente
-      clear_sort: Ordina Cancella
-      hide_column: Nascondi colonna
-      delete_column: Elimina colonna
-      edit_column_properties: Modifica delle proprietà della colonna
-      filter_this_column: Filtra questa colonna
-      clear_column_filter: filtro di colonna trasparente
-      precedente: Precedente
-      delete_warning_single_column: "Vuoi eliminare la colonna selezionata Tutti i dati in questa colonna verrà rimosso!"
-      delete_warning_multi_column: "Vuoi eliminare le colonne selezionate Tutti i dati in queste colonne saranno rimossi!"
-      view_single_row: Visualizzare Singolo Record
-      delete_row: Elimina Record
-      click_for_menu: Clicca per il Menu
-      must_enter_name: Devi inserire un nome per questa colonna

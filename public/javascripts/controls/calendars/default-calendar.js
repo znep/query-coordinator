@@ -332,9 +332,17 @@
         if (!$(this).isSocrataTip() && calObj.hasFlyout())
         { renderEventFlyout(calObj, calEvent, this); }
         if ($.subKeyDefined(calObj._primaryView, 'highlightTypes.select.' + calEvent.row.id))
-        { calObj._primaryView.unhighlightRows(calEvent.row, 'select'); }
+        {
+            calObj._primaryView.unhighlightRows(calEvent.row, 'select');
+            calObj.$dom().trigger('display_row', [{row: null}]);
+            $(document).trigger(blist.events.DISPLAY_ROW, [null, true]);
+        }
         else
-        { calObj._primaryView.highlightRows(calEvent.row, 'select'); }
+        {
+            calObj._primaryView.highlightRows(calEvent.row, 'select');
+            calObj.$dom().trigger('display_row', [{row: calEvent.row}]);
+            $(document).trigger(blist.events.DISPLAY_ROW, [calEvent.row.id, true]);
+        }
     };
 
     var eventMouseover = function(calObj, calEvent)

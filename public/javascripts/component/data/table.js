@@ -24,7 +24,7 @@ $.component.Component.extend('Table', 'data', {
         return {
             javascripts: [{ assets: 'shared-table-render' }],
             stylesheets: [{assets: 'grid'}],
-            translations: ['controls.filter']
+            translations: ['controls.grid']
         };
     },
 

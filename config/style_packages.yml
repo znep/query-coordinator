@@ -26,6 +26,7 @@ configurator:
 base-control-third-party:
 - jquery.ui.resizable
 - ui.slider
+- jquery-ui-1.8.4.custom
 colorpicker:
 - colorpicker
 print:

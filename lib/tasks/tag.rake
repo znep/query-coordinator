@@ -10,7 +10,7 @@ namespace :tag do
     system 'git config remote.origin.tagopt --tags'
   end
 
-  %w{staging release}.each do |environment|
+  %w{experimental staging release}.each do |environment|
     desc "Tag the current SHA as a #{environment} candidate"
     task environment.to_sym => :check_origin do
       timestamp = Time.now.strftime("%Y/%m/%d/%H%M")

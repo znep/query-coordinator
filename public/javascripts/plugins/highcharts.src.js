@@ -6887,7 +6887,7 @@ function Chart (options, callback) {
 		
 		
 		// hide tooltip and hover states
-		if (tracker && tracker.resetTracker) {
+		if (isDirtyBox && tracker && tracker.resetTracker) {
 			tracker.resetTracker();
 		}
 		
@@ -9880,9 +9880,10 @@ var ColumnSeries = extendClass(Series, {
 			
 		each(series.data, function(point) {
 			tracker = point.tracker;
-			shapeArgs = point.trackerArgs || point.shapeArgs;
+			shapeArgs = extend({}, point.trackerArgs || point.shapeArgs);
 			if (point.y !== null) {
 				if (tracker) {// update
+                    shapeArgs.fill = TRACKER_FILL;
 					tracker.attr(shapeArgs);
 					
 				} else {

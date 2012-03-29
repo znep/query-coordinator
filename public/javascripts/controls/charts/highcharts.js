@@ -1215,7 +1215,8 @@
             {
                 var t = this;
                 var $tooltip = $("#highcharts_tooltip");
-                tooltipTimeout = setTimeout(function(){
+                tooltipTimeout = setTimeout(function()
+                {
                     if (!$tooltip.data('mouseover'))
                     {
                         chartObj._primaryView.unhighlightRows(t.row);
@@ -1876,7 +1877,8 @@
     {
         chartObj.chart.xAxis[0].options.labels.step = calculateXAxisStepSize(chartObj,
             (chartObj._xCategories || []).length || chartObj._primaryView.totalRows);
-        chartObj.chart.xAxis[0].setCategories(chartObj._xCategories);
+        if (!_.isEqual(chartObj.chart.xAxis[0].categories, chartObj._xCategories))
+        { chartObj.chart.xAxis[0].setCategories(chartObj._xCategories); }
         chartObj._categoriesLoaded = true;
     };
 

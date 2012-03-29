@@ -400,15 +400,6 @@ var updateLayerLines = function($elems)
             name: $line.find('.layerName').val()
         };
 
-        if ($line.find('.layerCrsAutoDetect').prop('checked'))
-        {
-            importLayer.referenceSystem = null;
-        }
-        else
-        {
-            importLayer.referenceSystem = $line.find('.layerReferenceSystem').val();
-        }
-
         var replacingUid = $line.find('.layerReplaceDropdown').val();
         if (!$.isBlank(replacingUid))
         {
@@ -718,49 +709,16 @@ var newLayerLine = function(layer)
         }
 
         var layerReferenceSystemId = 'layerReferenceSystem_' + layer.id;
-        var $layerReferenceSystem = $line.find('.layerReferenceSystem');
-        $layerReferenceSystem
-            .attr('id', layerReferenceSystemId)
-            .attr('name', layerReferenceSystemId)
-            .prop('disabled', true)
-            .rules('add',
-            {
-                coordinateReferenceSystem: true,
-                messages:
-                {
-                    coordinateReferenceSystem: 'Enter a valid coordinate reference system.'
-                }
-            });
+        var $layerReferenceSystemCell = $line.find('.layerReferenceSystemCell');
 
         if (layer.referenceSystem)
         {
-            $layerReferenceSystem.val(layer.referenceSystem);
+            $layerReferenceSystemCell.text(layer.referenceSystem);
         }
-
-        $line.find('layerReferenceSystemCell label').attr('for', layerReferenceSystemId);
-
-        var layerCrsAutoDetectId = 'layerCrsAutoDetect_' + layer.id;
-        var $layerCrsAutoDetect = $line.find('.layerCrsAutoDetect');
-        $layerCrsAutoDetect
-            .attr('id', layerCrsAutoDetectId)
-            .attr('name', layerCrsAutoDetectId)
-            .prop('checked', true)
-            .click(function ()
-            {
-                if ($(this).prop('checked'))
-                {
-                    $layerReferenceSystem
-                        .val(layer.referenceSystem || '')
-                        .prop('disabled', true)
-                        .valid()
-                }
-                else
-                {
-                    $layerReferenceSystem.prop('disabled', false);
-                }
-            });
-
-        $line.find('.layerCrsAutoDetectCell label').attr('for', layerCrsAutoDetectId);
+        else
+        {
+            $layerReferenceSystemCell.text("(no reference system detected)");
+        }
 
         $line.data('layer', layer);
     }

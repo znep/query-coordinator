@@ -383,7 +383,7 @@
             var cObj = this;
             if (this._blockArrange) { return; }
 
-            this.$contents.toggleClass('inlineDisplay', this._properties.inlineDisplay);
+            this.$contents.toggleClass('inlineDisplay', !!this._properties.inlineDisplay);
 
             var totalWeight = 0;
             if (!this._properties.inlineDisplay)

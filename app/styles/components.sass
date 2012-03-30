@@ -121,6 +121,15 @@ body.socrata-page
       margin: 0 0 0 16px
     &.first-child > *
       margin-left: 0
+  &.inlineDisplay > .component-wrapper
+    display: inline
+    float: none
+    left: 0
+    position: static
+    & > *
+      display: inline
+      margin: 0
+
 .component-Box
   min-height: 100px // Default height; temporary?
   border: solid 1px #cecece

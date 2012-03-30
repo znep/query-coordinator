@@ -333,12 +333,16 @@ module Canvas2
       if @properties.has_key?('contextId') && @context.blank?
         if @properties['contextId'].is_a?(Array)
           @context = []
-          @properties['contextId'].each {|cId| @context << DataContext.available_contexts[cId]}
+          @properties['contextId'].each {|cId| @context << get_context(cId)}
         else
-          @context = DataContext.available_contexts[@properties['contextId']]
+          @context = get_context(@properties['contextId'])
         end
       end
       @context
+    end
+
+    def get_context(cId)
+      DataContext.available_contexts[cId] || (@properties['entity'] || {})[cId]
     end
 
     def string_substitute(text, special_resolver = nil)
@@ -355,8 +359,9 @@ module Canvas2
 
     def render
       c, fully_rendered = render_contents
-      html_class = string_substitute(@properties['htmlClass'].is_a?(Array) ?
-                                     @properties['htmlClass'].join(' ') : @properties['htmlClass'])
+      html_class = render_classes + ' ' +
+        string_substitute(@properties['htmlClass'].is_a?(Array) ?
+                          @properties['htmlClass'].join(' ') : @properties['htmlClass'])
       is_hidden = @properties['hidden'] || @properties['requiresContext'] && context.blank? ||
         @properties['ifValue'] && !eval_if(@properties['ifValue'])
       t = '<div class="socrata-component component-' + @properties['type'] + ' ' +
@@ -371,6 +376,10 @@ module Canvas2
 
     def render_contents
       ['', false]
+    end
+
+    def render_classes
+      ''
     end
 
     def resolver
@@ -439,18 +448,23 @@ module Canvas2
   end
 
   class HorizontalContainer < Container
+    def render_classes
+      @properties['inlineDisplay'] ? 'inlineDisplay' : ''
+    end
+
     def render_contents
       t = ''
       fully_rendered = true
       if has_children?
-        total_weight = children.reduce(0.0) {|sum, c| sum + (c.properties['weight'] || 1).to_f}
+        i_d = @properties['inlineDisplay']
+        total_weight = children.reduce(0.0) {|sum, c| sum + (c.properties['weight'] || 1).to_f} if i_d
         pos = 0.0
         children.each_with_index do |c, i|
-          w = (c.properties['weight'] || 1).to_f
+          w = (c.properties['weight'] || 1).to_f if i_d
           r = c.render
           t += '<div class="component-wrapper' + (i == 0 ? ' first-child' : '') + '"' +
-            ' style="margin-left:' + (-(100 - pos / total_weight * 100)).round(2).to_s + '%;' +
-            'width:' + (w / total_weight * 100).round(2).to_s + '%;"' +
+            (i_d ? '' : ' style="margin-left:' + (-(100 - pos / total_weight * 100)).round(2).to_s + '%;' +
+             'width:' + (w / total_weight * 100).round(2).to_s + '%;"') +
             '>' + r[0] + '</div>'
           fully_rendered &&= r[1]
           pos += w
@@ -486,10 +500,14 @@ module Canvas2
       if !context.blank?
         col_map = {}
         all_c = []
-        case context[:type]
-        when 'datasetList'
-          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, {}, ds.clone) }
-        when 'dataset'
+
+        if context.is_a? Array
+          context.each { |item, i| all_c << add_row(item, i, item.clone) }
+
+        elsif context[:type] == 'datasetList'
+          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }
+
+        elsif context[:type] == 'dataset'
           if @properties['repeaterType'] == 'column'
             ex_f = string_substitute(@properties['excludeFilter'])
             inc_f = string_substitute(@properties['includeFilter'])
@@ -500,13 +518,31 @@ module Canvas2
                 all_c << add_row(context, i, {column: c})
               end
             end
+
           else
             context[:dataset].visible_columns.each {|c| col_map[c.id.to_s] = c.fieldName}
-            rows = context[:dataset].get_rows(100)[:rows].each_with_index do |r, i|
-              all_c << add_row(r, i, col_map)
+            rows = context[:dataset].get_rows(100)[:rows].map do |row|
+              r = Hash.new
+              row.each do |k, v|
+                if !col_map[k].blank?
+                  r[col_map[k]] = v
+                elsif k.match(/[a-z]+/)
+                  r[k] = v
+                end
+              end
+              r
+            end
+
+            if !@properties['groupBy'].blank?
+              all_c = render_group_items(rows)
+            else
+              rows.each_with_index do |r, i|
+                all_c << add_row(r, i)
+              end
             end
           end
         end
+
         all_c.compact!
         if all_c.length > 0
           cont_config = @properties['container'] || {'type' => 'Container'}
@@ -522,13 +558,12 @@ module Canvas2
     end
 
   protected
-    def add_row(row, index, col_map = {}, resolutions = {})
+    def add_row(row, index, resolutions = {})
       resolutions['_repeaterIndex'] = index
-      col_map.each {|id, fieldName| resolutions[fieldName] = row[id]}
 
       child_props = string_substitute(@properties['childProperties'], resolutions)
       copy = create_copy({}.deep_merge(@clone_props).deep_merge(child_props.is_a?(Hash) ? child_props : {}),
-                         self.id + '-' + index.to_s + '-')
+                         self.id + '-' + index.to_s + '-', resolutions)
       copy['childContextId'] = row[:id]
       c = CanvasWidget.from_config(copy, self, resolutions)
       if @properties.has_key?('valueRegex')
@@ -541,6 +576,27 @@ module Canvas2
       c
     end
 
+    def render_group_items(items)
+      g_config = @properties['groupBy']
+      g_index = Hash.new
+      groups = []
+      items.each do |item|
+        g = string_substitute(g_config['value'], item)
+        if g_index[g].blank?
+          groups << g
+          g_index[g] = [item]
+        else
+          g_index[g] << item
+        end
+      end
+
+      all_c = []
+      groups.each_with_index do |g, i|
+        all_c << add_row({id: g}, i, {_groupValue: g, _groupItems: g_index[g]})
+      end
+      all_c
+    end
+
     def allocate_ids(components)
       (components || []).each do |c|
         c['id'] = Util.allocate_id if c['id'].blank?
@@ -548,14 +604,15 @@ module Canvas2
       end
     end
 
-    def create_copy(component, id_prefix)
+    def create_copy(component, id_prefix, resolutions)
       new_c = component.clone
       new_c['htmlClass'] = new_c['htmlClass'].is_a?(Array) ? new_c['htmlClass'].clone :
         [new_c['htmlClass']].compact
       new_c['htmlClass'] << 'id-' + new_c['id']
       new_c['id'] = id_prefix + new_c['id']
+      new_c['entity'] = resolutions
       if new_c['children'].is_a? Array
-        new_c['children'] = new_c['children'].map {|c| create_copy(c, id_prefix)}
+        new_c['children'] = new_c['children'].map {|c| create_copy(c, id_prefix, resolutions)}
       end
       new_c
     end

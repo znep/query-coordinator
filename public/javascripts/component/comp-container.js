@@ -378,21 +378,33 @@
             this._arrange();
         },
 
-        _arrange: function() {
-            if (this._blockArrange)
-                return;
+        _arrange: function()
+        {
+            var cObj = this;
+            if (this._blockArrange) { return; }
+
+            this.$contents.toggleClass('inlineDisplay', this._properties.inlineDisplay);
+
             var totalWeight = 0;
-            this.each(function(child) {
-                totalWeight += child.properties().weight || 1;
-            });
+            if (!this._properties.inlineDisplay)
+            { this.each(function(child) { totalWeight += child.properties().weight || 1; }); }
+
             var pos = 0;
-            this.each(function(child) {
-                var weight = child.properties().weight || 1;
-                $(child.wrapper).css({
-                    marginLeft: -(100 - pos / totalWeight * 100) + '%',
-                    width: (weight / totalWeight * 100) + '%'
-                });
-                pos += weight;
+            this.each(function(child)
+            {
+                if (cObj._properties.inlineDisplay)
+                {
+                    child.$wrapper.css({marginLeft: 0, width: 'auto'});
+                }
+                else
+                {
+                    var weight = child.properties().weight || 1;
+                    child.$wrapper.css({
+                        marginLeft: -(100 - pos / totalWeight * 100) + '%',
+                        width: (weight / totalWeight * 100) + '%'
+                    });
+                    pos += weight;
+                }
             });
 
             this._super();

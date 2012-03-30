@@ -644,6 +644,11 @@
                         {
                             if (!$.dataContext.getContext(cId, finishDC.success, finishDC.error))
                             {
+                                if ((cObj._properties.entity || {}).hasOwnProperty(cId))
+                                {
+                                    _.defer(function() { finishDC.success(cObj._properties.entity[cId]); });
+                                    return true;
+                                }
                                 finishDC.error();
                                 return false;
                             }

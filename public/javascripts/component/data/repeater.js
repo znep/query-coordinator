@@ -113,13 +113,18 @@ $.component.Container.extend('Repeater', 'content', {
         if (this._designing)
             // Render actual children as direct descendants
             this.add(this._cloneProperties.children);
+        else if (_.isArray(this._dataContext))
+        {
+            var callback = _.after(this._dataContext.length, doneWithRows);
+            _.each(this._dataContext, function(di, i) { cObj._setRow(di, i, di, callback); });
+        }
         else if (view = (this._dataContext || {}).dataset)
         {
             if (this._properties.repeaterType == 'column')
             {
                 var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
                 var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
-                var callback = _.after(this._dataContext.dataset.visibleColumns, doneWithRows);
+                var callback = _.after(this._dataContext.dataset.visibleColumns.length, doneWithRows);
                 _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
                 {
                     if (_.all(exF, function(v, k)
@@ -134,11 +139,31 @@ $.component.Container.extend('Repeater', 'content', {
             else
             {
                 // Render records
-                var columnMap = this.columnMap = {};
-                _.each(view.visibleColumns, function(c) { columnMap[c.id] = c.fieldName; });
-                this._dataContext.dataset.getRows(this.position, this.length, function(rows) {
-                    var callback = _.after(rows.length, doneWithRows);
-                    _.each(rows, function(r) { cObj._setRow(r, r.index, null, callback); });
+                var columnMap = {};
+                _.each(view.columns, function(c) { columnMap[c.id] = c.fieldName; });
+                this._dataContext.dataset.getRows(this.position, this.length, function(rows)
+                {
+                    // Create entity TODO - mapping will be unnecessary w/ SODA 2
+                    rows = _.map(rows, function(row)
+                    {
+                        var r = {};
+                        _.each(row, function(v, k)
+                        {
+                            if (!$.isBlank(columnMap[k]))
+                            { r[columnMap[k]] = v; }
+                            else if (k.match(/[a-z]+/))
+                            { r[k] = v; }
+                        });
+                        return r;
+                    });
+
+                    if (!$.isBlank(cObj._properties.groupBy))
+                    { renderGroupItems(cObj, rows, doneWithRows); }
+                    else
+                    {
+                        var callback = _.after(rows.length, doneWithRows);
+                        _.each(rows, function(r) { cObj._setRow(r, r.index, null, callback); });
+                    }
                 });
             }
         }
@@ -182,13 +207,7 @@ $.component.Container.extend('Repeater', 'content', {
         if (adjIndex < 0 || adjIndex >= this.length)
             return;
 
-        // Create entity TODO - mapping will be unnecessary w/ SODA 2
         entity = entity || {};
-        _.each(this.columnMap, function(to, from) {
-            entity[to] = row[from];
-            if (entity[to] == undefined)
-                entity[to] = null;
-        });
 
         if ($.isBlank(entity._repeaterIndex)) { entity._repeaterIndex = index; }
         // Add ID prefix so repeated components will not clash
@@ -199,6 +218,7 @@ $.component.Container.extend('Repeater', 'content', {
             properties.htmlClass = $.makeArray(properties.htmlClass);
             properties.htmlClass.push('id-' + properties.id);
             properties.id = prefix + (properties.id || $.component.allocateId());
+            properties.entity = entity;
             var children = properties.children;
             if (children) {
                 if (!$.isArray(children))
@@ -275,4 +295,27 @@ var getViewPercent = function(cObj)
 {
     return Math.max(0, $(window).scrollTop() - cObj.$dom.offset().top) / cObj.$dom.height();
 };
+
+var renderGroupItems = function(cObj, items, callback)
+{
+    var groupConfig = cObj._properties.groupBy;
+    var groupIndex = {};
+    var groups = [];
+    _.each(items, function(item)
+    {
+        var group = cObj._stringSubstitute(groupConfig.value, item);
+        if ($.isBlank(groupIndex[group]))
+        {
+            groups.push(group);
+            groupIndex[group] = [item];
+        }
+        else
+        { groupIndex[group].push(item); }
+    });
+
+    var aggCallback = _.after(groups.length, callback);
+    _.each(groups, function(g, i)
+    { cObj._setRow({id: g}, i, {_groupValue: g, _groupItems: groupIndex[g]}, aggCallback); });
+};
+
 })(jQuery);

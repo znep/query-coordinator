@@ -133,9 +133,9 @@
 
         reloadVisualization: function()
         {
+            this._chartType = this.settings.chartType || this._displayFormat.chartType;
             if (!this.isValid()) { return; }
 
-            this._chartType = this.settings.chartType || this._displayFormat.chartType;
             this.initializeVisualization();
             this._super();
         },

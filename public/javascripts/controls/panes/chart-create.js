@@ -63,7 +63,8 @@
             _.each(_.keys(Dataset.chart.types), function(type)
             {
                 result = result.concat(blist.configs.chart.configForType(type,
-                    {view: cpObj._view, isEdit: isEdit(cpObj), useOnlyIf: true}));
+                    {view: cpObj._view, isEdit: isEdit(cpObj) && !cpObj._view.isGrouped(),
+                        useOnlyIf: true}));
             });
 
             return result;

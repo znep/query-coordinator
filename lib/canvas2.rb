@@ -537,7 +537,7 @@ module Canvas2
               all_c = render_group_items(rows)
             else
               rows.each_with_index do |r, i|
-                all_c << add_row(r, i)
+                all_c << add_row(r, i, r)
               end
             end
           end

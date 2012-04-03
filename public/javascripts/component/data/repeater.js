@@ -162,7 +162,7 @@ $.component.Container.extend('Repeater', 'content', {
                     else
                     {
                         var callback = _.after(rows.length, doneWithRows);
-                        _.each(rows, function(r) { cObj._setRow(r, r.index, null, callback); });
+                        _.each(rows, function(r) { cObj._setRow(r, r.index, r, callback); });
                     }
                 });
             }

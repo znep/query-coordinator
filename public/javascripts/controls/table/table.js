@@ -1874,7 +1874,7 @@
 
         var onCopy = function(event) {
             if (cellNav) {
-                $navigator.text(cellNav.getSelectionDoc());
+                $navigator.val(cellNav.getSelectionDoc());
                 $navigator[0].select();
             }
         };
@@ -2119,7 +2119,7 @@
         /*** HTML RENDERING ***/
 
         var headerStr =
-            '<textarea class="blist-table-navigator hiddenTextField"></textarea>' +
+            '<input type="text" class="blist-table-navigator hiddenTextField" />' +
             '<div class="blist-table-locked-scrolls">' +
             '   <div class="blist-table-locked-header">&nbsp;</div>' +
             '   <div class="blist-table-locked">' +

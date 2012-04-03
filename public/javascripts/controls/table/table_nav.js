@@ -269,10 +269,10 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         $textarea[0].select();
         */
         if (hasSelection()) {
-            $textarea.text('x');
+            $textarea.val('x');
             $textarea[0].select();
         } else {
-            $textarea.text('');
+            $textarea.val('');
         }
     };
 
@@ -445,7 +445,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             needRefresh = true;
         }
 
-        $textarea.text('');
+        $textarea.val('');
 
         return needRefresh;
     };

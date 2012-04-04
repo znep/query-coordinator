@@ -113,17 +113,13 @@ class CurrentDomain
   end
 
   def self.default_widget_customization_id
-    if @@current_domain[:widget_customization].blank?
+    if @@current_domain[:widget_customization].nil?
       # Use the given setting. Don't inherit.
       result = Configuration.find_by_type('site_theme', true,
         CurrentDomain.cname, false)[0].properties.sdp_template
 
-      if result.blank?
-        # if they don't have a default, create one for them
-        result = WidgetCustomization.create_default!.uid
-        self.set_default_widget_customization_id(result)
-      end
-      @@current_domain[:widget_customization] = result
+      # a 'false' value indicates there is no default widget
+      @@current_domain[:widget_customization] = (result || false)
     end
     @@current_domain[:widget_customization]
   end

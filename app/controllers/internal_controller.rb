@@ -87,8 +87,6 @@ class InternalController < ApplicationController
       ::Configuration.create({'name' => 'Feature set',
         'default' => true, 'type' => 'feature_set', 'domainCName' => domain.cname})
 
-      site_theme.create_property('sdp_template', WidgetCustomization.create_default!.uid)
-
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :internal_server_error)

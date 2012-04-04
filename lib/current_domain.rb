@@ -27,12 +27,14 @@ class CurrentDomain
     return @@current_domain = @@property_store[cname]
   end
 
-  def self.reload
+  def self.reload(cname = nil)
     # Blow away the cached version of the domain,
     # forcing a refresh from the Core Server on configs and properties
-    cname = @@current_domain[:data].cname
+    default_cname = @@current_domain[:data].cname
+    cname ||= default_cname
+
     @@property_store.delete(cname)
-    self.set(cname)
+    self.set(cname) if cname == default_cname
   end
 
   # Main properties
@@ -66,15 +68,14 @@ class CurrentDomain
     @@current_domain[:data].organizationId
   end
 
-  def self.preferences_out_of_date?
-    # TODO: Deprecated
-    false
-  end
-
-  def self.flag_out_of_date!(domain_id)
-    # By writing the time to this key, we're notifying all
-    # frontend servers to reload this domain as soon as they notice
-    Rails.cache.write(generate_cache_key(domain_id), Time.now)
+  def self.flag_out_of_date!(cname)
+    if Rails.env.development?
+      self.reload(cname)
+    else
+      # By writing the time to this key, we're notifying all
+      # frontend servers to reload this domain as soon as they notice
+      Rails.cache.write(generate_cache_key(cname), Time.now)
+    end
   end
 
   def self.needs_refresh_check?(cname)

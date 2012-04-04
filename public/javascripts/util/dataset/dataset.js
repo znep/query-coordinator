@@ -494,6 +494,11 @@ var Dataset = ServerModel.extend({
         if (!ds._rowClusterParents)
         { ds._rowClusterParents = {}; }
 
+        if (!($.subKeyDefined(displayFormat, 'plot.locationId')
+            && (ds.columnForIdentifier(displayFormat.plot.locationId) || {})
+                .renderTypeName == 'location'))
+        { errorCallback(); return; }
+
         var params = {method: 'clustered2'};
         _.each({ 'xmin': 'min_lon',
                  'xmax': 'max_lon',

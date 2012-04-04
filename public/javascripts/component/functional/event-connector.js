@@ -93,13 +93,15 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
 var getValue = function(trans, args)
 {
     var v;
+    var row;
+    var col;
     if (!$.isBlank(trans.sourceColumn) && !$.isBlank(args.row) &&
         $.subKeyDefined(args, 'dataContext.dataset'))
     {
-        var c = args.dataContext.dataset.columnForIdentifier(trans.sourceColumn);
-        if (!$.isBlank(c))
+        col = args.dataContext.dataset.columnForIdentifier(trans.sourceColumn);
+        if (!$.isBlank(col))
         {
-            v = args.row[c.lookup];
+            v = args.row[col.lookup];
             if (!$.isBlank(trans.sourceValue))
             {
                 var keys = trans.sourceValue.split('.');
@@ -112,9 +114,8 @@ var getValue = function(trans, args)
                     v = v[keys[i]];
                 }
             }
-            else
-            { v = c.renderType.renderer(args.row[c.lookup], c, true); }
         }
+        else { row = args.row; }
     }
 
     else if (!$.isBlank(trans.sourceKey))
@@ -122,16 +123,11 @@ var getValue = function(trans, args)
 
     _.detect(trans.rules, function(r)
     {
-        var matches = false;
-        switch (r.operator)
-        {
-            case 'is_not_blank':
-                matches = !$.isBlank(v);
-                break;
-            case 'is_blank':
-                matches = $.isBlank(v);
-                break;
-        }
+        var expr = { operator: r.operator, value: r.value };
+        if (!$.isBlank(col))
+        { expr.tableColumnId = col.tableColumnId; }
+        var matches = blist.filter.matchesExpression(expr, row || v, (args.dataContext || {}).dataset);
+
         if (matches) { v = r.result; }
         return matches;
     });

@@ -41,6 +41,7 @@ javascripts:
     - public/javascripts/util/view-cache.js
     - public/javascripts/util/styles.js
     - public/javascripts/util/templates.js
+    - public/javascripts/util/filter.js
     - public/javascripts/util/datatypes.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/socrata-messaging.js

@@ -2663,165 +2663,8 @@ var Dataset = ServerModel.extend({
         var cf = ds.metadata.conditionalFormatting;
         if (!_.isArray(cf)) { return null; }
 
-        var matchesCondition;
-        matchesCondition = function(c)
-        {
-            if (c === true) { return true; }
-            if (!$.subKeyDefined(c, 'operator') ||
-                !$.subKeyDefined(c, 'tableColumnId') &&
-                !$.subKeyDefined(c, 'children')) { return false; }
-
-            // Handle array of sub-conditions
-            if (!$.isBlank(c.children))
-            {
-                var func = c.operator.toLowerCase() == 'or' ? 'any' : 'all';
-                return _[func](c.children, function(cc)
-                { return matchesCondition(cc); });
-            }
-
-            var col = ds.columnForTCID(c.tableColumnId);
-            if ($.isBlank(col)) { return false; }
-
-            var type = col.renderType;
-            if ($.subKeyDefined(type, 'subColumns.' + c.subColumn))
-            { type = type.subColumns[c.subColumn]; }
-
-            // Make sure this condition is supported for this type
-            if (!$.subKeyDefined(type, 'filterConditions.details.' + c.operator.toUpperCase()))
-            { return false; }
-
-            var rowVal = row[col.lookup];
-            if ($.isPlainObject(rowVal) && !$.isBlank(c.subColumn))
-            { rowVal = rowVal[c.subColumn]; }
-
-            var condVal = c.value;
-            // Need to translate some values in a more comparable format
-            if (type.name == 'drop_down_list')
-            {
-                // This is a numeric comparison, so use indices
-                _.each(col.dropDownList.values, function(ddv, i)
-                {
-                    if (ddv.id == rowVal) { rowVal = i; }
-                    condVal = _.map($.makeArray(condVal), function(cv)
-                        { return ddv.id == cv ? i : cv; });
-                });
-                if (condVal.length == 1) { condVal = condVal[0]; }
-            }
-            if (type.name == 'dataset_link' && !$.isBlank(col.dropDownList))
-            {
-                // Assume condVal is already in the displayable version
-                _.each(col.dropDownList.values, function(ddv)
-                { if (ddv.id == rowVal) { rowVal = ddv.description; } });
-            }
-
-            if (type.name == 'location')
-            {
-                // human_address in a location column is a JSON string; but we really want to compare
-                // the objects, without any of the blank keys. So munge it
-                var mungeLoc = function(v)
-                {
-                    if (_.isString((v || {}).human_address))
-                    {
-                        v = $.extend({}, v, {human_address: $.deepCompact(JSON.parse(v.human_address))});
-                        _.each(_.keys(v.human_address), function(k)
-                            { v.human_address[k] = v.human_address[k].toLowerCase(); });
-                    }
-                    return v;
-                };
-                condVal = mungeLoc(condVal);
-                rowVal = mungeLoc(rowVal);
-            }
-
-            if (type.name == 'human_address')
-            {
-                // human_address in a location column is a JSON string; but we really want to compare
-                // the objects, without any of the blank keys. So munge it
-                var mungeLoc = function(v)
-                {
-                    if (_.isString(v))
-                    {
-                        v = $.deepCompact(JSON.parse(v));
-                        _.each(_.keys(v), function(k)
-                            { v[k] = (v[k] || '').toLowerCase() || null; });
-                    }
-                    return v;
-                };
-                condVal = mungeLoc(condVal);
-                rowVal = mungeLoc(rowVal);
-            }
-
-            if (_.isNumber(condVal)) { rowVal = parseFloat(rowVal); }
-
-            var getResult = function(v, cv)
-            {
-                if (_.isString(v)) { v = $.trim(v.toLowerCase()); }
-                if (_.isString(cv)) { cv = $.trim(cv.toLowerCase()); }
-
-                switch (c.operator.toLowerCase())
-                {
-                    case 'equals':
-                        return _.isEqual(v, cv);
-                        break;
-                    case 'not_equals':
-                        return !_.isEqual(v, cv);
-                        break;
-                    case 'greater_than':
-                        return v > cv;
-                        break;
-                    case 'greater_than_or_equals':
-                        return v >= cv;
-                        break;
-                    case 'less_than':
-                        return v < cv;
-                        break;
-                    case 'less_than_or_equals':
-                        return v <= cv;
-                        break;
-                    case 'starts_with':
-                        return (v || '').startsWith(cv);
-                        break;
-                    case 'contains':
-                        return (v || '').indexOf(cv) > -1;
-                        break;
-                    case 'not_contains':
-                        return (v || '').indexOf(cv) < 0;
-                        break;
-                    case 'is_blank':
-                        return $.isBlank(v);
-                        break;
-                    case 'is_not_blank':
-                        return !$.isBlank(v);
-                        break;
-                    case 'between':
-                        if (!_.isArray(cv)) { return false; }
-                        return cv[0] <= v && v <= cv[1];
-                        break;
-                }
-                return false;
-            };
-
-            if (_.isArray(rowVal))
-            {
-                return _.any(rowVal, function(v)
-                    { return getResult(v, condVal); });
-            }
-            else if ($.isPlainObject(rowVal))
-            {
-                var func = c.operator.toLowerCase() == 'is_not_blank' ? 'any' : 'all';
-                return _[func](rowVal, function(v, k)
-                    {
-                        var cv = $.isPlainObject(condVal) ? condVal[k] : condVal;
-                        if (!$.isBlank(cv) ||
-                            c.operator.toLowerCase().endsWith('_blank'))
-                        { return getResult(v, cv); }
-                        return true;
-                    });
-            }
-            else { return getResult(rowVal, condVal); }
-        };
-
         var relevantCondition = _.detect(cf, function(c)
-            { return matchesCondition(c.condition); }) || {};
+            { return blist.filter.matchesExpression(c.condition, row, ds); }) || {};
 
         if (relevantCondition.color)
         { row.color = relevantCondition.color; }
@@ -3468,6 +3311,37 @@ function getType(ds)
     { type = 'filter'; }
 
     return type;
+};
+
+function translateQuery(query, ds)
+{
+    if (query.type != 'operator' || !_.isArray(query.children)) { return null; }
+
+    var filterQ = { operator: query.value };
+
+    if (filterQ.operator == 'AND' || filterQ.operator == 'OR')
+    { { filterQ.children = _.map(query.children, function(c) { return translateQuery(c, ds); }); } }
+    else
+    {
+        _.each(query.children, function(c)
+        {
+            if (c.type == 'column')
+            {
+                if (!$.isBlank(c.columnFieldName))
+                { filterQ.columnFieldName = c.columnFieldName; }
+                else if (!$.isBlank(ds))
+                {
+                    var col = ds.columnForID(c.columnId);
+                    if (!$.isBlank(col)) { filterQ.columnFieldName = col.fieldName; }
+                }
+                if (!$.isBlank(c.value)) { filterQ.subColumn = c.value; }
+            }
+            else if (c.type == 'literal')
+            { filterQ.value = c.value; }
+        });
+    }
+
+    return filterQ;
 };
 
 function getDisplayName(ds)

@@ -114,7 +114,7 @@
         initialize: function(name, options) {
             var hosts = _.map(["", "a.", "b.", "c.", "d."], function(subdomain)
             { return "http://" + subdomain + "tile.stamen.com/"
-                + (options.stamenType || 'watercolor') + "/${z}/${x}/${y}.jpg"; });
+                + ((options || {}).stamenType || 'watercolor') + "/${z}/${x}/${y}.jpg"; });
             options = OpenLayers.Util.extend({
                 "numZoomLevels":    16,
                 "buffer":           0,

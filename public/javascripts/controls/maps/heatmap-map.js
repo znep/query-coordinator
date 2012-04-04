@@ -23,10 +23,6 @@
             'fieldsReturned': ["STATE_NAME", "STATE_ABBR"],
             'where': function (mapObj, config)
                 { return "1=1" },
-            'center': esri.geometry.geographicToWebMercator(
-                new esri.geometry.Point(-104.98, 39.74,
-                    new esri.SpatialReference({ wkid: 4326 }))),
-            'zoom': 4,
             'transformFeatures': {
                 'Alaska': { 'scale': 0.6,
                     'offset': { 'x': 1950000, 'y': -4500000 } },
@@ -443,7 +439,7 @@
             { feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName]; }
             if (mapObj._displayFormat.forceBasemap && feature.oldGeometry)
             {
-                feature.geometry = new esri.geometry.Polygon(feature.oldGeometry);
+                feature.geometry = feature.oldGeometry;
                 delete feature.oldGeometry;
             }
 
@@ -482,11 +478,8 @@
             var longVal = datum[viewConfig._locCol.id].longitude;
             if (latVal && longVal)
             {
-                point = new esri.geometry.Point(longVal, latVal,
-                    new esri.SpatialReference({ wkid: 4326 }));
-                if (!mapObj.map.spatialReference ||
-                     mapObj.map.spatialReference.wkid == 102100)
-                { point = esri.geometry.geographicToWebMercator(point); }
+                point = new OpenLayers.Geometry.Point(longVal, latVal).transform(
+                    blist.openLayers.geographicProjection, mapObj.map.getProjectionObject());
             }
             else
             {
@@ -508,8 +501,8 @@
 
         return _.detect(mapObj._featureSet.features, function(feature)
         {
-            if (point instanceof esri.geometry.Point)
-            { return (feature.oldGeometry || feature.geometry).contains(point); }
+            if (point instanceof OpenLayers.Geometry.Point)
+            { return (feature.oldGeometry || feature.geometry).containsPoint(point); }
             else
             {
                 var featureName = feature.attributes['NAME']
@@ -539,28 +532,18 @@
 
             if (!transform) { return; }
 
-            feature.oldGeometry = $.extend(true, {}, feature.geometry);
+            feature.oldGeometry = feature.geometry.clone();
             var geometry = feature.geometry;
-            var rings = geometry.rings;
-            var center = geometry.getExtent().getCenter();
+            var rings = geometry.components;
+            var center = geometry.getBounds().getCenterLonLat();
+            center = new OpenLayers.Geometry.Point(center.lon, center.lat);
 
             for (var r = 0; r < rings.length; r++)
             {
-                var points = rings[r];
-                for (var p = 0; p < points.length; p++)
-                {
-                    if (transform.scale)
-                    {
-                        var point = geometry.getPoint(r, p);
-                        geometry.setPoint(r, p, new esri.geometry.Point(
-                            center.x + (point.x - center.x) * transform.scale,
-                            center.y + (point.y - center.y) * transform.scale,
-                            point.spatialReference));
-                    }
-                    if (transform.offset)
-                    { geometry.setPoint(r, p, geometry.getPoint(r, p)
-                        .offset(transform.offset.x, transform.offset.y)); }
-                }
+                if (transform.scale)
+                { rings[r].resize(transform.scale, center); }
+                if (transform.offset)
+                { rings[r].move(transform.offset.x, transform.offset.y); }
             }
         });
     };
@@ -570,8 +553,11 @@
         mapObj._featureSet.features = _.map(mapObj._featureSet.features,
             function(feature)
             {
-                feature.geometry.spatialReference = { wkid: 102100 };
-                return new esri.Graphic(feature);
+                feature.geometry
+                    = new OpenLayers.Geometry.Polygon(_.map(feature.geometry.rings, function(ring)
+                    { return new OpenLayers.Geometry.LinearRing(_.map(ring, function(point)
+                        { return new OpenLayers.Geometry.Point(point[0], point[1]); })); }));
+                return feature;
             });
     };
 

@@ -6,7 +6,7 @@
 
     blist.namespace.fetch('blist.openLayers');
 
-    var geographicProjection = new OpenLayers.Projection('EPSG:4326');
+    var geographicProjection = blist.openLayers.geographicProjection = new OpenLayers.Projection('EPSG:4326');
     var killAnimation = false;
 
     var animationOff = true;
@@ -1076,15 +1076,7 @@
             {
                 if (newMarker)
                 {
-                    var geo = new OpenLayers.Geometry.Polygon(_.map(geometry.rings, function(ring, r)
-                        { return new OpenLayers.Geometry.LinearRing( _.map(ring, function(point, p)
-                            {
-                                var point = geometry.getPoint(r, p);
-                                return new OpenLayers.Geometry.Point(point.x || point[0],
-                                                                     point.y || point[1]);
-                            }));
-                        }));
-                    marker = new OpenLayers.Feature.Vector(geo.transform(
+                    marker = new OpenLayers.Feature.Vector(geometry.transform(
                         new OpenLayers.Projection('EPSG:900913'), mapObj.map.getProjectionObject()));
                 }
                 marker.style = {

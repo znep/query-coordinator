@@ -1,5 +1,3 @@
-require 'base64'
-
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
@@ -413,6 +411,6 @@ module ApplicationHelper
   end
 
   def safe_json(obj)
-    ('JSON.parse(blist.util.base64.decode("' + Base64.strict_encode64(obj.to_json) + '"))').html_safe
+    ('JSON.parse($.htmlUnescape("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))').html_safe
   end
 end

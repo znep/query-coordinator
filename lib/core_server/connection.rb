@@ -84,7 +84,7 @@ module CoreServer
     def log_info(message, ms)
       if @logger && @logger.debug?
         log_output = 'Core server request: %s (%.1fms)' % [message, ms]
-        @logger.debug(log_output)
+        @logger.info(log_output)
       end
     end
 

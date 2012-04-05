@@ -35,6 +35,18 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
             };
         },
 
+        _shown: function()
+        {
+            this._super();
+            this.$contents.trigger('show');
+        },
+
+        _hidden: function()
+        {
+            this._super();
+            this.$contents.trigger('hide');
+        },
+
         _render: function()
         {
             var lcObj = this;
@@ -52,7 +64,8 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
             lcObj._super.apply(lcObj, arguments);
 
             this._chartType = this._stringSubstitute(this._properties.chartType) || this._chartType;
-            updateProperties(lcObj, properties);
+            if (lcObj._rendered)
+            { updateProperties(lcObj, properties); }
         }
     });
 });

@@ -208,7 +208,7 @@ var Column = ServerModel.extend({
         { this.view = parent; }
     },
 
-    filter: function(value, subColumnType)
+    filter: function(value, subColumnType, operator)
     {
         var col = this;
         if ($.isBlank(value))
@@ -231,7 +231,7 @@ var Column = ServerModel.extend({
         { value = JSON.stringify(value); }
 
         // Update the parent view with the new filter
-        var filterItem = { type: 'operator', value: 'EQUALS', children: [
+        var filterItem = { type: 'operator', value: operator || 'EQUALS', children: [
             colItem, { type: 'literal', value: value } ] };
 
         query.namedFilters = query.namedFilters || {};

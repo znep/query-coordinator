@@ -9,6 +9,7 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
 
         var doUpdate = function()
         {
+            var transformations = $.extend(true, [], properties.transformations);
             parSuper.call(cObj, cObj._stringSubstitute(properties));
 
             var srcCompId = (cObj._properties.parentPrefix || '') +
@@ -39,8 +40,17 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
 
                         if ($.subKeyDefined(cObj, '_destContext.dataset'))
                         {
-                            _.each(cObj._properties.transformations, function(t)
+                            _.each(transformations, function(origT)
                             {
+                                var t = {};
+                                _.each(origT, function(v, k)
+                                {
+                                    // String subst. items to match their data context
+                                    if (k.startsWith('dest'))
+                                    { t[k] = cObj._stringSubstitute(v, cObj._destContext); }
+                                    else
+                                    { t[k] = cObj._stringSubstitute(v); }
+                                });
                                 var colParts = t.destColFilter.split(':');
                                 var dc = cObj._destContext.dataset.columnForIdentifier(colParts[0]);
                                 if ($.isBlank(dc)) { return; }
@@ -57,7 +67,7 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
                                     o[colParts[i]] = v;
                                     v = orig;
                                 }
-                                dc.filter(v, colParts[1]);
+                                dc.filter(v, colParts[1], t.destOperator);
                             });
                         }
                     }, cObj);
@@ -88,7 +98,23 @@ var getValue = function(trans, args)
     {
         var c = args.dataContext.dataset.columnForIdentifier(trans.sourceColumn);
         if (!$.isBlank(c))
-        { v = c.renderType.renderer(args.row[c.lookup], c, true); }
+        {
+            v = args.row[c.lookup];
+            if (!$.isBlank(trans.sourceValue))
+            {
+                var keys = trans.sourceValue.split('.');
+                for (var i = 0; i < keys.length; i++)
+                {
+                    if (_.isString(v))
+                    { v = JSON.parse(v); }
+                    if ($.isBlank(v))
+                    { break; }
+                    v = v[keys[i]];
+                }
+            }
+            else
+            { v = c.renderType.renderer(args.row[c.lookup], c, true); }
+        }
     }
 
     else if (!$.isBlank(trans.sourceKey))

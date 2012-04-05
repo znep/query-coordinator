@@ -84,11 +84,12 @@ $.component.Container.extend('PagedContainer', {
                 }
             });
 
-        if ($.subKeyDefined(cObj, '_currentChild.$dom') && cObj._currentChild.$dom.hasClass('hide'))
+        if (cObj._rendered)
         {
-            cObj._showChild(cObj._currentChild, finalHide);
+            if ($.subKeyDefined(cObj, '_currentChild.$dom') && cObj._currentChild.$dom.hasClass('hide'))
+            { cObj._showChild(cObj._currentChild, finalHide); }
+            else if (_.isFunction(finalHide)) { finalHide(); }
         }
-        else if (_.isFunction(finalHide)) { finalHide(); }
         cObj._super();
     },
 

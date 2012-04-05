@@ -54,12 +54,25 @@ $.component.Component.extend('Map', 'data', {
         return true;
     },
 
+    _shown: function()
+    {
+        this._super();
+        this.$contents.trigger('show');
+    },
+
+    _hidden: function()
+    {
+        this._super();
+        this.$contents.trigger('hide');
+    },
+
     _propWrite: function(properties)
     {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
 
-        updateProperties(lcObj, properties);
+        if (lcObj._rendered)
+        { updateProperties(lcObj, properties); }
     }
 });
 

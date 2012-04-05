@@ -471,6 +471,16 @@
             }
         },
 
+        _shown: function()
+        {
+            // Called when component is shown after being hidden
+        },
+
+        _hidden: function()
+        {
+            // Called when component is hidden after being shown
+        },
+
         /**
          * Lifecycle management -- called when a component is added to a container or its position has moved within
          * its container.
@@ -547,13 +557,13 @@
                 if (!cObj._properties.hidden && cObj.$dom.hasClass('hide'))
                 {
                     cObj.$dom.removeClass('hide');
-                    cObj.$contents.trigger('show');
+                    cObj._shown();
                     if (cObj._needsRender) { cObj._render(); }
                 }
                 else if (cObj._properties.hidden && !cObj.$dom.hasClass('hide'))
                 {
                     cObj.$dom.addClass('hide');
-                    cObj.$contents.trigger('hide');
+                    cObj._hidden();
                 }
             }
 
@@ -582,20 +592,33 @@
                     result = $.deepGetStringField(dc, name);
                     return result !== undefined;
                 });
-                if (result !== undefined)
-                    return result;
-                return parentResolver(name);
+                return result;
             };
             var entity = cObj._properties.entity;
             if (entity)
+            {
                 return function(name) {
-                    var result = $.deepGetStringField(entity, name);
+                    var result;
+                    if (!_.isEmpty(cObj._dataContext)) { result = dcResolver(name); }
                     if (result !== undefined)
                         return result;
-                    if (!_.isEmpty(cObj._dataContext)) { return dcResolver(name); }
+                    result = $.deepGetStringField(entity, name);
+                    if (result !== undefined)
+                        return result;
                     return parentResolver(name);
                 };
-            if (!_.isEmpty(cObj._dataContext)) { return dcResolver; }
+            }
+
+            if (!_.isEmpty(cObj._dataContext))
+            {
+                return function(name)
+                {
+                    var result = dcResolver(name);
+                    if (result !== undefined)
+                        return result;
+                    return parentResolver(name);
+                };
+            }
             return parentResolver;
         },
 

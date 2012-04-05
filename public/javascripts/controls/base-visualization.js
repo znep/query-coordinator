@@ -333,7 +333,7 @@
         reload: function(newDF)
         {
             var vizObj = this;
-            vizObj._savedDF = newDF;
+            if (!$.isBlank(newDF)) { vizObj._savedDF = newDF; }
 
             if (vizObj._hidden)
             {

@@ -283,6 +283,18 @@
             return children;
         },
 
+        _shown: function()
+        {
+            this._super();
+            this.each(function(child) { child._shown(); });
+        },
+
+        _hidden: function()
+        {
+            this._super();
+            this.each(function(child) { child._hidden(); });
+        },
+
         // Override Component._propWrite to update children (currently brute replace)
         _propWrite: function(properties) {
             this._super(properties);

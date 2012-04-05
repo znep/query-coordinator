@@ -975,12 +975,14 @@
                         });
                     }
 
-                    if (metadata.multiSelect !== false && metadata.selectAll &&
-                        _.isEmpty(condition.children))
+                    if (metadata.multiSelect !== false && _.isEmpty(condition.children) &&
+                        (metadata.selectAll || metadata.selectTop))
                     {
+                        var $lines = $filter.find('.filterLineToggle');
+                        var c = metadata.selectTop || $lines.length;
                         _.defer(function()
                         {
-                            $.uniform.update($filter.find('.filterLineToggle').value(true));
+                            $.uniform.update($filter.find('.filterLineToggle').slice(0, c).value(true));
                             parseFilters();
                         });
                     }

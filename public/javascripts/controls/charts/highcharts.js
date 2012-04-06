@@ -1181,7 +1181,8 @@
             typeConfig.size = (sizeRatio * 20 + 30) + '%';
             var labelLength = sizeRatio * 5 + w / 50;
             typeConfig.dataLabels = {formatter: function()
-                { return clipFormatter.apply(this, [false, this.point.name, labelLength]); },
+                { return clipFormatter.apply(this,
+                    [false, this.point.name + this.point.nameSuffix, labelLength]); },
                     distance: sizeRatio * 7};
         }
 
@@ -1453,7 +1454,7 @@
 
         else if (isPieTypeChart)
         {
-            point.name = point.name || point.x;
+            point.nameSuffix = '';
             if (chartObj._displayFormat.showPercentages)
             {
                 var percentage = (value/chartObj._seriesSums[series.groupId][series.yColumn.data.id])*100;
@@ -1461,7 +1462,15 @@
                 { percentage = '<1'; }
                 else
                 { percentage = Math.floor(percentage); }
-                point.name += ' ('+ percentage +'%)';
+                point.nameSuffix += ' ('+ percentage +'%)';
+            }
+            if (chartObj._displayFormat.showActualValues)
+            {
+                if ($.subKeyDefined(series, 'yColumn.data.renderType.renderer'))
+                { point.nameSuffix += ' ('+ series.yColumn.data.renderType.renderer(
+                    value, series.yColumn.data, true, false, true) +')'; }
+                else
+                { point.nameSuffix += ' ('+ value +')'; }
             }
         }
 

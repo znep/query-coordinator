@@ -128,6 +128,7 @@
     // var domainMarker = _marker.curry('domain');
 
     var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: 'Show %s' };
+    var showActualValues = { type: 'checkbox', name: 'displayFormat.showActualValues', text: 'Show values' };
 
     var errorBars = function(chart, options)
     {
@@ -437,7 +438,7 @@
                 result.push(
                     configDonut(options),
                     basicAdv(chart, options,
-                        [legendPos, pieJoinAngle, flyoutControls(options), showPercentages]));
+                        [legendPos, pieJoinAngle, flyoutControls(options), showPercentages, showActualValues]));
                 break;
 
 
@@ -462,7 +463,7 @@
                 result.push(
                     configPie(options),
                     basicAdv(chart, options,
-                        [legendPos, pieJoinAngle, flyoutControls(options), showPercentages]));
+                        [legendPos, pieJoinAngle, flyoutControls(options), showPercentages, showActualValues]));
                 break;
 
 

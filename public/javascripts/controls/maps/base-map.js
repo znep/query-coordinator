@@ -1503,7 +1503,34 @@
         resizeHandle: function(event)
         {
             // Implement if you need to do anything on resize
-            this._isResize = true;
+            var mapObj = this;
+
+            mapObj._isResize = true;
+            _.defer(function(){
+                mapObj.map.updateSize();
+
+                // Bug #6327. This breaks things for Mac/FF at the very least, so we're testing
+                // for user agent. May need to persist this into Chrome 19.
+                if (navigator.userAgent.indexOf('Chrome/18') > -1)
+                {
+                    var fixOffsetLeft = function(layer)
+                    {
+                        if (!(layer && layer instanceof OpenLayers.Layer.Vector)) { return; }
+                        var $root = $(layer.renderer.root);
+                        var $svg = $root.parent();
+                        var $div = $svg.parent();
+                        if ($svg.offset().left > $div.offset().left)
+                        {
+                            var offset = $svg.offset();
+                            offset.left -= $div.offset().left / 2;
+                            $svg.offset(offset);
+                        }
+                    };
+
+                    fixOffsetLeft(mapObj._byView[mapObj._primaryView.id]._displayLayer);
+                    fixOffsetLeft(mapObj._byView[mapObj._primaryView.id]._clusterBoundaries);
+                }
+            });
         },
 
         getColumns: function()

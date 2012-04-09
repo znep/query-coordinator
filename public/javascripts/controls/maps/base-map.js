@@ -1520,7 +1520,10 @@
                         if ($svg.offset().left > $div.offset().left)
                         {
                             var offset = $svg.offset();
-                            offset.left -= $div.offset().left / 2;
+                            if (blist.sidebarPosition == 'left')
+                            { offset.left -= $div.offset().left / 2; }
+                            else
+                            { offset.left = 0; }
                             $svg.offset(offset);
                         }
                     };

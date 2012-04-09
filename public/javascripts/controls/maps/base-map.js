@@ -694,7 +694,8 @@
             var viewConfig = mapObj._byView[view.id];
 
             // For when animations are turned off.
-            if (!viewConfig._animation)
+            if (!viewConfig._animation
+                && viewConfig._displayLayer instanceof OpenLayers.Layer.Vector)
             { viewConfig._displayLayer.removeAllFeatures(); }
 
             _.each(clusters, function(cluster)

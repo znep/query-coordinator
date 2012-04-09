@@ -1885,7 +1885,7 @@
     var setCategories = function(chartObj)
     {
         chartObj.chart.xAxis[0].options.labels.step = calculateXAxisStepSize(chartObj,
-            (chartObj._xCategories || []).length || chartObj._primaryView.totalRows);
+            (chartObj._xCategories || []).length || chartObj._primaryView.totalRows());
         if (!_.isEqual(chartObj.chart.xAxis[0].categories, chartObj._xCategories))
         { chartObj.chart.xAxis[0].setCategories(chartObj._xCategories); }
         chartObj._categoriesLoaded = true;

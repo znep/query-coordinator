@@ -1754,7 +1754,7 @@
                 function(data)
             {
                 if (_.isUndefined(viewConfig._neverCluster))
-                { viewConfig._neverCluster = view.totalRows < mapObj._maxRows; }
+                { viewConfig._neverCluster = view.totalRows() < mapObj._maxRows; }
                 if (viewConfig._neverCluster)
                 {
                     viewConfig._renderType = 'points';

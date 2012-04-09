@@ -52,13 +52,12 @@ var Dataset = ServerModel.extend({
         this.minorChange = true;
         this.valid = this._checkValidity();
 
+        // We need an active row set to start
+        this._savedRowSet = new RowSet(this, this.cleanFilters());
+        this._activateRowSet(this._savedRowSet);
+
         this._pendingRowEdits = {};
         this._pendingRowDeletes = {};
-
-        this._rows = {};
-        this._rowIDLookup = {};
-        this._rowsLoading = {};
-        this._pendingRowReqs = [];
 
         this._aggregatesStale = true;
 
@@ -91,35 +90,21 @@ var Dataset = ServerModel.extend({
 
     rowForID: function(id)
     {
-        return this._rowIDLookup[parseInt(id) || id];
+        return this._activeRowSet.rowForID(id);
     },
 
     rowForIndex: function(index)
     {
-        return this._rows[index];
+        return this._activeRowSet.rowForIndex(index);
     },
 
     rowIndex: function(id, successCallback)
     {
-        var ds = this;
-        if (!$.isBlank(ds.rowForID(id)))
-        { successCallback(ds.rowForID(id).index); }
-        else
-        {
-            var gotID = function(data) { successCallback(data[id]); };
-            ds.makeRequest({inline: true,
-                params: {method: 'getByIds', indexesOnly: true, ids: id},
-                success: gotID});
-        }
+        this._activeRowSet.rowIndex(id, successCallback);
     },
 
-    _childRowForID: function(id, parRow, parCol)
-    {
-        // Someday an actual lookup for child rows might be good; but these
-        // should be rare and small, so don't bother yet
-        var cell = parRow[parCol.lookup];
-        return _.detect(cell || {}, function(sr) { return sr.id == id; });
-    },
+    totalRows: function()
+    { return this._activeRowSet.totalRows(); },
 
     isDefault: function() { return _.include(this.flags || [], 'default'); },
 
@@ -231,8 +216,8 @@ var Dataset = ServerModel.extend({
             _.pluck(ds.visibleColumns, 'id');
         var dsSaved = function(newDS)
         {
+            ds._savedRowSet = ds._activeRowSet;
             ds._update(newDS, true, false, true);
-            ds._clearTemporary();
             if (!$.isBlank(vizIds) &&
                 !_.isEqual(vizIds, _.pluck(ds.visibleColumns, 'id')))
             { ds.setVisibleColumns(vizIds); }
@@ -290,7 +275,7 @@ var Dataset = ServerModel.extend({
         { this._markTemporary(minorUpdate); }
     },
 
-    reload: function(successCallback, errorCallback)
+    reload: function(reloadData, successCallback, errorCallback)
     {
         var ds = this;
         if (ds.isBlobby())
@@ -299,11 +284,9 @@ var Dataset = ServerModel.extend({
             return;
         }
         ds._aggregatesStale = true;
-        ds._loadRows(0, 1, function()
-            {
-                ds._invalidateRows();
-                if (_.isFunction(successCallback)) { successCallback(); }
-            }, errorCallback, true, true);
+        ds._activateRowSet(ds._savedRowSet);
+        if (reloadData) { ds._invalidateAll(); }
+        ds._activeRowSet.reload(successCallback, errorCallback);
     },
 
     showRenderType: function(rt)
@@ -455,10 +438,7 @@ var Dataset = ServerModel.extend({
 
     getTotalRows: function(successCallback, errorCallback)
     {
-        if ($.isBlank(this.totalRows))
-        { this.getRows(0, 1, successCallback, errorCallback); }
-        else if (_.isFunction(successCallback))
-        { successCallback(); }
+        this._activeRowSet.getTotalRows(successCallback, errorCallback);
     },
 
 /*
@@ -606,206 +586,12 @@ var Dataset = ServerModel.extend({
     // Callback may be called multiple times with smaller batches of rows
     getRows: function(start, len, successCallback, errorCallback)
     {
-        var ds = this;
-
-        var pageSize = 100;
-        var reqs = [];
-        var curReq;
-        var pendReq;
-        var finish = start + len - 1;
-        var loaded = [];
-        var pendingRemoved = [];
-        var now = new Date().getTime();
-
-        var doLoaded = function()
-        {
-            if (loaded.length > 0 || ds.totalRows == 0)
-            {
-                successCallback(loaded);
-                loaded = [];
-            }
-        };
-
-        while (start <= finish &&
-            ($.isBlank(ds.totalRows) || start < ds.totalRows))
-        {
-            var r = ds._rows[start];
-            // If this is an expired pending row, clean it out and mark
-            // it null so it gets reloaded
-            if (!$.isBlank(r) && r.pending && now > r.expires)
-            {
-                delete ds._rows[r.index];
-                delete ds._rowIDLookup[r.id];
-                pendingRemoved.push(r);
-                r = null;
-            }
-
-            if ($.isBlank(r))
-            {
-                doLoaded();
-                if (ds._rowsLoading[start])
-                {
-                    if (!$.isBlank(curReq))
-                    {
-                        reqs.push(curReq);
-                        curReq = null;
-                    }
-
-                    if ($.isBlank(pendReq))
-                    {
-                        pendReq = {start: start, length: 1,
-                            successCallback: successCallback, errorCallback: errorCallback};
-                    }
-                    else
-                    { pendReq.length++; }
-                }
-                else
-                {
-                    if (!$.isBlank(pendReq))
-                    {
-                        ds._pendingRowReqs.push(pendReq);
-                        pendReq = null;
-                    }
-
-                    if ($.isBlank(curReq))
-                    { curReq = {start: start, finish: start}; }
-                    else
-                    {
-                        if (start - curReq.start + 1 > pageSize)
-                        {
-                            reqs.push(curReq);
-                            curReq = {start: start};
-                        }
-                        else { curReq.finish = start; }
-                    }
-                }
-            }
-            else
-            {
-                if (!$.isBlank(curReq))
-                {
-                    reqs.push(curReq);
-                    curReq = null;
-                }
-                if (!$.isBlank(pendReq))
-                {
-                    ds._pendingRowReqs.push(pendReq);
-                    pendReq = null;
-                }
-                loaded.push(r);
-            }
-            start++;
-        }
-
-        doLoaded();
-
-        if (pendingRemoved.length > 0)
-        { ds.trigger('row_change', [pendingRemoved, true]); }
-
-        if (!$.isBlank(curReq))
-        {
-            if (_.isUndefined(curReq.finish))
-            {
-                curReq.finish = curReq.start;
-            }
-            reqs.push(curReq);
-            curReq = null;
-        }
-        if (!$.isBlank(pendReq))
-        {
-            ds._pendingRowReqs.push(pendReq);
-            pendReq = null;
-        }
-
-        if (reqs.length > 0)
-        {
-            var loadAllRows = function()
-            {
-                // If we got here, and totalRows is still blank, bail, because something
-                // has changed in the meantime and this load is just invalid
-                if ($.isBlank(ds.totalRows))
-                {
-                    if (_.isFunction(errorCallback)) { errorCallback({cancelled: true}); }
-                    return;
-                }
-                _.each(reqs, function(req)
-                {
-                    if (req.start >= ds.totalRows) { return; }
-                    if (req.finish >= ds.totalRows)
-                    { req.finish = ds.totalRows - 1; }
-                    ds._loadRows(req.start, req.finish - req.start + 1, successCallback, errorCallback);
-                });
-            };
-
-            if ($.isBlank(ds.totalRows))
-            {
-                // Need to make init req to get all the meta
-                var initReq = reqs.shift();
-                ds._loadRows(initReq.start, initReq.finish - initReq.start + 1,
-                    function(rows)
-                    {
-                        if (_.isFunction(successCallback)) { successCallback(rows); }
-                        loadAllRows();
-                    }, errorCallback, true);
-            }
-            else
-            {
-                // Just request rows
-                loadAllRows();
-            }
-        }
+        this._activeRowSet.getRows(start, len, successCallback, errorCallback);
     },
 
     getRowsByIds: function(ids, successCallback, errorCallback)
     {
-        var ds = this;
-
-        var pageSize = 100;
-        var loaded = [];
-        var reqs = [];
-
-        var doLoaded = function()
-        {
-            if (loaded.length > 0)
-            {
-                if (_.isFunction(successCallback))
-                { successCallback(loaded); }
-                loaded = [];
-            }
-        }
-
-        ids = _.reject(ids || [], function(id)
-        {
-            var r = ds._rowIDLookup[id];
-            if (r)
-            { return loaded.push(r); }
-        });
-
-        doLoaded();
-
-        for (var i = 0; i < ids.length; i += 100)
-        { reqs.push({ ids: ids.slice(i, i + 100) }); }
-
-        if (reqs.length > 0)
-        {
-            var loadAllRows = function()
-            {
-                _.each(reqs, function(req)
-                { ds._loadRowsByIds(req.ids, successCallback, errorCallback); });
-            };
-
-            if ($.isBlank(ds.totalRows))
-            {
-                var initReq = reqs.shift();
-                ds._loadRowsByIds(initReq.ids, function(rows)
-                {
-                    if (_.isFunction(successCallback)) { successCallback(rows); }
-                    loadAllRows();
-                }, errorCallback, true);
-            }
-            else
-            { loadAllRows(); }
-        }
+        this._activeRowSet.getRows(ids, null, successCallback, errorCallback);
     },
 
     // Assume it goes at the end
@@ -828,13 +614,12 @@ var Dataset = ServerModel.extend({
         newRow.id = 'saving' + _.uniqueId();
         delete newRow.uuid;
 
+        _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
+            function(c) { newRow.changed[c.lookup] = true; });
+
         if ($.isBlank(parRow))
         {
-            newRow.index = data.index || ds.totalRows;
-            $.addItemsToObject(ds._rows, newRow, newRow.index);
-            ds._rowIDLookup[newRow.id] = newRow;
-            ds.totalRows++;
-            ds.trigger('row_count_change');
+            ds._addRow(newRow, data.index);
         }
         else
         {
@@ -842,12 +627,9 @@ var Dataset = ServerModel.extend({
             if (!$.isBlank(data.index))
             { parRow[parCol.lookup].splice(data.index, 0, newRow); }
             else { parRow[parCol.lookup].push(newRow); }
+            ds._updateRow(parRow);
             ds.trigger('row_change', [[parRow], true]);
         }
-
-
-        _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
-            function(c) { newRow.changed[c.lookup] = true; });
 
         var key = newRow.id;
         if (!$.isBlank(parRow)) { key += ':' + parRow.id +  ':' + parCol.id; }
@@ -870,6 +652,7 @@ var Dataset = ServerModel.extend({
         return newRow.id;
     },
 
+
     setRowValue: function(value, rowId, columnId, isInvalid, parRowId, parColId)
     {
         var parCol;
@@ -888,7 +671,7 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(parRowId))
         {
             var parRow = this.rowForID(parRowId);
-            row = this._childRowForID(rowId, parRow, parCol);
+            row = this._activeRowSet.childRowForID(rowId, parRow, parCol);
         }
         else
         { row = this.rowForID(rowId); }
@@ -903,7 +686,7 @@ var Dataset = ServerModel.extend({
 
         row.invalid[col.lookup] = isInvalid || false;
 
-        this._setRowFormatting(row);
+        this._activeRowSet.updateRow(row);
 
         this.trigger('row_change', [[parRow || row]]);
     },
@@ -919,7 +702,7 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(parRowId))
         {
             parRow = this.rowForID(parRowId);
-            row = this._childRowForID(rowId, parRow, parCol);
+            row = this._activeRowSet.childRowForID(rowId, parRow, parCol);
         }
         else
         { row = this.rowForID(rowId); }
@@ -967,9 +750,7 @@ var Dataset = ServerModel.extend({
                 var r = ds.rowForID(rId);
                 if ($.isBlank(r)) { return; }
                 uuid = r.uuid;
-                $.removeItemsFromObject(ds._rows, r.index, 1);
-                delete ds._rowIDLookup[rId];
-                ds.totalRows--;
+                ds._removeRow(r);
             }
             else
             {
@@ -983,6 +764,7 @@ var Dataset = ServerModel.extend({
                         }
                         return false;
                     });
+                ds._updateRow(parRow);
             }
 
             var key = rId;
@@ -1007,10 +789,7 @@ var Dataset = ServerModel.extend({
 
     markRow: function(markType, value, row)
     {
-        if ($.isBlank(row) || (row.sessionMeta || {})[markType] == value) { return; }
-
-        row.sessionMeta = row.sessionMeta || {};
-        row.sessionMeta[markType] = value;
+        _.each(this._availableRowSets, function(rs) { rs.markRow(markType, value, row); });
     },
 
     highlightRows: function(rows, type, column)
@@ -1264,6 +1043,7 @@ var Dataset = ServerModel.extend({
                         {
                             r.annotations = r.annotations || {};
                             r.annotations[c.lookup] = 'comments';
+                            ds._updateRow(r);
                             rowChanges[item.rowid] = r;
                         }
                     });
@@ -1297,6 +1077,7 @@ var Dataset = ServerModel.extend({
                 {
                     r.annotations = r.annotations || {};
                     r.annotations[c.lookup] = 'comments';
+                    ds._updateRow(r);
                     ds.trigger('row_change', [[r]]);
                 }
             }
@@ -1989,6 +1770,36 @@ var Dataset = ServerModel.extend({
         ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
     },
 
+    _activateRowSet: function(newRS)
+    {
+        var ds = this;
+        if (newRS == ds._activeRowSet) { return; }
+
+        if (!$.isBlank(ds._activeRowSet))
+        {
+            ds._activeRowSet.deactivate();
+            _.each(['row_change', 'row_count_change', 'metadata_update'], function(evName)
+                    { ds._activeRowSet.unbind(evName, null, ds); });
+        }
+
+        ds._activeRowSet = newRS;
+        ds._availableRowSets = ds._availableRowSets || {};
+        var k = ds._activeRowSet.getKey();
+        if (ds._availableRowSets[k] != ds._activeRowSet)
+        { ds._availableRowSets[k] = ds._activeRowSet; }
+
+        if (!$.isBlank(ds._activeRowSet))
+        {
+            _.each(['row_change', 'row_count_change'], function(evName)
+            {
+                ds._activeRowSet.bind(evName, function() { ds.trigger(evName, arguments); }, ds);
+            });
+            ds._activeRowSet.bind('metadata_update', function()
+                    { ds._update.apply(ds, arguments); });
+            ds._activeRowSet.activate();
+        }
+    },
+
     _getChildView: function(uid, callback, isBatch)
     {
         if (!this.childViews)
@@ -2137,22 +1948,34 @@ var Dataset = ServerModel.extend({
         if (needQueryChange || (oldSearch != ds.searchString) ||
                 !_.isEqual(oldQuery, ds.query))
         {
-            if (needQueryChange || oldSearch != ds.searchString ||
-                !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
-                !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters) ||
-                !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
-            { delete ds.totalRows; }
             ds._aggregatesStale = true;
-            // Clear out the rows, since the data is different now
-            ds._invalidateRows();
+            var filterChanged = needQueryChange ||
+                !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
+                !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters);
+            var nonFilterChanged = oldSearch != ds.searchString ||
+                !_.isEqual(oldQuery.groupBys, ds.query.groupBys);
+            if (filterChanged && !nonFilterChanged)
+            {
+                var newQ = ds.cleanFilters();
+                var newKey = RowSet.getQueryKey(Dataset.translateQuery(newQ, ds));
+                if (!$.isBlank(ds._availableRowSets[newKey]))
+                { ds._activateRowSet(ds._availableRowSets[newKey]); }
+                else
+                { ds._activateRowSet(new RowSet(ds, newQ)); }
+            }
+            else
+            {
+                // Clear out the rows, since the data is different now
+                ds._invalidateAll(filterChanged || nonFilterChanged);
+            }
             ds.trigger('query_change');
         }
         else if (!_.isEqual(oldCondFmt, ds.metadata.conditionalFormatting))
         {
             // If we aren't invalidating all the rows, but conditional formatting
             // changed, then redo all the colors and re-render
-            _.each(ds._rows, function(r) { ds._setRowFormatting(r); });
-            ds.trigger('row_change', [_.values(ds._rows)]);
+            _.each(ds._availableRowSets, function(rs) { rs.formattingChanged(); });
+            ds.trigger('row_change', [_.values(ds._activeRowSet._rows)]);
         }
 
         if (needsDTChange)
@@ -2162,7 +1985,10 @@ var Dataset = ServerModel.extend({
         { ds.trigger('displayformat_change'); }
 
         if (masterUpdate)
-        { ds._origObj = ds.cleanCopy(); }
+        {
+            ds._clearTemporary();
+            ds._origObj = ds.cleanCopy();
+        }
         else if (_.isEqual(ds._origObj, ds.cleanCopy()))
         { ds._clearTemporary(); }
 
@@ -2250,8 +2076,7 @@ var Dataset = ServerModel.extend({
 
         if (!_.isEqual(oldGroupAggs, newGroupAggs))
         {
-            ds._columnsInvalid = true;
-            ds._invalidateRows();
+            ds._invalidateAll(false, true);
         }
     },
 
@@ -2285,392 +2110,19 @@ var Dataset = ServerModel.extend({
         this._super(req);
     },
 
-    _invalidateRows: function()
-    {
-        var invRows = _.values(this._rows);
-        this._rows = {};
-        this._rowsLoading = {};
-        var pending = this._pendingRowReqs;
-        this._pendingRowReqs = [];
-        // Tell pending requests they are being cancelled
-        _.each(pending, function(p)
-            { if (_.isFunction(p.errorCallback)) { p.errorCallback({cancelled: true}); } });
-        delete this._curMetaReq;
-        delete this._curMetaReqMeta;
-        this._rowIDLookup = {};
-        _.each(this.columns || [], function(c) { c.invalidateData(); });
-        this.trigger('row_change', [invRows, true]);
-    },
-
-    _loadRows: function(start, len, successCallback, errorCallback, includeMeta, fullLoad)
+    _updateLinkedColumns: function(keyCol, row, newRow)
     {
         var ds = this;
-        var params = {method: 'getByIds', start: start, 'length': len, asHashes: true};
-
-        var reqData = ds.cleanCopy();
-
-        if ((includeMeta || $.isBlank(ds.totalRows) || ds._columnsInvalid) &&
-            !_.isEqual(reqData, ds._curMetaReqMeta))
-        { params.meta = true; }
-
-        var reqId = _.uniqueId();
-        var rowsLoaded = function(result)
+        if (keyCol.dataTypeName == "dataset_link")
         {
-            // Mark all rows as not in-process
-            for (var i = 0; i < len; i++)
-            { delete ds._rowsLoading[i + start]; }
-
-            var oldCount = ds.totalRows;
-            if (!$.isBlank(result.meta))
+            for (var n = ds.columns.length - 1; n >= 0; n--)
             {
-                // If another meta request started while this was loading, then
-                // skip this one, and only use the latest
-                if (ds._curMetaReq != reqId)
-                {
-                    if (_.isFunction(errorCallback))
-                    { _.defer(function() { errorCallback({cancelled: true}); }); }
-                    return;
-                }
-                delete ds._curMetaReq;
-                delete ds._curMetaReqMeta;
-                ds.totalRows = result.meta.totalRows;
-                delete ds._columnsInvalid;
-                if (!fullLoad)
-                {
-                    result.meta.view.query.filterCondition =
-                        ds.query.filterCondition;
-                    if (!$.isBlank(ds.query.namedFilters))
-                    {
-                        result.meta.view.query.namedFilters =
-                            ds.query.namedFilters;
-                    }
-                }
-                ds._update(result.meta.view, true, true, fullLoad);
+                var col = ds.columns[n];
+                if (!col.isLinked()) continue;
+                var uname = col.underscoreName(ds);
+                row[col.id] = newRow[uname];
             }
-            // If we loaded without meta but don't have meta available, bail
-            else if ($.isBlank(ds.totalRows))
-            {
-                if (_.isFunction(errorCallback))
-                { _.defer(function() { errorCallback({cancelled: true}); }); }
-                return;
-            }
-
-            if (fullLoad) { ds._clearTemporary(); }
-
-            var rows;
-            // If this result is marked pending, then we got no data, and we need
-            // placeholder rows
-            if (result.pending)
-            {
-                rows = [];
-                var oldRows = [];
-                // Make them expire after a short time, which will force a reload
-                // the next time something wants to render them
-                var expires = new Date().getTime() + 30000;
-                for (var i = 0; i < len; i++)
-                {
-                    var newRow = {invalid: {}, error: {}, changed: {},
-                        index: i + start, pending: true, expires: expires,
-                        id: 'pending_' + _.uniqueId()};
-
-                    // If an existing row, clean it out
-                    if (!$.isBlank(ds._rows[newRow.index]))
-                    {
-                        var oldRow = ds._rows[newRow.index];
-                        oldRows.push(oldRow);
-                        delete ds._rowIDLookup[oldRow.id];
-                    }
-
-                    ds._rows[newRow.index] = newRow;
-                    ds._rowIDLookup[newRow.id] = newRow;
-                    rows.push(newRow);
-                }
-                if (oldRows.length > 0)
-                { ds.trigger('row_change', [oldRows, true]); }
-            }
-            // Normal load
-            else
-            { rows = ds._addRows(result.data || result, start); }
-
-            if (oldCount !== ds.totalRows)
-            { ds.trigger('row_count_change'); }
-
-            if (_.isFunction(successCallback)) { successCallback(rows); }
-
-            var pending = ds._pendingRowReqs;
-            ds._pendingRowReqs = [];
-            _.each(pending, function(p)
-            { ds.getRows(p.start, p.length, p.successCallback, p.errorCallback); });
-        };
-
-        // Keep track of rows that are being loaded
-        for (var i = 0; i < len; i++)
-        { ds._rowsLoading[i + start] = true; }
-
-        var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
-        if (fullLoad)
-        { req.url = '/views/' + ds.id + '/rows.json'; }
-        if (params.meta)
-        {
-            ds._curMetaReq = reqId;
-            ds._curMetaReqMeta = reqData;
         }
-        ds.makeRequest(req);
-    },
-
-    _loadRowsByIds: function(ids, successCallback, errorCallback, includeMeta)
-    {
-        var ds = this;
-        var params = {method: 'getByIds', ids: ids, asHashes: true};
-
-        var reqData = ds.cleanCopy();
-        if ((includeMeta || $.isBlank(ds.totalRows) || ds._columnsInvalid) &&
-            !_.isEqual(reqData, ds._curMetaReqMeta))
-        { params.meta = true; }
-
-        var reqId = _.uniqueId();
-        var rowsLoaded = function(result)
-        {
-            var oldCount = ds.totalRows;
-            if (!$.isBlank(result.meta))
-            {
-                // If another meta request started while this was loading, then
-                // skip this one, and only use the latest
-                if (ds._curMetaReq != reqId)
-                {
-                    if (_.isFunction(errorCallback)) { _.defer(errorCallback); }
-                    return;
-                }
-                delete ds._curMetaReq;
-                delete ds._curMetaReqMeta;
-                ds.totalRows = result.meta.totalRows;
-                delete ds._columnsInvalid;
-                result.meta.view.query.filterCondition =
-                    ds.query.filterCondition;
-                if (!$.isBlank(ds.query.namedFilters))
-                {
-                    result.meta.view.query.namedFilters =
-                        ds.query.namedFilters;
-                }
-                ds._update(result.meta.view, true, true);
-            }
-            var rows = ds._addRows(result.data || result);
-
-            if (oldCount !== ds.totalRows)
-            { ds.trigger('row_count_change'); }
-
-            if (_.isFunction(successCallback)) { successCallback(rows); }
-        };
-
-        var req = {success: rowsLoaded, params: params, inline: true, type: 'POST'};
-        if (params.meta)
-        {
-            ds._curMetaReq = reqId;
-            ds._curMetaReqMeta = reqData;
-        }
-        ds.makeRequest(req);
-    },
-
-    _addRows: function(newRows, start)
-    {
-        var ds = this;
-        var translateRow = function(r, parCol)
-        {
-            var adjVals = {invalid: {}, changed: {}, error: {}, sessionMeta: {}};
-            if (!$.isBlank(_.detect(r, function(val, id)
-            {
-                var newVal;
-                // A few columns don't have original lookups
-                var lId = {sid: 'id', 'id': 'uuid'}[id] || id;
-                var c = $.isBlank(parCol) ? ds.columnForID(lId) : parCol.childColumnForID(lId);
-
-                if ($.isBlank(c)) { return true; }
-
-                if (c.isMeta && c.name == 'meta')
-                { newVal = JSON.parse(val || 'null'); }
-
-                if ($.isPlainObject(val))
-                {
-                    // First, convert an empty array into a null
-                    // Booleans in the array don't count because location type
-                    // has a flag that may be set even if there is no data.  If
-                    // some type actually cares about only having a boolean,
-                    // this will need to be made more specific
-                    if (_.all(val, function(v)
-                        { return $.isBlank(v) || _.isBoolean(v); }))
-                    { newVal = null; }
-                }
-
-                if (c.renderTypeName == 'checkbox' && val === false ||
-                        c.renderTypeName == 'stars' && val === 0)
-                { newVal = null; }
-
-                if (c.renderTypeName == 'geospatial' && r.sid)
-                { newVal = $.extend({}, val, {row_id: r.sid}); }
-
-                if (c.dataTypeName == 'nested_table' && _.isArray(val))
-                {
-                    if (!$.isBlank(_.detect(val, function(cr) { return !translateRow(cr, c); })))
-                    { return true; }
-                }
-
-                // A few columns have different ids we use than the core server gives us
-                if (id != c.lookup) { newVal = newVal || val; }
-
-                if (!_.isUndefined(newVal))
-                { adjVals[c.lookup] = newVal; }
-
-                return false;
-            }))) { return false; }
-
-            $.extend(r, adjVals);
-
-            _.each((r.meta || {}).invalidCells || {}, function(v, tcId)
-            {
-                if (!$.isBlank(v))
-                {
-                    var c = !$.isBlank(parCol) ? parCol.childColumnForTCID(tcId) :
-                        ds.columnForTCID(tcId);
-                    if (!$.isBlank(c) && $.isBlank(r[c.lookup]))
-                    {
-                        r.invalid[c.id] = true;
-                        r[c.lookup] = v;
-                    }
-                }
-            });
-            delete (r.meta || {}).invalidCells;
-
-            _.each((ds._commentLocations || {})[r.id] || {}, function(v, tcId)
-            {
-                var c = ds.columnForTCID(tcId);
-                if (!$.isBlank(c))
-                {
-                    r.annotations = r.annotations || {};
-                    r.annotations[c.lookup] =  'comments';
-                }
-            });
-
-            ds._setRowFormatting(r);
-
-            if ($.subKeyDefined(ds, 'highlights.' + r.id))
-            { ds.markRow('highlight', true, r); }
-
-            return true;
-        };
-
-        var adjRows = [];
-        var oldRows = [];
-        var hasIndex = !$.isBlank(start);
-        _.each(newRows, function(r, i)
-        {
-            var success = translateRow(r);
-            var ind;
-            if (hasIndex)
-            { ind = start + i; }
-
-            // If a row already exists at this index, clean it out
-            if (hasIndex)
-            {
-                if (!$.isBlank(ds._rows[ind]) && (!success || r.id != ds._rows[ind].id))
-                {
-                    var oldRow = ds._rows[ind];
-                    oldRows.push(oldRow);
-                    delete ds._rows[ind];
-                    delete ds._rowIDLookup[oldRow.id];
-                }
-            }
-            else
-            {
-                var oldRow = ds._rowIDLookup[r.id];
-                if (!$.isBlank(oldRow))
-                {
-                    oldRows.push(oldRow);
-                    delete ds._rowIDLookup[oldRow.id];
-                }
-            }
-
-            if (!success) { return; }
-
-            if (hasIndex)
-            {
-                r.index = ind;
-                ds._rows[r.index] = r;
-            }
-            ds._rowIDLookup[r.id] = r;
-            adjRows.push(r);
-        });
-
-        if (oldRows.length > 0)
-        { ds.trigger('row_change', [oldRows, true]); }
-
-        return adjRows;
-    },
-
-    _setRowFormatting: function(row)
-    {
-        // This reads metadata.conditionalFormatting, which is an ordered
-        // array of conditions & colors. The row will get the color of the
-        // first condition that it matches, or no color if it matches none
-        // of them.
-        // metadata.conditionalFormatting is an array. Each entry is an object
-        // with two keys: color and condition.
-        // * color: String of CSS color, such as '#ffffff' or
-        //          'rgba(255, 255, 255, 1)'
-        // * condition: Can be true, in which case any row will match this
-        //          condition. This is a good way to make a default as the
-        //          last item in the list. Otherwise it is an object. In the basic
-        //          case, this has three keys:
-        //   * tableColumnId: Identifies a column to look up the cell value in this
-        //          row to use for comparision
-        //   * subColumn: Identifies a sub-column to check for a value
-        //   * operator: How to do the comparison; operators available are the same
-        //          as for filter conditions
-        //   * value: Value to compare against
-        //   Alternately, you can have more complex expressions by providing
-        //   a key of children which has an array of condition objects.
-        //   In this case, operator is still required, but should be either
-        //   'and' or 'or' to control how the multiple conditions are combined
-        //
-        // Simple example to mark rows that have too high a measurement, too low,
-        // or within range:
-        // metadata.conditionalFormatting: [
-        //   {
-        //     color: '#ff9999',
-        //     condition: {
-        //       tableColumnId: 123,
-        //       operator: 'greater_than',
-        //       value: 100
-        //     }
-        //   },
-        //   {
-        //     color: '#9999ff',
-        //     condition: {
-        //       tableColumnId: 123,
-        //       operator: 'less_than',
-        //       value: 20
-        //     }
-        //   },
-        //   {
-        //     color: '#99ff99',
-        //     condition: true
-        //   }
-        // ]
-
-        // First clear color & icon, as they will be set properly later
-        row.color = row.icon = null;
-
-        var ds = this;
-        var cf = ds.metadata.conditionalFormatting;
-        if (!_.isArray(cf)) { return null; }
-
-        var relevantCondition = _.detect(cf, function(c)
-            { return blist.filter.matchesExpression(c.condition, row, ds); }) || {};
-
-        if (relevantCondition.color)
-        { row.color = relevantCondition.color; }
-
-        if (relevantCondition.icon)
-        { row.icon = relevantCondition.icon; }
     },
 
     _rowData: function(row, savingIds, parCol)
@@ -2709,6 +2161,28 @@ var Dataset = ServerModel.extend({
         return data;
     },
 
+    _addRow: function(newRow, idx)
+    {
+        var ds = this;
+        _.each(ds._availableRowSets, function(rs)
+                { rs.addRow(newRow, rs == ds._activeRowSet ? idx : null); });
+    },
+
+    _updateRow: function(row, oldID)
+    {
+        _.each(this._availableRowSets, function(rs) { rs.updateRow(row, oldID); });
+    },
+
+    _removeRow: function(row)
+    {
+        _.each(this._availableRowSets, function(rs) { rs.removeRow(row); });
+    },
+
+    _invalidateAll: function(rowCountChanged, columnsChanged)
+    {
+        _.each(this._availableRowSets, function(rs) { rs.invalidate(rowCountChanged, columnsChanged); });
+    },
+
     _serverCreateRow: function(req, isBatch)
     {
         var ds = this;
@@ -2734,16 +2208,8 @@ var Dataset = ServerModel.extend({
             if (req.row.underlying)
             {
                 req.row.noMatch = true;
-                delete req.row.underlying;
+                req.row.underlying = null;
             }
-
-            if ($.isBlank(req.parentRow))
-            {
-                ds._rowIDLookup[req.row.id] = req.row;
-                delete ds._rowIDLookup[oldID];
-            }
-
-            ds._setRowFormatting(req.row);
 
             var oldKey = oldID;
             var newKey = req.row.id;
@@ -2780,6 +2246,10 @@ var Dataset = ServerModel.extend({
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
             { delete req.row.changed[c.lookup]; });
 
+            if ($.isBlank(req.parentRow))
+            { ds._updateRow(req.row, oldID); }
+            else
+            { ds._updateRow(req.parentRow); }
             ds.trigger('row_change', [[{id: oldID}, req.parentRow || req.row]]);
             ds._processPending(req.row.id, (req.parentRow || {}).id,
                 (req.parentColumn || {}).id);
@@ -2793,6 +2263,7 @@ var Dataset = ServerModel.extend({
             _.each(!$.isBlank(req.parentColumn) ?
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
                     { req.row.error[c.id] = true; });
+            ds._updateRow(req.parentRow || req.row);
             ds.trigger('row_change', [[req.parentRow || req.row]]);
             if (_.isFunction(req.error)) { req.error(xhr); }
         };
@@ -2824,21 +2295,6 @@ var Dataset = ServerModel.extend({
             success: rowCreated, error: rowErrored, complete: rowCompleted});
     },
 
-    _updateLinkedColumns: function(keyCol, row, newRow)
-    {
-        var ds = this;
-        if (keyCol.dataTypeName == "dataset_link")
-        {
-            for (var n = ds.columns.length - 1; n >= 0; n--)
-            {
-                var col = ds.columns[n];
-                if (!col.isLinked()) continue;
-                var uname = col.underscoreName(ds);
-                row[col.id] = newRow[uname];
-            }
-        }
-    },
-
     _serverSaveRow: function(r, isBatch)
     {
         var ds = this;
@@ -2856,8 +2312,9 @@ var Dataset = ServerModel.extend({
                 ds._updateLinkedColumns(col, r.row, newRow);
             });
 
-            if (!newRow._underlying) { delete r.row.noMatch; }
+            if (!newRow._underlying) { r.row.noMatch = null; }
 
+            ds._updateRow(r.parentRow || r.row);
             ds.trigger('row_change', [[r.parentRow || r.row]]);
             ds.aggregatesChanged();
             if (_.isFunction(r.success)) { r.success(r.row); }
@@ -2868,6 +2325,7 @@ var Dataset = ServerModel.extend({
         {
             _.each(r.columnsSaving, function(cId)
                 { r.row.error[cId] = true; });
+            ds._updateRow(r.parentRow || r.row);
             ds.trigger('row_change', [[r.parentRow || r.row]]);
             if (_.isFunction(r.error)) { r.error(xhr); }
         };
@@ -3283,6 +2741,37 @@ Dataset.search = function(params, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
+Dataset.translateQuery = function(query, ds)
+{
+    if ($.isBlank(query) || query.type != 'operator' || !_.isArray(query.children)) { return null; }
+
+    var filterQ = { operator: query.value };
+
+    if (filterQ.operator == 'AND' || filterQ.operator == 'OR')
+    { { filterQ.children = _.map(query.children, function(c) { return Dataset.translateQuery(c, ds); }); } }
+    else
+    {
+        _.each(query.children, function(c)
+        {
+            if (c.type == 'column')
+            {
+                if (!$.isBlank(c.columnFieldName))
+                { filterQ.columnFieldName = c.columnFieldName; }
+                else if (!$.isBlank(ds))
+                {
+                    var col = ds.columnForID(c.columnId);
+                    if (!$.isBlank(col)) { filterQ.columnFieldName = col.fieldName; }
+                }
+                if (!$.isBlank(c.value)) { filterQ.subColumn = c.value; }
+            }
+            else if (c.type == 'literal')
+            { filterQ.value = c.value; }
+        });
+    }
+
+    return filterQ;
+};
+
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',
     'areachart', 'barchart', 'columnchart', 'linechart', 'piechart'];
 var MAP_TYPES = ['map', 'geomap', 'intensitymap'];
@@ -3311,37 +2800,6 @@ function getType(ds)
     { type = 'filter'; }
 
     return type;
-};
-
-function translateQuery(query, ds)
-{
-    if (query.type != 'operator' || !_.isArray(query.children)) { return null; }
-
-    var filterQ = { operator: query.value };
-
-    if (filterQ.operator == 'AND' || filterQ.operator == 'OR')
-    { { filterQ.children = _.map(query.children, function(c) { return translateQuery(c, ds); }); } }
-    else
-    {
-        _.each(query.children, function(c)
-        {
-            if (c.type == 'column')
-            {
-                if (!$.isBlank(c.columnFieldName))
-                { filterQ.columnFieldName = c.columnFieldName; }
-                else if (!$.isBlank(ds))
-                {
-                    var col = ds.columnForID(c.columnId);
-                    if (!$.isBlank(col)) { filterQ.columnFieldName = col.fieldName; }
-                }
-                if (!$.isBlank(c.value)) { filterQ.subColumn = c.value; }
-            }
-            else if (c.type == 'literal')
-            { filterQ.value = c.value; }
-        });
-    }
-
-    return filterQ;
 };
 
 function getDisplayName(ds)

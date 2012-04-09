@@ -153,7 +153,7 @@
 
     var renderCurrentRow = function(prtObj, updateId)
     {
-        if ($.isBlank(prtObj.navigation.currentPage()) || prtObj.settings.view.totalRows < 1)
+        if ($.isBlank(prtObj.navigation.currentPage()) || prtObj.settings.view.totalRows() < 1)
         {
             prtObj.$content().hide();
             prtObj.$noResults().show();

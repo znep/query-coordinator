@@ -32,6 +32,7 @@ javascripts:
     - public/javascripts/util/user.js
     - public/javascripts/util/dataset/column-container.js
     - public/javascripts/util/dataset/column.js
+    - public/javascripts/util/dataset/row-set.js
     - public/javascripts/util/dataset/dataset.js
     - public/javascripts/util/dataset/table.js
     - public/javascripts/util/dataset/calendar.js

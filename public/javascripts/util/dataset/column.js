@@ -291,7 +291,7 @@ var Column = ServerModel.extend({
             { col.parentColumn.updateChildColumns(); }
             else { col.view.updateColumns(); }
             // Need to refresh the view
-            col.view.reload();
+            col.view.reload(true);
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 

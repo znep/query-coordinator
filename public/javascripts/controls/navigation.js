@@ -115,9 +115,9 @@
 
     var updateNavigation = function(navObj)
     {
-        if ($.isBlank(navObj.settings.view.totalRows)) { return; }
-        var pageCount = Math.ceil(navObj.settings.view.totalRows /
-            navObj.settings.pageSize);
+        var tr = navObj.settings.view.totalRows();
+        if ($.isBlank(tr)) { return; }
+        var pageCount = Math.ceil(tr / navObj.settings.pageSize);
 
         if (pageCount < 1)
         {

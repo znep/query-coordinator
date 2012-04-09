@@ -516,7 +516,7 @@
 
             var renderedRows = _.size(mapObj._primaryView._rows);
             if (renderedRows >= mapObj._maxRows
-                || renderedRows >= mapObj._primaryView.totalRows)
+                || renderedRows >= mapObj._primaryView.totalRows())
             { mapObj.mapElementLoaded(); }
 
             mapObj.finishLoading();

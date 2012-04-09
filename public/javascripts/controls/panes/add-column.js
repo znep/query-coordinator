@@ -250,7 +250,7 @@
             }
             else { columnCreated(cpObj, newCol, finalCallback); }
             // Since we imported data, need to reload
-            cpObj._view.reload();
+            cpObj._view.reload(true);
         },
         function(xhr) { cpObj._genericErrorHandler(xhr); },
         $.extend({method: 'addressify', deleteOriginalColumns: false,

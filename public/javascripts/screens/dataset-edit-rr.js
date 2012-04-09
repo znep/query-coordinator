@@ -1174,7 +1174,7 @@ editRRNS.initSaving = function()
     $('.unsavedLine a.revert').click(function(e)
     {
         e.preventDefault();
-        blist.dataset.reload(function()
+        blist.dataset.reload(false, function()
         {
             editRRNS.resetConfig();
             editRRNS.renderCurrentRow();

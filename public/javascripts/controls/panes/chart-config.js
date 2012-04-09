@@ -209,8 +209,9 @@
     var datasetTooLarge = function(chartConfig, options)
     {
         // Limit number of rows
-        if ($.isBlank(options.view) || !$.isBlank(options.view.totalRows) &&
-            options.view.totalRows > ((chartConfig.displayLimit || {}).points || 500))
+        if ($.isBlank(options.view)) { return false; }
+        var tr = options.view.totalRows();
+        if (!$.isBlank(tr) && tr > ((chartConfig.displayLimit || {}).points || 500))
         { return false; }
         return true;
     };

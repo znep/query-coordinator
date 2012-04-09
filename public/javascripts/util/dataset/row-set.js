@@ -1,0 +1,714 @@
+(function(){
+
+var RowSet = ServerModel.extend({
+    _init: function(ds, query)
+    {
+        this._super();
+
+        this._dataset = ds;
+
+        this.registerEvent(['row_change', 'row_count_change', 'metadata_update']);
+
+        this._rows = {};
+        this._rowIDLookup = {};
+        this._rowsLoading = {};
+        this._pendingRowReqs = [];
+
+        this._query = query || {};
+        this._translatedQuery = Dataset.translateQuery(this._query, this._dataset);
+        this._isComplete = false;
+    },
+
+    getKey: function()
+    {
+        if ($.isBlank(this._key))
+        { this._key = RowSet.getQueryKey(this._translatedQuery); }
+        return this._key;
+    },
+
+    rowForID: function(id)
+    {
+        return this._rowIDLookup[parseInt(id) || id];
+    },
+
+    rowForIndex: function(index)
+    {
+        return this._rows[index];
+    },
+
+    rowIndex: function(id, successCallback)
+    {
+        var rs = this;
+        if (!$.isBlank(rs.rowForID(id)))
+        { successCallback(rs.rowForID(id).index); }
+        else
+        {
+            var gotID = function(data) { successCallback(data[id]); };
+            rs._dataset.makeRequest({inline: true,
+                params: {method: 'getByIds', indexesOnly: true, ids: id},
+                success: gotID});
+        }
+    },
+
+    childRowForID: function(id, parRow, parCol)
+    {
+        // Someday an actual lookup for child rows might be good; but these
+        // should be rare and small, so don't bother yet
+        var cell = parRow[parCol.lookup];
+        return _.detect(cell || {}, function(sr) { return sr.id == id; });
+    },
+
+    getTotalRows: function(successCallback, errorCallback)
+    {
+        if ($.isBlank(this._totalCount))
+        { this.getRows(0, 1, successCallback, errorCallback); }
+        else if (_.isFunction(successCallback))
+        { successCallback(); }
+    },
+
+    totalRows: function()
+    { return this._totalCount; },
+
+    getRows: function(startOrIds, len, successCallback, errorCallback)
+    {
+        var rs = this;
+
+        var ids;
+        var start;
+        if (_.isNumber(startOrIds) && _.isNumber(len))
+        { start = startOrIds; }
+        else if (_.isArray(startOrIds))
+        { ids = startOrIds; }
+        else
+        {
+            if (_.isFunction(errorCallback))
+            { errorCallback({message: "Missing start and length or ids"}); }
+            return;
+        }
+
+        var pageSize = 100;
+        var reqs = [];
+        var curReq;
+        var pendReq;
+        var finish = start + len - 1;
+        var loaded = [];
+        var pendingRemoved = [];
+        var now = new Date().getTime();
+
+        var doLoaded = function()
+        {
+            if (loaded.length > 0 || rs._totalCount == 0)
+            {
+                if (_.isFunction(successCallback))
+                { successCallback(loaded); }
+                loaded = [];
+            }
+        };
+
+        if (len && !$.isBlank(start))
+        {
+            while (start <= finish &&
+                ($.isBlank(rs._totalCount) || start < rs._totalCount))
+            {
+                var r = rs._rows[start];
+                // If this is an expired pending row, clean it out and mark
+                // it null so it gets reloaded
+                if (!$.isBlank(r) && r.pending && now > r.expires)
+                {
+                    delete rs._rows[r.index];
+                    delete rs._rowIDLookup[r.id];
+                    pendingRemoved.push(r);
+                    r = null;
+                }
+
+                if ($.isBlank(r))
+                {
+                    doLoaded();
+                    if (rs._rowsLoading[start])
+                    {
+                        if (!$.isBlank(curReq))
+                        {
+                            reqs.push(curReq);
+                            curReq = null;
+                        }
+
+                        if ($.isBlank(pendReq))
+                        {
+                            pendReq = {start: start, length: 1,
+                                successCallback: successCallback, errorCallback: errorCallback};
+                        }
+                        else
+                        { pendReq.length++; }
+                    }
+                    else
+                    {
+                        if (!$.isBlank(pendReq))
+                        {
+                            rs._pendingRowReqs.push(pendReq);
+                            pendReq = null;
+                        }
+
+                        if ($.isBlank(curReq))
+                        { curReq = {start: start, finish: start}; }
+                        else
+                        {
+                            if (start - curReq.start + 1 > pageSize)
+                            {
+                                reqs.push(curReq);
+                                curReq = {start: start};
+                            }
+                            else { curReq.finish = start; }
+                        }
+                    }
+                }
+                else
+                {
+                    if (!$.isBlank(curReq))
+                    {
+                        reqs.push(curReq);
+                        curReq = null;
+                    }
+                    if (!$.isBlank(pendReq))
+                    {
+                        rs._pendingRowReqs.push(pendReq);
+                        pendReq = null;
+                    }
+                    loaded.push(r);
+                }
+                start++;
+            }
+        }
+        else
+        {
+            ids = _.reject(ids || [], function(id)
+            {
+                var r = ds._rowIDLookup[id];
+                if (r)
+                { return loaded.push(r); }
+            });
+            for (var i = 0; i < ids.length; i += 100)
+            { reqs.push({ ids: ids.slice(i, i + 100) }); }
+        }
+
+        doLoaded();
+
+        if (pendingRemoved.length > 0)
+        { rs.trigger('row_change', [pendingRemoved, true]); }
+
+        if (!$.isBlank(curReq))
+        {
+            if (_.isUndefined(curReq.finish))
+            {
+                curReq.finish = curReq.start;
+            }
+            reqs.push(curReq);
+            curReq = null;
+        }
+        if (!$.isBlank(pendReq))
+        {
+            rs._pendingRowReqs.push(pendReq);
+            pendReq = null;
+        }
+
+        if (reqs.length > 0)
+        {
+            var loadAllRows = function()
+            {
+                // If we got here, and totalRows is still blank, bail, because something
+                // has changed in the meantime and this load is just invalid
+                if ($.isBlank(rs._totalCount))
+                {
+                    if (_.isFunction(errorCallback)) { errorCallback({cancelled: true}); }
+                    return;
+                }
+                _.each(reqs, function(req)
+                {
+                    var reqLen;
+                    if (req.finish && !$.isBlank(req.start))
+                    {
+                        if (req.start >= rs._totalCount) { return; }
+                        if (req.finish >= rs._totalCount)
+                        { req.finish = rs._totalCount - 1; }
+                        reqLen = req.finish - req.start + 1;
+                    }
+                    rs._loadRows(req.ids || req.start, reqLen, successCallback, errorCallback);
+                });
+            };
+
+            if ($.isBlank(rs._totalCount))
+            {
+                // Need to make init req to get all the meta
+                var initReq = reqs.shift();
+                var initReqLen;
+                if (initReq.finish && !$.isBlank(initReq.start))
+                { initReqLen = initReq.finish - initReq.start + 1; }
+                rs._loadRows(initReq.ids || initReq.start, initReqLen,
+                    function(rows)
+                    {
+                        if (_.isFunction(successCallback)) { successCallback(rows); }
+                        loadAllRows();
+                    }, errorCallback, true);
+            }
+            else
+            {
+                // Just request rows
+                loadAllRows();
+            }
+        }
+    },
+
+    addRow: function(newRow, idx)
+    {
+        if (!this._doesBelong(newRow)) { return; }
+
+        var row = $.extend({}, newRow);
+        row.index = $.isBlank(idx) ? this._totalCount : idx;
+        rs._setRowFormatting(row);
+        $.addItemsToObject(this._rows, row, row.index);
+        this._rowIDLookup[row.id] = row;
+        this._totalCount++;
+        this.trigger('row_count_change');
+    },
+
+    updateRow: function(row, oldID)
+    {
+        var curRow = this._rowIDLookup[$.isBlank(oldID) ? row.id : oldID];
+        $.extend(curRow, row, {index: curRow.index});
+        rs._setRowFormatting(curRow);
+        if (!$.isBlank(oldID))
+        {
+            this._rowIDLookup[curRow.id] = curRow;
+            delete this._rowIDLookup[oldID];
+        }
+        if (!this._doesBelong(curRow)) { this.removeRow(curRow); }
+    },
+
+    removeRow: function(origRow)
+    {
+        var row = this.rowForID(origRow.id);
+        if ($.isBlank(row)) { return; }
+        $.removeItemsFromObject(this._rows, row.index, 1);
+        delete this._rowIDLookup[row.id];
+        this._totalCount--;
+    },
+
+    markRow: function(markType, value, origRow)
+    {
+        var row = this.rowForID((origRow || {}).id);
+        if ($.isBlank(row) || (row.sessionMeta || {})[markType] == value) { return; }
+
+        row.sessionMeta = row.sessionMeta || {};
+        row.sessionMeta[markType] = value;
+    },
+
+    reload: function(successCallback, errorCallback)
+    {
+        this._loadRows(0, 1, successCallback, errorCallback, true, true);
+    },
+
+    activate: function()
+    {
+        this.trigger('row_change', [_.values(this._rows), true]);
+    },
+
+    deactivate: function()
+    {
+        this.trigger('row_change', [_.values(this._rows), true]);
+    },
+
+    invalidate: function(rowCountChanged, columnsChanged)
+    {
+        var invRows = _.values(this._rows);
+        this._rows = {};
+        this._rowsLoading = {};
+        var pending = this._pendingRowReqs;
+        this._pendingRowReqs = [];
+        // Tell pending requests they are being cancelled
+        _.each(pending, function(p)
+            { if (_.isFunction(p.errorCallback)) { p.errorCallback({cancelled: true}); } });
+        delete this._curMetaReq;
+        delete this._curMetaReqMeta;
+        this._rowIDLookup = {};
+        if (rowCountChanged) { delete this._totalCount; }
+        if (columnsChanged) { this._columnsInvalid = true; }
+        _.each(this._dataset.columns || [], function(c) { c.invalidateData(); });
+        this.trigger('row_change', [invRows, true]);
+    },
+
+    formattingChanged: function()
+    {
+        var rs = this;
+        _.each(rs._rows, function(r) { rs._setRowFormatting(r); });
+    },
+
+
+    _loadRows: function(startOrIds, len, successCallback, errorCallback, includeMeta, fullLoad)
+    {
+        var rs = this;
+
+        var params = {method: 'getByIds', asHashes: true};
+
+        var start;
+        if (_.isNumber(startOrIds) && _.isNumber(len))
+        {
+            start = startOrIds;
+            params.start = start;
+            params.length = len;
+        }
+        else if (_.isArray(startOrIds))
+        { params.ids = startOrIds; }
+        else
+        {
+            if (_.isFunction(errorCallback))
+            { errorCallback({message: "Missing start and length, or ids"}); }
+            return;
+        }
+
+        var reqData = rs._dataset.cleanCopy();
+        if (!_.isEmpty(rs._query))
+        {
+            reqData.query = reqData.query || {};
+            reqData.query.filterCondition = rs._query;
+        }
+
+        if (fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
+            !_.isEqual(reqData, rs._curMetaReqMeta))
+        { params.meta = true; }
+
+        var reqId = _.uniqueId();
+        var rowsLoaded = function(result)
+        {
+            if (len && !$.isBlank(start))
+            {
+                // Mark all rows as not in-process
+                for (var i = 0; i < len; i++)
+                { delete rs._rowsLoading[i + start]; }
+            }
+
+            var oldCount = rs._totalCount;
+            if (!$.isBlank(result.meta))
+            {
+                // If another meta request started while this was loading, then
+                // skip this one, and only use the latest
+                if (rs._curMetaReq != reqId)
+                {
+                    if (_.isFunction(errorCallback))
+                    { _.defer(function() { errorCallback({cancelled: true}); }); }
+                    return;
+                }
+                delete rs._curMetaReq;
+                delete rs._curMetaReqMeta;
+                rs._totalCount = result.meta.totalRows;
+                delete rs._columnsInvalid;
+                if (!fullLoad)
+                {
+                    result.meta.view.query.filterCondition = rs._dataset.query.filterCondition;
+                    if (!$.isBlank(rs._dataset.query.namedFilters))
+                    {
+                        result.meta.view.query.namedFilters =
+                            rs._dataset.query.namedFilters;
+                    }
+                }
+                rs.trigger('metadata_update', [result.meta.view, true, true, fullLoad]);
+            }
+            // If we loaded without meta but don't have meta available, bail
+            else if ($.isBlank(rs._totalCount))
+            {
+                if (_.isFunction(errorCallback))
+                { _.defer(function() { errorCallback({cancelled: true}); }); }
+                return;
+            }
+
+            var rows;
+            // If this result is marked pending, then we got no data, and we need
+            // placeholder rows
+            if (result.pending && len && !$.isBlank(start))
+            {
+                rows = [];
+                var oldRows = [];
+                // Make them expire after a short time, which will force a reload
+                // the next time something wants to render them
+                var expires = new Date().getTime() + 30000;
+                for (var i = 0; i < len; i++)
+                {
+                    var newRow = {invalid: {}, error: {}, changed: {},
+                        index: i + start, pending: true, expires: expires,
+                        id: 'pending_' + _.uniqueId()};
+
+                    // If an existing row, clean it out
+                    if (!$.isBlank(rs._rows[newRow.index]))
+                    {
+                        var oldRow = rs._rows[newRow.index];
+                        oldRows.push(oldRow);
+                        delete rs._rowIDLookup[oldRow.id];
+                    }
+
+                    rs._rows[newRow.index] = newRow;
+                    rs._rowIDLookup[newRow.id] = newRow;
+                    rows.push(newRow);
+                }
+                if (oldRows.length > 0)
+                { rs.trigger('row_change', [oldRows, true]); }
+            }
+            // Normal load
+            else
+            { rows = rs._addRows(result.data || result, start); }
+
+            if (oldCount !== rs._totalCount)
+            { rs.trigger('row_count_change'); }
+
+            if (_.isFunction(successCallback)) { successCallback(rows); }
+
+            var pending = rs._pendingRowReqs;
+            rs._pendingRowReqs = [];
+            _.each(pending, function(p)
+            { rs.getRows(p.start, p.length, p.successCallback, p.errorCallback); });
+        };
+
+        if (len && !$.isBlank(start))
+        {
+            // Keep track of rows that are being loaded
+            for (var i = 0; i < len; i++)
+            { rs._rowsLoading[i + start] = true; }
+        }
+
+        var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
+        if (fullLoad)
+        { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
+        if (params.meta)
+        {
+            rs._curMetaReq = reqId;
+            rs._curMetaReqMeta = reqData;
+        }
+        rs._dataset.makeRequest(req);
+    },
+
+    _addRows: function(newRows, start)
+    {
+        var rs = this;
+        var translateRow = function(r, parCol)
+        {
+            var adjVals = {invalid: {}, changed: {}, error: {}, sessionMeta: {}};
+            if (!$.isBlank(_.detect(r, function(val, id)
+            {
+                var newVal;
+                // A few columns don't have original lookups
+                var lId = {sid: 'id', 'id': 'uuid'}[id] || id;
+                var c = $.isBlank(parCol) ? rs._dataset.columnForID(lId) : parCol.childColumnForID(lId);
+
+                if ($.isBlank(c)) { return true; }
+
+                if (c.isMeta && c.name == 'meta')
+                { newVal = JSON.parse(val || 'null'); }
+
+                if ($.isPlainObject(val))
+                {
+                    // First, convert an empty array into a null
+                    // Booleans in the array don't count because location type
+                    // has a flag that may be set even if there is no data.  If
+                    // some type actually cares about only having a boolean,
+                    // this will need to be made more specific
+                    if (_.all(val, function(v)
+                        { return $.isBlank(v) || _.isBoolean(v); }))
+                    { newVal = null; }
+                }
+
+                if (c.renderTypeName == 'checkbox' && val === false ||
+                        c.renderTypeName == 'stars' && val === 0)
+                { newVal = null; }
+
+                if (c.renderTypeName == 'geospatial' && r.sid)
+                { newVal = $.extend({}, val, {row_id: r.sid}); }
+
+                if (c.dataTypeName == 'nested_table' && _.isArray(val))
+                {
+                    if (!$.isBlank(_.detect(val, function(cr) { return !translateRow(cr, c); })))
+                    { return true; }
+                }
+
+                // A few columns have different ids we use than the core server gives us
+                if (id != c.lookup) { newVal = newVal || val; }
+
+                if (!_.isUndefined(newVal))
+                { adjVals[c.lookup] = newVal; }
+
+                return false;
+            }))) { return false; }
+
+            $.extend(r, adjVals);
+
+            _.each((r.meta || {}).invalidCells || {}, function(v, tcId)
+            {
+                if (!$.isBlank(v))
+                {
+                    var c = !$.isBlank(parCol) ? parCol.childColumnForTCID(tcId) :
+                        rs._dataset.columnForTCID(tcId);
+                    if (!$.isBlank(c) && $.isBlank(r[c.lookup]))
+                    {
+                        r.invalid[c.id] = true;
+                        r[c.lookup] = v;
+                    }
+                }
+            });
+            delete (r.meta || {}).invalidCells;
+
+            _.each((rs._dataset._commentLocations || {})[r.id] || {}, function(v, tcId)
+            {
+                var c = rs._dataset.columnForTCID(tcId);
+                if (!$.isBlank(c))
+                {
+                    r.annotations = r.annotations || {};
+                    r.annotations[c.lookup] =  'comments';
+                }
+            });
+
+            rs._setRowFormatting(r);
+
+            if ($.subKeyDefined(rs._dataset, 'highlights.' + r.id))
+            { rs.markRow('highlight', true, r); }
+
+            return true;
+        };
+
+        var adjRows = [];
+        var oldRows = [];
+        var hasIndex = !$.isBlank(start);
+        _.each(newRows, function(r, i)
+        {
+            var success = translateRow(r);
+            var ind;
+            if (hasIndex)
+            { ind = start + i; }
+
+            // If a row already exists at this index, clean it out
+            if (hasIndex)
+            {
+                if (!$.isBlank(rs._rows[ind]) && (!success || r.id != rs._rows[ind].id))
+                {
+                    var oldRow = rs._rows[ind];
+                    oldRows.push(oldRow);
+                    delete rs._rows[ind];
+                    delete rs._rowIDLookup[oldRow.id];
+                }
+            }
+            else
+            {
+                var oldRow = rs._rowIDLookup[r.id];
+                if (!$.isBlank(oldRow))
+                {
+                    oldRows.push(oldRow);
+                    delete rs._rowIDLookup[oldRow.id];
+                }
+            }
+
+            if (!success) { return; }
+
+            if (hasIndex)
+            {
+                r.index = ind;
+                rs._rows[r.index] = r;
+            }
+            rs._rowIDLookup[r.id] = r;
+            adjRows.push(r);
+        });
+
+        if (oldRows.length > 0)
+        { rs.trigger('row_change', [oldRows, true]); }
+
+        return adjRows;
+    },
+
+    _doesBelong: function(row)
+    {
+        return blist.filter.matchesExpression(this._translatedQuery, row, this._dataset);
+    },
+
+    _setRowFormatting: function(row)
+    {
+        // This reads metadata.conditionalFormatting, which is an ordered
+        // array of conditions & colors. The row will get the color of the
+        // first condition that it matches, or no color if it matches none
+        // of them.
+        // metadata.conditionalFormatting is an array. Each entry is an object
+        // with two keys: color and condition.
+        // * color: String of CSS color, such as '#ffffff' or
+        //          'rgba(255, 255, 255, 1)'
+        // * condition: Can be true, in which case any row will match this
+        //          condition. This is a good way to make a default as the
+        //          last item in the list. Otherwise it is an object. In the basic
+        //          case, this has three keys:
+        //   * tableColumnId: Identifies a column to look up the cell value in this
+        //          row to use for comparision
+        //   * subColumn: Identifies a sub-column to check for a value
+        //   * operator: How to do the comparison; operators available are the same
+        //          as for filter conditions
+        //   * value: Value to compare against
+        //   Alternately, you can have more complex expressions by providing
+        //   a key of children which has an array of condition objects.
+        //   In this case, operator is still required, but should be either
+        //   'and' or 'or' to control how the multiple conditions are combined
+        //
+        // Simple example to mark rows that have too high a measurement, too low,
+        // or within range:
+        // metadata.conditionalFormatting: [
+        //   {
+        //     color: '#ff9999',
+        //     condition: {
+        //       tableColumnId: 123,
+        //       operator: 'greater_than',
+        //       value: 100
+        //     }
+        //   },
+        //   {
+        //     color: '#9999ff',
+        //     condition: {
+        //       tableColumnId: 123,
+        //       operator: 'less_than',
+        //       value: 20
+        //     }
+        //   },
+        //   {
+        //     color: '#99ff99',
+        //     condition: true
+        //   }
+        // ]
+
+        var rs = this;
+
+        // First clear color & icon, as they will be set properly later
+        row.color = row.icon = null;
+
+        var condFmt = rs._dataset.metadata.conditionalFormatting;
+        if (!_.isArray(condFmt)) { return null; }
+
+        var relevantCondition = _.detect(condFmt, function(c)
+            { return blist.filter.matchesExpression(c.condition, row, rs._dataset); }) || {};
+
+        if (relevantCondition.color)
+        { row.color = relevantCondition.color; }
+
+        if (relevantCondition.icon)
+        { row.icon = relevantCondition.icon; }
+    }
+});
+
+RowSet.getQueryKey = function(query)
+{
+    if (_.isEmpty(query)) { return ''; }
+    var op = query.operator.toUpperCase();
+    if (op == 'AND' || op == 'OR')
+    {
+        var childKeys = _.map(query.children, function(c) { return RowSet.getQueryKey(c); });
+        return childKeys.length < 2 ? (childKeys[0] || '') : '(' + childKeys.join('|' + op + '|') + ')';
+    }
+    return '(' + (query.columnFieldName || query.tableColumnId) +
+        (!$.isBlank(query.subColumn) ? '[' + query.subColumn + ']' : '') +
+        '|' + op + '|' + query.value + ')';
+};
+
+if (blist.inBrowser)
+{ this.RowSet = RowSet; }
+else
+{ module.exports = RowSet; }
+
+})();

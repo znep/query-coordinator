@@ -128,7 +128,7 @@
                 { mapObj.mapElementLoaded(); }
                 else
                 {
-                    if (viewConfig._renderedRows >= viewConfig.view.totalRows
+                    if (viewConfig._renderedRows >= viewConfig.view.totalRows()
                         || viewConfig._renderedRows >= viewConfig._requestedRows)
                     { mapObj.mapElementLoaded(); }
                 }

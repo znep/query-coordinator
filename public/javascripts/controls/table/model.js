@@ -679,8 +679,8 @@ blist.namespace.fetch('blist.data');
          */
         this.dataLength = function()
         {
-            return $.isBlank((this.view || {}).totalRows) ? -1 :
-                this.view.totalRows;
+            var tr = (this.view || {}).totalRows();
+            return $.isBlank(tr) ? -1 : tr;
         };
 
         /**

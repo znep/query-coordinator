@@ -568,11 +568,10 @@
             viewConfig._requestedRows = rowsToFetch;
             view.getRows(0, rowsToFetch, function(data)
             {
-                viewConfig._requestedRows = Math.min(view.totalRows, viewConfig._requestedRows);
+                viewConfig._requestedRows = Math.min(view.totalRows(), viewConfig._requestedRows);
                 _.defer(function()
                     { vizObj.handleRowsLoaded(data, view); });
-                vizObj._rowsLoaded += view.totalRows ? view.totalRows
-                                                     : data.length;
+                vizObj._rowsLoaded += view.totalRows() || data.length;
                 vizObj.totalRowsForAllViews();
                 delete vizObj._initialLoad;
                 delete vizObj._loadDelay;
@@ -602,7 +601,7 @@
             var vizObj = this;
             vizObj._totalRows = _.reduce(vizObj._dataViews,
                 function(total, view)
-                { return view.totalRows ? total + view.totalRows : total; }, 0);
+                { return total + (view.totalRows() || 0); }, 0);
             return vizObj._totalRows;
         }
     }, {view: null, showRowLink: true}, null, true);

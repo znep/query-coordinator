@@ -126,7 +126,7 @@ blist.namespace.fetch('blist.filter');
 
     blist.filter.matchesExpression = function(expr, row, colCont)
     {
-        if (expr === true) { return true; }
+        if (expr === true || _.isEmpty(expr)) { return true; }
         if (!$.subKeyDefined(expr, 'operator')) { return false; }
 
         // Handle array of sub-conditions

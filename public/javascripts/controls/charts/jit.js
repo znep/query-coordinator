@@ -108,7 +108,7 @@
                 row[chartObj._fixedColumns[0].id] = 'Other';
                 row[valCol.id] = chartObj._remainder;
                 var colors = chartObj._displayFormat.colors;
-                var color = colors[chartObj._primaryView.totalRows % 5];
+                var color = colors[chartObj._primaryView.totalRows() % 5];
                 if ((chartObj._primaryView.highlights || {})[row.id])
                 { color = getHighlightColor(color); }
                 var item = {

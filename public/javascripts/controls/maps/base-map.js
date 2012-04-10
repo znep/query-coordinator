@@ -529,6 +529,8 @@
 
             mapObj._boundsChanging = true;
             mapObj.initializeBaseLayers();
+            var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
+            if ($.isBlank(zoombar)) { mapObj.map.addControl(new blist.openLayers.ZoomBar()); }
             mapObj.populateLayers();
             mapObj.initializeFlyouts((mapObj._displayFormat
                 .plot || {}).descriptionColumns);

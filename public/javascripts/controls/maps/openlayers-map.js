@@ -24,7 +24,7 @@
             if (this.div != null)
             {
                 this.removeButtons();
-                if (this.sliderEvents) { this._removeZoomBar(); }
+                if (this.sliderEvents && !this.small) { this._removeZoomBar(); }
             }
             this.draw();
         },
@@ -41,12 +41,12 @@
             var padding = new OpenLayers.Size(-2, -2);
 
             // Magic number is height as specified in openlayers.sass.
-            var small = $(this.map.div).height() < 277;
+            this.small = $(this.map.div).height() < 277;
 
             // HACK HACK HACK HACK HCAK HCAK HCAKHCAKHC AKHACKHAC HKACK HACKH ACHKACHK
             var sz = new OpenLayers.Size(21, 21);
             this._addButton('zoomin', 'zoom-plus-mini.png', px.add(padding.w, padding.h), sz);
-            if (small)
+            if (this.small)
             {
                 $(this.div).addClass('small');
                 this._addButton('zoomout', 'zoom-minus-mini.png',

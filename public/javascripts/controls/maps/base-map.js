@@ -328,14 +328,11 @@
             mapObj.map.events.register('changebaselayer', null, function(evtObj)
             {
                 var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
-                if (!$.isBlank(zoombar))
-                {
-                    // Magic number: height that we want the zoombarDiv to be at.
-                    // Calculated as zoom_gutter.png (277) minus button heights (21) minus padding (2)
-                    // 277 - (2*21) - (2*2) = 231
-                    zoombar.zoomStopHeight = 231 / evtObj.layer.numZoomLevels;
-                    zoombar.redraw();
-                }
+                // Magic number: height that we want the zoombarDiv to be at.
+                // Calculated as zoom_gutter.png (277) minus button heights (21) minus padding (2)
+                // 277 - (2*21) - (2*2) = 231
+                zoombar.zoomStopHeight = 231 / evtObj.layer.numZoomLevels;
+                zoombar.redraw();
             });
 
             mapObj.initializeBaseLayers();
@@ -508,8 +505,6 @@
 
             if (mapObj._baseLayers)
             { _.each(mapObj._baseLayers, function(layer) { layer.destroy(false); }); }
-            var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
-            if (!$.isBlank(zoombar)) { zoombar.destroy(); }
 
             mapObj._markers = {};
             _.each(mapObj._byView, function(viewConfig)
@@ -529,8 +524,6 @@
 
             mapObj._boundsChanging = true;
             mapObj.initializeBaseLayers();
-            var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
-            if ($.isBlank(zoombar)) { mapObj.map.addControl(new blist.openLayers.ZoomBar()); }
             mapObj.populateLayers();
             mapObj.initializeFlyouts((mapObj._displayFormat
                 .plot || {}).descriptionColumns);

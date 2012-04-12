@@ -1038,7 +1038,9 @@
                     new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)); }
                 else
                 {
-                    marker.geometry = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+                    var geometry = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+                    if (!marker.geometry.equals(geometry))
+                    { marker.geometry = geometry; }
                     viewConfig._adjustBounds = true;
                 }
 

@@ -4,7 +4,8 @@
 class LogRefererMiddleware
   def initialize(app)
     @app = app
-    @queue = MetricQueue.instance
+    # @queue = MetricQueue.instance
+    @queue = MetricFileQueue.instance
   end
 
   def call(env)

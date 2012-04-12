@@ -107,6 +107,7 @@ module Canvas2
       groups = []
       items.each do |item|
         g = string_substitute(g_config['value'], item)
+        next if g.blank?
         if g_index[g].blank?
           groups << g
           g_index[g] = [item]

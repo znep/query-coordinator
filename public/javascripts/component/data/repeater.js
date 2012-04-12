@@ -304,6 +304,7 @@ var renderGroupItems = function(cObj, items, callback)
     _.each(items, function(item)
     {
         var group = cObj._stringSubstitute(groupConfig.value, item);
+        if ($.isBlank(group)) { return; }
         if ($.isBlank(groupIndex[group]))
         {
             groups.push(group);

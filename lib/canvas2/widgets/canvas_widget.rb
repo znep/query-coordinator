@@ -84,7 +84,7 @@ module Canvas2
         c = context || {}
         if c.is_a?(Array)
           c = {}
-          context.each {|dc| c[dc.id] = dc}
+          context.each {|dc| c[dc[:id]] = dc}
         end
         v = Util.deep_get(c, name) if v.blank?
         v = parent_resolver.call(name) if v.blank?

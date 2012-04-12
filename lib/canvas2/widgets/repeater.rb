@@ -1,0 +1,145 @@
+module Canvas2
+  class Repeater < Container
+    def initialize(props, parent = nil, resolver_context = nil)
+      # Can't modify original properties (except to add an ID, if needed); so
+      # we render with a copy
+      @orig_props = props
+      dup_props = props.dup
+      dup_props.delete('children')
+      super(dup_props, parent, resolver_context)
+      props['id'] = @properties['id']
+
+      allocate_ids(props['children'])
+      @clone_props = {
+        'id' => 'clone',
+        'children' => props['children'],
+        'htmlClass' => props['childHtmlClass'],
+        'styles' => props['childStyles'],
+        'type' => 'Container'
+      }
+    end
+
+    def render_contents
+      t = ''
+      fully_rendered = true
+      if !context.blank?
+        col_map = {}
+        all_c = []
+
+        if context.is_a? Array
+          context.each { |item, i| all_c << add_row(item, i, item.clone) }
+
+        elsif context[:type] == 'datasetList'
+          context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }
+
+        elsif context[:type] == 'dataset'
+          if @properties['repeaterType'] == 'column'
+            ex_f = string_substitute(@properties['excludeFilter'])
+            inc_f = string_substitute(@properties['includeFilter'])
+            context[:dataset].visible_columns.each_with_index do |c, i|
+              if ex_f.all? {|k, v| !(Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))} &&
+                (@properties['includeFilter'].blank? ||
+                 inc_f.any? {|k, v| (Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))})
+                all_c << add_row(context, i, {column: c})
+              end
+            end
+
+          else
+            context[:dataset].visible_columns.each {|c| col_map[c.id.to_s] = c.fieldName}
+            rows = context[:dataset].get_rows(100)[:rows].map do |row|
+              r = Hash.new
+              row.each do |k, v|
+                if !col_map[k].blank?
+                  r[col_map[k]] = v
+                elsif k.match(/[a-z]+/)
+                  r[k] = v
+                end
+              end
+              r
+            end
+
+            if !@properties['groupBy'].blank?
+              all_c = render_group_items(rows)
+            else
+              rows.each_with_index do |r, i|
+                all_c << add_row(r, i, r)
+              end
+            end
+          end
+        end
+
+        all_c.compact!
+        if all_c.length > 0
+          cont_config = @properties['container'] || {'type' => 'Container'}
+          @orig_props['container'] = cont_config
+          real_c = CanvasWidget.from_config(cont_config, self)
+          real_c.children = all_c
+          r = real_c.render
+          t += r[0]
+          fully_rendered &&= r[1]
+        end
+      end
+      [t, fully_rendered]
+    end
+
+  protected
+    def add_row(row, index, resolutions = {})
+      resolutions['_repeaterIndex'] = index
+
+      child_props = string_substitute(@properties['childProperties'], resolutions)
+      copy = create_copy({}.deep_merge(@clone_props).deep_merge(child_props.is_a?(Hash) ? child_props : {}),
+                         self.id + '-' + index.to_s + '-', resolutions)
+      copy['childContextId'] = row[:id]
+      c = CanvasWidget.from_config(copy, self, resolutions)
+      if @properties.has_key?('valueRegex')
+        r = Regexp.new(@properties['valueRegex']['regex'])
+        v = c.string_substitute(@properties['valueRegex']['value'])
+        result = r.match(v).blank?
+        result = !result if @properties['valueRegex']['invert']
+        return nil if result
+      end
+      c
+    end
+
+    def render_group_items(items)
+      g_config = @properties['groupBy']
+      g_index = Hash.new
+      groups = []
+      items.each do |item|
+        g = string_substitute(g_config['value'], item)
+        if g_index[g].blank?
+          groups << g
+          g_index[g] = [item]
+        else
+          g_index[g] << item
+        end
+      end
+
+      all_c = []
+      groups.each_with_index do |g, i|
+        all_c << add_row({id: g}, i, {_groupValue: g, _groupItems: g_index[g]})
+      end
+      all_c
+    end
+
+    def allocate_ids(components)
+      (components || []).each do |c|
+        c['id'] = Util.allocate_id if c['id'].blank?
+        allocate_ids(c['children'])
+      end
+    end
+
+    def create_copy(component, id_prefix, resolutions)
+      new_c = component.clone
+      new_c['htmlClass'] = new_c['htmlClass'].is_a?(Array) ? new_c['htmlClass'].clone :
+        [new_c['htmlClass']].compact
+      new_c['htmlClass'] << 'id-' + new_c['id']
+      new_c['id'] = id_prefix + new_c['id']
+      new_c['entity'] = resolutions
+      if new_c['children'].is_a? Array
+        new_c['children'] = new_c['children'].map {|c| create_copy(c, id_prefix, resolutions)}
+      end
+      new_c
+    end
+  end
+end

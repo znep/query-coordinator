@@ -135,11 +135,11 @@ blist.namespace.fetch('blist.filter');
             // Assume if not OR it is AND
             var func = expr.operator.toLowerCase() == 'or' ? 'any' : 'all';
             return _[func](expr.children, function(cExpr)
-                { return blist.filter.matchesExpression(cExpr); });
+                { return blist.filter.matchesExpression(cExpr, row, colCont); });
         }
 
-        if (!$.isBlank(colCont) && ($.subKeyDefined(expr.tableColumnId) ||
-                    $.subKeyDefined(expr.columnFieldName)))
+        if (!$.isBlank(colCont) && (!$.isBlank(expr.tableColumnId) ||
+                    !$.isBlank(expr.columnFieldName)))
         {
             var col = colCont.columnForIdentifier(expr.tableColumnId || expr.columnFieldName);
             if ($.isBlank(col)) { return false; }
@@ -156,7 +156,7 @@ blist.namespace.fetch('blist.filter');
         }
         else
         {
-            var op = filterOperatorw[expr.operator.toUpperCase()];
+            var op = filterOperators[expr.operator.toUpperCase()];
             if ($.isBlank(op)) { return false; }
             return op.matches(row, expr.value);
         }

@@ -1961,7 +1961,13 @@ var Dataset = ServerModel.extend({
                 if (!$.isBlank(ds._availableRowSets[newKey]))
                 { ds._activateRowSet(ds._availableRowSets[newKey]); }
                 else
-                { ds._activateRowSet(new RowSet(ds, newQ)); }
+                {
+                    // Find existing set to derive from
+                    var parRS = _.detect(_.sortBy(ds._availableRowSets,
+                                function(rs, key) { return -(rs._isComplete ? 1000000 : 1) * key.length; }),
+                            function(rs) { return rs.canDerive(newQ); });
+                    ds._activateRowSet(new RowSet(ds, newQ, parRS));
+                }
             }
             else
             {
@@ -2180,7 +2186,14 @@ var Dataset = ServerModel.extend({
 
     _invalidateAll: function(rowCountChanged, columnsChanged)
     {
-        _.each(this._availableRowSets, function(rs) { rs.invalidate(rowCountChanged, columnsChanged); });
+        var ds = this;
+        _.each(_.keys(ds._availableRowSets), function(rk)
+        {
+            if (ds._availableRowSets[rk] == ds._activeRowSet)
+            { ds._availableRowSets[rk].invalidate(rowCountChanged, columnsChanged); }
+            else
+            { delete ds._availableRowSets[rk]; }
+        });
     },
 
     _serverCreateRow: function(req, isBatch)
@@ -2743,12 +2756,29 @@ Dataset.search = function(params, successCallback, errorCallback)
 
 Dataset.translateQuery = function(query, ds)
 {
-    if ($.isBlank(query) || query.type != 'operator' || !_.isArray(query.children)) { return null; }
+    if ($.isBlank(query) || query.type != 'operator' || !_.isArray(query.children) ||
+            query.children.length == 0)
+    { return null; }
 
     var filterQ = { operator: query.value };
 
     if (filterQ.operator == 'AND' || filterQ.operator == 'OR')
-    { { filterQ.children = _.map(query.children, function(c) { return Dataset.translateQuery(c, ds); }); } }
+    {
+        filterQ.children = _.compact(_.map(query.children, function(c)
+        {
+            var fc = Dataset.translateQuery(c, ds);
+            if (!$.isBlank(fc)) { fc._parent = filterQ; }
+            return fc;
+        }));
+        if (filterQ.children.length == 0)
+        { return null; }
+        else if (filterQ.children.length == 1)
+        {
+            var cf = filterQ.children[0];
+            cf._parent = filterQ._parent;
+            filterQ = cf;
+        }
+    }
     else
     {
         _.each(query.children, function(c)

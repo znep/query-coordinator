@@ -1,7 +1,7 @@
 (function(){
 
 var RowSet = ServerModel.extend({
-    _init: function(ds, query)
+    _init: function(ds, query, parRS)
     {
         this._super();
 
@@ -14,8 +14,10 @@ var RowSet = ServerModel.extend({
         this._rowsLoading = {};
         this._pendingRowReqs = [];
 
+        this._parent = parRS;
         this._query = query || {};
         this._translatedQuery = Dataset.translateQuery(this._query, this._dataset);
+        this._loadedCount = 0;
         this._isComplete = false;
     },
 
@@ -72,6 +74,15 @@ var RowSet = ServerModel.extend({
     getRows: function(startOrIds, len, successCallback, errorCallback)
     {
         var rs = this;
+
+        // If we aren't complete, but can grab data from our parent, pre-emptively do so
+        if (!rs._isComplete && (rs._parent || {})._isComplete)
+        {
+            var newRows = _.map(_.select(rs._parent._rows, function(r)
+                    { return rs._doesBelong(r); }), function(r) { return $.extend({}, r); });
+            rs._totalCount = newRows.length;
+            rs._addRows(newRows, 0, true);
+        }
 
         var ids;
         var start;
@@ -266,6 +277,8 @@ var RowSet = ServerModel.extend({
         rs._setRowFormatting(row);
         $.addItemsToObject(this._rows, row, row.index);
         this._rowIDLookup[row.id] = row;
+        // Not going to change isComplete
+        this._loadedCount++;
         this._totalCount++;
         this.trigger('row_count_change');
     },
@@ -289,6 +302,8 @@ var RowSet = ServerModel.extend({
         if ($.isBlank(row)) { return; }
         $.removeItemsFromObject(this._rows, row.index, 1);
         delete this._rowIDLookup[row.id];
+        // Not going to change isComplete
+        this._loadedCount--;
         this._totalCount--;
     },
 
@@ -329,6 +344,8 @@ var RowSet = ServerModel.extend({
         delete this._curMetaReq;
         delete this._curMetaReqMeta;
         this._rowIDLookup = {};
+        this._loadedCount = 0;
+        this._isComplete = false;
         if (rowCountChanged) { delete this._totalCount; }
         if (columnsChanged) { this._columnsInvalid = true; }
         _.each(this._dataset.columns || [], function(c) { c.invalidateData(); });
@@ -339,6 +356,106 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
         _.each(rs._rows, function(r) { rs._setRowFormatting(r); });
+    },
+
+    canDerive: function(otherQ)
+    {
+        if (_.isEmpty(this._translatedQuery)) { return true; }
+        var transQ = Dataset.translateQuery(otherQ, this._dataset);
+        if (_.isEmpty(transQ)) { return false; }
+
+        // Find all leaves in both, and try to match them up on:
+        // value, columnFieldName, tableColumnId, operator, subColumn
+        // Reduce each set to highest common expr that completely changed
+        // Added operator under AND, removed under OR are good
+
+        var curLeaves = [];
+        var processLeaves = function(expr)
+        {
+            if (_.isArray(expr.children))
+            { _.each(expr.children, processLeaves); }
+            else
+            {
+                if ($.isBlank(expr._key)) { expr._key = RowSet.getQueryKey(expr); }
+                curLeaves.push(expr);
+            }
+        };
+        processLeaves(this._translatedQuery);
+
+        var leftoverLeaves = [];
+        var processOther = function(expr)
+        {
+            if (_.isArray(expr.children))
+            {
+                var leftoverChildren = _.select(expr.children, processOther);
+                // If all children are added, then just add this expr, not each child
+                if (leftoverChildren.length == expr.children.length)
+                { return true; }
+                else
+                {
+                    leftoverLeaves = leftoverLeaves.concat(leftoverChildren);
+                    return false;
+                }
+            }
+            else
+            {
+                if ($.isBlank(expr._key)) { expr._key = RowSet.getQueryKey(expr); }
+                var matchExpr;
+                curLeaves = _.reject(curLeaves, function(cl)
+                {
+                    if (cl._key == expr._key)
+                    {
+                        matchExpr = cl;
+                        return true;
+                    }
+                    return false;
+                });
+                return $.isBlank(matchExpr);
+            }
+        };
+        // If none of the leaves in otherQ matched, query is completely different
+        if (processOther(transQ)) { return false; }
+
+        // Combine removed items into higher-level ops if possible
+        var reduceNodes = function(nodes)
+        {
+            var result = [];
+            var madeChange = false;
+            while (nodes.length > 0)
+            {
+                var n = nodes[0];
+                if ($.isBlank(n._parent))
+                {
+                    result.push(nodes.shift());
+                    continue;
+                }
+                var p = n._parent;
+                var found = [];
+                nodes = _.reject(nodes, function(nn)
+                {
+                    if (nn._parent == p)
+                    {
+                        found.push(nn);
+                        return true;
+                    }
+                    return false;
+                });
+                if (found.length == p.children.length)
+                {
+                    result.push(p);
+                    madeChange = true;
+                }
+                else
+                { result = result.concat(found); }
+            }
+            return madeChange ? reduceNodes(result) : result;
+        };
+        curLeaves = reduceNodes(curLeaves);
+
+        return _.all(curLeaves, function(cl)
+                { return !$.isBlank(cl._parent) && cl._parent.operator.toLowerCase() == 'or'; }) &&
+            _.all(leftoverLeaves, function(ll)
+                { return $.isBlank(ll._parent) || ll._parent.operator.toLowerCase() == 'and'; });
     },
 
 
@@ -483,13 +600,13 @@ var RowSet = ServerModel.extend({
         rs._dataset.makeRequest(req);
     },
 
-    _addRows: function(newRows, start)
+    _addRows: function(newRows, start, skipTranslate)
     {
         var rs = this;
         var translateRow = function(r, parCol)
         {
             var adjVals = {invalid: {}, changed: {}, error: {}, sessionMeta: {}};
-            if (!$.isBlank(_.detect(r, function(val, id)
+            if (_.any(r, function(val, id)
             {
                 var newVal;
                 // A few columns don't have original lookups
@@ -499,7 +616,7 @@ var RowSet = ServerModel.extend({
                 if ($.isBlank(c)) { return true; }
 
                 if (c.isMeta && c.name == 'meta')
-                { newVal = JSON.parse(val || 'null'); }
+                { newVal = _.isString(val) ? JSON.parse(val || 'null') : val; }
 
                 if ($.isPlainObject(val))
                 {
@@ -533,7 +650,7 @@ var RowSet = ServerModel.extend({
                 { adjVals[c.lookup] = newVal; }
 
                 return false;
-            }))) { return false; }
+            })) { return false; }
 
             $.extend(r, adjVals);
 
@@ -575,7 +692,7 @@ var RowSet = ServerModel.extend({
         var hasIndex = !$.isBlank(start);
         _.each(newRows, function(r, i)
         {
-            var success = translateRow(r);
+            var success = skipTranslate || translateRow(r);
             var ind;
             if (hasIndex)
             { ind = start + i; }
@@ -589,6 +706,7 @@ var RowSet = ServerModel.extend({
                     oldRows.push(oldRow);
                     delete rs._rows[ind];
                     delete rs._rowIDLookup[oldRow.id];
+                    rs._loadedCount--;
                 }
             }
             else
@@ -598,6 +716,7 @@ var RowSet = ServerModel.extend({
                 {
                     oldRows.push(oldRow);
                     delete rs._rowIDLookup[oldRow.id];
+                    rs._loadedCount--;
                 }
             }
 
@@ -609,9 +728,11 @@ var RowSet = ServerModel.extend({
                 rs._rows[r.index] = r;
             }
             rs._rowIDLookup[r.id] = r;
+            rs._loadedCount++;
             adjRows.push(r);
         });
 
+        rs._isComplete = rs._totalCount == rs._loadedCount;
         if (oldRows.length > 0)
         { rs.trigger('row_change', [oldRows, true]); }
 

@@ -893,8 +893,7 @@ var Dataset = ServerModel.extend({
             });
 
             ds._aggregatesStale = false;
-            if ($.isBlank(customAggs))
-            { if (_.isFunction(callback)) { callback(); } }
+            if (_.isFunction(callback)) { callback(); }
         };
 
         // If aggregates are stale, clear them all out to avoid confusion
@@ -916,34 +915,7 @@ var Dataset = ServerModel.extend({
             });
 
         if (isStale)
-        {
-            var args = {success: aggResult, params: {method: 'getAggregates'},
-                inline: true};
-
-            if (!$.isBlank(customAggs))
-            {
-                var ilViews = [];
-                _.each(customAggs, function(aggList, cId)
-                {
-                    _.each(aggList, function(a, i)
-                    {
-                        if ($.isBlank(ilViews[i]))
-                        { ilViews[i] = ds.cleanCopy(); }
-                        var col = _.detect(ilViews[i].columns, function(c)
-                        { return c.id == parseInt(cId); });
-                        col.format.aggregate = a;
-                    });
-                });
-                _.each(ilViews, function(v)
-                {
-                    args = $.extend({}, args,
-                        {data: JSON.stringify(v), batch: true});
-                    ds.makeRequest(args);
-                });
-                ds.sendBatch(callback);
-            }
-            else { ds.makeRequest(args); }
-        }
+        { ds._activeRowSet.getAggregates(aggResult, customAggs); }
         else
         { callback(); }
     },

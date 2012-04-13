@@ -277,6 +277,7 @@ var RowSet = ServerModel.extend({
         rs._setRowFormatting(row);
         $.addItemsToObject(this._rows, row, row.index);
         this._rowIDLookup[row.id] = row;
+        delete this._aggCache;
         // Not going to change isComplete
         this._loadedCount++;
         this._totalCount++;
@@ -288,6 +289,7 @@ var RowSet = ServerModel.extend({
         var curRow = this._rowIDLookup[$.isBlank(oldID) ? row.id : oldID];
         $.extend(curRow, row, {index: curRow.index});
         rs._setRowFormatting(curRow);
+        delete this._aggCache;
         if (!$.isBlank(oldID))
         {
             this._rowIDLookup[curRow.id] = curRow;
@@ -302,6 +304,7 @@ var RowSet = ServerModel.extend({
         if ($.isBlank(row)) { return; }
         $.removeItemsFromObject(this._rows, row.index, 1);
         delete this._rowIDLookup[row.id];
+        delete this._aggCache;
         // Not going to change isComplete
         this._loadedCount--;
         this._totalCount--;
@@ -319,6 +322,99 @@ var RowSet = ServerModel.extend({
     reload: function(successCallback, errorCallback)
     {
         this._loadRows(0, 1, successCallback, errorCallback, true, true);
+    },
+
+    getAggregates: function(callback, customAggs)
+    {
+        var rs = this;
+        rs._aggCache = rs._aggCache || {};
+
+        var aggs = [];
+        var callResults = function() { callback(aggs); };
+
+        var gotAggs = function(recAggs)
+        {
+            _.each(recAggs, function(agg)
+            {
+                rs._aggCache[agg.columnId] = rs._aggCache[agg.columnId] || {};
+                rs._aggCache[agg.columnId][agg.name] = agg.value;
+                aggs.push(agg);
+            });
+        };
+
+        var args = {params: {method: 'getAggregates'}, inline: true};
+        var needReq = false;
+        if (!$.isBlank(customAggs))
+        {
+            var ilViews = [];
+            _.each(customAggs, function(aggList, cId)
+            {
+                _.each(aggList, function(a, i)
+                {
+                    if ($.subKeyDefined(rs._aggCache, cId + '.' + a))
+                    { aggs.push({columnId: cId, name: a, value: rs._aggCache[cId][a]}); }
+                    else if (rs._isComplete)
+                    { gotAggs([{columnId: cId, name: a, value: rs._calculateAggregate(cId, a)}]); }
+
+                    else
+                    {
+                        needReq = true;
+                        if ($.isBlank(ilViews[i]))
+                        { ilViews[i] = rs._dataset.cleanCopy(); }
+                        var col = _.detect(ilViews[i].columns, function(c)
+                        { return c.id == parseInt(cId); });
+                        col.format.aggregate = a;
+                    }
+                });
+            });
+
+            if (needReq)
+            {
+                args.success = gotAggs;
+                _.each(ilViews, function(v)
+                {
+                    if ($.isBlank(v)) { return; }
+                    args = $.extend({}, args, {data: JSON.stringify(v), batch: true});
+                    rs._dataset.makeRequest(args);
+                });
+                rs._dataset.sendBatch(callResults);
+            }
+            else
+            { callResults(); }
+        }
+        else
+        {
+            _.each(rs._dataset.realColumns, function(c)
+            {
+                if ($.subKeyDefined(c, 'format.aggregate'))
+                {
+                    if ($.subKeyDefined(rs._aggCache, c.id + '.' + c.format.aggregate))
+                    {
+                        aggs.push({columnId: c.id, name: c.format.aggregate,
+                            value: rs._aggCache[c.id][c.format.aggregate]});
+                    }
+                    else if (rs._isComplete)
+                    {
+                        gotAggs([{columnId: c.id, name: c.format.aggregate,
+                            value: rs._calculateAggregate(c.id, c.format.aggregate)}]);
+                    }
+                    else { needReq = true; }
+                }
+            });
+
+            if (needReq)
+            {
+                aggs = [];
+                args.success = function(recAggs)
+                {
+                    gotAggs(recAggs);
+                    callResults();
+                };
+                rs._dataset.makeRequest(args);
+            }
+            else
+            { callResults(); }
+        }
     },
 
     activate: function()
@@ -346,6 +442,7 @@ var RowSet = ServerModel.extend({
         this._rowIDLookup = {};
         this._loadedCount = 0;
         this._isComplete = false;
+        delete this._aggCache;
         if (rowCountChanged) { delete this._totalCount; }
         if (columnsChanged) { this._columnsInvalid = true; }
         _.each(this._dataset.columns || [], function(c) { c.invalidateData(); });
@@ -742,6 +839,19 @@ var RowSet = ServerModel.extend({
     _doesBelong: function(row)
     {
         return blist.filter.matchesExpression(this._translatedQuery, row, this._dataset);
+    },
+
+    _calculateAggregate: function(cId, aggName)
+    {
+        var rs = this;
+        var col = rs._dataset.columnForIdentifier(cId);
+        if ($.isBlank(col)) { return null; }
+
+        var agg = _.detect(col.renderType.aggregates, function(a) { return a.value == aggName; });
+        if ($.isBlank(agg)) { return null; }
+
+        var values = _.map(rs._rows, function(r) { return r[col.lookup]; });
+        return agg.calculate(values);
     },
 
     _setRowFormatting: function(row)

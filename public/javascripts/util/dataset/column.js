@@ -188,7 +188,7 @@ var Column = ServerModel.extend({
         this._setUpColumn();
 
         if (oldWidth !== col.width) { col.view.trigger('column_resized', [col]); }
-        if (!$.isBlank(newCol.updatedAggregate))
+        if ($.subKeyDefined(newCol, 'updatedAggregate.value'))
         {
             col.aggregates[newCol.updatedAggregate.name] =
                 parseFloat(newCol.updatedAggregate.value);

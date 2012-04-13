@@ -600,11 +600,47 @@ blist.namespace.fetch('blist.datatypes');
 
     // Aggregates
     var aggs = [
-        {text: 'Average', value: 'average'},
-        {text: 'Count', value: 'count'},
-        {text: 'Sum', value: 'sum'},
-        {text: 'Maximum', value: 'maximum'},
-        {text: 'Minimum', value: 'minimum'}
+        {text: 'Average', value: 'average', calculate: function(values)
+            {
+                var count = 0;
+                var sum = _.reduce(values,
+                        function(memo, v)
+                        {
+                            if ($.isBlank(v)) { return memo; }
+                            count++;
+                            return memo + parseFloat(v);
+                        }, 0);
+                return sum / (count || 1);
+            }},
+
+        {text: 'Count', value: 'count', calculate: function(values)
+            { return _.reduce(values, function(memo, v) { return memo + ($.isBlank(v) ? 0 : 1); }, 0); }},
+
+        {text: 'Sum', value: 'sum', calculate: function(values)
+            {
+                return _.reduce(values, function(memo, v)
+                        { return memo + ($.isBlank(v) ? 0 : parseFloat(v)); }, 0);
+            }},
+
+        {text: 'Maximum', value: 'maximum',
+            calculate: function(values)
+            {
+                return _.reduce(values, function(memo, v)
+                        {
+                            return $.isBlank(memo) ? v :
+                                ($.isBlank(v) ? memo : Math.max(memo, parseFloat(v)));
+                        }, null);
+            }},
+
+        {text: 'Minimum', value: 'minimum',
+            calculate: function(values)
+            {
+                return _.reduce(values, function(memo, v)
+                        {
+                            return $.isBlank(memo) ? v :
+                                ($.isBlank(v) ? memo : Math.min(memo, parseFloat(v)));
+                        }, null);
+            }}
     ];
 
     var nonNumericAggs = _.select(aggs, function(a)

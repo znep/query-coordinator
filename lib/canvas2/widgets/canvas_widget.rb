@@ -37,7 +37,7 @@ module Canvas2
     end
 
     def get_context(cId)
-      DataContext.available_contexts[cId] || (@properties['entity'] || {})[cId]
+      DataContext.available_contexts[cId] || (@properties['entity'] || {}).with_indifferent_access[cId]
     end
 
     def string_substitute(text, special_resolver = nil)

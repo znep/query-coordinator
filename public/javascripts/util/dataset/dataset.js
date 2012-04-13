@@ -53,7 +53,8 @@ var Dataset = ServerModel.extend({
         this.valid = this._checkValidity();
 
         // We need an active row set to start
-        this._savedRowSet = new RowSet(this, this.cleanFilters());
+        this._savedRowSet = new RowSet(this, {orderBys: this.query.orderBys,
+            filterCondition: this.cleanFilters()});
         this._activateRowSet(this._savedRowSet);
 
         this._pendingRowEdits = {};
@@ -1877,7 +1878,7 @@ var Dataset = ServerModel.extend({
         ds._updateGroupings(oldGroupings, oldGroupAggs);
 
         // Clean out any empty keys in the query
-        _.each(['namedFilters', 'filterCondition', 'sortBys', 'groupBys'],
+        _.each(['namedFilters', 'filterCondition', 'orderBys', 'groupBys'],
             function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
 
         var needsDTChange;
@@ -1926,10 +1927,11 @@ var Dataset = ServerModel.extend({
                 !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters);
             var nonFilterChanged = oldSearch != ds.searchString ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys);
-            if (filterChanged && !nonFilterChanged)
+            if ((filterChanged || !_.isEqual(oldQuery.orderBys, ds.query.orderBys)) && !nonFilterChanged)
             {
-                var newQ = ds.cleanFilters();
-                var newKey = RowSet.getQueryKey(Dataset.translateQuery(newQ, ds));
+                var newQ = {orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters()};
+                var newKey = RowSet.getQueryKey({orderBys: ds.query.orderBys,
+                    filterCondition: Dataset.translateFilterCondition(newQ.filterCondition, ds)});
                 if (!$.isBlank(ds._availableRowSets[newKey]))
                 { ds._activateRowSet(ds._availableRowSets[newKey]); }
                 else
@@ -2726,21 +2728,21 @@ Dataset.search = function(params, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
-Dataset.translateQuery = function(query, ds)
+Dataset.translateFilterCondition = function(fc, ds)
 {
-    if ($.isBlank(query) || query.type != 'operator' || !_.isArray(query.children) ||
-            query.children.length == 0)
+    if ($.isBlank(fc) || fc.type != 'operator' || !_.isArray(fc.children) ||
+            fc.children.length == 0)
     { return null; }
 
-    var filterQ = { operator: query.value };
+    var filterQ = { operator: fc.value };
 
     if (filterQ.operator == 'AND' || filterQ.operator == 'OR')
     {
-        filterQ.children = _.compact(_.map(query.children, function(c)
+        filterQ.children = _.compact(_.map(fc.children, function(c)
         {
-            var fc = Dataset.translateQuery(c, ds);
-            if (!$.isBlank(fc)) { fc._parent = filterQ; }
-            return fc;
+            var fcc = Dataset.translateFilterCondition(c, ds);
+            if (!$.isBlank(fcc)) { fcc._parent = filterQ; }
+            return fcc;
         }));
         if (filterQ.children.length == 0)
         { return null; }
@@ -2753,7 +2755,7 @@ Dataset.translateQuery = function(query, ds)
     }
     else
     {
-        _.each(query.children, function(c)
+        _.each(fc.children, function(c)
         {
             if (c.type == 'column')
             {

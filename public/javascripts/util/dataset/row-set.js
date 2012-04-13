@@ -16,7 +16,9 @@ var RowSet = ServerModel.extend({
 
         this._parent = parRS;
         this._query = query || {};
-        this._translatedQuery = Dataset.translateQuery(this._query, this._dataset);
+        this._translatedQuery =
+            $.extend({}, this._query, {filterCondition: Dataset.translateFilterCondition(
+                    this._query.filterCondition, this._dataset)});
         this._loadedCount = 0;
         this._isComplete = false;
     },
@@ -81,6 +83,32 @@ var RowSet = ServerModel.extend({
             var newRows = _.map(_.select(rs._parent._rows, function(r)
                     { return rs._doesBelong(r); }), function(r) { return $.extend({}, r); });
             rs._totalCount = newRows.length;
+            newRows = _.sortBy(newRows, function(r) { return r.position; });
+            _.each((rs._translatedQuery.orderBys || []).slice().reverse(), function(ob)
+            {
+                var col = rs._dataset.columnForIdentifier(ob.expression.columnId);
+                if ($.isBlank(col)) { return; }
+                if (!ob.ascending) { newRows.reverse(); }
+                var blankRows = [];
+                newRows = _.sortBy(_.reject(newRows, function(r)
+                    {
+                        if ($.isBlank(r[col.lookup]))
+                        {
+                            blankRows.push(r);
+                            return true;
+                        }
+                        return false;
+                    }),
+                    function(r)
+                    {
+                        var v = r[col.lookup];
+                        if (_.isFunction(col.renderType.matchValue))
+                        { v = col.renderType.matchValue(v, col); }
+                        return v;
+                    });
+                if (!ob.ascending) { newRows.reverse(); }
+                newRows = newRows.concat(blankRows);
+            });
             rs._addRows(newRows, 0, true);
         }
 
@@ -457,9 +485,9 @@ var RowSet = ServerModel.extend({
 
     canDerive: function(otherQ)
     {
-        if (_.isEmpty(this._translatedQuery)) { return true; }
-        var transQ = Dataset.translateQuery(otherQ, this._dataset);
-        if (_.isEmpty(transQ)) { return false; }
+        if (_.isEmpty(this._translatedQuery.filterCondition)) { return true; }
+        var transFC = Dataset.translateFilterCondition(otherQ.filterCondition, this._dataset);
+        if (_.isEmpty(transFC)) { return false; }
 
         // Find all leaves in both, and try to match them up on:
         // value, columnFieldName, tableColumnId, operator, subColumn
@@ -473,11 +501,11 @@ var RowSet = ServerModel.extend({
             { _.each(expr.children, processLeaves); }
             else
             {
-                if ($.isBlank(expr._key)) { expr._key = RowSet.getQueryKey(expr); }
+                if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
                 curLeaves.push(expr);
             }
         };
-        processLeaves(this._translatedQuery);
+        processLeaves(this._translatedQuery.filterCondition);
 
         var leftoverLeaves = [];
         var processOther = function(expr)
@@ -496,7 +524,7 @@ var RowSet = ServerModel.extend({
             }
             else
             {
-                if ($.isBlank(expr._key)) { expr._key = RowSet.getQueryKey(expr); }
+                if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
                 var matchExpr;
                 curLeaves = _.reject(curLeaves, function(cl)
                 {
@@ -510,8 +538,8 @@ var RowSet = ServerModel.extend({
                 return $.isBlank(matchExpr);
             }
         };
-        // If none of the leaves in otherQ matched, query is completely different
-        if (processOther(transQ)) { return false; }
+        // If none of the leaves in otherQ matched, filter condition is completely different
+        if (processOther(transFC)) { return false; }
 
         // Combine removed items into higher-level ops if possible
         var reduceNodes = function(nodes)
@@ -580,10 +608,7 @@ var RowSet = ServerModel.extend({
 
         var reqData = rs._dataset.cleanCopy();
         if (!_.isEmpty(rs._query))
-        {
-            reqData.query = reqData.query || {};
-            reqData.query.filterCondition = rs._query;
-        }
+        { reqData.query = rs._query; }
 
         if (fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
             !_.isEqual(reqData, rs._curMetaReqMeta))
@@ -838,7 +863,7 @@ var RowSet = ServerModel.extend({
 
     _doesBelong: function(row)
     {
-        return blist.filter.matchesExpression(this._translatedQuery, row, this._dataset);
+        return blist.filter.matchesExpression(this._translatedQuery.filterCondition, row, this._dataset);
     },
 
     _calculateAggregate: function(cId, aggName)
@@ -925,16 +950,28 @@ var RowSet = ServerModel.extend({
 
 RowSet.getQueryKey = function(query)
 {
-    if (_.isEmpty(query)) { return ''; }
-    var op = query.operator.toUpperCase();
+    return getSortKey(query.orderBys) + '/' + getFCKey(query.filterCondition);
+};
+
+function getSortKey(ob)
+{
+    if (_.isEmpty(ob)) { return ''; }
+    return '(' + _.map(ob, function(o)
+                { return o.expression.columnId + ':' + o.ascending; }).join('|') + ')';
+};
+
+function getFCKey(fc)
+{
+    if (_.isEmpty(fc)) { return ''; }
+    var op = fc.operator.toUpperCase();
     if (op == 'AND' || op == 'OR')
     {
-        var childKeys = _.map(query.children, function(c) { return RowSet.getQueryKey(c); });
+        var childKeys = _.map(fc.children, function(c) { return getFCKey(c); });
         return childKeys.length < 2 ? (childKeys[0] || '') : '(' + childKeys.join('|' + op + '|') + ')';
     }
-    return '(' + (query.columnFieldName || query.tableColumnId) +
-        (!$.isBlank(query.subColumn) ? '[' + query.subColumn + ']' : '') +
-        '|' + op + '|' + query.value + ')';
+    return '(' + (fc.columnFieldName || fc.tableColumnId) +
+        (!$.isBlank(fc.subColumn) ? '[' + fc.subColumn + ']' : '') +
+        '|' + op + '|' + fc.value + ')';
 };
 
 if (blist.inBrowser)

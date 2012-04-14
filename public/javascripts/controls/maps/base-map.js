@@ -1700,6 +1700,10 @@
                 }});
                 mapObj.map.addControl(mapObj._selectControl);
                 mapObj._selectControl.activate();
+
+                // This is to allow us to drag when (for example) clicking on a polygon.
+                // It is probably the best way to do this, short of modifying SelectFeature.
+                mapObj._selectControl.handlers.feature.stopDown = false;
             }
             else
             { mapObj._selectControl.setLayer(mapObj._displayLayers); }

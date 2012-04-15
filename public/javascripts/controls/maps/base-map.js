@@ -1037,12 +1037,7 @@
                 { marker = new OpenLayers.Feature.Vector(
                     new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)); }
                 else
-                {
-                    var geometry = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
-                    if (!marker.geometry.equals(geometry))
-                    { marker.geometry = geometry; }
-                    viewConfig._adjustBounds = true;
-                }
+                { viewConfig._adjustBounds = true; }
 
                 marker.attributes.clusterParent = details.clusterParent;
                 if (details.dataView)
@@ -1063,6 +1058,9 @@
                     if (details.size)
                     { marker.style.pointRadius = 5 + (2 * details.size); }
                 }
+
+                if (!newMarker)
+                { marker.move(lonlat); } // Feature/Vector#move calls drawFeature.
             }
             else if (geoType == 'polyline')
             {
@@ -1092,6 +1090,8 @@
                 marker.attributes.flyout = mapObj.getFlyout(details.rows,
                     details.flyoutDetails, details.dataView);
                 marker.attributes.redirects_to = details.redirect_to;
+
+                viewConfig._displayLayer.drawFeature(marker);
             }
 
             marker.attributes.heatStrength = 1;
@@ -1104,8 +1104,6 @@
                 mapObj._markers[dupKey] = marker;
                 viewConfig._displayLayer.addFeatures([marker]);
             }
-            else
-            { viewConfig._displayLayer.drawFeature(marker); }
 
             return marker;
         },

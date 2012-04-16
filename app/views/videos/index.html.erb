@@ -56,10 +56,7 @@
     <%- VIDEO_LIST.each do |video| -%>
       <li data-id="<%= video['name'] %>" data-type="<%= video['type'] %>"
           data-audience="<%= video['audience'] %>" data-added="<%= video['added'] %>"
-          data-wistiaflashvideoid="<%= video['wistia']['flashvideoid'] %>"
-          data-wistiahtml5videoid="<%= video['wistia']['html5videoid'] %>"
-          data-wistiastillid="<%= video['wistia']['stillid'] %>"
-          data-wistiaproductionid="<%= video['wistia']['productionid'] %>">
+          data-embedid="<%= video['wistia']['embedid'] %>">
         <a href="#<%= video['name'] %>">
           <img src="/stylesheets/images/video_thumbnails/<%= video['name'] %>.png" alt="<%= video['title'] %>" />
           <h2><%= video['title'] %></h2>
@@ -70,7 +67,7 @@
   </ul>
 </div>
 
-<textarea id="embedTemplate"><object width="640" height="360" id="wistia_%productionid%" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param name="movie" value="//embed.wistia.com/flash/embed_player_v1.1.swf"/><param name="allowfullscreen" value="true"/><param name="allowscriptaccess" value="always"/><param name="wmode" value="opaque"/><param name="flashvars" value="videoUrl=//embed.wistia.com/deliveries/%flashvideoid%.bin&stillUrl=//embed.wistia.com/deliveries/%stillid%.bin&unbufferedSeek=false&controlsVisibleOnLoad=false&autoPlay=false&endVideoBehavior=default&playButtonVisible=true&embedServiceURL=//distillery.wistia.com/x&accountKey=wistia-production_4324&mediaID=wistia-production_%productionid%"/><embed src="//embed.wistia.com/flash/embed_player_v1.1.swf" width="640" height="360" name="wistia_%productionid%" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" wmode="opaque" flashvars="videoUrl=//embed.wistia.com/deliveries/%flashvideoid%.bin&stillUrl=//embed.wistia.com/deliveries/%stillid%.bin&unbufferedSeek=false&controlsVisibleOnLoad=false&autoPlay=false&endVideoBehavior=default&playButtonVisible=true&embedServiceURL=//distillery.wistia.com/x&accountKey=wistia-production_4324&mediaID=wistia-production_%productionid%"></embed></object><script src="//embed.wistia.com/embeds/v.js" charset="ISO-8859-1"></script><script>if(!navigator.mimeTypes['application/x-shockwave-flash'])Wistia.VideoEmbed('wistia_%productionid%',640,360,{videoUrl:'//embed.wistia.com/deliveries/%html5videoid%.bin',stillUrl:'//embed.wistia.com/deliveries/%stillid%.bin',distilleryUrl:'//distillery.wistia.com/x',accountKey:'wistia-production_4324',mediaId:'wistia-production_%productionid%'})</script></textarea>
+<textarea id="embedTemplate"><iframe src="https://fast.wistia.com/embed/iframe/%embedid%?videoWidth=640&amp;videoHeight=360&amp;playButton=false&amp;playerColor=274066&amp;autoPlay=true" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" width="640" height="360"></iframe></textarea>
 
 <%- content_for :modals do -%>
   <div class="modalDialog videoPopupModal">

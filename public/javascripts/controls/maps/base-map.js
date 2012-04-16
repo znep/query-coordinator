@@ -248,12 +248,13 @@
 
                 var $layers = mapObj.$dom().siblings('.mapLayers');
                 $layers.find('a.button').click(function() {
+                    var $this = $(this);
                     Dataset.search({ limitTo: 'maps' },
                         function(data)
                         {
                             var views = _.reject(data.views,
                                 function(view) { return view.viewType == 'geo'; });
-                            var $select = $.tag({ tagName: 'li', contents: [{ tagName: 'select',
+                            var $select = $.tag({ tagName: 'div', contents: [{ tagName: 'select',
                                 contents: [{ tagName: 'option', contents: 'Select a map' }].concat(
                                 _.map(views, function(obj)
                                 { return { tagName: 'option', value: obj.id, contents: obj.name }; })
@@ -276,9 +277,10 @@
                                         mapObj.ready();
                                     }
                                     mapObj.getDataForAllViews();
+                                    $select.remove();
                                 });
                             }).uniform();
-                            $layers.find('ul.data').show().append($select);
+                            $this.before($select);
                         }
                     );
                 });

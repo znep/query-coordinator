@@ -38,6 +38,7 @@ $(function()
         '/facet/countries': 'countries',
         '/page/organization': 'organization',
         '/page/funds': 'funds',
+        '/page/trust-funds': 'trust-funds',
         '/page/datasets': 'datasets',
         '/page/faqs': 'faqs',
         '/page/about': 'about'

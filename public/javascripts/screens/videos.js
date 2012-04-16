@@ -13,10 +13,7 @@
 
         // process the templates
         var embedCode = $('#embedTemplate').text()
-            .replace(/%flashvideoid%/g, $item.attr('data-wistiaflashvideoid'))
-            .replace(/%html5videoid%/g, $item.attr('data-wistiahtml5videoid'))
-            .replace(/%stillid%/g, $item.attr('data-wistiastillid'))
-            .replace(/%productionid%/g, $item.attr('data-wistiaproductionid'));
+            .replace(/%embedid%/g, $item.attr('data-embedid'));
 
         if (destination === 'topLevel')
         {

@@ -723,10 +723,14 @@ var Dataset = ServerModel.extend({
             {
                 // If we got here, and totalRows is still blank, bail, because something
                 // has changed in the meantime and this load is just invalid
-                if ($.isBlank(ds.totalRows)) { return; }
+                if ($.isBlank(ds.totalRows))
+                {
+                    if (_.isFunction(errorCallback)) { errorCallback({cancelled: true}); }
+                    return;
+                }
                 _.each(reqs, function(req)
                 {
-                    if (req.start >= ds.totalRows) { return false; }
+                    if (req.start >= ds.totalRows) { return; }
                     if (req.finish >= ds.totalRows)
                     { req.finish = ds.totalRows - 1; }
                     ds._loadRows(req.start, req.finish - req.start + 1, successCallback, errorCallback);
@@ -2342,6 +2346,13 @@ var Dataset = ServerModel.extend({
                     }
                 }
                 ds._update(result.meta.view, true, true, fullLoad);
+            }
+            // If we loaded without meta but don't have meta available, bail
+            else if ($.isBlank(ds.totalRows))
+            {
+                if (_.isFunction(errorCallback))
+                { _.defer(function() { errorCallback({cancelled: true}); }); }
+                return;
             }
 
             if (fullLoad) { ds._clearTemporary(); }

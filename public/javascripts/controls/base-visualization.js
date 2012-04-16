@@ -575,6 +575,7 @@
                                                      : data.length;
                 vizObj.totalRowsForAllViews();
                 delete vizObj._initialLoad;
+                delete vizObj._loadDelay;
             },
             function(errObj)
             {
@@ -583,7 +584,14 @@
                 // respond normally.
                 if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled &&
                     (vizObj._initialLoad || !vizObj._boundViewEvents))
-                { vizObj.getDataForView(view); }
+                {
+                    // Exponential back-off in case we're waiting on something that needs to finish
+                    if ($.isBlank(vizObj._loadDelay) || vizObj._loadDelay == 0)
+                    { vizObj._loadDelay = 500; }
+                    setTimeout(function()
+                        { vizObj.getDataForView(view); }, vizObj._loadDelay);
+                    vizObj._loadDelay *= 2;
+                }
                 else if (vizObj._boundViewEvents) { delete vizObj._initialLoad; }
             });
         },

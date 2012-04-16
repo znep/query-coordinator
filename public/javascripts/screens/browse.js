@@ -157,7 +157,7 @@ $(function()
     // Sad hack: we don't have the stemmed version,
     // so just highlight the words they typed
     var searchRegex = blist.browse.query ?
-        new RegExp(blist.browse.query.replace(' ', '|'), 'gi') : '';
+        new RegExp(blist.browse.query.trim().replace(' ', '|'), 'gi') : '';
     // Render row search results, if any
     $browse.find('table tbody tr.withRows .rowSearchResults')
         .each(function()

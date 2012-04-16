@@ -485,102 +485,8 @@ var RowSet = ServerModel.extend({
 
     canDerive: function(otherQ)
     {
-        if (_.isEmpty(this._translatedQuery.filterCondition)) { return true; }
-        var transFC = Dataset.translateFilterCondition(otherQ.filterCondition, this._dataset);
-        if (_.isEmpty(transFC)) { return false; }
-
-        // Find all leaves in both, and try to match them up on:
-        // value, columnFieldName, tableColumnId, operator, subColumn
-        // Reduce each set to highest common expr that completely changed
-        // Added operator under AND, removed under OR are good
-
-        var curLeaves = [];
-        var processLeaves = function(expr)
-        {
-            if (_.isArray(expr.children))
-            { _.each(expr.children, processLeaves); }
-            else
-            {
-                if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
-                curLeaves.push(expr);
-            }
-        };
-        processLeaves(this._translatedQuery.filterCondition);
-
-        var leftoverLeaves = [];
-        var processOther = function(expr)
-        {
-            if (_.isArray(expr.children))
-            {
-                var leftoverChildren = _.select(expr.children, processOther);
-                // If all children are added, then just add this expr, not each child
-                if (leftoverChildren.length == expr.children.length)
-                { return true; }
-                else
-                {
-                    leftoverLeaves = leftoverLeaves.concat(leftoverChildren);
-                    return false;
-                }
-            }
-            else
-            {
-                if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
-                var matchExpr;
-                curLeaves = _.reject(curLeaves, function(cl)
-                {
-                    if (cl._key == expr._key)
-                    {
-                        matchExpr = cl;
-                        return true;
-                    }
-                    return false;
-                });
-                return $.isBlank(matchExpr);
-            }
-        };
-        // If none of the leaves in otherQ matched, filter condition is completely different
-        if (processOther(transFC)) { return false; }
-
-        // Combine removed items into higher-level ops if possible
-        var reduceNodes = function(nodes)
-        {
-            var result = [];
-            var madeChange = false;
-            while (nodes.length > 0)
-            {
-                var n = nodes[0];
-                if ($.isBlank(n._parent))
-                {
-                    result.push(nodes.shift());
-                    continue;
-                }
-                var p = n._parent;
-                var found = [];
-                nodes = _.reject(nodes, function(nn)
-                {
-                    if (nn._parent == p)
-                    {
-                        found.push(nn);
-                        return true;
-                    }
-                    return false;
-                });
-                if (found.length == p.children.length)
-                {
-                    result.push(p);
-                    madeChange = true;
-                }
-                else
-                { result = result.concat(found); }
-            }
-            return madeChange ? reduceNodes(result) : result;
-        };
-        curLeaves = reduceNodes(curLeaves);
-
-        return _.all(curLeaves, function(cl)
-                { return !$.isBlank(cl._parent) && cl._parent.operator.toLowerCase() == 'or'; }) &&
-            _.all(leftoverLeaves, function(ll)
-                { return $.isBlank(ll._parent) || ll._parent.operator.toLowerCase() == 'and'; });
+        return canDeriveExpr(this._translatedQuery.filterCondition,
+                Dataset.translateFilterCondition(otherQ.filterCondition, this._dataset));
     },
 
 
@@ -972,6 +878,124 @@ function getFCKey(fc)
     return '(' + (fc.columnFieldName || fc.tableColumnId) +
         (!$.isBlank(fc.subColumn) ? '[' + fc.subColumn + ']' : '') +
         '|' + op + '|' + fc.value + ')';
+};
+
+function canDeriveExpr(baseFC, otherFC)
+{
+    if (_.isEmpty(baseFC)) { return true; }
+    if (_.isEmpty(otherFC)) { return false; }
+
+    // Find all leaves in both, and try to match them up on:
+    // value, columnFieldName, tableColumnId, operator, subColumn (actually by key)
+    var curLeaves = [];
+    var processLeaves = function(expr)
+    {
+        if (_.isArray(expr.children))
+        { _.each(expr.children, processLeaves); }
+        else
+        {
+            if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
+            curLeaves.push(expr);
+        }
+    };
+    processLeaves(baseFC);
+
+    var leftoverLeaves = [];
+    var parDeriveCache = {};
+    var processOther = function(expr)
+    {
+        if (_.isArray(expr.children))
+        {
+            var leftoverChildren = _.select(expr.children, processOther);
+            // If all children are added, then just add this expr, not each child
+            if (leftoverChildren.length == expr.children.length)
+            { return true; }
+            else
+            {
+                leftoverLeaves = leftoverLeaves.concat(leftoverChildren);
+                return false;
+            }
+        }
+        else
+        {
+            if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
+            var matchExpr;
+            curLeaves = _.reject(curLeaves, function(cl)
+            {
+                // If we found a matching leaf, make sure the parents of each have
+                // the proper relationship
+                if (cl._key == expr._key)
+                {
+                    var parMatch = cl._parent == baseFC && expr._parent == otherFC ||
+                        $.isBlank(cl._parent) && $.isBlank(expr._parent) ||
+                        $.isBlank(cl._parent) && expr._parent.operator.toLowerCase() == 'and' ||
+                        $.isBlank(expr._parent) && cl._parent.operator.toLowerCase() == 'or';
+                    var k;
+                    if (!parMatch)
+                    {
+                        if ($.isBlank(cl._parent) || $.isBlank(expr._parent)) { return false; }
+                        if ($.isBlank(cl._parent._key)) { cl._parent._key = getFCKey(cl._parent); }
+                        if ($.isBlank(expr._parent._key)) { expr._parent._key = getFCKey(expr._parent); }
+                        k = cl._parent._key + '::' + expr._parent._key;
+                        if ($.isBlank(parDeriveCache[k]))
+                        { parDeriveCache[k] = canDeriveExpr(cl._parent, expr._parent); }
+                    }
+                    if (parMatch || parDeriveCache[k])
+                    {
+                        matchExpr = cl;
+                        return true;
+                    }
+                }
+                return false;
+            });
+            return $.isBlank(matchExpr);
+        }
+    };
+    // If none of the leaves in otherQ matched, filter condition is completely different
+    if (processOther(otherFC)) { return false; }
+
+    // Reduce each set to highest common expr that completely changed
+    // Combine removed items into higher-level ops if possible
+    var reduceNodes = function(nodes)
+    {
+        var result = [];
+        var madeChange = false;
+        while (nodes.length > 0)
+        {
+            var n = nodes[0];
+            if ($.isBlank(n._parent))
+            {
+                result.push(nodes.shift());
+                continue;
+            }
+            var p = n._parent;
+            var found = [];
+            nodes = _.reject(nodes, function(nn)
+            {
+                if (nn._parent == p)
+                {
+                    found.push(nn);
+                    return true;
+                }
+                return false;
+            });
+            if (found.length == p.children.length)
+            {
+                result.push(p);
+                madeChange = true;
+            }
+            else
+            { result = result.concat(found); }
+        }
+        return madeChange ? reduceNodes(result) : result;
+    };
+    curLeaves = reduceNodes(curLeaves);
+
+    // Added operator under AND, removed under OR are good
+    return _.all(curLeaves, function(cl)
+            { return !$.isBlank(cl._parent) && cl._parent.operator.toLowerCase() == 'or'; }) &&
+        _.all(leftoverLeaves, function(ll)
+            { return $.isBlank(ll._parent) || ll._parent.operator.toLowerCase() == 'and'; });
 };
 
 if (blist.inBrowser)

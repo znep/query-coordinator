@@ -562,7 +562,11 @@
         return _.detect(mapObj._featureSet.features, function(feature)
         {
             if (point instanceof OpenLayers.Geometry.Point)
-            { return (feature.oldGeometry || feature.geometry).containsPoint(point); }
+            {
+                var polygon = (feature.oldGeometry || feature.geometry);
+                return polygon.getBounds().contains(point.x, point.y)
+                    && polygon.containsPoint(point);
+            }
             else
             {
                 var featureName = feature.attributes['NAME']

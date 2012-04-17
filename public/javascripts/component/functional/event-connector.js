@@ -126,7 +126,7 @@ var getValue = function(trans, args)
         var expr = { operator: r.operator, value: r.value };
         if (!$.isBlank(col))
         { expr.tableColumnId = col.tableColumnId; }
-        var matches = blist.filter.matchesExpression(expr, row || v, (args.dataContext || {}).dataset);
+        var matches = blist.filter.matchesExpression(expr, (args.dataContext || {}).dataset)(row || v);
 
         if (matches) { v = r.result; }
         return matches;

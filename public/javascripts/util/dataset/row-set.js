@@ -21,6 +21,10 @@ var RowSet = ServerModel.extend({
                     this._query.filterCondition, this._dataset)});
         this._loadedCount = 0;
         this._isComplete = false;
+        this._matchesExpr = blist.filter.matchesExpression(this._translatedQuery.filterCondition,
+                this._dataset);
+
+        this.formattingChanged();
     },
 
     getKey: function()
@@ -48,7 +52,7 @@ var RowSet = ServerModel.extend({
         else
         {
             var gotID = function(data) { successCallback(data[id]); };
-            rs._dataset.makeRequest({inline: true,
+            rs.makeRequest({inline: true,
                 params: {method: 'getByIds', indexesOnly: true, ids: id},
                 success: gotID});
         }
@@ -88,9 +92,8 @@ var RowSet = ServerModel.extend({
             {
                 var col = rs._dataset.columnForIdentifier(ob.expression.columnId);
                 if ($.isBlank(col)) { return; }
-                if (!ob.ascending) { newRows.reverse(); }
                 var blankRows = [];
-                newRows = _.sortBy(_.reject(newRows, function(r)
+                var sortVals = _.map(_.reject(newRows, function(r)
                     {
                         if ($.isBlank(r[col.lookup]))
                         {
@@ -104,9 +107,14 @@ var RowSet = ServerModel.extend({
                         var v = r[col.lookup];
                         if (_.isFunction(col.renderType.matchValue))
                         { v = col.renderType.matchValue(v, col); }
-                        return v;
+                        return {sortVal: v, value: r};
                     });
-                if (!ob.ascending) { newRows.reverse(); }
+                newRows = _.pluck(sortVals.sort(function(l, r)
+                        {
+                            var a = l.sortVal;
+                            var b = r.sortVal;
+                            return (a < b ? -1 : a > b ? 1 : 0) * (ob.ascending ? 1 : -1);
+                        }), 'value');
                 newRows = newRows.concat(blankRows);
             });
             rs._addRows(newRows, 0, true);
@@ -402,8 +410,8 @@ var RowSet = ServerModel.extend({
                 _.each(ilViews, function(v)
                 {
                     if ($.isBlank(v)) { return; }
-                    args = $.extend({}, args, {data: JSON.stringify(v), batch: true});
-                    rs._dataset.makeRequest(args);
+                    args = $.extend({}, args, {data: v, batch: true});
+                    rs.makeRequest(args);
                 });
                 rs._dataset.sendBatch(callResults);
             }
@@ -438,7 +446,7 @@ var RowSet = ServerModel.extend({
                     gotAggs(recAggs);
                     callResults();
                 };
-                rs._dataset.makeRequest(args);
+                rs.makeRequest(args);
             }
             else
             { callResults(); }
@@ -480,6 +488,17 @@ var RowSet = ServerModel.extend({
     formattingChanged: function()
     {
         var rs = this;
+        var condFmt = rs._dataset.metadata.conditionalFormatting;
+        if (!_.isArray(condFmt))
+        { rs._condFmt = null; }
+        else
+        {
+            rs._condFmt = _.map(condFmt, function(c)
+            {
+                return $.extend({}, c,
+                    {matches: blist.filter.matchesExpression(c.condition, rs._dataset)});
+            });
+        }
         _.each(rs._rows, function(r) { rs._setRowFormatting(r); });
     },
 
@@ -487,6 +506,26 @@ var RowSet = ServerModel.extend({
     {
         return canDeriveExpr(this._translatedQuery.filterCondition,
                 Dataset.translateFilterCondition(otherQ.filterCondition, this._dataset));
+    },
+
+    makeRequest: function(args)
+    {
+        if (args.inline)
+        {
+            var d;
+            if (!$.isBlank(args.data))
+            { d = _.isString(args.data) ? JSON.parse(args.data) : args.data; }
+            else
+            { d = this._dataset.cleanCopy(); }
+            if (!_.isEmpty(this._query))
+            {
+                d.query = d.query || {};
+                d.query.orderBys = this._query.orderBys;
+                d.query.filterCondition = this._query.filterCondition;
+            }
+            args.data = JSON.stringify(d);
+        }
+        this._dataset.makeRequest(args);
     },
 
 
@@ -514,7 +553,11 @@ var RowSet = ServerModel.extend({
 
         var reqData = rs._dataset.cleanCopy();
         if (!_.isEmpty(rs._query))
-        { reqData.query = rs._query; }
+        {
+            reqData.query = reqData.query || {};
+            reqData.query.orderBys = rs._query.orderBys;
+            reqData.query.filterCondition = rs._query.filterCondition;
+        }
 
         if (fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
             !_.isEqual(reqData, rs._curMetaReqMeta))
@@ -625,7 +668,7 @@ var RowSet = ServerModel.extend({
             rs._curMetaReq = reqId;
             rs._curMetaReqMeta = reqData;
         }
-        rs._dataset.makeRequest(req);
+        rs.makeRequest(req);
     },
 
     _addRows: function(newRows, start, skipTranslate)
@@ -769,7 +812,7 @@ var RowSet = ServerModel.extend({
 
     _doesBelong: function(row)
     {
-        return blist.filter.matchesExpression(this._translatedQuery.filterCondition, row, this._dataset);
+        return this._matchesExpr(row);
     },
 
     _calculateAggregate: function(cId, aggName)
@@ -840,11 +883,9 @@ var RowSet = ServerModel.extend({
         // First clear color & icon, as they will be set properly later
         row.color = row.icon = null;
 
-        var condFmt = rs._dataset.metadata.conditionalFormatting;
-        if (!_.isArray(condFmt)) { return null; }
+        if (!_.isArray(rs._condFmt)) { return null; }
 
-        var relevantCondition = _.detect(condFmt, function(c)
-            { return blist.filter.matchesExpression(c.condition, row, rs._dataset); }) || {};
+        var relevantCondition = _.detect(rs._condFmt, function(c) { return c.matches(row); }) || {};
 
         if (relevantCondition.color)
         { row.color = relevantCondition.color; }
@@ -856,7 +897,7 @@ var RowSet = ServerModel.extend({
 
 RowSet.getQueryKey = function(query)
 {
-    return getSortKey(query.orderBys) + '/' + getFCKey(query.filterCondition);
+    return getSortKey(query.orderBys) + '/' + blist.filter.getFilterKey(query.filterCondition);
 };
 
 function getSortKey(ob)
@@ -864,20 +905,6 @@ function getSortKey(ob)
     if (_.isEmpty(ob)) { return ''; }
     return '(' + _.map(ob, function(o)
                 { return o.expression.columnId + ':' + o.ascending; }).join('|') + ')';
-};
-
-function getFCKey(fc)
-{
-    if (_.isEmpty(fc)) { return ''; }
-    var op = fc.operator.toUpperCase();
-    if (op == 'AND' || op == 'OR')
-    {
-        var childKeys = _.map(fc.children, function(c) { return getFCKey(c); });
-        return childKeys.length < 2 ? (childKeys[0] || '') : '(' + childKeys.join('|' + op + '|') + ')';
-    }
-    return '(' + (fc.columnFieldName || fc.tableColumnId) +
-        (!$.isBlank(fc.subColumn) ? '[' + fc.subColumn + ']' : '') +
-        '|' + op + '|' + fc.value + ')';
 };
 
 function canDeriveExpr(baseFC, otherFC)
@@ -894,7 +921,7 @@ function canDeriveExpr(baseFC, otherFC)
         { _.each(expr.children, processLeaves); }
         else
         {
-            if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
+            if ($.isBlank(expr._key)) { expr._key = blist.filter.getFilterKey(expr); }
             curLeaves.push(expr);
         }
     };
@@ -918,7 +945,7 @@ function canDeriveExpr(baseFC, otherFC)
         }
         else
         {
-            if ($.isBlank(expr._key)) { expr._key = getFCKey(expr); }
+            if ($.isBlank(expr._key)) { expr._key = blist.filter.getFilterKey(expr); }
             var matchExpr;
             curLeaves = _.reject(curLeaves, function(cl)
             {
@@ -934,8 +961,10 @@ function canDeriveExpr(baseFC, otherFC)
                     if (!parMatch)
                     {
                         if ($.isBlank(cl._parent) || $.isBlank(expr._parent)) { return false; }
-                        if ($.isBlank(cl._parent._key)) { cl._parent._key = getFCKey(cl._parent); }
-                        if ($.isBlank(expr._parent._key)) { expr._parent._key = getFCKey(expr._parent); }
+                        if ($.isBlank(cl._parent._key))
+                        { cl._parent._key = blist.filter.getFilterKey(cl._parent); }
+                        if ($.isBlank(expr._parent._key))
+                        { expr._parent._key = blist.filter.getFilterKey(expr._parent); }
                         k = cl._parent._key + '::' + expr._parent._key;
                         if ($.isBlank(parDeriveCache[k]))
                         { parDeriveCache[k] = canDeriveExpr(cl._parent, expr._parent); }

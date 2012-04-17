@@ -87,12 +87,8 @@ blist.namespace.fetch('blist.filter');
         op.name = name;
         op.matches = function() // v, cv, etc
         {
-            var vals = _.map(_.flatten(arguments), function(v)
-            {
-                // Transform
-                if (_.isString(v)) { v = $.trim(v.toLowerCase()); }
-                return v;
-            });
+            // If we want to trim strings, we should do that here
+            var vals = _.flatten(arguments);
 
             var getResult = function(v, vals)
             { return op.opMatches.apply(op, _.flatten([v, vals])); }
@@ -124,43 +120,78 @@ blist.namespace.fetch('blist.filter');
         fg.details = $.extend(true, {}, d, fg.details);
     });
 
-    blist.filter.matchesExpression = function(expr, row, colCont)
+    var exprCache = {};
+    blist.filter.matchesExpression = function(expr, colCont)
     {
-        if (expr === true || _.isEmpty(expr)) { return true; }
-        if (!$.subKeyDefined(expr, 'operator')) { return false; }
+        if (expr === true || _.isEmpty(expr))
+        { return function() { return true; }; }
+        if (!$.subKeyDefined(expr, 'operator'))
+        { return function() { return false; }; }
+
+        if ($.isBlank(expr._key)) { expr._key = blist.filter.getFilterKey(expr); }
+        var key = expr._key + '::' + (colCont || {}).id;
+        if (!$.isBlank(exprCache[key])) { return exprCache[key]; }
+
+        function cacheAndReturn(f)
+        {
+            exprCache[key] = f;
+            return f;
+        };
+
 
         // Handle array of sub-conditions
         if (!$.isBlank(expr.children))
         {
             // Assume if not OR it is AND
             var func = expr.operator.toLowerCase() == 'or' ? 'any' : 'all';
-            return _[func](expr.children, function(cExpr)
-                { return blist.filter.matchesExpression(cExpr, row, colCont); });
+            var childFuncs = _.map(expr.children, function(cExpr)
+                    { return blist.filter.matchesExpression(cExpr, colCont); });
+            return cacheAndReturn(function(row)
+                { return _[func](childFuncs, function(cf) { return cf(row); }); });
         }
 
         if (!$.isBlank(colCont) && (!$.isBlank(expr.tableColumnId) ||
                     !$.isBlank(expr.columnFieldName)))
         {
             var col = colCont.columnForIdentifier(expr.tableColumnId || expr.columnFieldName);
-            if ($.isBlank(col)) { return false; }
+            if ($.isBlank(col))
+            { return cacheAndReturn(function() { return false; }); }
 
             var type = col.renderType;
             if ($.subKeyDefined(type, 'subColumns.' + expr.subColumn))
             { type = type.subColumns[expr.subColumn]; }
 
-            var rowVal = row[col.lookup];
-            if ($.isPlainObject(rowVal) && !$.isBlank(expr.subColumn))
-            { rowVal = rowVal[expr.subColumn]; }
+            return cacheAndReturn(function(row)
+            {
+                var rowVal = row[col.lookup];
+                if ($.isPlainObject(rowVal) && !$.isBlank(expr.subColumn))
+                { rowVal = rowVal[expr.subColumn]; }
 
-            return type.matches(expr.operator, col, rowVal, expr.value);
+                return type.matches(expr.operator, col, rowVal, expr.value);
+            });
         }
         else
         {
             var op = filterOperators[expr.operator.toUpperCase()];
-            if ($.isBlank(op)) { return false; }
-            return op.matches(row, expr.value);
+            if ($.isBlank(op))
+            { return cacheAndReturn(function() { return false; }); }
+            return cacheAndReturn(function(row)
+                { return op.matches(row, expr.value); });
         }
+    };
 
+    blist.filter.getFilterKey = function(fc)
+    {
+        if (_.isEmpty(fc)) { return ''; }
+        var op = fc.operator.toUpperCase();
+        if (op == 'AND' || op == 'OR')
+        {
+            var childKeys = _.map(fc.children, function(c) { return blist.filter.getFilterKey(c); });
+            return childKeys.length < 2 ? (childKeys[0] || '') : '(' + childKeys.join('|' + op + '|') + ')';
+        }
+        return '(' + (fc.columnFieldName || fc.tableColumnId) +
+            (!$.isBlank(fc.subColumn) ? '[' + fc.subColumn + ']' : '') +
+            '|' + op + '|' + fc.value + ')';
     };
 
 })(jQuery);

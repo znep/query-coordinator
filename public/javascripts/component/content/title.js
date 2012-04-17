@@ -1,17 +1,6 @@
 ;(function($) {
 
 $.component.Component.extend('Title', 'content', {
-    configurationSchema: function()
-    {
-        // Only get these styles when we actually need them; not every time we render
-        if ($.isBlank(cObj._cachedTextStyle) && !$.isBlank(cObj.$title))
-        {
-            cObj._cachedTextStyle = blist.configs.styles.getStyles('text', cObj.$title),
-            cObj._cachedPaddingStyle = blist.configs.styles.getStyles('padding', cObj.$title)
-        }
-        return [this._cachedTextStyle, this._cachedPaddingStyle];
-    },
-
     _initTitle: function()
     {
         var cObj = this,

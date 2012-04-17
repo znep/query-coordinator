@@ -44,7 +44,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     {
         if ($.isBlank(ident)) { return null; }
         return _.isNumber(ident) || (ident || '').match(/^\d+$/) ?
-            (forID(this, ident) || forTCID(this, ident)) : forField(this, ident);
+            (forID(this, ident) || forTCID(this, ident)) : (forField(this, ident) || forID(this, ident));
     };
 
     // defines: clearColumn, clearChildColumn
@@ -248,7 +248,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                     // also be at the wrong spot.  So find the column and index
                     // if it already exists
                     var c = nc.dataTypeName != 'meta_data' ?
-                        forID(cont, nc.id) :
+                        forField(cont, nc.fieldName) :
                         _.detect(cont[colSet], function(mc)
                             { return mc.dataTypeName == 'meta_data' &&
                                 mc.name == nc.name; });

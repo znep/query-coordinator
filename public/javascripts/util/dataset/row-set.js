@@ -1,5 +1,7 @@
 (function(){
 
+blist.useSODA2 = false;
+
 var RowSet = ServerModel.extend({
     _init: function(ds, query, parRS, initRows)
     {
@@ -612,17 +614,21 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
 
-        var params = {method: 'getByIds', asHashes: true};
+        var params = blist.useSODA2 ? { '$exclude_system_fields': false, '$unwrapped': true } :
+            {method: 'getByIds', asHashes: true};
 
         var start;
         if (_.isNumber(startOrIds) && _.isNumber(len))
         {
             start = startOrIds;
-            params.start = start;
-            params.length = len;
+            $.extend(params, blist.useSODA2 ? { '$offset': start, '$limit': len } :
+                    { start: start, length: len });
         }
         else if (_.isArray(startOrIds))
-        { params.ids = startOrIds; }
+        {
+            // Not supported by SODA2 yet
+            params.ids = startOrIds;
+        }
         else
         {
             if (_.isFunction(errorCallback))
@@ -640,7 +646,7 @@ var RowSet = ServerModel.extend({
 
         if (fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
             !_.isEqual(reqData, rs._curMetaReqMeta))
-        { params.meta = true; }
+        { params[blist.useSODA2 ? '$meta' : 'meta'] = true; }
 
         var reqId = _.uniqueId();
         var rowsLoaded = function(result)
@@ -667,6 +673,11 @@ var RowSet = ServerModel.extend({
                 delete rs._curMetaReqMeta;
                 rs._totalCount = result.meta.totalRows;
                 delete rs._columnsInvalid;
+                if (blist.useSODA2)
+                {
+                    result.meta.view.columns = _.reject(result.meta.view.columns, function(c)
+                            { return c.dataTypeName != 'meta_data'; });
+                }
                 if (!fullLoad)
                 {
                     // I would rather get rid of triggering a metadata_update
@@ -755,17 +766,18 @@ var RowSet = ServerModel.extend({
             { rs._rowsLoading[i + start] = true; }
         }
 
-        var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
-        if (fullLoad)
-        {
-            req.url = '/views/' + rs._dataset.id + '/rows.json';
-            req.type = 'GET';
-        }
-        if (params.meta)
+        var req = {success: rowsLoaded, params: params, inline: !blist.useSODA2 && !fullLoad,
+            type: blist.useSODA2 || fullLoad ? 'GET' : 'POST'};
+        if (blist.useSODA2)
+        { req.url = '/api/id/' + rs._dataset.id + '.json'; }
+        else if (fullLoad)
+        { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
+        if (params.meta || params['$meta'])
         {
             rs._curMetaReq = reqId;
             rs._curMetaReqMeta = reqData;
         }
+
         rs.makeRequest(req);
     },
 
@@ -779,8 +791,10 @@ var RowSet = ServerModel.extend({
             {
                 var newVal;
                 // A few columns don't have original lookups
-                var lId = {sid: 'id', 'id': 'uuid'}[id] || id;
-                var c = $.isBlank(parCol) ? rs._dataset.columnForID(lId) : parCol.childColumnForID(lId);
+                var lId = blist.useSODA2 ? id : ({sid: 'id', 'id': 'uuid'}[id] || id);
+                if (lId.startsWith(':')) { lId = lId.slice(1); }
+                var c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(lId) :
+                    parCol.childColumnForIdentifier(lId);
 
                 if ($.isBlank(c)) { return true; }
 

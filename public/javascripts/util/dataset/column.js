@@ -319,12 +319,12 @@ var Column = ServerModel.extend({
         this.renderType = blist.datatypes[this.renderTypeName] || {};
         this.isMeta = this.dataTypeName == 'meta_data';
 
-        this.lookup = this.isMeta ? this.name : this.id;
+        this.lookup = this.isMeta ? this.name : (blist.useSODA2 ? this.fieldName : this.id);
         // The use of id and uuid potentially causes collision with user column field names.
         // We already do in the catalog dataset because it has another id column.
         // Not fixing this yet.  Suggest to use prefix ":" for system columns.
-        if (this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
-        else if (this.isMeta && this.name == 'id') { this.lookup = 'uuid'; }
+        if (!blist.useSODA2 && this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
+        else if (!blist.useSODA2 && this.isMeta && this.name == 'id') { this.lookup = 'uuid'; }
 
         // Set up min width and default
         this.minWidth = 50;
@@ -417,6 +417,7 @@ var Column = ServerModel.extend({
         defaultValues: true,
         description: true,
         dropDownList: true,
+        fieldName: true,
         flags: true,
         format: true,
         id: true,

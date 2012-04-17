@@ -58,7 +58,10 @@ $.component.Container.extend('Repeater', 'content', {
     design: function() {
         // If we were designing, update from the edited config
         if (this._designing)
+        {
             this._cloneProperties.children = this._readChildren();
+        }
+
         this._super.apply(this, arguments);
         this._delayUntilVisible = !this._designing;
         if (this._designing)
@@ -73,9 +76,9 @@ $.component.Container.extend('Repeater', 'content', {
     {
         var cObj = this;
         // Unbind anything old
-        if ($.subKeyDefined(this, '_dataContext.dataset'))
-        { _.each($.makeArray(this._dataContext), function(dc) { dc.dataset.unbind(null, null, cObj); }); }
-        this._super.apply(this, arguments);
+        if ($.subKeyDefined(cObj, '_dataContext.dataset'))
+        { _.each($.makeArray(cObj._dataContext), function(dc) { dc.dataset.unbind(null, null, cObj); }); }
+        cObj._super.apply(cObj, arguments);
     },
 
     _addDataContext: function(dc)
@@ -90,13 +93,14 @@ $.component.Container.extend('Repeater', 'content', {
     _refresh: function()
     {
         var cObj = this;
-        this._map = [];
+        cObj._map = [];
         if (!$.isBlank(this._realContainer))
         {
-            this._realContainer.destroy();
-            delete this._realContainer;
+            cObj._realContainer.destroy();
+            delete cObj._realContainer;
         }
-        while (this.first) { this.first.destroy(); }
+        while (cObj.first)
+        { cObj.first.destroy(); }
 
         var doneWithRows = function()
         {
@@ -110,21 +114,23 @@ $.component.Container.extend('Repeater', 'content', {
         };
 
         var view;
-        if (this._designing)
+        if (cObj._designing)
+        {
             // Render actual children as direct descendants
-            this.add(this._cloneProperties.children);
-        else if (_.isArray(this._dataContext))
-        {
-            var callback = _.after(this._dataContext.length, doneWithRows);
-            _.each(this._dataContext, function(di, i) { cObj._setRow(di, i, di, callback); });
+            cObj.add(cObj._cloneProperties.children);
         }
-        else if (view = (this._dataContext || {}).dataset)
+        else if (_.isArray(cObj._dataContext))
         {
-            if (this._properties.repeaterType == 'column')
+            var callback = _.after(cObj._dataContext.length, doneWithRows);
+            _.each(cObj._dataContext, function(di, i) { cObj._setRow(di, i, di, callback); });
+        }
+        else if (view = (cObj._dataContext || {}).dataset)
+        {
+            if (cObj._properties.repeaterType == 'column')
             {
                 var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
                 var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
-                var callback = _.after(this._dataContext.dataset.visibleColumns.length, doneWithRows);
+                var callback = _.after(cObj._dataContext.dataset.visibleColumns.length, doneWithRows);
                 _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
                 {
                     if (_.all(exF, function(v, k)
@@ -141,7 +147,7 @@ $.component.Container.extend('Repeater', 'content', {
                 // Render records
                 var columnMap = {};
                 _.each(view.columns, function(c) { columnMap[c.id] = c.fieldName; });
-                this._dataContext.dataset.getRows(this.position, this.length, function(rows)
+                cObj._dataContext.dataset.getRows(cObj.position, cObj.length, function(rows)
                 {
                     // Create entity TODO - mapping will be unnecessary w/ SODA 2
                     rows = _.map(rows, function(row)
@@ -167,9 +173,9 @@ $.component.Container.extend('Repeater', 'content', {
                 });
             }
         }
-        else if ($.subKeyDefined(this, '_dataContext.datasetList'))
+        else if ($.subKeyDefined(cObj, '_dataContext.datasetList'))
         {
-            var callback = _.after(this._dataContext.datasetList.length, doneWithRows);
+            var callback = _.after(cObj._dataContext.datasetList.length, doneWithRows);
             _.each(this._dataContext.datasetList, function(ds, i) { cObj._setRow(ds, i, ds, callback); });
         }
     },

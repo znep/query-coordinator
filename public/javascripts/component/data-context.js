@@ -44,7 +44,7 @@
             {
                 _.each(dc._contextsQueue[id], function(f) { if (_.isFunction(f.error)) { f.error(); } });
                 delete dc._contextsQueue[id];
-                if (_.isFunction(errorCallback)) { errorCallback(xhr); }
+                if (_.isFunction(errorCallback)) { errorCallback(); }
                 $.dataContext.trigger('error', [ id ]);
             };
 

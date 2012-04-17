@@ -17,6 +17,11 @@
             delete this._initializing;
         },
 
+        _initDom: function() {
+            this._super();
+            this._addChildren();
+        },
+
         /**
          * Add a child (or children) to the container.
          *

@@ -1,6 +1,7 @@
 module Canvas2
   class CanvasWidget
     attr_accessor :id, :parent
+    attr_reader :properties, :resolver_context
 
     def initialize(props, parent = nil, resolver_context = nil)
       @properties = props
@@ -14,14 +15,6 @@ module Canvas2
         DataContext.load_context(c_id, string_substitute(@properties['context']))
         @context = DataContext.available_contexts[c_id]
       end
-    end
-
-    def properties
-      return @properties
-    end
-
-    def resolver_context
-      return @resolver_context
     end
 
     def context
@@ -53,20 +46,28 @@ module Canvas2
     end
 
     def render
-      c, fully_rendered = render_contents
+      contents, fully_rendered = render_contents
+
       html_class = render_classes + ' ' +
         string_substitute(@properties['htmlClass'].is_a?(Array) ?
                           @properties['htmlClass'].join(' ') : @properties['htmlClass'])
+
       is_hidden = @properties['hidden'] || @properties['requiresContext'] && context.blank? ||
         @properties['ifValue'] && !eval_if(@properties['ifValue'])
-      t = '<div class="socrata-component component-' + @properties['type'] + ' ' +
-        (is_hidden ? ' hide' : '') + (@properties['customClass'] || '') +
-        (@needs_own_context ? '' : (' ' + html_class)) + (fully_rendered ? ' serverRendered' : '') +
-        '" id="' + self.id + '">'
-      t += '<div class="content-wrapper ' + html_class + '">' if @needs_own_context
-      t += c
-      t += '</div>' if @needs_own_context
-      [t += '</div>', fully_rendered]
+
+      classes = ['socrata-component', "component-#{@properties['type']}"]
+      classes << 'hide' if is_hidden
+      classes << @properties['customClass'] unless @properties['customClass'].blank?
+      classes << html_class unless @needs_own_context
+      classes << 'serverRendered' if fully_rendered
+
+      tag = ''
+
+      tag << '<div class="content-wrapper ' << html_class << '">' if @needs_own_context
+      tag << "<div class=\"#{classes.join(' ')}\" id=\"#{self.id}\">"
+      tag << contents
+      tag << '</div>' if @needs_own_context
+      [tag << '</div>', fully_rendered]
     end
 
     def render_contents

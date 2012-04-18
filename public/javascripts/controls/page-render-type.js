@@ -173,9 +173,17 @@
             prtObj.richRenderer.renderRow(prtObj.$content(), row, true);
             prtObj.richRenderer.adjustLayout();
         };
+        var delay = 500;
         var loadRows;
         loadRows = function()
-        { prtObj.settings.view.getRows(prtObj.navigation.currentPage(), 1, rowLoaded, loadRows); };
+        {
+            prtObj.settings.view.getRows(prtObj.navigation.currentPage(), 1, rowLoaded,
+                    function()
+                    {
+                        setTimeout(loadRows, delay);
+                        delay *= 2;
+                    });
+        };
         loadRows();
     };
 

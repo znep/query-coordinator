@@ -53,7 +53,7 @@ var Dataset = ServerModel.extend({
         this.valid = this._checkValidity();
 
         // We need an active row set to start
-        this._savedRowSet = new RowSet(this, {orderBys: this.query.orderBys,
+        this._savedRowSet = new RowSet(this, {orderBys: (this.query || {}).orderBys,
             filterCondition: this.cleanFilters()});
         this._activateRowSet(this._savedRowSet);
 

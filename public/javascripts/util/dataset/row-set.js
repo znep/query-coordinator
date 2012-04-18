@@ -310,7 +310,7 @@ var RowSet = ServerModel.extend({
 
         var row = $.extend({}, newRow);
         row.index = $.isBlank(idx) ? this._totalCount : idx;
-        rs._setRowFormatting(row);
+        this._setRowFormatting(row);
         $.addItemsToObject(this._rows, row, row.index);
         this._rowIDLookup[row.id] = row;
         delete this._aggCache;
@@ -324,7 +324,7 @@ var RowSet = ServerModel.extend({
     {
         var curRow = this._rowIDLookup[$.isBlank(oldID) ? row.id : oldID];
         $.extend(curRow, row, {index: curRow.index});
-        rs._setRowFormatting(curRow);
+        this._setRowFormatting(curRow);
         delete this._aggCache;
         if (!$.isBlank(oldID))
         {

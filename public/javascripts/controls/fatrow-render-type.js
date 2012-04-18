@@ -255,11 +255,17 @@
             _.each(rows, function(r) { updateRow(frObj, r); });
         };
 
+        var delay = 500;
         var loadRows;
         loadRows = function()
         {
             frObj.settings.view.getRows(frObj.navigation.currentPage() *
-                frObj.settings.pageSize, frObj.settings.pageSize, rowsLoaded);
+                frObj.settings.pageSize, frObj.settings.pageSize, rowsLoaded,
+                function()
+                {
+                    setTimeout(loadRows, delay);
+                    delay *= 2;
+                });
         }
         loadRows();
     };

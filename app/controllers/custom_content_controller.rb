@@ -122,7 +122,7 @@ class CustomContentController < ApplicationController
         # but Rails ignores it and passes it all the way up without rescuing
         # unless I rescue a generic Exception
         rescue Exception => e
-          Rails.logger.debug("Caught exception trying to render page: #{e.inspect}")
+          Rails.logger.info("Caught exception trying to render page: #{e.inspect}")
           write_fragment(@cache_key, '404', :expires_in => 15.minutes)
           render_404
         end

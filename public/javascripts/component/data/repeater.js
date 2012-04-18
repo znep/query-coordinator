@@ -53,9 +53,15 @@ $.component.Container.extend('Repeater', 'content', {
             this._tempHeight = 500;
             this.$dom.css('min-height', this._tempHeight);
         }
+        // hook up the real container when rendered by the server
+        if ($.isBlank(this._realContainer) && this._properties.container)
+        {
+            this._realContainer = this.add(this._properties.container);
+        }
     },
 
     design: function() {
+        var cObj = this;
         // If we were designing, update from the edited config
         if (this._designing)
         {
@@ -69,7 +75,22 @@ $.component.Container.extend('Repeater', 'content', {
             // If we're designing, make sure we're fully rendered
             this._render();
         }
-        this._refresh();
+
+        // If we're entering design mode for the first time, make sure
+        // our data context is properly configured
+        var finished = function()
+        {
+            cObj._refresh();
+        };
+
+        if (!$.isBlank(cObj._properties.contextId) && $.isBlank(cObj._dataContext))
+        {
+            cObj._updateDataSource(cObj._properties, finished);
+        }
+        else
+        {
+            finished();
+        }
     },
 
     _clearDataContext: function()
@@ -147,7 +168,7 @@ $.component.Container.extend('Repeater', 'content', {
                 // Render records
                 var columnMap = {};
                 _.each(view.columns, function(c) { columnMap[c.id] = c.fieldName; });
-                cObj._dataContext.dataset.getRows(cObj.position, cObj.length, function(rows)
+                view.getRows(cObj.position, cObj.length, function(rows)
                 {
                     // Create entity TODO - mapping will be unnecessary w/ SODA 2
                     rows = _.map(rows, function(row)

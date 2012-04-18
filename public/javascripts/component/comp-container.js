@@ -19,6 +19,9 @@
 
         _initDom: function() {
             this._super();
+
+            this.$ct = this._getContainer();
+            this.$ct.addClass('socrata-container');
             this._addChildren();
         },
 
@@ -118,7 +121,7 @@
         _childMoved: function(child, oldParent, oldPrev, oldNext) {
             // Record keeping -- update first & last
             if (!this.first)
-                this.first = this.last = child;
+            { this.first = this.last = child; }
             else {
                 if (this.first == child) {
                     if (child.prev)
@@ -168,9 +171,12 @@
             { child.next.$dom.parent()[0].insertBefore(child.$dom[0], child.next.$dom[0]); }
             else if (!$.isBlank(this.$ct) && child.$dom.parent().index(this.$ct) < 0)
             { this.$ct[0].appendChild(child.$dom[0]); }
+
             if (child.$dom.parent().length > 0 &&
                     this._rendered && !child._rendered)
+            {
                 child._render();
+            }
             this._arrange();
         },
 
@@ -255,8 +261,6 @@
 
             this._addChildren();
 
-            this.$ct = this._getContainer();
-            this.$ct.addClass('socrata-container');
             this.$contents.css(blist.configs.styles.convertProperties(this._properties));
 
             this.each(this._moveChildDom, this);

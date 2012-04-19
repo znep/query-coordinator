@@ -325,7 +325,7 @@
                     mapObj._featureSet = data;
                     reClassifyFeatures(mapObj);
                     processFeatures(mapObj,
-                        function() { processRows(mapObj, mapObj._primaryView._rows); });
+                    function() { processRows(mapObj, mapObj._primaryView._activeRowSet._rows); });
                 }
             });
         }
@@ -344,7 +344,8 @@
                     {
                         mapObj._featureSet = featureSet;
                         processFeatures(mapObj,
-                            function() { processRows(mapObj, mapObj._primaryView._rows); });
+                            function() { processRows(mapObj,
+                                        mapObj._primaryView._activeRowSet._rows); });
                     });
         }
         mapObj._runningQuery = true;
@@ -514,7 +515,7 @@
                     MAP_TYPE[config.type].transformFeatures))
             { if (mapObj.hideLayers) { mapObj.hideLayers(); } }
 
-            var renderedRows = _.size(mapObj._primaryView._rows);
+            var renderedRows = _.size(mapObj._primaryView._activeRowSet._rows);
             if (renderedRows >= mapObj._maxRows
                 || renderedRows >= mapObj._primaryView.totalRows())
             { mapObj.mapElementLoaded(); }

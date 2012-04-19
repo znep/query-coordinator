@@ -16,9 +16,9 @@
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
 <%- end -%>
 
-<%- end -%>
-<%- content_for :js_footer do -%>
-  <%= current_user_js %>
 <%- end -%><%# if render_result %>
 
 <%- end -%><%# prerendered_cache %>
+<%- content_for :js_footer do -%>
+  <%= current_user_js %>
+<%- end -%>

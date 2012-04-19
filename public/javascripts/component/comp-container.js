@@ -259,8 +259,6 @@
         _render: function() {
             if (!this._super()) { return false; }
 
-            this._addChildren();
-
             this.$contents.css(blist.configs.styles.convertProperties(this._properties));
 
             this.each(this._moveChildDom, this);
@@ -353,6 +351,10 @@
             {
                 this.$dom.append('<div class="socrata-ct-clear"></div>');
                 $clear = $(this.dom.lastChild);
+            }
+            else if (!$clear.is(':last-child'))
+            {
+                this.$dom.append($clear);
             }
             this._$clear = $clear;
         },

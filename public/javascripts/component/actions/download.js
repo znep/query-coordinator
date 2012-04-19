@@ -20,7 +20,9 @@ $.component.Component.extend('Download', 'actions', {
 
         cObj._updateDataSource(cObj._properties, function()
         {
-            if ($.isBlank(cObj._dataContext)) { return; }
+            if ($.isBlank(cObj._dataContext) || $.isBlank(cObj._dataContext.dataset))
+            { return; }
+
             var ds = cObj._dataContext.dataset;
             cObj.$link.text('Download this data');
             cObj.$link.attr('href', ds.downloadUrl('csv'));

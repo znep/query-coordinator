@@ -669,7 +669,9 @@
                             {
                                 if ((cObj._properties.entity || {}).hasOwnProperty(cId))
                                 {
-                                    _.defer(function() { finishDC.success(cObj._properties.entity[cId]); });
+                                    var eDC = { id: cObj.id + '-' + cId, type: 'entity',
+                                        value: cObj._properties.entity[cId] };
+                                    _.defer(function() { finishDC.success(eDC); });
                                     return true;
                                 }
                                 finishDC.error();

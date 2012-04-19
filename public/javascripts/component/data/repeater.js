@@ -140,10 +140,10 @@ $.component.Container.extend('Repeater', 'content', {
             // Render actual children as direct descendants
             cObj.add(cObj._cloneProperties.children);
         }
-        else if (_.isArray(cObj._dataContext))
+        else if (_.isArray(cObj._dataContext.value))
         {
-            var callback = _.after(cObj._dataContext.length, doneWithRows);
-            _.each(cObj._dataContext, function(di, i) { cObj._setRow(di, i, di, callback); });
+            var callback = _.after(cObj._dataContext.value.length, doneWithRows);
+            _.each(cObj._dataContext.value, function(di, i) { cObj._setRow(di, i, di, callback); });
         }
         else if (view = (cObj._dataContext || {}).dataset)
         {
@@ -332,16 +332,28 @@ var renderGroupItems = function(cObj, items, callback)
     {
         var group = cObj._stringSubstitute(groupConfig.value, item);
         if ($.isBlank(group)) { return; }
-        if ($.isBlank(groupIndex[group]))
+        var addGroupItem = function(g)
         {
-            groups.push(group);
-            groupIndex[group] = [item];
+            if ($.isBlank(groupIndex[g]))
+            {
+                groups.push(g);
+                groupIndex[g] = [item];
+            }
+            else
+            { groupIndex[g].push(item); }
+        };
+
+        if (!$.isBlank(groupConfig.splitOn))
+        {
+            _.each(group.split(groupConfig.splitOn), function(g)
+            { addGroupItem(g); });
         }
-        else
-        { groupIndex[group].push(item); }
+        else { addGroupItem(group); }
     });
 
     var aggCallback = _.after(groups.length, callback);
+    if (groupConfig.sortAlpha)
+    { groups = groups.sort(); }
     _.each(groups, function(g, i)
     { cObj._setRow({id: g}, i, {_groupValue: g, _groupItems: groupIndex[g]}, aggCallback); });
 };

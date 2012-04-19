@@ -108,15 +108,19 @@ module Canvas2
       items.each do |item|
         g = string_substitute(g_config['value'], item)
         next if g.blank?
-        if g_index[g].blank?
-          groups << g
-          g_index[g] = [item]
-        else
-          g_index[g] << item
+        g = g_config['splitOn'].blank? ? [g] : g.split(g_config['splitOn'])
+        g.each do |gg|
+          if g_index[gg].blank?
+            groups << gg
+            g_index[gg] = [item]
+          else
+            g_index[gg] << item
+          end
         end
       end
 
       all_c = []
+      groups = groups.sort if g_config['sortAlpha']
       groups.each_with_index do |g, i|
         all_c << add_row({id: g}, i, {_groupValue: g, _groupItems: g_index[g]})
       end

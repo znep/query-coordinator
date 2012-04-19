@@ -410,8 +410,8 @@ var RowSet = ServerModel.extend({
                 _.each(ilViews, function(v)
                 {
                     if ($.isBlank(v)) { return; }
-                    args = $.extend({}, args, {data: v, batch: true});
-                    rs.makeRequest(args);
+                    var req = $.extend({}, args, {data: v, batch: true});
+                    rs.makeRequest(req);
                 });
                 rs._dataset.sendBatch(callResults);
             }

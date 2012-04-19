@@ -63,8 +63,8 @@ module Canvas2
 
       tag = ''
 
-      tag << '<div class="content-wrapper ' << html_class << '">' if @needs_own_context
       tag << "<div class=\"#{classes.join(' ')}\" id=\"#{self.id}\">"
+      tag << '<div class="content-wrapper ' << html_class << '">' if @needs_own_context
       tag << contents
       tag << '</div>' if @needs_own_context
       [tag << '</div>', fully_rendered]

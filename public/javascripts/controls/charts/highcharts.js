@@ -1115,11 +1115,11 @@
                         { v = v.replace(new RegExp(m[1], m[3]), m[2]); }
                         return clipFormatter(true, v);
                     }} },
-            yAxis: { title:
-                { text: $.isBlank(yTitle) ? null : yTitle,
-                    style: { backgroundColor: '#ffffff',
-                        border: '1px solid #909090', padding: '3px' } },
-                labels: {formatter: clipFormatter} }
+            yAxis: { endOnTick: false, tickPixelInterval: chartObj.$dom().height() / 8,
+                       title: { text: $.isBlank(yTitle) ? null : yTitle,
+                           style: { backgroundColor: '#ffffff',
+                               border: '1px solid #909090', padding: '3px' } },
+                       labels: {formatter: clipFormatter} }
         };
         if (_.include(['top', 'bottom'], legendPos))
         { chartConfig.legend.verticalAlign = legendPos; }

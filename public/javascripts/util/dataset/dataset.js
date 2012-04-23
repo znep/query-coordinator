@@ -687,7 +687,7 @@ var Dataset = ServerModel.extend({
 
         row.invalid[col.lookup] = isInvalid || false;
 
-        this._activeRowSet.updateRow(row);
+        this._activeRowSet.updateRow(parRow || row);
 
         this.trigger('row_change', [[parRow || row]]);
     },

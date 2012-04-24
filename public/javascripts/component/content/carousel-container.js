@@ -39,51 +39,51 @@ $.component.PagedContainer.extend('Carousel', 'content', {
         return ct;
     },
 
-    _hideChild: function(child)
+    _hidePage: function(page)
     {
         var cObj = this;
-        if (child.$dom.is(':visible') && cObj._properties.animate !== false && $.support.svg)
+        if (page.$dom.is(':visible') && cObj._properties.animate !== false && $.support.svg)
         {
             var savedSuper = cObj._super;
             return function(doAnimate)
             {
                 if (doAnimate)
                 {
-                    child.$dom.css({width: cObj.$ct.width(), position: 'absolute', left: 0});
-                    child.$dom.animate({left: -cObj.$ct.width()}, 1000, function()
+                    page.$dom.css({width: cObj.$ct.width(), position: 'absolute', left: 0});
+                    page.$dom.animate({left: -cObj.$ct.width()}, 1000, function()
                         {
-                            child.$dom.css({position: '', width: ''});
-                            savedSuper(child);
+                            page.$dom.css({position: '', width: ''});
+                            savedSuper(page);
                             cObj._startSwitch();
                         });
                 }
                 else
                 {
-                    savedSuper(child);
+                    savedSuper(page);
                     cObj._startSwitch();
                 }
             }
         }
         else
-        { this._super(child); }
+        { this._super(page); }
     },
 
-    _showChild: function(child, finalCallback)
+    _showPage: function(page, finalCallback)
     {
         var cObj = this;
-        var firstLoad = !child._rendered;
+        var firstLoad = !page._rendered;
 
-        child.$dom.stop();
-        cObj._super(child);
+        page.$dom.stop();
+        cObj._super(page);
 
         var isAnimate = false;
         if (!firstLoad && cObj._properties.animate !== false && $.support.svg)
         {
             cObj.$ct.height(cObj.$ct.height());
-            child.$dom.css({width: cObj.$ct.width(), position: 'absolute', left: cObj.$ct.width()});
-            child.$dom.animate({left: 0}, 1000, function()
+            page.$dom.css({width: cObj.$ct.width(), position: 'absolute', left: cObj.$ct.width()});
+            page.$dom.animate({left: 0}, 1000, function()
                 {
-                    child.$dom.css({position: '', width: ''});
+                    page.$dom.css({position: '', width: ''});
                     cObj.$ct.css('height', '');
                 });
             isAnimate = true;

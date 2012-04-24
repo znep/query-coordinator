@@ -17,61 +17,36 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
             if (srcCompId != (cObj._sourceComponent || {}).id)
             {
                 if (!$.isBlank(cObj._sourceComponent))
-                { cObj._sourceComponent.unbind(null, null, this); }
-                cObj._sourceComponent = $.component(srcCompId);
+                { cObj._sourceComponent.unbind(null, null, cObj); }
+                if (!$.isBlank(srcCompId))
+                { cObj._sourceComponent = $.component(srcCompId); }
                 oldEvent = null;
             }
 
-            if (oldEvent != cObj._properties.sourceEvent && !$.isBlank(cObj._sourceComponent))
+            var srcContextId = cObj._properties.sourceContextId;
+            if (srcContextId != (cObj._sourceContext || {}).id)
             {
-                cObj._sourceComponent.unbind(oldEvent, null, cObj);
-                cObj._sourceComponent.bind(cObj._properties.sourceEvent,
-                    function(args)
-                    {
-                        if (!$.isBlank(cObj._destComponent))
+                if (!$.isBlank(cObj._sourceContext))
+                { cObj._sourceContext.unbind(null, null, cObj); }
+                delete cObj._sourceContext;
+                if (!$.isBlank(srcContextId))
+                {
+                    $.dataContext.getContext(cObj._properties.sourceContextId, function(sc)
                         {
-                            var p = {};
-                            _.each(cObj._properties.transformations, function(t)
+                            if (sc.type == 'dataset')
                             {
-                                $.deepSet.apply($, [p, getValue(t, args)].concat(t.destProperty.split('.')));
-                            });
-                            cObj._destComponent.properties(p);
-                        }
-
-                        if ($.subKeyDefined(cObj, '_destContext.dataset'))
-                        {
-                            _.each(transformations, function(origT)
-                            {
-                                var t = {};
-                                _.each(origT, function(v, k)
-                                {
-                                    // String subst. items to match their data context
-                                    if (k.startsWith('dest'))
-                                    { t[k] = cObj._stringSubstitute(v, cObj._destContext); }
-                                    else
-                                    { t[k] = cObj._stringSubstitute(v); }
-                                });
-                                var colParts = t.destColFilter.split(':');
-                                var dc = cObj._destContext.dataset.columnForIdentifier(colParts[0]);
-                                if ($.isBlank(dc)) { return; }
-                                var v = getValue(t, args);
-                                if (colParts.length > 2)
-                                {
-                                    var o = {};
-                                    var orig = o;
-                                    for (var i = 2; i < colParts.length - 1; i++)
-                                    {
-                                        o[colParts[i]] = {};
-                                        o = o[colParts[i]];
-                                    }
-                                    o[colParts[i]] = v;
-                                    v = orig;
-                                }
-                                dc.filter(v, colParts[1], t.destOperator);
-                            });
-                        }
-                    }, cObj);
+                                cObj._sourceContext = sc;
+                                eventChanged(cObj, cObj._sourceContext.dataset, oldEvent);
+                            }
+                        });
+                }
+                oldEvent = null;
             }
+            else if (!$.isBlank(cObj._sourceContext) && oldEvent != cObj._properties.sourceEvent)
+            { eventChanged(cObj, cObj._sourceContext.dataset, oldEvent); }
+
+            if (oldEvent != cObj._properties.sourceEvent && !$.isBlank(cObj._sourceComponent))
+            { eventChanged(cObj, cObj._sourceComponent, oldEvent); }
 
             var destCompId = (cObj._properties.parentPrefix || '') + cObj._properties.destComponentId;
             if (destCompId != (cObj._destComponent || {}).id)
@@ -89,6 +64,57 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
         { doUpdate(); }
     }
 });
+
+var eventChanged = function(cObj, sourceItem, oldEvent)
+{
+    sourceItem.unbind(oldEvent, null, cObj);
+    sourceItem.bind(cObj._properties.sourceEvent,
+        function(args)
+        {
+            if (!$.isBlank(cObj._destComponent))
+            {
+                var p = {};
+                _.each(cObj._properties.transformations, function(t)
+                {
+                    $.deepSet.apply($, [p, getValue(t, args)].concat(t.destProperty.split('.')));
+                });
+                cObj._destComponent.properties(p);
+            }
+
+            if ($.subKeyDefined(cObj, '_destContext.dataset'))
+            {
+                _.each(transformations, function(origT)
+                {
+                    var t = {};
+                    _.each(origT, function(v, k)
+                    {
+                        // String subst. items to match their data context
+                        if (k.startsWith('dest'))
+                        { t[k] = cObj._stringSubstitute(v, cObj._destContext); }
+                        else
+                        { t[k] = cObj._stringSubstitute(v); }
+                    });
+                    var colParts = t.destColFilter.split(':');
+                    var dc = cObj._destContext.dataset.columnForIdentifier(colParts[0]);
+                    if ($.isBlank(dc)) { return; }
+                    var v = getValue(t, args);
+                    if (colParts.length > 2)
+                    {
+                        var o = {};
+                        var orig = o;
+                        for (var i = 2; i < colParts.length - 1; i++)
+                        {
+                            o[colParts[i]] = {};
+                            o = o[colParts[i]];
+                        }
+                        o[colParts[i]] = v;
+                        v = orig;
+                    }
+                    dc.filter(v, colParts[1], t.destOperator);
+                });
+            }
+        }, cObj);
+};
 
 var getValue = function(trans, args)
 {

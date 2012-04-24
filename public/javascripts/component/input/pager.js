@@ -122,14 +122,14 @@ $.component.Component.extend('Pager', 'input', {
                 var $ul = $.tag({tagName: 'ul', 'class': ['clearfix',
                     (cObj._properties.buttonStyle || 'pillButtons')]});
                 cObj.$contents.append($ul);
-                cObj._context.each(function(childPane)
+                cObj._context.eachPage(function(page)
                 {
-                    var icon = (cObj._properties.associatedIcons || {})[childPane.id] ||
-                        childPane.properties().iconClass;
-                    var text = ((cObj._properties.associatedLabels || {})[childPane.id] ||
-                        childPane.properties().label || childPane.id);
+                    var icon = (cObj._properties.associatedIcons || {})[page.id] ||
+                        page.properties().iconClass;
+                    var text = ((cObj._properties.associatedLabels || {})[page.id] ||
+                        page.properties().label || page.id);
                     $ul.append($.tag({tagName: 'li', contents:
-                        {tagName: 'a', href: '#' + childPane.id, title: text,
+                        {tagName: 'a', href: '#' + page.id, title: text,
                             'class': ['childLink', {value: 'noText',
                                     onlyIf: cObj._properties.hideButtonText === true},
                                 {value: icon, onlyIf: !$.isBlank(icon)}],
@@ -142,15 +142,15 @@ $.component.Component.extend('Pager', 'input', {
             {
                 var inputName = cObj.id + '_pager';
                 var curId = cObj._context.visibleId();
-                cObj._context.each(function(childPane)
+                cObj._context.eachPage(function(page)
                 {
-                    var inputId = inputName + '_' + childPane.id;
+                    var inputId = inputName + '_' + page.id;
                     cObj.$contents.append($.tag({tagName: 'div', 'class': 'radioWrapper',
-                        contents: [{tagName: 'input', type: 'radio', checked: childPane.id == curId,
-                            name: inputName, id: inputId, value: childPane.id},
+                        contents: [{tagName: 'input', type: 'radio', checked: page.id == curId,
+                            name: inputName, id: inputId, value: page.id},
                         {tagName: 'label', 'for': inputId,
-                            contents: (cObj._properties.associatedLabels || {})[childPane.id] ||
-                                childPane.properties().label || childPane.id}]}));
+                            contents: (cObj._properties.associatedLabels || {})[page.id] ||
+                                page.properties().label || page.id}]}));
                 });
                 cObj.$contents.find('input').uniform();
             }
@@ -171,7 +171,7 @@ $.component.Component.extend('Pager', 'input', {
 var adjustIndex = function(cObj, newChildId)
 {
     var curIndex = cObj._context.visibleIndex();
-    var childList = cObj._context.children();
+    var pageList = cObj._context.pages();
     var $statusItem;
     var $navLinks;
     if (($navLinks = cObj.$contents.find('.navigateLink')).length > 0)
@@ -179,19 +179,19 @@ var adjustIndex = function(cObj, newChildId)
         $navLinks.filter('.prevLink').toggleClass('disabled',
             cObj._properties.navigateWrap === false && curIndex == 0);
         $navLinks.filter('.nextLink').toggleClass('disabled',
-            cObj._properties.navigateWrap === false && curIndex == (childList.length - 1));
+            cObj._properties.navigateWrap === false && curIndex == (pageList.length - 1));
     }
     if (($statusItem = cObj.$contents.find('.navigateInfo')).length > 0)
     {
         $statusItem.find('.currentItem').text(curIndex + 1);
-        $statusItem.find('.totalCount').text(childList.length);
+        $statusItem.find('.totalCount').text(pageList.length);
     }
     else if (($statusItem = cObj.$contents.find('.navigatePaging')).length > 0)
     {
         $statusItem.empty();
         var windowLimit = cObj._properties.pagingWindow || 4;
         var minI = Math.max(0, curIndex - windowLimit);
-        var maxI = Math.min(childList.length - 1, curIndex + windowLimit);
+        var maxI = Math.min(pageList.length - 1, curIndex + windowLimit);
 
         if (minI > 0)
         {
@@ -218,15 +218,15 @@ var adjustIndex = function(cObj, newChildId)
             }
         }
 
-        if (maxI < childList.length - 1)
+        if (maxI < pageList.length - 1)
         {
-            if (maxI < childList.length - 2)
+            if (maxI < pageList.length - 2)
             {
                 $statusItem.append($.tag({tagName: 'span',
                     'class': 'pageFillIn', contents: '&hellip;'}));
             }
-            $statusItem.append($.tag({tagName: 'a', href: '#' + (childList.length - 1),
-                'class': 'pageLink', contents: childList.length}));
+            $statusItem.append($.tag({tagName: 'a', href: '#' + (pageList.length - 1),
+                'class': 'pageLink', contents: pageList.length}));
         }
     }
     else if (($statusItem = cObj.$contents.find('.childLink')).length > 0)
@@ -248,10 +248,10 @@ var setUpComponent = function(cObj, adjId)
         delete cObj._context;
         return;
     }
-    cObj._context.bind('child_shown', function(args)
-    { adjustIndex(cObj, args.newChild.id); }, cObj);
-    cObj._context.bind('child_added', function() { cObj._render(); }, cObj);
-    cObj._context.bind('child_removed', function() { cObj._render(); }, cObj);
+    cObj._context.bind('page_shown', function(args)
+    { adjustIndex(cObj, args.newPage.id); }, cObj);
+    cObj._context.bind('page_added', function() { cObj._render(); }, cObj);
+    cObj._context.bind('page_removed', function() { cObj._render(); }, cObj);
 };
 
 })(jQuery);

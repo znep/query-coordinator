@@ -102,6 +102,12 @@ module Canvas2
   end
 
   class PagedContainer < Container
+    def render_contents
+      [super[0], false]
+    end
+  end
+
+  class MultiPagedContainer < PagedContainer
   end
 
   class Carousel < PagedContainer

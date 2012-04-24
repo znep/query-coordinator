@@ -590,6 +590,10 @@
                 _.any($.makeArray(cObj._dataContext), function(dc)
                 {
                     result = $.deepGetStringField(dc, name);
+                    // dc.dataset is the only time we care about applying an
+                    // object to a function
+                    if (_.isFunction(result))
+                    { result = result.call(dc.dataset); }
                     return result !== undefined;
                 });
                 return result;

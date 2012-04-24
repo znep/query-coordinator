@@ -4,62 +4,74 @@ $.component.Container.extend('PagedContainer', {
     _init: function()
     {
         this._super.apply(this, arguments);
-        this.registerEvent({child_shown: 'newChild', child_added: 'child', child_removed: 'child'});
-    },
-
-    visibleChild: function(newChild)
-    {
-        if (!$.isBlank(newChild) && newChild.parent == this && newChild != this._currentChild)
-        {
-            this._currentChild = newChild;
-            this._arrange();
-        }
-        return this._currentChild;
+        this.registerEvent({page_shown: 'newPage', page_added: 'page', page_removed: 'page'});
     },
 
     visibleId: function(newId)
     {
-        var newC;
+        var newP;
         if (!$.isBlank(newId))
-        { this.each(function(c) { if (c.id == newId) { newC = c; } }); }
-        return (this.visibleChild(newC) || {}).id;
+        { this.eachPage(function(p) { if (p.id == newId) { newP = p; } }); }
+        return (this._visiblePage(newP) || {}).id;
     },
 
     visibleIndex: function(newIndex)
     {
-        var c = this.children();
-        return _.indexOf(c, this.visibleChild(c[newIndex]))
+        var p = this.pages();
+        return _.indexOf(p, this._visiblePage(p[newIndex]))
     },
 
     viewNext: function(preventWrap)
     {
-        var c = this.children();
-        var newI = _.indexOf(c, this.visibleChild()) + 1;
-        if (preventWrap && newI >= c.length) { return; }
-        return this.visibleChild(c[newI % c.length]);
+        var p = this.pages();
+        var newI = _.indexOf(p, this._visiblePage()) + 1;
+        if (preventWrap && newI >= p.length) { return; }
+        return this._visiblePage(p[newI % p.length]);
     },
 
     viewPrevious: function(preventWrap)
     {
-        var c = this.children();
-        var newI = _.indexOf(c, this.visibleChild()) - 1;
+        var p = this.pages();
+        var newI = _.indexOf(p, this._visiblePage()) - 1;
         if (preventWrap && newI < 0) { return; }
-        return this.visibleChild(c[(newI + c.length) % c.length]);
+        return this._visiblePage(p[(newI + p.length) % p.length]);
     },
 
-    _hideChild: function(child)
+    pages: function()
+    { return this.children.apply(this, arguments); },
+
+    eachPage: function()
+    { return this.each.apply(this, arguments); },
+
+    mapPage: function()
+    { return this.map.apply(this, arguments); },
+
+    countPages: function()
+    { return this.count.apply(this, arguments); },
+
+    _visiblePage: function(newPage)
     {
-        child.$dom.addClass('hide');
-        child.$contents.trigger('hide');
+        if (!$.isBlank(newPage) && newPage.parent == this && newPage != this._currentPage)
+        {
+            this._currentPage = newPage;
+            this._arrange();
+        }
+        return this._currentPage;
     },
 
-    _showChild: function(child, finalCallback)
+    _hidePage: function(page)
     {
-        child.properties({height: this._properties.height});
-        if (!child._rendered) { child._render(); }
-        child.$dom.removeClass('hide');
-        this.trigger('child_shown', [{newChild: child}]);
-        child.$contents.trigger('show');
+        page.$dom.addClass('hide');
+        page.$contents.trigger('hide');
+    },
+
+    _showPage: function(page, finalCallback)
+    {
+        page.properties({height: this._properties.height});
+        if (!page._rendered) { page._render(); }
+        page.$dom.removeClass('hide');
+        this.trigger('page_shown', [{newPage: page}]);
+        page.$contents.trigger('show');
         $.component.sizeRenderRefresh();
         if (_.isFunction(finalCallback)) { finalCallback(); }
     },
@@ -67,18 +79,18 @@ $.component.Container.extend('PagedContainer', {
     _arrange: function()
     {
         var cObj = this;
-        if ($.isBlank(cObj._currentChild) && $.subKeyDefined(cObj, 'first.$dom'))
+        if ($.isBlank(cObj._currentPage) && $.subKeyDefined(cObj, 'first.$dom'))
         {
-            cObj._currentChild = cObj.first;
-            cObj._currentChild.$dom.addClass('hide');
+            cObj._currentPage = cObj.first;
+            cObj._currentPage.$dom.addClass('hide');
         }
 
         var finalHide;
-        cObj.each(function(child)
+        cObj.eachPage(function(page)
             {
-                if (child != cObj._currentChild && !$.isBlank(child.$dom))
+                if (page != cObj._currentPage && !$.isBlank(page.$dom))
                 {
-                    var callback = cObj._hideChild(child);
+                    var callback = cObj._hidePage(page);
                     if ($.isBlank(finalHide)) { finalHide = callback; }
                     else if (_.isFunction(callback)) { callback(); }
                 }
@@ -86,8 +98,8 @@ $.component.Container.extend('PagedContainer', {
 
         if (cObj._rendered)
         {
-            if ($.subKeyDefined(cObj, '_currentChild.$dom') && cObj._currentChild.$dom.hasClass('hide'))
-            { cObj._showChild(cObj._currentChild, finalHide); }
+            if ($.subKeyDefined(cObj, '_currentPage.$dom') && cObj._currentPage.$dom.hasClass('hide'))
+            { cObj._showPage(cObj._currentPage, finalHide); }
             else if (_.isFunction(finalHide)) { finalHide(); }
         }
         cObj._super();
@@ -96,7 +108,7 @@ $.component.Container.extend('PagedContainer', {
     _childRemoved: function(child)
     {
         this._super.apply(this, arguments);
-        this.trigger('child_removed', [{child: child}]);
+        this.trigger('page_removed', [{page: child}]);
     },
 
     _moveChildDom: function(child)
@@ -113,7 +125,7 @@ $.component.Container.extend('PagedContainer', {
         else if (!$.isBlank(this.$ct))
         {
             this.$ct.append(child.$dom);
-            this.trigger('child_added', [{child: child}]);
+            this.trigger('page_added', [{page: child}]);
         }
         this._arrange();
     }

@@ -91,6 +91,7 @@ javascripts:
     - public/javascripts/component/content/box.js
     - public/javascripts/component/content/paged-container.js
     - public/javascripts/component/content/carousel-container.js
+    - public/javascripts/component/content/multi-paged-container.js
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js
     - public/javascripts/component/content/fixed-container.js

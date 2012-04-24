@@ -455,7 +455,9 @@ var RowSet = ServerModel.extend({
 
     activate: function()
     {
-        this.trigger('row_change', [_.values(this._rows), true]);
+        var rs = this;
+        rs.trigger('row_change', [_.values(rs._rows), true]);
+        _.defer(function() { rs.trigger('row_count_change'); });
     },
 
     deactivate: function()

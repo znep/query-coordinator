@@ -495,10 +495,16 @@
             var segment = 100 / (chartObj._seriesCache.length + 1);
             _.each(chartObj._seriesCache, function(s, i)
             {
-                s.showInLegend = i == 0;
-                s.dataLabels = { enabled: i == chartObj._seriesCache.length - 1 };
-                s.innerSize = Math.round(segment * (i + 1)) + '%';
-                s.size = Math.round(segment * (i + 2)) + '%';
+                var updatedOptions = {
+                    showInLegend: i == 0,
+                    dataLabels: { enabled: i == chartObj._seriesCache.length - 1 },
+                    innerSize: Math.round(segment * (i + 1)) + '%',
+                    size: Math.round(segment * (i + 2)) + '%'
+                }
+                s = $.extend(s, updatedOptions);
+                if ($.subKeyDefined(chartObj, 'chart.series.' + i))
+                { chartObj.chart.series[i].options = $.extend(chartObj.chart.series[i].options,
+                                                              updatedOptions); }
             });
         }
 

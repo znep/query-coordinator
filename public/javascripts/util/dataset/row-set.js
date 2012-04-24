@@ -287,7 +287,7 @@ var RowSet = ServerModel.extend({
                 // Need to make init req to get all the meta
                 var initReq = reqs.shift();
                 var initReqLen;
-                if (initReq.finish && !$.isBlank(initReq.start))
+                if (!$.isBlank(initReq.finish) && !$.isBlank(initReq.start))
                 { initReqLen = initReq.finish - initReq.start + 1; }
                 rs._loadRows(initReq.ids || initReq.start, initReqLen,
                     function(rows)

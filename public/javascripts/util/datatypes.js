@@ -1245,13 +1245,15 @@ blist.namespace.fetch('blist.datatypes');
                     title: 'Latitude',
                     interfaceType: blist.datatypes.interfaceTypes.number,
 
-                    filterConditions: blist.filter.groups.numeric
+                    filterConditions: blist.filter.groups.numeric,
+                    matchValue: function(v) { return parseFloat(v); }
                 },
                 longitude: {
                     title: 'Longitude',
                     interfaceType: blist.datatypes.interfaceTypes.number,
 
-                    filterConditions: blist.filter.groups.numeric
+                    filterConditions: blist.filter.groups.numeric,
+                    matchValue: function(v) { return parseFloat(v); }
                 }
             },
             viewTypes: [{value: 'address_coords', text: 'Address &amp; Coordinates' },

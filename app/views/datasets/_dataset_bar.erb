@@ -38,7 +38,7 @@
     <h3 class="unpublished" title="<%= "This is a copy of the dataset that allows you " +
       "to make changes to it. It is not visible to others until you publish it."%>">[Working Copy]</h3>
     <%- end -%>
-    <h2 id="datasetName" class="clipText currentViewName"><%= @view.name %></h2>
+    <h2 id="datasetName" class="clipText currentViewName" title="<%= @view.name %>"><%= @view.name %></h2>
     <%- if @view.is_snapshotted? -%>
     <h3 class="snapshotted" title="<%= "This is a previously published version of the dataset. It is" +
       "archived and cannot be modified."%>">Snapshotted <%= blist_date_time(@view.publicationDate) %></h3>

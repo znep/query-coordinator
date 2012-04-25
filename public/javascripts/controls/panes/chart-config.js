@@ -395,7 +395,7 @@
             // Bar chart
             case 'bar':
                 result.push(
-                    basicConfig(chart, options, Dataset.chart.textualTypes, 'Groups'),
+                    basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
                     seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, stacking('bar'), renderOther,
@@ -422,7 +422,7 @@
             // Column chart
             case 'column':
                 result.push(
-                    basicConfig(chart, options, Dataset.chart.textualTypes, 'Groups'),
+                    basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
                     seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options,

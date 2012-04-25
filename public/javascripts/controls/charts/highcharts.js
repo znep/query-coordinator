@@ -675,6 +675,8 @@
                 // This check comes first because it's simpler than a regex.
                 if (xAxis && chartObj._xColumn)
                 {
+                    if (_.include(['date', 'calendar_date'], chartObj._xColumn.renderTypeName))
+                    { return num; }
                     return chartObj._xColumn.renderType.renderer(num,
                             chartObj._xColumn, true, false, true);
                 }
@@ -1422,7 +1424,8 @@
     {
         var pt = {};
 
-        if (isDateTime(chartObj))
+        if (chartObj._xColumn
+            && _.include(['date', 'calendar_date'], chartObj._xColumn.renderTypeName))
         {
             if (!$.isBlank(row) && ($.isBlank(row.invalid) || !row.invalid[chartObj._xColumn.lookup]))
             { pt.x = row[chartObj._xColumn.lookup]; }
@@ -1558,9 +1561,7 @@
 
     var isDateTime = function(chartObj)
     {
-        return !_.isUndefined(chartObj._xColumn) &&
-            (chartObj._xColumn.renderTypeName == 'date' ||
-                chartObj._xColumn.renderTypeName == 'calendar_date');
+        return chartObj._chartType == 'timeline';
     };
 
 

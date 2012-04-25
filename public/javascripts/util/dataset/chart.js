@@ -16,19 +16,20 @@ Dataset.chart.textualTypes = ['text', 'html', 'email', 'url',
     'drop_down_list', 'number', 'percent', 'money'];
 Dataset.chart.numericTypes = ['number', 'percent', 'money'];
 Dataset.chart.dateTypes = ['calendar_date', 'date'];
+Dataset.chart.textAndDateTypes = Dataset.chart.textualTypes.concat(Dataset.chart.dateTypes);
 
 Dataset.chart.types = {
     area: {value: 'area', text: 'Area Chart',
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 300 }},
     bar: {value: 'bar', text: 'Bar Chart',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        requiredColumns: [Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes],
         displayLimit: { points: 40 }},
     bubble: {value: 'bubble', text: 'Bubble Chart',
         requiredColumns: [Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 300 }},
     column: {value: 'column', text: 'Column Chart',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        requiredColumns: [Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 100 }},
     donut: {value: 'donut', text: 'Donut Chart',
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],

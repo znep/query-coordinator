@@ -322,6 +322,16 @@
                 numZoomLevels: 21
             }
 
+            if (mapObj._displayFormat.viewport)
+            {
+                mapOptions.extent
+                    = OpenLayers.Bounds.fromArray([mapObj._displayFormat.viewport.xmin,
+                                                   mapObj._displayFormat.viewport.ymin,
+                                                   mapObj._displayFormat.viewport.ymax,
+                                                   mapObj._displayFormat.viewport.ymax])
+                    .transform(geographicProjection, new OpenLayers.Projection('EPSG:900913'));
+            }
+
             OpenLayers.ImgPath = '/images/openlayers/';
 
             mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);

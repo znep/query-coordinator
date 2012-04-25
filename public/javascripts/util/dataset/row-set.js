@@ -420,7 +420,7 @@ var RowSet = ServerModel.extend({
         }
         else
         {
-            _.each(rs._dataset.realColumns, function(c)
+            var checkAgg = function(c)
             {
                 if ($.subKeyDefined(c, 'format.aggregate'))
                 {
@@ -436,6 +436,12 @@ var RowSet = ServerModel.extend({
                     }
                     else { needReq = true; }
                 }
+            };
+
+            _.each(rs._dataset.realColumns, function(c)
+            {
+                checkAgg(c);
+                _.each(c.realChildColumns, function(cc) { checkAgg(cc); });
             });
 
             if (needReq)
@@ -821,12 +827,35 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
         var col = rs._dataset.columnForIdentifier(cId);
+        var parCol;
+        // Might be a child column...
+        if ($.isBlank(col))
+        {
+            // Look through each nested table, and find if it has a child
+            // column -- find the first real one
+            _.any(rs._dataset.columnsForType('nested_table', true), function(pc)
+            {
+                col = pc.childColumnForID(cId);
+                if (!$.isBlank(col))
+                {
+                    parCol = pc;
+                    return true;
+                }
+                return false;
+            });
+        }
         if ($.isBlank(col)) { return null; }
 
         var agg = _.detect(col.renderType.aggregates, function(a) { return a.value == aggName; });
         if ($.isBlank(agg)) { return null; }
 
-        var values = _.map(rs._rows, function(r) { return r[col.lookup]; });
+        var values = _.flatten(_.map(rs._rows, function(r)
+        {
+            if (!$.isBlank(parCol))
+            { return _.map(r[parCol.lookup], function(rr) { return rr[col.lookup]; }); }
+            else
+            { return r[col.lookup]; }
+        }));
         return agg.calculate(values);
     },
 

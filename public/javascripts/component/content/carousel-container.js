@@ -42,7 +42,7 @@ $.component.PagedContainer.extend('Carousel', 'content', {
     _hidePage: function(page)
     {
         var cObj = this;
-        if (page.$dom.is(':visible') && cObj._properties.animate !== false && $.support.svg)
+        if (page.$dom.is(':visible') && $.support.svg)
         {
             var savedSuper = cObj._super;
             return function(doAnimate)

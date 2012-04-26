@@ -2755,21 +2755,34 @@ Dataset.translateFilterCondition = function(fc, ds)
     }
     else
     {
+        var col;
         _.each(fc.children, function(c)
         {
             if (c.type == 'column')
             {
+                if (!$.isBlank(ds))
+                { col = ds.columnForID(c.columnFieldName || c.columnId); }
+
                 if (!$.isBlank(c.columnFieldName))
                 { filterQ.columnFieldName = c.columnFieldName; }
-                else if (!$.isBlank(ds))
-                {
-                    var col = ds.columnForID(c.columnId);
-                    if (!$.isBlank(col)) { filterQ.columnFieldName = col.fieldName; }
-                }
+                else if (!$.isBlank(col))
+                { filterQ.columnFieldName = col.fieldName; }
+
                 if (!$.isBlank(c.value)) { filterQ.subColumn = c.value; }
             }
             else if (c.type == 'literal')
-            { filterQ.value = c.value; }
+            {
+                var v = c.value;
+                if (!$.isBlank(col) && _.isFunction(col.renderType.matchValue))
+                { v = col.renderType.matchValue(v, col); }
+                if ($.isBlank(filterQ.value))
+                { filterQ.value = v; }
+                else
+                {
+                    filterQ.value = $.makeArray(filterQ.value);
+                    filterQ.value.push(v);
+                }
+            }
         });
     }
 

@@ -9,7 +9,7 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
 
         var doUpdate = function()
         {
-            var transformations = $.extend(true, [], properties.transformations);
+            var origTransforms = $.extend(true, [], properties.transformations);
             parSuper.call(cObj, cObj._stringSubstitute(properties));
 
             var srcCompId = (cObj._properties.parentPrefix || '') +
@@ -36,17 +36,17 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
                             if (sc.type == 'dataset')
                             {
                                 cObj._sourceContext = sc;
-                                eventChanged(cObj, cObj._sourceContext.dataset, oldEvent);
+                                eventChanged(cObj, cObj._sourceContext.dataset, oldEvent, origTransforms);
                             }
                         });
                 }
                 oldEvent = null;
             }
             else if (!$.isBlank(cObj._sourceContext) && oldEvent != cObj._properties.sourceEvent)
-            { eventChanged(cObj, cObj._sourceContext.dataset, oldEvent); }
+            { eventChanged(cObj, cObj._sourceContext.dataset, oldEvent, origTransforms); }
 
             if (oldEvent != cObj._properties.sourceEvent && !$.isBlank(cObj._sourceComponent))
-            { eventChanged(cObj, cObj._sourceComponent, oldEvent); }
+            { eventChanged(cObj, cObj._sourceComponent, oldEvent, origTransforms); }
 
             var destCompId = (cObj._properties.parentPrefix || '') + cObj._properties.destComponentId;
             if (destCompId != (cObj._destComponent || {}).id)
@@ -65,7 +65,7 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
     }
 });
 
-var eventChanged = function(cObj, sourceItem, oldEvent)
+var eventChanged = function(cObj, sourceItem, oldEvent, origTransforms)
 {
     sourceItem.unbind(oldEvent, null, cObj);
     sourceItem.bind(cObj._properties.sourceEvent,
@@ -83,7 +83,7 @@ var eventChanged = function(cObj, sourceItem, oldEvent)
 
             if ($.subKeyDefined(cObj, '_destContext.dataset'))
             {
-                _.each(transformations, function(origT)
+                _.each(origTransforms, function(origT)
                 {
                     var t = {};
                     _.each(origT, function(v, k)
@@ -151,7 +151,7 @@ var getValue = function(trans, args)
     {
         var expr = { operator: r.operator, value: r.value };
         if (!$.isBlank(col))
-        { expr.tableColumnId = col.tableColumnId; }
+        { expr.columnFieldName = col.columnFieldName; }
         var matches = blist.filter.matchesExpression(expr, (args.dataContext || {}).dataset)(row || v);
 
         if (matches) { v = r.result; }

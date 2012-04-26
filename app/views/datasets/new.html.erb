@@ -324,8 +324,7 @@
 <% end %>
 
 <% content_for :modals do %>
-  <div class="modalDialog" id="importTypesMessage">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <%= modal :id => 'importTypesMessage' do %>
     <h2>Why is it important to choose column types now?</h2>
     <p>Your data is heavily processed when it is imported, and optimized for consumption
        for each particular data type. In addition, most data types have special features
@@ -336,7 +335,7 @@
     <div class="finishButtons">
       <a href="#close" class="button jqmClose">Close</a>
     </div>
-  </div>
+  <%- end -%>
 <% end %>
 
 <% content_for :js_footer do %>

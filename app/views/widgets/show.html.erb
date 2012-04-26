@@ -141,8 +141,7 @@
   dataset, <a href="<%= @view.href %>?no_mobile=true">tap here</a>.
 </div>
 
-<div class="actionInterstitial modalDialog">
-  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+<%= modal :class => 'actionInterstitial' do %>
   <h2>Want to <span class="actionPhrase">leave a comment</span>?</h2>
   <p>To <span class="actionPhrase">leave a comment</span>, you will be
      redirected to the <%= CurrentDomain.strings.company %> website where
@@ -158,10 +157,9 @@
       </a>
     </li>
   </ul>
-</div>
+<%- end -%>
 
-<div class="leavingInterstitial modalDialog">
-  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+<%= modal :class => 'leavingInterstitial' do %>
   <h2>You are leaving <span class="serverName"><%= CurrentDomain.cname %></span>.</h2>
   <p>Thank you for visiting our site. You will now access</p>
   <div class="leavingLinkWrapper">
@@ -179,7 +177,7 @@
       </a>
     </li>
   </ul>
-</div>
+<%- end -%>
 
 <%= render_translations LocalePart.controls.browse %>
 <%= render_translations LocalePart.controls.grid %>

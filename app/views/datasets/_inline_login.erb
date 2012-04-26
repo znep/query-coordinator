@@ -1,5 +1,4 @@
-<div id="login" class="modalDialog">
-  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+<%= modal :id => 'login' do %>
   <h2>Sign in using your Socrata ID</h2>
 
   <%= display_standard_flashes %>
@@ -12,14 +11,13 @@
     <li><%= link_to "Forgot your password?", forgot_password_path, :class => 'noRedirPrompt' %></li>
     <li><%= link_to "No account yet?", signup_url, { :class => "signupLink noRedirPrompt" } %></li>
   </ul>
-</div>
+<%- end -%>
 
-<div id="signup" class="modalDialog">
-  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+<%= modal :id => 'signup' do %>
   <h2>We're glad you want to join Socrata!</h2>
 
   <%= form_for :signup, :url => account_path, :html => {:id => 'signupForm',
               :class => 'commonForm', :multipart => true} do |f| %>
    <%= render :partial => "accounts/signup_form_data_new", :locals => { :f => f, :is_modal => true } %>
   <% end %>
-</div>
+<%- end -%>

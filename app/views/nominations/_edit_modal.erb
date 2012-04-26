@@ -1,5 +1,4 @@
-<div class="nominateDialog editNominationDialog modalDialog">
-  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+<%= modal :class => 'nominateDialog editNominationDialog' do %>
   <h2 class="create">Suggest a Dataset</h2>
   <h2 class="edit">Edit This Suggestion</h2>
   <form class="nominateContent commonForm">
@@ -26,4 +25,4 @@
     <li><a href="#Cancel" class="jqmClose button">Cancel</a></li>
     <li><a href="#Submit" class="submitAction button">Submit</a></li>
   </ul>
-</div>
+<%- end -%>

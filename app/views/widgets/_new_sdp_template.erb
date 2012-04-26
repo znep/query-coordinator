@@ -1,5 +1,4 @@
-<div class="modalDialog newTemplateModal">
-  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+<%= modal :class => 'newTemplateModal' do %>
   <h2>Create a new Template</h2>
 
   <%= form_tag '/admin/sdp_templates', :method => 'post', :class => 'newTemplateForm commonForm' do %>
@@ -16,4 +15,4 @@
       <input type="hidden" name="view_id" value="<%= view_id %>"/>
     <%- end -%>
   <% end %>
-</div>
+<%- end -%>

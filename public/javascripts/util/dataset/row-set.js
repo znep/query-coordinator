@@ -586,22 +586,42 @@ var RowSet = ServerModel.extend({
     {
         // Always get federated datasets cross-domain
         args.headers = $.extend(args.headers, {'X-Socrata-Federation': 'Honey Badger'});
-        if (args.inline)
+        var rs = this;
+        if (blist.useSODA2)
+        {
+            args.params = args.params || {};
+            if (!$.isBlank(rs._dataset.searchString))
+            { args.params['$q'] = rs._dataset.searchString; }
+            if (!_.isEmpty(rs._query.orderBys))
+            {
+                args.params['$order'] = _.compact(_.map(rs._query.orderBys, function(ob)
+                {
+                    var c = rs._dataset.columnForIdentifier(ob.expression.columnId);
+                    if ($.isBlank(c)) { return null; }
+                    return c.fieldName + (c.ascending ? '' : ' desc');
+                })).join(',');
+            }
+            if (!_.isEmpty(rs._translatedQuery.filterCondition))
+            {
+                args.params['$where'] = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition);
+            }
+        }
+        else if (args.inline)
         {
             var d;
             if (!$.isBlank(args.data))
             { d = _.isString(args.data) ? JSON.parse(args.data) : args.data; }
             else
-            { d = this._dataset.cleanCopy(); }
-            if (!_.isEmpty(this._query))
+            { d = rs._dataset.cleanCopy(); }
+            if (!_.isEmpty(rs._query))
             {
                 d.query = d.query || {};
-                d.query.orderBys = this._query.orderBys;
-                d.query.filterCondition = this._query.filterCondition;
+                d.query.orderBys = rs._query.orderBys;
+                d.query.filterCondition = rs._query.filterCondition;
             }
             args.data = JSON.stringify(d);
         }
-        this._dataset.makeRequest(args);
+        rs._dataset.makeRequest(args);
     },
 
     clone: function()

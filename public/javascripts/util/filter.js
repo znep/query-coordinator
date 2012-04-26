@@ -2,32 +2,45 @@ blist.namespace.fetch('blist.filter');
 
 (function($) {
 
+    var soqlInfix = function(c, op, v) { return c + op + v; };
+    var soqlFunc = function(c, op, v) { return op + '(' + c + ',' + v + ')'; };
+
     // Filtering
     // NOTE: New filter types also need an analogue template in
     // controls/maps/external-esri-map.js#transformFilterToLayerDefinition
     // -- michael.chui@socrata.com
     var filterOperators = {
         'EQUALS': { text: $.t('core.filters.informal.equals'), editorCount: 1,
+            soql: function(c, v) { return soqlInfix(c, '=', v); },
             opMatches: function(v, cv) { return _.isEqual(v, cv); } },
         'NOT_EQUALS': { text: $.t('core.filters.informal.not_equals'), editorCount: 1,
+            soql: function(c, v) { return soqlInfix(c, '!=', v); },
             opMatches: function(v, cv) { return !_.isEqual(v, cv); } },
 
         'STARTS_WITH': { text: $.t('core.filters.informal.starts_with'), editorCount: 1,
+            soql: function(c, v) { return soqlFunc(c, 'starts_with', v); },
             opMatches: function(v, cv) { return (v || '').startsWith(cv); } },
         'CONTAINS': { text: $.t('core.filters.informal.contains'), editorCount: 1,
+            soql: function(c, v) { return soqlFunc(c, 'contains', v); },
             opMatches: function(v, cv) { return (v || '').indexOf(cv) > -1; } },
         'NOT_CONTAINS': { text: $.t('core.filters.informal.not_contains'), editorCount: 1,
+            soql: function(c, v) { return soqlFunc(c, 'not contains', v); },
             opMatches: function(v, cv) { return (v || '').indexOf(cv) < 0; } },
 
         'LESS_THAN': { text: $.t('core.filters.informal.less_than'), editorCount: 1,
+            soql: function(c, v) { return soqlInfix(c, '<', v); },
             opMatches: function(v, cv) { return v < cv; } },
         'LESS_THAN_OR_EQUALS': { text: $.t('core.filters.informal.less_than_or_equals'), editorCount: 1,
+            soql: function(c, v) { return soqlInfix(c, '<=', v); },
             opMatches: function(v, cv) { return v <= cv; } },
         'GREATER_THAN': { text: $.t('core.filters.informal.greater_than'), editorCount: 1,
+            soql: function(c, v) { return soqlInfix(c, '>', v); },
             opMatches: function(v, cv) { return v > cv; } },
         'GREATER_THAN_OR_EQUALS': { text: $.t('core.filters.informal.greater_than_or_equals'),
+            soql: function(c, v) { return soqlInfix(c, '>=', v); },
             editorCount: 1, opMatches: function(v, cv) { return v >= cv; } },
         'BETWEEN': { text: $.t('core.filters.informal.between'), editorCount: 2,
+            soql: function(c, v) { return soqlInfix(c, '>', v[0]) + ' AND ' + soqlInfix(c, '<', v[1]); },
             opMatches: function(v, cv, cv2)
             {
                 var cva = _.flatten(_.compact([cv, cv2]));
@@ -36,8 +49,10 @@ blist.namespace.fetch('blist.filter');
             } },
 
         'IS_BLANK': { text: $.t('core.filters.informal.is_blank'), editorCount: 0,
+            soql: function(c, v) { return soqlFunc(c, 'is_blank', v); },
             opMatches: function(v) { return $.isBlank(v); } },
         'IS_NOT_BLANK': { text: $.t('core.filters.informal.is_not_blank'), editorCount: 0,
+            soql: function(c, v) { return soqlFunc(c, 'is_not_blank', v); },
             opMatches: function(v) { return !$.isBlank(v); } }
     };
 
@@ -193,6 +208,21 @@ blist.namespace.fetch('blist.filter');
         return '(' + (fc.columnFieldName || fc.tableColumnId) +
             (!$.isBlank(fc.subColumn) ? '[' + fc.subColumn + ']' : '') +
             '|' + op + '|' + fc.value + ')';
+    };
+
+    blist.filter.generateSOQLWhere = function(fc)
+    {
+        if (_.isEmpty(fc)) { return ''; }
+        var op = fc.operator.toUpperCase();
+        if (op == 'AND' || op == 'OR')
+        {
+            var childKeys = _.map(fc.children, function(c) { return blist.filter.generateSOQLWhere(c); });
+            return childKeys.length < 2 ? (childKeys[0] || '') : '(' + childKeys.join(' ' + op + ' ') + ')';
+        }
+        var v = fc.value;
+        if (_.isString(v)) { v = "'" + v + "'"; }
+        return '(' + filterOperators[op].soql(fc.columnFieldName +
+                    (!$.isBlank(fc.subColumn) ? '.' + fc.subColumn : ''), v) + ')';
     };
 
 })(jQuery);

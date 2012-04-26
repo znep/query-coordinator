@@ -25,7 +25,15 @@
     {
         var result = [];
         for (var key in obj)
-            result.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+        {
+            if (obj[key] && obj[key] instanceof Array && obj[key].length > 0)
+            {
+                for (var i = 0; i < obj[key].length; i++)
+                { result.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(obj[key][i])); }
+            }
+            else
+            { result.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key])); }
+        }
         return result.join('&');
     };
 

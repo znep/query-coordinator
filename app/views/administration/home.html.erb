@@ -191,16 +191,14 @@
 <%- end -%>
 
 <%- content_for :modals do -%>
-  <div id="selectDataset" class="modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <%= modal :id => 'selectDataset' do %>
     <h2>Choose a Dataset to feature</h2>
     <iframe src="<%= url_for :action => :select_dataset %>?nofederate=true&suppressed_facets[]=domain" frameBorder="0"></iframe>
-  </div>
-  <div id="setThumbnail" class="modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <%- end -%>
+  <%= modal :id => 'setThumbnail' do %>
     <h2>Set a Thumbnail</h2>
     <iframe frameBorder="0"></iframe>
-  </div>
+  <%- end -%>
 <%- end -%>
 
 <%- content_for :js_footer do -%>

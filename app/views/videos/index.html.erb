@@ -70,10 +70,9 @@
 <textarea id="embedTemplate"><iframe src="https://fast.wistia.com/embed/iframe/%embedid%?videoWidth=640&amp;videoHeight=360&amp;playButton=false&amp;playerColor=274066&amp;autoPlay=true" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" width="640" height="360"></iframe></textarea>
 
 <%- content_for :modals do -%>
-  <div class="modalDialog videoPopupModal">
-    <a href="#" class="close"><span class="icon"></span></a>
+  <%= modal :class => 'videoPopupModal' do %>
     <div class="videoContainer"></div>
-  </div>
+  <%- end -%>
 <%- end -%>
 
 <%- content_for :js_footer do -%>

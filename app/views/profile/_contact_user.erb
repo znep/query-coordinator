@@ -1,5 +1,4 @@
-<div class="contactUserDialog modalDialog">
-  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+<%= modal :class => 'contactUserDialog' do %>
   <h2>Contact User</h2>
   <form class="commonForm" action="/api/users/<%= @user.id %>?method=contact" />
     <div class="line clearfix">
@@ -19,4 +18,4 @@
     <li><a href="#Cancel" class="jqmClose button">Cancel</a></li>
     <li><a href="#Submit" class="submitAction button">Submit</a></li>
   </ul>
-</div>
+<%- end -%>

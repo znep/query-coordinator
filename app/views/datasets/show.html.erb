@@ -334,8 +334,7 @@
 
 <%- content_for :modals do -%>
 
-  <div class="subscribeToDataset modalDialog loading">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <%= modal :class => 'subscribeToDataset loading' do %>
     <h2>Subscribe to this <span class="datasetTypeNameUpcase">Dataset</span></h2>
 
     <div class="loadingOverlay">
@@ -371,9 +370,7 @@
       <li><a href="#cancel" class="jqmClose button">Done</a></li>
     </ul>
   </div>
-  <div class="emailDatasetDialog modalDialog<%= ' ownerDialog' if
-    @view.has_rights?('grant') %>">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <%= modal :class => "emailDatasetDialog#{' ownerDialog' if @view.has_rights?('grant')}" do %>
     <h2><span class="emailDatasetHint">Email</span> this
       <span class="datasetTypeNameUpcase">Dataset</span></h2>
     <div class="emailSuccess">
@@ -428,7 +425,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  <%- end -%>
 
   <%= render :partial => 'save_view_dialog' %>
 

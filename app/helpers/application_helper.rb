@@ -316,6 +316,16 @@ module ApplicationHelper
       "alt='#{textual_extent}' />").html_safe
   end
 
+  def modal(options, &block)
+    options[:class] = ['modalDialog', (options.delete(:class) || options.delete('class'))].compact.join(' ')
+    options[:style] = 'display:none'
+
+    content_tag(:div, options) do
+      [content_tag(:a, :href => '#close', :class => 'jqmClose modalDialogClose'){ t('core.dialogs.close') },
+       capture(&block)].join.html_safe
+    end
+  end
+
 # THEME HELPERS
 
   # Simple technique to do nested layouts. If you want to include one layout

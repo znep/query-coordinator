@@ -160,23 +160,21 @@ http://www.socrata.com
   <div id="modals">
     <%= yield :modals %>
 
-    <div class="modalDialog" id="jqmAlert">
-      <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <%= modal :id => 'jqmAlert' do %>
       <h2>Alert</h2>
       <p class="alertMessage"></p>
       <ul class="actions clearfix">
         <li><a href="#close" class="button jqmClose">Close</a></li>
       </ul>
-    </div>
-    <div class="modalDialog" id="jqmConfirm">
-      <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <%- end -%>
+    <%= modal :id => 'jqmConfirm' do %>
       <h2>Alert</h2>
       <p class="confirmMessage"></p>
       <ul class="actions clearfix">
         <li><a href="#close" class="button jqmClose default yes">Yes</a></li>
         <li><a href="#close" class="button jqmClose no">No</a></li>
       </ul>
-    </div>
+    <%- end -%>
   </div>
 
   <%= yield :js_footer %>

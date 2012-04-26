@@ -829,7 +829,7 @@ var Dataset = ServerModel.extend({
             {
                 var r = ds.rowForID(rId);
                 if ($.isBlank(r)) { return; }
-                uuid = r.uuid;
+                uuid = blist.useSODA2 ? r.id : r.uuid;
                 ds._removeRow(r);
             }
             else
@@ -839,7 +839,7 @@ var Dataset = ServerModel.extend({
                     {
                         if (cr.id == rId)
                         {
-                            uuid = cr.uuid;
+                            uuid = blist.useSODA2 ? cr.id : cr.uuid;
                             return true;
                         }
                         return false;
@@ -2334,6 +2334,9 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(data[fieldMeta]))
         { data[fieldMeta] = JSON.stringify(data[fieldMeta]); }
 
+        if (blist.useSODA2)
+        { data[':id'] = row.id; }
+
         return data;
     },
 
@@ -2366,12 +2369,20 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var rowCreated = function(rr)
         {
+            if (blist.useSODA2 && rr.Errors > 0)
+            {
+                rowErrored();
+                return;
+            }
+
             var oldID = req.row.id;
-            // Add metadata to new row
-            // FIXME: The server response for this should be changing; we can
-            // run into problems if there is a user column named something like
-            // '_id'
-            _.each(rr, function(v, k)
+            if (!blist.useSODA2)
+            {
+                // Add metadata to new row
+                // FIXME: The server response for this should be changing; we can
+                // run into problems if there is a user column named something like
+                // '_id'
+                _.each(rr, function(v, k)
                 {
                     if (k.startsWith('_'))
                     {
@@ -2383,6 +2394,8 @@ var Dataset = ServerModel.extend({
                         req.row[l] = v;
                     }
                 });
+            }
+
             if (req.row.underlying)
             {
                 req.row.noMatch = true;
@@ -2436,14 +2449,14 @@ var Dataset = ServerModel.extend({
             if (_.isFunction(req.success)) { req.success(req.row); }
         };
 
-        var rowErrored = function(xhr)
+        var rowErrored = function()
         {
             _.each(!$.isBlank(req.parentColumn) ?
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
                     { req.row.error[c.id] = true; });
             ds._updateRow(req.parentRow || req.row);
             ds.trigger('row_change', [[req.parentRow || req.row]]);
-            if (_.isFunction(req.error)) { req.error(xhr); }
+            if (_.isFunction(req.error)) { req.error(); }
         };
 
         // On complete, kick off any pending creates
@@ -2461,15 +2474,21 @@ var Dataset = ServerModel.extend({
             }
         };
 
-        var url = '/views/' + ds.id + '/rows';
+        var url = blist.useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
         if (!$.isBlank(req.parentRow))
         {
             url += '/' + req.parentRow.id + '/columns/' + req.parentColumn.id +
                 '/subrows';
         }
         url += '.json';
+        var rd = req.rowData;
+        if (blist.useSODA2)
+        {
+            rd = $.extend(true, {}, rd);
+            delete rd[':id'];
+        }
         ds.makeRequest({url: url,
-            type: 'POST', data: JSON.stringify(req.rowData), batch: isBatch,
+            type: 'POST', data: JSON.stringify(rd), batch: isBatch,
             success: rowCreated, error: rowErrored, complete: rowCompleted});
     },
 
@@ -2477,20 +2496,29 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         // On save, unmark each item, and fire an event
-        var rowSaved = function(newRow)
+        var rowSaved = function(result)
         {
+            if (blist.useSODA2 && result.Errors > 0)
+            {
+                rowErrored();
+                return;
+            }
+
             _.each(r.columnsSaving, function(cId)
                 { delete r.row.changed[cId]; });
 
-            _.each(r.columnsSaving, function(cId)
+            if (!blist.useSODA2)
             {
-                var col = !$.isBlank(r.parentColumn) ?
-                    r.parentColumn.childColumnForID(cId) :
-                    ds.columnForID(cId);
-                ds._updateLinkedColumns(col, r.row, newRow);
-            });
+                _.each(r.columnsSaving, function(cId)
+                {
+                    var col = !$.isBlank(r.parentColumn) ?
+                        r.parentColumn.childColumnForID(cId) :
+                        ds.columnForID(cId);
+                    ds._updateLinkedColumns(col, r.row, result);
+                });
 
-            if (!newRow._underlying) { r.row.noMatch = null; }
+                if (!result._underlying) { r.row.noMatch = null; }
+            }
 
             ds._updateRow(r.parentRow || r.row);
             ds.trigger('row_change', [[r.parentRow || r.row]]);
@@ -2499,13 +2527,13 @@ var Dataset = ServerModel.extend({
         };
 
         // On error, mark as such and notify
-        var rowErrored = function(xhr)
+        var rowErrored = function()
         {
             _.each(r.columnsSaving, function(cId)
                 { r.row.error[cId] = true; });
             ds._updateRow(r.parentRow || r.row);
             ds.trigger('row_change', [[r.parentRow || r.row]]);
-            if (_.isFunction(r.error)) { r.error(xhr); }
+            if (_.isFunction(r.error)) { r.error(); }
         };
 
         // On complete, kick off any pending saves/deletes
@@ -2516,10 +2544,10 @@ var Dataset = ServerModel.extend({
         };
 
 
-        var url = '/views/' + ds.id + '/rows/';
+        var url = blist.useSODA2 ? '/api/id/' + ds.id + '/' : '/views/' + ds.id + '/rows/';
         if (!$.isBlank(r.parentRow))
         { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows/'; }
-        url += r.row.uuid + '.json';
+        url += (blist.useSODA2 ? r.row.id : r.row.uuid) + '.json';
         ds.makeRequest({url: url, type: 'PUT', data: JSON.stringify(r.rowData),
             batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});
@@ -2537,11 +2565,12 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var rowRemoved = function() { ds.aggregatesChanged(); };
 
-        var url = '/views/' + ds.id + '/rows/';
+        var url = blist.useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows/';
         if (!$.isBlank(parRowId))
         { url += parRowId + '/columns/' + parColId + '/subrows/'; }
-        url += rowId + '.json';
-        ds.makeRequest({batch: isBatch, url: url, type: 'DELETE',
+        if (!blist.useSODA2) { url += rowId + '.json'; }
+        ds.makeRequest({batch: isBatch, url: url, type: blist.useSODA2 ? 'POST' : 'DELETE',
+            data: JSON.stringify({':deleted': true, ':id': rowId}),
             success: rowRemoved});
     },
 

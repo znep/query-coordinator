@@ -2,7 +2,8 @@
 {
     var rest = require('restler');
 
-    var env = require(__dirname + '/environment');
+    var env = require(__dirname + '/environment'),
+        _u = require('underscore');
 
     // util things
     var util = {};
@@ -179,6 +180,34 @@
         return target;
     };
 
+    // Used to remove items from an object that is acting like a sparse array
+    util.removeItemsFromObject = function(obj, index, numItems)
+    {
+        // Remove specified number of items
+        for (var i = 0; i < numItems; i++)
+        { delete obj[index + i]; }
+
+        // Use a temporary object to hold new indices, so we don't overwrite old
+        // as we iterate
+        var tmp = {};
+
+        // Move each item down one
+        _u.each(obj, function(r, i)
+        {
+            i = parseInt(i);
+            if (i > index)
+            {
+                if (!util.isBlank(r.index))
+                { r.index = i - numItems; }
+                tmp[i - numItems] = r;
+                delete obj[i];
+            }
+        });
+
+        // Merge moved values into original
+        util.extend(obj, tmp);
+    };
+
     // prototype things
     String.prototype.endsWith = function(str)
     {
@@ -194,6 +223,11 @@
     String.prototype.startsWith = function(str)
     {
         return this.indexOf(str) == 0;
+    };
+
+    String.prototype.trim = function()
+    {
+        return this.replace(/^\s+/, '').replace(/\s+$/, '');
     };
 
     // network things
@@ -216,7 +250,10 @@
                 opts.success(response);
         };
         var complete = opts.complete || function(){};
-        var path = env.base.url + opts.url;
+        var url = opts.url;
+        if (env.name == 'production' || env.name == 'staging')
+        { url = url.replace(/^\/api/, ''); }
+        var path = env.base.url + url;
 
         if (opts.type && !opts.method)
             opts.method = opts.type;
@@ -229,7 +266,7 @@
             .on('complete', complete)
             .on('error', function(xhr, error)
                 {
-                    console.error(error.message);
+                    console.error('Error: ' + error.message, xhr);
                 });
     };
 

@@ -134,7 +134,7 @@
     {
         this.name = filename;
         this.skip = summary.headers + 1;
-        this.columns = summary.columns.map(function(col)
+        this.columns = (summary.columns || []).map(function(col)
         {
             return {
                 name: col.name,

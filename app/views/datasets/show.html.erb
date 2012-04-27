@@ -369,7 +369,7 @@
     <ul class="actions clearfix">
       <li><a href="#cancel" class="jqmClose button">Done</a></li>
     </ul>
-  </div>
+  <%- end -%>
   <%= modal :class => "emailDatasetDialog#{' ownerDialog' if @view.has_rights?('grant')}" do %>
     <h2><span class="emailDatasetHint">Email</span> this
       <span class="datasetTypeNameUpcase">Dataset</span></h2>

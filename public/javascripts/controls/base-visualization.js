@@ -367,7 +367,7 @@
                     // without prompting a full reload of the rows.
                     // Will be done at the datalayer level in maps rewrite.
                     _.each(vizObj._dataViews, function(view)
-                    { vizObj.renderData(view._rows, view); });
+                    { vizObj.renderData(view._activeRowSet._rows, view); });
                 }
                 delete vizObj._updatingViewport;
                 delete vizObj._willfullyIgnoreReload;

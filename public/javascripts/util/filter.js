@@ -158,14 +158,15 @@ blist.namespace.fetch('blist.filter');
             { return cacheAndReturn(function() { return false; }); }
 
             var type = col.renderType;
-            if ($.subKeyDefined(type, 'subColumns.' + expr.subColumn))
-            { type = type.subColumns[expr.subColumn]; }
+            var subCol = (expr.subColumn || '').toLowerCase();
+            if ($.subKeyDefined(type, 'subColumns.' + subCol))
+            { type = type.subColumns[subCol]; }
 
             return cacheAndReturn(function(row)
             {
                 var rowVal = row[col.lookup];
-                if ($.isPlainObject(rowVal) && !$.isBlank(expr.subColumn))
-                { rowVal = rowVal[expr.subColumn]; }
+                if ($.isPlainObject(rowVal) && !$.isBlank(subCol))
+                { rowVal = rowVal[subCol]; }
 
                 return type.matches(expr.operator, col, rowVal, expr.value);
             });

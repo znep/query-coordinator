@@ -1703,6 +1703,8 @@
     var addPoint = function(chartObj, point, series, isOther, pointIndex)
     {
         var ri = (chartObj._rowIndices[point.row.id] || {})[series.id];
+        if (_.include(['pie', 'donut'], chartObj._chartType))
+        { point.pieSlice = true; }
         if (isOther && point.y == 0)
         {
             removePoint(chartObj, point, series, isOther);

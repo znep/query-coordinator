@@ -7929,7 +7929,7 @@ Point.prototype = {
         // We updated a point, so make sure the graphic is redrawn
         if (point.hasOwnProperty('graphic'))
         {
-            point.graphic.destroy();
+            if (!point.pieSlice) { point.graphic.destroy(); }
             delete point.graphic;
         }
 	},

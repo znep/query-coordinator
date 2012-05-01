@@ -237,6 +237,7 @@ $.component.Container.extend('Repeater', 'content', {
         entity = entity || {};
 
         if ($.isBlank(entity._repeaterIndex)) { entity._repeaterIndex = index; }
+        if ($.isBlank(entity._repeaterDisplayIndex)) { entity._repeaterDisplayIndex = index + 1; }
         // Add ID prefix so repeated components will not clash
         var prefix = this._idPrefix + index + '-';
         function createTemplate(properties) {

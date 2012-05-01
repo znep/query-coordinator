@@ -85,6 +85,7 @@ module Canvas2
   protected
     def add_row(row, index, resolutions = {})
       resolutions['_repeaterIndex'] = index
+      resolutions['_repeaterDisplayIndex'] = index + 1
 
       child_props = string_substitute(@properties['childProperties'], resolutions)
       copy = create_copy({}.deep_merge(@clone_props).deep_merge(child_props.is_a?(Hash) ? child_props : {}),

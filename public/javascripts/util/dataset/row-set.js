@@ -468,6 +468,13 @@ var RowSet = ServerModel.extend({
 
     deactivate: function()
     {
+        var pending = this._pendingRowReqs;
+        this._pendingRowReqs = [];
+        // Tell pending requests they are being cancelled
+        _.each(pending, function(p)
+            { if (_.isFunction(p.errorCallback)) { p.errorCallback({cancelled: true}); } });
+        delete this._curMetaReq;
+        delete this._curMetaReqMeta;
         this.trigger('row_change', [_.values(this._rows), true]);
     },
 

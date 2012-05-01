@@ -87,7 +87,7 @@
             'layerPath': "https://server.arcgisonline.com/ArcGIS/rest/services/" +
                          "Demographics/USA_Tapestry/MapServer/3",
             'jsonCache': function(config)
-                { return "/geodata/esri_county_"+config.region+".json"; },
+                { return "/geodata/esri_county_"+config.region.toLowerCase()+".json"; },
             'fieldsReturned': ["NAME", "ST_ABBREV"],
             'where': function (mapObj, config)
                 { return "ST_ABBREV = '"+config.region.toUpperCase()+"'"; }

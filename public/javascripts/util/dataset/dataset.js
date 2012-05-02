@@ -2695,7 +2695,9 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch)
         }
         else if ((cachedView !== false) && _.isFunction(successCallback))
         {
-            successCallback(new Dataset(blist.viewCache[id]));
+            var ds = _.isFunction(blist.viewCache[id].clone) ? blist.viewCache[id].clone()
+                                                             : new Dataset(blist.viewCache[id]);
+            successCallback(ds);
         }
     }
     else

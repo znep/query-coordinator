@@ -504,7 +504,8 @@ var RowSet = ServerModel.extend({
     formattingChanged: function()
     {
         var rs = this;
-        var condFmt = rs._dataset.metadata.conditionalFormatting;
+        var condFmt = $.subKeyDefined(rs, '_dataset.metadata.conditionalFormatting')
+            && rs._dataset.metadata.conditionalFormatting;
         if (!_.isArray(condFmt))
         { rs._condFmt = null; }
         else

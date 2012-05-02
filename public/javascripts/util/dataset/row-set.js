@@ -363,13 +363,13 @@ var RowSet = ServerModel.extend({
     getAggregates: function(callback, customAggs)
     {
         var rs = this;
-        rs._aggCache = rs._aggCache || {};
 
         var aggs = [];
         var callResults = function() { callback(aggs); };
 
         var gotAggs = function(recAggs)
         {
+            rs._aggCache = rs._aggCache || {};
             _.each(recAggs, function(agg)
             {
                 rs._aggCache[agg.columnId] = rs._aggCache[agg.columnId] || {};
@@ -378,6 +378,7 @@ var RowSet = ServerModel.extend({
             });
         };
 
+        rs._aggCache = rs._aggCache || {};
         var args = {params: {method: 'getAggregates'}, inline: true};
         var needReq = false;
         if (!$.isBlank(customAggs))

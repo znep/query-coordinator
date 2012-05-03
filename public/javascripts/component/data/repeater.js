@@ -127,6 +127,7 @@ $.component.Container.extend('Repeater', 'content', {
         {
             _.defer(function()
             {
+                if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
                 var newViewPercent = getViewPercent(cObj);
                 if (cObj._viewPercent && newViewPercent != cObj._viewPercent)
                 { $(window).scrollTop(cObj._viewPercent * cObj.$dom.height() + cObj.$dom.offset().top); }
@@ -218,7 +219,6 @@ $.component.Container.extend('Repeater', 'content', {
                 // Hack: This triggers a re-show of items
                 $(window).scroll();
             }
-            if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
             cObj._refresh();
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))

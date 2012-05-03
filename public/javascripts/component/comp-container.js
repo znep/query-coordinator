@@ -118,7 +118,8 @@
         /**
          * Callback invoked by children that are newly parented by this container or moved within the container.
          */
-        _childMoved: function(child, oldParent, oldPrev, oldNext) {
+        _childMoved: function(child, oldParent, oldPrev, oldNext)
+        {
             // Record keeping -- update first & last
             if (!this.first)
             { this.first = this.last = child; }
@@ -138,7 +139,9 @@
 
             // Synchronize DOM
             if ((oldParent != this || oldNext != child.next) && this._initialized)
+            {
                 this._moveChildDom(child);
+            }
         },
 
         /**
@@ -406,7 +409,8 @@
             var cObj = this;
             if (this._blockArrange) { return; }
 
-            this.$contents.toggleClass('inlineDisplay', !!this._properties.inlineDisplay);
+            if (this._initialized)
+            { this.$contents.toggleClass('inlineDisplay', !!this._properties.inlineDisplay); }
 
             var totalWeight = 0;
             if (!this._properties.inlineDisplay)
@@ -415,17 +419,21 @@
             var pos = 0;
             this.each(function(child)
             {
+                var isWrapped = $.subKeyDefined(child, '$wrapper');
                 if (cObj._properties.inlineDisplay)
                 {
-                    child.$wrapper.css({marginLeft: 0, width: 'auto'});
+                    if (isWrapped) { child.$wrapper.css({marginLeft: 0, width: 'auto'}); }
                 }
                 else
                 {
                     var weight = child.properties().weight || 1;
-                    child.$wrapper.css({
-                        marginLeft: -(100 - pos / totalWeight * 100) + '%',
-                        width: (weight / totalWeight * 100) + '%'
-                    });
+                    if (isWrapped)
+                    {
+                        child.$wrapper.css({
+                            marginLeft: -(100 - pos / totalWeight * 100) + '%',
+                            width: (weight / totalWeight * 100) + '%'
+                        });
+                    }
                     pos += weight;
                 }
             });

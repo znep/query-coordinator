@@ -3,25 +3,22 @@
 var DEFAULT_PAGE_SIZE = 5;
 
 $.component.PagedContainer.extend('MultiPagedContainer', {
-    _init: function()
+    /* Actual children added to the container */
+    children: function()
+    { return this._contentChildren; },
+
+    count: function()
     {
-        this._pages = [];
-        this._super.apply(this, arguments);
+        return this._contentChildren.length;
     },
 
-    pages: function()
-    { return this._pages; },
-
-    countPages: function()
-    { return this._pages.length; },
-
-    eachPage: function(fn, scope)
+    each: function(fn, scope)
     {
         var cObj = this;
         var result;
-        _.any(cObj._pages, function(p)
+        _.any(cObj._contentChildren, function(c)
         {
-            var r = fn.call(scope || this, p);
+            var r = fn.call(scope || cObj, c);
             if (r !== undefined)
             {
                 result = r;
@@ -29,35 +26,6 @@ $.component.PagedContainer.extend('MultiPagedContainer', {
             }
         });
         return result;
-    },
-
-    mapPage: function(fn, scope)
-    {
-        var result = [];
-        this.eachPage(function(page)
-        { result.push(fn.call(scope, page)); });
-        return result;
-    },
-
-    /* Actual children added to the container */
-    children: function()
-    { return this.map(function(child) { return child }); },
-
-    count: function()
-    {
-        var count = 0;
-        this.each(function() { count++; });
-        return count;
-    },
-
-    each: function(fn, scope)
-    {
-        var cObj = this;
-        return cObj.eachPage(function(p)
-        {
-            var result = p.each(fn, scope || cObj);
-            if (result !== undefined) { return result; }
-        });
     },
 
     map: function(fn, scope)
@@ -71,37 +39,35 @@ $.component.PagedContainer.extend('MultiPagedContainer', {
     /* TODO: This currently ignores position, and is append-only. Do we ever care about any other case? */
     add: function(child)
     {
-        if (child._parMPC == this)
-        { return this._super(child); }
+        if (child._parCont == this)
+        { return this._super.apply(this, arguments); }
 
-        if (_.isEmpty(this._pages) ||
-                _.last(this._pages).count() >= (this._properties.pageSize || DEFAULT_PAGE_SIZE))
+        this._contentChildren = this._contentChildren || [];
+        this._contentChildren.push(child);
+
+        if (this._pages.length < Math.ceil(this._contentChildren.length /
+                    (this._properties.pageSize || DEFAULT_PAGE_SIZE)))
+        { this._super($.component.create(this._properties.container || {type: 'Container'})); }
+    },
+
+    _showPage: function(page)
+    {
+        if (!page._initialized)
         {
-            var newC = $.component.create(this._properties.container || {type: 'Container'});
-            newC._parMPC = this;
-            this._pages.push(newC);
-            this.add(newC);
+            var i = _.indexOf(this._pages, page);
+            var numItems = this._properties.pageSize || DEFAULT_PAGE_SIZE;
+            var c = this._contentChildren.slice(i * numItems, (i + 1) * numItems)
+            page.add(c);
         }
-
-        _.last(this._pages).add(child);
+        this._super.apply(this, arguments);
     },
 
     // The Container can pass the real children in here; ignore them if they're
     // not our interim page containers
     _moveChildDom: function(child)
     {
-        if (child._parMPC != this) { return; }
+        if (child._parCont != this) { return; }
         this._super.apply(this, arguments);
-    },
-
-    // Override render to render to handle pages, instead of real children
-    _render: function()
-    {
-        if (!this._super()) { return false; }
-
-        this.eachPage(this._moveChildDom, this);
-
-        return true;
     }
 
 });

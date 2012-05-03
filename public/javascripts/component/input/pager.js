@@ -171,7 +171,7 @@ $.component.Component.extend('Pager', 'input', {
 var adjustIndex = function(cObj, newChildId)
 {
     var curIndex = cObj._context.visibleIndex();
-    var pageList = cObj._context.pages();
+    var pageCount = cObj._context.countPages();
     var $statusItem;
     var $navLinks;
     if (($navLinks = cObj.$contents.find('.navigateLink')).length > 0)
@@ -179,19 +179,19 @@ var adjustIndex = function(cObj, newChildId)
         $navLinks.filter('.prevLink').toggleClass('disabled',
             cObj._properties.navigateWrap === false && curIndex == 0);
         $navLinks.filter('.nextLink').toggleClass('disabled',
-            cObj._properties.navigateWrap === false && curIndex == (pageList.length - 1));
+            cObj._properties.navigateWrap === false && curIndex == (pageCount - 1));
     }
     if (($statusItem = cObj.$contents.find('.navigateInfo')).length > 0)
     {
         $statusItem.find('.currentItem').text(curIndex + 1);
-        $statusItem.find('.totalCount').text(pageList.length);
+        $statusItem.find('.totalCount').text(pageCount);
     }
     else if (($statusItem = cObj.$contents.find('.navigatePaging')).length > 0)
     {
         $statusItem.empty();
         var windowLimit = cObj._properties.pagingWindow || 4;
         var minI = Math.max(0, curIndex - windowLimit);
-        var maxI = Math.min(pageList.length - 1, curIndex + windowLimit);
+        var maxI = Math.min(pageCount - 1, curIndex + windowLimit);
 
         if (minI > 0)
         {
@@ -218,15 +218,15 @@ var adjustIndex = function(cObj, newChildId)
             }
         }
 
-        if (maxI < pageList.length - 1)
+        if (maxI < pageCount - 1)
         {
-            if (maxI < pageList.length - 2)
+            if (maxI < pageCount - 2)
             {
                 $statusItem.append($.tag({tagName: 'span',
                     'class': 'pageFillIn', contents: '&hellip;'}));
             }
-            $statusItem.append($.tag({tagName: 'a', href: '#' + (pageList.length - 1),
-                'class': 'pageLink', contents: pageList.length}));
+            $statusItem.append($.tag({tagName: 'a', href: '#' + (pageCount - 1),
+                'class': 'pageLink', contents: pageCount}));
         }
     }
     else if (($statusItem = cObj.$contents.find('.childLink')).length > 0)

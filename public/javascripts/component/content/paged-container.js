@@ -3,6 +3,7 @@
 $.component.Container.extend('PagedContainer', {
     _init: function()
     {
+        this._pages = [];
         this._super.apply(this, arguments);
         this.registerEvent({page_shown: 'newPage', page_added: 'page', page_removed: 'page'});
     },
@@ -38,20 +39,51 @@ $.component.Container.extend('PagedContainer', {
     },
 
     pages: function()
-    { return this.children.apply(this, arguments); },
-
-    eachPage: function()
-    { return this.each.apply(this, arguments); },
-
-    mapPage: function()
-    { return this.map.apply(this, arguments); },
+    { return this._pages; },
 
     countPages: function()
-    { return this.count.apply(this, arguments); },
+    { return this._pages.length; },
+
+    eachPage: function(fn, scope)
+    {
+        var cObj = this;
+        var result;
+        _.any(cObj._pages, function(p)
+        {
+            var r = fn.call(scope || cObj, p);
+            if (r !== undefined)
+            {
+                result = r;
+                return true;
+            }
+        });
+        return result;
+    },
+
+    mapPage: function(fn, scope)
+    {
+        var result = [];
+        this.eachPage(function(page)
+        { result.push(fn.call(scope, page)); });
+        return result;
+    },
+
+    add: function(child, position, forceAdd)
+    {
+        var r;
+        if (forceAdd)
+        { r = this._super(child); }
+
+        if (child._parCont == this) { return r; }
+
+        child._parCont = this;
+        this._pages.push(child);
+        return r;
+    },
 
     _visiblePage: function(newPage)
     {
-        if (!$.isBlank(newPage) && newPage.parent == this && newPage != this._currentPage)
+        if (!$.isBlank(newPage) && newPage != this._currentPage)
         {
             this._currentPage = newPage;
             this._arrange();
@@ -67,6 +99,8 @@ $.component.Container.extend('PagedContainer', {
 
     _showPage: function(page, finalCallback)
     {
+        if (!page._initialized)
+        { this.add(page, null, true); }
         page.properties({height: this._properties.height});
         if (!page._rendered) { page._render(); }
         page.$dom.removeClass('hide');
@@ -79,10 +113,11 @@ $.component.Container.extend('PagedContainer', {
     _arrange: function()
     {
         var cObj = this;
-        if ($.isBlank(cObj._currentPage) && $.subKeyDefined(cObj, 'first.$dom'))
+        if ($.isBlank(cObj._currentPage) && !_.isEmpty(cObj._pages))
         {
-            cObj._currentPage = cObj.first;
-            cObj._currentPage.$dom.addClass('hide');
+            cObj._currentPage = _.first(cObj._pages);
+            if ($.subKeyDefined(cObj, '_currentPage.$dom'))
+            { cObj._currentPage.$dom.addClass('hide'); }
         }
 
         var finalHide;
@@ -98,7 +133,8 @@ $.component.Container.extend('PagedContainer', {
 
         if (cObj._rendered)
         {
-            if ($.subKeyDefined(cObj, '_currentPage.$dom') && cObj._currentPage.$dom.hasClass('hide'))
+            if (!$.isBlank(cObj._currentPage) &&
+                    ($.isBlank(cObj._currentPage.$dom) || cObj._currentPage.$dom.hasClass('hide')))
             { cObj._showPage(cObj._currentPage, finalHide); }
             else if (_.isFunction(finalHide)) { finalHide(); }
         }
@@ -127,7 +163,6 @@ $.component.Container.extend('PagedContainer', {
             this.$ct.append(child.$dom);
             this.trigger('page_added', [{page: child}]);
         }
-        this._arrange();
     }
 });
 

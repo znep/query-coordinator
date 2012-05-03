@@ -73,7 +73,7 @@ $.component.PagedContainer.extend('Carousel', 'content', {
         var cObj = this;
         var firstLoad = !page._rendered;
 
-        page.$dom.stop();
+        if (!$.isBlank(page.$dom)) { page.$dom.stop(); }
         cObj._super(page);
 
         var isAnimate = false;
@@ -88,6 +88,7 @@ $.component.PagedContainer.extend('Carousel', 'content', {
                 });
             isAnimate = true;
         }
+        cObj._startSwitch();
         if (_.isFunction(finalCallback)) { finalCallback(isAnimate); }
     },
 

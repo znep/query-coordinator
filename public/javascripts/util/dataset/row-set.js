@@ -304,6 +304,11 @@ var RowSet = ServerModel.extend({
         }
     },
 
+    loadedRows: function()
+    {
+        return this._rows;
+    },
+
     addRow: function(newRow, idx)
     {
         if (!this._doesBelong(newRow)) { return; }

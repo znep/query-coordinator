@@ -595,6 +595,11 @@ var Dataset = ServerModel.extend({
         this._activeRowSet.getRows(ids, null, successCallback, errorCallback);
     },
 
+    loadedRows: function()
+    {
+        return this._activeRowSet.loadedRows();
+    },
+
     // Assume it goes at the end
     createRow: function(data, parRowId, parColId, successCallback, errorCallback)
     {

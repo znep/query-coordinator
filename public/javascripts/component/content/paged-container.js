@@ -70,11 +70,30 @@ $.component.Container.extend('PagedContainer', {
 
     add: function(child, position, forceAdd)
     {
+        var cObj = this;
         var r;
         if (forceAdd)
         { r = this._super(child); }
 
+        if (_.isArray(child))
+        {
+            _.each(child, function(c) { cObj.add(c); });
+            return r;
+        }
+
         if (child._parCont == this) { return r; }
+
+        if (!(child instanceof $.component.Component))
+        {
+            if ($.isBlank(child.contextId) && $.isBlank(child.context))
+            { child.contextId = this._properties.childContextId || this._properties.contextId; }
+            child = $.component.create(child);
+        }
+
+        // We want to initialize any functional components, but they go into their own store
+        // and not into the DOM
+        if (child instanceof $.component.FunctionalComponent)
+        { return null; }
 
         child._parCont = this;
         this._pages.push(child);

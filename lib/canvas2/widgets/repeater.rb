@@ -27,7 +27,7 @@ module Canvas2
         all_c = []
 
         if context.is_a? Array
-          context.each { |item, i| all_c << add_row(item, i, item.clone) }
+          context.each_with_index { |item, i| all_c << add_row(item, i, item.clone) }
 
         elsif context[:type] == 'datasetList'
           context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }

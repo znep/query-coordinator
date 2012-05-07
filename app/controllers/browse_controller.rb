@@ -1,4 +1,5 @@
 class BrowseController < ApplicationController
+  prepend_before_filter :check_chrome, :only => :show
   skip_before_filter :require_user
   skip_before_filter :disable_frame_embedding, :only => :embed
 

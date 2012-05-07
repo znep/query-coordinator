@@ -1,5 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
+  prepend_before_filter :check_chrome, :only => [:show, :alt]
   skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :external_download, :download, :about]
 
 # collection actions

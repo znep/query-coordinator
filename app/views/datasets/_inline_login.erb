@@ -1,3 +1,4 @@
+<%- unless @suppress_chrome -%>
 <%= modal :id => 'login' do %>
   <h2>Sign in using your Socrata ID</h2>
 
@@ -20,4 +21,5 @@
               :class => 'commonForm', :multipart => true} do |f| %>
    <%= render :partial => "accounts/signup_form_data_new", :locals => { :f => f, :is_modal => true } %>
   <% end %>
+<%- end -%>
 <%- end -%>

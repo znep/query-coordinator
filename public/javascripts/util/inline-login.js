@@ -10,7 +10,10 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
         var $login = $('#login');
         var $signup = $('#signup');
         if ($login.length < 1 || $signup.length < 1)
-        { throw 'Trying to use inline login, but #login or #signup is missing!'; }
+        {
+            alert('You are not logged in');
+            //throw new Error('Trying to use inline login, but #login or #signup is missing!');
+        }
 
         $login.jqmShow()
             .find('.flash').text(msg).addClass('notice').end()

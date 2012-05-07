@@ -70,7 +70,7 @@ http://www.socrata.com
   <% end %>
 </head>
 
-<body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}" %>">
+<body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}#{@suppress_chrome ? ' suppressChrome' : ''}" %>">
   <div id="skipLinks">
     <a href="#content" accesskey="c">Skip to main content</a>
     <a href="#footerLinks" accesskey="f">Skip to footer links</a>
@@ -82,9 +82,11 @@ http://www.socrata.com
   <div class="siteOuterWrapper">
     <div class="siteInnerWrapper">
 
+      <%- if !@suppress_chrome -%>
       <div id="siteHeader" class="clearfix">
         <%= render_domain_template(@page_custom_header || 'header_full') %>
       </div>
+      <%- end -%>
 
       <a name="content"></a>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
@@ -98,10 +100,12 @@ http://www.socrata.com
     </div>
   </div>
 
+  <%- if !@suppress_chrome -%>
   <div id="siteFooter">
     <a name="footerLinks"></a>
     <%= render_domain_template(@page_custom_footer || 'footer_full') %>
   </div>
+  <%- end -%>
 
   <%#
   Better to load JS at the bottom:
@@ -149,12 +153,14 @@ http://www.socrata.com
       blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
 
+    <%- if !@suppress_chrome -%>
     try {
       if ((self !== top) && (self.location.hostname !== top.location.hostname))
         top.location = self.document.location;
     } catch(ex) {
       top.location = self.document.location;
     }
+    <%- end -%>
   </script>
 
   <div id="modals">

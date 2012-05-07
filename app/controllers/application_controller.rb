@@ -2,8 +2,8 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  before_filter :hook_auth_controller,  :create_core_server_connection, :disable_frame_embedding,
-    :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie,
+  before_filter :hook_auth_controller,  :create_core_server_connection,
+    :disable_frame_embedding, :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie,
     :require_user, :set_user, :set_meta, :force_utf8_params
   helper :all # include all helpers, all the time
   helper_method :current_user
@@ -154,7 +154,7 @@ private
   end
 
   def disable_frame_embedding
-    headers['X-Frame-Options'] = 'SAMEORIGIN'
+    headers['X-Frame-Options'] = 'SAMEORIGIN' if !@suppress_chrome
   end
 
   def sync_logged_in_cookie
@@ -163,9 +163,13 @@ private
 
   def require_user(force_login = false)
     unless current_user_session && !force_login
-      store_location
-      flash[:notice] = "You must be logged in to access this page"
-      redirect_to login_url
+      if @suppress_chrome
+        render_forbidden("You do not have permission to view this page")
+      else
+        store_location
+        flash[:notice] = "You must be logged in to access this page"
+        redirect_to login_url
+      end
       return false
     end
   end
@@ -285,5 +289,9 @@ private
       o.force_encoding(Encoding::UTF_8) if o.respond_to?(:force_encoding)
     end
     traverse.call(params, force_encoding)
+  end
+
+  def check_chrome
+    @suppress_chrome = params[:hide_chrome] == 'true'
   end
 end

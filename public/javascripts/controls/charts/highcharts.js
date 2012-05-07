@@ -148,12 +148,12 @@
             var hasRI = true;
             if (!$.isBlank(chartObj._xCategories))
             {
-                if ($.isBlank(ri) && chartObj._dataGrouping)
+                if ($.isBlank((ri || {}).x) && chartObj._dataGrouping)
                 {
                     var existI = _.indexOf(chartObj._xCategories, xCat);
                     if (existI > -1) { ri = {x: existI}; }
                 }
-                if ($.isBlank(ri))
+                if ($.isBlank((ri || {}).x))
                 {
                     hasRI = false;
                     ri = {x: chartObj._xCategories.length};

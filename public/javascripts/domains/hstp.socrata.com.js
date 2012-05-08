@@ -15,7 +15,7 @@ $(function()
       { tagName: 'div', id: 'hstpInterstitial', 'class': 'modalDialog', style: { display: 'none' }, contents: [
           { tagName: 'a', 'class': 'jqmClose modalDialogClose', href: '#close', contents: 'Close' },
           { tagName: 'h2', contents: 'You are leaving the Health System Measurement Project' },
-          { tagName: 'p', contents: 'You are about to leave the Health System Measurement Project. The link you clicked on is sending you to' },
+          { tagName: 'p', contents: 'You are about to leave the HHS.Gov web server. The link you clicked on is sending you to' },
           { tagName: 'div', 'class': 'urlContainer', contents: { tagName: 'div' } },
           { tagName: 'p', contents: 'We hope your visit was enjoyable and informative.' },
           { tagName: 'ul', 'class': 'actions clearfix', contents: [

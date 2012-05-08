@@ -13,6 +13,14 @@ $.component.PagedContainer.extend('Carousel', 'content', {
         this._startSwitch();
     },
 
+    _initDom: function()
+    {
+        var cObj = this;
+        cObj._super.apply(cObj, arguments);
+        cObj.$dom.hover(function() { if (!cObj._properties.forceSwitch) { cObj.pause(); } },
+            function() { if (!cObj._properties.forceSwitch) { cObj.resume(); } });
+    },
+
     _cancelSwitch: function()
     {
         if (!$.isBlank(this._switchTimeout))
@@ -96,6 +104,7 @@ $.component.PagedContainer.extend('Carousel', 'content', {
     {
         this._cancelSwitch();
         this._super();
+        this._startSwitch();
     }
 });
 

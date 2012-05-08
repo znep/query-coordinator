@@ -120,7 +120,7 @@ $.component.Container.extend('PagedContainer', {
     {
         if (!page._initialized)
         { this.add(page, null, true); }
-        page.properties({height: this._properties.height});
+        page.properties({height: this._properties.height, hidden: false});
         if (!page._rendered) { page._render(); }
         page.$dom.removeClass('hide');
         this.trigger('page_shown', [{newPage: page}]);

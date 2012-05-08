@@ -105,7 +105,27 @@ module Canvas2
     def children
       return nil unless self.has_children?
       return @children unless @children.blank?
-      @properties['children'].each_with_index { |c, i| c['hidden'] = true if i > 0 }
+      found_item = false
+      if !@properties['defaultPage'].blank?
+        def_page = string_substitute(@properties['defaultPage'])
+        @properties['children'].each do |c, i|
+          if c['id'] == def_page
+            found_item = true
+          else
+            c['hidden'] = true
+          end
+        end
+        if !found_item
+          page_num = def_page.to_i
+          if page_num >= 0 && page_num < @properties['children'].length
+            found_item = true
+            @properties['children'][page_num]['hidden'] = false
+          end
+        end
+      end
+      if !found_item
+        @properties['children'].each_with_index { |c, i| c['hidden'] = i > 0 }
+      end
       super
     end
 

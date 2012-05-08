@@ -134,7 +134,20 @@ $.component.Container.extend('PagedContainer', {
         var cObj = this;
         if ($.isBlank(cObj._currentPage) && !_.isEmpty(cObj._pages))
         {
-            cObj._currentPage = _.first(cObj._pages);
+            if ($.subKeyDefined(cObj, '_properties.defaultPage'))
+            {
+                var defPage = cObj._stringSubstitute(cObj._properties.defaultPage);
+                cObj._currentPage = _.detect(cObj._pages, function(p) { return p.id == defPage; });
+                // Maybe it is a page number?
+                if ($.isBlank(cObj._currentPage))
+                {
+                    var pageNum = parseInt(defPage);
+                    if (_.isNumber(pageNum) && pageNum < cObj._pages.length && pageNum >= 0)
+                    { cObj._currentPage = cObj._pages[pageNum]; }
+                }
+            }
+            if ($.isBlank(cObj._currentPage))
+            { cObj._currentPage = _.first(cObj._pages); }
             if ($.subKeyDefined(cObj, '_currentPage.$dom'))
             { cObj._currentPage.$dom.addClass('hide'); }
         }

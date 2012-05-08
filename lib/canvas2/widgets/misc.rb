@@ -102,6 +102,13 @@ module Canvas2
   end
 
   class PagedContainer < Container
+    def children
+      return nil unless self.has_children?
+      return @children unless @children.blank?
+      @properties['children'].each_with_index { |c, i| c['hidden'] = true if i > 0 }
+      super
+    end
+
     def render_contents
       [super[0], false]
     end

@@ -24,7 +24,7 @@ $.component.Component.extend('Download', 'actions', {
             { return; }
 
             var ds = cObj._dataContext.dataset;
-            cObj.$link.text('Download this data');
+            cObj.$link.text(cObj._stringSubstitute(cObj._properties.text) || 'Download this data');
             cObj.$link.attr('href', ds.downloadUrl('csv'));
         });
     },

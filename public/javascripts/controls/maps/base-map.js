@@ -1510,7 +1510,7 @@
 
             mapObj._isResize = true;
             _.defer(function(){
-                mapObj.map.updateSize();
+                if (mapObj.map) { mapObj.map.updateSize(); }
 
                 // Bug #6327. This breaks things for Mac/FF at the very least, so we're testing
                 // for user agent. May need to persist this into Chrome 19.

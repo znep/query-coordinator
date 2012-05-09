@@ -54,6 +54,62 @@
         'wyoming': 'WY'
     };
 
+    blist.openLayers.Polygon = OpenLayers.Class(OpenLayers.Geometry.Polygon, {
+        initialize: function()
+        {
+            OpenLayers.Geometry.Polygon.prototype.initialize.apply(this, arguments);
+            this.attributes = { rows: {}, quantities: {} };
+            var primaryComponent = this.components[0];
+            this.islands = []; this.holes = [];
+
+            var polygon = this;
+            _.each(this.components, function(component)
+            {
+                if (component == primaryComponent || !primaryComponent.intersects(component))
+                { polygon.islands.push(component); }
+                else
+                { polygon.holes.push(component); }
+            });
+
+            _.defer(function() { polygon.getBounds(); }); // Precache if it's faster.
+        },
+
+        containsPoint: function(point) {
+            if (!this.getBounds().contains(point.x, point.y)) { return false; }
+
+            var numIslands = this.islands.length;
+            var numHoles = this.holes.length;
+            var contained = false;
+            if(numIslands > 0) {
+                // check exterior ring - 1 means on edge, boolean otherwise
+                for(var i=0; i<numIslands; ++i) {
+                    contained = this.islands[i].containsPoint(point);
+                    if (contained) break;
+                }
+                if(contained !== 1) {
+                    if(contained && numHoles > 1) {
+                        // check interior rings
+                        var hole;
+                        for(var i=1; i<numHoles; ++i) {
+                            hole = this.holes[i].containsPoint(point);
+                            if(hole) {
+                                if(hole === 1) {
+                                    // on edge
+                                    contained = 1;
+                                } else {
+                                    // in hole
+                                    contained = false;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return contained;
+        }
+    });
+
     // Delaying this object from being created until after we're sure libraries
     // have been loaded. First action in renderData should turn this back into an
     // object.
@@ -619,7 +675,7 @@
             function(feature)
             {
                 feature.geometry
-                    = new OpenLayers.Geometry.Polygon(_.map(feature.geometry.rings, function(ring)
+                    = new blist.openLayers.Polygon(_.map(feature.geometry.rings, function(ring)
                     { return new OpenLayers.Geometry.LinearRing(_.map(ring, function(point)
                         { return new OpenLayers.Geometry.Point(point[0], point[1]); })); }));
                 return feature;

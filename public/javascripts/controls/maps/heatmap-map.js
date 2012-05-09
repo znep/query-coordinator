@@ -502,8 +502,8 @@
             return parseFloat(e.attributes.quantity);
         };
 
-        var max = _.max(_.map(mapObj._featureSet.features, getValue));
-        var min = _.min(_.map(mapObj._featureSet.features, getValue));
+        var max = _.max(_.compact(_.map(mapObj._featureSet.features, getValue)));
+        var min = _.min(_.compact(_.map(mapObj._featureSet.features, getValue)));
         mapObj.$legend({ minimum: min, maximum: max });
         var segments = [];
         for (i = 0; i < mapObj._numSegments; i++)

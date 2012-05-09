@@ -332,6 +332,9 @@
                     .transform(geographicProjection, new OpenLayers.Projection('EPSG:900913'));
             }
 
+            if (mapObj._displayFormat.disableNavigation)
+            { mapOptions.disableNavigation = true; }
+
             OpenLayers.ImgPath = '/images/openlayers/';
 
             mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);
@@ -340,6 +343,8 @@
             mapObj.map.events.register('changebaselayer', null, function(evtObj)
             {
                 var zoombar = mapObj.map.getControlsByClass('blist.openLayers.ZoomBar')[0];
+                if (!zoombar) { return; }
+
                 // Magic number: height that we want the zoombarDiv to be at.
                 // Calculated as zoom_gutter.png (277) minus button heights (21) minus padding (2)
                 // 277 - (2*21) - (2*2) = 231

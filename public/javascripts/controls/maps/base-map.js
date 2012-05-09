@@ -503,8 +503,6 @@
 
             mapObj._super();
 
-            mapObj.$dom().siblings('.mapLayers').addClass('hide');
-
             mapObj.closePopup();
 
             _.each(mapObj._byView, function(viewConfig)

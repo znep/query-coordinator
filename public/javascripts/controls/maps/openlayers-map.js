@@ -96,10 +96,13 @@
         {
             options.controls = [
                 new blist.openLayers.Attribution(),
-                new OpenLayers.Control.Navigation(),
-                new blist.openLayers.ZoomBar(),
                 new blist.openLayers.MapTypeSwitcher()
             ];
+            if (!options.disableNavigation)
+            {
+                options.controls.push(new blist.openLayers.ZoomBar());
+                options.controls.push(new OpenLayers.Control.Navigation());
+            }
 
             if (window.location.href.indexOf('watercolor') > window.location.href.indexOf('?'))
             { options.controls.push(new blist.openLayers.StamenControl()); }

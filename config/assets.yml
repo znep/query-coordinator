@@ -515,6 +515,8 @@ javascripts:
     - public/javascripts/plugins/ace/worker-json.js
   waypoints:
     - public/javascripts/plugins/waypoints.js
+  client-embed:
+    - public/javascripts/client-libraries/embed.js
 
 
 dump:

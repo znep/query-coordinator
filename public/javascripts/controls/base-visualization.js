@@ -285,9 +285,26 @@
                 };
                 var handleRowChange = function(rows, fullReset)
                 {
+                    var ds = this;
                     if (vizObj._obsolete) { return; }
                     if (fullReset) { handleChange(true); }
-                    else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, this); }
+                    else if (!vizObj._hidden)
+                    {
+                        var removedRows = [];
+                        rows = _.reject(rows, function(r)
+                        {
+                            if ($.isBlank(ds.rowForID(r.id)))
+                            {
+                                removedRows.push(r);
+                                return true;
+                            }
+                            return false;
+                        });
+                        if (rows.length > 0)
+                        { vizObj.handleRowsLoaded(rows, ds); }
+                        if (removedRows.length > 0)
+                        { vizObj.handleRowsRemoved(removedRows, ds); }
+                    }
                 };
                 var handleQueryChange = function() {
                     if (vizObj._updatingViewport) return;
@@ -423,6 +440,12 @@
             // Intended for maps only
         },
 
+        handleRowsRemoved: function(rows, view)
+        {
+            var vizObj = this;
+            _.each(rows, function(r) { vizObj.removeRow(r, view); });
+        },
+
         renderData: function(rows, view)
         {
             var vizObj = this;
@@ -457,11 +480,16 @@
             { vizObj.rowsRendered(); }
         },
 
-        renderRow: function(row)
+        renderRow: function(row, view)
         {
             // Implement me
             this.errorMessage = 'No render function';
             return false;
+        },
+
+        removeRow: function(row, view)
+        {
+            // Implement me if desired
         },
 
         rowsRendered: function()

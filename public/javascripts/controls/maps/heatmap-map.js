@@ -214,6 +214,27 @@
             { processFeatures(mapObj, function() { processRows(mapObj, rows); }); }
         },
 
+        rowRemoved: function(row)
+        {
+            var feature = findFeatureWithPoint(mapObj, row);
+            if ($.isBlank(feature)) { return; }
+            var ind;
+            _.any(feature.attributes.rows, function(r, i)
+            {
+                if (r.id == row.id)
+                {
+                    ind = i;
+                    return true;
+                }
+                return false;
+            });
+            if ($.isBlank(ind)) { return; }
+
+            feature.attributes.rows.splice(ind, 1);
+            if (!_.isEmpty(feature.attributes.quantities))
+            { feature.attributes.quantities.splice(ind, 1); }
+        },
+
         generateFlyoutLayout: function(columns, noLabel, view)
         {
             var mapObj = this;

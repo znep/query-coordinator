@@ -128,9 +128,6 @@ $.component.Container.extend('Repeater', 'content', {
             _.defer(function()
             {
                 if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
-                var newViewPercent = getViewPercent(cObj);
-                if (cObj._viewPercent && newViewPercent != cObj._viewPercent)
-                { $(window).scrollTop(cObj._viewPercent * cObj.$dom.height() + cObj.$dom.offset().top); }
                 $.component.sizeRenderRefresh();
             });
         };
@@ -206,10 +203,6 @@ $.component.Container.extend('Repeater', 'content', {
     {
         if (!this._super.apply(this, arguments)) { return false; }
         var cObj = this;
-
-        // Only do this on first load
-        if ($.isBlank(cObj._viewPercent))
-        { cObj._viewPercent = getViewPercent(cObj); }
 
         var doRender = function()
         {
@@ -318,11 +311,6 @@ $.component.Repeater.Clone = $.component.Container.extend({
     // No special behavior for clones at the moment
     _persist: false
 });
-
-var getViewPercent = function(cObj)
-{
-    return Math.max(0, $(window).scrollTop() - cObj.$dom.offset().top) / cObj.$dom.height();
-};
 
 var renderGroupItems = function(cObj, items, callback)
 {

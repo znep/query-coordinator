@@ -781,6 +781,12 @@
 
     var queryParams;
 
+    var $win = $(window);
+    var $doc = $(document);
+    var prevWinPercent = 0;
+    var disableWinUpdate = false;
+    var winUpdateTimer;
+
     $.extend($.component, {
         Component: Component,
 
@@ -810,7 +816,23 @@
             return 'c' + nextAutoID++;
         },
 
-        sizeRenderRefresh: _.debounce(function() { $.waypoints('refresh'); }, 200),
+        sizeRenderRefresh: _.debounce(function()
+        {
+            var newWinPercent = getWinPercent();
+            if (newWinPercent != prevWinPercent)
+            { $win.scrollTop(prevWinPercent * $doc.height()); }
+
+            disableWinUpdate = true;
+            $.waypoints('refresh');
+
+            if (!$.isBlank(winUpdateTimer))
+            { clearTimeout(winUpdateTimer); }
+            winUpdateTimer = setTimeout(function()
+            {
+                disableWinUpdate = false;
+                winUpdateTimer = null;
+            }, 500);
+        }, 200),
 
         eachRoot: function(fn, scope) {
             for (var i in components)
@@ -915,5 +937,14 @@
             return false;
         }
     });
+
+    $win.scroll(function()
+    {
+        if (!disableWinUpdate)
+        { prevWinPercent = getWinPercent(); }
+    });
+
+    var getWinPercent = function()
+    { return $win.scrollTop() / $doc.height(); };
 
 })(jQuery);

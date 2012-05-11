@@ -1987,6 +1987,8 @@
             var popup = new OpenLayers.Popup.FramedCloud(null,
                 lonlat, null, contents, null, true,
                 function(evt) { new jQuery.Event(evt).stopPropagation(); closeBoxCallback(); });
+            if (options.dupKey)
+            { popup.dupKey = options.dupKey; }
             mapObj._popup = popup;
             mapObj.map.addPopup(popup);
 
@@ -2036,6 +2038,10 @@
             var mapObj = this;
 
             if (!mapObj._popup) { return; }
+
+            var feature = mapObj._markers[mapObj._popup.dupKey];
+            if (feature.attributes.rows && feature.layer)
+            { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
 
             mapObj.map.removePopup(mapObj._popup);
             mapObj._popup.destroy();
@@ -2160,7 +2166,7 @@
         { return null; }
 
         mapObj.showPopup(lonlat, feature.attributes.flyout[0].innerHTML,
-                         { closeBoxCallback: closeBoxCallback });
+                         { dupKey: feature.attributes.dupKey, closeBoxCallback: closeBoxCallback });
     };
 
     var iconCache = function(mapObj, url, feature, hasHighlight)

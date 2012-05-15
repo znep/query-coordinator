@@ -2165,14 +2165,9 @@ var Dataset = ServerModel.extend({
 
     _invalidateAll: function(rowCountChanged, columnsChanged)
     {
-        var ds = this;
-        _.each(_.keys(ds._availableRowSets), function(rk)
-        {
-            if (ds._availableRowSets[rk] == ds._activeRowSet)
-            { ds._availableRowSets[rk].invalidate(rowCountChanged, columnsChanged); }
-            else
-            { delete ds._availableRowSets[rk]; }
-        });
+        delete this._availableRowSets;
+        this._activateRowSet(new RowSet(this, {orderBys: (this.query || {}).orderBys,
+            filterCondition: this.cleanFilters()}));
     },
 
     _serverCreateRow: function(req, isBatch)

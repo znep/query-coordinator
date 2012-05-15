@@ -180,28 +180,8 @@
                     };
                 }
 
-                if ((view.query.filterCondition || {}).type == 'operator')
-                {
-                    if (view.query.filterCondition.value == 'AND')
-                    {
-                        if ($.isBlank(view.query.filterCondition.children))
-                        {
-                            view.query.filterCondition.children = [];
-                        }
-                        view.query.filterCondition.children.push(filter);
-                    }
-                    else
-                    {
-                        var existingQuery = view.query.filterCondition;
-                        view.query.filterCondition =
-                            { type: 'operator', value: 'AND',
-                                children: [ existingQuery, filter ] };
-                    }
-                }
-                else
-                {
-                    view.query.filterCondition = filter;
-                }
+                view.query.namedFilters = view.query.namedFilters || {};
+                view.query.namedFilters['drillDown-' + filterColumnId] = filter;
 
                 var drillDownCallBack = function(newView)
                 {

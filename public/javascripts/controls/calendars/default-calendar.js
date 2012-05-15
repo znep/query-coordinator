@@ -82,7 +82,6 @@
         {
             this._super();
 
-            this._ignoreViewChanges = true;
             if (!_.isEmpty(this._events))
             {
                 if (this._autoJump)
@@ -131,7 +130,6 @@
                 this._events = [];
             }
             this.$dom().fullCalendar('refetchEvents');
-            delete this._ignoreViewChanges;
         },
 
         getColumns: function()

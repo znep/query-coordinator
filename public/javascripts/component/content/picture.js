@@ -1,2 +1,2 @@
-$.component.Component.extend('Picture', 'content', {
-});
+//$.component.Component.extend('Picture', 'content', {
+//});

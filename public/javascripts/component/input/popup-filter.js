@@ -1,2 +1,2 @@
-$.component.Component.extend('Popup filter', 'input', {
-});
+//$.component.Component.extend('Popup filter', 'input', {
+//});

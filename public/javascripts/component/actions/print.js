@@ -1,2 +1,2 @@
-$.component.Component.extend('Print', 'actions', {
-});
+//$.component.Component.extend('Print', 'actions', {
+//});

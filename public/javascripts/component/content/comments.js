@@ -1,2 +1,2 @@
-$.component.Component.extend('Comments', 'content', {
-});
+//$.component.Component.extend('Comments', 'content', {
+//});

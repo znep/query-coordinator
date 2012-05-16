@@ -1,2 +1,2 @@
-$.component.Component.extend('Data search', 'input', {
-});
+//$.component.Component.extend('Data search', 'input', {
+//});

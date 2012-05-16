@@ -1,2 +1,2 @@
-$.component.Component.extend('Embed', 'actions', {
-});
+//$.component.Component.extend('Embed', 'actions', {
+//});

@@ -1,2 +1,2 @@
-$.component.Component.extend('Site search', 'input', {
-});
+//$.component.Component.extend('Site search', 'input', {
+//});

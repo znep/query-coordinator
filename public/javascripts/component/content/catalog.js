@@ -1,2 +1,2 @@
-$.component.Component.extend('Catalog', 'content', {
-});
+//$.component.Component.extend('Catalog', 'content', {
+//});

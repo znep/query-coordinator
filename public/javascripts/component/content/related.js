@@ -1,2 +1,2 @@
-$.component.Component.extend('Related', 'content', {
-});
+//$.component.Component.extend('Related', 'content', {
+//});

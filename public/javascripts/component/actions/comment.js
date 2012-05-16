@@ -1,2 +1,2 @@
-$.component.Component.extend('Comment', 'actions', {
-});
+//$.component.Component.extend('Comment', 'actions', {
+//});

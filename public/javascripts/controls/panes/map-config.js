@@ -82,7 +82,7 @@
 
     var customHeatmap = function(options)
     {
-        return options.view.displayFormat.heatmap &&
+        return !$.isBlank(options.view) && options.view.displayFormat.heatmap &&
                options.view.displayFormat.heatmap.type == 'custom';
     };
 
@@ -90,8 +90,9 @@
     {
         return {func: function()
             {
-                return this._view.columnsForType('location', options.isEdit).length > 0
-                    || this._view.isArcGISDataset();
+                return !$.isBlank(this._view) &&
+                    (this._view.columnsForType('location', options.isEdit).length > 0
+                     || this._view.isArcGISDataset());
             }};
     };
 
@@ -167,7 +168,7 @@
         {
             var cpObj = this;
             var msg = 'A location column is required to create a map.';
-            var hasHiddenLoc = _.any(cpObj._view.realColumns, function(c)
+            var hasHiddenLoc = !$.isBlank(cpObj._view) && _.any(cpObj._view.realColumns, function(c)
                 { return c.dataTypeName == 'location' && c.hidden; });
             if (options.useOtherSidebars && hasHiddenLoc && ($.isBlank(blist.sidebarHidden.manage) ||
                 !blist.sidebarHidden.manage.showHide))
@@ -190,7 +191,7 @@
                 onlyIf: $.extend({disable: true, disabledMessage: disabledMessage(options)},
                         sectionOnlyIf(options)),
                 fields: [
-                    !options.view.isArcGISDataset() ?
+                    $.isBlank(options.view) || !options.view.isArcGISDataset() ?
                     {
                         text: 'Map Type', name: 'displayFormat.type', type: 'select',
                         required: true, prompt: 'Select a map type', options: mapTypes
@@ -223,7 +224,8 @@
             {
                 title: 'Location',
                 onlyIf: [{field: 'displayFormat.type', value: 'esri'},
-                         { func: function() { return !this._view.isArcGISDataset(); } },
+                         { func: function()
+                             { return !$.isBlank(this._view) && !this._view.isArcGISDataset(); } },
                             sectionOnlyIf(options)],
                 fields: [
                     {text: 'Location', type: 'radioGroup', name: 'locationSection',

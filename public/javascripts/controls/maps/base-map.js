@@ -184,19 +184,17 @@
         _getMixins: function(options)
         {
             var mixins = [];
-            var df = options.displayFormat || options.view.displayFormat;
+            var df = options.displayFormat || (options.view || {}).displayFormat;
+
             var mapService = df.type || 'google';
-            if (mapService == 'heatmap' || options.view.isArcGISDataset())
-            {
-                mapService = 'esri';
-            }
-            else if (options.view.isGeoDataset())
-            {
-                mapService = 'openlayers';
-            }
+            if (mapService == 'heatmap' || !$.isBlank(options.view) && options.view.isArcGISDataset())
+            { mapService = 'esri'; }
+            else if (!$.isBlank(options.view) && options.view.isGeoDataset())
+            { mapService = 'openlayers'; }
             mixins.push(mapService);
 
-            if (options.view.isArcGISDataset()) { mixins.push('arcGISmap'); }
+            if (!$.isBlank(options.view) && options.view.isArcGISDataset())
+            { mixins.push('arcGISmap'); }
 
             var plotStyle = df.plotStyle;
             if (df.type == 'heatmap')

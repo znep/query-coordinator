@@ -99,7 +99,11 @@
           // delete expired request
           $.Tache.Data.splice(i-1, 1);
       } else if ($.Tache.Data[i-1].sIdentifier == sIdentifier) {
-          oAJAX.success($.Tache.Data[i-1].oData);
+          var item = $.Tache.Data[i-1];
+          if (item.hasOwnProperty('oData'))
+          { oAJAX.success(item.oData); }
+          else if (item.hasOwnProperty('oErrorReq'))
+          { oAJAX.error(item.oErrorReq); }
           return;
       }
     }
@@ -134,7 +138,28 @@
             }
         }
       }
-    }
+    };
+    var oeCallback = oAJAX.error;
+    oAJAX.error = function(xhr)
+    {
+        // Don't cache internal errors
+        if (xhr.status < 500)
+        { $.Tache.Data.push({ sIdentifier: sIdentifier, oErrorReq: xhr, dtAge: new Date() }); }
+
+        oAJAX.error = oeCallback;
+        for (var i = 0; i < $.Tache.InProcessData.length; i++)
+        {
+            if ($.Tache.InProcessData[i].sIdentifier == sIdentifier)
+            {
+                var ipItem = $.Tache.InProcessData.splice(i, 1)[0];
+                for (var j = 0; j < ipItem.oReqs.length; j++)
+                {
+                    if (ipItem.oReqs[j].error instanceof Function)
+                    { ipItem.oReqs[j].error.apply(this, arguments); }
+                }
+            }
+        }
+    };
     $.ajax(oAJAX);
   }
 

@@ -11,7 +11,7 @@ blist.debug.uid = 0;
 // extend jQuery with generic console logging.
 $.debug = function(msg, obj, obj2)
 {
-    msg = '[' + debugNS.uid++ + '] ' + msg;
+    msg = '[' + debugNS.uid++ + '] (' + new Date().getTime() + ') ' + msg;
     if (window.console && window.console.log)
     {
         if (obj || obj2)

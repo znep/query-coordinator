@@ -13,7 +13,8 @@ var picker = function($field, vals, curValue)
     $field.append($wrapper);
 
     var $hiddenInput = $.tag({tagName: 'input', type: 'hidden', name: $field.attr('name'),
-        'class': 'required', value: curValue});
+        'class': 'required'});
+    setValue($hiddenInput, curValue);
     $field.append($hiddenInput);
 
     var fullData = $.dataContext.availableContexts[curValue] || {dataset: {}};
@@ -21,13 +22,15 @@ var picker = function($field, vals, curValue)
         value: $.htmlEscape((fullData.dataset || {}).name || curValue)});
     $textInput.change(function(e)
         {
+            if ($field.parents('body').length < 1) { return; }
+
             var v = ($textInput.data('fullData') || {}).contextId || $textInput.value();
             if (!$.isBlank(v))
             {
                 var m = v.match(/^https?:\/\/.*\/(\w{4}-\w{4})(\?.*)*$/);
                 if (!$.isBlank(m)) { v = m[1]; }
             }
-            $hiddenInput.value(v);
+            setValue($hiddenInput, v);
             if (!$hiddenInput.valid()) { return; }
 
             if ($.isBlank($.dataContext.availableContexts[v]))
@@ -35,12 +38,13 @@ var picker = function($field, vals, curValue)
                 e.stopPropagation();
                 $.dataContext.loadContext(v, {type: 'dataset', datasetId: v},
                     function() { $textInput.change(); },
-                    function(xhr)
+                    function()
                     {
+                        if ($field.parents('body').length < 1) { return; }
+
                         var validator = $hiddenInput.closest('form').data('form-validator');
                         var errors = {};
-                        errors[$hiddenInput.attr('name')] = xhr.status == 404 ?
-                            'This dataset is not valid' : 'There was an error';
+                        errors[$hiddenInput.attr('name')] = 'This dataset is not valid';
                         if ($.isBlank(validator))
                         { alert(_.first(_.values(errors))); }
                         else
@@ -63,9 +67,25 @@ var picker = function($field, vals, curValue)
     var searchDelayTimer;
     var translateDS = function(dc)
     {
-        var d = {contextId: dc.id};
-        _.each(['name', 'id', 'description', 'category', 'tags'], function(key)
-            { d[key] = dc.dataset[key]; });
+        var d = {contextId: dc.id, id: dc.id, name: dc.id};
+        switch (dc.type)
+        {
+            case 'dataset':
+                _.each(['name', 'id', 'description', 'category', 'tags'], function(key)
+                        { d[key] = dc.dataset[key]; });
+                break;
+            case 'row':
+                $.extend(d, dc.row);
+                break;
+            case 'datasetList':
+                d.count = dc.count;
+                _.each(dc.datasetList, function(dsDc, i)
+                        { d[i + 1] = dsDc.dataset.name; });
+                break;
+            default:
+                break;
+        }
+        if (!$.isBlank(dc.type)) { d.name += ' (' + dc.type.displayable() + ')'; }
         return d;
     };
     var matchScore = function(item, baseScore)
@@ -191,7 +211,7 @@ var pickerValue = function($field)
     var $editor = $field.find('input[type=hidden]');
     if ($editor.length < 1) { return null; }
 
-    return $editor.value();
+    return getValue($editor);
 };
 
 var pickerValidate = function($field)
@@ -199,7 +219,20 @@ var pickerValidate = function($field)
     var $editor = $field.find('input[type=hidden]');
     if ($editor.length < 1) { return false; }
 
-    return $editor.valid() && !$.isBlank($.dataContext.availableContexts[$editor.value()]);
+    return $editor.valid() && !$.isBlank($.dataContext.availableContexts[getValue($editor)]);
+};
+
+var getValue = function($input)
+{
+    var v = $input.value();
+    if (v.indexOf('||') > -1) { v = v.split('||'); }
+    return v;
+};
+
+var setValue = function($input, v)
+{
+    if (_.isArray(v)) { v = v.join('||'); }
+    $input.value(v);
 };
 
 })(jQuery);

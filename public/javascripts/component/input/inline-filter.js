@@ -16,7 +16,8 @@ $.component.Component.extend('Inline filter', 'input', {
 
     configurationSchema: function()
     {
-        var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: (this._dataContext || {}).dataset};
+        var dsList = getDatasetList(this);
+        var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: _.first(dsList)};
         return retVal;
     },
 
@@ -39,58 +40,66 @@ $.component.Component.extend('Inline filter', 'input', {
 
 var renderUpdate = function()
 {
+    var opts = {datasets: getDatasetList(this)};
+
+    if (!$.isBlank(this._properties.columnFilter))
+    {
+        var cf = this._stringSubstitute(this._properties.columnFilter);
+        var tcIds = {};
+        opts.datasets = _.select(opts.datasets, function(ds)
+        {
+            var c = ds.columnForIdentifier(cf.column);
+            if (!$.isBlank(c))
+            { tcIds[ds.publicationGroup] = c.tableColumnId; }
+            return !$.isBlank(c);
+        });
+
+        opts.rootCondition = {
+            type: 'operator',
+            value: 'AND',
+            children: [{
+                type: 'operator',
+                value: 'OR',
+                metadata: $.extend({operator: 'EQUALS'}, cf, { tableColumnId: tcIds })
+            }],
+            metadata: {
+                advanced: false,
+                unifiedVersion: 2
+            }
+        };
+        opts.minimalDisplay = true;
+    }
+
+    if (opts.datasets.length < 1) { return; }
+    opts.view = _.first(opts.datasets);
+
     if (!$.isBlank(this._uf))
-    { this._uf.setView(this._dataContext.dataset); }
+    {
+        this._uf.setView(opts.view);
+        // TODO: update other options
+    }
     else
     {
         this.$contents.empty();
-
-        var opts = {datasets: []};
-        _.each($.makeArray(this._dataContext), function(dc)
-        {
-            switch (dc.type)
-            {
-                case 'dataset':
-                    opts.datasets.push(dc.dataset);
-                    break;
-                case 'datasetList':
-                    opts.datasets = opts.datasets.concat(_.pluck(dc.datasetList, 'dataset'));
-                    break;
-            }
-        });
-
-        if (!$.isBlank(this._properties.columnFilter))
-        {
-            var cf = this._stringSubstitute(this._properties.columnFilter);
-            var tcIds = {};
-            opts.datasets = _.select(opts.datasets, function(ds)
-            {
-                var c = ds.columnForIdentifier(cf.column);
-                if (!$.isBlank(c))
-                { tcIds[ds.publicationGroup] = c.tableColumnId; }
-                return !$.isBlank(c);
-            });
-
-            opts.rootCondition = {
-                type: 'operator',
-                value: 'AND',
-                children: [{
-                    type: 'operator',
-                    value: 'OR',
-                    metadata: $.extend({operator: 'EQUALS'}, cf, { tableColumnId: tcIds })
-                }],
-                metadata: {
-                    advanced: false,
-                    unifiedVersion: 2
-                }
-            };
-            opts.minimalDisplay = true;
-        }
-
-        if (opts.datasets.length < 1) { return; }
-        opts.view = _.first(opts.datasets);
-
         this._uf = this.$contents.pane_unifiedFilter(opts).render();
-        this._updateValidity();
     }
+    this._updateValidity();
+};
+
+var getDatasetList = function(cObj)
+{
+    var datasets = [];
+    _.each($.makeArray(cObj._dataContext), function(dc)
+    {
+        switch (dc.type)
+        {
+            case 'dataset':
+                datasets.push(dc.dataset);
+                break;
+            case 'datasetList':
+                datasets = datasets.concat(_.pluck(dc.datasetList, 'dataset'));
+                break;
+        }
+    });
+    return datasets;
 };

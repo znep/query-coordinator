@@ -17,9 +17,7 @@ $.component.Component.extend('Title', 'content', {
     {
         this._super.apply(this, arguments);
         if ($.isBlank(this.$title) && $.isBlank(this.$edit))
-        {
-            this._initTitle();
-        }
+        { this._initTitle(); }
     },
 
     _render: function()
@@ -29,13 +27,13 @@ $.component.Component.extend('Title', 'content', {
 
         var doRender = function()
         {
-            if (cObj.$title)
+            if (!cObj._editing)
             {
                 var t = $.isBlank(cObj._properties.text) ? '' : cObj._properties.text;
-                cObj.$title.text(cObj._designing ? t : cObj._stringSubstitute(t));
+                cObj.$title.text(cObj._stringSubstitute(t));
                 cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
             }
-            else if (cObj.$edit)
+            else
             { cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties)); }
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))
@@ -78,15 +76,18 @@ $.component.Component.extend('Title', 'content', {
             this._updatePrimaryValue(newText);
     },
 
-    edit: function(editable) {
+    edit: function()
+    {
+        var wasEditable = this._editing;
         if (!this._super.apply(this, arguments)) { return false; }
-        var wasEditable = this.$contents.data('editing');
 
-        this.$contents.toggleClass('socrata-cf-mouse', editable);
-        this.$contents.data('editing', editable);
+        this.$contents.toggleClass('socrata-cf-mouse', this._editing);
+        this.$contents.data('editing', this._editing);
 
-        if (editable) {
-            if (!wasEditable) {
+        if (this._editing)
+        {
+            if (!wasEditable)
+            {
                 this.$edit = $.tag({
                     tagName: 'input', type: 'text',
                     'class': 'titleInput',
@@ -97,7 +98,8 @@ $.component.Component.extend('Title', 'content', {
                 delete this.$title;
             }
         }
-        else if (wasEditable) {
+        else if (wasEditable)
+        {
             this.$contents.empty();
             delete this.$edit;
             this._customEditFinished();

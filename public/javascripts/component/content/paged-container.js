@@ -93,11 +93,25 @@ $.component.Container.extend('PagedContainer', {
         // We want to initialize any functional components, but they go into their own store
         // and not into the DOM
         if (child instanceof $.component.FunctionalComponent)
-        { return null; }
+        {
+            this._funcChildren = this._funcChildren || [];
+            this._funcChildren.push(child);
+            return null;
+        }
 
         child._parCont = this;
         this._pages.push(child);
         return r;
+    },
+
+    destroy: function()
+    {
+        this.eachPage(function(child)
+        {
+            delete child.parent;
+            child.destroy();
+        });
+        this._super();
     },
 
     _visiblePage: function(newPage)

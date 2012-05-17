@@ -112,7 +112,7 @@ module Canvas2
               p['prop'] = m[1]
               p['fallback'] = m[2]
             end
-            p['prop'].match(/(.*)\s+\/(\S*)\/(.*)\/([gi]*)$/) do |m|
+            p['prop'].match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/) do |m|
               p['prop'] = m[1]
               p['regex'] = m[2]
               p['repl'] = m[3]
@@ -150,7 +150,9 @@ module Canvas2
               if p.has_key?('regex')
                 # Woo, backslash
                 repl = p['repl'].gsub(/\$(\d)/, '\\\\\1')
-                r = Regexp.new(p['regex'], p['modifiers'].include?('i'))
+                r = Regexp.new(p['regex'],
+                               (p['modifiers'].include?('m') ? Regexp::MULTILINE : 0) |
+                               (p['modifiers'].include?('i') ? Regexp::IGNORECASE : 0))
                 temp = p['modifiers'].include?('g') ? temp.gsub(r, repl) : temp.sub(r, repl)
               end
             end

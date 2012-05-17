@@ -71,8 +71,8 @@ module Canvas2
         all_c.compact!
         if all_c.length > 0
           cont_config = @properties['container'] || {'type' => 'Container'}
-          @orig_props['container'] = cont_config
           real_c = CanvasWidget.from_config(cont_config, self)
+          @orig_props['container'] = cont_config
           real_c.children = all_c
           r = real_c.render
           t += r[0]

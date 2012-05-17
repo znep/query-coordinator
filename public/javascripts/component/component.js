@@ -13,7 +13,7 @@
             cObj._eventKeys = {};
             cObj.registerEvent({'start_loading': [], 'finish_loading': [], 'update_properties': []});
 
-            cObj._properties = properties || {};
+            cObj._updateProperties(properties);
             cObj.id = cObj._properties.id;
             if (!cObj.id)
                 cObj.id = $.component.allocateId();
@@ -149,14 +149,17 @@
         /**
          * Put the component into design mode.
          */
-        design: function(designing) {
+        design: function(designing)
+        {
             this._designing = designing;
+            this.properties({'__hidden': false});
         },
 
         /**
          * Set active editing state.
          */
-        edit: function(editing) {
+        edit: function(editing)
+        {
             if (this._loadingAssets)
             {
                 this._needsEdit = true;
@@ -164,6 +167,7 @@
             }
 
             delete this._needsEdit;
+            this._editing = editing;
 
             if (this._supportsCustomEditors() && this._properties.editor)
             {
@@ -198,7 +202,8 @@
          * Component received or lost focus in edit mode.
          * Usually used to update properties
          */
-        editFocus: function(focused) {
+        editFocus: function(focused)
+        {
             if (focused) return true;
 
             // Update properties from custom editor
@@ -209,7 +214,8 @@
             return true;
         },
 
-        _updatePrimaryValue: function(value) {
+        _updatePrimaryValue: function(value)
+        {
             var propKey = this._valueKey(),
                 properties = {};
             if ($.isBlank(propKey)) return;
@@ -218,7 +224,8 @@
             this._executePropertyUpdate(properties);
         },
 
-        _executePropertyUpdate: function(properties) {
+        _executePropertyUpdate: function(properties)
+        {
             $.cf.edit.execute('properties', {
                 componentID: this.id,
                 properties: properties
@@ -321,7 +328,8 @@
                 this.$dom = $(dom);
                 dom._comp = this;
                 this.$dom.addClass('socrata-component component-' + this.typeName + ' ' +
-                    (this._properties.customClass || '') + ' ' + (this._properties.hidden ? 'hide' : ''));
+                    (this._properties.customClass || '') + ' ' +
+                    (this._isHidden ? 'hide' : ''));
                 if (this._needsOwnContext)
                 {
                     this.$contents = this.$dom.children('.content-wrapper');
@@ -401,16 +409,19 @@
             if (this.$dom.hasClass('serverRendered'))
             {
                 this.$dom.removeClass('serverRendered');
-                this._rendered = true;
-                this._isDirty = false;
-                delete this._needsRender;
-                return false;
+                if (!this._designing)
+                {
+                    this._rendered = true;
+                    this._isDirty = false;
+                    delete this._needsRender;
+                    return false;
+                }
             }
 
             if (typeof this._properties.height == 'number')
                 this.$dom.css('height', this._properties.height);
 
-            if (this._loadingAssets || this._properties.hidden || this._delayUntilVisible)
+            if (this._loadingAssets || this._isHidden || this._delayUntilVisible)
             {
                 this._needsRender = true;
                 return false;
@@ -421,9 +432,10 @@
             {
                 var finishedDCGet = function()
                 {
-                    if (cObj._properties.requiresContext && $.isBlank(cObj._dataContext) ||
-                            cObj._properties.ifValue && !cObj._evalIf(cObj._properties.ifValue))
-                    { cObj.properties({hidden: true}); }
+                    if (!cObj._designing &&
+                            (cObj._properties.requiresContext && $.isBlank(cObj._dataContext) ||
+                             cObj._properties.ifValue && !cObj._evalIf(cObj._properties.ifValue)))
+                    { cObj.properties({'__hidden': true}); }
 
                     var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
                     cObj.$contents.removeClass(comp);
@@ -546,21 +558,20 @@
         _propWrite: function(properties)
         {
             var cObj = this;
-            properties = $.extend(true, {}, properties);
-            $.extend(true, cObj._properties, properties);
+            cObj._updateProperties(properties);
             cObj._isDirty = true;
             cObj.trigger('update_properties');
 
             if (!$.isBlank(cObj.$dom))
             {
                 cObj.$dom.removeClass('serverRendered');
-                if (!cObj._properties.hidden && cObj.$dom.hasClass('hide'))
+                if (!cObj._isHidden && cObj.$dom.hasClass('hide'))
                 {
                     cObj.$dom.removeClass('hide');
                     cObj._shown();
                     if (cObj._needsRender) { cObj._render(); }
                 }
-                else if (cObj._properties.hidden && !cObj.$dom.hasClass('hide'))
+                else if (cObj._isHidden && !cObj.$dom.hasClass('hide'))
                 {
                     cObj.$dom.addClass('hide');
                     cObj._hidden();
@@ -570,13 +581,31 @@
             _.defer(function() { cObj._updateValidity(); });
         },
 
+        _updateProperties: function(properties)
+        {
+            this._properties = this._properties || {};
+            this._privateProperties = this._privateProperties || {};
+            var privProps = {};
+            _.each(_.keys(properties), function(k)
+            {
+                if (k.startsWith('__'))
+                {
+                    privProps[k.slice(2)] = properties[k];
+                    delete properties[k];
+                }
+            });
+            $.extend(true, this._properties, properties);
+            $.extend(true, this._privateProperties, privProps);
+            this._isHidden = (this._properties.hidden || this._privateProperties.hidden) &&
+                !this._designing && !this._editing;
+        },
+
         /**
          * Obtain a function that can resolve substitution properties for this component's data context.
          */
-        _propertyResolver: function()
-        {
+        _propertyResolver: function() {
             var cObj = this;
-            if (cObj._designing)
+            if (cObj._editing)
                 return function() {};
             var parentResolver = this.parent ? this.parent._propertyResolver() :
                 $.component.rootPropertyResolver;

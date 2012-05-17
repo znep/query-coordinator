@@ -60,37 +60,17 @@ $.component.Container.extend('Repeater', 'content', {
         }
     },
 
-    design: function() {
+    design: function()
+    {
         var cObj = this;
         // If we were designing, update from the edited config
         if (this._designing)
-        {
-            this._cloneProperties.children = this._readChildren();
-        }
+        { this._cloneProperties.children = this._readChildren(); }
 
         this._super.apply(this, arguments);
-        this._delayUntilVisible = !this._designing;
-        if (this._designing)
-        {
-            // If we're designing, make sure we're fully rendered
-            this._render();
-        }
-
-        // If we're entering design mode for the first time, make sure
-        // our data context is properly configured
-        var finished = function()
-        {
-            cObj._refresh();
-        };
-
-        if (!$.isBlank(cObj._properties.contextId) && $.isBlank(cObj._dataContext))
-        {
-            cObj._updateDataSource(cObj._properties, finished);
-        }
-        else
-        {
-            finished();
-        }
+        if ($.subKeyDefined(this, '_delayUntilVisible'))
+        { this._delayUntilVisible = !this._designing; }
+        this._render();
     },
 
     _clearDataContext: function()
@@ -122,6 +102,7 @@ $.component.Container.extend('Repeater', 'content', {
         }
         while (cObj.first)
         { cObj.first.destroy(); }
+        _.each(cObj._funcChildren, function(fc) { fc.destroy(); });
 
         var doneWithRows = function()
         {
@@ -137,6 +118,7 @@ $.component.Container.extend('Repeater', 'content', {
         {
             // Render actual children as direct descendants
             cObj.add(cObj._cloneProperties.children);
+            cObj.each(function(c) { c.design(true); });
         }
         else if (_.isArray(cObj._dataContext.value))
         {
@@ -195,7 +177,8 @@ $.component.Container.extend('Repeater', 'content', {
         else if ($.subKeyDefined(cObj, '_dataContext.datasetList'))
         {
             var callback = _.after(cObj._dataContext.datasetList.length, doneWithRows);
-            _.each(this._dataContext.datasetList, function(ds, i) { cObj._setRow(ds, i, ds, callback); });
+            _.each(this._dataContext.datasetList, function(ds, i)
+                    { cObj._setRow(ds, i, $.extend({}, ds), callback); });
         }
     },
 
@@ -233,7 +216,8 @@ $.component.Container.extend('Repeater', 'content', {
         if ($.isBlank(entity._repeaterDisplayIndex)) { entity._repeaterDisplayIndex = index + 1; }
         // Add ID prefix so repeated components will not clash
         var prefix = this._idPrefix + index + '-';
-        function createTemplate(properties) {
+        function createTemplate(properties)
+        {
             properties = _.clone(properties);
             properties.parentPrefix = prefix;
             properties.htmlClass = $.makeArray(properties.htmlClass);
@@ -256,7 +240,8 @@ $.component.Container.extend('Repeater', 'content', {
 
         // Remove any existing row
         var map = this._map;
-        if (map[adjIndex]) {
+        if (map[adjIndex])
+        {
             map[adjIndex].remove();
             map[adjIndex] = undefined;
         }

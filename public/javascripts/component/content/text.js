@@ -6,14 +6,15 @@ $.component.Component.extend('Text', 'content', {
         };
     },
 
-    _render: function() {
+    _render: function()
+    {
         if (!this._super.apply(this, arguments)) { return false; }
 
         var cObj = this;
         var doRender = function()
         {
             var html = cObj._properties.html;
-            if (!$.isBlank(html) && cObj.$dom.attr('contentEditable') != 'true')
+            if (!$.isBlank(html) && !cObj._editing)
             { html = cObj._stringSubstitute(html); }
             if (cObj._properties.isPlainText)
             { html = html.plainTextToHtml(); }
@@ -27,7 +28,8 @@ $.component.Component.extend('Text', 'content', {
         return true;
     },
 
-    _propWrite: function(properties) {
+    _propWrite: function(properties)
+    {
         this._super(properties);
         if (!_.isEmpty(properties)) { this._render(); }
     },
@@ -35,28 +37,31 @@ $.component.Component.extend('Text', 'content', {
     _valueKey: function()
     { return 'html'; },
 
-    editFocus: function(focused) {
+    editFocus: function(focused)
+    {
         if (!this._super.apply(this, arguments)) { return false; }
         if (focused) return;
 
-        var newHtml = this.$contents[0].innerHTML;
+        var newHtml = this.$contents.text();
         if (newHtml != this._properties.html)
-            this._updatePrimaryValue(newHtml);
+        { this._updatePrimaryValue(newHtml); }
     },
 
-    edit: function(editable) {
+    edit: function()
+    {
+        var wasEditable = this._editing;
         if (!this._super.apply(this, arguments)) { return false; }
-        var wasEditable = this.$contents.attr('contentEditable') == 'true';
 
-        this.$contents.editable({ edit: editable });
-        this.$contents.toggleClass('socrata-cf-mouse', editable);
+        this.$contents.editable({ edit: this._editing });
+        this.$contents.toggleClass('socrata-cf-mouse', this._editing);
 
-        if (editable) {
+        if (this._editing)
+        {
             // Install raw template for editing
             if (!wasEditable)
-                this.$contents.html(this._properties.html);
-        } else if (wasEditable) {
-            this.$contents.html(this._stringSubstitute(this._properties.html));
+                this.$contents.text(this._properties.html);
         }
+        else if (wasEditable)
+        { this._render(); }
     }
 });

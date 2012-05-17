@@ -62,7 +62,11 @@
             // We want to initialize any functional components, but they go into their own store
             // and not into the DOM
             if (child instanceof $.component.FunctionalComponent)
-            { return null; }
+            {
+                this._funcChildren = this._funcChildren || [];
+                this._funcChildren.push(child);
+                return null;
+            }
 
             var cObj = this;
             child.bind('start_loading', function()
@@ -255,6 +259,8 @@
             });
             delete this.first;
             delete this.last;
+            _.each(this._funcChildren, function(c) { c.destroy(); });
+            delete this._funcChildren;
             this._super();
         },
 

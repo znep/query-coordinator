@@ -38,7 +38,7 @@
                             p.prop = m[1];
                             p.fallback = m[2];
                         }
-                        m = p.prop.match(/(.*)\s+\/(\S*)\/(.*)\/([gi]*)$/);
+                        m = p.prop.match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/);
                         if (!_.isEmpty(m))
                         {
                             p.prop = m[1];
@@ -91,7 +91,13 @@
                     temp = !temp.indexOf || temp.indexOf('{') == -1 ?
                         temp : $.stringSubstitute(temp, resolver);
                     if (!$.isBlank(temp) && !$.isBlank(p.regex))
-                    { temp = temp.replace(new RegExp(p.regex, p.modifiers), p.repl); }
+                    {
+                        var r = p.regex;
+                        // Make multiline mode actually useful...
+                        if (p.modifiers.indexOf('m') > -1)
+                        { r = r.replace(/(^|[^\\])\./, '$1[\\s\\S]'); }
+                        temp = temp.replace(new RegExp(r, p.modifiers), p.repl);
+                    }
                 }
                 a.push(temp);
             }

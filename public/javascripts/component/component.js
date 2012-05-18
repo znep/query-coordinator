@@ -696,8 +696,18 @@
             var startDCGet = function()
             { cObj.startLoading(); };
 
-            var cIds = cObj._stringSubstitute($.makeArray(properties.contextId));
-            if ((!$.isBlank(properties.context) || !$.isBlank(cIds)) &&
+            var cxt = properties.context;
+            var cIds = properties.contextId;
+            var curItem = cObj.parent;
+            while ($.isBlank(cIds) && $.isBlank(cxt) && !$.isBlank(curItem))
+            {
+                var props = curItem.properties();
+                cxt = props.context;
+                cIds = props.childContextId || props.contextId;
+                curItem = curItem.parent;
+            }
+            cIds = cObj._stringSubstitute($.makeArray(cIds));
+            if ((!$.isBlank(cxt) || !$.isBlank(cIds)) &&
                     ($.isBlank(cObj._dataContext) || _.any($.makeArray(cObj._dataContext), function(dc)
                                                            { return !_.include(cIds, dc.id); })))
             {
@@ -726,16 +736,18 @@
                     }
                     return false;
                 }
-                else if (!$.isBlank(properties.context))
+                else if (!$.isBlank(cxt))
                 {
                     // Hmm; maybe this is taking templating a bit too far?
-                    var c = cObj._stringSubstitute(properties.context);
+                    var c = cObj._stringSubstitute(cxt);
                     var id = c.id;
                     if ($.isBlank(id))
                     {
                         id = cObj.id + '_' + _.uniqueId();
                         c.id = id;
-                        properties.contextId = id;
+                        // Only set contextId if we got the context at this level
+                        if (!$.isBlank(properties.context))
+                        { properties.contextId = id; }
                     }
                     startDCGet();
                     var finishDC = gotDCGen(1);
@@ -743,8 +755,8 @@
                     return true;
                 }
             }
-            else if ($.isBlank(properties.context) && $.isBlank(cObj._properties.context) &&
-                    $.isBlank(properties.contextId) && $.isBlank(cObj._properties.contextId))
+            else if ($.isBlank(cxt) && $.isBlank(cObj._properties.context) &&
+                    _.isEmpty(cIds) && $.isBlank(cObj._properties.contextId))
             { delete cObj._dataContext; }
             return false;
         },

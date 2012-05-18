@@ -53,11 +53,7 @@
             }
 
             if (!(child instanceof $.component.Component))
-            {
-                if ($.isBlank(child.contextId) && $.isBlank(child.context))
-                { child.contextId = this._properties.childContextId || this._properties.contextId; }
-                child = $.component.create(child);
-            }
+            { child = $.component.create(child); }
 
             // We want to initialize any functional components, but they go into their own store
             // and not into the DOM

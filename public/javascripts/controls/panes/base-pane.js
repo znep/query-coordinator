@@ -229,6 +229,9 @@
                       the array.  Fields inside the repeater are rooted at the
                       particular object of the repeater array; so essentially
                       they are namespaced into the repeater
+                  + otherNames: optional, one or more strings that are legacy names to look
+                      up the existing value to populate. Will use the name field
+                      for getting values out.
                   + change: optional, handler for when control value changes.
                       Arguments are ($control, event).
                   + prompt: optional, prompt text for text/textarea/select.
@@ -270,6 +273,8 @@
                       same string
                   + isTableColumn: boolean, for columnSelect, use the
                       tableColumnId instead of the column ID
+                  + useFieldName: boolean, for columnSelect, use the column
+                      fieldName instead of other ID
                   + columns: for type columnSelect, tells what type of columns
                       should be available
                   {
@@ -282,6 +287,7 @@
                        (that matches the earliest name) will be used as the default
                        value. Matches are case-insensitive for both the provided
                        names and column names.
+                    + noDefault: don't auto-select a column even if an obvious default is available
                   }
                   + inputFirst: for checkbox, you can opt to move the checkboxes
                       ahead of the labels with this boolean.
@@ -741,6 +747,7 @@
 
         _isValid: function($input)
         {
+            var $visItem = $input;
             if ($input.hasClass('customWrapper'))
             {
                 var customValidator = this._customCallbacks[$input.attr('data-customId')];
@@ -748,7 +755,9 @@
                 if (!_.isFunction(customValidator)) { return true; }
                 return customValidator.call(this, $input);
             }
-            return $input.valid();
+            if ($input.hasClass('colorInput'))
+            { $visItem = $input.siblings('a.colorControl'); }
+            return $visItem.is(':visible') && $input.valid();
         },
 
         _getInputValue: function($input, results)
@@ -808,7 +817,9 @@
 
             // If this is a column select, then parse the value as a num,
             // since it is a column ID
-            if (!$.isBlank(value) && ($input.tagName() == 'select') && $parents.hasClass('columnSelect'))
+            if (!$.isBlank(value) && ($input.tagName() == 'select') &&
+                    $parents.hasClass('columnSelect') &&
+                    _.include(['tableColumnId', 'id'], $input.attr('data-columnIdField')))
             { value = parseInt(value); }
 
             // Now add the value
@@ -1010,7 +1021,9 @@
         if ($input.hasClass('colorControl'))
         { $input = $input.siblings(':input'); }
 
-        var value = $input.value();
+        var value = JSON.parse($input.attr('data-origSavedValue') || 'null');
+        if ($.isBlank(value))
+        { value = $input.value(); }
         if ($input.isInputType('checkbox'))
         {
             var t = $input.attr('data-trueValue');
@@ -1074,14 +1087,15 @@
         return item;
     };
 
-    var renderColumnSelectOptions = function(cpObj, columnsObj, isTableColumn, curVal)
+    var renderColumnSelectOptions = function(cpObj, columnsObj, columnIdField, curVal)
     {
         if ($.isBlank(cpObj._view)) { return []; }
 
+        columnIdField = columnIdField || 'id';
         var cols = cpObj._view.columnsForType((columnsObj || {}).type,
             (columnsObj || {}).hidden);
 
-        if (!_.isNumber(curVal) && _.isArray((columnsObj || {}).defaultNames))
+        if ($.isBlank(curVal) && _.isArray((columnsObj || {}).defaultNames))
         {
             // If we have a set of names to check for, look through them in
             // priority order to see if any columns match
@@ -1093,16 +1107,20 @@
                 return !$.isBlank(foundCol);
             });
             if (!$.isBlank(foundCol))
-            { curVal = isTableColumn ? foundCol.tableColumnId : foundCol.id; }
+            { curVal = foundCol[columnIdField]; }
         }
 
         var options = [{tagName: 'option', value: '',
             contents: $.isBlank(curVal) ? 'Select a column' : 'Deselect column'}];
         _.each(cols, function(c)
         {
-            var cId = isTableColumn ? c.tableColumnId : c.id;
-            options.push({tagName: 'option', value: cId,
-                selected: curVal == cId || (cols.length == 1 && !columnsObj.noDefault),
+            // Handle id/tcId/fieldName
+            var cId = c.id;
+            var tcId = c.tableColumnId;
+            var fName = c.fieldName;
+            options.push({tagName: 'option', value: c[columnIdField],
+                selected: curVal == fName || curVal == tcId || curVal == cId ||
+                    (cols.length == 1 && !columnsObj.noDefault && $.isBlank(curVal)),
                 contents: $.htmlEscape(c.name)});
         });
 
@@ -1137,7 +1155,8 @@
             'data-dataValue': {value: $.htmlEscape(
                     JSON.stringify(item.dataValue || '')),
                 onlyIf: !$.isBlank(item.dataValue) &&
-                    item.dataValue !== item.defaultValue}
+                    item.dataValue !== item.defaultValue},
+            'data-origSavedValue': $.htmlEscape(JSON.stringify(item.dataValue || ''))
         };
 
         if ($.isPlainObject(item.onlyIf))
@@ -1163,28 +1182,36 @@
     };
 
     /* Quick & dirty way to get the value of an item */
-    var getValue = function(data, name, valIndex)
+    var getValue = function(data, names, valIndex)
     {
-        var nParts = (name || '').split('.');
-        var base = data;
-        while (nParts.length > 0 && !$.isBlank(base))
+        var result = null;
+        _.any(_.compact(_.flatten($.makeArray(names))), function(name)
         {
-            base = base[nParts.shift()];
-            if (_.isArray(base) && nParts.length > 0)
+            var nParts = (name || '').split('.');
+            var base = data;
+            while (nParts.length > 0 && !$.isBlank(base))
             {
-                if ($.isBlank(nParts[0].match(/^\d+$/)))
-                { base = _.include(base, nParts.shift()); }
-                else
+                base = base[nParts.shift()];
+                if (_.isArray(base) && nParts.length > 0)
                 {
-                    var i = parseInt(nParts.shift());
-                    if (!$.isBlank(valIndex)) { i = valIndex; }
-                    base = base[i];
+                    if ($.isBlank(nParts[0].match(/^\d+$/)))
+                    { base = _.include(base, nParts.shift()); }
+                    else
+                    {
+                        var i = parseInt(nParts.shift());
+                        if (!$.isBlank(valIndex)) { i = valIndex; }
+                        base = base[i];
+                    }
                 }
             }
-        }
-        if (nParts.length == 0 && !$.isBlank(base))
-        { return base; }
-        return null;
+            if (nParts.length == 0 && !$.isBlank(base))
+            {
+                result = base;
+                return true;
+            }
+            return false;
+        });
+        return result;
     };
 
     /* Get all the required items for a field */
@@ -1226,7 +1253,7 @@
                 { continue; }
             }
 
-            names.push(f.name);
+            names.push(_.compact(_.flatten([f.name, f.otherNames])));
         }
         return names;
     };
@@ -1281,21 +1308,24 @@
 
     renderLineItem.columnSelect = function(cpObj, contents, args, curValue, defValue)
     {
+        var colIdField = args.item.useFieldName ? 'fieldName' : (args.item.isTableColumn ?
+            'tableColumnId' : 'id');
         var wrapper = _.last(contents);
         contents.push({tagName: 'a',
             href: '#Select:' + $.makeArray(args.item.columns.type)
                 .join('-'),
             title: 'Select a column from the grid',
-            'class': ['columnSelector', {value: 'tableColumn', onlyIf: args.item.isTableColumn}],
+            'class': 'columnSelector',
+            'data-columnIdField': colIdField,
             contents: 'Select a column from the grid'});
 
         var options = renderColumnSelectOptions(cpObj, args.item.columns,
-            args.item.isTableColumn, curValue || defValue);
+                colIdField, curValue || defValue);
 
         wrapper.contents = $.extend(commonAttrs(cpObj, $.extend({}, args.item,
             {extraClass: 'columnSelectControl'}), args.context),
             {tagName: 'select', contents: options,
-            'data-isTableColumn': args.item.isTableColumn,
+            'data-columnIdField': colIdField,
             'data-columnOptions': $.htmlEscape(JSON.stringify(
                 args.item.columns || ''))});
     };
@@ -1429,12 +1459,15 @@
             var names = getRequiredNames(cpObj, args.context.data, args.item.field);
             if (names.length > 0)
             {
-                var m = names[0].match(/^(.+)\.\d+(\..+)?$/);
-                if (!$.isBlank(m))
+                _.each(_.first(names), function(n)
                 {
-                    var a = getValue(args.context.data, m[1]);
-                    if (_.isArray(a)) { populatedLength = a.length; }
-                }
+                    var m = n.match(/^(.+)\.\d+(\..+)?$/);
+                    if (!$.isBlank(m))
+                    {
+                        var a = getValue(args.context.data, m[1]);
+                        if (_.isArray(a)) { populatedLength = a.length; }
+                    }
+                });
             }
         }
         curValue = _.select(curValue || [], function(v)
@@ -1620,7 +1653,7 @@
         { return null; }
 
         // Add optional modifier to name; also adjust to make it unique
-        args.item = $.extend({}, args.item, {origName : args.item.name,
+        args.item = $.extend({}, args.item, {origName: args.item.name,
             name: args.context.paneId +
                 ($.isBlank(args.context.sectionName) ? '' : '_' + args.context.sectionName) + ':' +
                 (args.item.name || '') +
@@ -1641,9 +1674,10 @@
         { defValue = args.item.repeaterValue; }
 
         var curValue;
-        if (!$.isBlank(args.item.origName))
+        var lookupNames = _.compact(_.flatten([args.item.origName, args.item.otherNames]));
+        if (lookupNames.length > 0)
         {
-            curValue = getValue(args.context.data, args.item.origName,
+            curValue = getValue(args.context.data, lookupNames,
                 args.context.inRepeaterContext ? args.context.repeaterIndex : null);
             if (!$.isBlank(curValue))
             { args.item = $.extend({}, args.item, {dataValue: curValue}); }
@@ -1702,7 +1736,7 @@
             var $sel = $(csItem);
             var newOpts = renderColumnSelectOptions(cpObj,
                 JSON.parse($sel.attr('data-columnOptions') || '""'),
-                !$.isBlank($sel.attr('data-isTableColumn')),
+                $sel.attr('data-columnIdField'),
                 $sel.val());
             $sel.find('option').remove();
             _.each(newOpts, function(o) { $sel.append($.tag(o)); });
@@ -1882,7 +1916,7 @@
                     {
                         cancelSelect();
                         var $sel = $link.siblings('.inputWrapper').find('select');
-                        $sel.val($link.is('.tableColumn') ? c.tableColumnId : c.id).change();
+                        $sel.val(c[$link.attr('data-columnIdField')]).change();
                         uniformUpdate($sel);
                     });
                 });
@@ -1899,6 +1933,11 @@
         // stop propagation for some reason.
         $container.find('[data-change]').each(function()
         { hookUpChangeHandler(cpObj, $(this), cpObj._changeHandlers[$(this).attr('data-change')]); });
+        $container.find('.inputItem').each(function()
+        {
+            hookUpChangeHandler(cpObj, $(this), function($field)
+                { $field.attr('data-origSavedValue', null); });
+        });
         if (_.isFunction(cpObj._changeHandler))
         {
             $container.find('.inputItem').each(function()

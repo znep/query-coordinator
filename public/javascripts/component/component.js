@@ -160,6 +160,7 @@
          */
         edit: function(editing)
         {
+            var cObj = this;
             if (this._loadingAssets)
             {
                 this._needsEdit = true;
@@ -168,6 +169,15 @@
 
             delete this._needsEdit;
             this._editing = editing;
+
+            if (cObj._editing && !cObj._disableEditCapture)
+            {
+                if (!cObj._boundEditEvent)
+                {
+                    cObj.$contents.click(function(e) { if (cObj._editing) { e.preventDefault(); } });
+                    cObj._boundEditEvent = true;
+                }
+            }
 
             if (this._supportsCustomEditors() && this._properties.editor)
             {
@@ -605,8 +615,6 @@
          */
         _propertyResolver: function() {
             var cObj = this;
-            if (cObj._editing)
-                return function() {};
             var parentResolver = this.parent ? this.parent._propertyResolver() :
                 $.component.rootPropertyResolver;
             var keyedDC = {};

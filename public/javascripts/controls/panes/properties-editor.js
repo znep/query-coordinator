@@ -48,8 +48,7 @@
 
         _changeHandler: function($field, event)
         {
-            if (!this._isDirty && !$.isBlank(this.component) && this._isValid($field) &&
-                    $field.is(':visible'))
+            if (!this._isDirty && !$.isBlank(this.component) && this._isValid($field))
             {
                 $.cf.edit.execute('properties',
                         {componentID: this.component.properties().id,

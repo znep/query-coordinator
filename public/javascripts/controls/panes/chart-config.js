@@ -44,14 +44,14 @@
     var pointSize = function(options)
     {
         return {text: 'Point Size', name: 'displayFormat.pointSize',
-            type: 'columnSelect', isTableColumn: true,
+            type: 'columnSelect', useFieldName: true,
             columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}};
     };
 
     var pointColor = function(options)
     {
         return {text: 'Point Color', name: 'displayFormat.pointColor',
-            type: 'columnSelect', isTableColumn: true,
+            type: 'columnSelect', useFieldName: true,
             columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}};
     };
 
@@ -76,8 +76,8 @@
     var flyoutControls = function(options)
     {
         return {type: 'repeater', name: 'displayFormat.descriptionColumns',
-            field: {text: 'Flyout Details', name: 'tableColumnId',
-                   type: 'columnSelect', isTableColumn: true, columns: {hidden: options.isEdit}},
+            field: {text: 'Flyout Details', name: 'fieldName', otherNames: 'tableColumnId',
+                   type: 'columnSelect', useFieldName: true, columns: {hidden: options.isEdit}},
             minimum: 1, addText: 'Add Flyout Details'
         };
     };
@@ -136,11 +136,11 @@
             type: 'selectable', name: 'errorBars',
             fields: [
                 {text: 'Low', name: 'displayFormat.plot.errorBarLow', required: true,
-                    type: 'columnSelect', isTableColumn: true, notequalto: 'errorBar',
+                    type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
                     columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                 },
                 {text: 'High', name: 'displayFormat.plot.errorBarHigh', required: true,
-                    type: 'columnSelect', isTableColumn: true, notequalto: 'errorBar',
+                    type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
                     columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                 },
                 {text: 'Color', name: 'displayFormat.errorBarColor',
@@ -234,7 +234,7 @@
             onlyIf: onlyIfForChart(chart, options, true),
             fields: [
                 {text: axisName, name: 'displayFormat.fixedColumns.0',
-                    type: 'columnSelect', required: true, isTableColumn: true, notequalto: 'valueCol',
+                    type: 'columnSelect', required: true, useFieldName: true, notequalto: 'valueCol',
                     columns: {type: colTypes, hidden: options.isEdit}
                 }
             ].concat(axisTitles)
@@ -253,8 +253,9 @@
                     field: {type: 'group', options: [
                         colorOption,
                         {text: axisName, required: true, type: 'columnSelect',
-                            notequalto: 'valueCol', isTableColumn: true,
-                            name: 'tableColumnId', columns: {type: colTypes, hidden: options.isEdit}}
+                            notequalto: 'valueCol', useFieldName: true,
+                            name: 'fieldName', otherNames: 'tableColumnId',
+                            columns: {type: colTypes, hidden: options.isEdit}}
                     ]}
                 }
             ]
@@ -270,8 +271,9 @@
                 {type: 'repeater', minimum: 1, addText: 'Add Series Column',
                     name: 'displayFormat.seriesColumns',
                     field: {text: 'Group by', type: 'columnSelect',
-                            notequalto: 'valueCol', isTableColumn: true,
-                            name: 'tableColumnId', columns: {type: colTypes, hidden: options.isEdit}}
+                            notequalto: 'valueCol', useFieldName: true,
+                            name: 'fieldName', otherNames: 'tableColumnId',
+                            columns: {type: colTypes, hidden: options.isEdit}}
                 }
             ]
         };
@@ -302,8 +304,9 @@
             onlyIf: onlyIfForChart(Dataset.chart.types.bubble, options, false),
             fields: [ conditionalFormattingWarning,
                       {text: 'Value', required: true, type: 'columnSelect',
-                        isTableColumn: true, notequalto: 'valueCol',
-                        name: 'displayFormat.valueColumns.0.tableColumnId',
+                        useFieldName: true, notequalto: 'valueCol',
+                        name: 'displayFormat.valueColumns.0.fieldName',
+                        otherNames: 'displayFormat.valueColumns.0.tableColumnId',
                         columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                     }, pointSize(options), pointColor(options), baseColor ]
         };
@@ -322,8 +325,8 @@
         var bc = basicConfig(Dataset.chart.types.donut, options, Dataset.chart.textualTypes, 'Label');
         bc.fields.splice(1, 2);
         bc.fields.push({type: 'repeater', name: 'displayFormat.valueColumns',
-                field: {text: 'Values', name: 'tableColumnId', notequalto: 'valueCol',
-                type: 'columnSelect', required: true, isTableColumn: true,
+                field: {text: 'Values', name: 'fieldName', otherNames: 'tableColumnId',
+                notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
                 columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}},
                 minimum: 1, addText: 'Add Data Column'});
 
@@ -339,8 +342,9 @@
     {
         var bc = basicConfig(Dataset.chart.types.pie, options, Dataset.chart.textualTypes, 'Label');
         bc.fields.splice(1, 2);
-        bc.fields.push({text: 'Values', name: 'displayFormat.valueColumns.0.tableColumnId',
-            notequalto: 'valueCol', type: 'columnSelect', required: true, isTableColumn: true,
+        bc.fields.push({text: 'Values', name: 'displayFormat.valueColumns.0.fieldName',
+            otherNames: 'displayFormat.valueColumns.0.tableColumnId',
+            notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: 'Colors',
@@ -360,10 +364,10 @@
     {
         var bc = basicData(Dataset.chart.types.timeline, options, Dataset.chart.numericTypes, 'Value');
         bc.fields[1].field.options.push(
-                {text: 'Title', type: 'columnSelect', isTableColumn: true,
+                {text: 'Title', type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.0',
                     columns: {type: 'text', hidden: options.isEdit}},
-                {text: 'Annotation', type: 'columnSelect', isTableColumn: true,
+                {text: 'Annotation', type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.1',
                     columns: {type: 'text', hidden: options.isEdit}}
         );
@@ -488,12 +492,13 @@
                     onlyIf: onlyIfForChart(chart, options, true),
                     fields: [
                         {text: 'Names', name: 'displayFormat.fixedColumns.0', notequalto: 'valueCol',
-                            type: 'columnSelect', required: true, isTableColumn: true,
+                            type: 'columnSelect', required: true, useFieldName: true,
                             columns: {type: Dataset.chart.textualTypes, hidden: options.isEdit}
                         },
-                        {text: 'Values', name: 'displayFormat.valueColumns.0.tableColumnId',
+                        {text: 'Values', name: 'displayFormat.valueColumns.0.fieldName',
+                            otherNames: 'displayFormat.valueColumns.0.tableColumnId',
                             notequalto: 'valueCol', type: 'columnSelect', required: true,
-                            isTableColumn: true,
+                            useFieldName: true,
                             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                         }
                     ] },

@@ -81,9 +81,9 @@
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
 
-            var addColumn = function(tcid)
+            var addColumn = function(colId)
             {
-                var col = cpObj._view.columnForTCID(tcid);
+                var col = cpObj._view.columnForIdentifier(colId);
                 if (_.any(col.renderType.aggregates, function(a) { return a.value == 'sum'; }))
                 col.format.aggregate = 'sum';
             };
@@ -95,7 +95,7 @@
                 { orderBys: _.map(view.displayFormat.valueColumns, function(col)
                     {
                         var orderBy = { ascending: false, expression: {
-                            columnId: cpObj._view.columnForTCID(col.tableColumnId).id,
+                            columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
                             type: 'column'
                         }};
                         return orderBy;

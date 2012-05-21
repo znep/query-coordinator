@@ -225,7 +225,7 @@
                 var featureProtocol = new AuthenticatingFeatureProtocol({
                     featureNS: 'http://' + mapObj._geo.namespace,
                     featureType: layerNames,
-                    maxFeatures: 1,
+                    maxFeatures: 10,
                     outputFormat: 'json',
                     readFormat: new OpenLayers.Format.GeoJSON(),
                     srsName: mapObj.map.projection,
@@ -311,7 +311,7 @@
 
                 var getFeature = new OpenLayers.Control.GetFeature({
                     protocol: featureProtocol,
-                    single: false
+                    single: true
                 });
 
                 mapObj._getFeature = getFeature;

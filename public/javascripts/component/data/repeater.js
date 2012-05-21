@@ -120,6 +120,10 @@ $.component.Container.extend('Repeater', 'content', {
             cObj.add(cObj._cloneProperties.children);
             cObj.each(function(c) { c.design(true); });
         }
+        else if ($.isBlank(cObj._dataContext))
+        {
+            return;
+        }
         else if (_.isArray(cObj._dataContext.value))
         {
             var callback = _.after(cObj._dataContext.value.length, doneWithRows);

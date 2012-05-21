@@ -225,7 +225,7 @@ var pickerValidate = function($field)
 var getValue = function($input)
 {
     var v = $input.value();
-    if (v.indexOf('||') > -1) { v = v.split('||'); }
+    if ((v || '').indexOf('||') > -1) { v = v.split('||'); }
     return v;
 };
 

@@ -57,13 +57,15 @@ $.component.Component.extend('Map', 'data', {
     _shown: function()
     {
         this._super();
-        this.$contents.trigger('show');
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('show'); }
     },
 
     _hidden: function()
     {
         this._super();
-        this.$contents.trigger('hide');
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('hide'); }
     },
 
     _propWrite: function(properties)
@@ -80,6 +82,7 @@ var updateProperties = function(lcObj, properties)
 {
     if (!lcObj._updateDataSource(properties, function()
         {
+            if ($.isBlank(this._dataContext)) { return; }
             if (!$.isBlank(this._map))
             { this._map.setView(this._dataContext.dataset); }
             else

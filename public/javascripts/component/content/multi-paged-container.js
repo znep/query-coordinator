@@ -7,11 +7,6 @@ $.component.PagedContainer.extend('MultiPagedContainer', {
     children: function()
     { return this._contentChildren; },
 
-    count: function()
-    {
-        return this._contentChildren.length;
-    },
-
     each: function(fn, scope)
     {
         var cObj = this;
@@ -25,14 +20,6 @@ $.component.PagedContainer.extend('MultiPagedContainer', {
                 return true;
             }
         });
-        return result;
-    },
-
-    map: function(fn, scope)
-    {
-        var result = [];
-        this.each(function(child)
-        { result.push(fn.call(scope, child)); });
         return result;
     },
 
@@ -69,7 +56,6 @@ $.component.PagedContainer.extend('MultiPagedContainer', {
         if (child._parCont != this) { return; }
         this._super.apply(this, arguments);
     }
-
 });
 
 })(jQuery);

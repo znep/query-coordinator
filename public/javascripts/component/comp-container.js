@@ -287,11 +287,11 @@
         },
 
         // Extension point that retrieves the list of children for property extraction
-        _readChildren: function() {
-            var children;
-            this.each(function(child) {
-                (children || (children = [])).push(child.properties());
-            });
+        _readChildren: function()
+        {
+            var children = [];
+            this.each(function(child) { children.push(child.properties()); });
+            _.each(this._funcChildren, function(child) { children.push(child.properties()); });
             return children;
         },
 

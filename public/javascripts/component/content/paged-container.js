@@ -68,12 +68,31 @@ $.component.Container.extend('PagedContainer', {
         return result;
     },
 
+    each: function(fn, scope)
+    {
+        var cObj = this;
+        var result;
+        _.any(cObj._pages, function(c)
+        {
+            var r = fn.call(scope || cObj, c);
+            if (r !== undefined)
+            {
+                result = r;
+                return true;
+            }
+        });
+        return result;
+    },
+
     add: function(child, position, forceAdd)
     {
         var cObj = this;
         var r;
         if (forceAdd)
-        { r = this._super(child); }
+        {
+            child._domAdded = true;
+            r = this._super(child);
+        }
 
         if (_.isArray(child))
         {
@@ -196,8 +215,14 @@ $.component.Container.extend('PagedContainer', {
             if (child._initialized) { child.$dom.remove(); }
             return;
         }
+        if (!child._domAdded) { return; }
+
         // Only init, don't do a full render until visible
-        if (!child._initialized) { child._initDom(); }
+        if (!child._initialized)
+        {
+            child._initDom();
+            child.$dom.addClass('hide');
+        }
         if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
         { child.next.$dom.before(child.$dom); }
         else if (!$.isBlank(this.$ct))

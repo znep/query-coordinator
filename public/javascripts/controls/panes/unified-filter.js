@@ -1784,6 +1784,7 @@
         // figure out what they entered and drop it into the dataset object
         var parseFilters = function()
         {
+            if ($pane.parents('body').length < 1) { return; }
             var $filterConditions = $pane.find('.filterCondition');
             $filterConditions.removeClass('countInvalid');
 

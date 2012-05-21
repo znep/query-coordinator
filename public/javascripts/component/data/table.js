@@ -31,13 +31,15 @@ $.component.Component.extend('Table', 'data', {
     _shown: function()
     {
         this._super();
-        this.$contents.trigger('show');
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('show'); }
     },
 
     _hidden: function()
     {
         this._super();
-        this.$contents.trigger('hide');
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('hide'); }
     },
 
     _render: function()

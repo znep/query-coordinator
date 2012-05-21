@@ -245,42 +245,46 @@
                     });
 
                 var $layers = mapObj.$dom().siblings('.mapLayers');
+
+                var isUid = function(str) { return /^[0-9a-z]{4}(-[0-9a-z]{4})?$/.test(str); };
+
                 $layers.find('a.button').click(function() {
                     var $this = $(this);
-                    Dataset.search({ limitTo: 'maps' },
-                        function(data)
+                    var $input = $('<input type="text">').wrap('<div>');
+                    $this.before($input.parent());
+                    $input.awesomecomplete({
+                        typingDelay: 500,
+                        dataMethod: function(value, $item, callback)
                         {
-                            var views = _.reject(data.views,
-                                function(view) { return view.viewType == 'geo'; });
-                            var $select = $.tag({ tagName: 'div', contents: [{ tagName: 'select',
-                                contents: [{ tagName: 'option', contents: 'Select a map' }].concat(
-                                _.map(views, function(obj)
-                                { return { tagName: 'option', value: obj.id, contents: obj.name }; })
-                                )}]
+                            if ($item.hasClass('prompt')) { return; }
+
+                            value = $.trim(value);
+                            var query = isUid(value) ? value : 'name:' + value;
+                            Dataset.search({ q: query, limitTo: 'maps' },
+                                function(data) { callback(data.views) });
+                        },
+                        noResultsMessage: 'No results were found. Note: This search only ' +
+                            'matches full words.',
+                        renderFunction: function(dataItem, topMatch)
+                        { return '<p>' + dataItem.name + '</p>'; },
+                        onComplete: function(dataset)
+                        {
+                            var uid = dataset.id;
+                            mapObj._primaryView.update({ displayFormat:
+                                $.extend({}, mapObj._displayFormat, { compositeMembers:
+                                    (mapObj._displayFormat.compositeMembers || []).concat(uid) })
                             });
-                            $select.find('select').change(function()
+                            mapObj._dataViews.push(dataset);
+                            mapObj._byView[dataset.id] = { view: dataset };
+                            if (mapObj.getColumns())
                             {
-                                var uid = $select.find('option:selected').val();
-                                mapObj._primaryView.update({ displayFormat:
-                                    $.extend({}, mapObj._displayFormat, { compositeMembers:
-                                        (mapObj._displayFormat.compositeMembers || []).concat(uid) })
-                                });
-                                Dataset.createFromViewId(uid, function(dataset)
-                                {
-                                    mapObj._dataViews.push(dataset)
-                                    mapObj._byView[dataset.id] = { view: dataset };
-                                    if (mapObj.getColumns())
-                                    {
-                                        mapObj._boundViewEvents = false;
-                                        mapObj.ready();
-                                    }
-                                    mapObj.getDataForAllViews();
-                                    $select.remove();
-                                });
-                            }).uniform();
-                            $this.before($select);
+                                mapObj._boundViewEvents = false;
+                                mapObj.ready();
+                            }
+                            mapObj.getDataForAllViews();
+                            $input.parent().remove();
                         }
-                    );
+                    }).example('Enter dataset name');
                 });
 
             }

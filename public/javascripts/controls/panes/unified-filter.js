@@ -309,6 +309,15 @@
         {
             var compatible = true;
 
+            if (rootCondition.type != 'operator' || !_.include(['AND', 'OR'], rootCondition.value))
+            {
+                // we're something not a conjunction; we should be able to nest this
+                // and everything will be okay
+                rootCondition.children = [ $.extend({}, rootCondition) ];
+                rootCondition.type = 'operator';
+                rootCondition.value = 'OR';
+            }
+
             // make sure we have children before _.each'ing it
             rootCondition.children = rootCondition.children || [];
 

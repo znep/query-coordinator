@@ -609,8 +609,7 @@
                 // If we were cancelled, and didn't respond to the event that caused a cancel,
                 // then re-try this request. Otherwise just clear initialLoad, and it will
                 // respond normally.
-                if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled &&
-                    (vizObj._initialLoad || !vizObj._boundViewEvents))
+                if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled)
                 {
                     // Exponential back-off in case we're waiting on something that needs to finish
                     if ($.isBlank(vizObj._loadDelay) || vizObj._loadDelay == 0)

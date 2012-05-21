@@ -468,12 +468,14 @@ var RowSet = ServerModel.extend({
     activate: function()
     {
         var rs = this;
+        rs._isActive = true;
         rs.trigger('row_change', [_.values(rs._rows), true]);
         _.defer(function() { rs.trigger('row_count_change'); });
     },
 
     deactivate: function()
     {
+        this._isActive = false;
         var pending = this._pendingRowReqs;
         this._pendingRowReqs = [];
         // Tell pending requests they are being cancelled
@@ -666,6 +668,13 @@ var RowSet = ServerModel.extend({
 
             if (oldCount !== rs._totalCount)
             { rs.trigger('row_count_change'); }
+
+            if (!rs._isActive)
+            {
+                if (_.isFunction(errorCallback))
+                { _.defer(function() { errorCallback({cancelled: true}); }); }
+                return;
+            }
 
             if (_.isFunction(successCallback)) { successCallback(rows); }
 

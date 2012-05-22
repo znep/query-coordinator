@@ -1,11 +1,21 @@
 module Canvas2
   class Title < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+
     def render_contents
       ['<h2>' + string_substitute(@properties['text']) + '</h2>', true]
     end
   end
 
   class Text < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+
     def render_contents
       [string_substitute(@properties['html']), true]
     end

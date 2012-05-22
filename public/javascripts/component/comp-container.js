@@ -187,7 +187,7 @@
          * Remove child from DOM.
          */
         _removeChildDom: function(child) {
-            if (!this._rendered)
+            if (!this._initialized)
                 return;
             child.$dom.remove();
             this._arrange();

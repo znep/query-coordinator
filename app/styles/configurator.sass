@@ -165,6 +165,19 @@
       &.collapsed .formHeader
         color: #666666
 
+.socrata-component .removeIcon
+  @include box-shadow(0, 0, 6px, black)
+  @include rounded-ends
+  display: none
+  position: absolute
+  right: -8px
+  top: -8px
+  .icon
+    @include close-button
+
+.socrata-component.removeActive > .removeIcon
+  display: block
+
 // Special control for dealing with component contexts
 .controlPane .formSection .line .customWrapper.contextPicker
   background-image: url(/stylesheets/images/common/uniform_sprite.png)

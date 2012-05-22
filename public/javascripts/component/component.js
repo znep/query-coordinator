@@ -171,14 +171,13 @@
             delete this._needsEdit;
             this._editing = editing;
 
-            if (cObj._editing && !cObj._disableEditCapture)
+            if (cObj._editing && !cObj._disableEditCapture && !cObj._boundEditEvent)
             {
-                if (!cObj._boundEditEvent)
-                {
-                    cObj.$contents.click(function(e) { if (cObj._editing) { e.preventDefault(); } });
-                    cObj._boundEditEvent = true;
-                }
+                cObj.$contents.click(function(e) { if (cObj._editing) { e.preventDefault(); } });
+                cObj._boundEditEvent = true;
             }
+
+            cObj._updateRemoveIcon();
 
             if (this._supportsCustomEditors() && this._properties.editor)
             {
@@ -248,6 +247,29 @@
          */
         _prepareCustomEdit: function() {
             this.$contents.empty();
+        },
+
+        _updateRemoveIcon: function()
+        {
+            var cObj = this;
+            if ($.isBlank(cObj._$removeIcon))
+            {
+                cObj._$removeIcon = $.tag({tagName: 'a', 'class': 'removeIcon', href: '#',
+                    title: 'Remove this component',
+                    contents: {tagName: 'span', 'class': 'icon'}});
+                cObj.$dom.append(cObj._$removeIcon);
+                cObj._$removeIcon.click(function(e)
+                {
+                    e.preventDefault();
+                    $.cf.edit.execute('remove', {
+                        component: cObj,
+                        container: cObj.parent,
+                        position: cObj.next
+                    });
+                    $.cf.blur(true);
+                });
+            }
+            cObj.$dom.toggleClass('removeActive', !$.isBlank(cObj.parent) && cObj._editing);
         },
 
         /**
@@ -599,7 +621,7 @@
             this._properties = this._properties || {};
             this._privateProperties = this._privateProperties || {};
             var privProps = {};
-            _.each(_.keys(properties), function(k)
+            _.each(_.keys(properties || {}), function(k)
             {
                 if (k.startsWith('__'))
                 {

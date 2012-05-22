@@ -260,8 +260,11 @@
 
                             value = $.trim(value);
                             var query = isUid(value) ? value : 'name:' + value;
-                            Dataset.search({ q: query, limitTo: 'maps' },
-                                function(data) { callback(data.views) });
+                            Dataset.search({q: query, limitTo: 'maps', nofederate: true, limit: 20 },
+                                function(data) {
+                                    callback(_.reject(data.views,
+                                        function(view) { view.viewType == 'geo'; }))
+                                });
                         },
                         noResultsMessage: 'No results were found. Note: This search only ' +
                             'matches full words.',

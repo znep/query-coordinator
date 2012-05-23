@@ -311,6 +311,7 @@
 
                 var getFeature = new OpenLayers.Control.GetFeature({
                     protocol: featureProtocol,
+                    filterType: OpenLayers.Filter.Spatial.INTERSECTS,
                     single: true
                 });
 

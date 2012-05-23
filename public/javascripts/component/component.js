@@ -162,14 +162,41 @@
         edit: function(editing)
         {
             var cObj = this;
-            if (this._loadingAssets)
+            if (cObj._loadingAssets || cObj._loadingEditAssets)
             {
-                this._needsEdit = true;
+                cObj._needsEdit = true;
                 return false;
             }
 
-            delete this._needsEdit;
-            this._editing = editing;
+            if (editing && !cObj._loadedEditAssets)
+            {
+                cObj._loadedEditAssets = true;
+                var assets = cObj._getEditAssets();
+                if (!_.isEmpty(assets))
+                {
+                    cObj._loadingEditAssets = true;
+                    cObj._needsEdit = true;
+                    cObj.startLoading();
+                    blist.util.assetLoading.loadAssets(assets, function()
+                    {
+                        cObj.finishLoading();
+                        delete cObj._loadingEditAssets;
+                        if (cObj._needsEdit)
+                        {
+                            _.defer(function ()
+                            {
+                                cObj.edit(true);
+                                if (!$.isBlank(cObj._propEditor))
+                                { cObj._propEditor.setComponent(cObj); }
+                            });
+                        }
+                    });
+                    return false;
+                }
+            }
+
+            delete cObj._needsEdit;
+            cObj._editing = editing;
 
             if (cObj._editing && !cObj._disableEditCapture && !cObj._boundEditEvent)
             {
@@ -179,9 +206,8 @@
 
             cObj._updateRemoveIcon();
 
-            if (this._supportsCustomEditors() && this._properties.editor)
+            if (cObj._supportsCustomEditors() && cObj._properties.editor)
             {
-                var cObj = this;
                 if (editing) {
                     cObj._prepareCustomEdit();
                     cObj.$customEditContents = $.tag({
@@ -308,6 +334,8 @@
          */
         configurationSchema: function()
         {
+            if (this._loadingAssets || this._loadingEditAssets)
+            { return false; }
             return null;
         },
 
@@ -339,6 +367,12 @@
          * Javascript and CSS that needs to be loaded to render the component
          */
         _getAssets: function()
+        { return null; },
+
+        /**
+         * Javascript and CSS that needs to be loaded to edit the component
+         */
+        _getEditAssets: function()
         { return null; },
 
         /**

@@ -765,13 +765,22 @@
             var cpObj = this;
             var $parents = $input.parents();
 
-            // If this is a radioBlock, we're actually interested in the values
-            // of the contained controls. otherwise, it's a radioSelect and we
-            // want the radio itself
+            // If this is a radioBlock, we want the currently selected value and
+            // null for all the non-selected values/sub-values
             if ($input.isInputType('radio') && $parents.hasClass('radioBlock'))
             {
-                $input = $input.closest('.radioLine').find('label :input:not(.prompt)');
-                if ($input.length < 1) { return results; }
+                var nullResults = {};
+                $input.closest('.radioLine').siblings('.radioLine').quickEach(function()
+                {
+                    this.find('label :input').quickEach(function()
+                        { cpObj._getInputValue(this, nullResults); });
+                });
+                nullResults = nullValues(nullResults);
+                results = $.extend(results, nullResults);
+
+                $input.closest('.radioLine').find('label :input').quickEach(function()
+                        { cpObj._getInputValue(this, results); });
+                return results;
             }
 
             var value = inputValue(cpObj, $input);
@@ -944,6 +953,19 @@
         if (!uniformEnabled()) { return; }
         if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
         { $.uniform.update(items); }
+    };
+
+    var nullValues = function(obj)
+    {
+        if (_.isArray(obj))
+        { return _.map(obj, nullValues); }
+        else if ($.isPlainObject(obj))
+        {
+            var o = {};
+            _.each(obj, function(v, k) { o[k] = nullValues(v); });
+            return o;
+        }
+        else { return null; }
     };
 
     var prepareValidation = function(cpObj)

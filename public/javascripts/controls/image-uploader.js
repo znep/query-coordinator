@@ -24,7 +24,7 @@
 
             $fileField.replaceWith($button);
 
-             new AjaxUpload($button, {
+            var ajaxUpload = new AjaxUpload($button, {
                 action       : $fileField.attr(opts.dataKey),
                 autoSubmit   : true,
                 name         : opts.name + (i++),
@@ -61,6 +61,18 @@
                     });
                 }
             });
+
+            if (!$.isBlank(opts.inputClass))
+            {
+                $button.mouseover(function()
+                {
+                    _.defer(function()
+                    {
+                        if (!$.isBlank(ajaxUpload._input))
+                        { $(ajaxUpload._input).addClass(opts.inputClass); }
+                    });
+                });
+            }
         });
         return this;
     };
@@ -71,6 +83,7 @@
         dataKey           : 'data-endpoint',
         errorSelector     : '.imageError',
         imageSelector     : '.ajaxImage',
+        inputClass        : null,
         name              : 'ajaxImageUploader',
         loading           : function($container) { $container.addClass('working') },
         success           : function($container) { $container.removeClass('working') },

@@ -21,6 +21,22 @@ module Canvas2
     end
   end
 
+  class Picture < CanvasWidget
+    def render_contents
+      if !@properties['asset'].blank? && !@properties['asset']['id'].blank?
+        url = '/api/assets/' + string_substitute(@properties['asset']['id'])
+        url += '?s=' +
+          string_substitute(@properties['asset']['size']) if !@properties['asset']['size'].blank?
+      elsif !@properties['url'].blank?
+        url = string_substitute(@properties['url'])
+      end
+      title = string_substitute(@properties['title'])
+      alt = @properties['alt'].blank? ? title : string_substitute(@properties['alt'])
+      h = %Q(<img src="#{url}" title="#{title}" alt="#{alt}" />)
+      [h, true]
+    end
+  end
+
   class DataRenderer < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

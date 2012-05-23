@@ -199,8 +199,6 @@ javascripts:
     - public/javascripts/controls/page-render-type.js
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
-  content-editable:
-    - public/javascripts/controls/content-editable.js
   admin-select-dataset:
     - public/javascripts/screens/admin-select-dataset.js
   admin-datasets:
@@ -524,6 +522,11 @@ javascripts:
     - public/javascripts/plugins/waypoints.js
   client-embed:
     - public/javascripts/client-libraries/embed.js
+  content-editable:
+    - public/javascripts/controls/content-editable.js
+  image-uploader:
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/image-uploader.js
 
 dump:
   javascripts:
@@ -542,3 +545,4 @@ dump:
     - shared-editors
     - configurator
     - waypoints
+    - image-uploader

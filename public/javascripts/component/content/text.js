@@ -5,7 +5,7 @@ $.component.Component.extend('Text', 'content', {
         this._super.apply(this, arguments);
     },
 
-    _getAssets: function()
+    _getEditAssets: function()
     {
         return {
             javascripts: [{ assets: 'content-editable' }]

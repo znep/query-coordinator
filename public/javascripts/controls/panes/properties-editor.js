@@ -33,6 +33,12 @@
         _getSections: function()
         {
             var config = this.component.configurationSchema();
+            if (config === false)
+            {
+                this._startProcessing();
+                return;
+            }
+            this._finishProcessing();
             if (_.isArray(config)) { config.schema = config; }
             if (!$.subKeyDefined(config, 'schema'))
             {
@@ -50,9 +56,13 @@
         {
             if (!this._isDirty && !$.isBlank(this.component) && this._isValid($field))
             {
-                $.cf.edit.execute('properties',
-                        {componentID: this.component.properties().id,
-                            properties: this._getInputValue($field)});
+                var props = this._getInputValue($field);
+                if (!_.isEmpty(props))
+                {
+                    $.cf.edit.execute('properties',
+                            {componentID: this.component.properties().id,
+                                properties: props});
+                }
             }
         }
      }, {name: 'propertiesEditor'}, 'controlPane');

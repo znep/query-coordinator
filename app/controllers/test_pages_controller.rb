@@ -1,5 +1,7 @@
 class TestPagesController < ApplicationController
 
+  skip_before_filter :require_user, :only => [ :charts ]
+
   def index
     @actions = action_methods
   end
@@ -63,6 +65,11 @@ class TestPagesController < ApplicationController
     end
 
     return render :text => "#{count} deleted"
+  end
+
+  def charts
+    @view = View.find 'i6hc-8ccn'
+    needs_view_js @view.id, @view
   end
 
 end

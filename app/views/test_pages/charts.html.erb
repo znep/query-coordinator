@@ -1,0 +1,239 @@
+
+<div class="chartArea">
+  <div class="chartContainer">
+    <div class="chart"></div>
+  </div>
+  <div class="baseline"></div>
+</div>
+
+<%- content_for :js_footer do -%>
+<%= include_javascripts 'shared-new-chart' %>
+
+<style type="text/css">
+
+.chartArea {
+  position: relative;
+}
+
+.chartContainer {
+  margin-bottom: -800px;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.chart {
+  position: relative;
+}
+
+.chart .dataBar {
+  border: 1px solid #fff;
+  background-color: #4682b4;
+  position: absolute;
+}
+
+.chart .dataLabel {
+  -webkit-transform: rotate(40deg);
+  -moz-transform: rotate(40deg);
+  -ms-transform: rotate(40deg);
+  font-size: 1.2em;
+  position: absolute;
+  width: 500px;
+}
+
+.ie7 .chart .dataLabel,
+.ie8 .chart .dataLabel {
+  filter:progid:DXImageTransform.Microsoft.Matrix(M11=0.766044443118978, M12=-0.6427876096865393, M21=0.6427876096865393, M22=0.766044443118978, sizingMethod='auto expand');
+  margin-left: 52px;
+  margin-top: -158px;
+  z-index: 1;
+  zoom: 1;
+}
+
+.chart .dataLabel span {
+  display: block;
+  margin-left: 50%;
+}
+
+.chartArea .baseline,
+.chartArea .tickLine {
+  background-color: #000;
+  height: 1px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.chartArea .baseline {
+  top: 600px;
+  z-index: 2;
+}
+
+.chartArea .tickLine {
+  background-color: #ccc;
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.ie .chartArea .tickLine {
+  opacity: 70
+}
+
+.tickLabel {
+  background-color: rgba(247, 247, 247, 0.7);
+  font-size: 1.2em;
+  margin-top: -1.2em;
+  padding: 0 0.3em;
+  position: absolute;
+}
+
+</style>
+
+<script type="text/javascript">
+
+$(function()
+{
+  var $chartContainer = $('.chartContainer');
+  var chart = d3.select('.chartContainer .chart');
+  var $chart = $('.chartContainer .chart');
+  var chartArea = d3.select('.chartArea');
+  var $chartArea = $('.chartArea');
+  var yScale;
+
+  var renderHeight = 800;
+  var chartHeight = 600;
+
+  var gutterWidth = 60;
+
+  var barWidth = 20;
+
+  var ds, max, rowCount;
+
+  Dataset.createFromViewId('<%= @view.id %>', function(inDs)
+  {
+    ds = inDs;
+
+    // get prereqs
+    var customAggs = {};
+    var column = ds.columnForFieldName('_1');
+    customAggs[column.id] = [ 'maximum' ];
+    ds.getAggregates(function()
+    {
+      max = parseFloat(column.aggregates.maximum);
+      ds.getTotalRows(function()
+      {
+        rowCount = ds.totalRows();
+        setupChart();
+      });
+    }, customAggs);
+
+  });
+
+  var setupChart = function()
+  {
+    $chart
+        .addClass('chart')
+        .width(rowCount * barWidth)
+        .height(renderHeight);
+
+    $chartArea
+      .addClass('chartArea')
+      .width($('.chartContainer').width())
+      .height(renderHeight);
+
+    yScale = d3.scale.linear()
+      .domain([ 0, max ])
+      .range([ 0, chartHeight ]);
+
+    // kick off data fetch
+    checkRowRenderRange();
+
+    // set up future data fetch
+    var throttledCheck = _.throttle(checkRowRenderRange, 250);
+    $('.chartContainer').scroll(function()
+    {
+      throttledCheck();
+    });
+  };
+
+  var checkRowRenderRange = function()
+  {
+    var reverseScrollScale = d3.scale.linear()
+      .domain([ 0, rowCount * barWidth - $chartArea.width() ])
+      .range([ 0, rowCount ]);
+
+    var start = Math.max(Math.floor(reverseScrollScale($('.chartContainer').scrollLeft())) - 30, 0);
+    var length = Math.ceil($chartArea.width() / barWidth) + 40;
+
+    ds.getRows(start, length, function(rows)
+    {
+      renderChart(rows);
+    });
+  };
+
+  var px = function(f)
+  {
+    return function() {
+      return Math.ceil(f.apply(this, arguments)) + 'px';
+    };
+  };
+
+  // can't use d3 .text() because it assumes textContent. mux here for IE.
+  var text = function(property)
+  {
+    if ($.browser.msie && ($.browser.majorVersion < 9))
+    {
+      return function(d, i) {
+        $(this).text(property ? d[property] : d);
+      };
+    }
+    else
+    {
+      return function(d, i) {
+        this.textContent = (property ? d[property] : d);
+      };
+    }
+  };
+
+  var renderChart = function(data)
+  {
+    // render actual bars
+    chart.selectAll('.dataBar')
+        .data(data, function(datum) { return datum.id; })
+      .enter().append('div')
+        .attr('class', 'dataBar')
+        .style('left', px(function(d) { return d.index * barWidth - .5 + gutterWidth; }))
+        .style('top', px(function(d) { return chartHeight - yScale(d['17360']); }))
+        .style('height', px(function(d) { return yScale(d['17360']) - 2; }))
+        .style('width', (barWidth - 1) + 'px');
+
+    // render bar labels
+    chart.selectAll('.dataLabel')
+        .data(data, function(datum) { return datum.id; })
+      .enter().append('div')
+        .attr('class', 'dataLabel')
+        .style('left', px(function(d) { return d.index * barWidth + (barWidth / 2) - .5 + gutterWidth - 250; }))
+        .style('top', (chartHeight + 5) + 'px')
+        .append('span')
+          .each(text('17361'));
+
+    // render ticks
+    chartArea.selectAll('.tickLine')
+        .data(yScale.ticks(8))
+      .enter().append('div')
+        .attr('class', 'tickLine')
+        .style('top', px(function(d) { return chartHeight - yScale(d); }));
+    
+    // render tick
+    chartArea.selectAll('.tickLabel')
+        .data(yScale.ticks(8))
+      .enter().append('div')
+        .attr('class', 'tickLabel')
+        .style('top', px(function(d) { return chartHeight - yScale(d); }))
+        .each(text());
+  };
+
+});
+
+</script>
+
+<%- end -%>

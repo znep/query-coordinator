@@ -49,6 +49,53 @@
         $.device.mobile = true;
     }
 
+    // prototype defs to delegate Array native functions to underscore for d3+ie8- benefit.
+    // since underscore has already loaded and cached its native function refs, this is
+    // okay. if util ever gets loaded before underscore, we're boned. but that doesn't seem
+    // possible anyway.
+
+    if (!_.isFunction(Array.prototype.map))
+    {
+        Array.prototype.map = function(callback, thisArg)
+        {
+            return _.map(thisArg || this, callback);
+        };
+    }
+    if (!_.isFunction(Array.prototype.forEach))
+    {
+        Array.prototype.forEach = function(callback, thisArg)
+        {
+            return _.each(thisArg || this, callback);
+        };
+    }
+    if (!_.isFunction(Array.prototype.every))
+    {
+        Array.prototype.every = function(callback, thisArg)
+        {
+            return _.all(thisArg || this, callback);
+        };
+    }
+
+    // prototype defs to make CSSStyleDeclaration sane in ie8-
+    if (!_.isFunction(CSSStyleDeclaration.prototype.getProperty))
+    {
+        CSSStyleDeclaration.prototype.getProperty = function(a) {
+            return this.getAttribute(a);
+        };
+    }
+    if (!_.isFunction(CSSStyleDeclaration.prototype.setProperty))
+    {
+        CSSStyleDeclaration.prototype.setProperty = function(a, b) {
+            return this.setAttribute(a, b);
+        };
+    }
+    if (!_.isFunction(CSSStyleDeclaration.prototype.removeProperty))
+    {
+        CSSStyleDeclaration.prototype.removeProperty = function(a) {
+            return this.removeAttribute(a);
+        };
+    }
+
 })(jQuery);
 
 $(function()

@@ -16,6 +16,7 @@ javascripts:
     - public/javascripts/plugins/jquery-ui-1.8.13.custom.js
     - public/javascripts/plugins/underscore.js
     - public/javascripts/util/namespace.js
+    - public/javascripts/util/compat.js
     - public/javascripts/plugins/inheritance.js
     - public/javascripts/controls/base-control.js
     - public/javascripts/controls/loading-spinner.js
@@ -25,7 +26,6 @@ javascripts:
     - public/javascripts/util/events.js
     - public/javascripts/util/base-model.js
     - public/javascripts/util/socrata-server.js
-    - public/javascripts/util/compat.js
     - public/javascripts/util/markup.js
     - public/javascripts/util/alert-override.js
     - public/javascripts/util/google-analytics.js
@@ -187,6 +187,15 @@ javascripts:
     - public/javascripts/controls/charts/base-chart.js
     - public/javascripts/controls/charts/highcharts.js
     - public/javascripts/controls/charts/jit.js
+  shared-new-chart:
+    - public/javascripts/plugins/vis/raphael.js
+    - public/javascripts/plugins/vis/d3.v2.js
+    - public/javascripts/plugins/vis/ie8compat.js
+    - public/javascripts/controls/panes/chart-config.js
+    - public/javascripts/controls/base-visualization.js
+    - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/charts/base-chart.js
+    - public/javascripts/controls/charts/d3.js
   shared-richRenderers:
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
@@ -517,7 +526,6 @@ javascripts:
     - public/javascripts/plugins/waypoints.js
   client-embed:
     - public/javascripts/client-libraries/embed.js
-
 
 dump:
   javascripts:

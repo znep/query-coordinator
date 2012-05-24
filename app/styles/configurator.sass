@@ -75,6 +75,10 @@
   .ie7 &, .ie8 &
     border: 2px dashed $color_chrome_box_border
 
+  .content-wrapper
+    line-height: 1.5em
+    word-wrap: break-word
+
 // Representation of icons in palette and drag form of same
 .socrata-cf-side .item, .socrata-cf-drag-icon
   &.label-only
@@ -147,6 +151,20 @@
       visibility: hidden
       position: static
       margin-bottom: -4px
+
+.cf-property
+  background-color: #ddddff
+  border: 1px solid #99aaee
+  cursor: default
+  font-family: Courier New, monospace
+  line-height: 1em
+  margin: 0.1em
+  padding: 0.1em
+  white-space: nowrap
+
+.cf-property-tip
+  p
+    white-space: nowrap
 
 // Container for properties editors in the sidebar
 .socrata-cf-properties-shell

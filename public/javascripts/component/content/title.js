@@ -7,23 +7,26 @@ $.component.Component.extend('Title', 'content', {
         this._super.apply(this, arguments);
     },
 
-    _initTitle: function()
-    {
-        var cObj = this,
-            tag = cObj._properties.tagName || 'h2';
-        cObj.$title = cObj.$contents.find(tag);
-        if (cObj.$title.length < 1)
-        {
-            cObj.$contents.empty().append($.tag({tagName: tag}));
-            cObj.$title = cObj.$contents.find(tag);
-        }
-    },
-
     _initDom: function()
     {
         this._super.apply(this, arguments);
-        if ($.isBlank(this.$title) && $.isBlank(this.$edit))
-        { this._initTitle(); }
+        if ($.isBlank(this.$title))
+        {
+            var tag = this._properties.tagName || 'h2';
+            this.$title = this.$contents.children(tag);
+            if (this.$title.length < 1)
+            {
+                this.$contents.empty().append($.tag({tagName: tag}));
+                this.$title = this.$contents.children(tag);
+            }
+        }
+    },
+
+    _getEditAssets: function()
+    {
+        return {
+            javascripts: [{ assets: 'content-editable' }]
+        };
     },
 
     _render: function()
@@ -33,14 +36,9 @@ $.component.Component.extend('Title', 'content', {
 
         var doRender = function()
         {
-            if (!cObj._editing)
-            {
-                var t = $.isBlank(cObj._properties.text) ? '' : cObj._properties.text;
-                cObj.$title.text(cObj._stringSubstitute(t));
-                cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
-            }
-            else
-            { cObj.$edit.css(blist.configs.styles.convertProperties(cObj._properties)); }
+            var t = $.isBlank(cObj._properties.text) ? '' : cObj._properties.text;
+            cObj.$title.text(cObj._stringSubstitute(t));
+            cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))
         { doRender(); }
@@ -52,16 +50,6 @@ $.component.Component.extend('Title', 'content', {
         if (!_.isEmpty(properties)) { this._render(); }
     },
 
-    // Allow blist editors to be used
-    _supportsCustomEditors: function()
-    { return true; },
-
-    _customEditFinished: function(editor)
-    {
-        this._initTitle();
-        this._render();
-    },
-
     design: function()
     {
         this._super.apply(this, arguments);
@@ -71,15 +59,13 @@ $.component.Component.extend('Title', 'content', {
     _valueKey: function()
     { return 'text'; },
 
-    editFocus: function(focused) {
+    editFocus: function(focused)
+    {
         if (!this._super.apply(this, arguments)) { return false; }
+        if (focused) { return true; }
 
-        // don't care about focusin
-        if (focused) return;
-
-        var newText = this.$edit.value();
-        if (newText != this._properties.text)
-            this._updatePrimaryValue(newText);
+        $.cf.extractProperties(this.$title);
+        this._updatePrimaryValue(this.$title.text());
     },
 
     edit: function()
@@ -87,29 +73,20 @@ $.component.Component.extend('Title', 'content', {
         var wasEditable = this._editing;
         if (!this._super.apply(this, arguments)) { return false; }
 
-        this.$contents.toggleClass('socrata-cf-mouse', this._editing);
-        this.$contents.data('editing', this._editing);
+        this.$title.editable({ edit: this._editing });
+        this.$title.toggleClass('socrata-cf-mouse', this._editing);
 
         if (this._editing)
         {
+            // Install raw template for editing
             if (!wasEditable)
             {
-                this.$edit = $.tag({
-                    tagName: 'input', type: 'text',
-                    'class': 'titleInput',
-                    name: 'input_' + this.id,
-                    value: this._properties.text
-                });
-                this.$contents.empty().append(this.$edit);
-                delete this.$title;
+                this.$title.text(this._properties.text);
+                $.cf.enhanceProperties(this.$title);
             }
         }
         else if (wasEditable)
-        {
-            this.$contents.empty();
-            delete this.$edit;
-            this._customEditFinished();
-        }
+        { this._render(); }
     },
 
     asString: function() {

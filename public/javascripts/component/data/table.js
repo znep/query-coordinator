@@ -66,6 +66,7 @@ var updateProperties = function(lcObj, properties)
 {
     lcObj._updateDataSource(properties, function()
         {
+            if ($.isBlank(this.$contents)) { return; }
             if (!$.isBlank(this._table))
             { this._table.setView(this._dataContext.dataset); }
             else

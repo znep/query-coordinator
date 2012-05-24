@@ -20,7 +20,7 @@ $.component.Component.extend('Text', 'content', {
         var doRender = function()
         {
             var html = cObj._properties.html;
-            if (!$.isBlank(html) && !cObj._editing)
+            if (!$.isBlank(html))
             { html = cObj._stringSubstitute(html); }
             if (cObj._properties.isPlainText)
             { html = html.plainTextToHtml(); }
@@ -46,11 +46,10 @@ $.component.Component.extend('Text', 'content', {
     editFocus: function(focused)
     {
         if (!this._super.apply(this, arguments)) { return false; }
-        if (focused) return;
+        if (focused) { return true; }
 
-        var newHtml = this.$contents.text();
-        if (newHtml != this._properties.html)
-        { this._updatePrimaryValue(newHtml); }
+        $.cf.extractProperties(this.$contents);
+        this._updatePrimaryValue($.htmlUnescape(this.$contents.html()));
     },
 
     edit: function()
@@ -65,7 +64,10 @@ $.component.Component.extend('Text', 'content', {
         {
             // Install raw template for editing
             if (!wasEditable)
-                this.$contents.text(this._properties.html);
+            {
+                this.$contents.html($.htmlEscape(this._properties.html));
+                $.cf.enhanceProperties(this.$contents);
+            }
         }
         else if (wasEditable)
         { this._render(); }

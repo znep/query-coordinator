@@ -6,13 +6,17 @@
     function Editor($dom, options) {
         var editable;
 
-        function startEdit() {
-            // TODO
-        }
+        function startEdit()
+        {
+            $dom.attr('dropzone', 'all string:text/plain string:text/html');
+            $dom.bind('dragenter', function(e) { if (editable) { $dom.attr('contentEditable', true); } });
+//            $dom.bind('dragover', function(e) { e.preventDefault(); });
+        };
 
-        function stopEdit() {
-            // TODO
-        }
+        function stopEdit()
+        {
+            $dom.attr('dropzone', 'none');
+        };
 
         function processOptions(options) {
             var newEditable = options.edit === undefined || options.edit === true;
@@ -24,7 +28,7 @@
                 else
                     stopEdit();
             }
-        }
+        };
 
         $.extend(this, {
             update: processOptions

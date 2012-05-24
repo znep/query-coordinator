@@ -162,6 +162,14 @@
         edit: function(editing)
         {
             var cObj = this;
+
+            if (editing && !cObj._disableEditCapture && !cObj._boundEditEvent)
+            {
+                cObj.$contents.click(function(e)
+                    { if (cObj._editing || cObj._needsEdit) { e.preventDefault(); } });
+                cObj._boundEditEvent = true;
+            }
+
             if (cObj._loadingAssets || cObj._loadingEditAssets)
             {
                 cObj._needsEdit = true;
@@ -197,12 +205,6 @@
 
             delete cObj._needsEdit;
             cObj._editing = editing;
-
-            if (cObj._editing && !cObj._disableEditCapture && !cObj._boundEditEvent)
-            {
-                cObj.$contents.click(function(e) { if (cObj._editing) { e.preventDefault(); } });
-                cObj._boundEditEvent = true;
-            }
 
             cObj._updateRemoveIcon();
 
@@ -254,7 +256,7 @@
         {
             var propKey = this._valueKey(),
                 properties = {};
-            if ($.isBlank(propKey)) return;
+            if ($.isBlank(propKey) || this._properties[propKey] == value) { return; }
 
             properties[propKey] = value;
             this._executePropertyUpdate(properties);

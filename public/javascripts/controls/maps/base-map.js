@@ -263,7 +263,7 @@
                             Dataset.search({q: query, limitTo: 'maps', nofederate: true, limit: 20 },
                                 function(data) {
                                     callback(_.reject(data.views,
-                                        function(view) { view.viewType == 'geo'; }))
+                                        function(view) { return view.viewType == 'geo'; }))
                                 });
                         },
                         noResultsMessage: 'No results were found. Note: This search only ' +

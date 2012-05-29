@@ -161,10 +161,32 @@
   margin: 0.1em
   padding: 0.1em
   white-space: nowrap
+.cf-property-edit
+  display: inline-block
 
 .cf-property-tip
   p
     white-space: nowrap
+.cf-property-edit-tip
+  .line
+    margin-bottom: 0.3em
+    label
+      display: inline-block
+      font-size: 1.1em
+      font-weight: bold
+      width: 5em
+    input
+      font-size: 1.1em
+    &.property input
+      width: 18.5em
+    &.regex
+      input[type=text]
+        width: 5em
+      label.regexModifier
+        font-weight: normal
+        width: auto
+    &.fallback input[type=text]
+      width: 16.5em
 
 // Container for properties editors in the sidebar
 .socrata-cf-properties-shell

@@ -32,12 +32,15 @@
             this.property = str;
         },
 
+        hasFallback: function()
+        { return this.hasOwnProperty('fallback'); },
+
         toString: function()
         {
             var str = this.property;
             if (!_.isEmpty(this.regex))
             { str += ' /' + this.regex.pattern + '/' + this.regex.replacement + '/' + this.regex.modifiers; }
-            if (this.hasOwnProperty('fallback'))
+            if (this.hasFallback())
             { str += ' ||' + this.fallback; }
             return '{' + str + '}';
         },
@@ -46,8 +49,189 @@
         {
             return $.tag({tagName: 'span', 'class': 'cf-property', contentEditable: false, draggable: true,
                 'data-propId': this.id, contents: $.htmlEscape(this.property.replace(/.*\./, ''))}, true);
+        },
+
+        domHookup: function($node)
+        {
+            var prop = this;
+            prop._$node = $node;
+            prop._$node.data('cfProperty', prop);
+            infoTipHookup(prop);
+
+            var $contEdit = prop._$node.closest('[contentEditable=true]');
+            prop._$node.bind('mousedown', function() { $contEdit.attr('contentEditable', false); })
+                .bind('mouseup', function() { $contEdit.attr('contentEditable', true); });
+            prop._$node.bind('dragstart', function(e)
+            {
+                prop._$node.socrataTip().hide();
+                e.originalEvent.dataTransfer.setData('text/html',
+                    '<span data-droppedId="' + prop.id + '"></span>');
+                // Chrome requires copy, or won't do anything on drop
+                e.originalEvent.dataTransfer.effectAllowed = 'copy';
+                // Fixes a bug in Chrome where the drag helper image had a bad offset;
+                // this also makes it a bit more obvious where the insertion cursor is during drag
+                e.originalEvent.dataTransfer.setDragImage(prop._$node[0], 0, 0);
+            })
+            .bind('dragend', function(e)
+            {
+                _.defer(function()
+                { $contEdit.find('[data-droppedid=' + prop.id + ']').replaceWith(prop._$node); });
+            });
+
+            $('body').bind('mousedown.prop_' + prop.id, function()
+            {
+                finishEdit(prop);
+            });
+
+            prop._$node.click(function()
+            {
+                prop._$node.socrataTip().destroy();
+                makeEditable(prop);
+            });
+        },
+
+        extract: function()
+        {
+            finishEdit(this, true);
+            $('body').unbind('.prop_' + this.id);
+            this._$node.socrataTip().destroy();
+            this._$node.replaceWith(this.toString());
         }
     });
+
+    var infoTipHookup = function(prop)
+    {
+        if ($.isBlank(prop._$node)) { return; }
+
+        var regex = prop.regex || {};
+        prop._$node.socrataTip({shrinkToFit: true,
+            content: $.tag({ tagName: 'div', 'class': 'cf-property-tip',
+            contents: [
+            { tagName: 'p', contents: [{ tagName: 'b', contents: 'Property: ' },
+                { tagName: 'span', contents: $.htmlEscape(prop.property) }] },
+            { onlyIf: !_.isEmpty(regex), value:
+                { tagName: 'p', contents: [
+                    { tagName: 'b', contents: 'Regex: ' },
+                    { tagName: 'span', contents: '/' + $.htmlEscape(regex.pattern) + '/' +
+                        $.htmlEscape(regex.replacement) + '/' + $.htmlEscape(regex.modifiers)
+                    }] }
+            },
+            { onlyIf: prop.hasFallback(), value:
+                { tagName: 'p', contents: [
+                    { tagName: 'b', contents: 'Fallback: ' },
+                    { tagName: 'span', contents: '"' + $.htmlEscape(prop.fallback) + '"' }] }
+            }
+        ] })});
+    };
+
+    var makeEditable = function(prop)
+    {
+        if ($.isBlank(prop._$edit))
+        {
+            prop._$node.wrap($.tag({tagName: 'div', 'class': 'cf-property-edit'}));
+            prop._$edit = prop._$node.parent();
+        }
+        var regex = prop.regex || {};
+        prop._$edit.socrataTip({width: '40em', trigger: 'now',
+            content: $.tag({ tagName: 'form', 'class': 'cf-property-edit-tip',
+                contents: [
+                    { tagName: 'div', 'class': ['line', 'property'], contents: [
+                        { tagName: 'label', 'for': 'propEdit_property', contents: 'Property' },
+                        { tagName: 'input', type: 'text', id: 'propEdit_property', name: 'property',
+                            'class': 'first', value: $.htmlEscape(prop.property) }
+                    ] },
+                    { tagName: 'div', 'class': ['line', 'regex'], contents: [
+                        { tagName: 'label', 'for': 'propEdit_regex', contents: 'Regex' },
+                        '/',
+                        { tagName: 'input', type: 'text', id: 'propEdit_regex',
+                            name: 'regex.pattern', value: $.htmlEscape(regex.pattern) },
+                        '/',
+                        { tagName: 'input', type: 'text', name: 'regex.replacement',
+                            value: $.htmlEscape(regex.replacement) },
+                        '/',
+                        { tagName: 'input', type: 'checkbox', id: 'propEdit_regex_modifier_g',
+                            name: 'regex.modifiers.g',
+                            checked: (regex.modifiers || '').indexOf('g') > -1 },
+                        { tagName: 'label', 'class': 'regexModifier',
+                            'for': 'propEdit_regex_modifier_g', contents: 'g' },
+                        { tagName: 'input', type: 'checkbox', id: 'propEdit_regex_modifier_i',
+                            name: 'regex.modifiers.i',
+                            checked: (regex.modifiers || '').indexOf('i') > -1 },
+                        { tagName: 'label', 'class': 'regexModifier',
+                            'for': 'propEdit_regex_modifier_i', contents: 'i' },
+                        { tagName: 'input', type: 'checkbox', id: 'propEdit_regex_modifier_m',
+                            name: 'regex.modifiers.m',
+                            checked: (regex.modifiers || '').indexOf('m') > -1 },
+                        { tagName: 'label', 'class': 'regexModifier',
+                            'for': 'propEdit_regex_modifier_m', contents: 'm' }
+                    ] },
+                    { tagName: 'div', 'class': ['line', 'fallback'], contents: [
+                        { tagName: 'label', 'for': 'propEdit_fallback', contents: 'Fallback' },
+                        { tagName: 'input', type: 'checkbox', name: 'useFallback',
+                            checked: prop.hasFallback() },
+                        { tagName: 'input', type: 'text', id: 'propEdit_fallback', name: 'fallback',
+                            'class': 'last', disabled: !prop.hasFallback(),
+                            value: $.htmlEscape(prop.fallback) }
+                    ] }
+                ] }),
+            shownCallback: function(box)
+            {
+                prop._$editBox = $(box);
+                prop._$editBox.mousedown(function(e) { e.stopPropagation(); });
+                prop._$editBox.find('.fallback input[type=checkbox]').change(function()
+                {
+                    var $c = $(this);
+                    $c.siblings('input[type=text]').attr('disabled', !$c.value());
+                });
+                prop._$editBox.find('input:first').focus();
+                prop._$editBox.find('input').keydown(function(e)
+                {
+                    var $i = $(this);
+                    var isFirst = $i.hasClass('first');
+                    var isLast = $i.hasClass('last');
+                    if (e.which == 9 && ((isFirst && !e.shiftKey) ||
+                            (isLast && e.shiftKey) || (!isFirst && !isLast)))
+                    { e.stopPropagation(); }
+                });
+            }});
+    };
+
+    var finishEdit = function(prop)
+    {
+        if ($.isBlank(prop._$editBox)) { return; }
+        prop._$editBox.find('input').quickEach(function()
+        {
+            if (this.is(':disabled')) { return; }
+            var name = this.attr('name');
+            var v = this.value() || '';
+            if (name == 'useFallback' && !v)
+            { delete prop.fallback; }
+            else if (name.startsWith('regex.'))
+            {
+                prop.regex = prop.regex || {};
+                var rp = name.split('.');
+                if (rp[1] == 'modifiers')
+                {
+                    prop.regex.modifiers = prop.regex.modifiers || '';
+                    var curI = prop.regex.modifiers.indexOf(rp[2]);
+                    if (curI > -1 && !v)
+                    { prop.regex.modifiers = prop.regex.modifiers.replace(rp[2], ''); }
+                    else if (curI < 0 && v)
+                    { prop.regex.modifiers += rp[2]; }
+                }
+                else
+                { prop.regex[rp[1]] = v; }
+            }
+            else
+            { prop[name] = v; }
+        });
+        if ($.isBlank(prop.regex.pattern)) { delete prop.regex; }
+        prop._$edit.socrataTip().destroy();
+        prop._$node.unwrap();
+        delete prop._$edit;
+        delete prop._$editBox;
+        infoTipHookup(prop);
+    };
 
     $.cf.enhanceProperties = function($node)
     {
@@ -63,46 +247,9 @@
         $node.html(html);
         $node.children('.cf-property').quickEach(function()
         {
-            var prop = propObjs[this.attr('data-propId')];
-            this.data('cfProperty', prop);
-            var regex = prop.regex || {};
-            this.socrataTip({shrinkToFit: true, content: $.tag({ tagName: 'div', 'class': 'cf-property-tip',
-                contents: [
-                { tagName: 'p', contents: [{ tagName: 'b', contents: 'Property: ' },
-                    { tagName: 'span', contents: $.htmlEscape(prop.property) }] },
-                { onlyIf: prop.hasOwnProperty('fallback'), value:
-                    { tagName: 'p', contents: [
-                        { tagName: 'b', contents: 'Fallback: ' },
-                        { tagName: 'span', contents: '"' + $.htmlEscape(prop.fallback) + '"' }] }
-                },
-                { onlyIf: !_.isEmpty(regex), value:
-                    { tagName: 'p', contents: [
-                        { tagName: 'b', contents: 'Regex: ' },
-                        { tagName: 'span', contents: '/' + $.htmlEscape(regex.pattern) + '/' +
-                            $.htmlEscape(regex.replacement) + '/' + $.htmlEscape(regex.modifiers)
-                        }] }
-                }
-            ] }, true)});
-
             var $t = $(this);
-            var $contEdit = this.closest('[contentEditable=true]');
-            this.hover(function() { $contEdit.attr('contentEditable', false); },
-                    function() { $contEdit.attr('contentEditable', true); });
-            this.bind('dragstart', function(e)
-            {
-                e.originalEvent.dataTransfer.setData('text/html',
-                    '<span data-droppedId="' + prop.id + '"></span>');
-                // Chrome requires copy, or won't do anything on drop
-                e.originalEvent.dataTransfer.effectAllowed = 'copy';
-                // Fixes a bug in Chrome where the drag helper image had a bad offset;
-                // this also makes it a bit more obvious where the insertion cursor is during drag
-                e.originalEvent.dataTransfer.setDragImage($t[0], 0, 0);
-            })
-            .bind('dragend', function(e)
-            {
-                _.defer(function()
-                { $contEdit.find('[data-droppedid=' + prop.id + ']').replaceWith($t); });
-            });
+            var prop = propObjs[$t.attr('data-propId')];
+            prop.domHookup($t);
         });
     };
 
@@ -126,9 +273,12 @@
 
     $.cf.extractProperties = function($node)
     {
-        $node.children('.cf-property').quickEach(function()
+        $node.children('.cf-property, .cf-property-edit').quickEach(function()
         {
-            this.replaceWith(this.data('cfProperty').toString());
+            var t = this;
+            if (t.hasClass('cf-property-edit')) { t = t.children('.cf-property'); }
+            var cfProp = t.data('cfProperty');
+            if (!$.isBlank(cfProp)) { cfProp.extract(); }
         });
     };
 

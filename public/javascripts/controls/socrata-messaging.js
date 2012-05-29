@@ -61,7 +61,8 @@
             showSpike: true,
             shrinkToFit: true,
             stroke: '#999999',
-            trigger: 'hover'
+            trigger: 'hover',
+            width: '200px'
         },
 
         prototype:
@@ -120,6 +121,7 @@
                         overlap: sTipObj.settings.overlap,
                         offsetParent: sTipObj.settings.parent,
                         killTitle: sTipObj.settings.killTitle,
+                        width: sTipObj.settings.width,
 
                         showTip: function(box)
                             {

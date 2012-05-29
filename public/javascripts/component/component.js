@@ -289,12 +289,12 @@
                 cObj._$removeIcon.click(function(e)
                 {
                     e.preventDefault();
+                    $.cf.blur(true);
                     $.cf.edit.execute('remove', {
                         component: cObj,
                         container: cObj.parent,
                         position: cObj.next
                     });
-                    $.cf.blur(true);
                 });
             }
             cObj.$dom.toggleClass('removeActive', !$.isBlank(cObj.parent) && cObj._editing);

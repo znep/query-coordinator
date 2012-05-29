@@ -75,6 +75,8 @@ jQuery.bt = {version: '0.9.5-rc1'};
    *
    */ 
   
+    var incrId = 0;
+
   jQuery.fn.bt = function(content, options) {
   
     var contentSelect = false;
@@ -103,6 +105,8 @@ jQuery.bt = {version: '0.9.5-rc1'};
 
       // clint.tseng@socrata.com: allow outside access of opts for hacky shit
       this._opts = opts;
+
+      this._internalId = 'btId' + incrId++;
   
       // clean up the options
       opts.spikeLength = numb(opts.spikeLength);
@@ -710,6 +714,10 @@ jQuery.bt = {version: '0.9.5-rc1'};
         this.btOff();
         this.btOn();
       };
+
+      this.btDestroy = function() {
+          $(this).unbind('.' + this._internalId);
+      };
   
       /**
        * This is sort of the "starting spot" for the this.each()
@@ -741,15 +749,14 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
       else if (opts.trigger[0] == 'hover') {
         var isHover = false;
-        $(this).hover(
-          function() {
+        $(this).bind('mouseenter.' + this._internalId, function() {
             if (!isHover)
             {
                 isHover = true;
                 this.btOn();
             }
-          },
-          function() {
+          })
+        .bind('mouseleave.' + this._internalId, function() {
             isHover = false;
             this.btOff();
           }
@@ -773,16 +780,16 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
       else if (opts.trigger.length > 1 && opts.trigger[0] != opts.trigger[1]) {
         $(this)
-          .bind(opts.trigger[0], function() {
+          .bind(opts.trigger[0] + '.' + this._internalId, function() {
             this.btOn();
           })
-          .bind(opts.trigger[1], function() {
+          .bind(opts.trigger[1] + '.' + this._internalId, function() {
             this.btOff();
           });
       }
       else {
         // toggle using the same event
-        $(this).bind(opts.trigger[0], function() {
+        $(this).bind(opts.trigger[0] + '.' + this._internalId, function() {
           if ($(this).hasClass('bt-active')) {
             this.btOff();
           }
@@ -1089,6 +1096,14 @@ jQuery.bt = {version: '0.9.5-rc1'};
     });
   }; // </ $().btOff() >
   
+  jQuery.fn.btDestroy = function() {
+    return this.each(function(index){
+      if (jQuery.isFunction(this.btDestroy)) {
+        this.btDestroy();
+      }
+    });
+  }; // </ $().btDestroy() >
+
   jQuery.bt.vars = {clickAnywhereStack: [], closeWhenOpenStack: []};
   
   /**

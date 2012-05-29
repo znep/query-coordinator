@@ -213,6 +213,7 @@
                 this._isDestroy = true;
                 this.hide();
                 this.disable();
+                this.$dom().btDestroy();
                 this.$dom().removeData('socrataTip');
             },
 

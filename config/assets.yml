@@ -516,6 +516,7 @@ javascripts:
   client-embed:
     - public/javascripts/client-libraries/embed.js
   content-editable:
+    - public/javascripts/plugins/rangy-core.js
     - public/javascripts/controls/content-editable.js
   image-uploader:
     - public/javascripts/plugins/ajaxupload.js

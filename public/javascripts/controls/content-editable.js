@@ -8,9 +8,25 @@
 
         function startEdit()
         {
+            if (!rangy.initialized) { rangy.init(); }
+
             $dom.attr('dropzone', 'all string:text/plain string:text/html');
             $dom.bind('dragenter', function(e) { if (editable) { $dom.attr('contentEditable', true); } });
 //            $dom.bind('dragover', function(e) { e.preventDefault(); });
+            $dom.bind('keypress', function(e)
+            {
+                if (e.which == 8) // Backspace
+                {
+                    var sel = rangy.getSelection();
+                    if (sel.focusOffset == sel.anchorOffset && sel.anchorOffset == 0)
+                    {
+                        var $parConts = $(sel.anchorNode).parent().contents();
+                        var $prevNode = $parConts.eq($parConts.index(sel.anchorNode) - 1);
+                        if ($prevNode.is('[contentEditable=false]'))
+                        { _.defer(function() { $prevNode.trigger('delete'); }); }
+                    }
+                }
+            });
         };
 
         function stopEdit()

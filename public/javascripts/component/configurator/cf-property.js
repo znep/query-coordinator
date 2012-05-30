@@ -47,7 +47,7 @@
 
         toHtml: function()
         {
-            return $.tag({tagName: 'span', 'class': 'cf-property', contentEditable: false, draggable: true,
+            return $.tag({tagName: 'span', 'class': 'cf-property', contentEditable: 'false', draggable: true,
                 'data-propId': this.id, contents: $.htmlEscape(this.property.replace(/.*\./, ''))}, true);
         },
 
@@ -83,10 +83,12 @@
                 finishEdit(prop);
             });
 
+            prop._$node.bind('delete', function() { prop._$node.remove(); });
+
             prop._$node.click(function()
             {
                 prop._$node.socrataTip().destroy();
-                makeEditable(prop);
+                setTimeout(function() { makeEditable(prop); }, 100);
             });
         },
 
@@ -126,13 +128,8 @@
 
     var makeEditable = function(prop)
     {
-        if ($.isBlank(prop._$edit))
-        {
-            prop._$node.wrap($.tag({tagName: 'div', 'class': 'cf-property-edit'}));
-            prop._$edit = prop._$node.parent();
-        }
         var regex = prop.regex || {};
-        prop._$edit.socrataTip({width: '40em', trigger: 'now',
+        prop._$node.socrataTip({width: '40em', trigger: 'now',
             content: $.tag({ tagName: 'form', 'class': 'cf-property-edit-tip',
                 contents: [
                     { tagName: 'div', 'class': ['line', 'property'], contents: [
@@ -186,9 +183,16 @@
                 prop._$editBox.find('input:first').focus();
                 prop._$editBox.find('input').keydown(function(e)
                 {
+                    // Esc
+                    if (e.which == 27)
+                    {
+                        finishEdit(prop, true);
+                        return;
+                    }
                     var $i = $(this);
                     var isFirst = $i.hasClass('first');
                     var isLast = $i.hasClass('last');
+                    // Tab
                     if (e.which == 9 && ((isFirst && !e.shiftKey) ||
                             (isLast && e.shiftKey) || (!isFirst && !isLast)))
                     { e.stopPropagation(); }
@@ -196,39 +200,41 @@
             }});
     };
 
-    var finishEdit = function(prop)
+    var finishEdit = function(prop, isCancel)
     {
         if ($.isBlank(prop._$editBox)) { return; }
-        prop._$editBox.find('input').quickEach(function()
+        if (!isCancel)
         {
-            if (this.is(':disabled')) { return; }
-            var name = this.attr('name');
-            var v = this.value() || '';
-            if (name == 'useFallback' && !v)
-            { delete prop.fallback; }
-            else if (name.startsWith('regex.'))
+            prop._$editBox.find('input').quickEach(function()
             {
-                prop.regex = prop.regex || {};
-                var rp = name.split('.');
-                if (rp[1] == 'modifiers')
+                if (this.is(':disabled')) { return; }
+                var name = this.attr('name');
+                var v = this.value() || '';
+                if (name == 'useFallback' && !v)
+                { delete prop.fallback; }
+                else if (name.startsWith('regex.'))
                 {
-                    prop.regex.modifiers = prop.regex.modifiers || '';
-                    var curI = prop.regex.modifiers.indexOf(rp[2]);
-                    if (curI > -1 && !v)
-                    { prop.regex.modifiers = prop.regex.modifiers.replace(rp[2], ''); }
-                    else if (curI < 0 && v)
-                    { prop.regex.modifiers += rp[2]; }
+                    prop.regex = prop.regex || {};
+                    var rp = name.split('.');
+                    if (rp[1] == 'modifiers')
+                    {
+                        prop.regex.modifiers = prop.regex.modifiers || '';
+                        var curI = prop.regex.modifiers.indexOf(rp[2]);
+                        if (curI > -1 && !v)
+                        { prop.regex.modifiers = prop.regex.modifiers.replace(rp[2], ''); }
+                        else if (curI < 0 && v)
+                        { prop.regex.modifiers += rp[2]; }
+                    }
+                    else
+                    { prop.regex[rp[1]] = v; }
                 }
                 else
-                { prop.regex[rp[1]] = v; }
-            }
-            else
-            { prop[name] = v; }
-        });
-        if ($.isBlank(prop.regex.pattern)) { delete prop.regex; }
-        prop._$edit.socrataTip().destroy();
-        prop._$node.unwrap();
-        delete prop._$edit;
+                { prop[name] = v; }
+            });
+            if ($.isBlank(prop.regex.pattern)) { delete prop.regex; }
+            prop._$node.text(prop.property.replace(/.*\./, ''));
+        }
+        prop._$node.socrataTip().destroy();
         delete prop._$editBox;
         infoTipHookup(prop);
     };

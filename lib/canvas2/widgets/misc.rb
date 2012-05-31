@@ -89,6 +89,13 @@ module Canvas2
     end
   end
 
+  class Geolocator < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+  end
+
   class InlineFilter < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

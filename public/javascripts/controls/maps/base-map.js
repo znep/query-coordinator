@@ -366,7 +366,39 @@
             if (!mapObj._displayLayers)
             { mapObj._displayLayers = []; }
 
+            var geocodeDialog = new blist.openLayers.GeocodeDialog();
+            mapObj.map.addControl(geocodeDialog);
+            geocodeDialog.events.register('geocoding', geocodeDialog,
+                function() { mapObj.startLoading(); });
+            geocodeDialog.events.register('geocodingdone', geocodeDialog,
+                function() { mapObj.finishLoading(); });
+            geocodeDialog.events.register('placepoint', geocodeDialog,
+                function(evt) {
+                    mapObj.enqueueGeometry('point', evt.lonlat,
+                        'geocodeMarker', { icon: '/images/pin.png' });
+                });
+
             mapObj.initializeEvents();
+        },
+
+        getRequiredJavascripts: function()
+        {
+            // This is a terrible hack; but we need to know if Google
+            // has already been loaded, since it has a special callback.
+            // We can't store a normal object var, because the whole
+            // library is being recreated
+            if (blist.util.googleCallbackMap) { return null; }
+
+            blist.util.googleCallback = this._setupLibraries;
+            blist.util.googleCallbackMap = this;
+            return "https://maps.google.com/maps/api/js?sensor=true&libraries=geometry&callback=blist.util.googleCallback";
+        },
+
+        _setupLibraries: function()
+        {
+            // Grab a reference to the current object (this) from a global
+            var mapObj = blist.util.googleCallbackMap;
+            mapObj._librariesLoaded();
         },
 
         initializeEvents: function()
@@ -555,6 +587,17 @@
                 layers: mapObj._displayFormat.layers};
 
             mapObj._super();
+        },
+
+        geolocate: function()
+        {
+            // Expected format: { address: '123 Main Street, Seattle, WA', radius: '5mi' }
+            if (this._mapLoaded && !this._geolocationDone && this._displayFormat.geolocate)
+            {
+                this.map.getControlsByClass('blist.openLayers.GeocodeDialog')[0]
+                    .geocode(this._displayFormat.geolocate);
+                this._geolocationDone = true;
+            }
         },
 
         fixMapLayers: function()
@@ -1304,6 +1347,7 @@
                     { mapObj.mapElementLoaded(); }
                 }
             });
+            mapObj.geolocate();
             mapObj._lastZoomLevel = mapObj.currentZoom();
         },
 
@@ -1757,7 +1801,8 @@
                 }
                 mapObj._super(view);
                 mapObj._boundsChanging = true;
-                mapObj.setViewport(viewport);
+                if (!mapObj._mapLoaded)
+                { mapObj.setViewport(viewport); }
                 if (viewConfig._fetchPoints)
                 { delete viewConfig._fetchPoints; }
                 return;
@@ -1772,7 +1817,11 @@
                 function(data)
             {
                 if (_.isUndefined(viewConfig._neverCluster))
-                { viewConfig._neverCluster = view.totalRows() < mapObj._maxRows; }
+                {
+                    var totalRows = view.totalRows();
+                    if (totalRows)
+                    { viewConfig._neverCluster = totalRows < mapObj._maxRows; }
+                }
                 if (viewConfig._neverCluster)
                 {
                     viewConfig._renderType = 'points';

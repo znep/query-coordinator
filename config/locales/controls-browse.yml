@@ -160,6 +160,7 @@ it:
         alpha: "Alfabetico"
         newest: "Più nuovo"
         oldest: "Più vecchio"
+        last_modified: "Aggiornato di recente"
         rating: "Con voto più alto"
         comments: "Più commentati"
       sort_period_title: "Periodo dell'ordinamento"

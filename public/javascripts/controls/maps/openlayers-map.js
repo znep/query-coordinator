@@ -390,6 +390,7 @@
             }
 
             mapObj._baseLayers = [mapObj.map.baseLayer];
+            _.each(mapObj._dataLayers || [], function(layer) { layer.destroy(); });
             mapObj._dataLayers = manipulableLayers;
             fetchLayerNames(mapObj);
 

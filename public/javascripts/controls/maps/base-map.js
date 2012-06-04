@@ -623,14 +623,14 @@
             var $layersList = $layers.find('ul');
             var $baseLayers = $layers.find('ul.base');
             var $dataLayers = $layers.find('ul.data');
-            mapObj._dataLayers = mapObj._dataLayers || mapObj._displayLayers || [];
+            var dataLayers = (mapObj._dataLayers || []).concat(mapObj._displayLayers || []);
 
             if (mapObj._baseLayers.length < 2)
             { $baseLayers.hide(); $('h3.base').hide(); }
-            if (mapObj._dataLayers.length < 2)
+            if (dataLayers.length < 2)
             { $dataLayers.hide(); $('h3.data').hide(); }
 
-            if (mapObj._baseLayers.length < 2 && mapObj._dataLayers.length < 2)
+            if (mapObj._baseLayers.length < 2 && dataLayers.length < 2)
             { return; }
 
             mapObj.fixMapLayers();
@@ -652,11 +652,11 @@
             var $layerSet = $baseLayers;
             _.each(mapObj._baseLayers, processLayer);
             $layerSet = $dataLayers;
-            _.each(mapObj._dataLayers, processLayer);
+            _.each(dataLayers, processLayer);
 
             if (mapObj._baseLayers.length >= 2)
             { $baseLayers.show(); $('h3.base').show(); }
-            if (mapObj._dataLayers.length >= 2)
+            if (dataLayers.length >= 2)
             { $dataLayers.show(); $('h3.data').show(); }
 
             $layersList.find('.sliderControl').each(function()
@@ -1887,8 +1887,6 @@
 
             mapObj._displayLayers.push(viewConfig._displayLayer);
 
-            // Yes, this is ridiculous. Yes, it will be fixed in the rewrite.
-            mapObj._dataLayers.push(viewConfig._displayLayer);
             mapObj.populateLayers();
 
             return layer;

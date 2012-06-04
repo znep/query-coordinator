@@ -32,6 +32,7 @@ javascripts:
     - public/javascripts/util/alert-override.js
     - public/javascripts/util/google-analytics.js
     - public/javascripts/util/user.js
+    - public/javascripts/util/domain/configuration.js
     - public/javascripts/util/dataset/column-container.js
     - public/javascripts/util/dataset/column.js
     - public/javascripts/util/dataset/row-set.js
@@ -129,6 +130,7 @@ javascripts:
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/component/configurator/properties-editor.js
+    - public/javascripts/component/configurator/properties-palette.js
     - public/javascripts/component/configurator/configurator.js
     - public/javascripts/component/configurator/cf-edit-log.js
     - public/javascripts/component/configurator/cf-component-drag.js

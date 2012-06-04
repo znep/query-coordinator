@@ -731,6 +731,7 @@
         _updateDataSource: function(properties, callback)
         {
             var cObj = this;
+            properties = properties || cObj._properties;
             var gotDCGen = function(count)
             {
                 var finishCallback = _.after(count, function()

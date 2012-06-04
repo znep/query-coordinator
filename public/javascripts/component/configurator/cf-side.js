@@ -100,6 +100,15 @@
             });
         });
 
+        $propPalette = $.tag({tagName: 'div', 'class': ['propertiesPalette', 'properties']});
+        propertiesPalette = $propPalette.pane_propertiesPalette();
+        var $ppWrapper = $.tag({tagName: 'div',
+            'class': ['section', 'open', 'socrata-cf-properties-shell', 'socrata-cf-mouse', 'hide'],
+            contents: [{tagName: 'h2', contents: 'Available Properties'}]});
+        propertiesPalette.render();
+        $ppWrapper.append($propPalette);
+        $ct.append($ppWrapper);
+
         $properties = $.tag({tagName: 'div', 'class': 'properties'});
         propertiesEditor = $properties.pane_propertiesEditor();
         var $wrapper = $.tag({tagName: 'div',
@@ -115,45 +124,7 @@
                 function(t) { $ct[0].addEventListener(t, function() { $(window).resize(); }); });
         };
         _.defer(function() { $(window).resize(); });
-
-        function update(id, dataset) {
-            createSection({
-                id: dataset.id,
-                name: dataset.name + ' Properties',
-                entries: _.filter(dataset.columns, function(column) {
-                    return column.dataTypeName != 'meta_data';
-                })
-            }, function(property, html) {
-                html.push(
-                    '<li class="item icon-Property label-only" data-dataset="',
-                    $.htmlEscape(id),
-                    '" data-name="',
-                    $.htmlEscape(property.fieldName),
-                    '"><span class="label bulb">',
-                    $.htmlEscape(property.name),
-                    '</span></li>'
-                );
-            });
-        }
-
-        $.dataContext.bind('available', function(context) {
-            if ($.subKeyDefined(context, 'dataset'))
-            {
-                context.dataset.bind('columns_changed', function() { update(context.id, context.dataset); });
-                update(context.id, context.dataset);
-            }
-        }).bind('unavailable', function(context) {
-            if ($.subKeyDefined(context, 'dataset'))
-            {
-                context.dataset.unbind('columns_changed', update);
-                $cf.find('.section-' + context.id).remove();
-            }
-        });
-
-        _.each($.dataContext.availableContexts, function(context) {
-            $.dataContext.trigger('available', [ context ]);
-        })
-    }
+    };
 
     $.cf.side = function(show) {
         if (!show) {
@@ -177,46 +148,68 @@
         }, 1);
 
         visible = true;
-    }
+    };
+
+    var $propPalette;
+    var propertiesPalette;
 
     var $properties;
     var propertiesEditor;
 
-    function closeProperties(callback)
+    function closePanel($dom, pane, callback)
     {
-        if ($.isBlank(propertiesEditor.component))
+        if ($.isBlank(pane.component))
         {
             if (_.isFunction(callback)) { callback(); }
             return;
         }
-        $properties.animate({ height: 0 }, 200, 'linear', function()
+        $dom.animate({ height: 0 }, 200, 'linear', function()
             {
-                $properties.css('height', '').closest('.socrata-cf-properties-shell').addClass('hide');
-                propertiesEditor.component.setEditor(null);
-                propertiesEditor.setComponent(null);
-                if (_.isFunction(callback)) { callback(); }
+                $dom.css('height', '').closest('.socrata-cf-properties-shell').addClass('hide');
+                if (_.isFunction(callback)) { callback(true); }
             });
-    }
+    };
 
-    function openProperties($dom) {
-        $properties.closest('.socrata-cf-properties-shell').removeClass('hide');
-        $properties.css('opacity', 0).animate({ opacity: 1 }, 200, 'linear', function()
-                { $properties.css('opacity', ''); });
-    }
+    function openPanel($dom)
+    {
+        $dom.closest('.socrata-cf-properties-shell').removeClass('hide');
+        $dom.css('opacity', 0).animate({ opacity: 1 }, 200, 'linear', function()
+                { $dom.css('opacity', ''); });
+    };
 
     $.extend($.cf.side, {
-        properties: function(what) {
-            if (propertiesEditor.component == what)
-                return;
-            closeProperties(function()
+        properties: function(what)
+        {
+            if (propertiesEditor.component != what)
             {
-                if (what)
+                closePanel($properties, propertiesEditor, function(didClose)
                 {
-                    propertiesEditor.setComponent(what);
-                    what.setEditor(propertiesEditor);
-                    openProperties();
-                }
-            });
+                    if (didClose)
+                    {
+                        propertiesEditor.component.setEditor(null);
+                        propertiesEditor.setComponent(null);
+                    }
+                    if (what)
+                    {
+                        propertiesEditor.setComponent(what);
+                        what.setEditor(propertiesEditor);
+                        openPanel($properties);
+                    }
+                });
+            }
+            if (propertiesPalette.component != what)
+            {
+                closePanel($propPalette, propertiesPalette, function(didClose)
+                {
+                    if (didClose)
+                    { propertiesPalette.setComponent(null); }
+                    if (what)
+                    {
+                        propertiesPalette.setComponent(what);
+                        openPanel($propPalette);
+                    }
+                });
+            }
         },
 
         reset: function() {

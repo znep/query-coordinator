@@ -5,7 +5,10 @@
         {
             this._super.apply(this, arguments);
             this.id = 'cfProp' + _.uniqueId();
-            if (!$.isBlank(str)) { this.parse(str); }
+            if (!$.isBlank(str) && _.isString(str))
+            { this.parse(str); }
+            else if ($.isPlainObject(str))
+            { $.extend(this, str); }
         },
 
         parse: function(str)
@@ -257,6 +260,20 @@
             var prop = propObjs[$t.attr('data-propId')];
             prop.domHookup($t);
         });
+        $node.bind('drop.cfProperty', function(e)
+        {
+            _.defer(function()
+            {
+                $node.find('[data-droppednewproperty]').quickEach(function()
+                {
+                    var prop = new $.cf.Property({property: this.attr('data-droppednewproperty'),
+                        fallback: ''});
+                    var $newProp = $(prop.toHtml());
+                    this.replaceWith($newProp);
+                    prop.domHookup($newProp);
+                });
+            });
+        });
     };
 
 //            this.hover(function() { $t.selectText(); });
@@ -286,6 +303,7 @@
             var cfProp = t.data('cfProperty');
             if (!$.isBlank(cfProp)) { cfProp.extract(); }
         });
+        $node.unbind('.cfProperty');
     };
 
 })(jQuery);

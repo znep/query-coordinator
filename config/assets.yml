@@ -128,7 +128,7 @@ javascripts:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/panes/base-pane.js
-    - public/javascripts/controls/panes/properties-editor.js
+    - public/javascripts/component/configurator/properties-editor.js
     - public/javascripts/component/configurator/configurator.js
     - public/javascripts/component/configurator/cf-edit-log.js
     - public/javascripts/component/configurator/cf-component-drag.js

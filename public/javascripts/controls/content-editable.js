@@ -18,10 +18,20 @@
                 if (e.which == 8) // Backspace
                 {
                     var sel = rangy.getSelection();
-                    if (sel.focusOffset == sel.anchorOffset && sel.anchorOffset == 0)
+                    if (sel.isCollapsed && sel.anchorOffset == 0)
                     {
-                        var $parConts = $(sel.anchorNode).parent().contents();
-                        var $prevNode = $parConts.eq($parConts.index(sel.anchorNode) - 1);
+                        var curNode = sel.anchorNode;
+                        var $par = $(curNode).parent();
+                        var $parConts = $par.contents();
+                        // Iterate up the tree until we're at the level of this node
+                        while ($par[0] != $dom[0])
+                        {
+                            if ($parConts.index(curNode) != 0) { return; }
+                            curNode = $par[0];
+                            $par = $par.parent();
+                            $parConts = $par.contents();
+                        }
+                        var $prevNode = $parConts.eq($parConts.index(curNode) - 1);
                         if ($prevNode.is('[contentEditable=false]'))
                         { _.defer(function() { $prevNode.trigger('delete'); }); }
                     }

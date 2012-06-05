@@ -1330,13 +1330,15 @@
                 args.item.columns || ''))});
     };
 
-    renderLineItem.custom = function(cpObj, contents, args, curValue)
+    renderLineItem.custom = function(cpObj, contents, args, curValue, defValue)
     {
         var u = _.uniqueId();
         _.last(contents).contents = $.extend(commonAttrs(cpObj, $.extend({}, args.item,
             {extraClass: 'customWrapper'}), args.context),
             {tagName: 'div', 'data-customId': u, 'data-linkedField':
                 $.arrayify(args.item.linkedField).join(',')});
+        _.last(contents).contents['data-defaultValue']
+            = $.htmlEscape(JSON.stringify(defValue || ''));
         cpObj._customCallbacks[u] = args.item.editorCallbacks;
     };
 

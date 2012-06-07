@@ -5187,7 +5187,12 @@ window.Raphael.vml && function (R) {
         }
         if (res.type == "text") {
             res.paper.canvas.style.display = E;
-            var span = res.paper.span,
+
+            // clint.tseng@socrata.com 2012/06/01
+            // the boundingRect has drastic perf implications in IE. commenting it out *seems* to have no adverse effect.
+            // if text is rendering weird or getting cut off or something in future use cases, I guess reinstate and optimize.
+            // since we're not using the boundingRect, no point in constructing this span either, it's just for measurement.
+            /*var span = res.paper.span,
                 m = 100,
                 fontSize = a.font && a.font.match(/\d+(?:\.\d*)?(?=px)/);
             s = span.style;
@@ -5198,9 +5203,12 @@ window.Raphael.vml && function (R) {
             fontSize = toFloat(a["font-size"] || fontSize && fontSize[0]) || 10;
             s.fontSize = fontSize * m + "px";
             res.textpath.string && (span.innerHTML = Str(res.textpath.string).replace(/</g, "&#60;").replace(/&/g, "&#38;").replace(/\n/g, "<br>"));
+
             var brect = span.getBoundingClientRect();
             res.W = a.w = (brect.right - brect.left) / m;
-            res.H = a.h = (brect.bottom - brect.top) / m;
+            res.H = a.h = (brect.bottom - brect.top) / m;*/
+            // end edit. the next commented line was already that way.
+
             // res.paper.canvas.style.display = "none";
             res.X = a.x;
             res.Y = a.y + res.H / 2;

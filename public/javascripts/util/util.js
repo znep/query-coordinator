@@ -1,6 +1,9 @@
 blist.namespace.fetch('blist.util');
 blist.namespace.fetch('blist.util.patterns');
 
+// expose Sizzle globally
+window.Sizzle = jQuery.find;
+
 // Prototype defs
 String.prototype.startsWith = function(str)
 { return this.indexOf(str) == 0; };
@@ -44,7 +47,7 @@ String.prototype.capitalize = function()
 
 String.prototype.displayable = function()
 {
-    return $.map(this.replace(/(\S)([A-Z])/g, '$1 $2').replace(/_/g, ' ').split(' '), $.capitalize).join(' ');
+    return $.map(this.replace(/_/g, ' ').split(' '), $.capitalize).join(' ');
 };
 
 String.prototype.trim = function()

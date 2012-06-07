@@ -1,8 +1,6 @@
 
 <div class="chartArea">
-  <div class="chartContainer">
-    <div class="chart"></div>
-  </div>
+  <div class="chartContainer"></div>
   <div class="baseline"></div>
 </div>
 
@@ -21,37 +19,8 @@
   overflow-x: auto;
 }
 
-.chart {
-  position: relative;
-}
-
-.chart .dataBar {
-  border: 1px solid #fff;
-  background-color: #4682b4;
-  position: absolute;
-}
-
-.chart .dataLabel {
-  -webkit-transform: rotate(40deg);
-  -moz-transform: rotate(40deg);
-  -ms-transform: rotate(40deg);
-  font-size: 1.2em;
-  position: absolute;
-  width: 500px;
-}
-
-.ie7 .chart .dataLabel,
-.ie8 .chart .dataLabel {
-  filter:progid:DXImageTransform.Microsoft.Matrix(M11=0.766044443118978, M12=-0.6427876096865393, M21=0.6427876096865393, M22=0.766044443118978, sizingMethod='auto expand');
-  margin-left: 52px;
-  margin-top: -158px;
-  z-index: 1;
-  zoom: 1;
-}
-
-.chart .dataLabel span {
-  display: block;
-  margin-left: 50%;
+.chartContainer svg {
+  top: auto !important;
 }
 
 .chartArea .baseline,
@@ -78,7 +47,7 @@
   opacity: 70
 }
 
-.tickLabel {
+.chartArea .tickLabel {
   background-color: rgba(247, 247, 247, 0.7);
   font-size: 1.2em;
   margin-top: -1.2em;
@@ -93,8 +62,8 @@
 $(function()
 {
   var $chartContainer = $('.chartContainer');
-  var chart = d3.select('.chartContainer .chart');
-  var $chart = $('.chartContainer .chart');
+  var raphaelPaper = new Raphael($chartContainer.get(0), 100, chartHeight);
+  var chart = d3.raphael(raphaelPaper);
   var chartArea = d3.select('.chartArea');
   var $chartArea = $('.chartArea');
   var yScale;
@@ -114,35 +83,32 @@ $(function()
 
     // get prereqs
     var customAggs = {};
-    var column = ds.columnForFieldName('_1');
-    customAggs[column.id] = [ 'maximum' ];
-    ds.getAggregates(function()
-    {
-      max = parseFloat(column.aggregates.maximum);
+    // var column = ds.columnForFieldName('_1');
+    // customAggs[column.id] = [ 'maximum' ];
+    // ds.getAggregates(function()
+    // {
+    //   max = parseFloat(column.aggregates.maximum);
       ds.getTotalRows(function()
       {
         rowCount = ds.totalRows();
         setupChart();
       });
-    }, customAggs);
+    // }, customAggs);
 
   });
 
   var setupChart = function()
   {
-    $chart
-        .addClass('chart')
-        .width(rowCount * barWidth)
-        .height(renderHeight);
+    raphaelPaper.setSize(rowCount * barWidth, renderHeight);
 
     $chartArea
       .addClass('chartArea')
       .width($('.chartContainer').width())
       .height(renderHeight);
 
-    yScale = d3.scale.linear()
-      .domain([ 0, max ])
-      .range([ 0, chartHeight ]);
+    // yScale = d3.scale.linear()
+    //   .domain([ 0, max ])
+    //   .range([ 0, chartHeight ]);
 
     // kick off data fetch
     checkRowRenderRange();
@@ -155,18 +121,30 @@ $(function()
     });
   };
 
+  var currentFetchId;
   var checkRowRenderRange = function()
   {
     var reverseScrollScale = d3.scale.linear()
-      .domain([ 0, rowCount * barWidth - $chartArea.width() ])
+      .domain([ 0, (rowCount * barWidth) - $chartArea.width() ])
       .range([ 0, rowCount ]);
 
     var start = Math.max(Math.floor(reverseScrollScale($('.chartContainer').scrollLeft())) - 30, 0);
     var length = Math.ceil($chartArea.width() / barWidth) + 40;
 
+    var fetchId = currentFetchId = _.uniqueId();
+    var fetchedRows = [];
     ds.getRows(start, length, function(rows)
     {
-      renderChart(rows);
+      if (currentFetchId != fetchId)
+      {
+        return; // don't bother; we're doing other things now.
+      }
+
+      fetchedRows = fetchedRows.concat(rows);
+      // if (!$.browser.msie || (fetchedRows.length == length))
+      // {
+        renderChart(fetchedRows);
+      // }
     });
   };
 
@@ -177,7 +155,7 @@ $(function()
     };
   };
 
-  // can't use d3 .text() because it assumes textContent. mux here for IE.
+  // can't use d3 .text() on html elems because it assumes textContent. mux here for IE.
   var text = function(property)
   {
     if ($.browser.msie && ($.browser.majorVersion < 9))
@@ -196,40 +174,75 @@ $(function()
 
   var renderChart = function(data)
   {
+    // readjust y-axis
+    yScale = d3.scale.linear()
+      .domain([ 0, d3.max(_.map(_.pluck(data, '17360'), function(val) { return parseFloat(val); })) ])
+      .range([ 0, chartHeight ]);
+
     // render actual bars
-    chart.selectAll('.dataBar')
-        .data(data, function(datum) { return datum.id; })
-      .enter().append('div')
-        .attr('class', 'dataBar')
-        .style('left', px(function(d) { return d.index * barWidth - .5 + gutterWidth; }))
-        .style('top', px(function(d) { return chartHeight - yScale(d['17360']); }))
-        .style('height', px(function(d) { return yScale(d['17360']) - 2; }))
-        .style('width', (barWidth - 1) + 'px');
+    var bars = chart.selectAll('.dataBar')
+        .data(data, function(datum) { return datum.id; });
+    bars
+      .enter().append('rect')
+        .classed('dataBar', true)
+        .attr('stroke', '#fff')
+        .attr('fill', '#4682b4')
+        .attr('x', function(d) { return d.index * barWidth - .5 + gutterWidth; })
+        .attr('y', chartHeight)
+        .attr('width', barWidth)
+        .attr('transform', 'S1,-1,0,' + chartHeight);
+
+    bars
+      .attr('height', function(d) { return yScale(d['17360']); });
+
+    bars
+      .exit()
+        .remove();
 
     // render bar labels
-    chart.selectAll('.dataLabel')
-        .data(data, function(datum) { return datum.id; })
-      .enter().append('div')
-        .attr('class', 'dataLabel')
-        .style('left', px(function(d) { return d.index * barWidth + (barWidth / 2) - .5 + gutterWidth - 250; }))
-        .style('top', (chartHeight + 5) + 'px')
-        .append('span')
-          .each(text('17361'));
+    var labelX = function(d) { return d.index * barWidth + (barWidth / 2) - 2.5 + gutterWidth; };
+    var labels = chart.selectAll('.dataLabel')
+        .data(data, function(datum) { return datum.id; });
+    labels
+      .enter().append('text')
+        .classed('dataLabel', true)
+        .attr({ 'x': 0,
+                'y': 0,
+                'text-anchor': 'start',
+                'font-size': 13 })
+        .attr('transform', function(d) { return [ 'r40', 0, 0 ].join(',') + 'T' + labelX(d) + ',' + (chartHeight + 10); });
 
-    // render ticks
-    chartArea.selectAll('.tickLine')
-        .data(yScale.ticks(8))
+    labels
+        .text(function(d) { return d['17361']; });
+
+    labels
+      .exit()
+        .remove();
+
+    // render tick lines
+    var tickLines = chartArea.selectAll('.tickLine')
+        .data(yScale.ticks(8));
+    tickLines
       .enter().append('div')
-        .attr('class', 'tickLine')
+        .attr('class', 'tickLine');
+    tickLines
         .style('top', px(function(d) { return chartHeight - yScale(d); }));
+    tickLines
+      .exit()
+        .remove();
     
-    // render tick
-    chartArea.selectAll('.tickLabel')
-        .data(yScale.ticks(8))
+    // render tick labels
+    var tickLabels = chartArea.selectAll('.tickLabel')
+        .data(yScale.ticks(8));
+    tickLabels
       .enter().append('div')
-        .attr('class', 'tickLabel')
+        .attr('class', 'tickLabel');
+    tickLabels
         .style('top', px(function(d) { return chartHeight - yScale(d); }))
         .each(text());
+    tickLabels
+      .exit()
+        .remove();
   };
 
 });

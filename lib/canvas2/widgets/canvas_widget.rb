@@ -18,12 +18,18 @@ module Canvas2
     end
 
     def context
-      if @properties.has_key?('contextId') && @context.blank?
-        if @properties['contextId'].is_a?(Array)
-          @context = []
-          @properties['contextId'].each {|cId| @context << get_context(cId)}
-        else
-          @context = get_context(@properties['contextId'])
+      if @context.blank? && !@properties.has_key?('context') # Have to handle a failed context
+        if @properties.has_key?('contextId')
+          @context = {temp: 1} # Set here so string_substitute doesn't cause an infinite loop
+          cIds = string_substitute(@properties['contextId'])
+          if cIds.is_a?(Array)
+            @context = []
+            cIds.each {|cId| @context << get_context(cId)}
+          else
+            @context = get_context(cIds)
+          end
+        elsif !self.parent.blank?
+          @context = self.parent.child_context
         end
       end
       @context

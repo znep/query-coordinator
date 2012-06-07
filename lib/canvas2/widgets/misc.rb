@@ -81,7 +81,7 @@ module Canvas2
 
   class Download < CanvasWidget
     def render_contents
-      return ['', true] if context.nil?
+      return ['', true] if context.nil? || context[:dataset].blank?
       t = string_substitute(@properties['text'])
       t = 'Download this data' if t.blank?
       ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +

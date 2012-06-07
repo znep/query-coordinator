@@ -12,11 +12,7 @@ module Canvas2
 
     def children
       return nil unless self.has_children?
-      @children ||= CanvasWidget.from_config(
-        @properties['children'].map do |c|
-          c['contextId'] = @properties['childContextId'] || @properties['contextId'] if c['contextId'].blank?
-          c
-        end, self)
+      @children ||= CanvasWidget.from_config(@properties['children'], self)
     end
 
     def render_contents
@@ -24,6 +20,23 @@ module Canvas2
       threads = children.map {|c| Thread.new { c.render }}
       results = threads.map {|thread| thread.value};
       [results.map {|r| r[0]}.join(''), results.reduce(true) {|memo, r| memo && r[1]}]
+    end
+
+    def child_context
+      if @child_context.blank?
+        if @properties.has_key?('childContextId')
+          ccIds = string_substitute(@properties['childContextId'])
+          if ccIds.is_a?(Array)
+            @child_context = []
+            ccIds.each {|cId| @child_context << get_context(cId)}
+          else
+            @child_context = get_context(ccIds)
+          end
+        else
+          @child_context = self.context
+        end
+      end
+      @child_context
     end
 
   protected

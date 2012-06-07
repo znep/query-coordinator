@@ -38,7 +38,7 @@ module Canvas2
           r = ds.get_rows(1)[:rows][0]
 
           if r.nil?
-            return false if config['required']
+            return false if !config['required']
             break
           end
 
@@ -98,6 +98,7 @@ module Canvas2
       if !config['contextId'].blank?
         context = available_contexts[config['contextId']]
         if !context.blank?
+          return !config['required'] if context[:dataset].blank?
           ds = context[:dataset].deep_clone(View)
         else
           @@pending_contexts ||= {}
@@ -129,4 +130,4 @@ module Canvas2
       ds.data['totalRows'] = ds.get_total_rows if config['getTotal']
     end
   end
-end  
+end

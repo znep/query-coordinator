@@ -82,6 +82,10 @@ module Canvas2
       [t, fully_rendered]
     end
 
+    def child_context
+      nil
+    end
+
   protected
     def add_row(row, index, resolutions = {})
       resolutions['_repeaterIndex'] = index

@@ -50,8 +50,10 @@
 
         toHtml: function()
         {
-            return $.tag({tagName: 'span', 'class': 'cf-property', contentEditable: 'false', draggable: true,
-                'data-propId': this.id, contents: $.htmlEscape(this.property.replace(/.*\./, ''))}, true);
+            return $.tag({ tagName: 'span', 'class': 'cf-property', 'data-propId': this.id,
+                // The stupid, it burns!
+                contentEditable: ($.browser.msie == true).toString(), draggable: true,
+                contents: $.htmlEscape(this.property.replace(/.*\./, '')) }, true);
         },
 
         domHookup: function($node)
@@ -61,25 +63,48 @@
             prop._$node.data('cfProperty', prop);
             infoTipHookup(prop);
 
-            var $contEdit = prop._$node.closest('[contentEditable=true]');
-            prop._$node.bind('mousedown', function() { $contEdit.attr('contentEditable', false); })
-                .bind('mouseup', function() { $contEdit.attr('contentEditable', true); });
+            var $contEdit = prop._$node.parent().closest('[contentEditable=true]');
+            if (!$.browser.msie)
+            {
+                prop._$node.bind('mousedown', function() { $contEdit.attr('contentEditable', false); })
+                    .bind('mouseup', function() { $contEdit.attr('contentEditable', true); });
+            }
             prop._$node.bind('dragstart', function(e)
             {
+                if ($.browser.msie) { prop._$node.data('mouseDownForEdit', false); }
                 prop._$node.socrataTip().hide();
-                e.originalEvent.dataTransfer.setData('text/html',
-                    '<span data-droppedId="' + prop.id + '"></span>');
+                prop._$node.addClass('dragcopy');
+                if (!$.browser.msie)
+                {
+                    // IE doesn't support anything but "Text" or "URL"; but it
+                    // doesn't matter in this case, because it literally copies
+                    // the element and ignores this
+                    e.originalEvent.dataTransfer.setData('text/html',
+                        '<span data-droppedId="' + prop.id + '"></span>');
+                }
                 // Chrome requires copy, or won't do anything on drop
                 e.originalEvent.dataTransfer.effectAllowed = 'copy';
                 // Fixes a bug in Chrome where the drag helper image had a bad offset;
                 // this also makes it a bit more obvious where the insertion cursor is during drag
-                e.originalEvent.dataTransfer.setDragImage(prop._$node[0], 0, 0);
+                if (!$.browser.msie)
+                { e.originalEvent.dataTransfer.setDragImage(prop._$node[0], 0, 0); }
+                else
+                { blist.util.startIEDrag(prop._$node); }
             })
             .bind('dragend', function(e)
             {
+                if ($.browser.msie) { blist.util.finishIEDrag(); }
                 _.defer(function()
                 {
-                    $contEdit.find('[data-droppedid=' + prop.id + ']').replaceWith(prop._$node);
+                    prop._$node.removeClass('dragcopy');
+                    if ($.browser.msie)
+                    {
+                        var $newNode = $contEdit.find('.dragcopy[data-propid=' + prop.id + ']');
+                        if ($newNode.length == 1)
+                        { $newNode.replaceWith(prop._$node); }
+                    }
+                    else
+                    { $contEdit.find('[data-droppedid=' + prop.id + ']').replaceWith(prop._$node); }
                     readjustCanaries($contEdit);
                 });
             });
@@ -91,11 +116,40 @@
 
             prop._$node.bind('delete', function() { prop._$node.remove(); });
 
-            prop._$node.click(function()
+            var doEdit = function()
             {
                 prop._$node.socrataTip().destroy();
                 setTimeout(function() { makeEditable(prop); }, 100);
-            });
+            };
+
+            if ($.browser.msie)
+            {
+                // Don't allow other properties to be dropped in a property
+                prop._$node.bind('dragover drop', function(e)
+                {
+                    e.preventDefault();
+                    return false;
+                });
+
+                // IE wasn't triggering plain clicks on the properties most of the time
+                // (maybe something to do with contentEditable), so hack around it
+                prop._$node.mousedown(function() { prop._$node.data('mouseDownForEdit', true); })
+                .mousemove(function()
+                {
+                    if (prop._$node.data('mouseDownForEdit'))
+                    { prop._$node.data('mouseDownForEdit', false); }
+                })
+                .mouseup(function()
+                {
+                    if (prop._$node.data('mouseDownForEdit'))
+                    {
+                        prop._$node.data('mouseDownForEdit', false);
+                        doEdit();
+                    }
+                });
+            }
+            else
+            { prop._$node.click(doEdit); }
         },
 
         extract: function()
@@ -245,6 +299,28 @@
         infoTipHookup(prop);
     };
 
+    $.cf.Property.newPropertyTagIE = { begin: '[::newProperty|', end: '::]' };
+
+    if ($.browser.msie)
+    {
+        // We don't want users to be able to tab into a property (since contentEditable is true),
+        // so we detect non-mouse selections, and just move the cursor to the end of the actual
+        // contentEditable node
+        $(document).bind('selectionchange', function()
+        {
+            var sel = document.selection;
+            var $item;
+            if (sel.type == 'Control' && ($item = $(sel.createRange().item(0))).hasClass('cf-property') &&
+                !$item.data('mouseDownForEdit'))
+            {
+                var $ce = $item.parent().closest('[contentEditable=true]');
+                var rs = rangy.getSelection();
+                rs.selectAllChildren($ce[0]);
+                rs.collapseToEnd();
+            }
+        });
+    }
+
     $.cf.enhanceProperties = function($node)
     {
         var html = $node.html();
@@ -267,15 +343,16 @@
         {
             _.defer(function()
             {
-                $node.find('[data-droppednewproperty]').quickEach(function()
+                if ($.browser.msie)
                 {
-                    var prop = new $.cf.Property({property: this.attr('data-droppednewproperty'),
-                        fallback: ''});
-                    var $newProp = $(prop.toHtml());
-                    this.replaceWith($newProp);
-                    prop.domHookup($newProp);
                     readjustCanaries($node);
-                });
+                    findNewProperties($node);
+                }
+                else
+                {
+                    $node.find('[data-droppednewproperty]').quickEach(function()
+                    { addNewProperty($node, this.attr('data-droppednewproperty'), this) });
+                }
             });
         });
 
@@ -314,6 +391,41 @@
                 { sel.collapse(sel.anchorNode, 1); }
             }
         });
+    };
+
+    // Special IE hack to find the text that was dropped in and replace it with a real property
+    var findNewProperties = function($curNode)
+    {
+        var npTag = $.cf.Property.newPropertyTagIE;
+        if ($curNode.text().indexOf(npTag.begin) > -1)
+        {
+            $curNode.contents().quickEach(function()
+            {
+                var t = this[0];
+                var tbi, tei;
+                if (t.nodeType == 3 &&
+                    (tbi = t.nodeValue.indexOf(npTag.begin)) > -1 &&
+                    (tei = t.nodeValue.indexOf(npTag.end)) > tbi + npTag.begin.length)
+                {
+                    var newProp = t.splitText(tbi);
+                    newProp.splitText(tei - tbi + npTag.end.length);
+                    addNewProperty($curNode, newProp.nodeValue.slice(npTag.begin.length,
+                        newProp.nodeValue.length - npTag.end.length), $(newProp));
+                }
+                else if (t.nodeType == 1)
+                { findNewProperties(this); }
+            });
+        }
+    };
+
+    // Common things to do to hook up a newly-added property
+    var addNewProperty = function($node, prop, $replaceNode)
+    {
+        var prop = new $.cf.Property({property: prop, fallback: ''});
+        var $newProp = $(prop.toHtml());
+        $replaceNode.replaceWith($newProp);
+        prop.domHookup($newProp);
+        readjustCanaries($node);
     };
 
     var zws = '\u200b';
@@ -393,24 +505,6 @@
             }
         });
     };
-
-//            this.hover(function() { $t.selectText(); });
-//jQuery.fn.selectText = function(){
-//    var doc = document;
-//    var element = this[0];
-//    console.log(this, element);
-//    if (doc.body.createTextRange) {
-//        var range = document.body.createTextRange();
-//        range.moveToElementText(element);
-//        range.select();
-//    } else if (window.getSelection) {
-//        var selection = window.getSelection();
-//        var range = document.createRange();
-//        range.selectNodeContents(element);
-//        selection.removeAllRanges();
-//        selection.addRange(range);
-//    }
-//};
 
     $.cf.extractProperties = function($node)
     {

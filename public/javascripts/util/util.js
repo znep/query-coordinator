@@ -629,6 +629,14 @@ $.jsonIntToFloat = function(integer)
     return integer;
 };
 
+$.clamp = function(number, bounds)
+{
+    // use ternary for perf
+    return number < bounds[0] ? bounds[0] :
+                number > bounds[1] ? bounds[1] :
+                number;
+};
+
 $.fn.tagName = function()
 {
     return this.get(0).tagName.toLowerCase();

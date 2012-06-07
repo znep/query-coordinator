@@ -12,6 +12,13 @@
         'treemap': 'jit'
     };
 
+    if ($.urlParam(window.location.href, 'nextgen') == 'true')
+    {
+        $.extend(chartMapping, {
+            'column': 'd3_impl_column'
+        });
+    }
+
     $.Control.extend('socrataChart', {
         _init: function()
         {

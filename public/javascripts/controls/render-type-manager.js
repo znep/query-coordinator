@@ -7,9 +7,9 @@
             domId: 'calendarRenderType',
             initFunction: 'socrataCalendar',
             javascripts: [{ assets: 'shared-calendar' }],
-            stylesheets: [{assets: 'display-calendar'},
-              '/stylesheets/fullcalendar.css',
-                {assets: 'rich-render-bundle'}],
+            stylesheets: [{ assets: 'display-calendar' },
+                '/stylesheets/fullcalendar.css',
+                { assets: 'rich-render-bundle' }],
             scrollsInline: false
         },
 
@@ -19,7 +19,8 @@
             initFunction: 'socrataChart',
             javascripts: [{ assets: 'shared-chart' }],
             stylesheets: ['/stylesheets/chart-screen.css',
-                { assets: 'rich-render-bundle'}],
+                { assets: 'rich-render-bundle' },
+                { assets: 'display-chart' }],
             scrollsInline: true
         },
 
@@ -40,9 +41,9 @@
             ],
             stylesheets: ['https://serverapi.arcgisonline.com/jsapi/arcgis' +
                 '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
-                {assets: 'render-images-bundle', hasImages: true},
-                {assets: 'display-map'},
-                {assets: 'rich-render-bundle'}],
+                { assets: 'render-images-bundle', hasImages: true },
+                { assets: 'display-map' },
+                { assets: 'rich-render-bundle' }],
             scrollsInline: true
         },
 

@@ -1,0 +1,44 @@
+.chartArea.columnChart
+  height: 100%
+  position: relative
+
+  .chartContainer
+    height: 100%
+    overflow-y: hidden
+    overflow-x: auto
+
+  .baselineContainer
+    background-color: rgba(0, 0, 0, 0.05)
+    cursor: move
+    cursor: ns-resize
+    margin-top: -2px
+    padding: 2px 0
+    position: absolute
+    top: -1px
+    width: 100%
+    z-index: 2
+
+    &:hover
+      background-color: rgba(0, 0, 0, 0.25)
+
+    .baselineLine
+      background-color: #000
+      height: 1px
+      width: 100%
+
+  .tickLine
+    background-color: #ccc
+    height: 1px
+    left: 0
+    @include opacity(0.7)
+    position: absolute
+    width: 100%
+    z-index: 1
+
+  .tickLabel
+    background-color: rgba(247, 247, 247, 0.7)
+    font-size: 1.2em
+    margin-top: -1em
+    padding: 0 0.3em
+    position: absolute
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8)

@@ -98,6 +98,8 @@ display-form:
 display-map:
 - screen-map
 - openlayers
+display-chart:
+- charts
 dataset-new:
 - screen-dataset-new
 dataset-show:

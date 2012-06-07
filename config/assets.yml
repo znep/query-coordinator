@@ -187,15 +187,9 @@ javascripts:
     - public/javascripts/controls/charts/base-chart.js
     - public/javascripts/controls/charts/highcharts.js
     - public/javascripts/controls/charts/jit.js
-  shared-new-chart:
-    - public/javascripts/plugins/vis/raphael.js
-    - public/javascripts/plugins/vis/d3.v2.js
-    - public/javascripts/plugins/vis/ie8compat.js
-    - public/javascripts/controls/panes/chart-config.js
-    - public/javascripts/controls/base-visualization.js
-    - public/javascripts/controls/rich-render-library.js
-    - public/javascripts/controls/charts/base-chart.js
-    - public/javascripts/controls/charts/d3.js
+    - public/javascripts/controls/charts/d3-impl/d3.base.js
+    - public/javascripts/controls/charts/d3-impl/d3.base.dynamic.js
+    - public/javascripts/controls/charts/d3-impl/d3.impl.column.js
   shared-richRenderers:
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
@@ -508,6 +502,10 @@ javascripts:
     - public/javascripts/plugins/highcharts.src.js
   jit:
     - public/javascripts/plugins/jit.js
+  d3:
+    - public/javascripts/plugins/vis/raphael.js
+    - public/javascripts/plugins/vis/d3.v2.js
+    - public/javascripts/plugins/vis/ie8compat.js
   excanvas:
     - public/javascripts/plugins/excanvas.compiled.js
   bgiframe:
@@ -538,6 +536,7 @@ dump:
     - content-editable
     - highcharts
     - jit
+    - d3
     - unified-filter
     - base-control
     - shared-editors

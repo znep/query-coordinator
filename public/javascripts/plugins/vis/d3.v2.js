@@ -5328,6 +5328,20 @@ d3_raphael_selectionPrototype.datum = d3_selectionPrototype.datum;
  */
 d3_raphael_selectionPrototype.remove = d3_selectionPrototype.remove;
 
+/**
+ * Starts a transition selection. TODO: finish this docu.
+ *
+ */
+d3_raphael_selectionPrototype.transition = function() {
+  // again, minor hack to sub out the dependency we want to inject.
+  var old_d3_transitionPrototype = d3_transitionPrototype;
+  d3_transitionPrototype = d3_raphael_transitionPrototype;
+  var transition = d3_selectionPrototype.transition.call(this);
+  d3_transitionPrototype = old_d3_transitionPrototype;
+
+  return transition;
+};
+
 
 d3_raphael_selectionPrototype.style = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.html = throw_raphael_not_supported;
@@ -5336,7 +5350,6 @@ d3_raphael_selectionPrototype.filter = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.sort = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.order = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.on = throw_raphael_not_supported;
-d3_raphael_selectionPrototype.transition = throw_raphael_not_supported;
 function d3_raphael_enterSelection(groups, d3_raphael_root) {
     d3_arraySubclass(groups, d3_raphael_enterSelectionPrototype);
     groups.root = d3_raphael_root;
@@ -5410,6 +5423,25 @@ d3_raphael_enterSelectionPrototype.node = d3_selectionPrototype.node;
 
 d3_raphael_enterSelectionPrototype.insert = throw_raphael_not_supported;
 
+var d3_raphael_transitionPrototype = [];
+
+d3_raphael_transitionPrototype.attr = d3_transitionPrototype.attr;
+
+d3_raphael_transitionPrototype.attrTween = function(name, tween) {
+    function attrTween(d, i) {
+        var f = tween.call(this, d, i, this.attr(name));
+        return f === d3_transitionRemove
+            ? (this.attr(name, null), null)
+            : f && function(t) { this.attr(name, f(t)); };
+    }
+
+    return this.tween('attr.' + name, attrTween);
+};
+
+d3_raphael_transitionPrototype.duration = d3_transitionPrototype.duration;
+
+d3_raphael_transitionPrototype.select = throw_raphael_not_supported;
+d3_raphael_transitionPrototype.selectAll = throw_raphael_not_supported;
 
 
 /**

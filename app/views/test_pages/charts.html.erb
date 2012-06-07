@@ -66,7 +66,7 @@ $(function()
   var chart = d3.raphael(raphaelPaper);
   var chartArea = d3.select('.chartArea');
   var $chartArea = $('.chartArea');
-  var yScale;
+  var oldYScale, yScale;
 
   var renderHeight = 800;
   var chartHeight = 600;
@@ -105,10 +105,6 @@ $(function()
       .addClass('chartArea')
       .width($('.chartContainer').width())
       .height(renderHeight);
-
-    // yScale = d3.scale.linear()
-    //   .domain([ 0, max ])
-    //   .range([ 0, chartHeight ]);
 
     // kick off data fetch
     checkRowRenderRange();
@@ -179,6 +175,10 @@ $(function()
       .domain([ 0, d3.max(_.map(_.pluck(data, '17360'), function(val) { return parseFloat(val); })) ])
       .range([ 0, chartHeight ]);
 
+    // init prev y-axis
+    if (!oldYScale)
+      oldYScale = yScale;
+
     // render actual bars
     var bars = chart.selectAll('.dataBar')
         .data(data, function(datum) { return datum.id; });
@@ -190,11 +190,12 @@ $(function()
         .attr('x', function(d) { return d.index * barWidth - .5 + gutterWidth; })
         .attr('y', chartHeight)
         .attr('width', barWidth)
+        .attr('height', function(d) { return oldYScale(d['17360']); })
         .attr('transform', 'S1,-1,0,' + chartHeight);
-
     bars
-      .attr('height', function(d) { return yScale(d['17360']); });
-
+      .transition()
+        .duration(1000)
+        .attr('height', function(d) { return yScale(d['17360']); });
     bars
       .exit()
         .remove();
@@ -221,11 +222,14 @@ $(function()
 
     // render tick lines
     var tickLines = chartArea.selectAll('.tickLine')
-        .data(yScale.ticks(8));
+        .data(yScale.ticks(8), function(val) { return val; });
     tickLines
       .enter().append('div')
-        .attr('class', 'tickLine');
+        .attr('class', 'tickLine')
+        .style('top', px(function(d) { return chartHeight - oldYScale(d); }));;
     tickLines
+      .transition()
+        .duration(1000)
         .style('top', px(function(d) { return chartHeight - yScale(d); }));
     tickLines
       .exit()
@@ -233,16 +237,22 @@ $(function()
     
     // render tick labels
     var tickLabels = chartArea.selectAll('.tickLabel')
-        .data(yScale.ticks(8));
+        .data(yScale.ticks(8), function(val) { return val; });
     tickLabels
       .enter().append('div')
-        .attr('class', 'tickLabel');
+        .attr('class', 'tickLabel')
+        .style('top', px(function(d) { return chartHeight - oldYScale(d); }));
     tickLabels
-        .style('top', px(function(d) { return chartHeight - yScale(d); }))
-        .each(text());
+        .each(text())
+      .transition()
+        .duration(1000)
+        .style('top', px(function(d) { return chartHeight - yScale(d); }));
     tickLabels
       .exit()
         .remove();
+
+    // update old y-scale for anim init on next cycle
+    oldYScale = yScale;
   };
 
 });

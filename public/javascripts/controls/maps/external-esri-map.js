@@ -250,6 +250,8 @@
                 viewConfig._identifyParameters.geometry = geometry;
                 viewConfig._identifyParameters.mapExtent = extent;
                 viewConfig._identifyParameters.layerDefinitions = layerDefs;
+                viewConfig._identifyParameters.tolerance
+                    = Math.floor(viewConfig._identifyParameters.tolerance);
 
                 lonlat.lat -= offsetLat;
                 mapObj.showPopup(lonlat, 'Loading...');

@@ -2090,7 +2090,7 @@
             if (!mapObj._popup) { return; }
 
             var feature = mapObj._markers[mapObj._popup.dupKey];
-            if (feature.attributes.rows && feature.layer)
+            if (feature && feature.attributes.rows && feature.layer)
             { feature.layer.dataView.unhighlightRows(feature.attributes.rows, 'select'); }
 
             mapObj.map.removePopup(mapObj._popup);

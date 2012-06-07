@@ -365,10 +365,11 @@
         },
 
         // Override child move to wrap child in extra div
-        _moveChildDom: function(child) {
-            if (!child._initialized)
-                child._initDom();
-            if (!child.wrapper) {
+        _moveChildDom: function(child)
+        {
+            if (!child._initialized) { child._initDom(); }
+            if (!child.wrapper)
+            {
                 var $w = child.$dom.parent('.component-wrapper');
                 if ($w.length < 1)
                 {
@@ -390,19 +391,26 @@
             { this._$clear.parent()[0].insertBefore(child.$wrapper[0], this._$clear[0]); }
             else if (!$.isBlank(this.$ct))
             { this.$ct[0].appendChild(child.$wrapper[0]); }
-            if (child.$wrapper.parent().length > 0 &&
-                    this._rendered && !child._rendered)
-                child._render();
+            if (child.$wrapper.parent().length > 0 && this._rendered && !child._rendered)
+            { child._render(); }
+
+            var cObj = this;
+            child.bind('shown', function() { cObj._arrange(); }, this);
+            child.bind('hidden', function() { cObj._arrange(); }, this);
+
             this._arrange();
         },
 
         // Override child remove to 1.) unwrap child, and 2.) update layout
-        _removeChildDom: function(child) {
-            if (child.$wrapper) {
+        _removeChildDom: function(child)
+        {
+            if (child.$wrapper)
+            {
                 child.$wrapper.remove();
                 delete child.wrapper;
                 delete child.$wrapper;
             }
+            child.unbind(null, null, this);
             this._arrange();
         },
 
@@ -414,12 +422,17 @@
             if (this._initialized)
             { this.$contents.toggleClass('inlineDisplay', !!this._properties.inlineDisplay); }
 
+            var visibleChildren = [];
             var totalWeight = 0;
-            if (!this._properties.inlineDisplay)
-            { this.each(function(child) { totalWeight += child.properties().weight || 1; }); }
+            this.each(function(child)
+            {
+                if (child._isHidden) { return; }
+                visibleChildren.push(child);
+                totalWeight += child.properties().weight || 1;
+            });
 
             var pos = 0;
-            this.each(function(child)
+            _.each(visibleChildren, function(child)
             {
                 var isWrapped = $.subKeyDefined(child, '$wrapper');
                 if (cObj._properties.inlineDisplay)
@@ -442,9 +455,10 @@
 
             this._super();
 
-            if (this.first) {
+            if (visibleChildren.length > 0)
+            {
                 $(this.dom).children('first-child').removeClass('first-child');
-                $(this.first.wrapper).addClass('first-child');
+                $(_.first(visibleChildren).wrapper).addClass('first-child');
             }
         }
     });

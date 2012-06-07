@@ -43,6 +43,11 @@ module Canvas2
       Util.string_substitute(text, special_resolver || resolver)
     end
 
+    def is_hidden
+      @properties['hidden'] || @properties['requiresContext'] && context.blank? ||
+        @properties['ifValue'] && !eval_if(@properties['ifValue'])
+    end
+
     def eval_if(if_value)
       [if_value].flatten.all? do |v|
         r = !string_substitute('{' + (v['key'] || v) + ' ||}').blank?
@@ -57,9 +62,6 @@ module Canvas2
       html_class = render_classes + ' ' +
         string_substitute(@properties['htmlClass'].is_a?(Array) ?
                           @properties['htmlClass'].join(' ') : @properties['htmlClass'])
-
-      is_hidden = @properties['hidden'] || @properties['requiresContext'] && context.blank? ||
-        @properties['ifValue'] && !eval_if(@properties['ifValue'])
 
       classes = ['socrata-component', "component-#{@properties['type']}"]
       classes << 'hide' if is_hidden

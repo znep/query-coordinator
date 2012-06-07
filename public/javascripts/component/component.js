@@ -11,7 +11,8 @@
             var cObj = this;
             cObj._super.apply(this, arguments);
             cObj._eventKeys = {};
-            cObj.registerEvent({'start_loading': [], 'finish_loading': [], 'update_properties': []});
+            cObj.registerEvent({ 'start_loading': [], 'finish_loading': [], 'update_properties': [],
+                'shown': [], 'hidden': [] });
 
             cObj._updateProperties(properties);
             cObj.id = cObj._properties.id;
@@ -496,11 +497,13 @@
         _shown: function()
         {
             // Called when component is shown after being hidden
+            this.trigger('shown');
         },
 
         _hidden: function()
         {
             // Called when component is hidden after being shown
+            this.trigger('hidden');
         },
 
         /**

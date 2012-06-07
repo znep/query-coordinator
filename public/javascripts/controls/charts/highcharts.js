@@ -301,7 +301,7 @@
         {
             var chartObj = this;
             if ($.isBlank(chartObj.chart) || chartObj._isLoading) { return; }
-            // Defer because Highcharts  also catches the resize, and gets confused if
+            // Defer because Highcharts  also catches window resize, and gets confused if
             // it is in the middle of a reload
             _.defer(function()
             {
@@ -311,6 +311,8 @@
                         && chartObj._chartType == 'column'
                         && chartObj.$dom().parents('.tickerLayoutChildren').length > 0)
                 { chartObj.reload(); }
+                else
+                { chartObj.chart.setSize(chartObj.$dom().width(), chartObj.$dom().height()); }
             });
         },
 

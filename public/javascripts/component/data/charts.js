@@ -49,6 +49,12 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
             { this.$contents.trigger('hide'); }
         },
 
+        _arrange: function()
+        {
+            this._super();
+            this.$contents.trigger('resize');
+        },
+
         _render: function()
         {
             var lcObj = this;

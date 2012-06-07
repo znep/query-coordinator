@@ -7,22 +7,12 @@ var Column = ServerModel.extend({
 
         $.extend(this, c);
 
+        // Calls _setUpColumn & updateChildColumns
         this.setParent(parent);
-
-        if (this.dataTypeName == 'nested_table')
-        {
-            // This ID really shouldn't be changing; if it does, this URL
-            // will be out-of-date...
-            var selfUrl = '/views/' + this.view.id + '/columns/' + this.id;
-            Column.addProperties(this, ColumnContainer('childColumn',
-                    selfUrl + '.json', selfUrl + '/sub_columns'), Column.prototype);
-        }
-
-        this._setUpColumn();
 
         this.aggregates = {};
 
-        this.updateChildColumns();
+        $.extend(this._cloneExclude, {_ntInit: true});
     },
 
     baseUrl: function()
@@ -206,6 +196,10 @@ var Column = ServerModel.extend({
         }
         else // if (parent instanceof Dataset) // NOTE: if this ever becomes not the case, fixme for Node
         { this.view = parent; }
+
+        this._setUpColumn();
+
+        this.updateChildColumns();
     },
 
     filter: function(value, subColumnType, operator)
@@ -341,6 +335,16 @@ var Column = ServerModel.extend({
             $.isBlank(((this.view.query || {}).namedFilters ||
                 {})['col' + this.id]))
         { delete this.currentFilter; }
+
+        if (this.dataTypeName == 'nested_table' && !this._ntInit && !$.isBlank(this.view))
+        {
+            // This ID really shouldn't be changing; if it does, this URL
+            // will be out-of-date...
+            var selfUrl = '/views/' + this.view.id + '/columns/' + this.id;
+            Column.addProperties(this, ColumnContainer('childColumn',
+                    selfUrl + '.json', selfUrl + '/sub_columns'), Column.prototype);
+            this._ntInit = true;
+        }
     },
 
     updateChildColumns: function()

@@ -4790,7 +4790,8 @@ if(typeof Raphael !== "undefined") {
             this.node.className = d3_raphael_addClassesToClassName(this.node.className, addClass);
         }
     }
-}if(typeof Raphael !== "undefined") {
+}
+if(typeof Raphael !== "undefined") {
     // adds a Raphael custom attribute "d" which maps to "path"
     // in d3/svg, the definition of a path is specified via attribute "d",
     // in raphael, it's specified via attribute "path".
@@ -4884,62 +4885,25 @@ var D3RaphaelRoot = function(paper) {
 /**
  * Performs a select on the elements in the Raphael paper.
  *
- * @param {String} type raphael selector string (currently limited to a Raphael primitive type name, ie: rect, circle, ellipse, text, and path)
+ * @param {String} raphael selector string; supports primitive type name and css classes.
  * @return {D3RaphaelSelection}
  * @private
  * @version Internal; Subject to change
  */
 D3RaphaelRoot.prototype.select = function(s) {
-    return d3_raphael_selection([d3_raphael_selector(s, this, true)], this);
+    return d3_raphael_selection([d3_raphael_type_selector(s, this, true)], this)
 };
 
 /**
  * Performs a selectAll on the elements in the Raphael paper.
  *
- * @param {String} type raphael selector string (currently limited to a Raphael primitive type name, ie: rect, circle, ellipse, text, and path)
+ * @param {String} raphael selector string; supports primitive type name and css classes.
  * @return {D3RaphaelSelection}
  * @private
  */
 D3RaphaelRoot.prototype.selectAll = function(s) {
-    return d3_raphael_selection([d3_raphael_selector(s, this, false)], this);
+    return d3_raphael_selection([d3_raphael_type_selector(s, this, false)], this)
 };
-
-// clint.tseng@socrata.com 2012/05/31:
-// Prefer Sizzle, if available
-if (typeof Sizzle === "function") {
-    console.info("Using sizzle for d34r!");
-
-    var d3_raphael_obj_from_dom = function(domElems, d3_paper) {
-        // don't do a paper.getById for every elem because that's n^2.
-        // traverse the linked list ourselves. still m+n, but oh well.
-
-        var elemCount = domElems.length;
-
-        // but first build an index of ids we're looking for
-        var domElemIndex = {};
-        for (var i = -1; ++i < elemCount;) { // mbostock has weird ideas about for loop syntax
-            var domElem = domElems[i];
-            domElemIndex[domElem.raphaelid] = true;
-        }
-
-        var raphaelElems = [];
-        var bot = d3_paper.paper.bottom;
-        while (bot && (raphaelElems.length < elemCount)) {
-            if (domElemIndex[bot.id]) {
-                raphaelElems.push(bot);
-            }
-            bot = bot.next;
-        }
-        return raphaelElems;
-    };
-
-    D3RaphaelRoot.prototype.select = function(s) {
-        return d3_raphael_selection([d3_raphael_obj_from_dom(Sizzle(s, this.paper.canvas)[0], this)], this);
-    };
-    D3RaphaelRoot.prototype.selectAll = function(s) {
-        return d3_raphael_selection([d3_raphael_obj_from_dom(Sizzle.uniqueSort(Sizzle(s, this.paper.canvas)), this)], this);
-    };
-}
 
 /**
  * Creates a Raphael paper primitive object.
@@ -4973,7 +4937,8 @@ for(var i = 0; i < d3_raphael_paperDelegateMethods.length; i++) {
     var method_name = d3_raphael_paperDelegateMethods[i];
 
     D3RaphaelRoot.prototype[method_name] = d3_raphael_rootToPaperDelegate(method_name);
-};var d3_raphael_selection = function(groups, d3_raphael_root) {
+};
+var d3_raphael_selection = function(groups, d3_raphael_root) {
     d3_arraySubclass(groups, d3_raphael_selectionPrototype);
     groups.root = d3_raphael_root;
 
@@ -5195,8 +5160,7 @@ d3_raphael_selectionPrototype.text = function(value) {
  * (like in d3).  Thus, every call to <code>select</code> searches on all elements in the paper, regardless of the
  * existing content of the selection. <br />
  * <br />
- * NOTE: Currently, the selector string is limited in features.  Right now, you can only specify the Raphael primitive
- * type name you want to select, no other selector strings are supported (like css class name).
+ * NOTE: Currently, the selector string supports only element type and class names.
  *
  * @see <a href="https://github.com/mbostock/d3/wiki/Selections#wiki-d3_select">d3.select()</a>
  * @see d3_raphael_paperShapes for a list of supported primitive types
@@ -5207,8 +5171,8 @@ d3_raphael_selectionPrototype.text = function(value) {
  * @function
  * @name D3RaphaelSelection#select
  */
-d3_raphael_selectionPrototype.select = function(type) {
-    return this.root.select(type);
+d3_raphael_selectionPrototype.select = function(s) {
+    return this.root.select(s);
 };
 
 /**
@@ -5220,8 +5184,7 @@ d3_raphael_selectionPrototype.select = function(type) {
  * (like in d3).  Thus, every call to <code>select</code> searches on all elements in the paper, regardless of the
  * existing content of the selection. <br />
  * <br />
- * NOTE: Currently, the selector string is limited in features.  Right now, you can only specify the Raphael primitive
- * type name you want to select, no other selector strings are supported (like css class name).
+ * NOTE: Currently, the selector string supports only element type and class names.
  *
  * @see <a href="https://github.com/mbostock/d3/wiki/Selections#wiki-d3_selectAll">d3.selectAll()</a>
  * @see d3_raphael_paperShapes for a list of supported primitive types
@@ -5232,8 +5195,8 @@ d3_raphael_selectionPrototype.select = function(type) {
  * @function
  * @name D3RaphaelSelection#selectAll
  */
-d3_raphael_selectionPrototype.selectAll = function(type) {
-    return this.root.selectAll(type);
+d3_raphael_selectionPrototype.selectAll = function(s) {
+    return this.root.selectAll(s);
 };
 
 
@@ -5329,19 +5292,22 @@ d3_raphael_selectionPrototype.datum = d3_selectionPrototype.datum;
 d3_raphael_selectionPrototype.remove = d3_selectionPrototype.remove;
 
 /**
- * Starts a transition selection. TODO: finish this docu.
+ * Starts a transition selection.
  *
+ * @return {D3RaphaelTransitionSelection} transition selection
+ *
+ * @function
+ * @name D3RaphaelSelection#transition
  */
 d3_raphael_selectionPrototype.transition = function() {
-  // again, minor hack to sub out the dependency we want to inject.
-  var old_d3_transitionPrototype = d3_transitionPrototype;
-  d3_transitionPrototype = d3_raphael_transitionPrototype;
-  var transition = d3_selectionPrototype.transition.call(this);
-  d3_transitionPrototype = old_d3_transitionPrototype;
+    // minor hack to sub out the dependency we want to inject.
+    var old_d3_transitionPrototype = d3_transitionPrototype;
+    d3_transitionPrototype = d3_raphael_transitionPrototype;
+    var transition = d3_selectionPrototype.transition.call(this);
+    d3_transitionPrototype = old_d3_transitionPrototype;
 
-  return transition;
+    return transition;
 };
-
 
 d3_raphael_selectionPrototype.style = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.html = throw_raphael_not_supported;
@@ -5350,6 +5316,7 @@ d3_raphael_selectionPrototype.filter = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.sort = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.order = throw_raphael_not_supported;
 d3_raphael_selectionPrototype.on = throw_raphael_not_supported;
+
 function d3_raphael_enterSelection(groups, d3_raphael_root) {
     d3_arraySubclass(groups, d3_raphael_enterSelectionPrototype);
     groups.root = d3_raphael_root;
@@ -5423,8 +5390,21 @@ d3_raphael_enterSelectionPrototype.node = d3_selectionPrototype.node;
 
 d3_raphael_enterSelectionPrototype.insert = throw_raphael_not_supported;
 
+
+
 var d3_raphael_transitionPrototype = [];
 
+/**
+ * Specifies an attribute to be animated.
+ *
+ * @see <a href="https://github.com/mbostock/d3/wiki/Selections#wiki-attr">d3.selection.attr()</a>
+ * @param {String} name property name
+ * @param value property value
+ * @return {D3RaphaelTransitionSelection} this
+ *
+ * @function
+ * @name D3RaphaelTransitionSelection#attr
+ */
 d3_raphael_transitionPrototype.attr = d3_transitionPrototype.attr;
 
 d3_raphael_transitionPrototype.attrTween = function(name, tween) {
@@ -5438,11 +5418,107 @@ d3_raphael_transitionPrototype.attrTween = function(name, tween) {
     return this.tween('attr.' + name, attrTween);
 };
 
+/**
+ * Specifies an amount of time to delay before transitioning.
+ *
+ * @see <a href="https://github.com/mbostock/d3/wiki/Transition#wiki-delay">transition.delay()</a>
+ * @param value delay in ms
+ * @return {D3RaphaelTransitionSelection} this
+ *
+ * @function
+ * @name D3RaphaelTransitionSelection#delay
+ */
+d3_raphael_transitionPrototype.delay = d3_transitionPrototype.duration;
+
+/**
+ * Specifies a duration for the transition.
+ *
+ * @see <a href="https://github.com/mbostock/d3/wiki/Transition#wiki-duration">transition.duration()</a>
+ * @param value length in ms
+ * @return {D3RaphaelTransitionSelection} this
+ *
+ * @function
+ * @name D3RaphaelTransitionSelection#duration
+ */
 d3_raphael_transitionPrototype.duration = d3_transitionPrototype.duration;
 
+/**
+ * Specifies a transition easing function.
+ *
+ * @see <a href="https://github.com/mbostock/d3/wiki/Transition#wiki-ease">transition.ease()</a>
+ * @param value string or function
+ * @return {D3RaphaelTransitionSelection} this
+ *
+ * @function
+ * @name D3RaphaelTransitionSelection#ease
+ */
+d3_raphael_transitionPrototype.duration = d3_transitionPrototype.duration;
+
+/**
+ * Sets the text content when the transition begins.
+ *
+ * @see <a href="https://github.com/mbostock/d3/wiki/Selections#wiki-text">d3.selection.text()</a>
+ * @param value property value
+ * @return {D3RaphaelTransitionSelection} this
+ *
+ * @function
+ * @name D3RaphaelTransitionSelection#text
+ */
+d3_raphael_transitionPrototype.text = d3_raphael_selectionPrototype.text;
+
+/**
+ * Removes elements after transitions are completed.
+ *
+ * @see <a href="https://github.com/mbostock/d3/wiki/Transition#wiki-remove">transition.remove()</a>
+ * @return {D3RaphaelTransitionSelection} this
+ *
+ * @function
+ * @name D3RaphaelTransitionSelection#remove
+ */
+d3_raphael_transitionPrototype.remove = d3_transitionPrototype.remove;
+
+d3_raphael_transitionPrototype.style = throw_raphael_not_supported;
+d3_raphael_transitionPrototype.styleTween = throw_raphael_not_supported;
 d3_raphael_transitionPrototype.select = throw_raphael_not_supported;
 d3_raphael_transitionPrototype.selectAll = throw_raphael_not_supported;
 
+// Prefer Sizzle, if available
+if (typeof Sizzle === "function") {
+
+    // lookup to translate dom nodes to raphael objs
+    var d3_raphael_obj_from_dom = function(domElems, d3_paper) {
+        // don't do a paper.getById for every elem because that's n^2.
+        // traverse the linked list ourselves. still m+n, but oh well.
+
+        var elemCount = domElems.length;
+
+        // but first build an index of ids we're looking for
+        var domElemIndex = {};
+        for (var i = -1; ++i < elemCount;) {
+            var domElem = domElems[i];
+            domElemIndex[domElem.raphaelid] = true;
+        }
+
+        var raphaelElems = [];
+        var bot = d3_paper.paper.bottom;
+        while (bot && (raphaelElems.length < elemCount)) {
+            if (domElemIndex[bot.id]) {
+                raphaelElems.push(bot);
+            }
+            bot = bot.next;
+        }
+        return raphaelElems;
+    };
+
+    // override root functions
+    D3RaphaelRoot.prototype.select = function(s) {
+        return d3_raphael_selection([d3_raphael_obj_from_dom(Sizzle(s, this.paper.canvas)[0], this)], this);
+    };
+    D3RaphaelRoot.prototype.selectAll = function(s) {
+        return d3_raphael_selection([d3_raphael_obj_from_dom(Sizzle.uniqueSort(Sizzle(s, this.paper.canvas)), this)], this);
+    };
+
+}
 
 /**
  * Constructs a Raphael axis renderer function.
@@ -5619,6 +5695,17 @@ d3.raphael.axis = function() {
     axis.orient = function(x) {
         if (!arguments.length) return orient;
         orient = x;
+        return axis;
+    };
+
+    /**
+     * TODO document
+     *
+     * @return {*}
+     */
+    axis.ticks = function() {
+        if (!arguments.length) return tickArguments_;
+        tickArguments_ = arguments;
         return axis;
     };
 

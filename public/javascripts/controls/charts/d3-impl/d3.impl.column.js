@@ -313,7 +313,7 @@ $.Control.registerMixin('d3_impl_column', {
             .exit()
                 .remove();
 
-        vizObj._renderTicks(oldYScale, newYScale);
+        vizObj._renderTicks(oldYScale, newYScale, true);
 
         // save off our yScale
         cc.yScale = newYScale;
@@ -335,10 +335,10 @@ $.Control.registerMixin('d3_impl_column', {
         cc.chartD3.selectAll('.seriesLabel')
                 .attr('transform', function(d) { return 'r40,0,0T' + seriesLabelX(d) + ',' + (yAxisPos + 10); });
 
-        vizObj._renderTicks(yScale, yScale);
+        vizObj._renderTicks(yScale, yScale, false);
     },
 
-    _renderTicks: function(oldYScale, newYScale)
+    _renderTicks: function(oldYScale, newYScale, isAnim)
     {
         var vizObj = this,
             cc = vizObj._columnChart,
@@ -358,7 +358,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .style('top', function(d) { return (yAxisPos - oldYScale(d)) + 'px'; });
         tickLines
             .transition()
-                .duration(1000)
+                .duration(isAnim ? 0 : 1000)
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLines
             .exit()
@@ -375,7 +375,7 @@ $.Control.registerMixin('d3_impl_column', {
         tickLabels
                 .each(vizObj.d3.util.text())
             .transition()
-                .duration(1000)
+                .duration(isAnim ? 0 : 1000)
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLabels
             .exit()

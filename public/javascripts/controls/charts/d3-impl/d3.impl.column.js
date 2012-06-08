@@ -26,9 +26,26 @@ $.Control.registerMixin('d3_impl_column', {
         cc.chartD3 = d3.raphael(cc.chartRaphael);
         cc.chromeD3 = d3.select(cc.$chartArea.get(0));
 
-        // wire up our one event
+        // maybe grab rows every half second when they're scrolling
         var throttledRerender = _.throttle(function() { vizObj.getDataForAllViews(); }, 500);
         cc.$chartContainer.scroll(throttledRerender);
+
+        // allow the baseline to be draggable
+        var throttledResize = _.throttle(function() { vizObj.resizeHandle(); }); // TODO: this is more blunt than we need
+        cc.$baselineContainer.draggable({
+            axis: 'y',
+            containment: 'parent', // TODO: bounded containment on viewport change
+            drag: function(event, ui)
+            {
+                vizObj.settings.valueLabelBuffer = cc.$chartArea.height() - ui.position.top;
+                console.log(vizObj.settings.valueLabelBuffer);
+                throttledResize();
+                // TODO: save off the valueLabelBuffer as a minor change on displayFormat?
+            },
+            scroll: false,
+            start: function() { cc._isDragging = true; },
+            stop: function() { cc._isDragging = false; }
+        });
 
         // super
         vizObj._super();
@@ -99,7 +116,7 @@ $.Control.registerMixin('d3_impl_column', {
             // we have for the new viewport, then kick off a refetch to make
             // sure we have all the data we need
             vizObj._resizeEverything();
-            vizObj._rerenderViewport();
+            vizObj._rerenderAxis();
             vizObj.getDataForAllViews();
         }
     },
@@ -262,8 +279,8 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('x', function(d) { return (d.index * cc.seriesWidth) +
                             (seriesIndex * (cc.barWidth + cc.barSpacing)) - 0.5; })
                     .attr('height', function(d) { return oldYScale(d[col.id]); })
-                    .on('mouseover', function(d) { view.highlightRows(d, null, col); })
-                    .on('mouseout', function(d) { view.unhighlightRows(d); });
+                    .on('mouseover', function(d) { if (!cc._isDragging) view.highlightRows(d, null, col); })
+                    .on('mouseout', function(d) { if (!cc._isDragging) view.unhighlightRows(d); });
             bars
                     .attr('fill', vizObj.d3.util.colorizeRow(colDef))
                 .transition()
@@ -302,8 +319,8 @@ $.Control.registerMixin('d3_impl_column', {
         cc.yScale = newYScale;
     },
 
-    // call this if the viewport changed
-    _rerenderViewport: function()
+    // call this if the yAxisPos has changed
+    _rerenderAxis: function()
     {
         var vizObj = this,
             cc = vizObj._columnChart,

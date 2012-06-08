@@ -122,6 +122,7 @@
             }
 
             view.displayFormat.viewport = cpObj._view.displayFormat.viewport;
+            view.displayFormat.compositeMembers = cpObj._view.displayFormat.compositeMembers;
 
             cpObj._view.update(view);
 

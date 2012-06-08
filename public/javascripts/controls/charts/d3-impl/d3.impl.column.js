@@ -93,9 +93,14 @@ $.Control.registerMixin('d3_impl_column', {
 
         // if we don't have totalRows yet then the sizing will be taken care
         // of shortly anyway, so only resize otherwise
-        if (!$.isBlank(vizObj._primaryView.totalRows()))
+        if (!$.isBlank(vizObj._columnChart.maxValue))
         {
+            // first resize the chart at large, then rerender whatever data
+            // we have for the new viewport, then kick off a refetch to make
+            // sure we have all the data we need
             vizObj._resizeEverything();
+            vizObj._rerenderViewport();
+            vizObj.getDataForAllViews();
         }
     },
 
@@ -205,12 +210,12 @@ $.Control.registerMixin('d3_impl_column', {
         return vizObj._columnChart.$chartArea.height() - vizObj.settings.valueLabelBuffer;
     },
 
-    // calculates a y scale
-    _yScale: function(maxValue)
+    // calculates a y scale based on the current set of data
+    _currentYScale: function()
     {
         var vizObj = this;
         return d3.scale.linear()
-                .domain([ 0, maxValue ])
+                .domain([ 0, vizObj._columnChart.maxValue ])
                 .range([ 0, vizObj._yAxisPos() - vizObj.settings.dataMaxBuffer ]);
     },
 
@@ -231,7 +236,7 @@ $.Control.registerMixin('d3_impl_column', {
 
         // set up our scales. oldYScale is used to init bars so they appear
         // in the old spot and transitions are less jarring.
-        var newYScale = vizObj._yScale(maxValue);
+        var newYScale = vizObj._currentYScale();
         var oldYScale = cc.yScale || newYScale;
 
         // render our bars per series
@@ -252,7 +257,8 @@ $.Control.registerMixin('d3_impl_column', {
                             fill: colDef.color,
                             y: yAxisPos - 0.5,
                             width: cc.barWidth,
-                            transform: 'S1,-1,0,' + yAxisPos })
+                            transform: 'S1,-1,0,' + yAxisPos,
+                            'data-accessor': col.id })
                     .attr('x', function(d) { return (d.index * cc.seriesWidth) +
                             (seriesIndex * (cc.barWidth + cc.barSpacing)) - 0.5; })
                     .attr('height', function(d) { return oldYScale(d[col.id]); })
@@ -290,10 +296,41 @@ $.Control.registerMixin('d3_impl_column', {
             .exit()
                 .remove();
 
+        vizObj._renderTicks(oldYScale, newYScale);
+
+        // save off our yScale
+        cc.yScale = newYScale;
+    },
+
+    // call this if the viewport changed
+    _rerenderViewport: function()
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            data = cc.currentData,
+            yScale = vizObj._currentYScale(),
+            yAxisPos = vizObj._yAxisPos();
+
+        cc.chartD3.selectAll('.dataBar')
+                .attr({ y: yAxisPos - 0.5,
+                        transform: 'S1,-1,0,' + yAxisPos });
+        var seriesLabelX = function(d) { return d.index * cc.seriesWidth + (cc.seriesWidth / 2) - 3.5 };
+        cc.chartD3.selectAll('.seriesLabel')
+                .attr('transform', function(d) { return 'r40,0,0T' + seriesLabelX(d) + ',' + (yAxisPos + 10); });
+
+        vizObj._renderTicks(yScale, yScale);
+    },
+
+    _renderTicks: function(oldYScale, newYScale)
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            yAxisPos = vizObj._yAxisPos();
+
         // TODO: rendering lines and labels is awful similar. fix?
 
         // render our tick lines
-        // TODO: right now we assume 8 ticks is right. we should probably actuall
+        // TODO: right now we assume 8 ticks is right. we should probably actually
         // calculate based on the chart height
         var tickLines = cc.chromeD3.selectAll('.tickLine')
             // we use the value rather than the index to make transitions more constant
@@ -326,9 +363,6 @@ $.Control.registerMixin('d3_impl_column', {
         tickLabels
             .exit()
                 .remove();
-
-        // save off our yScale
-        cc.yScale = newYScale;
     }
 }, {
     barWidthBounds: [ 20, 200 ], // width of the bar, of course

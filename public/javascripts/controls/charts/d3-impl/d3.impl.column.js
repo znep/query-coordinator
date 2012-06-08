@@ -2,6 +2,15 @@
 {
 
 $.Control.registerMixin('d3_impl_column', {
+    defaults: {
+        barWidthBounds: [ 20, 200 ], // width of the bar, of course
+        barSpacingBounds: [ 0, 20 ], // within series spacing
+        seriesSpacingBounds: [ 10, 80 ], // between series (row) spacing
+        rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
+        valueLabelBuffer: 200, // amount of room to leave for each series' label
+        dataMaxBuffer: 30 // amount of room to leave in actual chart area past the max bar
+    },
+
     initializeVisualization: function()
     {
         var vizObj = this;
@@ -30,6 +39,15 @@ $.Control.registerMixin('d3_impl_column', {
         var throttledRerender = _.throttle(function() { vizObj.getDataForAllViews(); }, 500);
         cc.$chartContainer.scroll(throttledRerender);
 
+        // save off a throttled version of the actual meat of resizeHandle with a proper
+        // reference to this/vizObj (is there a better way to do this?)
+        cc.doResizeHandle = _.throttle(function()
+        {
+            vizObj._resizeEverything();
+            vizObj._rerenderAxis();
+            vizObj.getDataForAllViews();
+        }, 500);
+
         // allow the baseline to be draggable
         var throttledResize = _.throttle(function() { vizObj.resizeHandle(); }); // TODO: this is more blunt than we need
         cc.$baselineContainer.draggable({
@@ -37,8 +55,8 @@ $.Control.registerMixin('d3_impl_column', {
             containment: 'parent', // TODO: bounded containment on viewport change
             drag: function(event, ui)
             {
-                vizObj.settings.valueLabelBuffer = cc.$chartArea.height() - ui.position.top;
-                console.log(vizObj.settings.valueLabelBuffer);
+                vizObj.defaults.valueLabelBuffer = cc.$chartArea.height() - ui.position.top;
+                console.log(vizObj.defaults.valueLabelBuffer);
                 throttledResize();
                 // TODO: save off the valueLabelBuffer as a minor change on displayFormat?
             },
@@ -98,8 +116,8 @@ $.Control.registerMixin('d3_impl_column', {
               .domain([ 0, cc.chartWidth - cc.$chartArea.width() ])
               .range([ 0, vizObj._primaryView.totalRows() ]);
 
-        var start = Math.max(Math.floor(screenScaling(cc.$chartContainer.scrollLeft())) - vizObj.settings.rowBuffer, 0);
-        var length = Math.ceil(cc.$chartArea.width() / cc.seriesWidth) + vizObj.settings.rowBuffer;
+        var start = Math.max(Math.floor(screenScaling(cc.$chartContainer.scrollLeft())) - vizObj.defaults.rowBuffer, 0);
+        var length = Math.ceil(cc.$chartArea.width() / cc.seriesWidth) + vizObj.defaults.rowBuffer;
 
         return { start: start, length: length };
     },
@@ -112,12 +130,7 @@ $.Control.registerMixin('d3_impl_column', {
         // of shortly anyway, so only resize otherwise
         if (!$.isBlank(vizObj._columnChart.maxValue))
         {
-            // first resize the chart at large, then rerender whatever data
-            // we have for the new viewport, then kick off a refetch to make
-            // sure we have all the data we need
-            vizObj._resizeEverything();
-            vizObj._rerenderAxis();
-            vizObj.getDataForAllViews();
+            vizObj._columnChart.doResizeHandle();
         }
     },
 
@@ -125,7 +138,7 @@ $.Control.registerMixin('d3_impl_column', {
     {
         var vizObj = this,
             view = vizObj._primaryView,
-            settings = vizObj.settings,
+            defaults = vizObj.defaults,
             cc = vizObj._columnChart,
             chartD3 = cc.chartD3,
             totalRows = view.totalRows();
@@ -145,16 +158,16 @@ $.Control.registerMixin('d3_impl_column', {
         // to collapse together
         if (vizObj._valueColumns.length === 1)
         {
-            settings.seriesSpacingBounds[0] = 0;
+            defaults.seriesSpacingBounds[0] = 0;
         }
 
         // assume no side padding to begin with
         cc.sidePadding = 0;
 
         // assume minimum possible width
-        cc.barWidth = settings.barWidthBounds[0];
-        cc.barSpacing = settings.barSpacingBounds[0];
-        cc.seriesSpacing = settings.seriesSpacingBounds[0];
+        cc.barWidth = defaults.barWidthBounds[0];
+        cc.barSpacing = defaults.barSpacingBounds[0];
+        cc.seriesSpacing = defaults.seriesSpacingBounds[0];
 
         var minTotalWidth = calculateTotalWidth();
         if (minTotalWidth > cc.$chartArea.width())
@@ -173,9 +186,9 @@ $.Control.registerMixin('d3_impl_column', {
 
             // okay, we're smaller than we need to be.
             // calculate maximum possible width instead.
-            cc.barWidth = settings.barWidthBounds[1];
-            cc.barSpacing = settings.barSpacingBounds[1];
-            cc.seriesSpacing = settings.seriesSpacingBounds[1];
+            cc.barWidth = defaults.barWidthBounds[1];
+            cc.barSpacing = defaults.barSpacingBounds[1];
+            cc.seriesSpacing = defaults.seriesSpacingBounds[1];
 
             var maxTotalWidth = calculateTotalWidth();
             if (maxTotalWidth < cc.$chartArea.width())
@@ -194,19 +207,19 @@ $.Control.registerMixin('d3_impl_column', {
                 // had to relearn algebra to do it... so it's probably all
                 // fucked.
                 var numerator = cc.$chartArea.width() -
-                                    (totalRows * settings.barWidthBounds[0]) -
-                                    ((totalRows - 1) * settings.barSpacingBounds[0]) -
-                                    settings.seriesSpacingBounds[0];
-                var denominator = (totalRows * (settings.barWidthBounds[1] - settings.barWidthBounds[0])) +
-                                    ((totalRows - 1) * (settings.barSpacingBounds[1] - settings.barSpacingBounds[0])) +
-                                    (settings.seriesSpacingBounds[1] - settings.seriesSpacingBounds[0]);
+                                    (totalRows * defaults.barWidthBounds[0]) -
+                                    ((totalRows - 1) * defaults.barSpacingBounds[0]) -
+                                    defaults.seriesSpacingBounds[0];
+                var denominator = (totalRows * (defaults.barWidthBounds[1] - defaults.barWidthBounds[0])) +
+                                    ((totalRows - 1) * (defaults.barSpacingBounds[1] - defaults.barSpacingBounds[0])) +
+                                    (defaults.seriesSpacingBounds[1] - defaults.seriesSpacingBounds[0]);
                 var scalingFactor = numerator / denominator;
 
                 // now do the actual scaling
                 var scale = function(bounds) { return ((bounds[1] - bounds[0]) * scalingFactor) + bounds[0]; }
-                cc.barWidth = scale(settings.barWidthBounds);
-                cc.barSpacing = scale(settings.barSpacingBounds);
-                cc.seriesSpacing = scale(settings.seriesSpacingBounds);
+                cc.barWidth = scale(defaults.barWidthBounds);
+                cc.barSpacing = scale(defaults.barSpacingBounds);
+                cc.seriesSpacing = scale(defaults.seriesSpacingBounds);
             }
         }
 
@@ -224,7 +237,7 @@ $.Control.registerMixin('d3_impl_column', {
     _yAxisPos: function()
     {
         var vizObj = this;
-        return vizObj._columnChart.$chartArea.height() - vizObj.settings.valueLabelBuffer;
+        return vizObj._columnChart.$chartArea.height() - vizObj.defaults.valueLabelBuffer;
     },
 
     // calculates a y scale based on the current set of data
@@ -233,7 +246,7 @@ $.Control.registerMixin('d3_impl_column', {
         var vizObj = this;
         return d3.scale.linear()
                 .domain([ 0, vizObj._columnChart.maxValue ])
-                .range([ 0, vizObj._yAxisPos() - vizObj.settings.dataMaxBuffer ]);
+                .range([ 0, vizObj._yAxisPos() - vizObj.defaults.dataMaxBuffer ]);
     },
 
     // call this if the active set of data has changed
@@ -241,7 +254,7 @@ $.Control.registerMixin('d3_impl_column', {
     {
         var vizObj = this,
             cc = vizObj._columnChart,
-            settings = vizObj.settings,
+            defaults = vizObj.defaults,
             data = cc.currentData,
             valueColumns = vizObj._valueColumns,
             $chartArea = cc.$chartArea
@@ -381,13 +394,6 @@ $.Control.registerMixin('d3_impl_column', {
             .exit()
                 .remove();
     }
-}, {
-    barWidthBounds: [ 20, 200 ], // width of the bar, of course
-    barSpacingBounds: [ 0, 20 ], // within series spacing
-    seriesSpacingBounds: [ 10, 80 ], // between series (row) spacing
-    rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
-    valueLabelBuffer: 200, // amount of room to leave for each series' label
-    dataMaxBuffer: 30 // amount of room to leave in actual chart area past the max bar
-}, 'socrataChart', [ 'd3_base', 'd3_base_dynamic' ]);
+}, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic' ]);
 
 })(jQuery);

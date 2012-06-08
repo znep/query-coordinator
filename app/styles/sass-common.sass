@@ -288,6 +288,12 @@ $row_zebra_color: #f6f6f6
     &:after
       display: inline
 
+@mixin no-pointer-events
+  pointer-events: none
+  .ie7 &, .ie8 &
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='empty.gif', sizingMethod='scale')
+    background: none !important
+
 @mixin drag-handle
   background-image: url(/stylesheets/images/interface/drag_handle.png)
   cursor: move

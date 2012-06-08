@@ -34,10 +34,35 @@ $.Control.registerMixin('d3_impl_column', {
         vizObj._super();
     },
 
+    cleanVisualization: function()
+    {
+        var vizObj = this;
+
+        delete vizObj._columnChart;
+
+        vizObj._super();
+    },
+
     renderData: function(data)
     {
         var vizObj = this;
+
+        // save off data
         vizObj._columnChart.currentData = data;
+
+        // precalculate some stuff
+        // figure out the max value for this slice
+        var allValues = _.reduce(data, function(values, row)
+        {
+            return values.concat(_.map(vizObj._valueColumns, function(colDef)
+            {
+                var col = colDef.column,
+                    rawValue = row[col.id];
+                return col.dataType.matchValue ? col.dataType.matchValue(rawValue) : rawValue;
+            }));
+        }, []);
+        vizObj._columnChart.maxValue = d3.max(allValues); // cache off maxValue for other renders
+
         vizObj._renderData();
     },
 
@@ -166,7 +191,7 @@ $.Control.registerMixin('d3_impl_column', {
         // for convenience later, precalculate the series (row) width
         cc.seriesWidth = calculateRowWidth();
 
-        // set margin 
+        // set margin
         cc.$chartContainer.css('margin-bottom', vizObj.$dom().height() * -1);
 
         // move baseline
@@ -197,22 +222,12 @@ $.Control.registerMixin('d3_impl_column', {
             settings = vizObj.settings,
             data = cc.currentData,
             valueColumns = vizObj._valueColumns,
-            $chartArea = cc.$chartArea;
+            $chartArea = cc.$chartArea
+            maxValue = cc.maxValue,
+            view = vizObj._primaryView;
 
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
-
-        // first figure out the max value for this slice
-        var allValues = _.reduce(data, function(values, row)
-        {
-            return values.concat(_.map(valueColumns, function(colDef)
-            {
-                var col = colDef.column,
-                    rawValue = row[col.id];
-                return col.dataType.matchValue ? col.dataType.matchValue(rawValue) : rawValue;
-            }));
-        }, []);
-        var maxValue = cc.maxValue = d3.max(allValues); // cache off maxValue for other renders
 
         // set up our scales. oldYScale is used to init bars so they appear
         // in the old spot and transitions are less jarring.
@@ -228,7 +243,7 @@ $.Control.registerMixin('d3_impl_column', {
             var seriesClass = 'dataBar_series' + col.id;
 
             var bars = cc.chartD3.selectAll('.' + seriesClass)
-                .data(data, function(row) { return col.id + ':' + row.id });
+                .data(data, function(row) { return row.id; });
             bars
                 .enter().append('rect')
                     .classed('dataBar', true)
@@ -240,14 +255,17 @@ $.Control.registerMixin('d3_impl_column', {
                             transform: 'S1,-1,0,' + yAxisPos })
                     .attr('x', function(d) { return (d.index * cc.seriesWidth) +
                             (seriesIndex * (cc.barWidth + cc.barSpacing)) - 0.5; })
-                    .attr('height', function(d) { return oldYScale(d[col.id]); });
+                    .attr('height', function(d) { return oldYScale(d[col.id]); })
+                    .on('mouseover', function(d) { view.highlightRows(d, null, col); })
+                    .on('mouseout', function(d) { view.unhighlightRows(d); });
             bars
+                    .attr('fill', vizObj.d3.util.colorizeRow(colDef))
                 .transition()
                     .duration(1000)
                     .attr('height', function(d) { return newYScale(d[col.id]); });
             bars
                 .exit()
-                    .remove()
+                    .remove();
         });
 
         // render our labels per row
@@ -266,10 +284,8 @@ $.Control.registerMixin('d3_impl_column', {
                 // TODO: make a transform-builder rather than doing this concat
                 // 10 is to bump the text off from the actual axis
                 .attr('transform', function(d) { return 'r40,0,0T' + seriesLabelX(d) + ',' + (yAxisPos + 10); });
-        // HACK?: directly using first fixed column here. why are there others?
-        // cartesian grouping?
         seriesLabels
-            .text(function(d) { return d[vizObj._fixedColumns[0].id]; });
+            .text(function(d) { return d[vizObj._fixedColumns[0].id]; }); // WHY IS THIS AN ARRAY
         seriesLabels
             .exit()
                 .remove();
@@ -313,8 +329,6 @@ $.Control.registerMixin('d3_impl_column', {
 
         // save off our yScale
         cc.yScale = newYScale;
-
-        console.log('render complete.');
     }
 }, {
     barWidthBounds: [ 20, 200 ], // width of the bar, of course

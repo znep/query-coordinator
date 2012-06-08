@@ -9,7 +9,6 @@ $.Control.registerMixin('d3_base_dynamic', {
     getDataForView: function(view)
     {
         var vizObj = this;
-        var viewConfig = vizObj._byView[view.id];
 
         var renderRange;
         if ($.isBlank(view.totalRows()))
@@ -27,7 +26,7 @@ $.Control.registerMixin('d3_base_dynamic', {
         vizObj._lastRowCount = view.totalRows();
         vizObj._currentRenderRange = renderRange; // keep track of what row set we care about at the moment
 
-        var rangeData = []; // aggregate all the callbacks we get for this range into one array
+        vizObj._currentRangeData = {}; // aggregate all the callbacks we get for this range into one array
 
         view.getRows(renderRange.start, renderRange.length, function(data)
         {
@@ -47,9 +46,8 @@ $.Control.registerMixin('d3_base_dynamic', {
                 _.defer(function() { vizObj.getDataForView(view) });
             }
 
-            rangeData = rangeData.concat(data);
             vizObj._lastRowCount = view.totalRows();
-            _.defer(function() { vizObj.handleRowsLoaded(rangeData, view); });
+            _.defer(function() { vizObj.handleRowsLoaded(data, view); });
 
             delete vizObj._initialLoad;
             delete vizObj._loadDelay;
@@ -71,6 +69,21 @@ $.Control.registerMixin('d3_base_dynamic', {
             }
             else if (vizObj._boundViewEvents) { delete vizObj._initialLoad; }
         });
+    },
+
+    handleRowsLoaded: function(data, view)
+    {
+        // handleRowsLoaded gets some weird call abuse with random subsections
+        // of the data. so, maintain our current slice and just update into our
+        // full visible set where appropriate
+        var vizObj = this;
+
+        _.each(data, function(row)
+        {
+            vizObj._currentRangeData[row.id] = row;
+        });
+
+        vizObj._super(_.values(vizObj._currentRangeData), view);
     },
 
     getRenderRange: function(view)

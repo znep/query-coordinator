@@ -24,6 +24,22 @@ $.Control.registerMixin('d3_base', {
                         this.textContent = (property ? d[property] : d);
                     };
                 }
+            },
+
+            colorizeRow: function(colDef)
+            {
+                return function(d)
+                {
+                    if (d.sessionMeta && d.sessionMeta.highlight &&
+                        (!d.sessionMeta.highlightColumn || (d.sessionMeta.highlightColumn == colDef.column.id)))
+                    {
+                        return '#' + $.rgbToHex($.brighten(colDef.color, -20)); // why the fuck does brighten darken
+                    }
+                    else
+                    {
+                        return colDef.color;
+                    }
+                };
             }
         }
     }

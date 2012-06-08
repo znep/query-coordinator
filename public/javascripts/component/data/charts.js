@@ -31,7 +31,7 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
         {
             return {
                 javascripts: [{ assets: 'shared-chart' }],
-                stylesheets: ['/stylesheets/chart-screen.css', {assets: 'rich-render-bundle'}]
+                stylesheets: ['/stylesheets/chart-screen.css', {assets: 'rich-render-bundle'}, { assets: 'display-chart' }]
             };
         },
 

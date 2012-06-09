@@ -5,7 +5,8 @@ $.Control.registerMixin('d3_impl_column', {
     defaults: {
         barWidthBounds: [ 20, 200 ], // width of the bar, of course
         barSpacingBounds: [ 0, 20 ], // within series spacing
-        seriesSpacingBounds: [ 10, 80 ], // between series (row) spacing
+        seriesSpacingBounds: [ 10, 100 ], // between series (row) spacing
+        sidePaddingBounds: [ 40, 200 ], // sides of window
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
         valueLabelBuffer: 200, // amount of room to leave for each series' label
         dataMaxBuffer: 30 // amount of room to leave in actual chart area past the max bar
@@ -43,8 +44,9 @@ $.Control.registerMixin('d3_impl_column', {
         // reference to this/vizObj (is there a better way to do this?)
         cc.doResizeHandle = _.throttle(function()
         {
-            vizObj._resizeEverything();
+            var needsReposition = vizObj._resizeEverything();
             vizObj._rerenderAxis();
+            if (needsReposition) vizObj._rerenderPositions();
             vizObj.getDataForAllViews();
         }, 500);
 
@@ -141,7 +143,12 @@ $.Control.registerMixin('d3_impl_column', {
             defaults = vizObj.defaults,
             cc = vizObj._columnChart,
             chartD3 = cc.chartD3,
-            totalRows = view.totalRows();
+            totalRows = view.totalRows(),
+            chartAreaWidth = cc.$chartArea.width(),
+            numSeries = vizObj._valueColumns.length;
+
+        // save off old series width for comparison later (see below)
+        var oldSeriesWidth = cc.seriesWidth;
 
         var calculateRowWidth = function()
         {
@@ -156,21 +163,19 @@ $.Control.registerMixin('d3_impl_column', {
 
         // if we only have one series, allow all the bars
         // to collapse together
-        if (vizObj._valueColumns.length === 1)
+        if (numSeries === 1)
         {
             defaults.seriesSpacingBounds[0] = 0;
         }
-
-        // assume no side padding to begin with
-        cc.sidePadding = 0;
 
         // assume minimum possible width
         cc.barWidth = defaults.barWidthBounds[0];
         cc.barSpacing = defaults.barSpacingBounds[0];
         cc.seriesSpacing = defaults.seriesSpacingBounds[0];
+        cc.sidePadding = defaults.sidePaddingBounds[0];
 
         var minTotalWidth = calculateTotalWidth();
-        if (minTotalWidth > cc.$chartArea.width())
+        if (minTotalWidth > chartAreaWidth)
         {
             // we're bigger than we need to be. set the render area size
             // to be what we calculated.
@@ -180,22 +185,22 @@ $.Control.registerMixin('d3_impl_column', {
         else
         {
             // set our sizing to equal vis area
-            var domWidth = vizObj.$dom().width();
-            cc.chartRaphael.setSize(vizObj.$dom().height(), domWidth);
-            cc.chartWidth = domWidth;
+            cc.chartRaphael.setSize(chartAreaWidth, vizObj.$dom().height());
+            cc.chartWidth = chartAreaWidth;
 
             // okay, we're smaller than we need to be.
             // calculate maximum possible width instead.
             cc.barWidth = defaults.barWidthBounds[1];
             cc.barSpacing = defaults.barSpacingBounds[1];
             cc.seriesSpacing = defaults.seriesSpacingBounds[1];
+            // don't bother calculating sidepadding here, just use minimum and see what's up
 
             var maxTotalWidth = calculateTotalWidth();
-            if (maxTotalWidth < cc.$chartArea.width())
+            if (maxTotalWidth < chartAreaWidth)
             {
                 // okay, then use those values and add side padding for
                 // the difference
-                cc.sidepadding = (cc.$chartArea.width() - maxTotalWidth) / 2;
+                cc.sidePadding = (chartAreaWidth - maxTotalWidth) / 2;
             }
             else
             {
@@ -206,20 +211,30 @@ $.Control.registerMixin('d3_impl_column', {
                 // this... is the result of a bunch of algebra i did. i
                 // had to relearn algebra to do it... so it's probably all
                 // fucked.
-                var numerator = cc.$chartArea.width() -
-                                    (totalRows * defaults.barWidthBounds[0]) -
-                                    ((totalRows - 1) * defaults.barSpacingBounds[0]) -
-                                    defaults.seriesSpacingBounds[0];
-                var denominator = (totalRows * (defaults.barWidthBounds[1] - defaults.barWidthBounds[0])) +
-                                    ((totalRows - 1) * (defaults.barSpacingBounds[1] - defaults.barSpacingBounds[0])) +
-                                    (defaults.seriesSpacingBounds[1] - defaults.seriesSpacingBounds[0]);
-                var scalingFactor = numerator / denominator;
+                var numerator = chartAreaWidth +
+                                totalRows * (numSeries * (-defaults.barWidthBounds[0] -
+                                                           defaults.barSpacingBounds[0]) +
+                                             defaults.barSpacingBounds[0] -
+                                             defaults.seriesSpacingBounds[0]) -
+                                2 * defaults.sidePaddingBounds[0];
+                var denominator = totalRows * (numSeries * (defaults.barWidthBounds[1] -
+                                                            defaults.barWidthBounds[0] +
+                                                            defaults.barSpacingBounds[1] -
+                                                            defaults.barSpacingBounds[0]) -
+                                               defaults.barSpacingBounds[1] +
+                                               defaults.barSpacingBounds[0] +
+                                               defaults.seriesSpacingBounds[1] -
+                                               defaults.seriesSpacingBounds[0]) +
+                                  2 * (defaults.sidePaddingBounds[1] -
+                                       defaults.sidePaddingBounds[0]);
+                var scalingFactor = 1.0 * numerator / denominator;
 
                 // now do the actual scaling
                 var scale = function(bounds) { return ((bounds[1] - bounds[0]) * scalingFactor) + bounds[0]; }
                 cc.barWidth = scale(defaults.barWidthBounds);
                 cc.barSpacing = scale(defaults.barSpacingBounds);
                 cc.seriesSpacing = scale(defaults.seriesSpacingBounds);
+                cc.sidePadding = scale(defaults.sidePaddingBounds);
             }
         }
 
@@ -231,6 +246,10 @@ $.Control.registerMixin('d3_impl_column', {
 
         // move baseline
         cc.$baselineContainer.css('top', vizObj._yAxisPos());
+
+        // return whether our series width has changed, so we know
+        // if we'll have to move some things around
+        return (oldSeriesWidth != cc.seriesWidth)
     },
 
     // calculates value axis position
@@ -289,9 +308,9 @@ $.Control.registerMixin('d3_impl_column', {
                             width: cc.barWidth,
                             transform: 'S1,-1,0,' + yAxisPos,
                             'data-accessor': col.id })
-                    .attr('x', function(d) { return (d.index * cc.seriesWidth) +
-                            (seriesIndex * (cc.barWidth + cc.barSpacing)) - 0.5; })
+                    .attr('x', vizObj._xBarPosition(seriesIndex))
                     .attr('height', function(d) { return oldYScale(d[col.id]); })
+                    // don't mousey on dragging because event/renderspam breaks charts
                     .on('mouseover', function(d) { if (!cc._isDragging) view.highlightRows(d, null, col); })
                     .on('mouseout', function(d) { if (!cc._isDragging) view.unhighlightRows(d); });
             bars
@@ -307,7 +326,6 @@ $.Control.registerMixin('d3_impl_column', {
         // render our labels per row
         // 3.5 is a somewhat arbitrary number to bring the label's center rather than
         // baseline closer to the series' center
-        var seriesLabelX = function(d) { return d.index * cc.seriesWidth + (cc.seriesWidth / 2) - 3.5 };
         var seriesLabels = cc.chartD3.selectAll('.seriesLabel')
             .data(data, function(row) { return row.id; });
         seriesLabels
@@ -319,8 +337,9 @@ $.Control.registerMixin('d3_impl_column', {
                         'font-size': 13 })
                 // TODO: make a transform-builder rather than doing this concat
                 // 10 is to bump the text off from the actual axis
-                .attr('transform', function(d) { return 'r40,0,0T' + seriesLabelX(d) + ',' + (yAxisPos + 10); });
+                .attr('transform', function(d) { return 'r40,0,0T' + vizObj._xLabelPosition(d) + ',' + (yAxisPos + 10); });
         seriesLabels
+            .attr('font-weight', function(d) { return (d.sessionMeta && d.sessionMeta.highlight) ? 'bold' : 'normal'; })
             .text(function(d) { return d[vizObj._fixedColumns[0].id]; }); // WHY IS THIS AN ARRAY
         seriesLabels
             .exit()
@@ -333,6 +352,7 @@ $.Control.registerMixin('d3_impl_column', {
     },
 
     // call this if the yAxisPos has changed
+    // you'll also need to call _renderData to make the dataBars the correct height
     _rerenderAxis: function()
     {
         var vizObj = this,
@@ -344,13 +364,32 @@ $.Control.registerMixin('d3_impl_column', {
         cc.chartD3.selectAll('.dataBar')
                 .attr({ y: yAxisPos - 0.5,
                         transform: 'S1,-1,0,' + yAxisPos });
-        var seriesLabelX = function(d) { return d.index * cc.seriesWidth + (cc.seriesWidth / 2) - 3.5 };
         cc.chartD3.selectAll('.seriesLabel')
-                .attr('transform', function(d) { return 'r40,0,0T' + seriesLabelX(d) + ',' + (yAxisPos + 10); });
+                .attr('transform', function(d) { return 'r40,0,0T' + vizObj._xLabelPosition(d) + ',' + (yAxisPos + 10); });
 
         vizObj._renderTicks(yScale, yScale, false);
     },
 
+    // call this if spacings/widths changed
+    _rerenderPositions: function()
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            valueColumns = vizObj._valueColumns,
+            yAxisPos = vizObj._yAxisPos();
+
+        // render our bars per series
+        _.each(valueColumns, function(colDef, seriesIndex)
+        {
+            var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.id)
+                    .attr('width', cc.barWidth)
+                    .attr('x', vizObj._xBarPosition(seriesIndex));
+        });
+        cc.chartD3.selectAll('.seriesLabel')
+                .attr('transform', function(d) { return 'r40,0,0T' + vizObj._xLabelPosition(d) + ',' + (yAxisPos + 10); });
+    },
+
+    // renders tick lines in general
     _renderTicks: function(oldYScale, newYScale, isAnim)
     {
         var vizObj = this,
@@ -393,6 +432,27 @@ $.Control.registerMixin('d3_impl_column', {
         tickLabels
             .exit()
                 .remove();
+    },
+
+    _xBarPosition: function(seriesIndex)
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart;
+
+        return function(d)
+        {
+            return cc.sidePadding + (d.index * cc.seriesWidth) +
+                (seriesIndex * (cc.barWidth + cc.barSpacing)) - 0.5;
+        };
+    },
+
+    _xLabelPosition: function(d)
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart;
+
+        return cc.sidePadding + d.index * cc.seriesWidth +
+               ((cc.seriesWidth - cc.seriesSpacing) / 2) - 3.5;
     }
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic' ]);
 

@@ -77,7 +77,7 @@
     }
 
     // prototype defs to make CSSStyleDeclaration sane in ie8-
-    if (CSSStyleDeclaration)
+    if (typeof CSSStyleDeclaration !== 'undefined')
     {
         if (!_.isFunction(CSSStyleDeclaration.prototype.getProperty))
         {

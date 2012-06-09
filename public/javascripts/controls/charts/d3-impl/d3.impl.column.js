@@ -403,6 +403,8 @@ $.Control.registerMixin('d3_impl_column', {
             cc = vizObj._columnChart,
             yAxisPos = vizObj._yAxisPos();
 
+        var idealTickCount = cc.$chartArea.height() / 80;
+
         // TODO: rendering lines and labels is awful similar. fix?
 
         // render our tick lines
@@ -410,7 +412,7 @@ $.Control.registerMixin('d3_impl_column', {
         // calculate based on the chart height
         var tickLines = cc.chromeD3.selectAll('.tickLine')
             // we use the value rather than the index to make transitions more constant
-            .data(oldYScale.ticks(8), function(val) { return val; });
+            .data(oldYScale.ticks(idealTickCount), function(val) { return val; });
         tickLines
             .enter().append('div')
                 .classed('tickLine', true)
@@ -426,7 +428,7 @@ $.Control.registerMixin('d3_impl_column', {
         // render our tick labels
         var tickLabels = cc.chromeD3.selectAll('.tickLabel')
             // we use the value rather than the index to make transitions more constant
-            .data(oldYScale.ticks(8), function(val) { return val; });
+            .data(oldYScale.ticks(idealTickCount), function(val) { return val; });
         tickLabels
             .enter().append('div')
                 .classed('tickLabel', true)

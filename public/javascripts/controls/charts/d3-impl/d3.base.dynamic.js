@@ -4,6 +4,15 @@
 // dynamic/slice loading isn't really something that base-visualization
 // accounts for. here we mangle it a bit to make it do what we want.
 $.Control.registerMixin('d3_base_dynamic', {
+
+    // need to have columns accessible to us for our code to work
+    initializeVisualization: function()
+    {
+        var vizObj = this;
+        vizObj.getColumns();
+        vizObj._super();
+    },
+
     // getDataForView normally just fetches up to _maxRows rows and dumps them
     // all on the renderer. we need to be gentler.
     getDataForView: function(view)
@@ -11,16 +20,26 @@ $.Control.registerMixin('d3_base_dynamic', {
         var vizObj = this;
 
         var renderRange;
-        if ($.isBlank(view.totalRows()))
+        if (vizObj._dynamicSizingCalculated === true)
+        {
+            renderRange = vizObj.getRenderRange(view);
+        }
+        else if (!$.isBlank(view.totalRows()))
+        {
+            // we haven't calculated our sizing stuff, but on the other hand
+            // someone's already went and gotten the total row count for us.
+            // recalculate and use.
+            vizObj.handleRowCountChange();
+            vizObj._dynamicSizingCalculated = true;
+
+            renderRange = vizObj.getRenderRange(view);
+        }
+        else
         {
             // we don't know the total row count, so let the system do
             // its first row fetch and then we'll be able to use that.
             // ask for 50 anyway for good measure
             renderRange = { start: 0, length: 50 };
-        }
-        else
-        {
-            renderRange = vizObj.getRenderRange(view);
         }
 
         vizObj._lastRowCount = view.totalRows();
@@ -38,6 +57,7 @@ $.Control.registerMixin('d3_base_dynamic', {
             if (vizObj._lastRowCount !== view.totalRows())
             {
                 vizObj.handleRowCountChange();
+                vizObj._dynamicSizingCalculated = true;
             }
             if ($.isBlank(vizObj._lastRowCount))
             {

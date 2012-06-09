@@ -128,6 +128,13 @@ $.Control.registerMixin('d3_impl_column', {
     {
         var vizObj = this;
 
+        if (!vizObj._columnChart)
+        {
+            // we haven't loaded yet but are being told to resize. init load
+            // will size correctly anyway then so whatev.
+            return;
+        }
+
         // if we don't have totalRows yet then the sizing will be taken care
         // of shortly anyway, so only resize otherwise
         if (!$.isBlank(vizObj._columnChart.maxValue))

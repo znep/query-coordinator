@@ -51,14 +51,13 @@ $.Control.registerMixin('d3_impl_column', {
         }, 500);
 
         // allow the baseline to be draggable
-        var throttledResize = _.throttle(function() { vizObj.resizeHandle(); }); // TODO: this is more blunt than we need
+        var throttledResize = _.throttle(function() { vizObj.resizeHandle(); }, 500); // TODO: this is more blunt than we need
         cc.$baselineContainer.draggable({
             axis: 'y',
             containment: 'parent', // TODO: bounded containment on viewport change
             drag: function(event, ui)
             {
                 vizObj.defaults.valueLabelBuffer = cc.$chartArea.height() - ui.position.top;
-                console.log(vizObj.defaults.valueLabelBuffer);
                 throttledResize();
                 // TODO: save off the valueLabelBuffer as a minor change on displayFormat?
             },
@@ -319,7 +318,12 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('height', function(d) { return oldYScale(d[col.id]); })
                     // don't mousey on dragging because event/renderspam breaks charts
                     .on('mouseover', function(d) { if (!cc._isDragging) view.highlightRows(d, null, col); })
-                    .on('mouseout', function(d) { if (!cc._isDragging) view.unhighlightRows(d); });
+                    .on('mouseout', function(d)
+                    {
+                        // for perf, only call unhighlight if highlighted.
+                        if (!cc._isDragging && d.sessionMeta && d.sessionMeta.highlight)
+                            view.unhighlightRows(d);
+                    });
             bars
                     .attr('fill', vizObj.d3.util.colorizeRow(colDef))
                 .transition()
@@ -419,7 +423,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .style('top', function(d) { return (yAxisPos - oldYScale(d)) + 'px'; });
         tickLines
             .transition()
-                .duration(isAnim ? 0 : 1000)
+                .duration(isAnim ? 1000 : 0)
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLines
             .exit()
@@ -436,7 +440,7 @@ $.Control.registerMixin('d3_impl_column', {
         tickLabels
                 .each(vizObj.d3.util.text())
             .transition()
-                .duration(isAnim ? 0 : 1000)
+                .duration(isAnim ? 1000 : 0)
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLabels
             .exit()

@@ -13,6 +13,14 @@ $.Control.registerMixin('d3_base_dynamic', {
         vizObj._super();
     },
 
+    // clear out our flag
+    cleanVisualization: function()
+    {
+        var vizObj = this;
+        delete vizObj._dynamicSizingCalculated;
+        vizObj._super();
+    },
+
     // getDataForView normally just fetches up to _maxRows rows and dumps them
     // all on the renderer. we need to be gentler.
     getDataForView: function(view)

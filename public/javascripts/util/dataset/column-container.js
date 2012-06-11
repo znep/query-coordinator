@@ -118,7 +118,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        cont.sendBatch(columnsRemoved);
+        ServerModel.sendBatch(columnsRemoved);
     };
 
     // defines: setVisibleColumns, setVisibleChildColumns
@@ -186,7 +186,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                     data: JSON.stringify(item), batch: true});
             }
 
-            cont.sendBatch(function()
+            ServerModel.sendBatch(function()
             {
                 if (_.isFunction(callback)) { callback(); }
             });

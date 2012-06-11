@@ -790,7 +790,7 @@ var Dataset = ServerModel.extend({
         ds._aggregatesStale = true;
         _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
             function(c) { c.invalidateData(); });
-        ds.sendBatch({success: successCallback, error: errorCallback});
+        ServerModel.sendBatch({success: successCallback, error: errorCallback});
     },
 
     markRow: function(markType, value, row)
@@ -1239,7 +1239,7 @@ var Dataset = ServerModel.extend({
                     options.push(child);
                 }, true);
             });
-            ds.sendBatch(function() {
+            ServerModel.sendBatch(function() {
                 // success
                 callback(options);
             });
@@ -2262,7 +2262,7 @@ var Dataset = ServerModel.extend({
             {
                 while (ds._pendingRowCreates.length > 0)
                 { ds._serverCreateRow(ds._pendingRowCreates.shift(), true); }
-                ds.sendBatch();
+                ServerModel.sendBatch();
             }
             else
             {
@@ -2370,7 +2370,7 @@ var Dataset = ServerModel.extend({
                 // Do save
                 ds._serverSaveRow(ds._pendingRowEdits[key].shift(), true);
             }
-            ds.sendBatch();
+            ServerModel.sendBatch();
         }
         else
         {

@@ -39,7 +39,7 @@
         });
 
         // Then match up with the grants
-        $.socrataServer.sendBatch(function(response)
+        ServerModel.sendBatch(function(response)
         {
             var $ul = $context.find('ul.itemsList');
             $ul.empty();

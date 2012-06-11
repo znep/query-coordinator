@@ -95,7 +95,7 @@ var ServerModel = Model.extend({
             cleanReq();
             $.Tache.Get(req);
         }
-        else if (req.batch)
+        else if (req.batch || ServerModel._inBatch)
         {
             cleanReq();
             batchRequests.push(req);
@@ -105,93 +105,6 @@ var ServerModel = Model.extend({
             cleanReq();
             $.ajax(req);
         }
-    },
-
-    sendBatch: function(successCallback, errorCallback, completeCallback)
-    {
-        var model = this;
-        if (batchRequests.length < 1)
-        {
-            if (_.isFunction(successCallback)) { successCallback(); }
-            return;
-        }
-
-        if (batchRequests.length == 1)
-        {
-            var origBR = batchRequests.shift();
-            $.ajax($.extend({}, origBR, {
-                complete: function()
-                {
-                    if (_.isFunction(origBR.complete)) { origBR.complete(); }
-                    if (_.isFunction(completeCallback)) { completeCallback(); }
-                },
-                error: function(xhr)
-                {
-                    var errBody = JSON.parse(xhr.responseText);
-                    if (_.isFunction(origBR.error)) { origBR.error(errBody.message); }
-                    if (_.isFunction(errorCallback)) { errorCallback(); }
-                },
-                success: function(resp)
-                {
-                    if (_.isFunction(origBR.success)) { origBR.success(resp); }
-                    if (_.isFunction(successCallback)) { successCallback(); }
-                }}));
-            return;
-        }
-
-        var serverReqs = [];
-        var br = batchRequests;
-        batchRequests = [];
-        _.each(br, function(r)
-            { serverReqs.push({url: r.url, requestType: r.type, body: r.data}); });
-
-        $.ajax({url: '/api/batches', dataType: 'json', contentType: 'application/json',
-                type: 'POST', data: JSON.stringify({requests: serverReqs}),
-                success: function(resp)
-                {
-                    var isError = false;
-                    _.each(resp, function(r, i)
-                    {
-                        if (r.error)
-                        {
-                            isError = true;
-                            if (_.isFunction(br[i].error))
-                            { br[i].error(r.errorMessage); }
-                        }
-                        else if (_.isFunction(br[i].success))
-                        {
-                            br[i].success(JSON.parse(r.response || '""'));
-                        }
-                    });
-
-                    if (isError)
-                    {
-                        if (_.isFunction(errorCallback)) { errorCallback(); }
-                    }
-                    else
-                    {
-                        if (_.isFunction(successCallback)) { successCallback(); }
-                    }
-                },
-                complete: function()
-                {
-                    _.each(br, function(r)
-                    {
-                        if (_.isFunction(r.complete)) { r.complete(); }
-                    });
-
-                    if (_.isFunction(completeCallback)) { completeCallback(); }
-                },
-                error: function(xhr)
-                {
-                    var errBody = JSON.parse(xhr.responseText);
-                    _.each(br, function(r)
-                    {
-                        if (_.isFunction(r.error)) { r.error(errBody.message); }
-                    });
-
-                    if (_.isFunction(errorCallback)) { errorCallback(); }
-                }});
     },
 
     _startRequest: function()
@@ -206,6 +119,98 @@ var ServerModel = Model.extend({
         if (this._reqCount < 1) { this.trigger('request_finish'); }
     }
 });
+
+ServerModel.startBatch = function()
+{
+    ServerModel._inBatch = true;
+};
+
+ServerModel.sendBatch = function(successCallback, errorCallback, completeCallback)
+{
+    ServerModel._inBatch = false;
+    if (batchRequests.length < 1)
+    {
+        if (_.isFunction(successCallback)) { successCallback(); }
+        return;
+    }
+
+    if (batchRequests.length == 1)
+    {
+        var origBR = batchRequests.shift();
+        $.ajax($.extend({}, origBR, {
+            complete: function()
+            {
+                if (_.isFunction(origBR.complete)) { origBR.complete(); }
+                if (_.isFunction(completeCallback)) { completeCallback(); }
+            },
+            error: function(xhr)
+            {
+                var errBody = JSON.parse(xhr.responseText);
+                if (_.isFunction(origBR.error)) { origBR.error(errBody.message); }
+                if (_.isFunction(errorCallback)) { errorCallback(); }
+            },
+            success: function(resp)
+            {
+                if (_.isFunction(origBR.success)) { origBR.success(resp); }
+                if (_.isFunction(successCallback)) { successCallback(); }
+            }}));
+        return;
+    }
+
+    var serverReqs = [];
+    var br = batchRequests;
+    batchRequests = [];
+    _.each(br, function(r)
+        { serverReqs.push({url: r.url, requestType: r.type, body: r.data}); });
+
+    $.ajax({url: '/api/batches', dataType: 'json', contentType: 'application/json',
+            type: 'POST', data: JSON.stringify({requests: serverReqs}),
+            success: function(resp)
+            {
+                var isError = false;
+                _.each(resp, function(r, i)
+                {
+                    if (r.error)
+                    {
+                        isError = true;
+                        if (_.isFunction(br[i].error))
+                        { br[i].error(r.errorMessage); }
+                    }
+                    else if (_.isFunction(br[i].success))
+                    {
+                        br[i].success(JSON.parse(r.response || '""'));
+                    }
+                });
+
+                if (isError)
+                {
+                    if (_.isFunction(errorCallback)) { errorCallback(); }
+                }
+                else
+                {
+                    if (_.isFunction(successCallback)) { successCallback(); }
+                }
+            },
+            complete: function()
+            {
+                _.each(br, function(r)
+                {
+                    if (_.isFunction(r.complete)) { r.complete(); }
+                });
+
+                if (_.isFunction(completeCallback)) { completeCallback(); }
+            },
+            error: function(xhr)
+            {
+                var errBody = JSON.parse(xhr.responseText);
+                _.each(br, function(r)
+                {
+                    if (_.isFunction(r.error)) { r.error(errBody.message); }
+                });
+
+                if (_.isFunction(errorCallback)) { errorCallback(); }
+            }});
+};
 
 if (blist.inBrowser)
 {

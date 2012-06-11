@@ -221,7 +221,7 @@
                 { blist.datasetPage.sidebar.refresh('manage.shareDataset'); }
             };
 
-            $.socrataServer.sendBatch(refreshCallback,
+            ServerModel.sendBatch(refreshCallback,
                     function()
                     {
                         $flash.addClass('error')

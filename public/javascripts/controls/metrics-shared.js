@@ -163,7 +163,7 @@ metricsNS.topDatasetsCallback = function($context)
             };
             // Some of the batch may have resulted in error, just
             // process what we have
-            $.socrataServer.sendBatch(render, render);
+            ServerModel.sendBatch(render, render);
         }
     );
 };
@@ -200,7 +200,7 @@ metricsNS.topAppTokensCallback = function($context)
             };
             // Some of the batch may have resulted in error, just
             // process what we have
-            $.socrataServer.sendBatch(render, render);
+            ServerModel.sendBatch(render, render);
         }
     );
 };

@@ -419,7 +419,7 @@ var RowSet = ServerModel.extend({
                     var req = $.extend({}, args, {data: v, batch: true});
                     rs.makeRequest(req);
                 });
-                rs._dataset.sendBatch(callResults);
+                ServerModel.sendBatch(callResults);
             }
             else
             { callResults(); }

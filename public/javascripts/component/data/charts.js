@@ -52,7 +52,8 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
         _arrange: function()
         {
             this._super();
-            this.$contents.trigger('resize');
+            if (!$.isBlank(this.$contents))
+            { this.$contents.trigger('resize'); }
         },
 
         _render: function()

@@ -2,6 +2,7 @@
 {
 
 $.Control.registerMixin('d3_impl_column', {
+
     defaults: {
         barWidthBounds: [ 20, 200 ], // width of the bar, of course
         barSpacingBounds: [ 0, 20 ], // within series spacing
@@ -151,7 +152,11 @@ $.Control.registerMixin('d3_impl_column', {
             chartD3 = cc.chartD3,
             totalRows = view.totalRows(),
             chartAreaWidth = cc.$chartArea.width(),
-            numSeries = vizObj._valueColumns.length;
+            numSeries = vizObj._valueColumns.length,
+            barWidthBounds = defaults.barWidthBounds,
+            barSpacingBounds = defaults.barSpacingBounds,
+            seriesSpacingBounds = defaults.seriesSpacingBounds,
+            sidePaddingBounds = defaults.sidePaddingBounds;
 
         // save off old series width for comparison later (see below)
         var oldSeriesWidth = cc.seriesWidth;
@@ -171,14 +176,14 @@ $.Control.registerMixin('d3_impl_column', {
         // to collapse together
         if (numSeries === 1)
         {
-            defaults.seriesSpacingBounds[0] = 0;
+            seriesSpacingBounds = [ 0, seriesSpacingBounds[1] ];
         }
 
         // assume minimum possible width
-        cc.barWidth = defaults.barWidthBounds[0];
-        cc.barSpacing = defaults.barSpacingBounds[0];
-        cc.seriesSpacing = defaults.seriesSpacingBounds[0];
-        cc.sidePadding = defaults.sidePaddingBounds[0];
+        cc.barWidth = barWidthBounds[0];
+        cc.barSpacing = barSpacingBounds[0];
+        cc.seriesSpacing = seriesSpacingBounds[0];
+        cc.sidePadding = sidePaddingBounds[0];
 
         var minTotalWidth = calculateTotalWidth();
         if (minTotalWidth > chartAreaWidth)
@@ -196,9 +201,9 @@ $.Control.registerMixin('d3_impl_column', {
 
             // okay, we're smaller than we need to be.
             // calculate maximum possible width instead.
-            cc.barWidth = defaults.barWidthBounds[1];
-            cc.barSpacing = defaults.barSpacingBounds[1];
-            cc.seriesSpacing = defaults.seriesSpacingBounds[1];
+            cc.barWidth = barWidthBounds[1];
+            cc.barSpacing = barSpacingBounds[1];
+            cc.seriesSpacing = seriesSpacingBounds[1];
             // don't bother calculating sidepadding here, just use minimum and see what's up
 
             var maxTotalWidth = calculateTotalWidth();
@@ -218,29 +223,29 @@ $.Control.registerMixin('d3_impl_column', {
                 // had to relearn algebra to do it... so it's probably all
                 // fucked.
                 var numerator = chartAreaWidth +
-                                totalRows * (numSeries * (-defaults.barWidthBounds[0] -
-                                                           defaults.barSpacingBounds[0]) +
-                                             defaults.barSpacingBounds[0] -
-                                             defaults.seriesSpacingBounds[0]) -
-                                2 * defaults.sidePaddingBounds[0];
-                var denominator = totalRows * (numSeries * (defaults.barWidthBounds[1] -
-                                                            defaults.barWidthBounds[0] +
-                                                            defaults.barSpacingBounds[1] -
-                                                            defaults.barSpacingBounds[0]) -
-                                               defaults.barSpacingBounds[1] +
-                                               defaults.barSpacingBounds[0] +
-                                               defaults.seriesSpacingBounds[1] -
-                                               defaults.seriesSpacingBounds[0]) +
-                                  2 * (defaults.sidePaddingBounds[1] -
-                                       defaults.sidePaddingBounds[0]);
+                                totalRows * (numSeries * (-barWidthBounds[0] -
+                                                           barSpacingBounds[0]) +
+                                             barSpacingBounds[0] -
+                                             seriesSpacingBounds[0]) -
+                                2 * sidePaddingBounds[0];
+                var denominator = totalRows * (numSeries * (barWidthBounds[1] -
+                                                            barWidthBounds[0] +
+                                                            barSpacingBounds[1] -
+                                                            barSpacingBounds[0]) -
+                                               barSpacingBounds[1] +
+                                               barSpacingBounds[0] +
+                                               seriesSpacingBounds[1] -
+                                               seriesSpacingBounds[0]) +
+                                  2 * (sidePaddingBounds[1] -
+                                       sidePaddingBounds[0]);
                 var scalingFactor = 1.0 * numerator / denominator;
 
                 // now do the actual scaling
                 var scale = function(bounds) { return ((bounds[1] - bounds[0]) * scalingFactor) + bounds[0]; }
-                cc.barWidth = scale(defaults.barWidthBounds);
-                cc.barSpacing = scale(defaults.barSpacingBounds);
-                cc.seriesSpacing = scale(defaults.seriesSpacingBounds);
-                cc.sidePadding = scale(defaults.sidePaddingBounds);
+                cc.barWidth = scale(barWidthBounds);
+                cc.barSpacing = scale(barSpacingBounds);
+                cc.seriesSpacing = scale(seriesSpacingBounds);
+                cc.sidePadding = scale(sidePaddingBounds);
             }
         }
 

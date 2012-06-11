@@ -39,6 +39,7 @@ class TestPagesController < ApplicationController
   end
 
   def cf
+    Canvas2::DataContext.reset
     Canvas2::Util.set_params(params)
     @minimal_render = params['no_render'] == 'true'
   end

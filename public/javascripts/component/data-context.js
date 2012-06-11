@@ -104,20 +104,40 @@
                 case 'datasetList':
                     Dataset.search(config.search, function(results)
                         {
-                            if (results.count < 1)
+                            _.each(results.views, function(ds) { addQuery(ds, config.query); });
+
+                            var setResult = function(viewsList, count)
                             {
-                                errorLoading(id);
-                                return;
+                                if (count < 1)
+                                {
+                                    errorLoading(id);
+                                    return;
+                                }
+
+                                dc.availableContexts[id] = {id: id, type: config.type,
+                                    count: count, datasetList: _.map(viewsList, function(ds)
+                                        {
+                                            var c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id};
+                                            dc.availableContexts[c.id] = c;
+                                            return c;
+                                        })};
+
+                                doneLoading(dc.availableContexts[id]);
+                            };
+
+                            if (config.requireData && results.count > 0)
+                            {
+                                var trCallback = _.after(results.views.length, function()
+                                {
+                                    var vl = _.reject(results.views, function(ds)
+                                        { return ds.totalRows() < 1; });
+                                    var c = results.count - (results.views.length - vl.length);
+                                    setResult(vl, c);
+                                });
+                                _.each(results.views, function(ds) { ds.getTotalRows(trCallback); });
                             }
-                            dc.availableContexts[id] = {id: id, type: config.type,
-                                count: results.count, datasetList: _.map(results.views, function(ds)
-                                    {
-                                        addQuery(ds, config.query);
-                                        var c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id};
-                                        dc.availableContexts[c.id] = c;
-                                        return c;
-                                    })};
-                            doneLoading(dc.availableContexts[id]);
+                            else
+                            { setResult(results.views, results.count); }
                         },
                         function(xhr)
                         { errorLoading(id); });

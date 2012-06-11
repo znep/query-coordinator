@@ -1,7 +1,11 @@
 module Canvas2
   class DataContext
     def self.available_contexts
-      return @@available_contexts ||= {}
+      return @available_contexts ||= {}
+    end
+
+    def self.reset
+      @available_contexts = {}
     end
 
     def self.load_context(id, config)
@@ -9,25 +13,32 @@ module Canvas2
       case config['type']
       when 'datasetList'
         search_response = Clytemnestra.search_views(config['search'])
-        available_contexts[id] = {id: id, type: config['type'],
-          count: search_response.count,
-          datasetList: search_response.results.map do |ds|
-            add_query(ds, config['query'])
-            c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id}
-            available_contexts[c[:id]] = c
-          end}
+        ds_list = search_response.results.reject do |ds|
+          add_query(ds, config['query'])
+          ds.get_total_rows < 1
+        end
+        if ds_list.length > 0
+          available_contexts[id] = {id: id, type: config['type'],
+            count: search_response.count - (search_response.results.length - ds_list.length),
+            datasetList: ds_list.map do |ds|
+              c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id}
+              available_contexts[c[:id]] = c
+            end}
+        elsif config['required']
+          return false
+        end
       when 'dataset'
         if !get_dataset(config) do |ds|
           available_contexts[id] = {id: id, type: config['type'], dataset: ds}
-          if (defined? @@pending_contexts) && (((@@pending_contexts || {})[id]).is_a? Array)
-            threads = @@pending_contexts[id].map do |req|
+          if (defined? @pending_contexts) && (((@pending_contexts || {})[id]).is_a? Array)
+            threads = @pending_contexts[id].map do |req|
               Thread.new do
                 ds_new = ds.deep_clone(View)
                 got_dataset(ds_new, req[:config])
                 req[:callback].call(ds_new)
               end
             end
-            @@pending_contexts.delete(id)
+            @pending_contexts.delete(id)
             threads.each { |thread| thread.join }
           end
         end
@@ -101,9 +112,9 @@ module Canvas2
           return !config['required'] if context[:dataset].blank?
           ds = context[:dataset].deep_clone(View)
         else
-          @@pending_contexts ||= {}
-          @@pending_contexts[config['contextId']] ||= []
-          @@pending_contexts[config['contextId']] << {config: config, callback: callback}
+          @pending_contexts ||= {}
+          @pending_contexts[config['contextId']] ||= []
+          @pending_contexts[config['contextId']] << {config: config, callback: callback}
         end
       elsif !config['datasetId'].blank?
         begin

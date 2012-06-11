@@ -444,7 +444,7 @@
                 var finishedDCGet = function()
                 {
                     if (!cObj._designing &&
-                            (cObj._properties.requiresContext && $.isBlank(cObj._dataContext) ||
+                            (cObj._properties.requiresContext && _.isEmpty(cObj._dataContext) ||
                              cObj._properties.ifValue && !cObj._evalIf(cObj._properties.ifValue)))
                     { cObj.properties({'__hidden': true}); }
 
@@ -742,19 +742,27 @@
                 else if (!$.isBlank(cxt))
                 {
                     // Hmm; maybe this is taking templating a bit too far?
-                    var c = cObj._stringSubstitute(cxt);
-                    var id = c.id;
-                    if ($.isBlank(id))
+                    _.each($.makeArray(cObj._stringSubstitute(cxt)), function(c, i)
                     {
-                        id = cObj.id + '_' + _.uniqueId();
-                        c.id = id;
-                        // Only set contextId if we got the context at this level
-                        if (!$.isBlank(properties.context))
-                        { properties.contextId = id; }
-                    }
-                    startDCGet();
-                    var finishDC = gotDCGen(1);
-                    $.dataContext.loadContext(id, c, finishDC.success, finishDC.error);
+                        var id = c.id;
+                        if ($.isBlank(id))
+                        {
+                            id = cObj.id + '_' + _.uniqueId();
+                            c.id = id;
+                            // Only set contextId if we got the context at this level
+                            if (!$.isBlank(properties.context))
+                            {
+                                if (!_.isArray(properties.contextId))
+                                { properties.contextId = []; }
+                                properties.contextId.push(id);
+                            }
+                        }
+                        startDCGet();
+                        var finishDC = gotDCGen(1);
+                        $.dataContext.loadContext(id, c, finishDC.success, finishDC.error);
+                    });
+                    if (_.isArray(properties.contextId) && properties.contextId.length == 1)
+                    { properties.contextId = _.first(properties.contextId); }
                     return true;
                 }
             }

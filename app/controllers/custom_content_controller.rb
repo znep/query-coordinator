@@ -103,6 +103,7 @@ class CustomContentController < ApplicationController
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if path == '/'
     if @cached_fragment.nil?
+      Canvas2::DataContext.reset
       Canvas2::Util.set_params(params)
       Canvas2::Util.set_path(path)
       if CurrentDomain.module_available?('canvas2')

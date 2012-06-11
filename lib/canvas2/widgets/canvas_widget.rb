@@ -12,8 +12,19 @@ module Canvas2
 
       if @properties.has_key?('context')
         c_id = 'context-' + self.id
-        DataContext.load_context(c_id, string_substitute(@properties['context']))
-        @context = DataContext.available_contexts[c_id]
+        con = string_substitute(@properties['context'])
+        if con.is_a?(Array)
+          @context = []
+          con.each_with_index do |c,i|
+            cur_id = c_id + '-' + i.to_s
+            DataContext.load_context(cur_id, c)
+            @context << DataContext.available_contexts[cur_id]
+          end
+          @context.compact!
+        else
+          DataContext.load_context(c_id, con)
+          @context = DataContext.available_contexts[c_id]
+        end
       end
     end
 
@@ -25,6 +36,7 @@ module Canvas2
           if cIds.is_a?(Array)
             @context = []
             cIds.each {|cId| @context << get_context(cId)}
+            @context.compact!
           else
             @context = get_context(cIds)
           end
@@ -44,7 +56,7 @@ module Canvas2
     end
 
     def is_hidden
-      @properties['hidden'] || @properties['requiresContext'] && context.blank? ||
+      @properties['hidden'] || @properties['requiresContext'] && (context.blank? || context.empty?) ||
         @properties['ifValue'] && !eval_if(@properties['ifValue'])
     end
 

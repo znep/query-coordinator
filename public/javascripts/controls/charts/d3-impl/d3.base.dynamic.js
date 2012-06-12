@@ -50,7 +50,6 @@ $.Control.registerMixin('d3_base_dynamic', {
             renderRange = { start: 0, length: 50 };
         }
 
-        vizObj._lastRowCount = view.totalRows();
         vizObj._currentRenderRange = renderRange; // keep track of what row set we care about at the moment
 
         vizObj._currentRangeData = {}; // aggregate all the callbacks we get for this range into one array

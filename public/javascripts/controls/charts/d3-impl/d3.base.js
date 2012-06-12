@@ -3,8 +3,23 @@
 
 // basic setup for d3
 $.Control.registerMixin('d3_base', {
+    initializeVisualization: function()
+    {
+        var vizObj = this;
+        vizObj._ignoreViewChanges = true;
+
+        var handleQueryChange = function()
+        {
+            vizObj.getColumns();
+            vizObj.getDataForAllViews();
+        };
+
+        _.each(vizObj._dataViews, function(view) { view.bind('query_change', handleQueryChange, vizObj); });
+    },
+
     getRequiredJavascripts: function()
     {
+        // get d3 stuffs
         return blist.assets.libraries.d3;
     },
 

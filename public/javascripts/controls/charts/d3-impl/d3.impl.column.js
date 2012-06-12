@@ -20,7 +20,7 @@ $.Control.registerMixin('d3_impl_column', {
 
         // create and cache dom elements
         var $dom = vizObj.$dom();
-        $dom.append($.tag(
+        $dom.empty().append($.tag(
             { tagName: 'div', 'class': 'chartArea columnChart', contents: [
                 { tagName: 'div', 'class': 'chartContainer' },
                 { tagName: 'div', 'class': 'baselineContainer', contents: [
@@ -105,7 +105,10 @@ $.Control.registerMixin('d3_impl_column', {
 
     handleRowCountChange: function()
     {
-        this._resizeEverything();
+        if (this._resizeEverything())
+        {
+            this._rerenderPositions(true);
+        }
     },
 
     getRenderRange: function(view, callback)

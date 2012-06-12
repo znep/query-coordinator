@@ -182,6 +182,32 @@ module Canvas2
     end
   end
 
+  class GridContainer < Container
+    def render_contents
+      t = '<div class="row clearfix">'
+      if has_children?
+        ch = @properties['cellHeight']
+        ch = ch.to_s + 'px' if !ch.is_a?(String)
+        cw = @properties['cellWidth']
+        cw = cw.to_s + 'px' if !cw.is_a?(String)
+        cs = @properties['cellSpacing']
+        cs = cs.to_s + 'px' if !cs.is_a?(String)
+
+        vc = children.reject { |c| c.is_hidden }
+        # We don't know the width, so just stick everything in one row with no border
+        vc.each_with_index do |c, i|
+          c.server_properties['styles'] ||= {}
+          c.server_properties['styles']['width'] = cw
+          c.server_properties['styles']['height'] = ch
+          c.server_properties['styles']['padding'] = cs
+          r = c.render
+          t += r[0]
+        end
+      end
+      [t += '</div>', false]
+    end
+  end
+
   class EventConnector < CanvasWidget
     def render
       ['', false]

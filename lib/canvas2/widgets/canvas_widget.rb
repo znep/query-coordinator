@@ -1,12 +1,13 @@
 module Canvas2
   class CanvasWidget
-    attr_accessor :id, :parent
+    attr_accessor :id, :parent, :server_properties
     attr_reader :properties, :resolver_context
 
     def initialize(props, parent = nil, resolver_context = nil)
       @properties = props
       @resolver_context = resolver_context
       @properties['id'] ||= Canvas2::Util.allocate_id
+      self.server_properties = {}
       self.id = @properties['id']
       self.parent = parent
 
@@ -81,9 +82,11 @@ module Canvas2
       classes << html_class unless @needs_own_context
       classes << 'serverRendered' if fully_rendered
 
+      styles = (server_properties['styles'] || {}).merge(@properties['styles'] || {}).
+        map { |k, v| k + ':' + v.to_s + ';' }.join('')
       tag = ''
 
-      tag << "<div class=\"#{classes.join(' ')}\" id=\"#{self.id}\">"
+      tag << %Q(<div class="#{classes.join(' ')}" id="#{self.id}" style="#{styles}">)
       tag << '<div class="content-wrapper ' << html_class << '">' if @needs_own_context
       tag << contents
       tag << '</div>' if @needs_own_context

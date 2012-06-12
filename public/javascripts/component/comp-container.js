@@ -2,7 +2,7 @@
  * Base implementation for components that contain other components.
  */
 (function($) {
-    $.component.Component.extend('Container', {
+    $.component.Component.extend('Container', 'content', {
         // A hint for drag implementation
         horizontal: false,
 
@@ -161,25 +161,29 @@
         /**
          * Synchronize child's position in the DOM.  Allows derivative containers to adjust position.
          */
-        _moveChildDom: function(child) {
-            if (!this._initialized) {
+        _moveChildDom: function(child)
+        {
+            if (!this._initialized)
+            {
                 if (child._initialized)
-                    $(child.dom).remove();
+                { $(child.dom).remove(); }
                 return;
             }
             if (!child._initialized)
-                child._initDom();
+            { child._initDom(); }
 
             if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
             { child.next.$dom.parent()[0].insertBefore(child.$dom[0], child.next.$dom[0]); }
             else if (!$.isBlank(this.$ct) && child.$dom.parent().index(this.$ct) < 0)
             { this.$ct[0].appendChild(child.$dom[0]); }
 
-            if (child.$dom.parent().length > 0 &&
-                    this._rendered && !child._rendered)
-            {
-                child._render();
-            }
+            if (child.$dom.parent().length > 0 && this._rendered && !child._rendered)
+            { child._render(); }
+
+            var cObj = this;
+            child.bind('shown', function() { cObj._arrange(); }, this);
+            child.bind('hidden', function() { cObj._arrange(); }, this);
+
             this._arrange();
         },
 
@@ -190,6 +194,7 @@
             if (!this._initialized)
                 return;
             child.$dom.remove();
+            child.unbind(null, null, this);
             this._arrange();
         },
 
@@ -343,7 +348,7 @@
         }
     });
 
-    $.component.Container.extend('Horizontal Container', {
+    $.component.Container.extend('Horizontal Container', 'content', {
         // A hint for drag implementation
         horizontal: true,
 
@@ -394,10 +399,6 @@
             if (child.$wrapper.parent().length > 0 && this._rendered && !child._rendered)
             { child._render(); }
 
-            var cObj = this;
-            child.bind('shown', function() { cObj._arrange(); }, this);
-            child.bind('hidden', function() { cObj._arrange(); }, this);
-
             this._arrange();
         },
 
@@ -410,7 +411,6 @@
                 delete child.wrapper;
                 delete child.$wrapper;
             }
-            child.unbind(null, null, this);
             this._arrange();
         },
 

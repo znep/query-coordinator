@@ -94,6 +94,7 @@ javascripts:
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js
     - public/javascripts/component/content/fixed-container.js
+    - public/javascripts/component/content/grid-container.js
     - public/javascripts/component/content/menu.js
     - public/javascripts/component/content/picture.js
     - public/javascripts/component/content/related.js

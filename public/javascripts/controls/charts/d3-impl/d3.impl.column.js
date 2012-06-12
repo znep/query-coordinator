@@ -117,12 +117,15 @@ $.Control.registerMixin('d3_impl_column', {
             cc = vizObj._columnChart;
 
         // TODO: need to handle too-large render elems
+        var chartAreaWidth = cc.$chartArea.width(),
+            rowsPerScreen = Math.ceil(chartAreaWidth / cc.seriesWidth);
+
         var screenScaling = d3.scale.linear()
-              .domain([ 0, cc.chartWidth - cc.$chartArea.width() ])
-              .range([ 0, vizObj._primaryView.totalRows() ]);
+              .domain([ cc.sidePadding, cc.chartWidth - chartAreaWidth ])
+              .range([ 0, vizObj._primaryView.totalRows() - rowsPerScreen ]);
 
         var start = Math.max(Math.floor(screenScaling(cc.$chartContainer.scrollLeft())) - vizObj.defaults.rowBuffer, 0);
-        var length = Math.ceil(cc.$chartArea.width() / cc.seriesWidth) + vizObj.defaults.rowBuffer;
+        var length = rowsPerScreen + (vizObj.defaults.rowBuffer * 2);
 
         return { start: start, length: length };
     },

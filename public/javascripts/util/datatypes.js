@@ -774,6 +774,11 @@ blist.namespace.fetch('blist.datatypes');
             deleteable: true,
             filterConditions: blist.filter.groups.textual,
             inlineType: true,
+            matchValue: function(v)
+            {
+                if (_.isString(v)) { v = v.toLowerCase(); }
+                return v;
+            },
             priority: 1,
             rollUpAggregates: nonNumericAggs,
             sortable: true
@@ -999,6 +1004,16 @@ blist.namespace.fetch('blist.datatypes');
             },
             formats: zDateTimeFormats,
             inlineType: true,
+            matchValue: function(v)
+            {
+                var d = v;
+                if (_.isString(v))
+                {
+                    d = Date.parse(v);
+                    if (!$.isBlank(d)) { d = d.getTime() / 1000; }
+                }
+                return d;
+            },
             priority: 7,
             rollUpAggregates: nonNumericAggs,
             sortable: true,

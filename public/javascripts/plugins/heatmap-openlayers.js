@@ -12,11 +12,18 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
 		this.div.appendChild(heatdiv);
 		hmoptions.element = heatdiv;
 		this.heatmap = h337.create(hmoptions);
+        this.active = true;
 		var handler = function(){ if(this.tmpData.max)this.updateLayer(); };
 		map.events.register("zoomend", this, handler);
 	},
+    deactivate: function(){
+        this.active = false;
+    },
+    activate: function(){
+        this.active = true;
+    },
 	updateLayer: function(){
-		this.setDataSet(this.tmpData);
+		if (this.active) { this.setDataSet(this.tmpData); }
 	},
 	setDataSet: function(obj){
 		var set = {},

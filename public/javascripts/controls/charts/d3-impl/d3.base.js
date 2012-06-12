@@ -3,19 +3,35 @@
 
 // basic setup for d3
 $.Control.registerMixin('d3_base', {
-    initializeVisualization: function()
+    /*
+    the world ain't ready for this. the default method is more brute force than d3 needs.
+    but the events are too crazy to detangle and unbind.
+    so, use safe strats for now.
+    ready: function()
     {
         var vizObj = this;
-        vizObj._ignoreViewChanges = true;
 
-        var handleQueryChange = function()
+        var wereEventsBound = vizObj._boundViewEvents;
+        vizObj._super();
+
+        // this will definitely be called before _super, so just rely on that to
+        // mark this flag appropriately
+        if (!wereEventsBound)
         {
-            vizObj.getColumns();
-            vizObj.getDataForAllViews();
-        };
+            var handleQueryChange = function()
+            {
+                debugger;
+                vizObj.getColumns();
+                vizObj.getDataForAllViews();
+            };
 
-        _.each(vizObj._dataViews, function(view) { view.bind('query_change', handleQueryChange, vizObj); });
-    },
+            _.each(vizObj._dataViews, function(view)
+            {
+                view.unbind('query_change')
+                view.bind('query_change', handleQueryChange, vizObj);
+            });
+        }
+    },*/
 
     getRequiredJavascripts: function()
     {

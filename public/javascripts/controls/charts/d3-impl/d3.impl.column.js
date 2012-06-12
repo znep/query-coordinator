@@ -9,7 +9,7 @@ $.Control.registerMixin('d3_impl_column', {
         seriesSpacingBounds: [ 10, 100 ], // between series (row) spacing
         sidePaddingBounds: [ 40, 200 ], // sides of window
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
-        valueLabelBuffer: 200, // amount of room to leave for each series' label
+        valueLabelBuffer: 100, // amount of room to leave for each series' label
         dataMaxBuffer: 30 // amount of room to leave in actual chart area past the max bar
     },
 
@@ -58,7 +58,7 @@ $.Control.registerMixin('d3_impl_column', {
             containment: 'parent', // TODO: bounded containment on viewport change
             drag: function(event, ui)
             {
-                vizObj.defaults.valueLabelBuffer = cc.$chartArea.height() - ui.position.top;
+                cc.valueLabelBuffer = cc.$chartArea.height() - ui.position.top;
                 throttledResize();
                 // TODO: save off the valueLabelBuffer as a minor change on displayFormat?
             },
@@ -273,7 +273,8 @@ $.Control.registerMixin('d3_impl_column', {
     _yAxisPos: function()
     {
         var vizObj = this;
-        return vizObj._columnChart.$chartArea.height() - vizObj.defaults.valueLabelBuffer;
+        return vizObj._columnChart.$chartArea.height() -
+               (vizObj._columnChart.valueLabelBuffer || vizObj.defaults.valueLabelBuffer);
     },
 
     // calculates a y scale based on the current set of data

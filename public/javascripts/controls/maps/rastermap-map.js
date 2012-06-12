@@ -156,11 +156,30 @@
         cleanVisualization: function()
         {
             var mapObj = this;
+            if (mapObj._requireRowReload && !mapObj._byView[mapObj._primaryView.id]._viewportChanged)
+            { delete mapObj._neverCluster; }
+
+            if (mapObj._baseLayers)
+            { _.each(mapObj._baseLayers, function(layer) { layer.destroy(false); }); }
 
             _.each(mapObj._byView, function(viewConfig)
             {
                 viewConfig._bounds = new OpenLayers.Bounds();
                 viewConfig._dataStore = [];
+                viewConfig._heatmapLayer.deactivate();
+            });
+        },
+
+        reloadVisualization: function()
+        {
+            var mapObj = this;
+
+            mapObj._super();
+
+            _.each(mapObj._byView, function(viewConfig)
+            {
+                viewConfig._heatmapLayer.mapLayer = mapObj.map.baseLayer;
+                viewConfig._heatmapLayer.activate();
             });
         }
     }, null, 'socrataMap');

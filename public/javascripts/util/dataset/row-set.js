@@ -1007,14 +1007,17 @@ function canDeriveExpr(baseFC, otherFC)
                 // the proper relationship
                 if (cl._key == expr._key)
                 {
-                    var parMatch = cl._parent == baseFC && expr._parent == otherFC ||
+                    var parMatch = cl._parent == baseFC && expr._parent == otherFC &&
+                            baseFC.operator == otherFC.operator ||
                         $.isBlank(cl._parent) && $.isBlank(expr._parent) ||
                         $.isBlank(cl._parent) && expr._parent.operator.toLowerCase() == 'and' ||
                         $.isBlank(expr._parent) && cl._parent.operator.toLowerCase() == 'or';
                     var k;
                     if (!parMatch)
                     {
-                        if ($.isBlank(cl._parent) || $.isBlank(expr._parent)) { return false; }
+                        if ($.isBlank(cl._parent) || $.isBlank(expr._parent) ||
+                            cl._parent.operator != expr._parent.operator)
+                        { return false; }
                         if ($.isBlank(cl._parent._key))
                         { cl._parent._key = blist.filter.getFilterKey(cl._parent); }
                         if ($.isBlank(expr._parent._key))

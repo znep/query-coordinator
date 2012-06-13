@@ -400,6 +400,13 @@ $.objectify = function(obj, key)
     return obj;
 };
 
+$.arrayToObjKeys = function(arr, v)
+{
+    var obj = {};
+    _.each($.makeArray(arr), function(k) { obj[k] = v; });
+    return obj;
+};
+
 // Used to insert items into an object that is acting like a sparse array
 $.addItemsToObject = function(obj, values, index)
 {

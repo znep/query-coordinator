@@ -37,6 +37,24 @@ module Canvas2
     end
   end
 
+  class Catalog < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+
+    def render_contents
+      t = '<iframe frameborder="0" scrolling="auto" title="Catalog" width="800" height="600" ' +
+        'src="/browse/embed?' +
+        { defaults: @properties['defaults'],
+          disable: Util.array_to_obj_keys(@properties['disabledItems'] || [], true),
+          suppressed_facets: Util.array_to_obj_keys(@properties['disabledSections'] || [], true)
+        }.to_param +
+        '"></iframe>'
+      [t, true]
+    end
+  end
+
   class DataRenderer < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

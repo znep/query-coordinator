@@ -76,6 +76,13 @@ module Canvas2
       obj
     end
 
+    def self.array_to_obj_keys(arr, val)
+      obj = {}
+      arr = [arr] if !arr.is_a?(Array)
+      arr.each { |k| obj[k] = val }
+      obj
+    end
+
     def self.app_helper
       AppHelper.instance
     end

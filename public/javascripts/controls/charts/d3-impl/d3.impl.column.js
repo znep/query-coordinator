@@ -32,22 +32,40 @@ $.Control.registerMixin('d3_impl_column', {
         cc.$chartContainer = $dom.find('.chartContainer');
         cc.$baselineContainer = $dom.find('.baselineContainer');
 
+        // default draw element position is 0
+        cc.drawElementPosition = 0;
+
         // init our renderers
         cc.chartRaphael = new Raphael(cc.$chartContainer.get(0), 10, 10);
         cc.chartD3 = d3.raphael(cc.chartRaphael);
         cc.chromeD3 = d3.select(cc.$chartArea.get(0));
 
-        // maybe grab rows every half second when they're scrolling
-        var throttledRerender = _.throttle(function() { vizObj.getDataForAllViews(); }, 500);
-        cc.$chartContainer.scroll(throttledRerender);
+        cc.$drawElement = cc.$chartContainer.children('svg, vml');
+
+        // maybe move things around and maybe grab rows every half second when they're scrolling
+        var throttledScrollHandler = _.throttle(function()
+        {
+            if (vizObj._repositionDrawElement())
+            {
+                vizObj._rerenderPositions();
+            }
+            vizObj.getDataForAllViews();
+        }, 500);
+        cc.$chartContainer.scroll(throttledScrollHandler);
 
         // save off a throttled version of the actual meat of resizeHandle with a proper
         // reference to this/vizObj (is there a better way to do this?)
         cc.doResizeHandle = _.throttle(function()
         {
+            // maybe recalculate all the sizing
             var needsReposition = vizObj._resizeEverything();
+            // maybe reposition the svg/vml elem
+            needsReposition = vizObj._repositionDrawElement() || needsReposition;
+            // reposition the elems vertically
             vizObj._rerenderAxis();
+            // reposition the elmes horizonally if necessary
             if (needsReposition) vizObj._rerenderPositions();
+            // maybe fetch some more rows if more are exposed
             vizObj.getDataForAllViews();
         }, 500);
 
@@ -58,7 +76,7 @@ $.Control.registerMixin('d3_impl_column', {
             containment: 'parent', // TODO: bounded containment on viewport change
             drag: function(event, ui)
             {
-                cc.valueLabelBuffer = cc.$chartArea.height() - ui.position.top;
+                cc.valueLabelBuffer = cc.chartHeight - ui.position.top;
                 throttledResize();
                 // TODO: save off the valueLabelBuffer as a minor change on displayFormat?
             },
@@ -149,6 +167,30 @@ $.Control.registerMixin('d3_impl_column', {
         }
     },
 
+    _maxRenderWidth: function()
+    {
+        if ($.browser.webkit || $.browser.mozilla)
+        {
+            // firefox straight up stops rendering at 8388600 (eg 0x800000), even if
+            // it's happy making the dom element much wider than that.
+
+            // webkit seems to render out to infinity just fine, but starts losing
+            // precision past the same cutoff.
+
+            // so, render out that far.
+            return 8300000;
+        }
+
+        if ($.browser.msie && $.browser.majorVersion > 8)
+        {
+            // ie9 seems to have the same cutoff as firefox.
+            return 8300000;
+        }
+
+        // ie8 cuts off at 10000 hahaha D:
+        return 10000;
+    },
+
     _resizeEverything: function()
     {
         var vizObj = this,
@@ -158,6 +200,8 @@ $.Control.registerMixin('d3_impl_column', {
             chartD3 = cc.chartD3,
             totalRows = view.totalRows(),
             chartAreaWidth = cc.$chartArea.width(),
+            domHeight = vizObj.$dom().height(),
+            maxRenderWidth = vizObj._maxRenderWidth(),
             numSeries = vizObj._valueColumns.length,
             barWidthBounds = defaults.barWidthBounds,
             barSpacingBounds = defaults.barSpacingBounds,
@@ -196,14 +240,20 @@ $.Control.registerMixin('d3_impl_column', {
         {
             // we're bigger than we need to be. set the render area size
             // to be what we calculated.
-            cc.chartRaphael.setSize(minTotalWidth, vizObj.$dom().height());
+            cc.chartRaphael.setSize(Math.min(minTotalWidth, maxRenderWidth), domHeight);
             cc.chartWidth = minTotalWidth;
+
+            // scrollbar should have appeared. reresize.
+            var renderHeight = cc.$chartContainer.renderHeight();
+            cc.chartRaphael.setSize(Math.min(minTotalWidth, maxRenderWidth), renderHeight);
+            cc.chartHeight = renderHeight;
         }
         else
         {
             // set our sizing to equal vis area
-            cc.chartRaphael.setSize(chartAreaWidth, vizObj.$dom().height());
+            cc.chartRaphael.setSize(Math.min(chartAreaWidth, maxRenderWidth), domHeight);
             cc.chartWidth = chartAreaWidth;
+            cc.chartHeight = domHeight;
 
             // okay, we're smaller than we need to be.
             // calculate maximum possible width instead.
@@ -259,7 +309,7 @@ $.Control.registerMixin('d3_impl_column', {
         cc.seriesWidth = calculateRowWidth();
 
         // set margin
-        cc.$chartContainer.css('margin-bottom', vizObj.$dom().height() * -1);
+        cc.$chartContainer.css('margin-bottom', cc.chartHeight * -1);
 
         // move baseline
         cc.$baselineContainer.css('top', vizObj._yAxisPos());
@@ -269,11 +319,36 @@ $.Control.registerMixin('d3_impl_column', {
         return (oldSeriesWidth != cc.seriesWidth)
     },
 
+    // moves the svg/vml element around to account for it's not big enough
+    _repositionDrawElement: function()
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            scrollPosition = cc.$chartContainer.scrollLeft(),
+            chartAreaWidth = cc.$chartArea.width(),
+            drawElementPosition = parseFloat(cc.$drawElement.css('left')),
+            drawElementWidth = vizObj._maxRenderWidth();
+
+        if ((scrollPosition < drawElementPosition) ||
+            (scrollPosition > (drawElementPosition + drawElementWidth - chartAreaWidth)))
+        {
+            cc.drawElementPosition = $.clamp(scrollPosition - Math.floor(drawElementWidth / 2),
+                                             [ 0, Math.ceil(cc.chartWidth - drawElementWidth) ]);
+
+            if (cc.drawElementPosition != drawElementPosition)
+            {
+                cc.$drawElement.css('left', cc.drawElementPosition);
+                return true;
+            }
+        }
+        return false;
+    },
+
     // calculates value axis position
     _yAxisPos: function()
     {
         var vizObj = this;
-        return vizObj._columnChart.$chartArea.height() -
+        return vizObj._columnChart.chartHeight -
                (vizObj._columnChart.valueLabelBuffer || vizObj.defaults.valueLabelBuffer);
     },
 
@@ -360,7 +435,7 @@ $.Control.registerMixin('d3_impl_column', {
                         'font-size': 13 })
                 // TODO: make a transform-builder rather than doing this concat
                 // 10 is to bump the text off from the actual axis
-                .attr('transform', function(d) { return 'r40,0,0T' + vizObj._xLabelPosition(d) + ',' + (yAxisPos + 10); });
+                .attr('transform', vizObj._labelTransform());
         seriesLabels
             .attr('font-weight', function(d) { return (d.sessionMeta && d.sessionMeta.highlight) ? 'bold' : 'normal'; })
             .text(function(d) { return d[vizObj._fixedColumns[0].id]; }); // WHY IS THIS AN ARRAY
@@ -388,7 +463,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .attr({ y: yAxisPos - 0.5,
                         transform: 'S1,-1,0,' + yAxisPos });
         cc.chartD3.selectAll('.seriesLabel')
-                .attr('transform', function(d) { return 'r40,0,0T' + vizObj._xLabelPosition(d) + ',' + (yAxisPos + 10); });
+                .attr('transform', viz._labelTransform());
 
         vizObj._renderTicks(yScale, yScale, false);
     },
@@ -409,7 +484,7 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('x', vizObj._xBarPosition(seriesIndex));
         });
         cc.chartD3.selectAll('.seriesLabel')
-                .attr('transform', function(d) { return 'r40,0,0T' + vizObj._xLabelPosition(d) + ',' + (yAxisPos + 10); });
+                .attr('transform', vizObj._labelTransform());
     },
 
     // renders tick lines in general
@@ -419,7 +494,7 @@ $.Control.registerMixin('d3_impl_column', {
             cc = vizObj._columnChart,
             yAxisPos = vizObj._yAxisPos();
 
-        var idealTickCount = cc.$chartArea.height() / 80;
+        var idealTickCount = cc.chartHeight / 80;
 
         // TODO: rendering lines and labels is awful similar. fix?
 
@@ -464,20 +539,28 @@ $.Control.registerMixin('d3_impl_column', {
         var vizObj = this,
             cc = vizObj._columnChart;
 
+        var staticParts = cc.sidePadding - 0.5 - cc.drawElementPosition +
+                          (seriesIndex * (cc.barWidth + cc.barSpacing));
+
         return function(d)
         {
-            return cc.sidePadding + (d.index * cc.seriesWidth) +
-                (seriesIndex * (cc.barWidth + cc.barSpacing)) - 0.5;
+            return staticParts + (d.index * cc.seriesWidth);
         };
     },
 
-    _xLabelPosition: function(d)
+    _labelTransform: function()
     {
         var vizObj = this,
             cc = vizObj._columnChart;
 
-        return cc.sidePadding + d.index * cc.seriesWidth +
-               ((cc.seriesWidth - cc.seriesSpacing) / 2) - 3.5;
+        var xPositionStaticParts = cc.sidePadding + ((cc.seriesWidth - cc.seriesSpacing) / 2) -
+                                   3.5 - cc.drawElementPosition;
+        var yPositionStaticParts = ',' + (vizObj._yAxisPos() + 10);
+
+        return function(d)
+        {
+            return 'r40,0,0,T' + (xPositionStaticParts + (d.index * cc.seriesWidth)) + yPositionStaticParts;
+        };
     }
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic' ]);
 

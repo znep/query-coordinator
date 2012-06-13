@@ -117,6 +117,7 @@ $.Control.registerMixin('d3_impl_column', {
             }));
         }, []);
         vizObj._columnChart.maxValue = d3.max(allValues); // cache off maxValue for other renders
+        vizObj._columnChart.minValue = d3.min(allValues); // etc
 
         vizObj._renderData();
     },
@@ -355,9 +356,10 @@ $.Control.registerMixin('d3_impl_column', {
     // calculates a y scale based on the current set of data
     _currentYScale: function()
     {
-        var vizObj = this;
+        var vizObj = this,
+            cc = vizObj._columnChart;
         return d3.scale.linear()
-                .domain([ 0, vizObj._columnChart.maxValue ])
+                .domain([ Math.min(0, cc.minValue), cc.maxValue ])
                 .range([ 0, vizObj._yAxisPos() - vizObj.defaults.dataMaxBuffer ]);
     },
 
@@ -370,7 +372,6 @@ $.Control.registerMixin('d3_impl_column', {
             data = cc.currentData,
             valueColumns = vizObj._valueColumns,
             $chartArea = cc.$chartArea,
-            maxValue = cc.maxValue,
             view = vizObj._primaryView;
 
         // figure out how far out our value axis line is
@@ -397,12 +398,15 @@ $.Control.registerMixin('d3_impl_column', {
                     .classed(seriesClass, true)
                     .attr({ stroke: '#fff',
                             fill: colDef.color,
-                            y: yAxisPos - 0.5,
-                            width: cc.barWidth,
-                            transform: 'S1,-1,0,' + yAxisPos,
-                            'data-accessor': col.id })
+                            width: cc.barWidth })
+
+                    .each(function() { this.__dataColumn = col; })
+
                     .attr('x', vizObj._xBarPosition(seriesIndex))
-                    .attr('height', function(d) { return oldYScale(d[col.id]); })
+
+                    .attr('y', function(d) { return yAxisPos - oldYScale(Math.max(0, d[col.id])) + 0.5; })
+                    .attr('height', function(d) { return Math.abs(oldYScale(0) - oldYScale(d[col.id])); })
+
                     // don't mousey on dragging because event/renderspam breaks charts
                     // check for d because sometimes there's a race condition between unbind and remove
                     .on('mouseover', function(d) { if (d && !cc._isDragging) view.highlightRows(d, null, col); })
@@ -416,7 +420,8 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('fill', vizObj.d3.util.colorizeRow(colDef))
                 .transition()
                     .duration(1000)
-                    .attr('height', function(d) { return newYScale(d[col.id]); });
+                    .attr('y', function(d) { return yAxisPos - newYScale(Math.max(0, d[col.id])) + 0.5; })
+                    .attr('height', function(d) { return Math.abs(newYScale(0) - newYScale(d[col.id])); });
             bars
                 .exit()
                 // need to call transition() here as it accounts for the animation ticks;
@@ -464,8 +469,11 @@ $.Control.registerMixin('d3_impl_column', {
             yAxisPos = vizObj._yAxisPos();
 
         cc.chartD3.selectAll('.dataBar')
-                .attr({ y: yAxisPos - 0.5,
-                        transform: 'S1,-1,0,' + yAxisPos });
+            .transition()
+                .duration(1000)
+                .attr('y', function(d) { return yAxisPos - yScale(Math.max(0, d[this.__dataColumn.id])) + 0.5; })
+                .attr('height', function(d) { return Math.abs(yScale(0) - yScale(d[this.__dataColumn.id])); });
+
         cc.chartD3.selectAll('.seriesLabel')
                 .attr('transform', vizObj._labelTransform());
 
@@ -511,6 +519,7 @@ $.Control.registerMixin('d3_impl_column', {
         tickLines
             .enter().append('div')
                 .classed('tickLine', true)
+                .classed('origin', function(d) { return d === 0; })
                 .style('top', function(d) { return (yAxisPos - oldYScale(d)) + 'px'; });
         tickLines
             .transition()

@@ -404,11 +404,12 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('x', vizObj._xBarPosition(seriesIndex))
                     .attr('height', function(d) { return oldYScale(d[col.id]); })
                     // don't mousey on dragging because event/renderspam breaks charts
-                    .on('mouseover', function(d) { if (!cc._isDragging) view.highlightRows(d, null, col); })
+                    // check for d because sometimes there's a race condition between unbind and remove
+                    .on('mouseover', function(d) { if (d && !cc._isDragging) view.highlightRows(d, null, col); })
                     .on('mouseout', function(d)
                     {
                         // for perf, only call unhighlight if highlighted.
-                        if (!cc._isDragging && d.sessionMeta && d.sessionMeta.highlight)
+                        if (d && !cc._isDragging && d.sessionMeta && d.sessionMeta.highlight)
                             view.unhighlightRows(d);
                     });
             bars
@@ -418,6 +419,9 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('height', function(d) { return newYScale(d[col.id]); });
             bars
                 .exit()
+                // need to call transition() here as it accounts for the animation ticks;
+                // otherwise you get npe's
+                .transition()
                     .remove();
         });
 
@@ -463,7 +467,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .attr({ y: yAxisPos - 0.5,
                         transform: 'S1,-1,0,' + yAxisPos });
         cc.chartD3.selectAll('.seriesLabel')
-                .attr('transform', viz._labelTransform());
+                .attr('transform', vizObj._labelTransform());
 
         vizObj._renderTicks(yScale, yScale, false);
     },
@@ -514,6 +518,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLines
             .exit()
+            .transition()
                 .remove();
 
         // render our tick labels
@@ -531,6 +536,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLabels
             .exit()
+            .transition()
                 .remove();
     },
 

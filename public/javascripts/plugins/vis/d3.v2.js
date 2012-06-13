@@ -5353,11 +5353,7 @@ d3_raphael_selectionPrototype.datum = d3_selectionPrototype.datum;
  * @name D3RaphaelSelection#remove
  */
 d3_raphael_selectionPrototype.remove = function() {
-    this.each(function() {
-        this.remove();
-    });
-
-    return this;
+    return this.each(function() { this.remove(); });
 };
 
 /**
@@ -5368,7 +5364,10 @@ d3_raphael_selectionPrototype.remove = function() {
  * @function
  * @name D3RaphaelSelection#transition
  */
-d3_raphael_selectionPrototype.transition = function() {
+d3_raphael_selectionPrototype.transition = function(shouldTransition) {
+    // allow an easy way to toggle transitioning
+    if (shouldTransition === false) return this;
+
     // minor hack to sub out the dependency we want to inject.
     var old_d3_transitionPrototype = d3_transitionPrototype;
     d3_transitionPrototype = d3_raphael_transitionPrototype;
@@ -5543,7 +5542,11 @@ d3_raphael_transitionPrototype.text = d3_raphael_selectionPrototype.text;
  * @function
  * @name D3RaphaelTransitionSelection#remove
  */
-d3_raphael_transitionPrototype.remove = d3_transitionPrototype.remove;
+d3_raphael_transitionPrototype.remove = function() {
+    return this.each("end.transition", function() {
+        this.remove();
+    });
+};
 
 d3_raphael_transitionPrototype.style = throw_raphael_not_supported;
 d3_raphael_transitionPrototype.styleTween = throw_raphael_not_supported;
@@ -5563,8 +5566,7 @@ if (typeof Sizzle === "function") {
         // but first build an index of ids we're looking for
         var domElemIndex = {};
         for (var i = -1; ++i < elemCount;) {
-            var domElem = domElems[i];
-            domElemIndex[domElem.raphaelid] = true;
+            domElemIndex[domElems[i].raphaelid] = true;
         }
 
         var raphaelElems = [];

@@ -288,10 +288,10 @@ $row_zebra_color: #f6f6f6
     &:after
       display: inline
 
-@mixin no-pointer-events
+@mixin no-pointer-events($pngurl:"images/empty.gif")
   pointer-events: none
   .ie7 &, .ie8 &
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='empty.gif', sizingMethod='scale')
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=#{$pngurl}, sizingMethod='scale')
     background: none !important
 
 @mixin drag-handle

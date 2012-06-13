@@ -32,7 +32,7 @@
     height: 1px
     left: 0
     @include opacity(0.7)
-    @include no-pointer-events
+    @include no-pointer-events("/stylesheets/images/content/70percentwhite.png")
     position: absolute
     width: 100%
     z-index: 1
@@ -42,6 +42,6 @@
     font-size: 1.2em
     margin-top: -1em
     padding: 0 0.3em
-    pointer-events: none
+    @include no-pointer-events("/stylesheets/images/content/70percentwhite.png")
     position: absolute
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8)

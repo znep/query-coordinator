@@ -95,6 +95,18 @@ $.component.Container.extend('GridContainer', 'content', {
         });
     },
 
+    _moveChildDom: function(child)
+    {
+        this._renderStatus.layoutStale = true;
+        this._super.apply(this, arguments);
+    },
+
+    _removeChildDom: function(child)
+    {
+        this._renderStatus.layoutStale = true;
+        this._super.apply(this, arguments);
+    },
+
     _propWrite: function()
     {
         this._renderStatus.layoutStale = true;

@@ -294,7 +294,7 @@ $.Control.registerMixin('d3_impl_column', {
             defaults = vizObj.defaults,
             data = cc.currentData,
             valueColumns = vizObj._valueColumns,
-            $chartArea = cc.$chartArea
+            $chartArea = cc.$chartArea,
             maxValue = cc.maxValue,
             view = vizObj._primaryView;
 

@@ -409,12 +409,31 @@ $.Control.registerMixin('d3_impl_column', {
 
                     // don't mousey on dragging because event/renderspam breaks charts
                     // check for d because sometimes there's a race condition between unbind and remove
-                    .on('mouseover', function(d) { if (d && !cc._isDragging) view.highlightRows(d, null, col); })
+                    .on('mouseover', function(d)
+                    {
+                        if (d && !cc._isDragging)
+                        {
+                            var rObj = this;
+                            rObj.tip = $(rObj.node).socrataTip({
+                                content: vizObj.renderFlyout(d, col.tableColumnId, view),
+                                positions: (d[col.id] > 0) ? 'top' : 'bottom',
+                                trigger: 'now'
+                            });
+                            rObj.tip.adjustPosition({
+                                top: (d[col.id] > 0) ? 0 : Math.abs(newYScale(0) - newYScale(d[col.id])),
+                                left: cc.barWidth / 2
+                            });
+                            view.highlightRows(d, null, col);
+                        }
+                    })
                     .on('mouseout', function(d)
                     {
                         // for perf, only call unhighlight if highlighted.
                         if (d && !cc._isDragging && d.sessionMeta && d.sessionMeta.highlight)
+                        {
+                            this.tip.destroy();
                             view.unhighlightRows(d);
+                        }
                     });
             bars
                     .attr('fill', vizObj.d3.util.colorizeRow(colDef))

@@ -74,9 +74,16 @@ var picker = function($field, vals, curValue)
                 _.each(['name', 'id', 'description', 'category', 'tags'], function(key)
                         { d[key] = dc.dataset[key]; });
                 break;
+
+            case 'column':
+                _.each(['name', 'renderTypeName'], function(key)
+                        { d[key] = dc.column[key]; });
+                break;
+
             case 'row':
                 $.extend(d, dc.row);
                 break;
+
             case 'datasetList':
                 d.count = dc.count;
                 _.each(dc.datasetList, function(dsDc, i)

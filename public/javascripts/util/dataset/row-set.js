@@ -391,7 +391,7 @@ var RowSet = ServerModel.extend({
             var ilViews = [];
             _.each(customAggs, function(aggList, cId)
             {
-                _.each(aggList, function(a, i)
+                _.each($.makeArray(aggList), function(a, i)
                 {
                     if ($.subKeyDefined(rs._aggCache, cId + '.' + a))
                     { aggs.push({columnId: cId, name: a, value: rs._aggCache[cId][a]}); }

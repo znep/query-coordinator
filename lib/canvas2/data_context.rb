@@ -27,13 +27,14 @@ module Canvas2
         elsif config['required']
           return false
         end
+
       when 'dataset'
         if !get_dataset(config) do |ds|
           available_contexts[id] = {id: id, type: config['type'], dataset: ds}
           if (defined? @pending_contexts) && (((@pending_contexts || {})[id]).is_a? Array)
             threads = @pending_contexts[id].map do |req|
               Thread.new do
-                ds_new = ds.deep_clone(View)
+                ds_new = req[:config]['keepOriginal'] ? ds : ds.deep_clone(View)
                 got_dataset(ds_new, req[:config])
                 req[:callback].call(ds_new)
               end
@@ -44,6 +45,23 @@ module Canvas2
         end
           return false
         end
+
+      when 'column'
+        get_dataset({'keepOriginal' => config['query'].blank?}.merge(config)) do |ds|
+          col = ds.column_by_id_or_field_name(config['columnId'])
+          if col.nil?
+            return false if !config['required']
+            break
+          end
+
+          if !config['aggregate'].blank?
+            aggs = {}
+            aggs[col.id] = config['aggregate'].is_a?(Array) ? config['aggregate'] : [config['aggregate']]
+            ds.get_aggregates(aggs)
+          end
+          available_contexts[id] = { id: id, type: config['type'], column: col }
+        end
+
       when 'row'
         get_dataset(config) do |ds|
           r = ds.get_rows(1)[:rows][0]
@@ -110,7 +128,7 @@ module Canvas2
         context = available_contexts[config['contextId']]
         if !context.blank?
           return !config['required'] if context[:dataset].blank?
-          ds = context[:dataset].deep_clone(View)
+          ds = config['keepOriginal'] ? context[:dataset] : context[:dataset].deep_clone(View)
         else
           @pending_contexts ||= {}
           @pending_contexts[config['contextId']] ||= []
@@ -137,7 +155,7 @@ module Canvas2
     end
 
     def self.got_dataset(ds, config)
-      add_query(ds, config['query'])
+      add_query(ds, config['query']) if !config['keepOriginal']
       ds.data['totalRows'] = ds.get_total_rows if config['getTotal']
     end
   end

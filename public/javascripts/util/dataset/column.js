@@ -10,7 +10,7 @@ var Column = ServerModel.extend({
         // Calls _setUpColumn & updateChildColumns
         this.setParent(parent);
 
-        this.aggregates = {};
+        this.aggregates = this.aggregates || {};
 
         $.extend(this._cloneExclude, {_ntInit: true});
     },

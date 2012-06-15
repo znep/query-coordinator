@@ -40,34 +40,65 @@ $.component.Component.extend('Inline filter', 'input', {
 
 var renderUpdate = function()
 {
-    var opts = {datasets: getDatasetList(this)};
+    // We don't support mixed data context types, so check the first one to decide what to do
+    var dcList = $.makeArray(this._dataContext);
+    if (dcList.length < 1) { return; }
 
-    if (!$.isBlank(this._properties.columnFilter))
+    var opts = {};
+    var cf = this._stringSubstitute(this._properties.columnFilter);
+    var addCondition = function(tcIds)
     {
-        var cf = this._stringSubstitute(this._properties.columnFilter);
-        var tcIds = {};
-        opts.datasets = _.select(opts.datasets, function(ds)
+        if ($.isBlank(opts.rootCondition))
         {
-            var c = ds.columnForIdentifier(cf.column);
-            if (!$.isBlank(c))
-            { tcIds[ds.publicationGroup] = c.tableColumnId; }
-            return !$.isBlank(c);
-        });
-
-        opts.rootCondition = {
-            type: 'operator',
-            value: 'AND',
-            children: [{
+            opts.rootCondition = {
                 type: 'operator',
-                value: 'OR',
-                metadata: $.extend({operator: 'EQUALS'}, cf, { tableColumnId: tcIds })
-            }],
-            metadata: {
-                advanced: false,
-                unifiedVersion: 2
-            }
-        };
+                value: 'AND',
+                children: [],
+                metadata: {
+                    advanced: false,
+                    unifiedVersion: 2
+                }
+            };
+        }
+        opts.rootCondition.children.push({
+            type: 'operator',
+            value: 'OR',
+            metadata: $.extend({operator: 'EQUALS'}, cf, { tableColumnId: tcIds })
+        });
         opts.minimalDisplay = true;
+    };
+
+    var firstDC = _.first(dcList);
+    if (firstDC.type == 'column')
+    {
+        opts.datasets = [];
+        _.each(dcList, function(dc)
+        {
+            if (dc.type != 'column') { return; }
+            opts.datasets.push(dc.column.view);
+            var tcIds = {};
+            tcIds[dc.column.view.publicationGroup] = dc.column.tableColumnId;
+            addCondition(tcIds);
+        });
+    }
+
+    else if (firstDC.type == 'dataset' || firstDC.type == 'datasetList')
+    {
+        opts.datasets = getDatasetList(dcList);
+
+        if (!$.isBlank(cf))
+        {
+            var tcIds = {};
+            opts.datasets = _.select(opts.datasets, function(ds)
+            {
+                var c = ds.columnForIdentifier(cf.column);
+                if (!$.isBlank(c))
+                { tcIds[ds.publicationGroup] = c.tableColumnId; }
+                return !$.isBlank(c);
+            });
+
+            addCondition(tcIds);
+        }
     }
 
     if (opts.datasets.length < 1) { return; }
@@ -86,10 +117,10 @@ var renderUpdate = function()
     this._updateValidity();
 };
 
-var getDatasetList = function(cObj)
+var getDatasetList = function(dcList)
 {
     var datasets = [];
-    _.each($.makeArray(cObj._dataContext), function(dc)
+    _.each(dcList, function(dc)
     {
         switch (dc.type)
         {

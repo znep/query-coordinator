@@ -71,7 +71,25 @@
                     });
                 }
 
-                doneLoading(curC);
+                if (!$.isBlank(curC.column))
+                {
+                    if (!(curC.column instanceof Column))
+                    { curC.column = new Column(curC.column); }
+                    if ($.isBlank(curC.column.view))
+                    {
+                        loadDataset(dc, id, $.extend({keepOriginal: $.isBlank(config.query)}, config),
+                        function(ds)
+                        {
+                            curC.column.setParent(ds);
+                            doneLoading(curC);
+                        });
+                    }
+                    else
+                    { doneLoading(curC); }
+                }
+                else
+                { doneLoading(curC); }
+
                 return;
             }
 
@@ -90,6 +108,33 @@
                                 doneLoading(dc.availableContexts[id]);
                             }
                         });
+                    }, errorLoading);
+                    break;
+
+                case 'column':
+                    loadDataset(dc, id, $.extend({keepOriginal: $.isBlank(config.query)}, config),
+                    function(ds)
+                    {
+                        var col = ds.columnForIdentifier(config.columnId);
+                        var finishCol = function()
+                        {
+                            dc.availableContexts[id] = { id: id, type: config.type, column: col };
+                            doneLoading(dc.availableContexts[id]);
+                        };
+
+                        if ($.isBlank(col))
+                        { errorLoading(id); }
+                        else
+                        {
+                            if (!$.isBlank(config.aggregate))
+                            {
+                                var aggs = {};
+                                aggs[col.id] = $.makeArray(config.aggregate);
+                                ds.getAggregates(finishCol, aggs);
+                            }
+                            else
+                            { finishCol(); }
+                        }
                     }, errorLoading);
                     break;
 
@@ -217,7 +262,7 @@
     {
         var gotDS = function(ds)
         {
-            addQuery(ds, config.query);
+            if (!config.keepOriginal) { addQuery(ds, config.query); }
             if (config.getTotal)
             { ds.getTotalRows(function() { callback(ds); }, function() { errorCallback(id); }) }
             else { callback(ds); }
@@ -232,7 +277,7 @@
                     errorCallback(id);
                     return;
                 }
-                gotDS(context.dataset.clone());
+                gotDS(config.keepOriginal ? context.dataset : context.dataset.clone());
             }))
             {
                 // When loading the initial hash, we might have references in

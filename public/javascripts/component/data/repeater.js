@@ -184,6 +184,7 @@ $.component.Container.extend('Repeater', 'content', {
             _.each(this._dataContext.datasetList, function(ds, i)
                     { cObj._setRow(ds, i, $.extend({}, ds), callback); });
         }
+        // Nothing to repeat on for row or column
     },
 
     _render: function()

@@ -253,6 +253,53 @@ class View < Model
     return result
   end
 
+  def get_aggregates(aggregates, conditions = {})
+    merged_conditions = self.query.cleaned.deep_merge(conditions)
+    request_body = {
+      'name' => self.name,
+      'searchString' => merged_conditions.delete('searchString'),
+      'query' => merged_conditions,
+      'originalViewId' => self.id,
+      'columns' => visible_columns.map { |c| c.deep_clone(Column) }
+    }
+
+    url = "/views/INLINE/rows.json?method=getAggregates"
+    reqs = []
+    aggregates.each do |col_id, agg_list|
+      col = self.column_by_id(col_id)
+      next if col.blank?
+      agg_list = [agg_list] if !agg_list.is_a?(Array)
+      agg_list.each_with_index do |agg, i|
+        if reqs.length <= i
+          reqs << request_body.clone
+          reqs[i]['columns'] = request_body['columns'].map { |c| c.deep_clone(Column) }
+        end
+        req_col = reqs[i]['columns'].detect { |c| c.id == col.id }
+        req_col.update({ 'aggregate' => { 'type' => agg } }) if !req_col.blank?
+      end
+    end
+
+    agg_results = {}
+    CoreServer::Base.connection.batch_request do
+      reqs.each do |req|
+        r = req.to_json
+        CoreServer::Base.connection.create_request(url, r, {}, true)
+      end
+    end.each do |r|
+      agg_resp = JSON.parse(r['response'], {:max_nesting => 25})
+      agg_resp.each do |agg|
+        agg_results[agg['columnId']] ||= {}
+        agg_results[agg['columnId']][agg['name']] = agg['value']
+        col = self.column_by_id(agg['columnId'])
+        if !col.blank?
+          col.data['aggregates'] ||= {}
+          col.data['aggregates'][agg['name']] = agg['value'].to_f
+        end
+      end
+    end
+    agg_results
+  end
+
 
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"

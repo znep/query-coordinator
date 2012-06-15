@@ -64,7 +64,7 @@ $.Control.registerMixin('d3_base', {
                     if (d.sessionMeta && d.sessionMeta.highlight &&
                         (!d.sessionMeta.highlightColumn || (d.sessionMeta.highlightColumn == colDef.column.id)))
                     {
-                        return '#' + $.rgbToHex($.brighten(colDef.color, -20)); // why the fuck does brighten darken
+                        return '#' + $.rgbToHex($.brighten(colDef.color, 20)); // why the fuck does brighten darken
                     }
                     else
                     {

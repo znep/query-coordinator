@@ -18,6 +18,9 @@ $.Control.registerMixin('d3_base_dynamic', {
     {
         var vizObj = this;
         delete vizObj._dynamicSizingCalculated;
+        delete vizObj._lastRowCount;
+        delete vizObj._currentRenderRange;
+        delete vizObj._currentRangeData;
         vizObj._super();
     },
 

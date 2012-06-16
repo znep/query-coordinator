@@ -416,7 +416,7 @@ $.Control.registerMixin('d3_impl_column', {
                             var rObj = this;
                             rObj.tip = $(rObj.node).socrataTip({
                                 content: vizObj.renderFlyout(d, col.tableColumnId, view),
-                                positions: (d[col.id] > 0) ? 'top' : 'bottom',
+                                positions: (d[col.id] > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
                                 trigger: 'now'
                             });
                             rObj.tip.adjustPosition({

@@ -397,9 +397,9 @@ $.Control.registerMixin('d3_impl_column', {
                     .classed('dataBar', true)
                     .classed(seriesClass, true)
                     .attr({ stroke: '#fff',
-                            fill: colDef.color,
                             width: cc.barWidth })
 
+                    .attr('fill', function(d) { return d.color || colDef.color; })
 
                     .attr('x', vizObj._xBarPosition(seriesIndex))
                     .attr('y', vizObj._yBarPosition(col.id, oldYScale))

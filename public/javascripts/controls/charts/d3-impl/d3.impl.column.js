@@ -359,8 +359,10 @@ $.Control.registerMixin('d3_impl_column', {
         var vizObj = this,
             cc = vizObj._columnChart;
         return d3.scale.linear()
-                .domain([ Math.min(0, cc.minValue), cc.maxValue ])
-                .range([ 0, vizObj._yAxisPos() - vizObj.defaults.dataMaxBuffer ]);
+            .domain([ $.deepGet(vizObj, '_displayFormat', 'yAxis', 'min') || Math.min(0, cc.minValue),
+                      $.deepGet(vizObj, '_displayFormat', 'yAxis', 'max') || cc.maxValue ])
+            .range([ 0, vizObj._yAxisPos() - vizObj.defaults.dataMaxBuffer ])
+            .clamp(true);
     },
 
     // call this if the active set of data has changed

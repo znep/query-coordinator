@@ -400,12 +400,12 @@ $.Control.registerMixin('d3_impl_column', {
                             fill: colDef.color,
                             width: cc.barWidth })
 
-                    .each(function() { this.__dataColumn = col; })
 
                     .attr('x', vizObj._xBarPosition(seriesIndex))
+                    .attr('y', vizObj._yBarPosition(col.id, oldYScale))
+                    .attr('height', vizObj._yBarHeight(col.id, oldYScale))
 
-                    .attr('y', function(d) { return yAxisPos - oldYScale(Math.max(0, d[col.id])) + 0.5; })
-                    .attr('height', function(d) { return Math.abs(oldYScale(0) - oldYScale(d[col.id])); })
+                    .each(function() { this.__dataColumn = col; })
 
                     // don't mousey on dragging because event/renderspam breaks charts
                     // check for d because sometimes there's a race condition between unbind and remove
@@ -439,8 +439,8 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('fill', vizObj.d3.util.colorizeRow(colDef))
                 .transition()
                     .duration(1000)
-                    .attr('y', function(d) { return yAxisPos - newYScale(Math.max(0, d[col.id])) + 0.5; })
-                    .attr('height', function(d) { return Math.abs(newYScale(0) - newYScale(d[col.id])); });
+                    .attr('y', vizObj._yBarPosition(col.id, newYScale))
+                    .attr('height', vizObj._yBarHeight(col.id, newYScale));
             bars
                 .exit()
                 // need to call transition() here as it accounts for the animation ticks;
@@ -490,8 +490,8 @@ $.Control.registerMixin('d3_impl_column', {
         cc.chartD3.selectAll('.dataBar')
             .transition()
                 .duration(1000)
-                .attr('y', function(d) { return yAxisPos - yScale(Math.max(0, d[this.__dataColumn.id])) + 0.5; })
-                .attr('height', function(d) { return Math.abs(yScale(0) - yScale(d[this.__dataColumn.id])); });
+                .attr('y', vizObj._yBarPosition(function() { return this.__dataColumn.id; }, yScale))
+                .attr('height', vizObj._yBarHeight(function() { return this.__dataColumn.id; }, yScale));
 
         cc.chartD3.selectAll('.seriesLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -580,6 +580,20 @@ $.Control.registerMixin('d3_impl_column', {
         {
             return staticParts + (d.index * cc.seriesWidth);
         };
+    },
+
+    _yBarPosition: function(colId, yScale)
+    {
+        var yAxisPos = this._yAxisPos();
+        var isFunction = _.isFunction(colId);
+        return function(d) { return yAxisPos - yScale(Math.max(0, d[isFunction ? colId.call(this) : colId])) + 0.5; };
+    },
+
+    _yBarHeight: function(colId, yScale)
+    {
+        var yScaleZero = yScale(0);
+        var isFunction = _.isFunction(colId);
+        return function(d) { return Math.abs(yScaleZero - yScale(d[isFunction ? colId.call(this) : colId])); };
     },
 
     _labelTransform: function()

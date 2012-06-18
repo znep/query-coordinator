@@ -301,6 +301,12 @@ $row_zebra_color: #f6f6f6
 @mixin required-star
   background: url(/stylesheets/images/common/required.png) no-repeat left 3px
 
+@mixin css3er($prop_name, $prop_value)
+  #{$prop_name}: $prop_value
+  -moz-#{$prop_name}: $prop_value
+  webkit-#{$prop_name}: $prop_value
+  -webkit-#{$prop_name}: $prop_value
+
 @mixin dl-section-content
   > dt
     color: $color_chrome_sidebar_text

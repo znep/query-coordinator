@@ -1,7 +1,35 @@
+.yLabelVert
+  font-size: 1.4em
+  font-weight: bold
+  left: -23.65em
+  margin-top: -4em
+  position: absolute
+  @include css3er(transform, rotate(-90deg))
+  text-align: center
+  top: 50%
+  width: 50em
+
+  .ie &
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3)
+
+.xLabelHoriz
+  background: url(/stylesheets/images/content/70percentwhite.png)
+  bottom: 2em
+  font-size: 1.4em
+  font-weight: bold
+  left: 50%
+  margin-left: -50%
+  padding: 0.2em
+  position: absolute
+  text-align: center
+
 .chartArea.columnChart
   height: 100%
   overflow: hidden
   position: relative
+
+  &.hasYLabelVert
+    margin-left: 4em
 
   .chartContainer
     height: 100%

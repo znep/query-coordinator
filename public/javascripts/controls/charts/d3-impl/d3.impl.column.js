@@ -32,6 +32,9 @@ $.Control.registerMixin('d3_impl_column', {
         cc.$chartContainer = $dom.find('.chartContainer');
         cc.$baselineContainer = $dom.find('.baselineContainer');
 
+        // for positioning
+        $dom.css('position', 'relative');
+
         // default draw element position is 0
         cc.drawElementPosition = 0;
 
@@ -84,6 +87,9 @@ $.Control.registerMixin('d3_impl_column', {
             start: function() { cc._isDragging = true; },
             stop: function() { cc._isDragging = false; }
         });
+
+        // set up side stuff
+        vizObj._decorateChrome();
 
         // super
         vizObj._super();
@@ -165,6 +171,38 @@ $.Control.registerMixin('d3_impl_column', {
         if (!$.isBlank(vizObj._columnChart.maxValue))
         {
             vizObj._columnChart.doResizeHandle();
+        }
+    },
+
+    _decorateChrome: function()
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart;
+
+        // render y axis label
+        if (!$.isBlank(vizObj._displayFormat.titleY))
+        {
+            cc.$chartArea.addClass('hasYLabelVert');
+            cc.$chartArea.after($.tag({
+                tagName: 'div',
+                'class': 'yLabelVert',
+                contents: $.htmlStrip(vizObj._displayFormat.titleY)
+            }));
+        }
+
+        // render x axis label
+        if (!$.isBlank(vizObj._displayFormat.titleX))
+        {
+            cc.$chartArea.addClass('hasXLabelHoriz');
+            var $label = $.tag({
+                tagName: 'div',
+                'class': 'xLabelHoriz',
+                contents: $.htmlStrip(vizObj._displayFormat.titleX)
+            });
+            cc.$chartArea.append($label);
+
+            // need to manually fix the label width due to bg image
+            $label.css('margin-left', -0.5 * $label.width());
         }
     },
 

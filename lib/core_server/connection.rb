@@ -44,8 +44,8 @@ module CoreServer
       end
     end
 
-    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false)
-      if @batching
+    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, use_batching = false)
+      if @batching && use_batching
        @batch_queue << {:url => path, :body => payload, :requestType => 'POST'}
       else
         result_body = cache_req ? cache.read("#{CurrentDomain.cname}:#{path}:#{payload}") : nil

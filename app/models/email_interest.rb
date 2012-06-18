@@ -4,7 +4,7 @@ class EmailInterest < Model
   def self.create(user_id, tag)
     path = "/users/#{user_id}/#{self.service_name}.json"
     attributes = {eventTag: tag}
-    CoreServer::Base.connection.create_request(path, attributes.to_json)
+    CoreServer::Base.connection.create_request(path, attributes.to_json, {}, false, true)
   end
 
   def delete(user_id)

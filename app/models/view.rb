@@ -283,7 +283,7 @@ class View < Model
     CoreServer::Base.connection.batch_request do
       reqs.each do |req|
         r = req.to_json
-        CoreServer::Base.connection.create_request(url, r, {}, true)
+        CoreServer::Base.connection.create_request(url, r, {}, true, true)
       end
     end.each do |r|
       agg_resp = JSON.parse(r['response'], {:max_nesting => 25})

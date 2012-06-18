@@ -44,7 +44,7 @@ class Configuration < Model
     data['properties'].push({'name' => name, 'value' => value})
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties.json"
     CoreServer::Base.connection.
-      create_request(url, {'name' => name, 'value' => value}.to_json)
+      create_request(url, {'name' => name, 'value' => value}.to_json, {}, false, true)
   end
 
   def update_property(name, value)

@@ -1450,10 +1450,13 @@
     var yPoint = function(chartObj, row, value, series, basePt)
     {
         var isPieTypeChart = _.include(['pie', 'donut'], chartObj._chartType);
+        var isLineTypeChart = _.include(['line', 'area'], chartObj._chartType);
         if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
-        var point = {y: value || 0, label: {}, id: row.id + '_' + series.id};
+        var point = {y: value, label: {}, id: row.id + '_' + series.id};
+        if (!isLineTypeChart) point.y = point.y || 0;
+
         point.isNull = _.isNull(value);
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
@@ -1716,7 +1719,7 @@
             var p = chartObj.chart.get(point.id);
             if ($.isBlank(p))
             { chartObj.chart.get(series.id).addPoint(point, false); }
-            else
+            else if (!p.isNull)
             {
                 if (point.selected && !p.selected) { p.select(true, true); }
                 else if (!point.selected && p.selected) { p.select(false, true); }

@@ -657,23 +657,19 @@ $.Control.registerMixin('d3_impl_column', {
             .enter().append('div')
                 .classed('valueMarkerContainer', true)
                 .style('top', function(d) { return (yAxisPos - oldYScale(parseFloat(d.atValue))) + 'px'; })
-                .on('mouseover', function(d)
+                .each(function(d)
                 {
                     var $this = $(this);
-                    if ($this.hasClass('tipped')) return;
 
-                    $this.addClass('tipped');
+                    // need to jQuery each rather than .html and .on because ie
+                    $this.append($.tag([
+                        { tagName: 'div', 'class': 'markerBg', style: { 'background-color': d.color } },
+                        { tagName: 'div', 'class': 'markerLine', style: { 'background-color': d.color } }
+                    ], true));
                     $this.socrataTip({
                         message: $.htmlStrip(d.caption),
                         positions: [ 'top', 'bottom' ]
                     });
-                })
-                .html(function(d)
-                {
-                    return $.tag([
-                        { tagName: 'div', 'class': 'markerBg', style: { 'background-color': d.color } },
-                        { tagName: 'div', 'class': 'markerLine', style: { 'background-color': d.color } }
-                    ], true);
                 });
         valueMarkers
             .transition()

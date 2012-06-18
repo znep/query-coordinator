@@ -333,9 +333,9 @@
             if ($.isBlank(config.region)) { return; }
         }
 
-        config.hideLayers = config.hideLayers ||
+        config.hideLayers = config.hideLayers || (config.type == 'state' && (
             !mapObj._displayFormat.layers
-            || mapObj._displayFormat.layers.length == 0;
+            || mapObj._displayFormat.layers.length == 0));
         if (mapObj._displayFormat.forceBasemap)
         {
             config.hideLayers = false;
@@ -649,7 +649,7 @@
             {
                 var featureName = feature.attributes['NAME']
                                   || feature.attributes['STATE_NAME'];
-                if (point.length == 2)
+                if (feature.attributes['STATE_ABBR'] && point.length == 2)
                 { featureName = feature.attributes['STATE_ABBR']; }
 
                 return point.toUpperCase() == featureName.toUpperCase();

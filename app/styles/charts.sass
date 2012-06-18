@@ -37,25 +37,62 @@
     overflow-x: auto
 
   .baselineContainer
-    background-color: rgba(0, 0, 0, 0.05)
     cursor: move
     cursor: ns-resize
     margin-top: -2px
     padding: 2px 0
     position: absolute
-    top: -1px
+    top: -3px
     width: 100%
     z-index: 2
 
     &:hover
-      background-color: rgba(0, 0, 0, 0.25)
+      .baselineBg
+        @include opacity(0.25)
 
       .baselineLine
         background-color: #444
 
+    .baselineBg
+      background-color: #000
+      height: 5px
+      @include opacity(0.05)
+      position: absolute
+      top: 0
+      width: 100%
+      z-index: 2
+
     .baselineLine
       height: 1px
+      position: relative
       width: 100%
+      z-index: 3
+
+  .valueMarkerContainer
+    height: 5px
+    margin-top: -2px
+    position: absolute
+    width: 100%
+    z-index: 2
+
+    &:hover
+      .markerBg
+        @include opacity(0.35)
+
+    .markerBg
+      height: 5px
+      @include opacity(0.1)
+      position: absolute
+      top: 0
+      width: 100%
+      z-index: 2
+
+    .markerLine
+      height: 1px
+      position: absolute
+      top: 2px
+      width: 100%
+      z-index: 3
 
   .tickLine
     background-color: #ccc

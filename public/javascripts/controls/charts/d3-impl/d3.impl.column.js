@@ -24,6 +24,7 @@ $.Control.registerMixin('d3_impl_column', {
             { tagName: 'div', 'class': 'chartArea columnChart', contents: [
                 { tagName: 'div', 'class': 'chartContainer' },
                 { tagName: 'div', 'class': 'baselineContainer', contents: [
+                    { tagName: 'div', 'class': 'baselineBg' },
                     { tagName: 'div', 'class': 'baselineLine' }
                 ] }
             ] }
@@ -512,6 +513,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .remove();
 
         vizObj._renderTicks(oldYScale, newYScale, true);
+        vizObj._renderValueMarkers(oldYScale, newYScale, true);
 
         // save off our yScale
         cc.yScale = newYScale;
@@ -537,6 +539,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .attr('transform', vizObj._labelTransform());
 
         vizObj._renderTicks(yScale, yScale, false);
+        vizObj._renderValueMarkers(yScale, yScale, false);
     },
 
     // call this if spacings/widths changed
@@ -603,6 +606,52 @@ $.Control.registerMixin('d3_impl_column', {
                 .duration(isAnim ? 1000 : 0)
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLabels
+            .exit()
+            .transition()
+                .remove();
+    },
+
+    _renderValueMarkers: function(oldYScale, newYScale, isAnim)
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            yAxisPos = vizObj._yAxisPos();
+
+        // if we ever to nukeless df updates, need to also remove lines
+        if (!_.isArray(vizObj._displayFormat.valueMarker))
+        {
+            return;
+        }
+
+        var valueMarkers = cc.chromeD3.selectAll('.valueMarkerContainer')
+            .data(vizObj._displayFormat.valueMarker);
+        valueMarkers
+            .enter().append('div')
+                .classed('valueMarkerContainer', true)
+                .style('top', function(d) { return (yAxisPos - oldYScale(parseFloat(d.atValue))) + 'px'; })
+                .on('mouseover', function(d)
+                {
+                    var $this = $(this);
+                    if ($this.hasClass('tipped')) return;
+
+                    $this.addClass('tipped');
+                    $this.socrataTip({
+                        message: $.htmlStrip(d.caption),
+                        positions: [ 'top', 'bottom' ]
+                    });
+                })
+                .html(function(d)
+                {
+                    return $.tag([
+                        { tagName: 'div', 'class': 'markerBg', style: { 'background-color': d.color } },
+                        { tagName: 'div', 'class': 'markerLine', style: { 'background-color': d.color } }
+                    ], true);
+                });
+        valueMarkers
+            .transition()
+                .duration(isAnim ? 1000 : 0)
+                .style('top', function(d) { return (yAxisPos - newYScale(parseFloat(d.atValue))) + 'px'; });
+        valueMarkers
             .exit()
             .transition()
                 .remove();

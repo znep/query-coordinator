@@ -98,6 +98,7 @@ module Canvas2
     class AppHelper
       include ActionView::Helpers::TagHelper
       include ActionView::Helpers::UrlHelper
+      include ActionView::Helpers::NumberHelper
       include Singleton
       include ApplicationHelper
     end
@@ -119,12 +120,38 @@ module Canvas2
               p['prop'] = m[1]
               p['fallback'] = m[2]
             end
+
+            p['transforms'] = []
             p['prop'].match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/) do |m|
               p['prop'] = m[1]
-              p['regex'] = m[2]
-              p['repl'] = m[3]
-              p['modifiers'] = m[4]
+              p['transforms'] << {
+                type: 'regex',
+                regex: m[2],
+                repl: m[3],
+                modifiers: m[4]
+              }
             end
+
+            p['prop'].match(/(.*)\s+([%@])\[([^\]]*)\]$/) do |m|
+              p['prop'] = m[1]
+              t = case m[2]
+                when '%' then 'number_format'
+                when '@' then 'date_format'
+              end
+              p['transforms'] << {
+                type: t,
+                format: m[3]
+              }
+            end
+
+            p['prop'].match(/(.*)\s+=\[([^\]]*)\]$/) do |m|
+              p['prop'] = m[1]
+              p['transforms'] << {
+                type: 'math_expr',
+                expr: m[2]
+              }
+            end
+
             i += 2
           else
             p['orig'] = m[i]
@@ -154,13 +181,9 @@ module Canvas2
             else
               temp = temp.map {|k, v| k + ': ' + v.to_s} if temp.is_a?(Hash)
               temp = temp.join(', ') if temp.is_a?(Array)
-              if p.has_key?('regex')
-                # Woo, backslash
-                repl = p['repl'].gsub(/\$(\d)/, '\\\\\1')
-                r = Regexp.new(p['regex'],
-                               (p['modifiers'].include?('m') ? Regexp::MULTILINE : 0) |
-                               (p['modifiers'].include?('i') ? Regexp::IGNORECASE : 0))
-                temp = p['modifiers'].include?('g') ? temp.gsub(r, repl) : temp.sub(r, repl)
+              p['transforms'].reverse.each do |pt|
+                temp = @@apply_expr[pt[:type]].call(temp, pt) if
+                  !temp.blank? && !@@apply_expr[pt[:type]].blank?
               end
             end
             v = temp
@@ -169,5 +192,76 @@ module Canvas2
         end.join('')
       end
     end
+
+    Default_Precison = 2
+
+    @@apply_expr = {
+      'regex' => lambda do |v, transf|
+        # Woo, backslash
+        repl = transf[:repl].gsub(/\$(\d)/, '\\\\\1')
+        r = Regexp.new(transf[:regex],
+                       (transf[:modifiers].include?('m') ? Regexp::MULTILINE : 0) |
+                       (transf[:modifiers].include?('i') ? Regexp::IGNORECASE : 0))
+        v = v.to_s
+        transf[:modifiers].include?('g') ? v.gsub(r, repl) : v.sub(r, repl)
+      end,
+
+      'number_format' => lambda do |v, transf|
+        return v if v.blank? || (!Float(v) rescue true)
+        v = v.to_f
+
+        prec = nil
+        transf[:format].match(/\d+/) { |m| prec = m[0].to_i }
+
+        use_padding = transf[:format].include?('p')
+        commaify = transf[:format].include?(',')
+        if transf[:format].include?('h')
+          # Humane
+          v = app_helper.number_to_human(v, :precision => prec.blank? ? Default_Precison : prec,
+                              :significant => false,
+                              :strip_insignificant_zeros => !use_padding,
+                              :delimiter => commaify ? ',' : '',
+                              :format =>  "%n%u",
+                              :units => {
+                                :unit => '',
+                                :thousand => 'K',
+                                :million => 'M',
+                                :billion => 'B',
+                                :trillion => 'T'
+                              })
+        elsif transf[:format].include?('e')
+          # Scientific
+          fmt = ('%' + (prec.blank? ? '' : '.' + prec.to_s) + 'e')
+          v = fmt % v
+          v = v.sub(/((\.[1-9]+)|\.)0+($|\D)/, '\2\3') if !use_padding
+        elsif !prec.blank? || transf[:format].include?('f')
+          # Standard fixed precision
+          v = app_helper.number_with_precision(v, :precision => prec.blank? ? Default_Precision : prec,
+                                   :strip_insignificant_zeros => !use_padding,
+                                   :delimiter => commaify ? ',' : '')
+        elsif commaify
+          # commaify only
+          v = app_helper.number_with_delimiter(v)
+        end
+
+        v.to_s
+      end,
+
+      'date_format' => lambda do |v, transf|
+        if v.is_a?(Fixnum)
+          d = Time.at(v)
+        elsif v.is_a?(String)
+          begin
+            d = Time.parse(v)
+          rescue ArgumentError => e
+            d = nil
+          end
+        end
+        return v if d.blank?
+
+        fmt = transf[:format].blank? ? "%a %b %e %Y %H:%M:%S GMT%z (%Z)" : transf[:format]
+        d.strftime(fmt)
+      end
+    }
   end
 end

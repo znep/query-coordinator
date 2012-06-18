@@ -1,4 +1,6 @@
 (function($) {
+    var DEFAULT_NUMBER_PRECISION = 2;
+
     var cache = {};
 
     $.stringSubstitute = function(obj, resolver)
@@ -18,37 +20,78 @@
         else { return obj; }
     };
 
-    var resolveString = function(string, resolver) {
+    var resolveString = function(string, resolver)
+    {
         if (string == undefined)
-            string = '';
+        { string = ''; }
         var compiled = cache[string];
-        if (!compiled) {
+        if (!compiled)
+        {
             var fn = function() { return ''; };
             var pieces = string.match(/({|}|[^{}]+)/mg);
-            if (pieces) {
+            if (pieces)
+            {
                 var props = [];
-                for (var i = 0; i < pieces.length; i++) {
+                for (var i = 0; i < pieces.length; i++)
+                {
                     var p = {};
-                    if (pieces[i] == '{' && pieces[i + 2] == '}') {
+                    if (pieces[i] == '{' && pieces[i + 2] == '}')
+                    {
                         p.orig = pieces[i + 1];
                         p.prop = p.orig;
+
                         var m = p.prop.match(/(.*)\s+\|\|\s*(.*)$/);
                         if (!_.isEmpty(m))
                         {
                             p.prop = m[1];
                             p.fallback = m[2];
                         }
-                        m = p.prop.match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/);
-                        if (!_.isEmpty(m))
+
+                        p.transforms = [];
+                        if (!_.isEmpty(m = p.prop.match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/)))
                         {
                             p.prop = m[1];
-                            p.regex = m[2];
-                            p.repl = m[3];
-                            p.modifiers = m[4];
+                            p.transforms.push({
+                                type: 'regex',
+                                regex: m[2],
+                                repl: m[3],
+                                modifiers: m[4]
+                            });
                         }
+
+                        if (!_.isEmpty(m = p.prop.match(/(.*)\s+([%@])\[([^\]]*)\]$/)))
+                        {
+                            p.prop = m[1];
+                            var t;
+                            switch (m[2])
+                            {
+                                case '%':
+                                    t = 'numberFormat';
+                                    break;
+                                case '@':
+                                    t = 'dateFormat';
+                                    break;
+                            }
+                            p.transforms.push({
+                                type: t,
+                                format: m[3]
+                            });
+                        }
+
+                        if (!_.isEmpty(m = p.prop.match(/(.*)\s+=\[([^\]]*)\]$/)))
+                        {
+                            p.prop = m[1];
+                            var t;
+                            p.transforms.push({
+                                type: 'mathExpr',
+                                expr: m[2]
+                            });
+                        }
+
                         i += 2;
-                    } else
-                        p.orig = pieces[i];
+                    }
+                    else
+                    { p.orig = pieces[i]; }
                     props.push(p);
                 }
                 fn = resBuilder(props);
@@ -90,18 +133,89 @@
                     if (_.isArray(temp)) { temp = temp.join(', '); }
                     temp = !temp.indexOf || temp.indexOf('{') == -1 ?
                         temp : $.stringSubstitute(temp, resolver);
-                    if (!$.isBlank(temp) && !$.isBlank(p.regex))
+                    _.each(p.transforms.reverse(), function(pt)
                     {
-                        var r = p.regex;
-                        // Make multiline mode actually useful...
-                        if (p.modifiers.indexOf('m') > -1)
-                        { r = r.replace(/(^|[^\\])\./, '$1[\\s\\S]'); }
-                        temp = temp.replace(new RegExp(r, p.modifiers), p.repl);
-                    }
+                        if (!$.isBlank(temp) && _.isFunction(applyExpr[pt.type]))
+                        { temp = applyExpr[pt.type](temp, pt); }
+                    });
                 }
                 a.push(temp);
             }
             return a.join('');
         };
     };
+
+    var applyExpr =
+    {
+        regex: function(v, transf)
+        {
+            var r = transf.regex;
+            // Make multiline mode actually useful...
+            if (transf.modifiers.indexOf('m') > -1)
+            { r = r.replace(/(^|[^\\])\./, '$1[\\s\\S]'); }
+            return v.replace(new RegExp(r, transf.modifiers), transf.repl);
+        },
+
+        numberFormat: function(v, transf)
+        {
+            if (!_.isNumber(parseFloat(v))) { return v; }
+            v = parseFloat(v);
+
+            var prec = transf.format.match(/\d+/);
+            if (!$.isBlank(prec))
+            { prec = parseInt(_.first(prec)); }
+
+            // Humane, scientific, or normal & precision
+            var didFmt = false;
+            if (transf.format.indexOf('h') > -1)
+            {
+                v = blist.util.toHumaneNumber(v, $.isBlank(prec) ? DEFAULT_NUMBER_PRECISION : prec);
+                didFmt = true;
+            }
+            else if (transf.format.indexOf('e') > -1)
+            {
+                v = v.toExponential(prec);
+                didFmt = true;
+            }
+            else if (!$.isBlank(prec) || transf.format.indexOf('f') > -1)
+            {
+                v = v.toFixed($.isBlank(prec) ? DEFAULT_NUMBER_PRECISION : prec);
+                didFmt = true;
+            }
+
+            // Convert to string now
+            v = v.toString();
+
+            // Strip padding if formatted, unless desired
+            if (didFmt && transf.format.indexOf('p') < 0)
+            { v = v.replace(/((\.[1-9]+)|\.)0+($|\D)/, '$2$3'); }
+
+            // Comma-ify
+            if (transf.format.indexOf(',') > -1)
+            { v = v.replace(/\d+/, $.commaify); }
+
+            return v;
+        },
+
+        dateFormat: function(v, transf)
+        {
+            var d;
+            if (_.isNumber(v))
+            { d = new Date(v * 1000); }
+            else if (_.isString(v))
+            { d = Date.parse(v); }
+
+            if ($.isBlank(d)) { return v; }
+
+            // Make format conform to what DateJS can handle from standard Unix strftime(3)
+            var fmt = transf.format.replace('%z', 'O');
+            return d.format(fmt);
+        },
+
+        mathExpr: function(v, transf)
+        {
+            return v;
+        }
+    };
+
 })(jQuery);

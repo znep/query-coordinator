@@ -22,6 +22,8 @@ javascripts:
     - public/javascripts/controls/loading-spinner.js
     - public/javascripts/util/util.js
     - public/javascripts/util/load-translations.js
+    - public/javascripts/util/humane-number.js
+    - public/javascripts/util/humane-date.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
     - public/javascripts/util/base-model.js
@@ -52,7 +54,6 @@ javascripts:
     - public/javascripts/controls/menu.js
     - public/javascripts/screens/all-screens.js
   shared-editors:
-    - public/javascripts/util/humane-number.js
     - public/javascripts/controls/editors/editor-base.js
     - public/javascripts/controls/editors/text-editor.js
     - public/javascripts/plugins/datepicker.js
@@ -156,7 +157,6 @@ javascripts:
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/calendars/default-calendar.js
   shared-table-render:
-    - public/javascripts/util/humane-number.js
     - public/javascripts/controls/table/model.js
     - public/javascripts/controls/table/table.js
     - public/javascripts/controls/table/table_nav.js
@@ -181,7 +181,6 @@ javascripts:
     - public/javascripts/controls/maps/openlayers-map.js
     - public/javascripts/controls/maps/rastermap-map.js
   shared-chart:
-    - public/javascripts/util/humane-number.js
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/rich-render-library.js
@@ -288,7 +287,6 @@ javascripts:
     - public/javascripts/screens/browse.js
   screen-nominations:
     - public/javascripts/plugins/ajaxupload.js
-    - public/javascripts/util/humane-date.js
     - public/javascripts/util/base-model.js
     - public/javascripts/util/socrata-server.js
     - public/javascripts/util/nomination.js
@@ -296,7 +294,6 @@ javascripts:
     - public/javascripts/screens/nominations.js
   screen-nomination:
     - public/javascripts/util/inline-login.js
-    - public/javascripts/util/humane-date.js
     - public/javascripts/util/serialize.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/util/base-model.js
@@ -316,7 +313,6 @@ javascripts:
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/controls/embed-form.js
-    - public/javascripts/util/humane-date.js
     - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/dataset-controls.js
@@ -363,7 +359,6 @@ javascripts:
     - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
-    - public/javascripts/util/humane-date.js
     - public/javascripts/util/inline-login.js
     - public/javascripts/util/konami.js
     - public/javascripts/controls/wizard-prompt.js
@@ -432,7 +427,6 @@ javascripts:
     - public/javascripts/plugins/jquery.imgareaselect.js
     - public/javascripts/screens/dataset-thumbnail.js
   screen-bare-dataset:
-    - public/javascripts/util/humane-date.js
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/plugins/lab.js
@@ -440,7 +434,6 @@ javascripts:
     - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/dataset-bare.js
   render-view-minimum:
-    - public/javascripts/util/humane-date.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
@@ -463,7 +456,6 @@ javascripts:
     - public/javascripts/screens/reset-password-screen.js
   screen-profile:
     - public/javascripts/util/serialize.js
-    - public/javascripts/util/humane-date.js
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:
     - public/javascripts/plugins/ajaxupload.js

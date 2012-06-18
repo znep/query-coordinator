@@ -113,14 +113,21 @@ $.Control.registerMixin('d3_impl_column', {
         vizObj._columnChart.currentData = data;
 
         // precalculate some stuff
+
         // figure out the max value for this slice
+        var relevantColumns = _.pluck(vizObj._valueColumns, 'column');
+        if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
+        {
+            var plot = vizObj._displayFormat.plot;
+            relevantColumns.push(vizObj._primaryView.columnForFieldName(plot.errorBarLow));
+            relevantColumns.push(vizObj._primaryView.columnForFieldName(plot.errorBarHigh));
+        }
+        relevantColumns = _.uniq(relevantColumns);
         var allValues = _.reduce(data, function(values, row)
         {
-            return values.concat(_.map(vizObj._valueColumns, function(colDef)
+            return values.concat(_.map(relevantColumns, function(col)
             {
-                var col = colDef.column,
-                    rawValue = row[col.id];
-                return col.dataType.matchValue ? col.dataType.matchValue(rawValue) : rawValue;
+                return col.dataType.matchValue ? col.dataType.matchValue(row[col.id]) : row[col.id];
             }));
         }, []);
         vizObj._columnChart.maxValue = d3.max(allValues); // cache off maxValue for other renders
@@ -506,11 +513,32 @@ $.Control.registerMixin('d3_impl_column', {
                 // 10 is to bump the text off from the actual axis
                 .attr('transform', vizObj._labelTransform());
         rowLabels
-            .attr('font-weight', function(d) { return (d.sessionMeta && d.sessionMeta.highlight) ? 'bold' : 'normal'; })
-            .text(function(d) { return d[vizObj._fixedColumns[0].id]; }); // WHY IS THIS AN ARRAY
+                .attr('font-weight', function(d) { return (d.sessionMeta && d.sessionMeta.highlight) ? 'bold' : 'normal'; })
+                .text(function(d) { return d[vizObj._fixedColumns[0].id]; }); // WHY IS THIS AN ARRAY
         rowLabels
             .exit()
                 .remove();
+
+        // render error markers if applicable
+        // sadly they can't animate unless i write transition support for transforms in d34r
+        if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
+        {
+            var errorMarkers = cc.chartD3.selectAll('.errorMarker')
+                .data(data, function(row) { return row.id; });
+            errorMarkers
+                .enter().append('path')
+                    .classed('errorMarker', true)
+                    .attr({ stroke: vizObj._displayFormat.errorBarColor,
+                            'stroke-width': '3' })
+                    .attr('d', vizObj._errorBarPath(oldYScale));
+            errorMarkers
+                .transition()
+                    .duration(1000)
+                    .attr('d', vizObj._errorBarPath(newYScale));
+            errorMarkers
+                .exit()
+                    .remove();
+        }
 
         vizObj._renderTicks(oldYScale, newYScale, true);
         vizObj._renderValueMarkers(oldYScale, newYScale, true);
@@ -697,6 +725,31 @@ $.Control.registerMixin('d3_impl_column', {
         return function(d)
         {
             return 'r40,0,0,T' + (xPositionStaticParts + (d.index * cc.rowWidth)) + yPositionStaticParts;
+        };
+    },
+
+    _errorBarPath: function(yScale)
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            plot = vizObj._displayFormat.plot,
+            lowCol = vizObj._primaryView.columnForFieldName(plot.errorBarLow),
+            highCol = vizObj._primaryView.columnForFieldName(plot.errorBarHigh),
+            yAxisPos = vizObj._yAxisPos();
+
+        var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2);
+        var capWidth = 8;
+
+        return function(d)
+        {
+            var x = Math.floor(xPositionStaticParts + (d.index * cc.rowWidth)) + 0.5;
+            var y = yAxisPos - yScale(Math.max(0, d[highCol.id]));
+            var height = Math.abs(yScale(d[lowCol.id]) - yScale(d[highCol.id]));
+
+            // TODO: uuurrrreeeeghhhhhhh
+            return 'M' + (x - capWidth) + ',' + y + 'H' + (x + capWidth) +
+                   'M' + x + ',' + y + 'V' + (y + height) +
+                   'M' + (x - capWidth) + ',' + (y + height) + 'H' + (x + capWidth);
         };
     }
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic' ]);

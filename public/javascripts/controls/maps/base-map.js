@@ -1740,6 +1740,9 @@
                 mapObj.map.addLayer(viewConfig._displayLayer);
             }
 
+            if (!$.subKeyDefined(mapObj, '_displayFormat.viewport.xmin'))
+            { delete mapObj._displayFormat.viewport; }
+
             var viewport = mapObj._displayFormat.viewport || { 'xmin': -180, 'xmax': 180,
                                                                'ymin': -90,  'ymax': 90 };
 

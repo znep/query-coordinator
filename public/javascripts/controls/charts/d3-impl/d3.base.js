@@ -71,6 +71,21 @@ $.Control.registerMixin('d3_base', {
                         return d.color || colDef.color;
                     }
                 };
+            },
+
+            px: function(f)
+            {
+                if (_.isNumber(f))
+                {
+                    return f + 'px';
+                }
+                else if (_.isFunction(f))
+                {
+                    return function()
+                    {
+                        return f.apply(this, arguments) + 'px';
+                    };
+                }
             }
         }
     }

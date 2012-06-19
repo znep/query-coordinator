@@ -42,6 +42,7 @@ $.Control.registerMixin('d3_impl_column', {
         // init our renderers
         cc.chartRaphael = new Raphael(cc.$chartContainer.get(0), 10, 10);
         cc.chartD3 = d3.raphael(cc.chartRaphael);
+        cc.chartHtmlD3 = d3.select(cc.$chartContainer.get(0));
         cc.chromeD3 = d3.select(cc.$chartArea.get(0));
 
         cc.$drawElement = cc.$chartContainer.children('svg, vml');
@@ -437,11 +438,17 @@ $.Control.registerMixin('d3_impl_column', {
         {
             var col = colDef.column;
 
-            // uniquely identify this series for selection
-            var seriesClass = 'dataBar_series' + col.id;
+            // figure out what data we can actually render
+            var splitData = _.groupBy(data, function(row)
+            {
+                return $.isBlank(row[col.id]) ? 'null' : 'present';
+            });
+            var presentData = splitData['present'], nullData = splitData['null'];
 
+            // render our actual bars
+            var seriesClass = 'dataBar_series' + col.id;
             var bars = cc.chartD3.selectAll('.' + seriesClass)
-                .data(data, function(row) { return row.id; });
+                .data(presentData, function(row) { return row.id; });
             bars
                 .enter().append('rect')
                     .classed('dataBar', true)
@@ -496,6 +503,23 @@ $.Control.registerMixin('d3_impl_column', {
                 // need to call transition() here as it accounts for the animation ticks;
                 // otherwise you get npe's
                 .transition()
+                    .remove();
+
+            // render null bars
+            var nullSeriesClass = 'nullDataBar_series' + col.id;
+            var nullBars = cc.chartHtmlD3.selectAll('.' + nullSeriesClass)
+                .data(nullData, function(row) { return row.id; });
+            nullBars
+                .enter().append('div')
+                    .classed('nullDataBar', true)
+                    .classed(nullSeriesClass, true)
+                    .style('left', vizObj.d3.util.px(vizObj._xBarPosition(seriesIndex)))
+                    .style('top', 0)
+                    .style('width', vizObj.d3.util.px(cc.barWidth));
+            nullBars
+                    .style('height', vizObj.d3.util.px(yAxisPos));
+            nullBars
+                .exit()
                     .remove();
         });
 

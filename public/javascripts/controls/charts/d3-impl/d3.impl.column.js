@@ -119,8 +119,8 @@ $.Control.registerMixin('d3_impl_column', {
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
         {
             var plot = vizObj._displayFormat.plot;
-            relevantColumns.push(vizObj._primaryView.columnForFieldName(plot.errorBarLow));
-            relevantColumns.push(vizObj._primaryView.columnForFieldName(plot.errorBarHigh));
+            relevantColumns.push(vizObj._primaryView.columnForIdentifier(plot.errorBarLow));
+            relevantColumns.push(vizObj._primaryView.columnForIdentifier(plot.errorBarHigh));
         }
         relevantColumns = _.uniq(relevantColumns);
         var allValues = _.reduce(data, function(values, row)
@@ -403,10 +403,12 @@ $.Control.registerMixin('d3_impl_column', {
     _currentYScale: function()
     {
         var vizObj = this,
-            cc = vizObj._columnChart;
+            cc = vizObj._columnChart,
+            explicitMin = $.deepGet(vizObj, '_displayFormat', 'yAxis', 'min'),
+            explicitMax = $.deepGet(vizObj, '_displayFormat', 'yAxis', 'max');
         return d3.scale.linear()
-            .domain([ $.deepGet(vizObj, '_displayFormat', 'yAxis', 'min') || Math.min(0, cc.minValue),
-                      $.deepGet(vizObj, '_displayFormat', 'yAxis', 'max') || cc.maxValue ])
+            .domain([ _.isNumber(explicitMin) ? explicitMin : Math.min(0, cc.minValue),
+                      _.isNumber(explicitMax) ? explicitMax : cc.maxValue ])
             .range([ 0, vizObj._yAxisPos() - vizObj.defaults.dataMaxBuffer ])
             .clamp(true);
     },
@@ -469,7 +471,7 @@ $.Control.registerMixin('d3_impl_column', {
                             });
                             rObj.tip.adjustPosition({
                                 top: (d[col.id] > 0) ? 0 : Math.abs(newYScale(0) - newYScale(d[col.id])),
-                                left: cc.barWidth / 2
+                                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
                             });
                             view.highlightRows(d, null, col);
                         }
@@ -517,6 +519,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .text(function(d) { return d[vizObj._fixedColumns[0].id]; }); // WHY IS THIS AN ARRAY
         rowLabels
             .exit()
+            .transition()
                 .remove();
 
         // render error markers if applicable
@@ -729,8 +732,8 @@ $.Control.registerMixin('d3_impl_column', {
         var vizObj = this,
             cc = vizObj._columnChart,
             plot = vizObj._displayFormat.plot,
-            lowCol = vizObj._primaryView.columnForFieldName(plot.errorBarLow),
-            highCol = vizObj._primaryView.columnForFieldName(plot.errorBarHigh),
+            lowCol = vizObj._primaryView.columnForIdentifier(plot.errorBarLow),
+            highCol = vizObj._primaryView.columnForIdentifier(plot.errorBarHigh),
             yAxisPos = vizObj._yAxisPos();
 
         var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2);

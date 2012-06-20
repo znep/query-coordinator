@@ -551,6 +551,9 @@ $.deepSet = function(/* obj, value, keys* */)
 $.deepGetStringField = function(obj, field)
 { return $.deepGet.apply($, [obj].concat(field.split("."))); };
 
+$.deepPluck = function(obj, field)
+{ return _.map(obj, function(x) { return $.deepGetStringField(x, field); }); };
+
 $.subKeyDefined = function(obj, keystring)
 {
     if ($.isBlank(obj) || !_.isString(keystring))

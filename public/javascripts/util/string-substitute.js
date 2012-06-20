@@ -199,12 +199,7 @@
 
         dateFormat: function(v, transf)
         {
-            var d;
-            if (_.isNumber(v))
-            { d = new Date(v * 1000); }
-            else if (_.isString(v))
-            { d = Date.parse(v); }
-
+            var d = parseDate(v);
             if ($.isBlank(d)) { return v; }
 
             // Make format conform to what DateJS can handle from standard Unix strftime(3)
@@ -214,8 +209,59 @@
 
         mathExpr: function(v, transf)
         {
-            return v;
+            // For now all we handle is a single binary operator, where either
+            // side can be the variable 'x' for a numeric value, the variable 't'
+            // for a date value, or a number
+            var varOpts = ['-?x', 't', '-?[0-9]*\\\.?[0-9]*'];
+            var opOpts = ['+', '\\\-', '*', '\\\/', '%'];
+            var m = transf.expr.match('^(' + varOpts.join('|') + ')\\\s*([' + opOpts.join('') +
+                        '])\\\s*(' + varOpts.join('|') + ')$');
+            if ($.isBlank(m)) { return v; }
+
+            var vl = computeValue(m[1], v);
+            var vr = computeValue(m[3], v);
+
+            if (!_.isNumber(vl) || !_.isNumber(vr)) { return v; }
+
+            switch (m[2])
+            {
+                case '+':
+                    return vl + vr;
+                    break;
+                case '-':
+                    return vl - vr;
+                    break;
+                case '*':
+                    return vl * vr;
+                    break;
+                case '/':
+                    return vl / vr;
+                    break;
+                case '%':
+                    return vl % vr;
+                    break;
+            }
         }
+    };
+
+    var computeValue = function(str, v)
+    {
+        if (str == 'x') { return parseFloat(v); }
+        else if (str == '-x') { return -parseFloat(v); }
+        else if (str == 't')
+        {
+            var d = parseDate(v);
+            return $.isBlank(d) ? null : Math.floor(d.getTime() / 1000);
+        }
+        else { return parseFloat(str); }
+    };
+
+    var parseDate = function(v)
+    {
+        if (_.isNumber(v))
+        { return new Date(v * 1000); }
+        else if (_.isString(v))
+        { return Date.parse(v); }
     };
 
 })(jQuery);

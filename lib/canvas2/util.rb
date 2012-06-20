@@ -248,20 +248,58 @@ module Canvas2
       end,
 
       'date_format' => lambda do |v, transf|
-        if v.is_a?(Fixnum)
-          d = Time.at(v)
-        elsif v.is_a?(String)
-          begin
-            d = Time.parse(v)
-          rescue ArgumentError => e
-            d = nil
-          end
-        end
+        d = Util.parse_date(v)
         return v if d.blank?
 
         fmt = transf[:format].blank? ? "%a %b %e %Y %H:%M:%S GMT%z (%Z)" : transf[:format]
         d.strftime(fmt)
+      end,
+
+      'math_expr' => lambda do |v, transf|
+        var_opts = ['-?x', 't', '-?[0-9]*\\.?[0-9]*']
+        op_opts = ['+', '\\-', '*', '\\/', '%']
+        transf[:expr].match('^(' + var_opts.join('|') + ')\\s*([' + op_opts.join('') +
+                        '])\\s*(' + var_opts.join('|') + ')$') do |m|
+          vl = Util.compute_value(m[1], v)
+          vr = Util.compute_value(m[3], v)
+
+          return v if vl.blank? || vr.blank?
+
+          v =
+            case m[2]
+              when '+' then vl + vr
+              when '-' then vl - vr
+              when '*' then vl * vr
+              when '/' then vl / vr
+              when '%' then vl % vr
+            end
+        end
+        v
       end
     }
+
+    def self.parse_date(v)
+      if v.is_a?(Numeric)
+        return Time.at(v)
+      elsif v.is_a?(String)
+        begin
+          return Time.parse(v)
+        rescue ArgumentError => e
+        end
+      end
+      nil
+    end
+
+    def self.compute_value(str, v)
+      case str
+        when 'x' then Float(v) rescue nil
+        when '-x' then -Float(v) rescue nil
+        when 't' then
+          d = Util.parse_date(v)
+          d.blank? ? nil : d.to_i
+        else Float(str).to_f
+      end
+    end
+
   end
 end

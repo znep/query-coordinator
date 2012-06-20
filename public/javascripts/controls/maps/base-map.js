@@ -1643,9 +1643,6 @@
 
                     if (!_.isEmpty(aggs))
                     {
-                        if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
-                        mapObj._delayRenderData++;
-
                         view.getAggregates(function()
                         { calculateSegmentSizes(mapObj, aggs); }, aggs);
                     }
@@ -2193,12 +2190,7 @@
             });
         });
 
-        mapObj._delayRenderData--;
-        if (!mapObj._delayRenderData && mapObj._delayedRenderData)
-        {
-            _.each(mapObj._delayedRenderData, function(f) { f(); });
-            mapObj._delayedRenderData = [];
-        }
+        mapObj.handleRowsLoaded(mapObj._primaryView.loadedRows(), mapObj._primaryView);
     };
 
     var onFeatureSelect = function(mapObj, feature, lonlat, closeBoxCallback)

@@ -443,7 +443,7 @@ $.Control.registerMixin('d3_impl_column', {
             {
                 return $.isBlank(row[col.id]) ? 'null' : 'present';
             });
-            var presentData = splitData['present'], nullData = splitData['null'];
+            var presentData = splitData['present'] || [], nullData = splitData['null'] || [];
 
             // render our actual bars
             var seriesClass = 'dataBar_series' + col.id;

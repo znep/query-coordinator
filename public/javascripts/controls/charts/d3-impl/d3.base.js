@@ -41,18 +41,19 @@ $.Control.registerMixin('d3_base', {
 
     d3: {
         util: {
-            text: function(property)
+            text: function(transform)
             {
+                var hasTransform = _.isFunction(transform);
                 if ($.browser.msie && ($.browser.majorVersion < 9))
                 {
                     return function(d, i) {
-                        $(this).text(property ? d[property] : d);
+                        $(this).text(hasTransform ? transform(d) : d);
                     };
                 }
                 else
                 {
                     return function(d, i) {
-                        this.textContent = (property ? d[property] : d);
+                        this.textContent = (hasTransform ? transform(d) : d);
                     };
                 }
             },

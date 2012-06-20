@@ -656,7 +656,8 @@ $.Control.registerMixin('d3_impl_column', {
                 .classed('tickLabel', true)
                 .style('top', function(d) { return (yAxisPos - oldYScale(d)) + 'px'; });
         tickLabels
-                .each(vizObj.d3.util.text())
+                .each(vizObj.d3.util.text(vizObj._formatYAxisTicks(
+                    $.deepGet(vizObj, '_displayFormat', 'yAxis', 'formatter'))))
             .transition()
                 .duration(isAnim ? 1000 : 0)
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
@@ -706,6 +707,29 @@ $.Control.registerMixin('d3_impl_column', {
             .exit()
             .transition()
                 .remove();
+    },
+
+    _formatYAxisTicks: function(formatter)
+    {
+        if ($.isBlank(formatter))
+        {
+            return $.commaify;
+        }
+
+        if (formatter.abbreviate === true)
+        {
+            // humane number requires a precision. so, our "auto" really just
+            // means 2 in this case.
+            return function(num) { return blist.util.toHumaneNumber(num, formatter.decimalPlaces || 2); };
+        }
+        else if (_.isNumber(formatter.decimalPlaces))
+        {
+            return function(num) { return $.commaify(num.toFixed(formatter.decimalPlaces)); };
+        }
+        else
+        {
+            return $.commaify;
+        }
     },
 
     _xBarPosition: function(seriesIndex)

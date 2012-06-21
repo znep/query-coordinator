@@ -23,7 +23,7 @@ var Configuration = ServerModel.extend({
 // TODO: make updating work by translating rawProperties back to properties
 
     _validKeys: {
-        default: true,
+        'default': true,
         domainCName: true,
         id: true,
         name: true,

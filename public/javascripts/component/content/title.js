@@ -66,27 +66,36 @@ $.component.Component.extend('Title', 'content', {
 
         $.cf.extractProperties(this.$title);
         this._updatePrimaryValue(this.$title.text());
+        return true;
     },
 
     edit: function()
     {
-        var wasEditable = this._editing;
-        if (!this._super.apply(this, arguments)) { return false; }
+        var cObj = this;
+        var wasEditable = cObj._editing;
+        if (!cObj._super.apply(cObj, arguments)) { return false; }
 
-        this.$title.editable({ edit: this._editing });
-        this.$title.toggleClass('socrata-cf-mouse', this._editing);
+        cObj.$title.editable({ edit: cObj._editing });
+        cObj.$title.toggleClass('socrata-cf-mouse', cObj._editing);
 
-        if (this._editing)
+        // Animate height
+        var origHeight = cObj.$dom.height();
+
+        if (cObj._editing)
         {
             // Install raw template for editing
             if (!wasEditable)
             {
-                this.$title.text(this._properties.text);
-                $.cf.enhanceProperties(this.$title);
+                cObj.$title.text(cObj._properties.text);
+                $.cf.enhanceProperties(cObj.$title);
             }
         }
         else if (wasEditable)
-        { this._render(); }
+        { cObj._render(); }
+
+        var newHeight = cObj.$dom.height();
+        cObj.$dom.height(origHeight);
+        cObj.$dom.animate({height: newHeight}, 'slow', function() { cObj.$dom.height(''); });
     },
 
     asString: function() {

@@ -12,7 +12,6 @@
 
             $dom.attr('dropzone', 'all string:text/plain string:text/html');
             $dom.bind('dragenter', function(e) { if (editable) { $dom.attr('contentEditable', true); } });
-//            $dom.bind('dragover', function(e) { e.preventDefault(); });
             $dom.bind('keypress', function(e)
             {
                 if (e.which == 8) // Backspace

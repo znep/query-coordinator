@@ -156,13 +156,24 @@
   background-color: #ddddff
   border: 1px solid #99aaee
   cursor: move
+  display: inline-block
   font-family: Courier New, monospace
   line-height: 1em
   margin: 0.1em
   padding: 0.1em
+  position: relative
   white-space: nowrap
   &.ieDrag
     font-size: 1.2em
+
+  .itemText
+    cursor: move
+
+  .remove
+    @include close-button
+    position: absolute
+    right: -6px
+    top: -6px
 
 .cf-property-tip
   p
@@ -174,7 +185,7 @@
       display: inline-block
       font-size: 1.1em
       font-weight: bold
-      width: 5em
+      width: 7em
     input
       font-size: 1.1em
     &.property input

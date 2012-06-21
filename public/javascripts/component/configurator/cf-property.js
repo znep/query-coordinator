@@ -16,14 +16,14 @@
             if (str.startsWith('{') && str.endsWith('}'))
             { str = str.slice(1, str.length - 1); }
 
-            var m = str.match(/(.*)\s+\|\|\s*(.*)$/);
-            if (!_.isEmpty(m))
+            var m;
+            if (!_.isEmpty(m = str.match(/(.*)\s+\|\|\s*(.*)$/)))
             {
                 str = m[1];
                 this.fallback = m[2];
             }
-            m = str.match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/);
-            if (!_.isEmpty(m))
+
+            if (!_.isEmpty(m = str.match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/)))
             {
                 str = m[1];
                 this.regex = {
@@ -32,6 +32,32 @@
                     modifiers: m[4]
                 };
             }
+
+            if (!_.isEmpty(m = str.match(/(.*)\s+([%@])\[([^\]]*)\]$/)))
+            {
+                str = m[1];
+                var t;
+                switch (m[2])
+                {
+                    case '%':
+                        t = 'number';
+                        break;
+                    case '@':
+                        t = 'date';
+                        break;
+                }
+                this.typeFormat = {
+                    type: t,
+                    format: m[3]
+                };
+            }
+
+            if (!_.isEmpty(m = str.match(/(.*)\s+=\[([^\]]*)\]$/)))
+            {
+                str = m[1];
+                this.mathExpr = m[2];
+            }
+
             this.property = str;
         },
 
@@ -41,6 +67,13 @@
         toString: function()
         {
             var str = this.property;
+            if (!$.isBlank(this.mathExpr))
+            { str += ' =[' + this.mathExpr + ']'; }
+            if (!_.isEmpty(this.typeFormat))
+            {
+                str += ' ' + (this.typeFormat.type == 'date' ? '@' : '%') +
+                    '[' + this.typeFormat.format + ']';
+            }
             if (!_.isEmpty(this.regex))
             { str += ' /' + this.regex.pattern + '/' + this.regex.replacement + '/' + this.regex.modifiers; }
             if (this.hasFallback())
@@ -50,10 +83,20 @@
 
         toHtml: function()
         {
-            return $.tag({ tagName: 'span', 'class': 'cf-property', 'data-propId': this.id,
+            return $.tag({ tagName: 'div', 'class': 'cf-property', 'data-propId': this.id,
                 // The stupid, it burns!
-                contentEditable: ($.browser.msie == true).toString(), draggable: true,
-                contents: $.htmlEscape(this.property.replace(/.*\./, '')) }, true);
+                contentEditable: ($.browser.msie === true).toString(), draggable: true,
+                contents: [ { tagName: 'span', 'class': 'itemText',
+                        contents: $.htmlEscape(this.property.replace(/.*\./, '')) },
+                    { tagName: 'a', href: '#Remove', 'class': ['remove', 'hide'], title: 'Remove property' }
+                ] }, true);
+        },
+
+        remove: function()
+        {
+            $('body').unbind('.prop_' + this.id);
+            this._$node.socrataTip().destroy();
+            this._$node.remove();
         },
 
         domHookup: function($node)
@@ -63,6 +106,15 @@
             prop._$node.data('cfProperty', prop);
             infoTipHookup(prop);
 
+            var $remButton = prop._$node.children('.remove');
+            prop._$node.hover(function() { $remButton.removeClass('hide'); },
+                    function() { $remButton.addClass('hide'); });
+            $remButton.click(function(e)
+            {
+                e.preventDefault();
+                prop.remove();
+            });
+
             var $contEdit = prop._$node.parent().closest('[contentEditable=true]');
             if (!$.browser.msie)
             {
@@ -71,6 +123,8 @@
             }
             prop._$node.bind('dragstart', function(e)
             {
+                if ($.browser.msie) { $contEdit.attr('contentEditable', false); }
+                $remButton.addClass('hide');
                 if ($.browser.msie) { prop._$node.data('mouseDownForEdit', false); }
                 prop._$node.socrataTip().hide();
                 prop._$node.addClass('dragcopy');
@@ -82,6 +136,8 @@
                     e.originalEvent.dataTransfer.setData('text/html',
                         '<span data-droppedId="' + prop.id + '"></span>');
                 }
+                // Need for drag onto other property; also IE uses this
+                e.originalEvent.dataTransfer.setData('Text', 'move:' + prop.id);
                 // Chrome requires copy, or won't do anything on drop
                 e.originalEvent.dataTransfer.effectAllowed = 'copy';
                 // Fixes a bug in Chrome where the drag helper image had a bad offset;
@@ -94,14 +150,15 @@
             .bind('dragend', function(e)
             {
                 if ($.browser.msie) { blist.util.finishIEDrag(); }
+                var sel = rangy.getSelection();
                 _.defer(function()
                 {
                     prop._$node.removeClass('dragcopy');
-                    if ($.browser.msie)
+                    if ($.browser.msie && sel.toString() == 'move:' + prop.id)
                     {
-                        var $newNode = $contEdit.find('.dragcopy[data-propid=' + prop.id + ']');
-                        if ($newNode.length == 1)
-                        { $newNode.replaceWith(prop._$node); }
+                        var moveProp = sel.anchorNode.splitText(sel.anchorOffset);
+                        moveProp.splitText(sel.focusOffset - sel.anchorOffset);
+                        $(moveProp).replaceWith(prop._$node);
                     }
                     else
                     { $contEdit.find('[data-droppedid=' + prop.id + ']').replaceWith(prop._$node); }
@@ -114,13 +171,49 @@
                 finishEdit(prop);
             });
 
-            prop._$node.bind('delete', function() { prop._$node.remove(); });
+            prop._$node.bind('delete', function() { prop.remove(); });
 
             var doEdit = function()
             {
                 prop._$node.socrataTip().destroy();
                 setTimeout(function() { makeEditable(prop); }, 100);
             };
+
+            prop._$node.attr('dropzone', 'all string:text/plain string:text/html');
+            prop._$node.bind('dragover', function(e)
+            {
+                e.preventDefault();
+                e.originalEvent.dataTransfer.dropEffect = 'copy';
+            });
+            prop._$node.bind('drop', function(e)
+            {
+                e.preventDefault();
+                var t = e.originalEvent.dataTransfer.getData('Text');
+                var didReplace = false;
+                if (t.startsWith('move:'))
+                {
+                    var mId = t.slice(5);
+                    if (mId == prop.id) { return; }
+                    var $repItem = $contEdit.find('[data-propid=' + mId + ']');
+                    if ($repItem.length > 0)
+                    {
+                        prop._$node.replaceWith($repItem);
+                        didReplace = true;
+                    }
+                }
+                else if (t.startsWith($.cf.Property.newPropertyTag.begin))
+                {
+                    addNewProperty($contEdit, t.slice($.cf.Property.newPropertyTag.begin.length,
+                            t.length - $.cf.Property.newPropertyTag.end.length), prop._$node);
+                    didReplace = true;
+                }
+
+                if (didReplace)
+                {
+                    prop.remove();
+                    readjustCanaries($contEdit);
+                }
+            });
 
             if ($.browser.msie)
             {
@@ -169,18 +262,18 @@
         prop._$node.socrataTip({shrinkToFit: true,
             content: $.tag({ tagName: 'div', 'class': 'cf-property-tip',
             contents: [
-            { tagName: 'p', contents: [{ tagName: 'b', contents: 'Property: ' },
+            { tagName: 'p', contents: [{ tagName: 'strong', contents: 'Property: ' },
                 { tagName: 'span', contents: $.htmlEscape(prop.property) }] },
             { onlyIf: !_.isEmpty(regex), value:
                 { tagName: 'p', contents: [
-                    { tagName: 'b', contents: 'Regex: ' },
+                    { tagName: 'strong', contents: 'Regex: ' },
                     { tagName: 'span', contents: '/' + $.htmlEscape(regex.pattern) + '/' +
                         $.htmlEscape(regex.replacement) + '/' + $.htmlEscape(regex.modifiers)
                     }] }
             },
             { onlyIf: prop.hasFallback(), value:
                 { tagName: 'p', contents: [
-                    { tagName: 'b', contents: 'Fallback: ' },
+                    { tagName: 'strong', contents: 'Fallback Value: ' },
                     { tagName: 'span', contents: '"' + $.htmlEscape(prop.fallback) + '"' }] }
             }
         ] })});
@@ -189,7 +282,7 @@
     var makeEditable = function(prop)
     {
         var regex = prop.regex || {};
-        prop._$node.socrataTip({width: '40em', trigger: 'now',
+        prop._$node.socrataTip({width: '42em', trigger: 'now',
             content: $.tag({ tagName: 'form', 'class': 'cf-property-edit-tip',
                 contents: [
                     { tagName: 'div', 'class': ['line', 'property'], contents: [
@@ -223,7 +316,7 @@
                             'for': 'propEdit_regex_modifier_m', contents: 'm' }
                     ] },
                     { tagName: 'div', 'class': ['line', 'fallback'], contents: [
-                        { tagName: 'label', 'for': 'propEdit_fallback', contents: 'Fallback' },
+                        { tagName: 'label', 'for': 'propEdit_fallback', contents: 'Fallback Value' },
                         { tagName: 'input', type: 'checkbox', name: 'useFallback',
                             checked: prop.hasFallback() },
                         { tagName: 'input', type: 'text', id: 'propEdit_fallback', name: 'fallback',
@@ -292,14 +385,14 @@
                 { prop[name] = v; }
             });
             if ($.isBlank(prop.regex.pattern)) { delete prop.regex; }
-            prop._$node.text(prop.property.replace(/.*\./, ''));
+            prop._$node.children('.itemText').text(prop.property.replace(/.*\./, ''));
         }
         prop._$node.socrataTip().destroy();
         delete prop._$editBox;
         infoTipHookup(prop);
     };
 
-    $.cf.Property.newPropertyTagIE = { begin: '[::newProperty|', end: '::]' };
+    $.cf.Property.newPropertyTag = { begin: '[::newProperty|', end: '::]' };
 
     if ($.browser.msie)
     {
@@ -396,7 +489,7 @@
     // Special IE hack to find the text that was dropped in and replace it with a real property
     var findNewProperties = function($curNode)
     {
-        var npTag = $.cf.Property.newPropertyTagIE;
+        var npTag = $.cf.Property.newPropertyTag;
         if ($curNode.text().indexOf(npTag.begin) > -1)
         {
             $curNode.contents().quickEach(function()
@@ -504,6 +597,7 @@
                 { sel.collapse($ic[0], 0); }
             }
         });
+        $node[0].normalize();
     };
 
     $.cf.extractProperties = function($node)

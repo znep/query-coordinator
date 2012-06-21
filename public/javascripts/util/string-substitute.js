@@ -81,7 +81,6 @@
                         if (!_.isEmpty(m = p.prop.match(/(.*)\s+=\[([^\]]*)\]$/)))
                         {
                             p.prop = m[1];
-                            var t;
                             p.transforms.push({
                                 type: 'mathExpr',
                                 expr: m[2]

@@ -1,9 +1,5 @@
 $.component.Component.extend('Text', 'content', {
-    _init: function()
-    {
-        this._needsOwnContext = true;
-        this._super.apply(this, arguments);
-    },
+    _needsOwnContext: true,
 
     _getEditAssets: function()
     {
@@ -50,26 +46,35 @@ $.component.Component.extend('Text', 'content', {
 
         $.cf.extractProperties(this.$contents);
         this._updatePrimaryValue($.htmlUnescape(this.$contents.html()));
+        return true;
     },
 
     edit: function()
     {
-        var wasEditable = this._editing;
-        if (!this._super.apply(this, arguments)) { return false; }
+        var cObj = this;
+        var wasEditable = cObj._editing;
+        if (!cObj._super.apply(cObj, arguments)) { return false; }
 
-        this.$contents.editable({ edit: this._editing });
-        this.$contents.toggleClass('socrata-cf-mouse', this._editing);
+        cObj.$contents.editable({ edit: cObj._editing });
+        cObj.$contents.toggleClass('socrata-cf-mouse', cObj._editing);
 
-        if (this._editing)
+        // Animate height
+        var origHeight = cObj.$dom.height();
+
+        if (cObj._editing)
         {
             // Install raw template for editing
             if (!wasEditable)
             {
-                this.$contents.html($.htmlEscape(this._properties.html));
-                $.cf.enhanceProperties(this.$contents);
+                cObj.$contents.html($.htmlEscape(cObj._properties.html));
+                $.cf.enhanceProperties(cObj.$contents);
             }
         }
         else if (wasEditable)
-        { this._render(); }
+        { cObj._render(); }
+
+        var newHeight = cObj.$dom.height();
+        cObj.$dom.height(origHeight);
+        cObj.$dom.animate({height: newHeight}, 'slow', function() { cObj.$dom.height(''); });
     }
 });

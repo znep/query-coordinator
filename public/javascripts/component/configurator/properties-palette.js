@@ -157,25 +157,30 @@
                     {
                         var $t = $(this);
                         if ($.browser.msie)
-                        { $t.bind('selectstart', function() { this.dragDrop(); }); }
+                        {
+                            $t.bind('selectstart', function(e)
+                            {
+                                e.preventDefault();
+                                this.dragDrop();
+                            });
+                        }
+
                         $t.bind('dragstart', function(e)
                         {
                             $t.socrataTip().hide();
-                            if ($.browser.msie)
-                            {
-                                // IE doesn't support setData('text/html',...), so don't
-                                // get a real span dropped in; instead, we get raw text
-                                // that is keyed such that it will be replaced by cf.Property
-                                e.originalEvent.dataTransfer.setData('Text',
-                                    $.cf.Property.newPropertyTagIE.begin + $t.attr('data-propkey') +
-                                    $.cf.Property.newPropertyTagIE.end);
-                            }
-                            else
+                            if (!$.browser.msie)
                             {
                                 e.originalEvent.dataTransfer.setData('text/html',
                                     '<span data-droppednewproperty="' +
                                     $t.attr('data-propkey') + '"></span>');
                             }
+                            // IE doesn't support setData('text/html',...), so don't
+                            // get a real span dropped in; instead, we get raw text
+                            // that is keyed such that it will be replaced by cf.Property
+                            // This is also used by all browsers for replacing a property
+                            e.originalEvent.dataTransfer.setData('Text',
+                                $.cf.Property.newPropertyTag.begin + $t.attr('data-propkey') +
+                                $.cf.Property.newPropertyTag.end);
                             // Chrome requires copy, or won't do anything on drop
                             e.originalEvent.dataTransfer.effectAllowed = 'copy';
                             // Fixes a bug in Chrome where the drag helper image had a bad offset;

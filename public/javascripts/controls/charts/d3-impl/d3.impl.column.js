@@ -405,11 +405,12 @@ $.Control.registerMixin('d3_impl_column', {
     {
         var vizObj = this,
             cc = vizObj._columnChart,
-            explicitMin = $.deepGet(vizObj, '_displayFormat', 'yAxis', 'min'),
-            explicitMax = $.deepGet(vizObj, '_displayFormat', 'yAxis', 'max');
+            explicitMin = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'min')),
+            explicitMax = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max'));
+
         return d3.scale.linear()
-            .domain([ _.isNumber(explicitMin) ? explicitMin : Math.min(0, cc.minValue),
-                      _.isNumber(explicitMax) ? explicitMax : cc.maxValue ])
+            .domain([ !_.isNaN(explicitMin) ? explicitMin : Math.min(0, cc.minValue),
+                      !_.isNaN(explicitMax) ? explicitMax : cc.maxValue ])
             .range([ 0, vizObj._yAxisPos() - vizObj.defaults.dataMaxBuffer ])
             .clamp(true);
     },
@@ -611,6 +612,10 @@ $.Control.registerMixin('d3_impl_column', {
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.id)
                     .attr('width', cc.barWidth)
                     .attr('x', vizObj._xBarPosition(seriesIndex));
+
+            cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.id)
+                    .style('width', vizObj.d3.util.px(cc.barWidth))
+                    .style('left', vizObj.d3.util.px(vizObj._xBarPosition(seriesIndex)));
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -628,8 +633,6 @@ $.Control.registerMixin('d3_impl_column', {
         // TODO: rendering lines and labels is awful similar. fix?
 
         // render our tick lines
-        // TODO: right now we assume 8 ticks is right. we should probably actually
-        // calculate based on the chart height
         var tickLines = cc.chromeD3.selectAll('.tickLine')
             // we use the value rather than the index to make transitions more constant
             .data(oldYScale.ticks(idealTickCount), function(val) { return val; });

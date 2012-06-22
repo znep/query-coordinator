@@ -830,15 +830,25 @@
 
             if (!mapObj._byView[dataView.id]._locCol) { return $info; }
             var loc = rows[0][mapObj._byView[dataView.id]._locCol.lookup];
-            if (loc.latitude && loc.longitude)
+
+            var mapLinkQuery;
+            if (loc.human_address)
+            {
+                var address = JSON.parse(loc.human_address);
+                mapLinkQuery = _.compact(_.values(address)).join(', ');
+            }
+            else if (loc.latitude && loc.longitude)
+            { mapLinkQuery = [loc.latitude, ',', loc.longitude].join(''); }
+
+            if (!_.isEmpty(mapLinkQuery))
             {
                 if (mapObj._displayFormat.type == 'bing')
                 { $info.append($.tag({tagName: 'a', 'class': 'external_link',
-                    href: 'http://www.bing.com/maps/?where1='+loc.latitude+','+loc.longitude,
+                    href: 'http://www.bing.com/maps/?where1='+mapLinkQuery,
                     target: '_blank', contents: 'View in Bing Maps'})); }
                 else
                 { $info.append($.tag({tagName: 'a', 'class': 'external_link',
-                    href: 'http://maps.google.com/maps?q='+loc.latitude+','+loc.longitude,
+                    href: 'http://maps.google.com/maps?q='+mapLinkQuery,
                     target: '_blank', contents: 'View in Google Maps'})); }
             }
 

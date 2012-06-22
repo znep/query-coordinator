@@ -489,12 +489,21 @@ $.Control.registerMixin('d3_impl_column', {
                         // for perf, only call unhighlight if highlighted.
                         if (d && !cc._isDragging && d.sessionMeta && d.sessionMeta.highlight)
                         {
-                            this.tip.destroy();
                             view.unhighlightRows(d);
                         }
                     });
             bars
                     .attr('fill', vizObj.d3.util.colorizeRow(colDef))
+                    .each(function(d)
+                    {
+                        // kill tip if not highlighted. need to check here because
+                        // unhighlight gets spammed when the grid gets stuck in weird
+                        // states (really a grid bug workaround)
+                        if (this.tip && (!d.sessionMeta || !d.sessionMeta.highlight))
+                        {
+                            this.tip.destroy();
+                        }
+                    })
                 .transition()
                     .duration(1000)
                     .attr('y', vizObj._yBarPosition(col.id, newYScale))

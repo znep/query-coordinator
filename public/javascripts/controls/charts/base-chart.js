@@ -3,8 +3,10 @@
     var chartMapping = {
         'area': 'highcharts',
         'bar': 'highcharts',
+        'stackedbar': 'highcharts',
         'bubble': 'highcharts',
         'column': 'highcharts',
+        'stackedcolumn': 'highcharts',
         'donut': 'highcharts',
         'line': 'highcharts',
         'pie': 'highcharts',

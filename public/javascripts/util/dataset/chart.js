@@ -201,6 +201,12 @@ Dataset.modules['chart'] =
             view.displayFormat.colors =
                 [view.displayFormat.baseColor, '#042656', '#19538b', '#6a9feb', '#bed6f7'];
         }
+
+        if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
+            (view.displayFormat.stacking === true))
+        {
+            view.displayFormat.chartType = 'stacked' + view.displayFormat.chartType;
+        }
     }
 };
 

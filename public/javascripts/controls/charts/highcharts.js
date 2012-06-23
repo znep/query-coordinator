@@ -1101,7 +1101,7 @@
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); }, redraw: chartRedraw },
-                inverted: (chartObj._chartType == 'bar') || (chartObj._chartType == 'stackedbar');
+                inverted: (chartObj._chartType == 'bar') || (chartObj._chartType == 'stackedbar')
             },
             credits: { enabled: false },
             legend: { enabled: legendPos != 'none',

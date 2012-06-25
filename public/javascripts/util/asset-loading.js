@@ -44,8 +44,6 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
     { assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished); }
     if (loadTranslations)
     { assetNS.loadTranslations(assets.translations, finished); }
-
-    if (!loadTemplates && !loadJS && !loadTranslations) { finished(); }
 };
 
 // Lazy-load JS libraries

@@ -83,9 +83,7 @@
 
         toHtml: function()
         {
-            return $.tag({ tagName: 'div', 'class': 'cf-property', 'data-propId': this.id,
-                // The stupid, it burns!
-                contentEditable: ($.browser.msie === true).toString(), draggable: true,
+            return $.tag({ tagName: 'div', 'class': ['cf-property', 'nonEditable'], 'data-propId': this.id,
                 contents: [ { tagName: 'span', 'class': 'itemText',
                         contents: $.htmlEscape(this.property.replace(/.*\./, '')) },
                     { tagName: 'a', href: '#Remove', 'class': ['remove', 'hide'], title: 'Remove property' }
@@ -94,7 +92,7 @@
 
         remove: function()
         {
-            $('body').unbind('.prop_' + this.id);
+            $('body').off('.prop_' + this.id);
             this._$node.socrataTip().destroy();
             this._$node.remove();
         },
@@ -109,6 +107,11 @@
             var $remButton = prop._$node.children('.remove');
             prop._$node.hover(function() { $remButton.removeClass('hide'); },
                     function() { $remButton.addClass('hide'); });
+            if ($.browser.msie)
+            {
+                $remButton.hover(function() { prop._$node.attr('contentEditable', false); },
+                        function() { prop._$node.attr('contentEditable', true); })
+            }
             $remButton.click(function(e)
             {
                 e.preventDefault();
@@ -116,139 +119,44 @@
             });
 
             var $contEdit = prop._$node.parent().closest('[contentEditable=true]');
-            if (!$.browser.msie)
-            {
-                prop._$node.bind('mousedown', function() { $contEdit.attr('contentEditable', false); })
-                    .bind('mouseup', function() { $contEdit.attr('contentEditable', true); });
-            }
-            prop._$node.bind('dragstart', function(e)
-            {
-                if ($.browser.msie) { $contEdit.attr('contentEditable', false); }
-                $remButton.addClass('hide');
-                if ($.browser.msie) { prop._$node.data('mouseDownForEdit', false); }
-                prop._$node.socrataTip().hide();
-                prop._$node.addClass('dragcopy');
-                if (!$.browser.msie)
+            prop._$node.nativeDraggable({ dropType: 'move', dropId: prop.id, clickExclude: '.remove',
+                dragStartPrepare: function()
                 {
-                    // IE doesn't support anything but "Text" or "URL"; but it
-                    // doesn't matter in this case, because it literally copies
-                    // the element and ignores this
-                    e.originalEvent.dataTransfer.setData('text/html',
-                        '<span data-droppedId="' + prop.id + '"></span>');
+                    $remButton.addClass('hide');
+                    prop._$node.socrataTip().hide();
                 }
-                // Need for drag onto other property; also IE uses this
-                e.originalEvent.dataTransfer.setData('Text', 'move:' + prop.id);
-                // Chrome requires copy, or won't do anything on drop
-                e.originalEvent.dataTransfer.effectAllowed = 'copy';
-                // Fixes a bug in Chrome where the drag helper image had a bad offset;
-                // this also makes it a bit more obvious where the insertion cursor is during drag
-                if (!$.browser.msie)
-                { e.originalEvent.dataTransfer.setDragImage(prop._$node[0], 0, 0); }
-                else
-                { blist.util.startIEDrag(prop._$node); }
-            })
-            .bind('dragend', function(e)
-            {
-                if ($.browser.msie) { blist.util.finishIEDrag(); }
-                var sel = rangy.getSelection();
-                _.defer(function()
+            });
+
+            $('body').on('mousedown.prop_' + prop.id, function() { finishEdit(prop); });
+
+            prop._$node.on('delete', function() { prop.remove(); });
+
+            prop._$node.nativeDropTarget({
+                contentEditable: false,
+                findReplacement: function(mId)
                 {
-                    prop._$node.removeClass('dragcopy');
-                    if ($.browser.msie && sel.toString() == 'move:' + prop.id)
-                    {
-                        var moveProp = sel.anchorNode.splitText(sel.anchorOffset);
-                        moveProp.splitText(sel.focusOffset - sel.anchorOffset);
-                        $(moveProp).replaceWith(prop._$node);
-                    }
-                    else
-                    { $contEdit.find('[data-droppedid=' + prop.id + ']').replaceWith(prop._$node); }
-                    readjustCanaries($contEdit);
-                });
+                    if (mId == prop.id) { return null; }
+                    return $contEdit.find('[data-propid=' + mId + ']');
+                },
+                copyReplace: function(newProp)
+                {
+                    $contEdit.nativeDropTarget().addNewDropped(newProp, prop._$node);
+                    return true;
+                },
+                replacedCallback: function() { prop.remove(); }
             });
 
-            $('body').bind('mousedown.prop_' + prop.id, function()
-            {
-                finishEdit(prop);
-            });
-
-            prop._$node.bind('delete', function() { prop.remove(); });
-
-            var doEdit = function()
+            prop._$node.click(function()
             {
                 prop._$node.socrataTip().destroy();
                 setTimeout(function() { makeEditable(prop); }, 100);
-            };
-
-            prop._$node.attr('dropzone', 'all string:text/plain string:text/html');
-            prop._$node.bind('dragover', function(e)
-            {
-                e.preventDefault();
-                e.originalEvent.dataTransfer.dropEffect = 'copy';
             });
-            prop._$node.bind('drop', function(e)
-            {
-                e.preventDefault();
-                var t = e.originalEvent.dataTransfer.getData('Text');
-                var didReplace = false;
-                if (t.startsWith('move:'))
-                {
-                    var mId = t.slice(5);
-                    if (mId == prop.id) { return; }
-                    var $repItem = $contEdit.find('[data-propid=' + mId + ']');
-                    if ($repItem.length > 0)
-                    {
-                        prop._$node.replaceWith($repItem);
-                        didReplace = true;
-                    }
-                }
-                else if (t.startsWith($.cf.Property.newPropertyTag.begin))
-                {
-                    addNewProperty($contEdit, t.slice($.cf.Property.newPropertyTag.begin.length,
-                            t.length - $.cf.Property.newPropertyTag.end.length), prop._$node);
-                    didReplace = true;
-                }
-
-                if (didReplace)
-                {
-                    prop.remove();
-                    readjustCanaries($contEdit);
-                }
-            });
-
-            if ($.browser.msie)
-            {
-                // Don't allow other properties to be dropped in a property
-                prop._$node.bind('dragover drop', function(e)
-                {
-                    e.preventDefault();
-                    return false;
-                });
-
-                // IE wasn't triggering plain clicks on the properties most of the time
-                // (maybe something to do with contentEditable), so hack around it
-                prop._$node.mousedown(function() { prop._$node.data('mouseDownForEdit', true); })
-                .mousemove(function()
-                {
-                    if (prop._$node.data('mouseDownForEdit'))
-                    { prop._$node.data('mouseDownForEdit', false); }
-                })
-                .mouseup(function()
-                {
-                    if (prop._$node.data('mouseDownForEdit'))
-                    {
-                        prop._$node.data('mouseDownForEdit', false);
-                        doEdit();
-                    }
-                });
-            }
-            else
-            { prop._$node.click(doEdit); }
         },
 
         extract: function()
         {
             finishEdit(this, true);
-            $('body').unbind('.prop_' + this.id);
+            $('body').off('.prop_' + this.id);
             this._$node.socrataTip().destroy();
             this._$node.replaceWith(this.toString());
         }
@@ -392,30 +300,10 @@
         infoTipHookup(prop);
     };
 
-    $.cf.Property.newPropertyTag = { begin: '[::newProperty|', end: '::]' };
-
-    if ($.browser.msie)
-    {
-        // We don't want users to be able to tab into a property (since contentEditable is true),
-        // so we detect non-mouse selections, and just move the cursor to the end of the actual
-        // contentEditable node
-        $(document).bind('selectionchange', function()
-        {
-            var sel = document.selection;
-            var $item;
-            if (sel.type == 'Control' && ($item = $(sel.createRange().item(0))).hasClass('cf-property') &&
-                !$item.data('mouseDownForEdit'))
-            {
-                var $ce = $item.parent().closest('[contentEditable=true]');
-                var rs = rangy.getSelection();
-                rs.selectAllChildren($ce[0]);
-                rs.collapseToEnd();
-            }
-        });
-    }
-
     $.cf.enhanceProperties = function($node)
     {
+        $node.editable({ edit: true });
+
         var html = $node.html();
         var props = html.match(/({[^{}]+})/mg);
         var propObjs = {};
@@ -432,178 +320,27 @@
             var prop = propObjs[$t.attr('data-propId')];
             prop.domHookup($t);
         });
-        $node.bind('drop.cfProperty', function(e)
+
+        if ($node.isControlClass('nativeDropTarget'))
+        { $node.nativeDropTarget().enable(); }
+        else
         {
-            _.defer(function()
-            {
-                if ($.browser.msie)
+            $node.nativeDropTarget({
+                newItemDrop: function(dropId)
                 {
-                    readjustCanaries($node);
-                    findNewProperties($node);
-                }
-                else
-                {
-                    $node.find('[data-droppednewproperty]').quickEach(function()
-                    { addNewProperty($node, this.attr('data-droppednewproperty'), this) });
-                }
-            });
-        });
-
-        readjustCanaries($node);
-
-        $node.bind('keyup.cfProperty mouseup.cfProperty', function(e)
-        {
-            _.defer(function()
-            {
-                readjustCanaries($node);
-                var sel = rangy.getSelection();
-                if (!sel.isCollapsed)
-                {
-                    return; // Some kind of selection; don't worry about canaries(?)
-                }
-
-                var $par = $(sel.anchorNode).parent();
-                if ($par.hasClass('canary'))
-                {
-                    if ($par.hasClass('first') && sel.anchorOffset == 0)
-                    { sel.collapse(sel.anchorNode, 1); }
-                    else if ($par.hasClass('last') && sel.anchorOffset == 1)
-                    { sel.collapse(sel.anchorNode, 0); }
+                    var prop = new $.cf.Property({property: dropId, fallback: ''});
+                    var $newProp = $(prop.toHtml());
+                    _.defer(function() { prop.domHookup($newProp); });
+                    return $newProp;
                 }
             });
-        });
-
-        $node.on('keydown.cfProperty', function(e)
-        {
-            var sel = rangy.getSelection();
-            if (sel.isCollapsed && $(sel.anchorNode).parent().andSelf().is('.canary.intermediate'))
-            {
-                if (e.which == 8 || e.which == 37) // backspace || arrow_left
-                { sel.collapse(sel.anchorNode, 0); }
-                if (e.which == 46 || e.which == 39) // delete || arrow_right
-                { sel.collapse(sel.anchorNode, 1); }
-            }
-        });
-    };
-
-    // Special IE hack to find the text that was dropped in and replace it with a real property
-    var findNewProperties = function($curNode)
-    {
-        var npTag = $.cf.Property.newPropertyTag;
-        if ($curNode.text().indexOf(npTag.begin) > -1)
-        {
-            $curNode.contents().quickEach(function()
-            {
-                var t = this[0];
-                var tbi, tei;
-                if (t.nodeType == 3 &&
-                    (tbi = t.nodeValue.indexOf(npTag.begin)) > -1 &&
-                    (tei = t.nodeValue.indexOf(npTag.end)) > tbi + npTag.begin.length)
-                {
-                    var newProp = t.splitText(tbi);
-                    newProp.splitText(tei - tbi + npTag.end.length);
-                    addNewProperty($curNode, newProp.nodeValue.slice(npTag.begin.length,
-                        newProp.nodeValue.length - npTag.end.length), $(newProp));
-                }
-                else if (t.nodeType == 1)
-                { findNewProperties(this); }
-            });
         }
-    };
-
-    // Common things to do to hook up a newly-added property
-    var addNewProperty = function($node, prop, $replaceNode)
-    {
-        var prop = new $.cf.Property({property: prop, fallback: ''});
-        var $newProp = $(prop.toHtml());
-        $replaceNode.replaceWith($newProp);
-        prop.domHookup($newProp);
-        readjustCanaries($node);
-    };
-
-    var zws = '\u200b';
-    var readjustCanaries = function($node)
-    {
-        var $items = $node.contents();
-        // Any to remove/replace with text?
-        $items.quickEach(function(i)
-        {
-            var $t = $(this);
-            if ($t.hasClass('canary'))
-            {
-                var h = $t.html();
-                if (h != zws)
-                {
-                    var sel = rangy.getSelection();
-                    var pos;
-                    if (sel.isCollapsed && $(sel.anchorNode).parent().index($t) == 0)
-                    {
-                        pos = sel.anchorOffset;
-                        var zi = h.indexOf(zws);
-                        if (zi > -1 && zi < pos && pos > 0) { pos--; }
-                    }
-                    $t.replaceWith(h.replace(zws, ''));
-                    if (!$.isBlank(pos))
-                    { sel.collapse($node.contents()[i], pos); }
-                }
-                else if (
-                    // If not really first item, or not before a property
-                    ($t.hasClass('first') && (i != 0 || !$items.eq(1).hasClass('cf-property'))) ||
-                    // If not really last item, or not after a property
-                    ($t.hasClass('last') && (i != ($items.length - 1) ||
-                                             !$items.eq(-2).hasClass('cf-property'))) ||
-                    // If intermediate and at beginning or end, or not between two properties
-                    ($t.hasClass('intermediate') && (i == 0 || i == ($items.length - 1) ||
-                                                     !$items.eq(i - 1).hasClass('cf-property') ||
-                                                     !$items.eq(i + 1).hasClass('cf-property')))
-                    )
-                { $t.remove(); }
-            }
-        });
-
-        $items = $node.contents();
-        var sel = rangy.getSelection();
-        var savePos = sel.isCollapsed && sel.anchorNode == $node[0];
-        var pos = sel.anchorOffset;
-        var canary = { tagName: 'span', 'class': ['canary'], contents: '&#x200b;' };
-        if ($items.first().hasClass('cf-property'))
-        {
-            var firstC = $.extend(true, {}, canary);
-            firstC['class'].push('first');
-            firstC = $.tag(firstC);
-            $node.prepend(firstC);
-            if (savePos && pos == 0)
-            { sel.collapse(firstC[0], 1); }
-        }
-        if ($items.last().hasClass('cf-property'))
-        {
-            var lastC = $.extend(true, {}, canary);
-            lastC['class'].push('last');
-            lastC = $.tag(lastC);
-            $node.append(lastC);
-            if (savePos && pos == $items.length)
-            { sel.collapse(lastC[0], 0); }
-        }
-        var interC = $.extend(true, {}, canary);
-        interC['class'].push('intermediate');
-        $items.quickEach(function(i)
-        {
-            var $t = $(this);
-            if ($t.hasClass('cf-property') && $items.eq(i+1).hasClass('cf-property'))
-            {
-                var $ic = $.tag(interC);
-                $t.after($ic);
-                if (savePos && (pos - 1) == i)
-                { sel.collapse($ic[0], 0); }
-            }
-        });
-        $node[0].normalize();
     };
 
     $.cf.extractProperties = function($node)
     {
-        readjustCanaries($node);
-        $node.children('.canary').remove();
+        $node.editable({ edit: false });
+
         $node.children('.cf-property, .cf-property-edit').quickEach(function()
         {
             var t = this;
@@ -611,7 +348,7 @@
             var cfProp = t.data('cfProperty');
             if (!$.isBlank(cfProp)) { cfProp.extract(); }
         });
-        $node.off('.cfProperty');
+        $node.nativeDropTarget().disable();
     };
 
 })(jQuery);

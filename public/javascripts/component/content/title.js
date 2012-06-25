@@ -75,7 +75,6 @@ $.component.Component.extend('Title', 'content', {
         var wasEditable = cObj._editing;
         if (!cObj._super.apply(cObj, arguments)) { return false; }
 
-        cObj.$title.editable({ edit: cObj._editing });
         cObj.$title.toggleClass('socrata-cf-mouse', cObj._editing);
 
         // Animate height

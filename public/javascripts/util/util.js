@@ -763,30 +763,4 @@ blist.util.railsFlash = function(text, level)
 blist.util.patterns.UID = /^\w{4}-\w{4}$/;
 
 
-// IE native drag-drop doesn't support a drag image, so fake it
-var $ieDragImage;
-blist.util.startIEDrag = function($node)
-{
-    $ieDragImage = $node.clone();
-    $ieDragImage.addClass('ieDrag').css({'opacity': '0.8', 'position': 'absolute', 'z-index': 20000,
-        '-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=80})"
-    });
-    $('body').append($ieDragImage);
-    $('body').bind('drag.ieDragImage', function(e)
-    {
-        if (!$.isBlank($ieDragImage))
-        { $ieDragImage.css({'left': e.originalEvent.pageX, 'top': e.originalEvent.pageY}); }
-    });
-};
-
-blist.util.finishIEDrag = function()
-{
-    if (!$.isBlank($ieDragImage))
-    {
-        $ieDragImage.remove();
-        $ieDragImage = null;
-    }
-    $('body').unbind('.ieDragImage');
-};
-
 })(jQuery);

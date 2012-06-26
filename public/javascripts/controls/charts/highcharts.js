@@ -742,6 +742,7 @@
                 {
                     if (!datum.isNull) { return; }
                     if (datum.$nullDiv) { datum.$nullDiv.remove(); }
+                    if ($.isBlank(datum.graphic)) { return; }
 
                     var position;
                     if (invertAxis)
@@ -885,7 +886,7 @@
                     if (i > -1) { lineAt = i; }
                 }
                 if (_.isString(lineAt)) { lineAt = parseFloat(lineAt.replace(/[^0-9\.\+\-]/, '')); }
-                if (!_.isNumber(lineAt)) { return; }
+                if (!_.isNumber(lineAt) || _.isNaN(lineAt)) { return; }
 
                 var percentage = getPercentage(lineAt, axis.getExtremes(), zeroAtTop);
                 if (percentage > 1 || percentage < 0)
@@ -1148,9 +1149,9 @@
         if (chartObj._displayFormat.yAxis)
         {
             var yAxis = chartObj._displayFormat.yAxis;
-            if (_.isNumber(parseFloat(yAxis.min)))
+            if (!_.isNaN(parseFloat(yAxis.min)))
             { chartConfig.yAxis.min = yAxis.min; }
-            if (_.isNumber(parseFloat(yAxis.max)))
+            if (!_.isNaN(parseFloat(yAxis.max)))
             { chartConfig.yAxis.max = yAxis.max; }
         }
 

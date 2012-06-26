@@ -37,7 +37,7 @@
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
             var layer = viewConfig._heatmapLayer
-                = new OpenLayers.Layer.Heatmap('Heatmap', mapObj.map, mapObj.map.layers[0],
+                = new OpenLayers.Layer.Heatmap('Heatmap', mapObj.map, mapObj.map.baseLayer,
                     { "element":mapObj.currentDom, "radius":25, "visible":true });
             viewConfig._dataStore = [];
             viewConfig._bounds = new OpenLayers.Bounds();
@@ -63,7 +63,7 @@
             viewConfig._rowsChanged = true;
             var lonlat = new OpenLayers.LonLat(geometry.longitude, geometry.latitude).transform(
                 geographicProjection, mapObj.map.getProjectionObject());
-            viewConfig._dataStore.push(lonlat);
+            viewConfig._dataStore.push({ lonlat: lonlat });
             viewConfig._bounds.extend(lonlat);
 
             return true;
@@ -104,9 +104,9 @@
                 if (lat > maxExtent.top) { lat = maxExtent.top; }
                 else if (lat > maxExtent.bottom) { lat = maxExtent.bottom; }
 
-                var lonlat = { lon: lon, lat: lat };
-                viewConfig._dataStore.push(lonlat);
-                viewConfig._bounds.extend(new OpenLayers.LonLat(lon, lat));
+                var lonlat = new OpenLayers.LonLat(lon, lat);
+                viewConfig._dataStore.push({ lonlat: lonlat });
+                viewConfig._bounds.extend(lonlat);
             });
 
             viewConfig._rowsChanged = true;

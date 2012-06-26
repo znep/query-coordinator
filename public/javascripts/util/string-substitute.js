@@ -157,7 +157,7 @@
 
         numberFormat: function(v, transf)
         {
-            if (!_.isNumber(parseFloat(v))) { return v; }
+            if (_.isNaN(parseFloat(v))) { return v; }
             v = parseFloat(v);
 
             var prec = transf.format.match(/\d+/);
@@ -220,7 +220,7 @@
             var vl = computeValue(m[1], v);
             var vr = computeValue(m[3], v);
 
-            if (!_.isNumber(vl) || !_.isNumber(vr)) { return v; }
+            if (!_.isNumber(vl) || _.isNaN(vl) || !_.isNumber(vr) || _.isNan(vr)) { return v; }
 
             switch (m[2])
             {

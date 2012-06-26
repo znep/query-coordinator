@@ -106,14 +106,14 @@
     $.validator.addMethod('data-validateMin', function(value, element, param)
     {
         value = parseInt(value);
-        if (!_.isNumber(value))
+        if (_.isNaN(value))
         { return false; }
 
         return value >= parseFloat(param);
     },
     function (value, element)
     {
-        return _.isNumber(parseInt(value)) ?
+        return !_.isNaN(parseInt(value)) ?
             ('Value must be at least ' + $(element).attr('data-validateMin')) :
             'Value must be a number';
     });
@@ -121,14 +121,14 @@
     $.validator.addMethod('data-validateMax', function(value, element, param)
     {
         value = parseInt(value);
-        if (!_.isNumber(value))
+        if (_.isNaN(value))
         { return false; }
 
         return value <= parseFloat(param);
     },
     function (value, element)
     {
-        return _.isNumber(parseInt(value)) ?
+        return !_.isNaN(parseInt(value)) ?
             ('Value must be no greater than ' + $(element).attr('data-validateMax')) :
             'Value must be a number';
     });

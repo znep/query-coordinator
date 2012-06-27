@@ -8,6 +8,9 @@
     // This is the current focal component, if any
     var focal;
 
+    // Separately track what is being dragged
+    var dragFocus;
+
     // This flag is set while we have global mouse event handlers installed
     var trackingMouseDown = false;
 
@@ -25,7 +28,7 @@
         var delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         if (delta > 4) {
             onBodyMouseUp();
-            new $.cf.ComponentDrag($(focal.dom), event);
+            new $.cf.ComponentDrag($(dragFocus.dom), event);
         }
     }
 
@@ -36,12 +39,14 @@
         trackingMouseDown = false;
     }
 
-    var focusOnTarget = function(target) {
+    var focusOnTarget = function(target)
+    {
         while (target && !target._comp)
             target = target.parentNode;
 
         // Simply unfocus if there is no target
-        if (!target) {
+        if (!target || !target._comp.canEdit('focus'))
+        {
             $.cf.blur(true);
             return false;
         }
@@ -98,8 +103,11 @@
              $target.closest('.colorpicker').length > 0 )
         { return; }
 
-        target = focusOnTarget(target);
-        if (!target) { return; }
+        while (target && !target._comp)
+        { target = target.parentNode; }
+
+        focusOnTarget(target);
+        if ($.isBlank(target)) { return; }
 
         // We let this pass through above so that we can properly
         // track focus, but we still want to disable drag-tracking since
@@ -108,18 +116,20 @@
         { return; }
 
         // Listen for drag unless this is a root component or immobilized by container
-        if (target._comp.parent && target._comp.parent.drag !== false) {
+        if (target._comp.parent && target._comp.canEdit('drag'))
+        {
             // Bind mouse events so we can detect drag-start
             $body.bind('mousemove.configurator-interaction', onBodyMouseMove);
             $body.bind('mouseup.configurator-interaction', onBodyMouseUp);
 
             // Record keeping
             trackingMouseDown = true;
+            dragFocus = target._comp;
             startX = event.pageX;
             startY = event.pageY;
-
-            return false;
         }
+        // Disable native browser drag
+        event.preventDefault();
     }
 
     function exitEditMode() {
@@ -267,6 +277,7 @@
                 $(focal.dom).removeClass('socrata-cf-focal');
                 focal = undefined;
             }
+            dragFocus = undefined;
             if ($mask && unmask) {
                 $mask.remove();
                 $mask = undefined;

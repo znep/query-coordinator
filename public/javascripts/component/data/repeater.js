@@ -4,9 +4,10 @@ $.component.Container.extend('Repeater', 'content', {
     position: 0,
     length: 100,
 
-    _init: function(properties) {
-        this._delayUntilVisible = true;
+    _delayUntilVisible: true,
 
+    _init: function(properties)
+    {
         // Take my children and give them to a "clone" template that will repeat once for each object
         var children = properties.children || [];
         delete properties.children;

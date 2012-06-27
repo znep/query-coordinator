@@ -236,6 +236,24 @@
             return true;
         },
 
+        canEdit: function(type)
+        {
+            if (this._locked || this._properties.locked ||
+                    (!$.isBlank(this.parent) && !this.parent.canEdit('locked')))
+            { return false; }
+
+            switch (type)
+            {
+                case 'drag':
+                case 'locked':
+                    return true;
+                    break;
+                default:
+                    return !this._editDisabled && !this._properties.editDisabled;
+                    break;
+            }
+        },
+
         /**
          * Component received or lost focus in edit mode.
          * Usually used to update properties

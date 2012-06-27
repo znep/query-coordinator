@@ -1,11 +1,7 @@
 ;(function() {
 
 $.component.Component.extend('Pager', 'input', {
-    _init: function()
-    {
-        this._needsOwnContext = true;
-        this._super.apply(this, arguments);
-    },
+    _needsOwnContext: true,
 
     // Config options:
     //   - pagedContainerId

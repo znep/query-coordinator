@@ -72,7 +72,7 @@
             var $containers = $('.socrata-container').closest('.socrata-component').filter(function() {
                 if ($(this).closest('.socrata-cf-drag-shell').length)
                     return false;
-                return this._comp && this._comp.drag !== false;
+                return this._comp && this._comp.canEdit('drag');
             });
             Array.prototype.reverse.apply($containers);
 

@@ -1,10 +1,11 @@
 ;(function() {
 
 $.component.Component.extend('Map', 'data', {
+    _needsOwnContext: true,
+    _delayUntilVisible: true,
+
     _init: function()
     {
-        this._needsOwnContext = true;
-        this._delayUntilVisible = true;
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row']});
     },
@@ -18,8 +19,9 @@ $.component.Component.extend('Map', 'data', {
     {
         var retVal = {schema: [{ fields: [$.cf.contextPicker()] }],
             view: (this._dataContext || {}).dataset};
-        if ($.isBlank(this._dataContext)) { return retVal; }
-        retVal.schema = retVal.schema.concat(blist.configs.map.config({view: this._dataContext.dataset}));
+// TODO: make this work better with properties substitution
+//        if ($.isBlank(this._dataContext)) { return retVal; }
+//        retVal.schema = retVal.schema.concat(blist.configs.map.config({view: this._dataContext.dataset}));
         return retVal;
     },
 

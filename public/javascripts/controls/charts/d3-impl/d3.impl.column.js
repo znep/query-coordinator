@@ -110,8 +110,6 @@ $.Control.registerMixin('d3_impl_column', {
     {
         var vizObj = this;
 
-        // save off data
-        vizObj._columnChart.currentData = data;
 
         // precalculate some stuff
 
@@ -134,7 +132,7 @@ $.Control.registerMixin('d3_impl_column', {
         vizObj._columnChart.maxValue = d3.max(allValues); // cache off maxValue for other renders
         vizObj._columnChart.minValue = d3.min(allValues); // etc
 
-        vizObj._renderData();
+        vizObj._renderData(data);
     },
 
     handleRowCountChange: function()
@@ -416,12 +414,11 @@ $.Control.registerMixin('d3_impl_column', {
     },
 
     // call this if the active set of data has changed
-    _renderData: function()
+    _renderData: function(data)
     {
         var vizObj = this,
             cc = vizObj._columnChart,
             defaults = vizObj.defaults,
-            data = cc.currentData,
             valueColumns = vizObj._valueColumns,
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView;

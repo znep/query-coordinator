@@ -123,7 +123,7 @@ $.Control.registerMixin('d3_base_dynamic', {
         console.error('implement me!');
     },
 
-    renderData: function()
+    renderData: function(data)
     {
         // we definitely don't want to use the default renderer because
         // it doesn't account for batches and such.

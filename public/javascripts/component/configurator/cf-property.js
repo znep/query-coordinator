@@ -133,6 +133,7 @@
 
             prop._$node.nativeDropTarget({
                 contentEditable: false,
+                acceptCheck: function($item) { return $item.hasClass('cf-property'); },
                 findReplacement: function(mId)
                 {
                     if (mId == prop.id) { return null; }
@@ -326,6 +327,7 @@
         else
         {
             $node.nativeDropTarget({
+                acceptCheck: function($item) { return $item.hasClass('cf-property'); },
                 newItemDrop: function(dropId)
                 {
                     var prop = new $.cf.Property({property: dropId, fallback: ''});

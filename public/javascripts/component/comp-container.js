@@ -332,13 +332,33 @@
         },
 
         // Propagate design mode to children
-        design: function(designing) {
+        design: function(designing)
+        {
             this._super.apply(this, arguments);
-            this.each(function(child) {
-                child.design(designing);
-            });
+            this.each(function(child) { child.design(designing); });
+            if (!this.$dom.isControlClass('nativeDropTarget'))
+            {
+                if (designing)
+                {
+                    this.$dom.nativeDropTarget({
+                        contentEditable: false,
+                        acceptCheck: function($item)
+                        {
+                            return $item.hasClass('socrata-component') ||
+                                $item.hasClass('componentCreate');
+                        }
+                    });
+                }
+            }
+            else
+            {
+                if (designing)
+                { this.$dom.nativeDropTarget().enable(); }
+                else
+                { this.$dom.nativeDropTarget().disable(); }
+            }
         },
-        
+
         // Propagate substitution parameter scan
         listTemplateSubstitutions: function(list) {
             this._super(list);

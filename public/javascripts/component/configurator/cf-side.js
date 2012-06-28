@@ -29,6 +29,7 @@
             paletteCatalog = [];
         }
 
+        $compPalettes = $();
         function createSection(section, createEntry) {
             // Structure
             var html = [ '<div class="section side-section-', section.id, section.open ? ' open' : '', '"><h2>', section.name, '</h2><ul>' ];
@@ -52,27 +53,13 @@
                 else
                     $ct.append($section);
             }
+            $compPalettes = $compPalettes.add($section);
 
             // Events
             var $items = $section.find('ul');
             $section.bind('collapse', function() {
                 $items.animate({ height: 0 }, 200, 'linear');
                 $section.removeClass('open');
-            }).mousedown(function(e) {
-                if (e.which != 1)
-                    return;
-
-                // Ignore events in headers which interact independently
-                var $target = $(e.target);
-                if ($target.closest('h2').length)
-                    return;
-
-                // Initiate icon drag
-                var $icon = $target.closest('.item');
-                if ($icon.length)
-                    new $.cf.ComponentDrag($icon, e);
-
-                return false;
             }).find('h2').click(function() {
                 if ($section.is('.open'))
                     $section.trigger('collapse');
@@ -86,14 +73,23 @@
 
                 $ct.find('.open').not(this.parentNode).trigger('collapse');
             });
+
+            $section.find('.componentCreate').each(function()
+            {
+                var $t = $(this);
+                $t.nativeDraggable({
+                    dropId: $t.attr('data-typename')
+                });
+            });
         }
 
         _.each(paletteCatalog, function(section) {
             createSection(section, function(entry, html) {
                 html.push(
-                    '<li class="item icon-',
+                    '<li class="componentCreate icon-',
                     entry.typeName,
-                    '"><span class="bulb"><span class="icon"></span></span><span class="label">',
+                    '" data-typename="' + entry.typeName + '">' +
+                    '<span class="bulb"><span class="icon"></span></span><span class="label">',
                     entry.catalogName,
                     '</span></li>'
                 );
@@ -150,6 +146,8 @@
         visible = true;
     };
 
+    var $compPalettes;
+
     var $propPalette;
     var propertiesPalette;
 
@@ -180,6 +178,11 @@
     $.extend($.cf.side, {
         properties: function(what)
         {
+            if ($.isBlank(what))
+            { $compPalettes.removeClass('hide'); }
+            else
+            { $compPalettes.addClass('hide'); }
+
             if (propertiesEditor.component != what)
             {
                 closePanel($properties, propertiesEditor, function(didClose)

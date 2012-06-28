@@ -130,6 +130,7 @@ javascripts:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/panes/base-pane.js
+    - public/javascripts/plugins/rangy-core.js
     - public/javascripts/controls/native-draggable.js
     - public/javascripts/controls/native-drop-target.js
     - public/javascripts/component/configurator/properties-editor.js

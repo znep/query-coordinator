@@ -1,23 +1,37 @@
 ;(function() {
 
+if (!rangy.initialized) { rangy.init(); }
+
 $.Control.extend('nativeDraggable', {
     _init: function()
     {
-        var dObj = this;
-        this._super.apply(dObj, arguments);
-        var $t = dObj.$dom();
+        this._super.apply(this, arguments);
 
-        dObj._dropId = dObj.settings.dropId || ('drop_' + _.uniqueId());
+        this._dropId = this.settings.dropId || ('drop_' + _.uniqueId());
+
+        var $ceParent = $(this.settings.contentEditableParent ||
+            this.$dom().parent().closest('[contentEditable=true]'));
+        if ($ceParent.length > 0)
+        {
+            this._inContentEditable = true;
+            this._$ceParent = $ceParent;
+        }
+
+        if (!this.settings.startDisabled)
+        { this.enable(); }
+    },
+
+    enable: function()
+    {
+        var dObj = this;
+        var $t = dObj.$dom();
 
         $t.attr('draggable', true);
         $t.addClass('nativeDraggable');
 
-        var $ceParent = $(dObj.settings.contentEditableParent ||
-            $t.parent().closest('[contentEditable=true]'));
-        if ($ceParent.length > 0)
+        if (dObj._inContentEditable)
         {
-            dObj._inContentEditable = true;
-            dObj._$ceParent = $ceParent;
+            dObj._origCE = $t.attr('contentEditable');
             // Making the assumption that a draggable item in a contentEditable
             // section cannot itself be contentEditable, because that doesn't
             // work very well
@@ -27,26 +41,28 @@ $.Control.extend('nativeDraggable', {
 
         if (dObj._inContentEditable && !$.browser.msie)
         {
-            $t.on('mousedown', function() { dObj._$ceParent.attr('contentEditable', false); })
-                .on('mouseup', function() { dObj._$ceParent.attr('contentEditable', true); });
+            $t.on('mousedown.nativeDraggable',
+                function() { dObj._$ceParent.attr('contentEditable', false); })
+            .on('mouseup.nativeDraggable',
+                function() { dObj._$ceParent.attr('contentEditable', true); });
         }
 
         if ($.browser.msie)
         {
-            $t.on('selectstart', function(e)
+            $t.on('selectstart.nativeDraggable', function(e)
             {
                 e.preventDefault();
                 this.dragDrop();
             });
         }
 
-        $t.on('dragstart', function(e) { dObj.dragStart(e); })
-        .on('dragend', function(e) { dObj.dragEnd(e); });
+        $t.on('dragstart.nativeDraggable', function(e) { dObj.dragStart(e); })
+            .on('dragend.nativeDraggable', function(e) { dObj.dragEnd(e); });
 
         if ($.browser.msie && dObj._inContentEditable)
         {
             // Don't allow other properties to be dropped in a property
-            $t.on('dragover drop', function(e)
+            $t.on('dragover.nativeDraggable drop.nativeDraggable', function(e)
             {
                 e.preventDefault();
                 return false;
@@ -54,26 +70,35 @@ $.Control.extend('nativeDraggable', {
 
             // IE wasn't triggering plain clicks on the properties most of the time
             // (maybe something to do with contentEditable), so hack around it
-            $t.mousedown(function(e)
-                    {
-                        if ($.isBlank(dObj.settings.clickExclude) ||
-                            !$(e.target).is(dObj.settings.clickExclude))
-                        { $t.data('mouseDownForClick', true); }
-                    })
-                .mousemove(function()
+            $t.on('mousedown.nativeDraggable', function(e)
+            {
+                if ($.isBlank(dObj.settings.clickExclude) ||
+                    !$(e.target).is(dObj.settings.clickExclude))
+                { $t.data('mouseDownForClick', true); }
+            })
+            .on('mousemove.nativeDraggable', function()
+            {
+                if ($t.data('mouseDownForClick'))
+                { $t.data('mouseDownForClick', false); }
+            })
+            .on('mouseup.nativeDraggable', function()
+            {
+                if ($t.data('mouseDownForClick'))
                 {
-                    if ($t.data('mouseDownForClick'))
-                    { $t.data('mouseDownForClick', false); }
-                })
-                .mouseup(function()
-                {
-                    if ($t.data('mouseDownForClick'))
-                    {
-                        $t.data('mouseDownForClick', false);
-                        $t.click();
-                    }
-                });
+                    $t.data('mouseDownForClick', false);
+                    $t.click();
+                }
+            });
         }
+    },
+
+    disable: function()
+    {
+        this.$dom().attr('draggable', false);
+        this.$dom().removeClass('nativeDragging');
+        if (this._inContentEditable)
+        { this.$dom().attr('contentEditable', this._origCE); }
+        this.$dom().off('.nativeDraggable');
     },
 
     dragStart: function(e)
@@ -126,6 +151,8 @@ $.Control.extend('nativeDraggable', {
         { e.originalEvent.dataTransfer.setDragImage(dObj.$dom()[0], 0, 0); }
         else
         { startIEDrag(dObj.$dom()); }
+
+        $.nativeDraggable.trigger('drag_start', [dObj.$dom()]);
     },
 
     dragEnd: function(e)
@@ -164,10 +191,13 @@ $.Control.extend('nativeDraggable', {
     dropId: null,
     dropType: 'copy',
     htmlData: '',
+    startDisabled: false,
     textData: ''
 });
 
-$.nativeDraggable = { copyDropTag: { begin: '[::copyDrop|', end: '::]' } };
+$.nativeDraggable = new Model();
+$.nativeDraggable.registerEvent(['drag_start']);
+$.nativeDraggable.copyDropTag = { begin: '[::copyDrop|', end: '::]' };
 
 if ($.browser.msie)
 {

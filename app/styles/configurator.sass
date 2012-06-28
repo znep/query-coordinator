@@ -45,7 +45,7 @@
     .autocomplete
       left: 0
 
-  .item
+  .componentCreate
     @include component-icons
     float: left
     margin: 4px 0
@@ -80,7 +80,7 @@
     word-wrap: break-word
 
 // Representation of icons in palette and drag form of same
-.socrata-cf-side .item, .socrata-cf-drag-icon
+.socrata-cf-side .componentCreate, .socrata-cf-drag-icon
   &.label-only
     width: auto
   .bulb
@@ -134,23 +134,9 @@
   @include opacity(0.8)
   z-index: 1000000
 
-// Dragging placeholder
-.component-Placeholder
-  position: relative
-  overflow: hidden
-  .insides
-    border: dashed 2px #888888
-    background-color: #eeeeee
-    top: 0
-    left: 0
-    right: 0
-    bottom: 0
-    overflow: hidden
-    @include border-radius(4px) // Default or temporary?
-    & > *
-      visibility: hidden
-      position: static
-      margin-bottom: -4px
+// Styling for drag-drop
+.socrata-container.dropActive
+  @include box-shadow(0, 0, 6px, black)
 
 .cf-property
   background-color: #ddddff

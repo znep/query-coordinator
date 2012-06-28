@@ -1,5 +1,7 @@
 ;(function() {
 
+    var exclusiveDropTarget;
+
 $.Control.extend('nativeDropTarget', {
     _init: function()
     {
@@ -25,30 +27,58 @@ $.Control.extend('nativeDropTarget', {
         dObj.enable();
     },
 
-    enable: function()
+    enable: function(isSoft)
     {
         var dObj = this;
         dObj.$dom().attr('dropzone', 'all string:text/plain string:text/html');
-        dObj.$dom().on('drop.nativeDropTarget', function(e)
+        if (!isSoft)
+        {
+            dObj._enabled = true;
+            dObj.$dom().on('drop.nativeDropTarget', function(e)
+                {
+                    if (dObj._isContentEditable)
+                    { dObj.dropContentEditable(e); }
+                    else
+                    { dObj.dropStandard(e); }
+                })
+                .on('dragover.nativeDropTarget', function(e) { dObj.dragOver(e); })
+                .on('dragenter.nativeDropTarget', function(e) { dObj.dragEnter(e); })
+                .on('dragleave.nativeDropTarget', function(e) { dObj.dragLeave(e); });
+            if (_.isFunction(dObj.settings.acceptCheck) && !$.isBlank($.nativeDraggable))
             {
-                if (dObj._isContentEditable)
-                { dObj.dropContentEditable(e); }
-                else
-                { dObj.dropStandard(e); }
-            })
-            .on('dragover.nativeDropTarget', function(e) { dObj.dragOver(e); })
-            .on('dragenter.nativeDropTarget', function(e) { dObj.dragEnter(e); });
+                $.nativeDraggable.bind('drag_start', function($item)
+                {
+                    if (dObj.settings.acceptCheck($item))
+                    { dObj.enable(true); }
+                    else
+                    { dObj.disable(true); }
+                }, dObj);
+            }
+        }
     },
 
-    disable: function()
+    disable: function(isSoft)
     {
         this.$dom().attr('dropzone', 'none');
-        this.$dom().off('.nativeDropTarget');
+        if (!isSoft)
+        {
+            this.$dom().off('.nativeDropTarget');
+            if (!$.isBlank($.nativeDraggable)) { $.nativeDraggable.unbind(null, null, this); }
+            this._enabled = false;
+        }
+    },
+
+    canAcceptDrop: function()
+    {
+        return this.$dom().attr('dropzone') != 'none';
     },
 
     dropStandard: function(e)
     {
         var dObj = this;
+        if (!dObj._active || !dObj.canAcceptDrop()) { return; }
+
+    $.debug('got drop', this.$dom());
         e.preventDefault();
 
         var t = e.originalEvent.dataTransfer.getData('Text');
@@ -81,6 +111,8 @@ $.Control.extend('nativeDropTarget', {
     dropContentEditable: function(e)
     {
         var dObj = this;
+        if (!dObj.canAcceptDrop()) { return; }
+
         _.defer(function()
         {
             // Only handles a copy from nativeDraggable
@@ -99,17 +131,44 @@ $.Control.extend('nativeDropTarget', {
 
     dragEnter: function(e)
     {
+        if (!this.canAcceptDrop()) { return; }
+
+        e.stopPropagation();
+
         if (this._isContentEditable)
         { this.$dom().attr('contentEditable', true); }
+
+        this._activate();
     },
 
     dragOver: function(e)
     {
+        if (!this.canAcceptDrop()) { return; }
+
+        e.stopPropagation();
+
         if (!this._isContentEditable)
         {
             e.preventDefault();
             // Chrome requires copy
             e.originalEvent.dataTransfer.dropEffect = 'copy';
+        }
+
+        this._activate();
+    },
+
+    dragLeave: function(e)
+    {
+        var dObj = this;
+        if (!dObj.canAcceptDrop()) { return; }
+        e.stopPropagation();
+        if ($.isBlank(dObj._leaveDebounce))
+        {
+            dObj._leaveDebounce = setTimeout(function()
+                    {
+                        delete dObj._leaveDebounce;
+                        dObj._deactivate();
+                    }, 100);
         }
     },
 
@@ -120,11 +179,43 @@ $.Control.extend('nativeDropTarget', {
         if (!$.isBlank($newItem))
         { $replaceNode.replaceWith($newItem); }
         this.$dom().trigger('content-changed');
+    },
+
+    _activate: function()
+    {
+        if (!$.isBlank(this._leaveDebounce))
+        {
+            clearTimeout(this._leaveDebounce);
+            delete this._leaveDebounce;
+        }
+
+        if (this._active) { return; }
+
+        this._active = true;
+        this.$dom().addClass(this.settings.activeClass);
+
+        if (!$.isBlank(exclusiveDropTarget))
+        { exclusiveDropTarget._deactivate(); }
+        exclusiveDropTarget = this;
+    },
+
+    _deactivate: function()
+    {
+        if (!this._active) { return; }
+
+        this._active = false;
+        this.$dom().removeClass(this.settings.activeClass);
+        if (exclusiveDropTarget == this)
+        { exclusiveDropTarget = null; }
     }
 
 }, {
+    acceptCheck: null,
+    activeClass: 'dropActive',
     contentEditable: null,
     contentEditableParent: null,
+    copyReplace: function(dropId) { return null; },
+    findReplacement: function(dropId) { return null; },
     newItemDrop: function(dropId) { return null; },
     replacedCallback: function() {}
 });

@@ -154,6 +154,25 @@
         {
             this._designing = designing;
             this.properties({'__hidden': false});
+            if (designing && !this.$dom.isControlClass('nativeDraggable'))
+            {
+                this.$dom.nativeDraggable({
+                    dropId: this.id,
+                    dropType: 'move',
+                    startDisabled: true
+                });
+            }
+
+            if (!designing)
+            { this.$dom.nativeDraggable().disable(); }
+        },
+
+        dragFocus: function(isFocus)
+        {
+            if (isFocus)
+            { this.$dom.nativeDraggable().enable(); }
+            else
+            { this.$dom.nativeDraggable().disable(); }
         },
 
         /**

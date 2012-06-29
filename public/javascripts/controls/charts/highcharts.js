@@ -9,6 +9,14 @@
             var chartObj = this;
             chartObj._super();
 
+            if (chartObj._chartType.startsWith('stacked'))
+            {
+                // HACK/TODO: once stacked layout is implemented in d3
+                // backfill and remove this shittiness
+                chartObj._chartType = chartObj._chartType.replace(/^stacked/, '');
+                chartObj._displayFormat.stacking = true;
+            }
+
             var limit = Dataset.chart.types[chartObj._chartType].displayLimit;
             if (limit.points)
             { chartObj._maxRows = limit.points; }
@@ -308,7 +316,7 @@
                 if (chartObj._chartType == 'pie' || chartObj._chartType == 'donut' ||
                         // This is a case-specific fix for ctrpilot.
                         $.browser.msie && ($.browser.majorVersion < 8)
-                        && (chartObj._chartType == 'column' || chartObj._chartType == 'stackedcolumn')
+                        && chartObj._chartType == 'column'
                         && chartObj.$dom().parents('.tickerLayoutChildren').length > 0)
                 { chartObj.reload(); }
                 else
@@ -662,8 +670,6 @@
         { seriesType = 'spline'; }
         if (seriesType == 'timeline') { seriesType = 'line'; }
         if (seriesType == 'donut') { seriesType = 'pie'; }
-        if (seriesType == 'stackedbar') { seriesType = 'bar'; }
-        if (seriesType == 'stackedcolumn') { seriesType = 'column'; }
         if (seriesType == 'bubble')
         {
             if (chartObj._displayFormat.showLine)
@@ -713,11 +719,11 @@
 
         var drawNullBars = function()
         {
-            if (!_.include(['column', 'bar', 'stackedcolumn', 'stackedbar'], chartObj._chartType) ||
-                    $.isBlank(chartObj.chart) || chartObj._renderedRows < 1)
+            if (!_.include(['column', 'bar'], chartObj._chartType) || $.isBlank(chartObj.chart) ||
+                    chartObj._renderedRows < 1)
             { return; }
 
-            var invertAxis = (chartObj._chartType == 'bar') || (chartObj._chartType == 'stackedbar');
+            var invertAxis = chartObj._chartType == 'bar';
             var stacking = chartObj._displayFormat.stacking;
             if (!chartObj._hatchPattern)
             { chartObj._hatchPattern = $('<div class="hatchPattern"></div>'); }
@@ -785,7 +791,7 @@
             if (!chartObj._displayFormat.valueMarker)
             { return; }
 
-            var invertAxis = (chartObj._chartType == 'bar') || (chartObj._chartType == 'stackedbar');
+            var invertAxis = chartObj._chartType == 'bar';
             if (!chartObj._valueMarkers)
             { chartObj._valueMarkers = []; }
 
@@ -798,7 +804,7 @@
             if (!chartObj._displayFormat.domainMarker)
             { return; }
 
-            var invertAxis = (chartObj._chartType != 'bar') && (chartObj._chartType != 'stackedbar');
+            var invertAxis = chartObj._chartType != 'bar';
             if (!chartObj._domainMarkers)
             { chartObj._domainMarkers = []; }
 
@@ -812,7 +818,7 @@
             if (!chartObj._errorBarConfig)
             { return; }
 
-            var invertAxis = (chartObj._chartType != 'bar') && (chartObj._chartType != 'stackedbar');
+            var invertAxis = chartObj._chartType != 'bar';
             if (!chartObj._errorBars)
             { chartObj._errorBars = []; }
 
@@ -964,7 +970,7 @@
                     { $box.css({ top: (position.top + too_low - 20) + 'px' }); }
                 };
 
-                var thickStroke = _.include(['column', 'bar', 'stackedcolumn', 'stackedbar'], chartObj._chartType);
+                var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
 
                 var lowBar, highBar;
                 if (isErrorBar)
@@ -1102,7 +1108,7 @@
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); }, redraw: chartRedraw },
-                inverted: (chartObj._chartType == 'bar') || (chartObj._chartType == 'stackedbar')
+                inverted: chartObj._chartType == 'bar'
             },
             credits: { enabled: false },
             legend: { enabled: legendPos != 'none',
@@ -1281,7 +1287,7 @@
 
             if (!chartObj._categoriesLoaded)
             { setCategories(chartObj); }
-            if ((chartObj._chartType == 'bar') || (chartObj._chartType == 'stackedbar'))
+            if (chartObj._chartType == 'bar')
             { chartObj.chart.setSize(chartObj.chart.chartWidth,
                                      chartObj.chart.chartHeight, false); }
 
@@ -1883,7 +1889,7 @@
             // Magic Number is the width of chartObj.$dom().width() when the
             // displayLimit configurations were determined.
             var spaceAvailable;
-            if ((chartObj._chartType == 'bar') || (chartObj._chartType == 'stackedbar'))
+            if (chartObj._chartType == 'bar')
             { spaceAvailable = labelLimit * (chartObj.$dom().height() / 514); }
             else
             { spaceAvailable = labelLimit * (chartObj.$dom().width() / 1440); }

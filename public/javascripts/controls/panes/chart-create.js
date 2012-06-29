@@ -101,6 +101,11 @@
                         return orderBy;
                     }) }
             ); }
+            if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
+                (view.displayFormat.stacking == true))
+            {
+                view.displayFormat.chartType = 'stacked' + view.displayFormat.chartType;
+            }
             cpObj._view.update(view);
 
             var didCallback = false;

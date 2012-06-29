@@ -23,11 +23,14 @@
         ]
     };
 
-    var stacking = function(type)
-    { return {text: 'Stacking', type: 'checkbox', defaultValue: false, name: 'displayFormat.stacking' } };
-
     var renderOther = {text: 'Group Extra Values', type: 'checkbox', defaultValue: false,
-        name: 'displayFormat.renderOther'};
+            name: 'displayFormat.renderOther'};
+
+    // this should really be a SODA feature anyway, not a display feature
+    if ($.urlParam(window.location.href, 'nextgen') == 'true')
+    {
+        renderOther = { onlyIf: false };
+    }
 
     var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors,
         lineClass: 'colorCollapse'};
@@ -403,12 +406,13 @@
 
 
             // Bar chart
+            case 'stackedbar':
             case 'bar':
                 result.push(
                     basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
                     seriesData(chart, options, Dataset.chart.textualTypes),
-                    basicAdv(chart, options, [legendPos, stacking('bar'), renderOther,
+                    basicAdv(chart, options, [legendPos, renderOther,
                         flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
@@ -430,13 +434,14 @@
                 break;
 
             // Column chart
+            case 'stackedcolumn':
             case 'column':
                 result.push(
                     basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
                     seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options,
-                        [legendPos, stacking('column'), renderOther, flyoutControls(options)]),
+                        [legendPos, renderOther, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
                     errorBars(chart, options),

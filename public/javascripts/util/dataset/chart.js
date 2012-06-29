@@ -48,6 +48,12 @@ Dataset.chart.types = {
         displayLimit: { points: 100 }, renderOther: true}
 };
 
+Dataset.chart.types.stackedcolumn = $.extend({}, Dataset.chart.types.column,
+        { value: 'stackedcolumn', text: 'Stacked Column Chart' });
+Dataset.chart.types.stackedbar = $.extend({}, Dataset.chart.types.column,
+        { value: 'stackedbar', text: 'Stacked Bar Chart' });
+
+
 Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
 {
     cols = cols.slice();

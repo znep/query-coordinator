@@ -39,55 +39,57 @@ $.Control.registerMixin('d3_base', {
         return blist.assets.libraries.d3;
     },
 
-    d3: {
-        util: {
-            text: function(transform)
-            {
-                var hasTransform = _.isFunction(transform);
-                if ($.browser.msie && ($.browser.majorVersion < 9))
-                {
-                    return function(d, i) {
-                        $(this).text(hasTransform ? transform(d) : d);
-                    };
-                }
-                else
-                {
-                    return function(d, i) {
-                        this.textContent = (hasTransform ? transform(d) : d);
-                    };
-                }
-            },
+    _d3_text: function(transform)
+    {
+        var hasTransform = _.isFunction(transform);
+        if ($.browser.msie && ($.browser.majorVersion < 9))
+        {
+            return function(d, i) {
+                $(this).text(hasTransform ? transform(d) : d);
+            };
+        }
+        else
+        {
+            return function(d, i) {
+                this.textContent = (hasTransform ? transform(d) : d);
+            };
+        }
+    },
 
-            colorizeRow: function(colDef)
+    _d3_colorizeRow: function(colDef, colIdentFinder)
+    {
+        var isFunc = _.isFunction(colIdentFinder);
+        return function(d)
+        {
+            if (d.sessionMeta && d.sessionMeta.highlight)
             {
-                return function(d)
-                {
-                    if (d.sessionMeta && d.sessionMeta.highlight &&
-                        (!d.sessionMeta.highlightColumn || (d.sessionMeta.highlightColumn == colDef.column.id)))
-                    {
-                        return '#' + $.rgbToHex($.brighten(d.color || colDef.color, 20)); // why the fuck does brighten darken
-                    }
-                    else
-                    {
-                        return d.color || colDef.color;
-                    }
-                };
-            },
-
-            px: function(f)
-            {
-                if (_.isNumber(f))
-                {
-                    return f + 'px';
-                }
-                else if (_.isFunction(f))
-                {
-                    return function()
-                    {
-                        return f.apply(this, arguments) + 'px';
-                    };
-                }
+                console.log($.extend(true, {}, d.sessionMeta));
             }
+            if (d.sessionMeta && d.sessionMeta.highlight &&
+                (!d.sessionMeta.highlightColumn ||
+                 (d.sessionMeta.highlightColumn == (isFunc ? colIdentFinder(colDef) : colDef.column.id))))
+            {
+                return '#' + $.rgbToHex($.brighten(d.color || colDef.color, 20)); // why the fuck does brighten darken
+            }
+            else
+            {
+                return d.color || colDef.color;
+            }
+        };
+    },
+
+    _d3_px: function(f)
+    {
+        if (_.isNumber(f))
+        {
+            return f + 'px';
+        }
+        else if (_.isFunction(f))
+        {
+            return function()
+            {
+                return f.apply(this, arguments) + 'px';
+            };
         }
     }
 }, null, 'socrataChart');

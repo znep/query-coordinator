@@ -212,16 +212,8 @@ $.brighten = function(color, amount)
     if (!amount) { amount = 10; }
     if (!color.r) { color = $.hexToRgb(color); }
     color = $.rgbToHsv(color);
-    if (color.v < 50)
-    {
-        color.v += amount;
-        if (color.v > 100) { color.v = 100; }
-    }
-    else
-    {
-        color.v -= amount;
-        if (color.v < 0) { color.v = 0; }
-    }
+    color.v += amount;
+    if (color.v > 100) { color.v = 100; }
     return $.hsvToRgb(color);
 };
 

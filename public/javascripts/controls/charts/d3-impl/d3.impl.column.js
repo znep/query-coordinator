@@ -1,6 +1,8 @@
 (function($)
 {
 
+var d3ns = blist.namespace.fetch('blist.d3');
+
 $.Control.registerMixin('d3_impl_column', {
 
     defaults: {
@@ -16,7 +18,17 @@ $.Control.registerMixin('d3_impl_column', {
     initializeVisualization: function()
     {
         var vizObj = this;
-        var cc = vizObj._columnChart = {}; // own object to save temp stuff on
+
+        // if we need to do series grouping stuff, mix that in before anything else
+        if (_.isArray(vizObj._displayFormat.seriesColumns) &&
+            $.isBlank(vizObj._seriesGrouping)) // but don't do this if we're higher on the chain
+        {
+            vizObj.Class.addProperties(vizObj, d3ns.base.seriesGrouping, $.extend({}, vizObj));
+            return vizObj.initializeVisualization(); // reset call chain
+        }
+
+        // own object to save temp stuff on
+        var cc = vizObj._columnChart = {};
 
         // create and cache dom elements
         var $dom = vizObj.$dom();
@@ -106,15 +118,25 @@ $.Control.registerMixin('d3_impl_column', {
         vizObj._super();
     },
 
+    getValueColumns: function()
+    {
+        return this._valueColumns;
+    },
+
+    getTotalRows: function()
+    {
+        return this._primaryView.totalRows();
+    },
+
     renderData: function(data)
     {
-        var vizObj = this;
-
+        var vizObj = this,
+            valueColumns = vizObj.getValueColumns();
 
         // precalculate some stuff
 
         // figure out the max value for this slice
-        var relevantColumns = _.pluck(vizObj._valueColumns, 'column');
+        var relevantColumns = _.pluck(valueColumns, 'column');
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
         {
             var plot = vizObj._displayFormat.plot;
@@ -154,7 +176,7 @@ $.Control.registerMixin('d3_impl_column', {
 
         var screenScaling = d3.scale.linear()
               .domain([ cc.sidePadding, cc.chartWidth - chartAreaWidth ])
-              .range([ 0, vizObj._primaryView.totalRows() - rowsPerScreen ]);
+              .range([ 0, vizObj.getTotalRows() - rowsPerScreen ]);
 
         var start = Math.max(Math.floor(screenScaling(cc.$chartContainer.scrollLeft())) - vizObj.defaults.rowBuffer, 0);
         var length = rowsPerScreen + (vizObj.defaults.rowBuffer * 2);
@@ -240,27 +262,31 @@ $.Control.registerMixin('d3_impl_column', {
     _resizeEverything: function()
     {
         var vizObj = this,
-            view = vizObj._primaryView,
             defaults = vizObj.defaults,
             cc = vizObj._columnChart,
             chartD3 = cc.chartD3,
-            totalRows = view.totalRows(),
+            totalRows = vizObj.getTotalRows(),
             chartAreaWidth = cc.$chartArea.width(),
             domHeight = vizObj.$dom().height(),
             maxRenderWidth = vizObj._maxRenderWidth(),
-            numSeries = vizObj._valueColumns.length,
+            valueColumns = vizObj.getValueColumns(),
             barWidthBounds = defaults.barWidthBounds,
             barSpacingBounds = defaults.barSpacingBounds,
             rowSpacingBounds = defaults.rowSpacingBounds,
             sidePaddingBounds = defaults.sidePaddingBounds;
+
+        // if we don't have value columns or total rows, bail
+        // for now. we'll be called again later.
+        if ($.isBlank(valueColumns) || $.isBlank(totalRows)) { return; }
+        var numSeries = valueColumns.length;
 
         // save off old row width for comparison later (see below)
         var oldRowWidth = cc.rowWidth;
 
         var calculateRowWidth = function()
         {
-            return (cc.barWidth * vizObj._valueColumns.length) +
-                   (cc.barSpacing * (vizObj._valueColumns.length - 1)) +
+            return (cc.barWidth * valueColumns.length) +
+                   (cc.barSpacing * (valueColumns.length - 1)) +
                     cc.rowSpacing;
         };
         var calculateTotalWidth = function()
@@ -419,7 +445,7 @@ $.Control.registerMixin('d3_impl_column', {
         var vizObj = this,
             cc = vizObj._columnChart,
             defaults = vizObj.defaults,
-            valueColumns = vizObj._valueColumns,
+            valueColumns = vizObj.getValueColumns(),
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView;
 
@@ -468,17 +494,7 @@ $.Control.registerMixin('d3_impl_column', {
                     {
                         if (d && !cc._isDragging)
                         {
-                            var rObj = this;
-                            rObj.tip = $(rObj.node).socrataTip({
-                                content: vizObj.renderFlyout(d, col.tableColumnId, view),
-                                positions: (d[col.id] > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
-                                trigger: 'now'
-                            });
-                            rObj.tip.adjustPosition({
-                                top: (d[col.id] > 0) ? 0 : Math.abs(newYScale(0) - newYScale(d[col.id])),
-                                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
-                            });
-                            view.highlightRows(d, null, col);
+                            vizObj.handleMouseOver(this, colDef, d, newYScale);
                         }
                     })
                     .on('mouseout', function(d)
@@ -486,11 +502,11 @@ $.Control.registerMixin('d3_impl_column', {
                         // for perf, only call unhighlight if highlighted.
                         if (d && !cc._isDragging && d.sessionMeta && d.sessionMeta.highlight)
                         {
-                            view.unhighlightRows(d);
+                            vizObj.handleMouseOut(this, colDef, d, newYScale);
                         }
                     });
             bars
-                    .attr('fill', vizObj.d3.util.colorizeRow(colDef))
+                    .attr('fill', vizObj._d3_colorizeRow(colDef))
                     .each(function(d)
                     {
                         // kill tip if not highlighted. need to check here because
@@ -520,11 +536,11 @@ $.Control.registerMixin('d3_impl_column', {
                 .enter().append('div')
                     .classed('nullDataBar', true)
                     .classed(nullSeriesClass, true)
-                    .style('left', vizObj.d3.util.px(vizObj._xBarPosition(seriesIndex)))
+                    .style('left', vizObj._d3_px(vizObj._xBarPosition(seriesIndex)))
                     .style('top', 0)
-                    .style('width', vizObj.d3.util.px(cc.barWidth));
+                    .style('width', vizObj._d3_px(cc.barWidth));
             nullBars
-                    .style('height', vizObj.d3.util.px(yAxisPos));
+                    .style('height', vizObj._d3_px(yAxisPos));
             nullBars
                 .exit()
                     .remove();
@@ -609,7 +625,7 @@ $.Control.registerMixin('d3_impl_column', {
     {
         var vizObj = this,
             cc = vizObj._columnChart,
-            valueColumns = vizObj._valueColumns,
+            valueColumns = vizObj.getValueColumns(),
             yAxisPos = vizObj._yAxisPos();
 
         // render our bars per series
@@ -620,8 +636,8 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('x', vizObj._xBarPosition(seriesIndex));
 
             cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.id)
-                    .style('width', vizObj.d3.util.px(cc.barWidth))
-                    .style('left', vizObj.d3.util.px(vizObj._xBarPosition(seriesIndex)));
+                    .style('width', vizObj._d3_px(cc.barWidth))
+                    .style('left', vizObj._d3_px(vizObj._xBarPosition(seriesIndex)));
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -665,7 +681,7 @@ $.Control.registerMixin('d3_impl_column', {
                 .classed('tickLabel', true)
                 .style('top', function(d) { return (yAxisPos - oldYScale(d)) + 'px'; });
         tickLabels
-                .each(vizObj.d3.util.text(vizObj._formatYAxisTicks(
+                .each(vizObj._d3_text(vizObj._formatYAxisTicks(
                     $.deepGet(vizObj, '_displayFormat', 'yAxis', 'formatter'))))
             .transition()
                 .duration(isAnim ? 1000 : 0)
@@ -807,7 +823,35 @@ $.Control.registerMixin('d3_impl_column', {
                    'M' + x + ',' + y + 'V' + (y + height) +
                    'M' + (x - capWidth) + ',' + (y + height) + 'H' + (x + capWidth);
         };
+    },
+
+    handleMouseOver: function(rObj, colDef, row, yScale)
+    {
+        var vizObj = this,
+            view = vizObj._primaryView,
+            col = colDef.column,
+            cc = vizObj._columnChart;
+
+        rObj.tip = $(rObj.node).socrataTip({
+            content: vizObj.renderFlyout(row, col.tableColumnId, view),
+            positions: (row[col.id] > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
+            trigger: 'now'
+        });
+        rObj.tip.adjustPosition({
+            top: (row[col.id] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.id])),
+            left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
+        });
+        view.highlightRows(row, null, col);
+    },
+
+    handleMouseOut: function(rObj, colDef, row, yScale)
+    {
+        var vizObj = this,
+            view = vizObj._primaryView;
+
+        view.unhighlightRows(row);
     }
+
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic' ]);
 
 })(jQuery);

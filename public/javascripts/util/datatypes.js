@@ -822,7 +822,11 @@ blist.namespace.fetch('blist.datatypes');
             deleteable: true,
             filterConditions: blist.filter.groups.numeric,
             inlineType: true,
-            matchValue: function(v) { return parseFloat(v); },
+            matchValue: function(v)
+            {
+                v = parseFloat(v);
+                return _.isNaN(v) ? null : v;
+            },
             precisionStyle: [{text: 'Standard (1,020.4)', value: 'standard'},
                 {text: 'Scientific (1.0204e+3)', value: 'scientific'}],
             priority: 3,
@@ -956,7 +960,11 @@ blist.namespace.fetch('blist.datatypes');
             deleteable: true,
             filterConditions: blist.filter.groups.numeric,
             inlineType: true,
-            matchValue: function(v) { return parseFloat(v); },
+            matchValue: function(v)
+            {
+                v = parseFloat(v);
+                return _.isNaN(v) ? null : v;
+            },
             priority: 4,
             rollUpAggregates: aggs,
             sortable: true
@@ -973,7 +981,11 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             deleteable: true,
             filterConditions: blist.filter.groups.numeric,
-            matchValue: function(v) { return parseFloat(v); },
+            matchValue: function(v)
+            {
+                v = parseFloat(v);
+                return _.isNaN(v) ? null : v;
+            },
             priority: 5,
             rollUpAggregates: aggs,
             sortable: true,
@@ -1261,14 +1273,22 @@ blist.namespace.fetch('blist.datatypes');
                     interfaceType: blist.datatypes.interfaceTypes.number,
 
                     filterConditions: blist.filter.groups.numeric,
-                    matchValue: function(v) { return parseFloat(v); }
+                    matchValue: function(v)
+                    {
+                        v = parseFloat(v);
+                        return _.isNaN(v) ? null : v;
+                    }
                 },
                 longitude: {
                     title: 'Longitude',
                     interfaceType: blist.datatypes.interfaceTypes.number,
 
                     filterConditions: blist.filter.groups.numeric,
-                    matchValue: function(v) { return parseFloat(v); }
+                    matchValue: function(v)
+                    {
+                        v = parseFloat(v);
+                        return _.isNaN(v) ? null : v;
+                    }
                 }
             },
             viewTypes: [{value: 'address_coords', text: 'Address &amp; Coordinates' },

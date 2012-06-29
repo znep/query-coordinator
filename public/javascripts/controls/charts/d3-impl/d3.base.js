@@ -61,10 +61,6 @@ $.Control.registerMixin('d3_base', {
         var isFunc = _.isFunction(colIdentFinder);
         return function(d)
         {
-            if (d.sessionMeta && d.sessionMeta.highlight)
-            {
-                console.log($.extend(true, {}, d.sessionMeta));
-            }
             if (d.sessionMeta && d.sessionMeta.highlight &&
                 (!d.sessionMeta.highlightColumn ||
                  (d.sessionMeta.highlightColumn == (isFunc ? colIdentFinder(colDef) : colDef.column.id))))

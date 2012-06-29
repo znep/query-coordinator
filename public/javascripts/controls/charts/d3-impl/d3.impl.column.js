@@ -650,43 +650,51 @@ $.Control.registerMixin('d3_impl_column', {
             cc = vizObj._columnChart,
             yAxisPos = vizObj._yAxisPos();
 
+        // determine our ticks
         var idealTickCount = cc.chartHeight / 80;
+        var ticks = newYScale.ticks(idealTickCount);
 
-        // TODO: rendering lines and labels is awful similar. fix?
+        var minValue = d3.min(newYScale.domain());
+        if ((minValue < 0) &&
+            !_.any(ticks, function(tick) { return tick < 0; }) &&
+            (Math.abs(newYScale(minValue) - newYScale(0)) > 20))
+        {
+            ticks.push(minValue);
+        }
 
-        // render our tick lines
-        var tickLines = cc.chromeD3.selectAll('.tickLine')
+        // if only we had lisp macros
+        var maxValue = d3.max(newYScale.domain());
+        if ((maxValue > 0) &&
+            !_.any(ticks, function(tick) { return tick > 0; }) &&
+            (Math.abs(newYScale(maxValue) - newYScale(0)) > 20))
+        {
+            ticks.push(maxValue);
+        }
+
+        // render our tick lines and labels
+        var tickLines = cc.chromeD3.selectAll('.tick')
             // we use the value rather than the index to make transitions more constant
-            .data(oldYScale.ticks(idealTickCount), function(val) { return val; });
-        tickLines
+            .data(ticks, function(val) { return val; });
+        var tickLinesRootEnter = tickLines
             .enter().append('div')
-                .classed('tickLine', true)
+                .classed('tick', true)
                 .classed('origin', function(d) { return d === 0; })
                 .style('top', function(d) { return (yAxisPos - oldYScale(d)) + 'px'; });
+            tickLinesRootEnter
+                .append('div')
+                    .classed('tickLabel', true);
+            tickLinesRootEnter
+                .append('div')
+                    .classed('tickLine', true);
         tickLines
             .transition()
                 .duration(isAnim ? 1000 : 0)
                 .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
         tickLines
-            .exit()
-            .transition()
-                .remove();
-
-        // render our tick labels
-        var tickLabels = cc.chromeD3.selectAll('.tickLabel')
-            // we use the value rather than the index to make transitions more constant
-            .data(oldYScale.ticks(idealTickCount), function(val) { return val; });
-        tickLabels
-            .enter().append('div')
-                .classed('tickLabel', true)
-                .style('top', function(d) { return (yAxisPos - oldYScale(d)) + 'px'; });
-        tickLabels
-                .each(vizObj._d3_text(vizObj._formatYAxisTicks(
-                    $.deepGet(vizObj, '_displayFormat', 'yAxis', 'formatter'))))
-            .transition()
-                .duration(isAnim ? 1000 : 0)
-                .style('top', function(d) { return (yAxisPos - newYScale(d)) + 'px'; });
-        tickLabels
+                .selectAll('.tickLabel')
+                    .each(vizObj._d3_text(vizObj._formatYAxisTicks(
+                        $.deepGet(vizObj, '_displayFormat', 'yAxis', 'formatter'))));
+        tickLines
             .exit()
             .transition()
                 .remove();

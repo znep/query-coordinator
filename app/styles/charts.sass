@@ -102,18 +102,17 @@
 
   // use px here because i'm nervous about data integrity
   .tick
-    height: 13px
+    height: 1px
     left: 0
-    margin-top: -12px
+    pointer-events: none
     position: absolute
     width: 100%
     z-index: 1
 
     .tickLine
-      background-color: #ccc
+      background: #ccc
       bottom: 0
       height: 1px
-      @include no-pointer-events("/stylesheets/images/content/70percentgrey.png")
       @include opacity(0.7)
       position: absolute
       width: 100%
@@ -126,6 +125,7 @@
 
     .tickLabel
       background-color: rgba(247, 247, 247, 0.7)
+      bottom: 1px
       font-size: 1.2em
       padding: 0 0.3em
       @include no-pointer-events("/stylesheets/images/content/70percentwhite.png")

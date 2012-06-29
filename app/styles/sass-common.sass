@@ -288,7 +288,7 @@ $row_zebra_color: #f6f6f6
     &:after
       display: inline
 
-@mixin no-pointer-events($pngurl:"images/empty.gif")
+@mixin no-pointer-events($pngurl:"/stylesheets/images/content/blank.png")
   pointer-events: none
   .ie7 &, .ie8 &
     filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=#{$pngurl}, sizingMethod='scale')

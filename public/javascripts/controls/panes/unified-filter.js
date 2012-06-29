@@ -1382,6 +1382,8 @@
                         aggCC.top = aggCC.top.sort(function(a, b)
                             { return (b.count - a.count) * (metadata.reverseSort ? -1 : 1); });
                     }
+                    if (metadata.useBottomItems && !$.isBlank(metadata.includeAuto))
+                    { aggCC.top = aggCC.top.slice(-metadata.includeAuto); }
                 }
                 if (_.isFunction(callback)) { callback(aggCC); }
             });

@@ -283,6 +283,8 @@ module Canvas2
         return Time.at(v)
       elsif v.is_a?(String)
         begin
+          # Seriously, fuck you, Ruby
+          v = "#{$3}-#{$1}-#{$2}" if /(\d{1,2})[\-.\/](\d{1,2})[\-.\/](\d{4})/ =~ v
           return Time.parse(v)
         rescue ArgumentError => e
         end

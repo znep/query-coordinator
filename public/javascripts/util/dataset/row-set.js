@@ -991,51 +991,50 @@ function canDeriveExpr(baseFC, otherFC)
             // If all children are added, then just add this expr, not each child
             if (leftoverChildren.length == expr.children.length)
             { return true; }
-            else
+            else if (leftoverChildren.length > 0)
             {
                 leftoverLeaves = leftoverLeaves.concat(leftoverChildren);
                 return false;
             }
+            // If all children matched, then check parents
         }
-        else
+
+        if ($.isBlank(expr._key)) { expr._key = blist.filter.getFilterKey(expr); }
+        var matchExpr;
+        curLeaves = _.reject(curLeaves, function(cl)
         {
-            if ($.isBlank(expr._key)) { expr._key = blist.filter.getFilterKey(expr); }
-            var matchExpr;
-            curLeaves = _.reject(curLeaves, function(cl)
+            // If we found a matching leaf, make sure the parents of each have
+            // the proper relationship
+            if (cl._key == expr._key)
             {
-                // If we found a matching leaf, make sure the parents of each have
-                // the proper relationship
-                if (cl._key == expr._key)
+                var parMatch = cl._parent == baseFC && expr._parent == otherFC &&
+                        baseFC.operator == otherFC.operator ||
+                    $.isBlank(cl._parent) && $.isBlank(expr._parent) ||
+                    $.isBlank(cl._parent) && expr._parent.operator.toLowerCase() == 'and' ||
+                    $.isBlank(expr._parent) && cl._parent.operator.toLowerCase() == 'or';
+                var k;
+                if (!parMatch)
                 {
-                    var parMatch = cl._parent == baseFC && expr._parent == otherFC &&
-                            baseFC.operator == otherFC.operator ||
-                        $.isBlank(cl._parent) && $.isBlank(expr._parent) ||
-                        $.isBlank(cl._parent) && expr._parent.operator.toLowerCase() == 'and' ||
-                        $.isBlank(expr._parent) && cl._parent.operator.toLowerCase() == 'or';
-                    var k;
-                    if (!parMatch)
-                    {
-                        if ($.isBlank(cl._parent) || $.isBlank(expr._parent) ||
-                            cl._parent.operator != expr._parent.operator)
-                        { return false; }
-                        if ($.isBlank(cl._parent._key))
-                        { cl._parent._key = blist.filter.getFilterKey(cl._parent); }
-                        if ($.isBlank(expr._parent._key))
-                        { expr._parent._key = blist.filter.getFilterKey(expr._parent); }
-                        k = cl._parent._key + '::' + expr._parent._key;
-                        if ($.isBlank(parDeriveCache[k]))
-                        { parDeriveCache[k] = canDeriveExpr(cl._parent, expr._parent); }
-                    }
-                    if (parMatch || parDeriveCache[k])
-                    {
-                        matchExpr = cl;
-                        return true;
-                    }
+                    if ($.isBlank(cl._parent) || $.isBlank(expr._parent) ||
+                        cl._parent.operator != expr._parent.operator)
+                    { return false; }
+                    if ($.isBlank(cl._parent._key))
+                    { cl._parent._key = blist.filter.getFilterKey(cl._parent); }
+                    if ($.isBlank(expr._parent._key))
+                    { expr._parent._key = blist.filter.getFilterKey(expr._parent); }
+                    k = cl._parent._key + '::' + expr._parent._key;
+                    if ($.isBlank(parDeriveCache[k]))
+                    { parDeriveCache[k] = canDeriveExpr(cl._parent, expr._parent); }
                 }
-                return false;
-            });
-            return $.isBlank(matchExpr);
-        }
+                if (parMatch || parDeriveCache[k])
+                {
+                    matchExpr = cl;
+                    return true;
+                }
+            }
+            return false;
+        });
+        return $.isBlank(matchExpr);
     };
     // If none of the leaves in otherQ matched, filter condition is completely different
     if (processOther(otherFC)) { return false; }

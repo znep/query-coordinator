@@ -22,10 +22,19 @@
                 $.t('controls.filter.main.view_has_no_columns');
         },
 
-        setView: function()
+        setView: function(newView)
         {
-            this._super.apply(this, arguments);
-            this.reset();
+            var cpObj = this;
+            var handle = function(ds)
+            {
+                cpObj._super.apply(cpObj, [ds]);
+                cpObj.reset();
+            };
+
+            if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
+            { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle); }
+            else
+            { handle(newView); }
         },
 
         _getSections: function()

@@ -5,6 +5,8 @@ Dataset.map = {};
 Dataset.map.isValid = function(view, displayFormat)
 {
     if ($.isBlank(view)) { return false; }
+    if (displayFormat.viewDefinitions) { return true; }
+
     if (view.isArcGISDataset()) { return true; }
     if (view.isGeoDataset()) { return true; }
     if ($.isBlank(displayFormat.noLocations) &&
@@ -20,6 +22,85 @@ Dataset.map.isValid = function(view, displayFormat)
     return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol)) ||
         displayFormat.noLocations;
 };
+
+Dataset.map.convertToVersion2 = function(view, df)
+{
+    if (!df) { df = view.displayFormat; }
+
+    df.viewDefinitions = [$.extend(true, {}, df)];
+    df.viewDefinitions[0].uid = view.id;
+
+    if (df.compositeMembers)
+    {
+        _.each(df.compositeMembers, function(uid)
+        { df.viewDefinitions.push({ uid: uid, plotStyle: 'point', legacy: true }); });
+    }
+
+    if (df.type == 'google')
+    { df.overrideWithLayerSet = 'Google'; df.exclusiveLayers = true; }
+    else if (df.type == 'bing')
+    { df.overrideWithLayerSet = 'Bing'; df.exclusiveLayers = true; }
+    else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || df.plotStyle != 'heatmap')
+    {
+        df.bkgdLayers = _.map(df.layers, function(layer) { return {
+            layerName: (_.detect(Dataset.map.backgroundLayers, function(lConfig)
+                { return layer.url.indexOf((lConfig.options || {}).url) > -1; }) || {}).name };
+        });
+    }
+
+    if (view.isArcGISDataset())
+    {
+        df.bkgdLayers = [{ layerName: 'World Street Map (ESRI)', opacity: 1.0 }];
+        delete df.viewDefinitions[0].plotStyle;
+        delete df.viewDefinitions[0].plot;
+    }
+
+    if (view.isGeoDataset())
+    {
+        df.exclusiveLayers = true;
+        df.bkgdLayers = [{ layerName: 'Google Roadmap', alias: 'Google', opacity: 1.0 },
+                         { layerName: 'Bing Road', alias: 'Bing', opacity: 1.0 },
+                         { layerName: 'World Street Map (ESRI)', alias: 'ESRI', opacity: 1.0 }];
+        delete df.viewDefinitions[0].plotStyle;
+        delete df.viewDefinitions[0].plot;
+    }
+
+    view.update({ displayFormat: df });
+};
+
+// Possible thought: Basic/Advanced where Basic allows Google or Bing 'layersets'.
+Dataset.map.backgroundLayers = [
+    { name: 'Google Roadmap', alias: 'Roadmap', className: 'Google', options: { type: 'ROADMAP' }},
+    { name: 'Google Satellite', alias: 'Satellite', className: 'Google',
+        options: { type: 'SATELLITE' }},
+    { name: 'Google Terrain', alias: 'Terrain', className: 'Google', options: { type: 'TERRAIN' }},
+    { name: 'Bing Road', alias: 'Road', className: 'Bing' },
+    { name: 'Bing Aerial', alias: 'Aerial', className: 'Bing', options: { type: 'Aerial' }},
+    { name: 'World Street Map (ESRI)', alias: 'World Street Map', className: 'ESRI',
+        options: { url: 'World_Street_Map' }},
+    { name: 'Satellite Imagery (ESRI)', alias: 'Satellite Imagery', className: 'ESRI',
+        options: { url: 'World_Imagery' }},
+    { name: 'Detailed USA Topographic Map (ESRI)', alias: 'USA Topographic Map', className: 'ESRI',
+        options: { url: 'USA_Topo_Maps' }},
+    { name: 'Annotated World Topographic Map (ESRI)', alias: 'World Topographic Map',
+        className: 'ESRI', options: { url: 'World_Topo_Maps' }},
+    { name: 'Natural Earth Map (ESRI)', alias: 'Natural Earth Map', className: 'ESRI',
+        options: { url: 'World_Physical_Map' }}
+];
+Dataset.map.backgroundLayer = {custom: { name: 'custom', className: 'ESRI' }};
+
+Dataset.map.backgroundLayerSet = {};
+Dataset.map.backgroundLayerSet.Google = [
+    { name: 'Google Roadmap', alias: 'Roadmap', className: 'Google', options: { type: 'ROADMAP' }},
+    { name: 'Google Satellite', alias: 'Satellite', className: 'Google',
+        options: { type: 'SATELLITE' }},
+    { name: 'Google Terrain', alias: 'Terrain', className: 'Google', options: { type: 'TERRAIN' }}
+];
+
+Dataset.map.backgroundLayerSet.Bing = [
+    { name: 'Bing Road', alias: 'Road', className: 'Bing' },
+    { name: 'Bing Aerial', alias: 'Aerial', className: 'Bing', options: { type: 'Aerial' }}
+];
 
 Dataset.modules['map'] =
 {
@@ -37,6 +118,8 @@ Dataset.modules['map'] =
     _convertLegacy: function()
     {
         var view = this;
+        if ($.subKeyDefined(view, 'displayFormat.viewDefinitions')) { return; }
+
         var isOldest = $.isBlank(view.displayFormat.plot) &&
              $.isBlank(view.displayFormat.latitudeId);
 

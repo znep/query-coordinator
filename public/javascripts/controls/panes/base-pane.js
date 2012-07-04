@@ -1846,7 +1846,7 @@
             }
             _.defer(function() { uniformUpdate($field); });
         };
-        var defAdjField = function() { _.defer(adjustField); };
+        var defAdjField = function() { $field.trigger('resetToDefault'); };
 
         $linkedItems.bind('change.linkedField-' + custId, defAdjField)
             .bind('blur.linkedField-' + custId, defAdjField);

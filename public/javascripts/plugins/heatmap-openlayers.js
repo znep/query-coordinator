@@ -132,5 +132,8 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
         // for now, nothing special to do here. 
         OpenLayers.Layer.prototype.destroy.apply(this, arguments);  
     },
+    setVisibility: function(visible) {
+        this.heatmap.setVisible(visible);
+    },
     CLASS_NAME: "OpenLayers.Layer.Heatmap"
 });

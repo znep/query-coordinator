@@ -297,6 +297,16 @@
 				this.colorize(xb,yb);
 
 		},
+		setVisible: function(visible){
+				canvas = this.get("canvas");
+
+				if(visible)
+					canvas.style.display = "block";
+				else
+					canvas.style.display = "none";
+
+				this.set("visible", visible);
+		},
 		toggleDisplay: function(){
 				var visible = this.get("visible"),
 				canvas = this.get("canvas");

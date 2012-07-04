@@ -7,6 +7,9 @@
         {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
+            if ($.urlParam(window.location.href, 'maps') == 'nextgen' && cpObj._view.type == 'map'
+                && !$.subKeyDefined(cpObj._view, 'displayFormat.viewDefinitions'))
+            { Dataset.map.convertToVersion2(cpObj._view); }
             cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
 
             cpObj.$dom().delegate('.showConditionalFormatting', 'click', function(e)
@@ -62,6 +65,7 @@
                 { blist.datasetPage.sidebar.show('edit.addColumn', col); }
             });
 
+            this.childPanes = [];
         },
 
         getTitle: function()
@@ -99,8 +103,16 @@
 
         _getSections: function()
         {
-            return blist.configs.map.config({view: this._view,
+            return blist.configs.map.config({parentControl: this, view: this._view,
                 isEdit: isEdit(this), useOtherSidebars: true});
+        },
+
+        render: function()
+        {
+            var cpObj = this;
+            cpObj._super();
+
+            cpObj._childrenDirty = true;
         },
 
         _getFinishButtons: function()
@@ -114,15 +126,32 @@
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {map: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
 
-            if ($.subKeyDefined(cpObj, 'view.displayFormat.heatmap.type')
+            if ($.urlParam(window.location.href, 'maps') != 'nextgen'
+                && $.subKeyDefined(cp, '_view.displayFormat.heatmap.type')
                 && cpObj.view.displayFormat.heatmap.type == 'custom')
             {
-                view.displayFormat.heatmap.type = 'custom';
-                view.displayFormat.heatmap.cache_url = cpObj._view.displayFormat.heatmap.cache_url;
+                    view.displayFormat.viewDefinitions[index].heatmap.type = 'custom';
+                    view.displayFormat.viewDefinitions[index].heatmap.cache_url
+                        = cpObj._view.displayFormat.heatmap.cache_url;
             }
+
+            _.each(cpObj.childPanes, function(cp)
+            {
+                var index = cp._index;
+                view.displayFormat.viewDefinitions[index] = $.extend(true, {}, cp._finish());
+
+                if ($.subKeyDefined(cp, '_view.displayFormat.heatmap.type')
+                    && cp._view.displayFormat.heatmap.type == 'custom')
+                {
+                    view.displayFormat.viewDefinitions[index].heatmap.type = 'custom';
+                    view.displayFormat.viewDefinitions[index].heatmap.cache_url
+                        = cpObj._view.displayFormat.heatmap.cache_url;
+                }
+            });
 
             view.displayFormat.viewport = cpObj._view.displayFormat.viewport;
             view.displayFormat.compositeMembers = cpObj._view.displayFormat.compositeMembers;
+            view.displayFormat.overrideWithLayerSet = cpObj._view.displayFormat.overrideWithLayerSet;
 
             cpObj._view.update(view);
 
@@ -150,5 +179,67 @@
 
     if ($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.mapCreate)
     { $.gridSidebar.registerConfig('visualize.mapCreate', 'pane_mapCreate', 2, 'map'); }
+
+    $.Control.extend('pane_mapDataLayerCreate', {
+        _init: function()
+        {
+            var cpObj = this;
+            cpObj._super.apply(cpObj, arguments);
+            cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+            cpObj._index = cpObj.settings.index;
+            cpObj._uid = cpObj._view.id;
+            cpObj._origDF = cpObj._getCurrentData().displayFormat.viewDefinitions[cpObj._index];
+        },
+
+        _getSections: function()
+        {
+            return [{ title: 'Config for ' + this._view.id + '<br />(' + this._view.name + ')',
+                fields: blist.configs.map.dataLayer[this._dataType]({
+                    prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
+                    view: this._view })
+            }];
+        },
+
+        setView: function(view)
+        {
+            var cpObj = this;
+
+            cpObj._super(view);
+
+            if (!cpObj._getCurrentData().displayFormat.viewDefinitions)
+            { cpObj._getCurrentData().displayFormat.viewDefinitions = []; }
+
+            if (cpObj._uid == view.id)
+            { cpObj._getCurrentData().displayFormat.viewDefinitions[cpObj._index] = cpObj._origDF; }
+            else
+            { cpObj._getCurrentData().displayFormat.viewDefinitions[cpObj._index] = {}; }
+
+            if ($.subKeyDefined(cpObj._view.metadata, 'custom_fields.Basic.Source'))
+            { cpObj._dataType = 'esri'; }
+            else if ($.subKeyDefined(cpObj._view.metadata, 'geo'))
+            { cpObj._dataType = 'mondara'; }
+            else
+            { cpObj._dataType = 'socrata'; }
+        },
+
+        setIndex: function(index)
+        {
+            this._index = index;
+        },
+
+        _finish: function()
+        {
+            var cpObj = this;
+
+            var fv = cpObj._getFormValues();
+            if ($.subKeyDefined(fv, 'displayFormat.viewDefinitions.0'))
+            { fv = fv.displayFormat.viewDefinitions[0]; }
+            else
+            { fv = null; }
+
+            return cpObj.settings.data.displayFormat.viewDefinitions[cpObj._index] = cpObj._origDF
+                = $.extend(true, { uid: cpObj._uid = cpObj._view.id }, fv);
+        }
+    }, {name: 'mapDataLayerCreate'}, 'controlPane');
 
 })(jQuery);

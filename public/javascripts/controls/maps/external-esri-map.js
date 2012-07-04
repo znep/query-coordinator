@@ -28,11 +28,14 @@
                 {
                     if ($.subKeyDefined(layer, 'featureLayer.renderer.infos'))
                     {
-                        layer._suggestedTolerance = Math.max.apply(null,
+                        layer._suggestedTolerance = Math.round(Math.max.apply(null,
                             _(layer.featureLayer.renderer.infos).chain()
                             .map(function(info) { return [info.symbol.height, info.symbol.width]; })
-                            .flatten().compact().value());
+                            .flatten().compact().value()));
                     }
+
+                    layer.name = layer.featureLayer.name;
+                    layer.dataObj._parent._controls.Overview.redraw();
 
                     if (layer._metadataReady)
                     { layer.onloadCallback(); }
@@ -123,7 +126,223 @@
         }
     });
 
-    // This entire file's purpose has been deprecated since we have GeometryType
+    $.Control.registerMixin('arcgis', {
+        initializeLayer: function()
+        {
+            var layerObj = this;
+
+            var layer_url = layerObj._view.metadata.custom_fields.Basic.Source;
+            var tmp = layer_url.split('/');
+            var layer_id = tmp.pop();
+            var export_url = tmp.join('/') + '/export';
+
+            var layer = layerObj._displayLayer
+                = new blist.openLayers.ExternalESRILayer( layer_url, export_url,
+                    { layers: "show:"+layer_id, transparent: true,
+                      internalMapProjection: layerObj._mapProjection,
+                      externalMapProjection: layerObj.extractSpatialReference(),
+                      onloadCallback: function() {
+                        if (layerObj._identifyParameters && layer._suggestedTolerance)
+                        { layerObj._identifyParameters.tolerance = layer._suggestedTolerance; }
+                        layer.filterWith(layerObj._view);
+                        layerObj.zoomToPreferred();
+                      }
+                    },
+                    { opacity: layerObj.extractOpacity(), ratio: 1, isBaseLayer: false } );
+            layerObj._map.addLayer(layerObj._displayLayer);
+            layer.dataObj = this;
+
+            layerObj.buildIdentifyParameters();
+            layerObj.buildAttributeMap();
+            layerObj._map.events.register('click', layerObj, layerObj.clickFeature);
+
+            layer.events.register('loadend', layerObj._parent, function()
+            {
+                if (!layerObj._loaded) { layerObj._loaded = true; layer.redraw(); }
+                this.mapElementLoaded(layer);
+            });
+        },
+
+        destroy: function()
+        {
+            this._super();
+            this._displayLayer.destroy();
+            this._map.events.unregister('click', this, this.clickFeature);
+        },
+
+        dataLayers: function()
+        {
+            return this._displayLayer;
+        },
+
+        calculateSymbolSize: function()
+        {
+            var view = this._view;
+
+            var symbolSize = 3;
+            if (view.metadata.custom_fields['drawingInfo.renderer'])
+            {
+                var symbolDimensions = [symbolSize];
+                if (view.metadata.custom_fields['drawingInfo.renderer']['symbol.width'])
+                { symbolDimensions.push(parseInt(
+                    view.metadata.custom_fields['drawingInfo.renderer']['symbol.width']), 10); }
+                if (view.metadata.custom_fields['drawingInfo.renderer']['symbol.height'])
+                { symbolDimensions.push(parseInt(
+                    view.metadata.custom_fields['drawingInfo.renderer']['symbol.height']), 10); }
+                symbolSize = Math.max.apply(null, symbolDimensions);
+            }
+            if (this._displayLayer._suggestedTolerance)
+            { symbolSize = Math.max(symbolSize, this._displayLayer._suggestedTolerance); }
+
+            return Math.round(symbolSize);
+        },
+
+        buildIdentifyParameters: function()
+        {
+            var layerObj = this;
+
+            layerObj._identifyParameters = new esri.tasks.IdentifyParameters();
+            layerObj._identifyParameters.tolerance = layerObj.calculateSymbolSize();
+            layerObj._identifyParameters.returnGeometry = true;
+            layerObj._identifyParameters.layerOption =
+                esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+            layerObj._identifyParameters.width  = layerObj._map.getSize().w;
+            layerObj._identifyParameters.height = layerObj._map.getSize().h;
+            layerObj._identifyParameters.layerIds = [layerObj._displayLayer.layerId];
+        },
+
+        buildAttributeMap: function()
+        {
+            var layerObj = this;
+
+            layerObj._attrMap = {};
+            _.each(layerObj._view.realColumns, function(col)
+            {
+                layerObj._attrMap[col.name] = col.lookup;
+                layerObj._attrMap[col.description] = col.lookup;
+            });
+        },
+
+        clickFeature: function(evt)
+        {
+            var layerObj = this;
+            var layer = layerObj._displayLayer;
+
+            var pixel = layerObj._map.events.getMousePosition(evt);
+            var sr = new esri.SpatialReference(
+                    { wkid: layerObj._mapProjection.projCode.split(':')[1]});
+            var lonlat = layer.getLonLatFromViewPortPx(pixel);
+            var geometry = new esri.geometry.Point(lonlat.lon, lonlat.lat, sr);
+
+            // On first load, the map is offset somehow.
+            pixel.y = layerObj._map.getSize().h / 2;
+            var offsetLat = layer.getLonLatFromViewPortPx(pixel).lat - layerObj._map.getCenter().lat;
+            layerObj._offsetLat = offsetLat;
+            geometry.y -= offsetLat;
+            var extent = layer.getExtent();
+            extent = new esri.geometry.Extent(extent.left, extent.bottom + offsetLat,
+                                              extent.right, extent.top + offsetLat);
+
+            var layerDefs = [];
+            if (layer.layerDefs)
+            { for (var i in layer.layerDefs) { layerDefs[i] = layer.layerDefs[i]; } }
+
+            layerObj._identifyParameters.geometry = geometry;
+            layerObj._identifyParameters.mapExtent = extent;
+            layerObj._identifyParameters.layerDefinitions = layerDefs;
+
+            lonlat.lat -= offsetLat;
+            layerObj._parent.showPopup(lonlat, 'Loading...');
+
+            new esri.tasks.IdentifyTask(layer.url.replace(/\/export$/, ''))
+                .execute(layerObj._identifyParameters, function(idResults)
+                {
+                    if (_.isEmpty(idResults)) { layerObj._parent.closePopup(); return; }
+
+                    var flyoutContent = layerObj.getFlyout(idResults);
+                    if (flyoutContent)
+                    { flyoutContent = flyoutContent[0].innerHTML; }
+
+                    layerObj._parent.showPopup(lonlat, flyoutContent);
+                },
+                function(error)
+                {
+                    if (error.dojoType == 'timeout')
+                    { layerObj._parent.showPopup(lonlat, 'Request for this data timed out.'); }
+                });
+        },
+
+        // TODO: This still relies on view.displayFormat on the original view.
+        // It actually makes a lot of sense for this case, so I'm not changing it until it's needed.
+        extractSpatialReference: function()
+        {
+            var layerObj = this;
+            var view = layerObj._view;
+
+            if (view.metadata.custom_fields.Basic['Spatial Reference wkid'])
+            { return new OpenLayers.Projection('EPSG:' +
+                    view.metadata.custom_fields.Basic['Spatial Reference wkid']); }
+            else if (view.metadata.custom_fields.Basic['Spatial Reference wkt'])
+            {
+                if (view.displayFormat.projection)
+                { layerObj._displayLayer.externalMapProjection
+                    = new OpenLayers.Projection('EPSG:' + view.displayFormat.projection); }
+                else
+                {
+                    var url = '/proxy/wkt_to_wkid?wkt='
+                    + encodeURI(blist.dataset.metadata.custom_fields.Basic['Spatial Reference wkt']);
+                    $.getJSON(url, function(data) {
+                        if (data.exact)
+                        {
+                            layerObj._displayLayer.externalMapProjection
+                                = new OpenLayers.Projection('EPSG:' + data.codes[0].code);
+                            view.update({ displayFormat: $.extend({}, view.displayFormat,
+                                { projection: data.codes[0].code }) }, false, false);
+                            view.save();
+                        }
+                    });
+                }
+            }
+
+            return null;
+        },
+
+        extractOpacity: function()
+        {
+            var view = this._view;
+
+            var opacity;
+            if ($.subKeyDefined(view, 'metadata.custom_fields.drawingInfo.transparency'))
+            { opacity = parseInt(view.metadata.custom_fields.drawingInfo.transparency, 10) / 100; }
+            if (opacity == 0) // ArcGIS Server defaults transparency to 0, resulting in many datasets
+            { opacity = 1; }  // created with this default when they don't mean it.
+
+            return opacity;
+        },
+
+        getFlyout: function(features)
+        {
+            var layerObj = this;
+
+            if (features[0].feature) { features = _.pluck(features, 'feature'); }
+
+            var rows = _.map(features, function(feature)
+            {
+                var row = {};
+                _.each(feature.attributes, function(val, attr)
+                { row[layerObj._attrMap[attr]] = val; });
+                return row;
+            });
+
+            return this._super(rows);
+        },
+
+        preferredExtent: function()
+        {
+            return this._displayLayer.getInitialExtent();
+        }
+    }, {}, 'socrataDataLayer', 'tiledata');
+
     $.Control.registerMixin('arcGISmap', {
         initializeMap: function()
         {

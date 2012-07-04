@@ -2,6 +2,103 @@
 {
     var geographicProjection = new OpenLayers.Projection('EPSG:4326');
 
+    $.Control.registerMixin('heatmap', {
+        initializeLayer: function()
+        {
+            var layerObj = this;
+
+            layerObj._displayLayer = new OpenLayers.Layer.Heatmap(layerObj._view.name,
+                layerObj._map, layerObj._map.baseLayer,
+                { 'element': layerObj._parent.currentDom, 'radius': 25, 'visible': true });
+            layerObj._map.addLayer(layerObj._displayLayer);
+
+            layerObj._dataStore = [];
+            layerObj._bounds = new OpenLayers.Bounds();
+
+            layerObj._parent.viewportHandler()
+                .events.register('viewportchanged', layerObj, layerObj.viewportHandler);
+        },
+
+        initializeFlyouts: function(){}, // No flyouts
+
+        preferredExtent: function()
+        {
+            return this._bounds;
+        },
+
+        clearData: function()
+        {
+            this._bounds = new OpenLayers.Bounds();
+            this._dataStore = [];
+        },
+
+        handleDataLoaded: function()
+        {
+            this._super.apply(this, arguments);
+
+            this._displayLayer.setDataSet({ max: 50, data: this._dataStore });
+        },
+
+        prepareRowRender: function(row_or_cluster)
+        {
+            var layerObj = this;
+
+            if (layerObj._renderType == 'clusters')
+            { layerObj.prepareHeatAsCluster(row_or_cluster); }
+            else
+            { layerObj.prepareHeatAsRow(row_or_cluster); }
+        },
+
+        prepareHeatAsCluster: function(cluster)
+        {
+            var layerObj = this;
+
+            // A cluster should either have children or points.
+            if (!_.isEmpty(cluster.points))
+            {
+                _.each(cluster.points, function(child)
+                {
+                    var lonlat = new OpenLayers.LonLat(child.lon, child.lat)
+                        .transform(blist.openLayers.geographicProjection, layerObj._mapProjection);
+                    layerObj._dataStore.push({ lonlat: lonlat });
+                    layerObj._bounds.extend(lonlat);
+                });
+            }
+            else if (!_.isEmpty(cluster.children))
+            {
+                _.each(cluster.children, function(child)
+                {
+                    var lonlat = new OpenLayers.LonLat(child.centroid.lon, child.centroid.lat)
+                        .transform(blist.openLayers.geographicProjection,
+                                   layerObj._mapProjection);
+                    layerObj._dataStore.push({ lonlat: lonlat, count: child.size });
+                    layerObj._bounds.extend(lonlat);
+                });
+            }
+        },
+
+        prepareHeatAsRow: function(row)
+        {
+            var layerObj = this;
+
+            if (!layerObj._idList) { layerObj._idList = {}; }
+
+            var geometry = layerObj.extractGeometryFromRow(row);
+            var dupKey = geometry.toString();
+
+            var lonlat = geometry.toLonLat();
+            layerObj._dataStore.push({ lonlat: lonlat });
+            layerObj._bounds.extend(lonlat);
+
+            layerObj._idList[dupKey] = true;
+        },
+
+        renderDatum: function(datum)
+        {
+            // Pft. Rendering.
+        }
+    }, {}, 'socrataDataLayer', 'clusters');
+
     $.Control.registerMixin('rastermap', {
         initializeMap: function()
         {

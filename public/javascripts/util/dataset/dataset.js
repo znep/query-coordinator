@@ -442,31 +442,6 @@ var Dataset = ServerModel.extend({
         this._activeRowSet.getTotalRows(successCallback, errorCallback);
     },
 
-/*
-    getClusters: function(successCallback, errorCallback)
-    {
-        var ds = this;
-
-        // To minimize having to make changes to the service files.
-        var transformClusters = function(cluster)
-        {
-            cluster.size = cluster.count;
-            cluster.centroid = { lon: cluster.point.lon, lat: cluster.point.lat };
-        };
-
-        ds.makeRequest({
-            params: {method: 'clustered'},
-            inline: true,
-            success: function(data)
-                {
-                    _.each(data, transformClusters);
-                    successCallback(data);
-                },
-            error: errorCallback
-        });
-    },
-*/
-
     getClusters: function(viewport, displayFormat, minDistance, successCallback, errorCallback)
     {
         var ds = this;
@@ -501,9 +476,6 @@ var Dataset = ServerModel.extend({
 
         var translateCluster = function(c)
         {
-            c.childBoxes = _.pluck(c.children, 'box');
-            c.children = _.pluck(c.children, 'id');
-            c.points   = _.pluck(c.points,  'sid');
             c.parent   = ds._clusters[c.pathToRoot[0]];
             ds._clusters[c.id] = c;
             _.each(c.points, function(point) { ds._rowClusterParents[point] = c; });
@@ -518,7 +490,7 @@ var Dataset = ServerModel.extend({
               if (vertex.lon == 180)       { vertex.lon -= 0.000001; }
               else if (vertex.lon == -180) { vertex.lon += 0.000001; }
             });
-            c.leafNode = c.points.length > 0;
+            c.leafNode = (c.points || []).length > 0;
         };
 
         var useInline = ds.isDefault()
@@ -1787,7 +1759,7 @@ var Dataset = ServerModel.extend({
         if (!this._childViews[uid])
         {
             var self = this;
-            Dataset.createFromViewId(uid, function(ds) {
+            Dataset.lookupFromViewId(uid, function(ds) {
                 self._childViews[uid] = ds;
                 callback(ds);
             }, undefined, isBatch);
@@ -1800,11 +1772,6 @@ var Dataset = ServerModel.extend({
 
     _childViewsForType: function(type)
     {
-        // for now, geo (atlas) datasets are the only kind with
-        // (possibly) multiple underlying tables
-        if (!this.isGeoDataset())
-        { return false; }
-
         // but if we're displaying it as a map, there's only one
         // map to show
         if (type == 'map')
@@ -1847,7 +1814,7 @@ var Dataset = ServerModel.extend({
 
         var oldQuery = ds.query || {};
         var oldSearch = ds.searchString;
-        var oldDispFmt = ds.displayFormat;
+        var oldDispFmt = $.extend(true, {}, ds.displayFormat);
         var oldDispType = ds.displayType;
         var oldRTConfig = ds.metadata.renderTypeConfig;
         var oldCondFmt = ds.metadata.conditionalFormatting;
@@ -2679,7 +2646,13 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
+Dataset.lookupFromViewId = function(id, successCallback, errorCallback, isBatch)
+{ Dataset._create(false, id, successCallback, errorCallback, isBatch); };
+
 Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch)
+{ Dataset._create(true, id, successCallback, errorCallback, isBatch); };
+
+Dataset._create = function(clone, id, successCallback, errorCallback, isBatch)
 {
     var cachedView = blist.viewCache[id];
     if (!_.isUndefined(cachedView))
@@ -2695,8 +2668,14 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch)
         }
         else if ((cachedView !== false) && _.isFunction(successCallback))
         {
-            var ds = _.isFunction(blist.viewCache[id].clone) ? blist.viewCache[id].clone()
-                                                             : new Dataset(blist.viewCache[id]);
+            var ds;
+            if (blist.viewCache[id] instanceof Dataset)
+            {
+                if (clone) { ds = blist.viewCache[id].clone(); }
+                else { ds = blist.viewCache[id]; }
+            }
+            else
+            { ds = new Dataset(blist.viewCache[id]); }
             successCallback(ds);
         }
     }

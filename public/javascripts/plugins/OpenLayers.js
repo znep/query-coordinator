@@ -42956,7 +42956,8 @@ OpenLayers.Control.SelectFeature = OpenLayers.Class(OpenLayers.Control, {
         var layer, feature;
         for(var l=0; l<layers.length; ++l) {
             layer = layers[l];
-            for(var i=layer.selectedFeatures.length-1; i>=0; --i) {
+            // michael.chui@socrata.com: sometimes it's null.
+            for(var i=(layer.selectedFeatures || []).length-1; i>=0; --i) {
                 feature = layer.selectedFeatures[i];
                 if(!options || options.except != feature) {
                     this.unselect(feature);

@@ -1,4 +1,5 @@
-;(function($) {
+;if (jQuery.urlParam(window.location.href, 'maps') != 'nextgen') { (function($) {
+
     var mapConfigNS = blist.namespace.fetch('blist.configs.map');
 
     var mapTypes = [
@@ -320,4 +321,4 @@
             configLayersHeatmap(options)
         ];
     };
-})(jQuery);
+})(jQuery); }

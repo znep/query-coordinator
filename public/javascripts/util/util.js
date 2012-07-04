@@ -575,6 +575,28 @@ $.subKeyDefined = function(obj, keystring)
     return true;
 };
 
+$.isSubKeyEqual = function(obj1, obj2, keystring)
+{
+    if ($.isBlank(obj1) || $.isBlank(obj2) || !_.isString(keystring))
+    {
+        return _.isEqual(obj1, obj2);
+    }
+
+    var objIter1 = obj1, objIter2 = obj2;
+    var keys = keystring.split('.');
+    while (keys.length > 0)
+    {
+        objIter1 = objIter1[keys[0]];
+        objIter2 = objIter2[keys[0]];
+        if ($.isBlank(objIter1) || $.isBlank(objIter2))
+        {
+            return _.isEqual(objIter1, objIter2);
+        }
+        keys.shift();
+    }
+    return _.isEqual(objIter1, objIter2);
+};
+
 $.safeId = function(id)
 { return id.replace(/(\.|\:)/g, '\\$1'); };
 

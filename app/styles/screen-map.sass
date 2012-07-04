@@ -64,18 +64,27 @@
     .prompt
       color: #ccc
 
+    .layerOrder
+      text-align: center
+
 .mapLayers li
   margin: 0.5em 0
   padding: 0.3em
+    bottom: 8px
   min-width: 11.1em
-
-  label
-    font-size: 1.1em
-    cursor: pointer
+  white-space: nowrap
 
   &:hover
-    cursor: pointer
     background-color: #ddeaf0
+
+.mapLayers ul.base li
+  label
+    font-size: 1.1em
+    cursor: move
+    white-space: normal
+
+  &:hover
+    cursor: move
 
 .mapLayers
   > div
@@ -88,6 +97,22 @@
     select
       width: 100%
 
+.layerLegend
+  margin: 10px
+  padding-bottom: 10px
+  padding-right: 1.2em
+  white-space: normal
+
+  > div
+    float: right
+
+  .label
+    float: left
+
+  .color_swatch
+    cursor: default
+    height: 8px
+
 .mapLegend
   background-color: #ffffff
   border: 1px solid #333333
@@ -96,9 +121,10 @@
   left: 3.7em
   bottom: 4em
   z-index: 1000
-
+ 
 .mapLegend .color_swatch
   cursor: default
+
 
 $geolocator_margin_top: 6px
 

@@ -184,6 +184,22 @@ javascripts:
     - public/javascripts/controls/maps/heatmap-map.js
     - public/javascripts/controls/maps/openlayers-map.js
     - public/javascripts/controls/maps/rastermap-map.js
+  shared-new-map:
+    - public/javascripts/plugins/OpenLayers.js
+    - public/javascripts/plugins/proj4js.js
+    - public/javascripts/plugins/heatmap.js
+    - public/javascripts/plugins/heatmap-openlayers.js
+    - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/base-visualization.js
+    - public/javascripts/controls/panes/map-config.2.js
+    - public/javascripts/controls/maps/map-wrapper.js
+    - public/javascripts/controls/maps/base-datalayer.js
+    - public/javascripts/controls/maps/ol-extensions.js
+    - public/javascripts/controls/maps/boundary-map.js
+    - public/javascripts/controls/maps/clustered-map.js
+    - public/javascripts/controls/maps/mondara-map.js
+    - public/javascripts/controls/maps/external-esri-map.js
+    - public/javascripts/controls/maps/rastermap-map.js
   shared-chart:
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
@@ -394,6 +410,7 @@ javascripts:
     - public/javascripts/controls/panes/feed.js
     - public/javascripts/controls/panes/form-create.js
     - public/javascripts/controls/panes/map-config.js
+    - public/javascripts/controls/panes/map-config.2.js
     - public/javascripts/controls/panes/map-create.js
     - public/javascripts/controls/panes/permissions.js
     - public/javascripts/controls/panes/plagiarize-dataset.js
@@ -532,6 +549,7 @@ dump:
     - shared-calendar
     - shared-chart
     - shared-map
+    - shared-new-map
     - shared-table-render
     - shared-richRenderers
     - shared-blob

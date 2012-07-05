@@ -78,25 +78,22 @@ $.Control.extend('nativeDropTarget', {
         var dObj = this;
         if (!dObj._active || !dObj.canAcceptDrop()) { return; }
 
-    $.debug('got drop', this.$dom());
         e.preventDefault();
 
-        var t = e.originalEvent.dataTransfer.getData('Text');
+        var di = getDropInfo(e);
         var didReplace = false;
-        var cpDropTag = $.nativeDraggable.copyDropTag;
-        if (t.startsWith('move:'))
+        if (di.type == 'move')
         {
-            var $repItem = dObj.settings.findReplacement(t.slice(5));
+            var $repItem = dObj.settings.findReplacement(di.id);
             if (!$.isBlank($repItem) && $repItem.length > 0)
             {
                 dObj.$dom().replaceWith($repItem);
                 didReplace = true;
             }
         }
-        else if (t.startsWith(cpDropTag.begin))
+        else if (di.type == 'copy')
         {
-            if (dObj.settings.copyReplace(t.slice(cpDropTag.begin.length,
-                    t.length - cpDropTag.end.length)))
+            if (dObj.settings.copyReplace(di.id))
             { didReplace = true; }
         }
 
@@ -106,6 +103,9 @@ $.Control.extend('nativeDropTarget', {
             { dObj.settings.replacedCallback(); }
             dObj._$ceParent.trigger('content-changed');
         }
+
+        dObj._deactivate();
+        dObj.settings.dropCallback(di.id, di.type);
     },
 
     dropContentEditable: function(e)
@@ -127,6 +127,7 @@ $.Control.extend('nativeDropTarget', {
                 { dObj.addNewDropped(this.attr('data-droppedcopy'), this) });
             }
         });
+        dObj._deactivate();
     },
 
     dragEnter: function(e)
@@ -137,8 +138,6 @@ $.Control.extend('nativeDropTarget', {
 
         if (this._isContentEditable)
         { this.$dom().attr('contentEditable', true); }
-
-        this._activate();
     },
 
     dragOver: function(e)
@@ -146,6 +145,12 @@ $.Control.extend('nativeDropTarget', {
         if (!this.canAcceptDrop()) { return; }
 
         e.stopPropagation();
+
+        if (this.settings.dragOverCallback(getDragPos(this, e), getDropInfo(e)) === false)
+        {
+            this._deactivate();
+            return;
+        }
 
         if (!this._isContentEditable)
         {
@@ -207,6 +212,8 @@ $.Control.extend('nativeDropTarget', {
         this.$dom().removeClass(this.settings.activeClass);
         if (exclusiveDropTarget == this)
         { exclusiveDropTarget = null; }
+
+        this.settings.dragLeaveCallback();
     }
 
 }, {
@@ -215,6 +222,9 @@ $.Control.extend('nativeDropTarget', {
     contentEditable: null,
     contentEditableParent: null,
     copyReplace: function(dropId) { return null; },
+    dropCallback: function(dropId, dropType) {},
+    dragOverCallback: function(pos, dropInfo) {},
+    dragLeaveCallback: function() {},
     findReplacement: function(dropId) { return null; },
     newItemDrop: function(dropId) { return null; },
     replacedCallback: function() {}
@@ -244,6 +254,31 @@ var findNewDropped = function(dObj, $curNode)
             { findNewDropped(dObj, this); }
         });
     }
+};
+
+var getDragPos = function(dObj, e)
+{
+    // Run through jQuery translate to get correct positions
+    e = $.event.mouseHooks.filter(e, e.originalEvent);
+    return {x: e.pageX, y: e.pageY};
+};
+
+var getDropInfo = function(e)
+{
+    var t = e.originalEvent.dataTransfer.getData('Text');
+    var type;
+    var cpDropTag = $.nativeDraggable.copyDropTag;
+    if (t.startsWith('move:'))
+    {
+        type = 'move';
+        t = t.slice(5);
+    }
+    else if (t.startsWith(cpDropTag.begin))
+    {
+        type = 'copy';
+        t = t.slice(cpDropTag.begin.length, t.length - cpDropTag.end.length);
+    }
+    return { id: t, type: type };
 };
 
 })(jQuery);

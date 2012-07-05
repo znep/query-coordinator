@@ -178,7 +178,7 @@
                 $body[edit ? 'on' : 'off']('keydown', onBodyKeyDown);
                 $body[edit ? 'on' : 'off']('mouseover', '.socrata-component', onBodyMouseOver);
                 if (!edit)
-                { $.cf.focus(); }
+                { $.cf.blur(true); }
 
                 if (designing)
                 { originalConfiguration = []; }

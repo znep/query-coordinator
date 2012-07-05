@@ -104,6 +104,9 @@ $.component.Container.extend('Grid Container', 'content', {
     _removeChildDom: function(child)
     {
         this._renderStatus.layoutStale = true;
+        child.$dom.css({height: '', width: '', paddingLeft: '', paddingTop: '',
+            paddingRight: '', paddingBottom: '', borderRightWidth: '' });
+        child.$dom.removeClass('first last');
         this._super.apply(this, arguments);
     },
 
@@ -111,7 +114,30 @@ $.component.Container.extend('Grid Container', 'content', {
     {
         this._renderStatus.layoutStale = true;
         this._super.apply(this, arguments);
-    }
+    },
+
+    _drawDropCursor: function(child)
+    {
+        this._super.apply(this, arguments);
+        child.$dom.closest('.row').append(this._$dropCursor);
+    },
+
+    _testChildHit: function(child, pos, inSequence)
+    {
+        var $row = child.$dom.closest('.row');
+        var rowOffset = $row.offset();
+        if (!((inSequence && rowOffset.top > pos.y) ||
+            rowOffset.top <= pos.y && (rowOffset.top + $row.outerHeight(true)) >= pos.y))
+        { return false; }
+
+        var childOffset = child.$dom.offset();
+        return (inSequence && childOffset.left > pos.x) ||
+            childOffset.left <= pos.x && (childOffset.left + child.$dom.outerWidth(true)) >= pos.x ||
+            childOffset.left <= pos.x && child.$dom.hasClass('last');
+    },
+
+    _dropCursorDirection: function()
+    { return 'vertical'; }
 });
 
 var valOrDef = function(val, def)

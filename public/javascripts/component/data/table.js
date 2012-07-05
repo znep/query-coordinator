@@ -1,8 +1,12 @@
 ;(function() {
 
 $.component.Component.extend('Table', 'data', {
-    _needsOwnContext: true,
-    _delayUntilVisible: true,
+    _init: function()
+    {
+        this._needsOwnContext = true;
+        this._delayUntilVisible = true;
+        this._super.apply(this, arguments);
+    },
 
     isValid: function()
     {

@@ -3,11 +3,10 @@
 _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, localChartType)
 {
     $.component.Component.extend(value.text.toLowerCase().capitalize(), 'data', {
-        _needsOwnContext: true,
-        _delayUntilVisible: true,
-
         _init: function()
         {
+            this._needsOwnContext = true;
+            this._delayUntilVisible = true;
             this._super.apply(this, arguments);
             this._chartType = this._stringSubstitute(this._properties.chartType) || localChartType;
         },

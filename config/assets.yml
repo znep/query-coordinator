@@ -87,7 +87,6 @@ javascripts:
     - public/javascripts/component/locale.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-container.js
-    - public/javascripts/component/comp-placeholder.js
     - public/javascripts/component/configurator-hook.js
     - public/javascripts/component/functional/event-connector.js
     - public/javascripts/component/content/paged-container.js
@@ -137,7 +136,6 @@ javascripts:
     - public/javascripts/component/configurator/properties-palette.js
     - public/javascripts/component/configurator/configurator.js
     - public/javascripts/component/configurator/cf-edit-log.js
-    - public/javascripts/component/configurator/cf-component-drag.js
     - public/javascripts/component/configurator/cf-side.js
     - public/javascripts/component/configurator/cf-translate.js
     - public/javascripts/component/configurator/cf-property.js

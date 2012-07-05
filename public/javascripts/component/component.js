@@ -112,6 +112,7 @@
 
         destroy: function() {
             this.remove();
+            if (!$.isBlank(this.$dom)) { this.$dom.remove(); }
             delete components[this.id];
             this._destroyed = true;
             var cObj = this;
@@ -154,7 +155,9 @@
         {
             this._designing = designing;
             this.properties({'__hidden': false});
-            if (designing && !this.$dom.isControlClass('nativeDraggable'))
+            if ($.isBlank(this.$dom)) { return; }
+
+            if (designing && this.canEdit('drag') && !this.$dom.isControlClass('nativeDraggable'))
             {
                 this.$dom.nativeDraggable({
                     dropId: this.id,
@@ -163,12 +166,14 @@
                 });
             }
 
-            if (!designing)
+            if (!designing && this.$dom.isControlClass('nativeDraggable'))
             { this.$dom.nativeDraggable().disable(); }
         },
 
         dragFocus: function(isFocus)
         {
+            if (!this.$dom.isControlClass('nativeDraggable')) { return; }
+
             if (isFocus)
             { this.$dom.nativeDraggable().enable(); }
             else
@@ -264,6 +269,7 @@
             switch (type)
             {
                 case 'drag':
+                case 'drop':
                 case 'locked':
                     return true;
                     break;

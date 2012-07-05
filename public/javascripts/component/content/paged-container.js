@@ -222,6 +222,7 @@ $.component.Container.extend('Paged Container', 'content', {
         {
             child._initDom();
             child.$dom.addClass('hide');
+            if (this._designing) { child.design(true); }
         }
         if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
         { child.next.$dom.before(child.$dom); }
@@ -230,7 +231,17 @@ $.component.Container.extend('Paged Container', 'content', {
             this.$ct.append(child.$dom);
             this.trigger('page_added', [{page: child}]);
         }
-    }
+    },
+
+    _testChildHit: function(child, pos, inSequence)
+    {
+        var childOffset = child.$dom.offset();
+        return (inSequence && childOffset.left > pos.x) ||
+            childOffset.left <= pos.x && childOffset.left + child.$dom.outerWidth(true) >= pos.x;
+    },
+
+    _dropCursorDirection: function()
+    { return 'vertical'; }
 });
 
 })(jQuery);

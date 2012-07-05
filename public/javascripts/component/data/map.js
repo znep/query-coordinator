@@ -1,11 +1,10 @@
 ;(function() {
 
 $.component.Component.extend('Map', 'data', {
-    _needsOwnContext: true,
-    _delayUntilVisible: true,
-
     _init: function()
     {
+        this._needsOwnContext = true;
+        this._delayUntilVisible = true;
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row']});
     },

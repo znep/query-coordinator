@@ -3,9 +3,6 @@
  */
 (function($) {
     $.component.Component.extend('Container', 'content', {
-        // A hint for drag implementation
-        horizontal: false,
-
         _init: function(properties) {
             this._initializing = true;
             this._childrenToLoad = properties.children;
@@ -166,15 +163,19 @@
             if (!this._initialized)
             {
                 if (child._initialized)
-                { $(child.dom).remove(); }
+                { $(child.dom).detach(); }
                 return;
             }
             if (!child._initialized)
-            { child._initDom(); }
+            {
+                child._initDom();
+                if (this._designing) { child.design(true); }
+            }
 
             if ($.subKeyDefined(child, 'next.$dom') && child.next.$dom.parent().index(this.$ct) >= 0)
             { child.next.$dom.parent()[0].insertBefore(child.$dom[0], child.next.$dom[0]); }
-            else if (!$.isBlank(this.$ct) && child.$dom.parent().index(this.$ct) < 0)
+            else if (!$.isBlank(this.$ct) && (child.$dom.parent().index(this.$ct) < 0 ||
+                        child.hasOwnProperty('next') && $.isBlank(child.next)))
             { this.$ct[0].appendChild(child.$dom[0]); }
 
             if (child.$dom.parent().length > 0 && this._rendered && !child._rendered)
@@ -193,7 +194,7 @@
         _removeChildDom: function(child) {
             if (!this._initialized)
                 return;
-            child.$dom.remove();
+            child.$dom.detach();
             child.unbind(null, null, this);
             this._arrange();
         },
@@ -334,9 +335,11 @@
         // Propagate design mode to children
         design: function(designing)
         {
+            var cObj = this;
             this._super.apply(this, arguments);
             this.each(function(child) { child.design(designing); });
-            if (!this.$dom.isControlClass('nativeDropTarget'))
+            if (!$.isBlank(this.$dom) && this.canEdit('drop') &&
+                    !this.$dom.isControlClass('nativeDropTarget'))
             {
                 if (designing)
                 {
@@ -346,11 +349,47 @@
                         {
                             return $item.hasClass('socrata-component') ||
                                 $item.hasClass('componentCreate');
+                        },
+                        dragOverCallback: function() { return cObj._handleDragOver.apply(cObj, arguments); },
+                        dragLeaveCallback: function()
+                        {
+                            if (!$.isBlank(cObj._$dropCursor))
+                            { cObj._$dropCursor.addClass('hide'); }
+                        },
+                        dropCallback: function(dropId, dropType)
+                        {
+                            if (!$.isBlank(cObj._$dropCursor))
+                            { cObj._$dropCursor.addClass('hide'); }
+
+                            if (dropType == 'move')
+                            {
+                                var moveComp = $.component(dropId);
+                                if (!$.isBlank(moveComp) && (moveComp.parent != cObj ||
+                                            (moveComp != cObj._dropPosition &&
+                                                 moveComp.next != cObj._dropPosition)))
+                                {
+                                    $.cf.edit.execute('move', {
+                                        newContainer: cObj,
+                                        newPosition: cObj._dropPosition,
+                                        oldContainer: moveComp.parent,
+                                        oldPosition: moveComp.next,
+                                        child: moveComp
+                                    });
+                                }
+                            }
+                            else if (dropType == 'copy')
+                            {
+                                $.cf.edit.execute('add', {
+                                    container: cObj,
+                                    position: cObj._dropPosition,
+                                    childTemplate: { type: dropId }
+                                });
+                            }
                         }
                     });
                 }
             }
-            else
+            else if (this.$dom.isControlClass('nativeDropTarget'))
             {
                 if (designing)
                 { this.$dom.nativeDropTarget().enable(); }
@@ -358,6 +397,115 @@
                 { this.$dom.nativeDropTarget().disable(); }
             }
         },
+
+        _handleDragOver: function(pos, dropInfo)
+        {
+            // Get closest child to drop cursor
+            if (!$.isBlank(this._dropChild))
+            {
+                if (!this._testChildHit(this._dropChild, pos))
+                { delete this._dropChild; }
+            }
+
+            if ($.isBlank(this._dropChild))
+            { this._dropChild = this._getDropChild(pos); }
+
+            if ($.isBlank(this._dropChild))
+            {
+                this._dropPosition = null;
+                // Empty container, so don't draw a cursor, but accept the drop
+                return;
+            }
+
+            // Determine orientation on it
+            var targetOrientation = this._getDropOrientation(this._dropChild, pos);
+
+            this._dropPosition = this._getDropPosition(this._dropChild, targetOrientation);
+
+            if (dropInfo.type == 'move')
+            {
+                var moveChild = $.component(dropInfo.id);
+                if (!$.isBlank(moveChild) && moveChild.parent == this &&
+                        (this._dropPosition == moveChild || this._dropPosition == moveChild.next))
+                {
+                    if (!$.isBlank(this._$dropCursor)) { this._$dropCursor.addClass('hide'); }
+                    return false; // Don't accept drop here
+                }
+            }
+
+            // Draw cursor
+            this._drawDropCursor(this._dropChild, targetOrientation);
+        },
+
+        _getDropChild: function(pos)
+        {
+            var cObj = this;
+            var lastChild;
+            var result = cObj.each(function(child)
+            {
+                if (cObj._testChildHit(child, pos, true))
+                { return child; }
+                lastChild = child;
+            });
+            if ($.isBlank(result) && !$.isBlank(lastChild))
+            { return lastChild; }
+            return result;
+        },
+
+        _testChildHit: function(child, pos, inSequence)
+        {
+            var childOffset = child.$dom.offset();
+            return (inSequence && childOffset.top > pos.y) ||
+                childOffset.top <= pos.y && childOffset.top + child.$dom.outerHeight(true) >= pos.y;
+        },
+
+        _getDropOrientation: function(child, pos)
+        {
+            var offs = child.$dom.offset();
+            var mpX = offs.left + child.$dom.outerWidth(true) / 2;
+            var mpY = offs.top + child.$dom.outerHeight(true) / 2;
+            return { vPos: mpY >= pos.y ? 'top' : 'bottom', hPos: mpX >= pos.x ? 'left' : 'right' };
+        },
+
+        _getDropPosition: function(child, targetOrientation)
+        {
+            var cursorDir = this._dropCursorDirection();
+            return cursorDir == 'horizontal' && targetOrientation.vPos == 'top' ||
+                cursorDir == 'vertical' && targetOrientation.hPos == 'left' ? child : child.next;
+        },
+
+        _drawDropCursor: function(child, targetOrientation)
+        {
+            if ($.isBlank(this._$dropCursor))
+            {
+                this._$dropCursor = $.tag({tagName: 'div', 'class': 'dropCursor'});
+                this.$dom.append(this._$dropCursor);
+            }
+
+            var direction = this._dropCursorDirection();
+            this._$dropCursor.removeClass('horizontal vertical hide').addClass(direction);
+
+            var pos = 0;
+            var side;
+            switch (direction)
+            {
+                case 'horizontal':
+                    side = 'top';
+                    if (targetOrientation.vPos == 'bottom')
+                    { pos = child.$dom.outerHeight(); }
+                    break;
+                case 'vertical':
+                    side = 'left';
+                    if (targetOrientation.hPos == 'right')
+                    { pos = child.$dom.outerWidth(); }
+                    break;
+            }
+            pos += child.$dom.offset()[side] - this.$dom.offset()[side];
+            this._$dropCursor.css(side, pos);
+        },
+
+        _dropCursorDirection: function()
+        { return 'horizontal'; },
 
         // Propagate substitution parameter scan
         listTemplateSubstitutions: function(list) {
@@ -369,9 +517,6 @@
     });
 
     $.component.Container.extend('Horizontal Container', 'content', {
-        // A hint for drag implementation
-        horizontal: true,
-
         // Override rendering to add a (eww) clearing element
         _initDom: function() {
             this._super.apply(this, arguments);
@@ -392,7 +537,11 @@
         // Override child move to wrap child in extra div
         _moveChildDom: function(child)
         {
-            if (!child._initialized) { child._initDom(); }
+            if (!child._initialized)
+            {
+                child._initDom();
+                if (this._designing) { child.design(true); }
+            }
             if (!child.wrapper)
             {
                 var $w = child.$dom.parent('.component-wrapper');
@@ -427,7 +576,7 @@
         {
             if (child.$wrapper)
             {
-                child.$wrapper.remove();
+                child.$wrapper.detach();
                 delete child.wrapper;
                 delete child.$wrapper;
             }
@@ -480,7 +629,17 @@
                 $(this.dom).children('first-child').removeClass('first-child');
                 $(_.first(visibleChildren).wrapper).addClass('first-child');
             }
-        }
+        },
+
+        _testChildHit: function(child, pos, inSequence)
+        {
+            var childOffset = child.$dom.offset();
+            return (inSequence && childOffset.left > pos.x) ||
+                childOffset.left <= pos.x && childOffset.left + child.$dom.outerWidth(true) >= pos.x;
+        },
+
+        _dropCursorDirection: function()
+        { return 'vertical'; }
     });
 
     $.extend($.component.Container, {

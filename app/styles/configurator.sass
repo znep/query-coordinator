@@ -80,7 +80,7 @@
     word-wrap: break-word
 
 // Representation of icons in palette and drag form of same
-.socrata-cf-side .componentCreate, .socrata-cf-drag-icon
+.socrata-cf-side .componentCreate
   &.label-only
     width: auto
   .bulb
@@ -106,37 +106,25 @@
       color: #f8f8f8
       margin: 0 6px 6px 6px
 
-// Transformation of new palette icon whilst animating into position
-.socrata-cf-drag-icon.socrata-cf-adding
-  .icon
-    position: absolute
-    top: 0
-    right: 16px
-    bottom: 6px
-    left: 16px
-    width: auto
-    height: auto
-    background-position: 100000px 100000px
-  .label
-    display: none
-
-// Icon dragged when creating new components
-.socrata-cf-drag-icon
-  @include component-icons
-  position: absolute
-  z-index: 1000000
-  &, *
-    cursor: pointer !important
-
-// Shell dragged when moving existing components
-.socrata-cf-drag-shell
-  position: absolute
-  @include opacity(0.8)
-  z-index: 1000000
-
 // Styling for drag-drop
-.socrata-container.dropActive
-  @include box-shadow(0, 0, 6px, black)
+.socrata-container
+  .configuring &
+    min-height: 5em
+  &.dropActive
+    @include box-shadow(0, 0, 6px, black)
+  .dropCursor
+    @include rounded-ends
+    background-color: #000000
+    @include opacity(.7)
+    position: absolute
+    &.horizontal
+      height: 3px
+      left: 4%
+      width: 90%
+    &.vertical
+      height: 90%
+      top: 4%
+      width: 3px
 
 .cf-property
   background-color: #ddddff

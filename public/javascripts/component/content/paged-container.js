@@ -1,6 +1,6 @@
 ;(function($) {
 
-$.component.Container.extend('PagedContainer', 'content', {
+$.component.Container.extend('Paged Container', 'content', {
     _init: function()
     {
         this._pages = [];

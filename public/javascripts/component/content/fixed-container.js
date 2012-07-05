@@ -1,4 +1,4 @@
-$.component.Container.extend('FixedContainer', 'content', {
+$.component.Container.extend('Fixed Container', 'content', {
     _needsOwnContext: true,
 
     _render: function()

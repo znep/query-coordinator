@@ -1,6 +1,6 @@
 ;(function($) {
 
-$.component.Container.extend('GridContainer', 'content', {
+$.component.Container.extend('Grid Container', 'content', {
     _renderStatus: {},
 
     _getContainer: function()

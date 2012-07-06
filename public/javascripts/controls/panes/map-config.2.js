@@ -1,4 +1,4 @@
-;(function($) {
+;if (jQuery.urlParam(window.location.href, 'maps') == 'nextgen') { (function($) {
     var mapConfigNS = blist.namespace.fetch('blist.configs.map');
 
     var mapTypes = _.map(_.pluck(Dataset.map.backgroundLayers, 'name'),
@@ -370,4 +370,4 @@
         ];
     };
 
-})(jQuery);
+})(jQuery); }

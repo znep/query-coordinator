@@ -35,10 +35,11 @@ $.component.Component.extend('Catalog', 'data', {
     {
         if (!this._super.apply(this, arguments)) { return false; }
 
-        this.$contents.css(blist.configs.styles.convertProperties(this._properties))
-        this._$iframe.attr('src', '/browse/embed?' + $.param({defaults: this._properties.defaults,
-            disable: $.arrayToObjKeys(this._properties.disabledItems, true),
-            suppressed_facets: $.arrayToObjKeys(this._properties.disabledSections, true)}));
+        this.$contents.css(blist.configs.styles.convertProperties(this._properties));
+        var props = this._stringSubstitute(this._properties);
+        this._$iframe.attr('src', '/browse/embed?' + $.param({defaults: props.defaults,
+            disable: $.arrayToObjKeys(props.disabledItems, true),
+            suppressed_facets: $.arrayToObjKeys(props.disabledSections, true)}));
         return true;
     },
 

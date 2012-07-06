@@ -50,7 +50,7 @@ module Canvas2
         get_dataset({'keepOriginal' => config['query'].blank?}.merge(config)) do |ds|
           col = ds.column_by_id_or_field_name(config['columnId'])
           if col.nil?
-            return false if !config['required']
+            return false if config['required']
             break
           end
 
@@ -67,7 +67,7 @@ module Canvas2
           r = ds.get_rows(1)[:rows][0]
 
           if r.nil?
-            return false if !config['required']
+            return false if config['required']
             break
           end
 

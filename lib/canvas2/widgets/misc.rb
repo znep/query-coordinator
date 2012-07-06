@@ -44,11 +44,12 @@ module Canvas2
     end
 
     def render_contents
+      p = string_substitute(@properties)
       t = '<iframe frameborder="0" scrolling="auto" title="Catalog" width="800" height="600" ' +
         'src="/browse/embed?' +
-        { defaults: @properties['defaults'],
-          disable: Util.array_to_obj_keys(@properties['disabledItems'] || [], true),
-          suppressed_facets: Util.array_to_obj_keys(@properties['disabledSections'] || [], true)
+        { defaults: p['defaults'],
+          disable: Util.array_to_obj_keys(p['disabledItems'] || [], true),
+          suppressed_facets: Util.array_to_obj_keys(p['disabledSections'] || [], true)
         }.to_param +
         '"></iframe>'
       [t, true]

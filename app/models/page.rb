@@ -1,19 +1,26 @@
 class Page < SodaModel
-  def render(vars, full = true)
-    if full
-      if vars.is_a?(Array)
-        var_hash = {}
-        path.split('/').each do |part|
-          var_hash[part.slice(1, part.length)] = vars.shift if part.starts_with?(':')
-        end
-        vars = var_hash
+  def set_context(vars)
+    if vars.is_a?(Array)
+      var_hash = {}
+      path.split('/').each do |part|
+        var_hash[part.slice(1, part.length)] = vars.shift if part.starts_with?(':')
       end
-      Canvas2::Util.add_vars(vars) if vars.is_a?(Hash)
-      return false if !data.nil? && !data.empty? && !Canvas2::DataContext.load(data)
+      vars = var_hash
+    end
+    Canvas2::Util.add_vars(vars) if vars.is_a?(Hash)
+    return !(!data.nil? && !data.empty? && !Canvas2::DataContext.load(data))
+  end
+
+  def render(full = true)
+    if full
       [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render[0]}.join('')
     else
       '<div id="' + content['id'] + '"></div>'
     end
+  end
+
+  def name
+    Canvas2::Util.string_substitute(@update_data['name'] || @data['name'], Canvas2::Util.base_resolver)
   end
 
   def content

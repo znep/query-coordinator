@@ -31,7 +31,8 @@ components = {
 @page = Page.new({data: dc, content: components, path: '/test_page/cf'}.with_indifferent_access)
 -%>
 
-<%= raw @page.render(nil, !@minimal_render) %>
+<%- @page.set_context(nil) -%>
+<%= raw @page.render(!@minimal_render) %>
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil } %>

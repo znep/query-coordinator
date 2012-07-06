@@ -1,22 +1,22 @@
 <%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 15.minutes do -%>
 
+<%- if !@minimal_render -%>
+  <%- context_result = @page.set_context(@vars) -%>
+  <%- if context_result == false -%>
+  <%- raise Canvas2::NoContentError.new -%>
+  <%- end -%><%# if context_result %>
+<%- end -%><%# if minimal_render %>
+
 <% content_for :head do %>
 <title><%= @page.name %></title>
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
 
-<%- render_result = @page.render(@vars, !@minimal_render) -%>
-<%- if render_result == false -%>
-<%- raise Canvas2::NoContentError.new -%>
-
-<%- else -%>
-<%= raw render_result %>
+<%= raw @page.render(!@minimal_render) %>
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
 <%- end -%>
-
-<%- end -%><%# if render_result %>
 
 <%- end -%><%# prerendered_cache %>
 <%- content_for :js_footer do -%>

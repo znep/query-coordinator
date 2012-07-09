@@ -16,7 +16,7 @@ $.component.Component.extend('Inline filter', 'input', {
 
     configurationSchema: function()
     {
-        var dsList = getDatasetList(this);
+        var dsList = this._getDatasetListFromContext(this._dataContext);
         var retVal = {schema: [{ fields: [$.cf.contextPicker()] }], view: _.first(dsList)};
         return retVal;
     },
@@ -84,7 +84,7 @@ var renderUpdate = function()
 
     else if (firstDC.type == 'dataset' || firstDC.type == 'datasetList')
     {
-        opts.datasets = getDatasetList(dcList);
+        opts.datasets = this._getDatasetListFromContext(dcList);
 
         if (!$.isBlank(cf))
         {
@@ -115,22 +115,4 @@ var renderUpdate = function()
         this._uf = this.$contents.pane_unifiedFilter(opts).render();
     }
     this._updateValidity();
-};
-
-var getDatasetList = function(dcList)
-{
-    var datasets = [];
-    _.each(dcList, function(dc)
-    {
-        switch (dc.type)
-        {
-            case 'dataset':
-                datasets.push(dc.dataset);
-                break;
-            case 'datasetList':
-                datasets = datasets.concat(_.pluck(dc.datasetList, 'dataset'));
-                break;
-        }
-    });
-    return datasets;
 };

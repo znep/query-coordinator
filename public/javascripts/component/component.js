@@ -724,6 +724,24 @@
             return parentResolver;
         },
 
+        _getDatasetListFromContext: function(context)
+        {
+            var datasets = [];
+            _.each($.makeArray(context), function(dc)
+            {
+                switch (dc.type)
+                {
+                    case 'dataset':
+                        datasets.push(dc.dataset);
+                        break;
+                    case 'datasetList':
+                        datasets = datasets.concat(_.pluck(dc.datasetList, 'dataset'));
+                        break;
+                }
+            });
+            return datasets;
+        },
+
         /**
          * Helper when updating the data source on a component. Not called automatically
          * since not all components have a data source.

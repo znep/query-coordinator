@@ -72,8 +72,8 @@
         {
             var layerObj = this;
 
-            console.log('handleDisplayFormatChange');
-            console.dir(newDF);
+            //console.log('handleDisplayFormatChange');
+            //console.dir(newDF);
 
             // If it's a legacy dataset, there is a phantom DF change from loading the meta.
             if (!layerObj._loaded) { return; }
@@ -110,7 +110,7 @@
         handleQueryChange: function()
         {
             var layerObj = this;
-console.log('query change', layerObj._uniqueId);
+//console.log('query change', layerObj._uniqueId);
             layerObj.clearData();
             layerObj.getData();
         },

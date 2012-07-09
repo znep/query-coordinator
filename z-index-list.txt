@@ -46,4 +46,3 @@ CANVAS:
 1500 FixedContainer
 2000 canvas edit bar
 20000 IE drag image
-

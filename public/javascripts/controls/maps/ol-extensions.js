@@ -647,6 +647,7 @@
 
         renderDataLayer: function($dom, layerObj)
         {
+            var control = this;
             var dataLayers = _($.makeArray(layerObj.dataLayers())).chain()
                 .flatten().compact().value();
 
@@ -704,7 +705,11 @@
                             );
                     });
                     $layerLI.append($legend);
-                    $layerLI.parents('.contentBlock').removeClass('hide');
+                    if (!control._drawn)
+                    {
+                        $layerLI.parents('.contentBlock').removeClass('hide');
+                        control._drawn = true;
+                    }
                 }
             });
         },

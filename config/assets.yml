@@ -175,7 +175,6 @@ javascripts:
     - public/javascripts/plugins/heatmap-openlayers.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
-    - public/javascripts/controls/panes/map-config.js
     - public/javascripts/controls/maps/base-map.js
     - public/javascripts/controls/maps/esri-map.js
     - public/javascripts/controls/maps/external-esri-map.js
@@ -191,7 +190,6 @@ javascripts:
     - public/javascripts/plugins/heatmap-openlayers.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
-    - public/javascripts/controls/panes/map-config.2.js
     - public/javascripts/controls/maps/map-wrapper.js
     - public/javascripts/controls/maps/base-datalayer.js
     - public/javascripts/controls/maps/ol-extensions.js

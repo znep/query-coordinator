@@ -170,7 +170,7 @@
         if (!$.isBlank(curValue))
         {
             $field.data('uid', curValue);
-            Dataset.createFromViewId(curValue, function(dataset)
+            Dataset.lookupFromViewId(curValue, function(dataset)
             {
                 makeStatic(dataset.name);
                 modifySection.call(cpObj, dataset, $field);

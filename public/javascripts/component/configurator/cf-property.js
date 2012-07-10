@@ -83,7 +83,8 @@
 
         toHtml: function()
         {
-            return $.tag({ tagName: 'div', 'class': ['cf-property', 'nonEditable'], 'data-propId': this.id,
+            return $.tag({ tagName: 'div', 'class': ['cf-property', 'nonEditable', 'socrata-cf-mouse'],
+                'data-propId': this.id,
                 contents: [ { tagName: 'span', 'class': 'itemText',
                         contents: $.htmlEscape(this.property.replace(/.*\./, '')) },
                     { tagName: 'a', href: '#Remove', 'class': ['remove', 'hide'], title: 'Remove property' }
@@ -236,6 +237,7 @@
             shownCallback: function(box)
             {
                 prop._$editBox = $(box);
+                prop._$editBox.closest('.bt-wrapper').addClass('socrata-cf-mouse');
                 prop._$editBox.mousedown(function(e) { e.stopPropagation(); });
                 prop._$editBox.find('.fallback input[type=checkbox]').change(function()
                 {

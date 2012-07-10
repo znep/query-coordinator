@@ -39,11 +39,7 @@ $.component.Container.extend('Repeater', 'content', {
         this._map = [];
 
         this._idPrefix = this.id + '-';
-        if ($.subKeyDefined(this, '_properties.container.id'))
-        {
-            this._properties.container.id = (this._properties.parentPrefix || '') +
-                this._properties.container.id;
-        }
+        updateContainerPrefix(this);
     },
 
     _initDom: function()
@@ -61,11 +57,11 @@ $.component.Container.extend('Repeater', 'content', {
         }
     },
 
-    design: function()
+    design: function(designing)
     {
         var cObj = this;
         // If we were designing, update from the edited config
-        if (this._designing)
+        if (this._designing && !designing)
         { this._cloneProperties.children = this._readChildren(); }
 
         this._super.apply(this, arguments);
@@ -104,6 +100,7 @@ $.component.Container.extend('Repeater', 'content', {
         while (cObj.first)
         { cObj.first.destroy(); }
         _.each(cObj._funcChildren, function(fc) { fc.destroy(); });
+        cObj._funcChildren = [];
 
         var doneWithRows = function()
         {
@@ -291,10 +288,13 @@ $.component.Container.extend('Repeater', 'content', {
         delete this._initializing;
     },
 
-    _readChildren: function() {
-        if (this._designing)
-            return this._super();
-        return this._cloneProperties.children;
+    _readChildren: function()
+    { return this._designing ? this._super() : this._cloneProperties.children; },
+
+    _propWrite: function()
+    {
+        this._super.apply(this, arguments);
+        updateContainerPrefix(this);
     }
 });
 
@@ -336,6 +336,19 @@ var renderGroupItems = function(cObj, items, callback)
     { groups = groups.sort(); }
     _.each(groups, function(g, i)
     { cObj._setRow({id: g}, i, {_groupValue: g, _groupItems: groupIndex[g]}, aggCallback); });
+};
+
+var updateContainerPrefix = function(cObj)
+{
+    var parPrefix = cObj._properties.parentPrefix || '';
+    if ($.subKeyDefined(cObj, '_properties.container.id') &&
+            !cObj._properties.container.id.startsWith(parPrefix))
+    {
+        // Use the parent prefix so that if this is a top-level Repeater,
+        // the realContainer id is unchanged
+        cObj._properties.container.id = (cObj._properties.parentPrefix || '') +
+            cObj._properties.container.id;
+    }
 };
 
 })(jQuery);

@@ -71,8 +71,12 @@ module Canvas2
         all_c.compact!
         if all_c.length > 0
           cont_config = @properties['container'] || {'type' => 'Container'}
+          cont_config['id'] ||= Canvas2::Util.allocate_id
+          orig_id = cont_config['id']
+          cont_config['id'] = (@properties['parentPrefix'] || '') + cont_config['id']
           real_c = CanvasWidget.from_config(cont_config, self)
           @orig_props['container'] = cont_config
+          @orig_props['container']['id'] = orig_id
           real_c.children = all_c
           r = real_c.render
           t += r[0]
@@ -144,6 +148,7 @@ module Canvas2
       new_c['htmlClass'] = new_c['htmlClass'].is_a?(Array) ? new_c['htmlClass'].clone :
         [new_c['htmlClass']].compact
       new_c['htmlClass'] << 'id-' + new_c['id']
+      new_c['parentPrefix'] = id_prefix
       new_c['id'] = id_prefix + new_c['id']
       new_c['entity'] = resolutions
       if new_c['children'].is_a? Array

@@ -837,7 +837,7 @@
                 if (!_.isEmpty(cIds))
                 {
                     var finishDC = gotDCGen(cIds.length);
-                    if (_(cIds).chain().map(function(cId)
+                    _.map(cIds, function(cId)
                         {
                             if (!$.dataContext.getContext(cId, finishDC.success, finishDC.error))
                             {
@@ -846,18 +846,12 @@
                                     var eDC = { id: cObj.id + '-' + cId, type: 'entity',
                                         value: cObj._properties.entity[cId] };
                                     _.defer(function() { finishDC.success(eDC); });
-                                    return true;
                                 }
-                                finishDC.error();
-                                return false;
+                                else
+                                { _.defer(function() { finishDC.error(); }); }
                             }
-                            return true;
-                        }).include(true).value())
-                    {
-                        startDCGet();
-                        return true;
-                    }
-                    return false;
+                        });
+                    startDCGet();
                 }
                 else if (!$.isBlank(cxt))
                 {
@@ -883,8 +877,8 @@
                     });
                     if (_.isArray(properties.contextId) && properties.contextId.length == 1)
                     { properties.contextId = _.first(properties.contextId); }
-                    return true;
                 }
+                return true;
             }
             else if ($.isBlank(cxt) && $.isBlank(cObj._properties.context) &&
                     _.isEmpty(cIds) && $.isBlank(cObj._properties.contextId))

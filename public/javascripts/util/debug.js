@@ -124,3 +124,9 @@ window.chartDebugger = function()
 {
     window.chartObj = blist.datasetPage.rtManager.$domForType('chart').socrataChart();
 };
+
+window.fetchOrigDF = function(uid)
+{
+    $.getJSON('/views/' + (uid || blist.dataset.id) + '.json',
+        function(ds) { console.dir(ds.displayFormat); });
+};

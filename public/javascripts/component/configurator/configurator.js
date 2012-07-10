@@ -220,13 +220,6 @@
 
                     success: function()
                     {
-                        if (page.path && window.location.pathname != page.path)
-                        {
-                            if (_.isFunction(window.history.pushState))
-                            { window.history.pushState({}, page.name, page.path); }
-                            else
-                            { window.location.pathname = page.path; }
-                        }
                         $.locale.initialize(page.locale);
                         exitEditMode();
                     },

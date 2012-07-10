@@ -1051,7 +1051,7 @@
 
             this.viewport = this.viewport
                 ? OpenLayers.Bounds.fromArray(this.viewport).intersection(this.wholeWorld)
-                : this.wholeWorld;
+                : this.wholeWorld.clone();
 
             var mapProjection = this.map.getProjectionObject();
             this.viewport.transform(blist.openLayers.geographicProjection, mapProjection);

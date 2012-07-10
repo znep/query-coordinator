@@ -1047,13 +1047,15 @@
 
             // Projecting the entire sphere onto Web Mercator doesn't work correctly.
             var wholeWorld = [-179.999999, -85.051128, 179.999999, 85.051128];
-            this.wholeWorld = OpenLayers.Bounds.fromArray(wholeWorld).transform(
-                blist.openLayers.geographicProjection, this.map.getProjectionObject());
+            this.wholeWorld = OpenLayers.Bounds.fromArray(wholeWorld);
 
             this.viewport = this.viewport
-                ? OpenLayers.Bounds.fromArray(this.viewport)
-                    .transform(blist.openLayers.geographicProjection, this.map.getProjectionObject())
+                ? OpenLayers.Bounds.fromArray(this.viewport).intersection(this.wholeWorld)
                 : this.wholeWorld;
+
+            var mapProjection = this.map.getProjectionObject();
+            this.viewport.transform(blist.openLayers.geographicProjection, mapProjection);
+            this.wholeWorld.transform(blist.openLayers.geographicProjection, mapProjection);
         },
 
         destroy: function()

@@ -131,14 +131,16 @@ var Model = Class.extend({
     },
 
     // Return a fully-instantiated copy
-    clone: function(parents)
+    clone: function(modelParents)
     {
         var that = this;
 
-        var cloneObj = function(val, key)
+        var cloneObj = function(val, key, objParents)
         {
+            objParents = (objParents || []).concat([ val ]);
+
             if (val instanceof Model)
-            { return val.clone(parents); }
+            { return val.clone(modelParents); }
 
             else if (_.isArray(val))
             {
@@ -147,13 +149,19 @@ var Model = Class.extend({
                 if (key == 'flags')
                 { return val.slice().sort(); }
                 else
-                { return _.map(val, function(v) { return cloneObj(v); }); }
+                { return _.map(val, function(v) { return cloneObj(v, undefined, objParents); }); }
             }
 
             else if ($.isPlainObject(val))
             {
                 var obj = {};
-                _.each(val, function(v, k) { obj[k] = cloneObj(v, k); });
+                _.each(val, function(v, k)
+                {
+                    if (!_.include(objParents, v))
+                    {
+                        obj[k] = cloneObj(v, k, objParents);
+                    }
+                });
                 return obj;
             }
 
@@ -161,13 +169,13 @@ var Model = Class.extend({
             { return val; }
         };
 
-        parents = $.makeArray(parents);
-        parents.push(that);
+        modelParents = $.makeArray(modelParents);
+        modelParents.push(that);
 
         var obj = {};
         _.each(this, function(v, k)
         {
-            if (!_.isFunction(v) && !that._cloneExclude[k] && !_.include(parents, v))
+            if (!_.isFunction(v) && !that._cloneExclude[k] && !_.include(modelParents, v))
             { obj[k] = cloneObj(v, k); }
         });
         return new that.Class(obj);

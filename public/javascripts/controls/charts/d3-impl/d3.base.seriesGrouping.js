@@ -157,11 +157,13 @@ d3base.seriesGrouping = {
                 createdVirtualColumns = true;
 
                 // save as obj for quick reference below
+                var virtualId = -100 - _.keys(sg.virtualColumns).length; // use negative id space to avoid confusion
                 sg.virtualColumns[virtualColumnName] = {
                     color: vizObj._getNextColor(valueCol),
                     groupName: groupName,
                     column: {
-                        id: -100 - _.keys(sg.virtualColumns).length, // use negative id space to avoid confusion
+                        id: virtualId,
+                        lookup: virtualId,
                         name: virtualColumnName,
                         realValueColumn: valueCol,
                         dataType: valueCol.column.dataType
@@ -183,6 +185,7 @@ d3base.seriesGrouping = {
                 virtualRow = {
                     id: sg.categoryIndexLookup[category],
                     index: sg.categoryIndexLookup[category],
+                    invalid: {},
                     realRows: {}
                 };
                 virtualRow[vizObj._fixedColumns[0].id] = category;

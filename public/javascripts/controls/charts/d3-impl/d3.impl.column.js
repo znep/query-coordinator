@@ -572,7 +572,12 @@ $.Control.registerMixin('d3_impl_column', {
                 .attr('transform', vizObj._labelTransform());
         rowLabels
                 .attr('font-weight', function(d) { return (d.sessionMeta && d.sessionMeta.highlight) ? 'bold' : 'normal'; })
-                .text(function(d) { return d[vizObj._fixedColumns[0].id]; }); // WHY IS THIS AN ARRAY
+                .text(function(d)
+                {
+                    var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
+                    // render plaintext representation of the data
+                    return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true);
+                });
         rowLabels
             .exit()
             .transition()

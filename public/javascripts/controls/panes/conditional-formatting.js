@@ -158,11 +158,20 @@
        };
 
     $.Control.extend('pane_conditionalFormatting', {
-        _init: function()
+        setView: function(newView)
         {
             var cpObj = this;
-            cpObj._super.apply(cpObj, arguments);
-            cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+            var _super = cpObj._super;
+            var handler = function(ds)
+            {
+                _super.call(cpObj, ds);
+                cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+            };
+
+            if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
+            { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handler); }
+            else
+            { handler(ds); }
         },
 
         getTitle: function()

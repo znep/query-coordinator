@@ -35,6 +35,9 @@ var Dataset = ServerModel.extend({
 
         $.extend(this, v);
 
+        if (!(blist.viewCache[this.id] instanceof Dataset))
+        { blist.viewCache[this.id] = this; }
+
         // This ID really shouldn't be changing; if it does, this URL
         // will be out-of-date...
         var selfUrl = '/views/' + this.id;
@@ -2685,10 +2688,11 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch)
             url: '/api/views/' + id + '.json',
             success: function(view)
                 {
-                    var ds = new Dataset(view);
-                    blist.viewCache[id] = ds;
-                    if(_.isFunction(successCallback))
-                    { successCallback(ds); }
+                    if (_.isUndefined(blist.viewCache[id]))
+                    { blist.viewCache[id] = new Dataset(view); }
+
+                    if (_.isFunction(successCallback))
+                    { successCallback(clone ? new Dataset(view) : blist.viewCache[id]); }
                 },
             batch: isBatch,
             pageCache: !isBatch,

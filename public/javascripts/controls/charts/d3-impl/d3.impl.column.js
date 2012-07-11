@@ -283,6 +283,7 @@ $.Control.registerMixin('d3_impl_column', {
 
         // save off old row width for comparison later (see below)
         var oldRowWidth = cc.rowWidth;
+        var oldSidePadding = cc.sidePadding;
 
         var calculateRowWidth = function()
         {
@@ -389,7 +390,7 @@ $.Control.registerMixin('d3_impl_column', {
 
         // return whether our row width has changed, so we know
         // if we'll have to move some things around
-        return (oldRowWidth != cc.rowWidth)
+        return ((oldRowWidth != cc.rowWidth) || (oldSidePadding != cc.sidePadding));
     },
 
     // moves the svg/vml element around to account for it's not big enough

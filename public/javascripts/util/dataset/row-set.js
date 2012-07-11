@@ -552,6 +552,11 @@ var RowSet = ServerModel.extend({
         this._dataset.makeRequest(args);
     },
 
+    clone: function()
+    {
+        return new RowSet(this._dataset, this._query, this._parent);
+    },
+
 
     _loadRows: function(startOrIds, len, successCallback, errorCallback, includeMeta, fullLoad)
     {

@@ -10,6 +10,8 @@ var d3base = blist.namespace.fetch('blist.d3.base');
 // impl layers to account for series grouping. meant to be mixed in
 // *after* the impl itself, since we need to intercept stuff
 d3base.seriesGrouping = {
+    _seriesGroupingSentinel: true,
+
     initializeVisualization: function()
     {
         var vizObj = this;

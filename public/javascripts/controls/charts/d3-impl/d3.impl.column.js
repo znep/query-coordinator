@@ -21,7 +21,7 @@ $.Control.registerMixin('d3_impl_column', {
 
         // if we need to do series grouping stuff, mix that in before anything else
         if (_.isArray(vizObj._displayFormat.seriesColumns) &&
-            $.isBlank(vizObj._seriesGrouping)) // but don't do this if we're higher on the chain
+            $.isBlank(vizObj._seriesGroupingSentinel)) // but don't do this if it's already been done
         {
             vizObj.Class.addProperties(vizObj, d3ns.base.seriesGrouping, $.extend({}, vizObj));
             return vizObj.initializeVisualization(); // reset call chain

@@ -148,7 +148,8 @@ $.Control.registerMixin('d3_impl_column', {
         {
             return values.concat(_.map(relevantColumns, function(col)
             {
-                return col.dataType.matchValue ? col.dataType.matchValue(row[col.id]) : row[col.id];
+                if (row.invalid[col.lookup]) { return null; }
+                return col.dataType.matchValue ? col.dataType.matchValue(row[col.lookup]) : row[col.lookup];
             }));
         }, []);
         vizObj._columnChart.maxValue = d3.max(allValues); // cache off maxValue for other renders
@@ -465,12 +466,20 @@ $.Control.registerMixin('d3_impl_column', {
             // figure out what data we can actually render
             var splitData = _.groupBy(data, function(row)
             {
-                return $.isBlank(row[col.id]) ? 'null' : 'present';
+                if ($.isBlank(row[col.lookup]) ||
+                    row.invalid[col.lookup])
+                {
+                    return 'null';
+                }
+                else
+                {
+                    return 'present';
+                }
             });
             var presentData = splitData['present'] || [], nullData = splitData['null'] || [];
 
             // render our actual bars
-            var seriesClass = 'dataBar_series' + col.id;
+            var seriesClass = 'dataBar_series' + col.lookup;
             var bars = cc.chartD3.selectAll('.' + seriesClass)
                 .data(presentData, function(row) { return row.id; });
             bars
@@ -483,8 +492,8 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('fill', function(d) { return d.color || colDef.color; })
 
                     .attr('x', vizObj._xBarPosition(seriesIndex))
-                    .attr('y', vizObj._yBarPosition(col.id, oldYScale))
-                    .attr('height', vizObj._yBarHeight(col.id, oldYScale))
+                    .attr('y', vizObj._yBarPosition(col.lookup, oldYScale))
+                    .attr('height', vizObj._yBarHeight(col.lookup, oldYScale))
 
                     .each(function() { this.__dataColumn = col; })
 
@@ -519,8 +528,8 @@ $.Control.registerMixin('d3_impl_column', {
                     })
                 .transition()
                     .duration(1000)
-                    .attr('y', vizObj._yBarPosition(col.id, newYScale))
-                    .attr('height', vizObj._yBarHeight(col.id, newYScale));
+                    .attr('y', vizObj._yBarPosition(col.lookup, newYScale))
+                    .attr('height', vizObj._yBarHeight(col.lookup, newYScale));
             bars
                 .exit()
                 // need to call transition() here as it accounts for the animation ticks;
@@ -529,7 +538,7 @@ $.Control.registerMixin('d3_impl_column', {
                     .remove();
 
             // render null bars
-            var nullSeriesClass = 'nullDataBar_series' + col.id;
+            var nullSeriesClass = 'nullDataBar_series' + col.lookup;
             var nullBars = cc.chartHtmlD3.selectAll('.' + nullSeriesClass)
                 .data(nullData, function(row) { return row.id; });
             nullBars
@@ -610,8 +619,8 @@ $.Control.registerMixin('d3_impl_column', {
         cc.chartD3.selectAll('.dataBar')
             .transition()
                 .duration(1000)
-                .attr('y', vizObj._yBarPosition(function() { return this.__dataColumn.id; }, yScale))
-                .attr('height', vizObj._yBarHeight(function() { return this.__dataColumn.id; }, yScale));
+                .attr('y', vizObj._yBarPosition(function() { return this.__dataColumn.lookup; }, yScale))
+                .attr('height', vizObj._yBarHeight(function() { return this.__dataColumn.lookup; }, yScale));
 
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -631,11 +640,11 @@ $.Control.registerMixin('d3_impl_column', {
         // render our bars per series
         _.each(valueColumns, function(colDef, seriesIndex)
         {
-            var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.id)
+            var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
                     .attr('width', cc.barWidth)
                     .attr('x', vizObj._xBarPosition(seriesIndex));
 
-            cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.id)
+            cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
                     .style('width', vizObj._d3_px(cc.barWidth))
                     .style('left', vizObj._d3_px(vizObj._xBarPosition(seriesIndex)));
         });
@@ -823,8 +832,8 @@ $.Control.registerMixin('d3_impl_column', {
         return function(d)
         {
             var x = Math.floor(xPositionStaticParts + (d.index * cc.rowWidth)) + 0.5;
-            var y = yAxisPos - yScale(Math.max(0, d[highCol.id]));
-            var height = Math.abs(yScale(d[lowCol.id]) - yScale(d[highCol.id]));
+            var y = yAxisPos - yScale(Math.max(0, d[highCol.lookup]));
+            var height = Math.abs(yScale(d[lowCol.lookup]) - yScale(d[highCol.lookup]));
 
             // TODO: uuurrrreeeeghhhhhhh
             return 'M' + (x - capWidth) + ',' + y + 'H' + (x + capWidth) +
@@ -842,11 +851,11 @@ $.Control.registerMixin('d3_impl_column', {
 
         rObj.tip = $(rObj.node).socrataTip({
             content: vizObj.renderFlyout(row, col.tableColumnId, view),
-            positions: (row[col.id] > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
+            positions: (row[col.lookup] > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
             trigger: 'now'
         });
         rObj.tip.adjustPosition({
-            top: (row[col.id] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.id])),
+            top: (row[col.lookup] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.lookup])),
             left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
         });
         view.highlightRows(row, null, col);

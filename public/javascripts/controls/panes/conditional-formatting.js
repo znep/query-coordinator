@@ -171,7 +171,7 @@
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
             { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handler); }
             else
-            { handler(ds); }
+            { handler(newView); }
         },
 
         getTitle: function()

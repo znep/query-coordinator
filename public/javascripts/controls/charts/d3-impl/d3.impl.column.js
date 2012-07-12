@@ -34,7 +34,10 @@ $.Control.registerMixin('d3_impl_column', {
         var $dom = vizObj.$dom();
         $dom.empty().append($.tag(
             { tagName: 'div', 'class': 'chartArea columnChart', contents: [
-                { tagName: 'div', 'class': 'chartContainer' },
+                { tagName: 'div', 'class': 'chartContainer', contents: [
+                    { tagName: 'div', 'class': 'chartRenderArea',
+                      contents: '&nbsp;' } // if no contents, browser doesn't bother to scroll
+                ] },
                 { tagName: 'div', 'class': 'baselineContainer', contents: [
                     { tagName: 'div', 'class': 'baselineBg' },
                     { tagName: 'div', 'class': 'baselineLine' }
@@ -43,25 +46,30 @@ $.Control.registerMixin('d3_impl_column', {
         , true));
         cc.$chartArea = $dom.find('.chartArea');
         cc.$chartContainer = $dom.find('.chartContainer');
+        cc.$chartRenderArea = $dom.find('.chartRenderArea');
         cc.$baselineContainer = $dom.find('.baselineContainer');
 
         // for positioning
         $dom.css('position', 'relative');
 
-        // default draw element position is 0
+        // default draw element position and left offset are 0
         cc.drawElementPosition = 0;
+        cc.leftOffset = 0;
 
         // init our renderers
         cc.chartRaphael = new Raphael(cc.$chartContainer.get(0), 10, 10);
         cc.chartD3 = d3.raphael(cc.chartRaphael);
-        cc.chartHtmlD3 = d3.select(cc.$chartContainer.get(0));
+        cc.chartHtmlD3 = d3.select(cc.$chartRenderArea.get(0));
         cc.chromeD3 = d3.select(cc.$chartArea.get(0));
 
-        cc.$drawElement = cc.$chartContainer.children('svg, vml');
+        // find and set up the draw elem
+        cc.$drawElement = cc.$chartContainer.children(':not(.chartRenderArea)');
+        cc.$drawElement.css({ 'position': 'absolute', 'top': '0' });
 
         // maybe move things around and maybe grab rows every half second when they're scrolling
         var throttledScrollHandler = _.throttle(function()
         {
+            vizObj._recalculateLeftOffset();
             if (vizObj._repositionDrawElement())
             {
                 vizObj._rerenderPositions();
@@ -78,6 +86,8 @@ $.Control.registerMixin('d3_impl_column', {
             var needsReposition = vizObj._resizeEverything();
             // maybe reposition the svg/vml elem
             needsReposition = vizObj._repositionDrawElement() || needsReposition;
+            // calculate our left offset to account for screen scaling
+            vizObj._recalculateLeftOffset();
             // reposition the elems vertically
             vizObj._rerenderAxis();
             // reposition the elmes horizonally if necessary
@@ -169,17 +179,11 @@ $.Control.registerMixin('d3_impl_column', {
     getRenderRange: function(view, callback)
     {
         var vizObj = this,
-            cc = vizObj._columnChart;
+            cc = vizObj._columnChart,
+            xScale = vizObj._currentXScale(),
+            rowsPerScreen = Math.ceil(cc.$chartArea.width() / cc.rowWidth);
 
-        // TODO: need to handle too-large render elems
-        var chartAreaWidth = cc.$chartArea.width(),
-            rowsPerScreen = Math.ceil(chartAreaWidth / cc.rowWidth);
-
-        var screenScaling = d3.scale.linear()
-              .domain([ cc.sidePadding, cc.chartWidth - chartAreaWidth ])
-              .range([ 0, vizObj.getTotalRows() - rowsPerScreen ]);
-
-        var start = Math.max(Math.floor(screenScaling(cc.$chartContainer.scrollLeft())) - vizObj.defaults.rowBuffer, 0);
+        var start = Math.max(Math.floor(xScale(cc.$chartContainer.scrollLeft())) - vizObj.defaults.rowBuffer, 0);
         var length = rowsPerScreen + (vizObj.defaults.rowBuffer * 2);
 
         return { start: start, length: length };
@@ -315,6 +319,7 @@ $.Control.registerMixin('d3_impl_column', {
             // we're bigger than we need to be. set the render area size
             // to be what we calculated.
             cc.chartRaphael.setSize(Math.min(minTotalWidth, maxRenderWidth), domHeight);
+            cc.$chartRenderArea.width(minTotalWidth);
             cc.chartWidth = minTotalWidth;
 
             // scrollbar should have appeared. reresize.
@@ -326,6 +331,7 @@ $.Control.registerMixin('d3_impl_column', {
         {
             // set our sizing to equal vis area
             cc.chartRaphael.setSize(Math.min(chartAreaWidth, maxRenderWidth), domHeight);
+            cc.$chartRenderArea.width(chartAreaWidth);
             cc.chartWidth = chartAreaWidth;
             cc.chartHeight = domHeight;
 
@@ -393,6 +399,20 @@ $.Control.registerMixin('d3_impl_column', {
         return ((oldRowWidth != cc.rowWidth) || (oldSidePadding != cc.sidePadding));
     },
 
+    // accounts for screen scaling
+    _recalculateLeftOffset: function()
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            xScale = vizObj._currentXScale(),
+            scrollLeft = cc.$chartContainer.scrollLeft();
+
+        cc.leftOffset = 0; // need to first set to zero to remove influence.
+        cc.leftOffset = vizObj._xBarPosition(0)({ index: xScale(scrollLeft) }) -
+                        (scrollLeft - cc.drawElementPosition) +
+                        (cc.sidePadding * scrollLeft / d3.max(xScale.domain()));
+    },
+
     // moves the svg/vml element around to account for it's not big enough
     _repositionDrawElement: function()
     {
@@ -439,6 +459,21 @@ $.Control.registerMixin('d3_impl_column', {
                       !_.isNaN(explicitMax) ? explicitMax : cc.maxValue ])
             .range([ 0, vizObj._yAxisPos() - vizObj.defaults.dataMaxBuffer ])
             .clamp(true);
+    },
+
+    // should be a 1:1 mapping unless the browser's render container has truncated
+    _currentXScale: function()
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart;
+
+        var chartAreaWidth = cc.$chartArea.width(),
+            rowsPerScreen = Math.ceil(chartAreaWidth / cc.rowWidth);
+
+        return d3.scale.linear()
+              .domain([ cc.sidePadding, cc.$chartRenderArea.width() - chartAreaWidth ])
+              .range([ 0, vizObj.getTotalRows() - rowsPerScreen ])
+              .clamp(true)
     },
 
     // call this if the active set of data has changed
@@ -585,7 +620,6 @@ $.Control.registerMixin('d3_impl_column', {
                 .remove();
 
         // render error markers if applicable
-        // sadly they can't animate unless i write transition support for transforms in d34r
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
         {
             var errorMarkers = cc.chartD3.selectAll('.errorMarker')
@@ -785,7 +819,7 @@ $.Control.registerMixin('d3_impl_column', {
         var vizObj = this,
             cc = vizObj._columnChart;
 
-        var staticParts = cc.sidePadding - 0.5 - cc.drawElementPosition +
+        var staticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.leftOffset +
                           (seriesIndex * (cc.barWidth + cc.barSpacing));
 
         return function(d)
@@ -814,7 +848,7 @@ $.Control.registerMixin('d3_impl_column', {
             cc = vizObj._columnChart;
 
         var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2) -
-                                   3.5 - cc.drawElementPosition;
+                                   3.5 - cc.drawElementPosition - cc.leftOffset;
         var yPositionStaticParts = ',' + (vizObj._yAxisPos() + 10);
 
         return function(d)

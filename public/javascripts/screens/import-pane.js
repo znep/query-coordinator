@@ -49,7 +49,7 @@ var importTypes = {
     number: 'number',
     money: 'money',
     percent: 'percent',
-    calendar_date: 'date',
+    calendar_date: 'calendar_date',
     date: 'date',
     checkbox: 'text',
     location: 'text',

@@ -1301,7 +1301,7 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
     $warningsSection = $pane.find('.warningsSection');
     $headersTable = $pane.find('.headersTable tbody');
     $headersCount = $pane.find('.headersCount');
-    headersCount = scan.summary.headers;
+    headersCount = scan.summary.headers + 1;
 
     // populate the dataset name field
     $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
@@ -1372,8 +1372,10 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
         }));
     });
 
-    // populate the number
+    // populate the header rows number
     setHeadersCountText();
+    // and set the header rows ui
+    $headersTable.children(':lt(' + headersCount + ')').addClass('header');
 
     // we are now past the first init, so start animating things
     isShown = true;

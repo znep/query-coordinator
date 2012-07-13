@@ -151,7 +151,8 @@
         var makeInput = function(initValue)
         {
             $field.empty();
-            $field.append($.tag({tagName: 'input', type: 'text', value: $.htmlEscape(initValue) }));
+            $field.append($.tag({tagName: 'input', type: 'text', name: 'dataset_name',
+                                 value: $.htmlEscape(initValue) }));
             _.defer(function() // Need to wait for the input to have innerWidth.
             { $field.find('input').awesomecomplete(params).example('Select a dataset'); });
             $field.find('input').blur(function()

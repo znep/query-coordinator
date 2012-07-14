@@ -14,7 +14,7 @@
         'treemap': 'jit'
     };
 
-    if ($.urlParam(window.location.href, 'nextgen') == 'true')
+    if ($.urlParam(window.location.href, 'charts') == 'nextgen')
     {
         $.extend(chartMapping, {
             'column': 'd3_impl_column'

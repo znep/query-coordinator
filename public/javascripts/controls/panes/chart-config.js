@@ -27,7 +27,7 @@
             name: 'displayFormat.renderOther'};
 
     // this should really be a SODA feature anyway, not a display feature
-    if ($.urlParam(window.location.href, 'nextgen') == 'true')
+    if ($.urlParam(window.location.href, 'charts') == 'nextgen')
     {
         renderOther = { onlyIf: false };
     }
@@ -99,7 +99,7 @@
                     options: [ { type: 'static', name: 'yAxisMaxAuto', value: 'Auto' },
                                { type: 'text', name: 'displayFormat.yAxis.max', prompt: 'Enter a number',
                                     extraClass: 'number' }] },
-                $.urlParam(window.location.href, 'nextgen') == 'true' ?
+                $.urlParam(window.location.href, 'charts') == 'nextgen' ?
                     { text: 'Precision', type: 'radioGroup', name: 'yAxisDecimalPlaces',
                         defaultValue: 'yAxisDecimalPlacesAuto',
                         options: [ { type: 'static', value: 'Auto', name: 'yAxisDecimalPlacesAuto' },

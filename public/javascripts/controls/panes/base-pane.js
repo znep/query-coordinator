@@ -1499,7 +1499,7 @@
 
         var numItems = curValue.length || populatedLength;
         if (!isRO && numItems < 1)
-        { numItems = args.item.minimum || 1; }
+        { numItems = _.isNumber(args.item.minimum) ? args.item.minimum : 1; }
         for (var i = 0; i < numItems; i++)
         {
             var contextData = curValue[i] || args.context.data;
@@ -1543,7 +1543,7 @@
             contents.push($.button({text: args.item.addText || 'Add Value',
                 customAttrs: $.extend(commonAttrs(cpObj, args.item, args.context),
                     {'data-template': templateLine, 'data-count': i, 'data-dataValue': null,
-                        'data-maximum': args.item.maximum}),
+                        'data-minimum': args.item.minimum, 'data-maximum': args.item.maximum}),
                 className: 'addValue', iconClass: 'add'}, true));
         }
     };
@@ -2255,7 +2255,9 @@
     {
         var numLines = $repeater.children('.line:not(.hide)').length;
         var $button = $repeater.children('.button.addValue');
-        if (numLines < 1) { _.defer(function() { addRepeaterLine(cpObj, $button); }); }
+
+        var min = parseInt($button.attr('data-minimum'));
+        if (numLines < (_.isNumber(min) ? min : 1)) { _.defer(function() { addRepeaterLine(cpObj, $button); }); }
 
         var max = $button.attr('data-maximum');
         if ($.isBlank(max)) { return; }

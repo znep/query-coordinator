@@ -3,6 +3,8 @@
 
     /*** Common configuration options ***/
 
+    var isNextGen = $.urlParam(window.location.href, 'charts') == 'nextgen';
+
     var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
 
     var axisTitles = [
@@ -23,11 +25,17 @@
         ]
     };
 
+    if (isNextGen)
+    {
+        var origLegendPos = legendPos;
+        legendPos = { onlyIf: false };
+    }
+
     var renderOther = {text: 'Group Extra Values', type: 'checkbox', defaultValue: false,
             name: 'displayFormat.renderOther'};
 
     // this should really be a SODA feature anyway, not a display feature
-    if ($.urlParam(window.location.href, 'charts') == 'nextgen')
+    if (isNextGen)
     {
         renderOther = { onlyIf: false };
     }
@@ -43,6 +51,47 @@
 
     var pieJoinAngle = {text: 'Min. Angle', name: 'displayFormat.pieJoinAngle',
         type: 'slider', minimum: 0, maximum: 10, defaultValue: 1};
+
+
+    var advLegend = function() { return { onlyIf: false } };
+
+    if (isNextGen)
+    {
+        advLegend = function(chart, options)
+        {
+            return  {
+                title: 'Legend Configuration',
+                type: 'selectable',
+                name: 'advLegend',
+                onlyIf: onlyIfForChart(chart, options, false),
+                fields: [
+                    $.extend({}, origLegendPos, { text: 'Display' }),
+                    { text: 'Describe Series', type: 'checkbox', inputFirst: true,
+                      name: 'displayFormat.legendDetails.showSeries', defaultValue: true,
+                      lineClass: 'advLegendCheck' },
+                    { text: 'Describe Conditional Formats', type: 'checkbox', inputFirst: true,
+                      name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
+                      lineClass: 'advLegendCheck' },
+                    { text: 'Describe Value Markers', type: 'checkbox', inputFirst: true,
+                      name: 'displayFormat.legendDetails.showValueMarkers', defaultValue: false,
+                      lineClass: 'advLegendCheck' },
+                    /*{ text: 'Custom Entries', type: 'selectable',
+                      name: 'customLegendEntries', defaultValue: false, fields: [*/
+                        { type: 'repeater', minimum: 0, addText: 'Add Custom Legend Entry',
+                          name: 'displayFormat.legendDetails.customEntries',
+                          field: {
+                              type: 'group', options: [
+                                  colorOption,
+                                  { text: 'Custom Label', type: 'text',
+                                    name: 'label', required: true }
+                              ]
+                        } }
+                    //] }
+                ]
+            };
+        };
+    }
+
 
     var pointSize = function(options)
     {
@@ -99,7 +148,7 @@
                     options: [ { type: 'static', name: 'yAxisMaxAuto', value: 'Auto' },
                                { type: 'text', name: 'displayFormat.yAxis.max', prompt: 'Enter a number',
                                     extraClass: 'number' }] },
-                $.urlParam(window.location.href, 'charts') == 'nextgen' ?
+                isNextGen ?
                     { text: 'Precision', type: 'radioGroup', name: 'yAxisDecimalPlaces',
                         defaultValue: 'yAxisDecimalPlacesAuto',
                         options: [ { type: 'static', value: 'Auto', name: 'yAxisDecimalPlacesAuto' },
@@ -440,12 +489,13 @@
                     basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
                     seriesData(chart, options, Dataset.chart.textualTypes),
-                    basicAdv(chart, options,
-                        [legendPos, renderOther, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
                     errorBars(chart, options),
-                    domainMarker(chart, options));
+                    domainMarker(chart, options),
+                    advLegend(chart, options),
+                    basicAdv(chart, options,
+                        [legendPos, renderOther, flyoutControls(options)]));
                 break;
 
 

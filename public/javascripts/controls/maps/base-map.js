@@ -252,7 +252,7 @@
 
                 $layers.find('a.button').click(function() {
                     var $this = $(this);
-                    var $input = $('<input type="text">').wrap('<div>');
+                    var $input = $('<input type="text" name="dataset_name">').wrap('<div>');
                     $this.before($input.parent());
                     $input.awesomecomplete({
                         typingDelay: 500,

@@ -502,12 +502,25 @@ var validateAll = function()
                 // warn about type mismatch, but only about upconvert, not downconvert
                 var invalidPercentage = Math.round(1000 *
                     (1 - (column.types[dsImportType] / column.processed))) / 10.0;
-                addValidationError(importColumn, 'warning',
-                    'a <strong>' + $.capitalize(dsColumn.dataTypeName) + '</strong>, but our ' +
-                    'analysis indicates that the source column you are trying to import into it is ' +
-                    'of type <strong>' + $.capitalize(column.suggestion) + '</strong>. Should you ' +
-                    'choose to import that column, roughly <strong>' + invalidPercentage + '%</strong> ' +
-                    'of your data will likely import incorrectly.');
+
+                if (_.isNaN(invalidPercentage))
+                {
+                    addValidationError(importColumn, 'warning',
+                        'a <strong>' + $.capitalize(typesToText(dsColumn.dataTypeName)) + '</strong>, but our ' +
+                        'analysis indicates that the source column you are trying to import into it is ' +
+                        'of type <strong>' + $.capitalize(column.suggestion) + '</strong>. If you run into ' +
+                        'problems with the import, please ensure that the source data is formatted correctly as ' +
+                        '<strong>' + $.capitalize(dsColumn.dataTypeName) + '</strong>.');
+                }
+                else
+                {
+                    addValidationError(importColumn, 'warning',
+                        'a <strong>' + $.capitalize(typesToText(dsColumn.dataTypeName)) + '</strong>, but our ' +
+                        'analysis indicates that the source column you are trying to import into it is ' +
+                        'of type <strong>' + $.capitalize(column.suggestion) + '</strong>. Should you ' +
+                        'choose to import that column, roughly <strong>' + invalidPercentage + '%</strong> ' +
+                        'of your data will likely import incorrectly.');
+                }
             }
         }
         else if (column.suggestion != importType)

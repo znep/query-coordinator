@@ -1,10 +1,10 @@
 <div class="line clearfix">
   <%= f.label :login, 'Email' %>
   <%= f.email_field :login %>
-  <% if !CurrentDomain.strings.login_disclaimer.nil? %>
+  <%- if !CurrentDomain.strings.login_disclaimer.nil? -%>
     <span class="helpie"
       title="<%= CurrentDomain.strings.login_disclaimer %>">?</span>
-  <% end %>
+  <%- end -%>
 </div>
 
 <div class="line clearfix">

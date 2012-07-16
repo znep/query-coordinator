@@ -31,7 +31,8 @@ var Dataset = ServerModel.extend({
         this.registerEvent(['columns_changed', 'valid', 'query_change',
             'set_temporary', 'clear_temporary', 'row_change', 'blob_change',
             'row_count_change', 'column_resized', 'displayformat_change',
-            'displaytype_change', 'column_totals_changed', 'removed', 'permissions_changed']);
+            'displaytype_change', 'column_totals_changed', 'removed',
+            'permissions_changed', 'new_comment']);
 
         $.extend(this, v);
 
@@ -1035,6 +1036,7 @@ var Dataset = ServerModel.extend({
                 }
             }
 
+            ds.trigger('new_comment', [newCom, comment.parent]);
             if (_.isFunction(successCallback)) { successCallback(newCom); }
         };
 

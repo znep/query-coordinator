@@ -33,6 +33,6 @@
 
 <%- allow_once do -%>
   <%- content_for :templates do -%>
-    <%= render :partial => 'datasets/feed_template', :locals => { :allow_comments => widget.properties.allowComments } %>
+    <%= render :partial => 'templates/feed', :locals => { :allow_comments => widget.properties.allowComments } %>
   <%- end -%>
 <%- end -%>

@@ -2,9 +2,9 @@
 var assetNS = blist.namespace.fetch('blist.util.assetLoading');
 
 // Keep a hash of which files are in the middle of processing
-var lazyLoadingAssets = {libraries: {}, stylesheets: {}, templates: {}, translations: {}};
+var lazyLoadingAssets = {libraries: {}, translations: {}};
 // Keep a hash of which files have finished processing
-var lazyLoadedAssets = {libraries: {}, stylesheets: {}, templates: {}};
+var lazyLoadedAssets = {libraries: {}, stylesheets: {}};
 // Keep track of when a callback is allowed to finish
 var lazyLoadingAssetJobs = [];
 var lazyLoadingTranslationJobs = [];
@@ -14,7 +14,8 @@ var $lazyLoadLab;
 assetNS.loadAssets = function(assets, mainCallback, cssCallback)
 {
     if (!$.subKeyDefined(assets, 'stylesheets') && !$.subKeyDefined(assets, 'javascripts') &&
-        !$.subKeyDefined(assets, 'templates') && !$.subKeyDefined(assets, 'templates'))
+        !$.subKeyDefined(assets, 'templates') && !$.subKeyDefined(assets, 'translations') &&
+        !$.subKeyDefined(assets, 'modals'))
     {
         if (_.isFunction(mainCallback)) { mainCallback(); }
         return;
@@ -34,12 +35,15 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
 
     var loadJS = _.isArray(assets.javascripts) && assets.javascripts.length > 0;
     var loadTemplates = _.isArray(assets.templates) && assets.templates.length > 0;
+    var loadModals = _.isArray(assets.modals) && assets.modals.length > 0;
     var loadTranslations = _.isArray(assets.translations) && assets.translations.length > 0;
-    var finished = _.after(_.compact([loadJS, loadTemplates, loadTranslations]).length, function()
-        { if (_.isFunction(mainCallback)) { mainCallback(); } });
+    var finished = _.after(_.compact([loadJS, loadTemplates, loadTranslations, loadModals]).length,
+            function() { if (_.isFunction(mainCallback)) { mainCallback(); } });
 
     if (loadTemplates)
-    { assetNS.loadTemplates(translateUrls('/templates/', assets.templates, 'templates'), finished); }
+    { assetNS.loadPartials(translateUrls('/templates/', assets.templates, 'templates'), 'templates', finished); }
+    if (loadModals)
+    { assetNS.loadPartials(translateUrls('/modals/', assets.modals, 'modals'), 'modals', finished); }
     if (loadJS)
     { assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished); }
     if (loadTranslations)
@@ -204,33 +208,36 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
     });
 };
 
-assetNS.loadTemplates = function(templateQueue, callback)
+assetNS.loadPartials = function(partialQueue, type, callback)
 {
-    var templates = _.reject($.arrayify(templateQueue), function(item)
-        { return lazyLoadedAssets.templates[item]; });
+    if ($.isBlank(lazyLoadedAssets[type]))
+    { lazyLoadedAssets[type] = {}; }
 
-    if (templates.length < 1)
+    var partials = _.reject($.arrayify(partialQueue), function(item)
+        { return lazyLoadedAssets[type][item]; });
+
+    if (partials.length < 1)
     {
         if (_.isFunction(callback)) { callback(); }
         return;
     }
 
-    var templPieces = '';
-    var insertTemplates = _.after(templates.length, function()
+    var partialPieces = '';
+    var insertPartials = _.after(partials.length, function()
     {
-        var $templates = $('#templates');
-        if ($templates.length < 1)
+        var $partials = $('#' + type);
+        if ($partials.length < 1)
         {
-            $('body').append($.tag({tagName: 'div', id: 'templates'}));
-            $templates = $('#templates');
+            $('body').append($.tag({tagName: 'div', id: type}));
+            $partials = $('#' + type);
         }
-        $templates.append(templPieces);
+        $partials.append(partialPieces);
         if (_.isFunction(callback)) { callback(); }
     });
 
-    _.each(templates, function(template)
+    _.each(partials, function(partial)
     {
-        var url = template;
+        var url = partial;
         // In dev, make the URL unique so we always reload to pick up changes
         if (blist.configuration.development)
         {
@@ -242,10 +249,10 @@ assetNS.loadTemplates = function(templateQueue, callback)
         $.socrataServer.makeRequest({url: url, pageCache: true, dataType: 'text', contentType: 'text/html',
             success: function(resp)
             {
-                if (!lazyLoadedAssets.templates[template])
-                { templPieces += resp; }
-                insertTemplates();
-                lazyLoadedAssets.templates[template] = true;
+                if (!lazyLoadedAssets[type][partial])
+                { partialPieces += resp; }
+                insertPartials();
+                lazyLoadedAssets[type][partial] = true;
             }});
 
     });

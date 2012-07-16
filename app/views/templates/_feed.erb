@@ -8,7 +8,7 @@
       <span class="text"><%= t 'controls.feed.header.feed_filter_label' %></span>
       <select class="feedFilter"></select>
     </div>
-    <%- if allow_comments -%>
+    <%- if local_assigns[:allow_comments] -%>
       <a href="#post" class="button feedNewCommentButton"><%= t 'controls.feed.header.add_comment' %></a>
     <%- end -%>
     <div class="moderationNotice"><%= t 'controls.feed.header.pending_moderation' %></div>
@@ -32,7 +32,7 @@
 </ul>
 <div class="feedItem_comment">
   <ul class="commentActions clearfix">
-    <%- if allow_comments -%>
+    <%- if local_assigns[:allow_comments] -%>
     <li class="actionReply"><a class="commentReplyLink" href="#reply"><%= t 'controls.feed.comment_actions.reply' %></a></li>
     <%- end -%>
     <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate"><%= t 'controls.feed.comment_actions.inappropriate' %></a></li>

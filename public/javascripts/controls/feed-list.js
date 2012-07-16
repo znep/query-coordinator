@@ -155,9 +155,10 @@
         };
         allFeedData = _.map(allFeedData, feedDataMap) || [];
 
-        this.each(function()
+        return this.each(function()
         {
             var $this = $(this);
+            var $feed = $this;
             var $scrollContainer = opts.$scrollContainer || $this.closest(opts.scrollContainerSelector);
             var $feedFilter = $this.find('.feedFilter');
             var $feedList = $this.find('.feedList');
@@ -183,7 +184,8 @@
                         }), true))
                     .val(opts.defaultFilter || _.first(opts.filterCategories));
 
-                $.uniform.update($feedFilter);
+                if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
+                { $.uniform.update($feedFilter); }
             }
 
             var filterItems = function(allow)
@@ -246,6 +248,45 @@
                 }
             };
 
+            var newCommentAdded = function(comment, parComment)
+            {
+                var data = getData($feed);
+
+                if ($.isBlank(data)) { return; }
+
+                var newCommentData = feedDataMap(commentMap(comment));
+
+                if (!$.subKeyDefined(parComment, 'id'))
+                {
+                    // root comment; add the new comment to the front
+
+                    data.feedData.unshift(newCommentData);
+
+                    $feed.children('.feedList').prepend(
+                        $.renderTemplate('feedItem', [newCommentData], feedDirective));
+                }
+                else
+                {
+                    var $parentComment = $feed.find('.feedItem[data-itemid="' + parComment.id + '"]');
+                    if ($parentComment.length < 1) // this is a reply, but we don't have the parent, so bail
+                    { return; }
+
+                    // reply; add the new comment to the reply
+                    newCommentData.itemType = 'reply';
+
+                    var parentCommentData = data.feedMap[getSerialId($parentComment)];
+                    parentCommentData.allChildren.unshift(newCommentData);
+                    parentCommentData.children.unshift(newCommentData);
+                    parentCommentData.children.splice(opts.replyPageLimit, 1);
+
+                    $parentComment.find('.feedChildren')
+                        .removeClass('hide')
+                        .prepend(compiledFeedDirectiveNest([newCommentData]));
+                }
+
+                $feed.find('.noResults').addClass('hide');
+            };
+
             // local events
             $moreItemsButton.click(function(event)
             {
@@ -263,9 +304,12 @@
                 showMoreItems(true);
             });
 
-            // kick things off
-            feedData = filterItems(opts.defaultFilter);
-            showMoreItems(true);
+            if (!opts.hideFeed)
+            {
+                // kick things off
+                feedData = filterItems(opts.defaultFilter);
+                showMoreItems(true);
+            }
 
 
             // Store off what we need to hook up events later.
@@ -289,6 +333,16 @@
 
                 $this.remove();
             });
+
+            if (!opts.hideFeed)
+            {
+                _.each(opts.views, function(ds)
+                { ds.bind('new_comment', newCommentAdded); }, this);
+            }
+            else
+            {
+                $feed.find('.feedList, .feedMoreItemsLink, .noResults').addClass('hide');
+            }
 
             if (opts.bindCommentEvents === true)
             {
@@ -449,43 +503,13 @@
                                         });
                                         return;
                                     }
-                                    var data = getData($this);
 
                                     var newCommentData = feedDataMap(commentMap(response));
 
-                                    var $parentComment = $this.closest('.feedItem');
-                                    if ($parentComment.length === 0)
-                                    {
-                                        // root comment; add the new comment to the front
-
-                                        data.feedData.unshift(newCommentData);
-
-                                        $this.closest('.feed').children('.feedList').prepend(
-                                            $.renderTemplate('feedItem', [newCommentData], feedDirective));
-                                    }
-                                    else
-                                    {
-                                        // reply; add the new comment to the reply
-                                        newCommentData.itemType = 'reply';
-
-                                        var parentCommentData = data.feedMap[getSerialId($parentComment)];
-                                        parentCommentData.allChildren.unshift(newCommentData);
-                                        parentCommentData.children.unshift(newCommentData);
-                                        parentCommentData.children.splice(opts.replyPageLimit, 1);
-
-                                        $this.closest('.newCommentForm')
-                                            .siblings('.feedChildren')
-                                                .removeClass('hide')
-                                                .prepend(compiledFeedDirectiveNest([newCommentData]));
-                                    }
-
-                                    var $feed = $this.closest('.feed');
-
-                                    $feed.find('.noResults').addClass('hide');
-                                    $this.closest('.newCommentForm').remove();
                                     if (_.isFunction(opts.addCommentCallback))
                                     { opts.addCommentCallback(view, newCommentData); }
 
+                                    $this.closest('.newCommentForm').remove();
                                     if ((opts.alwaysShowNewCommentForm === true) &&
                                         ($feed.find('.newCommentForm').length === 0))
                                     {
@@ -557,6 +581,7 @@
         comments: [],
         defaultFilter: 'comments',
         filterCategories: ['all items', 'comments', 'views'],
+        hideFeed: false,
         highlightCallback: function(feedItem) {
             // by default highlight items that have to do with the blist owner
             return blist.dataset && (feedItem.user.id == blist.dataset.tableAuthor.id);

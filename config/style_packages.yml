@@ -31,6 +31,8 @@ colorpicker:
 - colorpicker
 print:
 - print
+feed:
+- control-feed
 analytics-shared:
 - jquery-ui-1.8.4.custom
 - ui.daterangepicker

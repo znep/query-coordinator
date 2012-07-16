@@ -18,7 +18,7 @@
 <% end %>
 <%- unless current_user -%>
   <% content_for :modals do %>
-    <%= render :partial => 'inline_login' %>
+    <%= render :partial => 'modals/inline_login' %>
   <% end %>
 <%- end -%>
 <% content_for :js_footer do %>

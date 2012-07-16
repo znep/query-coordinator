@@ -103,7 +103,9 @@ Frontend::Application.routes do
     post '/routing_approval/manage', :action => 'routing_approval_manage_save'
   end
 
-  resources :templates, :only => [ :show ]
+  get '/templates/:id', :controller => 'remote_partials', :action => :templates
+  get '/modals/:id', :controller => 'remote_partials', :action => :modals
+
   get '/translations/*locale_parts' => 'translations#get'
 
   resource :browse, :controller => 'browse' do

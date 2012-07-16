@@ -307,7 +307,7 @@
   <%= render :partial => 'print_form', :locals => { :view => @view } %>
 </div>
 <%= render :partial => 'downloads_table_template' %>
-<%= render :partial => 'feed_template', :locals => { :allow_comments => @view.module_enabled?(:allow_comments) } %>
+<%= render :partial => 'templates/feed', :locals => { :allow_comments => @view.module_enabled?(:allow_comments) } %>
 <%= render :partial => 'flag_message' %>
 <%= render :partial => 'sharing' %>
 <%= render :partial => 'permissions' %>
@@ -430,7 +430,7 @@
   <%= render :partial => 'save_view_dialog' %>
 
   <%- unless current_user -%>
-    <%= render :partial => 'inline_login' %>
+    <%= render :partial => 'modals/inline_login' %>
   <%- end -%>
 <%- end -%>
 

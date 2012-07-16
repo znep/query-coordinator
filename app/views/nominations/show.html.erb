@@ -89,13 +89,13 @@
   <%- end -%>
 
   <%- if !current_user -%>
-    <%= render :partial => 'datasets/inline_login' %>
+    <%= render :partial => 'modals/inline_login' %>
   <%- end -%>
 <%- end -%>
 
 
 <%- content_for :templates do -%>
-  <%= render :partial => 'datasets/feed_template', :locals => {:allow_comments => true} %>
+  <%= render :partial => 'templates/feed', :locals => {:allow_comments => true} %>
 <%- end -%>
 
 <%= current_user_js %>

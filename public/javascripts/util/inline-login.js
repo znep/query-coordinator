@@ -1,3 +1,6 @@
+$(function ()
+{
+
 blist.namespace.fetch('blist.util.inlineLogin');
 
 blist.util.inlineLogin.verifyUser = function(callback, msg)
@@ -11,8 +14,22 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
         var $signup = $('#signup');
         if ($login.length < 1 || $signup.length < 1)
         {
-            alert('You are not logged in');
-            //throw new Error('Trying to use inline login, but #login or #signup is missing!');
+            var origThis = this;
+            var origArgs = arguments;
+            $('body').loadingSpinner().showHide(true);
+            // Load & re-try
+            blist.util.assetLoading.loadAssets({modals: ['inline_login']}, function()
+            {
+                $('body').loadingSpinner().showHide(false);
+                if ($('#login, #signup').length < 2)
+                {
+                    alert('You are not logged in');
+                    return;
+                }
+                hookUpDialogs();
+                blist.util.inlineLogin.verifyUser.apply(origThis, origArgs);
+            });
+            return;
         }
 
         $login.jqmShow()
@@ -179,8 +196,11 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
 };
 
 
-$(function ()
+var hookUpDialogs = function()
 {
     $('#login').jqm({trigger: false});
     $('#signup').jqm({trigger: false});
+};
+hookUpDialogs();
+
 });

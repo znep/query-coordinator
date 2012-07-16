@@ -234,6 +234,13 @@ module Canvas2
     end
   end
 
+  class Comments < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+  end
+
   class EventConnector < CanvasWidget
     def render
       ['', false]

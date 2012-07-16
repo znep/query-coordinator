@@ -1,3 +1,4 @@
+(function($) {
 $.component.Component.extend('Inline filter', 'input', {
     _needsOwnContext: true,
 
@@ -112,3 +113,4 @@ var renderUpdate = function()
     }
     this._updateValidity();
 };
+})(jQuery);

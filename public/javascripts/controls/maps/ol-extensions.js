@@ -512,6 +512,13 @@
                             .find('.contentBlock').toggleClass('hide');
                     });
             }
+            if ($dom.siblings('.mapLegend').length < 1)
+            {
+                $dom.before('<div class="mapLegend hide">' +
+                    '<div class="contentBlock">' +
+                    '</div>' +
+                    '</div>');
+            }
         },
 
         // Consider being more incisive? Parameter: `evt.layer`.
@@ -526,6 +533,7 @@
             if (control.noBackground) { backgroundLayers = []; }
 
             $dom.find('ul').empty();
+            $(this.map.div).siblings('.mapLegend').empty();
 
             $dom.find('.base').toggle(backgroundLayers.length > 0);
             $dom.find('.data').toggle(this._dataLayers.length > 0);
@@ -678,40 +686,76 @@
                 var $layerLI = $layerSet.find('li:last');
                 $layerLI.data('layer', layer);
 
-                var legendData;
-                if (legendData = layerObj.legendData())
-                {
-                    var totalWidth
-                        = legendData.gradient.length * blist.openLayers.Overview.SWATCH_WIDTH;
-                    var numWidth = (totalWidth - 10) / 2;
-                    var $legend = $('<div class="layerLegend">' +
-                        '<span class="label">' + legendData.name + '</span><div style="width: ' +
-                        totalWidth + 'px; overflow: hidden;"><ul></ul>' +
-                        '<span>' + legendData.minimum + '</span>' +
-                        '<span style="text-align: right; float: right;">' +
-                            legendData.maximum + '</span></div>' +
-                        '</div>');
-                    $legend.find('span').css('width', numWidth + 'px');
-                    var $ul = $legend.find('ul');
-                    _.each(legendData.gradient, function(segment, index)
-                    {
-                        var valueRange = [index == 0 ? legendData.minimum
-                                                     : legendData.gradient[index-1].value,
-                                          ' - ', segment.value].join('');
-                        $ul.append(
-                            $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
-                                .css('background-color', segment.color)
-                                .attr('title', valueRange)
-                            );
-                    });
-                    $layerLI.append($legend);
-                    if (!control._drawn)
-                    {
-                        $layerLI.parents('.contentBlock').removeClass('hide');
-                        control._drawn = true;
-                    }
-                }
+                control.renderLegend($dom, layerObj);
             });
+        },
+
+        enableLegend: function()
+        {
+            this._enableLegend = true;
+            this._drawn = false;
+            this.redraw();
+        },
+
+        disableLegend: function()
+        {
+            this._enableLegend = false;
+            this._drawn = false;
+            $(this.map.div).siblings('.mapLegend').addClass('hide');
+            this.redraw();
+        },
+
+        renderLegend: function($dom, layerObj)
+        {
+            var legendData = layerObj.legendData();
+            if (!legendData) { return; }
+
+            var $container = this._enableLegend ? $(this.map.div).siblings('.mapLegend')
+                                                : $dom.find('ul.feature li:last');
+
+            var totalWidth = legendData.gradient.length * blist.openLayers.Overview.SWATCH_WIDTH;
+            var numWidth = (totalWidth - 10) / 2;
+
+            var contents = { tagName: 'div',
+                style: { 'width':  totalWidth + 'px', overflow: 'hidden' }, contents: [
+                    { tagName: 'ul' },
+                    { tagName: 'span', contents: legendData.minimum },
+                    { tagName: 'span', style: { 'text-align': 'right', 'float': 'right' },
+                        contents: legendData.maximum }
+                ]
+            };
+
+            var $legend;
+            if (this._enableLegend)
+            { $legend = $.tag({ tagName: 'div', contents: [
+                { tagName: 'h3', 'class': 'label', contents: legendData.name }, contents ]}); }
+            else
+            { $legend = $.tag({ tagName: 'div', 'class': 'layerLegend', contents: [
+                { tagName: 'span', 'class': 'label', contents: legendData.name }, contents ]}); }
+
+            $legend.find('> div span').css('width', numWidth + 'px');
+            var $ul = $legend.find('ul');
+            _.each(legendData.gradient, function(segment, index)
+            {
+                var valueRange = [index == 0 ? legendData.minimum
+                                             : legendData.gradient[index-1].value,
+                                  ' - ', segment.value].join('');
+                $ul.append(
+                    $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
+                        .css('background-color', segment.color)
+                        .attr('title', valueRange)
+                    );
+            });
+            $container.append($legend);
+
+            if (!this._drawn)
+            {
+                if (this._enableLegend)
+                { $container.removeClass('hide'); }
+                else
+                { $container.parents('.contentBlock').removeClass('hide'); }
+                this._drawn = true;
+            }
         },
 
         resetBackground: function()

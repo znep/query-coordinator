@@ -230,6 +230,10 @@
 
                 mapObj.initializeBackgroundLayers();
 
+                if (!_.isUndefined(mapObj._displayFormat.distinctLegend))
+                { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()
+                                                       : mapObj._controls.Overview.disableLegend(); }
+
                 var length = mapObj._displayFormat.viewDefinitions.length;
                 _.each(mapObj._children.slice(length), function(childView) { childView.destroy(); });
                 mapObj._children = mapObj._children.slice(0, length);

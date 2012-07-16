@@ -266,6 +266,13 @@
                 ]
             },
             {
+                title: 'Advanced Configuration',
+                type: 'selectable',
+                fields: [
+                    { text: 'Show Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
+                ]
+            },
+            {
                 title: 'Datasets',
                 fields: [
                     { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: 'Add Data',

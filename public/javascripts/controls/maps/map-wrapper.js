@@ -146,6 +146,9 @@
                 numZoomLevels: 21
             }
 
+            if (mapObj._displayFormat.disableNavigation)
+            { mapOptions.disableNavigation = true; }
+
             OpenLayers.ImgPath = '/images/openlayers/';
 
             mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);

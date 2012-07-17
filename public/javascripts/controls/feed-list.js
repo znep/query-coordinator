@@ -337,7 +337,7 @@
             if (!opts.hideFeed)
             {
                 _.each(opts.views, function(ds)
-                { ds.bind('new_comment', newCommentAdded); }, this);
+                { ds.bind('new_comment', newCommentAdded); }, $this);
             }
             else
             {

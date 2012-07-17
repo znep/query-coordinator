@@ -2404,6 +2404,7 @@ var Dataset = ServerModel.extend({
         {
             views = _.map(views, function(v)
             {
+                if (v.id == ds.id) { v = ds; }
                 if (v instanceof Dataset) { return v; }
 
                 var nv = new Dataset(v);

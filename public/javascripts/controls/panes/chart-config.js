@@ -28,7 +28,7 @@
     if (isNextGen)
     {
         var origLegendPos = legendPos;
-        legendPos = { onlyIf: false };
+        legendPos = { onlyIf: function() { return false; } };
     }
 
     var renderOther = {text: 'Group Extra Values', type: 'checkbox', defaultValue: false,
@@ -37,7 +37,7 @@
     // this should really be a SODA feature anyway, not a display feature
     if (isNextGen)
     {
-        renderOther = { onlyIf: false };
+        renderOther = { onlyIf: function() { return false; } };
     }
 
     var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors,
@@ -53,7 +53,7 @@
         type: 'slider', minimum: 0, maximum: 10, defaultValue: 1};
 
 
-    var advLegend = function() { return { onlyIf: false } };
+    var advLegend = function() { return { onlyIf: function() { return false; } } };
 
     if (isNextGen)
     {

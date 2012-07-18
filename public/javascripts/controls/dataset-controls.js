@@ -53,6 +53,9 @@ blist.datasetControls.unsavedViewPrompt = function()
         // Skip local URLs
         if (href.charAt(0) == '#') { return; }
 
+        // if we're not trying to go anywhere, don't do anything.
+        if (window.location.href == origHref) { return; }
+
         e.preventDefault();
 
         var doRedirect = function()

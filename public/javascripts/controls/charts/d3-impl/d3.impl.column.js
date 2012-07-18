@@ -233,7 +233,7 @@ $.Control.registerMixin('d3_impl_column', {
             cc.$chartArea.after($.tag({
                 tagName: 'div',
                 'class': 'yLabelVert',
-                contents: $.htmlStrip(vizObj._displayFormat.titleY)
+                contents: $.htmlEscape(vizObj._displayFormat.titleY)
             }));
         }
 
@@ -244,7 +244,7 @@ $.Control.registerMixin('d3_impl_column', {
             var $label = $.tag({
                 tagName: 'div',
                 'class': 'xLabelHoriz',
-                contents: $.htmlStrip(vizObj._displayFormat.titleX)
+                contents: $.htmlEscape(vizObj._displayFormat.titleX)
             });
             cc.$chartArea.append($label);
 
@@ -790,7 +790,7 @@ $.Control.registerMixin('d3_impl_column', {
                         { tagName: 'div', 'class': 'markerLine', style: { 'background-color': d.color } }
                     ], true));
                     $this.socrataTip({
-                        message: $.htmlStrip(d.caption),
+                        message: $.htmlEscape(d.caption),
                         positions: [ 'top', 'bottom' ]
                     });
                 });

@@ -207,6 +207,7 @@ javascripts:
     - public/javascripts/controls/charts/d3-impl/d3.base.js
     - public/javascripts/controls/charts/d3-impl/d3.base.dynamic.js
     - public/javascripts/controls/charts/d3-impl/d3.base.seriesGrouping.js
+    - public/javascripts/controls/charts/d3-impl/d3.base.legend.js
     - public/javascripts/controls/charts/d3-impl/d3.impl.column.js
   shared-richRenderers:
     - public/javascripts/controls/navigation.js

@@ -30,6 +30,12 @@ $.Control.registerMixin('d3_impl_column', {
         // own object to save temp stuff on
         var cc = vizObj._columnChart = {};
 
+        // change default value buffer if we have a legend on the bottom
+        if (vizObj._displayFormat.legend == 'bottom')
+        {
+            vizObj.defaults.valueLabelBuffer = 150;
+        }
+
         // create and cache dom elements
         var $dom = vizObj.$dom();
         $dom.empty().append($.tag(
@@ -41,13 +47,15 @@ $.Control.registerMixin('d3_impl_column', {
                 { tagName: 'div', 'class': 'baselineContainer', contents: [
                     { tagName: 'div', 'class': 'baselineBg' },
                     { tagName: 'div', 'class': 'baselineLine' }
-                ] }
+                ] },
+                { tagName: 'div', 'class': 'legendContainer' }
             ] }
         , true));
         cc.$chartArea = $dom.find('.chartArea');
         cc.$chartContainer = $dom.find('.chartContainer');
         cc.$chartRenderArea = $dom.find('.chartRenderArea');
         cc.$baselineContainer = $dom.find('.baselineContainer');
+        cc.$legendContainer = $dom.find('.legendContainer');
 
         // for positioning
         $dom.css('position', 'relative');
@@ -206,6 +214,11 @@ $.Control.registerMixin('d3_impl_column', {
         {
             vizObj._columnChart.doResizeHandle();
         }
+    },
+
+    $legendContainer: function()
+    {
+        return this._columnChart.$legendContainer;
     },
 
     _decorateChrome: function()
@@ -909,6 +922,6 @@ $.Control.registerMixin('d3_impl_column', {
         view.unhighlightRows(row);
     }
 
-}, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic' ]);
+}, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);
 
 })(jQuery);

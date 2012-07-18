@@ -221,6 +221,8 @@
                     {type: 'repeater', minimum: 0, addText: 'Add New Rule',
                     name: 'metadata.conditionalFormatting',
                     field: {type: 'group', extraClass: 'conditionGroup', options: [
+                        {type: 'text', text: 'Description', name: 'description',
+                         prompt: 'Describe this match'},
                         conditionIndicator,
                         {type: 'select', text: 'When', prompt: null,
                             options: [{text: 'All Conditions', value: 'and'},

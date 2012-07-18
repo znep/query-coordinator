@@ -132,3 +132,39 @@
       @include no-pointer-events("/stylesheets/images/content/70percentwhite.png")
       position: absolute
       text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8)
+
+  .legendContainer
+    background-color: rgba(255, 255, 255, 0.7)
+    @include border-radius(0.2em)
+    overflow: hidden
+    position: absolute
+    text-align: center
+
+    .ie7 &, .ie8 &
+      background: transparent url(/stylesheets/images/content/70percentwhite.png)
+
+    &.bottom
+      bottom: 1em
+      left: 20%
+      width: 60%
+
+    .legendLine
+      @include ie7-inline-block
+      display: inline-block
+      padding: 1em
+
+      .legendIcon
+        float: left
+        height: 2em
+        margin-right: 1em
+        width: 2em
+
+        .markerLine
+          display: block
+          height: 2px
+          margin: 0.9em 0
+          width: 2em
+
+      .legendLabel
+        font-size: 1.3em
+        line-height: 1.538em

@@ -571,7 +571,7 @@
 
             hookUpFields(cpObj, $pane);
 
-            $pane.find('.button.addValue').bind('click', function(e)
+            $pane.delegate('.button.addValue', 'click', function(e)
             {
                 e.preventDefault();
                 addRepeaterLine(cpObj, $(this));

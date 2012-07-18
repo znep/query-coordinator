@@ -1,0 +1,42 @@
+en:
+  error:
+    back: Back
+    to_whence_you_came: to where you came from.
+
+    permission_denied_403:
+      no_permission: No permission to access resource.
+      were_sorry: "We're sorry, but it appears that you do not have permission to access this page."
+      description_html: "If you believe this to be an error, try logging out and back in as a different user <a href=\"/login\">here</a>."
+
+    not_found_404:
+      page_not_found: Page not found.
+      were_sorry: "We're really sorry, but the page you requested cannot be found."
+      description_html: "The page either does not exist or has moved. We think the best thing to do is start again from the <a href=\"/\">home page</a>. Feel free to contact us if the problem persists or if you definitely can&rsquo;t find what you are looking for. Thank you."
+      back_to: Back to
+
+    not_acceptable_406:
+      page_not_found: Page not found.
+      were_sorry: "We're really sorry, but the page you is not available in the requested format."
+
+    error_500:
+      somethings_wrong: "Something's wrong!"
+      were_sorry: "We're sorry, but there was a problem processing your request."
+      description_html: "Please try again in a few moments, or <a href=\"http://support.socrata.com\">report
+      this error</a> with the details of what you were trying to do."
+
+it:
+  error:
+    back: Eseguire
+    to_whence_you_came: da dove sei venuto da.
+
+    permission_denied_403:
+      no_permission: Nessun permesso di accesso alla risorsa.
+      were_sorry: "Siamo spiacenti, ma sembra che non hai il permesso di accedere a questa pagina."
+      description_html: "Se credi che questo sia un errore, provare a scollegarsi ed indietro come <a href=\"/login\">qui</a>."
+
+    not_found_404:
+      page_not_found: Pagina non trovata 
+      were_sorry: "Spiacenti, ma la pagina richiesta non è in linea."
+      description_html: "La pagina o non esiste o è stata spostata. Suggeriamo di tornare alla <a href=\"/\">home page</a>. Se il problema persiste chiediamo cortesemente di inviarci una segnalazione. Grazie per la collaborazione."
+      back_to: Tornare alla
+

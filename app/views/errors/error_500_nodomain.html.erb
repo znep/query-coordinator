@@ -5,13 +5,14 @@
 
 <div class="modalContentBox siteContent">
   <div class="contentHeader">
-    <h1>Something&rsquo;s wrong!</h1>
+    <h1><%= t 'error.error_500.somethings_wrong' %></h1>
   </div>
   <div class="contentBoxInner clearfix internalError">
     <div class="icon errorIcon"></div>
 
-    <p class="subheadline">We&rsquo;re sorry, but there was a problem processing your request.</p>
-    <p class="body">Please try again in a few moments, or <a href="http://support.socrata.com">report
-      this error</a> with the details of what you were trying to do.</p>
+    <p class="subheadline"><%= t 'error.error_500.were_sorry' %></p>
+    <p class="body"><%= t 'error.error_500.description_html' %></p>
   </div>
 </div>
+
+<%= render_translations LocalePart.error.error_500 %>

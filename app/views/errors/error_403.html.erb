@@ -5,19 +5,19 @@
 
 <div class="modalContentBox siteContent">
   <div class="contentHeader">
-    <h1>No permission to access resource.</h1>
+    <h1><%= t 'error.permission_denied_403.no_permission' %></h1>
   </div>
   <div class="contentBoxInner clearfix unauthorized">
     <div class="icon errorIcon"></div>
 
-    <p class="subheadline">We&rsquo;re sorry, but it appears that you do not
-      have permission to access this page.</p>
-    <p class="body">If you believe this to be an error,
-      try logging out and back in as a different user <a href="/login">here</a>.</p>
+    <p class="subheadline"><%= t 'error.permission_denied_403.were_sorry' %></p>
+    <p class="body"><%= t 'error.permission_denied_403.description_html' %></p>
 
     <div class="goSomewhere">
-      <a href="javascript:history.back(1)" class="button default">Back</a>
-      <span class="labelText">to where you came from.</span>
+      <a href="javascript:history.back(1)" class="button default"><%= t 'error.back' %></a>
+      <span class="labelText"><%= t 'error.to_whence_you_came' %></span>
     </div>
   </div>
 </div>
+
+<%= render_translations LocalePart.error.permission_denied_403 %>

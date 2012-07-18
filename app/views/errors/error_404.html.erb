@@ -5,20 +5,18 @@
 
 <div class="modalContentBox siteContent">
   <div class="contentHeader">
-    <h1>Page not found.</h1>
+    <h1><%= t 'error.not_found_404.page_not_found'  %></h1>
   </div>
   <div class="contentBoxInner clearfix notFound">
     <div class="icon errorIcon"></div>
 
-    <p class="subheadline">We&rsquo;re really sorry, but the page you requested cannot be found.</p>
-    <p class="body">The page either does not exist or has moved. We think the
-       best thing to do is start again from the <%= link_to 'home page', root_path %>.
-       Feel free to contact us if the problem persists or if you
-       definitely can&rsquo;t find what you are looking for. Thank
-       you.</p>
+    <p class="subheadline"><%= t 'error.not_found_404.were_sorry'  %></p>
+    <p class="body"><%= t 'error.not_found_404.description_html'  %></p>
 
     <div class="goSomewhere">
-      <span class="labelText">Back to</span> <a href="/" class="button default"><%= CurrentDomain.cname %></a>
+      <span class="labelText"><%= t 'error.not_found_404.back_to'  %></span> <a href="/" class="button default"><%= CurrentDomain.cname %></a>
     </div>
   </div>
 </div>
+
+<%= render_translations LocalePart.error.not_found_404 %>

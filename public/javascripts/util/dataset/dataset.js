@@ -2093,9 +2093,12 @@ var Dataset = ServerModel.extend({
             data[c.lookup] = row[c.lookup];
         });
 
+        var fieldMeta = ":meta";
+        var fieldPosition = ":position";
+
         // Copy over desired metadata columns
-        data.position = row.position;
-        data.meta = row.meta;
+        data[fieldPosition] = row.position;
+        data[fieldMeta] = row.meta;
 
         // Invalid values need to be saved into metadata
         _.each(row.invalid, function(isI, cId)
@@ -2104,16 +2107,16 @@ var Dataset = ServerModel.extend({
             {
                 var c = !$.isBlank(parCol) ? parCol.childColumnForID(cId) :
                     ds.columnForID(cId);
-                data.meta = data.meta || {};
-                data.meta.invalidCells = data.meta.invalidCells || {};
-                data.meta.invalidCells[c.tableColumnId] = data[cId];
+                data[fieldMeta] = data[fieldMeta] || {};
+                data[fieldMeta].invalidCells = data[fieldMeta].invalidCells || {};
+                data[fieldMeta].invalidCells[c.tableColumnId] = data[cId];
                 data[cId] = null;
             }
         });
 
         // Metadata is a JSON sring
-        if (!$.isBlank(data.meta))
-        { data.meta = JSON.stringify(data.meta); }
+        if (!$.isBlank(data[fieldMeta]))
+        { data[fieldMeta] = JSON.stringify(data[fieldMeta]); }
 
         return data;
     },

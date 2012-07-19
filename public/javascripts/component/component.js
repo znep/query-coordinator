@@ -830,7 +830,7 @@
                 curItem = curItem.parent;
             }
             cIds = cObj._stringSubstitute($.makeArray(cIds));
-            if ((!$.isBlank(cxt) || !$.isBlank(cIds)) &&
+            if ((!$.isBlank(cxt) || !_.isEmpty(cIds)) &&
                     ($.isBlank(cObj._dataContext) || _.any($.makeArray(cObj._dataContext), function(dc)
                                                            { return !_.include(cIds, dc.id); })))
             {

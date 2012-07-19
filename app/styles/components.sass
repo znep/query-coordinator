@@ -1,69 +1,17 @@
-// Styles needed for the top edit bar, before everything else is loaded
+// Styles needed for the edit init icon, before everything else is loaded
 body.socrata-page
-  #siteHeader
-    @include transition(padding-top .2s linear)
-  &.configurable
-    @include transition(margin-right .2s linear)
-    padding-top: 32px
-    .socrata-cf-top
-      top: 0
-  &.configuring
-    .socrata-cf-top
-      .not-edit-mode
-        @include opacity(0)
-        z-index: 1
-      .edit-mode
-        @include opacity(1)
-        z-index: 2
+  .cfEditSwitch
+    background-image: url(/stylesheets/images/component/pagepeel.png)
+    height: 68px
+    left: 0
+    position: absolute
+    top: 0
+    width: 68px
+    z-index: 10000
+  &.configuring .cfEditSwitch
+    display: none
   > .loadingOverlay, > .loadingSpinnerContainer
     position: fixed
-
-.socrata-cf-top
-  z-index: 2000
-  height: 24px
-  padding: 4px 18px
-  top: -32px
-  left: 0
-  right: 0
-  position: fixed
-  @include transition(top .2s linear)
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(32, 32, 32, .8)), to(rgba(0, 0, 0, .8)))
-  background: -webkit-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-  background: -moz-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-  background: -ms-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-  background: -o-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-  @include shadow(0 0 5px rgba(0, 0, 0, .8))
-  .noLinearGradient &
-    background-color: #222
-  color: white
-  a
-    @include transition(color .2s linear)
-    color: #aaaaaa
-    font-size: 14px
-    line-height: 24px
-    display: block
-    margin: 0 8px
-    cursor: default
-    &.disabled
-      cursor: default
-      &:hover
-        text-decoration: none
-  & a.edit, & a.cancel, & a.translate, &.can-save a.save, &.can-undo a.undo, &.can-redo a.redo, &.can-save a.save
-    color: white
-    cursor: pointer
-    &:hover
-      text-decoration: underline
-  .edit-mode, .not-edit-mode
-    position: absolute
-    @include transition(opacity .25s linear)
-    a
-      float: left
-  .not-edit-mode
-    @include opacity(1)
-    z-index: 2
-  .edit-mode
-    @include opacity(0)
-    z-index: 1
 
 
 // Base/default styles shared by all components

@@ -6,14 +6,14 @@ $.cf = {};
 
 $(function() {
 
-    $.cf.top = function() {
-        var $top = $.tag({tagName: 'div', 'class': 'socrata-cf-top', contents:
-            {tagName: 'div', 'class': 'not-edit-mode', contents:
-                {tagName: 'a', href: '#edit', 'class': 'edit', contents: 'edit page'}}});
+    $.cf.top = function()
+    {
+        var $editLink = $.tag({tagName: 'a', href: '#edit', 'class': 'cfEditSwitch', title: 'Edit Page'});
         var $body = $(document.body);
-        $body.append($top);
+        $body.append($editLink);
 
-        var initializeEditMode = function() {
+        var initializeEditMode = function()
+        {
             if ($.subKeyDefined($.cf, 'edit'))
             {
                 $.cf.edit(true);
@@ -24,16 +24,18 @@ $(function() {
             // Need to load & set-up
             blist.util.assetLoading.loadAssets(
                 {javascripts: [{assets: 'configurator'}, {assets: 'shared-editors'}],
-                    stylesheets: [{assets: 'colorpicker'}, {assets: 'base-control-third-party'},
+                    stylesheets: [{sheet: '/webfonts/ss-standard.css', hasFonts: true},
+                        {assets: 'colorpicker'}, {assets: 'base-control-third-party'},
                         {assets: 'base-control'}, {assets: 'configurator'}],
                     templates: ['grid_sidebar']}, function()
             {
                 $('.socrata-page').loadingSpinner().showHide(false);
-                $.cf.initialize($top);
+                $.cf.initialize();
             });
         };
 
-        $top.find('a.edit').click(function(e) {
+        $editLink.click(function(e)
+        {
             e.preventDefault();
             initializeEditMode();
         });

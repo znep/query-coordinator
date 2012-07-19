@@ -128,19 +128,43 @@
     };
 
     $.extend($.cf, {
-        initialize: function($top, opts)
+        initialize: function(opts)
         {
             $.cf.configuration(opts || {});
+            var page = blist.configuration.page;
 
-            $top.append($.tag({tagName: 'div', 'class': 'edit-mode', contents: [
-                {tagName: 'a', href: '#save', 'class': 'save', contents: 'save'},
-                {tagName: 'a', href: '#cancel', 'class': 'cancel', contents: 'cancel'},
-                {tagName: 'a', href: '#undo', 'class': 'undo', contents: 'undo'},
-                {tagName: 'a', href: '#redo', 'class': 'redo', contents: 'redo'},
-                {tagName: 'a', href: '#translate', 'class': 'translate', contents: 'translate' }
-            ]}));
+            var $body = $('body');
+            var $wrapper = $.tag({ tagName: 'div', 'class': 'cfEditingWrapper' });
+            $body.append($wrapper);
+            $wrapper.css('background-color', $body.css('background-color'))
+                .append($body.children('.siteOuterWrapper, #siteFooter'));
 
-            $top.find('.edit-mode a').click(function(e)
+            var $top = $.tag({ tagName: 'div', 'class': 'cfEditingBar', contents: [
+                { tagName: 'div', 'class': 'editTitle', contents: [
+                    { tagName: 'span', contents: 'Editing&nbsp;' },
+                    { tagName: 'span', 'class': 'pageName', contents: page.name }
+                ] },
+                { tagName: 'ul', 'class': 'actionBar', contents: [
+                    { tagName: 'li', contents:
+                        { tagName: 'a', href: '#undo', 'class': ['undo', 'button', 'ss-replay'],
+                            contents: 'Undo' } },
+                    { tagName: 'li', contents:
+                        { tagName: 'a', href: '#redo', 'class': ['redo', 'button', 'ss-refresh'],
+                            contents: 'Redo' } },
+                    { tagName: 'li', 'class': 'separator', contents:
+                        { tagName: 'a', href: '#settings', 'class': ['settings', 'button', 'ss-settings'],
+                            contents: 'Settings' } },
+                    { tagName: 'li', 'class': 'separator', contents:
+                        { tagName: 'a', href: '#save', 'class': ['save', 'button'],
+                            contents: 'Save' } },
+                    { tagName: 'li', contents:
+                        { tagName: 'a', href: '#revert', 'class': ['revert', 'button'],
+                            contents: 'Revert' } }
+                ] }
+            ] });
+            $body.append($top);
+
+            $top.find('.actionBar a').click(function(e)
             {
                 e.preventDefault();
                 var action = $.hashHref($(this).attr('href'));
@@ -234,7 +258,7 @@
             { exitEditMode(); }
         },
 
-        cancel: function()
+        revert: function()
         {
             if (originalConfiguration && $.cf.edit.dirty)
             {
@@ -243,6 +267,12 @@
             }
 
             exitEditMode();
+        },
+
+        settings: function()
+        {
+            alert('Coming Soon!');
+            // Include access to translate here
         },
 
         blur: function(unmask)

@@ -1,13 +1,53 @@
+.cfEditingBar
+  display: none
+  height: 2em
+  left: 0
+  padding: 2em 2.5em
+  position: fixed
+  right: 0
+  top: 0
+  z-index: 2000
+  .configuring &
+    display: block
+
+  .editTitle
+    font-size: 1.5em
+    text-shadow: 0 0 0.1em rgba(255, 255, 255, 0.7)
+  .actionBar
+    position: absolute
+    right: 2.5em
+    top: 1em
+    > li
+      display: inline-block
+      margin-right: 1em
+      padding: 0.5em 0
+      &:last-child
+        margin-right: 0
+      a
+        margin: 0
+      &.separator
+        border-left: 1px solid $color_chrome_box_border
+        padding-left: 1em
+
+.cfEditingWrapper
+  bottom: 0
+  left: 0
+  overflow: auto
+  position: absolute
+  right: 0
+  top: 0
+body.configuring
+  background-image: url(/stylesheets/images/component/canvasbg.png)
+  .cfEditingWrapper
+    @include border-radius(4px, 4px, 0, 0)
+    @include box-shadow(0, 0, 10px, rgba(0, 0, 0, 0.45))
+    left: 2.5em
+    right: 2.5em
+    top: 6em
+    z-index: 2001
+
 .socrata-cf-side
   z-index: 1000
-  // TODO - legacy webkit gradient background
-  background: -webkit-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -webkit-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
-  background: -moz-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -moz-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
-  background: -ms-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -ms-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
-  background: -o-linear-gradient(left, rgba(0, 0, 0, .15), transparent 4px, transparent), -o-linear-gradient(top, rgba(0, 0, 0, .15), transparent 6px, transparent), url(/stylesheets/images/component/cf-background.png)
-  .noLinearGradient &
-    background: url(/stylesheets/images/component/cf-background.png)
-  @include transition(right .2s linear)
   position: fixed
   top: 32px
   bottom: 0
@@ -23,12 +63,9 @@
         height: auto
     h2
       cursor: pointer
-      //@include shadow(0px 1px 0px #f7f7f7)
       font-size: 14px
       padding: 2px 8px
       margin: 2px 0 4px 0
-      //border-top: solid 1px rgba(0, 0, 0, .2)
-      //border-bottom: solid 1px rgba(0, 0, 0, .2)
       text-shadow: black 0 1px 1px
       color: white
       background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(32, 32, 32, .8)), to(rgba(0, 0, 0, .8)))

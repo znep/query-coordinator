@@ -1,5 +1,11 @@
 en:
   screens:
+    blob:
+      download: This dataset is available for download
+      data_extraction: This data extraction tool or application is available via the link to the right
+      limited_download: This dataset is not tabular data, and may have limited interactivity, but it is available for download
+      external_link: External Link
+      download: Download
     about:
       created: created
       snapshotted: snapshotted
@@ -42,6 +48,12 @@ en:
 
 it:
   screens:
+    blob:
+      download: Questo dataset è disponibile per il download
+      data_extraction: "Questo strumento di estrazione dei dati o l'applicazione è disponibile tramite il link a destra"
+      limited_download: Questo set di dati non è dati tabulari, e può avere interattività limitata, ma è disponibile per il download
+      external_link: Link Esterno
+      download: Scarica
     about:
       created: creato
       snapshotted: eseguito il backup

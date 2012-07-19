@@ -1499,7 +1499,7 @@
 
         var numItems = curValue.length || populatedLength;
         if (!isRO && numItems < 1)
-        { numItems = _.isNumber(args.item.minimum) ? args.item.minimum : 1; }
+        { numItems = _.isNumber(args.item.initialRepeatCount) ? args.item.initialRepeatCount : 1; }
         for (var i = 0; i < numItems; i++)
         {
             var contextData = curValue[i] || args.context.data;

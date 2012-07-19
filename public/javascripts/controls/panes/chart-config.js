@@ -77,7 +77,7 @@
                       lineClass: 'advLegendCheck' },
                     /*{ text: 'Custom Entries', type: 'selectable',
                       name: 'customLegendEntries', defaultValue: false, fields: [*/
-                        { type: 'repeater', minimum: 0, addText: 'Add Custom Legend Entry',
+                        { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: 'Add Custom Legend Entry',
                           name: 'displayFormat.legendDetails.customEntries',
                           field: {
                               type: 'group', options: [

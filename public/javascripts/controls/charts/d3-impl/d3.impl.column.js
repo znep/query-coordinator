@@ -30,12 +30,6 @@ $.Control.registerMixin('d3_impl_column', {
         // own object to save temp stuff on
         var cc = vizObj._columnChart = {};
 
-        // change default value buffer if we have a legend on the bottom
-        if (vizObj._displayFormat.legend == 'bottom')
-        {
-            vizObj.defaults.valueLabelBuffer = 150;
-        }
-
         // create and cache dom elements
         var $dom = vizObj.$dom();
         $dom.empty().append($.tag(
@@ -221,6 +215,39 @@ $.Control.registerMixin('d3_impl_column', {
         return this._columnChart.$legendContainer;
     },
 
+    renderLegend: function()
+    {
+        var vizObj = this,
+            cc = vizObj._columnChart,
+            $legendContainer = vizObj.$legendContainer();
+
+        vizObj._super();
+
+        // this is messy. what's a better way?
+        vizObj.defaults.valueLabelBuffer = 100;
+        vizObj.defaults.dataMaxBuffer = 30;
+        vizObj._columnChart.$chartArea.removeClass('hasLeftLegend hasRightLegend');
+
+        if (vizObj._displayFormat.legend == 'bottom')
+        {
+            vizObj.defaults.valueLabelBuffer = 100 + $legendContainer.height();
+        }
+        else if (vizObj._displayFormat.legend == 'top')
+        {
+            vizObj.defaults.dataMaxBuffer = 30 + $legendContainer.height();
+        }
+        else if (vizObj._displayFormat.legend == 'left')
+        {
+            $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
+            cc.$chartArea.addClass('hasLeftLegend');
+        }
+        else if (vizObj._displayFormat.legend == 'right')
+        {
+            $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
+            cc.$chartArea.addClass('hasRightLegend');
+        }
+    },
+
     _decorateChrome: function()
     {
         var vizObj = this,
@@ -230,7 +257,7 @@ $.Control.registerMixin('d3_impl_column', {
         if (!$.isBlank(vizObj._displayFormat.titleY))
         {
             cc.$chartArea.addClass('hasYLabelVert');
-            cc.$chartArea.after($.tag({
+            cc.$chartArea.append($.tag({
                 tagName: 'div',
                 'class': 'yLabelVert',
                 contents: $.htmlEscape(vizObj._displayFormat.titleY)

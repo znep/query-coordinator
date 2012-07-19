@@ -1,37 +1,48 @@
-.yLabelVert
-  font-size: 1.4em
-  font-weight: bold
-  left: -23.65em
-  margin-top: -4em
-  position: absolute
-  @include css3er(transform, rotate(-90deg))
-  text-align: center
-  top: 50%
-  width: 50em
-
-  .ie8 &
-    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3)
-    left: 1em
-    margin-top: -24em
-
-.xLabelHoriz
-  background: url(/stylesheets/images/content/70percentwhite.png)
-  bottom: 2em
-  font-size: 1.4em
-  font-weight: bold
-  left: 50%
-  margin-left: -50%
-  padding: 0.2em
-  position: absolute
-  text-align: center
-
 .chartArea.columnChart
   height: 100%
-  overflow: hidden
   position: relative
 
   &.hasYLabelVert
     margin-left: 4em
+
+  &.hasLeftLegend
+    margin-left: 25em
+
+    &.hasYLabelVert
+      margin-left: 29em
+
+      .legendContainer
+        left: -28em
+
+  &.hasRightLegend
+    margin-right: 25em
+
+  .yLabelVert
+    font-size: 1.4em
+    font-weight: bold
+    left: -26.65em
+    margin-top: -4em
+    position: absolute
+    @include css3er(transform, rotate(-90deg))
+    text-align: center
+    top: 50%
+    width: 50em
+
+    .ie8 &
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3)
+      left: 1em
+      margin-top: -24em
+
+  .xLabelHoriz
+    background: url(/stylesheets/images/content/70percentwhite.png)
+    bottom: 2em
+    font-size: 1.4em
+    font-weight: bold
+    left: 50%
+    margin-left: -50%
+    padding: 0.2em
+    position: absolute
+    text-align: center
 
   .chartContainer
     height: 100%
@@ -143,10 +154,24 @@
     .ie7 &, .ie8 &
       background: transparent url(/stylesheets/images/content/70percentwhite.png)
 
-    &.bottom
-      bottom: 1em
+    &.bottom, &.top
       left: 20%
       width: 60%
+    &.bottom
+      bottom: 1em
+    &.top
+      top: 1em
+
+    &.left, &.right
+      text-align: left
+      top: 50%
+      width: 23em
+      .legendLine
+        display: block
+    &.left
+      left: -24em
+    &.right
+      right: -24em
 
     .legendLine
       @include ie7-inline-block

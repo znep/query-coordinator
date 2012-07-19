@@ -28,7 +28,7 @@
     if (isNextGen)
     {
         var origLegendPos = legendPos;
-        legendPos = { onlyIf: { func: function() { return false; } } };
+        legendPos = { onlyIf: false };
     }
 
     var renderOther = {text: 'Group Extra Values', type: 'checkbox', defaultValue: false,
@@ -37,7 +37,7 @@
     // this should really be a SODA feature anyway, not a display feature
     if (isNextGen)
     {
-        renderOther = { onlyIf: { func: function() { return false; } } };
+        renderOther = { onlyIf: false };
     }
 
     var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors,

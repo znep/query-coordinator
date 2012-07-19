@@ -25,7 +25,7 @@ $.Control.registerMixin('d3_base_legend', {
 
         $legendContainer.empty();
         $legendContainer.removeClass('top right bottom left');
-        $legendContainer.addClass(legendPosition);
+        $legendContainer.addClass($.htmlEscape(legendPosition));
 
         // first render series if they were asked for
         if (legendDetails.showSeries === true)

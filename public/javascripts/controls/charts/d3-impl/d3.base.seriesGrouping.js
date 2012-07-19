@@ -250,7 +250,11 @@ d3base.seriesGrouping = {
             }
 
             // resize if we just readied
-            if (justReadied) vizObj.handleRowCountChange();
+            if (justReadied)
+            {
+                if (_.isFunction(vizObj.renderLegend)) vizObj.renderLegend();
+                vizObj.handleRowCountChange();
+            }
 
             // render what we've got
             vizObj._super(_.values(sg.virtualRows));

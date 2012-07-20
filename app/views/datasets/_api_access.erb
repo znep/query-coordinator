@@ -21,7 +21,7 @@
     <dl class="sectionContent">
       <%- @view.visible_columns.each do |column| -%>
         <dt><%= column.name %></dt>
-        <dd><%= column.id %></dd>
+        <dd><%= column.fieldName %></dd>
       <%- end -%>
     </dl>
   <%- end -%>

@@ -987,7 +987,7 @@
             var color = (isNormalMap(view) ? view.displayFormat : mapObj._displayFormat).color;
             if (color)
             { details.color = color; }
-            if (viewConfig._colorValueCol
+            if (viewConfig._colorValueCol && mapObj._gradient
                 && mapObj._segments[viewConfig._colorValueCol.id])
             {
                 for (var i = 0; i < mapObj._numSegments; i++)
@@ -1608,7 +1608,6 @@
         getColumns: function()
         {
             var mapObj = this;
-            var view = mapObj._primaryView;
 
             _.each(mapObj._dataViews, function(view)
             {

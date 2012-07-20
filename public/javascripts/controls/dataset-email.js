@@ -1,9 +1,10 @@
 ;$(function()
 {
     blist.namespace.fetch('blist.dialog');
-    var $form = $('#emailDatasetForm');
-    var $flash = $('#emailDatasetMessage');
+    var $form;
+    var $flash;
     var friends = false;
+    var didSetup = false;
 
     // Awesomecomplete's way of rendering result
     var awesomeRenderFunction = function(dataItem, topMatch)
@@ -41,30 +42,60 @@
         });
     };
 
-    blist.dialog.sharing = function(e, owner)
+    blist.dialog.sharing = function(e, owner, dataset)
     {
-        e.preventDefault();
+        if (!$.isBlank(e)) { e.preventDefault(); }
 
-        $('.emailDatasetDialog.ownerDialog .emailDatasetHint').text('Share');
+        if (!didSetup)
+        { doSetup(); }
+
+        var $emailDialog = $('.emailDatasetDialog');
+
+        dataset = dataset || blist.dataset;
+        $form.data('dataset', dataset);
+
+        $emailDialog.toggleClass('ownerDialog', dataset.hasRight('grant'));
+        $emailDialog.find('.emailDatasetHint').text($emailDialog.hasClass('ownerDialog') ? 'Share' : 'Email');
+
+        $form.attr('action', '/api/views' + dataset.id + '.json?method=sendAsEmail');
         $form.validate().resetForm();
 
-        $('.emailDatasetDialog .emailLine:not(:first)').remove();
-        $('.emailDatasetDialog .emailRecipient').val('');
-        $('.emailDatasetDialog .recipientUid').val('');
-        $('.emailDatasetDialog .recipientRole').val(
-            $('.emailDatasetDialog .recipientRole option:first').val());
-        $.uniform.update('.emailDatasetDialog .recipientRole');
-        $('.emailDatasetDialog #emailMessage').val('');
+        var displayName = dataset.displayName;
+        $emailDialog.find('.datasetTypeName').text(displayName);
+        $emailDialog.find('.datasetTypeNameUpcase').text(displayName.capitalize());
+        $emailDialog.find('.datasetName').text(dataset.name);
+
+        $emailDialog.find('.emailLine:not(:first)').remove();
+        $emailDialog.find('.emailRecipient').val('');
+        $emailDialog.find('.recipientUid').val('');
+        $emailDialog.find('.recipientRole').val(
+            $emailDialog.find('.recipientRole option:first').val());
+        if ($.subKeyDefined($.uniform, 'update'))
+        { $.uniform.update('.emailDatasetDialog .recipientRole'); }
+        else
+        { $emailDialog.find('.recipientRole').uniform(); }
+        $emailDialog.find('#emailMessage').val('');
+
+        var $eLine = $emailDialog.find('.emailLine');
+        $eLine.find('.recipientRole').remove();
+        if ($emailDialog.hasClass('ownerDialog'))
+        {
+            $eLine.append($.tag({ tagName: 'select', 'class': 'recipientRole', name: 'role',
+                contents: _.map(dataset.getShareTypes(), function(t)
+                    { return { tagName: 'option', value: t, contents: t }; })
+            }));
+            $eLine.find('select').uniform();
+        }
 
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
-        $('.emailDatasetDialog').data('owner', owner);
-        $('.emailDatasetDialog').jqmShow();
+        $emailDialog.data('owner', owner);
+        $emailDialog.jqmShow();
 
         $flash.removeClass('notice').removeClass('error').text('');
 
         // Set up warning message if this is a private view
-        if (!blist.dataset.isPublic())
+        if (!dataset.isPublic())
         {
             $flash.addClass('notice')
                 .text('Notice: This ' + displayName + ' is currently private. ' +
@@ -97,10 +128,6 @@
     // Modal show link
     $.live('#shareMenu .menuEntries .email a', 'click', blist.dialog.sharing);
 
-    var displayName = blist.dataset.displayName;
-    $('.emailDatasetDialog .datasetTypeName').text(displayName);
-    $('.emailDatasetDialog .datasetTypeNameUpcase').text(displayName.capitalize());
-
     $.live('.emailDatasetDialog .removeLink', 'click', function(e)
     {
         e.preventDefault();
@@ -114,126 +141,134 @@
     });
 
     var emailCount = 1;
-    // Add more recipients link
-    $('.emailDatasetDialog .addMoreRecipientsButton').click(function(e)
+    var doSetup = function()
     {
-        e.preventDefault();
+        $form = $('#emailDatasetForm');
+        $flash = $('#emailDatasetMessage');
 
-        if ($(this).hasClass('disabled')) { return; }
-
-        emailCount++;
-
-        // Make a clean copy of the line
-        var $copy = $form.find('.emailLine').first()
-            .clone()
-            .find('.autocomplete').remove().end()
-            .find('label.error').remove().end()
-            .find('input').val('').end()
-            .find('.removeLink').removeClass('hiddenLink').end();
-
-        var $select = $copy.find('.recipientRole');
-        // Non-admins won't have sharing dropdown
-        if ( $select.length > 0 )
+        // Add more recipients link
+        $('.emailDatasetDialog .addMoreRecipientsButton').click(function(e)
         {
-            $select.get(0).selectedIndex = 0;
-            $copy.find('.selector.uniform').replaceWith($select);
-            $select.uniform();
-        }
+            e.preventDefault();
 
-        $copy.insertAfter($form.find('.emailLine:last'));
+            if ($(this).hasClass('disabled')) { return; }
 
-        var $emailField = $copy.find('.emailRecipient')
-            .attr('name', 'emailRecipient' + emailCount);
+            emailCount++;
 
-        $emailField.rules('add', {
-            email: true
-        });
+            // Make a clean copy of the line
+            var $copy = $form.find('.emailLine').first()
+                .clone()
+                .find('.autocomplete').remove().end()
+                .find('label.error').remove().end()
+                .find('input').val('').end()
+                .find('.removeLink').removeClass('hiddenLink').end();
 
-        if (friends && friends.length > 0)
-        { autoCompleteForFriends($emailField); }
-
-        if (emailCount > 9)
-        { $(this).addClass('disabled'); }
-    });
-
-    // Use lazy validation, otherwise it interferes with the autocomplete
-    $form.validate({
-        rules: {
-          emailRecipient0: 'email'
-        },
-        errorPlacement: function($error, $element)
-        { $element.closest('.emailLine').append($error); },
-        onkeyup: false,
-        onfocusout: false,
-        focusInvalid: false
-    });
-
-    $form.submit(function(e)
-    {
-        e.preventDefault();
-        if ($form.valid())
-        {
-            var isPublic = blist.dataset.isPublic();
-
-            var message = $form.find('#emailMessage').val();
-
-            $form.find('.emailLine').each(function()
+            var $select = $copy.find('.recipientRole');
+            // Non-admins won't have sharing dropdown
+            if ( $select.length > 0 )
             {
-                // Send notification email
-                var address = $(this).find('.emailRecipient').val();
-                var uid = $(this).find('.recipientUid').val();
-                var grantType = $(this).find('.recipientRole').val();
+                $select.get(0).selectedIndex = 0;
+                $copy.find('.selector.uniform').replaceWith($select);
+                $select.uniform();
+            }
 
-                if (!$.isBlank(address))
-                {
-                    // Grant access as necessary
-                    if (!isPublic || !$.isBlank(grantType))
-                    {
-                        var grant = {userEmail: address,
-                                type: grantType, message: message};
-                        if (!$.isBlank(uid))
-                        { grant['userId'] = uid; }
+            $copy.insertAfter($form.find('.emailLine:last'));
 
-                        // Create a grant for the user
-                        blist.dataset.createGrant(grant, null, null, true);
-                    }
-                    else
-                    {
-                        $.socrataServer.makeRequest({
-                            url: $form.attr('action'),
-                            type: 'POST', batch: true,
-                            data: JSON.stringify({recipient: address, message: message})
-                        });
-                    }
-                }
+            var $emailField = $copy.find('.emailRecipient')
+                .attr('name', 'emailRecipient' + emailCount);
+
+            $emailField.rules('add', {
+                email: true
             });
 
-            var refreshCallback = function()
+            if (friends && friends.length > 0)
+            { autoCompleteForFriends($emailField); }
+
+            if (emailCount > 9)
+            { $(this).addClass('disabled'); }
+        });
+
+        // Use lazy validation, otherwise it interferes with the autocomplete
+        $form.validate({
+            rules: {
+              emailRecipient0: 'email'
+            },
+            errorPlacement: function($error, $element)
+            { $element.closest('.emailLine').append($error); },
+            onkeyup: false,
+            onfocusout: false,
+            focusInvalid: false
+        });
+
+        $form.submit(function(e)
+        {
+            e.preventDefault();
+            if ($form.valid())
             {
-                $form.closest('.emailDatasetContent').slideToggle();
-                $('.emailSuccess').slideToggle();
+                var dataset = $form.data('dataset');
+                var isPublic = dataset.isPublic();
 
-                // Update the sharing pane to reflect
-                var owner = $form.closest('.emailDatasetDialog').data('owner') || {};
-                if (_.isFunction(owner.reset))
-                { owner.reset(); }
-                else if ($.subKeyDefined(blist, 'datasetPage.sidebar'))
-                { blist.datasetPage.sidebar.refresh('manage.shareDataset'); }
-            };
+                var message = $form.find('#emailMessage').val();
 
-            ServerModel.sendBatch(refreshCallback,
-                    function()
+                $form.find('.emailLine').each(function()
+                {
+                    // Send notification email
+                    var address = $(this).find('.emailRecipient').val();
+                    var uid = $(this).find('.recipientUid').val();
+                    var grantType = $(this).find('.recipientRole').val();
+
+                    if (!$.isBlank(address))
                     {
-                        $flash.addClass('error')
-                            .text('There was an error sending your email. Please try again later.');
-                    });
-        }
-    });
+                        // Grant access as necessary
+                        if (!isPublic || !$.isBlank(grantType))
+                        {
+                            var grant = {userEmail: address,
+                                    type: grantType, message: message};
+                            if (!$.isBlank(uid))
+                            { grant['userId'] = uid; }
 
-    $('#emailSubmitButton').click(function(e)
-    {
-        e.preventDefault();
-        $form.submit();
-    });
+                            // Create a grant for the user
+                            dataset.createGrant(grant, null, null, true);
+                        }
+                        else
+                        {
+                            $.socrataServer.makeRequest({
+                                url: $form.attr('action'),
+                                type: 'POST', batch: true,
+                                data: JSON.stringify({recipient: address, message: message})
+                            });
+                        }
+                    }
+                });
 
+                var refreshCallback = function()
+                {
+                    $form.closest('.emailDatasetContent').slideToggle();
+                    $('.emailSuccess').slideToggle();
+
+                    // Update the sharing pane to reflect
+                    var owner = $form.closest('.emailDatasetDialog').data('owner') || {};
+                    if (_.isFunction(owner.reset))
+                    { owner.reset(); }
+                    else if ($.subKeyDefined(blist, 'datasetPage.sidebar'))
+                    { blist.datasetPage.sidebar.refresh('manage.shareDataset'); }
+                };
+
+                ServerModel.sendBatch(refreshCallback,
+                        function()
+                        {
+                            $flash.addClass('error')
+                                .text('There was an error sending your email. Please try again later.');
+                        });
+            }
+        });
+
+        $('#emailSubmitButton').click(function(e)
+        {
+            e.preventDefault();
+            $form.submit();
+        });
+
+        didSetup = true;
+    };
 });

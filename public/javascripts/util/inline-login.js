@@ -26,7 +26,6 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     alert('You are not logged in');
                     return;
                 }
-                hookUpDialogs();
                 blist.util.inlineLogin.verifyUser.apply(origThis, origArgs);
             });
             return;

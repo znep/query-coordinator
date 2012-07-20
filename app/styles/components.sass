@@ -310,3 +310,16 @@ body.socrata-page
 .component-Comments
   .feed.noReplies .commentActions .actionReply
     display: none
+
+.component-Share
+  ul li
+    display: inline-block
+    margin-right: 0.5em
+
+    .ie7 &
+      display: block
+      float: left
+      margin-right: 0.9em
+
+    a
+      @include sprite-social-media-icons

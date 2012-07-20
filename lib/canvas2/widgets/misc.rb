@@ -241,6 +241,58 @@ module Canvas2
     end
   end
 
+  class Share < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+
+    def render_contents
+      ds = !context.blank? ? context[:dataset] : nil
+      return ['', false] if ds.blank?
+
+      vis_items = @properties['visibleItems'] || ['subscribe', 'facebook', 'twitter', 'email']
+      hidden_items = @properties['hiddenItems'] || []
+      vis_items = vis_items.reject { |item| hidden_items.include?(item) }
+
+      avail_items = {
+        subscribe: '<li class="subscribe' +
+          (ds.is_public? && ds.is_tabular? && vis_items.include?('subscribe') ? '' : ' hide') +
+          '" data-name="subscribe">' +
+          '<a class="subscribe" href="#subscribe" title="Subscribe via Email or RSS">' +
+            '<span class="icon">Subscribe to Changes</span></a></li>',
+
+        email: '<li class="email' +
+          (ds.is_public? && ds.is_tabular? && vis_items.include?('email') ? '' : ' hide') +
+          '" data-name="email">' +
+          '<a class="email" href="#email" title="Share via Email">' +
+            '<span class="icon">Share via Email</span></a></li>',
+
+        facebook: '<li class="facebook' + (vis_items.include?('facebook') ? '' : ' hide') +
+          '" data-name="facebook">' +
+          '<a class="facebook" rel="external" title="Share on Facebook" ' +
+            'href="http://www.facebook.com/share.php?u=' +
+              CGI::escape("http://#{CurrentDomain.cname}#{ds.href}") + '">' +
+            '<span class="icon">Share on Facebook</span></a></li>',
+
+      twitter: '<li class="twitter' + (vis_items.include?('twitter') ? '' : ' hide') +
+        '" data-name="twitter">' +
+          '<a class="twitter" rel="external" title="Share on Twitter"' +
+              'href="http://twitter.com/?status=' + ds.tweet + '">' +
+            '<span class="icon">Share on Twitter</span></a></li>'
+      }
+
+      t = '<ul>'
+      vis_items.each do |item|
+        item = item.to_sym
+        t += avail_items[item] if !avail_items[item].nil?
+        avail_items.delete(item)
+      end
+      avail_items.values.each { |item| t += item }
+      [t + '</ul>', true]
+    end
+  end
+
   class EventConnector < CanvasWidget
     def render
       ['', false]

@@ -391,7 +391,7 @@ $(function()
     {
         event.preventDefault();
         if(_.isFunction(blist.dialog.subscribe))
-        { blist.dialog.subscribe(event); }
+        { blist.dialog.subscribe(); }
     });
 
     // Edit toolbar

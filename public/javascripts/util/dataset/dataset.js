@@ -180,6 +180,11 @@ var Dataset = ServerModel.extend({
         return (this.type == 'blob');
     },
 
+    isTabular: function()
+    {
+        return (this.viewType == 'tabular');
+    },
+
     isPublished: function()
     {
         return this.publicationStage == 'published';
@@ -1612,6 +1617,13 @@ var Dataset = ServerModel.extend({
             success: successCallback,
             error: errorCallback
         });
+    },
+
+    getShareTypes: function()
+    {
+        var stypes = ['Contributor', 'Owner'];
+        if (this.type != 'form') { stypes.unshift('Viewer'); }
+        return stypes;
     },
 
     // Private methods

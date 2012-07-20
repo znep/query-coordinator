@@ -43,7 +43,12 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
     if (loadTemplates)
     { assetNS.loadPartials(translateUrls('/templates/', assets.templates, 'templates'), 'templates', finished); }
     if (loadModals)
-    { assetNS.loadPartials(translateUrls('/modals/', assets.modals, 'modals'), 'modals', finished); }
+    { assetNS.loadPartials(translateUrls('/modals/', assets.modals, 'modals'), 'modals',
+            function($newItems)
+            {
+                $newItems.socrataJqm();
+                finished();
+            }); }
     if (loadJS)
     { assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished); }
     if (loadTranslations)
@@ -231,8 +236,9 @@ assetNS.loadPartials = function(partialQueue, type, callback)
             $('body').append($.tag({tagName: 'div', id: type}));
             $partials = $('#' + type);
         }
-        $partials.append(partialPieces);
-        if (_.isFunction(callback)) { callback(); }
+        var $pieces = $(partialPieces);
+        $partials.append($pieces);
+        if (_.isFunction(callback)) { callback($pieces); }
     });
 
     _.each(partials, function(partial)

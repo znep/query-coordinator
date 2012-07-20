@@ -1,0 +1,57 @@
+<%= modal :class => "emailDatasetDialog#{' ownerDialog' if !@view.nil? && @view.has_rights?('grant')}" do %>
+  <h2><span class="emailDatasetHint">Email</span> "<span class="datasetName"><%= @view.nil? ? '' : @view.name %></span>"
+    <span class="datasetTypeNameUpcase">Dataset</span></h2>
+  <div class="emailSuccess">
+    <div class="flash notice">
+      Your email has been successfully sent.
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a href="#cancel" class="jqmClose button">Close</a>
+      </li>
+    </ul>
+  </div>
+  <div class="emailDatasetContent">
+    <div class="flash" id="emailDatasetMessage"></div>
+    <p>Share the <span class="datasetName"><%= @view.nil? ? '' : @view.name %></span>
+      <span class="datasetTypeName">dataset</span> with the following email addresses</p>
+    <div class="emailFormContent">
+      <form class="commonForm" id="emailDatasetForm"
+        action="<%= @view.nil? ? '' : "/views/#{@view.id}.json?method=sendAsEmail" %>" method="post">
+        <div class="emailLine">
+          <a href="#remove" title="Remove" class="removeLink delete hiddenLink">
+            <span class="icon"></span>
+          </a>
+          <input type="hidden" class="recipientUid" />
+          <div class="textWrapper">
+            <input type="text" class="emailRecipient email"
+              name="emailRecipient0" />
+          </div>
+          <%- if !@view.nil? && @view.has_rights?('grant') -%>
+            <%= select_tag 'role', options_for_select(@view.share_types),
+                  :class => 'recipientRole', :id => nil %>
+          <%- end -%>
+        </div>
+        <div class="addMoreLine">
+          <a class="button addMoreRecipientsButton add" href="#add">
+            <span class="icon"></span>Add More
+          </a>
+        </div>
+        <p class="emailMessageHint">Enter an optional message</p>
+        <textarea id="emailMessage"></textarea>
+      </form>
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a href="#cancel" class="jqmClose button cancel">
+          <span class="icon"></span>Cancel
+        </a>
+      </li>
+      <li>
+        <a href="#email" class="button" id="emailSubmitButton">
+          <span class="icon"></span><span class="emailDatasetHint">Email</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+<% end %>

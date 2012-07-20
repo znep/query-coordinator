@@ -269,7 +269,7 @@
                 title: 'Advanced Configuration',
                 type: 'selectable',
                 fields: [
-                    { text: 'Show Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
+                    { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
                 ]
             },
             {

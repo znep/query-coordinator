@@ -1105,6 +1105,10 @@
             var mapProjection = this.map.getProjectionObject();
             this.viewport.transform(blist.openLayers.geographicProjection, mapProjection);
             this.wholeWorld.transform(blist.openLayers.geographicProjection, mapProjection);
+
+            this.original = this.viewport.clone();
+
+            this._untouched = true;
         },
 
         destroy: function()
@@ -1124,12 +1128,13 @@
                 { viewport: this.toViewport(blist.openLayers.geographicProjection) }) });
             delete this.mapObj._isResize;
             delete this.handlingEvent;
+            delete this._untouched;
         },
 
         saveViewport: function(original)
         {
             this.viewport = (this.map.getExtent() || this.wholeWorld).intersection(this.wholeWorld);
-            if (original) this.original = this.viewport.clone();
+            if (original) { this.original = this.viewport.clone(); }
         },
 
         resetToOriginal: function()
@@ -1151,6 +1156,7 @@
 
         zoomToPreferred: function()
         {
+            if (this.viewportInOriginal) { return; }
             if (_.any(_.pluck(this.mapObj._children, 'loading'))) { this.delayZoom(); return; }
             var viewport = this.preferredViewport();
             if (!viewport) { return; }
@@ -1196,6 +1202,11 @@
         crossesDateline: function()
         {
             return this.viewport.left > this.viewport.right;
+        },
+
+        untouched: function()
+        {
+            return this._untouched;
         },
 
         isWholeWorld: function()

@@ -11,7 +11,7 @@
             layerObj._map.addLayer(layerObj._clusterBoundaries);
 
             layerObj._parent.viewportHandler()
-                .events.register('viewportchanged', layerObj, layerObj.viewportHandler);
+                .events.register('viewportchanged', layerObj, layerObj.onViewportChange);
         },
 
         destroy: function()
@@ -19,10 +19,10 @@
             this._super();
             this._clusterBoundaries.destroy();
             this._parent.viewportHandler()
-                .events.unregister('viewportchanged', this, this.viewportHandler);
+                .events.unregister('viewportchanged', this, this.onViewportChange);
         },
 
-        viewportHandler: function()
+        onViewportChange: function()
         {
             var layerObj = this;
             if (layerObj._parent.viewportHandler().viewportInOriginal)

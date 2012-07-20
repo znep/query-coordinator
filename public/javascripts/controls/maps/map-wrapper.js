@@ -163,6 +163,8 @@
                 // TODO: Decide whether or not this is a good idea.
                 if (_.isEmpty(mapObj._children))
                 { mapObj.map.setCenter(new OpenLayers.LonLat(0,0)); }
+                else if (mapObj._viewportHandler.viewportInOriginal)
+                { mapObj._viewportHandler.resetToOriginal(); }
 
                 // For split views.
                 mapObj._primaryView.childViews = _.flatten(_.map(mapObj._children, function(c)
@@ -258,7 +260,7 @@
                         delete mapObj._children[index].loading;
                     }
                     else
-                    { constructChildView(df, index); childViewConstructing = true; }
+                    { childViewConstructing = true; constructChildView(df, index); }
                 });
 
                 if (mapObj._doneLoading
@@ -268,10 +270,12 @@
                 { mapObj.viewportHandler().resetToOriginal(); }
 
                 if (!childViewConstructing)
-                { mapObj.buildSelectFeature(); }
-                else if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
-                    && _.all(mapObj._children, function(cv) { return !cv.loading; }))
-                { datasetsLoaded(); }
+                {
+                    mapObj.buildSelectFeature();
+                    if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
+                        && _.all(mapObj._children, function(cv) { return !cv.loading; }))
+                    { datasetsLoaded(); }
+                }
             }).trigger('displayformat_change');
         },
 

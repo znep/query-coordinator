@@ -106,12 +106,14 @@ module Canvas2
       parent_resolver = !self.parent.blank? ? self.parent.resolver() : Util.base_resolver()
       lambda do |name|
         v = Util.deep_get((@resolver_context || {}), name)
-        keyed_c = {}
-        context.is_a?(Array) ?
-          context.each { |dc| keyed_c[dc[:id]] = dc } : keyed_c[context[:id]] = context
-        v = Util.deep_get(keyed_c, name) if v.blank?
-        v = Util.deep_get(context, name) if v.blank? && !context.is_a?(Array)
-        v = context.detect { |c| Util.deep_get(c, name) } if v.blank? && context.is_a?(Array)
+        if !context.blank?
+          keyed_c = {}
+          context.is_a?(Array) ?
+            context.each { |dc| keyed_c[dc[:id]] = dc } : (keyed_c[context[:id]] = context)
+          v = Util.deep_get(keyed_c, name) if v.blank?
+          v = Util.deep_get(context, name) if v.blank? && !context.is_a?(Array)
+          v = context.detect { |c| Util.deep_get(c, name) } if v.blank? && context.is_a?(Array)
+        end
         v = parent_resolver.call(name) if v.blank?
         v
       end

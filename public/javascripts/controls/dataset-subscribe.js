@@ -22,7 +22,7 @@
         $dsTypeUp.text(displayName.capitalize());
         $dialog.find('.datasetName').text(dataset.name);
 
-        var rssUrl = dataset.apiUrl + '.rss';
+        var rssUrl = dataset.apiUrl + '/rows.rss';
         $dialog.find('.rssSection a.rss').attr('href', rssUrl);
         $dialog.find('.rssSection a.greader').attr('href', 'http://fusion.google.com/add?feedurl=' + rssUrl);
         $dialog.find('.rssSection a.feed').attr('href', 'feed:' + rssUrl);

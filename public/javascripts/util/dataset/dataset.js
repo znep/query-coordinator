@@ -34,7 +34,10 @@ var Dataset = ServerModel.extend({
             'displaytype_change', 'column_totals_changed', 'removed',
             'permissions_changed', 'new_comment']);
 
-        $.extend(this, v);
+        var cObj = this;
+        // Avoid overwriting functions with static values from Rails (e.g., totalRows)
+        _.each(v, function(curVal, key)
+            { if (!_.isFunction(cObj[key])) { cObj[key] = curVal; } });
 
         if (!(blist.viewCache[this.id] instanceof Dataset))
         { blist.viewCache[this.id] = this; }
@@ -880,6 +883,7 @@ var Dataset = ServerModel.extend({
             });
 
             ds._aggregatesStale = false;
+            ds.trigger('column_totals_changed');
             if (_.isFunction(callback)) { callback(); }
         };
 
@@ -903,7 +907,7 @@ var Dataset = ServerModel.extend({
 
         if (isStale)
         { ds._activeRowSet.getAggregates(aggResult, customAggs); }
-        else
+        else if (_.isFunction(callback))
         { callback(); }
     },
 
@@ -1910,7 +1914,7 @@ var Dataset = ServerModel.extend({
         if (needQueryChange || (oldSearch != ds.searchString) ||
                 !_.isEqual(oldQuery, ds.query))
         {
-            ds._aggregatesStale = true;
+            ds.aggregatesChanged();
             var filterChanged = needQueryChange ||
                 !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
                 !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters);

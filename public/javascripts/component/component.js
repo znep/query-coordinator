@@ -717,7 +717,8 @@
         /**
          * Obtain a function that can resolve substitution properties for this component's data context.
          */
-        _propertyResolver: function() {
+        _propertyResolver: function()
+        {
             var cObj = this;
             var parentResolver = this.parent ? this.parent._propertyResolver() :
                 $.component.rootPropertyResolver;
@@ -726,8 +727,13 @@
             var dcResolver = function(name)
             {
                 var result = $.deepGetStringField(keyedDC, name);
+                // dc.dataset is the only time we care about applying an
+                // object to a function
+                if (_.isFunction(result))
+                { result = result.call(keyedDC[_.first(name.split('.', 1))].dataset); }
+
                 if (result !== undefined)
-                    return result;
+                { return result; }
                 _.any($.makeArray(cObj._dataContext), function(dc)
                 {
                     result = $.deepGetStringField(dc, name);

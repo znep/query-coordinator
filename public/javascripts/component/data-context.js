@@ -71,6 +71,9 @@
                     });
                 }
 
+                if (!$.isBlank(curC.dataset))
+                { hookTotals(config, curC.dataset); }
+
                 if (!$.isBlank(curC.column))
                 {
                     if (!(curC.column instanceof Column))
@@ -81,11 +84,15 @@
                         function(ds)
                         {
                             curC.column.setParent(ds);
+                            hookColumnAggs(config, curC.column);
                             doneLoading(curC);
                         });
                     }
                     else
-                    { doneLoading(curC); }
+                    {
+                        hookColumnAggs(config, curC.column);
+                        doneLoading(curC);
+                    }
                 }
                 else
                 { doneLoading(curC); }
@@ -126,6 +133,7 @@
                         { errorLoading(id); }
                         else
                         {
+                            hookColumnAggs(config, col);
                             if (!$.isBlank(config.aggregate))
                             {
                                 var aggs = {};
@@ -264,7 +272,14 @@
         {
             if (!config.keepOriginal) { addQuery(ds, config.query); }
             if (config.getTotal)
-            { ds.getTotalRows(function() { callback(ds); }, function() { errorCallback(id); }) }
+            {
+                ds.getTotalRows(function()
+                {
+                    hookTotals(config, ds);
+                    callback(ds);
+                },
+                function() { errorCallback(id); });
+            }
             else { callback(ds); }
         };
 
@@ -327,6 +342,33 @@
             var fr = {};
             _.each(dataset.visibleColumns, function(c) { fr[c.fieldName] = r[c.lookup]; });
             callback(fr);
+        });
+    };
+
+    var hookTotals = function(config, ds)
+    {
+        if (!config.getTotal) { return; }
+        ds.bind('row_count_change', function()
+        {
+            _.defer(function()
+            {
+                if ($.isBlank(ds.totalRows()))
+                { ds.getTotalRows(); }
+            });
+        });
+    };
+
+    var hookColumnAggs = function(config, col)
+    {
+        if ($.isBlank(config.aggregate)) { return; }
+        col.view.bind('column_totals_changed', function()
+        {
+            _.defer(function()
+            {
+                var aggs = {};
+                aggs[col.id] = $.makeArray(config.aggregate);
+                col.view.getAggregates(null, aggs);
+            });
         });
     };
 

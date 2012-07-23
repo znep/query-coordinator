@@ -4204,7 +4204,7 @@
                         { updateRows(rows); }, table)
                     .bind('query_change', updateHeader, table)
                     .bind('column_resized', configureWidths, table)
-                    .bind('column_totals_changed', renderFooter, table);
+                    .bind('column_totals_changed', function() { _.defer(renderFooter); }, table);
 
             };
 

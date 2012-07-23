@@ -17,12 +17,13 @@ module Canvas2
         if con.is_a?(Array)
           @context = []
           con.each_with_index do |c,i|
-            cur_id = c_id + '-' + i.to_s
+            cur_id = c['id'].blank? ? c_id + '-' + i.to_s : c['id']
             DataContext.load_context(cur_id, c)
             @context << DataContext.available_contexts[cur_id]
           end
           @context.compact!
         else
+          c_id = con['id'].blank? ? c_id : con['id']
           DataContext.load_context(c_id, con)
           @context = DataContext.available_contexts[c_id]
         end
@@ -105,12 +106,12 @@ module Canvas2
       parent_resolver = !self.parent.blank? ? self.parent.resolver() : Util.base_resolver()
       lambda do |name|
         v = Util.deep_get((@resolver_context || {}), name)
-        c = context || {}
-        if c.is_a?(Array)
-          c = {}
-          context.each {|dc| c[dc[:id]] = dc}
-        end
-        v = Util.deep_get(c, name) if v.blank?
+        keyed_c = {}
+        context.is_a?(Array) ?
+          context.each { |dc| keyed_c[dc[:id]] = dc } : keyed_c[context[:id]] = context
+        v = Util.deep_get(keyed_c, name) if v.blank?
+        v = Util.deep_get(context, name) if v.blank? && !context.is_a?(Array)
+        v = context.detect { |c| Util.deep_get(c, name) } if v.blank? && context.is_a?(Array)
         v = parent_resolver.call(name) if v.blank?
         v
       end

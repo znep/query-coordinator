@@ -206,6 +206,10 @@ module Canvas2
       @needs_own_context = true
       super(props, parent, resolver_context)
     end
+
+    def render_contents
+      [super[0], false]
+    end
   end
 
   class GridContainer < Container

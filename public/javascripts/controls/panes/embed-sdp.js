@@ -9,8 +9,7 @@
 
         isAvailable: function()
         {
-            return this._view.isPublic() && this._view.valid &&
-                (!this._view.temporary || this._view.minorChange);
+            return this._view.valid && (!this._view.temporary || this._view.minorChange);
         },
 
         getDisabledSubtitle: function()
@@ -23,6 +22,7 @@
 
         _getSections: function()
         {
+            var cpObj = this;
             return [
                 {
                     customContent: {
@@ -31,6 +31,8 @@
                         data: {},
                         callback: function($formElem)
                         {
+                            $formElem.find('.privateDatasetMessage').toggleClass('hide', cpObj._view.isPublic());
+
                             $formElem.embedForm({
                                 invalidCallback: function()
                                 {

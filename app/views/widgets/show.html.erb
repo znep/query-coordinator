@@ -179,6 +179,17 @@
   </ul>
 <%- end -%>
 
+<%= modal :class => 'privateDataset' do %>
+  <h2>Notice</h2>
+  <p>This view is currently private. You can preview it here, but you will need to make it
+     public before people will be able to see it.</p>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button" href="#close">Close</a>
+    </li>
+  </ul>
+<%- end -%>
+
 <%= render_translations LocalePart.controls.browse %>
 <%= render_translations LocalePart.controls.grid %>
 
@@ -206,6 +217,7 @@
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.enabledModules = <%= raw @view.enabled_modules.to_json %>;
+    blist.widget.showPrivateMessage = <%= !@view.is_public? && !@is_mobile %>;
   </script>
 
   <%= include_javascripts 'widgets-show' %>

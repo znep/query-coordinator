@@ -724,6 +724,11 @@ $(function()
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('widget (v2)', 'page loaded', document.referrer);
     });
+
+    if (widgetNS.showPrivateMessage === true)
+    {
+        $('.privateDataset').jqmShow();
+    }
 });
 
 

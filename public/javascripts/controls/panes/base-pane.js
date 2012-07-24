@@ -1405,7 +1405,12 @@
 
     renderLineItem.radioGroup = function(cpObj, contents, args, curValue, defValue)
     {
-        args.item.name += '_' + _.uniqueId();
+        var aMatch = '-templateId';
+        if (args.item.name.endsWith(aMatch))
+        { args.item.name = [args.item.name.slice(0, -aMatch.length), _.uniqueId(), aMatch].join(''); }
+        else
+        { args.item.name += '_' + _.uniqueId(); }
+
         var itemAttrs = commonAttrs(cpObj, args.item, args.context);
         var defChecked;
         var valChecked;

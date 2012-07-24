@@ -163,7 +163,7 @@
                 // TODO: Decide whether or not this is a good idea.
                 if (_.isEmpty(mapObj._children))
                 { mapObj.map.setCenter(new OpenLayers.LonLat(0,0)); }
-                else if (mapObj._viewportHandler.viewportInOriginal)
+                else if (mapObj.viewportHandler().viewportInOriginal)
                 { mapObj._viewportHandler.resetToOriginal(); }
 
                 // For split views.

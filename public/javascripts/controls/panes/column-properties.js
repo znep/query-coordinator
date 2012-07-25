@@ -212,6 +212,13 @@
         getDisabledSubtitle: function()
         { return 'You cannot edit column properties for an unsaved view'; },
 
+        render: function()
+        {
+            this._super.apply(this, arguments);
+            if ($.subKeyDefined(this, '_curData.origColumn'))
+            { this.$dom().loadingSpinner().setModel(this._curData.origColumn); }
+        },
+
         _dataPreProcess: function(col)
         {
             var cleanCol = col.cleanCopy();

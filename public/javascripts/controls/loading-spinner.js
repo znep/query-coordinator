@@ -33,12 +33,24 @@
                 spObj.$dom().data("loadingSpinner", spObj);
                 spObj.showHide(spObj.settings.showInitially);
 
-                if (!$.isBlank(spObj.settings.model))
+                spObj.setModel(spObj.settings.model);
+            },
+
+            setModel: function(newModel)
+            {
+                var spObj = this;
+                if (!$.isBlank(spObj._model))
                 {
-                    spObj.settings.model.bind('request_start', function() { spObj.showHide(true); });
-                    spObj.settings.model.bind('request_status', function()
-                        { spObj.setMessage.apply(spObj, arguments); });
-                    spObj.settings.model.bind('request_finish', function() { spObj.showHide(false); });
+                    spObj._model.unbind(null, null, spObj);
+                }
+
+                if (!$.isBlank(newModel))
+                {
+                    newModel.bind('request_start', function() { spObj.showHide(true); }, spObj);
+                    newModel.bind('request_status', function()
+                        { spObj.setMessage.apply(spObj, arguments); }, spObj);
+                    newModel.bind('request_finish', function() { spObj.showHide(false); }, spObj);
+                    spObj._model = newModel;
                 }
             },
 

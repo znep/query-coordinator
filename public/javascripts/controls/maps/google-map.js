@@ -65,7 +65,14 @@
                     $geolocator_prompt.find('a.button').click(function()
                     { doZoom($geolocator_prompt.find('input.textPrompt').val()); });
                     $div.append($geolocator_prompt);
+
+                    control.clickout = new OpenLayers.Handler.Click( control, {
+                        'click': function(evt) { $geolocator_prompt.hide(); }
+                    });
+                    control.clickout.activate();
                 }
+                else
+                { $geolocator_prompt.show(); }
             });
 
             return this.div;

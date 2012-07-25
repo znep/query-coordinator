@@ -2,7 +2,7 @@
 
 var DEFAULT_PAGE_SIZE = 5;
 
-$.component.PagedContainer.extend('Multi-Paged Container', 'content', {
+$.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content', {
     /* Actual children added to the container */
     children: function()
     { return this._contentChildren; },

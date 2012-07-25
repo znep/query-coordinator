@@ -1,4 +1,4 @@
-$.component.Component.extend('Menu', 'content', {
+$.component.Component.extend('Menu', 'none', {//'content', {
     _needsOwnContext: true,
 
     _render: function() {

@@ -1,4 +1,4 @@
-$.component.Component.extend('Search', 'input', {
+$.component.Component.extend('Search', 'none', {//'input', {
     _init: function()
     {
         this._needsOwnContext = true;

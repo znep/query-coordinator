@@ -308,6 +308,7 @@
 
         for (var i in results)
         {
+            if (results[i] instanceof Function) { continue; } // Because IE is dumb
             $('<li>' + config.renderFunction(results[i].dataItem, results[i].topMatch, config) + '</li>')
 				.data('awesomecomplete-dataItem', results[i].originalDataItem)
                 .data('awesomecomplete-value', config.valueFunction(results[i].originalDataItem, config))

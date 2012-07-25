@@ -65,7 +65,7 @@
         $emailDialog.find('.datasetTypeNameUpcase').text(displayName.capitalize());
         $emailDialog.find('.datasetName').text(dataset.name);
 
-        $emailDialog.find('.emailLine:not(:first)').remove();
+        $emailDialog.find('.emailLine').slice(1).remove();
         $emailDialog.find('.emailRecipient').val('');
         $emailDialog.find('.recipientUid').val('');
         $emailDialog.find('.recipientRole').val(

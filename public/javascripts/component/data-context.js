@@ -77,13 +77,12 @@
                 if (!$.isBlank(curC.column))
                 {
                     if (!(curC.column instanceof Column))
-                    { curC.column = new Column(curC.column); }
-                    if ($.isBlank(curC.column.view))
                     {
+                        // First find dataset
                         loadDataset(dc, id, $.extend({keepOriginal: $.isBlank(config.query)}, config),
                         function(ds)
                         {
-                            curC.column.setParent(ds);
+                            curC.column = ds.columnForIdentifier(config.columnId);
                             hookColumnAggs(config, curC.column);
                             doneLoading(curC);
                         });

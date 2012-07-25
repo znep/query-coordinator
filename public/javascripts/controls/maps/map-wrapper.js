@@ -153,6 +153,16 @@
 
             mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);
 
+            mapObj.map.escapeToClosePopup = function()
+            {
+                this.escapeClause = function(evt)
+                { if (evt.keyCode == 27) { mapObj.closePopup(null, true); } };
+                OpenLayers.Handler.Keyboard( this, {
+                    'keyup': this.escapeClause,
+                    'keydown': this.escapeClause
+                });
+            };
+
             mapObj._controls = {};
             _.each([ 'ZoomBar', 'MapTypeSwitcher', 'Overview', 'IconCache', 'GeocodeDialog' ],
             function(c)

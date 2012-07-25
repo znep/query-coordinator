@@ -94,7 +94,7 @@
             layerObj._getFeature = new OpenLayers.Control.GetFeature({
                 protocol: layerObj.featureProtocol(),
                 filterType: OpenLayers.Filter.Spatial.INTERSECTS,
-                single: true
+                single: false
             });
 
             layerObj._map.addControl(layerObj._getFeature);
@@ -114,33 +114,43 @@
             layerObj._getFeature.events.register('clickout', layerObj,
                 function() { this._parent.closePopup('loading'); });
 
-            layerObj._getFeature.events.register('featureselected', layerObj, function(evtObj)
+            layerObj._getFeature.events.register('featuresselected', layerObj, function(evtObj)
             {
-                var feature = evtObj.feature;
+                var features = evtObj.features;
 
                 layerObj._parent.closePopup('loading');
-                var popupText = _.map(feature.attributes, function(value, key)
+
+                var $popupText = $.tag({ tagName: 'div',
+                contents: _.map(features, function(feature)
                 {
-                    if (_.include(['_SocrataID', 'bbox'], key)) { return; }
-                    return $.tag({
-                        tagName: 'p',
-                        contents: [ {
-                            tagName: 'span', 'class': 'property',
-                            contents: $.htmlEscape(key) + ':'
-                        }, {
-                            tagName: 'span', 'class': 'value',
-                            contents: $.htmlEscape(value)
-                        } ]
-                    }, true);
-                }).join('');
+                    return { tagName: 'div', 'class': 'row',
+                        contents: _.map(feature.attributes, function(value, key)
+                        {
+                            if (_.include(['_SocrataID', 'bbox'], key)) { return; }
+                            return {
+                                tagName: 'p',
+                                contents: [ {
+                                    tagName: 'span', 'class': 'property',
+                                    contents: $.htmlEscape(key) + ':'
+                                }, {
+                                    tagName: 'span', 'class': 'value',
+                                    contents: $.htmlEscape(value)
+                                } ]
+                            };
+                        })
+                    };
+                }) });
+
+                if (features.length > 1)
+                { layerObj.addInfoPagingToFlyout($popupText); }
 
                 var lonlat = layerObj._getFeature.pixelToBounds(
                     layerObj._getFeature.handlers.click.evt.xy).getCenterLonLat();
 
-                layerObj._parent.showPopup(lonlat, popupText, { closeBoxCallback: function(evt)
-                    { layerObj._getFeature.unselect(feature); } });
+                layerObj._parent.showPopup(lonlat, $popupText[0].innerHTML,
+                    { closeBoxCallback: function(evt) { layerObj._getFeature.unselectAll(); } });
 
-                layerObj._selectionLayer.addFeatures([feature]);
+                layerObj._selectionLayer.addFeatures(features);
             });
 
             layerObj._getFeature.events.register('featureunselected', layerObj, function(evtObj)

@@ -285,19 +285,7 @@
                 function(r) { $info.append(layerObj.renderFlyout(r)); });
 
             if (rows.length > 1)
-            {
-                $info.children('.row').addClass('hide')
-                    .first().removeClass('hide');
-                $info.append($.tag({tagName: 'div', 'class': 'infoPaging',
-                    contents: [
-                        {tagName: 'a', 'class': ['previous', 'disabled'],
-                            href: '#Previous', title: 'Previous row',
-                            contents: '&lt; Previous'},
-                        {tagName: 'a', 'class': 'next', href: '#Next',
-                            title: 'Next row', contents: 'Next &gt;'}
-                    ]
-                }));
-            }
+            { this.addInfoPagingToFlyout($info); }
 
             // TODO: Update to use address when geolocating.
             if (!layerObj._locCol) { return $info; }
@@ -325,6 +313,21 @@
             }
 
             return $info;
+        },
+
+        addInfoPagingToFlyout: function($flyout)
+        {
+            $flyout.children('.row').addClass('hide')
+                .first().removeClass('hide');
+            $flyout.append($.tag({tagName: 'div', 'class': 'infoPaging',
+                contents: [
+                    {tagName: 'a', 'class': ['previous', 'disabled'],
+                        href: '#Previous', title: 'Previous row',
+                        contents: '&lt; Previous'},
+                    {tagName: 'a', 'class': 'next', href: '#Next',
+                        title: 'Next row', contents: 'Next &gt;'}
+                ]
+            }));
         },
 
         renderFlyout: function(row)

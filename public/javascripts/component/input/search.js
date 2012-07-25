@@ -10,13 +10,14 @@ $.component.Component.extend('Search', 'none', {//'input', {
         var cObj = this;
         cObj._super.apply(cObj, arguments);
         cObj.$contents.empty();
-        cObj.$contents.append($.tag({ tagName: 'input', type: 'text', name: 'q' }));
+        cObj.$contents.append($.tag({ tagName: 'input', type: 'text', name: 'q', 'class': 'textPrompt' }));
         cObj.$contents.append($.tag({ tagName: 'a', 'class': 'button', contents: 'Search' }));
 
         var handler = function()
         {
-            var q;
-            if (_.isEmpty(q = cObj.$contents.find('input').val())) { return; }
+            var $input = cObj.$contents.find('input');
+            var q = $input.val();
+            if ($input.hasClass('prompt') || _.isEmpty(q)) { q = ''; }
 
             _.each(cObj._getDatasetListFromContext(cObj._dataContext), function(ds)
             { ds.update({ searchString: q }); });

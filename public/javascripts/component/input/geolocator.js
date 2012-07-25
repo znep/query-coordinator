@@ -1,4 +1,4 @@
-$.component.Component.extend('Geolocator', 'input', {
+$.component.Component.extend('Geolocator', 'none', {//'input', {
     _needsOwnContext: true,
 
     _init: function()

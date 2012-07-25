@@ -1,6 +1,6 @@
 ;(function() {
 
-$.component.Component.extend('Pager', 'input', {
+$.component.Component.extend('Pager', 'none', {//'input', {
     _needsOwnContext: true,
 
     // Config options:

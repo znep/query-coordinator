@@ -2,7 +2,9 @@
 
 _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, localChartType)
 {
-    $.component.Component.extend(value.text.toLowerCase().capitalize(), 'data', {
+    $.component.Component.extend(value.text.toLowerCase().capitalize(),
+        _.include(['area chart', 'bar chart', 'donut chart', 'stacked column chart',
+            'stacked bar chart'], value.text.toLowerCase()) ? 'none' : 'data', {
         _init: function()
         {
             this._needsOwnContext = true;

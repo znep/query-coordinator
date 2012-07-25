@@ -1,6 +1,6 @@
 ;(function($) {
 
-$.component.PagedContainer.extend('Carousel', 'content', {
+$.component.PagedContainer.extend('Carousel', 'none', {//'content', {
     pause: function()
     {
         this._paused = true;

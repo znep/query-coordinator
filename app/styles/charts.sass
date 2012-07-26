@@ -30,7 +30,7 @@
 
     .ie8 &
       filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3)
-      left: 1em
+      left: -2em
       margin-top: -24em
 
   .xLabelHoriz
@@ -151,7 +151,7 @@
     position: absolute
     text-align: center
 
-    .ie7 &, .ie8 &
+    .ie8 &
       background: transparent url(/stylesheets/images/content/70percentwhite.png)
 
     &.bottom, &.top
@@ -174,7 +174,6 @@
       right: -24em
 
     .legendLine
-      @include ie7-inline-block
       display: inline-block
       padding: 1em
 

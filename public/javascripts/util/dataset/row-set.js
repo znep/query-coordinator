@@ -66,10 +66,19 @@ var RowSet = ServerModel.extend({
         return _.detect(cell || {}, function(sr) { return sr.id == id; });
     },
 
-    getTotalRows: function(successCallback, errorCallback)
+    // arguments: ([first-fetch size], [successCallback, [errorCallback]])
+    getTotalRows: function()
     {
+        var args = Array.prototype.slice.call(arguments);
+        var length = 1;
+        if (_.isNumber(args[0]))
+        {
+            length = args.shift();
+        }
+        var successCallback = args[0], errorCallback = args[1];
+
         if ($.isBlank(this._totalCount))
-        { this.getRows(0, 1, successCallback, errorCallback); }
+        { this.getRows(0, length, successCallback, errorCallback); }
         else if (_.isFunction(successCallback))
         { successCallback(); }
     },
@@ -302,6 +311,31 @@ var RowSet = ServerModel.extend({
                 loadAllRows();
             }
         }
+    },
+
+    getAllRows: function(successCallback, errorCallback)
+    {
+        var rs = this;
+        rs.getTotalRows(50, function()
+        {
+            if (rs._totalCount < 50)
+            {
+                // we're done already
+                rs.getRows(0, rs._totalCount, successCallback, errorCallback);
+            }
+            else
+            {
+                var loadedRows = 0;
+                rs.getRows(0, rs._totalCount, function(rows)
+                {
+                    loadedRows += rows.length;
+                    if (loadedRows >= rs._totalCount)
+                    {
+                        rs.getRows(0, rs._totalCount, successCallback, errorCallback);
+                    }
+                }, errorCallback);
+            }
+        }, errorCallback);
     },
 
     loadedRows: function()

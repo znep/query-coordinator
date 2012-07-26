@@ -54,89 +54,77 @@ d3base.seriesGrouping = {
             })
         }) });
 
+        var maybeDone = _.after(2, function()
+        {
+            // this is saved down below. Now that we have everything we need
+            // to get ready, process some things and allow everything to init.
+            vizObj._preprocessSeriesColumns();
+            sg.superInit.call(vizObj);
+        });
+
         // make another copy of the view that we'll use to get the category-relevant rows
         // piggyback off sortedView so that the categories come back sorted
-        var groupedView = sg.groupedView = sortedView.clone();
+        var categoryGroupedView = sortedView.clone();
         var fixedColumn = vizObj._fixedColumns[0];
-        groupedView.update({ query: $.extend({}, sortedView.query, {
+        categoryGroupedView.update({ query: $.extend({}, sortedView.query, {
             groupBys: [{
                 columnId: fixedColumn.id,
                 type: 'column'
             }]
         }) });
+        categoryGroupedView.getAllRows(function(rows)
+        {
+            sg.categoryGroupedRows = rows;
+            maybeDone();
+        });
 
-        vizObj._super();
+        // make yet another copy of the view grouped by the series columns, so we can
+        // just evaluate all the possible combinations of creating series columns up
+        // front, rather than trying to piece things together as we go.
+        var seriesGroupedView = sg.seriesGroupedView = sortedView.clone();
+        var seriesGroupedColumns = _.without(sortColumns, vizObj._fixedColumns[0]);
+        seriesGroupedView.update({ query: $.extend({}, sortedView.query, {
+            groupBys: _.map(seriesGroupedColumns, function(col)
+            {
+                return {
+                    columnId: col.id,
+                    type: 'column'
+                };
+            })
+        }) });
+        seriesGroupedView.getAllRows(function(rows)
+        {
+            sg.seriesGroupedRows = rows;
+            maybeDone();
+        });
+
+        // we're explicitly not calling _super here. we'll save it off, and
+        // initialize the rest of the chain once we're ready here. saves a
+        // lot of bad hackery.
+        sg.superInit = vizObj._super;
     },
 
     cleanVisualization: function()
     {
         delete this._seriesGrouping;
+        this._super();
     },
 
-    getDataForView: function(view)
+    _preprocessSeriesColumns: function()
     {
         var vizObj = this,
             sg = vizObj._seriesGrouping,
-            _super = vizObj._super; // need to save this off since it gets called async
+            fixedColumn = vizObj._fixedColumns[0];
 
-        // also need to fetch category rows
-        sg.groupedView.getRows(0, 50, function(rows)
+        // figure out our categories and make virtual row index lookups for them.
+        _.each(sg.categoryGroupedRows, function(row)
         {
-            if (!_.isNumber(sg.totalVirtualRows))
-            {
-                // once we know the rowcount, send off a request to get them all
-                sg.totalVirtualRows = sg.groupedView.totalRows();
-                if (sg.totalVirtualRows > 50)
-                {
-                    sg.groupedView.getRows(50, sg.totalVirtualRows);
-                }
-            }
-
-            // shuffle the rows into the array
-            var fixedColumn = vizObj._fixedColumns[0];
-            _.each(rows, function(row)
-            {
-                sg.categoryIndexLookup[row[fixedColumn.id]] = row.index;
-            });
-
-            // once we're ready trigger super
-            // TODO: could be parallelized but i can't even begin to think through that
-            if (sg.totalVirtualRows === _.keys(sg.categoryIndexLookup).length)
-            {
-                // need to plug in the sortedview to look through instead.
-                _super.call(vizObj, sg.sortedView);
-            }
+            sg.categoryIndexLookup[row[fixedColumn.lookup]] = row.index;
         });
-    },
+        sg.totalVirtualRows = sg.categoryGroupedRows.length;
 
-    getRenderRange: function(view)
-    {
-        var vizObj = this,
-            sg = vizObj._seriesGrouping;
-
-        if (!sg.ready)
-        {
-            // just fetch more rows until we get a repeat. we don't really have any
-            // way of predicting when that'll happen.
-            return { start: sg.physicalRowsRetreived, length: 50 };
-        }
-        else
-        {
-            var virtualRenderRange = vizObj._super(view);
-            // TODO: translate to physical range before returning
-            return virtualRenderRange;
-        }
-    },
-
-    renderData: function(data)
-    {
-        var vizObj = this,
-            sg = vizObj._seriesGrouping,
-            justReadied = false,
-            createdVirtualColumns = false;
-
-        // collate what we just got into virtual columns.
-        _.each(data, function(row)
+        // figure out our series columns.
+        _.each(sg.seriesGroupedRows, function(row)
         {
             var groupName = vizObj._groupName(row);
 
@@ -147,19 +135,17 @@ d3base.seriesGrouping = {
                 var virtualColumnName = (vizObj._valueColumns.length === 1) ?
                         groupName : valueCol.column.name + ', ' + groupName;
 
-                if (!$.isBlank(sg.virtualColumns[virtualColumnName]))
+                if (!_.isUndefined(sg.virtualColumns[virtualColumnName]))
                 {
-                    // we miiiight have everything...? WHATEVER THUNDERCATS HO
-                    justReadied = sg.ready = true;
-                    return false;
+                    // something has gone wrong
+                    console.log('Error: got a dupe virt col somehow?');
+                    return;
                 }
-
-                createdVirtualColumns = true;
 
                 // save as obj for quick reference below
                 var virtualId = -100 - _.keys(sg.virtualColumns).length; // use negative id space to avoid confusion
                 sg.virtualColumns[virtualColumnName] = {
-                    color: vizObj._getNextColor(valueCol),
+                    color: vizObj._getColorForColumn(valueCol),
                     groupName: groupName,
                     column: {
                         id: virtualId,
@@ -172,8 +158,48 @@ d3base.seriesGrouping = {
             });
         });
 
+        // mark that we're ready for business, and if we've already had a customer
+        // fire it off for them now that we're thundercats ho
+        sg.ready = true;
+        if (sg.wantsData === true)
+        {
+            vizObj.getDataForView(vizObj._primaryView);
+//            vizObj.handleRowCountChange(); <-- probably not needed
+        }
+    },
+
+    getDataForView: function(view)
+    {
+        var vizObj = this,
+            sg = vizObj._seriesGrouping,
+            _super = vizObj._super; // need to save this off since it gets called async
+
+        if (sg.ready !== true)
+        {
+            sg.wantsData = true;
+            return;
+        }
+
+        vizObj._super(sg.sortedView);
+    },
+
+    getRenderRange: function(view)
+    {
+        var vizObj = this,
+            sg = vizObj._seriesGrouping;
+
+        var virtualRenderRange = vizObj._super(view);
+        return { start: virtualRenderRange.start * sg.virtualColumns.length,
+                 length: virtualRenderRange.length * sg.virtualColumns.length };
+    },
+
+    renderData: function(data)
+    {
+        var vizObj = this,
+            sg = vizObj._seriesGrouping,
+            fixedColumn = vizObj._fixedColumns[0];
+
         // drop values where they belong
-        var fixedColumn = vizObj._fixedColumns[0];
         _.each(data, function(row)
         {
             // first get our virtual row, which will simply be the row for whatever
@@ -229,36 +255,15 @@ d3base.seriesGrouping = {
             });
         });
 
-        // are we not ready yet? if not, go fetch some more rows
-        // TODO: since this callback happens in chunks, this can overfetch.
-        if (!sg.ready)
+        // did we not get enough rows to flesh out our viewport? if so
+        // go get more
+        if (false)
         {
-            _.defer(function()
-            {
-                // just call getData again; render range calculator will
-                // figure out what's going on
-                vizObj.getDataForView();
-            });
+            // TODO: how do we even what
         }
-        else
-        {
-            // did we not get enough rows to flesh out our viewport? if so
-            // go get more
-            if (false)
-            {
-                // TODO: how do we even what
-            }
 
-            // resize if we just readied
-            if (justReadied)
-            {
-                if (_.isFunction(vizObj.renderLegend)) vizObj.renderLegend();
-                vizObj.handleRowCountChange();
-            }
-
-            // render what we've got
-            vizObj._super(_.values(sg.virtualRows));
-        }
+        // render what we've got
+        vizObj._super(_.values(sg.virtualRows));
     },
 
     _groupName: function(row)
@@ -271,7 +276,7 @@ d3base.seriesGrouping = {
         }).join(', ');
     },
 
-    _getNextColor: function(valueColumn)
+    _getColorForColumn: function(valueColumn)
     {
         var vizObj = this,
             sg = vizObj._seriesGrouping,

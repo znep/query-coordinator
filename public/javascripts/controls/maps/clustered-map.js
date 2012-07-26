@@ -130,6 +130,12 @@
             this.setQuery(query, true);
         },
 
+        handleRowChange: function(rows)
+        {
+            // It doesn't make sense to listen to row changes when we're clustering.
+            if (this._renderType == 'points') { this._super.apply(this, arguments); }
+        },
+
         handleDataLoaded: function(data)
         {
             if (_.any([this._lastRenderType, this._renderType],

@@ -43,6 +43,8 @@
         {
             var layerObj = this;
 
+            if (!layerObj._idList) { layerObj._idList = {}; }
+
             if (layerObj._renderType == 'clusters')
             { layerObj.prepareHeatAsCluster(row_or_cluster); }
             else
@@ -52,6 +54,8 @@
         prepareHeatAsCluster: function(cluster)
         {
             var layerObj = this;
+
+            if (layerObj._idList['cluster' + cluster.id]) { return; }
 
             // A cluster should either have children or points.
             if (!_.isEmpty(cluster.points))
@@ -75,16 +79,18 @@
                     layerObj._bounds.extend(lonlat);
                 });
             }
+
+            layerObj._idList['cluster' + cluster.id] = true;
         },
 
         prepareHeatAsRow: function(row)
         {
             var layerObj = this;
 
-            if (!layerObj._idList) { layerObj._idList = {}; }
-
             var geometry = layerObj.extractGeometryFromRow(row);
             var dupKey = geometry.toString();
+
+            if (layerObj._idList[dupKey]) { return; }
 
             var lonlat = geometry.toLonLat();
             layerObj._dataStore.push({ lonlat: lonlat });

@@ -149,9 +149,11 @@
                 }
             });
 
-            view.displayFormat.viewport = cpObj._view.displayFormat.viewport;
-            view.displayFormat.compositeMembers = cpObj._view.displayFormat.compositeMembers;
-            view.displayFormat.overrideWithLayerSet = cpObj._view.displayFormat.overrideWithLayerSet;
+            _.each(['viewport', 'compositeMembers', 'overrideWithLayerSet'], function(p)
+            {
+                if (!_.isUndefined(cpObj._view.displayFormat.viewport))
+                { view.displayFormat[p] = cpObj._view.displayFormat[p]; }
+            });
 
             cpObj._view.update(view);
 

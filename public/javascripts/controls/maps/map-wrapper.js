@@ -235,6 +235,7 @@
 
             mapObj._primaryView.bind('displayformat_change', function()
             {
+                if (arguments.length > 0) { return; }
                 mapObj._displayFormat = this.displayFormat;
 
                 if (mapObj._controls.SelectFeature)

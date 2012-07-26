@@ -73,7 +73,8 @@
             if (mapObj._displayFormat.exclusiveLayers)
             { mapObj._controls.MapTypeSwitcher.registerMapType(config.alias, layer); }
 
-            if (!mapObj._displayFormat.exclusiveLayers || !mapObj.map.baseLayer)
+            if (!mapObj._displayFormat.exclusiveLayers || !mapObj.map.baseLayer
+                || layer instanceof OpenLayers.Layer.Google)
             {
                 if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(); }
                 mapObj.map.addLayer(layer);
@@ -94,6 +95,9 @@
                                 google.maps.event.removeListener(listener);
                             }, 2000);
                         });
+
+                    if (mapObj._displayFormat.exclusiveLayers && mapObj.map.baseLayer != layer)
+                    { layerOptions.hidden = true; }
                 }
                 else
                 { layer.events.register('loadend', mapObj, mapObj.mapElementLoaded); }

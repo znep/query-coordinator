@@ -1,7 +1,10 @@
 (function($)
 {
-    
+
 var d3base = blist.namespace.fetch('blist.d3.base');
+
+var globalColorIndex = {};
+var globalColorBasis = [];
 
 // honestly i really think this is a soql thing, not a presentation thing.
 // but we're using it in enough places that i'll implement a stopgap for now.
@@ -98,6 +101,14 @@ d3base.seriesGrouping = {
             maybeDone();
         });
 
+        // clear the global color cache if the user changes the color settings
+        var colorBasis = _.map(vizObj._valueColumns, function(col) { return col.color; });
+        if (!_.isEqual(globalColorBasis, colorBasis))
+        {
+            globalColorIndex = {};
+            globalColorBasis = colorBasis;
+        }
+
         // we're explicitly not calling _super here. we'll save it off, and
         // initialize the rest of the chain once we're ready here. saves a
         // lot of bad hackery.
@@ -145,7 +156,7 @@ d3base.seriesGrouping = {
                 // save as obj for quick reference below
                 var virtualId = -100 - _.keys(sg.virtualColumns).length; // use negative id space to avoid confusion
                 sg.virtualColumns[virtualColumnName] = {
-                    color: vizObj._getColorForColumn(valueCol),
+                    color: vizObj._getColorForColumn(valueCol, virtualColumnName),
                     groupName: groupName,
                     column: {
                         id: virtualId,
@@ -275,11 +286,14 @@ d3base.seriesGrouping = {
         }).join(', ');
     },
 
-    _getColorForColumn: function(valueColumn)
+    _getColorForColumn: function(valueColumn, virtualColumnName)
     {
         var vizObj = this,
             sg = vizObj._seriesGrouping,
             lookup = valueColumn.column.id;
+
+        // if we've already seen this lookup return the color for it (for hstp)
+        if (globalColorIndex[virtualColumnName]) return globalColorIndex[virtualColumnName];
 
         var currentColor = sg.valueColumnColors[lookup];
         if (!currentColor)
@@ -302,6 +316,10 @@ d3base.seriesGrouping = {
                 sg.valueColumnColors[lookup].current = newColor;
             }
         }
+
+        // save off this lookup globally
+        globalColorIndex[virtualColumnName] = sg.valueColumnColors[lookup].current;
+
         return sg.valueColumnColors[lookup].current;
     },
 

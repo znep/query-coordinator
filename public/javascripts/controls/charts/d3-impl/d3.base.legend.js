@@ -7,20 +7,16 @@ $.Control.registerMixin('d3_base_legend', {
     {
         this._super();
 
-        // nothing to do if no legend
-        if (!this.hasLegend()) return;
-
-        // if we're seriesgrouped valuecolumns are all sorts of
-        // fucked up. delay legend render until we have value cols
-        // if necessary.
-        if (this.getValueColumns()) this.renderLegend();
+        if (this.hasLegend()) this.renderLegend();
     },
 
     renderLegend: function()
     {
+        if (!this.hasLegend()) return;
+
         var vizObj = this,
             legendPosition = vizObj._displayFormat.legend,
-            legendDetails = vizObj._displayFormat.legendDetails || {},
+            legendDetails = vizObj._displayFormat.legendDetails || { showSeries: true },
             $legendContainer = vizObj.$legendContainer();
 
         $legendContainer.empty();
@@ -81,7 +77,7 @@ $.Control.registerMixin('d3_base_legend', {
 
     hasLegend: function()
     {
-        return !$.isBlank(this._displayFormat.legend) || (this._displayFormat.legend != 'none');
+        return !$.isBlank(this._displayFormat.legend) && (this._displayFormat.legend != 'none');
     },
 
     _renderLegendLine: function(iconOpts, label)

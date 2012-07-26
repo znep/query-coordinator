@@ -171,8 +171,7 @@ d3base.seriesGrouping = {
     getDataForView: function(view)
     {
         var vizObj = this,
-            sg = vizObj._seriesGrouping,
-            _super = vizObj._super; // need to save this off since it gets called async
+            sg = vizObj._seriesGrouping;
 
         if (sg.ready !== true)
         {
@@ -294,9 +293,9 @@ d3base.seriesGrouping = {
             {
                 // rotate seed around hsv wheel by a bit and start over
                 var newSeedHsb = $.rgbToHsv($.hexToRgb(currentColor.seed));
-                newSeedHsb.h = (newSeedHsb.h + 10) % 360;
+                newSeedHsb.h = (newSeedHsb.h + 20) % 360;
                 var newSeed = $.rgbToHex($.hsvToRgb(newSeedHsb));
-                sg.valueColumnColors[lookup] = { seed: newSeed, current: newSeed };
+                sg.valueColumnColors[lookup] = { seed: '#' + newSeed, current: '#' + newSeed };
             }
             else
             {

@@ -226,7 +226,9 @@ $.Control.registerMixin('d3_impl_column', {
         // this is messy. what's a better way?
         vizObj.defaults.valueLabelBuffer = 100;
         vizObj.defaults.dataMaxBuffer = 30;
-        vizObj._columnChart.$chartArea.removeClass('hasLeftLegend hasRightLegend');
+        vizObj._columnChart.$chartArea
+            .removeClass('hasTopLegend hasRightLegend hasBottomLegend hasLeftLegend')
+            .addClass('has' + $.htmlEscape(vizObj._displayFormat.legend || 'No').capitalize() + 'Legend');
 
         if (vizObj._displayFormat.legend == 'bottom')
         {
@@ -236,15 +238,10 @@ $.Control.registerMixin('d3_impl_column', {
         {
             vizObj.defaults.dataMaxBuffer = 30 + $legendContainer.height();
         }
-        else if (vizObj._displayFormat.legend == 'left')
+        else if (vizObj._displayFormat.legend == 'left' ||
+                 vizObj._displayFormat.legend == 'right')
         {
             $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
-            cc.$chartArea.addClass('hasLeftLegend');
-        }
-        else if (vizObj._displayFormat.legend == 'right')
-        {
-            $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
-            cc.$chartArea.addClass('hasRightLegend');
         }
     },
 

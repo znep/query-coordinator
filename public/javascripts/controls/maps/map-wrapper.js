@@ -174,7 +174,7 @@
                 if (_.isEmpty(mapObj._children))
                 { mapObj.map.setCenter(new OpenLayers.LonLat(0,0)); }
                 else if (mapObj.viewportHandler().viewportInOriginal)
-                { mapObj._viewportHandler.resetToOriginal(); }
+                { mapObj.viewportHandler().resetToOriginal(); }
 
                 // For split views.
                 mapObj._primaryView.childViews = _.flatten(_.map(mapObj._children, function(c)
@@ -329,8 +329,8 @@
                 && _.all(mapObj.map.backgroundLayers(), function(layer) { return layer._loaded; })
                 && _.all(mapObj._children, function(cv) { return cv._loaded; }))
             {
-                mapObj._viewportHandler.expected();
-                mapObj._viewportHandler.saveViewport(true);
+                mapObj.viewportHandler().expected();
+                mapObj.viewportHandler().saveViewport(true);
                 mapObj.geolocate();
                 // Often, at this point, the images of the tiles themselves are not done loading.
                 // Thus, we timeout to wait for this.

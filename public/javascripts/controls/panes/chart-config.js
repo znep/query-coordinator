@@ -391,7 +391,7 @@
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: 'Colors',
                 field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-                minimum: 5, lineClass: 'colorArray'});
+                initialRepeatCount: 5, lineClass: 'colorArray'});
 
         return bc;
     };
@@ -407,7 +407,7 @@
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: 'Colors',
                 field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-                minimum: 5, lineClass: 'colorArray'});
+                initialRepeatCount: 5, lineClass: 'colorArray'});
         return bc;
     };
 

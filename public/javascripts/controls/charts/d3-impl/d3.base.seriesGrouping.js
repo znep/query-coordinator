@@ -1,3 +1,10 @@
+// future improvements:
+// * make obsolete w/ core server cubing
+// * currently assumes well-formed data: fully-specified combinatorics (filled cube).
+//   can make robust to not well-formed many-rowed data by intercepting and overriding
+//   getDataForView() and using an inline filter to filter down to the rows specified in
+//   the actual render ipml's getRenderRange(), then doing a straight getAllRows().
+
 (function($)
 {
 

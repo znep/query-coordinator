@@ -1,3 +1,16 @@
+// future improvements:
+// * make chartArea margins more like named filters rather than depending on css
+// * make d3 element rendering more like composing functions; create an object that contains
+//   the create/update/remove components of a selection, have a small army of functions that
+//   operate on those objects. Makes the different kinds of rerenders less stupid to manage.
+// * kill seriesgrouping and remove its weird timing and oo injection hacks
+// * possible major perf boost out of moving bar rendering back into an html div-based solution.
+//   i tried to do this at one point but ran into z-index issues with error markers. now that
+//   there is the canonical chartRenderArea to render html components in, it should be possible
+//   to try it again.
+// * if ie8 support is ever dropped, i had a working prototype with absolutely no svg at all;
+//   just use css rotation for the text labels. you can wrangle divs into being value markers too.
+
 (function($)
 {
 

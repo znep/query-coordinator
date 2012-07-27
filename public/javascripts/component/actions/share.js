@@ -1,6 +1,6 @@
 ;(function($) {
 
-$.component.Component.extend('Share', 'none', {//'actions', {
+$.component.Component.extend('Share', 'actions', {
     _needsOwnContext: true,
 
     _initDom: function()

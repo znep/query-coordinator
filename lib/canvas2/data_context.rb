@@ -59,7 +59,7 @@ module Canvas2
             aggs[col.id] = config['aggregate'].is_a?(Array) ? config['aggregate'] : [config['aggregate']]
             ds.get_aggregates(aggs)
           end
-          available_contexts[id] = { id: id, type: config['type'], column: col }
+          available_contexts[id] = { id: id, type: config['type'], column: col, parent_dataset: ds }
         end
 
       when 'row'

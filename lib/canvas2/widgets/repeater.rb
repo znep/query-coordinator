@@ -35,7 +35,9 @@ module Canvas2
         elsif context[:type] == 'dataset'
           if @properties['repeaterType'] == 'column'
             ex_f = string_substitute(@properties['excludeFilter'])
+            ex_f = [] if ex_f.blank?
             inc_f = string_substitute(@properties['includeFilter'])
+            inc_f = [] if inc_f.blank?
             context[:dataset].visible_columns.each_with_index do |c, i|
               if ex_f.all? {|k, v| !(Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))} &&
                 (@properties['includeFilter'].blank? ||

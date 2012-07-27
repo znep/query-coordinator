@@ -324,3 +324,28 @@ body.socrata-page
 
     a
       @include sprite-social-media-icons
+
+.component-Search
+  .button
+    padding: 0.2em 0.5em
+
+.component-Sort
+  position: relative
+  .datasetSort
+    padding-right: 16px
+    select
+      width: 100%
+    .selector.uniform
+      margin-top: 0.1em
+  .sortLinks
+    .sortDir
+      @include grid-header-icons
+      float: left
+    .sortClear
+      @include sprite-menu-icons
+      float: left
+    &.dataset
+      .sortDir
+        position: absolute
+        right: 0
+        top: 8px

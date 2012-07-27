@@ -297,6 +297,54 @@ module Canvas2
     end
   end
 
+  class Sort < CanvasWidget
+    def render_contents
+      sorts = []
+      if context[:type] == 'dataset'
+        sorts = context[:dataset].query.orderBys || []
+      elsif context[:type] == 'column'
+        sorts = context[:parent_dataset].query.orderBys || []
+      end
+
+      options = ''
+      found_col = false
+      sort_desc = false
+      if context[:type] == 'dataset'
+        context[:dataset].visible_columns.each do |c|
+          is_sel = sorts.length > 0 && sorts[0]['expression']['columnId'] == c.id
+          options += '<option value="' + c.fieldName + '"' + (is_sel ? ' selected="selected"' : '') +
+            '>' + c.name + '</option>'
+          sort_desc = !sorts[0]['ascending'] if is_sel
+          found_col ||= is_sel
+        end
+      end
+      options = '<option value=""' + (found_col ? '' : ' selected="selected"') +
+        '>(Unsorted)</option>' + options
+
+      if context[:type] == 'column'
+        si = sorts.detect { |s| s['expression']['columnId'] == context[:column].id }
+        found_col = !si.blank?
+        sort_desc = !si['ascending'] if found_col
+      end
+
+      t = '<div class="datasetSort' + (context[:type] != 'dataset' ? ' hide' : '') + '">' +
+          '<select id="' + id + '-datasetSort" name="datasetSort">' +
+          options +
+          '</select>' +
+        '</div>' +
+        '<div class="sortLinks clearfix ' + context[:type] + '">' +
+          '<a href="#sortDir" class="sortDir ' +
+            (!found_col ? 'sortAscLight ' : sort_desc ? 'sortDesc' : 'sortAsc') +
+            (context[:type] == 'dataset' && found_col || context[:type] == 'column' ? '' : ' hide') +
+            '"><span class="icon"></span></a>' +
+          '<a href="#sortClear" class="sortClear remove' +
+            (context[:type] != 'column' || !found_col ? ' hide' : '') +
+            '"><span class="icon"></span></a>' +
+        '</div>'
+      [t, false]
+    end
+  end
+
   class EventConnector < CanvasWidget
     def render
       ['', false]

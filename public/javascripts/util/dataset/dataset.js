@@ -302,6 +302,22 @@ var Dataset = ServerModel.extend({
         ds._activeRowSet.reload(successCallback, errorCallback);
     },
 
+    simpleSort: function(colId, ascending)
+    {
+        var ds = this;
+        var query = $.extend(true, {}, ds.query);
+        var col = ds.columnForIdentifier(colId);
+        if ($.isBlank(col))
+        { delete query.orderBys; }
+        else
+        {
+            query.orderBys = [{ expression:
+                { columnId: col.id, type: 'column' }, ascending: ascending === true }];
+        }
+
+        ds.update({query: query}, false, (query.orderBys || []).length < 2);
+    },
+
     showRenderType: function(rt)
     {
         var ds = this;

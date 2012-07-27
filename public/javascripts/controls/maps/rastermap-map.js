@@ -8,7 +8,7 @@
             var layerObj = this;
 
             layerObj._displayLayer = new OpenLayers.Layer.Heatmap(layerObj._view.name,
-                layerObj._map, layerObj._map.baseLayer,
+                layerObj._map,
                 { 'element': layerObj._parent.currentDom, 'radius': 25, 'visible': true });
             layerObj._map.addLayer(layerObj._displayLayer);
 
@@ -16,10 +16,19 @@
             layerObj._bounds = new OpenLayers.Bounds();
 
             layerObj._parent.viewportHandler()
-                .events.register('viewportchanged', layerObj, layerObj.viewportHandler);
+                .events.register('viewportchanged', layerObj, layerObj.onViewportChange);
         },
 
         initializeFlyouts: function(){}, // No flyouts
+
+        destroy: function()
+        {
+            this._displayLayer.destroy();
+            delete this._dataStore;
+            delete this._bounds;
+            this._parent.viewportHandler().events
+                .unregister('viewportchanged', this, this.onViewportChange);
+        },
 
         preferredExtent: function()
         {

@@ -1146,7 +1146,8 @@
 
         resetToOriginal: function()
         {
-            this.map.zoomToExtent(this.original, true);
+            if (this.willMove(this.original))
+            { this.map.zoomToExtent(this.original, true); }
         },
 
         preferredViewport: function()

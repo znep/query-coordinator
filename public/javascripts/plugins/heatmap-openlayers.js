@@ -15,12 +15,10 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
     // the heatmap isn't a basic layer by default - you usually want to display the heatmap over another map ;)
     isBaseLayer: false,
     heatmap: null,
-    mapLayer: null,
     // we store the lon lat data, because we have to redraw with new positions on zoomend|moveend
     tmpData: {},
-        initialize: function(name, map, mLayer, hmoptions, options){
-            var heatdiv = document.createElement("div"),
-                handler;
+        initialize: function(name, map, hmoptions, options){
+            var heatdiv = document.createElement("div");
 
             OpenLayers.Layer.prototype.initialize.apply(this, [name, options]);
 
@@ -29,20 +27,19 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
         this.div.appendChild(heatdiv);
         // add to our heatmap.js config
         hmoptions.element = heatdiv;
-        this.mapLayer = mLayer;
         this.map = map;
             // create the heatmap with passed heatmap-options
         this.heatmap = h337.create(hmoptions);
         this.active = true;
 
-            handler = function(){ 
+            this.viewportChangeHandler = function(){ 
                 if(this.tmpData.max){
                     this.updateLayer(); 
                 }
             };
         // on zoomend and moveend we have to move the canvas element and redraw the datapoints with new positions
-        map.events.register("zoomend", this, handler);
-        map.events.register("moveend", this, handler);
+        map.events.register("zoomend", this, this.viewportChangeHandler);
+        map.events.register("moveend", this, this.viewportChangeHandler);
         },
     activate: function() { this.active = true; },
     deactivate: function() { this.active = false; },
@@ -58,12 +55,12 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
                 this.setDataSet(this.tmpData);
     },
         getPixelOffset: function () {
-            var o = this.mapLayer.map.layerContainerOrigin,
+            var o = this.map.layerContainerOrigin,
                 o_lonlat = new OpenLayers.LonLat(o.lon, o.lat),
-                o_pixel = this.mapLayer.getViewPortPxFromLonLat(o_lonlat),
-                c = this.mapLayer.map.center,
+                o_pixel = this.map.baseLayer.getViewPortPxFromLonLat(o_lonlat),
+                c = this.map.center,
                 c_lonlat = new OpenLayers.LonLat(c.lon, c.lat),
-                c_pixel = this.mapLayer.getViewPortPxFromLonLat(c_lonlat);
+                c_pixel = this.map.baseLayer.getViewPortPxFromLonLat(c_lonlat);
 
             return { 
                 x: o_pixel.x - c_pixel.x,
@@ -105,7 +102,7 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
     },
     // same procedure as setDataSet
     addDataPoint: function(lonlat){
-        var pixel = this.roundPixels(this.mapLayer.getViewPortPxFromLonLat(lonlat)),
+        var pixel = this.roundPixels(this.map.baseLayer.getViewPortPxFromLonLat(lonlat)),
                 entry = {lonlat: lonlat},
                 args;
 
@@ -130,6 +127,9 @@ OpenLayers.Layer.Heatmap = OpenLayers.Class(OpenLayers.Layer, {
     },
     destroy: function() {
         // for now, nothing special to do here. 
+        // except maybe CLEANING UP YOUR FUCKING MESS.
+        this.map.events.unregister("zoomend", this, this.viewportChangeHandler);
+        this.map.events.unregister("moveend", this, this.viewportChangeHandler);
         OpenLayers.Layer.prototype.destroy.apply(this, arguments);  
     },
     setVisibility: function(visible) {

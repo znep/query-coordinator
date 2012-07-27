@@ -83,7 +83,7 @@ Dataset.map.backgroundLayers = [
     { name: 'Detailed USA Topographic Map (ESRI)', alias: 'USA Topographic Map', className: 'ESRI',
         options: { url: 'USA_Topo_Maps' }},
     { name: 'Annotated World Topographic Map (ESRI)', alias: 'World Topographic Map',
-        className: 'ESRI', options: { url: 'World_Topo_Maps' }},
+        className: 'ESRI', options: { url: 'World_Topo_Map' }},
     { name: 'Natural Earth Map (ESRI)', alias: 'Natural Earth Map', className: 'ESRI',
         options: { url: 'World_Physical_Map' }}
 ];

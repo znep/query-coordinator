@@ -30,7 +30,8 @@ class BrowseController < ApplicationController
       view_types_facet,
       custom_facets,
       categories_facet,
-      topics_facet
+      topics_facet,
+      federated_facet 
     ]
 
     @processed_browse = process_browse(request, browse_options)

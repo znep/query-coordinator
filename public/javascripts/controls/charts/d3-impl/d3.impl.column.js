@@ -232,7 +232,8 @@ $.Control.registerMixin('d3_impl_column', {
     {
         var vizObj = this,
             cc = vizObj._columnChart,
-            $legendContainer = vizObj.$legendContainer();
+            $legendContainer = vizObj.$legendContainer(),
+            legendPosition = vizObj.legendPosition();
 
         vizObj._super();
 
@@ -241,18 +242,17 @@ $.Control.registerMixin('d3_impl_column', {
         vizObj.defaults.dataMaxBuffer = 30;
         vizObj._columnChart.$chartArea
             .removeClass('hasTopLegend hasRightLegend hasBottomLegend hasLeftLegend')
-            .addClass('has' + $.htmlEscape(vizObj._displayFormat.legend || 'No').capitalize() + 'Legend');
+            .addClass('has' + $.htmlEscape(legendPosition || 'No').capitalize() + 'Legend');
 
-        if (vizObj._displayFormat.legend == 'bottom')
+        if (legendPosition == 'bottom')
         {
             vizObj.defaults.valueLabelBuffer = 100 + $legendContainer.height();
         }
-        else if (vizObj._displayFormat.legend == 'top')
+        else if (legendPosition == 'top')
         {
             vizObj.defaults.dataMaxBuffer = 30 + $legendContainer.height();
         }
-        else if (vizObj._displayFormat.legend == 'left' ||
-                 vizObj._displayFormat.legend == 'right')
+        else if ((legendPosition == 'left') || (legendPosition == 'right'))
         {
             $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
         }

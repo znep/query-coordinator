@@ -15,7 +15,7 @@ $.Control.registerMixin('d3_base_legend', {
         if (!this.hasLegend()) return;
 
         var vizObj = this,
-            legendPosition = vizObj._displayFormat.legend,
+            legendPosition = vizObj.legendPosition(),
             legendDetails = vizObj._displayFormat.legendDetails || { showSeries: true },
             $legendContainer = vizObj.$legendContainer();
 
@@ -77,7 +77,12 @@ $.Control.registerMixin('d3_base_legend', {
 
     hasLegend: function()
     {
-        return !$.isBlank(this._displayFormat.legend) && (this._displayFormat.legend != 'none');
+        return this._displayFormat.legend !== 'none';
+    },
+
+    legendPosition: function()
+    {
+        return this._displayFormat.legend || 'bottom';
     },
 
     _renderLegendLine: function(iconOpts, label)

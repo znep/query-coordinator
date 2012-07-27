@@ -136,7 +136,7 @@ class InternalController < ApplicationController
       CoreServer::Base.connection.batch_request do
         params[:features][:name].each do |key, name|
           config.update_property(name,
-                              params[:features][:enabled][name] == 'enabled')
+                              (params[:features][:enabled] || {})[name] == 'enabled')
         end
       end
     end

@@ -1,6 +1,6 @@
 class View < Model
   cattr_accessor :licenses, :creative_commons, :merged_licenses,
-    :filter_type1s
+    :filter_type1s, :custom_vis_cols
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -103,8 +103,18 @@ class View < Model
       c.fieldName == column_id_or_field_name }
   end
 
-  def visible_columns
-    self.columns.reject {|c| c.flag?('hidden')}.sort_by {|c| c.position}
+  def visible_columns(custom_query = nil)
+    q = custom_query || query.data
+    if q['groupBys'].is_a?(Array) && q['groupBys'].length > 0
+      grouped_cols = {}
+      q['groupBys'].each { |c| grouped_cols[c['columnId']] = true }
+    end
+    vc = (self.custom_vis_cols || self.columns).reject do |c|
+      c.flag?('hidden') ||
+        (!grouped_cols.blank? && !grouped_cols[c.id] && c.format.grouping_aggregate.blank?)
+    end
+    vc = vc.sort_by {|c| c.position} if self.custom_vis_cols.blank?
+    vc
   end
 
   def html
@@ -186,10 +196,11 @@ class View < Model
       'searchString' => merged_conditions.delete('searchString'),
       'query' => merged_conditions,
       'originalViewId' => self.id
-    }.to_json
+    }
+    request_body['columns'] = visible_columns(merged_conditions)
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
-    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body, {}, true),
+    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json, {}, true),
                         {:max_nesting => 25})
     {rows: include_meta ? result['data'] : result, meta: include_meta ? result['meta'] : nil}
   end
@@ -260,7 +271,7 @@ class View < Model
       'searchString' => merged_conditions.delete('searchString'),
       'query' => merged_conditions,
       'originalViewId' => self.id,
-      'columns' => visible_columns.map { |c| c.deep_clone(Column) }
+      'columns' => visible_columns(conditions).map { |c| c.deep_clone(Column) }
     }
 
     url = "/views/INLINE/rows.json?method=getAggregates"

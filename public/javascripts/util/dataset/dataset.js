@@ -54,6 +54,7 @@ var Dataset = ServerModel.extend({
         this.updateColumns();
 
         this._adjustProperties();
+        this._updateGroupings();
 
         this.temporary = false;
         this.minorChange = true;

@@ -91,7 +91,8 @@ module Canvas2
       return if query.blank?
       q = {'orderBys' => [], 'groupBys' => []}.deep_merge(ds.query)
       query.each do |k, v|
-        q[k] = (q[k] || ((v.is_a? Array) ? [] : {})).deep_merge(v) if k != 'orderBys' && k != 'groupBys'
+        q[k] = (q[k] || ((v.is_a? Array) ? [] : {})).deep_merge(v) if k != 'orderBys' &&
+          k != 'groupBys' && k != 'groupedColumns'
       end
 
       (query['orderBys'] || []).each do |ob|
@@ -120,6 +121,20 @@ module Canvas2
       q.delete('groupBys') if q['groupBys'].empty?
 
       ds.query.data.deep_merge!(q)
+
+      if !q['groupBys'].blank? && !query['groupedColumns'].empty?
+        cols = []
+        q['groupBys'].each { |gb| cols.push(ds.column_by_id_or_field_name(gb['columnId'])) }
+        query['groupedColumns'].each do |gc|
+          c = ds.column_by_id_or_field_name(gc['columnId'])
+          if !c.blank?
+            c.data['format'] ||= {}
+            c.data['format']['grouping_aggregate'] = gc['aggregate']
+            cols.push(c)
+          end
+        end
+        ds.custom_vis_cols = cols.compact
+      end
     end
 
     def self.get_dataset(config, &callback)

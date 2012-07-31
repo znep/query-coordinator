@@ -72,7 +72,10 @@
                 }
 
                 if (!$.isBlank(curC.dataset))
-                { hookTotals(config, curC.dataset); }
+                {
+                    hookTotals(config, curC.dataset);
+                    updateGroupedCols(curC.dataset, config.query);
+                }
 
                 if (!$.isBlank(curC.column))
                 {
@@ -225,7 +228,7 @@
         var q = $.extend(true, {orderBys: [], groupBys: []}, ds.query);
         _.each(query, function(v, k)
             {
-                if (!_.include(['orderBys', 'groupBys'], k))
+                if (!_.include(['orderBys', 'groupBys', 'groupedColumns'], k))
                 { q[k] = $.extend(true, _.isArray(v) ? [] : {}, q[k], v); }
             });
 
@@ -262,7 +265,8 @@
         }
         if (_.isEmpty(q.groupBys)) { delete q.groupBys; }
 
-        ds.update({query: q});
+        ds.update({ query: q });
+        updateGroupedCols(ds, query);
     };
 
     var loadDataset = function(dc, id, config, callback, errorCallback)
@@ -369,6 +373,28 @@
                 col.view.getAggregates(null, aggs);
             });
         });
+    };
+
+    var updateGroupedCols = function(ds, query)
+    {
+        if ($.isBlank(ds.query.groupBys) || $.isBlank(query) || _.isEmpty(query.groupedColumns))
+        { return; }
+
+        var cols = [];
+        // First all grouped columns
+        _.each(ds.query.groupBys, function(g)
+                { cols.push((ds.columnForIdentifier(g.columnId) || {}).id); });
+        // Then aggregated columns
+        _.each(query.groupedColumns, function(gc)
+        {
+            var c = ds.columnForIdentifier(gc.columnId);
+            if ($.isBlank(c)) { return; }
+            var fmt = $.extend({}, c.format);
+            fmt.grouping_aggregate = gc.aggregate;
+            c.update({format: fmt});
+            cols.push(c.id);
+        });
+        ds.setVisibleColumns(_.compact(cols), null, true);
     };
 
 })(jQuery);

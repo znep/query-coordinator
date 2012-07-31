@@ -149,7 +149,7 @@
             var mapObj = this;
             var viewConfig = mapObj._byView[view.id];
             var layer = viewConfig._heatmapLayer
-                = new OpenLayers.Layer.Heatmap('Heatmap', mapObj.map, mapObj.map.baseLayer,
+                = new OpenLayers.Layer.Heatmap('Heatmap', mapObj.map,
                     { "element":mapObj.currentDom, "radius":25, "visible":true });
             viewConfig._dataStore = [];
             viewConfig._bounds = new OpenLayers.Bounds();

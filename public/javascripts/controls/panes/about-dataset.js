@@ -6,6 +6,7 @@
 
         _getSections: function()
         {
+            var cpObj = this;
             return [
                 {
                     customContent: {
@@ -18,6 +19,9 @@
                             // confused about the current state.
                             var toggleAction = ($.browser.msie && ($.browser.majorVersion <= 8)) ?
                                 'toggle' : 'slideToggle';
+
+                            cpObj._view.getTotalRows(function()
+                            { $sect.find('.row_count').text(cpObj._view.totalRows()); });
 
                             $sect.find('.datasetAverageRating').each(function()
                             {

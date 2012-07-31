@@ -28,6 +28,7 @@ en:
       public: Public
       private: Private
       tags: Tags
+      row_count: Row Count
       permalink: Permalink
       short_url: Short URL
       attachments: Attachments
@@ -76,6 +77,7 @@ it:
       public: Pubblica
       private: Privati
       tags: Tags
+      row_count: Numero di righe
       permalink: Permalink
       short_url: Short URL
       attachments: Allegati

@@ -35,7 +35,8 @@
                     }
 
                     layer.name = layer.featureLayer.name;
-                    layer.dataObj._parent._controls.Overview.redraw();
+                    if ($.subKeyDefined(layer.dataObj, '_parent._controls.Overview.redraw'))
+                    { layer.dataObj._parent._controls.Overview.redraw(); }
 
                     if (layer._metadataReady)
                     { layer.onloadCallback(); }

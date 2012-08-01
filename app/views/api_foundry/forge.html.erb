@@ -1,0 +1,115 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'api-new' %>
+  <title>Socrata API Foundry | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="logo"><h1><img src="/images/apifoundry/api-foundry-logo.png" alt="Socrata API Foundry"></img></h1></div>
+<div class="contentBox fixedWidth">
+  <form id="newApiForm">
+    <h1>Customize Your API : <%= @view.name %></h1>
+    <div id="apiFoundryWizard">
+      <ul class="clearfix">
+        <li id="apiSettings" data-wizardpanename="apiSettings">
+          <div class="paneControlOuter">
+            <div class="paneFormControls">
+
+              <h2>Configure API Endpoint</h2>
+              <div class="line clearfix formControl">
+                <label class="required" for="resourceName">API Alias</label>
+                <%= text_field_tag("resourceName", @view.resourceName, :title => "Enter API Alias", :class => "textPrompt required") %>
+                <div class="additionalHelp">An alias that developers may use instead of the dataset ID</div>
+              </div>
+
+              <div class="line clearfix formControl">
+                <label for="view_category">Unique Identifier</label>
+                <%= select_tag("rowIdentifierColumnId", options_from_collection_for_select(
+                    @view.columns.find_all{|column| column.dataTypeName == "text" || column.dataTypeName == "number"}, "id", "name")) %>
+              </div>
+
+              <div class="line clearfix formControl">
+                <label for="description">Description</label>
+                <%= text_area_tag("description", @view.description, :title => "Enter a description", :class => "textPrompt") %>
+              </div>
+
+            </div>
+            <div class="docPreview">
+            <div class="docPreviewInside">
+              <h2>Documentation Preview</h2>
+              <h3>What is SODA?</h3>
+              <p>SODA Provides an open, standards-based, RESTful application programming interface to access government datasets.</p>
+              <h3>example API request</h3>
+              <ul>
+              <li>Every Socrata-hosted dataset is readily and uniformly accessible</li>
+              <li>You can read the data, but also perform more advanced operations such as searching and filtering</li>
+              <li>Combine datasets with other Web services to create new mashups and applications</li>
+              <li>Socrata Open Data API (SODA) specifications were released to the Open Data community under a Creative Commons license</li>
+              </ul>
+              <h3>another example API request</h3>
+            </div>
+            </div>
+          </div><!-- paneControlOuter -->
+        </li>
+        <% @view.columns.each_with_index do |column, index| %>
+        <li class="apiFieldPane" id="col-<%= column.id %>" data-wizardpanename="col-<%= column.id %>">
+          <div class="paneControlOuter">
+            <div class="paneFormControls">
+
+              <h2>Customize Field | <%= column.fieldName %></h2>
+              <div class="line clearfix formControl">
+                <label class="required" for="displayName">Display Name</label>
+                <%= text_field_tag("name", column.name, :title => "enter a display name", :class => "textPrompt required") %>
+                <div class="additionalHelp">A human-readable name for visual display and export</div>
+              </div>
+
+              <div class="line clearfix formControl">
+                <label class="required" for="fieldName">Field Name</label>
+                <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => "textPrompt required") %>
+                <div class="additionalHelp">The identifier used by developers and applications</div>
+              </div>
+
+              <div class="line clearfix formControl">
+                <label for="description">Description</label>
+                <%= text_area_tag("description", '', :title => "enter a description", :class => "textPrompt") %>
+                <div class="additionalHelp">The description that will be provided to end-users</div>
+              </div>
+
+            </div>
+            <div class="docPreview">
+            <div class="docPreviewInside">
+              <h2>Documentation Preview</h2>
+              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+              <h3>example API request</h3>
+              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+              <h3>another example API request</h3>
+              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+            </div>
+            </div>
+          </div><!-- paneControlOuter -->
+        </li>
+        <% end %>
+        <li id="apiPublish" data-wizardpanename="apiPublish">
+          <h2>Are you ready to publish this API?</h2>
+          <p>Once you publish an API over your dataset, developers may use the API to build applications.  Changing an API after it is published can break applications that depend on it.  We recommend that you only publish an API once you are confident the columns, fieldnames, and alias will remain the same.
+          </p>
+          <div id="publishResponse"></div>
+        </li>
+        <li id="published" data-wizardpanename="published">
+          <h2>Congratulations! You're API is now live.</h2>
+          <p>Developers may now use this API to build applications.</p>
+          <a href="/api_foundry/docs/<%= params[:id] %>"><h2>View the generated documentation</h2></a>
+        </li>
+      </ul>
+    </div>
+
+    <% content_for :js_footer do %>
+      <script type="text/javascript">
+        blist.configuration.apiFoundry = {
+          id: '<%= params[:id] %>',
+        }
+      </script>
+      <%= include_javascripts 'api-new' %>
+    <% end %>
+  </form>
+</div>

@@ -11,6 +11,13 @@ Frontend::Application.routes do
     get '/current_site.css', :action => 'current_site'
   end
 
+  scope :path => '/api_foundry', :controller => 'api_foundry' do
+    get '/', :action => 'index'
+    get '/forge/:id', :action => 'forge'
+    get '/docs', :action => 'docs'
+    post '/publish/:id', :action => 'publish'
+  end
+
   scope :path => '/internal', :controller => 'internal' do
     match '/', :action => 'index'
     match '/analytics', :action => 'analytics'

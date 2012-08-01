@@ -549,6 +549,9 @@ javascripts:
     - public/javascripts/controls/image-uploader.js
   awesomecomplete:
     - public/javascripts/plugins/jquery.awesomecomplete.js
+  api-new:
+    - public/javascripts/controls/wizard.js
+    - public/javascripts/screens/api-new.js
 
 dump:
   javascripts:

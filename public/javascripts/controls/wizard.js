@@ -177,8 +177,8 @@
                 $pane.find('input[type=text], textarea').blur();
 
                 // reset and reevaluate button states
-                $nextButton.text(opts.nextText).removeClass('disabled default');
-                $prevButton.text(opts.prevText).removeClass('disabled');
+                $nextButton.text(paneConfig.nextText || opts.nextText).removeClass('disabled default');
+                $prevButton.text(paneConfig.prevText || opts.prevText).removeClass('disabled');
                 $cancelButton.removeClass('disabled');
 
                 if (paneStack.length === 1)

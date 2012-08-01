@@ -113,5 +113,14 @@
         </span>
       </li>
     <%- end -%>
+    <%- if current_user && current_user.is_admin? && module_available?(:api_foundry) -%>
+      <li class="api_foundry">
+        <%= link_to raw('<span class="icon"></span>API Foundry'),
+            {:controller => 'api_foundry', :action => 'index'} %>
+        <span class="description">
+          Create, customize, and publish APIs over datasets
+        </span>
+      </li>
+    <%- end -%>
   </ul>
 </div>

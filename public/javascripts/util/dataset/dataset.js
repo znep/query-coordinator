@@ -2598,6 +2598,8 @@ var Dataset = ServerModel.extend({
         publicationAppendEnabled: true,
         query: true,
         queryString: true,
+        resourceName: true,
+        rowIdentifierColumnId: true,
         searchString: true,
         tags: true,
         termsAndConditions: true

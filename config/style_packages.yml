@@ -43,6 +43,8 @@ strip-chrome:
 - strip-chrome
 screen-login:
 - screen-login
+api-new:
+- screen-api-new
 administration-screen:
 - screen-admin
 administration-browse-widget:

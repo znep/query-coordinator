@@ -35,6 +35,7 @@ WIDGET:
 
 CONTROLS:
 3001 color_selector
+3002 autocompleteComboDropdown
 
 
 DATA RENDERING:

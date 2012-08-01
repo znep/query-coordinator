@@ -747,3 +747,90 @@ form.search
     position: absolute
     top: 40%
     z-index: 1
+
+
+//*** Autocomplete Combo Box ***//
+.autocompleteCombo
+  background-image: url(/stylesheets/images/common/uniform_sprite.png)
+  background-position: -485px -130px
+  background-repeat: no-repeat
+  display: inline-block
+  height: 26px
+  line-height: 26px
+  vertical-align: bottom
+  .wrapper
+    background-image: url(/stylesheets/images/common/uniform_sprite.png)
+    background-position: right 0px
+    background-repeat: no-repeat
+    height: 22px
+    line-height: 26px
+    margin-left: 8px
+    padding:
+      bottom: 2px
+      left: 0
+      right: 25px
+      top: 1px
+  .textInput
+    background-color: #ffffff
+    border-color: #dddddd
+    @include border-radius(0)
+    @include box-shadow-none
+    cursor: pointer
+    padding: 0
+  .dropdownChooser
+    background: none
+    display: inline-block
+    height: 21px
+    position: absolute
+    right: 4px
+    top: 2px
+    width: 21px
+
+ul.autocompleteComboDropdown
+  background-color: #fff
+  border: 1px solid #777
+  display: block
+  list-style-type: none
+  margin: 0
+  overflow: hidden
+  padding: 0
+  position: absolute
+  z-index: 3002
+
+  .ie7 &
+    left: 0
+    top: 2.5em
+
+  li
+    border-top: 1px solid #aaa
+    cursor: pointer
+    padding: 0
+
+    &:first-child
+      border-top: none
+
+    div
+      padding: 4px
+        left: 14px
+
+    p
+      font-size: 1.2em
+      margin: 1px 4px
+      white-space: nowrap
+
+      .title
+        font-weight: bold
+
+      .matchRow
+        color: #666
+
+    span.matchedField
+      color: #999
+      padding-right: 0.5em
+
+    span.match
+      font-weight: bold
+
+    &.active div
+      background-color: #f7f7f7
+

@@ -8,7 +8,7 @@ $.cf.contextPicker = function()
 
 var picker = function($field, vals, curValue)
 {
-    $field.addClass('contextPicker');
+    $field.addClass('contextPicker autocompleteCombo');
     var $wrapper = $.tag({tagName: 'div', 'class': 'wrapper'});
     $field.append($wrapper);
 
@@ -110,7 +110,7 @@ var picker = function($field, vals, curValue)
             forcePosition: true,
             showAll: true,
             skipBlankValues: true,
-            suggestionListClass: 'contextPickerAutocomplete',
+            suggestionListClass: 'contextPickerAutocomplete autocompleteComboDropdown',
             showFunction: function($list)
             {
                 $field.closest('.section').closest('.socrata-cf-side').andSelf().css('overflow', 'visible');

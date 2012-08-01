@@ -100,12 +100,18 @@
     var getEditorComponentValue = function($editor)
     {
         var editor = $editor.data('unifiedFilter-editor');
-        if (!editor.isValid())
+        var value;
+        if ($.isBlank(editor))
+        { value = $editor.data('unifiedFilter-editorValue'); }
+        else
         {
-            return null;
+            if (!editor.isValid())
+            {
+                return null;
+            }
+            value = editor.currentValue();
         }
 
-        var value = editor.currentValue();
         if (!$.isBlank(value) && !_.isNumber(value) && !_.isString(value) && !_.isBoolean(value) &&
             _.all(_.values(value), function(v) { return $.isBlank(v); }))
         {
@@ -1194,78 +1200,172 @@
                             'class': 'filterValueEditor'
                     }));
                 });
-                $line.find('.filterValueEditor').each(function(i)
-                {
-                    var $this = $(this);
-                    var editorValue = getFilterValue(_.isArray(valueObj.item) ?
-                        valueObj.item[i] : valueObj.item, column, metadata);
 
-                    $this.data('unifiedFilter-editor',
-                        $this.blistEditor({type: renderType, editorInterface: editorInt,
-                            value: editorValue, row: null,
-                            format: column.format, customProperties: {dropDownList: column.dropDownList,
-                                baseUrl: column.baseUrl()}}));
-                });
-
-                // events
-                $line.find('.filterValueEditor input').bind('focus', function()
+                if (!metadata.autocomplete)
                 {
-                    if ($line.nextAll().length === 0)
+                    $line.find('.filterValueEditor').each(function(i)
                     {
-                        // this is the last freeform line and the user just selected it; spawn new
-                        addFilterLine('', column, condition, $filter, filterUniqueId, { freeform: true });
-                    }
-                });
+                        var $this = $(this);
+                        var editorValue = getFilterValue(_.isArray(valueObj.item) ?
+                            valueObj.item[i] : valueObj.item, column, metadata);
 
-                var eventName = 'edit_end';
-                if (_.include(['checkbox', 'stars'], column.renderTypeName))
-                {
-                    eventName = 'editor-change';
+                        $this.data('unifiedFilter-editor',
+                            $this.blistEditor({type: renderType, editorInterface: editorInt,
+                                value: editorValue, row: null,
+                                format: column.format, customProperties: {dropDownList: column.dropDownList,
+                                    baseUrl: column.baseUrl()}}));
+                    });
+
+                    // events
+                    $line.find('.filterValueEditor input').bind('focus', function()
+                    {
+                        if ($line.nextAll().length === 0)
+                        {
+                            // this is the last freeform line and the user just selected it; spawn new
+                            addFilterLine('', column, condition, $filter, filterUniqueId, { freeform: true });
+                        }
+                    });
+
+                    var eventName = 'edit_end';
+                    if (_.include(['checkbox', 'stars'], column.renderTypeName))
+                    {
+                        eventName = 'editor-change';
+                    }
+                    $line.find('.filterValueEditor').bind(eventName, function()
+                    {
+                        var $this = $(this);
+                        var $lineToggle = $line.find('.filterLineToggle');
+
+                        if ((eventName == 'edit_end') && ($(document.activeElement).parents().index($this) < 0))
+                        {
+                            // edit_end was called but we're actually elsewhere.
+                            return;
+                        }
+
+                        var $allLineToggles = $filter.find('.filterLineToggle');
+                        if ($.isBlank(getEditorComponentValue($this)))
+                        {
+                            var $nextLine = $this.closest('.line').next('.line');
+                            if ($nextLine.is(':last-child'))
+                            {
+                                $nextLine.remove();
+                            }
+
+                            if ($lineToggle.is(':checked'))
+                            {
+                                if (metadata.multiSelect === false)
+                                {
+                                    $allLineToggles.filter(':first').attr('checked', true);
+                                }
+                                $lineToggle.removeAttr('checked');
+                            }
+                        }
+                        else
+                        {
+                            // don't check it if we're in edit mode, since edit mode shouldn't filter
+                            if ((!$lineToggle.is(':checked')) && !isEdit)
+                            {
+                                if (metadata.multiSelect === false)
+                                {
+                                    $allLineToggles.removeAttr('checked');
+                                }
+                                $lineToggle.attr('checked', true);
+                            }
+                        }
+                        $.uniform.update($allLineToggles);
+                        parseFilters();
+                    });
                 }
-                $line.find('.filterValueEditor').bind(eventName, function()
+                else
                 {
-                    var $this = $(this);
-                    var $lineToggle = $line.find('.filterLineToggle');
-
-                    if ((eventName == 'edit_end') && ($(document.activeElement).parents().index($this) < 0))
+                    $line.find('.filterValueEditor').each(function(i)
                     {
-                        // edit_end was called but we're actually elsewhere.
-                        return;
-                    }
+                        var $this = $(this);
+                        $this.addClass('autocompleteCombo');
 
-                    var $allLineToggles = $filter.find('.filterLineToggle');
-                    if ($.isBlank(getEditorComponentValue($this)))
-                    {
-                        var $nextLine = $this.closest('.line').next('.line');
-                        if ($nextLine.is(':last-child'))
-                        {
-                            $nextLine.remove();
-                        }
+                        var editorValue = getFilterValue(_.isArray(valueObj.item) ?
+                            valueObj.item[i] : valueObj.item, column, metadata);
 
-                        if ($lineToggle.is(':checked'))
-                        {
-                            if (metadata.multiSelect === false)
-                            {
-                                $allLineToggles.filter(':first').attr('checked', true);
-                            }
-                            $lineToggle.removeAttr('checked');
-                        }
-                    }
-                    else
+                        $this.append($.tag({ tagName: 'div', 'class': 'wrapper',
+                            contents: [
+                                {tagName: 'input', type: 'text', 'class': 'textInput',
+                                    value: $.htmlEscape(editorValue)},
+                                {tagName: 'a', href: '#choose', 'class': 'dropdownChooser'}
+                            ]
+                        }));
+                    });
+
+                    $line.find('.dropdownChooser').mousedown(function(e)
                     {
-                        // don't check it if we're in edit mode, since edit mode shouldn't filter
-                        if ((!$lineToggle.is(':checked')) && !isEdit)
+                        var $ti = $(this).siblings('.textInput');
+                        if (!$ti.is(':focus'))
+                        { _.defer(function() { $ti.focus(); }); }
+                    })
+                    .click(function(e) { e.preventDefault(); });
+
+                    _.defer(function()
+                    {
+                        $line.find('.textInput').each(function()
                         {
-                            if (metadata.multiSelect === false)
-                            {
-                                $allLineToggles.removeAttr('checked');
-                            }
-                            $lineToggle.attr('checked', true);
-                        }
-                    }
-                    $.uniform.update($allLineToggles);
-                    parseFilters();
-                });
+                            var $ti = $(this);
+                            $ti.awesomecomplete({
+                                attachTo: $line.closest('.filterCondition'),
+                                forcePosition: true,
+                                showAll: true,
+                                skipBlankValues: true,
+                                suggestionListClass: 'autocompleteComboDropdown',
+                                renderFunction: function(dataItem, topMatch, config)
+                                {
+                                    return $.tag({ tagName: 'div', contents: [
+                                        { tagName: 'p', 'class': 'item', contents: dataItem.item },
+                                        { tagName: 'p', 'class': 'count',
+                                            contents: '(' + dataItem.count + ')' }
+                                    ] }, true);
+                                },
+                                dataMethod: function(term, $f, dataCallback)
+                                {
+                                    column.getSummary(function(summary)
+                                    {
+                                        var topItems = [];
+                                        _.each(summary, function(s, type)
+                                        {
+                                            _.each(s.topFrequencies, function(t)
+                                            {
+                                                var item = t.value;
+                                                if (!$.isBlank(column.subColumnTypes))
+                                                {
+                                                    item = {};
+                                                    item[type] = t.value;
+                                                }
+                                                topItems.push({count: t.count, item: item});
+                                            });
+                                        });
+                                        dataCallback(topItems);
+                                    });
+                                },
+                                onComplete: function(data)
+                                {
+                                    if ($line.nextAll().length === 0)
+                                    {
+                                        // this is the last autocomplete line
+                                        // and a value was selected; spawn new
+                                        addFilterLine('', column, condition, $filter, filterUniqueId,
+                                                { freeform: true });
+                                    }
+                                    $ti.closest('.filterValueEditor').data('unifiedFilter-editorValue',
+                                            data.item);
+                                    if (!isEdit)
+                                    { $line.find('.filterLineToggle').attr('checked', true); }
+
+                                    $.uniform.update($filter.find('.filterLineToggle'));
+                                    parseFilters();
+                                },
+                                valueFunction: function(dataItem)
+                                { return dataItem.item || null; }
+                            });
+                        });
+                    });
+                }
             }
             else if (valueObj == noFilterValue)
             {

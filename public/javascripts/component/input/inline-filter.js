@@ -5,7 +5,8 @@ $.component.Component.extend('Inline filter', 'input', {
     _getAssets: function()
     {
         return {
-            javascripts: [{assets: 'base-control'}, {assets: 'shared-editors'}, {assets: 'unified-filter'}],
+            javascripts: [{assets: 'awesomecomplete'}, {assets: 'base-control'},
+                {assets: 'shared-editors'}, {assets: 'unified-filter'}],
             stylesheets: [{assets: 'base-control'}],
             templates: ['grid_sidebar', 'unified_filter'],
             translations: ['controls.filter'] };

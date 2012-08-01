@@ -561,12 +561,7 @@ module Canvas
     def prepare!
       @main_view = self.get_view
 
-      # grab data that we'll need. for now, comments-only
-      comments = @main_view.comments
-
-      @js_opts = {
-        comments: comments
-      }.merge(self.properties.controlOptions)
+      @js_opts = self.properties.controlOptions
     end
   protected
     self.default_properties = {

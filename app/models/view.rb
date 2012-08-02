@@ -1149,6 +1149,7 @@ class View < Model
     "CC" => "Creative Commons",
     "CC0_10" => "1.0 Universal",
     "CC_30_BY" => "Attribution 3.0 Unported",
+    "CC_30_BY_AUS" => "Attribution 3.0 Australia",
     "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",
     "CC_30_BY_ND" => "Attribution | No Derivative Works 3.0 Unported",
     "CC_30_BY_NC" => "Attribution | Noncommercial 3.0 Unported",

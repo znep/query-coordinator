@@ -326,8 +326,51 @@ body.socrata-page
       @include sprite-social-media-icons
 
 .component-Search
-  .button
+  .searchForm
+    // By default pad out to align with sort component
+    margin-top: 2px
+  .searchBoxContainer
+    background-color: #fff
+    border: 1px solid $color_buttons_active_border
+    @include border-radius(0.2em)
+    @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.05))
+    display: inline-block
+    padding: 0.4em 0.3em 0.3em
+    position: relative
+    &:hover
+      @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.15))
+
+    &.hasClearButton
+      padding-right: 2em
+    &.hasSearchIcon
+      padding-left: 2.8em
+
+    .searchIcon
+      @include dataset-toolbar-icon-search
+      left: 0.5em
+      position: absolute
+      top: 0.3em
+
+    .searchField
+      border: none
+      display: block
+      height: 13px
+      padding: 0
+      -webkit-appearance: none // otherwise iOS renders inset shadow
+      width: 13em
+      &.prompt
+        font-style: normal
+
+    .clearSearch
+      @include sprite-menu-icons
+      position: absolute
+      right: 2px
+      top: 3px
+
+  .searchButton
+    margin-top: 0
     padding: 0.2em 0.5em
+    vertical-align: top
 
 .component-Sort
   position: relative
@@ -335,8 +378,6 @@ body.socrata-page
     padding-right: 16px
     select
       width: 100%
-    .selector.uniform
-      margin-top: 0.1em
   .sortLinks
     .sortDir
       @include grid-header-icons

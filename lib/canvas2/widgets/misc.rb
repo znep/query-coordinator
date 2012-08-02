@@ -142,9 +142,36 @@ module Canvas2
   end
 
   class Search < CanvasWidget
-    def initialize(props, parent = nil, resolver_context = nil)
-      @needs_own_context = true
-      super(props, parent, resolver_context)
+    def render_contents
+      cur_val = nil
+      if context[:type] == 'dataset'
+        cur_val = context[:dataset].searchString
+      elsif context[:type] == 'datasetList'
+        context[:datasetList].each do |dc|
+          ss = dc[:dataset].searchString
+          cur_val = cur_val.nil? || ss == cur_val ? ss : ''
+        end
+      end
+      has_val = !cur_val.blank?
+
+      t = '<form action="#" class="searchForm">' +
+        '<div class="searchBoxContainer' + (@properties['hideSearchIcon'] != true ? ' hasSearchIcon' : '') +
+          (@properties['hideClearButton'] != true ? ' hasClearButton' : '') + '">' +
+          '<a href="#search" class="searchIcon' +
+            (@properties['hideSearchIcon'] == true ? ' hide' : '') + '" title="' +
+            string_substitute(@properties['iconPrompt'] || 'Find') + '"></a>' +
+          '<input type="text" class="searchField textPrompt' + (has_val ? '' : ' prompt') + '" value="' +
+            (has_val ? cur_val : string_substitute(@properties['searchPrompt'] || 'Find')) + '" />' +
+          '<a href="#clear" class="clearSearch close' +
+            (@properties['hideClearButton'] == true || !has_val ? ' hide' : '') +
+            '" title="' + string_substitute(@properties['clearPrompt'] || 'Clear') +
+            '"><span class="icon"></span></a>' +
+        '</div>' +
+        '<input type="submit" class="searchButton button' +
+          (@properties['showSearchButton'] ? '' : ' hide') + '" value="' +
+          string_substitute(@properties['buttonText'] || 'Find') + '" />' +
+        '</form>'
+      [t, false]
     end
   end
 

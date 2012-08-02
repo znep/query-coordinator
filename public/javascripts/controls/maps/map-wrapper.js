@@ -172,6 +172,9 @@
             function(c)
             { mapObj._controls[c] = mapObj.map.getControlsByClass('blist.openLayers.' + c)[0]; });
 
+            if (mapObj._displayFormat.disableGeolocator)
+            { mapObj._controls.GeocodeDialog.deactivate(); }
+
             var datasetsLoaded = function()
             {
                 // TODO: Decide whether or not this is a good idea.

@@ -11,6 +11,16 @@
                                OpenLayers.Control.prototype.EVENT_TYPES);
             OpenLayers.Control.prototype.initialize.apply(this, arguments);
         },
+
+        deactivate: function()
+        {
+            $('.geolocator_button, .geolocator', this.div).addClass('hide');
+        },
+
+        activate: function()
+        {
+            $('.geolocator_button, .geolocator', this.div).removeClass('hide');
+        },
    
         draw: function(px)
         {

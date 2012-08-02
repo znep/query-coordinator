@@ -380,6 +380,9 @@
                         'geocodeMarker', { icon: '/images/pin.png' });
                 });
 
+            if (mapObj._displayFormat.disableGeolocator)
+            { mapObj.map.getControlsByClass('blist.openLayers.GeocodeDialog')[0].deactivate(); }
+
             mapObj.initializeEvents();
         },
 

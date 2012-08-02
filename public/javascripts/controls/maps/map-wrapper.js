@@ -197,6 +197,9 @@
                 mapObj.getDataForChildren();
 
                 mapObj._primaryView.trigger('row_count_change'); // DEBUG EZMODE Sidebar ready.
+
+                mapObj.viewportHandler().events.register('viewportchanged', null,
+                    function() { mapObj._panning = true; });
             };
 
             mapObj._children = [];
@@ -240,6 +243,7 @@
             mapObj._primaryView.bind('displayformat_change', function()
             {
                 if (arguments.length > 0) { return; }
+                if (mapObj._panning) { delete mapObj._panning; return; }
                 mapObj._displayFormat = this.displayFormat;
 
                 if (mapObj._controls.SelectFeature)
@@ -353,7 +357,10 @@
 
             if (!mapObj._backgroundLayers
                 || !_.isEqual(mapObj._backgroundLayers, mapObj._displayFormat.bkgdLayers))
-            { _.each(mapObj.map.backgroundLayers(), function(layer) { layer.destroy(); }); }
+            {
+                if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(); }
+                _.each(mapObj.map.backgroundLayers(), function(layer) { layer.destroy(); });
+            }
             else
             { mapObj.setExclusiveLayers(); return; }
 

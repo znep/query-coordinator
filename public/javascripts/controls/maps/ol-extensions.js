@@ -1147,7 +1147,11 @@
         resetToOriginal: function()
         {
             if (this.willMove(this.original))
-            { this.map.zoomToExtent(this.original, true); }
+            {
+                this.expect();
+                this.map.zoomToExtent(this.original, true);
+                this.saveViewport();
+            }
         },
 
         preferredViewport: function()

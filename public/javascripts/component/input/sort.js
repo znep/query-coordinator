@@ -119,6 +119,7 @@ var renderUpdate = function()
         cObj.$dropdown.empty();
         var curSort = _.first(ds.query.orderBys || []) || {expression: {}};
         var foundCur = false;
+        var selVal = '';
         _.each(ds.visibleColumns, function(c)
         {
             var sel = curSort.expression.columnId == c.id;
@@ -130,10 +131,13 @@ var renderUpdate = function()
                 cObj.$sortDir.removeClass('hide sortAsc sortDesc')
                     .addClass('sort' + (curSort.ascending ? 'Asc' : 'Desc'))
                     .attr('title', 'Sort ' + (curSort.ascending ? 'Descending' : 'Ascending'));
+                selVal = c.fieldName;
             }
         });
         cObj.$dropdown.prepend($.tag({ tagName: 'option', value: '', 'class': 'prompt',
             selected: !foundCur, contents: '(Unsorted)' }));
+        // Force the selected value for IE8-
+        cObj.$dropdown.value(selVal);
 
         if ($.subKeyDefined($, 'uniform.update'))
         { $.uniform.update(cObj.$dropdown); }

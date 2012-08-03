@@ -197,7 +197,7 @@ class View < Model
       'query' => merged_conditions,
       'originalViewId' => self.id
     }
-    request_body['columns'] = visible_columns(merged_conditions)
+    request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
     result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json, {}, true),
@@ -293,6 +293,7 @@ class View < Model
     agg_results = {}
     CoreServer::Base.connection.batch_request do
       reqs.each do |req|
+        req['columns'] = req['columns'].map {|c| c.to_core}
         r = req.to_json
         CoreServer::Base.connection.create_request(url, r, {}, true, true)
       end

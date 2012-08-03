@@ -274,11 +274,17 @@ class Column < Model
 
   end
 
+  def to_core
+    Column.to_core(data.deep_merge(update_data).with_indifferent_access)
+  end
+
   def self.to_core(js)
     col = {
+      :id => js['id'],
       :name => js["name"],
       :description => js["description"],
       :width => js["width"],
+      :format => js['format'],
       :dataTypeName => js["type"],
       :dropDownList => js['dropDownList']
     }
@@ -291,7 +297,7 @@ class Column < Model
   def to_js
     col = self.data.clone
     col['name'] = CGI.escapeHTML(self.name)
-    col['description'] = CGI.escapeHTML(self.description)
+    col['description'] = CGI.escapeHTML(self.description || '')
     col['format'] ||= {}
 
     return col.to_json.html_safe

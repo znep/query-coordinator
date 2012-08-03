@@ -5,7 +5,7 @@ var blistCommonNS = blist.namespace.fetch('blist.common');
 blistCommonNS.formInliner = function(event)
 {
     var $form = $(event.target);
-    var view  = blist.dataset.cleanCopy();
+    var view  = $form.data('dataset').cleanCopy();
     if ($form.find('input[name=view]').size() > 0)
     { return; }
 
@@ -19,36 +19,31 @@ blistCommonNS.formInliner = function(event)
 // Grab links to download and auto-create a form if inline
 (function($)
 {
-    $.fn.downloadToFormCatcher = function()
+    $.fn.downloadToFormCatcher = function(ds, $context)
     {
-        if (! _.isUndefined(blist.$container.renderTypeManager()
-            .$domForType('table').datasetGrid))
+        return this.each(function()
         {
-            var dsGrid = blist.$container.renderTypeManager()
-                .$domForType('table').datasetGrid();
-
-            return this.each(function()
+            var $dom = $(this);
+            $dom.off('.downloadToFormCatcher');
+            $dom.on('click.downloadToFormCatcher', function(event)
             {
-                $(this).click(function(event)
-                {
-                    if (blist.dataset.temporary !== true)
-                    { return true; }
+                if (ds.temporary !== true)
+                { return true; }
 
-                    event.preventDefault();
+                event.preventDefault();
 
-                    var href = $(this).attr('href')
-                        .replace(/\w{4}-\w{4}/,'INLINE');
+                var href = $dom.attr('href')
+                    .replace(/\w{4}-\w{4}/,'INLINE');
 
-                    var $form = $('<form>')
-                        .attr('ACTION', href)
-                        .attr('method', 'post');
+                var $form = $('<form>')
+                    .attr('ACTION', href)
+                    .attr('method', 'post');
 
-                    blist.$container.renderTypeManager()
-                        .$domForType('table').append($form);
-                    $form.bind('submit', blistCommonNS.formInliner);
-                    $form.submit();
-                });
+                $form.data('dataset', ds);
+                ($context || $dom).append($form);
+                $form.bind('submit', blistCommonNS.formInliner);
+                $form.submit();
             });
-        }
+        });
     }
 })(jQuery);

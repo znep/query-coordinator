@@ -1,4 +1,11 @@
 $.component.Component.extend('Download', 'actions', {
+    _getAssets: function()
+    {
+        return {
+            javascripts: [{assets: 'download-inline'}]
+        };
+    },
+
     _initDom: function()
     {
         this._super.apply(this, arguments);
@@ -26,6 +33,8 @@ $.component.Component.extend('Download', 'actions', {
             var ds = cObj._dataContext.dataset;
             cObj.$link.text(cObj._stringSubstitute(cObj._properties.text) || 'Download this data');
             cObj.$link.attr('href', ds.downloadUrl('csv'));
+            if (!ds.isGeoDataset() && !cObj._properties.disableInlineDownload)
+            { cObj.$link.downloadToFormCatcher(ds); }
         });
     },
 

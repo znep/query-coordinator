@@ -15,6 +15,7 @@
 
         _getSections: function()
         {
+            var cObj = this;
             var _view = this._view;
             var type = this._view.isGeoDataset() ? 'geo' : 'normal';
             var catchForm = !this._view.isGeoDataset();
@@ -29,7 +30,10 @@
                         callback: function($sect)
                         {
                             if (catchForm)
-                            { $sect.find('.downloadsList .item a').downloadToFormCatcher(); }
+                            {
+                                $sect.find('.downloadsList .item a').downloadToFormCatcher(_view,
+                                        cObj.$dom());
+                            }
 
                             if (_view.isGeoDataset()) {
                                 _view.getChildOptionsForType('table', function(views) {

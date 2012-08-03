@@ -493,6 +493,8 @@ javascripts:
   share-dialogs:
     - public/javascripts/controls/dataset-email.js
     - public/javascripts/controls/dataset-subscribe.js
+  download-inline:
+    - public/javascripts/controls/form-inliner.js
   # these can be removed with canvas 1.0, i think
   stories:
     - public/javascripts/controls/stories.js
@@ -564,6 +566,7 @@ dump:
     - feed-list
     - inline-login
     - share-dialogs
+    - download-inline
     - base-control
     - shared-editors
     - configurator

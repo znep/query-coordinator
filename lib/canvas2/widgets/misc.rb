@@ -130,7 +130,7 @@ module Canvas2
       t = string_substitute(@properties['text'])
       t = 'Download this data' if t.blank?
       ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +
-         t + '</a>', true]
+         t + '</a>', false]
     end
   end
 

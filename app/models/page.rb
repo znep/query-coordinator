@@ -35,6 +35,10 @@ class Page < SodaModel
     @update_data['locale'] || @data['locale']
   end
 
+  def uneditable
+    !content.blank? && (content['uneditable'] == true || content['uneditable'] == 'true')
+  end
+
   def self.[](path, mtime)
     mtime ||= Time.now.to_i.to_s
     if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)

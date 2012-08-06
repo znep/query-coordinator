@@ -511,7 +511,8 @@
             $pane
                 .find('.noFilterConditionsText').show()
                 .siblings().remove();
-            rootCondition = undefined;
+            rootCondition = options.rootCondition;
+            filterableColumns = options.filterableColumns;
             renderQueryFilters();
         });
 

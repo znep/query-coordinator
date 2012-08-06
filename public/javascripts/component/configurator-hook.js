@@ -40,7 +40,7 @@ $(function() {
     };
 
     if (!$.isBlank(blist.currentUser) && blist.currentUser.hasRight('edit_pages') &&
-            blist.currentUser.isAdmin())
+            blist.configuration.designerAvailable)
     {
         $(document.body).addClass('socrata-page');
         $.cf.top();

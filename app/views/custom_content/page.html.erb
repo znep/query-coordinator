@@ -21,4 +21,7 @@
 <%- end -%><%# prerendered_cache %>
 <%- content_for :js_footer do -%>
   <%= current_user_js %>
+  <script type="text/javascript">
+    blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) %>;
+  </script>
 <%- end -%>

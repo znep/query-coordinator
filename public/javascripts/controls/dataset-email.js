@@ -68,16 +68,10 @@
         $emailDialog.find('.emailLine').slice(1).remove();
         $emailDialog.find('.emailRecipient').val('');
         $emailDialog.find('.recipientUid').val('');
-        $emailDialog.find('.recipientRole').val(
-            $emailDialog.find('.recipientRole option:first').val());
-        if ($.subKeyDefined($.uniform, 'update'))
-        { $.uniform.update('.emailDatasetDialog .recipientRole'); }
-        else
-        { $emailDialog.find('.recipientRole').uniform(); }
         $emailDialog.find('#emailMessage').val('');
 
         var $eLine = $emailDialog.find('.emailLine');
-        $eLine.find('.recipientRole').remove();
+        $eLine.find('.recipientRole').closest('.uniform').andSelf().remove();
         if ($emailDialog.hasClass('ownerDialog'))
         {
             $eLine.append($.tag({ tagName: 'select', 'class': 'recipientRole', name: 'role',
@@ -121,8 +115,6 @@
                 }
             });
         }
-
-        $form.find('.emailLine > select').uniform();
     };
 
     // Modal show link

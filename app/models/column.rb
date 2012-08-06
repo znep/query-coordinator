@@ -279,15 +279,11 @@ class Column < Model
   end
 
   def self.to_core(js)
-    col = {
-      :id => js['id'],
-      :name => js["name"],
-      :description => js["description"],
-      :width => js["width"],
-      :format => js['format'],
-      :dataTypeName => js["type"],
-      :dropDownList => js['dropDownList']
-    }
+    col = {}
+    [:id, :name, :fieldName, :position, :description, :width, :format, :dropDownList].each do |k|
+      col[k] = js[k.to_s] if !js[k.to_s].blank?
+    end
+    col[:dataTypeName] = js['type'] if !js['type'].blank?
 
     return col
   end

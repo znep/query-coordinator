@@ -270,6 +270,9 @@
             {
                 case 'drag':
                 case 'drop':
+                    // Disable for now...
+                    return false;
+                    break;
                 case 'locked':
                     return true;
                     break;

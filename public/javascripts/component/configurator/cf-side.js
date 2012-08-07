@@ -123,6 +123,8 @@
     };
 
     $.cf.side = function(show) {
+        // Disable for now...
+        return;
         if (!show) {
             if (visible) {
                 $ct.css('right', -$ct.width() + 'px');
@@ -178,6 +180,8 @@
     $.extend($.cf.side, {
         properties: function(what)
         {
+            // Disable for now...
+            return;
             if ($.isBlank(what))
             { $compPalettes.removeClass('hide'); }
             else
@@ -216,6 +220,8 @@
         },
 
         reset: function() {
+            // Disable for now...
+            return;
             render();
         }
     });

@@ -16,12 +16,12 @@
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
+  <script type="text/javascript">
+    blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) && !@page.uneditable %>;
+  </script>
 <%- end -%>
 
 <%- end -%><%# prerendered_cache %>
 <%- content_for :js_footer do -%>
   <%= current_user_js %>
-  <script type="text/javascript">
-    blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) && !@page.uneditable %>;
-  </script>
 <%- end -%>

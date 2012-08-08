@@ -3,7 +3,6 @@
  */
 (function($) {
     var $body = $(document.body);
-    var DEFAULT_SIDE_WIDTH = 258;
 
     // This is the current focal component, if any
     var focal;
@@ -123,8 +122,7 @@
         editOnly: false,  // Are components always in edit mode?
         edit: true,       // Start edit mode once initalized?
         mask: true,       // Mask out the background when editing a component?
-        sidebar: true,    // Show the sidebar?
-        sidebarWidth: DEFAULT_SIDE_WIDTH
+        sidebar: true     // Show the sidebar?
     };
 
     $.extend($.cf, {

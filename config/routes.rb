@@ -101,6 +101,8 @@ Frontend::Application.routes do
       :action => 'approve_view', :constraints => {:id => UID_REGEXP}
     get '/routing_approval/manage', :action => 'routing_approval_manage'
     post '/routing_approval/manage', :action => 'routing_approval_manage_save'
+
+    get '/configuration', :action => 'configuration'
   end
 
   get '/templates/:id', :controller => 'remote_partials', :action => :templates

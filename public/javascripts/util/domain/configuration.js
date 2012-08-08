@@ -34,16 +34,13 @@ var Configuration = ServerModel.extend({
 
 Configuration.findByType = function(type, options, successCallback, errorCallback)
 {
-    var params = $.extend({defaultOnly: true, merge: true}, options, {type: type});
-    $.socrataServer.makeRequest({pageCache: true, url: '/api/configurations.json', params: params,
-        success: function(results)
+    var params = $.extend({merge: true}, options, {type: type});
+    $.socrataServer.makeRequest({pageCache: true, url: '/admin/configuration.json', params: params,
+        success: function(result)
         {
             if (_.isFunction(successCallback))
             {
-                var retObj = { count: results.length, configurations: _.map(results, function(c)
-                        { return new Configuration(c); }) };
-                if (params.defaultOnly) { retObj = _.first(retObj.configurations); }
-                successCallback(retObj);
+                successCallback(new Configuration(result));
             }
         }, error: errorCallback});
 };

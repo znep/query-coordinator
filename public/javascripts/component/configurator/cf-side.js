@@ -7,10 +7,8 @@
     var visible = false;
 
     function render() {
-        var width = $.cf.configuration().sidebarWidth;
-
         if (!$ct) {
-            $ct = $('<div class="socrata-cf-side" style="width: ' + width + 'px; right: -' + width + 'px"></div>');
+            $ct = $.tag({ tagName: 'div', 'class': 'socrata-cf-side' });
             $(document.body).append($ct);
         }
         else {
@@ -123,8 +121,6 @@
     };
 
     $.cf.side = function(show) {
-        // Disable for now...
-        return;
         if (!show) {
             if (visible) {
                 $ct.css('right', -$ct.width() + 'px');
@@ -180,8 +176,6 @@
     $.extend($.cf.side, {
         properties: function(what)
         {
-            // Disable for now...
-            return;
             if ($.isBlank(what))
             { $compPalettes.removeClass('hide'); }
             else
@@ -220,8 +214,6 @@
         },
 
         reset: function() {
-            // Disable for now...
-            return;
             render();
         }
     });

@@ -43,11 +43,14 @@
                 Configuration.findByType('metadata', null, function(conf)
                 {
                     domainFields = {};
-                    _.each(conf.properties.fieldsets, function(fs)
+                    if ($.subKeyDefined(conf, 'properties.fieldsets'))
                     {
-                        _.each(fs.fields, function(f)
-                            { $.deepSet(domainFields, true, fs.name, f.name); });
-                    });
+                        _.each(conf.properties.fieldsets, function(fs)
+                        {
+                            _.each(fs.fields, function(f)
+                                { $.deepSet(domainFields, true, fs.name, f.name); });
+                        });
+                    }
                     reRender();
                 });
                 return null;

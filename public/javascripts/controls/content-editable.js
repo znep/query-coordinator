@@ -3,7 +3,8 @@
  * This plugin makes any element editable using contentEditable.
  */
 (function($) {
-    function Editor($dom, options) {
+    function Editor($dom, options)
+    {
         var editable;
 
         function startEdit()
@@ -72,7 +73,18 @@
             })
             .on('content-changed.editableControl', function() { readjustCanaries($dom); });
 
-            _.defer(function() { readjustCanaries($dom); });
+            $dom.addClass('editing');
+            _.defer(function()
+            {
+                if (options.focusOnEdit)
+                {
+                    $dom.focus();
+                    var rs = rangy.getSelection();
+                    rs.selectAllChildren($dom[0]);
+                    rs.collapseToEnd();
+                }
+                readjustCanaries($dom);
+            });
         };
 
         function stopEdit()
@@ -80,17 +92,21 @@
             $dom.off('.editableControl');
             readjustCanaries($dom);
             $dom.children('.canary').remove();
+            $dom.removeClass('editing');
         };
 
-        function processOptions(options) {
+        function processOptions(options)
+        {
             var newEditable = options.edit === undefined || options.edit === true;
-            if (newEditable != editable) {
+            $dom.addClass('contentEditable');
+            if (newEditable != editable)
+            {
                 editable = newEditable;
                 $dom.attr('contentEditable', editable);
                 if (editable)
-                    startEdit();
+                { startEdit(); }
                 else
-                    stopEdit();
+                { stopEdit(); }
             }
         };
 

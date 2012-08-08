@@ -305,7 +305,7 @@
 
     $.cf.enhanceProperties = function($node)
     {
-        $node.editable({ edit: true });
+        $node.editable({ edit: true, focusOnEdit: true });
 
         var html = $node.html();
         var props = html.match(/({[^{}]+})/mg);

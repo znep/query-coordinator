@@ -1,6 +1,6 @@
 ;(function($) {
 
-$.component.Component.extend('Sort', 'input', {
+$.component.Component.extend('Sort', 'none', {//'input', {
     _initDom: function()
     {
         var cObj = this;

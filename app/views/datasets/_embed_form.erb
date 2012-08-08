@@ -2,9 +2,11 @@
   <%- if view.is_form? -%>
   <label for="form_code" class="formHeader">Embed this Form as Plain HTML</label>
   <div class="embedCodeWrapper">
-      <%- form_string = render({:partial => 'displays/form_view',
+    <%# Explicitly call CGI.escapeHTML, since h() ignores html_safe items, and
+    render generates an html_safe, which seems to be nearly impossible to undo %>
+      <%- form_string = CGI.escapeHTML(render({:partial => 'displays/form_view',
       :locals => {:prefix => request.protocol + request.host_with_port,
-      :show_powered_tag => true}}) -%>
+      :show_powered_tag => true}})) -%>
       <%= text_area_tag("form_code", form_string, :class => 'htmlCode') %>
   </div>
   <div class="divider">or</div>

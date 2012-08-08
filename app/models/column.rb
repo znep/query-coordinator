@@ -280,7 +280,7 @@ class Column < Model
 
   def self.to_core(js)
     col = {}
-    [:id, :name, :fieldName, :position, :description, :width, :format, :dropDownList].each do |k|
+    [:id, :name, :position, :description, :width, :format, :dropDownList].each do |k|
       col[k] = js[k.to_s] if !js[k.to_s].blank?
     end
     col[:dataTypeName] = js['type'] if !js['type'].blank?

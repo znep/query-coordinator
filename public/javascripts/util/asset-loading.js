@@ -177,10 +177,12 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
         // and it also has a slight problem in IE when in an iframe (like the
         // SDP) -- images ref'ed in the stylesheet won't load.  *Also*, IE7
         // won't handle things like direct-child selectors for manually inserted
-        // stylesheets. So in any of these cases, load it via a link tag, and
-        // hope things look OK, since we don't get a callback.
+        // stylesheets. Oh, and apparently IE (iframe or not) needs the same
+        // fix for sheets with fonts. So in any of these cases, load it via a
+        // link tag, and hope things look OK, since we don't get a callback.
         if (($.browser.msie && $.browser.majorVersion == 7 && sheet.hasSpecialSelectors) ||
             ($.browser.msie && window.parent != window && sheet.hasImages) ||
+            ($.browser.msie && sheet.hasFonts) ||
             url.startsWith('http://') || url.startsWith('https://'))
         {
             // If the stylesheet is external, then just insert a style tag

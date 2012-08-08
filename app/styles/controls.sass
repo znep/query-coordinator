@@ -834,3 +834,12 @@ ul.autocompleteComboDropdown
     &.active div
       background-color: #f7f7f7
 
+// Tweak v-align of icons, and give them space when before text
+.ss-icon, [class^="ss-"]:before, [class*=" ss-"]:before
+  vertical-align: sub
+.ss-icon.button
+  font-weight: normal
+  padding-top: 0.6em
+[class^="ss-"], [class*=" ss-"]
+  &:not(:empty):before
+    margin-right: 0.4em

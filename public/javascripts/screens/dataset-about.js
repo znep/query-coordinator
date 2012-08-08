@@ -13,6 +13,9 @@ $(function()
     // Set up publishing
     blist.datasetControls.hookUpPublishing($('#infoBox'));
 
-    blist.dataset.getTotalRows(function()
-    { $container.find('.row_count').text(blist.dataset.totalRows()); });
+    if (blist.dataset.isTabular())
+    {
+        blist.dataset.getTotalRows(function()
+        { $container.find('.row_count').text(blist.dataset.totalRows()); });
+    }
 });

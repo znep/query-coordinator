@@ -45,6 +45,9 @@
                                         .find('.button[data-value=preview]').removeClass('disabled');
                                 }
                             });
+
+                            var form_contents = $formElem.find('#form_code').text();
+                            $formElem.find('#form_code').text($.htmlUnescape(form_contents));
                         }
                     }
                 }

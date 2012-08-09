@@ -167,6 +167,8 @@
             $top.find('.actionBar a').click(function(e)
             {
                 e.preventDefault();
+                // Blur immediately so any edits take effect
+                $.cf.blur(true);
                 var action = $.hashHref($(this).attr('href'));
                 var prefix = action == 'undo' || action == 'redo' ? $.cf.edit : $.cf;
                 prefix[action]();

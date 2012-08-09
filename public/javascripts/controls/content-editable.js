@@ -17,20 +17,24 @@
                     var sel = rangy.getSelection();
                     if (sel.isCollapsed && sel.anchorOffset == 0)
                     {
-                        var curNode = sel.anchorNode;
-                        var $par = $(curNode).parent();
-                        var $parConts = $par.contents();
-                        // Iterate up the tree until we're at the level of this node
-                        while ($par[0] != $dom[0])
-                        {
-                            if ($parConts.index(curNode) != 0) { return; }
-                            curNode = $par[0];
-                            $par = $par.parent();
-                            $parConts = $par.contents();
-                        }
-                        var $prevNode = $parConts.eq($parConts.index(curNode) - 1);
+                        var $contents = $dom.contents();
+                        var $prevNode = $contents.eq($contents.index
+                            (getChildNode(sel.anchorNode, $dom)) - 1);
                         if ($prevNode.hasClass('nonEditable'))
                         { _.defer(function() { $prevNode.trigger('delete'); }); }
+                    }
+                    else if (sel.isCollapsed && sel.anchorOffset == 1 &&
+                        sel.anchorNode.length == sel.anchorOffset)
+                    {
+                        // If we delete the last character in the first text
+                        // node before a non-editable item, we don't want the
+                        // cursor automatically moved to after the non-editable
+                        // property (or another backspace would accidentally
+                        // delete the item), so we mark the case
+                        var $contents = $dom.contents();
+                        var cn = getChildNode(sel.anchorNode, $dom);
+                        if ($contents.index(cn) == 0 && $contents.eq(1).hasClass('nonEditable'))
+                        { $dom.data('forceToBeginning', true); }
                     }
                 }
             })
@@ -97,6 +101,21 @@
         processOptions(options);
     }
 
+    var getChildNode = function(curNode, $dom)
+    {
+        var $par = $(curNode).parent();
+        var $parConts = $par.contents();
+        // Iterate up the tree until we're at the level of this node
+        while ($par[0] != $dom[0])
+        {
+            if ($parConts.index(curNode) != 0) { return null; }
+            curNode = $par[0];
+            $par = $par.parent();
+            $parConts = $par.contents();
+        }
+        return curNode;
+    };
+
     var zws = '\u200b';
     var readjustCanaries = function($node)
     {
@@ -148,8 +167,11 @@
             firstC['class'].push('first');
             firstC = $.tag(firstC);
             $node.prepend(firstC);
-            if (savePos && pos == 0)
-            { sel.collapse(firstC[0], 1); }
+            if (savePos && pos == 0 || $node.data('forceToBeginning'))
+            {
+                sel.collapse(firstC[0], 1);
+                $node.removeData('forceToBeginning');
+            }
         }
         if ($items.last().hasClass('nonEditable'))
         {

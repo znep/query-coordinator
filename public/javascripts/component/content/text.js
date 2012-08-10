@@ -45,7 +45,11 @@ $.component.Component.extend('Text', 'content', {
         if (focused) { return true; }
 
         $.cf.extractProperties(this.$contents);
-        this._updatePrimaryValue($.htmlUnescape(this.$contents.html()));
+        var contHtml = $.htmlStrip(this.$contents.html());
+        // Strip out straight &nbsp;, since the browser inserted that
+        // (a manually entered nbsp will return as &amp;nbsp;)
+        contHtml = contHtml.replace(/&nbsp;/g, ' ');
+        this._updatePrimaryValue($.htmlUnescape(contHtml));
         return true;
     },
 

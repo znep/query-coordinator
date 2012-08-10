@@ -113,14 +113,15 @@ var picker = function($field, vals, curValue)
             suggestionListClass: 'contextPickerAutocomplete autocompleteComboDropdown',
             showFunction: function($list)
             {
-                $field.closest('.section').closest('.socrata-cf-side').andSelf().css('overflow', 'visible');
+                $field.closest('.panes').closest('.socrata-cf-side').andSelf()
+                    .css('overflow', 'visible');
                 // If we only have a 'Current Data' title, hide it
                 var $lItems = $list.find('.localItem');
                 if ($lItems.length < 2) { $lItems.hide(); }
             },
             blurFunction: function()
             {
-                $field.closest('.section').closest('.socrata-cf-side').andSelf().css('overflow', '');
+                $field.closest('.panes').closest('.socrata-cf-side').andSelf().css('overflow', '');
             },
             renderFunction: function(dataItem, topMatch, config)
             {

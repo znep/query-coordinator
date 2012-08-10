@@ -3,7 +3,7 @@
   height: 2em
   left: 0
   padding: 2em 2.5em
-  position: fixed
+  position: absolute
   right: 0
   top: 0
   z-index: 2000
@@ -38,50 +38,43 @@
   top: 0
 body.configuring
   background-image: url(/stylesheets/images/component/canvasbg.png)
+  .cfMainContainer
+    height: 100%
+    position: relative
   .cfEditingWrapper
     @include border-radius(4px, 4px, 0, 0)
     @include box-shadow(0, 0, 10px, rgba(0, 0, 0, 0.45))
     left: 2.5em
-    right: 26em+2.5em
+    right: 2.5em
     top: 6em
     z-index: 2001
 
-.socrata-cf-side
+#gridSidebar.socrata-cf-side
+  background-color: #ffffff
+  border: none
   bottom: 0
+  @include box-shadow(0, 0, 3px, rgba(100, 100, 100, 0.8), true)
+  margin:
+    bottom: 0.75em
+    right: 0.75em
   overflow: auto
-  padding-top: 0.4em
-  position: fixed
   top: 6em
   width: 26em
   z-index: 1000
-  .section
-    overflow: hidden
-    ul
-      height: 0
-      overflow: hidden
-    &.open
-      ul
-        height: auto
-    h2
-      cursor: pointer
-      font-size: 14px
-      padding: 2px 8px
-      margin: 2px 0 4px 0
-      text-shadow: black 0 1px 1px
-      color: white
-      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(32, 32, 32, .8)), to(rgba(0, 0, 0, .8)))
-      background: -webkit-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-      background: -moz-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-      background: -ms-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-      background: -o-linear-gradient(top, rgba(32, 32, 32, .8), rgba(0, 0, 0, .8))
-      .noLinearGradient &
-        background: #222
-      @include opacity(.8)
-      &:hover
-        @include opacity(1)
+  .outerPane
+    .headerLink
+      border-style: solid
+      border-width: 1px
+      &.selected
+        border: none
 
-    .autocomplete
-      left: 0
+  .controlPane
+    .paneContent
+      .sectionContent
+        @include border-radius(0)
+
+  .autocomplete
+    left: 0
 
   .componentCreate
     @include component-icons
@@ -211,23 +204,6 @@ body.configuring
         width: auto
     &.fallback input[type=text]
       width: 16.5em
-
-// Container for properties editors in the sidebar
-.socrata-cf-properties-shell
-  position: relative
-  .properties
-    @include border-radius(4px)
-    background: rgba(255, 255, 255, .75)
-    margin: 0.25em 0.5em
-
-    &.controlPane
-      min-height: 5em
-
-    .formSection
-      .formHeader
-        color: #333333
-      &.collapsed .formHeader
-        color: #666666
 
 .socrata-component .removeIcon
   @include box-shadow(0, 0, 6px, black)

@@ -153,6 +153,18 @@
             return !$.isBlank(config);
         },
 
+        getPane: function(configName)
+        {
+            var sidebarObj = this;
+            var nameParts = getConfigNames(configName);
+            var outerConfig = paneConfigs[nameParts.primary];
+            if ($.isBlank(outerConfig)) { return false; }
+
+            var config = (outerConfig.subPanes || {})[nameParts.secondary] ||
+                paneConfigs[nameParts.secondary];
+            return config.control;
+        },
+
         /* Create a new pane in the sidebar */
         addPane: function(configName, data, isTempData)
         {
@@ -359,6 +371,7 @@
         position: 'right',
         renderTypeManager: null,
         resizeNeighbor: null,
+        setHeight: true,
         setSidebarTop: true,
         view: null,
         waitOnDataset: false
@@ -460,7 +473,8 @@
     {
         var gridHeight = sidebarObj.$neighbor().outerHeight();
         var adjH = sidebarObj.$dom().outerHeight() - sidebarObj.$dom().height();
-        sidebarObj.$dom().height(gridHeight - adjH);
+        if (sidebarObj.settings.setHeight)
+        { sidebarObj.$dom().height(gridHeight - adjH); }
         if (sidebarObj.settings.setSidebarTop)
         { sidebarObj.$dom().css('top', -gridHeight + 'px') }
 
@@ -481,8 +495,8 @@
         if (!$.isBlank($pane))
         {
             var $scrollContent = $pane.find('.panes');
-            adjH += $pane.outerHeight() - $scrollContent.height();
-            $scrollContent.height(gridHeight - adjH);
+            adjH = $pane.outerHeight() - $scrollContent.height();
+            $scrollContent.height(sidebarObj.$dom().height() - adjH);
         }
     };
 

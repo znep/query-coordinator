@@ -15,6 +15,9 @@
         getTitle: function()
         { return 'Available Properties'; },
 
+        getSubtitle: function()
+        { return 'Add properties based on the data context to this component'; },
+
         isAvailable: function()
         { return !$.isBlank(this.component); },
 
@@ -138,7 +141,7 @@
                 break;
         }
 
-        return { title: dc.id + ' (' + dc.type.displayable() + ')', type: 'selectable', name: dc.id,
+        return { title: dc.id + ' (' + dc.type.displayable() + ')',
             customContent: {
                 template: 'propertiesPaletteContainer',
                 directive: {
@@ -168,4 +171,6 @@
                 }
             } };
     };
+
+    $.gridSidebar.registerConfig('configuration.propertiesPalette', 'pane_propertiesPalette', 1);
 })(jQuery);

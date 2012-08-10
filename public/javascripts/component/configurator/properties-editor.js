@@ -3,6 +3,9 @@
         getTitle: function()
         { return 'Edit Component'; },
 
+        getSubtitle: function()
+        { return 'Configure this component'; },
+
         isAvailable: function()
         { return !$.isBlank(this.component); },
 
@@ -66,4 +69,6 @@
             }
         }
      }, {name: 'propertiesEditor'}, 'controlPane');
+
+    $.gridSidebar.registerConfig('configuration.propertiesEditor', 'pane_propertiesEditor', 2);
 })(jQuery);

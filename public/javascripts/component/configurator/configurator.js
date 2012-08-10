@@ -61,7 +61,7 @@
         var $target = $(target),
             mouseTrap = $target.closest('.socrata-cf-mouse').length > 0 ||
                 // Capture scrollbar clicks; or as a side effect, just general clicks in this div
-                $target.hasClass('socrata-cf-side');
+                $target.closest('.socrata-cf-side').length > 0;
 
         // If they are interacting with the properties editor, let them
         // Or, if the component explicitly disables mouse interaction
@@ -118,7 +118,7 @@
     var options;
 
     var defaultOptions = {
-        canAdd: true,     // Can you add new components?
+        canAdd: false,     // Can you add new components?
         editOnly: false,  // Are components always in edit mode?
         edit: true,       // Start edit mode once initalized?
         mask: true,       // Mask out the background when editing a component?
@@ -132,8 +132,11 @@
             var page = blist.configuration.page;
 
             var $body = $('body');
+            var $cont = $.tag({ tagName: 'div', 'class': 'cfMainContainer' });
+            $body.append($cont);
+
             var $wrapper = $.tag({ tagName: 'div', 'class': 'cfEditingWrapper' });
-            $body.append($wrapper);
+            $cont.append($wrapper);
             $wrapper.css('background-color', $body.css('background-color'))
                 .append($body.children('.siteOuterWrapper, #siteFooter'));
 
@@ -160,7 +163,7 @@
                             contents: 'Revert' } }
                 ] }
             ] });
-            $body.append($top);
+            $cont.append($top);
 
             $top.find('.actionBar a').click(function(e)
             {

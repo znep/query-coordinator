@@ -42,8 +42,23 @@ $.component.Component.extend('Title', 'content', {
 
     _propWrite: function(properties)
     {
-        this._super(properties);
-        if (!_.isEmpty(properties)) { this._render(); }
+        var cObj = this;
+        cObj._super(properties);
+        if (!_.isEmpty(properties))
+        {
+            if (!cObj._editing)
+            { cObj._render(); }
+            else
+            {
+                var doEdit = function()
+                {
+                    cObj.edit(true);
+                    cObj.editFocus(true);
+                };
+                if (!cObj._updateDataSource(cObj._properties, doEdit))
+                { doEdit(); }
+            }
+        }
     },
 
     design: function()
@@ -54,6 +69,9 @@ $.component.Component.extend('Title', 'content', {
 
     _valueKey: function()
     { return 'text'; },
+
+    configurationSchema: function()
+    { return { schema: [{ fields: [$.extend($.cf.contextPicker(), {required: false})] }] }; },
 
     editFocus: function(focused)
     {

@@ -218,8 +218,8 @@
                             _.defer(function ()
                             {
                                 cObj.edit(true);
-                                if (!$.isBlank(cObj._propEditor))
-                                { cObj._propEditor.setComponent(cObj); }
+                                if (cObj._isActiveEdit)
+                                { $.cf.side.enableProperties(true); }
                             });
                         }
                     });
@@ -369,9 +369,9 @@
         _valueKey: function() {
         },
 
-        setEditor: function(editor)
+        setActiveEdit: function(isActive)
         {
-            this._propEditor = editor;
+            this._isActiveEdit = isActive;
         },
 
         /**
@@ -896,8 +896,8 @@
         {
             delete this._dataContext;
             this._isDirty = true;
-            if (!$.isBlank(this._propEditor))
-            { this._propEditor.setComponent(null); }
+            if (this._isActiveEdit)
+            { $.cf.side.enableProperties(false); }
         },
 
         _addDataContext: function(dc)
@@ -913,8 +913,8 @@
                 this._dataContext.push(dc);
             }
             this._isDirty = true;
-            if (!$.isBlank(this._propEditor))
-            { this._propEditor.setComponent(this); }
+            if (this._isActiveEdit)
+            { $.cf.side.enableProperties(true); }
         },
 
         /**

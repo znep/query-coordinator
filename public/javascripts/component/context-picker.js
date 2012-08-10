@@ -12,8 +12,8 @@ var picker = function($field, vals, curValue)
     var $wrapper = $.tag({tagName: 'div', 'class': 'wrapper'});
     $field.append($wrapper);
 
-    var $hiddenInput = $.tag({tagName: 'input', type: 'hidden', name: $field.attr('name'),
-        'class': 'required'});
+    var $hiddenInput = $.tag({ tagName: 'input', type: 'hidden', name: $field.attr('name'),
+        'class': { value: 'required', onlyIf: $field.hasClass('required') } });
     setValue($hiddenInput, curValue);
     $field.append($hiddenInput);
 
@@ -188,7 +188,7 @@ var picker = function($field, vals, curValue)
                                     var newData = _.map(_.reject(results.views, function(v)
                                             { return !$.isBlank(curViews[v.id]); }),
                                         function(v) { return $.extend({isServer: true},
-                                            translateDS({id: v.id, dataset: v})); });
+                                            translateDS({type: 'dataset', id: v.id, dataset: v})); });
                                     if (!_.isEmpty(newData))
                                     {
                                         if (!_.isEmpty(dataViews))

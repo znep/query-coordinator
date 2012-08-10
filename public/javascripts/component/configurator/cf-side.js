@@ -152,6 +152,8 @@
     var $properties;
     var propertiesEditor;
 
+    var activeComponent;
+
     function closePanel($dom, pane, callback)
     {
         if ($.isBlank(pane.component))
@@ -181,19 +183,21 @@
             else
             { $compPalettes.addClass('hide'); }
 
+            if (!$.isBlank(activeComponent))
+            { activeComponent.setActiveEdit(false); }
+            if (!$.isBlank(what))
+            { what.setActiveEdit(true); }
+            activeComponent = what;
+
             if (propertiesEditor.component != what)
             {
                 closePanel($properties, propertiesEditor, function(didClose)
                 {
                     if (didClose)
-                    {
-                        propertiesEditor.component.setEditor(null);
-                        propertiesEditor.setComponent(null);
-                    }
+                    { propertiesEditor.setComponent(null); }
                     if (what)
                     {
                         propertiesEditor.setComponent(what);
-                        what.setEditor(propertiesEditor);
                         openPanel($properties);
                     }
                 });
@@ -211,6 +215,13 @@
                     }
                 });
             }
+        },
+
+        enableProperties: function(enable)
+        {
+            var c = enable ? activeComponent : null;
+            propertiesEditor.setComponent(c);
+            propertiesPalette.setComponent(c);
         },
 
         reset: function() {

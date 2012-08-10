@@ -1159,6 +1159,9 @@
             { chartConfig.yAxis.min = yAxis.min; }
             if (!_.isNaN(parseFloat(yAxis.max)))
             { chartConfig.yAxis.max = yAxis.max; }
+
+            if (chartObj._displayFormat.yAxis.noDecimals)
+            { chartConfig.yAxis.allowDecimals = false; }
         }
 
         if (isDateTime(chartObj))

@@ -157,7 +157,9 @@
                     { text: 'Precision', type: 'slider', minimum: 0, maximum: 10, defaultValue: 2,
                          name: 'displayFormat.yAxis.formatter.decimalPlaces' },
                 {text: 'Abbreviate', type: 'checkbox', defaultValue: true,
-                    name: 'displayFormat.yAxis.formatter.abbreviate'}
+                    name: 'displayFormat.yAxis.formatter.abbreviate'},
+                {text: 'No Decimals', type: 'checkbox', defaultValue: false,
+                    name: 'displayFormat.yAxis.noDecimals'}
             ]
         };
     };

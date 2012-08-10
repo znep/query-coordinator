@@ -162,7 +162,7 @@
 
             var config = (outerConfig.subPanes || {})[nameParts.secondary] ||
                 paneConfigs[nameParts.secondary];
-            return config.control;
+            return (config || {}).control;
         },
 
         /* Create a new pane in the sidebar */

@@ -141,7 +141,7 @@
             if ($.isBlank(what))
             { sidebar.hide(); }
             else
-            { sidebar.show('configuration.propertiesEditor'); }
+            { sidebar.show('configuration.propertiesPalette'); }
 
             var propertiesEditor = sidebar.getPane('configuration.propertiesEditor');
             if (!$.isBlank(propertiesEditor) && propertiesEditor.component != what)

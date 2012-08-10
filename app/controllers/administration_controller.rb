@@ -413,7 +413,6 @@ class AdministrationController < ApplicationController
   #
   # Dataset-level metadata (custom fields, categories)
   #
-  before_filter :only => [:metadata] {|c| c.check_auth_levels_any(['edit_site_theme', 'edit_pages'])}
   before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level('edit_site_theme')}
   def metadata
     config = get_or_create_configuration('metadata', {'name' => 'Metadata configuration'})

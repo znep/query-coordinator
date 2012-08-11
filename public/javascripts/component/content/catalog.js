@@ -38,7 +38,7 @@ $.component.Component.extend('Catalog', 'data', {
         this.$contents.css(blist.configs.styles.convertProperties(this._properties));
         var props = this._stringSubstitute(this._properties);
         var params = {};
-        if (!_.isEmpty(props.defaults)) { params.defaults = props.default; }
+        if (!_.isEmpty(props.defaults)) { params.defaults = props.defaults; }
         if (!_.isEmpty(props.disabledItems))
         { params.disable = $.arrayToObjKeys(props.disabledItems, true); }
         if (!_.isEmpty(props.disabledSections))

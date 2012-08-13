@@ -70,5 +70,5 @@
         }
      }, {name: 'propertiesEditor'}, 'controlPane');
 
-//    $.gridSidebar.registerConfig('configuration.propertiesEditor', 'pane_propertiesEditor', 2);
+    $.gridSidebar.registerConfig('configuration.propertiesEditor', 'pane_propertiesEditor', 2);
 })(jQuery);

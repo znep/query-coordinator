@@ -804,6 +804,8 @@
                 var finishCallback = _.after(count, function()
                 {
                     cObj.finishLoading();
+                    if (cObj._isActiveEdit)
+                    { $.cf.side.enableProperties(true); }
                     if (_.isFunction(callback)) { callback.apply(cObj); }
                 });
                 cObj._clearDataContext();
@@ -913,8 +915,6 @@
                 this._dataContext.push(dc);
             }
             this._isDirty = true;
-            if (this._isActiveEdit)
-            { $.cf.side.enableProperties(true); }
         },
 
         /**

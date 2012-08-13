@@ -234,6 +234,7 @@
                 { page.content = content[0]; }
                 else
                 { page.content = content; }
+                page.data = $.dataContext.currentContexts();
                 page.locale = $.locale.updated();
                 $.ajax({
                     type: 'POST',

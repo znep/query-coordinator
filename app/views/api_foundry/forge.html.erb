@@ -24,17 +24,20 @@
                 <label for="view_category">Unique Identifier</label>
                 <%= select_tag("rowIdentifierColumnId", options_from_collection_for_select(
                     @view.columns.find_all{|column| column.dataTypeName == "text" || column.dataTypeName == "number"}, "id", "name")) %>
+                <div class="additionalHelp">The primary field that identifies a row</div>
               </div>
 
               <div class="line clearfix formControl">
                 <label for="description">Description</label>
                 <%= text_area_tag("description", @view.description, :title => "Enter a description", :class => "textPrompt") %>
+                <div class="additionalHelp">The description that will be provided to end-users</div>
               </div>
 
             </div>
             <div class="docPreview">
             <div class="docPreviewInside">
               <h2>Documentation Preview</h2>
+            <div class="docPreviewPage">
               <h3>What is SODA?</h3>
               <p>SODA Provides an open, standards-based, RESTful application programming interface to access government datasets.</p>
               <h3>example API request</h3>
@@ -47,6 +50,7 @@
               <h3>another example API request</h3>
             </div>
             </div>
+            </div>
           </div><!-- paneControlOuter -->
         </li>
         <% @view.columns.each_with_index do |column, index| %>
@@ -54,11 +58,11 @@
           <div class="paneControlOuter">
             <div class="paneFormControls">
 
-              <h2>Customize Field | <%= column.fieldName %></h2>
+              <h2>Customize Field: <%= column.fieldName %></h2>
               <div class="line clearfix formControl">
                 <label class="required" for="displayName">Display Name</label>
                 <%= text_field_tag("name", column.name, :title => "enter a display name", :class => "textPrompt required") %>
-                <div class="additionalHelp">A human-readable name for visual display and export</div>
+                <div class="additionalHelp">A human-readable name for display and export</div>
               </div>
 
               <div class="line clearfix formControl">
@@ -77,6 +81,7 @@
             <div class="docPreview">
             <div class="docPreviewInside">
               <h2>Documentation Preview</h2>
+            <div class="docPreviewPage">
               <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
               <h3>example API request</h3>
               <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
@@ -84,6 +89,7 @@
               <h3>another example API request</h3>
               <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
               <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+            </div>
             </div>
             </div>
           </div><!-- paneControlOuter -->

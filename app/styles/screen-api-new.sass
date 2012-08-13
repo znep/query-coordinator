@@ -5,6 +5,12 @@
   text-align: center
 
 #apiFoundryWizard 
+  padding-top: 1.5em
+  padding-bottom: 1.5em
+  margin-top: 1.5em
+  margin-bottom: 1.5em
+  border-top: 1px solid $color_chrome_box_border
+  border-bottom: 1px solid $color_chrome_box_border
   li
     font-size: 1.2em
     display: none
@@ -15,24 +21,33 @@
       width: 50%
       float: left
       label 
-        width: 14em
+        width: 8em
         margin-right: 1em
         float: left
       .additionalHelp
-        margin-left: 15em
-        width: 20em
+        margin-left: 9em
+        width: 35em
+        color: gray
+        font-style: italic
       label.error
-        margin-left: 15em
+        margin-left: 21em
       input, select, textarea
-        width: 20em
+        width: 26em
     .formControl
       margin-bottom: 1em
     .docPreview
       width: 50%
       float: left
     .docPreviewInside
-      border-left: 1px silver solid
       padding-left: 1em
+    .docPreviewPage
+      padding: 1em
+      border: 1px solid $color_chrome_box_border
+      background-image: url('/images/apifoundry/corner-flip.png')
+      background-repeat: no-repeat
+      background-position: right top
+      background-color: #F1F1F1
+      @include box-shadow(3px, 3px, 4px, #cfcfcf)
   #published, #apiPublish
     text-align: center
     a h2

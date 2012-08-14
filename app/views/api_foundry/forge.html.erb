@@ -7,7 +7,7 @@
 <div class="contentBox fixedWidth">
   <form id="newApiForm">
     <h1>Customize Your API : <%= @view.name %></h1>
-    <div id="apiFoundryWizard">
+    <div id="apiFoundryWizard" class="wizard">
       <ul class="clearfix">
         <li id="apiSettings" data-wizardpanename="apiSettings">
           <div class="paneControlOuter">
@@ -104,7 +104,7 @@
         <li id="published" data-wizardpanename="published">
           <h2>Congratulations! You're API is now live.</h2>
           <p>Developers may now use this API to build applications.</p>
-          <a href="/api_foundry/docs/<%= params[:id] %>"><h2>View the generated documentation</h2></a>
+          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h2>View the generated documentation</h2></a>
         </li>
       </ul>
     </div>

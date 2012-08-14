@@ -58,6 +58,7 @@ $(function(){
         disableButtons: ['cancel', 'prev'],
         onActivate: function($pane, paneConfig, state, command){
           paneConfig.nextText = "View Documentation";
+          $("#docslink").attr("href", blist.configuration.apiFoundry.docsUrl);
         },
         onNext: function($pane, state)
         {

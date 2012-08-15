@@ -2598,6 +2598,8 @@ var Dataset = ServerModel.extend({
         publicationAppendEnabled: true,
         query: true,
         queryString: true,
+        resourceName: true,
+        rowIdentifierColumnId: true,
         searchString: true,
         tags: true,
         termsAndConditions: true
@@ -2894,6 +2896,8 @@ function cleanViewForCreate(ds)
         delete dsCopy.metadata.facets;
         delete dsCopy.metadata.filterCondition;
     }
+    delete dsCopy.resourceName;
+    delete dsCopy.rowIdentifierColumnId;
 
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }

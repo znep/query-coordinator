@@ -3,7 +3,8 @@
 .headline
   font-size: 1.8em
   text-align: center
-
+#steps
+  float: right
 #apiFoundryWizard 
   padding-top: 1.5em
   padding-bottom: 1.5em
@@ -11,15 +12,17 @@
   margin-bottom: 1.5em
   border-top: 1px solid $color_chrome_box_border
   border-bottom: 1px solid $color_chrome_box_border
-  li
+  .wizpane
     font-size: 1.2em
     display: none
     float: left
     h2
       margin-bottom: 0.5em
-    .paneFormControls
-      width: 50%
+    .controlColumn
       float: left
+      width: 50%
+    .paneFormControls
+      clear: both
       label 
         width: 8em
         margin-right: 1em
@@ -33,8 +36,14 @@
         margin-left: 21em
       input, select, textarea
         width: 26em
+      .locationSpan
+        font-size: 2em
     .formControl
-      margin-bottom: 1em
+      margin-top: 0.5em
+      margin-bottom: 0.5em
+    .helpfulText
+      width: 50%
+      float: left
     .docPreview
       width: 50%
       float: left

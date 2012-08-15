@@ -3,6 +3,9 @@ class ApiFoundryController < ApplicationController
   include DatasetsHelper
 
   def index
+    if !module_available?(:api_foundry) 
+      return render_404
+    end
     vtf = view_types_facet
     vtf[:options].insert(1, {
       :text => 'Unpublished Datasets', :value => 'unpublished',
@@ -23,7 +26,13 @@ class ApiFoundryController < ApplicationController
   end
 
   def forge
+    if !module_available?(:api_foundry) 
+      return render_404
+    end
     @view = get_view(params[:id])
+    if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
+      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id])
+    end
   end
 
 protected

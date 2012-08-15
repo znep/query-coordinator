@@ -54,6 +54,17 @@
         title="Only an owner or publisher can publish this dataset"
       <%- end -%>
         >Publish Dataset</a>
+
+      <%- if module_available?(:api_foundry) -%>
+       <a href="/api_foundry/forge/<%= @view.id %>" class="toolbarButton <%= @view.can_publish? ? '' : 'disabled' %>"
+         <%- if @view.can_publish?() -%>
+           title="<%= "Create an Application Programming Interface (API)
+           to grant programmatic access to this data." %>"
+        <%- else -%>
+          title="Only an owner or publisher can create an API"
+        <%- end -%>
+          >Create an API</a>
+      <%- end -%>
     <%- end -%>
 
     <div class="basedOnParent">

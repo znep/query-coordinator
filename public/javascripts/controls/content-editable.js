@@ -24,23 +24,13 @@
                         if ($prevNode.hasClass('nonEditable'))
                         { _.defer(function() { $prevNode.trigger('delete'); }); }
                     }
-                    else if (sel.isCollapsed && sel.anchorOffset == 1 &&
-                        sel.anchorNode.length == sel.anchorOffset)
-                    {
-                        // If we delete the last character in the first text
-                        // node before a non-editable item, we don't want the
-                        // cursor automatically moved to after the non-editable
-                        // property (or another backspace would accidentally
-                        // delete the item), so we mark the case
-                        var $contents = $dom.contents();
-                        var cn = getChildNode(sel.anchorNode, $dom);
-                        if ($contents.index(cn) == 0 && $contents.eq(1).hasClass('nonEditable'))
-                        { $dom.data('forceToBeginning', true); }
-                    }
                 }
             })
             .on('keyup.editableControl mouseup.editableControl', function(e)
             {
+                if (options.singleLineMode)
+                { $dom.find('br').replaceWith(''); }
+
                 _.defer(function()
                 {
                     readjustCanaries($dom);
@@ -53,9 +43,9 @@
                     var $par = $(sel.anchorNode).parent();
                     if ($par.hasClass('canary'))
                     {
-                        if ($par.hasClass('first') && sel.anchorOffset == 0)
+                        if ($par.hasClass('after') && sel.anchorOffset == 0)
                         { sel.collapse(sel.anchorNode, 1); }
-                        else if ($par.hasClass('last') && sel.anchorOffset == 1)
+                        else if ($par.hasClass('before') && sel.anchorOffset == 1)
                         { sel.collapse(sel.anchorNode, 0); }
                     }
                 });
@@ -63,12 +53,35 @@
             .on('keydown.editableControl', function(e)
             {
                 var sel = rangy.getSelection();
-                if (sel.isCollapsed && $(sel.anchorNode).parent().andSelf().is('.canary.intermediate'))
+                if (!sel.isCollapsed) { return; }
+
+                var $anchorNode = $(sel.anchorNode);
+                var $items = $anchorNode.parent().contents();
+                var idx = $items.index($anchorNode);
+                var $curNodes = $anchorNode.parent().andSelf();
+                // backspace || arrow_left
+                if (e.which == 8 || e.which == 37)
                 {
-                    if (e.which == 8 || e.which == 37) // backspace || arrow_left
-                    { sel.collapse(sel.anchorNode, 0); }
-                    if (e.which == 46 || e.which == 39) // delete || arrow_right
-                    { sel.collapse(sel.anchorNode, 1); }
+                    var node;
+                    if ($curNodes.is('.canary.after'))
+                    { node = sel.anchorNode; }
+                    else if (sel.anchorOffset == 0 && $items.eq(idx - 1).is('.canary.after'))
+                    { node = $items.eq(idx - 1)[0]; }
+                    if (!$.isBlank(node))
+                    { sel.collapse(node, 0); }
+                }
+
+                // delete || arrow_right
+                if (e.which == 46 || e.which == 39)
+                {
+                    var node;
+                    if ($curNodes.is('.canary.before'))
+                    { node = sel.anchorNode; }
+                    else if (sel.anchorOffset == $anchorNode.text().length &&
+                            $items.eq(idx + 1).is('.canary.before'))
+                    { node = $items.eq(idx + 1)[0]; }
+                    if (!$.isBlank(node))
+                    { sel.collapse(node, 1); }
                 }
             })
             .on('content-changed.editableControl', function() { readjustCanaries($dom); });
@@ -157,59 +170,27 @@
                     if (!$.isBlank(pos))
                     { sel.collapse($node.contents()[i], pos); }
                 }
-                else if (
-                    // If not really first item, or not before a property
-                    ($t.hasClass('first') && (i != 0 || !$items.eq(1).hasClass('nonEditable'))) ||
-                    // If not really last item, or not after a property
-                    ($t.hasClass('last') && (i != ($items.length - 1) ||
-                                             !$items.eq(-2).hasClass('nonEditable'))) ||
-                    // If intermediate and at beginning or end, or not between two properties
-                    ($t.hasClass('intermediate') && (i == 0 || i == ($items.length - 1) ||
-                                                     !$items.eq(i - 1).hasClass('nonEditable') ||
-                                                     !$items.eq(i + 1).hasClass('nonEditable')))
-                    )
+                else if (($t.hasClass('before') && !$items.eq(i+1).hasClass('nonEditable')) ||
+                    ($t.hasClass('after') && !$items.eq(i-1).hasClass('nonEditable')))
                 { $t.remove(); }
             }
         });
 
-        $items = $node.contents();
         var sel = rangy.getSelection();
         var savePos = sel.isCollapsed && sel.anchorNode == $node[0];
         var pos = sel.anchorOffset;
-        var canary = { tagName: 'span', 'class': ['canary'], contents: '&#x200b;' };
-        if ($items.first().hasClass('nonEditable'))
-        {
-            var firstC = $.extend(true, {}, canary);
-            firstC['class'].push('first');
-            firstC = $.tag(firstC);
-            $node.prepend(firstC);
-            if (savePos && pos == 0 || $node.data('forceToBeginning'))
-            {
-                sel.collapse(firstC[0], 1);
-                $node.removeData('forceToBeginning');
-            }
-        }
-        if ($items.last().hasClass('nonEditable'))
-        {
-            var lastC = $.extend(true, {}, canary);
-            lastC['class'].push('last');
-            lastC = $.tag(lastC);
-            $node.append(lastC);
-            if (savePos && pos == $items.length)
-            { sel.collapse(lastC[0], 0); }
-        }
-        var interC = $.extend(true, {}, canary);
-        interC['class'].push('intermediate');
-        $items.quickEach(function(i)
+        var c = { tagName: 'span', 'class': ['canary'], contents: '&#x200b;' };
+        var beforeC = $.extend(true, {}, c);
+        beforeC['class'].push('before');
+        var afterC = $.extend(true, {}, c);
+        afterC['class'].push('after');
+        $node.children('.nonEditable').quickEach(function()
         {
             var $t = $(this);
-            if ($t.hasClass('nonEditable') && $items.eq(i+1).hasClass('nonEditable'))
-            {
-                var $ic = $.tag(interC);
-                $t.after($ic);
-                if (savePos && (pos - 1) == i)
-                { sel.collapse($ic[0], 0); }
-            }
+            if ($t.prev('.canary.before').length < 1)
+            { $t.before($.tag(beforeC)); }
+            if ($t.next('.canary.after').length < 1)
+            { $t.after($.tag(afterC)); }
         });
         $node[0].normalize();
     };

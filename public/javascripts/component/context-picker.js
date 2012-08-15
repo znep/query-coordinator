@@ -17,26 +17,35 @@ var picker = function($field, vals, curValue)
     setValue($hiddenInput, curValue);
     $field.append($hiddenInput);
 
-    var fullData = $.dataContext.availableContexts[curValue] || {dataset: {}};
+    var cx = $.dataContext.availableContexts[curValue] || {dataset: {}};
     var $textInput = $.tag({tagName: 'input', type: 'text', 'class': 'textInput',
-        value: $.htmlEscape((fullData.dataset || {}).name || curValue)});
+        value: $.htmlEscape((cx.dataset || {}).name || curValue)});
     $textInput.change(function(e)
         {
             if ($field.parents('body').length < 1) { return; }
 
-            var v = ($textInput.data('fullData') || {}).contextId || $textInput.value();
-            if (!$.isBlank(v))
+            var context = $textInput.data('context');
+            var v;
+            if (!$.isBlank(context))
+            { v = context.id; }
+            else
             {
-                var m = v.match(/^https?:\/\/.*\/(\w{4}-\w{4})(\?.*)*$/);
-                if (!$.isBlank(m)) { v = m[1]; }
+                v = $textInput.value();
+                if (!$.isBlank(v))
+                {
+                    var m = v.match(/^https?:\/\/.*\/(\w{4}-\w{4})(\?.*)*$/);
+                    if (!$.isBlank(m)) { v = m[1]; }
+                }
+                context = { type: 'dataset', datasetId: v, id: v + '_' + _.uniqueId() };
             }
+
             setValue($hiddenInput, v);
             if (!$hiddenInput.valid()) { return; }
 
             if ($.isBlank($.dataContext.availableContexts[v]))
             {
                 e.stopPropagation();
-                $.dataContext.loadContext(v, {type: 'dataset', datasetId: v},
+                $.dataContext.loadContext(v, context,
                     function() { $textInput.change(); },
                     function()
                     {
@@ -67,7 +76,8 @@ var picker = function($field, vals, curValue)
     var searchDelayTimer;
     var translateDS = function(dc)
     {
-        var d = {contextId: dc.id, id: dc.id, name: dc.id};
+        var d = { context: dc.config, id: dc.id, name: dc.id };
+        d.context.id = d.id;
         switch (dc.type)
         {
             case 'dataset':
@@ -81,7 +91,7 @@ var picker = function($field, vals, curValue)
                 break;
 
             case 'row':
-                $.extend(d, dc.row);
+                $.extend(d, {row: dc.row});
                 break;
 
             case 'datasetList':
@@ -188,8 +198,13 @@ var picker = function($field, vals, curValue)
                                         });
                                     var newData = _.map(_.reject(results.views, function(v)
                                             { return !$.isBlank(curViews[v.id]); }),
-                                        function(v) { return $.extend({isServer: true},
-                                            translateDS({type: 'dataset', id: v.id, dataset: v})); });
+                                        function(v)
+                                        {
+                                            return $.extend({isServer: true},
+                                                translateDS({ type: 'dataset', dataset: v,
+                                                    id: v.id + '_' + _.uniqueId(),
+                                                    config: { type: 'dataset', datasetId: v.id } }));
+                                        });
                                     if (!_.isEmpty(newData))
                                     {
                                         if (!_.isEmpty(dataViews))
@@ -205,7 +220,7 @@ var picker = function($field, vals, curValue)
                 }
             },
             onComplete: function(data)
-            { $textInput.data('fullData', data).change(); },
+            { $textInput.data('context', data.context).change(); },
             valueFunction: function(dataItem)
             { return dataItem.id || null; }
         });

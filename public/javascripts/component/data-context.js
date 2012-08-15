@@ -57,7 +57,7 @@
             existingContexts = existingContexts || {};
             if (existingContexts.hasOwnProperty(id) && existingContexts[id].type == config.type)
             {
-                var curC = dc.availableContexts[id] = existingContexts[id];
+                var curC = addContext(dc, id, config, existingContexts[id]);
                 if (!$.isBlank(curC.dataset) && !(curC.dataset instanceof Dataset))
                 { curC.dataset = new Dataset(curC.dataset); }
 
@@ -65,9 +65,8 @@
                 {
                     curC.datasetList = _.map(curC.datasetList, function(dl)
                     {
-                        var c = {type: 'dataset', dataset: new Dataset(dl.dataset), id: dl.id};
-                        dc.availableContexts[c.id] = c;
-                        return c;
+                        return addContext(dc, dl.id, {type: 'dataset', datasetId: dl.dataset.id},
+                            {dataset: new Dataset(dl.dataset)});
                     });
                 }
 
@@ -112,10 +111,7 @@
                             if ($.isBlank(row))
                             { errorLoading(id); }
                             else
-                            {
-                                dc.availableContexts[id] = {id: id, type: config.type, row: row};
-                                doneLoading(dc.availableContexts[id]);
-                            }
+                            { doneLoading(addContext(dc, id, config, { row: row })); }
                         });
                     }, errorLoading);
                     break;
@@ -127,8 +123,7 @@
                         var col = ds.columnForIdentifier(config.columnId);
                         var finishCol = function()
                         {
-                            dc.availableContexts[id] = { id: id, type: config.type, column: col };
-                            doneLoading(dc.availableContexts[id]);
+                            doneLoading(addContext(dc, id, config, { column: col }));
                         };
 
                         if ($.isBlank(col))
@@ -151,8 +146,7 @@
                 case 'dataset':
                     loadDataset(dc, id, config, function(ds)
                     {
-                        dc.availableContexts[id] = {id: id, type: config.type, dataset: ds};
-                        doneLoading(dc.availableContexts[id]);
+                        doneLoading(addContext(dc, id, config, { dataset: ds }));
                     }, errorLoading);
                     break;
 
@@ -169,15 +163,14 @@
                                     return;
                                 }
 
-                                dc.availableContexts[id] = {id: id, type: config.type,
-                                    count: count, datasetList: _.map(viewsList, function(ds)
-                                        {
-                                            var c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id};
-                                            dc.availableContexts[c.id] = c;
-                                            return c;
-                                        })};
-
-                                doneLoading(dc.availableContexts[id]);
+                                doneLoading(addContext(dc, id, config, { count: count,
+                                    datasetList: _.map(viewsList, function(ds)
+                                    {
+                                        return addContext(dc, id + '_' + ds.id,
+                                            { type: 'dataset', datasetId: ds.id },
+                                            { dataset: ds });
+                                    })
+                                }));
                             };
 
                             if (config.requireData && results.count > 0)
@@ -217,8 +210,25 @@
             }
 
             return false;
+        },
+
+        currentContexts: function()
+        {
+            var res = {};
+            _.each(this.availableContexts, function(dc, id)
+            { res[id] = dc.config; });
+            return res;
         }
     }));
+
+    var addContext = function(dc, id, config, context)
+    {
+        context.config = config;
+        context.id = id;
+        context.type = config.type;
+        dc.availableContexts[id] = context;
+        return context;
+    };
 
     var addQuery = function(ds, query)
     {

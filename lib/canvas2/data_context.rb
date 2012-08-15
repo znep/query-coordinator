@@ -122,10 +122,10 @@ module Canvas2
 
       ds.query.data.deep_merge!(q)
 
-      if !q['groupBys'].blank? && !query['groupedColumns'].empty?
+      if !q['groupBys'].blank?
         cols = []
         q['groupBys'].each { |gb| cols.push(ds.column_by_id_or_field_name(gb['columnId'])) }
-        query['groupedColumns'].each do |gc|
+        (query['groupedColumns'] || []).each do |gc|
           c = ds.column_by_id_or_field_name(gc['columnId'])
           if !c.blank?
             c.data['format'] ||= {}

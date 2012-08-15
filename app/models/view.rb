@@ -1,6 +1,7 @@
 class View < Model
   cattr_accessor :licenses, :creative_commons, :merged_licenses,
-    :filter_type1s, :custom_vis_cols
+    :filter_type1s
+  attr_accessor :custom_vis_cols
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -404,6 +405,7 @@ class View < Model
     dhash["numberOfComments"] = numberOfComments
     dhash["averageRating"] = averageRating
     dhash["totalTimesRated"] = totalTimesRated
+    dhash['columns'] = columns.map {|c| c.to_core}
 
     dhash.to_json(opts)
   end

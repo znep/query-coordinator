@@ -280,12 +280,18 @@ class Column < Model
 
   def self.to_core(js)
     col = {}
-    [:id, :name, :fieldName, :position, :description, :width, :format, :dropDownList].each do |k|
+    [:id, :name, :fieldName, :position, :description, :width, :dropDownList].each do |k|
       col[k] = js[k.to_s] if !js[k.to_s].blank?
     end
+    col[:format] = js['format']
+    col[:flags] = js['flags']
     col[:dataTypeName] = js['type'] if !js['type'].blank?
 
     return col
+  end
+
+  def to_json
+    to_core.to_json.html_safe
   end
 
   # Convert the core server column data to what JS expects as a model so the

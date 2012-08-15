@@ -34,6 +34,10 @@ var datasets = {
     'alternativeSchools': {
         domain: 'opendata.test-socrata.com', uid: 's4r2-wuhk',
         flags: { 'maps=nextgen': true },
+    },
+    'washingtonCities': {
+        domain: 'opendata.test-socrata.com', uid: '7g3h-sxfk',
+        flags: { 'maps=nextgen': true },
     }
 };
 
@@ -561,26 +565,591 @@ var testsToRun = [
     {
         name: 'Create map with point map and conditional formatting on an additional dataset',
         dataset: 'alternativeSchools',
-        formFill: function() {
-            this.evaluate(function() { $('.repeater a.addValue:eq(1)').click(); });
-            this.waitASec();
-            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
-                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'dataset_name': '27ys-67jn',
-            });
-            this.evaluate(function() { $('input[name=dataset_name]').triggerHandler('blur'); });
-            this.waitASec();
-            this.screenshot('test');
-            this.evalAndEcho(function() { return $('.mapDataLayerCreate').length; });
-            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_68:displayFormat.viewDefinitions.1.plotStyle': 'point'
+        callUpdate: function() {
+            this.evaluate(function()
+            {
+                blist.dataset.update({
+                    metadata:
+                        {"renderTypeConfig":{"visible":{"map":true,"table":true}},
+                         "custom_fields":{"QA":{"abc":""},"dd123":{"oops":""},"QA new":{"bb9":"","bb":""}},
+                         "availableDisplayTypes":["map","table","fatrow","page"],"rdfSubject":"0","rowIdentifier":"0","rdfClass":""
+                        },
+                    displayFormat:
+                        {"bkgdLayers":[{"layerName":"Google Roadmap","opacity":1}],"exclusiveLayers":false,
+                        "viewDefinitions":[
+                            {"uid":"s4r2-wuhk","plotStyle":"point","plot":{"locationId":20015,"descriptionColumns":[{}]},"color":"#0000ff","flyoutsNoLabel":false},
+                            {"uid":"bsyu-pu7p","plotStyle":"point","plot":{"locationId":18443,"descriptionColumns":[{}]},"color":"#00ff00","flyoutsNoLabel":false}
+                        ]}
+                });
             });
         },
         runAsserts: function(currentTest) {
             with(this.test)
             {
+                assert(this.evaluate(function()
+                    { return mapObj._children[1]._displayLayer.features[3].style.fillColor == '#bbffbb'; }),
+                    bracket(currentTest) + 'Feature.Vectors with attributes.rows[i].color use that color in style.fillColor.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer instanceof OpenLayers.Layer.Vector; }),
+                    bracket(currentTest) + 'A Layer.Vector exists.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0] instanceof OpenLayers.Feature.Vector; }),
+                    bracket(currentTest) + 'A Layer.Vector exists, with appropriate Feature.Vectors contained.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0].geometry instanceof OpenLayers.Geometry.Polygon; }),
+                    bracket(currentTest) + 'Feature.Vectors have a .geometry of Polygon type.');
+                assert(this.evaluate(function()
+                    {
+                        var length = mapObj._children[0]._displayLayer.features.length, rv = true;
+                        for (var i = 0; i < length; i++)
+                        { if (!((_.isEmpty(mapObj._children[0]._displayLayer.features[i].attributes.rows) && mapObj._children[0]._displayLayer.features[i].style.fillOpacity == 0)
+                            || (!_.isEmpty(mapObj._children[0]._displayLayer.features[i].attributes.rows) && mapObj._children[0]._displayLayer.features[i].style.fillOpacity != 0)))
+                            { rv = false; break; } }
+                        return rv;
+                    }),
+                    bracket(currentTest) + 'Any Feature.Vector with an empty attributes.rows will have style.opacity set to 0.');
+                assert(this.evaluate(function() { return !_.isUndefined(mapObj._children[0]._range); }),
+                    bracket(currentTest) + 'layerObj._range is defined.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map choosing 1 or 2 location columns',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18447,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                // FIXME: Didn't work. Didn't troubleshoot for some reason.
+                assert(this.evaluate(function() { return mapObj._children[0]._locCol.tableColumnId == 18447; }),
+                    bracket(currentTest) + 'layerObj._locCol refers to the correct column.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using US Counties',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18447,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function() { return mapObj._children[0]._config.type == 'counties'; }),
+                    bracket(currentTest) + 'layerObj._config.type is \'counties\'.');
+                assert(this.evaluate(function() { return !_.isUndefined(mapObj._children[0]._config.region); }),
+                    bracket(currentTest) + 'layerObj._config.region is defined.');
+                // Not sure how to test for "- Fetched JSON is 'esri_county_XX.json'."
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using US States without background',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'state'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function() { return mapObj._children[0]._config.type == 'state'; }),
+                    bracket(currentTest) + 'layerObj._config.type is \'counties\'.');
+                assert(this.evaluate(function() { return _.isUndefined(mapObj._children[0]._config.region); }),
+                    bracket(currentTest) + 'layerObj._config.region is not defined.');
+                // Not sure how to test for "- Fetched JSON is 'esri_state_data.json'."
+                assert(this.evaluate(function() { return _.has(mapObj._children[0]._displayLayer.features[50].geometry.attributes, 'oldGeometry'); }),
+                    bracket(currentTest) + 'Alaska are moved into geographically inaccurate positions and scales.');
+                assert(this.evaluate(function() { return _.has(mapObj._children[0]._displayLayer.features[0].geometry.attributes, 'oldGeometry'); }),
+                    bracket(currentTest) + 'Hawaii are moved into geographically inaccurate positions and scales.');
+                assert(this.evaluate(function() { return mapObj.map.baseLayer.visibility == false; }),
+                    bracket(currentTest) + 'Background layer is hidden.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using US States with background',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'state'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function() { return mapObj._children[0]._config.type == 'state'; }),
+                    bracket(currentTest) + 'layerObj._config.type is \'counties\'.');
+                assert(this.evaluate(function() { return _.isUndefined(mapObj._children[0]._config.region); }),
+                    bracket(currentTest) + 'layerObj._config.region is not defined.');
+                // Not sure how to test for "- Fetched JSON is 'esri_state_data.json'."
+                assert(this.evaluate(function() { return !_.has(mapObj._children[0]._displayLayer.features[50].geometry.attributes, 'oldGeometry'); }),
+                    bracket(currentTest) + 'Alaska are moved into geographically accurate positions and scales.');
+                assert(this.evaluate(function() { return !_.has(mapObj._children[0]._displayLayer.features[0].geometry.attributes, 'oldGeometry'); }),
+                    bracket(currentTest) + 'Hawaii are moved into geographically accurate positions and scales.');
+                assert(this.evaluate(function() { return mapObj.map.baseLayer.visibility == true; }),
+                    bracket(currentTest) + 'Background layer is visible.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using Countries',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'countries'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function() { return mapObj._children[0]._config.type == 'countries'; }),
+                    bracket(currentTest) + 'layerObj._config.type is \'countries\'.');
+                assert(this.evaluate(function() { return _.isUndefined(mapObj._children[0]._config.region); }),
+                    bracket(currentTest) + 'layerObj._config.region is not defined.');
+                // Not sure how to test for "- Fetched JSON is 'esri_state_data.json'."
+                assert(this.evaluate(function() { return mapObj.map.baseLayer.visibility == true; }),
+                    bracket(currentTest) + 'Background layer is visible.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using non-default low color',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.colors.low': '#000000'
+            });
+            this.waitASec();
+            this.evaluate(function() { $('.colorControl:visible:first').trigger('color_change', '#000000'); });
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function() { return mapObj._children[0]._config.colors.low == '#000000'; }),
+                    bracket(currentTest) + 'layerObj._config.colors.low is defined and correct.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using non-default high color',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.colors.high': '#000000'
+            });
+            this.waitASec();
+            this.evaluate(function() { $('.colorControl:visible:last').trigger('color_change', '#000000'); });
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function() { return mapObj._children[0]._config.colors.high == '#000000'; }),
+                    bracket(currentTest) + 'layerObj._config.colors.high is defined and correct.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map not using a quantity column',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.quantityId': ''
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._config.aggregateMethod == 'count'; }),
+                    bracket(currentTest) + 'layerObj._config.aggregateMethod is \'count\'.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using a quantity column',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.quantityId': 18440
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._config.aggregateMethod == 'sum'; }),
+                    bracket(currentTest) + 'layerObj._config.aggregateMethod is \'sum\'.');
+                assert(this.evaluate(function()
+                    { return !_.isUndefined(mapObj._children[0]._quantityCol); }),
+                    bracket(currentTest) + 'layerObj._quantityCol is defined.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using flyout title',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.titleId': 18438
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                // Actually opening a flyout does not seem to be possible with any method I have tried so far.
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0].attributes.flyout.find('.richLine').length >= 1; }),
+                    bracket(currentTest) + 'An opened flyout contains a title section.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using flyout description',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_32:tableColumnId-0': 18438
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0].attributes.flyout.find('.richItem').length >= 1; }),
+                    bracket(currentTest) + 'An opened flyout contains the correct find(\'.richItem.columnId###\').');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map using flyout description with no labels',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_32:tableColumnId-0': 18438,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.flyoutsNoLabel': true
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0].attributes.flyout.find('.richItem.columnId102671').length >= 1; }),
+                    bracket(currentTest) + 'An opened flyout contains the correct find(\'.richItem.columnId###\').');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0].attributes.flyout.find('.richLabel').length == 0; }),
+                    bracket(currentTest) + 'An opened flyout does not contain find(\'.richLabel\').');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map having <500 rows',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return _.has(mapObj._children[0]._displayLayer.features[0].attributes, 'rows'); }),
+                    bracket(currentTest) + 'Feature.Vectors have attributes.rows.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer instanceof OpenLayers.Layer.Vector; }),
+                    bracket(currentTest) + 'A Layer.Vector exists.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0] instanceof OpenLayers.Feature.Vector; }),
+                    bracket(currentTest) + 'A Layer.Vector exists, with appropriate Feature.Vectors contained.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0].geometry instanceof OpenLayers.Geometry.Polygon; }),
+                    bracket(currentTest) + 'Feature.Vectors have a .geometry of Polygon type.');
+                assert(this.evaluate(function()
+                    {
+                        var length = mapObj._children[0]._displayLayer.features.length, rv = true;
+                        for (var i = 0; i < length; i++)
+                        { if (!((_.isEmpty(mapObj._children[0]._displayLayer.features[i].attributes.rows) && mapObj._children[0]._displayLayer.features[i].style.fillOpacity == 0)
+                            || (!_.isEmpty(mapObj._children[0]._displayLayer.features[i].attributes.rows) && mapObj._children[0]._displayLayer.features[i].style.fillOpacity != 0)))
+                            { rv = false; break; } }
+                        return rv;
+                    }),
+                    bracket(currentTest) + 'Any Feature.Vector with an empty attributes.rows will have style.opacity set to 0.');
+                assert(this.evaluate(function() { return !_.isUndefined(mapObj._children[0]._range); }),
+                    bracket(currentTest) + 'layerObj._range is defined.');
+            }
+        }
+    },
+    {
+        name: 'Create map with boundary map having >500 rows',
+        dataset: 'earthquakes',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 19982,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'countries'
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return _.has(mapObj._children[0]._displayLayer.features[0].attributes, 'rows'); }),
+                    bracket(currentTest) + 'Feature.Vectors have attributes.rows.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer instanceof OpenLayers.Layer.Vector; }),
+                    bracket(currentTest) + 'A Layer.Vector exists.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0] instanceof OpenLayers.Feature.Vector; }),
+                    bracket(currentTest) + 'A Layer.Vector exists, with appropriate Feature.Vectors contained.');
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer.features[0].geometry instanceof OpenLayers.Geometry.Polygon; }),
+                    bracket(currentTest) + 'Feature.Vectors have a .geometry of Polygon type.');
+                assert(this.evaluate(function()
+                    {
+                        var length = mapObj._children[0]._displayLayer.features.length, rv = true;
+                        for (var i = 0; i < length; i++)
+                        { if (!((_.isEmpty(mapObj._children[0]._displayLayer.features[i].attributes.rows) && mapObj._children[0]._displayLayer.features[i].style.fillOpacity == 0)
+                            || (!_.isEmpty(mapObj._children[0]._displayLayer.features[i].attributes.rows) && mapObj._children[0]._displayLayer.features[i].style.fillOpacity != 0)))
+                            { rv = false; break; } }
+                        return rv;
+                    }),
+                    bracket(currentTest) + 'Any Feature.Vector with an empty attributes.rows will have style.opacity set to 0.');
+                assert(this.evaluate(function() { return !_.isUndefined(mapObj._children[0]._range); }),
+                    bracket(currentTest) + 'layerObj._range is defined.');
+            }
+        }
+    },
+    {
+        name: 'Create map with heat map',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer instanceof OpenLayers.Layer.Heatmap; }),
+                    bracket(currentTest) + 'layerObj._displayLayer is OpenLayers.Layer.Heatmap.');
+                assert(this.evaluate(function()
+                    { return !_.isEmpty(mapObj._children[0]._dataStore); }),
+                    bracket(currentTest) + 'layerObj._dataStore is not empty.');
+            }
+        }
+    },
+    {
+        name: 'Create map with heat map choosing 1 or 2 location columns',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18447
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._locCol.tableColumnId == 18447; }),
+                    bracket(currentTest) + 'Feature.Vectors are using the correct location from their attributes.rows.');
+            }
+        }
+    },
+    {
+        name: 'Create map with heat map not using a quantity column',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return _.isUndefined(mapObj._children[0]._quantityCol); }),
+                    bracket(currentTest) + 'layerObj._quantityCol is not defined.');
+            }
+        }
+    },
+    {
+        name: 'Create map with heat map using a quantity column',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.quantityId': 18440
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return !_.isUndefined(mapObj._children[0]._quantityCol); }),
+                    bracket(currentTest) + 'layerObj._quantityCol is not defined.');
+            }
+        }
+    },
+    {
+        name: 'Create map with heat map having <500 rows',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer instanceof OpenLayers.Layer.Heatmap; }),
+                    bracket(currentTest) + 'layerObj._displayLayer is OpenLayers.Layer.Heatmap.');
+                assert(this.evaluate(function()
+                    { return !_.isEmpty(mapObj._children[0]._dataStore); }),
+                    bracket(currentTest) + 'layerObj._dataStore is not empty.');
+            }
+        }
+    },
+    {
+        name: 'Create map with heat map having >500 rows',
+        dataset: 'earthquakes',
+        formFill: function() {
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function()
+                    { return mapObj._children[0]._displayLayer instanceof OpenLayers.Layer.Heatmap; }),
+                    bracket(currentTest) + 'layerObj._displayLayer is OpenLayers.Layer.Heatmap.');
+                assert(this.evaluate(function()
+                    { return !_.isEmpty(mapObj._children[0]._dataStore); }),
+                    bracket(currentTest) + 'layerObj._dataStore is not empty.');
+            }
+        }
+    },
+    {
+        name: 'Create map with legend enabled',
+        formFill: function() {
+            this.evaluate(function() { $(".sectionSelect").click(); });
+            this.waitASec();
+            this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
+                'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.colorValueId': 18440,
+                'controlPane_mapCreate_5:displayFormat.distinctLegend': true
+            });
+            this.waitASec();
+        },
+        runAsserts: function(currentTest) {
+            with(this.test)
+            {
+                assert(this.evaluate(function() { return $('.mapLegend').hasClass('hide'); }) === false,
+                    bracket(currentTest) + 'Legend is visible.');
+                assert(this.evaluate(function() { return $('.mapLegend').find('h3').length == 1; }),
+                    bracket(currentTest) + 'Legend has a title.');
+                assert(this.evaluate(function() { return $('.mapLegend').find('ul').children().length == 6; }),
+                    bracket(currentTest) + 'Legend has colors.');
+                assert(this.evaluate(function() { return $('.mapLegend').find('span').length == 2; }),
+                    bracket(currentTest) + 'Legend has labels.');
             }
         }
     } // Copy paste up from here.
@@ -600,11 +1169,22 @@ casper.each(testsToRun, function(self, test) {
         this.profile('loadDataset', 's');
         this.test.info(test.name);
         this.openSidebar();
-        this.waitASec()
-        .then(test.formFill)
-        .waitASec()
-        .then(function() { this.evaluate(function() { $('a.button.submit:first').click(); }); })
-        .waitFor(this.hasMapObj, null, timeout('hasMapObj'))
+
+        if (test.formFill)
+        {
+            this.waitASec()
+            .then(test.formFill)
+            .waitASec()
+            .then(function() { this.evaluate(function() { $('a.button.submit:first').click(); }); })
+        }
+        else if (test.callUpdate)
+        {
+            this.waitASec()
+            .then(test.callUpdate)
+            .waitASec()
+        }
+
+        this.waitFor(this.hasMapObj, null, timeout('hasMapObj'))
         .then(this.makeMapObj);
         this.profile('mapIsReady');
         this.waitFor(this.mapIsReady, null, timeout('mapIsReady'))

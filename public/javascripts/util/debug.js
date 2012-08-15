@@ -130,3 +130,9 @@ window.fetchOrigDF = function(uid)
     $.getJSON('/views/' + (uid || blist.dataset.id) + '.json',
         function(ds) { console.dir(ds.displayFormat); });
 };
+
+window.addDataset = function(uid)
+{
+    $(".repeater .addValue:eq(1)").click();
+    $("input[name=dataset_name]").val(uid).blur();
+};

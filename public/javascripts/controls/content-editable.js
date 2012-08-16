@@ -28,9 +28,6 @@
             })
             .on('keyup.editableControl mouseup.editableControl', function(e)
             {
-                if (options.singleLineMode)
-                { $dom.find('br').replaceWith(''); }
-
                 _.defer(function()
                 {
                     readjustCanaries($dom);
@@ -52,6 +49,10 @@
             })
             .on('keydown.editableControl', function(e)
             {
+                // No Enter in single-line mode
+                if (options.singleLineMode && e.which == 13)
+                { e.preventDefault(); }
+
                 var sel = rangy.getSelection();
                 if (!sel.isCollapsed) { return; }
 

@@ -275,12 +275,15 @@ class Column < Model
   end
 
   def to_core
-    Column.to_core(data.deep_merge(update_data).with_indifferent_access)
+    c = data.deep_merge(update_data).with_indifferent_access
+    c['childColumns'] = childColumns.map {|cc| cc.to_core} if childColumns
+    Column.to_core(c)
   end
 
   def self.to_core(js)
     col = {}
-    [:id, :name, :fieldName, :position, :description, :width, :dropDownList].each do |k|
+    [:id, :name, :fieldName, :position, :description, :width, :dropDownList, :dataTypeName,
+      :renderTypeName, :defaultValues, :metadata, :tableColumnId, :cachedContents, :childColumns].each do |k|
       col[k] = js[k.to_s] if !js[k.to_s].blank?
     end
     col[:format] = js['format']

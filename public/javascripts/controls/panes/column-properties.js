@@ -388,6 +388,23 @@
                     ]
                 },
 
+                // Display order
+                {
+                    title: 'Display Order', type: 'selectable', name: 'displayOrder', showIfData: true,
+                    onlyIf: {func: function(c)
+                    {
+                        if ($.isBlank(c)) { return false; }
+                        return c.origColumn.renderTypeName == 'text';
+                    }},
+                    fields: [
+                        {type: 'repeater', addText: 'Add Item',
+                            defaultValue: $.subKeyDefined(cpObj, '_curData.origColumn.cachedContents.top') ?
+                                _.pluck(cpObj._curData.origColumn.cachedContents.top, 'item') : null,
+                        name: 'metadata.displayOrder',  minimum: 0,
+                        field: {type: 'text', text: 'Option', name: 'description'}}
+                    ]
+                },
+
                 // Multiple choice value chooser
                 {
                     title: 'Multiple Choice Options',

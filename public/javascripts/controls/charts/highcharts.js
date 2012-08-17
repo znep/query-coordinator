@@ -93,7 +93,16 @@
                         });
                     });
                     if (chartObj._displayFormat.sortSeries)
-                    { rows = _.sortBy(newRows, function(r) { return r[sc.column.lookup]; }); }
+                    {
+                        var order = {};
+                        _.each((sc.column.metadata || {}).displayOrder, function(item, i)
+                            { order[item.description] = i; });
+                        rows = _.sortBy(newRows, function(r)
+                        {
+                            var v = r[sc.column.lookup];
+                            return $.isBlank(order[v]) ? v : order[v];
+                        });
+                    }
                     else
                     { rows = newRows; }
                 });

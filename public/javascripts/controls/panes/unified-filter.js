@@ -1498,7 +1498,7 @@
             return newCondition;
         };
 
-        var aggregateCachedContents = function(metadata, callback)
+        var aggregateCachedContents = function(metadata, column, callback)
         {
             var aggCC = {};
 
@@ -1506,11 +1506,30 @@
             {
                 if ($.subKeyDefined(aggCC, 'top'))
                 {
-                    aggCC.top = aggCC.top.sort(function(a, b)
+                    if (metadata.sortAlphabetically && $.subKeyDefined(column, 'metadata.displayOrder'))
                     {
-                        return (a.item == b.item ? 0 : (a.item > b.item ? 1 : -1) *
-                            (metadata.reverseSort ? -1 : 1));
-                    });
+                        var orderOpts = {};
+                        _.each(column.metadata.displayOrder, function(item, i)
+                            { orderOpts[item.description] = i; });
+                        aggCC.top = aggCC.top.sort(function(a, b)
+                        {
+                            return a.item == b.item ? 0 :
+                                $.isBlank(orderOpts[a.item]) && $.isBlank(orderOpts[b.item]) ?
+                                    (a.item > b.item ? 1 : -1) * (metadata.reverseSort ? -1 : 1) :
+                                $.isBlank(orderOpts[a.item]) ? 1 :
+                                $.isBlank(orderOpts[b.item]) ? -1 :
+                                (orderOpts[a.item] > orderOpts[b.item] ? 1 : -1) *
+                                    (metadata.reverseSort ? -1 : 1);
+                        });
+                    }
+                    else
+                    {
+                        aggCC.top = aggCC.top.sort(function(a, b)
+                        {
+                            return (a.item == b.item ? 0 : (a.item > b.item ? 1 : -1) *
+                                (metadata.reverseSort ? -1 : 1));
+                        });
+                    }
                     if (!metadata.sortAlphabetically)
                     {
                         aggCC.top = aggCC.top.sort(function(a, b)
@@ -1586,7 +1605,7 @@
         {
             var metadata = condition.metadata || {};
 
-            aggregateCachedContents(metadata, function(cachedContents)
+            aggregateCachedContents(metadata, column, function(cachedContents)
             {
                 var internallyUsedValues = [];
 

@@ -146,6 +146,8 @@
                 validated.  'hidden' hides the section completely
             + name: internal name for field; required if it is of type selectable.
                 Used to identify a hidden section to open
+            + showIfData: boolean; if set to true, a selectable section will
+                show if data exists, even if it is equivalent to the default data
             + onlyIf: only display the section if these criteria are true.
                 Currently accepts a function, an object, or an array of objects:
             {
@@ -508,7 +510,8 @@
                         { return _.map(a.item.fields || [], function(f, i)
                             { return renderLine(cpObj,
                                 {context: $.extend({}, a.context,
-                                    {sectionName: a.item.name}),
+                                    { sectionName: a.item.name,
+                                        sectionOptions: { showIfData: a.item.showIfData } }),
                                 item: f, items: a.item.fields, pos: i}); }
                             ).join(''); }
                     }
@@ -1178,7 +1181,7 @@
             'data-dataValue': {value: $.htmlEscape(
                     JSON.stringify(item.dataValue || '')),
                 onlyIf: !$.isBlank(item.dataValue) &&
-                    item.dataValue !== item.defaultValue},
+                    (item.dataValue !== item.defaultValue || context.sectionOptions.showIfData)},
             'data-origSavedValue': $.htmlEscape(JSON.stringify(item.dataValue || ''))
         };
 
@@ -1503,7 +1506,8 @@
         curValue = _.select(curValue || [], function(v)
         { return checkRequiredData(cpObj, v, args.item.field); });
 
-        var numItems = curValue.length || populatedLength;
+        var defValues = $.makeArray(args.item.defaultValue);
+        var numItems = curValue.length || populatedLength || defValues.length;
         if (!isRO && numItems < 1)
         { numItems = _.isNumber(args.item.initialRepeatCount) ? args.item.initialRepeatCount : 1; }
         for (var i = 0; i < numItems; i++)
@@ -1512,7 +1516,8 @@
             var hasRequiredData =
                 checkRequiredData(cpObj, contextData, args.item.field);
 
-            var l = renderLine(cpObj, {item: args.item.field,
+            var l = renderLine(cpObj, {item: $.extend({}, args.item.field,
+                        { defaultValue: defValues[i] }),
                     context: $.extend({}, args.context,
                         {repeaterIndex: i, noTag: true, inRepeater: i >= args.item.minimum,
                             inRepeaterContext: !$.isBlank(args.item.field.name),

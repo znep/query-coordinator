@@ -405,7 +405,7 @@ class View < Model
     dhash["numberOfComments"] = numberOfComments
     dhash["averageRating"] = averageRating
     dhash["totalTimesRated"] = totalTimesRated
-    dhash['columns'] = columns.map {|c| c.to_core}
+    dhash['columns'] = (columns || []).map {|c| c.to_core}
 
     dhash.to_json(opts)
   end

@@ -40,10 +40,14 @@ class ProfileController < ApplicationController
     if params[:ownership] == 'sharedToMe'
       browse_options[:facets] = []
       browse_options[:sort_opts] = []
+      browse_options[:limit] = 10
+      browse_options[:page] = params[:page] || 1
 
-      view_results = View.find_shared_to_user(@user.id)
-      browse_options[:view_results] = view_results
-      browse_options[:view_count] = browse_options[:limit] = view_results.length
+      view_results = View.find_shared_to_user(@user.id,
+                          {offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
+                            limit: browse_options[:limit]})
+      browse_options[:view_results] = view_results['results']
+      browse_options[:view_count] = view_results['count']
     else
       if @is_user_current
         browse_options[:publication_stage] = [ 'published', 'unpublished' ]

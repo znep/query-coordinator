@@ -35,9 +35,12 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
-  def self.find_shared_to_user(id)
-    path = "/users/#{id}/views.json?method=getShared"
-    parse(CoreServer::Base.connection.get_request(path))
+  def self.find_shared_to_user(id, options)
+    options[:method] = 'getShared'
+    path = "/users/#{id}/views.json?" + options.to_param
+    r = JSON.parse(CoreServer::Base.connection.get_request(path))
+    r['results'] = (r['results'] || []).map { |d| self.set_up_model(d) }
+    r
   end
 
   def find_related(page, limit = 10, sort_by = 'most_accessed')

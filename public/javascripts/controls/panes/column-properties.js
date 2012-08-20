@@ -401,7 +401,7 @@
                             defaultValue: $.subKeyDefined(cpObj, '_curData.origColumn.cachedContents.top') ?
                                 _.pluck(cpObj._curData.origColumn.cachedContents.top, 'item') : null,
                         name: 'metadata.displayOrder',  minimum: 0,
-                        field: {type: 'text', text: 'Option', name: 'description'}}
+                        field: {type: 'text', text: 'Option', name: 'orderItem'}}
                     ]
                 },
 

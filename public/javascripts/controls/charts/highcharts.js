@@ -96,7 +96,7 @@
                     {
                         var order = {};
                         _.each((sc.column.metadata || {}).displayOrder, function(item, i)
-                            { order[item.description] = i; });
+                            { order[item.orderItem] = i; });
                         rows = _.sortBy(newRows, function(r)
                         {
                             var v = r[sc.column.lookup];

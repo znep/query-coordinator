@@ -1510,7 +1510,7 @@
                     {
                         var orderOpts = {};
                         _.each(column.metadata.displayOrder, function(item, i)
-                            { orderOpts[item.description] = i; });
+                            { orderOpts[item.orderItem] = i; });
                         aggCC.top = aggCC.top.sort(function(a, b)
                         {
                             return a.item == b.item ? 0 :

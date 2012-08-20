@@ -153,6 +153,8 @@ http://www.socrata.com
       blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
 
+    blist.configuration.canvasAvailable = <%= module_available?(:canvas2) %>;
+
     <%- if !@suppress_chrome -%>
     try {
       if ((self !== top) && (self.location.hostname !== top.location.hostname))

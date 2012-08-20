@@ -390,10 +390,11 @@
 
                 // Display order
                 {
-                    title: 'Display Order', type: 'selectable', name: 'displayOrder', showIfData: true,
+                    title: 'Display Order (for DataSlate)', type: 'selectable',
+                    name: 'displayOrder', showIfData: true,
                     onlyIf: {func: function(c)
                     {
-                        if ($.isBlank(c)) { return false; }
+                        if (!blist.configuration.canvasAvailable || $.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'text';
                     }},
                     fields: [

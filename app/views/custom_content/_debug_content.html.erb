@@ -1,0 +1,7 @@
+<h2>Loaded Contexts</h2>
+<pre style="font-size:1.2em;"><%= JSON.pretty_generate(Canvas2::DataContext::available_contexts) %></pre>
+
+<%- if !Canvas2::DataContext::errors.empty? -%>
+  <h2>Other Errors</h2>
+  <pre style="font-size:1.2em;"><%= Canvas2::DataContext::errors.map {|e| e.to_s} %></pre>
+<%- end -%>

@@ -14,6 +14,10 @@
 
 <%= raw @page.render(!@minimal_render) %>
 
+<%- if @debug -%>
+<%= render :partial => 'debug_content' %>
+<%- end -%>
+
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
   <script type="text/javascript">

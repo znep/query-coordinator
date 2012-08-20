@@ -87,6 +87,8 @@ class CustomContentController < ApplicationController
   end
 
   def page
+    @debug = params['debug'] == 'true'
+
     pages_time = VersionAuthority.resource('pages')
     # TODO: This should include the locale (whenever we figure out how that is specified)
     cache_params = { 'domain' => CurrentDomain.cname,
@@ -95,14 +97,14 @@ class CustomContentController < ApplicationController
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)
     @cached_fragment = read_fragment(@cache_key)
-    return render_404 if @cached_fragment == '404'
+    return render_404 if @cached_fragment == '404' && !@debug
 
     @minimal_render = params['no_render'] == 'true'
 
     path = "/#{params[:path]}"
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if path == '/'
-    if @cached_fragment.nil?
+    if @cached_fragment.nil? || @debug
       Canvas2::DataContext.reset
       Canvas2::Util.set_params(params)
       Canvas2::Util.set_path(path)
@@ -124,8 +126,13 @@ class CustomContentController < ApplicationController
         # unless I rescue a generic Exception
         rescue Exception => e
           Rails.logger.info("Caught exception trying to render page: #{e.inspect}")
-          write_fragment(@cache_key, '404', :expires_in => 15.minutes)
-          render_404
+          if @debug
+            @error = e.original_exception
+            render :action => 'page_debug'
+          else
+            write_fragment(@cache_key, '404', :expires_in => 15.minutes)
+            render_404
+          end
         end
       end
     else

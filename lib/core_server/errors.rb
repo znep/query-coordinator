@@ -9,12 +9,13 @@ module CoreServer
   # from the core server, it's not particularly granular in terms of what we can
   # catch. New code should favor the other error classes, if possible.
   class CoreServerError < Error
-    attr_reader :source, :error_code, :error_message
+    attr_reader :source, :error_code, :error_message, :payload
 
-    def initialize(source, error_code, error_message)
+    def initialize(source, error_code, error_message, payload = nil)
       @source = source
       @error_code = error_code
       @error_message = error_message
+      @payload = payload
     end
 
     def to_s

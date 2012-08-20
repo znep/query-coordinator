@@ -71,7 +71,12 @@ module Canvas2
     end
 
     def render
-      contents, fully_rendered = render_contents
+      begin
+        contents, fully_rendered = render_contents
+      rescue CoreServer::CoreServerError => e
+        raise ComponentError.new(self, "Data context '#{context[:id]}' failed: " + e.error_message,
+                                 { path: e.source, payload: JSON.parse(e.payload) })
+      end
 
       html_class = render_classes + ' ' +
         string_substitute(@properties['htmlClass'].is_a?(Array) ?
@@ -130,7 +135,8 @@ module Canvas2
         begin
           return Canvas2.const_get(config['type']).new(config, parent, resolver_context)
         rescue NameError => ex
-          throw "There is no Canvas2 widget of type '#{config['type']}'."
+          raise ComponentError.new(config, "There is no component of type #{config['type']}",
+                                   { config: config })
         end
       end
     end

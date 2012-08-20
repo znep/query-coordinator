@@ -4,79 +4,98 @@ module Canvas2
       return @available_contexts ||= {}
     end
 
+    def self.errors
+      return @errors ||= []
+    end
+
     def self.reset
       @available_contexts = {}
+      @errors = []
     end
 
     def self.load_context(id, config)
       config = Util.string_substitute(config, Util.base_resolver)
-      case config['type']
-      when 'datasetList'
-        search_response = Clytemnestra.search_views(config['search'])
-        ds_list = search_response.results.reject do |ds|
-          add_query(ds, config['query'])
-          ds.get_total_rows < 1
-        end
-        if ds_list.length > 0
-          available_contexts[id] = {id: id, type: config['type'],
-            count: search_response.count - (search_response.results.length - ds_list.length),
-            datasetList: ds_list.map do |ds|
-              c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id}
-              available_contexts[c[:id]] = c
-            end}
-        elsif config['required']
-          return false
-        end
+      config[:id] = id
+      ret_val = true
+      begin
+        case config['type']
+        when 'datasetList'
+          search_response = Clytemnestra.search_views(config['search'])
+          ds_list = search_response.results.reject do |ds|
+            add_query(ds, config['query'])
+            ds.get_total_rows < 1
+          end
+          if ds_list.length > 0
+            available_contexts[id] = {id: id, type: config['type'],
+              count: search_response.count - (search_response.results.length - ds_list.length),
+              datasetList: ds_list.map do |ds|
+                c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id}
+                available_contexts[c[:id]] = c
+              end}
+          elsif config['required']
+            errors.push("No datasets found for datasetList '" + id + "'")
+            ret_val = false
+          end
 
-      when 'dataset'
-        if !get_dataset(config) do |ds|
-          available_contexts[id] = {id: id, type: config['type'], dataset: ds}
-          if (defined? @pending_contexts) && (((@pending_contexts || {})[id]).is_a? Array)
-            threads = @pending_contexts[id].map do |req|
-              Thread.new do
-                ds_new = req[:config]['keepOriginal'] ? ds : ds.deep_clone(View)
-                got_dataset(ds_new, req[:config])
-                req[:callback].call(ds_new)
+        when 'dataset'
+          ret_val = get_dataset(config, lambda do |ds|
+            available_contexts[id] = {id: id, type: config['type'], dataset: ds}
+            if (defined? @pending_contexts) && (((@pending_contexts || {})[id]).is_a? Array)
+              threads = @pending_contexts[id].map do |req|
+                Thread.new do
+                  begin
+                    ds_new = req[:config]['keepOriginal'] ? ds : ds.deep_clone(View)
+                    got_dataset(ds_new, req[:config])
+                    req[:callback].call(ds_new)
+                  rescue CoreServer::CoreServerError => e
+                    raise DataContextError.new(req[:config], "Core server failed: " + e.error_message,
+                                             { path: e.source, payload: JSON.parse(e.payload) })
+                  end
+                end
               end
+              @pending_contexts.delete(id)
+              return threads.map { |thread| thread.value }.reduce(true) {|accum, v| accum && v}
             end
-            @pending_contexts.delete(id)
-            threads.each { |thread| thread.join }
-          end
+            return true
+          end)
+
+        when 'column'
+          ret_val = get_dataset({'keepOriginal' => config['query'].blank?}.merge(config), lambda do |ds|
+            col = ds.column_by_id_or_field_name(config['columnId'])
+            if col.nil?
+              errors.push("No column '" + config['columnId'] + "' found for '" + id + "'")
+              return !config['required']
+            end
+
+            if !config['aggregate'].blank?
+              aggs = {}
+              aggs[col.id] = config['aggregate'].is_a?(Array) ? config['aggregate'] : [config['aggregate']]
+              ds.get_aggregates(aggs)
+            end
+            available_contexts[id] = { id: id, type: config['type'], column: col, parent_dataset: ds }
+            return true
+          end)
+
+        when 'row'
+          ret_val = get_dataset(config, lambda do |ds|
+            r = ds.get_rows(1)[:rows][0]
+
+            if r.nil?
+              errors.push("No row found for '" + id + "'")
+              return !config['required']
+            end
+
+            fr = {}
+            ds.visible_columns.each {|c| fr[c.fieldName] = r[c.id.to_s]}
+            available_contexts[id] = {id: id, type: config['type'], row: fr}
+            return true
+          end)
         end
-          return false
-        end
-
-      when 'column'
-        get_dataset({'keepOriginal' => config['query'].blank?}.merge(config)) do |ds|
-          col = ds.column_by_id_or_field_name(config['columnId'])
-          if col.nil?
-            return false if config['required']
-            break
-          end
-
-          if !config['aggregate'].blank?
-            aggs = {}
-            aggs[col.id] = config['aggregate'].is_a?(Array) ? config['aggregate'] : [config['aggregate']]
-            ds.get_aggregates(aggs)
-          end
-          available_contexts[id] = { id: id, type: config['type'], column: col, parent_dataset: ds }
-        end
-
-      when 'row'
-        get_dataset(config) do |ds|
-          r = ds.get_rows(1)[:rows][0]
-
-          if r.nil?
-            return false if config['required']
-            break
-          end
-
-          fr = {}
-          ds.visible_columns.each {|c| fr[c.fieldName] = r[c.id.to_s]}
-          available_contexts[id] = {id: id, type: config['type'], row: fr}
-        end
+      rescue CoreServer::CoreServerError => e
+        raise DataContextError.new(config, "Core server failed: " + e.error_message,
+                                 { path: e.source, payload: JSON.parse(e.payload) })
       end
-      return true
+      return ret_val
     end
 
     def self.load(config)
@@ -137,12 +156,20 @@ module Canvas2
       end
     end
 
-    def self.get_dataset(config, &callback)
+    def self.get_dataset(config, callback)
       ds = nil
       if !config['contextId'].blank?
         context = available_contexts[config['contextId']]
         if !context.blank?
-          return !config['required'] if context[:dataset].blank?
+          if context[:dataset].blank?
+            if config['required']
+              errors.push("No dataset in original context '" + context[:id] +
+                          "' for derived context '" + config['id'] + "'")
+              return false
+            else
+              return true
+            end
+          end
           ds = config['keepOriginal'] ? context[:dataset] : context[:dataset].deep_clone(View)
         else
           @pending_contexts ||= {}
@@ -153,18 +180,23 @@ module Canvas2
         begin
           ds = View.find(config['datasetId'])
         rescue CoreServer::ResourceNotFound
+          errors.push("No dataset found for '" + config['id'] + "'")
           return false if config['required']
-        rescue CoreServer::CoreServerError
+        rescue CoreServer::CoreServerError => e
+          errors.push(e)
           return false if config['required']
         end
       elsif !config['search'].blank?
         search_response = Clytemnestra.search_views(config['search'].merge({'limit' => 1}))
         ds = search_response.results.first
-        return false if ds.nil? && config['required']
+        if ds.nil? && config['required']
+          errors.push("No dataset found for '" + config['id'] + "'")
+          return false
+        end
       end
       if !ds.blank?
         got_dataset(ds, config)
-        yield(ds)
+        return callback.call(ds)
       end
       return true
     end

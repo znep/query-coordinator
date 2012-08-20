@@ -124,12 +124,12 @@ module CoreServer
             if result['error']
               raise CoreServer::CoreServerError.new(@batch_queue[i][:requestType] +
                 " " + @batch_queue[i][:url],
-                result['errorCode'], result['errorMessage'])
+                result['errorCode'], result['errorMessage'], @batch_queue[i][:body])
             end
           end
         else
           raise CoreServer::CoreServerError.new("POST /batches",
-            'expected_array_return_value', parsed_body)
+            'expected_array_return_value', parsed_body, @batch_queue)
         end
         @batch_queue.clear
       end
@@ -189,7 +189,8 @@ module CoreServer
         raise CoreServer::CoreServerError.new(
           "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
           parsed_body['code'],
-          parsed_body['message'])
+          parsed_body['message'],
+          json)
       end
 
       result

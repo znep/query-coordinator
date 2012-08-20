@@ -1,0 +1,21 @@
+<% content_for :head do %>
+<title><%= @page.name %></title>
+<%= rendered_stylesheet_tag 'components' %>
+<% end %>
+
+<h2>Error</h2>
+<p style="font-size:1.3em;margin-bottom:2em;"><%= @error.to_s %></p>
+
+<%- if @error.respond_to?('details') && !@error.details.blank? -%>
+<h2>Details</h2>
+<pre style="font-size:1.2em;"><%= JSON.pretty_generate(@error.details) %></pre>
+<%- end -%>
+
+<%= render :partial => 'debug_content' %>
+
+<%- content_for :js_footer do -%>
+  <script type="text/javascript">
+    blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) && !@page.uneditable %>;
+  </script>
+  <%= current_user_js %>
+<%- end -%>

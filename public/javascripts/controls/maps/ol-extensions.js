@@ -1214,7 +1214,7 @@
         {
             if (!this.viewport) { return true; }
             if (this.viewport.equals(viewport)) { return false; }
-            if (this.viewport.getCenterLonLat() == viewport.getCenterLonLat()
+            if (this.viewport.getCenterLonLat().equals(viewport.getCenterLonLat())
                 && this.map.getZoomForExtent(this.viewport) == this.map.getZoomForExtent(viewport))
             { return false; }
 

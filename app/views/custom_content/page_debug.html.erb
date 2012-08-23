@@ -14,8 +14,6 @@
 <%= render :partial => 'debug_content' %>
 
 <%- content_for :js_footer do -%>
-  <script type="text/javascript">
-    blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) && !@page.uneditable %>;
-  </script>
+  <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
   <%= current_user_js %>
 <%- end -%>

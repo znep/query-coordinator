@@ -118,7 +118,7 @@
     var options;
 
     var defaultOptions = {
-        canAdd: false,     // Can you add new components?
+        canAdd: blist.configuration.canvasX,     // Can you add new components?
         editOnly: false,  // Are components always in edit mode?
         edit: true,       // Start edit mode once initalized?
         mask: true,       // Mask out the background when editing a component?
@@ -182,7 +182,8 @@
                 $top.toggleClass('can-redo', redoable);
             });
 
-            $.cf.edit($.cf.configuration().edit);
+            // Make sure all dom manipulation is done before starting edit mode
+            _.defer(function() { $.cf.edit($.cf.configuration().edit); });
         },
 
         // todo: checks?
@@ -199,7 +200,8 @@
             if (designing != edit)
             {
                 designing = this.designing = edit;
-                $.cf.side(!$.cf.configuration().sidebar ? false : edit);
+                if ($.cf.configuration().sidebar)
+                { $.cf.side(edit); }
                 $body.toggleClass('configuring', edit);
                 $body[edit ? 'on' : 'off']('click', onBodyClick);
                 $body[edit ? 'on' : 'off']('keydown', onBodyKeyDown);

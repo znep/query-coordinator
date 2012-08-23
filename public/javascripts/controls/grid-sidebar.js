@@ -192,6 +192,16 @@
         {
             var sidebarObj = this;
 
+            if ($.isBlank(paneName)) { paneName = sidebarObj._defaultPane; }
+            if ($.isBlank(paneName)) { return; }
+
+            var np = getConfigNames(paneName);
+            if ($.subKeyDefined(sidebarObj, '_currentOuterPane.name') &&
+                    sidebarObj._currentOuterPane.name == np.primary &&
+                    ($.subKeyDefined(sidebarObj, '_currentPane.name') &&
+                     sidebarObj._currentPane.name == np.secondary || np.secondary == paneName))
+            { return; }
+
             // Hide any other open panes
             hidePane(sidebarObj);
 
@@ -239,10 +249,14 @@
                     }
                     else
                     {
-                        sidebarObj.$currentPane().slideDown(function()
+                        var $cp = sidebarObj.$currentPane();
+                        if (!$.isBlank($cp))
                         {
-                            if (!$.isBlank(config.control)) { config.control.validatePane(); }
-                        });
+                            $cp.slideDown(function()
+                            {
+                                if (!$.isBlank(config.control)) { config.control.validatePane(); }
+                            });
+                        }
                     }
                 });
             }
@@ -277,10 +291,10 @@
         },
 
         /* Hide the sidebar and all panes */
-        hide: function()
+        hide: function(force)
         {
             var sidebarObj = this;
-            if (!$.isBlank(sidebarObj._defaultPane) && sidebarObj.hasPane(sidebarObj._defaultPane))
+            if (!force && !$.isBlank(sidebarObj._defaultPane) && sidebarObj.hasPane(sidebarObj._defaultPane))
             {
                 var np = getConfigNames(sidebarObj._defaultPane);
                 if (sidebarObj._currentOuterPane.name != np.primary ||
@@ -583,9 +597,13 @@
         .each(function()
         {
             var $this = $(this);
-            $this.socrataTip({ content: function()
-                    { return $.tag({tagName: 'p', contents: $(this).data('title').clean()}, true); },
-                killTitle: true, positions: 'left' });
+            var title = $(this).data('title').clean();
+            if (!$.isBlank(title))
+            {
+                $this.socrataTip({ content: function()
+                        { return $.tag({tagName: 'p', contents: $(this).data('title').clean()}, true); },
+                    killTitle: true, positions: 'left' });
+            }
         });
 
         sidebarObj.$dom().append($outerPane);

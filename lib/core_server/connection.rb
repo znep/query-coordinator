@@ -81,6 +81,17 @@ module CoreServer
       generic_request(req).body
     end
 
+    def post_form(path, fields, custom_headers = {})
+      req = Net::HTTP::Post.new(path)
+      fieldEntries = []
+      fields.each { |key, value|
+        fieldEntries << (CGI.escape(key.to_s) + "=" + CGI.escape(value.to_s))
+      }
+      req.body = fieldEntries.join("&")
+      req.content_type = 'application/x-www-form-urlencoded'
+      generic_request(req, nil, custom_headers).body
+    end
+
     def log_info(message, ms)
       if @logger && @logger.debug?
         log_output = 'Core server request: %s (%.1fms)' % [message, ms]

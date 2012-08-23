@@ -149,36 +149,21 @@ class AdministrationController < ApplicationController
       return (redirect_to :action => :users)
     end
 
-    emails = params[:users].split(/[, ]/).map{ |e| e.strip }.select { |e| !e.blank? }
-    if emails.blank?
-      flash[:error] = 'No user accounts specified to create'
-      return (redirect_to :action => :users)
-    end
-
     begin
-      results = CoreServer::Base.connection.batch_request do
-        emails.each do |email|
-          FutureAccount.create({
-            :email => email,
-            :role => role
-          }, false)
-        end
-      end
-
-      errors = []
-      results.each do |result|
-        if result['error']
-          errors.push(result['error_message'])
-        end
-      end
+      result = FutureAccount.create_multiple(params[:users], role)
+      errors = result["errors"]
+      created = result["created"]
     rescue CoreServer::CoreServerError => ex
       errors = [ex.error_message]
     end
 
-    if errors.size > 0
+    if !errors.blank?
       flash[:error] = errors.join(', ')
+    elsif(created.blank?)
+      flash[:error] = "No email addresses detected"
+      return (redirect_to :action => :users)
     else
-      flash[:notice] = "All accounts successfully created"
+      flash[:notice] = created.size.to_s + " accounts successfully created"
     end
 
     redirect_to :action => :users

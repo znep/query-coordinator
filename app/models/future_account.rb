@@ -5,4 +5,9 @@ class FutureAccount < Model
     # So we can bulk create these via batch request
     return parse(response) if parse
   end
+
+  def self.create_multiple(addresses, role)
+    path = "/future_accounts?method=createMultiple"
+    JSON.parse(CoreServer::Base.connection.post_form(path, {:addresses => addresses, :role => role}))
+  end
 end

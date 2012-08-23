@@ -45,7 +45,7 @@ protected
     @user.password = temp_password
     true
   rescue CoreServer::CoreServerError => e
-    @errors << e.error_message
+    @errors += e.error_message.split("|")
     false
   end
 

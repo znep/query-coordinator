@@ -19,7 +19,7 @@ class AccountsController < ApplicationController
       current_user_session.destroy
       @current_user = nil
     end
-
+    
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
@@ -28,7 +28,7 @@ class AccountsController < ApplicationController
         format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
-        flash.now[:error] = @signup.errors.join(" ")
+        flash.now[:error] = @signup.errors
         @user_session = UserSession.new
         format.html { render :action => :new }
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }

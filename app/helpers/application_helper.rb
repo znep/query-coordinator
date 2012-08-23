@@ -190,6 +190,11 @@ module ApplicationHelper
         break
       end
     end
+    if flash_to_display.is_a? Array
+      flash_to_display = flash_to_display.map do |line| 
+        content_tag 'p', h(line)
+      end.join.html_safe
+    end
     content_tag 'div', flash_to_display, :class => "flash #{level}"
   end
 

@@ -42,8 +42,17 @@
 
     label
       width: 9em
+      white-space: nowrap
       &.error
         width: auto
+
+      .passwordHint
+        @include sprite-menu-icons
+        font-style: italic
+        .icon
+          display: inline-block
+          position: relative
+          top: 5px
 
   #forgotPasswordForm
     .line

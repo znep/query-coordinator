@@ -36,7 +36,6 @@ components = {
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil } %>
-  <script type="text/javascript">blist.configuration.designerAvailable = true;</script>
 <%- end -%>
 
 <% content_for :js_footer do %>

@@ -132,9 +132,10 @@ javascripts:
     - public/javascripts/controls/native-draggable.js
     - public/javascripts/controls/native-drop-target.js
     - public/javascripts/controls/grid-sidebar.js
+    - public/javascripts/component/configurator/configurator.js
     - public/javascripts/component/configurator/properties-editor.js
     - public/javascripts/component/configurator/properties-palette.js
-    - public/javascripts/component/configurator/configurator.js
+    - public/javascripts/component/configurator/component-palette.js
     - public/javascripts/component/configurator/cf-edit-log.js
     - public/javascripts/component/configurator/cf-side.js
     - public/javascripts/component/configurator/cf-translate.js

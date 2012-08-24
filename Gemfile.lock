@@ -110,7 +110,7 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
-    sass (3.1.15)
+    sass (3.2.1)
     sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -146,7 +146,7 @@ DEPENDENCIES
   rails (~> 3.2.2)
   rinku
   ruby-debug19
-  sass (~> 3.1)
+  sass (~> 3.2)
   statsd-ruby!
   stomp (= 1.1.6)
   thin

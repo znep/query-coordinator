@@ -1,15 +1,22 @@
+@mixin header-color($c, $dark: false, $bold: false)
+  @if $bold == true
+    background-color: scale-color($c, $saturation: -40%)
+    border-color: scale-color($c, $saturation: -20%)
+    color: #ffffff
+  @else if $dark == true
+    background-color: scale-color($c, $saturation: +90%, $lightness: +90%)
+    border-color: scale-color($c, $saturation: +60%, $lightness: +70%)
+  @else
+    background-color: scale-color($c, $lightness: +70%)
+    border-color: scale-color($c, $lightness: +20%)
+  &.selected
+    background-color: $c
+
 @mixin sidebar-colors($c, $dark: false)
   .mainTitleBlock
     @include vertical-gradient($c)
   .headerLink
-    @if $dark == true
-      background-color: scale-color($c, $saturation: +90%, $lightness: +90%)
-      border-color: scale-color($c, $saturation: +60%, $lightness: +70%)
-    @else
-      background-color: scale-color($c, $lightness: +70%)
-      border-color: scale-color($c, $lightness: +20%)
-    &.selected
-      background-color: $c
+    @include header-color($c, $dark)
 
 .hideValidation
   display: none !important
@@ -146,6 +153,16 @@
       @include sidebar-colors($cell_feed_color)
 
     // Canvas Designer
+    &#gridSidebar_outer_components
+      @include sidebar-colors($sidebar_designer_components_tab_color_tab)
+      .headerLink.componentPaletteInput
+        @include header-color($designer_components_input_color, false, true)
+      .headerLink.componentPaletteActions
+        @include header-color($designer_components_actions_color, false, true)
+      .headerLink.componentPaletteData
+        @include header-color($designer_components_data_color, false, true)
+      .headerLink.componentPaletteContent
+        @include header-color($designer_components_content_color, false, true)
     &#gridSidebar_outer_configuration
       @include sidebar-colors($sidebar_designer_configuration_tab_color_tab)
 

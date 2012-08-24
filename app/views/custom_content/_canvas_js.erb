@@ -3,6 +3,8 @@
   blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
   blist.namespace.fetch('blist.configuration');
   blist.configuration.development = <%= Rails.env.development? %>;
+  blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) && !page.uneditable %>;
+  blist.configuration.canvasX = <%= module_enabled?(:canvasX) == true %>;
 
   $(function() {
       var page = blist.configuration.page = <%= safe_json(page) %>;

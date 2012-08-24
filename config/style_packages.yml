@@ -44,6 +44,7 @@ strip-chrome:
 screen-login:
 - screen-login
 api-new:
+- jquery-ui-1.8.23.custom
 - screen-api-new
 administration-screen:
 - screen-admin

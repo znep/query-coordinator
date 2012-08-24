@@ -1,52 +1,75 @@
 .logo
   text-align: center
-.headline
-  font-size: 1.8em
-  text-align: center
-#steps
+#newApiForm
+  font-size: 1.2em
+#progress
   float: right
+  line-height: 1.5
+  #steps
+    width: 10em
+    float: right
+  #progressbar
+    width: 20em
+    height: 1em
+    float: right
 #apiFoundryWizard 
+  text-align: center
   padding-top: 1.5em
   padding-bottom: 1.5em
   margin-top: 1.5em
   margin-bottom: 1.5em
   border-top: 1px solid $color_chrome_box_border
   border-bottom: 1px solid $color_chrome_box_border
+  a h2
+    color: darkblue
   .wizpane
-    font-size: 1.2em
     display: none
     float: left
     h2
       margin-bottom: 0.5em
+    p
+      line-height: 1.3
+    .center
+      text-align: center
     .controlColumn
       float: left
       width: 50%
     .paneFormControls
       clear: both
-      label 
-        width: 8em
-        margin-right: 1em
-        float: left
       .additionalHelp
-        margin-left: 9em
-        width: 35em
         color: gray
         font-style: italic
-      label.error
-        margin-left: 21em
       input, select, textarea
         width: 26em
+      .controlDiv
+        display: inline-block
+        text-align: left
+        vertical-align: top
+        margin-top: -0.6em
       .locationSpan
-        font-size: 2em
+        font-size: 1.5em
+      .locationInput
+        font-size: 1.5em
+        width: 18em
+      .availableError
+        color: red
+      #rowIdentifierColumnId
+        width: 21em
+      #description
+        width: 50%
     .formControl
       margin-top: 0.5em
       margin-bottom: 0.5em
+    .tabs
+      margin-top: 2em
     .helpfulText
-      width: 50%
-      float: left
+      text-align: left
+      p
+        margin-bottom: 1em
     .docPreview
-      width: 50%
-      float: left
+      text-align: left
+      p
+        margin-bottom: 1em
     .docPreviewInside
       padding-left: 1em
     .docPreviewPage
@@ -57,7 +80,3 @@
       background-position: right top
       background-color: #F1F1F1
       @include box-shadow(3px, 3px, 4px, #cfcfcf)
-  #published, #apiPublish
-    text-align: center
-    a h2
-      color: darkblue

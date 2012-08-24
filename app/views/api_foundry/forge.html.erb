@@ -6,114 +6,145 @@
 <div class="logo"><h1><img src="/images/apifoundry/api-foundry-logo.png" alt="Socrata API Foundry"></img></h1></div>
 <div class="contentBox fixedWidth">
   <form id="newApiForm">
-    <div id="steps">
-      Step <span id="step">0</span> of <span id="stepTotal">0</span>
-      <p><a id="skip" href="#">Skip to end</a></p>
+    <div id="progress">
+      <div>
+        <div id="steps">
+          Step <span id="step">0</span> of <span id="stepTotal">0</span>
+          <p><a id="skip" href="#apiPublish">Skip to end ></a></p>
+        </div>
+        <div id="progressbar"></div>
+      </div>
     </div>
-    <h1>Customize Your API : <%= @view.name %></h1>
-    <%= display_standard_flashes %>
+    <h4>Customize Your API : <%= @view.name %></h4>
     <div id="apiFoundryWizard" class="wizard">
       <ul class="clearfix">
         <li id="checkpub" class="wizpane" data-wizardpanename="checkpub">
-          <h2>Your datset is already published</h2>
+          <h1>Your datset is already published</h1>
           <p>The API Foundry can only modify unpublished datasets</p>
           <p>Would you like to work on a copy?</p>
-          <a id="copybutton" class="button" href="#published">Make a copy</a>
+          <a id="copybutton" class="button" href="#copy">Make a copy</a>
           <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h2>Read more about the Socrata API Foundry</h2></a>
         </li>
         <li id="welcome" class="wizpane" data-wizardpanename="welcome">
-          <h2>Let's get started</h2>
-          <p>This wizard will guide you through the steps to create an API over your data</p>
-          <p>You can go forward and back through the steps - the changes only take effect at the end</p>
-          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h2>Read more about the Socrata API Foundry</h2></a>
+          <h1>Let's get started</h1>
+          <p>This wizard will help you create an API over your data. </p>
+          <p>You can go forward and back through the steps - the changes are saved at the end.</p>
+          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><p>Read more about the Socrata API Foundry</p></a>
         </li>
         <li id="datasetResourceName" class="wizpane" data-wizardpanename="datasetResourceName"> 
           <div class="paneControlOuter">
-            <div class="paneFormControls">
-              <h2>Select a location for your API</h2>
-              <p>The selection you make here determines where developers may find your API</p>
+            <div class="paneFormControls center">
+              <h1>Select a location for your API</h1>
               <div class="line clearfix formControl">
                 <span class="locationSpan">http://<%= CurrentDomain.cname %>/resources/</span>
-                <%= text_field_tag("resourceName", @view.resourceName, :title => "Enter API Location", :class => "required textPrompt liveDoc") %>
+                <div class="controlDiv">
+                  <%= text_field_tag("resourceName", @view.resourceName, :title => "Enter API Location", :class => "required textPrompt liveDoc locationInput") %>
+                  <div>
+                    <label class="error" style="display: none" for="resourceName">This is required</label>
+                    <label class="availableError" style="display: none" for="resourceName">This location is not available</label>
+                  </div>
+                </div>
                 <span class="locationSpan">.json</span>
-                <label class="availabeError" style="display: none" for="resourceName">This location is not available</label>
               </div>
             </div>
-            <div class="helpfulText">
-              <h2>Once you set the location, you should not change it</h2>
-              <p>After you publish your API, developers can use it to build applications.</p>
-              <p>Typically, the location of an API is hard-coded into an application, so it must not change, or the application will break.</p>
-            </div>
-            <div class="docPreview">
-            <div class="docPreviewInside">
-              <h2>Documentation Preview</h2>
-            <div class="docPreviewPage">
-              <h3><%= @view.name %> API</h3>
-              <p>This API is available at:</p>
-              <p class="link liveDocLink">http://<%= CurrentDomain.cname %>/resource/<span id="resourceNameDoc"><%= @view.resourceName %></span>.json</p>
-              <p>Read more about <a href="#">Socrata Open Data APIs</a>
-            </div>
-            </div>
+            <div id="tabs-datasetResourceName" class="tabs">
+              <ul>
+                <li><a href="#ht-datasetResourceName">About this option</a></li>
+                <li><a href="#dp-datasetResourceName">Documentation Preview</a></li>
+              </ul>
+              <div id="ht-datasetResourceName" class="helpfulText">
+                <h3>Once you set the location, you should not change it</h3>
+                <p>The selection you make here determines where developers may find your API.</p>
+                <p>After you publish your API, a developers can use it to build applications. 
+                  Typically, the location of an API is hard-coded into an application.
+                  If the location changes, the applications will break, and developers will be angry!
+                </p>
+              </div>
+              <div id="dp-datasetResourceName" class="docPreview">
+                <div class="docPreviewInside">
+                  <h3>Documentation Preview</h3>
+                  <div class="docPreviewPage">
+                    <h3><%= @view.name %> API</h3>
+                    <p>This API is available at:</p>
+                    <p class="link liveDocLink">http://<%= CurrentDomain.cname %>/resource/<span id="resourceNameDoc"><%= @view.resourceName %></span>.json</p>
+                    <p>Read more about <a href="/developers/docs/">Socrata Open Data APIs</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div><!-- paneControlOuter -->
         </li>
         <li id="datasetUniqueId" class="wizpane" data-wizardpanename="datasetUniqueId">
           <div class="paneControlOuter">
-            <div class="paneFormControls">
+            <div class="paneFormControls center">
 
-              <h2>Pick a Unique Identifier</h2>
+              <h1>Pick a Unique Identifier</h1>
               <div class="line clearfix formControl">
                 <label for="view_category">Unique Identifier</label>
-                <%= select_tag("rowIdentifierColumnId", options_from_collection_for_select(
-                    @view.columns.find_all{|column| column.dataTypeName == "text" || column.dataTypeName == "number"}, "id", "name")) %>
-                <div class="additionalHelp">The primary field that identifies a row</div>
+                <div class="controlDiv">
+                  <%= select_tag("rowIdentifierColumnId", options_from_collection_for_select(
+                      @view.columns.find_all{|column| column.dataTypeName == "text" || column.dataTypeName == "number"}, "id", "name")) %>
+                   <div class="additionalHelp">The primary field that identifies a row</div>
+                </div>
               </div>
 
             </div>
-            <div class="helpfulText">
-              <h2>This is how you refer to individual rows</h2>
-              <p>The Unique Identifier is a column in your dataset, it can be a number column or a string column.</p>
-              <p>This is the column that is checked when you want to add, update, or delete individual rows</p>
-            </div>
-            <div class="docPreview">
-            <div class="docPreviewInside">
-              <h2>Documentation Preview</h2>
-            <div class="docPreviewPage">
-              <h3>- add live documention preview here - </h3>
-              <p>Read more about <a href="#">Socrata Open Data APIs</a>
-            </div>
-            </div>
+            <div id="tabs-datasetUniqueId" class="tabs">
+              <ul>
+                <li><a href="#ht-datasetUniqueId">About this option</a></li>
+                <li><a href="#dp-datasetUniqueId">Documentation Preview</a></li>
+              </ul>
+              <div id="ht-datasetUniqueId" class="helpfulText">
+                <h3>This is how you refer to individual rows</h3>
+                <p>The Unique Identifier is a column in your dataset, it can be a number column or a string column.
+                  This is the column that is checked when you want to add, update, or delete individual rows
+                </p>
+              </div>
+              <div id="dp-datasetUniqueId" class="docPreview">
+              <div class="docPreviewInside">
+                <h3>Documentation Preview</h3>
+              <div class="docPreviewPage">
+                <h3>- add live documention preview here - </h3>
+                <p>Read more about <a href="/developers/docs/">Socrata Open Data APIs</a>
+              </div>
+              </div>
+              </div>
             </div>
           </div><!-- paneControlOuter -->
         </li>
         <li id="datasetDescription" class="wizpane" data-wizardpanename="datasetDescription">
           <div class="paneControlOuter">
-            <div class="paneFormControls">
+            <div class="paneFormControls center">
 
-              <h2>Describe your API</h2>
+              <h1>Describe your API</h1>
               <div class="line clearfix formControl">
-                <label for="description">Description</label>
                 <%= text_area_tag("description", @view.description, :title => "Enter a description", :class => "textPrompt liveDoc") %>
                 <div class="additionalHelp">The description that will be provided to end-users</div>
               </div>
 
             </div>
-            <div class="helpfulText">
-              <h2>Tell developers what your dataset is about</h2>
-              <p>This description will be included with the generated documentation for your API.</p>
-              <p></p>
-            </div>
-            <div class="docPreview">
-            <div class="docPreviewInside">
-              <h2>Documentation Preview</h2>
-            <div class="docPreviewPage">
-              <h3><%= @view.name %> API</h3>
-              <p><span id="descriptionDoc"><%= @view.description %></span></p>
-              <p>This API is available at:</p>
-              <p class="link liveDocLink">http://opendata.socrata.com/resource/<span id="resourceNameDoc"><%= @view.resourceName %></span>.json</p>
-              <p>Read more about <a href="#">Socrata Open Data APIs</a>
-            </div>
-            </div>
+            <div id="tabs-datasetDescription" class="tabs">
+              <ul>
+                <li><a href="#ht-datasetDescription">About this option</a></li>
+                <li><a href="#dp-datasetDescription">Documentation Preview</a></li>
+              </ul>
+              <div id="ht-datasetDescription" class="helpfulText">
+                <h3>Tell developers what your dataset is about</h3>
+                <p>This description will be included with the generated documentation for your API.</p>
+                <p></p>
+              </div>
+              <div id="dp-datasetDescription" class="docPreview">
+              <div class="docPreviewInside">
+                <h3>Documentation Preview</h3>
+              <div class="docPreviewPage">
+                <h3><%= @view.name %> API</h3>
+                <p><span id="descriptionDoc"><%= @view.description %></span></p>
+                <p>This API is available at:</p>
+                <p class="link liveDocLink">http://opendata.socrata.com/resource/<span id="resourceNameDoc"><%= @view.resourceName %></span>.json</p>
+                <p>Read more about <a href="/developers/docs">Socrata Open Data APIs</a>
+              </div>
+              </div>
+              </div>
             </div>
           </div><!-- paneControlOuter -->
         </li>
@@ -121,7 +152,7 @@
         <li class="apiFieldPane wizpane" id="col-<%= column.fieldName %>" data-wizardpanename="col-<%= column.fieldName %>">
           <div class="paneControlOuter">
             <div class="paneFormControls clearfix">
-              <h2>Customize Field: <%= column.fieldName %></h2>
+              <h1>Customize Field: <%= column.fieldName %></h1>
               <div class="controlColumn">
                 <div class="line clearfix formControl">
                   <label class="required" for="displayName">Display Name</label>
@@ -144,36 +175,41 @@
               </div>
             </div>
             </div>
-            <div class="helpfulText">
-              <h2>Helpful text</h2>
-              <p>Here's some information about this option</p>
-              <p>Make the right choice!</p>
-            </div>
-            <div class="docPreview">
-            <div class="docPreviewInside">
-              <h2>Documentation Preview</h2>
-            <div class="docPreviewPage">
-              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
-              <h3>example API request</h3>
-              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
-              <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
-            </div>
-            </div>
+            <div id="tabs-col-<%= column.fieldName %>" class="tabs">
+              <ul>
+                <li><a href="#ht-col-<%= column.fieldName %>">About this option</a></li>
+                <li><a href="#dp-col-<%= column.fieldName %>">Documentation Preview</a></li>
+              </ul>
+              <div id="ht-col-<%= column.fieldName %>" class="helpfulText">
+                <h3>Helpful text</h3>
+                <p>Here's some information about this option</p>
+                <p>Make the right choice!</p>
+              </div>
+              <div id="dp-col-<%= column.fieldName %>" class="docPreview">
+              <div class="docPreviewInside">
+                <h3>Documentation Preview</h3>
+              <div class="docPreviewPage">
+                <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+                <h3>example API request</h3>
+                <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+                <p>This is a mock-up of the documentation preview. The API Foundry will generate this documentation</p>
+              </div>
+              </div>
+              </div>
             </div>
           </div><!-- paneControlOuter -->
         </li>
         <% end %>
         <li id="apiPublish" class="wizpane" data-wizardpanename="apiPublish">
-          <h2>Are you ready to publish this API?</h2>
-          <div class="flash"></div>
-          <p>Once you publish an API over your dataset, developers may use the API to build applications.  Changing an API after it is published can break applications that depend on it.  We recommend that you only publish an API once you are confident the columns, fieldnames, and location will remain the same.
-          </p>
+          <div class="publishError"></div>
+          <h1>Are you ready to save these changes?</h3>
           <div id="publishResponse"></div>
         </li>
         <li id="published" class="wizpane" data-wizardpanename="published">
-          <h2>Congratulations! Your API is now live.</h2>
-          <p>Developers may now use this API to build applications.</p>
-          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h2>View the generated documentation</h2></a>
+         <h1>Congratulations! Your API has been configured.</h1>
+         <p>Your API will be live once you publish your dataset.</p>
+         <p>After you publish, developers can use your API to create apps with your data.</p>
+          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h3>View the generated documentation</h3></a>
         </li>
       </ul>
     </div>

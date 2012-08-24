@@ -1,18 +1,21 @@
 $(function(){
 
   bindLiveDocs();
-  //bindNameCheck();
+  bindNameCheck();
   var $wizard = $('#apiFoundryWizard');
+  var stepTotal;
   var options = {
       onCancel: function($pane, state)
       {
-          window.location.href = '/api_foundry';
+          window.location.href = '/resource/' + blist.configuration.apiFoundry.id;
           return false;
       },
       finishText: "Apply Changes",
       paneConfig:makePaneConfig()
   }
   var $paneList = $('#apiFoundryWizard ul');
+  $("#stepTotal").text(stepTotal);
+  $("#progressbar").progressbar({value:0});
   $paneList.hide();
   $wizard.wizard(options);
   $paneList.show();
@@ -38,35 +41,59 @@ $(function(){
   }
 
   function bindNameCheck(){
-    var rNames = {}; //candidate names: true -> available, false -> unavailable
+    $('#resourceName').change(checkResourceName);
+    $('#resourceName').keyup(function(){
+      $('.availableError').hide();
+    });
+  }
 
-    function checkResourceName(){
-      var candidate = $('#resourceName').val();
-      checkAvailable(candidate, function(available){
+  var rNames = {}; //candidate names: true -> available, false -> unavailable
+  function checkResourceName(callback){
+    checkResourceNameAvailable($('#resourceName').val(), function(name, available){
+      if ($('#resourceName').val() === name){
         if (available) {
-          $("#nameNotAvailable").hide();
+          $(".availableError").hide();
         }
         else {
-          $("#nameNotAvailable").show();
+          $(".availableError").show();
         }
+        callback(name, available);
+      }
+    });
+  }
+
+  function checkResourceNameAvailable(name, callback){
+    if ( rNames[name] === undefined ){
+      requestResourceName(name, function(checkedName, available){
+        rNames[checkedName] = available;
+        callback(checkedName, available);
       });
     }
+    else { callback(name, rNames[name]) }
+  }
 
-    function checkAvailable(name, callback){
-      if ( rNames[candidate] === undefined ){
-        requestResourceName(candidate, function(available){
-          rNames[candidate] = available;
-          callback(available);
-        });
+  function requestResourceName(name, callback){
+    //callback(name, name.length % 2 === 0);
+    Dataset.lookupFromResourceName(
+      name,
+      function(ds){
+        if (ds){
+          callback(name, false);
+        }
+      },
+      function(err){
+        if (err.status === 404){
+          callback(name, true);
+        }
+        else {callback(name, false);} //403 implies there is a dataset with that name
       }
-      else { callback(rNames[candidate]) }
-    }
+    );
+  }
 
-    function requestResourceName(name, callback){
-      getDataset();
-    }
-
-    $('#resourceName').change(checkResourceName);
+  function updateProgressIndicator(ordinal){
+    var progress = ordinal / stepTotal * 100;
+    $("#step").text(ordinal);
+    $("#progressbar").progressbar("value", progress);
   }
 
   function makePaneConfig() {
@@ -74,7 +101,7 @@ $(function(){
     var nextPaneMap = {};
     var panes = [];
     var ordinal = 1; //ordinal indicates the position in the progress meter
-  
+
     function defaultOnNext($pane, state){
       var id = $pane.attr('id');
       //TODO try this method for clearing the prompt:
@@ -87,7 +114,9 @@ $(function(){
 
     var commandObj; //used by the skip-to-end button
     function defaultOnActivate($pane, paneConfig, state, command){
-      $("#step").text(paneConfig.ordinal);
+      var myTabs = 'tabs-' + $pane.attr("id");
+      $('#'+myTabs).tabs();
+      updateProgressIndicator(paneConfig.ordinal);
       if (commandObj) { commandObj = command; }
       else { 
         commandObj = command;
@@ -120,7 +149,7 @@ $(function(){
         ordinal: ordinal++,
         disableButtons: ['next'],
         onActivate: function(){
-          $("#steps").hide()
+          $("#progress").hide()
         },
         onNext: defaultOnNext
       });
@@ -139,7 +168,12 @@ $(function(){
       key: 'datasetResourceName',
       ordinal: ordinal++,
       onActivate: defaultOnActivate,
-      onNext: defaultOnNext
+      onNext: function($pane, state){
+        checkResourceName(function(name, available){
+          if (available){commandObj.next(defaultOnNext($pane, state));}
+        });
+        return false;
+      }
     });
     panes.push({
       uniform: true,
@@ -173,7 +207,7 @@ $(function(){
       ordinal: ordinal++,
       isFinish: true,
       onActivate: function($pane, paneConfig, state, command){
-        $("#step").text(paneConfig.ordinal);
+        updateProgressIndicator(paneConfig.ordinal);
         paneConfig.onNext = function($pane, state){
             $(".nextButton").addClass("disabled");
             updateDatasetState(state, function(){
@@ -188,7 +222,7 @@ $(function(){
         key:'published',
         disableButtons: ['cancel', 'prev'],
         onActivate: function($pane, paneConfig, state, command){
-          $("#steps").hide()
+          $("#progress").hide()
           paneConfig.nextText = "View Documentation";
           $("#docslink").attr("href", blist.configuration.apiFoundry.docsUrl);
         },
@@ -207,7 +241,7 @@ $(function(){
     });
     for (var p = 0; p < panes.length; p++){
     }
-    $("#stepTotal").text(ordinal - 1);
+    stepTotal = ordinal - 1;
     return paneConfig;
   }
   

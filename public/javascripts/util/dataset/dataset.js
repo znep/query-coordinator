@@ -2695,6 +2695,18 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
+Dataset.lookupFromResourceName = function(resourceName, successCallback, errorCallback){
+  $.socrataServer.makeRequest({
+      url: '/api/views.json?method=getByResourceName&name=' + resourceName,
+      success: function(view)
+      {
+          successCallback(new Dataset(view));
+      },
+      batch: false,
+      pageCache: false,
+      error: errorCallback});
+}
+
 Dataset.lookupFromViewId = function(id, successCallback, errorCallback, isBatch)
 { Dataset._create(false, id, successCallback, errorCallback, isBatch); };
 

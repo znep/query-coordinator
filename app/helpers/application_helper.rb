@@ -184,7 +184,8 @@ module ApplicationHelper
     flash_to_display, level = nil, nil
     FLASH_MESSAGE_TYPES.each do |type|
       if flash_obj[type]
-        flash_to_display, level = flash_obj[type], type.to_s
+        flash_to_display, level = flash_obj[type].join(' '), type.to_s
+        flash_to_display = flash_to_display.split('|') if flash_to_display.include? '|'
         break
       end
     end

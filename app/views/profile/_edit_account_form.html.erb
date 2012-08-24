@@ -39,6 +39,9 @@
         <div class="line clearfix">
           <label for="user_password_new">New Password</label>
           <%= password_field_tag('user[password_new]', '', :class => 'newPassword') %>
+          <span class="fieldHint textItem passwordHint about">
+            (Restrictions apply <span class="icon">&nbsp;</span>)
+          </span>
         </div>
         <div class="line clearfix">
           <label for="user_password_confirm">Confirm Password</label>

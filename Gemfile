@@ -7,7 +7,7 @@ gem "rack", "~>1.4.0"
 gem "erubis", ">= 2.6.4"
 gem "multipart-post", ">= 1.0.1", :require => 'net/http/post/multipart'
 gem "hashie", "0.3.1"
-gem "sass", "~>3.1"
+gem "sass", "~>3.2"
 gem "stomp", "1.1.6"
 gem "airbrake", "~>3.0.9"
 gem "money", "~> 3.7.1"

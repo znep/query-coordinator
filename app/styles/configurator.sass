@@ -1,3 +1,11 @@
+// Component colors
+@mixin component-colors($base_color, $items...)
+  $icon_index: 0
+  @each $name in $items
+    &.icon-#{$name} .icon
+      background-color: darken(adjust-hue($base_color, -15deg * (floor($icon_index / 3))), 10% * ($icon_index % 3))
+    $icon_index: $icon_index + 1
+
 .cfEditingBar
   height: 2em
   left: 0
@@ -88,8 +96,32 @@ body.configuring
     width: 80px
     &:hover
       @include opacity(1)
+    .icon
+      @include border-radius(2px)
+      @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
+      height: 48px
+      margin: 0 16px 6px 16px
+      width: 48px
+    .label
+      color: #333333
+      cursor: move
+      display: block
+      font-size: 1.1em
+      margin-top: 0.2em
+      text-align: center
     .icon, .label
       cursor: move
+
+  // Different select to make sure bkg color is overridden
+  .sectionContent .componentCreate .icon
+    background-color: #333333
+
+  .sectionContent .componentCreate
+    @include component-colors($designer_components_content_color, Container, HorizontalContainer, Comments, GridContainer, Picture, Text, Title, Repeater)
+    @include component-colors($designer_components_data_color, Catalog, Chart, BubbleChart, ColumnChart, LineChart, PieChart, TimeLine, TreeMap, Map, Table)
+    @include component-colors($designer_components_actions_color, Download, Share)
+    @include component-colors($designer_components_input_color, InlineFilter)
+
 
 .socrata-cf-mask
   z-index: 999
@@ -113,33 +145,6 @@ body.configuring
   .content-wrapper
     line-height: 1.5em
     word-wrap: break-word
-
-// Representation of icons in palette and drag form of same
-.socrata-cf-side .componentCreate
-  &.label-only
-    width: auto
-  .bulb
-    background: 10000px 10000px no-repeat, rgba(0, 0, 0, .25)
-    display: block
-    @include border-radius(6px)
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
-    -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
-    -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3)
-    margin: 0 16px 6px 16px
-  .icon, .bulb
-    width: 48px
-    height: 48px
-  .label
-    display: block
-    text-align: center
-    font-size: 12px
-    cursor: move
-    color: #dddddd
-    &.bulb
-      line-height: 24px
-      padding: 0 8px
-      color: #f8f8f8
-      margin: 0 6px 6px 6px
 
 // Styling for drag-drop
 .socrata-container

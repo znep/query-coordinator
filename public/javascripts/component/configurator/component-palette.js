@@ -8,11 +8,10 @@
                 $('#templates').append($.tag({ tagName: 'div', 'class': 'componentPaletteContainer',
                     contents: { tagName: 'ul', contents: { tagName: 'li', 'class': 'componentCreate',
                         contents: [
-                            { tagName: 'div', 'class': 'bulb', contents: [
-                                { tagName: 'span', 'class': 'icon' },
-                                { tagName: 'span', 'class': 'label' }
-                            ] }
-                    ] } } }));
+                            { tagName: 'span', 'class': 'icon' },
+                            { tagName: 'span', 'class': 'label' }
+                        ]
+                    } } }));
             }
         },
 

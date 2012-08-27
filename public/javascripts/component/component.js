@@ -1067,18 +1067,24 @@
             return new componentClass($.extend(true, {}, properties));
         },
 
-        initialize: function() {
+        initialize: function()
+        {
             this.roots = [];
             for (var i = 0; i < arguments.length; i++)
+            {
                 if ($.isArray(arguments[i]))
-                    this.initialize.apply(this, arguments[i]);
-                else {
+                { this.initialize.apply(this, arguments[i]); }
+                else
+                {
+                    if ($.subKeyDefined(arguments[i], 'bodyClass'))
+                    { $('body').addClass(arguments[i].bodyClass); }
                     var component = this.create(arguments[i]);
                     component._render();
                     if (component._isRenderable() && !component.dom.parentNode)
                         throw "Unparented root component " + component.id;
                     this.roots.push(component);
                 }
+            }
 
             $(document).trigger('canvas_initialized');
         },

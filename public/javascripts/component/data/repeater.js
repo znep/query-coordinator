@@ -262,7 +262,7 @@ $.component.Container.extend('Repeater', 'content', {
         // behave properly if more than a page of data is present
         if (!$.isBlank(this._properties.valueRegex))
         {
-            var r = new RegExp(this._properties.valueRegex.regex);
+            var r = new RegExp(this._stringSubstitute(this._properties.valueRegex.regex));
             var v = clone._stringSubstitute(this._properties.valueRegex.value);
             var result = r.test(v);
             if (this._properties.valueRegex.invert) { result = !result; }

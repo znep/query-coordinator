@@ -88,6 +88,8 @@ class AccountsController < ApplicationController
           return redirect_to(login_path)
         end
       else
+        result_hash = JSON.parse(result.body)
+        flash[:notice] = result_hash['message'] and return if (result_hash['code'] == 'validation')
         flash[:warning] = 'There was a problem resetting your password. Please try again.'
         return redirect_to(forgot_password_path)
       end

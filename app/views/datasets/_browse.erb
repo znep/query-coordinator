@@ -111,18 +111,22 @@
         <%- end -%>
       </div>
     <%- end -%>
+    <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+        <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
+                CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
+            <div class="createDatasetBox infoBox">
+            <h3><%= t('controls.browse.actions.create_dataset') %></h3>
 
-    <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
-             CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
-    <div class="createDatasetBox infoBox">
-      <h3><%= t('controls.browse.actions.create_dataset') %></h3>
-      <div class="buttonContainer">
-        <a class="button next" href="/datasets/new" title="<%= t('controls.browse.actions.create_dataset_short') %>">
-          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_short') : t('controls.browse.actions.create_dataset_verb') %><span class="icon"></span>
-        </a>
-      </div>
-    </div>
+            <div class="buttonContainer">
+                <a class="button next" href="/datasets/new" title="<%= t('controls.browse.actions.create_dataset_short') %>">
+                <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_short') : t('controls.browse.actions.create_dataset_verb') %>
+                <span class="icon"></span>
+                </a>
+            </div>
+            </div>
+        <%- end -%>
     <%- end -%>
+
 
     <%- if opts[:header_config] -%>
       <div class="browseHeader">
@@ -194,9 +198,11 @@
         <%- if opts[:view_count] == 0 -%>
           <div class="noResults">
             <span class="message"><%= opts[:no_results_text] %></span>
-            <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
-                  CurrentDomain.module_enabled?(:community_creation)) && !opts[:suppress_dataset_creation] -%>
-                  <a class="button createLink" href="/datasets/new"><%= t('controls.browse.actions.create_dataset_short') %></a>
+            <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+                <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
+                        CurrentDomain.module_enabled?(:community_creation)) && !opts[:suppress_dataset_creation] -%>
+                    <a class="button createLink" href="/datasets/new"><%= t('controls.browse.actions.create_dataset_short') %></a>
+                <%- end -%>
             <%- end -%>
             <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
               <a class="button suggestLink" href="/nominate"><%= t('controls.browse.actions.suggest_dataset_short') %></a>

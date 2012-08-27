@@ -95,7 +95,12 @@
                     { sTipObj.settings.shownCallback(box); }
                 };
 
-                $domObj.bt({
+                var onModalZIndices = {
+                    wrapperzIndex: 10000,
+                    boxzIndex: 10001,
+                    textzIndex: 10002 };
+
+                var options = {
                         content: _.isFunction(content) ? null : content,
                         contentSelector: _.isFunction(content) ? content : null,
 
@@ -142,7 +147,11 @@
                                 else
                                 { $(box).fadeOut(300, callback); }
                             }
-                });
+                };
+
+                if (sTipObj.settings.onModal)
+                { $.extend(options, onModalZIndices); }
+                $domObj.bt(options);
                 sTipObj._opts = $domObj[0]._opts;
             },
 

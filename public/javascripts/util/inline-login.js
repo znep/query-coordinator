@@ -149,10 +149,28 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     }
                 });
 
+        var $password = $signup.find('label.password');
+        if (!$password.data('passwordHint'))
+        {
+            var $content = $('<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>&bull; contain a digit</li><li>&bull; contain a lowercase letter</li><li>&bull; contain an uppercase letter</li><li>&bull; contain a non-alphanumeric symbol</li></ul>');
+
+            $password.addClass('about').append('<span class="icon">&nbsp;</span>')
+                     .data('passwordHint', true);
+            $signup.find('span.icon').socrataTip({ content: $content, onModal: true });
+        }
+
         var signupSuccess = function(responseData)
         {
             if (responseData && responseData.error)
             {
+                if (_.isArray(responseData.error))
+                {
+                    responseData.error = responseData.error
+                        .join(' ').split('|')
+                        .map(function(line) { return '<p>' + line + '</p>'; })
+                        .join('');
+                }
+
                 if (responseData.promptLogin)
                 {
                     $signup.jqmHide();
@@ -160,7 +178,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     {
                         $login.jqmShow()
                             .find('.flash')
-                                .text(responseData.error)
+                                .html(responseData.error)
                                 .addClass('error')
                             .end()
                             .find(':text:first').focus();
@@ -168,7 +186,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 }
                 else
                 {
-                    $signup.find('.flash').text(responseData.error).addClass('error');
+                    $signup.find('.flash').html(responseData.error).addClass('error');
                     $signup.find(':text:first').focus().select();
                 }
             }

@@ -103,7 +103,7 @@ module Canvas2
       copy['childContextId'] = row[:id]
       c = CanvasWidget.from_config(copy, self, resolutions)
       if @properties.has_key?('valueRegex')
-        r = Regexp.new(@properties['valueRegex']['regex'])
+        r = Regexp.new(c.string_substitute(@properties['valueRegex']['regex']))
         v = c.string_substitute(@properties['valueRegex']['value'])
         result = r.match(v).blank?
         result = !result if @properties['valueRegex']['invert']

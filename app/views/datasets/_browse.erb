@@ -281,7 +281,7 @@
                     rescue
                       # Chomp Chomp
                     end -%>
-                <tr class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
+                <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
                     <td class="index" scope="row">
@@ -298,7 +298,7 @@
                   <%- if opts[:grid_items][:domainIcon] -%>
                     <td class="domainIcon">
                       <%- if v.federated? -%>
-                        <a href="<%= view_url %>" rel="<%= rel_type %>">
+                        <a itemprop="url" href="<%= view_url %>" rel="<%= rel_type %>">
                           <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
                             t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
                         </a>
@@ -308,7 +308,7 @@
 
                   <%- if opts[:grid_items][:nameDesc] -%>
                     <td class="nameDesc">
-                      <a href="<%= view_url %>" class="name"
+                      <a href="<%= view_url %>" class="name" itemprop="name"
                         rel="<%= rel_type %>"><%= v.name %></a>
                       <%- if !v.category.blank? -%>
                       <span class="category infoItem"><%= v.category %></span>
@@ -325,7 +325,7 @@
                             end
                             t += '...'
                           end -%>
-                      <span class="tags infoItem"><%= t %></span>
+                      <span class="tags infoItem" itemprop="keywords"><%= t %></span>
                       <%- end -%>
                       <% if v.federated? %>
                         <div class="federation-source infoItem">
@@ -349,7 +349,7 @@
                     <td class="largeImage">
                       <%- img_url = v.preferred_image(opts[:port]) -%>
                       <%- if !img_url.nil? -%>
-                        <img class="datasetImage datasetIcon <%= v.preferred_image_type %>"
+                        <img itemprop="image" class="datasetImage datasetIcon <%= v.preferred_image_type %>"
                           src="<%= img_url %>" />
                       <%- else -%>
                         <div class="datasetIcon type type<%= v.display.type.capitalize %>"
@@ -360,12 +360,12 @@
 
                   <%- if opts[:grid_items][:richSection] -%>
                     <td class="richSection">
-                      <a href="<%= view_url %>" class="nameLink" rel="<%= rel_type %>">
+                      <a itemprop="url" href="<%= view_url %>" class="nameLink" rel="<%= rel_type %>">
                         <%- if opts[:use_federations] && v.federated? -%>
                           <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
                             t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
                         <%- end -%>
-                        <span class="name"><%= v.name %></span>
+                        <span itemprop="name" class="name"><%= v.name %></span>
                       </a>
                       <% if v.federated? %>
                         <div class="federation-source">

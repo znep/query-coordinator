@@ -89,6 +89,7 @@ javascripts:
     - public/javascripts/component/comp-container.js
     - public/javascripts/component/configurator-hook.js
     - public/javascripts/component/functional/event-connector.js
+    - public/javascripts/component/content/list-item-container.js
     - public/javascripts/component/content/paged-container.js
     - public/javascripts/component/content/carousel-container.js
     - public/javascripts/component/content/multi-paged-container.js

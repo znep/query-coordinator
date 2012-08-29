@@ -228,6 +228,25 @@ module Canvas2
   class Carousel < PagedContainer
   end
 
+  class ListItemContainer < Container
+    def render_contents
+      l_tag = @properties['listTag'] || 'ul'
+      t = '<' + l_tag + ' class="' + string_substitute(@properties['listCustomClass']) + '">'
+      end_tag = '</' + l_tag + '>'
+      return [t + end_tag, true] if !has_children?
+
+      threads = children.map {|c| Thread.new do
+        r = c.render
+        i_tag = c.string_substitute(@properties['itemTag'])
+        i_tag = {'ul' => 'li', 'ol' => 'li', 'dl' => 'dd'}[l_tag] || 'div' if i_tag.blank?
+        ['<' + i_tag + ' class="liWrapper ' + c.string_substitute(@properties['itemCustomClass'] || '') +
+          '">' + r[0] + '</' + i_tag + '>', r[1]]
+      end}
+      results = threads.map {|thread| thread.value};
+      [t + results.map {|r| r[0]}.join('') + end_tag, results.reduce(true) {|memo, r| memo && r[1]}]
+    end
+  end
+
   class FixedContainer < Container
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

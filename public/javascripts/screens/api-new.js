@@ -114,8 +114,6 @@ $(function(){
 
     var commandObj; //used by the skip-to-end button
     function defaultOnActivate($pane, paneConfig, state, command){
-      var myTabs = 'tabs-' + $pane.attr("id");
-      $('#'+myTabs).tabs();
       updateProgressIndicator(paneConfig.ordinal);
       if (commandObj) { commandObj = command; }
       else { 

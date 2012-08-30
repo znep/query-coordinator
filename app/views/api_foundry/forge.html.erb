@@ -6,16 +6,17 @@
 <div class="logo"><h1><img src="/images/apifoundry/api-foundry-logo.png" alt="Socrata API Foundry"></img></h1></div>
 <div class="contentBox fixedWidth">
   <form id="newApiForm">
-    <div id="progress">
-      <div>
-        <div id="steps">
-          Step <span id="step">0</span> of <span id="stepTotal">0</span>
-          <p><a id="skip" href="#apiPublish">Skip to end ></a></p>
-        </div>
-        <div id="progressbar"></div>
+    <div id="aboveslide">
+      <div id="toptext">
+        <h4>Customize Your API -</h4>
+        <p><%= @view.name %></p>
+      </div>
+      <div id="skip"><a id="skip" href="#apiPublish">Skip to end ></a></div>
+      <div id="progressbar"></div>
+      <div id="steps">
+        Step <span id="step">0</span> of <span id="stepTotal">0</span>
       </div>
     </div>
-    <h4>Customize Your API : <%= @view.name %></h4>
     <div id="apiFoundryWizard" class="wizard">
       <ul class="clearfix">
         <li id="checkpub" class="wizpane" data-wizardpanename="checkpub">
@@ -36,7 +37,7 @@
             <div class="paneFormControls center">
               <h1>Select a location for your API</h1>
               <div class="line clearfix formControl">
-                <span class="locationSpan">http://<%= CurrentDomain.cname %>/resources/</span>
+                <span class="locationSpan">http://<%= CurrentDomain.cname %>/resource/</span>
                 <div class="controlDiv">
                   <%= text_field_tag("resourceName", @view.resourceName, :title => "Enter API Location", :class => "required textPrompt liveDoc locationInput") %>
                   <div>
@@ -48,10 +49,6 @@
               </div>
             </div>
             <div id="tabs-datasetResourceName" class="tabs">
-              <ul>
-                <li><a href="#ht-datasetResourceName">About this option</a></li>
-                <li><a href="#dp-datasetResourceName">Documentation Preview</a></li>
-              </ul>
               <div id="ht-datasetResourceName" class="helpfulText">
                 <h3>Once you set the location, you should not change it</h3>
                 <p>The selection you make here determines where developers may find your API.</p>
@@ -59,17 +56,6 @@
                   Typically, the location of an API is hard-coded into an application.
                   If the location changes, the applications will break, and developers will be angry!
                 </p>
-              </div>
-              <div id="dp-datasetResourceName" class="docPreview">
-                <div class="docPreviewInside">
-                  <h3>Documentation Preview</h3>
-                  <div class="docPreviewPage">
-                    <h3><%= @view.name %> API</h3>
-                    <p>This API is available at:</p>
-                    <p class="link liveDocLink">http://<%= CurrentDomain.cname %>/resource/<span id="resourceNameDoc"><%= @view.resourceName %></span>.json</p>
-                    <p>Read more about <a href="/developers/docs/">Socrata Open Data APIs</a>
-                  </div>
-                </div>
               </div>
             </div>
           </div><!-- paneControlOuter -->
@@ -90,24 +76,11 @@
 
             </div>
             <div id="tabs-datasetUniqueId" class="tabs">
-              <ul>
-                <li><a href="#ht-datasetUniqueId">About this option</a></li>
-                <li><a href="#dp-datasetUniqueId">Documentation Preview</a></li>
-              </ul>
               <div id="ht-datasetUniqueId" class="helpfulText">
                 <h3>This is how you refer to individual rows</h3>
                 <p>The Unique Identifier is a column in your dataset, it can be a number column or a string column.
                   This is the column that is checked when you want to add, update, or delete individual rows
                 </p>
-              </div>
-              <div id="dp-datasetUniqueId" class="docPreview">
-              <div class="docPreviewInside">
-                <h3>Documentation Preview</h3>
-              <div class="docPreviewPage">
-                <h3>- add live documention preview here - </h3>
-                <p>Read more about <a href="/developers/docs/">Socrata Open Data APIs</a>
-              </div>
-              </div>
               </div>
             </div>
           </div><!-- paneControlOuter -->
@@ -119,20 +92,11 @@
               <h1>Describe your API</h1>
               <div class="line clearfix formControl">
                 <%= text_area_tag("description", @view.description, :title => "Enter a description", :class => "textPrompt liveDoc") %>
-                <div class="additionalHelp">The description that will be provided to end-users</div>
+                <div class="additionalHelp">Tell developers what your dataset is about</div>
               </div>
 
             </div>
             <div id="tabs-datasetDescription" class="tabs">
-              <ul>
-                <li><a href="#ht-datasetDescription">About this option</a></li>
-                <li><a href="#dp-datasetDescription">Documentation Preview</a></li>
-              </ul>
-              <div id="ht-datasetDescription" class="helpfulText">
-                <h3>Tell developers what your dataset is about</h3>
-                <p>This description will be included with the generated documentation for your API.</p>
-                <p></p>
-              </div>
               <div id="dp-datasetDescription" class="docPreview">
               <div class="docPreviewInside">
                 <h3>Documentation Preview</h3>
@@ -153,39 +117,31 @@
           <div class="paneControlOuter">
             <div class="paneFormControls clearfix">
               <h1>Customize Field: <%= column.fieldName %></h1>
-              <div class="controlColumn">
                 <div class="line clearfix formControl">
                   <label class="required" for="displayName">Display Name</label>
                   <%= text_field_tag("name", column.name, :title => "enter a display name", :class => "textPrompt required") %>
-                  <div class="additionalHelp">A human-readable name for display and export</div>
+                  <div class="additionalHelp"><label>A human-readable name for display and export</label></div>
                 </div>
                 <div class="line clearfix formControl">
                   <label class="required" for="fieldName">Field Name</label>
                   <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => "textPrompt required") %>
-                  <div class="additionalHelp">The identifier used by developers and applications</div>
+                  <div class="additionalHelp"><label>The identifier used by developers and applications</label></div>
                 </div>
-              </div>
-            <div class="controlColumn">
               <div class="paneFormControls">
                 <div class="line clearfix formControl">
                   <label for="description">Description</label>
                   <%= text_area_tag("description", '', :title => "enter a description", :class => "textPrompt") %>
-                  <div class="additionalHelp">The description that will be provided to end-users</div>
+                  <div class="additionalHelp"><label>The description that will be provided to end-users</label></div>
                 </div>
               </div>
             </div>
-            </div>
             <div id="tabs-col-<%= column.fieldName %>" class="tabs">
-              <ul>
-                <li><a href="#ht-col-<%= column.fieldName %>">About this option</a></li>
-                <li><a href="#dp-col-<%= column.fieldName %>">Documentation Preview</a></li>
-              </ul>
-              <div id="ht-col-<%= column.fieldName %>" class="helpfulText">
+              <div id="ht-col-<%= column.fieldName %>" class="helpfulText column">
                 <h3>Helpful text</h3>
                 <p>Here's some information about this option</p>
                 <p>Make the right choice!</p>
               </div>
-              <div id="dp-col-<%= column.fieldName %>" class="docPreview">
+              <div id="dp-col-<%= column.fieldName %>" class="docPreview column">
               <div class="docPreviewInside">
                 <h3>Documentation Preview</h3>
               <div class="docPreviewPage">

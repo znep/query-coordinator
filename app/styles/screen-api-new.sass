@@ -2,17 +2,24 @@
   text-align: center
 #newApiForm
   font-size: 1.2em
-#progress
-  float: right
+#aboveslide
   line-height: 1.5
+  text-align: center
+  #toptext
+    float: left
+    text-align: left
+    width: 22em
   #steps
-    width: 10em
+  #skip
     float: right
+    width: 22em
+    text-align: right
   #progressbar
     width: 20em
     height: 1em
-    float: right
+    margin: 0em auto
 #apiFoundryWizard 
+  clear: both
   text-align: center
   padding-top: 1.5em
   padding-bottom: 1.5em
@@ -22,6 +29,19 @@
   border-bottom: 1px solid $color_chrome_box_border
   a h2
     color: darkblue
+  .apiFieldPane
+    label
+      width: 8em
+      display: inline-block
+      text-align: right
+    input, select, textarea
+      width: 26em
+      margin-top: -0.6em
+    .additionalHelp
+      label
+        width: 31em
+        margin-left: 8em
+        text-align: left
   .wizpane
     display: none
     float: left
@@ -31,7 +51,7 @@
       line-height: 1.3
     .center
       text-align: center
-    .controlColumn
+    .column
       float: left
       width: 50%
     .paneFormControls
@@ -39,8 +59,6 @@
       .additionalHelp
         color: gray
         font-style: italic
-      input, select, textarea
-        width: 26em
       .controlDiv
         display: inline-block
         text-align: left
@@ -50,16 +68,16 @@
         font-size: 1.5em
       .locationInput
         font-size: 1.5em
-        width: 18em
+        width: 12em
       .availableError
         color: red
       #rowIdentifierColumnId
         width: 21em
       #description
-        width: 50%
+        width: 26em
     .formControl
       margin-top: 0.5em
-      margin-bottom: 0.5em
+      margin-bottom: 1.5em
     .tabs
       margin-top: 2em
     .helpfulText

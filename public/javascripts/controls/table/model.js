@@ -726,66 +726,47 @@ blist.namespace.fetch('blist.data');
             return null;
         };
 
-        this.selectedRows = {};
-
         this.hasSelectedRows = function()
         {
-            return !_.isEmpty(this.selectedRows);
+            return $.subKeyDefined(this.view, 'highlightTypes.select') &&
+                !_.isEmpty(this.view.highlightTypes.select);
         }
 
         this.toggleSelectRow = function(row)
         {
-            if ($.isBlank(this.selectedRows[row.id]))
-            { return this.selectRow(row); }
+            if (!$.subKeyDefined(this.view, 'highlightTypes.select.' + row.id))
+            { this.selectRow(row); }
 
             else
-            { return this.unselectRow(row); }
+            { this.unselectRow(row); }
         };
 
-        this.selectRow = function(row, suppressChange)
+        this.selectRow = function(row)
         {
             if (row.type == 'blank') { return; }
 
-            this.selectedRows[row.id] = this.index(row);
-            if (!suppressChange) { this.selectionChange([row]); }
-            return [row];
+            this.view.highlightRows(row, 'select');
+            $(listeners).trigger('display_row', [{row: row}]);
         };
 
         this.unselectRow = function(row)
         {
-            delete this.selectedRows[row.id];
-            this.selectionChange([row]);
-            return [row];
+            this.view.unhighlightRows(row, 'select');
+            $(listeners).trigger('display_row', [{row: null}]);
         };
 
-        this.unselectAllRows = function(suppressChange)
+        this.unselectAllRows = function()
         {
-            var unselectedRows = [];
-            _.each(this.selectedRows, function (v, id)
-            { unselectedRows.push(self.getByID(id)); });
-
-            this.selectedRows = {};
-            if (!suppressChange) { this.selectionChange(unselectedRows); }
-            return unselectedRows;
-        };
-
-        this.selectSingleRow = function(row)
-        {
-            var changedRows = this.unselectAllRows(true)
-                .concat(this.selectRow(row, true));
-            this.selectionChange(changedRows);
-            return changedRows;
+            this.view.highlightRows(null, 'select');
+            $(listeners).trigger('display_row', [{row: null}]);
         };
 
         this.selectRowsTo = function(row)
         {
-            var minIndex;
-            _.each(this.selectedRows, function (index)
-            {
-                if (minIndex == null || minIndex > index) { minIndex = index; }
-            });
+            if (!this.hasSelectedRows()) { return this.selectRow(row); }
 
-            if (minIndex == null) { return this.selectRow(row); }
+            var minIndex = _.min(_.map(this.view.highlightTypes.select, function(row)
+                    { return self.index(row); }));
 
             var curIndex = this.index(row);
             var maxIndex = curIndex;
@@ -795,18 +776,14 @@ blist.namespace.fetch('blist.data');
                 minIndex = curIndex;
             }
 
-            var changedRows = this.unselectAllRows(true);
+            var selRows = [];
             for (var i = minIndex; i <= maxIndex; i++)
             {
                 var curRow = this.get(i);
                 if (!$.isBlank(curRow) && curRow.type != 'blank')
-                {
-                    this.selectedRows[curRow.id] = i;
-                    changedRows.push(curRow);
-                }
+                { selRows.push(curRow); }
             }
-            this.selectionChange(changedRows);
-            return changedRows;
+            this.view.highlightRows(selRows, 'select');
         };
 
         var getChildRows = function(row)
@@ -928,7 +905,7 @@ blist.namespace.fetch('blist.data');
                 specialCount++;
             }
 
-            self.unselectAllRows(true);
+            self.unselectAllRows();
             $(listeners).trigger('rows_changed');
         };
 

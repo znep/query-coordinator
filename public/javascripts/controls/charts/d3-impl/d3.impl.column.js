@@ -599,6 +599,20 @@ $.Control.registerMixin('d3_impl_column', {
                         {
                             vizObj.handleMouseOut(this, colDef, d, newYScale);
                         }
+                    })
+                    .on('click', function(d)
+                    {
+                        if ($.isBlank(d)) { return; }
+                        if ($.subKeyDefined(vizObj._primaryView, 'highlightTypes.select.' + d.id))
+                        {
+                            vizObj._primaryView.unhighlightRows(d, 'select');
+                            vizObj.$dom().trigger('display_row', [{row: null}]);
+                        }
+                        else
+                        {
+                            vizObj._primaryView.highlightRows(d, 'select',  col);
+                            vizObj.$dom().trigger('display_row', [{row: d}]);
+                        }
                     });
             bars
                     .attr('fill', vizObj._d3_colorizeRow(colDef))

@@ -1259,9 +1259,15 @@
             click: function()
             {
                 if ($.subKeyDefined(chartObj._primaryView, 'highlightTypes.select.' + this.row.id))
-                { chartObj._primaryView.unhighlightRows(this.row, 'select'); }
+                {
+                    chartObj._primaryView.unhighlightRows(this.row, 'select');
+                    chartObj.$dom().trigger('display_row', [{row: null}]);
+                }
                 else
-                { chartObj._primaryView.highlightRows(this.row, 'select', this.column); }
+                {
+                    chartObj._primaryView.highlightRows(this.row, 'select', this.column);
+                    chartObj.$dom().trigger('display_row', [{row: this.row}]);
+                }
             }
         }};
 

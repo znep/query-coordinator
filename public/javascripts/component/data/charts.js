@@ -10,6 +10,7 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
             this._needsOwnContext = true;
             this._delayUntilVisible = true;
             this._super.apply(this, arguments);
+            this.registerEvent({display_row: ['dataContext', 'row']});
             this._chartType = this._stringSubstitute(this._properties.chartType) || localChartType;
         },
 
@@ -28,6 +29,19 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
 //                .concat(blist.configs.chart.configForType(this._chartType,
 //                        {view: this._dataContext.dataset}));
             return retVal;
+        },
+
+        _initDom: function()
+        {
+            var lcObj = this;
+            lcObj._super.apply(lcObj, arguments);
+
+            lcObj.$contents.off('.chart_' + lcObj.id);
+            lcObj.$contents.on('display_row.chart_' + lcObj.id, function(e, args)
+            {
+                lcObj.trigger('display_row',
+                    [{dataContext: lcObj._dataContext, row: (args || {}).row}]);
+            });
         },
 
         _getAssets: function()

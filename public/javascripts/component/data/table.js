@@ -6,6 +6,7 @@ $.component.Component.extend('Table', 'data', {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
         this._super.apply(this, arguments);
+        this.registerEvent({display_row: ['dataContext', 'row']});
     },
 
     isValid: function()
@@ -17,6 +18,19 @@ $.component.Component.extend('Table', 'data', {
     {
         // TODO: more config
         return {schema: [{ fields: [$.cf.contextPicker()] }], view: (this._dataContext || {}).dataset};
+    },
+
+    _initDom: function()
+    {
+        var lcObj = this;
+        lcObj._super.apply(lcObj, arguments);
+
+        lcObj.$contents.off('.table_' + lcObj.id);
+        lcObj.$contents.on('display_row.table_' + lcObj.id, function(e, args)
+        {
+            lcObj.trigger('display_row',
+                [{dataContext: lcObj._dataContext, row: (args || {}).row}]);
+        });
     },
 
     _getAssets: function()

@@ -405,8 +405,9 @@
                 }
                 else
                 {
-                    model.selectRow(datasetObj._view.rowForID(rowId));
-                    model.removeRows(_.keys(model.selectedRows));
+                    var selRows = _.keys((datasetObj._view.highlightTypes || {}).select);
+                    selRows.push(rowId);
+                    model.removeRows(selRows);
                 }
                 break;
 
@@ -419,8 +420,9 @@
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {
         var model = datasetObj._model;
-        if (!column || row.level > 0) { return; }
-        if (column.id == 'rowNumberCol')
+        if (row.level > 0) { return; }
+        // Handle clicks on ghost column
+        if ($.isBlank(column) || column.id == 'rowNumberCol')
         {
             if (origEvent.shiftKey)
             {

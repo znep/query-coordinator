@@ -235,9 +235,15 @@
               onClick: function(node)
               {
                   if ($.subKeyDefined(chartObj._primaryView, 'highlightTypes.select.' + node.data.row.id))
-                  { chartObj._primaryView.unhighlightRows(node.data.row, 'select'); }
+                  {
+                      chartObj._primaryView.unhighlightRows(node.data.row, 'select');
+                      chartObj.$dom().trigger('display_row', [{row: null}]);
+                  }
                   else
-                  { chartObj._primaryView.highlightRows(node.data.row, 'select',  node.data.column); }
+                  {
+                      chartObj._primaryView.highlightRows(node.data.row, 'select',  node.data.column);
+                      chartObj.$dom().trigger('display_row', [{row: node.data.row}]);
+                  }
               }
             },
             Tips: {

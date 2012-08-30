@@ -39,6 +39,19 @@ $.component.Component.extend('Map', 'data', {
         };
     },
 
+    _initDom: function()
+    {
+        var lcObj = this;
+        lcObj._super.apply(lcObj, arguments);
+
+        lcObj.$contents.off('.map_' + lcObj.id);
+        lcObj.$contents.on('display_row.map_' + lcObj.id, function(e, args)
+        {
+            lcObj.trigger('display_row',
+                [{dataContext: lcObj._dataContext, row: (args || {}).row}]);
+        });
+    },
+
     _render: function()
     {
         var lcObj = this;
@@ -46,11 +59,6 @@ $.component.Component.extend('Map', 'data', {
         { lcObj._properties.height = 300; }
         if (!lcObj._super.apply(lcObj, arguments)) { return false; }
 
-        lcObj.$contents.bind('display_row', function(e, args)
-        {
-            lcObj.trigger('display_row',
-                [{dataContext: lcObj._dataContext, row: (args || {}).row}]);
-        });
         updateProperties(lcObj, lcObj._properties);
         return true;
     },

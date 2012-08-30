@@ -281,6 +281,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
      */
     this.processSelection = function(rows, setRowSelectionFn, clearRowSelectionFn)
     {
+        // We don't really support cell selection, anyway, so disable this whole thing
+        return;
         // Convert the selection into canonical and sorted form to optimize
         // processing
         var selection = convertCellSelection();
@@ -327,7 +329,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
 
             // Update the selection map, and clear the selection if there's no
             // selection in the row
-            if (!$.isBlank(model.selectedRows[modelRow.id]))
+            if ($.subKeyDefined(model.view, 'highlightTypes.select.' + modelRow.id))
             {
                 selmap = [];
                 _.each(layout[modelRow.level || 0], function(c, j)

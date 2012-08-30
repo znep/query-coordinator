@@ -1610,17 +1610,13 @@
                 if (!isDisabled && !skipSelect &&
                     (!cellNav || !cellNav.isActive()) && options.selectionEnabled)
                 {
-                    if (origEvent.metaKey) // ctrl/cmd key
-                    {
-                        model.toggleSelectRow(row);
-                    }
-                    else if (origEvent.shiftKey)
+                    if (origEvent.shiftKey)
                     {
                         model.selectRowsTo(row);
                     }
                     else
                     {
-                        model.selectSingleRow(row);
+                        model.selectRow(row);
                     }
                     unHotRow(row.id);
                 }
@@ -4029,7 +4025,7 @@
             $locked.find('.blist-select-row').removeClass('blist-select-row');
             end('rowSelection.removeSelect.locked');
             begin('rowSelection.addSelect');
-            $.each(model.selectedRows, function (k, v)
+            _.each((model.view.highlightTypes || {}).select, function (v, k)
             {
                 $('#' + id + '-r' + k).addClass('blist-select-row');
                 $('#' + id + '-l' + k).addClass('blist-select-row');

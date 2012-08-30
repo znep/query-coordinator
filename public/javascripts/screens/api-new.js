@@ -208,6 +208,8 @@ $(function(){
         updateProgressIndicator(paneConfig.ordinal);
         paneConfig.onNext = function($pane, state){
             $(".nextButton").addClass("disabled");
+            $(".prevButton").addClass("disabled");
+            $("#publishSpinner").show();
             updateDatasetState(state, function(){
                 command.next("published");
             });

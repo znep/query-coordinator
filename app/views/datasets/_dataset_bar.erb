@@ -56,14 +56,16 @@
         >Publish Dataset</a>
 
       <%- if module_available?(:api_foundry) -%>
-       <a href="/api_foundry/forge/<%= @view.id %>" class="createapi toolbarButton <%= @view.can_publish? ? '' : 'disabled' %>"
-         <%- if @view.can_publish?() -%>
-           title="<%= "Create an Application Programming Interface (API)
-           to grant programmatic access to this data." %>"
+        <%- if @view.can_publish?() -%>
+          <a href="/api_foundry/forge/<%= @view.id %>" 
+            class="createapi toolbarButton"
+            title="Create an Application Programming Interface (API)
+            to grant programmatic access to this data.">Create an API</a>
         <%- else -%>
-          title="Only an owner or publisher can create an API"
+          <a href="#ApiFoundry" 
+            class="createapi toolbarButton disabled"
+            title="Only an owner or publisher can create an API">Create an API</a>
         <%- end -%>
-          >Create an API</a>
       <%- end -%>
     <%- end -%>
 

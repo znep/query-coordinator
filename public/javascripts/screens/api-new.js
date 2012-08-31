@@ -125,23 +125,8 @@ $(function(){
     //push the panes into the panes array - order is important!
 
     //start with either 'welcome' or 'checkpub' to make sure the dataset is unpublished.
-    if (blist.configuration.apiFoundry.published){
+    if (!blist.configuration.apiFoundry.published){
       $('#welcome').remove();
-      $('#copybutton').click(function(){
-        getDataset(function(ds){
-          ds.makeUnpublishedCopy(
-            function(unpub){
-              window.location = "/api_foundry/forge/" + unpub.id;
-            },
-            function(pendingCopy){
-              window.location = "/api_foundry/forge/" + pendingCopy.id;
-            },
-            function(err){
-              console.log(err);
-            }
-          );
-        });
-      });
       panes.push({
         key: 'checkpub',
         ordinal: ordinal++,
@@ -151,7 +136,8 @@ $(function(){
         },
         onNext: defaultOnNext
       });
-    } else {
+    } 
+    else {
       $('#checkpub').remove();
       panes.push({
         key: 'welcome',
@@ -210,9 +196,18 @@ $(function(){
             $(".nextButton").addClass("disabled");
             $(".prevButton").addClass("disabled");
             $("#publishSpinner").show();
-            updateDatasetState(state, function(){
+            makeApiView(state, 
+              function(){
                 command.next("published");
-            });
+              },
+              function(err){
+                $("#publishError").text(err.responseText);
+                $("#publishError").show();
+                $("#publishSpinner").hide();
+                $(".nextButton").removeClass("disabled");
+                $(".prevButton").removeClass("disabled");
+              }
+            );
             return false;
         }
       }
@@ -256,51 +251,60 @@ $(function(){
       , false);
   }
 
-  function updateDatasetState(state, callback, errorCallback){
+  function makeApiView(state, callback, errorCallback){
     getDataset(
       function(ds){
-        var _validKeys = {
-          'description':true,
-          'resourceName':true,
-          'rowIdentifierColumnId':true,
-        }
-        var columns = _.reduce(ds.columns, function(memo, col){
-          memo[col.fieldName] = col;
-          return memo;
-        }, {});
-        var changes = {};
-        _.each(state, function(value, key){
-          //collect settings for the dataset
-          if (key.indexOf('dataset') === 0){
-            _.each(value, function(value, key){
-              if (_validKeys[value.name]) { 
-                if (value.value.trim() === '') changes[value.name] = null;
-                else changes[value.name] = value.value;
-              }
-            });
-          }
-          //update settings for the columns
-          if (key.indexOf('col-') === 0){
-            var columnOriginalFieldName = key.slice(4);
-            var colChanges = _.reduce(value, function(memo, value){
-              memo[value.name] = value.value;
-              return memo;
-            }, {});
-            var col = columns[columnOriginalFieldName];
-            col.update(colChanges);
-            col.save();
+        ds.saveNew(
+          function(newView){
+            updateDatasetState(newView, state, callback, errorCallback);
+          },
+          function(err){errorCallback(err);}
+        );
+      },
+      function(err){
+        errorCallback(err);
+      }
+    );
+  }
+
+  function updateDatasetState(ds, state, callback, errorCallback){
+    var _validKeys = {
+      'description':true,
+      'resourceName':true,
+      'rowIdentifierColumnId':true,
+    }
+    var columns = _.reduce(ds.columns, function(memo, col){
+      memo[col.fieldName] = col;
+      return memo;
+    }, {});
+    var changes = {};
+    _.each(state, function(value, key){
+      //collect settings for the dataset
+      if (key.indexOf('dataset') === 0){
+        _.each(value, function(value, key){
+          if (_validKeys[value.name]) { 
+            if (value.value.trim() === '') changes[value.name] = null;
+            else changes[value.name] = value.value;
           }
         });
-        ds.update(changes);
-        blist.configuration.apiFoundry.docsUrl = '/developers/docs/' + ds.resourceName;
-        ds.save(callback, function(err){
-          console.log(err)
-        }); //need to add error handling
-      }      
-    ),
-    function(){
-      errorCallback();
-    }
+      }
+      //update settings for the columns
+      if (key.indexOf('col-') === 0){
+        var columnOriginalFieldName = key.slice(4);
+        var colChanges = _.reduce(value, function(memo, value){
+          memo[value.name] = value.value;
+          return memo;
+        }, {});
+        var col = columns[columnOriginalFieldName];
+        col.update(colChanges);
+        col.save();
+      }
+    });
+    ds.update(changes);
+    blist.configuration.apiFoundry.docsUrl = '/developers/docs/' + ds.resourceName;
+    ds.save(callback, function(err){
+      console.log(err)
+    }); //need to add error handling
   }
 
 

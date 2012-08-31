@@ -20,10 +20,9 @@
     <div id="apiFoundryWizard" class="wizard">
       <ul class="clearfix">
         <li id="checkpub" class="wizpane" data-wizardpanename="checkpub">
-          <h1>Your datset is already published</h1>
-          <p>The API Foundry can only modify unpublished datasets</p>
-          <p>Would you like to work on a copy?</p>
-          <a id="copybutton" class="button" href="#copy">Make a copy</a>
+          <h1>Your dataset is not published.</h1>
+          <p>You must publish your dataset before we can make an API.</p>
+          <a id="ds" class="button" href="/id/<%= @view.id %>">View Dataset</a>
           <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h2>Read more about the Socrata API Foundry</h2></a>
         </li>
         <li id="welcome" class="wizpane" data-wizardpanename="welcome">
@@ -157,10 +156,10 @@
         </li>
         <% end %>
         <li id="apiPublish" class="wizpane" data-wizardpanename="apiPublish">
-          <div class="publishError"></div>
           <h1>Are you ready to save these changes?</h3>
           <div id="publishSpinner" style="display: none"><img src="/stylesheets/images/common/BrandedSpinner.gif"></img></div>
           <div id="publishResponse"></div>
+          <div id="publishError" class="error" style="display: none">There was an error creating your API.</div>
         </li>
         <li id="published" class="wizpane" data-wizardpanename="published">
          <h1>Congratulations! Your API has been configured.</h1>

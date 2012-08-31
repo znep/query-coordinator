@@ -681,7 +681,6 @@ blist.datasetControls.hookUpPublishing = function($container)
         if (!isAvail)
         { $pub.addClass('disabled').attr('title', unavailMsg); }
         $pub.socrataTitleTip();
-        $('.createapi').socrataTitleTip();
     });
 
     if (!blist.dataset.isPublished())

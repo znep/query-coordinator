@@ -100,7 +100,7 @@ $.component.Container.extend('List Item Container', 'none', {//'content', {
             this._initialized = false;
         }
         else if (properties.listCustomClass != this._properties.listCustomClass)
-        { this.$ct.removeClass(this._properties.listCustomClass); }
+        { this.$ct.removeClass(this._stringSubstitute(this._properties.listCustomClass)); }
 
         this._super.apply(this, arguments);
 
@@ -110,7 +110,7 @@ $.component.Container.extend('List Item Container', 'none', {//'content', {
             this.$ct.append($oldCt.children());
         }
         else
-        { this.$ct.addClass(this._properties.listCustomClass); }
+        { this.$ct.addClass(this._stringSubstitute(this._properties.listCustomClass)); }
 
         this._arrange();
     }

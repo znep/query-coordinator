@@ -62,7 +62,7 @@
                 sidebarObj.hide();
             });
 
-            $domObj.addClass('position-' + sidebarObj.settings.position);
+            $domObj.addClass('hide position-' + sidebarObj.settings.position);
 
             $(window).resize(function() { handleResize(sidebarObj); });
             $domObj.resize(function() { handleResize(sidebarObj); });
@@ -268,7 +268,7 @@
             sidebarObj.updateEnabledSubPanes();
 
             // The big reveal
-            sidebarObj.$dom().show();
+            sidebarObj.$dom().removeClass('hide');
 
             $(window).resize();
 
@@ -305,7 +305,7 @@
                 }
             }
 
-            sidebarObj.$dom().hide();
+            sidebarObj.$dom().addClass('hide');
             sidebarObj.$neighbor().css('width', '').css('left', '');
 
             hidePane(sidebarObj);

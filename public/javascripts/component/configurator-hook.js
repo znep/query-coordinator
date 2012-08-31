@@ -31,7 +31,8 @@ $(function() {
             {
                 $('.socrata-page').loadingSpinner().showHide(false);
                 $.cf.initialize();
-            });
+            },
+            function() { $(window).trigger('resize'); });
         };
 
         $editLink.click(function(e)

@@ -2921,9 +2921,12 @@
             handleDigits = calculateHandleDigits();
 
             // Measure width of a default cell and height and width of the cell
+            // Note, .width returns a float (partial pixels) in chrome; though
+            // .outerWidth still returns an int. Make sure to floor the result of
+            // .width on the measured Div/Col
             measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
             var $measureDiv = $(measureUtilDOM.firstChild);
-            var measuredInnerDims = { width: Math.max(0, $measureDiv.width()),
+            var measuredInnerDims = { width: Math.max(0, Math.floor($measureDiv.width())),
                 height: Math.max(0, $measureDiv.height()) };
             var measuredOuterDims = { width: $measureDiv.outerWidth(),
                 height: $measureDiv.outerHeight() };
@@ -2948,7 +2951,6 @@
             {
                 style('cellStyle').height = rowHeight + 'px';
             }
-
             // Update the locked column styles with proper dimensions
             lockedWidth = 0;
             _.each(lockedColumns, function (c)
@@ -2966,7 +2968,9 @@
                 }
                 else
                 {
-                    var w = $measureCol.width();
+                    // Get the width of the measured column, but make sure it's
+                    // an integer instead of a partial pixel
+                    var w = Math.floor($measureCol.width());
                     if (w >= 0) { colStyle.width = w + 'px'; }
                 }
                 lockedWidth += $measureCol.outerWidth();
@@ -2983,7 +2987,7 @@
                 measureUtilDOM.innerHTML =
                     '<div class="blist-td blist-column-adder">x</div>';
                 $measureDiv = $(measureUtilDOM.firstChild);
-                adderWidth = $measureDiv.width() + paddingX;
+                adderWidth = Math.floor($measureDiv.width()) + paddingX;
             }
             if (options.showRowHandle)
             {

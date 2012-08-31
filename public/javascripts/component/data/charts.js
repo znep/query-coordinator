@@ -23,11 +23,14 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
         {
             var retVal = {schema: [{ fields: [$.cf.contextPicker()] }],
                 view: (this._dataContext || {}).dataset};
+            if (blist.configuration.canvasX)
+            {
+                if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
-//            if ($.isBlank(this._dataContext)) { return retVal; }
-//            retVal.schema = retVal.schema
-//                .concat(blist.configs.chart.configForType(this._chartType,
-//                        {view: this._dataContext.dataset}));
+                retVal.schema = retVal.schema
+                    .concat(blist.configs.chart.configForType(this._chartType,
+                                {view: this._dataContext.dataset}));
+            }
             return retVal;
         },
 

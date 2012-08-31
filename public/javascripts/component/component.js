@@ -561,6 +561,7 @@
             this._rendered = true;
             this._isDirty = false;
             $.component.sizeRenderRefresh();
+            this._updateValidity();
             return true;
         },
 

@@ -545,7 +545,7 @@
             var mapObj = this;
 
             if (mapObj.map) { mapObj.viewportHandler().expect(); }
-            if (mapObj._controls) { mapObj._controls.ZoomBar.redraw(); }
+            if (mapObj._controls && mapObj._controls.ZoomBar) { mapObj._controls.ZoomBar.redraw(); }
 
             _.defer(function(){
                 if (mapObj.map) { mapObj.map.updateSize(); }

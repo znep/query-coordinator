@@ -1,0 +1,14 @@
+<div class="apiFoundryPaneWrapper">
+  <p>The <strong>Socrata API Foundry</strong> allows you to create and customize
+    an Application Programming Interface (API) over this dataset.</p>
+  <%- if @view.can_publish?() -%>
+    <a href="/api_foundry/forge/<%= @view.id %>" 
+      class="createapi toolbarButton button"
+      title="Create an Application Programming Interface (API)
+      to grant programmatic access to this data.">Create an API</a>
+  <%- else -%>
+    <a href="#ApiFoundry" 
+      class="createapi toolbarButton button disabled"
+      title="Only an owner or publisher can create an API">Create an API</a>
+  <%- end -%>
+</div>

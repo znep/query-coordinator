@@ -312,6 +312,7 @@
 <%= render :partial => 'sharing' %>
 <%= render :partial => 'permissions' %>
 <%= render :partial => 'api_access' %>
+<%= render :partial => 'api_foundry' %>
 <%= render :partial => 'signed_dataset' %>
 <%= render :partial => 'fatrow_header_template' %>
 <div class="editAlertTemplate">
@@ -392,6 +393,7 @@
       !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
     blist.sidebarHidden.manage.deleteDataset = <%= !@view.has_rights?('delete_view') %>
+    blist.sidebarHidden.manage.api_foundry = <%= !module_available?(:api_foundry) %>
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;

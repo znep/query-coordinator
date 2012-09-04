@@ -120,7 +120,14 @@
                 if (!this.geocoder)
                 { this.geocoder = new google.maps.Geocoder(); }
                 this.events.triggerEvent('geocoding');
-                this.geocoder.geocode({ address: where.address }, function(results, gStatus)
+                var request = { address: where.address };
+                if (where.bounds)
+                {
+                    requestr.bounds = new google.maps.LatLngBounds(
+                        new google.maps.LatLng(where.bounds.ymin,where.bounds.xmin),
+                        new google.maps.LatLng(where.bounds.ymax,where.bounds.xmax));
+                }
+                this.geocoder.geocode(request, function(results, gStatus)
                 {
                     control.events.triggerEvent('geocodingdone');
                     switch (gStatus)
@@ -224,7 +231,7 @@
             else
             {
                 this._feature.geometry = lonlat.toGeometry();
-                this._layer.drawfeature(this._feature);
+                this._layer.drawFeature(this._feature);
             }
         },
 

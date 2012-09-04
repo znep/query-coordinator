@@ -68,5 +68,7 @@ var doZoom = function(cObj, value)
         else
         { where.address = value; }
     }
+    if (cObj._properties.restrictedBounds)
+    { $.extend(where, { bounds: cObj._properties.restrictedBounds }); }
     cObj.trigger('geolocate', [{ where: where }]);
 };

@@ -1295,6 +1295,62 @@ importNS.uploadFilePaneConfig = {
         });
     }
 };
+importNS.crossloadFilePaneConfig = {
+    disableButtons: [ 'next' ],
+    onInitialize: function($pane, config, state, command)
+    {
+        $pane.find('.crossloadUrlButton').click(function(event)
+        {
+            event.preventDefault();
+
+            var $this = $(this);
+            var $uploadThrobber = $pane.find('.uploadThrobber');
+            if ($this.hasClass('disabled')) { return; }
+
+            if (command.valid())
+            {
+                $this.addClass('disabled');
+                $uploadThrobber.slideDown().find('.text').text('Downloading your file...');
+
+                var targetUrl = $pane.find('.crossloadUrl').val();
+                $.socrataServer.makeRequest({
+                    type: 'post', contentType: 'application/x-www-form-urlencoded',
+                    url: '/api/imports2?method=scanUrl',
+                    data: { url: targetUrl },
+                    pending: function(response)
+                    {
+                        if ($.subKeyDefined(response, 'details.progress'))
+                        {
+                            $uploadThrobber.find('.text').text(response.details.progress);
+                        }
+                    },
+                    allComplete: function()
+                    {
+                        $this.removeClass('disabled');
+                        $uploadThrobber.slideUp();
+                    },
+                    success: function(response)
+                    {
+                        state.scan = response;
+                        state.fileName = targetUrl.match(/\/([^\?\/]*)(\?.*)?$/i)[1];
+                        command.next('importColumns');
+                    },
+                    error: function(xhr)
+                    {
+                        var msg = 'An unknown error has occurred';
+                        try
+                        {
+                            msg = JSON.parse(xhr.responseText).message;
+                        }
+                        catch(ex) {}
+
+                        $pane.find('.flash').addClass('error').text(msg + '. Please ensure that your file is accessible and valid and try again.');
+                    }
+                });
+            }
+        });
+    }
+};
 
 ////////////////////////////////////////////////////
 // shared helpers between import + append/replace

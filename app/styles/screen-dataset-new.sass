@@ -23,7 +23,7 @@
   margin: 0 0 0.5em
 
 // PANE ZERO: choose type
-.newKindList, .importTypeList
+.newKindList, .importTypeList, .uploadTypeList
   margin: 2em auto 5em
   width: 71.6em
 
@@ -71,22 +71,22 @@
       p
         font-size: 1.4em
         font-weight: bold
-.importTypeList
+.importTypeList, .uploadTypeList
   width: 46.4em
 
 // PANE ONE: upload
-.uploadFilePane
-  .uploadFileContainer
+.uploadFilePane, .crossloadFilePane
+  .uploadFileContainer, .crossloadUrlContainer
     margin: 0 auto
     padding-top: 2.8em
     width: 68em
 
-    .uploadFileNameWrapper
+    .uploadFileNameWrapper, .crossloadUrlWrapper
       float: left
       padding: 0
         right: 0.5em
 
-      .uploadFileName
+      .uploadFileName, .crossloadUrl
         @include border-radius(0.2em)
         display: inline-block
         font-size: 1.4em
@@ -108,6 +108,9 @@
         text-align: center
       .fileUploader-upload-list
         display: none
+
+    .crossloadUrlButton
+      margin: 0 0.3em
 
     .uploadThrobber
       clear: both

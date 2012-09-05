@@ -24,7 +24,7 @@ var ServerModel = Model.extend({
     {
         var model = this;
         var isCache = req.pageCache;
-        var finishCallback = function(callback)
+        var finishCallback = function(callback, allCompleteCallback)
         {
             return function(d, ts, xhr)
             {
@@ -60,14 +60,15 @@ var ServerModel = Model.extend({
                 { throw new Error('There was a problem with our servers'); }
 
                 model._finishRequest();
+                if (_.isFunction(allCompleteCallback)) { allCompleteCallback.apply(this, arguments); }
                 if (_.isFunction(callback)) { callback.apply(this, arguments); }
             };
         };
 
         model._startRequest();
         req = $.extend({contentType: 'application/json', dataType: 'json'}, req,
-                {error: finishCallback(req.error),
-                success: finishCallback(req.success)});
+                {error: finishCallback(req.error, req.allComplete),
+                success: finishCallback(req.success, req.allComplete)});
 
         if (!$.isBlank(model.accessType))
         { req.params = $.extend({accessType: model.accessType}, req.params); }

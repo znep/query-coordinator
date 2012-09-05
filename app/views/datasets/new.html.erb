@@ -62,6 +62,23 @@
             <%- end -%>
           </ul>
         </li>
+        <li class="selectUploadTypePane" data-wizardpanename="selectUploadType">
+          <p class="headline">Where is this file located?</p>
+          <ul class="uploadTypeList clearfix">
+            <li>
+              <a href="#local" class="byUpload" title="Choose this if you have a file that is on the computer you are using.">
+                <span class="icon"></span>
+                <p>On my computer</p>
+              </a>
+            </li>
+            <li>
+              <a href="#web" class="byCrossload" title="Choose this if you have a file that is already on the Internet and have the URL for it.">
+                <span class="icon"></span>
+                <p>On the Internet</p>
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="uploadFilePane" data-wizardpanename="uploadFile">
           <p class="headline"></p>
           <div class="uploadFileContainer">
@@ -72,6 +89,16 @@
               <span class="type type-blist">Supported formats are .csv, .tsv, .xls, and .xlsx.</span>
               <span class="type type-shapefile">Supported formats are .kml, .kmz, and .zip (ESRI Shapefile).</span>
             </p>
+          </div>
+        </li>
+        <li class="crossloadFilePane" data-wizardpanename="crossloadFile">
+          <p class="headline">Please indicate where your data file lives.</p>
+          <div class="crossloadUrlContainer">
+            <div class="crossloadUrlWrapper"><input type="text" name="crossload_url" class="crossloadUrl required textPrompt" title="What's the web URL of the file you'd like to import?" /></div>
+            <div class="crossloadUrlButtonWrapper"><a href="#import" class="button crossloadUrlButton">Import</a></div>
+            <div class="uploadThrobber"><span class="icon"></span><span class="text">Downloading your file...</span></div>
+            <p class="uploadFileFormats">Supported file types are CSV, TSV, and Excel. Supported protocols are HTTP and HTTPS.</p>
+            <div class="flash"></div>
           </div>
         </li>
         <li class="importColumnsPane columnsPane" data-wizardpanename="importColumns">

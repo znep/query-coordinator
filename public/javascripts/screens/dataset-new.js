@@ -95,7 +95,7 @@ $wizard.wizard({
 
                     state.type = 'blist';
                     state.afterUpload = 'importColumns';
-                    command.next('uploadFile');
+                    command.next('selectUploadType');
                 });
                 $pane.find('.newKindList a.mapLayer').click(function(event)
                 {
@@ -165,10 +165,53 @@ $wizard.wizard({
                 });
             }
         },
+        'selectUploadType': {
+            disableButtons: [ 'next' ],
+            onInitialize: function($pane, config, state, command)
+            {
+                state.selectTypeTips = [];
+                // tooltips
+                $pane.find('.uploadTypeList > li > a').each(function()
+                {
+                    var $this = $(this);
+                    state.selectTypeTips.push($this.socrataTip({ message: $this.attr('title').clean(),
+                        shrinkToFit: false, killTitle: true }));
+                });
+
+                // actions
+                $pane.find('.uploadTypeList a.byUpload').click(function(event)
+                {
+                    event.preventDefault();
+                    command.next('uploadFile');
+                });
+                $pane.find('.uploadTypeList a.byCrossload').click(function(event)
+                {
+                    event.preventDefault();
+                    command.next('crossloadFile');
+                });
+            },
+            onActivate: function($pane, config, state)
+            {
+                // reactivate tips if we have them
+                _.each(state.selectTypeTips || [], function(tip)
+                {
+                    tip.enable();
+                });
+            },
+            onLeave: function($pane, config, state)
+            {
+                _.each(state.selectTypeTips || [], function(tip)
+                {
+                    tip.hide();
+                    tip.disable();
+                });
+            }
+        },
 
 
 
         'uploadFile':       blist.importer.uploadFilePaneConfig,
+        'crossloadFile':    blist.importer.crossloadFilePaneConfig,
         'importColumns':    blist.importer.importColumnsPaneConfig,
         'importShapefile':  blist.importer.importShapefilePaneConfig,
         'importing':        blist.importer.importingPaneConfig,
@@ -371,12 +414,14 @@ $wizard.wizard({
     var validator = $('.newDatasetForm').validate({
         rules: {
             "view[attributionLink]": "customUrl",
-            "view[esri_src]": 'customUrl'
+            "view[esri_src]": 'customUrl',
+            'view[crossload_url]': 'customHttpMaybeSUrl'
         },
         messages: {
             "view[name]": "Dataset name is required.",
             "view[attributionLink]": "That does not appear to be a valid URL.",
-            'view[esri_src]': 'A valid ESRI map layer URL is required.'
+            'view[esri_src]': 'A valid ESRI map layer URL is required.',
+            'view[crossload_url]': 'Please enter a valid URL beginning with either HTTP or HTTPS.'
         },
         errorPlacement: function (label, $el) {
             $el.closest('.line').append(label);

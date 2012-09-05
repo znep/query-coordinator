@@ -99,15 +99,7 @@
 
             var nextPane = function(nextAttr)
             {
-                // I think this is a filed bug:
-                // http://plugins.jquery.com/content/valid-and-single-optional-elements
-                // but the issue is that the Contact Email field is failing
-                // validation even when not filled in. So we need to manually select
-                // everything that is non-empty or required
-                var $vizItems = $currentPane.find(':input:visible');
-                if ((currentPaneConfig.skipValidation !== true) &&
-                    !$vizItems.filter(':not(.prompt)')
-                        .add($vizItems.filter('.required')).valid())
+                if ((currentPaneConfig.skipValidation !== true) && !valid($currentPane))
                 {
                     return;
                 }
@@ -146,6 +138,18 @@
                 animateHoriz();
             };
 
+            var valid = function($pane)
+            {
+                // I think this is a filed bug:
+                // http://plugins.jquery.com/content/valid-and-single-optional-elements
+                // but the issue is that the Contact Email field is failing
+                // validation even when not filled in. So we need to manually select
+                // everything that is non-empty or required
+                var $vizItems = $pane.find(':input:visible');
+                return $vizItems.filter(':not(.prompt)')
+                           .add($vizItems.filter('.required')).valid();
+            };
+
             // takes a pane and readies it for being shown, including all callbacks
             // the plugin consumer expects, and readying the general UI state.
             var activatePane = function($pane, state)
@@ -155,7 +159,8 @@
                 // init command obj for consumers to trigger pane actions
                 var commandObj = {
                     prev: prevPane,
-                    next: nextPane
+                    next: nextPane,
+                    valid: function() { return valid($currentPane); }
                 };
 
                 // fire events people are expecting

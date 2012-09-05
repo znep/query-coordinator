@@ -415,13 +415,13 @@ $wizard.wizard({
         rules: {
             "view[attributionLink]": "customUrl",
             "view[esri_src]": 'customUrl',
-            'view[crossload_url]': 'customHttpMaybeSUrl'
+            'crossload_url': 'customHttpMaybeSUrl'
         },
         messages: {
             "view[name]": "Dataset name is required.",
             "view[attributionLink]": "That does not appear to be a valid URL.",
             'view[esri_src]': 'A valid ESRI map layer URL is required.',
-            'view[crossload_url]': 'Please enter a valid URL beginning with either HTTP or HTTPS.'
+            'crossload_url': 'Please enter a valid URL beginning with either HTTP or HTTPS.'
         },
         errorPlacement: function (label, $el) {
             $el.closest('.line').append(label);

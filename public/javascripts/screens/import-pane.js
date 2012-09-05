@@ -1312,7 +1312,7 @@ importNS.crossloadFilePaneConfig = {
                 $this.addClass('disabled');
                 $uploadThrobber.slideDown().find('.text').text('Downloading your file...');
 
-                var targetUrl = $pane.find('.crossloadUrl').val();
+                var targetUrl = $pane.find('.crossloadUrl').val().trim();
                 $.socrataServer.makeRequest({
                     type: 'post', contentType: 'application/x-www-form-urlencoded',
                     url: '/api/imports2?method=scanUrl',
@@ -1332,7 +1332,7 @@ importNS.crossloadFilePaneConfig = {
                     success: function(response)
                     {
                         state.scan = response;
-                        state.fileName = targetUrl.match(/\/([^\?\/]*)(\?.*)?$/i)[1];
+                        state.fileName = targetUrl.match(/\/([^\?\/]*)(\?.*)?$/i)[1] || 'your file';
                         command.next('importColumns');
                     },
                     error: function(xhr)

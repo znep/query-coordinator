@@ -460,7 +460,7 @@
                 {
                     title: 'Advanced', type: 'selectable', name: 'advanced',
                     fields: [
-                        {text: 'API Identifier', type: 'text', disabled: !isDataset(cpObj),
+                        {text: 'API Identifier', type: 'text',
                          data: { 'fieldName': 'unverified' }, name: 'fieldName'},
                         {type: 'repeater', addText: 'Add RDF Properties', name: 'format.rdf',  minimum: 0,
                         field:

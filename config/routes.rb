@@ -12,10 +12,8 @@ Frontend::Application.routes do
   end
 
   scope :path => '/api_foundry', :controller => 'api_foundry' do
-    get '/', :action => 'index'
     get '/forge/:id', :action => 'forge'
-    get '/docs', :action => 'docs'
-    post '/publish/:id', :action => 'publish'
+    get '/customize/:id', :action => 'customize'
   end
 
   scope :path => '/internal', :controller => 'internal' do

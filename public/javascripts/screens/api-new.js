@@ -1,5 +1,6 @@
 $(function(){
 
+  //INIT the wizard.
   bindLiveDocs();
   bindNameCheck();
   var $wizard = $('#apiFoundryWizard');
@@ -10,12 +11,17 @@ $(function(){
           window.location.href = '/resource/' + blist.configuration.apiFoundry.id;
           return false;
       },
-      finishText: "Apply Changes",
+      finishText: "Deploy",
       paneConfig:makePaneConfig()
   }
   var $paneList = $('#apiFoundryWizard ul');
   $("#stepTotal").text(stepTotal);
   $("#progressbar").progressbar({value:0});
+  $('#rowIdentifierColumnId option').each(function(index, element){
+    if ($(element).text() === blist.configuration.apiFoundry.defaultUniqueId){
+      $(element).attr('selected', 'selected');
+    }
+  });
   $paneList.hide();
   $wizard.wizard(options);
   $paneList.show();
@@ -41,7 +47,7 @@ $(function(){
   }
 
   function bindNameCheck(){
-    $('#resourceName').change(checkResourceName);
+    $('#resourceName').change(function(){checkResourceName();});
     $('#resourceName').keyup(function(){
       $('.availableError').hide();
     });
@@ -54,12 +60,17 @@ $(function(){
         if (available) {
           $(".availableError").hide();
         }
-        else {
-          $(".availableError").show();
-        }
-        callback(name, available);
+        else {resourceNameConflictHandler() }
+        if (callback) callback(name, available);
       }
     });
+  }
+
+  function resourceNameConflictHandler(){
+    $(".availableError").show();
+    $("#paneSpinner").hide();
+    $(".nextButton").removeClass("disabled");
+    $(".prevButton").removeClass("disabled");
   }
 
   function checkResourceNameAvailable(name, callback){
@@ -101,6 +112,133 @@ $(function(){
     var nextPaneMap = {};
     var panes = [];
     var ordinal = 1; //ordinal indicates the position in the progress meter
+    var commandObj; //used by the skip-to-end button
+    var onNext = {};
+    var onActivate = {};
+    var currentPaneId;
+
+    $("#skip").click(function(eventObj){ commandObj.next('apiPublish'); });
+
+    function defaultTransition(){
+      commandObj.next(nextPaneMap[currentPaneId]);
+    }
+
+    function defaultErrorHandler(err){
+      $("#paneError").text(err.responseText);
+      $("#paneError").show();
+      $("#paneSpinner").hide();
+      $(".nextButton").removeClass("disabled");
+      $(".prevButton").removeClass("disabled");
+    }
+
+    onActivate.checkpub = function($pane, paneConfig, state, command){
+      $("#progress").hide();
+    }
+
+    onActivate.welcome = function($pane, paneConfig, state, command){
+      getDataset(function(){}, defaultErrorHandler);
+      if (blist.configuration.apiFoundry.makeNewView)  paneConfig.nextText = "Create an API";
+      else paneConfig.nextText = "Customize this API";
+    }
+
+    onNext.welcome = function($pane, state){
+      makeApiView(
+        function(){
+          blist.configuration.apiFoundry.docsUrl = '/developers/docs/' 
+            + blist.configuration.apiFoundry.apiView.resourceName;
+          defaultTransition();
+        },
+        defaultErrorHandler 
+      );
+      return false;
+    }
+
+    onNext.datasetResourceName = function($pane, state){
+      updateView(
+        {
+          resourceName:$("#resourceName").val()
+        },
+        defaultTransition,
+        resourceNameConflictHandler
+      );
+      return false;
+    }
+
+    onNext.datasetUniqueId = function($pane, state){
+      var newSetting = $("#rowIdentifierColumnId").val();
+      if (newSetting.trim() === "") newSetting = null;
+      else {
+        _.each(blist.configuration.apiFoundry.apiView.columns, function(element, index){
+          if (newSetting === element.fieldName){ newSetting = element.id;}
+        });
+      }
+      updateView(
+        {
+          rowIdentifierColumnId:newSetting
+        },
+        defaultTransition,
+        defaultErrorHandler
+      );
+      return false;
+    }
+
+    onNext.datasetDescription = function($pane, state){
+      updateView(
+        {
+          description:$("#description").val()
+        },
+        defaultTransition,
+        defaultErrorHandler
+      );
+      return false;
+    }
+
+    //add a pane for each column
+    $("#apiFoundryWizard .apiFieldPane").each(function(index, element){
+      var key = $(element).attr('id');
+      var columnOriginalFieldName = key.slice(4);
+      onNext[key] = function($pane, state){
+        updateColumn(
+          columnOriginalFieldName,
+          {
+            name:$("#name").val(),
+            fieldName:$("#fieldName").val(),
+            description:$("#description").val()
+          },
+          defaultTransition,
+          defaultErrorHandler
+        );
+        return false;
+      }
+    });
+
+    onNext.apiPublish = function($pane, state){
+      makeApiView(
+        function(){
+          updateView(
+            {
+
+            },
+            defaultTransition,
+            defaultErrorHandler
+          );
+        },
+        defaultErrorHandler
+      );
+      return false;
+    }
+
+    onActivate.published = function($pane, paneConfig, state, command){
+      $("#progress").hide()
+      paneConfig.nextText = "View Documentation";
+      $("#docslink").attr("href", blist.configuration.apiFoundry.docsUrl);
+    }
+
+    onNext.published = function($pane, state)
+    {
+        window.location = blist.configuration.apiFoundry.docsUrl;
+        return false;
+    }
 
     function defaultOnNext($pane, state){
       var id = $pane.attr('id');
@@ -109,18 +247,25 @@ $(function(){
       $prompt.val(null);
       state[id] = $('#newApiForm').serializeArray();
       $prompt.blur();
-      return nextPaneMap[id];
+      $(".nextButton").addClass("disabled");
+      $(".prevButton").addClass("disabled");
+      $("#paneSpinner").show();
+      if (onNext[id]) { return onNext[id]($pane, state); }
+      else { return nextPaneMap[id]; }
     }
 
-    var commandObj; //used by the skip-to-end button
     function defaultOnActivate($pane, paneConfig, state, command){
+      currentPaneId = $pane.attr('id');
+      commandObj = command;
       updateProgressIndicator(paneConfig.ordinal);
-      if (commandObj) { commandObj = command; }
-      else { 
-        commandObj = command;
-        $("#skip").click(function(eventObj){ command.next('apiPublish'); });
-      }
+      $("#paneError").hide();
+      $("#paneSpinner").hide();
+      $(".nextButton").removeClass("disabled");
+      $(".prevButton").removeClass("disabled");
+      if (onActivate[currentPaneId]) { onActivate[currentPaneId]($pane, paneConfig, state, command);}
     }
+
+
 
     //push the panes into the panes array - order is important!
 
@@ -131,9 +276,7 @@ $(function(){
         key: 'checkpub',
         ordinal: ordinal++,
         disableButtons: ['next'],
-        onActivate: function(){
-          $("#progress").hide()
-        },
+        onActivate: defaultOnActivate,
         onNext: defaultOnNext
       });
     } 
@@ -152,12 +295,7 @@ $(function(){
       key: 'datasetResourceName',
       ordinal: ordinal++,
       onActivate: defaultOnActivate,
-      onNext: function($pane, state){
-        checkResourceName(function(name, available){
-          if (available){commandObj.next(defaultOnNext($pane, state));}
-        });
-        return false;
-      }
+      onNext: defaultOnNext
     });
     panes.push({
       uniform: true,
@@ -185,47 +323,20 @@ $(function(){
         onNext: defaultOnNext
       });
     });
-    
+
     panes.push({
       key:'apiPublish',
       ordinal: ordinal++,
       isFinish: true,
-      onActivate: function($pane, paneConfig, state, command){
-        updateProgressIndicator(paneConfig.ordinal);
-        paneConfig.onNext = function($pane, state){
-            $(".nextButton").addClass("disabled");
-            $(".prevButton").addClass("disabled");
-            $("#publishSpinner").show();
-            makeApiView(state, 
-              function(){
-                command.next("published");
-              },
-              function(err){
-                $("#publishError").text(err.responseText);
-                $("#publishError").show();
-                $("#publishSpinner").hide();
-                $(".nextButton").removeClass("disabled");
-                $(".prevButton").removeClass("disabled");
-              }
-            );
-            return false;
-        }
-      }
+      onActivate: defaultOnActivate,
+      onNext: defaultOnNext
     });
 
     panes.push({
         key:'published',
         disableButtons: ['cancel', 'prev'],
-        onActivate: function($pane, paneConfig, state, command){
-          $("#progress").hide()
-          paneConfig.nextText = "View Documentation";
-          $("#docslink").attr("href", blist.configuration.apiFoundry.docsUrl);
-        },
-        onNext: function($pane, state)
-        {
-            window.location = blist.configuration.apiFoundry.docsUrl;
-            return false;
-        }
+        onActivate: defaultOnActivate,
+        onNext: defaultOnNext
     });
 
     var paneConfig = {};
@@ -241,84 +352,62 @@ $(function(){
   }
   
   function getDataset(callback, errorCallback){
+    if (blist.configuration.apiFoundry.ds){callback(blist.configuration.apiFoundry.ds);}
     Dataset.lookupFromViewId(
       blist.configuration.apiFoundry.id
       , function(ds){
           blist.configuration.apiFoundry.ds = ds;
           callback(ds);
       }
-      , function(error){}
-      , false);
-  }
-
-  function makeApiView(state, callback, errorCallback){
-    getDataset(
-      function(ds){
-        ds.saveNew(
-          function(newView){
-            updateDatasetState(newView, state, callback, errorCallback);
-          },
-          function(err){errorCallback(err);}
-        );
-      },
-      function(err){
-        errorCallback(err);
-      }
+      , errorCallback
+      , false
     );
   }
 
-  function updateDatasetState(ds, state, callback, errorCallback){
-    var _validKeys = {
-      'description':true,
-      'resourceName':true,
-      'rowIdentifierColumnId':true,
+  function makeApiView(callback, errorCallback){
+    if (!blist.configuration.apiFoundry.makeNewView) {
+      blist.configuration.apiFoundry.apiView = blist.configuration.apiFoundry.ds;
     }
-    var columns = _.reduce(ds.columns, function(memo, col){
+    if (blist.configuration.apiFoundry.apiView){
+      callback(blist.configuration.apiFoundry.apiView);
+    }
+    else {
+      blist.configuration.apiFoundry.ds.saveNew(
+        function(newView){
+          blist.configuration.apiFoundry.apiView = newView;
+          callback(newView);
+        },
+        errorCallback
+      );
+    }
+  }
+
+  function updateView(changes, callback, errorCallback){
+    blist.configuration.apiFoundry.apiView.update(changes);
+    blist.configuration.apiFoundry.apiView.save(callback, errorCallback);
+  }
+
+  function updateColumn(column, changes, callback, errorCallback){
+    var columns = _.reduce(blist.configuration.apiFoundry.apiView.columns, function(memo, col){
       memo[col.fieldName] = col;
       return memo;
     }, {});
-    var changes = {};
-    _.each(state, function(value, key){
-      //collect settings for the dataset
-      if (key.indexOf('dataset') === 0){
-        _.each(value, function(value, key){
-          if (_validKeys[value.name]) { 
-            if (value.value.trim() === '') changes[value.name] = null;
-            else changes[value.name] = value.value;
-          }
-        });
-      }
-      //update settings for the columns
-      if (key.indexOf('col-') === 0){
-        var columnOriginalFieldName = key.slice(4);
-        var colChanges = _.reduce(value, function(memo, value){
-          memo[value.name] = value.value;
-          return memo;
-        }, {});
-        var col = columns[columnOriginalFieldName];
-        col.update(colChanges);
-        col.save();
-      }
-    });
-    ds.update(changes);
-    blist.configuration.apiFoundry.docsUrl = '/developers/docs/' + ds.resourceName;
-    ds.save(callback, function(err){
-      console.log(err)
-    }); //need to add error handling
+    var col = columns[column];
+    col.update(changes);
+    col.save(callback, errorCallback);
   }
 
-
-    // general validation. here because once a validator
-    // for a form is created, you can't set a new validator.
-    var validator = $('#newApiForm').validate({
-        rules: {
-          'resourceName': 'required'
-        },
-        messages: {
-          'resourceName':'this is required'
-        },
-        errorPlacement: function (label, $el) {
-            $el.closest('.line').append(label);
-        }
-    });
+  // general validation. here because once a validator
+  // for a form is created, you can't set a new validator.
+  var validator = $('#newApiForm').validate({
+      rules: {
+        'resourceName': 'required'
+      },
+      messages: {
+        'resourceName':'this is required'
+      },
+      errorPlacement: function (label, $el) {
+          $el.closest('.line').append(label);
+      }
+  });
 });

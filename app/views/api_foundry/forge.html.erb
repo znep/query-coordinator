@@ -18,6 +18,8 @@
       </div>
     </div>
     <div id="apiFoundryWizard" class="wizard">
+      <div id="paneSpinner" style="display: none"><img src="/stylesheets/images/common/BrandedSpinner.gif"></img></div>
+      <div id="paneError" class="error" style="display: none">There was an error updating your API.</div>
       <ul class="clearfix">
         <li id="checkpub" class="wizpane" data-wizardpanename="checkpub">
           <h1>Your dataset is not published.</h1>
@@ -26,9 +28,13 @@
           <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h2>Read more about the Socrata API Foundry</h2></a>
         </li>
         <li id="welcome" class="wizpane" data-wizardpanename="welcome">
-          <h1>Let's get started</h1>
-          <p>This wizard will help you create an API over your data. </p>
-          <p>You can go forward and back through the steps - the changes are saved at the end.</p>
+          <h1>
+            <span>Create,</span>
+            <span>Customize,</span>
+            <span>Deploy.</span>
+          </h1>
+          <p>Let's get started by creating an API over your data. </p>
+          <p>You can go forward and back through the steps - your changes are saved along the way.</p>
           <a id="docslink" href="/developers/docs/<%= params[:id] %>"><p>Read more about the Socrata API Foundry</p></a>
         </li>
         <li id="datasetResourceName" class="wizpane" data-wizardpanename="datasetResourceName"> 
@@ -51,7 +57,7 @@
               <div id="ht-datasetResourceName" class="helpfulText">
                 <h3>Once you set the location, you should not change it</h3>
                 <p>The selection you make here determines where developers may find your API.</p>
-                <p>After you publish your API, a developers can use it to build applications. 
+                <p>After you publish your API, developers can use it to build applications. 
                   Typically, the location of an API is hard-coded into an application.
                   If the location changes, the applications will break, and developers will be angry!
                 </p>
@@ -68,7 +74,7 @@
                 <label for="view_category">Unique Identifier</label>
                 <div class="controlDiv">
                   <%= select_tag("rowIdentifierColumnId", options_from_collection_for_select(
-                      @view.columns.find_all{|column| column.dataTypeName == "text" || column.dataTypeName == "number"}, "id", "name")) %>
+                  @view.columns.find_all{|column| column.dataTypeName == "text" || column.dataTypeName == "number"}, "fieldName", "name"), :prompt => "-- none selected --")  %>
                    <div class="additionalHelp">The primary field that identifies a row</div>
                 </div>
               </div>
@@ -156,16 +162,14 @@
         </li>
         <% end %>
         <li id="apiPublish" class="wizpane" data-wizardpanename="apiPublish">
-          <h1>Are you ready to save these changes?</h3>
-          <div id="publishSpinner" style="display: none"><img src="/stylesheets/images/common/BrandedSpinner.gif"></img></div>
-          <div id="publishResponse"></div>
-          <div id="publishError" class="error" style="display: none">There was an error creating your API.</div>
+          <h1>Are you ready to deploy this API?</h3>
+          <p>Once you deploy, developers can use your API to create apps with your data.</p>
+          <p>After you deploy, you should not change this API, as that may break any apps that depend on it!</p>
         </li>
         <li id="published" class="wizpane" data-wizardpanename="published">
-         <h1>Congratulations! Your API has been configured.</h1>
-         <p>Your API will be live once you publish your dataset.</p>
-         <p>After you publish, developers can use your API to create apps with your data.</p>
-          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h3>View the generated documentation</h3></a>
+         <h1>Congratulations! Your API has been deployed.</h1>
+         <p>Developers may now use this API to create applications.</p>
+         <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h3>View the generated documentation</h3></a>
         </li>
       </ul>
     </div>
@@ -174,7 +178,9 @@
       <script type="text/javascript">
         blist.configuration.apiFoundry = {
           id: '<%= params[:id] %>',
-          published: <%= @view.is_published? %>
+          makeNewView: <%= @makeNewView %>,
+          published: <%= @view.is_published? %>,
+          defaultUniqueId: '<%= @view.row_identifier %>'
         }
       </script>
       <%= include_javascripts 'api-new' %>

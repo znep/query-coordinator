@@ -2,37 +2,27 @@ class ApiFoundryController < ApplicationController
   include BrowseActions
   include DatasetsHelper
 
-  def index
-    if !module_available?(:api_foundry) 
-      return render_404
-    end
-    vtf = view_types_facet
-    vtf[:options].insert(1, {
-      :text => 'Unpublished Datasets', :value => 'unpublished',
-      :class => 'typeUnpublished'})
-    facets = [
-      vtf,
-      categories_facet,
-      topics_facet
-    ]
-    @processed_browse = process_browse(request, {
-      admin: true,
-      browse_in_container: true,
-      facets: facets,
-      limit: 30,
-      nofederate: true,
-      view_type: 'table',
-    })
-  end
-
   def forge
     if !module_available?(:api_foundry) 
       return render_404
     end
     @view = get_view(params[:id])
+    @makeNewView = true
     if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
       redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id])
     end
+  end
+
+  def customize
+    if !module_available?(:api_foundry) 
+      return render_404
+    end
+    @view = get_view(params[:id])
+    @makeNewView = false
+    if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
+      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id])
+    end
+    render "forge"
   end
 
 protected

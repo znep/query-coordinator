@@ -308,7 +308,8 @@
 
                   <%- if opts[:grid_items][:nameDesc] -%>
                     <td class="nameDesc">
-                      <a href="<%= view_url %>" class="name" itemprop="name"
+                      <span class="hide" itemprop="name"><%= v.name %></span>
+                      <a itemprop="url" href="<%= view_url %>" class="name"
                         rel="<%= rel_type %>"><%= v.name %></a>
                       <%- if !v.category.blank? -%>
                       <span class="category infoItem"><%= v.category %></span>

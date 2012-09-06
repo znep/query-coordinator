@@ -6,6 +6,7 @@ class ApiFoundryController < ApplicationController
     return render_404 if !module_available?(:api_foundry)
     @view = get_view(params[:id])
     @makeNewView = true
+    @rnSuggestion = get_resource_name_suggestion(@view.name)
     return if @view.nil?
     redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
   end
@@ -14,6 +15,7 @@ class ApiFoundryController < ApplicationController
     return render_404 if !module_available?(:api_foundry)
     @view = get_view(params[:id])
     @makeNewView = false
+    @rnSuggestion = @view.resourceName.nil? ? get_resource_name_suggestion(@view.name) : @view.resourceName
     return if @view.nil?
     if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
       redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) 
@@ -23,6 +25,10 @@ class ApiFoundryController < ApplicationController
   end
 
 protected
+  def get_resource_name_suggestion(name)
+    return name.downcase.gsub(/[^a-z0-9]/, "-").gsub(/-+/, "-")
+  end
+
   def get_view(id)
     begin
       view = View.find(id)

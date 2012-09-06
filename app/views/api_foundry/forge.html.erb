@@ -18,7 +18,6 @@
       </div>
     </div>
     <div id="apiFoundryWizard" class="wizard">
-      <div id="paneSpinner" style="display: none"><img src="/stylesheets/images/common/BrandedSpinner.gif"></img></div>
       <div id="paneError" class="error" style="display: none">There was an error updating your API.</div>
       <ul class="clearfix">
         <li id="checkpub" class="wizpane" data-wizardpanename="checkpub">
@@ -44,7 +43,10 @@
               <div class="line clearfix formControl">
                 <span class="locationSpan">http://<%= CurrentDomain.cname %>/resource/</span>
                 <div class="controlDiv">
-                  <%= text_field_tag("resourceName", @view.resourceName, :title => "Enter API Location", :class => "required textPrompt liveDoc locationInput") %>
+                  <%= text_field_tag("resourceName", 
+                                     @rnSuggestion,
+                                     :title => "Enter API Location", 
+                                     :class => "required textPrompt liveDoc locationInput") %>
                   <div>
                     <label class="error" style="display: none" for="resourceName">This is required</label>
                     <label class="availableError" style="display: none" for="resourceName">This location is not available</label>
@@ -172,6 +174,11 @@
          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h3>View the generated documentation</h3></a>
         </li>
       </ul>
+    </div>
+    <div id="paneSpinner" style="display: none">
+      <div id="paneSpinnerInside">
+        <img src="/stylesheets/images/common/BrandedSpinner.gif"></img>
+      </div>
     </div>
 
     <% content_for :js_footer do %>

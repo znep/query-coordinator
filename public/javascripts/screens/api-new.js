@@ -31,19 +31,11 @@ $(function(){
       var $element = $(element);
       var key = 'span#' + $element.attr('id') + 'Doc';
       var update = function(eventObj){
-        $(key).text($(eventObj.target).value());
+        $(key).html($(eventObj.target).value().replace(/\n/g, "<br/>"));
       };
       $element.change(update);
       $element.keyup(update);
     });
-    $('p.liveDocLink').each(function(index, element){
-      $elm = $(element);
-      var url = $elm.text()
-      //$elm.click(function(eventObj){
-      //  var win = window.open(url, 'Try this request', 'width=300, height=400');
-      //});
-    });
-
   }
 
   function bindNameCheck(){
@@ -144,8 +136,6 @@ $(function(){
     onNext.welcome = function($pane, state){
       makeApiView(
         function(){
-          blist.configuration.apiFoundry.docsUrl = '/developers/docs/' 
-            + blist.configuration.apiFoundry.apiView.resourceName;
           defaultTransition();
         },
         defaultErrorHandler 
@@ -182,6 +172,10 @@ $(function(){
       return false;
     }
 
+    onActivate.datasetDescription = function($pane, paneConfig, state, command){
+      $("#resourceNameDoc").text(blist.configuration.apiFoundry.apiView.resourceName);
+    }
+
     onNext.datasetDescription = function($pane, state){
       updateView(
         {
@@ -212,6 +206,10 @@ $(function(){
       }
     });
 
+    onActivate.apiPublish = function($pane, paneConfig, state, command){
+      $("#skip").hide()
+    }
+
     onNext.apiPublish = function($pane, state){
       makeApiView(
         function(){
@@ -229,13 +227,16 @@ $(function(){
     }
 
     onActivate.published = function($pane, paneConfig, state, command){
-      $("#progress").hide()
+      $("#skip").hide()
       paneConfig.nextText = "View Documentation";
+      blist.configuration.apiFoundry.docsUrl = '/developers/docs/'
+        + blist.configuration.apiFoundry.apiView.resourceName;
       $("#docslink").attr("href", blist.configuration.apiFoundry.docsUrl);
     }
 
     onNext.published = function($pane, state)
     {
+        $("#paneSpinner").hide();
         window.location = blist.configuration.apiFoundry.docsUrl;
         return false;
     }
@@ -258,6 +259,7 @@ $(function(){
       currentPaneId = $pane.attr('id');
       commandObj = command;
       updateProgressIndicator(paneConfig.ordinal);
+      $("#skip").show()
       $("#paneError").hide();
       $("#paneSpinner").hide();
       $(".nextButton").removeClass("disabled");
@@ -334,6 +336,7 @@ $(function(){
 
     panes.push({
         key:'published',
+        ordinal: ordinal++,
         disableButtons: ['cancel', 'prev'],
         onActivate: defaultOnActivate,
         onNext: defaultOnNext

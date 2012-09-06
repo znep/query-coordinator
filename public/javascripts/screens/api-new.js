@@ -116,7 +116,10 @@ $(function(){
     }
 
     function defaultErrorHandler(err){
-      $("#paneError").text(err.responseText);
+      var message = err.responseText;
+      try {message = JSON.parse(message).message}
+      catch(e){}
+      $("#paneError").text(message);
       $("#paneError").show();
       $("#paneSpinner").hide();
       $(".nextButton").removeClass("disabled");
@@ -367,17 +370,27 @@ $(function(){
     );
   }
 
+  var columns;
+  function makeColumnHash(){
+    columns = _.reduce(blist.configuration.apiFoundry.apiView.columns, function(memo, col){
+      memo[col.fieldName] = col;
+      return memo;
+    }, {});
+  }
+
   function makeApiView(callback, errorCallback){
     if (!blist.configuration.apiFoundry.makeNewView) {
       blist.configuration.apiFoundry.apiView = blist.configuration.apiFoundry.ds;
     }
     if (blist.configuration.apiFoundry.apiView){
+      makeColumnHash();
       callback(blist.configuration.apiFoundry.apiView);
     }
     else {
       blist.configuration.apiFoundry.ds.saveNew(
         function(newView){
           blist.configuration.apiFoundry.apiView = newView;
+          makeColumnHash();
           callback(newView);
         },
         errorCallback
@@ -391,10 +404,6 @@ $(function(){
   }
 
   function updateColumn(column, changes, callback, errorCallback){
-    var columns = _.reduce(blist.configuration.apiFoundry.apiView.columns, function(memo, col){
-      memo[col.fieldName] = col;
-      return memo;
-    }, {});
     var col = columns[column];
     col.update(changes);
     col.save(callback, errorCallback);

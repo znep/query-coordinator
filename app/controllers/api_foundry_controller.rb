@@ -3,26 +3,23 @@ class ApiFoundryController < ApplicationController
   include DatasetsHelper
 
   def forge
-    if !module_available?(:api_foundry) 
-      return render_404
-    end
+    return render_404 if !module_available?(:api_foundry)
     @view = get_view(params[:id])
     @makeNewView = true
-    if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
-      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id])
-    end
+    return if @view.nil?
+    redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
   end
 
   def customize
-    if !module_available?(:api_foundry) 
-      return render_404
-    end
+    return render_404 if !module_available?(:api_foundry)
     @view = get_view(params[:id])
     @makeNewView = false
+    return if @view.nil?
     if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
-      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id])
+      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) 
+    else
+      render "forge"
     end
-    render "forge"
   end
 
 protected

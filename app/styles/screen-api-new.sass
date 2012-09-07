@@ -1,5 +1,7 @@
 .logo
   text-align: center
+.contentBox
+  width: 85em
 #newApiForm
   font-size: 1.2em
 #aboveslide
@@ -32,7 +34,6 @@
     bottom: 0.5em
 #apiFoundryWizard 
   clear: both
-  text-align: center
   padding-top: 1.5em
   padding-bottom: 1.5em
   margin-top: 1.5em
@@ -45,29 +46,30 @@
     label
       width: 8em
       display: inline-block
-      text-align: right
+      margin-top: 0.5em
+      vertical-align: top
     input, select, textarea
-      width: 26em
-      margin-top: -0.6em
+      width: 23em
     .additionalHelp
       label
-        width: 31em
-        margin-left: 8em
+        width: 26em
+        margin-left: 8.5em
         text-align: left
+        margin-top: 0em
+    #description
+      width: 23em
   .wizpane
     display: none
     float: left
-    h2
-      margin-bottom: 0.5em
     p
       line-height: 1.3
     .center
       text-align: center
     .column
-      float: left
-      width: 50%
+      width: 32em
+      float: right
+      left: 38em
     .paneFormControls
-      clear: both
       .additionalHelp
         color: gray
         font-style: italic
@@ -75,18 +77,21 @@
         display: inline-block
         text-align: left
         vertical-align: top
-        margin-top: -0.6em
       .locationSpan
         font-size: 1.5em
       .locationInput
         font-size: 1.5em
         width: 12em
+        margin-top: -0.3em
       .availableError
         color: red
       #rowIdentifierColumnId
         width: 21em
-      #description
-        width: 26em
+      .rowIdentifierColumnId
+        margin-top: -0.6em
+      .apiDescription
+        width: 30em
+        height: 12em
     .formControl
       margin-top: 0.5em
       margin-bottom: 1.5em
@@ -96,6 +101,8 @@
       text-align: left
       p
         margin-bottom: 1em
+    .previewTitle
+      color: grey
     .docPreview
       text-align: left
       p
@@ -103,6 +110,7 @@
     .docPreviewInside
       padding-left: 1em
     .docPreviewPage
+      margin-top: 0.5em
       padding: 1em
       border: 1px solid $color_chrome_box_border
       background-image: url('/images/apifoundry/corner-flip.png')

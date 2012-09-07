@@ -374,6 +374,27 @@
                     ]
                 },
 
+                // Photo
+                {
+                    title: 'Photo Options',
+                    onlyIf: {func: function(c)
+                    {
+                        if ($.isBlank(c)) { return false; }
+                        return c.origColumn.renderTypeName == 'photo';
+                    }},
+                    fields: [
+                            {text: 'Size', type: 'select', name: 'format.size',
+                            prompt: 'Choose a size', options: [
+                                { value: 'tiny', text: 'Tiny (24x24)' },
+                                { value: 'thumb', text: 'Thumbnail (80x80)' },
+                                { value: 'medium', text: 'Medium (150x150)' },
+                                { value: 'featured', text: 'Featured (150x80)' },
+                                { value: 'large', text: 'Large (220x220)' },
+                                { value: '', text: 'Original' }
+                            ], defaultValue: ''}
+                    ]
+                },
+
                 // URL
                 {
                     title: 'URL Options',

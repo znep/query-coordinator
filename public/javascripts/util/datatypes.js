@@ -481,7 +481,10 @@ blist.namespace.fetch('blist.datatypes');
         var url = column.baseUrl() + value;
         if (plainText) { return url; }
 
-        var img = '<img src="' + escape(url) + '"></img>';
+        var escaped_url = escape(url);
+        if (!$.isBlank(column.format.size))
+        { escaped_url += '?size=' + column.format.size; }
+        var img = '<img src="' + $.htmlEscape(escaped_url) + '"></img>';
         if ((context || {permissions: {}}).permissions.canEdit)
         { return img; }
 

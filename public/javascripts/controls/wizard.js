@@ -8,6 +8,7 @@
         {
             var $wizard = $(this);
             var $paneContainer = $wizard.children('ul');
+
             var $panes = $paneContainer.children('li').detach();
 
             var $currentPane, currentPaneConfig, currentState;
@@ -25,7 +26,12 @@
                 { tagName: 'li', 'class': 'prev', contents: { tagName: 'a', 'class': 'button prevButton',
                     contents: opts.prevText, href: '#' } }
             ] });
-            $wizard.after($wizardButtons);
+
+            if (opts.buttonContainerId) {
+              $('#' + opts.buttonContainerId).append($wizardButtons);
+            } else {
+              $wizard.after($wizardButtons);
+            }
 
             var $prevButton = $wizardButtons.find('.prevButton');
             var $nextButton = $wizardButtons.find('.nextButton');

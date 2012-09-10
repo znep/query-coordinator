@@ -12,7 +12,8 @@ $(function(){
           return false;
       },
       finishText: "Deploy",
-      paneConfig:makePaneConfig()
+      paneConfig:makePaneConfig(),
+      buttonContainerId: "aboveslide"
   }
   var $paneList = $('#apiFoundryWizard ul');
   $("#stepTotal").text(stepTotal);
@@ -149,7 +150,7 @@ $(function(){
     onNext.datasetResourceName = function($pane, state){
       updateView(
         {
-          resourceName:$("#resourceName").val()
+          resourceName:$("#resourceName").val().trim()
         },
         defaultTransition,
         resourceNameConflictHandler
@@ -180,6 +181,8 @@ $(function(){
     }
 
     onNext.datasetDescription = function($pane, state){
+      var $prompt = $(".prompt");
+      $prompt.val(null);
       updateView(
         {
           description:$("#description").val()
@@ -187,6 +190,7 @@ $(function(){
         defaultTransition,
         defaultErrorHandler
       );
+      $prompt.blur();
       return false;
     }
 
@@ -195,16 +199,19 @@ $(function(){
       var key = $(element).attr('id');
       var columnOriginalFieldName = key.slice(4);
       onNext[key] = function($pane, state){
+        var $prompt = $(".prompt");
+        $prompt.val(null);
         updateColumn(
           columnOriginalFieldName,
           {
-            name:$("#name").val(),
-            fieldName:$("#fieldName").val(),
+            name:$("#name").val().trim(),
+            fieldName:$("#fieldName").val().trim(),
             description:$("#description").val()
           },
           defaultTransition,
           defaultErrorHandler
         );
+        $prompt.blur();
         return false;
       }
     });
@@ -246,11 +253,6 @@ $(function(){
 
     function defaultOnNext($pane, state){
       var id = $pane.attr('id');
-      //TODO try this method for clearing the prompt:
-      var $prompt = $(".prompt");
-      $prompt.val(null);
-      state[id] = $('#newApiForm').serializeArray();
-      $prompt.blur();
       $(".nextButton").addClass("disabled");
       $(".prevButton").addClass("disabled");
       $("#paneSpinner").show();

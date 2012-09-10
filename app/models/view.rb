@@ -510,7 +510,7 @@ class View < Model
 
   # argument port is deprecated
   def href(port = 80)
-    @_href ||= federated_path("/#{(self.category || 'dataset').convert_to_url}/#{name.convert_to_url}/#{id}")
+    @_href ||= federated_path("/#{(self.category || 'dataset').convert_to_url}/#{(name || 'dataset').convert_to_url}/#{id}")
   end
 
   def federated_path(path)

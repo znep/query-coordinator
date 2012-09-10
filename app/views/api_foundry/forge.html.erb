@@ -7,14 +7,16 @@
 <div class="contentBox fixedWidth">
   <form id="newApiForm">
     <div id="aboveslide">
-      <div id="toptext">
-        <h4>Customize Your API -</h4>
-        <p><%= @view.name %></p>
-      </div>
-      <div id="skip"><a id="skip" href="#apiPublish">Skip to end ></a></div>
+      <h4 id="toptitle">Customize API: <%= @view.name %></h4>
       <div id="progressbar"></div>
       <div id="steps">
         Step <span id="step">0</span> of <span id="stepTotal">0</span>
+        <span id="skip"><a id="skip" href="#apiPublish"> - Skip to end ></a></span>
+      </div>
+      <div id="paneSpinner" style="display: none">
+        <div id="paneSpinnerInside">
+          <img src="/stylesheets/images/common/BrandedSpinner.gif"></img>
+        </div>
       </div>
     </div>
     <div id="apiFoundryWizard" class="wizard">
@@ -91,10 +93,9 @@
         </li>
         <li id="datasetDescription" class="wizpane" data-wizardpanename="datasetDescription">
           <div class="paneControlOuter">
-            <h1>Describe your API</h1>
             <div id="dp-datasetDescription" class="docPreview column">
               <div class="docPreviewInside">
-                <h3 class="previewTitle">API Documentation Preview</h3>
+                <h1 class="previewTitle">API Documentation Preview</h1>
               <div class="docPreviewPage">
                 <h3><%= @view.name %> API</h3>
                 <p><span id="descriptionDoc"><%= @view.description %></span></p>
@@ -107,6 +108,7 @@
               </div>
             </div>
             <div class="paneFormControls">
+              <h1>Describe your API</h1>
               <div class="line clearfix formControl">
                 <%= text_area_tag("description", @view.description, :title => "Enter a description", :class => "textPrompt liveDoc apiDescription") %>
                 <div class="additionalHelp">Tell developers what your dataset is about</div>
@@ -117,10 +119,9 @@
         <% @view.columns.each_with_index do |column, index| %>
         <li class="apiFieldPane wizpane" id="col-<%= column.fieldName %>" data-wizardpanename="col-<%= column.fieldName %>">
           <div class="paneControlOuter">
-            <h1>Customize Field: <%= column.name %></h1>
             <div id="dp-col-<%= column.fieldName %>" class="docPreview column">
               <div class="docPreviewInside">
-                <h3 class="previewTitle">Field Documentation Preview</h3>
+                <h1 class="previewTitle">Field Documentation Preview</h1>
                 <div class="docPreviewPage">
                   <h3>Field: <span id="fieldNameDoc"><%= column.fieldName %></span></h3>
                   <p>Human Name: <span id="nameDoc"><%= column.name %></span></p>
@@ -129,16 +130,17 @@
               </div>
             </div>
             <div class="paneFormControls">
-                <div class="line formControl">
-                  <label class="required" for="displayName">Display Name</label>
-                  <%= text_field_tag("name", column.name, :title => "enter a display name", :class => "textPrompt required liveDoc") %>
-                  <div class="additionalHelp"><label>A human-readable name for display and export</label></div>
-                </div>
-                <div class="line formControl">
-                  <label class="required" for="fieldName">Field Name</label>
-                  <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => "textPrompt required liveDoc") %>
-                  <div class="additionalHelp"><label>The identifier used by developers and applications</label></div>
-                </div>
+              <h1>Customize Field: <%= column.name %></h1>
+              <div class="line formControl">
+                <label class="required" for="displayName">Display Name</label>
+                <%= text_field_tag("name", column.name, :title => "enter a display name", :class => "textPrompt required liveDoc") %>
+                <div class="additionalHelp"><label>A human-readable name for display and export</label></div>
+              </div>
+              <div class="line formControl">
+                <label class="required" for="fieldName">Field Name</label>
+                <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => "textPrompt required liveDoc") %>
+                <div class="additionalHelp"><label>The identifier used by developers and applications</label></div>
+              </div>
               <div class="paneFormControls">
                 <div class="line formControl">
                   <label for="description">Description</label>
@@ -164,11 +166,6 @@
          <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h3>View the generated documentation</h3></a>
         </li>
       </ul>
-    </div>
-    <div id="paneSpinner" style="display: none">
-      <div id="paneSpinnerInside">
-        <img src="/stylesheets/images/common/BrandedSpinner.gif"></img>
-      </div>
     </div>
 
     <% content_for :js_footer do %>

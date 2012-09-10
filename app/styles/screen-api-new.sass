@@ -8,21 +8,19 @@
   line-height: 1.5
   text-align: center
   position: relative
-  #toptext
-    text-align: left
-    width: 22em
-    position: absolute
-    left: 0em
+  #toptitle
   #steps
   #skip
-    width: 22em
-    text-align: right
-    position: absolute
-    right: 0em
   #progressbar
     width: 20em
-    height: 1em
-    margin: 0em auto
+    height: 1.25em
+    margin: 0.5em auto
+  .wizardButtons
+    position: absolute
+    top: 1.25em
+    right: 0em
+    margin: 0em
+    width: 100%
 .error
   color: red
 #paneSpinner
@@ -31,15 +29,14 @@
     position: absolute
     width: 100%
     text-align: center
-    bottom: 0.5em
+    bottom: 0em
 #apiFoundryWizard 
   clear: both
   padding-top: 1.5em
-  padding-bottom: 1.5em
-  margin-top: 1.5em
-  margin-bottom: 1.5em
+  padding-bottom: 0.5em
+  margin-top: 1em
+  margin-bottom: 1em
   border-top: 1px solid $color_chrome_box_border
-  border-bottom: 1px solid $color_chrome_box_border
   a h2
     color: darkblue
   .apiFieldPane
@@ -48,6 +45,9 @@
       display: inline-block
       margin-top: 0.5em
       vertical-align: top
+    label.error
+      margin-left: 8.5em
+      width: 26em
     input, select, textarea
       width: 23em
     .additionalHelp

@@ -521,7 +521,7 @@
                 { closeBoxCallback: function(evt)
                     {
                         if (!feature.layer)
-                        { feature = mapObj._data[feature.attributes.dupKey]; }
+                        { feature = layerObj._data[feature.attributes.dupKey]; }
                         if (feature && feature.layer)
                         { layerObj.unhighlightRows(feature.attributes.rows, 'select'); }
                     }

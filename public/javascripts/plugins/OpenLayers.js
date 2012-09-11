@@ -57530,7 +57530,10 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
      * {DOMElement} The specific render engine's root element
      */
     createRenderRoot: function() {
-        return this.nodeFactory(this.container.id + "_svgRoot", "svg");
+        // michael.chui@socrata.com stealing diff from https://github.com/openlayers/openlayers/pull/467/files
+        var svg = this.nodeFactory(this.container.id + "_svgRoot", "svg");
+        svg.style.position = "absolute";
+        return svg;
     },
 
     /**

@@ -100,14 +100,14 @@ Dataset.map.backgroundLayer = {custom: { name: 'custom', className: 'ESRI' }};
 
 Dataset.map.backgroundLayerSet = {};
 Dataset.map.backgroundLayerSet.Google = [
-    { name: 'Google Roadmap', alias: 'Roadmap', opacity: 1},
-    { name: 'Google Satellite', alias: 'Satellite', opacity: 1},
-    { name: 'Google Terrain', alias: 'Terrain', opacity: 1}
+    { layerName: 'Google Roadmap', alias: 'Roadmap', opacity: 1},
+    { layerName: 'Google Satellite', alias: 'Satellite', opacity: 1},
+    { layerName: 'Google Terrain', alias: 'Terrain', opacity: 1}
 ];
 
 Dataset.map.backgroundLayerSet.Bing = [
-    { name: 'Bing Road', alias: 'Road', opacity: 1},
-    { name: 'Bing Aerial', alias: 'Aerial', opacity: 1}
+    { layerName: 'Bing Road', alias: 'Road', opacity: 1},
+    { layerName: 'Bing Aerial', alias: 'Aerial', opacity: 1}
 ];
 
 Dataset.modules['map'] =

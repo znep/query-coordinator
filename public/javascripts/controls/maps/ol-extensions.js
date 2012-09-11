@@ -328,6 +328,12 @@
             return this;
         },
 
+        clearMapTypes: function()
+        {
+            this.layers = {};
+            return this;
+        },
+
         switchMapType: function(maptype)
         {
             if (maptype == this.currentMapType) { return; }
@@ -365,11 +371,13 @@
                 if (this.sliderEvents && !this.small) { this._removeZoomBar(); }
             }
 
+            var numZoomLevels = $.deepGetStringField(this, 'map.baseLayer.numZoomLevels');
+
             // Magic number: height that we want the zoombarDiv to be at.
             // Calculated as zoom_gutter.png (277) minus button heights (21) minus padding (2)
             // 277 - (2*21) - (2*2) = 231
-            if (this.map && this.map.baseLayer)
-            { this.zoomStopHeight = 231 / this.map.baseLayer.numZoomLevels; }
+            if (numZoomLevels)
+            { this.zoomStopHeight = 231 / numZoomLevels; }
             this.draw();
         },
 
@@ -404,6 +412,15 @@
             }
 
             return this.div;
+        },
+
+        moveZoomBar: function()
+        {
+            var numZoomLevels = this.map.currentMaxZoomLevel();
+            var zoomStopHeight = 231 / numZoomLevels;
+            var newTop = ((numZoomLevels-1) - this.map.getZoom())
+                * zoomStopHeight + this.startTop + 1;
+            this.slider.style.top = newTop + 'px';
         },
 
         CLASS_NAME: "blist.openLayers.ZoomBar"
@@ -463,6 +480,21 @@
         {
             return _.select(this.layers, function(layer)
                 { return blist.openLayers.isBackgroundLayer(layer); });
+        },
+
+        currentMaxZoomLevel: function()
+        {
+            return _(this.backgroundLayers()).chain()
+                .select(function(layer) { return layer.visibility; })
+                .pluck('availableZoomLevels')
+                .max().value();
+        },
+
+        isValidZoomLevel: function(zoomLevel)
+        {
+            return !_.isUndefined(zoomLevel)
+                && zoomLevel > 0
+                && zoomLevel < this.currentMaxZoomLevel();
         },
 
         showMousePosition: function()
@@ -570,6 +602,11 @@
                 var $check = $(e.currentTarget);
                 var layer = $check.parent().data('layer')
                 layer.setVisibility($check.value());
+
+                if (layer.visibility)
+                { delete layer.hiddenByUser; }
+                else
+                { layer.hiddenByUser = true; }
             });
 
             $dom.find(':radio').click(function(e)
@@ -639,7 +676,6 @@
             else
             { $dom.find('ul.data').css('border-bottom', 'none'); }
 
-            // FIXME: This is firing too early.
             this.correctHeight();
         },
 
@@ -655,10 +691,11 @@
                 || ( this.exclusiveLayers && this.map.baseLayer != layer))
             { checked = ''; }
 
+            var layerName = $.isBlank(layer.alias) ? layer.name : layer.alias;
             $layerSet.append('<li data-layerid="' + layer.id + '"' +
                 '><input type="' + (this.exclusiveLayers ? radio : 'checkbox') +
                 '" id="' + lId + '"' + checked +
-                ' /><label for="' + lId + '">' + layer.name + '</label>' +
+                ' /><label for="' + lId + '">' + layerName + '</label>' +
                 '<br /><span class="sliderControl" data-min="0" data-max="100" ' +
                 'data-origvalue="' + (opacity*100) + '" />' +
                 '</li>');
@@ -1029,6 +1066,21 @@
             Math.min(this.right, bounds.right), Math.min(this.top, bounds.top)]);
     };
 
+    OpenLayers.Bounds.prototype.isDifferentThan = function(bounds, map)
+    {
+        if (this.equals(bounds)) { return false; }
+        if (this.getCenterLonLat().equals(bounds.getCenterLonLat())
+            && map.getZoomForExtent(this) == map.getZoomForExtent(bounds))
+        { return false; }
+
+        return true;
+    };
+
+    OpenLayers.Bounds.fromViewport = function(vp)
+    {
+        return new OpenLayers.Bounds.fromArray([vp.xmin, vp.ymax, vp.xmax, vp.ymin]);
+    };
+
     OpenLayers.Layer.Heatmap.prototype.removeAllFeatures = function()
     {
         this.setDataSet({ max: 50, data: [] });
@@ -1107,10 +1159,10 @@
                 function() { control.expecting = true; });
 
             control.expecting = false;
-            if (viewport && viewport.xmin)
-            { control.viewport = [viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax]; }
-            else if (viewport && viewport[0])
-            { control.viewport = viewport; }
+            if (_.isObject(viewport))
+            { control.original = OpenLayers.Bounds.fromViewport(viewport); }
+            else if (_.isArray(viewport))
+            { control.original = OpenLayers.Bounds.fromArray(viewport); }
         },
 
         setMap: function()
@@ -1123,14 +1175,13 @@
             this.wholeWorld = OpenLayers.Bounds.fromArray(wholeWorld);
 
             this.viewport = this.viewport
-                ? OpenLayers.Bounds.fromArray(this.viewport).intersection(this.wholeWorld)
+                ? this.viewport.intersection(this.wholeWorld)
                 : this.wholeWorld.clone();
 
             var mapProjection = this.map.getProjectionObject();
+            this.original.transform(blist.openLayers.geographicProjection, mapProjection);
             this.viewport.transform(blist.openLayers.geographicProjection, mapProjection);
             this.wholeWorld.transform(blist.openLayers.geographicProjection, mapProjection);
-
-            this.original = this.viewport.clone();
 
             this._untouched = true;
         },
@@ -1220,12 +1271,7 @@
         willMove: function(viewport)
         {
             if (!this.viewport) { return true; }
-            if (this.viewport.equals(viewport)) { return false; }
-            if (this.viewport.getCenterLonLat().equals(viewport.getCenterLonLat())
-                && this.map.getZoomForExtent(this.viewport) == this.map.getZoomForExtent(viewport))
-            { return false; }
-
-            return true;
+            return this.viewport.isDifferentThan(viewport, this.map);
         },
 
         crossesDateline: function()

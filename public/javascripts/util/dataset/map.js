@@ -27,8 +27,11 @@ Dataset.map.convertToVersion2 = function(view, df)
 {
     if (!df) { df = view.displayFormat; }
 
-    df.viewDefinitions = [$.extend(true, {}, df)];
-    df.viewDefinitions[0].uid = view.id;
+    if ($.isBlank(df.viewDefinitions))
+    {
+        df.viewDefinitions = [$.extend(true, {}, df)];
+        df.viewDefinitions[0].uid = view.id;
+    }
 
     if (df.compositeMembers)
     {
@@ -37,9 +40,15 @@ Dataset.map.convertToVersion2 = function(view, df)
     }
 
     if (df.type == 'google')
-    { df.overrideWithLayerSet = 'Google'; df.exclusiveLayers = true; }
+    {
+        df.exclusiveLayers = true;
+        df.bkgdLayers = Dataset.map.backgroundLayerSet.Google;
+    }
     else if (df.type == 'bing')
-    { df.overrideWithLayerSet = 'Bing'; df.exclusiveLayers = true; }
+    {
+        df.exclusiveLayers = true;
+        df.bkgdLayers = Dataset.map.backgroundLayerSet.Bing;
+    }
     else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || df.plotStyle != 'heatmap')
     {
         df.bkgdLayers = _.map(df.layers, function(layer) { return {
@@ -68,38 +77,37 @@ Dataset.map.convertToVersion2 = function(view, df)
     view.update({ displayFormat: df });
 };
 
-// Possible thought: Basic/Advanced where Basic allows Google or Bing 'layersets'.
 Dataset.map.backgroundLayers = [
     { name: 'Google Roadmap', alias: 'Roadmap', className: 'Google', options: { type: 'ROADMAP' }},
     { name: 'Google Satellite', alias: 'Satellite', className: 'Google',
-        options: { type: 'SATELLITE' }},
-    { name: 'Google Terrain', alias: 'Terrain', className: 'Google', options: { type: 'TERRAIN' }},
-    { name: 'Bing Road', alias: 'Road', className: 'Bing' },
+        zoomLevels: 20, options: { type: 'SATELLITE' }},
+    { name: 'Google Terrain', alias: 'Terrain', className: 'Google',
+        zoomLevels: 16, options: { type: 'TERRAIN' }},
+    { name: 'Bing Road', alias: 'Road', className: 'Bing', zoomLevels: 20 },
     { name: 'Bing Aerial', alias: 'Aerial', className: 'Bing', options: { type: 'Aerial' }},
     { name: 'World Street Map (ESRI)', alias: 'World Street Map', className: 'ESRI',
-        options: { url: 'World_Street_Map' }},
+        zoomLevels: 20, options: { url: 'World_Street_Map' }},
     { name: 'Satellite Imagery (ESRI)', alias: 'Satellite Imagery', className: 'ESRI',
-        options: { url: 'World_Imagery' }},
+        zoomLevels: 20, options: { url: 'World_Imagery' }},
     { name: 'Detailed USA Topographic Map (ESRI)', alias: 'USA Topographic Map', className: 'ESRI',
-        options: { url: 'USA_Topo_Maps' }},
+        zoomLevels: 16, options: { url: 'USA_Topo_Maps' }},
     { name: 'Annotated World Topographic Map (ESRI)', alias: 'World Topographic Map',
-        className: 'ESRI', options: { url: 'World_Topo_Map' }},
+        zoomLevels: 17, className: 'ESRI', options: { url: 'World_Topo_Map' }},
     { name: 'Natural Earth Map (ESRI)', alias: 'Natural Earth Map', className: 'ESRI',
-        options: { url: 'World_Physical_Map' }}
+        zoomLevels: 9, options: { url: 'World_Physical_Map' }}
 ];
 Dataset.map.backgroundLayer = {custom: { name: 'custom', className: 'ESRI' }};
 
 Dataset.map.backgroundLayerSet = {};
 Dataset.map.backgroundLayerSet.Google = [
-    { name: 'Google Roadmap', alias: 'Roadmap', className: 'Google', options: { type: 'ROADMAP' }},
-    { name: 'Google Satellite', alias: 'Satellite', className: 'Google',
-        options: { type: 'SATELLITE' }},
-    { name: 'Google Terrain', alias: 'Terrain', className: 'Google', options: { type: 'TERRAIN' }}
+    { name: 'Google Roadmap', alias: 'Roadmap', opacity: 1},
+    { name: 'Google Satellite', alias: 'Satellite', opacity: 1},
+    { name: 'Google Terrain', alias: 'Terrain', opacity: 1}
 ];
 
 Dataset.map.backgroundLayerSet.Bing = [
-    { name: 'Bing Road', alias: 'Road', className: 'Bing' },
-    { name: 'Bing Aerial', alias: 'Aerial', className: 'Bing', options: { type: 'Aerial' }}
+    { name: 'Bing Road', alias: 'Road', opacity: 1},
+    { name: 'Bing Aerial', alias: 'Aerial', opacity: 1}
 ];
 
 Dataset.modules['map'] =

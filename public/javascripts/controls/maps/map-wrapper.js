@@ -12,101 +12,6 @@
             return Dataset.map.isValid(this._primaryView, this._displayFormat);
         },
 
-        addBackgroundLayer: function(layerOptions)
-        {
-            var mapObj = this;
-
-            var config;
-
-            if (layerOptions.name == 'custom')
-            { config = $.extend({}, Dataset.map.backgroundLayer.custom,
-                { custom_url: layerOptions.custom_url }); }
-            else if (mapObj._displayFormat.overrideWithLayerSet)
-            { config = layerOptions; }
-            else
-            { config = _.detect(Dataset.map.backgroundLayers, function(config)
-                { return config.name == layerOptions.layerName; }); }
-
-            var options = config.options;
-            config.alias = layerOptions.alias || config.alias;
-
-            var layer;
-            // If you add another type here, also make sure it's registered in
-            // blist.openLayers.backgroundLayerTypes.
-            switch (config.className)
-            {
-                case 'Google':
-                    options = $.extend(options, { type: google.maps.MapTypeId[options.type] });
-                    layer = new OpenLayers.Layer.Google(config.name, options); break;
-                case 'Bing':
-                    options = $.extend(options, {
-                        key: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
-                        transitionEffect: 'resize'
-                    });
-                    layer = new OpenLayers.Layer.Bing(options); break;
-                case 'ESRI':
-                    var url = config.name == 'custom' ? config.custom_url
-                                : 'https://server.arcgisonline.com/ArcGIS/rest/services/'
-                                + options.url + '/MapServer';
-                    var name;
-                    if (config.name == 'custom')
-                    {
-                        var name = url.match(/services\/(.*)\/[A-Za-z]+Server/);
-                        if (name) { name = name[1]; }
-                    }
-                    options = $.extend({}, options, {
-                        url: url,
-                        projection: 'EPSG:102113',
-                        tileSize: new OpenLayers.Size(256, 256),
-                        tileOrigin: new OpenLayers.LonLat(-20037508.342787, 20037508.342787),
-                        maxExtent: new OpenLayers.Bounds(-20037508.34, -19971868.8804086,
-                                                          20037508.34,  19971868.8804086),
-                        transitionEffect: 'resize'
-                    });
-                    layer = new OpenLayers.Layer.ArcGISCache(name || config.name, url, options);
-                    break;
-            }
-
-            layer.alias = config.alias;
-            layer.setIsBaseLayer(!mapObj.map.baseLayer || mapObj._displayFormat.exclusiveLayers);
-
-            if (mapObj._displayFormat.exclusiveLayers)
-            { mapObj._controls.MapTypeSwitcher.registerMapType(config.alias, layer); }
-
-            if (!mapObj._displayFormat.exclusiveLayers || !mapObj.map.baseLayer
-                || layer instanceof OpenLayers.Layer.Google)
-            {
-                if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(); }
-                mapObj.map.addLayer(layer);
-                if (layer instanceof OpenLayers.Layer.Google)
-                {
-                    var timeout, trigger;
-                    var listener = google.maps.event.addListener(layer.mapObject, 'tilesloaded',
-                        function()
-                        {
-                            // On initial load, tiles actually load *twice*. The second time happens
-                            // when you add data and zoom to the data extent.
-                            // If no zooming happens, then the timeout triggers and calls it ready.
-                            if (_.isFunction(trigger))
-                            { trigger(); clearTimeout(timeout); return; }
-                            timeout = setTimeout(trigger = function()
-                            {
-                                mapObj.mapElementLoaded(layer);
-                                google.maps.event.removeListener(listener);
-                            }, 2000);
-                        });
-
-                    if (mapObj._displayFormat.exclusiveLayers && mapObj.map.baseLayer != layer)
-                    { layerOptions.hidden = true; }
-                }
-                else
-                { layer.events.register('loadend', mapObj, mapObj.mapElementLoaded); }
-            }
-
-            if (layerOptions.opacity) { layer.setOpacity(layerOptions.opacity); }
-            if (layerOptions.hidden) { layer.setVisibility(false); }
-        },
-
         getRequiredJavascripts: function()
         {
             // This is a terrible hack; but we need to know if Google
@@ -343,6 +248,7 @@
                 && _.all(mapObj.map.backgroundLayers(), function(layer) { return layer._loaded; })
                 && _.all(mapObj._children, function(cv) { return cv._loaded; }))
             {
+                $.debug('map acknowledges being ready');
                 mapObj.viewportHandler().expected();
                 mapObj.viewportHandler().saveViewport(true);
                 mapObj.geolocate();
@@ -361,21 +267,21 @@
         {
             var mapObj = this;
 
+            mapObj.setExclusiveLayers();
             if (!mapObj._backgroundLayers
                 || !_.isEqual(mapObj._backgroundLayers, mapObj._displayFormat.bkgdLayers))
             {
+                // This is a new set of background layers. Set a forest fire.
                 if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(); }
                 _.each(mapObj.map.backgroundLayers(), function(layer) { layer.destroy(); });
+                mapObj._controls.MapTypeSwitcher.clearMapTypes();
             }
             else
-            { mapObj.setExclusiveLayers(); return; }
+            { return; }
 
             var bkgdLayers;
-            if (mapObj._displayFormat.overrideWithLayerSet)
-            { bkgdLayers
-                = Dataset.map.backgroundLayerSet[mapObj._displayFormat.overrideWithLayerSet]; }
             // Ensure there's a base layer to make OpenLayers internals work.
-            else if (_.isEmpty(mapObj._displayFormat.bkgdLayers))
+            if (_.isEmpty(mapObj._displayFormat.bkgdLayers))
             {
                 bkgdLayers = [{ layerName: 'World Street Map (ESRI)', opacity: 1.0, hidden: true }];
                 mapObj._controls.Overview.noBackground = true;
@@ -402,22 +308,135 @@
             {
                 mapObj._controls.MapTypeSwitcher.activate();
                 _.each(mapObj.map.backgroundLayers(), function(layer)
-                { mapObj._controls.MapTypeSwitcher.registerMapType(layer.alias, layer); });
+                {
+                    mapObj._controls.MapTypeSwitcher.registerMapType(layer.alias, layer);
+                    layer.setIsBaseLayer(true);
+                });
                 mapObj._controls.Overview.exclusiveLayers = true;
             }
             else
             {
                 mapObj._controls.MapTypeSwitcher.deactivate();
                 mapObj._controls.Overview.exclusiveLayers = false;
+                _.each(mapObj.map.backgroundLayers(), function(layer)
+                { layer.setIsBaseLayer(layer === mapObj.map.baseLayer); });
             }
             mapObj._controls.Overview.redraw();
+        },
+
+        addBackgroundLayer: function(layerOptions)
+        {
+            var mapObj = this;
+
+            var config;
+
+            if (layerOptions.name == 'custom')
+            { config = $.extend({}, Dataset.map.backgroundLayer.custom,
+                { custom_url: layerOptions.custom_url }); }
+            else if (mapObj._displayFormat.overrideWithLayerSet)
+            { config = layerOptions; }
+            else
+            { config = _.detect(Dataset.map.backgroundLayers, function(config)
+                { return config.name == layerOptions.layerName; }); }
+
+            var options = config.options;
+            if (!$.isBlank($.trim(layerOptions.alias)))
+            { config.alias = $.trim(layerOptions.alias); }
+
+            var layer;
+            // If you add another type here, also make sure it's registered in
+            // blist.openLayers.backgroundLayerTypes.
+            switch (config.className)
+            {
+                case 'Google':
+                    options = $.extend(options, { type: google.maps.MapTypeId[options.type] });
+                    layer = new OpenLayers.Layer.Google(config.name, options); break;
+                case 'Bing':
+                    options = $.extend(options, {
+                        key: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
+                        transitionEffect: 'resize'
+                    });
+                    layer = new OpenLayers.Layer.Bing(options); break;
+                case 'ESRI':
+                    var url = config.name == 'custom' ? config.custom_url
+                                : 'https://server.arcgisonline.com/ArcGIS/rest/services/'
+                                + options.url + '/MapServer';
+                    var name;
+                    if (config.name == 'custom')
+                    {
+                        var name = url.match(/services\/(.*)\/[A-Za-z]+Server/);
+                        if (name) { name = name[1]; }
+                    }
+                    options = $.extend({}, options, {
+                        url: url,
+                        projection: 'EPSG:102113',
+                        tileSize: new OpenLayers.Size(256, 256),
+                        tileOrigin: new OpenLayers.LonLat(-20037508.342787, 20037508.342787),
+                        maxExtent: new OpenLayers.Bounds(-20037508.34, -19971868.8804086,
+                                                          20037508.34,  19971868.8804086),
+                        transitionEffect: 'resize'
+                    });
+                    layer = new OpenLayers.Layer.ArcGISCache(name || config.name, url, options);
+                    break;
+            }
+
+            layer.availableZoomLevels = config.zoomLevels || 21;
+            layer.alias = config.alias;
+            layer.setIsBaseLayer(!mapObj.map.baseLayer || mapObj._displayFormat.exclusiveLayers);
+
+            if (mapObj._displayFormat.exclusiveLayers)
+            { mapObj._controls.MapTypeSwitcher.registerMapType(config.alias, layer); }
+
+            if (!mapObj._displayFormat.exclusiveLayers || !mapObj.map.baseLayer
+                || layer instanceof OpenLayers.Layer.Google)
+            {
+                if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(); }
+                mapObj.map.addLayer(layer);
+                if (layer instanceof OpenLayers.Layer.Google)
+                {
+                    var timeout, trigger;
+                    var listener = google.maps.event.addListener(layer.mapObject, 'tilesloaded',
+                        function()
+                        {
+                            // On initial load, tiles actually load *twice*. The second time happens
+                            // when you add data and zoom to the data extent.
+                            // If no zooming happens, then the timeout triggers and calls it ready.
+                            if (_.isFunction(trigger))
+                            { trigger(); clearTimeout(timeout); return; }
+                            timeout = setTimeout(trigger = function()
+                            {
+                                mapObj.mapElementLoaded(layer);
+                                google.maps.event.removeListener(listener);
+                            }, 2000);
+                        });
+
+                    if (mapObj._displayFormat.exclusiveLayers && mapObj.map.baseLayer != layer)
+                    { layerOptions.hidden = true; }
+                }
+                else
+                { layer.events.register('loadend', mapObj, mapObj.mapElementLoaded); }
+            }
+
+            if (layerOptions.opacity) { layer.setOpacity(layerOptions.opacity); }
+            if (layerOptions.hidden) { layer.setVisibility(false); }
         },
 
         initializeEvents: function()
         {
             var mapObj = this;
 
-            mapObj.events = { changedVisibility: function() {} };
+            mapObj.map.events.register('zoomend', null, function()
+            {
+                var zoomLevel = mapObj.map.getZoom();
+                _.each(mapObj.map.backgroundLayers(), function(layer)
+                {
+                    if (zoomLevel >= layer.zoomLevels)
+                    { layer.setVisibility(false); layer.hiddenByZoom = true; }
+                    else if (layer.hiddenByZoom)
+                    { layer.setVisibility(true); delete layer.hiddenByZoom; }
+                });
+                mapObj._controls.Overview.redraw();
+            });
 
             mapObj.viewportHandler(); // Just in case; no actual reason to initialize here.
             mapObj.buildSelectFeature();

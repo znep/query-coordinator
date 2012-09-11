@@ -259,6 +259,7 @@
                             onlyIf: {field: 'name', value: 'custom'}, defaultValue: 'https://',
                             required: true, data: { 'validlayerurl': 'unverified' },
                             change: normalizeLayerUrl },
+                        {text: 'Alias', type: 'text', name: 'alias'},
                         {text: 'Opacity', type: 'slider', name: 'opacity',
                             defaultValue: 1, minimum: 0, maximum: 1}
                     ]}

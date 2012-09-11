@@ -249,6 +249,9 @@
                 if (mapObj._panning) { delete mapObj._panning; return; }
                 mapObj._displayFormat = this.displayFormat;
 
+                if (!mapObj._displayFormat.viewDefinitions)
+                { Dataset.map.convertToVersion2(mapObj._primaryView, mapObj._displayFormat); }
+
                 if (mapObj._controls.SelectFeature)
                 {
                     mapObj._controls.SelectFeature.destroy();

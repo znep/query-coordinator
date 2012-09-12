@@ -513,6 +513,10 @@ class View < Model
     @_href ||= federated_path("/#{(self.category || 'dataset').convert_to_url}/#{(name || 'dataset').convert_to_url}/#{id}")
   end
 
+  def api_doc_href()
+    @_api_doc_href ||= federated_path("/developers/docs/#{resourceName}")
+  end
+
   def federated_path(path)
     if federated?
       absolute_path(path)
@@ -777,6 +781,10 @@ class View < Model
       !metadata.data['custom_fields']['Basic']['Source'].blank?
   end
 
+  def is_api?
+    displayType == 'api'
+  end
+
   def is_immutable?
     is_blobby? || is_geo?
   end
@@ -824,6 +832,8 @@ class View < Model
         display_class = Displays::Blob
       elsif is_href?
         display_class = Displays::Href
+      elsif is_api?
+        display_class = Displays::Api
       else
         # Table display is the default if the display type is absent or invalid
         display_class = Displays::Table

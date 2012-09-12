@@ -4,13 +4,13 @@
 
     + displayType: from core server, this can be set by the client to tell the
         front-end how to render data.  Available values: 'calendar', 'chart',
-        'map', 'form'
+        'map', 'form', 'api'
     + viewType: set by core server, this defines whether a dataset is tabular data,
         blobby data, or an href.  Possible values: 'tabular', 'blobby', 'href', 'geo'
     + type: set by this Model, it rolls up several pieces of data to give a simple
         type for the Dataset that code can check against.  Possible values:
         'blist', 'filter', 'grouped', 'chart', 'map', 'form', 'calendar',
-        'blob', 'href'
+        'blob', 'href', 'api'
     + styleClass: set by this Model, this can be set as a class on an HTML element
         to pick up styling for this type of Dataset
     + displayName: set by this Model, a displayable string that should used in the
@@ -134,7 +134,7 @@ var Dataset = ServerModel.extend({
     canEdit: function()
     {
         return (this.hasRight('write') || this.hasRight('add') || this.hasRight('delete')) &&
-            !this.isGrouped();
+            !this.isGrouped() && !this.isAPI();
     },
 
     canUpdate: function()
@@ -187,6 +187,11 @@ var Dataset = ServerModel.extend({
     isTabular: function()
     {
         return (this.viewType == 'tabular');
+    },
+
+    isAPI: function()
+    {
+        return (this.type == 'api');
     },
 
     isPublished: function()
@@ -1739,7 +1744,7 @@ var Dataset = ServerModel.extend({
         {
             ds.metadata = ds.metadata || {};
             var adt;
-            if (_.include(['blob', 'href', 'form'], ds.type))
+            if (_.include(['blob', 'href', 'form', 'api'], ds.type))
             { adt = [ds.type]; }
             else
             {
@@ -2844,6 +2849,7 @@ function getType(ds)
 
     if (ds.viewType == 'blobby') { type = 'blob'; }
     else if (ds.viewType == 'href') { type = 'href'; }
+    else if (ds.displayType == 'api') { type = 'api'; }
     else if (_.include(['table', 'fatrow', 'page'], type) &&
         _.include(ds.flags || [], 'default')) { type = 'blist'; }
 
@@ -2882,6 +2888,9 @@ function getDisplayName(ds)
             break;
         case 'href':
             retType = 'linked dataset';
+            break;
+        case 'api':
+            retType = 'API view';
             break;
     }
 

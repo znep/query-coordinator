@@ -273,14 +273,19 @@
             <tbody>
               <%- start_index = (opts[:page] - 1) * opts[:limit] + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
-                <%- view_url = v.href(opts[:port])
+                <%- view_url = v.href()
                     begin
                       if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?
                         view_url = v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last]
                       end
                     rescue
                       # Chomp Chomp
-                    end -%>
+                    end
+                    if v.is_api?
+                      orig_view_url = view_url
+                      view_url = v.api_doc_href()
+                    end
+                  -%>
                 <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
@@ -506,6 +511,9 @@
 <% content_for :templates do %>
 <div class="expandedInfo">
   <div class="actions">
+    <a class="manageApi button" href="#Manage" title="<%= t('controls.browse.actions.manage_api.title') %>">
+      <%= t('controls.browse.actions.manage_api.button') %>
+    </a>
     <a class="permissions button" href="#Permissions"
       title="<%= t('controls.browse.actions.permissions.title') %>">
       <%= t('controls.browse.actions.permissions.button_html',

@@ -18,7 +18,8 @@ protected
         {:text => I18n.t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
         {:text => I18n.t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
         {:text => I18n.t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
-        {:text => I18n.t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
+        {:text => I18n.t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'},
+        {:text => I18n.t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}]
     }
     view_types = CurrentDomain.property(:view_types_facet, :catalog)
     return vts if view_types.nil?

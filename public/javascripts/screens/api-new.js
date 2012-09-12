@@ -32,7 +32,7 @@ $(function(){
       var $element = $(element);
       var key = 'span#' + $element.attr('id') + 'Doc';
       var update = function(eventObj){
-        $(key).html($(eventObj.target).value().replace(/\n/g, "<br/>"));
+        $(key).html(($(eventObj.target).value() || '').replace(/\n/g, "<br/>"));
       };
       $element.change(update);
       $element.keyup(update);
@@ -388,15 +388,19 @@ $(function(){
       makeColumnHash();
       callback(blist.configuration.apiFoundry.apiView);
     }
-    else {
-      blist.configuration.apiFoundry.ds.saveNew(
-        function(newView){
-          blist.configuration.apiFoundry.apiView = newView;
-          makeColumnHash();
-          callback(newView);
-        },
-        errorCallback
-      );
+    else
+    {
+        var md = $.extend(true, {}, blist.configuration.apiFoundry.ds.metadata);
+        md.availableDisplayTypes = ['api'];
+        blist.configuration.apiFoundry.ds.update({displayType: 'api', metadata: md});
+        blist.configuration.apiFoundry.ds.saveNew(
+                function(newView)
+                {
+                    blist.configuration.apiFoundry.apiView = newView;
+                    makeColumnHash();
+                    callback(newView);
+                },
+                errorCallback);
     }
   }
 

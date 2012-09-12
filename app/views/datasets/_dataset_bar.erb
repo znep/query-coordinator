@@ -14,23 +14,26 @@
     </div>
     <div class="unsavedLine">
       <h2 id="unsavedTitle">Unsaved View</h2>
-      <%- if @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
+      <%- if @view.has_rights?('update_view') && !@view.is_snapshotted? && !@view.is_api? -%>
       <a href="#Save" title="Save current view" data-savingText="Saving..."
         class="save toolbarButton">Save</a>
       <%- end -%>
-      <%- if @view.is_published? -%>
+      <%- if @view.is_published? && !@view.is_api? -%>
       <a href="#SaveAs" title="Save view as..."
         class="saveAs toolbarButton">Save As...</a>
       <%- end -%>
       <a href="#Revert" title="Revert to saved view"
         class="revert toolbarButton">Revert</a>
       <%- if @view.is_unpublished? -%>
-        <span class="unpublishedRevert">Changes to the data below are saved automatically.
+        <span class="unpublishedRevert revertMessage">Changes to the data below are saved automatically.
           Filters and searches cannot be saved to a working copy of a dataset.
           Please create a view on a published dataset.</span>
       <%- end -%>
       <%- if @view.is_snapshotted? -%>
-      <span class="snapshottedRevert">Snapshotted datasets and views cannot be created or modified</span>
+      <span class="revertMessage">Snapshotted datasets and views cannot be created or modified</span>
+      <%- end -%>
+      <%- if @view.is_api? -%>
+      <span class="revertMessage">API views cannot be modified</span>
       <%- end -%>
     </div>
 

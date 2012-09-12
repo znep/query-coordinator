@@ -73,6 +73,10 @@ $(function()
         var ds = getDS($row);
         $content.append($.renderTemplate('expandedInfo', ds,
             {
+                '.manageApi.button@href': function(v) { return v.context.url; },
+                '.manageApi.button@class+': function(v)
+                    { return v.context.isAPI() && v.context.hasRight('update_view') &&
+                        !v.context.isFederated() ? '' : 'hide' },
                 '.permissions .permType': function(v)
                     { return v.context.isPublic() ? 'Private' : 'Public'; },
                 '.permissions.button@class+': function(v)

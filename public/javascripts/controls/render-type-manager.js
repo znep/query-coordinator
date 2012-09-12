@@ -148,6 +148,8 @@
         }
     };
 
+    typeConfigs.api = typeConfigs.table;
+
     $.fn.renderTypeManager = function(options)
     {
         // Check if object was already created

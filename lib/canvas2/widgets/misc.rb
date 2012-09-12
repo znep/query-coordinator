@@ -70,7 +70,7 @@ module Canvas2
       current_page = Util.component_data_page(self.id)
       row_results = ds.get_rows(page_size, current_page, {}, true)
 
-      t = '<div class="dataTableWrapper">'
+      t = '<noscript><div class="dataTableWrapper">'
       t += RenderType.table_html(self.id, ds.visible_columns, row_results[:rows], ds,
                                 (current_page - 1) * page_size)
 
@@ -83,7 +83,7 @@ module Canvas2
         row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
 
       t += '<a href="' + ds.alt_href + '" class="altViewLink">Accessibly explore the data</a>'
-      t += '</div>'
+      t += '</div></noscript>'
     end
   end
 

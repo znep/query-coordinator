@@ -213,18 +213,45 @@ body.configuring
     &.fallback input[type=text]
       width: 16.5em
 
-.socrata-component .removeIcon
-  @include box-shadow(0, 0, 6px, black)
-  @include rounded-ends
-  display: none
-  position: absolute
-  right: -8px
-  top: -8px
-  .icon
-    @include close-button
+.configuring .socrata-component
+  @include component-icons('> .disabledIcon', 'component', true)
+  @include disabled-overlay(33%)
 
-.socrata-component.removeActive > .removeIcon
-  display: block
+  &.disabled .notReady
+    display: none
+
+  &.disabled.notRendered
+    .notReady
+      display: block
+    .badConfig
+      display: none
+
+  .disabledIcon
+    @include rounded-ends
+    left: 50%
+    margin:
+      left: -24px
+      top: -24px
+    position: absolute
+    top: 50%
+    z-index: 81
+
+  &.disabled .disabledIcon
+    background-color: #666666
+    display: block
+
+  .removeIcon
+    @include box-shadow(0, 0, 6px, black)
+    @include rounded-ends
+    display: none
+    position: absolute
+    right: -8px
+    top: -8px
+    .icon
+      @include close-button
+
+  &.removeActive > .removeIcon
+    display: block
 
 .controlPane .formSection .line
   label, .radioBlock label

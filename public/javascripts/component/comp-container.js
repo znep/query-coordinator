@@ -80,13 +80,13 @@
         _adjustLoading: function()
         {
             var numLoading = _.size(this._childrenLoading);
-            if (numLoading > 0 && !this._loadingForChildren)
+            if (numLoading > 1 && !this._loadingForChildren)
             {
                 this._loadingForChildren = true;
                 this.each(function(child) { child.suspendLoading(true); });
                 this.startLoading();
             }
-            else if (numLoading < 1 && this._loadingForChildren)
+            else if (numLoading < 2 && this._loadingForChildren)
             {
                 this._loadingForChildren = false;
                 this.each(function(child) { child.suspendLoading(false); });

@@ -16,36 +16,14 @@ body.socrata-page
 
 // Base/default styles shared by all components
 .socrata-component
-  @include component-icons('> .disabledIcon', 'component', true)
-  @include disabled-overlay(33%)
   font-family: helvetica, arial, sans-serif
   position: relative
   min-height: 1em
   &:last-child
     margin-bottom: 0
 
-  &.disabled .notReady
+  .disabledMessage, .disabledOverlay, .disabledIcon
     display: none
-
-  &.disabled.notRendered
-    .notReady
-      display: block
-    .badConfig
-      display: none
-
-  .disabledIcon
-    @include rounded-ends
-    left: 50%
-    margin:
-      left: -24px
-      top: -24px
-    position: absolute
-    top: 50%
-    z-index: 81
-
-  &.disabled .disabledIcon
-    background-color: #666666
-    display: block
 
   .content-wrapper
     height: 100%

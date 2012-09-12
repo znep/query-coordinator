@@ -254,8 +254,16 @@
         },
 
         // Override destroy to propagate to children
-        destroy: function() {
-            this.each(function(child) {
+        destroy: function()
+        {
+            this.empty();
+            this._super();
+        },
+
+        empty: function()
+        {
+            this.each(function(child)
+            {
                 delete child.parent;
                 child.destroy();
             });
@@ -263,7 +271,6 @@
             delete this.last;
             _.each(this._funcChildren, function(c) { c.destroy(); });
             delete this._funcChildren;
-            this._super();
         },
 
         // Override render to render children as well

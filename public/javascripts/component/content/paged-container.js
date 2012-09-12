@@ -119,7 +119,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         return r;
     },
 
-    destroy: function()
+    empty: function()
     {
         this.eachPage(function(child)
         {

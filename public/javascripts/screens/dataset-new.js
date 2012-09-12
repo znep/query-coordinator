@@ -335,9 +335,9 @@ $wizard.wizard({
                 // populated some fields for us (in the case of shapefiles, this
                 // is critical), persist them.
                 if (viewData.metadata && state.submittedView && state.submittedView.metadata)
-                {
-                    $.extend(true, viewData, {metadata: state.submittedView.metadata});
-                }
+                { $.extend(true, viewData, {metadata: state.submittedView.metadata}); }
+                if (viewData.privateMetadata && state.submittedView && state.submittedView.privateMetadata)
+                { $.extend(true, viewData, {privateMetadata: state.submittedView.privateMetadata}); }
 
                 var successCallback = function(createdView)
                 {

@@ -15,31 +15,12 @@ $.component.Container.extend('Repeater', 'content', {
         // Normal object setup
         this._super(properties);
 
-        this._cloneProperties = {
-            id: 'clone',
-            children: children,
-            // TODO: Get rid of these out of templates so we can remove them
-            htmlClass: properties.childHtmlClass,
-            styles: properties.childStyles
-        };
-
-        // Ensure that all descendants have an ID.  This ID is prefixed during object rendering.
-        function allocateIds(children) {
-            for (var i = 0; i < children.length; i++) {
-                var child = children[i];
-                if (child.id == undefined)
-                    child.id = $.component.allocateId();
-                if (child.children)
-                    allocateIds(child.children);
-            }
-        }
-        allocateIds(children);
-
         // Record keeping preparation
         this._map = [];
 
         this._idPrefix = this.id + '-';
-        updateContainerPrefix(this);
+
+        setUpProperties(this, children);
     },
 
     _initDom: function()
@@ -51,7 +32,7 @@ $.component.Container.extend('Repeater', 'content', {
             this.$dom.css('min-height', this._tempHeight);
         }
         // hook up the real container when rendered by the server
-        if ($.isBlank(this._realContainer) && this._properties.container)
+        if ($.isBlank(this._realContainer) && this._properties.container && $.isBlank(this.first))
         {
             this._realContainer = this.add(this._properties.container);
         }
@@ -62,7 +43,21 @@ $.component.Container.extend('Repeater', 'content', {
         var cObj = this;
         // If we were designing, update from the edited config
         if (this._designing && !designing)
-        { this._cloneProperties.children = this._readChildren(); }
+        {
+            this._cloneProperties.children = this._readChildren();
+            // Need to clean out a contextId when there is also a context since cId takes precedence,
+            // but is probably wrong for the design item
+            var cleanCId = function(item)
+            {
+                _.each(item.children, function(c)
+                {
+                    if (!$.isBlank(c.context) && !$.isBlank(c.contextId))
+                    { delete c.contextId; }
+                    cleanCId(c);
+                });
+            };
+            cleanCId(this._cloneProperties);
+        }
 
         this._super.apply(this, arguments);
         if ($.subKeyDefined(this, '_delayUntilVisible'))
@@ -91,19 +86,33 @@ $.component.Container.extend('Repeater', 'content', {
     _refresh: function()
     {
         var cObj = this;
-        cObj._map = [];
-        if (!$.isBlank(this._realContainer))
+        if ($.isBlank(cObj._realContainer) || cObj._designing)
         {
-            cObj._realContainer.destroy();
+            while (cObj.first)
+            { cObj.first.destroy(); }
+            _.each(cObj._funcChildren, function(fc) { fc.destroy(); });
+            cObj._funcChildren = [];
+            cObj._map = [];
             delete cObj._realContainer;
         }
-        while (cObj.first)
-        { cObj.first.destroy(); }
-        _.each(cObj._funcChildren, function(fc) { fc.destroy(); });
-        cObj._funcChildren = [];
+        else if (!$.isBlank(cObj._realContainer))
+        {
+            if (cObj._containerDirty)
+            {
+                cObj._realContainer.destroy();
+                delete cObj._realContainer;
+                cObj._map = [];
+            }
+            else if (cObj._childrenDirty)
+            {
+                cObj._realContainer.empty();
+                cObj._map = [];
+            }
+        }
 
         var doneWithRows = function()
         {
+            delete cObj._childrenDirty;
             _.defer(function()
             {
                 if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
@@ -242,18 +251,18 @@ $.component.Container.extend('Repeater', 'content', {
                     this._cloneProperties));
 
         // Remove any existing row
-        var map = this._map;
-        if (map[adjIndex])
+        if (this._map[adjIndex])
         {
-            map[adjIndex].remove();
-            map[adjIndex] = undefined;
+            if (!this._childrenDirty && this._map[adjIndex].id == cloneProperties.id)
+            { return; }
+            this._map[adjIndex].remove();
+            this._map[adjIndex] = undefined;
         }
 
-        cloneProperties.entity = entity;
         cloneProperties.childContextId = row.id;
 
         // Create clone
-        var clone = map[adjIndex] = new $.component.Repeater.Clone(cloneProperties);
+        var clone = this._map[adjIndex] = new $.component.Repeater.Clone(cloneProperties);
 
         // Terrible hack; but core server doesn't support regexes in queries,
         // so this is the easiest way to skip some rows. This also doesn't
@@ -276,13 +285,16 @@ $.component.Container.extend('Repeater', 'content', {
 
         // Find position for clone
         var position;
-        for (var i = adjIndex + 1; !position && i < map.length; i++)
-            position = map[i];
+        for (var i = adjIndex + 1; !position && i < this._map.length; i++)
+            position = this._map[i];
 
         // Insert the clone
         this._initializing = true;
         if ($.isBlank(this._realContainer))
-        { this._realContainer = this.add(this._properties.container || {type: 'Container'}); }
+        {
+            this._realContainer = this.add(this._properties.container || {type: 'Container'});
+            delete this._containerDirty;
+        }
         this._realContainer.add(clone, position);
         if (_.isFunction(callback)) { callback(); }
         delete this._initializing;
@@ -291,10 +303,28 @@ $.component.Container.extend('Repeater', 'content', {
     _readChildren: function()
     { return this._designing ? this._super() : this._cloneProperties.children; },
 
-    _propWrite: function()
+    _propWrite: function(properties)
     {
-        this._super.apply(this, arguments);
-        updateContainerPrefix(this);
+        var cObj = this;
+        var origCloneProps = cObj._cloneProperties;
+        var origProps = $.extend(true, {}, cObj._properties);
+        var children = properties.children;
+        delete properties.children;
+
+        cObj._super(properties);
+
+        if (!$.isBlank(children))
+        { setUpProperties(this, children); }
+
+        cObj._containerDirty = !_.isEqual(cObj._properties.container, origProps.container);
+        cObj._childrenDirty = !_.isEqual(cObj._cloneProperties, origCloneProps) ||
+            _.any(['context', 'contextId', 'parentPrefix', 'groupBy',
+                    'repeaterType', 'excludeFilter', 'includeFilter', 'valueRegex',
+                    'childProperties', 'childHtmlClass', 'childStyles'], function(p)
+            { return !_.isEqual(cObj._properties[p], origProps[p]); });
+
+        if (cObj._containerDirty || cObj._childrenDirty)
+        { cObj._render(); }
     }
 });
 
@@ -302,6 +332,32 @@ $.component.Repeater.Clone = $.component.Container.extend({
     // No special behavior for clones at the moment
     _persist: false
 });
+
+var setUpProperties = function(cObj, children)
+{
+    cObj._cloneProperties = {
+        id: 'clone',
+        children: children,
+        // TODO: Get rid of these out of templates so we can remove them
+        htmlClass: cObj._properties.childHtmlClass,
+        styles: cObj._properties.childStyles
+    };
+
+    // Ensure that all descendants have an ID.  This ID is prefixed during object rendering.
+    function allocateIds(children)
+    {
+        for (var i = 0; i < children.length; i++)
+        {
+            var child = children[i];
+            if (child.id == undefined)
+            { child.id = $.component.allocateId(); }
+            if (child.children)
+            { allocateIds(child.children); }
+        }
+    }
+    allocateIds(children);
+    updateContainerPrefix(cObj);
+};
 
 var renderGroupItems = function(cObj, items, callback)
 {

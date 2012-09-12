@@ -180,7 +180,7 @@ module Canvas2
         begin
           ds = View.find(config['datasetId'])
         rescue CoreServer::ResourceNotFound
-          errors.push("No dataset found for '" + config['id'] + "'")
+          errors.push("No dataset found for '" + (config['id'] || config['datasetId']) + "'")
           return false if config['required']
         rescue CoreServer::CoreServerError => e
           errors.push(e)
@@ -190,7 +190,7 @@ module Canvas2
         search_response = Clytemnestra.search_views(config['search'].merge({'limit' => 1}))
         ds = search_response.results.first
         if ds.nil? && config['required']
-          errors.push("No dataset found for '" + config['id'] + "'")
+          errors.push("No dataset found for '" + (config['id'] || '(inline)') + "'")
           return false
         end
       end

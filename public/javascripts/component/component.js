@@ -6,6 +6,21 @@
 
     var components = {};
 
+    var winSpin = $('body').loadingSpinner();
+    var wsCounter = 0;
+    function startGlobalLoading()
+    {
+        if (wsCounter < 1)
+        { winSpin.showHide(true); }
+        wsCounter++;
+    };
+    function finishGlobalLoading()
+    {
+        wsCounter--;
+        if (wsCounter < 1)
+        { winSpin.showHide(false); }
+    };
+
     var Component = Model.extend({
         _init: function(properties) {
             var cObj = this;
@@ -76,21 +91,25 @@
             {
                 if (!this._lsInit)
                 {
-                    this.$dom.loadingSpinner({showInitially: true});
+                    this.$dom.loadingSpinner({ showInitially: true, minimal: true });
                     this._lsInit = true;
                 }
                 else { this.$dom.loadingSpinner().showHide(true); }
             }
+            if (this._loading) { return; }
             this._loading = true;
             this.trigger('start_loading');
+            startGlobalLoading();
         },
 
         finishLoading: function()
         {
             if (!$.isBlank(this.$dom) && this._lsInit)
             { this.$dom.loadingSpinner().showHide(false); }
+            if (!this._loading) { return; }
             this._loading = false;
             this.trigger('finish_loading');
+            finishGlobalLoading();
             this._updateValidity();
         },
 

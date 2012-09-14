@@ -20,6 +20,7 @@
     {
         defaults:
         {
+            minimal: false,
             model: null,
             overlay: false,
             showInitially: false
@@ -66,7 +67,8 @@
                 if ($.isBlank(this._$content))
                 {
                     this._$content = $.tag({tagName: 'div', 'class': 'loadingSpinnerContainer'});
-                    this._$content.append($.tag({tagName: 'div', 'class': 'loadingSpinner'}));
+                    this._$content.append($.tag({tagName: 'div', 'class': ['loadingSpinner',
+                        { value: 'minimal', onlyIf: this.settings.minimal } ] }));
                     this._$content.append($.tag({tagName: 'div', 'class': 'loadingMessage'}));
                     this._$content.append($.tag({tagName: 'div', 'class': ['loadingCountdown', 'hide'],
                         contents: ['Checking', {tagName: 'span', 'class': 'secondsSection', contents:

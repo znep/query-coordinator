@@ -9,7 +9,7 @@
             delete properties.children;
 
             this._super(properties);
-            this._childrenLoading = {};
+//            this._childrenLoading = {};
 
             delete this._initializing;
         },
@@ -61,38 +61,39 @@
                 return null;
             }
 
-            var cObj = this;
-            child.bind('start_loading', function()
-                {
-                    cObj._childrenLoading[this.id] = true;
-                    cObj._adjustLoading();
-                })
-                .bind('finish_loading', function()
-                {
-                    delete cObj._childrenLoading[this.id];
-                    cObj._adjustLoading();
-                });
+            // Disable spinner aggregation for now, since we've switched to a smaller throbber
+//            var cObj = this;
+//            child.bind('start_loading', function()
+//                {
+//                    cObj._childrenLoading[this.id] = true;
+//                    cObj._adjustLoading();
+//                })
+//                .bind('finish_loading', function()
+//                {
+//                    delete cObj._childrenLoading[this.id];
+//                    cObj._adjustLoading();
+//                });
             child._move(this, position);
 
             return child;
         },
 
-        _adjustLoading: function()
-        {
-            var numLoading = _.size(this._childrenLoading);
-            if (numLoading > 1 && !this._loadingForChildren)
-            {
-                this._loadingForChildren = true;
-                this.each(function(child) { child.suspendLoading(true); });
-                this.startLoading();
-            }
-            else if (numLoading < 2 && this._loadingForChildren)
-            {
-                this._loadingForChildren = false;
-                this.each(function(child) { child.suspendLoading(false); });
-                this.finishLoading();
-            }
-        },
+//        _adjustLoading: function()
+//        {
+//            var numLoading = _.size(this._childrenLoading);
+//            if (numLoading > 1 && !this._loadingForChildren)
+//            {
+//                this._loadingForChildren = true;
+//                this.each(function(child) { child.suspendLoading(true); });
+//                this.startLoading();
+//            }
+//            else if (numLoading < 2 && this._loadingForChildren)
+//            {
+//                this._loadingForChildren = false;
+//                this.each(function(child) { child.suspendLoading(false); });
+//                this.finishLoading();
+//            }
+//        },
 
         _addChildren: function()
         {

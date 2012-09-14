@@ -3,6 +3,7 @@
         availableContexts: {},
         _contextsQueue: {},
         _preLoadQueue: {},
+        _existingContexts: {},
 
         _init: function() {
             this._super();
@@ -14,10 +15,12 @@
         load: function(configHash, existingContexts)
         {
             var dc = this;
-            _.each(configHash, function(c, id) { dc.loadContext(id, c, null, null, existingContexts); });
+            if (_.isObject(existingContexts))
+            { $.extend(dc._existingContexts, existingContexts); }
+            _.each(configHash, function(c, id) { dc.loadContext(id, c); });
         },
 
-        loadContext: function(id, config, successCallback, errorCallback, existingContexts)
+        loadContext: function(id, config, successCallback, errorCallback)
         {
             var dc = this;
             if (!$.isBlank(dc.availableContexts[id]))
@@ -54,10 +57,9 @@
 
             // If we have an existing item that has all the context data, then short-circuit
             // and do the bit of updating required to use the context
-            existingContexts = existingContexts || {};
-            if (existingContexts.hasOwnProperty(id) && existingContexts[id].type == config.type)
+            if (dc._existingContexts.hasOwnProperty(id) && dc._existingContexts[id].type == config.type)
             {
-                var curC = addContext(dc, id, config, existingContexts[id]);
+                var curC = addContext(dc, id, config, dc._existingContexts[id]);
                 if (!$.isBlank(curC.dataset) && !(curC.dataset instanceof Dataset))
                 { curC.dataset = new Dataset(curC.dataset); }
 

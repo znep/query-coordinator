@@ -78,21 +78,24 @@ $.component.Component.extend('Table', 'data', {
 
 var updateProperties = function(lcObj, properties)
 {
-    lcObj._updateDataSource(properties, function()
+    var setUpTable = function()
+    {
+        if ($.isBlank(lcObj.$contents)) { return; }
+        if (!$.isBlank(lcObj._table))
+        { lcObj._table.setView(lcObj._dataContext.dataset); }
+        else
         {
-            if ($.isBlank(this.$contents)) { return; }
-            if (!$.isBlank(this._table))
-            { this._table.setView(this._dataContext.dataset); }
-            else
-            {
-                this._table = this.$contents.datasetGrid({view: this._dataContext.dataset,
-                    columnHideEnabled: false,
-                    columnPropertiesEnabled: false,
-                    editEnabled: false
-                });
-                this._updateValidity();
-            }
-        });
+            lcObj._table = lcObj.$contents.datasetGrid({view: lcObj._dataContext.dataset,
+                columnHideEnabled: false,
+                columnPropertiesEnabled: false,
+                editEnabled: false
+            });
+            lcObj._updateValidity();
+        }
+    });
+
+    if (!lcObj._updateDataSource(properties, setUpTable))
+    { setUpTable(); }
 };
 
 })(jQuery);

@@ -889,7 +889,7 @@
                         var id = c.id;
                         if ($.isBlank(id))
                         {
-                            id = cObj.id + '_' + _.uniqueId();
+                            id = 'context-' + cObj.id;
                             c.id = id;
                             // Only set contextId if we got the context at this level
                             if (!$.isBlank(properties.context))

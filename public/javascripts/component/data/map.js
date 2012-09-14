@@ -92,24 +92,30 @@ $.component.Component.extend('Map', 'data', {
 
 var updateProperties = function(lcObj, properties)
 {
-    if (!lcObj._updateDataSource(properties, function()
+    var setUpMap = function()
+    {
+        if ($.isBlank(lcObj._dataContext)) { return; }
+        if (!$.isBlank(lcObj._map))
+        { lcObj._map.setView(lcObj._dataContext.dataset); }
+        else
         {
-            if ($.isBlank(this._dataContext)) { return; }
-            if (!$.isBlank(this._map))
-            { this._map.setView(this._dataContext.dataset); }
-            else
-            {
-                this.$contents.empty();
-                this._map = this.$contents.socrataMap({
-                    showRowLink: false,
-                    displayFormat: this._stringSubstitute(this._properties.displayFormat),
-                    view: this._dataContext.dataset
-                });
-                this._updateValidity();
-            }
-        }) &&
-            !$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
-    { lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat)); }
+            lcObj.$contents.empty();
+            lcObj._map = lcObj.$contents.socrataMap({
+                showRowLink: false,
+                displayFormat: lcObj._stringSubstitute(lcObj._properties.displayFormat),
+                view: lcObj._dataContext.dataset
+            });
+            lcObj._updateValidity();
+        }
+    };
+
+    if (!lcObj._updateDataSource(properties, setUpMap))
+    {
+        if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
+        { lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat)); }
+        else
+        { setUpMap(); }
+    }
 };
 
 })(jQuery);

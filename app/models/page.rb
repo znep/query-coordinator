@@ -59,6 +59,14 @@ class Page < SodaModel
     get_item(ds, path)
   end
 
+  def self.parse(data)
+    if data.blank?
+      return nil
+    end
+
+    return self.set_up_model(JSON.parse(data, {:max_nesting => 35}))
+  end
+
 private
   def self.pages_data(mtime)
     cache_key = generate_cache_key(mtime)

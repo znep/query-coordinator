@@ -80,7 +80,7 @@ var updateProperties = function(lcObj, properties)
 {
     var setUpTable = function()
     {
-        if ($.isBlank(lcObj.$contents)) { return; }
+        if ($.isBlank(lcObj.$contents) || $.isBlank(lcObj._dataContext)) { return; }
         if (!$.isBlank(lcObj._table))
         { lcObj._table.setView(lcObj._dataContext.dataset); }
         else
@@ -92,7 +92,7 @@ var updateProperties = function(lcObj, properties)
             });
             lcObj._updateValidity();
         }
-    });
+    };
 
     if (!lcObj._updateDataSource(properties, setUpTable))
     { setUpTable(); }

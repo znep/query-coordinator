@@ -195,9 +195,8 @@
                                                  latlng.lng() + 0.0001, northBound.lat());
             }
 
-            var lonlat2 = lonlat.clone()
-                .transform(new OpenLayers.Projection('EPSG:4326'), this.map.getProjectionObject());
-            this.map.setCenter(lonlat2);
+            lonlat.transform(new OpenLayers.Projection('EPSG:4326'), this.map.getProjectionObject());
+            this.map.setCenter(lonlat);
 
             viewport = viewport || bounds;
             if (viewport)
@@ -206,7 +205,23 @@
             else
             { this.map.zoomTo(17); }
 
-            this.events.triggerEvent('placepoint', { lonlat: lonlat });
+            if (!this._layer)
+            { this.map.addLayer(this._layer = new OpenLayers.Layer.Vector('Geolocator')); }
+            if (!this._feature)
+            {
+                this._layer.addFeatures(
+                    [this._feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat))]);
+
+                this._feature.style = { externalGraphic: '/images/pin.png',
+                    graphicWidth: 22, graphicHeight: 34,
+                    graphicXOffset: -11, graphicYOffset: -17 };
+                this._layer.drawFeature(this._feature);
+            }
+            else
+            {
+                this._feature.geometry = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+                this._layer.drawFeature(this._feature);
+            }
         },
 
         errorMessage: function(msg)

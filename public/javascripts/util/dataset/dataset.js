@@ -1946,7 +1946,11 @@ var Dataset = ServerModel.extend({
                 !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
                 !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters);
             var nonFilterChanged = oldSearch != ds.searchString ||
-                !_.isEqual(oldQuery.groupBys, ds.query.groupBys);
+                !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
+                // Group-bys suck, since there may be pre-process filtering
+                // that happens before we have the data. So if they exist, we
+                // always have to talk to the server
+                !_.isEmpty(ds.query.groupBys);
             if ((filterChanged || !_.isEqual(oldQuery.orderBys, ds.query.orderBys)) && !nonFilterChanged)
             {
                 var newQ = {orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters()};

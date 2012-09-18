@@ -1015,7 +1015,7 @@ blist.namespace.fetch('blist.datatypes');
                 var d = v;
                 if (_.isNumber(v)) { d = new Date(v * 1000); }
                 else { d = Date.parse(v); }
-                return $.isBlank(d) ? '' : d.format('m/d/Y');
+                return $.isBlank(d) ? '' : d.format('m/d/Y h:i:s A');
             },
             formats: zDateTimeFormats,
             inlineType: true,

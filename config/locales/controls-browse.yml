@@ -15,7 +15,7 @@ en:
           maps: Maps
           calendars: Calendars
           forms: Forms
-          apis: API Views
+          apis: APIs
         categories_title: Categories
         categories_singular_title: category
         topics_title: Topics
@@ -116,7 +116,7 @@ en:
           title: About this Dataset
           button: About
         manage_api:
-          title: Manage this API View
+          title: Manage this API
           button: Manage
 
 it:

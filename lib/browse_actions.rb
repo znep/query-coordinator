@@ -18,9 +18,11 @@ protected
         {:text => I18n.t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
         {:text => I18n.t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
         {:text => I18n.t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
-        {:text => I18n.t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'},
-        {:text => I18n.t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}]
+        {:text => I18n.t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
+    if (module_available?(:api_foundry))
+      vts[:options] << {:text => I18n.t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
+    end
     view_types = CurrentDomain.property(:view_types_facet, :catalog)
     return vts if view_types.nil?
     vts[:options].select!{ |opt| view_types.include?(opt[:value]) }

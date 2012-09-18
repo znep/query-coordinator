@@ -301,7 +301,7 @@
 
         draw: function(px)
         {
-            if (_.isEmpty(this.layers)) { return; }
+            if (this.map.hasNoBackground || _.isEmpty(this.layers)) { return; }
 
             var $dom = $(this.map.div).siblings('.mapTypes');
             if ($dom.length == 0)
@@ -476,6 +476,11 @@
             OpenLayers.Map.prototype.initialize.apply(this, [div, options]);
         },
 
+        setNoBackground: function(toggle)
+        {
+            this.hasNoBackground = _.isUndefined(toggle) ? true : toggle;
+        },
+
         backgroundLayers: function()
         {
             return _.select(this.layers, function(layer)
@@ -494,7 +499,7 @@
         {
             return !_.isUndefined(zoomLevel)
                 && zoomLevel > 0
-                && zoomLevel < this.currentMaxZoomLevel();
+                && (this.hasNoBackground || zoomLevel < this.currentMaxZoomLevel());
         },
 
         showMousePosition: function()
@@ -586,7 +591,7 @@
             var $dom = $(this.map.div).siblings('.mapLayers');
             var backgroundLayers = this.exclusiveLayers ? _.values(this.mtSwitcher.layers)
                                                         : this.map.backgroundLayers();
-            if (control.noBackground) { backgroundLayers = []; }
+            if (control.map.hasNoBackground) { backgroundLayers = []; }
 
             $dom.find('ul').empty();
             $(this.map.div).siblings('.mapLegend').empty();
@@ -1179,7 +1184,8 @@
                 : this.wholeWorld.clone();
 
             var mapProjection = this.map.getProjectionObject();
-            this.original.transform(blist.openLayers.geographicProjection, mapProjection);
+            if (this.original)
+            { this.original.transform(blist.openLayers.geographicProjection, mapProjection); }
             this.viewport.transform(blist.openLayers.geographicProjection, mapProjection);
             this.wholeWorld.transform(blist.openLayers.geographicProjection, mapProjection);
 

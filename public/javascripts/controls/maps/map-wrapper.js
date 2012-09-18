@@ -284,10 +284,13 @@
             if (_.isEmpty(mapObj._displayFormat.bkgdLayers))
             {
                 bkgdLayers = [{ layerName: 'World Street Map (ESRI)', opacity: 1.0, hidden: true }];
-                mapObj._controls.Overview.noBackground = true;
+                mapObj.map.setNoBackground(true);
             }
             else
-            { bkgdLayers = mapObj._displayFormat.bkgdLayers; }
+            {
+                bkgdLayers = mapObj._displayFormat.bkgdLayers;
+                mapObj.map.setNoBackground(false);
+            }
 
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });
 

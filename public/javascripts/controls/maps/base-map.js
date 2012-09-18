@@ -1131,10 +1131,12 @@
                                                           : details.color || '#0000ff';
                     marker.style.strokeColor = '#ffffff';
                     marker.style.strokeWidth = 2;
-                    marker.style.pointRadius = marker.style.pointRadius || 5;
+                    marker.style.pointRadius = marker.style.pointRadius
+                        || mapObj.settings.basePointSize;
 
                     if (details.size)
-                    { marker.style.pointRadius = 5 + (2 * details.size); }
+                    { marker.style.pointRadius
+                        = mapObj.settings.basePointSize + (2 * details.size); }
                 }
 
                 if (!newMarker)
@@ -2042,6 +2044,8 @@
         {
             var mapObj = this;
 
+            if (mapObj._displayFormat.disableFlyouts) { return; }
+
             options = options || {};
             var closeBoxCallback = _.isFunction(options.closeBoxCallback)
                 ? options.closeBoxCallback : function() { mapObj.closePopup(); };
@@ -2101,6 +2105,7 @@
         {
             var mapObj = this;
 
+            if (mapObj._displayFormat.disableFlyouts) { return; }
             if (!mapObj._popup) { return; }
 
             var feature = mapObj._markers[mapObj._popup.dupKey];
@@ -2180,7 +2185,8 @@
     }, {
         defaultZoom: 1,
         coordinatePrecision: 6,
-        iconScaleFactor: 1.2
+        iconScaleFactor: 1.2,
+        basePointSize: blist.isMobile ? 15 : 5
     }, 'socrataVisualization');
 
     var calculateSegmentSizes = function(mapObj, aggs)

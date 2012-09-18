@@ -753,6 +753,7 @@
         {
             var mapObj = this;
 
+            if (mapObj._displayFormat.disableFlyouts) { return; }
             options = options || {};
 
             if (!options.keepOpen) { mapObj.closePopup(null, true); }
@@ -813,6 +814,7 @@
         {
             var mapObj = this;
 
+            if (mapObj._displayFormat.disableFlyouts) { return; }
             if (!mapObj._popup) { return; }
             if (!force && mapObj._popup.closeKey != closeKey)
             { return; }

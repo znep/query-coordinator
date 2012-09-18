@@ -599,7 +599,7 @@
             var data = { icon: this.extractIconFromRow(row) };
             if (!data.icon)
             { data = { color: this.extractColorFromRow(row),
-                       size: 5 + 2 * this.extractSizeFromRow(row) }; }
+                       size: this.settings.basePointSize + 2 * this.extractSizeFromRow(row) }; }
 
             var dupKey;
             if (geometry instanceof OpenLayers.Geometry.Point)
@@ -800,7 +800,8 @@
             layerObj._heatmapBkg.bindDatasetEvents();
             layerObj._heatmapBkg.getData();
         }
-    }, { showRowLink: true, numSegments: 6 }, 'socrataDataLayer');
+    }, { showRowLink: true, numSegments: 6, basePointSize: blist.isMobile ? 15 : 5 },
+    'socrataDataLayer');
 
     $.Control.registerMixin('tiledata', {
     }, {}, 'socrataDataLayer');

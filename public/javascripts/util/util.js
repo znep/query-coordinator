@@ -783,6 +783,11 @@ blist.util.railsFlash = function(text, level)
 }
 
 blist.util.patterns.UID = /^\w{4}-\w{4}$/;
+blist.util.patterns.mobileBrowser = /iPhone|iPod|Android/i;
+
+blist.util.isMobile
+    = function() { return blist.util.patterns.mobileBrowser.test(navigator.userAgent); };
+blist.isMobile = blist.util.isMobile();
 
 
 })(jQuery);

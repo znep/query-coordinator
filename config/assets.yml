@@ -109,6 +109,7 @@ javascripts:
     - public/javascripts/component/data/table.js
     - public/javascripts/component/actions/create-chart.js
     - public/javascripts/component/actions/create-map.js
+    - public/javascripts/component/actions/button.js
     - public/javascripts/component/actions/download.js
     - public/javascripts/component/actions/embed.js
     - public/javascripts/component/actions/hide-show.js

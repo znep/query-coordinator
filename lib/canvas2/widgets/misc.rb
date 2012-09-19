@@ -134,6 +134,24 @@ module Canvas2
     end
   end
 
+  class Button < CanvasWidget
+    def render_contents
+      init_state = string_substitute(@properties['states'] || 'state0')
+      init_state = init_state.is_a?(Array) ? init_state[0] : init_state
+
+      items = {}
+      ['text', 'title', 'href'].each do |k|
+        item = @properties[k]
+        items[k] = item.is_a?(Object) ? item[init_state] : item
+      end
+
+      ['<a href="' + items['href'] + '" class="' +
+        (!@properties['notButton'] ? 'button ' : '') + init_state +
+        '" title="' + items['title'] + '" rel="' + (@properties['external'] ? 'external' : '') +
+        '">' + items['text'] + '</a>', true]
+    end
+  end
+
   class Geolocator < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

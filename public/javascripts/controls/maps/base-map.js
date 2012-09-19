@@ -1102,6 +1102,8 @@
             else
             { newMarker = true; viewConfig._adjustBounds = true; }
 
+            details.rows = _.toArray(details.rows).slice(0, 10);
+
             if (geoType == 'point')
             {
                 var lonlat;
@@ -1173,7 +1175,7 @@
             }
 
             marker.attributes.heatStrength = 1;
-            marker.attributes.rows = _.toArray(details.rows).slice(0, 10);
+            marker.attributes.rows = details.rows;
             marker.attributes.dupKey = dupKey;
             marker.attributes.boundary = function() { return []; };
 

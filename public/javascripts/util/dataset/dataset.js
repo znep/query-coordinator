@@ -1523,7 +1523,16 @@ var Dataset = ServerModel.extend({
             callback(ds._unpublishedView);
         }
     },
-
+    getPredeployApiView: function(successCallback, errorCallback){
+      var ds = this;
+      ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json',
+          params: {method: 'getOrMakePredeployApiView'}, type: 'GET',
+          success: function(view)
+          {
+              successCallback(new Dataset(view));
+          },
+          error: errorCallback});
+    },
     getPublishingAvailable: function(successCallback)
     {
         var ds = this;
@@ -2726,6 +2735,7 @@ Dataset.lookupFromResourceName = function(resourceName, successCallback, errorCa
       pageCache: false,
       error: errorCallback});
 }
+
 
 Dataset.lookupFromViewId = function(id, successCallback, errorCallback, isBatch)
 { Dataset._create(false, id, successCallback, errorCallback, isBatch); };

@@ -138,9 +138,11 @@ $(function(){
     }
 
     onNext.welcome = function($pane, state){
-      makeApiView(
+      getApiView(
         function(){
           defaultTransition();
+          var rn = blist.configuration.apiFoundry.apiView.resourceName;
+          if (rn) {$('#resourceName').attr('value', rn);}
         },
         defaultErrorHandler 
       );
@@ -178,6 +180,8 @@ $(function(){
 
     onActivate.datasetDescription = function($pane, paneConfig, state, command){
       $("#resourceNameDoc").text(blist.configuration.apiFoundry.apiView.resourceName);
+      var desc = blist.configuration.apiFoundry.apiView.description;
+      if (desc) {$('#description').text(desc);}
     }
 
     onNext.datasetDescription = function($pane, state){
@@ -221,11 +225,14 @@ $(function(){
     }
 
     onNext.apiPublish = function($pane, state){
-      makeApiView(
+      getApiView(
         function(){
+          var md = $.extend(true, {}, blist.configuration.apiFoundry.ds.metadata);
+          md.availableDisplayTypes = ['api'];
           updateView(
             {
-
+              displayType: 'api',
+              metadata: md
             },
             defaultTransition,
             defaultErrorHandler
@@ -387,7 +394,7 @@ $(function(){
     }, {});
   }
 
-  function makeApiView(callback, errorCallback){
+  function getApiView(callback, errorCallback){
     if (!blist.configuration.apiFoundry.makeNewView) {
       blist.configuration.apiFoundry.apiView = blist.configuration.apiFoundry.ds;
     }
@@ -397,17 +404,16 @@ $(function(){
     }
     else
     {
-        var md = $.extend(true, {}, blist.configuration.apiFoundry.ds.metadata);
-        md.availableDisplayTypes = ['api'];
-        blist.configuration.apiFoundry.ds.update({displayType: 'api', metadata: md});
-        blist.configuration.apiFoundry.ds.saveNew(
-                function(newView)
-                {
-                    blist.configuration.apiFoundry.apiView = newView;
-                    makeColumnHash();
-                    callback(newView);
-                },
-                errorCallback);
+        //blist.configuration.apiFoundry.ds.update({displayType: 'api-predeploy'});
+        blist.configuration.apiFoundry.ds.getPredeployApiView(
+          function(newView)
+          {
+              blist.configuration.apiFoundry.apiView = newView;
+              makeColumnHash();
+              callback(newView);
+          },
+          errorCallback
+        );
     }
   }
 

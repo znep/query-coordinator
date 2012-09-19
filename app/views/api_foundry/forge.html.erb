@@ -182,7 +182,7 @@
         <li id="published" class="wizpane" data-wizardpanename="published">
          <h1>Congratulations! Your API has been deployed.</h1>
          <p>Developers may now use this API to create applications.</p>
-         <a id="docslink" href="/developers/docs/<%= params[:id] %>"><h3>View the generated documentation</h3></a>
+         <a id="docslink" href="/developers/docs/<%= @view.resourceName %>"><h3>View the generated documentation</h3></a>
         </li>
       </ul>
     </div>
@@ -190,7 +190,7 @@
     <% content_for :js_footer do %>
       <script type="text/javascript">
         blist.configuration.apiFoundry = {
-          id: '<%= params[:id] %>',
+          id: '<%= @view.id %>',
           makeNewView: <%= @makeNewView %>,
           published: <%= @view.is_published? %>,
           defaultUniqueId: '<%= @view.row_identifier %>'

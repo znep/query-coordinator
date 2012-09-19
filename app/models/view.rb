@@ -47,6 +47,11 @@ class View < Model
     r
   end
 
+  def self.get_predeploy_api_view(baseUid)
+    path = "/views/#{baseUid}/publication.json?" + {'method' => 'getPredeployApiView'}.to_param
+    parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def find_related(page, limit = 10, sort_by = 'most_accessed')
     params = {
       method: 'getByTableId',

@@ -1175,7 +1175,7 @@
             }
 
             marker.attributes.heatStrength = 1;
-            marker.attributes.rows = details.rows;
+            marker.attributes.rows = _.toArray(details.rows).slice(0, 10);
             marker.attributes.dupKey = dupKey;
             marker.attributes.boundary = function() { return []; };
 

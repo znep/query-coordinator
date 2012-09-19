@@ -156,6 +156,8 @@
 
             // For snapshotting.
             viewConfig._renderedRows = 0;
+
+            view.bind('query_change', function() { viewConfig._idList = {}; }, mapObj);
             
             return layer;
         },

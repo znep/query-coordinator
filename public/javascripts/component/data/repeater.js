@@ -38,6 +38,11 @@ $.component.Container.extend('Repeater', 'content', {
         }
     },
 
+    _dataReady: function()
+    {
+        // We just need the dc loaded to hook up events; don't actually do anything
+    },
+
     design: function(designing)
     {
         var cObj = this;
@@ -80,7 +85,13 @@ $.component.Container.extend('Repeater', 'content', {
         this._super.apply(this, arguments);
 
         if ($.subKeyDefined(dc, 'dataset') && this._properties.repeaterType != 'column')
-        { dc.dataset.bind('query_change', function() { cObj._refresh(); }, this); }
+        {
+            dc.dataset.bind('query_change', function()
+            {
+                cObj._childrenDirty = true;
+                cObj._render();
+            }, this);
+        }
     },
 
     _refresh: function()

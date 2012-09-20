@@ -23,6 +23,12 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
         return result;
     },
 
+    empty: function()
+    {
+        this._super.apply(this, arguments);
+        this._contentChildren = [];
+    },
+
     /* TODO: This currently ignores position, and is append-only. Do we ever care about any other case? */
     add: function(child)
     {
@@ -31,6 +37,14 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
 
         this._contentChildren = this._contentChildren || [];
         this._contentChildren.push(child);
+
+        var $existDom;
+        if ($.isBlank(child.$dom) &&
+                ($existDom = this.$contents.children('#' + child.id + ':visible')).length > 0)
+        {
+            child._carouselHidden = $existDom;
+            $existDom.addClass('hide');
+        }
 
         if (this._pages.length < Math.ceil(this._contentChildren.length /
                     (this._properties.pageSize || DEFAULT_PAGE_SIZE)))
@@ -43,7 +57,12 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
         {
             var i = _.indexOf(this._pages, page);
             var numItems = this._properties.pageSize || DEFAULT_PAGE_SIZE;
-            var c = this._contentChildren.slice(i * numItems, (i + 1) * numItems)
+            var c = this._contentChildren.slice(i * numItems, (i + 1) * numItems);
+            _.each(c, function(_c)
+            {
+                if (!$.isBlank(_c._carouselHidden))
+                { _c._carouselHidden.removeClass('hide'); }
+            });
             page.add(c);
         }
         this._super.apply(this, arguments);

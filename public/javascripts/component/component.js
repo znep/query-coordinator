@@ -46,7 +46,7 @@
             cObj._isDirty = true;
 
             if (_.isFunction(cObj._dataReady))
-                cObj._updateDataSource(properties, cObj._dataReady);
+            { _.defer(function() { cObj._updateDataSource(properties, cObj._dataReady); }); }
 
             var assets = cObj._getAssets();
             if (!_.isEmpty(assets))

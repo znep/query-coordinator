@@ -5,7 +5,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
     {
         this._pages = [];
         this._super.apply(this, arguments);
-        this.registerEvent({page_shown: 'newPage', page_added: 'page', page_removed: 'page'});
+        this.registerEvent({page_shown: 'newPage', page_added: 'pages', page_removed: 'pages'});
     },
 
     visibleId: function(newId)
@@ -114,6 +114,9 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
             return null;
         }
 
+        var $existDom;
+        if ($.isBlank(child.$dom) && ($existDom = this.$contents.children('#' + child.id)).length > 0)
+        { $existDom.addClass('hide'); }
         child._parCont = this;
         this._pages.push(child);
         return r;
@@ -126,6 +129,9 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
             delete child.parent;
             child.destroy();
         });
+        this.trigger('page_removed', [{pages: this._pages}]);
+        this._pages = [];
+        delete this._currentPage;
         this._super();
     },
 
@@ -205,7 +211,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
     _childRemoved: function(child)
     {
         this._super.apply(this, arguments);
-        this.trigger('page_removed', [{page: child}]);
+        this.trigger('page_removed', [{pages: [child]}]);
     },
 
     _moveChildDom: function(child)
@@ -229,7 +235,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         else if (!$.isBlank(this.$ct))
         {
             this.$ct.append(child.$dom);
-            this.trigger('page_added', [{page: child}]);
+            this.trigger('page_added', [{pages: [child]}]);
         }
     },
 

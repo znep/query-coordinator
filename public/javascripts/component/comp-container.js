@@ -270,6 +270,8 @@
             });
             delete this.first;
             delete this.last;
+            if (!$.isBlank(this.$contents))
+            { this.$contents.empty(); }
             _.each(this._funcChildren, function(c) { c.destroy(); });
             delete this._funcChildren;
         },

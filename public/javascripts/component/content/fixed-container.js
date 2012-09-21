@@ -13,15 +13,23 @@ $.component.Container.extend('Fixed Container', 'none', {//'content', {
                 {
                     cObj.$dom.height(cObj.$contents.height());
                     cObj.$contents.width(cObj.$dom.width());
-                    cObj.$contents.css('top', $b.css('padding-top'));
+                    cObj.$contents.css({top: $b.css('padding-top'), left: cObj.$dom.offset().left});
                 }
                 else
                 {
                     cObj.$dom.height('');
-                    cObj.$contents.width('').css('top', '');
+                    cObj.$contents.width('').css({top: '', left: ''});
                 }
+                cObj._floating = dir === 'down';
                 cObj.$contents.toggleClass('sticky', dir === 'down');
             }, {offset: parseInt($b.css('padding-top'))});
+
+        var key = '.fixedContainer_' + cObj.id;
+        $(window).off(key).on('resize' + key, function()
+        {
+            if (cObj._floating)
+            { cObj.$contents.css('left', cObj.$dom.offset().left); }
+        });
 
         return true;
     }

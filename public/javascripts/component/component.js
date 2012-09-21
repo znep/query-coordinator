@@ -540,7 +540,7 @@
             if (this.$dom.hasClass('serverRendered'))
             {
                 this.$dom.removeClass('serverRendered');
-                if (!this._designing)
+                if (!this._designing && !this._properties.requiresContext)
                 {
                     this._rendered = true;
                     this._isDirty = false;
@@ -889,7 +889,7 @@
                         var id = c.id;
                         if ($.isBlank(id))
                         {
-                            id = 'context-' + cObj.id;
+                            id = 'context-' + cObj.id + (_.isArray(cxt) ? '-' + i : '');
                             c.id = id;
                             // Only set contextId if we got the context at this level
                             if (!$.isBlank(properties.context))

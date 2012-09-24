@@ -29,13 +29,15 @@ var Column = ServerModel.extend({
         }
     },
 
-    getSummary: function(successCallback)
+    getSummary: function(successCallback, limit)
     {
         var col = this;
 
+        limit = limit || 100;
         var colSumLoaded = function(resp)
         {
             col._summary = {};
+            col._summaryLimit = limit;
             _(resp.columnSummaries || []).chain()
                 .select(function(s) { return s.columnId == col.id; })
                 .each(function(s)
@@ -47,10 +49,10 @@ var Column = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(col._summary); }
         };
 
-        if ($.isBlank(col._summary))
+        if ($.isBlank(col._summary) || limit > col._summaryLimit)
         {
             col.view.makeRequest({inline: true,
-                params: {method: 'getSummary', columnId: col.id},
+                params: {method: 'getSummary', columnId: col.id, limit: limit},
                 success: colSumLoaded});
         }
         else
@@ -60,6 +62,7 @@ var Column = ServerModel.extend({
     invalidateData: function()
     {
         delete this._summary;
+        delete this._summaryLimit;
     },
 
     canUpdate: function()

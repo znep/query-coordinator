@@ -1572,7 +1572,7 @@
             {
                 var ds = ufDS.dataset;
                 var c = ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]);
-                if (!$.subKeyDefined(c, 'cachedContents'))
+                if (metadata.serverSummary || !$.subKeyDefined(c, 'cachedContents'))
                 {
                     c.getSummary(function(summary)
                     {
@@ -1592,7 +1592,7 @@
                         });
 
                         processColumn({top: topItems});
-                    });
+                    }, metadata.includeAuto);
                 }
                 else
                 { processColumn(c.cachedContents); }

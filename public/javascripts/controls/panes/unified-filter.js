@@ -1006,12 +1006,67 @@
                     // Hide extra lines initially
                     if (_.isNumber(metadata.visibleItems))
                     {
-                        $filter.find('.filterValues .line').slice(metadata.visibleItems).addClass('hide');
+                        var $filterLines = $filter.find('.filterValues .line');
+                        $filterLines.slice(metadata.visibleItems).addClass('hide');
+                        var $moreLessLink = $filter.find('.showMoreLess');
+                        var isHidden = false;
                         if ($filter.find('.filterValues .line.hide').length > 0)
                         {
-                            var isHidden = true;
-                            var $moreLessLink = $filter.find('.showMoreLess').removeClass('hide')
-                                .click(function(e)
+                            $moreLessLink.removeClass('hide');
+                            isHidden = true;
+                        }
+
+                        if (metadata.usePopup)
+                        {
+                            var $popup = $.tag({
+                                tagName: 'div',
+                                'class': 'filterPopupBlock'
+                            });
+                            $popup.append($filterLines.clone().removeClass('hide'));
+                            $popup.find('.filterLineToggle').quickEach(function()
+                                {
+                                    var $t = $(this);
+                                    $t.attr('data-relatedId', $t.attr('id'));
+                                });
+
+                            $moreLessLink.data('popup', $popup);
+                            $moreLessLink.click(function(e) { e.preventDefault(); })
+                                .socrataTip({
+                                    content: $popup,
+                                    fill: '#444444',
+                                    isSolo: true,
+                                    stroke: '#444444',
+                                    trigger: 'click',
+                                    shownCallback: function(box)
+                                    {
+                                        var $b = $(box);
+                                        $moreLessLink.data('popup', $b);
+                                        $b.find('.filterLineToggle')
+                                        .on('change click', function(e)
+                                        {
+                                            var $t = $(this);
+                                            $.uniform.update($filterLines.find('#' +
+                                                    $t.attr('data-relatedId'))
+                                                .attr('checked', $t.attr('checked'))
+                                                .trigger('change')
+                                            );
+                                        })
+                                        .quickEach(function()
+                                        {
+                                            var $t = $(this);
+                                            var $l = $t.closest('.line');
+                                            $l.prepend($t);
+                                            $l.children('.uniform').remove();
+                                            $t.uniform();
+                                        });
+                                    }
+                                });
+                        }
+                        else
+                        {
+                            if (isHidden)
+                            {
+                                $moreLessLink.click(function(e)
                                 {
                                     e.preventDefault();
                                     isHidden = !isHidden;
@@ -1033,6 +1088,7 @@
                                             $cont.height('');
                                         });
                                 });
+                            }
                         }
                     }
                 });
@@ -2012,9 +2068,19 @@
 
                 var $lineToggles = $filterCondition.find('.filterLineToggle');
 
+                // Update popup if it exists
+                var $popup = $filterCondition.find('.showMoreLess').data('popup');
+                // First, uncheck everything
+                if (!$.isBlank($popup))
+                { $popup.find(':checkbox, :radio').attr('checked', false); }
+                // Then check each matching item in the loop below
                 $lineToggles.filter(':checked').each(function()
                 {
-                    var $line = $(this).closest('.line');
+                    var $t = $(this);
+                    if (!$.isBlank($popup))
+                    { $popup.find('[id^="' + $t.attr('id') + '"]').attr('checked', true); }
+
+                    var $line = $t.closest('.line');
                     var value = $line.data('unifiedFilter-value');
 
                     if (value == noFilterValue)
@@ -2063,6 +2129,9 @@
                         }))
                     });
                 });
+                // Finally uniform update
+                if (!$.isBlank($popup))
+                { $.uniform.update($popup.find(':checkbox, :radio')); }
 
                 condition.metadata.customValues = [];
                 $lineToggles.filter(':not(:checked)').each(function()

@@ -228,6 +228,9 @@
                     'parent': cpObj, view: dataset, index: index });
             insertPane(childPane);
             childPane.render();
+
+            // Event de-duplication.
+            cpObj.$content().undelegate('.button.addValue', '.paneAddValue');
         }
         else
         {

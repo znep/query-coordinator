@@ -279,7 +279,7 @@
 
         getFlyout: function(rows)
         {
-            if (rows.length < 1) { return null; }
+            if (!rows || rows.length < 1) { return null; }
 
             var layerObj = this;
             var $info = $.tag({tagName: 'div', 'class': 'mapInfoContainer'});

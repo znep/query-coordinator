@@ -2045,12 +2045,14 @@ var Dataset = ServerModel.extend({
                 { return !$.isBlank(c.format.grouping_aggregate); })
             .each(function(c)
             {
-                if (c.hidden && !oldGroupAggs[c.id])
+                if (c.hidden && !$.isBlank(oldGroupAggs) && !oldGroupAggs[c.id])
                 { c.update({flags: _.without(c.flags, 'hidden')}); }
                 newGroupAggs[c.id] = c.format.grouping_aggregate;
 
                 newColOrder.push(c.id);
             });
+        if ($.isBlank(oldGroupAggs))
+        { oldGroupAggs = newGroupAggs; }
 
         if (_.isEmpty(ds.query.groupBys))
         {

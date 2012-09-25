@@ -142,7 +142,8 @@ module Canvas2
       items = {}
       ['text', 'title', 'href'].each do |k|
         item = @properties[k]
-        items[k] = item.is_a?(Object) ? item[init_state] : item
+        items[k] = item.is_a?(Hash) ? item[init_state] : item
+        items[k] = items[k].nil? ? '' : items[k]
       end
 
       ['<a href="' + items['href'] + '" class="' +

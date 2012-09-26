@@ -186,6 +186,16 @@ module Canvas2
           errors.push(e)
           return false if config['required']
         end
+      elsif !config['datasetResourceName'].blank?
+        begin
+          ds = View.find_by_resource_name(config['datasetResourceName'])
+        rescue CoreServer::ResourceNotFound
+          errors.push("No dataset found for '" + (config['datasetResourceName'] + "'"))
+          return false if config['required']
+        rescue CoreServer::CoreServerError => e
+          errors.push(e)
+          return false if config['required']
+        end
       elsif !config['search'].blank?
         search_response = Clytemnestra.search_views(config['search'].merge({'limit' => 1}))
         ds = search_response.results.first

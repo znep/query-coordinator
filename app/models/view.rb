@@ -20,6 +20,10 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def self.find_by_resource_name(resource_name)
+    return self.find({'method' => 'getByResourceName', 'name' => resource_name}, true)
+  end
+
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     parse(CoreServer::Base.connection.get_request(path))

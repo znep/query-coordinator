@@ -326,6 +326,12 @@
                 function(xhr)
                 { errorCallback(id); });
         }
+        else if ($.subKeyDefined(config, 'datasetResourceName'))
+        {
+            Dataset.lookupFromResourceName(config.datasetResourceName, function(dataset) { gotDS(dataset); },
+                function(xhr)
+                { errorCallback(id); });
+        }
         else if ($.subKeyDefined(config, 'search'))
         {
             Dataset.search($.extend({}, config.search, {limit: 1}), function(results)

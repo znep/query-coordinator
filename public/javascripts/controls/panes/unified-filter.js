@@ -1026,7 +1026,9 @@
                             $popup.find('.filterLineToggle').quickEach(function()
                                 {
                                     var $t = $(this);
-                                    $t.attr('data-relatedId', $t.attr('id'));
+                                    $t.attr('data-relatedid', $t.attr('id'));
+                                    $t.attr('id', $t.attr('id') + '_popup');
+                                    $t.closest('.line').find('label').attr('for', $t.attr('id'));
                                 });
 
                             $moreLessLink.data('popup', $popup);
@@ -1045,9 +1047,9 @@
                                         .on('change click', function(e)
                                         {
                                             var $t = $(this);
-                                            $.uniform.update($filterLines.find('#' +
-                                                    $t.attr('data-relatedId'))
-                                                .attr('checked', $t.attr('checked'))
+                                            $.uniform.update(
+                                                $filterLines.find('#' + $t.attr('data-relatedid'))
+                                                .attr('checked', $t.attr('checked') == 'checked')
                                                 .trigger('change')
                                             );
                                         })

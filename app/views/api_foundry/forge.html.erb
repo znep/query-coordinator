@@ -66,6 +66,25 @@
             </div>
           </div><!-- paneControlOuter -->
         </li>
+        <li id="displayUniqueId" class="wizpane" data-wizardpanename="displayUniqueId">
+          <div class="paneControlOuter">
+            <div class="paneFormControls">
+
+              <h1>API Row Identifier: 
+                <span id="rowIdentifier"><%= @view.row_identifier or "Not specified" %></span>
+              </h1>
+            </div>
+            <div id="ht-datasetUniqueId" class="helpfulText">
+              <h3>The Row Identifier allows you to select individual rows.</h3>
+              <p>This setting is inherited from the dataset. 
+                Your dataset may have a specific column containing a unique identifier for each row.
+                This can be a number or a string, and this unique value is referenced 
+                when you want to add, update, or delete individual rows programmatically.
+              </p>
+              <p>A row identifier is not required.</p>
+            </div>
+          </div><!-- paneControlOuter -->
+        </li>
         <li id="datasetUniqueId" class="wizpane" data-wizardpanename="datasetUniqueId">
           <div class="paneControlOuter">
             <div class="paneFormControls">

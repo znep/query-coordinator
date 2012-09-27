@@ -306,11 +306,18 @@ $(function(){
     });
     panes.push({
       uniform: true,
-      key: 'datasetUniqueId',
+      key: 'displayUniqueId',
       ordinal: ordinal++,
       onActivate: defaultOnActivate,
       onNext: defaultOnNext
     });
+    //panes.push({
+    //  uniform: true,
+    //  key: 'datasetUniqueId',
+    //  ordinal: ordinal++,
+    //  onActivate: defaultOnActivate,
+    //  onNext: defaultOnNext
+    //});
     panes.push({
       uniform: true,
       key: 'datasetDescription',

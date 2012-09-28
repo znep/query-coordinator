@@ -39,17 +39,18 @@ Dataset.map.convertToVersion2 = function(view, df)
         { df.viewDefinitions.push({ uid: uid, plotStyle: 'point', legacy: true }); });
     }
 
-    if (df.type == 'google')
+    var notABoundaryMap = df.plotStyle != 'heatmap';
+    if (df.type == 'google' && notABoundaryMap)
     {
         df.exclusiveLayers = true;
         df.bkgdLayers = Dataset.map.backgroundLayerSet.Google;
     }
-    else if (df.type == 'bing')
+    else if (df.type == 'bing' && notABoundaryMap)
     {
         df.exclusiveLayers = true;
         df.bkgdLayers = Dataset.map.backgroundLayerSet.Bing;
     }
-    else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || df.plotStyle != 'heatmap')
+    else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || notABoundaryMap)
     {
         df.bkgdLayers = _.map(df.layers, function(layer) { return {
             layerName: (_.detect(Dataset.map.backgroundLayers, function(lConfig)

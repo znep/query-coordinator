@@ -58,12 +58,14 @@ $.Control.registerMixin('d3_base', {
 
     _d3_colorizeRow: function(colDef, colIdentFinder)
     {
+        var vizObj = this;
         var isFunc = _.isFunction(colIdentFinder);
         return function(d)
         {
-            if (d.sessionMeta && d.sessionMeta.highlight &&
-                (!d.sessionMeta.highlightColumn ||
-                 (d.sessionMeta.highlightColumn == (isFunc ? colIdentFinder(colDef) : colDef.column.id))))
+            if (vizObj._primaryView.highlights && vizObj._primaryView.highlights[d.id] &&
+                (!vizObj._primaryView.highlightsColumn[d.id] ||
+                 (vizObj._primaryView.highlightsColumn[d.id] ==
+                    (isFunc ? colIdentFinder(colDef) : colDef.column.id))))
             {
                 return '#' + $.rgbToHex($.brighten(d.color || colDef.color, 20)); // why the fuck does brighten darken
             }

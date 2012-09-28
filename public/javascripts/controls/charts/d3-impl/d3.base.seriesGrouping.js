@@ -214,7 +214,8 @@ d3base.seriesGrouping = {
     {
         var vizObj = this,
             sg = vizObj._seriesGrouping,
-            fixedColumn = vizObj._fixedColumns[0];
+            fixedColumn = vizObj._fixedColumns[0],
+            view = vizObj._primaryView;
 
         // drop values where they belong
         _.each(data, function(row)
@@ -226,7 +227,7 @@ d3base.seriesGrouping = {
             if ($.isBlank(sg.virtualRows[category]))
             {
                 virtualRow = {
-                    id: sg.categoryIndexLookup[category],
+                    id: -100 - sg.categoryIndexLookup[category],
                     index: sg.categoryIndexLookup[category],
                     invalid: {},
                     realRows: {}
@@ -251,23 +252,19 @@ d3base.seriesGrouping = {
                 virtualRow[virtualColumn.column.id] = row[valueCol.column.id];
                 virtualRow.realRows[virtualColumn.column.id] = row;
 
-                if (virtualRow.sessionMeta &&
-                    (virtualRow.sessionMeta.highlight === true) &&
-                    (virtualRow.sessionMeta.highlightColumn == virtualColumn.groupName))
+                if (view.highlights && view.highlights[virtualRow.id] &&
+                    view.highlightsColumn[virtualRow.id] == virtualColumn.column.id)
                 {
                     // this virtual row is currently marked as highlighted for this virtual column
                     // of data. should it be unmarked?
-                    if (!row.sessionMeta || !row.sessionMeta.highlight)
+                    if (!view.highlights || !view.highlights[row.id])
                     {
-                        delete virtualRow.sessionMeta.highlight;
-                        delete virtualRow.sessionMeta.highlightColumn;
+                        view.unhighlightRows(virtualRow);
                     }
                 }
-                if (row.sessionMeta && row.sessionMeta.highlight)
+                if (view.highlights && view.highlights[row.id])
                 {
-                    virtualRow.sessionMeta = virtualRow.sessionMeta || {};
-                    virtualRow.sessionMeta.highlight = true;
-                    virtualRow.sessionMeta.highlightColumn = virtualColumn.groupName;
+                    view.highlightRows(virtualRow, null, virtualColumn.column, true);
                 }
             });
         });
@@ -281,6 +278,33 @@ d3base.seriesGrouping = {
 
         // render what we've got
         vizObj._super(_.values(sg.virtualRows));
+    },
+
+    removeRow: function(row, view)
+    {
+        var vizObj = this,
+            sg = vizObj._seriesGrouping,
+            fixedColumn = vizObj._fixedColumns[0],
+            category = row[fixedColumn.id],
+            vRow = sg.virtualRows[category];
+
+        // A removed row might in reality be present in the sortedView, and should exist
+        if (sg.sortedView && sg.sortedView.rowForID(row.id))
+        { return; }
+
+        vizObj._super.apply(vizObj, arguments);
+
+        if (!$.isBlank(vRow))
+        {
+            var rejectedKeys = [];
+            _.each(vRow.realRows, function(rr, k)
+                    { if (rr.id == row.id) { rejectedKeys.push(k); } });
+            _.each(rejectedKeys, function(rk)
+                    {
+                        delete vRow[rk];
+                        delete vRow.realRows[rk];
+                    });
+        }
     },
 
     _groupName: function(row)
@@ -369,11 +393,6 @@ d3base.seriesGrouping = {
         // swap out virtual col/row references for hard references
         var vizObj = this;
         vizObj._super(rObj, colDef.column.realValueColumn, row.realRows[colDef.column.id], yScale);
-    },
-
-    _d3_colorizeRow: function(colDef)
-    {
-        return this._super(colDef, function(colDef) { return colDef.groupName; });
     }
 };
 

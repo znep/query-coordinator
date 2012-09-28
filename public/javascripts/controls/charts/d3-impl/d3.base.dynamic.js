@@ -116,6 +116,14 @@ $.Control.registerMixin('d3_base_dynamic', {
         vizObj._super(_.values(vizObj._currentRangeData), view);
     },
 
+    handleRowsRemoved: function(data, view)
+    {
+        var vizObj = this;
+
+        vizObj._super.apply(vizObj, arguments);
+        vizObj.renderData(_.values(vizObj._currentRangeData), view);
+    },
+
     getRenderRange: function(view)
     {
         // implement me to indicate what the range of rows should be
@@ -128,6 +136,11 @@ $.Control.registerMixin('d3_base_dynamic', {
         // we definitely don't want to use the default renderer because
         // it doesn't account for batches and such.
         console.error('implement me!');
+    },
+
+    removeRow: function(row, view)
+    {
+        delete this._currentRangeData[row.id];
     },
 
     handleRowCountChange: function()

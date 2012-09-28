@@ -809,22 +809,25 @@ var Dataset = ServerModel.extend({
         _.each(this._availableRowSets, function(rs) { rs.markRow(markType, value, row); });
     },
 
-    highlightRows: function(rows, type, column)
+    highlightRows: function(rows, type, column, isAdd)
     {
         var ds = this;
         rows = $.makeArray(rows);
 
         type = type || 'default';
         ds.highlightTypes = ds.highlightTypes || {};
-        if (!$.isBlank(ds.highlightTypes[type]))
+        if (!isAdd)
         {
-            var newIds = {};
-            _.each(rows, function(r) { newIds[r.id] = true; });
-            ds.unhighlightRows(_.reject(ds.highlightTypes[type],
-                function(row, rId) { return newIds[rId]; }), type);
+            if (!$.isBlank(ds.highlightTypes[type]))
+            {
+                var newIds = {};
+                _.each(rows, function(r) { newIds[r.id] = true; });
+                ds.unhighlightRows(_.reject(ds.highlightTypes[type],
+                    function(row, rId) { return newIds[rId]; }), type);
+            }
+            else
+            { ds.highlightTypes[type] = {}; }
         }
-        else
-        { ds.highlightTypes[type] = {}; }
 
         ds.highlights = ds.highlights || {};
         ds.highlightsColumn = ds.highlightsColumn || {};

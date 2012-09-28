@@ -595,7 +595,7 @@ $.Control.registerMixin('d3_impl_column', {
                     .on('mouseout', function(d)
                     {
                         // for perf, only call unhighlight if highlighted.
-                        if (d && !cc._isDragging && d.sessionMeta && d.sessionMeta.highlight)
+                        if (d && !cc._isDragging && view.highlights && view.highlights[d.id])
                         {
                             vizObj.handleMouseOut(this, colDef, d, newYScale);
                         }
@@ -621,9 +621,10 @@ $.Control.registerMixin('d3_impl_column', {
                         // kill tip if not highlighted. need to check here because
                         // unhighlight gets spammed when the grid gets stuck in weird
                         // states (really a grid bug workaround)
-                        if (this.tip && (!d.sessionMeta || !d.sessionMeta.highlight))
+                        if (this.tip && (!view.highlights || !view.highlights[d.id]))
                         {
                             this.tip.destroy();
+                            delete this.tip;
                         }
                     })
                 .transition()
@@ -632,6 +633,14 @@ $.Control.registerMixin('d3_impl_column', {
                     .attr('height', vizObj._yBarHeight(col.lookup, newYScale));
             bars
                 .exit()
+                    .each(function(d)
+                    {
+                        if (this.tip)
+                        {
+                            this.tip.destroy();
+                            delete this.tip;
+                        }
+                    })
                 // need to call transition() here as it accounts for the animation ticks;
                 // otherwise you get npe's
                 .transition()
@@ -671,7 +680,8 @@ $.Control.registerMixin('d3_impl_column', {
                 // 10 is to bump the text off from the actual axis
                 .attr('transform', vizObj._labelTransform());
         rowLabels
-                .attr('font-weight', function(d) { return (d.sessionMeta && d.sessionMeta.highlight) ? 'bold' : 'normal'; })
+                .attr('font-weight', function(d)
+                        { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
                 .text(function(d)
                 {
                     var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY

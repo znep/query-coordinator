@@ -1183,6 +1183,9 @@
                 ? this.viewport.intersection(this.wholeWorld)
                 : this.wholeWorld.clone();
 
+            if (this.original)
+            { this.original = this.original.intersection(this.wholeWorld); }
+
             var mapProjection = this.map.getProjectionObject();
             if (this.original)
             { this.original.transform(blist.openLayers.geographicProjection, mapProjection); }

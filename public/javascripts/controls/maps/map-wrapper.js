@@ -141,6 +141,7 @@
                             .socrataDataLayer({ view: ds, index: index,
                                                 parentViz: mapObj, displayFormat: df });
                     mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
+                    if (ds.isGeoDataset()) { mapObj._controls.Overview.open(); }
 
                     if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
                         && _.all(mapObj._children, function(cv) { return !cv.loading; }))

@@ -474,6 +474,7 @@
             _.each(mapObj._dataLayers, function(layer, index)
             { if (index < views.length) { layer.name = views[index].name; } });
             mapObj.populateLayers();
+            $(mapObj.map.div).siblings('.mapLayers').find('.contentBlock').removeClass('hide');
         });
     };
 

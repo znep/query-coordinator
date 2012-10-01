@@ -832,6 +832,16 @@
             this.map.setBaseLayer(this.map.backgroundLayers()[0])
         },
 
+        open: function()
+        {
+            $(this.map.div).siblings('.mapLayers').find('.contentBlock').removeClass('hide');
+        },
+
+        close: function()
+        {
+            $(this.map.div).siblings('.mapLayers').find('.contentBlock').addClass('hide');
+        },
+
         correctHeight: function()
         {
             var $div = $(this.map.div);

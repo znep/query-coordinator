@@ -952,10 +952,6 @@
                 {},
                 { fillColor: '#0000dd', fillOpacity: 0.2, strokeWidth: 3, strokeColor: '#000088' });
 
-            // If there are no children, just use the provided polygon.
-            if (_.isEmpty(this.attributes.children))
-            { this.boundaries = [boundary]; return this.boundaries; }
-
             // If the size of the bbox is small or thin, don't bother.
             var nwPixel = this.layer.getViewPortPxFromLonLat(
                 new OpenLayers.LonLat(this.attributes.box.lon1, this.attributes.box.lat1).transform(
@@ -967,6 +963,15 @@
             var bboxHeight = Math.abs(sePixel.y - nwPixel.y);
             this.attributes.bboxArea = bboxWidth * bboxHeight;
             this.attributes.bboxRatio = bboxWidth / bboxHeight;
+
+            // If there are no children, just use the provided polygon.
+            if (_.isEmpty(this.attributes.children))
+            {
+                if (bboxWidth < this.style.graphicWidth && bboxHeight < this.style.graphicHeight)
+                { this.translucentOnHover = true; }
+                this.boundaries = [boundary];
+                return this.boundaries;
+            }
 
             // This catches 1-point clusters, too, which are of area 0 and ratio NaN.
             // Current role model for "too big" is USGS Earthquakes, Carribean 55-point cluster.

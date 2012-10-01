@@ -51,12 +51,22 @@
         {
             if (this._renderType == 'points') { return this._super(feature); }
             this._clusterBoundaries.addFeatures(feature.boundary());
+            if (feature.translucentOnHover)
+            {
+                feature.style.graphicOpacity = 0.5;
+                this._displayLayer.drawFeature(feature);
+            }
         },
 
         outFeature: function(feature)
         {
             if (this._renderType == 'points') { return this._super(feature); }
             this._clusterBoundaries.removeAllFeatures();
+            if (feature.translucentOnHover)
+            {
+                feature.style.graphicOpacity = 1;
+                this._displayLayer.drawFeature(feature);
+            }
         },
 
         getData: function()

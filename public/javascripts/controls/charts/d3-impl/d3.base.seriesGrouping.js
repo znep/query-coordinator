@@ -69,6 +69,8 @@ d3base.seriesGrouping = {
             // this is saved down below. Now that we have everything we need
             // to get ready, process some things and allow everything to init.
             vizObj._preprocessSeriesColumns();
+            // Manually trigger this event on the primary view for things like the sidebar
+            vizObj._primaryView.trigger('row_count_change');
             sg.superInit.call(vizObj);
         });
 

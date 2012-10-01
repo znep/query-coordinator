@@ -14,7 +14,8 @@
         'treemap': 'jit'
     };
 
-    if ($.urlParam(window.location.href, 'charts') == 'nextgen')
+    if (blist.configuration.newChartsEnabled ||
+        $.urlParam(window.location.href, 'charts') == 'nextgen')
     {
         $.extend(chartMapping, {
             'column': 'd3_impl_column'

@@ -363,6 +363,8 @@
     blist.sidebarPosition = "<%= sidebar_position %>";
     blist.defaultPane = "<%= default_pane %>";
 
+    blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) %>;
+
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
 

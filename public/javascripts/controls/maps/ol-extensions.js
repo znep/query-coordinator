@@ -1215,7 +1215,7 @@
         saveViewport: function(original)
         {
             this.viewport = (this.map.getExtent() || this.wholeWorld).intersection(this.wholeWorld);
-            if (original) { this.original = this.viewport.clone(); }
+            if (!this.original && original) { this.original = this.viewport.clone(); }
         },
 
         resetToOriginal: function()

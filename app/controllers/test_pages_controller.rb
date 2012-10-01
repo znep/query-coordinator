@@ -41,6 +41,12 @@ class TestPagesController < ApplicationController
   def cf
     Canvas2::DataContext.reset
     Canvas2::Util.set_params(params)
+    Canvas2::Util.set_env({
+      domain: CurrentDomain.cname,
+      renderTime: Time.now.to_i,
+      path: '/test_page/cf',
+      siteTheme: CurrentDomain.theme
+    })
     @minimal_render = params['no_render'] == 'true'
   end
 

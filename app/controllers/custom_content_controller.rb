@@ -107,6 +107,12 @@ class CustomContentController < ApplicationController
     if @cached_fragment.nil? || @debug
       Canvas2::DataContext.reset
       Canvas2::Util.set_params(params)
+      Canvas2::Util.set_env({
+        domain: CurrentDomain.cname,
+        renderTime: Time.now.to_i,
+        path: path,
+        siteTheme: CurrentDomain.theme
+      })
       Canvas2::Util.set_path(path)
       if CurrentDomain.module_available?('canvas2')
         @page, @vars = Page[path, pages_time]

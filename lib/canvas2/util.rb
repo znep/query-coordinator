@@ -30,6 +30,14 @@ module Canvas2
       @@page_params
     end
 
+    def self.set_env(env)
+      @@env = env
+    end
+
+    def self.env
+      @@env
+    end
+
     def self.add_vars(vars)
       @@page_vars ||= {}
       @@page_vars.merge!(vars)
@@ -56,6 +64,8 @@ module Canvas2
       lambda do |name|
         if name[0] == '?' && defined? @@page_vars
           return deep_get(@@page_vars || {}, name.slice(1, name.length))
+        elsif name.start_with?('env.') && defined? @@env
+          return deep_get(@@env || {}, name.slice(4, name.length))
         end
         nil
       end

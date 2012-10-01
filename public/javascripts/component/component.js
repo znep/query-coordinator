@@ -980,6 +980,7 @@
     $.comp = $.component;
 
     var queryParams;
+    var envItems;
 
     var $win = $(window);
     var $doc = $(document);
@@ -992,7 +993,7 @@
 
         rootPropertyResolver: function(name) {
             if (name.charAt(0) == '@')
-                return $.locale(name.substring(1));
+            { return $.locale(name.substring(1)); }
             else if (name.charAt(0) == '?')
             {
                 if ($.isBlank(queryParams))
@@ -1009,6 +1010,12 @@
                     }
                 }
                 return queryParams[name.substring(1)];
+            }
+            else if (name.startsWith('env.'))
+            {
+                if ($.isBlank(envItems))
+                { envItems = blist.configuration.env; }
+                return envItems[name.substring(4)];
             }
         },
 

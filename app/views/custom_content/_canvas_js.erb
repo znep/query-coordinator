@@ -9,6 +9,7 @@
   $(function() {
       var page = blist.configuration.page = <%= safe_json(page) %>;
       blist.configuration.pageVariables = <%= safe_json(Canvas2::Util.page_vars) %>;
+      blist.configuration.env = <%= safe_json(Canvas2::Util.env) %>;
       blist.configuration.availableContexts = <%= safe_json(Canvas2::DataContext.available_contexts) %>;
       $.dataContext.load(page.data, blist.configuration.availableContexts);
       $.locale.initialize(page.locale);

@@ -229,6 +229,7 @@
         {
             var layerObj = this;
             var viewId = this._view.id;
+            var hasFlyout;
 
             if (!layerObj._$flyoutTemplate)
             {
@@ -245,8 +246,8 @@
                 }
                 layerObj.richRenderer = layerObj._$flyoutTemplate.richRenderer({
                     columnCount: 1, view: layerObj._view });
-                layerObj.richRenderer.setConfig(layerObj.generateFlyoutLayout());
-                layerObj.richRenderer.renderLayout();
+                layerObj.richRenderer.setConfig(hasFlyout = layerObj.generateFlyoutLayout());
+                if (hasFlyout) { layerObj.richRenderer.renderLayout(); }
             }
         },
 

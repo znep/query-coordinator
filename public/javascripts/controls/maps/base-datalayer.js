@@ -34,6 +34,8 @@
                 || currentObj._view.displayFormat;
             currentObj._query = currentObj.settings.query || currentObj._view.query;
 
+            currentObj._view.displayType = 'map';
+
             currentObj._mapProjection = currentObj._map.getProjectionObject();
 
             currentObj.initializeColumns();

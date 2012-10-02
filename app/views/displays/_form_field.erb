@@ -1,37 +1,37 @@
-<%- id = 'form_field_' + column.id.to_s -%>
+<%- id = 'form_field_' + column.fieldName-%>
 <%- case column.client_type
   when 'checkbox' -%>
 <div class="fieldContainer checkboxInput">
-  <input type="checkbox" id="<%= id %>" name="<%= column.id %>" />
+  <input type="checkbox" id="<%= id %>" name="<%= column.fieldName %>" />
 </div>
 
 <%- when 'calendar_date', 'date' -%>
 <div class="fieldContainer dateInput">
-  <select class="monthInput" name="<%= column.id %>:month">
+  <select class="monthInput" name="<%= column.fieldName %>:month">
     <option value=""></option>
     <%- 12.times do |i| -%>
     <option value="<%= i + 1 %>"><%= Date::ABBR_MONTHNAMES[i+1] %></option>
     <%- end -%>
   </select>
   <input type="text" class="dayInput" maxlength="2" min="1" max="31"
-    name="<%= column.id %>:day" />
-  <input type="text" class="yearInput" maxlength="4" name="<%= column.id %>:year" />
+    name="<%= column.fieldName %>:day" />
+  <input type="text" class="yearInput" maxlength="4" name="<%= column.fieldName %>:year" />
   <input type="text" class="hourInput" maxlength="2" min="1" max="12"
-    name="<%= column.id %>:hour" />
+    name="<%= column.fieldName %>:hour" />
   <span class="hourSplit">:</span>
   <input type="text" class="minuteInput" maxlength="2" min="0" max="59"
-    name="<%= column.id %>:minute" />
-  <select class="ampmInput" name="<%= column.id %>:pm">
+    name="<%= column.fieldName %>:minute" />
+  <select class="ampmInput" name="<%= column.fieldName %>:pm">
     <option value="am">AM</option>
     <option value="pm">PM</option>
   </select>
 </div>
 
 <%- when 'document_obsolete', 'photo_obsolete', 'document', 'photo' -%>
-<input type="file" id="<%= id %>" name="<%= column.id %>" />
+<input type="file" id="<%= id %>" name="<%= column.fieldName %>" />
 
 <%- when 'flag' -%>
-<select class="fieldInput" id="<%= id %>" name="<%= column.id %>">
+<select class="fieldInput" id="<%= id %>" name="<%= column.fieldName %>">
   <option value="">(Blank)</option>
   <option value="red">Red</option>
   <option value="blue">Blue</option>
@@ -43,8 +43,8 @@
 
 <%- when 'phone' -%>
 <div class="fieldContainer phoneInput">
-  <input type="text" id="<%= id %>" name="<%= column.id %>:phone_number" />
-  <select id="<%= id + '_phone_type' %>" name="<%= column.id %>:phone_type">
+  <input type="text" id="<%= id %>" name="<%= column.fieldName %>:phone_number" />
+  <select id="<%= id + '_phone_type' %>" name="<%= column.fieldName %>:phone_type">
     <option value="">(Blank)</option>
     <option value="Home">Home</option>
     <option value="Cell">Cell</option>
@@ -55,7 +55,7 @@
 </div>
 
 <%- when 'picklist', 'drop_down_list', 'dataset_link' -%>
-<select class="fieldInput" id="<%= id %>" name="<%= column.id %>">
+<select class="fieldInput" id="<%= id %>" name="<%= column.fieldName %>">
   <option value="">(Blank)</option>
   <% if column.dropDown && column.dropDown.values %>
     <%- column.dropDown.values.each do |dd| -%>
@@ -66,10 +66,10 @@
 </select>
 
 <%- when 'html' -%>
-<textarea class="fieldInput" id="<%= id %>" name="<%= column.id %>"></textarea>
+<textarea class="fieldInput" id="<%= id %>" name="<%= column.fieldName %>"></textarea>
 
 <%- when 'stars' -%>
-<select class="fieldInput" id="<%= id %>" name="<%= column.id %>">
+<select class="fieldInput" id="<%= id %>" name="<%= column.fieldName %>">
   <option value="">(Blank)</option>
   <%- range = column.range || 5 -%>
   <%- range.times do |i| -%>
@@ -80,29 +80,29 @@
 <%- when 'url' -%>
 <div class="fieldContainer urlInput">
   <label for="<%= id + '_url' %>">URL</label>
-  <input type="text" id="<%= id + '_url' %>" name="<%= column.id %>:url" />
+  <input type="text" id="<%= id + '_url' %>" name="<%= column.fieldName %>:url" />
   <label for="<%= id + '_description' %>">Description</label>
   <input type="text" id="<%= id + '_description' %>"
-    name="<%= column.id %>:description" />
+    name="<%= column.fieldName %>:description" />
 </div>
 
 <%- when 'location' -%>
 <div class="fieldContainer locationInput">
   <label for="<%= id %>_address_street">Street</label>
   <input type="text" id="<%= id %>_address_street"
-    name="<%= column.id %>:human_address:address" />
+    name="<%= column.fieldName %>:human_address:address" />
   <label for="<%= id %>_address_city">City</label>
   <input type="text" id="<%= id %>_address_city"
-    name="<%= column.id %>:human_address:city" />
+    name="<%= column.fieldName %>:human_address:city" />
   <label for="<%= id %>_address_state">State</label>
   <input type="text" id="<%= id %>_address_state"
-    name="<%= column.id %>:human_address:state" />
+    name="<%= column.fieldName %>:human_address:state" />
   <label for="<%= id %>_address_zip">Zip</label>
   <input type="text" id="<%= id %>_address_zip"
-    name="<%= column.id %>:human_address:zip" />
+    name="<%= column.fieldName %>:human_address:zip" />
 </div>
 
 <%- else -%>
-<input type="text" class="fieldInput" id="<%= id %>" name="<%= column.id %>" />
+<input type="text" class="fieldInput" id="<%= id %>" name="<%= column.fieldName %>" />
 
 <%- end -%>

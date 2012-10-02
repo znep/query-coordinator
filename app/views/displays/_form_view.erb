@@ -21,7 +21,7 @@
   <%- form_columns.each do |c| -%>
     <%- if (!c.is_linked?) -%>
       <div class="line clearfix <%= c.client_type %>">
-        <label for="form_field_<%= c.id %>" title="<%= c.name %>"><%= c.name %></label>
+        <label for="form_field_<%= c.fieldName %>" title="<%= c.name %>"><%= c.name %></label>
         <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
       </div>
     <%- end -%>

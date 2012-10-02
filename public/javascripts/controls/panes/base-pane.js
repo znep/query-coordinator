@@ -577,6 +577,7 @@
             $pane.undelegate('.button.addValue', '.paneAddValue');
             $pane.delegate('.button.addValue', 'click.paneAddValue', function(e)
             {
+                e.stopImmediatePropagation();
                 e.preventDefault();
                 addRepeaterLine(cpObj, $(this));
             });

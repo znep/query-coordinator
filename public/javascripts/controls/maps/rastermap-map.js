@@ -13,7 +13,7 @@
             layerObj._map.addLayer(layerObj._displayLayer);
 
             layerObj._dataStore = [];
-            layerObj._bounds = new OpenLayers.Bounds();
+            layerObj._bounds = null;
 
             layerObj._parent.viewportHandler()
                 .events.register('viewportchanged', layerObj, layerObj.onViewportChange);
@@ -26,6 +26,7 @@
             this._displayLayer.destroy();
             delete this._dataStore;
             delete this._bounds;
+            delete this._idList;
             this._parent.viewportHandler().events
                 .unregister('viewportchanged', this, this.onViewportChange);
         },
@@ -39,6 +40,7 @@
         {
             this._bounds = new OpenLayers.Bounds();
             this._dataStore = [];
+            this._idList = {};
         },
 
         handleDataLoaded: function()
@@ -60,6 +62,12 @@
             { layerObj.prepareHeatAsRow(row_or_cluster); }
         },
 
+        extendBounds: function(lonlat)
+        {
+            if (!this._bounds) { this._bounds = lonlat.toGeometry().getBounds(); }
+            else { this._bounds.extend(lonlat); }
+        },
+
         prepareHeatAsCluster: function(cluster)
         {
             var layerObj = this;
@@ -74,7 +82,7 @@
                     var lonlat = new OpenLayers.LonLat(child.lon, child.lat)
                         .transform(blist.openLayers.geographicProjection, layerObj._mapProjection);
                     layerObj._dataStore.push({ lonlat: lonlat });
-                    layerObj._bounds.extend(lonlat);
+                    layerObj.extendBounds(lonlat);
                 });
             }
             else if (!_.isEmpty(cluster.children))
@@ -85,7 +93,7 @@
                         .transform(blist.openLayers.geographicProjection,
                                    layerObj._mapProjection);
                     layerObj._dataStore.push({ lonlat: lonlat, count: child.size });
-                    layerObj._bounds.extend(lonlat);
+                    layerObj.extendBounds(lonlat);
                 });
             }
 
@@ -103,7 +111,7 @@
 
             var lonlat = geometry.toLonLat();
             layerObj._dataStore.push({ lonlat: lonlat });
-            layerObj._bounds.extend(lonlat);
+            layerObj.extendBounds(lonlat);
 
             layerObj._idList[dupKey] = true;
         },

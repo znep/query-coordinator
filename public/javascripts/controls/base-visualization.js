@@ -237,7 +237,8 @@
 
         showError: function(errorMessage)
         {
-            this.$dom().siblings('#vizError').show().text(errorMessage);
+            var $error = this.$dom().siblings('#vizError').show().text(errorMessage);
+            this.$dom().height(this.$dom().parent().height() - $error.outerHeight());
         },
 
         // Used in a few places for non-dataset status

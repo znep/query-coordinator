@@ -92,7 +92,7 @@
                 // A mere single cluster is essentially useless.
                 // Make an attempt to break it into its children.
                 if (!this._guessedViewport
-                    && data.length == 1 && !_.isEmpty(data[0].children)
+                    && data.length == 1 && data[0].children.length > 0
                     && layerObj._parent.viewportHandler().isWholeWorld())
                 { layerObj.attemptViewportGuess(data[0]); return; }
 

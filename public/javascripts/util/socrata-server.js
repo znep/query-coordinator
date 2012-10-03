@@ -148,7 +148,7 @@ ServerModel.sendBatch = function(successCallback, errorCallback, completeCallbac
             {
                 var errBody = JSON.parse(xhr.responseText);
                 if (_.isFunction(origBR.error)) { origBR.error(errBody.message); }
-                if (_.isFunction(errorCallback)) { errorCallback(); }
+                if (_.isFunction(errorCallback)) { errorCallback(errBody.message); }
             },
             success: function(resp)
             {
@@ -209,7 +209,7 @@ ServerModel.sendBatch = function(successCallback, errorCallback, completeCallbac
                     if (_.isFunction(r.error)) { r.error(errBody.message); }
                 });
 
-                if (_.isFunction(errorCallback)) { errorCallback(); }
+                if (_.isFunction(errorCallback)) { errorCallback(errBody.message); }
             }});
 };
 

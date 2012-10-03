@@ -247,10 +247,10 @@
                 };
 
                 ServerModel.sendBatch(refreshCallback,
-                        function()
+                        function(errorMessage)
                         {
-                            $flash.addClass('error')
-                                .text('There was an error sending your email. Please try again later.');
+                          var message = errorMessage || 'There was an error sending your email. Please try again later.';
+                          $flash.addClass('error').text(message);
                         });
             }
         });

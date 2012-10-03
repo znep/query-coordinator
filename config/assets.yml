@@ -96,6 +96,7 @@ javascripts:
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js
     - public/javascripts/component/content/fixed-container.js
+    - public/javascripts/component/content/float-grid-container.js
     - public/javascripts/component/content/grid-container.js
     - public/javascripts/component/content/menu.js
     - public/javascripts/component/content/picture.js
@@ -556,6 +557,8 @@ javascripts:
   api-new:
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/api-new.js
+  masonry:
+    - public/javascripts/plugins/jquery.masonry.js
 
 dump:
   javascripts:
@@ -581,3 +584,4 @@ dump:
     - waypoints
     - image-uploader
     - awesomecomplete
+    - masonry

@@ -211,8 +211,11 @@
 
                     // Refresh the data now that we have aggregates.
                     // TODO: This feels like a really bad way to do this.
-                    layerObj.handleDataLoaded(layerObj._view.loadedRows());
-                    layerObj._parent._controls.Overview.redraw();
+                    if (layerObj._loaded)
+                    {
+                        layerObj.handleDataLoaded(layerObj._view.loadedRows());
+                        layerObj._parent._controls.Overview.redraw();
+                    }
                 }, aggs);
             }
         },

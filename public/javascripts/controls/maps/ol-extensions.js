@@ -933,7 +933,8 @@
             var style = { externalGraphic: cluster_icon,
                   graphicWidth: size, graphicHeight: size,
                   graphicXOffset: -(size/2), graphicYOffset: -(size/2),
-                  label: ''+count, cursor: 'pointer' };
+                  label: ''+count };
+            if (!cluster_data.forever) { style.cursor = 'pointer'; }
 
             OpenLayers.Feature.Vector.prototype.initialize.apply(this,
                 [geometry, cluster_data, style]);
@@ -985,8 +986,7 @@
             this.boundaries = _.map(this.attributes.children, function(child)
             {
                 var box = child.box;
-                var bbox = new OpenLayers.Bounds(box.lon1, box.lat1,
-                                                 box.lon2, box.lat2)
+                var bbox = OpenLayers.Bounds.fromClusterBox(box)
                     .transform(blist.openLayers.geographicProjection, mapProjection);
                 return new OpenLayers.Feature.Vector(bbox.toGeometry(), {},
                     { fillColor: '#00dd00', fillOpacity: 0.2,
@@ -1096,9 +1096,22 @@
         return true;
     };
 
+    OpenLayers.Bounds.prototype.toViewport = function()
+    {
+        var vp = this.toArray();
+        return _.reduce(['xmin', 'ymin', 'xmax', 'ymax'],
+            function(memo, property, index)
+            { memo[property] = vp[index]; return memo; }, {});
+    },
+
     OpenLayers.Bounds.fromViewport = function(vp)
     {
-        return new OpenLayers.Bounds.fromArray([vp.xmin, vp.ymax, vp.xmax, vp.ymin]);
+        return OpenLayers.Bounds.fromArray([vp.xmin, vp.ymax, vp.xmax, vp.ymin]);
+    };
+
+    OpenLayers.Bounds.fromClusterBox = function(box)
+    {
+        return OpenLayers.Bounds.fromArray([box.lon1, box.lat2, box.lon2, box.lat1]);
     };
 
     OpenLayers.Layer.Heatmap.prototype.removeAllFeatures = function()
@@ -1310,7 +1323,9 @@
 
         isWholeWorld: function()
         {
-            return this.viewport == this.wholeWorld;
+            if (!this.zoomForWholeWorld)
+            { this.zoomForWholeWorld = this.map.getZoomForExtent(this.wholeWorld); }
+            return this.map.getZoom() <= this.zoomForWholeWorld;
         },
 
         project: function(projection)

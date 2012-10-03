@@ -41,7 +41,8 @@
 
             this._clusterBoundaries.removeAllFeatures();
             var currentZoom = this._map.getZoom();
-            if (currentZoom < this._map.getZoomForExtent(feature.attributes.bbox))
+            var bboxZoom = this._map.getZoomForExtent(feature.attributes.bbox);
+            if (currentZoom < bboxZoom && this._map.isValidZoomLevel(bboxZoom))
             { this._map.zoomToExtent(feature.attributes.bbox); }
             else
             { this._map.setCenter(feature.geometry.getBounds().getCenterLonLat(), currentZoom + 1); }
@@ -91,10 +92,13 @@
 
                 // A mere single cluster is essentially useless.
                 // Make an attempt to break it into its children.
-                if (!this._guessedViewport
-                    && data.length == 1 && data[0].children.length > 0
+                if (!layerObj._guessedViewport
+                    && data.length == 1 && !_.isEmpty(data[0].children)
                     && layerObj._parent.viewportHandler().isWholeWorld())
                 { layerObj.attemptViewportGuess(data[0]); return; }
+
+                if (layerObj._guessedViewport && data.length == 1)
+                { delete layerObj._guessedViewport; layerObj._singleCluster = data[0]; }
 
                 layerObj._renderType = 'clusters';
 
@@ -124,7 +128,32 @@
             this._guessedViewport = { xmin: cluster.box.lon1, ymin: cluster.box.lat1,
                                       xmax: cluster.box.lon2, ymax: cluster.box.lat2 };
             this.getData();
-            delete this._guessedViewport;
+        },
+
+        preferredExtent: function()
+        {
+            var layerObj = this;
+            if (layerObj._singleCluster)
+            {
+                var pe;
+                if (!_.isEmpty(layerObj._singleCluster.children))
+                {
+                    pe = _.reduce(layerObj._singleCluster.children, function(viewport, child)
+                    {
+                        var vp = OpenLayers.Bounds.fromClusterBox(child.box);
+
+                        if (viewport)
+                        { viewport.extend(vp); return viewport; }
+                        else
+                        { return vp; }
+                    }, null);
+                }
+                else
+                { pe = OpenLayers.Bounds.fromClusterBox(layerObj._singleCluster.box); }
+                return pe.transform(blist.openLayers.geographicProjection, layerObj._mapProjection);
+            }
+            else
+            { return layerObj._super(); }
         },
 
         filterWithViewport: function()
@@ -183,8 +212,7 @@
             var dupKey = 'cluster' + cluster.id;
             var size = cluster.size;
 
-            var bbox = new OpenLayers.Bounds(cluster.box.lon1, cluster.box.lat1,
-                                             cluster.box.lon2, cluster.box.lat2)
+            var bbox = OpenLayers.Bounds.fromClusterBox(cluster.box)
                         .transform(blist.openLayers.geographicProjection, layerObj._mapProjection);
 
             cluster.bbox = bbox;

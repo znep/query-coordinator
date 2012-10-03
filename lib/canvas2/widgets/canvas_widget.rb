@@ -58,7 +58,9 @@ module Canvas2
     end
 
     def is_hidden
-      @properties['hidden'] || @properties['requiresContext'] && (context.blank? || context.empty?) ||
+      # Don't use this property because of 508
+      #@properties['hidden'] ||
+      @properties['requiresContext'] && (context.blank? || context.empty?) ||
         @properties['ifValue'] && !eval_if(@properties['ifValue'])
     end
 

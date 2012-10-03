@@ -499,7 +499,7 @@
         {
             return !_.isUndefined(zoomLevel)
                 && zoomLevel > 0
-                && (this.hasNoBackground || zoomLevel < this.currentMaxZoomLevel());
+                && (this.hasNoBackground || zoomLevel <= this.currentMaxZoomLevel());
         },
 
         showMousePosition: function()
@@ -1310,7 +1310,7 @@
 
         isWholeWorld: function()
         {
-            return this.viewport == this.wholeWorld;
+            return this.map.getZoom() <= this.map.getZoomForExtent(this.wholeWorld);
         },
 
         project: function(projection)

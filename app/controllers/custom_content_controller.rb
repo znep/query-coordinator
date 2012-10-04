@@ -97,7 +97,7 @@ class CustomContentController < ApplicationController
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)
     @cached_fragment = read_fragment(@cache_key)
-    if !@cached_fragment.nil? && @cached_fragment.start_with?('error_page:') && !@debug
+    if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:') && !@debug
       str = @cached_fragment.slice(11, @cached_fragment.length)
       code = str.slice(0, 3)
       @display_message = str.slice(4, str.length)

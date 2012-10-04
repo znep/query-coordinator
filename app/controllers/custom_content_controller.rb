@@ -97,13 +97,7 @@ class CustomContentController < ApplicationController
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)
     @cached_fragment = read_fragment(@cache_key)
-    if !@cached_fragment.nil? && @cached_fragment.start_with?('error_page:') && !@debug
-      str = @cached_fragment.slice(11, @cached_fragment.length)
-      code = str.slice(0, 3)
-      @display_message = str.slice(4, str.length)
-      render :template => "custom_content/error_page", :layout => 'main', :status => code.to_i
-      return true
-    end
+    return render_404 if @cached_fragment == '404' && !@debug
 
     @minimal_render = params['no_render'] == 'true'
 
@@ -138,15 +132,12 @@ class CustomContentController < ApplicationController
         # unless I rescue a generic Exception
         rescue Exception => e
           Rails.logger.info("Caught exception trying to render page: #{e.inspect}")
-          @error = e.original_exception
           if @debug
+            @error = e.original_exception
             render :action => 'page_debug'
           else
-            code = @error.code || 404
-            write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + @error.display_message,
-                           :expires_in => 15.minutes)
-            @display_message = @error.display_message
-            render :template => "custom_content/error_page", :layout => 'main', :status => code
+            write_fragment(@cache_key, '404', :expires_in => 15.minutes)
+            render_404
           end
         end
       end

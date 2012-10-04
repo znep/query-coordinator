@@ -1,30 +1,15 @@
 module Canvas2
   class NoContentError < StandardError
-    attr_reader :source_error
-
-    def initialize(source = nil)
-      @source_error = source
-    end
-
-    def display_message
-      @source_error.nil? ? nil : @source_error.display_message
-    end
-
-    def code
-      @source_error.nil? ? nil : @source_error.code
-    end
   end
 
   class DataContextError < StandardError
-    attr_reader :config, :error_message, :details, :display_message, :code
+    attr_reader :config, :error_message, :details
 
-    def initialize(config, error_message, details = {}, display_message = nil, code = nil)
+    def initialize(config, error_message, details = {})
       @config = config
       @error_message = error_message
       @details = details
       @details[:config] = config
-      @display_message = display_message || config['errorMessage']
-      @code = code
     end
 
     def to_s
@@ -33,14 +18,12 @@ module Canvas2
   end
 
   class ComponentError < StandardError
-    attr_reader :component, :error_message, :details, :display_message, :code
+    attr_reader :component, :error_message, :details
 
-    def initialize(comp, error_message, details = nil, display_message = nil, code = nil)
+    def initialize(comp, error_message, details = nil)
       @component = comp
       @error_message = error_message
       @details = details
-      @display_message = display_message
-      @code = code
     end
 
     def to_s

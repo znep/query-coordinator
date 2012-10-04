@@ -3,7 +3,7 @@
 <%- if !@minimal_render -%>
   <%- context_result = @page.set_context(@vars) -%>
   <%- if context_result == false -%>
-  <%- raise Canvas2::NoContentError.new(Canvas2::DataContext::errors[0]) -%>
+  <%- raise Canvas2::NoContentError.new -%>
   <%- end -%><%# if context_result %>
 <%- end -%><%# if minimal_render %>
 

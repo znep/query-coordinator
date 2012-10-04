@@ -73,6 +73,7 @@
                     layerObj._loadingFeatures = false;
                     layerObj.renderFeatures(layerObj._featureSet);
                     layerObj.getData();
+                    layerObj._view.trigger('request_finish');
                 }
             });
 

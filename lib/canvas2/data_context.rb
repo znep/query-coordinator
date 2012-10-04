@@ -33,7 +33,7 @@ module Canvas2
                 available_contexts[c[:id]] = c
               end}
           elsif config['required']
-            errors.push("No datasets found for datasetList '" + id + "'")
+            errors.push(DataContextError.new(config, "No datasets found for datasetList '" + id + "'"))
             ret_val = false
           end
 
@@ -63,7 +63,8 @@ module Canvas2
           ret_val = get_dataset({'keepOriginal' => config['query'].blank?}.merge(config), lambda do |ds|
             col = ds.column_by_id_or_field_name(config['columnId'])
             if col.nil?
-              errors.push("No column '" + config['columnId'] + "' found for '" + id + "'")
+              errors.push(DataContextError.new(config, "No column '" + config['columnId'] +
+                                               "' found for '" + id + "'"))
               return !config['required']
             end
 
@@ -81,7 +82,7 @@ module Canvas2
             r = ds.get_rows(1)[:rows][0]
 
             if r.nil?
-              errors.push("No row found for '" + id + "'")
+              errors.push(DataContextError.new(config, "No row found for '" + id + "'"))
               return !config['required']
             end
 
@@ -163,8 +164,8 @@ module Canvas2
         if !context.blank?
           if context[:dataset].blank?
             if config['required']
-              errors.push("No dataset in original context '" + context[:id] +
-                          "' for derived context '" + config['id'] + "'")
+              errors.push(DataContextError.new(config, "No dataset in original context '" + context[:id] +
+                          "' for derived context '" + config['id'] + "'"))
               return false
             else
               return true
@@ -180,27 +181,32 @@ module Canvas2
         begin
           ds = View.find(config['datasetId'])
         rescue CoreServer::ResourceNotFound
-          errors.push("No dataset found for '" + (config['id'] || config['datasetId']) + "'")
+          errors.push(DataContextError.new(config, "No dataset found for '" +
+                                           (config['id'] || config['datasetId']) + "'"))
           return false if config['required']
         rescue CoreServer::CoreServerError => e
-          errors.push(e)
+          errors.push(DataContextError.new(config, "Core server failed: " + e.error_message,
+                                           { path: e.source, payload: JSON.parse(e.payload) }))
           return false if config['required']
         end
       elsif !config['datasetResourceName'].blank?
         begin
           ds = View.find_by_resource_name(config['datasetResourceName'])
         rescue CoreServer::ResourceNotFound
-          errors.push("No dataset found for '" + (config['datasetResourceName'] + "'"))
+          errors.push(DataContextError.new(config, "No dataset found for '" +
+                                           (config['datasetResourceName'] + "'")))
           return false if config['required']
         rescue CoreServer::CoreServerError => e
-          errors.push(e)
+          errors.push(DataContextError.new(config, "Core server failed: " + e.error_message,
+                                           { path: e.source, payload: JSON.parse(e.payload) }))
           return false if config['required']
         end
       elsif !config['search'].blank?
         search_response = Clytemnestra.search_views(config['search'].merge({'limit' => 1}))
         ds = search_response.results.first
         if ds.nil? && config['required']
-          errors.push("No dataset found for '" + (config['id'] || '(inline)') + "'")
+          errors.push(DataContextError.new(config, "No dataset found for '" +
+                                           (config['id'] || '(inline)') + "'"))
           return false
         end
       end

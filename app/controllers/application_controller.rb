@@ -203,6 +203,7 @@ private
         @meta['og:image'] = @link_image_src = logo_square[:href]
       elsif logo_square[:type].to_s == "hosted"
         @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:href]}"
+      end
     end
   end
 

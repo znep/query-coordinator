@@ -192,13 +192,17 @@ private
       'og:url' => request.url
     }
 
+    additional_meta = CurrentDomain.theme[:meta]
+    if additional_meta.present? && additional_meta.is_a? Hash
+      @meta.merge!(additional_meta)
+    end
+
     logo_square = CurrentDomain.theme[:images][:logo_square]
-    if logo_square.nil?
-      return
-    elsif logo_square[:type].to_s == "static"
-      @meta['og:image'] = @link_image_src = logo_square[:href]
-    elsif logo_square[:type].to_s == "hosted"
-      @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:href]}"
+    if logo_square.present?
+      if logo_square[:type].to_s == "static"
+        @meta['og:image'] = @link_image_src = logo_square[:href]
+      elsif logo_square[:type].to_s == "hosted"
+        @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:href]}"
     end
   end
 

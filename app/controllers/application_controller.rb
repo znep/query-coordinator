@@ -193,7 +193,7 @@ private
     }
 
     additional_meta = CurrentDomain.theme[:meta]
-    if additional_meta.present? && additional_meta.is_a? Hash
+    if additional_meta.present? && additional_meta.is_a?(Hash)
       @meta.merge!(additional_meta)
     end
 

@@ -248,12 +248,13 @@ $.component.Container.extend('Repeater', 'content', {
             properties.id = prefix + (properties.id || $.component.allocateId());
             properties.entity = entity;
             var children = properties.children;
-            if (children) {
+            if (properties.type != 'Repeater' && children)
+            {
                 if (!$.isArray(children))
-                    children = [ children ];
+                { children = [ children ]; }
                 children = properties.children = children.slice();
                 for (var i = 0; i < children.length; i++)
-                    children[i] = createTemplate(children[i]);
+                { children[i] = createTemplate(children[i]); }
             }
             return properties;
         }

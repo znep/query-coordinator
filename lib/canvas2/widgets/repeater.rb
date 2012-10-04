@@ -153,7 +153,7 @@ module Canvas2
       new_c['parentPrefix'] = id_prefix
       new_c['id'] = id_prefix + new_c['id']
       new_c['entity'] = resolutions
-      if new_c['children'].is_a? Array
+      if new_c['type'] != 'Repeater' && new_c['children'].is_a?(Array)
         new_c['children'] = new_c['children'].map {|c| create_copy(c, id_prefix, resolutions)}
       end
       new_c

@@ -103,8 +103,8 @@ var testsToRun = [
         name: 'Create map with no backgrounds',
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
         },
         runAsserts: function(currentTest) {
@@ -128,8 +128,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
         },
         runAsserts: function(currentTest) {
@@ -162,8 +162,8 @@ var testsToRun = [
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
                 'controlPane_mapCreate_5:layerName-1': 'Bing Road',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
         },
         runAsserts: function(currentTest) {
@@ -209,8 +209,8 @@ var testsToRun = [
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
                 'controlPane_mapCreate_5:layerName-1': 'Bing Road',
                 'controlPane_mapCreate_5:displayFormat.exclusiveLayers': true,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
         },
         runAsserts: function(currentTest) {
@@ -247,8 +247,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
         },
         runAsserts: function(currentTest) {
@@ -268,8 +268,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18447
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18447
             });
         },
         runAsserts: function(currentTest) {
@@ -298,8 +298,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
             this.evaluate(function() { $('.colorControl:visible').trigger('color_change', '#ff0000'); });
         },
@@ -317,16 +317,16 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.sizeValueId': 18440
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.sizeValueId': 18440
             });
         },
         runAsserts: function(currentTest) {
             with(this.test)
             {
                 assert(this.evaluate(function()
-                    { return !_.isUndefined(mapObj._children[0]._segments[102673]); }),
+                    { return !_.isUndefined(mapObj._children[0]._segments[mapObj._children[0]._sizeValueCol.id]); }),
                     bracket(currentTest) + 'layerObj._segments[col.id] is defined.');
                 assert(this.evaluate(function()
                     { return mapObj._children[0]._displayLayer.features[0].style.pointRadius != mapObj._children[0]._displayLayer.features[23].style.pointRadius; }),
@@ -339,16 +339,16 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.colorValueId': 18440
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.colorValueId': 18440
             });
         },
         runAsserts: function(currentTest) {
             with(this.test)
             {
                 assert(this.evaluate(function()
-                    { return !_.isUndefined(mapObj._children[0]._segments[102673]); }),
+                    { return !_.isUndefined(mapObj._children[0]._segments[mapObj._children[0]._colorValueCol.id]); }),
                     bracket(currentTest) + 'layerObj._segments[col.id] is defined.');
                 assert(this.evaluate(function()
                     { return mapObj._children[0]._displayLayer.features[0].style.fillColor != mapObj._children[0]._displayLayer.features[23].style.fillColor; }),
@@ -361,10 +361,10 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.sizeValueId': 18440,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.colorValueId': 18440
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.sizeValueId': 18440,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.colorValueId': 18440
             });
         },
         runAsserts: function(currentTest) {
@@ -387,9 +387,9 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.iconId': 19949
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.iconId': 19949
             });
         },
         runAsserts: function(currentTest) {
@@ -406,11 +406,11 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.iconId': 19949,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.sizeValueId': 18440,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.colorValueId': 18440
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.iconId': 19949,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.sizeValueId': 18440,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.colorValueId': 18440
             });
         },
         runAsserts: function(currentTest) {
@@ -433,9 +433,9 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.titleId': 18438
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.titleId': 18438
             });
         },
         runAsserts: function(currentTest) {
@@ -453,9 +453,9 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:tableColumnId-0': 18438
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:tableColumnId-0': 18438
             });
         },
         runAsserts: function(currentTest) {
@@ -472,10 +472,10 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:tableColumnId-0': 18438,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.flyoutsNoLabel': true
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:tableColumnId-0': 18438,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.flyoutsNoLabel': true
             });
         },
         runAsserts: function(currentTest) {
@@ -495,8 +495,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
         },
         runAsserts: function(currentTest) {
@@ -517,8 +517,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 19982
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 19982
             });
         },
         runAsserts: function(currentTest) {
@@ -549,8 +549,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
         },
         runAsserts: function(currentTest) {
@@ -597,10 +597,10 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
             });
             this.waitASec();
         },
@@ -636,10 +636,10 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18447,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18447,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
             });
             this.waitASec();
         },
@@ -657,10 +657,10 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18447,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18447,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
             });
             this.waitASec();
         },
@@ -679,9 +679,9 @@ var testsToRun = [
         name: 'Create map with boundary map using US States without background',
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'state'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'state'
             });
             this.waitASec();
         },
@@ -707,9 +707,9 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'state'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'state'
             });
             this.waitASec();
         },
@@ -735,9 +735,9 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'countries'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'countries'
             });
             this.waitASec();
         },
@@ -759,11 +759,11 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.colors.low': '#000000'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.colors.low': '#000000'
             });
             this.waitASec();
             this.evaluate(function() { $('.colorControl:visible:first').trigger('color_change', '#000000'); });
@@ -781,11 +781,11 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.colors.high': '#000000'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.colors.high': '#000000'
             });
             this.waitASec();
             this.evaluate(function() { $('.colorControl:visible:last').trigger('color_change', '#000000'); });
@@ -803,11 +803,11 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.quantityId': ''
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.quantityId': ''
             });
             this.waitASec();
         },
@@ -825,11 +825,11 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.quantityId': 18440
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.quantityId': 18440
             });
             this.waitASec();
         },
@@ -850,11 +850,11 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.titleId': 18438
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.titleId': 18438
             });
             this.waitASec();
         },
@@ -873,11 +873,11 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
-                'controlPane_mapDataLayerCreate_32:tableColumnId-0': 18438
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_34:tableColumnId-0': 18438
             });
             this.waitASec();
         },
@@ -895,12 +895,12 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
-                'controlPane_mapDataLayerCreate_32:tableColumnId-0': 18438,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.flyoutsNoLabel': true
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa',
+                'controlPane_mapDataLayerCreate_34:tableColumnId-0': 18438,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.flyoutsNoLabel': true
             });
             this.waitASec();
         },
@@ -921,10 +921,10 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'counties',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.region': 'wa'
             });
             this.waitASec();
         },
@@ -964,9 +964,9 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 19982,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.heatmap.type': 'countries'
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'heatmap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 19982,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.heatmap.type': 'countries'
             });
             this.waitASec();
         },
@@ -1005,8 +1005,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
             this.waitASec();
         },
@@ -1027,8 +1027,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18447
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18447
             });
             this.waitASec();
         },
@@ -1046,8 +1046,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
             this.waitASec();
         },
@@ -1065,9 +1065,9 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.quantityId': 18440
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.quantityId': 18440
             });
             this.waitASec();
         },
@@ -1085,8 +1085,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
             this.waitASec();
         },
@@ -1108,8 +1108,8 @@ var testsToRun = [
         formFill: function() {
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'rastermap',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443
             });
             this.waitASec();
         },
@@ -1132,9 +1132,9 @@ var testsToRun = [
             this.waitASec();
             this.fill('div#controlPane_mapCreate_5 > form.commonForm', {
                 'controlPane_mapCreate_5:layerName-0': 'Google Roadmap',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plotStyle': 'point',
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.locationId': 18443,
-                'controlPane_mapDataLayerCreate_32:displayFormat.viewDefinitions.0.plot.colorValueId': 18440,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plotStyle': 'point',
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.locationId': 18443,
+                'controlPane_mapDataLayerCreate_34:displayFormat.viewDefinitions.0.plot.colorValueId': 18440,
                 'controlPane_mapCreate_5:displayFormat.distinctLegend': true
             });
             this.waitASec();

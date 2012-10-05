@@ -121,13 +121,31 @@ $.component.Container.extend('Repeater', 'content', {
             }
         }
 
-        var doneWithRows = function()
+        var doneWithRowsCallback = function(count)
         {
-            delete cObj._childrenDirty;
-            _.defer(function()
+            return _.after(count, function()
             {
-                if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
-                $.component.sizeRenderRefresh();
+                delete cObj._childrenDirty;
+                if (count < 1)
+                {
+                    var clone = new $.component.Repeater.Clone($.extend(true, {},
+                            cObj._noChildrenCloneProperties));
+                    // Insert the clone
+                    cObj._initializing = true;
+                    if ($.isBlank(cObj._realContainer))
+                    {
+                        cObj._realContainer = cObj.add(cObj._properties.container || {type: 'Container'});
+                        delete cObj._containerDirty;
+                    }
+                    cObj._realContainer.add(clone);
+                    delete cObj._initializing;
+                }
+
+                _.defer(function()
+                {
+                    if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
+                    $.component.sizeRenderRefresh();
+                });
             });
         };
 
@@ -144,7 +162,7 @@ $.component.Container.extend('Repeater', 'content', {
         }
         else if (_.isArray(cObj._dataContext.value))
         {
-            var callback = _.after(cObj._dataContext.value.length, doneWithRows);
+            var callback = doneWithRowsCallback(cObj._dataContext.value.length);
             _.each(cObj._dataContext.value, function(di, i) { cObj._setRow(di, i, di, callback); });
         }
         else if (view = (cObj._dataContext || {}).dataset)
@@ -153,7 +171,7 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
                 var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
-                var callback = _.after(cObj._dataContext.dataset.visibleColumns.length, doneWithRows);
+                var callback = doneWithRowsCallback(cObj._dataContext.dataset.visibleColumns.length);
                 _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
                 {
                     if (_.all(exF, function(v, k)
@@ -187,10 +205,10 @@ $.component.Container.extend('Repeater', 'content', {
                     });
 
                     if (!$.isBlank(cObj._properties.groupBy))
-                    { renderGroupItems(cObj, rows, doneWithRows); }
+                    { renderGroupItems(cObj, rows, doneWithRowsCallback); }
                     else
                     {
-                        var callback = _.after(rows.length, doneWithRows);
+                        var callback = doneWithRowsCallback(rows.length);
                         _.each(rows, function(r) { cObj._setRow(r, r.index, r, callback); });
                     }
                 });
@@ -198,7 +216,7 @@ $.component.Container.extend('Repeater', 'content', {
         }
         else if ($.subKeyDefined(cObj, '_dataContext.datasetList'))
         {
-            var callback = _.after(cObj._dataContext.datasetList.length, doneWithRows);
+            var callback = doneWithRowsCallback(cObj._dataContext.datasetList.length);
             _.each(this._dataContext.datasetList, function(ds, i)
                     { cObj._setRow(ds, i, $.extend({}, ds), callback); });
         }
@@ -355,6 +373,11 @@ var setUpProperties = function(cObj, children)
         styles: cObj._properties.childStyles
     };
 
+    cObj._noChildrenCloneProperties = {
+        id: 'noChildren-clone',
+        children:  cObj._properties.noResultsChildren
+    };
+
     // Ensure that all descendants have an ID.  This ID is prefixed during object rendering.
     function allocateIds(children)
     {
@@ -367,7 +390,8 @@ var setUpProperties = function(cObj, children)
             { allocateIds(child.children); }
         }
     }
-    allocateIds(children);
+    allocateIds(cObj._cloneProperties);
+    allocateIds(cObj._noChildrenCloneProperties);
     updateContainerPrefix(cObj);
 };
 
@@ -399,7 +423,7 @@ var renderGroupItems = function(cObj, items, callback)
         else { addGroupItem(group); }
     });
 
-    var aggCallback = _.after(groups.length, callback);
+    var aggCallback = callback(groups.length);
     if (groupConfig.sortAlpha)
     { groups = groups.sort(); }
     _.each(groups, function(g, i)

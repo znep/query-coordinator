@@ -106,6 +106,7 @@ display-form:
 display-map:
 - screen-map
 - openlayers
+- jquery-ui-1.8.23.custom
 display-chart:
 - charts
 dataset-new:

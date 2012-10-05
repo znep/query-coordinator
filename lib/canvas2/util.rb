@@ -30,6 +30,14 @@ module Canvas2
       @@page_params
     end
 
+    def self.set_debug(debug)
+      @@debug = debug
+    end
+
+    def self.debug
+      @@debug
+    end
+
     def self.set_env(env)
       @@env = env
     end

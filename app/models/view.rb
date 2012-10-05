@@ -190,25 +190,52 @@ class View < Model
     return data, viewable_columns, aggregates, row_count
   end
 
+  #
+  # Return a tuple for a getRowsByIds request
+  #
+  def get_rows_request(per_page, page = 1, conditions = {}, include_meta = false)
+     params = { :method => 'getByIds',
+                :asHashes => true,
+                :accessType => 'WEBSITE',
+                :start => (page - 1) * per_page,
+                :length => per_page,
+                :meta => include_meta}
+     merged_conditions = self.query.cleaned.deep_merge(conditions)
+     request_body = {
+                'name' => self.name,
+                'searchString' => merged_conditions.delete('searchString'),
+                'query' => merged_conditions,
+                'originalViewId' => self.id
+                }
+                request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
+
+     url = "/views/INLINE/rows.json?#{params.to_param}"
+     { url: url, request: request_body}
+  end
+
+  #
+  # Return rows only, possibly cached - Can be used in discrete locations where
+  # we make a large number of small requests to the core server for individual
+  # rows for a poor-persons join. Should not be used generally, since rows are
+  # shared between users; this depends on other functions having had passed the
+  # requsite permissions checks
+  #
+  def get_cached_rows(per_page, page = 1, conditions = {})
+    req = get_rows_request(per_page, page, conditions)
+
+    cache_key = Digest::MD5.hexdigest(req.sort.to_json)
+    result = cache.read(cache_key)
+    if result.nil? || !@debug.nil? && @debug
+        result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {}, true),
+                        {:max_nesting => 25})
+        cache.write(cache_key, result, :expires_in => 15.minutes)
+    end
+    {rows: result, meta: nil}
+  end
+
   def get_rows(per_page, page = 1, conditions = {}, include_meta = false)
-    params = { :method => 'getByIds',
-               :asHashes => true,
-               :accessType => 'WEBSITE',
-               :start => (page - 1) * per_page,
-               :length => per_page,
-               :meta => include_meta}
-
-    merged_conditions = self.query.cleaned.deep_merge(conditions)
-    request_body = {
-      'name' => self.name,
-      'searchString' => merged_conditions.delete('searchString'),
-      'query' => merged_conditions,
-      'originalViewId' => self.id
-    }
-    request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
-
-    url = "/views/INLINE/rows.json?#{params.to_param}"
-    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json, {}, true),
+    req = get_rows_request(per_page, page, conditions, include_meta)
+    result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {}, true),
                         {:max_nesting => 25})
     {rows: include_meta ? result['data'] : result, meta: include_meta ? result['meta'] : nil}
   end
@@ -1272,4 +1299,8 @@ class View < Model
 
 
   private
+
+  def cache
+    @@cache ||= ActiveSupport::Cache::MemoryStore.new
+  end
 end

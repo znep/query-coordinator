@@ -48,7 +48,12 @@ module Canvas2
 
           else
             context[:dataset].visible_columns.each {|c| col_map[c.id.to_s] = c.fieldName}
-            rows = context[:dataset].get_rows(100)[:rows].map do |row|
+            if Canvas2::Util.debug
+              rows = context[:dataset].get_rows(100)
+            else
+              rows = context[:dataset].get_cached_rows(100)
+            end
+            rows = rows[:rows].map do |row|
               r = Hash.new
               row.each do |k, v|
                 if !col_map[k].blank?

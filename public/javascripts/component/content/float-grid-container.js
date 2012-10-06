@@ -15,7 +15,7 @@ $.component.Container.extend('Float Grid Container', 'content', {
         var cObj = this;
         cObj._super();
 
-        if (!$.isBlank(cObj.$ct.masonry))
+        if (!$.isBlank(cObj.$ct) && !$.isBlank(cObj.$ct.masonry))
         {
             var opts = {};
             var props = cObj._stringSubstitute(cObj._properties);

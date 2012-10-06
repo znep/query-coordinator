@@ -214,11 +214,11 @@ class View < Model
   end
 
   #
-  # Return rows only, possibly cached - Can be used in discrete locations where
-  # we make a large number of small requests to the core server for individual
-  # rows for a poor-persons join. Should not be used generally, since rows are
-  # shared between users; this depends on other functions having had passed the
-  # requsite permissions checks
+  # Return rows only (not metadata), possibly cached - Can be used in discrete
+  # locations where we make a large number of small requests to the core server
+  # for individual rows for a poor-persons join. Caching in the frontend is not
+  # fun, but this helps reduce and reuse calls to the core server across multiple
+  # requests
   #
   def get_cached_rows(per_page, page = 1, conditions = {})
     req = get_rows_request(per_page, page, conditions)

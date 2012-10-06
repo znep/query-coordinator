@@ -79,7 +79,12 @@ module Canvas2
 
         when 'row'
           ret_val = get_dataset(config, lambda do |ds|
-            r = ds.get_rows(1)[:rows][0]
+            # Cache single-row requests
+            if Canvas2::Util.debug
+              r = ds.get_rows(1)[:rows][0]
+            else
+              r = ds.get_cached_rows(1)[:rows][0]
+            end
 
             if r.nil?
               errors.push(DataContextError.new(config, "No row found for '" + id + "'"))

@@ -25,16 +25,19 @@ $.component.Container.extend('Float Grid Container', 'content', {
                     if (!$.isBlank(props[p]))
                     { opts[p] = props[p]; }
                 });
-            if (!cObj._masonryInit)
+            _.defer(function()
             {
-                cObj.$ct.masonry(opts);
-                cObj._masonryInit = true;
-            }
-            else
-            {
-                cObj.$ct.masonry('option', opts);
-                cObj.$ct.masonry('reload');
-            }
+                if (!cObj._masonryInit)
+                {
+                    cObj.$ct.masonry(opts);
+                    cObj._masonryInit = true;
+                }
+                else
+                {
+                    cObj.$ct.masonry('option', opts);
+                    cObj.$ct.masonry('reload');
+                }
+            });
         }
     },
 

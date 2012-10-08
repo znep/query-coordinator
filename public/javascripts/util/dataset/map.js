@@ -62,7 +62,11 @@ Dataset.map.convertToVersion2 = function(view, df)
     {
         df.bkgdLayers = [{ layerName: 'World Street Map (ESRI)', opacity: 1.0 }];
         delete df.viewDefinitions[0].plotStyle;
-        delete df.viewDefinitions[0].plot;
+        for (var key in df.viewDefinitions[0].plot)
+        {
+            if (!_.include(['titleId', 'descriptionColumns'], key))
+            { delete df.viewDefinitions[0].plot[key]; }
+        }
     }
 
     if (view.isGeoDataset())

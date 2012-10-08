@@ -81,6 +81,13 @@ $(function ()
     }
 });
 
+(function()
+{
+    var debug = $.urlParam(window.location.href, 'debug');
+    if (debug)
+    { _.each(debug.split(','), function(key) { blist.debug[key] = true; }); }
+})();
+
 window.mapDebugger = function()
 {
     window.mapObj = blist.datasetPage.rtManager.$domForType('map').socrataMap();

@@ -1230,6 +1230,7 @@
 
         onMoveEnd: function()
         {
+            if ((blist.debug || {}).viewport && (console || {}).trace) { console.groupCollapsed('onMoveEnd'); console.trace(); console.log('handlingEvent:', this.handlingEvent); console.dir(this.viewport); console.groupEnd(); }
             if (this.expected() || this.handlingEvent == 'moveend') { return; }
             this.events.triggerEvent('viewportchanged');
             this.handlingEvent = 'moveend';

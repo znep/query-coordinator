@@ -241,7 +241,7 @@
         {
             var mapObj = this;
             if (layer.object) { layer = layer.object; }
-            $.debug('map element loaded', layer.name);
+            $.debug('map element loaded', layer.name || layer.id);
 
             if (blist.openLayers.isBackgroundLayer(layer)) { layer._loaded = true; }
 

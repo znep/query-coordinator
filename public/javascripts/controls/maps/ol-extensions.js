@@ -1291,19 +1291,27 @@
             setTimeout(function() { control.zoomToPreferred(); }, 100);
         },
 
-        expect: function()
+        expect: function(persist)
         {
             this.expecting = true;
+            if (persist) this.expectingMultiple = true;
         },
 
         expected: function()
         {
             if (this.expecting)
             {
-                this.expecting = false;
+                if (!this.expectingMultiple)
+                { this.expecting = false; }
                 return true;
             }
             return false;
+        },
+
+        stopExpecting: function()
+        {
+            this.expecting = false;
+            delete this.expectingMultiple;
         },
 
         willMove: function(viewport)

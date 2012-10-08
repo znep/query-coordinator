@@ -293,7 +293,9 @@
                 mapObj.map.setNoBackground(false);
             }
 
+            if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(true); }
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });
+            if (mapObj._viewportHandler) { mapObj.viewportHandler().stopExpecting(); }
 
             mapObj._backgroundLayers = _.map(mapObj._displayFormat.bkgdLayers, function(o)
                 { return $.extend({}, o); });

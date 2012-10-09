@@ -105,6 +105,8 @@
             var layerObj = this;
 
             var geometry = layerObj.extractGeometryFromRow(row);
+            if (_.isBoolean(geometry) || _.isString(geometry)) { return null; }
+
             var dupKey = geometry.toString();
 
             if (layerObj._idList[dupKey]) { return; }

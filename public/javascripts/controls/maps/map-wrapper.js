@@ -80,6 +80,9 @@
             if (mapObj._displayFormat.disableGeolocator)
             { mapObj._controls.GeocodeDialog.deactivate(); }
 
+            mapObj.map.events.register('preaddlayer', mapObj,
+                function() { if (mapObj._viewportHandler) { mapObj._viewportHandler.expect(); } });
+
             var datasetsLoaded = function()
             {
                 // TODO: Decide whether or not this is a good idea.
@@ -151,6 +154,15 @@
 
             mapObj._primaryView.bind('displayformat_change', function()
             {
+                if ((blist.debug || {}).viewport && (console || {}).trace)
+                {
+                    console.groupCollapsed('primaryView displayformat_change');
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                    console.groupCollapsed('arguments'); console.log(arguments); console.groupEnd();
+                    console.groupCollapsed('old state'); console.dir(mapObj._displayFormat); console.groupEnd();
+                    console.groupCollapsed('new state'); console.dir(this.displayFormat); console.groupEnd();
+                    console.groupEnd();
+                }
                 if (arguments.length > 0) { return; }
                 if (mapObj._panning) { delete mapObj._panning; return; }
                 mapObj._displayFormat = this.displayFormat;
@@ -267,6 +279,14 @@
         initializeBackgroundLayers: function()
         {
             var mapObj = this;
+            if ((blist.debug || {}).viewport && (console || {}).trace)
+            {
+                console.groupCollapsed('initializeBackgroundLayers');
+                console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupCollapsed('config'); console.dir(mapObj._displayFormat.bkgdLayers); console.groupEnd();
+                console.groupCollapsed('cache'); console.dir(mapObj._backgroundLayers); console.groupEnd();
+                console.groupEnd();
+            }
 
             mapObj.setExclusiveLayers();
             if (!mapObj._backgroundLayers
@@ -293,9 +313,7 @@
                 mapObj.map.setNoBackground(false);
             }
 
-            if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(true); }
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });
-            if (mapObj._viewportHandler) { mapObj.viewportHandler().stopExpecting(); }
 
             mapObj._backgroundLayers = _.map(mapObj._displayFormat.bkgdLayers, function(o)
                 { return $.extend({}, o); });
@@ -333,6 +351,14 @@
         addBackgroundLayer: function(layerOptions)
         {
             var mapObj = this;
+            if ((blist.debug || {}).viewport && (console || {}).trace)
+            {
+                console.groupCollapsed('addBackgroundLayer');
+                console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupCollapsed('arguments'); console.log(arguments); console.groupEnd();
+                console.groupCollapsed('layers'); console.dir(mapObj.map.layers); console.groupEnd();
+                console.groupEnd();
+            }
 
             var config;
 

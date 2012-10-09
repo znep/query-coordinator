@@ -1810,9 +1810,12 @@ var Dataset = ServerModel.extend({
         if (!this._childViews[uid])
         {
             var self = this;
-            Dataset.lookupFromViewId(uid, function(ds) {
-                self._childViews[uid] = ds;
-                callback(ds);
+            Dataset.lookupFromViewId(uid, function(child) {
+                self._childViews[uid] = child;
+                child.unbind(null, null, self);
+                child.bind('displaytype_change',
+                    function() { self.trigger('displaytype_change'); }, self);
+                callback(child);
             }, undefined, isBatch);
         }
         else
@@ -1867,7 +1870,7 @@ var Dataset = ServerModel.extend({
         var oldSearch = ds.searchString;
         var oldDispFmt = $.extend(true, {}, ds.displayFormat);
         var oldDispType = ds.displayType;
-        var oldRTConfig = ds.metadata.renderTypeConfig;
+        var oldRTConfig = $.extend(true, {}, ds.metadata.renderTypeConfig);
         var oldCondFmt = ds.metadata.conditionalFormatting;
 
         if (forceFull)
@@ -1905,7 +1908,8 @@ var Dataset = ServerModel.extend({
             function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
 
         var needsDTChange;
-        if (!_.isEqual(oldRTConfig.visible, ds.metadata.renderTypeConfig.visible))
+        if (!_.isEqual(oldRTConfig.visible, ds.metadata.renderTypeConfig.visible)
+            || !_.isEqual(oldRTConfig.active, ds.metadata.renderTypeConfig.active))
         {
             // If we have a visible type that's not available, add it
             _.each(ds.metadata.renderTypeConfig.visible, function(v, type)

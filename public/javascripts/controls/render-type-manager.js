@@ -206,7 +206,6 @@
                     _.each(_.keys(rtmObj.visibleTypes), function(vt)
                     {
                         if (!toShow[vt]) { rtmObj.hide(vt); }
-                        else { delete toShow[vt]; }
                     });
 
                     _.each(toShow, function(v, t)

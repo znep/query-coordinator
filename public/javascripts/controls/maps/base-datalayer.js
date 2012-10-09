@@ -52,6 +52,7 @@
             { layerObj._$flyoutTemplate.remove(); }
 
             layerObj._view.unbind(null, null, layerObj);
+            layerObj._view.unbind(null, null, layerObj._parent._primaryView);
         },
 
         bindDatasetEvents: function()

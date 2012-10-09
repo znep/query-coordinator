@@ -46,6 +46,35 @@
             { this._map.zoomToExtent(feature.attributes.bbox); }
             else
             { this._map.setCenter(feature.geometry.getBounds().getCenterLonLat(), currentZoom + 1); }
+
+            if (feature.attributes.forever)
+            {
+                if (this.settings.showRowLink && !this._parent._displayFormat.hideRowLink)
+                {
+                    this._parent.showPopup(feature.geometry.toLonLat(),
+                        '<div class="foreverNode">' +
+                        '<div>Too much data</div>' +
+                        'This cluster\'s data is too densely packed to display useful data ' +
+                        'geographically. We recommend that you <a href="#openTable">open the ' +
+                        'tabular view</a> in order to get more details.</div>');
+
+                    $(".olFramedCloudPopupContent .foreverNode a").click(function(e)
+                    {
+                        e.preventDefault();
+                        var newMD = $.extend(true, {}, layerObj._parent._primaryView.metadata);
+                        $.deepSet(newMD, layerObj._view.id,'renderTypeConfig','active','table','id');
+                        $.deepSet(newMD, true, 'renderTypeConfig', 'visible', 'table');
+                        layerObj._parent._primaryView.update({metadata: newMD});
+                        layerObj._view.showRenderType('table');
+                    });
+                }
+                else
+                { this._parent.showPopup(feature.geometry.toLonLat(),
+                    '<div class="foreverNode">' +
+                    '<div>Too much data</div>' +
+                    'This cluster\'s data is too densely packed to display useful data ' +
+                    'geographically.</div>'); }
+            }
         },
 
         overFeature: function(feature)

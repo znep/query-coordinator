@@ -279,6 +279,14 @@
         initializeBackgroundLayers: function()
         {
             var mapObj = this;
+            if ((blist.debug || {}).viewport && (console || {}).trace)
+            {
+                console.groupCollapsed('initializeBackgroundLayers');
+                console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupCollapsed('config'); console.dir(mapObj._displayFormat.bkgdLayers); console.groupEnd();
+                console.groupCollapsed('cache'); console.dir(mapObj._backgroundLayers); console.groupEnd();
+                console.groupEnd();
+            }
 
             mapObj.setExclusiveLayers();
             if (!mapObj._backgroundLayers

@@ -76,7 +76,7 @@ module Canvas2
         end
 
         all_c.compact!
-        if all_c.length > 0
+        if all_c.length > 0 || !@properties['noResultsChildren'].nil?
           cont_config = @properties['container'] || {'type' => 'Container'}
           cont_config['id'] ||= Canvas2::Util.allocate_id
           orig_id = cont_config['id']
@@ -84,7 +84,8 @@ module Canvas2
           real_c = CanvasWidget.from_config(cont_config, self)
           @orig_props['container'] = cont_config
           @orig_props['container']['id'] = orig_id
-          real_c.children = all_c
+          real_c.children = all_c.length > 0 ? all_c :
+            CanvasWidget.from_config(@properties['noResultsChildren'], self)
           r = real_c.render
           t += r[0]
           fully_rendered &&= r[1]

@@ -159,6 +159,8 @@
                     console.groupCollapsed('primaryView displayformat_change');
                     console.groupCollapsed('trace'); console.trace(); console.groupEnd();
                     console.groupCollapsed('arguments'); console.log(arguments); console.groupEnd();
+                    console.groupCollapsed('old state'); console.dir(mapObj._displayFormat); console.groupEnd();
+                    console.groupCollapsed('new state'); console.dir(this.displayFormat); console.groupEnd();
                     console.groupEnd();
                 }
                 if (arguments.length > 0) { return; }

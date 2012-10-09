@@ -80,6 +80,9 @@
             if (mapObj._displayFormat.disableGeolocator)
             { mapObj._controls.GeocodeDialog.deactivate(); }
 
+            mapObj.map.events.register('preaddlayer', mapObj,
+                function() { if (mapObj._viewportHandler) { mapObj._viewportHandler.expect(); } });
+
             var datasetsLoaded = function()
             {
                 // TODO: Decide whether or not this is a good idea.
@@ -293,9 +296,7 @@
                 mapObj.map.setNoBackground(false);
             }
 
-            if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(true); }
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });
-            if (mapObj._viewportHandler) { mapObj.viewportHandler().stopExpecting(); }
 
             mapObj._backgroundLayers = _.map(mapObj._displayFormat.bkgdLayers, function(o)
                 { return $.extend({}, o); });
@@ -333,6 +334,8 @@
         addBackgroundLayer: function(layerOptions)
         {
             var mapObj = this;
+            if ((blist.debug || {}).viewport && (console || {}).trace)
+            { console.groupCollapsed('addBackgroundLayer'); console.trace(); console.dir(arguments); console.dir(mapObj.map.layers); console.groupEnd(); }
 
             var config;
 

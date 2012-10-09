@@ -154,6 +154,13 @@
 
             mapObj._primaryView.bind('displayformat_change', function()
             {
+                if ((blist.debug || {}).viewport && (console || {}).trace)
+                {
+                    console.groupCollapsed('primaryView displayformat_change');
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                    console.groupCollapsed('arguments'); console.log(arguments); console.groupEnd();
+                    console.groupEnd();
+                }
                 if (arguments.length > 0) { return; }
                 if (mapObj._panning) { delete mapObj._panning; return; }
                 mapObj._displayFormat = this.displayFormat;
@@ -335,7 +342,13 @@
         {
             var mapObj = this;
             if ((blist.debug || {}).viewport && (console || {}).trace)
-            { console.groupCollapsed('addBackgroundLayer'); console.trace(); console.dir(arguments); console.dir(mapObj.map.layers); console.groupEnd(); }
+            {
+                console.groupCollapsed('addBackgroundLayer');
+                console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupCollapsed('arguments'); console.log(arguments); console.groupEnd();
+                console.groupCollapsed('layers'); console.dir(mapObj.map.layers); console.groupEnd();
+                console.groupEnd();
+            }
 
             var config;
 

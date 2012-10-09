@@ -1230,7 +1230,15 @@
 
         onMoveEnd: function()
         {
-            if ((blist.debug || {}).viewport && (console || {}).trace) { console.groupCollapsed('onMoveEnd'); console.trace(); console.log('handlingEvent:', this.handlingEvent); console.dir(this.viewport); console.groupEnd(); }
+            if ((blist.debug || {}).viewport && (console || {}).trace)
+            {
+                console.groupCollapsed('onMoveEnd');
+                console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupCollapsed('state');
+                    console.log('handlingEvent:', this.handlingEvent); 
+                    console.dir(this.viewport); console.groupEnd();
+                console.groupEnd();
+            }
             if (this.expected() || this.handlingEvent == 'moveend') { return; }
             this.events.triggerEvent('viewportchanged');
             this.handlingEvent = 'moveend';

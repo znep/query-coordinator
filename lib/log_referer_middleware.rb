@@ -12,10 +12,12 @@ class LogRefererMiddleware
     # site to log the metrics too...
     request = Rack::Request.new(env)
     unless env['HTTP_X_FORWARDED_HOST'].blank?
-      domain = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
+      request_based_domain = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
     end
-    domain = request.host if domain.blank?
+    request_based_domain = request.host if request_based_domain.blank?
 
+    domain = CurrentDomain.cname
+    logger.info "Attempting to create metric for DOMAIN #{domain}. The requesting domain was #{request_based_domain}"
     if domain.blank?
       logger.warn "Unable to determine domain for request. I'm not going to log the referrer."
     else
@@ -38,9 +40,10 @@ class LogRefererMiddleware
         end
 
         domain.downcase!
+        request_based_domain.downcase!
         if uri.nil?
           # noop
-        elsif uri.host.downcase == domain
+        elsif uri.host.downcase == request_based_domain
           # logger.debug "Not logging same domain referal (#{domain})."
         elsif uri.host =~ /rpxnow.com$/
           logger.debug "Not logging RPX return logins."

@@ -143,7 +143,7 @@ var testsToRun = [
                     { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base').children().length; }) == 1,
                     bracket(currentTest) + 'Overview shows correct number of background layers.');
                 assert(this.evaluate(function()
-                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) label').text(); }) == 'Google Roadmap',
+                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) label').text(); }) == 'Roadmap',
                     bracket(currentTest) + 'Overview shows appropriate background.');
                 assert(this.evaluate(function()
                     { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) input[type=checkbox]').attr('checked'); }) == 'checked',
@@ -183,13 +183,13 @@ var testsToRun = [
                     { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base').children().length; }) == 2,
                     bracket(currentTest) + 'Overview shows correct number of background layers.');
                 assert(this.evaluate(function()
-                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) label').text(); }) == 'Google Roadmap',
+                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) label').text(); }) == 'Roadmap',
                     bracket(currentTest) + 'Overview shows appropriate first background.');
                 assert(this.evaluate(function()
                     { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) input[type=checkbox]').attr('checked'); }) == 'checked',
                     bracket(currentTest) + 'Overview shows appropriate first background with a checked checkbox.');
                 assert(this.evaluate(function()
-                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(1) label').text(); }) == 'Bing Road',
+                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(1) label').text(); }) == 'Road',
                     bracket(currentTest) + 'Overview shows appropriate second background.');
                 assert(this.evaluate(function()
                     { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(1) input[type=checkbox]').attr('checked'); }) == 'checked',
@@ -221,14 +221,14 @@ var testsToRun = [
                 assert(this.evaluate(function() { return mapObj.map.baseLayer.visibility; }) === true,
                     bracket(currentTest) + 'Map has appropriate background layer which is not hidden.');
                 assert(this.evaluate(function()
-                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base').children().length; }) == 1,
+                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base').children().length; }) == 2,
                     bracket(currentTest) + 'Overview shows correct number of background layers.');
                 assert(this.evaluate(function()
-                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) label').text(); }) == 'Google Roadmap',
+                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) label').text(); }) == 'Roadmap',
                     bracket(currentTest) + 'Overview shows appropriate first background.');
                 // This should be looking for a radio button.
                 assert(this.evaluate(function()
-                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) input[type=checkbox]').attr('checked'); }) == 'checked',
+                    { return $(mapObj.map.div).siblings('.mapLayers').find('ul.base li:eq(0) input[type=radio]').attr('checked'); }) == 'checked',
                     bracket(currentTest) + 'Overview shows appropriate first background with a selected radio button.');
                 assert(
                     this.evaluate(function() { return _.isEmpty(mapObj._controls.MapTypeSwitcher.layers); }) == false,
@@ -371,8 +371,11 @@ var testsToRun = [
             with(this.test)
             {
                 assert(this.evaluate(function()
-                    { return !_.isUndefined(mapObj._children[0]._segments[102673]); }),
-                    bracket(currentTest) + 'layerObj._segments[col.id] is defined.');
+                    { return !_.isUndefined(mapObj._children[0]._segments[mapObj._children[0]._sizeValueCol.id]); }),
+                    bracket(currentTest) + 'layerObj._segments[col.id] for size is defined.');
+                assert(this.evaluate(function()
+                    { return !_.isUndefined(mapObj._children[0]._segments[mapObj._children[0]._colorValueCol.id]); }),
+                    bracket(currentTest) + 'layerObj._segments[col.id] for color is defined.');
                 assert(this.evaluate(function()
                     { return mapObj._children[0]._displayLayer.features[0].style.pointRadius != mapObj._children[0]._displayLayer.features[23].style.pointRadius; }),
                     bracket(currentTest) + 'Feature.Vectors are using variable style.pointRadius values.');
@@ -420,8 +423,11 @@ var testsToRun = [
                     { return !_.isUndefined(mapObj._children[0]._displayLayer.features[0].style.externalGraphic); }),
                     bracket(currentTest) + 'Feature.Vectors have style.externalGraphic defined.');
                 assert(this.evaluate(function()
-                    { return !_.isUndefined(mapObj._children[0]._segments[102673]); }),
-                    bracket(currentTest) + 'layerObj._segments[col.id] is defined.');
+                    { return !_.isUndefined(mapObj._children[0]._segments[mapObj._children[0]._sizeValueCol.id]); }),
+                    bracket(currentTest) + 'layerObj._segments[col.id] for size is defined.');
+                assert(this.evaluate(function()
+                    { return !_.isUndefined(mapObj._children[0]._segments[mapObj._children[0]._colorValueCol.id]); }),
+                    bracket(currentTest) + 'layerObj._segments[col.id] for color is defined.');
                 assert(this.evaluate(function()
                     { return _.isUndefined(mapObj._children[0]._displayLayer.features[0].style.fillColor); }),
                     bracket(currentTest) + '- Feature.Vectors do NOT have style.pointRadius or style.fillColor defined.');

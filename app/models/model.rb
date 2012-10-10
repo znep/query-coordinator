@@ -176,7 +176,7 @@ class Model
   end
 
   def to_json(options = nil)
-    data_hash.to_json(options)
+    as_json.to_json(options)
   end
 
   def deep_clone(klass = nil)

@@ -51,7 +51,8 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(this.approvalHistory))
         { Dataset.addProperties(this, Dataset.modules.approvalHistory, $.extend({}, this)); }
 
-        this.updateColumns();
+        this.updateColumns(this.initialMetaColumns, false, true);
+        delete this.initialMetaColumns;
 
         this._adjustProperties();
         this._updateGroupings();
@@ -62,7 +63,8 @@ var Dataset = ServerModel.extend({
 
         // We need an active row set to start
         this._savedRowSet = new RowSet(this, {orderBys: (this.query || {}).orderBys,
-            filterCondition: this.cleanFilters()});
+            filterCondition: this.cleanFilters()}, null, this.initialRows);
+        delete this.initialRows;
         this._activateRowSet(this._savedRowSet);
 
         this._pendingRowEdits = {};

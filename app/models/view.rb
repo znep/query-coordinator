@@ -221,23 +221,46 @@ class View < Model
   # requests
   #
   def get_cached_rows(per_page, page = 1, conditions = {})
-    req = get_rows_request(per_page, page, conditions)
+    req = get_rows_request(per_page, page, conditions, true)
 
     cache_key = Digest::MD5.hexdigest(req.sort.to_json)
     result = cache.read(cache_key)
-    if result.nil? || !@debug.nil? && @debug
-        result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {}, true),
+    if result.nil?
+        server_result = JSON.parse(CoreServer::Base.connection.
+                                   create_request(req[:url], req[:request].to_json, {}, true),
                         {:max_nesting => 25})
+        result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
+          meta_columns: server_result['meta']['view']['columns'].
+            find_all { |c| c['dataTypeName'] == 'meta_data' } }
         cache.write(cache_key, result, :expires_in => 15.minutes)
     end
-    {rows: result, meta: nil}
+    if conditions.empty?
+      @cached_rows ||= {}
+      @cached_rows[:rows] = result[:rows]
+      @cached_rows[:start] = (page - 1) * per_page
+      @cached_rows[:total_count] = result[:total_count]
+      @cached_rows[:meta_columns] = result[:meta_columns]
+    end
+    {rows: result[:rows], meta: nil}
   end
 
   def get_rows(per_page, page = 1, conditions = {}, include_meta = false)
+    include_meta = true if @cached_rows.nil? || @cached_rows[:rows].nil?
     req = get_rows_request(per_page, page, conditions, include_meta)
     result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {}, true),
                         {:max_nesting => 25})
-    {rows: include_meta ? result['data'] : result, meta: include_meta ? result['meta'] : nil}
+    row_result = include_meta ? result['data'] : result
+    if conditions.empty?
+      @cached_rows ||= {}
+      @cached_rows[:rows] = row_result
+      @cached_rows[:start] = (page - 1) * per_page
+      if include_meta
+        @cached_rows[:total_count] = result['meta']['totalRows']
+        @cached_rows[:meta_columns] = result['meta']['view']['columns'].
+          find_all { |c| c['dataTypeName'] == 'meta_data' }
+      end
+    end
+    {rows: row_result, meta: include_meta ? result['meta'] : nil}
   end
 
   def get_total_rows(conditions = {})
@@ -256,8 +279,15 @@ class View < Model
     }.to_json
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
-    return JSON.parse(CoreServer::Base.connection.create_request(url, request_body),
-                      {:max_nesting => 25})['meta']['totalRows']
+    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body),
+                      {:max_nesting => 25})
+    if conditions.empty?
+      @cached_rows ||= {}
+      @cached_rows[:total_count] = result['meta']['totalRows']
+      @cached_rows[:meta_columns] = result['meta']['view']['columns'].
+        find_all { |c| c['dataTypeName'] == 'meta_data' }
+    end
+    return result['meta']['totalRows']
   end
 
   def get_rows_by_ids(ids, req_body = nil)
@@ -434,14 +464,19 @@ class View < Model
                      "?method=setPermission&value=#{perm_value}")
   end
 
-  def to_json(opts = nil)
+  def as_json(opts = nil)
     dhash = data_hash
     dhash["numberOfComments"] = numberOfComments
     dhash["averageRating"] = averageRating
     dhash["totalTimesRated"] = totalTimesRated
     dhash['columns'] = (columns || []).map {|c| c.to_core}
+    if !@cached_rows.nil?
+      dhash['initialRows'] = { rows: @cached_rows[:rows] || [], start: @cached_rows[:start] || 0,
+        total: @cached_rows[:total_count] }
+      dhash['initialMetaColumns'] = @cached_rows[:meta_columns]
+    end
 
-    dhash.to_json(opts)
+    dhash
   end
 
 

@@ -294,8 +294,8 @@ class Column < Model
     return col
   end
 
-  def to_json
-    to_core.to_json.html_safe
+  def as_json
+    to_core
   end
 
   # Convert the core server column data to what JS expects as a model so the

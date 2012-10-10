@@ -1,7 +1,7 @@
 (function(){
 
 var RowSet = ServerModel.extend({
-    _init: function(ds, query, parRS)
+    _init: function(ds, query, parRS, initRows)
     {
         this._super();
 
@@ -23,6 +23,13 @@ var RowSet = ServerModel.extend({
         this._isComplete = false;
         this._matchesExpr = blist.filter.matchesExpression(this._translatedQuery.filterCondition,
                 this._dataset);
+
+        if (!_.isEmpty(initRows))
+        {
+            this._addRows(initRows.rows, initRows.start);
+            if (!$.isBlank(initRows.total))
+            { this._totalCount = initRows.total; }
+        }
 
         this.formattingChanged();
     },

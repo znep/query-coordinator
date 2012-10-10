@@ -739,6 +739,9 @@ $.Control.registerMixin('d3_impl_column', {
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
 
+        cc.chartHtmlD3.selectAll('.nullDataBar')
+            .style('height', vizObj._d3_px(yAxisPos));
+
         vizObj._renderTicks(yScale, yScale, false);
         vizObj._renderValueMarkers(yScale, yScale, false);
     },

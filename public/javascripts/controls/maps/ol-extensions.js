@@ -1428,6 +1428,48 @@
         CLASS_NAME: 'blist.openLayers.Viewport'
     });
 
+    blist.openLayers.StaledCluster = OpenLayers.Class(OpenLayers.Control, {
+
+        viewportPercentage: 0.1,
+
+        debug: function() // Handy little grid thing to tell you how much you have to pan.
+        {
+            var $foo = $("<div />").css({ position: 'absolute', top: 0, left: 0,
+                                          border: 'solid 1px black',
+                                          width: this.map.getSize().w * this.viewportPercentage,
+                                          height: '100%' });
+            $('body').append($foo);
+        },
+
+        setMap: function()
+        {
+            OpenLayers.Control.prototype.setMap.apply(this, arguments);
+            this.update();
+        },
+
+        isStale: function()
+        {
+            return this.distance() >= this._distance || this.map.getZoom() != this._zoom;
+        },
+
+        distance: function()
+        {
+            var curPos = this.map.getCenter().toGeometry();
+            return curPos.distanceTo(this._cachedPos);
+        },
+
+        update: function()
+        {
+            this._zoom = this.map.getZoom();
+            this._cachedPos = this.map.getCenter().toGeometry();
+            var size = this.map.getSize();
+            this._distance
+                = this.map.getResolution() * Math.max(size.w, size.h) * this.viewportPercentage;
+        },
+
+        CLASS_NAME: 'blist.openLayers.StaledCluster'
+    });
+
     // STAMEN
 
     blist.openLayers.Stamen = OpenLayers.Class(OpenLayers.Layer.OSM, {

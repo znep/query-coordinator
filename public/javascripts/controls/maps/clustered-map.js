@@ -27,7 +27,11 @@
             var layerObj = this;
             if (layerObj._parent.viewportHandler().viewportInOriginal)
             { delete layerObj._neverCluster; }
-            _.defer(function() { layerObj.getData(); });
+
+            if (!layerObj._staledCluster
+                || layerObj._renderType == 'points'
+                || layerObj._staledCluster.isStale())
+            { _.defer(function() { layerObj.getData(); }); }
         },
 
         layersToRestack: function()
@@ -228,6 +232,13 @@
             { this._super(data); }
 
             this._lastRenderType = this._renderType;
+            if (this._staledCluster)
+            { this._staledCluster.update(); }
+            else if (this.settings.staleClusters)
+            {
+                this._map.addControl(this._staledCluster = new blist.openLayers.StaledCluster());
+                this._staledCluster.viewportPercentage = this.settings.staleClusters;
+            }
         },
 
         prepareRowRender: function(cluster)
@@ -281,6 +292,7 @@
             this._super.call(this, query);
         }
     }, {
+        staleClusters: 0.15, // Prevent small pan actions from updating clusters.
         defaultPixelSize: 45 // Size of a medium cluster, to minimize cluster overlap.
     }, 'socrataDataLayer', 'points');
 

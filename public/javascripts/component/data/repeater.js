@@ -187,7 +187,11 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 // Render records
                 var columnMap = {};
-                _.each(view.columns, function(c) { columnMap[c.id] = c.fieldName; });
+                var columnFieldNameMap = {};
+                _.each(view.columns, function(c) { 
+                    columnMap[c.id] = c.fieldName;
+                    columnFieldNameMap[c.fieldName] = c.id; 
+                });
                 view.getRows(cObj.position, cObj.length, function(rows)
                 {
                     // Create entity TODO - mapping will be unnecessary w/ SODA 2
@@ -198,7 +202,7 @@ $.component.Container.extend('Repeater', 'content', {
                         {
                             if (!$.isBlank(columnMap[k]))
                             { r[columnMap[k]] = v; }
-                            else if (k.match(/[a-z]+/))
+                            else if (k.match(/[a-z]+/) && $.isBlank(columnFieldNameMap[k])) // if user column collides with system column, user column wins.
                             { r[k] = v; }
                         });
                         return r;

@@ -24,6 +24,7 @@ module Canvas2
       fully_rendered = true
       if !context.blank?
         col_map = {}
+        col_field_name_map = {}
         all_c = []
 
         if context.is_a? Array
@@ -47,7 +48,10 @@ module Canvas2
             end
 
           else
-            context[:dataset].visible_columns.each {|c| col_map[c.id.to_s] = c.fieldName}
+            context[:dataset].visible_columns.each {|c| 
+              col_map[c.id.to_s] = c.fieldName
+              col_field_name_map[c.fieldName] = c.id
+            }
             if Canvas2::Util.debug
               rows = context[:dataset].get_rows(100)
             else
@@ -58,7 +62,7 @@ module Canvas2
               row.each do |k, v|
                 if !col_map[k].blank?
                   r[col_map[k]] = v
-                elsif k.match(/[a-z]+/)
+                elsif k.match(/[a-z]+/) && col_field_name_map[k].nil? # if user column collides with system column name, user column wins
                   r[k] = v
                 end
               end

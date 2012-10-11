@@ -119,8 +119,8 @@
             value = $.trim(value);
             var query = blist.util.patterns.UID.test(value)
                 ? value : 'name:' + value;
-            Dataset.search({ q: query, nofederate: true, limit: 20 }, function(data)
-            { callback(_.map(data.views, function(v) { return { id: v.id, name: v.name }; })) });
+            Dataset.search({ q: query, nofederate: true, limit: 20 },
+                function(data) { callback(data.views) });
         },
         noResultsMessage: 'No results were found. Note: This search only ' +
             'matches full words.',
@@ -136,8 +136,7 @@
             {
                 $field.data('uid', dataset.id);
                 makeStatic(dataset.name);
-                Dataset.lookupFromViewId(dataset.id, function(ds)
-                { modifySection.call(cpObj, ds, $field); });
+                modifySection.call(cpObj, dataset, $field);
             }
         });
 

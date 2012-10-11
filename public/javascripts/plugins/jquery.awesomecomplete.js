@@ -240,7 +240,9 @@
                 if (skippedField)
                     continue;
 
+$.debug('field', field);
                 var dataString = dataItem[field].toString();
+$.debug('dataString', dataString);
                 var adjTerms = [];
                 for (var j = 0; j < terms.length; j++)
                 {
@@ -269,6 +271,7 @@
                 {
                     var regex = new RegExp('(' + adjTerms.join('|') + ')', (config.ignoreCase ? 'ig' : 'g'));
                     var pieces = dataString.split(regex);
+$.debug('pieces', pieces);
                     for (var i = 0; i < pieces.length; i++)
                     {
                         pieces[i] = htmlEscape(pieces[i]);
@@ -279,6 +282,7 @@
                         }
                     }
                     dataItem[field] = pieces.join('');
+$.debug('dataItem', dataItem[field]);
                 }
                 else
                 { dataItem[field] = htmlEscape(dataString); }

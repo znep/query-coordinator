@@ -130,8 +130,12 @@
                     && layerObj._parent.viewportHandler().isWholeWorld())
                 { layerObj.attemptViewportGuess(data[0]); return; }
 
-                if (layerObj._guessedViewport && data.length == 1)
-                { delete layerObj._guessedViewport; layerObj._singleCluster = data[0]; }
+                if (layerObj._guessedViewport)
+                {
+                    if (data.length == 1)
+                    { layerObj._singleCluster = data[0]; }
+                    delete layerObj._guessedViewport;
+                }
 
                 layerObj._renderType = 'clusters';
 

@@ -93,6 +93,7 @@ class CustomContentController < ApplicationController
     # TODO: This should include the locale (whenever we figure out how that is specified)
     cache_params = { 'domain' => CurrentDomain.cname,
                      'pages_updated' => pages_time,
+                     'current_user' => @current_user ? @current_user.id() : "",
                      'domain_updated' => CurrentDomain.default_config_updated_at,
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
     @cache_key = app_helper.cache_key("canvas2-page", cache_params)

@@ -256,7 +256,7 @@
                             options: mapTypes
                         },
                         {text: 'Layer URL', type: 'text', name: 'custom_url',
-                            onlyIf: {field: 'name', value: 'custom'}, defaultValue: 'https://',
+                            onlyIf: {field: 'layerName', value: 'custom'}, defaultValue: 'https://',
                             required: true, data: { 'validlayerurl': 'unverified' },
                             change: normalizeLayerUrl },
                         {text: 'Alias', type: 'text', name: 'alias'},

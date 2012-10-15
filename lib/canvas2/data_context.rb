@@ -49,7 +49,7 @@ module Canvas2
                     req[:callback].call(ds_new)
                   rescue CoreServer::CoreServerError => e
                     raise DataContextError.new(req[:config], "Core server failed: " + e.error_message,
-                                             { path: e.source, payload: JSON.parse(e.payload) })
+                                             { path: e.source, payload: JSON.parse(e.payload || '{}') })
                   end
                 end
               end
@@ -99,7 +99,7 @@ module Canvas2
         end
       rescue CoreServer::CoreServerError => e
         raise DataContextError.new(config, "Core server failed: " + e.error_message,
-                                 { path: e.source, payload: JSON.parse(e.payload) })
+                                 { path: e.source, payload: JSON.parse(e.payload || '{}') })
       end
       return ret_val
     end
@@ -191,7 +191,7 @@ module Canvas2
           return false if config['required']
         rescue CoreServer::CoreServerError => e
           errors.push(DataContextError.new(config, "Core server failed: " + e.error_message,
-                                           { path: e.source, payload: JSON.parse(e.payload) }))
+                                           { path: e.source, payload: JSON.parse(e.payload || '{}') }))
           return false if config['required']
         end
       elsif !config['datasetResourceName'].blank?
@@ -203,7 +203,7 @@ module Canvas2
           return false if config['required']
         rescue CoreServer::CoreServerError => e
           errors.push(DataContextError.new(config, "Core server failed: " + e.error_message,
-                                           { path: e.source, payload: JSON.parse(e.payload) }))
+                                           { path: e.source, payload: JSON.parse(e.payload || '{}') }))
           return false if config['required']
         end
       elsif !config['search'].blank?

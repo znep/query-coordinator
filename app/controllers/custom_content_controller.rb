@@ -144,10 +144,10 @@ class CustomContentController < ApplicationController
           if @debug
             render :action => 'page_debug'
           else
-            code = @error.code || 404
-            write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + (@error.display_message || ''),
+            code = (@error.respond_to?(:code) ? @error.code : nil) || 404
+            @display_message = (@error.respond_to?(:display_message) ? @error.display_message : nil) || ''
+            write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + @display_message,
                            :expires_in => 15.minutes)
-            @display_message = @error.display_message
             render :template => "custom_content/error_page", :layout => 'main', :status => code
           end
         end

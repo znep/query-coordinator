@@ -294,7 +294,7 @@ class Column < Model
     return col
   end
 
-  def as_json
+  def as_json(opts = nil)
     to_core
   end
 

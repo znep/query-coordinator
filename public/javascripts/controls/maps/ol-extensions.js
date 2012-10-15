@@ -277,17 +277,20 @@
 
         activate: function()
         {
+            this.active = true;
             $(this.map.div).siblings('.mapTypes').show();
         },
 
         deactivate: function()
         {
+            this.active = false;
             $(this.map.div).siblings('.mapTypes').hide();
         },
 
         redraw: function(evtObj)
         {
             var _this = this;
+            if (!this.active) { return; }
             if (evtObj)
             {
                 _.each(this.layers, function(layer, maptype)

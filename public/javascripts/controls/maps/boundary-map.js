@@ -56,6 +56,14 @@
                     function(c) { return '#'+$.rgbToHex(c); });
         },
 
+        discoverDisplayFormatChanges: function()
+        {
+            return $.extend(true, this._super(), {
+                regions: { keys: ['heatmap.type', 'heatmap.region'],
+                           onChange: this.reloadFeatures }
+            });
+        },
+
         loadFeatures: function()
         {
             var layerObj = this;
@@ -91,6 +99,16 @@
                     alert('A data request has taken too long and timed out.');
                 }
             }, 60000);
+        },
+
+        reloadFeatures: function()
+        {
+            var layerObj = this;
+
+            delete layerObj._featureSet;
+            delete layerObj._loadingFeatures;
+            layerObj._displayLayer.removeAllFeatures();
+            layerObj.loadFeatures();
         },
 
         legendData: function()

@@ -7433,8 +7433,8 @@ function Chart (options, callback) {
 		
 		chart.plotLeft = plotLeft = mathRound(plotLeft);
 		chart.plotTop = plotTop = mathRound(plotTop);
-		chart.plotWidth = plotWidth = mathRound(chartWidth - plotLeft - marginRight);
-		chart.plotHeight = plotHeight = mathRound(chartHeight - plotTop - marginBottom);
+		chart.plotWidth = plotWidth = mathMax(0, mathRound(chartWidth - plotLeft - marginRight));
+		chart.plotHeight = plotHeight = mathMax(0, mathRound(chartHeight - plotTop - marginBottom));
 		
 		chart.plotSizeX = inverted ? plotHeight : plotWidth;
 		chart.plotSizeY = inverted ? plotWidth : plotHeight;

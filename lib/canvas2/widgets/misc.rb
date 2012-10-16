@@ -422,6 +422,10 @@ module Canvas2
   end
 
   class EventConnector < CanvasWidget
+    def is_hidden
+      true
+    end
+
     def render
       ['', false]
     end

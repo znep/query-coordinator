@@ -578,6 +578,10 @@
             if (child.$wrapper.parent().length > 0 && this._rendered && !child._rendered)
             { child._render(); }
 
+            var cObj = this;
+            child.bind('shown', function() { cObj._arrange(); }, this);
+            child.bind('hidden', function() { cObj._arrange(); }, this);
+
             this._arrange();
         },
 
@@ -589,6 +593,7 @@
                 child.$wrapper.detach();
                 delete child.wrapper;
                 delete child.$wrapper;
+                child.unbind(null, null, this);
             }
             this._arrange();
         },
@@ -605,7 +610,7 @@
             var totalWeight = 0;
             this.each(function(child)
             {
-                if (child._isHidden) { return; }
+                if (child._isHidden || !child._isRenderable()) { return; }
                 visibleChildren.push(child);
                 totalWeight += child.properties().weight || 1;
             });

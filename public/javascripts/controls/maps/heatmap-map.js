@@ -539,6 +539,8 @@
                 { break; }
             }
 
+            if (segmentIndex >= mapObj._numSegments) { return; }
+
             var details = {
                 flyoutDetails: {name: feature.attributes.NAME,
                     quantity: feature.attributes.quantity},

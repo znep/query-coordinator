@@ -255,6 +255,7 @@
             {
                 var rtmObj = this;
                 var typeInfo = getConfig(rtmObj, type);
+                rtmObj.settings[typeInfo.name] = rtmObj.settings[typeInfo.name] || {};
                 $.extend(rtmObj.settings[typeInfo.name], newConfig);
             },
 

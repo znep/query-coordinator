@@ -6,7 +6,7 @@ $.component.Component.extend('Map', 'data', {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
         this._super.apply(this, arguments);
-        this.registerEvent({display_row: ['dataContext', 'row']});
+        this.registerEvent({display_row: ['dataContext', 'row', 'datasetId']});
     },
 
     isValid: function()
@@ -51,7 +51,9 @@ $.component.Component.extend('Map', 'data', {
         lcObj.$contents.on('display_row.map_' + lcObj.id, function(e, args)
         {
             lcObj.trigger('display_row',
-                [{dataContext: lcObj._dataContext, row: (args || {}).row}]);
+                [{  dataContext: lcObj._dataContext,
+                    row: (args || {}).row,
+                    datasetId: (args || {}).datasetId }]);
         });
     },
 

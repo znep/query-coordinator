@@ -355,7 +355,6 @@
             {
                 $item.append($.tag({tagName: 'a',
                     href: layerObj._view.url + '/' + row.id,
-                    target: '_blank',
                     'class': ['viewRow', 'noInterstitial', 'noRedirPrompt'],
                     contents: 'View details for this row'}));
             }
@@ -519,9 +518,9 @@
             {
                 layerObj.highlightRows(feature.attributes.rows, 'select');
                 layerObj._parent.$dom().trigger('display_row',
-                    [{row: _.first(feature.attributes.rows)}]);
+                    [{row: _.first(feature.attributes.rows), datasetId: layerObj._view.id}]);
                 $(document).trigger(blist.events.DISPLAY_ROW,
-                    [_.first(feature.attributes.rows).id, true]);
+                    [[layerObj._view.id, _.first(feature.attributes.rows).id].join('/'), true]);
             }
             layerObj._parent.clearHoverTimer(layerObj._uniqueId + feature.attributes.dupKey);
 

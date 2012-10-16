@@ -588,8 +588,17 @@ $(function()
 
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly)
     {
-        if (!updateOnly && !blist.dataset.metadata.renderTypeConfig.visible.page)
-        { blist.$container.renderTypeManager().show('page', {defaultRowId: rowId}); }
+        var uid;
+        if (typeof rowId == 'string')
+        { var splitRowId = rowId.split('/'); uid = splitRowId[0]; rowId = splitRowId[1]; }
+
+        var sameDS = $.deepGet(blist.dataset.metadata.renderTypeConfig, 'active', 'page', 'id')
+            == uid;
+        if (!updateOnly || (blist.dataset.metadata.renderTypeConfig.visible.page && !sameDS))
+        {
+            blist.$container.renderTypeManager().setTypeConfig('page', {defaultRowId: rowId});
+            blist.dataset.showRenderType('page', uid, !sameDS);
+        }
     });
 
 

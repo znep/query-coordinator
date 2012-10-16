@@ -836,9 +836,9 @@
                     if ($a.attr('target') == '_blank') { return; }
                     e.preventDefault();
                     mapObj.closeFlyout($a);
-                    var href = $a.attr('href');
+                    var href = $a.attr('href').split('/');
                     $(document).trigger(blist.events.DISPLAY_ROW,
-                        [href.slice(href.lastIndexOf('/') + 1)]);
+                        [href.slice(href.length - 2).join('/')]);
                 });
 
         },

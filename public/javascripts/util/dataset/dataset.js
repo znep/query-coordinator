@@ -326,12 +326,13 @@ var Dataset = ServerModel.extend({
         ds.update({query: query}, false, (query.orderBys || []).length < 2);
     },
 
-    showRenderType: function(rt)
+    showRenderType: function(rt, activeUid, force)
     {
         var ds = this;
-        if (ds.metadata.renderTypeConfig.visible[rt]) { return; }
+        if (!force && ds.metadata.renderTypeConfig.visible[rt]) { return; }
         var md = $.extend(true, {}, ds.metadata);
         md.renderTypeConfig.visible[rt] = true;
+        activeUid && $.deepSet(md, activeUid, 'renderTypeConfig', 'active', rt, 'id');
         ds.update({metadata: md}, false, true);
     },
 

@@ -97,7 +97,15 @@
 
                 $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
                 {
-                    if (!$.isBlank(rowId))
+                    var uid, sameDS = true;
+                    if (typeof rowId == 'string')
+                    {
+                        var splitRowId = rowId.split('/');
+                        sameDS = splitRowId[0] == prtObj.settings.view.id;
+                        rowId = splitRowId[1];
+                    }
+
+                    if (sameDS && !$.isBlank(rowId))
                     { prtObj.displayRowByID(rowId); }
                 });
 

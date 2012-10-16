@@ -46,6 +46,10 @@ screen-login:
 api-new:
 - jquery-ui-1.8.23.custom
 - screen-api-new
+api-manage:
+- jquery-ui-1.8.23.custom
+- screen-api-manage
+- screen-metrics
 administration-screen:
 - screen-admin
 administration-browse-widget:

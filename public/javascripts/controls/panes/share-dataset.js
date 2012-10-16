@@ -216,7 +216,7 @@
         { return [$.controlPane.buttons.done]; }
     }, {name: 'shareDataset', noReset: true}, 'controlPane');
 
-    if ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.sharing)
+    if (blist.sidebarHidden && ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.sharing))
     { $.gridSidebar.registerConfig('manage.shareDataset', 'pane_shareDataset', 8); }
 
  })(jQuery);

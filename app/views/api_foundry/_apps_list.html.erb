@@ -1,0 +1,55 @@
+<% content_for :nav_crumb do %>
+  <li>Application Request Limits</li>
+<% end %>
+<a name="apps"></a>
+<div id="applications" class="managesection">
+  <h2>Application Request Limits</h2>
+  <div id="tableWrapper">
+    <table class="throttleTable" cellspacing="0">
+      <tr>
+        <th>Application</th>
+        <th>Token</th>
+        <th colspan="3">Request Limits</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>Minute</th>
+        <th>Hour</th>
+        <th>Day</th>
+        <th></th>
+      </tr>
+      <tr><td> </td></tr>
+      <% throttles = @view.find_api_throttles() %>
+      <% throttles.each do |throttle| %>
+        <tr id="<%= throttle.appToken %>">
+          <td class="">
+            <p class="appName"><%= throttle.appName %></p>
+            <p class="appDesc"><%= throttle.appDesc %></p>
+          </td>
+          <td><%= throttle.appToken %></td>
+          <td><%= throttle.minuteLimit %></td>
+          <td><%= throttle.hourLimit %></td>
+          <td><%= throttle.dayLimit %></td>
+          <td><a href="<%= "apps/" + throttle.appToken %>">Edit</a></td>
+        </tr>
+      <% end %>
+      <% @anonThrottle = @view.find_api_anonymous_throttle() %>
+      <% if !@anonThrottle.nil? %>
+        <tr id="anonymous">
+          <td class="">
+            <p class="appName">Anonymous Applications</p>
+            <p class="appDesc">where no application token is provided</p>
+          </td>
+          <td>none provided</td>
+          <td><%= @anonThrottle.minuteLimit %></td>
+          <td><%= @anonThrottle.hourLimit %></td>
+          <td><%= @anonThrottle.dayLimit %></td>
+          <td><a href="<%= "apps/anonymous" %>">Edit</a></td>
+        </tr>
+      <% end %>
+    </table>
+    <a href="apps/new" id="addLimits" class="button">Add Application Limits</a>
+    <a href="apps/anonymous" id="editAnonymous" class="button">Edit Anonymous Limit</a>
+  </div>
+</div>

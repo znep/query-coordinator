@@ -64,6 +64,29 @@ class View < Model
     View.parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def find_api_throttles()
+    path = "/views/#{self.id}/apiThrottle.json?" + {'method' => 'findViewThrottles'}.to_param
+    View.parse(CoreServer::Base.connection.get_request(path))
+  end
+
+  def find_api_anonymous_throttle()
+    path = "/views/#{self.id}/apiThrottle.json?" + {'method' => 'findViewAnonThrottle'}.to_param
+    View.parse(CoreServer::Base.connection.get_request(path))
+  end
+
+  def set_api_throttle(appId, minuteLimit, hourLimit, dayLimit, monthLimit)
+    params = {
+      'method' => 'setViewThrottle',
+      'appId' => appId,
+      'minuteLimit' => minuteLimit,
+      'hourLimit' => hourLimit,
+      'dayLimit' => dayLimit,
+      'monthLimit' => monthLimit
+    }
+    path = "/views/#{self.id}/apiThrottle.json?" + params.to_param
+    View.parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def self.categories
     categories = CurrentDomain.configuration('view_categories').properties
     map = @@default_categories.clone

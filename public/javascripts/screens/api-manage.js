@@ -1,0 +1,105 @@
+$(function() {
+
+	//the blist.dataset is actually the API view - calling it a dataset for compatibility
+	var view = blist.dataset;
+	var init = {};
+	var ns = {};
+
+	init.permission = function() 
+  {
+		$("#permission-host").pane_datasetPermissions({
+			view: blist.dataset
+		}).render();
+	}
+
+	init.sharing = function() 
+  {
+		$("#sharing-host").pane_shareDataset({
+			view: blist.dataset
+		}).render();
+	}
+
+	init.applications = function() 
+  {
+		$(".limitRemoveButton").click(function(event) {
+			var appToken = $(this).attr("id");
+			$.socrataServer.makeRequest({
+				url: 'rmThrottle?app_token=' + appToken,
+				type: 'delete',
+				success: function() {
+					$(".appFlash").text("");
+					window.location.href = '../apps';
+				},
+				error: function() {
+					$(".appFlash").text("There was an error with this request").addClass("error");
+				}
+			});
+		});
+	}
+
+	init.names = function() 
+  {
+		$(".disabled").attr("disabled", "disabled");
+		function updateColumn(columnFieldName, changes, callback, errorCallback) {
+			var col = _.find(blist.dataset.columns, function(col) {
+				return col.fieldName === columnFieldName
+			});
+			col.update(changes);
+			col.save(callback, errorCallback);
+		}
+
+		function bindLiveDocs() 
+    {
+			$('.liveDoc').each(function(index, element) {
+				var $element = $(element);
+				var key = 'span#' + $element.attr('id') + 'Doc';
+				var update = function(eventObj) {
+					$(key).html(($(eventObj.target).value() || '').replace(/\n/g, "<br/>"));
+				};
+				$element.change(update);
+				$element.keyup(update);
+			});
+		}
+
+		bindLiveDocs();
+		$("#updateField").click(function() {
+			var columnOriginalFieldName = $("#fieldName").value()
+			var $prompt = $(".prompt");
+			$prompt.val(null);
+			updateColumn(
+			columnOriginalFieldName, {
+				name: $("#name").val().trim(),
+				description: $("#description").val()
+			},
+			function() {
+				$(".flash").text("The field has been updated.").addClass("notice").removeClass("error");
+			},
+			function() {
+				$(".flash").text("An error occured. Your changes were not saved").addClass("error").removeClass("notice");
+			});
+			$prompt.blur();
+		});
+	}
+
+	init.transfer = function() 
+  {
+		$("#transfer-host").pane_plagiarism({
+			view: blist.dataset
+		}).render();
+	}
+
+	init.delete = function() 
+  {
+		$("#delete-host").pane_deleteDataset({
+			view: blist.dataset
+		}).render();
+	}
+
+	$("#breadcrumbs").xBreadcrumbs();
+	$(".managesection").each(function(index) {
+		var initFn = init[$(this).attr("id")];
+		if (initFn) initFn();
+	});
+	//_.each(init, function(initFn){ initFn(); });
+});
+

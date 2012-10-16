@@ -107,7 +107,7 @@
         }
     }, {name: 'datasetPermissions', noReset: true}, 'controlPane');
 
-    if ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.permissions)
+    if (blist.sidebarHidden && ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.permissions))
     { $.gridSidebar.registerConfig('manage.datasetPermissions', 'pane_datasetPermissions', 7); }
 
  })(jQuery);

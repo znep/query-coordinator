@@ -137,38 +137,7 @@
         </li>
         <% @view.columns.each_with_index do |column, index| %>
         <li class="apiFieldPane wizpane" id="col-<%= column.fieldName %>" data-wizardpanename="col-<%= column.fieldName %>">
-          <div class="paneControlOuter">
-            <div id="dp-col-<%= column.fieldName %>" class="docPreview column">
-              <div class="docPreviewInside">
-                <h1 class="previewTitle">Field Documentation Preview</h1>
-                <div class="docPreviewPage">
-                  <h3>Field: <span id="fieldNameDoc"><%= column.fieldName %></span></h3>
-                  <p>Human Name: <span id="nameDoc"><%= column.name %></span></p>
-                  <p>Description: <span id="descriptionDoc"><%= column.description %></span></p>
-                </div>
-              </div>
-            </div>
-            <div class="paneFormControls">
-              <h1>Customize Field: <%= column.name %></h1>
-              <div class="line formControl">
-                <label class="required" for="displayName">Display Name</label>
-                <%= text_field_tag("name", column.name, :title => "enter a display name", :class => "textPrompt required liveDoc") %>
-                <div class="additionalHelp"><label>A human-readable name for display and export</label></div>
-              </div>
-              <div class="line formControl">
-                <label class="required" for="fieldName">Field Name</label>
-                <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => "textPrompt required liveDoc") %>
-                <div class="additionalHelp"><label>The identifier used by developers and applications</label></div>
-              </div>
-              <div class="paneFormControls">
-                <div class="line formControl">
-                  <label for="description">Description</label>
-                  <%= text_area_tag("description", '', :title => "enter a description", :class => "textPrompt liveDoc") %>
-                  <div class="additionalHelp"><label>The description that will be provided to end-users</label></div>
-                </div>
-              </div>
-            </div>
-          </div><!-- paneControlOuter -->
+          <%= render :partial => 'edit_column', :locals => {:column => column}%>
         </li>
         <% end %>
         <li id="apiPublish" class="wizpane" data-wizardpanename="apiPublish">

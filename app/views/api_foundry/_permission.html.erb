@@ -1,0 +1,13 @@
+<a name="permission"></a>
+<div id="permission" class="managesection">
+  <div id="permission-host"></div>
+</div>
+<div id="sharing" class="managesection">
+  <div id="sharing-host"></div>
+</div>
+
+
+<% content_for :templates do %>
+  <%= render(:partial => 'datasets/permissions') %>
+  <%= render(:partial => 'datasets/sharing') %>
+<% end %>

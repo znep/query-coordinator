@@ -1,0 +1,49 @@
+<% content_for :head do %>
+  <link rel="stylesheet" href="/stylesheets/xbreadcrumbs.css" />
+  <%= rendered_stylesheet_tag 'api-manage' %>
+  <title>Socrata API Management | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="logo"><h1><img src="/images/apifoundry/api-foundry-logo.png" alt="Socrata API Foundry"></img></h1></div>
+<div class="contentBox fixedWidth">
+
+  <% content_for :adminsection do %>
+    <%= render :partial => @section %>
+  <% end %>
+
+  <div>
+    <ul id="breadcrumbs" class="xbreadcrumbs">
+      <li>
+        <a class="home" href="<%= @nav_root %>/">API Management</a> 
+        <ul>
+          <li><a href="<%= @nav_root %>/permission">Permission and Sharing</a> </li>
+          <li><a href="<%= @nav_root %>/apps">Applications</a>                 </li>
+          <li><a href="<%= @nav_root %>/metrics">Metrics</a>                   </li>
+          <li><a href="<%= @nav_root %>/naming">Names and Descriptions</a>     </li>
+          <li><a href="<%= @nav_root %>/transfer">Transfer Ownership</a>       </li>
+          <li><a href="<%= @nav_root %>/delete">Delete</a>                     </li>
+        </ul>
+      </li>
+      <%= yield :nav_crumb %>
+    </ul>
+  </div>
+  <%= yield :adminsection %>
+
+  <% content_for :templates do %>
+    <%= render(:partial => 'templates/grid_sidebar') %>
+  <% end %>
+
+  <%- content_for :modals do -%>
+    <%= render :partial => 'modals/email_dataset' %>
+    <%- unless current_user -%>
+      <%= render :partial => 'modals/inline_login' %>
+    <%- end -%>
+  <%- end -%>
+
+  <% content_for :js_footer do %>
+    <%= include_javascripts 'api-manage' %>
+    <script type="text/javascript">
+      blist.dataset = new Dataset(<%= safe_json(@view) %>);
+    </script>
+  <% end %>
+</div>

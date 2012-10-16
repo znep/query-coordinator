@@ -1,0 +1,24 @@
+<% content_for :nav_crumb do %>
+  <li>
+    <a href="<%= @nav_root + "/naming" %>" >Names and Descriptions</a>
+    <ul>
+      <% @view.columns.each do |column| %>
+        <li><a href="<%= @nav_root + "/naming/" + column.fieldName %>"><%= column.name %></a></li>
+      <% end %>
+    </ul>
+  </li>
+<% end %>
+<a name="naming"></a>
+<h2>Names and Descriptions</h2>
+<div id="names" class="managesection">
+  <div class="flash"></div>
+    <% @view.columns.find_all{|col| col.fieldName == params[:column] }.each do |column| %>
+        <% content_for :nav_crumb do %>
+          <li>
+              <%= column.name %>
+          </li>
+        <% end %>
+        <%= render :partial => 'edit_column', :locals => {:column => column}%>
+    <% end %>
+  <a href="#updateField" id="updateField" class="button">Apply</a>
+</div>

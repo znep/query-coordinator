@@ -133,7 +133,7 @@
 
     }, {name: 'plagiarism', noReset: true}, 'controlPane');
 
-    if ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.plagiarize)
+    if (blist.sidebarHidden && ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.plagiarize))
     { $.gridSidebar.registerConfig('manage.plagiarism', 'pane_plagiarism', 10); }
 
 })(jQuery);

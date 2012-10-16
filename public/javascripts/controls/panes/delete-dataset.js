@@ -61,7 +61,7 @@
 
     }, {name: 'deleteDataset'}, 'controlPane');
 
-    if ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.deleteDataset)
+    if (blist.sidebarHidden && ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.deleteDataset))
     { $.gridSidebar.registerConfig('manage.deleteDataset', 'pane_deleteDataset', 9); }
 
 })(jQuery);

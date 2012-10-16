@@ -1,0 +1,144 @@
+.logo
+  text-align: center
+.contentBox
+  width: 85em
+#newApiForm
+  font-size: 1.2em
+#aboveslide
+  line-height: 1.5
+  text-align: center
+  position: relative
+.error
+  color: red
+#paneSpinner
+  position: relative
+  #paneSpinnerInside
+    position: absolute
+    width: 100%
+    text-align: center
+    bottom: 0em
+
+#applications
+  text-align: center
+  h2
+    text-align: left
+#tableWrapper
+  padding-top: 2em
+  display: inline-block
+  font-size: 1.2em
+.appName, .appDesc
+  text-align: left
+.appDesc
+  color: grey
+  font-style: italic
+  font-size: .9em
+.throttleTable
+  td
+    padding-left: 2em
+    text-align: right
+    padding-bottom: 1em
+  th
+    padding-left: 2em
+.throttleEdit 
+  input
+    width: 5em
+
+
+.apiFieldPane
+  label
+    width: 8em
+    display: inline-block
+    margin-top: 0.5em
+    vertical-align: top
+  label.error
+    margin-left: 8.5em
+    width: 26em
+  input, select, textarea
+    width: 23em
+  .additionalHelp
+    label
+      width: 26em
+      margin-left: 8.5em
+      text-align: left
+      margin-top: 0em
+  #description
+    width: 23em
+
+.managesection
+  padding-top: 1em
+  font-size: 1.2em
+.paneContent
+  padding-top: 2em
+.commonForm .formHeader
+  padding-left: 0em
+
+.column
+  width: 32em
+  float: right
+  left: 38em
+.previewTitle
+  color: grey
+.docPreview
+  text-align: left
+  p
+    margin-bottom: 1em
+.docPreviewInside
+  padding-left: 1em
+.docPreviewPage
+  margin-top: 0.5em
+  padding: 1em
+  border: 1px solid $color_chrome_box_border
+  background-image: url('/images/apifoundry/corner-flip.png')
+  background-repeat: no-repeat
+  background-position: right top
+  background-color: #F1F1F1
+  @include box-shadow(3px, 3px, 4px, #cfcfcf)
+
+.removeShareLink
+  @include sprite-repeater-icons
+  float: left
+  padding-left: 0.5em
+
+.shareDatasetButton
+  @include sprite-repeater-icons
+  margin-bottom: 1em
+
+  .icon
+    float: left
+    margin-right: 0.4em
+
+#uniform-type
+  left: 14em
+  top: -1em
+
+.profileImage
+  background-image: url(/images/small-profile.png)
+  display: block
+  float: left
+  height: 24px
+  margin: 0 0.5em
+  position: relative
+  top: -0.5em
+  width: 24px
+.loadingShares
+  font-size: 1.2em
+  margin: 1em 0 1em 1em
+
+.loadingSharesIndicator
+  @include throbber-icon
+  float: left
+  margin-right: 0.5em
+
+.noShares
+  display: none
+  font-size: 1.2em
+  margin: 1em
+
+.shareNotifyArea
+  display: none
+  margin-top: 1em
+  .shareNoticeSent
+    display: none
+    margin: 0 0 0 0.5em
+    padding: 0.5em
+

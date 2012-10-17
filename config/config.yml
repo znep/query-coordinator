@@ -14,6 +14,7 @@ development:
   ssl_port: 9443
   http_port: 9292
   max_core_server_requests: 15
+  metrics_dir: tmp/metriclogs
   <<: *default
 
 # Running unit tests; NOT test.socrata.com

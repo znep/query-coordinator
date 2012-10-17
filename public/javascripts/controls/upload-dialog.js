@@ -124,7 +124,7 @@
                                     _.isFunction(currentObj._uploadURL) ?
                                         currentObj._uploadURL(file) :
                                         currentObj._uploadURL;
-                                if (!uploadInstanceURL.match(/\.txt$|\.txt\?/))
+                                if (!uploadInstanceURL.match(/\.txt$|\.txt\?/i))
                                 {
                                     // Stick a .txt on the end so the server returns
                                     // the right thing...
@@ -191,7 +191,7 @@
                 currentObj._extList = extList;
                 currentObj._extRE = null;
                 if (extList instanceof Array && extList.length > 0)
-                { currentObj._extRE = new RegExp('^(' + extList.join('|') + ')$'); }
+                { currentObj._extRE = new RegExp('^(' + extList.join('|') + ')$', 'i'); }
             },
 
             close: function()

@@ -56,6 +56,11 @@
                     function(c) { return '#'+$.rgbToHex(c); });
         },
 
+        ready: function()
+        {
+            return this._super() && this._featuresLoaded;
+        },
+
         discoverDisplayFormatChanges: function()
         {
             return $.extend(true, this._super(), {
@@ -211,6 +216,7 @@
             });
 
             layerObj.zoomToPreferred();
+            layerObj._featuresLoaded = true;
         },
 
         removeDatum: function(datum)

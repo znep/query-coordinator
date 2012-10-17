@@ -159,7 +159,7 @@
 
             layer.events.register('loadend', layerObj._parent, function()
             {
-                if (!layerObj._loaded) { layerObj._loaded = true; layer.redraw(); }
+                if (!layerObj._dataLoaded) { layerObj._dataLoaded = true; layer.redraw(); }
                 this.mapElementLoaded(layer);
             });
         },

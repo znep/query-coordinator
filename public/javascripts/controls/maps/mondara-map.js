@@ -185,7 +185,7 @@
         getData: function()
         {
             this.zoomToPreferred();
-            this._loaded = true;
+            this._dataLoaded = true;
             this._parent.mapElementLoaded(this._view);
         }
     }, {}, 'socrataDataLayer', 'tiledata');

@@ -55,6 +55,11 @@
             layerObj._view.unbind(null, null, layerObj._parent._primaryView);
         },
 
+        ready: function()
+        {
+            return this._dataLoaded;
+        },
+
         bindDatasetEvents: function()
         {
             var layerObj = this;
@@ -81,7 +86,7 @@
             // When the view is the same as the parent, bad things happen on triggering DF_change.
             if (_.isUndefined(newDF)) { return; }
             // If it's a legacy dataset, there is a phantom DF change from loading the meta.
-            if (!layerObj._loaded) { return; }
+            if (!layerObj.ready()) { return; }
             var comparator = function(keystring)
                 { return !$.isSubKeyEqual(layerObj._displayFormat, newDF, keystring); };
 
@@ -212,7 +217,7 @@
 
                     // Refresh the data now that we have aggregates.
                     // TODO: This feels like a really bad way to do this.
-                    if (layerObj._loaded)
+                    if (layerObj.ready())
                     {
                         layerObj.handleDataLoaded(layerObj._view.loadedRows());
                         layerObj._parent._controls.Overview.redraw();
@@ -390,7 +395,7 @@
 
         zoomToPreferred: function()
         {
-            if (!this._loaded)
+            if (!this.ready())
             { this._parent.viewportHandler().zoomToPreferred(); }
         },
 
@@ -566,7 +571,7 @@
                     if (Math.min(layerObj._view.totalRows(), rowsRequested)
                         <= _.size(layerObj._view.loadedRows()))
                     {
-                        layerObj._loaded = true;
+                        layerObj._dataLoaded = true;
                         layerObj._parent.mapElementLoaded(layerObj._displayLayer);
                     }
                 });

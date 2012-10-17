@@ -141,7 +141,7 @@
 
                 _.defer(function() {
                     layerObj.handleDataLoaded(data);
-                    layerObj._loaded = true;
+                    layerObj._dataLoaded = true;
                     layerObj._parent.mapElementLoaded(layerObj._displayLayer);
                 });
             },

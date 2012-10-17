@@ -259,7 +259,7 @@
 
             if (!mapObj._doneLoading
                 && _.all(mapObj.map.backgroundLayers(), function(layer) { return layer._loaded; })
-                && _.all(mapObj._children, function(cv) { return cv._loaded; }))
+                && _.all(mapObj._children, function(cv) { return cv.ready(); }))
             {
                 $.debug('map acknowledges being ready');
                 mapObj.viewportHandler().expected();

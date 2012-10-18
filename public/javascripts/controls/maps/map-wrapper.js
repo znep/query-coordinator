@@ -285,6 +285,7 @@
                 console.groupCollapsed('trace'); console.trace(); console.groupEnd();
                 console.groupCollapsed('config'); console.dir(mapObj._displayFormat.bkgdLayers); console.groupEnd();
                 console.groupCollapsed('cache'); console.dir(mapObj._backgroundLayers); console.groupEnd();
+                console.log(!_.isEqual(mapObj._backgroundLayers, mapObj._displayFormat.bkgdLayers));
                 console.groupEnd();
             }
 

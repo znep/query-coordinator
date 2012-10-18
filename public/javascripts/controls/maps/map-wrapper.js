@@ -281,6 +281,8 @@
             var mapObj = this;
             if ((blist.debug || {}).viewport && (console || {}).trace)
             {
+                console.dir(mapObj._displayFormat.bkgdLayers);
+                console.dir(mapObj._backgroundLayers);
                 console.groupCollapsed('initializeBackgroundLayers');
                 console.groupCollapsed('trace'); console.trace(); console.groupEnd();
                 console.groupCollapsed('config'); console.dir(mapObj._displayFormat.bkgdLayers); console.groupEnd();

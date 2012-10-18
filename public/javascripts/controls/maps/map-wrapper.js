@@ -314,6 +314,9 @@
                 mapObj.map.setNoBackground(false);
             }
 
+            if ((blist.debug || {}).viewport && (console || {}).trace)
+            { console.groupCollapsed('initBkgLayers - bkgdLayers'); console.dir(bkgdLayers); console.groupEnd(); }
+
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });
 
             mapObj._backgroundLayers = _.map(mapObj._displayFormat.bkgdLayers, function(o)

@@ -285,15 +285,6 @@
                 console.groupCollapsed('trace'); console.trace(); console.groupEnd();
                 console.groupCollapsed('config'); console.dir(mapObj._displayFormat.bkgdLayers); console.groupEnd();
                 console.groupCollapsed('cache'); console.dir(mapObj._backgroundLayers); console.groupEnd();
-                console.log(_.isEqual(mapObj._backgroundLayers, mapObj._displayFormat.bkgdLayers));
-                if (mapObj._backgroundLayers)
-                {
-                    console.log(mapObj._backgroundLayers[1].hidden, mapObj._displayFormat.bkgdLayers[1].hidden);
-                    console.log(mapObj._backgroundLayers[1].hidden === mapObj._displayFormat.bkgdLayers[1].hidden);
-                    console.log(mapObj._backgroundLayers[1].hidden !== 0);
-                    console.log(mapObj._backgroundLayers[1].hidden == 1 / mapObj._displayFormat.bkgdLayers[1].hidden);
-                    console.log(+mapObj._backgroundLayers[1].hidden == +mapObj._displayFormat.bkgdLayers[1].hidden);
-                }
                 console.groupEnd();
             }
 
@@ -321,9 +312,6 @@
                 bkgdLayers = mapObj._displayFormat.bkgdLayers;
                 mapObj.map.setNoBackground(false);
             }
-
-            if ((blist.debug || {}).viewport && (console || {}).trace)
-            { console.groupCollapsed('initBkgLayers - bkgdLayers'); console.dir(bkgdLayers); console.groupEnd(); }
 
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });
 
@@ -431,6 +419,7 @@
             if (mapObj._displayFormat.exclusiveLayers)
             { mapObj._controls.MapTypeSwitcher.registerMapType(config.alias, layer); }
 
+            var hideLayer;
             if (!mapObj._displayFormat.exclusiveLayers || !mapObj.map.baseLayer
                 || layer instanceof OpenLayers.Layer.Google)
             {
@@ -455,14 +444,14 @@
                         });
 
                     if (mapObj._displayFormat.exclusiveLayers && mapObj.map.baseLayer != layer)
-                    { layerOptions.hidden = true; }
+                    { hideLayer = true; }
                 }
                 else
                 { layer.events.register('loadend', mapObj, mapObj.mapElementLoaded); }
             }
 
             if (layerOptions.opacity) { layer.setOpacity(layerOptions.opacity); }
-            if (layerOptions.hidden) { layer.setVisibility(false); }
+            if (layerOptions.hidden || hideLayer) { layer.setVisibility(false); }
         },
 
         initializeEvents: function()

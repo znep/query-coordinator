@@ -287,7 +287,7 @@
                 console.groupCollapsed('cache'); console.dir(mapObj._backgroundLayers); console.groupEnd();
                 console.log(_.isEqual(mapObj._backgroundLayers, mapObj._displayFormat.bkgdLayers));
                 for (var i = 0; i < 3; i++) {
-                    console.log(_.isEqual(mapObj._backgroundLayers[i], mapObj._displayFormat.bkgdLayers[i])); }
+                    console.log(_.isEqual((mapObj._backgroundLayers || [])[i], mapObj._displayFormat.bkgdLayers[i])); }
                 console.groupEnd();
             }
 

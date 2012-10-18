@@ -303,7 +303,8 @@
                 plotStyle: mapObj._displayFormat.plotStyle,
                 layers: mapObj._displayFormat.layers};
 
-            mapObj._highlightColor = $.rgbToHex($.colorToObj(
+            mapObj._highlightColor = mapObj._displayFormat.highlightColor
+                || '#' + $.rgbToHex($.colorToObj(
                 blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
 
             mapObj.ready();
@@ -1129,16 +1130,17 @@
                 else
                 {
                     marker.style = marker.style || {};
-                    marker.style.fillColor = hasHighlight ? '#' + mapObj._highlightColor
+                    marker.style.fillColor = hasHighlight ? mapObj._highlightColor
                                                           : details.color || '#0000ff';
                     marker.style.strokeColor = '#ffffff';
                     marker.style.strokeWidth = 2;
                     marker.style.pointRadius = marker.style.pointRadius
-                        || mapObj.settings.basePointSize;
+                        || mapObj._displayFormat.basePointSize || mapObj.settings.basePointSize;
 
                     if (details.size)
                     { marker.style.pointRadius
-                        = mapObj.settings.basePointSize + (2 * details.size); }
+                        = (mapObj._displayFormat.basePointSize || mapObj.settings.basePointSize)
+                        + (2 * details.size); }
                 }
 
                 if (!newMarker)

@@ -445,7 +445,8 @@
             layerObj._map.addLayer(layerObj._displayLayer);
             layerObj._displayLayer.dataObj = layerObj;
 
-            layerObj._highlightColor = '#' + $.rgbToHex($.colorToObj(
+            layerObj._highlightColor = layerObj._displayFormat.highlightColor
+                || '#' + $.rgbToHex($.colorToObj(
                 blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
         },
 
@@ -610,7 +611,8 @@
             var data = { icon: this.extractIconFromRow(row) };
             if (!data.icon)
             { data = { color: this.extractColorFromRow(row),
-                       size: this.settings.basePointSize + 2 * this.extractSizeFromRow(row) }; }
+                       size: (this._displayFormat.basePointSize || this.settings.basePointSize)
+                            + 2 * this.extractSizeFromRow(row) }; }
 
             var dupKey;
             if (geometry instanceof OpenLayers.Geometry.Point)

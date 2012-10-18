@@ -286,8 +286,13 @@
                 console.groupCollapsed('config'); console.dir(mapObj._displayFormat.bkgdLayers); console.groupEnd();
                 console.groupCollapsed('cache'); console.dir(mapObj._backgroundLayers); console.groupEnd();
                 console.log(_.isEqual(mapObj._backgroundLayers, mapObj._displayFormat.bkgdLayers));
-                for (var i = 0; i < 3; i++) {
-                    console.log(_.isEqual((mapObj._backgroundLayers || [])[i], mapObj._displayFormat.bkgdLayers[i])); }
+                if (mapObj._backgroundLayers)
+                { for (var i = 0; i < 3; i++)
+                    { console.log(i, _.isEqual(mapObj._backgroundLayers[i],
+                                               mapObj._displayFormat.bkgdLayers[i])); }
+                    for (var key in mapObj._backgroundLayers[1])
+                    { console.log(key, _.isEqual(mapObj._backgroundLayers[1][key], mapObj._displayFormat.bkgdLayers[1][key])); }
+                }
                 console.groupEnd();
             }
 

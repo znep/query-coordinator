@@ -19,46 +19,12 @@
     z-index: 20;
 }
 
-#_tooltip
-{
-    color: #111;
-    background-color: white;
-    border:1px solid #ccc;
-    -moz-box-shadow:#555 2px 2px 8px;
-    -webkit-box-shadow:#555 2px 2px 8px;
-    -o-box-shadow:#555 2px 2px 8px;
-    box-shadow:#555 2px 2px 8px;
-    opacity:0.9;
-    filter:alpha(opacity=90);
-    font-size:10px;
-    font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
-    padding:7px;
-}
-
 .node
 {
     color: #fff;
     font-size: 12px;
     overflow: hidden;
     text-align: center;
-}
-
-#highcharts_tooltip
-{
-    border: solid 2px #ff0000;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    opacity: 0.85;
-    filter:alpha(opacity=85);
-    background-color: white;
-    padding: 5px;
-    font-family: "Lucida Grande","Lucida Sans Unicode",Verdana,Arial,Helvetica,sans-serif;
-    color: rgb(51, 51, 51);
-    font-size: 12px;
-    width: 200px;
-    position: absolute;
-    text-align: center;
-    z-index: 10000;
 }
 
 div.hatchPattern

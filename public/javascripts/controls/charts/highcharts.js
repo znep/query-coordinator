@@ -311,7 +311,6 @@
                 chartObj.secondChart.destroy();
                 delete chartObj.secondChart;
             }
-            chartObj.$dom().siblings('#highcharts_tooltip').hide();
         },
 
         resizeHandle: function()
@@ -952,31 +951,20 @@
                 }
 
 
-                var mouseover = function(event) {
-                    var $box = chartObj.$dom().siblings('#highcharts_tooltip');
-                    if ($box.length < 1)
-                    {
-                        chartObj.$dom().after('<div id="highcharts_tooltip"></div>');
-                        $box = chartObj.$dom().siblings('#highcharts_tooltip').hide();
-                    }
-
-                    var $container = $(chartObj.currentDom);
-                    var position;
-                    position = { 'top': handle[1] + 10, 'left': event.clientX - $container.offset().left };
-
-                    if (!hasSVG) { position.top += 10; }
-
-                    $box.empty()
-                        .append(marker.caption)
-                        .css({ top: position.top + 'px', left: position.left + 'px' })
-                        .show();
-
-                    if ($container.width() <= position.left + $box.outerWidth())
-                    { $box.css({ left: ($container.width() - $box.outerWidth() - 20) + 'px' }); }
-
-                    var too_low = $container.height() - (position.top + $box.outerHeight());
-                    if (too_low < 0)
-                    { $box.css({ top: (position.top + too_low - 20) + 'px' }); }
+                var addTip = function($dom, position)
+                {
+                    var tip = $dom.socrataTip({
+                        message: $.htmlEscape(marker.caption),
+                        positions: invertAxis ? [ 'right', 'left' ] : [ 'top', 'bottom' ],
+                        shownCallback: function()
+                        {
+                            position = position || {};
+                            tip.adjustPosition({
+                                left: invertAxis ? 10 : (position.left || 0),
+                                top: invertAxis ? (position.top || 0) : 0
+                            });
+                        }
+                    });
                 };
 
                 var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
@@ -1023,10 +1011,10 @@
                                 'fill': marker.color
                             })
                             .add();
-                    _.each([markerStore[index].element,
-                            markerStore[index].handle.element], function(element)
-                    { $(element).hover(mouseover,
-                        function() { chartObj.$dom().siblings('#highcharts_tooltip').hide(); }); });
+                    addTip($(markerStore[index].element),
+                                { left: chartObj.$dom().width() / 2,
+                                    top: chartObj.$dom().height() / 2 });
+                    addTip($(markerStore[index].handle.element), { top: 5 });
                 }
                 else
                 {
@@ -1089,10 +1077,8 @@
                     markerStore[index].$handle
                         .css({ top: (handle[1] - 5) + 'px', left: (handle[0] - 5) + 'px',
                                backgroundColor: marker.color })
-                    _.each([markerStore[index],
-                            markerStore[index].$handle], function($element)
-                    { $element.hover(mouseover,
-                        function() { chartObj.$dom().siblings('#highcharts_tooltip').hide(); }); });
+                    addTip(markerStore[index]);
+                    addTip(markerStore[index].$handle);
                 }
             });
 
@@ -1237,24 +1223,28 @@
             mouseOver: function()
             {
                 clearTimeout(tooltipTimeout);
-                var $tooltip = customTooltip(chartObj, this);
-                if (!$.isBlank($tooltip.data('currentRow')))
-                { chartObj._primaryView.unhighlightRows($tooltip.data('currentRow')); }
                 chartObj._primaryView.highlightRows(this.row, null, this.column);
-                $tooltip.data('currentRow', this.row);
             },
             mouseOut: function()
             {
                 var t = this;
-                var $tooltip = $("#highcharts_tooltip");
                 tooltipTimeout = setTimeout(function()
                 {
-                    if (!$tooltip.data('mouseover'))
-                    {
-                        chartObj._primaryView.unhighlightRows(t.row);
-                        $tooltip.hide();
-                    }
+                    if (!t.mouseover)
+                    { chartObj._primaryView.unhighlightRows(t.row); }
                 }, 500);
+            },
+            select: function()
+            {
+                customTooltip(chartObj, this);
+            },
+            unselect: function()
+            {
+                if (!$.isBlank(this.tip))
+                {
+                    this.tip.destroy();
+                    delete this.tip;
+                }
             },
             click: function()
             {
@@ -1540,7 +1530,7 @@
                 { if (parseFloat(row[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
                     {
                         point.fillColor = "#"+$.rgbToHex(chartObj._gradient[i]);
-                        point.states.hover = $.extend(point.states.hover,
+                        point.states.select = $.extend(point.states.select,
                             { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) });
                         break;
                     }
@@ -1554,7 +1544,7 @@
                 { if (parseFloat(row[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
                     {
                         point.radius = 4+(4*i);
-                        point.states.hover = $.extend(point.states.hover,
+                        point.states.select = $.extend(point.states.select,
                             { radius: point.radius + 2 });
                         break;
                     }
@@ -1567,7 +1557,7 @@
             point.color = row.color;
             point.fillColor = row.color;
             if (point.states)
-            { point.states.hover = $.extend(point.states.hover,
+            { point.states.select = $.extend(point.states.select,
                 { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
 
@@ -1800,7 +1790,15 @@
         if (!_.isUndefined(chartObj.chart))
         {
             var p = chartObj.chart.get(point.id);
-            if (!$.isBlank(p)) { p.remove(); }
+            if (!$.isBlank(p))
+            {
+                if (!$.isBlank(p.tip))
+                {
+                    p.tip.destroy();
+                    delete p.tip;
+                }
+                p.remove();
+            }
         }
         if (!_.isUndefined(chartObj.secondChart))
         {
@@ -1824,78 +1822,62 @@
 
     var customTooltip = function(chartObj, point)
     {
-        var $box = chartObj.$dom().siblings('#highcharts_tooltip');
-        if ($box.length < 1)
-        {
-            chartObj.$dom().after('<div id="highcharts_tooltip"></div>');
-            $box = chartObj.$dom().siblings('#highcharts_tooltip').hide();
-        }
-
-        if (!point.flyoutDetails) { $box.hide(); return; }
+        if (!point.flyoutDetails || !point.graphic) { return; }
         if (point.otherPt)
         { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
                              .text('Other'); }
 
-        var position;
         var $container = $(chartObj.currentDom);
-        if (point.graphic)
+
+        var $point = $(point.graphic.element);
+        var position = { top: 0, left: 0 };
+
+        var radius = parseInt($point[0].getAttribute('r'));
+        if (radius)
         {
-            var $point = $(point.graphic.element);
-            var radius = parseInt($point[0].getAttribute('r'));
-            position = $point.offset();
-            if (radius)
+            position.top = radius;
+            position.left = radius;
+        }
+
+        if (chartObj._chartType == 'column')
+        {
+            position.left = $point[0].getAttribute('width') / 2;
+            position.top = (point.y > 0) ? 0 : Math.abs(point.y);
+        }
+
+        if (chartObj._chartType == 'bar')
+        { position.left = $point[0].getAttribute('height') / 2; }
+
+        if (_.include(['pie', 'donut'], chartObj._chartType))
+        {
+            if (_.isFunction($point[0].getBBox))
             {
-                position.top += radius;
-                position.left += radius;
+                var bbox = $point[0].getBBox();
+                position.left = bbox.width / 2.0;
+                position.top = bbox.height / 3.0;
             }
-            var offset = $container.offset();
-            position.top -= offset.top;
-            position.left -= offset.left;
-
-            var boxOffset = 10;
-            if (_.include(['line', 'bubble'], chartObj._chartType))
-            { boxOffset = 2; }
-            position.top += boxOffset;
-            position.left += boxOffset;
-        }
-        else
-        {
-            position = {
-                top: chartObj.chart.plotHeight * 0.4,
-                left: point.clientX + chartObj.chart.plotLeft
-            };
         }
 
-        $box.empty()
-            .append(point.flyoutDetails)
-            .css({ top: position.top + 'px', left: position.left + 'px' })
-            .show();
-
-        if (point.isNull)
-        { $box.text('This point has no data.'); }
-
-        if (!$box.data('events-attached'))
-        {
-            $box.hover(
+        point.tip = $point.socrataTip({
+            content: point.flyoutDetails,
+            positions: (point.y > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
+            trigger: 'now',
+            shownCallback: function(box)
+            {
+                $(box).hover(
                     function(event)
-                    { $(this).data('mouseover', true); event.stopPropagation(); },
+                    { point.mouseover = true; },
                     function()
                     {
-                        var $tooltip = $(this);
-                        chartObj._primaryView.unhighlightRows($tooltip.data('currentRow'));
-                        $tooltip.data('mouseover', false).hide();
+                        point.mouseover = false;
+                        chartObj._primaryView.unhighlightRows(point.row);
                     })
-                .data('events-attached', true);
-        }
-
-        if ($container.width() <= position.left + $box.width())
-        { $box.css({ left: ($container.width() - $box.width() - 20) + 'px' }); }
-
-        var too_low = $container.height() - (position.top + $box.height());
-        if (too_low < 0)
-        { $box.css({ top: (position.top + too_low - 20) + 'px' }); }
-
-        return $box;
+            }
+        });
+        point.tip.adjustPosition({
+            top: position.top,
+            left: position.left
+        });
     };
 
     var calculateXAxisStepSize = function(chartObj, numCategories)

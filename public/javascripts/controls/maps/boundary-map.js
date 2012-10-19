@@ -61,6 +61,16 @@
             return this._super() && this._featuresLoaded;
         },
 
+        zoomToPreferred: function()
+        {
+            this._super();
+
+            // Super special case just for Bug 7171.
+            if (this._map.hasNoBackground && this._parent._children.length == 1
+                && this.restrictPanning())
+            { this._map.restrictPanningTo(this.preferredExtent()); }
+        },
+
         discoverDisplayFormatChanges: function()
         {
             return $.extend(true, this._super(), {
@@ -114,6 +124,11 @@
             delete layerObj._loadingFeatures;
             layerObj._displayLayer.removeAllFeatures();
             layerObj.loadFeatures();
+        },
+
+        restrictPanning: function()
+        {
+            return this._config.type != 'countries';
         },
 
         legendData: function()

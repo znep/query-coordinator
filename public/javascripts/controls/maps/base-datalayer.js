@@ -403,6 +403,11 @@
             return new OpenLayers.Bounds();
         },
 
+        restrictPanning: function()
+        {
+            return false;
+        },
+
         legendData: function()
         {
             var layerObj = this;

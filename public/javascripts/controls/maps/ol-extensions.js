@@ -505,6 +505,14 @@
                 && (this.hasNoBackground || zoomLevel < this.currentMaxZoomLevel());
         },
 
+        restrictPanningTo: function(extent)
+        {
+            extent = extent.clone().intersection(OpenLayers.Bounds.fromArray(
+                [-179.999999, -85.051128, 179.999999, 85.051128]).transform(
+                blist.openLayers.geographicProjection, this.getProjectionObject()));
+            this.restrictedExtent = extent;
+        },
+
         showMousePosition: function()
         {
             if (this.getControlsByClass('OpenLayers.Control.MousePosition').length == 0)

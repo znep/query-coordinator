@@ -1231,6 +1231,8 @@
             this.viewport.transform(blist.openLayers.geographicProjection, mapProjection);
             this.wholeWorld.transform(blist.openLayers.geographicProjection, mapProjection);
 
+            this.mapSize = this.map.getSize().clone();
+
             this._untouched = true;
         },
 
@@ -1250,7 +1252,10 @@
                     console.dir(this.viewport); console.groupEnd();
                 console.groupEnd();
             }
-            if (this.expected() || this.handlingEvent == 'moveend') { return; }
+
+            var resizeEvent = !this.mapSize.equals(this.map.getSize());
+
+            if (this.expected() || this.handlingEvent == 'moveend' || resizeEvent) { return; }
             this.events.triggerEvent('viewportchanged');
             this.handlingEvent = 'moveend';
 

@@ -1824,9 +1824,12 @@ var Dataset = ServerModel.extend({
             var self = this;
             Dataset.lookupFromViewId(uid, function(child) {
                 self._childViews[uid] = child;
-                child.unbind(null, null, self);
-                child.bind('displaytype_change',
-                    function() { self.trigger('displaytype_change'); }, self);
+                if (child != self)
+                {
+                    child.unbind(null, null, self);
+                    child.bind('displaytype_change',
+                        function() { self.trigger('displaytype_change'); }, self);
+                }
                 callback(child);
             }, undefined, isBatch);
         }

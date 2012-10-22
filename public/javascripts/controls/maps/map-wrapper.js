@@ -121,7 +121,7 @@
 
                 var uid = df.uid;
                 var viewId = [uid, '-', index].join('');
-                mapObj._children[index] = { loading: true,
+                mapObj._children[index] = { loading: true, ready: function() { return false; },
                     $dom: $('<div id="' + id + '_' + viewId + '"></div>') };
                 Dataset.lookupFromViewId(uid, function(ds)
                 {

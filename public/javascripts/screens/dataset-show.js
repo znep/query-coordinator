@@ -183,6 +183,18 @@ $(function()
     if (defRen == 'richList') { defRen = 'fatrow'; }
     if (!$.isBlank(blist.initialRowId)) { defRen = 'page'; }
 
+    if (blist.dataset.displayFormat.viewDefinitions)
+    {
+        var viewId = blist.dataset.displayFormat.viewDefinitions[0].uid;
+        _.each(blist.dataset.metadata.renderTypeConfig.visible || [], function(v, type)
+        {
+            if (v && _.include(['table', 'page', 'fatrow'], type)
+            && !$.subKeyDefined(blist.dataset.metadata, 'renderTypeConfig.active.' + type + '.id'))
+            { $.deepSet(blist.dataset.metadata, viewId, 'renderTypeConfig', 'active', type, 'id'); }
+        });
+
+        blist.dataset.childViews = _.pluck(blist.dataset.displayFormat.viewDefinitions, 'uid');
+    }
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
         defaultTypes: defRen,

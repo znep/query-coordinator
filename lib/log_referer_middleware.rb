@@ -17,6 +17,8 @@ class LogRefererMiddleware
     request_based_domain = request.host if request_based_domain.blank?
 
     domain = CurrentDomain.cname
+    domain_id = CurrentDomain.domain.id.to_s
+
     logger.info "Attempting to create metric for DOMAIN #{domain}. The requesting domain was #{request_based_domain}"
     if domain.blank?
       logger.warn "Unable to determine domain for request. I'm not going to log the referrer."
@@ -27,7 +29,7 @@ class LogRefererMiddleware
       if env['HTTP_ACCEPT'] && env['HTTP_ACCEPT'].include?("text/html")
         # If the request is for an html page, then log a pageview event.
         logger.info "Attempting to log a page view to the #{domain} domain."
-        @queue.push_metric(domain, 'page-views')
+        @queue.push_metric(domain_id, 'page-views')
       end
 
       if ref.blank?
@@ -58,8 +60,8 @@ class LogRefererMiddleware
             path += "?#{uri.query}"
           end
 
-          @queue.push_metric("referrer-hosts-#{domain}", "referrer-#{host}")
-          @queue.push_metric("referrer-paths-#{domain}-#{host}", "path-#{path}")
+          @queue.push_metric("referrer-hosts-#{domain_id}", "referrer-#{host}")
+          @queue.push_metric("referrer-paths-#{domain_id}-#{host}", "path-#{path}")
           # TODO: We should emit to a CSV file for backup too?
         end
       end

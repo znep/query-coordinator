@@ -60,13 +60,6 @@ var Model = Class.extend({
 
         this.trigger = function(evName, args)
         {
-            if ((blist.debug || {}).trigger)
-            {
-                console.groupCollapsed('trigger');
-                console.groupCollapsed('trace'); console.trace(); console.groupEnd();
-                console.groupCollapsed('arguments'); console.dir(arguments); console.groupEnd();
-                console.groupEnd();
-            }
             verifyEvent(evName);
             // IE requires that if you pass something for args, it must be
             // an array; not null or undefined

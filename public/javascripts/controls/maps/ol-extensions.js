@@ -492,6 +492,7 @@
 
         currentMaxZoomLevel: function()
         {
+            if (this.hasNoBackground) { return this.baseLayer.availableZoomLevels; }
             return _(this.backgroundLayers()).chain()
                 .select(function(layer) { return layer.visibility; })
                 .pluck('availableZoomLevels')

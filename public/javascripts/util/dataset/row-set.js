@@ -739,7 +739,10 @@ var RowSet = ServerModel.extend({
 
         var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
         if (fullLoad)
-        { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
+        {
+            req.url = '/views/' + rs._dataset.id + '/rows.json';
+            req.type = 'GET';
+        }
         if (params.meta)
         {
             rs._curMetaReq = reqId;

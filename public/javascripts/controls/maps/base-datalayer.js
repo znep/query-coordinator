@@ -67,7 +67,7 @@
             if (layerObj._eventsBound) { return; }
 
             layerObj._eventsBound = {
-                'row_change': function(rows) { layerObj.handleRowChange(rows); },
+                'row_change': function(rows, fr) { layerObj.handleRowChange(rows, fr); },
                 'displayformat_change': function(df) { layerObj.handleDisplayFormatChange(df); },
                 'query_change': function() { layerObj.handleQueryChange(); },
                 'set_temporary': function() { layerObj.fireTemporaryEvent(true); },
@@ -136,10 +136,13 @@
             layerObj.getData();
         },
 
-        handleRowChange: function(rows)
+        handleRowChange: function(rows, fullReset)
         {
             var layerObj = this;
 //console.log('row change', layerObj._displayLayer.id, _.size(rows));
+
+            if (fullReset) { return; } // This is because row_change(fullReset: true) appears
+                                       // to duplicate sending data down the pipe. Ref: Bug 7577.
             var removedRows = [];
             rows = _.reject(rows, function(r)
             {

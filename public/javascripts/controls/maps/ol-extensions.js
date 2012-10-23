@@ -1136,6 +1136,10 @@
         {
             OpenLayers.Geometry.Polygon.prototype.initialize.apply(this, arguments);
             this.attributes = { rows: {}, quantities: {} };
+        },
+
+        componentsReady: function()
+        {
             var primaryComponent = this.components[0];
             this.islands = []; this.holes = [];
 

@@ -91,12 +91,7 @@
                 url: MAP_TYPE[layerObj._config.type].jsonCache(layerObj._config),
                 handleAs: 'json',
                 load: function(data, ioArgs) {
-                    layerObj._featureSet = reClassifyFeatures(data.features,
-                        data.displayFieldName);
-                    layerObj._loadingFeatures = false;
-                    layerObj.renderFeatures(layerObj._featureSet);
-                    layerObj.getData();
-                    layerObj._view.trigger('request_finish');
+                    layerObj.handleFeaturesLoaded(data.features, data.displayFieldName);
                 }
             });
 
@@ -114,6 +109,82 @@
                     alert('A data request has taken too long and timed out.');
                 }
             }, 60000);
+        },
+
+        handleFeaturesLoaded: function(features, displayFieldName)
+        {
+            var layerObj = this, featuresReady = null;
+            layerObj._featureSet = [];
+            displayFieldName = displayFieldName || 'NAME';
+
+            var arr = function(size, val)
+                { var a = []; a.length = size; while(size--) { a[size] = val; } return a; };
+            var arr2 = function(size, cls)
+                { var a = []; a.length = size; while(size--) { a[size] = new cls(); } return a; };
+
+            var convertPoint = function(point, pIndex, ring, ready)
+            {
+                ring.components[pIndex] = new OpenLayers.Geometry.Point(point[0], point[1]);
+
+                ready[pIndex] = true;
+            };
+
+            var convertRing = function(ring, rIndex, feature, ready)
+            {
+                var pIndex = 0;
+                feature.components[rIndex].components = arr2(ring.length, OpenLayers.Geometry.Point);
+                ready[rIndex] = arr(ring.length, false);
+
+                $.batchProcess(ring, 10, function(p)
+                        { convertPoint(p, pIndex++, feature.components[rIndex], ready[rIndex]); },
+                    null, function() {
+                        var comps = feature.components[rIndex].components;
+                        feature.components[rIndex].components = [];
+                        feature.components[rIndex].addComponents(comps);
+                    });
+            };
+
+            var fIndex = 0, convertFeature = function(feature)
+            {
+                var index = fIndex, f = layerObj._featureSet[fIndex], rIndex = 0;
+                f.attributes.dupKey = f.dupKey
+                    = feature.attributes.NAME || feature.attributes[displayFieldName];
+
+                f.components = arr2(feature.geometry.rings.length, OpenLayers.Geometry.LinearRing);
+                featuresReady[fIndex] = arr(feature.geometry.rings.length, false);
+                $.batchProcess(feature.geometry.rings, 10,
+                    function(r) { convertRing(r, rIndex++, f, featuresReady[index]); });
+
+                fIndex++;
+            };
+
+            var onComplete = function()
+            {
+                layerObj._loadingFeatures = false;
+                _.each(layerObj._featureSet, function(f) { f.componentsReady(); });
+
+                layerObj.renderFeatures();
+
+                if (layerObj._dataLoaded)
+                { layerObj.handleDataLoaded(layerObj._view.loadedRows()); }
+                else
+                { layerObj.getData(); }
+
+                layerObj._view.trigger('request_finish');
+            };
+
+            layerObj._featureSet = arr2(features.length, blist.openLayers.Polygon);
+            featuresReady        = arr (features.length, false);
+            $.batchProcess(features, 10, convertFeature);
+
+            var collapseTruth = function(vector)
+            { return vector === true || ((_.isArray(vector)) && _.all(vector, collapseTruth)); };
+
+            var waitTimer = setInterval(function()
+            {
+                if (collapseTruth(featuresReady))
+                { clearInterval(waitTimer); onComplete(); }
+            }, 100);
         },
 
         reloadFeatures: function()
@@ -160,11 +231,9 @@
             { return; }
 
             // Thinking about promoting this to base-datalayer...
-            var updatedFeatures = [];
             $.batchProcess(_.toArray(rows), 10,
-                function(row, i) { return layerObj.prepareRowRender(row); },
-                function(batch) { updatedFeatures = updatedFeatures.concat(_.compact(batch)); },
-                function() { layerObj.renderFeatures(updatedFeatures); });
+                function(row, i) { return layerObj.prepareRowRender(row); }, null,
+                function() { layerObj.renderFeatures(); });
         },
 
         prepareRowRender: function(row)
@@ -186,7 +255,7 @@
             return feature;
         },
 
-        renderFeatures: function(updatedFeatures)
+        renderFeatures: function()
         {
             var layerObj = this;
             var features = layerObj._featureSet;
@@ -213,9 +282,6 @@
 
             _.each(features, function(feature, index)
             {
-                if (updatedFeatures && !_.include(updatedFeatures, feature))
-                { return; }
-
                 var rows = feature.attributes.rows || [];
                 var color;
                 if (!_.isNull(quantities[index]))
@@ -271,13 +337,10 @@
             var center = feature.getBounds().getCenterLonLat();
             center = new OpenLayers.Geometry.Point(center.lon, center.lat);
 
-            for (var r = 0; r < feature.components.length; r++)
-            {
-                if (transform.scale)
-                { feature.components[r].resize(transform.scale, center); }
-                if (transform.offset)
-                { feature.components[r].move(transform.offset.x, transform.offset.y); }
-            }
+            if (transform.scale)
+            { feature.resize(transform.scale, center); }
+            if (transform.offset)
+            { feature.move(transform.offset.x, transform.offset.y); }
 
             return feature;
         },
@@ -300,19 +363,18 @@
             }
             else
             { marker.style.fillOpacity = 0; }
+        },
+
+        clearData: function()
+        {
+            _.each(this._displayLayer.features, function(feature)
+            {
+                feature.attributes.rows = [];
+                feature.geometry.attributes.rows = {};
+                feature.geometry.attributes.quantities = {};
+            });
+            this.renderFeatures();
         }
     }, {}, 'socrataDataLayer', 'points');
 
-    var reClassifyFeatures = function(features, displayFieldName)
-    {
-        displayFieldName = displayFieldName || 'NAME';
-        return _.map(features, function(feature)
-            { var f = new blist.openLayers.Polygon(_.map(feature.geometry.rings, function(ring)
-                { return new OpenLayers.Geometry.LinearRing(_.map(ring, function(point)
-                { return new OpenLayers.Geometry.Point(point[0], point[1]); })); }));
-                f.dupKey = feature.attributes.NAME || feature.attributes[displayFieldName];
-                f.attributes.dupKey = f.dupKey;
-                return f;
-            });
-    };
 })(jQuery);

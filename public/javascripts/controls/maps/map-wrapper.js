@@ -272,6 +272,8 @@
                     { mapObj._primaryView.takeSnapshot(); }
                 }, 2000);
 
+                _.each(mapObj._children, function(cv) { cv._view._clearTemporary(); });
+
                 mapObj._doneLoading = true;
             }
         },

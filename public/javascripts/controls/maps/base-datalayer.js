@@ -69,11 +69,22 @@
             layerObj._eventsBound = {
                 'row_change': function(rows) { layerObj.handleRowChange(rows); },
                 'displayformat_change': function(df) { layerObj.handleDisplayFormatChange(df); },
-                'query_change': function() { layerObj.handleQueryChange(); }
+                'query_change': function() { layerObj.handleQueryChange(); },
+                'set_temporary': function() { layerObj.fireTemporaryEvent(true); },
+                'clear_temporary': function() { layerObj.fireTemporaryEvent(false); }
             };
 
             _.each(layerObj._eventsBound, function(handler, eventName)
             { layerObj._view.bind(eventName, handler, layerObj); });
+        },
+
+        fireTemporaryEvent: function(set)
+        {
+            if (this._ignoreTemporary) { delete this._ignoreTemporary; return; }
+
+            var eventName = set ? 'set_temporary' : 'clear_temporary';
+            if (this._parent._primaryView != this._view)
+            { this._parent._primaryView.trigger(eventName); }
         },
 
         handleDisplayFormatChange: function(newDF)

@@ -293,6 +293,7 @@
         setQuery: function(query, viewportChange)
         {
             if (!viewportChange) { delete this._neverCluster; }
+            else { this._ignoreTemporary = true; }
             this._super.call(this, query);
         }
     }, {

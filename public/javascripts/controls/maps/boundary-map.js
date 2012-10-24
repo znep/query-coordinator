@@ -232,7 +232,7 @@
 
             // Thinking about promoting this to base-datalayer...
             $.batchProcess(_.toArray(rows), 10,
-                function(row, i) { return layerObj.prepareRowRender(row); }, null,
+                function(row, i) { layerObj.prepareRowRender(row); }, null,
                 function() { layerObj.renderFeatures(); });
         },
 
@@ -241,18 +241,22 @@
             var layerObj = this;
 
             var geometry = layerObj.extractGeometryFromRow(row);
-            var feature = _.detect(layerObj._featureSet, function(polygon)
-                { return polygon.containsPoint(geometry); });
-            if (!feature) { return; }
+            var feature;
+            $.batchProcess(layerObj._featureSet, 3, function(polygon)
+            {
+                if (feature) { return; }
+                if (polygon.containsPoint(geometry)) { feature = polygon; }
+            }, null, function()
+            {
+                if (!feature) { return; }
 
-            feature.attributes.rows[row.id] = row;
-            if (layerObj._config.aggregateMethod == 'sum')
-            { feature.attributes.quantities[row.id]
-                = parseFloat(row[layerObj._quantityCol.lookup]); }
-            else
-            { feature.attributes.quantities[row.id] = 1; }
-
-            return feature;
+                feature.attributes.rows[row.id] = row;
+                if (layerObj._config.aggregateMethod == 'sum')
+                { feature.attributes.quantities[row.id]
+                    = parseFloat(row[layerObj._quantityCol.lookup]); }
+                else
+                { feature.attributes.quantities[row.id] = 1; }
+            });
         },
 
         renderFeatures: function()
@@ -280,7 +284,8 @@
             layerObj._quantityCol.aggregates = { maximum: max, minimum: min };
             layerObj._parent._controls.Overview.redraw();
 
-            _.each(features, function(feature, index)
+            var index = 0;
+            $.batchProcess(features, 10, function(feature)
             {
                 var rows = feature.attributes.rows || [];
                 var color;
@@ -294,10 +299,13 @@
                 layerObj.renderDatum({ geometry: layerObj.transformFeature(feature),
                     dupKey: feature.dupKey, rows: _.toArray(rows), color: color
                 });
-            });
 
-            layerObj.zoomToPreferred();
-            layerObj._featuresLoaded = true;
+                index++;
+            }, null, function()
+            {
+                layerObj.zoomToPreferred();
+                layerObj._featuresLoaded = true;
+            });
         },
 
         removeDatum: function(datum)
@@ -338,9 +346,9 @@
             center = new OpenLayers.Geometry.Point(center.lon, center.lat);
 
             if (transform.scale)
-            { feature.resize(transform.scale, center); }
+            { feature = feature.resize(transform.scale, center); }
             if (transform.offset)
-            { feature.move(transform.offset.x, transform.offset.y); }
+            { feature = feature.move(transform.offset.x, transform.offset.y); }
 
             return feature;
         },

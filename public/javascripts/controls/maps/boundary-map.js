@@ -248,6 +248,8 @@
             var layerObj = this;
 
             var geometry = layerObj.extractGeometryFromRow(row);
+            if (_.isBoolean(geometry) || _.isString(geometry)) { return null; }
+
             var feature;
             $.batchProcess(layerObj._featureSet, 3, function(polygon)
             {

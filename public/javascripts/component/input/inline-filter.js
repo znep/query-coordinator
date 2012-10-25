@@ -7,7 +7,7 @@ $.component.Component.extend('Inline filter', 'input', {
         return {
             javascripts: [{assets: 'awesomecomplete'}, {assets: 'base-control'},
                 {assets: 'shared-editors'}, {assets: 'unified-filter'}],
-            stylesheets: [{assets: 'base-control'}],
+            stylesheets: [{assets: 'base-control'}, {sheet: '/webfonts/ss-standard.css', hasFonts: true}],
             templates: ['grid_sidebar', 'unified_filter'],
             translations: ['controls.filter'] };
     },

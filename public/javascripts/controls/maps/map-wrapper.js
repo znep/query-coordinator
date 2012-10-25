@@ -140,8 +140,9 @@
                     }
 
                     mapObj.$dom().append(mapObj._children[index].$dom);
+                    var query = $.deepGet(mapObj._primaryView.metadata, 'query', ds.id);
                     mapObj._children[index] = $(mapObj._children[index].$dom)
-                            .socrataDataLayer({ view: ds, index: index,
+                            .socrataDataLayer({ view: ds, index: index, query: query,
                                                 parentViz: mapObj, displayFormat: df });
                     mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
                     if (ds.isGeoDataset()) { mapObj._controls.Overview.open(); }
@@ -454,6 +455,13 @@
 
             if (layerOptions.opacity) { layer.setOpacity(layerOptions.opacity); }
             if (layerOptions.hidden || hideLayer) { layer.setVisibility(false); }
+        },
+
+        saveQuery: function(uid, query)
+        {
+            var newMD = $.extend(true, {}, this._primaryView.metadata);
+            $.deepSet(newMD, query, 'query', uid);
+            this._primaryView.update({ metadata: newMD });
         },
 
         initializeEvents: function()

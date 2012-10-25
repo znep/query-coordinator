@@ -32,7 +32,7 @@
             currentObj._map = currentObj._parent.map;
             currentObj._displayFormat = currentObj.settings.displayFormat
                 || currentObj._view.displayFormat;
-            currentObj._query = currentObj.settings.query || currentObj._view.query;
+            currentObj.setQuery(currentObj.settings.query || currentObj._view.query || {});
 
             currentObj._view.displayType = 'map';
 
@@ -142,6 +142,7 @@
         {
             var layerObj = this;
 //console.log('query change', layerObj._uniqueId);
+            this._parent.saveQuery(this._view.id, this._view.query);
             layerObj.clearData();
             layerObj.getData();
         },

@@ -199,23 +199,23 @@ class View < Model
   # Return a tuple for a getRowsByIds request
   #
   def get_rows_request(per_page, page = 1, conditions = {}, include_meta = false)
-     params = { :method => 'getByIds',
-                :asHashes => true,
-                :accessType => 'WEBSITE',
-                :start => (page - 1) * per_page,
-                :length => per_page,
-                :meta => include_meta}
-     merged_conditions = self.query.cleaned.deep_merge(conditions)
-     request_body = {
-                'name' => self.name,
-                'searchString' => merged_conditions.delete('searchString'),
-                'query' => merged_conditions,
-                'originalViewId' => self.id
-                }
-                request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
+    params = { :method => 'getByIds',
+               :asHashes => true,
+               :accessType => 'WEBSITE',
+               :start => (page - 1) * per_page,
+               :length => per_page,
+               :meta => include_meta}
+    merged_conditions = self.query.cleaned.deep_merge(conditions)
+    request_body = {
+               'name' => self.name,
+               'searchString' => merged_conditions.delete('searchString'),
+               'query' => merged_conditions,
+               'originalViewId' => self.id
+               }
+    request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
 
-     url = "/views/INLINE/rows.json?#{params.to_param}"
-     { url: url, request: request_body}
+    url = "/views/INLINE/rows.json?#{params.to_param}"
+    { url: url, request: request_body}
   end
 
   #
@@ -281,10 +281,11 @@ class View < Model
       'searchString' => merged_conditions.delete('searchString'),
       'query' => merged_conditions,
       'originalViewId' => self.id
-    }.to_json
+    }
+    request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
-    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body),
+    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json),
                       {:max_nesting => 25})
     if conditions.empty?
       @cached_rows ||= {}

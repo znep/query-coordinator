@@ -87,6 +87,15 @@
             { this._parent._primaryView.trigger(eventName); }
         },
 
+        clearTemporary: function()
+        {
+            if (this._view != this._parent._primaryView)
+            {
+                this._ignoreTemporary = true;
+                this._view._clearTemporary();
+            }
+        },
+
         handleDisplayFormatChange: function(newDF)
         {
             var layerObj = this;

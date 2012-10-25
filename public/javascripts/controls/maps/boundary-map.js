@@ -230,10 +230,17 @@
             if (layerObj._loadingFeatures)
             { return; }
 
+            if (!layerObj._rowsProcessing) { layerObj._rowsProcessing = 0; }
+            layerObj._rowsProcessing += _.size(rows);
+
             // Thinking about promoting this to base-datalayer...
-            $.batchProcess(_.toArray(rows), 10,
-                function(row, i) { layerObj.prepareRowRender(row); }, null,
-                function() { layerObj.renderFeatures(); });
+            $.batchProcess(_.toArray(rows), 10, function(row) { layerObj.prepareRowRender(row); });
+
+            var waiting = setInterval(function()
+            {
+                if (layerObj._rowsProcessing <= 0)
+                { clearInterval(waiting); layerObj.renderFeatures(); }
+            }, 20);
         },
 
         prepareRowRender: function(row)
@@ -245,17 +252,21 @@
             $.batchProcess(layerObj._featureSet, 3, function(polygon)
             {
                 if (feature) { return; }
-                if (polygon.containsPoint(geometry)) { feature = polygon; }
+                if ((polygon.attributes.oldGeometry || polygon).containsPoint(geometry))
+                { feature = polygon; }
             }, null, function()
             {
-                if (!feature) { return; }
+                if (feature)
+                {
+                    feature.attributes.rows[row.id] = row;
+                    if (layerObj._config.aggregateMethod == 'sum')
+                    { feature.attributes.quantities[row.id]
+                        = parseFloat(row[layerObj._quantityCol.lookup]); }
+                    else
+                    { feature.attributes.quantities[row.id] = 1; }
+                }
 
-                feature.attributes.rows[row.id] = row;
-                if (layerObj._config.aggregateMethod == 'sum')
-                { feature.attributes.quantities[row.id]
-                    = parseFloat(row[layerObj._quantityCol.lookup]); }
-                else
-                { feature.attributes.quantities[row.id] = 1; }
+                layerObj._rowsProcessing--;
             });
         },
 

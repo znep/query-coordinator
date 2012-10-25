@@ -1155,7 +1155,8 @@
             _.defer(function() { polygon.getBounds(); }); // Precache if it's faster.
         },
 
-        containsPoint: function(point) {
+        containsPoint: function(point)
+        {
             if (!this.getBounds().contains(point.x, point.y)) { return false; }
 
             var numIslands = this.islands.length;

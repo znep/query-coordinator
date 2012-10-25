@@ -93,6 +93,7 @@
             {
                 this._ignoreTemporary = true;
                 this._view._clearTemporary();
+                delete this._ignoreTemporary;
             }
         },
 

@@ -1306,7 +1306,7 @@
         {
             if (this.viewportInOriginal) { return; }
             if (_.any(_.pluck(this.mapObj._children, 'loading'))) { this.delayZoom(); return; }
-            var viewport = this.preferredViewport();
+            var viewport = this.preferredViewport().intersection(this.map.restrictedExtent);
             if (!viewport) { return; }
             if (!this.willMove(viewport)) { return; }
 

@@ -459,6 +459,7 @@
 
         saveQuery: function(uid, query)
         {
+            if ($.isBlank(query.filterCondition)) { return; }
             var newMD = $.extend(true, {}, this._primaryView.metadata);
             $.deepSet(newMD, query, 'query', uid);
             this._primaryView.update({ metadata: newMD });

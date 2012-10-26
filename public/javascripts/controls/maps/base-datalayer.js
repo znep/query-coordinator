@@ -142,7 +142,7 @@
         {
             var layerObj = this;
 //console.log('query change', layerObj._uniqueId);
-            this._parent.saveQuery(this._view.id, this._view.query);
+            this._parent.saveQuery(this._view.id, { filterCondition: this._view.cleanFilters() });
             layerObj.clearData();
             layerObj.getData();
         },

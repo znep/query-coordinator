@@ -158,6 +158,7 @@ $.component.Container.extend('Repeater', 'content', {
         }
         else if ($.isBlank(cObj._dataContext))
         {
+            doneWithRowsCallback(0);
             return;
         }
         else if (_.isArray(cObj._dataContext.value))

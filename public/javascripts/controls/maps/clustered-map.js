@@ -118,12 +118,10 @@
                 layerObj.getMinDistanceForViewportPixels(viewport),
                 function(data)
             {
-if ((blist.debug || {}).bug7596) { console.log('checkpoint 1'); }
                 if (layerObj._neverCluster
                     || _.reduce(data, function(memo, cluster) { return memo + cluster.size; }, 0)
                         < layerObj._parent._maxRows / 2)
                 { layerObj.fetchPoints(); return; }
-if ((blist.debug || {}).bug7596) { console.log('checkpoint 2'); }
 
                 // A mere single cluster is essentially useless.
                 // Make an attempt to break it into its children.
@@ -156,12 +154,10 @@ if ((blist.debug || {}).bug7596) { console.log('checkpoint 2'); }
 
         fetchPoints: function()
         {
-if ((blist.debug || {}).bug7596) { console.log('checkpoint 3'); }
             this._fetchPoints = true;
             this._renderType = 'points';
             this.filterWithViewport();
             delete this._fetchPoints;
-if ((blist.debug || {}).bug7596) { console.log('checkpoint 4'); }
         },
 
         attemptViewportGuess: function(cluster)

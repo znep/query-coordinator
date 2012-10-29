@@ -1223,6 +1223,7 @@
             mouseOver: function()
             {
                 clearTimeout(tooltipTimeout);
+                this._isMouseover = true;
                 chartObj._primaryView.highlightRows(this.row, null, this.column);
             },
             mouseOut: function()
@@ -1236,7 +1237,9 @@
             },
             select: function()
             {
-                customTooltip(chartObj, this);
+                if (this._isMouseover)
+                { customTooltip(chartObj, this); }
+                delete this._isMouseover;
             },
             unselect: function()
             {

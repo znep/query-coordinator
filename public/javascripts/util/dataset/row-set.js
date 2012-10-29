@@ -97,8 +97,9 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
 
-        // If we aren't complete, but can grab data from our parent, pre-emptively do so
-        if (!rs._isComplete && (rs._parent || {})._isComplete)
+        // If we aren't complete, but can grab data from our iparent, pre-emptively do so
+        // Also exclude client side filtering on the catalog dataset because its filtering is somewhat unusual.
+        if (rs._dataset.resourceName !== "datasets" &&   !rs._isComplete && (rs._parent || {})._isComplete)
         {
             var newRows = _.map(_.select(rs._parent._rows, function(r)
                     { return rs._doesBelong(r); }), function(r) { return $.extend({}, r); });

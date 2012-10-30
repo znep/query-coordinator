@@ -423,7 +423,7 @@ class DatasetsController < ApplicationController
     return render_404 if blob.nil? || blob['href'].blank?
 
     MetricQueue.instance.push_metric(params[:id], 'files-downloaded')
-    MetricQueue.instance.push_metric("views-downloaded-#{CurrentDomain.cname}", "view-#{params[:id]}")
+    MetricQueue.instance.push_metric("views-downloaded-#{CurrentDomain.domain.id}", "view-#{params[:id]}")
     redirect_to blob['href']
   end
 

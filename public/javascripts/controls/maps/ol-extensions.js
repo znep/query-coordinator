@@ -512,6 +512,7 @@
                 [-179.999999, -85.051128, 179.999999, 85.051128]).transform(
                 blist.openLayers.geographicProjection, this.getProjectionObject()));
             this.restrictedExtent = extent;
+            this._extentRestricted = true;
         },
 
         showMousePosition: function()

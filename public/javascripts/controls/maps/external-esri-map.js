@@ -131,6 +131,11 @@
         initializeLayer: function()
         {
             var layerObj = this;
+            if (!layerObj._parent._esriAPIready)
+            {
+                setTimeout(function() { layerObj.initializeLayer(); }, 100);
+                return;
+            }
 
             var layer_url = layerObj._view.metadata.custom_fields.Basic.Source;
             var tmp = layer_url.split('/');

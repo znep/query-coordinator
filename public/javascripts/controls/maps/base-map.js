@@ -2190,7 +2190,7 @@
         defaultZoom: 1,
         coordinatePrecision: 6,
         iconScaleFactor: 1.2,
-        basePointSize: blist.isMobile ? 15 : 5
+        basePointSize: 5
     }, 'socrataVisualization');
 
     var calculateSegmentSizes = function(mapObj, aggs)

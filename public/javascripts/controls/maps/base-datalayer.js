@@ -844,7 +844,7 @@
             layerObj._heatmapBkg.bindDatasetEvents();
             layerObj._heatmapBkg.getData();
         }
-    }, { showRowLink: true, numSegments: 6, basePointSize: blist.isMobile ? 15 : 5 },
+    }, { showRowLink: true, numSegments: 6, basePointSize: 5 },
     'socrataDataLayer');
 
     $.Control.registerMixin('tiledata', {

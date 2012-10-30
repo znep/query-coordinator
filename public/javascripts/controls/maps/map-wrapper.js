@@ -101,6 +101,9 @@
                 _.each(mapObj._children, function(childView)
                 { childView.bindDatasetEvents(); });
 
+                if (mapObj._displayFormat.openOverviewByDefault)
+                { mapObj._controls.Overview.open(); }
+
                 mapObj.restackDataLayers();
 
                 mapObj.initializeEvents();
@@ -145,7 +148,6 @@
                             .socrataDataLayer({ view: ds, index: index, query: query,
                                                 parentViz: mapObj, displayFormat: df });
                     mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
-                    if (ds.isGeoDataset()) { mapObj._controls.Overview.open(); }
 
                     if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
                         && _.all(mapObj._children, function(cv) { return !cv.loading; }))

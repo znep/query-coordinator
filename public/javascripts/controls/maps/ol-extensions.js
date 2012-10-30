@@ -831,8 +831,6 @@
             {
                 if (this._enableLegend)
                 { $container.removeClass('hide'); }
-                else
-                { $container.parents('.contentBlock').removeClass('hide'); }
                 this._drawn = true;
             }
         },

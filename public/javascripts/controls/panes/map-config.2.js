@@ -222,9 +222,11 @@
         var childPane = cpObj.childPanes[index];
         if (!childPane)
         {
+            var displayFormat = $.extend(true, {}, cpObj._view.displayFormat);
+            displayFormat.viewDefinitions[index] = $.extend(true, {}, dataset.displayFormat);
             childPane = cpObj.childPanes[index] = $('<div />')
                 .pane_mapDataLayerCreate({
-                    data: { displayFormat: $.extend(true, {}, cpObj._view.displayFormat) },
+                    data: { displayFormat: displayFormat },
                     'parent': cpObj, view: dataset, index: index });
             insertPane(childPane);
             childPane.render();

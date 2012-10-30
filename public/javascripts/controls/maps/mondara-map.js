@@ -89,7 +89,7 @@
         buildGetFeature: function()
         {
             var layerObj = this;
-            if (layerObj._getFeature) { return; }
+            if (layerObj._displayFormat.disableFlyouts || layerObj._getFeature) { return; }
 
             layerObj._getFeature = new OpenLayers.Control.GetFeature({
                 protocol: layerObj.featureProtocol(),

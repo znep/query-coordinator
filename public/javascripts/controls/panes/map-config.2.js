@@ -223,7 +223,8 @@
         if (!childPane)
         {
             var displayFormat = $.extend(true, {}, cpObj._view.displayFormat);
-            displayFormat.viewDefinitions[index] = $.extend(true, {}, dataset.displayFormat);
+            $.deepSet(displayFormat, $.extend(true, {}, dataset.displayFormat),
+                'viewDefinitions', index);
             childPane = cpObj.childPanes[index] = $('<div />')
                 .pane_mapDataLayerCreate({
                     data: { displayFormat: displayFormat },

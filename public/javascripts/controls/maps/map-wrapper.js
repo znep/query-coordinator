@@ -32,15 +32,6 @@
             mapObj._librariesLoaded();
         },
 
-        loadESRIdependency: function()
-        {
-            var mapObj = this;
-
-            blist.util.assetLoading.loadAssets(
-                { javascripts: [ 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.3' ] },
-                function() { mapObj._esriAPIready = true; });
-        },
-
         initializeVisualization: function ()
         {
             var mapObj = this;
@@ -150,9 +141,6 @@
                         }
                         delete df.legacy;
                     }
-
-                    if (ds.isArcGISDataset() || df.plotStyle == 'heatmap')
-                    { mapObj.loadESRIdependency(); }
 
                     mapObj.$dom().append(mapObj._children[index].$dom);
                     var query = $.deepGet(mapObj._primaryView.metadata, 'query', ds.id);
@@ -266,8 +254,6 @@
 
         mapElementLoaded: function(layer)
         {
-            if (!layer) { return; }
-
             var mapObj = this;
             if (layer.object) { layer = layer.object; }
             $.debug('map element loaded', layer.name || layer.id);

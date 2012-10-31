@@ -26,11 +26,6 @@
         initializeLayer: function()
         {
             var layerObj = this;
-            if (!layerObj._parent._esriAPIready)
-            {
-                setTimeout(function() { layerObj.initializeLayer(); }, 100);
-                return;
-            }
             layerObj._super();
 
             layerObj.loadFeatures();
@@ -232,7 +227,7 @@
         handleDataLoaded: function(rows)
         {
             var layerObj = this;
-            if (layerObj._loadingFeatures || !layerObj._parent._esriAPIready)
+            if (layerObj._loadingFeatures)
             { return; }
 
             if (!layerObj._rowsProcessing) { layerObj._rowsProcessing = 0; }

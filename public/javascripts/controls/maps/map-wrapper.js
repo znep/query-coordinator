@@ -813,7 +813,7 @@
                 function(evt) { new jQuery.Event(evt).stopPropagation(); mapObj.closePopup(); });
             popup.onClosePopup = options.closeBoxCallback;
             popup.closeKey = options.closeKey;
-            popup.panMapIfOutOfView = !mapObj.map._extentRestricted;
+            popup.panMapIfOutOfView = false;
             mapObj._popup = popup;
             mapObj.map.addPopup(popup);
 

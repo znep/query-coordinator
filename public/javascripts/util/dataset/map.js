@@ -60,7 +60,9 @@ Dataset.map.convertToVersion2 = function(view, df)
 
     if (view.isArcGISDataset())
     {
-        df.bkgdLayers = [{ layerName: 'World Street Map (ESRI)', opacity: 1.0 }];
+        if (!df.layers)
+        { df.bkgdLayers = [{ layerName: 'World Street Map (ESRI)', opacity: 1.0 }]; }
+
         delete df.viewDefinitions[0].plotStyle;
         for (var key in df.viewDefinitions[0].plot)
         {

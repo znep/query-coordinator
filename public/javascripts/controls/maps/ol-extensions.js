@@ -1259,6 +1259,7 @@
             }
 
             var resizeEvent = !this.mapSize.equals(this.map.getSize());
+            if (resizeEvent) { this.mapSize = this.map.getSize().clone(); }
 
             if (this.expected() || this.handlingEvent == 'moveend' || resizeEvent) { return; }
             this.events.triggerEvent('viewportchanged');

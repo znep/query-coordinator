@@ -82,6 +82,7 @@ module Canvas2
         all_c.compact!
       end
 
+      child_timings = []
       if all_c.length > 0 || !@properties['noResultsChildren'].nil?
         cont_config = @properties['container'] || {'type' => 'Container'}
         cont_config['id'] ||= Canvas2::Util.allocate_id
@@ -95,9 +96,10 @@ module Canvas2
         r = real_c.render
         t += r[0]
         fully_rendered &&= r[1]
+        child_timings.push(r[2])
       end
 
-      [t, fully_rendered]
+      [t, fully_rendered, child_timings]
     end
 
     def child_context

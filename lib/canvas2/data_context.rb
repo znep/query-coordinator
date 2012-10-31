@@ -8,12 +8,18 @@ module Canvas2
       return @errors ||= []
     end
 
+    def self.timings
+      return @timings ||= []
+    end
+
     def self.reset
       @available_contexts = {}
       @errors = []
+      @timings = []
     end
 
     def self.load_context(id, config)
+      start_time = Time.now
       config = Util.string_substitute(config, Util.base_resolver)
       config[:id] = id
       ret_val = true
@@ -36,10 +42,12 @@ module Canvas2
             errors.push(DataContextError.new(config, "No datasets found for datasetList '" + id + "'"))
             ret_val = false
           end
+          log_timing(start_time, config)
 
         when 'dataset'
           ret_val = get_dataset(config, lambda do |ds|
             available_contexts[id] = {id: id, type: config['type'], dataset: ds}
+            log_timing(start_time, config)
             if (defined? @pending_contexts) && (((@pending_contexts || {})[id]).is_a? Array)
               threads = @pending_contexts[id].map do |req|
                 Thread.new do
@@ -65,6 +73,7 @@ module Canvas2
             if col.nil?
               errors.push(DataContextError.new(config, "No column '" + config['columnId'] +
                                                "' found for '" + id + "'"))
+              log_timing(start_time, config)
               return !config['required']
             end
 
@@ -74,6 +83,7 @@ module Canvas2
               ds.get_aggregates(aggs)
             end
             available_contexts[id] = { id: id, type: config['type'], column: col, parent_dataset: ds }
+            log_timing(start_time, config)
             return true
           end)
 
@@ -88,18 +98,21 @@ module Canvas2
 
             if r.nil?
               errors.push(DataContextError.new(config, "No row found for '" + id + "'"))
+              log_timing(start_time, config)
               return !config['required']
             end
 
             fr = {}
             ds.visible_columns.each {|c| fr[c.fieldName] = r[c.id.to_s]}
             available_contexts[id] = {id: id, type: config['type'], row: fr}
+            log_timing(start_time, config)
             return true
           end)
         end
       rescue CoreServer::CoreServerError => e
         raise DataContextError.new(config, "Core server failed: " + e.error_message,
                                  { path: e.source, payload: JSON.parse(e.payload || '{}') })
+        log_timing(start_time, config)
       end
       return ret_val
     end
@@ -225,6 +238,10 @@ module Canvas2
     def self.got_dataset(ds, config)
       add_query(ds, config['query']) if !config['keepOriginal']
       ds.data['totalRows'] = ds.get_total_rows if config['getTotal']
+    end
+
+    def self.log_timing(start_time, config)
+      timings.push("#{config[:id]} took #{(Time.now - start_time) * 1000} ms")
     end
   end
 end

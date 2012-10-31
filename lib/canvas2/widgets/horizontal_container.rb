@@ -7,6 +7,7 @@ module Canvas2
     def render_contents
       t = ''
       fully_rendered = true
+      child_timings = []
       if has_children?
         i_d = @properties['inlineDisplay']
         vc = children.reject { |c| c.is_hidden }
@@ -21,9 +22,10 @@ module Canvas2
             '>' + r[0] + '</div>'
           fully_rendered &&= r[1]
           pos += w
+          child_timings.push(r[2])
         end
       end
-      [t += '<div class="socrata-ct-clear"></div>', fully_rendered]
+      [t += '<div class="socrata-ct-clear"></div>', fully_rendered, child_timings]
     end
   end
 end

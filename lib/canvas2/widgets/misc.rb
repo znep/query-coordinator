@@ -262,7 +262,8 @@ module Canvas2
           '">' + r[0] + '</' + i_tag + '>', r[1]]
       end}
       results = threads.map {|thread| thread.value};
-      [t + results.map {|r| r[0]}.join('') + end_tag, results.reduce(true) {|memo, r| memo && r[1]}]
+      [t + results.map {|r| r[0]}.join('') + end_tag, results.reduce(true) {|memo, r| memo && r[1]},
+        results.map {|r| r[2]}]
     end
   end
 
@@ -280,6 +281,7 @@ module Canvas2
   class GridContainer < Container
     def render_contents
       t = '<div class="row clearfix">'
+      child_timings = []
       if has_children?
         ch = @properties['cellHeight']
         ch = ch.to_s + 'px' if !ch.is_a?(String)
@@ -297,9 +299,10 @@ module Canvas2
           c.server_properties['styles']['padding'] = cs
           r = c.render
           t += r[0]
+          child_timings.push(r[2])
         end
       end
-      [t += '</div>', false]
+      [t += '</div>', false, child_timings]
     end
   end
 

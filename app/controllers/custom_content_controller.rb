@@ -87,7 +87,9 @@ class CustomContentController < ApplicationController
   end
 
   def page
+    # FIXME: should probably make sure you're a Socrata admin before allowing debugging
     @debug = params['debug'] == 'true'
+    @start_time = Time.now
 
     pages_time = VersionAuthority.resource('pages')
     # TODO: This should include the locale (whenever we figure out how that is specified)

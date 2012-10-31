@@ -73,8 +73,9 @@ module Canvas2
     end
 
     def render
+      start_time = Time.now
       begin
-        contents, fully_rendered = render_contents
+        contents, fully_rendered, child_timings = render_contents
       rescue CoreServer::CoreServerError => e
         raise ComponentError.new(self, "Data context '#{context[:id]}' failed: " + e.error_message,
                                  { path: e.source, payload: JSON.parse(e.payload) })
@@ -98,7 +99,9 @@ module Canvas2
       tag << '<div class="content-wrapper ' << html_class << '">' if @needs_own_context
       tag << contents
       tag << '</div>' if @needs_own_context
-      [tag << '</div>', fully_rendered]
+      child_timings ||= []
+      child_timings.unshift("#{self.id} took #{(Time.now - start_time) * 1000} ms")
+      [tag << '</div>', fully_rendered, child_timings.compact.join("\n " + self.id + " | ")]
     end
 
     def render_contents

@@ -13,10 +13,19 @@ class Page < SodaModel
 
   def render(full = true)
     if full
-      [Canvas2::CanvasWidget.from_config(content)].flatten.map {|w| w.render[0]}.join('')
+      @timings = []
+      [Canvas2::CanvasWidget.from_config(content)].flatten.map do |w|
+        r = w.render
+        @timings.push(r[2])
+        r[0]
+      end.join('')
     else
       '<div id="' + content['id'] + '"></div>'
     end
+  end
+
+  def render_timings
+    @timings.compact
   end
 
   def name

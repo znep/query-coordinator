@@ -19,7 +19,8 @@ module Canvas2
       return ['', true] if !has_children?
       threads = children.map {|c| Thread.new { c.render }}
       results = threads.map {|thread| thread.value};
-      [results.map {|r| r[0]}.join(''), results.reduce(true) {|memo, r| memo && r[1]}]
+      [results.map {|r| r[0]}.join(''), results.reduce(true) {|memo, r| memo && r[1]},
+        results.map {|r| r[2]}]
     end
 
     def child_context

@@ -167,6 +167,7 @@
                     console.groupEnd();
                 }
                 if (arguments.length > 0) { return; }
+                mapObj.closePopup();
                 if (mapObj._panning) { delete mapObj._panning; return; }
                 mapObj._displayFormat = this.displayFormat;
 

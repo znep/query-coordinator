@@ -85,6 +85,8 @@
 
             var datasetsLoaded = function()
             {
+                mapObj._children = _.reject(mapObj._children, function(cv) { return cv.invalid; });
+
                 // TODO: Decide whether or not this is a good idea.
                 if (_.isEmpty(mapObj._children))
                 { mapObj.map.setCenter(new OpenLayers.LonLat(0,0)); }
@@ -152,6 +154,16 @@
                     if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
                         && _.all(mapObj._children, function(cv) { return !cv.loading; }))
                     { datasetsLoaded(); }
+                }, function(errorObj)
+                {
+                    mapObj._children[index] = { invalid: true,
+                        error: JSON.parse(errorObj.responseText) };
+                    mapObj._invalidChildren = $.makeArray(mapObj._invalidChildren);
+                    mapObj._invalidChildren.push(mapObj._children[index]);
+
+                    if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
+                        && _.all(mapObj._children, function(cv) { return !cv.loading; }))
+                    { datasetsLoaded(); }
                 });
             };
 
@@ -200,8 +212,7 @@
                         && _.isEqual(mapObj._children[index]._displayFormat, df))
                     { delete mapObj._children[index].loading; return; }
 
-                    if (mapObj._children[index] && !mapObj._children[index].loading
-                        && df.uid == mapObj._children[index]._view.id
+                    if (mapObj._children[index] && df.uid == mapObj._children[index]._view.id
                         && df.plotStyle == mapObj._children[index]._displayFormat.plotStyle)
                     {
                         mapObj._children[index]._view.trigger('displayformat_change', [df])

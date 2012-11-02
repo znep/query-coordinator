@@ -200,7 +200,8 @@
                         && _.isEqual(mapObj._children[index]._displayFormat, df))
                     { delete mapObj._children[index].loading; return; }
 
-                    if (mapObj._children[index] && df.uid == mapObj._children[index]._view.id
+                    if (mapObj._children[index] && !mapObj._children[index].loading
+                        && df.uid == mapObj._children[index]._view.id
                         && df.plotStyle == mapObj._children[index]._displayFormat.plotStyle)
                     {
                         mapObj._children[index]._view.trigger('displayformat_change', [df])

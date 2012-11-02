@@ -1254,6 +1254,8 @@
                 console.groupCollapsed('trace'); console.trace(); console.groupEnd();
                 console.groupCollapsed('state');
                     console.log('handlingEvent:', this.handlingEvent); 
+                    console.log('resizeEvent', !this.mapSize.equals(this.map.getSize()));
+                    console.log('untouched', this._untouched);
                     console.dir(this.viewport); console.groupEnd();
                 console.groupEnd();
             }
@@ -1269,7 +1271,6 @@
             this.mapObj._primaryView.update({ displayFormat: $.extend(true, {},
                 this.mapObj._displayFormat,
                 { viewport: this.toViewport(blist.openLayers.geographicProjection) }) });
-            delete this.mapObj._isResize;
             delete this.handlingEvent;
             delete this._untouched;
         },

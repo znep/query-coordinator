@@ -1342,6 +1342,6 @@ class View < Model
   private
 
   def cache
-    @@cache ||= ActiveSupport::Cache::MemoryStore.new
+    @@cache ||= Rails.cache
   end
 end

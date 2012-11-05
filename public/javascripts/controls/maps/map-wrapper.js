@@ -94,11 +94,11 @@
                 { mapObj.viewportHandler().resetToOriginal(); }
 
                 // For split views.
-                mapObj._primaryView.childViews = _.flatten(_.map(mapObj._children, function(c)
+                mapObj._primaryView.childViews = _(mapObj._children).chain().map(function(c)
                 {
                     if (c._view.childViews) { return c._view.childViews; }
                     else { return c._view.id; }
-                }));
+                }).flatten().uniq().value();
 
                 _.each(mapObj._children, function(childView)
                 { childView.bindDatasetEvents(); });

@@ -43,7 +43,7 @@ class LogRefererMiddleware
 
         domain.downcase!
         request_based_domain.downcase!
-        if uri.nil?
+        if uri.nil? || uri.host.nil?
           # noop
         elsif uri.host.downcase == request_based_domain
           # logger.debug "Not logging same domain referal (#{domain})."

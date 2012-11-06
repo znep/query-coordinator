@@ -455,21 +455,18 @@
          */
         _initDom: function()
         {
-            var dom = this.dom;
             var domId = (this._componentSet == primarySet ? '' : this._componentSet + '_') + this.id;
-            if (!dom)
-            { dom = document.getElementById(domId); }
-            if (!dom)
-            {
-                dom = document.createElement('div');
-                dom.id = domId;
-            }
+            var $dom = this.$dom;
+            if ($.isBlank($dom))
+            { $dom = $('#' + domId); }
+            if ($dom.length < 1)
+            { $dom = $.tag({ tagName: 'div', id: domId }); }
 
-            if ($.isBlank(this.dom))
+            if ($.isBlank(this.$dom))
             {
-                this.dom = dom;
-                this.$dom = $(dom);
-                dom._comp = this;
+                this.$dom = $dom;
+                this.dom = $dom[0];
+                this.dom._comp = this;
                 this.$dom.addClass('socrata-component component-' + this.typeName + ' ' +
                     (this._properties.customClass || '') + ' ' +
                     (this._isHidden ? 'hide' : ''));

@@ -48,8 +48,18 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
 
         if (this._pages.length < Math.ceil(this._contentChildren.length /
                     (this._properties.pageSize || DEFAULT_PAGE_SIZE)))
-        { this._super($.component.create(this._properties.container || {type: 'Container'})); }
+        {
+            this._super($.component.create(this._properties.container || {type: 'Container'},
+                        this._componentSet));
+        }
     },
+
+    // TODO: figure out design mode for real container
+//    design: function(designing)
+//    {
+//        this._super.apply(this, arguments);
+//        // set _designSubsidiary on real container
+//    },
 
     _showPage: function(page)
     {

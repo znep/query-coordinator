@@ -3,12 +3,14 @@
  */
 (function($) {
     $.component.Component.extend('Container', 'content', {
-        _init: function(properties) {
+        _init: function()
+        {
             this._initializing = true;
-            this._childrenToLoad = properties.children;
-            delete properties.children;
+            var props = arguments[0];
+            this._childrenToLoad = props.children;
+            delete props.children;
 
-            this._super(properties);
+            this._super.apply(this, arguments);
 //            this._childrenLoading = {};
 
             delete this._initializing;
@@ -28,7 +30,8 @@
          * @param child the child to add as properties or Component derivative
          * @param position the node before which the child is added; default is end-of-list
          */
-        add: function(child, position) {
+        add: function(child, position)
+        {
             if ($.isBlank(child)) return;
             if ($.isArray(child)) {
                 // Set flag to prevent layout as we recurse into arrays
@@ -50,7 +53,7 @@
             }
 
             if (!(child instanceof $.component.Component))
-            { child = $.component.create(child); }
+            { child = $.component.create(child, this._componentSet); }
 
             // We want to initialize any functional components, but they go into their own store
             // and not into the DOM
@@ -373,7 +376,7 @@
 
                             if (dropType == 'move')
                             {
-                                var moveComp = $.component(dropId);
+                                var moveComp = $.component(dropId, cObj._componentSet);
                                 if (!$.isBlank(moveComp) && (moveComp.parent != cObj ||
                                             (moveComp != cObj._dropPosition &&
                                                  moveComp.next != cObj._dropPosition)))
@@ -399,7 +402,7 @@
                     });
                 }
             }
-            else if (this.$dom.isControlClass('nativeDropTarget'))
+            else if (!$.isBlank(this.$dom) && this.$dom.isControlClass('nativeDropTarget'))
             {
                 if (designing)
                 { this.$dom.nativeDropTarget().enable(); }
@@ -434,7 +437,7 @@
 
             if (dropInfo.type == 'move')
             {
-                var moveChild = $.component(dropInfo.id);
+                var moveChild = $.component(dropInfo.id, this._componentSet);
                 if (!$.isBlank(moveChild) && moveChild.parent == this &&
                         (this._dropPosition == moveChild || this._dropPosition == moveChild.next))
                 {
@@ -662,7 +665,8 @@
          * Wrap a child component in a container.  This is used to create space for new components when performing
          * layout into a space perpendicular to the parent container.
          */
-        wrap: function(child, wrapperConfig) {
+        wrap: function(child, wrapperConfig)
+        {
             var parent = child.parent;
             if (!parent)
                 throw new Error("Cannot wrap unparented child");
@@ -672,7 +676,7 @@
             try {
                 if (wrapperConfig.weight === undefined)
                     wrapperConfig.weight = child.properties().weight;
-                var wrapper = $.component.create(wrapperConfig);
+                var wrapper = $.component.create(wrapperConfig, this._componentSet);
                 wrapper.add(child);
                 parent.add(wrapper, position);
                 parent._blockArrange = false;

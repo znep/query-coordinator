@@ -103,7 +103,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         if (child._parCont == this) { return r; }
 
         if (!(child instanceof $.component.Component))
-        { child = $.component.create(child); }
+        { child = $.component.create(child, cObj._componentSet); }
 
         // We want to initialize any functional components, but they go into their own store
         // and not into the DOM

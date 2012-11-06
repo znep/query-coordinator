@@ -37,9 +37,7 @@
         $(document.body).append($translator);
 
         var tokens = [];
-        $.component.eachRoot(function(root) {
-            root.listTemplateSubstitutions(tokens);
-        });
+        $.component.root().listTemplateSubstitutions(tokens);
         tokens = _.uniq(_.map(tokens, function(token) { return token.replace(/:.*/, '') }).sort(), true);
 
         var presentLocales = [ 'en', $.locale.current, $.locale.fallback ].concat($.locale.globals.available(),

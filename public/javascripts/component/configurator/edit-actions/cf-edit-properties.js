@@ -14,41 +14,65 @@ $.cf.edit.registerAction('properties', {
 
     initialize: function(options)
     {
-        this.properties = options.properties;
-        if ($.isBlank(this.properties))
+        this.origProperties = options.properties;
+        if ($.isBlank(this.origProperties))
         { throw new Error("Need properties to apply"); }
 
-        this.componentID = options.componentID;
-        if ($.isBlank(this.componentID))
-        { throw new Error("Need componentID to apply properties to"); }
+        var comp = this.origComp = options.component;
+        if ($.isBlank(comp))
+        { throw new Error("Need component to apply properties to"); }
+        while (comp._designSubsidiary && !$.isBlank(comp.parent))
+        { comp = comp.parent; }
+        this.origParent = comp;
+
+        if (comp == this.origComp)
+        {
+            this.properties = this.origProperties;
+            delete this.origProperties;
+            delete this.origComp;
+            delete this.origParent;
+        }
+
+        this.componentID = comp.id;
 
         this.oldProperties = options.oldProperties;
         if ($.isBlank(this.oldProperties))
         {
-            var component = $.component(this.componentID);
-            if ($.isBlank(component))
-            {
-                throw new Error("Component " + this.componentID +
-                        " doesn't exist, and no oldProperties provided");
-            }
-            this.oldProperties = objInvert(this.properties, component.properties());
+            if (!$.isBlank(this.origParent))
+            { this.origParentProperties = this.origParent.properties(); }
+            else
+            { this.oldProperties = objInvert(this.properties, comp.properties()); }
         }
     },
 
     commit: function()
     {
-        var component = $.component(this.componentID);
-        if ($.isBlank(component))
-        { throw new Error("Component " + this.componentID + " doesn't exist"); }
-        component.properties(this.properties);
+        var editObj = this;
+        var components = $.component(editObj.componentID, true);
+        if (_.isEmpty(components))
+        { throw new Error("Component " + editObj.componentID + " doesn't exist"); }
+
+        if (!$.isBlank(this.origProperties) && !$.isBlank(this.origComp))
+        {
+            this.origComp.properties(this.origProperties);
+            this.properties = this.origParent.properties();
+            this.oldProperties = objInvert(this.properties, this.origParentProperties);
+            delete this.origComp;
+            delete this.origParent;
+            delete this.origProperties;
+            delete this.origParentProperties;
+        }
+
+        _.each(components, function(c) { c.properties(editObj.properties); });
     },
 
     rollback: function()
     {
-        var component = $.component(this.componentID);
-        if ($.isBlank(component))
-        { throw new Error("Component " + this.componentID + " doesn't exist"); }
-        component.properties(this.oldProperties);
+        var editObj = this;
+        var components = $.component(editObj.componentID, true);
+        if (_.isEmpty(components))
+        { throw new Error("Component " + editObj.componentID + " doesn't exist"); }
+        _.each(components, function(c) { c.properties(editObj.oldProperties); });
     }
 });
 
@@ -56,7 +80,7 @@ var objInvert = function(newObj, refObj)
 {
     if (_.isUndefined(refObj)) { return null; }
     if (!(refObj instanceof Object) || _.isEqual(newObj, refObj)) { return refObj; }
-    var invObj = {};
+    var invObj = _.isArray(newObj) ? [] : {};
     _.each(newObj, function(v, k)
             { invObj[k] = objInvert(newObj[k], refObj[k]); });
     return invObj;

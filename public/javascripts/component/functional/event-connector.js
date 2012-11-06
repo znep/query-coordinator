@@ -19,7 +19,7 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
                 if (!$.isBlank(cObj._sourceComponent))
                 { cObj._sourceComponent.unbind(null, null, cObj); }
                 if (!$.isBlank(srcCompId))
-                { cObj._sourceComponent = $.component(srcCompId); }
+                { cObj._sourceComponent = $.component(srcCompId, cObj._componentSet); }
                 oldEvent = null;
             }
 
@@ -50,7 +50,7 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
 
             var destCompId = (cObj._properties.parentPrefix || '') + cObj._properties.destComponentId;
             if (destCompId != (cObj._destComponent || {}).id)
-            { cObj._destComponent = $.component(destCompId); }
+            { cObj._destComponent = $.component(destCompId, cObj._componentSet); }
 
             if (cObj._properties.destContextId != (cObj._destContext || {}).id)
             {

@@ -21,7 +21,8 @@
         { target = target.parentNode; }
 
         // Simply unfocus if there is no target
-        if (!target || !target._comp.canEdit('focus'))
+        if (!target || !target._comp.canEdit('focus') ||
+            $(target).closest('.cfEditingWrapper').length < 1)
         {
             $.cf.blur(true);
             return false;
@@ -111,6 +112,16 @@
     {
         $.cf.edit.reset();
         $.cf.edit(false);
+        $previewCont.removeClass('hide').width('').siblings().addClass('hide');
+    };
+
+    var pullConfig = function()
+    {
+        var page = blist.configuration.page;
+        page.content = $.component.root().properties();
+        page.data = $.dataContext.currentContexts();
+        page.locale = $.locale.updated();
+        return page;
     };
 
     var designing = false;
@@ -125,6 +136,11 @@
         sidebar: true     // Show the sidebar?
     };
 
+    var $viewOptions;
+    var $viewsCont;
+    var $previewCont;
+    var $editCont;
+
     $.extend($.cf, {
         initialize: function(opts)
         {
@@ -135,17 +151,21 @@
             var $cont = $.tag({ tagName: 'div', 'class': 'cfMainContainer' });
             $body.append($cont);
 
-            var $wrapper = $.tag({ tagName: 'div', 'class': 'cfEditingWrapper' });
-            $cont.append($wrapper);
-            $wrapper.css('background-color', $body.css('background-color'))
-                .append($body.children('.siteOuterWrapper, #siteFooter'));
-
             var $top = $.tag({ tagName: 'div', 'class': 'cfEditingBar', contents: [
                 { tagName: 'div', 'class': 'editTitle', contents: [
                     { tagName: 'span', contents: 'Editing&nbsp;' },
                     { tagName: 'span', 'class': 'pageName', contents: page.name }
                 ] },
                 { tagName: 'ul', 'class': 'actionBar', contents: [
+                    { tagName: 'li', contents:
+                        { tagName: 'ul', 'class': 'pillButtons', contents: [
+                            { tagName: 'li', contents:
+                                { tagName: 'a', href: '#preview', 'class': ['preview', 'ss-icon'],
+                                    title: 'Preview page', contents: 'desktop' } },
+                            { tagName: 'li', contents:
+                                { tagName: 'a', href: '#interactive', 'class': ['interactive', 'ss-icon'],
+                                    title: 'View interactive editor', contents: 'layout' } }
+                        ] } },
                     { tagName: 'li', contents:
                         { tagName: 'a', href: '#undo', 'class': ['undo', 'button', 'ss-replay'],
                             contents: 'Undo' } },
@@ -165,7 +185,7 @@
             ] });
             $cont.append($top);
 
-            $top.find('.actionBar a').click(function(e)
+            $top.find('.actionBar > li > a').click(function(e)
             {
                 e.preventDefault();
                 // Blur immediately so any edits take effect
@@ -175,6 +195,23 @@
                 prefix[action]();
             });
 
+            $viewOptions = $top.find('.actionBar .pillButtons a');
+            $viewOptions.filter('.interactive').addClass('active');
+            $viewOptions.click(function(e)
+            {
+                e.preventDefault();
+                // Blur immediately so any edits take effect
+                $.cf.blur(true);
+                var $a = $(this);
+                var view = $.hashHref($a.attr('href'));
+                var isHide = $a.hasClass('active');
+                if (isHide && $viewOptions.filter('.active').length < 2)
+                { return; }
+
+                $a.toggleClass('active', !isHide);
+                $.cf.showView(view, !isHide);
+            });
+
             $.cf.edit.registerListener(function(undoable, redoable)
             {
                 $top.toggleClass('can-save', $.cf.edit.dirty === true);
@@ -182,8 +219,85 @@
                 $top.toggleClass('can-redo', redoable);
             });
 
+            $viewsCont = $.tag({ tagName: 'div', 'class': 'cfViewsContainer' });
+            $cont.append($viewsCont);
+
+            $previewCont = $.tag({ tagName: 'div', 'class': ['cfPreviewWrapper', 'cfViewTypeWrapper'],
+                contents: { tagName: 'div', 'class': 'cfViewInnerWrapper' } });
+            $viewsCont.append($previewCont);
+            $previewCont.css('background-color', $body.css('background-color'))
+                .find('.cfViewInnerWrapper').append($body.children('.siteOuterWrapper, #siteFooter'));
+            $previewCont.resizable({
+                handles: 'e',
+                maxWidth: $viewsCont.width() * 0.8, minWidth: $viewsCont.width() * 0.2,
+                resize: function()
+                {
+                    var vcw = $viewsCont.width();
+                    $editCont.width(Math.floor((vcw - $previewCont.width()) / vcw * 100) + '%');
+                },
+                start: function()
+                { $previewCont.resizable('option', 'maxWidth', $viewsCont.width() * 0.8); },
+                stop: function()
+                {
+                    var vcw = $viewsCont.width();
+                    var ew = Math.floor((vcw - $previewCont.width()) / vcw * 100);
+                    $editCont.width(ew + '%');
+                    $previewCont.width((100 - ew) + '%');
+                    $viewsCont.children().quickEach(function()
+                    {
+                        var $t = $(this);
+                        $t.data('editWidth', Math.floor(($t.width() / vcw) * 100));
+                    });
+                }
+            });
+
+            var editContent = $.component.root().properties();
+            $editCont = $.tag({ tagName: 'div', 'class': ['cfEditingWrapper', 'cfViewTypeWrapper'] });
+            $viewsCont.append($editCont);
+            $editCont.css('background-color', $body.css('background-color'))
+                .append($.tag({ tagName: 'div', id: 'edit_' + editContent.id, 'class': 'editRoot' }));
+
             // Make sure all dom manipulation is done before starting edit mode
-            _.defer(function() { $.cf.edit($.cf.configuration().edit); });
+            _.defer(function()
+            {
+                $.component.initialize(editContent, 'edit');
+                $.cf.edit($.cf.configuration().edit);
+            });
+        },
+
+        showView: function(view, isShow)
+        {
+            switch (view)
+            {
+                case 'preview':
+                    $previewCont.toggleClass('hide', !isShow);
+                    break;
+                case 'interactive':
+                    $editCont.toggleClass('hide', !isShow);
+                    if ($.cf.configuration().sidebar)
+                    { $.cf.side(designing && isShow); }
+                    break;
+            }
+
+            var $children = $viewsCont.children(':visible');
+            var totalW = 0;
+            var items = [];
+            $children.quickEach(function()
+            {
+                var $t = $(this);
+                var w = $t.data('editWidth') || Math.floor(100 / $children.length);
+                totalW += w;
+                items.push({ $dom: $t, width: w });
+            });
+            _.each(items, function(item)
+            {
+                item['$dom'].width(Math.floor(item.width / totalW * 100) + '%');
+            });
+
+            $previewCont.find('.ui-resizable-handle').toggleClass('hide', $children.length < 2);
+
+            // Blunt instrument
+            $(window).resize();
         },
 
         // todo: checks?
@@ -210,15 +324,29 @@
                 { $.cf.blur(true); }
 
                 if (designing)
-                { originalConfiguration = []; }
-                $.component.eachRoot(function(root)
                 {
+                    originalConfiguration = _.map($.component.root(true), function(root)
+                        { return { component: root, properties: root.properties() }; });
+
+                    var root = $.component.root('edit');
                     root.design(designing);
                     if ($.cf.configuration().editOnly)
                     { root.edit(designing); }
-                    if (originalConfiguration)
-                    { originalConfiguration.push([ root, root.properties() ]); }
-                });
+
+                    $viewsCont.children().quickEach(function()
+                    {
+                        var $t = $(this);
+                        if (!$.isBlank($t.data('editWidth')))
+                        { $t.width($t.data('editWidth') + '%'); }
+                    });
+
+                    // Check each view button, and sync actual view state with buttons
+                    $viewOptions.quickEach(function()
+                    {
+                        var $a = $(this);
+                        $.cf.showView($.hashHref($a.attr('href')), $a.hasClass('active'));
+                    });
+                }
             }
         },
 
@@ -228,16 +356,7 @@
             {
                 var spinner = $('.socrata-page').loadingSpinner({overlay: true});
                 spinner.showHide(true);
-                var page = blist.configuration.page;
-                var content = [];
-                $.component.eachRoot(function(root)
-                { content.push(root._propRead()); });
-                if (content.length == 1)
-                { page.content = content[0]; }
-                else
-                { page.content = content; }
-                page.data = $.dataContext.currentContexts();
-                page.locale = $.locale.updated();
+                var page = pullConfig();
                 $.ajax({
                     type: 'POST',
                     url: '/id/pages',
@@ -266,9 +385,10 @@
 
         revert: function()
         {
-            if (originalConfiguration && $.cf.edit.dirty)
+            if (!_.isEmpty(originalConfiguration) && $.cf.edit.dirty)
             {
-                _.each(originalConfiguration, function(pair) { pair[0].properties(pair[1]); });
+                _.each(originalConfiguration, function(item)
+                        { item.component.properties(item.properties); });
                 originalConfiguration = undefined;
             }
 
@@ -283,14 +403,17 @@
 
         blur: function(unmask)
         {
-            if (focal)
+            if (!$.isBlank(focal))
             {
-                focal.editFocus(false);
-                if (!$.cf.configuration().editOnly)
-                { focal.edit(false); }
-                $body.removeClass('socrata-cf-has-focal');
-                $(focal.dom).removeClass('socrata-cf-focal');
+                // Make this safe from editFocus triggering something that
+                // re-calls blur later in the call-stack
+                var localFocal = focal;
                 focal = undefined;
+                localFocal.editFocus(false);
+                if (!$.cf.configuration().editOnly)
+                { localFocal.edit(false); }
+                $body.removeClass('socrata-cf-has-focal');
+                $(localFocal.dom).removeClass('socrata-cf-focal');
             }
             if ($mask && unmask)
             {

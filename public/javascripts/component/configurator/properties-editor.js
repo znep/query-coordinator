@@ -63,8 +63,7 @@
                 if (!_.isEmpty(props))
                 {
                     $.cf.edit.execute('properties',
-                            {componentID: this.component.properties().id,
-                                properties: props});
+                            {component: this.component, properties: props});
                 }
             }
         }

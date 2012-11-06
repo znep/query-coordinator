@@ -148,8 +148,6 @@ javascripts:
     - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-move.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-remove.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-unwrap.js
-    - public/javascripts/component/configurator/edit-actions/cf-edit-wrap.js
     - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
     - public/javascripts/component/design/partial-text.js
     - public/javascripts/component/functional/string-resolver.js

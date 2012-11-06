@@ -38,21 +38,43 @@
         border-left: 1px solid $color_chrome_box_border
         padding-left: 1em
 
-.cfEditingWrapper
+    .pillButtons
+      display: inline-block
+      vertical-align: middle
+      a
+        font-size: 1.2em
+        padding:
+          bottom: 0.2em
+          top: 0.5em
+
+.cfViewsContainer
   bottom: 0
   left: 0
-  overflow: auto
+  overflow: hidden
   position: absolute
   right: 0
   top: 0
   @include transition-property(left top right)
   @include transition-duration(0.8s)
+  .ui-resizable-handle
+    background-color: $color_chrome_box_border
+.cfViewTypeWrapper
+  display: inline-block
+  height: 100%
+  width: 100%
+.cfPreviewWrapper .cfViewInnerWrapper
+  height: 100%
+  overflow: auto
+.cfEditingWrapper
+  overflow: auto
+  .editRoot
+    margin: 2em
 body.configuring
   background-image: url(/stylesheets/images/component/canvasbg.png)
   .cfMainContainer
     height: 100%
     position: relative
-  .cfEditingWrapper
+  .cfViewsContainer
     @include border-radius(4px, 4px, 0, 0)
     @include box-shadow(0, 0, 10px, rgba(0, 0, 0, 0.45))
     left: 2.5em
@@ -148,7 +170,7 @@ body.configuring
 
 // Styling for drag-drop
 .socrata-container
-  .configuring &
+  .configuring .cfEditingWrapper &
     min-height: 5em
   &.dropActive
     @include box-shadow(0, 0, 6px, black)
@@ -213,7 +235,7 @@ body.configuring
     &.fallback input[type=text]
       width: 16.5em
 
-.configuring .socrata-component
+.configuring .cfEditingWrapper .socrata-component
   @include component-icons('> .disabledIcon', 'component', true)
   @include disabled-overlay(33%)
 

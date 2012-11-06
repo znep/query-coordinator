@@ -61,12 +61,10 @@
                         pagePath = $.component('t_pagePath').asString();
 
                     var insertions = [];
-                    $.component.eachRoot(function(root) {
-                        root.edit(false);
-                        insertions.push(root.properties());
-                        // de-register components
-                        root.destroy();
-                    });
+                    $.component.root.edit(false);
+                    insertions.push($.component.root.properties());
+                    // de-register components
+                    $.component.root.destroy();
 
                     var templatron = new $.component.PageTemplate({ insertions: insertions });
 

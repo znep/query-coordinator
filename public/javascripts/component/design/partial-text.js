@@ -4,7 +4,8 @@
  * without any DOM interaction.
  */
 $.component.Component.extend('PartialText', 'design', {
-    _init: function(properties) {
+    _init: function(properties)
+    {
         var cObj = this;
         cObj._super.apply(this, arguments);
 
@@ -12,7 +13,7 @@ $.component.Component.extend('PartialText', 'design', {
             throw new Error('Partial text needs a template to be used');
 
         cObj._resolver = new $.component.StringResolver($.extend({},
-            cObj._properties, {id: '__' + cObj.id}));
+            cObj._properties, {id: '__' + cObj.id}), cObj._componentSet);
 
         cObj._resolver.bind('child_updated', function(args) {
             cObj._render();

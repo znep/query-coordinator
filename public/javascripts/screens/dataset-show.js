@@ -130,6 +130,15 @@ $(function()
                             return checked;
                         }
                     }).data('popupSelect-tip').show();
+
+                    $button.data('popupSelect-width', $(window).width());
+                    $(window).resize(function()
+                    {
+                        var width = $(window).width();
+                        $button.data('popupSelect-tip')
+                            .adjustPosition({ left: width - $button.data('popupSelect-width')});
+                        $button.data('popupSelect-width', width);
+                    });
                 }
                 else
                 {

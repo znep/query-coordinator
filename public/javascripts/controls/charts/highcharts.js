@@ -179,6 +179,8 @@
                         var items = chartObj._xCategories.slice();
                         if (!chartObj._xColumn.sortAscending) { items = items.reverse(); }
                         ri.x = _.sortedIndex(items, xCat);
+                        if (!chartObj._xColumn.sortAscending)
+                        { ri.x = items.length - ri.x; }
                     }
                 }
                 ri = ri.x;

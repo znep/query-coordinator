@@ -33,6 +33,7 @@ class BrowseController < ApplicationController
         params[:suppressed_facets] =
             params[:suppressed_facets].map { |k, v| k if v }.flatten
       end
+      [:defaults, :suppressed_facets].each {|p| params.delete(p)}
 
       browse_options[:facets] = [
           view_types_facet,

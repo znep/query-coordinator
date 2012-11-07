@@ -556,8 +556,18 @@
 
             $pane.find('.formSection.selectable').each(function()
             {
-                var $s = $(this);
-                var hasData = $s.find('[data-dataValue]').length > 0;
+                var $s = $(this), hasData = false;
+                $s.find('[data-dataValue]').each(function()
+                {
+                    // Color inputs always return true, so ignore them.
+                    // Checkboxes always have a dataValue, so check against default.
+                    var $this = $(this),
+                        isCheckbox = $this.attr('type') == 'checkbox',
+                        isColorInput = $this.hasClass('colorInput');
+                    hasData = hasData || (!isColorInput && !isCheckbox) ||
+                        (isCheckbox
+                        && $this.attr('data-dataValue') != $this.attr('data-defaultValue'));
+                });
                 $s.toggleClass('collapsed', !hasData);
                 $s.find('.sectionSelect').value(hasData);
             });

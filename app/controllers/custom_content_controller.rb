@@ -110,6 +110,10 @@ class CustomContentController < ApplicationController
 
     @minimal_render = params['no_render'] == 'true'
 
+    # Move to different variable so we can control rendering in our own
+    # template, instead of the main layout
+    @custom_meta = @meta
+    @meta = nil
     path = "/#{params[:path]}"
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if path == '/'
@@ -128,6 +132,7 @@ class CustomContentController < ApplicationController
         @page, @vars = Page[path, pages_time]
       end
       unless @page
+        @meta = @custom_meta
         if path == '/'
           homepage
         else

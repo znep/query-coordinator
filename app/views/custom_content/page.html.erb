@@ -9,6 +9,8 @@
 
 <% content_for :head do %>
 <title><%= @page.name %></title>
+<%= meta_tags @custom_meta.merge({:title => @page.name,
+                                 'og:title' => @page.name}) unless @custom_meta.blank?  %>
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
 

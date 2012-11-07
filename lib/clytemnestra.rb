@@ -5,6 +5,20 @@ module Clytemnestra
     UserSearchResult.from_result(result)
   end
 
+  # We may want to enable caching by default in the future; but for now
+  # we only want to enable it in a few key locations - mostly canvas but
+  def self.search_cached_views(opts, use_batch = false, cache_ttl = 15)
+    path = "/search/views.json?#{opts.to_core_param}"
+    cache_key = "search-views:" + Digest::MD5.hexdigest(path)
+    result = cache.read(cache_key)
+    if result.nil?
+      result = CoreServer::Base.connection.get_request(path, {}, use_batch)
+      cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
+    end
+    ViewSearchResult.from_result(result)
+  end
+
+
   def self.search_views(opts, use_batch = false)
     path = "/search/views.json?#{opts.to_core_param}"
     result = CoreServer::Base.connection.get_request(path, {}, use_batch)
@@ -49,5 +63,11 @@ module Clytemnestra
 
   class ViewSearchResult < SearchResult
     @klass = Clytemnestra::ViewWithRows
+  end
+  
+  private
+
+  def self.cache
+    @@cache ||= Rails.cache
   end
 end

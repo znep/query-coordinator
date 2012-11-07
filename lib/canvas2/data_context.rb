@@ -26,7 +26,7 @@ module Canvas2
       begin
         case config['type']
         when 'datasetList'
-          search_response = Clytemnestra.search_views(config['search'])
+          search_response = Canvas2::Util.debug ? Clytemnestra.search_views(config['search']) : Clytemnestra.search_cached_views(config['search'], false, 60)
           ds_list = search_response.results.reject do |ds|
             add_query(ds, config['query'])
             ds.get_total_rows < 1
@@ -220,7 +220,8 @@ module Canvas2
           return false if config['required']
         end
       elsif !config['search'].blank?
-        search_response = Clytemnestra.search_views(config['search'].merge({'limit' => 1}))
+        search_config = config['search'].merge({'limit' => 1})
+        search_response = Canvas2::Util.debug ? Clytemnestra.search_views(search_config) : Clytemnestra.search_cached_views(search_config, false, 60)
         ds = search_response.results.first
         if ds.nil? && config['required']
           errors.push(DataContextError.new(config, "No dataset found for '" +

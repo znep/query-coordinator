@@ -680,7 +680,13 @@ blist.namespace.fetch('blist.datatypes');
         'date_shortmonthdy': 'M d, Y',
         'date_shortmonthdy_shorttime': 'M d, Y',
         'date_dmonthy': 'd F Y',
-        'date_ymonthd': 'Y F d'
+        'date_ymonthd': 'Y F d',
+        'date_my': 'm/Y',
+        'date_ym': 'Y/m',
+        'date_shortmonthy': 'M Y',
+        'date_yshortmonth': 'Y M',
+        'date_monthy': 'F Y',
+        'date_ymonth': 'Y F'
     };
     var dateTimeFormats = {};
     var zDateTimeFormats = {};
@@ -713,7 +719,13 @@ blist.namespace.fetch('blist.datatypes');
         {value: 'date_shortmonthdy', text: 'month day, year'},
         {value: 'date_shortmonthdy_shorttime', text: 'month day, year hour:minute'},
         {value: 'date_dmonthy', text: 'day month year'},
-        {value: 'date_ymonthd', text: 'year month day'}
+        {value: 'date_ymonthd', text: 'year month day'},
+        {value: 'date_my', text: 'month/year'},
+        {value: 'date_ym', text: 'year/month'},
+        {value: 'date_shortmonthy', text: 'month year'},
+        {value: 'date_yshortmonth', text: 'year month'},
+        {value: 'date_monthy', text: 'month year'},
+        {value: 'date_ymonth', text: 'year month'}
     ];
 
 

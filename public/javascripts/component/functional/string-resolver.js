@@ -19,7 +19,7 @@ $.component.FunctionalComponent.extend('StringResolver', 'functional', {
             if (!child.id)
                 return;
 
-            var comp = $.component(child.id);
+            var comp = $.component(child.id, cObj._componentSet);
             if (!comp)
                 throw new Error("No component registered with ID " + child.id);
 
@@ -37,7 +37,7 @@ $.component.FunctionalComponent.extend('StringResolver', 'functional', {
             return cObj._stringSubstitute(component);
         if (component.id) {
             if (!cObj._stringCache[component.id]) {
-                var comp = $.component(component.id),
+                var comp = $.component(component.id, cObj._componentSet),
                     val;
                 if (_.isFunction(comp.asString)) {
                     val = comp.asString();

@@ -27,34 +27,47 @@ $.cf.edit.registerAction('add', {
         }
     },
 
-    commit: function() {
+    commit: function()
+    {
+        var editObj = this;
         // Obtain container
-        var container = $.component(this.containerID);
-        if (!container)
-            throw "Cannot commit add because container " + this.containerID + " has disappeared";
+        var containers = $.component(editObj.containerID, true);
+        if (_.isEmpty(containers))
+        { throw new Error("Cannot commit add because container " + this.containerID + " has disappeared"); }
 
-        // Obtain position
-        if (this.positionID) {
-            var position = $.component(this.positionID);
-            if (!position)
-                throw "Cannot commit add because following sibling " + this.positionID + " has disappeared";
-        }
+        var children = _.map(containers, function(container)
+        {
+            // Obtain position
+            if (editObj.positionID)
+            {
+                var position = $.component(editObj.positionID, container._componentSet);
+                if (!position)
+                {
+                    throw new Error("Cannot commit add because following sibling " +
+                        editObj.positionID + " has disappeared");
+                }
+            }
 
-        // Instantiate child and record ID if necessary (ID must persist across undo/redo for later stages to work)
-        var childTemplate = this.childTemplate;
-        var child = $.component.create(childTemplate);
-        if (!childTemplate.id)
-            childTemplate.id = child.id;
+            // Instantiate child and record ID if necessary (ID must persist
+            // across undo/redo for later stages to work)
+            var childTemplate = editObj.childTemplate;
+            var child = $.component.create(childTemplate, container._componentSet);
+            if (!childTemplate.id)
+            { childTemplate.id = child.id; }
 
-        // Perform the actual add operation
-        container.add(child, position);
-        $.cf.focus(child);
+            // Perform the actual add operation
+            container.add(child, position);
+        });
+
+        $.cf.focus(_.first(children));
     },
 
-    rollback: function() {
-        var child = $.component(this.childTemplate.id);
-        if (!child)
-            throw "Cannot undo because component " + this.childTemplate.id + " has disappeared";
-        child.destroy();
+    rollback: function()
+    {
+        var editObj = this;
+        var children = $.component(editObj.childTemplate.id, true);
+        if (_.isEmpty(children))
+        { throw new Error("Cannot undo because component " + this.childTemplate.id + " has disappeared"); }
+        _.each(children, function(child) { child.destroy(); });
     }
 });

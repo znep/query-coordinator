@@ -238,7 +238,7 @@ var setUpComponent = function(cObj, adjId)
 {
     if (!$.isBlank(cObj._context))
     { cObj._context.unbind(null, null, cObj); }
-    cObj._context = $.component(adjId);
+    cObj._context = $.component(adjId, cObj._componentSet);
     if (!(cObj._context instanceof $.component.PagedContainer))
     {
         delete cObj._context;

@@ -210,7 +210,7 @@
             var container = cpObj.$dom().find('.dataLayerContainer');
             if (container.length == 0)
             {
-                cpObj.$dom().find('.mainError').before('<div class="dataLayerContainer" />');
+                $field.parents('.formSection').after('<div class="dataLayerContainer" />');
                 container = cpObj.$dom().find('.dataLayerContainer');
             }
             if (container.children().length <= index)
@@ -251,35 +251,7 @@
         options = $.extend({isEdit: false, useOtherSidebars: false}, options);
         return [
             {
-                title: 'Background Layers',
-                fields: [
-                    { type: 'repeater', name: 'displayFormat.bkgdLayers', addText: 'Add Background',
-                        minimum: 0, field: {type: 'group', options: [
-                        {text: 'Layer', type: 'select', name: 'layerName',
-                            required: true, prompt: 'Select a layer',
-                            options: mapTypes
-                        },
-                        {text: 'Layer URL', type: 'text', name: 'custom_url',
-                            onlyIf: {field: 'layerName', value: 'custom'}, defaultValue: 'https://',
-                            required: true, data: { 'validlayerurl': 'unverified' },
-                            change: normalizeLayerUrl },
-                        {text: 'Alias', type: 'text', name: 'alias'},
-                        {text: 'Opacity', type: 'slider', name: 'opacity',
-                            defaultValue: 1, minimum: 0, maximum: 1}
-                    ]}
-                    },
-                    { text: 'Exclusive', name: 'displayFormat.exclusiveLayers', type: 'checkbox' }
-                ]
-            },
-            {
-                title: 'Advanced Configuration',
-                type: 'selectable',
-                fields: [
-                    { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
-                ]
-            },
-            {
-                title: 'Datasets',
+                title: 'Dataset Summary',
                 fields: [
                     { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: 'Add Data',
                         field: {type: 'group', options: [
@@ -293,11 +265,53 @@
                         ]}, minimum: 1
                     }
                 ]
+            },
+            {
+                title: 'Base Maps',
+                fields: [
+                    { type: 'note', value: 'Select from a list of map services ' +
+                        'and configure how it will appear.' },
+                    { type: 'repeater', name: 'displayFormat.bkgdLayers', addText: 'Add Base Map',
+                        minimum: 0, field: {type: 'group', options: [
+                        {text: 'Layer', type: 'select', name: 'layerName',
+                            required: true, prompt: 'Select a layer',
+                            options: mapTypes, defaultValue: 'World Street Map (ESRI)'
+                        },
+                        {text: 'Layer URL', type: 'text', name: 'custom_url',
+                            onlyIf: {field: 'layerName', value: 'custom'}, defaultValue: 'https://',
+                            required: true, data: { 'validlayerurl': 'unverified' },
+                            change: normalizeLayerUrl },
+                        {text: 'Alias', type: 'text', name: 'alias'},
+                        {text: 'Opacity', type: 'slider', name: 'opacity',
+                            defaultValue: 1, minimum: 0, maximum: 1}
+                    ]}
+                    }
+                ]
+            },
+            {
+                title: 'Advanced Configuration',
+                fields: [
+                    { type: 'note', value: 'Select \'Exclusive\' if only one base map should ' +
+                        'display at a time.' },
+                    { text: 'Exclusive', name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
+                    { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
+                ]
             }
         ];
     };
 
     mapConfigNS.dataLayer = {};
+    mapConfigNS.dataLayer.socrataBase = function(options)
+    {
+        var prefix = options.prefix;
+        return [
+            {text: 'Plot Style', type: 'select', name: prefix+'plotStyle',
+                options: plotStyles, required: true, prompt: 'Select a plot style' },
+            {text: 'Location', name: prefix+'plot.locationId',
+                type: 'columnSelect', isTableColumn: true, required: true,
+                columns: {type: ['location'], hidden: options.isEdit }}
+        ];
+    };
     mapConfigNS.dataLayer.socrata = function(options)
     {
         var prefix = options.prefix;
@@ -306,11 +320,6 @@
         var flyouts = {field: prefix+'plotStyle', value: 'rastermap', negate: true };
         var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
         return [
-            {text: 'Plot Style', type: 'select', name: prefix+'plotStyle',
-                options: plotStyles, required: true, prompt: 'Select a plot style' },
-            {text: 'Location', name: prefix+'plot.locationId',
-                type: 'columnSelect', isTableColumn: true, required: true,
-                columns: {type: ['location'], hidden: options.isEdit }},
             {text: 'Base Color', name: prefix+'color', type: 'color', onlyIf: pointOnly,
                 defaultValue: "#0000ff"},
 

@@ -34,47 +34,71 @@ $.cf.edit.registerAction('move', {
         this.oldPositionID = options.oldPositionID || (options.oldPosition && options.oldPosition.id);
     },
 
-    commit: function() {
+    commit: function()
+    {
+        var editObj = this;
         // Obtain the child
-        var child = $.component(this.childID);
-        if (!child)
-            throw "Cannot commit move because component " + this.childID + " has disappeared";
+        var children = $.component(editObj.childID, true);
+        if (_.isEmpty(children))
+        { throw new Error("Cannot commit move because component " + editObj.childID + " has disappeared"); }
 
-        // Obtain new container
-        var container = $.component(this.newContainerID);
-        if (!container)
-            throw "Cannot commit move because container " + this.newContainerID + " has disappeared";
+        _.each(children, function(child)
+        {
+            // Obtain new container
+            var container = $.component(editObj.newContainerID, child._componentSet);
+            if (!container)
+            {
+                throw new Error("Cannot commit move because container " + editObj.newContainerID +
+                    " has disappeared");
+            }
 
-        // Obtain position
-        if (this.newPositionID) {
-            var position = $.component(this.newPositionID);
-            if (!position)
-                throw "Cannot commit add because following sibling " + this.positionID + " has disappeared";
-        }
+            // Obtain position
+            if (editObj.newPositionID)
+            {
+                var position = $.component(editObj.newPositionID, child._componentSet);
+                if (!position)
+                {
+                    throw new Error("Cannot commit add because following sibling " +
+                        editObj.positionID + " has disappeared");
+                }
+            }
 
-        // Perform the actual move
-        container.add(child, position);
+            // Perform the actual move
+            container.add(child, position);
+        });
     },
 
-    rollback: function() {
+    rollback: function()
+    {
+        var editObj = this;
         // Obtain the child
-        var child = $.component(this.childID);
-        if (!child)
-            throw "Cannot undo move because component " + this.childID + " has disappeared";
+        var children = $.component(editObj.childID, true);
+        if (_.isEmpty(children))
+        { throw new Error("Cannot undo move because component " + editObj.childID + " has disappeared"); }
 
-        // Obtain new container
-        var container = $.component(this.oldContainerID);
-        if (!container)
-            throw "Cannot undo move because container " + this.oldContainerID + " has disappeared";
+        _.each(children, function(child)
+        {
+            // Obtain new container
+            var container = $.component(editObj.oldContainerID, child._componentSet);
+            if (!container)
+            {
+                throw new Error("Cannot undo move because container " + editObj.oldContainerID +
+                    " has disappeared");
+            }
 
-        // Obtain position
-        if (this.oldPositionID) {
-            var position = $.component(this.oldPositionID);
-            if (!position)
-                throw "Cannot undo move because following sibling " + this.oldPositionID + " has disappeared";
-        }
+            // Obtain position
+            if (editObj.oldPositionID)
+            {
+                var position = $.component(editObj.oldPositionID, child._componentSet);
+                if (!position)
+                {
+                    throw new Error("Cannot undo move because following sibling " +
+                        editObj.oldPositionID + " has disappeared");
+                }
+            }
 
-        // Perform the actual move
-        container.add(child, position);
+            // Perform the actual move
+            container.add(child, position);
+        });
     }
 });

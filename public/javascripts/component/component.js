@@ -3,8 +3,12 @@
  */
 (function($) {
     var nextAutoID = 1;
+    var primarySet = '__primary';
 
-    var components = {};
+    var componentSets = {};
+    componentSets[primarySet] = {};
+
+    var roots = {};
 
     var winSpin = $('body').loadingSpinner();
     var wsCounter = 0;
@@ -22,27 +26,30 @@
     };
 
     var Component = Model.extend({
-        _init: function(properties) {
+        _init: function(properties, componentSet)
+        {
             var cObj = this;
             cObj._super.apply(this, arguments);
             cObj._eventKeys = {};
             cObj.registerEvent({ 'start_loading': [], 'finish_loading': [], 'update_properties': [],
                 'shown': [], 'hidden': [] });
 
+            cObj._componentSet = componentSet || primarySet;
             cObj._updateProperties(properties);
             cObj.id = cObj._properties.id;
             if (!cObj.id)
-                cObj.id = $.component.allocateId();
+            { cObj.id = $.component.allocateId(); }
             // If we're given an id in the form c\d+, then make sure our
             // automatically-generated IDs start later, so they don't overlap
-            else if (cObj.id.charAt(0) == 'c') {
+            else if (cObj.id.charAt(0) == 'c')
+            {
                 var sequence = parseInt(cObj.id.substring(1));
                 if (sequence >= nextAutoID)
-                    nextAutoID = sequence + 1;
+                { nextAutoID = sequence + 1; }
             }
-            if (components[cObj.id])
-                throw new Error("Duplicate component ID " + cObj.id);
-            components[cObj.id] = cObj;
+            if (componentSets[cObj._componentSet][cObj.id])
+            { throw new Error("Duplicate component ID in " + cObj._componentSet + ': ' + cObj.id); }
+            componentSets[cObj._componentSet][cObj.id] = cObj;
             cObj._isDirty = true;
 
             if (_.isFunction(cObj._dataReady))
@@ -63,12 +70,15 @@
             }
 
             // Allow configuring static properties via dynamic code
-            if (cObj._properties.setup) {
-                _(cObj._properties.setup).each(function(definitions, key) {
+            if (cObj._properties.setup)
+            {
+                _(cObj._properties.setup).each(function(definitions, key)
+                {
                     var props = {};
-                    _(definitions).each(function(template, propName) {
+                    _(definitions).each(function(template, propName)
+                    {
                         template.type || (template.type = 'StringResolver');
-                        var resolver = $.component.create(template);
+                        var resolver = $.component.create(template, cObj._componentSet);
                         props[propName] = resolver.asString();
                     });
                     cObj[key](props);
@@ -132,7 +142,7 @@
         destroy: function() {
             this.remove();
             if (!$.isBlank(this.$dom)) { this.$dom.remove(); }
-            delete components[this.id];
+            delete componentSets[this._componentSet][this.id];
             this._destroyed = true;
             var cObj = this;
             _.defer(function() { $.component.globalNotifier.trigger('component_removed', [cObj]); });
@@ -141,9 +151,10 @@
         /**
          * Read or write properties.
          */
-        properties: function(properties) {
+        properties: function(properties)
+        {
             if (properties)
-                this._propWrite(properties);
+            { this._propWrite(properties); }
             return this._propRead();
         },
 
@@ -327,7 +338,7 @@
         _executePropertyUpdate: function(properties)
         {
             $.cf.edit.execute('properties', {
-                componentID: this.id,
+                component: this,
                 properties: properties
             });
         },
@@ -444,20 +455,18 @@
          */
         _initDom: function()
         {
-            var dom = this.dom;
-            if (!dom)
-            { dom = document.getElementById(this.id); }
-            if (!dom)
-            {
-                dom = document.createElement('div');
-                dom.id = this.id;
-            }
+            var domId = (this._componentSet == primarySet ? '' : this._componentSet + '_') + this.id;
+            var $dom = this.$dom;
+            if ($.isBlank($dom))
+            { $dom = $('#' + domId); }
+            if ($dom.length < 1)
+            { $dom = $.tag({ tagName: 'div', id: domId }); }
 
-            if ($.isBlank(this.dom))
+            if ($.isBlank(this.$dom))
             {
-                this.dom = dom;
-                this.$dom = $(dom);
-                dom._comp = this;
+                this.$dom = $dom;
+                this.dom = $dom[0];
+                this.dom._comp = this;
                 this.$dom.addClass('socrata-component component-' + this.typeName + ' ' +
                     (this._properties.customClass || '') + ' ' +
                     (this._isHidden ? 'hide' : ''));
@@ -634,7 +643,7 @@
         _move: function(parent, position) {
             // Confirm that position makes sense
             if (position && position.parent != parent)
-                throw new Error("Illegal position -- new following sibling is not parented by new parent");
+            { throw new Error("Illegal position -- new following sibling is not parented by new parent"); }
 
             // Ignore identity moves
             if (position ? position == this || position == this.next : parent.last == this)
@@ -970,10 +979,13 @@
         return result;
     };
 
-    $.component = function(id) {
-        if (typeof id == 'number')
-            id = 'c' + id;
-        return components[id];
+    $.component = function(id, compSet)
+    {
+        if (typeof id == 'number') { id = 'c' + id; }
+        if (compSet === true)
+        { return _.compact(_.map(componentSets, function(cs) { return cs[id]; })); }
+        else
+        { return componentSets[compSet || primarySet][id]; }
     }
 
     // That extra five characters is annoying in Firebug
@@ -1039,18 +1051,7 @@
                 disableWinUpdate = false;
                 winUpdateTimer = null;
             }, 500);
-        }, 200),
-
-        eachRoot: function(fn, scope) {
-            for (var i in components)
-                if (!components[i].parent && components[i]._persist !== false)
-                    fn.call(scope || this, components[i]);
-        },
-
-        eachFunctional: function(fn, scope) {
-            for (var i in functionalComponents)
-                fn.call(scope || this, functionalComponents[i]);
-        }
+        }, 200)
     });
 
     // Set up the catalog registry here, since it is required for Component.extend to actually work
@@ -1076,44 +1077,49 @@
             }
         },
 
-        create: function(properties) {
+        create: function(properties, compSet)
+        {
             if (properties == undefined)
-                throw "Component create without input properties";
+            { throw new Error("Component create without input properties"); }
             if (properties instanceof $.component.Component)
-                return properties;
-            if (typeof properties == "string") {
+            { return properties; }
+            if (typeof properties == "string")
+            {
                 var type = properties;
                 properties = {};
-            } else
-                type = properties.type;
+            }
+            else
+            { type = properties.type; }
             if (type == undefined)
-                throw "Component create without type property";
+            { throw new Error("Component create without type property"); }
             var componentClass = $.component[properties.type.camelize()];
             if (!componentClass)
-                throw "Invalid component type " + type;
-            return new componentClass($.extend(true, {}, properties));
+            { throw new Error("Invalid component type " + type); }
+            return new componentClass($.extend(true, {}, properties), compSet);
         },
 
-        initialize: function()
+        initialize: function(configRoot, componentSet)
         {
-            this.roots = [];
-            for (var i = 0; i < arguments.length; i++)
+            componentSet = componentSet || primarySet;
+            roots[componentSet] = null;
+            componentSets[componentSet] = componentSets[componentSet] || {};
+            if ($.isPlainObject(configRoot))
             {
-                if ($.isArray(arguments[i]))
-                { this.initialize.apply(this, arguments[i]); }
-                else
-                {
-                    if ($.subKeyDefined(arguments[i], 'bodyClass'))
-                    { $('body').addClass(arguments[i].bodyClass); }
-                    var component = this.create(arguments[i]);
-                    component._render();
-                    if (component._isRenderable() && !component.dom.parentNode)
-                        throw "Unparented root component " + component.id;
-                    this.roots.push(component);
-                }
+                if ($.subKeyDefined(configRoot, 'bodyClass'))
+                { $('body').addClass(configRoot.bodyClass); }
+                var component = this.create(configRoot, componentSet);
+                component._render();
+                if (component._isRenderable() && !component.dom.parentNode)
+                { throw new Error("Unparented root component " + component.id); }
+                roots[componentSet] = component;
             }
 
             $(document).trigger('canvas_initialized');
+        },
+
+        root: function(componentSet)
+        {
+            return componentSet === true ? roots : roots[componentSet || primarySet];
         },
 
         catalog: catalog

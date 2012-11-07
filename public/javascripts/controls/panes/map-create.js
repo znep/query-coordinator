@@ -195,11 +195,40 @@
 
         _getSections: function()
         {
-            return [{ title: 'Config for ' + this._view.id + '<br />(' + this._view.name + ')',
-                fields: blist.configs.map.dataLayer[this._dataType]({
-                    prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
-                    view: this._view })
-            }];
+            var config = [];
+            var baseConfig = { fields: blist.configs.map.dataLayer[this._dataType]({
+                prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
+                view: this._view })
+            };
+            var title = this._view.name + '<br />(' + this._view.id + ')';
+
+            if (this._dataType == 'socrata')
+            {
+                config.push({
+                    title: 'Config for ' + title,
+                    fields: blist.configs.map.dataLayer.socrataBase({
+                        prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
+                        view: this._view })
+                });
+                config.push({
+                    title: 'Details for ' + title,
+                    name: this._view.id + '_details', type: 'selectable',
+                    fields: blist.configs.map.dataLayer.socrata({
+                        prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
+                        view: this._view })
+                });
+            }
+            else
+            {
+                config.push({
+                    title: 'Config for ' + title,
+                    fields: blist.configs.map.dataLayer[this._dataType]({
+                        prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
+                        view: this._view })
+                });
+            }
+
+            return config;
         },
 
         setView: function(view)

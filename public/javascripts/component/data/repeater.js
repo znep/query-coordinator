@@ -4,16 +4,17 @@ $.component.Container.extend('Repeater', 'content', {
     position: 0,
     length: 100,
 
-    _init: function(properties)
+    _init: function()
     {
+        var props = arguments[0];
         // Take my children and give them to a "clone" template that will repeat once for each object
-        var children = properties.children || [];
-        delete properties.children;
+        var children = props.children || [];
+        delete props.children;
 
         this._delayUntilVisible = true;
 
         // Normal object setup
-        this._super(properties);
+        this._super.apply(this, arguments);
 
         // Record keeping preparation
         this._map = [];
@@ -129,7 +130,7 @@ $.component.Container.extend('Repeater', 'content', {
                 if (count < 1)
                 {
                     var clone = new $.component.Repeater.Clone($.extend(true, {},
-                            cObj._noChildrenCloneProperties));
+                            cObj._noChildrenCloneProperties), cObj._componentSet);
                     // Insert the clone
                     cObj._initializing = true;
                     if ($.isBlank(cObj._realContainer))
@@ -154,7 +155,23 @@ $.component.Container.extend('Repeater', 'content', {
         {
             // Render actual children as direct descendants
             cObj.add(cObj._cloneProperties.children);
-            cObj.each(function(c) { c.design(true); });
+            if (!$.isBlank(cObj._realContainer)) { cObj._realContainer.design(true); }
+            cObj.each(function(c)
+            { c.design(true); });
+
+            if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._designSubsidiary = true; }
+            var addDesignSub = function(c)
+            {
+                if (_.isFunction(c.each))
+                {
+                    c.each(function(cc)
+                    {
+                        cc._designSubsidiary = true;
+                        addDesignSub(cc);
+                    });
+                }
+            };
+            addDesignSub(cObj);
         }
         else if ($.isBlank(cObj._dataContext))
         {
@@ -298,7 +315,8 @@ $.component.Container.extend('Repeater', 'content', {
         cloneProperties.childContextId = row.id;
 
         // Create clone
-        var clone = this._map[adjIndex] = new $.component.Repeater.Clone(cloneProperties);
+        var clone = this._map[adjIndex] = new $.component.Repeater.Clone(cloneProperties,
+                this._componentSet);
 
         // Terrible hack; but core server doesn't support regexes in queries,
         // so this is the easiest way to skip some rows. This also doesn't
@@ -343,6 +361,8 @@ $.component.Container.extend('Repeater', 'content', {
     {
         var cObj = this;
         var origCloneProps = cObj._cloneProperties;
+        // Make a copy so we don't screw up the original hash
+        properties = $.extend(true, {}, properties);
         var origProps = $.extend(true, {}, cObj._properties);
         var children = properties.children;
         delete properties.children;

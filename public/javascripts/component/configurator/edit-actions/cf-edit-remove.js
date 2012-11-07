@@ -21,8 +21,9 @@ $.cf.edit.registerAction('remove', {
     initialize: function(options) {
         var component = options.component;
         if (options.componentTemplate)
-            this.componentTemplate = options.componentTemplate;
-        else {
+        { this.componentTemplate = options.componentTemplate; }
+        else
+        {
             if (!component)
                 throw "Cannot remove component without template";
             this.componentTemplate = component.properties();
@@ -35,23 +36,40 @@ $.cf.edit.registerAction('remove', {
         this.positionID = options.positionID || (options.position && options.position.id);
     },
 
-    commit: function() {
-        var component = $.component(this.componentTemplate.id);
-        if (!component)
-            throw "Cannot remove component " + component.id + " because it has disappeared";
-        component.destroy();
+    commit: function()
+    {
+        var components = $.component(this.componentTemplate.id, true);
+        if (_.isEmpty(components))
+        {
+            throw new Error("Cannot remove component " + this.componentTemplate.id +
+                    " because it has disappeared");
+        }
+        _.each(components, function(c) { c.destroy(); });
     },
 
-    rollback: function() {
-        var component = $.component.create(this.componentTemplate);
-        var container = $.component(this.containerID);
-        if (!container)
-            throw "Cannot add component to container " + this.containerID + " because container has disappeared";
-        if (this.positionID) {
-            var position = $.component(this.positionID);
-            if (!position)
-                throw "Cannot add component because following sibling " + this.positionID + " has disappeared";
+    rollback: function()
+    {
+        var editObj = this;
+        var containers = $.component(editObj.containerID, true);
+        if (_.isEmpty(containers))
+        {
+            throw new Error("Cannot add component to container " + editObj.containerID +
+                    " because container has disappeared");
         }
-        container.add(component, position);
+
+        _.each(containers, function(container)
+        {
+            var component = $.component.create(editObj.componentTemplate, container._componentSet);
+            if (editObj.positionID)
+            {
+                var position = $.component(editObj.positionID, container._componentSet);
+                if (!position)
+                {
+                    throw new Error("Cannot add component because following sibling " +
+                        editObj.positionID + " has disappeared");
+                }
+            }
+            container.add(component, position);
+        });
     }
 });

@@ -12,10 +12,9 @@ $(function()
 {
     $('.expander').replaceWith($.tag({
         tagName: 'a',
-        'class': ['button', 'chooseDatasetButton', 'rightArrow'],
-        contents: [
-            'Choose',
-            { tagName: 'span', 'class': 'icon' } ] }, true));
+        'class': ['button', 'chooseDatasetButton'],
+        contents: [ 'Choose' ]
+    }, true));
 
     $('.chooseDatasetButton').click(function(event)
     {

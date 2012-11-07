@@ -4,6 +4,7 @@
 .browseSection .browseList .results .gridList
   th.index, td.index
     width: 10em
+    white-space: nowrap
 
 .expander
   display: none
@@ -12,11 +13,3 @@ a.chooseDatasetButton
   @include sprite-menu-icons
   font-size: 0.8em
   margin-right: 1em
-
-  .icon
-    float: right
-    margin-left: 0.3em
-
-    .ie7 &
-      // I can't get this to work. Forget it.
-      display: none

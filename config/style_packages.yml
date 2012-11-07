@@ -53,8 +53,6 @@ administration-browse-widget:
 - grid-sidebar
 - screen-admin-customizer
 - screen-admin-browse-widget
-administration-select-dataset:
-- screen-administration-select-dataset
 administration-federation:
 - screen-administration-federation
 administration-home:
@@ -90,6 +88,8 @@ administration-tos:
 base-control:
 - control-pane
 - control-pane-custom
+browse-select-dataset:
+- screen-browse-select-dataset
 browse-control:
 - screen-browse
 - rich-render-types

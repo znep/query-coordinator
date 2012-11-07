@@ -41,15 +41,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  def select_dataset
-    @processed_browse = process_browse(request, {
-      browse_in_container: true,
-      rel_type: 'external',
-      view_type: 'table',
-      hide_view_types: true
-    })
-  end
-
   before_filter :check_member, :only => :catalog_widget
   def catalog_widget
     topics_all = Tag.find({:method => 'viewsTags'}).map do |t|

@@ -341,6 +341,11 @@
 
   <%= render :partial => 'save_view_dialog' %>
 
+  <%= modal :id => 'selectDataset' do %>
+    <h2>Choose a Dataset to use</h2>
+    <iframe src="<%= url_for :controller => :browse, :action => :select_dataset %>?nofederate=true&suppressed_facets[]=domain" frameBorder="0"></iframe>
+  <%- end -%>
+
   <%- unless current_user -%>
     <%= render :partial => 'modals/inline_login' %>
   <%- end -%>

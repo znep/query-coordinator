@@ -110,62 +110,37 @@
         };
     };
 
-    var autocompleteParams = {
-        typingDelay: 500,
-        dataMethod: function(value, $item, callback)
-        {
-            if ($item.hasClass('prompt')) { return; }
-
-            value = $.trim(value);
-            var query = blist.util.patterns.UID.test(value)
-                ? value : 'name:' + value;
-            Dataset.search({ q: query, nofederate: true, limit: 20 },
-                function(data) { callback(data.views) });
-        },
-        noResultsMessage: 'No results were found. Note: This search only ' +
-            'matches full words.',
-        renderFunction: function(dataItem, topMatch)
-        { return '<p>' + dataItem.name + '</p>'; }
-    };
-
     var datasetCreate = function($field, vals, curValue)
     {
         var cpObj = this;
-        var params = $.extend({}, autocompleteParams, {
-            onComplete: function(dataset)
-            {
-                $field.data('uid', dataset.id);
-                makeStatic(dataset.name);
-                modifySection.call(cpObj, dataset, $field);
-            }
-        });
 
-        var makeStatic = function(value)
+        if (!blist.common.selectedDataset)
         {
-            $field.empty();
-            $field.append('<span>'+ $.htmlEscape(value) +' (<span class="edit">edit</span>)</span>');
-            $field.find('span.edit').click(function() { makeInput(value); })
-                                    .css('cursor', 'pointer');
+            blist.common.selectedDataset = function(ds)
+            {
+                cpObj._expectingCancel = false;
+                $('#selectDataset').jqmHide();
+                cpObj._$selectedField.data('uid', ds.id);
+                cpObj._$selectedField.makeStatic(ds.name);
+                modifySection.call(cpObj, ds, cpObj._$selectedField);
+            };
+        }
+
+        var openSelectDataset = function(e)
+        {
+            if (e) { e.preventDefault(); }
+            cpObj._$selectedField = $field;
+            $("#selectDataset").jqmShow();
+            cpObj._expectingCancel = true;
         };
 
-        var makeInput = function(initValue)
+        $field.makeStatic = function(value)
         {
             $field.empty();
-            $field.append($.tag({tagName: 'input', type: 'text', name: 'dataset_name',
-                                 value: $.htmlEscape(initValue) }));
-            _.defer(function() // Need to wait for the input to have innerWidth.
-            { $field.find('input').awesomecomplete(params).example('Select a dataset'); });
-            $field.find('input').blur(function()
-            {
-                var val = $(this).val();
-                // TODO: Make this take a URL too. Parse the 4x4 out like in context-picker.js#30
-                if (blist.util.patterns.UID.test(val))
-                {
-                    $field.data('uid', val);
-                    Dataset.createFromViewId(val, function(dataset)
-                    { modifySection.call(cpObj, dataset, $field); });
-                }
-            });
+            $field.data('dsName', value);
+            $field.append('<span>'+ $.htmlEscape(value) +' (<span class="edit">edit</span>)</span>');
+            $field.find('span.edit').click(openSelectDataset)
+                                    .css({ cursor: 'pointer', color: '#0000ff' });
         };
 
         if (!$.isBlank(curValue))
@@ -173,19 +148,32 @@
             $field.data('uid', curValue);
             Dataset.lookupFromViewId(curValue, function(dataset)
             {
-                makeStatic(dataset.name);
+                $field.makeStatic(dataset.name);
                 modifySection.call(cpObj, dataset, $field);
             });
         }
         else
-        { makeInput(); }
+        { openSelectDataset(); cpObj._selectingEmpty = true; }
 
         if (!$field.data('hookedCleanupEvent'))
         {
-            var cpObj = this;
             $field.parents('.line.group').find('.removeLink').click(function()
             { modifySection.call(cpObj, null, $field); });
             $field.data('hookedCleanupEvent', true);
+
+            $(document).bind(blist.events.MODAL_HIDDEN, function()
+            {
+                if (cpObj._expectingCancel)
+                {
+                    cpObj._$selectedField.makeStatic(cpObj._$selectedField.data('dsName'));
+                    cpObj._expectingCancel = false;
+                    if (cpObj._selectingEmpty)
+                    {
+                        cpObj._$selectedField.parents('.line.group').find('.removeLink').click();
+                        delete cpObj._selectingEmpty;
+                    }
+                }
+            });
         }
 
         return true;
@@ -304,12 +292,19 @@
     mapConfigNS.dataLayer.socrataBase = function(options)
     {
         var prefix = options.prefix;
+        var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
         return [
             {text: 'Plot Style', type: 'select', name: prefix+'plotStyle',
                 options: plotStyles, required: true, prompt: 'Select a plot style' },
             {text: 'Location', name: prefix+'plot.locationId',
                 type: 'columnSelect', isTableColumn: true, required: true,
-                columns: {type: ['location'], hidden: options.isEdit }}
+                columns: {type: ['location'], hidden: options.isEdit }},
+            {text: 'Region', name: prefix+'heatmap.type', type: 'select', onlyIf: boundaryOnly,
+                required: !customHeatmap(options), prompt: 'Select a region level',
+                options: regionTypes},
+            {text: '', name: prefix+'heatmap.region', type: 'select', onlyIf: boundaryOnly,
+                required: true, prompt: 'Select a region', linkedField: prefix+'heatmap.type',
+                options: heatmapRegionOptions}
         ];
     };
     mapConfigNS.dataLayer.socrata = function(options)
@@ -335,12 +330,6 @@
                 columns: {type: ['photo', 'photo_obsolete', 'url'],
                     noDefault: true, hidden: options.isEdit}},
 
-            {text: 'Region', name: prefix+'heatmap.type', type: 'select', onlyIf: boundaryOnly,
-                required: !customHeatmap(options), prompt: 'Select a region level',
-                options: regionTypes},
-            {text: '', name: prefix+'heatmap.region', type: 'select', onlyIf: boundaryOnly,
-                required: true, prompt: 'Select a region', linkedField: prefix+'heatmap.type',
-                options: heatmapRegionOptions},
             {type: 'color', text: 'Color (Low)', defaultValue: ['#c9c9c9'], onlyIf: boundaryOnly,
                 name: prefix+'heatmap.colors.low'},
             {type: 'color', defaultValue: ['#00ff00'], text: 'Color (High)', onlyIf: boundaryOnly,

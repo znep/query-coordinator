@@ -58,7 +58,6 @@ Frontend::Application.routes do
     get :comment_moderation
     get :sdp_templates
     get :datasets
-    get :select_dataset
     get :home, :as => 'home_administration'
     get :metadata, :as => 'metadata_administration'
     get :views
@@ -118,6 +117,7 @@ Frontend::Application.routes do
   resource :browse, :controller => 'browse' do
     collection do
       get :embed
+      get :select_dataset
     end
   end
 

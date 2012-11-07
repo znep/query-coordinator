@@ -47,4 +47,13 @@ class BrowseController < ApplicationController
     end
     render :layout => 'embedded_browse'
   end
+
+  def select_dataset
+    @processed_browse = process_browse(request, {
+      browse_in_container: true,
+      rel_type: 'external',
+      view_type: 'table',
+      hide_view_types: true
+    })
+  end
 end

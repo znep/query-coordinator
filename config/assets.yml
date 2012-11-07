@@ -221,8 +221,8 @@ javascripts:
     - public/javascripts/controls/page-render-type.js
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
-  admin-select-dataset:
-    - public/javascripts/screens/admin-select-dataset.js
+  browse-select-dataset:
+    - public/javascripts/screens/browse-select-dataset.js
   admin-datasets:
     - public/javascripts/util/serialize.js
     - public/javascripts/screens/admin-config-common.js

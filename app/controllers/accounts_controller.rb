@@ -102,6 +102,6 @@ class AccountsController < ApplicationController
   rescue CoreServer::CoreServerError => e
     flash[:error] = e.error_message
   ensure
-    redirect_to profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
+    redirect_to CurrentDomain.properties.on_login_path_override || profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
   end
 end

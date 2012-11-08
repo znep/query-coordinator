@@ -31,7 +31,7 @@ class RpxController < ApplicationController
     if @user_session.save
       current_user.openIdIdentifierId = @signup.openIdIdentifierId
       current_user.save!
-      redirect_to profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
+      redirect_to CurrentDomain.properties.on_login_path_override || profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
     else
       flash.now[:notice_login] = "Unable to login with that username and password; please try again"
       @body_id = 'signup'
@@ -58,7 +58,7 @@ private
     rpx_authentication = RpxAuthentication.new(params[:token])
     if (rpx_authentication.existing_account?)
       user_session = UserSession.rpx(rpx_authentication)
-      redirect_back_or_default(profile_index_path)
+      redirect_back_or_default(CurrentDomain.properties.on_login_path_override || profile_index_path)
     else
       @body_id = 'signup'
       @signup = SignupPresenter.new

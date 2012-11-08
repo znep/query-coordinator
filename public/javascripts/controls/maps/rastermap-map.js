@@ -23,7 +23,6 @@
 
         destroy: function()
         {
-            this._displayLayer.deactivate();
             this._displayLayer.destroy();
             delete this._dataStore;
             delete this._bounds;
@@ -46,6 +45,7 @@
 
         handleDataLoaded: function()
         {
+if ((blist.debug || {}).bug7077 && (console || {}).trace) { console.trace(); }
             this._super.apply(this, arguments);
 
             this._displayLayer.setDataSet({ max: 50, data: this._dataStore });

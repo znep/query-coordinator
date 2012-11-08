@@ -23,6 +23,7 @@
 
         destroy: function()
         {
+            this._displayLayer.deactivate();
             this._displayLayer.destroy();
             delete this._dataStore;
             delete this._bounds;

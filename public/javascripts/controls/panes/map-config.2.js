@@ -121,7 +121,7 @@
                 cpObj._expectingCancel = false;
                 $('#selectDataset').jqmHide();
                 cpObj._$selectedField.data('uid', ds.id);
-                cpObj._$selectedField.makeStatic(ds.name);
+                cpObj._$selectedField.makeStatic(ds.name, !validDataset(ds));
                 modifySection.call(cpObj, ds, cpObj._$selectedField);
             };
         }
@@ -134,13 +134,23 @@
             cpObj._expectingCancel = true;
         };
 
-        $field.makeStatic = function(value)
+        var validDataset = function(ds)
+        {
+            return ds.isArcGISDataset() || ds.isGeoDataset()
+                || _.any(ds.realColumns,
+                function(col) { return col.renderTypeName == 'location'; });
+        };
+
+        $field.makeStatic = function(value, invalid)
         {
             $field.empty();
             $field.data('dsName', value);
             $field.append('<span>'+ $.htmlEscape(value) +' (<span class="edit">edit</span>)</span>');
             $field.find('span.edit').click(openSelectDataset)
                                     .css({ cursor: 'pointer', color: '#0000ff' });
+            if (invalid)
+            { $field.append('<span class="error">This dataset has no location column.')
+                .find('span.error').css({ marginLeft: 0, paddingLeft: 0 }); }
         };
 
         if (!$.isBlank(curValue))
@@ -148,7 +158,7 @@
             $field.data('uid', curValue);
             Dataset.lookupFromViewId(curValue, function(dataset)
             {
-                $field.makeStatic(dataset.name);
+                $field.makeStatic(dataset.name, !validDataset(dataset));
                 modifySection.call(cpObj, dataset, $field);
             });
         }

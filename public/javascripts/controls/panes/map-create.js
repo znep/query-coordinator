@@ -211,7 +211,7 @@
                         view: this._view })
                 });
                 config.push({
-                    title: 'Details for ' + title,
+                    title: 'Advanced Config for ' + title,
                     name: this._view.id + '_details', type: 'selectable',
                     fields: blist.configs.map.dataLayer.socrata({
                         prefix: 'displayFormat.viewDefinitions.' + this._index + '.',

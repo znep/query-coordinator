@@ -564,8 +564,10 @@
                     var $this = $(this),
                         isCheckbox = $this.attr('type') == 'checkbox',
                         isColorInput = $this.hasClass('colorInput');
-                    hasData = hasData || (!isColorInput && !isCheckbox) ||
-                        (isCheckbox
+                    hasData = hasData || (!isColorInput && !isCheckbox)
+                        || (isColorInput
+                        && $this.attr('data-dataValue') != '['+$this.attr('data-defaultValue')+']')
+                        || (isCheckbox
                         && $this.attr('data-dataValue') != $this.attr('data-defaultValue'));
                 });
                 $s.toggleClass('collapsed', !hasData);

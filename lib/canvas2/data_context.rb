@@ -4,6 +4,10 @@ module Canvas2
       return @available_contexts ||= {}
     end
 
+    def self.streaming_contexts
+      return @streaming_contexts ||= {}
+    end
+
     def self.errors
       return @errors ||= []
     end
@@ -14,8 +18,13 @@ module Canvas2
 
     def self.reset
       @available_contexts = {}
+      @streaming_contexts = {}
       @errors = []
       @timings = []
+    end
+
+    def self.set_context_as_streaming(id)
+      streaming_contexts[id] = available_contexts[id]
     end
 
     def self.load_context(id, config)

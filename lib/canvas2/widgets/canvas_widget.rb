@@ -10,6 +10,7 @@ module Canvas2
       self.server_properties = {}
       self.id = @properties['id']
       self.parent = parent
+      @context_ids = []
 
       if @properties.has_key?('context')
         c_id = 'context-' + self.id
@@ -20,12 +21,16 @@ module Canvas2
             cur_id = c['id'].blank? ? c_id + '-' + i.to_s : c['id']
             DataContext.load_context(cur_id, c)
             @context << DataContext.available_contexts[cur_id]
+            # Collect ids for later perusal
+            @context_ids << cur_id
           end
           @context.compact!
         else
           c_id = con['id'].blank? ? c_id : con['id']
           DataContext.load_context(c_id, con)
           @context = DataContext.available_contexts[c_id]
+          # Collect ids for later perusal
+          @context_ids << c_id
         end
       end
     end
@@ -50,6 +55,7 @@ module Canvas2
     end
 
     def get_context(cId)
+      @context_ids << cId
       DataContext.available_contexts[cId] || (@properties['entity'] || {}).with_indifferent_access[cId]
     end
 
@@ -80,7 +86,13 @@ module Canvas2
         raise ComponentError.new(self, "Data context '#{context[:id]}' failed: " + e.error_message,
                                  { path: e.source, payload: JSON.parse(e.payload) })
       end
-
+      # Tell the DataContext that the contexts used by this widget should be available
+      # on the client.
+      if !fully_rendered 
+         @context_ids.each do |cId| 
+           DataContext.set_context_as_streaming(cId);
+         end
+      end
       html_class = render_classes + ' ' +
         string_substitute(@properties['htmlClass'].is_a?(Array) ?
                           @properties['htmlClass'].join(' ') : @properties['htmlClass'])

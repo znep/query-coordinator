@@ -32,7 +32,7 @@
             currentObj._map = currentObj._parent.map;
             currentObj._displayFormat = currentObj.settings.displayFormat
                 || currentObj._view.displayFormat;
-            currentObj.setQuery(currentObj.settings.query || currentObj._view.query || {});
+            currentObj._query = currentObj.settings.query || currentObj._view.query || {};
 
             currentObj._view.displayType = 'map';
 

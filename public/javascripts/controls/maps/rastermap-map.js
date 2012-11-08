@@ -29,6 +29,10 @@
             delete this._idList;
             this._parent.viewportHandler().events
                 .unregister('viewportchanged', this, this.onViewportChange);
+
+            this.$dom().remove();
+            this._view.unbind(null, null, this);
+            this._view.unbind(null, null, this._parent._primaryView);
         },
 
         preferredExtent: function()
@@ -45,7 +49,6 @@
 
         handleDataLoaded: function()
         {
-if ((blist.debug || {}).bug7077 && (console || {}).trace) { console.trace(); }
             this._super.apply(this, arguments);
 
             this._displayLayer.setDataSet({ max: 50, data: this._dataStore });

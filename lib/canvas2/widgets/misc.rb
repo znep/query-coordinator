@@ -173,13 +173,16 @@ module Canvas2
       end
       has_val = !cur_val.blank?
 
+      box_id = self.id + '_searchBox'
       t = '<form action="#" class="searchForm">' +
         '<div class="searchBoxContainer' + (@properties['hideSearchIcon'] != true ? ' hasSearchIcon' : '') +
           (@properties['hideClearButton'] != true ? ' hasClearButton' : '') + '">' +
           '<a href="#search" class="searchIcon' +
             (@properties['hideSearchIcon'] == true ? ' hide' : '') + '" title="' +
             string_substitute(@properties['iconPrompt'] || 'Find') + '"></a>' +
-          '<input type="text" class="searchField textPrompt' + (has_val ? '' : ' prompt') + '" value="' +
+          '<label for="' + box_id + '" class="accessible">Search text</label>' +
+          '<input type="text" id="' + box_id + '" class="searchField textPrompt' +
+            (has_val ? '' : ' prompt') + '" value="' +
             (has_val ? cur_val : string_substitute(@properties['searchPrompt'] || 'Find')) + '" />' +
           '<a href="#clear" class="clearSearch close' +
             (@properties['hideClearButton'] == true || !has_val ? ' hide' : '') +

@@ -12,11 +12,14 @@ $.component.Component.extend('Search', 'none', {//'input', {
             if (cObj.$input.length < 1)
             {
                 cObj.$contents.children('form').remove();
+                var boxId = cObj.id + '_searchBox';
                 cObj.$contents.append($.tag({ tagName: 'form', action: '#', 'class': 'searchForm',
                     contents: [ { tagName: 'div', 'class': ['searchBoxContainer',
                         'hasSearchIcon', 'hasClearButton'], contents: [
                         { tagName: 'a', href: '#search', 'class': 'searchIcon' },
-                        { tagName: 'input', type: 'text', 'class': ['searchField', 'textPrompt'] },
+                        { tagName: 'label', 'for': boxId, 'class': 'accessible', contents: 'Search text' },
+                        { tagName: 'input', type: 'text', id: boxId,
+                            'class': ['searchField', 'textPrompt'] },
                         { tagName: 'a', href: '#clear', 'class': ['clearSearch', 'close', 'hide'],
                             contents: { tagName: 'span', 'class': 'icon' } }
                     ] },

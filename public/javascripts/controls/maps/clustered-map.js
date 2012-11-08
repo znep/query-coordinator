@@ -25,7 +25,8 @@
         onViewportChange: function()
         {
             var layerObj = this;
-            if (layerObj._parent.viewportHandler().viewportInOriginal)
+            if (layerObj._parent.viewportHandler().viewportInOriginal
+                && layerObj._firstRenderType == 'points')
             { delete layerObj._neverCluster; }
 
             if (!layerObj._staledCluster
@@ -138,6 +139,7 @@
                 }
 
                 layerObj._renderType = 'clusters';
+                layerObj._firstRenderType = layerObj._firstRenderType || 'clusters';
 
                 _.defer(function() {
                     layerObj.handleDataLoaded(data);
@@ -156,6 +158,7 @@
         {
             this._fetchPoints = true;
             this._renderType = 'points';
+            this._firstRenderType = this._firstRenderType || 'points';
             this.filterWithViewport();
             delete this._fetchPoints;
         },
@@ -224,7 +227,7 @@
                 {
                     var totalRows = this._view.totalRows();
                     if (totalRows)
-                    { this._neverCluster = totalRows < this._parent._maxRows; }
+                    { this._neverCluster = totalRows < this._parent._maxRows / 2; }
                 }
                 else
                 { this._neverCluster = false; }

@@ -313,10 +313,13 @@ d3base.seriesGrouping = {
     {
         var vizObj = this;
 
-        return _.map(vizObj._seriesColumns, function(col)
+        return _.compact(_.map(vizObj._seriesColumns, function(col)
         {
-            return row[col.column.id];
-        }).join(', ');
+            var t = vizObj._renderCellText(row, col.column);
+            if ($.subKeyDefined(vizObj._displayFormat, 'seriesNames.' + t))
+            { t = vizObj._displayFormat.seriesNames[t]; }
+            return t;
+        })).join(', ');
     },
 
     _getColorForColumn: function(valueColumn, virtualColumnName)

@@ -214,6 +214,34 @@
             return false;
         },
 
+        updateContext: function(config, successCallback, errorCallback)
+        {
+            var gotDC = function(dc)
+            {
+                dc.config = $.stringSubstitute(config, $.component.rootPropertyResolver);
+                if (dc.config.type != dc.type)
+                {
+                    // Can't handle type change
+                    if (_.isFunction(errorCallback)) { errorCallback(); }
+                    return;
+                }
+
+                switch (dc.type)
+                {
+                    case 'dataset':
+                        addQuery(dc.dataset, dc.config.query);
+                        if (_.isFunction(successCallback)) { successCallback(dc); }
+                        break;
+                    default:
+                        // Can't handle other types
+                        if (_.isFunction(errorCallback)) { errorCallback(); }
+                        break;
+                }
+            };
+
+            return $.dataContext.getContext(config.id, gotDC, errorCallback);
+        },
+
         currentContexts: function()
         {
             var res = {};

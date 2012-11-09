@@ -39,6 +39,14 @@ $.Control.registerMixin('d3_base', {
         return blist.assets.libraries.d3;
     },
 
+    // Handle rendering values for different column types here
+    _renderCellText: function(row, col)
+    {
+        var renderer = row.invalid[col.lookup] ? blist.datatypes.invalid.renderer :
+            col.renderType.renderer;
+        return renderer(row[col.lookup], col, true, false, {}, true);
+    },
+
     _d3_text: function(transform)
     {
         var hasTransform = _.isFunction(transform);

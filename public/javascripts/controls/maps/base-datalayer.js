@@ -239,6 +239,10 @@
                                 size: i + 1
                             };
                         }
+
+                        if (layerObj._colorValueCol == column)
+                        { layerObj._colorSpread = { min: column.aggregates.minimum,
+                                                    max: column.aggregates.maximum }; }
                     });
 
                     // Refresh the data now that we have aggregates.
@@ -440,8 +444,8 @@
             if (!layerObj._colorValueCol || !layerObj._segments) { return; }
 
             return { name: layerObj._colorValueCol.name,
-                minimum:   layerObj._colorValueCol.aggregates.minimum,
-                maximum:   layerObj._colorValueCol.aggregates.maximum,
+                minimum:   layerObj._colorSpread.min,
+                maximum:   layerObj._colorSpread.max,
                 gradient:  layerObj._segments[layerObj._colorValueCol.id]
             };
         },

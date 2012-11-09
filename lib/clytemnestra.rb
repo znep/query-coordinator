@@ -9,7 +9,7 @@ module Clytemnestra
   # we only want to enable it in a few key locations - mostly canvas but
   def self.search_cached_views(opts, use_batch = false, cache_ttl = 15)
     path = "/search/views.json?#{opts.to_core_param}"
-    user = User.current_user.nil? ? User.current_user.id : "none"
+    user = User.current_user.nil? ? "none" : User.current_user.id
     cache_key = "search-views:" + Digest::MD5.hexdigest(path + ":" + user)
     result = cache.read(cache_key)
     if result.nil?

@@ -29,6 +29,10 @@
             delete this._idList;
             this._parent.viewportHandler().events
                 .unregister('viewportchanged', this, this.onViewportChange);
+
+            this.$dom().remove();
+            this._view.unbind(null, null, this);
+            this._view.unbind(null, null, this._parent._primaryView);
         },
 
         preferredExtent: function()

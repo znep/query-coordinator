@@ -1128,6 +1128,17 @@
                 setInitialValues();
             }
 
+            if (metadata.multiSelect !== false)
+            {
+                var $clear = $filter.find('.clearValues');
+                $clear.click(function(e)
+                {
+                    e.preventDefault();
+                    $.uniform.update($filter.find('.filterLineToggle').value(false));
+                    parseFilters();
+                });
+            }
+
             // data
             $filter.data('unifiedFilter-condition', condition);
 
@@ -2196,6 +2207,8 @@
                 {
                     $filterCondition.siblings().addClass('countInvalid');
                 }
+                $filterCondition.find('.clearValues').toggleClass('hide', children.length < 1 ||
+                        metadata.multiSelect === false || metadata.clearOption !== true);
             });
 
             // now let's see how clean we are. if we're clean, no need to update the dataset.

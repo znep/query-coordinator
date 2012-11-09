@@ -1090,6 +1090,12 @@
         return _.any([this.lon, this.lat], _.isNull) || _.any([this.lon, this.lat], _.isNaN);
     };
 
+    OpenLayers.Bounds.prototype.isValid = function()
+    {
+        return !(  _.any([this.left, this.bottom, this.right, this.top], _.isNull)
+                || _.any([this.left, this.bottom, this.right, this.top], _.isNaN));
+    };
+
     OpenLayers.Bounds.prototype.intersection = function(bounds)
     {
         return OpenLayers.Bounds.fromArray([
@@ -1208,10 +1214,13 @@
                 function() { control.expecting = true; });
 
             control.expecting = false;
-            if (_.isObject(viewport))
+            if (_.isObject(viewport) && viewport.xmin)
             { control.original = OpenLayers.Bounds.fromViewport(viewport); }
             else if (_.isArray(viewport))
             { control.original = OpenLayers.Bounds.fromArray(viewport); }
+
+            if (control.original && !control.original.isValid())
+            { delete control.original; }
         },
 
         setMap: function()

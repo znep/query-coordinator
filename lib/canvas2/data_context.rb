@@ -24,7 +24,7 @@ module Canvas2
     end
 
     def self.set_context_as_streaming(id)
-      streaming_contexts[id] = available_contexts[id]
+      streaming_contexts[id] = available_contexts[id] if !available_contexts[id].nil?
     end
 
     def self.load_context(id, config)

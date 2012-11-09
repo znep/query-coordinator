@@ -121,7 +121,7 @@
             {
                 if (layerObj._neverCluster
                     || _.reduce(data, function(memo, cluster) { return memo + cluster.size; }, 0)
-                        < layerObj._parent._maxRows / 2)
+                        < layerObj.settings.clusterThreshold)
                 { layerObj.fetchPoints(); return; }
 
                 // A mere single cluster is essentially useless.
@@ -227,7 +227,7 @@
                 {
                     var totalRows = this._view.totalRows();
                     if (totalRows)
-                    { this._neverCluster = totalRows < this._parent._maxRows / 2; }
+                    { this._neverCluster = totalRows < this.settings.clusterThreshold; }
                 }
                 else
                 { this._neverCluster = false; }
@@ -300,8 +300,9 @@
             this._super.call(this, query);
         }
     }, {
-        staleClusters: 0.15, // Prevent small pan actions from updating clusters.
-        defaultPixelSize: 45 // Size of a medium cluster, to minimize cluster overlap.
+        clusterThreshold: 300, // Number of points before clustering.
+        staleClusters: 0.15,   // Prevent small pan actions from updating clusters.
+        defaultPixelSize: 45   // Size of a medium cluster, to minimize cluster overlap.
     }, 'socrataDataLayer', 'points');
 
     // Should inherit from clusters.

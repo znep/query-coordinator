@@ -136,6 +136,7 @@ module Canvas2
           v = Util.deep_get(context, name) if v.blank? && !context.is_a?(Array)
           v = context.detect { |c| Util.deep_get(c, name) } if v.blank? && context.is_a?(Array)
         end
+        v = Util.deep_get(@properties['entity'], name) if v.blank? && !@properties['entity'].blank?
         v = parent_resolver.call(name) if v.blank?
         v
       end

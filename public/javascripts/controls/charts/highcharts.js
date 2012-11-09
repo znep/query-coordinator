@@ -466,7 +466,12 @@
         if (!chartObj._dataGrouping || chartObj._yColumns.length > 1)
         { seriesVals.push(yCol.data.name); }
         _.each(chartObj._seriesColumns, function(sc)
-            { seriesVals.push(renderCellText(row, sc.column)); });
+        {
+            var t = renderCellText(row, sc.column);
+            if ($.subKeyDefined(chartObj._displayFormat, 'seriesNames.' + t))
+            { t = chartObj._displayFormat.seriesNames[t]; }
+            seriesVals.push(t);
+        });
         return _.compact(seriesVals).join(', ');
     };
 

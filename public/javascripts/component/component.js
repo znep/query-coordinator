@@ -871,6 +871,7 @@
                     ($.isBlank(cObj._dataContext) || _.any($.makeArray(cObj._dataContext), function(dc)
                                                            { return !_.include(cIds, dc.id); })))
             {
+                cObj.unbind('update_properties', null, cObj);
                 if (!_.isEmpty(cIds))
                 {
                     var finishDC = gotDCGen(cIds.length);
@@ -892,13 +893,16 @@
                 }
                 else if (!$.isBlank(cxt))
                 {
+                    cObj._inlineContextConfigs = {};
+                    var isArr = _.isArray(cxt);
                     // Hmm; maybe this is taking templating a bit too far?
-                    _.each($.makeArray(cObj._stringSubstitute(cxt)), function(c, i)
+                    cxt = $.makeArray(cxt);
+                    _.each(cObj._stringSubstitute(cxt), function(c, i)
                     {
                         var id = c.id;
                         if ($.isBlank(id))
                         {
-                            id = 'context-' + cObj.id + (_.isArray(cxt) ? '-' + i : '');
+                            id = 'context-' + cObj.id + (isArr ? '-' + i : '');
                             c.id = id;
                             // Only set contextId if we got the context at this level
                             if (!$.isBlank(properties.context))
@@ -907,13 +911,27 @@
                                 { properties.contextId = []; }
                                 properties.contextId.push(id);
                             }
+                            cxt[i].id = id;
                         }
                         startDCGet();
                         var finishDC = gotDCGen(1);
                         $.dataContext.loadContext(id, c, finishDC.success, finishDC.error);
+                        cObj._inlineContextConfigs[c.id] = c;
                     });
                     if (_.isArray(properties.contextId) && properties.contextId.length == 1)
                     { properties.contextId = _.first(properties.contextId); }
+
+                    cObj.bind('update_properties', function()
+                    {
+                        _.each(cObj._stringSubstitute(cxt), function(c, i)
+                        {
+                            if (!_.isEqual(c, cObj._inlineContextConfigs[c.id]))
+                            {
+                                $.dataContext.updateContext(c);
+                                cObj._inlineContextConfigs[c.id] = c;
+                            }
+                        });
+                    }, cObj);
                 }
                 return true;
             }

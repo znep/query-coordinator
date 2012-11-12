@@ -225,7 +225,7 @@ class View < Model
   # fun, but this helps reduce and reuse calls to the core server across multiple
   # requests
   #
-  def get_cached_rows(per_page, page = 1, conditions = {})
+  def get_cached_rows(per_page, page = 1, conditions = {}, cache_ttl = 15)
     req = get_rows_request(per_page, page, conditions, true)
 
     cache_key = Digest::MD5.hexdigest(req.sort.to_json)
@@ -237,7 +237,7 @@ class View < Model
         result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
           meta_columns: server_result['meta']['view']['columns'].
             find_all { |c| c['dataTypeName'] == 'meta_data' } }
-        cache.write(cache_key, result, :expires_in => 15.minutes)
+        cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
     end
     if conditions.empty?
       @cached_rows ||= {}

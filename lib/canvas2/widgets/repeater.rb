@@ -55,7 +55,7 @@ module Canvas2
             if Canvas2::Util.debug
               rows = context[:dataset].get_rows(100)
             else
-              rows = context[:dataset].get_cached_rows(100)
+              rows = context[:dataset].get_cached_rows(100, 1, {}, 60)
             end
             rows = rows[:rows].map do |row|
               r = Hash.new

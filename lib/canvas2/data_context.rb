@@ -102,7 +102,7 @@ module Canvas2
             if Canvas2::Util.debug
               r = ds.get_rows(1)[:rows][0]
             else
-              r = ds.get_cached_rows(1)[:rows][0]
+              r = ds.get_cached_rows(1, 1, {}, 60)[:rows][0]
             end
 
             if r.nil?

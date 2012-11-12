@@ -149,7 +149,7 @@
             $field.find('span.edit').click(openSelectDataset)
                                     .css({ cursor: 'pointer', color: '#0000ff' });
             if (invalid)
-            { $field.append('<span class="error">This dataset has no location column.')
+            { $field.append('<span class="error">This dataset has no location column.</span>')
                 .find('span.error').css({ marginLeft: 0, paddingLeft: 0 }); }
         };
 

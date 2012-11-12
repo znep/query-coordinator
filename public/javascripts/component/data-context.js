@@ -17,6 +17,8 @@
             var dc = this;
             if (_.isObject(existingContexts))
             { $.extend(dc._existingContexts, existingContexts); }
+            // Initially set up preLoadQueue for each item
+            _.each(configHash, function(c, id) { dc._preLoadQueue[id] = dc._preLoadQueue[id] || []; });
             _.each(configHash, function(c, id) { dc.loadContext(id, c); });
         },
 
@@ -336,16 +338,20 @@
                     return;
                 }
                 gotDS(config.keepOriginal ? context.dataset : context.dataset.clone());
-            }))
+            }, errorCallback))
             {
                 // When loading the initial hash, we might have references in
                 // the wrong order; so make an attempt to wait until that one
                 // is loaded (or at least registered)
-                var args = arguments;
-                dc._preLoadQueue[config.contextId] = dc._preLoadQueue[config.contextId] || [];
-                dc._preLoadQueue[config.contextId].push(
-                    { success: function() { loadDataset.apply(this, args); },
-                        error: errorCallback });
+                if ($.subKeyDefined(dc._preLoadQueue, config.contextId))
+                {
+                    var args = arguments;
+                    dc._preLoadQueue[config.contextId].push(
+                            { success: function() { loadDataset.apply(this, args); },
+                                error: errorCallback });
+                }
+                else
+                { errorCallback(id); }
             }
         }
         else if ($.subKeyDefined(config, 'datasetId'))

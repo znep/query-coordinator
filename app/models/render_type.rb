@@ -112,7 +112,7 @@ class RenderType
       url = '/views/' + dataset.id + '/' +
         (self.type == 'photo_obsolete' ? 'obsolete_' : '') + 'files/' + cell
       ret = '<a href="' + url + '">' +
-        '<img width="20" height="20" src="' + url + '" />' +
+        '<img width="20" height="20" alt="User-uploaded image" src="' + url + '" />' +
         '</a>'
 
     when 'location'

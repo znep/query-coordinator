@@ -212,11 +212,11 @@
       @view.parent_dataset.owned_by?(current_user)
     -%>
 
-    <h4>This <%= @view.is_blist? ? "dataset" : "view" %> is
+    <p>This <%= @view.is_blist? ? "dataset" : "view" %> is
       <%= @view.is_public? ?  "public" : "private" %>
       <%= ' and shared with ' + pluralize(shares.length, 'friend') if
         @view.is_shared? %>
-    </h4>
+    </p>
     <%- if can_share -%>
     <%= form_tag(url_for(:controller => :datasets,
       :action => :modify_permission)) do %>

@@ -362,7 +362,7 @@
                     url: '/id/pages',
                     data: JSON.stringify(page),
                     dataType: 'json',
-                    contentType: 'text/json',
+                    contentType: 'application/json',
 
                     complete: function()
                     { spinner.showHide(false); },

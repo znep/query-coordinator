@@ -42,9 +42,8 @@ class Model
     if options.nil?
       options = Hash.new
     end
-    user_id = User.current_user.id
+    user_id = get_user_id(options)
     if !options['userId'].nil?
-      user_id = options['userId']
       options.delete('userId')
     end
 
@@ -57,6 +56,35 @@ class Model
     end
 
     parse(CoreServer::Base.connection.get_request(path))
+  end
+
+  #
+  # Preferentially get the user id from model options; otherwise the user model
+  #
+  def self.get_user_id(options)
+    if options.nil? && !options['userId'].nil?
+      options['userId']
+    else
+      User.current_user.id
+    end
+  end
+
+  #
+  # Find a cached model, delegating to cached_user_user if there is a user
+  # find* provides much of the user-level permissioning we need for things
+  # so find_cached should be used sparingly where there are clear advantages
+  #
+  def self.find_cached(options = nil, cache_ttl = 15)
+    return find_cached_under_user(options, cache_ttl) if !User.current_user.nil?
+    cache_string = options.nil? ? "none" : options.to_json
+    do_cached(method(:find), options, cache_string, cache_ttl)
+  end
+
+  def self.find_cached_under_user(options = nil, cache_ttl = 15)
+    user_id = get_user_id(options) || ""
+    cache_string = options.nil? ? "" : options.to_json
+    cache_string = cache_string + ":" + user_id
+    do_cached(method(:find_under_user), options, cache_string, cache_ttl)
   end
 
   def method_missing(method_symbol, *args)
@@ -390,6 +418,20 @@ private
   def self.non_serializable_attributes
     # read_inheritable_attribute("non_serializable") || Array.new
     Array.new
+  end
+
+  def self.do_cached(finder, options, cache_string, cache_ttl=15)
+    cache_key = "search-views:" + Digest::MD5.hexdigest(cache_string)
+    result = cache.read(cache_key)
+    if result.nil?
+      result = finder.call(options)
+      cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
+    end
+    result
+  end
+
+  def self.cache
+    @@cache ||= Rails.cache
   end
 
 end

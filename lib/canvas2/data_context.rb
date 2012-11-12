@@ -206,7 +206,7 @@ module Canvas2
         end
       elsif !config['datasetId'].blank?
         begin
-          ds = View.find(config['datasetId'])
+          ds = Canvas2::Util.debug ? View.find(config['datasetId']) : View.find_cached(config['datasetId'], 60)
         rescue CoreServer::ResourceNotFound
           errors.push(DataContextError.new(config, "No dataset found for '" +
                                            (config['id'] || config['datasetId']) + "'"))

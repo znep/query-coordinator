@@ -7,7 +7,8 @@
         {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
-            if ($.urlParam(window.location.href, 'maps') == 'nextgen' && cpObj._view.type == 'map'
+            if ((blist.configuration.newMapsEnabled || $.urlParam(window.location.href, 'maps') == 'nextgen')
+                && cpObj._view.type == 'map'
                 && !$.subKeyDefined(cpObj._view, 'displayFormat.viewDefinitions'))
             { Dataset.map.convertToVersion2(cpObj._view); }
             cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
@@ -126,7 +127,7 @@
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {map: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
 
-            if ($.urlParam(window.location.href, 'maps') != 'nextgen'
+            if ((!blist.configuration.newMapsEnabled && $.urlParam(window.location.href, 'maps') != 'nextgen')
                 && $.subKeyDefined(cpObj, '_view.displayFormat.heatmap.type')
                 && cpObj._view.displayFormat.heatmap.type == 'custom')
             {

@@ -37,7 +37,7 @@
             initFunction: 'socrataMap',
             javascripts: [
                 'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.3', false,
-                { assets: $.urlParam(window.location.href, 'maps') == 'nextgen' ? 'shared-new-map' : 'shared-map' }
+                { assets: (blist.configuration.newMapsEnabled || $.urlParam(window.location.href, 'maps') == 'nextgen') ? 'shared-new-map' : 'shared-map' }
             ],
             stylesheets: [{ assets: 'render-images-bundle', hasImages: true },
                 { assets: 'display-map' },

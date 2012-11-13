@@ -5,7 +5,7 @@
         window.oRequestAnimationFrame;
 
     blist.namespace.fetch('blist.openLayers');
-    if ($.urlParam(window.location.href, 'maps') != 'nextgen')
+    if (!blist.configuration.newMapsEnabled && $.urlParam(window.location.href, 'maps') != 'nextgen')
     { $.Control.extend('socrataDataLayer', {}, {}, null, false); }
 
     var geographicProjection = blist.openLayers.geographicProjection = new OpenLayers.Projection('EPSG:4326');

@@ -1,4 +1,4 @@
-;if (jQuery.urlParam(window.location.href, 'maps') != 'nextgen') { (function($) {
+;if (blist.configuration.newMapsEnabled || jQuery.urlParam(window.location.href, 'maps') != 'nextgen') { (function($) {
 
     var mapConfigNS = blist.namespace.fetch('blist.configs.map');
 

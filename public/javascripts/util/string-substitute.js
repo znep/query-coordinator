@@ -59,7 +59,7 @@
                             });
                         }
 
-                        if (!_.isEmpty(m = p.prop.match(/(.*)\s+([%@])\[([^\]]*)\]$/)))
+                        while (!_.isEmpty(m = p.prop.match(/(.*)\s+([%@$])\[([^\]]*)\]$/)))
                         {
                             p.prop = m[1];
                             var t;
@@ -70,6 +70,9 @@
                                     break;
                                 case '@':
                                     t = 'dateFormat';
+                                    break;
+                                case '$':
+                                    t = 'stringFormat';
                                     break;
                             }
                             p.transforms.push({
@@ -204,6 +207,30 @@
             // Make format conform to what DateJS can handle from standard Unix strftime(3)
             var fmt = transf.format.replace('%z', 'O').replace('%s', 'U');
             return d.format(fmt);
+        },
+
+        stringFormat: function(v, transf)
+        {
+            if ($.isBlank(v)) { return v; }
+
+            if (transf.format.indexOf('t') > -1)
+            { v = v.trim(); }
+
+            // Apply lower case first, because it might matter for capitalization
+            if (transf.format.indexOf('l') > -1)
+            { v = v.toLowerCase(); }
+
+            if (transf.format.indexOf('U') > -1)
+            { v = v.toUpperCase(); }
+            else if (transf.format.indexOf('u') > -1)
+            { v = _.map(v.split(' '), function(t) { return t.capitalize(); }).join(' '); }
+            else if (transf.format.indexOf('c') > -1)
+            { v = v.capitalize(); }
+
+            if (transf.format.indexOf('?') > -1)
+            { v = encodeURIComponent(v); }
+
+            return v;
         },
 
         mathExpr: function(v, transf)

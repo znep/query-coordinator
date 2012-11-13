@@ -134,39 +134,40 @@ module Canvas2
           if m[i] == '{' && m[i + 2] == '}'
             p['orig'] = m[i + 1]
             p['prop'] = p['orig']
-            p['prop'].match(/(.*)\s+\|\|\s*(.*)$/) do |m|
-              p['prop'] = m[1]
-              p['fallback'] = m[2]
+            p['prop'].match(/(.*)\s+\|\|\s*(.*)$/) do |ma|
+              p['prop'] = ma[1]
+              p['fallback'] = ma[2]
             end
 
             p['transforms'] = []
-            p['prop'].match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/) do |m|
-              p['prop'] = m[1]
+            p['prop'].match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/) do |ma|
+              p['prop'] = ma[1]
               p['transforms'] << {
                 type: 'regex',
-                regex: m[2],
-                repl: m[3],
-                modifiers: m[4]
+                regex: ma[2],
+                repl: ma[3],
+                modifiers: ma[4]
               }
             end
 
-            p['prop'].match(/(.*)\s+([%@])\[([^\]]*)\]$/) do |m|
-              p['prop'] = m[1]
-              t = case m[2]
+            while ma = p['prop'].match(/(.*)\s+([%@$])\[([^\]]*)\]$/) do
+              p['prop'] = ma[1]
+              t = case ma[2]
                 when '%' then 'number_format'
                 when '@' then 'date_format'
+                when '$' then 'string_format'
               end
               p['transforms'] << {
                 type: t,
-                format: m[3]
+                format: ma[3]
               }
             end
 
-            p['prop'].match(/(.*)\s+=\[([^\]]*)\]$/) do |m|
-              p['prop'] = m[1]
+            p['prop'].match(/(.*)\s+=\[([^\]]*)\]$/) do |ma|
+              p['prop'] = ma[1]
               p['transforms'] << {
                 type: 'math_expr',
-                expr: m[2]
+                expr: ma[2]
               }
             end
 
@@ -271,6 +272,25 @@ module Canvas2
 
         fmt = transf[:format].blank? ? "%a %b %e %Y %H:%M:%S GMT%z (%Z)" : transf[:format]
         d.strftime(fmt)
+      end,
+
+      'string_format' => lambda do |v, transf|
+        return v if v.blank?
+
+        v.strip! if transf[:format].include?('t')
+
+        v.downcase! if transf[:format].include?('l')
+
+        if transf[:format].include?('U')
+          v.upcase!
+        elsif transf[:format].include?('u')
+          v = v.split(' ').each {|vv| (vv[0] || '').upcase + (vv[1, -1] || '')}.join(' ')
+        elsif transf[:format].include?('c')
+          v = v[0].upcase + v[1, -1]
+        end
+
+        v = URI.escape(v) if transf[:format].include?('?')
+        v
       end,
 
       'math_expr' => lambda do |v, transf|

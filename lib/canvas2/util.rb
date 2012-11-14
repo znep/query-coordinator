@@ -291,7 +291,7 @@ module Canvas2
 
         if transf[:format].include?('?')
           v = URI.escape(v)
-        elsif transf[:format].include?('!') || transf[:format].include?('¿')
+        elsif transf[:format].include?('!')
           v = URI.unescape(v)
         end
 

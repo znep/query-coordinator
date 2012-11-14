@@ -229,6 +229,8 @@
 
             if (transf.format.indexOf('?') > -1)
             { v = encodeURIComponent(v); }
+            else if (transf.format.indexOf('!') > -1 || transf.format.indexOf('¿') > -1)
+            { v = decodeURIComponent(v); }
 
             return v;
         },

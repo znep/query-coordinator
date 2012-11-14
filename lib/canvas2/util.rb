@@ -289,7 +289,12 @@ module Canvas2
           v = v[0].upcase + v[1, -1]
         end
 
-        v = URI.escape(v) if transf[:format].include?('?')
+        if transf[:format].include?('?')
+          v = URI.escape(v)
+        elsif transf[:format].include?('!') || transf[:format].include?('¿')
+          v = URI.unescape(v)
+        end
+
         v
       end,
 

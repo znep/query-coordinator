@@ -566,7 +566,7 @@
                         isColorInput = $this.hasClass('colorInput');
                     hasData = hasData || (!isColorInput && !isCheckbox)
                         || (isColorInput
-                        && $this.attr('data-dataValue') != '['+$this.attr('data-defaultValue')+']')
+                        && '['+$this.attr('data-dataValue')+']' != $this.attr('data-defaultValue'))
                         || (isCheckbox
                         && $this.attr('data-dataValue') != $this.attr('data-defaultValue'));
                 });

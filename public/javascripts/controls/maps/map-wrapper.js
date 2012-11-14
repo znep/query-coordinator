@@ -557,7 +557,6 @@
             {
                 mapObj.map.addControl(mapObj._viewportHandler
                     = new blist.openLayers.Viewport(mapObj, mapObj._displayFormat.viewport));
-                mapObj._viewportHandler.viewportInOriginal = !!mapObj._displayFormat.viewport;
             }
             return mapObj._viewportHandler;
         },

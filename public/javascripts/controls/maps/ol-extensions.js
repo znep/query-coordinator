@@ -1221,6 +1221,8 @@
 
             if (control.original && !control.original.isValid())
             { delete control.original; }
+
+            control.viewportInOriginal = !!control.original;
         },
 
         setMap: function()

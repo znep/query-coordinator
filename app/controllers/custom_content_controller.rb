@@ -154,7 +154,7 @@ class CustomContentController < ApplicationController
             code = (@error.respond_to?(:code) ? @error.code : nil) || 404
             @display_message = (@error.respond_to?(:display_message) ? @error.display_message : nil) || ''
             write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + @display_message,
-                           :expires_in => 15.minutes)
+                           :expires_in => 1.minutes)
             render :template => "custom_content/error_page", :layout => 'main', :status => code
           end
         end

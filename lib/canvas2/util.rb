@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module Canvas2
   class Util
     def self.allocate_id

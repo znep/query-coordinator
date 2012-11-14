@@ -48,11 +48,11 @@
                     renderType: blist.datatypes.number, format: {} };
             }
 
-            var colors = layerObj._config.colors
-                && [layerObj._config.colors.high, layerObj._config.colors.low];
-            if (_.isEmpty(_.compact(colors)))
-            { colors = layerObj._displayFormat.color || '#0000ff'; }
-            layerObj._gradient = _.map($.gradient(layerObj.settings.numSegments, colors),
+            var colors = layerObj._config.colors || {};
+            colors.high = colors.high || '#00ff00';
+            colors.low  = colors.low  || '#c9c9c9';
+            layerObj._gradient = _.map(
+                    $.gradient(layerObj.settings.numSegments, [colors.high, colors.low]),
                     function(c) { return '#'+$.rgbToHex(c); });
         },
 

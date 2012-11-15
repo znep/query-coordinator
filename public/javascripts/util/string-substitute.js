@@ -13,8 +13,26 @@
         { return _.map(obj, function(t) { return $.stringSubstitute(t, resolver); }); }
         else if ($.isPlainObject(obj))
         {
-            var o = {};
-            _.each(obj, function(v, k) { o[k] = $.stringSubstitute(v, resolver); });
+            var o;
+            if (obj.substituteType == 'array')
+            {
+                o = $.stringSubstitute(obj.value, resolver);
+                if (obj.isJson)
+                {
+                    try
+                    { o = JSON.parse(o || '[]'); }
+                    catch (e)
+                    {}
+                }
+                else
+                { o = (o || '').split(obj.split || ','); }
+                if (obj.compact && _.isArray(o)) { o = _.compact(o); }
+            }
+            else
+            {
+                o = {};
+                _.each(obj, function(v, k) { o[k] = $.stringSubstitute(v, resolver); });
+            }
             return o;
         }
         else { return obj; }

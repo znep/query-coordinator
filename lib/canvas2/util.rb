@@ -15,8 +15,21 @@ module Canvas2
       elsif obj.is_a? Array
         return obj.map {|o| Util.string_substitute(o, resolver)}
       elsif obj.is_a? Hash
-        o = {}
-        obj.each {|k, v| o[k] = Util.string_substitute(v, resolver)}
+        if obj['substituteType'] == 'array'
+          o = Util.string_substitute(obj['value'], resolver)
+          if obj['isJson']
+            begin
+              o = JSON.parse(o || '[]')
+            rescue Exception => e
+            end
+          else
+            o = (o || '').split(obj['split'] || ',')
+          end
+          o.compact! if obj['compact'] && o.is_a?(Array)
+        else
+          o = {}
+          obj.each {|k, v| o[k] = Util.string_substitute(v, resolver)}
+        end
         return o
       else
         return obj

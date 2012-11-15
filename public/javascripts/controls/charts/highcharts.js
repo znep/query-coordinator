@@ -360,7 +360,7 @@
             // Make a copy of colors so we don't reverse the original
             var colors;
             if (!_.isUndefined(chartObj._displayFormat.colors))
-            { colors = chartObj._displayFormat.colors.slice(); }
+            { colors = $.makeArray(chartObj._displayFormat.colors).slice(); }
             else if (!_.isUndefined(chartObj._displayFormat.color))
             { colors = [ chartObj._displayFormat.color ]; }
             else

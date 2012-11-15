@@ -1105,7 +1105,7 @@
                                         $moreLessLink.socrataTip().refreshSize();
                                     });
 
-                            $moreLessLink.data('popup', $popup);
+                            $moreLessLink.data('popup', $popup.add($popupContents));
                             $moreLessLink.click(function(e) { e.preventDefault(); })
                                 .socrataTip({
                                     content: $popup,
@@ -1118,7 +1118,7 @@
                                     shownCallback: function(box)
                                     {
                                         var $b = $(box);
-                                        $moreLessLink.data('popup', $b);
+                                        $moreLessLink.data('popup', $b.add($popupContents));
                                         $b.find('.filterLineToggle')
                                         .on('change click', function(e)
                                         {

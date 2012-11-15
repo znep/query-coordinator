@@ -3,7 +3,7 @@ require 'json'
 class Model
   attr_accessor :data
   attr_accessor :update_data
-
+  cattr_accessor :model_cache_key
 
   def initialize(data = {})
     @data = data
@@ -421,12 +421,13 @@ private
   end
 
   def self.do_cached(finder, options, cache_string, cache_ttl=15)
-    cache_key = "search-views:" + Digest::MD5.hexdigest(cache_string)
-    result = cache.read(cache_key)
+    model_cache_key = "model:" + Digest::MD5.hexdigest(cache_string)
+    result = cache.read(model_cache_key)
     if result.nil?
       result = finder.call(options)
-      cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
+      cache.write(model_cache_key, result, :expires_in => cache_ttl.minutes)
     end
+    result.model_cache_key = model_cache_key
     result
   end
 

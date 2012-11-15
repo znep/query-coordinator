@@ -231,13 +231,19 @@ class View < Model
     cache_key = Digest::MD5.hexdigest(req.sort.to_json)
     result = cache.read(cache_key)
     if result.nil?
-        server_result = JSON.parse(CoreServer::Base.connection.
-                                   create_request(req[:url], req[:request].to_json, {}, true),
-                        {:max_nesting => 25})
-        result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
-          meta_columns: server_result['meta']['view']['columns'].
+      begin
+          server_result = JSON.parse(CoreServer::Base.connection.
+                                     create_request(req[:url], req[:request].to_json, {}, true),
+                                 {:max_nesting => 25})
+          result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
+            meta_columns: server_result['meta']['view']['columns'].
             find_all { |c| c['dataTypeName'] == 'meta_data' } }
-        cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
+          cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
+      rescue Exception => e
+          Rails.logger.info("Possibly invalid model found in row request, deleting model cache key: " + model_cache_key)
+          cache.delete(model_cache_key)
+          raise e
+      end
     end
     if conditions.empty?
       @cached_rows ||= {}

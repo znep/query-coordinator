@@ -35,7 +35,7 @@ module Canvas2
       begin
         case config['type']
         when 'datasetList'
-          search_response = Canvas2::Util.debug ? Clytemnestra.search_views(config['search']) : Clytemnestra.search_cached_views(config['search'], false, 60)
+          search_response = Canvas2::Util.debug ? Clytemnestra.search_views(config['search']) : Clytemnestra.search_cached_views(config['search'], false, 15)
           ds_list = search_response.results.reject do |ds|
             add_query(ds, config['query'])
             ds.get_total_rows < 1
@@ -102,7 +102,7 @@ module Canvas2
             if Canvas2::Util.debug
               r = ds.get_rows(1)[:rows][0]
             else
-              r = ds.get_cached_rows(1, 1, {}, 60)[:rows][0]
+              r = ds.get_cached_rows(1, 1, {}, 15)[:rows][0]
             end
 
             if r.nil?
@@ -206,7 +206,7 @@ module Canvas2
         end
       elsif !config['datasetId'].blank?
         begin
-          ds = Canvas2::Util.debug ? View.find(config['datasetId']) : View.find_cached(config['datasetId'], 60)
+          ds = Canvas2::Util.debug ? View.find(config['datasetId']) : View.find_cached(config['datasetId'], 15)
         rescue CoreServer::ResourceNotFound
           errors.push(DataContextError.new(config, "No dataset found for '" +
                                            (config['id'] || config['datasetId']) + "'"))
@@ -230,7 +230,7 @@ module Canvas2
         end
       elsif !config['search'].blank?
         search_config = config['search'].merge({'limit' => 1})
-        search_response = Canvas2::Util.debug ? Clytemnestra.search_views(search_config) : Clytemnestra.search_cached_views(search_config, false, 60)
+        search_response = Canvas2::Util.debug ? Clytemnestra.search_views(search_config) : Clytemnestra.search_cached_views(search_config, false, 15)
         ds = search_response.results.first
         if ds.nil? && config['required']
           errors.push(DataContextError.new(config, "No dataset found for '" +

@@ -1024,18 +1024,86 @@
 
                         if (metadata.usePopup)
                         {
-                            var $popup = $.tag({
+                            var $popupContents = $.tag({
                                 tagName: 'div',
-                                'class': 'filterPopupBlock'
+                                'class': 'filterPopupContents'
                             });
-                            $popup.append($filterLines.clone().removeClass('hide'));
-                            $popup.find('.filterLineToggle').quickEach(function()
+                            var curSection;
+                            var usedSections = [];
+                            _.each(_.sortBy($filterLines.clone().removeClass('hide'), function(fl)
+                                    { return $(fl).text(); }), function(fl)
+                                    {
+                                        var $fl = $(fl);
+                                        var firstL = $fl.text()[0].toUpperCase();
+                                        if (firstL != curSection)
+                                        {
+                                            curSection = firstL;
+                                            usedSections.push(curSection);
+                                            $popupContents.append($.tag({ tagName: 'span',
+                                                'class': ['sectionHeader', 'dontend',
+                                                    'section-' + curSection, 'section-All'],
+                                                contents: curSection }));
+                                        }
+                                        $fl.addClass('dontsplit section-All section-' + curSection);
+                                        $popupContents.append($fl);
+                                    });
+                            $popupContents.find('.filterLineToggle').quickEach(function()
                                 {
                                     var $t = $(this);
                                     $t.attr('data-relatedid', $t.attr('id'));
                                     $t.attr('id', $t.attr('id') + '_popup');
                                     $t.closest('.line').find('label').attr('for', $t.attr('id'));
                                 });
+
+                            var adjustColumns = function($pContents)
+                            {
+                                $('body').append($pContents);
+                                var itemW = $pContents.children('.line').outerWidth(true);
+                                $pContents.width(itemW);
+                                var colH = Math.min($pContents.height(), $(window).height() * 0.6);
+                                $pContents.css({ height: 'auto', 'max-height': 'none' });
+                                var numCols = Math.min(Math.ceil($pContents.height() / colH),
+                                        Math.floor(($(window).width() * 0.6) / itemW));
+                                $pContents.width(numCols * itemW);
+                                $pContents.columnize({ columns: numCols, lastNeverTallest: true });
+                                $pContents.height(Math.min(colH, $pContents.height()) + 10);
+                                $pContents.detach();
+                                return $pContents;
+                            };
+
+                            var $popup = $.tag({
+                                tagName: 'div',
+                                'class': ['filterPopupBlock', filterUniqueId],
+                                contents: { tagName: 'div', 'class': 'filterMenu',
+                                    contents: [{ tagName: 'a', href: '#All', 'class': 'active',
+                                        contents: 'All' }].concat(_.map(usedSections, function(sec)
+                                    {
+                                        return { tagName: 'a', href: '#' + sec,
+                                            contents: sec };
+                                    }))
+                                }
+                            });
+                            $popup.append(adjustColumns($popupContents.clone()));
+
+
+                            $(document).off('.filterPopup_' + filterUniqueId);
+                            $(document).on('click.filterPopup_' + filterUniqueId,
+                                    '.filterPopupBlock.' + filterUniqueId + ' .filterMenu a',
+                                    function(e)
+                                    {
+                                        e.preventDefault();
+                                        var $link = $(this).addClass('active');
+                                        $link.siblings().removeClass('active')
+                                        var $block = $link.closest('.filterPopupBlock');
+                                        $block.find('.filterPopupContents').remove();
+                                        var $pContents = $popupContents.clone();
+                                        $pContents.children()
+                                            .addClass('hide')
+                                            .filter('.section-' +
+                                                $.hashHref($link.attr('href'))).removeClass('hide');
+                                        $block.append(adjustColumns($pContents));
+                                        $moreLessLink.socrataTip().refreshSize();
+                                    });
 
                             $moreLessLink.data('popup', $popup);
                             $moreLessLink.click(function(e) { e.preventDefault(); })
@@ -1045,6 +1113,8 @@
                                     isSolo: true,
                                     stroke: '#444444',
                                     trigger: 'click',
+                                    positions: 'auto',
+                                    shrinkToFit: true,
                                     shownCallback: function(box)
                                     {
                                         var $b = $(box);

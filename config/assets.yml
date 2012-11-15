@@ -557,6 +557,8 @@ javascripts:
     - public/javascripts/screens/api-new.js
   masonry:
     - public/javascripts/plugins/jquery.masonry.js
+  columnizer:
+    - public/javascripts/plugins/jquery.columnizer.js
 
 dump:
   javascripts:
@@ -583,3 +585,4 @@ dump:
     - image-uploader
     - awesomecomplete
     - masonry
+    - columnizer

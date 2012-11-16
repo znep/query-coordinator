@@ -1628,7 +1628,7 @@
         var onTouchStart = function(event)
         {
             var e = event.originalEvent;
-            //e.preventDefault();
+            e.preventDefault();
 
             touchLastY = e.targetTouches[0].clientY;
             touchLastX = e.targetTouches[0].clientX;

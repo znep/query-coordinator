@@ -1852,7 +1852,7 @@
         if (chartObj._chartType == 'column')
         {
             position.left = $point[0].getAttribute('width') / 2;
-            position.top = (point.y > 0) ? 0 : Math.abs(point.y);
+            position.top = (point.y > 0) ? 0 : parseInt($point[0].getAttribute('height'));
         }
 
         if (chartObj._chartType == 'bar')

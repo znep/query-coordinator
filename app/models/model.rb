@@ -421,7 +421,15 @@ private
   end
 
   def self.do_cached(finder, options, cache_string, cache_ttl=15)
-    model_cache_key = "model:" + Digest::MD5.hexdigest(cache_string)
+    #
+    # If the model is requesting a simple string id; lookup the modification time in
+    # memcached and
+    #
+    mtime = 0
+    if options.is_a?(String)
+      mtime = VersionAuthority.resource(options) || 0
+    end
+    model_cache_key = "model:" + Digest::MD5.hexdigest(cache_string + ":" + mtime.to_s)
     result = cache.read(model_cache_key)
     if result.nil?
       result = finder.call(options)

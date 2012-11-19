@@ -455,6 +455,8 @@
                     { chartObj.chart.redraw(); }
                     if (!$.isBlank(chartObj.secondChart))
                     { chartObj.secondChart.redraw(); }
+                    if (!$.isBlank(chartObj._needsTip))
+                    { customTooltip(chartObj, chartObj._needsTip); }
                 });
             }
         }
@@ -1832,7 +1834,12 @@
 
     var customTooltip = function(chartObj, point)
     {
-        if (!point.flyoutDetails || !point.graphic) { return; }
+        if (!point.flyoutDetails || !point.graphic)
+        {
+            chartObj._needsTip = point;
+            return;
+        }
+        delete chartObj._needsTip;
         if (point.otherPt)
         { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
                              .text('Other'); }

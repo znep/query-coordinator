@@ -819,6 +819,7 @@ var Dataset = ServerModel.extend({
 
         type = type || 'default';
         ds.highlightTypes = ds.highlightTypes || {};
+        ds.highlightsColumn = ds.highlightsColumn || {};
         if (!isAdd)
         {
             if (!$.isBlank(ds.highlightTypes[type]))
@@ -826,14 +827,17 @@ var Dataset = ServerModel.extend({
                 var newIds = {};
                 _.each(rows, function(r) { newIds[r.id] = true; });
                 ds.unhighlightRows(_.reject(ds.highlightTypes[type],
-                    function(row, rId) { return newIds[rId]; }), type);
+                    function(row, rId)
+                    {
+                        return newIds[rId] && ($.isBlank(column) && $.isBlank(ds.highlightsColumn[rId]) ||
+                                (column || {}).id == ds.highlightsColumn[rId]);
+                    }), type);
             }
             else
             { ds.highlightTypes[type] = {}; }
         }
 
         ds.highlights = ds.highlights || {};
-        ds.highlightsColumn = ds.highlightsColumn || {};
         var rowChanges = [];
         for (var i = 0; i < rows.length; i++)
         {

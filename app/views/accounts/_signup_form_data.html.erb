@@ -7,14 +7,16 @@
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :email, 'Email Address', :class => 'required main' %>
+    <%= f.label :email, 'Email Address <span class="accessible">Required</span>'.html_safe,
+      :class => 'required main' %>
   </div>
   <%= f.text_field :email %>
 </div>
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :screenName, 'Display Name', :class => 'required main' %>
+    <%= f.label :screenName, 'Display Name <span class="accessible">Required</span>'.html_safe,
+      :class => 'required main' %>
   </div>
   <%= f.text_field :screenName, :maxlength => 40 %>
 </div>
@@ -22,7 +24,11 @@
 <%- if !local_assigns[:hide_password] -%>
 <div class="line">
   <div class="labelLine">
-    <%= f.label :password, 'Password', :class => 'required passwordLabel main' %>
+    <%= f.label :password, ('Password <span class="accessible">Required. ' +
+      'Your password must be between 8 and 40 characters and satisfy three ' +
+      'of the following four criteria: contain a digit; contain a lowercase letter; ' +
+      'contain an uppercase letter; contain a non-alphanumeric symbol.</span>').html_safe,
+      :class => 'required passwordLabel main' %>
     <span class="passwordHint about">(Restrictions apply <span class="icon">&nbsp;</span>)</span>
   </div>
   <%= f.password_field :password %>
@@ -30,7 +36,8 @@
 
 <div class="line clearfix">
   <div class="labelLine">
-    <%= f.label :passwordConfirm, 'Confirm Password', :class => 'required main' %>
+    <%= f.label :passwordConfirm, 'Confirm Password <span class="accessible">Required</span>'.html_safe,
+      :class => 'required main' %>
   </div>
   <%= f.password_field :passwordConfirm %>
 </div>

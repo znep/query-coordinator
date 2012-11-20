@@ -1,30 +1,32 @@
 <div class="line">
   <div class="labelLine">
-    <%= f.label :login, 'Email', :class => 'main' %>
+    <%= f.label :login, 'Email <span class="accessible">Required</span>'.html_safe, :class => 'main' %>
   </div>
-  <%= f.text_field :login, :tabindex => '1' %>
+  <%= f.text_field :login %>
 </div>
 
+<div class="forgotBox">
 <div class="line">
   <div class="labelLine">
-    <%= f.label :password, 'Password', :class => 'passwordLabel main' %>
-    <%= link_to 'Forgot?', forgot_password_path, :tabindex => '6' %>
+    <%= f.label :password, 'Password <span class="accessible">Required</span>'.html_safe,
+      :class => 'passwordLabel main' %>
   </div>
-  <%= f.password_field :password, :tabindex => '2' %>
+  <%= f.password_field :password %>
 </div>
 
 <%- if feature? :remember_me -%>
   <div class="line">
-    <%= f.check_box :remember_me, :tabindex => '3' %>
+    <%= f.check_box :remember_me %>
     <%= f.label :remember_me, 'Remember me', :class => 'pushUp' %>
   </div>
 <%- end -%>
 
 <div class="formActionButtons">
-  <%= submit_tag 'Sign In', :class => 'button default', :tabindex => '4' %>
-  <span class="accountSignupHint loginSignupHint">
+  <%= submit_tag 'Sign In', :class => 'button default' %>
+  <div class="accountSignupHint loginSignupHint">
     <span class="noAccountYet">Don't have an account?</span>
-    <%= link_to 'Sign up now', signup_path, :class => 'signUpLink', :tabindex => '5' %>.
-  </span>
+    <%= link_to 'Sign up now', signup_path, :class => 'signUpLink' %>.
+  </div>
 </div>
-
+<%= link_to 'Forgot password?', forgot_password_path, :class => 'forgotPassLink' %>
+</div>

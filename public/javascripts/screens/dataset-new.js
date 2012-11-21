@@ -353,9 +353,16 @@ $wizard.wizard({
                     // it's a bit bewildering if it happens too fast.
                     setTimeout(function()
                     {
-                        submitError = (request.status == 500) ?
+                        try
+                        {
+                            submitError = (request.status >= 500 && request.status < 600) ?
                                        'An unknown error has occurred. Please try again in a bit.' :
                                        JSON.parse(request.responseText).message;
+                        }
+                        catch (e)
+                        {
+                            submitError = $.format("An error {0} has occurred.", request.status);
+                        }
                         command.prev();
                     }, 2000);
                 };

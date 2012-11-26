@@ -381,7 +381,7 @@
 
             var config;
 
-            if (layerOptions.name == 'custom')
+            if (layerOptions.custom_url)
             { config = $.extend({}, Dataset.map.backgroundLayer.custom,
                 { custom_url: layerOptions.custom_url }); }
             else if (mapObj._displayFormat.overrideWithLayerSet)

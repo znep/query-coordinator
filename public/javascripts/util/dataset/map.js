@@ -52,9 +52,12 @@ Dataset.map.convertToVersion2 = function(view, df)
     }
     else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || notABoundaryMap)
     {
-        df.bkgdLayers = _.map(df.layers, function(layer) { return {
-            layerName: (_.detect(Dataset.map.backgroundLayers, function(lConfig)
-                { return layer.url.indexOf((lConfig.options || {}).url) > -1; }) || {}).name };
+        df.bkgdLayers = _.map(df.layers, function(layer) {
+            if (layer.custom_url)
+            { return { custom_url: layer.custom_url }; }
+            else
+            { return { layerName: (_.detect(Dataset.map.backgroundLayers, function(lConfig)
+                { return layer.url.indexOf((lConfig.options || {}).url) > -1; }) || {}).name }; }
         });
     }
 

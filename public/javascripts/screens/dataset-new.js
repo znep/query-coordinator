@@ -87,6 +87,7 @@ $wizard.wizard({
                     event.preventDefault();
 
                     state.type = 'blist';
+                    submitError = null;
                     command.next('metadata');
                 });
                 $pane.find('.newKindList a.upload').click(function(event)
@@ -95,6 +96,7 @@ $wizard.wizard({
 
                     state.type = 'blist';
                     state.afterUpload = 'importColumns';
+                    submitError = null;
                     command.next('selectUploadType');
                 });
                 $pane.find('.newKindList a.mapLayer').click(function(event)
@@ -102,6 +104,7 @@ $wizard.wizard({
                     event.preventDefault();
 
                     state.type = 'esri';
+                    submitError = null;
                     command.next('metadata');
                 });
                 $pane.find('.newKindList a.shapefile').click(function(event)
@@ -110,6 +113,7 @@ $wizard.wizard({
 
                     state.type = 'shapefile';
                     state.afterUpload = 'importShapefile';
+                    submitError = null;
                     command.next('uploadFile');
                 });
                 $pane.find('.newKindList a.blobby').click(function(event)
@@ -117,6 +121,7 @@ $wizard.wizard({
                     event.preventDefault();
 
                     state.type = 'blobby';
+                    submitError = null;
                     command.next('uploadFile');
                 });
                 $pane.find('.newKindList a.external').click(function(event)
@@ -124,6 +129,7 @@ $wizard.wizard({
                     event.preventDefault();
 
                     state.type = 'external';
+                    submitError = null;
                     command.next('metadata');
                 });
             },

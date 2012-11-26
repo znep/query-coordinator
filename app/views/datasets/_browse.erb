@@ -271,7 +271,7 @@
               </tr>
             </thead>
             <tbody>
-              <%- start_index = (opts[:page] - 1) * opts[:limit] + 1 -%>
+              <%- start_index = (opts[:page].to_i - 1) * opts[:limit].to_i + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
                 <%- view_url = v.href()
                     begin

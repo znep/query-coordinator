@@ -3,16 +3,16 @@ class View < Model
     :filter_type1s
   attr_accessor :custom_vis_cols
 
-  def self.find(options = nil, get_all=false)
+  def self.find(options = nil, custom_headers = {}, batch = false, is_anon = false, get_all = false)
     if get_all || options.is_a?(String)
-      return super(options)
+      return super(options, custom_headers, batch, is_anon)
     else
       return self.find_under_user(options)
     end
   end
 
   def self.find_external(ext_id)
-    return self.find({'method' => 'getByExternalId', 'externalId' => ext_id}, true)
+    return self.find({'method' => 'getByExternalId', 'externalId' => ext_id}, {}, false, false, true)
   end
 
   def self.find_filtered(options)
@@ -20,8 +20,8 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
-  def self.find_by_resource_name(resource_name)
-    return self.find({'method' => 'getByResourceName', 'name' => resource_name}, true)
+  def self.find_by_resource_name(resource_name, is_anon = false)
+    return self.find({'method' => 'getByResourceName', 'name' => resource_name}, {}, false, is_anon, true)
   end
 
   def self.find_multiple(ids)
@@ -248,15 +248,17 @@ class View < Model
   # fun, but this helps reduce and reuse calls to the core server across multiple
   # requests
   #
-  def get_cached_rows(per_page, page = 1, conditions = {}, cache_ttl = 15)
+  def get_cached_rows(per_page, page = 1, conditions = {}, cache_ttl = 15, is_anon = false)
     req = get_rows_request(per_page, page, conditions, true)
 
     cache_key = Digest::MD5.hexdigest(req.sort.to_json)
+    cache_key += ':anon' if is_anon
     result = cache.read(cache_key)
     if result.nil?
       begin
           server_result = JSON.parse(CoreServer::Base.connection.
-                                     create_request(req[:url], req[:request].to_json, {}, true),
+                                     create_request(req[:url], req[:request].to_json, {}, true,
+                                                    false, is_anon),
                                  {:max_nesting => 25})
           result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
             meta_columns: server_result['meta']['view']['columns'].
@@ -278,10 +280,11 @@ class View < Model
     {rows: result[:rows], meta: nil}
   end
 
-  def get_rows(per_page, page = 1, conditions = {}, include_meta = false)
+  def get_rows(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
     include_meta = true if @cached_rows.nil? || @cached_rows[:rows].nil?
     req = get_rows_request(per_page, page, conditions, include_meta)
-    result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {}, true),
+    result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {},
+                                                                   true, false, is_anon),
                         {:max_nesting => 25})
     row_result = include_meta ? result['data'] : result
     if conditions.empty?
@@ -297,7 +300,7 @@ class View < Model
     {rows: row_result, meta: include_meta ? result['meta'] : nil}
   end
 
-  def get_total_rows(conditions = {})
+  def get_total_rows(conditions = {}, is_anon = false)
     params = { :method => 'getByIds',
                :accessType => 'WEBSITE',
                :meta => true,
@@ -314,7 +317,8 @@ class View < Model
     request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
-    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json),
+    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json, {},
+                                                                  false, false, is_anon),
                       {:max_nesting => 25})
     if conditions.empty?
       @cached_rows ||= {}
@@ -788,7 +792,7 @@ class View < Model
   end
 
   def filters
-    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
+    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, {}, false, false, true).
       reject {|l| l.is_blist? || l.is_blobby?}
   end
 

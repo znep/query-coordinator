@@ -78,6 +78,11 @@ module Canvas2
       defined? @@page_path ? @@page_path : nil
     end
 
+    def self.is_private(is_p = nil)
+      @@is_private = is_p if !is_p.nil?
+      @@is_private
+    end
+
     def self.component_data_page(c_id)
       return 1 if @@page_params.nil?
       c_id == @@page_params['data_component'] ? (@@page_params['data_page'] || '1').to_i : 1

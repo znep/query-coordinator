@@ -94,7 +94,13 @@ var ServerModel = Model.extend({
             delete req.pageCache;
             delete req.params;
             delete req.isSODA;
+            delete req.anonymous;
         };
+
+        if (req.anonymous)
+        {
+            req.headers = $.extend(req.headers, {'X-Socrata-Auth': 'unauthenticated'});
+        }
 
         if (req.pageCache)
         {

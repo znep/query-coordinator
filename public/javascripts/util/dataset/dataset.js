@@ -128,6 +128,13 @@ var Dataset = ServerModel.extend({
                 ds.type != 'form'); });
     },
 
+    isAnonymous: function(isAnon)
+    {
+        if (!$.isBlank(isAnon)) { this._isAnon = isAnon; }
+        if ($.isBlank(this._isAnon)) { this._isAnon = false; }
+        return this._isAnon;
+    },
+
     hasRight: function(right)
     {
         return _.include(this.rights, right);
@@ -2139,6 +2146,7 @@ var Dataset = ServerModel.extend({
             req.data = req.data || JSON.stringify(this.cleanCopy());
         }
         delete req.inline;
+        if (this.isAnonymous()) { req.anonymous = true; }
 
         this._super(req);
     },
@@ -2733,26 +2741,31 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
-Dataset.lookupFromResourceName = function(resourceName, successCallback, errorCallback){
-  $.socrataServer.makeRequest({
-      url: '/api/views.json?method=getByResourceName&name=' + resourceName,
-      success: function(view)
-      {
-          successCallback(new Dataset(view));
-      },
-      batch: false,
-      pageCache: false,
-      error: errorCallback});
+Dataset.lookupFromResourceName = function(resourceName, successCallback, errorCallback, isAnonymous)
+{
+    $.socrataServer.makeRequest({
+        url: '/api/views.json?method=getByResourceName&name=' + resourceName,
+        success: function(view)
+        {
+            var ds = new Dataset(view);
+            if (isAnonymous) { ds.isAnonymous(isAnonymous); }
+            successCallback(ds);
+        },
+        batch: false,
+        anonymous: isAnonymous,
+        pageCache: false,
+        error: errorCallback
+    });
 }
 
 
-Dataset.lookupFromViewId = function(id, successCallback, errorCallback, isBatch)
-{ Dataset._create(false, id, successCallback, errorCallback, isBatch); };
+Dataset.lookupFromViewId = function(id, successCallback, errorCallback, isBatch, isAnonymous)
+{ Dataset._create(false, id, successCallback, errorCallback, isBatch, isAnonymous); };
 
-Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch)
-{ Dataset._create(true, id, successCallback, errorCallback, isBatch); };
+Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch, isAnonymous)
+{ Dataset._create(true, id, successCallback, errorCallback, isBatch, isAnonymous); };
 
-Dataset._create = function(clone, id, successCallback, errorCallback, isBatch)
+Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, isAnonymous)
 {
     var cachedView = blist.viewCache[id];
     if (!_.isUndefined(cachedView))
@@ -2771,11 +2784,13 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch)
             var ds;
             if (blist.viewCache[id] instanceof Dataset)
             {
-                if (clone) { ds = blist.viewCache[id].clone(); }
+                if (clone || blist.viewCache[id].isAnonymous() != isAnonymous)
+                { ds = blist.viewCache[id].clone(); }
                 else { ds = blist.viewCache[id]; }
             }
             else
             { ds = new Dataset(blist.viewCache[id]); }
+            if (isAnonymous) { ds.isAnonymous(isAnonymous); }
             successCallback(ds);
         }
     }
@@ -2789,23 +2804,34 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch)
                     { blist.viewCache[id] = new Dataset(view); }
 
                     if (_.isFunction(successCallback))
-                    { successCallback(clone ? new Dataset(view) : blist.viewCache[id]); }
+                    {
+                        var ds = clone || blist.viewCache[id].isAnonymous() != isAnonymous ?
+                            new Dataset(view) : blist.viewCache[id];
+                        if (isAnonymous) { ds.isAnonymous(isAnonymous); }
+                        successCallback(ds);
+                    }
                 },
             batch: isBatch,
+            anonymous: isAnonymous,
             pageCache: !isBatch,
             error: errorCallback});
     }
 };
 
-Dataset.search = function(params, successCallback, errorCallback)
+Dataset.search = function(params, successCallback, errorCallback, isAnonymous)
 {
     $.socrataServer.makeRequest({pageCache: true, url: '/api/search/views.json', params: params,
+        anonymous: isAnonymous,
         success: function(results)
         {
             if (_.isFunction(successCallback))
             {
                 successCallback({count: results.count, views: _.map(results.results, function(v)
-                        { return new Dataset(v.view); })});
+                    {
+                        var ds = new Dataset(v.view);
+                        if (isAnonymous) { ds.isAnonymous(isAnonymous); }
+                        return ds;
+                    })});
             }
         }, error: errorCallback});
 };

@@ -29,6 +29,7 @@ components = {
 }
 
 @page = Page.new({data: dc, content: components, path: '/test_page/cf'}.with_indifferent_access)
+Canvas2::Util.is_private(@page.private_data?)
 -%>
 
 <%- @page.set_context(nil) -%>

@@ -91,23 +91,26 @@ class CustomContentController < ApplicationController
     @debug = params['debug'] == 'true'
     @start_time = Time.now
 
-    manifest_valid = VersionAuthority.validate_manifest?(params[:path], @current_user ? @current_user.id() : "")
     pages_time = VersionAuthority.resource('pages')
 
     #TODO: This should include the locale (whenever we figure out how that is specified)
     cache_params = { 'domain' => CurrentDomain.cname,
                      'pages_updated' => pages_time,
-                     'current_user' => @current_user ? @current_user.id() : "",
                      'domain_updated' => CurrentDomain.default_config_updated_at,
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
-    @cache_key = app_helper.cache_key("canvas2-page", cache_params)
 
-    # Only check the fragment cache if the manifest is valid
-    if manifest_valid
-      Rails.logger.info("Manifest valid; reading content from fragment cache is OK")
-      @cached_fragment = read_fragment(@cache_key)
-    else
-      Rails.logger.info("Manifest invalid; re-rendering")
+    cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
+    if VersionAuthority.validate_manifest?(params[:path], "")
+      Rails.logger.info("Manifest valid for no user; reading content from fragment cache is OK")
+      @cached_fragment = read_fragment(cache_key_no_user)
+    end
+
+    cache_key_user = app_helper.cache_key("canvas2-page", cache_params.merge({
+                   'current_user' => @current_user ? @current_user.id() : "anon"}))
+    if @cached_fragment.nil? &&
+      VersionAuthority.validate_manifest?(params[:path], @current_user ? @current_user.id() : 'anon')
+      Rails.logger.info("Manifest valid for user; reading content from fragment cache is OK")
+      @cached_fragment = read_fragment(cache_key_user)
     end
 
     if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:') && !@debug
@@ -149,12 +152,15 @@ class CustomContentController < ApplicationController
           render_404
         end
       else
+        Canvas2::Util.is_private(@page.private_data?)
+        @cache_key = Canvas2::Util.is_private ? cache_key_user : cache_key_no_user
         self.action_name = 'page'
         begin
           render :action => 'page'
           # generate and set the manifest for this render on success; we need to recalculate the cache key here
           # This includes all data context resources along with associated modification times
-          VersionAuthority.set_manifest(params[:path], @current_user ? @current_user.id() : "", Canvas2::DataContext.manifest)
+          VersionAuthority.set_manifest(params[:path], @page.private_data? ? @current_user ?
+                                        @current_user.id() : "anon" : '', Canvas2::DataContext.manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
         # but Rails ignores it and passes it all the way up without rescuing
         # unless I rescue a generic Exception

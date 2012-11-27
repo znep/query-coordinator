@@ -25,7 +25,7 @@ class Page < SodaModel
   end
 
   def render_timings
-    @timings.compact
+    (@timings || []).compact
   end
 
   def name
@@ -46,6 +46,10 @@ class Page < SodaModel
 
   def uneditable
     !content.blank? && (content['uneditable'] == true || content['uneditable'] == 'true')
+  end
+
+  def private_data?
+    !content.blank? && (content['privateData'] == true || content['privateData'] == 'true')
   end
 
   def self.[](path, mtime)

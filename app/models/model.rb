@@ -23,7 +23,7 @@ class Model
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
-  def self.find( options = nil, custom_headers = {}, batch = false)
+  def self.find( options = nil, custom_headers = {}, batch = false, is_anon = false )
     if options.nil?
       options = Hash.new
     end
@@ -35,11 +35,11 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    result = CoreServer::Base.connection.get_request(path, custom_headers, batch)
+    result = CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon)
     batch ? nil : parse(result)
   end
 
-  def self.find_under_user(options = nil)
+  def self.find_under_user(options = nil, custom_headers = {}, batch = false, is_anon = false)
     if options.nil?
       options = Hash.new
     end
@@ -75,10 +75,11 @@ class Model
   # find* provides much of the user-level permissioning we need for things
   # so find_cached should be used sparingly where there are clear advantages
   #
-  def self.find_cached(options = nil, cache_ttl = 15)
-    return find_cached_under_user(options, cache_ttl) if !User.current_user.nil?
+  def self.find_cached(options = nil, cache_ttl = 15, is_anon = false)
+    return find_cached_under_user(options, cache_ttl) if !User.current_user.nil? && !is_anon
     cache_string = options.nil? ? "none" : options.to_json
-    do_cached(method(:find), options, cache_string, cache_ttl)
+    cache_string += ':anon' if is_anon
+    do_cached(method(:find), options, cache_string, cache_ttl, is_anon)
   end
 
   def self.find_cached_under_user(options = nil, cache_ttl = 15)
@@ -421,7 +422,7 @@ private
     Array.new
   end
 
-  def self.do_cached(finder, options, cache_string, cache_ttl=15)
+  def self.do_cached(finder, options, cache_string, cache_ttl=15, is_anon = false)
     #
     # If the model is requesting a simple string id; lookup the modification time in
     # memcached and return a model which is cached by the core server-set mtime.
@@ -434,9 +435,10 @@ private
       check_time = VersionAuthority.resource(options) || 0
     end
     model_cache_key = "model:" + Digest::MD5.hexdigest(cache_string + ":" + check_time.to_s)
+    model_cache_key += ':anon' if is_anon
     result = cache.read(model_cache_key)
     if result.nil?
-      result = finder.call(options)
+      result = finder.call(options, {}, false, is_anon)
       cache.write(model_cache_key, result, :expires_in => cache_ttl.minutes)
     end
     result.model_cache_key = model_cache_key

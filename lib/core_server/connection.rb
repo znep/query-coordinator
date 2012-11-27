@@ -28,31 +28,36 @@ module CoreServer
 
     # Require the caller to tell us to use batching, since we won't
     # return anything when we do
-    def get_request(path, custom_headers = {}, use_batching = false)
+    def get_request(path, custom_headers = {}, use_batching = false, is_anon = false)
       if @batching && use_batching
         @batch_queue << {:url => path, :requestType => 'GET'}
         nil
       else
-        result_body = cache.read("#{CurrentDomain.cname}:#{path}")
+        cache_key = "#{CurrentDomain.cname}:#{path}"
+        cache_key += ':anon' if is_anon
+        result_body = cache.read(cache_key)
         if result_body.nil?
           result_body = generic_request(Net::HTTP::Get.new(path),
-                                        nil, custom_headers).body
-          cache.write("#{CurrentDomain.cname}:#{path}", result_body)
+                                        nil, custom_headers, is_anon).body
+          cache.write(cache_key, result_body)
         end
 
         result_body
       end
     end
 
-    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, use_batching = false)
+    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, use_batching = false,
+                      is_anon = false)
       if @batching && use_batching
        @batch_queue << {:url => path, :body => payload, :requestType => 'POST'}
       else
-        result_body = cache_req ? cache.read("#{CurrentDomain.cname}:#{path}:#{payload}") : nil
+        cache_key = "#{CurrentDomain.cname}:#{path}:#{payload}"
+        cache_key += ':anon' if is_anon
+        result_body = cache_req ? cache.read(cache_key) : nil
         if result_body.nil?
           result_body = generic_request(Net::HTTP::Post.new(path),
-                                        payload, custom_headers).body
-          cache.write("#{CurrentDomain.cname}:#{path}:#{payload}", result_body) if cache_req
+                                        payload, custom_headers, is_anon).body
+          cache.write(cache_key, result_body) if cache_req
         end
 
         result_body
@@ -147,7 +152,7 @@ module CoreServer
       results_parsed
     end
 
-    def generic_request(request, json = nil, custom_headers = {})
+    def generic_request(request, json = nil, custom_headers = {}, is_anon = false)
       requestor = User.current_user
       if requestor && requestor.session_token
         request['Cookie'] = "#{@@cookie_name}=#{requestor.session_token.to_s}"
@@ -164,6 +169,9 @@ module CoreServer
       end
 
       @request_count[Thread.current.object_id] = (@request_count[Thread.current.object_id] || 0) + 1
+
+      # Make anon if requested
+      request['X-Socrata-Auth'] = 'unauthenticated' if is_anon
 
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname

@@ -63,14 +63,19 @@
             {
                 var curC = addContext(dc, id, config, dc._existingContexts[id]);
                 if (!$.isBlank(curC.dataset) && !(curC.dataset instanceof Dataset))
-                { curC.dataset = new Dataset(curC.dataset); }
+                {
+                    curC.dataset = new Dataset(curC.dataset);
+                    curC.dataset.isAnonymous(!blist.configuration.privateData);
+                }
 
                 if (!_.isEmpty(curC.datasetList))
                 {
                     curC.datasetList = _.map(curC.datasetList, function(dl)
                     {
+                        var ds = new Dataset(dl.dataset);
+                        ds.isAnonymous(!blist.configuration.privateData);
                         return addContext(dc, dl.id, {type: 'dataset', datasetId: dl.dataset.id},
-                            {dataset: new Dataset(dl.dataset)});
+                            {dataset: ds});
                     });
                 }
 
@@ -192,7 +197,8 @@
                             { setResult(results.views, results.count); }
                         },
                         function(xhr)
-                        { errorLoading(id); });
+                        { errorLoading(id); },
+                        !blist.configuration.privateData);
                     break;
             }
         },
@@ -358,13 +364,13 @@
         {
             Dataset.createFromViewId(config.datasetId, function(dataset) { gotDS(dataset); },
                 function(xhr)
-                { errorCallback(id); });
+                { errorCallback(id); }, false, !blist.configuration.privateData);
         }
         else if ($.subKeyDefined(config, 'datasetResourceName'))
         {
             Dataset.lookupFromResourceName(config.datasetResourceName, function(dataset) { gotDS(dataset); },
                 function(xhr)
-                { errorCallback(id); });
+                { errorCallback(id); }, !blist.configuration.privateData);
         }
         else if ($.subKeyDefined(config, 'search'))
         {
@@ -378,7 +384,8 @@
                 gotDS(_.first(results.views));
             },
             function(xhr)
-            { errorCallback(id); });
+            { errorCallback(id); },
+            !blist.configuration.privateData);
         }
     };
 

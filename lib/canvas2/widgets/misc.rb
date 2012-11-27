@@ -68,7 +68,7 @@ module Canvas2
 
       page_size = 20
       current_page = Util.component_data_page(self.id)
-      row_results = ds.get_rows(page_size, current_page, {}, true)
+      row_results = ds.get_rows(page_size, current_page, {}, true, !Canvas2::Util.is_private)
 
       t = '<noscript><div class="dataTableWrapper">'
       t += RenderType.table_html(self.id, ds.visible_columns, row_results[:rows], ds,

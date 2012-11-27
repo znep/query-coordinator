@@ -53,9 +53,9 @@ module Canvas2
               col_field_name_map[c.fieldName] = c.id
             }
             if Canvas2::Util.debug
-              rows = context[:dataset].get_rows(100)
+              rows = context[:dataset].get_rows(100, 1, {}, false, !Canvas2::Util.is_private)
             else
-              rows = context[:dataset].get_cached_rows(100, 1, {}, 60)
+              rows = context[:dataset].get_cached_rows(100, 1, {}, 60, !Canvas2::Util.is_private)
             end
             rows = rows[:rows].map do |row|
               r = Hash.new

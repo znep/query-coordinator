@@ -1123,7 +1123,12 @@
 
     OpenLayers.Bounds.fromViewport = function(vp)
     {
-        return OpenLayers.Bounds.fromArray([vp.xmin, vp.ymax, vp.xmax, vp.ymin]);
+        if (vp.sr)
+        { return OpenLayers.Bounds.fromArray([vp.xmin, vp.ymax, vp.xmax, vp.ymin])
+            .transform(new OpenLayers.Projection('EPSG:' + vp.sr),
+                       blist.openLayers.geographicProjection); }
+        else
+        { return OpenLayers.Bounds.fromArray([vp.xmin, vp.ymax, vp.xmax, vp.ymin]); }
     };
 
     OpenLayers.Bounds.fromClusterBox = function(box)

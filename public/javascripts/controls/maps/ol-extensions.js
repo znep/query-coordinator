@@ -1216,7 +1216,7 @@
             var control = this;
             control.mapObj = mapObj;
             control.mapObj._controls.MapTypeSwitcher.events.register('maptypechange', null,
-                function() { control.expecting = true; });
+                function() { control.expect(); });
 
             control.expecting = false;
             if (_.isObject(viewport) && viewport.xmin)
@@ -1272,6 +1272,7 @@
                     console.log('handlingEvent:', this.handlingEvent); 
                     console.log('resizeEvent', !this.mapSize.equals(this.map.getSize()));
                     console.log('untouched', this._untouched);
+                    console.log('expecting', this.expecting);
                     console.dir(this.viewport); console.groupEnd();
                 console.groupEnd();
             }
@@ -1327,7 +1328,7 @@
             if (!viewport) { return; }
             if (!this.willMove(viewport)) { return; }
 
-            this.expecting = true;
+            this.expect();
             this.map.zoomToExtent(viewport);
             this.saveViewport();
         },

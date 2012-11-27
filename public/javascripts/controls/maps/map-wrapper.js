@@ -80,8 +80,10 @@
             if (mapObj._displayFormat.disableGeolocator)
             { mapObj._controls.GeocodeDialog.deactivate(); }
 
-            mapObj.map.events.register('preaddlayer', mapObj,
-                function() { if (mapObj._viewportHandler) { mapObj._viewportHandler.expect(); } });
+            mapObj.map.events.register('preaddlayer', mapObj, function(evtObj) {
+                if (mapObj._viewportHandler && blist.openLayers.isBackgroundLayer(evtObj.layer))
+                { mapObj._viewportHandler.expect(); }
+            });
 
             var datasetsLoaded = function()
             {

@@ -207,6 +207,8 @@
                     blist.openLayers.geographicProjection, this._locCol.id) });
 
             this.setQuery(query, true);
+            if (this._lastRenderType == 'clusters' && this._renderType == 'points')
+            { this._view.trigger('query_change'); }
         },
 
         handleRowChange: function(rows)

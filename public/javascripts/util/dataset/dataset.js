@@ -32,7 +32,7 @@ var Dataset = ServerModel.extend({
             'set_temporary', 'clear_temporary', 'row_change', 'blob_change',
             'row_count_change', 'column_resized', 'displayformat_change',
             'displaytype_change', 'column_totals_changed', 'removed',
-            'permissions_changed', 'new_comment']);
+            'permissions_changed', 'new_comment', 'reloaded']);
 
         var cObj = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)
@@ -308,6 +308,7 @@ var Dataset = ServerModel.extend({
         ds._activateRowSet(ds._savedRowSet);
         if (reloadData) { ds._invalidateAll(); }
         ds._activeRowSet.reload(successCallback, errorCallback);
+        ds.trigger('reloaded');
     },
 
     simpleSort: function(colId, ascending)

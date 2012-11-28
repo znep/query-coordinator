@@ -84,6 +84,8 @@ Dataset.map.convertToVersion2 = function(view, df)
         delete df.viewDefinitions[0].plot;
     }
 
+    df.distinctLegend = true;
+
     view.update({ displayFormat: df });
 };
 

@@ -106,7 +106,8 @@
                 { childView.bindDatasetEvents(); });
 
                 mapObj._primaryView.bind('reloaded', function()
-                { _(mapObj._children).chain().pluck('_view').uniq().invoke('reload'); });
+                { _(mapObj._children).chain()
+                    .pluck('_view').uniq().without(mapObj._primaryView).invoke('reload'); });
 
                 if (mapObj._displayFormat.openOverviewByDefault)
                 { mapObj._controls.Overview.open(); }

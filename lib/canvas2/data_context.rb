@@ -21,6 +21,20 @@ module Canvas2
       @streaming_contexts = {}
       @errors = []
       @timings = []
+      @manifest = {}
+    end
+
+    # Get the data manifest for a dataslate page
+    # A manifest is the list of resources used by the
+    # system along with an associated check time for that resource
+    def self.manifest
+      @manifest ||= {}
+      @available_contexts.each { |ctx|
+        if !ctx[1].nil? && !ctx[1][:dataset].nil?
+          @manifest[ctx[1][:dataset].id] = ctx[1][:dataset].check_time
+        end
+      }
+      @manifest
     end
 
     def self.set_context_as_streaming(id)
@@ -36,6 +50,8 @@ module Canvas2
         case config['type']
         when 'datasetList'
           search_response = Canvas2::Util.debug ? Clytemnestra.search_views(config['search']) : Clytemnestra.search_cached_views(config['search'], false, 15)
+          # Search results are considered part of the manifest; but are handled differently during validation
+          @manifest[search_response.id] = search_response.check_time
           ds_list = search_response.results.reject do |ds|
             add_query(ds, config['query'])
             ds.get_total_rows < 1

@@ -4,6 +4,7 @@ class Model
   attr_accessor :data
   attr_accessor :update_data
   cattr_accessor :model_cache_key
+  cattr_accessor :check_time
 
   def initialize(data = {})
     @data = data
@@ -423,19 +424,23 @@ private
   def self.do_cached(finder, options, cache_string, cache_ttl=15)
     #
     # If the model is requesting a simple string id; lookup the modification time in
-    # memcached and
+    # memcached and return a model which is cached by the core server-set mtime.
+    # If the core server has not set a modification time for this resource, check the
+    # default cache key. We only cache for 15 minutes so it's not the end of the world
+    # if the core server has not blessed us.
     #
-    mtime = 0
+    check_time = 0
     if options.is_a?(String)
-      mtime = VersionAuthority.resource(options) || 0
+      check_time = VersionAuthority.resource(options) || 0
     end
-    model_cache_key = "model:" + Digest::MD5.hexdigest(cache_string + ":" + mtime.to_s)
+    model_cache_key = "model:" + Digest::MD5.hexdigest(cache_string + ":" + check_time.to_s)
     result = cache.read(model_cache_key)
     if result.nil?
       result = finder.call(options)
       cache.write(model_cache_key, result, :expires_in => cache_ttl.minutes)
     end
     result.model_cache_key = model_cache_key
+    result.check_time = check_time == 0 ? Time.now.to_i : check_time
     result
   end
 

@@ -6,7 +6,7 @@ module Clytemnestra
   end
 
   # We may want to enable caching by default in the future; but for now
-  # we only want to enable it in a few key locations - mostly canvas but
+  # we only want to enable it in a few key locations
   def self.search_cached_views(opts, use_batch = false, cache_ttl = 15)
     path = "/search/views.json?#{opts.to_core_param}"
     user = User.current_user.nil? ? "none" : User.current_user.id
@@ -16,7 +16,11 @@ module Clytemnestra
       result = CoreServer::Base.connection.get_request(path, {}, use_batch)
       cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
     end
-    ViewSearchResult.from_result(result)
+    search_result = ViewSearchResult.from_result(result)
+    # Set the id and check_time of the search
+    search_result.check_time = Time.now.to_i
+    search_result.id = cache_key
+    search_result
   end
 
 

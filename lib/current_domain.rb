@@ -38,6 +38,11 @@ class CurrentDomain
   end
 
   # Main properties
+  def self.set_domain(domain)
+    @@current_domain = {} unless defined? @@current_domain
+    @@current_domain[:data] = domain
+  end
+
   def self.domain_name
     @@current_domain[:data].name
   end

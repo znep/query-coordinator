@@ -40,7 +40,10 @@ module Clytemnestra
   end
 
   class SearchResult
+    cattr_accessor :check_time
+    cattr_accessor :id
     attr_reader :data
+
     class << self; attr_accessor :klass; end
 
     def initialize(data = {})

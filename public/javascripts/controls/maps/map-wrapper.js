@@ -106,8 +106,11 @@
                 { childView.bindDatasetEvents(); });
 
                 mapObj._primaryView.bind('reloaded', function()
-                { _(mapObj._children).chain()
-                    .pluck('_view').uniq().without(mapObj._primaryView).invoke('reload'); });
+                {
+                    _(mapObj._children).chain()
+                        .pluck('_view').uniq().without(this).invoke('reload');
+                    _.invoke(mapObj._children, 'getData');
+                });
 
                 if (mapObj._displayFormat.openOverviewByDefault)
                 { mapObj._controls.Overview.open(); }
@@ -285,7 +288,7 @@
                 && _.all(mapObj._children, function(cv) { return cv.ready(); }))
             {
                 $.debug('map acknowledges being ready');
-                mapObj.viewportHandler().expected();
+                mapObj.viewportHandler().stopExpecting();
                 mapObj.viewportHandler().saveViewport(true);
                 mapObj.geolocate();
                 // Often, at this point, the images of the tiles themselves are not done loading.

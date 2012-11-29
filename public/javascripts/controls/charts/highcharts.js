@@ -1339,11 +1339,11 @@
         // Check if there are remainders to stick on the end
         if (chartObj._useRemainders && !_.isEmpty(chartObj._seriesRemainders))
         {
-            var otherVal = '\u200b' + (_.indexOf(chartObj._xCategories, 'Other') > -1 ?
+            chartObj._otherVal = '\u200b' + (_.indexOf(chartObj._xCategories, 'Other') > -1 ?
                     'Remainder' : 'Other') + '\u200b';
             // Create fake row for other value
             var otherRow = { invalid: {}, error: {}, changed: {} };
-            otherRow[chartObj._xColumn.lookup] = otherVal;
+            otherRow[chartObj._xColumn.lookup] = chartObj._otherVal;
             var cf = _.detect(chartObj._primaryView.metadata.conditionalFormatting,
                 function(cf) { return cf.condition === true; });
             if (cf) { otherRow.color = cf.color; }
@@ -1351,7 +1351,7 @@
             var oInd;
             if (!_.isUndefined(chartObj._xCategories))
             {
-                oInd = _.indexOf(chartObj._xCategories, otherVal);
+                oInd = _.indexOf(chartObj._xCategories, chartObj._otherVal);
                 var isLastItem = oInd == chartObj._xCategories.length - 1;
                 // Make sure 'Other' is always the last element
                 if (oInd >= 0 && !isLastItem)
@@ -1359,7 +1359,7 @@
                 if (!isLastItem)
                 {
                     oInd = chartObj._xCategories.length;
-                    chartObj._xCategories.push(otherVal);
+                    chartObj._xCategories.push(chartObj._otherVal);
                 }
             }
             _.each(chartObj._seriesCache, function(series)
@@ -1844,7 +1844,7 @@
         delete chartObj._needsTip;
         if (point.otherPt)
         { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
-                             .text('Other'); }
+                             .text(chartObj._otherVal); }
 
         var $container = $(chartObj.currentDom);
 

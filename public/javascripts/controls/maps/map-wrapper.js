@@ -95,6 +95,14 @@
                 else if (mapObj.viewportHandler().viewportInOriginal)
                 { mapObj.viewportHandler().resetToOriginal(); }
 
+                if ($.browser.msie && parseInt($.browser.version) < 9
+                    && _.any(mapObj._children,
+                        function(cv) { return (cv._displayFormat || {}).plotStyle == 'rastermap'; }))
+                {
+                    alert("Raster Heat Maps do not work in your current browser. Please "
+                        + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");
+                }
+
                 // For split views.
                 mapObj._primaryView.childViews = _(mapObj._children).chain().map(function(c)
                 {

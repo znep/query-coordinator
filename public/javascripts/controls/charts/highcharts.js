@@ -162,6 +162,11 @@
 
             // See if there is an existing index
             var ri = chartObj._rowIndices[row.id];
+
+            // If this row is not rendered and is beyond our limit, then don't render it
+            if ($.isBlank(ri) && _.size(chartObj._rowIndices) >= chartObj._maxRows)
+            { return true; }
+
             var hasRI = true;
             if (!$.isBlank(chartObj._xCategories))
             {

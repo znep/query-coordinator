@@ -331,10 +331,10 @@
             {type: 'note', value: 'Point Customization', onlyIf: pointOnly},
             {text: 'Point Size', name: prefix+'plot.sizeValueId', onlyIf: pointOnly,
                 type: 'columnSelect', isTableColumn: true,
-                columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}},
+                columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
             {text: 'Point Color', name: prefix+'plot.colorValueId', onlyIf: pointOnly,
                 type: 'columnSelect', isTableColumn: true,
-                columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}},
+                columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
             {text: 'Icon', name: prefix+'plot.iconId', onlyIf: pointOnly,
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['photo', 'photo_obsolete', 'url'],
@@ -347,7 +347,7 @@
 
             {text: 'Quantity', name: prefix+'plot.quantityId', onlyIf: quantity,
                 type: 'columnSelect', isTableColumn: true,
-                columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}},
+                columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
 
             {type: 'note', value: 'Flyout Configuration', onlyIf: flyouts},
             {text: 'Title', name: prefix+'plot.titleId', onlyIf: flyouts,

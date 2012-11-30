@@ -88,7 +88,7 @@ $(function() {
 		}).render();
 	}
 
-	init.delete = function() 
+	init['delete'] = function() 
   {
 		$("#delete-host").pane_deleteDataset({
 			view: blist.dataset

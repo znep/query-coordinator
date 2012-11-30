@@ -44,6 +44,7 @@
         {
             if (this._renderType == 'points') { return this._super(feature); }
 
+            this._parent.viewportHandler().stopExpecting();
             this._clusterBoundaries.removeAllFeatures();
             var currentZoom = this._map.getZoom();
             var bboxZoom = this._map.getZoomForExtent(feature.attributes.bbox);

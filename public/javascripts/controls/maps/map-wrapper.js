@@ -296,6 +296,7 @@
                 && _.all(mapObj._children, function(cv) { return cv.ready(); }))
             {
                 $.debug('map acknowledges being ready');
+                mapObj._controls.Overview.redraw();
                 mapObj.viewportHandler().stopExpecting();
                 mapObj.viewportHandler().saveViewport(true);
                 mapObj.geolocate();

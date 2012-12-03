@@ -1,0 +1,23 @@
+<%= modal :class => 'configuratorSettings loading' do %>
+  <h2>Page Settings</h2>
+
+  <div class="loadingOverlay hide">
+    <div class="loadingSpinner"></div>
+  </div>
+
+  <form class="commonForm">
+    <div class="line">
+      <label for="configuratorSettings_pageTitle">Page Title</label>
+      <input type="text" id="configuratorSettings_pageTitle" name="pageTitle" />
+    </div>
+    <div class="line">
+      <label for="configuratorSettings_pageUrl">Path</label>
+      <input type="text" id="configuratorSettings_pageUrl" name="pageUrl" />
+    </div>
+  </form>
+  <div class="errorMessage hide"></div>
+  <ul class="actions clearfix">
+    <li><a href="#cancel" class="jqmClose button">Cancel</a></li>
+    <li><a href="#save" class="save button">Save</a></li>
+  </ul>
+<%- end -%>

@@ -70,9 +70,13 @@ var ServerModel = Model.extend({
                 {error: finishCallback(req.error, req.allComplete),
                 success: finishCallback(req.success, req.allComplete)});
 
-        if (!$.isBlank(model.accessType))
-        { req.params = $.extend({accessType: model.accessType}, req.params); }
-        else { $.debug('making call without accessType!', req); }
+        // Guess SODA can't handle accessType
+        if (!req.isSODA)
+        {
+            if (!$.isBlank(model.accessType))
+            { req.params = $.extend({accessType: model.accessType}, req.params); }
+            else { $.debug('making call without accessType!', req); }
+        }
 
         if (!$.isBlank(req.params))
         {
@@ -89,6 +93,7 @@ var ServerModel = Model.extend({
             delete req.batch;
             delete req.pageCache;
             delete req.params;
+            delete req.isSODA;
         };
 
         if (req.pageCache)

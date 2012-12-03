@@ -27,7 +27,7 @@ $(function() {
                     stylesheets: [{sheet: '/webfonts/ss-standard.css', hasFonts: true},
                         {assets: 'colorpicker'}, {assets: 'base-control-third-party'},
                         {assets: 'base-control'}, {assets: 'configurator'}],
-                    templates: ['grid_sidebar']}, function()
+                    templates: ['grid_sidebar'], modals: ['configurator_settings']}, function()
             {
                 $('.socrata-page').loadingSpinner().showHide(false);
                 $.cf.initialize();

@@ -141,6 +141,8 @@
     var $previewCont;
     var $editCont;
 
+    var $settingsDialog;
+
     $.extend($.cf, {
         initialize: function(opts)
         {
@@ -257,6 +259,64 @@
             $editCont.css('background-color', $body.css('background-color'))
                 .append($.tag({ tagName: 'div', id: 'edit_' + editContent.id, 'class': 'editRoot' }));
 
+            $settingsDialog = $('.configuratorSettings');
+            $settingsDialog.find('.actions .save').click(function(e)
+            {
+                e.preventDefault();
+                var newPage = $.extend(true, {}, blist.configuration.page);
+                newPage.name = $settingsDialog.find('[name=pageTitle]').value();
+                var oldPath = page.path;
+                newPage.path = $settingsDialog.find('[name=pageUrl]').value();
+                $.cf.edit.dirty = true;
+                var $spinner = $settingsDialog.find('.loadingOverlay');
+                $settingsDialog.find('.errorMessage').addClass('hide');
+                $spinner.removeClass('hide');
+
+                var saveSettings = function()
+                {
+                    $.cf.save(newPage, function()
+                    {
+                        $top.find('.editTitle .pageName').text(newPage.name);
+                        if (oldPath != newPage.path)
+                        {
+                            $.socrataServer.makeRequest({ type: 'POST', url: '/id/pages',
+                                data: JSON.stringify([{ ':deleted': true, path: oldPath }]),
+                                complete: function()
+                                { $spinner.addClass('hide'); },
+                                success: function()
+                                { window.location = newPage.path; }
+                            });
+                        }
+                        else
+                        {
+                            $spinner.addClass('hide');
+                            $settingsDialog.jqmHide();
+                        }
+                    });
+                };
+
+                if (oldPath != newPage.path)
+                {
+                    // Check if overwrite
+                    $.socrataServer.makeRequest({ type: 'GET', url: '/id/pages', isSODA: true,
+                        params: { path: newPage.path },
+                        success: function(resp)
+                        {
+                            if (_.isEmpty(resp))
+                            { saveSettings(); }
+                            else
+                            {
+                                $spinner.addClass('hide');
+                                $settingsDialog.find('.errorMessage').removeClass('hide').text(newPage.path +
+                                    ' already exists; please choose a different path');
+                            }
+                        }
+                    });
+                }
+                else
+                { saveSettings(); }
+            });
+
             // Make sure all dom manipulation is done before starting edit mode
             _.defer(function()
             {
@@ -350,27 +410,30 @@
             }
         },
 
-        save: function()
+        save: function(newPage, finishCallback)
         {
+            if (!_.isFunction(finishCallback))
+            { finishCallback = function() { exitEditMode(); }; }
+
             if ($.cf.edit.dirty)
             {
                 var spinner = $('.socrata-page').loadingSpinner({overlay: true});
                 spinner.showHide(true);
-                var page = pullConfig();
-                $.ajax({
+                if ($.isBlank(newPage))
+                { newPage = pullConfig(); }
+                $.socrataServer.makeRequest({
                     type: 'POST',
                     url: '/id/pages',
-                    data: JSON.stringify(page),
-                    dataType: 'json',
-                    contentType: 'application/json',
+                    data: JSON.stringify(newPage),
 
                     complete: function()
                     { spinner.showHide(false); },
 
                     success: function()
                     {
-                        $.locale.initialize(page.locale);
-                        exitEditMode();
+                        blist.configuration.page = newPage;
+                        $.locale.initialize(newPage.locale);
+                        finishCallback();
                     },
 
                     error: function()
@@ -380,7 +443,7 @@
                 });
             }
             else
-            { exitEditMode(); }
+            { finishCallback(); }
         },
 
         revert: function()
@@ -397,7 +460,10 @@
 
         settings: function()
         {
-            alert('Coming Soon!');
+            $settingsDialog.find('[name=pageTitle]').value(blist.configuration.page.name);
+            $settingsDialog.find('[name=pageUrl]').value(blist.configuration.page.path);
+            $settingsDialog.find('.errorMessage').addClass('hide');
+            $settingsDialog.jqmShow();
             // Include access to translate here
         },
 

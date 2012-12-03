@@ -3,9 +3,12 @@
   <%= rendered_stylesheet_tag 'analytics-shared' %>
 <% end %>
 
+<% content_for :nav_crumb do %>
+  <li>Usage Metrics</li>
+<% end %>
+
 <a name="metrics"></a>
 <div id="metrics" class="managesection">
-  <h2>Usage Metrics</h2>
   <div id="analyticsDataContainer" class="datasetMetrics">
     <div class="contentBox">
       <div>

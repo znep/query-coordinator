@@ -41,13 +41,13 @@ $(function()
         topListSections: [
             {
                 id: 'topApps', displayName: 'Top Applications',
-                heading: 'Applications', className: 'expanding', renderTo: 'leftColumn',
-                callback: blist.metrics.urlMapCallback,  top: 'APPS'
+                heading: 'Queries', className: 'expanding', renderTo: 'leftColumn',
+                callback: blist.metrics.topAppTokensCallback,  top: 'APPS'
             },
             {
                 id: 'topQueries', displayName: 'Top Queries',
                 heading: 'Queries', className: 'expanding', renderTo: 'rightColumn',
-                callback: blist.metrics.urlMapCallback, top: 'QUERIES'
+                callback: blist.metrics.topQueryStringsCallback, top: 'QUERIES'
             }
         ]
     }, blist.metrics.metricsScreenOptions));

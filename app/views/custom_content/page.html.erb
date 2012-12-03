@@ -1,4 +1,4 @@
-<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 15.minutes do -%>
+<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 60.minutes do -%>
 
 <%- if !@minimal_render -%>
   <%- context_result = @page.set_context(@vars) -%>

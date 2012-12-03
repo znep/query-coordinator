@@ -127,6 +127,8 @@
 
                 mapObj.initializeEvents();
 
+                mapObj.updateSearchString();
+
                 mapObj.getDataForChildren();
 
                 mapObj._primaryView.trigger('row_count_change'); // DEBUG EZMODE Sidebar ready.
@@ -254,6 +256,9 @@
                     { datasetsLoaded(); }
                 }
             }).trigger('displayformat_change');
+
+            mapObj._primaryView.bind('query_change', function()
+            { mapObj.updateSearchString(); });
         },
 
         restackDataLayers: function()
@@ -497,6 +502,15 @@
             var newMD = $.extend(true, {}, this._primaryView.metadata);
             $.deepSet(newMD, query, 'query', uid);
             this._primaryView.update({ metadata: newMD });
+        },
+
+        updateSearchString: function()
+        {
+            var mapObj = this;
+
+            var searchString = mapObj._primaryView.searchString;
+            _.each(mapObj._children, function(child)
+            { child._view.update({ searchString: searchString }); });
         },
 
         initializeEvents: function()

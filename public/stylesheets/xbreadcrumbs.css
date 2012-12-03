@@ -31,6 +31,7 @@
 .xbreadcrumbs {
 	background: #F0F0F0;
 	width: 100%;
+  font-size: 1.3em;
 }
 .xbreadcrumbs LI {
 	padding: 5px;
@@ -40,7 +41,6 @@
 	border-right: none;
 }
 .xbreadcrumbs LI A {
-	font-size: 11px;
 	color: #666666;
 	text-decoration: none;
 }
@@ -56,7 +56,6 @@
 .xbreadcrumbs LI UL {
 	padding: 3px;
 	background: #333333;
-	font-size: 11px;
 	width: 180px;
 	top: 20px;
 }

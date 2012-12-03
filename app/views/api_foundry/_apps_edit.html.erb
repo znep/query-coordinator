@@ -15,45 +15,48 @@
 
 <%- throttle = throttles.find_all{|t| t.appToken == params[:token] }.first -%>
 
-<h2>Set Application Request Limits</h2>
-<div class="flash appFlash"></div>
-<div id="tableWrapper">
-  <form method="get" action="setThrottle">
-    <table class="throttleTable" cellspacing="0">
-      <tr>
-        <th>Application</th>
-        <th>Token</th>
-        <th colspan="3">Request Limits</th>
-      </tr>
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Minute</th>
-        <th>Hour</th>
-        <th>Day</th>
-      </tr>
-      <tr><td> </td></tr>
-      <tr class="throttleEdit">
-        <% if params[:token] == "anonymous" %>
-          <td>Anonymous Applications</td>
-          <td><input name="appToken" disabled="disabled" value="<none>" ></input></td>
-        <% elsif !throttle.nil? %>
-          <td><input name="appToken" type="hidden" value="<%= throttle.appToken %>"></input></td>
-          <td><input disabled="disabled" value="<%= throttle.appToken %>" >    </input></td>
-        <% else %>
-          <td></td>
-          <td><input name="appToken" value="" ></input></td>
-        <% end %>
-        <td><input name="minuteLimit" value="<%= throttle.nil? ? "" : throttle.minuteLimit  %>" > </input></td>
-        <td><input name="hourLimit"   value="<%= throttle.nil? ? "" : throttle.hourLimit  %>" >   </input></td>
-        <td><input name="dayLimit"    value="<%= throttle.nil? ? "" : throttle.dayLimit  %>" >    </input></td>
-        <td>
-          <input type="submit" value="Add" class="button" ></input>
-        </td>
-      </tr>
-    </table>
-    <% if !throttle.nil? %>
-      <a id="<%= throttle.appToken %>" class="button limitRemoveButton" href="#">Remove</a>
-    <% end %>
-  </form>
+<a name="apps"></a>
+<div id="applications" class="managesection">
+  <h2>Set Application Request Limits</h2>
+  <div class="flash appFlash"></div>
+  <div id="tableWrapper">
+    <form method="get" action="setThrottle">
+      <table class="throttleTable" cellspacing="0">
+        <tr>
+          <th>Application</th>
+          <th>Token</th>
+          <th colspan="3">Request Limits</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>Minute</th>
+          <th>Hour</th>
+          <th>Day</th>
+        </tr>
+        <tr><td> </td></tr>
+        <tr class="throttleEdit">
+          <% if params[:token] == "anonymous" %>
+            <td>Anonymous Applications</td>
+            <td><input name="appToken" disabled="disabled" value="<none>" ></input></td>
+          <% elsif !throttle.nil? %>
+            <td><input name="appToken" type="hidden" value="<%= throttle.appToken %>"></input></td>
+            <td><input disabled="disabled" value="<%= throttle.appToken %>" >    </input></td>
+          <% else %>
+            <td></td>
+            <td><input name="appToken" value="" ></input></td>
+          <% end %>
+          <td><input name="minuteLimit" class="limitEdit" value="<%= throttle.nil? ? "" : throttle.minuteLimit  %>" > </input></td>
+          <td><input name="hourLimit"   class="limitEdit" value="<%= throttle.nil? ? "" : throttle.hourLimit  %>" >   </input></td>
+          <td><input name="dayLimit"    class="limitEdit" value="<%= throttle.nil? ? "" : throttle.dayLimit  %>" >    </input></td>
+          <td>
+            <input type="submit" value="<%= params[:token] == "new" ? "Add " : "Update" %>" class="button" ></input>
+          </td>
+        </tr>
+      </table>
+      <% if !throttle.nil? %>
+        <a id="<%= throttle.appToken %>" class="button limitRemoveButton default" href="#">Remove</a>
+      <% end %>
+    </form>
+  </div>
 </div>

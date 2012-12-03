@@ -168,6 +168,23 @@ metricsNS.topDatasetsCallback = function($context)
     );
 };
 
+// This one's pretty easy
+metricsNS.topQueryStringsCallback = function($context)
+{
+    var data = $context.data(metricsNS.DATA_KEY);
+    var searchMap = function(term, count, results)
+    {
+        var href = "";
+        results.push({
+            linkText: term,
+            value: count,
+            textValue: Highcharts.numberFormat(count, 0),
+            href: href
+        });
+    };
+    metricsNS.updateTopListWrapper($context, data, searchMap);
+};
+
 // Grab the name and info for an app_token, including thumbnail URL (if present)
 metricsNS.topAppTokensCallback = function($context)
 {

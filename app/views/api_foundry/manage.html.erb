@@ -5,13 +5,13 @@
 <% end %>
 
 <div class="logo"><h1><img src="/images/apifoundry/api-foundry-logo.png" alt="Socrata API Foundry"></img></h1></div>
-<div class="contentBox fixedWidth">
+<div id="apiAdminBox" class="contentBox fixedWidth">
 
   <% content_for :adminsection do %>
     <%= render :partial => @section %>
   <% end %>
 
-  <div>
+  <div id="navDiv">
     <ul id="breadcrumbs" class="xbreadcrumbs">
       <li>
         <a class="home" href="<%= @nav_root %>/">API Management</a> 

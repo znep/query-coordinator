@@ -171,6 +171,8 @@
               + data: Data for pure rendering
               + callback: optional, function to be called with newly-rendered
                   section
+              + cleanupCallback: optional, function to be called before the
+                  section is removed
             }
             + fields: array of input fields
             [
@@ -351,6 +353,7 @@
 
             cpObj._selectOptions = {};
             cpObj._customCallbacks = {};
+            cpObj._customSections = {};
             cpObj._columnSelects = [];
             cpObj._fieldOnlyIfs = {};
             cpObj._changeHandlers = {};
@@ -433,6 +436,7 @@
             { return; }
 
             $pane.find('.line.custom').each(function() { cleanLine(cpObj, $(this)); });
+            $pane.find('[data-customContent]').each(function() { cleanSection(cpObj, $(this)); });
             $pane.empty();
 
             if (!cpObj.isAvailable()) { return; }
@@ -454,7 +458,6 @@
             { rData.readOnlyMessage = cpObj._getReadOnlyMessage(); }
 
             var sectionOnlyIfs = {};
-            var customSections = {};
             var curSectId;
             var directive = {
                 '.subtitle': 'subtitle',
@@ -490,7 +493,7 @@
                             if (!$.isBlank(arg.item.customContent))
                             {
                                 var u = _.uniqueId();
-                                customSections[u] = arg.item.customContent;
+                                cpObj._customSections[u] = arg.item.customContent;
                                 return u;
                             }
                             return '';
@@ -625,7 +628,7 @@
             });
 
             // Once we've hooked up everything standard, render any custom content.
-            _.each(customSections, function(cs, uid)
+            _.each(cpObj._customSections, function(cs, uid)
             {
                 var $section = $pane.find('[data-customContent="' + uid + '"]');
                 var $sc = $section.find('.sectionContent');
@@ -1775,6 +1778,14 @@
 
         $line.find('select.columnSelectControl').each(function()
         { cpObj._columnSelects = _.without(cpObj._columnSelects, this); });
+    };
+
+    var cleanSection = function(cpObj, $section)
+    {
+        var cleaner = cpObj._customSections[$section.attr('data-customContent')];
+        if (!$.isBlank(cleaner)) { cleaner = cleaner.cleanupCallback; }
+        if (!_.isFunction(cleaner)) { return; }
+        cleaner.call(cpObj, $section.find('.sectionContent'));
     };
 
     var updateColumnSelects = function(cpObj, $colSelects)

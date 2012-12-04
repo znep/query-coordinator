@@ -40,7 +40,11 @@
             <td>Anonymous Applications</td>
             <td><input name="appToken" disabled="disabled" value="<none>" ></input></td>
           <% elsif !throttle.nil? %>
-            <td><input name="appToken" type="hidden" value="<%= throttle.appToken %>"></input></td>
+            <td>
+              <p class="appName"><%= throttle.appName %></p>
+              <p class="appDesc"><%= throttle.appDesc %></p>
+              <input name="appToken" type="hidden" value="<%= throttle.appToken %>"></input>
+            </td>
             <td><input disabled="disabled" value="<%= throttle.appToken %>" >    </input></td>
           <% else %>
             <td></td>
@@ -50,12 +54,12 @@
           <td><input name="hourLimit"   class="limitEdit" value="<%= throttle.nil? ? "" : throttle.hourLimit  %>" >   </input></td>
           <td><input name="dayLimit"    class="limitEdit" value="<%= throttle.nil? ? "" : throttle.dayLimit  %>" >    </input></td>
           <td>
-            <input type="submit" value="<%= params[:token] == "new" ? "Add " : "Update" %>" class="button" ></input>
+            <input type="submit" value="<%= params[:token] == "new" ? "Add Limits" : "Update Limits" %>" class="button" ></input>
           </td>
         </tr>
       </table>
       <% if !throttle.nil? %>
-        <a id="<%= throttle.appToken %>" class="button limitRemoveButton default" href="#">Remove</a>
+        <a id="<%= throttle.appToken %>" class="button limitRemoveButton default" href="#">Remove Limits</a>
       <% end %>
     </form>
   </div>

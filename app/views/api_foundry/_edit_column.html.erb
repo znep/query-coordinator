@@ -19,7 +19,9 @@
     </div>
     <div class="line formControl">
       <label class="required" for="fieldName">Field Name</label>
-      <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => "textPrompt required liveDoc") %>
+      <%- fnClasses = "textPrompt required liveDoc" -%>
+      <%- fnClasses += (defined? disable_field_name) && disable_field_name ? " disabled" : "" -%>
+      <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => fnClasses) %>
       <div class="additionalHelp"><label>The identifier used by developers and applications</label></div>
     </div>
     <div class="paneFormControls">

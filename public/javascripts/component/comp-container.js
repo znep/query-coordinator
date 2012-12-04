@@ -100,11 +100,8 @@
 
         _addChildren: function()
         {
-            // Make sure to start any data source updates so that we have our
-            // contextId assigned before creating children
             if (!$.isBlank(this._childrenToLoad))
             {
-                this._updateDataSource(this._properties);
                 this.add(this._childrenToLoad);
                 delete this._childrenToLoad;
             }

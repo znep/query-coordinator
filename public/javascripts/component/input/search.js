@@ -136,6 +136,9 @@ var handleSearch = function(cObj)
     { q = ''; }
     cObj.$clearButton.toggleClass('hide', $.isBlank(q) || !!cObj._properties.hideClearButton);
 
+    if (!$.isBlank(q) && cObj._properties.startsWith)
+    { q += '*'; }
+
     _.each(cObj._dsList, function(ds)
     { ds.update({ searchString: q }); });
 };

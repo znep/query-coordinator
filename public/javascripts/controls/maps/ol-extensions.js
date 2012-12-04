@@ -1287,7 +1287,7 @@
             this.saveViewport();
             this.mapObj._primaryView.update({ displayFormat: $.extend(true, {},
                 this.mapObj._displayFormat,
-                { viewport: this.toViewport(blist.openLayers.geographicProjection) }) });
+                { viewport: this.toViewport(blist.openLayers.geographicProjection, 0.9) }) });
             delete this.handlingEvent;
             delete this._untouched;
         },
@@ -1393,9 +1393,9 @@
             { return this.viewport.clone().transform(this.map.getProjectionObject(), projection); }
         },
 
-        toViewport: function(projection)
+        toViewport: function(projection, scale)
         {
-            var vp = this.project(projection).toArray();
+            var vp = this.project(projection).scale(scale || 1).toArray();
             return _.reduce(['xmin', 'ymin', 'xmax', 'ymax'],
                 function(memo, property, index)
                 { memo[property] = vp[index]; return memo; }, {});

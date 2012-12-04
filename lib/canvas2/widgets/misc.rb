@@ -391,8 +391,18 @@ module Canvas2
       options = ''
       found_col = false
       sort_desc = false
+      ex_f = string_substitute(@properties['excludeFilter'])
+      ex_f = [] if ex_f.blank?
+      inc_f = string_substitute(@properties['includeFilter'])
+      inc_f = [] if inc_f.blank?
       if context[:type] == 'dataset'
         context[:dataset].visible_columns.each do |c|
+          unless ex_f.all? {|k, v| !(Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))} &&
+            (@properties['includeFilter'].blank? ||
+             inc_f.any? {|k, v| (Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))})
+            next
+          end
+
           is_sel = sorts.length > 0 && sorts[0]['expression']['columnId'] == c.id
           options += '<option value="' + c.fieldName + '"' + (is_sel ? ' selected="selected"' : '') +
             '>' + c.name + '</option>'

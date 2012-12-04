@@ -120,8 +120,17 @@ var renderUpdate = function()
         var curSort = _.first(ds.query.orderBys || []) || {expression: {}};
         var foundCur = false;
         var selVal = '';
+        var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
+        var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
         _.each(ds.visibleColumns, function(c)
         {
+            if (!_.all(exF, function(v, k)
+                    { return !_.include($.makeArray(v), $.deepGetStringField(c, k)); }) ||
+                (!$.isBlank(cObj._properties.includeFilter) &&
+                 !_.any(incF, function(v, k)
+                     { return _.include($.makeArray(v), $.deepGetStringField(c, k)); })))
+            { return; }
+
             var sel = curSort.expression.columnId == c.id;
             foundCur = foundCur || sel;
             cObj.$dropdown.append($.tag({ tagName: 'option', value: c.fieldName,

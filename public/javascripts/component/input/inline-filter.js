@@ -33,11 +33,30 @@ $.component.Component.extend('Inline filter', 'input', {
         this._super.apply(this, arguments);
 
         this._updateDataSource(properties, renderUpdate);
+    },
+
+    _hidden: function()
+    {
+        this._super.apply(this, arguments);
+        renderUpdate.apply(this);
+    },
+
+    _shown: function()
+    {
+        this._super.apply(this, arguments);
+        renderUpdate.apply(this);
     }
 });
 
 var renderUpdate = function()
 {
+    if (this._isHidden)
+    {
+        if (!$.isBlank(this._uf))
+        { this._uf.setView(null); }
+        return;
+    }
+
     // We don't support mixed data context types, so check the first one to decide what to do
     var dcList = $.makeArray(this._dataContext);
     if (dcList.length < 1) { return; }
@@ -110,7 +129,8 @@ var renderUpdate = function()
     else
     {
         this.$contents.empty();
-        this._uf = this.$contents.pane_unifiedFilter(opts).render();
+        this._uf = this.$contents.pane_unifiedFilter(opts);
+        this._uf.render();
     }
     this._updateValidity();
 };

@@ -301,7 +301,7 @@
                 { return {dataset: ds, ufID: ds.id + '_' + _.uniqueId()}; });
         var dataset = datasets[0].dataset; // grab the first one; eg fsckLegacy only makes sense for one anyway
         var filterableColumns = options.filterableColumns; // this will change so save it off
-        var rootCondition = options.rootCondition; // note: this may be null/undef
+        var rootCondition = $.extend(true, {}, options.rootCondition); // note: this may be null/undef
 
         // Use a consistent ID to keep track of our particular query in each dataset
         var queryId = 'unifiedFilter' + _.uniqueId();
@@ -511,9 +511,29 @@
             $pane
                 .find('.noFilterConditionsText').show()
                 .siblings().remove();
-            rootCondition = options.rootCondition;
+            rootCondition = $.extend(true, {}, options.rootCondition);
             filterableColumns = options.filterableColumns;
             renderQueryFilters();
+        });
+
+        this.bind('destroy', function()
+        {
+            // Un-apply dataset query
+            _.each(datasets, function(ufDS)
+            {
+                var query = $.extend(true, {}, ufDS.dataset.query);
+                if (queryOwned)
+                { query.filterCondition = null; }
+                else
+                {
+                    // If not, find our corner of filter-space by name; set it up if necessary
+                    if (!$.isBlank(query.namedFilters))
+                    { delete query.namedFilters[queryId]; }
+                }
+                ufDS.dataset.update({ query: query });
+            });
+            rootCondition = $.extend(true, {}, options.rootCondition);
+            filterableColumns = options.filterableColumns;
         });
 
     /////////////////////////////////////
@@ -522,14 +542,14 @@
         // check and render all the filters that are saved on the view
         var renderQueryFilters = function()
         {
-            if ($.isBlank(rootCondition) && $.subKeyDefined(dataset, 'query.filterCondition'))
+            if (_.isEmpty(rootCondition) && $.subKeyDefined(dataset, 'query.filterCondition'))
             {
                 // extend this only if we have to and it exists (otherwise {} registers as !undefined)
                 rootCondition = $.extend(true, {}, dataset.query.filterCondition);
                 queryOwned = true;
             }
 
-            if (!_.isUndefined(rootCondition))
+            if (!_.isEmpty(rootCondition))
             {
                 // great, we have a real filter to work with.
 

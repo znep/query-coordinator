@@ -14,11 +14,12 @@
         { return $.t('controls.filter.main.filter_based_on_contents'); },
 
         isAvailable: function()
-        { return this._view.visibleColumns.length > 0 && this._view.valid; },
+        { return !$.isBlank(this._view) && this._view.visibleColumns.length > 0 && this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid ? $.t('controls.filter.main.view_must_be_valid') :
+            return $.isBlank(this._view) ? 'No dataset is defined' : !this._view.valid ?
+                $.t('controls.filter.main.view_must_be_valid') :
                 $.t('controls.filter.main.view_has_no_columns');
         },
 
@@ -52,6 +53,7 @@
                             rootCondition: cpObj.settings.rootCondition,
                             filterableColumns: cpObj._view.columnsForType(filterableTypes)});
 
+                        cpObj._view.unbind(null, null, cpObj);
                         cpObj._view.bind('columns_changed', function()
                         {
                             $elem.trigger('columns_changed',
@@ -60,6 +62,10 @@
 
                         cpObj._view.bind('clear_temporary', function()
                         { $elem.trigger('revert'); }, cpObj);
+                    },
+                    cleanupCallback: function($elem)
+                    {
+                        $elem.trigger('destroy');
                     }
                 }
             }];

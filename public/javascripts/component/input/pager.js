@@ -244,6 +244,7 @@ var setUpComponent = function(cObj, adjId)
         delete cObj._context;
         return;
     }
+    cObj._context.$dom.attr('aria-live', 'polite');
     cObj._context.bind('page_shown', function(args)
     { adjustIndex(cObj, args.newPage.id); }, cObj);
     cObj._context.bind('page_added', function() { cObj._render(); }, cObj);

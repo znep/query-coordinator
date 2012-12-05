@@ -50,7 +50,11 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
 
             var destCompId = (cObj._properties.parentPrefix || '') + cObj._properties.destComponentId;
             if (destCompId != (cObj._destComponent || {}).id)
-            { cObj._destComponent = $.component(destCompId, cObj._componentSet); }
+            {
+                cObj._destComponent = $.component(destCompId, cObj._componentSet);
+                if (!$.isBlank(cObj._destComponent))
+                { cObj._destComponent.$dom.attr('aria-live', 'polite'); }
+            }
 
             if (cObj._properties.destContextId != (cObj._destContext || {}).id)
             {

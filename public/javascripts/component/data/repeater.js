@@ -92,6 +92,7 @@ $.component.Container.extend('Repeater', 'content', {
                 cObj._childrenDirty = true;
                 cObj._render();
             }, this);
+            cObj.$dom.attr('aria-live', 'polite');
         }
     },
 

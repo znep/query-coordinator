@@ -19,6 +19,12 @@ $.component.Component.extend('Inline filter', 'input', {
         return retVal;
     },
 
+    _initDom: function()
+    {
+        this._super.apply(this, arguments);
+        this.$dom.attr('aria-live', 'polite');
+    },
+
     _render: function()
     {
         if (!this._super.apply(this, arguments)) { return false; }

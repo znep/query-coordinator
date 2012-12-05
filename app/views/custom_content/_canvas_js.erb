@@ -5,6 +5,7 @@
   blist.configuration.development = <%= Rails.env.development? %>;
   blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) && !page.uneditable %>;
   blist.configuration.canvasX = <%= module_enabled?(:canvasX) == true %>;
+  blist.configuration.govStat = <%= module_enabled?(:govStat) == true %>;
 
   <%
     staging_lockdown =  (CurrentDomain.feature? :staging_lockdown) || false

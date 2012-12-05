@@ -21,7 +21,16 @@
             _.each([$.component.catalog.content, $.component.catalog.data, $.component.catalog.actions,
                 $.component.catalog.input], function(section, i)
             {
-                $.cf.edit.addComponentPalette(section.name, section.entries, i+1);
+                var comps = section.entries;
+                if (blist.configuration.govStat)
+                {
+                    comps = _.filter(comps, function(e)
+                    {
+                        return _.include(['Title', 'Text', 'Picture', 'Map'], e.catalogName) ||
+                            e.catalogName.toLowerCase().endsWith('chart');
+                    });
+                }
+                if (!_.isEmpty(comps)) { $.cf.edit.addComponentPalette(section.name, comps, i+1); }
             });
         }
 

@@ -129,7 +129,7 @@
     var options;
 
     var defaultOptions = {
-        canAdd: blist.configuration.canvasX,     // Can you add new components?
+        canAdd: blist.configuration.canvasX || blist.configuration.govStat,  // Can you add new components?
         editOnly: false,  // Are components always in edit mode?
         edit: true,       // Start edit mode once initalized?
         mask: true,       // Mask out the background when editing a component?

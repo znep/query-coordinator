@@ -509,8 +509,8 @@
             var mapObj = this;
 
             var searchString = mapObj._primaryView.searchString;
-            _.each(mapObj._children, function(child)
-            { child._view.update({ searchString: searchString }); });
+            _(mapObj._children).chain().pluck('_view').without(mapObj._primaryView)
+                .each(function(view) { view.update({ searchString: searchString }); });
         },
 
         initializeEvents: function()

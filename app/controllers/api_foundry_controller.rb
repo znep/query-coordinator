@@ -45,7 +45,7 @@ class ApiFoundryController < ApplicationController
     end
     path = "/views/#{params[:id]}/apiThrottle.json?method=" + method + "&" + params.to_param
     coreResponse = CoreServer::Base.connection.get_request(path)
-    redirect_to( :action => 'manage', :id => params[:id], :op1 => 'apps')
+    redirect_to( :action => 'manage', :id => params[:id], :admin_section => 'apps_list')
   end
 
   def rmThrottle
@@ -53,7 +53,7 @@ class ApiFoundryController < ApplicationController
     path = "/views/#{params[:id]}/apiThrottle.json?method=removeViewThrottle&" + params.to_param
     coreResponse = CoreServer::Base.connection.delete_request(path)
     respond_to do |format|
-      format.html { redirect_to( :action => 'manage', :id => params[:id], :op1 => 'apps')}
+      format.html { redirect_to( :action => 'manage', :id => params[:id], :admin_section => 'apps_list')}
       format.data { render :text => "{}" }
     end
   end

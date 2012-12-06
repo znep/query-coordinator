@@ -452,7 +452,7 @@
 
             var rData = {title: cpObj.getTitle(), subtitle: cpObj.getSubtitle(),
                 sections: cpObj._getSections(), paneId: cpObj.$dom().attr('id'), data: data || {}};
-            if (!cpObj._isReadOnly())
+            if (!cpObj._isReadOnly() && cpObj.settings.showFinishButtons)
             { rData.finishButtons = cpObj._getFinishButtons(); }
             else
             { rData.readOnlyMessage = cpObj._getReadOnlyMessage(); }
@@ -964,6 +964,7 @@
         name: 'unset', // Name of pane for ID & class
         noReset: false, // if true form elements will not be reset on close
         renderTypeManager: null, // Allows components to access all the render types, if necessary
+        showFinishButtons: true,
         view: null
     });
 

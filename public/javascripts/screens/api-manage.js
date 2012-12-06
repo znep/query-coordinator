@@ -8,19 +8,31 @@ $(function() {
 	init.permission = function() 
   {
 		$("#permission-host").pane_datasetPermissions({
-			view: blist.dataset
+			view: blist.dataset,
+      showFinishButtons: false
 		}).render();
 	}
 
 	init.sharing = function() 
   {
 		$("#sharing-host").pane_shareDataset({
-			view: blist.dataset
+      view: blist.dataset,
+      showFinishButtons: false
 		}).render();
 	}
 
 	init.applications = function() 
   {
+    $(".hunum").each(function(elem){
+      $(this).text(blistUtilNS.toHumaneNumber($(this).text()));
+    });
+
+    $("#limitUpdate").click(function(){
+      $(".hunum").each(function(elem){
+        $(this).value(blistUtilNS.parseHumaneNumber($(this).value()));
+      });
+    });
+
 		$(".limitRemoveButton").click(function(event) {
 			var appToken = $(this).attr("id");
 			$.socrataServer.makeRequest({

@@ -25,7 +25,7 @@
     </div>
   </div>
   <%- disabled_features = @view.disabled_features -%>
-  <%- unless disabled_features.blank? -%>
+  <%- unless disabled_features.blank? || @view.is_api? -%>
     <div class="formSection disabledFeatureFlags">
       <p class="formHeader">Additional <span class="datasetTypeName">dataset</span> features</p>
       <div class="sectionContent">

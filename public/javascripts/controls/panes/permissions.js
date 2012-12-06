@@ -81,7 +81,9 @@
         },
 
         _getFinishButtons: function()
-        { return [$.controlPane.buttons.update, $.controlPane.buttons.cancel]; },
+        {
+          return [$.controlPane.buttons.update, $.controlPane.buttons.cancel];
+        },
 
         _finish: function(data, value, finalCallback)
         {
@@ -105,7 +107,7 @@
                     .text('There was an error modifying your permissions. Please try again later');
             });
         }
-    }, {name: 'datasetPermissions', noReset: true}, 'controlPane');
+    }, {name: 'datasetPermissions', noReset: true, showFinishButtons: true}, 'controlPane');
 
     if (blist.sidebarHidden && ($.isBlank(blist.sidebarHidden.manage) || !blist.sidebarHidden.manage.permissions))
     { $.gridSidebar.registerConfig('manage.datasetPermissions', 'pane_datasetPermissions', 7); }

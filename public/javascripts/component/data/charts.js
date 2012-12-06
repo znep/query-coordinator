@@ -2,9 +2,9 @@
 
 _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, localChartType)
 {
-    $.component.Component.extend(value.text.toLowerCase().capitalize(),
+    $.component.Component.extend(value.text.toLowerCase().displayable(),
         _.include(['area chart', 'bar chart', 'donut chart', 'stacked column chart',
-            'stacked bar chart'], value.text.toLowerCase()) ? 'none' : 'data', {
+            'stacked bar chart', 'chart'], value.text.toLowerCase()) ? 'none' : 'data', {
         _init: function()
         {
             this._needsOwnContext = true;
@@ -23,7 +23,7 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
         {
             var retVal = {schema: [{ fields: [$.cf.contextPicker()] }],
                 view: (this._dataContext || {}).dataset};
-            if (blist.configuration.canvasX)
+            if (blist.configuration.canvasX || blist.configuration.govStat)
             {
                 if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
@@ -95,6 +95,17 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
             this._chartType = this._stringSubstitute(this._properties.chartType) || this._chartType;
             if (lcObj._rendered)
             { updateProperties(lcObj, properties); }
+        },
+
+        design: function()
+        {
+            this._super.apply(this, arguments);
+            if ($.isBlank(this.$editOverlay))
+            {
+                this.$editOverlay = $.tag({ tagName: 'div', 'class': 'editOverlay' });
+                this.$dom.append(this.$editOverlay);
+            }
+            this.$editOverlay.toggleClass('hide', !this._designing);
         }
     });
 });

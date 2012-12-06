@@ -24,7 +24,10 @@
             _.defer(function()
             {
                 if (!$.isBlank(peObj.component))
-                { peObj.component.properties(peObj._getFormValues(true)); }
+                {
+                    $.cf.edit.execute('properties',
+                        { component: peObj.component, properties: peObj._getFormValues(true) });
+                }
             });
         },
 

@@ -57,9 +57,10 @@ $.cf.edit.registerAction('add', {
 
             // Perform the actual add operation
             container.add(child, position);
+            return child;
         });
 
-        $.cf.focus(_.first(children));
+        $.cf.focus(_.find(children, function(c) { return c._componentSet == 'edit'; }));
     },
 
     rollback: function()

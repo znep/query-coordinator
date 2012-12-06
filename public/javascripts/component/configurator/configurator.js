@@ -113,6 +113,7 @@
         $.cf.edit.reset();
         $.cf.edit(false);
         $previewCont.removeClass('hide').width('').siblings().addClass('hide');
+        _.defer(function() { $(window).resize(); });
     };
 
     var pullConfig = function()
@@ -500,7 +501,7 @@
             disableHoverFocus();
             focal = component;
             $body.addClass('socrata-cf-has-focal');
-            $(focal.dom).addClass('socrata-cf-focal');
+            focal.$dom.addClass('socrata-cf-focal');
             if (!$.cf.configuration().editOnly)
             { focal.edit(true); }
             focal.editFocus(true);

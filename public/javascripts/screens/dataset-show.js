@@ -202,7 +202,8 @@ $(function()
             { $.deepSet(blist.dataset.metadata, viewId, 'renderTypeConfig', 'active', type, 'id'); }
         });
 
-        blist.dataset.childViews = _.pluck(blist.dataset.displayFormat.viewDefinitions, 'uid');
+        if (!blist.dataset.childViews)
+        { blist.dataset.childViews = _.pluck(blist.dataset.displayFormat.viewDefinitions, 'uid'); }
     }
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,

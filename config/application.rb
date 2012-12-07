@@ -65,5 +65,15 @@ module Frontend
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # TTL for fragment caching, currently only used for DataSlate
+    config.cache_ttl_fragment = 60.minutes
+    # TTL for model caching, when calling find_cache*
+    config.cache_ttl_model = 5.minutes
+    # row caching on View models, when using get_rows_cached*
+    config.cache_ttl_rows = 60.minutes
+    # search caching when using search_cached
+    config.cache_ttl_search = 15.minutes
+
   end
 end

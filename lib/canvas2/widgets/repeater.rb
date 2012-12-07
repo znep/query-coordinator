@@ -55,7 +55,7 @@ module Canvas2
             if Canvas2::Util.debug
               rows = context[:dataset].get_rows(100, 1, {}, false, !Canvas2::Util.is_private)
             else
-              rows = context[:dataset].get_cached_rows(100, 1, {}, 60, !Canvas2::Util.is_private)
+              rows = context[:dataset].get_cached_rows(100, 1, {}, !Canvas2::Util.is_private)
             end
             rows = rows[:rows].map do |row|
               r = Hash.new

@@ -63,6 +63,10 @@ class ApplicationController < ActionController::Base
     @current_user_session ||= UserSession.find
   end
 
+  def current_user_session=(user_session)
+    @current_user_session = user_session
+  end
+
   def require_module!(name)
     render_404 unless CurrentDomain.module_enabled?(name.to_s)
   end
@@ -137,6 +141,12 @@ protected
     ActiveSupport::Notifications.instrument :meter, :measurement => name
   end
 
+  def set_user
+    if current_user_session
+      @current_user = current_user_session.user
+    end
+  end
+
 private
   # Allow access to the current controller from the UserSession model.
   # UserSession itself is an ActiveRecord-like model, but it's mostly
@@ -171,12 +181,6 @@ private
         redirect_to login_url
       end
       return false
-    end
-  end
-
-  def set_user
-    if current_user_session
-      @current_user = current_user_session.user
     end
   end
 

@@ -248,7 +248,7 @@ class View < Model
   # fun, but this helps reduce and reuse calls to the core server across multiple
   # requests
   #
-  def get_cached_rows(per_page, page = 1, conditions = {}, cache_ttl = 15, is_anon = false)
+  def get_cached_rows(per_page, page = 1, conditions = {}, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_rows)
     req = get_rows_request(per_page, page, conditions, true)
 
     cache_key = Digest::MD5.hexdigest(req.sort.to_json)
@@ -263,7 +263,7 @@ class View < Model
           result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
             meta_columns: server_result['meta']['view']['columns'].
             find_all { |c| c['dataTypeName'] == 'meta_data' } }
-          cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
+          cache.write(cache_key, result, :expires_in => cache_ttl)
       rescue Exception => e
           Rails.logger.info("Possibly invalid model found in row request, deleting model cache key: " + model_cache_key)
           cache.delete(model_cache_key)

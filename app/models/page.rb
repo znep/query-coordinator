@@ -49,7 +49,7 @@ class Page < SodaModel
   end
 
   def private_data?
-    !content.blank? && (content['privateData'] == true || content['privateData'] == 'true')
+    !content.blank?  && (content['privateData'] == true || content['privateData'] == 'true')
   end
 
   def self.[](path, mtime)

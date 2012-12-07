@@ -21,17 +21,16 @@ module Canvas2
       @streaming_contexts = {}
       @errors = []
       @timings = []
-      @manifest = {}
+      @manifest = Manifest.new
     end
 
     # Get the data manifest for a dataslate page
     # A manifest is the list of resources used by the
     # system along with an associated check time for that resource
     def self.manifest
-      @manifest ||= {}
       @available_contexts.each { |ctx|
         if !ctx[1].nil? && !ctx[1][:dataset].nil?
-          @manifest[ctx[1][:dataset].id] = ctx[1][:dataset].check_time
+          @manifest.add_resource(ctx[1][:dataset].id, ctx[1][:dataset].check_time)
         end
       }
       @manifest
@@ -49,11 +48,9 @@ module Canvas2
       begin
         case config['type']
         when 'datasetList'
-          search_response = Canvas2::Util.debug ? Clytemnestra.search_views(config['search'], false,
-                                                                            !Canvas2::Util.is_private) :
-            Clytemnestra.search_cached_views(config['search'], false, 15, !Canvas2::Util.is_private)
+          search_response = Canvas2::Util.debug ? Clytemnestra.search_views(config['search'], false, !Canvas2::Util.is_private) : Clytemnestra.search_cached_views(config['search'], false, !Canvas2::Util.is_private)
           # Search results are considered part of the manifest; but are handled differently during validation
-          @manifest[search_response.id] = search_response.check_time
+          @manifest.add_resource(search_response.id, search_response.check_time)
           ds_list = search_response.results.reject do |ds|
             add_query(ds, config['query'])
             ds.get_total_rows({}, !Canvas2::Util.is_private) < 1
@@ -120,7 +117,7 @@ module Canvas2
             if Canvas2::Util.debug
               r = ds.get_rows(1, 1, {}, false, !Canvas2::Util.is_private)[:rows][0]
             else
-              r = ds.get_cached_rows(1, 1, {}, 15, !Canvas2::Util.is_private)[:rows][0]
+              r = ds.get_cached_rows(1, 1, {}, !Canvas2::Util.is_private)[:rows][0]
             end
 
             if r.nil?
@@ -225,7 +222,7 @@ module Canvas2
       elsif !config['datasetId'].blank?
         begin
           ds = Canvas2::Util.debug ? View.find(config['datasetId'], {}, false, !Canvas2::Util.is_private) :
-            View.find_cached(config['datasetId'], 15, !Canvas2::Util.is_private)
+            View.find_cached(config['datasetId'], !Canvas2::Util.is_private)
         rescue CoreServer::ResourceNotFound
           errors.push(DataContextError.new(config, "No dataset found for '" +
                                            (config['id'] || config['datasetId']) + "'"))
@@ -251,7 +248,7 @@ module Canvas2
         search_config = config['search'].merge({'limit' => 1})
         search_response = Canvas2::Util.debug ? Clytemnestra.search_views(search_config, false,
                                                                           !Canvas2::Util.is_private) :
-          Clytemnestra.search_cached_views(search_config, false, 15, !Canvas2::Util.is_private)
+          Clytemnestra.search_cached_views(search_config, false, !Canvas2::Util.is_private)
         ds = search_response.results.first
         if ds.nil? && config['required']
           errors.push(DataContextError.new(config, "No dataset found for '" +

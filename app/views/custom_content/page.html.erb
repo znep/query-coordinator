@@ -1,4 +1,4 @@
-<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 60.minutes do -%>
+<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => Rails.application.config.cache_ttl_fragment do -%>
 
 <%- if !@minimal_render -%>
   <%- context_result = @page.set_context(@vars) -%>

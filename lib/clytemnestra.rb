@@ -7,14 +7,14 @@ module Clytemnestra
 
   # We may want to enable caching by default in the future; but for now
   # we only want to enable it in a few key locations
-  def self.search_cached_views(opts, use_batch = false, cache_ttl = 15, is_anon = false)
+  def self.search_cached_views(opts, use_batch = false, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_search)
     path = "/search/views.json?#{opts.to_core_param}"
     user = User.current_user.nil? || is_anon ? "none" : User.current_user.id
     cache_key = "search-views:" + Digest::MD5.hexdigest(path + ":" + user)
     result = cache.read(cache_key)
     if result.nil?
       result = CoreServer::Base.connection.get_request(path, {}, use_batch, is_anon)
-      cache.write(cache_key, result, :expires_in => cache_ttl.minutes)
+      cache.write(cache_key, result, :expires_in => cache_ttl)
     end
     search_result = ViewSearchResult.from_result(result)
     # Set the id and check_time of the search

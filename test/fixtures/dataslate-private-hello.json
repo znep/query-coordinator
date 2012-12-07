@@ -1,0 +1,14 @@
+{
+    "name": "Hello, world",
+    "path": "/hello",
+    "status": "published",
+    "content": {
+        "privateData": true,
+        "id": "socrata-root",
+        "type": "Container",
+        "children": [{
+            "type": "Text",
+            "html": "Hello, world"
+        }]
+    }
+}

@@ -1,10 +1,16 @@
 require 'digest/md5'
 
 class CustomContentController < ApplicationController
+
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
   skip_before_filter :require_user, :except => [ :template ]
   skip_before_filter :hook_auth_controller, :set_user, :sync_logged_in_cookie, :only => [:stylesheet]
+
+  # For testing
+  def page_override=(val)
+    @page_override = val
+  end
 
   def homepage
     Canvas::Environment.context = :homepage
@@ -86,6 +92,19 @@ class CustomContentController < ApplicationController
     render :text => sheet, :content_type => 'text/css'
   end
 
+  # Check for a conditional request and return a 304 if the client should
+  # have no issues using their cached copy
+  def handle_conditional_request(request, response, manifest)
+    ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
+    if ConditionalRequestHandler.check_conditional_request?(request, manifest)
+      Rails.logger.info("Conditional Request Matches; returning a 304")
+      render :nothing => true, :status => 304
+      return true
+    end
+    Rails.logger.info("Conditional Request Does Not Match")
+    return false
+  end
+
   def page
     # FIXME: should probably make sure you're a Socrata admin before allowing debugging
     @debug = params['debug'] == 'true'
@@ -99,20 +118,41 @@ class CustomContentController < ApplicationController
                      'domain_updated' => CurrentDomain.default_config_updated_at,
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
 
+
+    # We do not yet know whether the page can be cached globally, so we need to check both
+    # the global cache and the per-user cache.
+
+    # Global Page Caching, regardless of the current user
     cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
-    if VersionAuthority.validate_manifest?(params[:path], "")
-      Rails.logger.info("Manifest valid for no user; reading content from fragment cache is OK")
+    global_manifest = VersionAuthority.validate_manifest?(params[:path], GLOBAL_USER)
+
+    if !global_manifest.nil?
+      Rails.logger.info("Global Manifest valid; reading content from fragment cache is OK")
+      return true if handle_conditional_request(request, response, global_manifest)
       @cached_fragment = read_fragment(cache_key_no_user)
+    else
+      Rails.logger.info("Global Manifest is invalid")
     end
 
+    # Per-User Cache, including anonymous users
+    # Note that the per-user cache can also mean users which are not logged in, or anonymous
+    cache_user_id = @current_user ? @current_user.id : ANONYMOUS_USER
     cache_key_user = app_helper.cache_key("canvas2-page", cache_params.merge({
-                   'current_user' => @current_user ? @current_user.id() : "anon"}))
-    if @cached_fragment.nil? &&
-      VersionAuthority.validate_manifest?(params[:path], @current_user ? @current_user.id() : 'anon')
-      Rails.logger.info("Manifest valid for user; reading content from fragment cache is OK")
-      @cached_fragment = read_fragment(cache_key_user)
+                   'current_user' => cache_user_id}))
+
+    if @cached_fragment.nil?
+      # There was no Globally Cached page, check User Manifest
+      user_manifest = VersionAuthority.validate_manifest?(params[:path], cache_user_id)
+      if !user_manifest.nil?
+        Rails.logger.info("User Manifest valid; reading content from fragment cache is OK")
+        return true if handle_conditional_request(request, response, user_manifest)
+        @cached_fragment = read_fragment(cache_key_user)
+      else
+        Rails.logger.info("User Manifest invalid; page must be re-rendered")
+      end
     end
 
+    # The cached fragment is an error page; just return that then
     if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:') && !@debug
       str = @cached_fragment.slice(11, @cached_fragment.length)
       code = str.slice(0, 3)
@@ -142,7 +182,13 @@ class CustomContentController < ApplicationController
       })
       Canvas2::Util.set_path(path)
       if CurrentDomain.module_available?('canvas2')
-        @page, @vars = Page[path, pages_time]
+        if @page_override.nil?
+          @page, @vars = Page[path, pages_time]
+        else
+          @page = @page_override
+          @vars = {}
+        end
+
       end
       unless @page
         @meta = @custom_meta
@@ -152,6 +198,8 @@ class CustomContentController < ApplicationController
           render_404
         end
       else
+        # Now we know whether the page is private or not; set the render variables for
+        # cache-key
         Canvas2::Util.is_private(@page.private_data?)
         @cache_key = Canvas2::Util.is_private ? cache_key_user : cache_key_no_user
         self.action_name = 'page'
@@ -159,8 +207,12 @@ class CustomContentController < ApplicationController
           render :action => 'page'
           # generate and set the manifest for this render on success; we need to recalculate the cache key here
           # This includes all data context resources along with associated modification times
-          VersionAuthority.set_manifest(params[:path], @page.private_data? ? @current_user ?
-                                        @current_user.id() : "anon" : '', Canvas2::DataContext.manifest)
+          manifest = global_manifest || user_manifest || Canvas2::DataContext.manifest
+          if global_manifest.nil? && user_manifest.nil?
+            user_key = @page.private_data? ? cache_user_id : GLOBAL_USER
+            VersionAuthority.set_manifest(params[:path], user_key, manifest)
+          end
+          ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
         # but Rails ignores it and passes it all the way up without rescuing
         # unless I rescue a generic Exception
@@ -193,6 +245,10 @@ class CustomContentController < ApplicationController
   end
 
 private
+
+  ANONYMOUS_USER = "anon".freeze
+  GLOBAL_USER = "".freeze
+
 
   # around_filter for caching
   def cache_wrapper

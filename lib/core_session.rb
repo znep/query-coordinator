@@ -65,6 +65,11 @@ class CoreSession
     @loaded = true # Needed so we save an empty core session back
   end
 
+  # For tests
+  def pretend_loaded
+    @loaded = true
+  end
+
 private
   SECRET = "wm4NmtBisUd3XJ0JvQwJqTth8UdFvbYpy3LZ5IU3I3XCwG06XRa1TYXC3WySahssDzrt2cHFrbsRPT1o"
 

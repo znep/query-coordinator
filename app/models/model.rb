@@ -75,14 +75,14 @@ class Model
   # find* provides much of the user-level permissioning we need for things
   # so find_cached should be used sparingly where there are clear advantages
   #
-  def self.find_cached(options = nil, cache_ttl = 15, is_anon = false)
-    return find_cached_under_user(options, cache_ttl) if !User.current_user.nil? && !is_anon
+  def self.find_cached(options = nil, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_model)
+    return find_cached_under_user(options, cache_ttl) if !User.current_user.nil?
     cache_string = options.nil? ? "none" : options.to_json
     cache_string += ':anon' if is_anon
-    do_cached(method(:find), options, cache_string, cache_ttl, is_anon)
+    do_cached(method(:find), options, cache_string, is_anon, cache_ttl)
   end
 
-  def self.find_cached_under_user(options = nil, cache_ttl = 15)
+  def self.find_cached_under_user(options = nil, cache_ttl = Rails.application.config.cache_ttl_model)
     user_id = get_user_id(options) || ""
     cache_string = options.nil? ? "" : options.to_json
     cache_string = cache_string + ":" + user_id
@@ -422,7 +422,7 @@ private
     Array.new
   end
 
-  def self.do_cached(finder, options, cache_string, cache_ttl=15, is_anon = false)
+  def self.do_cached(finder, options, cache_string, is_anon = false, cache_ttl=Rails.application.config.cache_ttl_model)
     #
     # If the model is requesting a simple string id; lookup the modification time in
     # memcached and return a model which is cached by the core server-set mtime.
@@ -439,7 +439,7 @@ private
     result = cache.read(model_cache_key)
     if result.nil?
       result = finder.call(options, {}, false, is_anon)
-      cache.write(model_cache_key, result, :expires_in => cache_ttl.minutes)
+      cache.write(model_cache_key, result, :expires_in => cache_ttl)
     end
     result.model_cache_key = model_cache_key
     result.check_time = check_time == 0 ? Time.now.to_i : check_time

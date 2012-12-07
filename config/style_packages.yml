@@ -47,6 +47,7 @@ api-new:
 - jquery-ui-1.8.23.custom
 - screen-api-new
 api-manage:
+- control-share
 - control-pane
 - control-pane-custom
 - jquery-ui-1.8.23.custom

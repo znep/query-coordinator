@@ -112,6 +112,9 @@ $(function() {
 		var initFn = init[$(this).attr("id")];
 		if (initFn) initFn();
 	});
+  $(".controlPane").bind("hide", function(event){
+    window.location.href = "/api_foundry/manage/" + blist.dataset.id;
+  });
 	//_.each(init, function(initFn){ initFn(); });
 });
 

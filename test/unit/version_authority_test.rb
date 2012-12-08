@@ -67,19 +67,23 @@ class VersionAuthorityTest < Test::Unit::TestCase
                      "ab12-cd34" => @start.to_i}.sort
     set_test_manifest(test_manifest, 60)
     assert(VersionAuthority.validate_manifest?(@path, @user))
+    @truth_manifest = {}
+    @expect_datasets = ["ab12-cd34-OVER"]
     set_test_manifest(test_manifest, 5)
-    assert(!VersionAuthority.validate_manifest?(@path, @user))
+    assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
 
   def test_manifest_dataset_max_age_manifest_override
     test_manifest = {
         "search-views-some-stuff-that-does-not-matter" => @start.to_i ,
-        "ab12-cd34" => (@start - 30.minutes).to_i
+        "ab12-cd34-OVER" => (@start - 30.minutes).to_i
     }.sort
     set_test_manifest(test_manifest, 60)
     assert(VersionAuthority.validate_manifest?(@path, @user))
+    @truth_manifest = {}
+    @expect_datasets = ["ab12-cd34-OVER"]
     set_test_manifest(test_manifest, 5)
-    assert(!VersionAuthority.validate_manifest?(@path, @user))
+    assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
 
   def test_manifest_dataset_last_check_time_is_not_old_enough

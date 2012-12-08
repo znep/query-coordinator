@@ -76,6 +76,7 @@ class VersionAuthorityTest < Test::Unit::TestCase
         "search-views-some-stuff-that-does-not-matter" => @start.to_i ,
         "ab12-cd34" => (@start - 30.minutes).to_i
     }.sort
+    set_test_manifest(test_manifest, 60)
     assert(VersionAuthority.validate_manifest?(@path, @user))
     set_test_manifest(test_manifest, 5)
     assert(!VersionAuthority.validate_manifest?(@path, @user))

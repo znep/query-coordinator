@@ -22,27 +22,31 @@
 
 #applications
   text-align: center
-  h2
-    text-align: left
 #tableWrapper
-  padding-top: 2em
+  padding: 1em
   display: inline-block
   font-size: 1.2em
-.appName, .appDesc
-  text-align: left
 .appDesc
   color: grey
   font-style: italic
   font-size: .9em
 .throttleTable
+  .left
+    text-align: left
+    padding-left: 0em
   td
-    padding-left: 2em
-    text-align: right
-    padding-bottom: 1em
+    padding: 1em
   th
-    padding-left: 2em
+    .bg
+      background: #f0f0f0
+      padding: 4px
+      margin: 4px
+  .tableTitle
+    width: 28em
 .limitEdit
   width: 5em
+#editAnonymous, #limitUpdate
+  float: right
 
 
 .apiFieldPane
@@ -69,13 +73,26 @@
   #description
     width: 29em
 
+.controlPane
+  min-height: 5em
+  .subtitleBlock
+    .subtitle
+      font-size: 2em
+#transfer
+  .subtitleBlock
+    .subtitle
+      font-size: 1.2em
 .managesection
   padding-top: 1em
   font-size: 1.2em
 .paneContent
   padding-top: 2em
+.paneTitle
+  padding-left: 0.75em
 .commonForm .formHeader
   padding-left: 0em
+.sharingForm, .togglePermissionsForm
+  width: 36em
 
 .column
   width: 42em

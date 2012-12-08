@@ -3,53 +3,56 @@
 <% end %>
 <a name="apps"></a>
 <div id="applications" class="managesection">
-  <h2>Application Request Limits</h2>
   <div id="tableWrapper">
     <table class="throttleTable" cellspacing="0">
       <tr>
-        <th>Application</th>
-        <th>Token</th>
-        <th colspan="3">Request Limits</th>
+        <th colspan="2" class="left tableTitle">
+          <h2>Application Request Limits</h2>
+        </th>
+        <th colspan="3"><div class="bg">Request Limits</div></th>
       </tr>
       <tr>
-        <th></th>
-        <th></th>
-        <th>Minute</th>
-        <th>Hour</th>
-        <th>Day</th>
+        <th class="left">Application</th>
+        <th>Token</th>
+        <th><div class="bg">/Minute</div></th>
+        <th><div class="bg">/Hour</div></th>
+        <th><div class="bg">/Day</div></th>
         <th></th>
       </tr>
-      <tr><td> </td></tr>
       <% throttles = @view.find_api_throttles() %>
       <% throttles.each do |throttle| %>
         <tr id="<%= throttle.appToken %>">
-          <td class="">
+          <td class="left">
             <p class="appName"><%= throttle.appName %></p>
             <p class="appDesc"><%= throttle.appDesc %></p>
           </td>
           <td><%= throttle.appToken %></td>
-          <td><%= throttle.minuteLimit %></td>
-          <td><%= throttle.hourLimit %></td>
-          <td><%= throttle.dayLimit %></td>
+          <td class="hunum"><%= throttle.minuteLimit %></td>
+          <td class="hunum"><%= throttle.hourLimit %></td>
+          <td class="hunum"><%= throttle.dayLimit %></td>
           <td><a href="<%= "apps/" + throttle.appToken %>">Edit</a></td>
         </tr>
       <% end %>
       <% @anonThrottle = @view.find_api_anonymous_throttle() %>
       <% if !@anonThrottle.nil? %>
         <tr id="anonymous">
-          <td class="">
+          <td class="left">
             <p class="appName">Anonymous Applications</p>
             <p class="appDesc">where no application token is provided</p>
           </td>
           <td>none provided</td>
-          <td><%= @anonThrottle.minuteLimit %></td>
-          <td><%= @anonThrottle.hourLimit %></td>
-          <td><%= @anonThrottle.dayLimit %></td>
+          <td class="hunum"><%= @anonThrottle.minuteLimit %></td>
+          <td class="hunum"><%= @anonThrottle.hourLimit %></td>
+          <td class="hunum"><%= @anonThrottle.dayLimit %></td>
           <td><a href="<%= "apps/anonymous" %>">Edit</a></td>
         </tr>
       <% end %>
+      <tr>
+        <td class="left" colspan="6">
+          <a href="apps/new" id="addLimits" class="button">Add Application Limits</a>
+          <a href="apps/anonymous" id="editAnonymous" class="button">Edit Anonymous Limits</a>
+        </td>
+      </tr>
     </table>
-    <a href="apps/new" id="addLimits" class="button">Add Application Limits</a>
-    <a href="apps/anonymous" id="editAnonymous" class="button">Edit Anonymous Limit</a>
   </div>
 </div>

@@ -18,6 +18,9 @@
                     message = 'You can delete this working copy and make a new one in order to ' +
                               'revert any changes you\'ve made.';
             }
+            else if (this._view.isAPI()){
+              message = 'Deleting this API will break any applications that use this API.';
+            }
             else if (this._view.viewType == 'tabular')
             {
                 message = 'Deleting this view will only affect other views that are based upon it.';

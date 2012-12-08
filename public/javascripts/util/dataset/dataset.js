@@ -2950,7 +2950,7 @@ function getDisplayName(ds)
             retType = 'linked dataset';
             break;
         case 'api':
-            retType = 'API view';
+            retType = 'API';
             break;
     }
 

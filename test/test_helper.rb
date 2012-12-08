@@ -2,6 +2,27 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 
+module CoreServer
+  class Connection
+    cattr_accessor :data
+
+    def _get_request(path, custom_headers = {}, use_batching = false, is_anon = false)
+      @@data ||= {}
+      @@data["get_request"]
+    end
+
+    def _create_request(path, payload = "{}", custom_headers = {}, cache_req = false, use_batching = false, is_anon = false)
+      @@data ||= {}
+      @@data["create_request"]
+    end
+
+    def self.set_data(key, val)
+      @@data ||= {}
+      @@data[key] = val
+    end
+  end
+end
+
 class Test::Unit::TestCase
   # Add more helper methods to be used by all tests here...
   def init_current_domain
@@ -42,6 +63,17 @@ class Test::Unit::TestCase
     fake_core_session = CoreSession.new(self, @env)
     fake_core_session.pretend_loaded
     @controller.request.core_session = fake_core_session
+  end
+
+  def load_sample_data(file)
+    sample_data= JSON::parse(File.open(file).read)
+    sample_data.each {|k,v|
+      CoreServer::Connection.set_data(k, v.to_json)
+    }
+    CoreServer::Connection.class_eval do
+      alias_method :get_request, :_get_request
+      alias_method :create_request, :_create_request
+    end
   end
 
 end

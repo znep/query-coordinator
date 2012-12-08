@@ -1,0 +1,68 @@
+{
+    "_comment": "This requires the sample-data.json fixture",
+    "status": "published",
+    "name": "Pie Charts And Repeaters",
+    "path": "/pie-repeat",
+    "data": {
+        "test-data": {
+            "id": "test-data",
+            "datasetId": "test-data",
+            "type": "dataset"
+        }
+    },
+    "content": {
+        "maxAge": 1234,
+        "type": "Container",
+        "id": "socrata-root",
+        "children": [
+            {
+                "id": "s12",
+                "html": "Hello, world John",
+                "type": "Text"
+            },
+            {
+                "id": "c2",
+                "contextId": "test-data",
+                "height": 300,
+                "displayFormat": {
+                    "showPercentages": true,
+                    "fixedColumns": [ "name" ],
+                    "valueColumns": [
+                        {
+                            "fieldName": "things"
+                        }
+                    ],
+                    "pieJoinAngle": 5,
+                    "colors": [ "#a2c4c9" ],
+                    "legend": "top",
+                    "descriptionColumns": [
+                        {
+                            "fieldName": "name"
+                        }
+                    ],
+                    "showActualValues": true
+                },
+                "type": "PieChart"
+            },
+            {
+                "id": "c3",
+                "contextId": "test-data",
+                "html": "{dataset.name}",
+                "type": "Text"
+            },
+            {
+                "id": "c4",
+                "type": "Repeater",
+                "contextId": "test-data",
+                "repeaterType": "row",
+                "children": [
+                    {
+                        "id": "plan_title",
+                        "text": "{name}",
+                        "type": "Title"
+                    }
+                ]
+            }
+        ]
+    }
+}

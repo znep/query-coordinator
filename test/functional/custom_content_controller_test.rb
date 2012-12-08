@@ -80,4 +80,13 @@ class CustomContentControllerTest < ActionController::TestCase
     assert_etag_request(@response.headers['ETag'], "hello")
   end
 
+  test "Render Page With DataSet" do
+    load_sample_data("test/fixtures/sample-data.json")
+    prepare_page(fixture="test/fixtures/pie-charts-and-repeaters.json", anonymous=true)
+    get :page, {:path => "pie-repeat"}
+    assert_response :success
+    assert !@response.body.match(/Error/)
+    assert_equal 1234, Canvas2::DataContext.manifest.max_age
+  end
+
 end

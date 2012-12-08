@@ -68,12 +68,16 @@ module Frontend
 
     # TTL for fragment caching, currently only used for DataSlate
     config.cache_ttl_fragment = 60.minutes
-    # TTL for model caching, when calling find_cache*
+    # TTL for model caching, when calling find_cache* - this caching is beneficial, but is more
+    # likely to result in columnId synchronization issues.
     config.cache_ttl_model = 5.minutes
     # row caching on View models, when using get_rows_cached*
     config.cache_ttl_rows = 60.minutes
     # search caching when using search_cached
     config.cache_ttl_search = 15.minutes
-
+    # TTL for items within a manifest before we force a check against the core-server manifest or
+    # reinitialize a search. This is set on a per-manifest basis; so individual dataslate pages
+    # may have differing TTLs.
+    config.manifest_check_age = 15.minutes
   end
 end

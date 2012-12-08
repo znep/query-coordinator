@@ -26,11 +26,12 @@ module VersionAuthority
   # return nil if the manifest is invalid or the hash of the retrieved manifest
   # if the manifest is valid. All manifests newer than checkAge are considered
   # valid
-  def self.validate_manifest?(path, user, checkAge=15, core_manifest_fetcher=method(:get_core_manifest))
+  def self.validate_manifest?(path, user, core_manifest_fetcher=method(:get_core_manifest))
     name = manifest_key(path, user)
     manifest = Rails.cache.read(name, :raw => true)
     if !manifest.nil?
-      cut_off_time = (Time.now - checkAge.minutes).to_i
+      check_age = (manifest.max_age.minutes if manifest.max_age) || Rails.application.config.manifest_check_age
+      cut_off_time = (Time.now - check_age).to_i
       datasets = []
       searches = manifest.keys.select { |k|
         if k.to_s.match(/^search-views.*/).nil?

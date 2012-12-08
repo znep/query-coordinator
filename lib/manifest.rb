@@ -1,4 +1,5 @@
 class Manifest
+  attr_accessor :max_age
 
   def add_resource(name, mtime)
     if !name.is_a?(String) || !mtime.is_a?(Integer)

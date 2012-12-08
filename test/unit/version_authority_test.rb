@@ -21,9 +21,10 @@ class VersionAuthorityTest < Test::Unit::TestCase
     assert(!VersionAuthority.validate_manifest?("fake-path-yo", @user))
   end
 
-  def set_test_manifest(test_manifest)
+  def set_test_manifest(test_manifest, check_age_override=nil)
     manifest = Manifest.new
     manifest.set_manifest(test_manifest)
+    manifest.max_age=check_age_override if !check_age_override.nil?
     hash = VersionAuthority.set_manifest(@path, @user, manifest)
     assert_equal(Digest::MD5.hexdigest(test_manifest.to_json), hash)
   end
@@ -61,6 +62,25 @@ class VersionAuthorityTest < Test::Unit::TestCase
     assert(!VersionAuthority.validate_manifest?(@path, @user))
   end
 
+  def test_manifest_search_max_age_manifest_override
+    test_manifest = {"search-views-some-stuff-that-does-not-matter" =>(@start - 30.minutes).to_i,
+                     "ab12-cd34" => @start.to_i}.sort
+    set_test_manifest(test_manifest, 60)
+    assert(VersionAuthority.validate_manifest?(@path, @user))
+    set_test_manifest(test_manifest, 5)
+    assert(!VersionAuthority.validate_manifest?(@path, @user))
+  end
+
+  def test_manifest_dataset_max_age_manifest_override
+    test_manifest = {
+        "search-views-some-stuff-that-does-not-matter" => @start.to_i ,
+        "ab12-cd34" => (@start - 30.minutes).to_i
+    }.sort
+    assert(VersionAuthority.validate_manifest?(@path, @user))
+    set_test_manifest(test_manifest, 5)
+    assert(!VersionAuthority.validate_manifest?(@path, @user))
+  end
+
   def test_manifest_dataset_last_check_time_is_not_old_enough
     test_manifest = {
         "ab12-cd34" => @start.to_i,
@@ -82,7 +102,7 @@ class VersionAuthorityTest < Test::Unit::TestCase
         "cd12-ab34" => ( @start - 40.minutes).to_i
     }
     set_test_manifest(@complicated_manifest)
-    assert(VersionAuthority.validate_manifest?(@path, @user, 15, method(:the_truth)))
+    assert(VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
 
   def test_manifest_compare_dataset_to_truth_failure
@@ -91,7 +111,7 @@ class VersionAuthorityTest < Test::Unit::TestCase
         "cd12-ab34" => ( @start - 10.minutes).to_i * 1000
     }
     set_test_manifest(@complicated_manifest)
-    assert(!VersionAuthority.validate_manifest?(@path, @user, 15, method(:the_truth)))
+    assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
 
   def test_manifest_different_size_than_truth
@@ -99,7 +119,7 @@ class VersionAuthorityTest < Test::Unit::TestCase
         "ab12-cd34" => ( @start - 60.minutes).to_i * 1000,
     }
     set_test_manifest(@complicated_manifest)
-    assert(!VersionAuthority.validate_manifest?(@path, @user, 15, method(:the_truth)))
+    assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
 
 end

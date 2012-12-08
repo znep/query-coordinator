@@ -52,6 +52,10 @@ class Page < SodaModel
     !content.blank?  && (content['privateData'] == true || content['privateData'] == 'true')
   end
 
+  def max_age
+    !content.blank? && content['maxAge']
+  end
+
   def self.[](path, mtime)
     mtime ||= Time.now.to_i.to_s
     if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)

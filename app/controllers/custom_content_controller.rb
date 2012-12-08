@@ -210,6 +210,7 @@ class CustomContentController < ApplicationController
           manifest = global_manifest || user_manifest || Canvas2::DataContext.manifest
           if global_manifest.nil? && user_manifest.nil?
             user_key = @page.private_data? ? cache_user_id : GLOBAL_USER
+            manifest.max_age = @page.max_age
             VersionAuthority.set_manifest(params[:path], user_key, manifest)
           end
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)

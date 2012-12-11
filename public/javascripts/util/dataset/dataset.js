@@ -2768,6 +2768,8 @@ Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch,
 Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, isAnonymous)
 {
     var cachedView = blist.viewCache[id];
+    isAnonymous = !!isAnonymous;
+
     if (!_.isUndefined(cachedView))
     {
         if ((cachedView === false) && _.isFunction(errorCallback))

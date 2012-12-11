@@ -113,10 +113,16 @@
             { layerObj._super(); return; }
 
             var viewport = layerObj._guessedViewport || layerObj._parent.viewportHandler()
-                .toViewport(blist.openLayers.geographicProjection);
+                .toViewport(blist.openLayers.geographicProjection),
+                locCol = layerObj._locCol || layerObj._geoCol;
 
-            layerObj._view.getClusters(viewport,
-                { plot: { locationId: (layerObj._locCol || layerObj._geoCol).tableColumnId }},
+            if (_.isUndefined(locCol))
+            {
+                layerObj._parent.errorMessage = 'No columns defined';
+                return;
+            }
+
+            layerObj._view.getClusters(viewport, { plot: { locationId: locCol.tableColumnId }},
                 layerObj.getMinDistanceForViewportPixels(viewport),
                 function(data)
             {

@@ -47,7 +47,7 @@ module Canvas2
           else
             @context = get_context(cIds)
           end
-        elsif !self.parent.blank?
+        elsif !self.parent.blank? && self.parent.respond_to?(:child_context)
           @context = self.parent.child_context
         end
       end

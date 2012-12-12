@@ -8,8 +8,10 @@ module Canvas2
     end
 
     def self.string_substitute(obj, resolver)
-      if obj.blank?
+      if obj.nil?
         return ''
+      elsif obj.blank?
+        return obj
       elsif obj.is_a? String
         return Util.resolve_string(obj, resolver)
       elsif obj.is_a? Array

@@ -69,9 +69,11 @@ module Frontend
     config.assets.version = '1.0'
 
     # TTL for fragment caching, currently only used for DataSlate
-    config.cache_ttl_fragment = 60.minutes
+    config.cache_ttl_fragment = 2.hours
     # TTL for model caching, when calling find_cache* - this caching is beneficial, but is more
-    # likely to result in columnId synchronization issues.
+    # likely to result in columnId synchronization issues. Caching the model is inherently
+    # dangerous because we reference datasets by columnids which can change on updates. We /may/
+    # want to turn this off entirely for canvas View.find
     config.cache_ttl_model = 5.minutes
     # row caching on View models, when using get_rows_cached*
     config.cache_ttl_rows = 60.minutes

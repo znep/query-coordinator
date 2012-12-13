@@ -51,6 +51,15 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
     assert(ConditionalRequestHandler.check_conditional_request?(@request, @manifest))
   end
 
+
+  def test_conditional_request_last_modified_zero
+    @request.env['HTTP_IF_MODIFIED_SINCE'] = Time.at(0).httpdate
+    manifest = Manifest.new
+    empty_manifest = {}
+    manifest.set_manifest(empty_manifest)
+    assert(!ConditionalRequestHandler.check_conditional_request?(@request, manifest))
+  end
+
   def test_conditional_request_etag
     @request.env['HTTP_IF_NONE_MATCH'] = @manifest.hash
     assert(ConditionalRequestHandler.check_conditional_request?(@request, @manifest))

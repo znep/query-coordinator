@@ -221,8 +221,10 @@ module Canvas2
         end
       elsif !config['datasetId'].blank?
         begin
-          ds = Canvas2::Util.debug ? View.find(config['datasetId'], {}, false, !Canvas2::Util.is_private) :
-            View.find_cached(config['datasetId'], !Canvas2::Util.is_private)
+          # In general caching the metadata is dangerous, because there is always a window
+          # in which the metadata columnids may not match truth - when we move to SODA2
+          # we may consider it again
+          ds = View.find(config['datasetId'], {}, false, !Canvas2::Util.is_private)
         rescue CoreServer::ResourceNotFound
           errors.push(DataContextError.new(config, "No dataset found for '" +
                                            (config['id'] || config['datasetId']) + "'"))
@@ -246,9 +248,7 @@ module Canvas2
         end
       elsif !config['search'].blank?
         search_config = config['search'].merge({'limit' => 1})
-        search_response = Canvas2::Util.debug ? Clytemnestra.search_views(search_config, false,
-                                                                          !Canvas2::Util.is_private) :
-          Clytemnestra.search_cached_views(search_config, false, !Canvas2::Util.is_private)
+        search_response = Clytemnestra.search_views(search_config, false, !Canvas2::Util.is_private)
         ds = search_response.results.first
         if ds.nil? && config['required']
           errors.push(DataContextError.new(config, "No dataset found for '" +

@@ -107,6 +107,7 @@ javascripts:
     - public/javascripts/component/data/charts.js
     - public/javascripts/component/data/map.js
     - public/javascripts/component/data/repeater.js
+    - public/javascripts/component/data/simple-table.js
     - public/javascripts/component/data/table.js
     - public/javascripts/component/actions/create-chart.js
     - public/javascripts/component/actions/create-map.js

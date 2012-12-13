@@ -7,6 +7,7 @@
         return this.each(function()
         {
             var $wizard = $(this);
+            $wizard.attr('aria-live', 'polite');
             var $paneContainer = $wizard.children('ul');
 
             var $panes = $paneContainer.children('li').detach();
@@ -18,9 +19,11 @@
             var stateStack = [];
 
         // append control row
-            var $wizardButtons = $.tag({ tagName: 'ul', 'class': 'wizardButtons clearfix', contents: [
+            var $wizardButtons = $.tag({ tagName: 'ul', 'class': 'wizardButtons clearfix',
+                'aria-live': 'polite', contents: [
                 { tagName: 'li', 'class': 'cancel', contents: { tagName: 'a', 'class': 'button cancelButton',
-                    contents: opts.cancelText, href: opts.cancelPath } },
+                    contents: opts.cancelText,
+                    href: _.isString(opts.onCancel) ? opts.onCancel : '#cancel' } },
                 { tagName: 'li', 'class': 'next', contents: { tagName: 'a', 'class': 'button nextButton',
                     contents: opts.nextText, href: '#' } },
                 { tagName: 'li', 'class': 'prev', contents: { tagName: 'a', 'class': 'button prevButton',

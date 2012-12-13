@@ -27,9 +27,9 @@ $(function()
         }
     ];
     summaries = [
-      querySummary,
-      ipSummary,
-      appSummary
+      querySummary
+      //ipSummary,
+      //appSummary
     ];
     details = [];
 

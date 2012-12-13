@@ -63,6 +63,7 @@
             });
 
             $domObj.addClass('hide position-' + sidebarObj.settings.position);
+            $domObj.attr('aria-live', 'polite');
 
             $(window).resize(function() { handleResize(sidebarObj); });
             $domObj.resize(function() { handleResize(sidebarObj); });

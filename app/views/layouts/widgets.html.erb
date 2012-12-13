@@ -71,6 +71,10 @@ http://www.socrata.com
 
   <% if Rails.env != 'production' %>
       <%= include_javascripts 'debug' %>
+  <%- else -%>
+    <script type="text/javascript">
+      $.debug = function() {};
+    </script>
   <% end %>
 
   <script type="text/javascript">

@@ -54,6 +54,8 @@ module Frontend
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
+    config.log_tags = [:domain, :uuid]
+
     # Enforce whitelist mode for mass assignment.
     # This will create an empty whitelist of attributes available for mass-assignment for all models
     # in your app. As such, your models will need to explicitly whitelist or blacklist accessible

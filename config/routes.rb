@@ -301,6 +301,7 @@ Frontend::Application.routes do
 
     # Canvas 2
     match '/template/:id', :action => 'template'
+    match '*path.*ext', :action => 'page'
     match '*path', :action => 'page'
     root :action => 'page'
   end

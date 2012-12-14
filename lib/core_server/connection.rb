@@ -170,8 +170,8 @@ module CoreServer
 
       @request_count[Thread.current.object_id] = (@request_count[Thread.current.object_id] || 0) + 1
 
-      # Make anon if requested
-      request['X-Socrata-Auth'] = 'unauthenticated' if is_anon
+      # Make anon if requested, unless there's a good reason not to (see allow_anon)
+      request['X-Socrata-Auth'] = 'unauthenticated' if is_anon && !(CurrentDomain.feature? :staging_lockdown)
 
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname

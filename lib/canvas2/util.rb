@@ -134,6 +134,10 @@ module Canvas2
       view.render(partial, assigns)
     end
 
+    def self.csv_escape(str)
+      '"' + (str || '').to_s.gsub('"', '\"') + '"'
+    end
+
   private
     class AppHelper
       include ActionView::Helpers::TagHelper

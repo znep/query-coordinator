@@ -109,6 +109,7 @@ javascripts:
     - public/javascripts/component/data/repeater.js
     - public/javascripts/component/data/simple-table.js
     - public/javascripts/component/data/table.js
+    - public/javascripts/component/data/tabular-export.js
     - public/javascripts/component/actions/create-chart.js
     - public/javascripts/component/actions/create-map.js
     - public/javascripts/component/actions/button.js

@@ -117,17 +117,47 @@ module Canvas2
   class Table < DataRenderer
   end
 
-  class SimpleTable < CanvasWidget
-    def render_contents
+  class TabularData < CanvasWidget
+    protected
+    def columns
+      return @cols if !@cols.blank?
+
+      @cols = []
+      if @properties['columns'].is_a?(Array)
+        @cols = string_substitute(@properties['columns'])
+      elsif @properties['columns'].is_a?(Hash) && @properties['columns']['datasetColumns'] &&
+        !context.nil? && !context[:dataset].blank?
+        ex_f = string_substitute(@properties['columns']['excludeFilter'])
+        ex_f = [] if ex_f.blank?
+        inc_f = string_substitute(@properties['columns']['includeFilter'])
+        inc_f = [] if inc_f.blank?
+        context[:dataset].visible_columns.each do |c|
+          unless ex_f.all? {|k, v| !(Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))} &&
+            (@properties['columns']['includeFilter'].blank? ||
+             inc_f.any? {|k, v| (Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))})
+            next
+          end
+
+          @cols.push({ 'id' => c.fieldName, 'text' => c.name })
+        end
+      end
+      @cols
+    end
+
+    def head_row
       head_config = string_substitute(@properties['header'] || {})
       if !head_config.nil? && head_config['columns'] && columns.length > 0
-        head = '<tr>' + columns.map { |c| '<th scope="col" class="' + c['id'] +
-          '">' + c['text'] + '</th>' }.join('') + '</tr>'
+        header_row = { 'cells' => columns.map do |c|
+          { 'value' => c['text'], 'htmlClass' => c['id'], 'isColumn' => true }
+        end }
       else
-        head = add_row({ 'isHeader' => true }.merge(@properties['header'] || {}))
+        header_row = @properties['header'] || {}
       end
+      add_row({ 'isHeader' => true }.merge(header_row))
+    end
 
-      tbody_rows = []
+    def body_rows
+      b_rows = []
       if !context.blank?
         if context[:type] == 'dataset'
           col_map = {}
@@ -155,12 +185,76 @@ module Canvas2
             r
           end
 
-          rows.each_with_index { |r, i| tbody_rows.push(add_row(@properties['row'], r, i, rows.length)) }
+          rows.each_with_index { |r, i| b_rows.push(add_row(@properties['row'], r, i, rows.length)) }
         elsif context[:type] == 'datasetList'
-          context[:datasetList].each_with_index { |ds, i| tbody_rows.push(add_row(@properties['row'], ds, i, context[:datasetList].length)) }
+          context[:datasetList].each_with_index { |ds, i| b_rows.push(add_row(@properties['row'], ds, i, context[:datasetList].length)) }
         end
       end
+      b_rows
+    end
 
+    def add_row(config, row = nil, row_index = nil, row_length = nil)
+      if !row_index.nil? && !row_length.nil?
+        row = (row || {}).merge({ _rowIndex: row_index, _rowDisplayIndex: row_index + 1,
+                          _rowEvenOdd: (row_index % 2) == 0 ? 'evenRow' : 'oddRow',
+                          _rowFirstLast: row_index == 0 ? 'firstRow' :
+                            row_index == row_length - 1 ? 'lastRow' : 'innerRow' })
+      end
+
+      comp_row = PrivateTabularDataRow.new(config.clone(), self, row)
+      config = comp_row.string_substitute(config)
+
+      if config.has_key?('valueRegex')
+        r = Regexp.new(config['valueRegex']['regex'])
+        v = config['valueRegex']['value']
+        result = r.match(v).blank?
+        result = !result if config['valueRegex']['invert']
+        return '' if result
+      end
+
+      cells = []
+      if config['cells'].is_a?(Hash) && columns.length > 0
+        cells = columns.map.with_index { |col, i| add_cell(config['cells'][col['id']], config,
+                                                   i, columns.length, col['id']) }
+      elsif config['cells'].is_a?(Array)
+        cells = config['cells'].map.with_index { |cl, i| add_cell(cl, config, i, cells.length) }
+      end
+      render_row(cells, config)
+    end
+
+    def render_row(cells, config)
+      ''
+    end
+
+    def add_cell(cell, row_config, col_index, col_length, col_id = nil)
+      cell = string_substitute(cell || {}, { _colIndex: col_index,
+                              _colDisplayIndex: col_index + 1,
+                              _colEvenOdd: (col_index % 2) == 0 ? 'evenCol' : 'oddCol',
+                              _colFirstLast: col_index == 0 ? 'firstCol' :
+                                (col_index == col_length - 1) ? 'lastCol' : 'innerCol' })
+      render_cell(cell, row_config, col_id)
+    end
+
+    def render_cell(cell, row_config, col_id)
+      ''
+    end
+  end
+
+  class PrivateTabularDataRow < CanvasWidget
+    def is_hidden
+      true
+    end
+
+    def render
+      ['', false]
+    end
+  end
+
+  class SimpleTable < TabularData
+    def render_contents
+      head = head_row
+
+      tbody_rows = body_rows
       caption_class = ''
       head_class = ''
       foot_class = ''
@@ -184,82 +278,58 @@ module Canvas2
     end
 
     protected
-    def columns
-      return @cols if !@cols.blank?
 
-      @cols = []
-      if @properties['columns'].is_a?(Array)
-        @cols = string_substitute(@properties['columns'])
-      elsif @properties['columns'].is_a?(Hash) && @properties['columns']['datasetColumns'] &&
-        !context.nil? && !context[:dataset].blank?
-        ex_f = string_substitute(@properties['columns']['excludeFilter'])
-        ex_f = [] if ex_f.blank?
-        inc_f = string_substitute(@properties['columns']['includeFilter'])
-        inc_f = [] if inc_f.blank?
-        context[:dataset].visible_columns.each do |c|
-          unless ex_f.all? {|k, v| !(Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))} &&
-            (@properties['columns']['includeFilter'].blank? ||
-             inc_f.any? {|k, v| (Array.try_convert(v) || [v]).include?(Util.deep_get(c, k))})
-            next
-          end
-
-          @cols.push({ 'id' => c.fieldName, 'text' => c.name })
-        end
-      end
-      @cols
-    end
-
-    def add_row(config, row = nil, row_index = nil, row_length = nil)
-      if !row_index.nil? && !row_length.nil?
-        row = (row || {}).merge({ _rowIndex: row_index, _rowDisplayIndex: row_index + 1,
-                          _rowEvenOdd: (row_index % 2) == 0 ? 'evenRow' : 'oddRow',
-                          _rowFirstLast: row_index == 0 ? 'firstRow' :
-                            row_index == row_length - 1 ? 'lastRow' : 'innerRow' })
-      end
-
-      comp_row = PrivateSimpleTableRow.new(config.clone(), self, row)
-      config = comp_row.string_substitute(config)
-
-      if config.has_key?('valueRegex')
-        r = Regexp.new(config['valueRegex']['regex'])
-        v = config['valueRegex']['value']
-        result = r.match(v).blank?
-        result = !result if config['valueRegex']['invert']
-        return '' if result
-      end
-
-      cells = []
-      if config['cells'].is_a?(Hash) && columns.length > 0
-        cells = columns.map.with_index { |col, i| add_cell(config['cells'][col['id']], config,
-                                                   i, columns.length, col['id']) }
-      elsif config['cells'].is_a?(Array)
-        cells = config['cells'].map.with_index { |cl, i| add_cell(cl, config, i, cells.length) }
-      end
+    def render_row(cells, config)
       '<tr class="' + (config['htmlClass'] || '') + '">' + cells.join('') + '</tr>'
     end
 
-    def add_cell(cell, row_config, col_index, col_length, col_id = nil)
-      cell = string_substitute(cell || {}, { _colIndex: col_index,
-                              _colDisplayIndex: col_index + 1,
-                              _colEvenOdd: (col_index % 2) == 0 ? 'evenCol' : 'oddCol',
-                              _colFirstLast: col_index == 0 ? 'firstCol' :
-                                (col_index == col_length - 1) ? 'lastCol' : 'innerCol' })
+    def render_cell(cell, row_config, col_id)
       tag = row_config['isHeader'] || cell['isHeader'] ? 'th' : 'td'
       scope = ''
-      scope = 'row' if cell['isHeader']
-      scope = 'col' if row_config['isHeader'] && cell['isColumn']
+      scope = 'scope="row"' if cell['isHeader']
+      scope = 'scope="col"' if row_config['isHeader'] && cell['isColumn']
       '<' + tag + ' class="' + [col_id, cell['htmlClass']].compact.join(' ') + '"' + scope + '>' +
         (cell['value'] || '').to_s + '</' + tag + '>'
     end
   end
 
-  class PrivateSimpleTableRow < CanvasWidget
-    def is_hidden
-      true
+  class TabularExport < TabularData
+    def generate_file(type)
+      case type
+      when 'csv'
+        generate_csv
+      end
     end
 
-    def render
-      ['', false]
+    # For debug mode
+    def render_contents
+      [generate_csv, true]
+    end
+
+    def self.page_types
+      ['export']
+    end
+
+    protected
+    def generate_csv
+      head = head_row
+
+      data_rows = body_rows
+
+      if data_rows.length < 1 && @properties.has_key?('noResults')
+        nr_conf = string_substitute(@properties['noResults'])
+        data_rows.push(add_row(nr_conf['row'])) if nr_conf.has_key?('row')
+      end
+
+      head + "\n" + data_rows.join("\n")
+    end
+
+    def render_row(cells, config)
+      cells.join(',')
+    end
+
+    def render_cell(cell, row_config, col_id)
+      Util.csv_escape((cell['value'] || '').to_s)
     end
   end
 

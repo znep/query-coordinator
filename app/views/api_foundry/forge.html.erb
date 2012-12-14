@@ -3,7 +3,6 @@
   <title>Socrata API Foundry | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="logo"><h1><img src="/images/apifoundry/api-foundry-logo.png" alt="Socrata API Foundry"></img></h1></div>
 <div class="contentBox fixedWidth">
   <form id="newApiForm">
     <div id="aboveslide">
@@ -35,7 +34,7 @@
           </h1>
           <p>Let's get started by creating an API over your data. </p>
           <p>You can go forward and back through the steps - your changes are saved along the way.</p>
-          <a id="docslink" href="http://opendata.socrata.com/api/docs/"><p>Read more about the Socrata API Foundry</p></a>
+          <a id="docslink" href="http://www.socrata.com/api-foundry/"><p>Read more about the Socrata API Foundry</p></a>
         </li>
         <li id="datasetResourceName" class="wizpane" data-wizardpanename="datasetResourceName"> 
           <div class="paneControlOuter">
@@ -154,6 +153,9 @@
          <a id="docslink" href="/developers/docs/<%= @view.resourceName %>"><h3>View the generated documentation</h3></a>
         </li>
       </ul>
+    </div>
+    <div id="tagline">
+      This API is being created with <a href="http://www.socrata.com/api-foundry/">Socrata API Foundry</a>
     </div>
 
     <% content_for :js_footer do %>

@@ -4,7 +4,6 @@
   <title>Socrata API Management | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="logo"><h1><img src="/images/apifoundry/api-foundry-logo.png" alt="Socrata API Foundry"></img></h1></div>
 <div id="apiAdminBox" class="contentBox fixedWidth">
 
   <% content_for :adminsection do %>
@@ -27,7 +26,10 @@
       <%= yield :nav_crumb %>
     </ul>
   </div>
-  <%= yield :adminsection %>
+
+  <div id="adminContent">
+    <%= yield :adminsection %>
+  </div>
 
   <% content_for :templates do %>
     <%= render(:partial => 'templates/grid_sidebar') %>

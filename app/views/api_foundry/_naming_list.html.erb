@@ -1,5 +1,5 @@
 <a name="naming"></a>
-<h2>Names and Descriptions</h2>
+<h1 class="center">Names and Descriptions</h1>
 
 <% content_for :nav_crumb do %>
   <li>Names and Descriptions</a></li>
@@ -7,7 +7,7 @@
 <div id="names" class="managesection">
   <ul>
     <% @view.columns.each do |column| %>
-      <li><a href="<%= "naming/" + column.fieldName %>"><%= column.name %></a></li>
+      <li><h2><a href="<%= "naming/" + column.fieldName %>"><%= column.name %></a></h2></li>
     <% end %>
   </ul>
 </div>

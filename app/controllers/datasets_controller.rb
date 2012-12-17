@@ -264,6 +264,32 @@ class DatasetsController < ApplicationController
     @view = View.find(params[:id])
   end
 
+  def working_copy
+    view = View.find(params[:id])
+    unpub_ds = view.unpublished_dataset
+    if unpub_ds.blank?
+      # make copy
+      unpub_ds = view.make_unpublished_copy
+    end
+    redirect_to unpub_ds.alt_href
+  end
+
+  def publish
+    view = View.find(params[:id])
+    while !view.can_publish?
+      sleep(10)
+    end
+    pub_ds = view.publish
+    redirect_to pub_ds.alt_href
+  end
+
+  def delete_working_copy
+    view = View.find(params[:id])
+    pub_ds = view.published_dataset
+    view.delete
+    redirect_to (pub_ds.nil? ? profile_index_path : pub_ds.alt_href)
+  end
+
 # end alt actions
 
   def math_validate

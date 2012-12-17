@@ -483,6 +483,10 @@ class View < Model
     end
   end
 
+  def delete
+    self.class.delete(self.id)
+  end
+
   def delete_favorite
     self.data['flags'].delete("favorite")
     self.class.delete_favorite(self.id)
@@ -727,7 +731,7 @@ class View < Model
   def can_edit?
     data['rights'] && (data['rights'].include?('write') ||
       data['rights'].include?('add') ||
-      data['rights'].include?('delete')) && !is_grouped?
+      data['rights'].include?('delete')) && !is_grouped? && !is_api?
   end
 
   def can_read?
@@ -1234,6 +1238,31 @@ class View < Model
       @got_unpublished = true
     end
     @unpublished
+  end
+
+  def published_dataset
+    if @got_published.nil?
+      path = "/#{self.class.name.pluralize.downcase}/#{id}.json?method=getPublicationGroup"
+      @published = self.class.parse(CoreServer::Base.connection.get_request(path)).detect {|v|
+        v.is_blist? && v.is_published?}
+      @got_published = true
+    end
+    @published
+  end
+
+  def make_unpublished_copy
+    path = "/views/#{id}/publication.json?method=copy"
+    self.class.parse(CoreServer::Base.connection.create_request(path))
+  end
+
+  def publish
+    path = "/views/#{id}/publication.json"
+    self.class.parse(CoreServer::Base.connection.create_request(path))
+  end
+
+  def can_publish?
+    return true if !columns.any? { |c| c.renderTypeName == 'location' }
+    JSON.parse(CoreServer::Base.connection.get_request("/geocoding/#{id}.json?method=pending"))['view'] < 1
   end
 
   def can_replace?

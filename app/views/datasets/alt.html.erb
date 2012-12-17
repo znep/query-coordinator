@@ -37,6 +37,12 @@
     <%- if @view.can_email? -%>
       <li><a href="<%= email_dataset_path(@view.id) %>">Email...</a></li>
     <%- end -%>
+    <%- if @view.is_published? && @view.is_blist? && @view.can_edit? -%>
+      <li>This dataset is published. To edit, <a href="<%= working_copy_dataset_path(@view.id) %>">make a working copy</a></li>
+    <%- end -%>
+    <%- if @view.is_unpublished? && @view.can_publish? -%>
+      <li><a href="<%= publish_dataset_path(@view.id) %>">Publish Dataset</a></li>
+    <%- end -%>
     <%- if @view.can_modify_data? -%>
       <%- if module_available? :dataset_append -%>
         <li><a href="<%= append_dataset_path(@view.id) %>">Append Rows via Upload...</a></li>
@@ -44,6 +50,9 @@
       <%- if module_available? :dataset_refresh -%>
         <li><a href="<%= append_dataset_path(@view.id) %>?type=replace">Replace Rows via Upload...</a></li>
       <%- end -%>
+    <%- end -%>
+    <%- if @view.is_unpublished? && @view.has_rights?('delete') -%>
+      <li><a href="<%= delete_working_copy_dataset_path(@view.id) %>">Delete This Working Copy</a></li>
     <%- end -%>
     <%- if @view.is_tabular? -%>
     <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>

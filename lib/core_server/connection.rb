@@ -196,6 +196,23 @@ module CoreServer
         end
       end
 
+      if result.is_a?(Net::HTTPAccepted) # 202
+        res_obj = JSON.parse(result.body, {:max_nesting => 30})
+        if res_obj.key?('ticket')
+          sleep(10)
+          return get_request({ticket: res_obj['ticket']}.to_json, custom_headers, false, is_anon)
+        else
+          while result.is_a?(Net::HTTPAccepted) # 202
+            sleep(10)
+            result = log(request) do
+              Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
+                http.request(request)
+              end
+            end
+          end
+        end
+      end
+
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
       if !result.is_a?(Net::HTTPSuccess)
         parsed_body = JSON.parse(result.body, {:max_nesting => 25})

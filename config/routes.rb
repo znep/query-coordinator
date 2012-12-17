@@ -194,6 +194,9 @@ Frontend::Application.routes do
       get :append
       get :contact
       get :thumbnail
+      get :working_copy
+      get :publish
+      get :delete_working_copy
     end
   end
 

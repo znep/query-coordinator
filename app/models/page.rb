@@ -158,7 +158,7 @@ private
   end
 
   def self.generate_cache_key(mtime)
-    app_helper.cache_key("page-dataset", {
+    app_helper.cache_key("page-dataset-v2", {
       'domain' => CurrentDomain.cname,
       'updated' => mtime
     })

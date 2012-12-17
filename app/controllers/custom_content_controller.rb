@@ -113,7 +113,7 @@ class CustomContentController < ApplicationController
     pages_time = VersionAuthority.resource('pages')
 
     page_ext = (params[:ext] || '').downcase
-    path = full_path = '/' + params[:path]
+    path = full_path = '/' + (params[:path] || '')
     if !page_ext.blank?
       full_path += '.' + page_ext
       if page_ext != 'csv' && page_ext != 'xlsx'

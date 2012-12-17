@@ -604,6 +604,28 @@
   &.routingApproval #{$subselector}
     background-position: 0 -352px
 
+//API Management icons
+@mixin api-management-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    height: 50px
+    width: 50px
+    background-position: center
+
+  & .ico-permissions-sharing #{$subselector}
+    background-image: url(/stylesheets/images/apifoundry/ico-permissions-sharing.png)
+  & .ico-applications #{$subselector}
+    background-image: url(/stylesheets/images/apifoundry/ico-applications.png)
+  & .ico-metrics #{$subselector}
+    background-image: url(/stylesheets/images/apifoundry/ico-metrics.png)
+  & .ico-names-descriptions #{$subselector}
+    background-image: url(/stylesheets/images/apifoundry/ico-names-descriptions.png)
+  & .ico-transfer-ownership #{$subselector}
+    background-image: url(/stylesheets/images/apifoundry/ico-transfer-ownership.png)
+  & .ico-delete #{$subselector}
+    background-image: url(/stylesheets/images/apifoundry/ico-delete.png)
+
 // icons/new_dataset_icons.png
 @mixin new-dataset-icons($subselector: '.icon')
   #{$subselector}

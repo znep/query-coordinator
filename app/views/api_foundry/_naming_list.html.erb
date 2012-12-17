@@ -1,13 +1,18 @@
 <a name="naming"></a>
-<h1 class="center">Names and Descriptions</h1>
+<h2 class="title center">Names and Descriptions</h2>
 
 <% content_for :nav_crumb do %>
   <li>Names and Descriptions</a></li>
 <% end %>
 <div id="names" class="managesection">
-  <ul>
+  <ul class="title flowlist">
     <% @view.columns.each do |column| %>
-      <li><h2><a href="<%= "naming/" + column.fieldName %>"><%= column.name %></a></h2></li>
+      <li class="ico-names-descriptions">
+        <a href="<%= "naming/" + column.fieldName %>">
+          <span class="icon"> </span>
+          <p><%= column.name %></p>
+        </a>
+      </li>
     <% end %>
   </ul>
 </div>

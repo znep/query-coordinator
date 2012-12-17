@@ -3,43 +3,64 @@
 #navDiv
   margin-bottom: 2.5em
 #apiAdminBox
+  font-size: 1.2em
   width: 100em
 #adminContent
-  padding-top: 1.5em
+  margin: auto
   padding-bottom: 1.5em
+  padding-top: 1.5em
+  text-align: center
 .error
   color: red
 #paneSpinner
   position: relative
   #paneSpinnerInside
-    position: absolute
-    width: 100%
-    text-align: center
     bottom: 0em
+    position: absolute
+    text-align: center
+    width: 100%
 .center
   text-align: center
 #applications
   text-align: center
+.contentBox .title, #transfer h2
+  color: #666
+  font-size: 1.8em
+  font-weight: normal
+  line-height: 2em
+.flowlist
+  @include api-management-icons
+  text-align: center
+  li
+    display: inline-block
+    list-style-type: none
+    margin: 1em
+    width: 13em
+  .icon
+    border: 1px solid $color_chrome_box_border
+    margin: 1em auto
+    padding: 1em
 #tableWrapper
-  padding: 1em
   display: inline-block
   font-size: 1.2em
+  padding: 1em
 .appDesc
   color: grey
   font-style: italic
   font-size: .9em
 .throttleTable
   .left
-    text-align: left
     padding-left: 0em
+    text-align: left
   td
     padding: 1em
   th
     .bg
       background: #f0f0f0
-      padding: 4px
       margin: 4px
+      padding: 4px
   .tableTitle
+    font-size: 1.6em
     width: 28em
 .limitEdit
   width: 5em
@@ -49,10 +70,10 @@
 
 .apiFieldPane
   label
-    width: 8em
     display: inline-block
     margin-top: 0.5em
     vertical-align: top
+    width: 8em
   label.error
     margin-left: 8.5em
     width: 26em
@@ -62,12 +83,12 @@
     margin-bottom: 1.5em
   .additionalHelp
     label
-      width: 30em
-      margin-left: 8.5em
-      text-align: left
-      margin-top: 0em
       color: grey
       font-style: italic
+      margin-left: 8.5em
+      margin-top: 0em
+      text-align: left
+      width: 30em
   #description
     width: 29em
 
@@ -75,14 +96,18 @@
   min-height: 5em
   .subtitleBlock
     .subtitle
-      font-size: 2em
+      font-size: 1.8em
 #transfer
+  width: 40em
   .subtitleBlock
     .subtitle
       font-size: 1.2em
 .managesection
-  padding-top: 1em
-  font-size: 1.2em
+  display: inline-block
+  margin: 1em
+  padding: 1em
+  text-align: left
+  vertical-align: top
 .paneContent
   padding-top: 2em
 .paneTitle
@@ -90,11 +115,11 @@
 .commonForm .formHeader
   padding-left: 0em
 .sharingForm, .togglePermissionsForm
-  width: 36em
+  width: 28em
 
 .column
-  width: 42em
   float: right
+  width: 42em
 .previewTitle
   color: grey
 .docPreview
@@ -104,19 +129,19 @@
 .docPreviewInside
   padding-left: 1em
 .docPreviewPage
+  background-color: #F1F1F1
+  background-image: url('/images/apifoundry/corner-flip.png')
+  background-position: right top
+  background-repeat: no-repeat
+  border: 1px solid $color_chrome_box_border
+  @include box-shadow(3px, 3px, 4px, #cfcfcf)
   margin-top: 0.5em
   padding: 1em
-  border: 1px solid $color_chrome_box_border
-  background-image: url('/images/apifoundry/corner-flip.png')
-  background-repeat: no-repeat
-  background-position: right top
-  background-color: #F1F1F1
-  @include box-shadow(3px, 3px, 4px, #cfcfcf)
 
 .removeShareLink
-  @include sprite-repeater-icons
   float: left
   padding-left: 0.5em
+  @include sprite-repeater-icons
 
 .shareDatasetButton
   @include sprite-repeater-icons

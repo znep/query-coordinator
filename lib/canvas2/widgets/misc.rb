@@ -362,10 +362,11 @@ module Canvas2
         items[k] = items[k].nil? ? '' : items[k]
       end
 
-      ['<a href="' + items['href'] + '" class="' +
+      ['<a href="' + string_substitute(items['href']) + '" class="' +
         (!@properties['notButton'] ? 'button ' : '') + init_state +
-        '" title="' + items['title'] + '" rel="' + (@properties['external'] ? 'external' : '') +
-        '">' + items['text'] + '</a>', true]
+        '" title="' + string_substitute(items['title']) + '" rel="' +
+        (@properties['external'] ? 'external' : '') +
+        '">' + string_substitute(items['text']) + '</a>', true]
     end
   end
 

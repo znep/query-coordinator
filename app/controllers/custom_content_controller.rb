@@ -222,12 +222,14 @@ class CustomContentController < ApplicationController
           respond_to do |format|
             format.csv do
               file_content = @page.generate_file('csv')
-              write_fragment(@cache_key, file_content, Rails.application.config.cache_ttl_fragment)
+              write_fragment(@cache_key, file_content,
+                             :expires_in => Rails.application.config.cache_ttl_fragment)
               render :text => file_content
             end
             format.xlsx do
               file_content = @page.generate_file('xlsx')
-              write_fragment(@cache_key, file_content, Rails.application.config.cache_ttl_fragment)
+              write_fragment(@cache_key, file_content,
+                             :expires_in => Rails.application.config.cache_ttl_fragment)
               render :text => file_content
             end
             format.any { render :action => 'page' }

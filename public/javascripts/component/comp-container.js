@@ -334,12 +334,15 @@
         },
 
         // Override to perform layout beyond simple DOM order
-        _arrange: function() {
+        _arrange: function()
+        {
             this.each(function(child) {
                 if (child._arrange)
                     child._arrange();
             });
             this._super();
+            if (!$.isBlank(this.$dom))
+            { this.$dom.trigger('canvas_container_updated'); }
         },
 
         // Propagate design mode to children

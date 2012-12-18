@@ -4,6 +4,7 @@ require File.expand_path('../boot', __FILE__)
 require 'action_controller/railtie'
 require 'active_resource/railtie'
 require 'rails/test_unit/railtie'
+require 'active_support/core_ext/numeric/time'
 # require 'sprockets/railtie'
 
 require File.join(File.dirname(__FILE__), '..', 'lib/core_server/railtie')

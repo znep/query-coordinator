@@ -1,9 +1,10 @@
 class Manifest
   attr_accessor :max_age
+  attr_accessor :last_mtime, :first_mtime, :manifest
 
   def add_resource(name, mtime)
     if !name.is_a?(String) || !mtime.is_a?(Integer)
-      Rails.logger.info("INVALID MANIFEST for key #{name}")
+      Rails.logger.info("INVALID MANIFEST for key #{name} mtime #{mtime.to_s}")
       return
     end
     @manifest ||= {}

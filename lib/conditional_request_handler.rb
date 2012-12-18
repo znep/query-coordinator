@@ -8,7 +8,7 @@ module ConditionalRequestHandler
   def self.set_conditional_request_headers(response, manifest)
     return if manifest.nil?
     response.headers[ETAG] = manifest.hash
-    response.headers[LAST_MODIFIED] = manifest.last_mtime.httpdate
+    response.headers[LAST_MODIFIED] = Time.now.httpdate
     # The cache-control settings are conservative here.
     # public/private
     # If "public", apache mod_cache will perform their own caching; they may serve 200's
@@ -21,6 +21,7 @@ module ConditionalRequestHandler
     response.headers[CACHE_CONTROL] = "must-revalidate, no-cache, private"
     # Set a special header for testing
     response.headers[X_SOCRATA_CONDITIONAL] = "#{response.headers[ETAG]},#{response.headers[LAST_MODIFIED]}"
+    Rails.logger.info("Setting conditional headers: #{response.headers[X_SOCRATA_CONDITIONAL]}")
 
   end
 
@@ -30,8 +31,7 @@ module ConditionalRequestHandler
     return false if manifest.nil?
     # check manifest hash
     return true if etag_matches_hash?(request, manifest.hash)
-    return true if !request.if_modified_since.nil? && request.if_modified_since > manifest.last_mtime
-    false
+    return modified_since_matches?(request, manifest)
   end
 
   private
@@ -41,11 +41,26 @@ module ConditionalRequestHandler
   CACHE_CONTROL = "Cache-Control".freeze
   X_SOCRATA_CONDITIONAL = "X-Socrata-Conditional".freeze
 
+  def self.etag_exists?(request)
+    !request.if_none_match.nil?
+  end
+
+  def self.modified_since_matches?(request, manifest)
+    # if the etag check failed we can check the last modified
+    return false if etag_exists?(request)
+    if !request.if_modified_since.nil?
+      Rails.logger.info("  Last-Modified-Since found: #{request.if_modified_since}")
+      return true if request.if_modified_since > manifest.last_mtime
+    end
+    false
+  end
+
   #
   # Current version of rails doesn't have multiple etag tracking; so this will help
   #
   def self.etag_matches_hash?(request, manifest_hash)
     if !request.if_none_match.nil?
+      Rails.logger.info("  ETag found: #{request.if_none_match}")
       request.if_none_match.split(/\s*,\s*/).each { |etag|
         return true if etag.gsub(/^\"|\"$/, "") == manifest_hash
       }

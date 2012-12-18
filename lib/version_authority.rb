@@ -26,10 +26,11 @@ module VersionAuthority
   # return nil if the manifest is invalid or the hash of the retrieved manifest
   # if the manifest is valid. All manifests newer than checkAge are considered
   # valid
-  def self.validate_manifest?(path, user, core_manifest_fetcher=method(:get_core_manifest))
-    name = manifest_key(path, user)
+  def self.validate_manifest?(key, user, core_manifest_fetcher=method(:get_core_manifest))
+    name = manifest_key(key, user)
     manifest = Rails.cache.read(name, :raw => true)
     if !manifest.nil?
+      Rails.logger.info("Read manifest from cache #{manifest.to_json}")
       check_age = (manifest.max_age.minutes if manifest.max_age) || Rails.application.config.manifest_check_age
       cut_off_time = (Time.now - check_age).to_i
       datasets = []
@@ -54,6 +55,7 @@ module VersionAuthority
       #     times are newer than the existing manifest times return nil. If any of the true
       #     manifest times are newer than the check_times return nil.
       #     if the core server returns fewer results than expected return nil.
+      Rails.logger.info("Checking our manifest against the core server's version manifest")
       true_manifest = core_manifest_fetcher.call(datasets.sort)
       return nil if true_manifest.size != datasets.size
       datasets.each {|d|
@@ -66,16 +68,17 @@ module VersionAuthority
     end
   end
 
-  def self.expire(path, user)
-    name = manifest_key(path, user)
+  def self.expire(key, user)
+    name = manifest_key(key, user)
     manifest = Rails.cache.delete(name)
   end
 
   # set the manifest for a given path/user; domain is added implicitly
   # the manifest is a map of resource => check_time(long) - return a hash of
   # the manifest which can be used as part of the cache key.
-  def self.set_manifest(path, user, manifest)
-    name = manifest_key(path, user)
+  def self.set_manifest(key, user, manifest)
+    name = manifest_key(key, user)
+    Rails.logger.info("Writing manifest to cache #{manifest.to_json}")
     Rails.cache.write(name, manifest, :expires_in => 24.hours)
     manifest.hash
   end

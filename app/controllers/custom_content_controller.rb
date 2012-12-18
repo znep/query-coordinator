@@ -135,7 +135,7 @@ class CustomContentController < ApplicationController
 
     # Global Page Caching, regardless of the current user
     cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
-    global_manifest = VersionAuthority.validate_manifest?(full_path, GLOBAL_USER)
+    global_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, GLOBAL_USER)
 
     if !global_manifest.nil?
       Rails.logger.info("Global Manifest valid; reading content from fragment cache is OK")
@@ -153,7 +153,7 @@ class CustomContentController < ApplicationController
 
     if @cached_fragment.nil?
       # There was no Globally Cached page, check User Manifest
-      user_manifest = VersionAuthority.validate_manifest?(full_path, cache_user_id)
+      user_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, cache_user_id)
       if !user_manifest.nil?
         Rails.logger.info("User Manifest valid; reading content from fragment cache is OK")
         return true if handle_conditional_request(request, response, user_manifest)
@@ -238,7 +238,7 @@ class CustomContentController < ApplicationController
           if global_manifest.nil? && user_manifest.nil?
             user_key = @page.private_data? ? cache_user_id : GLOBAL_USER
             manifest.max_age = @page.max_age
-            VersionAuthority.set_manifest(full_path, user_key, manifest)
+            VersionAuthority.set_manifest(cache_key_no_user, user_key, manifest)
           end
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;

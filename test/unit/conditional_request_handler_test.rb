@@ -1,10 +1,13 @@
 require 'rack/etag'
 require 'time'
+require 'timecop'
+
 
 class ConditionalRequestHandlerTest < ActionController::TestCase
   include Rack::Test::Methods
 
   def setup
+    @start = Time.at(98765)
     @complicated_manifest = {
         "search-views-some-stuff-that-does-not-matter" => 666,
         "ab12-cd34" => 4321,
@@ -12,15 +15,14 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
     }
     @manifest = Manifest.new
     @manifest.set_manifest(@complicated_manifest)
+    Timecop.freeze(@start)
   end
 
   def test_header_set
     response = ActionDispatch::Response.new
     ConditionalRequestHandler.set_conditional_request_headers(response, @manifest)
     assert_equal(@manifest.hash, response.headers['ETag'])
-    assert_equal(@manifest.last_mtime.httpdate, response.headers['Last-Modified'])
-    assert_equal(Time.at(666).httpdate, response.headers['Last-Modified'])
-
+    assert_equal(@start.httpdate, response.headers['Last-Modified'])
   end
 
   class MockApp
@@ -70,6 +72,12 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
     @request.env['HTTP_IF_NONE_MATCH'] = '"acb", ' + @manifest.hash
     assert(ConditionalRequestHandler.check_conditional_request?(@request, @manifest))
 
+  end
+
+  def test_conditional_request_does_not_match_on_time_if_etag_check_fails
+    @request.env['HTTP_IF_NONE_MATCH'] = '"acb", "bcd"'
+    @request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now().httpdate
+    assert(!ConditionalRequestHandler.check_conditional_request?(@request, @manifest))
   end
 
 

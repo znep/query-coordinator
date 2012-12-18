@@ -10,6 +10,7 @@ class Model
     @data = data
     self.data = @data
     self.update_data = {}
+    self.check_time = Time.now.to_i
   end
 
   # Override super.id and return the id of the model

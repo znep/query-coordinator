@@ -6,16 +6,25 @@ class CustomContentControllerTest < ActionController::TestCase
   GLOBAL_USER = "".freeze
   PAGE_PATH = "hello".freeze
   PAGE_KEY = ("/" + PAGE_PATH).freeze
+  BASIC_PARAMS = [[:path,  PAGE_PATH.dup], [:action, "page"], [:controller, "custom_content"] ].sort.freeze
 
   def setup
     init_core_session
     init_current_domain
-    VersionAuthority.expire(PAGE_KEY, GLOBAL_USER)
-    VersionAuthority.expire(PAGE_KEY, ANONYMOUS_USER)
-    VersionAuthority.expire(PAGE_KEY, "test-test")
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, GLOBAL_USER).nil?
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, ANONYMOUS_USER).nil?
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, "test-test").nil?
+    pages_time = nil
+
+
+    @basic_cache_params = { 'domain' => CurrentDomain.cname,
+                     'pages_updated' => pages_time,
+                     'domain_updated' => CurrentDomain.default_config_updated_at,
+                     'params' => Digest::MD5.hexdigest(BASIC_PARAMS.to_json) }
+    @basic_cache_key  = AppHelper.instance.cache_key("canvas2-page", @basic_cache_params)
+    VersionAuthority.expire(@basic_cache_key, GLOBAL_USER)
+    VersionAuthority.expire(@basic_cache_key, ANONYMOUS_USER)
+    VersionAuthority.expire(@basic_cache_key, "test-test")
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, GLOBAL_USER).nil?
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, "test-test").nil?
   end
 
   def teardown
@@ -26,7 +35,7 @@ class CustomContentControllerTest < ActionController::TestCase
     user = prepare_page()
     get :page, {:path => PAGE_PATH.dup}
     assert_response :success
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, user.id)
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
   end
 
   def prepare_page(fixture="test/fixtures/dataslate-private-hello.json", anonymous=false)
@@ -62,8 +71,8 @@ class CustomContentControllerTest < ActionController::TestCase
     init_current_user(@controller, nil)
     get :page, {:path => PAGE_PATH.dup}
     assert_response :success
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, GLOBAL_USER)
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, ANONYMOUS_USER).nil?
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, GLOBAL_USER)
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
     assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
   end
 
@@ -71,14 +80,14 @@ class CustomContentControllerTest < ActionController::TestCase
     user = prepare_page(fixture="test/fixtures/dataslate-private-hello.json", anonymous=false)
     get :page, {:path => PAGE_PATH.dup}
     assert_response :success
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, GLOBAL_USER).nil?
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, ANONYMOUS_USER).nil?
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, GLOBAL_USER).nil?
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
     assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
 
     user = prepare_page(fixture="test/fixtures/dataslate-private-hello.json", anonymous=false)
     get :page, {:path => PAGE_PATH.dup}
     assert_response :success
-    assert VersionAuthority.validate_manifest?(PAGE_KEY, user.id)
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
     assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
   end
 

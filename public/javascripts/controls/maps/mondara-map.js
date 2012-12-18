@@ -148,7 +148,8 @@
                     layerObj._getFeature.handlers.click.evt.xy).getCenterLonLat();
 
                 layerObj._parent.showPopup(lonlat, $popupText[0].innerHTML,
-                    { closeBoxCallback: function(evt) { layerObj._getFeature.unselectAll(); } });
+                    { onlyIf: 'loading',
+                      closeBoxCallback: function(evt) { layerObj._getFeature.unselectAll(); } });
 
                 layerObj._selectionLayer.addFeatures(features);
             });

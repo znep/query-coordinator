@@ -852,6 +852,9 @@
             if (mapObj._displayFormat.disableFlyouts) { return; }
             options = options || {};
 
+            if (options.onlyIf && mapObj._popup && mapObj._popup.closeKey != options.onlyIf)
+            { return; }
+
             if (!options.keepOpen) { mapObj.closePopup(null, true); }
 
             if (!lonlat)

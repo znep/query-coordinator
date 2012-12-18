@@ -115,7 +115,7 @@
                 case 'row':
                     loadDataset(dc, id, config, function(ds)
                     {
-                        loadRow(ds, function(row)
+                        loadRow(ds, config, function(row)
                         {
                             if ($.isBlank(row))
                             { errorLoading(id); }
@@ -389,9 +389,9 @@
         }
     };
 
-    var loadRow = function(dataset, callback)
+    var loadRow = function(dataset, config, callback)
     {
-        dataset.getRows(0, 1, function(r)
+        var rowResult = function(r)
         {
             r = _.first(r);
             if ($.isBlank(r))
@@ -401,10 +401,12 @@
             }
 
             // Fake support for row fieldNames
-            var fr = {};
-            _.each(dataset.visibleColumns, function(c) { fr[c.fieldName] = r[c.lookup]; });
-            callback(fr);
-        });
+            callback(dataset.rowToSODA2(r));
+        };
+        if (!$.isBlank(config.rowId))
+        { dataset.getRowsByIds($.makeArray(config.rowId), rowResult); }
+        else
+        { dataset.getRows(0, 1, rowResult); }
     };
 
     var hookTotals = function(config, ds)

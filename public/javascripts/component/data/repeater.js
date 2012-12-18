@@ -205,28 +205,9 @@ $.component.Container.extend('Repeater', 'content', {
             else
             {
                 // Render records
-                var columnMap = {};
-                var columnFieldNameMap = {};
-                _.each(view.columns, function(c) { 
-                    columnMap[c.id] = c.fieldName;
-                    columnFieldNameMap[c.fieldName] = c.id; 
-                });
                 view.getRows(cObj.position, cObj.length, function(rows)
                 {
-                    // Create entity TODO - mapping will be unnecessary w/ SODA 2
-                    rows = _.map(rows, function(row)
-                    {
-                        var r = {};
-                        _.each(row, function(v, k)
-                        {
-                            if (!$.isBlank(columnMap[k]))
-                            { r[columnMap[k]] = v; }
-                            else if (k.match(/[a-z]+/) && $.isBlank(columnFieldNameMap[k])) // if user column collides with system column, user column wins.
-                            { r[k] = v; }
-                        });
-                        return r;
-                    });
-
+                    rows = _.map(rows, function(r) { return view.rowToSODA2(r); });
                     if (!$.isBlank(cObj._properties.groupBy))
                     { renderGroupItems(cObj, rows, doneWithRowsCallback); }
                     else

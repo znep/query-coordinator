@@ -246,7 +246,7 @@ var RowSet = ServerModel.extend({
         {
             ids = _.reject(ids || [], function(id)
             {
-                var r = ds._rowIDLookup[id];
+                var r = rs._rowIDLookup[id];
                 if (r)
                 { return loaded.push(r); }
             });

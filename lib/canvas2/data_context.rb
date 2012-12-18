@@ -113,11 +113,15 @@ module Canvas2
 
         when 'row'
           ret_val = get_dataset(config, lambda do |ds|
-            # Cache single-row requests
-            if Canvas2::Util.debug
-              r = ds.get_rows(1, 1, {}, false, !Canvas2::Util.is_private)[:rows][0]
+            if config.key?('rowId')
+              r = ds.get_row(config['rowId'], !Canvas2::Util.is_private)
             else
-              r = ds.get_cached_rows(1, 1, {}, !Canvas2::Util.is_private)[:rows][0]
+              # Cache single-row requests
+              if Canvas2::Util.debug
+                r = ds.get_rows(1, 1, {}, false, !Canvas2::Util.is_private)[:rows][0]
+              else
+                r = ds.get_cached_rows(1, 1, {}, !Canvas2::Util.is_private)[:rows][0]
+              end
             end
 
             if r.nil?
@@ -126,9 +130,7 @@ module Canvas2
               return !config['required']
             end
 
-            fr = {}
-            ds.visible_columns.each {|c| fr[c.fieldName] = r[c.id.to_s]}
-            available_contexts[id] = {id: id, type: config['type'], row: fr}
+            available_contexts[id] = { id: id, type: config['type'], row: ds.row_to_SODA2(r) }
             log_timing(start_time, config)
             return true
           end)

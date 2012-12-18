@@ -341,10 +341,11 @@ class View < Model
     end
   end
 
-  def get_row(row_id)
+  def get_row(row_id, is_anon = false)
     JSON.parse(CoreServer::Base.connection.create_request(
-      "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?ids=#{row_id}&method=getByIds&asHashes=true"), {:max_nesting => 25})[0]
+        "/#{self.class.name.pluralize.downcase}/#{id}/" +
+        "rows.json?ids=#{row_id}&method=getByIds&asHashes=true", nil, {}, false, false, is_anon),
+      {:max_nesting => 25})[0]
   end
 
   def get_row_by_index(row_index)
@@ -522,6 +523,16 @@ class View < Model
     dhash
   end
 
+  def row_to_SODA2(row)
+    r = {}
+    columns.each { |c| r[c.fieldName] = row[c.id.to_s] }
+    if !@cached_rows.nil? && @cached_rows.key?(:meta_columns)
+      @cached_rows[:meta_columns].each { |c| r[c['fieldName']] = row[c['name']] }
+    else # I guess we'll guess...
+      row.each { |k, v| r[':' + k] = v if !k.match(/^\d/) }
+    end
+    r
+  end
 
   def numberOfComments
     data['numberOfComments'] || 0

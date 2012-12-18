@@ -907,6 +907,13 @@ var Dataset = ServerModel.extend({
         { ds.trigger('row_change', [rowChanges]); }
     },
 
+    rowToSODA2: function(row)
+    {
+        var r = {};
+        _.each(this.columns, function(c) { r[c.fieldName] = row[c.lookup]; });
+        return r;
+    },
+
     getAggregates: function(callback, customAggs)
     {
         var ds = this;

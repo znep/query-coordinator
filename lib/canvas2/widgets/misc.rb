@@ -160,12 +160,6 @@ module Canvas2
       b_rows = []
       if !context.blank?
         if context[:type] == 'dataset'
-          col_map = {}
-          col_field_name_map = {}
-          context[:dataset].visible_columns.each do |c|
-            col_map[c.id.to_s] = c.fieldName
-            col_field_name_map[c.fieldName] = c.id
-          end
           row_count = string_substitute(@properties['rowBodyCount'] || 100)
           row_page = string_substitute(@properties['rowBodyPage'] || 1)
           if Canvas2::Util.debug
@@ -173,19 +167,9 @@ module Canvas2
           else
             rows = context[:dataset].get_cached_rows(row_count, row_page, {}, !Canvas2::Util.is_private)
           end
-          rows = rows[:rows].map do |row|
-            r = Hash.new
-            row.each do |k, v|
-              if !col_map[k].blank?
-                r[col_map[k]] = v
-              elsif k.match(/[a-z]+/) && col_field_name_map[k].nil? # if user column collides with system column name, user column wins
-                r[k] = v
-              end
-            end
-            r
+          rows[:rows].each_with_index do |r, i|
+            b_rows.push(add_row(@properties['row'], context[:dataset].row_to_SODA2(r), i, rows.length))
           end
-
-          rows.each_with_index { |r, i| b_rows.push(add_row(@properties['row'], r, i, rows.length)) }
         elsif context[:type] == 'datasetList'
           context[:datasetList].each_with_index { |ds, i| b_rows.push(add_row(@properties['row'], ds, i, context[:datasetList].length)) }
         end

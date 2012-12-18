@@ -24,9 +24,6 @@ module Canvas2
       fully_rendered = true
       all_c = []
       if !context.blank?
-        col_map = {}
-        col_field_name_map = {}
-
         if context.is_a? Array
           context.each_with_index { |item, i| all_c << add_row(item, i, item.clone) }
 
@@ -48,26 +45,12 @@ module Canvas2
             end
 
           else
-            context[:dataset].visible_columns.each {|c| 
-              col_map[c.id.to_s] = c.fieldName
-              col_field_name_map[c.fieldName] = c.id
-            }
             if Canvas2::Util.debug
               rows = context[:dataset].get_rows(100, 1, {}, false, !Canvas2::Util.is_private)
             else
               rows = context[:dataset].get_cached_rows(100, 1, {}, !Canvas2::Util.is_private)
             end
-            rows = rows[:rows].map do |row|
-              r = Hash.new
-              row.each do |k, v|
-                if !col_map[k].blank?
-                  r[col_map[k]] = v
-                elsif k.match(/[a-z]+/) && col_field_name_map[k].nil? # if user column collides with system column name, user column wins
-                  r[k] = v
-                end
-              end
-              r
-            end
+            rows = rows[:rows].map { |row| context[:dataset].row_to_SODA2(row) }
 
             if !@properties['groupBy'].blank?
               all_c = render_group_items(rows)

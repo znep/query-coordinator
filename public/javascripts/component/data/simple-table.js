@@ -155,37 +155,16 @@ var updateProperties = function(cObj, properties)
         {
             var view = cObj._dataContext.dataset;
             // Render records
-            var columnMap = {};
-            var columnFieldNameMap = {};
-            _.each(view.columns, function(c)
-            {
-                columnMap[c.id] = c.fieldName;
-                columnFieldNameMap[c.fieldName] = c.id;
-            });
             var rowCount = cObj._stringSubstitute(
                     cObj._properties.rowBodyCount || 100);
             view.getRows((cObj._stringSubstitute(cObj._properties.rowBodyPage || 1) - 1) * rowCount, rowCount,
                 function(rows)
                 {
-                    // Create entity TODO - mapping will be unnecessary w/ SODA 2
-                    rows = _.map(rows, function(row)
-                    {
-                        var r = {};
-                        _.each(row, function(v, k)
-                        {
-                            if (!$.isBlank(columnMap[k]))
-                            { r[columnMap[k]] = v; }
-                            // if user column collides with system column, user column wins.
-                            else if (k.match(/[a-z]+/) && $.isBlank(columnFieldNameMap[k]))
-                            { r[k] = v; }
-                        });
-                        return r;
-                    });
-
                     cObj.$tbody.empty();
                     var callback = doneWithRowsCallback(rows.length);
                     _.each(rows, function(r, i, list)
-                        { addRow(cObj, cObj.$tbody, cObj._properties.row, r, i, list.length, callback); });
+                        { addRow(cObj, cObj.$tbody, cObj._properties.row, view.rowToSODA2(r),
+                            i, list.length, callback); });
                 });
         }
         else if ($.subKeyDefined(cObj, '_dataContext.datasetList'))

@@ -105,7 +105,7 @@ $.Control.registerMixin('d3_impl_column', {
             vizObj._recalculateLeftOffset();
             // reposition the elems vertically
             vizObj._rerenderAxis();
-            // reposition the elmes horizonally if necessary
+            // reposition the elems horizonally if necessary
             if (needsReposition) vizObj._rerenderPositions();
             // maybe fetch some more rows if more are exposed
             vizObj.getDataForAllViews();
@@ -174,6 +174,7 @@ $.Control.registerMixin('d3_impl_column', {
             return values.concat(_.map(relevantColumns, function(col)
             {
                 if (row.invalid[col.lookup]) { return null; }
+                // use matchValue to get canonical representation of data
                 return col.dataType.matchValue ? col.dataType.matchValue(row[col.lookup]) : row[col.lookup];
             }));
         }, []);

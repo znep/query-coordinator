@@ -869,6 +869,9 @@
             mapObj._popup = popup;
             mapObj.map.addPopup(popup);
 
+            // retarded shit for OL kiddies
+            $('.olPopup > div > div:last-child').css('height', '34px');
+
             $('.olFramedCloudPopupContent')
                 .on('click', '.infoPaging a', function(event)
                 {

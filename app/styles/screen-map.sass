@@ -195,6 +195,42 @@ $geolocator_margin_top: 6px
   .titlebar .hide_infowindow
     margin-top: 0
 
+.olMap .olPopup > div
+  // content
+  .flyoutRenderer
+    .richColumn .richLine
+      border-bottom: none !important
+
+      > div
+        font-size: 1.7em
+        margin-bottom: 0.5em
+        padding-bottom: none
+
+      > span
+        font-size: 1.2em
+
+      > span + div
+        font-size: 1.2em
+        margin-bottom: inherit
+
+    a.viewRow
+      margin-top: 1em
+      text-indent: 23px
+
+  a.external_link
+    text-indent: 23px
+
+  // box
+  > div:last-child
+    height: 34px !important
+
+  .olPopupCloseBox
+    background: transparent url(/stylesheets/images/icons/menu_icons.png?3) no-repeat
+    background-position: 0 -507px
+    margin-right: -8px
+    margin-top: -4px
+
+
 .olFramedCloudPopupContent
   .infoPaging
     text-align: center

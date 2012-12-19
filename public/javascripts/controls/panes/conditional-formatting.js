@@ -166,10 +166,22 @@
             {
                 _super.call(cpObj, ds);
                 cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+
+                if ($.subKeyDefined(cpObj._parentView,
+                    'metadata.conditionalFormatting.' + cpObj._view.id))
+                {
+                    var md = $.extend(true, {}, cpObj._view.metadata);
+                    md.conditionalFormatting = $.union((md.conditionalFormatting || []),
+                        cpObj._parentView.metadata.conditionalFormatting[cpObj._view.id]);
+                    cpObj._view.update({ metadata: md });
+                }
             };
 
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
-            { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handler); }
+            {
+                cpObj._parentView = newView;
+                Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handler);
+            }
             else
             { handler(newView); }
         },
@@ -277,6 +289,15 @@
             });
 
             cpObj._view.update({metadata: newMd});
+
+            if (cpObj._parentView)
+            {
+                var parentMD = $.extend(true, {}, cpObj._parentView.metadata);
+                parentMD.conditionalFormatting = parentMD.conditionalFormatting || {};
+                parentMD.conditionalFormatting[cpObj._view.id]
+                    = (cpObj._view.metadata || {}).conditionalFormatting;
+                cpObj._parentView.update({ metadata: parentMD });
+            }
 
             cpObj._finishProcessing();
             if (_.isFunction(finalCallback)) { finalCallback(); }

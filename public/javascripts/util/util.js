@@ -669,6 +669,16 @@ $.clamp = function(number, bounds)
                 number;
 };
 
+// Underscore's _.union uses _.uniq, which uses === rather than _.isEqual.
+$.union = function()
+{
+    return _.reduce(_.flatten(arguments), function(memo, item)
+    {
+        if (_.all(memo, function(val) { return !_.isEqual(item, val); })) { memo.push(item); }
+        return memo;
+    }, []);
+};
+
 $.fn.tagName = function()
 {
     return this.get(0).tagName.toLowerCase();

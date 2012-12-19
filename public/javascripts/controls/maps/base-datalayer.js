@@ -120,7 +120,6 @@
                                    args: def.args,
                                    scope: def.scope || layerObj
                     });
-                    $.debug('df change found in', key + ' on ' + layerObj._view.id);
                 }
             });
 

@@ -292,7 +292,6 @@
         {
             var mapObj = this;
             if (layer.object) { layer = layer.object; }
-            $.debug('map element loaded', layer.name || layer.id);
 
             if (blist.openLayers.isBackgroundLayer(layer)) { layer._loaded = true; }
 
@@ -300,7 +299,6 @@
                 && _.all(mapObj.map.backgroundLayers(), function(layer) { return layer._loaded; })
                 && _.all(mapObj._children, function(cv) { return cv.ready(); }))
             {
-                $.debug('map acknowledges being ready');
                 mapObj._controls.Overview.redraw();
                 mapObj.viewportHandler().stopExpecting();
                 mapObj.viewportHandler().saveViewport(true);

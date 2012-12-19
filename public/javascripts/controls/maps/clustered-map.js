@@ -253,6 +253,8 @@
                 this._map.addControl(this._staledCluster = new blist.openLayers.StaledCluster());
                 this._staledCluster.viewportPercentage = this.settings.staleClusters;
             }
+
+            delete this._ignoreTemporary; // No reason to ignore temporaries anymore.
         },
 
         prepareRowRender: function(cluster)

@@ -171,8 +171,9 @@
                     'metadata.conditionalFormatting.' + cpObj._view.id))
                 {
                     var md = $.extend(true, {}, cpObj._view.metadata);
-                    md.conditionalFormatting = $.union((md.conditionalFormatting || []),
-                        cpObj._parentView.metadata.conditionalFormatting[cpObj._view.id]);
+                    md.conditionalFormatting = $.union(
+                        cpObj._parentView.metadata.conditionalFormatting[cpObj._view.id],
+                        (md.conditionalFormatting || []));
                     cpObj._view.update({ metadata: md });
                 }
             };

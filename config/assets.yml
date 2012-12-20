@@ -1,6 +1,4 @@
 package_path: packages
-staging:
-  allow_debugging: true
 
 javascripts:
   base:

@@ -241,7 +241,7 @@ Frontend::Application.routes do
       :constraints => {:row_id => /\d+/}
   end
 
-  # Semantic web canonical URLs
+  # Semantic web cannoical URLs
   %w{resource id}.each do |prefix|
     get "#{prefix}/:name(/:row_id)(.:format)" => 'resources#show'
   end
@@ -285,10 +285,6 @@ Frontend::Application.routes do
   match '/robots.txt' => 'robots_txt#show'
 
   match '/opensearch.xml' => 'open_search#show'
-
-  # fallback jammit paths for raw exposure
-  match '/assets/raw/:package.:extension',
-    :to => 'jammit#package', :as => :jammit, :constraints => { :extension => /.+/ }
 
   # Non-production environments get a special controller for test actions
   unless Rails.env.production?

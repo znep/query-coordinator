@@ -1205,7 +1205,7 @@
     // I'm super uncomfortable with the way I'm referencing the mapObj here.
     blist.openLayers.Viewport = OpenLayers.Class(OpenLayers.Control, {
 
-        EVENT_TYPES: ['viewportchanged'],
+        EVENT_TYPES: ['viewportchanged', 'resize'],
 
         initialize: function(mapObj, viewport)
         {
@@ -1278,7 +1278,11 @@
             }
 
             var resizeEvent = !this.mapSize.equals(this.map.getSize());
-            if (resizeEvent) { this.mapSize = this.map.getSize().clone(); }
+            if (resizeEvent)
+            {
+                this.mapSize = this.map.getSize().clone();
+                this.events.triggerEvent('resize');
+            }
 
             if (this.expected() || this.handlingEvent == 'moveend' || resizeEvent) { return; }
             this.events.triggerEvent('viewportchanged');

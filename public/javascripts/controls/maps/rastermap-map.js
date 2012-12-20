@@ -17,6 +17,8 @@
 
             layerObj._parent.viewportHandler()
                 .events.register('viewportchanged', layerObj, layerObj.onViewportChange);
+            layerObj._parent.viewportHandler()
+                .events.register('resize', layerObj, layerObj.onResize);
         },
 
         initializeFlyouts: function(){}, // No flyouts
@@ -29,10 +31,24 @@
             delete this._idList;
             this._parent.viewportHandler().events
                 .unregister('viewportchanged', this, this.onViewportChange);
+            this._parent.viewportHandler().events
+                .unregister('resize', this, this.onResize);
 
             this.$dom().remove();
             this._view.unbind(null, null, this);
             this._view.unbind(null, null, this._parent._primaryView);
+        },
+
+        // There is a fixed-size canvas created that doesn't flex with new map sizes.
+        // The simplest solution was to just tear down and re-create at minimal cost.
+        onResize: function()
+        {
+            this._displayLayer.destroy();
+            this._displayLayer = new OpenLayers.Layer.Heatmap(this._view.name,
+                this._map,
+                { 'element': this._parent.currentDom, 'radius': 25, 'visible': true });
+            this._map.addLayer(this._displayLayer);
+            this._displayLayer.setDataSet({ max: 50, data: this._dataStore });
         },
 
         preferredExtent: function()

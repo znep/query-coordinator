@@ -157,6 +157,14 @@ protected
     end
   end
 
+  def normalize_color(color, want_pound = true)
+    if want_pound
+      color.start_with?('#') ? color : "##{color}"
+    else
+      color.start_with?('#') ? color[1..-1] : color
+    end
+  end
+
   def get_gradient_definition(name, value)
     result = ''
 
@@ -164,7 +172,7 @@ protected
       stop['position'].to_f unless stop['position'].nil? }
 
     gradient_string = stops.map{ |stop| stop.has_key?('position') ?
-      "#{stop['color']}:#{stop['position']}" : stop['color'] }.join(',')
+      "#{normalize_color(stop['color'], false)}:#{stop['position']}" : normalize_color(stop['color'], false) }.join(',')
 
     # ie (based on raw string)
     result += "@mixin box_gradient_#{name}($width, $height, $additional)\n"
@@ -178,10 +186,8 @@ protected
 
     result += "@mixin gradient_#{name}\n"
 
-    first_color = first_stop['color']
-    first_color = '#' + first_color if !first_color.start_with?('#')
-    last_color = last_stop['color']
-    last_color = '#' + last_color if !last_color.start_with?('#')
+    first_color = normalize_color(first_stop['color'])
+    last_color = normalize_color(last_stop['color'])
     # firefox
     result += "  background: -moz-linear-gradient(0 0 270deg, #{first_color}, #{last_color}"
     prev_stop_position = 0
@@ -194,14 +200,14 @@ protected
         prev_stop_position = stop_position
       end
 
-      result += ", ##{stop['color']} #{prev_stop_position}%"
+      result += ", #{normalize_color(stop['color'])} #{prev_stop_position}%"
     end
     result += ")\n"
 
     # webkit
     result += "  background: -webkit-gradient(linear, left top, left bottom," +
               " from(#{first_color}), to(#{last_color})" +
-              stops.map{ |stop| ", color-stop(#{stop['position']},#{(stop['color'].start_with?('#') ? '' : '#') + stop['color']})" }.join +
+              stops.map{ |stop| ", color-stop(#{stop['position']},#{normalize_color(stop['color'])})" }.join +
               ")\n"
 
     # default background-color for fallback

@@ -112,17 +112,6 @@ class CustomContentController < ApplicationController
 
     pages_time = VersionAuthority.resource('pages')
 
-    page_ext = (params[:ext] || '').downcase
-    path = full_path = '/' + (params[:path] || '')
-    if !page_ext.blank?
-      full_path += '.' + page_ext
-      if page_ext != 'csv' && page_ext != 'xlsx'
-        path += '.' + page_ext
-        page_ext = ''
-      end
-      request.format = page_ext.to_sym if !page_ext.blank? && !@debug
-    end
-
     #TODO: This should include the locale (whenever we figure out how that is specified)
     cache_params = { 'domain' => CurrentDomain.cname,
                      'pages_updated' => pages_time,
@@ -135,7 +124,7 @@ class CustomContentController < ApplicationController
 
     # Global Page Caching, regardless of the current user
     cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
-    global_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, GLOBAL_USER)
+    global_manifest = VersionAuthority.validate_manifest?(params[:path], GLOBAL_USER)
 
     if !global_manifest.nil?
       Rails.logger.info("Global Manifest valid; reading content from fragment cache is OK")
@@ -153,7 +142,7 @@ class CustomContentController < ApplicationController
 
     if @cached_fragment.nil?
       # There was no Globally Cached page, check User Manifest
-      user_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, cache_user_id)
+      user_manifest = VersionAuthority.validate_manifest?(params[:path], cache_user_id)
       if !user_manifest.nil?
         Rails.logger.info("User Manifest valid; reading content from fragment cache is OK")
         return true if handle_conditional_request(request, response, user_manifest)
@@ -178,8 +167,9 @@ class CustomContentController < ApplicationController
     # template, instead of the main layout
     @custom_meta = @meta
     @meta = nil
+    path = "/#{params[:path]}"
     # Make sure action name is always changed for homepage, even if cached
-    self.action_name = 'homepage' if full_path == '/'
+    self.action_name = 'homepage' if path == '/'
     if @cached_fragment.nil? || @debug
       Canvas2::DataContext.reset
       Canvas2::Util.set_params(params)
@@ -187,13 +177,13 @@ class CustomContentController < ApplicationController
       Canvas2::Util.set_env({
         domain: CurrentDomain.cname,
         renderTime: Time.now.to_i,
-        path: full_path,
+        path: path,
         siteTheme: CurrentDomain.theme
       })
-      Canvas2::Util.set_path(full_path)
+      Canvas2::Util.set_path(path)
       if CurrentDomain.module_available?('canvas2')
         if @page_override.nil?
-          @page, @vars = Page[path, page_ext, pages_time]
+          @page, @vars = Page[path, pages_time]
         else
           @page = @page_override
           @vars = {}
@@ -202,7 +192,7 @@ class CustomContentController < ApplicationController
       end
       unless @page
         @meta = @custom_meta
-        if full_path == '/'
+        if path == '/'
           homepage
         else
           render_404
@@ -214,33 +204,14 @@ class CustomContentController < ApplicationController
         @cache_key = Canvas2::Util.is_private ? cache_key_user : cache_key_no_user
         self.action_name = 'page'
         begin
-          if @page.page_type == 'export'
-            context_result = @page.set_context(@vars)
-            raise Canvas2::NoContentError.new(Canvas2::DataContext::errors[0]) if context_result == false
-          end
-
-          respond_to do |format|
-            format.csv do
-              file_content = @page.generate_file('csv')
-              write_fragment(@cache_key, file_content,
-                             :expires_in => Rails.application.config.cache_ttl_fragment)
-              render :text => file_content
-            end
-            format.xlsx do
-              file_content = @page.generate_file('xlsx')
-              write_fragment(@cache_key, file_content,
-                             :expires_in => Rails.application.config.cache_ttl_fragment)
-              render :text => file_content
-            end
-            format.any { render :action => 'page' }
-          end
+          render :action => 'page'
           # generate and set the manifest for this render on success; we need to recalculate the cache key here
           # This includes all data context resources along with associated modification times
           manifest = global_manifest || user_manifest || Canvas2::DataContext.manifest
           if global_manifest.nil? && user_manifest.nil?
             user_key = @page.private_data? ? cache_user_id : GLOBAL_USER
             manifest.max_age = @page.max_age
-            VersionAuthority.set_manifest(cache_key_no_user, user_key, manifest)
+            VersionAuthority.set_manifest(params[:path], user_key, manifest)
           end
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
@@ -264,11 +235,7 @@ class CustomContentController < ApplicationController
       # When we're rendering a cached item, force it to use the page action,
       # since we may have manipulated the action name to be homepage, and there
       # is no such view
-      respond_to do |format|
-        format.csv { render :text => @cached_fragment }
-        format.xlsx { render :text => @cached_fragment }
-        format.any { render :action => 'page' }
-      end
+      render :action => 'page'
     end
   end
 

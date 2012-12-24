@@ -29,14 +29,18 @@
                                     cpObj._viewList = v;
                                     var apis = _.filter(v, function(view){return view.displayName === "API";});
                                     if (apis.length > 0){
-                                      var ea = $("#existingAPIs");
-                                      ea.show();
+                                      var $s = $('#selectAPI'), options = [], $ea = $("#existingAPIs");
+                                      $s.empty();
                                       _.each(apis, function(api){
-                                        var button = $('<a href="/api_foundry/manage/' + api.id + '"'
-                                                      + ' class="manageapi toolbarButton button"'
-                                                       +'> Manage API: ' + api.name + '</a>');
-                                        ea.after(button);
+                                        $s.append($.tag({tagName:'option', value:api.id, contents:$.htmlEscape(api.name)}));
                                       });
+                                      if ($.uniform){
+                                        $.uniform.update($s);
+                                      }
+                                      $(".manageAPI").click(function(event){
+                                        window.location.href='/api_foundry/manage/' + $s.value();
+                                      });
+                                      $ea.show();
                                     }
                                 });
                         }

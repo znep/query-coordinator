@@ -23,8 +23,8 @@
             :title => "Provide a link to this application or organization's website") %>
     </div>
     <div class="line clearfix">
-      <label for="app_token_baseUri" class="required">Callback Prefix</label>
-      <%= text_field_tag("app_token[baseUri]", @token.baseUri, :class => 'textPrompt url required',
+      <label for="app_token_baseUri">Callback Prefix</label>
+      <%= text_field_tag("app_token[baseUri]", @token.baseUri, :class => 'textPrompt url',
             :title => 'Provide the prefix to the secure (https) callback uri when using OAuth') %>
       <p>For instance, if your application will call back to
          <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> and

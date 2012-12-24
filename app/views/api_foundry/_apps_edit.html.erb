@@ -37,17 +37,25 @@
         </tr>
         <tr class="throttleEdit">
           <% if params[:token] == "anonymous" %>
-            <td class="left">Anonymous Applications</td>
+            <td class="left">
+              <span class="apiicon ico-applications"> </span>
+              Anonymous Applications
+            </td>
             <td><input name="appToken" disabled="disabled" value="<none>" ></input></td>
           <% elsif !throttle.nil? %>
             <td class="left">
-              <p class="appName"><%= throttle.appName %></p>
-              <p class="appDesc"><%= throttle.appDesc %></p>
+              <span class="apiicon ico-applications"> </span>
+              <span>
+                <p class="appName"><%= throttle.appName %></p>
+                <p class="appDesc"><%= throttle.appDesc %></p>
+              </span>
               <input name="appToken" type="hidden" value="<%= throttle.appToken %>"></input>
             </td>
             <td><input disabled="disabled" value="<%= throttle.appToken %>" >    </input></td>
           <% else %>
-            <td class="left"></td>
+            <td class="left">
+              <span class="apiicon ico-applications"> </span>
+            </td>
             <td><input name="appToken" value="" ></input></td>
           <% end %>
           <td><input name="minuteLimit" class="limitEdit hunum" value="<%= throttle.nil? ? "" : throttle.minuteLimit  %>" > </input></td>

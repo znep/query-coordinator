@@ -10,6 +10,9 @@
 <% end %>
 <a name="naming"></a>
 <div id="names" class="managesection apiFieldPane">
+  <div class="managesection">
+    <span class="apiicon ico-names-descriptions"></span>
+  </div>
   <div class="flash"></div>
     <% @view.columns.find_all{|col| col.fieldName == params[:column] }.each do |column| %>
         <% content_for :nav_crumb do %>

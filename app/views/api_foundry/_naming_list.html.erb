@@ -7,10 +7,13 @@
 <div id="names" class="managesection">
   <ul class="title flowlist">
     <% @view.columns.each do |column| %>
-      <li class="ico-names-descriptions">
+      <li>
         <a href="<%= "naming/" + column.fieldName %>">
-          <span class="icon"> </span>
-          <p><%= column.name %></p>
+          <span class="apiicon ico-names-descriptions"> </span>
+          <span class="colsummary">
+            <p class="colname"><%= column.name %></p>
+            <p class="desc"><%= truncate(column.description, :length => 115, :omission => "...") %></p>
+          </span>
         </a>
       </li>
     <% end %>

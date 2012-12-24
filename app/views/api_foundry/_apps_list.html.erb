@@ -27,8 +27,11 @@
       <% throttles.each do |throttle| %>
         <tr id="<%= throttle.appToken %>">
           <td class="left">
-            <p class="appName"><%= throttle.appName %></p>
-            <p class="appDesc"><%= throttle.appDesc %></p>
+            <span class="apiicon ico-applications"> </span>
+            <span>
+              <p class="appName"><%= throttle.appName %></p>
+              <p class="desc"><%= throttle.appDesc %></p>
+            </span>
           </td>
           <td><%= throttle.appToken %></td>
           <td class="hunum"><%= throttle.minuteLimit %></td>
@@ -41,8 +44,11 @@
       <% if !@anonThrottle.nil? %>
         <tr id="anonymous">
           <td class="left">
-            <p class="appName">Anonymous Applications</p>
-            <p class="appDesc">where no application token is provided</p>
+            <span class="apiicon ico-applications"> </span>
+            <span>
+              <p class="appName">Anonymous Applications</p>
+              <p class="desc">where no application token is provided</p>
+            </span>
           </td>
           <td>none provided</td>
           <td class="hunum"><%= @anonThrottle.minuteLimit %></td>

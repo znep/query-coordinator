@@ -1,12 +1,19 @@
 <div class="apiFoundryPaneWrapper">
-  <p><strong>API Foundry</strong> allows you to create and
-  configure one or more open, standards-based
-  Application Programming Interfaces (API) for this dataset.</p>
-  <a href="/api_foundry/forge/<%= @view.id %>"
-    class="createapi toolbarButton button"
-    title="Create an Application Programming Interface (API)
-    to grant programmatic access to this data.">Create an API</a>
-  <p id="existingAPIs" style="display:none"><strong>Existing APIs</strong> can be customized.  You can
-  control permissions, set request limits, view usage metrics, 
-  and edit the documentation.</p>
+  <div>
+    <p><strong>API Foundry</strong> allows you to create and
+    configure one or more open, standards-based
+    Application Programming Interfaces (API) for this dataset.</p>
+    <a href="/api_foundry/forge/<%= @view.id %>"
+      class="createapi toolbarButton button"
+      title="Create an Application Programming Interface (API)
+      to grant programmatic access to this data.">Create an API</a>
+  </div>
+  <div>
+    <p id="existingAPIs" style="display:none"><strong>Existing APIs</strong> can be customized.  You can
+    control permissions, set request limits, view usage metrics, 
+    and edit the documentation.</p>
+    <label>Existing APIs for this dataset:</label>
+    <select id="selectAPI"></select>
+    <a href="#manage" class="manageAPI toolbarButton button" title="Manage the selected API">Manage</a>
+  </div>
 </div>

@@ -104,15 +104,10 @@
 #metrics
   width: 85em
 #names
-  text-align: left
   .flowlist
     li
       text-align: left
-      width: 22em
-  .colname
-    margin-bottom: .5em
-  .colsummary
-    width: 15em
+      width: 25em
 #transfer
   width: 40em
   .subtitleBlock

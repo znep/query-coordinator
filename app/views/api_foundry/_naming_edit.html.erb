@@ -8,19 +8,20 @@
     </ul>
   </li>
 <% end %>
-<a name="naming"></a>
-<div id="names" class="managesection apiFieldPane">
+<div id="naming">
   <div class="managesection">
     <span class="apiicon ico-names-descriptions"></span>
   </div>
-  <div class="flash"></div>
-    <% @view.columns.find_all{|col| col.fieldName == params[:column] }.each do |column| %>
-        <% content_for :nav_crumb do %>
-          <li>
-              <%= column.name %>
-          </li>
-        <% end %>
-        <%= render :partial => 'edit_column', :locals => {:column => column, :disable_field_name => true}%>
-    <% end %>
-  <a href="#updateField" id="updateField" class="button">Apply</a>
+  <div id="editcolumn" class="managesection apiFieldPane">
+    <div class="flash"></div>
+      <% @view.columns.find_all{|col| col.fieldName == params[:column] }.each do |column| %>
+          <% content_for :nav_crumb do %>
+            <li>
+                <%= column.name %>
+            </li>
+          <% end %>
+          <%= render :partial => 'edit_column', :locals => {:column => column, :disable_field_name => true}%>
+      <% end %>
+    <a href="#updateField" id="updateField" class="button">Apply</a>
+  </div>
 </div>

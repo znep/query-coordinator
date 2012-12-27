@@ -1,7 +1,6 @@
 (function($) {
 
 $.component.Container.extend('Repeater', 'content', {
-    position: 0,
     length: 100,
 
     _init: function()
@@ -205,7 +204,7 @@ $.component.Container.extend('Repeater', 'content', {
             else
             {
                 // Render records
-                view.getRows(cObj.position, cObj.length, function(rows)
+                view.getRows(0, cObj.length, function(rows)
                 {
                     rows = _.map(rows, function(r) { return view.rowToSODA2(r); });
                     if (!$.isBlank(cObj._properties.groupBy))
@@ -213,7 +212,7 @@ $.component.Container.extend('Repeater', 'content', {
                     else
                     {
                         var callback = doneWithRowsCallback(rows.length);
-                        _.each(rows, function(r) { cObj._setRow(r, r.index, r, callback); });
+                        _.each(rows, function(r, i) { cObj._setRow(r, i, r, callback); });
                     }
                 });
             }
@@ -251,8 +250,7 @@ $.component.Container.extend('Repeater', 'content', {
     _setRow: function(row, index, entity, callback)
     {
         // Calculate the index in current set of rows and ignore if outside current window
-        var adjIndex = index - this.position;
-        if (adjIndex < 0 || adjIndex >= this.length)
+        if (index < 0 || index >= this.length)
             return;
 
         entity = entity || {};
@@ -286,18 +284,18 @@ $.component.Container.extend('Repeater', 'content', {
                     this._cloneProperties));
 
         // Remove any existing row
-        if (this._map[adjIndex])
+        if (this._map[index])
         {
-            if (!this._childrenDirty && this._map[adjIndex].id == cloneProperties.id)
+            if (!this._childrenDirty && this._map[index].id == cloneProperties.id)
             { return; }
-            this._map[adjIndex].remove();
-            this._map[adjIndex] = undefined;
+            this._map[index].remove();
+            this._map[index] = undefined;
         }
 
         cloneProperties.childContextId = row.id;
 
         // Create clone
-        var clone = this._map[adjIndex] = new $.component.Repeater.Clone(cloneProperties,
+        var clone = this._map[index] = new $.component.Repeater.Clone(cloneProperties,
                 this._componentSet);
 
         // Terrible hack; but core server doesn't support regexes in queries,
@@ -321,7 +319,7 @@ $.component.Container.extend('Repeater', 'content', {
 
         // Find position for clone
         var position;
-        for (var i = adjIndex + 1; !position && i < this._map.length; i++)
+        for (var i = index + 1; !position && i < this._map.length; i++)
             position = this._map[i];
 
         // Insert the clone

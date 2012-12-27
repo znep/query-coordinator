@@ -220,6 +220,8 @@ class CustomContentController < ApplicationController
           end
 
           respond_to do |format|
+            # Make sure HTML is first, since IE8 sends */* accept on Back
+            format.html { render :action => 'page' }
             format.csv do
               file_content = @page.generate_file('csv')
               write_fragment(@cache_key, file_content,
@@ -265,6 +267,7 @@ class CustomContentController < ApplicationController
       # since we may have manipulated the action name to be homepage, and there
       # is no such view
       respond_to do |format|
+        format.html { render :action => 'page' }
         format.csv { render :text => @cached_fragment }
         format.xlsx { render :text => @cached_fragment }
         format.any { render :action => 'page' }

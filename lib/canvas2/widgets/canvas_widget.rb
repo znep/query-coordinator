@@ -142,6 +142,15 @@ module Canvas2
       end
     end
 
+    def self.page_types
+      ['web']
+    end
+
+    def self.from_config_root(config, page)
+      @@page = page
+      from_config(config)
+    end
+
     def self.from_config(config, parent = nil, resolver_context = nil)
       if config.is_a? Array
         i = 0
@@ -151,7 +160,11 @@ module Canvas2
         end
       else
         begin
-          return Canvas2.const_get(config['type']).new(config, parent, resolver_context)
+          klass = Canvas2.const_get(config['type'])
+          raise ComponentError.new(
+            config, "Component #{config['type']} is not supported in #{@@page.page_type} page") if
+              !klass.page_types.include?(@@page.page_type)
+          return klass.new(config, parent, resolver_context)
         rescue NameError => ex
           raise ComponentError.new(config, "There is no component of type #{config['type']}",
                                    { config: config })

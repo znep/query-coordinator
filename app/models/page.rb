@@ -14,7 +14,7 @@ class Page < SodaModel
   def render(full = true)
     if full
       @timings = []
-      [Canvas2::CanvasWidget.from_config(content)].flatten.map do |w|
+      [Canvas2::CanvasWidget.from_config_root(content, self)].flatten.map do |w|
         r = w.render
         @timings.push(r[2])
         r[0]
@@ -26,6 +26,12 @@ class Page < SodaModel
 
   def render_timings
     (@timings || []).compact
+  end
+
+  def generate_file(type)
+    [Canvas2::CanvasWidget.from_config_root(content, self)].flatten.map do |w|
+      w.generate_file(type)
+    end.join('')
   end
 
   def name
@@ -44,6 +50,10 @@ class Page < SodaModel
     @update_data['locale'] || @data['locale']
   end
 
+  def metadata
+    @update_data['metadata'] || @data['metadata'] || {}
+  end
+
   def uneditable
     !content.blank? && (content['uneditable'] == true || content['uneditable'] == 'true')
   end
@@ -52,11 +62,15 @@ class Page < SodaModel
     !content.blank?  && (content['privateData'] == true || content['privateData'] == 'true')
   end
 
+  def page_type
+    metadata['export'] ? 'export' : 'web'
+  end
+
   def max_age
     !content.blank? && content['maxAge']
   end
 
-  def self.[](path, mtime)
+  def self.[](path, ext, mtime)
     mtime ||= Time.now.to_i.to_s
     if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)
       @@path_store = {}
@@ -68,12 +82,12 @@ class Page < SodaModel
       @@path_store[CurrentDomain.cname] = copy_paths(ds)
     end
 
-    unless get_item(@@path_store[CurrentDomain.cname], path)[0]
+    unless get_item(@@path_store[CurrentDomain.cname], path, ext)[0]
       return nil
     end
 
     ds = pages_data(mtime) if ds.blank?
-    get_item(ds, path)
+    get_item(ds, path, ext)
   end
 
   def self.parse(data)
@@ -99,7 +113,8 @@ private
           cur_obj[part] ||= {}
           cur_obj = cur_obj[part]
         end
-        if cur_obj.has_key?(':page')
+        key = ':' + c.page_type
+        if cur_obj.has_key?(key)
           Rails.logger.error "***************** Routing collision! #{c.path}"
           # Shouldn't overload our messaging since it only happens when the
           # paths are regenerated, which shouldn't be too often
@@ -113,7 +128,7 @@ private
                            :parameters => {:duplicate_config => c})
           end
         else
-          cur_obj[':page'] = c
+          cur_obj[key] = c
         end
       end
       Rails.cache.write(cache_key, ds)
@@ -123,11 +138,11 @@ private
 
   def self.copy_paths(path_hash)
     obj = {}
-    path_hash.each { |k, v| obj[k] = k == ':page' ? true : copy_paths(v) }
+    path_hash.each { |k, v| obj[k] = (k == ':web' || k == ':export') ? true : copy_paths(v) }
     return obj
   end
 
-  def self.get_item(paths, path)
+  def self.get_item(paths, path, ext)
     cur_obj = paths
     vars = []
     path.split('/').each do |part|
@@ -137,7 +152,9 @@ private
       cur_obj = cur_obj[p]
       vars.push(part) if p == ':var'
     end
-    return [cur_obj[':page'], vars]
+    # Currently has an extension iff it is export
+    key = ext == 'csv' || ext == 'xlsx' ? ':export' : ':web'
+    return [cur_obj[key], vars]
   end
 
   def self.generate_cache_key(mtime)

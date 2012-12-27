@@ -133,35 +133,28 @@ class CustomContentController < ApplicationController
     # We do not yet know whether the page can be cached globally, so we need to check both
     # the global cache and the per-user cache.
 
+    cache_user_id = @current_user ? @current_user.id : ANONYMOUS_USER
     # Global Page Caching, regardless of the current user
     cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
-    global_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, GLOBAL_USER)
-
-    if !global_manifest.nil?
-      Rails.logger.info("Global Manifest valid; reading content from fragment cache is OK")
-      return true if handle_conditional_request(request, response, global_manifest)
-      @cached_fragment = read_fragment(cache_key_no_user)
-    else
-      Rails.logger.info("Global Manifest is invalid")
-    end
-
     # Per-User Cache, including anonymous users
     # Note that the per-user cache can also mean users which are not logged in, or anonymous
-    cache_user_id = @current_user ? @current_user.id : ANONYMOUS_USER
     cache_key_user = app_helper.cache_key("canvas2-page", cache_params.merge({
                    'current_user' => cache_user_id}))
 
-    if @cached_fragment.nil?
-      # There was no Globally Cached page, check User Manifest
-      user_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, cache_user_id)
-      if !user_manifest.nil?
-        Rails.logger.info("User Manifest valid; reading content from fragment cache is OK")
-        return true if handle_conditional_request(request, response, user_manifest)
+    lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, cache_user_id)
+
+    if !lookup_manifest.nil?
+      Rails.logger.info("Manifest valid; reading content from fragment cache is OK")
+      return true if handle_conditional_request(request, response, lookup_manifest)
+      @cached_fragment = read_fragment(cache_key_no_user)
+      if @cached_fragment.nil?
+        Rails.logger.info("No global fragment cache; reading content from fragment cache is OK")
         @cached_fragment = read_fragment(cache_key_user)
-      else
-        Rails.logger.info("User Manifest invalid; page must be re-rendered")
       end
+    else
+      Rails.logger.info("Manifest is invalid")
     end
+
 
     # The cached fragment is an error page; just return that then
     if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:') && !@debug
@@ -238,11 +231,10 @@ class CustomContentController < ApplicationController
           end
           # generate and set the manifest for this render on success; we need to recalculate the cache key here
           # This includes all data context resources along with associated modification times
-          manifest = global_manifest || user_manifest || Canvas2::DataContext.manifest
-          if global_manifest.nil? && user_manifest.nil?
-            user_key = @page.private_data? ? cache_user_id : GLOBAL_USER
+          manifest = lookup_manifest || Canvas2::DataContext.manifest
+          if lookup_manifest.nil?
             manifest.max_age = @page.max_age
-            VersionAuthority.set_manifest(cache_key_no_user, user_key, manifest)
+            VersionAuthority.set_manifest(cache_key_no_user, cache_user_id, manifest)
           end
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;

@@ -213,7 +213,10 @@
                 { viewport: this._parent.viewportHandler().toQuery(
                     blist.openLayers.geographicProjection, this._locCol.id) });
 
-            this.setQuery(query, true);
+            if (_.isEqual(this._query, query))
+            { this.getData(); }
+            else
+            { this.setQuery(query, true); }
         },
 
         handleRowChange: function(rows)

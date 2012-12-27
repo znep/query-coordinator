@@ -221,13 +221,17 @@ class View < Model
   #
   # Return a tuple for a getRowsByIds request
   #
-  def get_rows_request(per_page, page = 1, conditions = {}, include_meta = false)
+  def get_rows_request(per_page_or_ids, page = 1, conditions = {}, include_meta = false)
     params = { :method => 'getByIds',
                :asHashes => true,
                :accessType => 'WEBSITE',
-               :start => (page - 1) * per_page,
-               :length => per_page,
                :meta => include_meta}
+    if per_page_or_ids.is_a?(Array)
+      params[:ids] = per_page_or_ids
+    else
+      params[:start] = (page - 1) * per_page_or_ids
+      params[:length] = per_page_or_ids
+    end
     merged_conditions = self.query.cleaned.deep_merge(conditions)
     request_body = {
                'name' => self.name,
@@ -342,9 +346,9 @@ class View < Model
   end
 
   def get_row(row_id, is_anon = false)
-    JSON.parse(CoreServer::Base.connection.create_request(
-        "/#{self.class.name.pluralize.downcase}/#{id}/" +
-        "rows.json?ids=#{row_id}&method=getByIds&asHashes=true", nil, {}, false, false, is_anon),
+    req = get_rows_request([row_id])
+    JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {},
+                                                          false, false, is_anon),
       {:max_nesting => 25})[0]
   end
 

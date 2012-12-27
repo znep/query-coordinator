@@ -911,7 +911,6 @@ var Dataset = ServerModel.extend({
     {
         var r = {};
         _.each(this.columns, function(c) { r[c.fieldName] = row[c.lookup]; });
-        r.index = row.index; // HACK: Jeff is this right?
         return r;
     },
 

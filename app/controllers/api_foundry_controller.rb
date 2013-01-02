@@ -6,9 +6,9 @@ class ApiFoundryController < ApplicationController
     return render_404 if !module_available?(:api_foundry)
     @apiView = View.get_predeploy_api_view(params[:id])
     @view = @apiView.nil? ? get_view(params[:id]) : @apiView
-    @makeNewView = @apiView.nil?
-    @rnSuggestion = get_resource_name_suggestion(@view.name)
     return if @view.nil?
+    @makeNewView = true
+    @rnSuggestion = get_resource_name_suggestion(@view.name)
     redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
   end
 

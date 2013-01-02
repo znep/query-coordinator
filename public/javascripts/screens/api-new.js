@@ -53,14 +53,16 @@ $(function(){
         if (available) {
           $(".availableError").hide();
         }
-        else {resourceNameConflictHandler() }
+        else {conflictHandler("this resource name is not available") }
         if (callback) callback(name, available);
       }
     });
   }
 
-  function resourceNameConflictHandler(){
-    $(".availableError").show();
+  function conflictHandler(message){
+    var $error = $(".validationError");
+    $error.show();
+    $error.text(message);
     $("#paneSpinner").hide();
     $(".nextButton").removeClass("disabled");
     $(".prevButton").removeClass("disabled");
@@ -155,7 +157,22 @@ $(function(){
           resourceName:$("#resourceName").val().trim()
         },
         defaultTransition,
-        resourceNameConflictHandler
+        function(err){
+          conflictHandler(JSON.parse(err.responseText).message);
+        }
+      );
+      return false;
+    }
+
+    onNext.datasetName = function($pane, state){
+      updateView(
+        {
+          name:$("#name").val().trim()
+        },
+        defaultTransition,
+        function(err){
+          conflictHandler(JSON.parse(err.responseText).message);
+        }
       );
       return false;
     }
@@ -313,11 +330,18 @@ $(function(){
     });
     panes.push({
       uniform: true,
-      key: 'displayUniqueId',
+      key: 'datasetName',
       ordinal: ordinal++,
       onActivate: defaultOnActivate,
       onNext: defaultOnNext
     });
+    //panes.push({
+    //  uniform: true,
+    //  key: 'displayUniqueId',
+    //  ordinal: ordinal++,
+    //  onActivate: defaultOnActivate,
+    //  onNext: defaultOnNext
+    //});
     //panes.push({
     //  uniform: true,
     //  key: 'datasetUniqueId',

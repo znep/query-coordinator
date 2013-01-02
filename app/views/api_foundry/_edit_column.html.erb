@@ -19,9 +19,10 @@
     </div>
     <div class="line formControl">
       <label class="required" for="fieldName">Field Name</label>
-      <%- fnClasses = "textPrompt required liveDoc" -%>
-      <%- fnClasses += (defined? disable_field_name) && disable_field_name ? " disabled" : "" -%>
-      <%= text_field_tag("fieldName", column.fieldName, :title => "enter a field name", :class => fnClasses) %>
+      <%- fieldnameFixed = (defined? disable_field_name) && disable_field_name -%>
+      <%- fnClasses = "textPrompt required liveDoc" + (fieldnameFixed ? " disabled" : "") -%>
+      <%- fnTitle = (fieldnameFixed ? "field name cannot be changed since API is published" : "enter a field name" ) -%>
+      <%= text_field_tag("fieldName", column.fieldName, :title => fnTitle, :class => fnClasses) %>
       <div class="additionalHelp"><label>The identifier used by developers and applications</label></div>
     </div>
     <div class="paneFormControls">
@@ -29,6 +30,7 @@
         <label for="description">Description</label>
         <%= text_area_tag("description", '', :title => "enter a description", :class => "textPrompt liveDoc") %>
         <div class="additionalHelp"><label>The description that will be provided to end-users</label></div>
+        <div class="additionalHelp"><label>This is optional</label></div>
       </div>
     </div>
   </div>

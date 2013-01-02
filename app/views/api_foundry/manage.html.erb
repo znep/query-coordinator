@@ -30,6 +30,9 @@
   <div class="adminContent">
     <%= yield :adminsection %>
   </div>
+  <div id="tagline">
+    This API is managed with <a href="http://www.socrata.com/api-foundry/">Socrata API Foundry</a>
+  </div>
 
   <% content_for :templates do %>
     <%= render(:partial => 'templates/grid_sidebar') %>

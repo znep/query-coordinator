@@ -37,9 +37,11 @@
                                       if ($.uniform){
                                         $.uniform.update($s);
                                       }
-                                      $(".manageAPI").click(function(event){
-                                        window.location.href='/api_foundry/manage/' + $s.value();
-                                      });
+                                      function setApiLink(){
+                                        $(".manageAPI").attr('href', '/api_foundry/manage/' + $s.value());
+                                      }
+                                      setApiLink();
+                                      $s.change(setApiLink);
                                       $ea.show();
                                     }
                                 });

@@ -303,12 +303,12 @@ module Canvas2
       'string_format' => lambda do |v, transf|
         return v if v.blank?
 
-        v.strip! if transf[:format].include?('t')
+        v = v.strip if transf[:format].include?('t')
 
-        v.downcase! if transf[:format].include?('l')
+        v = v.downcase if transf[:format].include?('l')
 
         if transf[:format].include?('U')
-          v.upcase!
+          v = v.upcase
         elsif transf[:format].include?('u')
           v = v.split(' ').each {|vv| (vv[0] || '').upcase + (vv[1, -1] || '')}.join(' ')
         elsif transf[:format].include?('c')

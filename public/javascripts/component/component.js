@@ -34,6 +34,7 @@
             cObj.registerEvent({ 'start_loading': [], 'finish_loading': [], 'update_properties': [],
                 'shown': [], 'hidden': [] });
 
+            cObj._visibility = true;
             cObj._componentSet = componentSet || primarySet;
             cObj._updateProperties(properties);
             cObj.id = cObj._properties.id;
@@ -323,6 +324,18 @@
                 return false;
             }
             return true;
+        },
+
+        hide: function()
+        { this.setVisibility(false); },
+
+        show: function()
+        { this.setVisibility(true); },
+
+        setVisibility: function(isVisible)
+        {
+            this._visibility = isVisible;
+            this._propWrite({});
         },
 
         _updatePrimaryValue: function(value)
@@ -739,7 +752,8 @@
             });
             $.extend(true, this._properties, properties);
             $.extend(true, this._privateProperties, privProps);
-            this._isHidden = (this._properties.hidden || this._privateProperties.hidden) &&
+            this._isHidden = (!this._visibility ||
+                    this._properties.hidden || this._privateProperties.hidden) &&
                 !this._designing && !this._editing;
         },
 

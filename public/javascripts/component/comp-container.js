@@ -64,6 +64,9 @@
                 return null;
             }
 
+            if (!this._visibility)
+            { child.hide(); }
+
             // Disable spinner aggregation for now, since we've switched to a smaller throbber
 //            var cObj = this;
 //            child.bind('start_loading', function()
@@ -274,6 +277,13 @@
             { this.$contents.empty(); }
             _.each(this._funcChildren, function(c) { c.destroy(); });
             delete this._funcChildren;
+        },
+
+        setVisibility: function()
+        {
+            var origArgs = arguments;
+            this._super.apply(this, origArgs);
+            this.each(function(c) { c.setVisibility.apply(c, origArgs); });
         },
 
         // Override render to render children as well

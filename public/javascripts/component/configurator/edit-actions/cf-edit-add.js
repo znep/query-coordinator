@@ -60,6 +60,8 @@ $.cf.edit.registerAction('add', {
             return child;
         });
 
+        // Make sure a delayed-visible component is rendered
+        $.component.sizeRenderRefresh();
         $.cf.focus(_.find(children, function(c) { return c._componentSet == 'edit'; }));
     },
 

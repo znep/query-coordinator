@@ -515,8 +515,11 @@
             mapObj.clearGeometries();
             mapObj._markers = {};
             $(mapObj.currentDom).removeData('socrataMap');
-            mapObj.map.destroy();
-            delete mapObj.map;
+            if (!$.isBlank(mapObj.map))
+            {
+                mapObj.map.destroy();
+                delete mapObj.map;
+            }
             mapObj.$dom().empty();
             mapObj._obsolete = true;
             if (mapObj._legend) { mapObj._legend.$dom.hide(); }
@@ -525,7 +528,7 @@
             mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
             var repostDF = !$.isBlank(mapObj._savedDF || mapObj.settings.displayFormat) ?
                 mapObj._displayFormat : null;
-            $(mapObj.currentDom).socrataMap($.extend({}, mapObj.settings, {view: mapObj._primaryView,
+            return $(mapObj.currentDom).socrataMap($.extend({}, mapObj.settings, {view: mapObj._primaryView,
                 displayFormat: repostDF}));
         },
 
@@ -580,11 +583,13 @@
         {
             var mapObj = this;
 
-            mapObj._boundsChanging = true;
-            mapObj.initializeBaseLayers();
-            mapObj.populateLayers();
-            mapObj.initializeFlyouts((mapObj._displayFormat
-                .plot || {}).descriptionColumns);
+            if (!$.isBlank(mapObj.map))
+            {
+                mapObj._boundsChanging = true;
+                mapObj.initializeBaseLayers();
+                mapObj.populateLayers();
+            }
+            mapObj.initializeFlyouts((mapObj._displayFormat.plot || {}).descriptionColumns);
 
             mapObj._origData = {
                 displayFormat: mapObj._displayFormat,

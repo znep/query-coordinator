@@ -16,9 +16,11 @@ $.component.Component.extend('Map', 'data', {
 
     configurationSchema: function()
     {
+        if (this._super.apply(this, arguments) === false) { return false; }
+
         var retVal = {schema: [{ fields: [$.cf.contextPicker()] }],
             view: (this._dataContext || {}).dataset};
-        if (blist.configuration.canvasX)
+        if (blist.configuration.canvasX || blist.configuration.govStat)
         {
             if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
@@ -39,6 +41,15 @@ $.component.Component.extend('Map', 'data', {
                 {assets: 'render-images-bundle', hasImages: true},
                 {assets: 'display-map'},
                 {assets: 'rich-render-bundle'}]
+        };
+    },
+
+    _getEditAssets: function()
+    {
+        return {
+            javascripts: [
+                { assets: 'shared-map-configuration' }
+            ]
         };
     },
 
@@ -89,6 +100,12 @@ $.component.Component.extend('Map', 'data', {
 
         if (lcObj._rendered)
         { updateProperties(lcObj, properties); }
+    },
+
+    _arrange: function()
+    {
+        this._super.apply(this, arguments);
+        this.$contents.trigger('resize');
     }
 });
 
@@ -111,10 +128,13 @@ var updateProperties = function(lcObj, properties)
         }
     };
 
-    if (!lcObj._updateDataSource(properties, setUpMap))
+    if (!lcObj._updateDataSource(null, setUpMap))
     {
         if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
-        { lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat)); }
+        {
+            var newM = lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));
+            if (!$.isBlank(newM)) { lcObj._map = newM; }
+        }
         else
         { setUpMap(); }
     }

@@ -351,6 +351,7 @@
         reload: function(newDF)
         {
             var vizObj = this;
+            if (vizObj._obsolete) { return; }
             if (!$.isBlank(newDF)) { vizObj._savedDF = newDF; }
 
             if (vizObj._hidden)
@@ -369,8 +370,7 @@
             if (vizObj.needsFullReset())
             {
                 delete vizObj._viewChanged;
-                vizObj.reset();
-                return;
+                return vizObj.reset();
             }
 
             vizObj.$dom().siblings('#vizError').hide().text('');

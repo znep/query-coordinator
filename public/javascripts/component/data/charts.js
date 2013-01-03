@@ -135,7 +135,10 @@ var updateProperties = function(lcObj, properties)
     if (!lcObj._updateDataSource(properties, setUpChart))
     {
         if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._chart))
-        { lcObj._chart.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat)); }
+        {
+            var newC = lcObj._chart.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));
+            if (!$.isBlank(newC)) { lcObj._chart = newC; }
+        }
         else
         { setUpChart(); }
     }

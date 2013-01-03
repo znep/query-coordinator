@@ -13,7 +13,6 @@
         {
             this.component = newComp;
             this.reset();
-            this.render();
         },
 
         render: function()

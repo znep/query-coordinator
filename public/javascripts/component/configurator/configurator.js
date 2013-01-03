@@ -113,6 +113,8 @@
         $.cf.edit.reset();
         $.cf.edit(false);
         $previewCont.removeClass('hide').width('').siblings().addClass('hide');
+        $.component.root().show();
+        $.component.root('edit').hide();
         _.defer(function() { $(window).resize(); });
     };
 
@@ -332,9 +334,11 @@
             {
                 case 'preview':
                     $previewCont.toggleClass('hide', !isShow);
+                    $.component.root().setVisibility(isShow);
                     break;
                 case 'interactive':
                     $editCont.toggleClass('hide', !isShow);
+                    $.component.root('edit').setVisibility(isShow);
                     if ($.cf.configuration().sidebar)
                     { $.cf.side(designing && isShow); }
                     break;

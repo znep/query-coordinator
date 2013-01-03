@@ -156,7 +156,7 @@
             $(chartObj.currentDom).removeData('socrataChart');
             chartObj.$dom().empty();
             chartObj._obsolete = true;
-            $(chartObj.currentDom).socrataChart(chartObj.settings);
+            return $(chartObj.currentDom).socrataChart(chartObj.settings);
         },
 
         needsFullReset: function()

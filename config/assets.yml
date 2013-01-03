@@ -202,6 +202,9 @@ javascripts:
     - public/javascripts/controls/maps/mondara-map.js
     - public/javascripts/controls/maps/external-esri-map.js
     - public/javascripts/controls/maps/rastermap-map.js
+  shared-map-configuration:
+    - public/javascripts/controls/panes/map-config.js
+    - public/javascripts/controls/panes/map-config.2.js
   shared-chart:
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
@@ -581,6 +584,7 @@ dump:
     - shared-chart
     - shared-map
     - shared-new-map
+    - shared-map-configuration
     - shared-table-render
     - shared-richRenderers
     - shared-blob

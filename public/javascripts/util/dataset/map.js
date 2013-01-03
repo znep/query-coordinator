@@ -13,7 +13,9 @@ Dataset.map.isValid = function(view, displayFormat)
         ($.isBlank(displayFormat.plot) ||
          ($.isBlank(displayFormat.plot.latitudeId) ||
           $.isBlank(displayFormat.plot.longitudeId)) &&
-         $.isBlank(displayFormat.plot.locationId))) { return false; }
+         $.isBlank(displayFormat.plot.locationId)) ||
+        $.isBlank(displayFormat.type) || $.isBlank(displayFormat.plotStyle))
+    { return false; }
 
     var latCol = view.columnForIdentifier(displayFormat.plot.latitudeId);
     var longCol = view.columnForIdentifier(displayFormat.plot.longitudeId);

@@ -910,7 +910,13 @@ var Dataset = ServerModel.extend({
     rowToSODA2: function(row)
     {
         var r = {};
-        _.each(this.columns, function(c) { r[c.fieldName] = row[c.lookup]; });
+        _.each(this.columns, function(c)
+        {
+            r[c.fieldName] = row[c.lookup];
+            if (c.renderTypeName == 'location' && $.subKeyDefined(r[c.fieldName], 'human_address') &&
+                _.isString(r[c.fieldName].human_address))
+            { r[c.fieldName].human_address = JSON.parse(r[c.fieldName].human_address); }
+        });
         return r;
     },
 

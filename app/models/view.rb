@@ -529,7 +529,13 @@ class View < Model
 
   def row_to_SODA2(row)
     r = {}
-    columns.each { |c| r[c.fieldName] = row[c.id.to_s] }
+    columns.each do |c|
+      r[c.fieldName] = row[c.id.to_s]
+      if c.renderTypeName == 'location' && r[c.fieldName].key?('human_address') &&
+        r[c.fieldName]['human_address'].is_a?(String)
+        r[c.fieldName]['human_address'] = JSON.parse(r[c.fieldName]['human_address'])
+      end
+    end
     if !@cached_rows.nil? && @cached_rows.key?(:meta_columns)
       @cached_rows[:meta_columns].each { |c| r[c['fieldName']] = row[c['name']] }
     else # I guess we'll guess...

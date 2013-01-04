@@ -687,7 +687,7 @@ $.Control.registerMixin('d3_impl_column', {
                 {
                     var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
                     // render plaintext representation of the data
-                    return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true);
+                    return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
                 });
         rowLabels
             .exit()

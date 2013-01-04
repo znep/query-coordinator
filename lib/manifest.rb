@@ -14,7 +14,8 @@ class Manifest
   end
 
   def hash
-    @manifest ||= {}
+    # Even an empty manifest needs to be unique
+    @manifest ||= { :default_empty => Time.now.to_i }
     Digest::MD5.hexdigest(@manifest.sort.to_json)
   end
 

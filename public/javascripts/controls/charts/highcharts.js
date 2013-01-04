@@ -710,7 +710,7 @@
                     if (_.include(['date', 'calendar_date'], chartObj._xColumn.renderTypeName))
                     { return num; }
                     return chartObj._xColumn.renderType.renderer(num,
-                            chartObj._xColumn, true, false, true);
+                            chartObj._xColumn, true, false, null, true);
                 }
 
                 if ($.subKeyDefined(chartObj, '_displayFormat.yAxis.formatter.abbreviate')

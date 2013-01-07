@@ -4,14 +4,16 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
 {
     $.component.Component.extend(value.text.toLowerCase().displayable(),
         _.include(['area chart', 'bar chart', 'donut chart', 'stacked column chart',
-            'stacked bar chart', 'chart'], value.text.toLowerCase()) ? 'none' : 'data', {
+            'stacked bar chart'], value.text.toLowerCase()) ? 'none' : 'data', {
         _init: function()
         {
             this._needsOwnContext = true;
             this._delayUntilVisible = true;
             this._super.apply(this, arguments);
             this.registerEvent({display_row: ['dataContext', 'row']});
-            this._chartType = this._stringSubstitute(this._properties.chartType) || localChartType;
+            this._chartType = this._stringSubstitute(this._properties.chartType) ||
+                // 'chart' is not a valid type
+                (localChartType == 'chart' ? null : localChartType);
         },
 
         isValid: function()
@@ -117,7 +119,10 @@ var updateProperties = function(lcObj, properties)
         if ($.isBlank(lcObj._dataContext)) { return; }
 
         if (!$.isBlank(lcObj._chart))
-        { lcObj._chart.setView(lcObj._dataContext.dataset); }
+        {
+            var newC = lcObj._chart.setView(lcObj._dataContext.dataset);
+            if (!$.isBlank(newC)) { lcObj._chart = newC; }
+        }
         else
         {
             lcObj._chartType = lcObj._stringSubstitute(lcObj._properties.chartType) || lcObj._chartType;

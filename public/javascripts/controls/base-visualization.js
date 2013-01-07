@@ -345,7 +345,8 @@
 
             vizObj._requireRowReload = true;
             vizObj._viewChanged = true;
-            vizObj.reload(hadView ? {} : null);
+            if (hadView) { delete vizObj._savedDF; }
+            return vizObj.reload(null);
         },
 
         reload: function(newDF)

@@ -266,6 +266,7 @@ $(function(){
       blist.configuration.apiFoundry.docsUrl = '/developers/docs/'
         + blist.configuration.apiFoundry.apiView.resourceName;
       $("#docslink").attr("href", blist.configuration.apiFoundry.docsUrl);
+      $(".nextButton").attr("href", blist.configuration.apiFoundry.docsUrl);
     }
 
     onNext.published = function($pane, state)

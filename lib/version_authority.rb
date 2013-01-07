@@ -35,11 +35,13 @@ module VersionAuthority
       cut_off_time = (Time.now - check_age).to_i
       datasets = []
       searches = manifest.keys.select { |k|
-        if k.to_s.match(/^search-views.*/).nil?
+        if k.to_s.match(/^search-views.*/)
+          true
+        elsif k.to_s.match(/^\w{4}-\w{4}/)
           datasets << k
           false
         else
-          true
+          false
         end
       }
       #  1. if the manifest contains a search; only check the last search time.

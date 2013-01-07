@@ -276,7 +276,6 @@ class CustomContentController < ApplicationController
 private
 
   ANONYMOUS_USER = "anon".freeze
-  GLOBAL_USER = "".freeze
 
 
   # around_filter for caching

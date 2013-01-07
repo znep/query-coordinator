@@ -3,7 +3,6 @@ require 'timecop'
 
 class CustomContentControllerTest < ActionController::TestCase
   ANONYMOUS_USER = "anon".freeze
-  GLOBAL_USER = "".freeze
   PAGE_PATH = "hello".freeze
   PAGE_KEY = ("/" + PAGE_PATH).freeze
   BASIC_PARAMS = [[:path,  PAGE_PATH.dup], [:action, "page"], [:controller, "custom_content"] ].sort.freeze
@@ -19,10 +18,8 @@ class CustomContentControllerTest < ActionController::TestCase
                      'domain_updated' => CurrentDomain.default_config_updated_at,
                      'params' => Digest::MD5.hexdigest(BASIC_PARAMS.to_json) }
     @basic_cache_key  = AppHelper.instance.cache_key("canvas2-page", @basic_cache_params)
-    VersionAuthority.expire(@basic_cache_key, GLOBAL_USER)
     VersionAuthority.expire(@basic_cache_key, ANONYMOUS_USER)
     VersionAuthority.expire(@basic_cache_key, "test-test")
-    assert VersionAuthority.validate_manifest?(@basic_cache_key, GLOBAL_USER).nil?
     assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
     assert VersionAuthority.validate_manifest?(@basic_cache_key, "test-test").nil?
   end
@@ -68,11 +65,10 @@ class CustomContentControllerTest < ActionController::TestCase
 
   test "304 for Global Manifest Cache" do
     prepare_page(fixture="test/fixtures/dataslate-global-hello.json", anonymous=true)
-    init_current_user(@controller, nil)
+    init_current_user(@controller, ANONYMOUS_USER)
     get :page, {:path => PAGE_PATH.dup}
     assert_response :success
-    assert VersionAuthority.validate_manifest?(@basic_cache_key, GLOBAL_USER)
-    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
+    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER)
     assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
   end
 
@@ -80,7 +76,6 @@ class CustomContentControllerTest < ActionController::TestCase
     user = prepare_page(fixture="test/fixtures/dataslate-private-hello.json", anonymous=false)
     get :page, {:path => PAGE_PATH.dup}
     assert_response :success
-    assert VersionAuthority.validate_manifest?(@basic_cache_key, GLOBAL_USER).nil?
     assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
     assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
 

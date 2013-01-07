@@ -36,6 +36,8 @@ WIDGET:
 CONTROLS:
 3001 color_selector
 3002 autocompleteComboDropdown
+6000 loading spinner overlay
+10000 loading spinner
 
 
 DATA RENDERING:

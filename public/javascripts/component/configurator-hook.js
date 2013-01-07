@@ -20,7 +20,7 @@ $(function() {
                 return;
             }
 
-            $('.socrata-page').loadingSpinner({showInitially: true, overlay: true});
+            $('.socrata-page').loadingSpinner().showHide(true);
             // Need to load & set-up
             blist.util.assetLoading.loadAssets(
                 {javascripts: [{assets: 'configurator'}, {assets: 'shared-editors'}],

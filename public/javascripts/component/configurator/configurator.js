@@ -422,7 +422,7 @@
 
             if ($.cf.edit.dirty)
             {
-                var spinner = $('.socrata-page').loadingSpinner({overlay: true});
+                var spinner = $('.socrata-page').loadingSpinner();
                 spinner.showHide(true);
                 if ($.isBlank(newPage))
                 { newPage = pullConfig(); }

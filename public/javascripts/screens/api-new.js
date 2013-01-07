@@ -134,6 +134,7 @@ $(function(){
     }
 
     onActivate.welcome = function($pane, paneConfig, state, command){
+      $("#skip").hide()
       getDataset(function(){}, defaultErrorHandler);
       if (blist.configuration.apiFoundry.makeNewView)  paneConfig.nextText = "Create an API";
       else paneConfig.nextText = "Customize this API";
@@ -149,6 +150,10 @@ $(function(){
         defaultErrorHandler 
       );
       return false;
+    }
+
+    onActivate.datasetResourceName = function($pane, state){
+      $("#skip").hide()
     }
 
     onNext.datasetResourceName = function($pane, state){

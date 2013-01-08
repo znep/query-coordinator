@@ -12,6 +12,8 @@ $(function() {
         var $body = $(document.body);
         $body.append($editLink);
 
+        var loading = false;
+
         var initializeEditMode = function()
         {
             if ($.subKeyDefined($.cf, 'edit'))
@@ -20,6 +22,8 @@ $(function() {
                 return;
             }
 
+            if (loading) { return; }
+            loading = true;
             $('.socrata-page').loadingSpinner().showHide(true);
             // Need to load & set-up
             blist.util.assetLoading.loadAssets(
@@ -31,6 +35,7 @@ $(function() {
             {
                 $('.socrata-page').loadingSpinner().showHide(false);
                 $.cf.initialize();
+                loading = false;
             },
             function() { $(window).trigger('resize'); });
         };

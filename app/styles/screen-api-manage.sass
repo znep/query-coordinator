@@ -4,7 +4,6 @@
   margin-bottom: 2.5em
 #apiAdminBox
   font-size: 1.2em
-  width: 100em
 .adminContent
   margin: auto
   padding-bottom: 1.5em
@@ -13,9 +12,9 @@
   @include api-management-icons
   .apiicon
     border: 1px solid $color_chrome_box_border
-    padding: 1em
+    padding: 0.75em
     display: inline-block
-    margin: 1em
+    margin: 0.5em
   span
     display: inline-block
     vertical-align: middle
@@ -36,14 +35,15 @@
   color: #666
   font-size: 1.8em
   font-weight: normal
-  line-height: 2em
 .flowlist
+  font-size: 1.3em
   text-align: center
   li
     display: inline-block
     list-style-type: none
     margin: 1em
-    width: 13em
+#adminList.flowlist li
+  width: 18em
 #tableWrapper
   display: inline-block
   font-size: 1.2em
@@ -109,12 +109,7 @@
   .flowlist
     li
       text-align: left
-      width: 22em
-      display: inline
-  .colname
-    margin-bottom: .5em
-  .colsummary
-    width: 15em
+      display: block
 #transfer
   width: 40em
   .subtitleBlock

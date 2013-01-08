@@ -6,12 +6,16 @@
   blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) && !page.uneditable %>;
   blist.configuration.canvasX = <%= module_enabled?(:canvasX) == true %>;
 
+  <%
+    staging_lockdown =  (CurrentDomain.feature? :staging_lockdown) || false
+  %>
+
   $(function() {
       var page = blist.configuration.page = <%= safe_json(page) %>;
       blist.configuration.pageVariables = <%= safe_json(Canvas2::Util.page_vars) %>;
       blist.configuration.env = <%= safe_json(Canvas2::Util.env) %>;
       blist.configuration.availableContexts = <%= safe_json(Canvas2::DataContext.streaming_contexts) %>;
-      blist.configuration.privateData = <%= page.private_data? %>;
+      blist.configuration.privateData = <%= page.private_data?  || staging_lockdown %>;
       $.dataContext.load(page.data, blist.configuration.availableContexts);
       $.locale.initialize(page.locale);
       $.component.initialize(page.content);

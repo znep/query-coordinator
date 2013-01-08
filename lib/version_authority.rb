@@ -92,7 +92,7 @@ module VersionAuthority
   end
 
   def self.manifest_key(path, user)
-    "_manifest.version.2.#{CurrentDomain.domain.id}.#{path}-#{user}"
+    "_manifest.version.3.#{CurrentDomain.domain.id}.#{path}-#{user}"
   end
 
   def self.get_core_manifest(datasets)

@@ -69,7 +69,7 @@ module Frontend
     config.assets.version = '1.0'
 
     # TTL for fragment caching, currently only used for DataSlate
-    config.cache_ttl_fragment = 2.hours
+    config.cache_ttl_fragment = 4.hours
     # TTL for model caching, when calling find_cache* - this caching is beneficial, but is more
     # likely to result in columnId synchronization issues. Caching the model is inherently
     # dangerous because we reference datasets by columnids which can change on updates. We /may/

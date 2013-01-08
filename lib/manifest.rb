@@ -2,11 +2,9 @@ class Manifest
   attr_accessor :max_age
   attr_accessor :last_mtime, :first_mtime, :manifest
 
-  DEFAULT_KEY = "default_empty".freeze
-
   def initialize
     # Even an empty manifest needs to be unique
-    @manifest = { DEFAULT_KEY => Time.now.to_i }
+    @manifest = {}
   end
 
   def add_resource(name, mtime)
@@ -14,7 +12,6 @@ class Manifest
       Rails.logger.info("INVALID MANIFEST for key #{name} mtime #{mtime.to_s}")
       return
     end
-    use_manifest
     @manifest[name] = mtime
     @first_mtime = mtime if @first_mtime.nil? || @first_mtime < mtime
     @last_mtime = mtime if @last_mtime.nil? || @last_mtime > mtime
@@ -25,10 +22,14 @@ class Manifest
   end
 
   def set_manifest(manifest)
-    use_manifest
     manifest.each { |k,v|
       add_resource(k, v)
     }
+  end
+
+  # Either anon, shared-user, or [UserId 4x4]
+  def set_access_level(access_level)
+    @manifest["access_level"] = access_level
   end
 
   def manifest
@@ -55,10 +56,5 @@ class Manifest
 
   def [](name)
     @manifest[name]
-  end
-
-private
-  def use_manifest
-    @manifest.delete(DEFAULT_KEY)
   end
 end

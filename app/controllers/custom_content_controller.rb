@@ -134,13 +134,24 @@ class CustomContentController < ApplicationController
     # the global cache and the per-user cache.
 
     cache_user_id = @current_user ? @current_user.id : ANONYMOUS_USER
-    # Global Page Caching, regardless of the current user
     cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
-    # Per-User Cache, including anonymous users
-    # Note that the per-user cache can also mean users which are not logged in, or anonymous
     cache_key_user = app_helper.cache_key("canvas2-page", cache_params.merge({
                    'current_user' => cache_user_id}))
 
+    #
+    # Tri-State Slate Page Caching
+    # Anonymous/Logged Out:
+    #   read manifest for ANONYMOUS_USER; read global fragment cache; 304s valid
+    #   write to global fragment cache
+    #   write manifest for ANONYMOUS_USER
+    # Logged In w/ Private Data:
+    #   read manifest for user; read user-fragment cache; 304s valid
+    #   write to user fragment cache
+    #   write manifest for USER
+    # Logged In w/ Shared Data:
+    #   read manifest for SHARED_USER; read global fragment cache; no 304s
+    #   write to global fragment cache
+    #   write manifest for SHARED_USER
     lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, cache_user_id)
 
     if !lookup_manifest.nil?
@@ -148,13 +159,23 @@ class CustomContentController < ApplicationController
       return true if handle_conditional_request(request, response, lookup_manifest)
       @cached_fragment = read_fragment(cache_key_no_user)
       if @cached_fragment.nil?
-        Rails.logger.info("No global fragment cache; reading content from fragment cache is OK")
+        Rails.logger.info("Global fragment cache not available; trying per-user fragment cache")
         @cached_fragment = read_fragment(cache_key_user)
       end
     else
-      Rails.logger.info("Manifest is invalid")
+      # Only bother checking the shared user manifest if we are logged in.
+      if !@current_user.nil?
+        Rails.logger.info("Anonymous/User manifest invalid; checking for Shared-User Manifest")
+        # manifest for pages which can be shared between logged-in users. 304s should NEVER be sent if this is valid
+        lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, SHARED_USER)
+        if !lookup_manifest.nil?
+          Rails.logger.info("Shared-User Manifest valid; reading from global fragment, no 304s allowed")
+          @cached_fragment = read_fragment(cache_key_no_user)
+        else
+          Rails.logger.info("Shared-User Manifest not valid. No Cache available.")
+        end
+      end
     end
-
 
     # The cached fragment is an error page; just return that then
     if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:') && !@debug
@@ -174,6 +195,7 @@ class CustomContentController < ApplicationController
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if full_path == '/'
     if @cached_fragment.nil? || @debug
+      Rails.logger.info("Performing full render")
       Canvas2::DataContext.reset
       Canvas2::Util.set_params(params)
       Canvas2::Util.set_debug(@debug)
@@ -232,9 +254,13 @@ class CustomContentController < ApplicationController
           # generate and set the manifest for this render on success; we need to recalculate the cache key here
           # This includes all data context resources along with associated modification times
           manifest = lookup_manifest || Canvas2::DataContext.manifest
+          # Only set the manifest if we were not successful in during lookup; we do not want to reset the
+          # manifest just because the fragment cache has expired.
           if lookup_manifest.nil?
             manifest.max_age = @page.max_age
-            VersionAuthority.set_manifest(cache_key_no_user, cache_user_id, manifest)
+            manifest_user = user_tristate(Canvas2::Util.is_private, @current_user)
+            manifest.set_access_level(manifest_user)
+            VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
           end
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
@@ -258,6 +284,7 @@ class CustomContentController < ApplicationController
       # When we're rendering a cached item, force it to use the page action,
       # since we may have manipulated the action name to be homepage, and there
       # is no such view
+      Rails.logger.info("Using fragment cache")
       respond_to do |format|
         format.html { render :action => 'page' }
         format.csv { render :text => @cached_fragment }
@@ -276,7 +303,21 @@ class CustomContentController < ApplicationController
 private
 
   ANONYMOUS_USER = "anon".freeze
+  SHARED_USER = "shared-user".freeze
 
+  # Knowing whether privateData is set and the user figure out
+  # which user_id should be used for the manifest key
+  def user_tristate(isPrivate, user)
+    if user.nil?
+      ANONYMOUS_USER
+    else
+      if isPrivate
+        user.id
+      else
+        SHARED_USER
+      end
+    end
+  end
 
   # around_filter for caching
   def cache_wrapper

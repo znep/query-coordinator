@@ -30,7 +30,7 @@ module VersionAuthority
     name = manifest_key(key, user)
     manifest = Rails.cache.read(name, :raw => true)
     if !manifest.nil?
-      Rails.logger.info("Read manifest from cache #{manifest.to_json}")
+      Rails.logger.info("Read manifest #{name} from cache #{manifest.to_json}")
       check_age = (manifest.max_age.minutes if manifest.max_age) || Rails.application.config.manifest_check_age
       cut_off_time = (Time.now - check_age).to_i
       datasets = []
@@ -80,7 +80,7 @@ module VersionAuthority
   # the manifest which can be used as part of the cache key.
   def self.set_manifest(key, user, manifest)
     name = manifest_key(key, user)
-    Rails.logger.info("Writing manifest to cache #{manifest.to_json}")
+    Rails.logger.info("Writing manifest #{name} to cache #{manifest.to_json}")
     Rails.cache.write(name, manifest, :expires_in => 24.hours)
     manifest.hash
   end
@@ -92,7 +92,7 @@ module VersionAuthority
   end
 
   def self.manifest_key(path, user)
-    "_manifest.version.3.#{CurrentDomain.domain.id}.#{path}-#{user}"
+    "_manifest.version.4.#{CurrentDomain.domain.id}.#{path}-#{user}"
   end
 
   def self.get_core_manifest(datasets)

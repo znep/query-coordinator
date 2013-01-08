@@ -8,49 +8,47 @@
 <% end %>
 
 <a name="metrics"></a>
-<div id="metrics" class="managesection">
-  <div id="analyticsDataContainer" class="datasetMetrics">
-    <div class="contentBox">
-      <div>
-        <h1><%= link_to @view.name, @view.href %></h1>
-        <%= render :partial => 'shared/metrics_timing' %>
-      </div>
-
-      <div class="summaryDisplay clearfix container"></div>
+<div id="analyticsDataContainer" class="datasetMetrics">
+  <div class="contentBox">
+    <div>
+      <h1><%= link_to @view.name, @view.href %></h1>
+      <%= render :partial => 'shared/metrics_timing' %>
     </div>
 
-    <div class="contentBox">
-      <div class="chartsDisplay container">
-        <div class="flash error message errorMessage">
-          <h3>An error occurred loading the metrics data. Please try again later</h3>
-        </div>
-      </div>
-      <div class="detailDisplay clearfix container"></div>
-    </div>
-
-    <div class="contentBox">
-      <div class="topDisplay clearfix container">
-        <div class="leftColumn"></div>
-        <div class="rightColumn"></div>
-      </div>
-    </div>
+    <div class="summaryDisplay clearfix container"></div>
   </div>
 
-  <div class="clearfix"></div>
+  <div class="contentBox">
+    <div class="chartsDisplay container">
+      <div class="flash error message errorMessage">
+        <h3>An error occurred loading the metrics data. Please try again later</h3>
+      </div>
+    </div>
+    <div class="detailDisplay clearfix container"></div>
+  </div>
 
-  <% content_for :templates do %>
-    <%= render :partial => 'shared/metrics_sections' %>
-    <%= render :partial => 'shared/control_templates' %>
-  <%- end -%>
-
-  <% content_for :js_footer do %>
-    <%- unless params[:no_js] == 'true' -%>
-      <script type="text/javascript">
-        blist.namespace.fetch('blist.metrics');
-        blist.metrics.viewID = '<%= @view.id %>';
-      </script>
-      <%= include_javascripts 'shared-metrics' %>
-      <%= include_javascripts 'api-metrics' %>
-    <%- end -%>
-  <% end %>
+  <div class="contentBox">
+    <div class="topDisplay clearfix container">
+      <div class="leftColumn"></div>
+      <div class="rightColumn"></div>
+    </div>
+  </div>
 </div>
+
+<div class="clearfix"></div>
+
+<% content_for :templates do %>
+  <%= render :partial => 'shared/metrics_sections' %>
+  <%= render :partial => 'shared/control_templates' %>
+<%- end -%>
+
+<% content_for :js_footer do %>
+  <%- unless params[:no_js] == 'true' -%>
+    <script type="text/javascript">
+      blist.namespace.fetch('blist.metrics');
+      blist.metrics.viewID = '<%= @view.id %>';
+    </script>
+    <%= include_javascripts 'shared-metrics' %>
+    <%= include_javascripts 'api-metrics' %>
+  <%- end -%>
+<% end %>

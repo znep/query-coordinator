@@ -69,6 +69,7 @@ Frontend::Application.routes do
     get :comment_moderation
     get :sdp_templates
     get :datasets
+    get :data_slate, :as => 'canvas_admin', :action => 'canvas_pages'
     get :home, :as => 'home_administration'
     get :metadata, :as => 'metadata_administration'
     get :views

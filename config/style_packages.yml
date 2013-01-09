@@ -60,6 +60,8 @@ administration-browse-widget:
 - grid-sidebar
 - screen-admin-customizer
 - screen-admin-browse-widget
+administration-canvas-pages:
+- screen-admin-canvas-pages
 administration-federation:
 - screen-administration-federation
 administration-home:

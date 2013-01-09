@@ -108,6 +108,7 @@ class CustomContentController < ApplicationController
   def page
     # FIXME: should probably make sure you're a Socrata admin before allowing debugging
     @debug = params['debug'] == 'true'
+    @edit_mode = params['_edit_mode'] == 'true' && CurrentDomain.user_can?(current_user, :edit_pages)
     @start_time = Time.now
 
     pages_time = VersionAuthority.resource('pages')
@@ -120,7 +121,7 @@ class CustomContentController < ApplicationController
         path += '.' + page_ext
         page_ext = ''
       end
-      request.format = page_ext.to_sym if !page_ext.blank? && !@debug
+      request.format = page_ext.to_sym if !page_ext.blank? && !@debug && !@edit_mode
     end
 
     #TODO: This should include the locale (whenever we figure out how that is specified)
@@ -154,7 +155,7 @@ class CustomContentController < ApplicationController
     #   write manifest for SHARED_USER
     lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, cache_user_id)
 
-    if !lookup_manifest.nil?
+    if !lookup_manifest.nil? && !@debug && !@edit_mode
       Rails.logger.info("Manifest valid; reading content from fragment cache is OK")
       return true if handle_conditional_request(request, response, lookup_manifest)
       @cached_fragment = read_fragment(cache_key_no_user)
@@ -178,7 +179,7 @@ class CustomContentController < ApplicationController
     end
 
     # The cached fragment is an error page; just return that then
-    if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:') && !@debug
+    if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:')
       str = @cached_fragment.slice(11, @cached_fragment.length)
       code = str.slice(0, 3)
       @display_message = str.slice(4, str.length)
@@ -194,11 +195,11 @@ class CustomContentController < ApplicationController
     @meta = nil
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if full_path == '/'
-    if @cached_fragment.nil? || @debug
+    if @cached_fragment.nil?
       Rails.logger.info("Performing full render")
       Canvas2::DataContext.reset
       Canvas2::Util.set_params(params)
-      Canvas2::Util.set_debug(@debug)
+      Canvas2::Util.set_debug(@debug || @edit_mode)
       Canvas2::Util.set_env({
         domain: CurrentDomain.cname,
         renderTime: Time.now.to_i,
@@ -271,6 +272,8 @@ class CustomContentController < ApplicationController
           @error = e.original_exception
           if @debug
             render :action => 'page_debug'
+          elsif @edit_mode
+            render :action => 'page'
           else
             code = (@error.respond_to?(:code) ? @error.code : nil) || 404
             @display_message = (@error.respond_to?(:display_message) ? @error.display_message : nil) || ''

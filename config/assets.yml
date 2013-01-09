@@ -228,6 +228,10 @@ javascripts:
     - public/javascripts/controls/blob-dataset.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
+  admin-canvas-pages:
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/screens/admin-canvas-pages-screen.js
   admin-datasets:
     - public/javascripts/util/serialize.js
     - public/javascripts/screens/admin-config-common.js

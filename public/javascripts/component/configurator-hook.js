@@ -45,6 +45,9 @@ $(function() {
             e.preventDefault();
             initializeEditMode();
         });
+
+        if (blist.configuration.immediateEdit)
+        { initializeEditMode(); }
     };
 
     if (!$.isBlank(blist.currentUser) && blist.currentUser.hasRight('edit_pages') &&
@@ -52,7 +55,6 @@ $(function() {
     {
         $(document.body).addClass('socrata-page');
         $.cf.top();
-        // Set timeout here so top menu animates in.  Delete if we decide that's undesirable
         _.defer(function() { $(document.body).addClass('configurable'); });
     }
 

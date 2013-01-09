@@ -75,6 +75,11 @@ class AdministrationController < ApplicationController
   def analytics
   end
 
+  before_filter :only => [:canvas_pages] {|c| c.check_auth_level('edit_pages')}
+  def canvas_pages
+    @pages = Page.find('$order' => 'name')
+  end
+
   #
   # Manage Users and User Roles
   #

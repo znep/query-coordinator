@@ -1,0 +1,83 @@
+<% content_for :head do %>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-canvas-pages' %>
+  <title>DataSlate Pages | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="?no_js=true">Disable Javascript on this page</a>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="canvasPagesContent" class="contentBox withLeftNavigation">
+  <div class="adminHeader contentmgmt">
+    <span class="icon"></span>
+    <h1>DataSlate Pages</h1>
+  </div>
+
+  <%= display_standard_flashes %>
+
+  <%- unless @pages.nil? || @pages.length < 1 -%>
+    <div class="gridListWrapper">
+      <table class="gridList adminTable" cellspacing="0">
+        <colgroup>
+          <col class="name" />
+          <col class="path" />
+          <col class="actions" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="name" scope="col"><div>Name</div><span class="icon"></span></th>
+            <th class="path" scope="col"><div>Path</div><span class="icon"></span></th>
+            <th class="actions" scope="col"><div>Actions</div><span class="icon"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @pages.each do |page| -%>
+            <tr class="item">
+              <td class="name" scope="row">
+                <span class="ss-icon" title="<%= page.status.capitalize %>">
+                  <%= page.status == 'published' ? 'book' : 'notebook' %>
+                </span>
+                <%- if page.private_data? -%>
+                  <span class="ss-icon" title="Private data in page">private</span>
+                <%- end -%>
+                <%- if page.page_type == 'export' -%>
+                  <span class="ss-icon" title="Download page">download</span>
+                <%- end -%>
+                <a href="<%= page.path %><%= page.page_type == 'export' ? '.csv' : '' %>?_edit_mode=true">
+                  <span class="cellInner"><%= page.name %></span>
+                </a>
+              </td>
+              <td class="path">
+                <span class="cellInner"><%= page.path %></span>
+              </td>
+              <td class="actions">
+                <%- if page.path.include?('/:') -%>
+                  <%# Can't provide a view link, since we don't know the proper fill-in for params %>
+                <%- else -%>
+                  <%- if page.page_type == 'export' -%>
+                    <a class="button" href="<%= page.path %>.csv">Download as CSV</a>
+                  <%- else -%>
+                    <a class="button" href="<%= page.path %>">View Page</a>
+                  <%- end -%>
+                <%- end -%>
+              </td>
+            </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </div>
+  <%- else -%>
+  <p class="noResultsMessage">There are no DataSlate pages.</p>
+  <%- end -%>
+
+</div>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js] == 'true' -%>
+    <%= include_javascripts 'admin-canvas-pages' %>
+  <%- end -%>
+<%- end -%>

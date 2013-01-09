@@ -47,6 +47,13 @@
             {:action => 'sdp_templates'} %>
       </li>
     <%- end -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_pages) -%>
+      <li class="contentmgmt">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>DataSlate Pages'),
+            {:action => 'canvas_pages'} %>
+      </li>
+    <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) ||
            CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="datasets">

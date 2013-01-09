@@ -1,5 +1,10 @@
 source :gemcutter
 
+if RUBY_VERSION =~ /1.9/
+  Encoding.default_external = Encoding::UTF_8
+  Encoding.default_internal = Encoding::UTF_8
+end
+
 gem "jammit", "~>0.6.5"
 
 gem "rails", "~>3.2.11", :require => nil

@@ -1,9 +1,10 @@
-<a name="naming"></a>
-<h2 class="title center">Names and Descriptions</h2>
-
 <% content_for :nav_crumb do %>
   <li>Names and Descriptions</li>
 <% end %>
+
+<a name="naming"></a>
+<h2 class="title center">Names and Descriptions: <strong><%= @view.name -%></strong></h2>
+<p><a href="rename/">Rename this API</a></p>
 <div id="names" class="managesection">
   <ul class="flowlist">
     <% @view.columns.each do |column| %>

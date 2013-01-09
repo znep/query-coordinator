@@ -172,7 +172,7 @@ $(function(){
     onNext.datasetName = function($pane, state){
       updateView(
         {
-          name:$("#name").val().trim()
+          name:$("#editTitle").val().trim()
         },
         defaultTransition,
         function(err){

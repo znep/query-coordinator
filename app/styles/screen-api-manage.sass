@@ -15,9 +15,6 @@
     padding: 0.75em
     display: inline-block
     margin: 0.5em
-  span
-    display: inline-block
-    vertical-align: middle
 .error
   color: red
 #paneSpinner
@@ -29,12 +26,16 @@
     width: 100%
 .center
   text-align: center
-#applications
-  text-align: center
-.contentBox .title, #transfer h2
+#permission
+  .subtitleBlock
+    display: none
+  .controlPane
+    min-height: 0em
+.contentBox .title, #transfer h2, #permission h2
   color: #666
   font-size: 1.8em
   font-weight: normal
+  margin-top: 0.5em
 .flowlist
   font-size: 1.3em
   text-align: center
@@ -44,6 +45,11 @@
     margin: 1em
 #adminList.flowlist li
   width: 18em
+#applications
+  text-align: center
+  .apiicon
+    float: left
+    display: block
 #tableWrapper
   display: inline-block
   font-size: 1.2em
@@ -58,6 +64,7 @@
     text-align: left
   td
     padding: 1em
+    vertical-align: middle
   th
     .bg
       background: #f0f0f0
@@ -121,8 +128,6 @@
       font-size: 1.8em
 .managesection
   display: inline-block
-  margin: 1em
-  padding: 1em
   text-align: left
   vertical-align: top
 .paneContent

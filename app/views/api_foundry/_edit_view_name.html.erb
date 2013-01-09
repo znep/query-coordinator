@@ -1,0 +1,21 @@
+
+<div class="paneControlOuter">
+  <div class="paneFormControls">
+    <h1>Select a title for your API</h1>
+      <div class="controlDiv">
+        <label for="editTitle">Title:</label>
+        <%= text_field_tag("editTitle", 
+                           @view.name,
+                           :title => "Enter API Title", 
+                           :class => "required textPrompt nameInput") %>
+        <div>
+          <label class="error" style="display: none" for="editTitle">This is required</label>
+          <label class="validationError" style="display: none" for="editTitle">This is not a valid name</label>
+        </div>
+      </div>
+  </div>
+  <div id="ht-datasetName" class="helpfulText">
+    <h3>Set a human-readable title for your new API</h3>
+    <p>This name will appear in your API catalog.  A helpful title indicates the nature of the data that this dataset represents.</p>
+  </div>
+</div><!-- paneControlOuter -->

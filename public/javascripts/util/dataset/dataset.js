@@ -2465,9 +2465,20 @@ var Dataset = ServerModel.extend({
         if (includeDomain || !$.isBlank(ds.domainCName))
         { base = ds._generateBaseUrl(ds.domainCName); }
 
-        return base + "/" + $.urlSafe(ds.category || "dataset") +
-               "/" + $.urlSafe(ds.name) +
-               "/" + ds.id;
+        var urlParts;
+        if (ds.displayName === 'api-predeploy')
+        {
+          urlParts = [base, 'api_foundry/forge', ds.id];
+        }
+        else if (ds.displayName === 'api')
+        {
+          urlParts = [base, 'developers/docs', ds.resourceName];
+        }
+        else
+        {
+          urlParts = [base, $.urlSafe(ds.category || "dataset"), $.urlSafe(ds.name), ds.id];
+        }
+        return urlParts.join('/');
     },
 
     _generateShortUrl: function(includeDomain)

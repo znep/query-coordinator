@@ -33,11 +33,11 @@
       <% throttles.each do |throttle| %>
         <tr id="<%= throttle.appToken %>">
           <td class="left">
-            <span class="apiicon ico-applications"> </span>
-            <span>
+            <div>
+              <span class="apiicon ico-applications"> </span>
               <p class="appName"><%= throttle.appName %></p>
               <p class="desc"><%= throttle.appDesc %></p>
-            </span>
+            </div>
           </td>
           <td><%= throttle.appToken %></td>
           <td class="hunum"><%= throttle.minuteLimit %></td>

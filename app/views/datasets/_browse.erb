@@ -281,10 +281,6 @@
                     rescue
                       # Chomp Chomp
                     end
-                    if v.is_api?
-                      orig_view_url = view_url
-                      view_url = v.api_doc_href()
-                    end
                   -%>
                 <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">

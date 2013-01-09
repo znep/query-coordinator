@@ -1,0 +1,19 @@
+<% content_for :nav_crumb do %>
+  <li>
+    <a href="<%= @nav_root + "/naming" %>" >Names and Descriptions</a>
+    <ul>
+      <% @view.columns.each do |column| %>
+        <li><a href="<%= @nav_root + "/naming/" + column.fieldName %>"><%= column.name %></a></li>
+      <% end %>
+    </ul>
+  </li>
+  <li>Rename API</li>
+<% end %>
+<a name="rename"></a>
+<div id="names" class="managesection">
+  <div class="flash"></div>
+  <%= render :partial => 'edit_view_name', :locals => {:disable_resource_name => true}%>
+  <a href="#updateTitle" id="updateTitle" class="button">Apply</a>
+  <a href="../" class="button">Cancel</a>
+</div>
+

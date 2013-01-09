@@ -3,21 +3,19 @@ class ApiFoundryController < ApplicationController
   include DatasetsHelper
 
   def forge
-    return render_404 if !module_available?(:api_foundry)
     @apiView = View.get_predeploy_api_view(params[:id])
     @view = @apiView.nil? ? get_view(params[:id]) : @apiView
-    return if @view.nil?
+    check_permission
     @makeNewView = true
     @rnSuggestion = get_resource_name_suggestion(@view.name)
     redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
   end
 
   def customize
-    return render_404 if !module_available?(:api_foundry)
     @view = get_view(params[:id])
+    check_permission
     @makeNewView = false
     @rnSuggestion = @view.resourceName.nil? ? get_resource_name_suggestion(@view.name) : @view.resourceName
-    return if @view.nil?
     if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
       redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) 
     else
@@ -26,12 +24,8 @@ class ApiFoundryController < ApplicationController
   end
 
   def manage 
-    return render_404 if !module_available?(:api_foundry)
     @view = get_view(params[:id])
-    return if @view.nil?
-    if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
-      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) 
-    end
+    check_permission
     @parent_dataset = @view.parent_dataset
     @nav_root = '/api_foundry/manage/' + @view.id
     @section = params[:admin_section]
@@ -93,4 +87,17 @@ protected
     return view
   end
 
+private
+
+  def check_permission(message = 'You do not have permission to view this page')
+    flash.now[:error] = message
+    return render_404 if !module_available?(:api_foundry)
+    return if @view.nil?
+    if @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
+      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) 
+    end
+    if @current_user.nil? || !@view.has_rights?('update_view')
+      return render('shared/error', :status => :forbidden)
+    end
+  end
 end

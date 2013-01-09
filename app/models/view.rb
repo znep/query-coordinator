@@ -640,11 +640,15 @@ class View < Model
 
   # argument port is deprecated
   def href(port = 80)
-    @_href ||= federated_path("/#{(self.category || 'dataset').convert_to_url}/#{(name || 'dataset').convert_to_url}/#{id}")
+    @_href ||= make_href()
   end
 
-  def api_doc_href()
-    @_api_doc_href ||= federated_path("/developers/docs/#{resourceName}")
+  def make_href()
+    if self.is_api?
+      federated_path("/developers/docs/#{resourceName}")
+    else
+      federated_path("/#{(self.category || 'dataset').convert_to_url}/#{(name || 'dataset').convert_to_url}/#{id}")
+    end
   end
 
   def federated_path(path)

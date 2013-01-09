@@ -28,7 +28,7 @@
     <div class="paneFormControls">
       <div class="line formControl">
         <label for="description">Description</label>
-        <%= text_area_tag("description", '', :title => "enter a description", :class => "textPrompt liveDoc") %>
+        <%= text_area_tag("description", column.description, :title => "enter a description", :class => "textPrompt liveDoc") %>
         <div class="additionalHelp"><label>The description that will be provided to end-users</label></div>
         <div class="additionalHelp"><label>This is optional</label></div>
       </div>

@@ -66,26 +66,7 @@
           </div><!-- paneControlOuter -->
         </li>
         <li id="datasetName" class="wizpane" data-wizardpanename="datasetName"> 
-          <div class="paneControlOuter">
-            <div class="paneFormControls">
-              <h1>Select a title for your API</h1>
-                <div class="controlDiv">
-                  <label for="name">Title:</label>
-                  <%= text_field_tag("name", 
-                                     @view.name,
-                                     :title => "Enter API Title", 
-                                     :class => "required textPrompt nameInput") %>
-                  <div>
-                    <label class="error" style="display: none" for="name">This is required</label>
-                    <label class="validationError" style="display: none" for="name">This is not a valid name</label>
-                  </div>
-                </div>
-            </div>
-            <div id="ht-datasetName" class="helpfulText">
-              <h3>Set a human-readable title for your new API</h3>
-              <p>This name will appear in your API catalog.  A helpful title indicates the nature of the data that this dataset represents.</p>
-            </div>
-          </div><!-- paneControlOuter -->
+          <%= render :partial => 'edit_view_name'%>
         </li>
         <li id="displayUniqueId" class="wizpane" data-wizardpanename="displayUniqueId">
           <div class="paneControlOuter">

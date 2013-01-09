@@ -91,6 +91,17 @@ $(function() {
 			});
 			$prompt.blur();
 		});
+    $("#updateTitle").click(function(event){
+      blist.dataset.update({name:$("#editTitle").val().trim()});
+      blist.dataset.save(
+        function() {
+          $(".flash").text("The field has been updated.").addClass("notice").removeClass("error");
+        },
+        function() {
+          $(".flash").text("An error occured. Your changes were not saved").addClass("error").removeClass("notice");
+        }
+      );
+    });
 	}
 
 	init.transfer = function() 

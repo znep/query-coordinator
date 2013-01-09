@@ -22,6 +22,7 @@ Frontend::Application.routes do
     get '/manage/:id/apps/:token',    :action => 'manage', :admin_section => 'apps_edit'
     get '/manage/:id/metrics',        :action => 'manage', :admin_section => 'metrics'
     get '/manage/:id/naming',         :action => 'manage', :admin_section => 'naming_list'
+    get '/manage/:id/rename',         :action => 'manage', :admin_section => 'rename'
     get '/manage/:id/naming/:column', :action => 'manage', :admin_section => 'naming_edit'
     get '/manage/:id/transfer',       :action => 'manage', :admin_section => 'transfer'
     get '/manage/:id/delete',         :action => 'manage', :admin_section => 'delete'

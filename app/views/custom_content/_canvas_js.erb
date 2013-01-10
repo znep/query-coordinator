@@ -16,6 +16,10 @@
       blist.configuration.env = <%= safe_json(Canvas2::Util.env) %>;
       blist.configuration.availableContexts = <%= safe_json(Canvas2::DataContext.streaming_contexts) %>;
       blist.configuration.privateData = <%= page.private_data?  || staging_lockdown %>;
+
+      blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) %>;
+      blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) %>;
+
       $.dataContext.load(page.data, blist.configuration.availableContexts);
       $.locale.initialize(page.locale);
       $.component.initialize(page.content);

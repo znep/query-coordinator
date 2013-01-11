@@ -46,7 +46,8 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
     { assetNS.loadPartials(translateUrls('/modals/', assets.modals, 'modals'), 'modals',
             function($newItems)
             {
-                $newItems.socrataJqm();
+                if (!$.isBlank($newItems))
+                { $newItems.socrataJqm(); }
                 finished();
             }); }
     if (loadJS)

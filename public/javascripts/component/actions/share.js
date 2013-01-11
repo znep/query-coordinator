@@ -43,6 +43,7 @@ $.component.Component.extend('Share', 'actions', {
         var cObj = this;
         cObj.$shareOpts.find('li[data-name=email] a').click(function(e)
         {
+            if (cObj._properties.currentPage) { return; }
             e.preventDefault();
             if (!$.subKeyDefined(cObj, '_dataContext.dataset')) { return; }
             if(_.isFunction(blist.dialog.sharing))
@@ -72,14 +73,15 @@ $.component.Component.extend('Share', 'actions', {
         if (!this._super.apply(this, arguments)) { return false; }
 
         if (!this._updateDataSource(null, renderUpdate))
-        { this.$shareOpts.addClass('hide'); }
+        { renderUpdate.apply(this); }
     },
 
     _propWrite: function(properties)
     {
         this._super.apply(this, arguments);
 
-        this._updateDataSource(properties, renderUpdate);
+        if (!this._updateDataSource(properties, renderUpdate))
+        { renderUpdate.apply(this); }
     }
 });
 
@@ -87,7 +89,9 @@ var renderUpdate = function()
 {
     var cObj = this;
 
-    if (!$.subKeyDefined(cObj, '_dataContext.dataset'))
+    if ($.isBlank(cObj.$shareOpts)) { return; }
+
+    if (!cObj._properties.currentPage && !$.subKeyDefined(cObj, '_dataContext.dataset'))
     {
         cObj.$shareOpts.addClass('hide');
         return;
@@ -111,16 +115,37 @@ var renderUpdate = function()
         { this.toggleClass('hide', _.include(hiddenItems, this.attr('data-name'))); });
     }
 
-    var ds = cObj._dataContext.dataset;
-    cObj.$shareOpts.find('li[data-name=facebook] a').attr('href',
-            'http://www.facebook.com/share.php?u=' + escape(ds.fullUrl));
+    if (cObj._properties.currentPage)
+    {
+        var pageUrl = window.location;
+        var pageName = $.stringSubstitute(blist.configuration.page.name, $.component.rootPropertyResolver);
+        cObj.$shareOpts.find('li[data-name=facebook] a').attr('href',
+                'http://www.facebook.com/share.php?u=' + escape(pageUrl));
 
-    cObj.$shareOpts.find('li[data-name=twitter] a').attr('href',
-            'http://twitter.com/?status=' + escape('Check out the ' + ds.name + ' dataset on ' +
+        cObj.$shareOpts.find('li[data-name=twitter] a').attr('href',
+                'http://twitter.com/?status=' + escape('Check out ' + pageName + ' on ' +
+            blist.configuration.strings.company + ': ' + pageUrl));
+
+        cObj.$shareOpts.find('li[data-name=subscribe]').addClass('hide');
+
+        cObj.$shareOpts.find('li[data-name=email]').find('a').attr('href', 'mailto:?subject=' +
+                escape(pageName + ' on ' + blist.configuration.strings.company) + '&body=' +
+                escape(pageUrl));
+    }
+    else
+    {
+        var ds = cObj._dataContext.dataset;
+        cObj.$shareOpts.find('li[data-name=facebook] a').attr('href',
+                'http://www.facebook.com/share.php?u=' + escape(ds.fullUrl));
+
+        cObj.$shareOpts.find('li[data-name=twitter] a').attr('href',
+                'http://twitter.com/?status=' + escape('Check out the ' + ds.name + ' dataset on ' +
             blist.configuration.strings.company + ': ' + ds.shortUrl));
 
-    cObj.$shareOpts.find('li[data-name=subscribe], li[data-name=email]').find('a')
-        .toggleClass('hide', !ds.isPublic() || !ds.isTabular());
+        cObj.$shareOpts.find('li[data-name=email]').find('a').attr('href', '#email');
+        cObj.$shareOpts.find('li[data-name=subscribe], li[data-name=email]').find('a')
+            .toggleClass('hide', !ds.isPublic() || !ds.isTabular());
+    }
 };
 
 })(jQuery);

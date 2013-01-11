@@ -77,7 +77,7 @@ module Canvas2
     end
 
     def self.page_path
-      defined? @@page_path ? @@page_path : nil
+      return (defined? @@page_path) ? @@page_path : nil
     end
 
     def self.is_private(is_p = nil)

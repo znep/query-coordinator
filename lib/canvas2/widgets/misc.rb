@@ -536,36 +536,50 @@ module Canvas2
 
     def render_contents
       ds = !context.blank? ? context[:dataset] : nil
-      return ['', false] if ds.blank?
+      return ['', false] if ds.blank? && !@properties['currentPage']
 
       vis_items = @properties['visibleItems'] || ['subscribe', 'facebook', 'twitter', 'email']
       hidden_items = @properties['hiddenItems'] || []
-      vis_items = vis_items.reject { |item| hidden_items.include?(item) }
+      vis_items = vis_items.reject { |item| hidden_items.include?(item) ||
+        @properties['currentPage'] && item == 'subscribe' }
+
+      page_url = Util.page_path || ''
+      params = Util.page_params.clone
+      page_url += '?' + params.map {|k, v| k + '=' + v}.join('&') if !params.empty?
+      page_url = 'http://' + CurrentDomain.cname + page_url
+      page_name = @@page.name
 
       avail_items = {
         subscribe: '<li class="subscribe' +
-          (ds.is_public? && ds.is_tabular? && vis_items.include?('subscribe') ? '' : ' hide') +
+          (!ds.blank? && ds.is_public? && ds.is_tabular? && vis_items.include?('subscribe') ? '' : ' hide') +
           '" data-name="subscribe">' +
           '<a class="subscribe" href="#subscribe" title="Subscribe via Email or RSS">' +
             '<span class="icon">Subscribe to Changes</span></a></li>',
 
         email: '<li class="email' +
-          (ds.is_public? && ds.is_tabular? && vis_items.include?('email') ? '' : ' hide') +
+          ((ds.blank? || ds.is_public? && ds.is_tabular?) && vis_items.include?('email') ? '' : ' hide') +
           '" data-name="email">' +
-          '<a class="email" href="#email" title="Share via Email">' +
+          '<a class="email" href="' +
+          (@properties['currentPage'] ?
+           CGI::escape('mailto:?subject=' + page_name + ' on ' + CurrentDomain.strings.company +
+                       '&body=' + page_url) : '#email') + '" title="Share via Email">' +
             '<span class="icon">Share via Email</span></a></li>',
 
         facebook: '<li class="facebook' + (vis_items.include?('facebook') ? '' : ' hide') +
           '" data-name="facebook">' +
           '<a class="facebook" rel="external" title="Share on Facebook" ' +
             'href="http://www.facebook.com/share.php?u=' +
-              CGI::escape("http://#{CurrentDomain.cname}#{ds.href}") + '">' +
+              (@properties['currentPage'] ? CGI::escape(page_url) :
+              CGI::escape("http://#{CurrentDomain.cname}#{ds.href}")) + '">' +
             '<span class="icon">Share on Facebook</span></a></li>',
 
       twitter: '<li class="twitter' + (vis_items.include?('twitter') ? '' : ' hide') +
         '" data-name="twitter">' +
           '<a class="twitter" rel="external" title="Share on Twitter"' +
-              'href="http://twitter.com/?status=' + ds.tweet + '">' +
+              'href="http://twitter.com/?status=' +
+              (@properties['currentPage'] ?
+               CGI::escape('Check out ' + page_name + ' on ' + CurrentDomain.strings.company +
+                           ': ' + page_url) : ds.tweet) + '">' +
             '<span class="icon">Share on Twitter</span></a></li>'
       }
 

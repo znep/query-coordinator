@@ -841,7 +841,7 @@
         _updateDataSource: function(properties, callback)
         {
             var cObj = this;
-            properties = properties || cObj._properties;
+            properties = _.isEmpty(properties) ? cObj._properties : properties;
             var gotDCGen = function(count)
             {
                 var finishCallback = _.after(count, function()

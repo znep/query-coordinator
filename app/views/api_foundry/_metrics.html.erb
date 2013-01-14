@@ -8,29 +8,31 @@
 <% end %>
 
 <a name="metrics"></a>
-<div id="analyticsDataContainer" class="datasetMetrics">
-  <div class="contentBox">
-    <div>
-      <h1><%= link_to @view.name, @view.href %></h1>
-      <%= render :partial => 'shared/metrics_timing' %>
-    </div>
-
-    <div class="summaryDisplay clearfix container"></div>
-  </div>
-
-  <div class="contentBox">
-    <div class="chartsDisplay container">
-      <div class="flash error message errorMessage">
-        <h3>An error occurred loading the metrics data. Please try again later</h3>
+<div id="metrics">
+  <div id="analyticsDataContainer" class="datasetMetrics">
+    <div class="contentBox">
+      <div>
+        <h1><%= link_to @view.name, @view.href %></h1>
+        <%= render :partial => 'shared/metrics_timing' %>
       </div>
-    </div>
-    <div class="detailDisplay clearfix container"></div>
-  </div>
 
-  <div class="contentBox">
-    <div class="topDisplay clearfix container">
-      <div class="leftColumn"></div>
-      <div class="rightColumn"></div>
+      <div class="summaryDisplay clearfix container"></div>
+    </div>
+
+    <div class="contentBox">
+      <div class="chartsDisplay container">
+        <div class="flash error message errorMessage">
+          <h3>An error occurred loading the metrics data. Please try again later</h3>
+        </div>
+      </div>
+      <div class="detailDisplay clearfix container"></div>
+    </div>
+
+    <div class="contentBox">
+      <div class="topDisplay clearfix container">
+        <div class="leftColumn"></div>
+        <div class="rightColumn"></div>
+      </div>
     </div>
   </div>
 </div>

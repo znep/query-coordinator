@@ -2,11 +2,13 @@
 <% content_for :nav_crumb do %>
   <li>
     <a href="<%= @nav_root + "/apps" %>" >Applications Request Limits</a>
-    <ul>
-      <% throttles.each do |throttle| %>
-        <li><a href="<%= @nav_root + "/apps/" + throttle.appToken %>"><%= throttle.appName %></a></li>
-      <% end %>
-    </ul>
+    <%- if throttles.length > 0 %>
+      <ul>
+        <% throttles.each do |throttle| %>
+          <li><a href="<%= @nav_root + "/apps/" + throttle.appToken %>"><%= throttle.appName %></a></li>
+        <% end %>
+      </ul>
+    <%- end %>
   </li>
   <li>
     <%= params[:token] == "new" ? "Add " : "Edit " %>Request Limit
@@ -17,7 +19,7 @@
   if params[:token] == "anonymous"
     throttle = @view.find_api_anonymous_throttle()
   else
-    throttle = throttles.find_all{|t| t.appToken == params[:token] }.first 
+    throttle = throttles.detect{|t| t.appToken == params[:token] }
   end
 -%>
 

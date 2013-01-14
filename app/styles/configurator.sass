@@ -241,6 +241,8 @@ body.configuring
 .configuring .cfEditingWrapper .socrata-component
   @include component-icons('> .disabledIcon', 'component', true)
   @include disabled-overlay(33%)
+  border: 1px dotted $color_chrome_box_border
+  background-color: rgba(240, 240, 240, 0.5)
 
   &.disabled .notReady
     display: none

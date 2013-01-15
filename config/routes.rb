@@ -28,6 +28,13 @@ Frontend::Application.routes do
     get '/manage/:id/delete',         :action => 'manage', :admin_section => 'delete'
   end
 
+  scope :path => '/intercessio', :controller => 'intercessio' do
+    get '/request/*path', :action => 'request_async'
+    get '/request/*path.*ext', :action => 'request_async'
+    get '/receive/:token', :action => 'request_receive'
+    get '/status/:token', :action => 'request_status'
+  end
+
   scope :path => '/internal', :controller => 'internal' do
     match '/', :action => 'index'
     match '/analytics', :action => 'analytics'

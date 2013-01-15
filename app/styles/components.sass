@@ -16,7 +16,6 @@ body.socrata-page
 
 // Base/default styles shared by all components
 .socrata-component
-  font-family: helvetica, arial, sans-serif
   position: relative
   min-height: 1em
   &:last-child
@@ -319,3 +318,8 @@ body.socrata-page
     list-style: disc
   ol
     list-style: decimal
+
+@media print
+  @each $name in Share, InlineFilter, Pager, Print, Search, Geolocator, Sort
+    .component-#{$name}
+      display: none

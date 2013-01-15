@@ -561,8 +561,8 @@ module Canvas2
           '" data-name="email">' +
           '<a class="email" href="' +
           (@properties['currentPage'] ?
-           CGI::escape('mailto:?subject=' + page_name + ' on ' + CurrentDomain.strings.company +
-                       '&body=' + page_url) : '#email') + '" title="Share via Email">' +
+           CGI::escape("mailto:?subject=#{page_name} on #{CurrentDomain.strings.company}&body=#{page_url}") :
+             '#email') + '" title="Share via Email">' +
             '<span class="icon">Share via Email</span></a></li>',
 
         facebook: '<li class="facebook' + (vis_items.include?('facebook') ? '' : ' hide') +
@@ -578,8 +578,8 @@ module Canvas2
           '<a class="twitter" rel="external" title="Share on Twitter"' +
               'href="http://twitter.com/?status=' +
               (@properties['currentPage'] ?
-               CGI::escape('Check out ' + page_name + ' on ' + CurrentDomain.strings.company +
-                           ': ' + page_url) : ds.tweet) + '">' +
+               CGI::escape("Check out #{page_name} on #{CurrentDomain.strings.company}: #{page_url}") :
+                ds.tweet) + '">' +
             '<span class="icon">Share on Twitter</span></a></li>'
       }
 

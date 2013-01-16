@@ -122,7 +122,8 @@
         options: [
             {type: 'color', required: true, name: 'color', defaultValue: '#bbffbb'},
             {type: 'custom', required: true, disabled: function()
-                { return !_.include(this._view.metadata.availableDisplayTypes, 'map'); },
+                { return !this._parentView // if there is a parentView, we know it's a map mashup
+                    && !_.include(this._view.metadata.availableDisplayTypes, 'map'); },
                 editorCallbacks: {
                 create: function($field, vals, curValue)
                 {

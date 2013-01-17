@@ -66,6 +66,10 @@ $.component.Component.extend('Map', 'data', {
                     row: (args || {}).row,
                     datasetId: (args || {}).datasetId }]);
         });
+        lcObj.$contents.on('render_started.map_' + lcObj.id, function()
+        { lcObj.startLoading(); });
+        lcObj.$contents.on('render_finished.map_' + lcObj.id, function()
+        { lcObj.finishLoading(); });
     },
 
     _render: function()

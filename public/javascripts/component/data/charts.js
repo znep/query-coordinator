@@ -47,6 +47,10 @@ _.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, 
                 lcObj.trigger('display_row',
                     [{dataContext: lcObj._dataContext, row: (args || {}).row}]);
             });
+            lcObj.$contents.on('render_started.chart_' + lcObj.id, function()
+            { lcObj.startLoading(); });
+            lcObj.$contents.on('render_finished.chart_' + lcObj.id, function()
+            { lcObj.finishLoading(); });
         },
 
         _getAssets: function()

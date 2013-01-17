@@ -1083,7 +1083,10 @@
                 disableWinUpdate = false;
                 winUpdateTimer = null;
             }, 500);
-        }, 200)
+        }, 200),
+
+        isLoading: function()
+        { return wsCounter > 0; }
     });
 
     // Set up the catalog registry here, since it is required for Component.extend to actually work

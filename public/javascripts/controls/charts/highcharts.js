@@ -7,6 +7,7 @@
         initializeVisualization: function()
         {
             var chartObj = this;
+            chartObj.$dom().trigger('render_started');
             chartObj._super();
 
             if (chartObj._chartType.startsWith('stacked'))
@@ -1321,11 +1322,7 @@
             chartObj._loadedOnce = true;
             delete chartObj._isLoading;
 
-            if (chartObj._primaryView.snapshotting)
-            {
-                prepareToSnapshot(chartObj);
-            }
-
+            renderDone(chartObj);
         };
         // Need to know that we are in the process of loading, but because of the defer, it
         // hasn't happened yet
@@ -1434,10 +1431,7 @@
         {
             setCategories(chartObj);
 
-            if (chartObj._primaryView.snapshotting)
-            {
-                prepareToSnapshot(chartObj);
-            }
+            renderDone(chartObj);
         }
         if (!_.isUndefined(chartObj.secondChart))
         {
@@ -1446,16 +1440,21 @@
         }
     };
 
-    // Once the chart's ready to draw, let' take a picture
-    var prepareToSnapshot = function(chartObj)
+    var renderDone = function(chartObj)
     {
-        if (!$.isBlank(chartObj._snapshot_timer))
+        if (!$.isBlank(chartObj._renderDoneTimer))
         {
-            clearTimeout(chartObj._snapshot_timer);
-            chartObj._snapshot_timer = null;
+            clearTimeout(chartObj._renderDoneTimer);
+            chartObj._renderDoneTimer = null;
         }
 
-        chartObj._snapshot_timer = setTimeout(chartObj._primaryView.takeSnapshot, 1000);
+        chartObj._renderDoneTimer = setTimeout(function()
+        {
+            // Once the chart's ready to draw, let's take a picture
+            if (chartObj._primaryView.snapshotting)
+            { chartObj._primaryView.takeSnapshot(); }
+            chartObj.$dom().trigger('render_finished');
+        }, 1000);
     };
 
     var xPoint = function(chartObj, row, ind)

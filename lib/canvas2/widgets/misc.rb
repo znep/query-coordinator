@@ -528,6 +528,12 @@ module Canvas2
     end
   end
 
+  class Print < CanvasWidget
+    def render_contents
+      [super[0], false]
+    end
+  end
+
   class Share < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

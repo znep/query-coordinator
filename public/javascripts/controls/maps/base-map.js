@@ -214,6 +214,7 @@
         initializeVisualization: function ()
         {
             var mapObj = this;
+            mapObj.$dom().trigger('render_started');
 
             mapObj._segments = {};
             mapObj._numSegments = 6;
@@ -504,9 +505,14 @@
 
         mapLoaded: function()
         {
+            var mapObj = this;
             // This is called once a map has been loaded, as type-appropriate
-            if (this._primaryView.snapshotting)
-            { setTimeout(this._primaryView.takeSnapshot, 2000); }
+            setTimeout(function()
+            {
+                mapObj.$dom().trigger('render_finished');
+                if (mapObj._primaryView.snapshotting)
+                { mapObj._primaryView.takeSnapshot(); }
+            }, 2000);
         },
 
         reset: function()

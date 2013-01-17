@@ -5,17 +5,20 @@ module Intercessio
       get = Net::HTTP::Get.new("/" + CurrentDomain.cname + "/" + path)
       headers.each { |h, v|
         if (/HTTP_.*/.match(h))
-          Rails.logger.info("    Adding header " + /HTTP_(.*)/.match(h)[1] + " => " + v.to_s)
            get[/HTTP_(.*)/.match(h)[1]] = v.to_s
         end
       }
-      get['X-Intercessio-User'] = user.id if user
-      #requestor = User.current_user
-      #request['X-Intercessio-Email'] = requestor
+
+      # Set the email/user headers if we are logged in
+      if user
+        get['X-Intercessio-User'] = user.id
+        get['X-Intercessio-Email'] = user.email if !user.emailUnsubscribed
+        get['X-Intercessio-DomainId'] = CurrentDomain.domain.id
+      end
+
       result = Net::HTTP.start(INTERCESSIO_URI.host, INTERCESSIO_URI.port) do |http|
         http.request(get)
       end
-      Rails.logger.info("Got respo " + result.body)
       return JSON.parse(result.body, {:max_nesting => 25})
     end
 

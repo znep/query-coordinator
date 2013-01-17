@@ -170,7 +170,8 @@ $.unescapeQuotes = function(text)
 {
     if (typeof text !== 'string') { return text; }
     return $.htmlUnescape(text)
-        .replace(/&apos;/, "'");
+        .replace(/&apos;/g, "'")
+        .replace(/&#x27;/g, "'");
 }
 
 $.htmlEscape = function(text)

@@ -567,7 +567,8 @@ module Canvas2
           '" data-name="email">' +
           '<a class="email" href="' +
           (@properties['currentPage'] ?
-           CGI::escape("mailto:?subject=#{page_name} on #{CurrentDomain.strings.company}&body=#{page_url}") :
+           'mailto:?subject=' + CGI::escape("#{page_name} on #{CurrentDomain.strings.company}") + '&body=' +
+            CGI::escape("#{page_url}") :
              '#email') + '" title="Share via Email">' +
             '<span class="icon">Share via Email</span></a></li>',
 

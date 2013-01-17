@@ -428,6 +428,6 @@ module ApplicationHelper
   end
 
   def safe_json(obj)
-    ('JSON.parse($.htmlUnescape("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))').html_safe
+    ('JSON.parse($.unescapeQuotes("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))').html_safe
   end
 end

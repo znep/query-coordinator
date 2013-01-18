@@ -19,6 +19,8 @@
 
   <%= display_standard_flashes %>
 
+  <a href="<%= canvas_create_path %>" class="button createLink"><span class="ss-icon">compose</span> Create New Page</a>
+
   <%- unless @pages.nil? || @pages.length < 1 -%>
     <div class="gridListWrapper">
       <table class="gridList adminTable" cellspacing="0">

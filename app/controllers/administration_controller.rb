@@ -75,9 +75,25 @@ class AdministrationController < ApplicationController
   def analytics
   end
 
-  before_filter :only => [:canvas_pages] {|c| c.check_auth_level('edit_pages')}
+  before_filter :only => [:canvas_pages, :create_canvas_page, :post_canvas_page] {|c| c.check_auth_level('edit_pages')}
   def canvas_pages
     @pages = Page.find('$order' => 'name')
+  end
+
+  def create_canvas_page
+    @cur_path = params[:path]
+    @cur_title = params[:title]
+  end
+
+  def post_canvas_page
+    title = params[:pageTitle]
+    url = params[:pageUrl]
+    if Page.path_exists?(url)
+      flash[:error] = "Path already exists; please choose a different one"
+      return redirect_to :action => 'create_canvas_page', :path => url, :title => title
+    end
+    res = Page.create({:path => url, :name => title})
+    redirect_to res.path + '?_edit_mode=true'
   end
 
   #

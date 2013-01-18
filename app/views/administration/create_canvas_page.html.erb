@@ -1,0 +1,38 @@
+<% content_for :head do %>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-canvas-pages' %>
+  <title>Create DataSlate Page | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="createCanvasPageContent" class="contentBox withLeftNavigation">
+  <div class="adminHeader contentmgmt">
+    <span class="icon"></span>
+    <h1>Create DataSlate Page</h1>
+  </div>
+
+  <%= display_standard_flashes %>
+
+  <%= modal :class => 'configuratorSettings', :style => '' do %>
+    <h2>Page Settings</h2>
+
+    <%= form_tag(canvas_create_path, :class => 'commonForm') do %>
+      <div class="line">
+        <%= label_tag :pageTitle, 'Page Title <span class="accessible">Required</span>'.html_safe,
+          :class => 'required' %>
+        <%= text_field_tag :pageTitle, @cur_title %>
+      </div>
+      <div class="line">
+        <%= label_tag :pageUrl, 'Path <span class="accessible">Required</span>'.html_safe,
+          :class => 'required' %>
+        <%= text_field_tag :pageUrl, @cur_path %>
+      </div>
+      <ul class="actions clearfix">
+        <li><a href="<%= canvas_admin_path %>" class="button">Cancel</a></li>
+        <li><input type="submit" value="Create" class="button createAction default" /></li>
+      </ul>
+    <% end %>
+  <%- end -%>
+</div>

@@ -325,7 +325,7 @@ module ApplicationHelper
 
   def modal(options, &block)
     options[:class] = ['modalDialog', (options.delete(:class) || options.delete('class'))].compact.join(' ')
-    options[:style] = 'display:none'
+    options[:style] ||= 'display:none'
 
     content_tag(:div, options) do
       [content_tag(:a, :href => '#close', :class => 'jqmClose modalDialogClose'){ t('core.dialogs.close') },

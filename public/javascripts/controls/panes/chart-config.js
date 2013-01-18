@@ -6,6 +6,8 @@
     var isNextGen = blist.configuration.newChartsEnabled ||
         $.urlParam(window.location.href, 'charts') == 'nextgen';
 
+    var nextGenReady = ['bar', 'column'];
+
     var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
 
     var axisTitles = [
@@ -241,6 +243,7 @@
     {
         return function()
         {
+            if (isNextGen && _.include(nextGenReady, chartConfig.value)) { return ''; }
             var chartName = chartConfig.text.toLowerCase();
             // This is the same as _maxRows in base-visualization.js
             var rowLimit = (chartConfig.displayLimit || {}).points || 500;
@@ -267,6 +270,7 @@
             chartConfig.requiredColumns, options.isEdit);
     };
 
+    // FIXME: It doesn't seem to matter if this returns true or false.
     var datasetTooLarge = function(chartConfig, options)
     {
         // Limit number of rows
@@ -464,12 +468,13 @@
                     basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
                     basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
                     seriesData(chart, options, Dataset.chart.textualTypes),
-                    basicAdv(chart, options, [legendPos, renderOther,
-                        flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
+                    domainMarker(chart, options),
+                    advLegend(chart, options),
                     errorBars(chart, options),
-                    domainMarker(chart, options));
+                    basicAdv(chart, options,
+                        [legendPos, renderOther, flyoutControls(options)]));
                 break;
 
 

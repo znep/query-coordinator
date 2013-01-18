@@ -502,16 +502,24 @@
                 if (this._delayUntilVisible)
                 {
                     var cObj = this;
-                    cObj.$dom.waypoint({delayRefresh: true, offset: '100%', checkTop: true,
-                    handler: function()
+                    // Defer so that the DOM has a chance to be added before waypoints tries to
+                    // find the parent context
+                    _.defer(function()
                     {
-                        if (!cObj._destroyed && cObj._needsRender)
-                        {
-                            delete cObj._delayUntilVisible;
-                            cObj.$dom.waypoint('destroy');
-                            cObj._render();
-                        }
-                    }});
+                        var sp = cObj.$dom.scrollParent()[0];
+                        cObj.$dom.waypoint({delayRefresh: true, offset: '100%', checkTop: true,
+                            context: sp.nodeType == sp.DOCUMENT_NODE ? window : sp,
+                            handler: function()
+                            {
+                                if (!cObj._destroyed && cObj._needsRender)
+                                {
+                                    delete cObj._delayUntilVisible;
+                                    cObj.$dom.waypoint('destroy');
+                                    cObj._render();
+                                }
+                            }
+                        });
+                    });
                 }
             }
 

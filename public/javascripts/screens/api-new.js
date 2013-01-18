@@ -256,7 +256,10 @@ $(function(){
               displayType: 'api',
               metadata: md
             },
-            defaultTransition,
+            function()
+            {
+              blist.configuration.apiFoundry.apiView.makePublic(defaultTransition, defaultErrorHandler);
+            },
             defaultErrorHandler
           );
         },

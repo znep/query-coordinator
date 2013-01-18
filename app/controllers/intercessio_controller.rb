@@ -17,8 +17,14 @@ class IntercessioController < ApplicationController
 
   def request_status
     CurrentDomain.module_available?('intercessio') or return render_404
-    Rails.logger.error("Retrieving the status for " + params[:token])
-    result = Intercessio::Connection.new().status(params[:token], @current_user)
+    @token = params[:token]
+    # bad request on invalid token
+    if invalid_token(@token)
+      render_error(400)
+      return true
+    end
+    Rails.logger.error("Retrieving the status for " + @token)
+    result = Intercessio::Connection.new().status(@token, @current_user)
     if result['result'] != 'success'
       return render :status => 404, :json => result.to_json
     end
@@ -28,15 +34,34 @@ class IntercessioController < ApplicationController
     render :json => status.to_json
   end
 
+  # Provides the bytes of the requested document, or a mildly disturbing error
+  # page
   def request_receive
     CurrentDomain.module_available?('intercessio') or return render_404
-    Rails.logger.error("Retrieving content for " + params[:token])
-    doc = Intercessio::Connection.new().receive(params[:token], @current_user)
+    @token = params[:token]
+    # bad request on invalid token
+    if invalid_token(@token)
+      render :template => "intercessio/bad_token", :layout => 'main', :status => 400
+      return true
+    end
+    Rails.logger.error("Retrieving content for " + @token)
+    doc = Intercessio::Connection.new().receive(@token, @current_user)
+    if !doc.is_a?(Net::HTTPSuccess)
+      render :template => "intercessio/request_error", :layout => 'main', :status => 404
+      return true
+    end
     # Ideally we should not be reading in the entire doc.body here, but stream it out as we
     # get bytes from intercessio. Also; it's annoying that send_data overwrites custom
     # content disposition headers
     filename = /filename=([^;]*)/.match(doc['Content-disposition'])[1].to_s
     send_data(doc.body, :status => 200, :type => doc['Content-type'], :filename => filename)
+  end
+
+  private
+
+  # Tokens are md5sums
+  def invalid_token(t)
+    (t =~ /^-?[0-9A-F]{32}$/i).nil?
   end
 end
 

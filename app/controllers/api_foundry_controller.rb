@@ -25,6 +25,19 @@ class ApiFoundryController < ApplicationController
     @parent_dataset = @view.parent_dataset
     @nav_root = '/api_foundry/manage/' + @view.id
     @section = params[:admin_section]
+    if @section == 'apps_edit'
+      @throttles = @view.find_api_throttles()
+      tok = params[:token]
+      if tok == "anonymous"
+        @throttle = @view.find_api_anonymous_throttle()
+      else
+        @throttle = @throttles.detect{|t| t.appToken == params[:token] }
+      end
+
+      if tok != 'new' and tok != 'anonymous' && @throttle.nil?
+        return render_404
+      end
+    end
   end
 
   def setThrottle

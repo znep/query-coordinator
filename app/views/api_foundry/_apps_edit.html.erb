@@ -1,11 +1,10 @@
-<%- throttles = @view.find_api_throttles() -%>
 <% content_for :nav_crumb do %>
   <li>
     <a href="<%= @nav_root + "/apps" %>" >Applications Request Limits</a>
-    <%- if throttles.length > 0 %>
+    <%- if @throttles.length > 0 %>
       <ul>
-        <% throttles.each do |throttle| %>
-          <li><a href="<%= @nav_root + "/apps/" + throttle.appToken %>"><%= throttle.appName %></a></li>
+        <% @throttles.each do |t| %>
+          <li><a href="<%= @nav_root + "/apps/" + t.appToken %>"><%= t.appName %></a></li>
         <% end %>
       </ul>
     <%- end %>
@@ -14,14 +13,6 @@
     <%= params[:token] == "new" ? "Add " : "Edit " %>Request Limit
   </li>
 <% end %>
-
-<%- 
-  if params[:token] == "anonymous"
-    throttle = @view.find_api_anonymous_throttle()
-  else
-    throttle = throttles.detect{|t| t.appToken == params[:token] }
-  end
--%>
 
 <a name="apps"></a>
 <div id="applications" class="managesection">
@@ -50,30 +41,30 @@
               Anonymous Applications
             </td>
             <td><input name="appToken" disabled="disabled" value="<none>" ></input></td>
-          <% elsif !throttle.nil? %>
+          <% elsif !@throttle.nil? %>
             <td class="left">
               <span class="apiicon ico-applications"> </span>
               <span>
-                <p class="appName"><%= throttle.appName %></p>
-                <p class="appDesc"><%= throttle.appDesc %></p>
+                <p class="appName"><%= @throttle.appName %></p>
+                <p class="appDesc"><%= @throttle.appDesc %></p>
               </span>
-              <input name="appToken" type="hidden" value="<%= throttle.appToken %>"></input>
+              <input name="appToken" type="hidden" value="<%= @throttle.appToken %>"></input>
             </td>
-            <td><input disabled="disabled" value="<%= throttle.appToken %>" >    </input></td>
+            <td><input disabled="disabled" value="<%= @throttle.appToken %>" >    </input></td>
           <% else %>
             <td class="left">
               <span class="apiicon ico-applications"> </span>
             </td>
             <td><input name="appToken" value="" ></input></td>
           <% end %>
-          <td><input name="minuteLimit" class="limitEdit hunum" value="<%= throttle.nil? ? "" : throttle.minuteLimit  %>" > </input></td>
-          <td><input name="hourLimit"   class="limitEdit hunum" value="<%= throttle.nil? ? "" : throttle.hourLimit  %>" >   </input></td>
-          <td><input name="dayLimit"    class="limitEdit hunum" value="<%= throttle.nil? ? "" : throttle.dayLimit  %>" >    </input></td>
+          <td><input name="minuteLimit" class="limitEdit hunum" value="<%= @throttle.nil? ? "" : @throttle.minuteLimit  %>" > </input></td>
+          <td><input name="hourLimit"   class="limitEdit hunum" value="<%= @throttle.nil? ? "" : @throttle.hourLimit  %>" >   </input></td>
+          <td><input name="dayLimit"    class="limitEdit hunum" value="<%= @throttle.nil? ? "" : @throttle.dayLimit  %>" >    </input></td>
         </tr>
         <tr>
           <td colspan="5" class="left">
-            <% if !throttle.nil? %>
-              <a id="<%= throttle.appToken %>" class="button limitRemoveButton default" href="#">Remove Limits</a>
+            <% if !@throttle.nil? %>
+              <a id="<%= @throttle.appToken %>" class="button limitRemoveButton default" href="#">Remove Limits</a>
             <% end %>
             <input id="limitUpdate" type="submit" value="<%= params[:token] == "new" ? "Add Limits" : "Update Limits" %>" class="button" ></input>
           </td>

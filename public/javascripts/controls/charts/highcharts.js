@@ -705,6 +705,9 @@
         {
             var abbreviateNumbers = function(num)
             {
+                if (_.isUndefined(num)) // blanks in drop downs are undefined.
+                { return ''; }
+
                 // This check comes first because it's simpler than a regex.
                 if (xAxis && chartObj._xColumn)
                 {
@@ -1473,7 +1476,7 @@
         else if (!$.isBlank(ind))
         { pt.x = ind; }
         if (_.include(['pie', 'donut'], chartObj._chartType))
-        { pt.name = row[chartObj._xColumn.lookup]; }
+        { pt.name = renderCellText(row, chartObj._xColumn); }
 
         if (!$.isBlank(chartObj._xCategories))
         {

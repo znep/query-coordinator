@@ -508,7 +508,7 @@
                     {
                         var sp = cObj.$dom.scrollParent()[0];
                         cObj.$dom.waypoint({delayRefresh: true, offset: '100%', checkTop: true,
-                            context: sp.nodeType == sp.DOCUMENT_NODE ? window : sp,
+                            context: sp.nodeType == 9 ? window : sp, // if got document, use window
                             handler: function()
                             {
                                 if (!cObj._destroyed && cObj._needsRender)

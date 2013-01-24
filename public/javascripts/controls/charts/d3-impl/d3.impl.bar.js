@@ -11,6 +11,8 @@
 // * if ie8 support is ever dropped, i had a working prototype with absolutely no svg at all;
 //   just use css rotation for the text labels. you can wrangle divs into being value markers too.
 
+// TODO: Cleanup all the ternary parameterizations by stuffing them into dataDim.
+
 (function($)
 {
 
@@ -717,15 +719,19 @@ chartObj.resizeHandle();
             var nullSeriesClass = 'nullDataBar_series' + col.lookup;
             var nullBars = cc.chartHtmlD3.selectAll('.' + nullSeriesClass)
                 .data(nullData, function(row) { return row.id; });
+            var height = cc.orientation == 'right' ? vizObj._d3_px(yAxisPos)
+                                                   : vizObj._d3_px(cc.chartWidth - yAxisPos);
+            var position = cc.orientation == 'right' ? 0
+                                                     : vizObj._d3_px(yAxisPos);
             nullBars
                 .enter().append('div')
                     .classed('nullDataBar', true)
                     .classed(nullSeriesClass, true)
                     .style(cc.dataDim.position, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)))
-                    .style(cc.orientation == 'right' ? 'top' : 'left', 0)
+                    .style(cc.orientation == 'right' ? 'top' : 'left', position)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth));
             nullBars
-                    .style(cc.dataDim.height, vizObj._d3_px(yAxisPos));
+                    .style(cc.dataDim.height, height);
             nullBars
                 .exit()
                     .remove();

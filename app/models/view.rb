@@ -530,9 +530,9 @@ class View < Model
   def row_to_SODA2(row)
     r = {}
     columns.each do |c|
-      v = row[c.id.to_s]
-      r[c.fieldName] = v.nil? ? v : v.clone
+      r[c.fieldName] = row[c.id.to_s]
       if c.renderTypeName == 'location' && !r[c.fieldName].blank? &&
+        r[c.fieldName] = r[c.fieldName].clone
         r[c.fieldName].key?('human_address') && r[c.fieldName]['human_address'].is_a?(String)
         r[c.fieldName]['human_address'] = JSON.parse(r[c.fieldName]['human_address'])
       end

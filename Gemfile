@@ -6,7 +6,7 @@ if RUBY_VERSION =~ /1.9/
 end
 
 gem "jammit", "~>0.6.5"
-
+gem "axlsx", "~> 1.3.4"
 gem "rails", "~>3.2.11", :require => nil
 gem "rack", "~>1.4.0"
 gem "erubis", ">= 2.6.4"

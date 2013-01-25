@@ -268,7 +268,7 @@ class CustomContentController < ApplicationController
         # but Rails ignores it and passes it all the way up without rescuing
         # unless I rescue a generic Exception
         rescue Exception => e
-          Rails.logger.info("Caught exception trying to render page: #{e.inspect}\n")
+          Rails.logger.info("Caught exception trying to render page: #{e.inspect}\n#{e.backtrace[0]}\n")
           @error = e.original_exception
           if @debug
             render :action => 'page_debug'

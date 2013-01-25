@@ -146,10 +146,12 @@ module Canvas2
 
     def head_row
       head_config = string_substitute(@properties['header'] || {})
-      if !head_config.nil? && head_config['columns'] && columns.length > 0
+      if !head_config.nil? && head_config.is_a?(Hash) && head_config['columns'] && columns.length > 0
         header_row = { 'cells' => columns.map do |c|
           { 'value' => c['text'], 'htmlClass' => c['id'], 'isColumn' => true }
         end }
+      elsif !@properties['header'].nil? && @properties['header'].is_a?(Array)
+        header_row = {"cells" => @properties['header']}
       else
         header_row = @properties['header'] || {}
       end
@@ -277,45 +279,6 @@ module Canvas2
     end
   end
 
-  class TabularExport < TabularData
-    def generate_file(type)
-      case type
-      when 'csv'
-        generate_csv
-      end
-    end
-
-    # For debug mode
-    def render_contents
-      [generate_csv, true]
-    end
-
-    def self.page_types
-      ['export']
-    end
-
-    protected
-    def generate_csv
-      head = head_row
-
-      data_rows = body_rows
-
-      if data_rows.length < 1 && @properties.has_key?('noResults')
-        nr_conf = string_substitute(@properties['noResults'])
-        data_rows.push(add_row(nr_conf['row'])) if nr_conf.has_key?('row')
-      end
-
-      head + "\n" + data_rows.join("\n")
-    end
-
-    def render_row(cells, config)
-      cells.join(',')
-    end
-
-    def render_cell(cell, row_config, col_id)
-      Util.csv_escape((cell['value'] || '').to_s)
-    end
-  end
 
   class Menu < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)

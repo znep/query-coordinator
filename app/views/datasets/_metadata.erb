@@ -20,7 +20,7 @@
 
         <div class="line clearfix<%= ' customRequired' if required %>">
           <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
-            <%= " class='required'" if required %>>
+            <%= " class=required" if required %>>
             <%= field.name %></label>
           <%- form_name = "view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]" -%>
           <%- if field['type'] && field['type'] == 'fixed' -%>

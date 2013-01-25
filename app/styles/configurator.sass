@@ -142,9 +142,9 @@ body.configuring
     background-color: #333333
 
   .sectionContent .componentCreate
-    @include component-colors($designer_components_content_color, Container, HorizontalContainer, Comments, GridContainer, Picture, Text, Title, Repeater)
-    @include component-colors($designer_components_data_color, Catalog, Chart, BubbleChart, ColumnChart, LineChart, PieChart, TimeLine, TreeMap, Map, Table)
-    @include component-colors($designer_components_actions_color, Download, Share)
+    @include component-colors($designer_components_content_color, Container, HorizontalContainer, Comments, FloatGridContainer, GridContainer, Picture, Text, Title, Repeater)
+    @include component-colors($designer_components_data_color, Catalog, Chart, BubbleChart, ColumnChart, LineChart, PieChart, TimeLine, TreeMap, Map, SimpleTable, Table)
+    @include component-colors($designer_components_actions_color, Button, Download, Print, Share)
     @include component-colors($designer_components_input_color, InlineFilter)
 
 
@@ -241,6 +241,8 @@ body.configuring
 .configuring .cfEditingWrapper .socrata-component
   @include component-icons('> .disabledIcon', 'component', true)
   @include disabled-overlay(33%)
+  border: 1px dotted $color_chrome_box_border
+  background-color: rgba(240, 240, 240, 0.5)
 
   &.disabled .notReady
     display: none
@@ -379,16 +381,3 @@ ul.contextPickerAutocomplete li
   right: 0
   top: 0
   z-index: 10
-
-.configuratorSettings
-  label
-    font-weight: bold
-    width: 5em
-  input
-    width: 22em
-  .errorMessage
-    font-size: 1.2em
-    margin:
-      bottom: -1em
-      top: 1em
-    padding-left: 1em

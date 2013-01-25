@@ -339,9 +339,12 @@
             }
 
             vizObj._primaryView = newView;
-            vizObj._dataViews.unshift(vizObj._primaryView);
-            vizObj._byView[vizObj._primaryView.id] = vizObj._primaryView;
             vizObj._boundViewEvents = false;
+            if (!$.isBlank(vizObj._primaryView))
+            {
+                vizObj._dataViews.unshift(vizObj._primaryView);
+                vizObj._byView[vizObj._primaryView.id] = vizObj._primaryView;
+            }
 
             vizObj._requireRowReload = true;
             vizObj._viewChanged = true;

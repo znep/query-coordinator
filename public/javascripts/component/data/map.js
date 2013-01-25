@@ -66,6 +66,10 @@ $.component.Component.extend('Map', 'data', {
                     row: (args || {}).row,
                     datasetId: (args || {}).datasetId }]);
         });
+        lcObj.$contents.on('render_started.map_' + lcObj.id, function()
+        { lcObj.startLoading(); });
+        lcObj.$contents.on('render_finished.map_' + lcObj.id, function()
+        { lcObj.finishLoading(); });
     },
 
     _render: function()
@@ -105,7 +109,8 @@ $.component.Component.extend('Map', 'data', {
     _arrange: function()
     {
         this._super.apply(this, arguments);
-        this.$contents.trigger('resize');
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('resize'); }
     }
 });
 

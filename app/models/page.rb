@@ -98,6 +98,22 @@ class Page < SodaModel
     return self.set_up_model(JSON.parse(data, {:max_nesting => 35}))
   end
 
+  def self.path_exists?(cur_path)
+    cur_path = cur_path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
+    find.any? do |p|
+      cur_path == p.path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
+    end
+  end
+
+  def self.create(attributes, custom_headers = {})
+    # Status should eventually start as unpublished
+    attributes = {:status => 'published', :content => { type: 'Container', id: 'pageRoot' }}.
+      merge(attributes)
+    path = "/id/pages.json"
+    return parse(CoreServer::Base.connection.
+                 create_request(path, attributes.to_json, custom_headers))
+  end
+
 private
   def self.pages_data(mtime)
     cache_key = generate_cache_key(mtime)

@@ -564,7 +564,7 @@ blist.namespace.fetch('blist.datatypes');
         }
 
         if ($.isBlank(matchVal))
-        { return '<div class="blist-dataset-link-dangling">' + value + '</div>'; }
+        { return plainText ? value : '<div class="blist-dataset-link-dangling">' + value + '</div>'; }
 
         var view = column.format.view || (this.format || {}).view || 'icon_text';
         var result = [];

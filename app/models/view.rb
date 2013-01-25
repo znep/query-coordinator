@@ -532,6 +532,7 @@ class View < Model
     columns.each do |c|
       r[c.fieldName] = row[c.id.to_s]
       if c.renderTypeName == 'location' && !r[c.fieldName].blank? &&
+        r[c.fieldName] = r[c.fieldName].clone
         r[c.fieldName].key?('human_address') && r[c.fieldName]['human_address'].is_a?(String)
         r[c.fieldName]['human_address'] = JSON.parse(r[c.fieldName]['human_address'])
       end

@@ -502,16 +502,24 @@
                 if (this._delayUntilVisible)
                 {
                     var cObj = this;
-                    cObj.$dom.waypoint({delayRefresh: true, offset: '100%', checkTop: true,
-                    handler: function()
+                    // Defer so that the DOM has a chance to be added before waypoints tries to
+                    // find the parent context
+                    _.defer(function()
                     {
-                        if (!cObj._destroyed && cObj._needsRender)
-                        {
-                            delete cObj._delayUntilVisible;
-                            cObj.$dom.waypoint('destroy');
-                            cObj._render();
-                        }
-                    }});
+                        var sp = cObj.$dom.scrollParent()[0];
+                        cObj.$dom.waypoint({delayRefresh: true, offset: '100%', checkTop: true,
+                            context: sp.nodeType == 9 ? window : sp, // if got document, use window
+                            handler: function()
+                            {
+                                if (!cObj._destroyed && cObj._needsRender)
+                                {
+                                    delete cObj._delayUntilVisible;
+                                    cObj.$dom.waypoint('destroy');
+                                    cObj._render();
+                                }
+                            }
+                        });
+                    });
                 }
             }
 
@@ -841,7 +849,7 @@
         _updateDataSource: function(properties, callback)
         {
             var cObj = this;
-            properties = properties || cObj._properties;
+            properties = _.isEmpty(properties) ? cObj._properties : properties;
             var gotDCGen = function(count)
             {
                 var finishCallback = _.after(count, function()
@@ -1083,7 +1091,10 @@
                 disableWinUpdate = false;
                 winUpdateTimer = null;
             }, 500);
-        }, 200)
+        }, 200),
+
+        isLoading: function()
+        { return wsCounter > 0; }
     });
 
     // Set up the catalog registry here, since it is required for Component.extend to actually work

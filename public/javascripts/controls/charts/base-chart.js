@@ -18,7 +18,8 @@
         $.urlParam(window.location.href, 'charts') == 'nextgen')
     {
         $.extend(chartMapping, {
-            'column': 'd3_impl_column'
+            'column': 'd3_impl_bar',
+            'bar': 'd3_impl_bar'
         });
     }
 

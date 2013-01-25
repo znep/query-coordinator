@@ -129,7 +129,6 @@
 
     var designing = false;
     var originalConfiguration;
-    var options;
 
     var defaultOptions = {
         canAdd: blist.configuration.canvasX || blist.configuration.govStat,  // Can you add new components?
@@ -138,6 +137,7 @@
         mask: true,       // Mask out the background when editing a component?
         sidebar: true     // Show the sidebar?
     };
+    var options = $.extend({}, defaultOptions);
 
     var $viewOptions;
     var $viewsCont;
@@ -365,7 +365,6 @@
             $(window).resize();
         },
 
-        // todo: checks?
         configuration: function(opts)
         {
             if (opts)

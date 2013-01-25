@@ -116,7 +116,7 @@ var renderUpdate = function()
 
     // set value only if it agrees  across all datasets
     var curVal = _.reduce(cObj._getDatasetListFromContext(cObj._dataContext), function(memo, ds)
-        { return _.isNull(memo) || ds.searcString == memo ? ds.searchString : ''; }, null);
+        { return _.isNull(memo) || ds.searchString == memo ? ds.searchString : ''; }, null);
     cObj.$input.focus().val(curVal).blur();
 
     // show/hide

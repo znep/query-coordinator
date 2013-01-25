@@ -5,6 +5,8 @@ end
 
 CORESERVICE_URI = URI.parse(APP_CONFIG['coreservice_uri'])
 
+INTERCESSIO_URI = URI.parse(APP_CONFIG['intercessio_uri'] || "http://localhost:1313" )
+
 revision_file = File.join(Rails.root, "REVISION")
 
 begin

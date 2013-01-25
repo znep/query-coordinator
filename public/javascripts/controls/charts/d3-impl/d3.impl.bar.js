@@ -1085,6 +1085,7 @@ return; // dataOffset doesn't appear to be necessary; I've disabled it for now i
             top: (row[col.lookup] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.lookup])),
             left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
         }); }
+if ((blist.debug || {}).flyout) { console.log(yScale(row[col.lookup])); window.footip = rObj.tip; }
         view.highlightRows(row, null, col);
     },
 

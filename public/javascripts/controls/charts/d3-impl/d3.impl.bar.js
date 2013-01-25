@@ -102,6 +102,7 @@ $.Control.registerMixin('d3_impl_bar', {
         // default draw element position and left offset are 0
         cc.drawElementPosition = 0;
         cc.dataOffset = 0;
+        cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
 
         // init our renderers
         cc.chartRaphael = new Raphael(cc.$chartContainer.get(0), 10, 10);
@@ -240,9 +241,11 @@ chartObj.resizeHandle();
         var vizObj = this,
             cc = vizObj._chartConfig,
             xScale = vizObj._currentXScale(),
-            rowsPerScreen = Math.ceil(cc.$chartArea[cc.dataDim.height]() / cc.rowWidth);
+            rowsPerScreen = Math.ceil(cc.$chartArea[cc.dataDim.width]() / (cc.rowWidth + cc.rowSpacing));
 
-        var start = Math.max(Math.floor(xScale(cc.$chartContainer[cc.dataDim.scroll]())) - vizObj.defaults.rowBuffer, 0);
+        // cache scrollPos so that aggressive scrolling doesn't make our calculations stutter.
+        cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
+        var start = Math.max(Math.floor(xScale(cc.scrollPos)) - vizObj.defaults.rowBuffer, 0);
         var length = rowsPerScreen + (vizObj.defaults.rowBuffer * 2);
 
         return { start: start, length: length };
@@ -499,8 +502,10 @@ chartObj.resizeHandle();
         cc.rowWidth = calculateRowWidth();
 
         // set margin
-        cc.$chartContainer.css('margin-' + (cc.orientation == 'right' ? 'bottom' : 'right'),
-            cc.chartWidth * -1);
+        if (cc.orientation == 'right')
+        { cc.$chartContainer.css('margin-bottom', cc.chartHeight * -1); }
+        else
+        { cc.$chartContainer.css('margin-right', cc.chartWidth * -1); }
 
         // move baseline
         cc.$baselineContainer.css(cc.orientation == 'right' ? 'top' : 'left', vizObj._yAxisPos());
@@ -513,15 +518,16 @@ chartObj.resizeHandle();
     // accounts for screen scaling
     _recalculateDataOffset: function()
     {
+return; // dataOffset doesn't appear to be necessary; I've disabled it for now in case I made a mistake in my testing.
         var vizObj = this,
-            cc = vizObj._chartConfig,
-            xScale = vizObj._currentXScale(),
-            scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
+            cc = vizObj._chartConfig;
+
+        var xScale = vizObj._currentXScale();
 
         cc.dataOffset = 0; // need to first set to zero to remove influence.
-        cc.dataOffset = vizObj._xBarPosition(0)({ index: xScale(scrollPos) }) -
-                        (scrollPos - cc.drawElementPosition) +
-                        (cc.sidePadding * scrollPos / d3.max(xScale.domain()));
+        cc.dataOffset = vizObj._xBarPosition(0)({ index: xScale(cc.scrollPos) }) -
+                        (cc.scrollPos - cc.drawElementPosition) +
+                        (cc.sidePadding * cc.scrollPos / d3.max(xScale.domain()));
     },
 
     // moves the svg/vml element around to account for it's not big enough
@@ -529,9 +535,9 @@ chartObj.resizeHandle();
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
-            scrollPosition = cc.$chartContainer[cc.dataDim.scroll](),
+            scrollPosition = cc.scrollPos,
             chartAreaWidth = cc.$chartArea[cc.dataDim.width](),
-            drawElementPosition = parseFloat(cc.$drawElement.css(cc.dataDim.position)),
+            drawElementPosition = parseFloat(cc.$drawElement.position()[cc.dataDim.position]),
             drawElementWidth = vizObj._maxRenderWidth();
 
         if ((scrollPosition < drawElementPosition) ||

@@ -130,6 +130,15 @@ window.mapDebugger = function()
 window.chartDebugger = function()
 {
     window.chartObj = blist.datasetPage.rtManager.$domForType('chart').socrataChart();
+    window.cc = chartObj._chartConfig || chartObj._columnChart;
+    window.drawLine = function(num, color)
+    {
+        var $foo = $("<div />").css({ position: 'absolute', top: 0, left: 0,
+                                      borderRight: 'solid 1px ' + (color || 'black'),
+                                      width: num + 'px',
+                                      height: '100%' });
+        $('body').append($foo);
+    }
 };
 
 window.fetchOrigDF = function(uid)

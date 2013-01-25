@@ -109,7 +109,8 @@ $.component.Component.extend('Map', 'data', {
     _arrange: function()
     {
         this._super.apply(this, arguments);
-        this.$contents.trigger('resize');
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('resize'); }
     }
 });
 

@@ -1448,7 +1448,8 @@
                 };
             };
 
-            var filterCondition = {temporary: true, displayTypes: ['map']};
+            // include table displayType because the ds is likely a source table.
+            var filterCondition = {temporary: true, displayTypes: ['map', 'table']};
             var viewport = this.toViewport(projection);
             if (viewport.xmin < viewport.xmax)
             {

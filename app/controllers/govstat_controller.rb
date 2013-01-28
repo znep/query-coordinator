@@ -1,7 +1,24 @@
 class GovstatController < ApplicationController
+  include BrowseActions
   before_filter :set_govstat_theme
 
   def goals
+  end
+
+  def manage_data
+    @processed_browse = process_browse(request, {
+      nofederate: true,
+      sortBy: 'newest',
+      for_user: current_user.id,
+      publication_stage: ['published', 'unpublished'],
+      limit: 10,
+      facets: [],
+      disable: { pagination: true, sort: true, counter: true, table_header: true },
+      grid_items: { largeImage: true, richSection: true },
+      footer_config: {},
+      browse_in_container: true,
+      suppress_dataset_creation: true
+    })
   end
 
 protected

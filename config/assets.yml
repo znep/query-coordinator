@@ -497,6 +497,14 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
+  screen-govstat-goals:
+    - public/javascripts/plugins/awesomemarkup.js
+    - public/javascripts/plugins/backbone.js
+    - public/javascripts/util/backbone-exts.js
+    - public/javascripts/screens/govstat/goals/show.js
+    - public/javascripts/screens/govstat/goals/models.js
+    - public/javascripts/screens/govstat/goals/markup.js
+    - public/javascripts/screens/govstat/goals/views.js
   unified-filter:
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/base-pane.js

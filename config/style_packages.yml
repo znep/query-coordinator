@@ -179,6 +179,9 @@ screen-videos:
 screen-videos-popup:
 - strip-chrome
 - screen-videos-popup
+screen-govstat-goals:
+- screen-govstat-base
+- screen-govstat-goals
 template-instantiator:
 - components
 - template-instantiator

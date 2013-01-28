@@ -1,0 +1,32 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'screen-govstat-goals' %>
+  <title>Edit Goals | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="configControl">
+  <ul class="chooser">
+    <li class="active">Draft Goals</li>
+    <li>Active Goals</li>
+  </ul>
+</div>
+<div class="config">
+  <div class="configWrapper">
+    <div class="draft">
+      <a href="#newGoal" class="newGoal">Create a New Goal</a>
+    </div>
+    <div class="final">
+      <a href="#newCategory" class="newCategory">Create a New Category</a>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= include_javascripts 'screen-govstat-goals' %>
+<% end %>
+
+<%- content_for :modals do -%>
+  <%= modal :id => 'selectDataset' do %>
+    <h2>Choose a Dataset to feature</h2>
+    <iframe src="<%= url_for :controller => :browse, :action => :select_dataset %>?nofederate=true&amp;suppressed_facets[]=domain" frameBorder="0"></iframe>
+  <%- end -%>
+<%- end -%>

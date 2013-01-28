@@ -192,6 +192,49 @@ a
     li
       float: right
 
+// New Modal Styles
+.socrataModal
+  background-color: rgba(0, 0, 0, 0.6)
+  height: 100%
+  left: 0
+  opacity: 0
+  @include prefixer(perspective, 700px)
+  position: fixed
+  top: 0
+  @include transition(0.3s, opacity)
+  width: 100%
+  z-index: 5000
+
+  &.shown
+    opacity: 1
+
+  .socrataModalWrapper
+    height: 100%
+
+    .modalContents
+      opacity: 0
+      @include prefixer(transform, rotateY(15deg) translateY(10em))
+      @include prefixer(transform-style, preserve-3d)
+      @include transition(0.5s, transform opacity)
+
+      &.shown
+        opacity: 1
+        @include prefixer(transform, rotateY(0deg) translateY(0))
+
+      &.pushed
+        opacity: 0
+        @include prefixer(transform, rotateY(-15deg) translateY(-5em))
+
+  // just a sane default style
+  .socrataDialog
+    background-color: #f7f7f7
+    @include prefixer(border-radius, 0.2em)
+    @include prefixer(box-shadow, 0 0.3em 0.3em rgba(0, 0, 0, 0.4))
+    margin: 10em auto
+    min-height: 3em
+    padding: 1.5em
+    width: 70%
+
 
 // Approval styles
 .stage .icon

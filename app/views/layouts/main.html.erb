@@ -68,6 +68,11 @@ http://www.socrata.com
       })();
     </script>
   <% end %>
+
+  <%- unless CurrentDomain.properties.typekit_id.blank? -%>
+    <script type="text/javascript" src="//use.typekit.net/<%= CurrentDomain.properties.typekit_id %>.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  <%- end -%>
 </head>
 
 <body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}#{@suppress_chrome ? ' suppressChrome' : ''}" %>">
@@ -106,6 +111,9 @@ http://www.socrata.com
     <%= render_domain_template(@page_custom_footer || 'footer_full') %>
   </div>
   <%- end -%>
+
+  <%# socrata modal fragment to supercede jqm %>
+  <div class="socrataModal"><div class="socrataModalWrapper"></div></div>
 
   <%#
   Better to load JS at the bottom:

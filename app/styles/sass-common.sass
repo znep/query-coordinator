@@ -308,13 +308,6 @@ $row_zebra_color: #f6f6f6
 @mixin required-star
   background: url(/stylesheets/images/common/required.png) no-repeat left 3px
 
-@mixin css3er($prop_name, $prop_value)
-  #{$prop_name}: $prop_value
-  -moz-#{$prop_name}: $prop_value
-  webkit-#{$prop_name}: $prop_value
-  -webkit-#{$prop_name}: $prop_value
-  -ms-#{$prop_name}: $prop_value
-
 @mixin dl-section-content
   > dt
     color: $color_chrome_sidebar_text
@@ -339,3 +332,25 @@ $row_zebra_color: #f6f6f6
       // These would sit below dts in IE7, so you couldn't rate
       position: relative
       z-index: 1
+
+
+
+// NEW GENERATION OF BASIC TOOLS
+
+@mixin prefixer($key, $value)
+  #{$key}: #{$value}
+  -webkit-#{$key}: #{$value}
+  -moz-#{$key}: #{$value}
+  -ms-#{$key}: #{$value}
+  -o-#{$key}: #{$value}
+
+@mixin transition($duration, $properties)
+  @include prefixer(transition-duration, $duration)
+  @include prefixer(transition-property, $properties)
+
+@mixin clearfix
+  &:after
+    content: ''
+    display: table
+    clear: both
+

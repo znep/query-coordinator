@@ -302,6 +302,13 @@ Frontend::Application.routes do
     match '/test_page/:action', :controller => 'test_pages'
   end
 
+  # Govstat pages
+  scope :controller => 'govstat' do
+    match '/goals', :action => 'goals'
+
+    # TODO: only expose these pages when the domain is a govstat instance
+  end
+
   # Custom pages, catalogs, facets
   scope :controller => 'custom_content' do
     # Canvas 1

@@ -30,7 +30,7 @@ $(function()
         metrics: [],
         related_datasets: [],
         start_date: null,
-        end_date: null,
+        end_date: '2012-12-03',
         required_change: null,
         is_public: false,
         comparison: '<'

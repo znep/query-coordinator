@@ -501,6 +501,7 @@ javascripts:
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/backbone.js
     - public/javascripts/util/backbone-exts.js
+    - public/javascripts/plugins/datepicker.js
     - public/javascripts/screens/govstat/goals/show.js
     - public/javascripts/screens/govstat/goals/models.js
     - public/javascripts/screens/govstat/goals/markup.js

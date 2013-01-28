@@ -113,7 +113,7 @@ window.govstat.markup = {
                         id: goal.cid + '_end_date',
                         className: 'date',
                         name: 'end_date',
-                        value: goal.get('end_date')
+                        'data-rawvalue': goal.get('end_date')
                     }]
                 }, {
                     _: 'span',
@@ -149,7 +149,7 @@ window.govstat.markup = {
                             id: goal.cid + '_start_date',
                             className: 'date',
                             name: 'start_date',
-                            value: goal.get('start_date')
+                            'data-rawvalue': goal.get('start_date')
                         }]
                     }, {
                         _: 'span',

@@ -78,7 +78,9 @@ var GoalEditor = Backbone.View.extend({
     events:
     {
         'change .mainDetails input[type=text]:not(.date), .mainDetails select': 'updateTextAttr',
-        'change .mainDetails input[type=checkbox]': 'updateCheckAttr'
+        'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
+		'change input.date': 'updateDateAttr',
+		'keypress .notes': 'updateNotesAttr'
     },
     initialize: function()
     {
@@ -99,10 +101,30 @@ var GoalEditor = Backbone.View.extend({
         agencyList.render();
         $additionalDetails.find('.agencyInput').append(agencyList.$el);
 
-        // custom events
+        // custom controls
         // bind fancy select
         var $comparisonWrapper = $mainDetails.find('.comparisonInput');
         bindSelect($comparisonWrapper.find('select'), $comparisonWrapper.find('span.selectValue'));
+
+		// bind fancy date
+		var $dateInputs = $mainDetails.find('input.date').add($additionalDetails.find('input.date'));
+		$dateInputs.each(function()
+		{
+			var $this = $(this);
+			$this.DatePicker({
+				date: $this.attr('data-rawvalue') || new Date(),
+				onChange: function(_, newDate)
+				{
+					$this
+						.attr('data-rawvalue', newDate.toISOString())
+						.val(newDate.toDateString())
+						.trigger('change')
+						.blur();
+				},
+				starts: 0,
+				eventName: 'focus'
+			});
+		});
 
         // bind fancy textedit
         var $notes = $additionalDetails.find('.notes');
@@ -130,7 +152,19 @@ var GoalEditor = Backbone.View.extend({
     {
         var $input = $(event.target);
         this.model.set($input.attr('name'), $input.is(':checked'));
-    }
+    },
+	updateDateAttr: function(event)
+	{
+		var $input = $(event.target);
+		this.model.set($input.attr('name'), $input.attr('data-rawvalue'));
+	},
+	updateNotesAttr: function(event)
+	{
+		var $span = $(event.target);
+		this.model.set('description', $span.text());
+		
+		console.log(this.model);
+	}
 });
 
 // static methods

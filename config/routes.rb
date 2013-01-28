@@ -306,6 +306,7 @@ Frontend::Application.routes do
   scope :controller => 'govstat' do
     match '/goals-new', :action => 'goals'
 
+    match '/manage', :action => 'manage'
     match '/manage/data', :action => 'manage_data'
     match '/manage/reports', :action => 'manage_reports'
 

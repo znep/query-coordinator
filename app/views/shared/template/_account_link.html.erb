@@ -1,3 +1,6 @@
 <%- if !current_user.nil? -%>
-<li class="accountLink"><a href="<%= profile_index_path %>">Hello, <%= current_user.displayName %></a></li>
+  <li class="accountLink"><a href="<%= module_enabled?(:govStat) ? manage_path : profile_index_path %>">Hello, <%= current_user.displayName %></a></li>
+  <%- if module_enabled?(:govStat) -%>
+  <li class="accountLink"><a href="<%= profile_index_path %>">Manage Account</a></li>
+  <%- end -%>
 <%- end -%>

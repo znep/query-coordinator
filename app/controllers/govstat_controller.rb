@@ -5,6 +5,9 @@ class GovstatController < ApplicationController
   def goals
   end
 
+  def manage
+  end
+
   def manage_data
     @processed_browse = process_browse(request, {
       nofederate: true,

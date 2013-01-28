@@ -182,6 +182,9 @@ screen-videos-popup:
 screen-govstat-goals:
 - screen-govstat-base
 - screen-govstat-goals
+screen-govstat-manage:
+- screen-govstat-base
+- screen-govstat-manage
 screen-govstat-manage-data:
 - screen-govstat-base
 - screen-govstat-manage-data

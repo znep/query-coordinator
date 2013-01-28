@@ -1,0 +1,13 @@
+<% content_for :head do %>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
+  <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
+  <title>Manage | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="managePage">
+  <div class="actionLinks">
+    <a href="<%= manage_data_path %>"><span class="ss-icon">database</span><p>Data and Analysis</p></a>
+    <a href="<%= manage_reports_path %>"><span class="ss-icon">openbook</span><p>Reports</p></a>
+    <a href="<%= manage_site_config_path %>"><span class="ss-icon">settings</span><p>Site Configuration</p></a>
+  </div>
+</div>

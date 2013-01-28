@@ -1,4 +1,5 @@
 class UserSessionsController < ApplicationController
+  include UserSessionsHelper
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
 
@@ -42,7 +43,7 @@ class UserSessionsController < ApplicationController
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       respond_to do |format|
         format.html {
-          redirect_back_or_default(CurrentDomain.properties.on_login_path_override || profile_index_path)
+          redirect_back_or_default(login_redirect_url)
         }
         format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }

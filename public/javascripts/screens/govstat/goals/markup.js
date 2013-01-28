@@ -14,7 +14,7 @@ window.govstat.markup = {
                     className: 'inputWrapper subjectInput',
                     contents: [{
                         _: 'label',
-                        for: goal.cid + '_we',
+                        'for': goal.cid + '_we',
                         contents: 'We'
                     }, {
                         _: 'input',
@@ -31,7 +31,7 @@ window.govstat.markup = {
                     className: 'inputWrapper selectInput comparisonInput',
                     contents: [{
                         _: 'label',
-                        for: goal.cid + '_comparison',
+                        'for': goal.cid + '_comparison',
                         contents: 'Reduce / Increase'
                     }, {
                         _: 'span',
@@ -57,7 +57,7 @@ window.govstat.markup = {
                     className: 'inputWrapper nameInput',
                     contents: [{
                         _: 'label',
-                        for: goal.cid + '_name',
+                        'for': goal.cid + '_name',
                         contents: 'Object'
                     }, {
                         _: 'input',
@@ -74,7 +74,7 @@ window.govstat.markup = {
                     className: 'inputWrapper amountInput',
                     contents: [{
                         _: 'label',
-                        for: goal.cid + '_amount',
+                        'for': goal.cid + '_amount',
                         contents: 'Amount'
                     }, {
                         _: 'input',
@@ -94,7 +94,7 @@ window.govstat.markup = {
                         checked: goal.get('goal_delta_is_pct') === true
                     }, {
                         _: 'label',
-                        for: goal.cid + '_amount_pct',
+                        'for': goal.cid + '_amount_pct',
                         contents: '%'
                     }]
                 }, {
@@ -105,7 +105,7 @@ window.govstat.markup = {
                     className: 'inputWrapper endDateInput',
                     contents: [{
                         _: 'label',
-                        for: goal.cid + '_end_date',
+                        'for': goal.cid + '_end_date',
                         contents: 'Goal Date'
                     }, {
                         _: 'input',
@@ -141,7 +141,7 @@ window.govstat.markup = {
                         className: 'inputWrapper startDateInput',
                         contents: [{
                             _: 'label',
-                            for: goal.cid + '_start_date',
+                            'for': goal.cid + '_start_date',
                             contents: 'Start Date'
                         }, {
                             _: 'input',
@@ -213,7 +213,7 @@ window.govstat.markup = {
                 value: agency.get('name')
             }, {
                 _: 'label',
-                for: agency.cid + '_name',
+                'for': agency.cid + '_name',
                 contents: 'Agency'
             }]
         }]);

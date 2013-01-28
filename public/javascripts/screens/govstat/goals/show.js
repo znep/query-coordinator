@@ -71,7 +71,7 @@ $(function()
 
     // categories
     var categories = new govstat.collections.Categories([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }], { parse: true });
-    categories.on('invalid', function() { debugger; });
+    categories.on('invalid', function() { console.error('invalid!'); });
 
 // INTERFACE
     // power tabswitch interface

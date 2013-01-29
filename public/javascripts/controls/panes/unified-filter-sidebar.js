@@ -25,11 +25,10 @@
 
         setView: function(newView)
         {
-            var cpObj = this;
+            var cpObj = this, _super = cpObj._super;
             var handle = function(ds)
             {
-if (blist.debug) { console.log(ds); console.log(cpObj._super); }
-                cpObj._super.apply(cpObj, [ds]);
+                _super.apply(cpObj, [ds]);
                 cpObj.reset();
             };
 

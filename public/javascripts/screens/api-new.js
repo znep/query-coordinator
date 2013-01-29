@@ -18,7 +18,8 @@ $(function(){
   var $paneList = $('#apiFoundryWizard ul');
   $("#stepTotal").text(stepTotal);
   $("#progressbar").progressbar({value:0});
-  $('#rowIdentifierColumnId option').each(function(index, element){
+  $('#rowIdentifierColumnId option').each(function(index, element)
+  {
     if ($(element).text() === blist.configuration.apiFoundry.defaultUniqueId){
       $(element).attr('selected', 'selected');
     }
@@ -27,11 +28,14 @@ $(function(){
   $wizard.wizard(options);
   $paneList.show();
 
-  function bindLiveDocs(){
-    $('.liveDoc').each(function(index, element){
+  function bindLiveDocs()
+  {
+    $('.liveDoc').each(function(index, element)
+    {
       var $element = $(element);
       var key = 'span#' + $element.attr('id') + 'Doc';
-      var update = function(eventObj){
+      var update = function(eventObj)
+      {
         $(key).html(($(eventObj.target).value() || '').replace(/\n/g, "<br/>"));
       };
       $element.change(update);
@@ -39,16 +43,20 @@ $(function(){
     });
   }
 
-  function bindNameCheck(){
+  function bindNameCheck()
+  {
     $('#resourceName').change(function(){checkResourceName();});
-    $('#resourceName').keyup(function(){
+    $('#resourceName').keyup(function()
+    {
       $('.availableError').hide();
     });
   }
 
   var rNames = {}; //candidate names: true -> available, false -> unavailable
-  function checkResourceName(callback){
-    checkResourceNameAvailable($('#resourceName').val(), function(name, available){
+  function checkResourceName(callback)
+  {
+    checkResourceNameAvailable($('#resourceName').val(), function(name, available)
+    {
       if ($('#resourceName').val() === name){
         if (available) {
           $(".availableError").hide();
@@ -59,7 +67,8 @@ $(function(){
     });
   }
 
-  function conflictHandler(message){
+  function conflictHandler(message)
+  {
     var $error = $(".validationError");
     $error.show();
     $error.text(message);
@@ -68,9 +77,11 @@ $(function(){
     $(".prevButton").removeClass("disabled");
   }
 
-  function checkResourceNameAvailable(name, callback){
+  function checkResourceNameAvailable(name, callback)
+  {
     if ( rNames[name] === undefined ){
-      requestResourceName(name, function(checkedName, available){
+      requestResourceName(name, function(checkedName, available)
+      {
         rNames[checkedName] = available;
         callback(checkedName, available);
       });
@@ -78,16 +89,19 @@ $(function(){
     else { callback(name, rNames[name]) }
   }
 
-  function requestResourceName(name, callback){
+  function requestResourceName(name, callback)
+  {
     //callback(name, name.length % 2 === 0);
     Dataset.lookupFromResourceName(
       name,
-      function(ds){
+      function(ds)
+      {
         if (ds){
           callback(name, false);
         }
       },
-      function(err){
+      function(err)
+      {
         if (err.status === 404){
           callback(name, true);
         }
@@ -96,14 +110,15 @@ $(function(){
     );
   }
 
-  function updateProgressIndicator(ordinal){
+  function updateProgressIndicator(ordinal)
+  {
     var progress = ordinal / stepTotal * 100;
     $("#step").text(ordinal);
     $("#progressbar").progressbar("value", progress);
   }
 
-  function makePaneConfig() {
-
+  function makePaneConfig() 
+  {
     var nextPaneMap = {};
     var panes = [];
     var ordinal = 1; //ordinal indicates the position in the progress meter
@@ -114,11 +129,13 @@ $(function(){
 
     $("#skip").click(function(eventObj){ commandObj.next('apiPublish'); });
 
-    function defaultTransition(){
+    function defaultTransition()
+    {
       commandObj.next(nextPaneMap[currentPaneId]);
     }
 
-    function defaultErrorHandler(err){
+    function defaultErrorHandler(err)
+    {
       var message = err.responseText;
       try {message = JSON.parse(message).message}
       catch(e){}
@@ -129,18 +146,21 @@ $(function(){
       $(".prevButton").removeClass("disabled");
     }
 
-    onActivate.checkpub = function($pane, paneConfig, state, command){
+    onActivate.checkpub = function($pane, paneConfig, state, command)
+    {
       $("#progress").hide();
     }
 
-    onActivate.welcome = function($pane, paneConfig, state, command){
+    onActivate.welcome = function($pane, paneConfig, state, command)
+    {
       $("#skip").hide()
       getDataset(function(){}, defaultErrorHandler);
       if (blist.configuration.apiFoundry.makeNewView)  paneConfig.nextText = "Create an API";
       else paneConfig.nextText = "Customize this API";
     }
 
-    onNext.welcome = function($pane, state){
+    onNext.welcome = function($pane, state)
+    {
       getApiView(
         function(){
           defaultTransition();
@@ -152,24 +172,28 @@ $(function(){
       return false;
     }
 
-    onActivate.datasetResourceName = function($pane, state){
+    onActivate.datasetResourceName = function($pane, state)
+    {
       $("#skip").hide()
     }
 
-    onNext.datasetResourceName = function($pane, state){
+    onNext.datasetResourceName = function($pane, state)
+    {
       updateView(
         {
           resourceName:$("#resourceName").val().trim()
         },
         defaultTransition,
-        function(err){
+        function(err)
+        {
           conflictHandler(JSON.parse(err.responseText).message);
         }
       );
       return false;
     }
 
-    onNext.datasetName = function($pane, state){
+    onNext.datasetName = function($pane, state)
+    {
       updateView(
         {
           name:$("#editTitle").val().trim()
@@ -182,11 +206,13 @@ $(function(){
       return false;
     }
 
-    onNext.datasetUniqueId = function($pane, state){
+    onNext.datasetUniqueId = function($pane, state)
+    {
       var newSetting = $("#rowIdentifierColumnId").val();
       if (newSetting.trim() === "") newSetting = null;
       else {
-        _.each(blist.configuration.apiFoundry.apiView.columns, function(element, index){
+        _.each(blist.configuration.apiFoundry.apiView.columns, function(element, index)
+        {
           if (newSetting === element.fieldName){ newSetting = element.id;}
         });
       }
@@ -200,13 +226,15 @@ $(function(){
       return false;
     }
 
-    onActivate.datasetDescription = function($pane, paneConfig, state, command){
+    onActivate.datasetDescription = function($pane, paneConfig, state, command)
+    {
       $("#resourceNameDoc").text(blist.configuration.apiFoundry.apiView.resourceName);
       var desc = blist.configuration.apiFoundry.apiView.description;
       if (desc) {$('#description').text(desc);}
     }
 
-    onNext.datasetDescription = function($pane, state){
+    onNext.datasetDescription = function($pane, state)
+    {
       var $prompt = $(".prompt");
       $prompt.val(null);
       updateView(
@@ -221,10 +249,21 @@ $(function(){
     }
 
     //add a pane for each column
-    $("#apiFoundryWizard .apiFieldPane").each(function(index, element){
+    $("#apiFoundryWizard .apiFieldPane").each(function(index, element)
+    {
       var key = $(element).attr('id');
       var columnOriginalFieldName = key.slice(4);
-      onNext[key] = function($pane, state){
+      onActivate[key] = function($pane, paneConfig, state, command)
+      {
+        var col = columns[columnOriginalFieldName];
+        var firstSelector = "#" + key + " ";
+        $(firstSelector + "#name").val(col.name);
+        $(firstSelector + "#fieldName").val(col.fieldName);
+        $(firstSelector + "#description").val(col.description);
+        $(firstSelector + "#description").text(col.description);
+      }
+      onNext[key] = function($pane, state)
+      {
         var $prompt = $(".prompt");
         $prompt.val(null);
         updateColumn(
@@ -242,13 +281,16 @@ $(function(){
       }
     });
 
-    onActivate.apiPublish = function($pane, paneConfig, state, command){
+    onActivate.apiPublish = function($pane, paneConfig, state, command)
+    {
       $("#skip").hide()
     }
 
-    onNext.apiPublish = function($pane, state){
+    onNext.apiPublish = function($pane, state)
+    {
       getApiView(
-        function(){
+        function()
+        {
           var md = $.extend(true, {}, blist.configuration.apiFoundry.ds.metadata);
           md.availableDisplayTypes = ['api'];
           updateView(
@@ -268,7 +310,8 @@ $(function(){
       return false;
     }
 
-    onActivate.published = function($pane, paneConfig, state, command){
+    onActivate.published = function($pane, paneConfig, state, command)
+    {
       $("#skip").hide()
       paneConfig.nextText = "View Documentation";
       blist.configuration.apiFoundry.docsUrl = '/developers/docs/'
@@ -284,7 +327,8 @@ $(function(){
         return false;
     }
 
-    function defaultOnNext($pane, state){
+    function defaultOnNext($pane, state)
+    {
       var id = $pane.attr('id');
       $(".nextButton").addClass("disabled");
       $(".prevButton").addClass("disabled");
@@ -293,7 +337,8 @@ $(function(){
       else { return nextPaneMap[id]; }
     }
 
-    function defaultOnActivate($pane, paneConfig, state, command){
+    function defaultOnActivate($pane, paneConfig, state, command)
+    {
       currentPaneId = $pane.attr('id');
       commandObj = command;
       updateProgressIndicator(paneConfig.ordinal);
@@ -367,7 +412,8 @@ $(function(){
     });
 
     //add a pane for each column
-    $("#apiFoundryWizard .apiFieldPane").each(function(index, element){
+    $("#apiFoundryWizard .apiFieldPane").each(function(index, element)
+    {
       var key = $(element).attr('id');
       panes.push({
         key:key,
@@ -395,7 +441,8 @@ $(function(){
     });
 
     var paneConfig = {};
-    _.each(panes, function(pane, index){
+    _.each(panes, function(pane, index)
+    {
       var key = pane.key;
       paneConfig[key] = pane;
       if (index < panes.length - 1) {nextPaneMap[key] = panes[index + 1].key}
@@ -406,28 +453,33 @@ $(function(){
     return paneConfig;
   }
   
-  function getDataset(callback, errorCallback){
+  function getDataset(callback, errorCallback)
+  {
     if (blist.configuration.apiFoundry.ds){callback(blist.configuration.apiFoundry.ds);}
     Dataset.lookupFromViewId(
-      blist.configuration.apiFoundry.id
-      , function(ds){
+      blist.configuration.apiFoundry.id,
+      function(ds)
+      {
           blist.configuration.apiFoundry.ds = ds;
           callback(ds);
-      }
-      , errorCallback
-      , false
+      },
+      errorCallback,
+      false
     );
   }
 
   var columns;
-  function makeColumnHash(){
-    columns = _.reduce(blist.configuration.apiFoundry.apiView.columns, function(memo, col){
+  function makeColumnHash()
+  {
+    columns = _.reduce(blist.configuration.apiFoundry.apiView.columns, function(memo, col)
+    {
       memo[col.fieldName] = col;
       return memo;
     }, {});
   }
 
-  function getApiView(callback, errorCallback){
+  function getApiView(callback, errorCallback)
+  {
     if (!blist.configuration.apiFoundry.makeNewView) {
       blist.configuration.apiFoundry.apiView = blist.configuration.apiFoundry.ds;
     }
@@ -450,15 +502,25 @@ $(function(){
     }
   }
 
-  function updateView(changes, callback, errorCallback){
+  function updateView(changes, callback, errorCallback)
+  {
     blist.configuration.apiFoundry.apiView.update(changes);
     blist.configuration.apiFoundry.apiView.save(callback, errorCallback);
   }
 
-  function updateColumn(column, changes, callback, errorCallback){
+  function updateColumn(column, changes, callback, errorCallback)
+  {
     var col = columns[column];
+    var original = col.cleanCopy();
     col.update(changes);
-    col.save(callback, errorCallback);
+    col.save(
+      callback, 
+      function(err)
+      {
+        col.update(original);
+        errorCallback(err);
+      }
+    );
   }
 
   // general validation. here because once a validator
@@ -470,7 +532,8 @@ $(function(){
       messages: {
         'resourceName':'this is required'
       },
-      errorPlacement: function (label, $el) {
+      errorPlacement: function (label, $el) 
+      {
           $el.closest('.line').append(label);
       }
   });

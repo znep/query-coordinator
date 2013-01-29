@@ -24,9 +24,11 @@
   <%= include_javascripts 'screen-govstat-goals' %>
 <% end %>
 
-<%- content_for :modals do -%>
-  <%= modal :id => 'selectDataset' do %>
-    <h2>Choose a Dataset to feature</h2>
+<%- content_for :new_modals do -%>
+  <div class="socrataDialog" id="selectDataset">
+    <h2>Choose a Dataset</h2>
+    <a href="#close" class="jqmClose">Close</a>
+    <p>We've by default filtered to datasets that might be relevant to this goal. To see all datasets, please feel free to clear the Goal facet on the left.</p>
     <iframe src="<%= url_for :controller => :browse, :action => :select_dataset %>?nofederate=true&amp;suppressed_facets[]=domain" frameBorder="0"></iframe>
-  <%- end -%>
+  </div>
 <%- end -%>

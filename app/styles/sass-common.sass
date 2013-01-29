@@ -87,25 +87,26 @@ $row_zebra_color: #f6f6f6
   -moz-box-shadow: none
   -webkit-box-shadow: none
 
-@mixin transition($t)
-  transition: $t
-  -moz-transition: $t
-  -webkit-transition: $t
-  -o-transition: $t
+@mixin transition($duration, $property)
+  @include transition-duration($duration)
+  @include transition-property($property)
 
 @mixin transition-duration($t)
   transition-duration: $t
   -moz-transition-duration: $t
   -webkit-transition-duration: $t
+  -o-transition-duration: $t
 
 @mixin transition-property($p)
   transition-property: $p
   @if ($p == box-shadow) or ($p == border-radius)
     -moz-transition-property: -moz- + $p
     -webkit-transition-property: -webkit- + $p
+    -o-transition-property: -o- + $p
   @else
     -moz-transition-property: $p
     -webkit-transition-property: $p
+    -o-transition-property: $p
 
 @mixin vertical-gradient($s, $e: false)
   @if $e == false
@@ -343,10 +344,6 @@ $row_zebra_color: #f6f6f6
   -moz-#{$key}: #{$value}
   -ms-#{$key}: #{$value}
   -o-#{$key}: #{$value}
-
-@mixin transition($duration, $properties)
-  @include prefixer(transition-duration, $duration)
-  @include prefixer(transition-property, $properties)
 
 @mixin clearfix
   &:after

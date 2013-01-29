@@ -1,7 +1,7 @@
 ;(function()
 {
 
-window.govstat.markup = {
+blist.namespace.fetch('blist.govstat').markup = {
     goalEditor:
     {
         mainDetails: function(goal)
@@ -181,7 +181,7 @@ window.govstat.markup = {
                             _: 'span',
                             className: 'notes',
                             contentEditable: 'true',
-                            contents: goal.get('description') // TODO: htmlsafe
+                            contents: $.htmlEscape(goal.get('description') || '').replace(/\n/g, '<br/>')
                         }, {
                             _: 'label',
                             className: 'notesLabel',
@@ -190,7 +190,27 @@ window.govstat.markup = {
                     }]
                 }]
             })
-        }
+        },
+
+		relatedDatasets: function(goal)
+		{
+			return $.tag2({
+				_: 'form',
+				className: 'relatedDatasets',
+				contents: [{
+					_: 'h2',
+					contents: 'Related Datasets'
+				}, {
+					_: 'div',
+					className: 'datasetListContainer'
+				}, {
+					_: 'a',
+					className: 'addDataset',
+					href: '#add',
+					contents: 'Add A Dataset'
+				}]
+			});
+		}
     },
 
     agencyEditor: function(agency)
@@ -217,7 +237,37 @@ window.govstat.markup = {
                 contents: 'Agency'
             }]
         }]);
-    }
+    },
+
+	datasetCard: function(ds)
+	{
+		var preferredImage = ds.preferredImage();
+		return $.tag2([{
+			i: $.isBlank(preferredImage),
+			t: {
+				_: 'div',
+				className: [ 'datasetIcon', 'type', ds.displayType.capitalize() ],
+				contents: {
+					_: 'span',
+					className: 'icon'
+				}
+			},
+			e: {
+				_: 'img',
+				src: preferredImage,
+				alt: ds.name
+			}
+		}, {
+			_: 'h2',
+			className: 'datasetName',
+			contents: $.htmlEscape(ds.name)
+		}, {
+			_: 'a',
+			className: 'removeDataset',
+			href: '#remove',
+			contents: 'Close'
+		}]);
+	}
 };
 
 })();

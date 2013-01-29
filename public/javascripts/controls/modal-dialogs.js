@@ -39,7 +39,7 @@
     var $overlay = $('.socrataModal');
     var $wrapper = $('.socrataModal .socrataModalWrapper');
     var $body = $('body');
-    var modalAnimLength = 800; // could use webkitTransitionEnd but that's, well, webkit
+    var modalAnimLength = 500; // could use webkitTransitionEnd but that's, well, webkit
 
     // util
     var afterComplete = function(f) { window.setTimeout(f, modalAnimLength); };
@@ -66,7 +66,7 @@
 
                 // if we let it always be auto we get render
                 // artifacts on the transition
-                $wrapper.css('overflow', 'auto');
+                $wrapper.css('overflow-y', 'auto');
                 overlayStatus = 'shown';
             });
         });
@@ -78,7 +78,7 @@
         $overlay.removeClass('shown');
         overlayStatus = 'hiding';
 
-        $wrapper.css('overflow', 'visible');
+        $wrapper.css('overflow-y', 'visible');
         $body.css('overflow-y', 'visible');
 
         afterComplete(function()
@@ -137,11 +137,18 @@
         }
     };
 
-    $.fn.showModal = function() { pushModal($(this)); };
+    $.fn.showModal = function()
+	{
+		var $this = $(this);
+		pushModal($this);
+		return $this;
+	};
+	$.showModal = function(name) { return $('#newModals > #' + name).clone().showModal(); };
+	$.popModal = popModal;
 
-    $(document).on('keyup', ':not(:input)', function(event)
+    $(document).on('keyup', function(event)
     {
-        if (event.keyCode === 27)
+        if ($(event.target).is(':not(:input)') && (event.keyCode === 27))
         {
             popModal();
         }
@@ -153,7 +160,7 @@
             popModal(true);
         }
     });
-    $wrapper.on('click', '.jqmHide', function(event)
+    $wrapper.on('click', '.jqmClose', function(event)
     {
         event.preventDefault();
         popModal();

@@ -12,8 +12,9 @@ var Agency = Backbone.Model.extend({
     {
         if (_.isString(response))
         {
-            this.set('name', response);
+			response = { name: response };
         }
+		return response;
     },
     toJSON: function() { return this.get('name'); }
 });
@@ -22,13 +23,51 @@ var Agencies = Backbone.Collection.extend({
     model: Agency
 });
 
+// DATASETPROXY
+
+var DatasetProxy = Backbone.Model.extend({
+	initialize: function(_, options)
+	{
+		if (!$.isBlank(options.dataset)) { this._dataset = options.dataset; }
+	},
+	parse: function(response)
+	{
+		if (_.isString(response))
+		{
+			response = { id: response };
+		}
+		return response;
+	},
+	getDataset: function(callback)
+	{
+		// not super happy with this; in backbone parlance it would seem more
+		// correct to bind to a 'hydrate' event and handle the dry case on the
+		// consumer side. but, this seems simpler and more in line with what we
+		// already do.
+		if (!$.isBlank(this._dataset))
+		{
+			callback(this._dataset);
+		}
+		else
+		{
+			Dataset.createFromViewId(this.get('id'), callback);
+		}
+	},
+	toJSON: function() { return this.get('id'); }
+});
+
+var DatasetsProxy = Backbone.Collection.extend({
+	model: DatasetProxy
+});
+
 // GOAL
 
 var Goal = Backbone.Model.extend({
     model:
     {
         metric: Metric,
-        agency: Agencies
+        agency: Agencies,
+		related_datasets: DatasetsProxy
     },
 
     initialize: function()
@@ -64,6 +103,7 @@ var Goals = Backbone.Collection.extend({
             }
             else if (options.draft === true)
             {
+				goal.set('category', null);
                 goal.set('is_public', false);
             }
         });
@@ -101,21 +141,23 @@ var Categories = Backbone.Collection.extend({
 
 // EXPORT
 
-window.govstat = {
+$.extend(blist.namespace.fetch('blist.govstat'), {
     collections:
     {
         Categories: Categories,
         Goals: Goals,
-        Agencies: Agencies
+        Agencies: Agencies,
+		DatasetsProxy: DatasetsProxy
     },
     models:
     {
         Category: Category,
         Goal: Goal,
         Metric: Metric,
-        Agency: Agency
+        Agency: Agency,
+		DatasetProxy: DatasetProxy
     }
-};
+});
 
 })();
 

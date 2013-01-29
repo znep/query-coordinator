@@ -3,7 +3,7 @@ class GovstatController < ApplicationController
 
   def goals
   end
-  
+
 protected
   def set_govstat_theme
     @use_govstat_theme = true

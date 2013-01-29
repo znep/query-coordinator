@@ -1,8 +1,10 @@
 
-// govstat.js -- ms stat
+// govstatNS.js -- ms stat
 
 $(function()
 {
+	var govstatNS = blist.namespace.fetch('blist.govstat');
+
 // ELEMENT CACHING
     var $config = $('.config');
     var $configWrapper = $('.config .configWrapper');
@@ -10,7 +12,7 @@ $(function()
     var $final = $('.config .final');
 
     // pagewide handlers
-    var handleResize = function()  
+    var handleResize = function()
     {
         $configWrapper.height(Math.max($(window).height() * 0.8, 400));
     };
@@ -22,13 +24,13 @@ $(function()
 // dummy data for now
 
     // goals
-    var goals = new govstat.collections.Goals([{
+    var goals = new govstatNS.collections.Goals([{
         id: '1234-5678',
         name: 'Thefts',
         category: null,
         agency: [],
         metrics: [],
-        related_datasets: [],
+        related_datasets: [ 'bqab-tjmv' ],
         start_date: null,
         end_date: '2012-12-03',
         required_change: null,
@@ -65,12 +67,12 @@ $(function()
     {
         return (goal.get('is_public') !== true) ? '__draft' : goal.get('category');
     });
-    //_.each(goalsByCategory, function(v, k) { goalsByCategory[k] = new govstat.collections.Goals(v); });
-    var draftGoals = new govstat.collections.Goals(rawGoalsByCategory.__draft || [], { draft: true });
+    //_.each(goalsByCategory, function(v, k) { goalsByCategory[k] = new govstatNS.collections.Goals(v); });
+    var draftGoals = new govstatNS.collections.Goals(rawGoalsByCategory.__draft || [], { draft: true });
     delete rawGoalsByCategory.__draft;
 
     // categories
-    var categories = new govstat.collections.Categories([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }], { parse: true });
+    var categories = new govstatNS.collections.Categories([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }], { parse: true });
     categories.on('invalid', function() { console.error('invalid!'); });
 
 // INTERFACE
@@ -96,17 +98,17 @@ $(function()
     });
 
     // render draft goals
-    var draftGoalsView = new govstat.views.goals.GoalList({
+    var draftGoalsView = new govstatNS.views.goals.GoalList({
         collection: draftGoals,
-        instanceView: govstat.views.goal.GoalCard
+        instanceView: govstatNS.views.goal.GoalCard
     });
-    $draft.prepend(draftGoalsView.el);
+    $draft.prepend(draftGoalsView.$el);
     draftGoalsView.render();
 
     // render categories
-    categoriesView = new govstat.views.categories.CategoryList({
+    categoriesView = new govstatNS.views.categories.CategoryList({
         collection: categories,
-        instanceView: govstat.views.category.CategoryPane
+        instanceView: govstatNS.views.category.CategoryPane
     });
     $final.prepend(categoriesView.$el);
     categoriesView.render();
@@ -126,24 +128,24 @@ $(function()
 
 
     // deal with new goal/new category
-    $('.newGoal.button').on('click', function(event)
+    $('.newGoal').on('click', function(event)
     {
         event.preventDefault();
 
         // add to drafts
-        var newGoal = new govstat.models.Goal();
+        var newGoal = new govstatNS.models.Goal();
         draftGoals.add(newGoal);
 
         // show editor by default
-        govstat.views.goal.GoalEditor.showDialog(newGoal);
+        govstatNS.views.goal.GoalEditor.showDialog(newGoal);
     });
 
-    $('.newCategory.button').on('click', function(event)
+    $('.newCategory').on('click', function(event)
     {
        event.preventDefault();
 
        // add to final
-       categories.add(new govstat.models.Category());
+       categories.add(new govstatNS.models.Category());
     });
 
 
@@ -217,8 +219,7 @@ $(function()
 
         // figure out which child we're hovered over
         var newHoverIdx = Math.floor((event.pageX - $draft.position().left) / $draft.width());
-        var util = { clamp: function(n, min, max) { return n < min ? min : n > max ? max : n } }; // TODO: remove
-        newHoverIdx = util.clamp(newHoverIdx, 0, $configWrapper.children().length - 1);
+        newHoverIdx = $.clamp(newHoverIdx, [ 0, $configWrapper.children().length - 1 ]);
 
         // if we've changed hover targets we should deal with it
         if (newHoverIdx !== hoverIdx)

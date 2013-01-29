@@ -1713,6 +1713,27 @@ var Dataset = ServerModel.extend({
         return stypes;
     },
 
+	preferredImage: function(size)
+	{
+		var ds = this;
+
+		if ($.isBlank(size)) { size = 'thumb'; }
+
+		var filename;
+		if (!$.isBlank(ds.iconUrl))
+		{
+			return '/assets/' + escape(ds.iconUrl) + '?s=thumb';
+		}
+		else if (filename = $.deepGet(ds, 'metadata', 'thumbnail', 'page', 'filename'))
+		{
+			var result = '';
+			if (ds.isFederated()) { result += '//' + this.domainCName; }
+
+			result += '/api/views/' + ds.id + '/snapshots/page?size=thumb';
+			return result;
+		}
+	},
+
     // Private methods
 
     _checkValidity: function()

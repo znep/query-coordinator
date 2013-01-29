@@ -140,6 +140,8 @@ a
       z-index: 10000
 
 // Modal styles
+#newModals
+  display: none
 .modalDialog
   background-color: #fff
   border: 1px solid #999
@@ -213,26 +215,29 @@ a
 
     .modalContents
       opacity: 0
-      @include prefixer(transform, rotateY(15deg) translateY(10em))
+      @include prefixer(transform, rotateY(10deg) translateX(15em))
       @include prefixer(transform-style, preserve-3d)
       @include transition(0.5s, transform opacity)
 
       &.shown
         opacity: 1
-        @include prefixer(transform, rotateY(0deg) translateY(0))
+        @include prefixer(transform, rotateY(0deg) translateX(0))
 
       &.pushed
         opacity: 0
-        @include prefixer(transform, rotateY(-15deg) translateY(-5em))
+        @include prefixer(transform, rotateY(-5deg) translateX(-15em))
 
   // just a sane default style
   .socrataDialog
-    background-color: #f7f7f7
+    background-color: #fff
     @include prefixer(border-radius, 0.2em)
     @include prefixer(box-shadow, 0 0.3em 0.3em rgba(0, 0, 0, 0.4))
-    margin: 10em auto
+    left: 15%
+    margin: 2em
     min-height: 3em
     padding: 1.5em
+    position: absolute
+    top: 10em
     width: 70%
 
 

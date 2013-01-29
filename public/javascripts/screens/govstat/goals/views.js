@@ -1,5 +1,8 @@
 ;(function(){
 
+var govstatNS = blist.namespace.fetch('blist.govstat');
+var commonNS = blist.namespace.fetch('blist.common');
+
 // UTIL
 
 // select binding
@@ -72,6 +75,7 @@ var GoalCard = Backbone.View.extend({
     }
 });
 
+var browseUrl = $('#selectDataset iframe').attr('src');
 var GoalEditor = Backbone.View.extend({
     tagName: 'div',
     className: 'goalEditor',
@@ -90,16 +94,39 @@ var GoalEditor = Backbone.View.extend({
     },
     render: function()
     {
+		var self = this;
+	    if (this._rendered === true) return; else this._rendered = true;
+
         this.$el.toggleClass('draft', this.model.get('is_public') !== true);
 
         // render markup
-        var $mainDetails = govstat.markup.goalEditor.mainDetails(this.model);
-        var $additionalDetails = govstat.markup.goalEditor.additionalDetails(this.model);
+        var $mainDetails = govstatNS.markup.goalEditor.mainDetails(this.model);
+        var $additionalDetails = govstatNS.markup.goalEditor.additionalDetails(this.model);
+        var $relatedDatasets = govstatNS.markup.goalEditor.relatedDatasets(this.model);
 
         // custom components
+		// drop in agency list
         var agencyList = new AgencyList({ collection: this.model.get('agency'), instanceView: AgencyEditor });
         agencyList.render();
         $additionalDetails.find('.agencyInput').append(agencyList.$el);
+
+		// drop in related datasets
+		var relatedDatasets = this.model.get('related_datasets');
+		var datasetCardList = new DatasetCardList({ collection: relatedDatasets, instanceView: DatasetCard });
+		datasetCardList.render();
+		$relatedDatasets.find('.datasetListContainer').append(datasetCardList.$el);
+		$relatedDatasets.find('a.addDataset').on('click', function(event)
+		{
+			event.preventDefault();
+			var $modal = $.showModal('selectDataset');
+			$modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(self.model.get('name')));
+			commonNS.selectedDataset = function(dataset)
+			{
+				var datasetProxy = new govstatNS.models.DatasetProxy({ id: dataset.id }, { dataset: dataset });
+				relatedDatasets.add(datasetProxy);
+				$.popModal();
+			};
+		});
 
         // custom controls
         // bind fancy select
@@ -128,19 +155,13 @@ var GoalEditor = Backbone.View.extend({
 
         // bind fancy textedit
         var $notes = $additionalDetails.find('.notes');
-        $additionalDetails.find('.notesWrapper').on('click', function() { $notes.focus(); });
+        $additionalDetails.find('.notesWrapper').on('click', function(event) { $notes.focus(); });
         $notes.on('blur', function() { $notes.trigger('change'); });
-        $notes.on('keyup', function(event)
-        {
-            if (event.keyCode === 13)
-            {
-                $notes.trigger('change');
-            }
-        });
 
         // append
         this.$el.append($mainDetails);
         this.$el.append($additionalDetails);
+        this.$el.append($relatedDatasets);
     },
 
     updateTextAttr: function(event)
@@ -160,10 +181,13 @@ var GoalEditor = Backbone.View.extend({
 	},
 	updateNotesAttr: function(event)
 	{
-		var $span = $(event.target);
-		this.model.set('description', $span.text());
-		
-		console.log(this.model);
+		var self = this;
+		_.defer(function()
+		{
+			var $markup = $(event.target).clone();
+			$markup.find('br').replaceWith('\n');
+			self.model.set('description', $markup.text());
+		});
 	}
 });
 
@@ -253,7 +277,7 @@ var CategoryPane = Backbone.View.extend({
         }]);
 
         // make a goal list per category pane
-        this.model.goals = new govstat.collections.Goals([], { category: this.model });
+        this.model.goals = new govstatNS.collections.Goals([], { category: this.model });
         goalsView = new GoalList({ collection: this.model.goals, instanceView: GoalCard });
         goalsView.render();
 
@@ -299,7 +323,7 @@ var CategoryPane = Backbone.View.extend({
 
     getName: function()
     {
-        var name = this.model.get('name'); // TODO: htmlsafe
+        var name = $.htmlEscape(this.model.get('name'));
         if (!name || (name === '')) { name = 'New Category'; };
         return name;
     }
@@ -311,7 +335,7 @@ var CategoryList = Backbone.CollectionView.extend({
     className: 'categories',
     render: function()
     {
-        this.$el.append(this.renderCollection())
+        this.$el.append(this.renderCollection());
     }
 });
 
@@ -326,7 +350,7 @@ var AgencyEditor = Backbone.View.extend({
     {
         if (this._rendered === true) return; else this._rendered = true;
 
-        this.$el.append(govstat.markup.agencyEditor(this.model));
+        this.$el.append(govstatNS.markup.agencyEditor(this.model));
 
         this.$el.data('model', this.model);
     },
@@ -352,13 +376,13 @@ var AgencyList = Backbone.CollectionView.extend({
 
         // create blank field
         var $newAgency = $('<li class="agencyEditor newAgency"/>');
-        $newAgency.append(govstat.markup.agencyEditor(new govstat.models.Agency()));
+        $newAgency.append(govstatNS.markup.agencyEditor(new govstatNS.models.Agency()));
         this.$el.append($newAgency);
     },
     newAgency: function()
     {
         // create new agency + editor
-        this.collection.add(new govstat.models.Agency());
+        this.collection.add(new govstatNS.models.Agency());
 
         // focus on said editor
         this.$('.newAgency').prev().find('input').focus();
@@ -371,7 +395,7 @@ var AgencyList = Backbone.CollectionView.extend({
     addOne: function(model)
     {
         // HACK: override to adjust where the add new field goes
-        view = new this.options.instanceView({ model: model });
+        var view = new this.options.instanceView({ model: model });
         this._views[model.cid] = view;
 
         this.$('.newAgency').before(view.$el);
@@ -387,8 +411,52 @@ var AgencyList = Backbone.CollectionView.extend({
     }
 });
 
+// DATASETSPROXY
+
+var DatasetCard = Backbone.View.extend({
+	tagName: 'div',
+	className: 'datasetCard',
+	render: function()
+	{
+		var self = this;
+		if (this._rendered === true) return; else this._rendered = true;
+
+		// drop in a spinner
+		this.$el.append($.tag2({ _: 'h2', className: 'loading', contents: 'Loading&hellip;' }));
+
+		// data
+		this.$el.data('model', this.model);
+
+		// the go fetch the actual metadata
+		this.model.getDataset(function(ds)
+		{
+			self.$el
+				.empty()
+				.append(govstatNS.markup.datasetCard(ds));
+		});
+	}
+});
+
+var DatasetCardList = Backbone.CollectionView.extend({
+    tagName: 'div',
+    className: 'datasetCardList',
+	events: {
+		'click .datasetCard .removeDataset': 'removeDataset'
+	},
+    render: function()
+    {
+        this.$el.append(this.renderCollection());
+    },
+	removeDataset: function(event)
+	{
+		event.preventDefault();
+		this.collection.remove($(event.target).closest('.datasetCard').data('model'));
+	}
+});
+
+
 // EXPORT
-window.govstat.views = {
+govstatNS.views = {
     goals:
     {
         GoalList: GoalList

@@ -18,9 +18,11 @@
 
         getDisabledSubtitle: function()
         {
-            return $.isBlank(this._view) ? 'No dataset is defined' : !this._view.valid ?
-                $.t('controls.filter.main.view_must_be_valid') :
-                $.t('controls.filter.main.view_has_no_columns');
+            return ($.isBlank(this._view) && this._pendingView !== true)
+                ? 'No dataset is defined'
+                : !this._view.valid
+                    ? $.t('controls.filter.main.view_must_be_valid')
+                    : $.t('controls.filter.main.view_has_no_columns');
         },
 
         setView: function(newView)
@@ -28,13 +30,16 @@
             var cpObj = this;
             var handle = function(ds)
             {
-if (blist.debug) { console.log(cpObj._super); }
+                delete cpObj._pendingView;
                 cpObj._super.apply(cpObj, [ds]);
                 cpObj.reset();
             };
 
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
-            { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle); }
+            {
+                cpObj._pendingView = true;
+                Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle);
+            }
             else
             { handle(newView); }
         },

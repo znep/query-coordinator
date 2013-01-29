@@ -28,21 +28,13 @@
             var cpObj = this;
             var handle = function(ds)
             {
+if (blist.debug) { console.log(ds); console.log(cpObj._super); }
                 cpObj._super.apply(cpObj, [ds]);
                 cpObj.reset();
-                if (cpObj._pendingView)
-                {
-                    if (blist.datasetPage && blist.datasetPage.sidebar)
-                    { blist.datasetPage.sidebar.updateEnabledSubPanes(); }
-                    delete cpObj._pendingView;
-                }
             };
 
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
-            {
-                cpObj._pendingView = true;
-                Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle);
-            }
+            { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle); }
             else
             { handle(newView); }
         },

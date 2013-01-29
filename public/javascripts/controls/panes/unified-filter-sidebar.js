@@ -14,15 +14,13 @@
         { return $.t('controls.filter.main.filter_based_on_contents'); },
 
         isAvailable: function()
-        { return !$.isBlank(this._view) && this._view.visibleColumns.length > 0 && this._view.valid; },
+        { return this._pendingView || (!$.isBlank(this._view) && this._view.visibleColumns.length > 0 && this._view.valid); },
 
         getDisabledSubtitle: function()
         {
-            return ($.isBlank(this._view) && this._pendingView !== true)
-                ? 'No dataset is defined'
-                : !this._view.valid
-                    ? $.t('controls.filter.main.view_must_be_valid')
-                    : $.t('controls.filter.main.view_has_no_columns');
+            return $.isBlank(this._view) ? 'No dataset is defined' : !this._view.valid ?
+                $.t('controls.filter.main.view_must_be_valid') :
+                $.t('controls.filter.main.view_has_no_columns');
         },
 
         setView: function(newView)

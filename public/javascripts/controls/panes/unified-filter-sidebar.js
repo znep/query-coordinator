@@ -30,10 +30,19 @@
             {
                 _super.apply(cpObj, [ds]);
                 cpObj.reset();
+                if (cpObj._pendingView)
+                {
+                    if (blist.datasetPage && blist.datasetPage.sidebar)
+                    { blist.datasetPage.sidebar.updateEnabledSubPanes(); }
+                    delete cpObj._pendingView;
+                }
             };
 
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
-            { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle); }
+            {
+                cpObj._pendingView = true;
+                Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle);
+            }
             else
             { handle(newView); }
         },

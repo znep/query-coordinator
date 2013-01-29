@@ -1,0 +1,38 @@
+<% content_for :head do %>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
+  <%= rendered_stylesheet_tag 'screen-govstat-manage-reports' %>
+  <title>Manage Reports | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="manageReportsPage">
+  <a class="button manageLink" href="<%= manage_path %>"><span class="ss-icon">reply</span>Back to Manage</a>
+  <div class="headerLine">
+    <h2>Recent Reports</h2>
+    <a class="button" href="<%= canvas_create_path %>"><span class="ss-icon">compose</span>Create New Report</a>
+  </div>
+
+  <table class="reportList">
+    <colgroup>
+      <col class="name" />
+      <col class="view" />
+      <col class="edit" />
+    </colgroup>
+    <tbody>
+      <%- @reports.each do |report| -%>
+        <tr>
+          <td class="name"><%= report.name %></td>
+          <td class="view">
+            <%- if !report.path.include?('/:') -%>
+              <a class="button" href="<%= report.path %>">View Report</a>
+            <%- end -%>
+          </td>
+          <td class="edit">
+            <a class="button" href="<%= report.path %>?_edit_mode=true">Edit Report</a>
+          </td>
+        </tr>
+      <%- end -%>
+    </tbody>
+  </table>
+</ul>
+  <a class="button" href="<%= canvas_admin_path %>"><span class="ss-icon">openbook</span>View All Reports</a>
+</div>

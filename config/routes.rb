@@ -307,6 +307,7 @@ Frontend::Application.routes do
     match '/goals-new', :action => 'goals'
 
     match '/manage/data', :action => 'manage_data'
+    match '/manage/reports', :action => 'manage_reports'
 
     # TODO: only expose these pages when the domain is a govstat instance
   end

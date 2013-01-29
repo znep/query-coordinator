@@ -21,6 +21,10 @@ class GovstatController < ApplicationController
     })
   end
 
+  def manage_reports
+    @reports = Page.find('$order' => ':updated_at', '$limit' => 10)
+  end
+
 protected
   def set_govstat_theme
     @use_govstat_theme = true

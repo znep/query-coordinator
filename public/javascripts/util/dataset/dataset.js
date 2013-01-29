@@ -277,6 +277,7 @@ var Dataset = ServerModel.extend({
             // Creating a map from table. CF needs a hack to be saved correctly from here. Bug 8320
             if (_.isArray((dsOrig.metadata || {}).conditionalFormatting))
             {
+                dsOrig.metadata = dsOrig.metadata || {};
                 var cf = dsOrig.metadata.conditionalFormatting.slice();
                 dsOrig.metadata.conditionalFormatting = {};
                 dsOrig.metadata.conditionalFormatting[dsOrig.id] = cf;
@@ -284,6 +285,8 @@ var Dataset = ServerModel.extend({
             // Same problem, but filters. Bug 8287
             if (_.isUndefined((dsOrig.metadata || {}).query))
             {
+                dsOrig.metadata = dsOrig.metadata || {};
+                dsOrig.metadata.query = {};
                 dsOrig.metadata.query[dsOrig.id] = $.extend(true, {}, dsOrig.cleanFilters(true));
             }
         }

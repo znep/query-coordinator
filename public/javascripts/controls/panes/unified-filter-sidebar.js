@@ -28,6 +28,7 @@
             var cpObj = this;
             var handle = function(ds)
             {
+if (blist.debug) { console.log(cpObj._super); }
                 cpObj._super.apply(cpObj, [ds]);
                 cpObj.reset();
             };

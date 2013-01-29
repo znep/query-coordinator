@@ -14,7 +14,7 @@
         { return $.t('controls.filter.main.filter_based_on_contents'); },
 
         isAvailable: function()
-        { return this._pendingView || (!$.isBlank(this._view) && this._view.visibleColumns.length > 0 && this._view.valid); },
+        { return !$.isBlank(this._view) && this._view.visibleColumns.length > 0 && this._view.valid; },
 
         getDisabledSubtitle: function()
         {
@@ -28,9 +28,14 @@
             var cpObj = this;
             var handle = function(ds)
             {
-                delete cpObj._pendingView;
                 cpObj._super.apply(cpObj, [ds]);
                 cpObj.reset();
+                if (cpObj._pendingView)
+                {
+                    if (blist.datasetPage && blist.datasetPage.sidebar)
+                    { blist.datasetPage.sidebar.updateEnabledSubPanes(); }
+                    delete cpObj._pendingView;
+                }
             };
 
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))

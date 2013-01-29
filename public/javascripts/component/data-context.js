@@ -200,6 +200,9 @@
                         { errorLoading(id); },
                         !blist.configuration.privateData);
                     break;
+                default:
+                    alert('Unrecognized data context type: ' + config.type + ' for ' + id);
+                    break;
             }
         },
 

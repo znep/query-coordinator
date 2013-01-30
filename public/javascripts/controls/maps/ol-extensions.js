@@ -414,6 +414,9 @@
                 this._addButton('zoomout', 'zoom-minus-mini.png', centered.add(-1, 2), sz);
             }
 
+            var altText = ['Zoom In', 'Zoom Bar Slider', 'Zoom Out'];
+            $('img', this.div).each(function() { $(this)[0].alt = altText.shift(); });
+
             return this.div;
         },
 

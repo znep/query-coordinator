@@ -185,7 +185,6 @@ h2
 
 .goalEditor.socrataDialog
   background-image: url(/stylesheets/images/content/noise.png)
-  margin-top: 6em
   min-width: 90em
   padding: 0
 
@@ -227,37 +226,11 @@ h2
 
       .selectValue
         display: block
-        height: 0.8em
+        height: 1.05em
         opacity: 1
         text-align: center
         text-transform: lowercase
         width: 100%
-
-      &.comparisonInput
-        width: 21em
-      &.nameInput
-        width: 50em
-      &.amountInput
-        width: 20em
-
-      &.amountIsPercentInput
-        border: none
-
-        input
-          bottom: 0.15em
-          float: left
-          position: relative
-          width: auto
-
-        label
-          display: inline
-          font-size: 2em
-          opacity: 0.2
-          position: static
-          @include transition(0.3s, opacity)
-
-        input:checked + label
-          opacity: 0.85
 
     span
       font-size: 2.8em
@@ -267,6 +240,38 @@ h2
     @include vertical-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.02))
     border-top: 1px solid rgba(0, 0, 0, 0.2)
     line-height: 4.5em
+
+  .metricList > .metric
+    @include vertical-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.02))
+    border-top: 1px solid rgba(0, 0, 0, 0.3)
+    line-height: 4.5em
+
+  form.mainDetails
+    .comparisonInput
+      width: 21em
+    .nameInput
+      width: 50em
+    .amountInput
+      width: 20em
+
+    .amountIsPercentInput
+      border: none
+
+      input
+        bottom: 0.15em
+        float: left
+        position: relative
+        width: auto
+
+      label
+        display: inline
+        font-size: 2em
+        opacity: 0.2
+        position: static
+        @include transition(0.3s, opacity)
+
+      input:checked + label
+        opacity: 0.85
 
   form.additionalDetails
     h2
@@ -388,6 +393,97 @@ h2
       &:hover, &:focus, &:active
         color: #666
 
+  .metric
+    position: relative
+
+    .removeMetric
+      color: #333
+      float: right
+      font-family: SSStandard
+      font-size: 1.3em
+      position: absolute
+      right: 1em
+      text-rendering: optimizeLegibility
+      top: 1em
+      @include transition(0.3s, color)
+
+      &:hover
+        color: #666
+
+    .prevailing
+      background-color: #ffdc5c
+      @include prefixer(box-shadow, 0.3em 0 0.3em rgba(0, 0, 0, 1))
+      color: #635213
+      display: none
+      font-size: 1.3em
+      font-weight: bold
+      line-height: 3em
+      padding: 0 1.5em
+      position: absolute
+      right: 1em
+      top: 2.35em
+      @include prefixer(transform, rotate(90deg))
+
+    > h2
+      line-height: 1em
+      padding-bottom: 1.5em
+
+    span
+      font-size: 1.7em
+
+    .inputWrapper
+      input, select
+        font-size: 1.7em
+
+    .nameInput
+      width: 40em
+
+    .splitSection
+      @include clearfix
+      margin: 0 -4em
+
+      .left, .right
+        float: left
+        width: 50%
+
+      .right
+        text-align: right
+
+    // prevailing metric
+    &:first-child
+      .removeMetric
+        display: none
+
+      .prevailing
+        display: block
+
+  .indicator
+    > h2
+      line-height: 1em
+      padding-bottom: 1.5em
+
+    .datasetCard
+      padding: 1em
+
+      .datasetIcon
+        margin-right: 1em
+
+      h2
+        font-size: 1.3em
+        line-height: 1
+        padding: 0.7em 0
+
+        &.prompt
+          padding: 0.3em
+
+    .combinedLine
+      background: rgba(0, 0, 0, 0.3)
+      border: 1px solid rgba(0, 0, 0, 0.5)
+        left: none
+        right: none
+      margin: 0 -4em
+      padding: 0 4em
+
   &.draft
     background-color: #333
     color: #fff
@@ -422,7 +518,13 @@ h2
     .datasetCard .removeDataset
       color: #fff
       &:hover, &:focus, &:active
-        color: #ddd
+        color: #bbb
+
+    .metric
+      .removeMetric
+        color: #fff
+        &:hover, &:focus, &:active
+          color: #bbb
 
 .socrataModal #selectDataset
   padding: 3em

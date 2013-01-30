@@ -40,6 +40,7 @@
     var $wrapper = $('.socrataModal .socrataModalWrapper');
     var $body = $('body');
     var modalAnimLength = 500; // could use webkitTransitionEnd but that's, well, webkit
+    var scrollTops = [];
 
     // util
     var afterComplete = function(f) { window.setTimeout(f, modalAnimLength); };
@@ -66,7 +67,7 @@
 
                 // if we let it always be auto we get render
                 // artifacts on the transition
-                $wrapper.css('overflow-y', 'auto');
+                $wrapper.css('overflow-y', 'scroll');
                 overlayStatus = 'shown';
             });
         });
@@ -98,7 +99,12 @@
         var $previous = $wrapper.children(':last-child');
         if ($previous.length > 0)
         {
+            var top = $wrapper.scrollTop();
+            scrollTops.push(top);
+            $previous.css('top', (parseFloat($previous.css('top')) || 0) - top);
+
             $previous.addClass('pushed');
+			$previous.css('position', 'absolute');
             afterComplete(function() { $previous.hide(); });
         }
 
@@ -124,12 +130,24 @@
         if (hideAll === true)
         {
             $current.prevAll().remove();
+            scrollTops = [];
             hideOverlay();
         }
         else if ($previous.length > 0)
         {
             $previous.show();
-            _.defer(function() { $previous.removeClass('pushed'); });
+            _.defer(function()
+			{
+				$previous.removeClass('pushed');
+				afterComplete(function()
+                {
+                    $previous.css('position', 'static');
+
+                    var top = scrollTops.pop();
+                    $wrapper.scrollTop(top);
+                    $previous.css('top', parseFloat($previous.css('top')) + top);
+                });
+			});
         }
         else
         {

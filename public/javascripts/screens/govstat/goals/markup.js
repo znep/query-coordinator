@@ -210,7 +210,23 @@ blist.namespace.fetch('blist.govstat').markup = {
 					contents: 'Add A Dataset'
 				}]
 			});
-		}
+		},
+
+        metrics: function()
+        {
+            return $.tag2([{
+                _: 'div',
+                contents: [{
+                    _: 'div',
+                    className: 'metricListContainer'
+                }, {
+                    _: 'a',
+                    className: 'addMetric',
+                    href: '#add',
+                    contents: 'Add a Metric'
+                }]
+            }]);
+        }
     },
 
     agencyEditor: function(agency)
@@ -239,6 +255,138 @@ blist.namespace.fetch('blist.govstat').markup = {
         }]);
     },
 
+	indicatorEditor: function(indicator)
+	{
+		return $.tag2({
+			_: 'form',
+			className: [ 'indicator', indicator.indicatorType ],
+			contents: [{
+				_: 'h2',
+				contents: { current: 'Current Data', baseline: 'Historical Baseline' }[indicator.indicatorType]
+			}, {
+				_: 'div',
+				className: 'normalLine',
+				contents: [{
+					_: 'div',
+					className: 'datasetContainer'
+				}, {
+					_: 'a',
+					className: 'selectDataset',
+					href: '#select dataset',
+					title: 'Select the dataset that contains ' + indicator.indicatorType + ' for this metric.',
+					contents: 'Select Dataset'
+				}]
+			}, {
+				_: 'div',
+				className: 'combinedLine',
+				contents: [{
+					_: 'div',
+					className: 'columnContainer column1'
+				}, {
+					_: 'div',
+					className: [ 'inputWrapper selectInput columnFunctionInput', { i: indicator.get('column_function'), t: 'hasFunction' }],
+					contents: [{
+                        _: 'span',
+                        className: 'selectValue'
+                    }, {
+						_: 'select',
+						name: 'column_function',
+						id: indicator.cid + '_column_function',
+						contents: [{
+							_: 'option',
+							value: 'null',
+							selected: indicator.get('column_function') === 'null',
+                            contents: 'alone'
+						}, {
+							_: 'option',
+							value: 'plus',
+							selected: indicator.get('column_function') === 'plus',
+                            contents: 'plus'
+						}, {
+							_: 'option',
+							value: 'divide',
+							selected: indicator.get('column_function') === 'divide',
+                            contents: 'divided by'
+						}, {
+							_: 'option',
+							value: 'minus',
+							selected: indicator.get('column_function') === 'minus',
+                            contents: 'minus'
+						}]
+					}]
+				}, {
+					_: 'div',
+					className: 'columnContainer column2'
+				}]
+			}, {
+				_: 'div',
+				className: 'normalLine',
+				contents: [{
+					_: 'span',
+                    contents: 'Slice this data by '
+				}, {
+				    _: 'div',
+                    className: 'inputWrapper selectInput metricPeriodInput',
+                    contents: [{
+                        _: 'span',
+                        className: 'selectValue'
+                    }, {
+                        _: 'select',
+                        name: 'metric_period',
+                        id: indicator.cid + '_metric_period',
+                        contents: [{
+                            _: 'option',
+                            value: 'monthly',
+                            selected: indicator.get('metric_period') === 'monthly',
+                            contents: 'month'
+                        }, {
+                            _: 'option',
+                            value: 'yearly',
+                            selected: indicator.get('metric_period') === 'yearly',
+                            contents: 'year'
+                        }]
+                    }, {
+                        _: 'label',
+                        'for': indicator.cid + '_metric_period',
+                        contents: 'Period'
+                    }]
+				}, {
+				    _: 'span',
+                    contents: ', and '
+				}, {
+                    _: 'div',
+                    className: 'inputWrapper selectInput aggregationFunctionInput',
+                    contents: [{
+                        _: 'span',
+                        className: 'selectValue'
+                    }, {
+                        _: 'select',
+                        name: 'aggregation_function',
+                        id: indicator.cid + '_aggregation_function',
+                        contents: [{
+                            _: 'option',
+                            value: 'sum',
+                            selected: indicator.get('aggregation_function') === 'sum',
+                            contents: 'sum'
+                        }, {
+                            _: 'option',
+                            value: 'extrapolate',
+                            selected: indicator.get('aggregation_function') === 'extrapolate',
+                            contents: 'extrapolate'
+                        }]
+                    }, {
+                        _: 'label',
+                        'for': indicator.cid + '_aggregation_function',
+                        contents: 'Aggregation'
+                    }]
+                }, {
+				    _: 'span',
+                    contents: ' data points within each slice.'
+				}]
+			}]
+		});
+	},
+
 	datasetCard: function(ds)
 	{
 		var preferredImage = ds.preferredImage();
@@ -261,11 +409,87 @@ blist.namespace.fetch('blist.govstat').markup = {
 			_: 'h2',
 			className: 'datasetName',
 			contents: $.htmlEscape(ds.name)
+		}]);
+	},
+
+	metricEditor: function(metric)
+	{
+		return $.tag2([{
+			_: 'h2',
+			contents: 'Metric Details'
 		}, {
-			_: 'a',
-			className: 'removeDataset',
-			href: '#remove',
-			contents: 'Close'
+			_: 'div',
+			className: 'prevailing',
+			contents: 'Prevailing',
+			title: 'This metric will be the primary metric by which the goal requirements are assessed.'
+		}, {
+			_: 'div',
+			className: 'detailsLine',
+			contents: [{
+				_: 'span',
+				contents: 'This is the '
+			}, {
+				_: 'div',
+				className: 'inputWrapper nameInput',
+				contents: [{
+                    _: 'label',
+                    'for': metric.cid + '_name',
+                    contents: 'Name'
+                }, {
+                    _: 'input',
+                    type: 'text',
+                    id: metric.cid + '_name',
+                    name: 'name',
+                    value: metric.get('name')
+                }]
+			}, {
+				_: 'span',
+				contents: ' measurement.'
+			}]
+		}, {
+			_: 'div',
+			className: 'splitSection',
+			contents: [{
+				_: 'div',
+				className: 'left',
+				contents: {
+					_: 'div',
+					className: 'wrapper'
+				}
+			}, {
+				_: 'div',
+				className: 'right',
+				contents: {
+					_: 'div',
+					className: 'wrapper'
+				}
+			}, {
+			    _: 'div',
+                className: 'island',
+                contents: [{
+                    _: 'p',
+                    contents: 'must be'
+                }, {
+                    _: 'div',
+                    className: 'inputWrapper comparisonInput',
+                    contents: [{
+                        _: 'select',
+                        name: 'comparison',
+                        id: metric.cid + '_comparison',
+                        contents: [{
+                            _: 'option',
+                            value: '<',
+                            selected: metric.get('comparison') === '<',
+                            contents: 'less than'
+                        }, {
+                            _: 'option',
+                            value: '>',
+                            selected: metric.get('comparison') === '>',
+                            contents: 'greater than'
+                        }]
+                    }]
+                }]
+			}]
 		}]);
 	}
 };

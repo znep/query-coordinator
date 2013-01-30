@@ -32,9 +32,12 @@ Backbone.CollectionView = Backbone.View.extend({
         var view = new this.options.instanceView({ model: model });
         this._views[model.cid] = view;
 
-        // HACK: this totally won't work at scale, but is fine for this app.
-        this.$el.append(view.$el);
+        this._addOneView(view);
         view.render();
+    },
+    _addOneView: function(view)
+    {
+        this.$el.append(view.$el);
     },
     removeOne: function(model)
     {

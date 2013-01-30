@@ -17,6 +17,18 @@ var bindSelect = function($select, $span)
     $select.on('change', setSpan);
 };
 
+// dataset picker
+var showDatasetSelect = function(callback)
+{
+	var $modal = $.showModal('selectDataset');
+	$modal.find('iframe');//.attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(self.model.get('name')));
+	commonNS.selectedDataset = function(dataset)
+	{
+		callback(dataset);
+		$.popModal();
+	};
+};
+
 
 // GOAL
 var GoalCard = Backbone.View.extend({
@@ -103,6 +115,7 @@ var GoalEditor = Backbone.View.extend({
         var $mainDetails = govstatNS.markup.goalEditor.mainDetails(this.model);
         var $additionalDetails = govstatNS.markup.goalEditor.additionalDetails(this.model);
         var $relatedDatasets = govstatNS.markup.goalEditor.relatedDatasets(this.model);
+        var $metrics = govstatNS.markup.goalEditor.metrics();
 
         // custom components
 		// drop in agency list
@@ -118,15 +131,23 @@ var GoalEditor = Backbone.View.extend({
 		$relatedDatasets.find('a.addDataset').on('click', function(event)
 		{
 			event.preventDefault();
-			var $modal = $.showModal('selectDataset');
-			$modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(self.model.get('name')));
-			commonNS.selectedDataset = function(dataset)
-			{
+			showDatasetSelect(function(dataset)
+            {
 				var datasetProxy = new govstatNS.models.DatasetProxy({ id: dataset.id }, { dataset: dataset });
 				relatedDatasets.add(datasetProxy);
-				$.popModal();
-			};
+            });
 		});
+
+        // drop in metrics
+        var metrics = this.model.get('metrics');
+        var metricList = new MetricList({ collection: metrics, instanceView: MetricEditor });
+        metricList.render();
+        $metrics.find('.metricListContainer').append(metricList.$el);
+        $metrics.find('.addMetric').on('click', function(event)
+        {
+            event.preventDefault();
+            metrics.add(new govstatNS.models.Metric());
+        });
 
         // custom controls
         // bind fancy select
@@ -162,6 +183,7 @@ var GoalEditor = Backbone.View.extend({
         this.$el.append($mainDetails);
         this.$el.append($additionalDetails);
         this.$el.append($relatedDatasets);
+        this.$el.append($metrics);
     },
 
     updateTextAttr: function(event)
@@ -392,21 +414,16 @@ var AgencyList = Backbone.CollectionView.extend({
         event.preventDefault();
         this.collection.remove($(event.target).closest('.agencyEditor').data('model'));
     },
-    addOne: function(model)
+    _addOneView: function(view)
     {
-        // HACK: override to adjust where the add new field goes
-        var view = new this.options.instanceView({ model: model });
-        this._views[model.cid] = view;
-
         this.$('.newAgency').before(view.$el);
-        view.render();
 
         view.$el.append($.tag2({
             _: 'a',
             className: 'removeAgency',
-            href: '#',
+            href: '#remove',
             title: 'Remove This Agency',
-            contents: 'close'
+            contents: 'Close'
         }));
     }
 });
@@ -416,25 +433,40 @@ var AgencyList = Backbone.CollectionView.extend({
 var DatasetCard = Backbone.View.extend({
 	tagName: 'div',
 	className: 'datasetCard',
+    initialize: function()
+    {
+        this.listenTo(this.model, 'change:id', function() { this.updateDataset(); });
+    },
 	render: function()
 	{
-		var self = this;
 		if (this._rendered === true) return; else this._rendered = true;
 
-		// drop in a spinner
-		this.$el.append($.tag2({ _: 'h2', className: 'loading', contents: 'Loading&hellip;' }));
+        this.$el.append($.tag2({ _: 'h2', className: 'prompt', contents: 'Please select a dataset' }));
 
 		// data
 		this.$el.data('model', this.model);
 
-		// the go fetch the actual metadata
+		// then go fetch the actual metadata
+		if (this.model.get('id')) { this.updateDataset(); }
+	},
+    empty: function()
+    {
+        this.$('h2, .datasetIcon').remove();
+    },
+    updateDataset: function()
+    {
+		var self = this;
+
+		// drop in a spinner
+        this.empty();
+		this.$el.append($.tag2({ _: 'h2', className: 'loading', contents: 'Loading&hellip;' }));
+
 		this.model.getDataset(function(ds)
 		{
-			self.$el
-				.empty()
-				.append(govstatNS.markup.datasetCard(ds));
+            self.empty();
+			self.$el.append(govstatNS.markup.datasetCard(ds));
 		});
-	}
+    }
 });
 
 var DatasetCardList = Backbone.CollectionView.extend({
@@ -451,7 +483,122 @@ var DatasetCardList = Backbone.CollectionView.extend({
 	{
 		event.preventDefault();
 		this.collection.remove($(event.target).closest('.datasetCard').data('model'));
-	}
+	},
+    _addOneView: function(view)
+    {
+        Backbone.CollectionView.prototype._addOneView.apply(this, arguments);
+
+        view.$el.append($.tag2({
+            _: 'a',
+            className: 'removeDataset',
+            href: '#remove',
+            title: 'Remove This Dataset',
+            contents: 'Close'
+        }));
+    }
+});
+
+// COLUMNSPROXY
+
+
+// METRICS
+
+var MetricEditor = Backbone.View.extend({
+    tagName: 'form',
+    className: 'metric',
+    events: {
+        
+    },
+    render: function()
+    {
+		var self = this;
+		if (this._rendered === true) return; else this._rendered = true;
+
+        var $markup = govstatNS.markup.metricEditor(this.model);
+        this.$el.append($markup);
+
+        // add indicators
+        var currentIndicatorEditor = new IndicatorEditor({ model: this.model.get('current') });
+        currentIndicatorEditor.render();
+        $markup.find('.left .wrapper').append(currentIndicatorEditor.$el);
+
+        var baselineIndicatorEditor = new IndicatorEditor({ model: this.model.get('baseline') });
+        baselineIndicatorEditor.render();
+        $markup.find('.right .wrapper').append(baselineIndicatorEditor.$el);
+
+        // save off model
+        this.$el.data('model', this.model);
+    }
+});
+
+var MetricList = Backbone.CollectionView.extend({
+    tagName: 'div',
+    className: 'metricList',
+    events: {
+        'click .metric .removeMetric': 'removeMetric'
+    },
+    render: function()
+    {
+        this.$el.append(this.renderCollection());
+    },
+    removeMetric: function()
+    {
+        event.preventDefault();
+        this.collection.remove($(event.target).closest('.metric').data('model'));
+    },
+    _addOneView: function(view)
+    {
+        Backbone.CollectionView.prototype._addOneView.apply(this, arguments);
+
+        view.$el.append($.tag2({
+            _: 'a',
+            className: 'removeMetric',
+            href: '#remove',
+            title: 'Remove This Metric',
+            contents: 'Close'
+        }));
+    }
+});
+
+// INDICATOR
+
+var IndicatorEditor = Backbone.View.extend({
+    tagName: 'div',
+    className: 'indicatorWrapper',
+    events: {
+        
+    },
+    render: function()
+    {
+		var self = this;
+		if (this._rendered === true) return; else this._rendered = true;
+
+        var $markup = govstatNS.markup.indicatorEditor(this.model);
+
+        // bind fancy select
+        $markup.find('select').each(function()
+        {
+            var $this = $(this);
+            bindSelect($this, $this.siblings('span.selectValue'));
+        });
+
+        // drop in dataset card
+        var datasetProxy = this.model.get('dataset');
+        var datasetCard = new DatasetCard({ model: datasetProxy });
+        datasetCard.render();
+        $markup.find('.datasetContainer').append(datasetCard.$el);
+		$markup.find('a.selectDataset').on('click', function(event)
+		{
+			event.preventDefault();
+			showDatasetSelect(function(dataset)
+            {
+                datasetProxy.set('id', dataset.id);
+                // TODO: maybe have to prevent double-download
+            });
+		});
+
+        this.$el.append($markup);
+    }
 });
 
 
@@ -473,14 +620,6 @@ govstatNS.views = {
     category:
     {
         CategoryPane: CategoryPane
-    },
-    agencies:
-    {
-        AgencyList: AgencyList
-    },
-    agency:
-    {
-        AgencyEditor: AgencyEditor
     }
 };
 

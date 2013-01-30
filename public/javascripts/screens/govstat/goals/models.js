@@ -1,26 +1,26 @@
 ;(function(){
 
-// METRIC
-var Metric = Backbone.Model.extend({
+// COLUMNPROXY
+var ColumnProxy = Backbone.Model.extend({
+    initialize: function(_, options)
+    {
+        this.datasetProxy = options.datasetProxy;
+        if (!$.isBlank(options.column)) { this._column = options.column; }
 
-});
-
-// AGENCY
-
-var Agency = Backbone.Model.extend({
+        this.listenTo(this.datasetProxy, 'change:id', function()
+        {
+            this._column = null;
+            this.set('field_name', null);
+        });
+    },
     parse: function(response)
     {
         if (_.isString(response))
         {
-			response = { name: response };
+            response = { field_name: response };
         }
-		return response;
     },
-    toJSON: function() { return this.get('name'); }
-});
-
-var Agencies = Backbone.Collection.extend({
-    model: Agency
+    toJSON: function() { return this.get('field_name'); }
 });
 
 // DATASETPROXY
@@ -28,7 +28,9 @@ var Agencies = Backbone.Collection.extend({
 var DatasetProxy = Backbone.Model.extend({
 	initialize: function(_, options)
 	{
-		if (!$.isBlank(options.dataset)) { this._dataset = options.dataset; }
+		if (options && !$.isBlank(options.dataset)) { this._dataset = options.dataset; }
+
+        this.on('change:id', function() { this._dataset = null; });
 	},
 	parse: function(response)
 	{
@@ -60,22 +62,123 @@ var DatasetsProxy = Backbone.Collection.extend({
 	model: DatasetProxy
 });
 
+// INDICATOR
+
+var Indicator = Backbone.Model.extend({
+    model:
+    {
+        dataset: DatasetProxy
+        // column 1 and 2 should both be columnproxies but we instantiate them manually below to link to datasetproxy
+    },
+
+    initialize: function(_, options)
+    {
+        this.indicatorType = options.indicatorType || 'baseline';
+
+        if (!this.get('dataset')) { this.set('dataset', new DatasetProxy()); }
+
+        var datasetProxy = this.get('dataset');
+        this.set('column1', new ColumnProxy({ field_name: this.get('column1') }, { datasetProxy: datasetProxy }));
+        this.set('column2', new ColumnProxy({ field_name: this.get('column2') }, { datasetProxy: datasetProxy }));
+    },
+    parse: function(response)
+    {
+        for (var key in this.model)
+        {
+            nestedClass = this.model[key];
+            nestedData = response[key];
+            response[key] = new nestedClass(nestedData, { parse: true });
+        }
+
+        return response;
+    }
+})
+
+// METRIC
+
+var Metric = Backbone.Model.extend({
+    model:
+    {
+        current: Indicator,
+        baseline: Indicator
+    },
+
+    initialize: function()
+    {
+        if (!this.get('current')) { this.set('current', new Indicator(null, { indicatorType: 'current' })) };
+        if (!this.get('baseline')) { this.set('baseline', new Indicator(null, { indicatorType: 'baseline' })) };
+    },
+    parse: function(response)
+    {
+        if (!response.compute) { response.compute = {} };
+        response.aggregation_function = response.compute.aggregation_function;
+        response.column_function = response.compute.column_function;
+        response.metric_period = response.compute.metric_period;
+        delete response.compute;
+
+        for (var key in this.model)
+        {
+            nestedClass = this.model[key];
+            nestedData = response[key];
+            response[key] = new nestedClass(nestedData, { parse: true });
+        }
+
+        return response;
+    },
+    toJSON: function()
+    {
+        var result = Backbone.Model.prototype.toJSON.call(this);
+        result.compute = {
+            aggregation_function: result.aggregation_function,
+            column_function: result.column_function,
+            metric_period: result.metric_period
+        };
+        delete result.aggregation_function;
+        delete result.column_function;
+        delete result.metric_period;
+    }
+});
+
+var Metrics = Backbone.Collection.extend({
+    model: Metric
+});
+
+// AGENCY
+
+var Agency = Backbone.Model.extend({
+    parse: function(response)
+    {
+        if (_.isString(response))
+        {
+			response = { name: response };
+        }
+		return response;
+    },
+    toJSON: function() { return this.get('name'); }
+});
+
+var Agencies = Backbone.Collection.extend({
+    model: Agency
+});
+
 // GOAL
 
 var Goal = Backbone.Model.extend({
     model:
     {
-        metric: Metric,
         agency: Agencies,
-		related_datasets: DatasetsProxy
+		related_datasets: DatasetsProxy,
+        metrics: Metrics
     },
 
     initialize: function()
     {
-        if (!this.get('agency'))
-        {
-            this.set('agency', new Agencies());
-        }
+        if (!this.get('agency')) { this.set('agency', new Agencies()); }
+        if (!this.get('related_datasets')) { this.set('related_datasets', new DatasetsProxy()); }
+        if (!this.get('metrics')) { this.set('metrics'), new Metrics(); }
+
+        var metrics = this.get('metrics');
+        if (metrics.length === 0) { metrics.add(new Metric()); }
     },
     parse: function(response)
     {

@@ -253,25 +253,31 @@ $(function(){
     {
       var key = $(element).attr('id');
       var columnOriginalFieldName = key.slice(4);
+      var prefix = "#" + columnOriginalFieldName;
       onActivate[key] = function($pane, paneConfig, state, command)
       {
+        var $n  = $(prefix + "Name")       ,
+            $fn = $(prefix + "FieldName")  ,
+            $d  = $(prefix + "Description");
         var col = columns[columnOriginalFieldName];
-        var firstSelector = "#" + key + " ";
-        $(firstSelector + "#name").val(col.name);
-        $(firstSelector + "#fieldName").val(col.fieldName);
-        $(firstSelector + "#description").val(col.description);
-        $(firstSelector + "#description").text(col.description);
+        $n.val(col.name);
+        $fn.val(col.fieldName);
+        $d.val(col.description);
+        $d.text(col.description);
       }
       onNext[key] = function($pane, state)
       {
+        var $n  = $(prefix + "Name")       ,
+            $fn = $(prefix + "FieldName")  ,
+            $d  = $(prefix + "Description");
         var $prompt = $(".prompt");
         $prompt.val(null);
         updateColumn(
           columnOriginalFieldName,
           {
-            name:$("#name").val().trim(),
-            fieldName:$("#fieldName").val().trim(),
-            description:$("#description").val()
+            name:$n.val().trim(),
+            fieldName:$fn.val().trim(),
+            description:$d.val()
           },
           defaultTransition,
           defaultErrorHandler

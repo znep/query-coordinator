@@ -75,13 +75,13 @@ $(function() {
 
 		bindLiveDocs();
 		$("#updateField").click(function() {
-			var columnOriginalFieldName = $("#fieldName").value()
+			var columnOriginalFieldName = $(".fieldName").value()
 			var $prompt = $(".prompt");
 			$prompt.val(null);
 			updateColumn(
 			columnOriginalFieldName, {
-				name: $("#name").val().trim(),
-				description: $("#description").val()
+				name: $("#" + columnOriginalFieldName + "Name").val().trim(),
+				description: $("#" + columnOriginalFieldName  + "Description").val()
 			},
 			function() {
 				$(".flash").text("The field has been updated.").addClass("notice").removeClass("error");

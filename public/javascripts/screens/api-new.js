@@ -8,7 +8,7 @@ $(function(){
   var options = {
       onCancel: function($pane, state)
       {
-          window.location.href = '/resource/' + blist.configuration.apiFoundry.id;
+          window.location.href = '/resource/' + blist.configuration.apiFoundry.id + '.html';
           return false;
       },
       finishText: "Deploy",

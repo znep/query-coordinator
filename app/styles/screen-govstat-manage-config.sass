@@ -1,0 +1,37 @@
+#manageConfigPage
+  .manageLink
+    margin:
+      bottom: 1em
+      left: 0
+
+  .button .ss-icon
+    // This should be applied in controls.sass, but it isn't taking
+    margin-right: 0.4em
+
+  .actionLinks
+    a
+      @include border-radius(0.3em)
+      background-color: #f7f7f7
+      border: 1px solid $color_chrome_box_border
+      color: #333
+      cursor: pointer
+      display: block
+      height: 9.3em
+      text-align: center
+      text-shadow: 1px 1px 0 #fff
+      @include transition-property(background-color)
+      @include transition-duration(0.5s)
+      padding: 2em
+      width: 17em
+
+      &:hover
+        background-color: #eee
+
+      .ss-icon
+        display: block
+        font-size: 5em
+        margin: 0.2em auto
+
+      p
+        font-size: 1.4em
+        font-weight: bold

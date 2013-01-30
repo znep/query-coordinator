@@ -185,15 +185,6 @@ screen-govstat-goals:
 screen-govstat-manage:
 - screen-govstat-base
 - screen-govstat-manage
-screen-govstat-manage-data:
-- screen-govstat-base
-- screen-govstat-manage-data
-screen-govstat-manage-reports:
-- screen-govstat-base
-- screen-govstat-manage-reports
-screen-govstat-manage-config:
-- screen-govstat-base
-- screen-govstat-manage-config
 template-instantiator:
 - components
 - template-instantiator

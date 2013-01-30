@@ -17,7 +17,7 @@
                 <%= column.name %>
             </li>
           <% end %>
-          <%= render :partial => 'edit_column', :locals => {:column => column, :disable_field_name => true}%>
+          <%= render :partial => 'edit_column', :locals => {:column => column, :published => @view.is_published? }%>
       <% end %>
     <a href="#updateField" id="updateField" class="button">Apply</a>
     <a href="../" class="button">Cancel</a>

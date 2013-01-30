@@ -47,7 +47,13 @@ class ApiFoundryController < ApplicationController
       method = 'setViewAnonThrottle'
     end
     path = "/views/#{params[:id]}/apiThrottle.json?method=" + method + "&" + params.to_param
-    coreResponse = CoreServer::Base.connection.get_request(path)
+    begin
+      coreResponse = CoreServer::Base.connection.get_request(path)
+    rescue CoreServer::CoreServerError => e
+      flash[:error] = e.error_message
+      redirect_to :action => 'manage', :admin_section => "apps_edit", :token => "new"
+      return
+    end
     redirect_to( :action => 'manage', :id => params[:id], :admin_section => 'apps_list')
   end
 

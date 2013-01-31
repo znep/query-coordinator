@@ -18,10 +18,10 @@ var bindSelect = function($select, $span)
 };
 
 // dataset picker
-var showDatasetSelect = function(callback)
+var showDatasetSelect = function(callback, goalName)
 {
 	var $modal = $.showModal('selectDataset');
-	$modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(self.model.get('name')));
+	$modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(goalName));
 	commonNS.selectedDataset = function(dataset)
 	{
 		callback(dataset);
@@ -137,7 +137,7 @@ var GoalEditor = Backbone.View.extend({
             {
 				var datasetProxy = new govstatNS.models.DatasetProxy({ id: dataset.id }, { dataset: dataset });
 				relatedDatasets.add(datasetProxy);
-            });
+            }, self.model.get('name'));
 		});
 
         // drop in metrics
@@ -708,7 +708,7 @@ var IndicatorEditor = Backbone.View.extend({
 			showDatasetSelect(function(dataset)
             {
                 datasetProxy.set('id', dataset.id);
-            });
+            }, self.model.get('name'));
 		});
 
         // drop in column card

@@ -382,7 +382,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     }]
 				}, {
 				    _: 'span',
-                    contents: ', and '
+                    contents: ', and<br/>' // LAZY HACK ALERT
 				}, {
                     _: 'div',
                     className: 'inputWrapper selectInput aggregationFunctionInput',

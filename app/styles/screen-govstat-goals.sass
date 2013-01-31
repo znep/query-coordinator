@@ -250,6 +250,7 @@ h2
         z-index: 9999
 
       .selectValue
+        background: url(/stylesheets/images/content/dropdown_arrow.png) no-repeat right 0
         display: block
         height: 1.05em
         @include opacity(1)
@@ -563,6 +564,9 @@ h2
           height: 100%
 
     .periodSection
+      .selectInput
+        margin: 0 1em
+
       .metricPeriodInput
         width: 10em
 
@@ -606,6 +610,10 @@ h2
 
           &.prompt
             padding: 0.3em
+
+      .selectDataset
+        color: #333
+        font-size: 1.3em
 
     .calculationContainer
       background: rgba(0, 0, 0, 0.04)
@@ -709,6 +717,9 @@ h2
       .calculationContainer
         background-color: rgba(0, 0, 0, 0.2)
         border-color: rgba(0, 0, 0, 0.4)
+
+      .datasetContainer .selectDataset
+        color: #fff
 
 .socrataModal #selectDataset
   padding: 3em

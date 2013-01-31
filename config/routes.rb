@@ -304,7 +304,7 @@ Frontend::Application.routes do
 
   # Govstat pages
   scope :controller => 'govstat' do
-    match '/goals', :action => 'goals'
+    match '/goals-new', :action => 'goals'
 
     # TODO: only expose these pages when the domain is a govstat instance
   end

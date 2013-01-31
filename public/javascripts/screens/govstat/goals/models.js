@@ -183,10 +183,19 @@ var Goal = Backbone.Model.extend({
     {
         if (!this.get('agency')) { this.set('agency', new Agencies()); }
         if (!this.get('related_datasets')) { this.set('related_datasets', new DatasetsProxy()); }
-        if (!this.get('metrics')) { this.set('metrics'), new Metrics(); }
+        if (!this.get('metrics')) { this.set('metrics', new Metrics()); }
 
         var metrics = this.get('metrics');
         if (metrics.length === 0) { metrics.add(new Metric()); }
+
+        // prevailing metric gets goal comparison
+        this.on('change:comparison', function(_, value)
+        {
+            var metrics = this.get('metrics');
+            if (!metrics || metrics.length < 2) { return; } // something's wrong
+
+            metrics.at(0).set('comparison', value);
+        });
     },
     parse: function(response)
     {
@@ -203,8 +212,10 @@ var Goal = Backbone.Model.extend({
 var Goals = Backbone.Collection.extend({
     model: Goal,
 
-    initialize: function(_, options)
+    initialize: function(__, options)
     {
+        var self = this;
+
         this.on('add', function(goal)
         {
             if (options.category instanceof Category)
@@ -217,6 +228,12 @@ var Goals = Backbone.Collection.extend({
 				goal.set('category', null);
                 goal.set('is_public', false);
             }
+
+            this.listenTo(goal, 'removeFromAll', function() { this.remove(goal); });
+        });
+        this.on('remove', function(goal)
+        {
+            self.stopListening(goal);
         });
     }
 });
@@ -230,6 +247,8 @@ var Category = Backbone.Model.extend({
         {
             this.set('color', Category.getColor());
         }
+
+        this.goals = new Goals([], { category: this });
 
         this.on('add', function(_, collection)
         {
@@ -247,7 +266,21 @@ Category.getColor = function()
 }
 
 var Categories = Backbone.Collection.extend({
-    model: Category
+    model: Category,
+
+    initialize: function(__, options)
+    {
+        var self = this;
+
+        this.on('add', function(category)
+        {
+            this.listenTo(category, 'removeFromAll', function() { this.remove(category); });
+        });
+        this.on('remove', function(category)
+        {
+            self.stopListening(category);
+        });
+    }
 });
 
 // EXPORT

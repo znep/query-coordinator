@@ -6,6 +6,30 @@
 blist.namespace.fetch('blist.govstat').markup = {
     goalEditor:
     {
+        actions: function()
+        {
+            return $.tag2({
+                _: 'div',
+                className: 'actions',
+                contents: [{
+                    _: 'a',
+                    className: 'deleteGoal',
+                    href: '#delete goal',
+                    contents: [{
+                        _: 'span',
+                        className: 'ss-trash'
+                    }, 'Delete this Goal']
+                }, {
+                    _: 'a',
+                    className: 'jqmClose',
+                    href: '#save and close',
+                    contents: [{
+                        _: 'span',
+                        className: 'ss-close'
+                    }, 'Save and Close']
+                }]
+            })
+        },
         mainDetails: function(goal)
         {
             return $.tag2({

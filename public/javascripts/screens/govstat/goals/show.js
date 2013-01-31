@@ -62,18 +62,36 @@ $(function()
         comparison: '<'
     }], { parse: true });
 
+    // first listen for removeFromAll Goal so we can put it in the delete queue
+    var goalsPendingDelete = new govstatNS.collections.Goals([], {});
+    goals.each(function(goal)
+    {
+        goal.on('removeFromAll', function() { goalsPendingDelete.add(goal); });
+    });
+
     // split out goals
     var rawGoalsByCategory = goals.groupBy(function(goal)
     {
         return (goal.get('is_public') !== true) ? '__draft' : goal.get('category');
     });
-    //_.each(goalsByCategory, function(v, k) { goalsByCategory[k] = new govstatNS.collections.Goals(v); });
-    var draftGoals = new govstatNS.collections.Goals(rawGoalsByCategory.__draft || [], { draft: true });
+    var draftGoals = new govstatNS.collections.Goals([], { draft: true });
+    draftGoals.add(rawGoalsByCategory.__draft);
     delete rawGoalsByCategory.__draft;
 
     // categories
-    var categories = new govstatNS.collections.Categories([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }], { parse: true });
+    var categories = new govstatNS.collections.Categories([], { parse: true });
+    categories.add([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }]);
     categories.on('invalid', function() { console.error('invalid!'); });
+
+    // now listen for removeFromAll Category so we can move its goals to draftGoals
+    categories.on('remove', function(category)
+    {
+        category.goals.each(function(goal)
+        {
+            draftGoals.add(goal);
+        });
+    });
+
 
 // INTERFACE
     // power tabswitch interface
@@ -113,17 +131,14 @@ $(function()
     $final.prepend(categoriesView.$el);
     categoriesView.render();
 
-    // render category goals
-    goalsByCategory = {};
-    categoriesView.$el.children().each(function()
+    // populate category goals
+    categories.each(function(category)
     {
-        var $this = $(this);
-        goalsByCategory[$this.data('category')] = $this.data('goals');
-    });
-
-    _.each(rawGoalsByCategory, function(goals, category)
-    {
-        goalsByCategory[category].add(goals);
+        var name = category.get('name');
+        if (rawGoalsByCategory[name])
+        {
+            category.goals.add(rawGoalsByCategory[name]);
+        }
     });
 
 

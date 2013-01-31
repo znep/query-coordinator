@@ -441,13 +441,11 @@ var DatasetCard = Backbone.View.extend({
 	{
 		if (this._rendered === true) return; else this._rendered = true;
 
-        this.$el.append($.tag2({ _: 'h2', className: 'prompt', contents: 'Please select a dataset' }));
-
 		// data
 		this.$el.data('model', this.model);
 
 		// then go fetch the actual metadata
-		if (this.model.get('id')) { this.updateDataset(); }
+		this.updateDataset();
 	},
     empty: function()
     {
@@ -464,7 +462,14 @@ var DatasetCard = Backbone.View.extend({
 		this.model.getDataset(function(ds)
 		{
             self.empty();
-			self.$el.append(govstatNS.markup.datasetCard(ds));
+            if ($.isBlank(ds))
+            {
+                self.$el.append($.tag2({ _: 'h2', className: 'prompt', contents: 'Please select a dataset' }));
+            }
+            else
+            {
+    			self.$el.append(govstatNS.markup.datasetCard(ds));
+            }
 		});
     }
 });
@@ -498,8 +503,66 @@ var DatasetCardList = Backbone.CollectionView.extend({
     }
 });
 
-// COLUMNSPROXY
+// COLUMNPROXY
 
+var ColumnCard = Backbone.View.extend({
+    tagName: 'div',
+    className: 'columnCard',
+    events: {
+        
+    },
+    initialize: function()
+    {
+        this.listenTo(this.model.datasetProxy, 'change:id', function() { this.updateEntries(); });
+    },
+    render: function()
+    {
+        var self = this;
+        if (this._rendered === true) return; else this._rendered = true;
+
+        this.$el.append(govstatNS.markup.columnCard(this.model));
+
+        // bind fancy select
+        bindSelect(this.$('select'), this.$('span.selectValue'));
+
+        // fetch entries if we have em
+        this.updateEntries();
+    },
+    updateEntries: function()
+    {
+        var self = this;
+        this.model.datasetProxy.getDataset(function(ds)
+        {
+            if ($.isBlank(ds))
+            {
+                self.$('select')
+                    .empty()
+                    .trigger('change');
+
+                self.$('span.selectValue')
+                    .addClass('needsDataset')
+                    .text('Please select a dataset');
+            }
+            else
+            {
+                self.$('select')
+                    .empty()
+                    .append('<option>(None)</option>')
+                    .append($.tag2(_.map(ds.columnsForType(self.model.acceptableTypes), function(column)
+                    {
+                        return {
+                            _: 'option',
+                            value: column.fieldName,
+                            contents: $.htmlEscape(column.name)
+                        };
+                    })))
+                    .trigger('change');
+
+                self.$('span.selectValue').removeClass('needsDataset');
+            }
+        });
+    }
+});
 
 // METRICS
 
@@ -507,7 +570,8 @@ var MetricEditor = Backbone.View.extend({
     tagName: 'form',
     className: 'metric',
     events: {
-        
+        'change .nameInput input': 'nameChanged',
+        'change .comparison select': 'comparisonChanged'
     },
     render: function()
     {
@@ -517,17 +581,36 @@ var MetricEditor = Backbone.View.extend({
         var $markup = govstatNS.markup.metricEditor(this.model);
         this.$el.append($markup);
 
-        // add indicators
-        var currentIndicatorEditor = new IndicatorEditor({ model: this.model.get('current') });
-        currentIndicatorEditor.render();
-        $markup.find('.left .wrapper').append(currentIndicatorEditor.$el);
+        // bind fancy select
+        var $select = this.$('.comparison select');
+        bindSelect($select, $select.siblings('span.selectValue'));
 
-        var baselineIndicatorEditor = new IndicatorEditor({ model: this.model.get('baseline') });
-        baselineIndicatorEditor.render();
-        $markup.find('.right .wrapper').append(baselineIndicatorEditor.$el);
+        // add indicators
+        this._addIndicator(this.model.get('current'), 'left');
+        this._addIndicator(this.model.get('baseline'), 'right');
 
         // save off model
         this.$el.data('model', this.model);
+    },
+
+    nameChanged: function() { this.model.set('name', $(event.target).val()); },
+    comparisonChanged: function() { this.model.set('comparison', $(event.target).val()); },
+    _addIndicator: function(indicator, childClass)
+    {
+        var indicatorEditor = new IndicatorEditor({ model: indicator });
+        indicatorEditor.render();
+
+        // break it up into sections so they line up :(
+        this.$('.datasetContainer .' + childClass).append(indicatorEditor.$('.datasetSection'));
+        this.$('.calculationContainer .' + childClass).append(indicatorEditor.$('.calculationSection'));
+        this.$('.periodContainer .' + childClass).append(indicatorEditor.$('.periodSection'));
+
+        // and then wire the events in :(
+        this.$('.indicator').on('change', '.' + childClass + ' select', function(event)
+        {
+            var $select = $(event.target);
+            indicator.set($select.attr('name'), $select.val());
+        });
     }
 });
 
@@ -566,7 +649,14 @@ var IndicatorEditor = Backbone.View.extend({
     tagName: 'div',
     className: 'indicatorWrapper',
     events: {
-        
+        'change select': 'selectChanged'
+    },
+    initialize: function()
+    {
+        this.listenTo(this.model, 'change:column_function', function(_, value)
+        {
+            this._$columnFunctionInput.toggleClass('hasFunction', value && (value !== 'null'));
+        });
     },
     render: function()
     {
@@ -574,9 +664,10 @@ var IndicatorEditor = Backbone.View.extend({
 		if (this._rendered === true) return; else this._rendered = true;
 
         var $markup = govstatNS.markup.indicatorEditor(this.model);
+        this.$el.append($markup);
 
         // bind fancy select
-        $markup.find('select').each(function()
+        this.$('select').each(function()
         {
             var $this = $(this);
             bindSelect($this, $this.siblings('span.selectValue'));
@@ -586,18 +677,34 @@ var IndicatorEditor = Backbone.View.extend({
         var datasetProxy = this.model.get('dataset');
         var datasetCard = new DatasetCard({ model: datasetProxy });
         datasetCard.render();
-        $markup.find('.datasetContainer').append(datasetCard.$el);
-		$markup.find('a.selectDataset').on('click', function(event)
+        this.$('.datasetContainer').append(datasetCard.$el);
+		this.$('a.selectDataset').on('click', function(event)
 		{
 			event.preventDefault();
 			showDatasetSelect(function(dataset)
             {
                 datasetProxy.set('id', dataset.id);
-                // TODO: maybe have to prevent double-download
             });
 		});
 
-        this.$el.append($markup);
+        // drop in column card
+        this._addColumnCard(1);
+        this._addColumnCard(2);
+
+        // save off columnfunction for quick access
+        this._$columnFunctionInput = this.$('.columnFunctionInput');
+    },
+    selectChanged: function()
+    {
+        var $select = $(event.target);
+        this.model.set($select.attr('name'), $select.val());
+    },
+    _addColumnCard: function(idx)
+    {
+        var columnProxy = this.model.get('column' + idx);
+        var columnCard = new ColumnCard({ model: columnProxy });
+        columnCard.render();
+        this.$('.columnContainer.column' + idx).append(columnCard.$el);
     }
 });
 

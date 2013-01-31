@@ -241,11 +241,6 @@ h2
     border-top: 1px solid rgba(0, 0, 0, 0.2)
     line-height: 4.5em
 
-  .metricList > .metric
-    @include vertical-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.02))
-    border-top: 1px solid rgba(0, 0, 0, 0.3)
-    line-height: 4.5em
-
   form.mainDetails
     .comparisonInput
       width: 21em
@@ -394,7 +389,34 @@ h2
         color: #666
 
   .metric
+    border-top: rgba(0, 0, 0, 0.3)
+    line-height: 4.5em
+    padding-bottom: 0
     position: relative
+
+    background-color: rgba(0, 0, 0, 0.25)
+    + .metric
+      background-color: rgba(255, 255, 255, 0.15)
+      + .metric
+        background-color: rgba(0, 0, 0, 0.1)
+        + .metric
+          background-color: rgba(255, 255, 255, 0.15)
+          + .metric
+            background-color: rgba(0, 0, 0, 0.15)
+            + .metric
+              background-color: rgba(255, 255, 255, 0.15)
+              + .metric
+                background-color: rgba(0, 0, 0, 0.1)
+                + .metric
+                  background-color: rgba(255, 255, 255, 0.15)
+                  + .metric
+                    background-color: rgba(0, 0, 0, 0.15)
+                    + .metric
+                      background-color: rgba(255, 255, 255, 0.15)
+                      + .metric
+                        background-color: rgba(0, 0, 0, 0.1)
+                        + .metric
+                          background-color: rgba(255, 255, 255, 0.15)
 
     .removeMetric
       color: #333
@@ -435,19 +457,92 @@ h2
       input, select
         font-size: 1.7em
 
+    .detailsLine
+      span, .inputWrapper input, .inputWrapper select
+        font-size: 2.3em
+
     .nameInput
       width: 40em
 
-    .splitSection
+    .indicatorContainer
       @include clearfix
-      margin: 0 -4em
+      margin: 0
+      padding: 1em 0
+      position: relative
 
       .left, .right
         float: left
         width: 50%
 
+      .left
+        box-sizing: border-box
+        padding: 2em 4em 4em 0
+
       .right
+        box-sizing: border-box
+        padding: 2em 4em 0 4em
         text-align: right
+
+        .calculationSection
+          padding-left: 9em
+          padding-right: 0
+
+      .comparison
+        left: 50%
+        line-height: 3.5em
+        margin-left: -6em
+        margin-top: -3em
+        position: absolute
+        text-align: center
+        top: 50%
+        width: 12em
+
+        label
+          left: -9999px
+
+        p
+          font-size: 1.3em
+
+        .comparisonInput
+          width: 12em
+
+    .calculationSection
+      padding-right: 9em
+
+      .columnCard
+        .inputWrapper
+          display: block
+
+        span.selectValue
+          @include transition(0.2s, color)
+
+          &.needsDataset
+            color: #666
+
+      .columnFunctionInput
+        margin-top: 3.5em
+        width: 15em
+
+      .column2
+        margin-top: 3.5em
+        opacity: 0.2
+        @include transition(0.3s, opacity)
+
+        select
+          height: 0
+
+      .columnFunctionInput.hasFunction + .column2
+        opacity: 1
+
+        select
+          height: 100%
+
+    .periodSection
+      .metricPeriodInput
+        width: 10em
+
+      .aggregationFunctionInput
+        width: 16em
 
     // prevailing metric
     &:first-child
@@ -457,32 +552,43 @@ h2
       .prevailing
         display: block
 
+      .indicatorContainer .comparison
+        display: none
+
   .indicator
-    > h2
-      line-height: 1em
-      padding-bottom: 1.5em
+    background: rgba(0, 0, 0, 0.03)
+    border: 1px solid rgba(0, 0, 0, 0.06)
+      left: none
+      right: none
+    margin: 3em -4em 0
+    padding: 0 4em
 
-    .datasetCard
-      padding: 1em
+    .datasetSection
+      > h2
+        line-height: 1em
+        padding-bottom: 1.5em
 
-      .datasetIcon
-        margin-right: 1em
+      .datasetCard
+        padding: 1em
 
-      h2
-        font-size: 1.3em
-        line-height: 1
-        padding: 0.7em 0
+        .datasetIcon
+          margin-right: 1em
 
-        &.prompt
-          padding: 0.3em
+        h2
+          font-size: 1.3em
+          line-height: 1
+          padding: 0.7em 0
 
-    .combinedLine
-      background: rgba(0, 0, 0, 0.3)
-      border: 1px solid rgba(0, 0, 0, 0.5)
+          &.prompt
+            padding: 0.3em
+
+    .calculationContainer
+      background: rgba(0, 0, 0, 0.2)
+      border: 1px solid rgba(0, 0, 0, 0.4)
         left: none
         right: none
       margin: 0 -4em
-      padding: 0 4em
+      padding: 2em 4em 1em
 
   &.draft
     background-color: #333
@@ -525,6 +631,10 @@ h2
         color: #fff
         &:hover, &:focus, &:active
           color: #bbb
+
+    .indicatorContainer
+      .calculationContainer .columnCard span.selectValue.needsDataset
+        color: #bbb
 
 .socrataModal #selectDataset
   padding: 3em

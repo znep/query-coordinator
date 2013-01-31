@@ -5,11 +5,11 @@ var ColumnProxy = Backbone.Model.extend({
     initialize: function(_, options)
     {
         this.datasetProxy = options.datasetProxy;
-        if (!$.isBlank(options.column)) { this._column = options.column; }
+
+        this.acceptableTypes = options.acceptableTypes;
 
         this.listenTo(this.datasetProxy, 'change:id', function()
         {
-            this._column = null;
             this.set('field_name', null);
         });
     },
@@ -19,6 +19,7 @@ var ColumnProxy = Backbone.Model.extend({
         {
             response = { field_name: response };
         }
+        return response;
     },
     toJSON: function() { return this.get('field_name'); }
 });
@@ -50,6 +51,10 @@ var DatasetProxy = Backbone.Model.extend({
 		{
 			callback(this._dataset);
 		}
+        else if (!this.get('id'))
+        {
+            callback();
+        }
 		else
 		{
 			Dataset.createFromViewId(this.get('id'), callback);
@@ -64,6 +69,7 @@ var DatasetsProxy = Backbone.Collection.extend({
 
 // INDICATOR
 
+var numericTypes = [ 'number', 'percent', 'money', 'stars' ];
 var Indicator = Backbone.Model.extend({
     model:
     {
@@ -78,8 +84,10 @@ var Indicator = Backbone.Model.extend({
         if (!this.get('dataset')) { this.set('dataset', new DatasetProxy()); }
 
         var datasetProxy = this.get('dataset');
-        this.set('column1', new ColumnProxy({ field_name: this.get('column1') }, { datasetProxy: datasetProxy }));
-        this.set('column2', new ColumnProxy({ field_name: this.get('column2') }, { datasetProxy: datasetProxy }));
+        this.set('column1', new ColumnProxy({ field_name: this.get('column1') },
+                                            { datasetProxy: datasetProxy, acceptableTypes: numericTypes }));
+        this.set('column2', new ColumnProxy({ field_name: this.get('column2') },
+                                            { datasetProxy: datasetProxy, acceptableTypes: numericTypes }));
     },
     parse: function(response)
     {

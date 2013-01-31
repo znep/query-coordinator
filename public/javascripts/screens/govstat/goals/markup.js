@@ -1,3 +1,5 @@
+// TODO: I'M AN ABOMINATION KILL ME PLEASE I HEAR HAML IS PRETTY NICE
+
 ;(function()
 {
 
@@ -261,12 +263,12 @@ blist.namespace.fetch('blist.govstat').markup = {
 			_: 'form',
 			className: [ 'indicator', indicator.indicatorType ],
 			contents: [{
-				_: 'h2',
-				contents: { current: 'Current Data', baseline: 'Historical Baseline' }[indicator.indicatorType]
-			}, {
 				_: 'div',
-				className: 'normalLine',
+				className: 'datasetSection',
 				contents: [{
+    				_: 'h2',
+    				contents: { current: 'Current Data', baseline: 'Historical Baseline' }[indicator.indicatorType]
+    			}, {
 					_: 'div',
 					className: 'datasetContainer'
 				}, {
@@ -278,13 +280,13 @@ blist.namespace.fetch('blist.govstat').markup = {
 				}]
 			}, {
 				_: 'div',
-				className: 'combinedLine',
+				className: 'calculationSection',
 				contents: [{
 					_: 'div',
 					className: 'columnContainer column1'
 				}, {
 					_: 'div',
-					className: [ 'inputWrapper selectInput columnFunctionInput', { i: indicator.get('column_function'), t: 'hasFunction' }],
+					className: [ 'inputWrapper selectInput columnFunctionInput' ],
 					contents: [{
                         _: 'span',
                         className: 'selectValue'
@@ -313,6 +315,10 @@ blist.namespace.fetch('blist.govstat').markup = {
 							selected: indicator.get('column_function') === 'minus',
                             contents: 'minus'
 						}]
+					}, {
+					    _: 'label',
+                        'for': indicator.cid + '_column_function',
+                        contents: 'Operation'
 					}]
 				}, {
 					_: 'div',
@@ -320,7 +326,7 @@ blist.namespace.fetch('blist.govstat').markup = {
 				}]
 			}, {
 				_: 'div',
-				className: 'normalLine',
+				className: 'periodSection',
 				contents: [{
 					_: 'span',
                     contents: 'Slice this data by '
@@ -412,6 +418,25 @@ blist.namespace.fetch('blist.govstat').markup = {
 		}]);
 	},
 
+    columnCard: function(columnProxy)
+    {
+        return $.tag2({
+            _: 'div',
+            className: 'inputWrapper columnInput',
+            contents: [{
+                _: 'span',
+                className: 'selectValue'
+            }, {
+                _: 'select',
+                id: columnProxy.cid + '_column'
+            }, {
+                _: 'label',
+                'for': columnProxy.cid + '_column',
+                contents: 'Column'
+            }]
+        });
+    },
+
 	metricEditor: function(metric)
 	{
 		return $.tag2([{
@@ -446,50 +471,76 @@ blist.namespace.fetch('blist.govstat').markup = {
 				_: 'span',
 				contents: ' measurement.'
 			}]
-		}, {
-			_: 'div',
-			className: 'splitSection',
-			contents: [{
-				_: 'div',
-				className: 'left',
-				contents: {
-					_: 'div',
-					className: 'wrapper'
-				}
-			}, {
-				_: 'div',
-				className: 'right',
-				contents: {
-					_: 'div',
-					className: 'wrapper'
-				}
-			}, {
-			    _: 'div',
-                className: 'island',
+        }, {
+            _: 'div',
+            className: 'indicator',
+            contents: [{
+    			_: 'div',
+    			className: 'datasetContainer indicatorContainer',
+    			contents: [{
+    				_: 'div',
+    				className: 'left'
+    			}, {
+    				_: 'div',
+    				className: 'right'
+    			}]
+            }, {
+                _: 'div',
+                className: 'calculationContainer indicatorContainer',
                 contents: [{
-                    _: 'p',
-                    contents: 'must be'
+    				_: 'div',
+    				className: 'left'
+    			}, {
+    				_: 'div',
+    				className: 'right'
                 }, {
-                    _: 'div',
-                    className: 'inputWrapper comparisonInput',
+    			    _: 'div',
+                    className: 'comparison',
                     contents: [{
-                        _: 'select',
-                        name: 'comparison',
-                        id: metric.cid + '_comparison',
+                        _: 'p',
+                        contents: 'should be'
+                    }, {
+                        _: 'div',
+                        className: 'inputWrapper comparisonInput',
                         contents: [{
-                            _: 'option',
-                            value: '<',
-                            selected: metric.get('comparison') === '<',
-                            contents: 'less than'
+                            _: 'span',
+                            className: 'selectValue'
                         }, {
-                            _: 'option',
-                            value: '>',
-                            selected: metric.get('comparison') === '>',
-                            contents: 'greater than'
+                            _: 'select',
+                            name: 'comparison',
+                            id: metric.cid + '_comparison',
+                            contents: [{
+                                _: 'option',
+                                value: '<',
+                                selected: metric.get('comparison') === '<',
+                                contents: 'reduced'
+                            }, {
+                                _: 'option',
+                                value: '>',
+                                selected: metric.get('comparison') === '>',
+                                contents: 'increased'
+                            }]
+                        }, {
+                            _: 'label',
+                            'for': metric.cid + '_comparison',
+                            contents: 'Comparison'
                         }]
+                    }, {
+                        _: 'p',
+                        contents: 'compared to'
                     }]
-                }]
-			}]
+    			}]
+            }, {
+    			_: 'div',
+    			className: 'periodContainer indicatorContainer',
+    			contents: [{
+    				_: 'div',
+    				className: 'left'
+    			}, {
+    				_: 'div',
+    				className: 'right'
+    			}]
+            }]
 		}]);
 	}
 };

@@ -63,6 +63,7 @@ $(function()
     }], { parse: true });
 
     // first listen for removeFromAll Goal so we can put it in the delete queue
+    // don't need to listen to new goals; they don't exist on the server anyway
     var goalsPendingDelete = new govstatNS.collections.Goals([], {});
     goals.each(function(goal)
     {

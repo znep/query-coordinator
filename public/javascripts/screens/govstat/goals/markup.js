@@ -139,7 +139,8 @@ blist.namespace.fetch('blist.govstat').markup = {
                         id: goal.cid + '_end_date',
                         className: 'date',
                         name: 'end_date',
-                        'data-rawvalue': goal.get('end_date')
+                        'data-rawvalue': goal.get('end_date'),
+                        value: goal.get('end_date') ? new Date(goal.get('end_date')).toDateString() : ''
                     }]
                 }, {
                     _: 'span',
@@ -175,7 +176,8 @@ blist.namespace.fetch('blist.govstat').markup = {
                             id: goal.cid + '_start_date',
                             className: 'date',
                             name: 'start_date',
-                            'data-rawvalue': goal.get('start_date')
+                            'data-rawvalue': goal.get('start_date'),
+                            value: goal.get('start_date') ? new Date(goal.get('start_date')).toDateString() : ''
                         }]
                     }, {
                         _: 'span',
@@ -424,7 +426,7 @@ blist.namespace.fetch('blist.govstat').markup = {
 			i: $.isBlank(preferredImage),
 			t: {
 				_: 'div',
-				className: [ 'datasetIcon', 'type', ds.displayType.capitalize() ],
+				className: [ 'datasetIcon', 'type' + ds.type.capitalize() ],
 				contents: {
 					_: 'span',
 					className: 'icon'

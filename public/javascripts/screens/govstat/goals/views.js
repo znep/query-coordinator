@@ -162,7 +162,7 @@ var GoalEditor = Backbone.View.extend({
 		{
 			var $this = $(this);
 			$this.DatePicker({
-				date: $this.attr('data-rawvalue') || new Date(),
+				date: new Date($this.attr('data-rawvalue')) || new Date(),
 				onChange: function(_, newDate)
 				{
 					$this
@@ -411,7 +411,7 @@ var AgencyList = Backbone.CollectionView.extend({
     tagName: 'ul',
     className: 'agencyList',
     events: {
-        'focus .newAgency input': 'newAgency',
+        'keydown .newAgency input': 'newAgency',
         'click .removeAgency': 'removeAgency'
     },
     render: function()
@@ -425,13 +425,22 @@ var AgencyList = Backbone.CollectionView.extend({
         $newAgency.append(govstatNS.markup.agencyEditor(new govstatNS.models.Agency()));
         this.$el.append($newAgency);
     },
-    newAgency: function()
+    newAgency: function(event)
     {
+        if (event.keyCode < 32) { return; } // let things progress for special keys
+
+        event.preventDefault();
+
+        // extract value
+        var chr = String.fromCharCode(event.keyCode);
+        if (!event.shiftKey) { chr = chr.toLowerCase(); }
+
         // create new agency + editor
         this.collection.add(new govstatNS.models.Agency());
 
-        // focus on said editor
-        this.$('.newAgency').prev().find('input').focus();
+        // focus on said editor; populate with new value
+        var $newInput = this.$('.newAgency').prev().find('input');
+        $newInput.val(chr).focus().caretToEnd();
     },
     removeAgency: function(event)
     {
@@ -442,13 +451,16 @@ var AgencyList = Backbone.CollectionView.extend({
     {
         this.$('.newAgency').before(view.$el);
 
-        view.$el.append($.tag2({
-            _: 'a',
-            className: 'removeAgency',
-            href: '#remove',
-            title: 'Remove This Agency',
-            contents: 'Close'
-        }));
+        _.defer(function()
+        {
+            view.$el.append($.tag2({
+                _: 'a',
+                className: 'removeAgency',
+                href: '#remove',
+                title: 'Remove This Agency',
+                contents: 'Close'
+            }));
+        });
     }
 });
 
@@ -533,7 +545,7 @@ var ColumnCard = Backbone.View.extend({
     tagName: 'div',
     className: 'columnCard',
     events: {
-        
+        'change select': 'fieldNameChanged'
     },
     initialize: function()
     {
@@ -551,6 +563,10 @@ var ColumnCard = Backbone.View.extend({
 
         // fetch entries if we have em
         this.updateEntries();
+    },
+    fieldNameChanged: function(event)
+    {
+        this.model.set('field_name', $(event.target).val());
     },
     updateEntries: function()
     {
@@ -580,6 +596,7 @@ var ColumnCard = Backbone.View.extend({
                             contents: $.htmlEscape(column.name)
                         };
                     })))
+                    .val(self.model.get('field_name'))
                     .trigger('change');
 
                 self.$('span.selectValue').removeClass('needsDataset');

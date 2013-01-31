@@ -28,6 +28,7 @@ javascripts:
     - public/javascripts/util/events.js
     - public/javascripts/util/base-model.js
     - public/javascripts/util/socrata-server.js
+    - public/javascripts/util/caret.js
     - public/javascripts/util/markup.js
     - public/javascripts/util/alert-override.js
     - public/javascripts/util/google-analytics.js

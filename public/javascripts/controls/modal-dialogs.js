@@ -115,7 +115,7 @@
         _.defer(function()
         {
             $contents.addClass('shown');
-            $contents.find('input:first').focus(); // focus on an input if we can
+            $contents.find('input:first').focus().caretToEnd(); // focus on an input if we can
         });
     };
     var popModal = function(hideAll)

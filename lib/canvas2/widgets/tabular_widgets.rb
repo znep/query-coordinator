@@ -484,7 +484,7 @@ module Canvas2
         }
       end
       p.use_shared_strings = true
-      p.to_stream(true).read
+      p.to_stream(false).read
     end
 
     # loads a style for an XLSX spreadsheet, or returns

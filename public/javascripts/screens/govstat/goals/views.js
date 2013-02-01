@@ -665,7 +665,7 @@ var MetricList = Backbone.CollectionView.extend({
     {
         this.$el.append(this.renderCollection());
     },
-    removeMetric: function()
+    removeMetric: function(event)
     {
         event.preventDefault();
         this.collection.remove($(event.target).closest('.metric').data('model'));

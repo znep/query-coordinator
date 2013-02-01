@@ -61,7 +61,7 @@ class IntercessioController < ApplicationController
 
   # Tokens are md5sums
   def invalid_token(t)
-    (t =~ /^-?[0-9A-F]{32}$/i).nil?
+    (t =~ /^[0-9A-F]{32}$/i).nil?
   end
 end
 

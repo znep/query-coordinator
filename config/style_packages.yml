@@ -185,6 +185,9 @@ screen-govstat-goals:
 screen-govstat-manage:
 - screen-govstat-base
 - screen-govstat-manage
+screen-govstat-homepage:
+- screen-govstat-base
+- screen-govstat-dashboard
 template-instantiator:
 - components
 - template-instantiator

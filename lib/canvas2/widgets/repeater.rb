@@ -27,6 +27,13 @@ module Canvas2
         if context.is_a? Array
           context.each_with_index { |item, i| all_c << add_row(item, i, item.clone) }
 
+        elsif context[:type] == 'goalList'
+          if !@properties['groupBy'].blank?
+            all_c = render_group_items(context[:goalList])
+          else
+            context[:goalList].each_with_index {|g, i| all_c << add_row(g, i, g.clone) }
+          end
+
         elsif context[:type] == 'datasetList'
           context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }
 
@@ -83,6 +90,10 @@ module Canvas2
       end
 
       [t, fully_rendered, child_timings]
+    end
+
+    def child_resolver
+      nil
     end
 
     def child_context

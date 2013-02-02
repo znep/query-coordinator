@@ -134,6 +134,36 @@ module Canvas2
             log_timing(start_time, config)
             return true
           end)
+
+        when 'goalList'
+          goals = Goal.find
+          if goals.length > 0
+            available_contexts[id] = {id: id, type: config['type'],
+              count: goals.length,
+              goalList: goals.map do |g|
+                c = {type: 'goal', goal: g, id: id + '_' + g.id}
+                available_contexts[c[:id]] = c
+                self.set_context_as_streaming(c[:id])
+              end}
+            self.set_context_as_streaming(id)
+          elsif config['required']
+            errors.push(DataContextError.new(config, "No goals found for goalList '" + id + "'"))
+            ret_val = false
+          end
+          log_timing(start_time, config)
+
+        when 'goal'
+          goal = Goal.find(config['goalId'])
+          if goal.nil?
+            errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
+            log_timing(start_time, config)
+            ret_val !config['required']
+          else
+            available_contexts[id] = { id: id, type: config['type'], goal: goal }
+            self.set_context_as_streaming(id)
+            log_timing(start_time, config)
+          end
+
         end
       rescue CoreServer::CoreServerError => e
         raise DataContextError.new(config, "Core server failed: " + e.error_message,

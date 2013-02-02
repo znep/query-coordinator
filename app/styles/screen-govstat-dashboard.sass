@@ -1,0 +1,124 @@
+#govstatHomeRoot
+  &.gridFlowLayout
+    .categoryItem
+      margin-bottom: 1em
+    .categoryTitle
+      background-color: #5555ee
+      bottom: 0
+      left: 0
+      padding: 1em
+      position: absolute
+      top: 0
+      width: 1.5em
+      h2
+        color: #f7f7f7
+        text-transform: uppercase
+        @include prefixer(transform, rotate(90deg))
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+    .goalList
+      margin-left: 5em
+    .goalItem
+      background-color: #7777ee
+      color: #f7f7f7
+      margin-right: 0.5em
+      .component-Title
+        margin-top: 3em
+        padding: 0 2em
+        text-align: center
+        h2
+          font-size: 2em
+      .goalDetails
+        bottom: 0
+        display: none
+        left: 0
+        padding: 0
+        position: absolute
+        right: 0
+        top: 0
+        z-index: 1
+        a
+          background-color: #772222
+          color: #f7f7f7
+          display: block
+          font-size: 1.5em
+          font-weight: bold
+          height: 100%
+          padding: 1.5em
+          .more
+            font-size: 0.6em
+            font-weight: normal
+            margin-top: 1em
+            text-transform: uppercase
+            .ss-icon
+              padding-left: 0.5em
+      .goalProgress
+        bottom: 1.5em
+        font-size: 1.2em
+        position: absolute
+        right: 1.5em
+        text-transform: uppercase
+      &:hover
+        .goalDetails
+          display: block
+
+  &.listLayout
+    .categoryTitle h2
+      font-size: 2em
+    .categoryItem
+      margin-bottom: 5em
+
+    .goalList
+      background-color: white
+      border: 1px solid $color_chrome_box_border
+      width: 100%
+
+    .goalItem
+      border-bottom: 1px solid $color_chrome_box_border
+      padding: 1em
+      padding-left: 2em
+      position: relative
+      &:last-child
+        border-bottom: none
+
+      .goalProgress
+        font-size: 1em
+        height: 100%
+        left: 0
+        padding: 0
+        position: absolute
+        top: 0
+        width: 1em
+        .contentWrapper
+          height: 100%
+          width: 100%
+        .progress-good
+          background-color: #55ee55
+        .progress-flat
+          background-color: #ee9955
+        .progress-poor
+          background-color: #ee3333
+
+      .progressDetails
+        float: right
+        margin-top: 0.75em
+        .component-Text
+          display: inline-block
+          vertical-align: top
+        .barValue
+          background-color: #f7f7f7
+          color: #dddddd
+          display: inline-block
+          height: 1em
+          margin-right: 2em
+          padding: 0.5em 1em
+          position: relative
+          text-transform: uppercase
+          width: 20em
+          .bar
+            background-color: #55ee55
+            height: 100%
+            position: absolute
+            right: 0
+            top: 0
+        .textValue
+          font-size: 2.5em

@@ -310,6 +310,7 @@ Frontend::Application.routes do
     match '/manage/data', :action => 'manage_data'
     match '/manage/reports', :action => 'manage_reports'
     match '/manage/site_config', :action => 'manage_config'
+    match '/manage/template', :action => 'manage_template'
 
     # TODO: only expose these pages when the domain is a govstat instance
   end

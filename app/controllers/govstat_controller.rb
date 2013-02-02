@@ -31,6 +31,9 @@ class GovstatController < ApplicationController
   def manage_config
   end
 
+  def manage_template
+  end
+
 protected
   def set_govstat_theme
     @use_govstat_theme = true

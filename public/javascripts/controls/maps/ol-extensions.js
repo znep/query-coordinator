@@ -1418,7 +1418,7 @@
             return this.project(projection);
         },
 
-        toQuery: function(projection, filterColumnId)
+        toQuery: function(projection, filterColumnFieldName)
         {
             var buildFilterCondition = function(viewport)
             {
@@ -1436,7 +1436,7 @@
                                     type: 'column',
                                     value: (axis == 'x') ? 'LONGITUDE'
                                                          : 'LATITUDE',
-                                    columnId: filterColumnId
+                                    columnFieldName: filterColumnFieldName
                                 },
                                 {
                                     type: 'literal',

@@ -1647,8 +1647,21 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         var filters;
+
+        // Convert filters using columnId to use columnFieldName
+        var convertFilter = function(filter)
+        {
+            if (filter.children) { filter.children = _.map(filter.children, convertFilter); }
+            if (filter.type == 'column' && filter.columnId)
+            {
+                filter.columnFieldName = ds.columnForID(filter.columnId).fieldName;
+                delete filter.columnId;
+            }
+            return filter;
+        };
+
         if (!$.isBlank((ds.query || {}).filterCondition))
-        { filters = $.extend(true, {}, ds.query.filterCondition); }
+        { filters = convertFilter($.extend(true, {}, ds.query.filterCondition)); }
         if (!$.isBlank((ds.query || {}).namedFilters))
         {
             var newFilters = [];
@@ -1662,7 +1675,7 @@ var Dataset = ServerModel.extend({
                 nf = $.extend(true, {}, nf);
                 delete nf.temporary;
                 delete nf.displayTypes;
-                newFilters.push(nf);
+                newFilters.push(convertFilter(nf));
             });
             if (newFilters.length > 0)
             {

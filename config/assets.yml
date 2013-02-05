@@ -180,21 +180,6 @@ javascripts:
     - public/javascripts/plugins/heatmap-openlayers.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
-    - public/javascripts/controls/maps/base-map.js
-    - public/javascripts/controls/maps/esri-map.js
-    - public/javascripts/controls/maps/external-esri-map.js
-    - public/javascripts/controls/maps/google-map.js
-    - public/javascripts/controls/maps/bing-map.js
-    - public/javascripts/controls/maps/heatmap-map.js
-    - public/javascripts/controls/maps/openlayers-map.js
-    - public/javascripts/controls/maps/rastermap-map.js
-  shared-new-map:
-    - public/javascripts/plugins/OpenLayers.js
-    - public/javascripts/plugins/proj4js.js
-    - public/javascripts/plugins/heatmap.js
-    - public/javascripts/plugins/heatmap-openlayers.js
-    - public/javascripts/controls/rich-render-library.js
-    - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/maps/map-wrapper.js
     - public/javascripts/controls/maps/base-datalayer.js
     - public/javascripts/controls/maps/ol-extensions.js
@@ -205,7 +190,6 @@ javascripts:
     - public/javascripts/controls/maps/rastermap-map.js
   shared-map-configuration:
     - public/javascripts/controls/panes/map-config.js
-    - public/javascripts/controls/panes/map-config.2.js
   shared-chart:
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
@@ -598,7 +582,6 @@ dump:
     - shared-calendar
     - shared-chart
     - shared-map
-    - shared-new-map
     - shared-map-configuration
     - shared-table-render
     - shared-richRenderers

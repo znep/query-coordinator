@@ -1,12 +1,8 @@
-;if (blist.configuration.newMapsEnabled || jQuery.urlParam(window.location.href, 'maps') != 'nextgen') { (function($) {
-
+;(function($) {
     var mapConfigNS = blist.namespace.fetch('blist.configs.map');
 
-    var mapTypes = [
-        {text: 'Google Maps', value: 'google'},
-        {text: 'Bing Maps', value: 'bing'},
-        {text: 'ESRI ArcGIS', value: 'esri'}
-    ];
+    var mapTypes = _.map(_.pluck(Dataset.map.backgroundLayers, 'name'),
+            function(x) { return { text: x, value: x }; });
     var regionTypes = [
         {text: 'Countries', value: 'countries'},
         {text: 'US States', value: 'state'},
@@ -24,34 +20,19 @@
         return plotStyles;
     };
 
-    var arcgisBaseService = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
-    var mapLayers = [
-        {text: 'Street Map', value: arcgisBaseService + 'World_Street_Map/MapServer',
-            data: {type: 'tile'}},
-        {text: 'Satellite Imagery', value: arcgisBaseService + 'World_Imagery/MapServer',
-            data: {type: 'tile'}},
-        {text: 'Detailed USA Topographic Map', value: arcgisBaseService + 'USA_Topo_Maps/MapServer',
-            data: {type: 'tile'}},
-        {text: 'Annotated World Topographic Map', value: arcgisBaseService + 'World_Topo_Map/MapServer',
-            data: {type: 'tile'}},
-        {text: 'Natural Earth Map', value: arcgisBaseService + 'World_Physical_Map/MapServer',
-            data: {type: 'tile'}}
-    ];
-    var newMapLayers = [
-        {text: 'Custom Layer', value: 'custom', data: {type: null}}
-    ];
-
     // proxy/verify_layer_url is unavailable when not logged in.
     if (blist.currentUser)
-    { mapLayers = mapLayers.concat(newMapLayers); }
+    { mapTypes = mapTypes.concat({text: 'Custom Layer', value: 'custom', data: {type: null}}); }
 
     var normalizeLayerUrl = function($control, event)
     { $control.attr('data-custom-validlayerurl', 'unverified'); };
 
     var heatmapRegionOptions = function(heatmapType)
     {
-        if ($.isBlank(heatmapType)) return null;
-        if (heatmapType != 'counties') return null;
+        if ($.isBlank(heatmapType)
+            || (_.isString(heatmapType) && heatmapType != 'counties')
+            || !_.include(heatmapType, 'counties')) // heatmapType appears to be an object. weird.
+        { return null; }
         return [
             {value:'ak',text:'Alaska'},         {value:'al',text:'Alabama'},
             {value:'ar',text:'Arkansas'},       {value:'az',text:'Arizona'},
@@ -87,16 +68,6 @@
                options.view.displayFormat.heatmap.type == 'custom';
     };
 
-    var sectionOnlyIf = function(options)
-    {
-        return {func: function()
-            {
-                return !$.isBlank(this._view) &&
-                    (this._view.columnsForType('location', options.isEdit).length > 0
-                     || this._view.isArcGISDataset());
-            }};
-    };
-
     // keep track that we only get domain map layers once.
     var domainMapLayersCalled = false;
     var getDomainMapLayers = function(triggerFieldVal, notUsed, $field, curVal)
@@ -121,48 +92,6 @@
         return mapLayers;
     };
 
-    var configLayers = function(options)
-    {
-        return {
-            title: 'Layers',
-            onlyIf: [{field: 'displayFormat.type', value: 'esri'},
-                     {field: 'displayFormat.plotStyle', value: 'heatmap', negate: true},
-                     sectionOnlyIf(options)],
-            fields: [
-                {type: 'text', name: 'triggerMapLayer', lineClass: 'hide'},
-
-                {type: 'repeater', minimum: 1, addText: 'Add Layer', name: 'displayFormat.layers',
-                    field: {type: 'group', options: [
-                        {text: 'Layer', type: 'select', name: 'url',
-                            defaultValue: mapLayers[0].value, repeaterValue: '',
-                            required: true, prompt: 'Select a layer',
-                            linkedField: 'triggerMapLayer', options: getDomainMapLayers
-                        },
-                        {text: 'Layer URL', type: 'text', name: 'custom_url',
-                            onlyIf: {field: 'url', value: 'custom'}, defaultValue: 'https://',
-                            required: true, data: { 'validlayerurl': 'unverified' },
-                            change: normalizeLayerUrl },
-                        {text: 'Opacity', type: 'slider', name: 'options.opacity',
-                            defaultValue: 1, repeaterValue: 0.6, minimum: 0, maximum: 1}
-                    ]}
-                }
-            ]
-        };
-    };
-
-    var configLayersHeatmap = function(options)
-    {
-        var conf = configLayers(options);
-        conf.onlyIf = [
-            { field: 'displayFormat.plotStyle', value: 'heatmap' },
-            { field: 'displayFormat.type', value: 'esri' }, sectionOnlyIf(options)];
-        conf.type = 'selectable';
-        conf.name = 'heatmapLayers';
-        conf.fields[1].minimum = 0;
-        conf.fields.push({ text: 'Force Display', type: 'checkbox', name: 'displayFormat.forceBasemap' });
-        return conf;
-    };
-
     var disabledMessage = function(options)
     {
         return function()
@@ -181,144 +110,286 @@
         };
     };
 
-    /*** Main config ***/
+    var datasetCreate = function($field, vals, curValue)
+    {
+        var cpObj = this;
 
+        if (!blist.common.selectedDataset)
+        {
+            blist.common.selectedDataset = function(ds)
+            {
+                cpObj._expectingCancel = false;
+                $('#selectDataset').jqmHide();
+                cpObj._$selectedField.data('uid', ds.id);
+                cpObj._$selectedField.makeStatic(ds.name, !validDataset(ds));
+                modifySection.call(cpObj, ds, cpObj._$selectedField);
+            };
+        }
+
+        var openSelectDataset = function(e)
+        {
+            if (e) { e.preventDefault(); }
+            cpObj._$selectedField = $field;
+            $("#selectDataset").jqmShow();
+            cpObj._expectingCancel = true;
+        };
+
+        var validDataset = function(ds)
+        {
+            return ds.isArcGISDataset() || ds.isGeoDataset()
+                || _.any(ds.realColumns,
+                function(col) { return col.renderTypeName == 'location'; });
+        };
+
+        $field.makeStatic = function(value, invalid)
+        {
+            $field.empty();
+            $field.data('dsName', value);
+            $field.append('<span>'+ $.htmlEscape(value) +' (<span class="edit">edit</span>)</span>');
+            $field.find('span.edit').click(openSelectDataset)
+                                    .css({ cursor: 'pointer', color: '#0000ff' });
+            if (invalid)
+            { $field.append('<span class="error">This dataset has no location column.</span>')
+                .find('span.error').css({ marginLeft: 0, paddingLeft: 0 }); }
+        };
+
+        if (!$.isBlank(curValue))
+        {
+            $field.data('uid', curValue);
+            Dataset.lookupFromViewId(curValue, function(dataset)
+            {
+                $field.makeStatic(dataset.name, !validDataset(dataset));
+                modifySection.call(cpObj, dataset, $field);
+            });
+        }
+        else
+        { openSelectDataset(); cpObj._selectingEmpty = true; }
+
+        if (!$field.data('hookedCleanupEvent'))
+        {
+            $field.parents('.line.group').find('.removeLink').click(function()
+            { modifySection.call(cpObj, null, $field); });
+            $field.data('hookedCleanupEvent', true);
+
+            $(document).bind(blist.events.MODAL_HIDDEN, function()
+            {
+                if (cpObj._expectingCancel)
+                {
+                    cpObj._$selectedField.makeStatic(cpObj._$selectedField.data('dsName'));
+                    cpObj._expectingCancel = false;
+                    if (cpObj._selectingEmpty)
+                    {
+                        cpObj._$selectedField.parents('.line.group').find('.removeLink').click();
+                        delete cpObj._selectingEmpty;
+                    }
+                }
+            });
+        }
+
+        return true;
+    };
+
+    var modifySection = function(dataset, $field)
+    {
+        var cpObj = this;
+
+        var index = $field.parents('.repeater').children('.line.group')
+                                               .index($field.parents('.line.group'))
+        if (!dataset)
+        {
+            if (cpObj.childPanes.length <= index) { return; }
+            cpObj.childPanes.splice(index, 1)[0].$dom().remove();
+            _.each(cpObj.childPanes.slice(index), function(cp, i) { cp.setIndex(index + i); });
+            return;
+        }
+
+        var insertPane = function(pane)
+        {
+            var container = cpObj.$dom().find('.dataLayerContainer');
+            if (container.length == 0)
+            {
+                $field.parents('.formSection').after('<div class="dataLayerContainer" />');
+                container = cpObj.$dom().find('.dataLayerContainer');
+            }
+            if (container.children().length <= index)
+            { container.append(pane.$dom()); }
+            else
+            { container.find('> div:eq(' + index + ')').before(pane.$dom()); }
+        };
+
+        var childPane = cpObj.childPanes[index];
+        if (!childPane)
+        {
+            var displayFormat = $.extend(true, {}, cpObj._view.displayFormat);
+            if (!$.subKeyDefined(displayFormat, 'viewDefinitions.0.uid'))
+            { $.deepSet(displayFormat, $.extend(true, {}, dataset.displayFormat),
+                'viewDefinitions', index); }
+            childPane = cpObj.childPanes[index] = $('<div />')
+                .pane_mapDataLayerCreate({
+                    data: { displayFormat: displayFormat },
+                    'parent': cpObj, view: dataset, index: index });
+            insertPane(childPane);
+            childPane.render();
+        }
+        else
+        {
+            // When the parent is re-rendered, attach the childPane to the new DOM.
+            if (cpObj._childrenDirty
+                && childPane.$dom().parents('.controlPane').length == 0)
+            { insertPane(childPane); }
+            childPane.setView(dataset);
+            childPane.reset();
+        }
+        childPane.$dom().find('div.required').remove();
+    };
+
+    /*** Main config ***/
     mapConfigNS.config = function(options)
     {
         options = $.extend({isEdit: false, useOtherSidebars: false}, options);
         return [
             {
-                title: 'Map Setup',
-                onlyIf: $.extend({disable: true, disabledMessage: disabledMessage(options)},
-                        sectionOnlyIf(options)),
+                title: 'Dataset Summary',
                 fields: [
-                    $.isBlank(options.view) || !options.view.isArcGISDataset() ?
-                    {
-                        text: 'Map Type', name: 'displayFormat.type', type: 'select',
-                        required: true, prompt: 'Select a map type', options: mapTypes
-                    } :
-                    {
-                        text: 'Map Type', name: 'displayFormat.type', type: 'select',
-                        required: true, prompt: null,
-                        options: _.select(mapTypes, function(t) { return t.value == 'esri'; }),
-                        defaultValue: 'esri'
-                    },
-                    {text: 'Plot Style', name: 'displayFormat.plotStyle', type: 'select',
-                        linkedField: 'displayFormat.type', required: true,
-                        prompt: 'Select a plot style', options: plotStyles
+                    { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: 'Add Data',
+                        field: {type: 'group', options: [
+                            { text: 'Dataset', type: 'custom', name: 'uid', required: true,
+                              defaultValue: options.parentControl._view.id, repeaterValue: '',
+                              editorCallbacks: {
+                                create: datasetCreate,
+                                value: function($field) { return $field.data('uid'); }
+                              }
+                            }
+                        ]}, minimum: 1
                     }
                 ]
             },
-
-            // Normal location
             {
-                title: 'Location',
-                onlyIf: [{field: 'displayFormat.type', value: 'esri', negate: true}, sectionOnlyIf(options)],
+                title: 'Base Maps',
                 fields: [
-                    {text: 'Location', name: 'displayFormat.plot.locationId',
-                        required: true, type: 'columnSelect', isTableColumn: true,
-                        columns: {type: 'location', hidden: options.isEdit}}
-                ]
-            },
-
-            // ESRI location
-            {
-                title: 'Location',
-                onlyIf: [{field: 'displayFormat.type', value: 'esri'},
-                         { func: function()
-                             { return !$.isBlank(this._view) && !this._view.isArcGISDataset(); } },
-                            sectionOnlyIf(options)],
-                fields: [
-                    {text: 'Location', type: 'radioGroup', name: 'locationSection',
-                        defaultValue: 'displayFormat.plot.locationId',
-                        options: [
-                            {name: 'displayFormat.plot.locationId',
-                                type: 'columnSelect', isTableColumn: true,
-                                columns: {type: 'location', hidden: options.isEdit}
-                            },
-                            {value: 'No Locations', type: 'static',
-                                name: 'displayFormat.noLocations', isInput: true }
-                        ]}
-                ]
-            },
-
-            // General Details
-            {
-                title: 'Details', type: 'selectable', name: 'detailsSection',
-                onlyIf: [{field: 'displayFormat.plotStyle', value: 'point'}, sectionOnlyIf(options)],
-                fields: [
-                    {text: 'Title', name: 'displayFormat.plot.titleId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'location', 'html', 'url',
-                            'drop_down_list', 'dataset_link', 'email',
-                            'percent', 'stars', 'flag', 'phone', 'money',
-                            'data', 'calendar_date', 'number'], hidden: options.isEdit,
-                            defaultNames: ['title']}},
-                    {type: 'repeater', name: 'displayFormat.plot.descriptionColumns',
-                        field: {text: 'Flyout Details', name: 'tableColumnId',
-                               type: 'columnSelect', isTableColumn: true,
-                               columns: {hidden: options.isEdit}},
-                        minimum: 1, addText: 'Add Flyout Details'},
-                    {text: 'w/o Labels?', type: 'checkbox', name: 'displayFormat.flyoutsNoLabel'},
-                    {type: 'note', onlyIf: {field: 'displayFormat.type', value: 'esri'},
-                        value: 'Colors may be overridden using ' +
-                        '<a href="#Conditional Formatting" ' +
-                        'class="showConditionalFormatting">Conditional Formatting</a>. ' +
-                        'Click <a href="#Clear Conditional Formatting" ' +
-                        'class="clearConditionalFormatting">here</a> to clear any ' +
-                        'current conditional formatting rules.' },
-                    {text: 'Base Color', name: 'displayFormat.color', type: 'color',
-                        defaultValue: "#0000ff"},
-                    {text: 'Point Size', name: 'displayFormat.plot.sizeValueId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}},
-                    {text: 'Point Color', name: 'displayFormat.plot.colorValueId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}},
-                    {text: 'Icon', name: 'displayFormat.plot.iconId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['photo', 'photo_obsolete', 'url'],
-                            noDefault: true, hidden: options.isEdit}}
-                ]
-            },
-            { // Rastermap Details section.
-                title: 'Details', name: 'rmDetailsSection',
-                onlyIf: [{field: 'displayFormat.plotStyle', value: 'rastermap'}, sectionOnlyIf(options)],
-                fields: [
-                    {text: 'Quantity', name: 'displayFormat.plot.quantityId',
-                        onlyIf: {field: 'displayFormat.plotStyle', value: 'rastermap'},
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}
+                    { type: 'note', value: 'Select from a list of map services ' +
+                        'and configure how it will appear.' },
+                    { type: 'repeater', name: 'displayFormat.bkgdLayers', addText: 'Add Base Map',
+                        minimum: 0, field: {type: 'group', options: [
+                        {text: 'Layer', type: 'select', name: 'layerName',
+                            required: true, prompt: 'Select a layer',
+                            options: mapTypes, defaultValue: 'World Street Map (ESRI)'
+                        },
+                        {text: 'Layer URL', type: 'text', name: 'custom_url',
+                            onlyIf: {field: 'layerName', value: 'custom'}, defaultValue: 'https://',
+                            required: true, data: { 'validlayerurl': 'unverified' },
+                            change: normalizeLayerUrl },
+                        {text: 'Alias', type: 'text', name: 'alias'},
+                        {text: 'Opacity', type: 'slider', name: 'opacity',
+                            defaultValue: 1, minimum: 0, maximum: 1}
+                    ]}
                     }
                 ]
             },
-            { // Heatmap Details section.
-                title: 'Details', name: 'hmDetailsSection',
-                onlyIf: [{field: 'displayFormat.plotStyle', value: 'heatmap'}, sectionOnlyIf(options)],
+            {
+                title: 'Advanced Configuration',
                 fields: [
-                    {type: 'repeater', name: 'displayFormat.plot.descriptionColumns',
-                        field: {text: 'Flyout Details', name: 'tableColumnId',
-                               type: 'columnSelect', isTableColumn: true,
-                               columns: {hidden: options.isEdit}},
-                        minimum: 1, addText: 'Add Flyout Details'},
-                    {text: 'Quantity', name: 'displayFormat.plot.quantityId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}},
-                    {text: 'Region', name: 'displayFormat.heatmap.type', type: 'select',
-                        required: !customHeatmap(options), prompt: 'Select a region level',
-                        options: regionTypes},
-                    {text: '', name: 'displayFormat.heatmap.region', type: 'select',
-                        required: true, prompt: 'Select a region',
-                        linkedField: 'displayFormat.heatmap.type',
-                        options: heatmapRegionOptions},
-                    {type: 'color', text: 'Color (Low)', defaultValue: ['#c9c9c9'],
-                        name: 'displayFormat.heatmap.colors.low'},
-                    {type: 'color', defaultValue: ['#00ff00'], text: 'Color (High)',
-                        name: 'displayFormat.heatmap.colors.high'}
+                    { type: 'note', value: 'Select \'Exclusive\' if only one base map should ' +
+                        'display at a time.' },
+                    { text: 'Exclusive', name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
+                    { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
                 ]
-            },
-            configLayers(options),
-            configLayersHeatmap(options)
+            }
         ];
     };
-})(jQuery); }
+
+    mapConfigNS.dataLayer = {};
+    mapConfigNS.dataLayer.socrataBase = function(options)
+    {
+        var prefix = options.prefix;
+        var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
+        return [
+            {text: 'Plot Style', type: 'select', name: prefix+'plotStyle',
+                options: plotStyles, required: true, prompt: 'Select a plot style' },
+            {text: 'Location', name: prefix+'plot.locationId',
+                type: 'columnSelect', isTableColumn: true, required: true,
+                columns: {type: ['location'], hidden: options.isEdit }},
+            {text: 'Region', name: prefix+'heatmap.type', type: 'select', onlyIf: boundaryOnly,
+                required: !customHeatmap(options), prompt: 'Select a region level',
+                options: regionTypes},
+            {text: '', name: prefix+'heatmap.region', type: 'select', onlyIf: boundaryOnly,
+                required: true, prompt: 'Select a region', linkedField: prefix+'heatmap.type',
+                options: heatmapRegionOptions}
+        ];
+    };
+    mapConfigNS.dataLayer.socrata = function(options)
+    {
+        var prefix = options.prefix;
+        var pointOnly = {field: prefix+'plotStyle', value: 'point' };
+        var quantity = {field: prefix+'plotStyle', value: 'point', negate: true };
+        var flyouts = {field: prefix+'plotStyle', value: 'rastermap', negate: true };
+        var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
+        return [
+            {text: 'Base Color', name: prefix+'color', type: 'color', onlyIf: pointOnly,
+                defaultValue: "#0000ff"},
+
+            {type: 'note', value: 'Point Customization', onlyIf: pointOnly},
+            {text: 'Point Size', name: prefix+'plot.sizeValueId', onlyIf: pointOnly,
+                type: 'columnSelect', isTableColumn: true,
+                columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
+            {text: 'Point Color', name: prefix+'plot.colorValueId', onlyIf: pointOnly,
+                type: 'columnSelect', isTableColumn: true,
+                columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
+            {text: 'Icon', name: prefix+'plot.iconId', onlyIf: pointOnly,
+                type: 'columnSelect', isTableColumn: true,
+                columns: {type: ['photo', 'photo_obsolete', 'url'],
+                    noDefault: true, hidden: options.isEdit}},
+
+            {type: 'color', text: 'Color (Low)', defaultValue: ['#c9c9c9'], onlyIf: boundaryOnly,
+                name: prefix+'heatmap.colors.low'},
+            {type: 'color', defaultValue: ['#00ff00'], text: 'Color (High)', onlyIf: boundaryOnly,
+                name: prefix+'heatmap.colors.high'},
+
+            {text: 'Quantity', name: prefix+'plot.quantityId', onlyIf: quantity,
+                type: 'columnSelect', isTableColumn: true,
+                columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
+
+            {type: 'note', value: 'Flyout Configuration', onlyIf: flyouts},
+            {text: 'Title', name: prefix+'plot.titleId', onlyIf: flyouts,
+                type: 'columnSelect', isTableColumn: true,
+                columns: {type: ['text', 'location', 'html', 'url',
+                    'drop_down_list', 'dataset_link', 'email',
+                    'percent', 'stars', 'flag', 'phone', 'money',
+                    'data', 'calendar_date', 'number'], hidden: options.isEdit,
+                    defaultNames: ['title']}},
+            {type: 'repeater', name: prefix+'plot.descriptionColumns', onlyIf: flyouts,
+                field: {text: 'Flyout Details', name: 'tableColumnId',
+                       type: 'columnSelect', isTableColumn: true,
+                       columns: {hidden: options.isEdit}},
+                minimum: 1, addText: 'Add Flyout Details'},
+            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel', onlyIf: flyouts}
+        ];
+    };
+    mapConfigNS.dataLayer.mondara = function(options)
+    { return [
+        { type: 'note', value: 'Mondara layers are currently not customizable.' },
+        { type: 'note', value: 'Warning: Mondara layers cannot be stacked on top of Socrata layers.',
+             onlyIf: { func: function() { return options.willRestack; } } }
+        ];
+    };
+    mapConfigNS.dataLayer.esri = function(options)
+    {
+        var prefix = options.prefix;
+        return [
+            {text: 'Title', name: prefix+'plot.titleId',
+                type: 'columnSelect', isTableColumn: true,
+                columns: {type: ['text', 'location', 'html', 'url',
+                    'drop_down_list', 'dataset_link', 'email',
+                    'percent', 'stars', 'flag', 'phone', 'money',
+                    'data', 'calendar_date', 'number'], hidden: options.isEdit,
+                    defaultNames: ['title']}},
+            {type: 'repeater', name: prefix+'plot.descriptionColumns',
+                field: {text: 'Flyout Details', name: 'tableColumnId',
+                       type: 'columnSelect', isTableColumn: true,
+                       columns: {hidden: options.isEdit}},
+                minimum: 1, addText: 'Add Flyout Details'},
+            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel'}
+        ];
+    };
+
+})(jQuery);

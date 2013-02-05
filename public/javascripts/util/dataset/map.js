@@ -142,9 +142,6 @@ Dataset.modules['map'] =
         var view = this;
         if ($.subKeyDefined(view, 'displayFormat.viewDefinitions')) { return; }
 
-        var isOldest = $.isBlank(view.displayFormat.plot) &&
-             $.isBlank(view.displayFormat.latitudeId);
-
         view.displayFormat.plot = view.displayFormat.plot || {};
 
         if (_.include(['geomap', 'intensitymap'], view.displayType))
@@ -184,22 +181,6 @@ Dataset.modules['map'] =
             delete view.displayFormat.lowcolor;
             delete view.displayFormat.highcolor;
             delete view.displayFormat.heatmapType;
-        }
-
-        if (isOldest)
-        {
-            if ((view.visibleColumns || []).length > 1)
-            {
-                view.displayFormat.plot.latitudeId =
-                    view.visibleColumns[0].tableColumnId;
-                view.displayFormat.plot.longitudeId =
-                    view.visibleColumns[1].tableColumnId;
-            }
-            if ((view.visibleColumns || []).length > 2)
-            {
-                view.displayFormat.plot.descriptionId =
-                    view.visibleColumns[2].tableColumnId;
-            }
         }
 
         var colObj = view.displayFormat.plot || view.displayFormat;

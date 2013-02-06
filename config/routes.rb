@@ -306,6 +306,8 @@ Frontend::Application.routes do
   scope :controller => 'govstat' do
     match '/goals-new', :action => 'goals'
 
+    match '/goal/:id', :action => 'goal_page', :constraints => { :id => UID_REGEXP }
+
     match '/manage', :action => 'manage'
     match '/manage/data', :action => 'manage_data'
     match '/manage/reports', :action => 'manage_reports'

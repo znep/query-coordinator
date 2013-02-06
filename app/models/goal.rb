@@ -1,14 +1,14 @@
 class Goal < Model
   def self.find( options = nil, custom_headers = {}, batch = false, is_anon = false )
-    parse([{
+    goals = parse([{
       id: 'efgh-5678',
       name: 'Water Cleanliness',
       subject: 'Improve water cleanliness from "poisinous" to "distasteful"',
       category: 'Health',
       agency: ['Department of Water', 'Health Safety Department', 'Citizen Death Management Panel'],
       related_datasets: [],
-      metric_datasets: [],
-      #start_date: // needs to be a value in the dataset
+      metric_datasets: ['wpc5-2rbf', '24vs-rw4z', 'qp2v-ypgh', 'irxs-ajcp'],
+      start_date: '2012-01-01',
       #end_date: 
       #goal_delta: // num
       #goal_delta_is_pct: // pct or rawunits?
@@ -21,7 +21,27 @@ class Goal < Model
           metric_value: 155000,
           baseline_value: 150000,
           progress: 'poor',
-          comparison: '-5'
+          delta: '-5'
+        }
+      }, {
+        title: 'Got sick from water',
+        unit: 'people',
+        #comparison: “<”, “>”, //f(metric, baseline|burndown)  -> Great, Just oK, NEEDS WORK
+        compute: {
+          metric_value: 250000,
+          baseline_value: 300000,
+          progress: 'good',
+          delta: '15'
+        }
+      }, {
+        title: 'Refused to drink water',
+        unit: 'people',
+        #comparison: “<”, “>”, //f(metric, baseline|burndown)  -> Great, Just oK, NEEDS WORK
+        compute: {
+          metric_value: 500000,
+          baseline_value: 500000,
+          progress: 'flat',
+          delta: '0'
         }
       }]
     }, {
@@ -37,7 +57,7 @@ class Goal < Model
       #goal_delta: // num
       #goal_delta_is_pct: // pct or rawunits?
       is_public: true,
-      #metrics: [{compute: {comparison: '-5'}}]
+      #metrics: [{compute: {delta: '-5'}}]
     }, {
       id: '2fgh-5678',
       name: 'Water Purity',
@@ -74,7 +94,7 @@ class Goal < Model
           metric_value: 200000,
           baseline_value: 150000,
           progress: 'good',
-          comparison: '25'
+          delta: '25'
         },
         current: {
           #dataset:4x4,
@@ -102,5 +122,6 @@ class Goal < Model
 #          }
         }]
     }].to_json)
+    options.is_a?(String) ? goals[0] : goals
   end
 end

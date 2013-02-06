@@ -56,7 +56,8 @@ module Canvas2
 
     def get_context(cId)
       @context_ids << cId
-      DataContext.available_contexts[cId] || (@properties['entity'] || {}).with_indifferent_access[cId]
+      DataContext.available_contexts[cId] || (@properties['entity'] || {}).with_indifferent_access[cId] ||
+        (!self.parent.blank? && self.parent.respond_to?(:child_context) ? Util.deep_get(self.parent.child_context || {}, cId) : nil)
     end
 
     def string_substitute(text, special_resolver = nil)

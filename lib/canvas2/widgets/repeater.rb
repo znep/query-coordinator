@@ -25,7 +25,10 @@ module Canvas2
       all_c = []
       if !context.blank?
         if context.is_a? Array
-          context.each_with_index { |item, i| all_c << add_row(item, i, item.clone) }
+          context.each_with_index do |item, i|
+            item = { value: item } if !item.is_a?(Hash)
+            all_c << add_row(item, i, item.clone)
+          end
 
         elsif context[:type] == 'goalList'
           if !@properties['groupBy'].blank?
@@ -93,7 +96,18 @@ module Canvas2
     end
 
     def child_resolver
-      nil
+      parent_resolver = self.parent.child_resolver() if !self.parent.blank?
+      parent_resolver = Util.base_resolver() if parent_resolver.blank?
+      lambda do |name|
+        if !context.blank?
+          keyed_c = {}
+          context.is_a?(Array) ?
+            context.each { |dc| keyed_c[dc[:id]] = dc } : (keyed_c[context[:id]] = context)
+          v = Util.deep_get(keyed_c, name)
+        end
+        v = parent_resolver.call(name) if v.blank?
+        v
+      end
     end
 
     def child_context

@@ -908,7 +908,28 @@
                                     _.defer(function() { finishDC.success(eDC); });
                                 }
                                 else
-                                { _.defer(function() { finishDC.error(); }); }
+                                {
+                                    var p = cObj.parent;
+                                    if (!$.isBlank(p))
+                                    {
+                                        var findContextItem = function()
+                                        {
+                                            var item = $.deepGetStringField(p._dataContext || {}, cId);
+                                            if (!$.isBlank(item))
+                                            {
+                                                var dDC = { id: cObj.id + '-' + cId,
+                                                    type: 'entity', value: item };
+                                                _.defer(function() { finishDC.success(dDC); });
+                                            }
+                                            else
+                                            { _.defer(function() { finishDC.error(); }); }
+                                        };
+                                        if (!p._updateDataSource(null, findContextItem))
+                                        { findContextItem(); }
+                                    }
+                                    else
+                                    { _.defer(function() { finishDC.error(); }); }
+                                }
                             }
                         });
                     startDCGet();

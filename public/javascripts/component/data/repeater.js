@@ -181,7 +181,12 @@ $.component.Container.extend('Repeater', 'content', {
         else if (_.isArray(cObj._dataContext.value))
         {
             var callback = doneWithRowsCallback(cObj._dataContext.value.length);
-            _.each(cObj._dataContext.value, function(di, i) { cObj._setRow(di, i, di, callback); });
+            _.each(cObj._dataContext.value, function(di, i)
+            {
+                if (!_.isObject(di))
+                { di = { value: di }; }
+                cObj._setRow(di, i, di, callback);
+            });
         }
         else if (view = (cObj._dataContext || {}).dataset)
         {

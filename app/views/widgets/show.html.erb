@@ -15,7 +15,7 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <%= link_to 'Go to an accessible version of this page', @view.alt_href %>
+    <a href="<%= @view.alt_href %>" rel="external" target="_blank">Go to an accessible version of this page</a>
 <% end %>
 
 <div class="widgetWrapper">

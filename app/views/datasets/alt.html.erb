@@ -15,10 +15,11 @@
   <% if @view.module_enabled? :allow_comments %>
     <a href="#comments" accesskey="o">Skip to comments</a>
   <% end %>
-  <a href="#sharing" accesskey="h">Skip to sharing</a>
+  <a href="#sharing" accesskey="a">Skip to sharing</a>
   <%- if @view.display.can_publish? -%>
   <a href="#publishing" accesskey="p">Skip to publishing</a>
   <%- end -%>
+
 <% end %>
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
@@ -27,7 +28,7 @@
 <%- is_form = @view.is_form? -%>
 <%- is_grid = is_tabular && !is_form -%>
 
-<div class="contentBox">
+<div class="contentBoxTable">
   <%= display_standard_flashes %>
 
   <ul id="datasetMenu">
@@ -60,7 +61,6 @@
   <%- socialize_menu_options(@view).each do |item| -%>
     <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
   <%- end -%>
-    <li><a href=""></a></li>
     <%- if is_grid -%>
       <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
       <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
@@ -69,9 +69,9 @@
   </ul>
 
   <a class="interactiveBackButton" href="<%= @view.href %>">Go back to the interactive dataset</a><!-- Back to the future -->
-  <a name="dataGrid"></a>
+  <a name="dataGrid" tabindex="-1"></a>
 
-  <h1><%= @view.name %></h1>
+  <h2><%= @view.name %></h2>
   <% if @view.parent_dataset && (@view.parent_dataset != @view) %>
     <p>This is a <%= @view.display.name.downcase %> based on <%= link_to @view.parent_dataset.name, @view.parent_dataset.alt_href %>.</p>
   <% end %>
@@ -133,7 +133,7 @@
     </ul>
     <%= submit_tag "Apply Sort" %>
 
-    <a name="search"></a>
+    <a name="search" tabindex="-1"></a>
     <h2>Search</h2>
     <%= label_tag 'search_string', 'Search' %>
     <%= text_field_tag 'search_string', params[:search_string] %>
@@ -156,7 +156,7 @@
 <%- end -%>
 
 <div class="altMeta">
-  <a name="views"></a>
+  <a name="views" tabindex="-1"></a>
   <h2>Saved Views</h2>
   <% if @view.filters.size > 0 %>
     <% @view.filters.each do |filter| %>
@@ -169,7 +169,7 @@
   <% end %>
 
   <% if @view.module_enabled? :allow_comments %>
-    <a name="comments"></a>
+    <a name="comments" tabindex="-1"></a>
     <h2>Post a Comment</h2>
     <%= form_tag(post_comment_dataset_path(@view.id)) do -%>
     <%= hidden_field_tag 'redirect_to', '/alt#comments' %>
@@ -212,7 +212,7 @@
     <% end %>
   <% end %>
 
-  <a name="sharing"></a>
+  <a name="sharing" tabindex="-1"></a>
   <div id="sharingBlock">
     <h2>Sharing</h2>
     <%-
@@ -257,7 +257,7 @@
   </div>
 
   <%- if @view.display.can_publish? -%>
-  <a name="publishing"></a>
+  <a name="publishing" tabindex="-1"></a>
   <div id="publishingBlock">
     <h2>Publishing</h2>
 

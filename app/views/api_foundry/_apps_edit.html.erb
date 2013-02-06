@@ -16,7 +16,16 @@
 
 <a name="apps"></a>
 <div id="applications" class="managesection">
-  <div class="flash appFlash"></div>
+  <% if flash[:notice] %>
+    <div class="flash notice">
+      <p class="notice"><%= flash[:notice] %></p>
+    </div>
+  <% end %>
+  <% if flash[:error] %>
+    <div class="flash error">
+      <p class="error"><%= flash[:error] %></p>
+    </div>
+  <% end %>
   <div id="tableWrapper">
     <form method="get" action="setThrottle">
       <table class="throttleTable" cellspacing="0">

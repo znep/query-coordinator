@@ -795,7 +795,8 @@
             var $container = this._enableLegend ? $(this.map.div).siblings('.mapLegend')
                                                 : $dom.find('ul.feature li:last');
 
-            var totalWidth = legendData.gradient.length * blist.openLayers.Overview.SWATCH_WIDTH;
+            var totalWidth = legendData.gradient.length * blist.openLayers.Overview.SWATCH_WIDTH
+                + legendData.gradient.length;
             var numWidth = (totalWidth - 10) / 2;
 
             var contents = { tagName: 'div',
@@ -873,7 +874,7 @@
         CLASS_NAME: 'blist.openLayers.Overview'
     });
 
-    blist.openLayers.Overview.SWATCH_WIDTH = 15;
+    blist.openLayers.Overview.SWATCH_WIDTH = 16;
 
     blist.openLayers.IconCache = OpenLayers.Class(OpenLayers.Control, {
         initialize: function()
@@ -1418,7 +1419,7 @@
             return this.project(projection);
         },
 
-        toQuery: function(projection, filterColumnId)
+        toQuery: function(projection, filterColumnFieldName)
         {
             var buildFilterCondition = function(viewport)
             {
@@ -1436,7 +1437,7 @@
                                     type: 'column',
                                     value: (axis == 'x') ? 'LONGITUDE'
                                                          : 'LATITUDE',
-                                    columnId: filterColumnId
+                                    columnFieldName: filterColumnFieldName
                                 },
                                 {
                                     type: 'literal',

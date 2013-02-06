@@ -18,10 +18,10 @@ var bindSelect = function($select, $span)
 };
 
 // dataset picker
-var showDatasetSelect = function(callback)
+var showDatasetSelect = function(callback, goalName)
 {
 	var $modal = $.showModal('selectDataset');
-	$modal.find('iframe');//.attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(self.model.get('name')));
+	$modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(goalName));
 	commonNS.selectedDataset = function(dataset)
 	{
 		callback(dataset);
@@ -93,6 +93,7 @@ var GoalEditor = Backbone.View.extend({
     className: 'goalEditor',
     events:
     {
+        'click .deleteGoal': 'maybeDeleteGoal',
         'change .mainDetails input[type=text]:not(.date), .mainDetails select': 'updateTextAttr',
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
 		'change input.date': 'updateDateAttr',
@@ -112,6 +113,7 @@ var GoalEditor = Backbone.View.extend({
         this.$el.toggleClass('draft', this.model.get('is_public') !== true);
 
         // render markup
+        var $actions = govstatNS.markup.goalEditor.actions();
         var $mainDetails = govstatNS.markup.goalEditor.mainDetails(this.model);
         var $additionalDetails = govstatNS.markup.goalEditor.additionalDetails(this.model);
         var $relatedDatasets = govstatNS.markup.goalEditor.relatedDatasets(this.model);
@@ -135,7 +137,7 @@ var GoalEditor = Backbone.View.extend({
             {
 				var datasetProxy = new govstatNS.models.DatasetProxy({ id: dataset.id }, { dataset: dataset });
 				relatedDatasets.add(datasetProxy);
-            });
+            }, self.model.get('name'));
 		});
 
         // drop in metrics
@@ -160,7 +162,7 @@ var GoalEditor = Backbone.View.extend({
 		{
 			var $this = $(this);
 			$this.DatePicker({
-				date: $this.attr('data-rawvalue') || new Date(),
+				date: new Date($this.attr('data-rawvalue')) || new Date(),
 				onChange: function(_, newDate)
 				{
 					$this
@@ -180,12 +182,22 @@ var GoalEditor = Backbone.View.extend({
         $notes.on('blur', function() { $notes.trigger('change'); });
 
         // append
+        this.$el.append($actions);
         this.$el.append($mainDetails);
         this.$el.append($additionalDetails);
         this.$el.append($relatedDatasets);
         this.$el.append($metrics);
     },
 
+    maybeDeleteGoal: function(event)
+    {
+        event.preventDefault();
+        if (confirm('Are you sure you want to delete this goal?'))
+        {
+            this.model.trigger('removeFromAll');
+            $.popModal();
+        }
+    },
     updateTextAttr: function(event)
     {
         var $input = $(event.target);
@@ -257,6 +269,7 @@ var GoalList = Backbone.CollectionView.extend({
 var CategoryPane = Backbone.View.extend({
     tagName: 'li',
     events: {
+        'click .removeCategory': 'maybeRemoveCategory',
         'click .categoryTitle': 'editTitle',
         'click .editIcon': 'editTitle',
         'blur .categoryTitleEdit': 'saveTitle',
@@ -283,12 +296,18 @@ var CategoryPane = Backbone.View.extend({
 
         // make list item
         var $title = $.tag2([{
+            _: 'a',
+            className: 'removeCategory',
+            href: '#remove',
+            contents: 'Close'
+        }, {
             _: 'h2',
             className: 'categoryTitle',
             contents: this.getName()
         }, {
-            _: 'h2',
+            _: 'a',
             className: 'editIcon',
+            href: '#edit',
             contents: 'edit'
         }, {
             _: 'input',
@@ -299,7 +318,6 @@ var CategoryPane = Backbone.View.extend({
         }]);
 
         // make a goal list per category pane
-        this.model.goals = new govstatNS.collections.Goals([], { category: this.model });
         goalsView = new GoalList({ collection: this.model.goals, instanceView: GoalCard });
         goalsView.render();
 
@@ -308,13 +326,19 @@ var CategoryPane = Backbone.View.extend({
 
         // data
         this.$el.data('category', this.model.get('name'));
-        this.$el.data('goals', this.model.goals);
 
         // add everything
         this.$el.append($title);
         this.$el.append(goalsView.$el);
     },
 
+    maybeRemoveCategory: function()
+    {
+        if (confirm('Are you sure you want to remove this category? All goals currently assigned to this category will be reverted to Draft Goals.'))
+        {
+            this.model.trigger('removeFromAll');
+        }
+    },
     editTitle: function()
     {
         this.$('.categoryTitle, .editIcon').hide();
@@ -387,7 +411,7 @@ var AgencyList = Backbone.CollectionView.extend({
     tagName: 'ul',
     className: 'agencyList',
     events: {
-        'focus .newAgency input': 'newAgency',
+        'keydown .newAgency input': 'newAgency',
         'click .removeAgency': 'removeAgency'
     },
     render: function()
@@ -401,13 +425,22 @@ var AgencyList = Backbone.CollectionView.extend({
         $newAgency.append(govstatNS.markup.agencyEditor(new govstatNS.models.Agency()));
         this.$el.append($newAgency);
     },
-    newAgency: function()
+    newAgency: function(event)
     {
+        if (event.keyCode < 32) { return; } // let things progress for special keys
+
+        event.preventDefault();
+
+        // extract value
+        var chr = String.fromCharCode(event.keyCode);
+        if (!event.shiftKey) { chr = chr.toLowerCase(); }
+
         // create new agency + editor
         this.collection.add(new govstatNS.models.Agency());
 
-        // focus on said editor
-        this.$('.newAgency').prev().find('input').focus();
+        // focus on said editor; populate with new value
+        var $newInput = this.$('.newAgency').prev().find('input');
+        $newInput.val(chr).focus().caretToEnd();
     },
     removeAgency: function(event)
     {
@@ -418,13 +451,16 @@ var AgencyList = Backbone.CollectionView.extend({
     {
         this.$('.newAgency').before(view.$el);
 
-        view.$el.append($.tag2({
-            _: 'a',
-            className: 'removeAgency',
-            href: '#remove',
-            title: 'Remove This Agency',
-            contents: 'Close'
-        }));
+        _.defer(function()
+        {
+            view.$el.append($.tag2({
+                _: 'a',
+                className: 'removeAgency',
+                href: '#remove',
+                title: 'Remove This Agency',
+                contents: 'Close'
+            }));
+        });
     }
 });
 
@@ -509,7 +545,7 @@ var ColumnCard = Backbone.View.extend({
     tagName: 'div',
     className: 'columnCard',
     events: {
-        
+        'change select': 'fieldNameChanged'
     },
     initialize: function()
     {
@@ -527,6 +563,10 @@ var ColumnCard = Backbone.View.extend({
 
         // fetch entries if we have em
         this.updateEntries();
+    },
+    fieldNameChanged: function(event)
+    {
+        this.model.set('field_name', $(event.target).val());
     },
     updateEntries: function()
     {
@@ -556,6 +596,7 @@ var ColumnCard = Backbone.View.extend({
                             contents: $.htmlEscape(column.name)
                         };
                     })))
+                    .val(self.model.get('field_name'))
                     .trigger('change');
 
                 self.$('span.selectValue').removeClass('needsDataset');
@@ -624,7 +665,7 @@ var MetricList = Backbone.CollectionView.extend({
     {
         this.$el.append(this.renderCollection());
     },
-    removeMetric: function()
+    removeMetric: function(event)
     {
         event.preventDefault();
         this.collection.remove($(event.target).closest('.metric').data('model'));
@@ -684,7 +725,7 @@ var IndicatorEditor = Backbone.View.extend({
 			showDatasetSelect(function(dataset)
             {
                 datasetProxy.set('id', dataset.id);
-            });
+            }, self.model.get('name'));
 		});
 
         // drop in column card

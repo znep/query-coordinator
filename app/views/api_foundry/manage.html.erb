@@ -4,7 +4,7 @@
   <title>Socrata API Management | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div id="apiAdminBox" class="contentBox fixedWidth">
+<div id="apiAdminBox" class="contentBox fixedWidth <%=@section%>_content">
 
   <% content_for :adminsection do %>
     <%= render :partial => @section %>

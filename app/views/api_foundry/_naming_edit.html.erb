@@ -9,9 +9,6 @@
   </li>
 <% end %>
 <div id="namesOuter">
-  <div class="managesection">
-    <span class="apiicon ico-names-descriptions"></span>
-  </div>
   <div id="names" class="managesection apiFieldPane">
     <div class="flash"></div>
       <% @view.columns.find_all{|col| col.fieldName == params[:column] }.each do |column| %>

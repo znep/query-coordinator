@@ -211,7 +211,7 @@
             { delete query.namedFilters.viewport; }
             query.namedFilters = $.extend(true, query.namedFilters || {},
                 { viewport: this._parent.viewportHandler().toQuery(
-                    blist.openLayers.geographicProjection, this._locCol.id) });
+                    blist.openLayers.geographicProjection, this._locCol.fieldName) });
 
             if (_.isEqual(this._query, query))
             { this.getData(); }

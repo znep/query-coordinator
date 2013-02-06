@@ -9,80 +9,94 @@ class ProfileController < ApplicationController
   end
 
   def show
-    @port = request.port
+    begin
+      @port = request.port
 
-    ### @createdOnDomain = Domain.findById(@user.data['createdOnDomainId'])
+      ### @createdOnDomain = Domain.findById(@user.data['createdOnDomainId'])
 
-    prepare_profile
-    return if @user.nil?
-    # See if it matches the authoritative URL; if not, redirect
-    if request.path != @user.href
-      # Log redirects in development
-      if Rails.env != 'production' &&
-        request.path =~ /^\w{4}-\w{4}/
-        logger.info("Doing a profile redirect from #{request.referrer}")
+      prepare_profile
+      return if @user.nil?
+      # See if it matches the authoritative URL; if not, redirect
+      if request.path != @user.href
+        # Log redirects in development
+        if Rails.env != 'production' &&
+          request.path =~ /^\w{4}-\w{4}/
+          logger.info("Doing a profile redirect from #{request.referrer}")
+        end
+        redirect_to(@user.href + '?' + request.query_string, :status => 301)
       end
-      redirect_to(@user.href + '?' + request.query_string, :status => 301)
-    end
-    @app_tokens = @user.app_tokens
+      @app_tokens = @user.app_tokens
 
-    browse_options = {
-      browse_in_container: true,
-      for_user: @user.id,
-      nofederate: true,
-      use_federations: false,
-      sortBy: 'newest',
-      ignore_params: [ :id, :profile_name ],
-      view_type: 'table',
-      row_count: 3
-    }
-
-    if params[:ownership] == 'sharedToMe'
-      browse_options[:facets] = []
-      browse_options[:sort_opts] = []
-      browse_options[:limit] = 10
-      browse_options[:page] = params[:page] || 1
-
-      view_results = View.find_shared_to_user(@user.id,
-                          {offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
-                            limit: browse_options[:limit]})
-      browse_options[:view_results] = view_results['results']
-      browse_options[:view_count] = view_results['count']
-    else
-      if @is_user_current
-        browse_options[:publication_stage] = [ 'published', 'unpublished' ]
-
-        vtf = view_types_facet
-        vtf[:options].insert(1, {:text => 'Unpublished Datasets', :value => 'unpublished',
-                             :class => 'typeUnpublished'})
-        browse_options[:facets] = [vtf, categories_facet]
-      else
-        browse_options[:facets] = [view_types_facet, categories_facet]
-      end
-
-      topic_chop = get_facet_cutoff(:topic)
-      user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data
-      top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, topic_chop).map {|t| t[0]}
-      if !params[:tags].nil? && !top_tags.include?(params[:tags])
-        top_tags.push(params[:tags])
-      end
-      top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
-      tag_cloud = nil
-      if user_tags.length > topic_chop
-        tag_cloud = user_tags.sort {|a,b| a[0] <=> b[0]}.
-          map {|t| {:text => t[0], :value => t[0], :count => t[1]}}
-      end
-
-      browse_options[:facets] << { :title => 'Topics',
-        :singular_description => 'topic',
-        :param => :tags,
-        :options => top_tags,
-        :extra_options => tag_cloud,
-        :tag_cloud => true
+      browse_options = {
+        browse_in_container: true,
+        for_user: @user.id,
+        nofederate: true,
+        use_federations: false,
+        sortBy: 'newest',
+        ignore_params: [ :id, :profile_name ],
+        view_type: 'table',
+        row_count: 3
       }
-    end
 
-    @processed_browse = process_browse(request, browse_options)
+      if params[:ownership] == 'sharedToMe'
+        browse_options[:facets] = []
+        browse_options[:sort_opts] = []
+        browse_options[:limit] = 10
+        browse_options[:page] = params[:page] || 1
+
+        view_results = View.find_shared_to_user(@user.id,
+                            {offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
+                              limit: browse_options[:limit]})
+        browse_options[:view_results] = view_results['results']
+        browse_options[:view_count] = view_results['count']
+      else
+        if @is_user_current
+          browse_options[:publication_stage] = [ 'published', 'unpublished' ]
+
+          vtf = view_types_facet
+          vtf[:options].insert(1, {:text => 'Unpublished Datasets', :value => 'unpublished',
+                               :class => 'typeUnpublished'})
+          browse_options[:facets] = [vtf, categories_facet]
+        else
+          browse_options[:facets] = [view_types_facet, categories_facet]
+        end
+
+        topic_chop = get_facet_cutoff(:topic)
+        user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data
+        top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, topic_chop).map {|t| t[0]}
+        if !params[:tags].nil? && !top_tags.include?(params[:tags])
+          top_tags.push(params[:tags])
+        end
+        top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
+        tag_cloud = nil
+        if user_tags.length > topic_chop
+          tag_cloud = user_tags.sort {|a,b| a[0] <=> b[0]}.
+            map {|t| {:text => t[0], :value => t[0], :count => t[1]}}
+        end
+
+        browse_options[:facets] << { :title => 'Topics',
+          :singular_description => 'topic',
+          :param => :tags,
+          :options => top_tags,
+          :extra_options => tag_cloud,
+          :tag_cloud => true
+        }
+      end
+
+      @processed_browse = process_browse(request, browse_options)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required'
+        require_user(true)
+        return
+      elsif e.error_code == 'permission_denied'
+        render_forbidden(e.error_message)
+        return
+      else
+        flash.now[:error] = e.error_message
+        render 'shared/error', :status => :internal_server_error
+        return
+      end
+    end
   end
 
   def update
@@ -434,8 +448,6 @@ private
         @stat_displays << [stats[i][:name], p['count']]
       end
     end
-
-
   end
 end
 

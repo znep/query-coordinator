@@ -60,7 +60,7 @@
     };
 
     // helper to be sure we're fetching the right subcondition given a subcondition.
-    // valid components: 'columnId', 'subcolumn', 'value'
+    // valid components: 'columnFieldName', 'subcolumn', 'value'
     // subindex can choose specific direct child rather than just taking the first
     var findConditionComponent = function(condition, component, subindex)
     {
@@ -69,11 +69,13 @@
 
         var lookingFor = {
             columnId: 'column',
+            columnFieldName: 'column',
             subcolumn: 'column',
             value: 'literal'
         };
         var returning = {
             columnId: 'columnId',
+            columnFieldName: 'columnFieldName',
             subcolumn: 'value',
             value: 'value'
         };
@@ -360,12 +362,12 @@
                     _.each(condition.children || [], function(subcondition)
                     {
                         if ((subcondition.type !== (op || subcondition.type)) ||
-                            (subcondition.columnId !== (col || subcondition.columnId)))
+                            (subcondition.columnFieldName !== (col || subcondition.columnFieldName)))
                         {
                             return compatible = false;
                         }
                         op = subcondition.type;
-                        col = subcondition.columnId;
+                        col = subcondition.columnFieldName;
                     });
                 }
                 else
@@ -392,7 +394,7 @@
             {
                 if (_.isUndefined(child.metadata))
                 {
-                    var column = dataset.columnForID(findConditionComponent(child, 'columnId'));
+                    var column = dataset.columnForIdentifier(findConditionComponent(child, 'columnFieldName'));
                     var operator = child.children[0].value;
 
                     if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], operator))
@@ -428,7 +430,7 @@
                         type: 'operator',
                         value: 'BETWEEN',
                         children: [
-                            { columnId: findConditionComponent(condition, 'columnId'),
+                            { columnFieldName: findConditionComponent(condition, 'columnFieldName'),
                               type: 'column' },
                             { value: findConditionComponent(condition, 'value', 0),
                               type: 'literal' },
@@ -2167,7 +2169,7 @@
                 var column = dataset.columnForTCID(metadata.tableColumnId[dataset.publicationGroup]);
                 var columnDefinition = {
                     type: 'column',
-                    columnId: column.id
+                    columnFieldName: column.fieldName
                 };
 
                 if (!_.isUndefined(metadata.subcolumn))
@@ -2285,8 +2287,8 @@
                 {
                     var ds = ufDS.dataset;
                     // Adjust for this dataset
-                    columnDefinition.columnId =
-                        ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).id;
+                    columnDefinition.columnFieldName =
+                        ds.columnForTCID(metadata.tableColumnId[ds.publicationGroup]).fieldName;
 
                     var dsCondition = $.extend(true, {}, condition);
                     dsCondition.children = $.extend(true, [], children);

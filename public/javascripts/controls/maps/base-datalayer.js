@@ -34,7 +34,9 @@
                 || currentObj._view.displayFormat;
             currentObj._query = currentObj.settings.query || currentObj._view.query || {};
 
-            currentObj._view.displayType = 'map';
+            if ($.subKeyDefined(blist, 'datasetPage.sidebar') && currentObj._index == 0
+                && $.subKeyDefined(currentObj._view, 'metadata.filterCondition'))
+            { blist.datasetPage.sidebar.setDefault('filter.unifiedFilter'); }
 
             currentObj._mapProjection = currentObj._map.getProjectionObject();
 

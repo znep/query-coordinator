@@ -102,7 +102,7 @@ module Canvas2
         if !context.blank?
           keyed_c = {}
           context.is_a?(Array) ?
-            context.each { |dc| keyed_c[dc[:id]] = dc } : (keyed_c[context[:id]] = context)
+            context.each { |dc| keyed_c[dc[:id]] = dc if dc.is_a?(Hash) } : (keyed_c[context[:id]] = context)
           v = Util.deep_get(keyed_c, name)
         end
         v = parent_resolver.call(name) if v.blank?

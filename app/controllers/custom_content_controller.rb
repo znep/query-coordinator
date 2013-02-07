@@ -42,7 +42,7 @@ class CustomContentController < ApplicationController
       siteTheme: CurrentDomain.theme
     })
     Canvas2::Util.set_path(path)
-    config = govstat_homepage_config(govstat_config.dashboard_layout.to_sym)
+    config = govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym)
     @page = Page.new(config.merge({path: path, name: CurrentDomain.strings.site_title}).
                      with_indifferent_access)
 

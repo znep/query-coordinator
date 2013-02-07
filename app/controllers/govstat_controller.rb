@@ -1,5 +1,6 @@
 class GovstatController < ApplicationController
   include GovstatHelper
+  include CustomContentHelper
   include BrowseActions
   before_filter :set_govstat_theme, :check_govstat_enabled
 
@@ -7,24 +8,24 @@ class GovstatController < ApplicationController
   end
 
   def goal_page
-    path = request.path
-    Canvas2::DataContext.reset
-    Canvas2::Util.set_params(params)
-    Canvas2::Util.set_debug(false)
-    Canvas2::Util.is_private(false)
-    Canvas2::Util.set_env({
-      domain: CurrentDomain.cname,
-      renderTime: Time.now.to_i,
-      path: path,
-      siteTheme: CurrentDomain.theme
-    })
-    Canvas2::Util.set_path(path)
-    config = goal_page_config(params[:id])
-    @page = Page.new(config.merge({path: path, name: CurrentDomain.strings.site_title}).
-                     with_indifferent_access)
+    @page = get_page(goal_page_config(params[:id]), request.path,
+                     'Goal | ' + CurrentDomain.strings.site_title, params)
+    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-goal-page' }
   end
 
   def manage
+    govstat_config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
+    config = govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym)
+    config[:content][:children] << { type: 'HorizontalContainer', htmlClass: 'actionLinks', children: [
+      { type: 'Button', href: manage_data_path, notButton: true,
+        text: '<span class="ss-icon">database</span><p>Data and Analysis</p>' },
+      { type: 'Button', href: manage_reports_path, notButton: true,
+        text: '<span class="ss-icon">openbook</span><p>Reports</p>' },
+      { type: 'Button', href: manage_site_config_path, notButton: true,
+        text: '<span class="ss-icon">checkcalendar</span><p>Goals and Users</p>' }
+    ] }
+    @page = get_page(config, request.path, 'Manage |' + CurrentDomain.strings.site_title, params)
+    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage' }
   end
 
   def manage_data

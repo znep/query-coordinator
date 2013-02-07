@@ -184,6 +184,7 @@ screen-govstat-goals:
 - screen-govstat-goals
 screen-govstat-manage:
 - screen-govstat-base
+- screen-govstat-dashboard
 - screen-govstat-manage
 screen-govstat-homepage:
 - screen-govstat-base

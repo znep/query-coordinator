@@ -2,16 +2,18 @@
 <title><%= @page.name %></title>
 <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
 <%= rendered_stylesheet_tag 'components' %>
-<%= rendered_stylesheet_tag 'screen-govstat-homepage' %>
+<%- if !local_assigns[:custom_styles].nil? -%>
+<%= rendered_stylesheet_tag custom_styles %>
+<%- end -%>
 <% end %>
 
 <%- @page.set_context(nil) -%>
 <%= raw @page.render(true) %>
 
 <%- if @debug -%>
-<%= render :partial => 'debug_content' %>
+<%= render :partial => 'custom_content/debug_content' %>
 <%- end -%>
 
 <%- content_for :js_footer do -%>
-  <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
+  <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil } %>
 <%- end -%>

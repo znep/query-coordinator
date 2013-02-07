@@ -28,4 +28,19 @@ module CustomContentHelper
       h(text)
     end
   end
+
+  def get_page(config, path, name, params)
+    Canvas2::DataContext.reset
+    Canvas2::Util.set_params(params)
+    Canvas2::Util.set_debug(false)
+    Canvas2::Util.is_private(false)
+    Canvas2::Util.set_env({
+      domain: CurrentDomain.cname,
+      renderTime: Time.now.to_i,
+      path: path,
+      siteTheme: CurrentDomain.theme
+    })
+    Canvas2::Util.set_path(path)
+    Page.new(config.merge({path: path, name: name}). with_indifferent_access)
+  end
 end

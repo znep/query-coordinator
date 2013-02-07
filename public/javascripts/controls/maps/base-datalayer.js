@@ -35,7 +35,7 @@
             currentObj._query = currentObj.settings.query || currentObj._view.query || {};
 
             if ($.subKeyDefined(blist, 'datasetPage.sidebar') && currentObj._index == 0
-                && $.subKeyDefined(currentObj._view, 'metadata.filterCondition'))
+                && $.subKeyDefined(currentObj._view, 'metadata.filterCondition.children'))
             { blist.datasetPage.sidebar.setDefault('filter.unifiedFilter'); }
 
             currentObj._mapProjection = currentObj._map.getProjectionObject();

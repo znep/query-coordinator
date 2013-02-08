@@ -2,7 +2,7 @@ class GovstatController < ApplicationController
   include GovstatHelper
   include CustomContentHelper
   include BrowseActions
-  before_filter :set_govstat_theme, :check_govstat_enabled
+  before_filter :check_govstat_enabled
 
   def goals
   end
@@ -55,10 +55,6 @@ class GovstatController < ApplicationController
   end
 
 protected
-  def set_govstat_theme
-    @use_govstat_theme = true
-  end
-
   def check_govstat_enabled
     if CurrentDomain.module_enabled?(:govStat)
       return true

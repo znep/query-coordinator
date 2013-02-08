@@ -1,1 +1,2 @@
-<li class="signOutLink<%= ' hide' unless current_user %>"><%= link_to CurrentDomain.strings.sign_out, logout_url, :rel => 'nofollow' %></li>
+<li class="signOutLink<%= ' hide' unless current_user %>"><a href="<%= logout_url %>" rel="nofollow"
+  class="ss-logout" title="<%= CurrentDomain.strings.sign_out %>"><span class="text"><%= CurrentDomain.strings.sign_out %></span></a>

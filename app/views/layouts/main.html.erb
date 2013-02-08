@@ -41,6 +41,10 @@ http://www.socrata.com
   </style>
   <![endif]-->
   <%= rendered_stylesheet_tag 'base' %>
+  <%- if module_enabled?(:govStat) -%>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css"/>
+  <%= rendered_stylesheet_tag 'govstat-layout' %>
+  <%- end -%>
   <%= rendered_stylesheet_tag 'print', 'print' %>
 
   <%= jquery_include %>

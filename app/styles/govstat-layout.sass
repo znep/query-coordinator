@@ -1,0 +1,36 @@
+html, body
+  background-color: #f7f7f7
+
+#siteHeader
+  background-color: #333333
+  .appLogo a
+    // FIXME: shouldn't be hardcoded
+    background-image: url(/stylesheets/images/common/socrata_logo_light.png)
+    height: 34px
+    width: 151px
+  .siteUserNav
+    margin:
+      bottom: 0.5em
+      top: 2em
+    li a
+      color: #ffffff
+      &:before
+        font-size: 1.6em
+      &:hover
+        text-decoration: none
+      .text
+        @include text-hiding
+        width: 1px
+
+.siteInnerWrapper
+  padding-bottom: 9em
+
+#siteFooter
+  background-color: #f1f1f1
+  .siteFooterNav li a
+    color: #666666
+
+  body > &
+    height: 8em
+    margin-top: -8.1em
+

@@ -155,6 +155,7 @@ Frontend::Application.routes do
   get '/datasets' => 'profile#index'
 
   get '/analytics' => 'analytics#index'
+  get '/analytics/add/:domain_entity/:metric/:increment' => 'analytics#add'
 
   scope :controller => 'profile', :path => '/profile',
         :constraints => {:id => UID_REGEXP, :profile_name => /(\w|-)+/} do

@@ -54,6 +54,7 @@ javascripts:
     - public/javascripts/controls/values.js
     - public/javascripts/controls/dropdown-menu.js
     - public/javascripts/controls/menu.js
+    - public/javascripts/util/socrata-analytics.js
     - public/javascripts/screens/all-screens.js
   shared-editors:
     - public/javascripts/controls/editors/editor-base.js

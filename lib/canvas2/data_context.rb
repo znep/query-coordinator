@@ -186,7 +186,7 @@ module Canvas2
       q = {'orderBys' => [], 'groupBys' => []}.deep_merge(ds.query)
       query.each do |k, v|
         q[k] = (q[k] || ((v.is_a? Array) ? [] : {})).deep_merge(v) if k != 'orderBys' &&
-          k != 'groupBys' && k != 'groupedColumns'
+          k != 'groupBys' && k != 'groupedColumns' && k != 'searchString'
       end
 
       (query['orderBys'] || []).each do |ob|
@@ -215,6 +215,7 @@ module Canvas2
       q.delete('groupBys') if q['groupBys'].empty?
 
       ds.query.data.deep_merge!(q)
+      ds.data['searchString'] = query['searchString'] if !query['searchString'].blank?
 
       if !q['groupBys'].blank?
         cols = []

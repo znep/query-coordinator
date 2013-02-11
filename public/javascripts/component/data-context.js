@@ -279,7 +279,8 @@
         var q = $.extend(true, {orderBys: [], groupBys: []}, ds.query);
         _.each(query, function(v, k)
             {
-                if (!_.include(['orderBys', 'groupBys', 'groupedColumns'], k))
+                if (!_.include(['orderBys', 'groupBys', 'groupedColumns',
+                        'searchString'], k))
                 { q[k] = $.extend(true, _.isArray(v) ? [] : {}, q[k], v); }
             });
 
@@ -316,7 +317,10 @@
         }
         if (_.isEmpty(q.groupBys)) { delete q.groupBys; }
 
-        ds.update({ query: q });
+        var props = { query: q };
+        if (!$.isBlank(query.searchString))
+        { props.searchString = query.searchString; }
+        ds.update(props);
         updateGroupedCols(ds, query);
     };
 

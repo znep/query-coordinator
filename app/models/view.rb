@@ -186,7 +186,8 @@ class View < Model
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
       aggregates = JSON.parse(CoreServer::Base.connection.create_request(url))
     else
-      merged_conditions = self.query.data.deep_merge(conditions)
+      merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).
+        deep_merge(conditions)
       request_body = {
         'name' => self.name,
         'searchString' => merged_conditions.delete('searchString'),
@@ -232,7 +233,7 @@ class View < Model
       params[:start] = (page - 1) * per_page_or_ids
       params[:length] = per_page_or_ids
     end
-    merged_conditions = self.query.cleaned.deep_merge(conditions)
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
     request_body = {
                'name' => self.name,
                'searchString' => merged_conditions.delete('searchString'),
@@ -311,7 +312,7 @@ class View < Model
                :start => 0,
                :length => 1 }
 
-    merged_conditions = self.query.cleaned.deep_merge(conditions)
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
     request_body = {
       'name' => self.name,
       'searchString' => merged_conditions.delete('searchString'),
@@ -374,7 +375,7 @@ class View < Model
   end
 
   def get_aggregates(aggregates, conditions = {})
-    merged_conditions = self.query.cleaned.deep_merge(conditions)
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
     request_body = {
       'name' => self.name,
       'searchString' => merged_conditions.delete('searchString'),
@@ -532,8 +533,8 @@ class View < Model
     columns.each do |c|
       r[c.fieldName] = row[c.id.to_s]
       if c.renderTypeName == 'location' && !r[c.fieldName].blank? &&
-        r[c.fieldName] = r[c.fieldName].clone
         r[c.fieldName].key?('human_address') && r[c.fieldName]['human_address'].is_a?(String)
+        r[c.fieldName] = r[c.fieldName].clone
         r[c.fieldName]['human_address'] = JSON.parse(r[c.fieldName]['human_address'])
       end
     end

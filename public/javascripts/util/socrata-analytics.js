@@ -13,7 +13,7 @@ jQuery.metrics = {
             return false;
         $.socrataServer.makeRequest({
             url: "/analytics/add/" + entity + "/" + metric,
-            params: {'increment': 1},
+            params: {'increment': increment},
             type: "POST",
             anonymous: true,
             isSODA: true,

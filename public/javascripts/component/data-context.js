@@ -200,6 +200,17 @@
                         { errorLoading(id); },
                         !blist.configuration.privateData);
                     break;
+
+                case 'goalList':
+                    // TODO
+                    doneLoading(addContext(dc, id, config, { goalList: [] }));
+                    break;
+
+                case 'goal':
+                    // TODO
+                    doneLoading(addContext(dc, id, config, { goal: {} }));
+                    break;
+
                 default:
                     alert('Unrecognized data context type: ' + config.type + ' for ' + id);
                     break;

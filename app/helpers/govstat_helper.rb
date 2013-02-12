@@ -29,6 +29,9 @@ module GovstatHelper
             contextId: 'goals',
             groupBy: { value: '{goal.category}' },
             childProperties: { htmlClass: 'categoryItem' },
+            noResultsChildren: [
+            { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
+            ],
             children: [
             { type: 'Title', text: '{_groupValue}', customClass: 'categoryTitle' },
             {
@@ -65,6 +68,9 @@ module GovstatHelper
             contextId: 'goals',
             groupBy: { value: '{goal.category}' },
             childProperties: { htmlClass: 'categoryItem' },
+            noResultsChildren: [
+            { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
+            ],
             children: [
             { type: 'Title', text: '{_groupValue}', htmlClass: 'categoryTitle' },
             {

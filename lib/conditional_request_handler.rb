@@ -6,16 +6,17 @@
 module ConditionalRequestHandler
 
   def self.set_cache_control_headers(response, anonymous = false, maxAge = 15.minutes)
-    # On pages which are anonymous we allow caching by proxies to maxAge, otherwise
-    # we are very conservative. Even for pages which can be shared between logged-in
-    # users we cannot allow proxy caching w/o edge-side includes.
+    # Cache-Control, again, surprises me. no-cache is apparently misused by some browsers
+    # and too many intermediate caches are configured to ignore responses to Cookies
+    # For anonymous, public resources we would like to use: "public, max-age=" + maxAge.seconds.to_s"
+    # but this does not work unless the intermediate cache is configured properly.
     #
     # We include an additional header which should not be stomped by intermediate
     # caches for debugging and to provide a mechanism for socrata-controlled caches to
     # do something useful without needing to perform a regex on every request.
     #
     if anonymous
-      response.headers[CACHE_CONTROL] = "public, max-age=" + maxAge.seconds.to_s
+      response.headers[CACHE_CONTROL] = "public, max-age=0, must-revalidate"
       response.headers[X_SOCRATA_CACHE_CONTROL] = "public"
     else
       response.headers[CACHE_CONTROL] = "private, no-cache, no-store, must-revalidate"

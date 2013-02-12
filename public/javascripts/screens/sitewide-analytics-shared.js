@@ -8,7 +8,7 @@ blist.metrics.sitewideShared = {
             children: [
                 {text: 'Page Views',
                     series: [{method: 'page-views', label: 'Requests'},
-                             {method: 'js-page-views', label: 'Browser'}]},
+                             {method: 'js-page-view', label: 'Browser'}]},
                 {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
                 {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
                 {text: 'Rows Loaded',

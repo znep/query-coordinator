@@ -73,7 +73,7 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
             ungappedData = metricsNS.transforms[$chart.data(metricsNS.TRANSFORM)](ungappedData);
         }
 
-        var plot = $.extend({}, seriesDefaults, {
+        var plot = $.extend({}, seriesDefaults, s.options, {
             data: ungappedData,
             lineColor: lineColors[i % lineColors.length],
             marker: {

@@ -11,8 +11,8 @@ $(function()
                 loading: blist.metrics.chartLoading,
                 children: [
                     {text: 'Page Views',
-                     series: [{method: 'page-views', label: 'Requests'},
-                              {method: 'js-page-view', label: 'Browser'}]},
+                     series: [{method: 'page-views', label: 'Page Requests', options: { stacking: null }},
+                              {method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null }}]},
                     {text: 'Disk Usage',   series: [{method: 'disk-usage'}],
                                            transform: 'smooth'},
                     {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},

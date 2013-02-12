@@ -10,7 +10,9 @@ $(function()
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
                 children: [
-                    {text: 'Page Views',   series: [{method: 'page-views'}]},
+                    {text: 'Page Views',
+                     series: [{method: 'page-views', label: 'Requests'},
+                              {method: 'js-page-views', label: 'Browser'}]},
                     {text: 'Disk Usage',   series: [{method: 'disk-usage'}],
                                            transform: 'smooth'},
                     {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},

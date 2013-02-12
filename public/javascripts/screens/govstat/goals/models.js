@@ -174,14 +174,15 @@ var Agencies = Backbone.Collection.extend({
 var Goal = Backbone.Model.extend({
     model:
     {
-        agency: Agencies,
-		related_datasets: DatasetsProxy,
+        agencies: Agencies,
+        related_datasets: DatasetsProxy,
         metrics: Metrics
     },
+    urlRoot: '/api/govStatGoals',
 
     initialize: function()
     {
-        if (!this.get('agency')) { this.set('agency', new Agencies()); }
+        if (!this.get('agencies')) { this.set('agencies', new Agencies()); }
         if (!this.get('related_datasets')) { this.set('related_datasets', new DatasetsProxy()); }
         if (!this.get('metrics')) { this.set('metrics', new Metrics()); }
 
@@ -206,11 +207,33 @@ var Goal = Backbone.Model.extend({
             response[key] = new nestedClass(nestedData, { parse: true });
         }
         return response;
+    },
+    toJSON: function()
+    {
+        var model = this;
+        var attrs = _.clone(model.attributes);
+        _.each(_.keys(model.model), function(k) { attrs[k] = _.compact(model.attributes[k].toJSON()); });
+        _.each(_.keys(attrs), function(k)
+        {
+            if (_.isArray(attrs[k]) && _.isEmpty(attrs[k]) || _.isNull(attrs[k]))
+            { delete attrs[k]; }
+        });
+        _.each(['goal_delta'], function(k)
+        { if (_.isString(attrs[k])) { attrs[k] = parseFloat(attrs[k]); } });
+        return attrs;
+    },
+    sync: function(method, model, options)
+    {
+        options = options || {};
+        options.url = (method == 'create' ? model.urlRoot : model.urlRoot + '/' + model.id) + '.json';
+
+        Backbone.sync(method, model, options);
     }
 });
 
 var Goals = Backbone.Collection.extend({
     model: Goal,
+    url: '/api/govStatGoals.json',
 
     initialize: function(__, options)
     {
@@ -267,6 +290,7 @@ Category.getColor = function()
 
 var Categories = Backbone.Collection.extend({
     model: Category,
+    url: '/api/govStatCategories.json',
 
     initialize: function(__, options)
     {

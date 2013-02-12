@@ -121,7 +121,7 @@ var GoalEditor = Backbone.View.extend({
 
         // custom components
 		// drop in agency list
-        var agencyList = new AgencyList({ collection: this.model.get('agency'), instanceView: AgencyEditor });
+        var agencyList = new AgencyList({ collection: this.model.get('agencies'), instanceView: AgencyEditor });
         agencyList.render();
         $additionalDetails.find('.agencyInput').append(agencyList.$el);
 

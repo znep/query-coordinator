@@ -1,8 +1,9 @@
 <% content_for :head do %>
 <title><%= @page.name %></title>
-<link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
 <%= rendered_stylesheet_tag 'components' %>
-<%= rendered_stylesheet_tag 'screen-govstat-goal-page' %>
+<%- if !local_assigns[:custom_styles].nil? -%>
+<%= rendered_stylesheet_tag custom_styles %>
+<%- end -%>
 <% end %>
 
 <%- @page.set_context(nil) -%>

@@ -1,6 +1,7 @@
 require 'digest/md5'
 
 class CustomContentController < ApplicationController
+  include CustomContentHelper
   include GovstatHelper
 
   before_filter :check_lockdown
@@ -27,26 +28,11 @@ class CustomContentController < ApplicationController
   end
 
   def govstat_homepage
-    @use_govstat_theme = true
     govstat_config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
+    @page = get_page(govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym),
+                     '/', CurrentDomain.strings.site_title, params)
 
-    path = '/'
-    Canvas2::DataContext.reset
-    Canvas2::Util.set_params(params)
-    Canvas2::Util.set_debug(false)
-    Canvas2::Util.is_private(false)
-    Canvas2::Util.set_env({
-      domain: CurrentDomain.cname,
-      renderTime: Time.now.to_i,
-      path: path,
-      siteTheme: CurrentDomain.theme
-    })
-    Canvas2::Util.set_path(path)
-    config = govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym)
-    @page = Page.new(config.merge({path: path, name: CurrentDomain.strings.site_title}).
-                     with_indifferent_access)
-
-    render :action => 'govstat_homepage'
+    render 'generic_page', :locals => { :custom_styles => 'screen-govstat-homepage' }
   end
 
   def show_page
@@ -512,91 +498,6 @@ private
       }
     }]
   }
-
-  def govstat_homepage_config(name = '')
-    configs = {
-      grid_flow: {
-        data: {
-          goals: { type: 'goalList' }
-        },
-        content: {
-          type: 'Container',
-          id: 'govstatHomeRoot',
-          htmlClass: 'gridFlowLayout',
-          children: [
-          {
-            type: 'Repeater',
-            htmlClass: 'categoryList',
-            contextId: 'goals',
-            groupBy: { value: '{goal.category}' },
-            childProperties: { htmlClass: 'categoryItem' },
-            children: [
-            { type: 'Title', text: '{_groupValue}', customClass: 'categoryTitle' },
-            {
-              type: 'Repeater',
-              htmlClass: 'goalList',
-              contextId: '_groupItems',
-              childProperties: { htmlClass: 'goalItem' },
-              container: { type: 'GridContainer', cellWidth: 200, cellHeight: 150, cellSpacing: 0 },
-              children: [
-                progress_indicator('goal.metrics.0'),
-                { type: 'Title', text: '{goal.name}' },
-                { type: 'Text', customClass: 'goalDetails',
-                  html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
-              ]
-            }
-            ]
-          }
-          ]
-        }
-      },
-
-      list: {
-        data: {
-          goals: { type: 'goalList' }
-        },
-        content: {
-          type: 'Container',
-          id: 'govstatHomeRoot',
-          htmlClass: 'listLayout',
-          children: [
-          {
-            type: 'Repeater',
-            htmlClass: 'categoryList',
-            contextId: 'goals',
-            groupBy: { value: '{goal.category}' },
-            childProperties: { htmlClass: 'categoryItem' },
-            children: [
-            { type: 'Title', text: '{_groupValue}', htmlClass: 'categoryTitle' },
-            {
-              type: 'Repeater',
-              htmlClass: 'goalList',
-              contextId: '_groupItems',
-              childProperties: { htmlClass: 'goalItem' },
-              children: [
-              { type: 'Container', customClass: 'progressDetails',
-                ifValue: 'goal.metrics.0.compute.delta',
-                children: [
-                { type: 'Text', htmlClass: 'barValue',
-                  html: 'Complete<span class="bar" ' +
-                  'style="width:{goal.metrics.0.compute.delta}%;"></span>' },
-                { type: 'Text', htmlClass: 'textValue', html: '{goal.metrics.0.compute.delta}%' },
-                ]
-              },
-              { type: 'Text', customClass: 'goalProgress',
-                htmlClass: 'progress-{goal.metrics.0.compute.progress}' },
-              { type: 'Title', text: '{goal.name}' },
-              { type: 'Text', html: '{goal.subject}' }
-              ]
-            }
-            ]
-          }
-          ]
-        }
-      }
-    }
-    configs[name] || configs[:list]
-  end
 end
 
 class AppHelper

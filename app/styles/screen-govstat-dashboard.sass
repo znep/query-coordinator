@@ -3,7 +3,7 @@
     .categoryItem
       margin-bottom: 1em
     .categoryTitle
-      background-color: #5555ee
+      background-color: #384695
       bottom: 0
       left: 0
       padding: 1em
@@ -11,34 +11,39 @@
       top: 0
       width: 1.5em
       h2
-        color: #f7f7f7
+        color: #ffffff
         text-transform: uppercase
         @include prefixer(transform, rotate(90deg))
         filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)
     .goalList
       margin-left: 5em
     .goalItem
-      background-color: #7777ee
-      color: #f7f7f7
+      background-color: #384695
+      color: #ffffff
       margin-right: 0.5em
       .component-Title
-        margin-top: 3em
+        margin-top: 1em
         padding: 0 2em
         text-align: center
         h2
           font-size: 2em
+          font-weight: normal
+      .goalProgress, .goalTitle
+        @include opacity(1)
+        @include transition(0.5s, opacity)
       .goalDetails
         bottom: 0
-        display: none
         left: 0
+        @include opacity(0)
         padding: 0
         position: absolute
         right: 0
         top: 0
+        @include transition(0.5s, opacity)
         z-index: 1
         a
-          background-color: #772222
-          color: #f7f7f7
+          background-color: rgba(255, 255, 255, 0.6)
+          color: #333333
           display: block
           font-size: 1.5em
           font-weight: bold
@@ -52,28 +57,33 @@
             .ss-icon
               padding-left: 0.5em
       .goalProgress
-        bottom: 1.5em
-        font-size: 1.2em
-        position: absolute
-        right: 1.5em
-        text-transform: uppercase
+        color: #ffffff
+        font-size: 4em
+        margin:
+          left: 0.5em
+          top: 1em
+        text-align: center
+        .text
+          display: none
       &:hover
+        .goalProgress, .goalTitle
+          @include opacity(0)
         .goalDetails
-          display: block
+          @include opacity(1)
 
   &.listLayout
     .categoryTitle h2
-      font-size: 2em
+      font-size: 2.5em
     .categoryItem
       margin-bottom: 5em
 
     .goalList
-      background-color: white
-      border: 1px solid $color_chrome_box_border
+      background-color: #384695
       width: 100%
 
     .goalItem
-      border-bottom: 1px solid $color_chrome_box_border
+      border-bottom: 3px solid #ffffff
+      color: #ffffff
       padding: 1em
       padding-left: 2em
       position: relative
@@ -81,6 +91,7 @@
         border-bottom: none
 
       .goalProgress
+        display: none
         font-size: 1em
         height: 100%
         left: 0
@@ -98,27 +109,70 @@
         .progress-poor
           background-color: #ee3333
 
+      .goalTitle
+        font-size: 1.4em
+
       .progressDetails
         float: right
-        margin-top: 0.75em
+        margin-top: 1em
         .component-Text
           display: inline-block
           vertical-align: top
         .barValue
-          background-color: #f7f7f7
+          background-color: #f1f1f1
           color: #dddddd
           display: inline-block
           height: 1em
-          margin-right: 2em
+          margin:
+            right: 2em
+            top: 0.2em
           padding: 0.5em 1em
           position: relative
           text-transform: uppercase
           width: 20em
           .bar
-            background-color: #55ee55
             height: 100%
             position: absolute
             right: 0
             top: 0
+          &.progress-good .bar
+            background-color: #55ee55
+          &.progress-flat .bar
+            background-color: #ee9955
+          &.progress-poor .bar
+            background-color: #ee3333
         .textValue
           font-size: 2.5em
+
+      .goalProgress, .goalTitle, .goalSubject
+        @include opacity(1)
+        @include transition(0.5s, opacity)
+      .goalDetails
+        position: static
+        a
+          background-color: rgba(255, 255, 255, 0.6)
+          bottom: 0
+          color: #333333
+          display: block
+          font-size: 1.5em
+          font-weight: bold
+          left: 0
+          @include opacity(0)
+          padding: 1.5em
+          position: absolute
+          right: 0
+          top: 0
+          @include transition(0.5s, opacity)
+          z-index: 1
+          .more
+            font-size: 0.6em
+            font-weight: normal
+            margin-top: 1em
+            text-transform: uppercase
+            .ss-icon
+              padding-left: 0.5em
+      &:hover
+        .goalProgress, .goalTitle, .goalSubject
+          @include opacity(0)
+        .goalDetails a
+          @include opacity(1)

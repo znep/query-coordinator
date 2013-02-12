@@ -179,11 +179,14 @@ screen-videos:
 screen-videos-popup:
 - strip-chrome
 - screen-videos-popup
+govstat-layout:
+- govstat-layout
 screen-govstat-goals:
 - screen-govstat-base
 - screen-govstat-goals
 screen-govstat-manage:
 - screen-govstat-base
+- screen-govstat-dashboard
 - screen-govstat-manage
 screen-govstat-homepage:
 - screen-govstat-base

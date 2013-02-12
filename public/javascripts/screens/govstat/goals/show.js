@@ -3,7 +3,7 @@
 
 $(function()
 {
-	var govstatNS = blist.namespace.fetch('blist.govstat');
+    var govstatNS = blist.namespace.fetch('blist.govstat');
 
 // ELEMENT CACHING
     var $config = $('.config');
@@ -21,83 +21,82 @@ $(function()
 
 
 // MODELS
-// dummy data for now
 
     // goals
-    var goals = new govstatNS.collections.Goals([{
-        id: '1234-5678',
-        name: 'Thefts',
-        category: null,
-        agency: [],
-        metrics: [],
-        related_datasets: [ 'bqab-tjmv' ],
-        start_date: null,
-        end_date: '2012-12-03',
-        required_change: null,
-        is_public: false,
-        comparison: '<'
-    }, {
-        id: 'abcd-5678',
-        name: 'Potholes',
-        category: null,
-        agency: [],
-        metrics: [],
-        related_datasets: [],
-        start_date: null,
-        end_date: null,
-        required_change: null,
-        is_public: false,
-        comparison: '>'
-    }, {
-        id: '1234-efgh',
-        name: 'Hungry Kids',
-        category: 'Opportunity',
-        agency: [],
-        metrics: [],
-        related_datasets: [],
-        start_date: null,
-        end_date: null,
-        required_change: null,
-        is_public: true,
-        comparison: '<'
-    }], { parse: true });
-
-    // first listen for removeFromAll Goal so we can put it in the delete queue
-    // don't need to listen to new goals; they don't exist on the server anyway
+    var goals = new govstatNS.collections.Goals();
     var goalsPendingDelete = new govstatNS.collections.Goals([], {});
-    goals.each(function(goal)
-    {
-        goal.on('removeFromAll', function() { goalsPendingDelete.add(goal); });
-    });
-
-    // split out goals
-    var rawGoalsByCategory = goals.groupBy(function(goal)
-    {
-        return (goal.get('is_public') !== true) ? '__draft' : goal.get('category');
-    });
     var draftGoals = new govstatNS.collections.Goals([], { draft: true });
-    draftGoals.add(rawGoalsByCategory.__draft);
-    delete rawGoalsByCategory.__draft;
+
+    goals.fetch({success: function()
+    {
+        // first listen for removeFromAll Goal so we can put it in the delete queue
+        // don't need to listen to new goals; they don't exist on the server anyway
+        goals.each(function(goal)
+        {
+            goal.on('removeFromAll', function() { goalsPendingDelete.add(goal); });
+        });
+
+        // split out goals
+        var rawGoalsByCategory = goals.groupBy(function(goal)
+        {
+            return (goal.get('is_public') !== true) ? '__draft' : goal.get('category');
+        });
+        draftGoals.add(rawGoalsByCategory.__draft);
+        delete rawGoalsByCategory.__draft;
+
+        // render draft goals
+        var draftGoalsView = new govstatNS.views.goals.GoalList({
+            collection: draftGoals,
+            instanceView: govstatNS.views.goal.GoalCard
+        });
+        $draft.prepend(draftGoalsView.$el);
+        draftGoalsView.render();
+    },
+    error: function(__, xhr)
+    { }});
 
     // categories
     var categories = new govstatNS.collections.Categories([], { parse: true });
-    categories.add([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }]);
+    categories.fetch({success: function()
+    {
+        // now listen for removeFromAll Category so we can move its goals to draftGoals
+        categories.on('remove', function(category)
+        {
+            category.goals.each(function(goal)
+            {
+                draftGoals.add(goal);
+            });
+        });
+
+        // render categories
+        categoriesView = new govstatNS.views.categories.CategoryList({
+            collection: categories,
+            instanceView: govstatNS.views.category.CategoryPane
+        });
+        $final.prepend(categoriesView.$el);
+        categoriesView.render();
+    },
+    error: function(__, xhr)
+    {}});
+    //categories.add([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }]);
     categories.on('invalid', function() { console.error('invalid!'); });
 
-    // now listen for removeFromAll Category so we can move its goals to draftGoals
-    categories.on('remove', function(category)
-    {
-        category.goals.each(function(goal)
-        {
-            draftGoals.add(goal);
-        });
-    });
+    // populate category goals
+//    categories.each(function(category)
+//    {
+//        var name = category.get('name');
+//        if (rawGoalsByCategory[name])
+//        {
+//            category.goals.add(rawGoalsByCategory[name]);
+//        }
+//    });
 
 
 // INTERFACE
     // power tabswitch interface
     var currentTabIdx = 0;
     var $chooser = $('.configControl .chooser');
+    var $save = $('.configControl .saveAll');
     var highlightTab = function(idx)
     {
         if (currentTabIdx === idx) { return; }
@@ -115,31 +114,14 @@ $(function()
     {
         highlightTab($(this).prevAll().length);
     });
-
-    // render draft goals
-    var draftGoalsView = new govstatNS.views.goals.GoalList({
-        collection: draftGoals,
-        instanceView: govstatNS.views.goal.GoalCard
-    });
-    $draft.prepend(draftGoalsView.$el);
-    draftGoalsView.render();
-
-    // render categories
-    categoriesView = new govstatNS.views.categories.CategoryList({
-        collection: categories,
-        instanceView: govstatNS.views.category.CategoryPane
-    });
-    $final.prepend(categoriesView.$el);
-    categoriesView.render();
-
-    // populate category goals
-    categories.each(function(category)
+    $save.on('click', function(e)
     {
-        var name = category.get('name');
-        if (rawGoalsByCategory[name])
-        {
-            category.goals.add(rawGoalsByCategory[name]);
-        }
+        e.preventDefault();
+    $.debug('goals', goals, draftGoals);
+        draftGoals.each(function(goal)
+            {
+                $.debug('saving goal', goal);
+                goal.save(); });
     });
 
 

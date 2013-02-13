@@ -56,6 +56,11 @@ javascripts:
     - public/javascripts/controls/menu.js
     - public/javascripts/util/socrata-analytics.js
     - public/javascripts/screens/all-screens.js
+  new-base:
+    - public/javascripts/plugins/awesomemarkup.js
+    - public/javascripts/plugins/backbone.js
+    - public/javascripts/util/backbone-exts.js
+    - public/javascripts/screens/govstat/goals/models.js
   shared-editors:
     - public/javascripts/controls/editors/editor-base.js
     - public/javascripts/controls/editors/text-editor.js
@@ -484,12 +489,8 @@ javascripts:
     - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
   screen-govstat-goals:
-    - public/javascripts/plugins/awesomemarkup.js
-    - public/javascripts/plugins/backbone.js
-    - public/javascripts/util/backbone-exts.js
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/screens/govstat/goals/show.js
-    - public/javascripts/screens/govstat/goals/models.js
     - public/javascripts/screens/govstat/goals/markup.js
     - public/javascripts/screens/govstat/goals/views.js
   unified-filter:

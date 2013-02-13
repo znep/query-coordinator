@@ -140,6 +140,9 @@ http://www.socrata.com
   <![endif]-->
 
   <%= include_javascripts 'base' %>
+  <%- if module_enabled?(:govStat) -%>
+  <%= include_javascripts 'new-base' %>
+  <%- end -%>
 
   <%= render_view_js %>
 

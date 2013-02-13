@@ -96,8 +96,8 @@ var GoalEditor = Backbone.View.extend({
         'click .deleteGoal': 'maybeDeleteGoal',
         'change .mainDetails input[type=text]:not(.date), .mainDetails select': 'updateTextAttr',
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
-		'change input.date': 'updateDateAttr',
-		'keypress .notes': 'updateNotesAttr'
+        'change input.date': 'updateDateAttr',
+        'keypress .notes': 'updateNotesAttr'
     },
     initialize: function()
     {
@@ -107,8 +107,8 @@ var GoalEditor = Backbone.View.extend({
     },
     render: function()
     {
-		var self = this;
-	    if (this._rendered === true) return; else this._rendered = true;
+        var self = this;
+        if (this._rendered === true) return; else this._rendered = true;
 
         this.$el.toggleClass('draft', this.model.get('is_public') !== true);
 
@@ -208,12 +208,12 @@ var GoalEditor = Backbone.View.extend({
         var $input = $(event.target);
         this.model.set($input.attr('name'), $input.is(':checked'));
     },
-	updateDateAttr: function(event)
+    updateDateAttr: function(event)
 	{
 		var $input = $(event.target);
 		this.model.set($input.attr('name'), $input.attr('data-rawvalue'));
 	},
-	updateNotesAttr: function(event)
+    updateNotesAttr: function(event)
 	{
 		var self = this;
 		_.defer(function()
@@ -282,12 +282,6 @@ var CategoryPane = Backbone.View.extend({
         {
             self.$('.categoryTitle').text(self.getName());
             self.$('.categoryTitleEdit').val(name);
-
-            // HACKMAYBE/TODO: this seems model-y
-            self.model.goals.each(function(goal)
-            {
-                goal.set('category', name);
-            });
         });
     },
     render: function()
@@ -325,7 +319,7 @@ var CategoryPane = Backbone.View.extend({
         this.$el.css('background-color', this.model.get('color'));
 
         // data
-        this.$el.data('category', this.model.get('name'));
+        this.$el.data('category', this.model.id);
 
         // add everything
         this.$el.append($title);

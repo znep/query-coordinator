@@ -16,7 +16,7 @@ module GovstatHelper
     configs = {
       grid_flow: {
         data: {
-          goals: { type: 'goalList' }
+          goals: { type: 'goalList', search: { isPublic: true } }
         },
         content: {
           type: 'Container',
@@ -55,7 +55,7 @@ module GovstatHelper
 
       list: {
         data: {
-          goals: { type: 'goalList' }
+          goals: { type: 'goalList', search: { isPublic: true } }
         },
         content: {
           type: 'Container',

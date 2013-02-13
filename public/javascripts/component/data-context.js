@@ -202,13 +202,60 @@
                     break;
 
                 case 'goalList':
-                    // TODO
-                    doneLoading(addContext(dc, id, config, { goalList: [] }));
+                    if (!$.subKeyDefined(blist, 'govstat.collections.Goals'))
+                    {
+                        errorLoading(id);
+                        break;
+                    }
+
+                    var setResult = function(goalList, count)
+                    {
+                        doneLoading(addContext(dc, id, config, { count: count,
+                            datasetList: _.map(viewsList, function(ds)
+                            {
+                                return addContext(dc, id + '_' + ds.id,
+                                    { type: 'dataset', datasetId: ds.id },
+                                    { dataset: ds });
+                            })
+                        }));
+                    };
+
+                    var gl = new blist.govstat.collections.Goals();
+                    gl.fetch({ data: $.param(config.search || {}), success: function()
+                    {
+                        if (gl.length < 1)
+                        {
+                            errorLoading(id);
+                            return;
+                        }
+
+                        doneLoading(addContext(dc, id, config, { count: gl.length,
+                            goalList: _.map(gl.models, function(goal)
+                            {
+                                return addContext(dc, id + '_' + goal.id,
+                                    { type: 'goal', goalId: goal.id },
+                                    { goal: goal.toJSON() });
+                            })
+                        }));
+                    },
+                    error: function()
+                    { errorLoading(id); } });
                     break;
 
                 case 'goal':
-                    // TODO
-                    doneLoading(addContext(dc, id, config, { goal: {} }));
+                    if (!$.subKeyDefined(blist, 'govstat.models.Goal'))
+                    {
+                        errorLoading(id);
+                        break;
+                    }
+
+                    var goal = new blist.govstat.models.Goal({id: config.goalId});
+                    goal.fetch({ success: function()
+                    {
+                        doneLoading(addContext(dc, id, config, { goal: goal.toJSON() }));
+                    },
+                    error: function()
+                    { errorLoading(id); } });
                     break;
 
                 default:

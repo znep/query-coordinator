@@ -136,16 +136,14 @@ module Canvas2
           end)
 
         when 'goalList'
-          goals = Goal.find
+          goals = Goal.find(config['search'])
           if goals.length > 0
             available_contexts[id] = {id: id, type: config['type'],
               count: goals.length,
               goalList: goals.map do |g|
                 c = {type: 'goal', goal: g, id: id + '_' + g.id}
                 available_contexts[c[:id]] = c
-                self.set_context_as_streaming(c[:id])
               end}
-            self.set_context_as_streaming(id)
           elsif config['required']
             errors.push(DataContextError.new(config, "No goals found for goalList '" + id + "'"))
             ret_val = false
@@ -157,10 +155,9 @@ module Canvas2
           if goal.nil?
             errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
             log_timing(start_time, config)
-            ret_val !config['required']
+            ret_val = !config['required']
           else
             available_contexts[id] = { id: id, type: config['type'], goal: goal }
-            self.set_context_as_streaming(id)
             log_timing(start_time, config)
           end
 

@@ -22,12 +22,28 @@ $(function()
 
 // MODELS
 
-    // goals
     var goals = new govstatNS.collections.Goals();
-    var goalsPendingDelete = new govstatNS.collections.Goals([], {});
+    var goalsPendingDelete = new govstatNS.collections.Goals();
     var draftGoals = new govstatNS.collections.Goals([], { draft: true });
+    var rawGoalsByCategory;
+    var categories = new govstatNS.collections.Categories();
+    var categoriesPendingDelete = new govstatNS.collections.Categories();
 
-    goals.fetch({success: function()
+    // populate category goals
+    var categorizeGoals = _.after(2, function()
+    {
+        categories.each(function(category)
+        {
+            var catId = category.id;
+            if (rawGoalsByCategory[catId])
+            {
+                category.goals.add(rawGoalsByCategory[catId]);
+            }
+        });
+    });
+
+    // goals
+    goals.fetch({update: true, success: function()
     {
         // first listen for removeFromAll Goal so we can put it in the delete queue
         // don't need to listen to new goals; they don't exist on the server anyway
@@ -37,7 +53,7 @@ $(function()
         });
 
         // split out goals
-        var rawGoalsByCategory = goals.groupBy(function(goal)
+        rawGoalsByCategory = goals.groupBy(function(goal)
         {
             return (goal.get('is_public') !== true) ? '__draft' : goal.get('category');
         });
@@ -51,20 +67,26 @@ $(function()
         });
         $draft.prepend(draftGoalsView.$el);
         draftGoalsView.render();
+
+        categorizeGoals();
     },
     error: function(__, xhr)
     { }});
 
     // categories
-    var categories = new govstatNS.collections.Categories([], { parse: true });
-    categories.fetch({success: function()
+    categories.fetch({update: true, success: function()
     {
         // now listen for removeFromAll Category so we can move its goals to draftGoals
-        categories.on('remove', function(category)
+        categories.each(function(category)
         {
-            category.goals.each(function(goal)
+            category.on('removeFromAll', function()
             {
-                draftGoals.add(goal);
+                categoriesPendingDelete.add(category);
+                if ($.subKeyDefined(category, 'goals'))
+                {
+                    category.goals.each(function(goal)
+                    { draftGoals.add(goal); });
+                }
             });
         });
 
@@ -75,21 +97,12 @@ $(function()
         });
         $final.prepend(categoriesView.$el);
         categoriesView.render();
+
+        categorizeGoals();
     },
     error: function(__, xhr)
     {}});
-    //categories.add([{ name: 'Opportunity' }, { name: 'Security' }, { name: 'Sustainability' }, { name: 'Health' }]);
     categories.on('invalid', function() { console.error('invalid!'); });
-
-    // populate category goals
-//    categories.each(function(category)
-//    {
-//        var name = category.get('name');
-//        if (rawGoalsByCategory[name])
-//        {
-//            category.goals.add(rawGoalsByCategory[name]);
-//        }
-//    });
 
 
 // INTERFACE
@@ -117,11 +130,20 @@ $(function()
     $save.on('click', function(e)
     {
         e.preventDefault();
-    $.debug('goals', goals, draftGoals);
-        draftGoals.each(function(goal)
+        goalsPendingDelete.each(function(goal)
+        { goal.destroy(); });
+        var categoriesSaved = _.after(categories.length, function()
+        {
+            categories.each(function(category)
             {
-                $.debug('saving goal', goal);
-                goal.save(); });
+                category.goals.each(function(goal) { goal.save(); });
+            });
+        });
+        categories.each(function(category)
+        { category.save(null, { success: function() { categoriesSaved(); } }); });
+        draftGoals.each(function(goal) { goal.save(); });
+        categoriesPendingDelete.each(function(category)
+        { category.destroy(); });
     });
 
 

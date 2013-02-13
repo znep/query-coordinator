@@ -188,6 +188,21 @@ $.component.Container.extend('Repeater', 'content', {
                 cObj._setRow(di, i, di, callback);
             });
         }
+        else if (_.isArray(cObj._dataContext.goalList))
+        {
+            var callback = doneWithRowsCallback(cObj._dataContext.goalList.length);
+            if (!$.isBlank(cObj._properties.groupBy))
+            { renderGroupItems(cObj, cObj._dataContext.goalList, doneWithRowsCallback); }
+            else
+            {
+                _.each(cObj._dataContext.goalList, function(di, i)
+                {
+                    if (!_.isObject(di))
+                    { di = { value: di }; }
+                    cObj._setRow(di, i, di, callback);
+                });
+            }
+        }
         else if (view = (cObj._dataContext || {}).dataset)
         {
             if (cObj._properties.repeaterType == 'column')
@@ -385,7 +400,7 @@ var setUpProperties = function(cObj, children)
     };
 
     cObj._noChildrenCloneProperties = {
-        id: 'noChildren-clone',
+        id: cObj.id + '_noChildren-clone',
         children:  cObj._properties.noResultsChildren
     };
 

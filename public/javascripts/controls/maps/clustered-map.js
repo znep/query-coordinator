@@ -67,6 +67,7 @@
                     $(".olFramedCloudPopupContent .foreverNode a").click(function(e)
                     {
                         e.preventDefault();
+                        if (!layerObj._parent._primaryView) { return; }
                         var newMD = $.extend(true, {}, layerObj._parent._primaryView.metadata);
                         $.deepSet(newMD, layerObj._view.id,'renderTypeConfig','active','table','id');
                         $.deepSet(newMD, true, 'renderTypeConfig', 'visible', 'table');

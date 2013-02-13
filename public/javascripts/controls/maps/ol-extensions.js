@@ -1293,9 +1293,14 @@
             this.handlingEvent = 'moveend';
 
             this.saveViewport();
-            this.mapObj._primaryView.update({ displayFormat: $.extend(true, {},
+            var newDF = $.extend(true, {},
                 this.mapObj._displayFormat,
-                { viewport: this.toViewport(blist.openLayers.geographicProjection, 0.9) }) });
+                { viewport: this.toViewport(blist.openLayers.geographicProjection, 0.9) });
+            if (this.mapObj._primaryView)
+            { this.mapObj._primaryView.update({ displayFormat: newDF }); }
+            else
+            { this.mapObj.updateDisplayFormat(newDF); }
+
             delete this.handlingEvent;
             delete this._untouched;
         },

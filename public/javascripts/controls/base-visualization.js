@@ -11,7 +11,7 @@
 
             currentObj._primaryView = currentObj.settings.view;
             currentObj._displayFormat = currentObj.settings.displayFormat ||
-                currentObj._primaryView.displayFormat;
+                (currentObj._primaryView || {}).displayFormat;
             $mainDom.resize(function(e, source, forceUpdate) { doResize(currentObj, e, forceUpdate); })
                 .bind('hide', function() { currentObj._hidden = true; })
                 .bind('show', function()
@@ -38,7 +38,8 @@
             }
 
             var viewsFetched = 0;
-            var viewsToLoad = (currentObj._displayFormat.compositeMembers || []).length + 1;
+            var viewsToLoad = (currentObj._displayFormat.compositeMembers || []).length;
+            if (currentObj._primaryView) { viewsToLoad++; }
 
             var datasetReady = function()
             {
@@ -244,12 +245,12 @@
         // Used in a few places for non-dataset status
         startLoading: function()
         {
-            this._primaryView.trigger('request_start');
+            this._primaryView && this._primaryView.trigger('request_start');
         },
 
         finishLoading: function()
         {
-            this._primaryView.trigger('request_finish');
+            this._primaryView && this._primaryView.trigger('request_finish');
         },
 
         initializeVisualization: function()
@@ -366,7 +367,7 @@
             delete vizObj._needsReload;
 
             vizObj._displayFormat = vizObj._savedDF ||
-                vizObj.settings.displayFormat || vizObj._primaryView.displayFormat;
+                vizObj.settings.displayFormat || (vizObj._primaryView || {}).displayFormat;
 
             // If still loading libraries, don't try to reload
             if (!vizObj._dynamicLibrariesLoaded) { return; }

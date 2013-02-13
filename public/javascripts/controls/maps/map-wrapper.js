@@ -85,109 +85,9 @@
                 { mapObj._viewportHandler.expect(); }
             });
 
-            var datasetsLoaded = function()
-            {
-                mapObj._children = _.reject(mapObj._children, function(cv) { return cv.invalid; });
-
-                // TODO: Decide whether or not this is a good idea.
-                if (_.isEmpty(mapObj._children))
-                { mapObj.map.setCenter(new OpenLayers.LonLat(0,0)); }
-                else if (mapObj.viewportHandler().viewportInOriginal)
-                { mapObj.viewportHandler().resetToOriginal(); }
-
-                if ($.browser.msie && parseInt($.browser.version) < 9
-                    && _.any(mapObj._children,
-                        function(cv) { return (cv._displayFormat || {}).plotStyle == 'rastermap'; }))
-                {
-                    alert("Raster Heat Maps do not work in your current browser. Please "
-                        + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");
-                }
-
-                // For split views.
-                mapObj._primaryView.childViews = _(mapObj._children).chain().map(function(c)
-                {
-                    if (c._view.childViews) { return c._view.childViews; }
-                    else { return c._view.id; }
-                }).flatten().uniq().value();
-
-                _.each(mapObj._children, function(childView)
-                { childView.bindDatasetEvents(); });
-
-                mapObj._primaryView.bind('reloaded', function()
-                {
-                    _(mapObj._children).chain()
-                        .pluck('_view').uniq().without(this).invoke('reload');
-                    _.invoke(mapObj._children, 'getData');
-                });
-
-                if (mapObj._displayFormat.openOverviewByDefault)
-                { mapObj._controls.Overview.open(); }
-
-                mapObj.restackDataLayers();
-
-                mapObj.initializeEvents();
-
-                mapObj.updateSearchString();
-
-                mapObj.getDataForChildren();
-
-                mapObj._primaryView.trigger('row_count_change'); // DEBUG EZMODE Sidebar ready.
-
-                mapObj.viewportHandler().events.register('viewportchanged', null,
-                    function() { mapObj._panning = true; });
-            };
-
             mapObj._children = [];
-            var id = mapObj.$dom().attr('id');
-            var constructChildView = function(df, index)
-            {
-                if (mapObj._children[index]) { mapObj._children[index].destroy(); }
 
-                var uid = df.uid;
-                var viewId = [uid, '-', index].join('');
-                mapObj._children[index] = { loading: true, ready: function() { return false; },
-                    $dom: $('<div id="' + id + '_' + viewId + '"></div>') };
-                Dataset.lookupFromViewId(uid, function(ds)
-                {
-                    if (df.legacy)
-                    {
-                        if (!ds.isArcGISDataset() && !ds.isGeoDataset())
-                        {
-                            df.plotStyle = 'point';
-                            var locCol = _.detect(ds.realColumns, function(col)
-                                { return col.renderTypeName == 'location'; });
-                            if (locCol)
-                            { df.plot = { locationId: locCol.tableColumnId }; }
-                            df.color = '#0000ff';
-                        }
-                        delete df.legacy;
-                    }
-
-                    mapObj.$dom().append(mapObj._children[index].$dom);
-                    var query = $.deepGet(mapObj._primaryView.metadata, 'query', ds.id);
-                    mapObj._children[index] = $(mapObj._children[index].$dom)
-                            .socrataDataLayer({ view: ds, index: index, query: query,
-                                                parentViz: mapObj, displayFormat: df });
-                    mapObj._children[index].setQuery(mapObj._children[index]._query);
-                    mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
-
-                    if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
-                        && _.all(mapObj._children, function(cv) { return !cv.loading; }))
-                    { datasetsLoaded(); }
-                }, function(errorObj)
-                {
-                    mapObj._children[index] = { invalid: true,
-                        error: JSON.parse(errorObj.responseText) };
-                    mapObj._invalidChildren = $.makeArray(mapObj._invalidChildren);
-                    mapObj._invalidChildren.push(mapObj._children[index]);
-
-                    if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
-                        && _.all(mapObj._children, function(cv) { return !cv.loading; }))
-                    { datasetsLoaded(); }
-                });
-            };
-
-            mapObj._primaryView.bind('displayformat_change', function()
+            var handleDisplayFormatChange = function()
             {
                 if ((blist.debug || {}).viewport && (console || {}).trace)
                 {
@@ -199,66 +99,196 @@
                     console.groupEnd();
                 }
                 if (arguments.length > 0) { return; }
-                mapObj.closePopup();
-                if (mapObj._panning) { delete mapObj._panning; return; }
-                mapObj._displayFormat = this.displayFormat;
+                mapObj.updateDisplayFormat(this.displayFormat);
+            };
 
-                if (!mapObj._displayFormat.viewDefinitions)
-                { Dataset.map.convertToVersion2(mapObj._primaryView, mapObj._displayFormat); }
+            if (mapObj._primaryView)
+            {
+                mapObj._primaryView.bind('displayformat_change', handleDisplayFormatChange)
+                                   .trigger('displayformat_change');
+                mapObj._primaryView.bind('query_change', function()
+                { mapObj.updateSearchString(); });
+            }
+            else
+            { mapObj.updateDisplayFormat(mapObj.settings.displayFormat); }
+        },
 
-                if (mapObj._controls.SelectFeature)
+        updateDisplayFormat: function(df)
+        {
+            var mapObj = this;
+            if ($.isBlank(mapObj.map)) { return; }
+
+            mapObj.closePopup();
+            if (mapObj._panning) { delete mapObj._panning; return; }
+            mapObj._displayFormat = df;
+
+            if (!mapObj._displayFormat.viewDefinitions)
+            { Dataset.map.convertToVersion2(mapObj._primaryView, mapObj._displayFormat); }
+
+            if (mapObj._controls.SelectFeature)
+            {
+                mapObj._controls.SelectFeature.destroy();
+                delete mapObj._controls.SelectFeature;
+            }
+
+            mapObj.initializeBackgroundLayers();
+
+            if (!_.isUndefined(mapObj._displayFormat.distinctLegend))
+            { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()
+                                                   : mapObj._controls.Overview.disableLegend(); }
+
+            var length = mapObj._displayFormat.viewDefinitions.length;
+            _.each(mapObj._children.slice(length), function(childView) { childView.destroy(); });
+            mapObj._children = mapObj._children.slice(0, length);
+            mapObj._controls.Overview.truncate(length);
+
+            _.each(mapObj._children, function(cv) { cv.loading = true; });
+
+            var childViewConstructing = false;
+            _.each(mapObj._displayFormat.viewDefinitions, function(df, index)
+            {
+                if (mapObj._children[index]
+                    && _.isEqual(mapObj._children[index]._displayFormat, df))
+                { delete mapObj._children[index].loading; return; }
+
+                if (mapObj._children[index] && df.uid == mapObj._children[index]._view.id
+                    && df.plotStyle == mapObj._children[index]._displayFormat.plotStyle)
                 {
-                    mapObj._controls.SelectFeature.destroy();
-                    delete mapObj._controls.SelectFeature;
+                    mapObj._children[index]._view.trigger('displayformat_change', [df])
+                    delete mapObj._children[index].loading;
                 }
+                else
+                { childViewConstructing = true; mapObj._constructDataLayer(df, index); }
+            });
 
-                mapObj.initializeBackgroundLayers();
+            if (mapObj._doneLoading
+                && !_.isEqual(
+                    mapObj.viewportHandler().toArray(blist.openLayers.geographicProjection),
+                    mapObj._displayFormat.viewport))
+            { mapObj.viewportHandler().resetToOriginal(); }
 
-                if (!_.isUndefined(mapObj._displayFormat.distinctLegend))
-                { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()
-                                                       : mapObj._controls.Overview.disableLegend(); }
+            if (!childViewConstructing)
+            {
+                mapObj.buildSelectFeature();
+                if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
+                    && _.all(mapObj._children, function(cv) { return !cv.loading; }))
+                { mapObj._onDatasetsLoaded(); }
+            }
+        },
 
-                var length = mapObj._displayFormat.viewDefinitions.length;
-                _.each(mapObj._children.slice(length), function(childView) { childView.destroy(); });
-                mapObj._children = mapObj._children.slice(0, length);
-                mapObj._controls.Overview.truncate(length);
+        _constructDataLayer: function(displayFormat, index)
+        {
+            var mapObj = this;
 
-                _.each(mapObj._children, function(cv) { cv.loading = true; });
+            if (mapObj._children[index]) { mapObj._children[index].destroy(); }
 
-                var childViewConstructing = false;
-                _.each(mapObj._displayFormat.viewDefinitions, function(df, index)
+            var id = mapObj.$dom().attr('id'),
+                df = displayFormat,
+                uid = df.uid,
+                viewId = [uid, '-', index].join('');
+
+            mapObj._children[index] = { loading: true, ready: function() { return false; },
+                $dom: $('<div id="' + id + '_' + viewId + '"></div>') };
+            var loadDataset = function(ds)
+            {
+                if (df.legacy)
                 {
-                    if (mapObj._children[index]
-                        && _.isEqual(mapObj._children[index]._displayFormat, df))
-                    { delete mapObj._children[index].loading; return; }
-
-                    if (mapObj._children[index] && df.uid == mapObj._children[index]._view.id
-                        && df.plotStyle == mapObj._children[index]._displayFormat.plotStyle)
+                    if (!ds.isArcGISDataset() && !ds.isGeoDataset())
                     {
-                        mapObj._children[index]._view.trigger('displayformat_change', [df])
-                        delete mapObj._children[index].loading;
+                        df.plotStyle = 'point';
+                        var locCol = _.detect(ds.realColumns, function(col)
+                            { return col.renderTypeName == 'location'; });
+                        if (locCol)
+                        { df.plot = { locationId: locCol.tableColumnId }; }
+                        df.color = '#0000ff';
                     }
-                    else
-                    { childViewConstructing = true; constructChildView(df, index); }
-                });
-
-                if (mapObj._doneLoading
-                    && !_.isEqual(
-                        mapObj.viewportHandler().toArray(blist.openLayers.geographicProjection),
-                        mapObj._displayFormat.viewport))
-                { mapObj.viewportHandler().resetToOriginal(); }
-
-                if (!childViewConstructing)
-                {
-                    mapObj.buildSelectFeature();
-                    if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
-                        && _.all(mapObj._children, function(cv) { return !cv.loading; }))
-                    { datasetsLoaded(); }
+                    delete df.legacy;
                 }
-            }).trigger('displayformat_change');
 
-            mapObj._primaryView.bind('query_change', function()
-            { mapObj.updateSearchString(); });
+                mapObj.$dom().append(mapObj._children[index].$dom);
+                var query = $.deepGet(mapObj, '_primaryView', 'metadata', 'query', ds.id);
+                mapObj._children[index] = $(mapObj._children[index].$dom)
+                        .socrataDataLayer({ view: ds, index: index, query: query,
+                                            parentViz: mapObj, displayFormat: df });
+                mapObj._children[index].setQuery(mapObj._children[index]._query);
+                mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
+
+                if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
+                    && _.all(mapObj._children, function(cv) { return !cv.loading; }))
+                { mapObj._onDatasetsLoaded(); }
+            };
+
+            if ($.subKeyDefined(df, 'context.dataset'))
+            { loadDataset(df.context.dataset); }
+            else
+            { Dataset.lookupFromViewId(uid, loadDataset, function(errorObj)
+            {
+                mapObj._children[index] = { invalid: true,
+                    error: JSON.parse(errorObj.responseText) };
+                mapObj._invalidChildren = $.makeArray(mapObj._invalidChildren);
+                mapObj._invalidChildren.push(mapObj._children[index]);
+
+                if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
+                    && _.all(mapObj._children, function(cv) { return !cv.loading; }))
+                { mapObj._onDatasetsLoaded(); }
+            }); }
+        },
+
+        _onDatasetsLoaded: function()
+        {
+            var mapObj = this;
+            mapObj._children = _.reject(mapObj._children, function(cv) { return cv.invalid; });
+
+            // TODO: Decide whether or not this is a good idea.
+            if (_.isEmpty(mapObj._children))
+            { mapObj.map.setCenter(new OpenLayers.LonLat(0,0)); }
+            else if (mapObj.viewportHandler().viewportInOriginal)
+            { mapObj.viewportHandler().resetToOriginal(); }
+
+            if ($.browser.msie && parseInt($.browser.version) < 9
+                && _.any(mapObj._children,
+                    function(cv) { return (cv._displayFormat || {}).plotStyle == 'rastermap'; }))
+            {
+                alert("Raster Heat Maps do not work in your current browser. Please "
+                    + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");
+            }
+
+            // For split views.
+            if (mapObj._primaryView)
+            { mapObj._primaryView.childViews = _(mapObj._children).chain().map(function(c)
+            {
+                if (c._view.childViews) { return c._view.childViews; }
+                else { return c._view.id; }
+            }).flatten().uniq().value(); }
+
+            _.each(mapObj._children, function(childView)
+            { childView.bindDatasetEvents(); });
+
+            if (mapObj._primaryView)
+            { mapObj._primaryView.bind('reloaded', function()
+            {
+                _(mapObj._children).chain()
+                    .pluck('_view').uniq().without(this).invoke('reload');
+                _.invoke(mapObj._children, 'getData');
+            }); }
+
+            if (mapObj._displayFormat.openOverviewByDefault)
+            { mapObj._controls.Overview.open(); }
+
+            mapObj.restackDataLayers();
+
+            mapObj.initializeEvents();
+
+            if (mapObj._primaryView)
+            { mapObj.updateSearchString(); }
+
+            mapObj.getDataForChildren();
+
+            if (mapObj._primaryView)
+            { mapObj._primaryView.trigger('row_count_change'); } // DEBUG EZMODE Sidebar ready.
+
+            mapObj.viewportHandler().events.register('viewportchanged', null,
+                function() { mapObj._panning = true; });
         },
 
         restackDataLayers: function()
@@ -306,7 +336,7 @@
                 // Often, at this point, the images of the tiles themselves are not done loading.
                 // Thus, we timeout to wait for this.
                 setTimeout(function() {
-                    if (mapObj._primaryView.snapshotting)
+                    if ((mapObj._primaryView || {}).snapshotting)
                     { mapObj._primaryView.takeSnapshot(); }
                 }, 2000);
 
@@ -496,6 +526,7 @@
 
         saveQuery: function(uid, query)
         {
+            if ($.isBlank(this._primaryView)) { return; }
             if ($.isBlank(query.filterCondition)) { return; }
             var newMD = $.extend(true, {}, this._primaryView.metadata);
             $.deepSet(newMD, query, 'query', uid);

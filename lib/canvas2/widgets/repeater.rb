@@ -37,6 +37,13 @@ module Canvas2
             context[:goalList].each_with_index {|g, i| all_c << add_row(g, i, g.clone) }
           end
 
+        elsif context[:type] == 'govstatCategoryList'
+          if !@properties['groupBy'].blank?
+            all_c = render_group_items(context[:categoryList])
+          else
+            context[:categoryList].each_with_index {|c, i| all_c << add_row(c, i, c.clone) }
+          end
+
         elsif context[:type] == 'datasetList'
           context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }
 

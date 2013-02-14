@@ -104,7 +104,7 @@ module Canvas2
       classes << html_class unless @needs_own_context
       classes << 'serverRendered' if fully_rendered
 
-      styles = (server_properties['styles'] || {}).merge(@properties['styles'] || {}).
+      styles = (server_properties['styles'] || {}).merge(string_substitute(@properties['styles'] || {})).
         map { |k, v| k + ':' + v.to_s + ';' }.join('')
       tag = ''
 

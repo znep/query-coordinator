@@ -161,6 +161,21 @@ module Canvas2
             log_timing(start_time, config)
           end
 
+        when 'govstatCategoryList'
+          categories = GovstatCategory.find
+          if categories.length > 0
+            available_contexts[id] = {id: id, type: config['type'],
+              count: categories.length,
+              categoryList: categories.map do |c|
+                dc = {type: 'govstatCategory', category: c, id: id + '_' + c.id}
+                available_contexts[dc[:id]] = dc
+              end}
+          elsif config['required']
+            errors.push(DataContextError.new(config, "No categories found for govstatCategoryList '" + id + "'"))
+            ret_val = false
+          end
+          log_timing(start_time, config)
+
         end
       rescue CoreServer::CoreServerError => e
         raise DataContextError.new(config, "Core server failed: " + e.error_message,

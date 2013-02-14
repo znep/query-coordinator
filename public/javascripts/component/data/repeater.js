@@ -203,6 +203,21 @@ $.component.Container.extend('Repeater', 'content', {
                 });
             }
         }
+        else if (_.isArray(cObj._dataContext.categoryList))
+        {
+            var callback = doneWithRowsCallback(cObj._dataContext.categoryList.length);
+            if (!$.isBlank(cObj._properties.groupBy))
+            { renderGroupItems(cObj, cObj._dataContext.categoryList, doneWithRowsCallback); }
+            else
+            {
+                _.each(cObj._dataContext.categoryList, function(di, i)
+                {
+                    if (!_.isObject(di))
+                    { di = { value: di }; }
+                    cObj._setRow(di, i, di, callback);
+                });
+            }
+        }
         else if (view = (cObj._dataContext || {}).dataset)
         {
             if (cObj._properties.repeaterType == 'column')

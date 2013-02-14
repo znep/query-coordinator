@@ -208,18 +208,6 @@
                         break;
                     }
 
-                    var setResult = function(goalList, count)
-                    {
-                        doneLoading(addContext(dc, id, config, { count: count,
-                            datasetList: _.map(viewsList, function(ds)
-                            {
-                                return addContext(dc, id + '_' + ds.id,
-                                    { type: 'dataset', datasetId: ds.id },
-                                    { dataset: ds });
-                            })
-                        }));
-                    };
-
                     var gl = new blist.govstat.collections.Goals();
                     gl.fetch({ data: $.param(config.search || {}), success: function()
                     {
@@ -253,6 +241,35 @@
                     goal.fetch({ success: function()
                     {
                         doneLoading(addContext(dc, id, config, { goal: goal.toJSON() }));
+                    },
+                    error: function()
+                    { errorLoading(id); } });
+                    break;
+
+                case 'govstatCategoryList':
+                    if (!$.subKeyDefined(blist, 'govstat.collections.Categories'))
+                    {
+                        errorLoading(id);
+                        break;
+                    }
+
+                    var catList = new blist.govstat.collections.Categories();
+                    catList.fetch({ success: function()
+                    {
+                        if (catList.length < 1)
+                        {
+                            errorLoading(id);
+                            return;
+                        }
+
+                        doneLoading(addContext(dc, id, config, { count: catList.length,
+                            categoryList: _.map(catList.models, function(cat)
+                            {
+                                return addContext(dc, id + '_' + cat.id,
+                                    { type: 'govstatCategory', categoryId: cat.id },
+                                    { category: cat.toJSON() });
+                            })
+                        }));
                     },
                     error: function()
                     { errorLoading(id); } });

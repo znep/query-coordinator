@@ -16,6 +16,7 @@ module GovstatHelper
     configs = {
       grid_flow: {
         data: {
+          categories: { type: 'govstatCategoryList' },
           goals: { type: 'goalList', search: { isPublic: true } }
         },
         content: {
@@ -33,18 +34,26 @@ module GovstatHelper
             { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
             ],
             children: [
-            { type: 'Title', text: '{_groupValue}', customClass: 'categoryTitle' },
             {
-              type: 'Repeater',
-              htmlClass: 'goalList',
-              contextId: '_groupItems',
-              childProperties: { htmlClass: 'goalItem' },
-              container: { type: 'GridContainer', cellWidth: 225, cellHeight: 225, cellSpacing: 0 },
+              type: 'Container',
+              contextId: 'categories_{_groupValue}',
               children: [
-                progress_indicator('goal.metrics.0'),
-                { type: 'Title', customClass: 'goalTitle', text: '{goal.name}' },
-                { type: 'Text', customClass: 'goalDetails',
-                  html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
+              { type: 'Title', text: '{category.name ||Draft}', customClass: 'categoryTitle',
+                styles: { 'background-color' => '{category.color}' } },
+              {
+                type: 'Repeater',
+                htmlClass: 'goalList',
+                contextId: '_groupItems',
+                childProperties: { htmlClass: 'goalItem',
+                  styles: { 'background-color' => '{category.color}' } },
+                container: { type: 'GridContainer', cellWidth: 225, cellHeight: 225, cellSpacing: 0 },
+                children: [
+                  progress_indicator('goal.metrics.0'),
+                  { type: 'Title', customClass: 'goalTitle', text: '{goal.name}' },
+                  { type: 'Text', customClass: 'goalDetails',
+                    html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
+                ]
+              }
               ]
             }
             ]
@@ -55,6 +64,7 @@ module GovstatHelper
 
       list: {
         data: {
+          categories: { type: 'govstatCategoryList' },
           goals: { type: 'goalList', search: { isPublic: true } }
         },
         content: {
@@ -72,28 +82,35 @@ module GovstatHelper
             { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
             ],
             children: [
-            { type: 'Title', text: '{_groupValue}', htmlClass: 'categoryTitle' },
             {
-              type: 'Repeater',
-              htmlClass: 'goalList',
-              contextId: '_groupItems',
-              childProperties: { htmlClass: 'goalItem' },
+              type: 'Container',
+              contextId: 'categories_{_groupValue}',
               children: [
-              { type: 'Container', customClass: 'progressDetails',
-                ifValue: 'goal.metrics.0.compute.delta',
+              { type: 'Title', text: '{category.name ||Draft}', htmlClass: 'categoryTitle' },
+              {
+                type: 'Repeater',
+                htmlClass: 'goalList',
+                styles: { 'background-color' => '{category.color}' },
+                contextId: '_groupItems',
+                childProperties: { htmlClass: 'goalItem' },
                 children: [
-                { type: 'Text', htmlClass: 'barValue progress-{goal.metrics.0.compute.progress}',
-                  html: 'Complete<span class="bar" ' +
-                  'style="width:{goal.metrics.0.compute.deltaFoo ||25}%;"></span>' },
-                { type: 'Text', htmlClass: 'textValue', html: '{goal.metrics.0.compute.delta}%' },
+                { type: 'Container', customClass: 'progressDetails',
+                  ifValue: 'goal.metrics.0.compute.delta',
+                  children: [
+                  { type: 'Text', htmlClass: 'barValue progress-{goal.metrics.0.compute.progress}',
+                    html: 'Complete<span class="bar" ' +
+                    'style="width:{goal.metrics.0.compute.deltaFoo ||25}%;"></span>' },
+                  { type: 'Text', htmlClass: 'textValue', html: '{goal.metrics.0.compute.delta}%' },
+                  ]
+                },
+                { type: 'Text', customClass: 'goalProgress',
+                  htmlClass: 'progress-{goal.metrics.0.compute.progress}' },
+                { type: 'Title', text: '{goal.name}', htmlClass: 'goalTitle' },
+                { type: 'Text', html: '{goal.subject}', htmlClass: 'goalSubject' },
+                { type: 'Text', customClass: 'goalDetails',
+                  html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
                 ]
-              },
-              { type: 'Text', customClass: 'goalProgress',
-                htmlClass: 'progress-{goal.metrics.0.compute.progress}' },
-              { type: 'Title', text: '{goal.name}', htmlClass: 'goalTitle' },
-              { type: 'Text', html: '{goal.subject}', htmlClass: 'goalSubject' },
-              { type: 'Text', customClass: 'goalDetails',
-                html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
+              }
               ]
             }
             ]

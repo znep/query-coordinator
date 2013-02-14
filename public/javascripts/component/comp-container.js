@@ -290,8 +290,6 @@
         _render: function() {
             if (!this._super()) { return false; }
 
-            this.$contents.css(blist.configs.styles.convertProperties(this._properties));
-
             this.each(this._moveChildDom, this);
 
             this._arrange();

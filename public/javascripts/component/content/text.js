@@ -21,8 +21,6 @@ $.component.Component.extend('Text', 'content', {
             if (cObj._properties.isPlainText)
             { html = html.plainTextToHtml(); }
             cObj.$contents.html(html);
-
-            cObj.$contents.css(blist.configs.styles.convertProperties(cObj._properties));
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))
         { doRender(); }

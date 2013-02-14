@@ -7,8 +7,8 @@ end
 
 gem "jammit", "~>0.6.5"
 gem "axlsx", "~> 1.3.4"
-gem "rails", "~>3.2.11", :require => nil
-gem "rack", "~>1.4.0"
+gem "rails", "~>3.2.12", :require => nil
+gem "rack", "~>1.4.5"
 gem "erubis", ">= 2.6.4"
 gem "multipart-post", ">= 1.0.1", :require => 'net/http/post/multipart'
 gem "hashie", "0.3.1"

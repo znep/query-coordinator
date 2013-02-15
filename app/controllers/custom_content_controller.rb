@@ -284,7 +284,12 @@ class CustomContentController < ApplicationController
         # unless I rescue a generic Exception
         rescue Exception => e
           Rails.logger.info("Caught exception trying to render page: #{e.inspect}\n#{e.backtrace[0]}\n")
-          @error = e.original_exception
+          if (e.respond_to?(:original_exception)
+            @error = e.original_exception
+          else
+            @error = e
+          end
+
           if @debug
             render :action => 'page_debug'
           elsif @edit_mode

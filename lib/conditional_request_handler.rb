@@ -6,20 +6,20 @@
 module ConditionalRequestHandler
 
   def self.set_cache_control_headers(response, anonymous = false, maxAge = 15.minutes)
-    # Cache-Control, again, surprises me. no-cache is apparently misused by some browsers
-    # and too many intermediate caches are configured to ignore responses to Cookies
-    # For anonymous, public resources we would like to use: "public, max-age=" + maxAge.seconds.to_s"
-    # but this does not work unless the intermediate cache is configured properly.
     #
-    # We include an additional header which should not be stomped by intermediate
-    # caches for debugging and to provide a mechanism for socrata-controlled caches to
-    # do something useful without needing to perform a regex on every request.
+    # Return to the previously, conservative Cache-Control headers. Cache servers appear
+    # to not only ignore certain headers, those headers which they do pay attention to
+    # they sometimes handle incorrectly.
     #
+    # From now on; the only Cache-Control headers we shall use are the ones we have
+    # explicit control over through our own caching server, and we will manage those
+    # internally to the caching server using the extra socrata-specific
+    # X-Socrata-Cache-Control header.
+    #
+    response.headers[CACHE_CONTROL] = "private, no-cache, must-revalidate"
     if anonymous
-      response.headers[CACHE_CONTROL] = "public, max-age=0, must-revalidate"
       response.headers[X_SOCRATA_CACHE_CONTROL] = "public"
     else
-      response.headers[CACHE_CONTROL] = "private, no-cache, no-store, must-revalidate"
       response.headers[X_SOCRATA_CACHE_CONTROL] = "private"
     end
   end

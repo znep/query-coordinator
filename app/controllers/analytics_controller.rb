@@ -1,5 +1,6 @@
 class AnalyticsController < ApplicationController
   skip_before_filter :require_user
+  skip_before_filter :verify_authenticity_token, :only => [:add]
 
   def index
     if !CurrentDomain.feature? :public_site_metrics

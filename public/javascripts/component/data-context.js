@@ -200,6 +200,81 @@
                         { errorLoading(id); },
                         !blist.configuration.privateData);
                     break;
+
+                case 'goalList':
+                    if (!$.subKeyDefined(blist, 'govstat.collections.Goals'))
+                    {
+                        errorLoading(id);
+                        break;
+                    }
+
+                    var gl = new blist.govstat.collections.Goals();
+                    gl.fetch({ data: $.param(config.search || {}), success: function()
+                    {
+                        if (gl.length < 1)
+                        {
+                            errorLoading(id);
+                            return;
+                        }
+
+                        doneLoading(addContext(dc, id, config, { count: gl.length,
+                            goalList: _.map(gl.models, function(goal)
+                            {
+                                return addContext(dc, id + '_' + goal.id,
+                                    { type: 'goal', goalId: goal.id },
+                                    { goal: goal.toJSON() });
+                            })
+                        }));
+                    },
+                    error: function()
+                    { errorLoading(id); } });
+                    break;
+
+                case 'goal':
+                    if (!$.subKeyDefined(blist, 'govstat.models.Goal'))
+                    {
+                        errorLoading(id);
+                        break;
+                    }
+
+                    var goal = new blist.govstat.models.Goal({id: config.goalId});
+                    goal.fetch({ success: function()
+                    {
+                        doneLoading(addContext(dc, id, config, { goal: goal.toJSON() }));
+                    },
+                    error: function()
+                    { errorLoading(id); } });
+                    break;
+
+                case 'govstatCategoryList':
+                    if (!$.subKeyDefined(blist, 'govstat.collections.Categories'))
+                    {
+                        errorLoading(id);
+                        break;
+                    }
+
+                    var catList = new blist.govstat.collections.Categories();
+                    catList.fetch({ success: function()
+                    {
+                        if (catList.length < 1)
+                        {
+                            errorLoading(id);
+                            return;
+                        }
+
+                        doneLoading(addContext(dc, id, config, { count: catList.length,
+                            categoryList: _.map(catList.models, function(cat)
+                            {
+                                return addContext(dc, id + '_' + cat.id,
+                                    { type: 'govstatCategory', categoryId: cat.id },
+                                    { category: cat.toJSON() });
+                            })
+                        }));
+                    },
+                    error: function()
+                    { errorLoading(id); } });
+                    break;
+
                 default:
                     alert('Unrecognized data context type: ' + config.type + ' for ' + id);
                     break;
@@ -279,7 +354,8 @@
         var q = $.extend(true, {orderBys: [], groupBys: []}, ds.query);
         _.each(query, function(v, k)
             {
-                if (!_.include(['orderBys', 'groupBys', 'groupedColumns'], k))
+                if (!_.include(['orderBys', 'groupBys', 'groupedColumns',
+                        'searchString'], k))
                 { q[k] = $.extend(true, _.isArray(v) ? [] : {}, q[k], v); }
             });
 
@@ -316,7 +392,10 @@
         }
         if (_.isEmpty(q.groupBys)) { delete q.groupBys; }
 
-        ds.update({ query: q });
+        var props = { query: q };
+        if (!$.isBlank(query.searchString))
+        { props.searchString = query.searchString; }
+        ds.update(props);
         updateGroupedCols(ds, query);
     };
 

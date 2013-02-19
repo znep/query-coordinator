@@ -25,7 +25,24 @@ module Canvas2
       all_c = []
       if !context.blank?
         if context.is_a? Array
-          context.each_with_index { |item, i| all_c << add_row(item, i, item.clone) }
+          context.each_with_index do |item, i|
+            item = { value: item } if !item.is_a?(Hash)
+            all_c << add_row(item, i, item.clone)
+          end
+
+        elsif context[:type] == 'goalList'
+          if !@properties['groupBy'].blank?
+            all_c = render_group_items(context[:goalList])
+          else
+            context[:goalList].each_with_index {|g, i| all_c << add_row(g, i, g.clone) }
+          end
+
+        elsif context[:type] == 'govstatCategoryList'
+          if !@properties['groupBy'].blank?
+            all_c = render_group_items(context[:categoryList])
+          else
+            context[:categoryList].each_with_index {|c, i| all_c << add_row(c, i, c.clone) }
+          end
 
         elsif context[:type] == 'datasetList'
           context[:datasetList].each_with_index {|ds, i| all_c << add_row(ds, i, ds.clone) }
@@ -83,6 +100,21 @@ module Canvas2
       end
 
       [t, fully_rendered, child_timings]
+    end
+
+    def child_resolver
+      parent_resolver = self.parent.child_resolver() if !self.parent.blank?
+      parent_resolver = Util.base_resolver() if parent_resolver.blank?
+      lambda do |name|
+        if !context.blank?
+          keyed_c = {}
+          context.is_a?(Array) ?
+            context.each { |dc| keyed_c[dc[:id]] = dc if dc.is_a?(Hash) } : (keyed_c[context[:id]] = context)
+          v = Util.deep_get(keyed_c, name)
+        end
+        v = parent_resolver.call(name) if v.blank?
+        v
+      end
     end
 
     def child_context

@@ -1,6 +1,8 @@
 require 'digest/md5'
 
 class CustomContentController < ApplicationController
+  include CustomContentHelper
+  include GovstatHelper
 
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
@@ -23,6 +25,14 @@ class CustomContentController < ApplicationController
     @stylesheet = 'homepage/homepage'
 
     render :action => 'show'
+  end
+
+  def govstat_homepage
+    govstat_config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
+    @page = get_page(govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym),
+                     '/', CurrentDomain.strings.site_title, params)
+
+    render 'generic_page', :locals => { :custom_styles => 'screen-govstat-homepage' }
   end
 
   def show_page
@@ -219,7 +229,11 @@ class CustomContentController < ApplicationController
       unless @page
         @meta = @custom_meta
         if full_path == '/'
-          homepage
+          if CurrentDomain.module_enabled?(:govStat)
+            govstat_homepage
+          else
+            homepage
+          end
         else
           render_404
         end
@@ -263,13 +277,19 @@ class CustomContentController < ApplicationController
             manifest.set_access_level(manifest_user)
             VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
           end
+          ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?, @page.max_age || 15.minutes)
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
         # but Rails ignores it and passes it all the way up without rescuing
         # unless I rescue a generic Exception
         rescue Exception => e
           Rails.logger.info("Caught exception trying to render page: #{e.inspect}\n#{e.backtrace[0]}\n")
-          @error = e.original_exception
+          if (e.respond_to?(:original_exception))
+            @error = e.original_exception
+          else
+            @error = e
+          end
+
           if @debug
             render :action => 'page_debug'
           elsif @edit_mode

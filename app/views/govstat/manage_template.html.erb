@@ -1,0 +1,12 @@
+<% content_for :head do %>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
+  <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
+  <title>Manage Template | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="manageTemplatePage">
+  <a class="button manageLink" href="<%= manage_site_config_path %>"><span class="ss-icon">reply</span>Back to Manage Site Configuration</a>
+  <div class="headerLine">
+    <h2>Choose a Template</h2>
+  </div>
+</div>

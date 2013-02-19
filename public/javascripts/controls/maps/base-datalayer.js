@@ -35,7 +35,7 @@
             currentObj._query = currentObj.settings.query || currentObj._view.query || {};
 
             if ($.subKeyDefined(blist, 'datasetPage.sidebar') && currentObj._index == 0
-                && $.subKeyDefined(currentObj._view, 'metadata.filterCondition'))
+                && $.subKeyDefined(currentObj._view, 'metadata.filterCondition.children'))
             { blist.datasetPage.sidebar.setDefault('filter.unifiedFilter'); }
 
             currentObj._mapProjection = currentObj._map.getProjectionObject();
@@ -54,7 +54,8 @@
             { layerObj._$flyoutTemplate.remove(); }
 
             layerObj._view.unbind(null, null, layerObj);
-            layerObj._view.unbind(null, null, layerObj._parent._primaryView);
+            if (layerObj._parent._primaryView)
+            { layerObj._view.unbind(null, null, layerObj._parent._primaryView); }
         },
 
         ready: function()
@@ -85,13 +86,13 @@
             if (this._ignoreTemporary) { delete this._ignoreTemporary; return; }
 
             var eventName = set ? 'set_temporary' : 'clear_temporary';
-            if (this._parent._primaryView != this._view)
+            if (this._parent._primaryView && this._parent._primaryView != this._view)
             { this._parent._primaryView.trigger(eventName); }
         },
 
         clearTemporary: function()
         {
-            if (this._view != this._parent._primaryView)
+            if (this._parent._primaryView && this._view != this._parent._primaryView)
             {
                 this._ignoreTemporary = true;
                 this._view._clearTemporary();

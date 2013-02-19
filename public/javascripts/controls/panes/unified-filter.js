@@ -68,14 +68,11 @@
         if ($.isBlank(child)) { return false; }
 
         var lookingFor = {
-            columnId: 'column',
-            columnFieldName: 'column',
+            column: 'column',
             subcolumn: 'column',
             value: 'literal'
         };
         var returning = {
-            columnId: 'columnId',
-            columnFieldName: 'columnFieldName',
             subcolumn: 'value',
             value: 'value'
         };
@@ -85,7 +82,10 @@
         {
             if (subchild.type == lookingFor[component])
             {
-                result.push(subchild[returning[component]]);
+                if (component == 'column')
+                { result.push(subchild.columnFieldName || subchild.columnId); }
+                else
+                { result.push(subchild[returning[component]]); }
             }
         });
 
@@ -394,7 +394,7 @@
             {
                 if (_.isUndefined(child.metadata))
                 {
-                    var column = dataset.columnForIdentifier(findConditionComponent(child, 'columnFieldName'));
+                    var column = dataset.columnForIdentifier(findConditionComponent(child, 'column'));
                     var operator = child.children[0].value;
 
                     if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], operator))
@@ -430,7 +430,7 @@
                         type: 'operator',
                         value: 'BETWEEN',
                         children: [
-                            { columnFieldName: findConditionComponent(condition, 'columnFieldName'),
+                            { columnFieldName: findConditionComponent(condition, 'column'),
                               type: 'column' },
                             { value: findConditionComponent(condition, 'value', 0),
                               type: 'literal' },

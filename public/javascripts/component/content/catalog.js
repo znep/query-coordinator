@@ -35,7 +35,6 @@ $.component.Component.extend('Catalog', 'data', {
     {
         if (!this._super.apply(this, arguments)) { return false; }
 
-        this.$contents.css(blist.configs.styles.convertProperties(this._properties));
         var props = this._stringSubstitute(this._properties);
         var params = {};
         if (!_.isEmpty(props.defaults)) { params.defaults = props.defaults; }

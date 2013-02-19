@@ -4,8 +4,8 @@ Dataset.map = {};
 
 Dataset.map.isValid = function(view, displayFormat)
 {
-    if ($.isBlank(view)) { return false; }
     if (displayFormat.viewDefinitions) { return true; }
+    if ($.isBlank(view)) { return false; }
 
     if (view.isArcGISDataset()) { return true; }
     if (view.isGeoDataset()) { return true; }

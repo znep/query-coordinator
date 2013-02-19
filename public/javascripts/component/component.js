@@ -589,7 +589,8 @@
             }
 
             if (cObj._properties.requiresContext || cObj._properties.ifValue ||
-                    !$.isBlank(cObj._properties.htmlClass))
+                    !$.isBlank(cObj._properties.htmlClass) ||
+                    !_.isEmpty(cObj._properties.styles) || !_.isEmpty(cObj._properties.styleDimensions))
             {
                 var finishedDCGet = function()
                 {
@@ -601,6 +602,8 @@
                     var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
                     cObj.$contents.removeClass(comp);
                     cObj.$contents.addClass(cObj._stringSubstitute(comp));
+                    cObj.$dom.css(blist.configs.styles.convertProperties(
+                                cObj._stringSubstitute(cObj._properties)));
                 };
                 if (!cObj._updateDataSource(cObj._properties, finishedDCGet))
                 { finishedDCGet(); }
@@ -908,7 +911,28 @@
                                     _.defer(function() { finishDC.success(eDC); });
                                 }
                                 else
-                                { _.defer(function() { finishDC.error(); }); }
+                                {
+                                    var p = cObj.parent;
+                                    if (!$.isBlank(p))
+                                    {
+                                        var findContextItem = function()
+                                        {
+                                            var item = $.deepGetStringField(p._dataContext || {}, cId);
+                                            if (!$.isBlank(item))
+                                            {
+                                                var dDC = { id: cObj.id + '-' + cId,
+                                                    type: 'entity', value: item };
+                                                _.defer(function() { finishDC.success(dDC); });
+                                            }
+                                            else
+                                            { _.defer(function() { finishDC.error(); }); }
+                                        };
+                                        if (!p._updateDataSource(null, findContextItem))
+                                        { findContextItem(); }
+                                    }
+                                    else
+                                    { _.defer(function() { finishDC.error(); }); }
+                                }
                             }
                         });
                     startDCGet();

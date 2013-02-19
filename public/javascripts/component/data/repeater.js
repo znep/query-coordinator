@@ -181,7 +181,42 @@ $.component.Container.extend('Repeater', 'content', {
         else if (_.isArray(cObj._dataContext.value))
         {
             var callback = doneWithRowsCallback(cObj._dataContext.value.length);
-            _.each(cObj._dataContext.value, function(di, i) { cObj._setRow(di, i, di, callback); });
+            _.each(cObj._dataContext.value, function(di, i)
+            {
+                if (!_.isObject(di))
+                { di = { value: di }; }
+                cObj._setRow(di, i, di, callback);
+            });
+        }
+        else if (_.isArray(cObj._dataContext.goalList))
+        {
+            var callback = doneWithRowsCallback(cObj._dataContext.goalList.length);
+            if (!$.isBlank(cObj._properties.groupBy))
+            { renderGroupItems(cObj, cObj._dataContext.goalList, doneWithRowsCallback); }
+            else
+            {
+                _.each(cObj._dataContext.goalList, function(di, i)
+                {
+                    if (!_.isObject(di))
+                    { di = { value: di }; }
+                    cObj._setRow(di, i, di, callback);
+                });
+            }
+        }
+        else if (_.isArray(cObj._dataContext.categoryList))
+        {
+            var callback = doneWithRowsCallback(cObj._dataContext.categoryList.length);
+            if (!$.isBlank(cObj._properties.groupBy))
+            { renderGroupItems(cObj, cObj._dataContext.categoryList, doneWithRowsCallback); }
+            else
+            {
+                _.each(cObj._dataContext.categoryList, function(di, i)
+                {
+                    if (!_.isObject(di))
+                    { di = { value: di }; }
+                    cObj._setRow(di, i, di, callback);
+                });
+            }
         }
         else if (view = (cObj._dataContext || {}).dataset)
         {
@@ -380,7 +415,7 @@ var setUpProperties = function(cObj, children)
     };
 
     cObj._noChildrenCloneProperties = {
-        id: 'noChildren-clone',
+        id: cObj.id + '_noChildren-clone',
         children:  cObj._properties.noResultsChildren
     };
 

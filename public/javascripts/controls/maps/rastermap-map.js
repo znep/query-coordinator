@@ -36,7 +36,8 @@
 
             this.$dom().remove();
             this._view.unbind(null, null, this);
-            this._view.unbind(null, null, this._parent._primaryView);
+            if (this._parent._primaryView)
+            { this._view.unbind(null, null, this._parent._primaryView); }
         },
 
         // There is a fixed-size canvas created that doesn't flex with new map sizes.

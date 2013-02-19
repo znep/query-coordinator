@@ -1,0 +1,15 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
+  <title>Manage Data | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="manageDataPage">
+  <a class="button manageLink" href="<%= manage_path %>"><span class="ss-icon">reply</span>Back to Manage</a>
+  <div class="headerLine">
+    <h2>Recent Data</h2>
+    <a class="button ss-upload" href="<%= new_dataset_path %>">Upload New Data</a>
+  </div>
+
+  <%= render_browse(@processed_browse) %>
+  <a class="button ss-database" href="<%= browse_path %>">Browse All Data</a>
+</div>

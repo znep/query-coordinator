@@ -258,31 +258,64 @@ $(function(){
       {
         var $n  = $(prefix + "Name")       ,
             $fn = $(prefix + "FieldName")  ,
-            $d  = $(prefix + "Description");
+            $d  = $(prefix + "Description"),
+            $i  = $(prefix + "Include");
         var col = columns[columnOriginalFieldName];
         $n.val(col.name);
         $fn.val(col.fieldName);
         $d.val(col.description);
         $d.text(col.description);
+        var disableIfNecessary = function()
+        {
+          if ($i.is(":checked")) {
+            $pane.find(".mustNotBeHidden").removeAttr("disabled");
+          } else {
+            $pane.find(".mustNotBeHidden").attr("disabled", "disabled");
+          }
+        }
+        disableIfNecessary();
+        $i.click(disableIfNecessary);
       }
       onNext[key] = function($pane, state)
       {
+        var col = columns[columnOriginalFieldName];
         var $n  = $(prefix + "Name")       ,
             $fn = $(prefix + "FieldName")  ,
-            $d  = $(prefix + "Description");
+            $d  = $(prefix + "Description"),
+            $i  = $(prefix + "Include");
         var $prompt = $(".prompt");
         $prompt.val(null);
-        updateColumn(
-          columnOriginalFieldName,
-          {
-            name:$n.val().trim(),
-            fieldName:$fn.val().trim(),
-            description:$d.val()
-          },
-          defaultTransition,
-          defaultErrorHandler
-        );
+        var changes = {
+          name:$n.val().trim(),
+          fieldName:$fn.val().trim(),
+          description:$d.val()
+        }
         $prompt.blur();
+        var doUpdate = function()
+        {
+          updateColumn(
+            columnOriginalFieldName,
+            changes,
+            defaultTransition,
+            defaultErrorHandler
+          );
+        }
+        if ($i.is(":checked")) 
+        {
+          if (col.hidden)
+          {
+            col.show(doUpdate, defaultErrorHandler);
+          }
+          else { doUpdate(); }
+        }
+        else 
+        {
+          if (col.hidden)
+          {
+            defaultTransition();
+          }
+          else { col.hide(defaultTransition, defaultErrorHandler); }
+        }
         return false;
       }
     });

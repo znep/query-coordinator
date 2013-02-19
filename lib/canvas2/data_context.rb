@@ -134,6 +134,48 @@ module Canvas2
             log_timing(start_time, config)
             return true
           end)
+
+        when 'goalList'
+          goals = Goal.find(config['search'])
+          if goals.length > 0
+            available_contexts[id] = {id: id, type: config['type'],
+              count: goals.length,
+              goalList: goals.map do |g|
+                c = {type: 'goal', goal: g, id: id + '_' + g.id}
+                available_contexts[c[:id]] = c
+              end}
+          elsif config['required']
+            errors.push(DataContextError.new(config, "No goals found for goalList '" + id + "'"))
+            ret_val = false
+          end
+          log_timing(start_time, config)
+
+        when 'goal'
+          goal = Goal.find(config['goalId'])
+          if goal.nil?
+            errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
+            log_timing(start_time, config)
+            ret_val = !config['required']
+          else
+            available_contexts[id] = { id: id, type: config['type'], goal: goal }
+            log_timing(start_time, config)
+          end
+
+        when 'govstatCategoryList'
+          categories = GovstatCategory.find
+          if categories.length > 0
+            available_contexts[id] = {id: id, type: config['type'],
+              count: categories.length,
+              categoryList: categories.map do |c|
+                dc = {type: 'govstatCategory', category: c, id: id + '_' + c.id}
+                available_contexts[dc[:id]] = dc
+              end}
+          elsif config['required']
+            errors.push(DataContextError.new(config, "No categories found for govstatCategoryList '" + id + "'"))
+            ret_val = false
+          end
+          log_timing(start_time, config)
+
         end
       rescue CoreServer::CoreServerError => e
         raise DataContextError.new(config, "Core server failed: " + e.error_message,
@@ -156,7 +198,7 @@ module Canvas2
       q = {'orderBys' => [], 'groupBys' => []}.deep_merge(ds.query)
       query.each do |k, v|
         q[k] = (q[k] || ((v.is_a? Array) ? [] : {})).deep_merge(v) if k != 'orderBys' &&
-          k != 'groupBys' && k != 'groupedColumns'
+          k != 'groupBys' && k != 'groupedColumns' && k != 'searchString'
       end
 
       (query['orderBys'] || []).each do |ob|
@@ -185,6 +227,7 @@ module Canvas2
       q.delete('groupBys') if q['groupBys'].empty?
 
       ds.query.data.deep_merge!(q)
+      ds.data['searchString'] = query['searchString'] if !query['searchString'].blank?
 
       if !q['groupBys'].blank?
         cols = []

@@ -69,7 +69,6 @@ $.component.Component.extend('Picture', 'content', {
             var title = cObj._stringSubstitute(cObj._properties.title);
             var alt = cObj._stringSubstitute(cObj._properties.alt);
             cObj.$img.attr({src: url, title: title, alt: alt || title});
-            cObj.$img.css(blist.configs.styles.convertProperties(cObj._properties));
         };
         if (!cObj._updateDataSource(cObj._properties, doRender))
         { doRender(); }

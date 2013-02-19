@@ -1,4 +1,5 @@
 
+<%- isPublished = (defined? published ) && published -%>
 <div class="paneControlOuter">
   <div id="dp-col-<%= column.fieldName %>" class="docPreview column">
    <div class="docPreviewInside">
@@ -13,22 +14,27 @@
   <div class="paneFormControls">
     <h1>Customize Field: <%= column.name %></h1>
     <div class="line formControl">
+      <label class="required" for="<%=column.fieldName%>Include">Include this Field</label>
+      <%= check_box_tag(column.fieldName + "Include", "include", !column.flag?('hidden'), :title => "Include this field in the API", :class => "checkbox" + (isPublished ? " disabled" : "")) %>
+      <label class="checkboxLabel additionalHelp">Uncheck to hide this field from the API</label>
+    </div>
+    <div class="line formControl">
       <label class="required" for="<%= column.fieldName + "Name" %>">Display Name</label>
-      <%= text_field_tag(column.fieldName + "Name", column.name, :title => "enter a display name", :class => "textPrompt required liveDoc name") %>
+      <%= text_field_tag(column.fieldName + "Name", column.name, :title => "enter a display name", :class => "textPrompt required liveDoc name mustNotBeHidden") %>
       <div class="additionalHelp"><label>A human-readable name for display and export</label></div>
     </div>
     <div class="line formControl">
       <label class="required" for="<%= column.fieldName + "FieldName" %>">Field Name</label>
       <%- fieldnameFixed = (defined? disable_field_name) && disable_field_name -%>
-      <%- fnClasses = "textPrompt required liveDoc fieldName" + (fieldnameFixed ? " disabled" : "") -%>
-      <%- fnTitle = (fieldnameFixed ? "field name cannot be changed since API is published" : "enter a field name" ) -%>
+      <%- fnClasses = "textPrompt required liveDoc fieldName mustNotBeHidden" + (isPublished ? " disabled" : "") -%>
+      <%- fnTitle = (isPublished ? "field name cannot be changed since API is published" : "enter a field name" ) -%>
       <%= text_field_tag(column.fieldName + "FieldName", column.fieldName, :title => fnTitle, :class => fnClasses) %>
       <div class="additionalHelp"><label>The identifier used by developers and applications</label></div>
     </div>
     <div class="paneFormControls">
       <div class="line formControl">
         <label for="<%= column.fieldName + "Description" %>">Description</label>
-        <%= text_area_tag(column.fieldName + "Description", column.description, :title => "enter a description", :class => "textPrompt liveDoc description") %>
+        <%= text_area_tag(column.fieldName + "Description", column.description, :title => "enter a description", :class => "textPrompt liveDoc description mustNotBeHidden") %>
         <div class="additionalHelp"><label>The description that will be provided to end-users</label></div>
         <div class="additionalHelp"><label>This is optional</label></div>
       </div>

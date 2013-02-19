@@ -109,6 +109,10 @@ module Canvas2
       while i < keys.length do
         k = keys[i]
         obj = obj.data if obj.respond_to?('data')
+        if obj.is_a?(Array)
+          return nil if !k.match(/^\d+$/)
+          k = k.to_i
+        end
         return nil if obj[k].blank?
         obj = obj[k]
         i += 1

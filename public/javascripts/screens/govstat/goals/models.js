@@ -27,44 +27,44 @@ var ColumnProxy = Backbone.Model.extend({
 // DATASETPROXY
 
 var DatasetProxy = Backbone.Model.extend({
-	initialize: function(_, options)
-	{
-		if (options && !$.isBlank(options.dataset)) { this._dataset = options.dataset; }
+    initialize: function(_, options)
+    {
+        if (options && !$.isBlank(options.dataset)) { this._dataset = options.dataset; }
 
         this.on('change:id', function() { this._dataset = null; });
-	},
-	parse: function(response)
-	{
-		if (_.isString(response))
-		{
-			response = { id: response };
-		}
-		return response;
-	},
-	getDataset: function(callback)
-	{
-		// not super happy with this; in backbone parlance it would seem more
-		// correct to bind to a 'hydrate' event and handle the dry case on the
-		// consumer side. but, this seems simpler and more in line with what we
-		// already do.
-		if (!$.isBlank(this._dataset))
-		{
-			callback(this._dataset);
-		}
+    },
+    parse: function(response)
+    {
+        if (_.isString(response))
+        {
+            response = { id: response };
+        }
+        return response;
+    },
+    getDataset: function(callback)
+    {
+        // not super happy with this; in backbone parlance it would seem more
+        // correct to bind to a 'hydrate' event and handle the dry case on the
+        // consumer side. but, this seems simpler and more in line with what we
+        // already do.
+        if (!$.isBlank(this._dataset))
+        {
+            callback(this._dataset);
+        }
         else if (!this.get('id'))
         {
             callback();
         }
-		else
-		{
-			Dataset.createFromViewId(this.get('id'), callback);
-		}
-	},
-	toJSON: function() { return this.get('id'); }
+        else
+        {
+            Dataset.createFromViewId(this.get('id'), callback);
+        }
+    },
+    toJSON: function() { return this.get('id'); }
 });
 
 var DatasetsProxy = Backbone.Collection.extend({
-	model: DatasetProxy
+    model: DatasetProxy
 });
 
 // INDICATOR
@@ -174,14 +174,14 @@ var Agencies = Backbone.Collection.extend({
 var Goal = Backbone.Model.extend({
     model:
     {
-        agency: Agencies,
-		related_datasets: DatasetsProxy,
+        agencies: Agencies,
+        related_datasets: DatasetsProxy,
         metrics: Metrics
     },
 
     initialize: function()
     {
-        if (!this.get('agency')) { this.set('agency', new Agencies()); }
+        if (!this.get('agencies')) { this.set('agencies', new Agencies()); }
         if (!this.get('related_datasets')) { this.set('related_datasets', new DatasetsProxy()); }
         if (!this.get('metrics')) { this.set('metrics', new Metrics()); }
 
@@ -197,6 +197,10 @@ var Goal = Backbone.Model.extend({
             metrics.at(0).set('comparison', value);
         });
     },
+    url: function()
+    {
+        return '/api/govStatGoals' + (this.isNew() ? '' : '/' + this.id) + '.json';
+    },
     parse: function(response)
     {
         for (var key in this.model)
@@ -206,26 +210,42 @@ var Goal = Backbone.Model.extend({
             response[key] = new nestedClass(nestedData, { parse: true });
         }
         return response;
+    },
+    toJSON: function()
+    {
+        var self = this;
+        var attrs = _.clone(self.attributes);
+        _.each(_.keys(self.model), function(k) { attrs[k] = _.compact(self.attributes[k].toJSON()); });
+        _.each(_.keys(attrs), function(k)
+        {
+            if (_.isArray(attrs[k]) && _.isEmpty(attrs[k]) || _.isNull(attrs[k]))
+            { delete attrs[k]; }
+        });
+        _.each(['goal_delta'], function(k)
+        { if (_.isString(attrs[k])) { attrs[k] = parseFloat(attrs[k]); } });
+        return attrs;
     }
 });
 
 var Goals = Backbone.Collection.extend({
     model: Goal,
+    url: '/api/govStatGoals.json',
 
     initialize: function(__, options)
     {
         var self = this;
 
+        options = options || {};
         this.on('add', function(goal)
         {
             if (options.category instanceof Category)
             {
-                goal.set('category', options.category.get('name'));
+                goal.set('category', options.category.id);
                 goal.set('is_public', true);
             }
             else if (options.draft === true)
             {
-				goal.set('category', null);
+                goal.set('category', '');
                 goal.set('is_public', false);
             }
 
@@ -243,6 +263,7 @@ var Goals = Backbone.Collection.extend({
 var Category = Backbone.Model.extend({
     initialize: function()
     {
+        var self = this;
         if (!this.get('color'))
         {
             this.set('color', Category.getColor());
@@ -250,10 +271,18 @@ var Category = Backbone.Model.extend({
 
         this.goals = new Goals([], { category: this });
 
+        this.on('change:id', function()
+        {
+            this.goals.each(function(goal) { goal.set('category', self.id); });
+        });
         this.on('add', function(_, collection)
         {
             this.collection = collection;
         });
+    },
+    url: function()
+    {
+        return '/api/govStatCategories' + (this.isNew() ? '' : '/' + this.id) + '.json';
     }
 });
 
@@ -267,8 +296,9 @@ Category.getColor = function()
 
 var Categories = Backbone.Collection.extend({
     model: Category,
+    url: '/api/govStatCategories.json',
 
-    initialize: function(__, options)
+    initialize: function()
     {
         var self = this;
 
@@ -291,7 +321,7 @@ $.extend(blist.namespace.fetch('blist.govstat'), {
         Categories: Categories,
         Goals: Goals,
         Agencies: Agencies,
-		DatasetsProxy: DatasetsProxy
+        DatasetsProxy: DatasetsProxy
     },
     models:
     {
@@ -299,7 +329,7 @@ $.extend(blist.namespace.fetch('blist.govstat'), {
         Goal: Goal,
         Metric: Metric,
         Agency: Agency,
-		DatasetProxy: DatasetProxy
+        DatasetProxy: DatasetProxy
     }
 });
 

@@ -5,20 +5,29 @@
 #
 module ConditionalRequestHandler
 
+  def self.set_cache_control_headers(response, anonymous = false, maxAge = 15.minutes)
+    #
+    # Return to the previously, conservative Cache-Control headers. Cache servers appear
+    # to not only ignore certain headers, those headers which they do pay attention to
+    # they sometimes handle incorrectly.
+    #
+    # From now on; the only Cache-Control headers we shall use are the ones we have
+    # explicit control over through our own caching server, and we will manage those
+    # internally to the caching server using the extra socrata-specific
+    # X-Socrata-Cache-Control header.
+    #
+    response.headers[CACHE_CONTROL] = "private, no-cache, must-revalidate"
+    if anonymous
+      response.headers[X_SOCRATA_CACHE_CONTROL] = "public"
+    else
+      response.headers[X_SOCRATA_CACHE_CONTROL] = "private"
+    end
+  end
+
   def self.set_conditional_request_headers(response, manifest)
     return if manifest.nil?
     response.headers[ETAG] = manifest.hash
     response.headers[LAST_MODIFIED] = Time.now.httpdate
-    # The cache-control settings are conservative here.
-    # public/private
-    # If "public", apache mod_cache will perform their own caching; they may serve 200's
-    # and do the conditional request to the frontend. This can be incorrect because
-    # rails may say it is returning a 304 but a 200 is sent from apache.
-    #
-    # max-age=0 means that some caching servers can serve stale pages, as opposed to no-cache which
-    # means a successful validation must always occur. "no-cache" does not prevent storage, it is
-    # just a stricter form of validation.
-    response.headers[CACHE_CONTROL] = "must-revalidate, no-cache, private"
     # Set a special header for testing
     response.headers[X_SOCRATA_CONDITIONAL] = "#{response.headers[ETAG]},#{response.headers[LAST_MODIFIED]}"
     Rails.logger.info("Setting conditional headers: #{response.headers[X_SOCRATA_CONDITIONAL]}")
@@ -40,6 +49,7 @@ module ConditionalRequestHandler
   ETAG          = "ETag".freeze
   CACHE_CONTROL = "Cache-Control".freeze
   X_SOCRATA_CONDITIONAL = "X-Socrata-Conditional".freeze
+  X_SOCRATA_CACHE_CONTROL = "X-Socrata-Cache-Control".freeze
 
   def self.etag_exists?(request)
     !request.if_none_match.nil?

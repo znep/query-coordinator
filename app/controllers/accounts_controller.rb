@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+  include UserSessionsHelper
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
   skip_before_filter :adjust_format, :only => [:update]
   protect_from_forgery :except => [:add_rpx_token]
@@ -24,7 +25,7 @@ class AccountsController < ApplicationController
     respond_to do |format|
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       if @signup.create
-        format.html { redirect_to(@signup.user.href) }
+        format.html { redirect_to(login_redirect_url) }
         format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
@@ -80,7 +81,7 @@ class AccountsController < ApplicationController
         user = User.parse(result.body)
         @user_session = UserSession.new('login' => user.id, 'password' => params[:password])
         if @user_session.save
-          return redirect_to(profile_index_path)
+          return redirect_to(login_redirect_url)
         else
           # Hmmm. They successfully reset their password, but we couldn't log them in?
           # Something's very wrong. Let's just put them at the login page and have them
@@ -102,6 +103,6 @@ class AccountsController < ApplicationController
   rescue CoreServer::CoreServerError => e
     flash[:error] = e.error_message
   ensure
-    redirect_to CurrentDomain.properties.on_login_path_override || profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
+    redirect_to login_redirect_url
   end
 end

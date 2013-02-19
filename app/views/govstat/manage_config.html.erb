@@ -1,0 +1,14 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
+  <title>Manage Site Configuration | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="manageConfigPage">
+  <a class="button manageLink" href="<%= manage_path %>"><span class="ss-icon">reply</span>Back to Manage</a>
+  <div class="actionLinks">
+    <a href="<%= users_path %>"><span class="ss-icon">users</span><p>Manage Users</p></a>
+    <a href="<%= url_for :controller => 'govstat', :action => 'goals' %>"><span class="ss-icon">calendarcheck</span><p>Manage Goals and Categories</p></a>
+    <a href="<%= manage_template_path %>"><span class="ss-icon">layout</span><p>Select Template</p></a>
+  </div>
+</div>
+

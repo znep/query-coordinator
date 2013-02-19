@@ -5,6 +5,7 @@ $.component.Component.extend('Map', 'data', {
     {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
+        this._vdefsToLoad = arguments[0].viewDefinitions;
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row', 'datasetId']});
     },
@@ -70,6 +71,38 @@ $.component.Component.extend('Map', 'data', {
         { lcObj.startLoading(); });
         lcObj.$contents.on('render_finished.map_' + lcObj.id, function()
         { lcObj.finishLoading(); });
+
+        lcObj._addDefinitions(lcObj._vdefsToLoad);
+    },
+
+    add: function(viewdef)
+    {
+        if ($.isBlank(viewdef)) return;
+        if ($.isArray(viewdef))
+        {
+            var result = _.map(viewdef.slice(), function(l) { return this.add(l); }, this);
+
+            return result;
+        }
+
+        if (!(viewdef instanceof $.component.MapLayer))
+        {
+            viewdef = $.component.create(viewdef, this._componentSet);
+            viewdef._map = this;
+            this._viewDefinitions = this._viewDefinitions || [];
+            this._viewDefinitions.push(viewdef);
+        }
+
+        return viewdef;
+    },
+
+    _addDefinitions: function()
+    {
+        if (!$.isBlank(this._vdefsToLoad))
+        {
+            this.add(this._vdefsToLoad);
+            delete this._vdefsToLoad;
+        }
     },
 
     _render: function()
@@ -118,31 +151,41 @@ var updateProperties = function(lcObj, properties)
 {
     var setUpMap = function()
     {
-        if ($.isBlank(lcObj._dataContext)) { return; }
+        var df = lcObj._stringSubstitute(lcObj._properties.displayFormat)
+        if (!lcObj._dataContext) // Do not manipulate DF in legacy cases.
+        {
+            df.viewDefinitions = df.viewDefinitions || [];
+            _.each(lcObj._viewDefinitions || [], function(vd, index)
+            { df.viewDefinitions.push(vd._displayFormat()); });
+        }
+
         if (!$.isBlank(lcObj._map))
-        { lcObj._map.setView(lcObj._dataContext.dataset); }
+        { lcObj._map.updateDisplayFormat(df); }
         else
         {
             lcObj.$contents.empty();
             lcObj._map = lcObj.$contents.socrataMap({
                 showRowLink: false,
-                displayFormat: lcObj._stringSubstitute(lcObj._properties.displayFormat),
+                displayFormat: df,
                 view: lcObj._dataContext.dataset
             });
             lcObj._updateValidity();
         }
     };
 
-    if (!lcObj._updateDataSource(null, setUpMap))
-    {
-        if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
+    var after = _.after((lcObj._viewDefinitions || []).length, function() {
+        if (!lcObj._updateDataSource(null, setUpMap))
         {
-            var newM = lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));
-            if (!$.isBlank(newM)) { lcObj._map = newM; }
+            if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
+            {
+                var newM = lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));
+                if (!$.isBlank(newM)) { lcObj._map = newM; }
+            }
+            else
+            { setUpMap(); }
         }
-        else
-        { setUpMap(); }
-    }
+    });
+    _.each(lcObj._viewDefinitions || [], function(l) { l._updateDataSource(null, after); });
 };
 
 })(jQuery);

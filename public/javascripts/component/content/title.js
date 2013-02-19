@@ -34,7 +34,6 @@ $.component.Component.extend('Title', 'content', {
         {
             var t = $.isBlank(cObj._properties.text) ? '' : cObj._properties.text;
             cObj.$title.text(cObj._stringSubstitute(t));
-            cObj.$title.css(blist.configs.styles.convertProperties(cObj._properties));
         }
         if (!cObj._updateDataSource(cObj._properties, doRender))
         { doRender(); }

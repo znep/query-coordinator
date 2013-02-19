@@ -155,6 +155,7 @@ Frontend::Application.routes do
   get '/datasets' => 'profile#index'
 
   get '/analytics' => 'analytics#index'
+  post '/analytics/add/:domain_entity/:metric' => 'analytics#add'
 
   scope :controller => 'profile', :path => '/profile',
         :constraints => {:id => UID_REGEXP, :profile_name => /(\w|-)+/} do
@@ -306,7 +307,13 @@ Frontend::Application.routes do
   scope :controller => 'govstat' do
     match '/goals-new', :action => 'goals'
 
-    # TODO: only expose these pages when the domain is a govstat instance
+    match '/goal/:id', :action => 'goal_page', :constraints => { :id => UID_REGEXP }
+
+    match '/manage', :action => 'manage'
+    match '/manage/data', :action => 'manage_data'
+    match '/manage/reports', :action => 'manage_reports'
+    match '/manage/site_config', :action => 'manage_config'
+    match '/manage/template', :action => 'manage_template'
   end
 
   # Custom pages, catalogs, facets

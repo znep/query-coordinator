@@ -95,9 +95,10 @@ module Canvas2
             b_rows.push(context[:dataset].row_to_SODA2(r));
           end
         elsif context[:type] == 'datasetList'
-          context[:datasetList].each_with_index { |ds, i| b_rows.push(add_row(@properties['row'], ds, i, context[:datasetList].length)) }
+          context[:datasetList].each_with_index { |ds, i| b_rows.push(ds[:dataset]) }
         end
       end
+
       b_rows
     end
 
@@ -127,7 +128,6 @@ module Canvas2
 
         first_row = true
       end
-
 
       ret_val = nil
 

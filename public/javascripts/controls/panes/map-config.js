@@ -247,8 +247,9 @@
     mapConfigNS.config = function(options)
     {
         options = $.extend({isEdit: false, useOtherSidebars: false}, options);
-        return [
-            {
+        var config = [];
+        if (options.convas)
+        { config.push({
                 title: 'Dataset Summary',
                 fields: [
                     { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: 'Add Data',
@@ -263,8 +264,8 @@
                         ]}, minimum: 1
                     }
                 ]
-            },
-            {
+            }); }
+        config.push({
                 title: 'Base Maps',
                 fields: [
                     { type: 'note', value: 'Select from a list of map services ' +
@@ -294,14 +295,14 @@
                     { text: 'Exclusive', name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
                     { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
                 ]
-            }
-        ];
+            });
+        return config;
     };
 
     mapConfigNS.dataLayer = {};
     mapConfigNS.dataLayer.socrataBase = function(options)
     {
-        var prefix = options.prefix;
+        var prefix = options.prefix || 'displayFormat.';
         var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
         return [
             {text: 'Plot Style', type: 'select', name: prefix+'plotStyle',
@@ -319,7 +320,7 @@
     };
     mapConfigNS.dataLayer.socrata = function(options)
     {
-        var prefix = options.prefix;
+        var prefix = options.prefix || 'displayFormat.';
         var pointOnly = {field: prefix+'plotStyle', value: 'point' };
         var quantity = {field: prefix+'plotStyle', value: 'point', negate: true };
         var flyouts = {field: prefix+'plotStyle', value: 'rastermap', negate: true };

@@ -16,15 +16,15 @@ class GovstatController < ApplicationController
   def manage
     govstat_config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
     config = govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym)
-    config[:content][:children] << { type: 'HorizontalContainer', htmlClass: 'actionLinks', children: [
+    config[:content][:children].unshift({ type: 'HorizontalContainer', htmlClass: 'actionLinks', children: [
       { type: 'Button', href: manage_data_path, notButton: true,
         text: '<span class="ss-icon">database</span><p>Data and Analysis</p>' },
       { type: 'Button', href: manage_reports_path, notButton: true,
         text: '<span class="ss-icon">openbook</span><p>Reports</p>' },
       { type: 'Button', href: manage_site_config_path, notButton: true,
         text: '<span class="ss-icon">checkcalendar</span><p>Goals and Users</p>' }
-    ] }
-    @page = get_page(config, request.path, 'Manage |' + CurrentDomain.strings.site_title, params)
+    ] })
+    @page = get_page(config, request.path, 'Manage | ' + CurrentDomain.strings.site_title, params)
     render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage' }
   end
 

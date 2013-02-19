@@ -3,6 +3,7 @@
 $.component.Component.extend('Map Layer', 'data', {
     _init: function()
     {
+        this._needsOwnContext = true;
         this._delayUntilVisible = true;
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row', 'datasetId']});
@@ -11,13 +12,23 @@ $.component.Component.extend('Map Layer', 'data', {
     _displayFormat: function()
     {
         return $.extend(true, {}, this._properties.displayFormat,
-            { context: { dataset: this._dataContext.dataset }});
+            { context: { dataset: (this._dataContext || {}).dataset }, component: this });
+    },
+
+    setDataObj: function(dataObj)
+    {
+        this._dataObj = dataObj;
     },
 
     isValid: function()
     {
-        return true; // TODO
-        //return $.isBlank(this._map) ? false : this._map.isValid();
+        //return $.isBlank(this._dataObj) ? false : this._dataObj.isValid();
+        var valid = $.isBlank(this._dataContext) ? false :
+            ($.subKeyDefined(this._properties, 'displayFormat.plot.locationId')
+             && $.subKeyDefined(this._properties, 'displayFormat.plotStyle'));
+        if ($.deepGet(this._properties, 'displayFormat', 'plotStyle') == 'heatmap')
+        { valid = valid && $.subKeyDefined(this._properties, 'displayFormat.heatmap.type'); }
+        return valid;
     },
 
     configurationSchema: function()
@@ -30,24 +41,20 @@ $.component.Component.extend('Map Layer', 'data', {
         {
             if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
-            retVal.schema = retVal.schema.concat(blist.configs.map.dataLayer.config({view: this._dataContext.dataset}));
+            retVal.schema = retVal.schema
+                .concat({ title: 'Basic Configuration',
+                    fields: blist.configs.map.dataLayer.socrataBase({view: this._dataContext.dataset})})
+                .concat({ title: 'Advanced Configuration',
+                    fields: blist.configs.map.dataLayer.socrata({view: this._dataContext.dataset})});
         }
         return retVal;
     },
 
-    _getAssets: function()
+    // No dragging; no repositioning. For now.
+    dragFocus: function()
     {
-        return {
-            javascripts: [
-                'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.3', false,
-                { assets: 'shared-map' }
-            ],
-            stylesheets: ['https://serverapi.arcgisonline.com/jsapi/arcgis' +
-                '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
-                {assets: 'render-images-bundle', hasImages: true},
-                {assets: 'display-map'},
-                {assets: 'rich-render-bundle'}]
-        };
+        if (this.$dom.isControlClass('nativeDraggable'))
+        { this.$dom.nativeDraggable().disable(); }
     },
 
     _getEditAssets: function()
@@ -59,36 +66,56 @@ $.component.Component.extend('Map Layer', 'data', {
         };
     },
 
+    _render: function()
+    {
+        if (!this._super()) { return false; }
+
+        updateProperties(this);
+
+        return true;
+    },
+
     _propWrite: function(properties)
     {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
 
         if (lcObj._rendered)
-        { updateProperties(lcObj, properties); }
+        { updateProperties(lcObj); }
     }
 });
 
-var updateProperties = function(lcObj, properties)
+var updateProperties = function(lcObj)
 {
-    var setUpMap = function()
+    var updateMap = function()
     {
-        if (!$.isBlank(lcObj._map))
-        {
-            lcObj._map.updateDisplayFormat(df);
-        }
-    };
-
-    if (!lcObj._updateDataSource(null, setUpMap))
-    {
-        if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
-        {
-            var newM = lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));
-            if (!$.isBlank(newM)) { lcObj._map = newM; }
-        }
+        var text;
+        if (!$.subKeyDefined(lcObj._dataContext, 'dataset'))
+        { text = 'No dataset selected'; }
+        //else if (lcObj._dataObj)
+        //{ text = lcObj._dataObj.describe(); }
         else
-        { setUpMap(); }
-    }
+        {
+            var ds = lcObj._dataContext.dataset,
+                df = lcObj._properties.displayFormat,
+                info = [];
+
+            if (df.plotStyle == 'point')
+            { info.push('Point map for dataset '); }
+            else if (df.plotStyle == 'heatmap')
+            { info.push('Boundary map for dataset '); }
+            else if (df.plotStyle == 'rastermap')
+            { info.push('Heat map for dataset '); }
+            info.push('<b>' + ds.name || ds.id + '</b>');
+
+            text = info.join('');
+        }
+        lcObj.$contents.html(text);
+
+        if (lcObj.isValid())
+        { lcObj.parent.updateDisplayFormat(); }
+    };
+    if (!lcObj._updateDataSource(null, updateMap)) { updateMap(); }
 };
 
 })(jQuery);

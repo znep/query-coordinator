@@ -5,27 +5,68 @@ $.component.Component.extend('Map', 'data', {
     {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
-        this._vdefsToLoad = arguments[0].viewDefinitions;
+        if ($.subKeyDefined(arguments[0], 'displayFormat.viewDefinitions'))
+        {
+            var contextId = arguments[0].contextId;
+            arguments[0].viewDefinitions = _.map(arguments[0].displayFormat.viewDefinitions,
+            function(vd)
+            { // TODO: Rewrite this assuming _.map, which I wasn't before.
+                if ($.isBlank(vd.displayFormat))
+                {
+                    vd = { displayFormat: vd };
+                    vd.uid = vd.displayFormat.uid; vd.contextId = vd.displayFormat.contextId;
+                }
+                if ($.isBlank(vd.uid) && $.isBlank(vd.contextId) && !$.isBlank(contextId))
+                { vd.contextId = contextId; }
+                vd.type = 'MapLayer';
+
+                return vd;
+            });
+            delete arguments[0].contextId;
+            delete arguments[0].displayFormat.viewDefinitions;
+        }
+        this._vdefsToLoad = arguments[0].viewDefinitions || [];
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row', 'datasetId']});
     },
 
+    updateDisplayFormat: function()
+    {
+        if (!$.isBlank(this._map))
+        { this._map.updateDisplayFormat(this._displayFormat()); }
+    },
+
+    _displayFormat: function()
+    {
+        var lcObj = this,
+            df = lcObj._stringSubstitute(lcObj._properties.displayFormat);
+        if (!lcObj._dataContext) // Do not manipulate DF in legacy cases.
+        {
+            df.viewDefinitions = df.viewDefinitions || [];
+            _.each(lcObj._viewDefinitions || [], function(vd, index)
+            { df.viewDefinitions.push(vd._displayFormat()); });
+        }
+
+        return df;
+    },
+
     isValid: function()
     {
-        return $.isBlank(this._map) ? false : this._map.isValid();
+        return !$.isBlank(this._viewDefinitions)
+            || !$.isBlank(this._vdefsToLoad)
+            || ($.isBlank(this._map) ? false : this._map.isValid());
     },
 
     configurationSchema: function()
     {
         if (this._super.apply(this, arguments) === false) { return false; }
 
-        var retVal = {schema: [{ fields: [$.cf.contextPicker()] }],
-            view: (this._dataContext || {}).dataset};
+        var retVal = {schema: [], view: (this._dataContext || {}).dataset};
         if (blist.configuration.canvasX || blist.configuration.govStat)
         {
-            if ($.isBlank(this._dataContext)) { return retVal; }
+            //if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
-            retVal.schema = retVal.schema.concat(blist.configs.map.config({view: this._dataContext.dataset}));
+            retVal.schema = retVal.schema.concat(blist.configs.map.config({view: (this._dataContext || {}).dataset, canvas: true }));
         }
         return retVal;
     },
@@ -59,6 +100,15 @@ $.component.Component.extend('Map', 'data', {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
 
+        if (!lcObj.$overlay && lcObj._designing)
+        {
+            lcObj.$overlay = $.tag({ tagName: 'div', 'class': 'mapBoxOverlay' });
+            lcObj.$dom.append(lcObj.$overlay);
+            lcObj.$overlay.append($.tag({ tagName: 'div', 'class': 'mapOverlayTitle',
+                contents: 'Layers in this Map:' }));
+            lcObj.$contents.css('zIndex', 1);
+        }
+
         lcObj.$contents.off('.map_' + lcObj.id);
         lcObj.$contents.on('display_row.map_' + lcObj.id, function(e, args)
         {
@@ -88,10 +138,12 @@ $.component.Component.extend('Map', 'data', {
         if (!(viewdef instanceof $.component.MapLayer))
         {
             viewdef = $.component.create(viewdef, this._componentSet);
-            viewdef._map = this;
+            viewdef.parent = this;
             this._viewDefinitions = this._viewDefinitions || [];
             this._viewDefinitions.push(viewdef);
         }
+
+        this._moveChildDom(viewdef);
 
         return viewdef;
     },
@@ -111,9 +163,33 @@ $.component.Component.extend('Map', 'data', {
         if (!_.isNumber(lcObj._properties.height))
         { lcObj._properties.height = 300; }
         if (!lcObj._super.apply(lcObj, arguments)) { return false; }
+        _.each(lcObj._viewDefinitions || [], function(l) { lcObj._moveChildDom(l); });
 
         updateProperties(lcObj, lcObj._properties);
         return true;
+    },
+
+    _moveChildDom: function(child)
+    {
+        if (!child._initialized)
+        {
+            child._initDom();
+            if (this._designing) { child.design(true); }
+        }
+
+        if (this.$overlay && child.$dom.parent().length == 0)
+        { this.$overlay[0].appendChild(child.dom); }
+
+        if (this._designing && this.$overlay && !child._rendered)
+        { child._render(); }
+    },
+
+    _childRemoved: function(child)
+    {
+        var index = this._viewDefinitions.indexOf(child);
+        this._viewDefinitions.splice(index, 1);
+
+        this.updateDisplayFormat();
     },
 
     _shown: function()
@@ -144,20 +220,54 @@ $.component.Component.extend('Map', 'data', {
         this._super.apply(this, arguments);
         if (!$.isBlank(this.$contents))
         { this.$contents.trigger('resize'); }
+    },
+
+    design: function(designing)
+    {
+        var cObj = this;
+        this._super.apply(this, arguments);
+        _.each(this._viewDefinitions || [], function(child) { child.design(designing); });
+        if (!$.isBlank(this.$dom) && this.canEdit('drop') &&
+                !this.$dom.isControlClass('nativeDropTarget'))
+        {
+            if (designing)
+            {
+                this.$dom.nativeDropTarget({
+                    contentEditable: false,
+                    acceptCheck: function($item)
+                    {
+                        return $item.data('typename') == 'MapLayer' &&
+                            ($item.hasClass('socrata-component') ||
+                            $item.hasClass('componentCreate'));
+                    },
+                    dropCallback: function(dropId, dropType)
+                    {
+                        if (dropType == 'copy')
+                        {
+                            $.cf.edit.execute('add', {
+                                container: cObj,
+                                childTemplate: { type: 'MapLayer' }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        else if (!$.isBlank(this.$dom) && this.$dom.isControlClass('nativeDropTarget'))
+        {
+            if (designing)
+            { this.$dom.nativeDropTarget().enable(); }
+            else
+            { this.$dom.nativeDropTarget().disable(); }
+        }
     }
 });
 
-var updateProperties = function(lcObj, properties)
+var updateProperties = function(lcObj)
 {
     var setUpMap = function()
     {
-        var df = lcObj._stringSubstitute(lcObj._properties.displayFormat)
-        if (!lcObj._dataContext) // Do not manipulate DF in legacy cases.
-        {
-            df.viewDefinitions = df.viewDefinitions || [];
-            _.each(lcObj._viewDefinitions || [], function(vd, index)
-            { df.viewDefinitions.push(vd._displayFormat()); });
-        }
+        var df = lcObj._displayFormat();
 
         if (!$.isBlank(lcObj._map))
         { lcObj._map.updateDisplayFormat(df); }
@@ -167,25 +277,18 @@ var updateProperties = function(lcObj, properties)
             lcObj._map = lcObj.$contents.socrataMap({
                 showRowLink: false,
                 displayFormat: df,
-                view: lcObj._dataContext.dataset
+                view: (lcObj._dataContext || {}).dataset
             });
             lcObj._updateValidity();
         }
     };
 
     var after = _.after((lcObj._viewDefinitions || []).length, function() {
-        if (!lcObj._updateDataSource(null, setUpMap))
-        {
-            if (!$.isBlank(properties.displayFormat) && !$.isBlank(lcObj._map))
-            {
-                var newM = lcObj._map.reload(lcObj._stringSubstitute(lcObj._properties.displayFormat));
-                if (!$.isBlank(newM)) { lcObj._map = newM; }
-            }
-            else
-            { setUpMap(); }
-        }
+        if (!lcObj._updateDataSource(null, setUpMap)) { setUpMap(); }
     });
-    _.each(lcObj._viewDefinitions || [], function(l) { l._updateDataSource(null, after); });
+    _.each(lcObj._viewDefinitions || [], function(l) {
+        if (!l._updateDataSource(null, after)) { after(); }
+    });
 };
 
 })(jQuery);

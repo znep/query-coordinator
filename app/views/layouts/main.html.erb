@@ -97,7 +97,7 @@ http://www.socrata.com
       </div>
       <%- end -%>
 
-      <a name="content"></a>
+      <a name="content"  tabindex="-1"></a>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
@@ -111,7 +111,7 @@ http://www.socrata.com
 
   <%- if !@suppress_chrome -%>
   <div id="siteFooter">
-    <a name="footerLinks"></a>
+    <a name="footerLinks" tabindex="-1"></a>
     <%= render_domain_template(@page_custom_footer || 'footer_full') %>
   </div>
   <%- end -%>

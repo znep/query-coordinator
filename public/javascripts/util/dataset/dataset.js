@@ -287,7 +287,7 @@ var Dataset = ServerModel.extend({
             {
                 dsOrig.metadata = dsOrig.metadata || {};
                 dsOrig.metadata.query = {};
-                dsOrig.metadata.query[dsOrig.id] = $.extend(true, {}, dsOrig.cleanFilters(true));
+                dsOrig.metadata.query[dsOrig.id] = $.extend(true, {}, { filterCondition: dsOrig.cleanFilters(true) });
             }
         }
 

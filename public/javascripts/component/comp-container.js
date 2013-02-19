@@ -368,8 +368,9 @@
                         contentEditable: false,
                         acceptCheck: function($item)
                         {
-                            return $item.hasClass('socrata-component') ||
-                                $item.hasClass('componentCreate');
+                            return $item.data('typename') != 'MapLayer' &&
+                                ($item.hasClass('socrata-component') ||
+                                $item.hasClass('componentCreate'));
                         },
                         dragOverCallback: function() { return cObj._handleDragOver.apply(cObj, arguments); },
                         dragLeaveCallback: function()

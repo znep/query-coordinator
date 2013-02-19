@@ -125,33 +125,11 @@ html, body
 
 // Site content
 
-.contentBox
-  background-color: #fff
-  border: 1px solid $color_chrome_box_border
-  @include border-radius(0.2em)
-  max-width: 100%
-  margin: 0
-    bottom: $chrome_margin_inner
-  padding: 1.5em
-  &.fixedWidth
-    max-width: 100em
-    margin: 1em auto
-  &.withLeftNavigation
-    margin-left: #{17em + $chrome_margin_inner}
 
-  h1
-    font-size: 1.8em
-  h2
-    color: #444
-    font-size: 1.5em
-    margin-top: 1em
-  
-  .jqmWindow
-    display: none
-    left: 50%
-    min-height: 0
-    position: fixed
-    top: 0
+
+.contentBox
+  @include contentBoxParent
+  max-width: 100%
 
 
 

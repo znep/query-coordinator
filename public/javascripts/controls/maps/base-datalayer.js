@@ -34,6 +34,9 @@
                 || currentObj._view.displayFormat;
             currentObj._query = currentObj.settings.query || currentObj._view.query || {};
 
+            if ($.subKeyDefined(currentObj, '_displayFormat.component'))
+            { currentObj._displayFormat.component.setDataObj(this); }
+
             if ($.subKeyDefined(blist, 'datasetPage.sidebar') && currentObj._index == 0
                 && $.subKeyDefined(currentObj._view, 'metadata.filterCondition.children'))
             { blist.datasetPage.sidebar.setDefault('filter.unifiedFilter'); }
@@ -103,6 +106,9 @@
         handleDisplayFormatChange: function(newDF)
         {
             var layerObj = this;
+
+            if (newDF.component)
+            { newDF.component.setDataObj(layerObj); }
 
             //console.log('handleDisplayFormatChange');
             //console.dir(newDF);

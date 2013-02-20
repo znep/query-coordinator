@@ -62,7 +62,7 @@ module Canvas2
             end
 
           else
-            if Canvas2::Util.debug
+            if Canvas2::Util.no_cache
               rows = context[:dataset].get_rows(100, 1, {}, false, !Canvas2::Util.is_private)
             else
               rows = context[:dataset].get_cached_rows(100, 1, {}, !Canvas2::Util.is_private)

@@ -55,6 +55,14 @@ module Canvas2
       @@debug
     end
 
+    def self.set_no_cache(no_cache)
+      @@no_cache = no_cache
+    end
+
+    def self.no_cache
+      @@no_cache || debug
+    end
+
     def self.set_env(env)
       @@env = env
     end

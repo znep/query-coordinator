@@ -248,14 +248,14 @@
     {
         options = $.extend({isEdit: false, useOtherSidebars: false}, options);
         var config = [];
-        if (!options.convas)
+        if (!options.canvas)
         { config.push({
                 title: 'Dataset Summary',
                 fields: [
                     { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: 'Add Data',
                         field: {type: 'group', options: [
                             { text: 'Dataset', type: 'custom', name: 'uid', required: true,
-                              defaultValue: options.parentControl._view.id, repeaterValue: '',
+                              defaultValue: options.view.id, repeaterValue: '',
                               editorCallbacks: {
                                 create: datasetCreate,
                                 value: function($field) { return $field.data('uid'); }

@@ -32,7 +32,7 @@
             mapObj._librariesLoaded();
         },
 
-        initializeVisualization: function ()
+        initializeVisualization: function()
         {
             var mapObj = this;
 
@@ -109,14 +109,14 @@
                 mapObj._primaryView.bind('query_change', function()
                 { mapObj.updateSearchString(); });
             }
-            else
-            { mapObj.updateDisplayFormat(mapObj.settings.displayFormat); }
+            else if ($.subKeyDefined(mapObj, '_displayFormat.bkgdLayers')) // Canvas from scratch
+            { mapObj.initializeBackgroundLayers(); }
         },
 
         updateDisplayFormat: function(df)
         {
             var mapObj = this;
-            if ($.isBlank(mapObj.map)) { return; }
+            if ($.isBlank(mapObj.map)) { mapObj._displayFormat = df; return; } // Ensure validity.
 
             mapObj.closePopup();
             if (mapObj._panning) { delete mapObj._panning; return; }
@@ -137,7 +137,7 @@
             { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()
                                                    : mapObj._controls.Overview.disableLegend(); }
 
-            var length = mapObj._displayFormat.viewDefinitions.length;
+            var length = (mapObj._displayFormat.viewDefinitions || []).length;
             _.each(mapObj._children.slice(length), function(childView) { childView.destroy(); });
             mapObj._children = mapObj._children.slice(0, length);
             mapObj._controls.Overview.truncate(length);
@@ -172,7 +172,7 @@
             if (!childViewConstructing)
             {
                 mapObj.buildSelectFeature();
-                if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
+                if ((mapObj._displayFormat.viewDefinitions || []).length == mapObj._children.length
                     && _.all(mapObj._children, function(cv) { return !cv.loading; }))
                 { mapObj._onDatasetsLoaded(); }
             }

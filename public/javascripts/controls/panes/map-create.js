@@ -103,7 +103,7 @@
 
         _getSections: function()
         {
-            return blist.configs.map.config({parentControl: this, view: this._view,
+            return blist.configs.map.config({view: this._view,
                 isEdit: isEdit(this), useOtherSidebars: true});
         },
 

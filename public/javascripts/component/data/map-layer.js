@@ -94,6 +94,12 @@ var updateProperties = function(lcObj)
         { text = 'No dataset selected'; }
         //else if (lcObj._dataObj)
         //{ text = lcObj._dataObj.describe(); }
+        else if (!$.subKeyDefined(lcObj._properties, 'displayFormat.plotStyle'))
+        {
+            var ds = lcObj._dataContext.dataset;
+
+            text = 'Layer for dataset ' + (ds.name || ds.id) + '. No plot style selected';
+        }
         else
         {
             var ds = lcObj._dataContext.dataset,

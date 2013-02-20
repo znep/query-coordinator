@@ -37,8 +37,9 @@
                 currentObj._dataViews = [currentObj._primaryView];
             }
 
+            var compositeMembers = (currentObj._displayFormat || {}).compositeMembers || [];
             var viewsFetched = 0;
-            var viewsToLoad = (currentObj._displayFormat.compositeMembers || []).length;
+            var viewsToLoad = compositeMembers.length;
             if (currentObj._primaryView) { viewsToLoad++; }
 
             var datasetReady = function()
@@ -48,8 +49,7 @@
                 { currentObj.loadLibraries(); }
             };
 
-            _.each(currentObj._displayFormat.compositeMembers || [],
-            function(member_id, index)
+            _.each(compositeMembers, function(member_id, index)
             {
                 Dataset.createFromViewId(member_id, function(dataset)
                 {

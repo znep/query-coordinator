@@ -34,6 +34,7 @@ $.component.Component.extend('Map', 'data', {
     {
         if (!$.isBlank(this._map))
         { this._map.updateDisplayFormat(this._displayFormat()); }
+        this._updateValidity();
     },
 
     _displayFormat: function()
@@ -136,14 +137,18 @@ $.component.Component.extend('Map', 'data', {
         }
 
         if (!(viewdef instanceof $.component.MapLayer))
-        {
-            viewdef = $.component.create(viewdef, this._componentSet);
-            viewdef.parent = this;
-            this._viewDefinitions = this._viewDefinitions || [];
-            this._viewDefinitions.push(viewdef);
-        }
+        { viewdef = $.component.create(viewdef, this._componentSet); }
+        viewdef.parent = this;
+
+        this._viewDefinitions = this._viewDefinitions || [];
+
+        if (!_.include(this._viewDefinitions, viewdef))
+        { this._viewDefinitions.push(viewdef); }
 
         this._moveChildDom(viewdef);
+
+        if (!$.isBlank(this._map) && $.isBlank(this._map.map))
+        { this._map._librariesLoaded(); }
 
         return viewdef;
     },

@@ -1238,6 +1238,19 @@
         setMap: function()
         {
             OpenLayers.Control.prototype.setMap.apply(this, arguments);
+            if (!this.map.baseLayer)
+            {
+                // Call me again when you have a baseLayer.
+                var _func = this.setMap,
+                    _args = arguments,
+                    _map = this.map,
+                    callback = function() {
+                        _func.apply(this, _args);
+                        _.map.events.unregister('changebaselayer', null, callback);
+                    };
+                this.map.events.register('changebaselayer', null, callback);
+                return;
+            }
             this.map.events.register('moveend', this, this.onMoveEnd);
 
             // Projecting the entire sphere onto Web Mercator doesn't work correctly.

@@ -1146,6 +1146,13 @@
         this.setDataSet({ max: 50, data: [] });
     };
 
+    OpenLayers.Events.prototype.once = function(type, obj, func)
+    {
+        var _this = this,
+            callback = function() { _this.unregister(type, obj, callback); func(); };
+        this.register(type, obj, callback);
+    };
+
     blist.openLayers.Polygon = OpenLayers.Class(OpenLayers.Geometry.Polygon, {
         initialize: function()
         {
@@ -1241,14 +1248,7 @@
             if (!this.map.baseLayer)
             {
                 // Call me again when you have a baseLayer.
-                var _func = this.setMap,
-                    _args = arguments,
-                    _map = this.map,
-                    callback = function() {
-                        _func.apply(this, _args);
-                        _.map.events.unregister('changebaselayer', null, callback);
-                    };
-                this.map.events.register('changebaselayer', null, callback);
+                this.map.events.once('changebaselayer', this, this.setMap);
                 return;
             }
             this.map.events.register('moveend', this, this.onMoveEnd);

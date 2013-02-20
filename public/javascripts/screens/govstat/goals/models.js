@@ -256,7 +256,7 @@ var Goal = Backbone.Model.extend({
         catch (e)
         { response.metadata = {}; }
         if ($.isBlank(response.metrics)) { response.metrics = new Metrics(); }
-        _.each(_.keys(response.metadata.metrics).sort(), function(mI)
+        _.each(_.keys(response.metadata.metrics || {}).sort(), function(mI)
         {
             response.metrics.add(new Metric(response.metadata.metrics[mI], { parse: true }), { at: mI });
         });

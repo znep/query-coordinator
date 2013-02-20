@@ -259,14 +259,13 @@ h2
         height: 1.05em
         @include opacity(1)
         text-align: center
-        text-transform: lowercase
         width: 100%
 
     span
       font-size: 2.8em
       @include opacity(0.9)
 
-  form + form
+  form + form, .metricsBlock + form
     @include vertical-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.02))
     border-top: 1px solid rgba(0, 0, 0, 0.2)
     line-height: 4.5em
@@ -515,8 +514,9 @@ h2
           padding: 2em 0 0 4em
 
         .calculationSection
-          padding-left: 9em
-          padding-right: 0
+          padding:
+            left: 0
+            right: 0
 
       .comparison
         left: 50%
@@ -525,7 +525,7 @@ h2
         margin-top: -3em
         position: absolute
         text-align: center
-        top: 50%
+        top: 60%
         width: 12em
 
         label
@@ -540,9 +540,12 @@ h2
     .calculationSection
       padding-right: 9em
 
+      .columnContainer
+        display: inline-block
+
       .columnCard
         .inputWrapper
-          display: block
+          width: 42em
 
         span.selectValue
           @include transition(0.2s, color)
@@ -568,6 +571,12 @@ h2
         select
           height: 100%
 
+    .date_column
+      display: inline-block
+      margin-bottom: 4em
+      .columnCard .inputWrapper
+        width: 28.5em
+
     .periodSection
       .selectInput
         margin: 0 1em
@@ -587,7 +596,10 @@ h2
         display: block
 
       .indicatorContainer .comparison
-        display: none
+        select
+          display: none
+        .selectValue
+          background: none
 
   .indicator
     background: rgba(0, 0, 0, 0.03)
@@ -651,7 +663,7 @@ h2
           option
             color: #000
 
-    form + form
+    form + form, .metricsBlock + form
       @include vertical-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.1))
       border-top-color: rgba(0, 0, 0, 0.3)
 

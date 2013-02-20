@@ -80,14 +80,23 @@ var Indicator = Backbone.Model.extend({
     initialize: function(_, options)
     {
         this.indicatorType = options.indicatorType || 'baseline';
-
         if (!this.get('dataset')) { this.set('dataset', new DatasetProxy()); }
 
         var datasetProxy = this.get('dataset');
+        this.set('date_column', new ColumnProxy({ field_name: this.get('date_column') },
+                                            { datasetProxy: datasetProxy, acceptableTypes: 'calendar_date' }));
         this.set('column1', new ColumnProxy({ field_name: this.get('column1') },
                                             { datasetProxy: datasetProxy, acceptableTypes: numericTypes }));
         this.set('column2', new ColumnProxy({ field_name: this.get('column2') },
                                             { datasetProxy: datasetProxy, acceptableTypes: numericTypes }));
+    },
+    isComplete: function()
+    {
+        var js = this.toJSON();
+        var res = !$.isBlank(js.compute_function.column_function) && !$.isBlank(js.dataset) &&
+            !$.isBlank(js.column1) && !$.isBlank(js.date_column) &&
+            (this.indicatorType != 'baseline' || !$.isBlank(js.start_date) && !$.isBlank(js.end_date));
+        return res;
     },
     parse: function(response)
     {
@@ -97,8 +106,32 @@ var Indicator = Backbone.Model.extend({
             nestedData = response[key];
             response[key] = new nestedClass(nestedData, { parse: true });
         }
+        response.column_function = (response.compute_function || {}).column_function;
+        delete response.compute_function;
 
         return response;
+    },
+    toJSON: function()
+    {
+        var self = this;
+        var result = Backbone.Model.prototype.toJSON.call(this);
+        _.each(_.keys(self.model).concat(['column1', 'column2', 'date_column']),
+                function(k) { result[k] = self.attributes[k].toJSON(); });
+        result.compute_function = { column_function: result.column_function || 'null',
+            aggregation_function: 'sum', metric_period: 'monthly' };
+        delete result.column_function;
+
+        // Set in the UI???
+        result.source_data_period = 'daily';
+        if (this.indicatorType == 'baseline')
+        {
+            result.type = 'burndown';
+            // hard-code for now; need to add UI
+            result.start_date = '1 Jan 2012';
+            result.end_date = '31 Dec 2012';
+        }
+
+        return result;
     }
 })
 
@@ -116,34 +149,38 @@ var Metric = Backbone.Model.extend({
         if (!this.get('current')) { this.set('current', new Indicator(null, { indicatorType: 'current' })) };
         if (!this.get('baseline')) { this.set('baseline', new Indicator(null, { indicatorType: 'baseline' })) };
     },
+    isComplete: function()
+    {
+        var js = this.toJSON();
+        return !$.isBlank(js.title) && !$.isBlank(js.comparison.comparison_function) &&
+            !$.isBlank(js.unit) &&
+            this.get('current').isComplete() && this.get('baseline').isComplete();
+    },
     parse: function(response)
     {
-        if (!response.compute) { response.compute = {} };
-        response.aggregation_function = response.compute.aggregation_function;
-        response.column_function = response.compute.column_function;
-        response.metric_period = response.compute.metric_period;
-        delete response.compute;
-
         for (var key in this.model)
         {
             nestedClass = this.model[key];
             nestedData = response[key];
-            response[key] = new nestedClass(nestedData, { parse: true });
+            response[key] = new nestedClass(nestedData, { parse: true, indicatorType: key });
         }
+        _.each(_.keys(response.comparison || {}), function(k)
+        { response[k] = response.comparison[k]; });
+        delete response.comparison;
 
         return response;
     },
     toJSON: function()
     {
+        var self = this;
         var result = Backbone.Model.prototype.toJSON.call(this);
-        result.compute = {
-            aggregation_function: result.aggregation_function,
-            column_function: result.column_function,
-            metric_period: result.metric_period
-        };
-        delete result.aggregation_function;
-        delete result.column_function;
-        delete result.metric_period;
+        _.each(_.keys(self.model), function(k) { result[k] = self.attributes[k].toJSON(); });
+        result.comparison = { comparison_function: result.comparison_function || '<',
+            time_to_compare: 'now' };
+        delete result.comparison_function;
+        delete result.time_to_compare;
+        result.unit = result.unit || ' ';
+        return result;
     }
 });
 
@@ -158,9 +195,9 @@ var Agency = Backbone.Model.extend({
     {
         if (_.isString(response))
         {
-			response = { name: response };
+            response = { name: response };
         }
-		return response;
+        return response;
     },
     toJSON: function() { return this.get('name'); }
 });
@@ -188,13 +225,17 @@ var Goal = Backbone.Model.extend({
         var metrics = this.get('metrics');
         if (metrics.length === 0) { metrics.add(new Metric()); }
 
+        // Default start_date to today
+        if ($.isBlank(this.get('start_date')))
+        { this.set('start_date', new Date().toISOString()); }
+
         // prevailing metric gets goal comparison
-        this.on('change:comparison', function(_, value)
+        this.on('change:comparison_function', function(_, value)
         {
             var metrics = this.get('metrics');
-            if (!metrics || metrics.length < 2) { return; } // something's wrong
+            if (!metrics || metrics.length < 1) { return; } // something's wrong
 
-            metrics.at(0).set('comparison', value);
+            metrics.at(0).set('comparison_function', value);
         });
     },
     url: function()
@@ -203,12 +244,23 @@ var Goal = Backbone.Model.extend({
     },
     parse: function(response)
     {
+        var self = this;
         for (var key in this.model)
         {
             nestedClass = this.model[key];
             nestedData = response[key];
             response[key] = new nestedClass(nestedData, { parse: true });
         }
+        try
+        { response.metadata = JSON.parse(response.metadata || '{}'); }
+        catch (e)
+        { response.metadata = {}; }
+        if ($.isBlank(response.metrics)) { response.metrics = new Metrics(); }
+        _.each(_.keys(response.metadata.metrics).sort(), function(mI)
+        {
+            response.metrics.add(new Metric(response.metadata.metrics[mI], { parse: true }), { at: mI });
+        });
+        response.comparison_function = (response.metadata || {}).comparison_function;
         return response;
     },
     toJSON: function()
@@ -223,6 +275,23 @@ var Goal = Backbone.Model.extend({
         });
         _.each(['goal_delta'], function(k)
         { if (_.isString(attrs[k])) { attrs[k] = parseFloat(attrs[k]); } });
+
+        if (!_.isObject(attrs.metadata))
+        { attrs.metadata = {}; }
+        attrs.metadata.comparison_function = attrs.comparison_function;
+        delete attrs.comparison_function;
+
+        // Always re-construct from scratch
+        attrs.metadata.metrics = {};
+        self.get('metrics').each(function(metric, i)
+        {
+            if (!metric.isComplete())
+            { attrs.metadata.metrics[i] = attrs.metrics[i]; }
+        });
+        _.each(_.keys(attrs.metadata.metrics).sort().reverse(), function(mI)
+        { attrs.metrics.splice(mI, 1); });
+
+        attrs.metadata = JSON.stringify(attrs.metadata);
         return attrs;
     }
 });

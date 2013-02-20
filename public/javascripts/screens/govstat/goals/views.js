@@ -120,25 +120,25 @@ var GoalEditor = Backbone.View.extend({
         var $metrics = govstatNS.markup.goalEditor.metrics();
 
         // custom components
-		// drop in agency list
+        // drop in agency list
         var agencyList = new AgencyList({ collection: this.model.get('agencies'), instanceView: AgencyEditor });
         agencyList.render();
         $additionalDetails.find('.agencyInput').append(agencyList.$el);
 
-		// drop in related datasets
-		var relatedDatasets = this.model.get('related_datasets');
-		var datasetCardList = new DatasetCardList({ collection: relatedDatasets, instanceView: DatasetCard });
-		datasetCardList.render();
-		$relatedDatasets.find('.datasetListContainer').append(datasetCardList.$el);
-		$relatedDatasets.find('a.addDataset').on('click', function(event)
-		{
-			event.preventDefault();
-			showDatasetSelect(function(dataset)
+        // drop in related datasets
+        var relatedDatasets = this.model.get('related_datasets');
+        var datasetCardList = new DatasetCardList({ collection: relatedDatasets, instanceView: DatasetCard });
+        datasetCardList.render();
+        $relatedDatasets.find('.datasetListContainer').append(datasetCardList.$el);
+        $relatedDatasets.find('a.addDataset').on('click', function(event)
+        {
+            event.preventDefault();
+            showDatasetSelect(function(dataset)
             {
-				var datasetProxy = new govstatNS.models.DatasetProxy({ id: dataset.id }, { dataset: dataset });
-				relatedDatasets.add(datasetProxy);
+                var datasetProxy = new govstatNS.models.DatasetProxy({ id: dataset.id }, { dataset: dataset });
+                relatedDatasets.add(datasetProxy);
             }, self.model.get('name'));
-		});
+        });
 
         // drop in metrics
         var metrics = this.model.get('metrics');
@@ -156,25 +156,25 @@ var GoalEditor = Backbone.View.extend({
         var $comparisonWrapper = $mainDetails.find('.comparisonInput');
         bindSelect($comparisonWrapper.find('select'), $comparisonWrapper.find('span.selectValue'));
 
-		// bind fancy date
-		var $dateInputs = $mainDetails.find('input.date').add($additionalDetails.find('input.date'));
-		$dateInputs.each(function()
-		{
-			var $this = $(this);
-			$this.DatePicker({
-				date: new Date($this.attr('data-rawvalue')) || new Date(),
-				onChange: function(_, newDate)
-				{
-					$this
-						.attr('data-rawvalue', newDate.toISOString())
-						.val(newDate.toDateString())
-						.trigger('change')
-						.blur();
-				},
-				starts: 0,
-				eventName: 'focus'
-			});
-		});
+        // bind fancy date
+        var $dateInputs = $mainDetails.find('input.date').add($additionalDetails.find('input.date'));
+        $dateInputs.each(function()
+        {
+            var $this = $(this);
+            $this.DatePicker({
+                date: new Date($this.attr('data-rawvalue')) || new Date(),
+                onChange: function(_, newDate)
+                {
+                    $this
+                        .attr('data-rawvalue', newDate.toISOString())
+                        .val(newDate.toDateString())
+                        .trigger('change')
+                        .blur();
+                },
+                starts: 0,
+                eventName: 'focus'
+            });
+        });
 
         // bind fancy textedit
         var $notes = $additionalDetails.find('.notes');
@@ -184,9 +184,9 @@ var GoalEditor = Backbone.View.extend({
         // append
         this.$el.append($actions);
         this.$el.append($mainDetails);
+        this.$el.append($metrics);
         this.$el.append($additionalDetails);
         this.$el.append($relatedDatasets);
-        this.$el.append($metrics);
     },
 
     maybeDeleteGoal: function(event)
@@ -209,10 +209,10 @@ var GoalEditor = Backbone.View.extend({
         this.model.set($input.attr('name'), $input.is(':checked'));
     },
     updateDateAttr: function(event)
-	{
-		var $input = $(event.target);
-		this.model.set($input.attr('name'), $input.attr('data-rawvalue'));
-	},
+    {
+        var $input = $(event.target);
+        this.model.set($input.attr('name'), $input.attr('data-rawvalue'));
+    },
     updateNotesAttr: function(event)
 	{
 		var self = this;
@@ -514,11 +514,11 @@ var DatasetCardList = Backbone.CollectionView.extend({
     {
         this.$el.append(this.renderCollection());
     },
-	removeDataset: function(event)
-	{
-		event.preventDefault();
-		this.collection.remove($(event.target).closest('.datasetCard').data('model'));
-	},
+    removeDataset: function(event)
+    {
+        event.preventDefault();
+        this.collection.remove($(event.target).closest('.datasetCard').data('model'));
+    },
     _addOneView: function(view)
     {
         Backbone.CollectionView.prototype._addOneView.apply(this, arguments);
@@ -581,7 +581,7 @@ var ColumnCard = Backbone.View.extend({
             {
                 self.$('select')
                     .empty()
-                    .append('<option>(None)</option>')
+                    .append('<option value="">(None)</option>')
                     .append($.tag2(_.map(ds.columnsForType(self.model.acceptableTypes), function(column)
                     {
                         return {
@@ -608,10 +608,16 @@ var MetricEditor = Backbone.View.extend({
         'change .nameInput input': 'nameChanged',
         'change .comparison select': 'comparisonChanged'
     },
+    initialize: function()
+    {
+        var self = this;
+        self.listenTo(self.model, 'change:comparison_function', function(_, value)
+        { self.$('.comparison select').val(value).trigger('change'); });
+    },
     render: function()
     {
-		var self = this;
-		if (this._rendered === true) return; else this._rendered = true;
+        var self = this;
+        if (this._rendered === true) return; else this._rendered = true;
 
         var $markup = govstatNS.markup.metricEditor(this.model);
         this.$el.append($markup);
@@ -628,8 +634,8 @@ var MetricEditor = Backbone.View.extend({
         this.$el.data('model', this.model);
     },
 
-    nameChanged: function() { this.model.set('name', $(event.target).val()); },
-    comparisonChanged: function() { this.model.set('comparison', $(event.target).val()); },
+    nameChanged: function(event) { this.model.set('title', $(event.target).val()); },
+    comparisonChanged: function(event) { this.model.set('comparison_function', $(event.target).val()); },
     _addIndicator: function(indicator, childClass)
     {
         var indicatorEditor = new IndicatorEditor({ model: indicator });
@@ -638,7 +644,6 @@ var MetricEditor = Backbone.View.extend({
         // break it up into sections so they line up :(
         this.$('.datasetContainer .' + childClass).append(indicatorEditor.$('.datasetSection'));
         this.$('.calculationContainer .' + childClass).append(indicatorEditor.$('.calculationSection'));
-        this.$('.periodContainer .' + childClass).append(indicatorEditor.$('.periodSection'));
 
         // and then wire the events in :(
         this.$('.indicator').on('change', '.' + childClass + ' select', function(event)
@@ -695,8 +700,8 @@ var IndicatorEditor = Backbone.View.extend({
     },
     render: function()
     {
-		var self = this;
-		if (this._rendered === true) return; else this._rendered = true;
+        var self = this;
+        if (this._rendered === true) return; else this._rendered = true;
 
         var $markup = govstatNS.markup.indicatorEditor(this.model);
         this.$el.append($markup);
@@ -713,18 +718,19 @@ var IndicatorEditor = Backbone.View.extend({
         var datasetCard = new DatasetCard({ model: datasetProxy });
         datasetCard.render();
         this.$('.datasetContainer').append(datasetCard.$el);
-		this.$('a.selectDataset').on('click', function(event)
-		{
-			event.preventDefault();
-			showDatasetSelect(function(dataset)
+        this.$('a.selectDataset').on('click', function(event)
+        {
+            event.preventDefault();
+            showDatasetSelect(function(dataset)
             {
                 datasetProxy.set('id', dataset.id);
             }, self.model.get('name'));
-		});
+        });
 
         // drop in column card
-        this._addColumnCard(1);
-        this._addColumnCard(2);
+        this._addColumnCard('date_column');
+        this._addColumnCard('column1');
+        this._addColumnCard('column2');
 
         // save off columnfunction for quick access
         this._$columnFunctionInput = this.$('.columnFunctionInput');
@@ -734,12 +740,12 @@ var IndicatorEditor = Backbone.View.extend({
         var $select = $(event.target);
         this.model.set($select.attr('name'), $select.val());
     },
-    _addColumnCard: function(idx)
+    _addColumnCard: function(name)
     {
-        var columnProxy = this.model.get('column' + idx);
+        var columnProxy = this.model.get(name);
         var columnCard = new ColumnCard({ model: columnProxy });
         columnCard.render();
-        this.$('.columnContainer.column' + idx).append(columnCard.$el);
+        this.$('.columnContainer.' + name).append(columnCard.$el);
     }
 });
 

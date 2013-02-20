@@ -272,6 +272,7 @@ h2
 
   form.mainDetails
     .comparisonInput
+      text-transform: lowercase
       width: 21em
     .nameInput
       width: 50em
@@ -370,7 +371,11 @@ h2
       position: relative
 
       .notes
+        display: inline-block
         line-height: 1.3em
+        min-height: 1.5em
+        vertical-align: middle
+        width: 100%
 
       .notesLabel
         @include lower-label
@@ -659,9 +664,6 @@ h2
 
         input, select
           color: #fff
-
-          option
-            color: #000
 
     form + form, .metricsBlock + form
       @include vertical-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.1))

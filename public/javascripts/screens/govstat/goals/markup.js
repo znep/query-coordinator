@@ -13,20 +13,14 @@ blist.namespace.fetch('blist.govstat').markup = {
                 className: 'actions',
                 contents: [{
                     _: 'a',
-                    className: 'deleteGoal',
+                    className: ['deleteGoal', 'ss-trash'],
                     href: '#delete goal',
-                    contents: [{
-                        _: 'span',
-                        className: 'ss-trash'
-                    }, 'Delete this Goal']
+                    contents: 'Delete this Goal'
                 }, {
                     _: 'a',
-                    className: 'jqmClose',
+                    className: ['jqmClose', 'ss-floppydisk'],
                     href: '#save and close',
-                    contents: [{
-                        _: 'span',
-                        className: 'ss-close'
-                    }, 'Save and Close']
+                    contents: 'Save and Close'
                 }]
             })
         },
@@ -315,7 +309,9 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'columnContainer column1'
                 }, {
                     _: 'div',
-                    className: [ 'inputWrapper selectInput columnFunctionInput' ],
+                    className: [ 'inputWrapper', 'selectInput', 'columnFunctionInput',
+                        { i: indicator.get('column_function') && indicator.get('column_function') != 'null',
+                            t: 'hasFunction' } ],
                     contents: [{
                         _: 'span',
                         className: 'selectValue'

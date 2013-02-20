@@ -326,15 +326,17 @@ var CategoryPane = Backbone.View.extend({
         this.$el.append(goalsView.$el);
     },
 
-    maybeRemoveCategory: function()
+    maybeRemoveCategory: function(event)
     {
+        event.preventDefault();
         if (confirm('Are you sure you want to remove this category? All goals currently assigned to this category will be reverted to Draft Goals.'))
         {
             this.model.trigger('removeFromAll');
         }
     },
-    editTitle: function()
+    editTitle: function(event)
     {
+        event.preventDefault();
         this.$('.categoryTitle, .editIcon').hide();
         this.$('.categoryTitleEdit').show().focus();
     },
@@ -507,9 +509,9 @@ var DatasetCard = Backbone.View.extend({
 var DatasetCardList = Backbone.CollectionView.extend({
     tagName: 'div',
     className: 'datasetCardList',
-	events: {
-		'click .datasetCard .removeDataset': 'removeDataset'
-	},
+    events: {
+        'click .datasetCard .removeDataset': 'removeDataset'
+    },
     render: function()
     {
         this.$el.append(this.renderCollection());

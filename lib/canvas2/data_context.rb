@@ -48,7 +48,7 @@ module Canvas2
       begin
         case config['type']
         when 'datasetList'
-          search_response = Canvas2::Util.debug ? Clytemnestra.search_views(config['search'], false, !Canvas2::Util.is_private) : Clytemnestra.search_cached_views(config['search'], false, !Canvas2::Util.is_private)
+          search_response = Canvas2::Util.no_cache ? Clytemnestra.search_views(config['search'], false, !Canvas2::Util.is_private) : Clytemnestra.search_cached_views(config['search'], false, !Canvas2::Util.is_private)
           # Search results are considered part of the manifest; but are handled differently during validation
           @manifest.add_resource(search_response.id, search_response.check_time)
           ds_list = search_response.results.reject do |ds|
@@ -117,7 +117,7 @@ module Canvas2
               r = ds.get_row(config['rowId'], !Canvas2::Util.is_private)
             else
               # Cache single-row requests
-              if Canvas2::Util.debug
+              if Canvas2::Util.no_cache
                 r = ds.get_rows(1, 1, {}, false, !Canvas2::Util.is_private)[:rows][0]
               else
                 r = ds.get_cached_rows(1, 1, {}, !Canvas2::Util.is_private)[:rows][0]

@@ -210,6 +210,7 @@ class CustomContentController < ApplicationController
       Canvas2::DataContext.reset
       Canvas2::Util.set_params(params)
       Canvas2::Util.set_debug(@debug || @edit_mode)
+      Canvas2::Util.set_no_cache(false)
       Canvas2::Util.set_env({
         domain: CurrentDomain.cname,
         renderTime: Time.now.to_i,
@@ -241,6 +242,8 @@ class CustomContentController < ApplicationController
         # Now we know whether the page is private or not; set the render variables for
         # cache-key
         Canvas2::Util.is_private(@page.private_data?)
+        # If the page has maxAge <= 0; explicitly disable any and all row or search caching
+        Canvas2::Util.set_no_cache(@page.max_age <= 0) if @page.max_age
         @cache_key = Canvas2::Util.is_private ? cache_key_user : cache_key_no_user
         self.action_name = 'page'
         begin

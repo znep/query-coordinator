@@ -1330,7 +1330,7 @@
             if (this.willMove(this.original))
             {
                 this.expect();
-                this.map.zoomToExtent(this.original, true);
+                this.map.zoomToExtent(this.original);
                 this.saveViewport();
             }
         },

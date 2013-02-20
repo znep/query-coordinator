@@ -248,7 +248,7 @@
     {
         options = $.extend({isEdit: false, useOtherSidebars: false}, options);
         var config = [];
-        if (options.convas)
+        if (!options.convas)
         { config.push({
                 title: 'Dataset Summary',
                 fields: [

@@ -3,24 +3,53 @@ html, body
 
 #siteHeader
   background-color: #333333
-  .appLogo a
-    // FIXME: shouldn't be hardcoded
-    background-image: url(/stylesheets/images/common/socrata_logo_light.png)
-    height: 34px
-    width: 151px
+  height: 5em
+  position: relative
+  > .clearfix
+    height: 100%
+  .manageActions
+    bottom: 0
+    left: 22em
+    position: absolute
+    li
+      border-bottom: 5px solid #333333
+      display: inline-block
+      margin-right: 2.5em
+      padding: 0 1em 0.5em
+      a
+        color: #ffffff
+        font-size: 2.5em
+  .appLogo
+    background-color: #160404
+    height: 100%
+    padding: 0
+    a
+      // FIXME: shouldn't be hardcoded
+      background-image: url(/stylesheets/images/common/socrata_logo_light.png)
+      background-position: 0.6em 0.3em
+      height: 34px
+      padding: 0.3em 0.6em
+      width: 151px
   .siteUserNav
-    margin:
-      bottom: 0.5em
-      top: 2em
-    li a
+    position: absolute
+    right: 0
+    top: 0.3em
+    .accountButton
       color: #ffffff
-      &:before
-        font-size: 1.6em
-      &:hover
-        text-decoration: none
-      .text
-        @include text-hiding
-        width: 1px
+      font-size: 2.5em
+    .menuDropdown
+      background-color: #333333
+      width: 20em
+    li
+      float: none
+      margin-left: 0
+      a
+        border-color: #333333
+        color: #ffffff
+        &:hover
+          background-color: #160404
+          border-color: #333333
+          text-decoration: none
 
 .siteInnerWrapper
   padding-bottom: 9em

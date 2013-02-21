@@ -109,6 +109,8 @@
                 mapObj._primaryView.bind('query_change', function()
                 { mapObj.updateSearchString(); });
             }
+            else if (!$.isBlank(mapObj.settings.displayFormat)) // context + df.vd case.
+            { mapObj.updateDisplayFormat(mapObj.settings.displayFormat); }
             else if ($.subKeyDefined(mapObj, '_displayFormat.bkgdLayers')) // Canvas from scratch
             { mapObj.initializeBackgroundLayers(); }
         },

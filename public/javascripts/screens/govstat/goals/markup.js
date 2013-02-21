@@ -303,7 +303,54 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'columnContainer date_column'
                 }, {
                     _: 'span',
-                    contents: ','
+                    contents: ', '
+                }, {
+                    _: 'span',
+                    contents: 'the'
+                }, {
+                    _: 'div',
+                    className: [ 'inputWrapper', 'selectInput', 'aggregationFunctionInput' ],
+                    contents: [{
+                        _: 'span',
+                        className: 'selectValue'
+                    }, {
+                        _: 'select',
+                        name: 'aggregation_function',
+                        id: indicator.cid + '_aggregation_function',
+                        contents: [{
+                            _: 'option',
+                            value: 'sum',
+                            selected: indicator.get('aggregation_function') === 'sum',
+                            contents: 'sum'
+                        }, {
+                            _: 'option',
+                            value: 'average',
+                            selected: indicator.get('aggregation_function') === 'average',
+                            contents: 'average'
+                        }, {
+                            _: 'option',
+                            value: 'most_recent',
+                            selected: indicator.get('aggregation_function') === 'most_recent',
+                            contents: 'most recent value'
+                        }, {
+                            _: 'option',
+                            value: 'max',
+                            selected: indicator.get('aggregation_function') === 'max',
+                            contents: 'maximum'
+                        }, {
+                            _: 'option',
+                            value: 'min',
+                            selected: indicator.get('aggregation_function') === 'min',
+                            contents: 'minimum'
+                        }]
+                    }, {
+                        _: 'label',
+                        'for': indicator.cid + '_aggregation_function',
+                        contents: 'Operation'
+                    }]
+                }, {
+                    _: 'span',
+                    contents: 'of'
                 }, {
                     _: 'div',
                     className: 'columnContainer column1'
@@ -347,7 +394,58 @@ blist.namespace.fetch('blist.govstat').markup = {
                     }]
                 }, {
                     _: 'div',
-                    className: 'columnContainer column2'
+                    className: 'column2Wrapper',
+                    contents: [{
+                        _: 'span',
+                        contents: 'the'
+                    }, {
+                        _: 'div',
+                        className: [ 'inputWrapper', 'selectInput', 'aggregationFunctionInput' ],
+                        contents: [{
+                            _: 'span',
+                            className: 'selectValue'
+                        }, {
+                            _: 'select',
+                            name: 'aggregation_function2',
+                            id: indicator.cid + '_aggregation_function2',
+                            contents: [{
+                                _: 'option',
+                                value: 'sum',
+                                selected: indicator.get('aggregation_function2') === 'sum',
+                                contents: 'sum'
+                            }, {
+                                _: 'option',
+                                value: 'average',
+                                selected: indicator.get('aggregation_function2') === 'average',
+                                contents: 'average'
+                            }, {
+                                _: 'option',
+                                value: 'most_recent',
+                                selected: indicator.get('aggregation_function2') === 'most_recent',
+                                contents: 'most recent value'
+                            }, {
+                                _: 'option',
+                                value: 'max',
+                                selected: indicator.get('aggregation_function2') === 'max',
+                                contents: 'maximum'
+                            }, {
+                                _: 'option',
+                                value: 'min',
+                                selected: indicator.get('aggregation_function2') === 'min',
+                                contents: 'minimum'
+                            }]
+                        }, {
+                            _: 'label',
+                            'for': indicator.cid + '_aggregation_function2',
+                            contents: 'Operation'
+                        }]
+                    }, {
+                        _: 'span',
+                        contents: 'of'
+                    }, {
+                        _: 'div',
+                        className: 'columnContainer column2'
+                    }]
                 }]
             }]
         });

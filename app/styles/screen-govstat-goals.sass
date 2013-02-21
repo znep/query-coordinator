@@ -520,7 +520,7 @@ h2
 
         .calculationSection
           padding:
-            left: 0
+            left: 4em
             right: 0
 
       .comparison
@@ -545,6 +545,13 @@ h2
     .calculationSection
       padding-right: 9em
 
+      .aggregationFunctionInput
+        margin:
+          bottom: 3.5em
+          left: 0.5em
+          right: 1.5em
+        width: 20em
+
       .columnContainer
         display: inline-block
 
@@ -562,7 +569,7 @@ h2
         margin-top: 3.5em
         width: 15em
 
-      .column2
+      .column2Wrapper
         margin-top: 3.5em
         @include opacity(0.2)
         @include transition(0.3s, opacity)
@@ -570,7 +577,7 @@ h2
         select
           height: 0
 
-      .columnFunctionInput.hasFunction + .column2
+      .columnFunctionInput.hasFunction + .column2Wrapper
         @include opacity(1)
 
         select

@@ -93,8 +93,9 @@ var Indicator = Backbone.Model.extend({
     isComplete: function()
     {
         var js = this.toJSON();
-        var res = !$.isBlank(js.compute_function.column_function) && !$.isBlank(js.dataset) &&
-            !$.isBlank(js.column1) && !$.isBlank(js.date_column) &&
+        var res = !$.isBlank(js.compute_function.column_function) &&
+            !$.isBlank(js.compute_function.aggregation_function) &&
+            !$.isBlank(js.dataset) && !$.isBlank(js.column1) && !$.isBlank(js.date_column) &&
             (this.indicatorType != 'baseline' || !$.isBlank(js.start_date) && !$.isBlank(js.end_date));
         return res;
     },
@@ -107,6 +108,8 @@ var Indicator = Backbone.Model.extend({
             response[key] = new nestedClass(nestedData, { parse: true });
         }
         response.column_function = (response.compute_function || {}).column_function;
+        response.aggregation_function = (response.compute_function || {}).aggregation_function;
+        response.aggregation_function2 = (response.compute_function || {}).aggregation_function2;
         delete response.compute_function;
 
         return response;
@@ -118,8 +121,10 @@ var Indicator = Backbone.Model.extend({
         _.each(_.keys(self.model).concat(['column1', 'column2', 'date_column']),
                 function(k) { result[k] = self.attributes[k].toJSON(); });
         result.compute_function = { column_function: result.column_function || 'null',
-            aggregation_function: 'sum', metric_period: 'monthly' };
-        delete result.column_function;
+            aggregation_function: result.aggregation_function || 'sum',
+            aggregation_function2: result.aggregation_function2 || 'sum', metric_period: 'monthly' };
+        _.each(['column_function', 'aggregation_function', 'aggregation_function2'], function(k)
+            { delete result[k]; });
 
         // Set in the UI???
         result.source_data_period = 'daily';

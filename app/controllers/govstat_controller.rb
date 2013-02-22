@@ -83,7 +83,7 @@ protected
             type: 'Container',
             children: [
             { type: 'Title', text: 'Overall Progress' },
-            { type: 'Text', htmlClass: 'overallStatus', html: '{goal.metrics.0.compute.delta}%' },
+            #{ type: 'Text', htmlClass: 'overallStatus', html: '{goal.metrics.0.compute.delta}%' },
             progress_indicator('goal.metrics.0')
             ]
           },
@@ -94,11 +94,11 @@ protected
             container: { type: 'HorizontalContainer' },
             children: [
             { type: 'Title', text: '{title}' },
-            { type: 'Text', htmlClass: 'current date', html: '{env.renderTime @[%B %Y]}' },
-            { type: 'Text', htmlClass: 'current value', html: '{compute.metric_value %[,0]}' },
-            { type: 'Text', htmlClass: 'baseline date', html: '{goalContext.goal.start_date @[%B %Y]}' },
-            { type: 'Text', htmlClass: 'baseline value', html: '{compute.baseline_value %[,0]}' },
-            { type: 'Text', htmlClass: 'metricStatus', html: '{compute.delta}%' },
+            { type: 'Text', htmlClass: 'current date', html: '{computed_values.as_of @[%B %Y] ||}' },
+            { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
+            { type: 'Text', htmlClass: 'baseline date', html: '{goalContext.goal.start_date @[%B %Y] ||}' },
+            { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||}' },
+            #{ type: 'Text', htmlClass: 'metricStatus', html: '{compute.delta}%' },
             progress_indicator
             ]
           }

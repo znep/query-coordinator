@@ -3,7 +3,7 @@ module GovstatHelper
   def progress_indicator(metric_prefix = '')
     metric_prefix += '.' if !metric_prefix.blank?
     { type: 'Text', customClass: 'goalProgress',
-      htmlClass: 'progress-{' + metric_prefix + 'compute.progress ||none}',
+      htmlClass: 'progress-{' + metric_prefix + 'computed_values.progress ||none}',
         html:
           '<div class="good ss-upwardsbarchart"><span class="text">On Track</span></div>' +
           '<div class="flat ss-hyphen"><span class="text">In Progress</span></div>' +

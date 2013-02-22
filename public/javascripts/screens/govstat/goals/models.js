@@ -335,12 +335,12 @@ var Goals = Backbone.Collection.extend({
 // CATEGORY
 
 var Category = Backbone.Model.extend({
-    initialize: function()
+    initialize: function(__, options)
     {
         var self = this;
         if (!this.get('color'))
         {
-            this.set('color', Category.getColor());
+            this.set('color', Category.getColor(options.parentCollection));
         }
 
         this.goals = new Goals([], { category: this });
@@ -361,12 +361,24 @@ var Category = Backbone.Model.extend({
 });
 
 
-var categoryColors = [ '#0b2850', '#320d1f', '#8f0f2f', '#be2327', '#eb702a' ];
+var categoryColors = [ '#e33229', '#291c73', '#e3a53d', '#6fab34', '#e44c34', '#4e9b37', '#711e8c',
+    '#b6cb2f', '#e4613f', '#afc42e', '#024885', '#24813d', '#e67846', '#9bbf31', '#017cab',
+    '#1a5b50', '#e48f42', '#00adf0', '#88b734', '#1e3a65' ];
 var lastColor = 0;
-Category.getColor = function()
+var colorIncr = 0;
+Category.getColor = function(catList)
 {
-    return categoryColors[lastColor++ % categoryColors.length];
-}
+    var usedColors = $.isBlank(catList) ? [] : catList.map(function(cat) { return cat.get('color'); });
+    var availColors = _.difference(categoryColors, usedColors);
+    if (_.isEmpty(availColors))
+    {
+        availColors = categoryColors;
+        colorIncr = 1;
+    }
+    var color = availColors[lastColor % availColors.length];
+    lastColor += colorIncr;
+    return color;
+};
 
 var Categories = Backbone.Collection.extend({
     model: Category,

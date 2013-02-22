@@ -165,7 +165,7 @@ $(function()
        event.preventDefault();
 
        // add to final
-       categories.add(new govstatNS.models.Category());
+       categories.add(new govstatNS.models.Category({}, { parentCollection: categories }));
     });
 
 

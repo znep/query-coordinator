@@ -106,7 +106,7 @@ protected
         },
         {
           type: 'Repeater',
-          contextId: 'goal.metric_datasets',
+          contextId: 'goal.related_datasets',
           container: { type: 'GridContainer' },
           children: [
           {

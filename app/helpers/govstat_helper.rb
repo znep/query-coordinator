@@ -39,20 +39,24 @@ module GovstatHelper
               contextId: 'categories_{_groupValue}',
               children: [
               { type: 'Title', text: '{category.name ||Draft}', customClass: 'categoryTitle',
-                styles: { 'background-color' => '{category.color}' } },
+                styles: { 'color' => '{category.color}' } },
               {
                 type: 'Repeater',
                 htmlClass: 'goalList',
                 contextId: '_groupItems',
-                childProperties: { htmlClass: 'goalItem',
-                  styles: { 'background-color' => '{category.color}' } },
-                container: { type: 'GridContainer', cellWidth: 225, cellHeight: 225, cellSpacing: 0 },
-                children: [
-                  progress_indicator('goal.metrics.0'),
-                  { type: 'Title', customClass: 'goalTitle', text: '{goal.name}' },
-                  { type: 'Text', customClass: 'goalDetails',
-                    html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
-                ]
+                container: { type: 'GridContainer', cellWidth: 250, cellHeight: 250, cellSpacing: 0 },
+                children: [{
+                  type: 'Container', htmlClass: 'goalItem',
+                  styles: { 'border-color' => '{category.color}' },
+                  children: [
+                    { type: 'Title', customClass: 'goalTitle', text: '{goal.name}' },
+                    { type: 'Text', customClass: 'goalSubject', html: '{goal.subject}' },
+                    { type: 'Text', customClass: 'goalProgress', ifValue: 'goal.metrics.0.compute.delta',
+                      html: 'Status: <span class="value">{goal.metrics.0.compute.delta ||}%</span>' },
+                    { type: 'Text', customClass: 'goalLink',
+                      html: '<a href="/goal/{goal.id}"><div class="more ss-right"></div></a>' }
+                  ]
+                }]
               }
               ]
             }

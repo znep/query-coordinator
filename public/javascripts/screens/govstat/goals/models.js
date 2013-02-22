@@ -132,8 +132,8 @@ var Indicator = Backbone.Model.extend({
         {
             result.type = 'burndown';
             // hard-code for now; need to add UI
-            result.start_date = '1 Jan 2012';
-            result.end_date = '31 Dec 2012';
+            result.start_date = new Date('1 Jan 2012').toISOString();
+            result.end_date = new Date('31 Dec 2012').toISOString();
         }
 
         return result;

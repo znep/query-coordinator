@@ -13,12 +13,12 @@ blist.namespace.fetch('blist.govstat').markup = {
                 className: 'actions',
                 contents: [{
                     _: 'a',
-                    className: ['deleteGoal', 'ss-trash'],
+                    className: ['deleteGoal', 'ss-trash', 'button'],
                     href: '#delete goal',
                     contents: 'Delete this Goal'
                 }, {
                     _: 'a',
-                    className: ['jqmClose', 'ss-floppydisk'],
+                    className: ['jqmClose', 'ss-floppydisk', 'button'],
                     href: '#save and close',
                     contents: 'Save and Close'
                 }]
@@ -220,9 +220,9 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'datasetListContainer'
                 }, {
                     _: 'a',
-                    className: 'addDataset',
+                    className: ['addDataset', 'button', 'ss-database'],
                     href: '#add',
-                    contents: 'Add A Dataset'
+                    contents: 'Add a Dataset'
                 }]
             });
         },
@@ -237,7 +237,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'metricListContainer'
                 }, {
                     _: 'a',
-                    className: 'addMetric',
+                    className: ['addMetric', 'button', 'ss-linechartclipboard'],
                     href: '#add',
                     contents: 'Add a Metric'
                 }]
@@ -287,7 +287,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'datasetContainer'
                 }, {
                     _: 'a',
-                    className: 'selectDataset',
+                    className: ['selectDataset', 'button', 'ss-database'],
                     href: '#select dataset',
                     title: 'Select the dataset that contains ' + indicator.indicatorType + ' for this metric.',
                     contents: 'Select Dataset'

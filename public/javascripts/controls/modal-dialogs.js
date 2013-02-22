@@ -104,7 +104,6 @@
             $previous.css('top', (parseFloat($previous.css('top')) || 0) - top);
 
             $previous.addClass('pushed');
-			$previous.css('position', 'absolute');
             afterComplete(function() { $previous.hide(); });
         }
 
@@ -137,17 +136,15 @@
         {
             $previous.show();
             _.defer(function()
-			{
-				$previous.removeClass('pushed');
-				afterComplete(function()
+            {
+                $previous.removeClass('pushed');
+                afterComplete(function()
                 {
-                    $previous.css('position', 'static');
-
                     var top = scrollTops.pop();
                     $wrapper.scrollTop(top);
                     $previous.css('top', parseFloat($previous.css('top')) + top);
                 });
-			});
+            });
         }
         else
         {
@@ -156,13 +153,13 @@
     };
 
     $.fn.showModal = function()
-	{
-		var $this = $(this);
-		pushModal($this);
-		return $this;
-	};
-	$.showModal = function(name) { return $('#newModals > #' + name).clone().showModal(); };
-	$.popModal = popModal;
+    {
+        var $this = $(this);
+        pushModal($this);
+        return $this;
+    };
+    $.showModal = function(name) { return $('#newModals > #' + name).clone().showModal(); };
+    $.popModal = popModal;
 
     $(document).on('keyup', function(event)
     {

@@ -291,18 +291,16 @@ var CategoryPane = Backbone.View.extend({
         // make list item
         var $title = $.tag2([{
             _: 'a',
-            className: 'removeCategory',
-            href: '#remove',
-            contents: 'Close'
+            className: ['removeCategory', 'ss-delete'],
+            href: '#remove'
         }, {
             _: 'h2',
             className: 'categoryTitle',
             contents: this.getName()
         }, {
             _: 'a',
-            className: 'editIcon',
-            href: '#edit',
-            contents: 'edit'
+            className: ['editIcon', 'ss-write'],
+            href: '#edit'
         }, {
             _: 'input',
             type: 'text',
@@ -451,10 +449,9 @@ var AgencyList = Backbone.CollectionView.extend({
         {
             view.$el.append($.tag2({
                 _: 'a',
-                className: 'removeAgency',
+                className: ['removeAgency', 'ss-delete'],
                 href: '#remove',
-                title: 'Remove This Agency',
-                contents: 'Close'
+                title: 'Remove This Agency'
             }));
         });
     }
@@ -463,22 +460,22 @@ var AgencyList = Backbone.CollectionView.extend({
 // DATASETSPROXY
 
 var DatasetCard = Backbone.View.extend({
-	tagName: 'div',
-	className: 'datasetCard',
+    tagName: 'div',
+    className: 'datasetCard',
     initialize: function()
     {
         this.listenTo(this.model, 'change:id', function() { this.updateDataset(); });
     },
-	render: function()
-	{
-		if (this._rendered === true) return; else this._rendered = true;
+    render: function()
+    {
+        if (this._rendered === true) return; else this._rendered = true;
 
-		// data
-		this.$el.data('model', this.model);
+        // data
+        this.$el.data('model', this.model);
 
-		// then go fetch the actual metadata
-		this.updateDataset();
-	},
+        // then go fetch the actual metadata
+        this.updateDataset();
+    },
     empty: function()
     {
         this.$('h2, .datasetIcon').remove();
@@ -527,10 +524,9 @@ var DatasetCardList = Backbone.CollectionView.extend({
 
         view.$el.append($.tag2({
             _: 'a',
-            className: 'removeDataset',
+            className: ['removeDataset', 'ss-delete'],
             href: '#remove',
-            title: 'Remove This Dataset',
-            contents: 'Close'
+            title: 'Remove This Dataset'
         }));
     }
 });
@@ -677,10 +673,9 @@ var MetricList = Backbone.CollectionView.extend({
 
         view.$el.append($.tag2({
             _: 'a',
-            className: 'removeMetric',
+            className: ['removeMetric', 'ss-delete'],
             href: '#remove',
-            title: 'Remove This Metric',
-            contents: 'Close'
+            title: 'Remove This Metric'
         }));
     }
 });

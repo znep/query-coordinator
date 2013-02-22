@@ -129,12 +129,7 @@ var Indicator = Backbone.Model.extend({
         // Set in the UI???
         result.source_data_period = 'daily';
         if (this.indicatorType == 'baseline')
-        {
-            result.type = 'burndown';
-            // hard-code for now; need to add UI
-            result.start_date = new Date('1 Jan 2012').toISOString();
-            result.end_date = new Date('31 Dec 2012').toISOString();
-        }
+        { result.type = 'burndown'; }
 
         return result;
     }

@@ -96,7 +96,7 @@ var GoalEditor = Backbone.View.extend({
         'click .deleteGoal': 'maybeDeleteGoal',
         'change .mainDetails input[type=text]:not(.date), .mainDetails select': 'updateTextAttr',
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
-        'change input.date': 'updateDateAttr',
+        'change .mainDetails input.date': 'updateDateAttr',
         'keypress .notes': 'updateNotesAttr'
     },
     initialize: function()
@@ -157,7 +157,7 @@ var GoalEditor = Backbone.View.extend({
         bindSelect($comparisonWrapper.find('select'), $comparisonWrapper.find('span.selectValue'));
 
         // bind fancy date
-        var $dateInputs = $mainDetails.find('input.date').add($additionalDetails.find('input.date'));
+        var $dateInputs = $mainDetails.find('input.date');
         $dateInputs.each(function()
         {
             var $this = $(this);
@@ -649,6 +649,11 @@ var MetricEditor = Backbone.View.extend({
             var $select = $(event.target);
             indicator.set($select.attr('name'), $select.val());
         });
+        this.$('.indicator').on('change', '.' + childClass + ' input.date', function(event)
+        {
+            var $input = $(event.target);
+            indicator.set($input.attr('name'), $input.attr('data-rawvalue'));
+        });
     }
 });
 
@@ -686,7 +691,9 @@ var IndicatorEditor = Backbone.View.extend({
     tagName: 'div',
     className: 'indicatorWrapper',
     events: {
-        'change select': 'selectChanged'
+        // These don't work because everything is pulled up to the metric
+        //'change input.date': 'dateChanged',
+        //'change select': 'selectChanged'
     },
     initialize: function()
     {
@@ -729,13 +736,28 @@ var IndicatorEditor = Backbone.View.extend({
         this._addColumnCard('column1');
         this._addColumnCard('column2');
 
+        // bind fancy date
+        var $dateInputs = this.$('input.date');
+        $dateInputs.each(function()
+        {
+            var $this = $(this);
+            $this.DatePicker({
+                date: new Date($this.attr('data-rawvalue')) || new Date(),
+                onChange: function(_, newDate)
+                {
+                    $this
+                        .attr('data-rawvalue', newDate.toISOString())
+                        .val(newDate.toDateString())
+                        .trigger('change')
+                        .blur();
+                },
+                starts: 0,
+                eventName: 'focus'
+            });
+        });
+
         // save off columnfunction for quick access
         this._$columnFunctionInput = this.$('.columnFunctionInput');
-    },
-    selectChanged: function()
-    {
-        var $select = $(event.target);
-        this.model.set($select.attr('name'), $select.val());
     },
     _addColumnCard: function(name)
     {

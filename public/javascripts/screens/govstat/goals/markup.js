@@ -446,6 +446,53 @@ blist.namespace.fetch('blist.govstat').markup = {
                         _: 'div',
                         className: 'columnContainer column2'
                     }]
+                }, {
+                    i: indicator.indicatorType == 'baseline',
+                    t: {
+                        _: 'div',
+                        className: 'baselineDates',
+                        contents: [{
+                            _: 'span',
+                            contents: 'This data starts on '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper baselineStartDateInput',
+                            contents: [{
+                                _: 'label',
+                                'for': indicator.cid + '_start_date',
+                                contents: 'Start Date'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: indicator.cid + '_start_date',
+                                className: 'date',
+                                name: 'start_date',
+                                'data-rawvalue': indicator.get('start_date'),
+                                value: indicator.get('start_date') ?
+                                    new Date(indicator.get('start_date')).toDateString() : ''
+                            }]
+                        }, {
+                            _: 'span',
+                            contents: ' and ends on '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper baselineEndDateInput',
+                            contents: [{
+                                _: 'label',
+                                'for': indicator.cid + '_end_date',
+                                contents: 'End Date'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: indicator.cid + '_end_date',
+                                className: 'date',
+                                name: 'end_date',
+                                'data-rawvalue': indicator.get('end_date'),
+                                value: indicator.get('end_date') ?
+                                    new Date(indicator.get('end_date')).toDateString() : ''
+                            }]
+                        }]
+                    }
                 }]
             }]
         });

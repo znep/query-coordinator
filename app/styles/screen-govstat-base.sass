@@ -1,4 +1,5 @@
 // BASE STYLES
+$color_action: #2f90dd
 
 body
   color: #333
@@ -6,6 +7,14 @@ body
 
 h1, h2, h3, h4
   text-rendering: optimizeLegibility
+
+input.button, a.button
+  background: $color_action
+  border: none
+  color: #ffffff
+  text-shadow: none
+  &:hover
+    @include box-shadow(0, 0, 0.3em, $color_action)
 
 .goalProgress
   .content-wrapper > div
@@ -29,3 +38,69 @@ h1, h2, h3, h4
     display: inline-block
     .ss-icon
       color: #333333
+
+.gridFlowLayout
+  .categoryItem
+    margin-bottom: 1em
+    border-bottom: 1px solid #e3e3e3
+    padding-bottom: 2em
+    &:last-child
+      border-bottom: none
+  .categoryTitle
+    font-size: 2em
+  .singleItem
+    background-color: #eaeaea
+    border:
+      style: solid
+      width: 10px
+    height: 230px
+    margin-right: 1em
+    .title
+      padding: 1.5em 1.5em 0
+      h2
+        font-size: 2em
+        font-weight: normal
+        padding: 0
+    .goalSubject
+      color: #555555
+      font-style: italic
+      margin: 0 1em
+    .primaryAction
+      bottom: 0
+      left: 0
+      padding: 0
+      position: absolute
+      right: 0
+      top: 0
+      z-index: 1
+      a
+        color: #000000
+        display: block
+        height: 100%
+        .actionDetails
+          bottom: 1.5em
+          position: absolute
+          right: 1.5em
+    .goalProgress
+      bottom: 1.1em
+      left: 1.3em
+      position: absolute
+      .value
+        color: #000000
+        font-size: 1.5em
+
+  &.nonDS div.singleItem.addNewItem
+    background-color: $color_action
+    border-color: $color_action
+    .primaryAction .actionDetails
+      display: block
+      color: #ffffff
+      font-size: 2em
+      text-align: center
+      &:before
+        display: block
+        font-size: 2.5em
+        margin:
+          bottom: 0.4em
+          right: 0
+          top: 1.5em

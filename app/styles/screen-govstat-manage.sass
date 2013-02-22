@@ -11,6 +11,8 @@ $color_goals: #5161b7
         border-color: $color
         a
           color: $color
+    .gridFlowLayout.nonDS .singleItem
+      border-color: $color
   #siteHeader .manageActions li.#{$name}:hover
     border-color: $color
 
@@ -18,6 +20,18 @@ $color_goals: #5161b7
 @include header_color('_data', 'data', $color_data)
 @include header_color('_reports', 'reports', $color_reports)
 @include header_color('_config', 'goals', $color_goals)
+
+.gridFlowLayout.nonDS
+  .singleItem
+    float: left
+    height: 250px
+    margin:
+      bottom: 1em
+      right: 1em
+    position: relative
+    width: 250px
+    .primaryAction .actionDetails
+      font-size: 1.1em
 
 .actionLinks
   border: 2px solid $color_chrome_box_border
@@ -51,25 +65,11 @@ $color_goals: #5161b7
       font-size: 1.4em
       font-weight: bold
 
-.manageLink
-  margin:
-    bottom: 1em
-    left: 0
-.headerLine h2
-  display: inline-block
-  margin:
-    right: 1em
-    top: 0.5em
-
-.button .ss-icon
-  // This should be applied in controls.sass, but it isn't taking
-  margin-right: 0.4em
-
-#manageReportsPage
-  .reportList
-    .name
-      font-size: 1.2em
-      font-weight: bold
-      width: 30em
-    .view, .edit
-      width: 10em
+.headerLine
+  margin-bottom: 2em
+  .manageLink
+    margin-left: 0
+    span
+      vertical-align: sub
+      &:before
+        margin-right: 0.7em

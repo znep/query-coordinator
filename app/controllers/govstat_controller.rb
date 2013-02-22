@@ -45,7 +45,7 @@ class GovstatController < ApplicationController
   end
 
   def manage_reports
-    @reports = Page.find('$order' => ':updated_at', '$limit' => 10)
+    @reports = Page.find('$order' => ':updated_at')
   end
 
   def manage_config

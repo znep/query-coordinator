@@ -1146,6 +1146,13 @@
         this.setDataSet({ max: 50, data: [] });
     };
 
+    OpenLayers.Events.prototype.once = function(type, obj, func)
+    {
+        var _this = this,
+            callback = function() { _this.unregister(type, obj, callback); func(); };
+        this.register(type, obj, callback);
+    };
+
     blist.openLayers.Polygon = OpenLayers.Class(OpenLayers.Geometry.Polygon, {
         initialize: function()
         {
@@ -1238,6 +1245,12 @@
         setMap: function()
         {
             OpenLayers.Control.prototype.setMap.apply(this, arguments);
+            if (!this.map.baseLayer)
+            {
+                // Call me again when you have a baseLayer.
+                this.map.events.once('changebaselayer', this, this.setMap);
+                return;
+            }
             this.map.events.register('moveend', this, this.onMoveEnd);
 
             // Projecting the entire sphere onto Web Mercator doesn't work correctly.
@@ -1317,7 +1330,7 @@
             if (this.willMove(this.original))
             {
                 this.expect();
-                this.map.zoomToExtent(this.original, true);
+                this.map.zoomToExtent(this.original);
                 this.saveViewport();
             }
         },

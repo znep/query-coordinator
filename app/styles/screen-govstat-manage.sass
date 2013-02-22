@@ -1,20 +1,46 @@
+// Colors for different sections
+$color_home: #e0d5a1
+$color_data: #f6d139
+$color_reports: #318e47
+$color_goals: #5161b7
+
+@mixin header_color($page_name, $name, $color)
+  .action_govstat_manage#{$page_name}
+    #siteHeader
+      .manageActions li.#{$name}
+        border-color: $color
+        a
+          color: $color
+  #siteHeader .manageActions li.#{$name}:hover
+    border-color: $color
+
+@include header_color('', 'home', $color_home)
+@include header_color('_data', 'data', $color_data)
+@include header_color('_reports', 'reports', $color_reports)
+@include header_color('_config', 'goals', $color_goals)
+
 .actionLinks
+  border: 2px solid $color_chrome_box_border
+  margin-bottom: 2em
+  padding: 1em
+  > div + div .socrata-component a
+    margin: 0 auto
+  > div + div + div .socrata-component
+    float: right
   a
     @include border-radius(0.3em)
-    background-color: #f7f7f7
-    border: 1px solid $color_chrome_box_border
-    color: #333
+    background-color: #2f91de
+    color: #ffffff
     cursor: pointer
     display: block
     height: 9.3em
     text-align: center
-    text-shadow: 1px 1px 0 #fff
     @include transition(0.5s, background-color)
     padding: 2em
     width: 17em
 
     &:hover
-      background-color: #eee
+      background-color: #1070b0
 
     .ss-icon
       display: block
@@ -29,7 +55,7 @@
   margin:
     bottom: 1em
     left: 0
-h2
+.headerLine h2
   display: inline-block
   margin:
     right: 1em

@@ -26,7 +26,7 @@
                 {
                     comps = _.filter(comps, function(e)
                     {
-                        return _.include(['Title', 'Text', 'Picture', 'Map'], e.catalogName) ||
+                        return _.include(['Title', 'Text', 'Picture', 'Map', 'Map Layer'], e.catalogName) ||
                             e.catalogName.toLowerCase().endsWith('chart');
                     });
                 }

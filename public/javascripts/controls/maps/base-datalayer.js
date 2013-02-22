@@ -107,14 +107,15 @@
         {
             var layerObj = this;
 
-            if (newDF.component)
-            { newDF.component.setDataObj(layerObj); }
-
             //console.log('handleDisplayFormatChange');
             //console.dir(newDF);
 
             // When the view is the same as the parent, bad things happen on triggering DF_change.
             if (_.isUndefined(newDF)) { return; }
+
+            if (newDF.component)
+            { newDF.component.setDataObj(layerObj); }
+
             // If it's a legacy dataset, there is a phantom DF change from loading the meta.
             if (!layerObj.ready()) { return; }
             var comparator = function(keystring)

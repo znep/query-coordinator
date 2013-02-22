@@ -164,7 +164,7 @@ module Canvas2
         if context[:type] == 'dataset'
           row_count = string_substitute(@properties['rowBodyCount'] || 100)
           row_page = string_substitute(@properties['rowBodyPage'] || 1)
-          if Canvas2::Util.debug
+          if Canvas2::Util.no_cache
             rows = context[:dataset].get_rows(row_count, row_page, {}, false, !Canvas2::Util.is_private)
           else
             rows = context[:dataset].get_cached_rows(row_count, row_page, {}, !Canvas2::Util.is_private)

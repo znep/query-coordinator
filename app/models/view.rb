@@ -255,8 +255,8 @@ class View < Model
   #
   def get_cached_rows(per_page, page = 1, conditions = {}, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_rows)
     req = get_rows_request(per_page, page, conditions, true)
-
-    cache_key = Digest::MD5.hexdigest(req.sort.to_json)
+    rows_updated_at = self.rowsUpdatedAt.nil? ? nil : self.rowsUpdatedAt
+    cache_key = "rows:" + id.to_s + ":" + Digest::MD5.hexdigest(req.sort.to_json) + ":#{rows_updated_at}"
     cache_key += ':anon' if is_anon
     result = cache.read(cache_key)
     if result.nil?

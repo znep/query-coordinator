@@ -94,13 +94,15 @@
                 // Send an update request to the C.S. to delete the grant
                 event.preventDefault();
                 var $line = $(event.target).closest('.line');
+                if ($line.attr("disabled")) return;
+                $line.attr("disabled", true);
 
                 cpObj._view.removeGrant(createGrantObject($line),
                     function()
                     {
                         $line.slideToggle();
                         updateShareText(cpObj, $line.closest('form'));
-                    }, function() { commonError(cpObj); });
+                    }, function() { $line.attr("disabled", false); commonError(cpObj); });
             });
         });
     };

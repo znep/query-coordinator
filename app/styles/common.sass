@@ -218,27 +218,28 @@ a
 
     .modalContents
       opacity: 0
-      @include prefixer(transform, rotateY(10deg) translateX(15em))
-      @include prefixer(transform-style, preserve-3d)
+      // Unfortunately, as of FF19, these transforms make selects in the modal unuseable
+      //@include prefixer(transform, rotateY(10deg) translateX(15em))
+      //@include prefixer(transform-style, preserve-3d)
       @include transition(0.5s, transform opacity)
 
       &.shown
         opacity: 1
-        @include prefixer(transform, rotateY(0deg) translateX(0))
+        //@include prefixer(transform, rotateY(0deg) translateX(0))
 
       &.pushed
         opacity: 0
-        @include prefixer(transform, rotateY(-5deg) translateX(-15em))
+        //@include prefixer(transform, rotateY(-5deg) translateX(-15em))
 
   // just a sane default style
   .socrataDialog
     background-color: #fff
     @include prefixer(border-radius, 0.2em)
     @include prefixer(box-shadow, 0 0.3em 0.3em rgba(0, 0, 0, 0.4))
-    left: 15%
     margin: 4em auto
     min-height: 3em
     padding: 1.5em
+    position: relative
     top: 0
     width: 70%
 

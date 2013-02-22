@@ -4,6 +4,7 @@ Dataset.map = {};
 
 Dataset.map.isValid = function(view, displayFormat)
 {
+    if ($.isBlank(displayFormat)) { return false; }
     if (displayFormat.viewDefinitions) { return true; }
     if ($.isBlank(view)) { return false; }
 
@@ -27,6 +28,7 @@ Dataset.map.isValid = function(view, displayFormat)
 
 Dataset.map.convertToVersion2 = function(view, df)
 {
+    if (!view) { return; }
     if (!df) { df = view.displayFormat; }
 
     if ($.isBlank(df.viewDefinitions))

@@ -580,7 +580,12 @@
                         { feature = layerObj._data[feature.attributes.dupKey]; }
                         if (feature && feature.layer)
                         { layerObj.unhighlightRows(feature.attributes.rows, 'select'); }
-                    }
+                    },
+                    // Hack for Bug 9280.
+                    atPixel: feature.geometry instanceof OpenLayers.Geometry.Polygon
+                        ? new OpenLayers.Pixel(layerObj._parent._lastClickAt.x,
+                                               layerObj._parent._lastClickAt.y)
+                        : false
                 });
             }
         },

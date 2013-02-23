@@ -902,6 +902,10 @@
             mapObj._popup = popup;
             mapObj.map.addPopup(popup);
 
+            // Hack for Bug 9280.
+            if (options.atPixel)
+            { popup.moveTo(new OpenLayers.Pixel(options.atPixel.x, options.atPixel.y)); }
+
             // retarded shit for OL kiddies
             $('.olPopup > div > div:last-child').css('height', '34px');
 

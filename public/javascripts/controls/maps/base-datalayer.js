@@ -563,7 +563,8 @@
             {
                 layerObj.highlightRows(feature.attributes.rows, 'select');
                 layerObj._parent.$dom().trigger('display_row',
-                    [{row: _.first(feature.attributes.rows), datasetId: layerObj._view.id}]);
+                    [{row: _.first(feature.attributes.rows), datasetId: layerObj._view.id,
+                    dataset: layerObj._view}]);
                 $(document).trigger(blist.events.DISPLAY_ROW,
                     [[layerObj._view.id, _.first(feature.attributes.rows).id].join('/'), true]);
             }

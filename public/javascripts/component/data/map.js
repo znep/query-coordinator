@@ -113,8 +113,11 @@ $.component.Component.extend('Map', 'data', {
         lcObj.$contents.off('.map_' + lcObj.id);
         lcObj.$contents.on('display_row.map_' + lcObj.id, function(e, args)
         {
-            lcObj.trigger('display_row',
-                [{  dataContext: lcObj._dataContext,
+            var vd = _.detect(lcObj._viewDefinitions, function(layer)
+                { return (layer._dataContext || {}).dataset == (args || {}).dataset });
+            if (!$.subKeyDefined(vd, '_dataContext')) { return; }
+            vd.trigger('display_row',
+                [{  dataContext: vd._dataContext,
                     row: (args || {}).row,
                     datasetId: (args || {}).datasetId }]);
         });

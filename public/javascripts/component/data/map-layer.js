@@ -24,8 +24,10 @@ $.component.Component.extend('Map Layer', 'data', {
     {
         //return $.isBlank(this._dataObj) ? false : this._dataObj.isValid();
         var valid = $.isBlank(this._dataContext) ? false :
+            (this._dataContext.dataset.isArcGISDataset()
+            || this._dataContext.dataset.isGeoDataset() ||
             ($.subKeyDefined(this._properties, 'displayFormat.plot.locationId')
-             && $.subKeyDefined(this._properties, 'displayFormat.plotStyle'));
+             && $.subKeyDefined(this._properties, 'displayFormat.plotStyle')));
         if ($.deepGet(this._properties, 'displayFormat', 'plotStyle') == 'heatmap')
         { valid = valid && $.subKeyDefined(this._properties, 'displayFormat.heatmap.type'); }
         return valid;
@@ -41,11 +43,19 @@ $.component.Component.extend('Map Layer', 'data', {
         {
             if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
+            if (!this._dataType || this._dataType == 'socrata')
+            {
             retVal.schema = retVal.schema
                 .concat({ title: 'Basic Configuration',
                     fields: blist.configs.map.dataLayer.socrataBase({view: this._dataContext.dataset})})
                 .concat({ title: 'Advanced Configuration',
                     fields: blist.configs.map.dataLayer.socrata({view: this._dataContext.dataset})});
+            }
+            else
+            {
+            retVal.schema = retVal.schema.concat({ title: 'Config',
+                fields: blist.configs.map.dataLayer[this._dataType]({view: this._dataContext.dataset})});
+            }
         }
         return retVal;
     },
@@ -82,6 +92,22 @@ $.component.Component.extend('Map Layer', 'data', {
 
         if (lcObj._rendered)
         { updateProperties(lcObj); }
+    },
+
+    _updateDataSource: function(properties)
+    {
+        var rv = this._super.apply(this, arguments);
+        if ($.subKeyDefined(this, '_dataContext.dataset'))
+        {
+            var ds = this._dataContext.dataset;
+            if (ds.isArcGISDataset())
+            { this._dataType = 'esri'; }
+            else if (ds.isGeoDataset())
+            { this._dataType = 'mondara'; }
+            else
+            { this._dataType = 'socrata'; }
+        }
+        return rv;
     }
 });
 
@@ -94,13 +120,17 @@ var updateProperties = function(lcObj)
         { text = 'No dataset selected'; }
         //else if (lcObj._dataObj)
         //{ text = lcObj._dataObj.describe(); }
+        else if (lcObj._dataType == 'esri')
+        { text = 'ESRI Layer: <b>' + lcObj._dataContext.dataset.name + '</b>'; }
+        else if (lcObj._dataType == 'mondara')
+        { text = 'Mondara Layer Set: <b>' + lcObj._dataContext.dataset.name + '</b>'; }
         else if (!$.subKeyDefined(lcObj._properties, 'displayFormat.plotStyle'))
         {
             var ds = lcObj._dataContext.dataset;
 
             text = 'Layer for dataset ' + (ds.name || ds.id) + '. No plot style selected';
         }
-        else
+        else if (!lcObj._dataType || lcObj._dataType == 'socrata')
         {
             var ds = lcObj._dataContext.dataset,
                 df = lcObj._properties.displayFormat,

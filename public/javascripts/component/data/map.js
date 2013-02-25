@@ -214,6 +214,22 @@ $.component.Component.extend('Map', 'data', {
         { this.$contents.trigger('hide'); }
     },
 
+    _propRead: function()
+    {
+        var properties = this._super();
+        var children = this._readChildren();
+        if (children)
+            properties.viewDefinitions = children;
+        return properties;
+    },
+
+    _readChildren: function()
+    {
+        var children = [];
+        _.each(this._viewDefinitions, function(child) { children.push(child.properties()); });
+        return children;
+    },
+
     _propWrite: function(properties)
     {
         var lcObj = this;

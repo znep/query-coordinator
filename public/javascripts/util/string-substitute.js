@@ -66,14 +66,15 @@
                         }
 
                         p.transforms = [];
-                        if (!_.isEmpty(m = p.prop.match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/)))
+                        while (!_.isEmpty(m = p.prop.match(
+                                        /(.*)\s+\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]|(\\\/)*)*)\/([gim]*)$/)))
                         {
                             p.prop = m[1];
                             p.transforms.push({
                                 type: 'regex',
-                                regex: m[2],
-                                repl: m[3],
-                                modifiers: m[4]
+                                regex: m[2].replace(/\\\//, '/'),
+                                repl: m[5].replace(/\\\//, '/'),
+                                modifiers: m[8]
                             });
                         }
 
@@ -173,7 +174,7 @@
             // Make multiline mode actually useful...
             if (transf.modifiers.indexOf('m') > -1)
             { r = r.replace(/(^|[^\\])\./, '$1[\\s\\S]'); }
-            return v.replace(new RegExp(r, transf.modifiers), transf.repl);
+            return v.toString().replace(new RegExp(r, transf.modifiers), transf.repl);
         },
 
         numberFormat: function(v, transf)
@@ -307,7 +308,7 @@
         if (_.isNumber(v))
         { return new Date(v * 1000); }
         else if (_.isString(v))
-        { return Date.parse(v); }
+        { return new Date(v); }
     };
 
 })(jQuery);

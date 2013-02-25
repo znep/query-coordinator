@@ -261,6 +261,7 @@ var Goal = Backbone.Model.extend({
             response.metrics.add(new Metric(response.metadata.metrics[mI], { parse: true }), { at: mI });
         });
         response.comparison_function = (response.metadata || {}).comparison_function;
+        response.description = (response.metadata || {}).description;
         return response;
     },
     toJSON: function()
@@ -280,6 +281,8 @@ var Goal = Backbone.Model.extend({
         { attrs.metadata = {}; }
         attrs.metadata.comparison_function = attrs.comparison_function;
         delete attrs.comparison_function;
+        attrs.metadata.description = attrs.description;
+        delete attrs.description;
 
         // Always re-construct from scratch
         attrs.metadata.metrics = {};

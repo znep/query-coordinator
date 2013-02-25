@@ -214,15 +214,15 @@ var GoalEditor = Backbone.View.extend({
         this.model.set($input.attr('name'), $input.attr('data-rawvalue'));
     },
     updateNotesAttr: function(event)
-	{
-		var self = this;
-		_.defer(function()
-		{
-			var $markup = $(event.target).clone();
-			$markup.find('br').replaceWith('\n');
-			self.model.set('description', $markup.text());
-		});
-	}
+    {
+        var self = this;
+        _.defer(function()
+        {
+            var $markup = $(event.target).clone();
+            $markup.find('br').replaceWith('\n');
+            self.model.set('description', $markup.text());
+        });
+    }
 });
 
 // static methods

@@ -5,10 +5,10 @@ module GovstatHelper
     { type: 'Text', customClass: 'goalProgress',
       htmlClass: 'progress-{' + metric_prefix + 'computed_values.progress ||none}',
         html:
-          '<div class="good ss-upwardsbarchart"><span class="text">On Track</span></div>' +
-          '<div class="flat ss-hyphen"><span class="text">In Progress</span></div>' +
-          '<div class="poor ss-downwardsbarchart"><span class="text">Needs Improvement</span></div>' +
-          '<div class="none ss-linechartclipboard"><span class="text">Collecting Data</span></div>'
+          '<div class="good ss-up right">On Track</div>' +
+          '<div class="flat ss-right right">In Progress</div>' +
+          '<div class="poor ss-down right">Needs Improvement</div>' +
+          '<div class="none ss-linechartclipboard right">Collecting Data</div>'
     }
   end
 

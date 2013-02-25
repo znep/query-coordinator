@@ -214,15 +214,15 @@ blist.namespace.fetch('blist.govstat').markup = {
                 className: 'relatedDatasets',
                 contents: [{
                     _: 'h2',
-                    contents: 'Related Datasets'
+                    contents: 'Related Visualizations'
                 }, {
                     _: 'div',
                     className: 'datasetListContainer'
                 }, {
                     _: 'a',
-                    className: ['addDataset', 'button', 'ss-database'],
+                    className: ['addDataset', 'button', 'ss-piechart'],
                     href: '#add',
-                    contents: 'Add a Dataset'
+                    contents: 'Add a Visualization'
                 }]
             });
         },

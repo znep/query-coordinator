@@ -12,6 +12,13 @@ $color_goals: #ec8b00
         border-color: $color
         a
           color: #fff
+
+    .subnavigation
+      border-color: $color
+
+      .breadcrumb .main a
+        color: $color
+
     .gridFlowLayout.nonDS .singleItem
       background-color: $color
   #siteHeader .manageActions li.#{$name}:hover
@@ -23,6 +30,35 @@ $color_goals: #ec8b00
 @include header_color('_reports', 'reports', $color_reports)
 @include header_color('_config', 'goals', $color_goals)
 
+.subnavigation
+  background-color: #e7e7e7
+  border-bottom: 2px solid
+  margin: -2em -4em 4em
+  padding: 2em
+
+  .breadcrumb
+    @include clearfix
+    margin-bottom: -0.9em
+
+    li
+      float: left
+      margin-right: 1em
+
+      .ss-icon
+        color: #ccc
+        font-size: 1.8em
+        line-height: 1.6em
+
+      a
+        color: #585858
+        font-size: 2em
+
+      &.root
+        .ss-icon
+          color: #b9b9b9
+          font-size: 2em
+          line-height: 1.3em
+
 .gridFlowLayout.nonDS
   .singleItem
     float: left
@@ -30,8 +66,12 @@ $color_goals: #ec8b00
     width: 164px
     .singleInner
       position: relative
-    .primaryAction .actionDetails
-      font-size: 1.1em
+      .primaryAction .actionDetails
+        bottom: -2.1em
+        font-size: 1.1em
+        &:before
+          bottom: 1px
+          position: relative
 
 @mixin section_color($selector, $color)
   &.#{$selector}

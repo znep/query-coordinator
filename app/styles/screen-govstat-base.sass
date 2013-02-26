@@ -52,12 +52,17 @@ input.button, a.button
       border-bottom: none
   .categoryTitle
     font-size: 2em
+    padding-bottom: 0.8em
   .singleItem
     height: 18.4em
+    margin-bottom: 2em
     margin-right: 2em
     padding: 0.8em
-    &:hover .singleInner
-      background-color: #ddd
+    &:hover
+      .singleInner
+        background-color: #ddd
+        .fullIcon
+          color: #888
     .singleInner
       background-color: #f8f8f8
       @include prefixer(border-radius, 0.2em)
@@ -70,6 +75,13 @@ input.button, a.button
           font-size: 2em
           font-weight: normal
           padding: 0
+      .fullIcon
+        color: #aaa
+        display: block
+        font-size: 7em
+        line-height: 2.15em
+        text-align: center
+        @include transition(0.2s, color)
       .goalSubject
         color: #555555
         font-style: italic

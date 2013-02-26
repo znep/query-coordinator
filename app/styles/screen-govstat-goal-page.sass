@@ -1,6 +1,24 @@
 .headerLine .goalProgress
   float: right
 
+.goalProgress
+  .content-wrapper > div
+    @include border-radius(0.3em)
+    display: none
+    color: #ffffff
+    font-size: 1.1em
+    padding: 0.7em 1em 0.5em
+    &:after
+      margin-left: 0.5em
+  .progress-good .good
+    background-color: #09a74f
+  .progress-progressing .flat
+    background-color: #fcc806
+  .progress-bad .poor
+    background-color: #e33229
+  .progress-none .none
+    background-color: #333333
+
 .goalTitle
   font-size: 2em
   margin-bottom: 1em

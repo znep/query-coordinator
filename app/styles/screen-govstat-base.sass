@@ -37,24 +37,11 @@ input.button, a.button
 
 .goalProgress
   .content-wrapper > div
-    @include border-radius(0.3em)
     display: none
-    color: #ffffff
-    font-size: 1.1em
-    padding: 0.7em 1em 0.5em
-    &:after
-      margin-left: 0.5em
-  .progress-good .good
-    background-color: #09a74f
-    display: inline-block
-  .progress-progressing .flat
-    background-color: #fcc806
-    display: inline-block
-  .progress-bad .poor
-    background-color: #e33229
-    display: inline-block
+  .progress-good .good,
+  .progress-progressing .flat,
+  .progress-bad .poor,
   .progress-none .none
-    background-color: #333333
     display: inline-block
 
 .gridFlowLayout
@@ -118,7 +105,7 @@ input.button, a.button
             position: absolute
             right: 0.25em
       .goalProgress
-        bottom: -2.2em
+        bottom: -2em
         color: #fff
         left: 0.3em
         position: absolute
@@ -126,9 +113,10 @@ input.button, a.button
           color: #fff
           font-size: 1.5em
 
-        > div > div:before
-          bottom: 1px
+        > div > div:after
+          margin-left: 0.7em
           position: relative
+          top: 1px
 
   &.nonDS div.singleItem.addNewItem
     background-color: $govstat_color_action

@@ -5,26 +5,7 @@ $.component.Component.extend('Map', 'data', {
     {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
-        if ($.subKeyDefined(arguments[0], 'displayFormat.viewDefinitions'))
-        {
-            var contextId = arguments[0].contextId;
-            arguments[0].viewDefinitions = _.map(arguments[0].displayFormat.viewDefinitions,
-            function(vd)
-            { // TODO: Rewrite this assuming _.map, which I wasn't before.
-                if ($.isBlank(vd.displayFormat))
-                {
-                    vd = { displayFormat: vd };
-                    vd.uid = vd.displayFormat.uid; vd.contextId = vd.displayFormat.contextId;
-                }
-                if ($.isBlank(vd.uid) && $.isBlank(vd.contextId) && !$.isBlank(contextId))
-                { vd.contextId = contextId; }
-                vd.type = 'MapLayer';
-
-                return vd;
-            });
-            delete arguments[0].contextId;
-            delete arguments[0].displayFormat.viewDefinitions;
-        }
+        arguments[0] = convertLegacy(arguments[0]);
         this._vdefsToLoad = arguments[0].viewDefinitions || [];
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row', 'datasetId']});
@@ -118,7 +99,7 @@ $.component.Component.extend('Map', 'data', {
             // TODO: This is ugly because my brain is half-functional. Can probably clean it up.
             // It's not wrong or slow in any special way so whatever.
             lcObj.trigger('display_row',
-                [{  dataContext: vd ? vd._dataContext : null,
+                [{  dataContext: vd ? vd._dataContext : lcObj._dataContext,
                     row: (args || {}).row,
                     datasetId: (args || {}).datasetId }]);
             if (!$.subKeyDefined(vd, '_dataContext')) { return; }
@@ -319,6 +300,65 @@ var updateProperties = function(lcObj)
     _.each(lcObj._viewDefinitions || [], function(l) {
         if (!l._updateDataSource(null, after)) { after(); }
     });
+};
+
+var convertLegacy = function()
+{
+    var props = $.extend(true, {}, arguments[0]);
+    if ($.subKeyDefined(props, 'displayFormat.viewDefinitions'))
+    {
+        var contextId = props.contextId;
+        props.viewDefinitions = _.map(props.displayFormat.viewDefinitions,
+        function(vd)
+        { // TODO: Rewrite this assuming _.map, which I wasn't before.
+            if ($.isBlank(vd.displayFormat))
+            {
+                vd = { displayFormat: vd };
+                vd.uid = vd.displayFormat.uid; vd.contextId = vd.displayFormat.contextId;
+            }
+            if ($.isBlank(vd.uid) && $.isBlank(vd.contextId) && !$.isBlank(contextId))
+            { vd.contextId = contextId; }
+            vd.type = 'MapLayer';
+
+            return vd;
+        });
+        delete props.displayFormat.viewDefinitions;
+    }
+    else if ($.subKeyDefined(props, 'displayFormat.type'))
+    {
+        var df = props.displayFormat,
+            contextId = props.contextId;
+        props.viewDefinitions = [$.extend(true,
+            { type: 'MapLayer', contextId: contextId },
+            { displayFormat: props.displayFormat })];
+
+        // Copied out of Dataset.map.convertToVersion2
+        var notABoundaryMap = df.plotStyle != 'heatmap';
+        if (df.type == 'google' && notABoundaryMap)
+        {
+            df.exclusiveLayers = true;
+            df.bkgdLayers = Dataset.map.backgroundLayerSet.Google;
+        }
+        else if (df.type == 'bing' && notABoundaryMap)
+        {
+            df.exclusiveLayers = true;
+            df.bkgdLayers = Dataset.map.backgroundLayerSet.Bing;
+        }
+        else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || notABoundaryMap)
+        {
+            df.bkgdLayers = _.map(df.layers, function(layer) {
+                if (layer.custom_url)
+                { return { custom_url: layer.custom_url }; }
+                else
+                { return { layerName: (_.detect(Dataset.map.backgroundLayers, function(lConfig)
+                    { return layer.url.indexOf((lConfig.options || {}).url) > -1; }) || {}).name }; }
+            });
+        }
+    }
+
+    delete props.contextId;
+
+    return props;
 };
 
 })(jQuery);

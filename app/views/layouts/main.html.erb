@@ -96,13 +96,13 @@ http://www.socrata.com
         <%= render_domain_template(@page_custom_header || 'header_full') %>
         <%- if module_enabled?(:govStat) -%>
           <ul class="manageActions">
-            <li class="home"><a href="<%= manage_path %>" class="ss-home" title="Manage Home"></a></li>
-            <li class="data"><a href="<%= manage_data_path %>" class="ss-database"
-              title="Manage Data"></a></li>
-            <li class="reports"><a href="<%= manage_reports_path %>" class="ss-openbook"
-              title="Manage Reports"></a></li>
-            <li class="goals"><a href="<%= manage_site_config_path %>" class="ss-checkcalendar"
-              title="Manage Goals"></a></li>
+            <li class="home"><a href="<%= manage_path %>" class="ss-home" title="Home">Home</a></li>
+            <li class="data"><a href="<%= manage_data_path %>" class="ss-hdd"
+              title="Browse and Manage Data">Data</a></li>
+            <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"
+              title="View and Create Reports">Reports</a></li>
+            <li class="goals"><a href="<%= manage_site_config_path %>" class="ss-wrench"
+              title="Manage GovStat configuration">Configuration</a></li>
           </ul>
         <%- end -%>
       </div>
@@ -204,7 +204,7 @@ http://www.socrata.com
         $siteLinks.remove();
         $siteLinks = $.tag2({_: 'div', className: ['siteUserNav', 'menu']});
         $('#siteHeader').append($siteLinks);
-        $siteLinks.menu({ menuButtonClass: 'accountButton ss-list', menuButtonContents: '',
+        $siteLinks.menu({ menuButtonClass: 'accountButton ss-list', menuButtonContents: 'Menu',
           menuButtonTitle: 'Account Options', contents: contents });
       })(jQuery);
     <%- end -%>

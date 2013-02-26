@@ -5,15 +5,17 @@
 
 <div id="manageReportsPage">
   <div class="headerLine">
-    <a class="button manageLink" href="<%= manage_path %>"><span class="ss-navigateleft">Back</span></a>
+    <a class="button manageLink" href="<%= manage_path %>"><span class="ss-left">Back</span></a>
   </div>
 
   <div class="gridFlowLayout nonDS clearfix">
     <%- @reports.each do |report| -%>
       <div class="singleItem">
-        <div class="title"><h2><%= report.name %></h2></div>
-        <div class="primaryAction">
-          <a href="<%= report.path %>?_edit_mode=true"><span class="actionDetails ss-write">Edit Report</span></a>
+        <div class="singleInner">
+          <div class="title"><h2><%= report.name %></h2></div>
+          <div class="primaryAction">
+            <a href="<%= report.path %>?_edit_mode=true"><span class="actionDetails ss-write">Edit Report</span></a>
+          </div>
         </div>
       </div>
     <%- end -%>

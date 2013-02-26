@@ -1,43 +1,145 @@
+// Colors for different sections
+$color_home: #971ac0
+$color_data: #2471ff
+$color_reports: #35a000
+$color_goals: #ec8b00
+
+@mixin header_color($page_name, $name, $color)
+  .action_govstat_manage#{$page_name}
+    #siteHeader
+      .manageActions li.#{$name}
+        background-color: #000
+        border-color: $color
+        a
+          color: #fff
+    .gridFlowLayout.nonDS .singleItem
+      background-color: $color
+  #siteHeader .manageActions li.#{$name}:hover
+    background-color: #222
+    border-color: $color
+
+@include header_color('', 'home', $color_home)
+@include header_color('_data', 'data', $color_data)
+@include header_color('_reports', 'reports', $color_reports)
+@include header_color('_config', 'goals', $color_goals)
+
 .gridFlowLayout.nonDS
   .singleItem
     float: left
-    height: 250px
-    margin:
-      bottom: 1em
-      right: 1em
     position: relative
-    width: 250px
+    width: 164px
+    .singleInner
+      position: relative
     .primaryAction .actionDetails
       font-size: 1.1em
 
-.actionLinks
-  border: 2px solid $color_chrome_box_border
-  margin-bottom: 2em
-  padding: 1em
-  > div + div .socrata-component a
-    margin: 0 auto
-  > div + div + div .socrata-component
-    float: right
-  a
-    @include border-radius(0.3em)
-    background-color: #2f91de
-    color: #ffffff
-    cursor: pointer
-    display: block
-    height: 9.3em
-    text-align: center
-    @include transition(0.5s, background-color)
-    padding: 2em
-    width: 17em
+@mixin section_color($selector, $color)
+  &.#{$selector}
+    .mainIcon, p.header
+      color: $color
+
+    div.button
+      background-color: $color
 
     &:hover
-      background-color: #1070b0
+      .mainIcon, p.header
+        color: lighten($color, 8%)
 
-    .ss-icon
-      display: block
-      font-size: 5em
-      margin: 0.2em auto
+      div.button
+        background-color: lighten($color, 8%)
 
-    p
-      font-size: 1.4em
-      font-weight: bold
+
+.subHubSection
+  background-color: #e7e7e7
+  border-bottom: 2px solid $color_home
+  margin: -2em -4em
+  margin-bottom: 2em
+
+  .subHubTitle
+    padding: 3em 4em 0
+    width: auto
+
+    h2
+      color: $color_home
+      font-size: 3.5em
+      font-weight: normal
+      letter-spacing: -0.05em
+      padding: 0
+
+  .subHubIntro
+    color: #585858
+    font-size: 1.7em
+    letter-spacing: -0.05em
+    padding: 0 2em 1.5em
+    text-rendering: optimizeLegibility
+    width: auto
+
+  .subHubNavigation
+    max-width: 100em
+    margin: 0 auto 3em
+
+    .component-wrapper
+      > .component-Button
+        border-left: 1px solid #d1d1d1
+        padding-bottom: 1em
+        padding-top: 2em
+        text-align: center
+
+        @include section_color('data', $color_data)
+        @include section_color('reports', $color_reports)
+        @include section_color('configuration', $color_goals)
+
+        a
+          display: block
+
+          &:hover
+            p.explanation
+              color: #666
+
+        .mainIcon
+          font-size: 10em
+          @include transition(0.2s, color)
+
+        p.header
+          font-size: 3.5em
+          letter-spacing: -0.05em
+          text-rendering: optimizeLegibility
+          @include transition(0.2s, color)
+
+        p.explanation
+          color: #949494
+          font-size: 1.7em
+          min-height: 3.2em
+          padding: 1.5em 2.3em
+          @include transition(0.2s, color)
+
+        div.button
+          @include prefixer(border-radius, 0.2em)
+          color: #fff
+          display: inline-block
+          font-size: 1.6em
+          letter-spacing: -0.05em
+          padding: 0.6em 1.3em 0.5em
+          text-transform: lowercase
+          @include transition(0.2s, background-color)
+
+          .ss-icon
+            color: #fff
+
+      &:first-child
+        > .component-Button
+          border: none
+
+  &:after
+    border-bottom: 6px solid #dedede
+    content: ''
+    display: block
+    height: 0
+
+.headerLine
+  margin-bottom: 2em
+  .manageLink
+    margin-left: 0
+    span
+      vertical-align: sub
+

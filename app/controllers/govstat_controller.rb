@@ -10,7 +10,8 @@ class GovstatController < ApplicationController
   def goal_page
     @page = get_page(goal_page_config(params[:id]), request.path,
                      'Goal | ' + CurrentDomain.strings.site_title, params)
-    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-goal-page' }
+    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-goal-page',
+      :custom_javascript => 'screen-govstat-goal-page' }
   end
 
   def manage
@@ -81,30 +82,70 @@ protected
         children: [
         {
           type: 'HorizontalContainer',
-          htmlClass: 'metricsStats',
+          htmlClass: 'headerLine',
           children: [
           {
-            weight: 1,
-            type: 'Container',
-            children: [
-            { type: 'Title', text: 'Overall Progress' },
-            #{ type: 'Text', htmlClass: 'overallStatus', html: '{goal.metrics.0.compute.delta}%' },
-            progress_indicator('goal.metrics.0')
-            ]
+            type: 'Button',
+            href: home_path,
+            htmlClass: 'button backLink',
+            text: '<span class="ss-navigateleft">Back</span>'
           },
+          progress_indicator('goal.metrics.0')
+          ]
+        },
+        {
+          type: 'Title',
+          htmlClass: 'goalTitle',
+          text: '{goal.subject ||We} will ' +
+            '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
+            '{goal.name $[u] ||results} by {goal.goal_delta %[,0]}{goal.goal_delta_is_pct /true/%/ ||} ' +
+            'before {goal.end_date @[%B %Y] ||sometime}'
+        },
+        {
+          type: 'Repeater',
+          contextId: 'goal.metrics',
+          htmlClass: 'metricsBlock',
+          children: [
           {
-            weight: 3,
-            type: 'Repeater',
-            contextId: 'goal.metrics',
-            container: { type: 'HorizontalContainer' },
+            type: 'HorizontalContainer',
+            htmlClass: 'metricItem index-{_repeaterIndex}',
             children: [
-            { type: 'Title', text: '{title}' },
-            { type: 'Text', htmlClass: 'current date', html: '{computed_values.as_of @[%B %Y] ||}' },
-            { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
-            { type: 'Text', htmlClass: 'baseline date', html: '{goalContext.goal.start_date @[%B %Y] ||}' },
-            { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||}' },
-            #{ type: 'Text', htmlClass: 'metricStatus', html: '{compute.delta}%' },
-            progress_indicator
+            {
+              weight: 32,
+              type: 'Container',
+              children: [
+                { type: 'Text', customClass: 'metricType prevailing', html: 'Prevailing Metric' },
+                { type: 'Text', customClass: 'metricType additional', html: 'Additional Metric' },
+                { type: 'Title', htmlClass: 'metricTitle', text: '{title}' }
+              ]
+            },
+            {
+              weight: 6,
+              type: 'Container',
+              htmlClass: 'indicatorContainer',
+              children: [
+                { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||}' },
+                { type: 'Text', htmlClass: 'baseline date', html: '{goalContext.goal.start_date @[%b %Y] ||}' }
+              ]
+            },
+            {
+              weight: 6,
+              type: 'Container',
+              htmlClass: 'indicatorContainer',
+              children: [
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
+                { type: 'Text', htmlClass: 'current date', html: '{computed_values.as_of @[%b %Y] ||}' }
+              ]
+            },
+            {
+              weight: 7,
+              type: 'Container',
+              htmlClass: 'progressContainer',
+              children: [
+                #{ type: 'Text', htmlClass: 'metricStatus', html: '{compute.delta}%' },
+                progress_indicator
+              ]
+            }
             ]
           }
           ]
@@ -112,7 +153,9 @@ protected
         {
           type: 'Repeater',
           contextId: 'goal.related_datasets',
-          container: { type: 'GridContainer' },
+          htmlClass: 'relatedVisualizations',
+          container: { type: 'GridContainer', cellWidth: 500, cellHeight: 400, rowSpacing: 30,
+            cellSpacing: 35, cellBorderWidth: 1, rowBorderWidth: 1 },
           children: [
           {
             type: 'Container',
@@ -121,11 +164,15 @@ protected
               datasetId: '{value}'
             },
             children: [
-              { type: 'Title', text: '{dataset.name}' },
-              { type: 'Chart', chartType: '{dataset.displayFormat.chartType}' }
+              { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
+              { type: 'Chart', chartType: '{dataset.displayFormat.chartType}', height: 330 }
             ]
           }
           ]
+        },
+        {
+          type: 'Text', htmlClass: 'goalDescription clearfix',
+          html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
         }
         ]
       }

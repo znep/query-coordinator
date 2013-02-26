@@ -1,5 +1,20 @@
 // BASE STYLES
-$color_action: #2f90dd
+@mixin header_color($page_name, $name, $color)
+  .action_govstat_manage#{$page_name}
+    #siteHeader
+      .manageActions li.#{$name}
+        border-color: $color
+        a
+          color: $color
+    .gridFlowLayout.nonDS .singleItem
+      border-color: $color
+  #siteHeader .manageActions li.#{$name}:hover
+    border-color: $color
+
+@include header_color('', 'home', $govstat_color_home)
+@include header_color('_data', 'data', $govstat_color_data)
+@include header_color('_reports', 'reports', $govstat_color_reports)
+@include header_color('_config', 'goals', $govstat_color_goals)
 
 body
   color: #333
@@ -9,12 +24,12 @@ h1, h2, h3, h4
   text-rendering: optimizeLegibility
 
 input.button, a.button
-  background: $color_action
+  background: $govstat_color_action
   border: none
   color: #ffffff
   text-shadow: none
   &:hover
-    @include box-shadow(0, 0, 0.3em, $color_action)
+    @include box-shadow(0, 0, 0.3em, $govstat_color_action)
 
 [class^="ss-"], [class*=" ss-"]
   &:not(:empty):before
@@ -22,26 +37,25 @@ input.button, a.button
 
 .goalProgress
   .content-wrapper > div
+    @include border-radius(0.3em)
     display: none
-  .ss-icon
-    font-size: 1em
-    margin-left: 0.5em
+    color: #ffffff
+    font-size: 1.1em
+    padding: 0.7em 1em 0.5em
+    &:after
+      margin-left: 0.5em
   .progress-good .good
+    background-color: #09a74f
     display: inline-block
-    .ss-icon
-      color: #55ee55
   .progress-progressing .flat
+    background-color: #fcc806
     display: inline-block
-    .ss-icon
-      color: #ee9955
   .progress-bad .poor
+    background-color: #e33229
     display: inline-block
-    .ss-icon
-      color: #ee3333
   .progress-none .none
+    background-color: #333333
     display: inline-block
-    .ss-icon
-      color: #333333
 
 .gridFlowLayout
   .categoryItem
@@ -117,8 +131,8 @@ input.button, a.button
           position: relative
 
   &.nonDS div.singleItem.addNewItem
-    background-color: $color_action
-    border-color: $color_action
+    background-color: $govstat_color_action
+    border-color: $govstat_color_action
     .primaryAction .actionDetails
       display: block
       color: #ffffff
@@ -131,3 +145,10 @@ input.button, a.button
           bottom: 0.4em
           right: 0
           top: 1.5em
+
+.headerLine
+  margin-bottom: 2em
+  .backLink
+    margin-left: 0
+    span
+      vertical-align: sub

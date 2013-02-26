@@ -3,12 +3,21 @@
   .action_govstat_manage#{$page_name}
     #siteHeader
       .manageActions li.#{$name}
+        background-color: #000
         border-color: $color
         a
-          color: $color
-    .gridFlowLayout.nonDS .singleItem
+          color: #fff
+
+    .subnavigation
       border-color: $color
+
+      .breadcrumb .main a
+        color: $color
+
+    .gridFlowLayout.nonDS .singleItem
+      background-color: $color
   #siteHeader .manageActions li.#{$name}:hover
+    background-color: #222
     border-color: $color
 
 @include header_color('', 'home', $govstat_color_home)
@@ -27,6 +36,7 @@ input.button, a.button
   background: $govstat_color_action
   border: none
   color: #ffffff
+  font-family: 'myriad-pro', helvetica, sans-serif
   text-shadow: none
   &:hover
     @include box-shadow(0, 0, 0.3em, $govstat_color_action)

@@ -86,7 +86,7 @@ protected
           children: [
           {
             type: 'Button',
-            href: home_path,
+            href: '/',
             htmlClass: 'button backLink',
             text: '<span class="ss-navigateleft">Back</span>'
           },
@@ -98,7 +98,7 @@ protected
           htmlClass: 'goalTitle',
           text: '{goal.subject ||We} will ' +
             '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
-            '{goal.name $[u] ||results} by {goal.goal_delta %[,0]}{goal.goal_delta_is_pct /true/%/ ||} ' +
+            '{goal.name $[u] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
             'before {goal.end_date @[%B %Y] ||sometime}'
         },
         {

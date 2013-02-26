@@ -167,7 +167,7 @@ protected
         },
         {
           type: 'Text', htmlClass: 'goalDescription clearfix',
-          html: '<p>{goal.metadata.description /\n/<\/p><p>/g}</p>'
+          html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
         }
         ]
       }

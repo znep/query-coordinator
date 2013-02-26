@@ -30,7 +30,8 @@
         <%= text_field_tag :pageUrl, @cur_path %>
       </div>
       <ul class="actions clearfix">
-        <li><a href="<%= canvas_admin_path %>" class="button">Cancel</a></li>
+        <li><a href="<%= module_enabled?(:govStat) ? manage_reports_path : canvas_admin_path %>"
+          class="button">Cancel</a></li>
         <li><input type="submit" value="Create" class="button createAction default" /></li>
       </ul>
     <% end %>

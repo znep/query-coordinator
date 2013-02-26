@@ -51,7 +51,17 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   end
 
   def manage_reports
-    @reports = Page.find('$order' => ':updated_at')
+    reports = Page.find('$order' => ':updated_at')
+    @own_reports = []
+    @other_reports = []
+    reports.each do |r|
+      next if r.page_type == 'export' || r.path.include?('/:')
+      if r.owner == current_user.id
+        @own_reports.push(r)
+      else
+        @other_reports.push(r)
+      end
+    end
   end
 
   def manage_config
@@ -86,7 +96,7 @@ protected
           children: [
           {
             type: 'Button',
-            href: home_path,
+            href: '/',
             htmlClass: 'button backLink',
             text: '<span class="ss-navigateleft">Back</span>'
           },
@@ -98,7 +108,7 @@ protected
           htmlClass: 'goalTitle',
           text: '{goal.subject ||We} will ' +
             '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
-            '{goal.name $[u] ||results} by {goal.goal_delta %[,0]}{goal.goal_delta_is_pct /true/%/ ||} ' +
+            '{goal.name $[u] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
             'before {goal.end_date @[%B %Y] ||sometime}'
         },
         {

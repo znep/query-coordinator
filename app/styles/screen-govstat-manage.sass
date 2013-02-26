@@ -1,35 +1,3 @@
-// Colors for different sections
-$color_home: #971ac0
-$color_data: #2471ff
-$color_reports: #35a000
-$color_goals: #ec8b00
-
-@mixin header_color($page_name, $name, $color)
-  .action_govstat_manage#{$page_name}
-    #siteHeader
-      .manageActions li.#{$name}
-        background-color: #000
-        border-color: $color
-        a
-          color: #fff
-
-    .subnavigation
-      border-color: $color
-
-      .breadcrumb .main a
-        color: $color
-
-    .gridFlowLayout.nonDS .singleItem
-      background-color: $color
-  #siteHeader .manageActions li.#{$name}:hover
-    background-color: #222
-    border-color: $color
-
-@include header_color('', 'home', $color_home)
-@include header_color('_data', 'data', $color_data)
-@include header_color('_reports', 'reports', $color_reports)
-@include header_color('_config', 'goals', $color_goals)
-
 .subnavigation
   background-color: #e7e7e7
   border-bottom: 2px solid
@@ -91,7 +59,7 @@ $color_goals: #ec8b00
 
 .subHubSection
   background-color: #e7e7e7
-  border-bottom: 2px solid $color_home
+  border-bottom: 2px solid $govstat_color_home
   margin: -2em -4em
   margin-bottom: 2em
 
@@ -100,7 +68,7 @@ $color_goals: #ec8b00
     width: auto
 
     h2
-      color: $color_home
+      color: $govstat_color_home
       font-size: 3.5em
       font-weight: normal
       letter-spacing: -0.05em
@@ -125,9 +93,9 @@ $color_goals: #ec8b00
         padding-top: 2em
         text-align: center
 
-        @include section_color('data', $color_data)
-        @include section_color('reports', $color_reports)
-        @include section_color('configuration', $color_goals)
+        @include section_color('data', $govstat_color_data)
+        @include section_color('reports', $govstat_color_reports)
+        @include section_color('configuration', $govstat_color_goals)
 
         a
           display: block
@@ -183,3 +151,12 @@ $color_goals: #ec8b00
     span
       vertical-align: sub
 
+#manageReportsPage
+  .categoryItem.ownerReports
+    .categoryTitle h2
+      color: $govstat_color_reports
+  .categoryItem.otherReports
+    .categoryTitle h2
+      color: #002635
+    .singleItem
+      background-color: #002635

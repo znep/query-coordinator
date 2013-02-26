@@ -3,12 +3,12 @@ module GovstatHelper
   def progress_indicator(metric_prefix = '')
     metric_prefix += '.' if !metric_prefix.blank?
     { type: 'Text', customClass: 'goalProgress',
-      htmlClass: 'progress-{' + metric_prefix + 'compute.progress ||none}',
+      htmlClass: 'progress-{' + metric_prefix + 'computed_values.progress ||none}',
         html:
-          '<div class="good ss-upwardsbarchart"><span class="text">On Track</span></div>' +
-          '<div class="flat ss-hyphen"><span class="text">In Progress</span></div>' +
-          '<div class="poor ss-downwardsbarchart"><span class="text">Needs Improvement</span></div>' +
-          '<div class="none ss-linechartclipboard"><span class="text">Collecting Data</span></div>'
+          '<div class="good ss-up right">On Track</div>' +
+          '<div class="flat ss-right right">In Progress</div>' +
+          '<div class="poor ss-down right">Needs Improvement</div>' +
+          '<div class="none ss-linechartclipboard right">Collecting Data</div>'
     }
   end
 
@@ -31,7 +31,7 @@ module GovstatHelper
             groupBy: { value: '{goal.category}' },
             childProperties: { htmlClass: 'categoryItem' },
             noResultsChildren: [
-            { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
+              { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
             ],
             children: [
             {
@@ -39,20 +39,28 @@ module GovstatHelper
               contextId: 'categories_{_groupValue}',
               children: [
               { type: 'Title', text: '{category.name ||Draft}', customClass: 'categoryTitle',
-                styles: { 'background-color' => '{category.color}' } },
+                styles: { 'color' => '{category.color}' } },
               {
                 type: 'Repeater',
                 htmlClass: 'goalList',
                 contextId: '_groupItems',
-                childProperties: { htmlClass: 'goalItem',
-                  styles: { 'background-color' => '{category.color}' } },
-                container: { type: 'GridContainer', cellWidth: 225, cellHeight: 225, cellSpacing: 0 },
-                children: [
-                  progress_indicator('goal.metrics.0'),
-                  { type: 'Title', customClass: 'goalTitle', text: '{goal.name}' },
-                  { type: 'Text', customClass: 'goalDetails',
-                    html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
-                ]
+                container: { type: 'GridContainer', cellWidth: 200, cellHeight: 200, cellSpacing: 0 },
+                children: [{
+                  type: 'Container', htmlClass: 'goalItem singleItem',
+                  styles: { 'background-color' => '{category.color}' },
+                  children: [{
+                    type: 'Container', htmlClass: 'singleInner',
+                    children: [
+                      { type: 'Title', customClass: 'goalTitle title', text: '{goal.name}' },
+                      { type: 'Text', customClass: 'goalSubject', html: '{goal.subject}' },
+                      progress_indicator('goal.metrics.0'),
+                      #{ type: 'Text', customClass: 'goalProgress', ifValue: 'goal.metrics.0.computed_values.delta',
+                        #html: 'Status: <span class="value">{goal.metrics.0.computed_values.delta ||}%</span>' },
+                      { type: 'Text', customClass: 'goalLink primaryAction',
+                        html: '<a href="/goal/{goal.id}"><div class="actionDetails ss-right"></div></a>' }
+                    ]
+                  }]
+                }]
               }
               ]
             }

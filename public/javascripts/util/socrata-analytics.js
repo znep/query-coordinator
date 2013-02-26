@@ -15,6 +15,7 @@ jQuery.metrics = {
             type: "POST",
             anonymous: true,
             isSODA: true,
+            headers: {'Content-Type': 'application/text'},
             success: function (data) {
                 // noop
             },

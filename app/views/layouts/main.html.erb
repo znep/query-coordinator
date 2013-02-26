@@ -94,6 +94,17 @@ http://www.socrata.com
       <%- if !@suppress_chrome -%>
       <div id="siteHeader" class="clearfix">
         <%= render_domain_template(@page_custom_header || 'header_full') %>
+        <%- if module_enabled?(:govStat) -%>
+          <ul class="manageActions">
+            <li class="home"><a href="<%= manage_path %>" class="ss-home" title="Home">Home</a></li>
+            <li class="data"><a href="<%= manage_data_path %>" class="ss-hdd"
+              title="Browse and Manage Data">Data</a></li>
+            <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"
+              title="View and Create Reports">Reports</a></li>
+            <li class="goals"><a href="<%= manage_site_config_path %>" class="ss-wrench"
+              title="Manage GovStat configuration">Configuration</a></li>
+          </ul>
+        <%- end -%>
       </div>
       <%- end -%>
 
@@ -177,6 +188,25 @@ http://www.socrata.com
     } catch(ex) {
       top.location = self.document.location;
     }
+    <%- end -%>
+
+    <%- if module_enabled?(:govStat) -%>
+      (function($)
+      {
+        var $siteLinks = $('#siteHeader .siteUserNav');
+        var contents = [];
+        $siteLinks.find('li a:visible').each(function()
+        {
+          var $a = $(this);
+          contents.push({ className: $a[0].className, text: $a.text(), href: $a.attr('href'),
+            rel: $a.attr('rel'), title: $a.attr('title') });
+        });
+        $siteLinks.remove();
+        $siteLinks = $.tag2({_: 'div', className: ['siteUserNav', 'menu']});
+        $('#siteHeader').append($siteLinks);
+        $siteLinks.menu({ menuButtonClass: 'accountButton ss-list', menuButtonContents: 'Menu',
+          menuButtonTitle: 'Account Options', contents: contents });
+      })(jQuery);
     <%- end -%>
   </script>
 

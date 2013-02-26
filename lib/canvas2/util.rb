@@ -121,6 +121,10 @@ module Canvas2
           return nil if !k.match(/^\d+$/)
           k = k.to_i
         end
+        begin
+          obj = JSON.parse(obj) if obj.is_a?(String)
+        rescue Exception => e
+        end
         return nil if obj[k].blank?
         obj = obj[k]
         i += 1
@@ -178,13 +182,13 @@ module Canvas2
             end
 
             p['transforms'] = []
-            p['prop'].match(/(.*)\s+\/(\S*)\/(.*)\/([gim]*)$/) do |ma|
+            while ma = p['prop'].match(/(.*)\s+\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]*|(\\\/)*)*)\/([gim]*)$/) do
               p['prop'] = ma[1]
               p['transforms'] << {
                 type: 'regex',
-                regex: ma[2],
-                repl: ma[3],
-                modifiers: ma[4]
+                regex: ma[2].gsub('\/', '/'),
+                repl: ma[5].gsub('\/', '/'),
+                modifiers: ma[8]
               }
             end
 
@@ -322,7 +326,7 @@ module Canvas2
         if transf[:format].include?('U')
           v = v.upcase
         elsif transf[:format].include?('u')
-          v = v.split(' ').each {|vv| (vv[0] || '').upcase + (vv[1, -1] || '')}.join(' ')
+          v = v.split(' ').map {|vv| ((vv[0] || '').upcase + (vv[1..-1] || ''))}.join(' ')
         elsif transf[:format].include?('c')
           v = v[0].upcase + v[1, -1]
         end

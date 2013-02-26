@@ -113,8 +113,17 @@ $.component.Component.extend('Map', 'data', {
         lcObj.$contents.off('.map_' + lcObj.id);
         lcObj.$contents.on('display_row.map_' + lcObj.id, function(e, args)
         {
+            var vd = _.detect(lcObj._viewDefinitions, function(layer)
+                { return (layer._dataContext || {}).dataset == (args || {}).dataset });
+            // TODO: This is ugly because my brain is half-functional. Can probably clean it up.
+            // It's not wrong or slow in any special way so whatever.
             lcObj.trigger('display_row',
-                [{  dataContext: lcObj._dataContext,
+                [{  dataContext: vd ? vd._dataContext : null,
+                    row: (args || {}).row,
+                    datasetId: (args || {}).datasetId }]);
+            if (!$.subKeyDefined(vd, '_dataContext')) { return; }
+            vd.trigger('display_row',
+                [{  dataContext: vd._dataContext,
                     row: (args || {}).row,
                     datasetId: (args || {}).datasetId }]);
         });
@@ -209,6 +218,22 @@ $.component.Component.extend('Map', 'data', {
         this._super();
         if (!$.isBlank(this.$contents))
         { this.$contents.trigger('hide'); }
+    },
+
+    _propRead: function()
+    {
+        var properties = this._super();
+        var children = this._readChildren();
+        if (children)
+            properties.viewDefinitions = children;
+        return properties;
+    },
+
+    _readChildren: function()
+    {
+        var children = [];
+        _.each(this._viewDefinitions, function(child) { children.push(child.properties()); });
+        return children;
     },
 
     _propWrite: function(properties)

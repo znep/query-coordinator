@@ -145,7 +145,6 @@ h2
       color: #fff
       display: none
       float: right
-      font-family: SSStandard
       font-size: 1.7em
       padding: 1.3em
       text-rendering: optimizeLegibility
@@ -161,12 +160,10 @@ h2
     .editIcon
       color: #fff
       display: block
-      font-family: 'SSStandard'
       font-size: 1.7em
       @include opacity(0.9)
       margin-right: 4em
-      padding: 1.5em
-        bottom: 0
+      padding: 1.2em 1.5em 0
       text-rendering: optimizeLegibility
       visibility: hidden
 
@@ -212,7 +209,6 @@ h2
     top: 1em
 
     a
-      color: #333
       display: inline-block
       font-size: 1.3em
       padding: 1em
@@ -272,6 +268,7 @@ h2
 
   form.mainDetails
     .comparisonInput
+      text-transform: lowercase
       width: 21em
     .nameInput
       width: 50em
@@ -348,7 +345,6 @@ h2
 
           .removeAgency
             color: #333
-            font-family: SSStandard
             margin-left: -1.2em
             margin-right: 1.2em
             position: relative
@@ -370,7 +366,11 @@ h2
       position: relative
 
       .notes
-        line-height: 1.3em
+        display: inline-block
+        line-height: 2.646em
+        min-height: 1.5em
+        vertical-align: middle
+        width: 100%
 
       .notesLabel
         @include lower-label
@@ -379,7 +379,6 @@ h2
 
   form.relatedDatasets
     .addDataset
-      color: #333
       font-size: 1.4em
 
   .datasetCardList
@@ -405,7 +404,6 @@ h2
 
     .removeDataset
       color: #333
-      font-family: SSStandard
       font-size: 1.3em
       margin-top: -1.5em
       position: absolute
@@ -450,7 +448,6 @@ h2
     .removeMetric
       color: #333
       float: right
-      font-family: SSStandard
       font-size: 1.3em
       position: absolute
       right: 1em
@@ -515,7 +512,7 @@ h2
 
         .calculationSection
           padding:
-            left: 0
+            left: 4em
             right: 0
 
       .comparison
@@ -540,6 +537,13 @@ h2
     .calculationSection
       padding-right: 9em
 
+      .aggregationFunctionInput
+        margin:
+          bottom: 3.5em
+          left: 0.5em
+          right: 1.5em
+        width: 20em
+
       .columnContainer
         display: inline-block
 
@@ -557,7 +561,7 @@ h2
         margin-top: 3.5em
         width: 15em
 
-      .column2
+      .column2Wrapper
         margin-top: 3.5em
         @include opacity(0.2)
         @include transition(0.3s, opacity)
@@ -565,7 +569,7 @@ h2
         select
           height: 0
 
-      .columnFunctionInput.hasFunction + .column2
+      .columnFunctionInput.hasFunction + .column2Wrapper
         @include opacity(1)
 
         select
@@ -577,15 +581,10 @@ h2
       .columnCard .inputWrapper
         width: 28.5em
 
-    .periodSection
-      .selectInput
-        margin: 0 1em
-
-      .metricPeriodInput
-        width: 10em
-
-      .aggregationFunctionInput
-        width: 16em
+    .baselineDates
+      margin-top: 2em
+      .inputWrapper
+        width: 26em
 
     // prevailing metric
     &:first-child
@@ -629,7 +628,6 @@ h2
             padding: 0.3em
 
       .selectDataset
-        color: #333
         font-size: 1.3em
 
     .calculationContainer
@@ -641,7 +639,6 @@ h2
       padding: 2em 4em 1em
 
   .addMetric
-    color: #333
     display: inline-block
     font-size: 1.5em
     margin: 2em
@@ -650,18 +647,12 @@ h2
     background-color: #333
     color: #fff
 
-    .actions a
-      color: #fff
-
     form
       .inputWrapper
         border-color: #fff
 
         input, select
           color: #fff
-
-          option
-            color: #000
 
     form + form, .metricsBlock + form
       @include vertical-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.1))
@@ -679,9 +670,6 @@ h2
 
       .notesWrapper
         background: url(/stylesheets/images/content/dotted_line.png)
-
-    form.relatedDatasets a.addDataset
-      color: #fff
 
     .datasetCard .removeDataset
       color: #fff
@@ -723,9 +711,6 @@ h2
       .prevailing
         @include prefixer(box-shadow-color, rgba(0, 0, 0, 1))
 
-    .addMetric
-      color: #fff
-
     .indicatorContainer
       .calculationContainer .columnCard span.selectValue.needsDataset
         color: #bbb
@@ -735,15 +720,13 @@ h2
         background-color: rgba(0, 0, 0, 0.2)
         border-color: rgba(0, 0, 0, 0.4)
 
-      .datasetContainer .selectDataset
-        color: #fff
 
 .socrataModal #selectDataset
   padding: 3em
 
   .jqmClose
     color: #333
-    font-family: SSStandard
+    font-family: SSPika
     font-size: 1.2em
     position: absolute
     right: 2.5em

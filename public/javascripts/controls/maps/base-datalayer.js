@@ -107,14 +107,15 @@
         {
             var layerObj = this;
 
-            if (newDF.component)
-            { newDF.component.setDataObj(layerObj); }
-
             //console.log('handleDisplayFormatChange');
             //console.dir(newDF);
 
             // When the view is the same as the parent, bad things happen on triggering DF_change.
             if (_.isUndefined(newDF)) { return; }
+
+            if (newDF.component)
+            { newDF.component.setDataObj(layerObj); }
+
             // If it's a legacy dataset, there is a phantom DF change from loading the meta.
             if (!layerObj.ready()) { return; }
             var comparator = function(keystring)
@@ -562,7 +563,8 @@
             {
                 layerObj.highlightRows(feature.attributes.rows, 'select');
                 layerObj._parent.$dom().trigger('display_row',
-                    [{row: _.first(feature.attributes.rows), datasetId: layerObj._view.id}]);
+                    [{row: _.first(feature.attributes.rows), datasetId: layerObj._view.id,
+                    dataset: layerObj._view}]);
                 $(document).trigger(blist.events.DISPLAY_ROW,
                     [[layerObj._view.id, _.first(feature.attributes.rows).id].join('/'), true]);
             }
@@ -579,7 +581,12 @@
                         { feature = layerObj._data[feature.attributes.dupKey]; }
                         if (feature && feature.layer)
                         { layerObj.unhighlightRows(feature.attributes.rows, 'select'); }
-                    }
+                    },
+                    // Hack for Bug 9280.
+                    atPixel: feature.geometry instanceof OpenLayers.Geometry.Polygon
+                        ? new OpenLayers.Pixel(layerObj._parent._lastClickAt.x,
+                                               layerObj._parent._lastClickAt.y)
+                        : false
                 });
             }
         },

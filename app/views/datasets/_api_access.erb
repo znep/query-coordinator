@@ -10,10 +10,10 @@
   <p>To start accessing this dataset programmatically, use the API endpoint
      provided below. For more information and examples on how to use the
      Socrata Open Data API, reference our
-     <a href="/api/docs" rel="external">Developer Documentation</a>.</p>
+     <a href="http://dev.socrata.com" rel="external">Developer Documentation</a>.</p>
   <h3>API Access Endpoint:</h3>
   <div class="apiEndpointWrapper">
-    <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/api/views/#{@view.id}/rows.json" %></pre>
+    <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{@view.id}.json" %></pre>
   </div>
 
   <%- if @view.is_tabular? && !@view.visible_columns.empty? -%>

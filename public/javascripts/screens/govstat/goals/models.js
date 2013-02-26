@@ -93,8 +93,9 @@ var Indicator = Backbone.Model.extend({
     isComplete: function()
     {
         var js = this.toJSON();
-        var res = !$.isBlank(js.compute_function.column_function) && !$.isBlank(js.dataset) &&
-            !$.isBlank(js.column1) && !$.isBlank(js.date_column) &&
+        var res = !$.isBlank(js.compute_function.column_function) &&
+            !$.isBlank(js.compute_function.aggregation_function) &&
+            !$.isBlank(js.dataset) && !$.isBlank(js.column1) && !$.isBlank(js.date_column) &&
             (this.indicatorType != 'baseline' || !$.isBlank(js.start_date) && !$.isBlank(js.end_date));
         return res;
     },
@@ -107,6 +108,8 @@ var Indicator = Backbone.Model.extend({
             response[key] = new nestedClass(nestedData, { parse: true });
         }
         response.column_function = (response.compute_function || {}).column_function;
+        response.aggregation_function = (response.compute_function || {}).aggregation_function;
+        response.aggregation_function2 = (response.compute_function || {}).aggregation_function2;
         delete response.compute_function;
 
         return response;
@@ -118,18 +121,15 @@ var Indicator = Backbone.Model.extend({
         _.each(_.keys(self.model).concat(['column1', 'column2', 'date_column']),
                 function(k) { result[k] = self.attributes[k].toJSON(); });
         result.compute_function = { column_function: result.column_function || 'null',
-            aggregation_function: 'sum', metric_period: 'monthly' };
-        delete result.column_function;
+            aggregation_function: result.aggregation_function || 'sum',
+            aggregation_function2: result.aggregation_function2 || 'sum', metric_period: 'monthly' };
+        _.each(['column_function', 'aggregation_function', 'aggregation_function2'], function(k)
+            { delete result[k]; });
 
         // Set in the UI???
         result.source_data_period = 'daily';
         if (this.indicatorType == 'baseline')
-        {
-            result.type = 'burndown';
-            // hard-code for now; need to add UI
-            result.start_date = '1 Jan 2012';
-            result.end_date = '31 Dec 2012';
-        }
+        { result.type = 'burndown'; }
 
         return result;
     }
@@ -261,6 +261,7 @@ var Goal = Backbone.Model.extend({
             response.metrics.add(new Metric(response.metadata.metrics[mI], { parse: true }), { at: mI });
         });
         response.comparison_function = (response.metadata || {}).comparison_function;
+        response.description = (response.metadata || {}).description;
         return response;
     },
     toJSON: function()
@@ -280,6 +281,8 @@ var Goal = Backbone.Model.extend({
         { attrs.metadata = {}; }
         attrs.metadata.comparison_function = attrs.comparison_function;
         delete attrs.comparison_function;
+        attrs.metadata.description = attrs.description;
+        delete attrs.description;
 
         // Always re-construct from scratch
         attrs.metadata.metrics = {};
@@ -330,12 +333,12 @@ var Goals = Backbone.Collection.extend({
 // CATEGORY
 
 var Category = Backbone.Model.extend({
-    initialize: function()
+    initialize: function(__, options)
     {
         var self = this;
         if (!this.get('color'))
         {
-            this.set('color', Category.getColor());
+            this.set('color', Category.getColor(options.parentCollection));
         }
 
         this.goals = new Goals([], { category: this });
@@ -356,12 +359,24 @@ var Category = Backbone.Model.extend({
 });
 
 
-var categoryColors = [ '#0b2850', '#320d1f', '#8f0f2f', '#be2327', '#eb702a' ];
+var categoryColors = [ '#e33229', '#291c73', '#e3a53d', '#6fab34', '#e44c34', '#4e9b37', '#711e8c',
+    '#b6cb2f', '#e4613f', '#afc42e', '#024885', '#24813d', '#e67846', '#9bbf31', '#017cab',
+    '#1a5b50', '#e48f42', '#00adf0', '#88b734', '#1e3a65' ];
 var lastColor = 0;
-Category.getColor = function()
+var colorIncr = 0;
+Category.getColor = function(catList)
 {
-    return categoryColors[lastColor++ % categoryColors.length];
-}
+    var usedColors = $.isBlank(catList) ? [] : catList.map(function(cat) { return cat.get('color'); });
+    var availColors = _.difference(categoryColors, usedColors);
+    if (_.isEmpty(availColors))
+    {
+        availColors = categoryColors;
+        colorIncr = 1;
+    }
+    var color = availColors[lastColor % availColors.length];
+    lastColor += colorIncr;
+    return color;
+};
 
 var Categories = Backbone.Collection.extend({
     model: Category,

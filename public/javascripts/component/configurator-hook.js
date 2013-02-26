@@ -26,11 +26,13 @@ $(function() {
             loading = true;
             $('.socrata-page').loadingSpinner().showHide(true);
             // Need to load & set-up
+            var stylesheets = [ {assets: 'colorpicker'}, {assets: 'base-control-third-party'},
+                        {assets: 'base-control'}, {assets: 'configurator'} ];
+            if (!blist.configuration.govStat)
+            { stylesheets.unshift( {sheet: '/webfonts/ss-standard.css', hasFonts: true} ); }
             blist.util.assetLoading.loadAssets(
                 {javascripts: [{assets: 'configurator'}, {assets: 'shared-editors'}],
-                    stylesheets: [{sheet: '/webfonts/ss-standard.css', hasFonts: true},
-                        {assets: 'colorpicker'}, {assets: 'base-control-third-party'},
-                        {assets: 'base-control'}, {assets: 'configurator'}],
+                    stylesheets: stylesheets,
                     templates: ['grid_sidebar'], modals: ['configurator_settings']}, function()
             {
                 $('.socrata-page').loadingSpinner().showHide(false);

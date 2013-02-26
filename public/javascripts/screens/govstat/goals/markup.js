@@ -13,20 +13,14 @@ blist.namespace.fetch('blist.govstat').markup = {
                 className: 'actions',
                 contents: [{
                     _: 'a',
-                    className: 'deleteGoal',
+                    className: ['deleteGoal', 'ss-trash', 'button'],
                     href: '#delete goal',
-                    contents: [{
-                        _: 'span',
-                        className: 'ss-trash'
-                    }, 'Delete this Goal']
+                    contents: 'Delete this Goal'
                 }, {
                     _: 'a',
-                    className: 'jqmClose',
+                    className: ['jqmClose', 'ss-floppydisk', 'button'],
                     href: '#save and close',
-                    contents: [{
-                        _: 'span',
-                        className: 'ss-close'
-                    }, 'Save and Close']
+                    contents: 'Save and Close'
                 }]
             })
         },
@@ -220,15 +214,15 @@ blist.namespace.fetch('blist.govstat').markup = {
                 className: 'relatedDatasets',
                 contents: [{
                     _: 'h2',
-                    contents: 'Related Datasets'
+                    contents: 'Related Visualizations'
                 }, {
                     _: 'div',
                     className: 'datasetListContainer'
                 }, {
                     _: 'a',
-                    className: 'addDataset',
+                    className: ['addDataset', 'button', 'ss-piechart'],
                     href: '#add',
-                    contents: 'Add A Dataset'
+                    contents: 'Add a Visualization'
                 }]
             });
         },
@@ -243,7 +237,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'metricListContainer'
                 }, {
                     _: 'a',
-                    className: 'addMetric',
+                    className: ['addMetric', 'button', 'ss-linechartclipboard'],
                     href: '#add',
                     contents: 'Add a Metric'
                 }]
@@ -293,7 +287,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'datasetContainer'
                 }, {
                     _: 'a',
-                    className: 'selectDataset',
+                    className: ['selectDataset', 'button', 'ss-database'],
                     href: '#select dataset',
                     title: 'Select the dataset that contains ' + indicator.indicatorType + ' for this metric.',
                     contents: 'Select Dataset'
@@ -309,13 +303,62 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'columnContainer date_column'
                 }, {
                     _: 'span',
-                    contents: ','
+                    contents: ', '
+                }, {
+                    _: 'span',
+                    contents: 'the'
+                }, {
+                    _: 'div',
+                    className: [ 'inputWrapper', 'selectInput', 'aggregationFunctionInput' ],
+                    contents: [{
+                        _: 'span',
+                        className: 'selectValue'
+                    }, {
+                        _: 'select',
+                        name: 'aggregation_function',
+                        id: indicator.cid + '_aggregation_function',
+                        contents: [{
+                            _: 'option',
+                            value: 'sum',
+                            selected: indicator.get('aggregation_function') === 'sum',
+                            contents: 'sum'
+                        }, {
+                            _: 'option',
+                            value: 'average',
+                            selected: indicator.get('aggregation_function') === 'average',
+                            contents: 'average'
+                        }, {
+                            _: 'option',
+                            value: 'most_recent',
+                            selected: indicator.get('aggregation_function') === 'most_recent',
+                            contents: 'most recent value'
+                        }, {
+                            _: 'option',
+                            value: 'max',
+                            selected: indicator.get('aggregation_function') === 'max',
+                            contents: 'maximum'
+                        }, {
+                            _: 'option',
+                            value: 'min',
+                            selected: indicator.get('aggregation_function') === 'min',
+                            contents: 'minimum'
+                        }]
+                    }, {
+                        _: 'label',
+                        'for': indicator.cid + '_aggregation_function',
+                        contents: 'Operation'
+                    }]
+                }, {
+                    _: 'span',
+                    contents: 'of'
                 }, {
                     _: 'div',
                     className: 'columnContainer column1'
                 }, {
                     _: 'div',
-                    className: [ 'inputWrapper selectInput columnFunctionInput' ],
+                    className: [ 'inputWrapper', 'selectInput', 'columnFunctionInput',
+                        { i: indicator.get('column_function') && indicator.get('column_function') != 'null',
+                            t: 'hasFunction' } ],
                     contents: [{
                         _: 'span',
                         className: 'selectValue'
@@ -351,7 +394,105 @@ blist.namespace.fetch('blist.govstat').markup = {
                     }]
                 }, {
                     _: 'div',
-                    className: 'columnContainer column2'
+                    className: 'column2Wrapper',
+                    contents: [{
+                        _: 'span',
+                        contents: 'the'
+                    }, {
+                        _: 'div',
+                        className: [ 'inputWrapper', 'selectInput', 'aggregationFunctionInput' ],
+                        contents: [{
+                            _: 'span',
+                            className: 'selectValue'
+                        }, {
+                            _: 'select',
+                            name: 'aggregation_function2',
+                            id: indicator.cid + '_aggregation_function2',
+                            contents: [{
+                                _: 'option',
+                                value: 'sum',
+                                selected: indicator.get('aggregation_function2') === 'sum',
+                                contents: 'sum'
+                            }, {
+                                _: 'option',
+                                value: 'average',
+                                selected: indicator.get('aggregation_function2') === 'average',
+                                contents: 'average'
+                            }, {
+                                _: 'option',
+                                value: 'most_recent',
+                                selected: indicator.get('aggregation_function2') === 'most_recent',
+                                contents: 'most recent value'
+                            }, {
+                                _: 'option',
+                                value: 'max',
+                                selected: indicator.get('aggregation_function2') === 'max',
+                                contents: 'maximum'
+                            }, {
+                                _: 'option',
+                                value: 'min',
+                                selected: indicator.get('aggregation_function2') === 'min',
+                                contents: 'minimum'
+                            }]
+                        }, {
+                            _: 'label',
+                            'for': indicator.cid + '_aggregation_function2',
+                            contents: 'Operation'
+                        }]
+                    }, {
+                        _: 'span',
+                        contents: 'of'
+                    }, {
+                        _: 'div',
+                        className: 'columnContainer column2'
+                    }]
+                }, {
+                    i: indicator.indicatorType == 'baseline',
+                    t: {
+                        _: 'div',
+                        className: 'baselineDates',
+                        contents: [{
+                            _: 'span',
+                            contents: 'This data starts on '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper baselineStartDateInput',
+                            contents: [{
+                                _: 'label',
+                                'for': indicator.cid + '_start_date',
+                                contents: 'Start Date'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: indicator.cid + '_start_date',
+                                className: 'date',
+                                name: 'start_date',
+                                'data-rawvalue': indicator.get('start_date'),
+                                value: indicator.get('start_date') ?
+                                    new Date(indicator.get('start_date')).toDateString() : ''
+                            }]
+                        }, {
+                            _: 'span',
+                            contents: ' and ends on '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper baselineEndDateInput',
+                            contents: [{
+                                _: 'label',
+                                'for': indicator.cid + '_end_date',
+                                contents: 'End Date'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: indicator.cid + '_end_date',
+                                className: 'date',
+                                name: 'end_date',
+                                'data-rawvalue': indicator.get('end_date'),
+                                value: indicator.get('end_date') ?
+                                    new Date(indicator.get('end_date')).toDateString() : ''
+                            }]
+                        }]
+                    }
                 }]
             }]
         });

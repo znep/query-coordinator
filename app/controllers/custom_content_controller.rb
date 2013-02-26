@@ -148,7 +148,7 @@ class CustomContentController < ApplicationController
     cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
     cache_key_user = app_helper.cache_key("canvas2-page", cache_params.merge({
                    'current_user' => cache_user_id}))
-
+    ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
     #
     # Tri-State Slate Page Caching
     # Anonymous/Logged Out:
@@ -280,7 +280,6 @@ class CustomContentController < ApplicationController
             manifest.set_access_level(manifest_user)
             VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
           end
-          ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?, @page.max_age || 15.minutes)
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
         # but Rails ignores it and passes it all the way up without rescuing

@@ -1,29 +1,87 @@
 html, body
   background-color: #f7f7f7
 
+@mixin menuLi
+  border-bottom: 3px solid #626262
+  display: inline-block
+  margin-right: 0.5em
+  @include transition(0.1s, 'background-color, border-color')
+
+  > a
+    color: #a2a2a2
+    display: block
+    font-family: 'Myriad Pro'
+    font-size: 1.4em
+    height: 2.857em
+    line-height: 3.3em
+    padding: 0 0.8em
+    text-rendering: optimizeLegibility
+    &:before
+      color: #fff
+      font-size: 1.4em
+      position: relative
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.35)
+      top: 1px
+      vertical-align: bottom
+
 #siteHeader
   background-color: #333333
-  .appLogo a
-    // FIXME: shouldn't be hardcoded
-    background-image: url(/stylesheets/images/common/socrata_logo_light.png)
-    height: 34px
-    width: 151px
+  border-bottom: 3px solid #626262
+  height: 4em
+  position: relative
+  > .clearfix
+    height: 100%
+  .manageActions
+    left: 16em
+    position: absolute
+    top: 0
+    li
+      @include menuLi
+  .appLogo
+    height: 100%
+    padding: 0
+    a
+      // FIXME: shouldn't be hardcoded
+      background-image: url(/stylesheets/images/common/govstat_logo_tx.png)
+      background-position: 0.5em 0.15em
+      background-repeat: no-repeat
+      height: 34px
+      padding: 0.3em 0.6em
+      width: 121px
   .siteUserNav
-    margin:
-      bottom: 0.5em
-      top: 2em
-    li a
-      color: #ffffff
-      &:before
-        font-size: 1.6em
+    @include menuLi
+    margin: 0
+    position: absolute
+    right: 0.3em
+    top: 0
+    @include transition(0.1s, border-color)
+    &:hover
+      border-color: #888
+    .accountButton
+      color: #a2a2a2
+      @include transition(0.1s, background-color)
       &:hover
-        text-decoration: none
-      .text
-        @include text-hiding
-        width: 1px
+        background-color: #222
+    .menuDropdown
+      background-color: #333333
+      width: 20em
+      li
+        float: none
+        margin-left: 0
+        a
+          border-color: #333333
+          color: #ffffff
+          &:hover
+            background-color: #160404
+            border-color: #333333
+            text-decoration: none
 
 .siteInnerWrapper
   padding-bottom: 9em
+
+.siteContentWrapper
+  padding-left: 4em
+  padding-right: 4em
 
 #siteFooter
   background-color: #f1f1f1

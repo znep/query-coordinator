@@ -96,7 +96,7 @@ var GoalEditor = Backbone.View.extend({
         'click .deleteGoal': 'maybeDeleteGoal',
         'change .mainDetails input[type=text]:not(.date), .mainDetails select': 'updateTextAttr',
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
-        'change input.date': 'updateDateAttr',
+        'change .mainDetails input.date': 'updateDateAttr',
         'keypress .notes': 'updateNotesAttr'
     },
     initialize: function()
@@ -157,7 +157,7 @@ var GoalEditor = Backbone.View.extend({
         bindSelect($comparisonWrapper.find('select'), $comparisonWrapper.find('span.selectValue'));
 
         // bind fancy date
-        var $dateInputs = $mainDetails.find('input.date').add($additionalDetails.find('input.date'));
+        var $dateInputs = $mainDetails.find('input.date');
         $dateInputs.each(function()
         {
             var $this = $(this);
@@ -214,15 +214,15 @@ var GoalEditor = Backbone.View.extend({
         this.model.set($input.attr('name'), $input.attr('data-rawvalue'));
     },
     updateNotesAttr: function(event)
-	{
-		var self = this;
-		_.defer(function()
-		{
-			var $markup = $(event.target).clone();
-			$markup.find('br').replaceWith('\n');
-			self.model.set('description', $markup.text());
-		});
-	}
+    {
+        var self = this;
+        _.defer(function()
+        {
+            var $markup = $(event.target).clone();
+            $markup.find('br').replaceWith('\n');
+            self.model.set('description', $markup.text());
+        });
+    }
 });
 
 // static methods
@@ -291,18 +291,16 @@ var CategoryPane = Backbone.View.extend({
         // make list item
         var $title = $.tag2([{
             _: 'a',
-            className: 'removeCategory',
-            href: '#remove',
-            contents: 'Close'
+            className: ['removeCategory', 'ss-delete'],
+            href: '#remove'
         }, {
             _: 'h2',
             className: 'categoryTitle',
             contents: this.getName()
         }, {
             _: 'a',
-            className: 'editIcon',
-            href: '#edit',
-            contents: 'edit'
+            className: ['editIcon', 'ss-write'],
+            href: '#edit'
         }, {
             _: 'input',
             type: 'text',
@@ -326,15 +324,17 @@ var CategoryPane = Backbone.View.extend({
         this.$el.append(goalsView.$el);
     },
 
-    maybeRemoveCategory: function()
+    maybeRemoveCategory: function(event)
     {
+        event.preventDefault();
         if (confirm('Are you sure you want to remove this category? All goals currently assigned to this category will be reverted to Draft Goals.'))
         {
             this.model.trigger('removeFromAll');
         }
     },
-    editTitle: function()
+    editTitle: function(event)
     {
+        event.preventDefault();
         this.$('.categoryTitle, .editIcon').hide();
         this.$('.categoryTitleEdit').show().focus();
     },
@@ -449,10 +449,9 @@ var AgencyList = Backbone.CollectionView.extend({
         {
             view.$el.append($.tag2({
                 _: 'a',
-                className: 'removeAgency',
+                className: ['removeAgency', 'ss-delete'],
                 href: '#remove',
-                title: 'Remove This Agency',
-                contents: 'Close'
+                title: 'Remove This Agency'
             }));
         });
     }
@@ -461,22 +460,22 @@ var AgencyList = Backbone.CollectionView.extend({
 // DATASETSPROXY
 
 var DatasetCard = Backbone.View.extend({
-	tagName: 'div',
-	className: 'datasetCard',
+    tagName: 'div',
+    className: 'datasetCard',
     initialize: function()
     {
         this.listenTo(this.model, 'change:id', function() { this.updateDataset(); });
     },
-	render: function()
-	{
-		if (this._rendered === true) return; else this._rendered = true;
+    render: function()
+    {
+        if (this._rendered === true) return; else this._rendered = true;
 
-		// data
-		this.$el.data('model', this.model);
+        // data
+        this.$el.data('model', this.model);
 
-		// then go fetch the actual metadata
-		this.updateDataset();
-	},
+        // then go fetch the actual metadata
+        this.updateDataset();
+    },
     empty: function()
     {
         this.$('h2, .datasetIcon').remove();
@@ -507,9 +506,9 @@ var DatasetCard = Backbone.View.extend({
 var DatasetCardList = Backbone.CollectionView.extend({
     tagName: 'div',
     className: 'datasetCardList',
-	events: {
-		'click .datasetCard .removeDataset': 'removeDataset'
-	},
+    events: {
+        'click .datasetCard .removeDataset': 'removeDataset'
+    },
     render: function()
     {
         this.$el.append(this.renderCollection());
@@ -525,10 +524,9 @@ var DatasetCardList = Backbone.CollectionView.extend({
 
         view.$el.append($.tag2({
             _: 'a',
-            className: 'removeDataset',
+            className: ['removeDataset', 'ss-delete'],
             href: '#remove',
-            title: 'Remove This Dataset',
-            contents: 'Close'
+            title: 'Remove This Dataset'
         }));
     }
 });
@@ -651,6 +649,11 @@ var MetricEditor = Backbone.View.extend({
             var $select = $(event.target);
             indicator.set($select.attr('name'), $select.val());
         });
+        this.$('.indicator').on('change', '.' + childClass + ' input.date', function(event)
+        {
+            var $input = $(event.target);
+            indicator.set($input.attr('name'), $input.attr('data-rawvalue'));
+        });
     }
 });
 
@@ -675,10 +678,9 @@ var MetricList = Backbone.CollectionView.extend({
 
         view.$el.append($.tag2({
             _: 'a',
-            className: 'removeMetric',
+            className: ['removeMetric', 'ss-delete'],
             href: '#remove',
-            title: 'Remove This Metric',
-            contents: 'Close'
+            title: 'Remove This Metric'
         }));
     }
 });
@@ -689,7 +691,9 @@ var IndicatorEditor = Backbone.View.extend({
     tagName: 'div',
     className: 'indicatorWrapper',
     events: {
-        'change select': 'selectChanged'
+        // These don't work because everything is pulled up to the metric
+        //'change input.date': 'dateChanged',
+        //'change select': 'selectChanged'
     },
     initialize: function()
     {
@@ -732,13 +736,28 @@ var IndicatorEditor = Backbone.View.extend({
         this._addColumnCard('column1');
         this._addColumnCard('column2');
 
+        // bind fancy date
+        var $dateInputs = this.$('input.date');
+        $dateInputs.each(function()
+        {
+            var $this = $(this);
+            $this.DatePicker({
+                date: new Date($this.attr('data-rawvalue')) || new Date(),
+                onChange: function(_, newDate)
+                {
+                    $this
+                        .attr('data-rawvalue', newDate.toISOString())
+                        .val(newDate.toDateString())
+                        .trigger('change')
+                        .blur();
+                },
+                starts: 0,
+                eventName: 'focus'
+            });
+        });
+
         // save off columnfunction for quick access
         this._$columnFunctionInput = this.$('.columnFunctionInput');
-    },
-    selectChanged: function()
-    {
-        var $select = $(event.target);
-        this.model.set($select.attr('name'), $select.val());
     },
     _addColumnCard: function(name)
     {

@@ -5,7 +5,7 @@
 #
 module ConditionalRequestHandler
 
-  def self.set_cache_control_headers(response, anonymous = false, maxAge = 15.minutes)
+  def self.set_cache_control_headers(response, anonymous = false)
     #
     # Return to the previously, conservative Cache-Control headers. Cache servers appear
     # to not only ignore certain headers, those headers which they do pay attention to

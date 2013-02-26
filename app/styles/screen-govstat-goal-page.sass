@@ -1,0 +1,154 @@
+.headerLine .goalProgress
+  float: right
+
+.goalProgress
+  .content-wrapper > div
+    @include border-radius(0.3em)
+    display: none
+    color: #ffffff
+    font-size: 1.1em
+    padding: 0.7em 1em 0.5em
+    &:after
+      margin-left: 0.5em
+  .progress-good .good
+    background-color: #09a74f
+  .progress-progressing .flat
+    background-color: #fcc806
+  .progress-bad .poor
+    background-color: #e33229
+  .progress-none .none
+    background-color: #333333
+
+.goalTitle
+  font-size: 2em
+  margin-bottom: 1em
+  h2
+    font-weight: normal
+
+.metricsBlock
+  .metricItem
+    border-bottom: 1px solid $color_chrome_box_border
+    margin-bottom: 1.5em
+    padding-bottom: 1em
+    .metricTitle
+      font-size: 1.3em
+      h2
+        font-weight: normal
+        line-height: 1em
+        padding: 0
+    .metricType.prevailing
+      display: none
+    .indicatorContainer
+      text-align: center
+      .value
+        font-size: 2em
+        font-weight: bold
+      .date
+        line-height: 1em
+        text-transform: uppercase
+    .progressContainer
+      text-align: center
+    &.index-0
+      border-bottom: 3px solid #000000
+      margin-bottom: 3.5em
+      .metricType.additional
+        display: none
+      .metricType.prevailing
+        display: block
+      .indicatorContainer
+        color: $govstat_color_goals
+
+.relatedVisualizations
+  border-bottom: 1px solid $color_chrome_box_border
+  padding-bottom: 6em
+  .row
+    border:
+      color: $color_chrome_box_border
+      style: solid
+    > .socrata-component
+      border:
+        color: $color_chrome_box_border
+        style: solid
+  .chartTitle
+    margin-bottom: 0.5em
+    h2
+      font-size: 2.2em
+      font-weight: normal
+
+.goalDescription
+  color: #000000
+  font-size: 1.2em
+  line-height: 1.2em
+  margin: 3em 0
+  p
+    margin-right: 2em
+    padding-bottom: 1.5em
+    max-width: 400px
+.headerLine .goalProgress
+  float: right
+
+.goalTitle
+  font-size: 2em
+  margin-bottom: 1em
+  h2
+    font-weight: normal
+
+.metricsBlock
+  .metricItem
+    border-bottom: 1px solid $color_chrome_box_border
+    margin-bottom: 1.5em
+    padding-bottom: 1em
+    .metricTitle
+      font-size: 1.3em
+      h2
+        font-weight: normal
+        line-height: 1em
+        padding: 0
+    .metricType.prevailing
+      display: none
+    .indicatorContainer
+      text-align: center
+      .value
+        font-size: 2em
+        font-weight: bold
+      .date
+        line-height: 1em
+        text-transform: uppercase
+    .progressContainer
+      text-align: center
+    &.index-0
+      border-bottom: 3px solid #000000
+      margin-bottom: 3.5em
+      .metricType.additional
+        display: none
+      .metricType.prevailing
+        display: block
+      .indicatorContainer
+        color: $govstat_color_goals
+
+.relatedVisualizations
+  border-bottom: 1px solid $color_chrome_box_border
+  padding-bottom: 6em
+  .row
+    border:
+      color: $color_chrome_box_border
+      style: solid
+    > .socrata-component
+      border:
+        color: $color_chrome_box_border
+        style: solid
+  .chartTitle
+    margin-bottom: 0.5em
+    h2
+      font-size: 2.2em
+      font-weight: normal
+
+.goalDescription
+  color: #000000
+  font-size: 1.2em
+  line-height: 1.2em
+  margin: 3em 0
+  p
+    margin-right: 2em
+    padding-bottom: 1.5em
+    max-width: 400px

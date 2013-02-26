@@ -4,11 +4,91 @@
 <% end %>
 
 <div id="manageConfigPage">
-  <a class="button manageLink" href="<%= manage_path %>"><span class="ss-icon">reply</span>Back to Manage</a>
+  <div class="subnavigation">
+    <ul class="breadcrumb">
+      <li class="root"><a class="ss-icon" href="/manage">Home</a></li>
+      <li><span class="ss-icon">navigateright</span></li>
+      <li class="main"><a href="/manage/site_config">Configuration</a></li>
+    </ul>
+  </div>
+
+  <%
+    admin_links = [{
+      title: 'GovStat',
+      color: '#002635',
+      links: [
+        { icon: 'users', text: 'Users', href: users_path,
+          right: :manage_users },
+        { icon: 'checkclipboard', text: 'Goals and Categories', href: '/goals-new' },
+        { icon: 'layout', text: 'Select Paradigm', href: manage_template_path }
+      ]
+    }, {
+      title: 'Data Management',
+      color: '#d97925',
+      links: [
+        { icon: 'notebook', text: 'Datasets', href: '/admin/datasets',
+          right: :edit_others_datasets },
+        { icon: 'searchbarcode', text: 'Metadata', href: '/admin/metadata',
+          right: :edit_site_theme },
+        { icon: 'contract', text: 'Federations', href: '/admin/federations',
+          right: :federations, module_available: :federations },
+        { icon: 'check', text: 'Rounding and Approval', href: '/admin/routing_approval',
+          module_available: :routing_approval } # current_user.can_approve?
+      ]
+    }, {
+      title: 'Appearance',
+      color: '#a1ba25',
+      links: [
+        { icon: 'bankcheck', text: 'Data Player Templates', href: '/admin/sdp_templates',
+          right: :edit_sdp, module_available: :sdp_customizer },
+        { icon: 'browseonline', text: 'Homepage', href: '/admin/home',
+          right: :edit_site_theme }
+      ]
+    }, {
+      title: 'Content Moderation',
+      color: '#a92c2a',
+      links: [
+        { icon: 'chat', text: 'Comment Moderation', href: '/admin/comment_moderation',
+          right: :moderate_comments, module_available: :publisher_comment_moderation },
+        { icon: 'userprofile', text: 'Nomination Moderation', href: '/admin/nominations',
+          right: :approve_nominations, feature: :view_moderation }
+      ]
+    }]
+  %>
+
+  <div class="categoryList gridFlowLayout nonDS clearfix">
+    <% admin_links.each do |cat| %>
+      <div class="categoryItem">
+        <%
+          relevant_links = cat[:links].reject do |link|
+            (link[:right].present? and !CurrentDomain.user_can?(current_user, link[:right])) or
+            (link[:module_available].present? and !CurrentDomain.module_available?(link[:module_available])) or
+            (link[:module_enabled].present? and !CurrentDomain.module_available?(link[:module_enabled])) or
+            (link[:feature].present? and !CurrentDomain.feature?(link[:feature]))
+          end
+
+          next if relevant_links.empty?
+        %>
+
+        <div class="categoryTitle"><h2 style="color:<%= cat[:color] %>"><%= cat[:title] %></h2></div>
+        <div class="clearfix">
+          <% relevant_links.each do |link| %>
+            <div class="singleItem" style="background-color:<%= cat[:color] %>">
+              <div class="singleInner">
+                <div class="title"><span class="fullIcon ss-icon"><%= link[:icon] %></span></div>
+                <div class="primaryAction">
+                  <a href="<%= link[:href] %>"><span class="actionDetails ss-right"><%= link[:text] %></span></a>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  </div>
   <div class="actionLinks">
-    <a href="<%= users_path %>"><span class="ss-icon">users</span><p>Manage Users</p></a>
-    <a href="<%= url_for :controller => 'govstat', :action => 'goals' %>"><span class="ss-icon">calendarcheck</span><p>Manage Goals and Categories</p></a>
-    <a href="<%= manage_template_path %>"><span class="ss-icon">layout</span><p>Select Template</p></a>
   </div>
 </div>
 

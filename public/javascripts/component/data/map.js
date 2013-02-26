@@ -5,7 +5,7 @@ $.component.Component.extend('Map', 'data', {
     {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
-        arguments[0] = convertLegacy(arguments[0]);
+        arguments[0] = convertLegacy($.extend(true, {}, arguments[0]));
         this._vdefsToLoad = arguments[0].viewDefinitions || [];
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row', 'datasetId']});
@@ -302,9 +302,8 @@ var updateProperties = function(lcObj)
     });
 };
 
-var convertLegacy = function()
+var convertLegacy = function(props)
 {
-    var props = $.extend(true, {}, arguments[0]);
     if ($.subKeyDefined(props, 'displayFormat.viewDefinitions'))
     {
         var contextId = props.contextId;

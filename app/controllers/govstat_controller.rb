@@ -51,7 +51,17 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   end
 
   def manage_reports
-    @reports = Page.find('$order' => ':updated_at')
+    reports = Page.find('$order' => ':updated_at')
+    @own_reports = []
+    @other_reports = []
+    reports.each do |r|
+      next if r.page_type == 'export' || r.path.include?('/:')
+      if r.owner == current_user.id
+        @own_reports.push(r)
+      else
+        @other_reports.push(r)
+      end
+    end
   end
 
   def manage_config

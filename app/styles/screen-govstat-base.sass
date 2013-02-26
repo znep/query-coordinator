@@ -80,6 +80,7 @@ input.button, a.button
       @include prefixer(box-shadow, '0 0 5px rgba(0, 0, 0, 0.28), 0 0 51px #fff inset')
       @include transition(0.2s, background-color)
       height: 16.2em
+      overflow: hidden
       .title
         padding: 1.5em 1.5em 0
         h2
@@ -114,7 +115,7 @@ input.button, a.button
             color: #fff
             position: absolute
             right: 0.25em
-      .goalProgress
+      .goalProgress, .secondaryAction
         bottom: -2em
         color: #fff
         left: 0.3em
@@ -127,6 +128,14 @@ input.button, a.button
           margin-left: 0.7em
           position: relative
           top: 1px
+
+      .secondaryAction
+        bottom: 0.5em
+        z-index: 2
+        a
+          padding: 0.4em 0.8em
+          span
+            vertical-align: bottom
 
   &.nonDS div.singleItem.addNewItem
     background-color: $govstat_color_action
@@ -142,7 +151,7 @@ input.button, a.button
         margin:
           bottom: 0.4em
           right: 0
-          top: 1.5em
+          top: 1em
 
 .headerLine
   margin-bottom: 2em

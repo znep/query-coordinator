@@ -13,19 +13,44 @@
   </div>
 
   <div class="gridFlowLayout nonDS clearfix">
-    <%- @reports.each do |report| -%>
-      <div class="singleItem">
-        <div class="singleInner">
-          <div class="title"><h2><%= report.name %></h2></div>
-          <div class="primaryAction">
-            <a href="<%= report.path %>?_edit_mode=true"><span class="actionDetails ss-write">Edit Report</span></a>
-          </div>
+    <div class="categoryItem ownerReports">
+      <div class="categoryTitle"><h2>Your Reports</h2></div>
+      <div class="clearfix">
+        <div class="singleItem addNewItem">
+          <a class="primaryAction" href="<%= canvas_create_path %>">
+            <span class="actionDetails ss-compose">Create New Report</span></a>
         </div>
+        <%- @own_reports.each do |report| -%>
+          <div class="singleItem">
+            <div class="singleInner">
+              <div class="title"><h2><%= report.name %></h2></div>
+              <div class="secondaryAction">
+                <a href="<%= report.path %>?_edit_mode=true" class="button">
+                  <span class="actionDetails ss-write">Edit</span></a>
+              </div>
+              <div class="primaryAction">
+                <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
+              </div>
+            </div>
+          </div>
+        <%- end -%>
       </div>
-    <%- end -%>
-    <div class="singleItem addNewItem">
-      <a class="primaryAction" href="<%= canvas_create_path %>">
-        <span class="actionDetails ss-compose">Create New Report</span></a>
+    </div>
+
+    <div class="categoryItem otherReports">
+      <div class="categoryTitle"><h2>Other Reports</h2></div>
+      <div class="clearfix">
+        <%- @other_reports.each do |report| -%>
+          <div class="singleItem">
+            <div class="singleInner">
+              <div class="title"><h2><%= report.name %></h2></div>
+              <div class="primaryAction">
+                <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
+              </div>
+            </div>
+          </div>
+        <%- end -%>
+      </div>
     </div>
   </div>
 </div>

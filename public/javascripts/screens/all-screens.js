@@ -62,7 +62,7 @@
     var loggedInCookie = $.cookies.get('logged_in');
     if (loggedInCookie && loggedInCookie == "true")
     {
-        $('#siteHeader .siteUserNav').addClass('loggedInNav');
+        $('#siteHeader').addClass('loggedIn').find('.siteUserNav').addClass('loggedInNav');
     }
 
     blist.namespace.fetch('blist.configuration');

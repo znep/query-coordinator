@@ -88,7 +88,7 @@ var toggleState = function(cObj)
         cObj._availStates.length];
     cObj.$link.addClass(cObj._state);
 
-    cObj.$link.text(cObj._stringSubstitute(getItem(cObj, 'text')));
+    cObj.$link.html(cObj._stringSubstitute(getItem(cObj, 'text')));
     cObj.$link.attr('title', cObj._stringSubstitute(getItem(cObj, 'title')));
     cObj.$link.attr('href', cObj._stringSubstitute(getItem(cObj, 'href')) || '#');
 };

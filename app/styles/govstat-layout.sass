@@ -31,11 +31,14 @@ html, body
   > .clearfix
     height: 100%
   .manageActions
+    display: none
     left: 16em
     position: absolute
     top: 0
     li
       @include menuLi
+  &.loggedIn .manageActions
+    display: block
   .appLogo
     height: 100%
     padding: 0
@@ -91,3 +94,20 @@ html, body
     height: 8em
     margin-top: -8.1em
 
+@media print
+  #siteHeader
+    // Awesome hacks to get around no background printing
+    border-top: 40px solid #333333
+    height: 0
+    .appLogo
+      left: 1em
+      position: absolute
+      top: -35px
+      display: list-item
+      // FIXME: shouldn't be hardcoded
+      list-style-image: url(/stylesheets/images/common/govstat_logo_tx.png)
+      list-style-position: inside
+      a
+        display: none
+    &.loggedIn .manageActions
+      display: none

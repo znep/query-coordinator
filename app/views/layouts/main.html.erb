@@ -204,7 +204,8 @@ http://www.socrata.com
         $siteLinks.remove();
         $siteLinks = $.tag2({_: 'div', className: ['siteUserNav', 'menu']});
         $('#siteHeader').append($siteLinks);
-        $siteLinks.menu({ menuButtonClass: 'accountButton ss-list', menuButtonContents: 'Menu',
+        $siteLinks.menu({ menuButtonClass: 'accountButton ss-<%= (current_user.nil? ? 'user' : 'list') %>',
+          menuButtonContents: 'Menu',
           menuButtonTitle: 'Account Options', contents: contents });
       })(jQuery);
     <%- end -%>

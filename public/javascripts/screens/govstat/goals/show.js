@@ -45,7 +45,7 @@ $(function()
         // split out goals
         rawGoalsByCategory = goals.groupBy(function(goal)
         {
-            return (goal.get('is_public') !== true) ? '__draft' : goal.get('category');
+            return (goal.get('category') === '' || goal.get('category') == null) ? '__draft' : goal.get('category');
         });
         draftGoals.add(rawGoalsByCategory.__draft);
         delete rawGoalsByCategory.__draft;

@@ -20,20 +20,20 @@ var bindSelect = function($select, $span)
 // dataset picker
 var showDatasetSelect = function(callback, goalName)
 {
-	var $modal = $.showModal('selectDataset');
-	$modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(goalName));
-	commonNS.selectedDataset = function(dataset)
-	{
-		callback(dataset);
-		$.popModal();
-	};
+    var $modal = $.showModal('selectDataset');
+    $modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(goalName));
+    commonNS.selectedDataset = function(dataset)
+    {
+        callback(dataset);
+        $.popModal();
+    };
 };
 
 
 // GOAL
 var GoalCard = Backbone.View.extend({
     tagName: 'li',
-    className: 'goalCard',
+    className: 'singleItem',
     events:
     {
         'click': 'showEditor'
@@ -43,6 +43,8 @@ var GoalCard = Backbone.View.extend({
         var self = this;
         this.listenTo(this.model, 'change:name',
             function(_, name) { self.$('h2').text(self.getName()); });
+        this.listenTo(this.model, 'change:category', function() { self.updateColor(); });
+        this.listenTo(this.model, 'change:is_public', function(_, is_public) { self.$el.toggleClass('internal', is_public === false); });
     },
     render: function()
     {
@@ -50,9 +52,33 @@ var GoalCard = Backbone.View.extend({
 
         // markup
         this.$el.append($.tag2([{
-            _: 'h2',
-            contents: this.getName()
+            _: 'div',
+            className: 'singleInner',
+            contents: [{
+                _: 'div',
+                className: 'title',
+                contents: [{
+                    _: 'h2',
+                    contents: this.getName()
+                }]
+            }, {
+                _: 'div',
+                className: 'primaryAction',
+                contents: [{
+                    _: 'a',
+                    href: '#',
+                    contents: {
+                        _: 'span',
+                        className: 'actionDetails ss-right',
+                        contents: 'Edit goal'
+                    }
+                }]
+            }]
         }], true));
+
+        // color
+        this.updateColor();
+        this.$el.toggleClass('internal', this.model.get('is_public') === false);
 
         // model
         this.$el.data('model', this.model);
@@ -60,7 +86,6 @@ var GoalCard = Backbone.View.extend({
         // events
         // drag and drop
         this.$el.draggable({
-            containment: $('.config'), // HACK: probably should be passed in
             delay: 100,
             distance: 5,
             helper: 'clone',
@@ -68,12 +93,15 @@ var GoalCard = Backbone.View.extend({
             revert: 'invalid',
             revertDuration: 180,
             scope: 'goals',
-            scroll: false,
-            start: function() { $('.config').addClass('isDragging'); },
-            stop: function() { $('.config').removeClass('isDragging'); }
+            scroll: true
         });
     },
 
+    updateColor: function()
+    {
+        var category = this.$el.closest('.categoryItem').data('model');
+        this.$el.css('background-color', (category ? category.get('color') : null) || '#888');
+    },
     showEditor: function()
     {
         GoalEditor.showDialog(this.model);
@@ -97,6 +125,7 @@ var GoalEditor = Backbone.View.extend({
         'change .mainDetails input[type=text]:not(.date), .mainDetails select': 'updateTextAttr',
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
         'change .mainDetails input.date': 'updateDateAttr',
+        'change .additionalDetails select': 'updateFakeBooleanAttr',
         'keypress .notes': 'updateNotesAttr'
     },
     initialize: function()
@@ -112,7 +141,7 @@ var GoalEditor = Backbone.View.extend({
 
         this.$el.toggleClass('draft', this.model.get('is_public') !== true);
 
-        // render markup
+        // render markup 
         var $actions = govstatNS.markup.goalEditor.actions();
         var $mainDetails = govstatNS.markup.goalEditor.mainDetails(this.model);
         var $additionalDetails = govstatNS.markup.goalEditor.additionalDetails(this.model);
@@ -151,10 +180,13 @@ var GoalEditor = Backbone.View.extend({
             metrics.add(new govstatNS.models.Metric());
         });
 
-        // custom controls
+        // custom controls 
         // bind fancy select
         var $comparisonWrapper = $mainDetails.find('.comparisonInput');
         bindSelect($comparisonWrapper.find('select'), $comparisonWrapper.find('span.selectValue'));
+
+        var $publicWrapper = $additionalDetails.find('.publicInput');
+        bindSelect($publicWrapper.find('select'), $publicWrapper.find('span.selectValue'));
 
         // bind fancy date
         var $dateInputs = $mainDetails.find('input.date');
@@ -203,6 +235,11 @@ var GoalEditor = Backbone.View.extend({
         var $input = $(event.target);
         this.model.set($input.attr('name'), $input.val());
     },
+    updateFakeBooleanAttr: function(event)
+    {
+        var $input = $(event.target);
+        this.model.set($input.attr('name'), $input.val() === 'true');
+    },
     updateCheckAttr: function(event)
     {
         var $input = $(event.target);
@@ -238,7 +275,7 @@ GoalEditor.showDialog = function(goal)
 // GOALS
 var GoalList = Backbone.CollectionView.extend({
     tagName: 'ul',
-    className: 'goalList',
+    className: 'goalList clearfix',
     render: function()
     {
         var self = this;
@@ -268,6 +305,7 @@ var GoalList = Backbone.CollectionView.extend({
 // CATEGORY
 var CategoryPane = Backbone.View.extend({
     tagName: 'li',
+    className: 'categoryItem',
     events: {
         'click .removeCategory': 'maybeRemoveCategory',
         'click .categoryTitle': 'editTitle',
@@ -290,38 +328,42 @@ var CategoryPane = Backbone.View.extend({
 
         // make list item
         var $title = $.tag2([{
-            _: 'a',
-            className: ['removeCategory', 'ss-delete'],
-            href: '#remove'
-        }, {
-            _: 'h2',
-            className: 'categoryTitle',
-            contents: this.getName()
-        }, {
-            _: 'a',
-            className: ['editIcon', 'ss-write'],
-            href: '#edit'
-        }, {
-            _: 'input',
-            type: 'text',
-            className: 'categoryTitleEdit',
-            title: 'Category Name',
-            value: this.model.get('name')
+            _: 'div',
+            className: [ 'categoryTitle' ],
+            contents: [{
+                _: 'a',
+                className: ['removeCategory', 'ss-delete'],
+                href: '#remove'
+            }, {
+                _: 'h2',
+                contents: this.getName()
+            }, {
+                _: 'a',
+                className: ['editIcon', 'ss-write'],
+                href: '#edit'
+            }, {
+                _: 'input',
+                type: 'text',
+                className: 'categoryTitleEdit',
+                title: 'Category Name',
+                value: this.model.get('name')
+            }]
         }]);
 
         // make a goal list per category pane
         goalsView = new GoalList({ collection: this.model.goals, instanceView: GoalCard });
         goalsView.render();
 
-        // color
-        this.$el.css('background-color', this.model.get('color'));
-
         // data
         this.$el.data('category', this.model.id);
+        this.$el.data('model', this.model);
 
         // add everything
         this.$el.append($title);
         this.$el.append(goalsView.$el);
+
+        // color
+        this.$('.categoryTitle, .categoryTitle .editIcon, categoryTitle .removeCategory').css('color', this.model.get('color'));
     },
 
     maybeRemoveCategory: function(event)
@@ -335,12 +377,12 @@ var CategoryPane = Backbone.View.extend({
     editTitle: function(event)
     {
         event.preventDefault();
-        this.$('.categoryTitle, .editIcon').hide();
+        this.$('.categoryTitle h2, .editIcon').hide();
         this.$('.categoryTitleEdit').show().focus();
     },
     uneditTitle: function()
     {
-        this.$('.categoryTitle, .editIcon').show();
+        this.$('.categoryTitle h2, .editIcon').show();
         this.$('.categoryTitleEdit').hide();
     },
     handleTitleKey: function(event)
@@ -482,14 +524,14 @@ var DatasetCard = Backbone.View.extend({
     },
     updateDataset: function()
     {
-		var self = this;
+        var self = this;
 
-		// drop in a spinner
+        // drop in a spinner
         this.empty();
-		this.$el.append($.tag2({ _: 'h2', className: 'loading', contents: 'Loading&hellip;' }));
+        this.$el.append($.tag2({ _: 'h2', className: 'loading', contents: 'Loading&hellip;' }));
 
-		this.model.getDataset(function(ds)
-		{
+        this.model.getDataset(function(ds)
+        {
             self.empty();
             if ($.isBlank(ds))
             {
@@ -497,9 +539,9 @@ var DatasetCard = Backbone.View.extend({
             }
             else
             {
-    			self.$el.append(govstatNS.markup.datasetCard(ds));
+                self.$el.append(govstatNS.markup.datasetCard(ds));
             }
-		});
+        });
     }
 });
 

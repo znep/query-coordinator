@@ -63,12 +63,16 @@ input.button, a.button
       border-bottom: none
   .categoryTitle
     font-size: 2em
+    font-weight: normal
     padding-bottom: 0.8em
+    h2
+      font-weight: normal
   .singleItem
     height: 18.4em
     margin-bottom: 2em
     margin-right: 2em
     padding: 0.8em
+    @include transition(0.7s, background-color)
     &:hover
       .singleInner
         background-color: #ddd

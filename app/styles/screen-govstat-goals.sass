@@ -11,161 +11,60 @@
   text-transform: uppercase
   width: 100%
 
-// dunno why this is a default, but reset it
-h2
-  line-height: 1
+.saveAll
+  position: absolute
+  right: 1em
+  top: 9.6em
+.addCategory
+  position: absolute
+  right: 8em
+  top: 9.6em
 
-.configControl
-  background-color: #f9f9f9
-  padding: 1.5em 0
-  position: relative
+.gridFlowLayout
+  .categoryItem
+    @include clearfix
 
-  .chooser
-    margin: 0 auto
-    overflow: hidden
-    text-align: center
-    width: 30em
-
-    li
-      background: -moz-linear-gradient(270deg, #ddd, #ccc)
-      background: -webkit-linear-gradient(270deg, #ddd, #ccc)
-      border: 1px solid #999
-        left: none
-      cursor: pointer
-      float: left
-      font-size: 1.3em
-      font-weight: 700
-      padding: 0.4em 0.8em
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3)
-      width: 9.8em
-
-      &:first-child
-        border-left: 1px solid #999
-        @include prefixer(border-radius, 0.2em 0 0 0.2em)
-
-      &:last-child
-        @include prefixer(border-radius, 0 0.2em 0.2em 0)
-
-      &.active
-        background: -moz-linear-gradient(270deg, #333, #444)
-        background: -webkit-linear-gradient(270deg, #333, #444)
-        @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.4) inset)
-        color: #fff
-        text-shadow: 0 2px 1px rgba(0, 0, 0, 0.3)
-
-  .saveAll
-    position: absolute
-    right: 1em
-    top: 0.75em
-
-.config
-  overflow: hidden
-
-  .configWrapper
-    width: 170%
-
-  .draft, .final
-    box-sizing: border-box
-    @include prefixer(box-shadow, 0 0 1em rgba(0, 0, 0, 0.4) inset)
-    float: left
-    height: 100%
-    overflow-y: auto
-    width: 50%
-
-    > a
-      background-color: #555
-      @include prefixer(border-radius, 0.2em)
-      @include prefixer(box-shadow, 0 0.3em 0.5em rgba(0, 0, 0, 0.35))
-      color: #fff
-      display: block
-      font-size: 1.7em
-      font-weight: bold
-      margin: 1.6em auto
-      padding: 1em 1.5em
-      text-align: center
-      text-decoration: none
-      text-rendering: optimizeLegibility
-      text-shadow: 0 0 0.4em rgba(0, 0, 0, 0.6)
-      @include transition(0.3s, background-color)
-      width: 14em
-
-      &:hover
-        background-color: #666
-
-  .draft
-    background: url(/stylesheets/images/content/nasty_fabric.png)
-
-  .final
-    background: url(/stylesheets/images/content/debut_dark.png)
-
-.goalList
-  @include clearfix
-  padding: 3em
-
-  &.dropTarget
-    background-image: url(/stylesheets/images/content/dropzone.png)
-
-  .goalCard
-    background-color: #f7f7f7
-    @include prefixer(border-radius, 0.2em)
-    @include prefixer(box-shadow, 0 0.3em 0.5em rgba(0, 0, 0, 0.35))
-    cursor: pointer
-    display: block
-    float: left
-    height: 12em
-    margin-bottom: 1em
-    margin-right: 1em
-    padding: 1.5em
-    width: 12em
-
-    &.ui-draggable-dragging
-      margin: 0.5em
-
-    .draft &
-      background-color: #333
-      color: #fff
-
+    .categoryTitle
       h2
-        text-align: right
+        display: inline
 
-      a
-        border-color: #fff
-        color: #fff
+      .removeCategory
+        display: none
+        float: right
+        padding: 0.6em
+        text-rendering: optimizeLegibility
 
-    h2
-      font-size: 2em
-      text-transform: capitalize
+      .editIcon
+        bottom: 0.3em
+        left: 0.6em
+        margin-right: 4em
+        @include opacity(0.9)
+        position: relative
+        text-rendering: optimizeLegibility
+        visibility: hidden
 
-.categories
+      input.categoryTitleEdit
+        background: none
+        border: none
+          bottom: 2px dotted #666
+        color: #666
+        display: none
+        font-family: 'myriad-pro'
+        font-size: 1.5em
+        height: 1em
+        line-height: 1em
+        margin: 0.22em 0
+          bottom: 0.02em
+        outline: none
+        padding: 0
+          right: 0.05em
+          bottom: 0.2em
+        text-rendering: optimizeLegibility
+        width: 20em
 
-  li
-    background-color: #444
+      + *
+        display: block
 
-    .removeCategory
-      color: #fff
-      display: none
-      float: right
-      font-size: 1.7em
-      padding: 1.3em
-      text-rendering: optimizeLegibility
-
-    h2.categoryTitle
-      color: #fff
-      cursor: pointer
-      font-size: 2.5em
-      float: left
-      padding: 0.7em
-      text-shadow: 0 0 0.3em rgba(255, 255, 255, 0.3)
-
-    .editIcon
-      color: #fff
-      display: block
-      font-size: 1.7em
-      @include opacity(0.9)
-      margin-right: 4em
-      padding: 1.2em 1.5em 0
-      text-rendering: optimizeLegibility
-      visibility: hidden
 
     &:hover
       .removeCategory
@@ -173,30 +72,16 @@ h2
       .editIcon
         visibility: visible
 
-    input.categoryTitleEdit
-      background: none
-      border: none
-        bottom: 2px dotted #fff
-      color: #fff
-      display: none
-      font-family: 'myriad-pro'
-      font-size: 2.5em
-      font-weight: bold
-      height: 1em
-      line-height: 1em
-      margin: 0.7em
-        bottom: 0.4em
-        top: 0.72em
-      outline: none
-      padding: 0
-        right: 0.05em
-        bottom: 0.2em
-      text-rendering: optimizeLegibility
-      width: 20em
-
     .goalList
-      clear: left
-      min-height: 10em
+      min-height: 20em
+      &.dropTarget
+        background-color: #eee
+
+      .singleItem
+        &.internal
+          @include opacity(0.7)
+        &.ui-draggable-dragging
+          margin: 1em
 
 .goalEditor.socrataDialog
   background-image: url(/stylesheets/images/content/noise.png)
@@ -355,6 +240,10 @@ h2
 
             &:active, &:hover, &:focus
               color: #888
+
+    .publicInput
+      text-transform: lowercase
+      width: 15em
 
     .noteLine > span
       line-height: 1em

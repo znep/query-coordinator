@@ -181,6 +181,35 @@ blist.namespace.fetch('blist.govstat').markup = {
                         className: 'agencyInput'
                     }, {
                         _: 'span',
+                        contents: '. It is visible '
+                    }, {
+                        _: 'div',
+                        className: [ 'inputWrapper', 'selectInput', 'publicInput' ],
+                        contents: [{
+                            _: 'span',
+                            className: 'selectValue'
+                        }, {
+                            _: 'select',
+                            name: 'is_public',
+                            id: goal.cid + '_public',
+                            contents: [{
+                                _: 'option',
+                                value: 'true',
+                                selected: goal.get('is_public') === true,
+                                contents: 'publicly'
+                            }, {
+                                _: 'option',
+                                value: 'false',
+                                selected: goal.get('is_public') === false,
+                                contents: 'internally'
+                            }]
+                        }, {
+                            _: 'label',
+                            'for': goal.cid + '_public',
+                            contents: 'Visibility'
+                        }]
+                    }, {
+                        _: 'span',
                         contents: '.'
                     }]
                 }, {
@@ -204,7 +233,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                         }]
                     }]
                 }]
-            })
+            });
         },
 
         relatedDatasets: function(goal)

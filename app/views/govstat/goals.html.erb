@@ -3,23 +3,34 @@
   <title>Edit Goals | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="configControl">
-  <ul class="chooser">
-    <li class="active">Draft Goals</li>
-    <li>Active Goals</li>
-  </ul>
+<div id="editGoalsPage">
+  <div class="subnavigation">
+    <ul class="breadcrumb">
+      <li class="root"><a class="ss-icon" href="/manage">Home</a></li>
+      <li><span class="ss-icon">navigateright</span></li>
+      <li class="main"><a href="/manage">Configuration</a></li>
+      <li><span class="ss-icon">navigateright</span></li>
+      <li><a>Goals</a></li>
+    </ul>
+  </div>
+
   <a class="button saveAll ss-floppydisk" href="#save">Save</a>
-</div>
-<div class="config">
-  <div class="configWrapper">
-    <div class="draft">
-      <a href="#newGoal" class="newGoal">Create a New Goal</a>
-    </div>
-    <div class="final">
-      <a href="#newCategory" class="newCategory">Create a New Category</a>
+  <a class="button addCategory ss-plus" href="#new category">New Category</a>
+
+  <div class="gridFlowLayout nonDS categoryContainer clearfix">
+    <div class="categoryItem">
+      <div class="categoryTitle"><h2>Draft Goals</h2></div>
+      <div class="clearfix">
+        <div class="singleItem addNewItem">
+          <div class="primaryAction">
+            <a class="actionDetails ss-checkclipboard" href="#new goal">Create New Goal</a>
+          </div>
+        </div>
+        <div class="draftGoals">
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
 <% content_for :js_footer do %>
   <%= include_javascripts 'screen-govstat-goals' %>

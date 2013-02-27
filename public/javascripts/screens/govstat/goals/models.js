@@ -313,12 +313,10 @@ var Goals = Backbone.Collection.extend({
             if (options.category instanceof Category)
             {
                 goal.set('category', options.category.id);
-                goal.set('is_public', true);
             }
             else if (options.draft === true)
             {
                 goal.set('category', '');
-                goal.set('is_public', false);
             }
 
             this.listenTo(goal, 'removeFromAll', function() { this.remove(goal); });

@@ -151,6 +151,7 @@
         {
             var layerObj = this;
 //console.log('query change', layerObj._uniqueId);
+//console.dir(layerObj._view.query);
             this._parent.saveQuery(this._view.id,
                 { filterCondition: this._view.cleanFilters(true) });
             layerObj.clearData();

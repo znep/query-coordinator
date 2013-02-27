@@ -228,10 +228,6 @@
 
         handleDataLoaded: function(data)
         {
-            if (_.any([this._lastRenderType, this._renderType],
-                function(rt) { return rt == 'clusters'; }))
-            { this.clearData(); }
-
             if (_.isUndefined(this._neverCluster))
             {
                 if (this._renderType == 'points')
@@ -247,7 +243,12 @@
             if (_.isEmpty(data)
                 || (this._renderType == 'clusters' && _.first(data).centroid)
                 || (this._renderType == 'points' && !_.first(data).centroid))
-            { this._super(data); }
+            {
+                if (_.any([this._lastRenderType, this._renderType],
+                    function(rt) { return rt == 'clusters'; }))
+                { this.clearData(); }
+                this._super(data);
+            }
 
             this._lastRenderType = this._renderType;
             if (this._staledCluster)

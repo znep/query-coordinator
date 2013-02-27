@@ -126,6 +126,7 @@ var GoalEditor = Backbone.View.extend({
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
         'change .mainDetails input.date': 'updateDateAttr',
         'change .additionalDetails select': 'updateFakeBooleanAttr',
+        'change .additionalDetails .imageInput input': 'updateTextAttr',
         'keypress .notes': 'updateNotesAttr'
     },
     initialize: function()
@@ -645,7 +646,7 @@ var MetricEditor = Backbone.View.extend({
     tagName: 'form',
     className: 'metric',
     events: {
-        'change .nameInput input': 'nameChanged',
+        'change .textInput input': 'textChanged',
         'change .comparison select': 'comparisonChanged'
     },
     initialize: function()
@@ -674,7 +675,11 @@ var MetricEditor = Backbone.View.extend({
         this.$el.data('model', this.model);
     },
 
-    nameChanged: function(event) { this.model.set('title', $(event.target).val()); },
+    textChanged: function(event)
+    {
+        var $input = $(event.target);
+        this.model.set($input.attr('name'), $input.val());
+    },
     comparisonChanged: function(event) { this.model.set('comparison_function', $(event.target).val()); },
     _addIndicator: function(indicator, childClass)
     {

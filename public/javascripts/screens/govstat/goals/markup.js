@@ -211,6 +211,27 @@ blist.namespace.fetch('blist.govstat').markup = {
                     }, {
                         _: 'span',
                         contents: '.'
+                    }, {
+                        _: 'div',
+                        className: 'imageLine',
+                        contents: [{
+                            _: 'span',
+                            contents: 'It has a title image of '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper imageInput',
+                            contents: [{
+                                _: 'label',
+                                'for': goal.cid + '_title_image',
+                                contents: 'URL'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: goal.cid + '_title_image',
+                                name: 'title_image',
+                                value: goal.get('title_image')
+                            }]
+                        }]
                     }]
                 }, {
                     _: 'div',
@@ -589,7 +610,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                 contents: 'We will measure '
             }, {
                 _: 'div',
-                className: 'inputWrapper nameInput',
+                className: 'inputWrapper textInput nameInput',
                 contents: [{
                     _: 'label',
                     'for': metric.cid + '_title',
@@ -600,6 +621,23 @@ blist.namespace.fetch('blist.govstat').markup = {
                     id: metric.cid + '_title',
                     name: 'title',
                     value: metric.get('title')
+                }]
+            }, {
+                _: 'span',
+                contents: ' by '
+            }, {
+                _: 'div',
+                className: 'inputWrapper textInput',
+                contents: [{
+                    _: 'label',
+                    'for': metric.cid + '_unit',
+                    contents: 'Unit'
+                }, {
+                    _: 'input',
+                    type: 'text',
+                    id: metric.cid + '_unit',
+                    name: 'unit',
+                    value: metric.get('unit')
                 }]
             }]
         }, {

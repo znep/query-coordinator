@@ -3,6 +3,7 @@ class GovstatController < ApplicationController
   include CustomContentHelper
   include BrowseActions
   before_filter :check_govstat_enabled
+  skip_before_filter :require_user, :only => [:goal_page]
 
   def goals
   end
@@ -99,17 +100,25 @@ protected
             href: '/',
             htmlClass: 'button backLink',
             text: '<span class="ss-navigateleft">Back</span>'
-          },
-          progress_indicator('goal.metrics.0')
+          }
           ]
         },
         {
-          type: 'Title',
-          htmlClass: 'goalTitle',
-          text: '{goal.subject ||We} will ' +
-            '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
-            '{goal.name $[u] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
-            'before {goal.end_date @[%B %Y] ||sometime}'
+          type: 'Container',
+          htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/}',
+          children: [ {
+            type: 'Picture',
+            url: '{goal.metadata.title_image}'
+          }, {
+            type: 'Title',
+            customClass: 'goalTitle',
+            text: '{goal.subject ||We} will ' +
+              '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
+              '{goal.name $[u] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
+              'before {goal.end_date @[%B %Y] ||sometime}'
+          },
+          progress_indicator('goal.metrics.0')
+          ]
         },
         {
           type: 'Repeater',
@@ -134,8 +143,11 @@ protected
               type: 'Container',
               htmlClass: 'indicatorContainer',
               children: [
+                { type: 'Text', htmlClass: 'baseline type', html: 'Baseline' },
+                { type: 'Text', htmlClass: 'baseline date',
+                  html: '(as of {goalContext.goal.start_date @[%b %Y] ||})' },
                 { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||}' },
-                { type: 'Text', htmlClass: 'baseline date', html: '{goalContext.goal.start_date @[%b %Y] ||}' }
+                { type: 'Text', htmlClass: 'baseline unit', html: '{unit ||}' }
               ]
             },
             {
@@ -143,8 +155,11 @@ protected
               type: 'Container',
               htmlClass: 'indicatorContainer',
               children: [
+                { type: 'Text', htmlClass: 'current type', html: 'Current' },
+                { type: 'Text', htmlClass: 'current date',
+                  html: '(as of {computed_values.as_of @[%b %Y] ||})' },
                 { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
-                { type: 'Text', htmlClass: 'current date', html: '{computed_values.as_of @[%b %Y] ||}' }
+                { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' }
               ]
             },
             {

@@ -179,7 +179,6 @@ var Metric = Backbone.Model.extend({
             time_to_compare: 'now' };
         delete result.comparison_function;
         delete result.time_to_compare;
-        result.unit = result.unit || ' ';
         return result;
     }
 });
@@ -260,8 +259,8 @@ var Goal = Backbone.Model.extend({
         {
             response.metrics.add(new Metric(response.metadata.metrics[mI], { parse: true }), { at: mI });
         });
-        response.comparison_function = (response.metadata || {}).comparison_function;
-        response.description = (response.metadata || {}).description;
+        _.each(['comparison_function', 'description', 'title_image'], function(k)
+        { response[k] = (response.metadata || {})[k]; });
         return response;
     },
     toJSON: function()
@@ -279,10 +278,11 @@ var Goal = Backbone.Model.extend({
 
         if (!_.isObject(attrs.metadata))
         { attrs.metadata = {}; }
-        attrs.metadata.comparison_function = attrs.comparison_function;
-        delete attrs.comparison_function;
-        attrs.metadata.description = attrs.description;
-        delete attrs.description;
+        _.each(['comparison_function', 'description', 'title_image'], function(k)
+        {
+            attrs.metadata[k] = attrs[k];
+            delete attrs[k];
+        });
 
         // Always re-construct from scratch
         attrs.metadata.metrics = {};

@@ -96,7 +96,10 @@
                 <label for="view_category">Unique Identifier</label>
                 <div class="controlDiv rowIdentifierColumnId">
                   <%= select_tag("rowIdentifierColumnId", options_from_collection_for_select(
-                  @view.columns.find_all{|column| column.dataTypeName == "text" || column.dataTypeName == "number"}, "fieldName", "name"), :prompt => "-- none selected --")  %>
+                    @view.columns.find_all{|column| column.dataTypeName == "text" || 
+                      column.dataTypeName == "number" ||
+                      column.dataTypeName == "calendar_date" || 
+                      column.dataTypeName == "date" }, "fieldName", "name"), :prompt => "-- none selected --")  %>
                    <div class="additionalHelp">The primary field that identifies a row</div>
                 </div>
               </div>

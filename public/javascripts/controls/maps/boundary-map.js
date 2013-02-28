@@ -255,6 +255,10 @@
             $.batchProcess(layerObj._featureSet, 3, function(polygon)
             {
                 if (feature) { return; }
+                if (polygon.attributes.dupKey == 'Hawaii'
+                    && (polygon.attributes.oldGeometry || polygon)
+                        .getBounds().toGeometry().containsPoint(geometry))
+                { feature = polygon; }
                 if ((polygon.attributes.oldGeometry || polygon).containsPoint(geometry))
                 { feature = polygon; }
             }, null, function()

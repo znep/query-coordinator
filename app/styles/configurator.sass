@@ -12,7 +12,7 @@
   padding: 2em 2.5em
   position: absolute
   right: 0
-  top: -6em
+  top: -30em
   @include transition-property(display top)
   @include transition-duration(0.8s)
   z-index: 2000
@@ -48,7 +48,7 @@
           top: 0.5em
 
 .cfViewsContainer
-  bottom: 0
+  bottom: 5.5em
   left: 0
   overflow: hidden
   position: absolute
@@ -72,11 +72,11 @@
   .editRoot
     height: 100%
     margin: 0 2em
+.cfMainContainer
+  height: 100%
+  position: relative
 body.configuring
   background-image: url(/stylesheets/images/component/canvasbg.png)
-  .cfMainContainer
-    height: 100%
-    position: relative
   .cfViewsContainer
     @include border-radius(4px, 4px, 0, 0)
     @include box-shadow(0, 0, 10px, rgba(0, 0, 0, 0.45))

@@ -157,7 +157,7 @@
 
             var $body = $('body');
             var $cont = $.tag2({ _: 'div', className: 'cfMainContainer' });
-            $body.append($cont);
+            $body.find('.siteInnerWrapper').append($cont);
 
             var $top = $.tag2({ _: 'div', className: 'cfEditingBar', contents: [
                 { _: 'div', className: 'editTitle', contents: [
@@ -235,7 +235,7 @@
                 contents: { _: 'div', className: 'cfViewInnerWrapper' } });
             $viewsCont.append($previewCont);
             $previewCont.css('background-color', $body.css('background-color'))
-                .find('.cfViewInnerWrapper').append($body.children('.siteOuterWrapper, #siteFooter'));
+                .find('.cfViewInnerWrapper').append($body.find('.siteContentWrapper'));
             $previewCont.resizable({
                 handles: 'e',
                 maxWidth: $viewsCont.width() * 0.8, minWidth: $viewsCont.width() * 0.2,
@@ -323,6 +323,8 @@
                 else
                 { saveSettings(); }
             });
+
+            $body.find('.siteOuterWrapper').fullScreen();
 
             // Make sure all dom manipulation is done before starting edit mode
             _.defer(function()

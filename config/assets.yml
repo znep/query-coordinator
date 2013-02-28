@@ -141,6 +141,7 @@ javascripts:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
+    - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/plugins/rangy-core.js
     - public/javascripts/controls/native-draggable.js

@@ -22,12 +22,9 @@ $.component.Component.extend('Map', 'data', {
     {
         var lcObj = this,
             df = lcObj._stringSubstitute(lcObj._properties.displayFormat);
-        if (!lcObj._dataContext) // Do not manipulate DF in legacy cases.
-        {
-            df.viewDefinitions = df.viewDefinitions || [];
-            _.each(lcObj._viewDefinitions || [], function(vd, index)
-            { df.viewDefinitions.push(vd._displayFormat()); });
-        }
+        df.viewDefinitions = df.viewDefinitions || [];
+        _.each(lcObj._viewDefinitions || [], function(vd, index)
+        { df.viewDefinitions.push(vd._displayFormat()); });
 
         return df;
     },
@@ -43,12 +40,11 @@ $.component.Component.extend('Map', 'data', {
     {
         if (this._super.apply(this, arguments) === false) { return false; }
 
-        var retVal = {schema: [], view: (this._dataContext || {}).dataset};
+        var retVal = {schema: []};
         if (blist.configuration.canvasX || blist.configuration.govStat)
         {
-            //if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
-            retVal.schema = retVal.schema.concat(blist.configs.map.config({view: (this._dataContext || {}).dataset, canvas: true }));
+            retVal.schema = retVal.schema.concat(blist.configs.map.config({canvas: true}));
         }
         return retVal;
     },
@@ -287,8 +283,7 @@ var updateProperties = function(lcObj)
             lcObj.$contents.empty();
             lcObj._map = lcObj.$contents.socrataMap({
                 showRowLink: false,
-                displayFormat: df,
-                view: (lcObj._dataContext || {}).dataset
+                displayFormat: df
             });
             lcObj._updateValidity();
         }
@@ -304,6 +299,7 @@ var updateProperties = function(lcObj)
 
 var convertLegacy = function(props)
 {
+    if (props.viewDefinitions) { return props; }
     if ($.subKeyDefined(props, 'displayFormat.viewDefinitions'))
     {
         var contextId = props.contextId;

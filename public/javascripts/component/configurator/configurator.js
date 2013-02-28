@@ -22,7 +22,10 @@
 
         // Simply unfocus if there is no target
         if (!target || !target._comp.canEdit('focus') ||
-            $(target).closest('.cfEditingWrapper').length < 1)
+            $(target).closest('.cfEditingWrapper').length < 1 ||
+            // Clicking on the root should defocus for easier interaction;
+            // plus the root container has no config options at all
+            $(target).parent().hasClass('cfEditingWrapper'))
         {
             $.cf.blur(true);
             return false;
@@ -70,7 +73,7 @@
         // in editOnly mode, don't fire events
         if ((mouseTrap && !$.cf.configuration().editOnly) ||
              $target.closest('#color_selector').length > 0 ||
-             $target.closest('.colorpicker').length > 0 )
+             $target.closest('.colorpicker').length > 0)
         { return; }
 
         focusOnTarget(target);

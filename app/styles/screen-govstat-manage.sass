@@ -27,6 +27,13 @@
           font-size: 2em
           line-height: 1.3em
 
+.canvas_nav
+  font-size: 1em
+  padding: 0
+  .subnavigation.content-wrapper
+    height: auto
+    width: auto
+
 .gridFlowLayout.nonDS
   .singleItem
     float: left
@@ -150,6 +157,46 @@
     margin-left: 0
     span
       vertical-align: sub
+
+#manageDataPage
+  .categoryItem
+    .singleItem
+      margin:
+        bottom: 0
+        right: 0
+      .tileIcon
+        .type-table
+          color: #0b5e9b
+          &.default-true
+            color: #e76e34
+        .type-map
+          color: #009345
+        .type-chart
+          color: #fcba63
+        .type-api
+          color: #e44044
+        .type-calendar
+          color: #6dc8bf
+        .type-blob
+          color: #57bc7b
+        .type-form
+          color: #b72467
+  .myDatasets
+    .categoryTitle h2
+      color: $govstat_color_data
+    .addBox
+      font-size: 1em
+      .addNewItem
+        width: auto
+    .datasetItem
+      background-color: $govstat_color_data
+      &.publication-unpublished
+        @include opacity(0.7)
+  .categoryItem.allDatasets
+    .categoryTitle h2
+      color: #002635
+    .singleItem
+      background-color: #002635
 
 #manageReportsPage
   .categoryItem.ownerReports

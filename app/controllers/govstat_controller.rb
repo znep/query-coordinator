@@ -36,19 +36,9 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   end
 
   def manage_data
-    @processed_browse = process_browse(request, {
-      nofederate: true,
-      sortBy: 'newest',
-      for_user: current_user.id,
-      publication_stage: ['published', 'unpublished'],
-      limit: 10,
-      facets: [],
-      disable: { pagination: true, sort: true, counter: true, table_header: true },
-      grid_items: { largeImage: true, richSection: true },
-      footer_config: {},
-      browse_in_container: true,
-      suppress_dataset_creation: true
-    })
+    @page = get_page(manage_data_config(), request.path,
+                     'Manage Data | ' + CurrentDomain.strings.site_title, params)
+    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage' }
   end
 
   def manage_reports
@@ -200,6 +190,89 @@ protected
           html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
         }
         ]
+      }
+    }
+  end
+
+  def manage_data_config
+    {
+      data: {
+        myDatasets: { type: 'datasetList', search: { nofederate: true,
+          sortBy: 'newest', for_user: current_user.id,
+          publication_stage: ['published', 'unpublished'], limit: 20 } },
+        allDatasets: { type: 'datasetList', search: { nofederate: true,
+          publication_stage: 'published', limit: 20 } }
+      },
+      content: {
+        type: 'Container',
+        id: 'manageDataPage',
+        children: [
+        {
+          type: 'Text', customClass: 'canvas_nav', htmlClass: 'subnavigation',
+          html: '<ul class="breadcrumb">' +
+            '<li class="root"><a class="ss-icon" href="/manage">Home</a></li>' +
+            '<li><span class="ss-icon">navigateright</span></li>' +
+            '<li class="main"><a href="/manage/data">Data</a></li>' +
+            '</ul>'
+        },
+        {
+          type: 'Container',
+          htmlClass: 'gridFlowLayout',
+          children: [
+          {
+            type: 'Container',
+            htmlClass: 'myDatasets categoryItem',
+            children: [
+            { type: 'Title', text: 'My Datasets', htmlClass: 'categoryTitle' },
+            {
+              type: 'Repeater',
+              contextId: 'myDatasets',
+              container: { type: 'GridContainer', cellWidth: 180, cellHeight: 200,
+                cellSpacing: 10, cellVSpacing: 10,
+                # This hack to insert a fixed initial item is pretty awesome
+                children: [
+                { type: 'Text', customClass: 'addBox', htmlClass: 'singleItem addNewItem',
+                  html: '<a class="primaryAction" href="' + new_dataset_path + '">' +
+                  '<span class="actionDetails ss-uploadcloud">Upload New Data</span></a>' }
+              ]},
+              children: [{
+                type: 'Container', htmlClass: 'datasetItem singleItem publication-{dataset.publicationStage}',
+                children: [{
+                  type: 'Container', htmlClass: 'singleInner',
+                  children: [
+                    dataset_icon,
+                    { type: 'Title', customClass: 'datasetTitle title', text: '{dataset.name}' },
+                    { type: 'Text', customClass: 'primaryAction',
+                      html: '<a href="/d/{dataset.id}"><div class="actionDetails ss-right"></div></a>' }
+                  ]
+                } ]
+              } ]
+            } ]
+          }, {
+            type: 'Container',
+            htmlClass: 'allDatasets categoryItem',
+            children: [
+            { type: 'Title', text: 'All Datasets', htmlClass: 'categoryTitle' },
+            {
+              type: 'Repeater',
+              contextId: 'allDatasets',
+              container: { type: 'GridContainer', cellWidth: 180, cellHeight: 200,
+                cellSpacing: 10, rowSpacing: 10 },
+              children: [{
+                type: 'Container', htmlClass: 'datasetItem singleItem',
+                children: [{
+                  type: 'Container', htmlClass: 'singleInner',
+                  children: [
+                    dataset_icon,
+                    { type: 'Title', customClass: 'datasetTitle title', text: '{dataset.name}' },
+                    { type: 'Text', customClass: 'primaryAction',
+                      html: '<a href="/d/{dataset.id}"><div class="actionDetails ss-right"></div></a>' }
+                  ]
+                } ]
+              } ]
+            } ]
+          } ]
+        } ]
       }
     }
   end

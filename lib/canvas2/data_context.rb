@@ -1,3 +1,5 @@
+require 'clytemnestra'
+
 module Canvas2
   class DataContext
     def self.available_contexts
@@ -178,9 +180,9 @@ module Canvas2
 
         end
       rescue CoreServer::CoreServerError => e
+        log_timing(start_time, config)
         raise DataContextError.new(config, "Core server failed: " + e.error_message,
                                  { path: e.source, payload: JSON.parse(e.payload || '{}') })
-        log_timing(start_time, config)
       end
       return ret_val
     end

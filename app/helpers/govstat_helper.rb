@@ -12,6 +12,12 @@ module GovstatHelper
     }
   end
 
+  def dataset_icon
+    { type: 'Text', customClass: 'tileIcon',
+      htmlClass: 'type-{dataset.displayType} default-{dataset.flags /.*default.*/true/} ss-{dataset.displayType /table/list/ ' +
+      '/map/compass/ /chart/barchart/ /api/downloadcloud/ /blob/attach/}' }
+  end
+
   def govstat_homepage_config(name = '')
     configs = {
       grid_flow: {

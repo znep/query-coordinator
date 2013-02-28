@@ -34,6 +34,7 @@ module CustomContentHelper
     Canvas2::Util.set_params(params)
     Canvas2::Util.set_debug(false)
     Canvas2::Util.is_private(false)
+    Canvas2::Util.set_no_cache(true)
     Canvas2::Util.set_env({
       domain: CurrentDomain.cname,
       renderTime: Time.now.to_i,

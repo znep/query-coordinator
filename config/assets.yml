@@ -137,6 +137,7 @@ javascripts:
     - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
   configurator:
+    - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js

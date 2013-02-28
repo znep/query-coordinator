@@ -419,6 +419,10 @@ var CategoryList = Backbone.CollectionView.extend({
     render: function()
     {
         this.$el.append(this.renderCollection());
+    },
+    _addOneView: function(view)
+    {
+        this.$el.prepend(view.$el);
     }
 });
 

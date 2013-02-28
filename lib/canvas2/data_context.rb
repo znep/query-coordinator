@@ -49,6 +49,11 @@ module Canvas2
       ret_val = true
       begin
         case config['type']
+        when 'list'
+          available_contexts[id] = {id: id, type: config['type'], list: config['list'],
+            count: config['list'].length}
+          log_timing(start_time, config)
+
         when 'datasetList'
           search_response = Canvas2::Util.no_cache ? Clytemnestra.search_views(config['search'], false, !Canvas2::Util.is_private) : Clytemnestra.search_cached_views(config['search'], false, !Canvas2::Util.is_private)
           # Search results are considered part of the manifest; but are handled differently during validation

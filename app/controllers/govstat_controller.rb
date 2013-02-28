@@ -36,7 +36,7 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   end
 
   def manage_data
-    @page = get_page(manage_data_config(), request.path,
+    @page = get_page(manage_data_config(params), request.path,
                      'Manage Data | ' + CurrentDomain.strings.site_title, params)
     render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage' }
   end
@@ -207,14 +207,17 @@ protected
     }
   end
 
-  def manage_data_config
+  def manage_data_config(params)
+    cats = [{ value: '', text: 'All' }].concat(View.categories.keys.
+                                               reject { |c| c.blank? }.map { |c| { value: c, text: c } })
+    opts = { nofederate: true, publication_stage: 'published', limit: 20 }
+    [:category].each { |p| opts[p] = params[p] unless params[p].blank? }
     {
       data: {
-        myDatasets: { type: 'datasetList', search: { nofederate: true,
+        myDatasets: { type: 'datasetList', search: opts.merge({
           sortBy: 'newest', for_user: current_user.id,
-          publication_stage: ['published', 'unpublished'], limit: 20 } },
-        allDatasets: { type: 'datasetList', search: { nofederate: true,
-          publication_stage: 'published', limit: 20 } }
+          publication_stage: ['published', 'unpublished'] }) },
+        allDatasets: { type: 'datasetList', search: opts }
       },
       content: {
         type: 'Container',
@@ -227,6 +230,21 @@ protected
             '<li><span class="ss-icon">navigateright</span></li>' +
             '<li class="main"><a href="/manage/data">Data</a></li>' +
             '</ul>'
+        },
+        {
+          type: 'Container',
+          htmlClass: 'filterSection',
+          children: [
+          { type: 'Title', text: 'Categories' },
+          {
+            type: 'Repeater',
+            context: { type: 'list', list: cats },
+            childProperties: { customClass: 'filterItem' },
+            children: [{
+              type: 'Button', href: '?category={value ||}', htmlClass: 'value{value ||__default}', text: '{text}'
+            }]
+          }
+          ]
         },
         {
           type: 'Container',

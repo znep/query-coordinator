@@ -332,6 +332,11 @@ $(function()
     {
         datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
     }
+    else if ($.subKeyDefined(blist.dataset, 'metadata.query') && _.any(blist.dataset.metadata.query,
+        function(query) { return query.filterCondition && hasConditions(query.filterCondition); }))
+    {
+        datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
+    }
 
     // Pop a sidebar right away if they ask for it
     var paneName = $.urlParam(window.location.href, 'pane') || blist.defaultPane;

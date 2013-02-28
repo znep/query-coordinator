@@ -57,8 +57,11 @@ module GovstatHelper
                   children: [{
                     type: 'Container', htmlClass: 'singleInner',
                     children: [
-                      { type: 'Title', customClass: 'goalTitle title', text: '{goal.name}' },
-                      { type: 'Text', customClass: 'goalSubject', html: '{goal.subject}' },
+                      { type: 'Container', customClass: 'goalTitle title',
+                        children: [
+                          { type: 'Title', text: '{goal.name}' },
+                          { type: 'Text', customClass: 'goalSubject', html: '{goal.subject}' }
+                      ] },
                       progress_indicator('goal.metrics.0'),
                       #{ type: 'Text', customClass: 'goalProgress', ifValue: 'goal.metrics.0.computed_values.delta',
                         #html: 'Status: <span class="value">{goal.metrics.0.computed_values.delta ||}%</span>' },

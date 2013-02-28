@@ -153,6 +153,19 @@ protected
               ]
             },
             {
+              weight: 6,
+              type: 'Container',
+              htmlClass: 'indicatorContainer',
+              ifValue: 'computed_values.target_value',
+              children: [
+                { type: 'Text', htmlClass: 'current type', html: 'Target' },
+                { type: 'Text', htmlClass: 'current date',
+                  html: '({goalContext.goal.end_date @[%b %Y] ||})' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||}' },
+                { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' }
+              ]
+            },
+            {
               weight: 7,
               type: 'Container',
               htmlClass: 'progressContainer',
@@ -169,8 +182,8 @@ protected
           type: 'Repeater',
           contextId: 'goal.related_datasets',
           htmlClass: 'relatedVisualizations',
-          container: { type: 'GridContainer', cellWidth: 500, cellHeight: 400, rowSpacing: 30,
-            cellSpacing: 35, cellBorderWidth: 1, rowBorderWidth: 1 },
+          container: { type: 'GridContainer', cellWidth: 400, cellHeight: 300, rowSpacing: 20,
+            cellSpacing: 20, cellBorderWidth: 1, rowBorderWidth: 1 },
           children: [
           {
             type: 'Container',

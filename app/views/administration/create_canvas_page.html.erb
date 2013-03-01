@@ -29,14 +29,13 @@
     <h2>Page Settings</h2>
 
     <%= form_tag(canvas_create_path, :class => 'commonForm') do %>
-      <div class="line">
+      <div class="line pageTitle">
         <%= label_tag :pageTitle, 'Page Title <span class="accessible">Required</span>'.html_safe,
           :class => 'required' %>
         <%= text_field_tag :pageTitle, @cur_title %>
       </div>
-      <div class="line">
-        <%= label_tag :pageUrl, 'Page URL <span class="accessible">Required</span>'.html_safe,
-          :class => 'required' %>
+      <div class="line pageUrl">
+        <%= label_tag :pageUrl, 'Page URL'.html_safe %>
         <%= text_field_tag :pageUrl, @cur_path %>
       </div>
       <ul class="actions clearfix">

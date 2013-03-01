@@ -319,7 +319,7 @@ var CategoryPane = Backbone.View.extend({
         var self = this;
         this.listenTo(this.model, 'change:name', function(_, name)
         {
-            self.$('.categoryTitle').text(self.getName());
+            self.$('.categoryTitle h2').text(self.getName());
             self.$('.categoryTitleEdit').val(name);
         });
     },

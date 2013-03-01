@@ -32,6 +32,9 @@
       left: 0
       position: absolute
       right: 0
+      img
+        width: 100%
+
     .goalTitle
       background-color: rgba(247, 247, 247, 0.5)
       @include border-radius(2px)
@@ -41,7 +44,7 @@
       z-index: 1
 
       .categoryTitle
-        font-size: 0.7em
+        font-size: 0.5em
   .goalTitle
     h2
       font-size: 4em
@@ -64,20 +67,41 @@
   .metricItem
     border-bottom: 1px solid $color_chrome_box_border
     margin-bottom: 1.5em
-    padding-bottom: 1em
+    padding-bottom: 1.5em
+
+    .socrata-component
+      min-height: 0
+    .component-Text
+      padding: 0
+
+    .metricIntro
+      color: #444
+      font-size: 1.4em
+      padding-bottom: 0.3em
+
+      em
+        color: #2c90ec
+        font-style: normal
+
     .metricTitle
       font-size: 1.3em
       h2
         font-weight: normal
         line-height: 1em
         padding: 0
-    .metricType.prevailing
+    .prevailing
       display: none
+    .nonprevailing
+      color: #444
+      font-size: 1.2em
+      &.type
+        font-weight: bold
     .indicatorContainer
       text-align: center
       .value
         font-size: 2em
         font-weight: bold
+        padding: 0.5em 0
       .date, .unit, .type
         line-height: 1em
       .unit
@@ -87,12 +111,41 @@
     &.index-0
       border-bottom: 3px solid #000000
       margin-bottom: 3.5em
+      position: relative
+      .prevailing
+        display: block
+      .nonprevailing
+        display: none
+      .metricTitle
+        padding: 0.5em 0
+        h2
+          font-size: 2em
       .metricType.additional
         display: none
       .metricType.prevailing
         display: block
-      .indicatorContainer
-        color: $govstat_color_goals
+      .value
+        color: #2c90ec
+        font-size: 3em
+        padding: 0
+      .metricProgress
+        .progressContainer
+          background-color: #ddd
+          float: left
+          height: 2em
+          margin-right: 1em
+          margin-top: 0.5em
+          width: 18em
+
+          .progressBar
+            background-color: #2c90ec
+            height: 100%
+
+        .progressText
+          color: #444
+          font-size: 1.5em
+          line-height: 1.5em
+          padding: 0.2em
 
 .relatedVisualizations
   border-bottom: 1px solid $color_chrome_box_border

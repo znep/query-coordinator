@@ -103,6 +103,11 @@ class UserSession
       user = User.find(core_session.user_id,
                        {'Cookie' => "#{::CoreServer::Connection.cookie_name}=#{core_session.to_s}"})
       UserSession.update_current_user(user, core_session)
+      if !(controller.request.headers["x-socrata-auth"] == "unauthenticated")
+        new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
+        exp = UserSession.expiration_from_core_cookie(new_core_cookie)
+        create_core_session_credentials(user, exp)
+      end
     elsif !cookies['remember_token'].blank?
       response = post_cookie_authentication
       if response.is_a?(Net::HTTPSuccess)
@@ -122,18 +127,38 @@ class UserSession
     !@new_session.blank?
   end
 
+  def self.expiration_from_core_cookie(cookie)
+    core_data = ::CoreSession.unmangle_core_session_from_cookie(cookie)
+    expiration_data = core_data.split[1].to_i
+    return expiration_data - Time.now.to_i
+  end
+
   def self.expiration_from_core_response(response)
     if response.is_a?(Net::HTTPSuccess)
       response.get_fields('set-cookie').each do |cookie_header|
         if match = /\b#{::CoreServer::Connection.cookie_name}=([A-Za-z0-9%\-|]+)/.match(cookie_header)
-          core_data = ::CoreSession.unmangle_core_session_from_cookie(match[1])
-          expiration_data = core_data.split[1].to_i
-          return expiration_data - Time.now.to_i
+          return expiration_from_core_cookie(match[1])
         end
       end
     end
     return 15.minutes
   end
+
+  def self.find_seconds_until_timeout
+    path = "/sessionExpiration/" + User.current_user.id + ".json"
+    return CoreServer::Base.connection.get_request(path, {}, false, true)
+  end
+
+  def extend
+    path = "/sessionExpiration/" + User.current_user.id + ".json"
+    coreResponse = CoreServer::Base.connection.get_request(path)
+    new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
+    #expiration = UserSession.expiration_from_core_response(coreResponse)
+    expiration = UserSession.expiration_from_core_cookie(new_core_cookie)
+    create_core_session_credentials(user, expiration)
+    return coreResponse
+  end
+
 
   # Obtain a UserSession based on an RpxAuthentication object
   # If the RpxAuthentication has a valid user associated with it, log in

@@ -276,7 +276,9 @@ Frontend::Application.routes do
   scope :protocol => "https", :port => APP_CONFIG['ssl_port'] || 443 do
     match '/login.json', :to => 'user_sessions#create', :format => 'json', :as => 'login_json'
     match '/login', :to => 'user_sessions#new', :as => 'login'
+    match '/login/extend', :to => 'user_sessions#extend', :as => 'login_extend'
     match '/logout', :to => 'user_sessions#destroy', :as => 'logout'
+    match '/logout/expire_if_idle', :to => 'user_sessions#expire_if_idle', :as => 'expire_if_idle'
     match '/signup.json', :to => 'accounts#create', :format => 'json', :as => 'signup_json'
     get '/signup', :to => 'accounts#new', :as => 'signup'
     post '/signup', :to => 'accounts#create', :as => 'signup_submit'

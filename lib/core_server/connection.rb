@@ -153,6 +153,7 @@ module CoreServer
     end
 
     def generic_request(request, json = nil, custom_headers = {}, is_anon = false, timeout = 60)
+
       requestor = User.current_user
       if requestor && requestor.session_token
         request['Cookie'] = "#{@@cookie_name}=#{requestor.session_token.to_s}"
@@ -224,6 +225,13 @@ module CoreServer
       end
 
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
+      if env.present?
+        set_cookie = result["set-cookie"]
+        if !set_cookie.nil?
+          core_cookie = set_cookie.split(";")[0].split("=")[1] + "="
+          env["socrata.new-core-session-cookie"] = core_cookie
+        end
+      end
       if !result.is_a?(Net::HTTPSuccess)
         parsed_body = JSON.parse(result.body, {:max_nesting => 25})
         Rails.logger.info("Error: " +

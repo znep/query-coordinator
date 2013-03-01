@@ -27,6 +27,15 @@ class UserSessionsController < ApplicationController
     end
   end
 
+  def extend
+    response = current_user.nil? ? {:expired => "expired"} : current_user_session.extend
+    render :json => response, :callback => params[:callback], :content_type => "application/json"
+  end
+
+  def expire_if_idle
+    response = current_user.nil? ? {:expired => "expired"} : UserSession.find_seconds_until_timeout
+    render :json => response, :callback => params[:callback], :content_type => "application/json"
+  end
 
   def create
     @body_id = 'login'

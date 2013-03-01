@@ -49,6 +49,8 @@ javascripts:
     - public/javascripts/util/filter.js
     - public/javascripts/util/datatypes.js
     - public/javascripts/controls/modal-dialogs.js
+    - public/javascripts/controls/session-timeout-modal.js
+    - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/controls/socrata-messaging.js
     - public/javascripts/controls/text-prompt.js
     - public/javascripts/controls/values.js

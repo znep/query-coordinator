@@ -94,11 +94,11 @@ protected
               type: 'Title',
               customClass: 'categoryTitle',
               #context: {
-              #  id: 'category',
+              #  id: 'categoryContext',
               #  type: 'govstatCategory',
               #  categoryId: '{goal.category}'
               #},
-              text: '{category.name}'
+              text: '{categoryContext.category.name}'
             }, {
               type: 'Title',
               text: '{goal.subject ||We} will ' +
@@ -106,8 +106,7 @@ protected
                 '{goal.name $[d] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
                 'before {goal.end_date @[%B %Y] ||sometime}'
             } ]
-          }
-          ]
+          } ]
         },
         {
           type: 'Title',
@@ -116,7 +115,7 @@ protected
         },
         {
           type: 'Text',
-          html: '<script type="text/javascript">window.setTimeout($(function() { $(".metricProgress .progressBar").each(function() { var $this = $(this); var start = parseInt($this.attr("data-start")) * 1000; var end = parseInt($this.attr("data-end")) * 1000; $this.css("width", (((new Date()).getTime() - start) / (end - start)) + "%"); }); }), 0);</script>'
+          html: '<script type="text/javascript">setTimeout(function() { $(function() { $(".metricProgress .progressBar").each(function() { var $this = $(this); var start = (new Date($this.attr("data-start"))).getTime(); var end = (new Date($this.attr("data-end"))).getTime(); $this.css("width", Math.min(((new Date()).getTime() - start) / (end - start) * 100, 100) + "%"); }); }); }, 0);</script>'
         },
         {
           type: 'Repeater',
@@ -128,50 +127,49 @@ protected
             htmlClass: 'metricItem index-{_repeaterIndex}',
             children: [
             {
-              weight: 32,
+              weight: 26,
               type: 'Container',
               children: [
-                { type: 'Text', customClass: 'metricType prevailing', html: 'Prevailing Metric' },
-                { type: 'Text', customClass: 'metricIntro prevailing', html: 'This goal is being measured by tracking' },
+                { type: 'Text', customClass: 'metricIntro prevailing', html: 'This goal is being measured by tracking the Prevailing Metric of' },
                 { type: 'Title', htmlClass: 'metricTitle', text: '{title}' },
-                { type: 'Text', customClass: 'metricProgress', html: '<div class="progressText">Remaining Time</div><div class="progressContainer"><div class="progressBar" data-start="{start_date}" data-end="{end_date}"></div></div>' }
+                { type: 'Text', customClass: 'metricProgress prevailing', html: '<div class="progressContainer"><div class="progressBar" data-start="{goalContext.goal.start_date}" data-end="{goalContext.goal.end_date}"></div></div><div class="progressText">Time to Complete</div>' }
               ]
             },
             {
-              weight: 6,
+              weight: 8,
               type: 'Container',
               htmlClass: 'indicatorContainer',
               children: [
-                { type: 'Text', htmlClass: 'baseline type', html: 'Baseline' },
-                { type: 'Text', htmlClass: 'baseline date',
-                  html: '(as of {goalContext.goal.start_date @[%b %Y] ||})' },
-                { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||}' },
-                { type: 'Text', htmlClass: 'baseline unit', html: '{unit ||}' }
+                { type: 'Text', htmlClass: 'baseline nonprevailing type', html: 'Baseline' },
+                { type: 'Text', htmlClass: 'baseline nonprevailing date', html: 'as of {goalContext.goal.start_date @[%b %Y] ||}' },
+                { type: 'Text', customClass: 'metricIntro prevailing', html: 'Compared to the <em>{goalContext.goal.start_date @[%b %Y] ||}</em> <strong>baseline</strong> {unit $[l] ||value} of ' },
+                { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||531}' },
+                { type: 'Text', htmlClass: 'baseline nonprevailing unit', html: '{unit ||}' }
               ]
             },
             {
-              weight: 6,
+              weight: 8,
               type: 'Container',
               htmlClass: 'indicatorContainer',
               children: [
-                { type: 'Text', htmlClass: 'current type', html: 'Current' },
-                { type: 'Text', htmlClass: 'current date',
-                  html: '(as of {computed_values.as_of @[%b %Y] ||})' },
-                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
-                { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' }
+                { type: 'Text', htmlClass: 'current nonprevailing type', html: 'Current' },
+                { type: 'Text', htmlClass: 'current nonprevailing date', html: 'as of {computed_values.as_of @[%b %Y] ||}' },
+                { type: 'Text', customClass: 'metricIntro prevailing', html: 'we should {goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} the <em>{computed_values.as_of @[%b %Y] ||}</em> <strong>current</strong> {unit $[l] ||value} of ' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||411}' },
+                { type: 'Text', htmlClass: 'current nonprevailing unit', html: '{unit ||}' }
               ]
             },
             {
-              weight: 6,
+              weight: 8,
               type: 'Container',
               htmlClass: 'indicatorContainer',
               #ifValue: 'computed_values.target_value',
               children: [
-                { type: 'Text', htmlClass: 'current type', html: 'Target' },
-                { type: 'Text', htmlClass: 'current date',
-                  html: '({goalContext.goal.end_date @[%b %Y] ||})' },
-                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
-                { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' }
+                { type: 'Text', htmlClass: 'current nonprevailing type', html: 'Target' },
+                { type: 'Text', htmlClass: 'current nonprevailing date', html: '{goalContext.goal.end_date @[%b %Y] ||}' },
+                { type: 'Text', customClass: 'metricIntro prevailing', html: 'to meet our <em>{goalContext.goal.end_date @[%b %Y] ||}</em> <strong>target</strong> {unit $[l] ||value} of ' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||332}' },
+                { type: 'Text', htmlClass: 'current nonprevailing unit', html: '{unit ||}' }
               ]
             },
             {
@@ -215,7 +213,7 @@ protected
         {
           type: 'Title',
           customClass: 'sectionTitle',
-          text: 'Description'
+          text: 'More Information'
         },
         {
           type: 'Text', htmlClass: 'goalDescription clearfix',

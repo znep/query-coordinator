@@ -83,21 +83,21 @@ protected
         children: [
         {
           type: 'Container',
-          htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/ ||}',#!
+          htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/ ||hasImage}',#!
           children: [ {
             type: 'Picture',
-            url: '{goal.metadata.title_image ||}' #!
+            url: '{goal.metadata.title_image ||https://dl.dropbox.com/u/16255305/Photo%20Dec%2010%2C%2012%2058%2013%20PM.jpg}' #!
           }, {
             type: 'Container',
             customClass: 'goalTitle',
             children: [ {
               type: 'Title',
               customClass: 'categoryTitle',
-              context: {
-                id: 'category',
-                type: 'govstatCategory',
-                categoryId: '{goal.category}'
-              },
+              #context: {
+              #  id: 'category',
+              #  type: 'govstatCategory',
+              #  categoryId: '{goal.category}'
+              #},
               text: '{category.name}'
             }, {
               type: 'Title',

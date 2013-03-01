@@ -208,8 +208,9 @@ protected
   end
 
   def manage_data_config(params)
-    cats = [{ value: '', text: 'All' }].concat(View.categories.keys.
-                                               reject { |c| c.blank? }.map { |c| { value: c, text: c } })
+    cats = [{ value: '', text: 'All', current: params[:category].blank? }].
+      concat(View.categories.keys.reject { |c| c.blank? }.map { |c|
+        { value: c, text: c, current: params[:category] == c } })
     opts = { nofederate: true, publication_stage: 'published', limit: 20 }
     [:category].each { |p| opts[p] = params[p] unless params[p].blank? }
     {
@@ -241,7 +242,8 @@ protected
             context: { type: 'list', list: cats },
             childProperties: { customClass: 'filterItem' },
             children: [{
-              type: 'Button', href: '?category={value ||}', htmlClass: 'value{value ||__default}', text: '{text}'
+              type: 'Button', href: '?category={value ||}',
+              htmlClass: 'value{value ||__default} current-{current}', text: '{text}'
             }]
           }
           ]

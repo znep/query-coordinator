@@ -102,8 +102,9 @@ var GoalCard = Backbone.View.extend({
         var category = this.$el.closest('.categoryItem').data('model');
         this.$el.css('background-color', (category ? category.get('color') : null) || '#888');
     },
-    showEditor: function()
+    showEditor: function(event)
     {
+        event.preventDefault();
         GoalEditor.showDialog(this.model);
     },
 
@@ -142,7 +143,7 @@ var GoalEditor = Backbone.View.extend({
 
         this.$el.toggleClass('draft', this.model.get('is_public') !== true);
 
-        // render markup 
+        // render markup
         var $actions = govstatNS.markup.goalEditor.actions();
         var $mainDetails = govstatNS.markup.goalEditor.mainDetails(this.model);
         var $additionalDetails = govstatNS.markup.goalEditor.additionalDetails(this.model);
@@ -181,7 +182,7 @@ var GoalEditor = Backbone.View.extend({
             metrics.add(new govstatNS.models.Metric());
         });
 
-        // custom controls 
+        // custom controls
         // bind fancy select
         var $comparisonWrapper = $mainDetails.find('.comparisonInput');
         bindSelect($comparisonWrapper.find('select'), $comparisonWrapper.find('span.selectValue'));
@@ -220,6 +221,8 @@ var GoalEditor = Backbone.View.extend({
         this.$el.append($metrics);
         this.$el.append($additionalDetails);
         this.$el.append($relatedDatasets);
+
+        this.$el.data('backboneModel', this.model);
     },
 
     maybeDeleteGoal: function(event)
@@ -269,7 +272,7 @@ GoalEditor.showDialog = function(goal)
     var editorView = new GoalEditor({ model: goal });
     editorView.render();
 
-    editorView.$el.addClass('socrataDialog');
+    editorView.$el.addClass('socrataDialog locked');
     editorView.$el.showModal();
 };
 

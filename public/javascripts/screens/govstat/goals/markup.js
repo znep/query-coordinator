@@ -18,7 +18,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     contents: 'Delete this Goal'
                 }, {
                     _: 'a',
-                    className: ['jqmClose', 'ss-floppydisk', 'button'],
+                    className: ['jqmClose', 'saveGoal', 'ss-floppydisk', 'button'],
                     href: '#save and close',
                     contents: 'Save and Close'
                 }]

@@ -10,14 +10,14 @@ $(function()
     var $draft = $('.draftGoals');
 
 
+    var stdCallbacks = { success: statusFinished, error: statusError };
+
 // MODELS
 
     var goals = new govstatNS.collections.Goals();
-    var goalsPendingDelete = new govstatNS.collections.Goals();
     var draftGoals = new govstatNS.collections.Goals([], { draft: true });
     var rawGoalsByCategory;
     var categories = new govstatNS.collections.Categories();
-    var categoriesPendingDelete = new govstatNS.collections.Categories();
 
     // populate category goals
     var categorizeGoals = _.after(2, function()
@@ -32,15 +32,25 @@ $(function()
         });
     });
 
+    var hookUpGoal = function(goal)
+    {
+        goal.on('change:category', function()
+        {
+            statusWorking();
+            goal.save(null, stdCallbacks);
+        });
+        goal.on('removeFromAll', function()
+        {
+            statusWorking();
+            goal.destroy(stdCallbacks);
+        });
+    };
+
     // goals
     goals.fetch({update: true, success: function()
     {
-        // first listen for removeFromAll Goal so we can put it in the delete queue
-        // don't need to listen to new goals; they don't exist on the server anyway
-        goals.each(function(goal)
-        {
-            goal.on('removeFromAll', function() { goalsPendingDelete.add(goal); });
-        });
+        // listen for Goal events to update the server
+        goals.each(hookUpGoal);
 
         // split out goals
         rawGoalsByCategory = goals.groupBy(function(goal)
@@ -63,22 +73,30 @@ $(function()
     error: function(__, xhr)
     { }});
 
+    var hookUpCategory = function(category)
+    {
+        category.on('change:name', function()
+        {
+            statusWorking();
+            category.save(null, stdCallbacks);
+        });
+        category.on('removeFromAll', function()
+        {
+            if ($.subKeyDefined(category, 'goals'))
+            {
+                category.goals.each(function(goal)
+                { draftGoals.add(goal); });
+            }
+            statusWorking();
+            category.destroy(stdCallbacks);
+        });
+    };
+
     // categories
     categories.fetch({update: true, success: function()
     {
-        // now listen for removeFromAll Category so we can move its goals to draftGoals
-        categories.each(function(category)
-        {
-            category.on('removeFromAll', function()
-            {
-                categoriesPendingDelete.add(category);
-                if ($.subKeyDefined(category, 'goals'))
-                {
-                    category.goals.each(function(goal)
-                    { draftGoals.add(goal); });
-                }
-            });
-        });
+        // now listen for appropriate Category events so we can update the server
+        categories.each(hookUpCategory);
 
         // render categories
         categoriesView = new govstatNS.views.categories.CategoryList({
@@ -108,36 +126,63 @@ $(function()
 
         // show editor by default
         govstatNS.views.goal.GoalEditor.showDialog(newGoal);
+
+        hookUpGoal(newGoal);
     });
 
     $('.addCategory').on('click', function(event)
     {
-       event.preventDefault();
+        event.preventDefault();
 
-       // add to final
-       categories.add(new govstatNS.models.Category({}, { parentCollection: categories }));
-       $(document).scrollTop($(document).scrollHeight());
+        var newCat = new govstatNS.models.Category({}, { parentCollection: categories });
+        // add to final
+        categories.add(newCat);
+        $(document).scrollTop($('.categoryItem:first').outerHeight(true));
+
+        hookUpCategory(newCat);
     });
 
     // deal with save
-    $('.saveAll').on('click', function(event)
+
+    // save individual goal
+    $(document).on('click', '.goalEditor .actions .saveGoal', function(event)
     {
         event.preventDefault();
-        goalsPendingDelete.each(function(goal)
-        { goal.destroy(); });
-        var categoriesSaved = _.after(categories.length, function()
-        {
-            categories.each(function(category)
-            {
-                category.goals.each(function(goal) { goal.save(); });
-            });
-        });
-        categories.each(function(category)
-        { category.save(null, { success: function() { categoriesSaved(); } }); });
-        draftGoals.each(function(goal) { goal.save(); });
-        categoriesPendingDelete.each(function(category)
-        { category.destroy(); });
+        var goal = $(this).closest('.goalEditor').data('backboneModel');
+        statusWorking();
+        goal.save(null, stdCallbacks);
     });
 
+    var $statusIndicator = $.tag2({ _: 'div', className: 'globalStatusIndicator',
+        contents: [
+            { _: 'span', className: ['icon', 'waiting', 'ss-loading'] },
+            { _: 'span', className: ['icon', 'good', 'ss-check'] },
+            { _: 'span', className: ['icon', 'bad', 'ss-delete'] },
+            { _: 'span', className: 'message' }
+        ]
+    });
+    var curState = '';
+    $('body').append($statusIndicator);
+    function showStatus(state, message, timeout)
+    {
+        $statusIndicator.removeClass('state-' + curState)
+            .addClass('state-' + state).addClass('shown')
+            .find('.message').text(message);
+        curState = state;
+        if (_.isNumber(timeout))
+        { setTimeout(hideStatus, timeout); }
+    };
+
+    function hideStatus()
+    {
+        $statusIndicator.removeClass('shown');
+    };
+
+    function statusWorking()
+    { showStatus('waiting', 'Saving...'); };
+    function statusFinished()
+    { showStatus('good', 'Saved', 4000); };
+    function statusError()
+    { showStatus('bad', 'Error'); };
 });
 

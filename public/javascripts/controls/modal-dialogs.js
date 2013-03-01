@@ -151,6 +151,10 @@
             hideOverlay();
         }
     };
+    var modalLocked = function()
+    {
+        return $wrapper.children('.locked').length > 0;
+    };
 
     $.fn.showModal = function()
     {
@@ -163,14 +167,14 @@
 
     $(document).on('keyup', function(event)
     {
-        if ($(event.target).is(':not(:input)') && (event.keyCode === 27))
+        if ($(event.target).is(':not(:input)') && (event.keyCode === 27) && !modalLocked())
         {
             popModal();
         }
     });
     $wrapper.on('click', function(event)
     {
-        if (event.target === this)
+        if (event.target === this && !modalLocked())
         {
             popModal(true);
         }

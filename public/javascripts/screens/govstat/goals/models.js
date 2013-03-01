@@ -224,6 +224,10 @@ var Goal = Backbone.Model.extend({
         var metrics = this.get('metrics');
         if (metrics.length === 0) { metrics.add(new Metric()); }
 
+        // Default to non-public
+        if ($.isBlank(this.get('is_public')))
+        { this.set('is_public', false); }
+
         // Default start_date to today
         if ($.isBlank(this.get('start_date')))
         { this.set('start_date', new Date().toISOString()); }

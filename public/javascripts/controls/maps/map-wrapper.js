@@ -123,6 +123,8 @@
             mapObj.closePopup();
             if (mapObj._panning) { delete mapObj._panning; return; }
             mapObj._displayFormat = df;
+            if ($.isEmptyObject(mapObj._displayFormat))
+            { return; }
 
             if (!mapObj._displayFormat.viewDefinitions)
             { Dataset.map.convertToVersion2(mapObj._primaryView, mapObj._displayFormat); }

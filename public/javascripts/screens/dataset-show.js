@@ -204,6 +204,10 @@ $(function()
 
         if (!blist.dataset.childViews)
         { blist.dataset.childViews = _.pluck(blist.dataset.displayFormat.viewDefinitions, 'uid'); }
+
+        if ($.subKeyDefined(blist.dataset, 'metadata.query.' + viewId + '.filterCondition')
+            && hasConditions(blist.dataset.metadata.query[viewId].filterCondition))
+        { datasetPageNS.sidebar.setDefault('filter.unifiedFilter'); }
     }
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
@@ -332,11 +336,7 @@ $(function()
     {
         datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
     }
-    else if ($.subKeyDefined(blist.dataset, 'metadata.query') && _.any(blist.dataset.metadata.query,
-        function(query) { return query.filterCondition && hasConditions(query.filterCondition); }))
-    {
-        datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
-    }
+    // Also, text search for viewDefinitions for the other case.
 
     // Pop a sidebar right away if they ask for it
     var paneName = $.urlParam(window.location.href, 'pane') || blist.defaultPane;

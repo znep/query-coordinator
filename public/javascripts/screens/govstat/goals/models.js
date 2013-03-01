@@ -120,7 +120,7 @@ var Indicator = Backbone.Model.extend({
         var result = Backbone.Model.prototype.toJSON.call(this);
         _.each(_.keys(self.model).concat(['column1', 'column2', 'date_column']),
                 function(k) { result[k] = self.attributes[k].toJSON(); });
-        result.compute_function = { column_function: result.column_function || 'null',
+        result.compute_function = { column_function: result.column_function || '',
             aggregation_function: result.aggregation_function || 'sum',
             aggregation_function2: result.aggregation_function2 || 'sum', metric_period: 'monthly' };
         _.each(['column_function', 'aggregation_function', 'aggregation_function2'], function(k)

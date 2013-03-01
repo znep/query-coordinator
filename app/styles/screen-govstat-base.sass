@@ -40,10 +40,14 @@ input.button, a.button, div.button
   text-shadow: none
   &:hover
     @include box-shadow(0, 0, 0.3em, $govstat_color_action)
+  &.default
+    background: $govstat_color_home
+    border-color: $govstat_color_action
 
 [class^="ss-"], [class*=" ss-"]
   &:not(:empty):before
     margin-right: 0.7em
+    vertical-align: middle
 [class^="ss-"], [class*=" ss-"]
   &:not(:empty):after
     margin-left: 0.7em

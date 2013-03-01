@@ -196,6 +196,9 @@ screen-govstat-homepage:
 screen-govstat-goal-page:
 - screen-govstat-base
 - screen-govstat-goal-page
+administration-govstat:
+- screen-govstat-base
+- screen-govstat-administration
 template-instantiator:
 - components
 - template-instantiator

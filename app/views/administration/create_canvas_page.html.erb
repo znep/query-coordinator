@@ -1,16 +1,26 @@
 <% content_for :head do %>
+  <%- if !module_enabled?(:govStat) -%>
   <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
+  <title>Create DataSlate Page | <%= CurrentDomain.strings.site_title %></title>
+  <%- end -%>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-canvas-pages' %>
-  <title>Create DataSlate Page | <%= CurrentDomain.strings.site_title %></title>
+  <%- if module_enabled?(:govStat) -%>
+  <%= rendered_stylesheet_tag 'administration-govstat' %>
+  <title>Create Report | <%= CurrentDomain.strings.site_title %></title>
+  <%- end -%>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
 
 <div id="createCanvasPageContent" class="contentBox withLeftNavigation">
   <div class="adminHeader contentmgmt">
+    <%- if !module_enabled?(:govStat) -%>
     <span class="icon"></span>
     <h1>Create DataSlate Page</h1>
+    <%- else -%>
+    <h1 class="ss-notepad">Create Report</h1>
+    <%- end -%>
   </div>
 
   <%= display_standard_flashes %>
@@ -25,7 +35,7 @@
         <%= text_field_tag :pageTitle, @cur_title %>
       </div>
       <div class="line">
-        <%= label_tag :pageUrl, 'Path <span class="accessible">Required</span>'.html_safe,
+        <%= label_tag :pageUrl, 'Page URL <span class="accessible">Required</span>'.html_safe,
           :class => 'required' %>
         <%= text_field_tag :pageUrl, @cur_path %>
       </div>

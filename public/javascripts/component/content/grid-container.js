@@ -34,6 +34,7 @@ $.component.Container.extend('Grid Container', 'content', {
             for (rowItems = 0; (rowItems * cw + (rowItems-1) * innerCW) <= mainW; rowItems++)
             { }
             rowItems--;
+            if (rowItems < 1) { return; }
             var visibleChildren = [];
             cObj.each(function(c) { if (!c._isHidden) { visibleChildren.push(c); } });
             var rows = Math.ceil(1.0 * visibleChildren.length / rowItems);

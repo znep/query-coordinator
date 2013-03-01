@@ -32,7 +32,7 @@ body
 h1, h2, h3, h4
   text-rendering: optimizeLegibility
 
-input.button, a.button
+input.button, a.button, div.button
   background: $govstat_color_action
   border: none
   color: #ffffff
@@ -44,6 +44,10 @@ input.button, a.button
 [class^="ss-"], [class*=" ss-"]
   &:not(:empty):before
     margin-right: 0.7em
+[class^="ss-"], [class*=" ss-"]
+  &:not(:empty):after
+    margin-left: 0.7em
+    vertical-align: middle
 
 .goalProgress
   .content-wrapper > div

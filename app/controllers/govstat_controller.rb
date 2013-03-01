@@ -255,11 +255,12 @@ protected
           {
             type: 'Container',
             htmlClass: 'myDatasets categoryItem',
+            contextId: 'myDatasets',
             children: [
-            { type: 'Title', text: 'My Datasets', htmlClass: 'categoryTitle' },
+            { type: 'Title', text: 'My Data', htmlClass: 'categoryTitle' },
             {
               type: 'Repeater',
-              contextId: 'myDatasets',
+              ifValue: 'count',
               container: { type: 'GridContainer', cellWidth: 180, cellHeight: 200,
                 cellSpacing: 10, cellVSpacing: 10,
                 # This hack to insert a fixed initial item is pretty awesome
@@ -280,15 +281,28 @@ protected
                   ]
                 } ]
               } ]
+            }, {
+              type: 'Container',
+              ifValue: { negate: true, key: 'count' },
+              htmlClass: 'noDataSection',
+              children: [
+                { type: 'Title', text: "You don't have any data yet. So let's..." },
+                {
+                type: 'Button', htmlClass: 'noData', notButton: true, href: new_dataset_path, text:
+                '<div class="callToAction ss-plus">Add Some Data</div>' +
+                '<div class="button ss-navigateright right">Add Data</div>'
+                }
+              ]
             } ]
           }, {
             type: 'Container',
             htmlClass: 'allDatasets categoryItem',
+            contextId: 'allDatasets',
+            ifValue: 'count',
             children: [
-            { type: 'Title', text: 'All Datasets', htmlClass: 'categoryTitle' },
+            { type: 'Title', text: 'All Data', htmlClass: 'categoryTitle' },
             {
               type: 'Repeater',
-              contextId: 'allDatasets',
               container: { type: 'GridContainer', cellWidth: 180, cellHeight: 200,
                 cellSpacing: 10, rowSpacing: 10 },
               children: [{

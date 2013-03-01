@@ -183,6 +183,17 @@ module Canvas2
           end
           log_timing(start_time, config)
 
+        when 'govstatCategory'
+          category = GovstatCategory.find(config['categoryId'])
+          if category.nil?
+            errors.push(DataContextError.new(config, "No category found for '" + id + "'"))
+            log_timing(start_time, config)
+            ret_val = !config['required']
+          else
+            available_contexts[id] = { id: id, type: config['type'], category: category }
+            log_timing(start_time, config)
+          end
+
         end
       rescue CoreServer::CoreServerError => e
         log_timing(start_time, config)

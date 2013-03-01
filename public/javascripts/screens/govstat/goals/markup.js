@@ -196,7 +196,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                                 _: 'option',
                                 value: 'true',
                                 selected: goal.get('is_public') === true,
-                                contents: 'publicly'
+                                contents: 'publically'
                             }, {
                                 _: 'option',
                                 value: 'false',

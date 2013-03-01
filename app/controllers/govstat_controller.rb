@@ -82,33 +82,41 @@ protected
         contextId: 'goalContext',
         children: [
         {
-          type: 'HorizontalContainer',
-          htmlClass: 'headerLine',
-          children: [
-          {
-            type: 'Button',
-            href: '/',
-            htmlClass: 'button backLink',
-            text: '<span class="ss-navigateleft">Back</span>'
+          type: 'Container',
+          htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/ ||}',#!
+          children: [ {
+            type: 'Picture',
+            url: '{goal.metadata.title_image ||}' #!
+          }, {
+            type: 'Container',
+            customClass: 'goalTitle',
+            children: [ {
+              type: 'Title',
+              customClass: 'categoryTitle',
+              context: {
+                id: 'category',
+                type: 'govstatCategory',
+                categoryId: '{goal.category}'
+              },
+              text: '{category.name}'
+            }, {
+              type: 'Title',
+              text: '{goal.subject ||We} will ' +
+                '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
+                '{goal.name $[d] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
+                'before {goal.end_date @[%B %Y] ||sometime}'
+            } ]
           }
           ]
         },
         {
-          type: 'Container',
-          htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/}',
-          children: [ {
-            type: 'Picture',
-            url: '{goal.metadata.title_image}'
-          }, {
-            type: 'Title',
-            customClass: 'goalTitle',
-            text: '{goal.subject ||We} will ' +
-              '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
-              '{goal.name $[u] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
-              'before {goal.end_date @[%B %Y] ||sometime}'
-          },
-          progress_indicator('goal.metrics.0')
-          ]
+          type: 'Title',
+          customClass: 'sectionTitle',
+          text: 'Metrics'
+        },
+        {
+          type: 'Text',
+          html: '<script type="text/javascript">window.setTimeout($(function() { $(".metricProgress .progressBar").each(function() { var $this = $(this); var start = parseInt($this.attr("data-start")) * 1000; var end = parseInt($this.attr("data-end")) * 1000; $this.css("width", (((new Date()).getTime() - start) / (end - start)) + "%"); }); }), 0);</script>'
         },
         {
           type: 'Repeater',
@@ -124,8 +132,9 @@ protected
               type: 'Container',
               children: [
                 { type: 'Text', customClass: 'metricType prevailing', html: 'Prevailing Metric' },
-                { type: 'Text', customClass: 'metricType additional', html: 'Additional Metric' },
-                { type: 'Title', htmlClass: 'metricTitle', text: '{title}' }
+                { type: 'Text', customClass: 'metricIntro prevailing', html: 'This goal is being measured by tracking' },
+                { type: 'Title', htmlClass: 'metricTitle', text: '{title}' },
+                { type: 'Text', customClass: 'metricProgress', html: '<div class="progressText">Remaining Time</div><div class="progressContainer"><div class="progressBar" data-start="{start_date}" data-end="{end_date}"></div></div>' }
               ]
             },
             {
@@ -156,12 +165,12 @@ protected
               weight: 6,
               type: 'Container',
               htmlClass: 'indicatorContainer',
-              ifValue: 'computed_values.target_value',
+              #ifValue: 'computed_values.target_value',
               children: [
                 { type: 'Text', htmlClass: 'current type', html: 'Target' },
                 { type: 'Text', htmlClass: 'current date',
                   html: '({goalContext.goal.end_date @[%b %Y] ||})' },
-                { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||}' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' }
               ]
             },
@@ -177,6 +186,11 @@ protected
             ]
           }
           ]
+        },
+        {
+          type: 'Title',
+          customClass: 'sectionTitle',
+          text: 'Related Data'
         },
         {
           type: 'Repeater',
@@ -197,6 +211,11 @@ protected
             ]
           }
           ]
+        },
+        {
+          type: 'Title',
+          customClass: 'sectionTitle',
+          text: 'Description'
         },
         {
           type: 'Text', htmlClass: 'goalDescription clearfix',

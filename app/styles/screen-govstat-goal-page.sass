@@ -17,25 +17,31 @@
     background-color: #333333
 
 .titleContainer
+  border-top: 3px solid #888
   margin-bottom: 2em
+  overflow: hidden
+  padding-bottom: 5em
+  margin-bottom: 5em
   position: relative
+
   .component-Picture
     display: none
   &.hasImage
-    display: inline-block
     .component-Picture
-      display: inline
+      display: block
+      left: 0
+      position: absolute
+      right: 0
     .goalTitle
       background-color: rgba(247, 247, 247, 0.5)
-      @include border-radius(3px)
-      bottom: 1em
-      left: 1em
-      padding: 1em 2em
-      position: absolute
-      right: 25%
-      top: 1em
-    .goalProgress
-      right: 25%
+      @include border-radius(2px)
+      margin: 2em
+      padding: 2em 3em
+      position: relative
+      z-index: 1
+
+      .categoryTitle
+        font-size: 0.7em
   .goalTitle
     h2
       font-size: 4em
@@ -48,6 +54,11 @@
       right: 0.833em
     position: absolute
     right: 0.833em
+
+.sectionTitle
+  font-size: 2em
+  h2
+    font-weight: normal
 
 .metricsBlock
   .metricItem

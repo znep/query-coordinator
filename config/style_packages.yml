@@ -180,24 +180,20 @@ screen-videos-popup:
 - strip-chrome
 - screen-videos-popup
 govstat-layout:
+- screen-govstat-base
 - govstat-layout
 screen-govstat-goals:
-- screen-govstat-base
 - screen-govstat-goals
 - screen-govstat-dashboard
 - screen-govstat-manage
 screen-govstat-manage:
-- screen-govstat-base
 - screen-govstat-dashboard
 - screen-govstat-manage
 screen-govstat-homepage:
-- screen-govstat-base
 - screen-govstat-dashboard
 screen-govstat-goal-page:
-- screen-govstat-base
 - screen-govstat-goal-page
 administration-govstat:
-- screen-govstat-base
 - screen-govstat-administration
 template-instantiator:
 - components

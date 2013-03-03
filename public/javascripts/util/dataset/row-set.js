@@ -550,11 +550,11 @@ var RowSet = ServerModel.extend({
         this.trigger('row_change', [invRows, true]);
     },
 
-    formattingChanged: function()
+    formattingChanged: function(condFmt)
     {
         var rs = this;
-        var condFmt = $.subKeyDefined(rs, '_dataset.metadata.conditionalFormatting')
-            && rs._dataset.metadata.conditionalFormatting;
+        var condFmt = condFmt || ($.subKeyDefined(rs, '_dataset.metadata.conditionalFormatting')
+            && rs._dataset.metadata.conditionalFormatting);
         if (!_.isArray(condFmt))
         { rs._condFmt = null; }
         else

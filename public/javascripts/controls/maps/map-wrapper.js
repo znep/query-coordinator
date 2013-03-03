@@ -271,10 +271,20 @@
             { childView.bindDatasetEvents(); });
 
             if (mapObj._primaryView)
-            { mapObj._primaryView.bind('reloaded', function()
-            {
+            { mapObj._primaryView.bind('reloaded', function() {
                 _(mapObj._children).chain()
-                    .pluck('_view').uniq().without(this).invoke('reload');
+                    .pluck('_view').uniq().without(this).each(function(subview)
+                {
+                    subview.reload();
+                    var condFmt = $.deepGet(mapObj._primaryView.metadata,
+                        'conditionalFormatting', subview.id);
+                    if (condFmt)
+                    {
+                        condFmt = $.union( condFmt, (subview.metadata.conditionalFormatting || []));
+                        _.each(subview._availableRowSets,
+                            function(rs) { rs.formattingChanged(condFmt); });
+                    }
+                });
                 _.invoke(mapObj._children, 'getData');
             }); }
 

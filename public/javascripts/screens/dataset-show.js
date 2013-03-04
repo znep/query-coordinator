@@ -207,7 +207,7 @@ $(function()
         { blist.dataset.childViews = _.pluck(blist.dataset.displayFormat.viewDefinitions, 'uid'); }
 
         if ($.subKeyDefined(blist.dataset, 'metadata.query.' + viewId + '.filterCondition')
-            && hasConditions(blist.dataset.metadata.query[viewId].filterCondition))
+            && (blist.dataset.metadata.query[viewId].filterCondition.children || []).length > 0)
         { openSidebar = true; }
     }
     datasetPageNS.rtManager = blist.$container.renderTypeManager({

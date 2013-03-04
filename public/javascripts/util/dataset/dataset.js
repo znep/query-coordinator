@@ -1841,6 +1841,15 @@ var Dataset = ServerModel.extend({
             ds.metadata.renderTypeConfig.visible[ds.displayType] = true;
         }
 
+        // Update sorts on each column
+        _.each(ds.realColumns || [], function(c)
+                { delete c.sortAscending; });
+        _.each((ds.query || {}).orderBys || [], function(ob)
+        {
+            var c = ds.columnForID(ob.expression.columnId);
+            if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
+        });
+
         ds.url = ds._generateUrl();
         ds.fullUrl = ds._generateUrl(true);
         ds.shortUrl = ds._generateShortUrl(true);

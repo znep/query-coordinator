@@ -407,8 +407,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                 }, {
                     _: 'div',
                     className: [ 'inputWrapper', 'selectInput', 'columnFunctionInput',
-                        { i: indicator.get('column_function') && indicator.get('column_function') != 'null',
-                            t: 'hasFunction' } ],
+                        { i: indicator.get('column_function'), t: 'hasFunction' } ],
                     contents: [{
                         _: 'span',
                         className: 'selectValue'
@@ -418,8 +417,8 @@ blist.namespace.fetch('blist.govstat').markup = {
                         id: indicator.cid + '_column_function',
                         contents: [{
                             _: 'option',
-                            value: 'null',
-                            selected: indicator.get('column_function') === 'null',
+                            value: '',
+                            selected: indicator.get('column_function') === '',
                             contents: 'alone'
                         }, {
                             _: 'option',
@@ -517,7 +516,6 @@ blist.namespace.fetch('blist.govstat').markup = {
                                 id: indicator.cid + '_start_date',
                                 className: 'date',
                                 name: 'start_date',
-                                'data-rawvalue': indicator.get('start_date'),
                                 value: indicator.get('start_date') ?
                                     new Date(indicator.get('start_date')).toDateString() : ''
                             }]

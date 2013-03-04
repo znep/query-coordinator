@@ -196,11 +196,10 @@ var GoalEditor = Backbone.View.extend({
         {
             var $this = $(this);
             $this.DatePicker({
-                date: new Date($this.attr('data-rawvalue')) || new Date(),
+                date: new Date($this.val()) || new Date(),
                 onChange: function(_, newDate)
                 {
                     $this
-                        .attr('data-rawvalue', newDate.toISOString())
                         .val(newDate.toDateString())
                         .trigger('change')
                         .blur();
@@ -252,7 +251,8 @@ var GoalEditor = Backbone.View.extend({
     updateDateAttr: function(event)
     {
         var $input = $(event.target);
-        this.model.set($input.attr('name'), $input.attr('data-rawvalue'));
+        var d = new Date($input.val());
+        this.model.set($input.attr('name'), _.isNaN(d.valueOf()) ? null : d.toISOString());
     },
     updateNotesAttr: function(event)
     {
@@ -706,7 +706,8 @@ var MetricEditor = Backbone.View.extend({
         this.$('.indicator').on('change', '.' + childClass + ' input.date', function(event)
         {
             var $input = $(event.target);
-            indicator.set($input.attr('name'), $input.attr('data-rawvalue'));
+            var d = new Date($input.val());
+            indicator.set($input.attr('name'), _.isNaN(d.valueOf()) ? null : d.toISOString());
         });
     }
 });
@@ -753,7 +754,7 @@ var IndicatorEditor = Backbone.View.extend({
     {
         this.listenTo(this.model, 'change:column_function', function(_, value)
         {
-            this._$columnFunctionInput.toggleClass('hasFunction', value && (value !== 'null'));
+            this._$columnFunctionInput.toggleClass('hasFunction', value);
         });
     },
     render: function()
@@ -796,11 +797,10 @@ var IndicatorEditor = Backbone.View.extend({
         {
             var $this = $(this);
             $this.DatePicker({
-                date: new Date($this.attr('data-rawvalue')) || new Date(),
+                date: new Date($this.val()),
                 onChange: function(_, newDate)
                 {
                     $this
-                        .attr('data-rawvalue', newDate.toISOString())
                         .val(newDate.toDateString())
                         .trigger('change')
                         .blur();

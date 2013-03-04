@@ -93,8 +93,7 @@ var Indicator = Backbone.Model.extend({
     isComplete: function()
     {
         var js = this.toJSON();
-        var res = !$.isBlank(js.compute_function.column_function) &&
-            !$.isBlank(js.compute_function.aggregation_function) &&
+        var res = !$.isBlank(js.compute_function.aggregation_function) &&
             !$.isBlank(js.dataset) && !$.isBlank(js.column1) && !$.isBlank(js.date_column) &&
             (this.indicatorType != 'baseline' || !$.isBlank(js.start_date) && !$.isBlank(js.end_date));
         return res;
@@ -274,8 +273,10 @@ var Goal = Backbone.Model.extend({
         _.each(_.keys(self.model), function(k) { attrs[k] = _.compact(self.attributes[k].toJSON()); });
         _.each(_.keys(attrs), function(k)
         {
-            if (_.isArray(attrs[k]) && _.isEmpty(attrs[k]) || _.isNull(attrs[k]))
+            if (_.isArray(attrs[k]) && _.isEmpty(attrs[k]))
             { delete attrs[k]; }
+            if (_.isNull(attrs[k]))
+            { attrs[k] = ''; }
         });
         _.each(['goal_delta'], function(k)
         { if (_.isString(attrs[k])) { attrs[k] = parseFloat(attrs[k]); } });

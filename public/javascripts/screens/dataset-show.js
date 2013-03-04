@@ -192,6 +192,7 @@ $(function()
     if (defRen == 'richList') { defRen = 'fatrow'; }
     if (!$.isBlank(blist.initialRowId)) { defRen = 'page'; }
 
+    var openSidebar = false;
     if (blist.dataset.displayFormat.viewDefinitions)
     {
         var viewId = blist.dataset.displayFormat.viewDefinitions[0].uid;
@@ -207,7 +208,7 @@ $(function()
 
         if ($.subKeyDefined(blist.dataset, 'metadata.query.' + viewId + '.filterCondition')
             && hasConditions(blist.dataset.metadata.query[viewId].filterCondition))
-        { datasetPageNS.sidebar.setDefault('filter.unifiedFilter'); }
+        { openSidebar = true; }
     }
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
@@ -329,7 +330,8 @@ $(function()
     {
         return (filterCondition.children || []).length > 0;
     };
-    if (($.subKeyDefined(blist.dataset, 'query.filterCondition') &&
+    if (openSidebar ||
+        ($.subKeyDefined(blist.dataset, 'query.filterCondition') &&
              hasConditions(blist.dataset.query.filterCondition)) ||
         ($.subKeyDefined(blist.dataset, 'metadata.filterCondition') &&
              hasConditions(blist.dataset.metadata.filterCondition)))

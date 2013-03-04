@@ -271,22 +271,28 @@
             { childView.bindDatasetEvents(); });
 
             if (mapObj._primaryView)
-            { mapObj._primaryView.bind('reloaded', function() {
-                _(mapObj._children).chain()
-                    .pluck('_view').uniq().without(this).each(function(subview)
-                {
-                    subview.reload();
-                    var condFmt = $.deepGet(mapObj._primaryView.metadata,
-                        'conditionalFormatting', subview.id);
-                    if (condFmt)
-                    {
-                        condFmt = $.union( condFmt, (subview.metadata.conditionalFormatting || []));
-                        _.each(subview._availableRowSets,
-                            function(rs) { rs.formattingChanged(condFmt); });
+            {
+                mapObj._primaryView.bind('reloaded', function() {
+                    var reInitCondFmt = function() {
+                        var condFmt = $.deepGet(mapObj._primaryView.metadata,
+                            'conditionalFormatting', subview.id);
+                        if (condFmt)
+                        {
+                            condFmt = $.union( condFmt,
+                                (subview.metadata.conditionalFormatting || []));
+                            _.each(subview._availableRowSets,
+                                function(rs) { rs.formattingChanged(condFmt); });
+                        }
                     }
+                    _(mapObj._children).chain()
+                        .pluck('_view').uniq().without(mapObj._primaryView).each(function(subview)
+                    {
+                        delete subview.metadata.conditionalFormatting;
+                        subview.reload(reInitCondFmt);
+                    });
+                    _.invoke(mapObj._children, 'getData');
                 });
-                _.invoke(mapObj._children, 'getData');
-            }); }
+            }
 
             if (mapObj._displayFormat.openOverviewByDefault)
             { mapObj._controls.Overview.open(); }

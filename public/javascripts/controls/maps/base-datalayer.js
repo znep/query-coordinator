@@ -38,7 +38,8 @@
             { currentObj._displayFormat.component.setDataObj(this); }
 
             if ($.subKeyDefined(blist, 'datasetPage.sidebar') && currentObj._index == 0
-                && $.subKeyDefined(currentObj._view, 'metadata.filterCondition.children'))
+                && ($.subKeyDefined(currentObj._view, 'metadata.filterCondition.children')
+                    || $.subKeyDefined(currentObj._view, 'query.filterCondition.children')))
             { blist.datasetPage.sidebar.setDefault('filter.unifiedFilter'); }
 
             currentObj._mapProjection = currentObj._map.getProjectionObject();

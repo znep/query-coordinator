@@ -28,8 +28,12 @@ $(function()
             if (rawGoalsByCategory[catId])
             {
                 category.goals.add(rawGoalsByCategory[catId]);
+                delete rawGoalsByCategory[catId];
             }
         });
+        // Handle orphaned goals
+        _.each(rawGoalsByCategory, function(catId)
+        { draftGoals.add(rawGoalsByCategory[catId]); });
     });
 
     var hookUpGoal = function(goal)

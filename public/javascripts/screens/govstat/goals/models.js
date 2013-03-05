@@ -227,6 +227,10 @@ var Goal = Backbone.Model.extend({
         if ($.isBlank(this.get('is_public')))
         { this.set('is_public', false); }
 
+        // Default to not percent
+        if ($.isBlank(this.get('goal_delta_is_pct')))
+        { this.set('goal_delta_is_pct', false); }
+
         // Default start_date to today
         if ($.isBlank(this.get('start_date')))
         { this.set('start_date', new Date().toISOString()); }

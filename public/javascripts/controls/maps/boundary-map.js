@@ -323,6 +323,7 @@
             {
                 layerObj.zoomToPreferred();
                 layerObj._featuresLoaded = true;
+                layerObj._parent.mapElementLoaded(layerObj._displayLayer);
             });
         },
 

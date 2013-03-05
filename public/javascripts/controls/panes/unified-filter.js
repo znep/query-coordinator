@@ -1691,11 +1691,10 @@
                     }
                     else
                     {
-                        aggCC.top = aggCC.top.sort(function(a, b)
-                        {
-                            return (a.item == b.item ? 0 : (a.item > b.item ? 1 : -1) *
-                                (metadata.reverseSort ? -1 : 1));
-                        });
+                        aggCC.top = _.sortBy(aggCC.top, function(v)
+                        { return column.renderType.matchValue(v.item, column); });
+                        if (metadata.reverseSort)
+                        { aggCC.top.reverse(); }
                     }
                     if (!metadata.sortAlphabetically)
                     {

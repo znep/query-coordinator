@@ -42,6 +42,7 @@ class TestPagesController < ApplicationController
     Canvas2::DataContext.reset
     Canvas2::Util.set_params(params)
     Canvas2::Util.set_debug(true)
+    Canvas2::Util.set_no_cache(true)
     Canvas2::Util.set_env({
       domain: CurrentDomain.cname,
       renderTime: Time.now.to_i,

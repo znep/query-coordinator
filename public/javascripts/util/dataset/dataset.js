@@ -935,6 +935,10 @@ var Dataset = ServerModel.extend({
             if (c.renderTypeName == 'location' && $.subKeyDefined(r[c.fieldName], 'human_address') &&
                 _.isString(r[c.fieldName].human_address))
             { r[c.fieldName].human_address = JSON.parse(r[c.fieldName].human_address); }
+            // Do we expect SODA2 to actually return real values or not? For
+            // current use cases, this is valid; but maybe not forever
+            if (c.renderTypeName == 'drop_down_list' && !$.isBlank(r[c.fieldName]))
+            { r[c.fieldName] = c.renderType.renderer(r[c.fieldName], c, true); }
         });
         return r;
     },

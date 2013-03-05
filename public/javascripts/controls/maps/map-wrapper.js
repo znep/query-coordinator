@@ -402,7 +402,7 @@
             else
             {
                 bkgdLayers = mapObj._displayFormat.bkgdLayers;
-                mapObj.map.setNoBackground(false);
+                mapObj.map.setNoBackground(_.all(_.pluck(bkgdLayers, 'hidden'), _.identity));
             }
 
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });

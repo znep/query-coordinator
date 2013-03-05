@@ -345,6 +345,9 @@
         {
             var layerObj = this;
 
+            if (feature.attributes.oldGeometry) // Already transformed.
+            { return feature; }
+
             var key = feature.attributes.dupKey;
             if (!$.subKeyDefined(MAP_TYPE[layerObj._config.type], 'transformFeatures.' + key))
             { return feature; }
@@ -357,9 +360,6 @@
             if (!transform)
             { return feature; }
 
-            if (feature.attributes.oldGeometry) // Already transformed.
-            { return feature; }
-
             feature.attributes.oldGeometry = feature.clone();
             var center = feature.getBounds().getCenterLonLat();
             center = new OpenLayers.Geometry.Point(center.lon, center.lat);
@@ -367,7 +367,8 @@
             if (transform.scale)
             { feature = feature.resize(transform.scale, center); }
             if (transform.offset)
-            { feature = feature.move(transform.offset.x, transform.offset.y); }
+            { feature.move(transform.offset.x, transform.offset.y); }
+            feature.calculateBounds();
 
             return feature;
         },

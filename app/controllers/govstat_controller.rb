@@ -83,10 +83,10 @@ protected
         children: [
         {
           type: 'Container',
-          htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/ ||hasImage}',#!
+          htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/ ||}',
           children: [ {
             type: 'Picture',
-            url: '{goal.metadata.title_image ||https://dl.dropbox.com/u/16255305/Photo%20Dec%2010%2C%2012%2058%2013%20PM.jpg}' #!
+            url: '{goal.metadata.title_image ||}'
           }, {
             type: 'Container',
             customClass: 'goalTitle',
@@ -143,7 +143,7 @@ protected
                 { type: 'Text', htmlClass: 'baseline nonprevailing type', html: 'Baseline' },
                 { type: 'Text', htmlClass: 'baseline nonprevailing date', html: 'as of {goalContext.goal.start_date @[%b %Y] ||}' },
                 { type: 'Text', customClass: 'metricIntro prevailing', html: 'Compared to the <em>{goalContext.goal.start_date @[%b %Y] ||}</em> <strong>baseline</strong> {unit $[l] ||value} of ' },
-                { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||531}' },
+                { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'baseline nonprevailing unit', html: '{unit ||}' }
               ]
             },
@@ -155,7 +155,7 @@ protected
                 { type: 'Text', htmlClass: 'current nonprevailing type', html: 'Current' },
                 { type: 'Text', htmlClass: 'current nonprevailing date', html: 'as of {computed_values.as_of @[%b %Y] ||}' },
                 { type: 'Text', customClass: 'metricIntro prevailing', html: 'we should {goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} the <em>{computed_values.as_of @[%b %Y] ||}</em> <strong>current</strong> {unit $[l] ||value} of ' },
-                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||411}' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'current nonprevailing unit', html: '{unit ||}' }
               ]
             },
@@ -168,7 +168,7 @@ protected
                 { type: 'Text', htmlClass: 'current nonprevailing type', html: 'Target' },
                 { type: 'Text', htmlClass: 'current nonprevailing date', html: '{goalContext.goal.end_date @[%b %Y] ||}' },
                 { type: 'Text', customClass: 'metricIntro prevailing', html: 'to meet our <em>{goalContext.goal.end_date @[%b %Y] ||}</em> <strong>target</strong> {unit $[l] ||value} of ' },
-                { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||332}' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'current nonprevailing unit', html: '{unit ||}' }
               ]
             },

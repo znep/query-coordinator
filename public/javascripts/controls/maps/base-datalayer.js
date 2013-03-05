@@ -151,7 +151,7 @@
         handleQueryChange: function()
         {
             var layerObj = this;
-if ((blist.debug || {}).filters) { console.log('query change', layerObj._uniqueId); }
+//console.log('query change', layerObj._uniqueId);
 //console.dir(layerObj._view.query);
             this._parent.saveQuery(this._view.id,
                 { filterCondition: this._view.cleanFilters(true) });

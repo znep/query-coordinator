@@ -38,7 +38,8 @@
             { currentObj._displayFormat.component.setDataObj(this); }
 
             if ($.subKeyDefined(blist, 'datasetPage.sidebar') && currentObj._index == 0
-                && $.subKeyDefined(currentObj._view, 'metadata.filterCondition.children'))
+                && ($.subKeyDefined(currentObj._view, 'metadata.filterCondition.children')
+                    || $.subKeyDefined(currentObj._view, 'query.filterCondition.children')))
             { blist.datasetPage.sidebar.setDefault('filter.unifiedFilter'); }
 
             currentObj._mapProjection = currentObj._map.getProjectionObject();
@@ -107,8 +108,13 @@
         {
             var layerObj = this;
 
-            //console.log('handleDisplayFormatChange');
-            //console.dir(newDF);
+            if ((blist.debug || {}).events && (console || {}).trace)
+            {
+                console.groupCollapsed('handleDisplayFormatChange ' + layerObj._uniqueId);
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                    console.dir(newDF);
+                console.groupEnd();
+            }
 
             // When the view is the same as the parent, bad things happen on triggering DF_change.
             if (_.isUndefined(newDF)) { return; }
@@ -150,7 +156,13 @@
         handleQueryChange: function()
         {
             var layerObj = this;
-//console.log('query change', layerObj._uniqueId);
+            if ((blist.debug || {}).events && (console || {}).trace)
+            {
+                console.groupCollapsed('handleQueryChange ' + layerObj._uniqueId);
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                    console.groupCollapsed('state'); console.dir(layerObj._view.query); console.groupEnd();
+                console.groupEnd();
+            }
             this._parent.saveQuery(this._view.id,
                 { filterCondition: this._view.cleanFilters(true) });
             layerObj.clearData();
@@ -160,7 +172,17 @@
         handleRowChange: function(rows, fullReset)
         {
             var layerObj = this;
-//console.log('row change', layerObj._displayLayer.id, _.size(rows));
+            if ((blist.debug || {}).events && (console || {}).trace)
+            {
+                console.groupCollapsed('handleRowChange ' + layerObj._uniqueId);
+                    console.groupCollapsed('arguments'); console.dir(arguments); console.groupEnd();
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                    console.groupCollapsed('state');
+                        console.log('_displayLayer.id', layerObj._displayLayer.id);
+                        console.log('size', _.size(rows));
+                    console.groupEnd();
+                console.groupEnd();
+            }
 
             if (fullReset) { return; } // This is because row_change(fullReset: true) appears
                                        // to duplicate sending data down the pipe. Ref: Bug 7577.
@@ -563,7 +585,8 @@
             {
                 layerObj.highlightRows(feature.attributes.rows, 'select');
                 layerObj._parent.$dom().trigger('display_row',
-                    [{row: _.first(feature.attributes.rows), datasetId: layerObj._view.id}]);
+                    [{row: _.first(feature.attributes.rows), datasetId: layerObj._view.id,
+                    dataset: layerObj._view}]);
                 $(document).trigger(blist.events.DISPLAY_ROW,
                     [[layerObj._view.id, _.first(feature.attributes.rows).id].join('/'), true]);
             }
@@ -580,7 +603,12 @@
                         { feature = layerObj._data[feature.attributes.dupKey]; }
                         if (feature && feature.layer)
                         { layerObj.unhighlightRows(feature.attributes.rows, 'select'); }
-                    }
+                    },
+                    // Hack for Bug 9280.
+                    atPixel: feature.geometry instanceof OpenLayers.Geometry.Polygon
+                        ? new OpenLayers.Pixel(layerObj._parent._lastClickAt.x,
+                                               layerObj._parent._lastClickAt.y)
+                        : false
                 });
             }
         },

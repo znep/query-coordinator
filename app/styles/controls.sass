@@ -1,5 +1,6 @@
 input.button,
-a.button
+a.button,
+div.button
   @include button
   @include default-fonts
   color: #333
@@ -842,7 +843,7 @@ ul.autocompleteComboDropdown
       background-color: #f7f7f7
 
 // Tweak v-align of icons, and give them space when before text
-.ss-icon, [class^="ss-"]:before, [class*=" ss-"]:before
+.ss-icon, [class^="ss-"]:before, [class*=" ss-"]:before, [class^="ss-"]:after, [class*=" ss-"]:after
   vertical-align: sub
 .ss-icon.button
   font-weight: normal

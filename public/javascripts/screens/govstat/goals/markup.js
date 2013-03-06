@@ -13,12 +13,12 @@ blist.namespace.fetch('blist.govstat').markup = {
                 className: 'actions',
                 contents: [{
                     _: 'a',
-                    className: ['deleteGoal', 'ss-trash'],
+                    className: ['deleteGoal', 'ss-trash', 'button'],
                     href: '#delete goal',
                     contents: 'Delete this Goal'
                 }, {
                     _: 'a',
-                    className: ['jqmClose', 'ss-floppydisk'],
+                    className: ['jqmClose', 'saveGoal', 'ss-floppydisk', 'button'],
                     href: '#save and close',
                     contents: 'Save and Close'
                 }]
@@ -181,7 +181,57 @@ blist.namespace.fetch('blist.govstat').markup = {
                         className: 'agencyInput'
                     }, {
                         _: 'span',
+                        contents: '. It is visible '
+                    }, {
+                        _: 'div',
+                        className: [ 'inputWrapper', 'selectInput', 'publicInput' ],
+                        contents: [{
+                            _: 'span',
+                            className: 'selectValue'
+                        }, {
+                            _: 'select',
+                            name: 'is_public',
+                            id: goal.cid + '_public',
+                            contents: [{
+                                _: 'option',
+                                value: 'true',
+                                selected: goal.get('is_public') === true,
+                                contents: 'publicly'
+                            }, {
+                                _: 'option',
+                                value: 'false',
+                                selected: goal.get('is_public') === false,
+                                contents: 'internally'
+                            }]
+                        }, {
+                            _: 'label',
+                            'for': goal.cid + '_public',
+                            contents: 'Visibility'
+                        }]
+                    }, {
+                        _: 'span',
                         contents: '.'
+                    }, {
+                        _: 'div',
+                        className: 'imageLine',
+                        contents: [{
+                            _: 'span',
+                            contents: 'It has a title image of '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper imageInput',
+                            contents: [{
+                                _: 'label',
+                                'for': goal.cid + '_title_image',
+                                contents: 'URL'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: goal.cid + '_title_image',
+                                name: 'title_image',
+                                value: goal.get('title_image')
+                            }]
+                        }]
                     }]
                 }, {
                     _: 'div',
@@ -204,7 +254,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                         }]
                     }]
                 }]
-            })
+            });
         },
 
         relatedDatasets: function(goal)
@@ -214,15 +264,15 @@ blist.namespace.fetch('blist.govstat').markup = {
                 className: 'relatedDatasets',
                 contents: [{
                     _: 'h2',
-                    contents: 'Related Datasets'
+                    contents: 'Related Visualizations'
                 }, {
                     _: 'div',
                     className: 'datasetListContainer'
                 }, {
                     _: 'a',
-                    className: 'addDataset',
+                    className: ['addDataset', 'button', 'ss-piechart'],
                     href: '#add',
-                    contents: 'Add A Dataset'
+                    contents: 'Add a Visualization'
                 }]
             });
         },
@@ -237,7 +287,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'metricListContainer'
                 }, {
                     _: 'a',
-                    className: 'addMetric',
+                    className: ['addMetric', 'button', 'ss-linechartclipboard'],
                     href: '#add',
                     contents: 'Add a Metric'
                 }]
@@ -287,7 +337,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     className: 'datasetContainer'
                 }, {
                     _: 'a',
-                    className: 'selectDataset',
+                    className: ['selectDataset', 'button', 'ss-database'],
                     href: '#select dataset',
                     title: 'Select the dataset that contains ' + indicator.indicatorType + ' for this metric.',
                     contents: 'Select Dataset'
@@ -357,8 +407,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                 }, {
                     _: 'div',
                     className: [ 'inputWrapper', 'selectInput', 'columnFunctionInput',
-                        { i: indicator.get('column_function') && indicator.get('column_function') != 'null',
-                            t: 'hasFunction' } ],
+                        { i: indicator.get('column_function'), t: 'hasFunction' } ],
                     contents: [{
                         _: 'span',
                         className: 'selectValue'
@@ -368,8 +417,8 @@ blist.namespace.fetch('blist.govstat').markup = {
                         id: indicator.cid + '_column_function',
                         contents: [{
                             _: 'option',
-                            value: 'null',
-                            selected: indicator.get('column_function') === 'null',
+                            value: '',
+                            selected: indicator.get('column_function') === '',
                             contents: 'alone'
                         }, {
                             _: 'option',
@@ -446,6 +495,52 @@ blist.namespace.fetch('blist.govstat').markup = {
                         _: 'div',
                         className: 'columnContainer column2'
                     }]
+                }, {
+                    i: indicator.indicatorType == 'baseline',
+                    t: {
+                        _: 'div',
+                        className: 'baselineDates',
+                        contents: [{
+                            _: 'span',
+                            contents: 'This data starts on '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper baselineStartDateInput',
+                            contents: [{
+                                _: 'label',
+                                'for': indicator.cid + '_start_date',
+                                contents: 'Start Date'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: indicator.cid + '_start_date',
+                                className: 'date',
+                                name: 'start_date',
+                                value: indicator.get('start_date') ?
+                                    new Date(indicator.get('start_date')).toDateString() : ''
+                            }]
+                        }, {
+                            _: 'span',
+                            contents: ' and ends on '
+                        }, {
+                            _: 'div',
+                            className: 'inputWrapper baselineEndDateInput',
+                            contents: [{
+                                _: 'label',
+                                'for': indicator.cid + '_end_date',
+                                contents: 'End Date'
+                            }, {
+                                _: 'input',
+                                type: 'text',
+                                id: indicator.cid + '_end_date',
+                                className: 'date',
+                                name: 'end_date',
+                                'data-rawvalue': indicator.get('end_date'),
+                                value: indicator.get('end_date') ?
+                                    new Date(indicator.get('end_date')).toDateString() : ''
+                            }]
+                        }]
+                    }
                 }]
             }]
         });
@@ -513,7 +608,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                 contents: 'We will measure '
             }, {
                 _: 'div',
-                className: 'inputWrapper nameInput',
+                className: 'inputWrapper textInput nameInput',
                 contents: [{
                     _: 'label',
                     'for': metric.cid + '_title',
@@ -524,6 +619,23 @@ blist.namespace.fetch('blist.govstat').markup = {
                     id: metric.cid + '_title',
                     name: 'title',
                     value: metric.get('title')
+                }]
+            }, {
+                _: 'span',
+                contents: ' by '
+            }, {
+                _: 'div',
+                className: 'inputWrapper textInput',
+                contents: [{
+                    _: 'label',
+                    'for': metric.cid + '_unit',
+                    contents: 'Unit'
+                }, {
+                    _: 'input',
+                    type: 'text',
+                    id: metric.cid + '_unit',
+                    name: 'unit',
+                    value: metric.get('unit')
                 }]
             }]
         }, {

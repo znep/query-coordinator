@@ -104,7 +104,6 @@
             $previous.css('top', (parseFloat($previous.css('top')) || 0) - top);
 
             $previous.addClass('pushed');
-			$previous.css('position', 'absolute');
             afterComplete(function() { $previous.hide(); });
         }
 
@@ -137,43 +136,45 @@
         {
             $previous.show();
             _.defer(function()
-			{
-				$previous.removeClass('pushed');
-				afterComplete(function()
+            {
+                $previous.removeClass('pushed');
+                afterComplete(function()
                 {
-                    $previous.css('position', 'static');
-
                     var top = scrollTops.pop();
                     $wrapper.scrollTop(top);
                     $previous.css('top', parseFloat($previous.css('top')) + top);
                 });
-			});
+            });
         }
         else
         {
             hideOverlay();
         }
     };
+    var modalLocked = function()
+    {
+        return $wrapper.children('.locked').length > 0;
+    };
 
     $.fn.showModal = function()
-	{
-		var $this = $(this);
-		pushModal($this);
-		return $this;
-	};
-	$.showModal = function(name) { return $('#newModals > #' + name).clone().showModal(); };
-	$.popModal = popModal;
+    {
+        var $this = $(this);
+        pushModal($this);
+        return $this;
+    };
+    $.showModal = function(name) { return $('#newModals > #' + name).clone().showModal(); };
+    $.popModal = popModal;
 
     $(document).on('keyup', function(event)
     {
-        if ($(event.target).is(':not(:input)') && (event.keyCode === 27))
+        if ($(event.target).is(':not(:input)') && (event.keyCode === 27) && !modalLocked())
         {
             popModal();
         }
     });
     $wrapper.on('click', function(event)
     {
-        if (event.target === this)
+        if (event.target === this && !modalLocked())
         {
             popModal(true);
         }

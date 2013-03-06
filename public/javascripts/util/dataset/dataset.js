@@ -935,6 +935,10 @@ var Dataset = ServerModel.extend({
             if (c.renderTypeName == 'location' && $.subKeyDefined(r[c.fieldName], 'human_address') &&
                 _.isString(r[c.fieldName].human_address))
             { r[c.fieldName].human_address = JSON.parse(r[c.fieldName].human_address); }
+            // Do we expect SODA2 to actually return real values or not? For
+            // current use cases, this is valid; but maybe not forever
+            if (c.renderTypeName == 'drop_down_list' && !$.isBlank(r[c.fieldName]))
+            { r[c.fieldName] = c.renderType.renderer(r[c.fieldName], c, true); }
         });
         return r;
     },
@@ -1840,6 +1844,15 @@ var Dataset = ServerModel.extend({
             ds.metadata = $.extend(true, {renderTypeConfig: {visible: {}}}, ds.metadata);
             ds.metadata.renderTypeConfig.visible[ds.displayType] = true;
         }
+
+        // Update sorts on each column
+        _.each(ds.realColumns || [], function(c)
+                { delete c.sortAscending; });
+        _.each((ds.query || {}).orderBys || [], function(ob)
+        {
+            var c = ds.columnForID(ob.expression.columnId);
+            if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
+        });
 
         ds.url = ds._generateUrl();
         ds.fullUrl = ds._generateUrl(true);

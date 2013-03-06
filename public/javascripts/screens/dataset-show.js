@@ -192,6 +192,7 @@ $(function()
     if (defRen == 'richList') { defRen = 'fatrow'; }
     if (!$.isBlank(blist.initialRowId)) { defRen = 'page'; }
 
+    var openSidebar = false;
     if (blist.dataset.displayFormat.viewDefinitions)
     {
         var viewId = blist.dataset.displayFormat.viewDefinitions[0].uid;
@@ -204,6 +205,10 @@ $(function()
 
         if (!blist.dataset.childViews)
         { blist.dataset.childViews = _.pluck(blist.dataset.displayFormat.viewDefinitions, 'uid'); }
+
+        if ($.subKeyDefined(blist.dataset, 'metadata.query.' + viewId + '.filterCondition')
+            && (blist.dataset.metadata.query[viewId].filterCondition.children || []).length > 0)
+        { openSidebar = true; }
     }
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
@@ -325,13 +330,15 @@ $(function()
     {
         return (filterCondition.children || []).length > 0;
     };
-    if (($.subKeyDefined(blist.dataset, 'query.filterCondition') &&
+    if (openSidebar ||
+        ($.subKeyDefined(blist.dataset, 'query.filterCondition') &&
              hasConditions(blist.dataset.query.filterCondition)) ||
         ($.subKeyDefined(blist.dataset, 'metadata.filterCondition') &&
              hasConditions(blist.dataset.metadata.filterCondition)))
     {
         datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
     }
+    // Also, text search for viewDefinitions for the other case.
 
     // Pop a sidebar right away if they ask for it
     var paneName = $.urlParam(window.location.href, 'pane') || blist.defaultPane;

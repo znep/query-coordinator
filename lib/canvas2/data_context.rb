@@ -1,3 +1,5 @@
+require 'clytemnestra'
+
 module Canvas2
   class DataContext
     def self.available_contexts
@@ -47,6 +49,11 @@ module Canvas2
       ret_val = true
       begin
         case config['type']
+        when 'list'
+          available_contexts[id] = {id: id, type: config['type'], list: config['list'],
+            count: config['list'].length}
+          log_timing(start_time, config)
+
         when 'datasetList'
           search_response = Canvas2::Util.no_cache ? Clytemnestra.search_views(config['search'], false, !Canvas2::Util.is_private) : Clytemnestra.search_cached_views(config['search'], false, !Canvas2::Util.is_private)
           # Search results are considered part of the manifest; but are handled differently during validation
@@ -176,11 +183,22 @@ module Canvas2
           end
           log_timing(start_time, config)
 
+        when 'govstatCategory'
+          category = GovstatCategory.find(config['categoryId'])
+          if category.nil?
+            errors.push(DataContextError.new(config, "No category found for '" + id + "'"))
+            log_timing(start_time, config)
+            ret_val = !config['required']
+          else
+            available_contexts[id] = { id: id, type: config['type'], category: category }
+            log_timing(start_time, config)
+          end
+
         end
       rescue CoreServer::CoreServerError => e
+        log_timing(start_time, config)
         raise DataContextError.new(config, "Core server failed: " + e.error_message,
                                  { path: e.source, payload: JSON.parse(e.payload || '{}') })
-        log_timing(start_time, config)
       end
       return ret_val
     end

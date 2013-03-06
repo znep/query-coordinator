@@ -88,11 +88,28 @@ class AdministrationController < ApplicationController
   def post_canvas_page
     title = params[:pageTitle]
     url = params[:pageUrl]
+    if title.blank?
+      flash[:error] = "Please enter a title"
+      return redirect_to :action => 'create_canvas_page', :path => url, :title => title
+    end
+    if url.blank?
+      prefix = CurrentDomain.module_enabled?(:govStat) ? '/reports/' : '/'
+      # Let's generate one from the title
+      url = prefix + title.convert_to_url
+      i = 1
+      check_url = url
+      while Page.path_exists?(check_url) do
+        check_url = url + '-' + i.to_s
+        i += 1
+      end
+      url = check_url
+    end
+    url = '/' + url unless url.starts_with?('/')
     if Page.path_exists?(url)
       flash[:error] = "Path already exists; please choose a different one"
       return redirect_to :action => 'create_canvas_page', :path => url, :title => title
     end
-    res = Page.create({:path => url, :name => title})
+    res = Page.create({:path => url, :name => title, :owner => current_user.id})
     redirect_to res.path + '?_edit_mode=true'
   end
 

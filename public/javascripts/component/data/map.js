@@ -5,26 +5,7 @@ $.component.Component.extend('Map', 'data', {
     {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
-        if ($.subKeyDefined(arguments[0], 'displayFormat.viewDefinitions'))
-        {
-            var contextId = arguments[0].contextId;
-            arguments[0].viewDefinitions = _.map(arguments[0].displayFormat.viewDefinitions,
-            function(vd)
-            { // TODO: Rewrite this assuming _.map, which I wasn't before.
-                if ($.isBlank(vd.displayFormat))
-                {
-                    vd = { displayFormat: vd };
-                    vd.uid = vd.displayFormat.uid; vd.contextId = vd.displayFormat.contextId;
-                }
-                if ($.isBlank(vd.uid) && $.isBlank(vd.contextId) && !$.isBlank(contextId))
-                { vd.contextId = contextId; }
-                vd.type = 'MapLayer';
-
-                return vd;
-            });
-            delete arguments[0].contextId;
-            delete arguments[0].displayFormat.viewDefinitions;
-        }
+        arguments[0] = convertLegacy($.extend(true, {}, arguments[0]));
         this._vdefsToLoad = arguments[0].viewDefinitions || [];
         this._super.apply(this, arguments);
         this.registerEvent({display_row: ['dataContext', 'row', 'datasetId']});
@@ -41,12 +22,9 @@ $.component.Component.extend('Map', 'data', {
     {
         var lcObj = this,
             df = lcObj._stringSubstitute(lcObj._properties.displayFormat);
-        if (!lcObj._dataContext) // Do not manipulate DF in legacy cases.
-        {
-            df.viewDefinitions = df.viewDefinitions || [];
-            _.each(lcObj._viewDefinitions || [], function(vd, index)
-            { df.viewDefinitions.push(vd._displayFormat()); });
-        }
+        df.viewDefinitions = df.viewDefinitions || [];
+        _.each(lcObj._viewDefinitions || [], function(vd, index)
+        { df.viewDefinitions.push(vd._displayFormat()); });
 
         return df;
     },
@@ -62,12 +40,11 @@ $.component.Component.extend('Map', 'data', {
     {
         if (this._super.apply(this, arguments) === false) { return false; }
 
-        var retVal = {schema: [], view: (this._dataContext || {}).dataset};
+        var retVal = {schema: []};
         if (blist.configuration.canvasX || blist.configuration.govStat)
         {
-            //if ($.isBlank(this._dataContext)) { return retVal; }
 // TODO: make this work better with properties substitution
-            retVal.schema = retVal.schema.concat(blist.configs.map.config({view: (this._dataContext || {}).dataset, canvas: true }));
+            retVal.schema = retVal.schema.concat(blist.configs.map.config({canvas: true}));
         }
         return retVal;
     },
@@ -113,8 +90,17 @@ $.component.Component.extend('Map', 'data', {
         lcObj.$contents.off('.map_' + lcObj.id);
         lcObj.$contents.on('display_row.map_' + lcObj.id, function(e, args)
         {
+            var vd = _.detect(lcObj._viewDefinitions, function(layer)
+                { return (layer._dataContext || {}).dataset == (args || {}).dataset });
+            // TODO: This is ugly because my brain is half-functional. Can probably clean it up.
+            // It's not wrong or slow in any special way so whatever.
             lcObj.trigger('display_row',
-                [{  dataContext: lcObj._dataContext,
+                [{  dataContext: vd ? vd._dataContext : lcObj._dataContext,
+                    row: (args || {}).row,
+                    datasetId: (args || {}).datasetId }]);
+            if (!$.subKeyDefined(vd, '_dataContext')) { return; }
+            vd.trigger('display_row',
+                [{  dataContext: vd._dataContext,
                     row: (args || {}).row,
                     datasetId: (args || {}).datasetId }]);
         });
@@ -211,6 +197,22 @@ $.component.Component.extend('Map', 'data', {
         { this.$contents.trigger('hide'); }
     },
 
+    _propRead: function()
+    {
+        var properties = this._super();
+        var children = this._readChildren();
+        if (children)
+            properties.viewDefinitions = children;
+        return properties;
+    },
+
+    _readChildren: function()
+    {
+        var children = [];
+        _.each(this._viewDefinitions, function(child) { children.push(child.properties()); });
+        return children;
+    },
+
     _propWrite: function(properties)
     {
         var lcObj = this;
@@ -281,8 +283,7 @@ var updateProperties = function(lcObj)
             lcObj.$contents.empty();
             lcObj._map = lcObj.$contents.socrataMap({
                 showRowLink: false,
-                displayFormat: df,
-                view: (lcObj._dataContext || {}).dataset
+                displayFormat: df
             });
             lcObj._updateValidity();
         }
@@ -294,6 +295,65 @@ var updateProperties = function(lcObj)
     _.each(lcObj._viewDefinitions || [], function(l) {
         if (!l._updateDataSource(null, after)) { after(); }
     });
+};
+
+var convertLegacy = function(props)
+{
+    if (props.viewDefinitions) { return props; }
+    if ($.subKeyDefined(props, 'displayFormat.viewDefinitions'))
+    {
+        var contextId = props.contextId;
+        props.viewDefinitions = _.map(props.displayFormat.viewDefinitions,
+        function(vd)
+        { // TODO: Rewrite this assuming _.map, which I wasn't before.
+            if ($.isBlank(vd.displayFormat))
+            {
+                vd = { displayFormat: vd };
+                vd.uid = vd.displayFormat.uid; vd.contextId = vd.displayFormat.contextId;
+            }
+            if ($.isBlank(vd.uid) && $.isBlank(vd.contextId) && !$.isBlank(contextId))
+            { vd.contextId = contextId; }
+            vd.type = 'MapLayer';
+
+            return vd;
+        });
+        delete props.displayFormat.viewDefinitions;
+    }
+    else if ($.subKeyDefined(props, 'displayFormat.type'))
+    {
+        var df = props.displayFormat,
+            contextId = props.contextId;
+        props.viewDefinitions = [$.extend(true,
+            { type: 'MapLayer', contextId: contextId },
+            { displayFormat: props.displayFormat })];
+
+        // Copied out of Dataset.map.convertToVersion2
+        var notABoundaryMap = df.plotStyle != 'heatmap';
+        if (df.type == 'google' && notABoundaryMap)
+        {
+            df.exclusiveLayers = true;
+            df.bkgdLayers = Dataset.map.backgroundLayerSet.Google;
+        }
+        else if (df.type == 'bing' && notABoundaryMap)
+        {
+            df.exclusiveLayers = true;
+            df.bkgdLayers = Dataset.map.backgroundLayerSet.Bing;
+        }
+        else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || notABoundaryMap)
+        {
+            df.bkgdLayers = _.map(df.layers, function(layer) {
+                if (layer.custom_url)
+                { return { custom_url: layer.custom_url }; }
+                else
+                { return { layerName: (_.detect(Dataset.map.backgroundLayers, function(lConfig)
+                    { return layer.url.indexOf((lConfig.options || {}).url) > -1; }) || {}).name }; }
+            });
+        }
+    }
+
+    delete props.contextId;
+
+    return props;
 };
 
 })(jQuery);

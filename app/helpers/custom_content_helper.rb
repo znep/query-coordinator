@@ -34,11 +34,13 @@ module CustomContentHelper
     Canvas2::Util.set_params(params)
     Canvas2::Util.set_debug(false)
     Canvas2::Util.is_private(false)
+    Canvas2::Util.set_no_cache(true)
     Canvas2::Util.set_env({
       domain: CurrentDomain.cname,
       renderTime: Time.now.to_i,
       path: path,
-      siteTheme: CurrentDomain.theme
+      siteTheme: CurrentDomain.theme,
+      currentUser: current_user ? current_user.id : nil
     })
     Canvas2::Util.set_path(path)
     Page.new(config.merge({path: path, name: name}). with_indifferent_access)

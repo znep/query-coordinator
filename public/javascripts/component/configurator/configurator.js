@@ -22,7 +22,10 @@
 
         // Simply unfocus if there is no target
         if (!target || !target._comp.canEdit('focus') ||
-            $(target).closest('.cfEditingWrapper').length < 1)
+            $(target).closest('.cfEditingWrapper').length < 1 ||
+            // Clicking on the root should defocus for easier interaction;
+            // plus the root container has no config options at all
+            $(target).parent().hasClass('cfEditingWrapper'))
         {
             $.cf.blur(true);
             return false;
@@ -70,7 +73,7 @@
         // in editOnly mode, don't fire events
         if ((mouseTrap && !$.cf.configuration().editOnly) ||
              $target.closest('#color_selector').length > 0 ||
-             $target.closest('.colorpicker').length > 0 )
+             $target.closest('.colorpicker').length > 0)
         { return; }
 
         focusOnTarget(target);
@@ -153,38 +156,39 @@
             var page = blist.configuration.page;
 
             var $body = $('body');
-            var $cont = $.tag({ tagName: 'div', 'class': 'cfMainContainer' });
-            $body.append($cont);
+            var $cont = $.tag2({ _: 'div', className: 'cfMainContainer' });
+            $body.find('.siteInnerWrapper').append($cont);
 
-            var $top = $.tag({ tagName: 'div', 'class': 'cfEditingBar', contents: [
-                { tagName: 'div', 'class': 'editTitle', contents: [
-                    { tagName: 'span', contents: 'Editing&nbsp;' },
-                    { tagName: 'span', 'class': 'pageName', contents: page.name }
+            var $top = $.tag2({ _: 'div', className: 'cfEditingBar', contents: [
+                { _: 'div', className: 'editTitle', contents: [
+                    { _: 'span', contents: 'Editing&nbsp;' },
+                    { _: 'span', className: 'pageName', contents: page.name }
                 ] },
-                { tagName: 'ul', 'class': 'actionBar', contents: [
-                    { tagName: 'li', contents:
-                        { tagName: 'ul', 'class': 'pillButtons', contents: [
-                            { tagName: 'li', contents:
-                                { tagName: 'a', href: '#preview', 'class': ['preview', 'ss-icon'],
+                { _: 'ul', className: 'actionBar', contents: [
+                    { _: 'li', contents:
+                        { _: 'ul', className: ['pillButtons', { i: blist.configuration.govStat, t: 'hide' }],
+                            contents: [
+                            { _: 'li', contents:
+                                { _: 'a', href: '#preview', className: ['preview', 'ss-icon'],
                                     title: 'Preview page', contents: 'desktop' } },
-                            { tagName: 'li', contents:
-                                { tagName: 'a', href: '#interactive', 'class': ['interactive', 'ss-icon'],
+                            { _: 'li', contents:
+                                { _: 'a', href: '#interactive', className: ['interactive', 'ss-icon'],
                                     title: 'View interactive editor', contents: 'layout' } }
-                        ] } },
-                    { tagName: 'li', contents:
-                        { tagName: 'a', href: '#undo', 'class': ['undo', 'button', 'ss-replay'],
+                    ] } },
+                    { _: 'li', contents:
+                        { _: 'a', href: '#undo', className: ['undo', 'button', 'ss-replay'],
                             contents: 'Undo' } },
-                    { tagName: 'li', contents:
-                        { tagName: 'a', href: '#redo', 'class': ['redo', 'button', 'ss-refresh'],
+                    { _: 'li', contents:
+                        { _: 'a', href: '#redo', className: ['redo', 'button', 'ss-refresh'],
                             contents: 'Redo' } },
-                    { tagName: 'li', 'class': 'separator', contents:
-                        { tagName: 'a', href: '#settings', 'class': ['settings', 'button', 'ss-settings'],
+                    { _: 'li', className: 'separator', contents:
+                        { _: 'a', href: '#settings', className: ['settings', 'button', 'ss-settings'],
                             contents: 'Settings' } },
-                    { tagName: 'li', 'class': 'separator', contents:
-                        { tagName: 'a', href: '#save', 'class': ['save', 'button'],
+                    { _: 'li', className: 'separator', contents:
+                        { _: 'a', href: '#save', className: ['save', 'button'],
                             contents: 'Save' } },
-                    { tagName: 'li', contents:
-                        { tagName: 'a', href: '#revert', 'class': ['revert', 'button'],
+                    { _: 'li', contents:
+                        { _: 'a', href: '#revert', className: ['revert', 'button'],
                             contents: 'Revert' } }
                 ] }
             ] });
@@ -224,14 +228,14 @@
                 $top.toggleClass('can-redo', redoable);
             });
 
-            $viewsCont = $.tag({ tagName: 'div', 'class': 'cfViewsContainer' });
+            $viewsCont = $.tag2({ _: 'div', className: 'cfViewsContainer' });
             $cont.append($viewsCont);
 
-            $previewCont = $.tag({ tagName: 'div', 'class': ['cfPreviewWrapper', 'cfViewTypeWrapper'],
-                contents: { tagName: 'div', 'class': 'cfViewInnerWrapper' } });
+            $previewCont = $.tag2({ _: 'div', className: ['cfPreviewWrapper', 'cfViewTypeWrapper'],
+                contents: { _: 'div', className: 'cfViewInnerWrapper' } });
             $viewsCont.append($previewCont);
             $previewCont.css('background-color', $body.css('background-color'))
-                .find('.cfViewInnerWrapper').append($body.children('.siteOuterWrapper, #siteFooter'));
+                .find('.cfViewInnerWrapper').append($body.find('.siteContentWrapper'));
             $previewCont.resizable({
                 handles: 'e',
                 maxWidth: $viewsCont.width() * 0.8, minWidth: $viewsCont.width() * 0.2,
@@ -257,10 +261,10 @@
             });
 
             var editContent = $.component.root().properties();
-            $editCont = $.tag({ tagName: 'div', 'class': ['cfEditingWrapper', 'cfViewTypeWrapper'] });
+            $editCont = $.tag2({ _: 'div', className: ['cfEditingWrapper', 'cfViewTypeWrapper'] });
             $viewsCont.append($editCont);
             $editCont.css('background-color', $body.css('background-color'))
-                .append($.tag({ tagName: 'div', id: 'edit_' + editContent.id, 'class': 'editRoot' }));
+                .append($.tag2({ _: 'div', id: 'edit_' + editContent.id, className: 'editRoot' }));
 
             $settingsDialog = $('.configuratorSettings');
             $settingsDialog.find('.actions .save').click(function(e)
@@ -319,6 +323,8 @@
                 else
                 { saveSettings(); }
             });
+
+            $body.find('.siteOuterWrapper').fullScreen();
 
             // Make sure all dom manipulation is done before starting edit mode
             _.defer(function()

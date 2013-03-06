@@ -105,7 +105,23 @@
                         });
                     }
                     else
-                    { rows = newRows; }
+                    {
+                        if (!$.isBlank(sc.column.sortAscending))
+                        {
+
+                            if (sc.column.sortAscending)
+                            {
+                                newRows.sort(function(a, b)
+                                { return a[sc.column.lookup].toUpperCase().localeCompare(b[sc.column.lookup].toUpperCase()); });
+                            }
+                            else
+                            {
+                                newRows.sort(function(a, b)
+                                { return b[sc.column.lookup].toUpperCase().localeCompare(a[sc.column.lookup].toUpperCase()); });
+                            }
+                        }
+                        rows = newRows;
+                    }
                 });
 
                 _.each(chartObj._yColumns, function(yc)

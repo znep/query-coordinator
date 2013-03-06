@@ -167,7 +167,10 @@ module DatasetsHelper
     options.push(['--None--', 0])
     use_field_name = (selected_rdf_subject.to_i == 0)
     cols.each do |m|
-      if (m.renderTypeName == 'text' || m.renderTypeName == 'url' ||
+      if (m.renderTypeName == 'text' || 
+          m.renderTypeName == 'url'  || 
+          m.renderTypeName == 'calendar_date' || 
+          m.renderTypeName == 'date' || 
           m.renderTypeName == 'number')
         options.push([m.name, use_field_name ?  m.fieldName : m.id])
         if (use_field_name)

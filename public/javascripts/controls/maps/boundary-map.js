@@ -255,6 +255,10 @@
             $.batchProcess(layerObj._featureSet, 3, function(polygon)
             {
                 if (feature) { return; }
+                if (polygon.attributes.dupKey == 'Hawaii'
+                    && (polygon.attributes.oldGeometry || polygon)
+                        .getBounds().toGeometry().containsPoint(geometry))
+                { feature = polygon; }
                 if ((polygon.attributes.oldGeometry || polygon).containsPoint(geometry))
                 { feature = polygon; }
             }, null, function()
@@ -319,6 +323,7 @@
             {
                 layerObj.zoomToPreferred();
                 layerObj._featuresLoaded = true;
+                layerObj._parent.mapElementLoaded(layerObj._displayLayer);
             });
         },
 
@@ -340,6 +345,9 @@
         {
             var layerObj = this;
 
+            if (feature.attributes.oldGeometry) // Already transformed.
+            { return feature; }
+
             var key = feature.attributes.dupKey;
             if (!$.subKeyDefined(MAP_TYPE[layerObj._config.type], 'transformFeatures.' + key))
             { return feature; }
@@ -352,9 +360,6 @@
             if (!transform)
             { return feature; }
 
-            if (feature.attributes.oldGeometry) // Already transformed.
-            { return feature; }
-
             feature.attributes.oldGeometry = feature.clone();
             var center = feature.getBounds().getCenterLonLat();
             center = new OpenLayers.Geometry.Point(center.lon, center.lat);
@@ -362,7 +367,8 @@
             if (transform.scale)
             { feature = feature.resize(transform.scale, center); }
             if (transform.offset)
-            { feature = feature.move(transform.offset.x, transform.offset.y); }
+            { feature.move(transform.offset.x, transform.offset.y); }
+            feature.calculateBounds();
 
             return feature;
         },

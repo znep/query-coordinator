@@ -4,76 +4,6 @@
     margin-top: 5em
     text-align: center
 
-  &.gridFlowLayout
-    .categoryItem
-      margin-bottom: 1em
-    .categoryTitle
-      bottom: 0
-      left: 0
-      padding: 1em
-      position: absolute
-      top: 0
-      width: 1.5em
-      h2
-        color: #ffffff
-        text-transform: uppercase
-        @include prefixer(transform, rotate(90deg))
-        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)
-    .goalList
-      margin-left: 5em
-    .goalItem
-      color: #ffffff
-      margin-right: 0.5em
-      .component-Title
-        margin-top: 1em
-        padding: 0 2em
-        text-align: center
-        h2
-          font-size: 2em
-          font-weight: normal
-      .goalProgress, .goalTitle
-        @include opacity(1)
-        @include transition(0.5s, opacity)
-      .goalDetails
-        bottom: 0
-        left: 0
-        @include opacity(0)
-        padding: 0
-        position: absolute
-        right: 0
-        top: 0
-        @include transition(0.5s, opacity)
-        z-index: 1
-        a
-          background-color: rgba(51, 51, 51, 0.4)
-          color: #ffffff
-          display: block
-          font-size: 1.5em
-          font-weight: bold
-          height: 100%
-          padding: 1.5em
-          .more
-            font-size: 0.6em
-            font-weight: normal
-            margin-top: 1em
-            text-transform: uppercase
-            .ss-icon
-              padding-left: 0.5em
-      .goalProgress
-        color: #ffffff
-        font-size: 4em
-        margin:
-          left: 0.5em
-          top: 1em
-        text-align: center
-        .text
-          display: none
-      &:hover
-        .goalProgress, .goalTitle
-          @include opacity(0)
-        .goalDetails
-          @include opacity(1)
-
   &.listLayout
     .categoryTitle h2
       font-size: 2.5em
@@ -106,9 +36,9 @@
           width: 100%
         .progress-good
           background-color: #55ee55
-        .progress-flat
+        .progress-progressing
           background-color: #ee9955
-        .progress-poor
+        .progress-bad
           background-color: #ee3333
 
       .goalTitle
@@ -139,9 +69,9 @@
             top: 0
           &.progress-good .bar
             background-color: #55ee55
-          &.progress-flat .bar
+          &.progress-progressing .bar
             background-color: #ee9955
-          &.progress-poor .bar
+          &.progress-bad .bar
             background-color: #ee3333
         .textValue
           font-size: 2.5em

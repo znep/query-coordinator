@@ -537,6 +537,10 @@ class View < Model
         r[c.fieldName] = r[c.fieldName].clone
         r[c.fieldName]['human_address'] = JSON.parse(r[c.fieldName]['human_address'])
       end
+      if c.renderTypeName == 'drop_down_list' && !r[c.fieldName].blank? && c.dropDown
+        ddl_id = r[c.fieldName]
+        c.dropDown.values.each { |opt| r[c.fieldName] = opt['description'] if opt['id'] == ddl_id }
+      end
     end
     if !@cached_rows.nil? && @cached_rows.key?(:meta_columns)
       @cached_rows[:meta_columns].each { |c| r[c['fieldName']] = row[c['name']] }

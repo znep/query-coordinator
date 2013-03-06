@@ -133,7 +133,7 @@
                     if (disabled)
                     {
                         $field.append('Icons are only relevant for map view');
-                        return;
+                        return false;
                     }
                     $field.append('(<a>change</a>)<input type="hidden" name="' +
                         $field.attr('name') + '" value="' + curValue + '" />');
@@ -152,11 +152,24 @@
                                 .prop('checked', true).click();
                         }
                     }))
+                    return true;
                 },
                 value: function($field) { return $field.find('img').attr('src'); }},
                 name: 'icon'}
            ]
        };
+
+    var meldWithParentCondFmt = function(cpObj)
+    {
+        if ($.subKeyDefined(cpObj._parentView, 'metadata.conditionalFormatting.' + cpObj._view.id))
+        {
+            var md = $.extend(true, {}, cpObj._view.metadata);
+            md.conditionalFormatting = $.union(
+                cpObj._parentView.metadata.conditionalFormatting[cpObj._view.id],
+                (md.conditionalFormatting || []));
+            cpObj._view.update({ metadata: md });
+        }
+    };
 
     $.Control.extend('pane_conditionalFormatting', {
         setView: function(newView)
@@ -168,15 +181,7 @@
                 _super.call(cpObj, ds);
                 cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
 
-                if ($.subKeyDefined(cpObj._parentView,
-                    'metadata.conditionalFormatting.' + cpObj._view.id))
-                {
-                    var md = $.extend(true, {}, cpObj._view.metadata);
-                    md.conditionalFormatting = $.union(
-                        cpObj._parentView.metadata.conditionalFormatting[cpObj._view.id],
-                        (md.conditionalFormatting || []));
-                    cpObj._view.update({ metadata: md });
-                }
+                meldWithParentCondFmt(cpObj);
             };
 
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
@@ -225,6 +230,12 @@
                 }
             });
             return {metadata: md};
+        },
+
+        render: function()
+        {
+            meldWithParentCondFmt(this);
+            this._super.apply(this, arguments);
         },
 
         _getSections: function()

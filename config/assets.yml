@@ -137,9 +137,11 @@ javascripts:
     - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
   configurator:
+    - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
+    - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/plugins/rangy-core.js
     - public/javascripts/controls/native-draggable.js
@@ -493,6 +495,9 @@ javascripts:
     - public/javascripts/screens/govstat/goals/show.js
     - public/javascripts/screens/govstat/goals/markup.js
     - public/javascripts/screens/govstat/goals/views.js
+  screen-govstat-goal-page:
+    - public/javascripts/plugins/jquery.columnizer.js
+    - public/javascripts/screens/govstat/goal-page.js
   unified-filter:
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/base-pane.js

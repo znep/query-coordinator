@@ -24,12 +24,16 @@ module Canvas2
       fully_rendered = true
       all_c = []
       if !context.blank?
-        if context.is_a? Array
+        if context.is_a?(Array)
           context.each_with_index do |item, i|
             item = { value: item } if !item.is_a?(Hash)
             all_c << add_row(item, i, item.clone)
           end
-
+        elsif context[:type] == 'list'
+          context[:list].each_with_index do |item, i|
+            item = { value: item } if !item.is_a?(Hash)
+            all_c << add_row(item, i, item.clone)
+          end
         elsif context[:type] == 'goalList'
           if !@properties['groupBy'].blank?
             all_c = render_group_items(context[:goalList])

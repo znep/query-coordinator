@@ -123,6 +123,8 @@
             mapObj.closePopup();
             if (mapObj._panning) { delete mapObj._panning; return; }
             mapObj._displayFormat = df;
+            if ($.isEmptyObject(mapObj._displayFormat))
+            { return; }
 
             if (!mapObj._displayFormat.viewDefinitions)
             { Dataset.map.convertToVersion2(mapObj._primaryView, mapObj._displayFormat); }
@@ -269,12 +271,28 @@
             { childView.bindDatasetEvents(); });
 
             if (mapObj._primaryView)
-            { mapObj._primaryView.bind('reloaded', function()
             {
-                _(mapObj._children).chain()
-                    .pluck('_view').uniq().without(this).invoke('reload');
-                _.invoke(mapObj._children, 'getData');
-            }); }
+                mapObj._primaryView.bind('reloaded', function() {
+                    var reInitCondFmt = function() {
+                        var condFmt = $.deepGet(mapObj._primaryView.metadata,
+                            'conditionalFormatting', subview.id);
+                        if (condFmt)
+                        {
+                            condFmt = $.union( condFmt,
+                                (subview.metadata.conditionalFormatting || []));
+                            _.each(subview._availableRowSets,
+                                function(rs) { rs.formattingChanged(condFmt); });
+                        }
+                    }
+                    _(mapObj._children).chain()
+                        .pluck('_view').uniq().without(mapObj._primaryView).each(function(subview)
+                    {
+                        delete subview.metadata.conditionalFormatting;
+                        subview.reload(reInitCondFmt);
+                    });
+                    _.invoke(mapObj._children, 'getData');
+                });
+            }
 
             if (mapObj._displayFormat.openOverviewByDefault)
             { mapObj._controls.Overview.open(); }
@@ -384,7 +402,7 @@
             else
             {
                 bkgdLayers = mapObj._displayFormat.bkgdLayers;
-                mapObj.map.setNoBackground(false);
+                mapObj.map.setNoBackground(_.all(_.pluck(bkgdLayers, 'hidden'), _.identity));
             }
 
             _.each(bkgdLayers, function(layer) { mapObj.addBackgroundLayer(layer); });
@@ -530,11 +548,25 @@
 
         saveQuery: function(uid, query)
         {
+            if ((blist.debug || {}).events && (console || {}).trace)
+            {
+                console.groupCollapsed('saveQuery');
+                    console.groupCollapsed('arguments'); console.dir(arguments); console.groupEnd();
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupEnd();
+            }
             if ($.isBlank(this._primaryView)) { return; }
             if ($.isBlank(query.filterCondition)) { return; }
             var newMD = $.extend(true, {}, this._primaryView.metadata);
             $.deepSet(newMD, query, 'query', uid);
             this._primaryView.update({ metadata: newMD });
+            if ((blist.debug || {}).events && (console || {}).trace)
+            {
+                console.groupCollapsed('saveQuery (after)');
+                    console.groupCollapsed('_primaryView'); console.dir(this._primaryView.metadata); console.groupEnd();
+                    console.groupCollapsed('blist.dataset'); console.dir(blist.dataset.metadata); console.groupEnd();
+                console.groupEnd();
+            }
         },
 
         updateSearchString: function()
@@ -901,6 +933,10 @@
             popup.panMapIfOutOfView = false;
             mapObj._popup = popup;
             mapObj.map.addPopup(popup);
+
+            // Hack for Bug 9280.
+            if (options.atPixel)
+            { popup.moveTo(new OpenLayers.Pixel(options.atPixel.x, options.atPixel.y)); }
 
             // retarded shit for OL kiddies
             $('.olPopup > div > div:last-child').css('height', '34px');

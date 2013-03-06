@@ -1,0 +1,176 @@
+.goalProgress
+  .content-wrapper > div
+    @include border-radius(0.3em)
+    display: none
+    color: #ffffff
+    font-size: 1.1em
+    padding: 0.7em 1em 0.5em
+    &:after
+      margin-left: 0.5em
+  .progress-good .good
+    background-color: #09a74f
+  .progress-progressing .flat
+    background-color: #fcc806
+  .progress-bad .poor
+    background-color: #e33229
+  .progress-none .none
+    background-color: #333333
+
+.titleContainer
+  border-top: 3px solid #888
+  margin-bottom: 2em
+  overflow: hidden
+  padding-bottom: 5em
+  margin-bottom: 5em
+  position: relative
+
+  .component-Picture
+    display: none
+  &.hasImage
+    .component-Picture
+      display: block
+      left: 0
+      position: absolute
+      right: 0
+      img
+        width: 100%
+
+    .goalTitle
+      background-color: rgba(247, 247, 247, 0.5)
+      @include border-radius(2px)
+      margin: 2em
+      padding: 2em 3em
+      position: relative
+      z-index: 1
+
+      .categoryTitle
+        font-size: 0.5em
+  .goalTitle
+    h2
+      font-size: 4em
+      font-weight: normal
+      padding: 0
+  .goalProgress
+    bottom: 0.833em
+    margin:
+      bottom: 0.833em
+      right: 0.833em
+    position: absolute
+    right: 0.833em
+
+.sectionTitle
+  font-size: 2em
+  h2
+    font-weight: normal
+
+.metricsBlock
+  .metricItem
+    border-bottom: 1px solid $color_chrome_box_border
+    margin-bottom: 1.5em
+    padding-bottom: 1.5em
+
+    .socrata-component
+      min-height: 0
+    .component-Text
+      padding: 0
+
+    .metricIntro
+      color: #444
+      font-size: 1.4em
+      padding-bottom: 0.3em
+
+      em
+        color: #2c90ec
+        font-style: normal
+
+    .metricTitle
+      font-size: 1.3em
+      h2
+        font-weight: normal
+        line-height: 1em
+        padding: 0
+    .prevailing
+      display: none
+    .nonprevailing
+      color: #444
+      font-size: 1.2em
+      &.type
+        font-weight: bold
+    .indicatorContainer
+      text-align: center
+      .value
+        font-size: 2em
+        font-weight: bold
+        padding: 0.5em 0
+      .date, .unit, .type
+        line-height: 1em
+      .unit
+        text-transform: uppercase
+    .progressContainer
+      text-align: center
+    &.index-0
+      border-bottom: 3px solid #000000
+      margin-bottom: 3.5em
+      position: relative
+      .prevailing
+        display: block
+      .nonprevailing
+        display: none
+      .metricTitle
+        padding: 0.5em 0
+        h2
+          font-size: 2em
+      .metricType.additional
+        display: none
+      .metricType.prevailing
+        display: block
+      .value
+        color: #2c90ec
+        font-size: 3em
+        padding: 0
+      .metricProgress
+        .progressContainer
+          background-color: #ddd
+          float: left
+          height: 2em
+          margin-right: 1em
+          margin-top: 0.5em
+          width: 18em
+
+          .progressBar
+            background-color: #2c90ec
+            height: 100%
+
+        .progressText
+          color: #444
+          font-size: 1.5em
+          line-height: 1.5em
+          padding: 0.2em
+
+.relatedVisualizations
+  border-bottom: 1px solid $color_chrome_box_border
+  padding-bottom: 3em
+  .row
+    border:
+      color: $color_chrome_box_border
+      style: solid
+    > .socrata-component
+      border:
+        color: $color_chrome_box_border
+        style: solid
+  .chartTitle
+    margin-bottom: 0.5em
+    h2
+      font-size: 2.2em
+      font-weight: normal
+
+.goalDescription
+  color: #000000
+  font-size: 1.2em
+  line-height: 1.2em
+  margin: 3em 0
+  p
+    margin-right: 2em
+    padding-bottom: 1.5em
+    max-width: 400px
+

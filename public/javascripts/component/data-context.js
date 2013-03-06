@@ -275,6 +275,10 @@
                     { errorLoading(id); } });
                     break;
 
+                case 'list':
+                    doneLoading(addContext(dc, id, config, { count: config.list.length, list: config.list }));
+                    break;
+
                 default:
                     alert('Unrecognized data context type: ' + config.type + ' for ' + id);
                     break;

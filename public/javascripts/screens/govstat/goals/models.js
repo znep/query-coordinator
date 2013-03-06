@@ -93,8 +93,7 @@ var Indicator = Backbone.Model.extend({
     isComplete: function()
     {
         var js = this.toJSON();
-        var res = !$.isBlank(js.compute_function.column_function) &&
-            !$.isBlank(js.compute_function.aggregation_function) &&
+        var res = !$.isBlank(js.compute_function.aggregation_function) &&
             !$.isBlank(js.dataset) && !$.isBlank(js.column1) && !$.isBlank(js.date_column) &&
             (this.indicatorType != 'baseline' || !$.isBlank(js.start_date) && !$.isBlank(js.end_date));
         return res;
@@ -120,7 +119,7 @@ var Indicator = Backbone.Model.extend({
         var result = Backbone.Model.prototype.toJSON.call(this);
         _.each(_.keys(self.model).concat(['column1', 'column2', 'date_column']),
                 function(k) { result[k] = self.attributes[k].toJSON(); });
-        result.compute_function = { column_function: result.column_function || 'null',
+        result.compute_function = { column_function: result.column_function || '',
             aggregation_function: result.aggregation_function || 'sum',
             aggregation_function2: result.aggregation_function2 || 'sum', metric_period: 'monthly' };
         _.each(['column_function', 'aggregation_function', 'aggregation_function2'], function(k)
@@ -129,12 +128,7 @@ var Indicator = Backbone.Model.extend({
         // Set in the UI???
         result.source_data_period = 'daily';
         if (this.indicatorType == 'baseline')
-        {
-            result.type = 'burndown';
-            // hard-code for now; need to add UI
-            result.start_date = '1 Jan 2012';
-            result.end_date = '31 Dec 2012';
-        }
+        { result.type = 'burndown'; }
 
         return result;
     }
@@ -184,7 +178,6 @@ var Metric = Backbone.Model.extend({
             time_to_compare: 'now' };
         delete result.comparison_function;
         delete result.time_to_compare;
-        result.unit = result.unit || ' ';
         return result;
     }
 });
@@ -230,6 +223,14 @@ var Goal = Backbone.Model.extend({
         var metrics = this.get('metrics');
         if (metrics.length === 0) { metrics.add(new Metric()); }
 
+        // Default to non-public
+        if ($.isBlank(this.get('is_public')))
+        { this.set('is_public', false); }
+
+        // Default to not percent
+        if ($.isBlank(this.get('goal_delta_is_pct')))
+        { this.set('goal_delta_is_pct', false); }
+
         // Default start_date to today
         if ($.isBlank(this.get('start_date')))
         { this.set('start_date', new Date().toISOString()); }
@@ -265,7 +266,8 @@ var Goal = Backbone.Model.extend({
         {
             response.metrics.add(new Metric(response.metadata.metrics[mI], { parse: true }), { at: mI });
         });
-        response.comparison_function = (response.metadata || {}).comparison_function;
+        _.each(['comparison_function', 'description', 'title_image'], function(k)
+        { response[k] = (response.metadata || {})[k]; });
         return response;
     },
     toJSON: function()
@@ -275,16 +277,21 @@ var Goal = Backbone.Model.extend({
         _.each(_.keys(self.model), function(k) { attrs[k] = _.compact(self.attributes[k].toJSON()); });
         _.each(_.keys(attrs), function(k)
         {
-            if (_.isArray(attrs[k]) && _.isEmpty(attrs[k]) || _.isNull(attrs[k]))
+            if (_.isArray(attrs[k]) && _.isEmpty(attrs[k]))
             { delete attrs[k]; }
+            if (_.isNull(attrs[k]))
+            { attrs[k] = ''; }
         });
         _.each(['goal_delta'], function(k)
         { if (_.isString(attrs[k])) { attrs[k] = parseFloat(attrs[k]); } });
 
         if (!_.isObject(attrs.metadata))
         { attrs.metadata = {}; }
-        attrs.metadata.comparison_function = attrs.comparison_function;
-        delete attrs.comparison_function;
+        _.each(['comparison_function', 'description', 'title_image'], function(k)
+        {
+            attrs.metadata[k] = attrs[k];
+            delete attrs[k];
+        });
 
         // Always re-construct from scratch
         attrs.metadata.metrics = {};
@@ -315,12 +322,10 @@ var Goals = Backbone.Collection.extend({
             if (options.category instanceof Category)
             {
                 goal.set('category', options.category.id);
-                goal.set('is_public', true);
             }
             else if (options.draft === true)
             {
                 goal.set('category', '');
-                goal.set('is_public', false);
             }
 
             this.listenTo(goal, 'removeFromAll', function() { this.remove(goal); });
@@ -335,12 +340,12 @@ var Goals = Backbone.Collection.extend({
 // CATEGORY
 
 var Category = Backbone.Model.extend({
-    initialize: function()
+    initialize: function(__, options)
     {
         var self = this;
         if (!this.get('color'))
         {
-            this.set('color', Category.getColor());
+            this.set('color', Category.getColor(options.parentCollection));
         }
 
         this.goals = new Goals([], { category: this });
@@ -361,12 +366,24 @@ var Category = Backbone.Model.extend({
 });
 
 
-var categoryColors = [ '#0b2850', '#320d1f', '#8f0f2f', '#be2327', '#eb702a' ];
+var categoryColors = [ '#e33229', '#291c73', '#e3a53d', '#6fab34', '#e44c34', '#4e9b37', '#711e8c',
+    '#b6cb2f', '#e4613f', '#afc42e', '#024885', '#24813d', '#e67846', '#9bbf31', '#017cab',
+    '#1a5b50', '#e48f42', '#00adf0', '#88b734', '#1e3a65' ];
 var lastColor = 0;
-Category.getColor = function()
+var colorIncr = 0;
+Category.getColor = function(catList)
 {
-    return categoryColors[lastColor++ % categoryColors.length];
-}
+    var usedColors = $.isBlank(catList) ? [] : catList.map(function(cat) { return cat.get('color'); });
+    var availColors = _.difference(categoryColors, usedColors);
+    if (_.isEmpty(availColors))
+    {
+        availColors = categoryColors;
+        colorIncr = 1;
+    }
+    var color = availColors[lastColor % availColors.length];
+    lastColor += colorIncr;
+    return color;
+};
 
 var Categories = Backbone.Collection.extend({
     model: Category,

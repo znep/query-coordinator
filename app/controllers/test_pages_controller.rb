@@ -42,11 +42,13 @@ class TestPagesController < ApplicationController
     Canvas2::DataContext.reset
     Canvas2::Util.set_params(params)
     Canvas2::Util.set_debug(true)
+    Canvas2::Util.set_no_cache(true)
     Canvas2::Util.set_env({
       domain: CurrentDomain.cname,
       renderTime: Time.now.to_i,
       path: '/test_page/cf',
-      siteTheme: CurrentDomain.theme
+      siteTheme: CurrentDomain.theme,
+      currentUser: current_user ? current_user.id : nil
     })
     @minimal_render = params['no_render'] == 'true'
   end

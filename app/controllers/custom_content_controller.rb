@@ -241,7 +241,7 @@ class CustomContentController < ApplicationController
           renderTime: Time.now.to_i,
           path: full_path,
           siteTheme: CurrentDomain.theme,
-          currentUser: @page.private_data? ? current_user.id : nil
+          currentUser: @page.private_data? ? @current_user.id : nil
         })
         # If the page has maxAge <= 0; explicitly disable any and all row or search caching
         Canvas2::Util.set_no_cache(@page.max_age <= 0) if @page.max_age

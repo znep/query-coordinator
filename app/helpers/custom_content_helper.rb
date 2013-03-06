@@ -39,7 +39,8 @@ module CustomContentHelper
       domain: CurrentDomain.cname,
       renderTime: Time.now.to_i,
       path: path,
-      siteTheme: CurrentDomain.theme
+      siteTheme: CurrentDomain.theme,
+      currentUser: current_user ? current_user.id : nil
     })
     Canvas2::Util.set_path(path)
     Page.new(config.merge({path: path, name: name}). with_indifferent_access)

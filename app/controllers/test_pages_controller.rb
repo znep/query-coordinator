@@ -47,7 +47,8 @@ class TestPagesController < ApplicationController
       domain: CurrentDomain.cname,
       renderTime: Time.now.to_i,
       path: '/test_page/cf',
-      siteTheme: CurrentDomain.theme
+      siteTheme: CurrentDomain.theme,
+      currentUser: current_user ? current_user.id : nil
     })
     @minimal_render = params['no_render'] == 'true'
   end

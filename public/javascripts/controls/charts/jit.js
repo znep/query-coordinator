@@ -253,7 +253,9 @@
               offsetY: 10,
               onShow: function(tip, node, isLeaf, domElement)
               {
-                  $(tip).empty().append(node.data.flyoutDetails);
+                  $(tip)
+                    .addClass('jitTip')
+                    .empty().append(node.data.flyoutDetails);
               }
             },
             onCreateLabel: function(domElement, node){

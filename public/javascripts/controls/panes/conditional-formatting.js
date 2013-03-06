@@ -133,7 +133,7 @@
                     if (disabled)
                     {
                         $field.append('Icons are only relevant for map view');
-                        return false;
+                        return true;
                     }
                     $field.append('(<a>change</a>)<input type="hidden" name="' +
                         $field.attr('name') + '" value="' + curValue + '" />');

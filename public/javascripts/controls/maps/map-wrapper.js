@@ -548,6 +548,13 @@
 
         saveQuery: function(uid, query)
         {
+            if ((blist.debug || {}).events && (console || {}).trace)
+            {
+                console.groupCollapsed('saveQuery');
+                    console.groupCollapsed('arguments'); console.dir(arguments); console.groupEnd();
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupEnd();
+            }
             if ($.isBlank(this._primaryView)) { return; }
             if ($.isBlank(query.filterCondition)) { return; }
             var newMD = $.extend(true, {}, this._primaryView.metadata);

@@ -35,6 +35,7 @@ module Canvas2
           @manifest.add_resource(ctx[1][:dataset].id, ctx[1][:dataset].check_time)
         end
       }
+      @manifest.add_resource("pages",Time.now.to_i)
       @manifest
     end
 

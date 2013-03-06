@@ -34,6 +34,7 @@ module VersionAuthority
       check_age = (manifest.max_age.minutes if manifest.max_age) || Rails.application.config.manifest_check_age
       cut_off_time = (Time.now - check_age).to_i
       datasets = []
+      resources = []
       searches = manifest.keys.select { |k|
         if k.to_s.match(/^search-views.*/)
           true
@@ -41,6 +42,7 @@ module VersionAuthority
           datasets << k
           false
         else
+          resources << k
           false
         end
       }
@@ -51,18 +53,24 @@ module VersionAuthority
       }
       #  2. if the manifest does not contain a search, and all the manifest entries
       #     are newer than checkAge; return the manifest hash
-      return manifest if datasets.all? { |d| manifest[d] > cut_off_time }
+      return manifest if datasets.all? { |d| manifest[d] > cut_off_time } &&
+                         resources.all? { |r| manifest[r] > cut_off_time }
+
       #  3. if there is no search, and the manifest contains entries older than checkAge
       #     ask the core server for the true manifest times and if the true manifest
       #     times are newer than the existing manifest times return nil. If any of the true
       #     manifest times are newer than the check_times return nil.
       #     if the core server returns fewer results than expected return nil.
       Rails.logger.info("Checking our manifest against the core server's version manifest")
-      true_manifest = core_manifest_fetcher.call(datasets.sort)
-      return nil if true_manifest.size != datasets.size
+      true_manifest = core_manifest_fetcher.call(datasets.sort, resources.sort)
+      return nil if true_manifest.size != ( datasets.size + resources.size )
       datasets.each {|d|
         return nil if (manifest[d].seconds * 1000) < true_manifest[d]
         }
+      resources.each {|r|
+        return nil if (manifest[r].seconds * 1000) < true_manifest[r]
+      }
+
       #  4. If none of the above conditions apply return the manifest
       manifest
     else
@@ -95,9 +103,10 @@ module VersionAuthority
     "_manifest.version.4.#{CurrentDomain.domain.id}.#{path}-#{user}"
   end
 
-  def self.get_core_manifest(datasets)
+  def self.get_core_manifest(datasets, resources)
     params = datasets.to_core_query("uid")
-    path = "/manifest_version.json?#{params}"
+    rparams = resources.to_core_query("resource")
+    path = "/manifest_version.json?#{params}&#{rparams}"
     result = CoreServer::Base.connection.get_request(path, {}, false)
     JSON.parse(result, :max_nesting => 25)
   end

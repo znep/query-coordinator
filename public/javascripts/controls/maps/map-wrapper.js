@@ -560,6 +560,12 @@
             var newMD = $.extend(true, {}, this._primaryView.metadata);
             $.deepSet(newMD, query, 'query', uid);
             this._primaryView.update({ metadata: newMD });
+            if ((blist.debug || {}).events && (console || {}).trace)
+            {
+                console.groupCollapsed('saveQuery (after)');
+                    console.dir(this._primaryView.metadata);
+                console.groupEnd();
+            }
         },
 
         updateSearchString: function()

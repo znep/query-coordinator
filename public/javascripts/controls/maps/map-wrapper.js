@@ -563,7 +563,8 @@
             if ((blist.debug || {}).events && (console || {}).trace)
             {
                 console.groupCollapsed('saveQuery (after)');
-                    console.dir(this._primaryView.metadata);
+                    console.groupCollapsed('_primaryView'); console.dir(this._primaryView.metadata); console.groupEnd();
+                    console.groupCollapsed('blist.dataset'); console.dir(blist.dataset.metadata); console.groupEnd();
                 console.groupEnd();
             }
         },

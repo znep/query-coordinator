@@ -291,7 +291,19 @@ var Dataset = ServerModel.extend({
             }
         }
 
+        if ((blist.debug || {}).events && (console || {}).trace)
+        {
+            console.groupCollapsed('before saveNew - cleanViewForCreate')
+                console.dir(dsOrig);
+            console.groupEnd();
+        }
         var ds = cleanViewForCreate(this);
+        if ((blist.debug || {}).events && (console || {}).trace)
+        {
+            console.groupCollapsed('after saveNew - cleanViewForCreate')
+                console.dir(ds);
+            console.groupEnd();
+        }
 
         // Munge permissions for forms, since those don't get carried over
         // or inherited

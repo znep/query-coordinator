@@ -1692,7 +1692,10 @@
                     else
                     {
                         aggCC.top = _.sortBy(aggCC.top, function(v)
-                        { return column.renderType.matchValue(v.item, column); });
+                        {
+                            return _.isFunction(column.renderType.matchValue) ?
+                                column.renderType.matchValue(v.item, column) : v.item;
+                        });
                         if (metadata.reverseSort)
                         { aggCC.top.reverse(); }
                     }

@@ -50,7 +50,7 @@ module GovstatHelper
                 type: 'Repeater',
                 htmlClass: 'goalList',
                 contextId: '_groupItems',
-                container: { type: 'GridContainer', cellWidth: 200, cellHeight: 200, cellSpacing: 0 },
+                container: { type: 'GridContainer', cellWidth: 200, cellHeight: 220, cellSpacing: 0 },
                 children: [{
                   type: 'Container', htmlClass: 'goalItem singleItem',
                   styles: { 'background-color' => '{category.color}' },
@@ -60,7 +60,7 @@ module GovstatHelper
                       { type: 'Container', customClass: 'goalTitle title',
                         children: [
                           { type: 'Title', text: '{goal.name}' },
-                          { type: 'Text', customClass: 'goalSubject', html: '{goal.subject}' }
+                          { type: 'Text', customClass: 'goalSubject', html: '{goal.subject ||}' }
                       ] },
                       progress_indicator('goal.metrics.0'),
                       #{ type: 'Text', customClass: 'goalProgress', ifValue: 'goal.metrics.0.computed_values.delta',

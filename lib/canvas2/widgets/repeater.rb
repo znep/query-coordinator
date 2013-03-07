@@ -66,10 +66,12 @@ module Canvas2
             end
 
           else
+            row_count = string_substitute(@properties['rowCount'] || 100)
+            row_page = string_substitute(@properties['rowPage'] || 1)
             if Canvas2::Util.no_cache
-              rows = context[:dataset].get_rows(100, 1, {}, false, !Canvas2::Util.is_private)
+              rows = context[:dataset].get_rows(row_count, row_page, {}, false, !Canvas2::Util.is_private)
             else
-              rows = context[:dataset].get_cached_rows(100, 1, {}, !Canvas2::Util.is_private)
+              rows = context[:dataset].get_cached_rows(row_count, row_page, {}, !Canvas2::Util.is_private)
             end
             rows = rows[:rows].map { |row| context[:dataset].row_to_SODA2(row) }
 

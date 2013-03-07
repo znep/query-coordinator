@@ -155,8 +155,7 @@ var updateProperties = function(cObj, properties)
         {
             var view = cObj._dataContext.dataset;
             // Render records
-            var rowCount = cObj._stringSubstitute(
-                    cObj._properties.rowBodyCount || 100);
+            var rowCount = cObj._stringSubstitute(cObj._properties.rowBodyCount || 100);
             view.getRows((cObj._stringSubstitute(cObj._properties.rowBodyPage || 1) - 1) * rowCount, rowCount,
                 function(rows)
                 {

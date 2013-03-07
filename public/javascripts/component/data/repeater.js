@@ -1,8 +1,6 @@
 (function($) {
 
 $.component.Container.extend('Repeater', 'content', {
-    length: 100,
-
     _init: function()
     {
         var props = arguments[0];
@@ -239,7 +237,9 @@ $.component.Container.extend('Repeater', 'content', {
             else
             {
                 // Render records
-                view.getRows(0, cObj.length, function(rows)
+                var length = cObj._stringSubstitute(cObj._properties.rowCount || 100);
+                var start = (cObj._stringSubstitute(cObj._properties.rowPage || 1) - 1) * length;
+                view.getRows(start, length, function(rows)
                 {
                     rows = _.map(rows, function(r) { return view.rowToSODA2(r); });
                     if (!$.isBlank(cObj._properties.groupBy))
@@ -284,10 +284,6 @@ $.component.Container.extend('Repeater', 'content', {
 
     _setRow: function(row, index, entity, callback)
     {
-        // Calculate the index in current set of rows and ignore if outside current window
-        if (index < 0 || index >= this.length)
-            return;
-
         entity = entity || {};
 
         if ($.isBlank(entity._repeaterIndex)) { entity._repeaterIndex = index; }

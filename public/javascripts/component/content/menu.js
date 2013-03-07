@@ -32,7 +32,9 @@ $.component.Component.extend('Menu', 'none', {//'content', {
                 switch (cObj._dataContext.type)
                 {
                     case 'dataset':
-                        cObj._dataContext.dataset.getRows(0, 100,
+                        var start = cObj._stringSubstitute(cObj._properties.rowStart || 0);
+                        var length = cObj._stringSubstitute(cObj._properties.rowLength || 100);
+                        cObj._dataContext.dataset.getRows(start, length,
                             function(rows)
                             {
                                 var columnMap = this.columnMap = {};

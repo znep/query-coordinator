@@ -73,6 +73,19 @@ var GoalCard = Backbone.View.extend({
                         contents: 'Edit goal'
                     }
                 }]
+            }, {
+                _: 'div',
+                className: 'secondaryAction',
+                contents: [{
+                    _: 'a',
+                    href: '/goal/' + this.model.id,
+                    className: 'button view',
+                    contents: {
+                        _: 'span',
+                        className: 'actionDetails ss-checkclipboard',
+                        contents: 'View'
+                    }
+                }]
             }]
         }], true));
 
@@ -104,6 +117,8 @@ var GoalCard = Backbone.View.extend({
     },
     showEditor: function(event)
     {
+        var $a = $(event.target).closest('a');
+        if ($a.hasClass('view')) { return; }
         event.preventDefault();
         GoalEditor.showDialog(this.model);
     },

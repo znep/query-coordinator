@@ -68,7 +68,7 @@ class VersionAuthorityTest < Test::Unit::TestCase
     set_test_manifest(test_manifest, 60)
     assert(VersionAuthority.validate_manifest?(@path, @user))
     @truth_manifest = {}
-    @expect_datasets = ["ab12-cd34-OVER"]
+    @expect_datasets = ["ab12-cd34"]
     set_test_manifest(test_manifest, 5)
     assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
@@ -76,12 +76,12 @@ class VersionAuthorityTest < Test::Unit::TestCase
   def test_manifest_dataset_max_age_manifest_override
     test_manifest = {
         "search-views-some-stuff-that-does-not-matter" => @start.to_i ,
-        "ab12-cd34-OVER" => (@start - 30.minutes).to_i
+        "ab12-cd34" => (@start - 30.minutes).to_i
     }.sort
     set_test_manifest(test_manifest, 60)
     assert(VersionAuthority.validate_manifest?(@path, @user))
     @truth_manifest = {}
-    @expect_datasets = ["ab12-cd34-OVER"]
+    @expect_datasets = ["ab12-cd34"]
     set_test_manifest(test_manifest, 5)
     assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
@@ -95,9 +95,11 @@ class VersionAuthorityTest < Test::Unit::TestCase
     assert(VersionAuthority.validate_manifest?(@path, @user))
   end
 
-  def the_truth(datasets)
-    @expect_datasets = @expect_datasets || {}
+  def the_truth(datasets = [], resources = [])
+    @expect_datasets = @expect_datasets || []
+    @expect_resources = @expect_resources || []
     assert_equal(@expect_datasets, datasets)
+    assert_equal(@expect_resources, resources)
     return @truth_manifest || {}
   end
 
@@ -124,6 +126,35 @@ class VersionAuthorityTest < Test::Unit::TestCase
         "ab12-cd34" => ( @start - 60.minutes).to_i * 1000,
     }
     set_test_manifest(@complicated_manifest)
+    assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
+  end
+
+  def test_manifest_resources
+    @truth_manifest = {
+        "ab12-cd34" => @start.to_i,
+        "pages" => @start.to_i,
+        "some_resource" => @start.to_i
+    }.sort
+    @expect_datasets = ["ab12-cd34"]
+    @expect_resources = ["pages", "some_resource"]
+    set_test_manifest(@truth_manifest)
+    assert(VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
+  end
+
+  def test_manifest_resources_out_of_date
+    resource_test_manifest = {
+        "ab12-cd34" => @start.to_i,
+        "pages" => ( @start - 60.minutes).to_i,
+        "some_resource" => @start.to_i
+    }.sort
+    @truth_manifest = {
+        "ab12-cd34" => @start.to_i * 1000,
+        "pages" => @start.to_i * 1000,
+        "some_resource" => @start.to_i * 1000
+    }
+    @expect_datasets = ["ab12-cd34"]
+    @expect_resources = ["pages", "some_resource"]
+    set_test_manifest(resource_test_manifest)
     assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
   end
 

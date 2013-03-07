@@ -362,7 +362,9 @@
                     { mapObj._primaryView.takeSnapshot(); }
                 }, 2000);
 
-                _.each(mapObj._children, function(cv) { cv.clearTemporary(); });
+                // taken out for now. seems we just attempt to do this for sanitycheck/cleanliness
+                // but it causes race conditions if temporaryness applies before maploaded is called.
+                //_.each(mapObj._children, function(cv) { cv.clearTemporary(); });
 
                 mapObj._doneLoading = true;
             }

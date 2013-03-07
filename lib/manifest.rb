@@ -1,5 +1,5 @@
 class Manifest
-  attr_accessor :max_age
+  attr_accessor :max_age, :access_level
   attr_accessor :last_mtime, :first_mtime, :manifest
 
   def initialize
@@ -28,8 +28,8 @@ class Manifest
   end
 
   # Either anon, shared-user, or [UserId 4x4]
-  def set_access_level(access_level)
-    @manifest["access_level"] = access_level
+  def set_access_level(level)
+    @access_level = level
   end
 
   def manifest

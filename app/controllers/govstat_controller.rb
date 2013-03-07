@@ -107,12 +107,17 @@ protected
           } ]
         },
         {
+          type: 'Share',
+          currentPage: true
+        },
+        {
           type: 'Title',
           customClass: 'sectionTitle',
           text: 'Metrics'
         },
         {
           type: 'Text',
+          # Clint, I hate you (I mean that in the nicest way)
           html: '<script type="text/javascript">setTimeout(function() { $(function() { $(".metricProgress .progressBar").each(function() { var $this = $(this); var start = (new Date($this.attr("data-start"))).getTime(); var end = (new Date($this.attr("data-end"))).getTime(); $this.css("width", Math.min(((new Date()).getTime() - start) / (end - start) * 100, 100) + "%"); }); }); }, 0);</script>'
         },
         {
@@ -203,7 +208,9 @@ protected
             },
             children: [
               { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
-              { type: 'Chart', chartType: '{dataset.displayFormat.chartType}', height: 330 }
+              { type: 'Chart', chartType: '{dataset.displayFormat.chartType}', height: 220 },
+              { type: 'Button', htmlClass: 'exploreLink ss-right right', notButton: true,
+                href: '/d/{dataset.id}', text: 'Explore this data' }
             ]
           }
           ]

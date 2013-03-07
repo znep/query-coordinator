@@ -74,6 +74,7 @@ protected
   def goal_page_config(goal_id)
     {
       data: {
+        categories: { type: 'govstatCategoryList' },
         goalContext: { type: 'goal', goalId: goal_id }
       },
       content: {
@@ -83,7 +84,9 @@ protected
         children: [
         {
           type: 'Container',
+          contextId: 'categories_{goal.category}',
           htmlClass: 'titleContainer {goal.metadata.title_image /^.+$/hasImage/ ||}',
+          styles: { 'border-color' => '{category.color}' },
           children: [ {
             type: 'Picture',
             url: '{goal.metadata.title_image ||}'
@@ -93,12 +96,7 @@ protected
             children: [ {
               type: 'Title',
               customClass: 'categoryTitle',
-              #context: {
-              #  id: 'categoryContext',
-              #  type: 'govstatCategory',
-              #  categoryId: '{goal.category}'
-              #},
-              text: '{categoryContext.category.name}'
+              text: '{category.name}'
             }, {
               type: 'Title',
               text: '{goal.subject ||We} will ' +

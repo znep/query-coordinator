@@ -417,8 +417,8 @@ blist.namespace.fetch('blist.govstat').markup = {
                         id: indicator.cid + '_column_function',
                         contents: [{
                             _: 'option',
-                            value: '',
-                            selected: indicator.get('column_function') === '',
+                            value: 'null',
+                            selected: indicator.get('column_function') === 'null',
                             contents: 'alone'
                         }, {
                             _: 'option',

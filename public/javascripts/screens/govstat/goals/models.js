@@ -107,6 +107,8 @@ var Indicator = Backbone.Model.extend({
             response[key] = new nestedClass(nestedData, { parse: true });
         }
         response.column_function = (response.compute_function || {}).column_function;
+        if ($.isBlank(response.column_function))
+        { response.column_function = 'null'; }
         response.aggregation_function = (response.compute_function || {}).aggregation_function;
         response.aggregation_function2 = (response.compute_function || {}).aggregation_function2;
         delete response.compute_function;
@@ -119,16 +121,27 @@ var Indicator = Backbone.Model.extend({
         var result = Backbone.Model.prototype.toJSON.call(this);
         _.each(_.keys(self.model).concat(['column1', 'column2', 'date_column']),
                 function(k) { result[k] = self.attributes[k].toJSON(); });
-        result.compute_function = { column_function: result.column_function || '',
+        result.compute_function = { column_function: result.column_function || 'null',
             aggregation_function: result.aggregation_function || 'sum',
-            aggregation_function2: result.aggregation_function2 || 'sum', metric_period: 'monthly' };
+            aggregation_function2: result.aggregation_function2 || '', metric_period: 'monthly' };
         _.each(['column_function', 'aggregation_function', 'aggregation_function2'], function(k)
             { delete result[k]; });
+        if (result.compute_function.column_function == 'null')
+        { result.compute_function.column_function = ''; }
+        if ($.isBlank(result.column2))
+        { delete result.compute_function.aggregation_function2; }
+        delete result.compute;
 
         // Set in the UI???
         result.source_data_period = 'daily';
         if (this.indicatorType == 'baseline')
         { result.type = 'burndown'; }
+
+        _.each(_.keys(result), function(k)
+        {
+            if (_.isNull(result[k]))
+            { result[k] = ''; }
+        });
 
         return result;
     }
@@ -293,15 +306,8 @@ var Goal = Backbone.Model.extend({
             delete attrs[k];
         });
 
-        // Always re-construct from scratch
-        attrs.metadata.metrics = {};
-        self.get('metrics').each(function(metric, i)
-        {
-            if (!metric.isComplete())
-            { attrs.metadata.metrics[i] = attrs.metrics[i]; }
-        });
-        _.each(_.keys(attrs.metadata.metrics).sort().reverse(), function(mI)
-        { attrs.metrics.splice(mI, 1); });
+        // Delete legacy
+        delete attrs.metadata.metrics;
 
         attrs.metadata = JSON.stringify(attrs.metadata);
         return attrs;

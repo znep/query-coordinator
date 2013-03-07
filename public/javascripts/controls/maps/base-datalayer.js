@@ -32,7 +32,6 @@
             currentObj._map = currentObj._parent.map;
             currentObj._displayFormat = currentObj.settings.displayFormat
                 || currentObj._view.displayFormat;
-            currentObj._query = currentObj.settings.query || currentObj._view.query || {};
 
             if ($.subKeyDefined(currentObj, '_displayFormat.component'))
             { currentObj._displayFormat.component.setDataObj(this); }
@@ -47,6 +46,18 @@
             currentObj.initializeColumns();
             currentObj.initializeLayer();
             currentObj.initializeFlyouts();
+        },
+
+        _getQuery: function(preferCurrent)
+        {
+            if (preferCurrent === true)
+            {
+                return this._view.query || {};
+            }
+            else
+            {
+                return this.settings.query || this._view.query || {};
+            }
         },
 
         destroy: function()
@@ -495,10 +506,24 @@
         {
         },
 
-        setQuery: function(query)
+        setQuery: function(query, viewportChange)
         {
-            this._query = $.extend(true, {}, query);
-            this._view.update({ query: $.extend(true, {}, this._view.query, this._query) });
+            var newQueryClone = $.extend(true, {}, query);
+            var fullQueryClone = $.extend(true, {}, this._getQuery(true));
+
+            if (!$.isBlank(query.namedFilters))
+            {
+                // always extend namedFilters separately
+                fullQueryClone.namedFilters = fullQueryClone.namedFilters || {};
+                $.extend(fullQueryClone.namedFilters, query.namedFilters);
+            }
+
+            if (viewportChange !== true)
+            {
+                fullQueryClone.filterCondition = fullQueryClone.filterCondition || {};
+                $.extend(fullQueryClone.filterCondition, newQueryClone.filterCondition);
+            }
+            this._view.update({ query: fullQueryClone });
         }
     }, {}, null, false);
 

@@ -538,12 +538,27 @@
             filterableColumns = options.filterableColumns;
         });
 
+        _.each(datasets, function(obj)
+        {
+            obj.dataset.bind('query_change', function()
+            {
+                // drop everything and start over unless we caused it
+                if ($pane.triggeredQueryChange !== true)
+                {
+                    rootCondition = null;
+                    renderQueryFilters();
+                }
+            })
+        });
+
     /////////////////////////////////////
     // RENDER+EVENTS
 
         // check and render all the filters that are saved on the view
         var renderQueryFilters = function()
         {
+            $pane.find('.filterConditions').empty();
+
             if (_.isEmpty(rootCondition) && $.subKeyDefined(dataset, 'query.filterCondition'))
             {
                 // extend this only if we have to and it exists (otherwise {} registers as !undefined)
@@ -608,6 +623,8 @@
             }
 
             // are we advanced?
+            // default advanced to true since that's the initial state
+            rootCondition.metadata.advanced = rootCondition.metadata.advanced || true;
             $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
             $pane.toggleClass('notAdvanced', !rootCondition.metadata.advanced);
             $pane.find('.advancedStateLine').removeClass('hide')
@@ -622,13 +639,22 @@
             _.each(rootCondition.children, renderCondition);
 
             // if we have nothing, show the beginner's message
-            if (rootCondition.children.length == 0)
+            if (rootCondition.children.length === 0)
             {
                 _.defer(function()
                 {
                     // hide and show don't work on this loop because the pane itself is hidden
                     $pane.find('.initialFilterMode').show();
                     $pane.find('.normalFilterMode').hide();
+                });
+            }
+            else
+            {
+                _.defer(function()
+                {
+                    // hide and show don't work on this loop because the pane itself is hidden
+                    $pane.find('.initialFilterMode').hide();
+                    $pane.find('.normalFilterMode').show();
                 });
             }
         };
@@ -2307,6 +2333,7 @@
 
             // now let's see how clean we are. if we're clean, no need to update the dataset.
             // TODO: can't really just blindly iterate through this with one isDirty. rethink.
+            $pane.triggeredQueryChange = true;
             _.each(datasets, function(ufDS)
             {
                 var ds = ufDS.dataset;
@@ -2320,6 +2347,7 @@
                     isDirty = true;
                 }
             });
+            $pane.triggeredQueryChange = false;
         };
 
     /////////////////////////////////////

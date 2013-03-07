@@ -114,6 +114,9 @@ module Canvas2
   class Map < DataRenderer
   end
 
+  class Visualization < DataRenderer
+  end
+
   class Table < DataRenderer
   end
 

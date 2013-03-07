@@ -311,7 +311,7 @@ var convertLegacy = function(props)
                 vd = { displayFormat: vd };
                 vd.uid = vd.displayFormat.uid; vd.contextId = vd.displayFormat.contextId;
             }
-            if ($.isBlank(vd.uid) && $.isBlank(vd.contextId) && !$.isBlank(contextId))
+            if ($.isBlank(vd.contextId) && !$.isBlank(contextId))
             { vd.contextId = contextId; }
             vd.type = 'MapLayer';
 

@@ -103,7 +103,7 @@ protected
               type: 'Title',
               customClass: 'categoryTitle',
               styles: { color: '{category.color}' },
-              text: '{category.name}'
+              text: '{category.name ||}'
             }, {
               type: 'Title',
               customClass: 'goalTitle',

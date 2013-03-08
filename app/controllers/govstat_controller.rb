@@ -161,7 +161,7 @@ protected
                 }, {
                   type: 'Text',
                   htmlClass: 'metricValue',
-                  html: '<span style="color:{category.color}">{computed_values.metric_value %[,3] ||N/A}</span>'
+                  html: '<span style="color:{category.color}">{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}</span>'
                 }, {
                   type: 'Text',
                   htmlClass: 'metricTime',

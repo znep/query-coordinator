@@ -16,54 +16,98 @@
   .progress-none .none
     background-color: #333333
 
-.titleContainer
-  border-top: 3px solid #888
-  margin-bottom: 2em
+.heroImageContainer
+  height: 35em
+  margin: -2em -4em -23em
   overflow: hidden
-  padding-bottom: 5em
-  margin-bottom: 5em
   position: relative
 
-  .component-Picture
-    display: none
-  &.hasImage
-    .component-Picture
-      display: block
-      left: 0
-      position: absolute
-      right: 0
-      img
-        width: 100%
+  img
+    width: 100%
 
-    .goalTitle
-      background-color: rgba(247, 247, 247, 0.5)
-      @include border-radius(2px)
-      margin: 2em
-      padding: 2em 3em
-      position: relative
-      z-index: 1
+  .heroGradient
+    @include vertical-gradient(rgba(247, 247, 247, 0.3), rgba(247, 247, 247, 1))
+    height: 100%
+    left: 0
+    position: absolute
+    top: 0
+    width: 100%
 
-      .categoryTitle
-        font-size: 0.5em
-  .goalTitle
+    .ie8 &
+      border-bottom: 1px solid #fff
+
+.titleContainer
+  background: #fff
+  background: rgba(255, 255, 255, 0.9)
+  border-top: 3px solid #888
+  @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.2))
+  color: #555
+  margin-bottom: 5em
+  overflow: hidden
+  padding-bottom: 1.5em
+  position: relative
+
+  strong
+    color: #000
+    font-weight: normal
+
+  .goalBox
+    padding: 3em 4.5em
+
     h2
-      font-size: 4em
       font-weight: normal
       padding: 0
-  .goalProgress
-    bottom: 0.833em
-    margin:
-      bottom: 0.833em
-      right: 0.833em
-    position: absolute
-    right: 0.833em
+
+    .categoryTitle
+      padding-bottom: 0.5em
+
+      h2
+        font-size: 2.5em
+
+    .goalTitle
+      color: #333
+      letter-spacing: -1px
+      padding-bottom: 2em
+
+      h2
+        font-size: 5em
+        line-height: 1.1em
+
+    .goalSubtitle
+      font-size: 2.2em
+      letter-spacing: -1px
+      padding-bottom: 1.5em
+
+    .prevailingMetric
+      padding-bottom: 4.5em
+
+      .metric
+        letter-spacing: -1px
+        text-align: center
+
+        .metricType
+          font-size: 1.7em
+          padding-bottom: 0.5em
+        .metricValue
+          color: #000
+          font-size: 4em
+        .metricTime
+          font-size: 1.7em
+
+    .goalProgress
+      bottom: 1.2em
+      font-size: 1.4em
+      position: absolute
+      right: 2.4em
 
 .sectionTitle
   font-size: 2em
+  padding: 0 1.8em
   h2
     font-weight: normal
 
 .metricsBlock
+  padding: 0 3.6em
   .metricItem
     border-bottom: 1px solid $color_chrome_box_border
     margin-bottom: 1.5em
@@ -74,81 +118,31 @@
     .component-Text
       padding: 0
 
-    .metricIntro
-      color: #444
-      font-size: 1.4em
-      padding-bottom: 0.3em
-
-      em
-        color: #2c90ec
-        font-style: normal
-
     .metricTitle
       font-size: 1.3em
       h2
         font-weight: normal
-        line-height: 1em
+        line-height: 2.5em
         padding: 0
-    .prevailing
-      display: none
-    .nonprevailing
-      color: #444
-      font-size: 1.2em
-      &.type
-        font-weight: bold
+
     .indicatorContainer
       text-align: center
       .value
-        font-size: 2em
-        font-weight: bold
-        padding: 0.5em 0
-      .date, .unit, .type
+        font-size: 3em
+      .unit, .type
+        color: #555
         line-height: 1em
       .unit
-        text-transform: uppercase
+        font-size: 1.4em
+        padding: 0.2em 0
+
     .progressContainer
-      text-align: center
-    &.index-0
-      border-bottom: 3px solid #000000
-      margin-bottom: 3.5em
-      position: relative
-      .prevailing
-        display: block
-      .nonprevailing
-        display: none
-      .metricTitle
-        padding: 0.5em 0
-        h2
-          font-size: 2em
-      .metricType.additional
-        display: none
-      .metricType.prevailing
-        display: block
-      .value
-        color: #2c90ec
-        font-size: 3em
-        padding: 0
-      .metricProgress
-        .progressContainer
-          background-color: #ddd
-          float: left
-          height: 2em
-          margin-right: 1em
-          margin-top: 0.5em
-          width: 18em
-
-          .progressBar
-            background-color: #2c90ec
-            height: 100%
-
-        .progressText
-          color: #444
-          font-size: 1.5em
-          line-height: 1.5em
-          padding: 0.2em
+      padding-top: 0.9em
+      text-align: right
 
 .relatedVisualizations
   border-bottom: 1px solid $color_chrome_box_border
+  margin: 0 3.6em 2em
   padding-bottom: 3em
   .row
     border:
@@ -169,11 +163,15 @@
     a
       font-size: 1.2em
 
+  svg > rect
+    fill: none
+
 .goalDescription
   color: #000000
   font-size: 1.2em
   line-height: 1.2em
   margin: 3em 0
+  padding: 0 3em
   p
     margin-right: 2em
     padding-bottom: 1.5em

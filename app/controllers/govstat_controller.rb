@@ -171,7 +171,7 @@ protected
             }, {
               type: 'Share',
               currentPage: true
-            }, progress_indicator ]
+            }, progress_indicator('goal.metrics.0') ]
           } ]
         }, {
           type: 'Repeater',

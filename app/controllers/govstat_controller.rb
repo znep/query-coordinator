@@ -72,6 +72,7 @@ protected
   end
 
   def goal_page_config(goal_id)
+    show_status = current_user && current_user.role == 'admin'
     {
       data: {
         categories: { type: 'govstatCategoryList' },
@@ -86,7 +87,7 @@ protected
           htmlClass: 'heroImageContainer',
           children: [ {
             type: 'Picture',
-            url: '{goal.metadata.title_image ||/stylesheets/image/content/govstat_default_hero.jpg}'
+            url: '{goal.metadata.title_image ||/stylesheets/images/content/govstat_default_hero.jpg}'
           }, {
             type: 'Container',
             htmlClass: 'heroGradient'

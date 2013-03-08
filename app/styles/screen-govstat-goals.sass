@@ -121,19 +121,49 @@
   min-width: 90em
   padding: 0
 
-  .actions
-    position: absolute
-    right: 1em
-    top: 1em
+  .headerBar
+    @include vertical-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.1))
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3)
+    @include clearfix
+    margin: 0
+    padding: 1em
+    &.sticky
+      position: fixed
+      top: 0
+      z-index: 10000
+    .status
+      float: left
+      margin:
+        left: 1em
+        top: 1em
+      span
+        @include border-radius(0.3em)
+        color: #ffffff
+        display: none
+        font-size: 1.5em
+        padding: 0.5em 1em
+      &.status-computed .computed
+        background-color: #09a74f
+        display: inline-block
+      &.status-computing .computing
+        background-color: #fcc806
+        display: inline-block
+      &.status-draft .draft
+        background-color: #999999
+        display: inline-block
 
-    a
-      display: inline-block
-      font-size: 1.3em
-      padding: 1em
+    .actions
+      float: right
+
+      a
+        display: inline-block
+        font-size: 1.3em
+        padding: 1em
 
   form
     line-height: 6em
     padding: 4em
+      top: 2em
 
     > *
       margin-right: 5px
@@ -571,6 +601,10 @@
   &.draft
     background-color: #333
     color: #fff
+
+    .headerBar
+      @include vertical-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1))
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3)
 
     form
       .inputWrapper

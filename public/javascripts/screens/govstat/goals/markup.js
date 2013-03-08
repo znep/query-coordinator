@@ -6,21 +6,41 @@
 blist.namespace.fetch('blist.govstat').markup = {
     goalEditor:
     {
-        actions: function()
+        actions: function(goal)
         {
             return $.tag2({
                 _: 'div',
-                className: 'actions',
+                className: 'headerBar',
                 contents: [{
-                    _: 'a',
-                    className: ['deleteGoal', 'ss-trash', 'button'],
-                    href: '#delete goal',
-                    contents: 'Delete this Goal'
+                    _: 'div',
+                    className: 'status status-' + goal.get('goal_status'),
+                    contents: [{
+                        _: 'span',
+                        className: 'computed ss-check',
+                        contents: 'Ready'
+                    }, {
+                        _: 'span',
+                        className: 'computing ss-loading',
+                        contents: 'Calculating...'
+                    }, {
+                        _: 'span',
+                        className: 'draft ss-write',
+                        contents: 'Not Complete'
+                    }]
                 }, {
-                    _: 'a',
-                    className: ['jqmClose', 'saveGoal', 'ss-floppydisk', 'button'],
-                    href: '#save and close',
-                    contents: 'Save and Close'
+                    _: 'div',
+                    className: 'actions',
+                    contents: [{
+                        _: 'a',
+                        className: ['deleteGoal', 'ss-trash', 'button'],
+                        href: '#delete goal',
+                        contents: 'Delete this Goal'
+                    }, {
+                        _: 'a',
+                        className: ['jqmClose', 'saveGoal', 'ss-floppydisk', 'button'],
+                        href: '#save and close',
+                        contents: 'Save and Close'
+                    }]
                 }]
             })
         },

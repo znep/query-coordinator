@@ -356,7 +356,7 @@ protected
                 {
                 type: 'Button', htmlClass: 'noData', notButton: true, href: new_dataset_path, text:
                 '<div class="callToAction ss-plus">Add Some Data</div>' +
-                '<div class="button ss-navigateright right">Add Data</div>'
+                '<input class="button ss-navigateright right" value="Add Data" />'
                 }
               ]
             } ]

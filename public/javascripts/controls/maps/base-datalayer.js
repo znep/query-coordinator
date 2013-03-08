@@ -659,9 +659,11 @@
             layerObj._rowsLoaded = 0;
             var rowsRequested = layerObj._parent.rowsRemaining;
 
+            layerObj._bug9238log = $.makeArray(layerObj._bug9238log);
+
             layerObj._view.getRows(0, rowsRequested,
                 function(data) {
-                    layerObj._parent.rowsLoaded(layerObj._view.totalRows());
+                    layerObj._bug9238log.push({ timestamp: new Date(), data: data });
 
                     layerObj.handleDataLoaded(data);
 
@@ -677,6 +679,7 @@
         clearData: function()
         {
             this._data = {};
+            this._dataLoaded = false;
             this._displayLayer.removeAllFeatures();
         },
 

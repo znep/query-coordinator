@@ -159,7 +159,7 @@ var GoalEditor = Backbone.View.extend({
         this.$el.toggleClass('draft', this.model.get('is_public') !== true);
 
         // render markup
-        var $actions = govstatNS.markup.goalEditor.actions();
+        var $actions = govstatNS.markup.goalEditor.actions(this.model);
         var $mainDetails = govstatNS.markup.goalEditor.mainDetails(this.model);
         var $additionalDetails = govstatNS.markup.goalEditor.additionalDetails(this.model);
         var $relatedDatasets = govstatNS.markup.goalEditor.relatedDatasets(this.model);
@@ -289,6 +289,12 @@ GoalEditor.showDialog = function(goal)
 
     editorView.$el.addClass('socrataDialog locked');
     editorView.$el.showModal();
+    var $headerBar = editorView.$el.find('.headerBar');
+    $headerBar.waypoint(function(ev, dir)
+    {
+        $headerBar.width(dir === 'down' ? $headerBar.width() : '');
+        $headerBar.toggleClass('sticky', dir === 'down');
+    }, { context: $('.socrataModalWrapper') });
 };
 
 // GOALS

@@ -495,6 +495,7 @@ javascripts:
     - public/javascripts/screens/profile-screen-edit.js
   screen-govstat-goals:
     - public/javascripts/plugins/datepicker.js
+    - public/javascripts/plugins/waypoints.js
     - public/javascripts/screens/govstat/goals/show.js
     - public/javascripts/screens/govstat/goals/markup.js
     - public/javascripts/screens/govstat/goals/views.js

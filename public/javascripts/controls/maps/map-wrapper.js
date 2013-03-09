@@ -216,7 +216,7 @@
                 mapObj._children[index] = $(mapObj._children[index].$dom)
                         .socrataDataLayer({ view: ds, index: index, query: query,
                                             parentViz: mapObj, displayFormat: df });
-                mapObj._children[index].setQuery(mapObj._children[index]._getQuery());
+                mapObj._children[index].setQuery(mapObj._children[index]._query);
                 mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
 
                 if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length

@@ -206,14 +206,18 @@
 
         filterWithViewport: function()
         {
-            var namedFilters = $.extend(true, {}, this._getQuery(true).namedFilters || {});
-            namedFilters.viewport = this._parent.viewportHandler().toQuery(
-                blist.openLayers.geographicProjection, this._locCol.fieldName);
+            var query = $.extend(true, {}, this._query);
 
-            if (_.isEqual(this._getQuery(true).namedFilters, namedFilters))
+            if ((query.namedFilters || {}).viewport)
+            { delete query.namedFilters.viewport; }
+            query.namedFilters = $.extend(true, query.namedFilters || {},
+                { viewport: this._parent.viewportHandler().toQuery(
+                    blist.openLayers.geographicProjection, this._locCol.fieldName) });
+
+            if (_.isEqual(this._query, query))
             { this.getData(); }
             else
-            { this.setQuery({ namedFilters: namedFilters }, true); }
+            { this.setQuery(query, true); }
         },
 
         handleRowChange: function(rows)
@@ -307,7 +311,7 @@
         {
             if (!viewportChange) { delete this._neverCluster; }
             else { this._ignoreTemporary = true; }
-            this._super.call(this, query, viewportChange);
+            this._super.call(this, query);
         }
     }, {
         clusterThreshold: 300, // Number of points before clustering.

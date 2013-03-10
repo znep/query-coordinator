@@ -110,7 +110,7 @@ protected
               text: '{goal.subject ||We} will ' +
                 '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
                 '{goal.name $[l] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
-                'before {goal.end_date @[%B %Y] ||sometime}'
+                'by {goal.end_date @[%B %Y] ||sometime}'
             }, {
               type: 'Text',
               htmlClass: 'goalSubtitle',

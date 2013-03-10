@@ -10224,7 +10224,10 @@ var PieSeries = extendClass(Series, {
 			isPercent,
 			radiusX, // the x component of the radius vector for a given point
 			radiusY,
-			labelDistance = options.dataLabels.distance;
+			labelDistance = options.dataLabels.distance,
+                        i,
+                        len = data.length,
+                        point;
 			
 		// get positions - either an integer or a percentage string must be given
 		positions.push(options.size, options.innerSize || 0);
@@ -10254,11 +10257,14 @@ var PieSeries = extendClass(Series, {
 		series.center = positions;
 					
 		// get the total sum
-		each(data, function(point) {
+		for(i = 0; i < len; i++) {
+                        point = data[i];
 			total += point.y;
-		});
+		}
 		
-		each(data, function(point) {
+                for (i = 0; i < len; i++) {
+                        point = data[i];
+
 			// set start and end angle
 			fraction = total ? point.y / total : 0;
 			start = mathRound(cumulative * circ * precision) / precision;
@@ -10310,7 +10316,7 @@ var PieSeries = extendClass(Series, {
 			point.percentage = fraction * 100;
 			point.total = total;
 			
-		});
+		}
 		
 		this.setTooltipPoints();
 	},

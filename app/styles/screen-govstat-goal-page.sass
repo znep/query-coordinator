@@ -14,7 +14,21 @@
   .progress-bad .poor
     background-color: #e33229
   .progress-none .none
-    background-color: #333333
+    background-color: #888
+
+@mixin text-progress-colors
+  &.progress-good
+    .value, .unit
+      color: #09a74f
+  &.progress-progressing
+    .value, .unit
+      color: #fcc806
+  &.progress-bad
+    .value, .unit
+      color: #e33229
+  &.progress-none
+    .value, .unit
+      color: #888
 
 .heroImageContainer
   height: 35em
@@ -64,6 +78,14 @@
       h2
         font-size: 2.5em
 
+    .component-Share
+      right: 4em
+      position: absolute
+      top: 4em
+
+      li
+        margin-right: 1em
+
     .goalTitle
       color: #333
       letter-spacing: -1px
@@ -79,26 +101,64 @@
       padding-bottom: 1.5em
 
     .prevailingMetric
-      padding-bottom: 4.5em
+      .currentValue
+        padding-top: 2.5em
 
-      .metric
-        letter-spacing: -1px
-        text-align: center
-
-        .metricType
-          font-size: 1.7em
-          padding-bottom: 0.5em
         .metricValue
-          color: #000
-          font-size: 4em
-        .metricTime
-          font-size: 1.7em
+          @include text-progress-colors
 
-    .goalProgress
-      bottom: 1.2em
-      font-size: 1.4em
-      position: absolute
-      right: 2.4em
+          .value
+            font-size: 7em
+            letter-spacing: -2px
+          .unit
+            font-size: 2em
+            letter-spacing: -1px
+            padding-left: 0.3em
+
+        .metricTime
+          color: #777
+          font-size: 1.6em
+          letter-spacing: -1px
+
+        .goalProgress
+          font-size: 1.5em
+          margin-top: 2.5em
+
+      .nonCurrent
+        border-left: 1px solid #ddd
+        padding-left: 3em
+
+        .metric
+          padding: 2em 0 1em
+          position: relative
+          text-align: right
+
+          &.baselineValue
+            border-bottom: 1px solid #ddd
+            padding: 1em 0 2em
+
+            .metricType
+              top: 1em
+
+          .metricType
+            font-size: 1.8em
+            left: 0
+            position: absolute
+            top: 1.5em // not actually sure why this looks more right than 2em
+
+          .metricValue
+            color: #000
+            font-size: 3.5em
+            letter-spacing: -1px
+
+          .metricUnit
+            color: #000
+            font-size: 1.8em
+            letter-spacing: -1px
+
+          .metricTime
+            font-size: 1.2em
+            letter-spacing: -1px
 
 .sectionTitle
   font-size: 2em
@@ -122,11 +182,13 @@
       font-size: 1.3em
       h2
         font-weight: normal
-        line-height: 2.5em
+        line-height: 1.5em
         padding: 0
 
     .indicatorContainer
+      @include text-progress-colors
       text-align: center
+
       .value
         font-size: 3em
       .unit, .type
@@ -136,9 +198,8 @@
         font-size: 1.4em
         padding: 0.2em 0
 
-    .progressContainer
-      padding-top: 0.9em
-      text-align: right
+    .goalProgress
+      padding-top: 0.6em
 
 .relatedVisualizations
   border-bottom: 1px solid $color_chrome_box_border
@@ -172,6 +233,8 @@
   line-height: 1.2em
   margin: 3em 0
   padding: 0 3em
+  width: auto
+
   p
     margin-right: 2em
     padding-bottom: 1.5em

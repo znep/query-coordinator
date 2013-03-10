@@ -31,7 +31,12 @@
                             var url = prompt('Enter a URL:');
                             if (url !== null)
                             {
-                                if (!url.match(/^(f|ht)tps?:\/\//))
+                                // theoretically all we have to do is leave this alone and tinymce
+                                // will handle email for us. but either we're sidestepping that
+                                // machinery or our version of tinymce is too old, so do it ourselves.
+                                if (url.match(/^.+@.+\..+/))
+                                { url = "mailto:" + url; }
+                                else if (!url.match(/^(f|ht)tps?:\/\//))
                                 { url = "http://" + url; }
                                 config.formatEditor.action('link', url);
                             }

@@ -32,7 +32,7 @@ var Dataset = ServerModel.extend({
             'set_temporary', 'clear_temporary', 'row_change', 'blob_change',
             'row_count_change', 'column_resized', 'displayformat_change',
             'displaytype_change', 'column_totals_changed', 'removed',
-            'permissions_changed', 'new_comment', 'reloaded']);
+            'permissions_changed', 'new_comment', 'reloaded', 'maplayer_query_set']);
 
         var cObj = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)

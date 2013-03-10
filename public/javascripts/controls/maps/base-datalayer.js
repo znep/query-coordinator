@@ -495,10 +495,22 @@
         {
         },
 
-        setQuery: function(query)
+        setFullQuery: function(query)
         {
             this._query = $.extend(true, {}, query);
-            this._view.update({ query: $.extend(true, {}, this._view.query, this._query) });
+            this._view.update({ query: this._query });
+        },
+
+        setQuery: function(query)
+        {
+            var queryClone = $.extend(true, {}, this._view.query);
+            var newQuery = $.extend(true, {}, query);
+
+            if ($.isBlank(queryClone.namedFilters)) { queryClone.namedFilters = {}; }
+            $.extend(queryClone.namedFilters, newQuery.namedFilters || {});
+
+            this._query = queryClone;
+            this._view.update({ query: this._query });
         }
     }, {}, null, false);
 

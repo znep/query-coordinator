@@ -538,12 +538,23 @@
             filterableColumns = options.filterableColumns;
         });
 
+        _.each(datasets, function(obj)
+        {
+            obj.dataset.bind('maplayer_query_set', function()
+            {
+                rootCondition = null;
+                renderQueryFilters();
+            });
+        });
+
     /////////////////////////////////////
     // RENDER+EVENTS
 
         // check and render all the filters that are saved on the view
         var renderQueryFilters = function()
         {
+            $pane.find('.filterConditions').empty();
+
             if (_.isEmpty(rootCondition) && $.subKeyDefined(dataset, 'query.filterCondition'))
             {
                 // extend this only if we have to and it exists (otherwise {} registers as !undefined)
@@ -629,6 +640,15 @@
                     // hide and show don't work on this loop because the pane itself is hidden
                     $pane.find('.initialFilterMode').show();
                     $pane.find('.normalFilterMode').hide();
+                });
+            }
+            else
+            {
+                _.defer(function()
+                {
+                    // hide and show don't work on this loop because the pane itself is hidden
+                    $pane.find('.initialFilterMode').hide();
+                    $pane.find('.normalFilterMode').show();
                 });
             }
         };

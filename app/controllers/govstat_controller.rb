@@ -110,69 +110,78 @@ protected
               customClass: 'goalTitle',
               text: '{goal.subject ||We} will ' +
                 '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
-                '{goal.name $[d] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
+                '{goal.name $[l] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
                 'before {goal.end_date @[%B %Y] ||sometime}'
             }, {
               type: 'Text',
               htmlClass: 'goalSubtitle',
-              html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit $[l] ||units}</strong>'
+              html: 'This goal is measured by tracking <strong>{goal.metrics.0.title $[l] ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit $[l] ||units}</strong>'
             }, {
               type: 'HorizontalContainer',
               htmlClass: 'prevailingMetric',
               children: [ {
                 type: 'Container',
-                htmlClass: 'metric',
-                children: [ {
-                  type: 'Text',
-                  htmlClass: 'metricType',
-                  html: 'Baseline <strong>{goal.metrics.0.unit $[l] ||}</strong> is'
-                }, {
-                  type: 'Text',
-                  htmlClass: 'metricValue',
-                  html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||N/A}'
-                }, {
-                  type: 'Text',
-                  htmlClass: 'metricTime',
-                  html: 'in <strong>{goal.start_date @[%b %Y] ||}</strong>'
-                } ]
-              }, {
-                type: 'Container',
-                htmlClass: 'metric',
-                children: [ {
-                  type: 'Text',
-                  htmlClass: 'metricType',
-                  html: 'Target <strong>{goal.metrics.0.unit $[l] ||}</strong> is'
-                }, {
-                  type: 'Text',
-                  htmlClass: 'metricValue',
-                  html: '{goal.metrics.0.computed_values.target_value %[,3] ||N/A}'
-                }, {
-                  type: 'Text',
-                  htmlClass: 'metricTime',
-                  html: 'in <strong>{goal.end_date @[%b %Y] ||}</strong>'
-                } ]
-              }, {
-                type: 'Container',
+                weight: 5.5,
                 htmlClass: 'metric currentValue',
                 children: [ {
                   type: 'Text',
-                  htmlClass: 'metricType',
-                  html: 'Current <strong>{goal.metrics.0.unit $[l] ||}</strong> is'
-                }, {
-                  type: 'Text',
-                  htmlClass: 'metricValue',
-                  html: '<span style="color:{category.color}">{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}</span>'
+                  htmlClass: 'metricValue progress-{computed_values.progress ||none}',
+                  html: '<span class="value">{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}</span> <span class="unit">{goal.metrics.0.unit $[l] ||}</span>'
                 }, {
                   type: 'Text',
                   htmlClass: 'metricTime',
-                  styles: { color: '{category.color}' },
                   html: 'measured {goal.metrics.0.computed_values.as_of @[%b %Y] ||today}'
+                }, progress_indicator('goal.metrics.0') ]
+              }, {
+                type: 'Container',
+                weight: 4.5,
+                htmlClass: 'nonCurrent',
+                children: [ {
+                  type: 'Container',
+                  htmlClass: 'metric baselineValue',
+                  children: [ {
+                    type: 'Text',
+                    customClass: 'metricType',
+                    html: 'Baseline'
+                  }, {
+                    type: 'Text',
+                    htmlClass: 'metricValue',
+                    html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||N/A}'
+                  }, {
+                    type: 'Text',
+                    htmlClass: 'metricUnit',
+                    html: '<strong>{goal.metrics.0.unit $[l] ||}</strong>'
+                  }, {
+                    type: 'Text',
+                    htmlClass: 'metricTime',
+                    html: '{goal.start_date @[%B %Y] ||}'
+                  } ]
+                }, {
+                  type: 'Container',
+                  htmlClass: 'metric targetValue',
+                  children: [ {
+                    type: 'Text',
+                    customClass: 'metricType',
+                    html: 'Target'
+                  }, {
+                    type: 'Text',
+                    htmlClass: 'metricValue',
+                    html: '{goal.metrics.0.computed_values.target_value %[,3] ||N/A}'
+                  }, {
+                    type: 'Text',
+                    htmlClass: 'metricUnit',
+                    html: '<strong>{goal.metrics.0.unit $[l] ||}</strong>'
+                  }, {
+                    type: 'Text',
+                    htmlClass: 'metricTime',
+                    html: '{goal.end_date @[%B %Y] ||}'
+                  } ]
                 } ]
               } ]
             }, {
               type: 'Share',
               currentPage: true
-            }, progress_indicator('goal.metrics.0') ]
+            }]
           } ]
         }, {
           type: 'Repeater',
@@ -184,10 +193,22 @@ protected
             htmlClass: 'metricItem index-{_repeaterIndex}',
             children: [
             {
-              weight: 20,
+              weight: 16,
               type: 'Container',
               children: [
-                { type: 'Title', htmlClass: 'metricTitle', text: '{title}' }
+                { type: 'Title', htmlClass: 'metricTitle', text: '{title}' },
+                progress_indicator
+              ]
+            },
+            {
+              weight: 8,
+              type: 'Container',
+              contextId: 'categories_{goal.category}',
+              htmlClass: 'indicatorContainer progress-{computed_values.progress ||none}',
+              children: [
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||N/A}' },
+                { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' },
+                { type: 'Text', htmlClass: 'current type', html: 'measured {computed_values.as_of @[%B %Y] ||today}' }
               ]
             },
             {
@@ -197,7 +218,7 @@ protected
               children: [
                 { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||N/A}' },
                 { type: 'Text', htmlClass: 'baseline unit', html: '{unit ||}' },
-                { type: 'Text', htmlClass: 'baseline type', html: '{goalContext.goal.start_date @[%b %Y] ||} baseline' }
+                { type: 'Text', htmlClass: 'baseline type', html: '{goalContext.goal.start_date @[%B %Y] ||} baseline' }
               ]
             },
             {
@@ -207,26 +228,7 @@ protected
               children: [
                 { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||N/A}' },
                 { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' },
-                { type: 'Text', htmlClass: 'current type', html: '{goalContext.goal.end_date @[%b %Y] ||} target' }
-              ]
-            },
-            {
-              weight: 8,
-              type: 'Container',
-              contextId: 'categories_{goal.category}',
-              htmlClass: 'indicatorContainer',
-              children: [
-                { type: 'Text', htmlClass: 'current value', styles: { color: '{category.color}' }, html: '{computed_values.metric_value %[,3] ||N/A}' },
-                { type: 'Text', htmlClass: 'current unit', html: '<span style="color:{category.color}">{unit ||}</span>' },
-                { type: 'Text', htmlClass: 'current type', html: 'measured {computed_values.as_of @[%b %Y] ||today}' }
-              ]
-            },
-            {
-              weight: 7,
-              type: 'Container',
-              htmlClass: 'progressContainer',
-              children: [
-                progress_indicator
+                { type: 'Text', htmlClass: 'current type', html: '{goalContext.goal.end_date @[%B %Y] ||} target' }
               ]
             }
             ]
@@ -253,7 +255,7 @@ protected
             },
             children: [
               { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
-              { type: 'Chart', chartType: '{dataset.displayFormat.chartType}', height: 220 },
+              { type: 'Visualization', height: 220 },
               { type: 'Button', htmlClass: 'exploreLink ss-right right', notButton: true,
                 href: '/d/{dataset.id}', text: 'Explore this data' }
             ]

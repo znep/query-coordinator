@@ -124,7 +124,7 @@ protected
                 htmlClass: 'metric currentValue',
                 children: [ {
                   type: 'Text',
-                  htmlClass: 'metricValue progress-{computed_values.progress ||none}',
+                  htmlClass: 'metricValue progress-{goal.metrics.0.computed_values.progress ||none}',
                   html: '<span class="value">{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}</span> <span class="unit">{goal.metrics.0.unit $[l] ||}</span>'
                 }, {
                   type: 'Text',

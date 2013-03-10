@@ -102,13 +102,13 @@
 
     .prevailingMetric
       .currentValue
-        padding-top: 2.5em
+        padding-top: 1.5em
 
         .metricValue
           @include text-progress-colors
 
           .value
-            font-size: 7em
+            font-size: 8em
             letter-spacing: -2px
           .unit
             font-size: 2em
@@ -148,8 +148,9 @@
 
           .metricValue
             color: #000
-            font-size: 3.5em
+            font-size: 4.5em
             letter-spacing: -1px
+            margin-bottom: -0.15em
 
           .metricUnit
             color: #000
@@ -192,11 +193,12 @@
       .value
         font-size: 3em
       .unit, .type
-        color: #555
         line-height: 1em
       .unit
         font-size: 1.4em
         padding: 0.2em 0
+      .type
+        color: #555
 
     .goalProgress
       padding-top: 0.6em
@@ -227,7 +229,7 @@
   svg > rect
     fill: none
 
-.goalDescription
+.content-wrapper.goalDescription
   color: #000000
   font-size: 1.2em
   line-height: 1.2em

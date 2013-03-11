@@ -365,8 +365,11 @@ module ApplicationHelper
   end
 
   def render_domain_template(template_name, version = '2b')
-    tmpl = CurrentDomain.templates(version)[template_name] || ''
-    tmpl = tmpl.clone # make a copy so we don't override and we don't leave a mess for the GC
+    render_text_template(CurrentDomain.templates(version)[template_name] || '', version)
+  end
+
+  def render_text_template(tmpl, version = '2b')
+    tmpl = tmpl.clone
 
     DOMAIN_TEMPLATES.each do |subst|
       pattern = '{{' + subst + '}}'

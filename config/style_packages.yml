@@ -179,6 +179,8 @@ screen-videos:
 screen-videos-popup:
 - strip-chrome
 - screen-videos-popup
+govstat-base:
+- screen-govstat-base
 govstat-layout:
 - screen-govstat-base
 - govstat-layout

@@ -42,8 +42,12 @@ http://www.socrata.com
   <![endif]-->
   <%= rendered_stylesheet_tag 'base' %>
   <%- if module_enabled?(:govStat) -%>
-  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css"/>
-  <%= rendered_stylesheet_tag 'govstat-layout' %>
+    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css"/>
+    <%- if @suppress_govstat -%>
+      <%= rendered_stylesheet_tag 'govstat-base' %>
+    <%- else -%>
+      <%= rendered_stylesheet_tag 'govstat-layout' %>
+    <%- end -%>
   <%- end -%>
   <%= rendered_stylesheet_tag 'print', 'print' %>
 
@@ -52,7 +56,7 @@ http://www.socrata.com
 
   <%= yield :head %>
 
-  <%- unless CurrentDomain.properties.custom_css.blank? -%>
+  <%- unless CurrentDomain.properties.custom_css.blank? || (module_enabled?(:govStat) && !@suppress_govstat) -%>
     <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css"/>
   <%- end -%>
 
@@ -93,8 +97,8 @@ http://www.socrata.com
 
       <%- if !@suppress_chrome -%>
       <div id="siteHeader" class="clearfix">
-        <%= render_domain_template(@page_custom_header || 'header_full') %>
-        <%- if module_enabled?(:govStat) -%>
+        <%- if module_enabled?(:govStat) && !@suppress_govstat -%>
+          <%= render_text_template('<div class="clearfix">{{main_logo}}<ul class="siteUserNav">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>') %>
           <ul class="manageActions">
             <li class="home"><a href="<%= manage_path %>" class="ss-home" title="Home">Home</a></li>
             <li class="data"><a href="<%= manage_data_path %>" class="ss-hdd"
@@ -104,12 +108,14 @@ http://www.socrata.com
             <li class="goals"><a href="<%= manage_site_config_path %>" class="ss-wrench"
               title="Manage GovStat configuration">Configuration</a></li>
           </ul>
+        <%- else -%>
+          <%= render_domain_template(@page_custom_header || 'header_full') %>
         <%- end -%>
       </div>
       <%- end -%>
 
       <a name="content"  tabindex="-1"></a>
-      <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
+      <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !@suppress_govstat %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
       <%- else -%>

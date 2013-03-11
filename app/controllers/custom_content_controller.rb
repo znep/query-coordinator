@@ -28,6 +28,9 @@ class CustomContentController < ApplicationController
   end
 
   def govstat_homepage
+    # this is a public-facing page, so always suppress govstat here.
+    @suppress_govstat = true
+
     govstat_config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
     @page = get_page(govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym),
                      '/', CurrentDomain.strings.site_title, params)

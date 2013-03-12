@@ -2065,7 +2065,7 @@
             {
                 event.preventDefault();
 
-                if (dataset.temporary)
+                if (dataset.temporary && !dataset.minorChange)
                 {
                     if (confirm($.t('controls.filter.edit_default.save_confirm')))
                     {

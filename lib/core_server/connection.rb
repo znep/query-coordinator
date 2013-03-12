@@ -28,7 +28,7 @@ module CoreServer
 
     # Require the caller to tell us to use batching, since we won't
     # return anything when we do
-    def get_request(path, custom_headers = {}, use_batching = false, is_anon = false)
+    def get_request(path, custom_headers = {}, use_batching = false, is_anon = false, timeout = 60)
       if @batching && use_batching
         @batch_queue << {:url => path, :requestType => 'GET'}
         nil
@@ -38,7 +38,7 @@ module CoreServer
         result_body = cache.read(cache_key)
         if result_body.nil?
           result_body = generic_request(Net::HTTP::Get.new(path),
-                                        nil, custom_headers, is_anon).body
+                                        nil, custom_headers, is_anon, timeout).body
           cache.write(cache_key, result_body)
         end
 
@@ -152,7 +152,7 @@ module CoreServer
       results_parsed
     end
 
-    def generic_request(request, json = nil, custom_headers = {}, is_anon = false)
+    def generic_request(request, json = nil, custom_headers = {}, is_anon = false, timeout = 60)
       requestor = User.current_user
       if requestor && requestor.session_token
         request['Cookie'] = "#{@@cookie_name}=#{requestor.session_token.to_s}"
@@ -192,7 +192,12 @@ module CoreServer
       end
       result = log(request) do
         Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
-          http.request(request)
+          http.read_timeout = timeout
+          begin
+            http.request(request)
+          rescue Timeout::Error
+            raise CoreServer::TimeoutError.new(timeout)
+          end
         end
       end
 
@@ -206,7 +211,12 @@ module CoreServer
             sleep(10)
             result = log(request) do
               Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
-                http.request(request)
+                http.read_timeout = timeout
+                begin
+                  http.request(request)
+                rescue Timeout::Error
+                  raise CoreServer::TimeoutError.new(timeout)
+                end
               end
             end
           end

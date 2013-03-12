@@ -24,9 +24,9 @@ module Clytemnestra
   end
 
 
-  def self.search_views(opts, use_batch = false, is_anon = false)
+  def self.search_views(opts, use_batch = false, is_anon = false, timeout = 25)
     path = "/search/views.json?#{opts.to_core_param}"
-    result = CoreServer::Base.connection.get_request(path, {}, use_batch, is_anon)
+    result = CoreServer::Base.connection.get_request(path, {}, use_batch, is_anon, timeout)
     ViewSearchResult.from_result(result)
   end
 

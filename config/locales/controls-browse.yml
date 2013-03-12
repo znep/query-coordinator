@@ -64,6 +64,7 @@ en:
       listing:
         share_this_dataset: Share this Dataset
         no_results: No Results
+        timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
         result_count: Showing %{this} of %{total}
         federation_source: Federated from %{source}
         # same as above but with a link. no particular reason the wording is different.
@@ -184,6 +185,7 @@ it:
       listing:
         share_this_dataset: Condividi questo set di dati
         no_results: Nessun risultato
+        timeout: Siamo spiacenti. I risultati non possono essere recuperate da questo momento. Si prega di riprovare più tardi.
         result_count: %{this} di %{total}
         federation_source: Federato da %{source}
         # same as above but with a link. no particular reason the wording is different.

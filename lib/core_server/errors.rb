@@ -53,5 +53,16 @@ module CoreServer
     end
   end
 
+  class TimeoutError < StandardError
+    def initialize(timeout, message = nil)
+      @message = message
+      @timeout = timeout
+    end
+
+    def to_s
+      "Timed out after #{@timeout} seconds #{@message}"
+    end
+  end
+
   class ResourceNotFound < ConnectionError; end
 end

@@ -190,6 +190,7 @@ protected
       port: request.port,
       disable: {},
       no_results_text: I18n.t('controls.browse.listing.no_results'),
+      timeout_text: I18n.t('controls.browse.listing.timeout'),
       base_url: request.path,
       view_type: 'table'
     }
@@ -312,9 +313,14 @@ protected
     browse_options[:user_params] = user_params.reject{ |k| ignore_params.include? k }
 
     if browse_options[:view_results].nil?
-      view_results = Clytemnestra.search_views(browse_options[:search_options])
-      browse_options[:view_count] = view_results.count
-      browse_options[:view_results] = view_results.results
+      begin
+        view_results = Clytemnestra.search_views(browse_options[:search_options])
+        browse_options[:view_count] = view_results.count
+        browse_options[:view_results] = view_results.results
+      rescue CoreServer::TimeoutError
+        browse_options[:view_request_timed_out] = true
+        browse_options[:view_results] = []
+      end
     end
 
     # check whether or not we need to display icons for other domains

@@ -228,6 +228,8 @@
         {
             var layerObj = this;
             var layer = layerObj._displayLayer;
+            if (layer.visibility === false || layer.opacity === 0)
+            { return; } // Don't request data for invisible layer.
 
             var pixel = layerObj._map.events.getMousePosition(evt);
             var sr = new esri.SpatialReference(

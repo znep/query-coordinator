@@ -1,0 +1,25 @@
+[
+  {
+    "type" : "operator",
+    "value" : "AND",
+    "children" : [ {
+      "type" : "operator",
+      "value" : "AND",
+      "children" : [ {
+        "type" : "operator",
+        "value" : "WITHIN_CIRCLE",
+        "children" : [ {
+          "type" : "column",
+          "columnFieldName" : "action_step_name"
+        } ]
+      }, {
+        "type" : "operator",
+        "value" : "IS_BLANK",
+        "children" : [ {
+          "type" : "column",
+          "columnFieldName" : "leadership"
+        } ]
+      } ]
+    }]
+  }
+]

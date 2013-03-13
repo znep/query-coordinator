@@ -1,0 +1,665 @@
+{
+  "id" : "8vyz-328w",
+  "name" : "All The Types",
+  "averageRating" : 0,
+  "createdAt" : 1362529582,
+  "displayType" : "table",
+  "downloadCount" : 0,
+  "numberOfComments" : 0,
+  "oid" : 2745755,
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1362779118,
+  "publicationGroup" : 716280,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1362779091,
+  "rowsUpdatedBy" : "2fra-n3vu",
+  "signed" : false,
+  "tableId" : 720390,
+  "totalTimesRated" : 0,
+  "viewCount" : 13,
+  "viewLastModified" : 1362779118,
+  "viewType" : "tabular",
+  "columns" : [ {
+    "id" : 49111196,
+    "name" : "COMPARE_TO_FIRST",
+    "dataTypeName" : "text",
+    "fieldName" : "compare_to_first",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 8440775,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 7,
+      "smallest" : "BASELINE",
+      "null" : 0,
+      "largest" : "STARTS_WITH",
+      "top" : [ {
+        "count" : 20,
+        "item" : "BASELINE"
+      }, {
+        "count" : 19,
+        "item" : "NOT_EQUALS"
+      }, {
+        "count" : 18,
+        "item" : "EQUALS"
+      }, {
+        "count" : 17,
+        "item" : "GREATER_THAN"
+      }, {
+        "count" : 16,
+        "item" : "LESS_THAN"
+      }, {
+        "count" : 15,
+        "item" : "CONTAINS"
+      }, {
+        "count" : 14,
+        "item" : "STARTS_WITH"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110355,
+    "name" : "ptext",
+    "dataTypeName" : "text",
+    "fieldName" : "ptext",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 8381853,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 7,
+      "smallest" : "Apple",
+      "null" : 0,
+      "largest" : "Zippy",
+      "top" : [ {
+        "count" : 20,
+        "item" : "This is plain"
+      }, {
+        "count" : 19,
+        "item" : "Plain is this"
+      }, {
+        "count" : 18,
+        "item" : "Zippy"
+      }, {
+        "count" : 17,
+        "item" : "Apple"
+      }, {
+        "count" : 16,
+        "item" : "is"
+      }, {
+        "count" : 15,
+        "item" : "This"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110356,
+    "name" : "ftext",
+    "dataTypeName" : "html",
+    "fieldName" : "ftext",
+    "position" : 3,
+    "renderTypeName" : "html",
+    "tableColumnId" : 8381854,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : "I LIKE IT BOLD",
+      "null" : 4,
+      "largest" : "I LIKE STRIKETHROUGH",
+      "top" : [ {
+        "count" : 20,
+        "item" : "I LIKE IT BOLD"
+      }, {
+        "count" : 19,
+        "item" : "I LIKE STRIKETHROUGH"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110357,
+    "name" : "num",
+    "dataTypeName" : "number",
+    "fieldName" : "num",
+    "position" : 4,
+    "renderTypeName" : "number",
+    "tableColumnId" : 8381855,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 5,
+      "smallest" : "45",
+      "sum" : "106833",
+      "null" : 2,
+      "average" : "21366.6",
+      "largest" : "99999",
+      "top" : [ {
+        "count" : 20,
+        "item" : "1234"
+      }, {
+        "count" : 19,
+        "item" : "4321"
+      }, {
+        "count" : 18,
+        "item" : "99999"
+      }, {
+        "count" : 17,
+        "item" : "45"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110358,
+    "name" : "money",
+    "dataTypeName" : "money",
+    "fieldName" : "money",
+    "position" : 5,
+    "renderTypeName" : "money",
+    "tableColumnId" : 8381856,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 4,
+      "smallest" : "0.01",
+      "sum" : "191.37",
+      "null" : 3,
+      "average" : "47.8425",
+      "largest" : "99.86",
+      "top" : [ {
+        "count" : 20,
+        "item" : "45.75"
+      }, {
+        "count" : 19,
+        "item" : "99.86"
+      }, {
+        "count" : 18,
+        "item" : "0.01"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110359,
+    "name" : "percent",
+    "dataTypeName" : "percent",
+    "fieldName" : "percent",
+    "position" : 6,
+    "renderTypeName" : "percent",
+    "tableColumnId" : 8381857,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 1,
+      "smallest" : "67",
+      "sum" : "67",
+      "null" : 6,
+      "average" : "67",
+      "largest" : "67",
+      "top" : [ {
+        "count" : 20,
+        "item" : "67"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110360,
+    "name" : "dtime",
+    "dataTypeName" : "calendar_date",
+    "fieldName" : "dtime",
+    "position" : 7,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 8381858,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 5,
+      "smallest" : "2012-11-06T00:00:00",
+      "null" : 2,
+      "largest" : "2013-04-11T00:00:00",
+      "top" : [ {
+        "count" : 20,
+        "item" : "2013-03-07T00:00:00"
+      }, {
+        "count" : 19,
+        "item" : "2013-03-22T00:00:00"
+      }, {
+        "count" : 18,
+        "item" : "2013-04-11T00:00:00"
+      }, {
+        "count" : 17,
+        "item" : "2012-11-06T00:00:00"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110361,
+    "name" : "dtimetz",
+    "dataTypeName" : "date",
+    "fieldName" : "dtimetz",
+    "position" : 8,
+    "renderTypeName" : "date",
+    "tableColumnId" : 8381868,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 5,
+      "smallest" : 1354435200,
+      "null" : 2,
+      "largest" : 1379574000,
+      "top" : [ {
+        "count" : 20,
+        "item" : 1362297600
+      }, {
+        "count" : 19,
+        "item" : 1362124800
+      }, {
+        "count" : 18,
+        "item" : 1379574000
+      }, {
+        "count" : 17,
+        "item" : 1354435200
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110365,
+    "name" : "geo",
+    "dataTypeName" : "location",
+    "fieldName" : "geo",
+    "position" : 9,
+    "renderTypeName" : "location",
+    "tableColumnId" : 8381911,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : {
+        "longitude" : "-122.3342440110845",
+        "latitude" : "47.60164773409304",
+        "human_address" : "{\"address\":\"111 1st Ave.\",\"city\":\"Seattle\",\"state\":\"WA\",\"zip\":\"\"}"
+      },
+      "null" : 4,
+      "largest" : {
+        "longitude" : "-149.89781520082622",
+        "latitude" : "61.20387584860754",
+        "human_address" : "{\"address\":\"1810 Arctic Blvd\",\"city\":\"Anchorage\",\"state\":\"AK\",\"zip\":\"\"}"
+      },
+      "top" : [ {
+        "count" : 20,
+        "item" : {
+          "longitude" : "-122.3342440110845",
+          "latitude" : "47.60164773409304",
+          "human_address" : "{\"address\":\"111 1st Ave.\",\"city\":\"Seattle\",\"state\":\"WA\",\"zip\":\"\"}"
+        }
+      }, {
+        "count" : 19,
+        "item" : {
+          "longitude" : "-149.89781520082622",
+          "latitude" : "61.20387584860754",
+          "human_address" : "{\"address\":\"1810 Arctic Blvd\",\"city\":\"Anchorage\",\"state\":\"AK\",\"zip\":\"\"}"
+        }
+      }, {
+        "count" : 18,
+        "item" : {
+          "longitude" : "-122.3342440110845",
+          "latitude" : "47.60164773409304",
+          "human_address" : "{\"address\":\"111 1st Ave.\",\"city\":\"Seattle\",\"state\":\"WA\",\"zip\":\"\"}"
+        }
+      } ]
+    },
+    "format" : {
+    },
+    "subColumnTypes" : [ "human_address", "latitude", "longitude", "machine_address", "needs_recoding" ]
+  }, {
+    "id" : 49110366,
+    "name" : "url",
+    "dataTypeName" : "url",
+    "fieldName" : "url",
+    "position" : 10,
+    "renderTypeName" : "url",
+    "tableColumnId" : 8381928,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : {
+        "description" : "EXPLORE",
+        "url" : "http://explore.data.gov"
+      },
+      "null" : 4,
+      "largest" : {
+        "description" : "Homepage",
+        "url" : "http://www.socrata.com"
+      },
+      "top" : [ {
+        "count" : 20,
+        "item" : {
+          "description" : "Homepage",
+          "url" : "http://www.socrata.com"
+        }
+      }, {
+        "count" : 19,
+        "item" : {
+          "description" : "EXPLORE",
+          "url" : "http://explore.data.gov"
+        }
+      } ]
+    },
+    "format" : {
+    },
+    "subColumnTypes" : [ "url", "description" ]
+  }, {
+    "id" : 49110367,
+    "name" : "email",
+    "dataTypeName" : "email",
+    "fieldName" : "email",
+    "position" : 11,
+    "renderTypeName" : "email",
+    "tableColumnId" : 8381929,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 5,
+      "smallest" : "apple.johnney@socrata.com",
+      "null" : 2,
+      "largest" : "zip.person@socrata.com",
+      "top" : [ {
+        "count" : 20,
+        "item" : "john.kew@socrata.com"
+      }, {
+        "count" : 19,
+        "item" : "jkew@socrata.com"
+      }, {
+        "count" : 18,
+        "item" : "zip.person@socrata.com"
+      }, {
+        "count" : 17,
+        "item" : "apple.johnney@socrata.com"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110368,
+    "name" : "checkbox",
+    "dataTypeName" : "checkbox",
+    "fieldName" : "checkbox",
+    "position" : 12,
+    "renderTypeName" : "checkbox",
+    "tableColumnId" : 8381934,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 7,
+      "smallest" : false,
+      "null" : 0,
+      "largest" : true,
+      "top" : [ {
+        "count" : 20,
+        "item" : false
+      }, {
+        "count" : 19,
+        "item" : true
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110369,
+    "name" : "flag",
+    "dataTypeName" : "flag",
+    "fieldName" : "flag",
+    "position" : 13,
+    "renderTypeName" : "flag",
+    "tableColumnId" : 8381938,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 5,
+      "smallest" : "blue",
+      "null" : 2,
+      "largest" : "red",
+      "top" : [ {
+        "count" : 20,
+        "item" : "green"
+      }, {
+        "count" : 19,
+        "item" : "blue"
+      }, {
+        "count" : 18,
+        "item" : "purple"
+      }, {
+        "count" : 17,
+        "item" : "red"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110370,
+    "name" : "star",
+    "dataTypeName" : "stars",
+    "fieldName" : "star",
+    "position" : 14,
+    "renderTypeName" : "stars",
+    "tableColumnId" : 8381939,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 4,
+      "smallest" : "1",
+      "sum" : "12",
+      "null" : 3,
+      "average" : "3",
+      "largest" : "5",
+      "top" : [ {
+        "count" : 20,
+        "item" : "3"
+      }, {
+        "count" : 19,
+        "item" : "5"
+      }, {
+        "count" : 18,
+        "item" : "1"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110371,
+    "name" : "phone",
+    "dataTypeName" : "phone",
+    "fieldName" : "phone",
+    "position" : 15,
+    "renderTypeName" : "phone",
+    "tableColumnId" : 8381940,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 4,
+      "smallest" : {
+        "phone_number" : "111-1111",
+        "phone_type" : "Other"
+      },
+      "null" : 3,
+      "largest" : {
+        "phone_number" : "867-5309",
+        "phone_type" : "Fax"
+      },
+      "top" : [ {
+        "count" : 20,
+        "item" : {
+          "phone_number" : "234-345-9000",
+          "phone_type" : "Cell"
+        }
+      }, {
+        "count" : 19,
+        "item" : {
+          "phone_number" : "867-5309",
+          "phone_type" : "Fax"
+        }
+      }, {
+        "count" : 18,
+        "item" : {
+          "phone_number" : "111-1111",
+          "phone_type" : "Other"
+        }
+      } ]
+    },
+    "format" : {
+    },
+    "subColumnTypes" : [ "phone_number", "phone_type" ]
+  }, {
+    "id" : 49110372,
+    "name" : "multchoice",
+    "dataTypeName" : "drop_down_list",
+    "fieldName" : "multchoice",
+    "position" : 16,
+    "renderTypeName" : "drop_down_list",
+    "tableColumnId" : 8381953,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 6,
+      "smallest" : "nmed-wusw",
+      "null" : 1,
+      "largest" : "gq8a-gxfs",
+      "top" : [ {
+        "count" : 20,
+        "item" : "gq8a-gxfs"
+      }, {
+        "count" : 19,
+        "item" : "4kux-vpvf"
+      }, {
+        "count" : 18,
+        "item" : "nmed-wusw"
+      } ]
+    },
+    "dropDown" : {
+      "values" : [ {
+        "id" : "nmed-wusw",
+        "deleted" : false,
+        "description" : "one"
+      }, {
+        "id" : "gq8a-gxfs",
+        "deleted" : false,
+        "description" : "two"
+      }, {
+        "id" : "4kux-vpvf",
+        "deleted" : false,
+        "description" : "three"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110373,
+    "name" : "photo",
+    "dataTypeName" : "photo",
+    "fieldName" : "photo",
+    "position" : 17,
+    "renderTypeName" : "photo",
+    "tableColumnId" : 8381954,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 2,
+      "null" : 5
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49110374,
+    "name" : "document",
+    "dataTypeName" : "document",
+    "fieldName" : "document",
+    "position" : 18,
+    "renderTypeName" : "document",
+    "tableColumnId" : 8381955,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 7,
+      "null" : 0
+    },
+    "format" : {
+    },
+    "subColumnTypes" : [ "content_type", "file_id", "filename", "size" ]
+  }, {
+    "id" : 49110375,
+    "name" : "nested_table",
+    "dataTypeName" : "nested_table",
+    "fieldName" : "nested_table",
+    "position" : 19,
+    "renderTypeName" : "nested_table",
+    "tableColumnId" : 8381956,
+    "width" : 100,
+    "childColumns" : [ {
+      "id" : 49110377,
+      "name" : "nested_1",
+      "dataTypeName" : "text",
+      "fieldName" : "untitled",
+      "position" : 1,
+      "renderTypeName" : "text",
+      "tableColumnId" : 8381958,
+      "width" : 100,
+      "format" : {
+        "align" : "left"
+      }
+    } ],
+    "format" : {
+    }
+  }, {
+    "id" : 49110378,
+    "name" : "dataset_link",
+    "dataTypeName" : "dataset_link",
+    "fieldName" : "dataset_link",
+    "position" : 20,
+    "renderTypeName" : "dataset_link",
+    "tableColumnId" : 8381982,
+    "width" : 100,
+    "format" : {
+      "linkedDataset" : "644b-gaut"
+    }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "renderTypeConfig" : {
+      "visible" : {
+        "table" : true
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "2fra-n3vu",
+    "displayName" : "John Kew",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileLastModified" : 1355365728,
+    "screenName" : "John Kew",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+    "flags" : [ "admin" ]
+  },
+  "query" : {
+    "orderBys" : [ {
+      "ascending" : true,
+      "expression" : {
+        "columnId" : 49110356,
+        "type" : "column"
+      }
+    } ]
+  },
+  "rights" : [ "read" ],
+  "sortBys" : [ {
+    "id" : 0,
+    "viewColumnId" : 49110356,
+    "flags" : [ "asc" ]
+  } ],
+  "tableAuthor" : {
+    "id" : "2fra-n3vu",
+    "displayName" : "John Kew",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileLastModified" : 1355365728,
+    "screenName" : "John Kew",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+    "flags" : [ "admin" ]
+  },
+  "flags" : [ "default" ]
+}

@@ -1,0 +1,119 @@
+[
+  {
+    "type" : "operator",
+    "value" : "AND",
+    "children" : [ {
+      "type" : "operator",
+      "value" : "AND",
+      "children" : [ {
+        "type" : "operator",
+        "value" : "IS_NOT_BLANK",
+        "children" : [ {
+          "type" : "column",
+          "columnFieldName" : "action_step_name"
+        } ]
+      }, {
+        "type" : "operator",
+        "value" : "IS_BLANK",
+        "children" : [ {
+          "type" : "column",
+          "columnFieldName" : "leadership"
+        } ]
+      } ]
+    },
+    {
+      "type" : "operator",
+      "value" : "AND",
+      "children" : [ {
+        "type" : "operator",
+        "value" : "IS_NOT_BLANK",
+        "children" : [ {
+          "type" : "column",
+          "columnFieldName" : "action_step_name"
+        } ]
+      }, {
+        "type" : "operator",
+        "value" : "IS_BLANK",
+        "children" : [ {
+          "type" : "column",
+          "columnFieldName" : "leadership"
+        } ]
+      } ]
+    }
+    ]
+  },
+  {
+  "type" : "operator",
+  "value" : "AND",
+  "children" : [ {
+    "type" : "operator",
+    "value" : "IS_NOT_BLANK",
+    "children" : [ {
+      "type" : "column",
+      "columnFieldName" : "action_step_name"
+    } ]
+  }, {
+    "type" : "operator",
+    "value" : "IS_NOT_BLANK",
+    "children" : [ {
+      "type" : "column",
+      "columnFieldName" : "leadership"
+    } ]
+  } ]
+  },
+  {},
+  {
+    "type" : "operator",
+    "value" : "AND",
+    "children" : [ {
+      "type" : "operator",
+      "value" : "EQUALS",
+      "children" : [ {
+        "type" : "column",
+        "columnFieldName" : "action_step_id"
+      }, {
+        "type" : "literal",
+        "value" : "{action_step_id || -1}"
+      } ]
+    }, {
+      "type" : "operator",
+      "value" : "EQUALS",
+      "children" : [ {
+        "type" : "column",
+        "columnFieldName" : "goal_id"
+      }, {
+        "type" : "literal",
+        "value" : "{goal_id || -1}"
+      } ]
+    }, {
+      "type" : "operator",
+      "value" : "EQUALS",
+      "children" : [ {
+        "type" : "column",
+        "columnFieldName" : "objective_id"
+      }, {
+        "type" : "literal",
+        "value" : "{objective_id || -1}"
+      } ]
+    }, {
+      "type" : "operator",
+      "value" : "EQUALS",
+      "children" : [ {
+        "type" : "column",
+        "columnFieldName" : "strategy_id"
+      }, {
+        "type" : "literal",
+        "value" : "{strategy_id || -1}"
+      } ]
+    } , {
+      "type" : "operator",
+      "value" : "IS_NOT_BLANK",
+      "children" : [ {
+        "type" : "column",
+        "columnFieldName" : "approved"
+      } ]
+    } ]
+  }
+
+
+]

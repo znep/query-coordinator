@@ -1,0 +1,953 @@
+{
+  "meta" : {
+    "view" : {
+      "id" : "vedg-c5sb",
+      "name" : "2010 Report to Congress on White House Staff",
+      "averageRating" : 63,
+      "category" : "Government",
+      "createdAt" : 1278017457,
+      "displayType" : "table",
+      "downloadCount" : 8703,
+      "numberOfComments" : 12,
+      "oid" : 301551,
+      "publicationAppendEnabled" : false,
+      "publicationDate" : 1302998589,
+      "publicationGroup" : 218173,
+      "publicationStage" : "published",
+      "rowClass" : "",
+      "rowsUpdatedAt" : 1313892792,
+      "rowsUpdatedBy" : "bhnt-uir2",
+      "signed" : false,
+      "tableId" : 218173,
+      "totalTimesRated" : 11,
+      "viewCount" : 497285,
+      "viewLastModified" : 1339007640,
+      "viewType" : "tabular",
+      "columns" : [ {
+        "id" : -1,
+        "name" : "sid",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":sid",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "id",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":id",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "position",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":position",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : 2519204,
+        "name" : "Employee Name",
+        "dataTypeName" : "text",
+        "fieldName" : "employee_name",
+        "position" : 1,
+        "renderTypeName" : "text",
+        "tableColumnId" : 1389398,
+        "width" : 117,
+        "cachedContents" : {
+          "non_null" : 469,
+          "smallest" : "Abrams, Adam W.",
+          "null" : 0,
+          "largest" : "Zichal, Heather R.",
+          "top" : [ {
+            "count" : 20,
+            "item" : "Barnes, Melody C."
+          }, {
+            "count" : 19,
+            "item" : "Baldassaro, Frederick J."
+          }, {
+            "count" : 18,
+            "item" : "Baggetto, Maude L."
+          }, {
+            "count" : 17,
+            "item" : "Ayling, Lindsay A."
+          }, {
+            "count" : 16,
+            "item" : "Axelrod, David M."
+          }, {
+            "count" : 15,
+            "item" : "Attili, Candice L."
+          }, {
+            "count" : 14,
+            "item" : "Asen, Jonathan D."
+          }, {
+            "count" : 13,
+            "item" : "Anello, Russell M."
+          }, {
+            "count" : 12,
+            "item" : "Andrias, Kate E."
+          }, {
+            "count" : 11,
+            "item" : "Anderson, Charles D."
+          }, {
+            "count" : 10,
+            "item" : "Anderson, Amanda D."
+          }, {
+            "count" : 9,
+            "item" : "Amorsingh, Lucius L."
+          }, {
+            "count" : 8,
+            "item" : "Alley, Hilary J."
+          }, {
+            "count" : 7,
+            "item" : "Aldy, Jr., Joseph E."
+          }, {
+            "count" : 6,
+            "item" : "Albino, James "
+          }, {
+            "count" : 5,
+            "item" : "Agnew, David P."
+          }, {
+            "count" : 4,
+            "item" : "Adams, Ian H."
+          }, {
+            "count" : 3,
+            "item" : "Abrams, Adam W."
+          } ]
+        },
+        "format" : {
+          "aggregate" : "count"
+        }
+      }, {
+        "id" : 2519205,
+        "name" : "Employee Status",
+        "dataTypeName" : "text",
+        "description" : "The type of the stated employee",
+        "fieldName" : "employee_status",
+        "position" : 2,
+        "renderTypeName" : "text",
+        "tableColumnId" : 1389399,
+        "width" : 142,
+        "cachedContents" : {
+          "non_null" : 469,
+          "smallest" : "Detailee",
+          "null" : 0,
+          "largest" : "Employee (part-time)",
+          "top" : [ {
+            "count" : 20,
+            "item" : "Employee"
+          }, {
+            "count" : 19,
+            "item" : "Detailee"
+          }, {
+            "count" : 18,
+            "item" : "Employee (part-time)"
+          } ]
+        },
+        "format" : {
+        }
+      }, {
+        "id" : 2519209,
+        "name" : "Salary",
+        "dataTypeName" : "money",
+        "description" : "The salary paid per period",
+        "fieldName" : "salary",
+        "position" : 3,
+        "renderTypeName" : "money",
+        "tableColumnId" : 1389403,
+        "width" : 142,
+        "cachedContents" : {
+          "non_null" : 469,
+          "smallest" : "0.00",
+          "sum" : "38796307.00",
+          "null" : 0,
+          "average" : "82721.33688699360",
+          "largest" : "179700.00",
+          "top" : [ {
+            "count" : 20,
+            "item" : "50000.00"
+          }, {
+            "count" : 19,
+            "item" : "42000.00"
+          }, {
+            "count" : 18,
+            "item" : "66300.00"
+          }, {
+            "count" : 17,
+            "item" : "45000.00"
+          }, {
+            "count" : 16,
+            "item" : "130500.00"
+          }, {
+            "count" : 15,
+            "item" : "45900.00"
+          }, {
+            "count" : 14,
+            "item" : "158500.00"
+          }, {
+            "count" : 13,
+            "item" : "172200.00"
+          }, {
+            "count" : 12,
+            "item" : "71400.00"
+          }, {
+            "count" : 11,
+            "item" : "56100.00"
+          }, {
+            "count" : 10,
+            "item" : "80000.00"
+          }, {
+            "count" : 9,
+            "item" : "102000.00"
+          }, {
+            "count" : 8,
+            "item" : "60000.00"
+          }, {
+            "count" : 7,
+            "item" : "100000.00"
+          }, {
+            "count" : 6,
+            "item" : "113000.00"
+          }, {
+            "count" : 5,
+            "item" : "61200.00"
+          }, {
+            "count" : 4,
+            "item" : "120000.00"
+          }, {
+            "count" : 3,
+            "item" : "58511.00"
+          }, {
+            "count" : 2,
+            "item" : "78000.00"
+          }, {
+            "count" : 1,
+            "item" : "44402.00"
+          } ]
+        },
+        "format" : {
+          "aggregate" : "sum",
+          "humane" : "false",
+          "currency" : "USD"
+        }
+      }, {
+        "id" : 2519207,
+        "name" : "Pay Basis",
+        "dataTypeName" : "text",
+        "description" : "How often the salary is paid out",
+        "fieldName" : "pay_basis",
+        "position" : 4,
+        "renderTypeName" : "text",
+        "tableColumnId" : 1389401,
+        "width" : 128,
+        "cachedContents" : {
+          "non_null" : 469,
+          "smallest" : "Per Annum",
+          "null" : 0,
+          "largest" : "Per Annum",
+          "top" : [ {
+            "count" : 20,
+            "item" : "Per Annum"
+          } ]
+        },
+        "format" : {
+        }
+      }, {
+        "id" : 2519208,
+        "name" : "Position Title",
+        "dataTypeName" : "text",
+        "description" : "The employee's title",
+        "fieldName" : "position_title",
+        "position" : 5,
+        "renderTypeName" : "text",
+        "tableColumnId" : 1389402,
+        "width" : 358,
+        "cachedContents" : {
+          "non_null" : 469,
+          "smallest" : "ADVANCE COORDINATOR",
+          "null" : 0,
+          "largest" : "WHITE HOUSE BUSINESS LIAISON",
+          "top" : [ {
+            "count" : 20,
+            "item" : "RECORDS MANAGEMENT ANALYST"
+          }, {
+            "count" : 19,
+            "item" : "STAFF ASSISTANT"
+          }, {
+            "count" : 18,
+            "item" : "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT"
+          }, {
+            "count" : 17,
+            "item" : "SPECIAL ASSISTANT TO THE WHITE HOUSE COUNSEL"
+          }, {
+            "count" : 16,
+            "item" : "ASSISTANT SHIFT LEADER"
+          }, {
+            "count" : 15,
+            "item" : "ASSISTANT PRESS SECRETARY"
+          }, {
+            "count" : 14,
+            "item" : "ANALYST"
+          }, {
+            "count" : 13,
+            "item" : "EXECUTIVE ASSISTANT TO THE CHIEF OF STAFF TO THE FIRST LADY"
+          }, {
+            "count" : 12,
+            "item" : "DEPUTY DIRECTOR OF PUBLIC ENGAGEMENT"
+          }, {
+            "count" : 11,
+            "item" : "DEPUTY ASSOCIATE DIRECTOR OF INTERGOVERNMENTAL AFFAIRS"
+          }, {
+            "count" : 10,
+            "item" : "LEGISLATIVE ASSISTANT"
+          }, {
+            "count" : 9,
+            "item" : "RESEARCHER"
+          }, {
+            "count" : 8,
+            "item" : "SPECIAL ASSISTANT"
+          }, {
+            "count" : 7,
+            "item" : "DIRECTOR OF SPECIAL PROJECTS AND SPECIAL ASSISTANT TO THE OFFICE OF THE CHIEF OF STAFF"
+          }, {
+            "count" : 6,
+            "item" : "ASSOCIATE DIRECTOR OF URBAN AFFAIRS"
+          }, {
+            "count" : 5,
+            "item" : "DIRECTOR, ONLINE ENGAGEMENT"
+          }, {
+            "count" : 4,
+            "item" : "LEGISLATIVE ASSISTANT AND ASSISTANT FOR EVENTS"
+          }, {
+            "count" : 3,
+            "item" : "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF ADVANCE AND OPERATIONS"
+          }, {
+            "count" : 2,
+            "item" : "DEPUTY DIRECTOR FOR MEDIA AFFAIRS"
+          }, {
+            "count" : 1,
+            "item" : "SPECIAL ASSISTANT AND ADVANCE LEAD"
+          } ]
+        },
+        "format" : {
+        }
+      } ],
+      "grants" : [ {
+        "inherited" : false,
+        "type" : "viewer",
+        "flags" : [ "public" ]
+      } ],
+      "metadata" : {
+        "availableDisplayTypes" : [ "table", "fatrow", "page" ],
+        "rdfSubject" : "0",
+        "facets" : [ {
+          "multiSelect" : true,
+          "tableColumnId" : 1389399,
+          "type" : "discrete",
+          "top" : 3
+        }, {
+          "multiSelect" : true,
+          "ranges" : [ 0, 50000, 80000, 100000, 120000, 150000, 180000 ],
+          "tableColumnId" : 1389403,
+          "type" : "ranges"
+        }, {
+          "multiSelect" : true,
+          "tableColumnId" : 1389402,
+          "type" : "discrete",
+          "top" : 20
+        } ],
+        "filterCondition" : {
+          "value" : "AND",
+          "children" : [ {
+            "value" : "OR",
+            "type" : "operator",
+            "metadata" : {
+              "multiSelect" : false,
+              "includeAuto" : 5,
+              "tableColumnId" : 1389399,
+              "operator" : "EQUALS"
+            }
+          }, {
+            "value" : "OR",
+            "type" : "operator",
+            "metadata" : {
+              "customValues" : [ [ "0", "59999" ], [ "60000", "99999" ], [ "100000", "149999" ], [ "150000", "999999" ] ],
+              "tableColumnId" : 1389403,
+              "operator" : "BETWEEN"
+            }
+          }, {
+            "value" : "OR",
+            "type" : "operator",
+            "metadata" : {
+              "includeAuto" : 10,
+              "tableColumnId" : 1389402,
+              "operator" : "EQUALS"
+            }
+          } ],
+          "type" : "operator",
+          "metadata" : {
+            "unifiedVersion" : 1,
+            "advanced" : true
+          }
+        },
+        "rowIdentifier" : "0",
+        "rdfClass" : ""
+      },
+      "owner" : {
+        "id" : "bhnt-uir2",
+        "displayName" : "whitehouse",
+        "emailUnsubscribed" : false,
+        "privacyControl" : "login",
+        "profileLastModified" : 1361567417,
+        "screenName" : "whitehouse"
+      },
+      "query" : {
+        "orderBys" : [ {
+          "ascending" : false,
+          "expression" : {
+            "columnId" : 2519204,
+            "type" : "column"
+          }
+        } ]
+      },
+      "ratings" : {
+        "rating" : 64
+      },
+      "rights" : [ "read" ],
+      "sortBys" : [ {
+        "id" : 0,
+        "viewColumnId" : 2519204
+      } ],
+      "tableAuthor" : {
+        "id" : "bhnt-uir2",
+        "displayName" : "whitehouse",
+        "emailUnsubscribed" : false,
+        "privacyControl" : "login",
+        "profileLastModified" : 1361567417,
+        "screenName" : "whitehouse"
+      },
+      "tags" : [ "whitehouse", "salary", "government", "congress", "white house staff" ],
+      "flags" : [ "default" ]
+    }
+  },
+  "data" : [ [ 469, "0AB95D7A-6B52-4BCB-A654-EA5F5382B9AD", 469, 1278026248, "275909", 1278026248, "275909", null, "Zichal, Heather R.", "Employee", "100000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT FOR ENERGY AND CLIMATE CHANGE" ]
+, [ 468, "496F46E3-8987-411E-8DAA-C3A557F0A1D2", 468, 1278026248, "275909", 1278026248, "275909", null, "Zelman, Allison L.", "Employee", "50000.00", "Per Annum", "POLICY ASSISTANT" ]
+, [ 467, "655A2B0E-3663-401F-B019-C4FE4AFA7C06", 467, 1278026248, "275909", 1278026248, "275909", null, "Young, Latoya A.", "Employee", "58511.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 466, "92D65C2C-8EC6-4249-833F-79BFC6F581FC", 466, 1278026248, "275909", 1278026248, "275909", null, "Young, Katherine H.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 465, "4CFB8A9D-C8FC-46C6-8A37-16DEB6FE559F", 465, 1278026248, "275909", 1278026248, "275909", null, "Young, Jr., Reginald D.", "Employee", "60232.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 464, "659CE459-F54E-4A12-A4D7-05EBA73336AA", 464, 1278026248, "275909", 1278026248, "275909", null, "Yeager Kaplan, Jennifer F.", "Employee", "66300.00", "Per Annum", "SPECIAL ASSISTANT TO THE DIRECTOR OF PUBLIC ENGAGEMENT" ]
+, [ 463, "6F06CB38-D0BF-49C0-8804-76FED7DAE212", 463, 1278026248, "275909", 1278026248, "275909", null, "Wright, Jessica N.", "Employee", "96900.00", "Per Annum", "DEPUTY DIRECTOR OF SCHEDULING FOR THE PRESIDENT" ]
+, [ 462, "847DBB97-C99A-4172-8432-78A86B7BC7D6", 462, 1278026248, "275909", 1278026248, "275909", null, "Wong, Shale L.", "Employee", "0.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 461, "B65B3E2D-C75B-49FE-8200-CF450C295A49", 461, 1278026248, "275909", 1278026248, "275909", null, "Witt, Abigail", "Employee", "45000.00", "Per Annum", "SPECIAL ASSISTANT TO THE CHIEF OF STAFF OF THE OFFICE OF INTERGOVERNMENTAL AFFAIRS AND PUBLIC ENGAGEMENT" ]
+, [ 460, "7DB63C86-F20D-4844-A1D4-5433C43C47EC", 460, 1278026248, "275909", 1278026248, "275909", null, "Winter, Melissa", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DEPUTY CHIEF OF STAFF TO THE FIRST LADY" ]
+, [ 459, "B50C6945-82D2-4988-821C-44FF438247C3", 459, 1278026248, "275909", 1278026248, "275909", null, "Wilson, Samuel A.", "Employee", "45000.00", "Per Annum", "DEPUTY DIRECTOR FOR BROADCAST MEDIA" ]
+, [ 458, "327E389C-7D19-436E-9517-9D55AD74E0EB", 458, 1278026248, "275909", 1278026248, "275909", null, "Wilson, Denise R.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 457, "D4E3C963-342E-4A83-BE30-CBEA21670286", 457, 1278026248, "275909", 1278026248, "275909", null, "Williams, Sherman A.", "Employee", "74958.00", "Per Annum", "ASSISTANT TO THE EXECUTIVE CLERK" ]
+, [ 456, "E0A6FED2-E3CB-43C1-88F0-820E078C18D5", 456, 1278026248, "275909", 1278026248, "275909", null, "Williams, Marie J.", "Employee", "55000.00", "Per Annum", "BOARDS AND COMMISSIONS DIRECTOR" ]
+, [ 455, "C3E7A200-0697-40C1-B9CA-8C998CB7A66D", 455, 1278026248, "275909", 1278026248, "275909", null, "Whitty, Patrick M.", "Employee", "45000.00", "Per Annum", "EXECUTIVE ASSISTANT" ]
+, [ 454, "B72AA767-B99A-4ECA-AC68-8B25DC67ACF3", 454, 1278026248, "275909", 1278026248, "275909", null, "White, Cleo", "Detailee", "65393.00", "Per Annum", "ANALYST" ]
+, [ 453, "5650C080-F3D8-4BF6-B169-E5E118D8B29D", 453, 1278026248, "275909", 1278026248, "275909", null, "Whichard, IV, David J.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR AND TRIP COORDINATOR" ]
+, [ 452, "E5610C92-5008-44A4-853A-D8D53B26A6CE", 452, 1278026248, "275909", 1278026248, "275909", null, "Weiser, Philip J.", "Detailee", "172000.00", "Per Annum", "SENIOR ADVISOR FOR TECHNOLOGY AND INNOVATION TO THE NATIONAL ECONOMIC COUNCIL DIRECTOR" ]
+, [ 451, "4EF72742-12FE-457A-B8E9-F8DD3401D260", 451, 1278026248, "275909", 1278026248, "275909", null, "Webster, Meridith A.", "Employee", "120000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND SENIOR ADVISOR TO THE CHIEF OF STAFF" ]
+, [ 450, "D6407A25-0A4C-485C-9C47-3A71367DD065", 450, 1278026248, "275909", 1278026248, "275909", null, "Wear, Michael R.", "Employee", "45900.00", "Per Annum", "EXECUTIVE ASSISTANT TO THE EXECUTIVE DIRECTOR" ]
+, [ 449, "88DB6826-FB49-40FA-B29D-45C021D81D8B", 449, 1278026248, "275909", 1278026248, "275909", null, "Watson, Takesha R.", "Employee", "43860.00", "Per Annum", "SPECIAL SERVICES OPERATOR" ]
+, [ 448, "35D30CC4-6771-435C-8072-291A4465BF1A", 448, 1278026248, "275909", 1278026248, "275909", null, "Watkins, Kyle D. ", "Employee", "45000.00", "Per Annum", "SPECIAL ASSISTANT TO THE DEPUTY ASSISTANT TO THE PRESIDENT" ]
+, [ 447, "C1A73FB0-2810-41AD-B225-07D4D43A8662", 447, 1278026248, "275909", 1278026248, "275909", null, "Wang-Levine, Adam", "Employee", "55080.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 446, "64754017-F701-4F61-ADB4-EFCAB32327CD", 446, 1278026248, "275909", 1278026248, "275909", null, "Walsh, Joan L.", "Employee", "60000.00", "Per Annum", "ASSISTANT STAFF SECRETARY" ]
+, [ 445, "7B07BC5B-B8EE-4769-97A6-F3AA15F12A12", 445, 1278026248, "275909", 1278026248, "275909", null, "Wade, Frances J.", "Employee", "44402.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 444, "FC993C0C-8BC5-4E19-9F5D-9262E22A3E2D", 444, 1278026248, "275909", 1278026248, "275909", null, "Wade, David L.", "Employee", "55000.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 443, "85439973-B819-4C05-90A2-0C5542893953", 443, 1278026248, "275909", 1278026248, "275909", null, "Voorman, David A.", "Employee", "45594.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 442, "539C0309-34CF-4AEE-BB84-B86F69675997", 442, 1278026248, "275909", 1278026248, "275909", null, "Vogel, Matthew A.", "Employee", "71400.00", "Per Annum", "ASSOCIATE DIRECTOR OF COMMUNICATIONS FOR ECONOMICS" ]
+, [ 441, "4CD758C9-17F7-4A91-8414-20EF54D0BCF3", 441, 1278026248, "275909", 1278026248, "275909", null, "Vietor, Thomas F.", "Employee", "78000.00", "Per Annum", "ASSISTANT PRESS SECRETARY" ]
+, [ 440, "0BB797A3-0B0C-4C4F-8104-4AB93DDAA258", 440, 1278026248, "275909", 1278026248, "275909", null, "Verrilli, Donald B.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY COUNSEL TO THE PRESIDENT" ]
+, [ 439, "430E94FC-B7B3-49A8-8132-900DFA45377A", 439, 1278026248, "275909", 1278026248, "275909", null, "Vega, Dagoberto", "Employee", "100000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF BROADCAST MEDIA" ]
+, [ 438, "2B0B13ED-CFE7-4F0D-9872-408B63557844", 438, 1278026248, "275909", 1278026248, "275909", null, "Vanderslice, Mara L.", "Detailee", "92001.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 437, "C98E60B3-03C3-4557-B3C2-424BC481DE52", 437, 1278026248, "275909", 1278026248, "275909", null, "Valencia, Stephanie M.", "Employee", "61200.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR OF PUBLIC ENGAGEMENT" ]
+, [ 436, "49D8659D-93EA-49C4-9281-CA5C8B2C6447", 436, 1278026248, "275909", 1278026248, "275909", null, "Vale, Elizabeth A.", "Detailee", "132009.00", "Per Annum", "WHITE HOUSE BUSINESS LIAISON" ]
+, [ 435, "169B5686-7A27-47E9-A895-BF0BB1C354D2", 435, 1278026248, "275909", 1278026248, "275909", null, "Utech, Daniel G.", "Detailee", "130000.00", "Per Annum", "ADVISOR" ]
+, [ 434, "0573DE3F-F2F3-47B1-BD00-5A4736A7A103", 434, 1278026248, "275909", 1278026248, "275909", null, "Turton, Daniel A.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS AND HOUSE LIAISON" ]
+, [ 433, "E5F96486-7B01-4B83-94BF-971D02428673", 433, 1278026248, "275909", 1278026248, "275909", null, "Turk, Andrea E.", "Employee", "50000.00", "Per Annum", "DIRECTOR OF INFORMATION SERVICES" ]
+, [ 432, "F9798A84-95EA-4F58-A83D-9FC46318AD36", 432, 1278026248, "275909", 1278026248, "275909", null, "Tucker, Phyllis J.", "Employee", "89033.00", "Per Annum", "SUPERVISOR OF COMPUTER ADMINISTRATION" ]
+, [ 431, "5A18BCAC-8731-4244-858D-79C0C1BC8305", 431, 1278026248, "275909", 1278026248, "275909", null, "Tucci, Rosarie G.", "Employee", "51000.00", "Per Annum", "SENIOR WRITER" ]
+, [ 430, "1E9110AA-766F-44EA-8B8E-E94CAE2F0123", 430, 1278026248, "275909", 1278026248, "275909", null, "Tubman, Samantha J.", "Employee", "49000.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR" ]
+, [ 429, "342DE607-C937-4A88-AEE4-BFD9F8E9A2E5", 429, 1278026248, "275909", 1278026248, "275909", null, "Tseggai, Gannet L.", "Employee", "66300.00", "Per Annum", "COMMUNICATIONS ADVISOR, DOMESTIC POLICY COUNCIL AND OFFICE OF NATIONAL AIDS POLICY" ]
+, [ 428, "CEA313AA-190D-49DB-B4CB-6B4360584F21", 428, 1278026248, "275909", 1278026248, "275909", null, "Tranchin, Matthew A.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 427, "470D2E15-9DB6-4343-861F-89B7C5C67838", 427, 1278026248, "275909", 1278026248, "275909", null, "Trainor, Gregory T.", "Employee", "68230.00", "Per Annum", "SPECIAL ASSISTANT" ]
+, [ 426, "8F05BA28-B8F1-4076-A760-67496AAAB4C0", 426, 1278026248, "275909", 1278026248, "275909", null, "Thorbjornsen, Lauren K.", "Employee", "45000.00", "Per Annum", "EXECUTIVE ASSISTANT" ]
+, [ 425, "C69BEE2D-2C42-4696-A620-EAE666B60909", 425, 1278026248, "275909", 1278026248, "275909", null, "Thomas, Maria A.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 424, "84BD367B-45A1-4C44-8BFC-DA843961F382", 424, 1278026248, "275909", 1278026248, "275909", null, "Thomas, III, Edwin R.", "Employee", "97936.00", "Per Annum", "ASSISTANT EXECUTIVE CLERK" ]
+, [ 423, "BEE1B91C-0AA7-40CE-824E-BC22C81E916A", 423, 1278026248, "275909", 1278026248, "275909", null, "Terry, Joelle L.", "Employee", "65000.00", "Per Annum", "DEPUTY DIRECTOR OF MESSAGE EVENTS" ]
+, [ 422, "0FA36BED-5571-486D-AA69-557B0A09F51C", 422, 1278026248, "275909", 1278026248, "275909", null, "Terrell, Louisa M.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 421, "5E6EC531-3DE4-4C78-8BC7-809A886B5716", 421, 1278026248, "275909", 1278026248, "275909", null, "Tennison, Angela N.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 420, "91F69BEB-3AD2-4C35-8D3E-0FB3723093B5", 420, 1278026248, "275909", 1278026248, "275909", null, "Teehee, Kimberly K.", "Employee", "100000.00", "Per Annum", "SENIOR POLICY ADVISOR FOR NATIVE AMERICAN AFFAIRS" ]
+, [ 419, "68F702F3-F215-4C49-849E-EFDE44AF72D9", 419, 1278026248, "275909", 1278026248, "275909", null, "Tchen, Christina M.", "Employee", "153500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF THE OFFICE OF PUBLIC ENGAGEMENT" ]
+, [ 418, "A050AE62-4911-4CA3-8DFF-BE76A7F623D0", 418, 1278026248, "275909", 1278026248, "275909", null, "Tate-Gilmore, Ashley R.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR AND TRAVEL MANAGER" ]
+, [ 417, "F3D500E9-70B0-4FA9-A6E0-D232277FA0A8", 417, 1278026248, "275909", 1278026248, "275909", null, "Tamarin, Nathanael P.", "Employee", "96900.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 416, "87C86D3A-3C29-4FEB-B66D-8FA6414EE874", 416, 1278026248, "275909", 1278026248, "275909", null, "Taggart, Jr., Hugh T.", "Employee", "92341.00", "Per Annum", "ASSISTANT SUPERVISOR OF SEARCH AND FILE" ]
+, [ 415, "34573058-7F27-4F60-8D11-80030363CED7", 415, 1278026248, "275909", 1278026248, "275909", null, "Swire, Peter P.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR ECONOMIC POLICY" ]
+, [ 414, "94EAE841-823A-420A-8740-C99643E183A4", 414, 1278026248, "275909", 1278026248, "275909", null, "Sweeney, Sean F.", "Employee", "120000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR, OFFICE OF THE CHIEF OF STAFF" ]
+, [ 413, "19C2FE00-FE5D-4294-9649-8FF2ADA32017", 413, 1278026248, "275909", 1278026248, "275909", null, "Swanson, Gregory C.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 412, "0ECF42D0-6AD1-46AB-B2E7-142538220D97", 412, 1278026248, "275909", 1278026248, "275909", null, "Sutton, Nikki E.", "Employee", "47500.00", "Per Annum", "ASSOCIATE DIRECTOR, NEW MEDIA OPERATIONS" ]
+, [ 411, "8F1B8965-9799-4BA9-A655-98FF5418B1D3", 411, 1278026248, "275909", 1278026248, "275909", null, "Sutphen, Mona K.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DEPUTY CHIEF OF STAFF FOR POLICY" ]
+, [ 410, "B3F430CB-7D32-4642-86FA-FDA216C8BED1", 410, 1278026248, "275909", 1278026248, "275909", null, "Summers, Lawrence H.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT FOR ECONOMIC POLICY AND DIRECTOR OF THE NATIONAL ECONOMIC COUNCIL" ]
+, [ 409, "8FBF567C-6E46-491A-9AEF-4B7E2D8D1722", 409, 1278026248, "275909", 1278026248, "275909", null, "Strautmanis, Michael A.", "Employee", "139500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND CHIEF OF STAFF OF THE OFFICE OF INTERGOVERNMENTAL AFFAIRS AND PUBLIC ENGAGEMENT" ]
+, [ 408, "943E4D11-A74E-4D61-97CC-D0B287722852", 408, 1278026248, "275909", 1278026248, "275909", null, "Stracko, Jill A.", "Employee", "51000.00", "Per Annum", "ASSISTANT DIRECTOR" ]
+, [ 406, "F64B7F59-D3B8-4097-A001-518CC75F0C61", 406, 1278026248, "275909", 1278026248, "275909", null, "Stone, Wandra E.", "Employee", "112774.00", "Per Annum", "SUPERVISOR OF SEARCH AND FILE" ]
+, [ 407, "CD4A00FC-7AF5-46D1-8A6D-213BE0444EB3", 407, 1278026248, "275909", 1278026248, "275909", null, "Stoneman, Shelly O.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 405, "EC072EA3-ECC3-45AD-A7B6-2CB5D958ECF2", 405, 1278026248, "275909", 1278026248, "275909", null, "Stoev, Ivan", "Employee", "50000.00", "Per Annum", "ASSISTANT DIRECTOR" ]
+, [ 404, "0A9581B0-56ED-465E-BAFB-903362475455", 404, 1278026248, "275909", 1278026248, "275909", null, "Stickel, Nicole T.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 403, "13F1B53F-A388-4943-882F-50FC479FC61F", 403, 1278026248, "275909", 1278026248, "275909", null, "Stephens, Semonti M.", "Employee", "53550.00", "Per Annum", "ASSOCIATE DIRECTOR AND DEPUTY PRESS SECRETARY TO THE FIRST LADY" ]
+, [ 402, "9D895715-DF75-4532-B421-A562607D2882", 402, 1278026248, "275909", 1278026248, "275909", null, "Stephens, Jeffrey M.", "Employee", "75000.00", "Per Annum", "DEPUTY DIRECTOR" ]
+, [ 401, "D11951DE-8FEA-4713-BC1E-485D2A03BF81", 401, 1278026248, "275909", 1278026248, "275909", null, "Starkey, Frances M.", "Employee", "80000.00", "Per Annum", "DIRECTOR OF SCHEDULING AND ADVANCE FOR THE FIRST LADY" ]
+, [ 400, "1A5EB813-6C2F-4CEA-87D7-B3FB90093611", 400, 1278026248, "275909", 1278026248, "275909", null, "Spencer, Jane C.", "Employee", "76500.00", "Per Annum", "MIDWEST POLITICAL DIRECTOR" ]
+, [ 399, "8C0184CD-C5E4-4F8A-94FF-49CEB7A5F382", 399, 1278026248, "275909", 1278026248, "275909", null, "Sobel, Charlie J.", "Employee", "55000.00", "Per Annum", "DIRECTOR OF OPERATIONS" ]
+, [ 398, "692275ED-A174-483C-830E-C114E0B2E90F", 398, 1278026248, "275909", 1278026248, "275909", null, "Smoot, Julianna S.", "Employee", "150000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND WHITE HOUSE SOCIAL SECRETARY" ]
+, [ 397, "B6D6DFD5-B413-4B49-A1D7-715F7081BDD5", 397, 1278026248, "275909", 1278026248, "275909", null, "Smith, Kelley S.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 396, "30967BC4-1F1D-47F7-951C-8D240EDF06AC", 396, 1278026248, "275909", 1278026248, "275909", null, "Smith, Jason J.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 395, "A875B61C-D1D8-4E2C-9C2F-4CB5EB90225F", 395, 1278026248, "275909", 1278026248, "275909", null, "Smith, Elizabeth S.", "Employee", "130000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY CABINET SECRETARY" ]
+, [ 394, "71BA84D6-867D-4127-90C5-F01A980E6509", 394, 1278026248, "275909", 1278026248, "275909", null, "Skoczek, Timothy R.", "Employee", "45000.00", "Per Annum", "DEPUTY DIRECTOR OF RESPONSE" ]
+, [ 393, "0350998B-E185-4135-9708-4D79248EE014", 393, 1278026248, "275909", 1278026248, "275909", null, "Sirbu, Mara L.", "Employee", "42000.00", "Per Annum", "NATIONAL SECURITY STAFF ASSISTANT" ]
+, [ 392, "7CD47EE5-D768-49AE-B3AE-96B13376C8D2", 392, 1278026248, "275909", 1278026248, "275909", null, "Sinha, Manish", "Employee", "42000.00", "Per Annum", "OPERATIONS STAFF ASSISTANT" ]
+, [ 391, "7D0B2A16-B462-4B35-A0D9-19B557C183AA", 391, 1278026248, "275909", 1278026248, "275909", null, "Singiser, Dana E.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 390, "8BB5070F-0191-46A9-B5C1-64A236A6A950", 390, 1278026248, "275909", 1278026248, "275909", null, "Simas, David M.", "Employee", "100000.00", "Per Annum", "DIRECTOR OF SPECIAL PROJECTS AND SPECIAL ASSISTANT TO THE SENIOR ADVISOR" ]
+, [ 389, "04C6C5A3-BFD0-4F1E-A495-767DABFCC9A0", 389, 1278026248, "275909", 1278026248, "275909", null, "Siegel, Avra C.", "Employee", "50000.00", "Per Annum", "SPECIAL ASSISTANT TO THE DEPUTY ASSISTANT TO THE PRESIDENT" ]
+, [ 388, "A33C645E-236B-4D38-ADA2-A69555A29A76", 388, 1278026248, "275909", 1278026248, "275909", null, "Sibley, Sarah E.", "Employee", "50000.00", "Per Annum", "SENIOR WRITER" ]
+, [ 387, "7B69A3A5-2568-47CF-AFC1-3A36C7FAF1E1", 387, 1278026248, "275909", 1278026248, "275909", null, "Showers, Wendy W.", "Employee", "84855.00", "Per Annum", "PRESIDENTIAL SUPPORT SPECIALIST" ]
+, [ 386, "640B7DB1-C415-40CC-9AAA-77EFF055B385", 386, 1278026248, "275909", 1278026248, "275909", null, "Sher, Susan S.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT, CHIEF OF STAFF TO THE FIRST LADY AND COUNSEL" ]
+, [ 385, "D949E441-AE69-4C0A-A9A2-D6D89F26D75E", 385, 1278026248, "275909", 1278026248, "275909", null, "Sheehy, Kristin J.", "Employee", "60000.00", "Per Annum", "SPECIAL ASSISTANT TO THE DEPUTY CHIEF OF STAFF" ]
+, [ 384, "4BD95E74-2CB4-401A-B391-5ACB6D42B8B9", 384, 1278026248, "275909", 1278026248, "275909", null, "Shaw, Katherine", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 383, "B77AC772-1B37-4BB7-9B63-5CFF2B6D24A8", 383, 1278026248, "275909", 1278026248, "275909", null, "Shapiro, Nicholas S.", "Employee", "78000.00", "Per Annum", "ASSISTANT PRESS SECRETARY" ]
+, [ 382, "D19D995E-67D4-47F9-9505-87797C381365", 382, 1278026248, "275909", 1278026248, "275909", null, "Shah, Sonal R.", "Employee", "120000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR, OFFICE  OF SOCIAL INNOVATION AND CIVIC PARTICIPATION" ]
+, [ 381, "E494E066-EA27-4A87-9D45-182567483FFD", 381, 1278026248, "275909", 1278026248, "275909", null, "Seymour, Jennifer D.", "Detailee", "107770.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 380, "BFA481F9-073E-4B5A-9A87-5714F6AADFE7", 380, 1278026248, "275909", 1278026248, "275909", null, "Setser, Bradley W.", "Employee", "110500.00", "Per Annum", "DIRECTOR" ]
+, [ 379, "03AE75CC-2B55-4405-B967-0BF55CA9BC3C", 379, 1278026248, "275909", 1278026248, "275909", null, "Schwartz, Alison K.", "Employee", "75000.00", "Per Annum", "WESTERN POLITICAL DIRECTOR" ]
+, [ 378, "F1ABA5A5-8B36-4497-B27F-5095C764876C", 378, 1278026248, "275909", 1278026248, "275909", null, "Schulman, Kori S.", "Employee", "48450.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 377, "BDC98B17-0A42-4D1F-B3DF-D345BEB9C970", 377, 1278026248, "275909", 1278026248, "275909", null, "Schuker, Daniel J. T.", "Employee", "55080.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 376, "CFBC8D22-4A49-4502-97E6-6C0C95C20B7D", 376, 1278026248, "275909", 1278026248, "275909", null, "Schmuck, Robert E.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 375, "019C6AAD-F4C8-4BE1-B977-7D34D1C21E6D", 375, 1278026248, "275909", 1278026248, "275909", null, "Schiliro, Philip M.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DIRECTOR, OFFICE OF LEGISLATIVE AFFAIRS" ]
+, [ 374, "474206F7-2A3F-48AE-92D9-8C4E8087F4C7", 374, 1278026248, "275909", 1278026248, "275909", null, "Schaub, Matthew J.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 373, "00BA7DAB-37FB-483A-86A0-4B1F035ED0E5", 373, 1278026248, "275909", 1278026248, "275909", null, "Schafer, Ellie S.", "Employee", "71400.00", "Per Annum", "DIRECTOR OF VISITORS OFFICE" ]
+, [ 372, "D233E663-13E0-47EB-9844-622DC84C0110", 372, 1278026248, "275909", 1278026248, "275909", null, "Saunders, George T.", "Employee", "155500.00", "Per Annum", "EXECUTIVE CLERK" ]
+, [ 371, "7803EBFE-1862-4B92-9B47-E56470F9BE1D", 371, 1278026248, "275909", 1278026248, "275909", null, "Sathe, Smrthi", "Employee", "70000.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 370, "E1307E03-C8DF-4255-8AAC-BAC6C0ABB53B", 370, 1278026248, "275909", 1278026248, "275909", null, "Sass, Joan C.", "Employee", "56791.00", "Per Annum", "ASSISTANT SHIFT LEADER" ]
+, [ 369, "97A3F65C-A77A-4E8D-8F53-285AFDC8D2E3", 369, 1278026248, "275909", 1278026248, "275909", null, "Santucci, Laura G.", "Employee", "70000.00", "Per Annum", "DEPUTY REGIONAL POLITICAL DIRECTOR" ]
+, [ 368, "12266EC0-7F5D-4929-8014-97AB00638E52", 368, 1278026248, "275909", 1278026248, "275909", null, "Sanders, Trooper", "Employee", "85000.00", "Per Annum", "DEPUTY DIRECTOR OF POLICY AND PROJECTS FOR THE FIRST LADY" ]
+, [ 366, "68B5335D-8A78-431F-91FF-7C5208A67217", 366, 1278026248, "275909", 1278026248, "275909", null, "Samuels, Jr., Wendell A.", "Employee", "60232.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 367, "0E0417A2-E43D-41CD-8742-566819553F6C", 367, 1278026248, "275909", 1278026248, "275909", null, "Samuels, Jonathan D.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 365, "4F679C66-E2B3-4A1F-A858-C230169CD591", 365, 1278026248, "275909", 1278026248, "275909", null, "Sahgal, Rishi R.", "Employee", "66300.00", "Per Annum", "DIRECTOR OF WHITE HOUSE PERSONNEL" ]
+, [ 364, "CD83F62F-9C32-4EAF-975D-E045453A0394", 364, 1278026248, "275909", 1278026248, "275909", null, "Sabochik, Katelyn A.", "Employee", "62500.00", "Per Annum", "DEPUTY DIRECTOR, ONLINE PROGRAMS AND EMAIL" ]
+, [ 363, "BCB8085E-DD13-4246-9244-24085AB5A226", 363, 1278026248, "275909", 1278026248, "275909", null, "Ryan, Timothy J.", "Employee", "71400.00", "Per Annum", "DIRECTOR OF TECHNOLOGY" ]
+, [ 362, "36389BE7-7274-439D-A62C-B5F9867CFA49", 362, 1278026248, "275909", 1278026248, "275909", null, "Rundlet, Peter F.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY STAFF SECRETARY" ]
+, [ 361, "1D84B76A-668E-4FC8-A6F8-089261D16FE5", 361, 1278026248, "275909", 1278026248, "275909", null, "Ruemmler, Michael L.", "Employee", "56100.00", "Per Annum", "SPECIAL ASSISTANT AND ADVANCE LEAD" ]
+, [ 360, "FF742553-EFB3-4B43-918E-D7E4FEA2E353", 360, 1278026248, "275909", 1278026248, "275909", null, "Ruemmler, Kathryn H.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY COUNSEL TO THE PRESIDENT" ]
+, [ 359, "E37AF47F-B985-4CE2-B7E2-CCF52623B49E", 359, 1278026248, "275909", 1278026248, "275909", null, "Rouse, Peter M.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND SENIOR ADVISOR" ]
+, [ 358, "1E37322F-EFC7-4DCE-A10C-CBE8CB66AD80", 358, 1278026248, "275909", 1278026248, "275909", null, "Rosalsky, Gregory E.", "Employee", "45000.00", "Per Annum", "VETTER" ]
+, [ 357, "1F182AB9-4C65-4BA7-8389-7C1B23B98A9E", 357, 1278026248, "275909", 1278026248, "275909", null, "Rodriguez, Roberto J.", "Employee", "120000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR EDUCATION POLICY" ]
+, [ 356, "1E57489F-F304-4B04-ADB0-04A443C9F364", 356, 1278026248, "275909", 1278026248, "275909", null, "Roddick, Gertrude A.", "Employee", "89846.00", "Per Annum", "SPECIAL ASSISTANT" ]
+, [ 355, "23C483C4-F450-4E4D-AFD8-772443C00F06", 355, 1278026248, "275909", 1278026248, "275909", null, "Roche, Mary K.", "Employee", "60000.00", "Per Annum", "SPEECHWRITER" ]
+, [ 354, "34FCA0AF-E6C8-449E-AC02-E3C91A8885CA", 354, 1278026248, "275909", 1278026248, "275909", null, "Robertson, Ian T.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 353, "9292C22D-97B3-465C-9D9E-952FB26E5EA9", 353, 1278026248, "275909", 1278026248, "275909", null, "Roberts, Blake C.", "Employee", "99000.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL" ]
+, [ 352, "705A162A-A1E2-4A68-90BC-9382A0922D0A", 352, 1278026248, "275909", 1278026248, "275909", null, "Roach, Cynthia L.", "Employee", "100904.00", "Per Annum", "SUPERVISOR OF CLASSIFICATION" ]
+, [ 351, "1609FD0B-FBEA-43AC-B490-56638F517655", 351, 1278026248, "275909", 1278026248, "275909", null, "Rivadeneira, Shirley C.", "Employee", "55000.00", "Per Annum", "ENERGY AND ENVIRONMENT DIRECTOR" ]
+, [ 350, "4DB70E64-2716-4C7F-A663-F9C958E15774", 350, 1278026248, "275909", 1278026248, "275909", null, "Rittner, Kathleen A.", "Detailee", "144868.00", "Per Annum", "ETHICS ADVISOR" ]
+, [ 349, "C3363E9B-E729-4230-8728-F2F503AC6C44", 349, 1278026248, "275909", 1278026248, "275909", null, "Richardson, Karen E.", "Detailee", "92001.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 348, "FD082564-7DF3-4494-B6E7-3453ADBA78C9", 348, 1278026248, "275909", 1278026248, "275909", null, "Reinstein, Joseph B.", "Employee", "66300.00", "Per Annum", "DEPUTY DIRECTOR AND DEPUTY SOCIAL SECRETARY" ]
+, [ 347, "A795A992-081D-4DF1-8B1A-855A442C5A8E", 347, 1278026248, "275909", 1278026248, "275909", null, "Reeves, Fiona O.", "Employee", "51000.00", "Per Annum", "SENIOR WRITER" ]
+, [ 346, "2FB8D08D-5468-4CFB-8B36-0FCB4ADD806B", 346, 1278026248, "275909", 1278026248, "275909", null, "Reed, Ian P.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 345, "6848BC60-2AFA-4DC1-9700-44BF6EC32EB9", 345, 1278026248, "275909", 1278026248, "275909", null, "Rathod, Nicholas S.", "Employee", "71400.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR OF INTERGOVERNMENTAL AFFAIRS" ]
+, [ 344, "48BE3701-A340-4137-814C-B0E2573C4A8E", 344, 1278026248, "275909", 1278026248, "275909", null, "Raizk, Paul S.", "Employee", "113605.00", "Per Annum", "DEPUTY DIRECTOR OF RECORDS MANAGEMENT" ]
+, [ 343, "268D7CD4-9208-45DB-B4DD-75F7A77528C4", 343, 1278026248, "275909", 1278026248, "275909", null, "Quinn, Brian P.", "Employee", "45000.00", "Per Annum", "ASSOCIATE DIRECTOR AND TRAVEL MANAGER" ]
+, [ 342, "9C2A2A18-C252-43F1-B80A-72B7C320F3D5", 342, 1278026248, "275909", 1278026248, "275909", null, "Pulliam, Allison C.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 341, "3180E962-2048-4FF9-BDE0-23D7F044FD9B", 341, 1278026248, "275909", 1278026248, "275909", null, "Psaki, Jennifer R.", "Employee", "150000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY DIRECTOR OF COMMUNICATIONS" ]
+, [ 340, "4C0CBA09-08BA-4C39-A283-322FD029A8DF", 340, 1278026248, "275909", 1278026248, "275909", null, "Pourmorad, Araz ", "Employee", "45000.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 339, "4757EA7C-80DB-4E36-A9FF-F2B99F50974D", 339, 1278026248, "275909", 1278026248, "275909", null, "Posey, Stacie M.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 338, "871ECA35-9EB3-49EB-A746-CF372265513E", 338, 1278026248, "275909", 1278026248, "275909", null, "Portilla, Zachary A.", "Employee", "42000.00", "Per Annum", "PRIORITY PLACEMENT STAFF ASSISTANT" ]
+, [ 337, "EE6D75E2-A344-41A3-A962-8983EE340BEC", 337, 1278026248, "275909", 1278026248, "275909", null, "Pope, Jamal A.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 336, "59BCA80E-EFF4-4DDE-B2C3-4CD65B1B47D6", 336, 1278026248, "275909", 1278026248, "275909", null, "Pope, David F.", "Employee", "51000.00", "Per Annum", "POLICY ASSISTANT" ]
+, [ 335, "F633A768-C0C1-4A5E-BDA6-290D6C563BFC", 335, 1278026248, "275909", 1278026248, "275909", null, "Pojman, Natalie R.", "Employee", "45900.00", "Per Annum", "EXECUTIVE ASSISTANT" ]
+, [ 334, "B95ED9DC-2BA3-43B9-A34A-B3FDCC0036AA", 334, 1278026248, "275909", 1278026248, "275909", null, "Pipkins, Desiree E.", "Employee", "50000.00", "Per Annum", "RESEARCH ASSISTANT" ]
+, [ 333, "89091286-3090-4595-BB40-B9F03F8D25D9", 333, 1278026248, "275909", 1278026248, "275909", null, "Phillips, III, Robert M.", "Employee", "115000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF NEW MEDIA" ]
+, [ 332, "D943686F-63C5-4FAA-9C93-D242FB661B0A", 332, 1278026248, "275909", 1278026248, "275909", null, "Phadke, Shilpa", "Employee", "80000.00", "Per Annum", "DEPUTY DIRECTOR OF CABINET AFFAIRS" ]
+, [ 331, "8549088E-13B8-4A8E-84EA-2B06E86CEC52", 331, 1278026248, "275909", 1278026248, "275909", null, "Pfeiffer, Howard D.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DIRECTOR OF COMMUNICATIONS" ]
+, [ 330, "BAE4245D-B1B1-4A3C-8D6F-B730ABB47932", 330, 1278026248, "275909", 1278026248, "275909", null, "Perez, Alejandro", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 329, "FF730F60-6A72-4999-B019-5865F265636B", 329, 1278026248, "275909", 1278026248, "275909", null, "Paulsen, Joseph B.", "Employee", "56100.00", "Per Annum", "DEPUTY DIRECTOR AND SURROGATE SCHEDULER" ]
+, [ 328, "4A0B1F3A-0B36-4596-9300-1F56AE1DE132", 328, 1278026248, "275909", 1278026248, "275909", null, "Pate, Brian E.", "Employee", "46745.00", "Per Annum", "PRESIDENTIAL SUPPORT SPECIALIST" ]
+, [ 327, "D986B900-1A9D-4668-938D-3879AB76D7FB", 327, 1278026248, "275909", 1278026248, "275909", null, "Parker, Doris D.", "Employee", "79864.00", "Per Annum", "ASSISTANT SUPERVISOR OF CLASSIFICATION" ]
+, [ 326, "47029668-70A8-4D9E-8E61-720A3B78C68A", 326, 1278026248, "275909", 1278026248, "275909", null, "Papas, Nicholas W.", "Detailee", "92001.00", "Per Annum", "DIRECTOR OF COMMUNICATIONS FOR THE OFFICE OF HEALTH REFORM" ]
+, [ 325, "0E778687-E025-4A50-B958-D2E6CA7F8221", 325, 1278026248, "275909", 1278026248, "275909", null, "Papa, Gregory J.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 324, "20F79280-A748-43DB-B0C3-074C1095945E", 324, 1278026248, "275909", 1278026248, "275909", null, "Paige, Lauren R.", "Employee", "62000.00", "Per Annum", "DIRECTOR OF SPECIAL PROJECTS FOR COMMUNICATIONS" ]
+, [ 323, "828E58C0-F279-4384-A018-A7BE5DE95B0A", 323, 1278026248, "275909", 1278026248, "275909", null, "Page, Darienne M.", "Employee", "42000.00", "Per Annum", "WEST WING RECEPTIONIST" ]
+, [ 322, "C8A959F4-5975-4E26-A74C-6A7FE3AA9A3B", 322, 1278026248, "275909", 1278026248, "275909", null, "Oxtoby, John T.", "Employee", "42000.00", "Per Annum", "SPECIAL ASSISTANT TO THE SENIOR ADVISOR" ]
+, [ 321, "743F0987-28CF-432E-AEAD-F28565E29A97", 321, 1278026248, "275909", 1278026248, "275909", null, "Ortiz, Michael R.", "Employee", "45000.00", "Per Annum", "LEGISLATIVE ASSISTANT AND ASSISTANT TO THE DIRECTOR'S OFFICE" ]
+, [ 320, "63446DF1-58E5-46A8-B563-733B8CAD9BED", 320, 1278026248, "275909", 1278026248, "275909", null, "Onek, Matthew M.", "Employee", "110000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND CHIEF OF STAFF OF THE DOMESTIC POLICY COUNCIL" ]
+, [ 319, "DBBF7389-2A58-4E3B-BCFA-FA07F05BDBB6", 319, 1278026248, "275909", 1278026248, "275909", null, "O'Neil, Michael P.", "Employee", "81600.00", "Per Annum", "PRIORITY PLACEMENT DIRECTOR" ]
+, [ 318, "21EF1693-EF91-47E9-AB71-AB29A04CE951", 318, 1278026248, "275909", 1278026248, "275909", null, "Olson, Elizabeth H.", "Employee", "76500.00", "Per Annum", "DEPUTY DIRECTOR, PRESIDENTIAL CORRESPONDENCE" ]
+, [ 317, "EDB5523E-F504-4287-AE4B-9139DB726754", 317, 1278026248, "275909", 1278026248, "275909", null, "Olmos, Margaret C.", "Employee", "65000.00", "Per Annum", "DEPUTY DIRECTOR" ]
+, [ 316, "1C00E6CA-05CD-4B55-9290-C16B6DA94F6D", 316, 1278026248, "275909", 1278026248, "275909", null, "Oleske, James M.", "Employee", "114000.00", "Per Annum", "CHIEF OF STAFF, OFFICE OF LEGISLATIVE AFFAIRS" ]
+, [ 315, "92595E1E-781B-475B-982B-2F64B4CE5C2A", 315, 1278026248, "275909", 1278026248, "275909", null, "Offerman, Mary F.", "Employee", "45000.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR" ]
+, [ 314, "68198705-DCD5-4184-B7D0-B16DBE24A122", 314, 1278026248, "275909", 1278026248, "275909", null, "Odio, Carlos P.", "Employee", "56100.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR" ]
+, [ 313, "BC8F6FA5-C8B0-4BEF-8396-08D756C32D61", 313, 1278026248, "275909", 1278026248, "275909", null, "Odintz, Joshua D.", "Detailee", "155500.00", "Per Annum", "CHIEF TAX COUNSEL" ]
+, [ 312, "9BB2C8B6-1B0F-4F1B-B416-5E377397EC18", 312, 1278026248, "275909", 1278026248, "275909", null, "O'Connor, Kyle P.", "Employee", "42000.00", "Per Annum", "ASSISTANT SPEECHWRITER" ]
+, [ 311, "A4530D72-A63D-4C01-8B1B-B4F39140694D", 311, 1278026248, "275909", 1278026248, "275909", null, "Ocampo, Maria L.", "Employee", "42000.00", "Per Annum", "LEGISLATIVE ASSISTANT" ]
+, [ 310, "F3589D9D-73A3-46D1-88E0-D0068F8D87D8", 310, 1278026248, "275909", 1278026248, "275909", null, "Northern, Mary G.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 309, "168B007E-C752-4590-B2F3-F8D7859D2F55", 309, 1278026248, "275909", 1278026248, "275909", null, "Noel, Pascal J.", "Employee", "59160.00", "Per Annum", "SENIOR POLICY ADVISOR" ]
+, [ 308, "C7105FC9-4C96-415D-8DCE-487453ED199E", 308, 1278026248, "275909", 1278026248, "275909", null, "Nicholson, Jr., Marvin D.", "Employee", "130000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND TRIP DIRECTOR" ]
+, [ 307, "0929B3A6-4954-4A5F-B0DE-C792A6D8D171", 307, 1278026248, "275909", 1278026248, "275909", null, "Nguyen, Alexander T. H.", "Detailee", "102829.00", "Per Annum", "ETHICS ADVISOR" ]
+, [ 306, "877122E7-0C5C-447E-BBC4-11CCB61FE536", 306, 1278026248, "275909", 1278026248, "275909", null, "Newell, Peter J.", "Employee", "71400.00", "Per Annum", "DIRECTOR OF TRAVEL OFFICE" ]
+, [ 305, "A8E2CCA1-E0BA-4C09-BBDC-2F05235E2D8B", 305, 1278026248, "275909", 1278026248, "275909", null, "Neralla, Venkateswar N.", "Employee", "75480.00", "Per Annum", "PRIORITY PLACEMENT DIRECTOR" ]
+, [ 304, "C004A3CF-663C-42D9-B636-8972F9C788CB", 304, 1278026248, "275909", 1278026248, "275909", null, "Nelson, Elizabeth W.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR OF SCHEDULING" ]
+, [ 303, "88F15869-5BF7-4CCD-8D28-41F5293FAB45", 303, 1278026248, "275909", 1278026248, "275909", null, "Neiman, Wanda M.", "Employee", "74958.00", "Per Annum", "ASSISTANT TO THE EXECUTIVE CLERK" ]
+, [ 302, "163A34A8-3B16-4D57-9BEB-24DDC64B3D47", 302, 1278026248, "275909", 1278026248, "275909", null, "Nathan, Alison J.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 301, "EF99238A-1108-4229-9180-9C7E60A44925", 301, 1278026248, "275909", 1278026248, "275909", null, "Narechania, Saumya N.", "Employee", "50000.00", "Per Annum", "ASSISTANT DIRECTOR" ]
+, [ 300, "211FCE4A-13F6-4EB0-91F7-B8DED2F4EC2F", 300, 1278026248, "275909", 1278026248, "275909", null, "Naidoff, Caitlin L.", "Employee", "50000.00", "Per Annum", "EXECUTIVE ASSISTANT TO THE SENIOR ADVISOR" ]
+, [ 299, "3768ED8E-C182-4CFE-AA7B-344A7177C188", 299, 1278026248, "275909", 1278026248, "275909", null, "Nabors, Robert L.", "Employee", "162500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND SENIOR ADVISOR TO THE CHIEF OF STAFF" ]
+, [ 298, "A96BF9A0-E89C-449A-8DCA-A36740404384", 298, 1278026248, "275909", 1278026248, "275909", null, "Murtha, Katherine R.", "Employee", "50000.00", "Per Annum", "SENIOR VETTER" ]
+, [ 297, "59C54581-6B2F-4E30-988B-07C5B3D9F3A3", 297, 1278026248, "275909", 1278026248, "275909", null, "Muntz, Moira K. M.", "Employee", "66300.00", "Per Annum", "NORTHEAST REGIONAL COMMUNICATIONS DIRECTOR" ]
+, [ 296, "E2228CC0-31CD-4D88-8200-563DD8801243", 296, 1278026248, "275909", 1278026248, "275909", null, "Muñoz, Cecilia", "Employee", "153500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF INTERGOVERNMENTAL AFFAIRS" ]
+, [ 295, "230F3B34-4E17-4C1F-9D68-640A81FBEA45", 295, 1278026248, "275909", 1278026248, "275909", null, "Mueller, Lindsay E.", "Employee", "66300.00", "Per Annum", "DIRECTOR OF OPERATIONS" ]
+, [ 294, "A4DCB5F3-CF0D-48FB-A744-758B9CEB011D", 294, 1278026248, "275909", 1278026248, "275909", null, "Mrazek, Susannah R.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 293, "C6DF289B-30D0-4FBB-97BB-7079D386262A", 293, 1278026248, "275909", 1278026248, "275909", null, "Mosteller, Brian D.", "Employee", "90000.00", "Per Annum", "PERSONAL AIDE TO THE PRESIDENT" ]
+, [ 292, "2F1DA5F0-764C-4764-BF73-B5CD72E0E792", 292, 1278026248, "275909", 1278026248, "275909", null, "Monteiro, Darron P.", "Employee", "61200.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR OF PUBLIC ENGAGEMENT" ]
+, [ 291, "70EC9D9B-4ADF-4DED-A154-F01CD06EABCA", 291, 1278026248, "275909", 1278026248, "275909", null, "Monje, Jr., Carlos A.", "Employee", "91800.00", "Per Annum", "SENIOR POLICY ADVISOR FOR SOCIAL INNOVATION AND CIVIC PARTICIPATION" ]
+, [ 290, "9667FE8E-A8BD-4225-B2BE-FD7AA3C4135B", 290, 1278026248, "275909", 1278026248, "275909", null, "Moilanen, Stephen S.", "Employee", "45000.00", "Per Annum", "POLICY ANALYST" ]
+, [ 289, "AFD8CCA4-5313-4BE0-B5A6-B89B8C891A45", 289, 1278026248, "275909", 1278026248, "275909", null, "Miranda, Luis A.", "Employee", "78000.00", "Per Annum", "DIRECTOR OF HISPANIC MEDIA" ]
+, [ 288, "21C6A89B-185D-40A7-906D-2731C088B5E6", 288, 1278026248, "275909", 1278026248, "275909", null, "Millison, Chad L.", "Employee", "60232.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 287, "5E5A6A75-B95A-4D68-A9BE-9E5EBA207D7B", 287, 1278026248, "275909", 1278026248, "275909", null, "Millett, Gregorio A.", "Detailee", "115731.00", "Per Annum", "SENIOR POLICY ADVISOR" ]
+, [ 286, "607B9840-AEA3-4D20-AF2E-BA3E201A34CE", 286, 1278026248, "275909", 1278026248, "275909", null, "Milakofsky, Benjamin E.", "Employee", "45000.00", "Per Annum", "SPECIAL ASSISTANT TO THE CABINET SECRETARY" ]
+, [ 285, "BCF05CB8-DEDF-42BF-95DC-A452F20532E2", 285, 1278026248, "275909", 1278026248, "275909", null, "Metcalf, Ryan D.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 284, "5D145707-83B4-4FFA-B138-E85AD22A21C2", 284, 1278026248, "275909", 1278026248, "275909", null, "Messina, James A.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DEPUTY CHIEF OF STAFF FOR OPERATIONS" ]
+, [ 283, "699D338F-ECF6-4BD2-B5C6-44699B750764", 283, 1278026248, "275909", 1278026248, "275909", null, "Mehrbani, Rodin A.", "Employee", "80000.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL FOR PRESIDENTIAL PERSONNEL" ]
+, [ 282, "1035B53F-3ED7-4D6E-8AF5-C1142E35B8AA", 282, 1278026248, "275909", 1278026248, "275909", null, "McNeal, Melissa K.", "Employee", "51000.00", "Per Annum", "DIRECTOR OF WHITE HOUSE INTERNSHIP PROGRAM" ]
+, [ 281, "F172A0E0-5F57-404E-BFD9-D487D9CAF2F9", 281, 1278026248, "275909", 1278026248, "275909", null, "McLaughlin, Margaret T.", "Employee", "120000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND CHIEF OF STAFF FOR PRESIDENTIAL PERSONNEL" ]
+, [ 280, "E92E3519-0976-4C6F-9DA6-51E6D9CFE208", 280, 1278026248, "275909", 1278026248, "275909", null, "McGuire, MaryEllen C.", "Employee", "91800.00", "Per Annum", "SENIOR POLICY ADVISOR FOR EDUCATION" ]
+, [ 279, "BAD21D71-A5E9-4763-A7D8-05708D603493", 279, 1278026248, "275909", 1278026248, "275909", null, "McGrath, Shaun L.", "Employee", "93840.00", "Per Annum", "DEPUTY DIRECTOR OF INTERGOVERNMENTAL AFFAIRS" ]
+, [ 278, "22002FC9-FB60-41A2-B805-DBE5D775F7F8", 278, 1278026248, "275909", 1278026248, "275909", null, "McGinnis, Patricia G.", "Employee", "0.00", "Per Annum", "ADVISOR" ]
+, [ 277, "07A28683-16C4-470E-BE21-3CCE72DF4FC7", 277, 1278026248, "275909", 1278026248, "275909", null, "McDonough, Denis R.", "Employee", "147500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND NATIONAL SECURITY COUNCIL CHIEF OF STAFF" ]
+, [ 276, "1C3A7E11-D686-40EB-A9F1-AE0A281E019C", 276, 1278026248, "275909", 1278026248, "275909", null, "McCathran, William W.", "Employee", "106839.00", "Per Annum", "ASSISTANT EXECUTIVE CLERK" ]
+, [ 275, "4B9F98E2-FAF9-4063-8F98-008D478FDB73", 275, 1278026248, "275909", 1278026248, "275909", null, "McCarthy, Mary N.", "Detailee", "155500.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 274, "102C7C36-1201-4C3A-A048-7B21F2C9C103", 274, 1278026248, "275909", 1278026248, "275909", null, "McBride, Jonathan D.", "Employee", "130000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DEPUTY DIRECTOR OF PRESIDENTIAL PERSONNEL" ]
+, [ 273, "65B28E06-1135-462A-AF0E-402F06F91879", 273, 1278026248, "275909", 1278026248, "275909", null, "Mayekar, Samir S.", "Employee", "56100.00", "Per Annum", "NATIONAL SECURITY DIRECTOR" ]
+, [ 272, "95F7DC95-7C0E-433C-B0B5-AB8E494D9E2C", 272, 1278026248, "275909", 1278026248, "275909", null, "Mattson, Philip C.", "Employee", "60232.00", "Per Annum", "SPECIAL ASSISTANT" ]
+, [ 271, "A877EE84-AF07-4837-862E-3C5E6BD69D56", 271, 1278026248, "275909", 1278026248, "275909", null, "Mastromonaco, Alyssa M.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DIRECTOR OF SCHEDULING AND ADVANCE" ]
+, [ 270, "506A6615-5F75-4E5D-9278-94213CDBBDE0", 270, 1278026248, "275909", 1278026248, "275909", null, "Massey, Katherine", "Detailee", "165000.00", "Per Annum", "SENIOR POLICY DIRECTOR" ]
+, [ 269, "59085781-6FD3-49C4-BB1A-FF959951F9A6", 269, 1278026248, "275909", 1278026248, "275909", null, "Maska, Johanna M.", "Employee", "56100.00", "Per Annum", "SPECIAL ASSISTANT AND PRESS LEAD" ]
+, [ 268, "B8A45C4E-30B1-437F-8159-B92D146950C3", 268, 1278026248, "275909", 1278026248, "275909", null, "Martin, Joanna G.", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR PRESIDENTIAL PERSONNEL" ]
+, [ 267, "CC918478-5A5B-4D02-AD93-9EE8EB2C90F6", 267, 1278026248, "275909", 1278026248, "275909", null, "Markovitz, Alison J.", "Employee", "80000.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL FOR PRESIDENTIAL PERSONNEL" ]
+, [ 266, "8A7D66CF-EE6F-4097-AE3A-C0CAF53991AC", 266, 1278026248, "275909", 1278026248, "275909", null, "Maher, Shawn P.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS AND SENATE LIAISION" ]
+, [ 264, "E62BD1EB-5455-47EF-87BA-DBDF97FF90DF", 264, 1278026248, "275909", 1278026248, "275909", null, "Mack, William B.", "Employee", "80000.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL FOR PRESIDENTIAL PERSONNEL" ]
+, [ 265, "7D145A2B-0649-474C-BEA1-5B15A6388F61", 265, 1278026248, "275909", 1278026248, "275909", null, "Mackey, Erin E.", "Employee", "66300.00", "Per Annum", "DIRECTOR OF FINANCE" ]
+, [ 263, "EECAD56E-6CF9-4EB3-B195-BEC1CC9E7D52", 263, 1278026248, "275909", 1278026248, "275909", null, "Lynn, Anthony V.", "Employee", "45000.00", "Per Annum", "COORDINATOR" ]
+, [ 262, "27779E65-7E53-4028-A350-140C353A1513", 262, 1278026248, "275909", 1278026248, "275909", null, "Luck, Deatrice N.", "Employee", "43860.00", "Per Annum", "SPECIAL SERVICES OPERATOR" ]
+, [ 261, "D4893BFB-5DE6-40BD-8CFB-50A32E7FDBFD", 261, 1278026248, "275909", 1278026248, "275909", null, "Lu, Christopher P.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND CABINET SECRETARY" ]
+, [ 260, "7C7E5D4F-347A-43DF-9A8B-ADA1D5F1C671", 260, 1278026248, "275909", 1278026248, "275909", null, "Lovett, Jonathan I.", "Employee", "75000.00", "Per Annum", "PRESIDENTIAL SPEECHWRITER" ]
+, [ 259, "1FAF08A8-4754-412B-80D8-DF2B0777E01D", 259, 1278026248, "275909", 1278026248, "275909", null, "Love, Timothy P.", "Detailee", "179700.00", "Per Annum", "POLICY DIRECTOR" ]
+, [ 258, "A6C36B63-8075-4162-9728-A36827D483F7", 258, 1278026248, "275909", 1278026248, "275909", null, "Love, Reginald L.", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND PERSONAL AIDE TO THE PRESIDENT" ]
+, [ 257, "B2A53C55-F32F-400D-A100-F224584089D6", 257, 1278026248, "275909", 1278026248, "275909", null, "Lorjuste, Gregory", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR OF SCHEDULING" ]
+, [ 256, "C0D4BACC-FDAF-43DB-A67F-5D0CA66A0D60", 256, 1278026248, "275909", 1278026248, "275909", null, "London, Seth A.", "Employee", "45000.00", "Per Annum", "LEGISLATIVE ASSISTANT AND ASSOCIATE DIRECTOR FOR LEGISLATIVE CORRESPONDENCE" ]
+, [ 255, "8E445EEB-432C-4EE9-B790-36F5ED718B43", 255, 1278026248, "275909", 1278026248, "275909", null, "Loeb, Emily M.", "Employee", "60000.00", "Per Annum", "LEGISLATIVE COUNSEL AND POLICY ADVISOR" ]
+, [ 254, "2E7A8A85-6D24-4210-A1D7-E72149AE845D", 254, 1278026248, "275909", 1278026248, "275909", null, "Lipton, David A.", "Employee", "149000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR INTERNATIONAL ECONOMIC AFFAIRS" ]
+, [ 253, "96B06683-C91A-4317-A933-6551EAF68F8D", 253, 1278026248, "275909", 1278026248, "275909", null, "Lipsky, Joshua S.", "Employee", "45000.00", "Per Annum", "ASSOCIATE DIRECTOR OF PRESS ADVANCE " ]
+, [ 252, "F2E2379F-E140-4B7C-9272-0B5D7BD50686", 252, 1278026248, "275909", 1278026248, "275909", null, "Lippert, Mark W.", "Employee", "147500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND CHIEF OF STAFF FOR NATIONAL SECURITY OPERATIONS" ]
+, [ 251, "91B7E7E5-64FB-46A2-B664-528A8850DB17", 251, 1278026248, "275909", 1278026248, "275909", null, "Limon, Noerena", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 250, "C7FD8E84-B968-4E64-A080-A0A031FC07C6", 250, 1278026248, "275909", 1278026248, "275909", null, "Lillie, Catherine E.", "Employee", "70000.00", "Per Annum", "DIRECTOR OF PRESS ADVANCE" ]
+, [ 249, "2B3BBB9E-BEC4-4D15-97FD-8BEE209E56D8", 249, 1278026248, "275909", 1278026248, "275909", null, "Liegel, Christopher J.", "Employee", "37826.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 248, "2EF56B0E-4B1E-40F4-AECC-45E5579A16F9", 248, 1278026248, "275909", 1278026248, "275909", null, "Liddell-Westefeld, Christopher", "Employee", "50000.00", "Per Annum", "ASSISTANT DIRECTOR" ]
+, [ 247, "FE5B236B-F0BC-4988-A0CB-03FD4646F167", 247, 1278026248, "275909", 1278026248, "275909", null, "Lezotte, Darin R.", "Employee", "62544.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 246, "30EABF8E-7968-45EB-BC29-E8E777766196", 246, 1278026248, "275909", 1278026248, "275909", null, "Lewis, Kevin S.", "Employee", "42000.00", "Per Annum", "PRESS ASSISTANT" ]
+, [ 245, "92A6F3C7-0EF2-4179-A401-F7EC7BBB58D4", 245, 1278026248, "275909", 1278026248, "275909", null, "Lewis, Georgette T.", "Employee", "45000.00", "Per Annum", "COORDINATOR" ]
+, [ 244, "2611356A-0ECB-41D8-B784-0C18A71F0082", 244, 1278026248, "275909", 1278026248, "275909", null, "Lewis, Dana M.", "Employee", "66000.00", "Per Annum", "SPECIAL ASSISTANT AND PERSONAL AIDE TO THE FIRST LADY" ]
+, [ 243, "EFEC9853-0EF6-4B60-AC1E-2D3587A8F392", 243, 1278026248, "275909", 1278026248, "275909", null, "Lewin, Jesse M.", "Employee", "42000.00", "Per Annum", "PRESS ASSISTANT" ]
+, [ 242, "B0F5823A-C8F4-43C6-A664-4D914ED8BED5", 242, 1278026248, "275909", 1278026248, "275909", null, "Levine, Marne L.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR ECONOMIC POLICY AND CHIEF OF STAFF OF THE NATIONAL ECONOMIC COUNCIL" ]
+, [ 241, "6C969AB5-3A5B-4CCF-8D85-D27E9B369BD9", 241, 1278026248, "275909", 1278026248, "275909", null, "Levine, Jacob C.", "Employee", "45000.00", "Per Annum", "POLICY ANALYST" ]
+, [ 240, "103C1A64-9C67-49F6-973A-ACBEB8A70398", 240, 1278026248, "275909", 1278026248, "275909", null, "Lesser, Eric P.", "Employee", "60000.00", "Per Annum", "SPECIAL ASSISTANT TO THE SENIOR ADVISOR" ]
+, [ 239, "A2280829-B76F-4130-ACED-AE287C873AD8", 239, 1278026248, "275909", 1278026248, "275909", null, "Lerner, Jeffrey B. W.", "Employee", "76500.00", "Per Annum", "SOUTHERN POLITICAL DIRECTOR" ]
+, [ 238, "3A67C80D-75FE-4570-93F5-1F044885043F", 238, 1278026248, "275909", 1278026248, "275909", null, "Lepow, Brandon D.", "Employee", "55000.00", "Per Annum", "SPECIAL ASSISTANT AND PRESS LEAD" ]
+, [ 237, "D329FDC7-787F-43CD-B91C-3364028F26B4", 237, 1278026248, "275909", 1278026248, "275909", null, "Lelyveld, Catherine M.", "Employee", "85680.00", "Per Annum", "DIRECTOR AND PRESS SECRETARY TO THE FIRST LADY" ]
+, [ 236, "6B646CA0-978D-427E-8F3D-9F086AED0BD4", 236, 1278026248, "275909", 1278026248, "275909", null, "Leitner-Laserna, Sofia I.", "Employee (part-time)", "21000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 235, "4C7912EF-FF0C-46AA-9E4D-3D008A8FF32C", 235, 1278026248, "275909", 1278026248, "275909", null, "Lehrich, Matthew A.", "Employee", "65000.00", "Per Annum", "MIDWESTERN REGIONAL COMMUNICATIONS DIRECTOR" ]
+, [ 234, "64E1EF72-77D4-4118-AA02-008D0659C54D", 234, 1278026248, "275909", 1278026248, "275909", null, "Leger, Daniella G.", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF MESSAGE EVENTS" ]
+, [ 233, "62E27F50-CA7F-42D9-94D1-E11135E2478C", 233, 1278026248, "275909", 1278026248, "275909", null, "Lee, Jesse C.", "Employee", "71400.00", "Per Annum", "DIRECTOR OF ONLINE PROGRAMS" ]
+, [ 232, "072D5A89-0118-4860-9B04-2DC25F20E177", 232, 1278026248, "275909", 1278026248, "275909", null, "Lee, Gary S.", "Employee", "42000.00", "Per Annum", "LEGISLATIVE ASSISTANT" ]
+, [ 231, "1FDC5463-D58A-48E3-B07B-3CB01A6B81A3", 231, 1278026248, "275909", 1278026248, "275909", null, "Ledbetter, Howli J.", "Employee", "42000.00", "Per Annum", "COORDINATOR" ]
+, [ 230, "2F573C62-38C1-49C0-9A04-AA3A270709ED", 230, 1278026248, "275909", 1278026248, "275909", null, "Lechtenberg, Tyler A", "Employee", "50000.00", "Per Annum", "DIRECTOR OF CORRESPONDENCE FOR THE FIRST LADY" ]
+, [ 229, "76A75103-BBEA-45F6-9A5C-298C8C0C8E37", 229, 1278026248, "275909", 1278026248, "275909", null, "Larus, Anne K.", "Employee", "56100.00", "Per Annum", "DEPUTY DIRECTOR AND HOTEL PROGRAM MANAGER" ]
+, [ 228, "D9A30E26-7989-4D2E-8851-6354ECF4B369", 228, 1278026248, "275909", 1278026248, "275909", null, "Lartey, Solomon D.", "Employee", "56092.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 227, "A4785714-3D5E-4368-A69B-58E3F3FBD1E0", 227, 1278026248, "275909", 1278026248, "275909", null, "LaBolt, Benjamin C.", "Employee", "78000.00", "Per Annum", "ASSISTANT PRESS SECRETARY" ]
+, [ 226, "A46A92B0-AD53-468D-92D3-A6967213B458", 226, 1278026248, "275909", 1278026248, "275909", null, "Kumar, Pravin D.", "Employee", "50000.00", "Per Annum", "ASSISTANT COUNSEL FOR NOMINATIONS" ]
+, [ 225, "F2FF9192-0142-4B89-9600-5F571D199510", 225, 1278026248, "275909", 1278026248, "275909", null, "Kravis, Jonathan I.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 224, "D5EDD89D-7017-4DB4-9D3F-934875BA6FBE", 224, 1278026248, "275909", 1278026248, "275909", null, "Krass, Caroline D.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND SPECIAL COUNSEL TO THE PRESIDENT" ]
+, [ 223, "C40F6005-BAEE-400D-B81E-CB88E70F40BE", 223, 1278026248, "275909", 1278026248, "275909", null, "Kramer, Douglas J.", "Detailee", "155500.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL FOR PRESIDENTIAL PERSONNEL" ]
+, [ 222, "79726910-5D53-4F0D-9AA9-08A6069CD8C5", 222, 1278026248, "275909", 1278026248, "275909", null, "Koo, Stacy J.", "Employee", "55000.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR" ]
+, [ 221, "AB1BC9A9-97B6-4F06-BC7F-7CA384BFA0C8", 221, 1278026248, "275909", 1278026248, "275909", null, "Konwinski, Lisa M.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 220, "A76A18BB-2CBD-4951-AFE8-4D63B9FB3ED0", 220, 1278026248, "275909", 1278026248, "275909", null, "Kommareddi, Madhuri", "Employee", "71400.00", "Per Annum", "ASSOCIATE STAFF SECRETARY" ]
+, [ 219, "629AD413-8BA8-4AF9-A430-15ABBFAB4BFC", 219, 1278026248, "275909", 1278026248, "275909", null, "Kohnke, Lisa J.", "Employee", "60000.00", "Per Annum", "DEPUTY DIRECTOR OF ADVANCE AND SPECIAL EVENTS FOR THE OFFICE OF INTERGOVERNMENTAL AFFAIRS AND PUBLIC ENGAGEMENT" ]
+, [ 218, "D50EA89C-2F2B-4C8C-A5B4-7F58BF434E6F", 218, 1278026248, "275909", 1278026248, "275909", null, "Kochman, Katherine H.", "Employee", "45000.00", "Per Annum", "SCHEDULER FOR CHIEF OF STAFF" ]
+, [ 217, "27CF59D1-0B1F-409D-806B-0D3D897D03D0", 217, 1278026248, "275909", 1278026248, "275909", null, "Kocher, Robert P.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR HEALTHCARE AND ECONOMIC POLICY" ]
+, [ 216, "F01D0F6E-608C-46A4-8609-D01EB10CFB86", 216, 1278026248, "275909", 1278026248, "275909", null, "King, Taeshonnda C.", "Employee", "60232.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 215, "2FF3DF18-7C6C-49E0-A97E-81915D91BE9E", 215, 1278026248, "275909", 1278026248, "275909", null, "Kimball, Astri B.", "Employee", "85000.00", "Per Annum", "DEPUTY DIRECTOR OF CABINET AFFAIRS" ]
+, [ 214, "E52FE30F-C217-4306-9C23-A588F9217DBD", 214, 1278026248, "275909", 1278026248, "275909", null, "Kim, Anna S.", "Employee", "60000.00", "Per Annum", "ASSISTANT STAFF SECRETARY" ]
+, [ 213, "847618F6-E764-40AB-B215-EB9192A892D6", 213, 1278026248, "275909", 1278026248, "275909", null, "Kiley, Bradley J.", "Employee", "162900.00", "Per Annum", "ASSISTANT TO THE PRESIDENT FOR MANAGEMENT AND ADMINISTRATION" ]
+, [ 212, "A668805A-D727-430E-BCC3-A0C7A98888AD", 212, 1278026248, "275909", 1278026248, "275909", null, "Kennedy, Sean D.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 211, "1CE92D5B-4A38-4CE4-A22C-0B51AB5F2C96", 211, 1278026248, "275909", 1278026248, "275909", null, "Kennedy, Joseph B.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 210, "E4304A23-CC97-4CB3-A9DA-A4F9FF8208DC", 210, 1278026248, "275909", 1278026248, "275909", null, "Kelly, Allison K.", "Employee", "45000.00", "Per Annum", "VETTER" ]
+, [ 209, "FCE96569-47FA-466F-BC67-73751CF82E68", 209, 1278026248, "275909", 1278026248, "275909", null, "Kelleher, Jr., Francis M.", "Employee", "110000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF PRESIDENTIAL CORRESPONDENCE" ]
+, [ 208, "07876287-C7AE-4F9D-BE92-B4B1320067BC", 208, 1278026248, "275909", 1278026248, "275909", null, "Keenan, Cody S.", "Employee", "75000.00", "Per Annum", "PRESIDENTIAL SPEECHWRITER" ]
+, [ 207, "2EAB00F3-0C7C-4FAE-BB3A-58F50D3EA39C", 207, 1278026248, "275909", 1278026248, "275909", null, "Kang, Eugene J.", "Employee", "48095.00", "Per Annum", "SPECIAL PROJECTS COORDINATOR" ]
+, [ 206, "A5079E8C-AB3B-4F53-92EF-748B9EE9BD2A", 206, 1278026248, "275909", 1278026248, "275909", null, "Kang, Christopher D.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 205, "1FE40F35-0C58-46ED-9A4D-8470A7F74AA5", 205, 1278026248, "275909", 1278026248, "275909", null, "Kammerer, Chelsea J.", "Employee", "56100.00", "Per Annum", "SPECIAL ASSISTANT TO THE DIRECTOR OF INTERGOVERNMENTAL AFFAIRS" ]
+, [ 204, "9A365230-C172-48BE-9C82-B41A90F21684", 204, 1278026248, "275909", 1278026248, "275909", null, "Kale, Katy A.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF WHITE HOUSE OPERATIONS" ]
+, [ 203, "17FBB33A-D567-45AD-B54D-2948E3915612", 203, 1278026248, "275909", 1278026248, "275909", null, "Kalbaugh, David E.", "Employee", "129758.00", "Per Annum", "DEPUTY EXECUTIVE CLERK" ]
+, [ 202, "2AAFE400-3E9E-453F-8DDC-EBBD605D7297", 202, 1278026248, "275909", 1278026248, "275909", null, "Juska, Monika", "Employee", "45000.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 201, "81DD1CB7-25A7-42AB-8DD3-A93A8BE5C5FA", 201, 1278026248, "275909", 1278026248, "275909", null, "Jung, Bryan", "Employee", "50000.00", "Per Annum", "SPECIAL ASSISTANT TO THE DIRECTOR" ]
+, [ 200, "D1BF2192-027B-4122-8C1D-B9A7D7177EFD", 200, 1278026248, "275909", 1278026248, "275909", null, "Jones, Kristin T.", "Employee", "42000.00", "Per Annum", "RESEARCH ASSOCIATE" ]
+, [ 199, "988B1771-3F63-489D-A727-4D6BD7796C2E", 199, 1278026248, "275909", 1278026248, "275909", null, "Jones, James L.", "Employee", "172200.00", "Per Annum", "NATIONAL SECURITY ADVISOR" ]
+, [ 198, "6D9ADD2C-1F4C-49CB-8D06-EF988D9D7E1C", 198, 1278026248, "275909", 1278026248, "275909", null, "Jones, Elizabeth A.", "Employee", "100000.00", "Per Annum", "DIRECTOR OF WHITE HOUSE ADMINISTRATION" ]
+, [ 197, "A8173EC4-55D4-4153-A610-8D30813EF4C7", 197, 1278026248, "275909", 1278026248, "275909", null, "Jones, Crystal B.", "Employee", "84855.00", "Per Annum", "ASSISTANT SUPERVISOR, DOCUMENT MANAGEMENT AND TRACKING UNIT" ]
+, [ 196, "D2BE46AA-1D83-4BC9-A8E7-9C224B22281C", 196, 1278026248, "275909", 1278026248, "275909", null, "Johnston, Camille Y.", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF COMMUNICATIONS FOR THE FIRST LADY" ]
+, [ 195, "8B2A4D9A-D332-4112-A2DE-A380431B52A2", 195, 1278026248, "275909", 1278026248, "275909", null, "Johnson, Linda M.", "Employee", "66335.00", "Per Annum", "SHIFT LEADER" ]
+, [ 194, "988E03FD-8262-47B5-9CDF-6FD8EE5D86A6", 194, 1278026248, "275909", 1278026248, "275909", null, "Johnson, Katherine B.", "Employee", "90000.00", "Per Annum", "PERSONAL AIDE TO THE PRESIDENT" ]
+, [ 193, "0038C7E6-99E5-4ECA-8AE8-343FCE1C56F1", 193, 1278026248, "275909", 1278026248, "275909", null, "Jean-Pierre, Karine", "Employee", "76500.00", "Per Annum", "NORTHEAST POLITICAL DIRECTOR" ]
+, [ 192, "B5996D82-4495-4C64-BC46-1F8FB5E54821", 192, 1278026248, "275909", 1278026248, "275909", null, "Jawando, William O.", "Detailee", "89033.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR" ]
+, [ 191, "ECD9D376-DC1E-4E01-82A1-57FA1CC5186C", 191, 1278026248, "275909", 1278026248, "275909", null, "Jarvis-Shean, Elizabeth P.", "Employee", "100000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF RESEARCH" ]
+, [ 190, "E7D7C441-673F-44F2-BA45-6262CD27BD6E", 190, 1278026248, "275909", 1278026248, "275909", null, "Jarvis, Kristen E.", "Employee", "51000.00", "Per Annum", "SPECIAL ASSISTANT FOR SCHEDULING AND TRAVELING AIDE TO THE FIRST LADY" ]
+, [ 189, "8CC80D43-5855-4A54-A1B1-BC73632A7DBD", 189, 1278026248, "275909", 1278026248, "275909", null, "Jarrett, Valerie B.", "Employee", "172200.00", "Per Annum", "SENIOR ADVISOR AND ASSISTANT TO THE PRESIDENT FOR INTERGOVERNMENTAL AFFAIRS AND PUBLIC ENGAGEMENT" ]
+, [ 188, "BDFDA800-1327-40FB-B4FB-AB771EA26E40", 188, 1278026248, "275909", 1278026248, "275909", null, "Jamison, Linda S.", "Employee", "113000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR PRESIDENTIAL PERSONNEL" ]
+, [ 187, "C85A650C-A847-4BC5-8B96-2EC4104D352E", 187, 1278026248, "275909", 1278026248, "275909", null, "Jackson, Theresa R.", "Employee", "64439.00", "Per Annum", "SHIFT LEADER" ]
+, [ 186, "9827D737-49F2-4845-A085-E8BFCC6515D3", 186, 1278026248, "275909", 1278026248, "275909", null, "Jackson, Elizabeth J.", "Employee", "37983.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 185, "A5C061CC-D139-47FA-A741-AEBF09A60B1B", 185, 1278026248, "275909", 1278026248, "275909", null, "Jackson, Deilia A. L.", "Employee", "42000.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR OF CORRESPONDENCE FOR THE FIRST LADY" ]
+, [ 184, "B6F87D48-02EF-492B-BFEE-12751A4918B8", 184, 1278026248, "275909", 1278026248, "275909", null, "Jabbour, Mona K.", "Employee", "80000.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL FOR PRESIDENTIAL PERSONNEL " ]
+, [ 183, "AFD949DB-5D27-45DE-A88D-344E81DAEF07", 183, 1278026248, "275909", 1278026248, "275909", null, "Inouye, Shinichi", "Employee", "78000.00", "Per Annum", "DIRECTOR OF SPECIALITY MEDIA" ]
+, [ 182, "0EFDC4F9-DA43-421B-8572-22BF319282B8", 182, 1278026248, "275909", 1278026248, "275909", null, "Hurwitz, Sarah K.", "Employee", "100000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND SENIOR PRESIDENTIAL SPEECHWRITER" ]
+, [ 181, "DF96A275-CEC9-44E3-9AE4-56F42858B1B2", 181, 1278026248, "275909", 1278026248, "275909", null, "Hurley, Caitlin G.", "Employee", "60000.00", "Per Annum", "ASSISTANT STAFF SECRETARY" ]
+, [ 180, "5EBCC38B-9492-4F25-87BC-3228C05FCF05", 180, 1278026248, "275909", 1278026248, "275909", null, "Hughes, Caroline E.", "Employee", "42000.00", "Per Annum", "PRESS ASSISTANT" ]
+, [ 179, "04A912E9-3F32-40E5-A1A4-D7029AC42788", 179, 1278026248, "275909", 1278026248, "275909", null, "Hornsby, Michael A.", "Employee", "66300.00", "Per Annum", "ASSISTANT DIRECTOR" ]
+, [ 178, "966E6668-826D-44ED-8B54-9A5B077721EC", 178, 1278026248, "275909", 1278026248, "275909", null, "Hopkins, Marissa C.", "Employee", "60000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESS SECRETARY" ]
+, [ 177, "3383631F-43E6-42DA-AA8C-37D169FEBE05", 177, 1278026248, "275909", 1278026248, "275909", null, "Hogan, Nancy D.", "Employee", "145000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF PRESIDENTIAL PERSONNEL" ]
+, [ 176, "10591294-538C-46B9-B633-1A51E1B77108", 176, 1278026248, "275909", 1278026248, "275909", null, "Hogan, Katherine J.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR OF PRESS ADVANCE AND PRESS POOL WRANGLER" ]
+, [ 175, "B6994758-9B56-4FEC-8606-8177933C9AA9", 175, 1278026248, "275909", 1278026248, "275909", null, "Hoang, Vy T.", "Employee", "44402.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 174, "4F916D33-F59D-41A7-929F-C24768A849F3", 174, 1278026248, "275909", 1278026248, "275909", null, "Hitchcock, Adam S.", "Employee", "51000.00", "Per Annum", "SPECIAL ASSISTANT" ]
+, [ 173, "BD2A26D7-E774-4C53-8C96-B3FFFFDC9241", 173, 1278026248, "275909", 1278026248, "275909", null, "Higginbottom, Heather A.", "Employee", "150000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY DIRECTOR OF THE DOMESTIC POLICY COUNCIL" ]
+, [ 172, "0253C917-97F0-4DBF-A3A4-4124F4AA7789", 172, 1278026248, "275909", 1278026248, "275909", null, "Hiatt, Natalie M.", "Employee", "42000.00", "Per Annum", "OPERATOR" ]
+, [ 171, "FCC3916A-01FB-4F52-8DFA-4603ED8BA812", 171, 1278026248, "275909", 1278026248, "275909", null, "Hernandez, Philip M.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 170, "7CEA7835-F5BA-4131-91E4-B735787E46ED", 170, 1278026248, "275909", 1278026248, "275909", null, "Hennigan, Margo E.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR AND TRAVEL MANAGER" ]
+, [ 169, "497A11A1-38DE-471A-8233-75758F212B8F", 169, 1278026248, "275909", 1278026248, "275909", null, "Heimbach, James T.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR LEGISLATIVE AFFAIRS" ]
+, [ 168, "FB353789-86D2-4BE2-95F7-50124E1C0A2C", 168, 1278026248, "275909", 1278026248, "275909", null, "Hegde, Shilpa S.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 167, "E67181D6-819F-48BF-B2C5-431A4AA82148", 167, 1278026248, "275909", 1278026248, "275909", null, "Hash, Michael M.", "Detailee", "179700.00", "Per Annum", "DEPUTY DIRECTOR" ]
+, [ 165, "22ABCB9E-2B36-4246-8250-32F61FC54284", 165, 1278026248, "275909", 1278026248, "275909", null, "Harris, Kimberley D.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 166, "35355463-9228-4DE7-9DBB-5ADE7FC6272D", 166, 1278026248, "275909", 1278026248, "275909", null, "Harris, Kevin R.", "Employee", "42000.00", "Per Annum", "LEGISLATIVE ASSISTANT AND ASSISTANT TO THE HOUSE LIAISON" ]
+, [ 164, "2217A87E-3BE5-438E-BDFB-DD54D5E15416", 164, 1278026248, "275909", 1278026248, "275909", null, "Harper, Ryan M.", "Employee", "56100.00", "Per Annum", "DOMESTIC DIRECTOR" ]
+, [ 163, "634C1338-0F4E-4BB2-BF44-1A29A1F7F206", 163, 1278026248, "275909", 1278026248, "275909", null, "Hanson, Terry P.", "Employee", "42000.00", "Per Annum", "DOMESTIC STAFF ASSISTANT" ]
+, [ 162, "6FB8E32C-320B-40C5-9A4F-5A963479AC6D", 162, 1278026248, "275909", 1278026248, "275909", null, "Hable, Abigail K.", "Employee", "45000.00", "Per Annum", "EXECUTIVE ASSISTANT" ]
+, [ 161, "4BD84DB9-547E-4234-9052-CF4D388C2CDD", 161, 1278026248, "275909", 1278026248, "275909", null, "Groth, Travis R.", "Employee", "42840.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 158, "CDC574CF-842E-43CA-913B-67A7DDE4E089", 158, 1278026248, "275909", 1278026248, "275909", null, "Green, Valerie E.", "Employee", "113000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR PRESIDENTIAL PERSONNEL" ]
+, [ 157, "444AFB8A-A2DC-483F-B3D1-F9CB05676863", 157, 1278026248, "275909", 1278026248, "275909", null, "Green, Jason G.", "Employee", "99000.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL" ]
+, [ 160, "2E8D93E2-B994-4786-80F1-2AC3792E847C", 160, 1278026248, "275909", 1278026248, "275909", null, "Greene, Norman A.", "Employee", "66300.00", "Per Annum", "DEPUTY DIRECTOR OF FINANCE" ]
+, [ 159, "375E3F84-2720-43EE-B26D-D82D8444136C", 159, 1278026248, "275909", 1278026248, "275909", null, "Greenawalt, Andrei M.", "Employee", "80000.00", "Per Annum", "DEPUTY DIRECTOR OF CABINET AFFAIRS" ]
+, [ 156, "3B8FE44E-705A-4FD2-854E-B7D8816ABB48", 156, 1278026248, "275909", 1278026248, "275909", null, "Gray, Danielle C.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 155, "4EAF9405-9C44-4C66-A202-A035C2781396", 155, 1278026248, "275909", 1278026248, "275909", null, "Grant, Kathryn A.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 154, "D2236F43-6205-41E4-A538-16B6A6BB48B0", 154, 1278026248, "275909", 1278026248, "275909", null, "Graham, Lottie B.", "Employee", "63673.00", "Per Annum", "ASSISTANT SHIFT LEADER" ]
+, [ 153, "6E60284E-D68B-4B70-B39E-7CD693B70CC8", 153, 1278026248, "275909", 1278026248, "275909", null, "Gottry, Heather C.", "Detailee", "136134.00", "Per Annum", "ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 152, "BD842A95-F7B4-4C82-A795-EC4D12B17796", 152, 1278026248, "275909", 1278026248, "275909", null, "Gottlieb, Michael J.", "Employee", "114000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 151, "9A1A37FF-C1A9-4735-9297-6BA1E078D9CB", 151, 1278026248, "275909", 1278026248, "275909", null, "Gottlieb, Graham D.", "Employee", "42000.00", "Per Annum", "BOARDS AND COMMISSIONS STAFF ASSISTANT" ]
+, [ 150, "A99511AE-F28C-4284-9691-C9D4FA5CB7A3", 150, 1278026248, "275909", 1278026248, "275909", null, "Goodman, Mary B.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR FINANCIAL MARKETS" ]
+, [ 149, "2CBA4213-5751-406E-AC6B-874A8BF02495", 149, 1278026248, "275909", 1278026248, "275909", null, "Goodman, Jennifer", "Employee", "63240.00", "Per Annum", "DEPUTY DIRECTOR OF SCHEDULING AND EVENTS COORDINATOR FOR THE FIRST LADY" ]
+, [ 148, "BFF2CD5A-DA7D-4443-A6A9-972788A99B2D", 148, 1278026248, "275909", 1278026248, "275909", null, "Gonzalez, Roberto J.", "Employee", "114000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND  ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 147, "1EB526E9-58AE-41EB-A2CD-AC911B83D236", 147, 1278026248, "275909", 1278026248, "275909", null, "Gomez, David F.", "Employee", "45000.00", "Per Annum", "RESEARCHER" ]
+, [ 146, "3BAA55F8-56AF-40EF-9221-229BAA16087E", 146, 1278026248, "275909", 1278026248, "275909", null, "Godfrey, Harrison T.", "Employee", "42000.00", "Per Annum", "LEGISLATIVE ASSISTANT" ]
+, [ 145, "A02DAF3B-CF1D-47A8-88A6-0173D5E0C83C", 145, 1278026248, "275909", 1278026248, "275909", null, "Gillette, Jodi A.", "Employee", "71400.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR OF INTERGOVERNMENTAL AFFAIRS" ]
+, [ 144, "CC7C8C80-4E85-4DED-9AD2-FCDFCD6A582F", 144, 1278026248, "275909", 1278026248, "275909", null, "Gibbs, Robert L.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND PRESS SECRETARY" ]
+, [ 143, "1A812D28-92DF-4966-896B-6C1CE3F18C0E", 143, 1278026248, "275909", 1278026248, "275909", null, "Gavin, Jr., Thomas E.", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF MEDIA AFFAIRS" ]
+, [ 142, "CD7D54DE-F133-48F5-BBCB-578C19F43667", 142, 1278026248, "275909", 1278026248, "275909", null, "Gaspard, Patrick H.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DIRECTOR OF POLITICAL AFFAIRS" ]
+, [ 141, "4FBAB70B-10FA-48AC-8B37-D7E2F3CD3D10", 141, 1278026248, "275909", 1278026248, "275909", null, "Gardaphe, Frederico C.", "Employee", "50000.00", "Per Annum", "ASSISTANT DIRECTOR" ]
+, [ 140, "DD811037-2B7E-49BA-AC80-76A542827DA7", 140, 1278026248, "275909", 1278026248, "275909", null, "Garcia, Kristin M.", "Employee", "45000.00", "Per Annum", "LEGISLATIVE ASSISTANT AND ASSISTANT TO THE SENATE LIAISON" ]
+, [ 139, "15BE7C4E-784F-43AB-B569-1B866AA2149A", 139, 1278026248, "275909", 1278026248, "275909", null, "Gage, Peter T.", "Detailee", "94969.00", "Per Annum", "POLICY ANALYST" ]
+, [ 138, "ADF77D05-F745-42E3-8416-0AFF9C4BB146", 138, 1278026248, "275909", 1278026248, "275909", null, "Furman, Jason L.", "Employee", "147500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT  FOR ECONOMIC POLICY" ]
+, [ 137, "191C31B4-284F-4E3C-8F53-23B44C4764A4", 137, 1278026248, "275909", 1278026248, "275909", null, "Frye, Jocelyn C.", "Employee", "140000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF POLICY AND PROJECTS FOR THE FIRST LADY" ]
+, [ 136, "31F921BE-1E5E-495B-856B-CC9CC2C66C3D", 136, 1278026248, "275909", 1278026248, "275909", null, "Freeman, Myra B.", "Employee", "73917.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 135, "52AE9E4D-C20A-4DCA-8CD2-029EE7504CBC", 135, 1278026248, "275909", 1278026248, "275909", null, "Frankel, Adam P.", "Employee", "100000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND SENIOR PRESIDENTIAL SPEECHWRITER" ]
+, [ 134, "0B27B143-F45F-42F9-8F72-4EDEAAE18E9A", 134, 1278026248, "275909", 1278026248, "275909", null, "Frank, April P.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 133, "EB7526F6-5CF1-4CDA-8AA8-3519AC833CFD", 133, 1278026248, "275909", 1278026248, "275909", null, "Ford, Harrison A.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 132, "286E7E55-982E-4CED-9F90-30CAEDAB9691", 132, 1278026248, "275909", 1278026248, "275909", null, "Flatgard, Benjamin W.", "Employee", "55000.00", "Per Annum", "ECONOMICS DIRECTOR" ]
+, [ 131, "9D1ED7CA-5630-4E31-A63E-7276E97F5259", 131, 1278026248, "275909", 1278026248, "275909", null, "Fitts, Alan 0.", "Employee", "61200.00", "Per Annum", "DEPUTY DIRECTOR OF ADVANCE AND TRIP DIRECTOR FOR THE FIRST LADY" ]
+, [ 130, "0FA4EF5B-5CAC-41BD-A3E9-E41FE8666C92", 130, 1278026248, "275909", 1278026248, "275909", null, "Fiscus, Taylor R.", "Employee", "45000.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 129, "DE6C99A4-48F8-47A4-8441-BB28761868D6", 129, 1278026248, "275909", 1278026248, "275909", null, "Firestone, Daren H.", "Detailee", "105211.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL FOR PRESIDENTIAL PERSONNEL" ]
+, [ 128, "3951590B-94A3-4B75-8E06-BC198538DD31", 128, 1278026248, "275909", 1278026248, "275909", null, "Finlen, Shawn T.", "Employee", "50000.00", "Per Annum", "ASSISTANT DIRECTOR" ]
+, [ 127, "BFAD77C4-C146-44DE-A52E-4F42B5D38C4C", 127, 1278026248, "275909", 1278026248, "275909", null, "Finkenbinder, Benjamin N.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR OF PRESS ADVANCE AND PRESS POOL WRANGLER" ]
+, [ 126, "BCC9DCE2-8C5B-4370-9C59-9F42D82C4448", 126, 1278026248, "275909", 1278026248, "275909", null, "Fernkas, Robin E.", "Detailee", "126251.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 125, "08522DA2-8B22-433A-8DD8-B5783C0151BE", 125, 1278026248, "275909", 1278026248, "275909", null, "Fernandez, Micaela J.", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DIRECTOR OF EVENTS AND PROTOCOL" ]
+, [ 124, "367ACB31-C2CC-4E84-AEF6-2F13C55E5874", 124, 1278026248, "275909", 1278026248, "275909", null, "Fergenson, Micah F.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 123, "D41A863E-68CB-44B5-923D-B2CC224E5672", 123, 1278026248, "275909", 1278026248, "275909", null, "Fenn, Sarah B.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 122, "AAC0698D-A6BD-4C09-A9B2-2F96EC0CBABE", 122, 1278026248, "275909", 1278026248, "275909", null, "Favreau, Jonathan E.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DIRECTOR OF SPEECHWRITING" ]
+, [ 121, "8F419D39-4114-4E83-A0CB-65F16FE30581", 121, 1278026248, "275909", 1278026248, "275909", null, "Faulman, Michael T.", "Employee", "42000.00", "Per Annum", "ADVANCE COORDINATOR" ]
+, [ 120, "6DF8E898-2362-439F-824E-0F1DF657F501", 120, 1278026248, "275909", 1278026248, "275909", null, "Farrell, Diana", "Employee", "147500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT FOR ECONOMIC POLICY" ]
+, [ 119, "D0E8B147-C346-4B19-B496-01D35DF7CCDB", 119, 1278026248, "275909", 1278026248, "275909", null, "Espinel, Zulima L.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 118, "67AC1C0A-B7D5-4291-B577-6326F62A117A", 118, 1278026248, "275909", 1278026248, "275909", null, "Escobar, Felicia A. ", "Employee", "90000.00", "Per Annum", "SENIOR POLICY ADVISOR" ]
+, [ 117, "4CE8BD86-92ED-40C5-9941-A3216F180E39", 117, 1278026248, "275909", 1278026248, "275909", null, "Emanuel, Rahm I.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND CHIEF OF STAFF" ]
+, [ 116, "CF9D6103-F840-4628-BB68-73593172B48D", 116, 1278026248, "275909", 1278026248, "275909", null, "Eisen, Norman L.", "Employee", "149000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND SPECIAL COUNSEL TO THE PRESIDENT" ]
+, [ 115, "4AA3C936-47D1-4D6F-A777-E6FB45E59EA6", 115, 1278026248, "275909", 1278026248, "275909", null, "Edwards, Lisa W.", "Detailee", "155500.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL FOR PRESIDENTIAL PERSONNEL" ]
+, [ 114, "C0758B96-DACE-4956-AD08-44D2E163DA7C", 114, 1278026248, "275909", 1278026248, "275909", null, "Edmonds, Anita J.", "Employee", "49069.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 113, "605E00B5-6B0C-4519-A6BB-605D1B9E0797", 113, 1278026248, "275909", 1278026248, "275909", null, "Edgerton, Erin M.", "Detailee", "89033.00", "Per Annum", "NEW MEDIA ANALYST" ]
+, [ 112, "8DB1BA7D-3ABF-4BAF-BCE5-BB451ADBA5D4", 112, 1278026248, "275909", 1278026248, "275909", null, "Earnest, Joshua R.", "Employee", "113000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DEPUTY PRESS SECRETARY" ]
+, [ 111, "89D142D2-B01D-47AF-8EE8-1FCDF7C79D95", 111, 1278026248, "275909", 1278026248, "275909", null, "Ealons, Corey A.", "Employee", "79560.00", "Per Annum", "DIRECTOR OF AFRICAN AMERICAN MEDIA" ]
+, [ 110, "C6BA3B8D-70F9-483C-83C9-F10B85412576", 110, 1278026248, "275909", 1278026248, "275909", null, "Dyer, Deesha A.", "Employee", "45000.00", "Per Annum", "ASSOCIATE DIRECTOR FOR SCHEDULING CORRESPONDENCE" ]
+, [ 109, "5D99F0D6-636D-4F32-A9D9-2D639037E84B", 109, 1278026248, "275909", 1278026248, "275909", null, "Dunn, Lauren P.", "Employee", "50000.00", "Per Annum", "POLICY ASSISTANT, URBAN POLICY AND MOBILITY AND OPPORTUNITY" ]
+, [ 108, "ECFCC995-06DA-4739-B287-481EAD56608F", 108, 1278026248, "275909", 1278026248, "275909", null, "DuBois, Joshua P.", "Employee", "100000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND EXECUTIVE DIRECTOR OF THE WHITE HOUSE OFFICE OF FAITH-BASED AND NEIGHBORHOOD PARTNERSHIPS" ]
+, [ 107, "2485603D-108A-4751-A8CE-D6DCFCF75F18", 107, 1278026248, "275909", 1278026248, "275909", null, "Droege, Philip C.", "Employee", "140259.00", "Per Annum", "DIRECTOR OF RECORDS MANAGEMENT" ]
+, [ 106, "D4D51578-E502-4E92-B1F2-C6CF3B0E877E", 106, 1278026248, "275909", 1278026248, "275909", null, "Douglas, Derek R. B.", "Employee", "120000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR URBAN AFFAIRS" ]
+, [ 105, "8B03B150-CF1C-4390-AC40-C325098653A0", 105, 1278026248, "275909", 1278026248, "275909", null, "Dorsett, Craig M.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 104, "DCDB229E-ED72-4285-AB0B-E7FF8D2AF6AF", 104, 1278026248, "275909", 1278026248, "275909", null, "Donovan, William J.", "Employee", "42000.00", "Per Annum", "ENERGY AND ENVIRONMENT STAFF ASSISTANT" ]
+, [ 103, "2B52D0CD-AF4A-46C0-A349-E5E2957FCD31", 103, 1278026248, "275909", 1278026248, "275909", null, "Donovan, Michael W.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR AND SCHEDULING RESEARCHER" ]
+, [ 102, "4035563C-349A-4FEA-9559-5FF571D63100", 102, 1278026248, "275909", 1278026248, "275909", null, "Donilon, Thomas E.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DEPUTY NATIONAL SECURITY ADVISOR" ]
+, [ 101, "76AA559D-A7BB-4D82-89AC-2B2A50A7B24C", 101, 1278026248, "275909", 1278026248, "275909", null, "Dillon, Michael P.", "Employee", "113000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DEPUTY DIRECTOR OF POLITICAL AFFAIRS" ]
+, [ 100, "184413D9-5DD3-4B6C-ABE8-34454A0AD3DF", 100, 1278026248, "275909", 1278026248, "275909", null, "Devine, Carrie S.", "Employee", "56100.00", "Per Annum", "SPECIAL ASSISTANT AND ADVANCE LEAD" ]
+, [ 94, "E05A5FB8-A9B3-45B6-B0B8-9FD7B300F6B3", 94, 1278026248, "275909", 1278026248, "275909", null, "De Sio, Jr., Henry F.", "Employee", "153300.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT FOR MANAGEMENT AND ADMINISTRATION" ]
+, [ 99, "1FEE387B-DFE8-4944-9419-EA2766F21908", 99, 1278026248, "275909", 1278026248, "275909", null, "DeRosa, Mary B.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY COUNSEL TO THE PRESIDENT" ]
+, [ 98, "33120915-B37E-4307-A590-2C12590EB94E", 98, 1278026248, "275909", 1278026248, "275909", null, "DeParle, Nancy-Ann Min", "Employee", "158500.00", "Per Annum", "COUNSELOR TO THE PRESIDENT AND DIRECTOR OF THE WHITE HOUSE OFFICE FOR HEALTH CARE REFORM" ]
+, [ 96, "358330C4-077B-46D2-B959-1459CDA9DB57", 96, 1278026248, "275909", 1278026248, "275909", null, "DeGuzman, Jr., Danilo", "Employee", "72876.00", "Per Annum", "PRESIDENTIAL SUPPORT SPECIALIST" ]
+, [ 97, "E5B9BF64-BC7F-4667-B4B1-50DAF9AD7272", 97, 1278026248, "275909", 1278026248, "275909", null, "DeGuzman, Brian K.", "Employee", "42738.00", "Per Annum", "OPERATOR" ]
+, [ 95, "7A233FA8-8516-48D8-986D-3616C6FB7FC8", 95, 1278026248, "275909", 1278026248, "275909", null, "Deese, Brian C.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR ECONOMIC POLICY" ]
+, [ 93, "AA7782D7-53D5-40D4-A560-A63117E697B8", 93, 1278026248, "275909", 1278026248, "275909", null, "Davis, Christopher E.", "Employee", "76500.00", "Per Annum", "SENIOR LEGISLATIVE AFFAIRS ANALYST" ]
+, [ 92, "5D90604C-05D9-4B64-9C7D-34E1F6501C83", 92, 1278026248, "275909", 1278026248, "275909", null, "Davies, Susan M.", "Employee", "158500.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DEPUTY COUNSEL TO THE PRESIDENT" ]
+, [ 91, "9F71CC96-754B-429F-A122-6F381B9D7EAD", 91, 1278026248, "275909", 1278026248, "275909", null, "Dalheim, Karen L.", "Detailee", "148510.00", "Per Annum", "ETHICS ADVISOR" ]
+, [ 90, "7DEBF802-AEC2-4EE4-803D-ADF5E775785F", 90, 1278026248, "275909", 1278026248, "275909", null, "Dale, Kareem A.", "Employee", "61200.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DEPUTY ASSOCIATE DIRECTOR OF PUBLIC ENGAGEMENT" ]
+, [ 89, "142E5246-DCC2-49C6-8C23-0C32256E614C", 89, 1278026248, "275909", 1278026248, "275909", null, "Cutter, Stephanie ", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT FOR SPECIAL PROJECTS" ]
+, [ 88, "244C4CA5-1146-4CB5-B828-820CC699D7C5", 88, 1278026248, "275909", 1278026248, "275909", null, "Cushman, Chase M.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR OF SCHEDULING" ]
+, [ 87, "4B9C8DB5-98FC-4C6C-8A29-98881EAD9B45", 87, 1278026248, "275909", 1278026248, "275909", null, "Cusack, David J.", "Employee", "102000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DEPUTY DIRECTOR OF ADVANCE" ]
+, [ 86, "6D93A610-78B1-4111-A0AD-BE922A5A4746", 86, 1278026248, "275909", 1278026248, "275909", null, "Cunningham, Vinson T.", "Employee", "42000.00", "Per Annum", "ECONOMICS STAFF ASSISTANT" ]
+, [ 85, "DCE38FD0-48D9-40C3-96EC-EC34EFB0F9C4", 85, 1278026248, "275909", 1278026248, "275909", null, "Cunningham, Jason F.", "Detailee", "64548.00", "Per Annum", "RESEARCHER" ]
+, [ 84, "881F102E-69A6-4AB5-955F-865B2E3FC6C3", 84, 1278026248, "275909", 1278026248, "275909", null, "Cuellar, Martin E.", "Employee", "91800.00", "Per Annum", "DEPUTY DIRECTOR, PRESIDENTIAL CORRESPONDENCE" ]
+, [ 83, "6BA0226D-CC50-4238-AD8F-5872E4C84D46", 83, 1278026248, "275909", 1278026248, "275909", null, "Cuba, Juan C.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 82, "E83F7853-0C76-4060-90D6-4CEED254E1A4", 82, 1278026248, "275909", 1278026248, "275909", null, "Crutchfield, Danielle M.", "Employee", "130000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF APPOINTMENTS AND SCHEDULING" ]
+, [ 81, "9043AFAF-1A0F-4F0E-B96B-761E66E156C7", 81, 1278026248, "275909", 1278026248, "275909", null, "Crowley, Jeffrey S.", "Employee", "102000.00", "Per Annum", "DIRECTOR OF THE OFFICE OF NATIONAL AIDS POLICY AND SENIOR ADVISOR ON DISABILITY POLICY" ]
+, [ 80, "86E4391F-89A5-4449-A64C-41C37868FA49", 80, 1278026248, "275909", 1278026248, "275909", null, "Coven, Martha B.", "Employee", "120000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR MOBILTY AND OPPORTUNITY POLICY" ]
+, [ 79, "2E6BB3D4-781C-4091-953E-75FE67202F15", 79, 1278026248, "275909", 1278026248, "275909", null, "Corrigan, Tara C.", "Employee", "45000.00", "Per Annum", "EXECUTIVE ASSISTANT TO THE POLITICAL DIRECTOR" ]
+, [ 78, "40E6B621-59F7-427A-8B82-A013C412E213", 78, 1278026248, "275909", 1278026248, "275909", null, "Conrad, Shasti K. ", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 77, "BDD51C4A-C49C-4735-BE47-4A66162F3564", 77, 1278026248, "275909", 1278026248, "275909", null, "Colvin, Nicholas M.", "Employee", "63240.00", "Per Annum", "SPECIAL ASSISTANT TO THE WHITE HOUSE COUNSEL" ]
+, [ 76, "A19EABA7-8575-476D-AD48-D4E6F244D09C", 76, 1278026248, "275909", 1278026248, "275909", null, "Cokley, Rebecca A.", "Employee", "72000.00", "Per Annum", "PRIORITY PLACEMENT DIRECTOR" ]
+, [ 75, "591067C6-AA9A-455F-B9B4-767DF4A23323", 75, 1278026248, "275909", 1278026248, "275909", null, "Cohen, Elizabeth S", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR AND SCHEDULING RESEARCHER" ]
+, [ 74, "10515E86-2D62-4F6F-B09E-51D0671B3A7B", 74, 1278026248, "275909", 1278026248, "275909", null, "Cobbina, Kwesi A.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 73, "6616E69F-0140-4990-A5BA-33563BD7975D", 73, 1278026248, "275909", 1278026248, "275909", null, "Claude, Lilia H.", "Employee", "58511.00", "Per Annum", "ASSISTANT SHIFT LEADER" ]
+, [ 72, "72E26C19-A033-4FA8-AA77-8FCD87D8C2D1", 72, 1278026248, "275909", 1278026248, "275909", null, "Clarke, Kay F.", "Employee", "64439.00", "Per Annum", "SHIFT LEADER" ]
+, [ 71, "54BC2960-8BDD-41C4-9A38-F8B29F08E64D", 71, 1278026248, "275909", 1278026248, "275909", null, "Cizner, Jennifer C.", "Employee", "85680.00", "Per Annum", "DEPUTY CHIEF OF STAFF FOR PRESIDENTIAL PERSONNEL" ]
+, [ 70, "2504A1B0-026B-4BBA-9926-A8DF2AE0C6F7", 70, 1278026248, "275909", 1278026248, "275909", null, "Chiodo, Theodore A.", "Employee", "60000.00", "Per Annum", "ASSISTANT STAFF SECRETARY" ]
+, [ 69, "433E05C0-9EF2-44AD-85FA-287DAB8F7D03", 69, 1278026248, "275909", 1278026248, "275909", null, "Chhabra, Anand", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 68, "401ACA6C-5EE5-4518-B73B-28DA5EDCF49B", 68, 1278026248, "275909", 1278026248, "275909", null, "Cherlin, Reid H.", "Employee", "78000.00", "Per Annum", "ASSISTANT PRESS SECRETARY" ]
+, [ 67, "449F21A0-E00B-41F2-8BDB-2F8F9C8D503C", 67, 1278026248, "275909", 1278026248, "275909", null, "Chen, Margaret C.", "Employee", "0.00", "Per Annum", "SPECIAL ASSISTANT" ]
+, [ 66, "F5402EBD-96DA-4A93-BCEC-00A3594E658E", 66, 1278026248, "275909", 1278026248, "275909", null, "Chambers, Caroline M.", "Employee", "120000.00", "Per Annum", "DIRECTOR OF CONFIRMATIONS" ]
+, [ 65, "81687766-FB74-4F58-9609-BF5FBEF86E1D", 65, 1278026248, "275909", 1278026248, "275909", null, "Chaifetz, Samantha L.", "Detailee", "123758.00", "Per Annum", "RESEARCHER" ]
+, [ 64, "7B5B8DC8-26AE-48C1-85D3-F25DDE266909", 64, 1278026248, "275909", 1278026248, "275909", null, "Castillo, Laura M.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 63, "4422A13F-D84D-4464-8D44-461161D673AF", 63, 1278026248, "275909", 1278026248, "275909", null, "Carter, Rhonda M.", "Employee", "57000.00", "Per Annum", "SPECIAL ASSISTANT TO THE WHITE HOUSE COUNSEL" ]
+, [ 62, "6824851F-79FA-4F7E-81B6-5721215E08CE", 62, 1278026248, "275909", 1278026248, "275909", null, "Carrier, Ethan A.", "Detailee", "94969.00", "Per Annum", "ETHICS ADVISOR" ]
+, [ 61, "319D36BF-112D-411A-AF15-3F9E582D30AA", 61, 1278026248, "275909", 1278026248, "275909", null, "Cardwell, Rebecca A.", "Employee", "43656.00", "Per Annum", "OPERATOR" ]
+, [ 60, "7EFBCFF6-36EE-4E1B-A1B5-11B33CF89F1B", 60, 1278026248, "275909", 1278026248, "275909", null, "Carden, Meredith M.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 59, "EED1E7C6-4BF6-4F20-98E0-801CA441D459", 59, 1278026248, "275909", 1278026248, "275909", null, "Canery, Beverly D.", "Employee", "58511.00", "Per Annum", "ASSISTANT SHIFT LEADER" ]
+, [ 58, "2E3477A4-E00A-4ECD-B3FF-462E1B804711", 58, 1278026248, "275909", 1278026248, "275909", null, "Camuñez, Michael C.", "Employee", "140000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND SPECIAL COUNSEL TO THE PRESIDENT" ]
+, [ 57, "6B63D4FA-6D52-47E0-B047-5E1975336551", 57, 1278026248, "275909", 1278026248, "275909", null, "Campoverdi, Alejandra M.", "Employee", "60000.00", "Per Annum", "SPECIAL ASSISTANT TO THE DEPUTY CHIEF OF STAFF" ]
+, [ 56, "BA51168F-D2C8-41B5-998F-589D7D439B27", 56, 1278026248, "275909", 1278026248, "275909", null, "Campos, David R.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 55, "D2034C2C-B88F-4F67-8EC8-CB07C968D312", 55, 1278026248, "275909", 1278026248, "275909", null, "Campbell, Nnaji-Semayi K.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 54, "86757289-4738-40E1-B2C0-9B5B7A94569C", 54, 1278026248, "275909", 1278026248, "275909", null, "Campbell, Grant E.", "Employee", "45900.00", "Per Annum", "ASSOCIATE DIRECTOR AND TRIP COORDINATOR" ]
+, [ 53, "B4DF658B-FD78-489F-A968-6D2BE8E74CC0", 53, 1278026248, "275909", 1278026248, "275909", null, "Campbell, Frances L.", "Employee", "100904.00", "Per Annum", "SUPERVISOR, DOCUMENT MANAGEMENT AND TRACKING UNIT" ]
+, [ 52, "59B72685-54AC-4057-9C97-B518B6D3BFDD", 52, 1278026248, "275909", 1278026248, "275909", null, "Burton, William A.", "Employee", "113000.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND DEPUTY PRESS SECRETARY" ]
+, [ 51, "FB59378D-11BF-44D0-9D4C-00C541309DC3", 51, 1278026248, "275909", 1278026248, "275909", null, "Burnough, Erinn J.", "Employee", "66300.00", "Per Annum", "DEPUTY DIRECTOR AND DEPUTY SOCIAL SECRETARY" ]
+, [ 50, "39C96E41-8845-4470-B839-7AA01A9FE420", 50, 1278026248, "275909", 1278026248, "275909", null, "Burman, Kendall C.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 49, "B34F6E92-79FB-4CA8-8CE6-A46E7CA4C50F", 49, 1278026248, "275909", 1278026248, "275909", null, "Buffett, Howard W.", "Detailee", "51630.00", "Per Annum", "POLICY ADVISOR" ]
+, [ 48, "0108726A-D8AB-4498-9C1D-4A75B9BDC375", 48, 1278026248, "275909", 1278026248, "275909", null, "Brush, Michael P.", "Employee", "56100.00", "Per Annum", "SPECIAL ASSISTANT AND ADVANCE LEAD" ]
+, [ 47, "01222CD2-902D-4BF9-B476-1B731AE9D504", 47, 1278026248, "275909", 1278026248, "275909", null, "Brundage, Amy J.", "Employee", "78000.00", "Per Annum", "ASSISTANT PRESS SECRETARY" ]
+, [ 46, "D1E784B0-4E41-485D-BEBD-8E6A410B6983", 46, 1278026248, "275909", 1278026248, "275909", null, "Browner, Carol M.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT FOR ENERGY AND CLIMATE CHANGE" ]
+, [ 45, "042BE946-FC46-4C45-AA19-0D5846797EE7", 45, 1278026248, "275909", 1278026248, "275909", null, "Brown, Elizabeth M.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND STAFF SECRETARY" ]
+, [ 44, "9617E6E7-CE33-4121-8021-01CE70AF5742", 44, 1278026248, "275909", 1278026248, "275909", null, "Brooke, Mary J.", "Employee", "89033.00", "Per Annum", "SUPERVISOR OF CORRESPONDENCE REVIEW" ]
+, [ 43, "0EBBB1F1-D497-427B-B1BD-878DB31E4073", 43, 1278026248, "275909", 1278026248, "275909", null, "Brewer, Anne P.", "Employee", "45000.00", "Per Annum", "EXECUTIVE ASSISTANT TO THE DIRECTOR OF PUBLIC ENGAGEMENT" ]
+, [ 42, "3C226865-D662-47C8-BDF3-F6EB32AF7CBD", 42, 1278026248, "275909", 1278026248, "275909", null, "Bressler, Steven Y.", "Detailee", "148510.00", "Per Annum", "CLEARANCE ADVISOR" ]
+, [ 41, "8A725CB5-5DA7-430E-8733-64599E8815B9", 41, 1278026248, "275909", 1278026248, "275909", null, "Brennan, John O.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT FOR HOMELAND SECURITY AND COUNTERTERRORISM" ]
+, [ 40, "234CF236-22A4-44D5-BAC0-53637D663594", 40, 1278026248, "275909", 1278026248, "275909", null, "Branch, Katherine Y.", "Employee", "61200.00", "Per Annum", "SPECIAL ASSISTANT TO THE SENIOR ADVISOR" ]
+, [ 39, "710F48A7-53E1-4ED4-B0A5-D633CDC96DA9", 39, 1278026248, "275909", 1278026248, "275909", null, "Bookey-Baker, Natalie F.", "Employee", "45000.00", "Per Annum", "EXECUTIVE ASSISTANT TO THE CHIEF OF STAFF TO THE FIRST LADY" ]
+, [ 38, "29A1C19C-0989-41CD-922D-63FCD33592CA", 38, 1278026248, "275909", 1278026248, "275909", null, "Bond, Brian K.", "Employee", "93840.00", "Per Annum", "DEPUTY DIRECTOR OF PUBLIC ENGAGEMENT" ]
+, [ 37, "FA13EA9E-A525-49C7-B765-78D2486D84E5", 37, 1278026248, "275909", 1278026248, "275909", null, "Blount, Patricia H.", "Employee", "44402.00", "Per Annum", "RECORDS MANAGEMENT ANALYST" ]
+, [ 36, "C9FC57A9-2611-44CA-B117-EB265DE58A5C", 36, 1278026248, "275909", 1278026248, "275909", null, "Block, Michael R.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 35, "26DBDA1C-1627-45A6-9BF4-EAC22E4732C4", 35, 1278026248, "275909", 1278026248, "275909", null, "Blake, Michael A.", "Employee", "61200.00", "Per Annum", "DEPUTY ASSOCIATE DIRECTOR OF INTERGOVERNMENTAL AFFAIRS" ]
+, [ 34, "9BF97DE7-D269-47EE-B1F1-AFCB844ECA6C", 34, 1278026248, "275909", 1278026248, "275909", null, "Bisi, Rachel I.", "Employee", "42000.00", "Per Annum", "LEGISLATIVE ASSISTANT" ]
+, [ 33, "700EAE8E-8FDF-437C-8039-60C2BE305CD2", 33, 1278026248, "275909", 1278026248, "275909", null, "Birdsall, Kristen S.", "Employee", "45900.00", "Per Annum", "RESEARCHER" ]
+, [ 32, "002B3F76-E0F0-4846-89AE-AC857A52398B", 32, 1278026248, "275909", 1278026248, "275909", null, "Binns, Mary U.", "Employee", "70126.00", "Per Annum", "SPECIAL ASSISTANT" ]
+, [ 31, "1EAFA727-A6E2-4C2E-A4A9-E941E1D7083F", 31, 1278026248, "275909", 1278026248, "275909", null, "Bhowmik, Rachana", "Employee", "100000.00", "Per Annum", "DIRECTOR OF SPECIAL PROJECTS AND SPECIAL ASSISTANT TO THE OFFICE OF THE CHIEF OF STAFF" ]
+, [ 30, "CDC5E63F-BCB1-44C9-A945-72630C22F7B8", 30, 1278026248, "275909", 1278026248, "275909", null, "Beverly, Alaina C.", "Employee", "71400.00", "Per Annum", "ASSOCIATE DIRECTOR OF URBAN AFFAIRS" ]
+, [ 29, "8168EDA9-1D6E-4A01-A15F-AE1A2208946F", 29, 1278026248, "275909", 1278026248, "275909", null, "Bernard, Sarah C.", "Employee", "70000.00", "Per Annum", "DIRECTOR, ONLINE ENGAGEMENT" ]
+, [ 27, "343B6622-9314-4729-8A23-5029222481CB", 27, 1278026248, "275909", 1278026248, "275909", null, "Belive, Lauren E.", "Employee", "45000.00", "Per Annum", "LEGISLATIVE ASSISTANT AND ASSISTANT FOR EVENTS" ]
+, [ 28, "89B98BA7-CF46-4429-BD03-174C361816BE", 28, 1278026248, "275909", 1278026248, "275909", null, "Beliveau, Emmett S.", "Employee", "130000.00", "Per Annum", "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF ADVANCE AND OPERATIONS" ]
+, [ 26, "26BAD094-F2B8-46EB-B2FE-2E99CC6D953E", 26, 1278026248, "275909", 1278026248, "275909", null, "Beinart, Diana H.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 25, "83EED855-0D0A-4D81-9891-0FA38C726A2C", 25, 1278026248, "275909", 1278026248, "275909", null, "Bedingfield, Katherine J.", "Employee", "90000.00", "Per Annum", "DEPUTY DIRECTOR FOR MEDIA AFFAIRS" ]
+, [ 24, "B206F6C0-0C6E-45F9-95E5-D61FA9CF9F5F", 24, 1278026248, "275909", 1278026248, "275909", null, "Becnel, Bradley D.", "Employee", "55000.00", "Per Annum", "SPECIAL ASSISTANT AND ADVANCE LEAD" ]
+, [ 23, "480DEE17-EE24-447B-9758-D07507A0FD24", 23, 1278026248, "275909", 1278026248, "275909", null, "Bauer, Robert F.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND COUNSEL TO THE PRESIDENT" ]
+, [ 22, "F28A1A86-2EB7-46DF-9D39-EA674FDE64F5", 22, 1278026248, "275909", 1278026248, "275909", null, "Bauer, Nicholas T.", "Employee", "55000.00", "Per Annum", "ASSOCIATE DIRECTOR" ]
+, [ 21, "D036374A-42D1-49F6-9EF9-E16D6029BBD1", 21, 1278026248, "275909", 1278026248, "275909", null, "Bates, Andrew J.", "Employee", "42000.00", "Per Annum", "MEDIA MONITOR" ]
+, [ 20, "DA99F90C-1FD9-4D79-9902-5398843076E5", 20, 1278026248, "275909", 1278026248, "275909", null, "Bassin, Ian M.", "Employee", "99000.00", "Per Annum", "DEPUTY ASSOCIATE COUNSEL" ]
+, [ 19, "89945973-73AD-4F9D-8208-945B743AD0EA", 19, 1278026248, "275909", 1278026248, "275909", null, "Baskerville, Jr., Chester A.", "Employee", "47532.00", "Per Annum", "ASSISTANT SHIFT LEADER" ]
+, [ 18, "BF3CB8A5-CE6E-4E3C-91C3-CD5061469D4C", 18, 1278026248, "275909", 1278026248, "275909", null, "Barnes, Melody C.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND DIRECTOR OF THE DOMESTIC POLICY COUNCIL" ]
+, [ 17, "32ADD9F3-0419-4DE2-8258-40F876EF2CD3", 17, 1278026248, "275909", 1278026248, "275909", null, "Baldassaro, Frederick J.", "Detailee", "122744.00", "Per Annum", "COMMUNICATIONS DIRECTOR" ]
+, [ 16, "8CAFA166-F479-4AA4-811F-4A2A6721FB5F", 16, 1278026248, "275909", 1278026248, "275909", null, "Baggetto, Maude L.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 15, "09AB797E-7872-4FCC-A8A9-A12EBC4CF991", 15, 1278026248, "275909", 1278026248, "275909", null, "Ayling, Lindsay A.", "Employee", "42000.00", "Per Annum", "ANALYST" ]
+, [ 14, "D11C564A-FAE5-4BE3-B6F8-5EF95E5C12AE", 14, 1278026248, "275909", 1278026248, "275909", null, "Axelrod, David M.", "Employee", "172200.00", "Per Annum", "ASSISTANT TO THE PRESIDENT AND SENIOR ADVISOR" ]
+, [ 13, "52C3DEFA-239D-47D6-9A23-C77CA34EFF26", 13, 1278026248, "275909", 1278026248, "275909", null, "Attili, Candice L.", "Employee", "58511.00", "Per Annum", "ASSISTANT SHIFT LEADER" ]
+, [ 12, "66DBE59C-8D38-4AFA-AE8C-488248791F02", 12, 1278026248, "275909", 1278026248, "275909", null, "Asen, Jonathan D.", "Employee", "42000.00", "Per Annum", "SENIOR ANALYST" ]
+, [ 11, "40029456-3EAF-4C45-9684-161DEDBCBF62", 11, 1278026248, "275909", 1278026248, "275909", null, "Anello, Russell M.", "Employee", "66300.00", "Per Annum", "COUNSEL" ]
+, [ 10, "1AAC1AE2-86B6-427B-81A3-727582514F04", 10, 1278026248, "275909", 1278026248, "275909", null, "Andrias, Kate E.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT" ]
+, [ 9, "69DB8292-0CFF-40E4-9C1B-08E5332599BD", 9, 1278026248, "275909", 1278026248, "275909", null, "Anderson, Charles D.", "Employee", "51000.00", "Per Annum", "POLICY ASSISTANT" ]
+, [ 8, "45F126F3-C485-4A9A-98CA-B76CE5143E58", 8, 1278026248, "275909", 1278026248, "275909", null, "Anderson, Amanda D.", "Employee", "60000.00", "Per Annum", "SPECIAL ASSISTANT TO THE CHIEF OF STAFF" ]
+, [ 7, "83BF18C6-DF7B-40D3-932D-959715495F84", 7, 1278026248, "275909", 1278026248, "275909", null, "Amorsingh, Lucius L.", "Employee", "56092.00", "Per Annum", "SPECIAL ASSISTANT" ]
+, [ 6, "AB93E4E3-AD37-43C5-A26B-B7CE09DC582D", 6, 1278026248, "275909", 1278026248, "275909", null, "Alley, Hilary J.", "Employee", "42000.00", "Per Annum", "STAFF ASSISTANT" ]
+, [ 5, "5B367A3D-76FF-4826-8865-059BDBA1C199", 5, 1278026248, "275909", 1278026248, "275909", null, "Aldy, Jr., Joseph E.", "Employee", "130500.00", "Per Annum", "SPECIAL ASSISTANT TO THE PRESIDENT FOR ENERGY AND ENVIRONMENT" ]
+, [ 4, "DD9E6E7C-72A1-4E0B-BEB2-2FE30D60B96D", 4, 1278026248, "275909", 1278026248, "275909", null, "Albino, James ", "Employee", "91800.00", "Per Annum", "SENIOR PROGRAM MANAGER" ]
+, [ 3, "B5D52E90-A9D4-4F2F-85B6-B8AC58F96FD3", 3, 1278026248, "275909", 1278026248, "275909", null, "Agnew, David P.", "Employee", "93840.00", "Per Annum", "DEPUTY DIRECTOR OF INTERGOVERNMENTAL AFFAIRS" ]
+, [ 2, "8FF94405-A15C-4245-84A0-F9D03DC6D9C3", 2, 1278026248, "275909", 1278026248, "275909", null, "Adams, Ian H.", "Employee", "45000.00", "Per Annum", "EXECUTIVE ASSISTANT TO THE DIRECTOR OF SCHEDULING AND ADVANCE" ]
+, [ 1, "A0EAA688-E039-4172-9E71-66F167F9AE61", 1, 1278026248, "275909", 1278026248, "275909", null, "Abrams, Adam W.", "Employee", "66300.00", "Per Annum", "WESTERN REGIONAL COMMUNICATIONS DIRECTOR" ]
+ ]
+}

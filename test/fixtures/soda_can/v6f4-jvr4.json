@@ -1,0 +1,170 @@
+{
+  "id" : "v6f4-jvr4",
+  "name" : "Things to Order By",
+  "averageRating" : 0,
+  "createdAt" : 1362845100,
+  "displayType" : "table",
+  "downloadCount" : 0,
+  "numberOfComments" : 0,
+  "oid" : 2766325,
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1362847167,
+  "publicationGroup" : 723869,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1362845420,
+  "rowsUpdatedBy" : "2fra-n3vu",
+  "signed" : false,
+  "tableId" : 723869,
+  "totalTimesRated" : 0,
+  "viewCount" : 1,
+  "viewLastModified" : 1362847196,
+  "viewType" : "tabular",
+  "columns" : [ {
+    "id" : 49493123,
+    "name" : "ptext",
+    "dataTypeName" : "text",
+    "fieldName" : "ptext",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 8488507,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 9,
+      "smallest" : "Apple",
+      "null" : 0,
+      "largest" : "Zorrow",
+      "top" : [ {
+        "count" : 20,
+        "item" : "Apple"
+      }, {
+        "count" : 19,
+        "item" : "Bannana"
+      }, {
+        "count" : 18,
+        "item" : "Crisp"
+      }, {
+        "count" : 17,
+        "item" : "Oatmeal"
+      }, {
+        "count" : 16,
+        "item" : "Zorrow"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49493124,
+    "name" : "ftext",
+    "dataTypeName" : "html",
+    "fieldName" : "ftext",
+    "position" : 2,
+    "renderTypeName" : "html",
+    "tableColumnId" : 8488508,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 3,
+      "smallest" : "* So don't try\n* or\n* you will",
+      "null" : 6,
+      "largest" : "Regret it",
+      "top" : [ {
+        "count" : 20,
+        "item" : "* We can't really\n* Order these\n* Things"
+      }, {
+        "count" : 19,
+        "item" : "* So don't try\n* or\n* you will"
+      }, {
+        "count" : 18,
+        "item" : "Regret it"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 49493173,
+    "name" : "number",
+    "dataTypeName" : "number",
+    "fieldName" : "number",
+    "position" : 3,
+    "renderTypeName" : "number",
+    "tableColumnId" : 8488509,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 9,
+      "smallest" : "1",
+      "sum" : "28",
+      "null" : 0,
+      "average" : "3.111111111111111",
+      "largest" : "6",
+      "top" : [ {
+        "count" : 20,
+        "item" : "1"
+      }, {
+        "count" : 19,
+        "item" : "2"
+      }, {
+        "count" : 18,
+        "item" : "3"
+      }, {
+        "count" : 17,
+        "item" : "4"
+      }, {
+        "count" : 16,
+        "item" : "5"
+      }, {
+        "count" : 15,
+        "item" : "6"
+      } ]
+    },
+    "format" : {
+    }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "renderTypeConfig" : {
+      "visible" : {
+        "table" : true
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "2fra-n3vu",
+    "displayName" : "John Kew",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileLastModified" : 1355365728,
+    "screenName" : "John Kew",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+    "flags" : [ "admin" ]
+  },
+  "query" : {
+    "orderBys" : [ {
+      "ascending" : true,
+      "expression" : {
+        "columnId" : 49493123,
+        "type" : "column"
+      }
+    } ]
+  },
+  "rights" : [ "read" ],
+  "sortBys" : [ {
+    "id" : 0,
+    "viewColumnId" : 49493123,
+    "flags" : [ "asc" ]
+  } ],
+  "tableAuthor" : {
+    "id" : "2fra-n3vu",
+    "displayName" : "John Kew",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileLastModified" : 1355365728,
+    "screenName" : "John Kew",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+    "flags" : [ "admin" ]
+  },
+  "flags" : [ "default" ]
+}

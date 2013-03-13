@@ -18,6 +18,16 @@ module Canvas2
       return @timings ||= []
     end
 
+    def self.prefetch
+      prefetch = []
+      @available_contexts.map { |ctx|
+         if !ctx[1][:dataset].nil? && ctx[1][:dataset].sodacan
+           prefetch << { :context =>  ctx[1][:id], :metrics => ctx[1][:dataset].sodacan.metrics, :hints => ctx[1][:dataset].sodacan.hints}
+         end
+      }
+      prefetch
+    end
+
     def self.reset
       @available_contexts = {}
       @streaming_contexts = {}
@@ -85,6 +95,7 @@ module Canvas2
                 Thread.new do
                   begin
                     ds_new = req[:config]['keepOriginal'] ? ds : ds.deep_clone(View)
+                    ds.set_sodacan(config['useParentPrefetch'] ? context[:dataset].sodacan : nil)
                     got_dataset(ds_new, req[:config])
                     req[:callback].call(ds_new)
                   rescue CoreServer::CoreServerError => e
@@ -278,6 +289,7 @@ module Canvas2
             end
           end
           ds = config['keepOriginal'] ? context[:dataset] : context[:dataset].deep_clone(View)
+          ds.set_sodacan(config['useParentPrefetch'] ? context[:dataset].sodacan : nil)
         else
           @pending_contexts ||= {}
           @pending_contexts[config['contextId']] ||= []
@@ -329,6 +341,9 @@ module Canvas2
 
     def self.got_dataset(ds, config)
       add_query(ds, config['query']) if !config['keepOriginal']
+      if ds.sodacan.nil? && config['prefetch']
+        ds.prefetch(config['prefetch'])
+      end
       ds.data['totalRows'] = ds.get_total_rows({}, !Canvas2::Util.is_private) if config['getTotal']
     end
 

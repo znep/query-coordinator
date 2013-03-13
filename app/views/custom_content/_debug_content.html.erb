@@ -1,8 +1,5 @@
-<h2>Loaded Contexts</h2>
-<pre style="font-size:1.2em;"><%= JSON.pretty_generate(Canvas2::DataContext::available_contexts) %></pre>
-
 <%- if !Canvas2::DataContext::errors.empty? -%>
-  <h2>Other Errors</h2>
+  <h2>Errors</h2>
   <pre style="font-size:1.2em;"><%= Canvas2::DataContext::errors.map {|e| e.to_s} %></pre>
 <%- end -%>
 
@@ -14,7 +11,15 @@
   <div style="font-size:1.1em;"><p><%= Canvas2::DataContext::timings.join("</p><p>").html_safe %></p></div>
 <%- end -%>
 
+<%- if !Canvas2::DataContext::prefetch.empty? -%>
+  <h2>Prefetch Statistics</h2>
+  <div style="font-size:1.1em;"><p><%= Canvas2::DataContext::prefetch.join("</p><p>").html_safe %></p></div>
+<%- end -%>
+
 <%- if !@page.render_timings.empty? -%>
   <h2>Render Timings</h2>
   <div style="font-size:1.2em;"><pre><%= @page.render_timings.join("\n") %></pre></div>
 <%- end -%>
+
+<h2>Loaded Contexts</h2>
+<pre style="font-size:1.2em;"><%= JSON.pretty_generate(Canvas2::DataContext::available_contexts) %></pre>

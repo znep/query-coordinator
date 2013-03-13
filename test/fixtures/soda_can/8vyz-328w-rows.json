@@ -1,0 +1,732 @@
+{
+  "meta" : {
+    "view" : {
+      "id" : "8vyz-328w",
+      "name" : "All The Types",
+      "averageRating" : 0,
+      "createdAt" : 1362529582,
+      "displayType" : "table",
+      "downloadCount" : 0,
+      "numberOfComments" : 0,
+      "oid" : 2760033,
+      "publicationAppendEnabled" : false,
+      "publicationDate" : 1362803921,
+      "publicationGroup" : 716280,
+      "publicationStage" : "published",
+      "rowsUpdatedAt" : 1362803910,
+      "rowsUpdatedBy" : "2fra-n3vu",
+      "signed" : false,
+      "tableId" : 722970,
+      "totalTimesRated" : 0,
+      "viewCount" : 17,
+      "viewLastModified" : 1362803921,
+      "viewType" : "tabular",
+      "columns" : [ {
+        "id" : -1,
+        "name" : "sid",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":sid",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "id",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":id",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "position",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":position",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : 49369504,
+        "name" : "COMPARE_TO_FIRST",
+        "dataTypeName" : "text",
+        "fieldName" : "compare_to_first",
+        "position" : 1,
+        "renderTypeName" : "text",
+        "tableColumnId" : 8440775,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369505,
+        "name" : "ptext",
+        "dataTypeName" : "text",
+        "fieldName" : "ptext",
+        "position" : 2,
+        "renderTypeName" : "text",
+        "tableColumnId" : 8381853,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369506,
+        "name" : "ftext",
+        "dataTypeName" : "html",
+        "fieldName" : "ftext",
+        "position" : 3,
+        "renderTypeName" : "html",
+        "tableColumnId" : 8381854,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369507,
+        "name" : "num",
+        "dataTypeName" : "number",
+        "fieldName" : "num",
+        "position" : 4,
+        "renderTypeName" : "number",
+        "tableColumnId" : 8381855,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369508,
+        "name" : "money",
+        "dataTypeName" : "money",
+        "fieldName" : "money",
+        "position" : 5,
+        "renderTypeName" : "money",
+        "tableColumnId" : 8381856,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369509,
+        "name" : "percent",
+        "dataTypeName" : "percent",
+        "fieldName" : "percent",
+        "position" : 6,
+        "renderTypeName" : "percent",
+        "tableColumnId" : 8381857,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369510,
+        "name" : "dtime",
+        "dataTypeName" : "calendar_date",
+        "fieldName" : "dtime",
+        "position" : 7,
+        "renderTypeName" : "calendar_date",
+        "tableColumnId" : 8381858,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369511,
+        "name" : "dtimetz",
+        "dataTypeName" : "date",
+        "fieldName" : "dtimetz",
+        "position" : 8,
+        "renderTypeName" : "date",
+        "tableColumnId" : 8381868,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369512,
+        "name" : "geo",
+        "dataTypeName" : "location",
+        "fieldName" : "geo",
+        "position" : 9,
+        "renderTypeName" : "location",
+        "tableColumnId" : 8381911,
+        "width" : 100,
+        "format" : {
+        },
+        "subColumnTypes" : [ "human_address", "latitude", "longitude", "machine_address", "needs_recoding" ]
+      }, {
+        "id" : 49369513,
+        "name" : "url",
+        "dataTypeName" : "url",
+        "fieldName" : "url",
+        "position" : 10,
+        "renderTypeName" : "url",
+        "tableColumnId" : 8381928,
+        "width" : 100,
+        "format" : {
+        },
+        "subColumnTypes" : [ "url", "description" ]
+      }, {
+        "id" : 49369514,
+        "name" : "email",
+        "dataTypeName" : "email",
+        "fieldName" : "email",
+        "position" : 11,
+        "renderTypeName" : "email",
+        "tableColumnId" : 8381929,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369515,
+        "name" : "checkbox",
+        "dataTypeName" : "checkbox",
+        "fieldName" : "checkbox",
+        "position" : 12,
+        "renderTypeName" : "checkbox",
+        "tableColumnId" : 8381934,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369516,
+        "name" : "flag",
+        "dataTypeName" : "flag",
+        "fieldName" : "flag",
+        "position" : 13,
+        "renderTypeName" : "flag",
+        "tableColumnId" : 8381938,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369517,
+        "name" : "star",
+        "dataTypeName" : "stars",
+        "fieldName" : "star",
+        "position" : 14,
+        "renderTypeName" : "stars",
+        "tableColumnId" : 8381939,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369518,
+        "name" : "phone",
+        "dataTypeName" : "phone",
+        "fieldName" : "phone",
+        "position" : 15,
+        "renderTypeName" : "phone",
+        "tableColumnId" : 8381940,
+        "width" : 100,
+        "format" : {
+        },
+        "subColumnTypes" : [ "phone_number", "phone_type" ]
+      }, {
+        "id" : 49369519,
+        "name" : "multchoice",
+        "dataTypeName" : "drop_down_list",
+        "fieldName" : "multchoice",
+        "position" : 16,
+        "renderTypeName" : "drop_down_list",
+        "tableColumnId" : 8381953,
+        "width" : 100,
+        "dropDown" : {
+          "values" : [ {
+            "id" : "nmed-wusw",
+            "deleted" : false,
+            "description" : "one"
+          }, {
+            "id" : "gq8a-gxfs",
+            "deleted" : false,
+            "description" : "two"
+          }, {
+            "id" : "4kux-vpvf",
+            "deleted" : false,
+            "description" : "three"
+          } ]
+        },
+        "format" : {
+        }
+      }, {
+        "id" : 49369520,
+        "name" : "photo",
+        "dataTypeName" : "photo",
+        "fieldName" : "photo",
+        "position" : 17,
+        "renderTypeName" : "photo",
+        "tableColumnId" : 8381954,
+        "width" : 100,
+        "format" : {
+        }
+      }, {
+        "id" : 49369521,
+        "name" : "document",
+        "dataTypeName" : "document",
+        "fieldName" : "document",
+        "position" : 18,
+        "renderTypeName" : "document",
+        "tableColumnId" : 8381955,
+        "width" : 100,
+        "format" : {
+        },
+        "subColumnTypes" : [ "content_type", "file_id", "filename", "size" ]
+      }, {
+        "id" : 49369525,
+        "name" : "dataset_link",
+        "dataTypeName" : "dataset_link",
+        "fieldName" : "dataset_link",
+        "position" : 20,
+        "renderTypeName" : "dataset_link",
+        "tableColumnId" : 8381982,
+        "width" : 100,
+        "format" : {
+          "linkedDataset" : "644b-gaut"
+        }
+      }, {
+        "id" : 49369522,
+        "name" : "nested_table",
+        "dataTypeName" : "nested_table",
+        "fieldName" : "nested_table",
+        "position" : 19,
+        "renderTypeName" : "nested_table",
+        "tableColumnId" : 8381956,
+        "width" : 100,
+        "childColumns" : [ {
+          "id" : -1,
+          "name" : "sid",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":sid",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : -1,
+          "name" : "id",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":id",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : -1,
+          "name" : "position",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":position",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : -1,
+          "name" : "created_at",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":created_at",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : -1,
+          "name" : "created_meta",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":created_meta",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : -1,
+          "name" : "updated_at",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":updated_at",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : -1,
+          "name" : "updated_meta",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":updated_meta",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : -1,
+          "name" : "meta",
+          "dataTypeName" : "meta_data",
+          "fieldName" : ":meta",
+          "position" : 0,
+          "renderTypeName" : "meta_data",
+          "format" : {
+          },
+          "flags" : [ "hidden" ]
+        }, {
+          "id" : 49369524,
+          "name" : "nested_1",
+          "dataTypeName" : "text",
+          "fieldName" : "untitled",
+          "position" : 1,
+          "renderTypeName" : "text",
+          "tableColumnId" : 8381958,
+          "width" : 100,
+          "format" : {
+            "align" : "left"
+          }
+        } ],
+        "format" : {
+        }
+      } ],
+      "grants" : [ {
+        "inherited" : false,
+        "type" : "viewer",
+        "flags" : [ "public" ]
+      } ],
+      "metadata" : {
+        "renderTypeConfig" : {
+          "visible" : {
+            "table" : true
+          }
+        },
+        "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+      },
+      "owner" : {
+        "id" : "2fra-n3vu",
+        "displayName" : "John Kew",
+        "emailUnsubscribed" : false,
+        "privacyControl" : "login",
+        "profileLastModified" : 1355365728,
+        "screenName" : "John Kew",
+        "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+        "flags" : [ "admin" ]
+      },
+      "query" : {
+        "orderBys" : [ {
+          "ascending" : true,
+          "expression" : {
+            "columnId" : 49369504,
+            "type" : "column"
+          }
+        } ]
+      },
+      "rights" : [ "read" ],
+      "sortBys" : [ {
+        "id" : 0,
+        "viewColumnId" : 49369504,
+        "flags" : [ "asc" ]
+      } ],
+      "tableAuthor" : {
+        "id" : "2fra-n3vu",
+        "displayName" : "John Kew",
+        "emailUnsubscribed" : false,
+        "privacyControl" : "login",
+        "profileLastModified" : 1355365728,
+        "screenName" : "John Kew",
+        "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+        "flags" : [ "admin" ]
+      },
+      "flags" : [ "default" ]
+    }
+  },
+  "entries" : [ {
+    "phone" : {
+      "phone_number" : "234-345-9000",
+      "phone_type" : "Cell"
+    },
+    "percent" : "67",
+    "nested_table" : [ {
+      ":updated_meta" : "658618",
+      ":updated_at" : 1362803891,
+      ":sid" : 1,
+      "untitled" : "This is nested",
+      ":id" : "4F97B9B5-F0CF-419B-8DCA-99232609BE02",
+      ":created_at" : 1362803891,
+      ":position" : 1,
+      ":created_meta" : "658618"
+    } ],
+    "dtime" : "2013-03-07T00:00:00",
+    "compare_to_first" : "BASELINE",
+    ":created_meta" : "658618",
+    "dtimetz" : 1362297600,
+    "document" : {
+      "file_id" : "nNAcRP2zuoakjiLmSwdgj_Lx6kIQq2sidNWLE_WhVOs",
+      "filename" : "hello.jpg",
+      "content_type" : "image/jpeg; charset=binary",
+      "size" : "85017"
+    },
+    "money" : "45.75",
+    ":sid" : 1,
+    "ptext" : "This is plain",
+    ":position" : 1,
+    ":updated_at" : 1362803891,
+    "geo" : {
+      "needs_recoding" : false,
+      "longitude" : "-122.3342440110845",
+      "latitude" : "47.60164773409304",
+      "human_address" : "{\"address\":\"111 1st Ave.\",\"city\":\"Seattle\",\"state\":\"WA\",\"zip\":\"\"}"
+    },
+    "star" : 3,
+    "dataset_link" : "644b-guat",
+    "photo" : "nNAcRP2zuoakjiLmSwdgj_Lx6kIQq2sidNWLE_WhVOs",
+    "url" : {
+      "description" : "Homepage",
+      "url" : "http://www.socrata.com"
+    },
+    ":updated_meta" : "658618",
+    "num" : "1234",
+    "flag" : "green",
+    "ftext" : "<p><strong>I LIKE IT BOLD</strong></p>",
+    "email" : "friday@socrata.com",
+    "multchoice" : "gq8a-gxfs",
+    ":id" : "66D479E5-99FB-4801-A8D2-E7C80188DE2E",
+    ":created_at" : 1362803891
+  }
+, {
+    "phone" : {
+    },
+    "compare_to_first" : "CONTAINS",
+    ":created_meta" : "658618",
+    "document" : {
+    },
+    ":sid" : 2,
+    "ptext" : "Heck Yeah This is plain silly",
+    ":position" : 2,
+    ":updated_at" : 1362803891,
+    "geo" : {
+      "needs_recoding" : false
+    },
+    "dataset_link" : "644b-guat-yeah",
+    "url" : {
+    },
+    ":updated_meta" : "658618",
+    "multchoice" : "gq8a-gxfs",
+    ":id" : "5DB69396-63E7-4DDF-88C2-4E57380949B5",
+    ":created_at" : 1362803891
+  }
+, {
+    "phone" : {
+      "phone_number" : "234-345-9000",
+      "phone_type" : "Cell"
+    },
+    "percent" : "67",
+    "nested_table" : [ {
+      ":updated_meta" : "658618",
+      ":updated_at" : 1362803891,
+      ":sid" : 2,
+      "untitled" : "This is nested",
+      ":id" : "F79FEB29-E2A0-4E40-B41E-311976DB98E5",
+      ":created_at" : 1362803891,
+      ":position" : 2,
+      ":created_meta" : "658618"
+    } ],
+    "dtime" : "2013-03-07T00:00:00",
+    "compare_to_first" : "EQUALS",
+    ":created_meta" : "658618",
+    "dtimetz" : 1362297600,
+    "document" : {
+      "file_id" : "nNAcRP2zuoakjiLmSwdgj_Lx6kIQq2sidNWLE_WhVOs",
+      "filename" : "hello.jpg",
+      "content_type" : "image/jpeg; charset=binary",
+      "size" : "85017"
+    },
+    "money" : "45.75",
+    ":sid" : 3,
+    "ptext" : "This is plain",
+    ":position" : 3,
+    ":updated_at" : 1362803891,
+    "geo" : {
+      "needs_recoding" : false,
+      "longitude" : "-122.3342440110845",
+      "latitude" : "47.60164773409304",
+      "human_address" : "{\"address\":\"111 1st Ave.\",\"city\":\"Seattle\",\"state\":\"WA\",\"zip\":\"\"}"
+    },
+    "star" : 3,
+    "dataset_link" : "644b-guat",
+    "photo" : "nNAcRP2zuoakjiLmSwdgj_Lx6kIQq2sidNWLE_WhVOs",
+    "url" : {
+      "description" : "Homepage",
+      "url" : "http://www.socrata.com"
+    },
+    ":updated_meta" : "658618",
+    "num" : "1234",
+    "flag" : "green",
+    "ftext" : "<p><strong>I LIKE IT BOLD</strong></p>",
+    "email" : "friday@socrata.com",
+    "multchoice" : "gq8a-gxfs",
+    ":id" : "83D52291-6313-41D8-897E-7E36861C32E8",
+    ":created_at" : 1362803891
+  }
+, {
+    "phone" : {
+      "phone_number" : "867-5309",
+      "phone_type" : "Fax"
+    },
+    "percent" : "97",
+    "dtime" : "2013-04-01T00:00:00",
+    "compare_to_first" : "GREATER_THAN",
+    ":created_meta" : "658618",
+    "dtimetz" : 1367996400,
+    "document" : {
+    },
+    "money" : "99.86",
+    ":sid" : 4,
+    "ptext" : "Zippy",
+    ":position" : 4,
+    ":updated_at" : 1362803891,
+    "geo" : {
+      "needs_recoding" : false
+    },
+    "star" : 5,
+    "dataset_link" : "zzzz-zzzz",
+    "url" : {
+    },
+    ":updated_meta" : "658618",
+    "num" : "99999",
+    "flag" : "purple",
+    "email" : "zip.person@socrata.com",
+    "multchoice" : "nmed-wusw",
+    ":id" : "46B572A5-EB6F-42F2-B67D-E24AAA2059DD",
+    ":created_at" : 1362803891
+  }
+, {
+    "phone" : {
+      "phone_number" : "111-1111",
+      "phone_type" : "Other"
+    },
+    "percent" : "31",
+    "dtime" : "2012-11-06T00:00:00",
+    "compare_to_first" : "LESS_THAN",
+    ":created_meta" : "658618",
+    "dtimetz" : 1354435200,
+    "document" : {
+    },
+    "money" : "0.01",
+    ":sid" : 5,
+    "ptext" : "Apple",
+    ":position" : 5,
+    ":updated_at" : 1362803891,
+    "geo" : {
+      "needs_recoding" : false
+    },
+    "star" : 1,
+    "dataset_link" : "5aaa-aaaa",
+    "url" : {
+    },
+    ":updated_meta" : "658618",
+    "num" : "45",
+    "flag" : "blue",
+    "email" : "apple.johnney@socrata.com",
+    "multchoice" : "4kux-vpvf",
+    ":id" : "3A271A25-BC9E-440C-81A1-4E3609ADE4C4",
+    ":created_at" : 1362803891
+  }
+, {
+    "phone" : {
+    },
+    "percent" : "89",
+    "dtime" : "2013-03-22T00:00:00",
+    "compare_to_first" : "NOT_EQUALS",
+    ":created_meta" : "658618",
+    "dtimetz" : 1362124800,
+    "document" : {
+    },
+    "money" : "13.23",
+    ":sid" : 6,
+    "ptext" : "Plain is this",
+    ":position" : 6,
+    ":updated_at" : 1362803891,
+    "geo" : {
+      "needs_recoding" : false,
+      "longitude" : "-149.89781520082622",
+      "latitude" : "61.20387584860754",
+      "human_address" : "{\"address\":\"1810 Arctic Blvd\",\"city\":\"Anchorage\",\"state\":\"AK\",\"zip\":\"\"}"
+    },
+    "star" : 5,
+    "url" : {
+      "description" : "EXPLORE",
+      "url" : "http://explore.data.gov"
+    },
+    ":updated_meta" : "658618",
+    "num" : "4321",
+    "flag" : "blue",
+    "ftext" : "<p><span style=\"text-decoration:line-through;\">I LIKE STRIKETHROUGH</span></p>",
+    "email" : "monday@socrata.com",
+    "multchoice" : "4kux-vpvf",
+    "checkbox" : true,
+    ":id" : "FFA735D4-E5C5-4E09-B425-38718C79E597",
+    ":created_at" : 1362803891
+  }
+, {
+    "phone" : {
+    },
+    "compare_to_first" : "STARTS_WITH",
+    ":created_meta" : "658618",
+    "document" : {
+    },
+    ":sid" : 7,
+    "ptext" : "This is plain silly",
+    ":position" : 7,
+    ":updated_at" : 1362803910,
+    "geo" : {
+      "needs_recoding" : false
+    },
+    "dataset_link" : "644b-guat-extreme",
+    "url" : {
+    },
+    ":updated_meta" : "658618",
+    "multchoice" : "gq8a-gxfs",
+    ":id" : "8CB720A5-D579-4830-A827-565EAE39A45E",
+    ":created_at" : 1362803891
+  }
+ ]
+}

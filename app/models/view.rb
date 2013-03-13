@@ -1,7 +1,7 @@
 class View < Model
   cattr_accessor :licenses, :creative_commons, :merged_licenses,
     :filter_type1s
-  attr_accessor :custom_vis_cols
+  attr_accessor :custom_vis_cols, :sodacan
 
   def self.find(options = nil, custom_headers = {}, batch = false, is_anon = false, get_all = false)
     if get_all || options.is_a?(String)
@@ -72,6 +72,19 @@ class View < Model
   def find_api_anonymous_throttle()
     path = "/views/#{self.id}/apiThrottle.json?" + {'method' => 'findViewAnonThrottle'}.to_param
     View.parse(CoreServer::Base.connection.get_request(path))
+  end
+
+  def prefetch(rows, conditions = {})
+    row_data = get_rows(rows, 1, conditions, true)
+    @sodacan = SodaCan.new(row_data[:meta], row_data, true)
+  end
+
+  def set_sodacan(sodacan)
+    @sodacan = sodacan
+  end
+
+  def sodacan
+    @sodacan
   end
 
   def set_api_throttle(appId, minuteLimit, hourLimit, dayLimit, monthLimit)
@@ -222,7 +235,7 @@ class View < Model
   #
   # Return a tuple for a getRowsByIds request
   #
-  def get_rows_request(per_page_or_ids, page = 1, conditions = {}, include_meta = false)
+  def get_rows_request(per_page_or_ids, page = 1, merged_conditions, include_meta)
     params = { :method => 'getByIds',
                :asHashes => true,
                :accessType => 'WEBSITE',
@@ -233,7 +246,6 @@ class View < Model
       params[:start] = (page - 1) * per_page_or_ids
       params[:length] = per_page_or_ids
     end
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
     request_body = {
                'name' => self.name,
                'searchString' => merged_conditions.delete('searchString'),
@@ -254,7 +266,13 @@ class View < Model
   # requests
   #
   def get_cached_rows(per_page, page = 1, conditions = {}, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_rows)
-    req = get_rows_request(per_page, page, conditions, true)
+    # dedup with create request
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    unless @sodacan.nil? || !@sodacan.can_query?(merged_conditions)
+      return {rows: @sodacan.get_rows(merged_conditions, per_page, page), meta: nil}
+    end
+
+    req = get_rows_request(per_page, page, merged_conditions, true)
     rows_updated_at = self.rowsUpdatedAt.nil? ? nil : self.rowsUpdatedAt
     cache_key = "rows:" + id.to_s + ":" + Digest::MD5.hexdigest(req.sort.to_json) + ":#{rows_updated_at}"
     cache_key += ':anon' if is_anon
@@ -287,7 +305,13 @@ class View < Model
 
   def get_rows(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
     include_meta = true if @cached_rows.nil? || @cached_rows[:rows].nil?
-    req = get_rows_request(per_page, page, conditions, include_meta)
+    # dedup with create request
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    unless @sodacan.nil? || !@sodacan.can_query?(merged_conditions)
+      result = {rows: @sodacan.get_rows(merged_conditions, per_page, page), meta: include_meta ? @sodacan.meta : nil }
+      return result
+    end
+    req = get_rows_request(per_page, page, merged_conditions, include_meta)
     result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {},
                                                                    true, false, is_anon),
                         {:max_nesting => 25})
@@ -306,13 +330,16 @@ class View < Model
   end
 
   def get_total_rows(conditions = {}, is_anon = false)
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    unless @sodacan.nil?
+      return @sodacan.total_rows if conditions.empty?
+      return @sodacan.get_rows(merged_conditions).size
+    end
     params = { :method => 'getByIds',
                :accessType => 'WEBSITE',
                :meta => true,
                :start => 0,
                :length => 1 }
-
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
     request_body = {
       'name' => self.name,
       'searchString' => merged_conditions.delete('searchString'),

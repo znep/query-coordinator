@@ -369,7 +369,7 @@
             var mapLinkQuery;
             if (loc.human_address)
             {
-                var address = $.isPlainObject(loc.human_address) ? JSON.parse(loc.human_address)
+                var address = _.isString(loc.human_address) ? JSON.parse(loc.human_address)
                                                                  : loc.human_address;
                 mapLinkQuery = _.compact(_.values(address)).join(', ');
             }

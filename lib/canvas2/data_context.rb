@@ -61,7 +61,7 @@ module Canvas2
           @manifest.add_resource(search_response.id, search_response.check_time)
           ds_list = search_response.results.reject do |ds|
             add_query(ds, config['query'])
-            ds.get_total_rows({}, !Canvas2::Util.is_private) < 1
+            config['requireData'] && ds.get_total_rows({}, !Canvas2::Util.is_private) < 1
           end
           if ds_list.length > 0
             available_contexts[id] = {id: id, type: config['type'],

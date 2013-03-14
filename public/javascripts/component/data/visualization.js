@@ -51,6 +51,9 @@ var updateProperties = function(lcObj)
         if (lcObj.$contents.data('renderTypeManager'))
         { lcObj.$contents.removeData('renderTypeManager'); }
 
+        if ($.isBlank((lcObj._dataContext || {}).dataset))
+        { return; }
+
         lcObj.$contents.renderTypeManager({
             view: (lcObj._dataContext || {}).dataset,
             width: lcObj._properties.width,

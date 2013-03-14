@@ -12,10 +12,24 @@ module GovstatHelper
     }
   end
 
+  def goal_statement(metric_prefix = '')
+    "{#{metric_prefix}goal.subject ||We} will " +
+      "{#{metric_prefix}goal.metadata.comparison_function /</reduce/ />/increase/ ||change} " +
+      "{#{metric_prefix}goal.name ||results} by {#{metric_prefix}goal.goal_delta %[,0] ||0}{#{metric_prefix}goal.goal_delta_is_pct /true/%/ ||} " +
+      "by {#{metric_prefix}goal.end_date @[%B %Y] ||sometime}"
+  end
+
   def dataset_icon
     { type: 'Text', customClass: 'tileIcon',
       htmlClass: 'type-{dataset.displayType} default-{dataset.flags /.*default.*/true/} ss-{dataset.displayType /table/list/ ' +
       '/map/compass/ /chart/barchart/ /api/downloadcloud/ /blob/attach/}' }
+  end
+
+  def govstat_category_map
+    categories = GovstatCategory.find
+    result = {}
+    categories.each{ |category| result[category.id] = category.name }
+    result
   end
 
   def govstat_homepage_config(name = '')
@@ -87,14 +101,32 @@ module GovstatHelper
         content: {
           type: 'Container',
           id: 'govstatHomeRoot',
-          htmlClass: 'listLayout',
+          htmlClass: 'listLayout {categories.0.name /.*/hello/g ||}',
           children: [
+          {
+            type: 'Container',
+            htmlClass: 'filterSection',
+            children: [
+            { type: 'Title', text: 'Categories' },
+            {
+              type: 'Pager',
+              pagedContainerId: 'categoryPages',
+              selectorStyle: 'buttons',
+              buttonStyle: 'sidebarTabs',
+              associatedLabels: govstat_category_map
+            }
+            ]
+          },
           {
             type: 'Repeater',
             htmlClass: 'categoryList',
             contextId: 'goals',
             groupBy: { value: '{goal.category}' },
-            childProperties: { htmlClass: 'categoryItem' },
+            childProperties: { htmlClass: 'categoryItem', label: '{_groupValue}' },
+            container: {
+              type: 'PagedContainer',
+              id: 'categoryPages'
+            },
             noResultsChildren: [
             { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
             ],
@@ -103,29 +135,184 @@ module GovstatHelper
               type: 'Container',
               contextId: 'categories_{_groupValue}',
               children: [
-              { type: 'Title', text: '{category.name ||Draft}', htmlClass: 'categoryTitle' },
               {
                 type: 'Repeater',
-                htmlClass: 'goalList',
-                styles: { 'background-color' => '{category.color}' },
+                htmlClass: 'itemList goalList',
                 contextId: '_groupItems',
-                childProperties: { htmlClass: 'goalItem' },
+                childProperties: { htmlClass: 'singleItem goalItem progress-{goal.metrics.0.computed_values.progress ||none}' },
                 children: [
-                { type: 'Container', customClass: 'progressDetails',
-                  ifValue: 'goal.metrics.0.compute.delta',
+                {
+                  type: 'Container',
+                  htmlClass: 'mainSection',
                   children: [
-                  { type: 'Text', htmlClass: 'barValue progress-{goal.metrics.0.compute.progress}',
-                    html: 'Complete<span class="bar" ' +
-                    'style="width:{goal.metrics.0.compute.deltaFoo ||25}%;"></span>' },
-                  { type: 'Text', htmlClass: 'textValue', html: '{goal.metrics.0.compute.delta}%' },
+                  { type: 'Title', text: '{goal.name}', htmlClass: 'itemTitle' },
+                  {
+                    type: 'Text',
+                    htmlClass: 'itemSubtitle',
+                    html: goal_statement
+                  },
+                  {
+                    type: 'Container',
+                    customClass: 'goalValue',
+                    htmlClass: 'progress-{goal.metrics.0.computed_values.progress ||none}',
+                    children: [
+                    { type: 'Text', htmlClass: 'value', html: '{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}' },
+                    { type: 'Text', htmlClass: 'unit', html: '{goal.metrics.0.unit ||current value}' }
+                    ]
+                  }
                   ]
                 },
-                { type: 'Text', customClass: 'goalProgress',
-                  htmlClass: 'progress-{goal.metrics.0.compute.progress}' },
-                { type: 'Title', text: '{goal.name}', htmlClass: 'goalTitle' },
-                { type: 'Text', html: '{goal.subject}', htmlClass: 'goalSubject' },
-                { type: 'Text', customClass: 'goalDetails',
-                  html: '<a href="/goal/{goal.id}"><span class="description">{goal.subject}</span><div class="more">More<span class="ss-icon">directright</span></div></a>' }
+                {
+                  type: 'Container',
+                  htmlClass: 'expandedSection',
+                  children: [
+                  { type: 'Text', customClass: 'close', html: '<a href="#" class="ss-delete"></a>' },
+                  {
+                    type: 'HorizontalContainer',
+                    children: [
+                    {
+                      type: 'Container',
+                      weight: 7,
+                      htmlClass: 'goalDetails',
+                      children: [
+                      {
+
+                        # this is my fallback solution
+                        type: 'Container',
+                        customClass: 'goalVisualization',
+                        ifValue: 'goal.related_datasets.0',
+                        context: {
+                          type: 'dataset',
+                          datasetId: '{goal.related_datasets.0}'
+                        },
+                        children: [
+                        { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
+                        { type: 'Visualization', height: 250 }
+                        ]
+
+                        # this is what i wanted to do but the repeater or carousel or something seems unhappy
+#                       type: 'Container',
+#                       customClass: 'goalVisualizations',
+#                       onlyIf: '{goal.related_datasets.0}',
+#                       children: [
+#                       {
+#                         type: 'Repeater',
+#                         contextId: 'goal.related_datasets',
+#                         container: {
+#                           type: 'Carousel',
+#                           id: 'relatedDatasets',
+#                           switchInterval: 10000,
+#                           animate: false
+#                         },
+#                         children: [
+#                         {
+#                           type: 'Container',
+#                           context: {
+#                             type: 'dataset',
+#                             datasetId: '{value}'
+#                           },
+#                           children: [
+#                           { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
+#                           { type: 'Visualization', height: 250 }
+#                           ]
+#                         }
+#                         ]
+#                       },
+#                       {
+#                         type: 'Pager',
+#                         customClass: 'incrPager',
+#                         pagedContainerId: 'relatedDatasets',
+#                         selectorStyle: 'navigate'
+#                       },
+#                       {
+#                         type: 'Pager',
+#                         customClass: 'dotPager',
+#                         buttonStyle: 'sidebarTabs',
+#                         pagedContainerId: 'relatedDatasets',
+#                         selectorStyle: 'buttons',
+#                         hideButtonText: true
+#                       }
+#                       ]
+                      },
+                      {
+                        type: 'Text',
+                        customClass: 'goalDescription',
+                        ifValue: 'goal.metadata.description',
+                        html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
+                      },
+                      {
+                        type: 'Text',
+                        customClass: 'goalFallback',
+                        html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit ||units}</strong>'
+                      },
+                      {
+                        type: 'Text',
+                        customClass: 'goalLink',
+                        html: '<a href="/goals/{goal.id}" class="button ss-navigateright right">Goal Details</a>'
+                      }
+                      ]
+                    },
+                    {
+                      type: 'Container',
+                      weight: 3,
+                      htmlClass: 'metricContainer',
+                      children: [
+                      {
+                        type: 'Container',
+                        htmlClass: 'metric baselineValue',
+                        children: [ {
+                          type: 'Text',
+                          customClass: 'metricType',
+                          html: 'Baseline'
+                        },
+                        {
+                          type: 'Text',
+                          htmlClass: 'metricValue',
+                          html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||N/A}'
+                        },
+                        {
+                          type: 'Text',
+                          htmlClass: 'metricUnit',
+                          html: '{goal.metrics.0.unit ||}'
+                        },
+                        {
+                          type: 'Text',
+                          htmlClass: 'metricTime',
+                          html: '{goal.start_date @[%B %Y] ||}'
+                        }
+                        ]
+                      },
+                      {
+                        type: 'Container',
+                        htmlClass: 'metric targetValue',
+                        children: [ {
+                          type: 'Text',
+                          customClass: 'metricType',
+                          html: 'Target'
+                        },
+                        {
+                          type: 'Text',
+                          htmlClass: 'metricValue',
+                          html: '{goal.metrics.0.computed_values.target_value %[,3] ||N/A}'
+                        },
+                        {
+                          type: 'Text',
+                          htmlClass: 'metricUnit',
+                          html: '{goal.metrics.0.unit ||}'
+                        },
+                        {
+                          type: 'Text',
+                          htmlClass: 'metricTime',
+                          html: '{goal.end_date @[%B %Y] ||}'
+                        }
+                        ]
+                      }
+                      ]
+                    }
+                    ]
+                  }
+                  ]
+                }
                 ]
               }
               ]

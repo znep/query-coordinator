@@ -25,6 +25,16 @@
 @include header_color('_reports', 'reports', $govstat_color_reports)
 @include header_color('_config', 'goals', $govstat_color_goals)
 
+@mixin progress-colors($prop)
+  &.progress-good
+    #{$prop}: #09a74f
+  &.progress-progressing
+    #{$prop}: #fcc806
+  &.progress-bad
+    #{$prop}: #e33229
+  &.progress-none
+    #{$prop}: #888
+
 body
   color: #333
   font-family: 'myriad-pro', helvetica, sans-serif
@@ -178,6 +188,203 @@ input.button, a.button
           bottom: 0.4em
           right: 0
           top: 1em
+
+$list_border_color: #d1d1d1
+
+@mixin list-button
+  background-color: #f2f2f2
+  @include vertical-gradient(#fff, #f2f2f2)
+  border: 1px solid $list_border_color
+  color: #222
+  font-size: 1.4em
+  font-weight: normal
+  padding: 0.6em 0.9em 0.8em
+  text-shadow: 0 1px 0 #fff
+
+.listLayout
+  .filterSection
+    padding: 3em 0
+
+    .component-Title
+      float: left
+      margin-right: 2em
+
+      h2
+        font-size: 2.3em
+        font-weight: normal
+
+    .component-Pager
+      .sidebarTabs
+        li .childLink
+          @include list-button
+
+          &.active
+            background: #222 none
+            border-color: #222
+            @include prefixer(box-shadow, none)
+            color: #fff
+            text-shadow: none
+
+  .itemList
+    background-color: $list_border_color
+    padding:
+      left: 1em
+      top: 1px
+
+    .socrata-component
+      min-height: 0 // what is this nonsense
+
+    .singleItem
+      background-color: #fff
+      border-left: 10px solid #777
+      margin:
+        bottom: 1px
+        left: -1em
+      padding: 1em 3.5em
+
+      .itemTitle h2
+        font-size: 3em
+        font-weight: normal
+        line-height: 1em
+        padding-bottom: 0.1em
+
+      .itemSubtitle
+        font-size: 1.1em
+
+    &.goalList
+
+      .singleItem
+        @include progress-colors('border-color')
+        position: relative
+
+        .mainSection
+          background-color: #fff
+          cursor: pointer
+          margin: -1em -3.5em -1em
+          padding: 1em 3.5em 2.5em
+          @include transition(0.1s, background-color)
+
+          &:hover
+            background-color: #f3f3f3
+
+          .goalValue
+            @include progress-colors('color')
+            letter-spacing: -1px
+            position: absolute
+            right: 3.5em
+            text-align: right
+            top: 1.7em
+
+            .component-Text
+              padding: 0
+
+            .value
+              font-size: 3em
+
+            .unit
+              font-size: 1.5em
+
+        .expandedSection
+          background-color: #333
+          border-top: 1px solid $list_border_color
+          color: #fff
+          display: none
+          margin: 0 -3.5em -1em -4.5em
+          padding: 3em 4em
+
+          .close
+            right: 0.3em
+            position: absolute
+            top: 0.3em
+
+            a
+              color: #fff
+
+          .goalDetails
+            border-right: 1px solid #666
+            padding-right: 2em
+
+          .goalDescription, .goalFallback
+            display: none
+
+          .goalVisualization.hide ~ .goalDescription
+            display: block
+
+          .goalVisualization.hide ~ .goalDescription.hide ~ .goalFallback
+            display: block
+
+          .goalVisualization
+            .chartTitle
+              h2
+                font-size: 2em
+                font-weight: normal
+
+            svg
+              > rect
+                fill: #333333
+
+              .highcharts-grid path
+                stroke: #666666
+
+              .highcharts-axis text
+                color: #ccc !important // highcharts dumps inline styles
+                fill: #ccc !important // highcharts dumps inline styles
+
+          .goalDescription
+            p
+              line-height: 1.3em
+
+          .goalFallback
+            min-height: 12em
+
+            .content-wrapper
+              color: #bbb
+              font-size: 2em
+              padding: 2em 0
+
+              strong
+                color: #fff
+                font-weight: normal
+
+          .goalLink
+            padding: 0
+            padding-top: 2em
+
+            a
+              @include list-button
+              font-size: 1.25em
+              margin-left: 0
+              padding-bottom: 0.5em
+
+              &:after
+                position: relative
+                top: 0.1em
+
+          .metricContainer
+            padding-left: 2em
+
+            .metric
+              padding: 3em 0
+              position: relative
+              text-align: right
+
+              &.baselineValue
+                border-bottom: 1px solid #666
+
+              .metricType
+                color: #bbb
+                font-size: 1.2em
+                position: absolute
+
+              .metricValue
+                font-size: 2.5em
+
+              .metricUnit
+                font-size: 1.4em
+                font-weight: normal
+
+              .metricTime
+                color: #bbb
 
 .headerLine
   margin-bottom: 2em

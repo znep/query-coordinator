@@ -123,6 +123,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                     var icon = (cObj._properties.associatedIcons || {})[page.id] ||
                         page.properties().iconClass;
                     var text = ((cObj._properties.associatedLabels || {})[page.id] ||
+                        (cObj._properties.associatedLabels || {})[page.properties().label] ||
                         page.properties().label || page.id);
                     $ul.append($.tag({tagName: 'li', contents:
                         {tagName: 'a', href: '#' + page.id, title: text,
@@ -146,6 +147,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                             name: inputName, id: inputId, value: page.id},
                         {tagName: 'label', 'for': inputId,
                             contents: (cObj._properties.associatedLabels || {})[page.id] ||
+                                (cObj._properties.associatedLabels || {})[page.properties().label] ||
                                 page.properties().label || page.id}]}));
                 });
                 cObj.$contents.find('input').uniform();

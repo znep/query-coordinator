@@ -98,9 +98,13 @@ module Canvas2
         string_substitute(@properties['htmlClass'].is_a?(Array) ?
                           @properties['htmlClass'].join(' ') : @properties['htmlClass'])
 
+      custom_class = '' +
+        string_substitute(@properties['customClass'].is_a?(Array) ?
+                          @properties['customClass'].join(' ') : @properties['customClass'])
+
       classes = ['socrata-component', "component-#{@properties['type']}"]
       classes << 'hide' if is_hidden
-      classes << @properties['customClass'] unless @properties['customClass'].blank?
+      classes << custom_class unless @properties['customClass'].blank?
       classes << html_class unless @needs_own_context
       classes << 'serverRendered' if fully_rendered
 

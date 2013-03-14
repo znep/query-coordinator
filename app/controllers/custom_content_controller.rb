@@ -35,7 +35,8 @@ class CustomContentController < ApplicationController
     @page = get_page(govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym),
                      '/', CurrentDomain.strings.site_title, params)
 
-    render 'generic_page', :locals => { :custom_styles => 'screen-govstat-homepage' }
+    render 'generic_page', :locals => { :custom_styles => 'screen-govstat-homepage',
+      :custom_javascript => 'screen-govstat-dashboard' }
   end
 
   def show_page

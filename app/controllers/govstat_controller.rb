@@ -32,7 +32,8 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
       ]}
     ]})
     @page = get_page(config, request.path, 'Manage | ' + CurrentDomain.strings.site_title, params)
-    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage' }
+    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage',
+      :custom_javascript => 'screen-govstat-dashboard' }
   end
 
   def manage_data
@@ -108,14 +109,11 @@ protected
             }, {
               type: 'Title',
               customClass: 'goalTitle',
-              text: '{goal.subject ||We} will ' +
-                '{goal.metadata.comparison_function /</reduce/ />/increase/ ||reduce/increase} '+
-                '{goal.name $[l] ||results} by {goal.goal_delta %[,0] ||0}{goal.goal_delta_is_pct /true/%/ ||} ' +
-                'by {goal.end_date @[%B %Y] ||sometime}'
+              text: goal_statement
             }, {
               type: 'Text',
               htmlClass: 'goalSubtitle',
-              html: 'This goal is measured by tracking <strong>{goal.metrics.0.title $[l] ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit $[l] ||units}</strong>'
+              html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit ||units}</strong>'
             }, {
               type: 'HorizontalContainer',
               htmlClass: 'prevailingMetric',
@@ -126,7 +124,7 @@ protected
                 children: [ {
                   type: 'Text',
                   htmlClass: 'metricValue progress-{goal.metrics.0.computed_values.progress ||none}',
-                  html: '<span class="value">{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}</span> <span class="unit">{goal.metrics.0.unit $[l] ||}</span>'
+                  html: '<span class="value">{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}</span> <span class="unit">{goal.metrics.0.unit ||}</span>'
                 }, {
                   type: 'Text',
                   htmlClass: 'metricTime',
@@ -150,7 +148,7 @@ protected
                   }, {
                     type: 'Text',
                     htmlClass: 'metricUnit',
-                    html: '<strong>{goal.metrics.0.unit $[l] ||}</strong>'
+                    html: '<strong>{goal.metrics.0.unit ||}</strong>'
                   }, {
                     type: 'Text',
                     htmlClass: 'metricTime',
@@ -170,7 +168,7 @@ protected
                   }, {
                     type: 'Text',
                     htmlClass: 'metricUnit',
-                    html: '<strong>{goal.metrics.0.unit $[l] ||}</strong>'
+                    html: '<strong>{goal.metrics.0.unit ||}</strong>'
                   }, {
                     type: 'Text',
                     htmlClass: 'metricTime',

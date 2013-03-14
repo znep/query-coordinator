@@ -499,6 +499,8 @@ javascripts:
     - public/javascripts/screens/govstat/goals/show.js
     - public/javascripts/screens/govstat/goals/markup.js
     - public/javascripts/screens/govstat/goals/views.js
+  screen-govstat-dashboard:
+    - public/javascripts/screens/govstat/dashboard.js
   screen-govstat-goal-page:
     - public/javascripts/plugins/jquery.columnizer.js
     - public/javascripts/screens/govstat/goal-page.js

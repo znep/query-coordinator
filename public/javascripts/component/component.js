@@ -602,6 +602,11 @@
                     var comp = $.makeArray(cObj._properties.htmlClass).join(' ');
                     cObj.$contents.removeClass(comp);
                     cObj.$contents.addClass(cObj._stringSubstitute(comp));
+
+                    var custComp = $.makeArray(cObj._properties.customClass).join(' ');
+                    cObj.$contents.removeClass(custComp);
+                    cObj.$contents.addClass(cObj._stringSubstitute(custComp));
+
                     cObj.$dom.css(blist.configs.styles.convertProperties(
                                 cObj._stringSubstitute(cObj._properties)));
                 };

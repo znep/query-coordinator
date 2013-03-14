@@ -248,7 +248,7 @@ module GovstatHelper
                       {
                         type: 'Text',
                         customClass: 'goalLink',
-                        html: '<a href="/goals/{goal.id}" class="button ss-navigateright right">Goal Details</a>'
+                        html: '<a href="/goal/{goal.id}" class="button ss-navigateright right">Goal Details</a>'
                       }
                       ]
                     },

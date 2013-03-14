@@ -180,7 +180,7 @@
             cpObj._super.apply(cpObj, arguments);
             cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
             cpObj._index = cpObj.settings.index;
-            cpObj._uid = cpObj._view.id;
+            cpObj._uid = (cpObj.settings.parent._view.id == cpObj._view.id ? 'self' : cpObj._view.id);
             cpObj._origDF = cpObj._getCurrentData().displayFormat.viewDefinitions[cpObj._index];
         },
 
@@ -191,7 +191,7 @@
                 prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
                 view: this._view })
             };
-            var title = this._view.name + '<br />(' + this._view.id + ')';
+            var title = this._view.name + (this._uid != 'self' ? '<br />(' + this._uid + ')' : '');
 
             if (this._dataType == 'socrata')
             {
@@ -225,13 +225,14 @@
         setView: function(view)
         {
             var cpObj = this;
+            var oldView = cpObj._view;
 
             cpObj._super(view);
 
             if (!cpObj._getCurrentData().displayFormat.viewDefinitions)
             { cpObj._getCurrentData().displayFormat.viewDefinitions = []; }
 
-            if (cpObj._uid == view.id)
+            if (oldView && oldView.id == view.id)
             { cpObj._getCurrentData().displayFormat.viewDefinitions[cpObj._index] = cpObj._origDF; }
             else
             { cpObj._getCurrentData().displayFormat.viewDefinitions[cpObj._index] = {}; }
@@ -242,6 +243,7 @@
             { cpObj._dataType = 'mondara'; }
             else
             { cpObj._dataType = 'socrata'; }
+            cpObj._uid = (cpObj.settings.parent._view.id == cpObj._view.id ? 'self' : cpObj._view.id);
         },
 
         setIndex: function(index)
@@ -260,7 +262,7 @@
             { fv = null; }
 
             return cpObj.settings.data.displayFormat.viewDefinitions[cpObj._index] = cpObj._origDF
-                = $.extend(true, { uid: cpObj._uid = cpObj._view.id }, fv);
+                = $.extend(true, { uid: cpObj._uid }, fv);
         }
     }, {name: 'mapDataLayerCreate'}, 'controlPane');
 

@@ -90,9 +90,12 @@ $(function()
                 { datasetPageNS.rtManager.toggle(rt); }
                 else if (id)
                 {
-                    var newMD = $.extend({}, blist.dataset.metadata);
-                    $.deepSet(newMD, id, 'renderTypeConfig', 'active', rt, 'id');
-                    blist.dataset.update({metadata: newMD});
+                    if (id != blist.dataset.id)
+                    {
+                        var newMD = $.extend({}, blist.dataset.metadata);
+                        $.deepSet(newMD, id, 'renderTypeConfig', 'active', rt, 'id');
+                        blist.dataset.update({metadata: newMD});
+                    }
                     if (datasetPageNS.rtManager.visibleTypes[rt])
                     { datasetPageNS.rtManager.hide(rt); }
                     datasetPageNS.rtManager.show(rt);
@@ -113,10 +116,11 @@ $(function()
                         canDeselect: true,
                         choices: options,
                         isSelected: function(option) {
+                            var selId = $.deepGetStringField(blist.dataset.metadata,
+                                'renderTypeConfig.active.' + rt + '.id');
                             return $.deepGetStringField(blist.dataset.metadata,
                                 'renderTypeConfig.visible.' + rt) &&
-                                (option.id == $.deepGetStringField(blist.dataset.metadata,
-                                'renderTypeConfig.active.' + rt + '.id'));
+                                (option.id == selId || $.isBlank(selId) && option.id == blist.dataset.id);
                         },
                         prompt: 'Select a layer:',
                         renderer: function(option) {
@@ -195,20 +199,23 @@ $(function()
     var openSidebar = false;
     if (blist.dataset.displayFormat.viewDefinitions)
     {
-        var viewId = blist.dataset.displayFormat.viewDefinitions[0].uid;
-        _.each(blist.dataset.metadata.renderTypeConfig.visible || [], function(v, type)
-        {
-            if (v && _.include(['table', 'page', 'fatrow'], type)
-            && !$.subKeyDefined(blist.dataset.metadata, 'renderTypeConfig.active.' + type + '.id'))
-            { $.deepSet(blist.dataset.metadata, viewId, 'renderTypeConfig', 'active', type, 'id'); }
-        });
-
         if (!blist.dataset.childViews)
         { blist.dataset.childViews = _.pluck(blist.dataset.displayFormat.viewDefinitions, 'uid'); }
 
-        if ($.subKeyDefined(blist.dataset, 'metadata.query.' + viewId + '.filterCondition')
-            && (blist.dataset.metadata.query[viewId].filterCondition.children || []).length > 0)
-        { openSidebar = true; }
+        var viewId = blist.dataset.displayFormat.viewDefinitions[0].uid;
+        if (viewId != 'self')
+        {
+            _.each(blist.dataset.metadata.renderTypeConfig.visible || [], function(v, type)
+            {
+                if (v && _.include(['table', 'page', 'fatrow'], type)
+                && !$.subKeyDefined(blist.dataset.metadata, 'renderTypeConfig.active.' + type + '.id'))
+                { $.deepSet(blist.dataset.metadata, viewId, 'renderTypeConfig', 'active', type, 'id'); }
+            });
+
+            if ($.subKeyDefined(blist.dataset, 'metadata.query.' + viewId + '.filterCondition')
+                && (blist.dataset.metadata.query[viewId].filterCondition.children || []).length > 0)
+            { openSidebar = true; }
+        }
     }
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
@@ -246,8 +253,8 @@ $(function()
         if (typeof rowId == 'string')
         { var splitRowId = rowId.split('/'); uid = splitRowId[0]; rowId = splitRowId[1]; }
 
-        var sameDS = $.deepGet(blist.dataset.metadata.renderTypeConfig, 'active', 'page', 'id')
-            == uid;
+        var curId = $.deepGet(blist.dataset.metadata.renderTypeConfig, 'active', 'page', 'id');
+        var sameDS = curId == uid || $.isBlank(curId) && uid == blist.dataset.id;
         if (!updateOnly || (blist.dataset.metadata.renderTypeConfig.visible.page && !sameDS))
         {
             datasetPageNS.rtManager.setTypeConfig('page', {defaultRowId: rowId});

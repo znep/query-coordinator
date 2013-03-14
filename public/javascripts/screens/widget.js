@@ -592,8 +592,8 @@ $(function()
         if (typeof rowId == 'string')
         { var splitRowId = rowId.split('/'); uid = splitRowId[0]; rowId = splitRowId[1]; }
 
-        var sameDS = $.deepGet(blist.dataset.metadata.renderTypeConfig, 'active', 'page', 'id')
-            == uid;
+        var curId = $.deepGet(blist.dataset.metadata.renderTypeConfig, 'active', 'page', 'id');
+        var sameDS = curId == uid || $.isBlank(curId) && uid == blist.dataset.id;
         if (!updateOnly || (blist.dataset.metadata.renderTypeConfig.visible.page && !sameDS))
         {
             blist.$container.renderTypeManager().setTypeConfig('page', {defaultRowId: rowId});

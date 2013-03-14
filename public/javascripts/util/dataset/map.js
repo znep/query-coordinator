@@ -34,7 +34,7 @@ Dataset.map.convertToVersion2 = function(view, df)
     if ($.isBlank(df.viewDefinitions))
     {
         df.viewDefinitions = [$.extend(true, {}, df)];
-        df.viewDefinitions[0].uid = view.id;
+        df.viewDefinitions[0].uid = 'self';
     }
 
     if (df.compositeMembers)

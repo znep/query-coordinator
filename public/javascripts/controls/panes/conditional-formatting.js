@@ -161,11 +161,12 @@
 
     var meldWithParentCondFmt = function(cpObj)
     {
-        if ($.subKeyDefined(cpObj._parentView, 'metadata.conditionalFormatting.' + cpObj._view.id))
+        var id = cpObj._view.id == cpObj._parentView.id ? 'self' : cpObj._view.id;
+        if ($.subKeyDefined(cpObj._parentView, 'metadata.conditionalFormatting.' + id))
         {
             var md = $.extend(true, {}, cpObj._view.metadata);
             md.conditionalFormatting = $.union(
-                cpObj._parentView.metadata.conditionalFormatting[cpObj._view.id],
+                cpObj._parentView.metadata.conditionalFormatting[id],
                 (md.conditionalFormatting || []));
             cpObj._view.update({ metadata: md });
         }
@@ -187,7 +188,10 @@
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
             {
                 cpObj._parentView = newView;
-                Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handler);
+                if (newView.displayFormat.viewDefinitions[0].uid == 'self')
+                { handler(newView); }
+                else
+                { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handler); }
             }
             else
             { handler(newView); }
@@ -307,7 +311,8 @@
             {
                 var parentMD = $.extend(true, {}, cpObj._parentView.metadata);
                 parentMD.conditionalFormatting = parentMD.conditionalFormatting || {};
-                parentMD.conditionalFormatting[cpObj._view.id]
+                parentMD.conditionalFormatting[cpObj._view.id == cpObj._parentView.id ?
+                    'self' : cpObj._view.id]
                     = (cpObj._view.metadata || {}).conditionalFormatting;
                 cpObj._parentView.update({ metadata: parentMD });
             }

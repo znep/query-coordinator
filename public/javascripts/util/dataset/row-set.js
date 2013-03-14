@@ -661,12 +661,21 @@ var RowSet = ServerModel.extend({
                 delete rs._columnsInvalid;
                 if (!fullLoad)
                 {
+                    // I would rather get rid of triggering a metadata_update
+                    // all the time, since if this isn't a full load, I don't
+                    // think any relevant metadata has changed. But various UI
+                    // already depends on events triggered from a metadata
+                    // update, so we're stuck with this for the moment.
+                    // Mitigate race conditions by using the current version of
+                    // data on the dataset for items that are known to cause
+                    // problems
                     result.meta.view.query.filterCondition = rs._dataset.query.filterCondition;
                     if (!$.isBlank(rs._dataset.query.namedFilters))
                     {
                         result.meta.view.query.namedFilters =
                             rs._dataset.query.namedFilters;
                     }
+                    result.meta.view.metadata = rs._dataset.metadata;
                 }
                 rs.trigger('metadata_update', [result.meta.view, true, true, fullLoad]);
             }

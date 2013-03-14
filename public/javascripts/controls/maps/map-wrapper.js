@@ -157,7 +157,8 @@
 
                 if (mapObj._children[index]
                     && ($.subKeyDefined(df, 'context.dataset')
-                        || df.uid == mapObj._children[index]._view.id)
+                        || df.uid == mapObj._children[index]._view.id
+                        || df.uid == 'self' && mapObj._children[index]._view.id == mapObj._view.id)
                     && df.plotStyle == mapObj._children[index]._displayFormat.plotStyle)
                 {
                     mapObj._children[index]._view.trigger('displayformat_change', [df])
@@ -227,18 +228,22 @@
 
             if ($.subKeyDefined(df, 'context.dataset'))
             { loadDataset(df.context.dataset); }
+            else if (uid == 'self')
+            { loadDataset(mapObj._primaryView); }
             else
-            { Dataset.lookupFromViewId(uid, loadDataset, function(errorObj)
             {
-                mapObj._children[index] = { invalid: true,
-                    error: JSON.parse(errorObj.responseText) };
-                mapObj._invalidChildren = $.makeArray(mapObj._invalidChildren);
-                mapObj._invalidChildren.push(mapObj._children[index]);
+                Dataset.lookupFromViewId(uid, loadDataset, function(errorObj)
+                {
+                    mapObj._children[index] = { invalid: true,
+                        error: JSON.parse(errorObj.responseText) };
+                    mapObj._invalidChildren = $.makeArray(mapObj._invalidChildren);
+                    mapObj._invalidChildren.push(mapObj._children[index]);
 
-                if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
-                    && _.all(mapObj._children, function(cv) { return !cv.loading; }))
-                { mapObj._onDatasetsLoaded(); }
-            }); }
+                    if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
+                        && _.all(mapObj._children, function(cv) { return !cv.loading; }))
+                    { mapObj._onDatasetsLoaded(); }
+                });
+            }
         },
 
         _onDatasetsLoaded: function()
@@ -274,7 +279,8 @@
             if (mapObj._primaryView)
             {
                 mapObj._primaryView.bind('reloaded', function() {
-                    var reInitCondFmt = function() {
+                    var reInitCondFmt = function(subview)
+                    {
                         var condFmt = $.deepGet(mapObj._primaryView.metadata,
                             'conditionalFormatting', subview.id);
                         if (condFmt)
@@ -284,12 +290,12 @@
                             _.each(subview._availableRowSets,
                                 function(rs) { rs.formattingChanged(condFmt); });
                         }
-                    }
+                    };
                     _(mapObj._children).chain()
                         .pluck('_view').uniq().without(mapObj._primaryView).each(function(subview)
                     {
                         delete subview.metadata.conditionalFormatting;
-                        subview.reload(reInitCondFmt);
+                        subview.reload(false, function() { reInitCondFmt(subview); });
                     });
                     _.invoke(mapObj._children, 'getData');
                 });
@@ -558,7 +564,8 @@
                     console.groupCollapsed('trace'); console.trace(); console.groupEnd();
                 console.groupEnd();
             }
-            if ($.isBlank(this._primaryView)) { return; }
+            if ($.isBlank(this._primaryView) || uid == 'self' || this._primaryView.id == uid)
+            { return; }
             if ($.isBlank(query.filterCondition)) { return; }
             var newMD = $.extend(true, {}, this._primaryView.metadata);
             $.deepSet(newMD, query, 'query', uid);

@@ -280,14 +280,7 @@ var Dataset = ServerModel.extend({
                 dsOrig.metadata = dsOrig.metadata || {};
                 var cf = dsOrig.metadata.conditionalFormatting.slice();
                 dsOrig.metadata.conditionalFormatting = {};
-                dsOrig.metadata.conditionalFormatting[dsOrig.id] = cf;
-            }
-            // Same problem, but filters. Bug 8287
-            if (_.isUndefined((dsOrig.metadata || {}).query))
-            {
-                dsOrig.metadata = dsOrig.metadata || {};
-                dsOrig.metadata.query = {};
-                dsOrig.metadata.query[dsOrig.id] = $.extend(true, {}, { filterCondition: dsOrig.cleanFilters(true) });
+                dsOrig.metadata.conditionalFormatting.self = cf;
             }
         }
 
@@ -359,7 +352,8 @@ var Dataset = ServerModel.extend({
         if (!force && ds.metadata.renderTypeConfig.visible[rt]) { return; }
         var md = $.extend(true, {}, ds.metadata);
         md.renderTypeConfig.visible[rt] = true;
-        activeUid && $.deepSet(md, activeUid, 'renderTypeConfig', 'active', rt, 'id');
+        if (activeUid && activeUid != ds.id)
+        { $.deepSet(md, activeUid, 'renderTypeConfig', 'active', rt, 'id'); }
         ds.update({metadata: md}, false, true);
     },
 
@@ -1900,7 +1894,8 @@ var Dataset = ServerModel.extend({
         if (!this._childViews[uid])
         {
             var self = this;
-            Dataset.lookupFromViewId(uid, function(child) {
+            var handleChild = function(child)
+            {
                 self._childViews[uid] = child;
                 if (child != self)
                 {
@@ -1909,7 +1904,11 @@ var Dataset = ServerModel.extend({
                         function() { self.trigger('displaytype_change'); }, self);
                 }
                 callback(child);
-            }, undefined, isBatch);
+            };
+            if (uid == 'self')
+            { handleChild(self); }
+            else
+            { Dataset.lookupFromViewId(uid, handleChild, undefined, isBatch); }
         }
         else
         {

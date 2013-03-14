@@ -69,7 +69,8 @@
                         e.preventDefault();
                         if (!layerObj._parent._primaryView) { return; }
                         var newMD = $.extend(true, {}, layerObj._parent._primaryView.metadata);
-                        $.deepSet(newMD, layerObj._view.id,'renderTypeConfig','active','table','id');
+                        if (layerObj._view.id != layerObj._parent._primaryView.id)
+                        { $.deepSet(newMD, layerObj._view.id,'renderTypeConfig','active','table','id'); }
                         $.deepSet(newMD, true, 'renderTypeConfig', 'visible', 'table');
                         layerObj._parent._primaryView.update({metadata: newMD});
                         layerObj._view.showRenderType('table');

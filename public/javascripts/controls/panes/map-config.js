@@ -141,13 +141,14 @@
                 function(col) { return col.renderTypeName == 'location'; });
         };
 
-        $field.makeStatic = function(value, invalid)
+        $field.makeStatic = function(value, invalid, uneditable)
         {
             $field.empty();
             $field.data('dsName', value);
-            $field.append('<span>'+ $.htmlEscape(value) +' (<span class="edit">edit</span>)</span>');
+            $field.append('<span>' + $.htmlEscape(value) + (uneditable ? '' :
+                        ' (<span class="edit">edit</span>)') + '</span>');
             $field.find('span.edit').click(openSelectDataset)
-                                    .css({ cursor: 'pointer', color: '#0000ff' });
+                .css({ cursor: 'pointer', color: '#0000ff' });
             if (invalid)
             { $field.append('<span class="error">This dataset has no location column.</span>')
                 .find('span.error').css({ marginLeft: 0, paddingLeft: 0 }); }
@@ -156,11 +157,15 @@
         if (!$.isBlank(curValue))
         {
             $field.data('uid', curValue);
-            Dataset.lookupFromViewId(curValue, function(dataset)
+            var handle = function(dataset)
             {
-                $field.makeStatic(dataset.name, !validDataset(dataset));
+                $field.makeStatic(dataset.name, !validDataset(dataset), cpObj._view.id == dataset.id);
                 modifySection.call(cpObj, dataset, $field);
-            });
+            };
+            if (curValue == 'self')
+            { handle(cpObj._view); }
+            else
+            { Dataset.lookupFromViewId(curValue, handle); }
         }
         else
         { openSelectDataset(); cpObj._selectingEmpty = true; }

@@ -41,7 +41,10 @@
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
             {
                 cpObj._pendingView = true;
-                Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle);
+                if (newView.displayFormat.viewDefinitions[0].uid == 'self')
+                { handle(newView); }
+                else
+                { Dataset.lookupFromViewId(newView.displayFormat.viewDefinitions[0].uid, handle); }
             }
             else
             { handle(newView); }

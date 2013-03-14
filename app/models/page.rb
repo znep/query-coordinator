@@ -39,7 +39,8 @@ class Page < SodaModel
   end
 
   def content
-    @update_data['content'] || @data['content']
+    @update_data['content'] || @data['content'] ||
+      (@update_data['content'] = { 'type' => 'Container', 'id' => 'defaultRoot' })
   end
 
   def data

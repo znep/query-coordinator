@@ -61,7 +61,8 @@ $(function()
         {
             return (goal.get('category') === '' || goal.get('category') == null) ? '__draft' : goal.get('category');
         });
-        draftGoals.add(rawGoalsByCategory.__draft);
+        if (!$.isBlank(rawGoalsByCategory.__draft))
+        { draftGoals.add(rawGoalsByCategory.__draft); }
         delete rawGoalsByCategory.__draft;
 
         // render draft goals

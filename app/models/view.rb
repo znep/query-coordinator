@@ -374,7 +374,8 @@ class View < Model
   end
 
   def get_row(row_id, is_anon = false)
-    req = get_rows_request([row_id])
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString})
+    req = get_rows_request([row_id], 0, merged_conditions, false)
     JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {},
                                                           false, false, is_anon),
       {:max_nesting => 25})[0]

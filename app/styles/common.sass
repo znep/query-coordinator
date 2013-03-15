@@ -54,6 +54,12 @@
   top: auto
   width: 1px
 
+a:focus, a:active
+  text-decoration: underline
+
+  img
+    @include prefixer(box-shadow, 0 0 4px rgba(0, 40, 180, 0.3))
+
 #jqmAlert
   display: none
   left: 50%

@@ -166,7 +166,7 @@ class SodaCan
   #   - only supports references by fieldName
   #
   def order_rows(rows, order_bys)
-    return rows if order_bys.nil?
+    return rows if order_bys.nil? || order_bys.size <= 0
     rows.sort do |a, b|
       i, res = 0, 0
       div = 1

@@ -1,5 +1,13 @@
 module SodaCan
   class Util
+
+    def self.fail(msg, context = nil, throw_exception=false)
+      err = "#{msg} context: #{context.inspect}"
+      Rails.logger.error(err)
+      return false unless throw_exception
+      raise Exception, err
+    end
+
     #
     # Resolve the column type from a single child; return nil
     # if the child references a literal

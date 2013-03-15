@@ -142,7 +142,50 @@ Dataset.modules['map'] =
     _convertLegacy: function()
     {
         var view = this;
-        if ($.subKeyDefined(view, 'displayFormat.viewDefinitions')) { return; }
+        if ($.subKeyDefined(view, 'displayFormat.viewDefinitions'))
+        {
+            var fixIds = function(checkId, vd)
+            {
+                // We've got some bad data; let's fix it
+                vd.uid = 'self';
+                // renderTypeConfig.active
+                if ($.subKeyDefined(view, 'metadata.renderTypeConfig.active'))
+                {
+                    var a = {};
+                    _.each(view.metadata.renderTypeConfig.active, function(rt, k)
+                        { if (rt.id != checkId) { a[k] = rt; } });
+                    view.metadata.renderTypeConfig.active = a;
+                }
+                // conditional formatting
+                if ($.subKeyDefined(view, 'metadata.conditionalFormatting.' + checkId))
+                {
+                    view.metadata.conditionalFormatting.self =
+                        view.metadata.conditionalFormatting[checkId];
+                    delete view.metadata.conditionalFormatting[checkId];
+                }
+                // metadata.query
+                if ($.subKeyDefined(view, 'metadata.query.' + checkId))
+                { delete view.metadata.query[checkId]; }
+            };
+
+            // Maybe clean up IDs?
+            var checkFix = function(checkId)
+            {
+                return _.any(view.displayFormat.viewDefinitions, function(vd)
+                {
+                    if (vd.uid == checkId)
+                    {
+                        fixIds(checkId, vd);
+                        return true;
+                    }
+                    return false;
+                });
+            };
+
+            if (!checkFix(view.id))
+            { view.getParentView(function(parView) { checkFix(parView.id); }); }
+            return;
+        }
 
         view.displayFormat.plot = view.displayFormat.plot || {};
 

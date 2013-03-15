@@ -76,7 +76,7 @@ class View < Model
 
   def prefetch(rows, conditions = {})
     row_data = get_rows(rows, 1, conditions, true)
-    @sodacan = SodaCan.new(row_data[:meta], row_data, true)
+    @sodacan = SodaCan::Processor.new(row_data[:meta], row_data, true)
   end
 
   def set_sodacan(sodacan)

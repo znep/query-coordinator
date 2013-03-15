@@ -2,7 +2,7 @@ class SodaCanTest < Test::Unit::TestCase
   ROW_META_LAST_INDX = 7.freeze
 
   def test_isfilterable
-    sodacan = SodaCan.new({}, nil)
+    sodacan =SodaCan::Processor.new({}, nil)
     queries= JSON::parse(File.open("test/fixtures/soda_can/query_pass.json").read)
     queries.each { |q|
       assert sodacan.soda_can?(q), "Should have passed: #{q.to_s}"
@@ -15,51 +15,29 @@ class SodaCanTest < Test::Unit::TestCase
 
   end
 
-  def test_get_field_index
-    metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
-    rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-rows.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
-    assert sodacan.get_field_index("employee_name", nil) == 8
-    assert sodacan.get_field_index("pay_basis", nil) == 11
-
-    begin
-      sodacan.get_field_index("not_there", nil)
-      assert false
-    rescue Exception
-      # expected
-    end
-
-    assert sodacan.get_field_index(nil, 2519204) == 8
-    assert sodacan.get_field_index(nil, 2519207) == 11
-
-    assert sodacan.get_field_index("employee_name", 2519204) == 8
-  end
-
   def test_resolve_value
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-rows.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
     row = rowdata['entries'][0]
     atom = JSON::parse('{ "type" : "column", "columnFieldName" : "employee_name"}')
-    assert sodacan.resolve_value(atom, row) == "Zichal, Heather R."
+    assert SodaCan::Util.resolve_value(atom, row, metadata, false) == "Zichal, Heather R."
 
     atom = JSON::parse('{ "type" : "column", "columnFieldName" : "not_there"}')
-    assert sodacan.resolve_value(atom, row).nil?
+    assert SodaCan::Util.resolve_value(atom, row, metadata, false).nil?
   end
 
   def test_resolve_literal
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-rows.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
     row = rowdata['entries'][0]
     atom = JSON::parse('{ "type" : "literal", "value" : "alphabet"}')
-    assert sodacan.resolve_value(atom, row) == "alphabet"
+    assert SodaCan::Util.resolve_value(atom, row, metadata, false) == "alphabet"
   end
 
   def test_perform_equals
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-rows.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
+    sodacan = SodaCan::Processor.new(metadata, rowdata)
     row = rowdata['entries'][0]
     atom = JSON::parse('[{ "type" : "literal", "value" : "Zichal, Heather R."}, { "type" : "column", "columnFieldName" : "employee_name"}]')
     assert sodacan.perform_op("EQUALS", atom, row)
@@ -75,25 +53,16 @@ class SodaCanTest < Test::Unit::TestCase
   def test_by_ids
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-byids.json").read)
-    sodacan = SodaCan.new(metadata, rowdata, true)
+    sodacan = SodaCan::Processor.new(metadata, rowdata, true)
     equals = create_filter("EQUALS", "Zichal, Heather R.", "employee_name")
     assert sodacan.can_query? equals
-    assert sodacan.get_rows(equals).size == 1, ">>>> GOT : #{sodacan.get_rows(equals).to_json}"
+    assert sodacan.get_rows(equals).size == 1, ">>>> because : #{sodacan.hints}"
   end
 
   def test_by_ids_meta
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-byids-meta.json").read)
-    sodacan = SodaCan.new(metadata, rowdata, true)
-    equals = create_filter("EQUALS", "Zichal, Heather R.", "employee_name")
-    assert sodacan.can_query? equals
-    assert sodacan.get_rows(equals).size == 1
-  end
-
-  def test_as_array
-    metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
-    rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-array.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
+    sodacan = SodaCan::Processor.new(metadata, rowdata, true)
     equals = create_filter("EQUALS", "Zichal, Heather R.", "employee_name")
     assert sodacan.can_query? equals
     assert sodacan.get_rows(equals).size == 1
@@ -102,7 +71,7 @@ class SodaCanTest < Test::Unit::TestCase
   def test_perform_blanks
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-rows.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
+    sodacan =SodaCan::Processor.new(metadata, rowdata)
     row = { "employee_name" => "This is not blank",
     }
 
@@ -147,7 +116,7 @@ eos
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-rows.json").read)
     queries = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-queries.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
+    sodacan =SodaCan::Processor.new(metadata, rowdata)
     queries.each { |q|
       got = sodacan.get_rows(q).to_json
       assert(got == q['expect'].to_json, "fixture failed test: " + q['description'] + " got: #{got}")
@@ -158,7 +127,7 @@ eos
   def test_all_the_types
     metadata = JSON::parse(File.open("test/fixtures/soda_can/8vyz-328w.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/8vyz-328w-rows.json").read)
-    sodacan = SodaCan.new(metadata, rowdata)
+    sodacan =SodaCan::Processor.new(metadata, rowdata)
     # for each column[1:] in the dataset (excluding the first column)
     #     for each row[1:] in the dataset (excluding the first row)
     #        if the value of row[n]column[n] is blank, skip
@@ -207,7 +176,7 @@ eos
     metadata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4-rows.json").read)
     rowdata['entries'] = rowdata['entries'].shuffle
-    sodacan = SodaCan.new(metadata, rowdata)
+    sodacan =SodaCan::Processor.new(metadata, rowdata)
     ptext_asc = JSON::parse('{ "ascending" : true, "expression" : { "type" : "column", "fieldName" : "ptext"} }')
     ptext_desc = JSON::parse('{ "ascending" : false, "expression" : { "type" : "column", "fieldName" : "ptext"} }')
     ftext_asc = JSON::parse('{ "ascending" : true, "expression" : { "type" : "column", "fieldName" : "ftext"} }')
@@ -243,7 +212,7 @@ eos
     metadata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/v6f4-jvr4-rows.json").read)
     rowdata['entries'] = rowdata['entries'].shuffle
-    sodacan = SodaCan.new(metadata, rowdata)
+    sodacan =SodaCan::Processor.new(metadata, rowdata)
     ptext_asc = JSON::parse('{ "ascending" : true, "expression" : { "type" : "column", "fieldName" : "ptext"} }')
     num_desc = JSON::parse('{ "ascending" : false, "expression" : { "type" : "column", "fieldName" : "number"} }')
     condition = {
@@ -279,7 +248,7 @@ eos
   def test_paging
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
     rowdata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb-byids-meta.json").read)
-    sodacan = SodaCan.new(metadata, rowdata, true)
+    sodacan =SodaCan::Processor.new(metadata, rowdata, true)
     per_page = 100
     num_rows = sodacan.get_rows({}, per_page, 1).length
     row_count = num_rows

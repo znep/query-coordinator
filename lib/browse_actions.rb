@@ -169,6 +169,9 @@ protected
     # some of the other methods need this
     @request_params = request.params
 
+    # make our params all safe
+    @request_params.each{ |_, v| v.force_encoding('iso-8859-1').encode!('utf-8') }
+
     # grab our catalog configuration first
     catalog_config = CurrentDomain.configuration('catalog')
     catalog_config = catalog_config ? catalog_config.properties : Hashie::Mash.new

@@ -200,37 +200,40 @@ blist.namespace.fetch('blist.govstat').markup = {
                         _: 'div',
                         className: 'agencyInput'
                     }, {
-                        _: 'span',
-                        contents: '. It is visible '
-                    }, {
-                        _: 'div',
-                        className: [ 'inputWrapper', 'selectInput', 'publicInput' ],
-                        contents: [{
+                        i: !$.isBlank(goal.get('category')) && (goal.get('category') !== ''),
+                        t: [{
                             _: 'span',
-                            className: 'selectValue'
+                            contents: '. It is visible '
                         }, {
-                            _: 'select',
-                            name: 'is_public',
-                            id: goal.cid + '_public',
+                            _: 'div',
+                            className: [ 'inputWrapper', 'selectInput', 'publicInput' ],
                             contents: [{
-                                _: 'option',
-                                value: 'true',
-                                selected: goal.get('is_public') === true,
-                                contents: 'publicly'
+                                _: 'span',
+                                className: 'selectValue'
                             }, {
-                                _: 'option',
-                                value: 'false',
-                                selected: goal.get('is_public') === false,
-                                contents: 'internally'
+                                _: 'select',
+                                name: 'is_public',
+                                id: goal.cid + '_public',
+                                contents: [{
+                                    _: 'option',
+                                    value: 'true',
+                                    selected: goal.get('is_public') === true,
+                                    contents: 'publicly'
+                                }, {
+                                    _: 'option',
+                                    value: 'false',
+                                    selected: goal.get('is_public') === false,
+                                    contents: 'internally'
+                                }]
+                            }, {
+                                _: 'label',
+                                'for': goal.cid + '_public',
+                                contents: 'Visibility'
                             }]
                         }, {
-                            _: 'label',
-                            'for': goal.cid + '_public',
-                            contents: 'Visibility'
+                            _: 'span',
+                            contents: '.'
                         }]
-                    }, {
-                        _: 'span',
-                        contents: '.'
                     }, {
                         _: 'div',
                         className: 'imageLine',

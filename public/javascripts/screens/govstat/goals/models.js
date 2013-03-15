@@ -325,6 +325,11 @@ var Goals = Backbone.Collection.extend({
         options = options || {};
         this.on('add', function(goal)
         {
+            if (options.draft === true)
+            {
+                goal.set('is_public', false);
+            }
+
             if (options.category instanceof Category)
             {
                 goal.set('category', options.category.id);

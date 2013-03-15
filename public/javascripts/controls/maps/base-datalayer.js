@@ -854,7 +854,12 @@
                 if (layerObj._iconCol.dataTypeName == 'url')
                 { return row[layerObj._iconCol.id].url; }
                 else
-                { return layerObj._iconCol.baseUrl() + row[layerObj._iconCol.id]; }
+                {
+                    var url = layerObj._iconCol.baseUrl() + row[layerObj._iconCol.id];
+                    if ((layerObj._iconCol.format || {}).size)
+                    { url += '?size=' + layerObj._iconCol.format.size; }
+                    return url;
+                }
             }
 
             return null;

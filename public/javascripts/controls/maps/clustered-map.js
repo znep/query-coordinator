@@ -10,7 +10,7 @@
                 = new OpenLayers.Layer.Vector(layerObj._view.name + ' cluster boundaries');
             layerObj._map.addLayer(layerObj._clusterBoundaries);
 
-            layerObj._parent.viewportHandler()
+            layerObj.viewportHandler()
                 .events.register('viewportchanged', layerObj, layerObj.onViewportChange);
         },
 
@@ -18,14 +18,14 @@
         {
             this._super();
             this._clusterBoundaries.destroy();
-            this._parent.viewportHandler()
+            this.viewportHandler()
                 .events.unregister('viewportchanged', this, this.onViewportChange);
         },
 
         onViewportChange: function()
         {
             var layerObj = this;
-            if (layerObj._parent.viewportHandler().viewportInOriginal
+            if (layerObj.viewportHandler().viewportInOriginal
                 && layerObj._firstRenderType == 'points')
             { delete layerObj._neverCluster; }
 
@@ -42,9 +42,10 @@
 
         clickFeature: function(feature)
         {
+            var layerObj = this;
             if (this._renderType == 'points') { return this._super(feature); }
 
-            this._parent.viewportHandler().stopExpecting();
+            this.viewportHandler().stopExpecting();
             this._clusterBoundaries.removeAllFeatures();
             var currentZoom = this._map.getZoom();
             var bboxZoom = this._map.getZoomForExtent(feature.attributes.bbox);
@@ -57,7 +58,7 @@
             {
                 if (this.settings.showRowLink && !this._parent._displayFormat.hideRowLink)
                 {
-                    this._parent.showPopup(feature.geometry.toLonLat(),
+                    this.flyoutHandler().add(layerObj, feature.geometry.toLonLat(),
                         '<div class="foreverNode">' +
                         '<div>Too much data</div>' +
                         'This cluster\'s data is too densely packed to display useful data ' +
@@ -77,7 +78,7 @@
                     });
                 }
                 else
-                { this._parent.showPopup(feature.geometry.toLonLat(),
+                { this.flyoutHandler().add(layerObj, feature.geometry.toLonLat(),
                     '<div class="foreverNode">' +
                     '<div>Too much data</div>' +
                     'This cluster\'s data is too densely packed to display useful data ' +
@@ -114,7 +115,7 @@
             if (layerObj._neverCluster || layerObj._fetchPoints)
             { layerObj._super(); return; }
 
-            var viewport = layerObj._guessedViewport || layerObj._parent.viewportHandler()
+            var viewport = layerObj._guessedViewport || layerObj.viewportHandler()
                 .toViewport(blist.openLayers.geographicProjection),
                 locCol = layerObj._locCol || layerObj._geoCol;
 
@@ -137,7 +138,7 @@
                 // Make an attempt to break it into its children.
                 if (!layerObj._guessedViewport
                     && data.length == 1 && !_.isEmpty(data[0].children)
-                    && layerObj._parent.viewportHandler().isWholeWorld())
+                    && layerObj.viewportHandler().isWholeWorld())
                 { layerObj.attemptViewportGuess(data[0]); return; }
 
                 if (layerObj._guessedViewport)
@@ -212,7 +213,7 @@
             if ((query.namedFilters || {}).viewport)
             { delete query.namedFilters.viewport; }
             query.namedFilters = $.extend(true, query.namedFilters || {},
-                { viewport: this._parent.viewportHandler().toQuery(
+                { viewport: this.viewportHandler().toQuery(
                     blist.openLayers.geographicProjection, this._locCol.fieldName) });
 
             if (_.isEqual(this._query, query))

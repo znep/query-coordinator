@@ -919,6 +919,14 @@
                 }); });
         },
 
+        flyoutHandler: function()
+        {
+            var mapObj = this;
+            if (!mapObj._flyoutHandler)
+            { mapObj.map.addControl(mapObj._flyoutHandler = new blist.openLayers.Flyout(mapObj)); }
+            return mapObj._flyoutHandler;
+        },
+
         showPopup: function(lonlat, contents, options)
         {
             var mapObj = this;

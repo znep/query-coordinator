@@ -370,7 +370,7 @@
             if (loc.human_address)
             {
                 var address = _.isString(loc.human_address) ? JSON.parse(loc.human_address)
-                                                                 : loc.human_address;
+                                                            : loc.human_address;
                 mapLinkQuery = _.compact(_.values(address)).join(', ');
             }
             else if (loc.latitude && loc.longitude)
@@ -444,6 +444,16 @@
         },
 
         /* Utility functions */
+        viewportHandler: function()
+        {
+            return this._parent.viewportHandler();
+        },
+
+        flyoutHandler: function()
+        {
+            return this._parent.flyoutHandler();
+        },
+
         selectableFeatureLayers: function()
         {
             return null;
@@ -457,7 +467,7 @@
         zoomToPreferred: function()
         {
             if (!this.ready())
-            { this._parent.viewportHandler().zoomToPreferred(); }
+            { this.viewportHandler().zoomToPreferred(); }
         },
 
         preferredExtent: function()
@@ -609,7 +619,7 @@
             {
                 var lonlat = layerObj._displayLayer.getLonLatFromViewPortPx(
                     layerObj._parent._lastClickAt);
-                layerObj._parent.showPopup(lonlat, feature.attributes.flyout[0].innerHTML,
+                layerObj.flyoutHandler().add(layerObj, lonlat, feature.attributes.flyout[0].innerHTML,
                 { closeBoxCallback: function(evt)
                     {
                         if (!feature.layer)

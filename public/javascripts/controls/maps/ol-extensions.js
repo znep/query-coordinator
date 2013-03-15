@@ -1538,6 +1538,226 @@
         CLASS_NAME: 'blist.openLayers.StaledCluster'
     });
 
+    blist.openLayers.Flyout = OpenLayers.Class(OpenLayers.Control, {
+
+       EVENT_TYPES: ['close'],
+
+        initialize: function(mapObj)
+        {
+            this.EVENT_TYPES = blist.openLayers.Flyout.prototype.EVENT_TYPES.concat(
+                               OpenLayers.Control.prototype.EVENT_TYPES);
+            OpenLayers.Control.prototype.initialize.apply(this, arguments);
+
+            if (mapObj._displayFormat.disableFlyouts)
+            { this.disabled = true; }
+
+            this.mapObj = mapObj;
+        },
+
+        sayLoading: function(lonlat)
+        {
+            if (this._popup) { return; }
+
+            var control = this;
+            control._popup = new OpenLayers.Popup.FramedCloud(null, lonlat, null,
+                'Loading...', null, true,
+                function(evt) { new jQuery.Event(evt).stopPropagation(); control.close(); });
+            control.map.addPopup(control._popup);
+            // TODO: Decide if this is a good thing.
+            control._loading = setTimeout(function() { control.close(); }, 500);
+        },
+
+        // For actively saying nothing was loaded.
+        cancel: function()
+        {
+            if (_.isEmpty(this._layers)) { this.close(); }
+        },
+
+        add: function(layerObj, lonlat, contents, options)
+        {
+            if ($.urlParam(window.location.href, 'flyouts') != 'nextgen')
+            { return this.mapObj.showPopup(lonlat, contents, options); }
+
+            if ((blist.debug || {}).flyouts && (console || {}).trace)
+            {
+                console.groupCollapsed('Flyout#add');
+                    console.groupCollapsed('arguments'); console.dir(arguments); console.groupEnd();
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                    console.groupCollapsed('before state');
+                        console.dir(this._layers);
+                    console.groupEnd();
+                console.groupEnd();
+            }
+            if (this._loading) { clearTimeout(this._loading); }
+            options = options || {};
+
+            // If we've moved more than 5 pixels, make a new popup.
+            // TODO: There has GOT to be a better way to decide to regenerte the popup.
+            // Maybe catch a click event and invalidate popup every time we get one?
+            var pixel = this.map.getViewPortPxFromLonLat(lonlat);
+            if (this._pixel && pixel.distanceTo(this._pixel) > 5) { this.close(); }
+            this._pixel = pixel;
+
+            this._layers = $.makeArray(this._layers);
+            var layerOpen = _.detect(this._layers, function(l) { return layerObj == l.dataObj; });
+            if (layerOpen)
+            { layerOpen.contents.push(contents); }
+            else
+            { this._layers.push({ dataObj: layerObj, contents: [contents] }); }
+            // FIXME: contents as an array doesn't actually make sense...
+
+            if (!this._popup) { this._open(lonlat, options); }
+            else { this._popup.contentDiv.innerHTML = this.buildContents(); }
+
+            this._popup.updateSize();
+        },
+
+        _open: function(lonlat, options)
+        {
+            var control = this;
+            if (control.disabled) { return; }
+
+            control.close();
+
+            control._popup = new OpenLayers.Popup.FramedCloud(null, lonlat, null,
+                control.buildContents(), null, true,
+                function(evt) { new jQuery.Event(evt).stopPropagation(); control.close(); });
+
+            // TODO: make this an event?
+            control._onClosePopup = $.makeArray(control._onClosePopup);
+            control._onClosePopup.push(options.closeBoxCallback);
+
+            control._popup.panMapIfOutOfView = false;
+            control.map.addPopup(control._popup);
+
+            // Hack for Bug 9280.
+            if (options.atPixel)
+            { popup.moveTo(new OpenLayers.Pixel(options.atPixel.x, options.atPixel.y)); }
+
+            control.fixPopup();
+        },
+
+        close: function()
+        {
+            if ((blist.debug || {}).flyouts && (console || {}).trace)
+            {
+                console.groupCollapsed('Flyout#close');
+                    console.groupCollapsed('trace'); console.trace(); console.groupEnd();
+                console.groupEnd();
+            }
+            if (!this._popup) { return; }
+            this.events.triggerEvent('close');
+            _.each(this._onClosePopup || [], function(f) { if (_.isFunction(f)) { f(); } });
+
+            this._layers = [];
+            this._onClosePopup = [];
+            if (this._popup) // Seriously, I don't understand.
+            { this._popup.destroy(); }
+            this._popup = null;
+        },
+
+        fixPopup: function()
+        {
+            var mapObj = this.mapObj,
+                popup = this._popup;
+
+            // retarded shit for OL kiddies
+            $('.olPopup > div > div:last-child').css('height', '34px');
+
+            $('.olFramedCloudPopupContent')
+                .on('click', '.infoPaging a', function(event)
+                {
+                    event.preventDefault();
+
+                    var $a = $(this);
+                    if ($a.hasClass('disabled')) { return; }
+
+                    var $paging = $a.parent();
+                    var action = $.hashHref($a.attr('href')).toLowerCase();
+
+                    var $rows = $paging.siblings('.row');
+                    var $curRow = $rows.filter(':visible');
+
+                    var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
+                    if (newIndex < 0) { return; }
+                    if (newIndex >= $rows.length) { return; }
+
+                    $curRow.addClass('hide');
+                    $rows.eq(newIndex).removeClass('hide');
+
+                    $paging.find('a').removeClass('disabled');
+                    if (newIndex <= 0)
+                    { $paging.find('.previous').addClass('disabled'); }
+                    if (newIndex >= $rows.length - 1)
+                    { $paging.find('.next').addClass('disabled'); }
+                })
+                .on('click', '.flyoutRenderer .viewRow', function(e)
+                {
+                    var $a = $(this);
+                    // Open a new page if it's not the same view.
+                    if ($a.attr('target') == '_blank') { return; }
+                    e.preventDefault();
+                    mapObj.closeFlyout($a);
+                    var href = $a.attr('href').split('/');
+                    $(document).trigger(blist.events.DISPLAY_ROW,
+                        [href.slice(href.length - 2).join('/')]);
+                })
+                .on('click', '.layerPaging a', function(event)
+                {
+                    event.preventDefault();
+
+                    var $a = $(this);
+                    if ($a.hasClass('disabled')) { return; }
+
+                    var newIndex = $.hashHref($a.attr('href')).slice(5);
+                    var $paging = $a.parent().parent();
+
+                    var $layers = $paging.siblings('.flyoutLayer');
+                    var $curLayer = $layers.filter(':visible');
+
+                    $curLayer.addClass('hide');
+                    $layers.eq(newIndex).removeClass('hide');
+
+                    $paging.find('a').removeClass('disabled');
+                    $a.addClass('disabled');
+
+                    popup.updateSize();
+                });
+        },
+
+        buildContents: function(asText)
+        {
+            var $flyout = $.tag({ tagName: 'div', 'class': 'flyoutWrapper' });
+
+            if (_.size(this._layers) > 1)
+            {
+                $flyout.append($.tag({ tagName: 'div', 'class': 'flyoutToggle',
+                    contents: 'There is data for more than one layer here. Select one:' }));
+                $flyout.append($.tag({ tagName: 'ul', 'class': 'layerPaging', contents:
+                    _.map(this._layers, function(dataLayer, index)
+                    { return { tagName: 'li', contents: [{
+                        tagName: 'a', 'class': index === 0 ? 'disabled' : '',
+                        href: '#Layer' + index, title: dataLayer.dataObj._view.name,
+                        contents: '&bull; ' + dataLayer.dataObj._view.name }]}; })
+                }));
+            }
+
+            _.each(this._layers, function(l, i)
+            {
+                var $layer = $.tag({ tagName: 'div', 'class': 'flyoutLayer' });
+                _.each(l.contents, function(c) { $layer.append(c); });
+                $flyout.append($layer);
+                if (i > 0) { $layer.addClass('hide'); }
+            });
+
+            var wrapper = document.createElement('div');
+            wrapper.appendChild($flyout[0]);
+            return wrapper.innerHTML;
+        },
+
+        CLASS_NAME: 'blist.openLayers.Flyout'
+    });
+
     // STAMEN
 
     blist.openLayers.Stamen = OpenLayers.Class(OpenLayers.Layer.OSM, {

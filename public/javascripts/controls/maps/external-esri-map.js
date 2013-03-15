@@ -255,23 +255,33 @@
             layerObj._identifyParameters.layerDefinitions = layerDefs;
 
             lonlat.lat -= offsetLat;
-            layerObj._parent.showPopup(lonlat, 'Loading...');
+            if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
+            { layerObj.flyoutHandler().sayLoading(lonlat); }
+            else
+            { layerObj._parent.showPopup(lonlat, 'Loading...'); }
 
             new esri.tasks.IdentifyTask(layer.url.replace(/\/export$/, ''))
                 .execute(layerObj._identifyParameters, function(idResults)
                 {
-                    if (_.isEmpty(idResults)) { layerObj._parent.closePopup(); return; }
+                    if (_.isEmpty(idResults))
+                    {
+                        if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
+                        { layerObj.flyoutHandler().cancel(); }
+                        else
+                        { layerObj._parent.closePopup(); }
+                        return;
+                    }
 
                     var flyoutContent = layerObj.getFlyout(idResults);
                     if (flyoutContent)
                     { flyoutContent = flyoutContent[0].innerHTML; }
 
-                    layerObj._parent.showPopup(lonlat, flyoutContent);
+                    layerObj.flyoutHandler().add(layerObj, lonlat, flyoutContent);
                 },
                 function(error)
                 {
                     if (error.dojoType == 'timeout')
-                    { layerObj._parent.showPopup(lonlat, 'Request for this data timed out.'); }
+                    { layerObj.flyoutHandler().add(layerObj, lonlat, 'Request for this data timed out.'); }
                 });
         },
 

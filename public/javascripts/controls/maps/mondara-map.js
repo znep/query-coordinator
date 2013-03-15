@@ -109,10 +109,17 @@
             {
                 var lonlat = layerObj._map.baseLayer
                     .getLonLatFromViewPortPx(layerObj._map.events.getMousePosition(evtObj));
-                layerObj._parent.showPopup(lonlat, 'Loading...', { closeKey: 'loading' });
+                if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
+                { layerObj.flyoutHandler().sayLoading(lonlat); }
+                else
+                { layerObj._parent.showPopup(lonlat, 'Loading...', { closeKey: 'loading' }); }
             });
-            layerObj._getFeature.events.register('clickout', layerObj,
-                function() { this._parent.closePopup('loading'); });
+            layerObj._getFeature.events.register('clickout', layerObj, function() {
+                if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
+                { this.flyoutHandler().cancel(); }
+                else
+                { this._parent.closePopup('loading'); }
+            });
 
             layerObj._getFeature.events.register('featuresselected', layerObj, function(evtObj)
             {
@@ -147,15 +154,22 @@
                 var lonlat = layerObj._getFeature.pixelToBounds(
                     layerObj._getFeature.handlers.click.evt.xy).getCenterLonLat();
 
-                layerObj._parent.showPopup(lonlat, $popupText[0].innerHTML,
+                layerObj.flyoutHandler().add(layerObj, lonlat, $popupText[0].innerHTML,
                     { onlyIf: 'loading',
                       closeBoxCallback: function(evt) { layerObj._getFeature.unselectAll(); } });
+
 
                 layerObj._selectionLayer.addFeatures(features);
             });
 
             layerObj._getFeature.events.register('featureunselected', layerObj, function(evtObj)
-            { layerObj._selectionLayer.removeFeatures([evtObj.feature]); });
+            {
+                layerObj._selectionLayer.removeFeatures([evtObj.feature]);
+                layerObj.flyoutHandler().close();
+            });
+
+            layerObj.flyoutHandler().events.register('close', layerObj,
+                function() { layerObj._getFeature.unselectAll(); });
         },
 
         destroy: function()

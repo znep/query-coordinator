@@ -15,9 +15,9 @@
             layerObj._dataStore = [];
             layerObj._bounds = null;
 
-            layerObj._parent.viewportHandler()
+            layerObj.viewportHandler()
                 .events.register('viewportchanged', layerObj, layerObj.onViewportChange);
-            layerObj._parent.viewportHandler()
+            layerObj.viewportHandler()
                 .events.register('resize', layerObj, layerObj.onResize);
         },
 
@@ -29,9 +29,9 @@
             delete this._dataStore;
             delete this._bounds;
             delete this._idList;
-            this._parent.viewportHandler().events
+            this.viewportHandler().events
                 .unregister('viewportchanged', this, this.onViewportChange);
-            this._parent.viewportHandler().events
+            this.viewportHandler().events
                 .unregister('resize', this, this.onResize);
 
             this.$dom().remove();

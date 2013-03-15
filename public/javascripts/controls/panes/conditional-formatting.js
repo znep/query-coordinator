@@ -161,7 +161,7 @@
 
     var meldWithParentCondFmt = function(cpObj)
     {
-        var id = cpObj._view.id == cpObj._parentView.id ? 'self' : cpObj._view.id;
+        var id = cpObj._parentView && cpObj._view.id == cpObj._parentView.id ? 'self' : cpObj._view.id;
         if ($.subKeyDefined(cpObj._parentView, 'metadata.conditionalFormatting.' + id))
         {
             var md = $.extend(true, {}, cpObj._view.metadata);

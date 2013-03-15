@@ -217,7 +217,6 @@
                         .socrataDataLayer({ view: ds, index: index, query: query,
                                             parentViz: mapObj, displayFormat: df });
                 mapObj._children[index].setFullQuery(mapObj._children[index]._query);
-                mapObj._children[index]._view.trigger('maplayer_query_set');
                 mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
 
                 if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length

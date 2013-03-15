@@ -538,15 +538,6 @@
             filterableColumns = options.filterableColumns;
         });
 
-        _.each(datasets, function(obj)
-        {
-            obj.dataset.bind('maplayer_query_set', function()
-            {
-                rootCondition = null;
-                renderQueryFilters();
-            });
-        });
-
     /////////////////////////////////////
     // RENDER+EVENTS
 

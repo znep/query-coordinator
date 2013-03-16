@@ -52,7 +52,7 @@
                     selectable: false,
                     sortGrouping: false,
                     sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'autoDateTime'},
-                        2: {sorter: 'text'}, 3: {sorter: 'text'}},
+                        2: {sorter: 'text'}, 3: {sorter: false}},
                     sortTextExtraction: function(node) {
                         return $(node).find('.cellInner').text();
                     }

@@ -105,12 +105,30 @@
                     });
                     var sorterSettings =
                     {
-                     // First column is not sortable
-                     headers: comboListObj.settings.sortHeaders,
-                     // Don't use simple extraction
-                     textExtraction: comboListObj.settings.sortTextExtraction,
-                     widgets: []
+                        // First column is not sortable
+                        headers: comboListObj.settings.sortHeaders,
+                        // Don't use simple extraction
+                        textExtraction: comboListObj.settings.sortTextExtraction,
+                        widgets: []
                     };
+
+                    // mark sortable columns as sortable
+                    var suppressSort = {};
+                    if (comboListObj.settings.sortHeaders)
+                    {
+                        _.each(comboListObj.settings.sortHeaders, function(value, index)
+                        {
+                            suppressSort[index] = (value.sorter === false);
+                        });
+                    }
+                    $comboList.find('thead th').each(function(idx)
+                    {
+                        if (!suppressSort[idx])
+                        {
+                            $(this).addClass('sortable');
+                        }
+                    });
+
                     if (comboListObj.settings.scrollableBody)
                     {
                         // Pass in a different header for doing the sorting

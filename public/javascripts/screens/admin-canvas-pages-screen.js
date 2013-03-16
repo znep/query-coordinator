@@ -6,6 +6,7 @@ $(function()
         scrollableBody: false,
         selectable: false,
         sortGrouping: false,
+        sortHeaders: { 2: { sorter: false } },
         sortTextExtraction: function(node) {
             return $(node).find('.cellInner').text();
         }

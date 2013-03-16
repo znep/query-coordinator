@@ -72,7 +72,7 @@
             scrollableBody: false,
             selectable: false,
             sortGrouping: false,
-            sortHeaders: {0: {sorter: 'text'}},
+            sortHeaders: {0: {sorter: 'text'}, 1: { sorter: false }, 2: { sorter: false }},
             sortTextExtraction: function(node) {
                 return $(node).find('.cellInner').text();
             }

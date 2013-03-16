@@ -55,6 +55,7 @@ $(function()
           scrollableBody: false,
           selectable: false,
           sortGrouping: false,
+          sortHeaders: { 3: { sorter: false } },
           sortTextExtraction: function(node) {
               return $(node).find('.cellInner').text();
           }

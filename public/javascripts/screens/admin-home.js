@@ -20,7 +20,7 @@ $(function()
         scrollableBody: false,
         selectable: false,
         sortGrouping: false,
-        sortHeaders: {1: {sorter: 'text'}, 2: {sorter: 'numeric'}},
+        sortHeaders: {0: { sorter: false }, 1: {sorter: 'text'}, 2: {sorter: 'numeric'}, 3: { sorter: false }},
         sortTextExtraction: function(node) {
             return $(node).find('.cellInner').text();
         }

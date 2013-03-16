@@ -65,7 +65,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_available?(:canvas_designer) -%>
       <li class="contentmgmt">
         <%= link_to raw('<span class="icon"></span>DataSlate Pages'),
             {:action => 'canvas_pages'} %>

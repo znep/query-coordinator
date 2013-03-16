@@ -51,11 +51,20 @@ var updateProperties = function(lcObj)
         if (lcObj.$contents.data('renderTypeManager'))
         { lcObj.$contents.removeData('renderTypeManager'); }
 
-        if ($.isBlank((lcObj._dataContext || {}).dataset))
-        { return; }
+        var ds = (lcObj._dataContext || {}).dataset;
+
+        if ($.isBlank(ds)) { return; }
+        var visibleTypes = _.keys(ds.metadata.renderTypeConfig.visible),
+            defaultTypes = {};
+
+        // Attempt to reduce it down to a primary view.
+        var type = _.detect(visibleTypes, function(vt) { return vt != 'table'; });
+        type = type || 'table'; // Last ditch, even though 'table' doesn't work anyways.
+        defaultTypes[type] = true;
 
         lcObj.$contents.renderTypeManager({
-            view: (lcObj._dataContext || {}).dataset,
+            defaultTypes: defaultTypes,
+            view: ds,
             width: lcObj._properties.width,
             height: lcObj._properties.height
         });

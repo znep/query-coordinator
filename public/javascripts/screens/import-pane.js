@@ -816,7 +816,7 @@ var setAsideCompositeColumns = function(availableColumns, compositeColumns)
 };
 
 // throw in all analysed columns, with location groups
-var addDefaultColumns = function(flat)
+var addDefaultColumns = function(flat, duplicateComposites)
 {
     // keep track of what we haven't used
     var availableColumns = _.clone(columns);
@@ -825,7 +825,14 @@ var addDefaultColumns = function(flat)
     // don't run the composites scan if they want it flat
     if (flat !== true)
     {
-        availableColumns = setAsideCompositeColumns(availableColumns, compositeColumns);
+        if (duplicateComposites === true)
+        {
+            setAsideCompositeColumns(availableColumns, compositeColumns);
+        }
+        else
+        {
+            availableColumns = setAsideCompositeColumns(availableColumns, compositeColumns);
+        }
     }
 
     // now add the ones we haven't used as individual columns, plus our compositeColumns
@@ -1021,6 +1028,8 @@ var wireEvents = function()
             addDefaultColumns(true);
         else if (presetType == 'suggested')
             addDefaultColumns();
+        else if (presetType == 'suggestedPlusDiscrete')
+            addDefaultColumns(false, true);
 
         $columnsList.trigger('awesomereorder-listupdated');
     });

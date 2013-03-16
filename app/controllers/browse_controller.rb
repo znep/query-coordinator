@@ -53,7 +53,8 @@ class BrowseController < ApplicationController
       browse_in_container: true,
       rel_type: 'external',
       view_type: 'table',
-      hide_view_types: true
+      hide_view_types: true,
+      suppress_dataset_creation: true
     })
   end
 end

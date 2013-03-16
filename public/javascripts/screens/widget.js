@@ -345,7 +345,7 @@ $(function()
                     iconColor: '#f93f06', onlyIf: !widgetNS.isNonTabular && menuOptions['api'] },
                 { text: 'Print', className: 'print', targetPane: 'print',
                     subtext: 'Print this dataset', href: '#print',
-                    iconColor: '#a460c4', onlyIf: blist.dataset.isGrid() && menuOptions['print'] },
+                    iconColor: '#a460c4', onlyIf: blist.dataset.isTabular() && menuOptions['print'] },
                 { text: 'About the Socrata Open Data Platform', className: 'about',
                     href: 'http://www.socrata.com/', rel: 'external',
                     onlyIf: menuOptions['about_sdp'] }

@@ -11,6 +11,7 @@
                 && !$.subKeyDefined(cpObj._view, 'displayFormat.viewDefinitions'))
             { Dataset.map.convertToVersion2(cpObj._view); }
             cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+            cpObj._view.bind('displayformat_change', function() { cpObj.reset(); }, cpObj);
 
             cpObj.$dom().delegate('.showConditionalFormatting', 'click', function(e)
             {

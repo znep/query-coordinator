@@ -142,48 +142,49 @@ Dataset.modules['map'] =
     _convertLegacy: function()
     {
         var view = this;
+        if (view._convertedLegacy) { return; }
+        view._convertedLegacy = true;
+
         if ($.subKeyDefined(view, 'displayFormat.viewDefinitions'))
         {
-            var fixIds = function(checkId, vd)
+            var fixIds = function(checkId)
             {
                 // We've got some bad data; let's fix it
-                vd.uid = 'self';
-                // renderTypeConfig.active
-                if ($.subKeyDefined(view, 'metadata.renderTypeConfig.active'))
-                {
-                    var a = {};
-                    _.each(view.metadata.renderTypeConfig.active, function(rt, k)
-                        { if (rt.id != checkId) { a[k] = rt; } });
-                    view.metadata.renderTypeConfig.active = a;
-                }
-                // conditional formatting
-                if ($.subKeyDefined(view, 'metadata.conditionalFormatting.' + checkId))
-                {
-                    view.metadata.conditionalFormatting.self =
-                        view.metadata.conditionalFormatting[checkId];
-                    delete view.metadata.conditionalFormatting[checkId];
-                }
-                // metadata.query
-                if ($.subKeyDefined(view, 'metadata.query.' + checkId))
-                { delete view.metadata.query[checkId]; }
-            };
-
-            // Maybe clean up IDs?
-            var checkFix = function(checkId)
-            {
-                return _.any(view.displayFormat.viewDefinitions, function(vd)
+                var df = $.extend(true, {}, view.displayFormat);
+                var vdResult = _.any(df.viewDefinitions, function(vd)
                 {
                     if (vd.uid == checkId)
                     {
-                        fixIds(checkId, vd);
+                        vd.uid = 'self';
                         return true;
                     }
                     return false;
                 });
+
+                var md = $.extend(true, {}, view.metadata);
+                // renderTypeConfig.active
+                if ($.subKeyDefined(md, 'renderTypeConfig.active'))
+                {
+                    _.each(md.renderTypeConfig.active, function(rt, k)
+                        { if (rt.id == checkId) { rt.id = 'self'; } });
+                }
+                // conditional formatting
+                if ($.subKeyDefined(md, 'conditionalFormatting.' + checkId))
+                {
+                    md.conditionalFormatting.self = md.conditionalFormatting[checkId];
+                    delete md.conditionalFormatting[checkId];
+                }
+                // metadata.query
+                if ($.subKeyDefined(md, 'query.' + checkId))
+                { delete md.query[checkId]; }
+
+                view.update({ displayFormat: df, metadata: md });
+
+                return vdResult;
             };
 
-            if (!checkFix(view.id))
-            { view.getParentView(function(parView) { checkFix(parView.id); }); }
+            if (!fixIds(view.id))
+            { view.getParentView(function(parView) { fixIds(parView.id); }); }
             return;
         }
 

@@ -165,9 +165,9 @@
         if ($.subKeyDefined(cpObj._parentView, 'metadata.conditionalFormatting.' + id))
         {
             var md = $.extend(true, {}, cpObj._view.metadata);
-            md.conditionalFormatting = $.union(
+            md.conditionalFormatting = _.union(
                 cpObj._parentView.metadata.conditionalFormatting[id],
-                (md.conditionalFormatting || []));
+                id == 'self' ? [] : (md.conditionalFormatting || []));
             cpObj._view.update({ metadata: md });
         }
     };
@@ -181,13 +181,23 @@
             {
                 _super.call(cpObj, ds);
                 cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+                cpObj._view.bind('conditionalformatting_change', function() { cpObj.reset(); }, cpObj);
 
                 meldWithParentCondFmt(cpObj);
             };
 
             if ($.subKeyDefined(newView, 'displayFormat.viewDefinitions'))
             {
+                if (!$.isBlank(cpObj._parentView))
+                { cpObj._parentView.unbind(null, null, cpObj); }
                 cpObj._parentView = newView;
+                cpObj._parentView.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+                cpObj._parentView.bind('displayformat_change', function()
+                {
+                    cpObj.setView(cpObj._parentView);
+                    cpObj.reset();
+                }, cpObj);
+                cpObj._parentView.bind('conditionalformatting_change', function() { cpObj.reset(); }, cpObj);
                 if (newView.displayFormat.viewDefinitions[0].uid == 'self')
                 { handler(newView); }
                 else

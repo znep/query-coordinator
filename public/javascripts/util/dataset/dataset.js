@@ -32,7 +32,8 @@ var Dataset = ServerModel.extend({
             'set_temporary', 'clear_temporary', 'row_change', 'blob_change',
             'row_count_change', 'column_resized', 'displayformat_change',
             'displaytype_change', 'column_totals_changed', 'removed',
-            'permissions_changed', 'new_comment', 'reloaded']);
+            'permissions_changed', 'new_comment', 'reloaded',
+            'conditionalformatting_change']);
 
         var cObj = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)
@@ -2079,6 +2080,7 @@ var Dataset = ServerModel.extend({
             // changed, then redo all the colors and re-render
             _.each(ds._availableRowSets, function(rs) { rs.formattingChanged(); });
             ds.trigger('row_change', [_.values(ds._activeRowSet._rows)]);
+            ds.trigger('conditionalformatting_change');
         }
 
         if (needsDTChange)

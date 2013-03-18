@@ -1349,11 +1349,14 @@ importNS.crossloadFilePaneConfig = {
                         var msg = 'An unknown error has occurred';
                         try
                         {
-                            msg = JSON.parse(xhr.responseText).message;
+                            msg = JSON.parse(xhr.responseText).message + '.';
                         }
-                        catch(ex) {}
+                        catch(ex)
+                        {
+                            msg = '';
+                        }
 
-                        $pane.find('.flash').addClass('error').text(msg + '. Please ensure that your file is accessible and valid and try again.');
+                        $pane.find('.flash').addClass('error').text(msg + ' Please ensure that your file is accessible and valid and try again.');
                     }
                 });
             }

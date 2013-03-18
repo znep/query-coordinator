@@ -6659,6 +6659,7 @@ function Chart (options, callback) {
 				}
 			}
 			
+if ((blist.debug || {}).bug8998) { console.log(legendHeight); console.groupCollapsed('trace'); console.trace(); console.groupEnd(); }
 			legendGroup.align(extend(options, {
 				width: legendWidth,
 				height: legendHeight

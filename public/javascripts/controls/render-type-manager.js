@@ -90,6 +90,7 @@
             name: 'table',
             domId: 'gridRenderType',
             javascripts: [{ assets: 'shared-table-render' }],
+            stylesheets: [{ assets: 'grid' }],
             initFunction: function($dom, settings)
             {
                 $dom.datasetGrid($.extend({view: settings.view,

@@ -222,6 +222,10 @@
         _dataPreProcess: function(data)
         {
             var md = $.extend(true, {}, data.metadata);
+            // Just in case this wasn't converted properly earlier...
+            if ($.isPlainObject(md.conditionalFormatting))
+            { md.conditionalFormatting = _.union.apply(this, _.values(md.conditionalFormatting)); }
+
             // Make them all consistent so they fit into the children pattern
             _.each(md.conditionalFormatting || [], function(cf)
             {

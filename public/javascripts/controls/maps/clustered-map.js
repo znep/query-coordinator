@@ -147,6 +147,8 @@
                     { layerObj._singleCluster = data[0]; }
                     delete layerObj._guessedViewport;
                 }
+                else
+                { delete layerObj._singleCluster; }
 
                 layerObj._renderType = 'clusters';
                 layerObj._firstRenderType = layerObj._firstRenderType || 'clusters';

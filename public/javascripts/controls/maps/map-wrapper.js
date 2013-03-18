@@ -158,7 +158,7 @@
                 if (mapObj._children[index]
                     && ($.subKeyDefined(df, 'context.dataset')
                         || df.uid == mapObj._children[index]._view.id
-                        || df.uid == 'self' && mapObj._children[index]._view.id == mapObj._view.id)
+                        || df.uid == 'self' && mapObj._children[index]._view.id == mapObj._primaryView.id)
                     && df.plotStyle == mapObj._children[index]._displayFormat.plotStyle)
                 {
                     mapObj._children[index]._view.trigger('displayformat_change', [df])

@@ -32,8 +32,8 @@ $(function()
             }
         });
         // Handle orphaned goals
-        _.each(rawGoalsByCategory, function(catId)
-        { draftGoals.add(rawGoalsByCategory[catId]); });
+        _.each(rawGoalsByCategory, function(goals)
+        { draftGoals.add(goals); });
     });
 
     var hookUpGoal = function(goal)

@@ -355,7 +355,7 @@ private
   def get_title(options, facets)
     title = []
 
-    title << I18n.t('controls.browse.title.result.term', :term => CGI.escapeHTML(options[:q])) unless options[:q].blank?
+    title << I18n.t('controls.browse.title.result.term', :term => options[:q]) unless options[:q].blank?
     facet_parts = []
     facets.each do |f|
       if !options[f[:param]].blank?
@@ -376,7 +376,7 @@ private
       options[:default_title] || I18n.t('controls.browse.title.default')
     else
       I18n.t('controls.browse.title.result.main', :body => title.join(', '))
-    end
+    end.to_str # force this string to be marked html unsafe
   end
 
   def default_browse_sort_opts

@@ -657,12 +657,8 @@
             layerObj._rowsLoaded = 0;
             var rowsRequested = layerObj._parent.rowsRemaining;
 
-            layerObj._bug9238log = $.makeArray(layerObj._bug9238log);
-
             layerObj._view.getRows(0, rowsRequested,
                 function(data) {
-                    layerObj._bug9238log.push({ timestamp: new Date(), data: data });
-
                     layerObj.handleDataLoaded(data);
 
                     if (Math.min(layerObj._view.totalRows(), rowsRequested)
@@ -671,6 +667,9 @@
                         layerObj._dataLoaded = true;
                         layerObj._parent.mapElementLoaded(layerObj._displayLayer);
                     }
+                }, function(error)
+                {
+                    if (error.cancelled) { _.defer(function() { layerObj.getData(); }); }
                 });
         },
 

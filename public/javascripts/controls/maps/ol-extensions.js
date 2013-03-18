@@ -1118,6 +1118,11 @@
         return true;
     };
 
+    OpenLayers.Bounds.prototype.isPoint = function()
+    {
+        return this.left == this.right && this.top == this.bottom;
+    };
+
     OpenLayers.Bounds.prototype.toViewport = function()
     {
         var vp = this.toArray();

@@ -581,7 +581,25 @@
 
         preferredExtent: function()
         {
-            return this._displayLayer.getDataExtent();
+            var extent = this._displayLayer.getDataExtent();
+            if (extent.isPoint())
+            {
+                // Zoom level 12 seems nice-ish for a city-level hit.
+                // We are going to manufacture an extent now. For the record, this is dumb.
+                var targetZoom = Math.min(this._map.baseLayer.availableZoomLevels - 1, 12),
+                    resolution = this._map.baseLayer.resolutions[targetZoom], // map units per pixel
+                    pixels = Math.min(this._parent.$dom().height(), this._parent.$dom().width()),
+                    mapUnits = pixels * resolution,
+                    bounds = OpenLayers.Bounds.fromViewport({
+                        xmin: extent.left   - mapUnits,
+                        xmax: extent.right  + mapUnits,
+                        ymin: extent.top    - mapUnits,
+                        ymax: extent.bottom + mapUnits
+                    });
+                return bounds;
+            }
+            else
+            { return extent; }
         },
 
         /* Eventing functions */

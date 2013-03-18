@@ -21,7 +21,7 @@ var bindSelect = function($select, $span)
 var showDatasetSelect = function(callback, goalName)
 {
     var $modal = $.showModal('selectDataset');
-    $modal.find('iframe').attr('src', browseUrl + '&Goal_Related-Dataset=' + escape(goalName));
+    $modal.find('iframe').attr('src', browseUrl + '&_cache=' + (new Date()).getTime());
     commonNS.selectedDataset = function(dataset)
     {
         callback(dataset);

@@ -10,8 +10,14 @@
             if (cpObj._view.type == 'map'
                 && !$.subKeyDefined(cpObj._view, 'displayFormat.viewDefinitions'))
             { Dataset.map.convertToVersion2(cpObj._view); }
-            cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
-            cpObj._view.bind('displayformat_change', function() { cpObj.reset(); }, cpObj);
+
+            var fullReset = function()
+            {
+                cpObj.childPanes = [];
+                cpObj.reset();
+            };
+            cpObj._view.bind('clear_temporary', fullReset, cpObj);
+            cpObj._view.bind('displayformat_change', fullReset, cpObj);
 
             cpObj.$dom().delegate('.showConditionalFormatting', 'click', function(e)
             {
@@ -66,7 +72,7 @@
                 { blist.datasetPage.sidebar.show('edit.addColumn', col); }
             });
 
-            this.childPanes = [];
+            cpObj.childPanes = [];
         },
 
         getTitle: function()
@@ -180,6 +186,7 @@
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
             cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+            cpObj._view.bind('displayformat_change', function() { cpObj.reset(); }, cpObj);
             cpObj._index = cpObj.settings.index;
             cpObj._uid = (cpObj.settings.parent._view.id == cpObj._view.id ? 'self' : cpObj._view.id);
             cpObj._origDF = cpObj._getCurrentData().displayFormat.viewDefinitions[cpObj._index];

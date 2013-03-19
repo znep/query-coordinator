@@ -122,8 +122,6 @@
             if (newDF.component)
             { newDF.component.setDataObj(layerObj); }
 
-            // If it's a legacy dataset, there is a phantom DF change from loading the meta.
-            if (!layerObj.ready()) { return; }
             var comparator = function(keystring)
                 { return !$.isSubKeyEqual(layerObj._displayFormat, newDF, keystring); };
 
@@ -582,7 +580,7 @@
         preferredExtent: function()
         {
             var extent = this._displayLayer.getDataExtent();
-            if (extent.isPoint())
+            if (extent && extent.isPoint())
             {
                 // Zoom level 12 seems nice-ish for a city-level hit.
                 // We are going to manufacture an extent now. For the record, this is dumb.
@@ -737,7 +735,8 @@
 
         mapRowToDatum: function(row)
         {
-            return this.extractGeometryFromRow(row).toString();
+            var geo = this.extractGeometryFromRow(row);
+            return $.isPlainObject(geo) ? geo : null;
         },
 
         renderDatum: function(datum)

@@ -429,11 +429,11 @@ class View < Model
     end
 
     agg_results = {}
-    CoreServer::Base.connection.batch_request do
+    CoreServer::Base.connection.batch_request do |b_id|
       reqs.each do |req|
         req['columns'] = req['columns'].map {|c| c.to_core}
         r = req.to_json
-        CoreServer::Base.connection.create_request(url, r, {}, true, true)
+        CoreServer::Base.connection.create_request(url, r, {}, true, b_id)
       end
     end.each do |r|
       agg_resp = JSON.parse(r['response'], {:max_nesting => 25})
@@ -1189,8 +1189,8 @@ class View < Model
     (data['metadata']|| {}).deep_merge(data['privateMetadata'] || {})
   end
 
-  def approval_history_batch
-    CoreServer::Base.connection.get_request("/views/#{id}/approval.json", {}, true)
+  def approval_history_batch(batch_id)
+    CoreServer::Base.connection.get_request("/views/#{id}/approval.json", {}, batch_id)
   end
 
   def set_approval_history(ah)

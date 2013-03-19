@@ -24,7 +24,7 @@ class Model
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
-  def self.find( options = nil, custom_headers = {}, batch = false, is_anon = false )
+  def self.find( options = nil, custom_headers = {}, batch = nil, is_anon = false )
     if options.nil?
       options = Hash.new
     end

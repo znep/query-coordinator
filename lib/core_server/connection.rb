@@ -5,21 +5,21 @@ module CoreServer
     cattr_accessor :cookie_name
 
     @@cookie_name = "_core_session_id".freeze
+    @@batch_id = 0
 
     def initialize(logger = nil, cookies = nil)
       @logger = logger
       @cookies = cookies
       @runtime = 0
       @request_count = {}
-      @batching = false
+      @batch_queue = {}
     end
 
     def batch_request()
-      @batching = true
-      @batch_queue = []
-      yield
-      @batching = false
-      flush_batch_queue()
+      b_id = @@batch_id += 1
+      @batch_queue[b_id] = []
+      yield b_id
+      flush_batch_queue(b_id)
     end
 
     def reset_counters
@@ -28,9 +28,10 @@ module CoreServer
 
     # Require the caller to tell us to use batching, since we won't
     # return anything when we do
-    def get_request(path, custom_headers = {}, use_batching = false, is_anon = false, timeout = 60)
-      if @batching && use_batching
-        @batch_queue << {:url => path, :requestType => 'GET'}
+    def get_request(path, custom_headers = {}, batch_id = nil, is_anon = false, timeout = 60)
+      # Check true/false for legacy
+      if !batch_id.nil? && batch_id != true && batch_id != false
+        @batch_queue[batch_id] << {:url => path, :requestType => 'GET'}
         nil
       else
         cache_key = "#{CurrentDomain.cname}:#{path}"
@@ -46,10 +47,11 @@ module CoreServer
       end
     end
 
-    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, use_batching = false,
+    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, batch_id = nil,
                       is_anon = false)
-      if @batching && use_batching
-       @batch_queue << {:url => path, :body => payload, :requestType => 'POST'}
+      # Check true/false for legacy
+      if !batch_id.nil? && batch_id != true && batch_id != false
+       @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'POST'}
       else
         cache_key = "#{CurrentDomain.cname}:#{path}:#{payload}"
         cache_key += ':anon' if is_anon
@@ -64,17 +66,17 @@ module CoreServer
       end
     end
 
-    def update_request(path, payload = "", custom_headers = {})
-      if @batching
-       @batch_queue << {:url => path, :body => payload, :requestType => 'PUT'}
+    def update_request(path, payload = "", custom_headers = {}, batch_id = nil)
+      if !batch_id.nil?
+       @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'PUT'}
       else
         generic_request(Net::HTTP::Put.new(path), payload, custom_headers).body
       end
     end
 
-    def delete_request(path, payload = "", custom_headers = {})
-      if @batching
-         @batch_queue << {:url => path, :body => payload, :requestType => 'DELETE'}
+    def delete_request(path, payload = "", custom_headers = {}, batch_id = nil)
+      if !batch_id.nil?
+         @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'DELETE'}
       else
         generic_request(Net::HTTP::Delete.new(path), payload, custom_headers).body
       end
@@ -130,24 +132,24 @@ module CoreServer
     end
 
   private
-    def flush_batch_queue
-      if !@batch_queue.empty?
-        result = generic_request(Net::HTTP::Post.new('/batches'), {:requests => @batch_queue}.to_json)
-        Rails.logger.info("Batch request sent: " + @batch_queue.map{|b| b[:url]}.join(", "))
+    def flush_batch_queue(batch_id)
+      if !@batch_queue[batch_id].empty?
+        batches = @batch_queue[batch_id]
+        @batch_queue.delete(batch_id)
+        result = generic_request(Net::HTTP::Post.new('/batches'), {:requests => batches}.to_json)
         results_parsed = JSON.parse(result.body, {:max_nesting => 25})
         if results_parsed.is_a? Array
           results_parsed.each_with_index do |result, i|
             if result['error']
-              raise CoreServer::CoreServerError.new(@batch_queue[i][:requestType] +
-                " " + @batch_queue[i][:url],
-                result['errorCode'], result['errorMessage'], @batch_queue[i][:body])
+              raise CoreServer::CoreServerError.new(batches[i][:requestType] +
+                " " + batches[i][:url],
+                result['errorCode'], result['errorMessage'], batches[i][:body])
             end
           end
         else
           raise CoreServer::CoreServerError.new("POST /batches",
-            'expected_array_return_value', parsed_body, @batch_queue)
+            'expected_array_return_value', parsed_body, batches)
         end
-        @batch_queue.clear
       end
       results_parsed
     end

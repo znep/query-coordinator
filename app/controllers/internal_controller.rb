@@ -133,10 +133,10 @@ class InternalController < ApplicationController
       config.create_property(params['new-feature_name'],
                              params['new-feature_enabled'] == 'enabled')
     else
-      CoreServer::Base.connection.batch_request do
+      CoreServer::Base.connection.batch_request do |batch_id|
         params[:features][:name].each do |key, name|
           config.update_property(name,
-                              (params[:features][:enabled] || {})[name] == 'enabled')
+                              (params[:features][:enabled] || {})[name] == 'enabled', batch_id)
         end
       end
     end
@@ -177,18 +177,18 @@ class InternalController < ApplicationController
 
     else
       begin
-        CoreServer::Base.connection.batch_request do
+        CoreServer::Base.connection.batch_request do |batch_id|
           if !params[:delete_properties].nil?
             params[:delete_properties].each do |name, value|
               if value == 'delete'
                 params[:properties].delete(name)
-                config.delete_property(name)
+                config.delete_property(name, false, batch_id)
               end
             end
           end
 
           params[:properties].each do |name, value|
-            config.update_property(name, get_json_or_string(value))
+            config.update_property(name, get_json_or_string(value), batch_id)
           end
         end
       rescue CoreServer::CoreServerError => e

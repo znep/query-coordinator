@@ -1,15 +1,15 @@
 class EmailInterest < Model
   cattr_accessor :specification
 
-  def self.create(user_id, tag)
+  def self.create(user_id, tag, batch_id = nil)
     path = "/users/#{user_id}/#{self.service_name}.json"
     attributes = {eventTag: tag}
-    CoreServer::Base.connection.create_request(path, attributes.to_json, {}, false, true)
+    CoreServer::Base.connection.create_request(path, attributes.to_json, {}, false, batch_id)
   end
 
-  def delete(user_id)
+  def delete(user_id, batch_id = nil)
     path = "/users/#{user_id}/#{self.class.service_name}/#{eventTag}"
-    return CoreServer::Base.connection.delete_request(path)
+    return CoreServer::Base.connection.delete_request(path, '', {}, batch_id)
   end
 
   @@specification = {

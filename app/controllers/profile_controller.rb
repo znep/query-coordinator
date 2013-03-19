@@ -211,13 +211,13 @@ class ProfileController < ApplicationController
             params[:openid_delete].size >= current_user.openid_identifiers.size
             error_msg = "You cannot remove all your OpenID identifiers before you set a password"
           else
-            CoreServer::Base.connection.batch_request do
+            CoreServer::Base.connection.batch_request do |batch_id|
               params[:openid_delete].each do |k, v|
                 delete_path = params[:openid_delete_paths][k]
                 if delete_path.nil?
                   Rails.logger.warn("Got request to delete OpenID identifier for user #{current_user.id}, identifier: #{k}")
                 else
-                  CoreServer::Base.connection.delete_request(delete_path)
+                  CoreServer::Base.connection.delete_request(delete_path, '', {}, batch_id)
                 end
               end
             end
@@ -237,9 +237,9 @@ class ProfileController < ApplicationController
             to_create << k
           end
         end
-        CoreServer::Base.connection.batch_request do
-          to_delete.each { |interest| interest.delete(current_user.id) }
-          to_create.each { |interest| EmailInterest.create(current_user.id, interest) }
+        CoreServer::Base.connection.batch_request do |batch_id|
+          to_delete.each { |interest| interest.delete(current_user.id, batch_id) }
+          to_create.each { |interest| EmailInterest.create(current_user.id, interest, batch_id) }
         end
 
         # update other attributes
@@ -439,9 +439,9 @@ private
         {:params => {:limitTo => 'calendars'}, :name => 'Calendars'},
         {:params => {:limitTo => 'forms'}, :name => 'Forms'}
       ]
-      CoreServer::Base.connection.batch_request do
+      CoreServer::Base.connection.batch_request do |batch_id|
         stats.each do |s|
-          Clytemnestra.search_views(base_req.merge(s[:params]), true)
+          Clytemnestra.search_views(base_req.merge(s[:params]), batch_id)
         end
       end.each_with_index do |r, i|
         p = JSON.parse(r['response'], {:max_nesting => 25})

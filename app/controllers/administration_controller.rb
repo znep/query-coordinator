@@ -623,13 +623,13 @@ class AdministrationController < ApplicationController
       return redirect_to metadata_administration_path
     end
 
-    CoreServer::Base.connection.batch_request do
+    CoreServer::Base.connection.batch_request do |batch_id|
       config.raw_properties.each do |prop, value|
         if value['parent'].present? && value['parent'].downcase == category.downcase
-          config.update_property(prop, value.merge('parent' => nil))
+          config.update_property(prop, value.merge('parent' => nil), batch_id)
         end
       end
-      config.delete_property(category)
+      config.delete_property(category, false, batch_id)
     end
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
@@ -822,9 +822,9 @@ class AdministrationController < ApplicationController
     @view_results = @view_results.results
 
     # Fetch all the approval history in a batch
-    (CoreServer::Base.connection.batch_request do
+    (CoreServer::Base.connection.batch_request do |batch_id|
       @view_results.each do |v|
-        v.approval_history_batch
+        v.approval_history_batch(batch_id)
       end
     end || []).each_with_index do |r, i|
       @view_results[i].set_approval_history(JSON.parse(r['response']))
@@ -888,10 +888,10 @@ class AdministrationController < ApplicationController
 
     @users = {}
     if !@approval_template.nil?
-      (CoreServer::Base.connection.batch_request do
+      (CoreServer::Base.connection.batch_request do |batch_id|
         (@approval_template.stages || []).each do |s|
           (s['approverUids'] || []).each do |userId|
-            User.find(userId, {}, true)
+            User.find(userId, {}, batch_id)
           end
         end
       end || []).each do |r|
@@ -1091,8 +1091,8 @@ private
     config = ::Configuration.create(opts)
 
     # Copy over the original, merged values
-    CoreServer::Base.connection.batch_request do
-      original_config.each {|k,v| config.create_property(k, v) }
+    CoreServer::Base.connection.batch_request do |batch_id|
+      original_config.each {|k,v| config.create_property(k, v, batch_id) }
     end
     return config
   end

@@ -45,12 +45,12 @@
   <%- if approval.present? -%>
   <%- next_stage = @view.next_approval_stage(approval) -%>
   <%- @users = {}
-    (CoreServer::Base.connection.batch_request do
+    (CoreServer::Base.connection.batch_request do |batch_id|
       ((next_stage || {})['approverUids'] || []).each do |userId|
-        User.find(userId, {}, true)
+        User.find(userId, {}, batch_id)
       end
       (@view.approval_history || []).each do |ah|
-        User.find(ah['approverUserUid'], {}, true)
+        User.find(ah['approverUserUid'], {}, batch_id)
       end
     end || []).each do |r|
       u = User.parse(r['response'])

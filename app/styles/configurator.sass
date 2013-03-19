@@ -9,14 +9,16 @@
 .cfEditingBar
   height: 2em
   left: 0
+  @include opacity(0)
   padding: 2em 2.5em
   position: absolute
   right: 0
   top: -30em
-  @include transition-property(display top)
+  @include transition-property(opacity)
   @include transition-duration(0.8s)
   z-index: 2000
   .configuring &
+    @include opacity(1)
     top: 0
 
   .editTitle

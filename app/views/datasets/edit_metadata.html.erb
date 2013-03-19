@@ -136,10 +136,12 @@
      </div>
 
     <h2>API Endpoint</h2>
+    <%- if module_available?(:api_foundry)-%>
      <div class="line clearfix">
        <label for="view_resourceName">Resource Name</label>
        <%= text_field_tag("view[resourceName]", @view.resourceName, :title => "Enter a resource name", :class => "textPrompt") %>
      </div>
+    <%- end -%>
 
      <div class="line clearfix">
        <label for="view_metadata_rowIdentifier">Row Identifier</label>

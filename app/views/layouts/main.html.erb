@@ -199,6 +199,7 @@ http://www.socrata.com
     <%- if module_enabled?(:govStat) -%>
       (function($)
       {
+      <%- if !@suppress_govstat -%>
         var $siteLinks = $('#siteHeader .siteUserNav');
         var contents = [];
         $siteLinks.find('li a:visible').each(function()
@@ -213,6 +214,13 @@ http://www.socrata.com
         $siteLinks.menu({ menuButtonClass: 'accountButton ss-<%= (current_user.nil? ? 'user' : 'list') %>',
           menuButtonContents: 'Menu',
           menuButtonTitle: 'Account Options', contents: contents });
+      <%- else -%>
+        $('#siteHeader .siteUserNav .accountLink').after($.tag2({ _: 'li',
+            className: 'govstatManageLink',
+            contents: { _: 'a', href: '<%= manage_path %>',
+            contents: 'Manage GovStat' }
+        }));
+      <%- end -%>
       })(jQuery);
     <%- end -%>
   </script>

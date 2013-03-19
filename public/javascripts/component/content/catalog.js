@@ -37,7 +37,7 @@ $.component.Component.extend('Catalog', 'data', {
 
         var props = this._stringSubstitute(this._properties);
         var params = {};
-        if (!_.isEmpty(props.defaults)) { params.defaults = props.defaults; }
+        if (!_.isEmpty(props.defaults)) { $.extend(params, props.defaults); }
         if (!_.isEmpty(props.disabledItems))
         { params.disable = $.arrayToObjKeys(props.disabledItems, true); }
         if (!_.isEmpty(props.disabledSections))

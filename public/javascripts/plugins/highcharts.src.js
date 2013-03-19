@@ -6288,6 +6288,7 @@ function Chart (options, callback) {
 			itemY,
 			lastItemY,
 			itemHeight = 0,
+			lastValidItemHeight = 0,
 			box,
 			legendBorderWidth = options.borderWidth,
 			legendBackgroundColor = options.backgroundColor,
@@ -6539,6 +6540,11 @@ function Chart (options, callback) {
 			itemWidth = item.legendItemWidth =  
 				options.itemWidth || symbolWidth + symbolPadding + bBox.width + rightPadding;
 			itemHeight = bBox.height;
+
+            // michael.chui@socrata.com - if the last legend item has no label, it breaks the legend
+            // spacing box.
+            if (itemHeight > 0)
+            { lastValidItemHeight = itemHeight; }
 			
 			// if the item exceeds the width, start a new line
 			if (horizontal && itemX - initialItemX + itemWidth > 
@@ -6614,7 +6620,7 @@ function Chart (options, callback) {
 			
 			// Draw the border
 			legendWidth = widthOption || offsetWidth;
-			legendHeight = lastItemY - y + itemHeight;
+			legendHeight = lastItemY - y + lastValidItemHeight;
 			
 			if (legendBorderWidth || legendBackgroundColor) {
 				legendWidth += 2 * padding;

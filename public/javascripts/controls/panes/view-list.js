@@ -84,7 +84,10 @@
                             blist.util.humaneDate.DAY).capitalize();
                     },
                     '.authorLine .author': 'view.owner.displayName!',
-                    '.description': 'view.description!',
+                    '.description': function(a)
+                    {
+                        return $.htmlEscape(a.context.view.description).linkify("rel='nofollow'");
+                    },
                     '.deleteViewLink@class+': function(a)
                     {
                         return _.include(a.context.view.rights, 'delete_view') ?  '' : 'hide';

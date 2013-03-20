@@ -268,7 +268,7 @@ $(function()
         var description = ds.description;
         if (description && description.length > 128)
         { description = description.substring(0, 128) + '...'; }
-
+        description = $.htmlEscape(description).linkify('rel="nofollow"');
         var $modal = $('.externalDomainNotice');
         $modal.find('.leavingLink').attr('href', href).text(href);
         $modal.find('.accept.button').attr('href', href);
@@ -276,7 +276,7 @@ $(function()
         $modal.find('.externalDomain').attr('href', ds.domainUrl)
             .text(ds.domainCName);
         $modal.find('.dsName').text(ds.name).end()
-              .find('.dsDesc').text(description);
+              .find('.dsDesc').html(description);
         $modal.jqmShow();
     });
 

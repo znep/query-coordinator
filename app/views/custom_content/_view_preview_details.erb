@@ -6,7 +6,7 @@
     <%- when 'description' -%>
       <div class="description">
         <p>
-          <%= raw h(widget.view.description).gsub("\n", '<br/>') %>
+          <%= raw(auto_link(h(widget.view.description).gsub("\n", '<br/>')), :html => { :rel => 'nofollow' })) %>
         </p>
         <%= link_to 'More&hellip;'.html_safe, widget.view.href + '#pane=about', :class => 'moreLink' %>
       </div>

@@ -147,10 +147,31 @@ Dataset.modules['map'] =
 
         if ($.subKeyDefined(view, 'displayFormat.viewDefinitions'))
         {
-            var fixIds = function(checkId)
+            var fixIds = function(checkView)
             {
+                var fixFilter = function(fc)
+                {
+                    if ($.isBlank(fc)) { return; }
+                    if (fc.type == 'column' && !$.isBlank(fc.columnId))
+                    {
+                        var checkCol = checkView.columnForID(fc.columnId);
+                        if (!$.isBlank(checkCol))
+                        {
+                            var curCol = view.columnForTCID(checkCol.tableColumnId);
+                            if (!$.isBlank(curCol))
+                            { fc.columnId = curCol.id; }
+                        }
+                    }
+                    else if (!_.isEmpty(fc.children))
+                    { _.each(fc.children, function (fcc) { fixFilter(fcc); }); }
+                };
+
+                var checkId = checkView.id;
                 // We've got some bad data; let's fix it
                 var df = $.extend(true, {}, view.displayFormat);
+                var md = $.extend(true, {}, view.metadata);
+                var updateItems = { displayFormat: df, metadata: md };
+
                 var vdResult = _.any(df.viewDefinitions, function(vd)
                 {
                     if (vd.uid == checkId)
@@ -161,7 +182,6 @@ Dataset.modules['map'] =
                     return false;
                 });
 
-                var md = $.extend(true, {}, view.metadata);
                 // renderTypeConfig.active
                 if ($.subKeyDefined(md, 'renderTypeConfig.active'))
                 {
@@ -176,15 +196,25 @@ Dataset.modules['map'] =
                 }
                 // metadata.query
                 if ($.subKeyDefined(md, 'query.' + checkId))
-                { delete md.query[checkId]; }
+                {
+                    // Well, if the view already has a query, then it should take precedence
+                    if (checkId != view.id && _.isEmpty(view.query.filterCondition))
+                    {
+                        // Oh boy, copy over and translate
+                        var q = md.query[checkId];
+                        fixFilter(q.filterCondition);
+                        updateItems.query = q;
+                    }
+                    delete md.query[checkId];
+                }
 
-                view.update({ displayFormat: df, metadata: md });
+                view.update(updateItems);
 
                 return vdResult;
             };
 
-            if (!fixIds(view.id))
-            { view.getParentView(function(parView) { fixIds(parView.id); }); }
+            if (!fixIds(view))
+            { view.getParentView(function(parView) { fixIds(parView); }); }
             return;
         }
 

@@ -215,15 +215,18 @@ $list_border_color: #d1d1d1
 
     .component-Pager
       .sidebarTabs
-        li .childLink
-          @include list-button
+        li
+          margin-bottom: 0.6em
 
-          &.active
-            background: #222 none
-            border-color: #222
-            @include prefixer(box-shadow, none)
-            color: #fff
-            text-shadow: none
+          .childLink
+            @include list-button
+
+            &.active
+              background: #222 none
+              border-color: #222
+              @include prefixer(box-shadow, none)
+              color: #fff
+              text-shadow: none
 
   .itemList
     background-color: $list_border_color

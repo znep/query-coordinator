@@ -213,7 +213,8 @@ Dataset.modules['map'] =
                 return vdResult;
             };
 
-            if (!fixIds(view))
+            if (!fixIds(view) && !_.any(view.displayFormat.viewDefinitions, function(vd)
+                { return vd.uid == 'self'; }))
             {
                 view.getParentView(function(parView)
                 {

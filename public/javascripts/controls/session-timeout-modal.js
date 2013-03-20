@@ -54,7 +54,7 @@ $(function(){
       {
         if (response.expired)
         {
-          blist.util.railsFlash("We logged you out.");
+          blist.util.railsFlash("You have been logged out for your security. Please sign back in to continue.");
           window.document.location = "/login";
         }
         else 

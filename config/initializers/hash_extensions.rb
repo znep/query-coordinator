@@ -59,4 +59,8 @@ class Hash
   def only(*whitelist)
     self.reject{ |key| !whitelist.include?(key) }
   end
+
+  def fix_get_encoding!
+    self.each{ |_, v| v.fix_get_encoding! }
+  end
 end

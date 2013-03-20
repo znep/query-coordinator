@@ -170,13 +170,7 @@ protected
     @request_params = request.params
 
     # make our params all safe
-    @request_params.each do |_, v|
-      if v.is_a? Array
-        v.each{ |elem| elem.force_encoding('iso-8859-1').encode!('utf-8') }
-      else
-        v.force_encoding('iso-8859-1').encode!('utf-8')
-      end
-    end
+    @request_params.fix_get_encoding!
 
     # grab our catalog configuration first
     catalog_config = CurrentDomain.configuration('catalog')

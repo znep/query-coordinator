@@ -20,4 +20,8 @@ class String
   def capitalize_first
     self.gsub(/^[a-z]/){ |c| c.upcase }
   end
+
+  def fix_get_encoding!
+    self.force_encoding('iso-8859-1').encode!('utf-8')
+  end
 end

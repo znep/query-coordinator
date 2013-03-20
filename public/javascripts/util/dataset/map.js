@@ -214,7 +214,23 @@ Dataset.modules['map'] =
             };
 
             if (!fixIds(view))
-            { view.getParentView(function(parView) { fixIds(parView); }); }
+            {
+                view.getParentView(function(parView)
+                {
+                    if (!fixIds(parView) && !_.any(view.displayFormat.viewDefinitions, function(vd)
+                            { return vd.uid == 'self'; }))
+                    {
+                        // OK, if things still weren't fixed, and none of the viewDefinitions are for
+                        // the current view, then look up the first one and fix it if is based on
+                        // the same dataset as the current view
+                        Dataset.lookupFromViewId(view.displayFormat.viewDefinitions[0].uid, function(relDS)
+                        {
+                            if (relDS.tableId == view.tableId)
+                            { fixIds(relDS); }
+                        });
+                    }
+                });
+            }
             return;
         }
 

@@ -189,6 +189,7 @@ $(function(){
     onActivate.datasetDescription = function($pane, paneConfig, state, command)
     {
       $("#resourceNameDoc").text(apiView.resourceName);
+      $("#nameDoc").text(apiView.name);
       var desc = apiView.description;
       if (desc) {
         $('#description').val(desc).blur();
@@ -219,19 +220,24 @@ $(function(){
       onActivate[key] = function($pane, paneConfig, state, command)
       {
         var $n  = $(prefix + "Name")       ,
+            $ndoc  = $(prefix + "NameDoc")       ,
             $fn = $(prefix + "FieldName")  ,
+            $fndoc = $(prefix + "FieldNameDoc")  ,
             $d  = $(prefix + "Description"),
-            $i  = $(prefix + "Include"),
-            $ddoc  = $(prefix + "DescriptionDoc");
+            $ddoc  = $(prefix + "DescriptionDoc"),
+            $i  = $(prefix + "Include");
+
         var col = columns[columnOriginalFieldName];
+
         $n.val(col.name).blur();
+        $ndoc.text(col.name);
         $fn.val(col.fieldName).blur();
+        $fndoc.text(col.fieldName);
         $i.prop("checked", !col.hidden);
-        if (col.description)
-        {
-          $d.val(col.description).blur();
-          $ddoc.text(col.description);
-        }
+        $d.val(col.description).blur();
+        if(col.description) { $d.removeClass("prompt");}
+        $ddoc.text(col.description);
+
         var disableIfNecessary = function()
         {
           if ($i.is(":checked")) {
@@ -364,6 +370,7 @@ $(function(){
       $("#skip").show()
       $("#paneError").hide();
       $("#paneSpinner").hide();
+      $(".validationError").hide();
       $(".nextButton").removeClass("disabled");
       $(".prevButton").removeClass("disabled");
       if (onActivate[currentPaneId]) { onActivate[currentPaneId]($pane, paneConfig, state, command);}

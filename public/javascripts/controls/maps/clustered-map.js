@@ -182,6 +182,16 @@
             this.getData();
         },
 
+        // clustered#handleDataLoaded calls #clearData, which is correct but does not mean
+        // we want to re-trigger a "figure out your own zoom level". So this stops it from
+        // thinking this is a completely new map, yet again.
+        clearData: function()
+        {
+            var dataLoaded = this._dataLoaded;
+            this._super.apply(this, arguments);
+            this._dataLoaded = dataLoaded;
+        },
+
         preferredExtent: function()
         {
             var layerObj = this;
@@ -222,6 +232,12 @@
             { this.getData(); }
             else
             { this.setQuery(query, true); }
+        },
+
+        handleQueryChange: function()
+        {
+            this._dataLoaded = false;
+            this._super.apply(this, arguments);
         },
 
         handleRowChange: function(rows)

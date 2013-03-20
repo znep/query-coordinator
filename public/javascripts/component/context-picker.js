@@ -12,6 +12,23 @@ var picker = function($field, vals, curValue)
     var $wrapper = $.tag({tagName: 'div', 'class': 'wrapper'});
     $field.append($wrapper);
 
+    var $catalogChooser = $.tag2({ _: 'a', href: '#choose',
+        className: ['catalogChooser', 'button', 'ss-database'],
+        title: 'Select Dataset', contents: 'Select Dataset' });
+    $catalogChooser.on('click', function(e)
+    {
+        e.preventDefault();
+        $('#selectDataset').jqmShow();
+    });
+    blist.common.selectedDataset = function(ds)
+    {
+        $('#selectDataset').jqmHide();
+        // Just pass all the work off to textInput
+        setValue($textInput, ds.id);
+        $textInput.change();
+    };
+    $field.append($catalogChooser);
+
     var $hiddenInput = $.tag({ tagName: 'input', type: 'hidden', name: $field.attr('name'),
         'class': { value: 'required', onlyIf: $field.hasClass('required') } });
     setValue($hiddenInput, curValue);

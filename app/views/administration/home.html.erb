@@ -191,10 +191,8 @@
 <%- end -%>
 
 <%- content_for :modals do -%>
-  <%= modal :id => 'selectDataset' do %>
-    <h2>Choose a Dataset to feature</h2>
-    <iframe src="<%= url_for :controller => :browse, :action => :select_dataset %>?nofederate=true&suppressed_facets[]=domain" frameBorder="0"></iframe>
-  <%- end -%>
+  <%= render :partial => 'modals/select_dataset', :locals => { :title => 'Choose a Dataset to feature' } %>
+
   <%= modal :id => 'setThumbnail' do %>
     <h2>Set a Thumbnail</h2>
     <iframe frameBorder="0"></iframe>

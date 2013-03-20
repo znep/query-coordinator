@@ -33,7 +33,8 @@ $(function() {
             blist.util.assetLoading.loadAssets(
                 {javascripts: [{assets: 'configurator'}, {assets: 'shared-editors'}],
                     stylesheets: stylesheets,
-                    templates: ['grid_sidebar'], modals: ['configurator_settings']}, function()
+                    templates: ['grid_sidebar'], modals: ['configurator_settings', 'select_dataset']},
+            function()
             {
                 $('.socrata-page').loadingSpinner().showHide(false);
                 $.cf.initialize();

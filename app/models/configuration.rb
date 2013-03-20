@@ -39,7 +39,7 @@ class Configuration < Model
     return props
   end
 
-  def create_property(name, value, batch_id)
+  def create_property(name, value, batch_id = nil)
     data['properties'] = [] if data['properties'].nil?
     data['properties'].push({'name' => name, 'value' => value})
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties.json"

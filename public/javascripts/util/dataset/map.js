@@ -166,6 +166,9 @@ Dataset.modules['map'] =
                     { _.each(fc.children, function (fcc) { fixFilter(fcc); }); }
                 };
 
+                if (checkView.isArcGISDataset() || checkView.isGeoDataset())
+                { return false; }
+
                 var checkId = checkView.id;
                 // We've got some bad data; let's fix it
                 var df = $.extend(true, {}, view.displayFormat);

@@ -86,6 +86,7 @@
                     '.authorLine .author': 'view.owner.displayName!',
                     '.description': function(a)
                     {
+                        if ($.isBlank(a.context.view.description)){ return ''; }
                         return $.htmlEscape(a.context.view.description).linkify("rel='nofollow'");
                     },
                     '.deleteViewLink@class+': function(a)

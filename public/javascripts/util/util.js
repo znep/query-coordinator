@@ -128,10 +128,8 @@ Function.prototype.curry = function()
 
 String.prototype.linkify = function(extra)
 {
-    if ($.isBlank(extra))
-    {
-        extra = '';
-    }
+    if ($.isBlank(this)) { return ''; }
+    if ($.isBlank(extra)) { extra = ''; }
     var replacedText, replacePattern1, replacePattern2, replacePattern3;
 
     //URLs starting with http://, https://, or ftp://

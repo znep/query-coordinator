@@ -267,9 +267,15 @@
                 .append($.tag2({ _: 'div', id: 'edit_' + editContent.id, className: 'editRoot' }));
 
             $settingsDialog = $('.configuratorSettings');
+            $settingsDialog.find('form').validate({errorElement: 'span',
+                    errorPlacement: function($error, $element)
+                        { $error.appendTo($element.closest('.line')); }});
             $settingsDialog.find('.actions .save').click(function(e)
             {
                 e.preventDefault();
+                if (!$settingsDialog.find('form').valid())
+                { return; }
+
                 var newPage = $.extend(true, {}, blist.configuration.page);
                 newPage.name = $settingsDialog.find('[name=pageTitle]').value();
                 var oldPath = page.path;

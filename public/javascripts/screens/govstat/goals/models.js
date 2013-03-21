@@ -281,6 +281,8 @@ var Goal = Backbone.Model.extend({
         });
         _.each(['comparison_function', 'description', 'title_image'], function(k)
         { response[k] = (response.metadata || {})[k]; });
+        // If a missing name is present to satisfy Procrustes, turn it back to true blank
+        if (response.name == ' ') { response.name = ''; }
         return response;
     },
     toJSON: function()
@@ -305,6 +307,9 @@ var Goal = Backbone.Model.extend({
             attrs.metadata[k] = attrs[k];
             delete attrs[k];
         });
+
+        // If no name is set, making a single-char string to satisfy Procrustes
+        attrs.name = attrs.name || ' ';
 
         // Delete legacy
         delete attrs.metadata.metrics;

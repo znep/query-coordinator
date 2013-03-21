@@ -55,7 +55,15 @@ var cleanFragment = function(fragment)
     }
 
     // get the document fragment this $() represents
-    return $paragraphs.contents().unwrap().get(0).parentNode;
+    if ($paragraphs.contents().length > 0)
+    {
+        return $paragraphs.contents().unwrap().get(0).parentNode;
+    }
+    else
+    {
+        // in case something unsuitable is pasted
+        return fragment;
+    }
 };
 
 // the following is repurposed from http://stackoverflow.com/questions/2176861/javascript-get-clipboard-data-on-paste-event-cross-browser

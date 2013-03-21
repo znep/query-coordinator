@@ -216,8 +216,8 @@ Dataset.modules['map'] =
                 return vdResult;
             };
 
-            if (!fixIds(view) && !_.any(view.displayFormat.viewDefinitions, function(vd)
-                { return vd.uid == 'self'; }))
+            if (!_.any(view.displayFormat.viewDefinitions, function(vd)
+                        { return vd.uid == 'self'; }) && !fixIds(view))
             {
                 view.getParentView(function(parView)
                 {

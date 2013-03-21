@@ -143,7 +143,7 @@ var GoalEditor = Backbone.View.extend({
         'change .mainDetails input.date': 'updateDateAttr',
         'change .additionalDetails select': 'updateFakeBooleanAttr',
         'change .additionalDetails .imageInput input': 'updateTextAttr',
-        'keypress .notes': 'updateNotesAttr'
+        'hallomodified .notes': 'updateNotesAttr'
     },
     initialize: function()
     {
@@ -227,7 +227,19 @@ var GoalEditor = Backbone.View.extend({
         // bind fancy textedit
         var $notes = $additionalDetails.find('.notes');
         $additionalDetails.find('.notesWrapper').on('click', function(event) { $notes.focus(); });
-        $notes.on('blur', function() { $notes.trigger('change'); });
+
+        $notes.hallo({
+            toolbar: 'halloToolbarContextual',
+            plugins: {
+                halloformat: {
+                    formatting: {
+                        bold: true, italic: true
+                    }
+                },
+                hallolists: {},
+                halloplainpaster: {}
+            }
+        });
 
         // append
         this.$el.append($actions);
@@ -275,8 +287,7 @@ var GoalEditor = Backbone.View.extend({
         _.defer(function()
         {
             var $markup = $(event.target).clone();
-            $markup.find('br').replaceWith('\n');
-            self.model.set('description', $markup.text());
+            self.model.set('description', $markup.html());
         });
     }
 });

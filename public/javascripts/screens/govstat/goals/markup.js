@@ -266,10 +266,9 @@ blist.namespace.fetch('blist.govstat').markup = {
                         _: 'div',
                         className: 'notesWrapper',
                         contents: [{
-                            _: 'span',
+                            _: 'div',
                             className: 'notes',
-                            contentEditable: 'true',
-                            contents: $.htmlEscape(goal.get('description') || '').replace(/\n/g, '<br/>')
+                            contents: goal.get('description')
                         }, {
                             _: 'label',
                             className: 'notesLabel',

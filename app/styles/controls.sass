@@ -870,3 +870,38 @@ ul.autocompleteComboDropdown
 #sessionTimeoutModal
   .buttonWrapper
     text-align: right
+
+// hallo
+.hallotoolbar
+  background-color: #f4f4f4
+  border: 1px solid $color_chrome_box_border
+  @include prefixer(border-radius, 0.2em)
+  @include prefixer(box-shadow, 0 0.15em 0.35em rgba(0, 0, 0, 0.3))
+  padding: 0.8em
+  z-index: 9999
+
+  > span
+    margin-left: 1em
+
+    &:first-child
+      margin-left: 0
+
+  button
+    background-color: #ddd
+    border: 1px solid #bbb
+    cursor: pointer
+    outline: none
+    padding: 0.3em
+    @include transition(0.1s, background-color)
+
+    &:hover
+      background-color: #e4e4e4
+
+    .ui-button-text i
+      color: #444
+      display: block
+      font-size: 1.2em
+      height: 1em
+      padding: 0.3em
+      width: 1em
+

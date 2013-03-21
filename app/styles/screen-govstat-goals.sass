@@ -209,6 +209,9 @@
       font-size: 2.8em
       @include opacity(0.9)
 
+  .metricsBlock
+    padding: 0
+
   form + form, .metricsBlock + form
     @include vertical-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.02))
     border-top: 1px solid rgba(0, 0, 0, 0.2)
@@ -317,15 +320,18 @@
     .notesWrapper
       background: url(/stylesheets/images/content/dotted_line_dark.png)
       cursor: text
-      min-height: 4.5em
       position: relative
 
       .notes
         display: inline-block
-        line-height: 2.646em
-        min-height: 1.5em
+        font-size: 1.7em
+        line-height: 2.65em
+        min-height: 5.5em
         vertical-align: middle
         width: 100%
+
+        p
+          line-height: 2.65em
 
       .notesLabel
         @include lower-label

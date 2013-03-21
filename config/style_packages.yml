@@ -185,7 +185,9 @@ govstat-layout:
 - screen-govstat-base
 - govstat-layout
 screen-govstat-goals:
+- font-awesome
 - screen-govstat-goals
+- screen-govstat-goal-page
 - screen-govstat-dashboard
 - screen-govstat-manage
 screen-govstat-manage:

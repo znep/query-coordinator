@@ -361,7 +361,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     _: 'a',
                     className: ['selectDataset', 'button', 'ss-database'],
                     href: '#select dataset',
-                    title: 'Select the dataset that contains ' + indicator.indicatorType + ' for this metric.',
+                    title: 'Select the dataset that contains the ' + indicator.indicatorType + ' data for this metric.',
                     contents: 'Select Dataset'
                 }]
             }, {

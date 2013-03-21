@@ -108,6 +108,12 @@ var GoalCard = Backbone.View.extend({
             scope: 'goals',
             scroll: true
         });
+
+        // prevent drag+drop initiation on linkclick
+        this.$el.find('a').on('mousedown', function(event)
+        {
+            event.stopPropagation();
+        });
     },
 
     updateColor: function()

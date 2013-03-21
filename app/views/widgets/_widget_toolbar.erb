@@ -23,7 +23,7 @@
         <dt>Author</dt>
         <dd><a href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a></dd>
         <dt>Description</dt>
-        <dd><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || '(none)' %></dd>
+        <dd><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow external' })) || '(none)' %></dd>
         <%- if @view.category -%>
           <dt>Category</dt>
           <dd><%= @view.category %></dd>

@@ -87,7 +87,7 @@
                     '.description': function(a)
                     {
                         if ($.isBlank(a.context.view.description)){ return ''; }
-                        return $.htmlEscape(a.context.view.description).linkify("rel='nofollow'");
+                        return $.htmlEscape(a.context.view.description).linkify("rel='nofollow external'");
                     },
                     '.deleteViewLink@class+': function(a)
                     {

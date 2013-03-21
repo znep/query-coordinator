@@ -409,6 +409,7 @@ class AdministrationController < ApplicationController
       data = Federation.new
       target_domain = Domain.find(params[:new_federation][:target_domain])
       data.targetDomainId = target_domain.id
+      data.searchBoost = params[:new_federation][:search_boost]
       Federation.create(data)
     rescue CoreServer::ResourceNotFound => e
       flash[:error] = "Could not create data federation: target domain is invalid"

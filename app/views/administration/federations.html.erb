@@ -44,6 +44,7 @@
       <%= form_tag({:action => 'create_federation'}, {:method => 'post', :class => 'newFederationForm'}) do %>
         <label class="domain"><%= d.cname %></label>
         <%= hidden_field_tag('new_federation[target_domain]', d.cname) %>
+        <label for="search_boost" class="boost" >Search Boost:</label><%= text_field_tag('new_federation[search_boost]', '0.8', :title => 'Range from 1 to 0.  Higher value makes datasets more likely to show up first.') %>
         <%= submit_tag 'Publish', :class => 'button' %>
       <% end %>
      <%- end -%>
@@ -57,6 +58,7 @@
           <col class="source" />
           <col class="target" />
           <col class="dataset" />
+          <col class="boost" />
           <col class="acceptedBy" />
           <col class="status" />
           <col class="delete" />
@@ -66,6 +68,7 @@
             <th class="source" scope="col"><div>Source Domain</div><span class="icon"></span></th>
             <th class="target" scope="col"><div>Target Domain</div><span class="icon"></span></th>
             <th class="dataset" scope="col"><div>Dataset</div><span class="icon"></span></th>
+            <th class="boost" scope="col"><div>Search Boost</div><span class="icon"></span></th>
             <th class="acceptedBy" scope="col"><div>Accepted By</div><span class="icon"></span></th>
             <th class="status" scope="col"><div>Status</div><span class="icon"></span></th>
             <th class="delete" scope="col"><div>Terminate</div><span class="icon"></span></th>
@@ -86,6 +89,9 @@
                 <%- else -%>
                   <span class="cellInner"><%= f.lensName %></span>
                 <%- end -%>
+              </td>
+              <td class="boost">
+                <span class="cellInner"><%= f.searchBoost %></span>
               </td>
               <td class="acceptedBy">
                 <%- if !f.acceptedUserId.nil?%>

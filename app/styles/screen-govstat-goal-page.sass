@@ -207,19 +207,25 @@
   border-bottom: 1px solid $color_chrome_box_border
   margin: 0 3.6em 2em
   padding-bottom: 3em
-  .row
-    border:
-      color: $color_chrome_box_border
-      style: solid
-    > .socrata-component
-      border:
-        color: $color_chrome_box_border
-        style: solid
+  > .component-Container
+    overflow: hidden
+
+    > .component-Container
+      float: left
+      width: 50%
+
+      > .component-Container
+        padding: 1em
+
   .chartTitle
     margin-bottom: 0.5em
     h2
       font-size: 2.2em
       font-weight: normal
+  .chartDescription
+    font-size: 1.3em
+    line-height: 1.2em
+    padding: 0.4em 0
   .exploreLink
     margin-top: 1.6em
     text-align: right

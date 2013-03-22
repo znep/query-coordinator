@@ -27,6 +27,8 @@
               <div class="secondaryAction">
                 <a href="<%= report.path %>?_edit_mode=true" class="button">
                   <span class="actionDetails ss-write">Edit</span></a>
+                <a href="#delete" class="button delete" data-id="<%= report.path %>">
+                  <span class="actionDetails ss-trash">Delete</span></a>
               </div>
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
@@ -54,3 +56,7 @@
     </div>
   </div>
 </div>
+
+<% content_for :js_footer do %>
+  <%= include_javascripts 'screen-govstat-manage' %>
+<% end %>

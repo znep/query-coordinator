@@ -59,7 +59,7 @@ module GovstatHelper
               contextId: 'categories_{_groupValue}',
               children: [
               { type: 'Title', text: '{category.name ||Draft}', customClass: 'categoryTitle',
-                styles: { 'color' => '{category.color}' } },
+                styles: { 'color' => '{category.color}', 'border-color' => '{category.color}' } },
               {
                 type: 'Repeater',
                 htmlClass: 'goalList',

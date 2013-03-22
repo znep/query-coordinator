@@ -242,8 +242,6 @@ protected
           type: 'Repeater',
           contextId: 'goal.related_datasets',
           htmlClass: 'relatedVisualizations',
-          container: { type: 'GridContainer', cellWidth: 400, cellHeight: 300, rowSpacing: 20,
-            cellSpacing: 20, cellBorderWidth: 1, rowBorderWidth: 1 },
           children: [
           {
             type: 'Container',
@@ -254,6 +252,7 @@ protected
             children: [
               { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
               { type: 'Visualization', height: 220 },
+              { type: 'Text', htmlClass: 'chartDescription', html: '{dataset.description ||}', ifValue: 'dataset.description' },
               { type: 'Button', htmlClass: 'exploreLink ss-right right', notButton: true,
                 href: '/d/{dataset.id}', text: 'Explore this data' }
             ]

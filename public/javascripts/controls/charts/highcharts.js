@@ -80,7 +80,9 @@
             // by the most populous series first
             if (chartObj._dataGrouping)
             {
+
                 var rows = [{invalid: {}}];
+                var sortFunctions = [];
                 _.each(chartObj._seriesColumns, function(sc)
                 {
                     var newRows = [];
@@ -106,28 +108,49 @@
                     }
                     else
                     {
+                        //If any of the columns in the data grouping are sorted, set-up a sort function for them here.
+                        //The sort hierarchy will be in the order they are set-up in the grouping, not how they are setup in the
+                        //filter.
                         if (!$.isBlank(sc.column.sortAscending))
                         {
 
                             if (sc.column.sortAscending)
                             {
-                                newRows.sort(function(a, b)
-                                { return a[sc.column.lookup].toUpperCase().localeCompare(b[sc.column.lookup].toUpperCase()); });
+                               sortFunctions.push(function(a, b)
+                                 { return a[sc.column.lookup].toUpperCase().localeCompare(b[sc.column.lookup].toUpperCase()); });
                             }
                             else
                             {
-                                newRows.sort(function(a, b)
+                                sortFunctions.push(function(a, b)
                                 { return b[sc.column.lookup].toUpperCase().localeCompare(a[sc.column.lookup].toUpperCase()); });
+
                             }
                         }
                         rows = newRows;
                     }
                 });
 
+                //If there is a sort set, then sort the data groupings
+                if (!chartObj._displayFormat.sortSeries && sortFunctions.length > 0)
+                {
+                    rows.sort(function(a, b)
+                    {
+                        var retVal = 0;
+                        var index = 0;
+                        while (retVal == 0 && index < sortFunctions.length) {
+                            retVal = sortFunctions[index](a, b);
+                            index++;
+                        }
+                        return retVal;
+                    })
+                }
+
                 _.each(chartObj._yColumns, function(yc)
                 {
                     _.each(rows, function(r)
-                    { createSeries(chartObj, getSeriesName(chartObj, yc, r), yc, r); });
+                    {
+                        createSeries(chartObj, getSeriesName(chartObj, yc, r), yc, r);
+                    });
                 });
             }
 
@@ -269,6 +292,11 @@
                     {
                         doChartRedraw(chartObj, true);
                         return;
+                    }
+
+                    if (!_.isNull(chartObj._rowIndices) && chartObj._rowIndices[row.id])
+                    {
+                        point.x = chartObj._rowIndices[row.id].x;
                     }
 
                     addPoint(chartObj, point, series, false, chartObj._dataGrouping ? ri : null);

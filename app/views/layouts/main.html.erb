@@ -115,7 +115,7 @@ http://www.socrata.com
       <%- end -%>
 
       <a name="content"  tabindex="-1"></a>
-      <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !@suppress_govstat %>
+      <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || @suppress_govstat %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
       <%- else -%>

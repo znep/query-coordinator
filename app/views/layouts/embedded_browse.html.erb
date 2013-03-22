@@ -49,7 +49,7 @@ http://www.socrata.com
   <%= yield :head %>
 
   <%- unless CurrentDomain.properties.custom_css.blank? -%>
-    <link type="text/css" rel="stylesheet" href="/styles/current_site.css"/>
+    <link type="text/css" rel="stylesheet" href="/styles/current_site.css?<%="#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"%>"/>
   <%- end -%>
 
   <%= rendered_stylesheet_tag 'strip-chrome' %>

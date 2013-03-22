@@ -57,7 +57,7 @@ http://www.socrata.com
   <%= yield :head %>
 
   <%- unless CurrentDomain.properties.custom_css.blank? || (module_enabled?(:govStat) && !@suppress_govstat) -%>
-    <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css"/>
+    <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css?<%="#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"%>"/>
   <%- end -%>
 
   <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />

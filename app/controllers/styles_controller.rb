@@ -4,6 +4,7 @@ require 'digest/md5'
 class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie
 
+  # Only used in development
   def individual
     if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-|\.)+$/)
       stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.sass")
@@ -37,6 +38,7 @@ class StylesController < ApplicationController
   def merged
     if STYLE_PACKAGES[params[:stylesheet]].present?
       headers['Content-Type'] = 'text/css'
+      headers['Cache-Control'] = "public, max-age=604800"
 
       cache_key = generate_cache_key(params[:stylesheet])
       cached = Rails.cache.read(cache_key)
@@ -120,6 +122,7 @@ class StylesController < ApplicationController
 
   def current_site
     headers['Content-Type'] = 'text/css'
+    headers['Cache-Control'] = "public, max-age=604800"
     render :text => CurrentDomain.properties.custom_css
   end
 

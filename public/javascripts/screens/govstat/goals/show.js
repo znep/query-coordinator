@@ -10,7 +10,7 @@ $(function()
     var $draft = $('.draftGoals');
 
 
-    var stdCallbacks = { success: statusFinished, error: statusError };
+    var stdCallbacks = { success: $.globalIndicator.statusFinished, error: $.globalIndicator.statusError };
 
 // MODELS
 
@@ -40,12 +40,12 @@ $(function()
     {
         goal.on('change:category', function()
         {
-            statusWorking();
+            $.globalIndicator.statusWorking();
             goal.save(null, stdCallbacks);
         });
         goal.on('removeFromAll', function()
         {
-            statusWorking();
+            $.globalIndicator.statusWorking();
             goal.destroy(stdCallbacks);
         });
     };
@@ -82,7 +82,7 @@ $(function()
     {
         category.on('change:name', function()
         {
-            statusWorking();
+            $.globalIndicator.statusWorking();
             category.save(null, stdCallbacks);
         });
         category.on('removeFromAll', function()
@@ -92,7 +92,7 @@ $(function()
                 category.goals.each(function(goal)
                 { draftGoals.add(goal); });
             }
-            statusWorking();
+            $.globalIndicator.statusWorking();
             category.destroy(stdCallbacks);
         });
     };
@@ -154,40 +154,8 @@ $(function()
     {
         event.preventDefault();
         var goal = $(this).closest('.goalEditor').data('backboneModel');
-        statusWorking();
+        $.globalIndicator.statusWorking();
         goal.save(null, stdCallbacks);
     });
-
-    var $statusIndicator = $.tag2({ _: 'div', className: 'globalStatusIndicator',
-        contents: [
-            { _: 'span', className: ['icon', 'waiting', 'ss-loading'] },
-            { _: 'span', className: ['icon', 'good', 'ss-check'] },
-            { _: 'span', className: ['icon', 'bad', 'ss-delete'] },
-            { _: 'span', className: 'message' }
-        ]
-    });
-    var curState = '';
-    $('body').append($statusIndicator);
-    function showStatus(state, message, timeout)
-    {
-        $statusIndicator.removeClass('state-' + curState)
-            .addClass('state-' + state).addClass('shown')
-            .find('.message').text(message);
-        curState = state;
-        if (_.isNumber(timeout))
-        { setTimeout(hideStatus, timeout); }
-    };
-
-    function hideStatus()
-    {
-        $statusIndicator.removeClass('shown');
-    };
-
-    function statusWorking()
-    { showStatus('waiting', 'Saving...'); };
-    function statusFinished()
-    { showStatus('good', 'Saved', 4000); };
-    function statusError()
-    { showStatus('bad', 'Error'); };
 });
 

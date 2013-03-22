@@ -502,6 +502,7 @@ javascripts:
     - public/javascripts/controls/hallo-plugins.js
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/plugins/waypoints.js
+    - public/javascripts/controls/global-indicator.js
     - public/javascripts/screens/govstat/goals/show.js
     - public/javascripts/screens/govstat/goals/markup.js
     - public/javascripts/screens/govstat/goals/views.js
@@ -510,6 +511,9 @@ javascripts:
   screen-govstat-goal-page:
     - public/javascripts/plugins/jquery.columnizer.js
     - public/javascripts/screens/govstat/goal-page.js
+  screen-govstat-manage:
+    - public/javascripts/controls/global-indicator.js
+    - public/javascripts/screens/govstat/manage.js
   unified-filter:
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/base-pane.js

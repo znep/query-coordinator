@@ -907,3 +907,39 @@ ul.autocompleteComboDropdown
       padding: 0.3em
       width: 1em
 
+.globalStatusIndicator
+  @include border-radius(0, 0.4em)
+  border: 1px solid #fff
+  border-top: none
+  color: #ffffff
+  height: 1.5em
+  left: 50%
+  margin-left: -8em
+  padding: 0.5em 0.5em 0.8em
+  position: fixed
+  text-align: center
+  @include transition(0.5s, top)
+  top: -100%
+  width: 16em
+  z-index: 10000
+  .icon, .message
+    font-size: 1.5em
+    font-weight: bold
+    vertical-align: middle
+  .icon
+    display: none
+    margin-right: 0.5em
+  &.shown
+    top: 0
+  &.state-good
+    background-color: #09a74f
+    .icon.good
+      display: inline-block
+  &.state-waiting
+    background-color: #fcc806
+    .icon.waiting
+      display: inline-block
+  &.state-bad
+    background-color: #e33229
+    .icon.bad
+      display: inline-block

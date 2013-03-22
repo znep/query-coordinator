@@ -39,7 +39,8 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   def manage_data
     @page = get_page(manage_data_config(params), request.path,
                      'Manage Data | ' + CurrentDomain.strings.site_title, params)
-    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage' }
+    render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage',
+      :custom_javascript => 'screen-govstat-manage' }
   end
 
   def manage_reports
@@ -289,6 +290,7 @@ protected
       content: {
         type: 'Container',
         id: 'manageDataPage',
+        privateData: true,
         children: [
         {
           type: 'Text', customClass: 'canvas_nav', htmlClass: 'subnavigation',
@@ -343,7 +345,10 @@ protected
                     dataset_icon,
                     { type: 'Title', customClass: 'datasetTitle title', text: '{dataset.name}' },
                     { type: 'Text', customClass: 'primaryAction',
-                      html: '<a href="/d/{dataset.id}"><div class="actionDetails ss-right"></div></a>' }
+                      html: '<a href="/d/{dataset.id}"><div class="actionDetails ss-right"></div></a>' },
+                    { type: 'Text', customClass: 'secondaryAction',
+                      html: '<a href="#delete" class="delete button" data-dsId="{dataset.id}">' +
+                        '<span class="actionDetails ss-trash">Delete</span></a>' }
                   ]
                 } ]
               } ]

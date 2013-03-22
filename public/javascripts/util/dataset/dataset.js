@@ -1009,7 +1009,7 @@ var Dataset = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        ds.makeRequest({url: '/views/' + ds.id + '.json',
+        ds.makeRequest({url: '/api/views/' + ds.id + '.json',
             type: 'DELETE', success: dsRemoved, error: errorCallback});
     },
 

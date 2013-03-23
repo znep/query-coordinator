@@ -134,7 +134,7 @@ module SodaCan
 
     def self.is_blank(operands)
       operands.size == 1 or fail("Invalid number of operands for is_blank, expected 1, got #{operands.size} => #{operands}", operands, true)
-      operands[0].nil? || operands[0].class == String && operands[0].empty?
+      operands[0].nil? || operands[0].class == FalseClass || operands[0].class == String && operands[0].empty?
     end
 
     def self.less_than(operands)

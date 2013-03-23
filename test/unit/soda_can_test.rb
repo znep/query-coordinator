@@ -261,5 +261,42 @@ eos
     assert row_count == rowdata["data"].length
   end
 
+  def test_ASPE_RM9793_orderBys_parsing
+    metadata = JSON::parse(File.open("test/fixtures/soda_can/74nx-npbu.json").read)
+    rowdata = JSON::parse(File.open("test/fixtures/soda_can/74nx-npbu-rows.json").read)
+    sodacan =SodaCan::Processor.new(metadata, rowdata, false)
+    query_json = <<eos
+          {
+        "filterCondition" : {
+          "type" : "operator", "value" : "AND",
+          "children" : [ {
+            "type" : "operator", "value" : "EQUALS",
+            "children" : [ {
+              "type" : "column", "columnFieldName" : "type"
+            }, {
+              "type" : "literal", "value" : "Goal"
+            } ]
+          }, {
+            "type" : "operator", "value" : "IS_BLANK",
+            "children" : [ {
+              "type" : "column", "columnFieldName" : "archive"
+            } ]
+          } ]
+        },
+        "orderBys" : [ {
+          "ascending" : true,
+          "expression" : {
+            "type" : "column", "fieldName" : "sort_order"
+          }
+        } ]
+      }
+eos
+    query = JSON::parse(query_json)
+    assert sodacan.can_query? (query)
+    assert !SodaCan::Util.is_not_blank([ false ])
+    assert SodaCan::Util.is_not_blank([ true ])
+    assert !SodaCan::Util.is_blank([ true ])
+    assert sodacan.get_rows(query).size > 0, "because #{sodacan.hints}"
 
+  end
 end

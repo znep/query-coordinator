@@ -70,19 +70,20 @@ $(function(){
     var onActivate = {};
     var currentPaneId;
 
-    $("#skip").click(function(eventObj){ commandObj.next('apiPublish'); });
-
-    function defaultTransition(forward)
-    {
-      if (forward )
+    $("#skip").click(function(eventObj){ 
+      if (onTransition[currentPaneId])
       {
-        commandObj.next(nextPaneMap[currentPaneId]);
+        onTransition[currentPaneId](
+          $("#" + currentPaneId),
+          {},
+          function(){commandObj.next('apiPublish');}
+        );
       }
       else 
       {
-        commandObj.prev();
+        commandObj.next('apiPublish'); 
       }
-    }
+    });
 
     function defaultErrorHandler(err)
     {
@@ -109,31 +110,29 @@ $(function(){
       else paneConfig.nextText = "Customize this API";
     }
 
-    onTransition.welcome = function($pane, state, forward)
+    onTransition.welcome = function($pane, state, callback)
     {
       getApiView(
-        function(){
-          defaultTransition(forward);
-        },
+        callback,
         defaultErrorHandler 
       );
       return false;
     }
 
-    onActivate.datasetResourceName = function($pane, state, forward)
+    onActivate.datasetResourceName = function($pane, paneConfig, state, command)
     {
       $("#skip").hide();
       var rn = apiView.resourceName;
       if (rn) {$('#resourceName').val(rn).blur();}
     }
 
-    onTransition.datasetResourceName = function($pane, state, forward)
+    onTransition.datasetResourceName = function($pane, state, callback)
     {
       updateView(
         {
           resourceName:$("#resourceName").val().trim()
         },
-        function(){defaultTransition(forward);},
+        callback,
         function(err)
         {
           conflictHandler(JSON.parse(err.responseText).message);
@@ -142,13 +141,13 @@ $(function(){
       return false;
     }
 
-    onActivate.datasetName = function($pane, state, forward)
+    onActivate.datasetName = function($pane, paneConfig, state, command)
     {
       var n = apiView.name;
       if (n) {$('#editTitle').val(n).blur();}
     }
 
-    onTransition.datasetName = function($pane, state, forward)
+    onTransition.datasetName = function($pane, state, callback)
     {
       updateView(
         {
@@ -157,7 +156,7 @@ $(function(){
         function()
         {
           $("#toptitle").text(apiView.name);
-          defaultTransition(forward);
+          callback();
         },
         function(err){
           conflictHandler(JSON.parse(err.responseText).message);
@@ -166,7 +165,7 @@ $(function(){
       return false;
     }
 
-    onTransition.datasetUniqueId = function($pane, state, forward)
+    onTransition.datasetUniqueId = function($pane, state, callback)
     {
       var newSetting = $("#rowIdentifierColumnId").val();
       if (newSetting.trim() === "") newSetting = null;
@@ -180,7 +179,7 @@ $(function(){
         {
           rowIdentifierColumnId:newSetting
         },
-        function(){defaultTransition(forward);},
+        callback,
         defaultErrorHandler
       );
       return false;
@@ -197,7 +196,7 @@ $(function(){
       }
     }
 
-    onTransition.datasetDescription = function($pane, state, forward)
+    onTransition.datasetDescription = function($pane, state, callback)
     {
       var $prompt = $(".prompt");
       $prompt.val(null);
@@ -205,7 +204,7 @@ $(function(){
       $prompt.blur();
       updateView(
         {description:desc},
-        function(){defaultTransition(forward);},
+        callback,
         defaultErrorHandler
       );
       return false;
@@ -233,14 +232,15 @@ $(function(){
         $ndoc.text(col.name);
         $fn.val(col.fieldName).blur();
         $fndoc.text(col.fieldName);
-        $i.prop("checked", !col.hidden);
+        $i.value(!col.hidden);
+        $.uniform.update($i);
         $d.val(col.description).blur();
         if(col.description) { $d.removeClass("prompt");}
         $ddoc.text(col.description);
 
         var disableIfNecessary = function()
         {
-          if ($i.is(":checked")) {
+          if ($i.value()) {
             $pane.find(".mustNotBeHidden").removeAttr("disabled");
           } else {
             $pane.find(".mustNotBeHidden").attr("disabled", "disabled");
@@ -249,7 +249,7 @@ $(function(){
         disableIfNecessary();
         $i.click(disableIfNecessary);
       }
-      onTransition[key] = function($pane, state, forward)
+      onTransition[key] = function($pane, state, callback)
       {
         var col = columns[columnOriginalFieldName];
         var $n  = $(prefix + "Name")       ,
@@ -269,11 +269,11 @@ $(function(){
           updateColumn(
             columnOriginalFieldName,
             changes,
-            function(){defaultTransition(forward);},
+            callback,
             defaultErrorHandler
           );
         }
-        if ($i.is(":checked")) 
+        if ($i.value()) 
         {
           if (col.hidden)
           {
@@ -285,9 +285,9 @@ $(function(){
         {
           if (col.hidden)
           {
-            defaultTransition(forward);
+            callback()
           }
-          else { col.hide(function(){defaultTransition(forward);}, defaultErrorHandler); }
+          else { col.hide(callback, defaultErrorHandler); }
         }
         return false;
       }
@@ -298,8 +298,10 @@ $(function(){
       $("#skip").hide()
     }
 
-    onTransition.apiPublish = function($pane, state, forward)
+    function apiPublishOnNext($pane, state)
     {
+      var id = $pane.attr('id');
+      startTransitionUI();
       getApiView(
         function()
         {
@@ -312,7 +314,12 @@ $(function(){
             },
             function()
             {
-              apiView.makePublic(function(){defaultTransition(forward);}, defaultErrorHandler);
+              apiView.makePublic(
+                function()
+                {
+                  commandObj.next(nextPaneMap[currentPaneId]);
+                },
+                defaultErrorHandler);
             },
             defaultErrorHandler
           );
@@ -332,7 +339,7 @@ $(function(){
       $(".nextButton").attr("href", blist.configuration.apiFoundry.docsUrl);
     }
 
-    onTransition.published = function($pane, state, forward)
+    onTransition.published = function($pane, state, callback)
     {
         $("#paneSpinner").hide();
         window.location = blist.configuration.apiFoundry.docsUrl;
@@ -346,20 +353,33 @@ $(function(){
       $("#paneSpinner").show();
     }
 
-    function defaultOnPrev($pane, state)
-    {
-      var id = $pane.attr('id');
+    function doWorkBeforeTransition($pane, state, forward){
       startTransitionUI();
-      if (onTransition[id]) { return onTransition[id]($pane, state, false); }
-      else { return 1; }
+      var transitionFn = onTransition[currentPaneId];
+      if (transitionFn) 
+      { 
+        var nextPaneOrFalse = transitionFn(
+          $pane, 
+          state, 
+          function()
+          {
+            if (forward){ commandObj.next(nextPaneMap[currentPaneId]);}
+            else {commandObj.prev();}
+          }
+        ); 
+        return nextPaneOrFalse;
+      }
+      else { return (forward ?  nextPaneMap[id] : 1); }
     }
 
     function defaultOnNext($pane, state)
     {
-      var id = $pane.attr('id');
-      startTransitionUI();
-      if (onTransition[id]) { return onTransition[id]($pane, state, true); }
-      else { return nextPaneMap[id]; }
+      return doWorkBeforeTransition($pane, state, true);
+    }
+
+    function defaultOnPrev($pane, state)
+    {
+      return doWorkBeforeTransition($pane, state, false);
     }
 
     function defaultOnActivate($pane, paneConfig, state, command)
@@ -464,7 +484,7 @@ $(function(){
       isFinish: true,
       onActivate: defaultOnActivate,
       onPrev: defaultOnPrev,
-      onNext: defaultOnNext
+      onNext: apiPublishOnNext
     });
 
     panes.push({

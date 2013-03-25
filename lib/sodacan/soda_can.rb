@@ -1,5 +1,6 @@
 require 'sodacan/util'
 require 'sodacan/order'
+require 'sodacan/index'
 
 #
 # SodaCan performs simple filtering atop precached
@@ -52,7 +53,6 @@ class Processor
     @field_map = {}
     @field_types = {}
     @rows = {}
-
     # Inspect rows and normalize the object rows
     if rows.class == Array
         @rows[:rows] = rows
@@ -75,6 +75,7 @@ class Processor
     if @metadata['columns'].nil? && !@metadata['view'].nil?
       @metadata = @metadata['view']
     end
+    @index = SodaCan::Index.new(@metadata)
     log_metrics("cache_size", @rows[:rows].nil? ? 0 : @rows[:rows].length) unless @rows.nil?
   end
 
@@ -95,7 +96,9 @@ class Processor
         return true
       end
       return false unless conditions['groupBys'].nil?
-      soda_can?(conditions['filterCondition'], positive_cb = method(:validate_op)) && Order.validate_order_by(conditions['orderBys'], @metadata)
+      valid = soda_can?(conditions['filterCondition'], positive_cb = method(:validate_and_index_op)) && Order.validate_order_by(conditions['orderBys'], @metadata)
+      @index.update_index(@rows[:rows], @hash_by_ids) if valid
+      valid
     ensure
       log_metrics("can_query_ms", (Time.now - start) * 1000)
     end
@@ -104,25 +107,74 @@ class Processor
   def get_rows(conditions, per_page = 1024, page = 1)
     start = Time.now
     begin
+      @hints[:explain] = []
       log_metrics("num_calls", 1)
-      if conditions.nil?
-        return @rows[:rows]
+      if conditions.nil? || conditions.empty?
+        ordered = @rows[:rows]
+      else
+        filtered = all_rows = @rows[:rows]
+        unless conditions['filterCondition'].nil?
+          row_indicies, partial_seq_scan, full_seq_scan = @index.index_scan(conditions['filterCondition'])
+          row_slice = full_seq_scan ? all_rows : row_indicies.size > 0 ? get_row_slice(all_rows, row_indicies) : []
+          requires_seq_scan = partial_seq_scan || full_seq_scan
+          explain("index scan full_req #{full_seq_scan} partial_req #{partial_seq_scan}", all_rows.size, row_slice.size)
+          filtered = requires_seq_scan ? sequential_scan(row_slice, conditions['filterCondition']) : row_slice
+          explain("seq scan", row_slice.size, filtered.size) if requires_seq_scan
+        end
+        ordered = Order.order_rows(filtered, conditions['orderBys'], @metadata) || []
       end
-      filtered = @rows[:rows].select { |r|
-        soda_can?(conditions['filterCondition'], positive_cb = method(:perform_op), r)
-      }
       row_start = per_page * (page - 1)
       row_end = row_start + per_page - 1
-      ordered = Order.order_rows(filtered, conditions['orderBys'], @metadata)[row_start..row_end]
-      log_metrics("num_results", ordered.length)
+      ordered = ordered[row_start..row_end]
+      log_metrics("num_results", ordered.size)
       ordered
     ensure
       log_metrics("get_rows_ms", (Time.now - start) * 1000)
     end
   end
 
+  def get_row_slice(all_rows, indices)
+    slice = []
+    indices.each { |i|
+      slice << all_rows[i]
+    }
+    slice
+  end
+
   def meta
     @rows.nil? ? nil : @rows['meta']
+  end
+
+  def metrics
+    @metrics ||= {}
+    unless @metrics["get_rows_ms"].nil? || @metrics["can_query_ms"].nil?
+      log_metrics("can_query_ave", @metrics["can_query_ms"] / @metrics["num_validates"], false)
+      log_metrics("get_rows_ave", @metrics["get_rows_ms"] / @metrics["num_calls"], false)
+    end
+    @metrics
+  end
+
+  def explain(msg, rows_in, rows_out)
+    @hints[:explain] ||= []
+    @hints[:explain] << {:rows_in => rows_in, :rows_out => rows_out, :msg => msg}
+  end
+
+  def hints
+    @hints[:indexer] = @index.hints
+    @hints
+  end
+
+  protected
+
+  def validate_and_index_op(operator, children, row)
+    return false unless validate_op(operator, children, nil)
+    @index.register_fields_to_index_op(operator, children, nil)
+  end
+
+  def sequential_scan(rows, filter_conditions)
+    rows.select { |r|
+      soda_can?(filter_conditions, positive_cb = method(:perform_op), r)
+    }
   end
 
   #
@@ -196,25 +248,12 @@ class Processor
     @metrics[name] = aggregate ? last_val + value : value
   end
 
-  def metrics
-    @metrics ||= {}
-    unless @metrics["get_rows_ms"].nil? || @metrics["can_query_ms"].nil?
-      log_metrics("can_query_ave", @metrics["can_query_ms"] / @metrics["num_validates"], false)
-      log_metrics("get_rows_ave", @metrics["get_rows_ms"] / @metrics["num_calls"], false)
-    end
-    @metrics
-  end
-
   def fail(msg, context = nil, throw_exception=false)
     hint = { :error => msg, :context => context }
     @hints[hints.to_json.sum] = hint
     log_metrics("#{throw_exception ? "hard" : "soft"}_failure", 1)
     return false unless throw_exception
     raise Exception, msg
-  end
-
-  def hints
-    @hints
   end
 
   #

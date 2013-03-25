@@ -51,10 +51,10 @@ module SodaCan
             if field.nil? && columnId.nil?
               fail("field name and columnId are not available", atom, true)
             end
-            key = get_row_hash_key(field, columnId, metadata, hash_by_ids)
+            key = Util.get_row_hash_key(field, columnId, metadata, hash_by_ids)
             value = row[key]
             return nil if value.nil?
-            return coerce_type(row[key], type)
+            return coerce_type(value, type)
           else
             fail("Only rows indexed by hash are supported", row, true)
           end
@@ -62,6 +62,21 @@ module SodaCan
           return atom['value']
         else
           fail("Unsupported value type! #{atom['type']}", atom, true)
+      end
+    end
+
+    def self.resolve_column_value(row, type, field, columnId, metadata, hash_by_ids)
+     # Check if rows as hashes
+      if row.class == Hash
+        if field.nil? && columnId.nil?
+          fail("field name and columnId are not available", atom, true)
+        end
+        key = Util.get_row_hash_key(field, columnId, metadata, hash_by_ids)
+        value = row[key]
+        return nil if value.nil?
+        Util.coerce_type(value, type)
+      else
+        fail("Only rows organized into Hash are supported", row, true)
       end
     end
 

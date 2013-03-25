@@ -110,7 +110,7 @@ var GoalCard = Backbone.View.extend({
         });
 
         // prevent drag+drop initiation on linkclick
-        this.$el.find('a').on('mousedown', function(event)
+        this.$el.find('.secondaryAction a').on('mousedown', function(event)
         {
             event.stopPropagation();
         });

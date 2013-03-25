@@ -106,14 +106,14 @@ class UserSession
       if !(controller.request.headers["x-socrata-auth"] == "unauthenticated")
         new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
         exp = UserSession.expiration_from_core_cookie(new_core_cookie)
-        create_core_session_credentials(user, exp)
+        create_core_session_credentials(user, exp) if exp > 0
       end
     elsif !cookies['remember_token'].blank?
       response = post_cookie_authentication
       if response.is_a?(Net::HTTPSuccess)
         expiration = UserSession.expiration_from_core_response(response)
         user = User.parse(response.body)
-        create_core_session_credentials(user, expiration)
+        create_core_session_credentials(user, expiration) if expiration > 0
         self.new_session = false
         cookies[:logged_in] = true
         UserSession.update_current_user(user, core_session)
@@ -129,6 +129,7 @@ class UserSession
 
   def self.expiration_from_core_cookie(cookie)
     core_data = ::CoreSession.unmangle_core_session_from_cookie(cookie)
+    return -1 if core_data.nil? or core_data.split[1].nil?
     expiration_data = core_data.split[1].to_i
     return expiration_data - Time.now.to_i
   end
@@ -153,9 +154,8 @@ class UserSession
     path = "/sessionExpiration/" + User.current_user.id + ".json"
     coreResponse = CoreServer::Base.connection.get_request(path)
     new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
-    #expiration = UserSession.expiration_from_core_response(coreResponse)
     expiration = UserSession.expiration_from_core_cookie(new_core_cookie)
-    create_core_session_credentials(user, expiration)
+      create_core_session_credentials(user, expiration) if expiration > 0
     return coreResponse
   end
 
@@ -200,7 +200,7 @@ class UserSession
     if response.is_a?(Net::HTTPSuccess)
       expiration = UserSession.expiration_from_core_response(response)
       user = User.parse(response.body)
-      create_core_session_credentials(user, expiration)
+      create_core_session_credentials(user, expiration) if expiration > 0
 
       # Plumb the cookie from the core server back to the user's browser
       response.get_fields('set-cookie').each do |cookie_header|

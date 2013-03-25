@@ -503,6 +503,10 @@ javascripts:
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/plugins/waypoints.js
     - public/javascripts/controls/global-indicator.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/image-uploader.js
+    - public/javascripts/controls/popup-select.js
+    - public/javascripts/controls/icon-picker.js
     - public/javascripts/screens/govstat/goals/show.js
     - public/javascripts/screens/govstat/goals/markup.js
     - public/javascripts/screens/govstat/goals/views.js

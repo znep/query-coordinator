@@ -302,7 +302,7 @@ var Goal = Backbone.Model.extend({
 
         if (!_.isObject(attrs.metadata))
         { attrs.metadata = {}; }
-        _.each(['comparison_function', 'description', 'title_image'], function(k)
+        _.each(['comparison_function', 'description', 'title_image', 'icon'], function(k)
         {
             attrs.metadata[k] = attrs[k];
             delete attrs[k];

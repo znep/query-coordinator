@@ -200,10 +200,17 @@ blist.namespace.fetch('blist.govstat').markup = {
                         _: 'div',
                         className: 'agencyInput'
                     }, {
+                        _: 'span',
+                        contents: '.'
+                    }]
+                }, {
+                    _: 'div',
+                    className: 'detailLine',
+                    contents: [{
                         i: !$.isBlank(goal.get('category')) && (goal.get('category') !== ''),
                         t: [{
                             _: 'span',
-                            contents: '. It is visible '
+                            contents: 'It is visible '
                         }, {
                             _: 'div',
                             className: [ 'inputWrapper', 'selectInput', 'publicInput' ],
@@ -230,31 +237,39 @@ blist.namespace.fetch('blist.govstat').markup = {
                                 'for': goal.cid + '_public',
                                 contents: 'Visibility'
                             }]
-                        }, {
+                        }],
+                        e: [{
                             _: 'span',
-                            contents: '.'
+                            contents: 'Please categorize this goal if you wish to make it publicly visible.'
                         }]
                     }, {
+                        _: 'span',
+                        contents: '. It has an icon of '
+                    }, {
+                        _: 'a',
+                        href: '#icon',
+                        className: 'iconPickerHandle ss-icon',
+                        contents: goal.get('metadata').icon || 'checkclipboard'
+                    }, {
+                        _: 'span',
+                        contents: ', and it has a title image of:'
+                    }, {
                         _: 'div',
-                        className: 'imageLine',
+                        className: 'imageInput',
                         contents: [{
-                            _: 'span',
-                            contents: 'It has a title image of '
+                            _: 'img',
+                            src: goal.get('title_image') || '',
+                            className: 'titleImage',
+                            alt: 'Title Image'
                         }, {
-                            _: 'div',
-                            className: 'inputWrapper imageInput',
-                            contents: [{
-                                _: 'label',
-                                'for': goal.cid + '_title_image',
-                                contents: 'URL'
-                            }, {
-                                _: 'input',
-                                type: 'text',
-                                id: goal.cid + '_title_image',
-                                name: 'title_image',
-                                value: goal.get('title_image')
-                            }]
+                            _: 'input',
+                            className: 'titleImageInput',
+                            contents: 'Select an Image',
+                            'data-endpoint': '/api/assets'
                         }]
+                    }, {
+                        _: 'span',
+                        contents: 'We recommend a title image that&apos;s at least 1000px wide and 400px tall.'
                     }]
                 }, {
                     _: 'div',

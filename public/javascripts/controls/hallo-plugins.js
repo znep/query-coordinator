@@ -10,7 +10,7 @@ var cleanFragment = function(fragment)
     $result.find('*').each(function()
     {
         var $this = $(this);
-        if ($this.is(':not(div, p, li)'))
+        if ($this.is(':not(div, p, li, tr, th)'))
         {
             $this.replaceWith($this.contents());
         }

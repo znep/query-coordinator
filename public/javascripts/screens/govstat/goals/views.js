@@ -79,6 +79,7 @@ var GoalCard = Backbone.View.extend({
                 contents: [{
                     _: 'a',
                     href: '/goal/' + this.model.id,
+                    rel: 'external',
                     className: 'button view',
                     contents: {
                         _: 'span',
@@ -110,7 +111,7 @@ var GoalCard = Backbone.View.extend({
         });
 
         // prevent drag+drop initiation on linkclick
-        this.$el.find('a').on('mousedown', function(event)
+        this.$el.find('.secondaryAction a').on('mousedown', function(event)
         {
             event.stopPropagation();
         });
@@ -148,7 +149,6 @@ var GoalEditor = Backbone.View.extend({
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
         'change .mainDetails input.date': 'updateDateAttr',
         'change .additionalDetails select': 'updateFakeBooleanAttr',
-        'change .additionalDetails .imageInput input': 'updateTextAttr',
         'hallomodified .notes': 'updateNotesAttr'
     },
     initialize: function()
@@ -231,9 +231,23 @@ var GoalEditor = Backbone.View.extend({
             });
         });
 
+        // bind fancy icon
+        var $iconPicker = $additionalDetails.find('.iconPickerHandle');
+        $iconPicker.iconPicker();
+
+        // bind fancy imageselect
+        $additionalDetails.find('input.titleImageInput').imageUploader({
+            buttonText: 'Choose an Image',
+            buttonClass: 'selectImageButton ss-uploadfolder',
+            containerSelector: '.imageInput',
+            imageSelector: '.titleImage',
+            imageIsContainer: false,
+            success: function(_, _, response) { self.model.set('title_image', '/api/assets/' + response.id); }
+        });
+
         // bind fancy textedit
         var $notes = $additionalDetails.find('.notes');
-        $additionalDetails.find('.notesWrapper').on('click', function(event) { $notes.focus(); });
+        $additionalDetails.find('.notesWrapper').on('click', function() { $notes.focus(); });
 
         $notes.hallo({
             toolbar: 'halloToolbarContextual',

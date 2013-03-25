@@ -60,6 +60,7 @@
 
         _.defer(function()
         {
+            $wrapper.lockScroll(true);
             $overlay.addClass('shown');
             afterComplete(function()
             {
@@ -81,6 +82,8 @@
 
         $wrapper.css('overflow-y', 'visible');
         $body.css('overflow-y', 'visible');
+
+        $wrapper.lockScroll(false);
 
         afterComplete(function()
         {

@@ -67,6 +67,7 @@
                 fill: '#444444',
                 isSolo: true,
                 onShowCallback: opts.onShowCallback,
+                shownCallback: function(box) { $(box).find('.popupSelectList').lockScroll(true); },
                 stroke: '#444444',
                 trigger: 'click'
             });

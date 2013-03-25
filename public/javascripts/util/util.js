@@ -729,6 +729,37 @@ $.fn.renderHeight = function()
     return this[0].clientHeight - (this.innerHeight() - this.height());
 };
 
+$.fn.lockScroll = function(lock)
+{
+    var self = this;
+    if (lock === true)
+    {
+        this.on('mousewheel.lockScroll DOMMouseScroll.lockScroll', function(event)
+        {
+            var scrollTo = null;
+
+            if (event.type == 'mousewheel')
+            {
+                scrollTo = (event.originalEvent.wheelDelta * -0.5);
+            }
+            else if (event.type == 'DOMMouseScroll')
+            {
+                scrollTo = 20 * event.originalEvent.detail;
+            }
+
+            if (scrollTo)
+            {
+                $(this).scrollTop(scrollTo + $(this).scrollTop());
+                event.preventDefault();
+            }
+        });
+    }
+    else
+    {
+        this.off('mousewheel.lockScroll DOMMouseScroll.lockScroll');
+    }
+};
+
 // hooray, fake green-threading!
 $.batchProcess = function(array, batchSize, eachItem, eachBatch, onComplete)
 {

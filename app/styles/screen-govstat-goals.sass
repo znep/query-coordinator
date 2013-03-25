@@ -277,6 +277,35 @@
     .imageLine .inputWrapper
       width: 60em
 
+    .iconPickerHandle
+      border-bottom: 2px dotted #333
+      color: #333
+      display: inline-block
+      font-size: 1.8em
+      line-height: 1.2em
+      padding: 0 1em
+
+    .imageInput
+      border: 2px dotted #333
+      line-height: 1
+      margin-top: 2em
+      max-height: 50em
+      overflow: hidden
+      padding: 0.5em
+      position: relative
+
+      img
+        background-color: rgba(0, 0, 0, 0.1)
+        border: none
+        color: transparent
+        min-height: 20em
+        width: 100%
+
+      .selectImageButton
+        bottom: 1.5em
+        left: 1.5em
+        position: absolute
+
     .noteLine > span
       line-height: 1em
 
@@ -517,6 +546,7 @@
 
     .baselineDates
       margin-top: 2em
+      padding-bottom: 1em
       .inputWrapper
         width: 26em
 
@@ -605,6 +635,10 @@
 
         &:active, &:hover, &:focus
           color: #bbb
+
+      .iconPickerHandle
+        border-color: #fff
+        color: #fff
 
       .notesWrapper
         background: url(/stylesheets/images/content/dotted_line.png)

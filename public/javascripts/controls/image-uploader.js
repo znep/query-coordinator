@@ -51,12 +51,20 @@
                                    '?_=' + new Date().getTime();
 
                             $('<img/>').attr('src', url)
-                            .load(function() {
-                                $image
-                                    .empty()
-                                    .append($(this))
-                                    .animate({opacity: 1});
-                            });
+                                .load(function() {
+                                    if (opts.imageIsContainer)
+                                    {
+                                        $image
+                                            .empty()
+                                            .append($(this))
+                                            .animate({opacity: 1});
+                                    }
+                                    else
+                                    {
+                                        $image.attr('src', url)
+                                            .animate({ opacity: 1 });
+                                    }
+                                });
                         }
                     });
                 }
@@ -83,6 +91,7 @@
         dataKey           : 'data-endpoint',
         errorSelector     : '.imageError',
         imageSelector     : '.ajaxImage',
+        imageIsContainer  : true,
         inputClass        : null,
         name              : 'ajaxImageUploader',
         loading           : function($container) { $container.addClass('working') },

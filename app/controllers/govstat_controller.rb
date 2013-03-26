@@ -2,8 +2,9 @@ class GovstatController < ApplicationController
   include GovstatHelper
   include CustomContentHelper
   include BrowseActions
-  before_filter :check_govstat_enabled
+  before_filter :check_govstat_enabled, :check_domain_member
   skip_before_filter :require_user, :only => [:goal_page]
+  skip_before_filter :check_domain_member, :only => [:goal_page]
 
   def goals
   end
@@ -82,6 +83,15 @@ protected
       return true
     else
       render_404
+      return false
+    end
+  end
+
+  def check_domain_member
+    if CurrentDomain.member?(current_user)
+      return true
+    else
+      render_forbidden
       return false
     end
   end

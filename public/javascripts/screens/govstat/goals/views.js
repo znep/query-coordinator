@@ -427,6 +427,7 @@ var CategoryPane = Backbone.View.extend({
 
         // color
         this.$('.categoryTitle, .categoryTitle .editIcon, categoryTitle .removeCategory').css('color', this.model.get('color'));
+        this.$('.categoryTitle').css('border-color', this.model.get('color'));
     },
 
     maybeRemoveCategory: function(event)

@@ -18,16 +18,16 @@
 
 @mixin text-progress-colors
   &.progress-good
-    .value, .unit
+    .value
       color: #09a74f
   &.progress-progressing
-    .value, .unit
+    .value
       color: #fcc806
   &.progress-bad
-    .value, .unit
+    .value
       color: #e33229
   &.progress-none
-    .value, .unit
+    .value
       color: #888
 
 .heroImageContainer
@@ -111,6 +111,7 @@
             font-size: 8em
             letter-spacing: -2px
           .unit
+            color: #666
             font-size: 2em
             letter-spacing: -1px
             padding-left: 0.1em
@@ -195,6 +196,7 @@
       .unit, .type
         line-height: 1em
       .unit
+        color: #666
         font-size: 1.4em
         padding: 0.2em 0
       .type

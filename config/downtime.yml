@@ -1,7 +1,7 @@
 # Scheduled downtime notifications go here
 # Example:
-# start: 2010-08-08t00:00:00.00-08:00
-# end:   2010-08-09t00:00:00.00-08:00
+# start: 2010-08-08t00:00:00-08:00
+# end:   2010-08-09t00:00:00-08:00
 # message: We are performing scheduled maintenance during...
 #
 # NOTE: If you leave off an 'end' param, it will keep displaying until the config
@@ -10,7 +10,7 @@
 # Similarly, if you leave off a 'start' param, the message will be displayed
 # until it is removed from this file
 
-start: 2013-03-26t17:00.00-07:00
-end: 2013-03-26t18:00:00.00-07:00
+start: 2013-03-26t16:00-07:00
+end: 2013-03-26t17:00:00-07:00
 message: Dataset imports and email notifications are temporarily delayed for the next hour.
 

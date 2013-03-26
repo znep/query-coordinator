@@ -114,27 +114,6 @@ protected
     }
   end
 
-  def extents_facet
-    params = params || request_params || {}
-
-    return nil unless CurrentDomain.module_enabled?(:esri_integration)
-    { :title => I18n.t('controls.browse.facets.extents_title'),
-      :param => :extents,
-      :custom_content => proc do |params, opts|
-        html = "<a href='#ChooseBounds' class='chooseBounds'>"
-        if !params[:extents].blank?
-          html += extent_html(opts[:ymax], opts[:xmin], opts[:ymin], opts[:xmax])
-        end
-        html += I18n.t('controls.browse.facets.extents.set_extents_link')
-        html += "</a>"
-        html
-      end,
-      :custom_description => proc do |options|
-        options[:extents].nil? ? nil : I18n.t('controls.browse.facets.extents.extents_set_message')
-      end
-    }
-  end
-
   def custom_facets
     facets = CurrentDomain.property(:custom_facets, :catalog)
 
@@ -273,26 +252,12 @@ protected
         end
     end
 
-    if browse_options[:extents].present?
-      extents = browse_options[:extents]
-      if extents.is_a? String
-        extents = extents.split(',')
-        if extents.length == 4
-          browse_options[:xmin] = extents.shift
-          browse_options[:xmax] = extents.shift
-          browse_options[:ymin] = extents.shift
-          browse_options[:ymax] = extents.shift
-        end
-      end
-    end
-
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,
       categories_facet,
       topics_facet,
-      federated_facet,
-      extents_facet
+      federated_facet
     ]
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 

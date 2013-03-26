@@ -30,13 +30,6 @@ en:
           pending: Pending
           accepted: Accepted
           rejected: Rejected
-        extents_title: Within Geographical Area
-        extents:
-          set_extents_link: Set geographical area
-          set_extents_instructions: Drag the markers to set a bounding box to find only datasets contained in that box
-          submit_button: Find datasets
-          # this is the text that is shown when the user has picked a geographical area
-          extents_set_message: within an area
       sort_title: Sort By
       sorts:
         relevance: Most Relevant
@@ -151,13 +144,6 @@ it:
           pending: In attesa
           accepted: Accettato
           rejected: Respinto
-        extents_title: "All'interno dell'area geografica"
-        extents:
-          set_extents_link: "Imposta l'area geografica"
-          set_extents_instructions: Trascina i markers per impostare un rettangolo di selezione per trovare solo i set di dati contenuti nel rettangolo
-          submit_button: Cerca i datasets
-          # this is the text that is shown when the user has picked a geographical area
-          extents_set_message: dentro un area
       sort_title: Ordinato per
       sorts:
         relevance: "Più rilevante"

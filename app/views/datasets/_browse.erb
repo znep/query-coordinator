@@ -471,23 +471,6 @@
     <div class="optionsContent"></div>
   <%- end -%>
 
-  <%= modal :class => 'extentChooser' do %>
-    <p class="modalParagraph"><%= t('controls.browse.facets.extents.set_extents_instructions') %></p>
-    <div class="mapContainer"></div>
-    <ul class="actions clearfix">
-      <li>
-        <a class="jqmClose button cancel"
-          href="#cancel"><span class="icon"></span><%= t('core.dialogs.cancel') %></a>
-      </li>
-      <li>
-        <a class="button accept" href="#">
-          <span class="icon"></span>
-          <%= t('controls.browse.facets.extents.submit_button') %>
-        </a>
-      </li>
-    </ul>
-  <%- end -%>
-
   <%= modal :class => 'externalDomainNotice' do %>
     <h2>
       <%= t('core.interstitial.leaving_notice_html', :site_name => CurrentDomain.cname) %>
@@ -558,16 +541,10 @@
        blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
        <%- end -%>
        blist.browse.baseURL = "<%= opts[:base_url] %>";
-       <%- if opts[:xmin].present? -%>
-       blist.browse.extents = {xmin: <%= opts[:xmin] %>, xmax: <%= opts[:xmax] %>,
-           ymin: <%= opts[:ymin] %>, ymax: <%= opts[:ymax] %>};
-       <%- end -%>
        <%- if opts[:q].present? -%>
        blist.browse.query = "<%= opts[:q] %>";
        <%- end -%>
     });
   </script>
-  <script type='text/javascript'
-    src='https://maps.google.com/maps/api/js?sensor=false'></script>
   <%= include_javascripts 'browse-control' %>
 <% end %>

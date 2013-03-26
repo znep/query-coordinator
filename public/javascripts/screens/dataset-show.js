@@ -250,7 +250,7 @@ $(function()
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly)
     {
         var uid;
-        if (typeof rowId == 'string')
+        if (typeof rowId == 'string' && rowId.indexOf('/') > -1)
         { var splitRowId = rowId.split('/'); uid = splitRowId[0]; rowId = splitRowId[1]; }
 
         var curId = $.deepGet(blist.dataset.metadata.renderTypeConfig, 'active', 'page', 'id');

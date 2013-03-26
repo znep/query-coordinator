@@ -98,7 +98,7 @@
                 $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
                 {
                     var uid, sameDS = true;
-                    if (typeof rowId == 'string')
+                    if (typeof rowId == 'string' && rowId.indexOf('/') > -1)
                     {
                         var splitRowId = rowId.split('/');
                         sameDS = splitRowId[0] == prtObj.settings.view.id;

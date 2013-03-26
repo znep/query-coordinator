@@ -149,6 +149,7 @@ var GoalEditor = Backbone.View.extend({
         'change .mainDetails input[type=checkbox]': 'updateCheckAttr',
         'change .mainDetails input.date': 'updateDateAttr',
         'change .additionalDetails select': 'updateFakeBooleanAttr',
+        'change .additionalDetails .iconPickerHandle': 'updateParamAttr',
         'hallomodified .notes': 'updateNotesAttr'
     },
     initialize: function()
@@ -233,7 +234,7 @@ var GoalEditor = Backbone.View.extend({
 
         // bind fancy icon
         var $iconPicker = $additionalDetails.find('.iconPickerHandle');
-        $iconPicker.iconPicker();
+        _.defer(function() { $iconPicker.iconPicker(); }); // defer for scrollbind
 
         // bind fancy imageselect
         $additionalDetails.find('input.titleImageInput').imageUploader({
@@ -290,6 +291,11 @@ var GoalEditor = Backbone.View.extend({
     {
         var $input = $(event.target);
         this.model.set($input.attr('name'), $input.val() === 'true');
+    },
+    updateParamAttr: function(event, val)
+    {
+        var $input = $(event.target);
+        this.model.set($input.attr('name'), val);
     },
     updateCheckAttr: function(event)
     {

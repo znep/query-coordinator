@@ -72,7 +72,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     contents: [{
                         _: 'label',
                         'for': goal.cid + '_comparison',
-                        contents: 'Reduce / Increase'
+                        contents: 'Improve'
                     }, {
                         _: 'span',
                         className: 'selectValue'
@@ -81,6 +81,10 @@ blist.namespace.fetch('blist.govstat').markup = {
                         id: goal.cid + '_comparison',
                         name: 'comparison_function',
                         contents: [{
+                            _: 'option',
+                            value: 'null',
+                            contents: '(Change)'
+                        }, {
                             _: 'option',
                             value: '<',
                             selected: goal.get('comparison_function') === '<',
@@ -249,7 +253,8 @@ blist.namespace.fetch('blist.govstat').markup = {
                         _: 'a',
                         href: '#icon',
                         className: 'iconPickerHandle ss-icon',
-                        contents: goal.get('metadata').icon || 'checkclipboard'
+                        name: 'icon',
+                        contents: goal.get('icon') || 'checkclipboard'
                     }, {
                         _: 'span',
                         contents: ', and it has a title image of:'

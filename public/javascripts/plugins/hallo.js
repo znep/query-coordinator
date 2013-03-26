@@ -2425,6 +2425,13 @@
         this.toolbar = this.options.toolbar;
         jQuery(this.options.parentElement).append(this.toolbar);
         this._bindEvents();
+
+        // 2013-03-25 clint.tseng@socrata.com -- close toolbar if user scrolls any container
+        jQuery(this.element).parents().andSelf().on('scroll', function()
+        {
+            _this.toolbar.hide();
+        });
+
         return jQuery(window).resize(function(event) {
           return _this._updatePosition(_this._getPosition(event));
         });

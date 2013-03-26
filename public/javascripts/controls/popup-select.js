@@ -79,6 +79,11 @@
                 tip: tip
             };
 
+            $this.parents().on('scroll', function()
+            {
+                tip.hide();
+            });
+
             if (!eventsBound)
             {
                 $.live('.popupSelectList li', 'click', function(event)

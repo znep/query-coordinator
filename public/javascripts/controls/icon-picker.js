@@ -78,6 +78,8 @@ $.fn.iconPicker = function()
     {
         var $a = $(this);
 
+        $a.on('click', function(event) { event.preventDefault(); });
+
         $a.popupSelect({
             choices: icons,
             listContainerClass: 'iconPicker',

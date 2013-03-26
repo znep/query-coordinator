@@ -48,7 +48,7 @@ $(function() {
 
     // NavigationTiming not supported by safari
     // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming
-    if (performance)
+    if (window.performance !== undefined)
     {
         var now = new Date().getTime();
         var page_load_time = now - performance.timing.navigationStart;

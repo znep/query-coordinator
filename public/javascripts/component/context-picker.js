@@ -20,6 +20,7 @@ var picker = function($field, vals, curValue)
         e.preventDefault();
         $('#selectDataset').jqmShow();
     });
+    blist.common = blist.common || {};
     blist.common.selectedDataset = function(ds)
     {
         $('#selectDataset').jqmHide();

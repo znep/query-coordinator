@@ -824,7 +824,7 @@
                     var buttonName = $curRep.children('.button.addValue').attr('name');
                     if (i != $repeaters.length - 1)
                     { buttonName = buttonName.split('-').slice(0, -1).join('-'); }
-                    parArray = addFormValue(buttonName, [], parObj);
+                    parArray = addFormValue(buttonName, [], parObj, parIndex);
 
                     var curName = (i == 0 ? $input :
                         $repeaters.eq(i - 1).children('.button.addValue')).attr('name');
@@ -852,7 +852,7 @@
             { value = parseInt(value); }
 
             // Now add the value
-            addFormValue(inputName, value, parObj);
+            addFormValue(inputName, value, parObj, parIndex);
 
             // If this is a select, check for extra data on the actual
             // option element
@@ -865,7 +865,7 @@
                     // If there are custom keys, loop through each one,
                     // and add the value in
                     _.each(ckeys.split(','), function(k)
-                    { addFormValue(k, $sel.attr('data-custom-' + k), parObj); });
+                    { addFormValue(k, $sel.attr('data-custom-' + k), parObj, parIndex); });
                 }
             }
 
@@ -1005,7 +1005,7 @@
 
     /* Helper function for getFormValues; this takes a full field name and value,
      * the parent object it goes into */
-    var addFormValue = function(name, value, parObj)
+    var addFormValue = function(name, value, parObj, parIndex)
     {
         // The name is something like
         // gridSidebar_mapPane:displayFormat.plot.titleId
@@ -1034,7 +1034,11 @@
         {
             if (!$.isBlank(p[0].match(/^\d+$/)))
             {
-                parObj.push(value);
+                // Make sure values are inserted at their proper index
+                if (!$.isBlank(parIndex))
+                { parObj[parIndex] = value; }
+                else
+                { parObj.push(value); }
             }
             // If an array and the value is true, then just push on
             // the last part of the name as a value

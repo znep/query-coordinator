@@ -149,7 +149,8 @@
                         layerObj.zoomToPreferred();
                       }
                     },
-                    { opacity: layerObj.extractOpacity(), ratio: 1, isBaseLayer: false } );
+                    { opacity: layerObj.extractOpacity(), ratio: 1,
+                      singleTile: layerObj._displayFormat.singleTile, isBaseLayer: false } );
             layerObj._map.addLayer(layerObj._displayLayer);
             layer.dataObj = this;
 

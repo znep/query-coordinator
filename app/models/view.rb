@@ -100,11 +100,22 @@ class View < Model
     View.parse(CoreServer::Base.connection.get_request(path))
   end
 
-  def self.categories
+  def self.category_tree
     categories = CurrentDomain.configuration('view_categories').properties
-    map = @@default_categories.clone
-    categories.each { |c, o| map[c.titleize_if_necessary] = c.titleize_if_necessary if o.enabled }
-    return map
+    top_level_cats = @@default_categories.clone
+    categories.each do |c, o|
+      next if !o.enabled
+      c = c.titleize_if_necessary
+      if o['parent'].blank?
+        top_level_cats[c] ||= { value: c, text: c }
+      else
+        p = o['parent'].titleize_if_necessary
+        top_level_cats[p] ||= { value: p, text: p }
+        top_level_cats[p][:children] ||= []
+        top_level_cats[p][:children].push({ value: c, text: c })
+      end
+    end
+    return top_level_cats
   end
 
   def module_enabled?(name)
@@ -1329,7 +1340,7 @@ class View < Model
   end
 
   @@default_categories = {
-    "" => "-- No category --"
+    "" => { text: "-- No category --", value: "" }
   }
 
   @@licenses = {

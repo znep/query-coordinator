@@ -32,15 +32,23 @@ protected
   def categories_facet
     params = params || request_params || {}
 
-    cats = View.categories.keys.reject {|c| c.blank?}
+    cats = View.category_tree.reject { |c, o| c.blank? }
     return nil if cats.empty?
 
     cat_chop = get_facet_cutoff(:category)
-    cats = cats.sort.map{ |c| {:text => c, :value => c} }
+    cats = cats.values.sort_by { |o| o[:value] }
     cats, hidden_cats = cats[0..(cat_chop - 1)], cats[cat_chop..-1] if cats.length > cat_chop
 
-    if params[:category].present? && !cats.any?{ |cat| cat[:text] == params[:category] }
-      cats.push({ :text => params[:category], :value => params[:category] })
+    if params[:category].present? && !cats.any? { |cat| cat[:value] == params[:category] ||
+      cat[:children].any? { |cc| cc[:value] == params[:category] } }
+      found_cat = hidden_cats.detect { |cat| cat[:value] == params[:category] ||
+        cat[:children].any? { |cc| cc[:value] == params[:category] } }
+      if found_cat.nil?
+        cats.push({ :text => params[:category], :value => params[:category] })
+      else
+        cats.push(found_cat)
+        hidden_cats.delete(found_cat)
+      end
     end
 
     return { :title => I18n.t('controls.browse.facets.categories_title'),

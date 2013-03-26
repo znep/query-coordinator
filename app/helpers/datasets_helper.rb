@@ -15,8 +15,10 @@ module DatasetsHelper
   end
 
   def category_select_options(selected_category = nil)
-    options_for_select(View.categories.invert.sort { |a, b| a.first <=> b.first },
-                       selected_category)
+    cats = View.category_tree.values.sort_by { |o| o[:text] }.
+      map { |o| [o].concat((o[:children] || []).map { |cc|
+        { text: ' -- ' + cc[:text], value: cc[:value] } }) }.flatten.map { |o| [o[:text], o[:value]] }
+    options_for_select(cats, selected_category)
   end
 
   def license_select_options(selected_license = nil)
@@ -222,5 +224,32 @@ module DatasetsHelper
     end
 
     domain_metadata
+  end
+
+  def browse_facet_option(facet_option, param, options, use_icon = false)
+    cp = options[:user_params].dup
+    if options[:strip_params] && options[:strip_params][param.to_sym]
+      cp.delete_if{ |k, v| options[:strip_params][param.to_sym][k.to_sym] }
+    end
+    cp[param] = facet_option[:value]
+    ret = '<li><a href="' + options[:base_url] + '?' + cp.to_param + '" class="' +
+      (facet_option[:class] || '') +
+      (options[param] == facet_option[:value] ? ' active' : '') +'">'
+    if use_icon
+      ret += '<span class="icon"></span>'
+    elsif !facet_option[:icon].nil?
+      ret += '<img class="customIcon" src="' + theme_image_url(facet_option[:icon]) + '" alt="icon" />'
+    end
+    ret += h(facet_option[:text])
+    ret += '</a>'
+    if options[param] == facet_option[:value] && !(facet_option[:children] || []).empty? ||
+      (facet_option[:children] || []).any? { |cc| cc[:value] == options[param] }
+      ret += '<ul class="childList">' +
+        facet_option[:children].map { |child|
+          browse_facet_option(child, param, options, use_icon) }.join('') +
+        '</ul>'
+    end
+    ret += '</li>'
+    ret.html_safe
   end
 end

@@ -170,6 +170,12 @@
         float: left
         .value__default a
           background-color: $govstat_color_home
+        .item-parent
+          margin-left: 0.5em
+        .item-child
+          margin-left: -0.5em
+          a
+            background-color: adjust-color($govstat_color_action, $lightness: -20%)
         .current-true a
           background-color: #002635
   .noDataSection

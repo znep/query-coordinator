@@ -276,9 +276,16 @@ protected
   end
 
   def manage_data_config(params)
-    cats = [{ value: '', text: 'All', current: params[:category].blank? }].
-      concat(View.categories.keys.reject { |c| c.blank? }.map { |c|
-        { value: c, text: c, current: params[:category] == c } })
+    cats = View.category_tree.reject { |c| c.blank? }.values.sort_by { |v| v[:text] }.map do |v|
+      if !v[:children].nil? && (params[:category] == v[:value] ||
+                                v[:children].any? { |vv| vv[:value] == params[:category] })
+        [v].concat(v[:children].map { |vv| { text: vv[:text], value: vv[:value], item: 'child' } })
+      else
+        v
+      end
+    end.flatten.compact.map { |v|
+      { value: v[:value], text: v[:text], current: params[:category] == v[:value], item: v[:item] } }
+    cats.unshift({ value: '', text: 'All', current: params[:category].blank? })
     opts = { nofederate: true, publication_stage: 'published', limit: 20 }
     [:category].each { |p| opts[p] = params[p] unless params[p].blank? }
     {
@@ -312,7 +319,7 @@ protected
             childProperties: { customClass: 'filterItem' },
             children: [{
               type: 'Button', href: '?category={value ||}',
-              htmlClass: 'value{value ||__default} current-{current}', text: '{text}'
+              htmlClass: 'value{value ||__default} current-{current} item-{item ||parent}', text: '{text}'
             }]
           }
           ]

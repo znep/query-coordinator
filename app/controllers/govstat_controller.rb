@@ -243,6 +243,7 @@ protected
           type: 'Repeater',
           contextId: 'goal.related_datasets',
           htmlClass: 'relatedVisualizations',
+          childHtmlClass: '{_evenOdd}',
           children: [
           {
             type: 'Container',

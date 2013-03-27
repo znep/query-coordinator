@@ -317,7 +317,8 @@ Frontend::Application.routes do
     match '/manage/data', :action => 'manage_data'
     match '/manage/reports', :action => 'manage_reports'
     match '/manage/site_config', :action => 'manage_config'
-    match '/manage/template', :action => 'manage_template'
+    get '/manage/template', :action => 'manage_template'
+    post '/manage/template', :action => 'manage_template_update'
   end
 
   # Custom pages, catalogs, facets

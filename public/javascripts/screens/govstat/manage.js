@@ -20,4 +20,21 @@ $(function()
             $.globalIndicator.statusError);
         }
     });
+
+    // ----- TEMPLATE ------
+    $('#manageTemplatePage input[type=submit]').hide();
+
+    $('#manageTemplatePage input[type=radio]').on('change', function(e)
+    {
+        var $input = $(e.currentTarget);
+        var d = {}
+        d[$input.attr('name')] = $input.val();
+        $.globalIndicator.statusWorking();
+        $.ajax({ url: $input.closest('form').attr('action'), type: 'POST', data: d,
+        error: $.globalIndicator.statusError,
+        success: function()
+        {
+            $.globalIndicator.statusFinished();
+        } });
+    });
 });

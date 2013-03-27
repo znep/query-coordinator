@@ -1099,13 +1099,7 @@ private
   end
 
   def update_or_create_property(configuration, name, value)
-    unless value.nil?
-      if (!configuration.raw_properties.key?(name))
-        configuration.create_property(name,value)
-      else
-        configuration.update_property(name,value)
-      end
-    end
+    configuration.update_or_create_property(name, value)
   end
 
   def clear_homepage_cache

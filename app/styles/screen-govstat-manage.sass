@@ -249,3 +249,29 @@
       color: #002635
     .singleItem
       background-color: #002635
+
+#manageTemplatePage
+  .flashContainer
+    text-align: center
+    .flash
+      display: inline-block
+      margin: 0
+
+  .categoryTitle h2
+    color: $govstat_color_goals
+
+  label
+    border: 5px solid #002635
+    display: inline-block
+    margin-right: 2em
+    padding: 0.5em
+    img
+      height: 300px
+  input[type="radio"]
+    display: none
+  input[type="radio"]:checked + label
+    border-color: $govstat_color_action
+
+  .button
+    display: block
+    margin-top: 1em

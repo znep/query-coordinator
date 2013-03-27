@@ -58,4 +58,14 @@ class Configuration < Model
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape(name)}.json"
     CoreServer::Base.connection.delete_request(url, '', {}, batch_id)
   end
+
+  def update_or_create_property(name, value, batch_id = nil)
+    unless value.nil?
+      if (!raw_properties.key?(name))
+        create_property(name, value, batch_id)
+      else
+        update_property(name, value, batch_id)
+      end
+    end
+  end
 end

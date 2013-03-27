@@ -1,12 +1,40 @@
 <% content_for :head do %>
-  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
   <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
-  <title>Manage Template | <%= CurrentDomain.strings.site_title %></title>
+  <title>Select Layout | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div id="manageTemplatePage">
-  <a class="button manageLink" href="<%= manage_site_config_path %>"><span class="ss-icon">reply</span>Back to Manage Site Configuration</a>
-  <div class="headerLine">
-    <h2>Choose a Template</h2>
+  <div class="subnavigation">
+    <ul class="breadcrumb">
+      <li class="root"><a class="ss-icon" href="/manage">Home</a></li>
+      <li><span class="ss-icon">navigateright</span></li>
+      <li><a href="/manage/site_config">Configuration</a></li>
+      <li><span class="ss-icon">navigateright</span></li>
+      <li class="main"><a href="/manage/template">Select Layout</a></li>
+    </ul>
+  </div>
+
+  <div class="flashContainer">
+    <%= display_standard_flashes %>
+  </div>
+
+  <div class="categoryList gridFlowLayout nonDS clearfix">
+    <div class="categoryItem">
+      <div class="categoryTitle"><h2>Layouts</h2></div>
+      <%= form_tag(manage_template_path, :method => 'post', :class => 'commonForm') do %>
+        <%- [{ value: 'grid_flow', text: 'Grid Flow' }, { value: 'list', text: 'List' }].each do |opt| -%>
+            <input type="radio" name="template" id="template_<%= opt[:value] %>"
+            <%= opt[:value] == @template ? 'checked="checked"' : '' %> value="<%= opt[:value] %>" />
+            <label for="template_<%= opt[:value] %>">
+              <img src="/images/govstat/paradigm_<%= opt[:value] %>.png" alt="<%= opt[:text] %> Layout" />
+            </label>
+        <%- end -%>
+        <input type="submit" class="button" value="Save" />
+      <% end %>
+    </div>
   </div>
 </div>
+
+<%- content_for :js_footer do -%>
+  <%= include_javascripts 'screen-govstat-manage' %>
+<%- end -%>

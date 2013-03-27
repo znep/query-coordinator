@@ -61,6 +61,19 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   end
 
   def manage_template
+    @template = (CurrentDomain.properties.gov_stat || Hashie::Mash.new).dashboard_layout || 'grid_flow'
+  end
+
+  def manage_template_update
+    CurrentDomain.current_theme.update_or_create_property('gov_stat.dashboard_layout', params['template'])
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+    respond_to do |format|
+      format.html do
+        flash[:notice] = 'Saved Paradigm'
+        redirect_to manage_template_path
+      end
+      format.data { render :json => params['template'].to_json }
+    end
   end
 
 protected

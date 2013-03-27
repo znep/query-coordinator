@@ -38,8 +38,8 @@ class BrowseController < ApplicationController
       browse_options[:facets] = [
           view_types_facet,
           custom_facets,
-          categories_facet,
-          topics_facet,
+          categories_facet(params),
+          topics_facet(params),
           federated_facet
       ]
 

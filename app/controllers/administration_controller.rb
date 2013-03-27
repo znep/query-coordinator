@@ -13,8 +13,8 @@ class AdministrationController < ApplicationController
       :class => 'typeUnpublished'})
     facets = [
       vtf,
-      categories_facet,
-      topics_facet
+      categories_facet(params),
+      topics_facet(params)
     ]
     @processed_browse = process_browse(request, {
       admin: true,
@@ -54,7 +54,7 @@ class AdministrationController < ApplicationController
     @embed_options = @@default_embed_options
     @browse_select_options = {
         :limitTo => view_types_facet,
-        :categories => categories_facet,
+        :categories => categories_facet(params),
         :topics => topics_all,
         :sortBy => @@default_browse_sort_opts.map do |item|
           { :value => item[:value], :text => item[:name],
@@ -226,8 +226,8 @@ class AdministrationController < ApplicationController
       facets: [
         moderation_facet,
         view_facet,
-        categories_facet,
-        topics_facet
+        categories_facet(params),
+        topics_facet(params)
       ],
       moderation: 'any',
       nofederate: 'true',

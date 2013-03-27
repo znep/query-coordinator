@@ -29,7 +29,7 @@ protected
     vts
   end
 
-  def categories_facet
+  def categories_facet(params = nil)
     params = params || request_params || {}
 
     cats = View.category_tree.reject { |c, o| c.blank? }
@@ -40,9 +40,9 @@ protected
     cats, hidden_cats = cats[0..(cat_chop - 1)], cats[cat_chop..-1] if cats.length > cat_chop
 
     if params[:category].present? && !cats.any? { |cat| cat[:value] == params[:category] ||
-      cat[:children].any? { |cc| cc[:value] == params[:category] } }
+      (cat[:children] || []).any? { |cc| cc[:value] == params[:category] } }
       found_cat = hidden_cats.detect { |cat| cat[:value] == params[:category] ||
-        cat[:children].any? { |cc| cc[:value] == params[:category] } }
+        (cat[:children] || []).any? { |cc| cc[:value] == params[:category] } }
       if found_cat.nil?
         cats.push({ :text => params[:category], :value => params[:category] })
       else
@@ -59,7 +59,7 @@ protected
     }
   end
 
-  def topics_facet
+  def topics_facet(params = nil)
     params = params || request_params || {}
 
     topic_chop = get_facet_cutoff(:topic)

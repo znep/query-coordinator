@@ -56,9 +56,9 @@ class ProfileController < ApplicationController
           vtf = view_types_facet
           vtf[:options].insert(1, {:text => 'Unpublished Datasets', :value => 'unpublished',
                                :class => 'typeUnpublished'})
-          browse_options[:facets] = [vtf, categories_facet]
+          browse_options[:facets] = [vtf, categories_facet(params)]
         else
-          browse_options[:facets] = [view_types_facet, categories_facet]
+          browse_options[:facets] = [view_types_facet, categories_facet(params)]
         end
 
         topic_chop = get_facet_cutoff(:topic)

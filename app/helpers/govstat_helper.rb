@@ -32,12 +32,14 @@ module GovstatHelper
     result
   end
 
-  def govstat_homepage_config(name = '')
+  def govstat_homepage_config(name = '', is_public = true)
+    search = {}
+    search[:isPublic] = is_public unless is_public.nil?
     configs = {
       grid_flow: {
         data: {
           categories: { type: 'govstatCategoryList' },
-          goals: { type: 'goalList', search: { isPublic: true } }
+          goals: { type: 'goalList', search: search, draftGoals: false }
         },
         content: {
           type: 'Container',
@@ -66,12 +68,12 @@ module GovstatHelper
                   children: [{
                     type: 'Button',
                     notButton: true, # hahahaha
-                    htmlClass: 'goalItem singleItem',
+                    htmlClass: 'goalItem singleItem public-{goal.is_public ||false}',
                     href: '/goal/{goal.id}',
                     styles: { 'background-color' => '{category.color}' },
                     text: '<div class="singleInner">' +
                       '<h3 class="itemTitle goalName">{goal.name}</h3>' +
-                      '<p class="goalValue progress-{goal.metrics.0.computed_values.progress ||none}">{goal.metrics.0.computed_values.metric_value %[h] ||}</p>' +
+                      '<p class="goalValue progress-{goal.metrics.0.computed_values.progress ||none} {goal.metrics.0.computed_values.metric_value /.+/hasValue/ ||}">{goal.metrics.0.computed_values.metric_value %[h] ||}</p>' +
                       '<p class="goalUnit">{goal.metrics.0.unit ||}</p>' +
                       '<div class="goalIcon ss-{goal.metadata.icon} {goal.metadata.icon /^.+$/hasIcon/ ||}"></div>' +
                       '<div class="goalProgress">' +
@@ -90,7 +92,7 @@ module GovstatHelper
       list: {
         data: {
           categories: { type: 'govstatCategoryList' },
-          goals: { type: 'goalList', search: { isPublic: true } }
+          goals: { type: 'goalList', search: search, draftGoals: false }
         },
         content: {
           type: 'Container',
@@ -133,7 +135,7 @@ module GovstatHelper
                 type: 'Repeater',
                 htmlClass: 'itemList goalList',
                 contextId: '_groupItems',
-                childProperties: { htmlClass: 'singleItem goalItem progress-{goal.metrics.0.computed_values.progress ||none}' },
+                childProperties: { htmlClass: 'singleItem goalItem progress-{goal.metrics.0.computed_values.progress ||none} public-{goal.is_public ||false}' },
                 children: [
                 {
                   type: 'Container',
@@ -150,8 +152,8 @@ module GovstatHelper
                     customClass: 'goalValue',
                     htmlClass: 'progress-{goal.metrics.0.computed_values.progress ||none}',
                     children: [
-                    { type: 'Text', htmlClass: 'value', html: '{goal.metrics.0.computed_values.metric_value %[,3] ||}' },
-                    { type: 'Text', htmlClass: 'unit', html: '{goal.metrics.0.unit ||current value}' }
+                    { type: 'Text', customClass: '{goal.metrics.0.computed_values.metric_value /.+/hasValue/ ||}', htmlClass: 'value', html: '{goal.metrics.0.computed_values.metric_value %[,3] ||}' },
+                    { type: 'Text', htmlClass: 'unit', html: '{goal.metrics.0.unit ||}' }
                     ]
                   }
                   ]

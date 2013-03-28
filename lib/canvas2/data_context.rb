@@ -157,6 +157,8 @@ module Canvas2
         when 'goalList'
           goals = Goal.find(config['search'])
           if goals.length > 0
+            goals.reject!{ |goal| goal.category.blank? } if config['draftGoals'] == false
+
             available_contexts[id] = {id: id, type: config['type'],
               count: goals.length,
               goalList: goals.map do |g|

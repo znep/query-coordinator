@@ -253,10 +253,46 @@ input.button, a.button
         height: 2.2em
         overflow: hidden
 
+
+    .singleCaption
+      padding: 1em 0 0.4em
+      position: relative
+      z-index: 1
+
+      .captionText
+        color: #fff
+        font-size: 1.4em
+        margin-right: 1.7em
+        text-align: right
+
+      .captionIcon
+        color: #fff
+        font-size: 1.7em
+        margin-top: -0.2em
+        position: absolute
+        right: 0.1em
+        top: 50%
+
+  .goalItem
+    &.public-false
+      a:before
+        background-color: #bbb
+        @include opacity(0.4)
+
+      a:hover:before
+        background-color: #888
+        @include opacity(0.7)
+
+    .singleInner
       .goalValue
         @include progress-colors(color)
         font-size: 5.5em
         letter-spacing: -3px
+
+      .goalUnit
+        display: none
+      .goalValue.hasValue ~ .goalUnit
+        display: block
 
       .goalUnit
         color: #888
@@ -307,25 +343,6 @@ input.button, a.button
           padding-left: 1.8em
           position: absolute
           text-transform: lowercase
-
-    .singleCaption
-      padding: 1em 0 0.4em
-      position: relative
-      z-index: 1
-
-      .captionText
-        color: #fff
-        font-size: 1.4em
-        margin-right: 1.7em
-        text-align: right
-
-      .captionIcon
-        color: #fff
-        font-size: 1.7em
-        margin-top: -0.2em
-        position: absolute
-        right: 0.1em
-        top: 50%
 
 $list_border_color: #d1d1d1
 
@@ -398,6 +415,10 @@ $list_border_color: #d1d1d1
         @include progress-colors('border-color')
         position: relative
 
+        &.public-false
+          .mainSection
+            background-color: #eee
+
         .mainSection
           background-color: #fff
           cursor: pointer
@@ -423,7 +444,12 @@ $list_border_color: #d1d1d1
               font-size: 3em
 
             .unit
+              color: #666
+              display: none
               font-size: 1.5em
+
+            .hasValue ~ div .unit
+              display: block
 
         .expandedSection
           background-color: #333

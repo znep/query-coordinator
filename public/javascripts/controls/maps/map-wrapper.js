@@ -57,6 +57,8 @@
 
             if (mapObj._displayFormat.disableNavigation)
             { mapOptions.disableNavigation = true; }
+            if (mapObj.settings.interactToScroll)
+            { mapOptions.interactToScroll = true; }
 
             OpenLayers.ImgPath = '/images/openlayers/';
 
@@ -76,6 +78,13 @@
             _.each([ 'ZoomBar', 'MapTypeSwitcher', 'Overview', 'IconCache', 'GeocodeDialog' ],
             function(c)
             { mapObj._controls[c] = mapObj.map.getControlsByClass('blist.openLayers.' + c)[0]; });
+            mapObj._controls.Navigation = mapObj.map.getControlsByClass('OpenLayers.Control.Navigation')[0];
+
+            if (mapObj.settings.interactToScroll && $.subKeyDefined(mapObj, '_controls.Navigation'))
+            {
+                $(mapObj.currentDom).one('mouseup', function(e)
+                { mapObj._controls.Navigation.enableZoomWheel(); });
+            }
 
             if (mapObj._displayFormat.disableGeolocator)
             { mapObj._controls.GeocodeDialog.deactivate(); }

@@ -283,6 +283,7 @@ var updateProperties = function(lcObj)
             lcObj.$contents.empty();
             lcObj._map = lcObj.$contents.socrataMap({
                 showRowLink: false,
+                interactToScroll: true,
                 displayFormat: df
             });
             lcObj._updateValidity();

@@ -471,7 +471,8 @@
 
             if (!options.disableNavigation)
             {
-                options.controls.push(new OpenLayers.Control.Navigation());
+                options.controls.push(new OpenLayers.Control.Navigation(
+                        { zoomWheelEnabled: !options.interactToScroll }));
                 options.controls.push(new blist.openLayers.ZoomBar());
             }
 

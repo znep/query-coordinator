@@ -66,7 +66,8 @@ var updateProperties = function(lcObj)
             defaultTypes: defaultTypes,
             view: ds,
             width: lcObj._properties.width,
-            height: lcObj._properties.height
+            height: lcObj._properties.height,
+            map: { interactToScroll: true }
         });
     };
 

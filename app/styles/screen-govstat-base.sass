@@ -191,6 +191,142 @@ input.button, a.button
           right: 0
           top: 1em
 
+.gridFlowLayoutNew
+  .categoryItem
+    margin-bottom: 1em
+  .categoryTitle
+    border-bottom: 1px solid #ccc
+    font-size: 2em
+    font-weight: normal
+    margin-bottom: 1.2em
+    h2
+      font-weight: normal
+      padding: 0
+        bottom: 0.05em
+
+  .singleItemWrapper
+    float: left
+    margin-right: 1em
+    margin-bottom: 1em
+
+  .goalList
+    overflow: hidden
+
+  .singleItem
+    position: relative
+
+    a
+      display: block
+      padding: 0.7em
+
+      &:before
+        background-color: #000
+        content: ' '
+        display: block
+        height: 100%
+        left: 0
+        @include opacity(0)
+        position: absolute
+        top: 0
+        @include transition(0.1s, opacity)
+        width: 100%
+        z-index: 0
+
+      &:hover:before
+        @include opacity(0.3)
+
+    .singleInner
+      background-color: #fff
+      @include prefixer(border-radius, 0.18em)
+      height: 17em
+      padding: 1em
+      position: relative
+      z-index: 1
+      width: 17em
+
+      .itemTitle
+        color: #333
+        font-size: 2.1em
+        font-weight: normal
+        letter-spacing: -1px
+        line-height: 1.1em
+        height: 2.2em
+        overflow: hidden
+
+      .goalValue
+        @include progress-colors(color)
+        font-size: 5.5em
+        letter-spacing: -3px
+
+      .goalUnit
+        color: #888
+        font-size: 1.6em
+        height: 1em
+        letter-spacing: -1px
+        margin-top: -0.5em
+
+      .goalIcon
+        bottom: 0
+        display: none
+        left: 0.2em
+        position: absolute
+
+        &.hasIcon
+          color: #dadada
+          display: block
+          font-size: 4em
+          padding-top: 0.4em
+
+          ~ .goalProgress
+            left: 2.8em
+            z-index: 2
+
+      .goalProgress
+        @include clearfix
+        bottom: 1em
+        left: 1em
+        position: absolute
+        width: 100%
+
+        .progressIcon
+          @include progress-colors(background-color)
+          @include rounded-ends
+          color: #fff
+          height: 1.6667em
+          float: left
+          font-size: 1.2em
+          line-height: 1.5em
+          text-indent: 0.3em
+          width: 1.6667em
+
+        .progressText
+          @include progress-colors(color)
+          bottom: 0.3em
+          font-size: 1.4em
+          letter-spacing: -1px
+          padding-left: 1.8em
+          position: absolute
+          text-transform: lowercase
+
+    .singleCaption
+      padding: 1em 0 0.4em
+      position: relative
+      z-index: 1
+
+      .captionText
+        color: #fff
+        font-size: 1.4em
+        margin-right: 1.7em
+        text-align: right
+
+      .captionIcon
+        color: #fff
+        font-size: 1.7em
+        margin-top: -0.2em
+        position: absolute
+        right: 0.1em
+        top: 50%
+
 $list_border_color: #d1d1d1
 
 @mixin list-button

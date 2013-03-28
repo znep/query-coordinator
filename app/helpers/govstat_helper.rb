@@ -42,9 +42,8 @@ module GovstatHelper
         content: {
           type: 'Container',
           id: 'govstatHomeRoot',
-          htmlClass: 'gridFlowLayout',
-          children: [
-          {
+          htmlClass: 'gridFlowLayoutNew',
+          children: [{
             type: 'Repeater',
             htmlClass: 'categoryList',
             contextId: 'goals',
@@ -53,43 +52,37 @@ module GovstatHelper
             noResultsChildren: [
               { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
             ],
-            children: [
-            {
+            children: [{
               type: 'Container',
               contextId: 'categories_{_groupValue}',
               children: [
-              { type: 'Title', text: '{category.name ||Draft}', customClass: 'categoryTitle',
-                styles: { 'color' => '{category.color}', 'border-color' => '{category.color}' } },
-              {
-                type: 'Repeater',
-                htmlClass: 'goalList',
-                contextId: '_groupItems',
-                container: { type: 'GridContainer', cellWidth: 200, cellHeight: 220, cellSpacing: 0 },
-                children: [{
-                  type: 'Container', htmlClass: 'goalItem singleItem',
-                  styles: { 'background-color' => '{category.color}' },
+                { type: 'Title', text: '{category.name ||Draft}', customClass: 'categoryTitle',
+                  styles: { 'color' => '{category.color}', 'border-color' => '{category.color}' } },
+                {
+                  type: 'Repeater',
+                  htmlClass: 'goalList',
+                  contextId: '_groupItems',
+                  childProperties: { customClass: 'singleItemWrapper' },
                   children: [{
-                    type: 'Container', htmlClass: 'singleInner',
-                    children: [
-                      { type: 'Container', customClass: 'goalTitle title',
-                        children: [
-                          { type: 'Title', text: '{goal.name}' },
-                          { type: 'Text', customClass: 'goalSubject', html: '{goal.subject ||}' }
-                      ] },
-                      progress_indicator('goal.metrics.0'),
-                      #{ type: 'Text', customClass: 'goalProgress', ifValue: 'goal.metrics.0.computed_values.delta',
-                        #html: 'Status: <span class="value">{goal.metrics.0.computed_values.delta ||}%</span>' },
-                      { type: 'Text', customClass: 'goalLink primaryAction',
-                        html: '<a href="/goal/{goal.id}"><div class="actionDetails ss-right"></div></a>' }
-                    ]
+                    type: 'Button',
+                    notButton: true, # hahahaha
+                    htmlClass: 'goalItem singleItem',
+                    styles: { 'background-color' => '{category.color}' },
+                    text: '<div class="singleInner">' +
+                      '<h3 class="itemTitle goalName">{goal.name}</h3>' +
+                      '<p class="goalValue progress-{goal.metrics.0.computed_values.progress ||none}">{goal.metrics.0.computed_values.metric_value %[h] ||N/A}</p>' +
+                      '<p class="goalUnit">{goal.metrics.0.unit ||}</p>' +
+                      '<div class="goalIcon ss-{goal.metadata.icon} {goal.metadata.icon /^.+$/hasIcon/ ||}"></div>' +
+                      '<div class="goalProgress">' +
+                        '<div class="progressIcon progress-{goal.metrics.0.computed_values.progress ||none} ss-{goal.metrics.0.computed_values.progress /good/check/ /flat/right/ /poor/delete/ /none/linechartclipboard/ ||linechartclipboard}"></div>' +
+                        '<div class="progressText progress-{goal.metrics.0.computed_values.progress ||none}">{goal.metrics.0.computed_values.progress /none/Collecting Data/ /good/On Track/ /flat/In Progress/ /poor/Needs Improvement/ ||Collecting Data}</div>' +
+                      '</div></div>' +
+                      '<div class="singleCaption"><div class="captionText">Details</div><div class="captionIcon ss-icon">next</div></div>' # hahahaha D:
                   }]
-                }]
-              }
+                }
               ]
-            }
-            ]
-          }
-          ]
+            }]
+          }]
         }
       },
 
@@ -101,7 +94,7 @@ module GovstatHelper
         content: {
           type: 'Container',
           id: 'govstatHomeRoot',
-          htmlClass: 'listLayout {categories.0.name /.*/hello/g ||}',
+          htmlClass: 'listLayout',
           children: [
           {
             type: 'Container',

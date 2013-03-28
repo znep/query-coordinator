@@ -72,7 +72,8 @@ $.component.Component.extend('Table', 'data', {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
 
-        updateProperties(lcObj, properties);
+        if (lcObj._rendered)
+        { updateProperties(lcObj, properties); }
     }
 });
 

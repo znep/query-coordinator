@@ -30,7 +30,7 @@ $.component.Component.extend('Inline filter', 'input', {
         if (!this._super.apply(this, arguments)) { return false; }
 
         if (!this._updateDataSource(this._properties, renderUpdate))
-        { this.$contents.empty(); }
+        { renderUpdate(); }
         return true;
     },
 

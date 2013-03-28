@@ -27,6 +27,8 @@ $.component.Container.extend('Float Grid Container', 'content', {
                 });
             _.defer(function()
             {
+                if (cObj._destroyed) { return; }
+
                 if (!cObj._masonryInit)
                 {
                     cObj.$ct.masonry(opts);

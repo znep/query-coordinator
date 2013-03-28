@@ -139,6 +139,25 @@ $.component.Component.extend('Map', 'data', {
         return viewdef;
     },
 
+    destroy: function()
+    {
+        this._empty();
+        this._super();
+    },
+
+    _empty: function()
+    {
+        _.each(this._viewDefinitions || [], function(child)
+        {
+            delete child.parent;
+            child.destroy();
+            child = child.next;
+        });
+        delete this._viewDefinitions;
+        delete this.first;
+        delete this.last;
+    },
+
     _addDefinitions: function()
     {
         if (!$.isBlank(this._vdefsToLoad))
@@ -218,6 +237,8 @@ $.component.Component.extend('Map', 'data', {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
 
+        if ($.subKeyDefined(properties, 'viewDefinitions'))
+        { lcObj._empty(); }
         if (lcObj._rendered)
         { updateProperties(lcObj, properties); }
     },

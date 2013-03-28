@@ -140,7 +140,8 @@
             }
         },
 
-        destroy: function() {
+        destroy: function()
+        {
             this.remove();
             if (!$.isBlank(this.$dom)) { this.$dom.remove(); }
             delete componentSets[this._componentSet][this.id];

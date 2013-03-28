@@ -261,16 +261,25 @@
     color: $govstat_color_goals
 
   label
-    border: 5px solid #002635
+    border: 5px solid #888
+    cursor: pointer
     display: inline-block
     margin-right: 2em
+    @include transition(0.2s, border-color)
     padding: 0.5em
     img
       height: 300px
+
+    &:hover
+      border-color: #555
+
   input[type="radio"]
     display: none
   input[type="radio"]:checked + label
     border-color: $govstat_color_action
+
+    &:hover
+      border-color: darken($govstat_color_action, 20%)
 
   .button
     display: block

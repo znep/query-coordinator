@@ -39,21 +39,28 @@ jQuery.metrics = {
             //noop
         }
     });
+    },
+    collect_page_timings: function() {
+        $.metrics.mark("domain", "js-page-view");
 
+        // NavigationTiming not supported by safari
+        // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming
+        if (window.performance !== undefined)
+        {
+            var nav_start = performance.timing.navigationStart;
+            var dom_complete = performance.timing.domComplete;
+            // Some browsers appear to return zero for navigationStart
+            if (nav_start > 0 && dom_complete > 0) {
+                $.metrics.mark("domain-intern", "js-page-load-samples");
+                $.metrics.increment("domain-intern", "js-page-load-time", dom_complete - nav_start);
+                // domComplete is always the value of the *first* state change to complete
+                // subsequent interactive states will not be captured here
+                $.metrics.increment("domain-intern", "js-dom-load-time", dom_complete - performance.timing.domLoading);
+            }
+        }
+        $.metrics.flush_metrics();
     }
 };
 
-$(function() {
-    $.metrics.mark("domain", "js-page-view");
+$(window).load($.metrics.collect_page_timings);
 
-    // NavigationTiming not supported by safari
-    // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming
-    if (window.performance !== undefined)
-    {
-        var now = new Date().getTime();
-        var page_load_time = now - performance.timing.navigationStart;
-        $.metrics.mark("domain-intern", "js-page-load-samples");
-        $.metrics.increment("domain-intern", "js-page-load-time", page_load_time);
-    }
-    $.metrics.flush_metrics();
-});

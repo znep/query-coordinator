@@ -67,7 +67,10 @@ end
 
 module ClientAnalyticsHelper
   MARK_METRICS = %w(domain/js-page-view domain-intern/js-page-load-samples).freeze
-  ALLOWED_METRICS = %w(domain/js-page-view domain-intern/js-page-load-samples domain-intern/js-page-load-time).freeze
+  ALLOWED_METRICS = %w(domain/js-page-view
+                       domain-intern/js-page-load-samples
+                       domain-intern/js-page-load-time
+                       domain-intern/js-dom-load-time).freeze
 
   def self.get_valid_increment(entity, metric, input)
     increment = input.to_i

@@ -800,12 +800,17 @@
                 + legendData.gradient.length;
             var numWidth = (totalWidth - 10) / 2;
 
+            var humanify = function(x)
+                { return Math.abs(x) >= 1000 ? blist.util.toHumaneNumber(x, 2) : x.toFixed(4); },
+                min = humanify(legendData.minimum),
+                max = humanify(legendData.maximum);
+
             var contents = { tagName: 'div',
                 style: { 'width':  totalWidth + 'px', overflow: 'hidden' }, contents: [
                     { tagName: 'ul' },
-                    { tagName: 'span', contents: legendData.minimum },
+                    { tagName: 'span', contents: min },
                     { tagName: 'span', style: { 'text-align': 'right', 'float': 'right' },
-                        contents: legendData.maximum }
+                        contents: max }
                 ]
             };
 
@@ -821,9 +826,11 @@
             var $ul = $legend.find('ul');
             _.each(legendData.gradient, function(segment, index)
             {
-                var valueRange = [index == 0 ? legendData.minimum
-                                             : legendData.gradient[index-1].value,
-                                  ' - ', segment.value].join('');
+                var valueRange = _.map(
+                        [index == 0 ? legendData.minimum
+                                    : legendData.gradient[index-1].value,
+                         ' - ', segment.value], $.commaify)
+                    .join('');
                 $ul.append(
                     $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
                         .css('background-color', segment.color)

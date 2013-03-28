@@ -71,7 +71,7 @@ module GovstatHelper
                     styles: { 'background-color' => '{category.color}' },
                     text: '<div class="singleInner">' +
                       '<h3 class="itemTitle goalName">{goal.name}</h3>' +
-                      '<p class="goalValue progress-{goal.metrics.0.computed_values.progress ||none}">{goal.metrics.0.computed_values.metric_value %[h] ||N/A}</p>' +
+                      '<p class="goalValue progress-{goal.metrics.0.computed_values.progress ||none}">{goal.metrics.0.computed_values.metric_value %[h] ||}</p>' +
                       '<p class="goalUnit">{goal.metrics.0.unit ||}</p>' +
                       '<div class="goalIcon ss-{goal.metadata.icon} {goal.metadata.icon /^.+$/hasIcon/ ||}"></div>' +
                       '<div class="goalProgress">' +
@@ -150,7 +150,7 @@ module GovstatHelper
                     customClass: 'goalValue',
                     htmlClass: 'progress-{goal.metrics.0.computed_values.progress ||none}',
                     children: [
-                    { type: 'Text', htmlClass: 'value', html: '{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}' },
+                    { type: 'Text', htmlClass: 'value', html: '{goal.metrics.0.computed_values.metric_value %[,3] ||}' },
                     { type: 'Text', htmlClass: 'unit', html: '{goal.metrics.0.unit ||current value}' }
                     ]
                   }
@@ -262,7 +262,7 @@ module GovstatHelper
                         {
                           type: 'Text',
                           htmlClass: 'metricValue',
-                          html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||N/A}'
+                          html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||}'
                         },
                         {
                           type: 'Text',
@@ -287,7 +287,7 @@ module GovstatHelper
                         {
                           type: 'Text',
                           htmlClass: 'metricValue',
-                          html: '{goal.metrics.0.computed_values.target_value %[,3] ||N/A}'
+                          html: '{goal.metrics.0.computed_values.target_value %[,3] ||}'
                         },
                         {
                           type: 'Text',

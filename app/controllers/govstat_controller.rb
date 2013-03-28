@@ -148,7 +148,7 @@ protected
                 children: [ {
                   type: 'Text',
                   htmlClass: 'metricValue progress-{goal.metrics.0.computed_values.progress ||none}',
-                  html: '<span class="value">{goal.metrics.0.computed_values.metric_value %[,3] ||N/A}</span> <span class="unit">{goal.metrics.0.unit ||}</span>'
+                  html: '<span class="value">{goal.metrics.0.computed_values.metric_value %[,3] ||}</span> <span class="unit">{goal.metrics.0.unit ||}</span>'
                 }, {
                   type: 'Text',
                   htmlClass: 'metricTime',
@@ -168,7 +168,7 @@ protected
                   }, {
                     type: 'Text',
                     htmlClass: 'metricValue',
-                    html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||N/A}'
+                    html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||}'
                   }, {
                     type: 'Text',
                     htmlClass: 'metricUnit',
@@ -188,7 +188,7 @@ protected
                   }, {
                     type: 'Text',
                     htmlClass: 'metricValue',
-                    html: '{goal.metrics.0.computed_values.target_value %[,3] ||N/A}'
+                    html: '{goal.metrics.0.computed_values.target_value %[,3] ||}'
                   }, {
                     type: 'Text',
                     htmlClass: 'metricUnit',
@@ -232,7 +232,7 @@ protected
               contextId: 'categories_{goal.category}',
               htmlClass: 'indicatorContainer progress-{computed_values.progress ||none}',
               children: [
-                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||N/A}' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' },
                 { type: 'Text', htmlClass: 'current type', html: 'measured {computed_values.as_of @[%B %Y] ||today}' }
               ]
@@ -242,7 +242,7 @@ protected
               type: 'Container',
               htmlClass: 'indicatorContainer',
               children: [
-                { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||N/A}' },
+                { type: 'Text', htmlClass: 'baseline value', html: '{computed_values.baseline_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'baseline unit', html: '{unit ||}' },
                 { type: 'Text', htmlClass: 'baseline type', html: '{goalContext.goal.start_date @[%B %Y] ||} baseline' }
               ]
@@ -252,7 +252,7 @@ protected
               type: 'Container',
               htmlClass: 'indicatorContainer',
               children: [
-                { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||N/A}' },
+                { type: 'Text', htmlClass: 'current value', html: '{computed_values.target_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' },
                 { type: 'Text', htmlClass: 'current type', html: '{goalContext.goal.end_date @[%B %Y] ||} target' }
               ]

@@ -18,7 +18,7 @@ class GovstatController < ApplicationController
 
   def manage
     govstat_config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
-    config = govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym)
+    config = govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym, nil)
     config[:content][:children].unshift({ type: 'Container', htmlClass: 'subHubSection', children: [
       { type: 'Title', htmlClass: 'subHubTitle', text: 'Welcome to GovStat.' },
       { type: 'Text', htmlClass: 'subHubIntro', html: 'You can check out the current status of your goals below, or dig into these hubs for a deeper look.' },

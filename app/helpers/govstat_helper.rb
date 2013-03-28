@@ -67,6 +67,7 @@ module GovstatHelper
                     type: 'Button',
                     notButton: true, # hahahaha
                     htmlClass: 'goalItem singleItem',
+                    href: '/goal/{goal.id}',
                     styles: { 'background-color' => '{category.color}' },
                     text: '<div class="singleInner">' +
                       '<h3 class="itemTitle goalName">{goal.name}</h3>' +

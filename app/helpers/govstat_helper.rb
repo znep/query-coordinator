@@ -121,7 +121,11 @@ module GovstatHelper
             childProperties: { htmlClass: 'categoryItem', label: '{_groupValue}' },
             container: {
               type: 'PagedContainer',
-              id: 'categoryPages'
+              id: 'categoryPages',
+              htmlClass: 'categoryItem',
+              children: [
+                list_repeater('goals', 'All')
+              ]
             },
             noResultsChildren: [
             { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
@@ -131,62 +135,76 @@ module GovstatHelper
               type: 'Container',
               contextId: 'categories_{_groupValue}',
               children: [
-              {
-                type: 'Repeater',
-                htmlClass: 'itemList goalList',
-                contextId: '_groupItems',
-                childProperties: { htmlClass: 'singleItem goalItem progress-{goal.metrics.0.computed_values.progress ||none} public-{goal.is_public ||false}' },
-                children: [
-                {
-                  type: 'Container',
-                  htmlClass: 'mainSection',
-                  children: [
-                  { type: 'Title', text: '{goal.name}', htmlClass: 'itemTitle' },
-                  {
-                    type: 'Text',
-                    htmlClass: 'itemSubtitle',
-                    html: goal_statement
-                  },
-                  {
-                    type: 'Container',
-                    customClass: 'goalValue',
-                    htmlClass: 'progress-{goal.metrics.0.computed_values.progress ||none}',
-                    children: [
-                    { type: 'Text', customClass: '{goal.metrics.0.computed_values.metric_value /.+/hasValue/ ||}', htmlClass: 'value', html: '{goal.metrics.0.computed_values.metric_value %[,3] ||}' },
-                    { type: 'Text', htmlClass: 'unit', html: '{goal.metrics.0.unit ||}' }
-                    ]
-                  }
-                  ]
-                },
-                {
-                  type: 'Container',
-                  htmlClass: 'expandedSection',
-                  children: [
-                  { type: 'Text', customClass: 'close', html: '<a href="#" class="ss-delete"></a>' },
-                  {
-                    type: 'HorizontalContainer',
-                    children: [
-                    {
-                      type: 'Container',
-                      weight: 7,
-                      htmlClass: 'goalDetails',
-                      children: [
-                      {
+                list_repeater('_groupItems')
+              ]
+            }
+            ]
+          }
+          ]
+        }
+      }
+    }
+    configs[name] || configs[:list]
+  end
 
-                        # this is my fallback solution
-                        type: 'Container',
-                        customClass: 'goalVisualization',
-                        ifValue: 'goal.related_datasets.0',
-                        context: {
-                          type: 'dataset',
-                          datasetId: '{goal.related_datasets.0}'
-                        },
-                        children: [
-                        { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
-                        { type: 'Visualization', height: 250 }
-                        ]
+  def list_repeater(context_id, label = nil)
+    {
+      label: label,
+      type: 'Repeater',
+      htmlClass: 'itemList goalList',
+      contextId: context_id,
+      childProperties: { htmlClass: 'singleItem goalItem progress-{goal.metrics.0.computed_values.progress ||none} public-{goal.is_public ||false}' },
+      children: [
+      {
+        type: 'Container',
+        htmlClass: 'mainSection',
+        children: [
+        { type: 'Title', text: '{goal.name}', htmlClass: 'itemTitle' },
+        {
+          type: 'Text',
+          htmlClass: 'itemSubtitle',
+          html: goal_statement
+        },
+        {
+          type: 'Container',
+          customClass: 'goalValue',
+          htmlClass: 'progress-{goal.metrics.0.computed_values.progress ||none}',
+          children: [
+          { type: 'Text', customClass: '{goal.metrics.0.computed_values.metric_value /.+/hasValue/ ||}', htmlClass: 'value', html: '{goal.metrics.0.computed_values.metric_value %[,3] ||}' },
+          { type: 'Text', htmlClass: 'unit', html: '{goal.metrics.0.unit ||}' }
+          ]
+        }
+        ]
+      },
+      {
+        type: 'Container',
+        htmlClass: 'expandedSection',
+        children: [
+        { type: 'Text', customClass: 'close', html: '<a href="#" class="ss-delete"></a>' },
+        {
+          type: 'HorizontalContainer',
+          children: [
+          {
+            type: 'Container',
+            weight: 7,
+            htmlClass: 'goalDetails',
+            children: [
+            {
 
-                        # this is what i wanted to do but the repeater or carousel or something seems unhappy
+              # this is my fallback solution
+              type: 'Container',
+              customClass: 'goalVisualization',
+              ifValue: 'goal.related_datasets.0',
+              context: {
+                type: 'dataset',
+                datasetId: '{goal.related_datasets.0}'
+              },
+              children: [
+              { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
+              { type: 'Visualization', height: 250 }
+              ]
+
+              # this is what i wanted to do but the repeater or carousel or something seems unhappy
 #                       type: 'Container',
 #                       customClass: 'goalVisualizations',
 #                       onlyIf: '{goal.related_datasets.0}',
@@ -229,87 +247,77 @@ module GovstatHelper
 #                         hideButtonText: true
 #                       }
 #                       ]
-                      },
-                      {
-                        type: 'Text',
-                        customClass: 'goalDescription',
-                        ifValue: 'goal.metadata.description',
-                        html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
-                      },
-                      {
-                        type: 'Text',
-                        customClass: 'goalFallback',
-                        html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit ||units}</strong>'
-                      },
-                      {
-                        type: 'Text',
-                        customClass: 'goalLink',
-                        html: '<a href="/goal/{goal.id}" class="button ss-navigateright right">Goal Details</a>'
-                      }
-                      ]
-                    },
-                    {
-                      type: 'Container',
-                      weight: 3,
-                      htmlClass: 'metricContainer',
-                      children: [
-                      {
-                        type: 'Container',
-                        htmlClass: 'metric baselineValue',
-                        children: [ {
-                          type: 'Text',
-                          customClass: 'metricType',
-                          html: 'Baseline'
-                        },
-                        {
-                          type: 'Text',
-                          htmlClass: 'metricValue',
-                          html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||}'
-                        },
-                        {
-                          type: 'Text',
-                          htmlClass: 'metricUnit',
-                          html: '{goal.metrics.0.unit ||}'
-                        },
-                        {
-                          type: 'Text',
-                          htmlClass: 'metricTime',
-                          html: '{goal.start_date @[%B %Y] ||}'
-                        }
-                        ]
-                      },
-                      {
-                        type: 'Container',
-                        htmlClass: 'metric targetValue',
-                        children: [ {
-                          type: 'Text',
-                          customClass: 'metricType',
-                          html: 'Target'
-                        },
-                        {
-                          type: 'Text',
-                          htmlClass: 'metricValue',
-                          html: '{goal.metrics.0.computed_values.target_value %[,3] ||}'
-                        },
-                        {
-                          type: 'Text',
-                          htmlClass: 'metricUnit',
-                          html: '{goal.metrics.0.unit ||}'
-                        },
-                        {
-                          type: 'Text',
-                          htmlClass: 'metricTime',
-                          html: '{goal.end_date @[%B %Y] ||}'
-                        }
-                        ]
-                      }
-                      ]
-                    }
-                    ]
-                  }
-                  ]
-                }
-                ]
+            },
+            {
+              type: 'Text',
+              customClass: 'goalDescription',
+              ifValue: 'goal.metadata.description',
+              html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
+            },
+            {
+              type: 'Text',
+              customClass: 'goalFallback',
+              html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit ||units}</strong>'
+            },
+            {
+              type: 'Text',
+              customClass: 'goalLink',
+              html: '<a href="/goal/{goal.id}" class="button ss-navigateright right">Goal Details</a>'
+            }
+            ]
+          },
+          {
+            type: 'Container',
+            weight: 3,
+            htmlClass: 'metricContainer',
+            children: [
+            {
+              type: 'Container',
+              htmlClass: 'metric baselineValue',
+              children: [ {
+                type: 'Text',
+                customClass: 'metricType',
+                html: 'Baseline'
+              },
+              {
+                type: 'Text',
+                htmlClass: 'metricValue',
+                html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||}'
+              },
+              {
+                type: 'Text',
+                htmlClass: 'metricUnit',
+                html: '{goal.metrics.0.unit ||}'
+              },
+              {
+                type: 'Text',
+                htmlClass: 'metricTime',
+                html: '{goal.start_date @[%B %Y] ||}'
+              }
+              ]
+            },
+            {
+              type: 'Container',
+              htmlClass: 'metric targetValue',
+              children: [ {
+                type: 'Text',
+                customClass: 'metricType',
+                html: 'Target'
+              },
+              {
+                type: 'Text',
+                htmlClass: 'metricValue',
+                html: '{goal.metrics.0.computed_values.target_value %[,3] ||}'
+              },
+              {
+                type: 'Text',
+                htmlClass: 'metricUnit',
+                html: '{goal.metrics.0.unit ||}'
+              },
+              {
+                type: 'Text',
+                htmlClass: 'metricTime',
+                html: '{goal.end_date @[%B %Y] ||}'
               }
               ]
             }
@@ -317,8 +325,9 @@ module GovstatHelper
           }
           ]
         }
+        ]
       }
+    ]
     }
-    configs[name] || configs[:list]
   end
 end

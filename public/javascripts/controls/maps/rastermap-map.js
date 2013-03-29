@@ -1,11 +1,13 @@
 (function($)
 {
-    var geographicProjection = new OpenLayers.Projection('EPSG:4326');
+    var cannotHeatmap = $.browser.msie && parseInt($.browser.version) < 9;
 
     $.Control.registerMixin('heatmap', {
         initializeLayer: function()
         {
             var layerObj = this;
+
+            if (cannotHeatmap) { throw 'IE8 - no canvas for heat map'; }
 
             layerObj._displayLayer = new OpenLayers.Layer.Heatmap(layerObj._view.name,
                 layerObj._map,

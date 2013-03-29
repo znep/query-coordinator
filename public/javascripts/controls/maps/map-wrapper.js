@@ -223,11 +223,17 @@
 
                 mapObj.$dom().append(mapObj._children[index].$dom);
                 var query = $.deepGet(mapObj, '_primaryView', 'metadata', 'query', ds.id);
-                mapObj._children[index] = $(mapObj._children[index].$dom)
-                        .socrataDataLayer({ view: ds, index: index, query: query,
-                                            parentViz: mapObj, displayFormat: df });
-                mapObj._children[index].setFullQuery(mapObj._children[index]._query);
-                mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
+                try {
+                    mapObj._children[index] = $(mapObj._children[index].$dom)
+                            .socrataDataLayer({ view: ds, index: index, query: query,
+                                                parentViz: mapObj, displayFormat: df });
+                    mapObj._children[index].setFullQuery(mapObj._children[index]._query);
+                    mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
+                } catch(e) {
+                    mapObj._children[index] = { invalid: true, error: e };
+                    mapObj._invalidChildren = $.makeArray(mapObj._invalidChildren);
+                    mapObj._invalidChildren.push(mapObj._children[index]);
+                }
 
                 if (mapObj._displayFormat.viewDefinitions.length == mapObj._children.length
                     && _.all(mapObj._children, function(cv) { return !cv.loading; }))
@@ -265,9 +271,8 @@
             else if (mapObj.viewportHandler().viewportInOriginal)
             { mapObj.viewportHandler().resetToOriginal(); }
 
-            if ($.browser.msie && parseInt($.browser.version) < 9
-                && _.any(mapObj._children,
-                    function(cv) { return (cv._displayFormat || {}).plotStyle == 'rastermap'; }))
+            if (_.any(mapObj._invalidChildren,
+                    function(cv) { return cv.error.indexOf('heat map') > -1; }))
             {
                 alert("Raster Heat Maps do not work in your current browser. Please "
                     + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");

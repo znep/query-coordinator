@@ -1588,9 +1588,6 @@
 
         add: function(layerObj, lonlat, contents, options)
         {
-            if ($.urlParam(window.location.href, 'flyouts') != 'nextgen')
-            { return this.mapObj.showPopup(lonlat, contents, options); }
-
             if ((blist.debug || {}).flyouts && (console || {}).trace)
             {
                 console.groupCollapsed('Flyout#add');

@@ -256,20 +256,14 @@
             layerObj._identifyParameters.layerDefinitions = layerDefs;
 
             lonlat.lat -= offsetLat;
-            if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
-            { layerObj.flyoutHandler().sayLoading(lonlat); }
-            else
-            { layerObj._parent.showPopup(lonlat, 'Loading...'); }
+            layerObj.flyoutHandler().sayLoading(lonlat);
 
             new esri.tasks.IdentifyTask(layer.url.replace(/\/export$/, ''))
                 .execute(layerObj._identifyParameters, function(idResults)
                 {
                     if (_.isEmpty(idResults))
                     {
-                        if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
-                        { layerObj.flyoutHandler().cancel(); }
-                        else
-                        { layerObj._parent.closePopup(); }
+                        layerObj.flyoutHandler().cancel();
                         return;
                     }
 

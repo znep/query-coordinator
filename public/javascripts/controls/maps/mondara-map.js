@@ -109,16 +109,10 @@
             {
                 var lonlat = layerObj._map.baseLayer
                     .getLonLatFromViewPortPx(layerObj._map.events.getMousePosition(evtObj));
-                if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
-                { layerObj.flyoutHandler().sayLoading(lonlat); }
-                else
-                { layerObj._parent.showPopup(lonlat, 'Loading...', { closeKey: 'loading' }); }
+                layerObj.flyoutHandler().sayLoading(lonlat);
             });
             layerObj._getFeature.events.register('clickout', layerObj, function() {
-                if ($.urlParam(window.location.href, 'flyouts') == 'nextgen')
-                { this.flyoutHandler().cancel(); }
-                else
-                { this._parent.closePopup('loading'); }
+                this.flyoutHandler().cancel();
             });
 
             layerObj._getFeature.events.register('featuresselected', layerObj, function(evtObj)

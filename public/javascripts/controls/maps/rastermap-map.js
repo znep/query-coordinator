@@ -7,7 +7,7 @@
         {
             var layerObj = this;
 
-            if (cannotHeatmap) { throw 'IE8 - no canvas for heat map'; }
+            if (cannotHeatmap) { throw new Error('IE8 - no canvas for heat map'); }
 
             layerObj._displayLayer = new OpenLayers.Layer.Heatmap(layerObj._view.name,
                 layerObj._map,

@@ -154,7 +154,13 @@
 
       /* Make the example text reappear if the input is blank on blurring. */
       $this.blur(function() {
-        if ($(this).val() == '') {
+        // clint.tseng@socrata.com - 29 mar 2013 (fuck, it's been 2 years?)
+        // also update the text if we blur and we have text but we're .prompt
+        // so that we can just .blur() on the element to update it remotely.
+        //
+        // this only ever adds prompt, so i don't think this can do anything
+        // it didn't do before besides the above.
+        if ($(this).val() == '' || $(this).is('.' + o.className)) {
           $(this).addClass(o.className);
 
           /* Re-evaluate the callback function every time the user

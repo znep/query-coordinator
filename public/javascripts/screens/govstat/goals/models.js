@@ -279,7 +279,7 @@ var Goal = Backbone.Model.extend({
         {
             response.metrics.add(new Metric(response.metadata.metrics[mI], { parse: true }), { at: mI });
         });
-        _.each(['comparison_function', 'description', 'title_image', 'icon'], function(k)
+        _.each(['comparison_function', 'description', 'title_image', 'icon', 'custom_title'], function(k)
         { response[k] = (response.metadata || {})[k]; });
         // If a missing name is present to satisfy Procrustes, turn it back to true blank
         if (response.name == ' ') { response.name = ''; }
@@ -305,7 +305,7 @@ var Goal = Backbone.Model.extend({
 
         if (!_.isObject(attrs.metadata))
         { attrs.metadata = {}; }
-        _.each(['comparison_function', 'description', 'title_image', 'icon'], function(k)
+        _.each(['comparison_function', 'description', 'title_image', 'icon', 'custom_title'], function(k)
         {
             attrs.metadata[k] = attrs[k];
             delete attrs[k];

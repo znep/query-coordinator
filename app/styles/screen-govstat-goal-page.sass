@@ -179,46 +179,47 @@
   h2
     font-weight: normal
 
-.metricsBlock
-  padding: 0 3.6em
+#goalPageRoot
+  .metricsBlock
+    padding: 0 3.6em
 
-  > :first-child
-    display: none
+    > :first-child
+      display: none
 
-  .metricItem
-    border-bottom: 1px solid $color_chrome_box_border
-    margin-bottom: 1.5em
-    padding-bottom: 1.5em
+    .metricItem
+      border-bottom: 1px solid $color_chrome_box_border
+      margin-bottom: 1.5em
+      padding-bottom: 1.5em
 
-    .socrata-component
-      min-height: 0
-    .component-Text
-      padding: 0
-
-    .metricTitle
-      font-size: 1.3em
-      h2
-        font-weight: normal
-        line-height: 1.5em
+      .socrata-component
+        min-height: 0
+      .component-Text
         padding: 0
 
-    .indicatorContainer
-      @include text-progress-colors
-      text-align: center
+      .metricTitle
+        font-size: 1.3em
+        h2
+          font-weight: normal
+          line-height: 1.5em
+          padding: 0
 
-      .value
-        font-size: 3em
-      .unit, .type
-        line-height: 1em
-      .unit
-        color: #666
-        font-size: 1.4em
-        padding: 0.2em 0
-      .type
-        color: #555
+      .indicatorContainer
+        @include text-progress-colors
+        text-align: center
 
-    .goalProgress
-      padding-top: 0.6em
+        .value
+          font-size: 3em
+        .unit, .type
+          line-height: 1em
+        .unit
+          color: #666
+          font-size: 1.4em
+          padding: 0.2em 0
+        .type
+          color: #555
+
+      .goalProgress
+        padding-top: 0.6em
 
 .relatedVisualizations
   border-bottom: 1px solid $color_chrome_box_border

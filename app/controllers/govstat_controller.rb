@@ -132,7 +132,11 @@ protected
               text: '{category.name ||}'
             }, {
               type: 'Title',
-              customClass: 'goalTitle',
+              customClass: 'goalTitle customTitle {goal.metadata.custom_title /.+/hasCustomTitle/ ||}',
+              text: '{goal.metadata.custom_title}'
+            }, {
+              type: 'Title',
+              customClass: 'goalTitle defaultTitle',
               text: goal_statement
             }, {
               type: 'Text',
@@ -152,7 +156,8 @@ protected
                 }, {
                   type: 'Text',
                   htmlClass: 'metricTime',
-                  html: 'measured {goal.metrics.0.computed_values.as_of @[%b %Y] ||today}'
+                  ifValue: 'goal.metrics.0.computed_values.as_of',
+                  html: 'measured {goal.metrics.0.computed_values.as_of @[%b %Y] ||}'
                 }, progress_indicator('goal.metrics.0') ]
               }, {
                 type: 'Container',
@@ -222,7 +227,7 @@ protected
               weight: 16,
               type: 'Container',
               children: [
-                { type: 'Title', htmlClass: 'metricTitle', text: '{title}' },
+                { type: 'Title', htmlClass: 'metricTitle', text: '{title ||}' },
                 progress_indicator
               ]
             },
@@ -234,7 +239,7 @@ protected
               children: [
                 { type: 'Text', htmlClass: 'current value', html: '{computed_values.metric_value %[,3] ||}' },
                 { type: 'Text', htmlClass: 'current unit', html: '{unit ||}' },
-                { type: 'Text', htmlClass: 'current type', html: 'measured {computed_values.as_of @[%B %Y] ||today}' }
+                { type: 'Text', ifValue: 'computed_values.as_of', htmlClass: 'current type', html: 'measured {computed_values.as_of @[%B %Y] ||}' }
               ]
             },
             {

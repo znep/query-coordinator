@@ -157,6 +157,10 @@ var GoalEditor = Backbone.View.extend({
         var self = this;
         this.listenTo(this.model, 'change:is_public',
             function(_, is_public) { self.$el.toggleClass('draft', !is_public); });
+
+        var titleFields = [ 'subject', 'comparison_function', 'name', 'goal_delta', 'goal_delta_is_pct', 'end_date' ];
+        this.listenTo(this.model, _.map(titleFields, function(field) { return 'change:' + field }).join(' '),
+            function() { self.$el.find('.customTitle input').blur(); }); // update default title
     },
     render: function()
     {
@@ -232,6 +236,9 @@ var GoalEditor = Backbone.View.extend({
             });
         });
 
+        // bind fancy custom_title
+        $mainDetails.find('.customTitle input').example(function() { return self._generateGoalSentence(); });
+
         // bind fancy icon
         var $iconPicker = $additionalDetails.find('.iconPickerHandle');
         _.defer(function() { $iconPicker.iconPicker(); }); // defer for scrollbind
@@ -285,7 +292,11 @@ var GoalEditor = Backbone.View.extend({
     updateTextAttr: function(event)
     {
         var $input = $(event.target);
-        this.model.set($input.attr('name'), $input.val());
+
+        var value = $input.attr('name');
+        if ($input.hasClass('prompt')) { value = null; }
+
+        this.model.set(value, $input.val());
     },
     updateFakeBooleanAttr: function(event)
     {
@@ -316,6 +327,33 @@ var GoalEditor = Backbone.View.extend({
             var $markup = $(event.target).clone();
             self.model.set('description', $markup.html());
         });
+    },
+
+    _generateGoalSentence: function()
+    {
+        var comparisons = { '<': 'reduce', '>': 'improve' };
+
+        var rawEndDate = this.model.get('end_date');
+        var endDate = $.isBlank(rawEndDate) ? null : new Date(rawEndDate);
+        var formattedEndDate = endDate ? ('by ' + endDate.format('%h %Y')) : '';
+
+        var formattedGoalDelta = this.model.get('goal_delta') || null;
+        if (!$.isBlank(formattedGoalDelta))
+        {
+            formattedGoalDelta =
+              'by ' +
+              formattedGoalDelta +
+              (this.model.get('goal_delta_is_pct') ? '%' : '');
+        }
+
+        return _.compact([
+            this.model.get('subject') || 'We',
+            'will',
+            comparisons[this.model.get('comparison_function')] || 'change',
+            this.model.get('name') || 'something',
+            formattedGoalDelta,
+            formattedEndDate
+        ]).join(' ');
     }
 });
 

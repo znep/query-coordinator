@@ -189,6 +189,9 @@
     .amountInput
       width: 20em
 
+    .startDateInput, .endDateInput
+      width: 25em
+
     .amountIsPercentInput
       border: none
 
@@ -207,6 +210,18 @@
 
       input:checked + label
         @include opacity(0.85)
+
+    .customTitle
+      padding-top: 6em
+
+      .customTitleInput
+        width: 100%
+
+        input
+          font-size: 1.8em
+
+          &.prompt
+            @include opacity(0.5)
 
   form.additionalDetails
     h2

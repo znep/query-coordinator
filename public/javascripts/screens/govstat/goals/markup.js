@@ -143,26 +143,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                     }]
                 }, {
                     _: 'span',
-                    contents: 'by'
-                }, {
-                    _: 'div',
-                    className: 'inputWrapper endDateInput',
-                    contents: [{
-                        _: 'label',
-                        'for': goal.cid + '_end_date',
-                        contents: 'Goal Date'
-                    }, {
-                        _: 'input',
-                        type: 'text',
-                        id: goal.cid + '_end_date',
-                        className: 'date',
-                        name: 'end_date',
-                        'data-rawvalue': goal.get('end_date'),
-                        value: goal.get('end_date') ? new Date(goal.get('end_date')).toDateString() : ''
-                    }]
-                }, {
-                    _: 'span',
-                    contents: ', starting '
+                    contents: 'starting'
                 }, {
                     _: 'div',
                     className: 'inputWrapper startDateInput',
@@ -181,7 +162,44 @@ blist.namespace.fetch('blist.govstat').markup = {
                     }]
                 }, {
                     _: 'span',
+                    contents: 'and completing by'
+                }, {
+                    _: 'div',
+                    className: 'inputWrapper endDateInput',
+                    contents: [{
+                        _: 'label',
+                        'for': goal.cid + '_end_date',
+                        contents: 'Goal Date'
+                    }, {
+                        _: 'input',
+                        type: 'text',
+                        id: goal.cid + '_end_date',
+                        className: 'date',
+                        name: 'end_date',
+                        'data-rawvalue': goal.get('end_date'),
+                        value: goal.get('end_date') ? new Date(goal.get('end_date')).toDateString() : ''
+                    }]
+                }, {
+                    _: 'span',
                     contents: '.'
+                }, {
+                    _: 'div',
+                    className: 'customTitle',
+                    contents: [{
+                        _: 'div',
+                        className: 'inputWrapper customTitleInput',
+                        contents: [{
+                            _: 'label',
+                            'for': goal.cid + '_custom_title',
+                            contents: 'Goal Title'
+                        }, {
+                            _: 'input',
+                            type: 'text',
+                            id: goal.cid + '_custom_title',
+                            name: 'custom_title',
+                            value: goal.get('custom_title')
+                        }]
+                    }]
                 }]
             });
         },

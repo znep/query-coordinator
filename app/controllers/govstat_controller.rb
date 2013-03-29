@@ -37,6 +37,7 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
       :custom_javascript => 'screen-govstat-dashboard' }
   end
 
+  protect_from_forgery :except => :manage_data
   def manage_data
     @page = get_page(manage_data_config(params), request.path,
                      'Manage Data | ' + CurrentDomain.strings.site_title, params)
@@ -319,7 +320,32 @@ protected
       { value: v[:value], text: v[:text], current: params[:category] == v[:value], item: v[:item] } }
     cats.unshift({ value: '', text: 'All', current: params[:category].blank? })
     opts = { nofederate: true, publication_stage: 'published', limit: 20 }
-    [:category].each { |p| opts[p] = params[p] unless params[p].blank? }
+
+    view_types = view_types_facet[:options].each { |o| o[:current] = (params[:view_type] == o[:value]) }
+    view_types.unshift({ value: '', text: 'All', current: params[:view_type].blank? })
+
+    if params[:view_type].present?
+      case params[:view_type]
+      when 'unpublished'
+        opts[:limitTo] = 'tables'
+        opts[:datasetView] = 'dataset'
+        opts[:publication_stage] = 'unpublished'
+      when 'datasets'
+        opts[:limitTo] = 'tables'
+        opts[:datasetView] = 'dataset'
+      when 'filters'
+        opts[:limitTo] = 'tables'
+        opts[:datasetView] = 'view'
+      else
+        opts[:limitTo] = params[:view_type]
+      end
+    end
+
+    search_params = {}
+    [:category, :view_type, :q].each { |p| search_params[p] = params[p] if params[p].present? }
+    non_default = !search_params.empty?
+    [:category, :q].each { |p| opts[p] = params[p] unless params[p].blank? }
+
     {
       data: {
         myDatasets: { type: 'datasetList', search: opts.merge({
@@ -350,9 +376,34 @@ protected
             context: { type: 'list', list: cats },
             childProperties: { customClass: 'filterItem' },
             children: [{
-              type: 'Button', href: '?category={value ||}',
+              type: 'Button', href: '?' + search_params.reject { |k, v| k == :category }.
+                map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&category={value ||}',
               htmlClass: 'value{value ||__default} current-{current} item-{item ||parent}', text: '{text}'
             }]
+          },
+          { type: 'Title', text: 'View Types' },
+          {
+            type: 'Repeater',
+            context: { type: 'list', list: view_types },
+            childProperties: { customClass: 'filterItem' },
+            children: [{
+              type: 'Button', href: '?' + search_params.reject { |k, v| k == :view_type }.
+                map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&view_type={value ||}',
+              htmlClass: 'value{value ||__default} current-{current}', text: '{text}'
+            }]
+          },
+          { type: 'Title', text: 'Search' },
+          {
+            type: 'Text', customClass: 'searchBlock',
+            html: '<form action="/manage/data" " method="get">' +
+              search_params.reject { |k, v| k == :q }.map { |k, v|
+                '<input type="hidden" name="' + k.to_s + '" value="' + v.to_s + '" />' }.join('') +
+              '<input type="text" name="q" value="' + (search_params[:q] || '') + '" />' +
+              (search_params[:q].present? ? '<a href="?' + search_params.reject { |k, v| k == :q }.
+                map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '" class="clearSearch ss-delete" ' +
+                'title="Clear Search"></a>' : '') +
+              '<input type="submit" value="Search" class="button" />' +
+              '</form>'
           }
           ]
         },
@@ -368,15 +419,18 @@ protected
             { type: 'Title', text: 'My Data', htmlClass: 'categoryTitle' },
             {
               type: 'Repeater',
-              ifValue: 'count',
+              ifValue: (non_default ? '' : 'count'),
               container: { type: 'GridContainer', cellWidth: 180, cellHeight: 200,
                 cellSpacing: 10, cellVSpacing: 10,
                 # This hack to insert a fixed initial item is pretty awesome
-                children: [
+                children: (non_default ? [] : [
                 { type: 'Text', customClass: 'addBox', htmlClass: 'singleItem addNewItem',
                   html: '<a class="primaryAction" href="' + new_dataset_path + '">' +
                   '<span class="actionDetails ss-uploadcloud">Upload New Data</span></a>' }
-              ]},
+              ]) },
+              noResultsChildren: [{
+                type: 'Title', text: 'No data available'
+              }],
               children: [{
                 type: 'Container', htmlClass: 'datasetItem singleItem publication-{dataset.publicationStage}',
                 children: [{
@@ -392,7 +446,7 @@ protected
                   ]
                 } ]
               } ]
-            }, {
+            }, (non_default ? nil : {
               type: 'Container',
               ifValue: { negate: true, key: 'count' },
               htmlClass: 'noDataSection',
@@ -404,7 +458,7 @@ protected
                 '<input class="button ss-navigateright right" value="Add Data" />'
                 }
               ]
-            } ]
+            }) ]
           }, {
             type: 'Container',
             htmlClass: 'allDatasets categoryItem',

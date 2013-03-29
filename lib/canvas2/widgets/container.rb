@@ -12,7 +12,7 @@ module Canvas2
 
     def children
       return nil unless self.has_children?
-      @children ||= CanvasWidget.from_config(@properties['children'], self)
+      @children ||= CanvasWidget.from_config(@properties['children'], self).compact
     end
 
     def render_contents

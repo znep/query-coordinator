@@ -162,6 +162,7 @@ module Canvas2
     end
 
     def self.from_config(config, parent = nil, resolver_context = nil)
+      return nil if config.nil?
       if config.is_a? Array
         i = 0
         return config.map do |config_item|

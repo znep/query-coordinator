@@ -230,7 +230,7 @@
                     mapObj._children[index].setFullQuery(mapObj._children[index]._query);
                     mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
                 } catch(e) {
-                    mapObj._children[index] = { invalid: true, error: e };
+                    mapObj._children[index] = { invalid: true, error: (e || {}).message };
                     mapObj._invalidChildren = $.makeArray(mapObj._invalidChildren);
                     mapObj._invalidChildren.push(mapObj._children[index]);
                 }

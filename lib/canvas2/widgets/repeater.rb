@@ -97,8 +97,10 @@ module Canvas2
         real_c = CanvasWidget.from_config(cont_config, self)
         @orig_props['container'] = cont_config
         @orig_props['container']['id'] = orig_id
-        real_c.children = all_c.length > 0 ? all_c :
-          CanvasWidget.from_config(@properties['noResultsChildren'], self)
+        # Enable hack to prepend special item to Repeater
+        real_c.children ||= []
+        real_c.children.concat(all_c.length > 0 ? all_c :
+          CanvasWidget.from_config(@properties['noResultsChildren'], self))
         r = real_c.render
         t += r[0]
         fully_rendered &&= r[1]

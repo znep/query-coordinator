@@ -298,7 +298,30 @@
                     { type: 'note', value: 'Select \'Exclusive\' if only one base map should ' +
                         'display at a time.' },
                     { text: 'Exclusive', name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
-                    { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend' }
+                    { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend',
+                        onlyIf: { func: function()
+                            { return $.urlParam(window.location.href, 'legend') != 'nextgen'; } }
+                    }
+                ]
+            },
+            {
+                title: 'Legend Configuration', type: 'selectable',
+                onlyIf: { func: function() { return $.urlParam(window.location.href, 'legend') == 'nextgen'; } },
+                fields: [
+                    { text: 'Describe Conditional Formats', type: 'checkbox', inputFirst: true,
+                      name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
+                      lineClass: 'advLegendCheck' },
+                    { type: 'repeater', minimum: 0, initialRepeatCount: 0,
+                      addText: 'Add Custom Legend Entry',
+                      name: 'displayFormat.legendDetails.customEntries',
+                      field: {
+                          type: 'group', options: [
+                              { type: 'color', name: 'color', defaultValue: '#ffffff',
+                                lineClass: 'colorCollapse' },
+                              { text: 'Custom Label', type: 'text',
+                                name: 'description', required: true }
+                          ]
+                    } }
                 ]
             });
         return config;

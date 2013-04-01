@@ -280,6 +280,7 @@
                     {
                         layerObj.handleDataLoaded(layerObj._view.loadedRows());
                         layerObj._parent._controls.Overview.redraw();
+                        layerObj._parent._controls.Legend.redraw();
                     }
                 }, aggs);
             }
@@ -553,6 +554,7 @@
                             {
                                 layerObj.handleDataLoaded(layerObj._view.loadedRows());
                                 layerObj._parent._controls.Overview.redraw();
+                                layerObj._parent._controls.Legend.redraw();
                             } }
             });
         },

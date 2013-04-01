@@ -113,15 +113,54 @@
     cursor: default
     height: 8px
 
+$swatch_width: 16px
+
 .mapLegend
+  @include border-radius(0.1em)
   background-color: #ffffff
-  border: 1px solid #333333
-  padding: 0.5em
+  border: 1px solid #444444
+  padding:
+    top: 8px
+    bottom: 8px
+    left: 12px
+    right: 12px
   position: absolute
   left: 3.7em
   bottom: 4em
   z-index: 1000
  
+  .legendRow
+    margin-top: 9px
+
+    &:first-child
+      margin-top: 0
+
+    .description
+      white-space: nowrap
+      line-height: 16px
+      margin-left: $swatch_width + 5
+      font-size: 1.2em
+
+    .color_swatch
+      cursor: default
+
+      &:last-child
+        border-right: none
+
+    .rangeValues
+      width: ($swatch_width + 1) * 6 - 1
+
+  .icon .symbol
+    float: left
+
+    img
+      max-width: 16px
+      max-height: 16px
+
+  .colorRange .description
+    margin-left: ($swatch_width + 1) * 6 + 5
+
+// For legacy during feature flag
 .mapLegend .color_swatch
   cursor: default
 

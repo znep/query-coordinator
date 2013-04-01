@@ -79,6 +79,14 @@
             function(c)
             { mapObj._controls[c] = mapObj.map.getControlsByClass('blist.openLayers.' + c)[0]; });
             mapObj._controls.Navigation = mapObj.map.getControlsByClass('OpenLayers.Control.Navigation')[0];
+            if (blist.openLayers.legendNextgen)
+            {
+                mapObj.map.addControl(mapObj._controls.Legend = new blist.openLayers.Legend(mapObj));
+                mapObj._primaryView.bind('conditionalformatting_change',
+                    function() { mapObj._controls.Legend.redraw(); });
+            }
+            else
+            { mapObj._controls.Legend = { redraw: function() {} }; }
 
             if (mapObj.settings.interactToScroll && $.subKeyDefined(mapObj, '_controls.Navigation'))
             {
@@ -146,7 +154,8 @@
 
             mapObj.initializeBackgroundLayers();
 
-            if (!_.isUndefined(mapObj._displayFormat.distinctLegend))
+            if (!blist.openLayers.legendNextgen
+                && !_.isUndefined(mapObj._displayFormat.distinctLegend))
             { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()
                                                    : mapObj._controls.Overview.disableLegend(); }
 
@@ -154,6 +163,7 @@
             _.each(mapObj._children.slice(length), function(childView) { childView.destroy(); });
             mapObj._children = mapObj._children.slice(0, length);
             mapObj._controls.Overview.truncate(length);
+            mapObj._controls.Legend.redraw();
 
             _.each(mapObj._children, function(cv) { cv.loading = true; });
 
@@ -372,6 +382,7 @@
                 && _.all(mapObj._children, function(cv) { return cv.ready(); }))
             {
                 mapObj._controls.Overview.redraw();
+                mapObj._controls.Legend.redraw();
                 mapObj.viewportHandler().stopExpecting();
                 mapObj.viewportHandler().saveViewport(true);
                 mapObj.geolocate();

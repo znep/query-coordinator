@@ -9,6 +9,8 @@
         OpenLayers.Layer.Bing, OpenLayers.Layer.ArcGISCache, OpenLayers.Layer.Google
     ];
 
+    blist.openLayers.legendNextgen = $.urlParam(window.location.href, 'legend') == 'nextgen';
+
     blist.openLayers.isBackgroundLayer = function(layer)
     { return _.any(blist.openLayers.backgroundLayerTypes,
         function(layerType) { return layer instanceof layerType; }); };
@@ -566,6 +568,7 @@
             });
         },
 
+        // FIXME: #draw and #redraw as used here are non-idiomatic.
         draw: function()
         {
             var $dom = $(this.map.div);
@@ -591,7 +594,7 @@
                             .find('.contentBlock').toggleClass('hide');
                     });
             }
-            if ($dom.siblings('.mapLegend').length < 1)
+            if (!blist.openLayers.legendNextgen && $dom.siblings('.mapLegend').length < 1)
             {
                 $dom.before('<div class="mapLegend hide">' +
                     '<div class="contentBlock">' +
@@ -612,7 +615,7 @@
             if (control.map.hasNoBackground) { backgroundLayers = []; }
 
             $dom.find('ul').empty();
-            $(this.map.div).siblings('.mapLegend').empty();
+            if (!blist.openLayers.legendNextgen) { $(this.map.div).siblings('.mapLegend').empty(); }
 
             $dom.find('.base').toggle(backgroundLayers.length > 0);
             $dom.find('.data').toggle(this._dataLayers.length > 0);
@@ -770,7 +773,7 @@
                 var $layerLI = $layerSet.find('li:last');
                 $layerLI.data('layer', layer);
 
-                control.renderLegend($dom, layerObj);
+                if (!blist.openLayers.legendNextgen) { control.renderLegend($dom, layerObj); }
             });
         },
 
@@ -881,6 +884,136 @@
         },
 
         CLASS_NAME: 'blist.openLayers.Overview'
+    });
+
+    /*
+      Rules:
+        1) If you don't have a description, you don't get included in the legend.
+        2) Icons will be shrunk to a 16x16 with appropriate aspect ratio.
+    */
+    blist.openLayers.Legend = OpenLayers.Class(OpenLayers.Control, {
+
+        initialize: function(mapObj)
+        {
+            this.mapObj = mapObj;
+        },
+
+        destroy: function()
+        {
+            OpenLayers.Control.prototype.destroy.apply(this, arguments);
+        },
+
+        redraw: function()
+        {
+            this.draw();
+        },
+
+        draw: function()
+        {
+            OpenLayers.Control.prototype.draw.apply(this, arguments);
+            var control = this,
+                $dom = $(this.map.div);
+            if ($dom.siblings('.mapLegend').length < 1)
+            {
+                $dom.before('<div class="mapLegend hide">' + '</div>');
+            }
+            this.$dom = $dom = $dom.siblings('.mapLegend');
+
+            $dom.find('.legendRow').remove();
+
+            // Get and $.union every possible conditional format that exists.
+            var cfs = [];
+            if ((this.mapObj._displayFormat.legendDetails || {}).showConditional)
+            {
+                cfs = _.compact($.union(_.flatten(_.values(
+                        $.deepGet(this.mapObj._primaryView, 'metadata', 'conditionalFormatting'))),
+                    _.map(this.mapObj._children,
+                        function(c) { return c._view.metadata.conditionalFormatting; })))
+            }
+
+            // Custom entries.
+            cfs = cfs.concat((this.mapObj._displayFormat.legendDetails || {}).customEntries);
+            _.each(cfs, function(cf)
+            {
+                if (!cf || !cf.description) { return; }
+
+                if (cf.color)
+                { control.render({ symbolType: 'oneColor', color: cf.color,
+                                   description: cf.description }); }
+                else if (cf.icon)
+                { control.render({ symbolType: 'icon', icon: cf.icon,
+                                   description: cf.description }); }
+            });
+
+            _(this.mapObj._children).chain().invoke('legendData').compact().each(function(ld)
+            {
+                control.render($.extend({}, ld,
+                    { symbolType: 'colorRange', description: ld.name }));
+            });
+
+            $dom.removeClass('hide', $dom.find('.legendRow').length > 0);
+        },
+
+        render: function(datum)
+        {
+            var $dom = this.$dom, $row;
+            $dom.append($row = $.tag2({ _: 'div', contents: [
+                    { _: 'div', className: 'symbol' },
+                    { _: 'div', className: 'description', contents: datum.description }
+                ], 'className': 'legendRow clearfix ' + datum.symbolType
+            }));
+
+            this.renderSymbol[datum.symbolType].call(this, datum, $row);
+
+            return $dom;
+        },
+
+        renderSymbol: {
+        oneColor: function(datum, $row)
+        {
+            $row.find('.symbol').append($.tag2({ _: 'div', className: 'color_swatch', contents: [
+                { _: 'div', className: 'inner', contents: '&nbsp;' }]
+            }));
+            $row.find('.color_swatch').css('background-color', datum.color);
+        },
+        icon: function(datum, $row)
+        {
+            $row.find('.symbol').append($.tag2({ _: 'img', src: datum.icon }));
+        },
+        colorRange: function(datum, $row)
+        {
+            var humanify = function(x)
+                {
+                    var abs = Math.abs(x);
+                    return abs >= 1000 ? blist.util.toHumaneNumber(x, 2)
+                                       : (abs - Math.floor(abs) > 0 ? x.toFixed(4) : x);
+                },
+                min = humanify(datum.minimum),
+                max = humanify(datum.maximum);
+
+            $row.find('.symbol').append($.tag2({ _: 'ul', contents: _.map(datum.gradient,
+                function(segment, index)
+                {
+                    var valueRange = _.map(
+                            [index == 0 ? datum.minimum
+                                        : datum.gradient[index-1].value,
+                             ' - ', segment.value], $.commaify)
+                        .join('');
+
+                    return { _: 'div', className: 'color_swatch',
+                        style: 'background-color: ' + segment.color, title: valueRange,
+                        contents: [{ _: 'div', className: 'inner', contents: '&nbsp;' }]
+                    };
+                })
+            }));
+            $row.append($.tag2({ _: 'div', className: 'rangeValues', contents: [
+                { _: 'span', contents: min },
+                { _: 'span', style: { 'text-align': 'right', 'float': 'right'}, contents: max }
+            ]}));
+        }
+        },
+
+        CLASS_NAME: 'blist.openLayers.Legend'
     });
 
     blist.openLayers.Overview.SWATCH_WIDTH = 16;

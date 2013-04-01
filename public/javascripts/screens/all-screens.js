@@ -176,34 +176,14 @@
     onCurrentUser(
       function (user)
       {
-        $('.accountLink .text .currentUser').html(user.displayName);
-        $('.accountLink').removeClass('hide');
+         $('.accountLink .text .currentUser').html(user.displayName);
+         $('.accountLink').removeClass('hide');
+         $('.signOutLink').removeClass('hide');
+         $('.signInLink').addClass('hide');
+         $('.signUpLink').removeClass('hide');
+         if (user !== undefined && user.rights && user.rights.length > 0)
+         {
+            $('.adminLink').removeClass('hide');
+         }
       });
-
-    onCurrentUser(
-        function (user)
-        {
-            if (user !== undefined && user.rights && user.rights.length > 0)
-            {
-                $('.adminLink').removeClass('hide');
-            }
-        });
-
-    onCurrentUser(
-        function (user)
-        {
-            $('.signInLink').addClass('hide');
-        });
-
-    onCurrentUser(
-        function (user)
-        {
-            $('.signOutLink').removeClass('hide');
-        });
-
-    onCurrentUser(
-        function (user) {
-            $('.signUpLink').removeClass('hide');
-        });
-
 });

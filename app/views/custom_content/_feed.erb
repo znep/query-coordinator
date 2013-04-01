@@ -1,7 +1,6 @@
 <div id="<%= widget.elem_id %>" class="feedWidget clearfix"></div>
 
 <%- needs_view_js(widget.main_view.id, widget.main_view) -%>
-<%= current_user_js %>
 
 <%- content_for :js_footer do -%>
   <%- allow_once do -%>

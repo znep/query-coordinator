@@ -1,4 +1,2 @@
-<%- if current_user.nil? -%>
-  <li class="signUpLink"><a href="<%= signup_url %>" rel="nofollow" title="<%= CurrentDomain.strings.sign_up %>"
-  ><span class="text"><%= CurrentDomain.strings.sign_up %></span></a>
-<%- end -%>
+<li class="signUpLink hide"><a href="<%= signup_url %>" rel="nofollow" title="<%= CurrentDomain.strings.sign_up %>">
+    <span class="text"><%= CurrentDomain.strings.sign_up %></span></a>

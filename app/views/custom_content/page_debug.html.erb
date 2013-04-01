@@ -2,7 +2,6 @@
 <title><%= @page.name %></title>
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
-
 <h2>Error</h2>
 <p style="font-size:1.3em;margin-bottom:2em;"><%= @error.to_s %></p>
 
@@ -15,5 +14,4 @@
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
-  <%= current_user_js %>
 <%- end -%>

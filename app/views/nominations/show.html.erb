@@ -98,8 +98,6 @@
   <%= render :partial => 'templates/feed', :locals => {:allow_comments => true} %>
 <%- end -%>
 
-<%= current_user_js %>
-
 <%- content_for :js_footer do -%>
   <%= include_javascripts 'screen-nomination' %>
   <script type='text/javascript'>

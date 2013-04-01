@@ -12,7 +12,7 @@
 <%= meta_tags @custom_meta.merge({:title => @page.name,
                                  'og:title' => @page.name}) unless @custom_meta.blank?  %>
 <%= rendered_stylesheet_tag 'components' %>
-<% end %>
+  <% end %>
 
 <%= raw @page.render(!@minimal_render) %>
 
@@ -24,7 +24,6 @@
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
 <%- end -%>
 
-<%- end -%><%# prerendered_cache %>
-<%- content_for :js_footer do -%>
-  <%= current_user_js %>
 <%- end -%>
+<%# prerendered_cache %>
+

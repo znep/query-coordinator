@@ -38,7 +38,3 @@ Canvas2::Util.is_private(@page.private_data?)
 <%- content_for :js_footer do -%>
   <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil } %>
 <%- end -%>
-
-<% content_for :js_footer do %>
-<%= current_user_js %>
-<% end %>

@@ -171,6 +171,11 @@ private
     cookies.delete(:logged_in) unless current_user
   end
 
+  # Sets socrata-specific headers so that a CDN or ATS may fully cache this HTML
+  def can_be_cached
+    ConditionalRequestHandler.set_cache_control_headers(response, true)
+  end
+
   def require_user(force_login = false)
     unless current_user_session && !force_login
       if @suppress_chrome

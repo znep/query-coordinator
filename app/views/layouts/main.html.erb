@@ -181,10 +181,6 @@ http://www.socrata.com
       blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
     <%- end -%>
 
-    <%- if !current_user.nil? -%>
-      blist.currentUserId = "<%= current_user.id %>";
-    <%- end -%>
-
     blist.configuration.canvasAvailable = <%= module_available?(:canvas2) %>;
 
     <%- if !@suppress_chrome -%>

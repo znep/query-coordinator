@@ -123,4 +123,87 @@
         }
         $d.text(new Date($d.data('rawdatetime') * 1000).format(fmt));
     });
+
+    var on_current_user = [];
+
+    // global fn
+    var getCurrentUser = function()
+    {
+        $.socrataServer.makeRequest({
+            type: "GET",
+            url: '/api/users/current.json',
+            headers: {'Cache-Control': 'nocache'},
+            success: function(user)
+            {
+                blist.currentUser = user;
+                blist.currentUserId = user.id;
+                for (var i = 0; i < on_current_user.length; i++)
+                {
+                    successCallback = on_current_user[i];
+                    if (_.isFunction(successCallback))
+                    {
+                        successCallback(user);
+                    }
+                }
+            },
+            error: function() {
+                // noop
+            }});
+    };
+
+    // kick off the process of setting the current user
+    var loggedInCookie = $.cookies.get('logged_in');
+    if (loggedInCookie && loggedInCookie == "true")
+    {
+        if (blist.currentUser === undefined)
+        {
+            getCurrentUser();
+        }
+    }
+
+    //  Callback mechanism for when the request for the
+    //  current user is slow
+    var onCurrentUser = function(successCallback)
+    {
+        if (blist.currentUser !== undefined)
+        {
+            successCallback(blist.currentUser);
+        } else {
+            on_current_user.push(successCallback);
+        }
+    };
+
+    onCurrentUser(
+      function (user)
+      {
+        $('.accountLink .text .currentUser').html(user.displayName);
+        $('.accountLink').removeClass('hide');
+      });
+
+    onCurrentUser(
+        function (user)
+        {
+            if (user !== undefined && user.rights && user.rights.length > 0)
+            {
+                $('.adminLink').removeClass('hide');
+            }
+        });
+
+    onCurrentUser(
+        function (user)
+        {
+            $('.signInLink').addClass('hide');
+        });
+
+    onCurrentUser(
+        function (user)
+        {
+            $('.signOutLink').removeClass('hide');
+        });
+
+    onCurrentUser(
+        function (user) {
+            $('.signUpLink').removeClass('hide');
+        });
+
 });

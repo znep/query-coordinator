@@ -47,7 +47,6 @@
 <%- end -%>
 
 <%- content_for :js_footer do -%>
-  <%= current_user_js %>
   <%= render :partial => 'canvas_js', :locals => { :page => @templet.page, :template => @templet } %>
   <%= include_javascripts 'configurator' %>
   <%= include_javascripts 'shared-editors' %>

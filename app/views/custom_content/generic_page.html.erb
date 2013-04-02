@@ -14,7 +14,7 @@
 <%- end -%>
 
 <%- content_for :js_footer do -%>
-  <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil } %>
+  <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil, :non_editable => true } %>
   <%- if !local_assigns[:custom_javascript].nil? -%>
   <%= include_javascripts custom_javascript %>
   <%- end -%>

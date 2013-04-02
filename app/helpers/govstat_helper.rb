@@ -181,6 +181,7 @@ module GovstatHelper
       {
         type: 'Container',
         htmlClass: 'expandedSection',
+        hidden: true,
         children: [
         { type: 'Text', customClass: 'close', html: '<a href="#" class="ss-delete"></a>' },
         {

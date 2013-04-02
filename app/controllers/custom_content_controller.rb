@@ -184,7 +184,8 @@ class CustomContentController < ApplicationController
         # manifest for pages which can be shared between logged-in users. 304s should NEVER be sent if this is valid
         lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, SHARED_USER)
         if !lookup_manifest.nil?
-          Rails.logger.info("Shared-User Manifest valid; reading from global fragment, no 304s allowed")
+          Rails.logger.info("Shared-User Manifest valid; reading from global fragment")
+          return true if handle_conditional_request(request, response, lookup_manifest)
           @cached_fragment = read_fragment(cache_key_no_user)
         else
           Rails.logger.info("Shared-User Manifest not valid. No Cache available.")
@@ -279,12 +280,13 @@ class CustomContentController < ApplicationController
           manifest = lookup_manifest || Canvas2::DataContext.manifest
           # Only set the manifest if we were not successful in during lookup; we do not want to reset the
           # manifest just because the fragment cache has expired.
+          manifest_user = user_tristate(Canvas2::Util.is_private, @current_user)
           if lookup_manifest.nil?
             manifest.max_age = @page.max_age
-            manifest_user = user_tristate(Canvas2::Util.is_private, @current_user)
             manifest.set_access_level(manifest_user)
             VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
           end
+          ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil? || manifest_user == SHARED_USER)
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
         # but Rails ignores it and passes it all the way up without rescuing

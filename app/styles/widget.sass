@@ -11,6 +11,7 @@ html, body
 .widgetWrapper
   background-color: $color_frame_color
   border: $frame_border_width solid $color_frame_border_color
+  box-sizing: border-box
   height: 100%
 
 .headerBar
@@ -178,6 +179,9 @@ html, body
       width: 13px
       &.datasetName
         width: auto
+
+    &.datasetName
+      padding: 0.4em 0.2em
 
     &.share .menu
       height: 13px

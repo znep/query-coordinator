@@ -381,7 +381,7 @@ module Canvas2
   class PagedContainer < Container
     def children
       return nil unless self.has_children?
-      return @children unless @children.blank?
+      return @children unless @children.nil?
       found_item = false
       if !@properties['defaultPage'].blank?
         def_page = string_substitute(@properties['defaultPage'])

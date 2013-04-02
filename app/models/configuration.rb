@@ -11,6 +11,15 @@ class Configuration < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def self.get_or_create(type, opts)
+    config = self.find_by_type(type, true, CurrentDomain.cname).first
+    if config.nil?
+      config = self.create({'type' => type, 'default' => true,
+        'domainCName' => CurrentDomain.cname}.merge(opts))
+    end
+    config
+  end
+
   def properties
     props = Hashie::Mash.new
     return props if data['properties'].nil?

@@ -28,7 +28,7 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level('edit_site_theme')}
   def modify_sidebar_config
-    config = get_or_create_configuration('sidebar', {'name' => 'Sidebar configuration'})
+    config = ::Configuration.get_or_create('sidebar', {'name' => 'Sidebar configuration'})
 
     params[:sidebar].each do |k, v|
       update_or_create_property(config, k.to_s, v)
@@ -430,7 +430,7 @@ class AdministrationController < ApplicationController
   #
   before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level('edit_site_theme')}
   def metadata
-    config = get_or_create_configuration('metadata', {'name' => 'Metadata configuration'})
+    config = ::Configuration.get_or_create('metadata', {'name' => 'Metadata configuration'})
     @metadata = config.properties.fieldsets || []
     @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
   end
@@ -980,7 +980,7 @@ class AdministrationController < ApplicationController
 
     if request.post?
       if params[:terms_accepted].present?
-        actions = get_or_create_configuration('actions', {:name => 'Actions'})
+        actions = ::Configuration.get_or_create('actions', {:name => 'Actions'})
         update_or_create_property(actions, 'tos_accepted', {
           :user => current_user,
           :text => @tos,
@@ -1110,15 +1110,6 @@ private
 
   def get_configuration(type='site_theme', merge=false)
     ::Configuration.find_by_type(type, true, CurrentDomain.cname, merge).first
-  end
-
-  def get_or_create_configuration(type, opts)
-    config = get_configuration(type)
-    if config.nil?
-      config = ::Configuration.create({'type' => type, 'default' => true,
-        'domainCName' => CurrentDomain.cname}.merge(opts))
-    end
-    config
   end
 
   def save_metadata(config, metadata, successMessage, json = false)

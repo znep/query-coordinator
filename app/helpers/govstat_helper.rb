@@ -32,9 +32,21 @@ module GovstatHelper
     result
   end
 
-  def govstat_homepage_config(name = '', is_public = true)
+  def govstat_homepage_config(is_public = true, dashboard_layout = nil)
     search = {}
     search[:isPublic] = is_public unless is_public.nil?
+
+    config = CurrentDomain.configuration('gov_stat')
+    show_all = config.nil? ? nil : config.properties.show_all
+    show_all = true if show_all.nil? || show_all == 'true'
+    show_all = false if show_all == 'false'
+
+    dashboard_layout = config.properties.dashboard_layout if !config.nil?
+    if dashboard_layout.nil?
+      config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
+      dashboard_layout = config.dashboard_layout
+    end
+
     configs = {
       grid_flow: {
         data: {
@@ -123,9 +135,7 @@ module GovstatHelper
               type: 'PagedContainer',
               id: 'categoryPages',
               htmlClass: 'categoryItem',
-              children: [
-                list_repeater('goals', 'All')
-              ]
+              children: (show_all ? [ list_repeater('goals', 'All') ] : [])
             },
             noResultsChildren: [
             { type: 'Title', text: 'No Goals', htmlClass: 'noResults' }
@@ -144,7 +154,7 @@ module GovstatHelper
         }
       }
     }
-    configs[name] || configs[:list]
+    configs[dashboard_layout.to_sym] || configs[:list]
   end
 
   def list_repeater(context_id, label = nil)

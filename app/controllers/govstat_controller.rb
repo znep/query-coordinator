@@ -17,8 +17,7 @@ class GovstatController < ApplicationController
   end
 
   def manage
-    govstat_config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
-    config = govstat_homepage_config((govstat_config.dashboard_layout || '').to_sym, nil)
+    config = govstat_homepage_config(nil)
     config[:content][:children].unshift({ type: 'Container', htmlClass: 'subHubSection', children: [
       { type: 'Title', htmlClass: 'subHubTitle', text: 'Welcome to GovStat.' },
       { type: 'Text', htmlClass: 'subHubIntro', html: 'You can check out the current status of your goals below, or dig into these hubs for a deeper look.' },
@@ -63,11 +62,18 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   end
 
   def manage_template
-    @template = (CurrentDomain.properties.gov_stat || Hashie::Mash.new).dashboard_layout || 'grid_flow'
+    config = CurrentDomain.configuration('gov_stat')
+    dashboard_layout = config.nil? ? nil : config.properties.dashboard_layout
+    if dashboard_layout.nil?
+      config = CurrentDomain.properties.gov_stat || Hashie::Mash.new
+      dashboard_layout = config.dashboard_layout
+    end
+    @template = dashboard_layout || 'grid_flow'
   end
 
   def manage_template_update
-    CurrentDomain.current_theme.update_or_create_property('gov_stat.dashboard_layout', params['template'])
+    config = ::Configuration.get_or_create('gov_stat', {'name' => 'GovStat'})
+    config.update_or_create_property('dashboard_layout', params['template'])
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
       format.html do

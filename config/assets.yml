@@ -62,6 +62,7 @@ javascripts:
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/backbone.js
     - public/javascripts/util/backbone-exts.js
+    - public/javascripts/plugins/backbone.orderable.js
     - public/javascripts/screens/govstat/goals/models.js
   shared-editors:
     - public/javascripts/controls/editors/editor-base.js
@@ -502,6 +503,7 @@ javascripts:
     - public/javascripts/controls/hallo-plugins.js
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/plugins/waypoints.js
+    - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/controls/global-indicator.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/image-uploader.js

@@ -425,6 +425,8 @@ var CategoryPane = Backbone.View.extend({
     },
     render: function()
     {
+        var self = this;
+
         if (this._rendered === true) return; else this._rendered = true;
 
         // make list item
@@ -463,8 +465,7 @@ var CategoryPane = Backbone.View.extend({
         this.$el.append($title);
         this.$el.append(goalsView.$el);
 
-        // color
-        this.$('.categoryTitle, .categoryTitle .editIcon, categoryTitle .removeCategory').css('color', this.model.get('color'));
+        this.$('.categoryTitle, .categoryTitle .editIcon, .categoryTitle .removeCategory').css('color', this.model.get('color'));
         this.$('.categoryTitle').css('border-color', this.model.get('color'));
     },
 
@@ -651,7 +652,7 @@ var DatasetCard = Backbone.View.extend({
     }
 });
 
-var DatasetCardList = Backbone.CollectionView.extend({
+var DatasetCardList = Backbone.OrderableView.extend({
     tagName: 'div',
     className: 'datasetCardList',
     events: {
@@ -659,15 +660,24 @@ var DatasetCardList = Backbone.CollectionView.extend({
     },
     render: function()
     {
-        this.$el.append(this.renderCollection());
+        this.$el.awesomereorder({
+            handleSelector: '.dragHandle',
+            listItemSelector: '.datasetCard',
+            uiDraggableDefaults: {
+                containment: false
+            }
+        });
     },
     removeDataset: function(event)
     {
         event.preventDefault();
         this.collection.remove($(event.target).closest('.datasetCard').data('model'));
     },
-    _addOneView: function(view)
+    _move: function() {}, // nobody else touches the ordering but us
+    _addOneView: function(view, model)
     {
+        var self = this;
+
         Backbone.CollectionView.prototype._addOneView.apply(this, arguments);
 
         view.$el.append($.tag2({
@@ -676,6 +686,16 @@ var DatasetCardList = Backbone.CollectionView.extend({
             href: '#remove',
             title: 'Remove This Dataset'
         }));
+        view.$el.append($.tag2({ _: 'div', className: 'dragHandle' }));
+
+        // ordering: kick awesomereorder
+        this.$el.trigger('awesomereorder-listupdated');
+
+        // listen to drop
+        view.$el.on('awesomereorder-dropped', function()
+        {
+            self.collection.move(model, view.$el.prevAll().length);
+        });
     }
 });
 

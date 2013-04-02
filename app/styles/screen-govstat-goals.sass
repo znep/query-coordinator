@@ -368,6 +368,7 @@
     @include prefixer(box-shadow, 0 0 1em rgba(0, 0, 0, 0.2) inset)
     margin-bottom: 1em
     padding: 2em
+      left: 4em
     position: relative
 
     .datasetIcon
@@ -379,6 +380,15 @@
       font-size: 2em
       font-weight: normal
       line-height: 1.5em
+
+    .dragHandle
+      background: transparent url(/stylesheets/images/interface/drag_handle.png)
+      bottom: 1.5em
+      cursor: move
+      left: 2em
+      position: absolute
+      top: 1.5em
+      width: 6px
 
     .removeDataset
       color: #333

@@ -63,7 +63,7 @@ var DatasetProxy = Backbone.Model.extend({
     toJSON: function() { return this.get('id'); }
 });
 
-var DatasetsProxy = Backbone.Collection.extend({
+var DatasetsProxy = Backbone.OrderableCollection.extend({
     model: DatasetProxy
 });
 

@@ -90,7 +90,6 @@
         // behavior this should probably be overriden as well.
         _move: function(model, idx)
         {
-          debugger;
             var modelEl = this._views[model.cid].el;
             this.$el.children(':nth-child(' + (idx + 1) + ')').before(modelEl);
         },

@@ -50,28 +50,19 @@
           top: 0.5em
 
 .cfViewsContainer
-  bottom: 5.5em
-  left: 0
   overflow: hidden
-  position: absolute
-  right: 0
-  top: 0
   @include transition-property(left top right)
   @include transition-duration(0.8s)
   .ui-resizable-handle
     background-color: $color_chrome_box_border
 .cfViewTypeWrapper
   display: inline-block
-  float: left
   height: 100%
   width: 100%
-.cfPreviewWrapper .cfViewInnerWrapper
-  height: 100%
-  overflow: auto
 .cfEditingWrapper
   overflow: auto
   .editRoot
-    height: 100%
+    min-height: 100%
     margin: 0 2em
     padding:
       bottom: 4em
@@ -84,10 +75,17 @@ body.configuring
   .cfViewsContainer
     @include border-radius(4px, 4px, 0, 0)
     @include box-shadow(0, 0, 10px, rgba(0, 0, 0, 0.45))
+    bottom: 5.5em
     left: 2.5em
+    position: absolute
     right: 2.5em
     top: 6em
     z-index: 2001
+  .cfViewTypeWrapper
+    float: left
+  .cfPreviewWrapper .cfViewInnerWrapper
+    height: 100%
+    overflow: auto
 
 #gridSidebar.socrata-cf-side
   background-color: #ffffff

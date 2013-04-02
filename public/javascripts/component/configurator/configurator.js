@@ -116,6 +116,7 @@
         $.cf.edit.reset();
         $.cf.edit(false);
         $previewCont.removeClass('hide').width('').siblings().addClass('hide');
+        $body.find('.siteOuterWrapper').fullScreen().disable();
         $.component.root().show();
         $.component.root('edit').hide();
         _.defer(function() { $(window).resize(); });
@@ -408,6 +409,8 @@
                     root.design(designing);
                     if ($.cf.configuration().editOnly)
                     { root.edit(designing); }
+
+                    $body.find('.siteOuterWrapper').fullScreen().enable();
 
                     $viewsCont.children().quickEach(function()
                     {

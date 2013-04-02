@@ -53,6 +53,7 @@
             adjustSize: function()
             {
                 var fsObj = this;
+                if (fsObj._disabled) { return; }
 
                 var targetHeight = $(window).height();
 
@@ -90,6 +91,18 @@
                                 multiplier / $fh.length));
                         });
                 });
+            },
+
+            enable: function()
+            {
+                this._disabled = false;
+                this.adjustSize();
+            },
+
+            disable: function()
+            {
+                this._disabled = true;
+                this.$dom().children().height('auto').find(this.settings.fullHeightSelector).height('auto');
             }
         }
     });

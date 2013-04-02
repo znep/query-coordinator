@@ -125,8 +125,21 @@
     });
 
     var on_current_user = [];
+    var on_current_user_complete = [];
+    var current_user_done = false;
 
-    // global fn
+    var dispatchCurrentUser = function(callbacks, user)
+    {
+        for (var i = 0; i < callbacks.length; i++)
+        {
+            successCallback = callbacks[i];
+            if (_.isFunction(successCallback))
+            {
+                successCallback(user);
+            }
+        }
+    };
+
     var getCurrentUser = function()
     {
         $.socrataServer.makeRequest({
@@ -135,31 +148,29 @@
             headers: {'Cache-Control': 'nocache'},
             success: function(user)
             {
+                current_user_done = true;
                 user = new User(user);
                 blist.currentUser = user;
                 blist.currentUserId = user.id;
-                for (var i = 0; i < on_current_user.length; i++)
-                {
-                    successCallback = on_current_user[i];
-                    if (_.isFunction(successCallback))
-                    {
-                        successCallback(user);
-                    }
-                }
+                var callbacks = on_current_user.concat(on_current_user_complete);
+                dispatchCurrentUser(callbacks, user);
             },
             error: function() {
-                // noop
+                // We dispatch an undefined user to anything waiting for this
+                // process to complete
+                current_user_done = true;
+                dispatchCurrentUser(on_current_user_complete);
             }});
     };
 
     // kick off the process of setting the current user
     var loggedInCookie = $.cookies.get('logged_in');
-    if (loggedInCookie && loggedInCookie == "true")
+    if (loggedInCookie && loggedInCookie == "true" && blist.currentUser === undefined)
     {
-        if (blist.currentUser === undefined)
-        {
-            getCurrentUser();
-        }
+        getCurrentUser();
+    } else {
+        current_user_done = true;
+        dispatchCurrentUser(on_current_user_complete, blist.currentUser);
     }
 
     //  Callback mechanism for when the request for the
@@ -170,6 +181,16 @@
         { successCallback(blist.currentUser); }
         else
         { on_current_user.push(successCallback); }
+    };
+
+    //  Callback mechanism for when the current user has been checked
+    //  or if there is no login cookie to check
+    blist.configuration.onCurrentUserComplete = function(callback)
+    {
+        if (current_user_done)
+        { callback(blist.currentUser); }
+        else
+        { on_current_user_complete.push(callback); }
     };
 
     blist.configuration.onCurrentUser(
@@ -183,6 +204,18 @@
          if (user !== undefined && user.rights && user.rights.length > 0)
          {
             $('.adminLink').removeClass('hide');
+         }
+      });
+
+    // GovStat account links are setup in main.html; originally before any current
+    // user is available. We look to see if the govstat cb is defined and execute
+    // them afterwards instead.
+    blist.configuration.onCurrentUserComplete(
+      function (user)
+      {
+         if (blist.configuration.govstat_links_cb !== undefined)
+         {
+            blist.configuration.govstat_links_cb(user)
          }
       });
 });

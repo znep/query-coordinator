@@ -180,7 +180,7 @@
          $('.accountLink').removeClass('hide');
          $('.signOutLink').removeClass('hide');
          $('.signInLink').addClass('hide');
-         $('.signUpLink').removeClass('hide');
+         $('.signUpLink').addClass('hide');
          if (user !== undefined && user.rights && user.rights.length > 0)
          {
             $('.adminLink').removeClass('hide');

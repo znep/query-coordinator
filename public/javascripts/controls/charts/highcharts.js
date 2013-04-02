@@ -296,7 +296,7 @@
 
                     if (!_.isNull(chartObj._rowIndices) && chartObj._rowIndices[row.id])
                     {
-                        point.x = chartObj._rowIndices[row.id].x;
+                        point.x = chartObj._rowIndices[row.id].x || point.x;
                     }
 
                     addPoint(chartObj, point, series, false, chartObj._dataGrouping ? ri : null);

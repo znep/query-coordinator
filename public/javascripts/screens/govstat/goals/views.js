@@ -331,7 +331,7 @@ var GoalEditor = Backbone.View.extend({
 
     _generateGoalSentence: function()
     {
-        var comparisons = { '<': 'reduce', '>': 'improve' };
+        var comparisons = { '<': 'reduce', '>': 'increase' };
 
         var rawEndDate = this.model.get('end_date');
         var endDate = $.isBlank(rawEndDate) ? null : new Date(rawEndDate);

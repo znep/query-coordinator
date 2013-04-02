@@ -8,7 +8,7 @@
           {:action => 'index'}, {:class => 'button backButton leftArrowNoHover'}) %>
   <%- if current_user && (current_user.has_right?('edit_nominations')) -%>
     <a href="#edit" class="edit button editNomButton">Edit This Suggestion</a>
-    <%- if current_user.id != @nom.user.id -%>
+    <%- if !@nom.user.nil? && current_user.id != @nom.user.id -%>
       <a href="#contact" class="notifyNominatorButton button">Contact Suggestion Author</a>
     <%- end -%>
   <%- end -%>
@@ -19,6 +19,13 @@
     </div>
 
     <div class="submittedBy">
+      <%- if @nom.user.nil? -%>
+      <a><img class="authorImage" src="/images/small-profile.png" alt="User was removed" />
+        <h4>Submited by
+          <span class="authorName">a user who was already removed</span>
+        </h4>
+      </a>
+      <%- else -%>
       <a href="<%= @nom.user.href %>" rel="external">
         <img class="authorImage" src="<%= @nom.user.profile_image_path %>"
              alt="<%= @nom.user.displayName %>" />
@@ -28,6 +35,7 @@
           </span>
         </h4>
       </a>
+      <%- end -%>
       <span class="submittedOn"><%= blist_long_date(@nom.createdAt) %></span>
     </div>
 
@@ -83,7 +91,7 @@
 <%- content_for :modals do -%>
   <%- if current_user && current_user.has_right?('edit_nominations') -%>
     <%= render :partial => 'edit_modal' %>
-    <%- if current_user.id != @nom.user.id -%>
+    <%- if !@nom.user.nil? && current_user.id != @nom.user.id -%>
       <%= render :partial => 'contact_modal' %>
     <%- end -%>
   <%- end -%>

@@ -1,5 +1,6 @@
 <%= modal :class => 'configuratorSettings loading' do %>
-  <h2>Page Settings</h2>
+  <%- name = module_enabled?(:govStat) ? 'Report' : 'Page' -%>
+  <h2><%= name %> Settings</h2>
 
   <div class="loadingOverlay hide">
     <div class="loadingSpinner"></div>
@@ -7,7 +8,7 @@
 
   <form class="commonForm">
     <div class="line">
-      <label for="configuratorSettings_pageTitle">Page Title</label>
+      <label for="configuratorSettings_pageTitle"><%= name %> Title</label>
       <input type="text" id="configuratorSettings_pageTitle" class="required" name="pageTitle" />
     </div>
     <div class="line">

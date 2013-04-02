@@ -214,11 +214,14 @@ http://www.socrata.com
           menuButtonContents: 'Menu',
           menuButtonTitle: 'Account Options', contents: contents });
       <%- else -%>
-        $('#siteHeader .siteUserNav .accountLink').after($.tag2({ _: 'li',
+        if (! $('#siteHeader .siteUserNav .accountLink').hasClass('hide'))
+        {
+          $('#siteHeader .siteUserNav .accountLink').after($.tag2({ _: 'li',
             className: 'govstatManageLink',
             contents: { _: 'a', href: '<%= manage_path %>',
             contents: 'Manage GovStat' }
-        }));
+          }));
+        }
       <%- end -%>
       };
       // We can generally count that main js is evaled before all-screens, but

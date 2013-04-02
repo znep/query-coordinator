@@ -53,12 +53,14 @@ $(function() {
         { initializeEditMode(); }
     };
 
-    if (!$.isBlank(blist.currentUser) && blist.currentUser.hasRight('edit_pages') &&
-            blist.configuration.designerAvailable)
+    blist.configuration.onCurrentUser(function(user)
     {
-        $(document.body).addClass('socrata-page');
-        $.cf.top();
-        _.defer(function() { $(document.body).addClass('configurable'); });
-    }
+        if (!$.isBlank(user) && user.hasRight('edit_pages') && blist.configuration.designerAvailable)
+        {
+            $(document.body).addClass('socrata-page');
+            $.cf.top();
+            _.defer(function() { $(document.body).addClass('configurable'); });
+        }
+    });
 
 });

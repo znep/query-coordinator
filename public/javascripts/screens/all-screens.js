@@ -135,6 +135,7 @@
             headers: {'Cache-Control': 'nocache'},
             success: function(user)
             {
+                user = new User(user);
                 blist.currentUser = user;
                 blist.currentUserId = user.id;
                 for (var i = 0; i < on_current_user.length; i++)
@@ -163,17 +164,15 @@
 
     //  Callback mechanism for when the request for the
     //  current user is slow
-    var onCurrentUser = function(successCallback)
+    blist.configuration.onCurrentUser = function(successCallback)
     {
         if (blist.currentUser !== undefined)
-        {
-            successCallback(blist.currentUser);
-        } else {
-            on_current_user.push(successCallback);
-        }
+        { successCallback(blist.currentUser); }
+        else
+        { on_current_user.push(successCallback); }
     };
 
-    onCurrentUser(
+    blist.configuration.onCurrentUser(
       function (user)
       {
          $('.accountLink .text .currentUser').html(user.displayName);

@@ -77,7 +77,7 @@ class CustomContentControllerTest < ActionController::TestCase
     # Subsequent requests should NOT return 304s
     @request.env['HTTP_IF_NONE_MATCH'] = @response.headers['ETag']
     get :page, {:path => PAGE_PATH.dup}
-    assert_response 200
+    assert_response 304
   end
 
   test "304 for User Manifest Cache" do

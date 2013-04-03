@@ -512,12 +512,10 @@
                             context: sp.nodeType == 9 ? window : sp, // if got document, use window
                             handler: function()
                             {
+                                delete cObj._delayUntilVisible;
+                                cObj.$dom.waypoint('destroy');
                                 if (!cObj._destroyed && cObj._needsRender)
-                                {
-                                    delete cObj._delayUntilVisible;
-                                    cObj.$dom.waypoint('destroy');
-                                    cObj._render();
-                                }
+                                { cObj._render(); }
                             }
                         });
                     });

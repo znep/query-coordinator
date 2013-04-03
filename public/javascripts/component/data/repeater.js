@@ -87,6 +87,9 @@ $.component.Container.extend('Repeater', 'content', {
             dc.dataset.bind('query_change', function()
             {
                 cObj._childrenDirty = true;
+                cObj._isDirty = true;
+                if (!$.isBlank(cObj.$dom))
+                { cObj.$dom.removeClass('serverRendered'); }
                 cObj._render();
             }, this);
             cObj.$dom.attr('aria-live', 'polite');

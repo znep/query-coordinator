@@ -264,7 +264,6 @@ protected
       view_types_facet,
       cfs,
       categories_facet,
-      topics_facet,
       federated_facet
     ]
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }

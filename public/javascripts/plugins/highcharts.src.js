@@ -6854,6 +6854,14 @@ function Chart (options, callback) {
 			}
 			adjustTickAmounts();
 			getMargins();
+
+            // michael.chui@socrata.com - Refresh to reflect new margins.
+            // see #render for the exact same pattern.
+            each(axes, function(axis) {
+                axis.setTickPositions(true);
+            });
+            adjustTickAmounts();
+            getMargins(); // second pass to check for new labels
 	
 			// redraw axes
 			each(axes, function(axis) {

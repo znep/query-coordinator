@@ -871,9 +871,9 @@ var IndicatorEditor = Backbone.View.extend({
     },
     initialize: function()
     {
-        this.listenTo(this.model, 'change:column_function', function(_, value)
+        this.listenTo(this.model, 'change:column_function', function(__, value)
         {
-            this._$columnFunctionInput.toggleClass('hasFunction', value);
+            this._$columnFunctionInput.toggleClass('hasFunction', _.include([ 'plus', 'divide', 'minus' ], value));
         });
     },
     render: function()

@@ -467,7 +467,7 @@ blist.namespace.fetch('blist.govstat').markup = {
                 }, {
                     _: 'div',
                     className: [ 'inputWrapper', 'selectInput', 'columnFunctionInput',
-                        { i: indicator.get('column_function'), t: 'hasFunction' } ],
+                        { i: _.include([ 'plus', 'divide', 'minus' ], indicator.get('column_function')), t: 'hasFunction' } ],
                     contents: [{
                         _: 'span',
                         className: 'selectValue'

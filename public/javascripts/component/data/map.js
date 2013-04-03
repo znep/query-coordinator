@@ -305,7 +305,12 @@ var updateProperties = function(lcObj)
             lcObj._map = lcObj.$contents.socrataMap({
                 showRowLink: false,
                 interactToScroll: true,
-                displayFormat: df
+                displayFormat: df,
+                // If displayFormat is blank, it's because it's Lombardia's site and
+                // they don't need the editor to work as of 2013-04-03. This is to
+                // allow their magic to continue working the way it did before by
+                // passing the context directly through as a view.
+                view: $.isBlank(df) ? (lcObj._dataContext || {}).dataset : null
             });
             lcObj._updateValidity();
         }
@@ -373,7 +378,8 @@ var convertLegacy = function(props)
         }
     }
 
-    delete props.contextId;
+    if (props.displayFormat)
+    { delete props.contextId; }
 
     return props;
 };

@@ -45,6 +45,7 @@ var GoalCard = Backbone.View.extend({
             function(_, name) { self.$('h2').text(self.getName()); });
         this.listenTo(this.model, 'change:category', function() { self.updateColor(); });
         this.listenTo(this.model, 'change:is_public', function(_, is_public) { self.$el.toggleClass('internal', is_public === false); });
+        this.listenTo(this.model, 'change:id', function(_, id) { self.$('.view.button').attr('href', '/goal/' + id); });
     },
     render: function()
     {

@@ -951,7 +951,7 @@
                     { symbolType: 'colorRange', description: ld.name }));
             });
 
-            $dom.removeClass('hide', $dom.find('.legendRow').length > 0);
+            $dom.toggleClass('hide', $dom.find('.legendRow').length > 0);
         },
 
         render: function(datum)

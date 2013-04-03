@@ -284,13 +284,6 @@ input.button, a.button
         @include opacity(0.7)
 
     .singleInner
-      .customTitle
-        display: none
-        &.hasCustomTitle
-          display: block
-          + .goalName
-            display: none
-
       .goalValue
         @include progress-colors(color)
         font-size: 5.5em
@@ -423,13 +416,6 @@ input.button, a.button
 
           &:hover
             background-color: #f3f3f3
-
-          .customTitle
-            display: none
-            &.hasCustomTitle
-              display: block
-              ~ .defaultTitle
-                display: none
 
           .goalValue
             @include progress-colors('color')

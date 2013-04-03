@@ -58,7 +58,7 @@ module GovstatHelper
               type: 'Container',
               contextId: 'categories_{_groupValue}',
               children: [
-                { type: 'Title', text: '{category.name ||Draft}', customClass: 'categoryTitle',
+                { type: 'Title', text: '{category.name ||Untitled Category}', customClass: 'categoryTitle',
                   styles: { 'color' => '{category.color}', 'border-color' => '{category.color}' } },
                 {
                   type: 'Repeater',
@@ -72,7 +72,6 @@ module GovstatHelper
                     href: '/goal/{goal.id}',
                     styles: { 'background-color' => '{category.color}' },
                     text: '<div class="singleInner">' +
-                      '<h3 class="itemTitle customTitle {goal.metadata.custom_title /.+/hasCustomTitle/ ||}">{goal.metadata.custom_title ||}</h3>' +
                       '<h3 class="itemTitle goalName">{goal.name ||Untitled Goal}</h3>' +
                       '<p class="goalValue progress-{goal.metrics.0.computed_values.progress ||none} {goal.metrics.0.computed_values.metric_value /.+/hasValue/ ||}">{goal.metrics.0.computed_values.metric_value %[h] ||}</p>' +
                       '<p class="goalUnit">{goal.metrics.0.unit ||}</p>' +
@@ -160,8 +159,7 @@ module GovstatHelper
         type: 'Container',
         htmlClass: 'mainSection',
         children: [
-        { type: 'Title', text: '{goal.metadata.custom_title ||}', htmlClass: 'itemTitle', customClass: 'customTitle {goal.metadata.custom_title /.+/hasCustomTitle/ ||}' },
-        { type: 'Title', text: '{goal.name ||Untitled Goal}', htmlClass: 'itemTitle', customClass: 'defaultTitle' },
+        { type: 'Title', text: '{goal.name ||Untitled Goal}', htmlClass: 'itemTitle' },
         {
           type: 'Text',
           htmlClass: 'itemSubtitle',

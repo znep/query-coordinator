@@ -319,9 +319,21 @@ body.socrata-page
   ol
     list-style: decimal
 
+.component-Header
+  border-bottom: solid 2px $color_chrome_box_border
+  padding-bottom: 2em
+  > div
+    height: 100%
+    overflow: hidden
+    text-align: center
+  img
+    max-width: 100%
+
 @media print
   @each $name in Share, InlineFilter, Pager, Print, Search, Geolocator, Sort
     .component-#{$name}
       display: none
   .cfEditSwitch
+    display: none
+  .hasHeader #siteHeader
     display: none

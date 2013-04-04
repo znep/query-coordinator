@@ -37,6 +37,13 @@ module Canvas2
     end
   end
 
+  class Header < Picture
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+  end
+
   class Catalog < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

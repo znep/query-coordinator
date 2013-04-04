@@ -578,8 +578,9 @@
                 }
             }
 
-            if (typeof this._properties.height == 'number')
-                this.$dom.css('height', this._properties.height);
+            var parsedHeight = parseInt(this._properties.height);
+            if (!_.isNaN(parsedHeight))
+                this.$dom.css('height', parsedHeight);
 
             if (this._loadingAssets || this._isHidden || this._delayUntilVisible)
             {

@@ -110,6 +110,7 @@ javascripts:
     - public/javascripts/component/content/grid-container.js
     - public/javascripts/component/content/menu.js
     - public/javascripts/component/content/picture.js
+    - public/javascripts/component/content/header.js
     - public/javascripts/component/content/related.js
     - public/javascripts/component/content/text.js
     - public/javascripts/component/content/title.js

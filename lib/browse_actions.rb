@@ -12,12 +12,12 @@ protected
       :use_icon => true,
       :options => [
         {:text => I18n.t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'},
-        {:text => I18n.t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
-        {:text => I18n.t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
-        {:text => I18n.t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
         {:text => I18n.t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
         {:text => I18n.t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
         {:text => I18n.t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
+        {:text => I18n.t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
+        {:text => I18n.t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
+        {:text => I18n.t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
         {:text => I18n.t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
     if (module_available?(:api_foundry))
@@ -264,6 +264,7 @@ protected
       view_types_facet,
       cfs,
       categories_facet,
+      (browse_options[:__tagkillhack] == 'hack') ? nil : topics_facet,
       federated_facet
     ]
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }

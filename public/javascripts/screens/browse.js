@@ -23,6 +23,8 @@ $(function()
     {
         // Reset page
         delete newOpts.page;
+        // set utf8
+        newOpts.utf8 = '✓';
         // Pull real URL from JS
         window.location = blist.browse.baseURL + '?' +
             _.map(newOpts, function(v, k) { return k + '=' + v; }).join('&');
@@ -210,7 +212,7 @@ $(function()
             e.preventDefault();
             _.defer(function()
             {
-                var newOpts = $.extend({}, opts, {q: escape($search.val())});
+                var newOpts = $.extend({}, opts, {q: encodeURIComponent($search.val())});
                 if ($.isBlank(newOpts.q))
                 {
                     delete newOpts.q;

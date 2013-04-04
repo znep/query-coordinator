@@ -22,6 +22,6 @@ class String
   end
 
   def fix_get_encoding!
-    self.force_encoding('iso-8859-1').encode!('utf-8')
+    self.force_encoding('utf-8')
   end
 end

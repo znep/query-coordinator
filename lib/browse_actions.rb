@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module BrowseActions
   include ApplicationHelper
 
@@ -287,6 +289,9 @@ protected
                                                     .merge(search_options)
     ignore_params = (browse_options[:ignore_params] || []) + [ :controller, :action, :page ]
     browse_options[:user_params] = user_params.reject{ |k| ignore_params.include? k }
+
+    # insert utf8 penguin thing
+    browse_options[:user_params][:utf8] = '✓'
 
     if browse_options[:view_results].nil?
       begin

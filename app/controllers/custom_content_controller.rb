@@ -154,8 +154,8 @@ class CustomContentController < ApplicationController
                    'current_user' => cache_user_id}))
     ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
     #
-    # Tri-State Slate Page Caching
-    # Anonymous/Logged Out:
+    # Slate Page Caching
+    # Anonymous/Logged Out OR Logged In w/ Shared Data:
     #   read manifest for ANONYMOUS_USER; read global fragment cache; 304s valid
     #   write to global fragment cache
     #   write manifest for ANONYMOUS_USER
@@ -163,33 +163,25 @@ class CustomContentController < ApplicationController
     #   read manifest for user; read user-fragment cache; 304s valid
     #   write to user fragment cache
     #   write manifest for USER
-    # Logged In w/ Shared Data:
-    #   read manifest for SHARED_USER; read global fragment cache; no 304s
-    #   write to global fragment cache
-    #   write manifest for SHARED_USER
-    lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, cache_user_id)
+
+    # Optimistically lookup from the global manifest and fragment cache
+    can_be_globally_cached = true
+    lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, ANONYMOUS_USER)
+    if lookup_manifest.nil? && @current_user
+      # No global manifest available; page is either private or completely uncached
+      lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, @current_user.id)
+      # if we did, indeed find a manifest for that specific user we can assume the page will
+      # be private
+      can_be_globally_cached = !lookup_manifest.nil?
+    end
 
     if !lookup_manifest.nil? && !@debug && !@edit_mode
       Rails.logger.info("Manifest valid; reading content from fragment cache is OK")
       return true if handle_conditional_request(request, response, lookup_manifest)
-      @cached_fragment = read_fragment(cache_key_no_user)
+      @cached_fragment = read_fragment(cache_key_no_user) if can_be_globally_cached
       if @cached_fragment.nil?
         Rails.logger.info("Global fragment cache not available; trying per-user fragment cache")
         @cached_fragment = read_fragment(cache_key_user)
-      end
-    else
-      # Only bother checking the shared user manifest if we are logged in.
-      if !@current_user.nil?
-        Rails.logger.info("Anonymous/User manifest invalid; checking for Shared-User Manifest")
-        # manifest for pages which can be shared between logged-in users. 304s should NEVER be sent if this is valid
-        lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, SHARED_USER)
-        if !lookup_manifest.nil?
-          Rails.logger.info("Shared-User Manifest valid; reading from global fragment")
-          return true if handle_conditional_request(request, response, lookup_manifest)
-          @cached_fragment = read_fragment(cache_key_no_user)
-        else
-          Rails.logger.info("Shared-User Manifest not valid. No Cache available.")
-        end
       end
     end
 
@@ -286,7 +278,7 @@ class CustomContentController < ApplicationController
             manifest.set_access_level(manifest_user)
             VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
           end
-          ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil? || manifest_user == SHARED_USER)
+          ConditionalRequestHandler.set_cache_control_headers(response, manifest_user == ANONYMOUS_USER)
           ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
         # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
         # but Rails ignores it and passes it all the way up without rescuing
@@ -335,7 +327,6 @@ class CustomContentController < ApplicationController
 private
 
   ANONYMOUS_USER = "anon".freeze
-  SHARED_USER = "shared-user".freeze
 
   # Knowing whether privateData is set and the user figure out
   # which user_id should be used for the manifest key
@@ -346,7 +337,7 @@ private
       if isPrivate
         user.id
       else
-        SHARED_USER
+        ANONYMOUS_USER
       end
     end
   end

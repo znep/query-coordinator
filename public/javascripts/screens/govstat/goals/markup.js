@@ -482,19 +482,14 @@ blist.namespace.fetch('blist.govstat').markup = {
                             contents: 'alone'
                         }, {
                             _: 'option',
-                            value: 'plus',
-                            selected: indicator.get('column_function') === 'plus',
+                            value: 'sum',
+                            selected: indicator.get('column_function') === 'sum',
                             contents: 'plus'
                         }, {
                             _: 'option',
                             value: 'divide',
                             selected: indicator.get('column_function') === 'divide',
                             contents: 'divided by'
-                        }, {
-                            _: 'option',
-                            value: 'minus',
-                            selected: indicator.get('column_function') === 'minus',
-                            contents: 'minus'
                         }]
                     }, {
                         _: 'label',

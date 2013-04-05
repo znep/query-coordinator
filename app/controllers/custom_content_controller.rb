@@ -180,6 +180,9 @@ class CustomContentController < ApplicationController
       if @cached_fragment.nil?
         Rails.logger.info("Global fragment cache not available; trying per-user fragment cache")
         @cached_fragment = read_fragment(cache_key_user)
+      else
+        # If we got something out of the fragment cache; we can make that something cacheable down the line as well
+        ConditionalRequestHandler.set_cache_control_headers(response, true)
       end
     end
 

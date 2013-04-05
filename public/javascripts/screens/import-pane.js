@@ -573,8 +573,8 @@ var validateAll = function()
     {
         // wow, dumbest error ever.
         addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(names.tags.length)) +
-            '</strong> of your columns are named &ldquo;tags&rdquo;. Columns may not be named ' +
-            '&ldquo;tags&rdquo;.');
+            '</strong> of your columns ' + (names.tags.length == 1 ? 'is' : 'are') +
+            ' named &ldquo;tags&rdquo;. Columns may not be named &ldquo;tags&rdquo;.');
     }
 
     // validate name missing (error)

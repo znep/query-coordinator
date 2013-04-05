@@ -13,7 +13,7 @@
     <%- end -%>
   </div>
 
-  <%- if @view.has_rights?('update_view') -%>
+  <%- if @view.has_rights?('update_view') && !@view.is_api? -%>
     <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
   <%- end -%>
 

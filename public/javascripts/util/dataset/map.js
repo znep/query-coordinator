@@ -139,6 +139,8 @@ Dataset.modules['map'] =
         return Dataset.map.isValid(this, this.displayFormat);
     },
 
+    // Old Maps didn't have an explicit 'self' reference. This function fixes
+    // up this view to have correct self-references.
     _convertLegacy: function()
     {
         var view = this;
@@ -216,6 +218,8 @@ Dataset.modules['map'] =
                 return vdResult;
             };
 
+            // Fix the IDs if none have a self-reference (indicating an old
+            // format). If none were fixed, try fixing the parent view.
             if (!_.any(view.displayFormat.viewDefinitions, function(vd)
                         { return vd.uid == 'self'; }) && !fixIds(view))
             {

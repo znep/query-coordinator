@@ -2077,9 +2077,14 @@ var Dataset = ServerModel.extend({
         else if (!_.isEqual(oldCondFmt, ds.metadata.conditionalFormatting))
         {
             // If we aren't invalidating all the rows, but conditional formatting
-            // changed, then redo all the colors and re-render
-            _.each(ds._availableRowSets, function(rs) { rs.formattingChanged(); });
-            ds.trigger('row_change', [_.values(ds._activeRowSet._rows)]);
+            // changed, then redo all the colors and re-render. We may not
+            // have a row set if we're in the _init path.
+            if (!$.isBlank(ds._availableRowSets) && !$.isBlank(ds._activeRowSet))
+            {
+                _.each(ds._availableRowSets, function(rs) { rs.formattingChanged(); });
+                ds.trigger('row_change', [_.values(ds._activeRowSet._rows)]);
+            }
+            
             ds.trigger('conditionalformatting_change');
         }
 

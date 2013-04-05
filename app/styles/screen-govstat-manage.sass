@@ -125,8 +125,20 @@
           color: #949494
           font-size: 1.7em
           min-height: 3.2em
-          padding: 1.5em 2.3em
+          padding: 1.5em 2.3em 1.2em
           @include transition(0.2s, color)
+
+        ul.metadata
+          padding-bottom: 2em
+          li
+            color: #585858
+            font-size: 1.8em
+            letter-spacing: -0.05em
+            padding-bottom: 0.5em
+            text-align: center
+            .value
+              color: #333333
+              font-weight: bold
 
         div.button
           @include prefixer(border-radius, 0.2em)

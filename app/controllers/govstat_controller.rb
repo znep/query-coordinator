@@ -17,18 +17,56 @@ class GovstatController < ApplicationController
   end
 
   def manage
+    ds_counts = []
+    base_req = {:limit => 1, :datasetView => 'dataset', :nofederate => true}
+    CoreServer::Base.connection.batch_request do |batch_id|
+      Clytemnestra.search_views(base_req, batch_id)
+      Clytemnestra.search_views(base_req.merge({ :for_user => current_user.id }), batch_id)
+    end.each_with_index do |r, i|
+      p = JSON.parse(r['response'], {:max_nesting => 25})
+      ds_counts.push(p['count'])
+    end
+
+    own_reports, other_reports = get_reports
+    goals = Goal.find({ isPublic: true })
+    goals.reject!{ |goal| goal.category.blank? } if goals.length > 0
+    users = User.find(:method => 'findPrivilegedUsers')
+
     config = govstat_homepage_config(nil)
     config[:content][:children].unshift({ type: 'Container', htmlClass: 'subHubSection', children: [
       { type: 'Title', htmlClass: 'subHubTitle', text: 'Welcome to GovStat.' },
       { type: 'Text', htmlClass: 'subHubIntro', html: 'You can check out the current status of your goals below, or dig into these hubs for a deeper look.' },
       { type: 'HorizontalContainer', htmlClass: 'subHubNavigation', children: [
         { type: 'Button', htmlClass: 'data', href: manage_data_path, notButton: true,
-          text: '<span class="mainIcon ss-icon">hdd</span><p class="header">Data</p><p class="explanation">Upload, update, analyze, view, and share datasets.</p><div class="button">Browse Data <span class="ss-icon">next</span></div>' },
+          text: '<span class="mainIcon ss-icon">hdd</span><p class="header">Data</p>' +
+            '<p class="explanation">Upload, update, analyze, view, and share datasets.</p>' +
+            '<ul class="metadata">' +
+              '<li><span class="value">' + ds_counts[0].to_s + '</span> ' +
+                'dataset'.pluralize(ds_counts[0]) + ' total</li>' +
+              '<li><span class="value">' + ds_counts[1].to_s + '</span> ' +
+                'dataset'.pluralize(ds_counts[1]) + ' by me</li>' +
+            '</ul>' +
+            '<div class="button">Browse Data <span class="ss-icon">next</span></div>' },
         { type: 'Button', htmlClass: 'reports', href: manage_reports_path, notButton: true,
-          text: '<span class="mainIcon ss-icon">notepad</span><p class="header">Reports</p><p class="explanation">Build and share reports to help
-analyze your goals and data.</p><div class="button">Manage Reports <span class="ss-icon">next</span></div>' },
+          text: '<span class="mainIcon ss-icon">notepad</span><p class="header">Reports</p>' +
+            '<p class="explanation">Build and share reports to help analyze your goals and data.</p>' +
+            '<ul class="metadata">' +
+              '<li><span class="value">' + other_reports.length.to_s + '</span> ' +
+                'report'.pluralize(other_reports.length) + ' total</li>' +
+              '<li><span class="value">' + own_reports.length.to_s + '</span> ' +
+                'report'.pluralize(own_reports.length) + ' by me</li>' +
+            '</ul>' +
+            '<div class="button">Manage Reports <span class="ss-icon">next</span></div>' },
         { type: 'Button', htmlClass: 'configuration', href: manage_site_config_path, notButton: true,
-          text: '<span class="mainIcon ss-icon">wrench</span><p class="header">Configuration</p><p class="explanation">Set up goals and users, and tweak various settings about GovStat.</p><div class="button">Configure GovStat <span class="ss-icon">next</span></div>' }
+          text: '<span class="mainIcon ss-icon">wrench</span><p class="header">Configuration</p>' +
+            '<p class="explanation">Set up goals and users, and tweak various settings about GovStat.</p>' +
+            '<ul class="metadata">' +
+              '<li><span class="value">' + goals.length.to_s + '</span> ' +
+                'active ' + 'goal'.pluralize(goals.length) + '</li>' +
+              '<li><span class="value">' + users.length.to_s + '</span> ' +
+                'user'.pluralize(users.length) + ' total</li>' +
+            '</ul>' +
+            '<div class="button">Configure GovStat <span class="ss-icon">next</span></div>' }
       ]}
     ]})
     @page = get_page(config, request.path, 'Manage | ' + CurrentDomain.strings.site_title, params)
@@ -45,17 +83,7 @@ analyze your goals and data.</p><div class="button">Manage Reports <span class="
   end
 
   def manage_reports
-    reports = Page.find('$order' => ':updated_at')
-    @own_reports = []
-    @other_reports = []
-    reports.each do |r|
-      next if r.page_type == 'export' || r.path.include?('/:')
-      if r.owner == current_user.id
-        @own_reports.push(r)
-      else
-        @other_reports.push(r)
-      end
-    end
+    @own_reports, @other_reports = get_reports
   end
 
   def manage_config
@@ -101,6 +129,21 @@ protected
       render_forbidden
       return false
     end
+  end
+
+  def get_reports
+    reports = Page.find('$order' => ':updated_at')
+    own_reports = []
+    other_reports = []
+    reports.each do |r|
+      next if r.page_type == 'export' || r.path.include?('/:')
+      if r.owner == current_user.id
+        own_reports.push(r)
+      else
+        other_reports.push(r)
+      end
+    end
+    return own_reports, other_reports
   end
 
   def goal_page_config(goal_id)

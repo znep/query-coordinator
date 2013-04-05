@@ -332,7 +332,14 @@ private
     facets.each do |f|
       if !options[f[:param]].blank?
         if !f[:singular_description].blank?
-          facet_item = f[:options].detect {|o| o[:value] == options[f[:param]]}
+          facet_item = nil
+          f[:options].each do |o|
+            if o[:value] == options[f[:param]]
+              facet_item = o
+            elsif !o[:children].nil?
+              facet_item = o[:children].detect { |c| c[:value] == options[f[:param]] }
+            end
+          end
           facet_parts << I18n.t('controls.browse.title.result.facet',
                            :facet_type => f[:singular_description],
                            :facet_value => facet_item[:text]) unless facet_item.nil?

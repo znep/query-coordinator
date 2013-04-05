@@ -6,7 +6,7 @@ module Canvas2
     end
 
     def render_contents
-      ['<h2>' + CGI::escapeHTML(string_substitute(@properties['text'])) + '</h2>', true]
+      ['<h2>' + string_substitute(@properties['text']) + '</h2>', true]
     end
   end
 

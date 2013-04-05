@@ -18,7 +18,7 @@ class GovstatController < ApplicationController
 
   def manage
     ds_counts = []
-    base_req = {:limit => 1, :datasetView => 'dataset', :nofederate => true}
+    base_req = {:limit => 1, :datasetView => 'dataset', :limitTo => 'tables', :nofederate => true}
     CoreServer::Base.connection.batch_request do |batch_id|
       Clytemnestra.search_views(base_req, batch_id)
       Clytemnestra.search_views(base_req.merge({ :for_user => current_user.id }), batch_id)
@@ -28,6 +28,7 @@ class GovstatController < ApplicationController
     end
 
     own_reports, other_reports = get_reports
+    all_reports_count = own_reports.length + other_reports.length
     goals = Goal.find({ isPublic: true })
     goals.reject!{ |goal| goal.category.blank? } if goals.length > 0
     users = User.find(:method => 'findPrivilegedUsers')
@@ -51,8 +52,8 @@ class GovstatController < ApplicationController
           text: '<span class="mainIcon ss-icon">notepad</span><p class="header">Reports</p>' +
             '<p class="explanation">Build and share reports to help analyze your goals and data.</p>' +
             '<ul class="metadata">' +
-              '<li><span class="value">' + other_reports.length.to_s + '</span> ' +
-                'report'.pluralize(other_reports.length) + ' total</li>' +
+              '<li><span class="value">' + all_reports_count.to_s + '</span> ' +
+                'report'.pluralize(all_reports_count) + ' total</li>' +
               '<li><span class="value">' + own_reports.length.to_s + '</span> ' +
                 'report'.pluralize(own_reports.length) + ' by me</li>' +
             '</ul>' +

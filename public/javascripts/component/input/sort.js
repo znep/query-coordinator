@@ -137,7 +137,7 @@ var renderUpdate = function()
                 selected: sel, contents: $.htmlEscape(c.name) }));
             if (sel)
             {
-                cObj.$sortDir.removeClass('hide sortAsc sortDesc')
+                cObj.$sortDir.removeClass('hide sortAsc sortDesc sortAscLight')
                     .addClass('sort' + (curSort.ascending ? 'Asc' : 'Desc'))
                     .attr('title', 'Sort ' + (curSort.ascending ? 'Descending' : 'Ascending'));
                 selVal = c.fieldName;
@@ -181,14 +181,15 @@ var handleChange = function(cObj)
     {
         var cfn = cObj.$dropdown.value();
         cObj._dataContext.dataset.simpleSort(cfn, true);
-        cObj.$sortDir.toggleClass('hide', $.isBlank(cfn)).removeClass('sortDesc').addClass('sortAsc');
+        cObj.$sortDir.toggleClass('hide', $.isBlank(cfn)).removeClass('sortDesc sortAscLight')
+            .addClass('sortAsc');
     }
 };
 
 var handleSortDir = function(cObj)
 {
     var isDesc = cObj.$sortDir.hasClass('sortAsc');
-    cObj.$sortDir.toggleClass('sortDesc', isDesc).toggleClass('sortAsc', !isDesc);
+    cObj.$sortDir.removeClass('sortAscLight').toggleClass('sortDesc', isDesc).toggleClass('sortAsc', !isDesc);
 
     var cfn;
     var ds;

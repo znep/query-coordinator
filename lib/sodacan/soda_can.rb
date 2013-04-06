@@ -121,7 +121,7 @@ class Processor
           filtered = requires_seq_scan ? sequential_scan(row_slice, conditions['filterCondition']) : row_slice
           explain("seq scan", row_slice.size, filtered.size) if requires_seq_scan
         end
-        ordered = Order.order_rows(filtered, conditions['orderBys'], @metadata) || []
+        ordered = Order.order_rows(filtered, conditions['orderBys'], @metadata, @hash_by_ids) || []
       end
       row_start = per_page * (page - 1)
       row_end = row_start + per_page - 1
@@ -142,7 +142,7 @@ class Processor
   end
 
   def meta
-    @rows.nil? ? nil : @rows['meta']
+    @metadata
   end
 
   def metrics

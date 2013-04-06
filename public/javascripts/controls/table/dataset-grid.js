@@ -362,7 +362,10 @@
 
     var rowMenuOpenCallback = function(datasetObj, $menu)
     {
-        $menu.find('li.pageView').toggle(!datasetObj._model.hasSelectedRows());
+        // clint 05 apr 2013: seems this was added to account for multirow select,
+        // but it behaves correctly in that case anyway (shows the row you open
+        // the menu for) so i'm going to take this out.
+        //$menu.find('li.pageView').toggle(!datasetObj._model.hasSelectedRows());
     };
 
     /* Handle clicks in the row menus */

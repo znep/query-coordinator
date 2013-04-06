@@ -253,7 +253,7 @@ class Processor
     @hints[hints.to_json.sum] = hint
     log_metrics("#{throw_exception ? "hard" : "soft"}_failure", 1)
     return false unless throw_exception
-    raise Exception, msg
+    raise Exception, msg + context.to_json
   end
 
   #
@@ -268,11 +268,7 @@ class Processor
     uncoerced_literals = false
     operands = children.map do |c|
       val = Util.resolve_value(c, row, @metadata, @hash_by_ids)
-      val_clazz = val.class.name
       # if we have previously set clazz to non-nil; fail if this type does not match
-      unless clazz.nil? || val.nil? || clazz == val_clazz
-        fail("Operand classes do not match #{clazz} vs #{val_clazz}", children, true)
-      end
       case c['type']
         when "column"
           # for c
@@ -281,9 +277,9 @@ class Processor
           if !TYPES.include?(type) || !TYPES[type][:ops].include?(op)
             fail("Unsupported Operation #{op} on type #{type} - query not validated before processing!", children, true)
           end
-          clazz = val_clazz
+          clazz = val.class.name
         when "literal"
-            uncoerced_literals = true
+          uncoerced_literals = true
       end
       val
     end

@@ -242,4 +242,33 @@ eos
     assert sodacan.get_rows(query).size > 0, "because #{sodacan.hints}"
 
   end
+
+  def test_ASPE_RM10031_number_literals_as_strings
+    metadata = JSON::parse(File.open("test/fixtures/soda_can/74nx-npbu.json").read)
+    rowdata = JSON::parse(File.open("test/fixtures/soda_can/74nx-npbu-rows.json").read)
+    sodacan =SodaCan::Processor.new(metadata, rowdata, false)
+    query_json = <<eos
+      {
+        "filterCondition" : {
+          "value": "EQUALS",
+          "children": [
+          {
+            "type": "column",
+            "columnFieldName": "goal_id"
+          },
+          {
+            "value": "5",
+            "type": "literal"
+          }
+          ],
+          "type": "operator"
+        }
+      }
+eos
+    query = JSON::parse(query_json)
+    assert sodacan.can_query? (query)
+    assert sodacan.send :perform_op, "equals", query['filterCondition']['children'], rowdata['entries'][4]
+    assert sodacan.get_rows(query).size > 0, "because #{sodacan.hints}"
+
+  end
 end

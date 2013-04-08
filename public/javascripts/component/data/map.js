@@ -295,6 +295,7 @@ var updateProperties = function(lcObj)
 {
     var setUpMap = function()
     {
+        if (lcObj._isHidden) { return; }
         var df = lcObj._displayFormat();
 
         if (!$.isBlank(lcObj._map))

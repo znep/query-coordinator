@@ -11,4 +11,8 @@ $(function()
             return $(node).find('.cellInner').text();
         }
     });
+
+    $('#createCanvasPageContent form').validate({errorElement: 'span',
+        errorPlacement: function($error, $element)
+            { $error.appendTo($element.closest('.line')); }});
 });

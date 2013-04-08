@@ -11,6 +11,10 @@
   <%- end -%>
 <% end %>
 
+<% content_for :skip_links do %>
+  <a href="?no_js=true">Disable Javascript on this page</a>
+<% end %>
+
 <%= render :partial => 'left_nav' %>
 
 <div id="createCanvasPageContent" class="contentBox withLeftNavigation">
@@ -32,7 +36,7 @@
       <div class="line pageTitle">
         <%= label_tag :pageTitle, 'Page Title <span class="accessible">Required</span>'.html_safe,
           :class => 'required' %>
-        <%= text_field_tag :pageTitle, @cur_title %>
+        <%= text_field_tag :pageTitle, @cur_title, :class => 'required' %>
       </div>
       <div class="line pageUrl">
         <%= label_tag :pageUrl, 'Page URL'.html_safe %>
@@ -46,3 +50,9 @@
     <% end %>
   <%- end -%>
 </div>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js] == 'true' -%>
+    <%= include_javascripts 'admin-canvas-pages' %>
+  <%- end -%>
+<%- end -%>

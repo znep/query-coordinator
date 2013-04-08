@@ -602,7 +602,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
           }
         }
   
-        drawIt.apply(ctx, [points], opts.strokeWidth);
+        drawIt.call(ctx, [points], opts.strokeWidth);
         ctx.fillStyle = opts.fill;
         if (opts.shadow) {
           ctx.shadowOffsetX = opts.shadowOffsetX;
@@ -617,7 +617,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
           ctx.lineWidth = opts.strokeWidth;
           ctx.strokeStyle = opts.strokeStyle;
           ctx.beginPath();
-          drawIt.apply(ctx, [points], opts.strokeWidth);
+          drawIt.call(ctx, [points], opts.strokeWidth);
           ctx.closePath();
           ctx.stroke();
         }

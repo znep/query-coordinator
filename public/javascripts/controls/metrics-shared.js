@@ -191,19 +191,28 @@ metricsNS.topAppTokensCallback = function($context)
     metricsNS.updateTopListWrapper($context,
         $context.data(metricsNS.DATA_KEY),
         function(key, value, results) {
+            if (key === "anonymous"){
+              results.push({
+                linkText: "anonymous application",
+                textValue: Highcharts.numberFormat(value, 0),
+                value:value
+              });
+              return;
+            }
             $.socrataServer.makeRequest({url: '/api/app_tokens/' + key + '.json',
                 batch: true, type: 'get',
-                success: function(response)
+                success: function(responseOrNull)
                 {
+                    var response = responseOrNull || {};
                     var thumbed = response.thumbnailSha,
                         klass = thumbed ? 'showThumbnail' : '',
                         thumbnail = thumbed ? ('/api/file_data/' + response.thumbnailSha +
                             '?size=tiny') : '';
 
                     var owner = new User(response.owner);
-                    results.push({linkText: response.name || '(deleted)',
+                    results.push({linkText: response.name || 'deleted application',
                         extraClass: klass,
-                        href: owner.getProfileUrl() + '/app_tokens/' + response.id,
+                        href: response.owner ? owner.getProfileUrl() + '/app_tokens/' + response.id : null,
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
                         thumbnail: thumbnail

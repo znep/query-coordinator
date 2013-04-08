@@ -1052,6 +1052,8 @@
             // Ensure viewport is in the window vertically
             var contHeight = curSize ? curSize.height : $container.outerHeight();
             var viewportHeight = $scrolls.height();
+            if ($footerScrolls.is(':visible'))
+            { viewportHeight -= $footerScrolls.outerHeight() - 1; }
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
             {
                 viewportHeight -= scrollbarWidth;
@@ -1074,8 +1076,6 @@
             else
             {
                 maxHeight = scrollTop + viewportHeight - top;
-                if ($footerScrolls.is(':visible'))
-                { maxHeight -= $footerScrolls.outerHeight() - 1; }
             }
 
             if (!animate)

@@ -192,7 +192,7 @@ class AdministrationController < ApplicationController
       flash[:error] = "No email addresses detected"
       return (redirect_to :action => :users)
     else
-      flash[:notice] = created.size.to_s + " accounts successfully created"
+      flash[:notice] = app_helper.pluralize(created.size, "account") + " successfully created"
     end
 
     redirect_to :action => :users
@@ -1145,7 +1145,7 @@ private
     end
   end
 
-  # Need an instance for using cache_key()
+  # Need an instance for using cache_key() and pluralize()
   def app_helper
     AppHelper.instance
   end
@@ -1166,4 +1166,5 @@ end
 class AppHelper
   include Singleton
   include ApplicationHelper
+  include ActionView::Helpers::TextHelper
 end

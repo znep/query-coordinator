@@ -146,7 +146,7 @@ metricsNS.topDatasetsCallback = function($context)
     metricsNS.updateTopListWrapper($context,
         $context.data(metricsNS.DATA_KEY),
         function(key, value, results) {
-            $.socrataServer.makeRequest({url: '/views/' + key  + '.json', type: 'get', batch: true,
+            $.socrataServer.makeRequest({url: '/views/' + key  + '.json', type: 'get', batch: false,
                 success: function(responseData)
                 {
                     results.push({linkText: responseData.name,

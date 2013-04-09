@@ -13,6 +13,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
     //   - associatedLabels: hash of id -> label for child components
     //   - associatedIcons: hash of id -> iconClass
     //   - hideButtonText
+    //   - showFirstLastPageLink: true (default), false
 
     isValid: function()
     {
@@ -95,8 +96,43 @@ $.component.Component.extend('Pager', 'none', {//'input', {
         {
             if (cObj._properties.selectorStyle == 'navigate')
             {
-                cObj.$contents.append($.tag({tagName: 'a', href: '#Previous',
-                    'class': ['navigateLink', 'prevLink'], contents: '&lt; Previous'}));
+                // Create navigation UI.
+
+                var firstLastButtonsEnabled =
+                    cObj._properties.showFirstLastPageLink !== 'false';
+
+                // First button.
+                if (firstLastButtonsEnabled)
+                {
+                    cObj.$contents.append($.tag(
+                        {
+                            tagName: 'a',
+                            href: '#First',
+                            contents:
+                                {
+                                    tagName: 'span',
+                                    'class': ['icon'],
+                                    contents: 'First Page'
+                                },
+                            'class': ['button', 'navigateLink', 'firstLink', 'start']
+                        }));
+                }
+
+                // Prev button.
+                cObj.$contents.append($.tag(
+                    {
+                        tagName: 'a',
+                        href: '#Previous',
+                        contents:
+                            {
+                                tagName: 'span',
+                                'class': ['icon'],
+                                contents: 'Previous Page'
+                            },
+                        'class': ['button', 'navigateLink', 'prevLink', 'previous']
+                    }));
+
+                // Paging UI containers.
                 if (cObj._properties.navigateStyle == 'paging')
                 {
                     cObj.$contents.append($.tag({tagName: 'div', 'class': 'navigatePaging'}));
@@ -110,8 +146,32 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                             {tagName: 'span', 'class': 'totalCount'}
                     ]}));
                 }
-                cObj.$contents.append($.tag({tagName: 'a', href: '#Next',
-                    'class': ['navigateLink', 'nextLink'], contents: 'Next &gt;'}));
+
+                // Next button.
+                cObj.$contents.append($.tag(
+                    {
+                        tagName: 'a',
+                        href: '#Next',
+                        contents:
+                            {
+                                tagName: 'span',
+                                'class': ['icon'],
+                                contents: 'Next Page'
+                            },
+                        'class': ['button', 'navigateLink', 'nextLink', 'next']
+                    }));
+
+                // Last button.
+                if (firstLastButtonsEnabled)
+                {
+                    cObj.$contents.append($.tag(
+                        {
+                            tagName: 'a',
+                            href: '#Last',
+                            contents: { tagName: 'span', 'class': ['icon'], contents: 'Last Page'},
+                            'class': ['button', 'navigateLink', 'lastLink', 'end']
+                        }));
+                }
             }
             else if (cObj._properties.selectorStyle == 'buttons')
             {
@@ -174,10 +234,11 @@ var adjustIndex = function(cObj, newChildId)
     var $navLinks;
     if (($navLinks = cObj.$contents.find('.navigateLink')).length > 0)
     {
-        $navLinks.filter('.prevLink').toggleClass('disabled',
-            cObj._properties.navigateWrap === false && curIndex == 0);
-        $navLinks.filter('.nextLink').toggleClass('disabled',
-            cObj._properties.navigateWrap === false && curIndex == (pageCount - 1));
+        var atLowBoundary = cObj._properties.navigateWrap === false && curIndex == 0;
+        var atHighBoundary = cObj._properties.navigateWrap === false && curIndex == (pageCount - 1);
+
+        $navLinks.filter('.prevLink, .firstLink').toggleClass('disabled', atLowBoundary);
+        $navLinks.filter('.nextLink, .lastLink').toggleClass('disabled', atHighBoundary);
     }
     if (($statusItem = cObj.$contents.find('.navigateInfo')).length > 0)
     {

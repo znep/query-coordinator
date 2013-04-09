@@ -38,6 +38,26 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         return this._visiblePage(p[(newI + p.length) % p.length]);
     },
 
+    viewFirst: function()
+    {
+        var p = this.pages();
+
+        if (p.length != 0)
+        {
+            return this._visiblePage(p[0]);
+        }
+    },
+
+    viewLast: function()
+    {
+        var p = this.pages();
+
+        if (p.length != 0)
+        {
+            return this._visiblePage(p[p.length - 1]);
+        }
+    },
+
     pages: function()
     { return this._pages; },
 

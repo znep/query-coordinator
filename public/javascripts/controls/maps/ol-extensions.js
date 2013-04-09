@@ -799,7 +799,11 @@
             var numWidth = (totalWidth - 10) / 2;
 
             var humanify = function(x)
-                { return Math.abs(x) >= 1000 ? blist.util.toHumaneNumber(x, 2) : x.toFixed(4); },
+                {
+                    var abs = Math.abs(x);
+                    return abs >= 1000 ? blist.util.toHumaneNumber(x, 2)
+                                       : (abs - Math.floor(abs) > 0 ? x.toFixed(4) : x);
+                },
                 min = humanify(legendData.minimum),
                 max = humanify(legendData.maximum);
 

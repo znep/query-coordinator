@@ -25,6 +25,8 @@
                     tiled: true,
                     transparent: true
                 };
+                var opacity = _.isNumber(layerObj._displayFormat.opacity)
+                    && layerObj._displayFormat.opacity;
                 var layer = new OpenLayers.Layer.WMS(layerName, layerObj._config.owsUrl, params, {
                     url: layerObj._config.owsUrl,
                     isBaseLayer: false,
@@ -33,6 +35,7 @@
                     tileOrigin: new OpenLayers.LonLat(layerObj._map.maxExtent.left,
                         layerObj._map.maxExtent.bottom),
                     maxExtent: layerObj._maxExtent || layerObj._map.maxExtent,
+                    opacity: opacity,
                     params: params
                 });
                 layer.atlasId = layerName;
@@ -173,6 +176,15 @@
             if (this._getFeature) { this._getFeature.destroy(); }
             if (this._selectionLayer) { this._selectionLayer.destroy(); }
             // TODO: Check events to unregister.
+        },
+
+        reloadOpacity: function()
+        {
+            if (_.isNumber(this._displayFormat.opacity))
+            {
+                _.each(this._dataLayers, function(layer)
+                { layer.setOpacity(this._displayFormat.opacity); });
+            }
         },
 
         preferredExtent: function()

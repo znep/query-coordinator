@@ -320,11 +320,16 @@
             var view = this._view;
 
             var opacity;
-            if ($.subKeyDefined(view, 'metadata.custom_fields.drawingInfo.transparency'))
-            { opacity = parseInt(view.metadata.custom_fields.drawingInfo.transparency, 10) / 100; }
-            if (opacity == 0) // ArcGIS Server defaults transparency to 0, resulting in many datasets
-            { opacity = 1; }  // created with this default when they don't mean it.
-
+            if (_.isNumber((this._displayFormat || {}).opacity))
+            { opacity = this._displayFormat.opacity; }
+            else if ($.subKeyDefined(view, 'metadata.custom_fields.drawingInfo.transparency'))
+            {
+                opacity = parseInt(view.metadata.custom_fields.drawingInfo.transparency, 10) / 100;
+                // ArcGIS Server defaults transparency to 0, resulting in many datasets
+                // created with this default when they don't mean it.
+                if (opacity == 0)
+                { opacity = 1; }
+            }
             return opacity;
         },
 

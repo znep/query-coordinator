@@ -146,9 +146,16 @@
         discoverDisplayFormatChanges: function()
         {
             return {
+                opacity: { keys: ['opacity'], onChange: this.reloadOpacity },
                 flyouts: { keys: ['flyoutsNoLabel', 'plot.titleId', 'plot.descriptionColumns'],
                            onChange: this.reloadFlyouts }
             };
+        },
+
+        reloadOpacity: function()
+        {
+            if (this._displayLayer && _.isNumber(this._displayFormat.opacity))
+            { this._displayLayer.setOpacity(this._displayFormat.opacity); }
         },
 
         handleQueryChange: function()
@@ -532,6 +539,9 @@
             layerObj._displayLayer = new OpenLayers.Layer.Vector(layerObj._view.name);
             layerObj._map.addLayer(layerObj._displayLayer);
             layerObj._displayLayer.dataObj = layerObj;
+
+            if (_.isNumber(layerObj._displayFormat.opacity))
+            { layerObj._displayLayer.setOpacity(layerObj._displayFormat.opacity); }
 
             layerObj._highlightColor = layerObj._displayFormat.highlightColor
                 || '#' + $.rgbToHex($.colorToObj(

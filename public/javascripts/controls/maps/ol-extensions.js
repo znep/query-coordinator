@@ -708,7 +708,6 @@
         renderBackgroundLayer: function($dom, layer)
         {
             var lId = 'mapLayer_' + layer.name;
-            var opacity = _.isNull(layer.opacity) ? 1 : layer.opacity;
             var $layerSet = $dom.find('ul.base');
             var radio = 'radio" name="backgroundLayers';
             var checked = ' checked="checked"';
@@ -722,8 +721,6 @@
                 '><input type="' + (this.exclusiveLayers ? radio : 'checkbox') +
                 '" id="' + lId + '"' + checked +
                 ' /><label for="' + lId + '">' + layerName + '</label>' +
-                '<br /><span class="sliderControl" data-min="0" data-max="100" ' +
-                'data-origvalue="' + (opacity*100) + '" />' +
                 '</li>');
             $layerSet.find('li:last').data('layer', layer);
         },
@@ -757,7 +754,6 @@
                 var $layerSet = layer instanceof OpenLayers.Layer.Vector ? $dom.find('ul.feature')
                                                                          : $dom.find('ul.data');
                 var lId = 'mapLayer_' + layer.name;
-                var opacity = _.isNull(layer.opacity) ? 1 : layer.opacity;
                 var layerName = layer.name;
                 var layerType = typeMap[layerObj._displayFormat.plotStyle]
                 if (layerType) { layerType = ' title="' + layerType + '"'; }
@@ -767,8 +763,6 @@
                     '><input type="checkbox" id="' + lId + '"' +
                     (layer.visibility ? ' checked="checked"' : '') +
                     ' /><label for="' + lId + '"' + layerType + '>' + layerName + '</label>' +
-                    '<br /><span class="sliderControl" data-min="0" data-max="100" ' +
-                    'data-origvalue="' + (opacity*100) + '" />' +
                     '</li>');
                 var $layerLI = $layerSet.find('li:last');
                 $layerLI.data('layer', layer);

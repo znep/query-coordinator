@@ -14,6 +14,9 @@
                 { 'element': layerObj._parent.currentDom, 'radius': 25, 'visible': true });
             layerObj._map.addLayer(layerObj._displayLayer);
 
+            if (_.isNumber(layerObj._displayFormat.opacity))
+            { layerObj._displayLayer.setOpacity(layerObj._displayFormat.opacity); }
+
             layerObj._dataStore = [];
             layerObj._bounds = null;
 

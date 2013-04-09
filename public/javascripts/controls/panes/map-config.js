@@ -391,14 +391,20 @@
                        type: 'columnSelect', isTableColumn: true,
                        columns: {hidden: options.isEdit}},
                 minimum: 1, addText: 'Add Flyout Details'},
-            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel', onlyIf: flyouts}
+            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel', onlyIf: flyouts},
+
+            {text: 'Opacity', type: 'slider', name: prefix+'opacity',
+                defaultValue: 1, minimum: 0, maximum: 1}
         ];
     };
     mapConfigNS.dataLayer.mondara = function(options)
-    { return [
-        { type: 'note', value: 'Mondara layers are currently not customizable.' },
-        { type: 'note', value: 'Warning: Mondara layers cannot be stacked on top of Socrata layers.',
-             onlyIf: { func: function() { return options.willRestack; } } }
+    {
+        var prefix = options.prefix || 'displayFormat.';
+
+        return [
+            {text: 'Opacity', type: 'slider', name: prefix+'opacity',
+                defaultValue: 1, minimum: 0, maximum: 1},
+            { type: 'note', value: 'Mondara layers are currently not customizable further.' }
         ];
     };
     mapConfigNS.dataLayer.esri = function(options)
@@ -417,7 +423,10 @@
                        type: 'columnSelect', isTableColumn: true,
                        columns: {hidden: options.isEdit}},
                 minimum: 1, addText: 'Add Flyout Details'},
-            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel'}
+            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel'},
+
+            {text: 'Opacity', type: 'slider', name: prefix+'opacity',
+                defaultValue: 1, minimum: 0, maximum: 1}
         ];
     };
 

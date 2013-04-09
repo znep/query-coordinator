@@ -84,32 +84,25 @@ body.socrata-page
       font-size: 1.2em
       line-height: 18px
 
-  .button
-    @include sprite-menu-icons
-    font-size: 1em
-    padding: 0.3em
-    .ie7 &
-      position: relative
-      top: 0.5em
-
   .navigateLink
     font-size: 1.2em
     margin: 0.2em 0.5em
-    &.disabled
-      color: $color_buttons_disabled_text
-      cursor: auto
+    &.button
+      @include sprite-menu-icons
+      font-size: 1em
+      padding: 0.3em
+      margin: 0 0.25em
     &.prevLink
       margin-right: 1em
-      .ie7 &
-        margin-left: 0.5em
     &.nextLink
       margin-left: 1em
-      .ie7 &
-        margin-right: 0.5em
     &.firstLink
       margin-right: 0
     &.lastLink
       margin-left: 0
+    &.disabled
+      color: $color_buttons_disabled_text
+      cursor: auto
 
   .navigateInfo
     display: inline-block
@@ -121,10 +114,10 @@ body.socrata-page
     display: inline-block
     .pageLink, .currentPage, .pageFillIn
       font-size: 1.2em
-      margin: 0 0.25em
+      margin: 0 0.1em
 
     .currentPage
-      color: #999999
+      font-weight: bold
 
   .pillButtons
     display: inline-block

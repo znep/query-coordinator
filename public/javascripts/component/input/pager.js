@@ -13,7 +13,8 @@ $.component.Component.extend('Pager', 'none', {//'input', {
     //   - associatedLabels: hash of id -> label for child components
     //   - associatedIcons: hash of id -> iconClass
     //   - hideButtonText
-    //   - showFirstLastPageLink: true (default), false
+    //   - showFirstLastPageLink: false (default), true. Only for selectorStyle=navigate.
+    //   - navigateLinksAsButtons: false (default), true. Only for selectorStyle=navigate.
 
     isValid: function()
     {
@@ -99,12 +100,17 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                 // Create navigation UI.
 
                 var firstLastButtonsEnabled =
-                    cObj._properties.showFirstLastPageLink !== 'false';
+                    cObj._properties.showFirstLastPageLink === true;
+
+                var navigateLinksAsButtons =
+                    cObj._properties.navigateLinksAsButtons === true;
 
                 // First button.
                 if (firstLastButtonsEnabled)
                 {
-                    cObj.$contents.append($.tag(
+                    if (navigateLinksAsButtons)
+                    {
+                        cObj.$contents.append($.tag(
                         {
                             tagName: 'a',
                             href: '#First',
@@ -116,10 +122,18 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                                 },
                             'class': ['button', 'navigateLink', 'firstLink', 'start']
                         }));
+                    }
+                    else
+                    {
+                        cObj.$contents.append($.tag({tagName: 'a', href: '#First',
+                            'class': ['navigateLink', 'firstLink'], contents: '&laquo; First'}));
+                    }
                 }
 
                 // Prev button.
-                cObj.$contents.append($.tag(
+                if (navigateLinksAsButtons)
+                {
+                    cObj.$contents.append($.tag(
                     {
                         tagName: 'a',
                         href: '#Previous',
@@ -131,6 +145,12 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                             },
                         'class': ['button', 'navigateLink', 'prevLink', 'previous']
                     }));
+                }
+                else
+                {
+                    cObj.$contents.append($.tag({tagName: 'a', href: '#Previous',
+                        'class': ['navigateLink', 'prevLink'], contents: '&lt; Previous'}));
+                }
 
                 // Paging UI containers.
                 if (cObj._properties.navigateStyle == 'paging')
@@ -148,7 +168,9 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                 }
 
                 // Next button.
-                cObj.$contents.append($.tag(
+                if (navigateLinksAsButtons)
+                {
+                    cObj.$contents.append($.tag(
                     {
                         tagName: 'a',
                         href: '#Next',
@@ -160,17 +182,32 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                             },
                         'class': ['button', 'navigateLink', 'nextLink', 'next']
                     }));
+                }
+                else
+                {
+                    cObj.$contents.append($.tag({tagName: 'a', href: '#Next',
+                        'class': ['navigateLink', 'nextLink'], contents: 'Next &gt;'}));
+                }
+
 
                 // Last button.
                 if (firstLastButtonsEnabled)
                 {
-                    cObj.$contents.append($.tag(
+                    if (navigateLinksAsButtons)
+                    {
+                        cObj.$contents.append($.tag(
                         {
                             tagName: 'a',
                             href: '#Last',
                             contents: { tagName: 'span', 'class': ['icon'], contents: 'Last Page'},
                             'class': ['button', 'navigateLink', 'lastLink', 'end']
                         }));
+                    }
+                    else
+                    {
+                        cObj.$contents.append($.tag({tagName: 'a', href: '#Last',
+                            'class': ['navigateLink', 'lastLink'], contents: 'Last &raquo;'}));
+                    }
                 }
             }
             else if (cObj._properties.selectorStyle == 'buttons')

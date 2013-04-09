@@ -24,7 +24,7 @@ $(function()
         // Reset page
         delete newOpts.page;
         // set utf8
-        newOpts.utf8 = '✓';
+        newOpts.utf8 = '%E2%9C%93';
         // Pull real URL from JS
         window.location = blist.browse.baseURL + '?' +
             _.map(newOpts, function(v, k) { return k + '=' + v; }).join('&');

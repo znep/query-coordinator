@@ -24,7 +24,8 @@ var showDatasetSelect = function(callback, goalName, extraArgs)
     $modal.find('iframe').attr('src', browseUrl + (extraArgs || '') + '&_cache=' + (new Date()).getTime());
     commonNS.selectedDataset = function(dataset)
     {
-        callback(dataset);
+        // the dataset we get back may be fragment-cached. don't trust it.
+        Dataset.createFromViewId(dataset.id, callback);
         $.popModal();
     };
 };

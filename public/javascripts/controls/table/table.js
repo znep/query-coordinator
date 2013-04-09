@@ -4192,6 +4192,11 @@
 
                 dsReady = true;
 
+                // If the rows are already all available the first time we run this,
+                // then the row_change event below will never get fired and the
+                // size/layout will never be updated
+                updateLayout();
+
                 if (!$.isBlank(curView))
                 { curView.unbind(null, null, table); }
                 curView = model.view;

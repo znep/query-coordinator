@@ -56,6 +56,13 @@ $.component.Component.extend('Table', 'data', {
         { this.$contents.trigger('hide'); }
     },
 
+    _arrange: function()
+    {
+        this._super.apply(this, arguments);
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('resize'); }
+    },
+
     _render: function()
     {
         var lcObj = this;
@@ -89,7 +96,8 @@ var updateProperties = function(lcObj, properties)
             lcObj._table = lcObj.$contents.datasetGrid({view: lcObj._dataContext.dataset,
                 columnHideEnabled: false,
                 columnPropertiesEnabled: false,
-                editEnabled: false
+                editEnabled: false,
+                manualResize: true
             });
             lcObj._updateValidity();
         }

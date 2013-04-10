@@ -86,7 +86,7 @@
   &:hover
     cursor: move
 
-.mapLayers
+.mapOverview, .mapLayers
   > div
     margin: 0.5em 0
     padding: 0.3em
@@ -113,7 +113,8 @@
     cursor: default
     height: 8px
 
-$swatch_width: 16px
+$swatch_size: 16px
+$num_segments: 6
 
 .mapLegend
   @include border-radius(0.1em)
@@ -128,37 +129,75 @@ $swatch_width: 16px
   left: 3.7em
   bottom: 4em
   z-index: 1000
- 
-  .legendRow
+
+.mapOverview
+  @include border-radius(0.1em)
+  background-color: #ffffff
+  border: 1px solid #444444
+  padding:
+    top: 8px
+    bottom: 8px
+    left: 12px
+    right: 12px
+  position: absolute
+  z-index: 1000
+
+  &.topRight
+    right: 1.5em
+    top: 4em
+
+  &.bottomLeft
+    left: 3.7em
+    bottom: 4em
+
+  .uniform.checker, .uniform.radio
+    margin-right: 0.2em
+
+    span
+      margin-top: 3px
+
+  label
+    font-size: 1.3em
+
+  li, h3.base
     margin-top: 9px
 
-    &:first-child
-      margin-top: 0
+.legendRow
+  margin-top: 9px
 
-    .description
-      white-space: nowrap
-      line-height: 16px
-      margin-left: $swatch_width + 5
-      font-size: 1.2em
+  .mapOverview &
+    margin-left: 2.1em
 
-    .color_swatch
-      cursor: default
+  .customEntries &
+    margin-left: 1.8em
 
-      &:last-child
-        border-right: none
+  &:first-child
+    margin-top: 0
 
-    .rangeValues
-      width: ($swatch_width + 1) * 6 - 1
+  .description
+    white-space: nowrap
+    line-height: $swatch_size
+    margin-left: $swatch_size + 5
+    font-size: 1.2em
 
-  .icon .symbol
+  .color_swatch
+    cursor: default
+
+    &:last-child
+      border-right: none
+
+  .rangeValues
+    width: ($swatch_size + 1) * $num_segments - 1
+
+  &.icon .symbol
     float: left
 
     img
-      max-width: 16px
-      max-height: 16px
+      max-width: $swatch_size
+      max-height: $swatch_size
 
-  .colorRange .description
-    margin-left: ($swatch_width + 1) * 6 + 5
+  &.colorRange .description
+    margin-left: ($swatch_size + 1) * $num_segments + 5
 
 // For legacy during feature flag
 .mapLegend .color_swatch
@@ -309,7 +348,7 @@ $geolocator_margin_top: 6px
       margin-top: -908px
 
 .pageRenderType
-  .mapLegend, .mapLayers
+  .mapLegend, .mapLayers, .mapOverview
     display: none
 
 .google_cluster_labels
@@ -355,5 +394,5 @@ $geolocator_margin_top: 6px
       padding-bottom: 0.2em
 
 @media print
-  .mapLayers, .olMapViewport .olControlNoSelect
+  .mapLayers, .mapOverview, .olMapViewport .olControlNoSelect
     display: none

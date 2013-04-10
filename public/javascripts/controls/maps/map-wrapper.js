@@ -79,14 +79,10 @@
             function(c)
             { mapObj._controls[c] = mapObj.map.getControlsByClass('blist.openLayers.' + c)[0]; });
             mapObj._controls.Navigation = mapObj.map.getControlsByClass('OpenLayers.Control.Navigation')[0];
-            if (blist.openLayers.legendNextgen)
-            {
-                mapObj.map.addControl(mapObj._controls.Legend = new blist.openLayers.Legend(mapObj));
-                mapObj._primaryView.bind('conditionalformatting_change',
-                    function() { mapObj._controls.Legend.redraw(); });
-            }
-            else
-            { mapObj._controls.Legend = { redraw: function() {} }; }
+
+            if (blist.nextgen.legend)
+            { mapObj._controls.Overview
+                = mapObj.map.getControlsByClass('blist.openLayers.Overview2')[0]; }
 
             if (mapObj.settings.interactToScroll && $.subKeyDefined(mapObj, '_controls.Navigation'))
             {
@@ -153,6 +149,14 @@
             }
 
             mapObj.initializeBackgroundLayers();
+            if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.position'))
+            { mapObj._controls.Overview.reposition(mapObj._displayFormat.legendDetails.position); }
+            if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.showConditional'))
+            { mapObj._controls.Overview.configure('describeCF',
+                mapObj._displayFormat.legendDetails.showConditional); }
+            if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.customEntries'))
+            { mapObj._controls.Overview.configure('customEntries',
+                mapObj._displayFormat.legendDetails.customEntries); }
 
             if (!blist.openLayers.legendNextgen
                 && !_.isUndefined(mapObj._displayFormat.distinctLegend))
@@ -163,7 +167,6 @@
             _.each(mapObj._children.slice(length), function(childView) { childView.destroy(); });
             mapObj._children = mapObj._children.slice(0, length);
             mapObj._controls.Overview.truncate(length);
-            mapObj._controls.Legend.redraw();
 
             _.each(mapObj._children, function(cv) { cv.loading = true; });
 
@@ -324,9 +327,6 @@
                 });
             }
 
-            if (mapObj._displayFormat.openOverviewByDefault)
-            { mapObj._controls.Overview.open(); }
-
             mapObj.restackDataLayers();
 
             mapObj.initializeEvents();
@@ -382,7 +382,6 @@
                 && _.all(mapObj._children, function(cv) { return cv.ready(); }))
             {
                 mapObj._controls.Overview.redraw();
-                mapObj._controls.Legend.redraw();
                 mapObj.viewportHandler().stopExpecting();
                 mapObj.viewportHandler().saveViewport(true);
                 mapObj.geolocate();

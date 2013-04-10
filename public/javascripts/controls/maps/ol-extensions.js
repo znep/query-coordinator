@@ -466,7 +466,7 @@
             options.controls = [
                 new blist.openLayers.Attribution(),
                 new blist.openLayers.MapTypeSwitcher(),
-                new blist.openLayers.Overview(),
+                new blist.openLayers[blist.nextgen.legend ? 'Overview2' : 'Overview'](),
                 new blist.openLayers.GeocodeDialog(),
                 new blist.openLayers.IconCache()
             ];
@@ -884,89 +884,274 @@
         CLASS_NAME: 'blist.openLayers.Overview'
     });
 
-    /*
-      Rules:
-        1) If you don't have a description, you don't get included in the legend.
-        2) Icons will be shrunk to a 16x16 with appropriate aspect ratio.
-    */
-    blist.openLayers.Legend = OpenLayers.Class(OpenLayers.Control, {
+    blist.openLayers.Overview.SWATCH_WIDTH = 16;
 
-        initialize: function(mapObj)
+    blist.openLayers.Overview2 = OpenLayers.Class(OpenLayers.Control, {
+
+        EVENT_TYPES: [],
+
+        initialize: function()
         {
-            this.mapObj = mapObj;
+            this.EVENT_TYPES = blist.openLayers.Overview.prototype.EVENT_TYPES.concat(
+                               OpenLayers.Control.prototype.EVENT_TYPES);
+            OpenLayers.Control.prototype.initialize.apply(this, arguments);
+            this._dataLayers = [];
+            this._config = { describeCF: true, customEntries: [] };
         },
 
-        destroy: function()
+        setMap: function(map)
         {
-            OpenLayers.Control.prototype.destroy.apply(this, arguments);
+            OpenLayers.Control.prototype.setMap.apply(this, arguments);
+
+            this.mtSwitcher = this.map.getControlsByClass('blist.openLayers.MapTypeSwitcher')[0];
+            this.map.events.on({
+                'changebaselayer': this.redraw,
+                'addlayer': this.redraw,
+                'removelayer': this.redraw,
+                scope: this
+            });
         },
 
-        redraw: function()
+        configure: function(property, value)
         {
-            this.draw();
+            this._config[property] = value;
+            this.redraw();
         },
 
+        // FIXME: #draw and #redraw as used here are non-idiomatic.
         draw: function()
         {
-            OpenLayers.Control.prototype.draw.apply(this, arguments);
-            var control = this,
-                $dom = $(this.map.div);
-            if ($dom.siblings('.mapLegend').length < 1)
+            var $dom = $(this.map.div);
+            if ($dom.siblings('.mapLayers').length < 1)
             {
-                $dom.before('<div class="mapLegend hide">' + '</div>');
+                $dom.before(this.$dom = $.tag2({ _: 'div', contents: [
+                    { _: 'h3', className: 'data', contents: 'Data Layers' },
+                    { _: 'ul', className: 'data' },
+                    { _: 'ul', className: 'feature' },
+                    { _: 'h3', className: 'base', contents: 'Base Layers' },
+                    { _: 'ul', className: 'base' },
+                    { _: 'div', className: 'customEntries' }
+                ], className: ['mapOverview', 'topRight'] }));
             }
-            this.$dom = $dom = $dom.siblings('.mapLegend');
-
-            $dom.find('.legendRow').remove();
-
-            // Get and $.union every possible conditional format that exists.
-            var cfs = [];
-            if ((this.mapObj._displayFormat.legendDetails || {}).showConditional)
-            {
-                cfs = _.compact($.union(_.flatten(_.values(
-                        $.deepGet(this.mapObj._primaryView, 'metadata', 'conditionalFormatting'))),
-                    _.map(this.mapObj._children,
-                        function(c) { return c._view.metadata.conditionalFormatting; })))
-            }
-
-            // Custom entries.
-            cfs = cfs.concat((this.mapObj._displayFormat.legendDetails || {}).customEntries);
-            _.each(cfs, function(cf)
-            {
-                if (!cf || !cf.description) { return; }
-
-                if (cf.color)
-                { control.render({ symbolType: 'oneColor', color: cf.color,
-                                   description: cf.description }); }
-                else if (cf.icon)
-                { control.render({ symbolType: 'icon', icon: cf.icon,
-                                   description: cf.description }); }
-            });
-
-            _(this.mapObj._children).chain().invoke('legendData').compact().each(function(ld)
-            {
-                control.render($.extend({}, ld,
-                    { symbolType: 'colorRange', description: ld.name }));
-            });
-
-            $dom.toggleClass('hide', $dom.find('.legendRow').length <= 0);
         },
 
-        render: function(datum)
+        reposition: function(where)
         {
-            var $dom = this.$dom, $row;
-            $dom.append($row = $.tag2({ _: 'div', contents: [
+            this.$dom.toggleClass('hide', where == 'none');
+
+            _.each(['topRight', 'bottomLeft'], function(cn)
+            { this.$dom.toggleClass(cn, cn == where); }, this);
+        },
+
+        // Consider being more incisive? Parameter: `evt.layer`.
+        redraw: function(evtObj)
+        {
+            var control = this;
+            if (control._handlingEvent == 'changebaselayer') { return; }
+
+            var $dom = this.$dom;
+            var backgroundLayers = this.exclusiveLayers ? _.values(this.mtSwitcher.layers)
+                                                        : this.map.backgroundLayers();
+            if (control.map.hasNoBackground) { backgroundLayers = []; }
+
+            $dom.find('ul').empty();
+            $dom.find('.customEntries').empty();
+
+            $dom.find('.base').toggle(backgroundLayers.length > 0);
+            $dom.find('.data').toggle(this._dataLayers.length > 0);
+
+            _.each(backgroundLayers.slice().reverse(), this.renderBackgroundLayer, this);
+            _.each(this._dataLayers.slice().reverse(), this.renderDataLayer, this);
+            _.each(this._config.customEntries, this.renderCustomEntry, this);
+
+            $dom.find(':checkbox').click(function(e)
+            {
+                var $check = $(e.currentTarget);
+                var layer = $check.parents('li').data('layer')
+                layer.setVisibility($check.value());
+
+                if (layer.visibility)
+                { delete layer.hiddenByUser; }
+                else
+                { layer.hiddenByUser = true; }
+            }).uniform();
+
+            $dom.find(':radio').click(function(e)
+            {
+                var $check = $(e.currentTarget);
+                var layer = $check.parents('li').data('layer');
+                if (control.map.getLayerIndex(layer) == -1)
+                { control.map.addLayers([layer]); }
+                control.map.setBaseLayer(layer);
+            }).uniform();
+
+            $dom.find('.sliderControl').each(function()
+            {
+                var $slider = $(this);
+                $slider.slider({min: parseInt($slider.attr('data-min')),
+                    max: parseInt($slider.attr('data-max')),
+                    value: parseInt($slider.attr('data-origvalue'))});
+                $slider.after($.tag(
+                    {tagName: 'input', type: 'text',
+                    value: $slider.attr('data-origvalue'),
+                    readonly: true, 'class': 'sliderInput'}
+                , true));
+                $slider.bind('slide', function(event, ui)
+                {
+                    var $_this = $(this);
+                    var layer = $_this.parent().data('layer')
+                    var newOpacity = ui.value/100;
+                    layer.setOpacity(newOpacity);
+                    $_this.next(':input').val(ui.value);
+                });
+            });
+
+            var reorderLayers = function(event, ui)
+            {
+                control._handlingEvent = 'changebaselayer';
+                var layer = $(ui.item).data('layer');
+                if (!layer) { return; }
+                var index = $dom.find('ul li').index(ui.item);
+
+                var oldBaseLayer, newBaseLayer;
+                if (index == 0)
+                { oldBaseLayer = control.map.baseLayer; newBaseLayer = layer; }
+                else if (control.map.getLayerIndex(layer) == 0)
+                { oldBaseLayer = control.map.layers[0]; newBaseLayer = control.map.layers[1]; }
+
+                if (oldBaseLayer && newBaseLayer)
+                {
+                    control.map.setBaseLayer(newBaseLayer);
+                    newBaseLayer.setIsBaseLayer(true);
+                    oldBaseLayer.setIsBaseLayer(false);
+                    oldBaseLayer.setVisibility(true);
+                }
+                control.map.setLayerIndex(layer, index);
+                delete control._handlingEvent;
+            };
+
+            if (!this.exclusiveLayers && $('ul.base:visible').length > 0)
+            { $dom.find('ul.base').sortable({containment: 'parent',
+                    placeholder: 'ui-state-highlight',
+                    forcePlaceholderSize: true, tolerance: 'pointer',
+                    update: reorderLayers, cancel: 'a.ui-slider-handle'
+                }); }
+
+            // Create separator if there is something to separate.
+            if ($dom.find('ul.data, ul.feature').filter(':visible').hasChildren())
+            { $dom.find('ul.data').css('border-bottom', 'dashed 1px #eee'); }
+            else
+            { $dom.find('ul.data').css('border-bottom', 'none'); }
+
+            this.correctHeight();
+        },
+
+        renderBackgroundLayer: function(layer)
+        {
+            var lId = 'mapLayer_' + layer.name;
+            var $layerSet = this.$dom.find('ul.base');
+            var radio = 'radio" name="backgroundLayers';
+            var checked = ' checked="checked"';
+
+            if (   (!this.exclusiveLayers && !layer.visibility)
+                || ( this.exclusiveLayers && this.map.baseLayer != layer))
+            { checked = ''; }
+
+            var layerName = $.isBlank(layer.alias) ? layer.name : layer.alias;
+            $layerSet.append('<li data-layerid="' + layer.id + '"' +
+                '><input type="' + (this.exclusiveLayers ? radio : 'checkbox') +
+                '" id="' + lId + '"' + checked +
+                ' /><label for="' + lId + '">' + layerName + '</label>' +
+                '</li>');
+            $layerSet.find('li:last').data('layer', layer);
+        },
+
+        truncate: function(length)
+        {
+            this._dataLayers = this._dataLayers.slice(0, length);
+            this.redraw();
+        },
+
+        registerDataLayer: function(layerObj, index)
+        {
+            this._dataLayers[index] = layerObj;
+            this.redraw();
+        },
+
+        renderDataLayer: function(layerObj)
+        {
+            var control = this, $dom = this.$dom;
+            var dataLayers = _($.makeArray(layerObj.dataLayers())).chain()
+                .flatten().compact().value();
+
+            var typeMap = {
+                'point': 'Point Map',
+                'heatmap': 'Boundary Map',
+                'rastermap': 'Heat Map'
+            };
+
+            _.each(dataLayers, function(layer)
+            {
+                var $layerSet = layer instanceof OpenLayers.Layer.Vector ? $dom.find('ul.feature')
+                                                                         : $dom.find('ul.data');
+                var lId = 'mapLayer_' + layer.name;
+                var layerName = layerObj._displayFormat.alias || layer.name;
+                var layerType = typeMap[layerObj._displayFormat.plotStyle]
+                if (layerType) { layerType = ' title="' + layerType + '"'; }
+                if (dataLayers.length > 1)
+                { layerName += ' (of ' + layerObj._view.name + ')'; }
+                $layerSet.append('<li data-layerid="' + layer.id + '"' +
+                    '><input type="checkbox" id="' + lId + '"' +
+                    (layer.visibility ? ' checked="checked"' : '') +
+                    ' /><label for="' + lId + '"' + layerType + '>' + layerName + '</label>' +
+                    '</li>');
+                var $layerLI = $layerSet.find('li:last');
+                $layerLI.data('layer', layer);
+
+                control.renderLegend(layerObj);
+            });
+        },
+
+        renderCustomEntry: function(entry)
+        {
+            var $row;
+            this.$dom.find('.customEntries').append($row = $.tag2({ _: 'div', contents: [
                     { _: 'div', className: 'symbol' },
-                    { _: 'div', className: 'description', contents: datum.description }
-                ], 'className': 'legendRow clearfix ' + datum.symbolType
+                    { _: 'div', className: 'description', contents: entry.label }
+                ], 'className': 'legendRow clearfix oneColor'
             }));
 
-            this.renderSymbol[datum.symbolType].call(this, datum, $row);
-
-            return $dom;
+            this.renderLegendRow.oneColor(entry, $row);
         },
 
-        renderSymbol: {
+        /*
+          Rules:
+            1) If you don't have a description, you don't get included in the legend.
+            2) Icons will be shrunk to a 16x16 with appropriate aspect ratio.
+        */
+        renderLegend: function(layerObj)
+        {
+            var legendData = layerObj.legendData();
+            if (_.isEmpty(legendData)) { return; }
+
+            var $container = this.$dom.find('ul.feature li:last'), $row;
+
+            _.each(legendData, function(datum)
+            {
+                if (!this._config.describeCF && datum.cf) { return; }
+
+                $container.append($row = $.tag2({ _: 'div', contents: [
+                        { _: 'div', className: 'symbol' },
+                        { _: 'div', className: 'description', contents: datum.description }
+                    ], 'className': 'legendRow clearfix ' + datum.symbolType
+                }));
+
+                this.renderLegendRow[datum.symbolType](datum, $row);
+            }, this);
+        },
+
+        renderLegendRow:
+        {
         oneColor: function(datum, $row)
         {
             $row.find('.symbol').append($.tag2({ _: 'div', className: 'color_swatch', contents: [
@@ -1011,10 +1196,29 @@
         }
         },
 
-        CLASS_NAME: 'blist.openLayers.Legend'
-    });
+        resetBackground: function()
+        {
+            if (!this.exclusiveLayers) { return; }
+            this.$dom.find('ul.base li:first input:radio').attr('checked', 'checked');
+            this.map.setBaseLayer(this.map.backgroundLayers()[0])
+        },
 
-    blist.openLayers.Overview.SWATCH_WIDTH = 16;
+        correctHeight: function()
+        {
+            var $div = $(this.map.div);
+            var $layers = this.$dom;
+            var $bottom = $(this.map.getControlsByClass('OpenLayers.Control.Attribution')[0].div);
+            var height = ($bottom.filter(':visible').length == 0)
+                ? $div.height() - 20 : $bottom.position().top - 10;
+            height -= $layers.position().top + $layers.padding().top + $layers.padding().bottom;
+            $layers.css('max-height', height);
+            $layers.find('.contentBlock').css({
+                'max-height': height-(2 * $layers.find('.toggleLayers').height()),
+                'overflow': 'auto'});
+        },
+
+        CLASS_NAME: 'blist.openLayers.Overview2'
+    });
 
     blist.openLayers.IconCache = OpenLayers.Class(OpenLayers.Control, {
         initialize: function()

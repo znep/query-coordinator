@@ -77,6 +77,8 @@
                 'row_change': function(rows, fr) { layerObj.handleRowChange(rows, fr); },
                 'displayformat_change': function(df) { layerObj.handleDisplayFormatChange(df); },
                 'query_change': function() { layerObj.handleQueryChange(); },
+                'conditionalformatting_change':
+                    function() { layerObj._parent._controls.Overview.redraw(); },
                 'set_temporary': function() { layerObj.fireTemporaryEvent(true); },
                 'clear_temporary': function() { layerObj.fireTemporaryEvent(false); }
             };
@@ -287,7 +289,6 @@
                     {
                         layerObj.handleDataLoaded(layerObj._view.loadedRows());
                         layerObj._parent._controls.Overview.redraw();
-                        layerObj._parent._controls.Legend.redraw();
                     }
                 }, aggs);
             }
@@ -488,14 +489,39 @@
 
         legendData: function()
         {
-            var layerObj = this;
-            if (!layerObj._colorValueCol || !layerObj._segments) { return; }
+            var layerObj = this, data = [];
 
-            return { name: layerObj._colorValueCol.name,
-                minimum:   layerObj._colorSpread.min,
-                maximum:   layerObj._colorSpread.max,
-                gradient:  layerObj._segments[layerObj._colorValueCol.id]
-            };
+            if ($.subKeyDefined(layerObj._view, 'metadata.conditionalFormatting'))
+            {
+                _.each(layerObj._view.metadata.conditionalFormatting, function(cf)
+                {
+                    if (!cf.description) { return; }
+
+                    if (cf.color)
+                    { data.push({ symbolType: 'oneColor', color: cf.color,
+                                  description: cf.description, cf: true }) }
+                    else if (cf.icon)
+                    { data.push({ symbolType: 'icon', icon: cf.icon,
+                                  description: cf.description, cf: true }) }
+                });
+            }
+            if (layerObj._colorValueCol && layerObj._segments)
+            {
+                data.push({
+                    symbolType:  'colorRange',
+                    description: layerObj._colorValueCol.name,
+                    minimum:     layerObj._colorSpread.min,
+                    maximum:     layerObj._colorSpread.max,
+                    gradient:    layerObj._segments[layerObj._colorValueCol.id]
+                });
+            }
+
+            if (blist.nextgen.legend)
+            { return data; }
+            else if (layerObj._colorValueCol && layerObj._segments)
+            { return _.last(data); }
+            else
+            { return null; }
         },
 
         layersToRestack: function()
@@ -564,7 +590,6 @@
                             {
                                 layerObj.handleDataLoaded(layerObj._view.loadedRows());
                                 layerObj._parent._controls.Overview.redraw();
-                                layerObj._parent._controls.Legend.redraw();
                             } }
             });
         },

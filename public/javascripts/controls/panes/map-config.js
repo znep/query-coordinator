@@ -308,8 +308,16 @@
                 title: 'Legend Configuration', type: 'selectable',
                 onlyIf: { func: function() { return $.urlParam(window.location.href, 'legend') == 'nextgen'; } },
                 fields: [
+                    {text: 'Legend', type: 'select', prompt: 'Choose a position',
+                        defaultValue: 'bottom', name: 'displayFormat.legendDetails.position',
+                        options: [
+                            {text: 'Top Right', value: 'topRight'},
+                            {text: 'Bottom Left', value: 'bottomLeft'},
+                            {text: 'None', value: 'none'}
+                        ]
+                    },
                     { text: 'Describe Conditional Formats', type: 'checkbox', inputFirst: true,
-                      name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
+                      name: 'displayFormat.legendDetails.showConditional', defaultValue: true,
                       lineClass: 'advLegendCheck' },
                     { type: 'repeater', minimum: 0, initialRepeatCount: 0,
                       addText: 'Add Custom Legend Entry',
@@ -319,7 +327,7 @@
                               { type: 'color', name: 'color', defaultValue: '#ffffff',
                                 lineClass: 'colorCollapse' },
                               { text: 'Custom Label', type: 'text',
-                                name: 'description', required: true }
+                                name: 'label', required: true }
                           ]
                     } }
                 ]
@@ -333,6 +341,8 @@
         var prefix = options.prefix || 'displayFormat.';
         var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
         return [
+            {text: 'Alias', type: 'text', name: prefix+'alias',
+                prompt: 'Describe the dataset' },
             {text: 'Plot Style', type: 'select', name: prefix+'plotStyle',
                 options: plotStyles, required: true, prompt: 'Select a plot style' },
             {text: 'Location', name: prefix+'plot.locationId',
@@ -402,6 +412,8 @@
         var prefix = options.prefix || 'displayFormat.';
 
         return [
+            {text: 'Alias', type: 'text', name: prefix+'alias',
+                prompt: 'Describe the dataset' },
             {text: 'Opacity', type: 'slider', name: prefix+'opacity',
                 defaultValue: 1, minimum: 0, maximum: 1},
             { type: 'note', value: 'Mondara layers are currently not customizable further.' }
@@ -411,6 +423,8 @@
     {
         var prefix = options.prefix;
         return [
+            {text: 'Alias', type: 'text', name: prefix+'alias',
+                prompt: 'Describe the dataset' },
             {text: 'Title', name: prefix+'plot.titleId',
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['text', 'location', 'html', 'url',

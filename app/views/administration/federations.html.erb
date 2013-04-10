@@ -103,10 +103,12 @@
                 <%- accepted = f.acceptedUserId.present? -%>
                 <span class="cellInner"><%= accepted ? 'Accepted' : 'Pending' %></span>
                 <%- if f.targetDomainCName == CurrentDomain.cname %>
-                  <%= form_button({:action => :accept_federation, :id => f.id}, 'Accept',
-                       {}, {:class => 'button' + (accepted ? ' disabled' : '')}) %>
-                  <%= form_button({:action => :reject_federation, :id => f.id}, 'Reject',
-                       {}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
+                  <div class="acceptRejectButtons">
+                    <%= form_button({:action => :accept_federation, :id => f.id}, 'Accept',
+                         {}, {:class => 'button' + (accepted ? ' disabled' : '')}) %>
+                    <%= form_button({:action => :reject_federation, :id => f.id}, 'Reject',
+                         {}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
+                  </div>
                 <%- end -%>
               </td>
               <td class="delete">

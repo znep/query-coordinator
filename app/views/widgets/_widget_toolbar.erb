@@ -26,7 +26,7 @@
         <dd><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow external' })) || '(none)' %></dd>
         <%- if @view.category -%>
           <dt>Category</dt>
-          <dd><%= @view.category %></dd>
+          <dd><%= @view.category_display %></dd>
         <%- end -%>
         <%- if @view.tags -%>
           <dt>Tags</dt>

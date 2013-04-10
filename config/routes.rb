@@ -110,6 +110,7 @@ Frontend::Application.routes do
     put '/metadata/:fieldset/:index/toggle/:option', :action => 'toggle_metadata_option'
     put '/metadata/:fieldset/:field/move/:direction', :action => 'move_metadata_field'
     post '/metadata/create_category', :action => 'create_category'
+    post '/metadata/update_category', :action => 'update_category'
     delete '/metadata/delete_category', :action => 'delete_category'
     post '/home/stories', :action => 'create_story'
     put '/home/stories/:id/:other', :action => 'move_story'

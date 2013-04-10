@@ -433,6 +433,7 @@ class AdministrationController < ApplicationController
     config = ::Configuration.get_or_create('metadata', {'name' => 'Metadata configuration'})
     @metadata = config.properties.fieldsets || []
     @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
+    @locales = request.env['socrata.available_locales']
   end
 
   def create_metadata_fieldset
@@ -598,11 +599,38 @@ class AdministrationController < ApplicationController
     if !new_category_parent.blank?
       prop_val[:parent] = new_category_parent.titleize_if_necessary
     end
+
+    locales = params[:new_locales]
+    prop_val[:locale_strings] = locales if !locales.empty?
+
     config.create_property(new_category.titleize_if_necessary, prop_val)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     flash[:notice] = "Category successfully created"
+    redirect_to metadata_administration_path
+  end
+
+  def update_category
+    category = params[:category]
+    config = get_configuration('view_categories')
+    if config.nil?
+      config = create_config_copy('View categories', 'view_categories')
+    end
+
+    cat_config = config.raw_properties[category[:name]]
+    if cat_config.nil?
+      flash[:error] = "Could not update category named '#{category[:name]}'"
+      return redirect_to metadata_administration_path
+    end
+
+    cat_config[:locale_strings] = category[:locale]
+
+    config.update_property(category[:name], cat_config)
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+
+    flash[:notice] = "Category successfully updated"
     redirect_to metadata_administration_path
   end
 

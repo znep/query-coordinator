@@ -106,16 +106,32 @@ class View < Model
     categories.each do |c, o|
       next if !o.enabled
       c = c.titleize_if_necessary
+      t = (o['locale_strings'] || {})[I18n.locale]
+      t = c if t.blank?
       if o['parent'].blank?
-        top_level_cats[c] ||= { value: c, text: c }
+        top_level_cats[c] ||= {}
+        top_level_cats[c][:value] = c
+        top_level_cats[c][:text] = t
       else
         p = o['parent'].titleize_if_necessary
-        top_level_cats[p] ||= { value: p, text: p }
+        top_level_cats[p] ||= {}
         top_level_cats[p][:children] ||= []
-        top_level_cats[p][:children].push({ value: c, text: c })
+        top_level_cats[p][:children].push({ value: c, text: t })
       end
     end
     return top_level_cats
+  end
+
+  def category_display
+    categories = CurrentDomain.configuration('view_categories').properties
+    cat_obj = nil
+    categories.each do |c, o|
+      cat_obj = o if c == self.category || c.titleize_if_necessary == self.category
+    end
+    return self.category if cat_obj.nil?
+    c = (cat_obj['locale_strings'] || {})[I18n.locale]
+    c = self.category if c.blank?
+    c
   end
 
   def module_enabled?(name)

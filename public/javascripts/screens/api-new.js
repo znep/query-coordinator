@@ -307,6 +307,7 @@ $(function(){
         {
           var md = $.extend(true, {}, blist.configuration.apiFoundry.ds.metadata);
           md.availableDisplayTypes = ['api'];
+          md.rowIdentifier = apiView.metadata.rowIdentifier;
           updateView(
             {
               displayType: 'api',

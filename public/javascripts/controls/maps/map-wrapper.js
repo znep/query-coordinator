@@ -378,8 +378,9 @@
             if (blist.openLayers.isBackgroundLayer(layer)) { layer._loaded = true; }
 
             if (!mapObj._doneLoading
-                && _.all(mapObj.map.backgroundLayers(), function(layer) { return layer._loaded; })
-                && _.all(mapObj._children, function(cv) { return cv.ready(); }))
+                && (mapObj.map.hasNoBackground
+                    || _(mapObj.map.backgroundLayers()).chain().pluck('_loaded').all().value())
+                && _(mapObj._children).chain().invoke('ready').all().value())
             {
                 mapObj._controls.Overview.redraw();
                 mapObj.viewportHandler().stopExpecting();

@@ -58,7 +58,7 @@
 
         ready: function()
         {
-            return this._super() && this._featuresLoaded;
+            return this._super() && this._featuresLoaded && this._dataInFeatures;
         },
 
         zoomToPreferred: function()
@@ -264,7 +264,11 @@
             var waiting = setInterval(function()
             {
                 if (layerObj._rowsProcessing <= 0)
-                { clearInterval(waiting); layerObj.renderFeatures(); }
+                {
+                    clearInterval(waiting);
+                    layerObj.renderFeatures();
+                    layerObj._dataInFeatures = layerObj._dataLoaded;
+                }
             }, 20);
         },
 

@@ -378,6 +378,12 @@ $row_zebra_color: #f6f6f6
     display: table
     clear: both
 
+@mixin triangle($size, $color, $side)
+  border: $size solid transparent
+  border-#{$side}-color: $color
+  height: 0
+  width: 0
+
 // GovStat colors
 $govstat_color_action: #2f90dd
 
@@ -400,3 +406,4 @@ $list_border_color: #d1d1d1
   text-shadow: 0 1px 0 #fff
   &:hover
     @include box-shadow-none
+

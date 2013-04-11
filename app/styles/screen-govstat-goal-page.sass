@@ -16,19 +16,16 @@
   .progress-none .none
     background-color: #888
 
-@mixin text-progress-colors
-  &.progress-good
-    .value
-      color: #09a74f
-  &.progress-progressing
-    .value
-      color: #fcc806
-  &.progress-bad
-    .value
-      color: #e33229
-  &.progress-none
-    .value
-      color: #888
+@mixin progress-colors($prop, $selector: '')
+  &.progress-good #{$selector}
+    #{$prop}: #09a74f
+  &.progress-progressing #{$selector}
+    #{$prop}: #fcc806
+  &.progress-bad #{$selector}
+    #{$prop}: #e33229
+  &.progress-none #{$selector}
+    #{$prop}: #888
+
 
 .heroImageContainer
   height: 35em
@@ -56,8 +53,8 @@
   border-top: 3px solid #888
   @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.2))
   color: #555
-  margin-bottom: 5em
-  overflow: hidden
+  margin: 5em
+    top: 0
   padding-bottom: 1.5em
   position: relative
 
@@ -112,7 +109,7 @@
         padding-top: 1.5em
 
         .metricValue
-          @include text-progress-colors
+          @include progress-colors(color, '.value')
 
           .value
             font-size: 8em
@@ -170,8 +167,132 @@
             letter-spacing: -1px
 
   .chartArea
+    background-color: #fbfbfb
+    @include prefixer(background, linear-gradient(#f4f4f4, #fbfbfb 15px))
+    border-top: 1px solid #bbb
+    font-size: 1em
+    height: 21em
+    margin: 2em -4.5em -4.5em
+    padding: 0
+
     .goalUid
       display: none
+
+    .content-wrapper
+      position: relative
+
+      svg
+        position: relative
+        z-index: 1
+
+        .dataSeriesArea
+          fill: #aaa
+          fill-opacity: 0.3
+
+        .dataSeriesLine
+          fill: none
+          stroke: #666
+          stroke-width: 3px
+
+        .projectionLineShadow
+          fill: none
+          stroke: #fbfbfb
+          stroke-opacity: 0.75
+          stroke-width: 7px
+
+        .projectionLine
+          @include progress-colors(stroke)
+          fill: none
+          stroke-width: 3px
+
+      .dataSeriesLeftBuffer, .dataSeriesRightBuffer
+        background-color: #aaa
+        bottom: 0
+        @include opacity(0.08)
+        position: absolute
+        z-index: 1
+
+      .dataSeriesLeftBuffer
+        left: 0
+
+      .dataSeriesRightBuffer
+        right: 0
+
+      .bubble
+        color: #fff
+        padding: 0.2em
+        position: absolute
+
+      .yTick
+        border-top: 1px solid #eee
+        left: 0
+        position: absolute
+        right: 0
+        z-index: 0
+
+        .bubble
+          background-color: #797979
+          margin-right: 0.8em
+          margin-top: -0.8em
+          right: 100%
+          text-rendering: optimizeLegibility
+
+          .tip
+            @include triangle(3px, #797979, left)
+            margin-right: -6px
+            position: absolute
+            right: 0
+            top: 0.4em
+
+      .xTick.bubble
+        background-color: #ababab
+        bottom: 0
+        margin-bottom: -2.3em
+        margin-left: -2.2em
+        position: absolute
+        text-align: center
+        width: 4em
+
+        .tip
+          @include triangle(3px, #ababab, bottom)
+          margin-top: -6px
+          position: absolute
+          left: 1.9em
+          top: 0
+
+      .marker
+        @include progress-colors(background-color)
+        @include progress-colors(border-right-color, '.tip')
+        background-color: #797979
+        left: 100%
+        margin-left: 0.8em
+        margin-top: -0.8em
+        position: absolute
+
+        .tip
+          @include triangle(3px, #797979, right)
+          margin-left: -6px
+          position: absolute
+          left: 0
+          top: 0.4em
+
+      .meter
+        bottom: 0
+        position: absolute
+        right: 0
+        top: 0
+        width: 4px
+        z-index: 2
+
+        div
+          @include progress-colors(background-color)
+          position: absolute
+          width: 100%
+
+          &.rangeTop
+            top: 0
+          &.rangeBottom
+            bottom: 0
 
 .sectionTitle
   font-size: 2em
@@ -204,7 +325,7 @@
           padding: 0
 
       .indicatorContainer
-        @include text-progress-colors
+        @include progress-colors(color, '.value')
         text-align: center
 
         .value

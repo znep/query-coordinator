@@ -128,7 +128,7 @@
             $container.find('.meter')
                 .find('.rangeTop').addClass('progress-bad').end()
                 .find('.rangeBottom').addClass('progress-good').end();
-            computeProgress = function(val) { return val < computedValues.target_value ? 'bad' : 'good'; };
+            computeProgress = function(val) { return val < computedValues.target_value ? 'good' : 'bad'; };
         }
 
 

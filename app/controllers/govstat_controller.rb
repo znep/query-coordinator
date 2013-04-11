@@ -259,7 +259,8 @@ protected
             }, {
               type: 'Text',
               customClass: 'chartArea',
-              html: '<span class="goalUid">{goal.id}</span>'
+              ifValue: '?leafChart',
+              html: '<span class="goalUid">{goal.id}</span><div class="dataSeriesLeftBuffer"></div><div class="dataSeriesRightBuffer"></div><div class="meter"><div class="rangeTop"></div><div class="rangeBottom"></div></div><div class="bubble marker projectionMarker">Projected<div class="tip"></div></div><div class="bubble marker currentMarker">Current<div class="tip"></div></div><div class="bubble marker targetMarker">Target<div class="tip"></div></div><!-- {?leafChart}-->'
             }]
           } ]
         }, {
@@ -349,6 +350,12 @@ protected
         {
           type: 'Text', htmlClass: 'goalDescription clearfix',
           html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
+        },
+        {
+          type: 'Text',
+          style: { display: 'none' },
+          # TODO: minify
+          html: '<!--[if lte IE 8]><script src="/javascripts/plugins/vis/r2d3.v3.js" charset="utf-8"></script><![endif]--><!--[if gte IE 9]><!--><script src="/javascripts/plugins/vis/d3.v3.js"></script><!--<![endif]-->'
         }
         ]
       }

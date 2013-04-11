@@ -560,7 +560,7 @@ javascripts:
     - public/javascripts/plugins/jit.js
   d3:
     - public/javascripts/plugins/vis/raphael.js
-    - public/javascripts/plugins/vis/d3.v2.js
+    - public/javascripts/plugins/vis/d34raphael.js
     - public/javascripts/plugins/vis/ie8compat.js
   excanvas:
     - public/javascripts/plugins/excanvas.compiled.js

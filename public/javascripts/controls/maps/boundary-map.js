@@ -204,15 +204,40 @@
 
         legendData: function()
         {
-            var layerObj = this;
-            if (!layerObj._quantityCol || !layerObj._range) { return; }
-            if (!$.subKeyDefined(layerObj, '_quantityCol.aggregates.maximum')) { return; }
+            var layerObj = this, data = [];
 
-            return { name: layerObj._quantityCol.name,
-                minimum: layerObj._quantityCol.aggregates.minimum,
-                maximum: layerObj._quantityCol.aggregates.maximum,
-                gradient: layerObj._range
-            };
+            if ($.subKeyDefined(layerObj._view, 'metadata.conditionalFormatting'))
+            {
+                _.each(layerObj._view.metadata.conditionalFormatting, function(cf)
+                {
+                    if (!cf.description) { return; }
+
+                    if (cf.color)
+                    { data.push({ symbolType: 'oneColor', color: cf.color,
+                                  description: cf.description, cf: true }) }
+                    else if (cf.icon)
+                    { data.push({ symbolType: 'icon', icon: cf.icon,
+                                  description: cf.description, cf: true }) }
+                });
+            }
+            if (layerObj._quantityCol && layerObj._range
+                && ($.subKeyDefined(layerObj, '_quantityCol.aggregates.maximum')))
+            {
+                data.push({
+                    symbolType:  'colorRange',
+                    description: layerObj._quantityCol.name,
+                    minimum:     layerObj._quantityCol.aggregates.minimum,
+                    maximum:     layerObj._quantityCol.aggregates.maximum,
+                    gradient:    layerObj._range
+                });
+            }
+
+            if (blist.nextgen.legend)
+            { return data; }
+            else if (layerObj._colorValueCol && layerObj._segments)
+            { return _.last(data); }
+            else
+            { return null; }
         },
 
         // Make it so that it only highlights one row first in order to speed up highlighting

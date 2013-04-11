@@ -263,7 +263,11 @@ protected
               type: 'Text',
               customClass: 'chartArea',
               ifValue: '?leafChart',
-              html: '<span class="goalUid">{goal.id}</span><div class="dataSeriesLeftBuffer"></div><div class="dataSeriesRightBuffer"></div><div class="meter"><div class="rangeTop"></div><div class="rangeBottom"></div></div><div class="bubble marker projectionMarker">Projected<div class="tip"></div></div><div class="bubble marker currentMarker">Current<div class="tip"></div></div><div class="bubble marker targetMarker">Target<div class="tip"></div></div><!-- {?leafChart}-->'
+              html: '<span class="goalUid">{goal.id}</span>' +
+                    '<div class="constrain"><div class="nowTip"><div class="nowTipFill"></div></div></div>' +
+                    '<div class="dataSeriesLeftBuffer"></div><div class="dataSeriesRightBuffer"></div>' +
+                    '<div class="meter"><div class="rangeTop"></div><div class="rangeBottom"></div></div>' +
+                    '<div class="bubble marker projectionMarker">Projected<div class="tip"></div></div><div class="bubble marker currentMarker">Current<div class="tip"></div></div><div class="bubble marker targetMarker">Target<div class="tip"></div></div>'
             }]
           } ]
         }, {

@@ -206,6 +206,7 @@ class CustomContentController < ApplicationController
     if @cached_fragment.nil?
       Rails.logger.info("Performing full render")
       Canvas2::DataContext.reset
+      Canvas2::Util.reset
       Canvas2::Util.set_params(params)
       Canvas2::Util.set_debug(@debug || @edit_mode)
       Canvas2::Util.set_no_cache(false)

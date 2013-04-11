@@ -374,6 +374,22 @@
                     ]
                 },
 
+                // Number localization
+                {
+                    title: 'Localization', type: 'selectable', showIfData: true,
+                    onlyIf: { func: function(c)
+                    {
+                        if ($.isBlank(c)) { return false; }
+                        return _.include(['number', 'percent', 'money'], c.origColumn.renderTypeName);
+                    }},
+                    fields: [
+                        { text: 'Decimal', type: 'text', name: 'format.decimalSeparator',
+                            defaultValue: '.' },
+                        { text: 'Thousands', type: 'text', name: 'format.groupSeparator',
+                            defaultValue: ',' }
+                    ]
+                },
+
                 // Photo
                 {
                     title: 'Photo Options',
@@ -510,12 +526,18 @@
             var column = cpObj._getFormValues();
             var col = data.origColumn;
 
-            // Need to maintain drill_down and grouping_aggregate if present
             if (!$.isBlank(col.format))
             {
+                // Need to maintain drill_down and grouping_aggregate if present
                 column.format = column.format || {};
                 column.format.drill_down = col.format.drill_down;
                 column.format.grouping_aggregate = col.format.grouping_aggregate;
+
+                // Make sure default values for separators are not saved
+                if (column.format.decimalSeparator == '.')
+                { delete column.format.decimalSeparator; }
+                if (column.format.groupSeparator == ',')
+                { delete column.format.groupSeparator; }
             }
 
             if (!$.isBlank(column.format) && !$.isBlank(column.format.rdf))

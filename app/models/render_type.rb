@@ -48,6 +48,8 @@ class RenderType
       else
         ret = cell.to_s
       end
+      ret = ret.sub(/\./, column.format.decimalSeparator) if !column.format.decimalSeparator.nil? &&
+        !column.format.decimalSeparator.blank?
 
     when 'percent'
       if !column.precision.nil?
@@ -56,9 +58,13 @@ class RenderType
         ret = cell.to_s
       end
       ret += '%'
+      ret = ret.sub(/\./, column.format.decimalSeparator) if !column.format.decimalSeparator.nil? &&
+        !column.format.decimalSeparator.blank?
 
     when 'money'
       ret = column.currency_symbol + "%.#{column.precision || 2}f" % cell
+      ret = ret.sub(/\./, column.format.decimalSeparator) if !column.format.decimalSeparator.nil? &&
+        !column.format.decimalSeparator.blank?
 
     when 'calendar_date', 'date'
       if self.type == 'calendar_date'

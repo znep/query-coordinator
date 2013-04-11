@@ -12,6 +12,26 @@
             this._super.apply(this, arguments);
         },
 
+        originalTextValue: function()
+        {
+            var v = this._super.apply(this, arguments).toString();
+            if (!$.isBlank(this.format.decimalSeparator) && this.format.decimalSeparator != '.')
+            { v = v.replace('.', this.format.decimalSeparator); }
+            return v;
+        },
+
+        textValue: function()
+        {
+            var v = this._super.apply(this, arguments);
+            if (!$.isBlank(v) && !$.isBlank(this.format.decimalSeparator) &&
+                    this.format.decimalSeparator != '.')
+            {
+                v = v.replace(/\./g, '');
+                v = v.replace(this.format.decimalSeparator, '.');
+            }
+            return v;
+        },
+
         numberTextValue: function()
         {
             // get our value from the mask plugin if necessary

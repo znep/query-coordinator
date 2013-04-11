@@ -42,15 +42,18 @@ blist.namespace.fetch('blist.datatypes');
 
     // Number & base numeric
     var numberHelper = function(value, decimalPlaces, precisionStyle,
-        prefix, suffix, humane, noCommas, mask)
+        prefix, suffix, humane, noCommas, mask, localization)
     {
         if ($.isBlank(value)) { return ''; }
+
+        localization = localization || {};
 
         var origValue = value.toString();
         if (_.isString(mask) && (mask !== ''))
         {
             value = '';
 
+            var decSep = localization.decimalSeparator || '.';
             while (origValue.length && mask.length)
             {
                 // decimals are weird things to have in a masked number,
@@ -58,7 +61,7 @@ blist.namespace.fetch('blist.datatypes');
                 // as soon as the value gets there
                 if (origValue.charAt(0) === '.')
                 {
-                    value += '.';
+                    value += decSep;
                     origValue = origValue.slice(1);
                 }
 
@@ -104,15 +107,20 @@ blist.namespace.fetch('blist.datatypes');
 
             if (humane === true || humane === 'true')
             { value = blist.util.toHumaneNumber(value, 2); }
-            else if (noCommas !== true && noCommas != 'true')
+
+            value = value.toString();
+            var pos = value.indexOf('.');
+            if (!$.isBlank(localization.decimalSeparator) && pos > -1)
+            { value = value.substring(0, pos) + localization.decimalSeparator + value.substring(pos + 1); }
+
+            if (noCommas !== true && noCommas != 'true')
             {
-                value = value + '';
-                var pos = value.indexOf('.');
                 if (pos == -1) { pos = value.length; }
                 pos -= 3;
                 while (pos > 0 && DIGITS[value.charAt(pos - 1)])
                 {
-                    value = value.substring(0, pos) + "," + value.substring(pos);
+                    value = value.substring(0, pos) + (localization.groupSeparator || ",") +
+                        value.substring(pos);
                     pos -= 3;
                 }
             }
@@ -128,7 +136,9 @@ blist.namespace.fetch('blist.datatypes');
     {
         return numberHelper(value, column.format.precision,
             column.format.precisionStyle, null, null, false,
-            column.format.noCommas, column.format.mask);
+            column.format.noCommas, column.format.mask,
+            { groupSeparator: column.format.groupSeparator,
+                decimalSeparator: column.format.decimalSeparator });
     };
 
     // Money
@@ -140,8 +150,9 @@ blist.namespace.fetch('blist.datatypes');
         return numberHelper(value, (column.format.precision || 2),
             column.format.precisionStyle,
             blist.datatypes.money.currencies[column.format.currency || 'USD'],
-            null,
-            column.format.humane);
+            null, column.format.humane, false, null,
+            { groupSeparator: column.format.groupSeparator,
+                decimalSeparator: column.format.decimalSeparator });
     };
 
     // Percent
@@ -151,7 +162,9 @@ blist.namespace.fetch('blist.datatypes');
         {
             return numberHelper(value, column.format.precision,
                 column.format.precisionStyle, null, '%', false,
-                column.format.noCommas);
+                column.format.noCommas, null,
+                { groupSeparator: column.format.groupSeparator,
+                    decimalSeparator: column.format.decimalSeparator });
         }
 
         var renderText;
@@ -193,7 +206,9 @@ blist.namespace.fetch('blist.datatypes');
         {
             rv.push('<span class="blist-cell blist-percent-num">',
                 numberHelper(value, column.format.precision, column.format.precisionStyle,
-                    null, '%', false, column.format.noCommas), '</span>');
+                    null, '%', false, column.format.noCommas, null,
+                    { groupSeparator: column.format.groupSeparator,
+                        decimalSeparator: column.format.decimalSeparator }), '</span>');
         }
 
         rv.push('</span>');

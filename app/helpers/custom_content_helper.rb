@@ -31,6 +31,7 @@ module CustomContentHelper
 
   def get_page(config, path, name, params)
     Canvas2::DataContext.reset
+    Canvas2::Util.reset
     Canvas2::Util.set_params(params)
     Canvas2::Util.set_debug(false)
     Canvas2::Util.is_private(false)

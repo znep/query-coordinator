@@ -38,6 +38,16 @@ module Canvas2
       end
     end
 
+    def self.reset
+      @@page_params = {}
+      @@page_vars = {}
+      @@page_path = nil
+      @@debug = nil
+      @@no_cache = nil
+      @@env = nil
+      @@is_private = nil
+    end
+
     def self.set_params(params)
       @@page_params = params.reject {|k, v| k == 'controller' || k == 'action' || k == 'path'}
       add_vars(@@page_params)

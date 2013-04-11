@@ -14,15 +14,19 @@
         goal.fetch({
             success: function()
             {
-                prepareChart(goal, 0, $('.goalBox .chartArea .content-wrapper'), $('.titleContainer').css('border-color'));
+                if (!prepareChart(goal, 0, $('.goalBox .chartArea .content-wrapper'), $('.titleContainer').css('border-color')))
+                {
+                    $('.goalBox .chartArea').remove();
+                }
             },
             error: function()
             {
-                errorLoading(id);
+                $('.goalBox .chartArea').remove();
             }
         });
     }
 
+    // main code for initializing and rendering a chart
     var prepareChart = function(goal, idx, $container, color)
     {
         // get our data
@@ -47,16 +51,17 @@
             _.each(series, function(point) { point.x = timeParse(point.x); });
         });
 
+        var startDate = timeParseZ(goal.get('start_date'));
+        var endDate = timeParseZ(goal.get('end_date'));
+
         // scales
-        var xScale = d3.time.scale()
-            .domain([ timeParseZ(goal.get('start_date')), timeParseZ(goal.get('end_date')) ]);
+        var xScale = d3.time.scale().domain([ startDate, endDate ]);
 
         var allYValues = _.pluck(dataSeries
                 .concat(projectionSeries)
                 .concat([ { y: computedValues.target_value } ]),
             'y');
-        var yScale = d3.scale.linear()
-            .domain([ d3.min(allYValues), d3.max(allYValues) ]);
+        var yScale = d3.scale.linear().domain([ d3.min(allYValues), d3.max(allYValues) ]);
         var yScaleInv = yScale.copy();
 
 
@@ -134,6 +139,41 @@
 
 
 
+        // for some reason i keep needing the last elem
+        var last = function(arr)
+        {
+            return arr[arr.length - 1];
+        }
+
+        // process date ticks
+        var minDist = 40;
+        var processXTicks = function(proposed, scale)
+        {
+            // weed out subsequent ticks that are same-month
+            var ticks = [ startDate ]; // we definitely want the start date tick
+            _.each(proposed, function(tick, i)
+            {
+                var lastTick = last(ticks);
+                if (((tick.getMonth() !== lastTick.getMonth())
+                        || (tick.getFullYear() !== lastTick.getFullYear()))
+                    && (scale(tick) - scale(lastTick) > minDist))
+                {
+                    ticks.push(tick);
+                }
+            });
+
+            // we definitely want the last tick. purge from before if necessary.
+            if (scale(endDate) - scale(last(ticks)) < minDist)
+            {
+                ticks.pop();
+            }
+
+            // now add the last tick.
+            ticks.push(endDate);
+
+            return ticks;
+        };
+
         // actual render
         var render = function()
         {
@@ -143,8 +183,8 @@
 
             // update scales
             xScale.range([ 0, width ]);
-            yScale.range([ height, 0 ]);
-            yScaleInv.range([ 0, height ]);
+            yScale.range([ height - 10, 10 ]);
+            yScaleInv.range([ 10, height - 10 ]);
 
             // render !
 
@@ -157,8 +197,8 @@
                 .css('width', xScale(dataSeries[0].x))
                 .css('height', height - yScale(dataSeries[0].y));
             $container.find('.dataSeriesRightBuffer')
-                .css('width', width - xScale(dataSeries[dataSeries.length - 1].x))
-                .css('height', yScaleInv(dataSeries[dataSeries.length - 1].y));
+                .css('width', width - xScale(last(dataSeries).x))
+                .css('height', yScaleInv(last(dataSeries).y));
 
             // projectionSeries
             svg.select('path.projectionLineShadow').attr('d', projectionLineShadow);
@@ -178,17 +218,19 @@
                             .classed('tip', true);
 
             // x ticks
-            var xTicks = xScale.ticks(width / 150);
+            var xTicks = processXTicks(xScale.ticks(width / 150), xScale);
             xTicks.push(timeParseZ(goal.get('end_date'))); // always render end date
-            container.selectAll('.xTick')
-                .data(xTicks)
+            var xTickDivs = container.selectAll('.xTick')
+                .data(xTicks);
+            xTickDivs
                 .enter().append('div')
                     .classed('xTick', true)
                     .classed('bubble', true)
-                    .style('left', function(d) { return xScale(d) + 'px'; })
                     .text(function(d) { return timeFormat(d); })
                     .append('div')
                         .classed('tip', true);
+            xTickDivs
+                    .style('left', function(d) { return xScale(d) + 'px'; });
 
             // meter
             $container.find('.meter')
@@ -198,19 +240,24 @@
             // projection marker
             $container.find('.projectionMarker')
                 .addClass('progress-' + (computedValues.progress || 'none'))
-                .css('top', yScale(projectionSeries[projectionSeries.length - 1].y));
+                .css('top', yScale(last(projectionSeries).y));
 
             // current marker
             $container.find('.currentMarker')
-                .addClass('progress-' + computeProgress(dataSeries[dataSeries.length - 1].y))
-                .css('top', yScale(dataSeries[dataSeries.length - 1].y));
+                .addClass('progress-' + computeProgress(last(dataSeries).y))
+                .css('top', yScale(last(dataSeries).y));
 
             // target marker
             $container.find('.targetMarker')
                 .css('top', yScale(computedValues.target_value));
+
+            // no tip, do you eat em?
+            $container.find('.nowTip')
+                .css('left', xScale(last(dataSeries).x));
         };
 
         render();
+        $(window).on('resize', render);
 
         return true;
     };

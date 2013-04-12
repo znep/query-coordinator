@@ -326,7 +326,7 @@
                           type: 'group', options: [
                               { type: 'color', name: 'color', defaultValue: '#ffffff',
                                 lineClass: 'colorCollapse' },
-                              { text: 'Custom Label', type: 'text',
+                              { text: 'Label', type: 'text',
                                 name: 'label', required: true }
                           ]
                     } }

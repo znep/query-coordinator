@@ -39,12 +39,7 @@ class LocaleMiddleware
       locale = locales.properties['*']
     end
 
-    domain_locales = locales.properties['available_locales']
-    domain_locales = [locale] if domain_locales.nil? || domain_locales.empty?
-    domain_locales.push(locale) if !domain_locales.include?(locale)
-
     env['socrata.locale'] = locale
-    env['socrata.available_locales'] = domain_locales
     I18n.locale = locale
     @app.call(env)
   end

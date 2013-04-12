@@ -158,7 +158,7 @@
             { mapObj._controls.Overview.configure('customEntries',
                 mapObj._displayFormat.legendDetails.customEntries); }
 
-            if (!blist.openLayers.legendNextgen
+            if (!blist.nextgen.legend
                 && !_.isUndefined(mapObj._displayFormat.distinctLegend))
             { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()
                                                    : mapObj._controls.Overview.disableLegend(); }

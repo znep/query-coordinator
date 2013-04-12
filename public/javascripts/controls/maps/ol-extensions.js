@@ -9,8 +9,6 @@
         OpenLayers.Layer.Bing, OpenLayers.Layer.ArcGISCache, OpenLayers.Layer.Google
     ];
 
-    blist.openLayers.legendNextgen = $.urlParam(window.location.href, 'legend') == 'nextgen';
-
     blist.openLayers.isBackgroundLayer = function(layer)
     { return _.any(blist.openLayers.backgroundLayerTypes,
         function(layerType) { return layer instanceof layerType; }); };
@@ -594,7 +592,7 @@
                             .find('.contentBlock').toggleClass('hide');
                     });
             }
-            if (!blist.openLayers.legendNextgen && $dom.siblings('.mapLegend').length < 1)
+            if (!blist.nextgen.legend && $dom.siblings('.mapLegend').length < 1)
             {
                 $dom.before('<div class="mapLegend hide">' +
                     '<div class="contentBlock">' +
@@ -615,7 +613,7 @@
             if (control.map.hasNoBackground) { backgroundLayers = []; }
 
             $dom.find('ul').empty();
-            if (!blist.openLayers.legendNextgen) { $(this.map.div).siblings('.mapLegend').empty(); }
+            if (!blist.nextgen.legend) { $(this.map.div).siblings('.mapLegend').empty(); }
 
             $dom.find('.base').toggle(backgroundLayers.length > 0);
             $dom.find('.data').toggle(this._dataLayers.length > 0);
@@ -767,7 +765,7 @@
                 var $layerLI = $layerSet.find('li:last');
                 $layerLI.data('layer', layer);
 
-                if (!blist.openLayers.legendNextgen) { control.renderLegend($dom, layerObj); }
+                if (!blist.nextgen.legend) { control.renderLegend($dom, layerObj); }
             });
         },
 

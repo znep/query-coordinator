@@ -299,14 +299,13 @@
                         'display at a time.' },
                     { text: 'Exclusive', name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
                     { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend',
-                        onlyIf: { func: function()
-                            { return $.urlParam(window.location.href, 'legend') != 'nextgen'; } }
+                        onlyIf: { func: function() { return !blist.nextgen.legend; } }
                     }
                 ]
             },
             {
                 title: 'Legend Configuration', type: 'selectable',
-                onlyIf: { func: function() { return $.urlParam(window.location.href, 'legend') == 'nextgen'; } },
+                onlyIf: { func: function() { return blist.nextgen.legend; } },
                 fields: [
                     {text: 'Legend', type: 'select', prompt: 'Choose a position',
                         defaultValue: 'bottom', name: 'displayFormat.legendDetails.position',

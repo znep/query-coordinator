@@ -188,26 +188,54 @@
       <table class="gridList categoriesTable" cellspacing="0">
         <colgroup>
           <col class="name" />
+          <%- if @locales.length > 1 -%>
+            <col class="locales" />
+          <%- end -%>
           <col class="parent" />
           <col class="shown" />
           <col class="actions" />
+          <col class="deleteAction" />
         </colgroup>
         <thead>
           <tr>
             <th class="name"><div>Category Name</div><span class="icon"></span></th>
+            <%- if @locales.length > 1 -%>
+              <th class="locales"><div>Locales</div><span class="icon"></span></th>
+            <%- end -%>
             <th class="parent"><div>Parent</div><span class="icon"></span></th>
             <th class="shown"><div>Shown?</div><span class="icon"></span></th>
             <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
+            <th class="deleteAction"><div>&nbsp;</div><span class="icon"></span></th>
           </tr>
         </thead>
         <tbody>
           <%- @categories.each do |category, value| -%>
             <tr class="item">
+              <%= form_tag({:action => 'update_category'}, {:class => 'updateCategoryForm'}) %>
               <td class="name">
                 <span class="cellInner">
                   <%= category.titleize_if_necessary %>
+                  <input type="hidden" name="category[name]" value="<%= category %>" />
                 </span>
               </td>
+              <%- if @locales.length > 1 -%>
+                <td class="locales">
+                  <div class="cellInner">
+                    <%- if value.kind_of? Hashie::Mash -%>
+                      <%- @locales.each_with_index do |l, i| -%>
+                        <%- input_id = category + '_locale_' + l -%>
+                        <div class="line">
+                          <label for="<%= input_id %>"><%= l %></label>
+                          <%- t = (value['locale_strings'] || {})[l] -%>
+                          <input type="text" class="categoryLocale" name="category[locale][<%= l %>]"
+                            id="<%= input_id %>"
+                            value="<%= t.blank? && i == 0 ? category.titleize_if_necessary : t %>" />
+                        </div>
+                      <%- end -%>
+                    <%- end -%>
+                  </div>
+                </td>
+              <%- end -%>
               <td class="parent">
                 <span class="cellInner">
                   <%- if value.kind_of? Hashie::Mash -%>
@@ -223,17 +251,32 @@
                 </span>
               </td>
               <td class="actions">
-                <%= form_button({ :action => 'delete_category', :category => category }, 'Remove', 
+                <input class="button saveCategoryButton" type="submit" value="Save" />
+              </td>
+              </form>
+              <td class="deleteAction">
+                <%= form_button({ :action => 'delete_category', :category => category }, 'Remove',
                      {:method => :delete}, {:class => 'button removeField remove'}) %>
               </td>
             </tr>
           <%- end -%>
           <tr>
-            <%= form_tag({:action => 'create_category'},
-              {:class => 'createCategoryForm'}) %>
+            <%= form_tag({:action => 'create_category'}, {:class => 'createCategoryForm'}) %>
               <td class="name">
                 <input type="text" class="newCategory" name="new_category" />
               </td>
+              <%- if @locales.length > 1 -%>
+                <td class="locales">
+                  <%- @locales.each do |l| -%>
+                    <%- input_id = 'locale_new_category_' + l -%>
+                    <div class="line">
+                      <label for="<%= input_id %>"><%= l %></label>
+                      <input type="text" id="<%= input_id %>" class="newCategory"
+                        name="new_locales[<%= l %>]" />
+                    </div>
+                  <%- end -%>
+                </td>
+              <%- end -%>
               <td class="parent">
                 <select name="new_category_parent" class="newCategorySelect">
                   <%= options_for_select(@categories.map{|k,v| k}.unshift('')) %>

@@ -43,7 +43,7 @@ protected
 
     if params[:category].present? && !cats.any? { |cat| cat[:value] == params[:category] ||
       (cat[:children] || []).any? { |cc| cc[:value] == params[:category] } }
-      found_cat = (hidden_cats || []).detect { |cat| cat[:value] == params[:category] ||
+      found_cat = hidden_cats.detect { |cat| cat[:value] == params[:category] ||
         (cat[:children] || []).any? { |cc| cc[:value] == params[:category] } }
       if found_cat.nil?
         cats.push({ :text => params[:category], :value => params[:category] })

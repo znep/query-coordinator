@@ -115,7 +115,7 @@ class View < Model
         top_level_cats[p][:children].push({ value: c, text: c })
       end
     end
-    return top_level_cats
+    return top_level_cats.reject { |k, c| c[:value].nil? }
   end
 
   def module_enabled?(name)

@@ -181,7 +181,7 @@
     </a>
     <dl class="sectionContent">
       <dt><%= t('screens.about.category') %></dt>
-      <dd><%= @view.category_display || t('screens.about.none') %></dd>
+      <dd><%= @view.category || t('screens.about.none') %></dd>
       <dt><%= t('screens.about.permissions') %></dt>
       <dd><%= @view.is_public? ? t('screens.about.public') : t('controls.browse.about.private') %></dd>
       <dt><%= t('screens.about.tags') %></dt>

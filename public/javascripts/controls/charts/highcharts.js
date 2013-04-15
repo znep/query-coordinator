@@ -198,7 +198,9 @@
 
             var xCat;
             if (!$.isBlank(chartObj._xColumn))
-            { xCat = renderCellText(row, chartObj._xColumn); }
+            { xCat = row[chartObj._xColumn.lookup]; }
+            if ($.isBlank(xCat))
+            { xCat = ''; }
 
             // See if there is an existing index
             var ri = chartObj._rowIndices[row.id];
@@ -459,14 +461,16 @@
         var riObj = _.detect(chartObj._rowIndices, function(obj)
         { if (obj.x == ind) { return obj; } });
 
-        _.each(chartObj._seriesCache, function(series)
+        if (isRemove)
         {
-            var d = series.data[riObj[series.id]];
-            if (isRemove)
-            { removePoint(chartObj, d, series, d.otherPt); }
+            _.each(chartObj._seriesCache, function(series)
+            {
+                var d = series.data[riObj[series.id]];
+                removePoint(chartObj, d, series, d.otherPt);
+            });
             // I guess we should probably do something in the else case, but
             // hopefully Highcharts will die before I get to that
-        });
+        }
 
         var adjRowInd = {};
         _.each(chartObj._rowIndices, function(obj, id)
@@ -755,8 +759,6 @@
                 // This check comes first because it's simpler than a regex.
                 if (xAxis && chartObj._xColumn)
                 {
-                    if (_.include(['date', 'calendar_date'], chartObj._xColumn.renderTypeName))
-                    { return num; }
                     return chartObj._xColumn.renderType.renderer(num,
                             chartObj._xColumn, true, false, null, true);
                 }

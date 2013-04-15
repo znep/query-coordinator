@@ -31,7 +31,6 @@ class GovstatController < ApplicationController
     all_reports_count = own_reports.length + other_reports.length
     goals = Goal.find({ isPublic: true })
     goals.reject!{ |goal| goal.category.blank? } if goals.length > 0
-    users = User.find(:method => 'findPrivilegedUsers')
 
     config = govstat_homepage_config(nil)
     config[:content][:children].unshift({ type: 'Container', htmlClass: 'subHubSection', children: [
@@ -64,8 +63,6 @@ class GovstatController < ApplicationController
             '<ul class="metadata">' +
               '<li><span class="value">' + goals.length.to_s + '</span> ' +
                 'active ' + 'goal'.pluralize(goals.length) + '</li>' +
-              '<li><span class="value">' + users.length.to_s + '</span> ' +
-                'user'.pluralize(users.length) + ' total</li>' +
             '</ul>' +
             '<div class="button">Configure GovStat <span class="ss-icon">next</span></div>' }
       ]}

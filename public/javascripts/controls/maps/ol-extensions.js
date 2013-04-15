@@ -981,7 +981,7 @@
                 if (control.map.getLayerIndex(layer) == -1)
                 { control.map.addLayers([layer]); }
                 control.map.setBaseLayer(layer);
-            }).uniform();
+            });
 
             $dom.find('.sliderControl').each(function()
             {
@@ -1046,22 +1046,23 @@
 
         renderBackgroundLayer: function(layer)
         {
-            var lId = 'mapLayer_' + layer.name;
-            var $layerSet = this.$dom.find('ul.base');
-            var radio = 'radio" name="backgroundLayers';
-            var checked = ' checked="checked"';
+            var lId = 'mapLayer_' + layer.name.replace(' ', '_'),
+                layerName = $.isBlank(layer.alias) ? layer.name : layer.alias;
+            var $layerSet = this.$dom.find('ul.base'), $layer;
+            var checked = this.exclusiveLayers ? this.map.baseLayer == layer
+                                               : layer.visibility;
 
-            if (   (!this.exclusiveLayers && !layer.visibility)
-                || ( this.exclusiveLayers && this.map.baseLayer != layer))
-            { checked = ''; }
+            var buttonType = this.exclusiveLayers ? { 'type': 'radio', 'name': 'backgroundLayers' }
+                                                  : { 'type': 'checkbox' };
+            checked && $.extend(buttonType, { checked: 'checked' });
 
-            var layerName = $.isBlank(layer.alias) ? layer.name : layer.alias;
-            $layerSet.append('<li data-layerid="' + layer.id + '"' +
-                '><input type="' + (this.exclusiveLayers ? radio : 'checkbox') +
-                '" id="' + lId + '"' + checked +
-                ' /><label for="' + lId + '">' + layerName + '</label>' +
-                '</li>');
-            $layerSet.find('li:last').data('layer', layer);
+            $layerSet.append($layer = $.tag2({ _: 'li', 'data-layerid': layer.id, contents: [
+                $.extend({ _: 'input', id: lId }, buttonType),
+                { _: 'label', 'for': lId, contents: layerName }
+            ] }) );
+
+            $layer.find(':radio').uniform();
+            $layer.data('layer', layer);
         },
 
         truncate: function(length)

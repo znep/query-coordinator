@@ -223,11 +223,17 @@
                     ri = {x: chartObj._xCategories.length};
                     if (!$.isBlank(chartObj._xColumn.sortAscending))
                     {
+                        var isAsc = chartObj._xColumn.sortAscending;
                         var items = chartObj._xCategories.slice();
-                        if (!chartObj._xColumn.sortAscending) { items = items.reverse(); }
-                        ri.x = _.sortedIndex(items, xCat);
-                        if (!chartObj._xColumn.sortAscending)
-                        { ri.x = items.length - ri.x; }
+                        // Don't use _.sortedIndex because we may have duplicate
+                        // values, in which case they should get added at the end
+                        // of the block of dupes. Also always sort blanks to the
+                        // bottom, to match core sorting.
+                        var x = 0;
+                        while (x < items.length && ($.isBlank(xCat) ||
+                                    isAsc && xCat >= items[x] || !isAsc && xCat <= items[x]))
+                        { x++; }
+                        ri.x = x;
                     }
                 }
                 ri = ri.x;
@@ -955,8 +961,7 @@
                 if (axis.isXAxis && !_.isEmpty(chartObj._xCategories))
                 {
                     // Attempt to look up value
-                    var v = chartObj._xColumn.renderType.renderer(lineAt,
-                        chartObj._xColumn, true, false, true);
+                    var v = lineAt[chartObj._xColumn.lookup];
                     var i = _.indexOf(chartObj._xCategories, v);
                     if (i < 0 && v > _.first(chartObj._xCategories) &&
                         v < _.last(chartObj._xCategories))

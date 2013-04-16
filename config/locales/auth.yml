@@ -49,6 +49,12 @@ en:
       form:
         have_account_link: I already have an account
         create_account_button: Create My Account
+    forgot_password:
+      title: Recover Your Password
+      prompt: "If you've forgotten your password, we can send you an email with a link to reset your password."
+      already_authenticated: "Unable to reset password: you are already logged in."
+      form:
+        reset_password_button: Reset Password
     reset_password:
       title: Reset Password
       prompt: Welcome back! Please select a new password.

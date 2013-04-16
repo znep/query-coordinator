@@ -886,11 +886,11 @@
 
     blist.openLayers.Overview2 = OpenLayers.Class(OpenLayers.Control, {
 
-        EVENT_TYPES: [],
+        EVENT_TYPES: ['datalayer_hover_over', 'datalayer_hover_out'],
 
         initialize: function()
         {
-            this.EVENT_TYPES = blist.openLayers.Overview.prototype.EVENT_TYPES.concat(
+            this.EVENT_TYPES = blist.openLayers.Overview2.prototype.EVENT_TYPES.concat(
                                OpenLayers.Control.prototype.EVENT_TYPES);
             OpenLayers.Control.prototype.initialize.apply(this, arguments);
             this._dataLayers = [];
@@ -982,6 +982,13 @@
                 { control.map.addLayers([layer]); }
                 control.map.setBaseLayer(layer);
             });
+
+            $dom.find('ul.data li, ul.feature li').hover(
+                   function() { control.events.triggerEvent('datalayer_hover_over',
+                    { layer: $(this).data('layer') });
+                }, function() { control.events.triggerEvent('datalayer_hover_out',
+                    { layer: $(this).data('layer') });
+                });
 
             $dom.find('.sliderControl').each(function()
             {

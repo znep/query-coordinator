@@ -450,6 +450,16 @@
             _.each(layerObj._displayLayer.features, reload.forEach);
         },
 
+        toggleDataLayerDimming: function(dim, except)
+        {
+            var notdim = this._displayFormat.opacity || 1;
+            _.each($.makeArray(this.dataLayers()), function(layer)
+            {
+                if (!dim || layer != except)
+                { layer.setOpacity(dim ? 0.5 : notdim); }
+            });
+        },
+
         /* Utility functions */
         viewportHandler: function()
         {

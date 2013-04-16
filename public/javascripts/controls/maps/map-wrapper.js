@@ -84,6 +84,12 @@
             { mapObj._controls.Overview
                 = mapObj.map.getControlsByClass('blist.openLayers.Overview2')[0]; }
 
+            mapObj._controls.Overview.events.on({
+                'datalayer_hover_over': mapObj.onHoverDataLayer,
+                'datalayer_hover_out':  mapObj.onHoverDataLayer,
+                scope: mapObj
+            });
+
             if (mapObj.settings.interactToScroll && $.subKeyDefined(mapObj, '_controls.Navigation'))
             {
                 $(mapObj.currentDom).one('mouseup', function(e)
@@ -368,6 +374,12 @@
                 views.splice(index, 0, childView);
                 _.each(views, function(cv, i) { cv._setLayerIndex(i); });
             }
+        },
+
+        onHoverDataLayer: function(evtObj)
+        {
+            _.each(this._children, function(child)
+            { child.toggleDataLayerDimming(evtObj.type == 'datalayer_hover_over', evtObj.layer); });
         },
 
         mapElementLoaded: function(layer)

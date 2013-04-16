@@ -33,24 +33,3 @@ en:
         rate_comment: rate a comment
         post_comment: post a comment
 
-wtf:
-  controls:
-    feed:
-      header:
-        cell_comment_header_html: The lowdown on row <span class="rowName"></span>, column <span class="columnName"></span>
-        feed_filter_label: Gimme
-        add_comment: Talk, fool!
-        pending_moderation: People gotta approve your comment, man
-      listing:
-        no_results: Ain't got nothin to show!
-        all_replies: Hand it all over
-      comment_actions:
-        reply: Respond
-        inappropriate: Wtf is this
-        delete: Trash
-        rate_down: Props
-        rate_up: Eff that
-      comment_form:
-        header: Say things
-        post_button: Go
-        cancel_button: Never mind

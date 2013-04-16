@@ -1,14 +1,8 @@
-<% auth_action ||= "sign in" %>
+<% auth_action ||= "sign_in" %>
 <% return_url ||= rpx_return_login_url %>
 
-<p>
-  <strong>
-    Or... Use one of these accounts to <span class="authAction"><%= auth_action %></span>.
-  </strong>
-</p>
-<p>
-  Take advantage of additional features these accounts provide and sign in with one click.
-</p>
+<p><strong class="rpxPrompt"><%= t("core.account.rpx.prompt.#{auth_action}") %></strong></p>
+<p><%= t('core.account.rpx.description') %></p>
 
 <div class="thirdPartyLinks">
   <%- RpxController.auth_providers.each do |provider| -%>
@@ -18,7 +12,7 @@
         <%= hidden_field_tag :openid_identifier, provider[:openid_identifier] %>
       <%- end -%>
       <%- if params[:no_js].present? -%>
-        <%= submit_tag "Connect with " + provider[:name], :class => 'button simpleLoginButton' %>
+        <%= submit_tag t("core.account.rpx.providers.#{provider[:id]}.#{auth_action}_html"), :class => 'button simpleLoginButton' %>
       <%- else -%>
         <a class="authProvider tall button <%= provider[:name].downcase +
           (provider[:class].present? ? " #{provider[:class]}" : '') %>"
@@ -26,8 +20,7 @@
           <span class="iconContainer">
             <span class="icon"></span>
           </span>
-          <span class="description"><span class="actionText"><%= provider[:hint] %></span> with <strong>
-              <%= provider[:name] %></strong>
+          <span class="description" data-providerid="<%= provider[:id] %>"><%= t("core.account.rpx.providers.#{provider[:id]}.#{auth_action}_html") %></strong>
           </span>
         </a>
       <%- end -%>

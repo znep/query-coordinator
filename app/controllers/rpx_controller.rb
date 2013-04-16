@@ -70,12 +70,11 @@ private
   end
 
   @@auth_providers = [
-    {:name => 'Facebook', :hint => 'Connect', :rpx_url => APP_CONFIG['rpx_facebook_url']},
-    {:name => 'Twitter', :hint => 'Connect', :rpx_url => APP_CONFIG['rpx_twitter_url']},
-    {:name => 'Google', :hint => 'Sign in', :rpx_url => APP_CONFIG['rpx_openid_url'],
-      :class => 'hintSwap',
+    {:name => 'Facebook', :id => 'facebook', :rpx_url => APP_CONFIG['rpx_facebook_url']},
+    {:name => 'Twitter', :id => 'twitter', :rpx_url => APP_CONFIG['rpx_twitter_url']},
+    {:name => 'Google', :id => 'google', :rpx_url => APP_CONFIG['rpx_openid_url'],
       :openid_identifier => 'https://www.google.com/accounts/o8/id'},
-    {:name => 'OpenID', :hint => 'Sign in', :rpx_url => APP_CONFIG['rpx_signin_url'],
-      :class => 'rpxnow hintSwap', :href => true}
+    {:name => 'OpenID', :id => 'openid', :rpx_url => APP_CONFIG['rpx_signin_url'],
+      :class => 'rpxnow', :href => true}
   ]
 end

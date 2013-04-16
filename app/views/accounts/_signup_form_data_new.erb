@@ -8,30 +8,30 @@
   <%= hidden_field 'signup[accept_terms]', 'true' %>
 
   <div class="line clearfix">
-    <%= f.label :email, 'Email Address', :class => 'required' %>
+    <%= f.label :email, t('core.account.form.email'), :class => 'required' %>
     <%= f.text_field :email %>
   </div>
 
   <div class="line clearfix">
-    <%= f.label :screenName, 'Display Name', :class => 'required' %>
+    <%= f.label :screenName, t('core.account.form.display_name'), :class => 'required' %>
     <%= f.text_field :screenName, :maxlength => 40 %>
   </div>
 
   <% unless local_assigns[:hide_password] %>
     <div class="line clearfix">
-      <%= f.label :password, 'Password', :class => 'required password' %>
+      <%= f.label :password, t('core.account.form.password'), :class => 'required password' %>
       <%= f.password_field :password %>
     </div>
     <div class="line clearfix">
-      <%= f.label :passwordConfirm, 'Confirm Password', :class => 'required' %>
+      <%= f.label :passwordConfirm, t('core.account.form.confirm_password'), :class => 'required' %>
       <%= f.password_field :passwordConfirm %>
     </div>
   <% end %>
 </fieldset>
 
-<div class="required">Required Field</div>
+<div class="required"><%= t('core.forms.required_field') %></div>
 
-<p class="terms"><%= raw MASTER_DOMAIN_PREFS['strings.signup_terms'] %></p>
+<p class="terms"><%= t('screens.sign_up.terms_html') %></p>
 
 <input class="fakeSubmit" type="submit"/>
 <ul class="finishButtons clearfix">
@@ -39,11 +39,11 @@
     <span class="signup_loadingIndicator"></span>
   </li>
   <li>
-    <a id="signup_submit" class="button default" href="#signup">Create My Account</a>
+  <a id="signup_submit" class="button default" href="#signup"><%= t('screens.sign_up.form.create_account_button') %></a>
   </li>
   <%- if local_assigns[:is_modal] -%>
     <li>
-      <a href="#close" class="button close jqmClose">Cancel</a>
+      <a href="#close" class="button close jqmClose"><%= t('core.dialogs.cancel') %></a>
     </li>
   <%- end -%>
 </ul>

@@ -5,9 +5,11 @@
 <%= f.hidden_field :lastName %>
 <%= hidden_field_tag 'signup[accept_terms]', 'true' %>
 
+<%- required_span = "<span class=\"accessible\">#{t('core.forms.required_field')}</span>" -%>
+
 <div class="line">
   <div class="labelLine">
-    <%= f.label :email, 'Email Address <span class="accessible">Required</span>'.html_safe,
+    <%= f.label :email, "#{t('core.account.form.email')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
   <%= f.text_field :email %>
@@ -15,7 +17,7 @@
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :screenName, 'Display Name <span class="accessible">Required</span>'.html_safe,
+    <%= f.label :screenName, "#{t('core.account.form.display_name')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
   <%= f.text_field :screenName, :maxlength => 40 %>
@@ -24,19 +26,16 @@
 <%- if !local_assigns[:hide_password] -%>
 <div class="line">
   <div class="labelLine">
-    <%= f.label :password, ('Password <span class="accessible">Required. ' +
-      'Your password must be between 8 and 40 characters and satisfy three ' +
-      'of the following four criteria: contain a digit; contain a lowercase letter; ' +
-      'contain an uppercase letter; contain a non-alphanumeric symbol.</span>').html_safe,
+    <%= f.label :password, "#{t('core.account.form.password')} <span class=\"accessible\">#{t('core.account.form.password_requirements')}</span>".html_safe,
       :class => 'required passwordLabel main' %>
-    <span class="passwordHint about">(Restrictions apply <span class="icon">&nbsp;</span>)</span>
+    <span class="passwordHint about">(<%= t('core.account.form.password_restrictions') %> <span class="icon">&nbsp;</span>)</span>
   </div>
   <%= f.password_field :password %>
 </div>
 
 <div class="line clearfix">
   <div class="labelLine">
-    <%= f.label :passwordConfirm, 'Confirm Password <span class="accessible">Required</span>'.html_safe,
+    <%= f.label :passwordConfirm, "#{t('core.account.form.confirm_password')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
   <%= f.password_field :passwordConfirm %>
@@ -44,12 +43,12 @@
 <%- end -%>
 
 <p class="signUpHint">
-  <%= raw MASTER_DOMAIN_PREFS['strings.signup_terms'] %>
+  <%= t('screens.sign_up.terms_html') %>
 </p>
 
 <div class="formActionButtons">
-  <input type="submit" class="button default" value="Create My Account" />
+  <input type="submit" class="button default" value="<%= t('screens.sign_up.form.create_account_button') %>" />
   <span class="accountSignupHint">
-    <%= link_to 'I already have an account', login_path, :class => 'signInLink' %>.
+    <%= link_to t('screens.sign_up.form.have_account_link'), login_path, :class => 'signInLink' %>.
   </span>
 </div>

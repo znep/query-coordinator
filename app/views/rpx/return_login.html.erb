@@ -12,25 +12,20 @@
     <div class="loginSignupForm firstColumn column">
       <%= display_standard_flashes %>
       <div class="flash notice">
-        Before using these credentials, you must
-        <%= link_to "create a #{MASTER_DOMAIN_PREFS['strings.company']} account", '#create', :class => 'signUpLink' %>
-          or
-        <%= link_to "link it to an existing #{MASTER_DOMAIN_PREFS['strings.company']} ID", '#login', :class => 'signInLink'%>.
+        <%= t('screens.sign_up.third_party_return') %>
+        <%= link_to t('screens.sign_up.third_party_return_create'), '#create', :class => 'signUpLink' %>
+          <%= t('core.or') %>
+        <%= link_to t('screens.sign_up.third_party_return_link'), '#login', :class => 'signInLink'%>.
       </div>
-      
+
       <div id="accordion">
         <div class="signupForm"<%= raw('style="display: none;"') if flash[:notice_login]%>>
           <div class="authProvider socrata">
             <span class="iconContainer">
               <span class="icon"></span>
             </span>
-            <span class="description">
-              Sign up for a new
-              <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
-            </span>
-            <p class="loginTips">
-              <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
-            </p>
+            <span class="description"><%= t('screens.sign_up.prompt_html') %></span>
+            <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
           </div>
 
           <%= form_for :signup, :url => rpx_signup_path,

@@ -7,13 +7,8 @@
     <span class="iconContainer">
       <span class="icon"></span>
     </span>
-    <span class="description">
-      Sign in with your
-      <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
-    </span>
-    <p class="loginTips">
-      <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
-    </p>
+    <span class="description"><%= t('screens.sign_in.prompt_html') %></span>
+    <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
   </div>
   <%= form_for @user_session do |f| %>
     <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>

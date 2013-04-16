@@ -1,6 +1,8 @@
+<%- required_span = "<span class=\"accessible\">#{t('core.forms.required_field')}</span>".html_safe -%>
+
 <div class="line">
   <div class="labelLine">
-    <%= f.label :login, 'Email <span class="accessible">Required</span>'.html_safe, :class => 'main' %>
+    <%= f.label :login, "#{t('core.account.form.email')} #{required_span}".html_safe, :class => 'main' %>
   </div>
   <%= f.text_field :login %>
 </div>
@@ -8,7 +10,7 @@
 <div class="forgotBox">
 <div class="line">
   <div class="labelLine">
-    <%= f.label :password, 'Password <span class="accessible">Required</span>'.html_safe,
+    <%= f.label :password, "#{t('core.account.form.password')} #{required_span}".html_safe,
       :class => 'passwordLabel main' %>
   </div>
   <%= f.password_field :password %>
@@ -17,16 +19,16 @@
 <%- if feature? :remember_me -%>
   <div class="line">
     <%= f.check_box :remember_me %>
-    <%= f.label :remember_me, 'Remember me', :class => 'pushUp' %>
+    <%= f.label :remember_me, t('core.account.form.remember_me'), :class => 'pushUp' %>
   </div>
 <%- end -%>
 
 <div class="formActionButtons">
-  <%= submit_tag 'Sign In', :class => 'button default' %>
+  <%= submit_tag t('screens.sign_in.form.sign_in_button'), :class => 'button default' %>
   <div class="accountSignupHint loginSignupHint">
-    <span class="noAccountYet">Don't have an account?</span>
-    <%= link_to 'Sign up now', signup_path, :class => 'signUpLink' %>.
+    <span class="noAccountYet"><%= t('screens.sign_in.form.no_account') %></span>
+    <%= link_to t('screens.sign_in.form.sign_up_prompt'), signup_path, :class => 'signUpLink' %>.
   </div>
 </div>
-<%= link_to 'Forgot password?', forgot_password_path, :class => 'forgotPassLink' %>
+<%= link_to t('screens.sign_in.form._forgot_password'), forgot_password_path, :class => 'forgotPassLink' %>
 </div>

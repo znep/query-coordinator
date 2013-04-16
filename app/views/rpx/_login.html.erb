@@ -2,16 +2,12 @@
   <span class="iconContainer">
     <span class="icon"></span>
   </span>
-  <span class="description">
-    Sign in with your
-    <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
-  </span>
+  <span class="description"><%= t('screens.sign_in.prompt_html') %></span>
 </div>
 <% if flash[:notice_login]  %>
   <div class="flash notice"><%= flash[:notice_login] %></div>
 <% else %>
-  <p class="chooseMessage loginTips">After signing in, your 3rd-party credentials will be associated with this
-  account.</p>
+  <p class="chooseMessage loginTips"><%= t('screens.sign_in.third_party') %></p>
 <% end %>
 
 <%= form_for @user_session, :url => rpx_login_path do |f| %>
@@ -27,4 +23,6 @@
   <% end %>
   <%= render :partial => 'user_sessions/login_form_data', :locals => { :f => f } %>
 <% end %>
+
+<%= render_translations LocalePart.screens.sign_in %>
 

@@ -5,12 +5,8 @@
   <%- end -%>
   <div class="authProvider socrata">
     <span class="iconContainer"> <span class="icon"></span> </span>
-    <span class="description">
-      Create a new <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
-    </span>
-    <p class="loginTips">
-      <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
-    </p>
+    <span class="description"><%= t('screens.sign_up.prompt_html') %></span>
+    <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
   </div>
 
   <%- if !CurrentDomain.strings.disclaimer.nil? -%>
@@ -22,3 +18,6 @@
     <%= render :partial => 'accounts/signup_form_data', :locals => {:f => f} %>
   <% end %>
 </div>
+
+<%= render_translations LocalePart.screens.sign_up %>
+

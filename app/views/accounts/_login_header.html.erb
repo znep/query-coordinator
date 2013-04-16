@@ -1,5 +1,5 @@
 <h1 class="loginHeader modalHeader">
-  Sign In
+  <%= t('screens.sign_in.headline') %>
   <%- unless CurrentDomain.short_name == 'socrata' -%>
     to <%= CurrentDomain.strings.company %>
   <%- end -%>
@@ -9,7 +9,7 @@
     <%- if CurrentDomain.strings.signup_header.present? -%>
       <%= CurrentDomain.strings.signup_header %>
     <%- else -%>
-      We're glad you want to join <%= CurrentDomain.strings.company %>!
+      <%= t('screens.sign_up.headline', site: CurrentDomain.strings.company) %>
     <%- end -%>
   </h1>
   <%- if CurrentDomain.strings.signup_explanation.present? -%>

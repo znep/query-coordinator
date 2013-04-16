@@ -41,5 +41,5 @@ DOMAIN_TEMPLATES = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
   f.match(/\/_(\w+)\.html\.erb$/)[1]
 end
 
-MASTER_DOMAIN_PREFS = YAML.load_file("#{Rails.root}/config/domain_prefs.yml") || {}
 STYLE_PACKAGES = YAML.load_file("#{Rails.root}/config/style_packages.yml") || {}
+

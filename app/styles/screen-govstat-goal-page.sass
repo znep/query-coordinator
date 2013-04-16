@@ -325,11 +325,12 @@
           padding: 0
 
       .indicatorContainer
-        @include progress-colors(color, '.value')
         text-align: center
 
         .value
           font-size: 3em
+        &.currentValue .value
+          color: $govstat_color_action
         .unit, .type
           line-height: 1em
         .unit

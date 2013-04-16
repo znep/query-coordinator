@@ -270,6 +270,9 @@ $.live = function(selector, type, fn)
 // TODO: not integrated with component locale stuffing
 $.t = function(key, data)
 {
+    if (blist.locale == 'nyan')
+    { return 'nyan'; }
+
     if (!$.subKeyDefined(blist.translations, key))
     { return '(no translation available)'; }
     var result = $.deepGetStringField(blist.translations, key)

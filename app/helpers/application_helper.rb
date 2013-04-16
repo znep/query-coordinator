@@ -1,6 +1,17 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
+# RAILS OVERRIDE
+  # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan
+  def translate(key, options = {})
+    if I18n.locale == :nyan
+      'nyan'
+    else
+      super
+    end
+  end
+  alias :t :translate
+
 # MODULES/FEATURES
   def module_available(name_or_set, &block)
     concat(capture(&block)) if CurrentDomain.module_available?(name_or_set)

@@ -75,6 +75,16 @@ class ApplicationController < ActionController::Base
     render_404 unless enabled
   end
 
+  # Rails override so if you provide a locale of nyan we will nyan everything
+  def translate(*args)
+    if I18n.locale == :nyan
+      'nyan'
+    else
+      super
+    end
+  end
+  alias :t :translate
+
   # Patch the page caching support to handle our dynamic domain support.
   # (ie: the cache ends up in a directory based on the locale set via
   # the configure_theme parameter, and Apache uses the domain name of the

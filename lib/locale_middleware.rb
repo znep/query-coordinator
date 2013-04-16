@@ -24,7 +24,7 @@ class LocaleMiddleware
     if locale.blank?
       # fall back to checking path lead
       possible_locale = request.path.match(/^\/([^\/]+)/)[1] rescue nil
-      if possible_locale.present? && I18n.available_locales.include?(possible_locale.to_sym)
+      if possible_locale.present? && (possible_locale == 'nyan' || I18n.available_locales.include?(possible_locale.to_sym))
         locale = possible_locale
 
         # really, all these are legacy vars except PATH_INFO, but set

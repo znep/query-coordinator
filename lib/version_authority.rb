@@ -49,7 +49,7 @@ module VersionAuthority
       #  1. if the manifest contains a search; only check the last search time.
       #     if any search is older than checkAge, return nil
       searches.each {|s|
-          return nil if manifest[s] < cut_off_time
+          return return_invalid("search") if manifest[s] < cut_off_time
       }
       #  2. if the manifest does not contain a search, and all the manifest entries
       #     are newer than checkAge; return the manifest hash
@@ -63,19 +63,26 @@ module VersionAuthority
       #     if the core server returns fewer results than expected return nil.
       Rails.logger.info("Checking our manifest against the core server's version manifest")
       true_manifest = core_manifest_fetcher.call(datasets.sort, resources.sort)
-      return nil if true_manifest.size != ( datasets.size + resources.size )
+      return return_invalid("core-mismatch") if true_manifest.size != ( datasets.size + resources.size )
       datasets.each {|d|
-        return nil if (manifest[d].seconds * 1000) < true_manifest[d]
+        return return_invalid("core-dataset", d) if (manifest[d].seconds * 1000) < true_manifest[d]
         }
       resources.each {|r|
-        return nil if (manifest[r].seconds * 1000) < true_manifest[r]
+        return return_invalid("core-resource", r) if (manifest[r].seconds * 1000) < true_manifest[r]
       }
 
       #  4. If none of the above conditions apply return the manifest
       manifest
     else
-      nil
+      return_invalid("not-available")
     end
+  end
+
+  def self.return_invalid(type, id = nil)
+    Rails.logger.info("Invalid manifest; #{type} #{id.nil? ? '' : id} has expired")
+    domain_id = CurrentDomain.domain.nil? ? "all" : CurrentDomain.domain.id.to_s
+    MetricQueue.instance.push_metric(domain_id + "-intern", "manifest-invalid-#{type}", 1)
+    nil
   end
 
   def self.expire(key, user)

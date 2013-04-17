@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 module BrowseActions
+  include ActionView::Helpers::TranslationHelper
   include ApplicationHelper
 
 protected

@@ -110,6 +110,7 @@ class CustomContentController < ApplicationController
     ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
     if ConditionalRequestHandler.check_conditional_request?(request, manifest)
       Rails.logger.info("Conditional Request Matches; returning a 304")
+      MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + "-intern", "ds-no-render", 1)
       render :nothing => true, :status => 304
       return true
     end
@@ -135,6 +136,10 @@ class CustomContentController < ApplicationController
       end
       request.format = page_ext.to_sym if !page_ext.blank? && !@debug && !@edit_mode
     end
+
+    domain_id = CurrentDomain.domain.id.to_s
+    internal_metric_entity = domain_id + "-intern"
+    MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + "-intern", "ds-total", 1)
 
     #TODO: This should include the locale (whenever we figure out how that is specified)
     cache_params = { 'domain' => CurrentDomain.cname,
@@ -175,6 +180,7 @@ class CustomContentController < ApplicationController
 
     if !lookup_manifest.nil? && !@debug && !@edit_mode
       Rails.logger.info("Manifest valid; reading content from fragment cache is OK")
+      MetricQueue.instance.push_metric(internal_metric_entity , "ds-manifest-valid", 1)
       return true if handle_conditional_request(request, response, lookup_manifest)
       @cached_fragment = read_fragment(cache_key_no_user) if can_be_globally_cached
       if @cached_fragment.nil?
@@ -184,6 +190,8 @@ class CustomContentController < ApplicationController
         # If we got something out of the fragment cache; we can make that something cacheable down the line as well
         ConditionalRequestHandler.set_cache_control_headers(response, true)
       end
+    else
+      MetricQueue.instance.push_metric(internal_metric_entity , "ds-manifest-invalid", 1)
     end
 
     # The cached fragment is an error page; just return that then
@@ -205,6 +213,7 @@ class CustomContentController < ApplicationController
     self.action_name = 'homepage' if full_path == '/'
     if @cached_fragment.nil?
       Rails.logger.info("Performing full render")
+      MetricQueue.instance.push_metric(internal_metric_entity , "ds-full-render", 1)
       Canvas2::DataContext.reset
       Canvas2::Util.reset
       Canvas2::Util.set_params(params)
@@ -311,6 +320,7 @@ class CustomContentController < ApplicationController
       # since we may have manipulated the action name to be homepage, and there
       # is no such view
       Rails.logger.info("Using fragment cache")
+      MetricQueue.instance.push_metric(internal_metric_entity , "ds-fragment-render", 1)
       respond_to do |format|
         format.html { render :action => 'page' }
         format.csv { render :text => @cached_fragment }

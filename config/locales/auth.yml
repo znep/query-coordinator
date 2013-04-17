@@ -1,6 +1,9 @@
 en:
-  core:
-    account:
+  account:
+    common:
+      inline_auth:
+        sign_in_headline: Sign in using your Socrata ID
+        sign_up_headline: "We're glad you want to join %{site}!"
       form:
         email: Email Address
         display_name: Display Name
@@ -9,6 +12,9 @@ en:
         password_requirements_html: "<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>&bull; contain a digit</li><li>&bull; contain a lowercase letter</li><li>&bull; contain an uppercase letter</li><li>&bull; contain a non-alphanumeric symbol</li></ul>"
         password_restrictions: Restrictions apply
         confirm_password: Confirm Password
+        no_account: "Don't have an account?"
+        sign_up_prompt: Sign up now
+        forgot_password: Forgot Password?
       rpx:
         prompt:
           sign_in: Or… Use one of these accounts to sign in.
@@ -35,9 +41,6 @@ en:
       form:
         remember_me: Remember me
         sign_in_button: Sign In
-        no_account: "Don't have an account?"
-        sign_up_prompt: Sign up now
-        forgot_password: Forgot Password?
     sign_up:
       headline: "We're glad you want to join %{site}!"
       terms_html: By clicking on "Create My Account" below, you are agreeing to our <a href="http://www.socrata.com/terms-of-service" rel="external">Terms of Service</a> and <a href="http://www.socrata.com/privacy" rel="external">Privacy Policy.</a>

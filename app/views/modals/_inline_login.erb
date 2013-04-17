@@ -1,6 +1,6 @@
 <%- unless @suppress_chrome -%>
 <%= modal :id => 'login' do %>
-  <h2>Sign in using your Socrata ID</h2>
+  <h2><%= t('account.common.inline_auth.sign_in_headline') %></h2>
 
   <%= display_standard_flashes %>
 
@@ -9,13 +9,13 @@
   <% end %>
 
   <ul class="accountMaint">
-    <li><%= link_to "Forgot your password?", forgot_password_path, :class => 'noRedirPrompt' %></li>
-    <li><%= link_to "No account yet?", signup_url, { :class => "signupLink noRedirPrompt" } %></li>
+    <li><%= link_to t('account.common.form.forgot_password'), forgot_password_path, :class => 'noRedirPrompt' %></li>
+    <li><%= link_to t('account.common.form.no_account'), signup_url, { :class => "signupLink noRedirPrompt" } %></li>
   </ul>
 <%- end -%>
 
 <%= modal :id => 'signup' do %>
-  <h2>We're glad you want to join Socrata!</h2>
+  <h2><%= t('account.common.inline_auth.sign_up_headline', site: CurrentDomain.strings.company) %></h2>
 
   <%= form_for :signup, :url => account_path, :html => {:id => 'signupForm',
               :class => 'commonForm', :multipart => true} do |f| %>

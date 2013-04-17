@@ -120,7 +120,7 @@ module ApplicationHelper
     end
   end
 
-  DEFAULT_TRANSLATIONS = [ LocalePart.core ]
+  DEFAULT_TRANSLATIONS = [ LocalePart.core, LocalePart.account.common, LocalePart.controls.common ]
   def render_translations(part = nil)
     @rendered_translations ||= Set.new()
     to_render = [part].concat(DEFAULT_TRANSLATIONS).compact.reject {|t| @rendered_translations.include?(t)}
@@ -269,11 +269,11 @@ module ApplicationHelper
       out += link_to("<span class='icon'>First</span>".html_safe,
                      base_href + (1).to_s,
                      :class => "start firstLink " + navigation_link_class,
-                     :title => "First Page")
+                     :title => t('core.pagination.first_page'))
       out += link_to("<span class='icon'>Prev</span>".html_safe,
                      base_href + (current_page - 1).to_s,
                      :class => "previous prevLink " + navigation_link_class,
-                     :title => "Previous Page")
+                     :title => t('core.pagination.previous_page'))
     end
     if (start_page > 1)
       out += "<span class='ellipses'>...</span>"
@@ -290,11 +290,11 @@ module ApplicationHelper
       out += link_to("<span class='icon'>Next</span>".html_safe,
                      base_href + (current_page + 1).to_s,
                      :class => "next nextLink " + navigation_link_class,
-                     :title => "Next Page")
+                     :title => t('core.pagination.next_page'))
       out += link_to("<span class='icon'>Last</span>".html_safe,
                      base_href + (num_pages).to_s,
                      :class => "end lastLink " + navigation_link_class,
-                     :title => "Last Page")
+                     :title => t('core.pagination.last_page'))
     end
 
     out += "</div>"

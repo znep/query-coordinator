@@ -8,22 +8,22 @@ protected
 
   def view_types_facet
     vts = {
-      :title => I18n.t('controls.browse.facets.view_types_title'),
-      :singular_description => I18n.t('controls.browse.facets.view_types_singular_title'),
+      :title => t('controls.browse.facets.view_types_title'),
+      :singular_description => t('controls.browse.facets.view_types_singular_title'),
       :param => :limitTo,
       :use_icon => true,
       :options => [
-        {:text => I18n.t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'},
-        {:text => I18n.t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
-        {:text => I18n.t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
-        {:text => I18n.t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
-        {:text => I18n.t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
-        {:text => I18n.t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
-        {:text => I18n.t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
-        {:text => I18n.t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
+        {:text => t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'},
+        {:text => t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
+        {:text => t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
+        {:text => t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
+        {:text => t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
+        {:text => t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
+        {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
+        {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
     if (module_available?(:api_foundry))
-      vts[:options] << {:text => I18n.t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
+      vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
     view_types = CurrentDomain.property(:view_types_facet, :catalog)
     return vts if view_types.nil?
@@ -53,8 +53,8 @@ protected
       end
     end
 
-    return { :title => I18n.t('controls.browse.facets.categories_title'),
-      :singular_description => I18n.t('controls.browse.facets.categories_singular_title'),
+    return { :title => t('controls.browse.facets.categories_title'),
+      :singular_description => t('controls.browse.facets.categories_singular_title'),
       :param => :category,
       :options => cats,
       :extra_options => hidden_cats
@@ -77,8 +77,8 @@ protected
         map {|t| {:text => t.name, :value => t.name, :count => t.frequency}}
     end
 
-    { :title => I18n.t('controls.browse.facets.topics_title'),
-      :singular_description => I18n.t('controls.browse.facets.topics_singular_title'),
+    { :title => t('controls.browse.facets.topics_title'),
+      :singular_description => t('controls.browse.facets.topics_singular_title'),
       :param => :tags,
       :options => top_tags,
       :extra_options => tag_cloud,
@@ -104,8 +104,8 @@ protected
       fed_cloud = all_feds[fed_chop..-1]
     end
 
-    { :title => I18n.t('controls.browse.facets.federated_domains_title'),
-      :singular_description => I18n.t('controls.browse.facets.federated_domains_singular_title'),
+    { :title => t('controls.browse.facets.federated_domains_title'),
+      :singular_description => t('controls.browse.facets.federated_domains_singular_title'),
       :param => :federation_filter,
       :options => top_feds,
       :extra_options => fed_cloud
@@ -113,13 +113,13 @@ protected
   end
 
   def moderation_facet
-    { :title => I18n.t('controls.browse.facets.moderation_status_title'),
-      :singular_description => I18n.t('controls.browse.facets.moderation_status_singular_title'),
+    { :title => t('controls.browse.facets.moderation_status_title'),
+      :singular_description => t('controls.browse.facets.moderation_status_singular_title'),
       :param => :moderation,
       :options => [
-        {:text => I18n.t('controls.browse.facets.moderation_status.pending'), :value => 'pending'},
-        {:text => I18n.t('controls.browse.facets.moderation_status.accepted'), :value => 'accepted'},
-        {:text => I18n.t('controls.browse.facets.moderation_status.rejected'), :value => 'rejected'}
+        {:text => t('controls.browse.facets.moderation_status.pending'), :value => 'pending'},
+        {:text => t('controls.browse.facets.moderation_status.accepted'), :value => 'accepted'},
+        {:text => t('controls.browse.facets.moderation_status.rejected'), :value => 'rejected'}
       ]
     }
   end
@@ -181,8 +181,8 @@ protected
       page: 1,
       port: request.port,
       disable: {},
-      no_results_text: I18n.t('controls.browse.listing.no_results'),
-      timeout_text: I18n.t('controls.browse.listing.timeout'),
+      no_results_text: t('controls.browse.listing.no_results'),
+      timeout_text: t('controls.browse.listing.timeout'),
       base_url: request.path,
       view_type: 'table'
     }
@@ -327,7 +327,7 @@ private
   def get_title(options, facets)
     title = []
 
-    title << I18n.t('controls.browse.title.result.term', :term => options[:q]) unless options[:q].blank?
+    title << t('controls.browse.title.result.term', :term => options[:q]) unless options[:q].blank?
     facet_parts = []
     facets.each do |f|
       if !options[f[:param]].blank?
@@ -340,7 +340,7 @@ private
               facet_item = o[:children].detect { |c| c[:value] == options[f[:param]] }
             end
           end
-          facet_parts << I18n.t('controls.browse.title.result.facet',
+          facet_parts << t('controls.browse.title.result.facet',
                            :facet_type => f[:singular_description],
                            :facet_value => facet_item[:text]) unless facet_item.nil?
         elsif !f[:custom_description].blank?
@@ -348,26 +348,26 @@ private
         end
       end
     end
-    title << I18n.t('controls.browse.title.result.facet_main',
+    title << t('controls.browse.title.result.facet_main',
                :body => facet_parts.compact.to_sentence) unless facet_parts.empty?
 
     if title.empty?
-      options[:default_title] || I18n.t('controls.browse.title.default')
+      options[:default_title] || t('controls.browse.title.default')
     else
-      I18n.t('controls.browse.title.result.main', :body => title.join(', '))
+      t('controls.browse.title.result.main', :body => title.join(', '))
     end.to_str # force this string to be marked html unsafe
   end
 
   def default_browse_sort_opts
     [
-      { value: 'relevance', name: I18n.t('controls.browse.sorts.relevance') },
-      { value: 'most_accessed', name: I18n.t('controls.browse.sorts.most_accessed'), is_time_period: true },
-      { value: 'alpha', name: I18n.t('controls.browse.sorts.alpha') },
-      { value: 'newest', name: I18n.t('controls.browse.sorts.newest') },
-      { value: 'oldest', name: I18n.t('controls.browse.sorts.oldest') },
-      { value: 'last_modified', name: I18n.t('controls.browse.sorts.last_modified') },
-      { value: 'rating', name: I18n.t('controls.browse.sorts.rating') },
-      { value: 'comments', name: I18n.t('controls.browse.sorts.comments') }
+      { value: 'relevance', name: t('controls.browse.sorts.relevance') },
+      { value: 'most_accessed', name: t('controls.browse.sorts.most_accessed'), is_time_period: true },
+      { value: 'alpha', name: t('controls.browse.sorts.alpha') },
+      { value: 'newest', name: t('controls.browse.sorts.newest') },
+      { value: 'oldest', name: t('controls.browse.sorts.oldest') },
+      { value: 'last_modified', name: t('controls.browse.sorts.last_modified') },
+      { value: 'rating', name: t('controls.browse.sorts.rating') },
+      { value: 'comments', name: t('controls.browse.sorts.comments') }
     ]
   end
 

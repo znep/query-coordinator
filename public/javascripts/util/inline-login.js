@@ -152,7 +152,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
         var $password = $signup.find('label.password');
         if (!$password.data('passwordHint'))
         {
-            var $content = $('<div/>').append($.t('core.account.form.password_requirements_html'));
+            var $content = $('<div/>').append($.t('account.common.form.password_requirements_html'));
 
             $password.addClass('about').append('<span class="icon">&nbsp;</span>')
                      .data('passwordHint', true);

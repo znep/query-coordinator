@@ -2,19 +2,18 @@ datasetControlsNS = blist.namespace.fetch('blist.datasetControls');
 
 blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEmail)
 {
-    var tweet = escape('Check out the ' + $.htmlEscape(view.name) +
-        ' dataset on ' + blist.configuration.strings.company + ': ');
+    var tweet = escape($.t('controls.common.share.share_text', { name: view.name, site: blist.configuration.strings.company }));
     var seoPath = view.fullUrl;
     var shortPath = view.shortUrl;
     var opts = {
-        menuButtonContents: 'Socialize',
-        menuButtonTitle: $.t('controls.browse.listing.share_this_dataset'),
+        menuButtonContents: $.t('controls.common.share.button_prompt'),
+        menuButtonTitle: $.t('controls.common.share.button_tooltip'),
         contents: [
-            { text: 'Facebook', className: 'facebook', rel: 'external',
+            { text: $.t('controls.common.share.networks.facebook'), className: 'facebook', rel: 'external',
               href: 'http://www.facebook.com/share.php?u=' + seoPath },
-            { text: 'Twitter', className: 'twitter', rel: 'external',
+            { text: $.t('controls.common.share.networks.twitter'), className: 'twitter', rel: 'external',
               href: 'http://twitter.com/?status=' + tweet + shortPath },
-            { text: 'Email', className: 'email', href: '#email',
+            { text: $.t('controls.common.share.networks.email'), className: 'email', href: '#email',
                 onlyIf: !hideEmail}
         ]
     };
@@ -104,7 +103,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         var name = $name.val();
         if (isNew && $.isBlank(name))
         {
-            $dialog.find('.mainError').text('A view name is required');
+            $dialog.find('.mainError').text($.t('screens.save_dialog.validation.view_name_required'));
             return;
         }
 
@@ -144,7 +143,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
         if (!$.isBlank(blist.util.inlineLogin))
         {
-            var msg = 'You must be logged in to save a view';
+            var msg = $.t('screens.save_dialog.validation.auth_required');
             blist.util.inlineLogin.verifyUser(
                 function(isSuccess)
                 {

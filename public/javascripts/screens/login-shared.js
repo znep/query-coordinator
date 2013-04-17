@@ -6,11 +6,11 @@ $(function() {
         event.preventDefault();
         $('.loginForm').slideUp();
         $('.signupForm').slideDown();
-        $('.rpxPrompt').text($.t('core.account.rpx.prompt.sign_up'));
+        $('.rpxPrompt').text($.t('account.common.rpx.prompt.sign_up'));
         $('.thirdPartyLinks .authProvider .description').each(function()
         {
             var $this = $(this);
-            $this.html($.t('core.account.rpx.providers.' + $this.attr('data-providerid') + '.sign_up_html'));
+            $this.html($.t('account.common.rpx.providers.' + $this.attr('data-providerid') + '.sign_up_html'));
         });
         $('.modalContentBox').removeClass('loginModal').addClass('signupModal');
     });
@@ -19,11 +19,11 @@ $(function() {
         event.preventDefault();
         $('.signupForm').slideUp();
         $('.loginForm').slideDown();
-        $('.rpxPrompt').text($.t('core.account.rpx.prompt.sign_in'));
+        $('.rpxPrompt').text($.t('account.common.rpx.prompt.sign_in'));
         $('.thirdPartyLinks .authProvider .description').each(function()
         {
             var $this = $(this);
-            $this.html($.t('core.account.rpx.providers.' + $this.attr('data-providerid') + '.sign_in_html'));
+            $this.html($.t('account.common.rpx.providers.' + $this.attr('data-providerid') + '.sign_in_html'));
         });
         $('.modalContentBox').removeClass('signupModal').addClass('loginModal');
     });

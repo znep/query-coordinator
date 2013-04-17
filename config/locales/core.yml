@@ -51,6 +51,11 @@ en:
       close: Close
       cancel: Cancel
       continue: Continue
+    pagination:
+      first_page: First Page
+      previous_page: Previous Page
+      next_page: Next Page
+      last_page: Last Page
     interstitial:
       leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.

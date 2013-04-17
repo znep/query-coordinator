@@ -1,5 +1,5 @@
 <div class="line clearfix">
-  <%= f.label :login, t('core.account.form.email') %>
+  <%= f.label :login, t('account.common.form.email') %>
   <%= f.email_field :login %>
   <%- if !CurrentDomain.strings.login_disclaimer.nil? -%>
     <span class="helpie"
@@ -8,13 +8,13 @@
 </div>
 
 <div class="line clearfix">
-  <%= f.label :password, t('core.account.form.password') %>
+  <%= f.label :password, t('account.common.form.password') %>
   <%= f.password_field :password %>
 </div>
 
 <%- if feature? "remember_me" -%>
   <div class="line rememberMe clearfix">
-    <%= f.label :remember_me, t('core.account.form.remember_me') %>
+    <%= f.label :remember_me, t('account.common.form.remember_me') %>
     <%= f.check_box :remember_me %>
   </div>
 <%- end -%>

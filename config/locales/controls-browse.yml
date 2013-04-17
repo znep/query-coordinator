@@ -55,9 +55,8 @@ en:
           facet_main: matching %{body}
           facet: %{facet_type} of %{facet_value}
       listing:
-        share_this_dataset: Share this Dataset
         no_results: No Results
-        timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
+        timeout: "We're sorry. Results could not be retrieved at this time. Please try again later."
         result_count: Showing %{this} of %{total}
         federation_source: Federated from %{source}
         # same as above but with a link. no particular reason the wording is different.
@@ -95,13 +94,15 @@ en:
         compact_list: View as a compact list
         rich_list: View as a rich list
         expand_section: Click to expand
+        share_button: Share
         moderation:
           accept: Accept
           reject: Reject
         permissions:
           title: Change the public visibility
-          # eg "Make public"
-          button_html: Make %{visibility}
+          change_button:
+            public_html: Make Public
+            private_html: Make Private
         delete:
           title: Delete this item
           button: Delete
@@ -169,7 +170,6 @@ it:
           facet_main: corrispondenze %{body}
           facet: %{facet_type} di %{facet_value}
       listing:
-        share_this_dataset: Condividi questo set di dati
         no_results: Nessun risultato
         timeout: Siamo spiacenti. I risultati non possono essere recuperate da questo momento. Si prega di riprovare più tardi.
         result_count: %{this} di %{total}
@@ -214,8 +214,9 @@ it:
           reject: Respingi
         permissions:
           title: "Cambia la visibilità"
-          # eg "Make public"
-          button_html: Rendi %{visibility}
+          change_button:
+            public_html: Rendi Pubblica
+            private_html: Rendi Privati
         delete:
           title: Cancella questo item
           button: Cancella

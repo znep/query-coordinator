@@ -9,7 +9,7 @@
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :email, "#{t('core.account.form.email')} #{required_span}".html_safe,
+    <%= f.label :email, "#{t('account.common.form.email')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
   <%= f.text_field :email %>
@@ -17,7 +17,7 @@
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :screenName, "#{t('core.account.form.display_name')} #{required_span}".html_safe,
+    <%= f.label :screenName, "#{t('account.common.form.display_name')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
   <%= f.text_field :screenName, :maxlength => 40 %>
@@ -26,16 +26,16 @@
 <%- if !local_assigns[:hide_password] -%>
 <div class="line">
   <div class="labelLine">
-    <%= f.label :password, "#{t('core.account.form.password')} <span class=\"accessible\">#{t('core.account.form.password_requirements')}</span>".html_safe,
+    <%= f.label :password, "#{t('account.common.form.password')} <span class=\"accessible\">#{t('account.common.form.password_requirements')}</span>".html_safe,
       :class => 'required passwordLabel main' %>
-    <span class="passwordHint about">(<%= t('core.account.form.password_restrictions') %> <span class="icon">&nbsp;</span>)</span>
+    <span class="passwordHint about">(<%= t('account.common.form.password_restrictions') %> <span class="icon">&nbsp;</span>)</span>
   </div>
   <%= f.password_field :password %>
 </div>
 
 <div class="line clearfix">
   <div class="labelLine">
-    <%= f.label :passwordConfirm, "#{t('core.account.form.confirm_password')} #{required_span}".html_safe,
+    <%= f.label :passwordConfirm, "#{t('account.common.form.confirm_password')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
   <%= f.password_field :passwordConfirm %>

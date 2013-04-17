@@ -16,7 +16,7 @@ $(function ()
         }
     });
 
-    var $content = $('<div/>').append($.t('core.account.form.password_requirements_html'));
+    var $content = $('<div/>').append($.t('account.common.form.password_requirements_html'));
 
     $('.passwordHint').socrataTip({ content: $content });
 });

@@ -46,6 +46,10 @@ en:
       row_identifier: Row Identifier
       flag_dataset: Flag Dataset
       contact_dataset_owner: Contact Dataset Owner
+    save_dialog:
+      validation:
+        auth_required: You must be logged in to save a view
+        view_name_required: A view name is required
 
 it:
   screens:

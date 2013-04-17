@@ -8,22 +8,22 @@
   <%= hidden_field 'signup[accept_terms]', 'true' %>
 
   <div class="line clearfix">
-    <%= f.label :email, t('core.account.form.email'), :class => 'required' %>
+    <%= f.label :email, t('account.common.form.email'), :class => 'required' %>
     <%= f.text_field :email %>
   </div>
 
   <div class="line clearfix">
-    <%= f.label :screenName, t('core.account.form.display_name'), :class => 'required' %>
+    <%= f.label :screenName, t('account.common.form.display_name'), :class => 'required' %>
     <%= f.text_field :screenName, :maxlength => 40 %>
   </div>
 
   <% unless local_assigns[:hide_password] %>
     <div class="line clearfix">
-      <%= f.label :password, t('core.account.form.password'), :class => 'required password' %>
+      <%= f.label :password, t('account.common.form.password'), :class => 'required password' %>
       <%= f.password_field :password %>
     </div>
     <div class="line clearfix">
-      <%= f.label :passwordConfirm, t('core.account.form.confirm_password'), :class => 'required' %>
+      <%= f.label :passwordConfirm, t('account.common.form.confirm_password'), :class => 'required' %>
       <%= f.password_field :passwordConfirm %>
     </div>
   <% end %>

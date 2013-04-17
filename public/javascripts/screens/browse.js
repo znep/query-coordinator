@@ -79,8 +79,8 @@ $(function()
                 '.manageApi.button@class+': function(v)
                     { return v.context.isAPI() && v.context.hasRight('update_view') &&
                         !v.context.isFederated() ? '' : 'hide' },
-                '.permissions .permType': function(v)
-                    { return v.context.isPublic() ? 'Private' : 'Public'; },
+                '.permissions.button': function(v)
+                    { return $.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html'); },
                 '.permissions.button@class+': function(v)
                     { return v.context.hasRight('update_view') &&
                         !v.context.isFederated() ? '' : 'hide'; },
@@ -94,13 +94,10 @@ $(function()
                 {
                     menuButtonContents: $.tag([
                         {tagName: 'span', 'class': 'shareIcon'},
-                        {tagName: 'span', 'class': 'shareText', contents: 'Share'}
+                        {tagName: 'span', 'class': 'shareText', contents: $.t('controls.browse.actions.share_button')}
                     ], true),
                     onOpen: function($menu)
                     {
-                        // Grr, IE7
-                        if (($.browser.msie) && ($.browser.majorVersion < 8))
-                        { $menu.closest('.extraInfo').css('z-index', 1); }
                         $.analytics.trackEvent('browse ' + window.location.pathname,
                             'share menu opened', ds.id);
                     },
@@ -122,7 +119,7 @@ $(function()
             var isPublic = ds.isPublic();
             if (isPublic) { ds.makePrivate(); }
             else { ds.makePublic(); }
-            $t.find('.permType').text(isPublic ? 'Public' : 'Private');
+            $t.text($.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html'));
         });
 
         $content.find('.button.delete:not(.hide)').click(function(e)

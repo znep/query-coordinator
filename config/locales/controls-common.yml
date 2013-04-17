@@ -1,0 +1,18 @@
+en:
+  controls:
+    common:
+      share:
+        button_prompt: Socialize
+        button_tooltip: Share this Dataset
+        share_text: "Check out the %{name}, dataset on %{site}: "
+        networks:
+          facebook: Facebook
+          twitter: Twitter
+          email: Email
+
+it:
+  controls:
+    common:
+      share:
+        button_tooltip: Condividi questo set di dati
+

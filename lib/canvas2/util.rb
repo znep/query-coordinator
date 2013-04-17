@@ -169,6 +169,7 @@ module Canvas2
       include ActionView::Helpers::TagHelper
       include ActionView::Helpers::UrlHelper
       include ActionView::Helpers::NumberHelper
+      include ActionView::Helpers::TranslationHelper
       include Singleton
       include ApplicationHelper
     end

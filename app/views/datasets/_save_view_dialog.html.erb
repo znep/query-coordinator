@@ -31,3 +31,8 @@
     </li>
   </ul>
 <%- end -%>
+
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.screens.save_dialog %>
+<%- end -%>
+

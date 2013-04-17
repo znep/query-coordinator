@@ -15,6 +15,7 @@ en:
         no_account: "Don't have an account?"
         sign_up_prompt: Sign up now
         forgot_password: Forgot Password?
+        remember_me: Remember me
       rpx:
         prompt:
           sign_in: Or… Use one of these accounts to sign in.
@@ -39,7 +40,6 @@ en:
       tips_html: Use your Email and Password to sign into all <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.
       prompt_html: Sign in with your <strong>Socrata ID</strong>
       form:
-        remember_me: Remember me
         sign_in_button: Sign In
     sign_up:
       headline: "We're glad you want to join %{site}!"

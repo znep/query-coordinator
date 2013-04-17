@@ -19,6 +19,7 @@ development:
 
 # Running unit tests; NOT test.socrata.com
 test:
+  metrics_dir: tmp/metriclogs
   <<: *default
 
 # test.socrata.com

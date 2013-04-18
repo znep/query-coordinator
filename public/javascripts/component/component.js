@@ -392,7 +392,7 @@
          */
         _stringSubstitute: function(obj, resolver)
         {
-            return $.stringSubstitute(obj, resolver || this._propertyResolver());
+            return $.stringSubstitute(obj, resolver || this._propertyResolver(), this._substitutionHelpers());
         },
 
         _evalIf: function(ifValue)
@@ -830,6 +830,12 @@
                 };
             }
             return parentResolver;
+        },
+
+        _substitutionHelpers: function()
+        {
+            return $.extend(true, $.isBlank(this.parent) ? {} : this.parent._substitutionHelpers(),
+                    this._properties.substitutionHelpers);
         },
 
         _getDatasetListFromContext: function(context)

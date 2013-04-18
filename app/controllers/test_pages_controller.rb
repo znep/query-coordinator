@@ -49,7 +49,9 @@ class TestPagesController < ApplicationController
       renderTime: Time.now.to_i,
       path: '/test_page/cf',
       siteTheme: CurrentDomain.theme,
-      currentUser: current_user ? current_user.id : nil
+      currentUser: current_user ? current_user.id : nil,
+      current_locale: I18n.locale,
+      available_locales: request.env['socrata.available_locales']
     })
     @minimal_render = params['no_render'] == 'true'
   end

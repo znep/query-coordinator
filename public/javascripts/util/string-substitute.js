@@ -1,22 +1,20 @@
 (function($) {
     var DEFAULT_NUMBER_PRECISION = 2;
 
-    var cache = {};
-
-    $.stringSubstitute = function(obj, resolver)
+    $.stringSubstitute = function(obj, resolver, helpers)
     {
         if ($.isBlank(obj))
         { return ''; }
         if (_.isString(obj))
-        { return resolveString(obj, resolver); }
+        { return resolveString(obj, resolver, helpers); }
         else if (_.isArray(obj))
-        { return _.map(obj, function(t) { return $.stringSubstitute(t, resolver); }); }
+        { return _.map(obj, function(t) { return $.stringSubstitute(t, resolver, helpers); }); }
         else if ($.isPlainObject(obj))
         {
             var o;
             if (obj.substituteType == 'array')
             {
-                o = $.stringSubstitute(obj.value, resolver);
+                o = $.stringSubstitute(obj.value, resolver, helpers);
                 if (obj.isJson)
                 {
                     try
@@ -28,142 +26,198 @@
                 { o = (o || '').split(obj.split || ','); }
                 if (obj.compact && _.isArray(o)) { o = _.compact(o); }
             }
+            else if ($.subKeyDefined(obj, blist.locale))
+            {
+                // Assume it is a localization object
+                o = $.stringSubstitute($.localize(obj), resolver, helpers);
+            }
             else
             {
                 o = {};
-                _.each(obj, function(v, k) { o[k] = $.stringSubstitute(v, resolver); });
+                _.each(obj, function(v, k) { o[k] = $.stringSubstitute(v, resolver, helpers); });
             }
             return o;
         }
         else { return obj; }
     };
 
-    var resolveString = function(string, resolver)
+    var resolveCache = {};
+
+    var resolveString = function(string, resolver, helpers)
     {
         if (string == undefined)
         { string = ''; }
-        var compiled = cache[string];
-        if (!compiled)
+        // Assumes locale doesn't change in the middle of a session
+        if ($.subKeyDefined(resolveCache, string))
+        { return doResolve(resolveCache[string], resolver, helpers); }
+
+        var props = [];
+        var pieces = string.match(/({|}|[^{}]+)/mg) || [];
+        for (var i = 0; i < pieces.length; i++)
         {
-            var fn = function() { return ''; };
-            var pieces = string.match(/({|}|[^{}]+)/mg);
-            if (pieces)
+            var p = {};
+            if (pieces[i] == '{' && pieces[i + 2] == '}')
             {
-                var props = [];
-                for (var i = 0; i < pieces.length; i++)
-                {
-                    var p = {};
-                    if (pieces[i] == '{' && pieces[i + 2] == '}')
-                    {
-                        p.orig = pieces[i + 1];
-                        p.prop = p.orig;
+                p.orig = pieces[i + 1];
+                p.prop = p.orig;
 
-                        var m = p.prop.match(/(.*)\s+\|\|\s*(.*)$/);
-                        if (!_.isEmpty(m))
-                        {
-                            p.prop = m[1];
-                            p.fallback = m[2];
-                        }
-
-                        p.transforms = [];
-                        while (!_.isEmpty(m = p.prop.match(
-                                        /(.*)\s+\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]|(\\\/)*)*)\/([gim]*)$/)))
-                        {
-                            p.prop = m[1];
-                            p.transforms.push({
-                                type: 'regex',
-                                regex: m[2].replace(/\\\//, '/'),
-                                repl: m[5].replace(/\\\//, '/'),
-                                modifiers: m[8]
-                            });
-                        }
-
-                        while (!_.isEmpty(m = p.prop.match(/(.*)\s+([%@$])\[([^\]]*)\]$/)))
-                        {
-                            p.prop = m[1];
-                            var t;
-                            switch (m[2])
-                            {
-                                case '%':
-                                    t = 'numberFormat';
-                                    break;
-                                case '@':
-                                    t = 'dateFormat';
-                                    break;
-                                case '$':
-                                    t = 'stringFormat';
-                                    break;
-                            }
-                            p.transforms.push({
-                                type: t,
-                                format: m[3]
-                            });
-                        }
-
-                        if (!_.isEmpty(m = p.prop.match(/(.*)\s+=\[([^\]]*)\]$/)))
-                        {
-                            p.prop = m[1];
-                            p.transforms.push({
-                                type: 'mathExpr',
-                                expr: m[2]
-                            });
-                        }
-
-                        i += 2;
-                    }
-                    else
-                    { p.orig = pieces[i]; }
-                    props.push(p);
-                }
-                fn = resBuilder(props);
+                $.extend(p, parseTransforms(p.prop));
+                i += 2;
             }
-            compiled = cache[string] = fn;
+            else
+            { p.orig = pieces[i]; }
+            props.push(p);
         }
-        return compiled(resolver);
+        resolveCache[string] = props;
+        return doResolve(props, resolver, helpers);
     };
 
-    var resBuilder = function(props)
+    var doResolve = function(props, resolver, helpers)
     {
-        return function(resolver)
+        var phrases = (helpers || {}).phrases || {};
+        if (!_.isFunction(resolver))
         {
-            if (!_.isFunction(resolver))
+            var obj = resolver || {};
+            resolver = function(name) { return $.deepGetStringField(obj, name); };
+        }
+        var a = [];
+        for (var i = 0; i < props.length; i++)
+        {
+            var p = props[i];
+            if ($.isBlank(p.prop))
             {
-                var obj = resolver || {};
-                resolver = function(name) { return $.deepGetStringField(obj, name); };
+                a.push(p.orig);
+                continue;
             }
-            var a = [];
-            for (var i = 0; i < props.length; i++)
+            var temp;
+            var m = p.prop.match(/^#(\w+)$/);
+            if (!_.isEmpty(m) && $.subKeyDefined(phrases, m[1]))
+            { temp = resolveString($.localize(phrases[m[1]]), resolver, helpers); }
+            else
+            { temp = resolver(p.prop); }
+
+            if ($.isBlank(temp))
+            { temp = ''; }
+
+            if ($.isPlainObject(temp))
+            { temp = _.map(temp, function(v, k) { return k + ': ' + v; }) }
+            if (_.isArray(temp)) { temp = temp.join(', '); }
+            temp = !temp.indexOf || temp.indexOf('{') == -1 ? temp :
+                $.stringSubstitute(temp, resolver, helpers);
+
+            var transResult = processTransforms(temp, p.transforms, helpers);
+            temp = transResult.value;
+            if ($.isBlank(temp) && !transResult.fallbackResult)
+            { temp = '{' + p.orig + '}'; }
+
+            a.push(temp);
+        }
+        return a.join('');
+    };
+
+    var transformsCache = {};
+
+    var parseTransforms = function(str)
+    {
+        if ($.subKeyDefined(transformsCache, str))
+        { return transformsCache[str]; }
+
+        var p = { prop: str, transforms: [] };
+        var m;
+
+        m = p.prop.match(/(^|(.*)\s+)\|\|\s*(.*)$/);
+        if (!_.isEmpty(m))
+        {
+            p.prop = m[2] || '';
+            p.transforms.push({
+                type: 'fallback',
+                fallback: m[3]
+            });
+        }
+
+        var checkExpr = function()
+        {
+            while (!_.isEmpty(m = p.prop.match(/(^|(.*)\s+)\!(\w+)$/)))
             {
-                var p = props[i];
-                if ($.isBlank(p.prop))
-                {
-                    a.push(p.orig);
-                    continue;
-                }
-                var temp = resolver(p.prop);
-                if ($.isBlank(temp))
-                {
-                    if (!_.isUndefined(p.fallback))
-                    { temp = p.fallback; }
-                    else { temp = '{' + p.orig + '}'; }
-                }
+                p.prop = m[2] || '';
+                p.transforms.push({
+                    type: 'subExpr',
+                    key: m[3]
+                });
+            }
+        };
+
+        checkExpr();
+        while (!_.isEmpty(m = p.prop.match(
+                    /(^|(.*)\s+)\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]|(\\\/)*)*)\/([gim]*)$/)))
+        {
+            p.prop = m[2] || '';
+            p.transforms.push({
+                type: 'regex',
+                regex: m[3].replace(/\\\//, '/'),
+                repl: m[6].replace(/\\\//, '/'),
+                modifiers: m[9]
+            });
+        }
+
+        checkExpr();
+        while (!_.isEmpty(m = p.prop.match(/(^|(.*)\s+)([%@$])\[([^\]]*)\]$/)))
+        {
+            p.prop = m[2] || '';
+            var t;
+            switch (m[3])
+            {
+                case '%':
+                    t = 'numberFormat';
+                    break;
+                case '@':
+                    t = 'dateFormat';
+                    break;
+                case '$':
+                    t = 'stringFormat';
+                    break;
+            }
+            p.transforms.push({
+                type: t,
+                format: m[4]
+            });
+        }
+
+        checkExpr();
+        if (!_.isEmpty(m = p.prop.match(/(^|(.*)\s+)=\[([^\]]*)\]$/)))
+        {
+            p.prop = m[2] || '';
+            p.transforms.push({
+                type: 'mathExpr',
+                expr: m[3]
+            });
+        }
+
+        checkExpr();
+
+        transformsCache[str] = p;
+        return p;
+    };
+
+    var processTransforms = function(v, transforms, helpers)
+    {
+        var fallbackResult = false;
+        var r;
+        _.each(transforms.reverse(), function(pt)
+        {
+            if (_.isFunction(applyExpr[pt.type]))
+            {
+                r = applyExpr[pt.type](v, pt, helpers);
+                if (!$.isPlainObject(r))
+                { v = r; }
                 else
                 {
-                    if ($.isPlainObject(temp))
-                    { temp = _.map(temp, function(v, k) { return k + ': ' + v; }) }
-                    if (_.isArray(temp)) { temp = temp.join(', '); }
-                    temp = !temp.indexOf || temp.indexOf('{') == -1 ?
-                        temp : $.stringSubstitute(temp, resolver);
-                    _.each(p.transforms.reverse(), function(pt)
-                    {
-                        if (!$.isBlank(temp) && _.isFunction(applyExpr[pt.type]))
-                        { temp = applyExpr[pt.type](temp, pt); }
-                    });
+                    v = r.value;
+                    fallbackResult = fallbackResult || r.fallbackResult;
                 }
-                a.push(temp);
             }
-            return a.join('');
-        };
+        });
+        return { value: v, fallbackResult: fallbackResult };
     };
 
     var applyExpr =
@@ -263,7 +317,7 @@
             var opOpts = ['+', '\\\-', '*', '\\\/', '%'];
             var m = transf.expr.match('^(' + varOpts.join('|') + ')\\\s*([' + opOpts.join('') +
                         '])\\\s*(' + varOpts.join('|') + ')$');
-            if ($.isBlank(m)) { return v; }
+            if ($.isBlank(m) || $.isBlank(v)) { return v; }
 
             var vl = computeValue(m[1], v);
             var vr = computeValue(m[3], v);
@@ -288,6 +342,18 @@
                     return vl % vr;
                     break;
             }
+        },
+
+        subExpr: function(v, transf, helpers)
+        {
+            return processTransforms(v, parseTransforms($.localize(((helpers || {}).expressions ||
+                                {})[transf.key])).transforms, helpers);
+        },
+
+        fallback: function(v, transf)
+        {
+            var isFallback = $.isBlank(v);
+            return { value: isFallback ? transf.fallback : v, fallbackResult: isFallback };
         }
     };
 

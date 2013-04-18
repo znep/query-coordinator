@@ -7,18 +7,18 @@ module Canvas2
       's' + (@@next_auto_id += 1).to_s
     end
 
-    def self.string_substitute(obj, resolver)
+    def self.string_substitute(obj, resolver, helpers = {})
       if obj.nil?
         return ''
       elsif obj.blank?
         return obj
       elsif obj.is_a? String
-        return Util.resolve_string(obj, resolver)
+        return Util.resolve_string(obj, resolver, helpers)
       elsif obj.is_a? Array
-        return obj.map {|o| Util.string_substitute(o, resolver)}
+        return obj.map {|o| Util.string_substitute(o, resolver, helpers)}
       elsif obj.is_a? Hash
         if obj['substituteType'] == 'array'
-          o = Util.string_substitute(obj['value'], resolver)
+          o = Util.string_substitute(obj['value'], resolver, helpers)
           if obj['isJson']
             begin
               o = JSON.parse(o || '[]')
@@ -28,9 +28,11 @@ module Canvas2
             o = (o || '').split(obj['split'] || ',')
           end
           o.compact! if obj['compact'] && o.is_a?(Array)
+        elsif obj.key?(@@env[:current_locale].to_s)
+          o = Util.string_substitute(Util.localize(obj), resolver, helpers)
         else
           o = {}
-          obj.each {|k, v| o[k] = Util.string_substitute(v, resolver)}
+          obj.each {|k, v| o[k] = Util.string_substitute(v, resolver, helpers)}
         end
         return o
       else
@@ -164,6 +166,13 @@ module Canvas2
       '"' + (str || '').to_s.gsub('"', '\"') + '"'
     end
 
+    def self.localize(obj)
+      return obj if !obj.is_a?(Hash)
+      # I18n.locale doesn't seem to be correct here
+      locale = @@env[:current_locale].to_s
+      obj.key?(locale) ? obj[locale] : ''
+    end
+
   private
     class AppHelper
       include ActionView::Helpers::TagHelper
@@ -174,101 +183,146 @@ module Canvas2
       include ApplicationHelper
     end
 
-    def self.resolve_string(str, resolver)
+    def self.resolve_string(str, resolver, helpers)
+      helpers ||= {}
+
       @@resolve_cache ||= {}
-      compiled = @@resolve_cache[str]
-      if compiled.blank?
-        fn = lambda {|r| ''}
-        m = str.split(/({|})/m)
-        props = []
-        i = 0
-        while i < m.length do
-          p = {}
-          if m[i] == '{' && m[i + 2] == '}'
-            p['orig'] = m[i + 1]
-            p['prop'] = p['orig']
-            p['prop'].match(/(.*)\s+\|\|\s*(.*)$/) do |ma|
-              p['prop'] = ma[1]
-              p['fallback'] = ma[2]
-            end
+      return do_resolve(@@resolve_cache[str], resolver, helpers) if @@resolve_cache.key?(str)
 
-            p['transforms'] = []
-            while ma = p['prop'].match(/(.*)\s+\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]*|(\\\/)*)*)\/([gim]*)$/) do
-              p['prop'] = ma[1]
-              p['transforms'] << {
-                type: 'regex',
-                regex: ma[2].gsub('\/', '/'),
-                repl: ma[5].gsub('\/', '/'),
-                modifiers: ma[8]
-              }
-            end
+      m = str.split(/({|})/m)
+      props = []
+      i = 0
+      while i < m.length do
+        p = {}
+        if m[i] == '{' && m[i + 2] == '}'
+          p['orig'] = m[i + 1]
+          p['prop'] = p['orig']
 
-            while ma = p['prop'].match(/(.*)\s+([%@$])\[([^\]]*)\]$/) do
-              p['prop'] = ma[1]
-              t = case ma[2]
-                when '%' then 'number_format'
-                when '@' then 'date_format'
-                when '$' then 'string_format'
-              end
-              p['transforms'] << {
-                type: t,
-                format: ma[3]
-              }
-            end
-
-            p['prop'].match(/(.*)\s+=\[([^\]]*)\]$/) do |ma|
-              p['prop'] = ma[1]
-              p['transforms'] << {
-                type: 'math_expr',
-                expr: ma[2]
-              }
-            end
-
-            i += 2
-          else
-            p['orig'] = m[i]
-          end
-          props << p
-          i += 1
+          p.merge!(parse_transforms(p['prop']))
+          i += 2
+        else
+          p['orig'] = m[i]
         end
-        fn = Util.resolution_builder(props)
-        @@resolve_cache[str] = fn
-        compiled = @@resolve_cache[str]
+        props << p
+        i += 1
       end
-      compiled.call(resolver)
+
+      @@resolve_cache[str] = props
+      do_resolve(props, resolver, helpers)
     end
 
-    def self.resolution_builder(props)
-      lambda do |resolver|
-        if !resolver.is_a? Proc
-          obj = resolver || {}
-          resolver = lambda {|name| deep_get(obj, name)}
-        end
-        return props.map do |p|
-          v = p['orig']
-          if !p['prop'].blank?
-            temp = resolver.call(p['prop'])
-            if temp.blank?
-              temp = p.has_key?('fallback') ? p['fallback'] : '{' + p['orig'] + '}'
-            else
-              temp = temp.map {|k, v| k + ': ' + v.to_s} if temp.is_a?(Hash)
-              temp = temp.join(', ') if temp.is_a?(Array)
-              p['transforms'].reverse.each do |pt|
-                temp = @@apply_expr[pt[:type]].call(temp, pt) if
-                  !temp.blank? && !@@apply_expr[pt[:type]].blank?
-              end
-            end
-            v = temp
-          end
-          v
-        end.join('')
+    def self.do_resolve(props, resolver, helpers)
+      phrases = helpers['phrases'] || {}
+      if !resolver.is_a? Proc
+        obj = resolver || {}
+        resolver = lambda {|name| deep_get(obj, name)}
       end
+      return props.map do |p|
+        next p['orig'] if p['prop'].blank?
+
+        if !(m = p['prop'].match(/^#(\w+)$/)).nil? && !phrases[m[1]].nil?
+          temp = resolve_string(localize(phrases[m[1]]), resolver, helpers)
+        else
+          temp = resolver.call(p['prop'])
+        end
+
+        temp = '' if temp.blank?
+
+        temp = temp.map {|k, v| k + ': ' + v.to_s} if temp.is_a?(Hash)
+        temp = temp.join(', ') if temp.is_a?(Array)
+        temp = Util.string_substitute(temp, resolver, helpers) if temp.is_a?(String) && !temp.index('{').nil?
+
+        trans_result = process_transforms(temp, p['transforms'], helpers)
+        temp = trans_result[:value]
+        temp = '{' + p['orig'] + '}' if temp.blank? && !trans_result[:fallback_result]
+
+        temp
+      end.join('')
+    end
+
+    def self.parse_transforms(str)
+      @@transforms_cache ||= {}
+      return @@transforms_cache[str] if @@transforms_cache.key?(str)
+
+      p = { 'prop' => str, 'transforms' => [] }
+
+      p['prop'].match(/(^|(.*)\s+)\|\|\s*(.*)$/) do |ma|
+        p['prop'] = ma[2] || ''
+        p['transforms'].push({
+          type: 'fallback',
+          fallback: ma[3]
+        })
+      end
+
+      check_expr = lambda do
+        while ma = p['prop'].match(/(^|(.*)\s+)\!(\w+)$/) do
+          p['prop'] = ma[2] || ''
+          p['transforms'].push({
+            type: 'sub_expr',
+            key: ma[3]
+          })
+        end
+      end
+
+      check_expr.call()
+      while ma = p['prop'].match(/(^|(.*)\s+)\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]*|(\\\/)*)*)\/([gim]*)$/) do
+        p['prop'] = ma[2] || ''
+        p['transforms'].push({
+          type: 'regex',
+          regex: ma[3].gsub('\/', '/'),
+          repl: ma[6].gsub('\/', '/'),
+          modifiers: ma[9]
+        })
+      end
+
+      check_expr.call()
+      while ma = p['prop'].match(/(^|(.*)\s+)([%@$])\[([^\]]*)\]$/) do
+        p['prop'] = ma[2] || ''
+        t = case ma[3]
+            when '%' then 'number_format'
+            when '@' then 'date_format'
+            when '$' then 'string_format'
+            end
+        p['transforms'].push({
+          type: t,
+          format: ma[4]
+        })
+      end
+
+      check_expr.call()
+      p['prop'].match(/(^|(.*)\s+)=\[([^\]]*)\]$/) do |ma|
+        p['prop'] = ma[2] || ''
+        p['transforms'] << {
+          type: 'math_expr',
+          expr: ma[3]
+        }
+      end
+
+      check_expr.call()
+      @@transforms_cache[str] = p
+      p
+    end
+
+    def self.process_transforms(v, transforms, helpers)
+      fb_result = false
+      transforms.reverse.each do |pt|
+        if !@@apply_expr[pt[:type]].blank?
+          r = @@apply_expr[pt[:type]].call(v, pt, helpers)
+          if !r.is_a?(Hash)
+            v = r
+          else
+            v = r[:value]
+            fb_result ||= r[:fallback_result]
+          end
+        end
+      end
+      { value: v, fallback_result: fb_result }
     end
 
     Default_Precison = 2
 
     @@apply_expr = {
-      'regex' => lambda do |v, transf|
+      'regex' => lambda do |v, transf, helpers|
         # Woo, backslash
         repl = transf[:repl].gsub(/\$(\d)/, '\\\\\1')
         r = Regexp.new(transf[:regex],
@@ -278,7 +332,7 @@ module Canvas2
         transf[:modifiers].include?('g') ? v.gsub(r, repl) : v.sub(r, repl)
       end,
 
-      'number_format' => lambda do |v, transf|
+      'number_format' => lambda do |v, transf, helpers|
         return v if v.blank? || (!Float(v) rescue true)
         v = v.to_f
 
@@ -319,7 +373,7 @@ module Canvas2
         v.to_s
       end,
 
-      'date_format' => lambda do |v, transf|
+      'date_format' => lambda do |v, transf, helpers|
         d = Util.parse_date(v)
         return v if d.blank?
 
@@ -327,7 +381,7 @@ module Canvas2
         d.strftime(fmt)
       end,
 
-      'string_format' => lambda do |v, transf|
+      'string_format' => lambda do |v, transf, helpers|
         return v if v.blank?
 
         v = v.strip if transf[:format].include?('t')
@@ -351,7 +405,7 @@ module Canvas2
         v
       end,
 
-      'math_expr' => lambda do |v, transf|
+      'math_expr' => lambda do |v, transf, helpers|
         var_opts = ['-?x', 't', '-?[0-9]*\\.?[0-9]*']
         op_opts = ['+', '\\-', '*', '\\/', '%']
         transf[:expr].match('^(' + var_opts.join('|') + ')\\s*([' + op_opts.join('') +
@@ -371,6 +425,15 @@ module Canvas2
             end
         end
         v
+      end,
+
+      'sub_expr' => lambda do |v, transf, helpers|
+        process_transforms(v, parse_transforms(localize((helpers['expressions'] || {})[transf[:key]]))['transforms'], helpers)
+      end,
+
+      'fallback' => lambda do |v, transf, helpers|
+        is_fb = v.blank?
+        { value: is_fb ? transf[:fallback] : v, fallback_result: is_fb }
       end
     }
 

@@ -189,6 +189,16 @@ $.component.Container.extend('Repeater', 'content', {
                 cObj._setRow(di, i, di, callback);
             });
         }
+        else if (_.isArray(cObj._dataContext.list))
+        {
+            var callback = doneWithRowsCallback(cObj._dataContext.count);
+            _.each(cObj._dataContext.list, function(di, i)
+            {
+                if (!_.isObject(di))
+                { di = { value: di }; }
+                cObj._setRow(di, i, di, callback);
+            });
+        }
         else if (_.isArray(cObj._dataContext.goalList))
         {
             var callback = doneWithRowsCallback(cObj._dataContext.goalList.length);

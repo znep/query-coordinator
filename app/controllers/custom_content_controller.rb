@@ -141,8 +141,8 @@ class CustomContentController < ApplicationController
     internal_metric_entity = domain_id + "-intern"
     MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + "-intern", "ds-total", 1)
 
-    #TODO: This should include the locale (whenever we figure out how that is specified)
     cache_params = { 'domain' => CurrentDomain.cname,
+                     'locale' => I18n.locale,
                      'pages_updated' => pages_time,
                      'domain_updated' => CurrentDomain.default_config_updated_at,
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
@@ -249,7 +249,9 @@ class CustomContentController < ApplicationController
           renderTime: Time.now.to_i,
           path: full_path,
           siteTheme: CurrentDomain.theme,
-          currentUser: @page.private_data? && @current_user ? @current_user.id : nil
+          currentUser: @page.private_data? && @current_user ? @current_user.id : nil,
+          current_locale: I18n.locale,
+          available_locales: request.env['socrata.available_locales']
         })
         # If the page has maxAge <= 0; explicitly disable any and all row or search caching
         Canvas2::Util.set_no_cache(@page.max_age <= 0) if @page.max_age

@@ -282,6 +282,13 @@ $.t = function(key, data)
     return key.endsWith('_html') ? result : $.htmlStrip(result);
 };
 
+$.localize = function(obj)
+{
+    if (!$.isPlainObject(obj))
+    { return obj; }
+    return $.subKeyDefined(obj, blist.locale) ? obj[blist.locale] : '';
+};
+
 /* Do a deep compact on any object.  For any array, run a normal compact on
  * the array; then deep compact all sub-values.  For an object, leave out blank
  * values; and deep compact all the non-blank ones */

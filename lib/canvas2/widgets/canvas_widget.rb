@@ -61,7 +61,7 @@ module Canvas2
     end
 
     def string_substitute(text, special_resolver = nil)
-      Util.string_substitute(text, special_resolver || resolver)
+      Util.string_substitute(text, special_resolver || resolver, substitution_helpers)
     end
 
     def is_hidden
@@ -157,6 +157,11 @@ module Canvas2
 
     def child_resolver
       resolver()
+    end
+
+    def substitution_helpers
+      (self.parent.blank? ? {} : self.parent.substitution_helpers()).
+        deep_merge(@properties['substitutionHelpers'] || {})
     end
 
     def self.page_types

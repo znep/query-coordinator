@@ -61,8 +61,9 @@ module Canvas2
       begin
         case config['type']
         when 'list'
-          available_contexts[id] = {id: id, type: config['type'], list: config['list'],
-            count: config['list'].length}
+          l = config['list']
+          l = Util.string_substitute('{' + l + ' ||}', Util.base_resolver).split(', ') if l.is_a?(String)
+          available_contexts[id] = {id: id, type: config['type'], list: l, count: l.length}
           log_timing(start_time, config)
 
         when 'datasetList'

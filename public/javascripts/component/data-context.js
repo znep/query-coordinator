@@ -276,7 +276,13 @@
                     break;
 
                 case 'list':
-                    doneLoading(addContext(dc, id, config, { count: config.list.length, list: config.list }));
+                    var l = config.list;
+                    if (_.isString(l))
+                    {
+                        l = $.stringSubstitute('{' + l + ' ||}',
+                                $.component.rootPropertyResolver).split(', ');
+                    }
+                    doneLoading(addContext(dc, id, config, { count: l.length, list: l }));
                     break;
 
                 default:

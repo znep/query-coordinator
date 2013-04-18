@@ -21,10 +21,14 @@ class LocaleMiddleware
     # first, try loading from subdomain
     locale = locales.properties[host]
 
+    domain_locales = locales.properties['available_locales']
+    domain_locales = [locale] if domain_locales.nil? || domain_locales.empty?
+    domain_locales.push(locale) if !domain_locales.include?(locale)
+
     if locale.blank?
       # fall back to checking path lead
       possible_locale = request.path.match(/^\/([^\/]+)/)[1] rescue nil
-      if possible_locale.present? && (possible_locale == 'nyan' || I18n.available_locales.include?(possible_locale.to_sym))
+      if possible_locale.present? && (possible_locale == 'nyan' || domain_locales.include?(possible_locale))
         locale = possible_locale
 
         # really, all these are legacy vars except PATH_INFO, but set
@@ -38,10 +42,6 @@ class LocaleMiddleware
       # fall back to domain default
       locale = locales.properties['*']
     end
-
-    domain_locales = locales.properties['available_locales']
-    domain_locales = [locale] if domain_locales.nil? || domain_locales.empty?
-    domain_locales.push(locale) if !domain_locales.include?(locale)
 
     env['socrata.locale'] = locale
     env['socrata.available_locales'] = domain_locales

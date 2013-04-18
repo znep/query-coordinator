@@ -600,7 +600,7 @@ class AdministrationController < ApplicationController
       prop_val[:parent] = new_category_parent.titleize_if_necessary
     end
 
-    locales = params[:new_locales]
+    locales = params[:new_locales] || []
     prop_val[:locale_strings] = locales if !locales.empty?
 
     config.create_property(new_category.titleize_if_necessary, prop_val)

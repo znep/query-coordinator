@@ -317,16 +317,11 @@
 <%= render :partial => 'fatrow_header_template' %>
 <div class="editAlertTemplate">
   <div class="editAlert">
-    <p class="editMessage">This dataset is published and cannot be edited directly.
-    A working copy <span class="workingCopyStatus">is available</span> that allows
-    you to make all your desired changes before making them publicly available.</p>
-    <p class="copyingMessage">Please wait while a working copy is made.
-    <span class="additionalCopyingMessage"></span></p>
-    <p class="doneCopyingMessage hide">The working copy is now available.
-      The Edit Dataset button will give you access when you are ready to edit.</p>
-    <a href="#Unpublished" class="button editPublished">Edit Dataset</a>
-    <p class="errorMessage hide">There was an error making a working copy of your dataset.
-    Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.</p>
+    <p class="editMessage"><%= t('screens.dataset_status.needs_copy') %></p>
+    <p class="copyingMessage"><%= t('screens.dataset_status.copy_in_progress') %></p>
+    <p class="doneCopyingMessage hide"><%= t('screens.dataset_status.copy_available') %></p>
+    <a href="#Unpublished" class="button editPublished"><%= t('screens.dataset_status.edit_dataset_button') %></a>
+    <p class="errorMessage hide"><%= t('screens.dataset_status.error_publishing_html') %></p>
   </div>
 </div>
 <%= render :partial => 'templates/unified_filter' %>

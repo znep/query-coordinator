@@ -10,7 +10,7 @@
             var $inner = $.tag({ tagName: 'div', 'class': 'starsControlInner' });
             var value = opts.value;
 
-            $this.attr('title', opts.value + ' stars');
+            $this.attr('title', $.t('controls.common.stars.tooltip', { number: opts.value }));
             $this.empty().append($inner);
             updateInner($inner, value, opts);
 

@@ -9,6 +9,11 @@ en:
           facebook: Facebook
           twitter: Twitter
           email: Email
+      auth_required: You must be logged in to %{action_phrase}
+      rate:
+        auth_action_phrase: rate this dataset
+      stars:
+        tooltip: %{number} stars
 
 it:
   controls:

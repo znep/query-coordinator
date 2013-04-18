@@ -206,7 +206,7 @@ blist.datasetControls.datasetRating = function($star, $sect, enabled)
         enabled: enabled && !$.isBlank($star.data('rating-type')),
         onChange: function(value)
         {
-            blist.util.doAuthedAction('rate this dataset', function(successCallback)
+            blist.util.doAuthedAction($.t('controls.common.rate.auth_action_phrase'), function(successCallback)
             {
                 blist.dataset.updateRating(
                     {
@@ -246,28 +246,17 @@ blist.datasetControls.datasetContact = function($sect)
 
         if (type == 'other')
         {
-            subject = 'A visitor has sent you a message about your "' +
-                  blist.dataset.name + '" ' +
-                  blist.configuration.strings.company + ' dataset';
+            subject = $.t('screens.dataset_contact.other_subject', {
+                dataset_name: blist.dataset.name,
+                site: blist.configuration.strings.company
+            });
         }
         else
         {
-            subject = 'Your dataset "' + blist.dataset.name + '" has been flagged ';
-            switch (type)
-            {
-                case 'copyright_violation':
-                    subject += 'for copyright violation';
-                    break;
-                case 'offensive_content':
-                    subject += 'for offensive content';
-                    break;
-                case 'spam':
-                    subject += 'as potential spam';
-                    break;
-                case 'personal_information':
-                    subject += 'for containing personal information';
-                    break;
-            }
+            subject = $.t('screens.dataset_contact.subject', {
+                dataset_name: blist.dataset.name,
+                reason: $.t('screens.dataset_contact.reasons.' + type)
+            });
         }
         $sect.find('#contactSubject').val(subject);
         $sect.find('#contactBody').focus();
@@ -314,11 +303,11 @@ blist.datasetControls.datasetContact = function($sect)
                     'from_address': {'required': true, 'email': true}
                 },
                 messages: {
-                    'type'   : 'You must select a purpose for this message.',
-                    'subject': 'You must choose a subject for this message.',
-                    'message': 'The message must have a body.',
+                    'type'   : $.t('screens.dataset_contact.validation.no_purpose'),
+                    'subject': $.t('screens.dataset_contact.validation.no_subject'),
+                    'message': $.t('screens.dataset_contact.validation.no_body'),
                     'from_address': {
-                        required: 'Your email address is required.'
+                        required: $.t('screens.dataset_contact.validation.no_email')
                     }
                 },
                 errorPlacement: function($error, $element)
@@ -343,14 +332,14 @@ blist.datasetControls.datasetContact = function($sect)
                         error: function(request, textStatus, errorThrown) {
                             $sect.find('.flash:not(.math_message)')
                               .removeClass('notice').addClass('error')
-                              .text('There was an error sending feedback for this dataset. Please retry later.').show();
+                              .text($.t('screens.dataset_contact.error_message')).show();
                         },
                         success: function(response) {
                             if(response['success'] == true) {
                                 _.defer(function() {
                                     $sect.find('.flash:not(.math_message)')
                                         .removeClass('error').addClass('notice')
-                                        .text('The dataset owner has been notified.').show();
+                                        .text($.t('screens.dataset_contact.success_message')).show();
                                     toggleContactActions();
                                 });
 
@@ -359,7 +348,7 @@ blist.datasetControls.datasetContact = function($sect)
                             } else if (response['success'] == false) {
                                 $sect.find('.math_message')
                                     .removeClass('notice').addClass('error')
-                                    .text('Incorrect answer, please try again.').fadeIn();
+                                    .text($.t('screens.dataset_contact.captcha_failed')).fadeIn();
                             }
                         }
                     });
@@ -562,12 +551,14 @@ blist.datasetControls.editPublishedMessage = function()
             .append($.renderTemplate('editAlertTemplate', data, {
                 '.editPublished@class+': function()
                     { return copyPending ? 'hide' : ''; },
+                '.editMessage': function()
+                    { return $.t('screens.dataset_status.needs_copy', { status: $.t('screens.dataset_status.needs_copy_status.' + data.status) }); },
                 '.editMessage@class+': function()
                     { return copyPending ? 'hide' : ''; },
+                '.copyingMessage': function()
+                    { return $.t('screens.dataset_status.copy_in_progress', { additional: data.message }); },
                 '.copyingMessage@class+': function()
-                    { return copyPending ? '' : 'hide'; },
-                '.workingCopyStatus': 'status',
-                '.additionalCopyingMessage': 'message'
+                    { return copyPending ? '' : 'hide'; }
             }));
 
         // bt is kind of a massive pile of shit
@@ -617,21 +608,18 @@ blist.datasetControls.editPublishedMessage = function()
             switch (statuses.copying.copyStatus)
             {
                 case 'finished':
-                    data.status = wasEverInProgress ? 'is available' : 'can be made';
+                    data.status = wasEverInProgress ? 'available' : 'can_be_made';
                     break;
                 case 'queued':
-                    data.message = 'It is in line waiting to be processed ' +
-                                   '(queued ' + dateify(statuses.copying.queuedAt) + '; ' +
-                                   statuses.copying.totalQueued + ' total in line)';
+                    data.message = $.t('screens.dataset_status.copy_in_progress_additional.queued', { time: dateify(statuses.copying.queuedAt), totalQueued: statuses.copying.totalQueued });
                     copyInProgress = true;
                     break;
                 case 'processing':
-                    data.message = 'It is currently being processed ' +
-                                   '(started ' + dateify(statuses.copying.startedAt) + ')';
+                    data.message = $.t('screens.dataset_status.copy_in_progress_additional.processing', { time: dateify(statuses.copying.startedAt) });
                     copyInProgress = true;
                     break;
                 case 'failed':
-                    data.status = 'can be made';
+                    data.status = 'can_be_made';
             }
 
             wasEverInProgress = wasEverInProgress || copyInProgress;
@@ -647,7 +635,7 @@ blist.datasetControls.editPublishedMessage = function()
         }
         else
         {
-            finish({ status: 'is available' }, false);
+            finish({ status: 'available' }, false);
         }
     });
 
@@ -667,9 +655,7 @@ blist.datasetControls.hookUpPublishing = function($container)
             {
                 $container.find('#datasetName').socrataTip({content: $.tag({tagName: 'p',
                     'class': 'errorMessage',
-                    contents: ['There was an error publishing your dataset. Please ',
-                        {tagName: 'a', href: 'http://support.socrata.com', rel: 'external',
-                        contents: ['contact Socrata support']}]}),
+                    contents: $.t('screens.dataset_status.error_publishing_html')}),
                     showSpike: false, trigger: 'now'});
             });
     });

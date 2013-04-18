@@ -274,7 +274,7 @@ $.t = function(key, data)
 
     if (!$.subKeyDefined(blist.translations, key))
     {
-        console.warn('Could not find translation for key ' + key);
+        console.error('Could not find translation for key ' + key);
         return '(no translation available)';
     }
     var result = $.deepGetStringField(blist.translations, key)
@@ -834,7 +834,7 @@ blist.util.doAuthedAction = function(actionText, callback)
             {
                 if (isSuccess)
                     callback(successCallback);
-            }, 'You must be logged in to ' + actionText);
+            }, $.t('controls.common.auth_required', { action_phrase: actionText }));
     }
     else if (!blist.currentUserId)
     {

@@ -8,4 +8,6 @@
             $.extend(true, blist.translations, translation());
         });
     }
+
+    blist.locale = $('body').data('locale');
 })();

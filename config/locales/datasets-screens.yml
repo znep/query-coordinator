@@ -14,14 +14,15 @@ en:
       view_full_page: View Full Page
       description: Description
       activity: Activity
-      community: Community
-      your: Your
+      community: Community Rating
+      your: Your Rating
       raters: Raters
       visits: Visits
       downloads: Downloads
       comments: Comments
       contributors: Contributors
       view_statistics: View Statistics
+      meta: Meta
       category: Category
       none: (none)
       permissions: Permissions
@@ -29,6 +30,7 @@ en:
       private: Private
       tags: Tags
       row_count: Row Count
+      links: Links
       permalink: Permalink
       short_url: Short URL
       attachments: Attachments
@@ -44,12 +46,56 @@ en:
       permanent_links: Permanent Links
       resource_name: Resource Name
       row_identifier: Row Identifier
+      actions: Actions
       flag_dataset: Flag Dataset
       contact_dataset_owner: Contact Dataset Owner
     save_dialog:
       validation:
         auth_required: You must be logged in to save a view
         view_name_required: A view name is required
+    dataset_contact:
+      subject: Your dataset "%{dataset_name}" has been flagged %{reason}
+      reasons:
+        copyright_violation: for copyright violation
+        offensive_content: for offensive content
+        spam: as potential spam
+        personal_information: for containing personal information
+      other_subject: A visitor has sent you a message about your '%{dataset_name}' '%{site}' dataset
+      form:
+        purpose: Purpose
+        purposes:
+          prompt: "-- Select Purpose --"
+          copyright_violation: Copyright Violation
+          offensive_content: Offensive Content
+          spam: Spam or Junk
+          personal_information: Personal Information
+          other: Other
+        subject: Subject
+        message: Short Message
+        email: Your Email
+        email_prompt: Your email address will be shared with the owner of this dataset so they can reply.
+        send_button: Send
+      validation:
+        no_purpose: You must select a purpose for this message.
+        no_subject: You must choose a subject for this message.
+        no_body: The message must have a body.
+        no_email: Your email address is required.
+      error_message: There was an error sending feedback for this dataset. Please retry later.
+      success_message: The dataset owner has been notified.
+      captcha_failed: Incorrect answer, please try again.
+    dataset_status:
+      # status is eg 'is available' or 'can be made'
+      needs_copy: This dataset is published and cannot be edited directly. A working copy %{status} that allows you to make all your desired changes before making them publicly available.
+      needs_copy_status:
+        available: is available
+        can_be_made: can be made
+      copy_in_progress: Please wait while a working copy is made. %{additional}
+      copy_in_progress_additional:
+        queued: It is in line waiting to be processed (queued %{time}; %{totalQueued} total in line)
+        processing: It is currently being processed (started %{time})
+      copy_available: The working copy is now available. The Edit Dataset button will give you access when you are ready to edit.
+      edit_dataset_button: Edit Dataset
+      error_publishing_html: There was an error making a working copy of your dataset. Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.
 
 it:
   screens:

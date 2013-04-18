@@ -83,7 +83,7 @@ http://www.socrata.com
   <%- end -%>
 </head>
 
-<body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}#{@suppress_chrome ? ' suppressChrome' : ''}" %>">
+<body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}#{@suppress_chrome ? ' suppressChrome' : ''}" %>" data-locale="<%= I18n.locale %>">
   <div id="skipLinks">
     <a href="#content" accesskey="c">Skip to main content</a>
     <a href="#footerLinks" accesskey="f">Skip to footer links</a>
@@ -175,7 +175,6 @@ http://www.socrata.com
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
-    blist.locale = "<%= I18n.locale %>";
 
     <%- if DOWNTIME.should_display(DateTime.now) -%>
       blist.configuration.maintenance_hash = '<%= raw DOWNTIME.hash %>';

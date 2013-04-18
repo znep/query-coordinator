@@ -141,13 +141,13 @@
     </a>
     <dl class="sectionContent">
       <%- (CurrentDomain.properties.rating_types || ["rating"]).each do |rating_type| -%>
-        <dt><%= t('screens.about.community') %> <%= rating_type.titleize %></dt>
+        <dt><%= t('screens.about.community') %></dt>
         <dd class="clearfix">
           <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>">
             <%= @view.average_rating(rating_type) %>
           </div>
         </dd>
-        <dt><%= t('screens.about.your') %> <%= rating_type.titleize %></dt>
+        <dt><%= t('screens.about.your') %></dt>
         <dd class="clearfix">
           <div class="starsControl blueStars datasetAverageRating" data-rating-type="<%= rating_type %>"
             data-rating="<%= @view.user_rating(rating_type) %>">
@@ -177,7 +177,7 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Meta
+      <%= t('screens.about.meta') %>
     </a>
     <dl class="sectionContent">
       <dt><%= t('screens.about.category') %></dt>
@@ -196,7 +196,7 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Links
+      <%= t('screens.about.links') %>
     </a>
     <dl class="sectionContent">
       <dt><%= t('screens.about.permalink') %></dt>
@@ -345,7 +345,7 @@
   <div class="formSection">
     <a href="#expand" class="expander expanded formHeader">
       <span class="icon"></span>
-      Actions
+      <%= t('screens.about.actions') %>
     </a>
     <div class="flash"></div>
     <dl class="sectionContent contactOwnerLinks">

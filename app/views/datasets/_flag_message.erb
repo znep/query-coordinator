@@ -4,31 +4,31 @@
       :class => 'contactOwnerForm') do %>
       <%= hidden_field_tag 'method', 'flag' %>
       <div class="lined">
-        <div><label for="contactPurpose" class="required">Purpose:</label></div>
+        <div><label for="contactPurpose" class="required"><%= t('screens.dataset_contact.form.purpose') %></label></div>
         <select id="contactPurpose" name="type">
           <%= options_for_select(
-              [['-- Select Purpose --', ''],
-               ['Copyright Violation', 'copyright_violation'],
-               ['Offensive Content', 'offensive_content'],
-               ['Spam or Junk', 'spam'],
-               ['Personal Information', 'personal_information'],
-               ['Other', 'other']], '') -%>
+              [[t('screens.dataset_contact.form.purposes.prompt'), ''],
+               [t('screens.dataset_contact.form.purposes.copyright_violation'), 'copyright_violation'],
+               [t('screens.dataset_contact.form.purposes.offensive_content'), 'offensive_content'],
+               [t('screens.dataset_contact.form.purposes.spam'), 'spam'],
+               [t('screens.dataset_contact.form.purposes.personal_information'), 'personal_information'],
+               [t('screens.dataset_contact.form.purposes.other'), 'other']], '') -%>
         </select>
       </div>
 
       <div class="lined">
-        <label for="contactSubject">Subject:</label>
+        <label for="contactSubject"><<%= t('screens.dataset_contact.form.subject') %>/label>
         <textarea id="contactSubject" name="subject"></textarea>
       </div>
 
       <div class="lined">
-        <div><label for="contactBody" class="required">Short Message:</label></div>
+        <div><label for="contactBody" class="required"><<%= t('screens.dataset_contact.form.message') %>/label></div>
         <textarea id="contactBody" name="message"></textarea>
       </div>
 
       <div class="lined">
-        <div><label for="from_address" class="required">Your Email:</label></div>
-        <p>Your email address will be shared with the owner of this dataset so they can reply.</p>
+        <div><label for="from_address" class="required"><%= t('screens.dataset_contact.form.email') %></label></div>
+        <p><%= t('email_prompt') %></p>
         <input id="fromAddress" name="from_address" type="text" value="<%= current_user.email unless (current_user.nil? || current_user.email.nil?) %>"/>
       </div>
 
@@ -58,10 +58,10 @@
       <%- if local_assigns[:static_links] -%>
       <%= submit_tag('Send', :class => 'button default') %>
       <%- else -%>
-      <a href="#submit" class="button sendContactButton">Send</a>
+        <a href="#submit" class="button sendContactButton"><%= t('screens.dataset_contact.form.send_button') %></a>
       <%- end -%>
       <a href="<%= local_assigns[:static_links] ? @view.alt_href : '#cancel' %>"
-        class="button cancelContactButton contactButton">Cancel</a>
+        class="button cancelContactButton contactButton"><%= t('core.dialogs.cancel') %></a>
     <% end %>
   </div>
 </div>

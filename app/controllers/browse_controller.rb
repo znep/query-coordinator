@@ -13,7 +13,7 @@ class BrowseController < ApplicationController
     })
   end
 
-  def embed                                                                 yeah
+  def embed
     cache_user_id = @current_user ? @current_user.id : "anon"
     cache_params = {'domain' => CurrentDomain.cname,
                     'domain_updated' => CurrentDomain.default_config_updated_at,

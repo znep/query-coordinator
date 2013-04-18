@@ -89,6 +89,9 @@ javascripts:
     - public/javascripts/controls/editors/document-editor.js
     - public/javascripts/controls/editors/photo-editor.js
   canvas:
+    - public/javascripts/plugins/uri.js
+    - public/javascripts/plugins/html2markdown.js
+    - public/javascripts/plugins/htmldomparser.js
     - public/javascripts/plugins/showdown.js
     - public/javascripts/plugins/lab.js
     - public/javascripts/plugins/waypoints.js

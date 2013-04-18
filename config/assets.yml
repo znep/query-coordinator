@@ -62,6 +62,7 @@ javascripts:
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/backbone.js
     - public/javascripts/util/backbone-exts.js
+    - public/javascripts/util/konami.js
     - public/javascripts/plugins/backbone.orderable.js
     - public/javascripts/screens/govstat/goals/models.js
   shared-editors:

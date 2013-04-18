@@ -103,7 +103,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         var name = $name.val();
         if (isNew && $.isBlank(name))
         {
-            $dialog.find('.mainError').text($.t('screens.save_dialog.validation.view_name_required'));
+            $dialog.find('.mainError').text($.t('screens.ds.save_dialog.validation.view_name_required'));
             return;
         }
 
@@ -143,7 +143,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
         if (!$.isBlank(blist.util.inlineLogin))
         {
-            var msg = $.t('screens.save_dialog.validation.auth_required');
+            var msg = $.t('screens.ds.save_dialog.validation.auth_required');
             blist.util.inlineLogin.verifyUser(
                 function(isSuccess)
                 {
@@ -246,16 +246,16 @@ blist.datasetControls.datasetContact = function($sect)
 
         if (type == 'other')
         {
-            subject = $.t('screens.dataset_contact.other_subject', {
+            subject = $.t('screens.ds.dataset_contact.other_subject', {
                 dataset_name: blist.dataset.name,
                 site: blist.configuration.strings.company
             });
         }
         else
         {
-            subject = $.t('screens.dataset_contact.subject', {
+            subject = $.t('screens.ds.dataset_contact.subject', {
                 dataset_name: blist.dataset.name,
-                reason: $.t('screens.dataset_contact.reasons.' + type)
+                reason: $.t('screens.ds.dataset_contact.reasons.' + type)
             });
         }
         $sect.find('#contactSubject').val(subject);
@@ -303,11 +303,11 @@ blist.datasetControls.datasetContact = function($sect)
                     'from_address': {'required': true, 'email': true}
                 },
                 messages: {
-                    'type'   : $.t('screens.dataset_contact.validation.no_purpose'),
-                    'subject': $.t('screens.dataset_contact.validation.no_subject'),
-                    'message': $.t('screens.dataset_contact.validation.no_body'),
+                    'type'   : $.t('screens.ds.dataset_contact.validation.no_purpose'),
+                    'subject': $.t('screens.ds.dataset_contact.validation.no_subject'),
+                    'message': $.t('screens.ds.dataset_contact.validation.no_body'),
                     'from_address': {
-                        required: $.t('screens.dataset_contact.validation.no_email')
+                        required: $.t('screens.ds.dataset_contact.validation.no_email')
                     }
                 },
                 errorPlacement: function($error, $element)
@@ -332,14 +332,14 @@ blist.datasetControls.datasetContact = function($sect)
                         error: function(request, textStatus, errorThrown) {
                             $sect.find('.flash:not(.math_message)')
                               .removeClass('notice').addClass('error')
-                              .text($.t('screens.dataset_contact.error_message')).show();
+                              .text($.t('screens.ds.dataset_contact.error_message')).show();
                         },
                         success: function(response) {
                             if(response['success'] == true) {
                                 _.defer(function() {
                                     $sect.find('.flash:not(.math_message)')
                                         .removeClass('error').addClass('notice')
-                                        .text($.t('screens.dataset_contact.success_message')).show();
+                                        .text($.t('screens.ds.dataset_contact.success_message')).show();
                                     toggleContactActions();
                                 });
 
@@ -348,7 +348,7 @@ blist.datasetControls.datasetContact = function($sect)
                             } else if (response['success'] == false) {
                                 $sect.find('.math_message')
                                     .removeClass('notice').addClass('error')
-                                    .text($.t('screens.dataset_contact.captcha_failed')).fadeIn();
+                                    .text($.t('screens.ds.dataset_contact.captcha_failed')).fadeIn();
                             }
                         }
                     });
@@ -415,7 +415,7 @@ blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
         '<p class="name">' +
         $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
         (!$.isBlank(col.metadata.originalName) ?
-            '<p class="originalName"><span class="title">Original Name:</span> ' +
+            '<p class="originalName"><span class="title">' + $.t('screens.ds.column_tip.original_name') + ':</span> ' +
             '<span class="value">' +
                 $.htmlEscape(col.metadata.originalName).replace(/ /, '&nbsp;') +
             '</span>' : '') +
@@ -424,10 +424,9 @@ blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
             '</p>' : '') +
         '<p class="columnType">' +
         '<span class="blist-th-icon"></span>' +
-        col.renderType.title +
+        $.t('core.data_types.' + col.dataTypeName) +
         (col.format.grouping_aggregate !== undefined ?
-            ' (' + $.capitalize(col.format.grouping_aggregate) + ' on ' +
-            col.dataTypeName.displayable() + ')' : '') +
+            ' ' + $.t('screens.ds.column_tip.aggregate', { aggregate: $.t('core.aggregates.' + col.format.grouping_aggregate), data_type: $.t('core.data_types.' + col.dataTypeName) }) : '') +
         '</p>' +
         '</div>';
     var contentIsMain = true;
@@ -552,11 +551,11 @@ blist.datasetControls.editPublishedMessage = function()
                 '.editPublished@class+': function()
                     { return copyPending ? 'hide' : ''; },
                 '.editMessage': function()
-                    { return $.t('screens.dataset_status.needs_copy', { status: $.t('screens.dataset_status.needs_copy_status.' + data.status) }); },
+                    { return $.t('screens.ds.dataset_status.needs_copy', { status: $.t('screens.ds.dataset_status.needs_copy_status.' + data.status) }); },
                 '.editMessage@class+': function()
                     { return copyPending ? 'hide' : ''; },
                 '.copyingMessage': function()
-                    { return $.t('screens.dataset_status.copy_in_progress', { additional: data.message }); },
+                    { return $.t('screens.ds.dataset_status.copy_in_progress', { additional: data.message }); },
                 '.copyingMessage@class+': function()
                     { return copyPending ? '' : 'hide'; }
             }));
@@ -611,11 +610,11 @@ blist.datasetControls.editPublishedMessage = function()
                     data.status = wasEverInProgress ? 'available' : 'can_be_made';
                     break;
                 case 'queued':
-                    data.message = $.t('screens.dataset_status.copy_in_progress_additional.queued', { time: dateify(statuses.copying.queuedAt), totalQueued: statuses.copying.totalQueued });
+                    data.message = $.t('screens.ds.dataset_status.copy_in_progress_additional.queued', { time: dateify(statuses.copying.queuedAt), totalQueued: statuses.copying.totalQueued });
                     copyInProgress = true;
                     break;
                 case 'processing':
-                    data.message = $.t('screens.dataset_status.copy_in_progress_additional.processing', { time: dateify(statuses.copying.startedAt) });
+                    data.message = $.t('screens.ds.dataset_status.copy_in_progress_additional.processing', { time: dateify(statuses.copying.startedAt) });
                     copyInProgress = true;
                     break;
                 case 'failed':
@@ -655,7 +654,7 @@ blist.datasetControls.hookUpPublishing = function($container)
             {
                 $container.find('#datasetName').socrataTip({content: $.tag({tagName: 'p',
                     'class': 'errorMessage',
-                    contents: $.t('screens.dataset_status.error_publishing_html')}),
+                    contents: $.t('screens.ds.dataset_status.error_publishing_html')}),
                     showSpike: false, trigger: 'now'});
             });
     });

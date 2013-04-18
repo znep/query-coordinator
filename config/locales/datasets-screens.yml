@@ -1,11 +1,5 @@
 en:
   screens:
-    blob:
-      download: This dataset is available for download
-      data_extraction: This data extraction tool or application is available via the link to the right
-      limited_download: This dataset is not tabular data, and may have limited interactivity, but it is available for download
-      external_link: External Link
-      download: Download
     about:
       created: created
       snapshotted: snapshotted
@@ -49,53 +43,138 @@ en:
       actions: Actions
       flag_dataset: Flag Dataset
       contact_dataset_owner: Contact Dataset Owner
-    save_dialog:
-      validation:
-        auth_required: You must be logged in to save a view
-        view_name_required: A view name is required
-    dataset_contact:
-      subject: Your dataset "%{dataset_name}" has been flagged %{reason}
-      reasons:
-        copyright_violation: for copyright violation
-        offensive_content: for offensive content
-        spam: as potential spam
-        personal_information: for containing personal information
-      other_subject: A visitor has sent you a message about your '%{dataset_name}' '%{site}' dataset
-      form:
-        purpose: Purpose
-        purposes:
-          prompt: "-- Select Purpose --"
-          copyright_violation: Copyright Violation
-          offensive_content: Offensive Content
-          spam: Spam or Junk
-          personal_information: Personal Information
-          other: Other
-        subject: Subject
-        message: Short Message
-        email: Your Email
-        email_prompt: Your email address will be shared with the owner of this dataset so they can reply.
-        send_button: Send
-      validation:
-        no_purpose: You must select a purpose for this message.
-        no_subject: You must choose a subject for this message.
-        no_body: The message must have a body.
-        no_email: Your email address is required.
-      error_message: There was an error sending feedback for this dataset. Please retry later.
-      success_message: The dataset owner has been notified.
-      captcha_failed: Incorrect answer, please try again.
-    dataset_status:
-      # status is eg 'is available' or 'can be made'
-      needs_copy: This dataset is published and cannot be edited directly. A working copy %{status} that allows you to make all your desired changes before making them publicly available.
-      needs_copy_status:
-        available: is available
-        can_be_made: can be made
-      copy_in_progress: Please wait while a working copy is made. %{additional}
-      copy_in_progress_additional:
-        queued: It is in line waiting to be processed (queued %{time}; %{totalQueued} total in line)
-        processing: It is currently being processed (started %{time})
-      copy_available: The working copy is now available. The Edit Dataset button will give you access when you are ready to edit.
-      edit_dataset_button: Edit Dataset
-      error_publishing_html: There was an error making a working copy of your dataset. Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.
+    ds:
+      blob:
+        download: This dataset is available for download
+        data_extraction: This data extraction tool or application is available via the link to the right
+        limited_download: This dataset is not tabular data, and may have limited interactivity, but it is available for download
+        external_link: External Link
+        download: Download
+        js_required: Javascript is required to run the document viewer inside your browser.
+        js_required_download:
+          prompt_html: To download this file instead, %{click_here}.
+          click_here: click here
+      save_dialog:
+        titles:
+          normal: Save view
+          prompt: Do you want to save your view?
+        descriptions:
+          leaving: You have unsaved data that will be lost if you leave this page. Please choose whether or not you wish to save this view before you leave; or choose Cancel to return to the page.
+          reload_save: This change requires a reload. You may Save your changes to view them, or Cancel to stay on this page.
+          reload_update: This change requires a reload. You may Update this view or Save a new view to see your changes, or Cancel to stay on this page.
+        form:
+          new_name: "Enter a name for your new view:"
+        validation:
+          auth_required: You must be logged in to save a view
+          view_name_required: A view name is required
+      dataset_contact:
+        subject: Your dataset "%{dataset_name}" has been flagged %{reason}
+        reasons:
+          copyright_violation: for copyright violation
+          offensive_content: for offensive content
+          spam: as potential spam
+          personal_information: for containing personal information
+        other_subject: A visitor has sent you a message about your '%{dataset_name}' '%{site}' dataset
+        form:
+          purpose: Purpose
+          purposes:
+            prompt: "-- Select Purpose --"
+            copyright_violation: Copyright Violation
+            offensive_content: Offensive Content
+            spam: Spam or Junk
+            personal_information: Personal Information
+            other: Other
+          subject: Subject
+          message: Short Message
+          email: Your Email
+          email_prompt: Your email address will be shared with the owner of this dataset so they can reply.
+          send_button: Send
+        validation:
+          no_purpose: You must select a purpose for this message.
+          no_subject: You must choose a subject for this message.
+          no_body: The message must have a body.
+          no_email: Your email address is required.
+        error_message: There was an error sending feedback for this dataset. Please retry later.
+        success_message: The dataset owner has been notified.
+        captcha_failed: Incorrect answer, please try again.
+      dataset_status:
+        # status is eg 'is available' or 'can be made'
+        needs_copy: This dataset is published and cannot be edited directly. A working copy %{status} that allows you to make all your desired changes before making them publicly available.
+        needs_copy_status:
+          available: is available
+          can_be_made: can be made
+        copy_in_progress: Please wait while a working copy is made. %{additional}
+        copy_in_progress_additional:
+          queued: It is in line waiting to be processed (queued %{time}; %{totalQueued} total in line)
+          processing: It is currently being processed (started %{time})
+        copy_available: The working copy is now available. The Edit Dataset button will give you access when you are ready to edit.
+        edit_dataset_button: Edit Dataset
+        error_publishing_html: There was an error making a working copy of your dataset. Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.
+      column_tip:
+        aggregate: "(%{aggregate} on %{data_type})"
+        original_name: Original Name
+      grid_sidebar:
+        tabs:
+          edit: Edit
+          manage: Manage
+          more_views: More Views
+          filter: Filter
+          visualize: Visualize
+          export: Export
+          discuss: Discuss
+          embed: Embed
+          about: About
+        base:
+          validation:
+            different_value: A different value is required.
+            invalid_value: This value is invalid
+            invalid_values: There were problems with the specified values. Please check the errors above.
+            uid_required: This requires a 4x4 view UID
+            identifier_format: Valid API identifier characters are lower case letters, digits and underscore.  It must start with a letter and cannot have consecutive underscores.
+            file_format: %{format} file is required
+            verifying_url: Verifying URL
+            invalid_url: This URL is not valid
+            at_least: Value must be at least %{value}
+            no_greater: Value must be no greater than %{value}
+            numeric: Value must be a number
+          buttons:
+            create: Create
+            update: Update
+            apply: Apply
+            done: Done
+            cancel: Cancel
+          column_select:
+            prompt: Select a column
+            unselect: Deselect column
+            from_grid: Select a column from the grid
+          color_select:
+            prompt: Choose color
+          generic_select:
+            prompt: Select a value
+        sort_rollup:
+          title: Sort &amp; Roll-Up
+          subtitle: You can group rows together and summarize data with a roll-up; and sort one or more columns
+          validation:
+            invalid_view: This view must be valid
+            no_eligible_columns: This view has no columns to roll-up or sort
+            no_group_bys: You must group by at least one column to roll-up a column
+            no_function: Each roll-up column must have a function
+          rollup:
+            title: Roll-Ups &amp; Drill-Downs
+            add_group_button: Add Grouping Column
+            group_by: Group By
+            add_rollup_button: Add Roll-Up Column
+            roll_up: Roll-Up
+            function: Function
+            roll_up_function: Select a function
+          sort:
+            title: Sort
+            add_column_button: Add Column
+            column: Column
+            direction: Direction
+            directions:
+              ascending: Ascending
+              descending: Descending
 
 it:
   screens:

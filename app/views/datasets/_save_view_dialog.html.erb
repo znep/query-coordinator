@@ -1,38 +1,33 @@
 <%= modal :class => 'saveViewDialog' do %>
-  <h2 class="normalSave">Save view</h2>
-  <h2 class="leavingSave">Do you want to save your view?</h2>
-  <p class="leavingSave info">You have unsaved data that will be lost if
-    you leave this page. Please choose whether or not you wish to save this view
-    before you leave; or choose Cancel to return to the page.</p>
-  <p class="reloadSave info">This change requires a reload. You may Save
-    your changes to view them, or Cancel to stay on this page.</p>
-  <p class="reloadUpdate info">This change requires a reload. You may Update
-    this view or Save a new view to see your changes, or Cancel to stay
-    on this page.</p>
-  <p class="newName">Enter a name for your new view:</p>
+  <h2 class="normalSave"><%= t('screens.ds.save_dialog.titles.normal') %></h2>
+  <h2 class="leavingSave"><%= t('screens.ds.save_dialog.titles.prompt') %></h2>
+  <p class="leavingSave info"><%= t('screens.ds.save_dialog.descriptions.leaving') %></p>
+  <p class="reloadSave info"><%= t('screens.ds.save_dialog.descriptions.reload_save') %></p>
+  <p class="reloadUpdate info"><%= t('screens.ds.save_dialog.descriptions.reload_update') %></p>
+  <p class="newName"><%= t('screens.ds.save_dialog.form.new_name') %></p>
   <form class="commonForm" action="#save">
     <input type="text" class="viewName" />
   </form>
   <div class="mainError"></div>
   <ul class="actions clearfix">
     <li>
-      <a class="jqmClose button cancel" href="#cancel">Cancel</a>
+      <a class="jqmClose button cancel" href="#cancel"><%= t('core.dialogs.cancel') %></a>
     </li>
     <li>
       <a class="button dontSave jqmClose leavingSave"
-        href="#dontSave">Don't Save</a>
+        href="#dontSave"><%= t('core.dialogs.dont_save') %></a>
     </li>
     <li>
-      <a class="button save submit" href="#save">Save</a>
+      <a class="button save submit" href="#save"><%= t('core.dialogs.save') %></a>
     </li>
     <li>
       <a class="button update submit reloadUpdate"
-        href="#update">Update</a>
+        href="#update"><%= t('core.dialogs.update') %></a>
     </li>
   </ul>
 <%- end -%>
 
 <%- content_for :translations do -%>
-  <%= render_translations LocalePart.screens.save_dialog %>
+  <%= render_translations LocalePart.screens.ds.save_dialog %>
 <%- end -%>
 

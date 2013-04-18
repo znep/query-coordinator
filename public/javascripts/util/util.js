@@ -278,7 +278,7 @@ $.t = function(key, data)
         return '(no translation available)';
     }
     var result = $.deepGetStringField(blist.translations, key)
-                      .replace(/%{[^}]+}/, function(dataKey) { return data[dataKey.slice(2, -1)]; });
+                      .replace(/%{[^}]+}/g, function(dataKey) { return data[dataKey.slice(2, -1)]; });
     return key.endsWith('_html') ? result : $.htmlStrip(result);
 };
 

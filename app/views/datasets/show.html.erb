@@ -134,25 +134,25 @@
 
     <div class="sidebarOptionsContainer clearfix">
       <ul id="sidebarOptions" class="clearfix">
-        <li><a href="#Edit" title="Edit" class="edit"
-          data-paneName="edit"><span class="icon"></span>Edit</a></li>
-        <li><a href="#Manage" title="Manage" class="manage"
-          data-paneName="manage"><span class="icon"></span>Manage</a></li>
-        <li><a href="#More_Views" title="More Views" class="moreViews"
-          data-paneName="moreViews"><span class="icon"></span>More Views</a></li>
-        <li><a href="#Filter" title="Filter" class="filter"
-          data-paneName="filter"><span class="icon"></span>Filter
+        <li><a href="#Edit" title="<%= t('screens.ds.grid_sidebar.tabs.edit') %>" class="edit"
+          data-paneName="edit"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.edit') %></a></li>
+        <li><a href="#Manage" title="<%= t('screens.ds.grid_sidebar.tabs.manage') %>" class="manage"
+          data-paneName="manage"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.manage') %></a></li>
+        <li><a href="#More_Views" title="<%= t('screens.ds.grid_sidebar.tabs.more_views') %>" class="moreViews"
+          data-paneName="moreViews"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.more_views') %></a></li>
+        <li><a href="#Filter" title="<%= t('screens.ds.grid_sidebar.tabs.filter') %>" class="filter"
+          data-paneName="filter"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.filter') %>
           <span class="alertIcon"></span></a></li>
-        <li><a href="#Visualize" title="Visualize" class="visualize"
-          data-paneName="visualize"><span class="icon"></span>Visualize</a></li>
-        <li><a href="#Export" title="Export" class="export"
-          data-paneName="export"><span class="icon"></span>Export</a></li>
-        <li><a href="#Discuss" title="Discuss" class="feed"
-          data-paneName="feed"><span class="icon"></span>Discuss</a></li>
-        <li><a href="#Embed" title="Embed" class="embed"
-          data-paneName="embed"><span class="icon"></span>Embed</a></li>
-        <li><a href="#About" title="About" class="about"
-          data-paneName="about"><span class="icon"></span>About</a></li>
+        <li><a href="#Visualize" title="<%= t('screens.ds.grid_sidebar.tabs.visualize') %>" class="visualize"
+          data-paneName="visualize"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.visualize') %></a></li>
+        <li><a href="#Export" title="<%= t('screens.ds.grid_sidebar.tabs.export') %>" class="export"
+          data-paneName="export"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.export') %></a></li>
+        <li><a href="#Discuss" title="<%= t('screens.ds.grid_sidebar.tabs.discuss') %>" class="feed"
+          data-paneName="feed"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.discuss') %></a></li>
+        <li><a href="#Embed" title="<%= t('screens.ds.grid_sidebar.tabs.embed') %>" class="embed"
+          data-paneName="embed"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.embed') %></a></li>
+        <li><a href="#About" title="<%= t('screens.ds.grid_sidebar.tabs.about') %>" class="about"
+          data-paneName="about"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.about') %></a></li>
       </ul>
     </div>
   </div>
@@ -317,11 +317,11 @@
 <%= render :partial => 'fatrow_header_template' %>
 <div class="editAlertTemplate">
   <div class="editAlert">
-    <p class="editMessage"><%= t('screens.dataset_status.needs_copy') %></p>
-    <p class="copyingMessage"><%= t('screens.dataset_status.copy_in_progress') %></p>
-    <p class="doneCopyingMessage hide"><%= t('screens.dataset_status.copy_available') %></p>
-    <a href="#Unpublished" class="button editPublished"><%= t('screens.dataset_status.edit_dataset_button') %></a>
-    <p class="errorMessage hide"><%= t('screens.dataset_status.error_publishing_html') %></p>
+    <p class="editMessage"><%= t('screens.ds.dataset_status.needs_copy') %></p>
+    <p class="copyingMessage"><%= t('screens.ds.dataset_status.copy_in_progress') %></p>
+    <p class="doneCopyingMessage hide"><%= t('screens.ds.dataset_status.copy_available') %></p>
+    <a href="#Unpublished" class="button editPublished"><%= t('screens.ds.dataset_status.edit_dataset_button') %></a>
+    <p class="errorMessage hide"><%= t('screens.ds.dataset_status.error_publishing_html') %></p>
   </div>
 </div>
 <%= render :partial => 'templates/unified_filter' %>
@@ -344,6 +344,8 @@
 <%- end -%>
 
 <%= render_translations LocalePart.controls.grid %>
+<%= render_translations LocalePart.screens.ds %>
+<%= render_translations LocalePart.screens.about %>
 
 <% content_for :js_footer do %>
   <script type="text/javascript">

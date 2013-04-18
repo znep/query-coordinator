@@ -1,18 +1,18 @@
 <div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
   <p class="info">
   <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
-  <%= t 'screens.blob.download' %> 
+  <%= t 'screens.ds.blob.download' %>
   <%- elsif @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-  <%= t 'screens.blob.data_extraction' %> 
+  <%= t 'screens.ds.blob.data_extraction' %>
   <%- else -%>
-  <%= t 'screens.blob.limited_download' %> 
+  <%= t 'screens.ds.blob.limited_download' %>
   <%- end -%>
   </p>
   <div class="downloadBox">
     <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-      <h5><%= t 'screens.blob.external_link' %></h5>
+      <h5><%= t 'screens.ds.blob.external_link' %></h5>
     <%- else -%>
-      <h5><%= t 'screens.blob.download' %></h5>
+      <h5><%= t 'screens.ds.blob.download' %></h5>
     <%- end -%>
     <ul>
       <%- @view.blobs.each do |b| -%>
@@ -40,9 +40,8 @@
   @view.blobs[0]['href']) -%>
 <div class="displayArea fullHeight">
 <noscript>
-    <p>Javascript is required to run the document viewer inside your browser.</p>
-    <p>To download this file instead, <%= link_to 'click here', blob_location,
-      :target => '_blank' %>.</p>
+    <p><%= t('screens.ds.blob.js_required') %></p>
+    <p><%= t('screens.ds.blob.js_required_download.prompt_html', click_here: link_to(t('screens.ds.blob.js_required_download.click_here'), blob_location, :target => '_blank')).html_safe %></p>
 </noscript>
 <script type="text/javascript">
     $(function()

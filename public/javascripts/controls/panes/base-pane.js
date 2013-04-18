@@ -19,7 +19,7 @@
         });
         return !isEqual;
     },
-    'A different value is required.');
+    $.t('screens.ds.grid_sidebar.base.validation.different_value'));
 
     // Special validator for figuring out which inputs have resulted in
     // a disabled section appearing
@@ -28,7 +28,7 @@
         if (this.optional(element)) { return true; }
         return _.isNull(element.className.match(/\bsectionDisabled-/));
     },
-    'This value is invalid');
+    $.t('screens.ds.grid_sidebar.base.validation.invalid_value'));
 
     $.validator.addMethod('data-custom-4x4uid', function(value, element, param)
     {
@@ -52,13 +52,13 @@
         }
         return true;
     },
-    'This requires a 4x4 view UID');
+    $.t('screens.ds.grid_sidebar.base.validation.uid_required'));
 
     $.validator.addMethod('data-custom-fieldName', function(value, element, param)
     {
         return value == Column.sanitizeName(value);
     },
-    'Valid API identifier characters are lower case letters, digits and underscore.  It must start with a letter and cannot have consecutive underscores.');
+    $.t('screens.ds.grid_sidebar.base.validation.identifier_format'));
 
 
     // Special validator for validating required file types
@@ -67,7 +67,7 @@
         if (this.optional(element)) { return true; }
         return $.isBlank(param);
     },
-    $.format('{0} file is required'));
+    function(formats) { $.t('screens.ds.grid_sidebar.base.validation.file_format', { formats: formats }); });
 
     // Special validator for handling ESRI Layer URLs
     $.validator.addMethod('data-custom-validlayerurl', function(value, element, param)
@@ -99,8 +99,8 @@
     function (value, element)
     {
         return _.include(['unverified', 'verifying'], value)
-                ? 'Verifying URL'
-                : 'This URL is not valid';
+                ? $.t('screens.ds.grid_sidebar.base.validation.verifying_url')
+                : $.t('screens.ds.grid_sidebar.base.validation.invalid_url');
     });
 
     $.validator.addMethod('data-validateMin', function(value, element, param)
@@ -114,8 +114,8 @@
     function (value, element)
     {
         return !_.isNaN(parseInt(value)) ?
-            ('Value must be at least ' + $(element).attr('data-validateMin')) :
-            'Value must be a number';
+            $.t('screens.ds.grid_sidebar.base.validation.at_least', { value: $(element).attr('data-validateMin') }) :
+            $.t('screens.ds.grid_sidebar.base.validation.numeric');
     });
 
     $.validator.addMethod('data-validateMax', function(value, element, param)
@@ -129,8 +129,8 @@
     function (value, element)
     {
         return !_.isNaN(parseInt(value)) ?
-            ('Value must be no greater than ' + $(element).attr('data-validateMax')) :
-            'Value must be a number';
+            $.t('screens.ds.grid_sidebar.base.validation.no_greater', { value: $(element).attr('data-validateMax') }) :
+            $.t('screens.ds.grid_sidebar.base.validation.numeric');
     });
 
 
@@ -332,11 +332,11 @@
     $.controlPane = {
         // Pre-defined buttons for easy access
         buttons: {
-            create: {text: 'Create', value: true, isDefault: true, requiresLogin: true},
-            update: {text: 'Update', value: true, isDefault: true, requiresLogin: true},
-            apply: {text: 'Apply', value: true, isDefault: true},
-            done: {text: 'Done', value: false, isDefault: true},
-            cancel: {text: 'Cancel', value: false, isCancel: true}
+            create: {text: $.t('screens.ds.grid_sidebar.base.buttons.create'), value: true, isDefault: true, requiresLogin: true},
+            update: {text: $.t('screens.ds.grid_sidebar.base.buttons.update'), value: true, isDefault: true, requiresLogin: true},
+            apply: {text: $.t('screens.ds.grid_sidebar.base.buttons.apply'), value: true, isDefault: true},
+            done: {text: $.t('screens.ds.grid_sidebar.base.buttons.done'), value: false, isDefault: true},
+            cancel: {text: $.t('screens.ds.grid_sidebar.base.buttons.cancel'), value: false, isCancel: true}
         }
     };
 
@@ -754,8 +754,7 @@
                 // Undo our hidden lines before returning
                 resetValidation(cpObj);
                 cpObj.$dom().find('.mainError')
-                    .text('There were problems with the specified values. ' +
-                        'Please check the errors above.');
+                    .text($.t('screens.ds.grid_sidebar.base.validation.invalid_values'));
                 return false;
             }
 
@@ -1158,7 +1157,7 @@
         }
 
         var options = [{tagName: 'option', value: '',
-            contents: $.isBlank(curVal) ? 'Select a column' : 'Deselect column'}];
+            contents: $.isBlank(curVal) ? $.t('screens.ds.grid_sidebar.base.column_select.prompt') : $.t('screens.ds.grid_sidebar.base.column_select.unselect')}];
         _.each(cols, function(c)
         {
             // Handle id/tcId/fieldName
@@ -1344,9 +1343,9 @@
         var wrapper = _.last(contents);
         wrapper.contents = [];
         wrapper.contents.push({tagName: 'a', href: '#Color',
-            title: 'Choose color', name: args.item.name,
+            title: $.t('screens.ds.grid_sidebar.base.color_select.prompt'), name: args.item.name,
             'class': ['colorControl', {value: 'advanced', onlyIf: args.item.advanced}],
-            contents: 'Choose color', style: {'background-color': defColor}});
+            contents: $.t('screens.ds.grid_sidebar.base.color_select.prompt'), style: {'background-color': defColor}});
         if (args.item.showLabel === true)
         { wrapper.contents.push({tagName: 'span', 'class': 'colorControlLabel'}); }
         wrapper.contents.push($.extend(commonAttrs(cpObj, item, args.context),
@@ -1361,10 +1360,10 @@
         contents.push({tagName: 'a',
             href: '#Select:' + $.makeArray(args.item.columns.type)
                 .join('-'),
-            title: 'Select a column from the grid',
+            title: $.t('screens.ds.grid_sidebar.base.column_select.from_grid'),
             'class': 'columnSelector',
             'data-columnIdField': colIdField,
-            contents: 'Select a column from the grid'});
+            contents: $.t('screens.ds.grid_sidebar.base.column_select.from_grid')});
 
         var options = renderColumnSelectOptions(cpObj, args.item.columns,
                 colIdField, curValue || defValue);
@@ -1586,7 +1585,7 @@
         if (!_.isNull(args.item.prompt))
         {
             options.push({tagName: 'option', value: '', 'class': 'prompt',
-                contents: args.item.prompt || 'Select a value'});
+                contents: args.item.prompt || $.t('screens.ds.grid_sidebar.base.generic_select.prompt')});
         }
         if (_.isBoolean(curValue)) { curValue = curValue.toString(); }
 

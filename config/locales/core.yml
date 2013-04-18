@@ -17,6 +17,35 @@ en:
       href: external dataset
       map: map
       table: table
+    data_types:
+      text: Plain Text
+      html: Formatted Text
+      number: Number
+      money: Money
+      percent: Percent
+      date: Date & Time (with timezone)
+      calendar_date: Date & Time
+      email: Email
+      phone: Phone
+      url: Website URL
+      checkbox: Checkbox
+      flag: Flag
+      stars: Star
+      location: Location
+      geospatial: Geospatial
+      document: Document
+      photo: Photo (Image)
+      drop_down_list: Multiple Choice
+      dataset_link: Dataset Link
+      object: Object
+      list: List
+      nested_table: Nested Table
+    aggregates:
+      average: Average
+      count: Count
+      sum: Sum
+      minimum: Minimum
+      maximum: Maximum
     filters:
       formal:
         equals: equals
@@ -51,6 +80,10 @@ en:
       close: Close
       cancel: Cancel
       continue: Continue
+      save: Save
+      dont_save: "Don't Save"
+      apply: Apply
+      update: Update
     pagination:
       first_page: First Page
       previous_page: Previous Page

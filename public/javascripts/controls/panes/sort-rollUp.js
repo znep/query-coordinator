@@ -14,12 +14,11 @@
 
     $.Control.extend('pane_sortRollUp', {
         getTitle: function()
-        { return 'Sort &amp; Roll-Up'; },
+        { return $.t('screens.ds.grid_sidebar.sort_rollup.title'); },
 
         getSubtitle: function()
         {
-            return 'You can group rows together and summarize data with a roll-up; ' +
-                'and sort one or more columns';
+            return $.t('screens.ds.grid_sidebar.sort_rollup.subtitle');
         },
 
         isAvailable: function()
@@ -30,8 +29,7 @@
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid && !isEdit(this) ? 'This view must be valid' :
-                'This view has no columns to roll-up or sort';
+            return !this._view.valid && !isEdit(this) ? $.t('screens.ds.grid_sidebar.sort_rollup.validation.invalid_view') : $.t('screens.ds.grid_sidebar.sort_rollup.validation.no_eligible_columns');
         },
 
         _getCurrentData: function()
@@ -44,22 +42,22 @@
             {
                 // Group section
                 sects.push({
-                    title: 'Roll-Ups & Drill-Downs', name: 'filterGroup', type: 'selectable',
+                    title: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.title'), name: 'filterGroup', type: 'selectable',
                     fields: [
-                        {type: 'repeater', addText: 'Add Grouping Column',
+                        {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.add_group_button'),
                             name: 'query.groupBys', minimum: 0,
-                            field: {type: 'columnSelect', text: 'Group By',
+                            field: {type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_by'),
                                 name: 'columnId', notequalto: 'groupColumn',
                                 columns: {type: groupableTypes,
                                     hidden: isEdit(this) || this._view.isGrouped()}}
                         },
-                        {type: 'repeater', addText: 'Add Roll-Up Column', minimum: 0, name: 'columns',
+                        {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.add_rollup_button'), minimum: 0, name: 'columns',
                             field: {type: 'group', options: [
-                                {type: 'columnSelect', text: 'Roll-Up', name: 'id', required: true,
+                                {type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.roll_up'), name: 'id', required: true,
                                     notequalto: 'rollUpColumn', columns: {type: groupableTypes,
                                         hidden: isEdit(this) || this._view.isGrouped()}},
-                                {type: 'select', text: 'Function', required: true,
-                                    name: 'format.grouping_aggregate', prompt: 'Select a function',
+                                {type: 'select', text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.function'), required: true,
+                                    name: 'format.grouping_aggregate', prompt: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.roll_up_function'),
                                     linkedField: 'id', options: rollUpFunctions}
                             ]}
                         }
@@ -69,17 +67,17 @@
 
             // Sort section
             sects.push({
-                title: 'Sort', name: 'filterSort', type: 'selectable',
+                title: $.t('screens.ds.grid_sidebar.sort_rollup.sort.title'), name: 'filterSort', type: 'selectable',
                 fields: [
-                    {type: 'repeater', addText: 'Add Column', name: 'query.orderBys', minimum: 0,
+                    {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.sort_rollup.sort.add_column_button'), name: 'query.orderBys', minimum: 0,
                         field: {type: 'group', options: [
-                            {type: 'columnSelect', text: 'Column',
+                            {type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.column'),
                                 name: 'expression.columnId', required: true, notequalto: 'sortColumn',
                                 columns: {type: sortableTypes}},
-                            {type: 'select', text: 'Direction',
+                            {type: 'select', text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.direction'),
                                 name: 'ascending', prompt: null, options: [
-                                    {text: 'Ascending', value: 'true'},
-                                    {text: 'Descending', value: 'false'}
+                                    {text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.directions.ascending'), value: 'true'},
+                                    {text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.directions.descending'), value: 'false'}
                                 ]}
                         ]}
                     }
@@ -138,7 +136,7 @@
             if (filterView.columns.length > 0 && (filterView.query.groupBys || []).length < 1)
             {
                 cpObj.$dom().find('.mainError')
-                    .text('You must group by at least one column to roll-up a column');
+                    .text($.t('screens.ds.grid_sidebar.sort_rollup.validation.no_group_bys'));
                 cpObj._finishProcessing();
                 return;
             }
@@ -146,7 +144,7 @@
             if (_.any(filterView.columns, function(c)
                 { return $.isBlank(c.format) || $.isBlank(c.format.grouping_aggregate); }))
             {
-                cpObj.$dom().find('.mainError').text('Each roll-up column must have a function');
+                cpObj.$dom().find('.mainError').text($.t('screens.ds.grid_sidebar.sort_rollup.validation.no_function'));
                 cpObj._finishProcessing();
                 return;
             }

@@ -93,6 +93,8 @@ javascripts:
     - public/javascripts/plugins/html2markdown.js
     - public/javascripts/plugins/htmldomparser.js
     - public/javascripts/plugins/showdown.js
+    - public/javascripts/plugins/html4-defs.js
+    - public/javascripts/plugins/html-sanitizer.js
     - public/javascripts/plugins/lab.js
     - public/javascripts/plugins/waypoints.js
     - public/javascripts/util/asset-loading.js

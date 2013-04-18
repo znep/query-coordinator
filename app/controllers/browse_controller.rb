@@ -13,9 +13,11 @@ class BrowseController < ApplicationController
     })
   end
 
-  def embed
+  def embed                                                                 yeah
+    cache_user_id = @current_user ? @current_user.id : "anon"
     cache_params = {'domain' => CurrentDomain.cname,
                     'domain_updated' => CurrentDomain.default_config_updated_at,
+                    'current_user' => cache_user_id,
                     'locale' => I18n.locale,
                     'params' => Digest::MD5.hexdigest(params.sort.to_json)}
     @cache_key = cache_key("canvas-embedded-browse-#{params[:action]}", cache_params)

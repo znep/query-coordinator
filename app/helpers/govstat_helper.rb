@@ -3,7 +3,7 @@ module GovstatHelper
   def progress_indicator(metric_prefix = '')
     metric_prefix += '.' if !metric_prefix.blank?
     { type: 'Text', customClass: 'goalProgress',
-      htmlClass: 'progress-{' + metric_prefix + 'computed_values.progress ||none}',
+      htmlClass: 'progress-' + metric_prefix + 'computed_values.progress ||none}',
         html:
           '<div class="good ss-check">On Track</div>' +
           '<div class="flat ss-right">In Progress</div>' +
@@ -89,8 +89,8 @@ module GovstatHelper
                       '<p class="goalUnit">{goal.metrics.0.unit ||}</p>' +
                       '<div class="goalIcon ss-{goal.metadata.icon} {goal.metadata.icon /^.+$/hasIcon/ ||}"></div>' +
                       '<div class="goalProgress">' +
-                        '<div class="progressIcon progress-{goal.metrics.0.computed_values.progress ||none} ss-{goal.metrics.0.computed_values.progress /good/check/ /flat/right/ /poor/delete/ /bad/delete/ /none/linechartclipboard/ ||linechartclipboard}"></div>' +
-                        '<div class="progressText progress-{goal.metrics.0.computed_values.progress ||none}">{goal.metrics.0.computed_values.progress /none/Collecting Data/ /good/On Track/ /flat/In Progress/ /poor/Needs Improvement/ /bad/Needs Improvement/ ||Collecting Data}</div>' +
+                        '<div class="progressIcon progress-{goal.metrics.0.computed_values.progress ||none} ss-{goal.metrics.0.computed_values.progress /good/check/ /progressing/right/ /poor/delete/ /bad/delete/ /none/linechartclipboard/ ||linechartclipboard}"></div>' +
+                        '<div class="progressText progress-{goal.metrics.0.computed_values.progress ||none}">{goal.metrics.0.computed_values.progress /none/Collecting Data/ /good/On Track/ /progressing/In Progress/ /poor/Needs Improvement/ /bad/Needs Improvement/ ||Collecting Data}</div>' +
                       '</div></div>' +
                       '<div class="singleCaption"><div class="captionText">Details</div><div class="captionIcon ss-icon">next</div></div>' # hahahaha D:
                   }]

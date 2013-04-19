@@ -38,7 +38,9 @@
 
         var dataSeries = computedValues.values;
         var projectionSeries = computedValues.projected_values;
-        if (dataSeries.length < 3) { return false; } // stilllll nothing interesting to show.
+
+        if ($.isBlank(dataSeries)) { return false; } // stilllll nothing interesting to show.
+        if ($.isBlank(projectionSeries)) { return false; } // and again.
 
         var projection = computedValues.projected_value;
 

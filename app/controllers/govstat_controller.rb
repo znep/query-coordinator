@@ -1,4 +1,6 @@
 class GovstatController < ApplicationController
+  include ActionView::Helpers::AssetTagHelper
+  include Jammit::Helper
   include GovstatHelper
   include CustomContentHelper
   include BrowseActions
@@ -347,8 +349,7 @@ protected
         {
           type: 'Text',
           style: { display: 'none' },
-          # TODO: minify
-          html: '<!--[if lte IE 8]><script src="/javascripts/plugins/vis/r2d3.v3.js" charset="utf-8"></script><![endif]--><!--[if gte IE 9]><!--><script src="/javascripts/plugins/vis/d3.v3.js"></script><!--<![endif]-->'
+          html: '<!--[if lte IE 8]>' + include_javascripts('d3-iecompat') + '<![endif]--><!--[if gte IE 9]><!-->' + include_javascripts('d3-new') + '<!--<![endif]-->'
         }
         ]
       }
@@ -536,4 +537,9 @@ protected
     }
   end
 
+private
+  # make jammit happy
+  def controller
+    self
+  end
 end

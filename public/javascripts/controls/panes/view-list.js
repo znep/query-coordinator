@@ -120,7 +120,7 @@
                 if (remaining == 1)
                 { $moreLink.text($.t('screens.ds.grid_sidebar.view_list.pagination.last')); }
                 else
-                { $moreLink.text($.t('screens.ds.grid_sidebar.view_list.pagination.next', { count: Math.min(remaining, PAGE_SIZE })); }
+                { $moreLink.text($.t('screens.ds.grid_sidebar.view_list.pagination.next', { count: Math.min(remaining, PAGE_SIZE) })); }
             }
             else
             { $moreLink.addClass('hide'); }

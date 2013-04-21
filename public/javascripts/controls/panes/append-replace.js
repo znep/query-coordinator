@@ -5,7 +5,7 @@
         {
             return (blist.dataset.isImmutable() ?
                 $.t('screens.ds.grid_sidebar.append_replace.title.immutable') :
-                $.t('screens.ds.grid_sidebar.append_replace.title.mutable');
+                $.t('screens.ds.grid_sidebar.append_replace.title.mutable'));
         },
 
 
@@ -13,7 +13,7 @@
         {
             return (blist.dataset.isImmutable() ?
                 $.t('screens.ds.grid_sidebar.append_replace.subtitle.immutable') :
-                $.t('screens.ds.grid_sidebar.append_replace.subtitle.mutable');
+                $.t('screens.ds.grid_sidebar.append_replace.subtitle.mutable'));
         },
 
         _getSections: function()

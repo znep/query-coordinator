@@ -163,12 +163,14 @@ class CurrentDomain
     return @@current_domain[:site_properties_raw]
   end
 
-  def self.templates(version = '2b')
-    if version == 0
-      return self.properties.templates || Hashie::Mash.new
-    else
-      return self.properties['templates_v' + version] || Hashie::Mash.new
-    end
+  def self.templates(version = '2b', locale = nil)
+    return self.properties.templates if version == 0
+
+    # TODO: not sure how to safely per-request cache
+    result = self.properties['templates_v' + version]
+    result.merge!(self.properties['templates_v' + version][locale] || {}) unless locale.nil?
+
+    result
   end
 
   def self.theme(version = '2b')
@@ -179,8 +181,12 @@ class CurrentDomain
     end
   end
 
-  def self.strings
-    return self.properties.strings || Hashie::Mash.new
+  def self.strings(locale = nil)
+    # TODO: not sure how to safely per-request cache
+    result = self.properties.strings
+    result.merge!(self.properties.strings[locale] || {}) unless locale.nil?
+
+    result
   end
 
   def self.features

@@ -371,7 +371,7 @@ module ApplicationHelper
   end
 
   def render_domain_template(template_name, version = '2b')
-    render_text_template(CurrentDomain.templates(version)[template_name] || '', version)
+    render_text_template(CurrentDomain.templates(version, I18n.locale)[template_name] || '', version)
   end
 
   def render_text_template(tmpl, version = '2b')
@@ -383,7 +383,7 @@ module ApplicationHelper
         tmpl.include?(pattern)
     end
 
-    tmpl.gsub!(/\{\{string\.(\w+)\}\}/) {|match| CurrentDomain.strings[$1]}
+    tmpl.gsub!(/\{\{string\.(\w+)\}\}/){ |match| CurrentDomain.strings(I18n.locale)[$1] }
 
     tmpl.gsub!(/\{\{urls\.(\w+)\}\}/) do |match|
       (CurrentDomain.theme(version).urls[$1] || []).map do |url|

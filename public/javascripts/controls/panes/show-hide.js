@@ -16,16 +16,16 @@
         },
 
         getTitle: function()
-        { return 'Show &amp; Hide Columns'; },
+        { return $.t('screens.ds.grid_sidebar.showhide_columns.title'); },
 
         getSubtitle: function()
-        { return 'Adjust which columns are visible in this view'; },
+        { return $.t('screens.ds.grid_sidebar.showhide_columns.subtitle'); },
 
         isAvailable: function()
         { return this._view.valid; },
 
         getDisabledSubtitle: function()
-        { return 'This view must be valid'; },
+        { return $.t('screens.ds.grid_sidebar.base.validation.invalid_view'); },
 
         _getSections: function()
         {
@@ -64,7 +64,7 @@
             }
 
             return [{
-                title: 'Columns',
+                title: $.t('screens.ds.grid_sidebar.showhide_columns.columns.title'),
                 customContent: {
                     template: 'showHideBlock',
                     data: cols,
@@ -102,7 +102,7 @@
         },
 
         _getFinishButtons: function()
-        { return [{text: 'Apply', isDefault: true, value: true}, $.controlPane.buttons.cancel]; },
+        { return [{text: $.t('core.dialogs.apply'), isDefault: true, value: true}, $.controlPane.buttons.cancel]; },
 
         _finish: function(data, value, finalCallback)
         {

@@ -9,10 +9,10 @@
         },
 
         getTitle: function()
-        { return 'Calendar'; },
+        { return $.t('screens.ds.grid_sidebar.calendar.title'); },
 
         getSubtitle: function()
-        { return 'Views with dates can be displayed in a monthly calendar format'; },
+        { return $.t('screens.ds.grid_sidebar.calendar.subtitle'); },
 
         _getCurrentData: function()
         { return this._super() || this._view; },
@@ -29,11 +29,11 @@
 
         getDisabledSubtitle: function()
         {
-            return (!this._view.valid && !isEdit(this)) ? 'This view must be valid' :
+            return (!this._view.valid && !isEdit(this)) ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
                 ((!_.include(this._view.metadata.availableDisplayTypes, 'calendar') &&
                 this._view.isAltView()) ?
-                'A view may only have one visualization on it' :
-                'This view must have a date column and a text column');
+                $.t('screens.ds.grid_sidebar.calendar.validation.viz_limit') :
+                $.t('screens.ds.grid_sidebar.calendar.validation.invalid_columns'));
         },
 
         _getSections: function()
@@ -41,15 +41,15 @@
             var cpObj = this;
             return [
                 {
-                    title: 'Dates',
+                    title: $.t('screens.ds.grid_sidebar.calendar.dates.title'),
                     fields: [
-                        {text: 'Starting Date', name: 'displayFormat.startDateTableId',
+                        {text: $.t('screens.ds.grid_sidebar.calendar.dates.start'), name: 'displayFormat.startDateTableId',
                             type: 'columnSelect', required: true, notequalto: 'dateCol',
                             isTableColumn: true,
                             columns: {type: ['calendar_date', 'date'], hidden: isEdit(cpObj),
                                 defaultNames: ['start date', 'start']}
                         },
-                        {text: 'Ending Date', name: 'displayFormat.endDateTableId',
+                        {text: $.t('screens.ds.grid_sidebar.calendar.dates.end'), name: 'displayFormat.endDateTableId',
                             type: 'columnSelect', notequalto: 'dateCol', isTableColumn: true,
                             columns: {type: ['calendar_date', 'date'], hidden: isEdit(cpObj),
                                 noDefault: true, defaultNames: ['end date', 'end']}
@@ -57,9 +57,9 @@
                     ]
                 },
                 {
-                    title: 'Event Information',
+                    title: $.t('screens.ds.grid_sidebar.calendar.information.title'),
                     fields: [
-                        {text: 'Event Title', name: 'displayFormat.titleTableId',
+                        {text: $.t('screens.ds.grid_sidebar.calendar.information.event_title'), name: 'displayFormat.titleTableId',
                             type: 'columnSelect', required: true, isTableColumn: true,
                             columns: {type: ['calendar_date', 'dataset_link', 'date', 'drop_down_list',
                                 'email', 'flag', 'html', 'location',  'money', 'number', 'percent',
@@ -67,10 +67,10 @@
                                 defaultNames: ['title']}
                         },
                         {type: 'repeater', name: 'displayFormat.descriptionColumns',
-                            field: {text: 'Details', name: 'tableColumnId',
+                            field: {text: $.t('screens.ds.grid_sidebar.calendar.information.details'), name: 'tableColumnId',
                                    type: 'columnSelect', isTableColumn: true,
                                    columns: {hidden: isEdit(cpObj)}},
-                            minimum: 1, addText: 'Add Details'
+                            minimum: 1, addText: $.t('screens.ds.grid_sidebar.calendar.information.new_details_button')
                         }
                     ]
                 }

@@ -29,7 +29,7 @@
 
     <div class="mainError"></div>
 
-    <div class="required hide">Required Field</div>
+    <div class="required hide"><%= t('core.forms.required_field') %></div>
     <ul class="finishButtons actionButtons clearfix">
       <li></li>
     </ul>
@@ -42,7 +42,7 @@
       <div class="sortMenu menu"></div>
       <div class="showMenu menu"></div>
       <div class="searchWrapper">
-        <input type="text" title="Search views" class="viewSearch textPrompt" />
+        <input type="text" title="<%= t('screens.ds.grid_sidebar.view_list.search') %>" class="viewSearch textPrompt" />
         <a class="clearViewSearch remove"
           href="#clear"><span class="icon"></span></a>
       </div>
@@ -51,7 +51,7 @@
     <a href="#More" class="moreLink fullButton"></a>
   </div>
   <div class="emptyResult">
-    There are no <span class="type">results</span>
+    <%= t('screens.ds.grid_sidebar.view_list.no_results_html') %>
   </div>
 </div>
 
@@ -60,13 +60,13 @@
   <span class="viewIcon"><span class="icon"></span></span>
   <a class="nameLink"><span class="pubDate"></span><span class="name"></span></a>
   <span class="authorLine">
-    <span class="date"></span> by <span class="author"></span>
+    <%= t('screens.ds.grid_sidebar.view_list.item.author_html') %>
   </span>
   <span class="description collapsed"></span>
-  <a href="#delete" title="Delete this view" class="remove deleteViewLink">
+  <a href="#delete" title="<%= t('screens.ds.grid_sidebar.view_list.item.delete') %>" class="remove deleteViewLink">
     <span class="icon"></span>
   </a>
-  <a href="#expand" title="Click to expand" class="expand downArrow">
+  <a href="#expand" title="<%= t('screens.ds.grid_sidebar.view_list.item.expand') %>" class="expand downArrow">
     <span class="icon"></span>
   </a>
 </li>

@@ -76,10 +76,10 @@
         },
 
         getTitle: function()
-        { return 'Map'; },
+        { return $.t('screens.ds.grid_sidebar.map.title'); },
 
         getSubtitle: function()
-        { return 'Views with locations can be displayed as points on a map'; },
+        { return $.t('screens.ds.grid_sidebar.map.subtitle'); },
 
         _getCurrentData: function()
         { return this._super() || this._view; },
@@ -104,8 +104,8 @@
         getDisabledSubtitle: function()
         {
             return !this._view.valid && !isEdit(this) ?
-                'This view must be valid' :
-                'A view may only have one visualization on it';
+                $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
+                $.t('screens.ds.grid_sidebar.map.validation.viz_limit');
         },
 
         _getSections: function()
@@ -204,13 +204,13 @@
             if (this._dataType == 'socrata')
             {
                 config.push({
-                    title: 'Config for ' + title,
+                    title: $.t('screens.ds.grid_sidebar.map.layers.config', { name: title }),
                     fields: blist.configs.map.dataLayer.socrataBase({
                         prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
                         view: this._view })
                 });
                 config.push({
-                    title: 'Advanced Config for ' + title,
+                    title: $.t('screens.ds.grid_sidebar.map.layers.advanced', { name: title }),
                     name: this._view.id + '_details', type: 'selectable',
                     fields: blist.configs.map.dataLayer.socrata({
                         prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
@@ -220,7 +220,7 @@
             else
             {
                 config.push({
-                    title: 'Config for ' + title,
+                    title: $.t('screens.ds.grid_sidebar.map.layers.config', { name: title }),
                     fields: blist.configs.map.dataLayer[this._dataType]({
                         prefix: 'displayFormat.viewDefinitions.' + this._index + '.',
                         view: this._view })

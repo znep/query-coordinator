@@ -24,10 +24,10 @@
         },
 
         getTitle: function()
-        { return 'Chart'; },
+        { return $.t('screens.ds.grid_sidebar.chart.title'); },
 
         getSubtitle: function()
-        { return 'View data can be displayed with a variety of charts'; },
+        { return $.t('screens.ds.grid_sidebar.chart.subtitle'); },
 
         _getCurrentData: function()
         { return this._super() || this._view; },
@@ -42,7 +42,7 @@
         getDisabledSubtitle: function()
         {
             return !this._view.valid && !isEdit(this) ?
-                'This view must be valid' : 'A view may only have one visualization on it';
+                $.t('screens.ds.grid_sidebar.base.validation.invalid_view') : $.t('screens.ds.grid_sidebar.chart.validation.viz_limit');
         },
 
         _getSections: function()
@@ -50,10 +50,10 @@
             var cpObj = this;
             var result = [
                 {
-                    title: 'Chart Setup',
+                    title: $.t('screens.ds.grid_sidebar.chart.setup.title'),
                     fields: [
-                        {text: 'Chart Type', name: 'displayFormat.chartType',
-                            type: 'select', required: true, prompt: 'Select a chart type',
+                        {text: $.t('screens.ds.grid_sidebar.chart.setup.type'), name: 'displayFormat.chartType',
+                            type: 'select', required: true, prompt: $.t('screens.ds.grid_sidebar.chart.setup.type_prompt'),
                             options: _.sortBy(Dataset.chart.types, function(ct) { return ct.text; })
                         }
                     ]

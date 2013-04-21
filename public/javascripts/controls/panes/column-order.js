@@ -16,10 +16,10 @@
         },
 
         getTitle: function()
-        { return 'Column Order'; },
+        { return $.t('screens.ds.grid_sidebar.column_order.title'); },
 
         getSubtitle: function()
-        { return 'Change the order of your columns'; },
+        { return $.t('screens.ds.grid_sidebar.column_order.subtitle'); },
 
         isAvailable: function()
         {
@@ -29,12 +29,12 @@
         },
 
         getDisabledSubtitle: function()
-        { return 'This view must be valid and must have visible columns.'; },
+        { return $.t('screens.ds.grid_sidebar.column_order.validation.valid_columns'); },
 
         _getSections: function()
         {
             return [{
-                title: 'Columns',
+                title: $.t('screens.ds.grid_sidebar.column_order.columns.title'),
                 customContent: {
                     template: 'columnOrderBlock',
                     directive: {

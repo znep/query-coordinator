@@ -35,7 +35,7 @@
                 if ($.isBlank(paneConfigs[primary]))
                 {
                     paneConfigs[primary] = {name: primary, isParent: true,
-                        title: primary.replace(/([a-z]+)([A-Z])/g, '$1 $2').capitalize(), subPanes: {}};
+                        title: $.tNull('controls.common.sidebar.tabs.' + primary) || primary.replace(/([a-z]+)([A-Z])/g, '$1 $2').capitalize(), subPanes: {}};
                 }
                 config.name = p[1];
                 config.parent = paneConfigs[primary];

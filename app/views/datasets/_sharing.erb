@@ -5,33 +5,30 @@
       <p>
         <a class="button shareDatasetButton add" href="#share">
           <span class="icon"></span>
-          Share this <span class="datasetTypeNameUpcase">Dataset</span>
+          <%= t('screens.ds.grid_sidebar.share.share_button_html') %>
         </a>
       </p>
     <%- end -%>
-    <p class="formHeader">This <span class="datasetTypeName">dataset</span> is
-      <span class="publicOrPrivate"><%= @view.is_public? ? 'Public' : 'Private' %></span>
-      <span class="andSharedHint<%= ' hide' unless @view.is_shared? -%>">
-        and shared with the following <span class="friendsHint"></span>
-      </span>
+    <p class="formHeader">
+      <%= t('screens.ds.grid_sidebar.share.prompt_html', visibility: (@view.is_public? ? t('core.visibility.public') : t('core.visibility.private')), hide: ('hide' unless @view.is_shared?)) %>
     </p>
     <div class="sectionContent">
       <ul class="itemsList">
-        <li class="loadingShares">Loading Shares...
+        <li class="loadingShares"><%= t('screens.ds.grid_sidebar.share.loading_shares') %>
           <span class="loadingSharesIndicator"></span>
         </li>
       </ul>
       <div class="noShares">
-        <p>You are not currently sharing this <span class="datasetTypeName">dataset</span> with anyone</p>
+        <p><%= t('screens.ds.grid_sidebar.share.no_shares_html') %></p>
       </div>
     </div>
     <%- if @view.can_email? -%>
       <p class="shareNotifyArea">
         <a class="button shareNotifyLink" href="#notify">
-          Notify All of Changes
+          <%= t('screens.ds.grid_sidebar.share.notify_button') %>
         </a>
         <span class="flash notice shareNoticeSent">
-          Notification sent
+          <%= t('screens.ds.grid_sidebar.share.notify_success') %>
         </span>
       </p>
     <%- end -%>
@@ -47,7 +44,7 @@
     <span class="profileImage"></span>
     <div class="nameWrapper"><span class="name"></span></div>
     <%- if grantable -%>
-      <%= select_tag 'type', options_for_select(Share.types), :class => 'type' %>
+      <%= select_tag 'type', options_for_select(Share.types.map{ |type| [ t("core.share_types.#{type.downcase}"), type ] }), :class => 'type' %>
     <%- end -%>
     <span class="type readOnlyType"></span>
   </li>

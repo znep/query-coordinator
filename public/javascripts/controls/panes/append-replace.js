@@ -3,15 +3,17 @@
     $.Control.extend('pane_appendReplace', {
         getTitle: function()
         {
-            return (blist.dataset.isImmutable() ? '' : 'Append and ') + 'Replace';
+            return (blist.dataset.isImmutable() ?
+                $.t('screens.ds.grid_sidebar.append_replace.title.immutable') :
+                $.t('screens.ds.grid_sidebar.append_replace.title.mutable');
         },
 
 
         getSubtitle: function()
         {
-            return 'Upload a new data file whose contents will ' +
-                   (blist.dataset.isImmutable() ? '' : 'be added to or ') +
-                   'replace your current data.';
+            return (blist.dataset.isImmutable() ?
+                $.t('screens.ds.grid_sidebar.append_replace.subtitle.immutable') :
+                $.t('screens.ds.grid_sidebar.append_replace.subtitle.mutable');
         },
 
         _getSections: function()

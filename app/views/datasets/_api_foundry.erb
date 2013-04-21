@@ -1,18 +1,14 @@
 <div class="apiFoundryPaneWrapper">
   <div>
-    <p><strong>API Foundry</strong> allows you to create and
-    configure one or more open, standards-based
-    Application Programming Interfaces (API) for this dataset.</p>
+    <p><%= t('screens.ds.grid_sidebar.apis.prompt_new_html') %></p>
     <a href="/api_foundry/forge/<%= @view.id %>"
       class="createapi toolbarButton button"
-      title="Create an Application Programming Interface (API)
-      to grant programmatic access to this data.">Create an API</a>
+      title="<%= t('screens.ds.grid_sidebar.apis.create_button_prompt') %>"><%= t('screens.ds.grid_sidebar.apis.create_button') %></a>
   </div>
   <div id="existingAPIs" style="display:none">
-    <p ><strong>Existing APIs</strong> can be customized.  You can
-    control permissions, set request limits, view usage metrics, 
-    and edit the documentation.</p>
+    <p><%= t('screens.ds.grid_sidebar.apis.prompt_existing_html') %></p>
     <select id="selectAPI"></select>
-    <a href="#manage" class="manageAPI toolbarButton button" title="Manage the selected API">Manage</a>
+    <a href="#manage" class="manageAPI toolbarButton button"
+      title="<%= t('screens.ds.grid_sidebar.apis.manage_button_prompt') %>"><%= t('screens.ds.grid_sidebar.apis.manage_button') %></a>
   </div>
 </div>

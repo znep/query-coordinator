@@ -3,6 +3,9 @@ en:
     array:
       two_words_connector: " and "
       last_word_connector: ", and "
+    array_or:
+      two_words_connector: " or "
+      last_word_connector: ", or "
   core:
     and: and
     or: or
@@ -11,12 +14,23 @@ en:
       blob: non-tabular file or document
       calendar: calendar
       chart: chart
+      dataset: dataset
       filter: filtered view
       form: form
       group: grouped view
+      grouped: grouped view
       href: external dataset
       map: map
       table: table
+      working_copy: working copy
+    view_types_plural:
+      api: APIs
+      chart: Charts
+      map: Maps
+      calendar: Calendars
+      filter: Filtered Views
+      form: Forms
+      grouped: Grouped Views
     data_types:
       text: Plain Text
       html: Formatted Text
@@ -37,6 +51,7 @@ en:
       photo: Photo (Image)
       drop_down_list: Multiple Choice
       dataset_link: Dataset Link
+      link: Link Column
       object: Object
       list: List
       nested_table: Nested Table
@@ -73,6 +88,9 @@ en:
         between: is between
         is_blank: is blank
         is_not_blank: is not blank
+    visibility:
+      public: public
+      private: private
     analytics:
       visit: view
       visits: views
@@ -93,7 +111,15 @@ en:
       leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.
     forms:
+      none: None
       required_field: Required Field
+    share_types:
+      view: Viewer
+      contributor: Contributor
+      owner: Owner
+    features:
+      allow_comments: Commenting
+      cell_comments: Cell Commenting
 
 it:
   support:

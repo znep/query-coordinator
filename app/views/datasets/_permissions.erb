@@ -1,9 +1,7 @@
 <div class="datasetPermissions commonForm">
   <div class="formSection">
-    <p class="formHeader">This <span class="datasetTypeName">dataset</span> is currently
-      <span class="datasetPublicText">
-        <%= @view.is_public? ? 'Public' : 'Private' %>
-      </span>
+    <p class="formHeader">
+      <%= t('screens.ds.grid_sidebar.permissions.status_html', visibility: (@view.is_public? ? t('core.visibility.public').capitalize : t('core.visibility.private').capitalize)) %>
     </p>
     <div class="sectionContent togglePermissionsForm">
       <div class="line inputFirst">
@@ -12,7 +10,7 @@
                 <%= raw('checked="checked"') if @view.is_public? %>
                  class="toggleDatasetPermissions" value="makePublic"/>
         </div>
-        <label for="public">Public</label>
+        <label for="public"><%= t('core.visibility.public').capitalize %></label>
       </div>
       <div class="line inputFirst">
         <div class="inputWrapper">
@@ -20,19 +18,19 @@
                  <%= raw('checked="checked"') unless @view.is_public? %>
                  class="toggleDatasetPermissions" value="makePrivate" />
         </div>
-        <label for="private">Private</label>
+        <label for="private"><%= t('core.visibility.private').capitalize %></label>
       </div>
     </div>
   </div>
   <%- disabled_features = @view.disabled_features -%>
   <%- unless disabled_features.blank? || @view.is_api? -%>
     <div class="formSection disabledFeatureFlags">
-      <p class="formHeader">Additional <span class="datasetTypeName">dataset</span> features</p>
+      <p class="formHeader"><%= t('screens.ds.grid_sidebar.permissions.features_html') %></p>
       <div class="sectionContent">
         <%- disabled_features.each do |feature| -%>
           <div class="line clearfix">
             <label for="<%= feature[:key] %>">
-              <%= feature[:name] %></label>
+              <%= t('core.features.' + feature[:key]) %></label>
             <span class="inputWrapper">
               <span>
                 <input type="checkbox"

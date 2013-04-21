@@ -162,10 +162,9 @@ class View < Model
 
   def overridable_features
     of = [
-      { :key => 'allow_comments',
-        :name => 'Commenting' },
+      { :key => 'allow_comments' },
     ]
-    of << { :key => 'cell_comments', :name => 'Cell Commenting' } if is_tabular? && !is_form?
+    of << { :key => 'cell_comments' } if is_tabular? && !is_form?
     return of
   end
 

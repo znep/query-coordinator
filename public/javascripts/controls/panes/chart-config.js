@@ -11,20 +11,20 @@
     var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
 
     var axisTitles = [
-        {text: 'X-Axis Title', name: 'displayFormat.titleX',
-            type: 'text', prompt: 'Enter a title for the x-axis'},
-        {text: 'Y-Axis Title', name: 'displayFormat.titleY',
-            type: 'text', prompt: 'Enter a title for the y-axis'}
+        {text: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title'), name: 'displayFormat.titleX',
+            type: 'text', prompt: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title_prompt')},
+        {text: $.t('screens.ds.grid_sidebar.chart.axes.y_axis_title'), name: 'displayFormat.titleY',
+            type: 'text', prompt: $.t('screens.ds.grid_sidebar.chart.axes.y_axis_title_prompt')}
     ];
 
-    var legendPos = {text: 'Legend', type: 'select', prompt: 'Choose a position',
+    var legendPos = {text: $.t('screens.ds.grid_sidebar.chart.legend.position'), type: 'select', prompt: $.t('screens.ds.grid_sidebar.chart.legend.position_prompt'),
         defaultValue: 'bottom', name: 'displayFormat.legend',
         options: [
-            {text: 'Bottom', value: 'bottom'},
-            {text: 'Top', value: 'top'},
-            {text: 'Right', value: 'right'},
-            {text: 'Left', value: 'left'},
-            {text: 'None', value: 'none'}
+            {text: $.t('screens.ds.grid_sidebar.chart.legend.positions.bottom'), value: 'bottom'},
+            {text: $.t('screens.ds.grid_sidebar.chart.legend.positions.top'), value: 'top'},
+            {text: $.t('screens.ds.grid_sidebar.chart.legend.positions.right'), value: 'right'},
+            {text: $.t('screens.ds.grid_sidebar.chart.legend.positions.left'), value: 'left'},
+            {text: $.t('screens.ds.grid_sidebar.chart.legend.positions.none'), value: 'none'}
         ]
     };
 
@@ -34,7 +34,7 @@
         legendPos = { onlyIf: false };
     }
 
-    var renderOther = {text: 'Group Extra Values', type: 'checkbox', defaultValue: false,
+    var renderOther = {text: $.t('screens.ds.grid_sidebar.chart.group_extra'), type: 'checkbox', defaultValue: false,
             name: 'displayFormat.renderOther'};
 
     // this should really be a SODA feature anyway, not a display feature
@@ -46,13 +46,13 @@
     var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors,
         lineClass: 'colorCollapse'};
 
-    var showLines = {text: 'Show Lines', name: 'displayFormat.lineSize',
+    var showLines = {text: $.t('screens.ds.grid_sidebar.chart.show_lines'), name: 'displayFormat.lineSize',
         type: 'checkbox', trueValue: '2', falseValue: '0', defaultValue: '2'};
 
-    var showPoints = {text: 'Show Points', name: 'displayFormat.pointSize',
+    var showPoints = {text: $.t('screens.ds.grid_sidebar.chart.show_points'), name: 'displayFormat.pointSize',
         type: 'checkbox', trueValue: '3', falseValue: '0', defaultValue: '3'};
 
-    var pieJoinAngle = {text: 'Min. Angle', name: 'displayFormat.pieJoinAngle',
+    var pieJoinAngle = {text: $.t('screens.ds.grid_sidebar.chart.min_angle'), name: 'displayFormat.pieJoinAngle',
         type: 'slider', minimum: 0, maximum: 10, defaultValue: 1};
 
 
@@ -63,29 +63,29 @@
         advLegend = function(chart, options)
         {
             return  {
-                title: 'Legend Configuration',
+                title: $.t('screens.ds.grid_sidebar.chart.legend.title'),
                 type: 'selectable',
                 name: 'advLegend',
                 onlyIf: onlyIfForChart(chart, options, false),
                 fields: [
-                    $.extend({}, origLegendPos, { text: 'Display' }),
-                    { text: 'Describe Series', type: 'checkbox', inputFirst: true,
+                    $.extend({}, origLegendPos, { text: $.t('screens.ds.grid_sidebar.chart.legend.display') }),
+                    { text: $.t('screens.ds.grid_sidebar.chart.legend.series'), type: 'checkbox', inputFirst: true,
                       name: 'displayFormat.legendDetails.showSeries', defaultValue: true,
                       lineClass: 'advLegendCheck' },
-                    { text: 'Describe Conditional Formats', type: 'checkbox', inputFirst: true,
+                    { text: $.t('screens.ds.grid_sidebar.chart.legend.conditional_formats'), type: 'checkbox', inputFirst: true,
                       name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
                       lineClass: 'advLegendCheck' },
-                    { text: 'Describe Value Markers', type: 'checkbox', inputFirst: true,
+                    { text: $.t('screens.ds.grid_sidebar.chart.legend.value_markers'), type: 'checkbox', inputFirst: true,
                       name: 'displayFormat.legendDetails.showValueMarkers', defaultValue: false,
                       lineClass: 'advLegendCheck' },
                     /*{ text: 'Custom Entries', type: 'selectable',
                       name: 'customLegendEntries', defaultValue: false, fields: [*/
-                        { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: 'Add Custom Legend Entry',
+                        { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: $.t('screens.ds.grid_sidebar.chart.legend.new_custom_entry_button'),
                           name: 'displayFormat.legendDetails.customEntries',
                           field: {
                               type: 'group', options: [
                                   colorOption,
-                                  { text: 'Custom Label', type: 'text',
+                                  { text: $.t('screens.ds.grid_sidebar.chart.legend.custom_entry'), type: 'text',
                                     name: 'label', required: true }
                               ]
                         } }
@@ -98,70 +98,64 @@
 
     var pointSize = function(options)
     {
-        return {text: 'Point Size', name: 'displayFormat.pointSize',
+        return {text: $.t('screens.ds.grid_sidebar.chart.point_size'), name: 'displayFormat.pointSize',
             type: 'columnSelect', useFieldName: true,
             columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}};
     };
 
     var pointColor = function(options)
     {
-        return {text: 'Point Color', name: 'displayFormat.pointColor',
+        return {text: $.t('screens.ds.grid_sidebar.chart.point_color'), name: 'displayFormat.pointColor',
             type: 'columnSelect', useFieldName: true,
             columns: {type: ['number', 'money', 'percent'], hidden: options.isEdit}};
     };
 
-    var baseColor = {text: 'Base Color', name: 'displayFormat.color', type: 'color',
+    var baseColor = {text: $.t('screens.ds.grid_sidebar.chart.base_color'), name: 'displayFormat.color', type: 'color',
         defaultValue: "#042656"};
 
-    var showLine = {text: 'Draw a Line', name: 'displayFormat.showLine', type: 'checkbox' };
+    var showLine = {text: $.t('screens.ds.grid_sidebar.chart.draw_line'), name: 'displayFormat.showLine', type: 'checkbox' };
 
-    var dataLabels = {text: 'Data Labels', name: 'displayFormat.dataLabels', type: 'checkbox' };
+    var dataLabels = {text: $.t('screens.ds.grid_sidebar.chart.data_labels'), name: 'displayFormat.dataLabels', type: 'checkbox' };
 
     var conditionalFormattingWarning = {type: 'note',
-        value: 'Colors may be overridden using <a href="#Conditional Formatting" ' +
-               'class="showConditionalFormatting">Conditional Formatting</a>. Click ' +
-                '<a href="#Clear Conditional Formatting" ' +
-                'class="clearConditionalFormatting">here</a> to clear any current ' +
-                'conditional formatting rules.' };
+        value: $.t('screens.ds.grid_sidebar.chart.color_override_html') };
     var treemapRandomColorWarning = {type: 'note',
-        value: 'These colors are applied to the treemap randomly only for ' +
-               'creating visual distinctions. They do not have a specific meaning ' +
-               'by themselves.' };
+        value: $.t('screens.ds.grid_sidebar.chart.treemap_color_html') };
 
     var flyoutControls = function(options)
     {
         return {type: 'repeater', name: 'displayFormat.descriptionColumns',
-            field: {text: 'Flyout Details', name: 'fieldName', otherNames: 'tableColumnId',
+            field: {text: $.t('screens.ds.grid_sidebar.chart.flyout.title'), name: 'fieldName', otherNames: 'tableColumnId',
                    type: 'columnSelect', useFieldName: true, columns: {hidden: options.isEdit}},
-            minimum: 1, addText: 'Add Flyout Details'
+            minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.flyout.new_details_button')
         };
     };
 
     var yAxisFormatting = function(chart, options)
     {
         return {
-            title: 'Y-Axis Formatting', onlyIf: onlyIfForChart(chart, options, false),
+            title: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.title'), onlyIf: onlyIfForChart(chart, options, false),
             type: 'selectable', name: 'yAxisFormatting',
             fields: [
-                {text: 'Axis Min.', type: 'radioGroup', defaultValue: 'yAxisMinAuto', name: 'yAxisMin',
-                    options: [ { type: 'static', name: 'yAxisMinAuto', value: 'Auto' },
-                               { type: 'text', name: 'displayFormat.yAxis.min', prompt: 'Enter a number',
+                {text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.axis_min'), type: 'radioGroup', defaultValue: 'yAxisMinAuto', name: 'yAxisMin',
+                    options: [ { type: 'static', name: 'yAxisMinAuto', value: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.auto') },
+                               { type: 'text', name: 'displayFormat.yAxis.min', prompt: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.axis_prompt'),
                                     extraClass: 'number' }] },
-                {text: 'Axis Max.', type: 'radioGroup', defaultValue: 'yAxisMaxAuto', name: 'yAxisMax',
-                    options: [ { type: 'static', name: 'yAxisMaxAuto', value: 'Auto' },
-                               { type: 'text', name: 'displayFormat.yAxis.max', prompt: 'Enter a number',
+                {text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.axis_max'), type: 'radioGroup', defaultValue: 'yAxisMaxAuto', name: 'yAxisMax',
+                    options: [ { type: 'static', name: 'yAxisMaxAuto', value: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.auto') },
+                               { type: 'text', name: 'displayFormat.yAxis.max', prompt: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.axis_prompt'),
                                     extraClass: 'number' }] },
                 isNextGen ?
-                    { text: 'Precision', type: 'radioGroup', name: 'yAxisDecimalPlaces',
+                    { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.precision'), type: 'radioGroup', name: 'yAxisDecimalPlaces',
                         defaultValue: 'yAxisDecimalPlacesAuto',
                         options: [ { type: 'static', value: 'Auto', name: 'yAxisDecimalPlacesAuto' },
                                    { type: 'slider', minimum: 0, maximum: 10, defaultValue: 2,
                                      name: 'displayFormat.yAxis.formatter.decimalPlaces' } ] } :
-                    { text: 'Precision', type: 'slider', minimum: 0, maximum: 10, defaultValue: 2,
+                    { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.precision'), type: 'slider', minimum: 0, maximum: 10, defaultValue: 2,
                          name: 'displayFormat.yAxis.formatter.decimalPlaces' },
-                {text: 'Abbreviate', type: 'checkbox', defaultValue: true,
+                {text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.abbreviate'), type: 'checkbox', defaultValue: true,
                     name: 'displayFormat.yAxis.formatter.abbreviate'},
-                {text: 'No Decimals', type: 'checkbox', defaultValue: false,
+                {text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.no_decimals'), type: 'checkbox', defaultValue: false,
                     name: 'displayFormat.yAxis.noDecimals'}
             ]
         };
@@ -170,16 +164,16 @@
     var _marker = function(which, chart, options)
     {
         return {
-            title: $.capitalize(which) + ' Marker', onlyIf: onlyIfForChart(chart, options, false),
+            title: $.t('screens.ds.grid_sidebar.chart.marker.title', { axis: $.capitalize(which) }), onlyIf: onlyIfForChart(chart, options, false),
             type: 'selectable', name: which + 'Marker',
             fields: [
-                {type: 'repeater', name: 'displayFormat.' + which + 'Marker', addText: 'Add Marker', minimum: 0,
+                {type: 'repeater', name: 'displayFormat.' + which + 'Marker', addText: $.t('screens.ds.grid_sidebar.chart.marker.new_marker_button'), minimum: 0,
                     field: {type: 'group', options: [
                         {type: 'group', options: [
                             {type: 'color', name: 'color',
                                 lineClass: 'colorCollapse', defaultValue: '#000000'},
-                            {text: 'At Value', type: 'text', name: 'atValue'}]},
-                        {text: 'Caption', type: 'text', name: 'caption'}
+                            {text: $.t('screens.ds.grid_sidebar.chart.marker.value'), type: 'text', name: 'atValue'}]},
+                        {text: $.t('screens.ds.grid_sidebar.chart.marker.caption'), type: 'text', name: 'caption'}
                     ]}
                 }
             ]
@@ -190,23 +184,23 @@
     var domainMarker = function() { return { onlyIf: { func: function() { return false; } } }; };
     // var domainMarker = _marker.curry('domain');
 
-    var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: 'Show %s' };
-    var showActualValues = { type: 'checkbox', name: 'displayFormat.showActualValues', text: 'Show values' };
+    var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: $.t('screens.ds.grid_sidebar.chart.show_percent') };
+    var showActualValues = { type: 'checkbox', name: 'displayFormat.showActualValues', text: $.t('screens.ds.grid_sidebar.chart.show_values') };
 
     var errorBars = function(chart, options)
     {
-        return { title: 'Error Bars', onlyIf: onlyIfForChart(chart, options, false),
+        return { title: $.t('screens.ds.grid_sidebar.chart.error_bars.title'), onlyIf: onlyIfForChart(chart, options, false),
             type: 'selectable', name: 'errorBars',
             fields: [
-                {text: 'Low', name: 'displayFormat.plot.errorBarLow', required: true,
+                {text: $.t('screens.ds.grid_sidebar.chart.error_bars.low'), name: 'displayFormat.plot.errorBarLow', required: true,
                     type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
                     columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                 },
-                {text: 'High', name: 'displayFormat.plot.errorBarHigh', required: true,
+                {text: $.t('screens.ds.grid_sidebar.chart.error_bars.high'), name: 'displayFormat.plot.errorBarHigh', required: true,
                     type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
                     columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                 },
-                {text: 'Color', name: 'displayFormat.errorBarColor',
+                {text: $.t('screens.ds.grid_sidebar.chart.error_bars.color'), name: 'displayFormat.errorBarColor',
                     type: 'color', defaultValue: '#ff0000'}]
         };
     };
@@ -230,12 +224,13 @@
                 newTypes.push({count: (oldL - copy.length) + 1, types: t});
             }
 
-            return chartName.capitalize() + ' requires ' +
-                $.arrayToSentence(_.map(newTypes, function(rc) { return $.wordify(rc.count) + ' ' +
-                    $.arrayToSentence(_.map(rc.types, function(t)
-                    { return blist.datatypes[t].title.toLowerCase(); }),
-                        'or', ',') + ' column' + (rc.count == 1 ? '' : 's'); }),
-                'and', ';', true) + '.';
+            return $.t('screens.ds.grid_sidebar.chart.validation.required_columns', {
+                chart_type: chartName.capitalize(),
+                column_types: $.arrayToSentence(_.map(newTypes, function(rc) { return rc.count + ' ' +
+                        $.arrayToSentence(_.map(rc.types, function(t)
+                        { return blist.datatypes[t].title.toLowerCase(); }),
+                            $.t('support.array_or.two_words_connector'), ','); }),
+                    $.t('support.array.two_words_connector'), ';', true) })
         };
     };
 
@@ -248,19 +243,9 @@
             // This is the same as _maxRows in base-visualization.js
             var rowLimit = (chartConfig.displayLimit || {}).points || 500;
             if (chartConfig.renderOther)
-            { return 'Warning: ' + chartName.capitalize() + ' will aggregate ' +
-                ' distinct values (rows) past the ' + rowLimit + 'th into an ' +
-                'Other category. Try creating a Roll Up or a filter which ' +
-                'limits the number of values and then create a' +
-                (!_.isNull(chartName.match(/^[aeiou]/)) ? 'n' : '') +
-                ' ' + chartName + ' of that.'; }
+            { return $.t('screens.ds.grid_sidebar.chart.pie_other', { chart_type: chartName.capitalize(), row_limit: rowLimit }) }
             else
-            { return 'Warning: ' + chartName.capitalize() + ' will truncate ' +
-                'datasets with more than ' + rowLimit + ' distinct values ' +
-                '(rows). Try creating a Roll Up or a filter which limits the ' +
-                'number of values and then create a' +
-                (!_.isNull(chartName.match(/^[aeiou]/)) ? 'n' : '') +
-                ' ' + chartName + ' of that.'; }
+            { return $.t('screens.ds.grid_sidebar.chart.pie_truncate', { chart_type: chartName.capitalize(), row_limit: rowLimit }); }
         };
     };
 
@@ -295,7 +280,7 @@
     var basicConfig = function(chart, options, colTypes, axisName)
     {
         return {
-            title: 'Configuration', name: chart.value + 'Basic',
+            title: $.t('screens.ds.grid_sidebar.chart.configuration'), name: chart.value + 'Basic',
             onlyIf: onlyIfForChart(chart, options, true),
             fields: [
                 {text: axisName, name: 'displayFormat.fixedColumns.0',
@@ -309,11 +294,11 @@
     var basicData = function(chart, options, colTypes, axisName)
     {
         return {
-            title: 'Data Columns', name: chart.value + 'Data',
+            title: $.t('screens.ds.grid_sidebar.chart.data_columns.title'), name: chart.value + 'Data',
             onlyIf: onlyIfForChart(chart, options, false),
             fields: [
                 conditionalFormattingWarning,
-                {type: 'repeater', minimum: 1, addText: 'Add Data Column',
+                {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button'),
                     name: 'displayFormat.valueColumns',
                     field: {type: 'group', options: [
                         colorOption,
@@ -330,12 +315,12 @@
     var seriesData = function(chart, options, colTypes)
     {
         return {
-            title: 'Data Series Grouping', type: 'selectable', name: chart.value + 'SeriesData',
+            title: $.t('screens.ds.grid_sidebar.chart.series_group.title'), type: 'selectable', name: chart.value + 'SeriesData',
             onlyIf: onlyIfForChart(chart, options, false),
             fields: [
-                {type: 'repeater', minimum: 1, addText: 'Add Series Column',
+                {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.series_group.new_column_button'),
                     name: 'displayFormat.seriesColumns',
-                    field: {text: 'Group by', type: 'columnSelect',
+                    field: {text: $.t('screens.ds.grid_sidebar.chart.series_group.group_by'), type: 'columnSelect',
                             notequalto: 'valueCol', useFieldName: true,
                             name: 'fieldName', otherNames: 'tableColumnId',
                             columns: {type: colTypes, hidden: options.isEdit}}
@@ -347,7 +332,7 @@
     var basicAdv = function(chart, options, fields)
     {
         return {
-            title: 'Advanced Configuration', type: 'selectable',
+            title: $.t('screens.ds.grid_sidebar.chart.advanced'), type: 'selectable',
             name: chart.value + 'Adv', onlyIf: onlyIfForChart(chart, options, false),
             fields: fields
         };
@@ -380,23 +365,23 @@
 
     var configLine = function(options)
     {
-        var bc = basicConfig(Dataset.chart.types.line, options, Dataset.chart.textualTypes, 'Categories');
+        var bc = basicConfig(Dataset.chart.types.line, options, Dataset.chart.textualTypes, $.t('screens.ds.grid_sidebar.chart.categories'));
         bc.fields[0].required = false;
         return bc;
     };
 
     var configDonut = function(options)
     {
-        var bc = basicConfig(Dataset.chart.types.donut, options, Dataset.chart.textualTypes, 'Label');
+        var bc = basicConfig(Dataset.chart.types.donut, options, Dataset.chart.textualTypes, $.t('screens.ds.grid_sidebar.chart.label'));
         bc.fields.splice(1, 2);
         bc.fields.push({type: 'repeater', name: 'displayFormat.valueColumns',
-                field: {text: 'Values', name: 'fieldName', otherNames: 'tableColumnId',
+                field: {text: $.t('screens.ds.grid_sidebar.chart.values'), name: 'fieldName', otherNames: 'tableColumnId',
                 notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
                 columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}},
-                minimum: 1, addText: 'Add Data Column'});
+                minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button')});
 
         bc.fields.push(conditionalFormattingWarning);
-        bc.fields.push({type: 'repeater', text: 'Colors',
+        bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
                 initialRepeatCount: 5, lineClass: 'colorArray'});
 
@@ -405,14 +390,14 @@
 
     var configPie = function(options)
     {
-        var bc = basicConfig(Dataset.chart.types.pie, options, Dataset.chart.textualTypes, 'Label');
+        var bc = basicConfig(Dataset.chart.types.pie, options, Dataset.chart.textualTypes, $.t('screens.ds.grid_sidebar.chart.label'));
         bc.fields.splice(1, 2);
         bc.fields.push({text: 'Values', name: 'displayFormat.valueColumns.0.fieldName',
             otherNames: 'displayFormat.valueColumns.0.tableColumnId',
             notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
         bc.fields.push(conditionalFormattingWarning);
-        bc.fields.push({type: 'repeater', text: 'Colors',
+        bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
                 initialRepeatCount: 5, lineClass: 'colorArray'});
         return bc;
@@ -420,19 +405,19 @@
 
     var configTimeline = function(options)
     {
-        var bc = basicConfig(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, 'Date');
+        var bc = basicConfig(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, $.t('screens.ds.grid_sidebar.chart.date'));
         bc.fields = _.reject(bc.fields, function(f) { return f.name == 'displayFormat.titleX'; });
         return bc;
     };
 
     var dataTimeline = function(options)
     {
-        var bc = basicData(Dataset.chart.types.timeline, options, Dataset.chart.numericTypes, 'Value');
+        var bc = basicData(Dataset.chart.types.timeline, options, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.value'));
         bc.fields[1].field.options.push(
-                {text: 'Title', type: 'columnSelect', useFieldName: true,
+                {text: $.t('screens.ds.grid_sidebar.chart.title'), type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.0',
                     columns: {type: 'text', hidden: options.isEdit}},
-                {text: 'Annotation', type: 'columnSelect', useFieldName: true,
+                {text: $.t('screens.ds.grid_sidebar.chart.annotation'), type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.1',
                     columns: {type: 'text', hidden: options.isEdit}}
         );
@@ -451,8 +436,8 @@
             // Area chart
             case 'area':
                 result.push(
-                    basicConfig(chart, options, Dataset.chart.textualTypes, 'Categories'),
-                    basicData(chart, options, Dataset.chart.numericTypes, 'Value'),
+                    basicConfig(chart, options, Dataset.chart.textualTypes, $.t('screens.ds.grid_sidebar.chart.categories')),
+                    basicData(chart, options, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.value')),
                     seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, showLines, showPoints, flyoutControls(options)]),
                     yAxisFormatting(chart, options),
@@ -465,8 +450,8 @@
             case 'stackedbar':
             case 'bar':
                 result.push(
-                    basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
-                    basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
+                    basicConfig(chart, options, Dataset.chart.textAndDateTypes, $.t('screens.ds.grid_sidebar.chart.groups')),
+                    basicData(chart, options, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.values')),
                     seriesData(chart, options, Dataset.chart.textualTypes),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
@@ -494,8 +479,8 @@
             case 'stackedcolumn':
             case 'column':
                 result.push(
-                    basicConfig(chart, options, Dataset.chart.textAndDateTypes, 'Groups'),
-                    basicData(chart, options, Dataset.chart.numericTypes, 'Values'),
+                    basicConfig(chart, options, Dataset.chart.textAndDateTypes, $.t('screens.ds.grid_sidebar.chart.groups')),
+                    basicData(chart, options, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.values')),
                     seriesData(chart, options, Dataset.chart.textualTypes),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
@@ -520,10 +505,10 @@
             case 'line':
                 result.push(
                     configLine(options),
-                    basicData(chart, options, Dataset.chart.numericTypes, 'Value'),
+                    basicData(chart, options, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.value')),
                     seriesData(chart, options, Dataset.chart.textualTypes),
                     basicAdv(chart, options, [legendPos, showLines, showPoints, dataLabels,
-                            {text: 'Smooth Line', name: 'displayFormat.smoothLine',
+                            {text: $.t('screens.ds.grid_sidebar.chart.smooth_line'), name: 'displayFormat.smoothLine',
                             type: 'checkbox', defaultValue: false},
                          flyoutControls(options)]),
                     yAxisFormatting(chart, options),
@@ -557,25 +542,25 @@
             // Tree Map
             case 'treemap':
                 result.push(
-                    { title: 'Configuration', name: 'treemapBasic',
+                    { title: $.t('screens.ds.grid_sidebar.chart.configuration'), name: 'treemapBasic',
                     onlyIf: onlyIfForChart(chart, options, true),
                     fields: [
-                        {text: 'Names', name: 'displayFormat.fixedColumns.0', notequalto: 'valueCol',
+                        {text: $.t('screens.ds.grid_sidebar.chart.names'), name: 'displayFormat.fixedColumns.0', notequalto: 'valueCol',
                             type: 'columnSelect', required: true, useFieldName: true,
                             columns: {type: Dataset.chart.textualTypes, hidden: options.isEdit}
                         },
-                        {text: 'Values', name: 'displayFormat.valueColumns.0.fieldName',
+                        {text: $.t('screens.ds.grid_sidebar.chart.values'), name: 'displayFormat.valueColumns.0.fieldName',
                             otherNames: 'displayFormat.valueColumns.0.tableColumnId',
                             notequalto: 'valueCol', type: 'columnSelect', required: true,
                             useFieldName: true,
                             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                         }
                     ] },
-                    { title: 'Details', name: 'treemapDetails', selectable: true,
+                    { title: $.t('screens.ds.grid_sidebar.chart.details'), name: 'treemapDetails', selectable: true,
                     onlyIf: onlyIfForChart(chart, options, false),
                     fields: [
                         conditionalFormattingWarning,
-                        {type: 'repeater', text: 'Colors',
+                        {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                             field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
                             minimum: 5, lineClass: 'colorArray'},
                         treemapRandomColorWarning

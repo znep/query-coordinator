@@ -26,14 +26,10 @@
         },
 
         getTitle: function()
-        { return 'Ownership'; },
+        { return $.t('screens.ds.grid_sidebar.ownership.title'); },
 
         getSubtitle: function()
-        { return 'To transfer to another user, enter the email address or account name ' +
-                  'of the Socrata ID, then select the desired account from the dropdown ' +
-                  'list. You may also enter the user\'s profile URL if you know it. ' +
-                  'Only users with existing accounts may take ownership of datasets.';
-        },
+        { return $.t('screens.ds.grid_sidebar.ownership.subtitle'); },
 
         isAvailable: function()
         {
@@ -42,7 +38,7 @@
         },
 
         getDisabledSubtitle: function()
-        { return 'This view must be valid and saved'; },
+        { return $.t('screens.ds.grid_sidebar.ownership.validation.valid_saved'); },
 
         _getSections: function()
         {
@@ -53,14 +49,14 @@
             {
                 fieldConfig = {type: 'group', options: [
                     {type: 'radioGroup', name: 'datasetThief', defaultValue: 'currentUser', options:
-                        [{name: 'user', value: 'Me', type: 'static', isInput: true}, userInput]}
+                        [{name: 'user', value: $.t('screens.ds.grid_sidebar.ownership.me'), type: 'static', isInput: true}, userInput]}
                 ]};
             }
             else
             { fieldConfig = userInput; }
 
             return [ {
-                title: 'Transfer ownership to',
+                title: $.t('screens.ds.grid_sidebar.ownership.transfer_to'),
                 fields: [ fieldConfig ]
             } ];
         },
@@ -81,21 +77,22 @@
 
             if (!userText)
             {
-                $error.text('Please select a user.')
+                $error.text($.t('screens.ds.grid_sidebar.ownership.validation.no_user'))
                 return;
             }
 
             var userId, successText;
-            if (userText == 'Me')
+            // i claim no responsibility if this breaks.. :)
+            if (userText == $.t('screens.ds.grid_sidebar.ownership.me'))
             {
-                successText = 'You are now the owner of this ' + cpObj._view.displayName;
+                successText = $.t('screens.ds.grid_sidebar.ownership.success.me');
                 userId = blist.currentUserId;
             }
             else
             {
                 if (userText != '' && $.subKeyDefined(cpObj, '_thief.id'))
                 {
-                    successText = 'Ownership successfully transferred to ' + cpObj._thief.nameAndOrEmail();
+                    successText = $.t('screens.ds.grid_sidebar.ownership.success.user', { owner: cpObj._thief.nameAndOrEmail() });
                     userId = cpObj._thief.id;
                 }
                 else
@@ -104,12 +101,11 @@
                     if (matches)
                     {
                         userId = matches[1];
-                        successText = 'Ownership successfully transferred'
+                        successText = $.t('screens.ds.grid_sidebar.ownership.success.other');
                     }
                     else
                     {
-                        $error.text('User not recognized. Please try searching ' +
-                                    'for a user by name, email, or profile URL.');
+                        $error.text($.t('screens.ds.grid_sidebar.ownership.validation.invalid_user'));
                         return;
                     }
                 }
@@ -124,9 +120,7 @@
             },
             function error(xhr, text, error)
             {
-                var msg = (xhr.status == 404) ?  'No such user found.' :
-                    ('There was a problem changing ownership of this ' +
-                        cpObj._view.displayName + '. Please try again later.')
+                var msg = (xhr.status == 404) ? $.t('screens.ds.grid_sidebar.ownership.validation.invalid_user') : $.t('screens.ds.grid_sidebar.ownership.error');
                 $error.text(msg);
             });
         }

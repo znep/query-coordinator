@@ -2,10 +2,10 @@
  {
     $.Control.extend('pane_datasetPermissions', {
         getTitle: function()
-        { return 'Permissions'; },
+        { return $.t('screens.ds.grid_sidebar.permissions.title'); },
 
         getSubtitle: function()
-        { return 'Manage the permissions of this ' + this._view.displayName; },
+        { return $.t('screens.ds.grid_sidebar.permissions.subtitle', { view_type: this._view.displayName }); },
 
         isAvailable: function()
         {
@@ -14,7 +14,7 @@
         },
 
         getDisabledSubtitle: function()
-        { return 'This view must be valid and saved'; },
+        { return $.t('screens.ds.grid_sidebar.permissions.validation.valid_saved'); },
 
         _getSections: function()
         {
@@ -35,7 +35,7 @@
                                 $toggleForm   = $formElem.find('.togglePermissionsForm'),
                                 $toggleRadios = $toggleForm.find('.toggleDatasetPermissions');
 
-                            $publicText.text( cpObj._view.isPublic() ? 'Public' : 'Private' );
+                            $publicText.text( cpObj._view.isPublic() ? $.t('core.visibility.public').capitalize() : $.t('core.visibility.private').capitalize() );
 
                             // Only owned, parent-public datasets can be toggled
                             if (cpObj._view.hasRight('update_view') &&
@@ -47,16 +47,15 @@
                                     cpObj._view[$radio.val()](function()
                                     {
                                         $publicText.text(cpObj._view.isPublic() ?
-                                            'Public' : 'Private');
+                                            $.t('core.visibility.public').capitalize() : $.t('core.visibility.private').capitalize());
                                         $radio.socrataAlert({
-                                            message: 'Your permissions have been saved', overlay: true
+                                            message: $.t('screens.ds.grid_sidebar.permissions.success'), overlay: true
                                         });
                                     },
                                     function(request, textStatus, errorThrown)
                                     {
                                         cpObj.$dom().find('.sharingFlash').addClass('error')
-                                        .text('There was an error modifying your dataset ' +
-                                            'permissions. Please try again later');
+                                        .text($.t('screens.ds.grid_sidebar.permissions.error'));
                                     });
                                 });
 
@@ -97,14 +96,14 @@
             cpObj._view.save(function()
             {
                 cpObj._finishProcessing();
-                cpObj._showMessage('Your permissions have been saved');
+                cpObj._showMessage($.t('screens.ds.grid_sidebar.permissions.success'));
                 cpObj._hide();
                 if (_.isFunction(finalCallback)) { finalCallback(); }
             },
             function()
             {
                 cpObj.find$('.sharingFlash').addClass('error')
-                    .text('There was an error modifying your permissions. Please try again later');
+                    .text($.t('screens.ds.grid_sidebar.permissions.error'));
             });
         }
     }, {name: 'datasetPermissions', noReset: true, showFinishButtons: true}, 'controlPane');

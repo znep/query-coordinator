@@ -14,6 +14,17 @@ en:
         auth_action_phrase: rate this dataset
       stars:
         tooltip: %{number} stars
+      sidebar:
+        tabs:
+          edit: Edit
+          manage: Manage
+          moreViews: More Views
+          filter: Filter
+          visualize: Visualize
+          export: Export
+          discuss: Discuss
+          embed: Embed
+          about: About
 
 it:
   controls:

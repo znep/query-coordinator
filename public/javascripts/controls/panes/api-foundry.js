@@ -2,10 +2,10 @@
 {
     $.Control.extend('pane_api_foundry', {
         getTitle: function()
-        { return 'APIs'; },
+        { return $.t('screens.ds.grid_sidebar.apis.title'); },
 
         getSubtitle: function()
-        { return 'Create and Customize an API'; },
+        { return $.t('screens.ds.grid_sidebar.apis.subtitle'); },
 
         _getSections: function()
         {

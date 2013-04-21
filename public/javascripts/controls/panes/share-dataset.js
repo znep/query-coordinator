@@ -11,7 +11,7 @@
     var commonError = function(cpObj)
     {
         cpObj.$dom().find('.sharingFlash').addClass('error')
-            .text('There was an error modifying your shares. Please try again later');
+            .text($.t('screens.ds.grid_sidebar.share.error'));
     };
 
     var grabShares = function(cpObj, $context, grants)
@@ -83,7 +83,7 @@
                     function()
                     {
                         cpObj.$dom().find('.sharingFlash').removeClass('error').addClass('notice')
-                            .text('Your permissions have been updated');
+                            .text($.t('screens.ds.grid_sidebar.share.success'));
                         // Update the hidden type in case they update again
                         $line.attr('data-currtype', existingGrant.type);
                     }, function() { commonError(cpObj); });
@@ -122,7 +122,6 @@
         else
         {
             $span.removeClass('hide');
-            $friends.text((friends.length > 1) ? 'friends' : 'friend');
         }
     };
 
@@ -135,10 +134,10 @@
         },
 
         getTitle: function()
-        { return 'Sharing'; },
+        { return $.t('screens.ds.grid_sidebar.share.title'); },
 
         getSubtitle: function()
-        { return 'Share this ' + this._view.displayName; },
+        { return $.t('screens.ds.grid_sidebar.share.subtitle', { view_type: this._view.displayName }); },
 
         isAvailable: function()
         {
@@ -147,7 +146,7 @@
         },
 
         getDisabledSubtitle: function()
-        { return 'This view must be valid and saved'; },
+        { return $.t('screens.ds.grid_sidebar.share.validation.valid_saved'); },
 
         _getSections: function()
         {

@@ -2,10 +2,10 @@
 {
     $.Control.extend('pane_deleteDataset', {
         getTitle: function()
-        { return 'Delete'; },
+        { return $.t('screens.ds.grid_sidebar.delete.title'); },
 
         getSubtitle: function()
-        { return 'Delete this ' + this._view.displayName; },
+        { return $.t('screens.ds.grid_sidebar.delete.subtitle', { view_type: this._view.displayName }); },
 
         _getSections: function()
         {
@@ -13,17 +13,17 @@
             if (this._view.type == 'blist')
             {
                 if (this._view.isPublished())
-                    message = 'Deleting this dataset will also delete any views associated with it.';
+                    message = $.t('screens.ds.grid_sidebar.delete.warning.published');
                 else
-                    message = 'You can delete this working copy and make a new one in order to ' +
-                              'revert any changes you\'ve made.';
+                    message = $.t('screens.ds.grid_sidebar.delete.warning.working_copy');
             }
-            else if (this._view.isAPI()){
-              message = 'Deleting this API will break any applications that use this API.';
+            else if (this._view.isAPI())
+            {
+                message = $.t('screens.ds.grid_sidebar.delete.warning.api');
             }
             else if (this._view.viewType == 'tabular')
             {
-                message = 'Deleting this view will only affect other views that are based upon it.';
+                message = $.t('screens.ds.grid_sidebar.delete.warning.view');
             }
 
             return [{
@@ -35,7 +35,7 @@
         },
         
         _getFinishButtons: function()
-        { return [{ text: "Delete this " + this._view.displayName, isDefault: true, value: true },
+        { return [{ text: $.t('screens.ds.grid_sidebar.delete.delete_button', { view_type: this._view.displayName }), isDefault: true, value: true },
                   $.controlPane.buttons.cancel]; },
 
         _finish: function(data, value, finalCallback)
@@ -57,8 +57,7 @@
             };
 
             cpObj._finishProcessing();
-            prettyConfirm('This will delete the ' + cpObj._view.displayName + ' permanently. ' +
-                'There is no undo! Are you sure you wish to proceed?',
+            prettyConfirm($.t('screens.ds.grid_sidebar.delete.confirm', { view_type: this._view.displayName }),
                 function() { cpObj._view.remove(onRemoved); })
         }
 

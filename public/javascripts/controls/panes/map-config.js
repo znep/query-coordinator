@@ -4,25 +4,25 @@
     var mapTypes = _.map(_.pluck(Dataset.map.backgroundLayers, 'name'),
             function(x) { return { text: x, value: x }; });
     var regionTypes = [
-        {text: 'Countries', value: 'countries'},
-        {text: 'US States', value: 'state'},
-        {text: 'Canada Provinces', value: 'canada_provinces'},
-        {text: 'US Counties in', value: 'counties'}
+        {text: $.t('screens.ds.grid_sidebar.map.regions.countries'), value: 'countries'},
+        {text: $.t('screens.ds.grid_sidebar.map.regions.state'), value: 'state'},
+        {text: $.t('screens.ds.grid_sidebar.map.regions.canada_provinces'), value: 'canada_provinces'},
+        {text: $.t('screens.ds.grid_sidebar.map.regions.counties'), value: 'counties'}
     ];
     var plotStyles = function(mapType)
     {
         // Yes, the names are kinda inaccurate, but eh. We live with it.
         var plotStyles = [
-            {text: 'Point Map', value: 'point'},
-            {text: 'Boundary Map', value: 'heatmap'},
-            {text: 'Heat Map', value: 'rastermap'}
+            {text: $.t('screens.ds.grid_sidebar.map.plots.point'), value: 'point'},
+            {text: $.t('screens.ds.grid_sidebar.map.plots.heatmap'), value: 'heatmap'},
+            {text: $.t('screens.ds.grid_sidebar.map.plots.rastermap'), value: 'rastermap'}
         ];
         return plotStyles;
     };
 
     // proxy/verify_layer_url is unavailable when not logged in.
     if (blist.currentUser)
-    { mapTypes = mapTypes.concat({text: 'Custom Layer', value: 'custom', data: {type: null}}); }
+    { mapTypes = mapTypes.concat({text: $.t('screens.ds.grid_sidebar.map.layers.custom'), value: 'custom', data: {type: null}}); }
 
     var normalizeLayerUrl = function($control, event)
     { $control.attr('data-custom-validlayerurl', 'unverified'); };
@@ -97,14 +97,13 @@
         return function()
         {
             var cpObj = this;
-            var msg = 'A location column is required to create a map.';
+            var msg = $.t('screens.ds.grid_sidebar.map.validation.location_column');
             var hasHiddenLoc = !$.isBlank(cpObj._view) && _.any(cpObj._view.realColumns, function(c)
                 { return c.dataTypeName == 'location' && c.hidden; });
             if (options.useOtherSidebars && hasHiddenLoc && ($.isBlank(blist.sidebarHidden.manage) ||
                 !blist.sidebarHidden.manage.showHide))
             {
-                msg += ' You can <a href="#showLoc" title="Show a location column">' +
-                    'show a hidden location column</a>.';
+                msg += ' ' + $.t('screens.ds.grid_sidebar.map.validation.hidden_location_html');
             }
             return msg;
         };
@@ -146,11 +145,11 @@
             $field.empty();
             $field.data('dsName', value);
             $field.append('<span>' + $.htmlEscape(value) + (uneditable ? '' :
-                        ' (<span class="edit">edit</span>)') + '</span>');
+                        ' (<span class="edit">' + $.t('screens.ds.grid_sidebar.map.layers.edit') + '</span>)') + '</span>');
             $field.find('span.edit').click(openSelectDataset)
                 .css({ cursor: 'pointer', color: '#0000ff' });
             if (invalid)
-            { $field.append('<span class="error">This dataset has no location column.</span>')
+            { $field.append('<span class="error">' + $.t('screens.ds.grid_sidebar.map.validation.location_column') + '</span>')
                 .find('span.error').css({ marginLeft: 0, paddingLeft: 0 }); }
         };
 
@@ -255,11 +254,11 @@
         var config = [];
         if (!options.canvas)
         { config.push({
-                title: 'Dataset Summary',
+                title: $.t('screens.ds.grid_sidebar.map.layers.title'),
                 fields: [
-                    { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: 'Add Data',
+                    { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: $.t('screens.ds.grid_sidebar.map.layers.new_data_button'),
                         field: {type: 'group', options: [
-                            { text: 'Dataset', type: 'custom', name: 'uid', required: true,
+                            { text: $.t('screens.ds.grid_sidebar.map.layers.dataset'), type: 'custom', name: 'uid', required: true,
                               defaultValue: options.view.id, repeaterValue: '',
                               editorCallbacks: {
                                 create: datasetCreate,
@@ -271,61 +270,59 @@
                 ]
             }); }
         config.push({
-                title: 'Base Maps',
+                title: $.t('screens.ds.grid_sidebar.map.base_layers.title'),
                 fields: [
-                    { type: 'note', value: 'Select from a list of map services ' +
-                        'and configure how it will appear.' },
-                    { type: 'repeater', name: 'displayFormat.bkgdLayers', addText: 'Add Base Map',
+                    { type: 'note', value: $.t('screens.ds.grid_sidebar.map.base_layers.subtitle') },
+                    { type: 'repeater', name: 'displayFormat.bkgdLayers', addText: $.t('screens.ds.grid_sidebar.map.base_layers.new_base_map_button'),
                         minimum: 0, field: {type: 'group', options: [
-                        {text: 'Layer', type: 'select', name: 'layerName',
-                            required: true, prompt: 'Select a layer',
+                        {text: $.t('screens.ds.grid_sidebar.map.base_layers.layer'), type: 'select', name: 'layerName',
+                            required: true, prompt: $.t('screens.ds.grid_sidebar.map.base_layers.layer_prompt'),
                             options: mapTypes, defaultValue: 'World Street Map (ESRI)'
                         },
-                        {text: 'Layer URL', type: 'text', name: 'custom_url',
+                        {text: $.t('screens.ds.grid_sidebar.map.base_layers.layer_url'), type: 'text', name: 'custom_url',
                             onlyIf: {field: 'layerName', value: 'custom'}, defaultValue: 'https://',
                             required: true, data: { 'validlayerurl': 'unverified' },
                             change: normalizeLayerUrl },
-                        {text: 'Alias', type: 'text', name: 'alias'},
-                        {text: 'Opacity', type: 'slider', name: 'opacity',
+                        {text: $.t('screens.ds.grid_sidebar.map.base_layers.alias'), type: 'text', name: 'alias'},
+                        {text: $.t('screens.ds.grid_sidebar.map.base_layers.opacity'), type: 'slider', name: 'opacity',
                             defaultValue: 1, minimum: 0, maximum: 1}
                     ]}
                     }
                 ]
             },
             {
-                title: 'Advanced Configuration',
+                title: $.t('screens.ds.grid_sidebar.map.advanced.title'),
                 fields: [
-                    { type: 'note', value: 'Select \'Exclusive\' if only one base map should ' +
-                        'display at a time.' },
-                    { text: 'Exclusive', name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
-                    { text: 'Use Legend', type: 'checkbox', name: 'displayFormat.distinctLegend',
+                    { type: 'note', value: $.t('screens.ds.grid_sidebar.map.advanced.subtitle') },
+                    { text: $.t('screens.ds.grid_sidebar.map.advanced.exclusive'), name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
+                    { text: $.t('screens.ds.grid_sidebar.map.advanced.use_legend'), type: 'checkbox', name: 'displayFormat.distinctLegend',
                         onlyIf: { func: function() { return !blist.nextgen.legend; } }
                     }
                 ]
             },
             {
-                title: 'Legend Configuration', type: 'selectable',
+                title: $.t('screens.ds.grid_sidebar.map.legend.title'), type: 'selectable',
                 onlyIf: { func: function() { return blist.nextgen.legend; } },
                 fields: [
-                    {text: 'Legend', type: 'select', prompt: 'Choose a position',
+                    {text: $.t('screens.ds.grid_sidebar.map.legend.position'), type: 'select', prompt: $.t('screens.ds.grid_sidebar.map.legend.position_prompt'),
                         defaultValue: 'bottom', name: 'displayFormat.legendDetails.position',
                         options: [
-                            {text: 'Top Right', value: 'topRight'},
-                            {text: 'Bottom Left', value: 'bottomLeft'},
-                            {text: 'None', value: 'none'}
+                            {text: $.t('screens.ds.grid_sidebar.map.legend.positions.top_right'), value: 'topRight'},
+                            {text: $.t('screens.ds.grid_sidebar.map.legend.positions.bottom_left'), value: 'bottomLeft'},
+                            {text: $.t('screens.ds.grid_sidebar.map.legend.positions.none'), value: 'none'}
                         ]
                     },
-                    { text: 'Describe Conditional Formats', type: 'checkbox', inputFirst: true,
+                    { text: $.t('screens.ds.grid_sidebar.map.legend.conditional_formats'), type: 'checkbox', inputFirst: true,
                       name: 'displayFormat.legendDetails.showConditional', defaultValue: true,
                       lineClass: 'advLegendCheck' },
                     { type: 'repeater', minimum: 0, initialRepeatCount: 0,
-                      addText: 'Add Custom Legend Entry',
+                      addText: $.t('screens.ds.grid_sidebar.map.legend.custom_entry'),
                       name: 'displayFormat.legendDetails.customEntries',
                       field: {
                           type: 'group', options: [
                               { type: 'color', name: 'color', defaultValue: '#ffffff',
                                 lineClass: 'colorCollapse' },
-                              { text: 'Label', type: 'text',
+                              { text: $.t('screens.ds.grid_sidebar.map.legend.entry_label'), type: 'text',
                                 name: 'label', required: true }
                           ]
                     } }
@@ -340,18 +337,18 @@
         var prefix = options.prefix || 'displayFormat.';
         var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
         return [
-            {text: 'Alias', type: 'text', name: prefix+'alias',
-                prompt: 'Describe the dataset' },
-            {text: 'Plot Style', type: 'select', name: prefix+'plotStyle',
-                options: plotStyles, required: true, prompt: 'Select a plot style' },
-            {text: 'Location', name: prefix+'plot.locationId',
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.alias'), type: 'text', name: prefix+'alias',
+                prompt: $.t('screens.ds.grid_sidebar.map.data_layer.alias_prompt') },
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.plot_style'), type: 'select', name: prefix+'plotStyle',
+                options: plotStyles, required: true, prompt: $.t('screens.ds.grid_sidebar.map.data_layer.plot_style') },
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.location'), name: prefix+'plot.locationId',
                 type: 'columnSelect', isTableColumn: true, required: true,
                 columns: {type: ['location'], hidden: options.isEdit }},
-            {text: 'Region', name: prefix+'heatmap.type', type: 'select', onlyIf: boundaryOnly,
-                required: !customHeatmap(options), prompt: 'Select a region level',
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.region'), name: prefix+'heatmap.type', type: 'select', onlyIf: boundaryOnly,
+                required: !customHeatmap(options), prompt: $.t('screens.ds.grid_sidebar.map.data_layer.region_level_prompt'),
                 options: regionTypes},
             {text: '', name: prefix+'heatmap.region', type: 'select', onlyIf: boundaryOnly,
-                required: true, prompt: 'Select a region', linkedField: prefix+'heatmap.type',
+                required: true, prompt: $.t('screens.ds.grid_sidebar.map.data_layer.region_prompt'), linkedField: prefix+'heatmap.type',
                 options: heatmapRegionOptions}
         ];
     };
@@ -363,32 +360,32 @@
         var flyouts = {field: prefix+'plotStyle', value: 'rastermap', negate: true };
         var boundaryOnly = {field: prefix+'plotStyle', value: 'heatmap' };
         return [
-            {text: 'Base Color', name: prefix+'color', type: 'color', onlyIf: pointOnly,
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.base_color'), name: prefix+'color', type: 'color', onlyIf: pointOnly,
                 defaultValue: "#0000ff"},
 
-            {type: 'note', value: 'Point Customization', onlyIf: pointOnly},
-            {text: 'Point Size', name: prefix+'plot.sizeValueId', onlyIf: pointOnly,
+            {type: 'note', value: $.t('screens.ds.grid_sidebar.map.data_layer.point'), onlyIf: pointOnly},
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.point_size'), name: prefix+'plot.sizeValueId', onlyIf: pointOnly,
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
-            {text: 'Point Color', name: prefix+'plot.colorValueId', onlyIf: pointOnly,
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.point_color'), name: prefix+'plot.colorValueId', onlyIf: pointOnly,
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
-            {text: 'Icon', name: prefix+'plot.iconId', onlyIf: pointOnly,
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.icon'), name: prefix+'plot.iconId', onlyIf: pointOnly,
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['photo', 'photo_obsolete', 'url'],
                     noDefault: true, hidden: options.isEdit}},
 
-            {type: 'color', text: 'Color (Low)', defaultValue: ['#c9c9c9'], onlyIf: boundaryOnly,
+            {type: 'color', text: $.t('screens.ds.grid_sidebar.map.data_layer.color_low'), defaultValue: ['#c9c9c9'], onlyIf: boundaryOnly,
                 name: prefix+'heatmap.colors.low'},
-            {type: 'color', defaultValue: ['#00ff00'], text: 'Color (High)', onlyIf: boundaryOnly,
+            {type: 'color', defaultValue: ['#00ff00'], text: $.t('screens.ds.grid_sidebar.map.data_layer.color_high'), onlyIf: boundaryOnly,
                 name: prefix+'heatmap.colors.high'},
 
-            {text: 'Quantity', name: prefix+'plot.quantityId', onlyIf: quantity,
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.quantity'), name: prefix+'plot.quantityId', onlyIf: quantity,
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['number', 'money', 'percent'], noDefault: true, hidden: options.isEdit}},
 
-            {type: 'note', value: 'Flyout Configuration', onlyIf: flyouts},
-            {text: 'Title', name: prefix+'plot.titleId', onlyIf: flyouts,
+            {type: 'note', value: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.title'), onlyIf: flyouts},
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.title_column'), name: prefix+'plot.titleId', onlyIf: flyouts,
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['text', 'location', 'html', 'url',
                     'drop_down_list', 'dataset_link', 'email',
@@ -396,13 +393,13 @@
                     'data', 'calendar_date', 'number'], hidden: options.isEdit,
                     defaultNames: ['title']}},
             {type: 'repeater', name: prefix+'plot.descriptionColumns', onlyIf: flyouts,
-                field: {text: 'Flyout Details', name: 'tableColumnId',
+                field: {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.details'), name: 'tableColumnId',
                        type: 'columnSelect', isTableColumn: true,
                        columns: {hidden: options.isEdit}},
-                minimum: 1, addText: 'Add Flyout Details'},
-            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel', onlyIf: flyouts},
+                minimum: 1, addText: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.new_details_button')},
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.labels'), type: 'checkbox', name: prefix+'flyoutsNoLabel', onlyIf: flyouts},
 
-            {text: 'Opacity', type: 'slider', name: prefix+'opacity',
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.opacity'), type: 'slider', name: prefix+'opacity',
                 defaultValue: 1, minimum: 0, maximum: 1}
         ];
     };
@@ -411,20 +408,20 @@
         var prefix = options.prefix || 'displayFormat.';
 
         return [
-            {text: 'Alias', type: 'text', name: prefix+'alias',
-                prompt: 'Describe the dataset' },
-            {text: 'Opacity', type: 'slider', name: prefix+'opacity',
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.alias'), type: 'text', name: prefix+'alias',
+                prompt: $.t('screens.ds.grid_sidebar.map.data_layer.alias_prompt') },
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.opacity'), type: 'slider', name: prefix+'opacity',
                 defaultValue: 1, minimum: 0, maximum: 1},
-            { type: 'note', value: 'Mondara layers are currently not customizable further.' }
+            { type: 'note', value: $.t('screens.ds.grid_sidebar.map.data_layer.mondara_note') }
         ];
     };
     mapConfigNS.dataLayer.esri = function(options)
     {
         var prefix = options.prefix;
         return [
-            {text: 'Alias', type: 'text', name: prefix+'alias',
-                prompt: 'Describe the dataset' },
-            {text: 'Title', name: prefix+'plot.titleId',
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.alias'), type: 'text', name: prefix+'alias',
+                prompt: $.t('screens.ds.grid_sidebar.map.data_layer.alias_prompt') },
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.title'), name: prefix+'plot.titleId',
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['text', 'location', 'html', 'url',
                     'drop_down_list', 'dataset_link', 'email',
@@ -432,13 +429,13 @@
                     'data', 'calendar_date', 'number'], hidden: options.isEdit,
                     defaultNames: ['title']}},
             {type: 'repeater', name: prefix+'plot.descriptionColumns',
-                field: {text: 'Flyout Details', name: 'tableColumnId',
+                field: {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.details'), name: 'tableColumnId',
                        type: 'columnSelect', isTableColumn: true,
                        columns: {hidden: options.isEdit}},
-                minimum: 1, addText: 'Add Flyout Details'},
-            {text: 'w/o Labels?', type: 'checkbox', name: prefix+'flyoutsNoLabel'},
+                minimum: 1, addText: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.new_details_button')},
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.labels'), type: 'checkbox', name: prefix+'flyoutsNoLabel'},
 
-            {text: 'Opacity', type: 'slider', name: prefix+'opacity',
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.opacity'), type: 'slider', name: prefix+'opacity',
                 defaultValue: 1, minimum: 0, maximum: 1}
         ];
     };

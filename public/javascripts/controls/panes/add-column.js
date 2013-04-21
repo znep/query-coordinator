@@ -15,7 +15,7 @@
 
         if ($.isBlank((data || {}).parentId) && this._view.hasDatasetLinkColumn())
         {
-            types.push({value: 'link', text: 'Link Column'});
+            types.push({value: 'link', text: $.t('core.data_types.link')});
         }
 
         return types;
@@ -30,38 +30,39 @@
         },
 
         getTitle: function()
-        { return 'Add Column'; },
+        { return $.t('screens.ds.grid_sidebar.add_column.title'); },
 
         getSubtitle: function()
-        { return 'Add a new column to your dataset'; },
+        { return $.t('screens.ds.grid_sidebar.add_column.subtitle'); },
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid ? 'This view must be valid' :
-                'You cannot add a column to a view';
+            return !this._view.valid ?
+                $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
+                $.t('screens.ds.grid_sidebar.add_column.validation.view_column');
         },
 
         _getSections: function()
         {
             return [
                 {
-                    title: 'Basic Information',
+                    title: $.t('screens.ds.grid_sidebar.add_column.basic.title'),
                     fields: [
-                        {text: 'Name', type: 'text', required: true, name: 'name', prompt: 'Enter a name'},
-                        {text: 'Description', type: 'textarea',
-                        name: 'description', prompt: 'Enter a description'}
+                        {text: $.t('screens.ds.grid_sidebar.add_column.basic.name'), type: 'text', required: true, name: 'name', prompt: $.t('screens.ds.grid_sidebar.add_column.basic.name_prompt')},
+                        {text: $.t('screens.ds.grid_sidebar.add_column.basic.description'), type: 'textarea',
+                        name: 'description', prompt: $.t('screens.ds.grid_sidebar.add_column.basic.description_prompt')}
                     ]
                 },
                 {
-                    title: 'Column Type',
+                    title: $.t('screens.ds.grid_sidebar.add_column.type.title'),
                     fields: [
-                        {text: 'Data Type', type: 'select', required: true, prompt: 'Select a data type',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.type.type'), type: 'select', required: true, prompt: $.t('screens.ds.grid_sidebar.add_column.type.type_prompt'),
                         name: 'dataTypeName', options: getTypes},
 
-                        {text: 'Key', type: 'columnSelect', name: 'format.linkedKey', required: true,
+                        {text: $.t('screens.ds.grid_sidebar.add_column.type.key'), type: 'columnSelect', name: 'format.linkedKey', required: true,
                             onlyIf: {field: 'dataTypeName', value: 'link'},
                             columns: {type: 'dataset_link', hidden: false}},
-                        {text: 'Source', type: 'select', name: 'format.linkedSource', required: true,
+                        {text: $.t('screens.ds.grid_sidebar.add_column.type.source'), type: 'select', name: 'format.linkedSource', required: true,
                             onlyIf: {field: 'dataTypeName', value: 'link'}, linkedField: 'format.linkedKey',
                             options:
                                 // wrap in function to set up the "this" var
@@ -78,31 +79,31 @@
 
                 // Multiple choice value chooser
                 {
-                    title: 'Multiple Choice Options',
+                    title: $.t('screens.ds.grid_sidebar.add_column.multiple_choice.title'),
                     onlyIf: {field: 'dataTypeName', value: 'drop_down_list'},
                     fields: [
-                        {type: 'repeater', addText: 'Add Option',
+                        {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.add_column.multiple_choice.add_option_button'),
                         name: 'dropDownList.values',  minimum: 1,
-                        field: {type: 'text', text: 'Option', name: 'description'}}
+                        field: {type: 'text', text: $.t('screens.ds.grid_sidebar.add_column.multiple_choice.option'), name: 'description'}}
                     ]
                 },
 
                 // Dataset Link
                 {
-                    title: 'Linked Dataset',
+                    title: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.title'),
                     onlyIf: {field: 'dataTypeName', value: 'dataset_link'},
                     fields: [
-                        {text: 'Dataset', type: 'text', name: 'format.linkedDataset',
-                            data: { '4x4uid': 'unverified' }, prompt: 'Dataset URL or 4x4 UID'
+                        {text: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.dataset'), type: 'text', name: 'format.linkedDataset',
+                            data: { '4x4uid': 'unverified' }, prompt: ''
                         },
-                        {text: 'Key Column', type: 'select', name: 'format.keyColumn',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.key'), type: 'select', name: 'format.keyColumn',
                             linkedField: 'format.linkedDataset',
                             // allow selected value to be determined until options are loaded.
                             // this is done by setting default value to '_selected' and
                             // adding _selected attrib = true in the desired option.
                             defaultValue: '_selected',
                             options: Dataset.getLinkedDatasetOptionsDefault},
-                        {text: 'Label Column', type: 'select', name: 'format.labelColumn',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.label'), type: 'select', name: 'format.labelColumn',
                             linkedField: 'format.linkedDataset',
                             options: Dataset.getLinkedDatasetOptionsDefault}
                     ]
@@ -110,16 +111,16 @@
 
                 // Location convert
                 {
-                    title: 'Use Existing Latitude & Longitude',
+                    title: $.t('screens.ds.grid_sidebar.add_column.convert_latlong.title'),
                     onlyIf: {field: 'dataTypeName', value: 'location'},
                     type: 'selectable',
                     name: 'latLongSection',
                     fields: [
-                        {text: 'Latitude', type: 'columnSelect', name: 'convert.latitudeColumn',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.convert_latlong.latitude'), type: 'columnSelect', name: 'convert.latitudeColumn',
                             required: true, notequalto: 'convertNumber',
                             columns: {type: 'number', hidden: false, defaultNames: ['latitude', 'lat', 'y']}
                         },
-                        {text: 'Longitude', type: 'columnSelect', name: 'convert.longitudeColumn',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.convert_latlong.longitude'), type: 'columnSelect', name: 'convert.longitudeColumn',
                             required: true, notequalto: 'convertNumber',
                             columns: {type: 'number', hidden: false,
                                 defaultNames: ['longitude', 'long', 'x']}
@@ -127,49 +128,49 @@
                     ]
                 },
                 {
-                    title: 'Use Existing Address Columns',
+                    title: $.t('screens.ds.grid_sidebar.add_column.convert_address.title'),
                     onlyIf: {field: 'dataTypeName', value: 'location'},
                     type: 'selectable',
                     name: 'addressSection',
                     fields: [
-                        {text: 'Street', type: 'radioGroup', name: 'convertStreetGroup',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.convert_address.street'), type: 'radioGroup', name: 'convertStreetGroup',
                             defaultValue: 'streetNone',
                             options: [
-                                {value: 'None', name: 'streetNone', type: 'static'},
+                                {value: $.t('core.forms.none'), name: 'streetNone', type: 'static'},
                                 {type: 'columnSelect', name: 'convert.addressColumn',
                                     notequalto: 'convertText',
                                     columns: {type: 'text', hidden: false,
                                         defaultNames: ['street address', 'street', 'address']} }
                             ]
                         },
-                        {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.convert_address.city'), type: 'radioGroup', name: 'convertCityGroup',
                             defaultValue: 'cityNone',
                             options: [
-                                {value: 'None', type: 'static', name: 'cityNone'},
+                                {value: $.t('core.forms.none'), type: 'static', name: 'cityNone'},
                                 {type: 'columnSelect', name: 'convert.cityColumn', notequalto: 'convertText',
                                     columns: {type: 'text', hidden: false, defaultNames: ['city']} },
-                                {type: 'text', name: 'convert.cityValue', prompt: 'Enter a city'}
+                                {type: 'text', name: 'convert.cityValue', prompt: $.t('screens.ds.grid_sidebar.add_column.convert_address.city_prompt')}
                             ]
                         },
-                        {text: 'State', type: 'radioGroup', name: 'convertStateGroup',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.convert_address.state'), type: 'radioGroup', name: 'convertStateGroup',
                             defaultValue: 'stateNone',
                             options: [
-                                {value: 'None', type: 'static', name: 'stateNone'},
+                                {value: $.t('core.forms.none'), type: 'static', name: 'stateNone'},
                                 {type: 'columnSelect', name: 'convert.stateColumn',
                                     notequalto: 'convertText',
                                     columns: {type: 'text', hidden: false, defaultNames: ['state']} },
-                                {type: 'text', name: 'convert.stateValue', prompt: 'Enter a state'}
+                                {type: 'text', name: 'convert.stateValue', prompt: $.t('screens.ds.grid_sidebar.add_column.convert_address.state_prompt')}
                             ]
                         },
-                        {text: 'Zip Code', type: 'radioGroup', name: 'convertZipGroup',
+                        {text: $.t('screens.ds.grid_sidebar.add_column.convert_address.zip_code'), type: 'radioGroup', name: 'convertZipGroup',
                             defaultValue: 'zipNone',
                             options: [
-                                {value: 'None', type: 'static', name: 'zipNone'},
+                                {value: $.t('core.forms.none'), type: 'static', name: 'zipNone'},
                                 {type: 'columnSelect', name: 'convert.zipColumn',
                                     notequalto: 'convertText convertNumber',
                                     columns: {type: ['text', 'number'], hidden: false,
                                         defaultNames: ['zip code', 'postal code', 'zip']} },
-                                {type: 'text', name: 'convert.zipValue', prompt: 'Enter a zip code'}
+                                {type: 'text', name: 'convert.zipValue', prompt: $.t('screens.ds.grid_sidebar.add_column.convert_address.zip_code_prompt')}
                             ]
                         }
                     ]
@@ -189,7 +190,7 @@
 
             if (column.dataTypeName == 'nested_table')
             {
-                column.childColumns = [{dataTypeName: 'text', name: 'Untitled', width: 100}];
+                column.childColumns = [{dataTypeName: 'text', name: $.t('screens.ds.grid_sidebar.add_column.nested_table.default_column_name'), width: 100}];
             }
             else if (column.dataTypeName == 'location' && !$.isBlank(column.convert))
             {
@@ -233,7 +234,7 @@
     var columnCreated = function(cpObj, newCol, finalCallback)
     {
         cpObj._finishProcessing();
-        cpObj._showMessage('Your column has been added');
+        cpObj._showMessage($.t('screens.ds.grid_sidebar.add_column.success'));
         cpObj._hide();
         if (_.isFunction(finalCallback)) { finalCallback(); }
     };

@@ -126,6 +126,7 @@ en:
           about: About
         base:
           validation:
+            invalid_view: This view must be valid
             different_value: A different value is required.
             invalid_value: This value is invalid
             invalid_values: There were problems with the specified values. Please check the errors above.
@@ -151,11 +152,159 @@ en:
             prompt: Choose color
           generic_select:
             prompt: Select a value
+        append_replace:
+          title:
+            immutable: Replace
+            mutable: Append and Replace
+          subtitle:
+            immutable: Upload a new data file whose contents will replace your current data.
+            mutable: Upload a new data file whose contents will be added to or replace your current data.
+          wizard_button:
+            immutable: Launch the Replace wizard
+            mutable: Launch the Append and Replace wizard
+        add_column:
+          title: Add Column
+          subtitle: Add a new column to your dataset
+          success: Your column has been added
+          validation:
+            view_column: You cannot add a column to a view
+          basic:
+            title: Basic Information
+            name: Name
+            name_prompt: Enter a Name
+            description: Description
+            description_prompt: Enter a Description
+          type:
+            title: Column Type
+            type: Data Type
+            type_prompt: Select a data type
+            key: Key
+            source: Source
+          multiple_choice:
+            title: Multiple Choice Options
+            add_option_button: Add Option
+            option: Option
+          linked_dataset:
+            title: Linked Dataset
+            dataset: Dataset
+            dataset_prompt: Dataset URL or 4x4 UID
+            key: Key Column
+            label: Label Column
+          convert_latlong:
+            title: Use Existing Latitude & Longitude
+            latitude: Latitude
+            longitude: Longitude
+          convert_address:
+            title: Use Existing Address Columns
+            street: Street
+            city: City
+            city_prompt: Enter a City
+            state: State
+            state_prompt: Enter a State
+            zip_code: Zip Code
+            zip_code_prompt: Enter a Zip Code
+          nested_table:
+            default_column_name: Untitled
+        ownership:
+          title: Ownership
+          subtitle: "To transfer to another user, enter the email address or account name of the Socrata ID, then select the desired account from the dropdown list. You may also enter the user's profile URL if you know it. Only users with existing accounts may take ownership of datasets."
+          validation:
+            valid_saved: This view must be valid and saved
+            no_user: Please select a user.
+            invalid_user: User not recognized. Please try searching for a user by name, email, or profile URL.
+          transfer_to: Transfer ownership to
+          # (eg transfer to me)
+          me: Me
+          success:
+            me: You are now the owner
+            user: Ownership successfully transferred to %{owner}
+            other: Ownership successfully transferred
+          error: There was a problem changing the ownership. Please try again later.
+        delete:
+          title: Delete
+          subtitle: Delete this %{view_type}
+          warning:
+            published: Deleting this dataset will also delete any views associated with it.
+            working_copy: "You can delete this working copy and make a new one in order to revert any changes you've made."
+            api: Deleting this API will break any applications that use this API.
+            view: Deleting this view will only affect other views that are based upon it.
+          delete_button: Delete this %{view_type}
+          confirm: This will delete the %{view_type} permanently. There is no undo! Are you sure you wish to proceed?
+        share:
+          title: Sharing
+          subtitle: Share this %{view_type}
+          validation:
+            valid_saved: This view must be valid and saved
+          prompt_html: "This <span class=\"datasetTypeName\">dataset</span> is <span class=\"publicOrPrivate\">%{visibility}</span> <span class=\"andSharedHint %{hide}\">and shared with:</span>"
+          loading_shares: Loading Shares...
+          no_shares_html: "You are not currently sharing this <span class=\"datasetTypeName\">dataset</span> with anyone"
+          share_button_html: Share this <span class="datasetTypeNameUpcase">Dataset</span>
+          error: There was an error modifying your shares. Please try again later
+          success: Your permissions have been updated
+          notify_button: Notify All of Changes
+          notify_success: Notification sent
+        apis:
+          title: APIs
+          subtitle: Create and Customize an API
+          prompt_new_html: <strong>API Foundry</strong> allows you to create and configure one or more open, standards-based Application Programming Interfaces (API) for this dataset.
+          create_button: Create an API
+          create_button_prompt: Create an Application Programming Interface (API) to grant programmatic access to this data.
+          prompt_existing_html: <strong>Existing APIs</strong> can be customized. You can control permissions, set request limits, view usage metrics, and edit the documentation.
+          manage_button: Manage
+          manage_button_prompt: Manage the selected API
+        permissions:
+          title: Permissions
+          subtitle: Manage the permissions of this %{view_type}
+          validation:
+            valid_saved: This view must be valid and saved
+          status_html: This <span class="datasetTypeName">dataset</span> is currently <span class="datasetPublicText">%{visibility}</span>
+          features_html: Additional <span class="datasetTypeName">dataset</span> features
+          success: Your permissions have been saved
+          error: There was an error modifying your dataset permissions. Please try again later
+        showhide_columns:
+          title: Show &amp; Hide Columns
+          subtitle: Adjust which columns are visible in this view
+          columns:
+            title: Columns
+        column_order:
+          title: Column Order
+          subtitle: Change the order of your columns
+          prompt_html: Drag the columns into the order you would like, and then press <strong>apply</strong> to apply the new order.
+          validation:
+            valid_columns: This view must be valid and must have visible columns.
+          columns:
+            title: Columns
+        view_list:
+          pagination:
+            last: See last view
+            next: See next %{count} views
+          sort_title: Sort by
+          sort:
+            popularity: Popularity
+            dateDescending: Most Recent
+            dateAsceding: Oldest to Newest
+            alphaAscending: A-Z
+          filter_title: Show only
+          filter:
+            all: All Views
+          delete_confirm: Are you sure you want to delete %{name}?
+          delete_snapshot_confirm: Are you sure you want to delete %{name} (snapshotted %{date})?
+          search: Search views
+          no_results_html: There are no <span class="type">results</span>
+          item:
+            author_html: <span class="date"></span> by <span class="author"></span>
+            delete: Delete this view
+            expand: Click to expand
+          views:
+            title: Views
+            subtitle: See existing filters, maps, charts and other views on this dataset
+          snapshots:
+            title: Dataset Snapshots
+            subtitle: View previously published versions of this data
         sort_rollup:
           title: Sort &amp; Roll-Up
           subtitle: You can group rows together and summarize data with a roll-up; and sort one or more columns
           validation:
-            invalid_view: This view must be valid
             no_eligible_columns: This view has no columns to roll-up or sort
             no_group_bys: You must group by at least one column to roll-up a column
             no_function: Each roll-up column must have a function
@@ -175,6 +324,242 @@ en:
             directions:
               ascending: Ascending
               descending: Descending
+        conditional_formatting:
+          title: Conditional Formatting
+          subtitle: Conditional Formatting allows you to change the background color of rows based on custom criteria. Each row will be assigned the color of the first matching condition.
+          validation:
+            no_columns: This view has no columns to filter
+            no_icons: Icons are only relevant for map view
+          format_html: Use<br />this color<br />or this icon
+          change_icon: change
+          conditions:
+            title: Conditions
+            new_rule_button: Add New Rule
+            description: Description
+            description_prompt: Describe this match
+            when_title: When
+            when:
+              all: All Conditions
+              any: Any Condition
+              always: Always
+            new_condition_button: Add Condition
+            item:
+              title: "Condition:"
+              subcolumn: Select a sub-column
+              operator: Select a comparison
+        calendar:
+          title: Calendar
+          subtitle: Views with dates can be displayed in a monthly calendar format
+          validation:
+            viz_limit: A view may only have one visualization on it
+            invalid_columns: This view must have a date column and a text column
+          dates:
+            title: Dates
+            start: Starting Date
+            end: Ending Date
+          information:
+            title: Event Information
+            event_title: Event Title
+            details: Details
+            new_details_button: Add Details
+        map:
+          title: Map
+          subtitle: Views with locations can be displayed as points on a map
+          validation:
+            viz_limit: A view may only have one visualization on it
+            location_column: A location column is required to create a map.
+            hidden_location_html: You can <a href="#showLoc" title="Show a location column">show a hidden location column</a>.
+          layers:
+            title: Dataset Summary
+            config: Config for %{name}
+            dataset: Dataset
+            advanced: Advanced Config for %{name}
+            custom: Custom Layer
+            edit: edit
+            new_data_button: Add Data
+          data_layer:
+            alias: Alias
+            alias_prompt: Describe the dataset
+            plot_style: Plot Style
+            plot_style_prompt: Select a plot style
+            location: Location
+            region: Region
+            region_level_prompt: Select a region level
+            region_prompt: Select a region
+            base_color: Base Color
+            point: Point Customization
+            point_size: Point Size
+            point_color: Point Color
+            icon: Icon
+            color_low: Color (Low)
+            color_high: Color (High)
+            quantity: Quantity
+            opacity: Opacity
+            mondara_note: Mondara layers are currently not customizable further.
+            flyout:
+              title: Flyout Configuration
+              title_column: Title
+              details: Flyout Details
+              new_details_button: Add Flyout Details
+              labels: w/o Labels?
+              opacity: Opacity
+          base_layers:
+            title: Base Maps
+            subtitle: Select from a list of map services and configure how it will appear.
+            new_base_map_button: Add Base Map
+            layer: Layer
+            layer_prompt: Select a layer
+            layer_url: Layer URL
+            alias: Alias
+            opacity: Opacity
+            library:
+              roadmap: Roadmap
+              satellite: Satellite
+              terrain: Terrain
+              aerial: Aerial
+              esri_world_street_map: World Street Map (ESRI)
+              esri_world_street_map_alias: World Street Map
+              esri_satellite: Satellite Imagery (ESRI)
+              esri_us_topo: Detailed USA Topographic Map (ESRI)
+              esri_us_topo_alias: USA Topographic Map
+              esri_world_topo: Annotated World Topographic Map (ESRI)
+              esri_world_topo_alias: World Topographic Map
+              esri_natural_earth: Natural Earth Map (ESRI)
+              esri_natural_earth_alias: Natural Earth Map
+              google_roadmap: Google Roadmap
+              google_roadmap_alias: Google
+              google_satellite: Google Satellite
+              google_terrain: Google Terrain
+              bing_roadmap: Bing Roadmap
+              bing_roadmap_alias: Bing
+          regions:
+            countries: Countries
+            state: US States
+            canada_provinces: Canada Provinces
+            counties: US Counties in
+          plots:
+            point: Point Map
+            heatmap: Boundary Map
+            rastermap: Heat Map
+          advanced:
+            title: Advanced Configuration
+            subtitle: Select 'Exclusive' if only one base map should display at a time.
+            exclusive: Exclusive
+            use_legend: Use Legend
+          legend:
+            title: Legend Configuration
+            position: Legend
+            position_prompt: Choose a position
+            positions:
+              top_right: Top Right
+              bottom_left: Bottom Left
+              none: None
+            conditional_formats: Describe Conditional Formats
+            custom_entry: Add Custom Legend Entry
+            entry_label: Label
+        chart:
+          title: Chart
+          subtitle: View data can be displayed with a variety of charts
+          validation:
+            viz_limit: A view may only have one visualization on it
+            required_columns: %{chart_type} requires %{column_types} columns
+          setup:
+            title: Chart Setup
+            type: Chart Type
+            type_prompt: Select a chart type
+          axes:
+            x_axis_title: X-Axis Title
+            x_axis_title_prompt: Enter a title for the x-axis
+            y_axis_title: Y-Axis Title
+            y_axis_title_prompt: Enter a title for the y-axis
+          legend:
+            title: Legend Configuration
+            display: Display
+            position: Legend
+            position_prompt: Choose a position
+            positions:
+              bottom: Bottom
+              top: Top
+              right: Right
+              left: Left
+              none: None
+            series: Describe Series
+            conditional_formats: Describe Conditional Formats
+            value_markers: Describe Value Markers
+            new_custom_entry_button: Add Custom Legend Entry
+            custom_entry: Custom Label
+          point_size: Point Size
+          point_color: Point Color
+          base_color: Base Color
+          draw_line: Draw a Line
+          data_labels: Data Labels
+          color_override_html: Colors may be overridden using <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
+          treemap_color_html: These colors are applied to the treemap randomly only for creating visual distinctions. They do not have a specific meaning by themselves.
+          group_extra: Group Extra Values
+          show_lines: Show Lines
+          show_points: Show Points
+          min_angle: Min. Angle
+          flyout:
+            title: Flyout Details
+            new_details_button: Add Flyout Details
+          y_axis_formatting:
+            title: Y-Axis Formatting
+            axis_min: Axis Min.
+            axis_max: Axis Max.
+            axis_prompt: Enter a number
+            precision: Precision
+            abbreviate: Abbreviate
+            no_decimals: No Decimals
+            auto: Auto
+          marker:
+            title: %{axis} Marker
+            new_marker_button: Add Marker
+            value: At Value
+            caption: Caption
+          show_percent: Show %s
+          show_values: Show values
+          error_bars:
+            title: Error Bars
+            low: Low
+            high: High
+            color: Color
+          pie_other: "Warning: %{chart_type} will aggregate distinct values (rows) past the %{row_limit}th into an Other category. Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that."
+          pie_truncate: "Warning: %{chart_type} will truncate datasets with more than %{row_limit} distinct values (rows). Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that."
+          configuration: Configuration
+          advanced: Advanced Configuration
+          data_columns:
+            title: Data Columns
+            new_data_column_button: Add Data Column
+          series_group:
+            title: Data Series Grouping
+            new_column_button: Add Series Column
+            group_by: Group by
+          categories: Categories
+          names: Names
+          label: Label
+          date: Date
+          value: Value
+          values: Values
+          groups: Groups
+          colors: Colors
+          title: Title
+          annotation: Annotation
+          smooth_line: Smooth Line
+          details: Details
+          chart_type:
+            area: Area Chart
+            bar: Bar Chart
+            bubble: Bubble Chart
+            column: Column Chart
+            donut: Donut Chart
+            line: Line Chart
+            pie: Pie Chart
+            timeline: Time Line
+            treemap: Tree Map
+            stackedcolumn: Stacked Column Chart
+            stackedbar: Stacked Bar Chart
+
+
 
 it:
   screens:

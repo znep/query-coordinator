@@ -117,7 +117,7 @@
     };
 
     var conditionIndicator = {
-        text: 'Use<br />this color<br />or this icon',
+        text: $.t('screens.ds.grid_sidebar.conditional_formatting.format_html'),
         type: 'radioGroup', name: 'conditionIndicator', defaultValue: 'color',
         options: [
             {type: 'color', required: true, name: 'color', defaultValue: '#bbffbb'},
@@ -132,10 +132,10 @@
                     var disabled = $field.parents(".radioLine").children(':disabled').length > 0;
                     if (disabled)
                     {
-                        $field.append('Icons are only relevant for map view');
+                        $field.append($.t('screens.ds.grid_sidebar.conditional_formatting.validation.no_icons'));
                         return true;
                     }
-                    $field.append('(<a>change</a>)<input type="hidden" name="' +
+                    $field.append('(<a>' + $.t('screens.ds.grid_sidebar.conditional_formatting.change_icon') + '</a>)<input type="hidden" name="' +
                         $field.attr('name') + '" value="' + curValue + '" />');
                     $field.find('a').data('ajaxupload', new AjaxUpload($field, {
                         action: '/api/assets', autoSubmit: true, responseType: 'json',
@@ -208,13 +208,11 @@
         },
 
         getTitle: function()
-        { return 'Conditional Formatting'; },
+        { return $.t('screens.ds.grid_sidebar.conditional_formatting.title'); },
 
         getSubtitle: function()
         {
-            return 'Conditional Formatting allows you to change the background ' +
-                'color of rows based on custom criteria. Each row will be assigned ' +
-                'the color of the first matching condition.';
+            return $.t('screens.ds.grid_sidebar.conditional_formatting.subtitle');
         },
 
         isAvailable: function()
@@ -222,8 +220,8 @@
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid ? 'This view must be valid' :
-                'This view has no columns to filter';
+            return !this._view.valid ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
+                $.t('screens.ds.grid_sidebar.conditional_formatting.validation.no_columns');
         },
 
         _getCurrentData: function()
@@ -259,33 +257,33 @@
         _getSections: function()
         {
             return [{
-                title: 'Conditions',
+                title: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.title'),
                 fields: [
-                    {type: 'repeater', minimum: 0, addText: 'Add New Rule',
+                    {type: 'repeater', minimum: 0, addText: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.new_rule_button'),
                     name: 'metadata.conditionalFormatting',
                     field: {type: 'group', extraClass: 'conditionGroup', options: [
-                        {type: 'text', text: 'Description', name: 'description',
-                         prompt: 'Describe this match'},
+                        {type: 'text', text: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.description'), name: 'description',
+                         prompt: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.description_prompt')},
                         conditionIndicator,
-                        {type: 'select', text: 'When', prompt: null,
-                            options: [{text: 'All Conditions', value: 'and'},
-                                {text: 'Any Condition', value: 'or'},
-                                {text: 'Always', value: 'always'}],
+                        {type: 'select', text: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.when_title'), prompt: null,
+                            options: [{text: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.when.all'), value: 'and'},
+                                {text: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.when.any'), value: 'or'},
+                                {text: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.when.always'), value: 'always'}],
                             name: 'condition.operator'},
-                        {type: 'repeater', minimum: 0, addText: 'Add Condition',
+                        {type: 'repeater', minimum: 0, addText: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.new_condition_button'),
                             name: 'condition.children',
                             onlyIf: {field: 'condition.operator', value: 'always', negate: true},
                             field: {type: 'group', options: [
-                            {type: 'columnSelect', text: 'Condition:', required: true,
+                            {type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.item.title'), required: true,
                                 name: 'tableColumnId', isTableColumn: true,
                                 columns: {type: filterableTypes, hidden: false}},
                             {type: 'select', name: 'subColumn',
-                                linkedField: 'tableColumnId', prompt: 'Select a sub-column',
+                                linkedField: 'tableColumnId', prompt: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.item.subcolumn'),
                                 onlyIf: {field: 'tableColumnId', func: subColumnShown},
                                 options: subColumns},
                             {type: 'select', name: 'operator', required: true,
                                 linkedField: ['tableColumnId', 'subColumn'],
-                                prompt: 'Select a comparison', options: filterOperators},
+                                prompt: $.t('screens.ds.grid_sidebar.conditional_formatting.conditions.item.operator'), options: filterOperators},
                             {type: 'custom', required: true, name: 'value',
                                 linkedField: ['tableColumnId', 'subColumn', 'operator'],
                                 editorCallbacks: {create: filterEditor,
@@ -299,7 +297,7 @@
         },
 
         _getFinishButtons: function()
-        { return [ {text: 'Apply', isDefault: true, value: true}, $.controlPane.buttons.cancel ]; },
+        { return [ {text: $.t('core.dialogs.apply'), isDefault: true, value: true}, $.controlPane.buttons.cancel ]; },
 
         _finish: function(data, value, finalCallback)
         {

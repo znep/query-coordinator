@@ -29,7 +29,7 @@
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid && !isEdit(this) ? $.t('screens.ds.grid_sidebar.sort_rollup.validation.invalid_view') : $.t('screens.ds.grid_sidebar.sort_rollup.validation.no_eligible_columns');
+            return !this._view.valid && !isEdit(this) ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') : $.t('screens.ds.grid_sidebar.sort_rollup.validation.no_eligible_columns');
         },
 
         _getCurrentData: function()

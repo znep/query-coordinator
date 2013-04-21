@@ -270,12 +270,16 @@ $.live = function(selector, type, fn)
 // TODO: not integrated with component locale stuffing
 $.t = function(key, data)
 {
+    return $.tNull(key, data) || '(no translation available)';
+};
+$.tNull = function(key, data)
+{
     if (blist.locale == 'nyan') { return 'nyan'; }
 
     if (!$.subKeyDefined(blist.translations, key))
     {
         console.error('Could not find translation for key ' + key);
-        return '(no translation available)';
+        return null;
     }
     var result = $.deepGetStringField(blist.translations, key)
                       .replace(/%{[^}]+}/g, function(dataKey) { return data[dataKey.slice(2, -1)]; });

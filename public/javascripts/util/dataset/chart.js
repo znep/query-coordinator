@@ -19,39 +19,39 @@ Dataset.chart.dateTypes = ['calendar_date', 'date'];
 Dataset.chart.textAndDateTypes = Dataset.chart.textualTypes.concat(Dataset.chart.dateTypes);
 
 Dataset.chart.types = {
-    area: {value: 'area', text: 'Area Chart',
+    area: {value: 'area', text: $.t('screens.ds.grid_sidebar.chart.chart_type.area'),
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 300 }},
-    bar: {value: 'bar', text: 'Bar Chart',
+    bar: {value: 'bar', text: $.t('screens.ds.grid_sidebar.chart.chart_type.bar'),
         requiredColumns: [Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes],
         displayLimit: { points: 40 }},
-    bubble: {value: 'bubble', text: 'Bubble Chart',
+    bubble: {value: 'bubble', text: $.t('screens.ds.grid_sidebar.chart.chart_type.bubble'),
         requiredColumns: [Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 300 }},
-    column: {value: 'column', text: 'Column Chart',
+    column: {value: 'column', text: $.t('screens.ds.grid_sidebar.chart.chart_type.column'),
         requiredColumns: [Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 100 }},
-    donut: {value: 'donut', text: 'Donut Chart',
+    donut: {value: 'donut', text: $.t('screens.ds.grid_sidebar.chart.chart_type.donut'),
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
         displayLimit: { points: 30 }, renderOther: true},
-    line: {value: 'line', text: 'Line Chart',
+    line: {value: 'line', text: $.t('screens.ds.grid_sidebar.chart.chart_type.line'),
         requiredColumns: [Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 300 }},
-    pie: {value: 'pie', text: 'Pie Chart',
+    pie: {value: 'pie', text: $.t('screens.ds.grid_sidebar.chart.chart_type.pie'),
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
         displayLimit: { points: 30 }, renderOther: true},
-    timeline: {value: 'timeline', text: 'Time Line',
+    timeline: {value: 'timeline', text: $.t('screens.ds.grid_sidebar.chart.chart_type.timeline'),
         requiredColumns: [Dataset.chart.dateTypes, Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 300 }},
-    treemap: {value: 'treemap', text: 'Tree Map',
+    treemap: {value: 'treemap', text: $.t('screens.ds.grid_sidebar.chart.chart_type.treemap'),
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
         displayLimit: { points: 100 }, renderOther: true}
 };
 
 Dataset.chart.types.stackedcolumn = $.extend({}, Dataset.chart.types.column,
-        { value: 'stackedcolumn', text: 'Stacked Column Chart' });
+        { value: 'stackedcolumn', text: $.t('screens.ds.grid_sidebar.chart.chart_type.stackedcolumn') });
 Dataset.chart.types.stackedbar = $.extend({}, Dataset.chart.types.column,
-        { value: 'stackedbar', text: 'Stacked Bar Chart' });
+        { value: 'stackedbar', text: $.t('screens.ds.grid_sidebar.chart.chart_type.stackedbar') });
 
 
 Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)

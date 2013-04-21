@@ -3020,23 +3020,10 @@ function getDisplayName(ds)
     switch (ds.type)
     {
         case 'blist':
-            retType = ds.isPublished() ? 'dataset' : 'working copy';
+            retType = ds.isPublished() ? $.t('core.view_types.dataset') : $.t('core.view_types.working_copy');
             break;
-        case 'filter':
-            retType = 'filtered view';
-            break;
-        case 'grouped':
-            retType = 'grouped view';
-            break;
-        case 'blob':
-            retType = 'embedded file';
-            break;
-        case 'href':
-            retType = 'linked dataset';
-            break;
-        case 'api':
-            retType = 'API';
-            break;
+        default:
+            retType = $.t('core.view_types.' + ds.type);
     }
 
     return retType;

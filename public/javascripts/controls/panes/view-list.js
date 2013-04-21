@@ -118,9 +118,9 @@
             {
                 $moreLink.removeClass('hide');
                 if (remaining == 1)
-                { $moreLink.text('See last view'); }
+                { $moreLink.text($.t('screens.ds.grid_sidebar.view_list.pagination.last')); }
                 else
-                { $moreLink.text('See next ' + Math.min(remaining, PAGE_SIZE) + ' views'); }
+                { $moreLink.text($.t('screens.ds.grid_sidebar.view_list.pagination.next', { count: Math.min(remaining, PAGE_SIZE })); }
             }
             else
             { $moreLink.addClass('hide'); }
@@ -141,17 +141,17 @@
         cpObj._renderBlock(true);
     };
 
-    var defaultSorts = [{ text: 'Popularity', name: 'popularity' },
-        { text: 'Most Recent', name: 'dateDescending' },
-        { text: 'Oldest to Newest', name: 'dateAscending' },
-        { text: 'A-Z', name: 'alphaAscending' }];
+    var defaultSorts = [{ text: $.t('screens.ds.grid_sidebar.view_list.sort.popularity'), name: 'popularity' },
+        { text: $.t('screens.ds.grid_sidebar.view_list.sort.dateDescending'), name: 'dateDescending' },
+        { text: $.t('screens.ds.grid_sidebar.view_list.sort.dateAscending'), name: 'dateAscending' },
+        { text: $.t('screens.ds.grid_sidebar.view_list.sort.alphaAscending'), name: 'alphaAscending' }];
 
     var setupSection = function(cpObj)
     {
         var $sortMenu = cpObj._$section.find('.sortMenu');
         $sortMenu.menu({
-            menuButtonContents: 'Sort by',
-            menuButtonTitle: 'Sort by',
+            menuButtonContents: $.t('screens.ds.grid_sidebar.view_list.sort_title'),
+            menuButtonTitle: $.t('screens.ds.grid_sidebar.view_list.sort_title'),
             contents: _.map(defaultSorts, function(s)
                 { return {text: s.text, href: '#' + s.name,
                     className: 'none' + (s.name == cpObj._currentSort ? ' checked' : '')}; })
@@ -174,29 +174,29 @@
         if (!$showMenu.hasClass('hide'))
         {
             $showMenu.menu({
-                menuButtonContents: 'Show only',
-                menuButtonTitle: 'Show only',
+                menuButtonContents: $.t('screens.ds.grid_sidebar.view_list.filter_title'),
+                menuButtonTitle: $.t('screens.ds.grid_sidebar.view_list.filter_title'),
                 contents: [
-                    { text: 'All Views', className: 'none checked', href: '#all' },
-                    { text: 'Charts', className: 'typeChart', href: '#chart',
+                    { text: $.t('screens.ds.grid_sidebar.view_list.filter.all'), className: 'none checked', href: '#all' },
+                    { text: $.t('core.view_types_plural.chart'), className: 'typeChart', href: '#chart',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'chart'; })},
-                    { text: 'Maps', className: 'typeMap', href: '#map',
+                    { text: $.t('core.view_types_plural.map'), className: 'typeMap', href: '#map',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'map'; })},
-                    { text: 'Calendars', className: 'typeCalendar', href: '#calendar',
+                    { text: $.t('core.view_types_plural.calendar'), className: 'typeCalendar', href: '#calendar',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'calendar'; })},
-                    { text: 'Filtered Views', className: 'typeFilter', href: '#filter',
+                    { text: $.t('core.view_types_plural.filter'), className: 'typeFilter', href: '#filter',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'filter'; })},
-                    { text: 'APIs', className: 'typeApi', href: '#api',
+                    { text: $.t('core.view_types_plural.api'), className: 'typeApi', href: '#api',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'api'; })},
-                    { text: 'Grouped Views', className: 'typeGrouped', href: '#grouped',
+                    { text: $.t('core.view_types_plural.grouped'), className: 'typeGrouped', href: '#grouped',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'grouped'; })},
-                    { text: 'Forms', className: 'typeForm', href: '#form',
+                    { text: $.t('core.view_types_plural.form'), className: 'typeForm', href: '#form',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'form'; })}
                 ]
@@ -280,7 +280,7 @@
 
                 var $li = $(this).closest('li');
                 var v = $li.data('view');
-                if (confirm('Are you sure you want to delete ' + v.name + '?'))
+                if (confirm($.t('screens.ds.grid_sidebar.view_list.delete_confirm', { name: v.name })))
                 {
                     var redirDS;
                     var deletedCallback = function()
@@ -307,10 +307,10 @@
         },
 
         getTitle: function()
-        { return 'Views'; },
+        { return $.t('screens.ds.grid_sidebar.view_list.viwes.title'); },
 
         getSubtitle: function()
-        { return 'See existing filters, maps, charts and other views on this dataset'; },
+        { return $.t('screens.ds.grid_sidebar.view_list.viwes.subtitle'); },
 
         _getSections: function()
         {
@@ -360,8 +360,7 @@
 
                 var $li = $(this).closest('li');
                 var v = $li.data('view');
-                if (confirm('Are you sure you want to delete ' + v.name + ' (snapshotted ' +
-                            new Date((v.publicationDate || 0) * 1000).format('F d, Y g:ia') + ')?'))
+                if (confirm($.t('screens.ds.grid_sidebar.view_list.delete_snapshot_confirm', { name: v.name, date: new Date((v.publicationDate || 0) * 1000).format('F d, Y g:ia') })))
                 {
                     var redirDS;
                     var deletedCallback = function()
@@ -383,10 +382,10 @@
         },
 
         getTitle: function()
-        { return 'Dataset Snapshots'; },
+        { return $.t('screens.ds.grid_sidebar.view_list.snapshots.title'); },
 
         getSubtitle: function()
-        { return 'View previously published versions of this data'; },
+        { return $.t('screens.ds.grid_sidebar.view_list.snapshots.subtitle'); },
 
         _getSections: function()
         {

@@ -32,19 +32,19 @@
         <ul id="shareOptions">
           <%- if @view.is_public? && @view.is_tabular? -%>
             <li class="subscribe">
-              <a class="subscribe" href="#subscribe" title="Subscribe via Email or RSS">
-              <span class="icon">Subscribe to Changes</span></a>
+              <a class="subscribe" href="#subscribe" title="<%= t('screens.ds.bar.subscribe_prompt') %>">
+              <span class="icon"><%= t('screens.ds.bar.subscribe') %></span></a>
             </li>
           <%- end -%>
-          <li><a class="facebook" rel="external" title="Share on Facebook"
+          <li><a class="facebook" rel="external" title="<%= t('screens.ds.bar.share_facebook') %>"
                 href="http://www.facebook.com/share.php?u=<%= CGI::escape("http://#{CurrentDomain.cname}#{@view.href}") %>">
-            <span class="icon">Share on Facebook</span></a></li>
-          <li><a class="twitter" rel="external" title="Share on Twitter"
+            <span class="icon"><%= t('screens.ds.bar.share_facebook') %></span></a></li>
+          <li><a class="twitter" rel="external" title="<%= t('screens.ds.bar.share_twitter') %>"
                 href="http://twitter.com/?status=<%= @view.tweet %>">
-            <span class="icon">Share on Twitter</span></a></li>
+            <span class="icon"><%= t('screens.ds.bar.share_twitter') %></span></a></li>
           <%- if @view.has_right?('grant') || @view.is_public? -%>
-            <li><a class="email" href="#email" title="Share via Email">
-              <span class="icon">Share via Email</span></a></li>
+            <li><a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
+              <span class="icon"><%= t('screens.ds.bar.share_email') %></span></a></li>
           <%- end -%>
         </ul>
       </li>
@@ -53,14 +53,13 @@
         <%- if @view.available_display_types.length > 1 -%>
         <ul id="renderTypeOptions" class="pillButtons">
 
-          <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list'} -%>
           <%- url_types = {'fatrow' => 'richList'} -%>
           <%- @view.available_display_types.clone.
             push('template').each do |type| -%>
           <li><a
             href="<%= @view.href %>?defaultRender=<%= url_types[type] || type %>"
             class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
-            title="View as a <%= title_types[type] || type %>">
+            title="<%= t('screens.ds.bar.view_type', type: t('screens.ds.bar.view_types.' + type)) %>">
             <span class="icon"></span>
           </a></li>
           <%- end -%>
@@ -72,7 +71,7 @@
       <li>
         <form id="searchForm" action="#">
           <span class="icon"></span>
-          <input type="text" class="searchField textPrompt" title="Find in this Dataset"
+          <input type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>"
           <%- if params[:q] -%>
             value="<%= params[:q] %>"
           <%- end -%>
@@ -84,45 +83,45 @@
     </ul>
   </div>
 
-  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
-    <span class="icon">Toggle full screen</span>
+  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="<%= t('screens.ds.bar.full_screen') %>">
+    <span class="icon"><%= t('screens.ds.bar.full_screen') %></span>
   </a>
 
   <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
     <%- if @view.can_modify_data? -%>
     <div id="editBar" class="clearfix">
       <ul id="editOptions">
-        <li><a href="#Undo" class="button undo" title="Undo">
-          <span class="icon">Undo</span>
+        <li><a href="#Undo" class="button undo" title="<%= t('screens.ds.bar.format.undo') %>">
+          <span class="icon"><%= t('screens.ds.bar.format.undo') %></span>
         </a></li>
-        <li><a href="#Redo" class="button redo" title="Redo">
-          <span class="icon">Redo</span>
+        <li><a href="#Redo" class="button redo" title="<%= t('screens.ds.bar.format.redo') %>">
+          <span class="icon"><%= t('screens.ds.bar.format.redo') %></span>
         </a></li>
       </ul>
 
       <div id="formatOptions" class="disabled">
         <ul>
           <li><a href="#format_bold" class="button bold toggleButton"
-            title="Bold"><span class="icon">Bold</span></a></li>
+            title="<%= t('screens.ds.bar.format.bold') %>"><span class="icon"><%= t('screens.ds.bar.format.bold') %></span></a></li>
           <li><a href="#format_underline" class="button underline toggleButton"
-            title="Underline"><span class="icon">Underline</span></a></li>
+            title="<%= t('screens.ds.bar.format.underline') %>"><span class="icon"><%= t('screens.ds.bar.format.underline') %></span></a></li>
           <li><a href="#format_italic" class="button italic toggleButton"
-            title="Italic"><span class="icon">Italic</span></a></li>
+            title="<%= t('screens.ds.bar.format.italic') %>"><span class="icon"><%= t('screens.ds.bar.format.italic') %></span></a></li>
           <li><a href="#format_strikethrough" class="button strike toggleButton"
-            title="Strikethrough"><span class="icon">Strike</span></a></li>
+            title="<%= t('screens.ds.bar.format.strike') %>"><span class="icon"><%= t('screens.ds.bar.format.strike') %></span></a></li>
           <li><a href="#format_unorderedList"
             class="button bulletedList toggleButton"
-            title="Bulleted List"><span class="icon">Bulleted List</span></a></li>
+            title="<%= t('screens.ds.bar.format.bullet') %>"><span class="icon"><%= t('screens.ds.bar.format.bullet') %></span></a></li>
           <li><a href="#format_orderedList" class="button numberedList toggleButton"
-            title="Numbered List"><span class="icon">Numbered List</span></a></li>
+            title="<%= t('screens.ds.bar.format.number') %>"><span class="icon"><%= t('screens.ds.bar.format.number') %></span></a></li>
           <li><a href="#format_link" class="button link toggleButton"
-            title="Link">Link</a></li>
+            title="<%= t('screens.ds.bar.format.link') %>"><%= t('screens.ds.bar.format.link') %></a></li>
           <li><%= select_tag("format_fontFamily", font_select_options('Helvetica'),
             {:class => 'fontFamily'}) %></li>
           <li><%= select_tag("format_fontSize", font_size_select_options(12),
             {:class => 'fontSize'}) %></li>
           <li><div class="menu color">
-            <a class="menuButton color" title="Font Color" href="#color">
+            <a class="menuButton color" title="<%= t('screens.ds.bar.format.color') %>" href="#color">
               <span class="colorIcon colorIndicator"></span><span class="icon"></span>
             </a>
           </div></li>

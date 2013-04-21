@@ -13,68 +13,63 @@
       <span class="alertIcon"></span>
     </div>
     <div class="unsavedLine">
-      <h2 id="unsavedTitle">Unsaved View</h2>
+      <h2 id="unsavedTitle"><%= t('screens.ds.bar.unsaved_title') %></h2>
       <%- if @view.has_rights?('update_view') && !@view.is_snapshotted? && !@view.is_api? -%>
-      <a href="#Save" title="Save current view" data-savingText="Saving..."
-        class="save toolbarButton">Save</a>
+        <a href="#Save" title="<%= t('screens.ds.bar.save_prompt') %>" data-savingText="<%= t('screens.ds.bar.save_progress') %>"
+        class="save toolbarButton"><%= t('screens.ds.bar.save_button') %></a>
       <%- end -%>
       <%- if @view.is_published? && !@view.is_api? -%>
-      <a href="#SaveAs" title="Save view as..."
-        class="saveAs toolbarButton">Save As...</a>
+      <a href="#SaveAs" title="<%= t('screens.ds.bar.save_as_prompt') %>"
+        class="saveAs toolbarButton"><%= t('screens.ds.bar.save_as_button') %></a>
       <%- end -%>
-      <a href="#Revert" title="Revert to saved view"
-        class="revert toolbarButton">Revert</a>
+      <a href="#Revert" title="<%= t('screens.ds.bar.revert_prompt') %>"
+        class="revert toolbarButton"><%= t('screens.ds.bar.revert_button') %></a>
       <%- if @view.is_unpublished? -%>
-        <span class="unpublishedRevert revertMessage">Changes to the data below are saved automatically.
-          Filters and searches cannot be saved to a working copy of a dataset.
-          Please create a view on a published dataset.</span>
+        <span class="unpublishedRevert revertMessage"><%= t('screens.ds.bar.unpublished_unsavable') %></span>
       <%- end -%>
       <%- if @view.is_snapshotted? -%>
-      <span class="revertMessage">Snapshotted datasets and views cannot be created or modified</span>
+      <span class="revertMessage"><%= t('screens.ds.bar.unpublished_unsavable') %></span>
       <%- end -%>
       <%- if @view.is_api? -%>
-      <span class="revertMessage">API views cannot be modified</span>
+      <span class="revertMessage"><%= t('screens.ds.bar.unpublished_unsavable') %></span>
       <%- end -%>
     </div>
 
     <%- if @view.is_unpublished? -%>
-    <h3 class="unpublished" title="<%= "This is a copy of the dataset that allows you " +
-      "to make changes to it. It is not visible to others until you publish it."%>">[Working Copy]</h3>
+    <h3 class="unpublished" title="<%= t('screens.ds.bar.working_copy_notice') %>"><%= t('screens.ds.bar.working_copy_title') %></h3>
     <%- end -%>
     <h2 id="datasetName" class="clipText currentViewName" title="<%= @view.name %>"><%= @view.name %></h2>
     <%- if @view.is_snapshotted? -%>
-    <h3 class="snapshotted" title="<%= "This is a previously published version of the dataset. It is" +
-      "archived and cannot be modified."%>">Snapshotted <%= blist_date_time(@view.publicationDate) %></h3>
+    <h3 class="snapshotted" title="<%= t('screens.ds.bar.snapshot_notice') %>"><%= t('screens.ds.bar.snapshot_title', date: blist_date_time(@view.publicationDate)) %></h3>
     <%- end -%>
 
     <%- if @view.is_unpublished? -%>
      <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
        <%- if @view.can_publish?() -%>
-         title="<%= "This dataset is a working copy and is not publicly available.
-        Once you have made the desired changes, this dataset should be published to
-        make it publicly available." %>"
+         title="<%= t('screens.ds.bar.publish_prompt') %>"
       <%- else -%>
-        title="Only an owner or publisher can publish this dataset"
+        title="<%= t('screens.ds.bar.publish_rights') %>"
       <%- end -%>
-        >Publish Dataset</a>
+        ><%= t('screens.ds.bar.publish_button') %></a>
     <%- end -%>
 
-    <div class="basedOnParent">
-      Based on <a class="parentName"></a>
-    </div>
+    <div class="basedOnParent"><%= t('screens.ds.bar.based_on_parent_html') %></div>
     <div class="basedOnTemp">
-      Based on <%= @view.is_unpublished? ? 'the working copy of ' : '' %>
-      <a class="revertLink currentViewName" href="#revert"><%= @view.name %></a>
+      <%- if @view.is_unpublished? -%>
+        <%= t('screens.ds.bar.based_on_working_copy_html', name: @view.name) %>
+      <%- else -%>
+        <%= t('screens.ds.bar.based_on_html', name: @view.name) %>
+      <%- end -%>
     </div>
 
     <%- if !@view.is_published? -%>
-    <a id="publishedLink">View the published <span class="publishedName">dataset</span></a>
+    <a id="publishedLink"><%= t('screens.ds.bar.view_published_html') %></a>
     <%- end -%>
 
     <div id="description">
       <p class="collapsed"><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow external' })) || '(No description provided)'%></p>
-      <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
-        <span class="icon">Expand</span>
+      <a href="#expand" class="descriptionExpander rightArrow" title="<%= t('core.expando.prompt') %>">
+        <span class="icon"><%= t('core.expando.expand') %></span>
       </a>
     </div>
 

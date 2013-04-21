@@ -120,6 +120,9 @@ en:
     features:
       allow_comments: Commenting
       cell_comments: Cell Commenting
+    expando:
+      prompt: Click to expand
+      expand: Expand
 
 
 it:

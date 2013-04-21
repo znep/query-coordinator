@@ -44,6 +44,55 @@ en:
       flag_dataset: Flag Dataset
       contact_dataset_owner: Contact Dataset Owner
     ds:
+      bar:
+        save_button: Save
+        save_prompt: Save current view
+        save_progress: Saving...
+        save_as_button: Save As...
+        save_as_prompt: Save View As...
+        revert_button: Revert
+        revert_prompt: Revert to saved view
+        unsaved_title: Unsaved View
+        unpublished_unsavable: Changes to the data below are saved automatically. Filters and searches cannot be saved to a working copy of a dataset. Please create a view on a published dataset.
+        snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
+        api_unsavable: API views cannot be modified
+        working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
+        working_copy_title: [Working Copy]
+        snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
+        snapshot_title: Snapshotted %{date}
+        publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.
+        publish_rights: Only an owner or publisher can publish this dataset
+        publish_button: Publish Dataset
+        based_on_parent_html: Based on <a class="parentName"></a>
+        based_on_working_copy_html: Based on the working copy of <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_html: Based on <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        view_published_html: View the published <span class="publishedName">dataset</span>
+        subscribe_prompt: Subscribe via Email or RSS
+        subscribe: Subscribe to Changes
+        share_facebook: Share on Facebook
+        share_twitter: Share on Twitter
+        share_email: Share via Email
+        view_type: View as a %{type}
+        view_types:
+          table: table
+          map: map
+          chart: chart
+          calendar: calendar
+          page: single row
+          fatrow: rich list
+        find_prompt: Find in this Dataset
+        full_screen: Toggle full screen
+        format:
+          undo: Undo
+          redo: Redo
+          bold: Bold
+          underline: Underline
+          italic: Italic
+          strike: Strikethrough
+          bullet: Bulleted List
+          number: Numbered List
+          link: Link
+          color: Font Color
       blob:
         download: This dataset is available for download
         data_extraction: This data extraction tool or application is available via the link to the right

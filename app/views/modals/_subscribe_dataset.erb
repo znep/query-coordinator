@@ -1,38 +1,34 @@
 <%= modal :class => 'subscribeToDataset loading' do %>
-  <h2>Subscribe to the "<span class="datasetName"><%= @view.nil? ? '' : @view.name %></span>"
-    <span class="datasetTypeNameUpcase">Dataset</span></h2>
+  <h2><%= t('screens.ds.subscribe.title_html', name: (@view.nil? ? '' : @view.name)) %></h2>
 
   <div class="loadingOverlay">
     <div class="loadingSpinner"></div>
   </div>
   <div class="rssSection">
-    <p><strong>To subscribe to the <span class="datasetName"><%= @view.nil? ? '' : @view.name %></span>
-      dataset via an RSS reader</strong>, use one of the following links:</p>
+    <p><%= t('screens.ds.subscribe.intro_html', name: (@view.nil? ? '' : @view.name)) %></p>
     <p>
       <%- rss_url = @view.nil? ? '' : @view.rss -%>
-      <a class="subscribe rss" rel="external" href="<%= rss_url %>"><span class="icon"></span>Download as RSS</a>
+      <a class="subscribe rss" rel="external" href="<%= rss_url %>"><span class="icon"></span><%= t('screens.ds.subscribe.rss') %></a>
       <a rel="external" class="greader" href="http://fusion.google.com/add?feedurl=<%= rss_url %>">
-        Add to Google Reader
+        <%= t('screens.ds.subscribe.google_reader') %>
       </a>
-      <a class="feed" href="feed:<%= rss_url %>">Open in External Program</a>
+      <a class="feed" href="feed:<%= rss_url %>"><%= t('screens.ds.subscribe.rss_program') %></a>
     </p>
   </div>
   <div class="emailSection">
     <div class="subscribeText">
-      <p><strong>To receive email notifications</strong> when new data is published, check
-         the Subscribe box below.</p>
+      <p><%= t('screens.ds.subscribe.subscribe_html') %></p>
     </div>
     <div class="unsubscribeText">
-      <p><strong>You are currently subscribed to this <span class="datasetTypeName">dataset</span>
-        via email</strong>, and will receive notifications when new data is published.</p>
-      <p>If you no longer wish to receive notifications, uncheck the Subscribe box below.</p>
+      <p><%= t('screens.ds.subscribe.subscribed_html') %></p>
+      <p><%= t('screens.ds.subscribe.unsubscribe') %></p>
     </div>
     <div>
       <input type="checkbox" class="subscribeCheckbox" id="email_publish_subscribe" />
-      <label for="email_publish_subscribe">Subscribe via Email</label>
+      <label for="email_publish_subscribe"><%= t('screens.ds.subscribe.subscribe_button') %></label>
     </div>
   </div>
   <ul class="actions clearfix">
-    <li><a href="#cancel" class="jqmClose button">Done</a></li>
+    <li><a href="#cancel" class="jqmClose button"><%= t('core.dialogs.done') %></a></li>
   </ul>
 <%- end -%>

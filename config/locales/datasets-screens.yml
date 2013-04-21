@@ -93,6 +93,16 @@ en:
           number: Numbered List
           link: Link
           color: Font Color
+      subscribe:
+        title_html: Subscribe to the "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Dataset</span>
+        intro_html: "<strong>To subscribe to the <span class=\"datasetName\">%{name}</span> dataset via an RSS reader</strong>, use one of the following links:"
+        rss: Download as RSS
+        google_reader: Add to Google Reader
+        rss_program: Open in External Program
+        subscribe_html: <strong>To receive email notifications</strong> when new data is published, check the Subscribe box below.
+        subscribed_html: <strong>You are currently subscribed to this <span class="datasetTypeName">dataset</span> via email</strong>, and will receive notifications when new data is published.
+        unsubscribe: If you no longer wish to receive notifications, uncheck the Subscribe box below.
+        subscribe_button: Subscribe via Email
       blob:
         download: This dataset is available for download
         data_extraction: This data extraction tool or application is available via the link to the right

@@ -179,7 +179,7 @@
                             return {
                                 tagName: 'option',
                                 value: category,
-                                contents: category
+                                contents: $.t('controls.feed.types.' + category)
                             };
                         }), true))
                     .val(opts.defaultFilter || _.first(opts.filterCategories));

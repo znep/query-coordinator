@@ -2,10 +2,10 @@
 {
     $.Control.extend('pane_embedSdp', {
         getTitle: function()
-        { return 'Social Data Player'; },
+        { return $.t('screens.ds.grid_sidebar.sdp.title'); },
 
         getSubtitle: function()
-        { return 'The Social Data Player enables you to publish this dataset on the Internet at large'; },
+        { return $.t('screens.ds.grid_sidebar.sdp.subtitle'); },
 
         isAvailable: function()
         {
@@ -16,8 +16,8 @@
         {
             return !this._view.valid ||
                 (this._view.temporary && !this._view.minorChange) ?
-                'This view must be valid and saved' :
-                'This view must be public before it can be published';
+                    $.t('screens.ds.grid_sidebar.sdp.validation.valid_saved') :
+                    $.t('screens.ds.grid_sidebar.sdp.validation.public');
         },
 
         _getSections: function()
@@ -55,7 +55,7 @@
         },
 
         _getFinishButtons: function()
-        { return [$.controlPane.buttons.done, { text: 'Preview', value: 'preview', isDefault: false }]; },
+        { return [$.controlPane.buttons.done, { text: $.t('screens.ds.grid_sidebar.sdp.preview'), value: 'preview', isDefault: false }]; },
 
         _finish: function(data, value, finalCallback)
         {

@@ -2,18 +2,18 @@
 {
     $.Control.extend('pane_signedDataset', {
         getTitle: function()
-        { return 'Digital Signing'; },
+        { return $.t('screens.ds.grid_sidebar.digital_signing.title'); },
 
         getSubtitle: function()
-        { return 'Export a version of this data whose integrity may later be verified.'; },
+        { return $.t('screens.ds.grid_sidebar.digital_signing.subtitle'); },
 
         isAvailable: function()
         { return this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid ? 'This view must be valid' :
-                'Only tabular data may be downloaded';
+            return !this._view.valid ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
+                $.t('screens.ds.grid_sidebar.digital_signing.validation.non_tabular');
         },
 
         _getSections: function()

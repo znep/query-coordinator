@@ -24,28 +24,28 @@
         },
 
         getTitle: function()
-        { return 'Form' },
+        { return $.t('screens.ds.grid_sidebar.form.title') },
 
         getSubtitle: function()
-        { return 'Forms allow you to gather data directly from your website into a dataset' },
+        { return $.t('screens.ds.grid_sidebar.form.subtitle') },
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid ? 'This view must be valid' :
-                'This view must have visible columns to create a form';
+            return !this._view.valid ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
+                $.t('screens.ds.grid_sidebar.form.validation.no_columns');
         },
 
         _getSections: function()
         {
             return [
                 {
-                    title: 'Form Information',
+                    title: $.t('screens.ds.grid_sidebar.form.information.title'),
                     fields: [
-                        {type: 'text', text: 'Name', name: 'name', required: true, prompt: 'Enter a name'},
-                        {type: 'text', text: 'Success URL', name: 'displayFormat.successRedirect',
-                            extraClass: 'url', prompt: 'Enter a webpage URL'
+                        {type: 'text', text: $.t('screens.ds.grid_sidebar.form.information.name'), name: 'name', required: true, prompt: $.t('screens.ds.grid_sidebar.form.information.name_prompt')},
+                        {type: 'text', text: $.t('screens.ds.grid_sidebar.form.information.success'), name: 'displayFormat.successRedirect',
+                            extraClass: 'url', prompt: $.t('screens.ds.grid_sidebar.form.information.success_prompt')
                         },
-                        {type: 'checkbox', text: 'Public?', name: 'flags.dataPublicAdd', defaultValue: true}
+                        {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.form.information.public'), name: 'flags.dataPublicAdd', defaultValue: true}
                     ]
                 }
             ];

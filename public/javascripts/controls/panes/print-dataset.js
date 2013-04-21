@@ -2,18 +2,18 @@
 {
     $.Control.extend('pane_printDataset', {
         getTitle: function()
-        { return 'Print'; },
+        { return $.t('screens.ds.grid_sidebar.print.title'); },
 
         getSubtitle: function()
-        { return 'Export this dataset to a printable PDF format'; },
+        { return $.t('screens.ds.grid_sidebar.print.subtitle'); },
 
         isAvailable: function()
         { return this._view.isGrid() && this._view.valid; },
 
         getDisabledSubtitle: function()
         {
-            return !this._view.valid ? 'This view must be valid' :
-                'Only tabular data may be printed';
+            return !this._view.valid ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
+                $.t('screens.ds.grid_sidebar.print.validation.non_tabular');
         },
 
         _getSections: function()
@@ -40,7 +40,7 @@
         },
 
         _getFinishButtons: function()
-        { return [{text: 'Print', value: 'print', isDefault: true}, $.controlPane.buttons.cancel]; },
+        { return [{text: $.t('screens.ds.grid_sidebar.print.print_button'), value: 'print', isDefault: true}, $.controlPane.buttons.cancel]; },
 
         _finish: function(data, value, finalCallback)
         {

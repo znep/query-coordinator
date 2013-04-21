@@ -6,6 +6,10 @@ en:
         feed_filter_label: Show
         add_comment: Add Comment
         pending_moderation: Your comment is submitted and is pending moderation
+      types:
+        all items: all items
+        views: views
+        comments: comments
       listing:
         no_results: There are no items to display
         all_replies: View all replies

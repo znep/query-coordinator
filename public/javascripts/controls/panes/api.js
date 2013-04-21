@@ -2,10 +2,10 @@
 {
     $.Control.extend('pane_api', {
         getTitle: function()
-        { return 'API'; },
+        { return $.t('screens.ds.grid_sidebar.api.title'); },
 
         getSubtitle: function()
-        { return 'Access this ' + this._view.displayName + ' via SODA'; },
+        { return $.t('screens.ds.grid_sidebar.api.subtitle', { view_type: this._view.displayName }); },
 
         _getSections: function()
         {

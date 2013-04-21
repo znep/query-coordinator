@@ -1,25 +1,15 @@
-<%- we_support_download_count_yet = false -%>
 <table class="gridList downloadsList" cellspacing="0">
   <colgroup>
     <col class="type" />
-    <%- if we_support_download_count_yet -%>
-      <col class="downloads" />
-    <%- end -%>
   </colgroup>
   <thead>
     <tr>
-      <th class="type" scope="col"><div>Download As</div><span class="icon"></span></th>
-      <%- if we_support_download_count_yet -%>
-        <th class="downloads" scope="col"><div>Downloads</div><span class="icon"></span></th>
-      <%- end -%>
+      <th class="type" scope="col"><div><%= t('screens.ds.grid_sidebar.download.download_as') %></div><span class="icon"></span></th>
     </tr>
   </thead>
   <tbody>
     <tr class="item">
       <td class="type" scope="row"><div class="cellInner"><a rel="external" class="noInterstitial"></a></div></td>
-      <%- if we_support_download_count_yet -%>
-        <td class="downloads"><div class="cellInner"></div></td>
-      <%- end -%>
     </tr>
   </tbody>
 </table>

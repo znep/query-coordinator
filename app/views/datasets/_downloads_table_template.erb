@@ -1,6 +1,6 @@
 <div class="downloadsSectionContent">
   <%- if @view.is_geo? -%>
-  <label class="formHeader">Download Geospatial Data</label>
+  <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.geo_header') %></label>
   <%- end -%>
   <div class="downloadsTable">
     <div class="gridListWrapper">
@@ -9,7 +9,7 @@
   </div>
   <%- if @view.is_geo? -%>
   <div class="layerTableDownloads">
-    <label class="formHeader">Download Tabular Layers</label>
+    <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.layers_header') %></label>
     <select id="layerChooserForTabular" class="layerChooser"></select>
     <div class="layerDownloadsContent gridListWrapper">
       <%= render :partial => 'datasets/downloads_table_inner' %>

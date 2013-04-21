@@ -1,45 +1,45 @@
   <input type="hidden" id="print" name="print" value="true" />
   <div class="formSection">
     <div class="line clearfix">
-      <label for="page_size" class="formHeader pageSizeHeader">Paper Size:</label>
+      <label for="page_size" class="formHeader pageSizeHeader"><%= t('screens.ds.grid_sidebar.print.paper_size') %></label>
       <div class="inputWrapper">
         <select id="page_size" name="page_size">
-          <option value="letter">Letter (8.5 x 11 inches)</option>
-          <option value="legal">Legal (8.5 x 14 inches)</option>
-          <option value="tabloid">Tabloid (11 x 17 inches)</option>
-          <option value="a4">A4 (210 x 297mm)</option>
-          <option value="a3">A3 (297 x 420mm)</option>
-          <option value="a2">A2 (420 x 594mm)</option>
-          <option value="a1">A1 (594 x 841mm)</option>
-          <option value="a0">A0 (841 x 1189mm)</option>
+          <option value="letter"><%= t('screens.ds.grid_sidebar.print.paper_sizes.letter') %></option>
+          <option value="legal"><%= t('screens.ds.grid_sidebar.print.paper_sizes.legal') %></option>
+          <option value="tabloid"><%= t('screens.ds.grid_sidebar.print.paper_sizes.tabloid') %></option>
+          <option value="a4"><%= t('screens.ds.grid_sidebar.print.paper_sizes.a4') %></option>
+          <option value="a3"><%= t('screens.ds.grid_sidebar.print.paper_sizes.a3') %></option>
+          <option value="a2"><%= t('screens.ds.grid_sidebar.print.paper_sizes.a2') %></option>
+          <option value="a1"><%= t('screens.ds.grid_sidebar.print.paper_sizes.a1') %></option>
+          <option value="a0"><%= t('screens.ds.grid_sidebar.print.paper_sizes.a0') %></option>
         </select>
       </div>
     </div>
   </div>
 
   <div class="formSection margins">
-    <label class="formHeader">Margins (inches):</label>
+    <label class="formHeader"><%= t('screens.ds.grid_sidebar.print.margins_title') %></label>
     <div class="sectionContent">
       <div class="line clearfix">
-        <label for="margin_top">Top:</label>
+        <label for="margin_top"><%= t('screens.ds.grid_sidebar.print.margins.top') %></label>
         <div class="inputWrapper textWrapper">
           <input type="text" id="margin_top" name="margin_top" value="1.0" />
         </div>
       </div>
       <div class="line clearfix">
-        <label for="margin_left">Left:</label>
+        <label for="margin_left"><%= t('screens.ds.grid_sidebar.print.margins.left') %></label>
         <div class="inputWrapper textWrapper">
           <input type="text" id="margin_left" name="margin_left" value="1.0" />
         </div>
       </div>
       <div class="line clearfix">
-        <label for="margin_bottom">Bottom:</label>
+        <label for="margin_bottom"><%= t('screens.ds.grid_sidebar.print.margins.bottom') %></label>
         <div class="inputWrapper textWrapper">
           <input type="text" id="margin_bottom" name="margin_bottom" value="1.0" />
         </div>
       </div>
       <div class="line clearfix">
-        <label for="margin_right">Right:</label>
+        <label for="margin_right"><%= t('screens.ds.grid_sidebar.print.margins.right') %></label>
         <div class="inputWrapper textWrapper">
           <input type="text" id="margin_right" name="margin_right" value="1.0" />
         </div>
@@ -48,45 +48,45 @@
   </div>
 
   <div class="formSection">
-    <label class="formHeader">Orientation:</label>
+    <label class="formHeader"><%= t('screens.ds.grid_sidebar.print.orientation') %></label>
     <div class="sectionContent optionsBlock">
       <fieldset>
         <div class="line inputFirst">
           <div class="inputWrapper">
             <input type="radio" id="landscape" name="portrait" value="false" checked="checked" />
           </div>
-          <label for="landscape">Landscape</label>
+          <label for="landscape"><%= t('screens.ds.grid_sidebar.print.orientations.landscape') %></label>
         </div>
         <div class="line inputFirst">
           <div class="inputWrapper">
             <input type="radio" id="portrait" name="portrait" value="true" />
           </div>
-          <label for="portrait">Portrait</label>
+          <label for="portrait"><%= t('screens.ds.grid_sidebar.print.orientations.portrait') %></label>
         </div>
       </fieldset>
     </div>
   </div>
 
   <div class="formSection">
-    <label class="formHeader">Options:</label>
+    <label class="formHeader"><%= t('screens.ds.grid_sidebar.print.orientations.options_title') %></label>
     <div class="sectionContent optionsBlock">
       <div class="line inputFirst">
         <div class="inputWrapper">
           <input type="checkbox" id="fit" name="fit" value="true" />
         </div>
-        <label for="fit">Shrink to fit dataset on one page</label>
+        <label for="fit"><%= t('screens.ds.grid_sidebar.print.orientations.options.fit') %></label>
       </div>
       <div class="line inputFirst">
         <div class="inputWrapper">
           <input type="checkbox" id="headers_on_every_page" name="headers_on_every_page" value="true" checked="checked" />
         </div>
-        <label for="headers_on_every_page">Print column titles on each page</label>
+        <label for="headers_on_every_page"><%= t('screens.ds.grid_sidebar.print.orientations.options.headers_every_page') %></label>
       </div>
       <div class="line inputFirst">
         <div class="inputWrapper">
           <input type="checkbox" id="header_icons" name="header_icons" value="true" />
         </div>
-        <label for="header_icons">Display icons in column header</label>
+        <label for="header_icons"><%= t('screens.ds.grid_sidebar.print.orientations.options.header_icons') %></label>
       </div>
     </div>
   </div>
@@ -102,7 +102,7 @@
       </li>
       <li class="cancelButton">
         <a href="<%= @accessible ? @view.alt_href : '#close_print' %>" class="jqmClose button close">
-          <span class="icon"></span>Cancel
+          <span class="icon"></span><%= t('core.dialogs.cancel') %>
         </a>
       </li>
     </ul>

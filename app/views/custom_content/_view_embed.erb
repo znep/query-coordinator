@@ -2,6 +2,10 @@
   <%- content_for :head do -%>
     <%= rendered_stylesheet_tag 'embed-form' %>
   <%- end -%>
+
+  <%- content_for :translations do -%>
+    <%= render_translations LocalePart.controls.embed %>
+  <%- end -%>
 <%- end -%>
 
 <div id="<%= widget.elem_id %>" class="viewEmbed clearfix">

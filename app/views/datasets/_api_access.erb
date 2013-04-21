@@ -1,23 +1,13 @@
 <div class="apiContentWrapper">
-  <p>The <strong>Socrata Open Data API</strong> (SODA) allows software developers
-     to access data hosted in Socrata data sites programmatically. Developers can
-     create applications that use the SODA APIs to visualize and
-     &ldquo;mash-up&rdquo; Socrata datasets in new and exciting ways. Create an
-     iPhone application that visualizes government spending in your area, a web
-     application that allows citizens to look up potential government benefits
-     they'd overlooked, or a service that automatically emails you when new
-     earmarks are added to bills that you wish to track.</p>
-  <p>To start accessing this dataset programmatically, use the API endpoint
-     provided below. For more information and examples on how to use the
-     Socrata Open Data API, reference our
-     <a href="http://dev.socrata.com" rel="external">Developer Documentation</a>.</p>
-  <h3>API Access Endpoint:</h3>
+  <p><%= t('screens.ds.grid_sidebar.api.intro_html') %></p>
+  <p><%= t('screens.ds.grid_sidebar.api.reference_html') %></p>
+  <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
   <div class="apiEndpointWrapper">
     <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{@view.id}.json" %></pre>
   </div>
 
   <%- if @view.is_tabular? && !@view.visible_columns.empty? -%>
-    <h3>Column IDs:</h3>
+    <h3><%= t('screens.ds.grid_sidebar.api.column_ids_title') %></h3>
     <dl class="sectionContent">
       <%- @view.visible_columns.each do |column| -%>
         <dt><%= column.name %></dt>

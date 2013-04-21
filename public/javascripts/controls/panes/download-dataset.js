@@ -2,16 +2,16 @@
 {
     $.Control.extend('pane_downloadDataset', {
         getTitle: function()
-        { return 'Download'; },
+        { return $.t('screens.ds.grid_sidebar.download.title'); },
 
         getSubtitle: function()
-        { return 'Download a copy of this dataset in a static format'; },
+        { return $.t('screens.ds.grid_sidebar.download.subtitle'); },
 
         isAvailable: function()
         { return this._view.valid; },
 
         getDisabledSubtitle: function()
-        { return 'This view must be valid'; },
+        { return $.t('screens.ds.grid_sidebar.base.validation.invalid_view'); },
 
         _getSections: function()
         {

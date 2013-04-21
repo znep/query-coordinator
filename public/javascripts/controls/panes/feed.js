@@ -2,10 +2,10 @@
 {
     $.Control.extend('pane_feed', {
         getTitle: function()
-        { return 'Discuss'; },
+        { return $.t('screens.ds.grid_sidebar.feed.title'); },
 
         getSubtitle: function()
-        { return 'The discussion feed shows you the conversation and activity around a dataset'; },
+        { return $.t('screens.ds.grid_sidebar.feed.subtitle'); },
 
         _getSections: function()
         {

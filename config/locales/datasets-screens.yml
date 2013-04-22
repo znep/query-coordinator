@@ -221,12 +221,7 @@ en:
           wizard_button:
             immutable: Launch the Replace wizard
             mutable: Launch the Append and Replace wizard
-        add_column:
-          title: Add Column
-          subtitle: Add a new column to your dataset
-          success: Your column has been added
-          validation:
-            view_column: You cannot add a column to a view
+        column_common:
           basic:
             title: Basic Information
             name: Name
@@ -239,16 +234,22 @@ en:
             type_prompt: Select a data type
             key: Key
             source: Source
-          multiple_choice:
-            title: Multiple Choice Options
-            add_option_button: Add Option
-            option: Option
           linked_dataset:
             title: Linked Dataset
             dataset: Dataset
             dataset_prompt: Dataset URL or 4x4 UID
             key: Key Column
             label: Label Column
+        add_column:
+          title: Add Column
+          subtitle: Add a new column to your dataset
+          success: Your column has been added
+          validation:
+            view_column: You cannot add a column to a view
+          multiple_choice:
+            title: Multiple Choice Options
+            add_option_button: Add Option
+            option: Option
           convert_latlong:
             title: Use Existing Latitude & Longitude
             latitude: Latitude
@@ -264,6 +265,75 @@ en:
             zip_code_prompt: Enter a Zip Code
           nested_table:
             default_column_name: Untitled
+        column_properties:
+          title: Column Properties
+          subtitle: Update various properties on this column
+          validation:
+            unsaved: You cannot edit column properties for an unsaved view
+            published: Please make a working copy or view of this dataset to change column properties
+          link:
+            title: Link
+            key: Key
+            source: Source
+          formatting:
+            title: Formatting
+            alignment: Alignment
+            view_style: View Style
+          number: 
+            title: Number Formatting
+            precision: Precision
+            no_precision: None
+            display: Display
+            no_commas: No Commas
+          number_advanced: 
+            title: Advanced Formatting
+            format_mask: Format Mask
+            format_mask_prompt: "Use #s to indicate numeric digits, and other characters where you want them to go; for example a social security number would be ###-##-####"
+            format_mask_warning: This may override some of your settings above.
+          money: 
+            title: Money Formatting
+            precision: Precision
+            no_precision: None
+            currency: Currency
+            abbreviated: Abbreviated
+          localization:
+            title: Localization
+            decimal: Decimal
+            thousands: Thousands
+          photo:
+            title: Photo Options
+            size: Size
+            size_prompt: Choose a size
+            sizes:
+              tiny: Tiny (24x24)
+              thumb: Thumbnail (80x80)
+              medium: Medium (150x150)
+              featured: Featured (150x80)
+              large: Large (220x220)
+              original: Original
+          url:
+            title: URL Options
+            base_url: Base URL
+            base_url_prompt: Enter the common URL prefix
+          display_order:
+            title: Display Order (for DataSlate)
+            new_item_button: Add Item
+            option: Option
+          multiple_choice:
+            title: Multiple Choice Options
+            new_option_button: Add Option
+            option: Option
+          column_totals:
+            title: Column Totals
+            total: Total
+            total_prompt: Select a column total
+          advanced:
+            title: Advanced
+            api_identifier: API Identifier
+            new_rdf_button: Add RDF Properties
+            semantics: Semantics
+            url: Enter custom URL
+          success: Your column has been updated
         ownership:
           title: Ownership
           subtitle: "To transfer to another user, enter the email address or account name of the Socrata ID, then select the desired account from the dropdown list. You may also enter the user's profile URL if you know it. Only users with existing accounts may take ownership of datasets."

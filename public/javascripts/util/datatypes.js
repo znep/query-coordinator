@@ -666,9 +666,9 @@ blist.namespace.fetch('blist.datatypes');
 
 
     // Alignment
-    var alignLeft = {text: 'Left', value: 'left'};
-    var alignCenter = {text: 'Center', value: 'center'};
-    var alignRight ={text: 'Right', value: 'right'};
+    var alignLeft = {text: $.t('core.alignment.left'), value: 'left'};
+    var alignCenter = {text: $.t('core.alignment.center'), value: 'center'};
+    var alignRight ={text: $.t('core.alignment.right'), value: 'right'};
 
     var alignment = [alignLeft, alignCenter, alignRight];
     var numericAlignment = [alignRight, alignLeft, alignCenter];
@@ -857,8 +857,8 @@ blist.namespace.fetch('blist.datatypes');
                 v = parseFloat(v);
                 return _.isNaN(v) ? null : v;
             },
-            precisionStyle: [{text: 'Standard (1,020.4)', value: 'standard'},
-                {text: 'Scientific (1.0204e+3)', value: 'scientific'}],
+            precisionStyle: [{text: $.t('core.precision_style.standard'), value: 'standard'},
+                {text: $.t('core.precision_style.scientific'), value: 'scientific'}],
             priority: 3,
             rollUpAggregates: aggs,
             sortable: true

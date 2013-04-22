@@ -7,7 +7,7 @@
             {
                 return t.createable && ($.isBlank((data || {}).parentId) ||
                     !t.excludeInNestedTable) ?
-                    {text: t.title, value: k, priority: t.priority} : null;
+                    {text: $.t('core.data_types.' + t.name), value: k, priority: t.priority} : null;
             })
             .compact()
             .sortBy(function(t) { return t.priority; })
@@ -46,23 +46,23 @@
         {
             return [
                 {
-                    title: $.t('screens.ds.grid_sidebar.add_column.basic.title'),
+                    title: $.t('screens.ds.grid_sidebar.column_common.basic.title'),
                     fields: [
-                        {text: $.t('screens.ds.grid_sidebar.add_column.basic.name'), type: 'text', required: true, name: 'name', prompt: $.t('screens.ds.grid_sidebar.add_column.basic.name_prompt')},
-                        {text: $.t('screens.ds.grid_sidebar.add_column.basic.description'), type: 'textarea',
-                        name: 'description', prompt: $.t('screens.ds.grid_sidebar.add_column.basic.description_prompt')}
+                        {text: $.t('screens.ds.grid_sidebar.column_common.basic.name'), type: 'text', required: true, name: 'name', prompt: $.t('screens.ds.grid_sidebar.column_common.basic.name_prompt')},
+                        {text: $.t('screens.ds.grid_sidebar.column_common.basic.description'), type: 'textarea',
+                        name: 'description', prompt: $.t('screens.ds.grid_sidebar.column_common.basic.description_prompt')}
                     ]
                 },
                 {
-                    title: $.t('screens.ds.grid_sidebar.add_column.type.title'),
+                    title: $.t('screens.ds.grid_sidebar.column_common.type.title'),
                     fields: [
-                        {text: $.t('screens.ds.grid_sidebar.add_column.type.type'), type: 'select', required: true, prompt: $.t('screens.ds.grid_sidebar.add_column.type.type_prompt'),
+                        {text: $.t('screens.ds.grid_sidebar.column_common.type.type'), type: 'select', required: true, prompt: $.t('screens.ds.grid_sidebar.column_common.type.type_prompt'),
                         name: 'dataTypeName', options: getTypes},
 
-                        {text: $.t('screens.ds.grid_sidebar.add_column.type.key'), type: 'columnSelect', name: 'format.linkedKey', required: true,
+                        {text: $.t('screens.ds.grid_sidebar.column_common.type.key'), type: 'columnSelect', name: 'format.linkedKey', required: true,
                             onlyIf: {field: 'dataTypeName', value: 'link'},
                             columns: {type: 'dataset_link', hidden: false}},
-                        {text: $.t('screens.ds.grid_sidebar.add_column.type.source'), type: 'select', name: 'format.linkedSource', required: true,
+                        {text: $.t('screens.ds.grid_sidebar.column_common.type.source'), type: 'select', name: 'format.linkedSource', required: true,
                             onlyIf: {field: 'dataTypeName', value: 'link'}, linkedField: 'format.linkedKey',
                             options:
                                 // wrap in function to set up the "this" var
@@ -90,20 +90,20 @@
 
                 // Dataset Link
                 {
-                    title: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.title'),
+                    title: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.title'),
                     onlyIf: {field: 'dataTypeName', value: 'dataset_link'},
                     fields: [
-                        {text: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.dataset'), type: 'text', name: 'format.linkedDataset',
+                        {text: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.dataset'), type: 'text', name: 'format.linkedDataset',
                             data: { '4x4uid': 'unverified' }, prompt: ''
                         },
-                        {text: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.key'), type: 'select', name: 'format.keyColumn',
+                        {text: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.key'), type: 'select', name: 'format.keyColumn',
                             linkedField: 'format.linkedDataset',
                             // allow selected value to be determined until options are loaded.
                             // this is done by setting default value to '_selected' and
                             // adding _selected attrib = true in the desired option.
                             defaultValue: '_selected',
                             options: Dataset.getLinkedDatasetOptionsDefault},
-                        {text: $.t('screens.ds.grid_sidebar.add_column.linked_dataset.label'), type: 'select', name: 'format.labelColumn',
+                        {text: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.label'), type: 'select', name: 'format.labelColumn',
                             linkedField: 'format.linkedDataset',
                             options: Dataset.getLinkedDatasetOptionsDefault}
                     ]

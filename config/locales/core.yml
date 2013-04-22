@@ -55,6 +55,13 @@ en:
       object: Object
       list: List
       nested_table: Nested Table
+    alignment:
+      left: Left
+      center: Center
+      right: Right
+    precision_style:
+      standard: Standard (1020.4)
+      scientific: Scientific (1.0204e+3)
     aggregates:
       average: Average
       count: Count

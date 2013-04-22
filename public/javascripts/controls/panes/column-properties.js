@@ -25,10 +25,10 @@
         var col = c.origColumn;
 
         var t = col.dataType;
-        var types = [{text: col.renderType.title, value: col.renderTypeName}];
+        var types = [{text: $.t('core.data_types.' + col.renderTypeName), value: col.renderTypeName}];
         return types.concat(_(t.convertableTypes || []).chain()
             .sortBy(function(ct) { return blist.datatypes[ct].priority; })
-            .map(function(ct) { return {value: ct, text: blist.datatypes[ct].title}; }).value());
+            .map(function(ct) { return {value: ct, text: $.t('core.data_types.' + ct)}; }).value());
     };
 
     var showLinkSection = function(c)
@@ -201,16 +201,16 @@
         },
 
         getTitle: function()
-        { return 'Column Properties'; },
+        { return $.t('screens.ds.grid_sidebar.column_properties.title'); },
 
         getSubtitle: function()
-        { return 'Update various properties on this column'; },
+        { return $.t('screens.ds.grid_sidebar.column_properties.subtitle'); },
 
         isAvailable: function()
         { return !this._view.temporary || this._view.minorChange; },
 
         getDisabledSubtitle: function()
-        { return 'You cannot edit column properties for an unsaved view'; },
+        { return $.t('screens.ds.grid_sidebar.column_properties.validation.unsaved'); },
 
         render: function()
         {
@@ -253,7 +253,7 @@
 
         _getReadOnlyMessage: function()
         {
-            return 'Please make a working copy or view of this dataset to change column properties';
+            return $.t('screens.ds.grid_sidebar.column_properties.validation.published');
         },
 
         _getSections: function()
@@ -261,33 +261,33 @@
             var cpObj = this;
             return [
                 {
-                    title: 'Basic Information',
+                    title: $.t('screens.ds.grid_sidebar.column_common.basic.title'),
                     fields: [
-                        {text: 'Name', type: 'text', required: true,
-                        disabled: nameDisabled, name: 'name', prompt: 'Enter a name'},
-                        {text: 'Description', type: 'textarea', disabled: nameDisabled,
-                        name: 'description', prompt: 'Enter a description'}
+                        {text: $.t('screens.ds.grid_sidebar.column_common.basic.name'), type: 'text', required: true,
+                        disabled: nameDisabled, name: 'name', prompt: $.t('screens.ds.grid_sidebar.column_common.basic.name_prompt')},
+                        {text: $.t('screens.ds.grid_sidebar.column_common.basic.description'), type: 'textarea', disabled: nameDisabled,
+                        name: 'description', prompt: $.t('screens.ds.grid_sidebar.column_common.basic.description_prompt')}
                     ]
                 },
 
                 {
-                    title: 'Data Type',
+                    title: $.t('screens.ds.grid_sidebar.column_common.type.title'),
                     onlyIf: { func: function(c) { return !showLinkSection(c); } },
                     fields: [
-                        {text: 'Data Type', type: 'select', required: true,
+                        {text: $.t('screens.ds.grid_sidebar.column_common.type.type'), type: 'select', required: true,
                         name: 'dataTypeName', prompt: null, options: convertTypes},
-                        {text: 'Data Type', type: 'static', value: staticDataType}
+                        {text: $.t('screens.ds.grid_sidebar.column_common.type.type'), type: 'static', value: staticDataType}
                     ]
                 },
 
                 // Link Column
                 {
-                    title: 'Link',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.link.title'),
                     onlyIf: { func: showLinkSection },
                     fields: [
-                        {text: 'Key', type: 'columnSelect', name: 'format.linkedKey', required: true,
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.link.key'), type: 'columnSelect', name: 'format.linkedKey', required: true,
                             columns: {type: 'dataset_link', hidden: false}},
-                        {text: 'Source', type: 'select', name: 'format.linkedSource', required: true,
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.link.source'), type: 'select', name: 'format.linkedSource', required: true,
                             linkedField: 'format.linkedKey',
                             options:
                                 // wrap in function to set up the "this" var
@@ -303,7 +303,7 @@
                 },
 
                 {
-                    title: 'Formatting',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.formatting.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
@@ -311,123 +311,121 @@
                         return !$.isBlank(t.alignment) || !$.isBlank(t.viewTypes);
                     }},
                     fields: [
-                        {text: 'Alignment', type: 'select', name: 'format.align',
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.formatting.alignment'), type: 'select', name: 'format.align',
                         prompt: null, options: alignmentOptions},
-                        {text: 'View Style', type: 'select', name: 'format.view',
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.formatting.view_style'), type: 'select', name: 'format.view',
                         prompt: null, options: viewOptions}
                     ]
                 },
 
                 // Number-specific info
                 {
-                    title: 'Number Formatting',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.number.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return _.include(['number', 'percent'], c.origColumn.renderTypeName);
                     }},
                     fields: [
-                        {text: 'Precision', type: 'radioGroup', name: 'precisionGroup',
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.number.precision'), type: 'radioGroup', name: 'precisionGroup',
                         defaultValue: 'format.precisionNone', options: [
-                            {type: 'static', value: 'None', name: 'format.precisionNone'},
+                            {type: 'static', value: $.t('screens.ds.grid_sidebar.column_properties.number.no_precision'), name: 'format.precisionNone'},
                             {type: 'slider', minimum: 0, maximum: 10, defaultValue: 0,
                             name: 'format.precision'}]},
-                        {text: 'Display', type: 'select',
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.number.display'), type: 'select',
                         name: 'format.precisionStyle', prompt: null, options: precisionStyle},
-                        {text: 'No Commas', type: 'checkbox', name: 'format.noCommas'}
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.number.no_commas'), type: 'checkbox', name: 'format.noCommas'}
                     ]
                 },
 
                 {
-                    title: 'Advanced Formatting',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.number_advanced.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'number';
                     }},
-                    fields: [{text: 'Format Mask', type: 'text', name: 'format.mask'},
-                        {type: 'note', value: 'Use #s to indicate numeric digits, ' +
-                        'and other characters where you want them to go; for example ' +
-                        'a social security number would be ###-##-####'},
-                        {type: 'note', value: 'This may override some of your settings above.'}
+                    fields: [{text: $.t('screens.ds.grid_sidebar.column_properties.number_advanced.format_mask'), type: 'text', name: 'format.mask'},
+                        {type: 'note', value: $.t('screens.ds.grid_sidebar.column_properties.number_advanced.format_mask_prompt')},
+                        {type: 'note', value: $.t('screens.ds.grid_sidebar.column_properties.number_advanced.format_mask_warning')}
                     ]
                 },
 
                 // Money-specific styles
                 {
-                    title: 'Money Formatting',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.money.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'money';
                     }},
                     fields: [
-                        {text: 'Precision', type: 'radioGroup',
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.money.precision'), type: 'radioGroup',
                         name: 'moneyPrecisionGroup',
                         defaultValue: 'format.precisionNone', options: [
-                            {type: 'static', value: 'None', name: 'format.precisionNone'},
+                            {type: 'static', value: $.t('screens.ds.grid_sidebar.column_properties.money.no_precision'), name: 'format.precisionNone'},
                             {type: 'slider', minimum: 0, maximum: 2, defaultValue: 2,
                             name: 'format.precision'}]},
-                        {text: 'Currency', type: 'select', name: 'format.currency', prompt: null,
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.money.currency'), type: 'select', name: 'format.currency', prompt: null,
                         defaultValue: 'dollar', options: currencyOptions},
-                        {text: 'Abbreviated', type: 'checkbox', name: 'format.humane'}
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.money.abbreviated'), type: 'checkbox', name: 'format.humane'}
                     ]
                 },
 
                 // Number localization
                 {
-                    title: 'Localization', type: 'selectable', showIfData: true,
+                    title: $.t('screens.ds.grid_sidebar.column_properties.localization.title'), type: 'selectable', showIfData: true,
                     onlyIf: { func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return _.include(['number', 'percent', 'money'], c.origColumn.renderTypeName);
                     }},
                     fields: [
-                        { text: 'Decimal', type: 'text', name: 'format.decimalSeparator',
+                        { text: $.t('screens.ds.grid_sidebar.column_properties.localization.decimal'), type: 'text', name: 'format.decimalSeparator',
                             defaultValue: '.' },
-                        { text: 'Thousands', type: 'text', name: 'format.groupSeparator',
+                        { text: $.t('screens.ds.grid_sidebar.column_properties.localization.thousands'), type: 'text', name: 'format.groupSeparator',
                             defaultValue: ',' }
                     ]
                 },
 
                 // Photo
                 {
-                    title: 'Photo Options',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.photo.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'photo';
                     }},
                     fields: [
-                            {text: 'Size', type: 'select', name: 'format.size',
-                            prompt: 'Choose a size', options: [
-                                { value: 'tiny', text: 'Tiny (24x24)' },
-                                { value: 'thumb', text: 'Thumbnail (80x80)' },
-                                { value: 'medium', text: 'Medium (150x150)' },
-                                { value: 'featured', text: 'Featured (150x80)' },
-                                { value: 'large', text: 'Large (220x220)' },
-                                { value: '', text: 'Original' }
+                            {text: $.t('screens.ds.grid_sidebar.column_properties.photo.size'), type: 'select', name: 'format.size',
+                            prompt: $.t('screens.ds.grid_sidebar.column_properties.photo.size_prompt'), options: [
+                                { value: 'tiny', text: $.t('screens.ds.grid_sidebar.column_properties.photo.sizes.tiny') },
+                                { value: 'thumb', text: $.t('screens.ds.grid_sidebar.column_properties.photo.sizes.thumb') },
+                                { value: 'medium', text: $.t('screens.ds.grid_sidebar.column_properties.photo.sizes.medium') },
+                                { value: 'featured', text: $.t('screens.ds.grid_sidebar.column_properties.photo.sizes.featured') },
+                                { value: 'large', text: $.t('screens.ds.grid_sidebar.column_properties.photo.sizes.large') },
+                                { value: '', text: $.t('screens.ds.grid_sidebar.column_properties.photo.sizes.original') }
                             ], defaultValue: ''}
                     ]
                 },
 
                 // URL
                 {
-                    title: 'URL Options',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.url.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'url';
                     }},
                     fields: [
-                            {text: 'Base URL', type: 'text', name: 'format.baseUrl',
-                            prompt: 'Enter the common URL prefix', extraClass: 'url'}
+                            {text: $.t('screens.ds.grid_sidebar.column_properties.url.base_url'), type: 'text', name: 'format.baseUrl',
+                            prompt: $.t('screens.ds.grid_sidebar.column_properties.url.base_url_prompt'), extraClass: 'url'}
                     ]
                 },
 
                 // Display order
                 {
-                    title: 'Display Order (for DataSlate)', type: 'selectable',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.display_order.title'), type: 'selectable',
                     name: 'displayOrder', showIfData: true,
                     onlyIf: {func: function(c)
                     {
@@ -435,76 +433,76 @@
                         return c.origColumn.renderTypeName == 'text';
                     }},
                     fields: [
-                        {type: 'repeater', addText: 'Add Item',
+                        {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.column_properties.display_order.new_item_button'),
                             defaultValue: $.subKeyDefined(cpObj, '_curData.origColumn.cachedContents.top') ?
                                 _.pluck(cpObj._curData.origColumn.cachedContents.top, 'item') : null,
                         name: 'metadata.displayOrder',  minimum: 0,
-                        field: {type: 'text', text: 'Option', name: 'orderItem'}}
+                        field: {type: 'text', text: $.t('screens.ds.grid_sidebar.column_properties.display_order.option'), name: 'orderItem'}}
                     ]
                 },
 
                 // Multiple choice value chooser
                 {
-                    title: 'Multiple Choice Options',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.multiple_choice.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'drop_down_list';
                     }},
                     fields: [
-                        {type: 'repeater', addText: 'Add Option',
+                        {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.column_properties.multiple_choice.new_option_button'),
                         name: 'dropDownList.values',  minimum: 1, savedField: 'id',
-                        field: {type: 'text', text: 'Option', name: 'description'}}
+                        field: {type: 'text', text: $.t('screens.ds.grid_sidebar.column_properties.multiple_choice.option'), name: 'description'}}
                     ]
                 },
 
                 // Dataset Link
                 {
-                    title: 'Linked Dataset',
+                    title: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'dataset_link';
                     }},
                     fields: [
-                        {text: 'Dataset', type: 'text', name: 'format.linkedDataset',
-                            data: { '4x4uid': 'unverified'}, prompt: 'Dataset URL or 4x4 UID'},
-                        {text: 'Key Column', type: 'select', name: 'format.keyColumn',
+                        {text: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.dataset'), type: 'text', name: 'format.linkedDataset',
+                            data: { '4x4uid': 'unverified'}, prompt: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.dataset_prompt')},
+                        {text: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.key'), type: 'select', name: 'format.keyColumn',
                             // add column has default - rdf key.
                             // edit column has no default.  ui cannot tell the diff
                             // between default (unsaved) or saved value.
                             linkedField: 'format.linkedDataset',
                             options: Dataset.getLinkedDatasetOptionsNoDefault},
-                        {text: 'Label Column', type: 'select', name: 'format.labelColumn',
+                        {text: $.t('screens.ds.grid_sidebar.column_common.linked_dataset.label'), type: 'select', name: 'format.labelColumn',
                             linkedField: 'format.linkedDataset',
                             options: Dataset.getLinkedDatasetOptionsDefault}
                     ]
                 },
 
                 {
-                    title: 'Column Totals',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.column_totals.title'),
                     onlyIf: {func: function(c)
                     {
                         if ($.isBlank(c)) { return false; }
                         return !$.isBlank(c.origColumn.renderType.aggregates);
                     }},
                     fields: [
-                        {text: 'Total', type: 'select', name: 'format.aggregate',
-                        prompt: 'Select a column total', options: aggregateOptions}
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.column_totals.total'), type: 'select', name: 'format.aggregate',
+                        prompt: $.t('screens.ds.grid_sidebar.column_properties.column_totals.total_prompt'), options: aggregateOptions}
                     ]
                 },
 
                 {
-                    title: 'Advanced', type: 'selectable', name: 'advanced',
+                    title: $.t('screens.ds.grid_sidebar.column_properties.advanced.title'), type: 'selectable', name: 'advanced',
                     fields: [
-                        {text: 'API Identifier', type: 'text',
+                        {text: $.t('screens.ds.grid_sidebar.column_properties.advanced.api_identifier'), type: 'text',
                          data: { 'fieldName': 'unverified' }, name: 'fieldName'},
-                        {type: 'repeater', addText: 'Add RDF Properties', name: 'format.rdf',  minimum: 0,
+                        {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.column_properties.advanced.new_rdf_button'), name: 'format.rdf',  minimum: 0,
                         field:
-                            {type: 'radioGroup', text: 'Semantics', name: 'rdfGroup',
+                            {type: 'radioGroup', text: $.t('screens.ds.grid_sidebar.column_properties.advanced.semantics'), name: 'rdfGroup',
                             options: [
                                 {type: 'select', name: 'stock', options: rdfOptions},
-                                {type: 'text', name: 'custom', prompt: 'Enter custom URL', extraClass: 'url'}
+                                {type: 'text', name: 'custom', prompt: $.t('screens.ds.grid_sidebar.column_properties.advanced.url'), extraClass: 'url'}
                             ]}
                         }
                     ]
@@ -572,7 +570,7 @@
             {
                 cpObj._finishProcessing();
 
-                cpObj._showMessage('Your column has been updated');
+                cpObj._showMessage($.t('screens.ds.grid_sidebar.column_properties.success'));
                 _.defer(function() { cpObj._hide(); });
                 if (_.isFunction(finalCallback)) { finalCallback(); }
             };

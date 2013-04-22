@@ -651,7 +651,7 @@ en:
           values: Values
           groups: Groups
           colors: Colors
-          title: Title
+          point_title: Title
           annotation: Annotation
           smooth_line: Smooth Line
           details: Details

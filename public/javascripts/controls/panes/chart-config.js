@@ -414,7 +414,7 @@
     {
         var bc = basicData(Dataset.chart.types.timeline, options, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.value'));
         bc.fields[1].field.options.push(
-                {text: $.t('screens.ds.grid_sidebar.chart.title'), type: 'columnSelect', useFieldName: true,
+                {text: $.t('screens.ds.grid_sidebar.chart.point_title'), type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.0',
                     columns: {type: 'text', hidden: options.isEdit}},
                 {text: $.t('screens.ds.grid_sidebar.chart.annotation'), type: 'columnSelect', useFieldName: true,

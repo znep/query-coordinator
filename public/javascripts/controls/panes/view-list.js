@@ -307,10 +307,10 @@
         },
 
         getTitle: function()
-        { return $.t('screens.ds.grid_sidebar.view_list.viwes.title'); },
+        { return $.t('screens.ds.grid_sidebar.view_list.views.title'); },
 
         getSubtitle: function()
-        { return $.t('screens.ds.grid_sidebar.view_list.viwes.subtitle'); },
+        { return $.t('screens.ds.grid_sidebar.view_list.views.subtitle'); },
 
         _getSections: function()
         {

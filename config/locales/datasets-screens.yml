@@ -364,7 +364,7 @@ en:
           subtitle: Share this %{view_type}
           validation:
             valid_saved: This view must be valid and saved
-          prompt_html: "This <span class=\"datasetTypeName\">dataset</span> is <span class=\"publicOrPrivate\">%{visibility}</span> <span class=\"andSharedHint %{hide}\">and shared with:</span>"
+          prompt_html: "This <span class=\"datasetTypeName\">dataset</span> is <span class=\"publicOrPrivate\">%{visibility} </span> <span class=\"andSharedHint %{hide}\">and shared with:</span>"
           loading_shares: Loading Shares...
           no_shares_html: "You are not currently sharing this <span class=\"datasetTypeName\">dataset</span> with anyone"
           share_button_html: Share this <span class="datasetTypeNameUpcase">Dataset</span>

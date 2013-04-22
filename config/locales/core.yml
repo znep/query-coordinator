@@ -158,6 +158,7 @@ en:
       required_field: Required Field
     share_types:
       view: Viewer
+      viewer: Viewer
       contributor: Contributor
       owner: Owner
     features:

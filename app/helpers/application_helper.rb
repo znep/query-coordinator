@@ -356,6 +356,9 @@ module ApplicationHelper
                   CurrentDomain.module_enabled?(options[:ifModuleEnabled])
 
     text = options[:text]
+
+    text = text[I18n.locale.to_s] || '(no translation available)' if text.is_a? Hash
+
     text = text.html_safe if options[:safe] == true
     options = options.except(:text, :ifModuleEnabled, :safe,
                              'text','ifModuleEnabled','safe')

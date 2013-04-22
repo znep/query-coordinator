@@ -2,23 +2,26 @@
   <ul class="navigationList">
     <li class="basicInfo">
       <%= link_to \
-        raw('<span class="icon"></span>Basic Info'),
+        raw('<span class="icon"></span>' + t('screens.profile.edit.info.title')),
           "#{current_user.href}/edit" %>
     </li>
     <li class="profileImage">
       <%= link_to \
-        raw('<span class="icon"></span>Profile Image'),
+        raw('<span class="icon"></span>' + t('screens.profile.edit.image.title')),
         {:action => 'edit_image'} %>
     </li>
     <li class="accountSettings">
       <%= link_to \
-        raw('<span class="icon"></span>Account Settings'),
+        raw('<span class="icon"></span>' + t('screens.profile.edit.account.title')),
         {:action => 'edit_account'} %>
     </li>
     <li class="appTokens">
       <%= link_to \
-        raw('<span class="icon"></span>App Tokens'),
+        raw('<span class="icon"></span>' + t('screens.profile.edit.app_tokens.title')),
         {:action => 'edit_app_tokens'} %>
     </li>
   </ul>
 </div>
+
+<%= render_translations LocalePart.screens.profile %>
+

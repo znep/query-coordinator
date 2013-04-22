@@ -1,21 +1,21 @@
 <%= modal :class => 'contactUserDialog' do %>
-  <h2>Contact User</h2>
+  <h2><%= t('screens.profile.contact.title') %></h2>
   <form class="commonForm" action="/api/users/<%= @user.id %>?method=contact" />
     <div class="line clearfix">
-      <label for="contactSubject" class="required">Subject</label>
+      <label for="contactSubject" class="required"><%= t('screens.profile.contact.subject') %></label>
       <input type="text" id="contactSubject" name="subject"
-        class="textPrompt required" title="Enter a subject" />
+        class="textPrompt required" title="<%= t('screens.profile.contact.subject_prompt') %>" />
     </div>
     <div class="line clearfix">
-      <label for="contactBody" class="required">Message</label>
+      <label for="contactBody" class="required"><%= t('screens.profile.contact.message') %></label>
       <textarea id="contactBody" name="message"
-        class="textPrompt required" title="Enter your message"></textarea>
+        class="textPrompt required" title="<%= t('screens.profile.contact.message_prompt') %>"></textarea>
     </div>
-    <span class="required">Required</span>
+    <span class="required"><%= t('core.forms.required_field') %></span>
   </form>
   <div class="mainError flash"></div>
   <ul class="actions">
-    <li><a href="#Cancel" class="jqmClose button">Cancel</a></li>
-    <li><a href="#Submit" class="submitAction button">Submit</a></li>
+    <li><a href="#Cancel" class="jqmClose button"><%= t('core.dialogs.cancel') %></a></li>
+    <li><a href="#Submit" class="submitAction button"><%= t('core.dialogs.submit') %></a></li>
   </ul>
 <%- end -%>

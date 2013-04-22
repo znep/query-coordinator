@@ -95,13 +95,15 @@ en:
       visit: view
       visits: views
     dialogs:
-      close: Close
-      cancel: Cancel
-      continue: Continue
-      done: Done
-      save: Save
-      dont_save: "Don't Save"
       apply: Apply
+      cancel: Cancel
+      close: Close
+      continue: Continue
+      create: Create
+      delete: Delete
+      done: Done
+      dont_save: "Don't Save"
+      save: Save
       update: Update
     pagination:
       first_page: First Page

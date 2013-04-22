@@ -3,52 +3,48 @@
              {:multipart => true, :class => 'commonForm createNewTokenForm'}) %>
   <div class="editSection noBorder">
     <div class="line clearfix">
-      <label for="app_token_name" class="required">Application Name</label>
+      <label for="app_token_name" class="required"><%= t('screens.profile.edit.app_tokens.application_name') %></label>
       <%= text_field_tag("app_token[name]", @token.name, :class => 'textPrompt required',
-            :title => 'Enter a name for your application') %>
+            :title => t('screens.profile.edit.app_tokens.application_name_prompt')) %>
     </div>
     <div class="line clearfix">
-      <label for="app_token_description" class="required">Description</label>
+      <label for="app_token_description" class="required"><%= t('screens.profile.edit.app_tokens.description') %></label>
       <%= text_area_tag("app_token[description]", @token.description, :class => 'textPrompt required',
-            :title => 'Enter a description for your application') %>
+            :title => t('screens.profile.edit.app_tokens.description_prompt')) %>
     </div>
     <div class="line clearfix">
-      <label for="app_token_organization">Organization</label>
+      <label for="app_token_organization"><%= t('screens.profile.edit.app_tokens.organization') %></label>
       <%= text_field_tag("app_token[organization]", @token.organization, :class => 'textPrompt',
-            :title => 'Enter the organization responsible for this application') %>
+            :title => t('screens.profile.edit.app_tokens.organization_prompt')) %>
     </div>
     <div class="line clearfix">
-      <label for="app_token_website">Website</label>
+      <label for="app_token_website"><%= t('screens.profile.edit.app_tokens.website') %></label>
       <%= text_field_tag("app_token[website]", @token.website, :class => 'textPrompt url',
-            :title => "Provide a link to this application or organization's website") %>
+            :title => t('screens.profile.edit.app_tokens.website_prompt')) %>
     </div>
     <div class="line clearfix">
-      <label for="app_token_baseUri">Callback Prefix</label>
+      <label for="app_token_baseUri"><%= t('screens.profile.edit.app_tokens.callback_prefix') %></label>
       <%= text_field_tag("app_token[baseUri]", @token.baseUri, :class => 'textPrompt url',
-            :title => 'Provide the prefix to the secure (https) callback uri when using OAuth') %>
-      <p>For instance, if your application will call back to
-         <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> and
-         <span class="code">https://my-domain.com/socrata-app/profile</span>, you'll want to supply
-         <span class="code">https://my-domain.com/socrata-app</span> as your prefix. Note
-         that you must include at least the entire domain name.</p>
+            :title => t('screens.profile.edit.app_tokens.callback_prefix_prompt')) %>
+      <p><%= t('screens.profile.edit.app_tokens.callback_prefix_help_html') %></p>
     </div>
     <div class="line clearfix">
-      <label for="app_token_public">Public?</label>
+      <label for="app_token_public"><%= t('screens.profile.edit.app_tokens.public') %></label>
       <%= check_box_tag 'app_token[public]', 'on', @token.public %>
     </div>
     <%- unless @token.id.nil? -%>
       <div class="line clearfix">
-        <label>Thumbnail</label>
+        <label><%= t('screens.profile.edit.app_tokens.thumbnail') %></label>
         <%- if @token.has_thumbnail? -%>
           <div class="thumbnail thumbnailArea">
             <img src="<%= @token.thumbnail_url %>" alt="thumbnail" />
           </div>
-          <span class="flash error thumbnailError">Please choose an image file (jpg, gif, png or tiff)</span>
+          <span class="flash error thumbnailError"><%= t('screens.profile.edit.validation.image_format') %></span>
         <%- else -%>
           <div class="noThumbnail thumbnailArea">
             <img alt="thumbnail" />
             <span class="noThumbnailText">
-              <em>No Thumbnail</em>
+              <em><%= t('screens.profile.app_tokens.no_thumbnail') %></em>
             </span>
           </div>
         <%- end -%>
@@ -63,7 +59,7 @@
     <%- end -%>
   </div>
   <div class="submitLine">
-    <%= submit_tag (@token && @token.id ? 'Save' : 'Create'), :class => 'button default' %>
-    <%= link_to('Cancel', {:action => 'edit_app_tokens'}, {:class => 'cancelButton button'}) %>
+    <%= submit_tag (@token && @token.id ? t('core.dialogs.save') : t('core.dialogs.create')), :class => 'button default' %>
+    <%= link_to(t('core.dialogs.cancel'), {:action => 'edit_app_tokens'}, {:class => 'cancelButton button'}) %>
   </div>
 </form>

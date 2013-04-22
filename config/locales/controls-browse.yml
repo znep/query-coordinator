@@ -8,6 +8,7 @@ en:
         view_types_singular_title: type
         view_types:
           datasets: Datasets
+          unpublished: Unpublished Datasets
           href: External Datasets
           blob: Files and Documents
           filters: Filtered Views

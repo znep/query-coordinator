@@ -3,13 +3,13 @@
     <div class="profileImage">
       <img src="<%= @user.profile_image_path('large') %>" alt="<%= @user.displayName %>" />
     </div>
-    <%= edit_link(@user, 'editProfileImageLink profileImage', 'Edit Image', 'image') %>
+    <%= edit_link(@user, 'editProfileImageLink profileImage', t('screens.profile.sidebar.edit_image_link'), 'image') %>
   </div>
   <% prerendered_cache cache_key('profile-friends-list', @current_state),
     @friends_rendered, :expires_in => 5.minutes do %>
 
-    <%- [{:name => 'Followers', :list => @followers},
-         {:name => 'Following', :list => @friends}].each do |user_list| -%>
+    <%- [{:name => t('screens.profile.sidebar.followers'), :list => @followers},
+         {:name => t('screens.profile.sidebar.following'), :list => @friends}].each do |user_list| -%>
       <%- unless user_list.blank? -%>
         <div class="innerItem userList <%= user_list[:name].downcase %>List">
           <h2><%= user_list[:name] %> (<%= user_list[:list].size %>)</h2>
@@ -29,7 +29,7 @@
                 <%- end -%>
               </div>
               <p class="showMoreLinkContainer">
-                <a href="#More" class="showMoreContacts">View All</a>
+                <a href="#More" class="showMoreContacts"><%= t('screens.profile.sidebar.all_contacts_link') %></a>
               </p>
             <%- end -%>
         </div>
@@ -37,3 +37,4 @@
     <%- end -%>
   <%- end -%>
 </div>
+

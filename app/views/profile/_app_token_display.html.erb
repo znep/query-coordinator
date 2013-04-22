@@ -9,7 +9,7 @@
         <img alt="thumbnail" />
       <%- end -%>
       <span class="noThumbnailText">
-        <em>No Thumbnail</em>
+        <em><%= t('screens.profile.app_tokens.item.no_thumbnail') %></em>
       </span>
     </div>
   <%- end -%>
@@ -17,7 +17,7 @@
     <%- ['name', 'description', 'organization', 'website'].each do |field| -%>
       <%- if token.data[field].present? -%>
         <p>
-          <span class="fieldName"><%= field.capitalize %></span>
+          <span class="fieldName"><%= t("screens.profile.app_tokens.item.#{field}") %></span>
           <span class="fieldValue">
             <%= raw(auto_link(h(token.data[field]), :html => { :rel=> 'external' })) %>
           </span>
@@ -26,27 +26,27 @@
     <%- end -%>
     <%- if edit -%>
       <p class="appTokenLine">
-        <span class="fieldName">App Token</span>
+        <span class="fieldName"><%= t('screens.profile.app_tokens.item.app_token') %></span>
         <span class="appTokenTextContainer fieldValue">
           <span class="appTokenText"><%= token.app_token %></span>
         </span>
       </p>
       <p class="appTokenLine">
-        <span class="fieldName">Secret Token</span>
+        <span class="fieldName"><%= t('screens.profile.app_tokens.item.secret_token') %></span>
         <span class="appTokenTextContainer fieldValue">
           <span class="appTokenText"></span>
           <a class="showSecretLink" href="#showSecretToken"
             data-userId="<%= current_user.id %>"
-            data-appTokenId="<%= token.id %>">Show Secret Token</a>
+            data-appTokenId="<%= token.id %>"><%= t('screens.profile.app_tokens.item.show_secret_link') %></a>
         </span>
       </p>
     <%- end -%>
     <%- if edit -%>
       <%= form_tag({:action => :delete_app_token, :token_id => token.id}) %>
         <p class="actionsLine">
-          <%= link_to 'Edit', {:action => 'edit_app_token', :id => current_user.id,
+          <%= link_to t('screens.profile.app_tokens.item.edit_token_link'), {:action => 'edit_app_token', :id => current_user.id,
                                :token_id => token.id}, :class => 'button' %>
-          <%= submit_tag 'Delete', :class => 'button deleteTokenButton' %>
+          <%= submit_tag t('core.dialogs.delete'), :class => 'button deleteTokenButton' %>
         </p>
       </form>
     <%- end -%>

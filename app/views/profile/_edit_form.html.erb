@@ -1,22 +1,22 @@
 <div class="editBasicInfoForm editForm">
-  <h1>Basic Information</h1>
+  <h1><%= t('screens.profile.edit.info.title_full') %></h1>
 
   <%= display_standard_flashes %>
 
   <div class="editArea">
     <div class="editSection clearfix">
       <div class="line clearfix">
-        <label for="user_screenName">Display Name</label>
+        <label for="user_screenName"><%= t('screens.profile.edit.info.display_name') %></label>
         <%= text_field_tag("user[screenName]", current_user.screenName,
         {:class => "textPrompt", :maxlength => 200}) %>
       </div>
       <div class="line clearfix">
-        <label for="user_firstName">First Name</label>
+        <label for="user_firstName"><%= t('screens.profile.edit.info.first_name') %></label>
         <%= text_field_tag("user[firstName]", current_user.firstName,
         {:class => "textPrompt", :maxlength => 200}) %>
       </div>
       <div class="line clearfix">
-        <label for="user_lastName">Last Name</label>
+        <label for="user_lastName"><%= t('screens.profile.edit.info.last_name') %></label>
         <%= text_field_tag("user[lastName]", current_user.lastName,
         {:class => "textPrompt", :maxlength => 200}) %>
       </div>
@@ -24,42 +24,40 @@
 
     <div class="editSection clearfix">
       <div class="line clearfix">
-        <label for="user_title">Organization</label>
+        <label for="user_title"><%= t('screens.profile.edit.info.organization') %></label>
         <%= text_field_tag("user[company]", current_user.company, :class => "textPrompt") %>
       </div>
 
       <div class="line clearfix">
-        <label for="user_title">Title</label>
+        <label for="user_title"><%= t('screens.profile.edit.info.user_title') %></label>
         <%= text_field_tag("user[title]", current_user.title, :class => "textPrompt") %>
       </div>
 
     </div>
     <div class="editSection clearfix">
       <div class="line clearfix">
-        <label for="user_city">City</label>
+        <label for="user_city"><%= t('screens.profile.edit.info.city') %></label>
         <%= text_field_tag("user[city]", current_user.city, :class => "textPrompt") %>
       </div>
 
       <div class="line fullLine clearfix stateLine">
-        <label for="user_state">State</label>
+        <label for="user_state"><%= t('screens.profile.edit.info.state') %></label>
         <%= select_tag("user[state]", raw(us_state_select_options((current_user.state || '').upcase))) %>
       </div>
 
       <div class="line fullLine clearfix">
-        <label for="user_country">Country</label>
+        <label for="user_country"><%= t('screens.profile.edit.info.country') %></label>
         <%= select_tag("user[country]", raw(country_select_options(current_user.country))) %>
       </div>
     </div>
 
     <div class="editSection clearfix">
-      <%- [{:name => 'description', :value => current_user.description,
-          :hint => 'Enter any information you would like to share'},
-         {:name => 'interests', :value => current_user.interests,
-          :hint => 'Enter your interests'}].each do |text_prompt| -%>
+      <%- [{:name => 'description', :value => current_user.description},
+          {:name => 'interests', :value => current_user.interests}].each do |text_prompt| -%>
         <div class="line clearfix">
-          <label><%= text_prompt[:name].titleize %></label>
+          <label><%= t("screens.profile.edit.info.#{text_prompt[:name]}.title") %></label>
           <%= text_area_tag("user[#{text_prompt[:name]}]", text_prompt[:value],
-            :class => 'textPrompt', :title => text_prompt[:hint]) %>
+            :class => 'textPrompt', :title => t("screens.profile.edit.info.#{text_prompt[:name]}.prompt")) %>
         </div>
      <%- end -%>
    </div>
@@ -75,15 +73,15 @@
         -%>
         <div class="line clearfix">
           <%= hidden_field_tag "links[#{existing_link.id}][linkType]", link_type.first.downcase %>
-          <label for="links_<%= existing_link.id %>_url"><%= link_type.last %></label>
-          <%= text_field_tag "links[#{existing_link.id}][url]", existing_link.url, :class => 'textPrompt url', :title => 'Enter URL' %>
+          <label for="links_<%= existing_link.id %>_url"><%= t('screens.profile.info.links.' + link_type.last) %></label>
+          <%= text_field_tag "links[#{existing_link.id}][url]", existing_link.url, :class => 'textPrompt url', :title => t('screens.profile.edit.info.link_prompt') %>
         </div>
       <%- end -%>
     </div>
   </div>
   <div class="submitLine">
-    <%= submit_tag 'Save Changes', :class => 'button default' %>
-    <%= link_to 'Cancel', current_user.href, :class => 'button' %>
+    <%= submit_tag t('core.dialogs.save'), :class => 'button default' %>
+    <%= link_to t('core.dialogs.cancel'), current_user.href, :class => 'button' %>
   </div>
 </div>
 

@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'profile-edit' %>
-  <title>Edit Application Tokens | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('screens.profile.edit.app_tokens.title_full') %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -14,11 +14,11 @@
 <div class="contentBox withLeftNavigation editProfile editAppTokens">
   <% link_to current_user.href, :class => 'button backButton leftArrowNoHover' do %>
     <span class="icon"></span>
-    Back to My Profile
+    <%= t('screens.profile.edit.back_link') %>
   <% end %>
   <div class="content">
     <div class="editAppTokensForm editForm">
-      <h1>Your Applications</h1>
+      <h1><%= t('screens.profile.edit.app_tokens.title_full') %></h1>
       <%= display_standard_flashes %>
       <div class="createNewToken editArea<%= ' hide' unless params[:no_js].present? %>">
         <%= render :partial => 'edit_app_tokens_form' %>

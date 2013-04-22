@@ -22,13 +22,13 @@ class UserLink < Model
   end
 
   @@link_types = [
-    ["MY_COMPANY", "My Company"],
-    ["MY_SITE", "My Site"],
-    ["BLOG", "My Blog"],
-    ["TWITTER", "Twitter"],
-    ["FACEBOOK", "Facebook"],
-    ["FLICKR", "Flickr"],
-    ["OTHER", "Other"]
+    ["MY_COMPANY", 'my_company'],
+    ["MY_SITE", 'my_site'],
+    ["BLOG", 'my_blog'],
+    ["TWITTER", 'twitter'],
+    ["FACEBOOK", 'facebook'],
+    ["FLICKR", 'flickr'],
+    ["OTHER", 'other']
   ]
 
 end

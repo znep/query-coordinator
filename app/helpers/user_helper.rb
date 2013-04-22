@@ -26,7 +26,7 @@ module UserHelper
     out = ""
     out += "<option value=\"\">-- Select a link type --</option>"
     UserLink.link_types.each do |network|
-      out += "<option value=\"#{network[0]}\" #{get_selected(selected_link, network[0])}>#{network[1]}</option>"
+      out += "<option value=\"#{network[0]}\" #{get_selected(selected_link, network[0])}>#{t('screens.profile.info.links.' + network[1])}</option>"
     end
     out
   end

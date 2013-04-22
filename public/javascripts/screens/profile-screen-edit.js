@@ -158,7 +158,7 @@
     var $showFormButton = $.tag({
         tagName: 'a',
         'class': 'button add showCreateTokenButton',
-        contents: 'Create New Application'
+        contents: $.t('screens.profile.edit.app_tokens.new_app_button')
     });
 
     var openFunction = $('html').hasClass('ie7') ? 'toggle' : 'slideToggle';

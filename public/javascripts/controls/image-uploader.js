@@ -86,7 +86,7 @@
     };
 
     $.fn.imageUploader.defaults = {
-        buttonText        : 'Upload Image',
+        buttonText        : $.t('controls.common.image_upload.button'),
         containerSelector : '.line',
         dataKey           : 'data-endpoint',
         errorSelector     : '.imageError',

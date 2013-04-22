@@ -1,0 +1,140 @@
+en:
+  screens:
+    profile:
+      bar:
+        edit_settings_link: Edit Account Settings
+        follow_link: Follow
+        unfollow_link: Unfollow
+        message_link: Send Message
+        join_date: Joined on
+        last_seen_date: Last logged in
+      info:
+        title: Basic Info
+        no_description: No description provided
+        interests: Interests
+        external_links: External Links
+        other_ext_link: Other
+        edit_link: Edit
+        links:
+          my_company: My Company
+          my_site: My Site
+          my_blog: My Blog
+          twitter: Twitter
+          facebook: Facebook
+          flickr: Flickr
+          other: Other
+      browse:
+        title: "%{user}'s Datasets"
+        owned_datasets: Owned By Me
+        shared_datasets: Shared To Me
+      app_tokens:
+        title: "%{user}'s Applications"
+        manage_link: Manage
+        no_applications: You have not created any applications yet. Click 'Manage' on the right to get started
+        item:
+          no_thumbnail: No Thumbnail
+          name: Name
+          description: Description
+          organization: Organization
+          website: Website
+          app_token: App Token
+          secret_token: Secret Token
+          show_secret_link: Show Secret Token
+          edit_token_link: Edit
+      sidebar:
+        edit_image_link: Edit Image
+        followers: Followers
+        following: Following
+        all_contacts_link: View All
+      contact:
+        title: Contact User
+        subject: Subject
+        subject_prompt: Enter a subject
+        message: Message
+        message_prompt: Enter your message
+      edit:
+        back_link: Back to My Profile
+        info:
+          title: Basic Info
+          title_full: Basic Information
+          display_name: Display Name
+          first_name: First Name
+          last_name: Last Name
+          organization: Organization
+          user_title: Title
+          city: City
+          state: State
+          country: Country
+          description:
+            title: Description
+            prompt: Enter any information you would like to share
+          interests:
+            title: Interests
+            prompt: Enter your interests
+          link_prompt: Enter URL
+        image:
+          title: Profile Image
+          upload_image_button: Upload New Image
+          success: Your image has been updated
+          error: "Error uploading new image: #{message}"
+        account:
+          title: Account Settings
+          current_email: Current Email
+          new_email: New Email
+          confirm_email: Confirm Email
+          password: Password
+          password_prompt: (For your security)
+          old_password: Old Password
+          new_password: New Password
+          password_restrictions_html: (Restrictions apply <span class="icon">&nbsp;</span>)
+          confirm_password: Confirm Password
+          connect_openid: Log in with your Facebook, Twitter, Google, or other 3rd-party credentials.
+          learn_openid: Learn about OpenID
+          no_openid: You have no OpenID identifiers associated with this account yet.
+          add_openid_button: Add an OpenID or External Account
+          email:
+            title: Email Notifications
+            subtitle: Subscribe to individual events by checking the associated box.
+            interests:
+              privileged_account_created: A user creates their privileged account
+              any_view_created: Any view is created
+              comment_to_moderate: A comment is submitted requiring moderation
+              account_provisioned: A privileged account is provisioned for future use
+              nomination_created: A new nomination is created
+              nomination_moderated: Any nomination is moderated
+              view_made_public: Any view is made public
+              other: Other
+              user_affected: Actions directly affecting you, such as comment replies and status updates
+            policy: %{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to.
+        app_tokens:
+          title: App Tokens
+          title_full: Your Applications
+          new_app_button: Create New Application
+          create_error: "An error occured creating your application token: #{message}"
+          create_success: Your application has been created
+          save_success: Your application was successfully saved
+          delete_error: "An error occured deleting your application token: #{message}"
+          delete_success: Your application has been deleted
+          application_name: Application Name
+          application_name_prompt: Enter a name for your application
+          description: Description
+          description_prompt: Enter a description for your application
+          organization: Organization
+          organization_prompt: Enter the organization responsible for this application
+          website: Website
+          website_prompt: "Provide a link to this application or organization's website"
+          callback_prefix: Callback Prefix
+          callback_prefix_prompt: Provide the prefix to the secure (https) callback uri when using OAuth
+          callback_prefix_help_html: "For instance, if your application will call back to <span class=\"code\">https://my-domain.com/socrata-app/oauth/validated</span> and <span class=\"code\">https://my-domain.com/socrata-app/profile</span>, you'll want to supply <span class=\"code\">https://my-domain.com/socrata-app</span> as your prefix. Note that you must include at least the entire domain name."
+          public: Public?
+          thumbnail: Thumbnail
+        validation:
+          no_display_name: "Error: 'Display Name' is required"
+          invalid_links: There was a problem updating your links. %{message}
+          password_mismatch: New passwords do not match
+          no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
+          email_mismatch: New emails do not match
+          image_format: Please select a valid image type (PNG, JPG, or GIF)
+          user_missing: This user cannot be found, or has been deleted.
+        success: Your profile has been successfully updated.
+

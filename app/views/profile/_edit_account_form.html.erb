@@ -1,5 +1,5 @@
 <div class="editAccountInfoForm editForm">
-  <h1>Account Settings</h1>
+  <h1><%= t('screens.profile.edit.account.title') %></h1>
 
   <%= display_standard_flashes %>
   <%- openid_identifiers = current_user.openid_identifiers -%>
@@ -10,22 +10,22 @@
       <%- unless current_user.flag?('nopassword') -%>
         <div class="editSection clearfix">
           <div class="line clearfix">
-            <label>Current Email</label>
+            <label><%= t('screens.profile.edit.account.current_email') %></label>
             <span class="field textItem"><%= current_user.email %></span>
           </div>
           <div class="line clearfix">
-            <label for="user_email">New Email</label>
+            <label for="user_email"><%= t('screens.profile.edit.account.new_email') %></label>
             <%= text_field_tag('user[email]', '', :class => 'textPrompt email') %>
           </div>
           <div class="line clearfix">
-            <label for="user_email_confirm">Confirm Email</label>
+            <label for="user_email_confirm"><%= t('screens.profile.edit.account.confirm_email') %></label>
             <%= text_field_tag('user[email_confirm]', '', :class => 'textPrompt email') %>
           </div>
           <div class="line clearfix">
-            <label for="user_email_password">Password</label>
+            <label for="user_email_password"><%= t('screens.profile.edit.account.password') %></label>
             <%= password_field_tag('user[email_password]', '') %>
             <span class="fieldHint textItem">
-              (For your security)
+              <%= t('screens.profile.edit.account.password_prompt') %>
             </span>
           </div>
         </div>
@@ -33,18 +33,18 @@
 
       <div class="editSection clearfix">
         <div class="line clearfix<%= ' noPassword hide' if current_user.flag?('nopassword') %>">
-          <label for="user_password_old">Old Password</label>
+          <label for="user_password_old"><%= t('screens.profile.edit.account.old_password') %></label>
           <%= password_field_tag('user[password_old]', '', :class => 'currentPassword') %>
         </div>
         <div class="line clearfix">
-          <label for="user_password_new">New Password</label>
+          <label for="user_password_new"><%= t('screens.profile.edit.account.new_password') %></label>
           <%= password_field_tag('user[password_new]', '', :class => 'newPassword') %>
           <span class="fieldHint textItem passwordHint about">
-            (Restrictions apply <span class="icon">&nbsp;</span>)
+            <%= t('screens.profile.edit.account.password_restrictions_html') %>
           </span>
         </div>
         <div class="line clearfix">
-          <label for="user_password_confirm">Confirm Password</label>
+          <label for="user_password_confirm"><%= t('screens.profile.edit.account.confirm_password') %></label>
           <%= password_field_tag('user[password_confirm]', '', :class => 'confirmPassword') %>
         </div>
       </div>
@@ -53,15 +53,15 @@
         <div class="line clearfix">
           <label>&nbsp;</label>
           <span class="field textItem">
-            Log in with your Facebook, Twitter, Google, or other 3rd-party credentials.
-            <%= link_to "Learn about OpenID", openid_explained_url(profile_account_url) %>
+            <%= t('screens.profile.edit.account.connect_openid') %>
+            <%= link_to t('screens.profile.edit.account.learn_openid'), openid_explained_url(profile_account_url) %>
           </span>
         </div>
 
         <%- if openid_identifiers.empty? -%>
         <div class="line clearfix">
           <label>&nbsp;</label>
-          <span class="field emptyItem">You have no OpenID identifiers associated with this account yet.</span>
+          <span class="field emptyItem"><%= t('screens.profile.edit.account.no_openid') %></span>
         </div>
         <%- else -%>
           <%- openid_identifiers.each do |ident| -%>
@@ -77,16 +77,16 @@
         <%- end -%>
         <div class="line clearfix fullLine">
           <label>&nbsp;</label>
-          <%= link_to_rpx raw('<span class="icon"></span>Add an OpenID or External Account'),
+          <%= link_to_rpx raw('<span class="icon"></span>' + t('screens.profile.edit.account.add_openid_button')),
                 add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>
         </div>
       </div>
 
       <div class="editSection clearfix">
         <div class="line clearfix">
-          <label>Email Notifications</label>
+          <label><%= t('screens.profile.edit.account.email.title') %></label>
           <span class="textItem">
-            Subscribe to individual events by checking the associated box.
+            <%= t('screens.profile.edit.account.email.subtitle') %>
           </span>
         </div>
         <%- EmailInterest.specification.sort {|a, b| a.last[:description] <=> b.last[:description]}.each do |interest| -%>
@@ -94,26 +94,23 @@
           <div class="line emailInterestLine clearfix">
             <label>&nbsp;</label>
             <%= check_box_tag("email_interests[#{interest.first}]", true, @email_interests.any? { |i| i.eventTag == interest.first }) %>
-            <label class="description" for="email_interests_<%= interest.first %>"><%= interest.last[:description]%></label>
+            <label class="description" for="email_interests_<%= interest.first %>"><%= t('screens.profile.edit.account.email.interests.' + interest.last[:description]) %></label>
           </div>
         <%- end -%>
         <div class="line emailSubscribeLine clearfix">
-          <label>Other</label>
+          <label><%= t('screens.profile.edit.account.email.interests.other') %></label>
           <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
           <label for="user_email_subscribe" class="description">
-            Actions directly affecting you, such as comment replies and status updates
+            <%= t('screens.profile.edit.account.email.interests.user_affected') %>
           </label>
-          <p><%= CurrentDomain.strings.company %> respects your privacy, and will never send you
-             marketing emails through this list, or give your email to a third party. The emails
-             sent from this site include account notifications and updates to datasets that you
-             have created or subscribed to.</p>
+          <p><%= t('screens.profile.edit.account.email.policy', site: CurrentDomain.strings.company) %></p>
         </div>
       </div>
     </div>
 
     <div class="submitLine">
-      <%= submit_tag 'Save Changes', :class => 'button default' %>
-      <%= link_to 'Cancel', current_user.href, :class => 'button' %>
+      <%= submit_tag t('core.dialogs.save'), :class => 'button default' %>
+      <%= link_to t('core.dialogs.cancel'), current_user.href, :class => 'button' %>
     </div>
   <% end %>
 </div>

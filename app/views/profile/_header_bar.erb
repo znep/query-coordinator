@@ -19,24 +19,24 @@
     <%- if @is_user_current -%>
       <a href="<%= @user.href %>/account" class="editProfileLink iconLink accountSettings">
         <span class="icon"></span>
-        <span class="editLinkText">Edit Account Settings</span>
+        <span class="editLinkText"><%= t('screens.profile.bar.edit_settings_link') %></span>
       </a>
     <%- elsif !current_user.nil? -%>
       <%- if !(@user.my_friend?) -%>
         <a href="<%= url_for(:action => 'create_friend') %>" class="followButton button smallButton add">
           <span class="icon"></span>
-          <span class="linkText">Follow</span>
+          <span class="linkText"><%= t('screens.profile.bar.follow_link') %></span>
         </a>
       <%- else -%>
         <a href="<%= url_for(:action => 'delete_friend') %>" class="followButton button smallButton remove">
           <span class="icon"></span>
-          <span class="linkText">Unfollow</span>
+          <span class="linkText"><%= t('screens.profile.bar.unfollow_link') %></span>
         </a>
       <%- end -%>
       <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
         <a href="#Message" class="button smallButton contactUserButton">
           <span class="icon"></span>
-          <span class="linkText">Send Message</span>
+          <span class="linkText"><%= t('screens.profile.bar.message_link') %></span>
         </a>
       <%- end -%>
     <%- end -%>
@@ -47,8 +47,8 @@
       <%= @user.displayLocation %>
     </p>
     <p class="secondary">
-      <%- [{:text => "Joined on", :date => @user.createdAt},
-           {:text => "Last Logged In", :date => @user.lastLogin}].each do |login| -%>
+      <%- [{:text => t('screens.profile.bar.join_date'), :date => @user.createdAt},
+           {:text => t('screens.profile.bar.last_seen_date'), :date => @user.lastLogin}].each do |login| -%>
          <em><%= login[:text] %></em>
          <span class="accountDate"><%= blist_long_date(login[:date]) %></span>
       <%- end -%>

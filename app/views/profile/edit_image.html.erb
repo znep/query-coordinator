@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'profile-edit' %>
-  <title>Profile Image | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('screens.profile.edit.image.title') %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -14,7 +14,7 @@
 <div id="profileEdit" class="contentBox withLeftNavigation editProfile editProfileImage">
   <% link_to current_user.href, :class => 'button backButton leftArrowNoHover' do %>
     <span class="icon"></span>
-    Back to My Profile
+    <%= t('screens.profile.edit.back_link') %>
   <% end %>
   <div class="content">
     <%= form_tag(current_user.href, :id => "editProfileForm",

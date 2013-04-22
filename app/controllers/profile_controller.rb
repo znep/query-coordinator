@@ -54,7 +54,7 @@ class ProfileController < ApplicationController
           browse_options[:publication_stage] = [ 'published', 'unpublished' ]
 
           vtf = view_types_facet
-          vtf[:options].insert(1, {:text => 'Unpublished Datasets', :value => 'unpublished',
+          vtf[:options].insert(1, {:text => t('controls.browse.facets.view_types.unpublished'), :value => 'unpublished',
                                :class => 'typeUnpublished'})
           browse_options[:facets] = [vtf, categories_facet(params)]
         else
@@ -115,7 +115,7 @@ class ProfileController < ApplicationController
       end
 
       if (params[:user][:screenName].empty?)
-        flash.now[:error] = "Error: 'Display Name' is required"
+        flash.now[:error] = t('screens.profile.edit.validation.no_display_name')
         @user_links = UserLink.find(current_user.id)
         return (render 'profile/edit')
       end
@@ -146,7 +146,7 @@ class ProfileController < ApplicationController
         end
       rescue CoreServer::CoreServerError => e
         is_error = true
-        error_msg = "There was a problem updating your links. #{e.error_message}"
+        error_msg = t('screens.profile.edit.validation.invalid_links', message: e.error_message)
       end
     end
 
@@ -165,7 +165,7 @@ class ProfileController < ApplicationController
           flash.now[:error] = error_msg
           return (render 'shared/error', :status => :forbidden)
         else
-          flash[:notice] = "Your profile has been successfully updated."
+          flash[:notice] = t('screens.profile.edit.success')
           redirect_to(current_user.href)
         end
       end
@@ -199,7 +199,7 @@ class ProfileController < ApplicationController
       begin
         if params[:user][:password_new].present?
           if params[:user][:password_new] != params[:user][:password_confirm]
-            error_msg = "New passwords do not match"
+            error_msg = t('screens.profile.edit.validation.password_mismatch')
           else
             @current_user = current_user.update_password(
               {:newPassword => params[:user][:password_new],
@@ -209,7 +209,7 @@ class ProfileController < ApplicationController
         if params[:openid_delete].present?
           if current_user.flag?('nopassword') &&
             params[:openid_delete].size >= current_user.openid_identifiers.size
-            error_msg = "You cannot remove all your OpenID identifiers before you set a password"
+            error_msg = t('screens.profile.edit.validation.no_password_no_openid')
           else
             CoreServer::Base.connection.batch_request do |batch_id|
               params[:openid_delete].each do |k, v|
@@ -246,7 +246,7 @@ class ProfileController < ApplicationController
         updated_attributes = {}
         if params[:user][:email].present?
           if params[:user][:email] != params[:user][:email_confirm]
-            error_msg = "New emails do not match"
+            error_msg = t('screens.profile.edit.validation.email_mismatch')
           else
             updated_attributes.merge!(
                 {:email => params[:user][:email],
@@ -265,7 +265,7 @@ class ProfileController < ApplicationController
       if !error_msg.nil?
         flash[:error] = error_msg
       else
-        flash[:notice] = "Your profile has been successfully updated."
+        flash[:notice] = t('screens.profile.edit.success')
       end
     end
     redirect_to "#{current_user.href}/account"
@@ -305,9 +305,9 @@ class ProfileController < ApplicationController
     if params[:token_id] == 'new'
       begin
         @token = AppToken.create(params[:id], token_params)
-        flash.now[:notice] = "Your application has been created"
+        flash.now[:notice] = t('screens.profile.edit.app_tokens.create_success')
       rescue CoreServer::CoreServerError => e
-        flash.now[:error] = "An error occured creating your application token: #{e.error_message}"
+        flash.now[:error] = t('screens.profile.edit.app_tokens.create_error', message: e.error_message)
         if @token.nil?
           @token = Hashie::Mash.new(token_params)
         end
@@ -322,7 +322,7 @@ class ProfileController < ApplicationController
           flash.now[:error] = e.error_message
           @token = AppToken.find_by_id(params[:id], params[:token_id])
         end
-        flash.now[:notice] = "Your application was successfully saved"
+        flash.now[:notice] = t('screens.profile.edit.app_tokens.save_success')
       else
         @token = AppToken.find_by_id(params[:id], params[:token_id])
       end
@@ -335,10 +335,10 @@ class ProfileController < ApplicationController
     begin
       AppToken.delete(params[:id], params[:token_id])
     rescue CoreServer::CoreServerError => e
-      flash[:error] = "An error occured deleting your application: #{e.error_message}"
+      flash[:error] = t('screens.profile.edit.app_tokens.delete_error', message: e.error_message)
       return(redirect_to(:action => :edit_app_tokens))
     end
-    flash[:notice] = "Your application has been deleted"
+    flash[:notice] = t('screens.profile.edit.app_tokens.delete_success')
     redirect_to :action => :edit_app_tokens
   end
 
@@ -376,15 +376,15 @@ private
     if params[:new_image]
       unless ['image/png','image/x-png','image/gif','image/jpeg','image/pjpeg']
         .include? params[:new_image].content_type
-        flash[:error] = "Please select a valid image type (PNG, JPG, or GIF)"
+        flash[:error] = t('screens.profile.edit.validation.image_format')
         return
       end
       begin
         resp = CoreServer::Base.connection.multipart_post_file(
           post_url, params[:new_image])
-        flash[:notice] = "Your image has been updated"
+        flash[:notice] = t('screens.profile.edit.image.success')
       rescue => ex
-        flash[:error] = "Error uploading new image: #{ex.message}"
+        flash[:error] = t('screens.profile.edit.image.error', message: ex.message)
       end
     end
   end
@@ -400,7 +400,7 @@ private
         @user = current_user
       end
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'This user cannot be found, or has been deleted.'
+      flash.now[:error] = t('screens.profile.edit.validation.user_missing')
       render 'shared/error', :status => :not_found
       return
     rescue CoreServer::CoreServerError => e
@@ -431,13 +431,13 @@ private
     unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state)))
       base_req = {:limit => 1, :for_user => @user.id, :nofederate => true}
       stats = [
-        {:params => {:datasetView => 'dataset'}, :name => 'Datasets'},
+        {:params => {:datasetView => 'dataset'}, :name => t('controls.browse.facets.view_types.datasets')},
         {:params => {:limitTo => 'tables', :datasetView => 'view'},
-          :name => 'Filtered Views'},
-        {:params => {:limitTo => 'charts'}, :name => 'Charts'},
-        {:params => {:limitTo => 'maps'}, :name => 'Maps'},
-        {:params => {:limitTo => 'calendars'}, :name => 'Calendars'},
-        {:params => {:limitTo => 'forms'}, :name => 'Forms'}
+          :name => t('controls.browse.facets.view_types.filters')},
+        {:params => {:limitTo => 'charts'}, :name => t('controls.browse.facets.view_types.charts')},
+        {:params => {:limitTo => 'maps'}, :name => t('controls.browse.facets.view_types.maps')},
+        {:params => {:limitTo => 'calendars'}, :name => t('controls.browse.facets.view_types.calendars')},
+        {:params => {:limitTo => 'forms'}, :name => t('controls.browse.facets.view_types.forms')}
       ]
       CoreServer::Base.connection.batch_request do |batch_id|
         stats.each do |s|

@@ -25,6 +25,8 @@ en:
           discuss: Discuss
           embed: Embed
           about: About
+      image_upload:
+        button: Upload Image
 
 it:
   controls:

@@ -23,7 +23,7 @@ class LocaleMiddleware
     locale = locales.properties[host]
 
     # now grab all the ones that are acceptable
-    domain_locales = CurrentDomain.available_locales
+    domain_locales = CurrentDomain.available_locales + [ locale ]
 
     if locale.blank?
       # fall back to checking path lead

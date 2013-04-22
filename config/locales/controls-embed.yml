@@ -1,0 +1,17 @@
+en:
+  controls:
+    embed:
+      form_plain: Embed this Form as Plain HTML
+      form_frame: Embed this Form in a Frame
+      form_or: or
+      embed: Embed this Dataset
+      private_warning: This view is currently private. You can preview it, but you will need to make it public before people will be able to see it.
+      size: Size
+      custom_size: Custom Size
+      minimum_size: 425x425 is the minimum size
+      width: Width
+      height: Height
+      sdp_template: Social Data Player Template
+      template: Template
+      create_template_button: Create a New Template
+

@@ -183,7 +183,7 @@
             if (_.isNumber(this._displayFormat.opacity))
             {
                 _.each(this._dataLayers, function(layer)
-                { layer.setOpacity(this._displayFormat.opacity); });
+                { layer.setOpacity(this._displayFormat.opacity); }, this);
             }
         },
 

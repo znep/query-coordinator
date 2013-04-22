@@ -239,6 +239,18 @@ class CurrentDomain
     self.module_available?(name_or_set) && self.feature?(name_or_set)
   end
 
+  def self.available_locales
+    locale_props = self.configuration(:locales)
+
+    locale_props.properties['available_locales'] || [ default_locale ]
+  end
+
+  def self.default_locale
+    locale_props = self.configuration(:locales)
+
+    locale_props[cname] || locale_props['*'] || 'en'
+  end
+
   # CurrentDomain['preference name'] returns properties
   def self.[](key)
     self.properties.send key

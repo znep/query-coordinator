@@ -19,11 +19,11 @@ class LocaleMiddleware
     locales = CurrentDomain.configuration(:locales)
 
     # first, try loading from subdomain
+    # this is to enable cname-based locale enforcement; eg fr.socrata.com
     locale = locales.properties[host]
 
-    domain_locales = locales.properties['available_locales']
-    domain_locales = [locale] if domain_locales.nil? || domain_locales.empty?
-    domain_locales.push(locale) if !domain_locales.include?(locale)
+    # now grab all the ones that are acceptable
+    domain_locales = CurrentDomain.available_locales
 
     if locale.blank?
       # fall back to checking path lead

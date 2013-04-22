@@ -68,7 +68,7 @@ Dataset.map.convertToVersion2 = function(view, df)
     if (view.isArcGISDataset())
     {
         if (!df.layers)
-        { df.bkgdLayers = [{ layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_world_street_map'), opacity: 1.0 }]; }
+        { df.bkgdLayers = [{ layerName: $.t('core.map_layers.esri_world_street_map'), opacity: 1.0 }]; }
 
         delete df.viewDefinitions[0].plotStyle;
         for (var key in df.viewDefinitions[0].plot)
@@ -81,9 +81,9 @@ Dataset.map.convertToVersion2 = function(view, df)
     if (view.isGeoDataset())
     {
         df.exclusiveLayers = true;
-        df.bkgdLayers = [{ layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_roadmap'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_roadmap_alias'), opacity: 1.0 },
-                         { layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_roadmap'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_roadmap_alias'), opacity: 1.0 },
-                         { layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_world_street_map'), alias: 'ESRI', opacity: 1.0 }];
+        df.bkgdLayers = [{ layerName: $.t('core.map_layers.google_roadmap'), alias: $.t('core.map_layers.google_roadmap_alias'), opacity: 1.0 },
+                         { layerName: $.t('core.map_layers.bing_roadmap'), alias: $.t('core.map_layers.bing_roadmap_alias'), opacity: 1.0 },
+                         { layerName: $.t('core.map_layers.esri_world_street_map'), alias: 'ESRI', opacity: 1.0 }];
         delete df.viewDefinitions[0].plotStyle;
         delete df.viewDefinitions[0].plot;
     }
@@ -94,39 +94,39 @@ Dataset.map.convertToVersion2 = function(view, df)
 };
 
 Dataset.map.backgroundLayers = [
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_roadmap'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.roadmap'), className: 'Google', options: { type: 'ROADMAP' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_satellite'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.satellite'), className: 'Google',
+    { name: $.t('core.map_layers.google_roadmap'), alias: $.t('core.map_layers.roadmap'), className: 'Google', options: { type: 'ROADMAP' }},
+    { name: $.t('core.map_layers.google_satellite'), alias: $.t('core.map_layers.satellite'), className: 'Google',
         zoomLevels: 20, options: { type: 'SATELLITE' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_terrain'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.terrain'), className: 'Google',
+    { name: $.t('core.map_layers.google_terrain'), alias: $.t('core.map_layers.terrain'), className: 'Google',
         zoomLevels: 16, options: { type: 'TERRAIN' }},
-    //{ name: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_roadmap'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.roadmap'), className: 'Bing', zoomLevels: 20 },
-    //{ name: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_aerial'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.aerial'), className: 'Bing', options: { type: 'Aerial' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_roadmap'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.roadmap'), className: 'Google', options: { type: 'ROADMAP' } },
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_aerial'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.aerial'), className: 'Google',
+    //{ name: $.t('core.map_layers.bing_roadmap'), alias: $.t('core.map_layers.roadmap'), className: 'Bing', zoomLevels: 20 },
+    //{ name: $.t('core.map_layers.bing_aerial'), alias: $.t('core.map_layers.aerial'), className: 'Bing', options: { type: 'Aerial' }},
+    { name: $.t('core.map_layers.bing_roadmap'), alias: $.t('core.map_layers.roadmap'), className: 'Google', options: { type: 'ROADMAP' } },
+    { name: $.t('core.map_layers.bing_aerial'), alias: $.t('core.map_layers.aerial'), className: 'Google',
         zoomLevels: 20, options: { type: 'SATELLITE' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_world_street_map'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_world_street_map_alias'), className: 'ESRI',
+    { name: $.t('core.map_layers.esri_world_street_map'), alias: $.t('core.map_layers.esri_world_street_map_alias'), className: 'ESRI',
         zoomLevels: 20, options: { url: 'World_Street_Map' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_satellite'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.satellite'), className: 'ESRI',
+    { name: $.t('core.map_layers.esri_satellite'), alias: $.t('core.map_layers.satellite'), className: 'ESRI',
         zoomLevels: 20, options: { url: 'World_Imagery' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_us_topo'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_us_topo_alias'), className: 'ESRI',
+    { name: $.t('core.map_layers.esri_us_topo'), alias: $.t('core.map_layers.esri_us_topo_alias'), className: 'ESRI',
         zoomLevels: 16, options: { url: 'USA_Topo_Maps' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_world_topo'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_world_topo_alias'),
+    { name: $.t('core.map_layers.esri_world_topo'), alias: $.t('core.map_layers.esri_world_topo_alias'),
         zoomLevels: 17, className: 'ESRI', options: { url: 'World_Topo_Map' }},
-    { name: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_natural_earth'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.esri_natural_earth_alias'), className: 'ESRI',
+    { name: $.t('core.map_layers.esri_natural_earth'), alias: $.t('core.map_layers.esri_natural_earth_alias'), className: 'ESRI',
         zoomLevels: 9, options: { url: 'World_Physical_Map' }}
 ];
 Dataset.map.backgroundLayer = {custom: { name: 'custom', className: 'ESRI' }};
 
 Dataset.map.backgroundLayerSet = {};
 Dataset.map.backgroundLayerSet.Google = [
-    { layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_roadmap'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.roadmap'), opacity: 1},
-    { layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_satellite'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.satellite'), opacity: 1},
-    { layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.google_terrain'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.terrain'), opacity: 1}
+    { layerName: $.t('core.map_layers.google_roadmap'), alias: $.t('core.map_layers.roadmap'), opacity: 1},
+    { layerName: $.t('core.map_layers.google_satellite'), alias: $.t('core.map_layers.satellite'), opacity: 1},
+    { layerName: $.t('core.map_layers.google_terrain'), alias: $.t('core.map_layers.terrain'), opacity: 1}
 ];
 
 Dataset.map.backgroundLayerSet.Bing = [
-    { layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_roadmap'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.roadmap'), opacity: 1},
-    { layerName: $.t('screens.ds.grid_sidebar.map.base_layers.library.bing_aerial'), alias: $.t('screens.ds.grid_sidebar.map.base_layers.library.aerial'), opacity: 1}
+    { layerName: $.t('core.map_layers.bing_roadmap'), alias: $.t('core.map_layers.roadmap'), opacity: 1},
+    { layerName: $.t('core.map_layers.bing_aerial'), alias: $.t('core.map_layers.aerial'), opacity: 1}
 ];
 
 Dataset.modules['map'] =

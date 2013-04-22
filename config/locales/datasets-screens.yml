@@ -341,7 +341,7 @@ en:
           sort:
             popularity: Popularity
             dateDescending: Most Recent
-            dateAsceding: Oldest to Newest
+            dateAscending: Oldest to Newest
             alphaAscending: A-Z
           filter_title: Show only
           filter:
@@ -471,26 +471,6 @@ en:
             layer_url: Layer URL
             alias: Alias
             opacity: Opacity
-            library:
-              roadmap: Roadmap
-              satellite: Satellite
-              terrain: Terrain
-              aerial: Aerial
-              esri_world_street_map: World Street Map (ESRI)
-              esri_world_street_map_alias: World Street Map
-              esri_satellite: Satellite Imagery (ESRI)
-              esri_us_topo: Detailed USA Topographic Map (ESRI)
-              esri_us_topo_alias: USA Topographic Map
-              esri_world_topo: Annotated World Topographic Map (ESRI)
-              esri_world_topo_alias: World Topographic Map
-              esri_natural_earth: Natural Earth Map (ESRI)
-              esri_natural_earth_alias: Natural Earth Map
-              google_roadmap: Google Roadmap
-              google_roadmap_alias: Google
-              google_satellite: Google Satellite
-              google_terrain: Google Terrain
-              bing_roadmap: Bing Roadmap
-              bing_roadmap_alias: Bing
           regions:
             countries: Countries
             state: US States
@@ -605,18 +585,6 @@ en:
           annotation: Annotation
           smooth_line: Smooth Line
           details: Details
-          chart_type:
-            area: Area Chart
-            bar: Bar Chart
-            bubble: Bubble Chart
-            column: Column Chart
-            donut: Donut Chart
-            line: Line Chart
-            pie: Pie Chart
-            timeline: Time Line
-            treemap: Tree Map
-            stackedcolumn: Stacked Column Chart
-            stackedbar: Stacked Bar Chart
         api:
           title: API
           subtitle: Access this %{view_type} via SODA

@@ -89,12 +89,6 @@ javascripts:
     - public/javascripts/controls/editors/document-editor.js
     - public/javascripts/controls/editors/photo-editor.js
   canvas:
-    - public/javascripts/plugins/uri.js
-    - public/javascripts/plugins/html2markdown.js
-    - public/javascripts/plugins/htmldomparser.js
-    - public/javascripts/plugins/showdown.js
-    - public/javascripts/plugins/html4-defs.js
-    - public/javascripts/plugins/html-sanitizer.js
     - public/javascripts/plugins/lab.js
     - public/javascripts/plugins/waypoints.js
     - public/javascripts/util/asset-loading.js
@@ -120,6 +114,8 @@ javascripts:
     - public/javascripts/component/content/header.js
     - public/javascripts/component/content/related.js
     - public/javascripts/component/content/text.js
+    - public/javascripts/component/content/formatted-text.js
+    - public/javascripts/component/content/safe-html.js
     - public/javascripts/component/content/title.js
     - public/javascripts/component/data/calendar.js
     - public/javascripts/component/data/charts.js
@@ -175,6 +171,18 @@ javascripts:
     - public/javascripts/component/configurator/edit-actions/cf-edit-properties.js
     - public/javascripts/component/design/partial-text.js
     - public/javascripts/component/functional/string-resolver.js
+  sanitize-html:
+    - public/javascripts/plugins/uri.js
+    - public/javascripts/plugins/html4-defs.js
+    - public/javascripts/plugins/html-sanitizer.js
+    - public/javascripts/component/util/html-sanitizer-utils.js
+  markdown-render:
+    - public/javascripts/plugins/showdown.js
+    - public/javascripts/component/util/markdown-utils.js
+  markdown-create:
+    - public/javascripts/plugins/html2markdown.js
+    - public/javascripts/plugins/htmldomparser.js
+    - public/javascripts/component/util/markdown-utils.js
   template-instantiator:
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/template-instantiation.js
@@ -645,3 +653,6 @@ dump:
     - awesomecomplete
     - masonry
     - columnizer
+    - markdown-render
+    - markdown-create
+    - sanitize-html

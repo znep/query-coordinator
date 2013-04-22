@@ -173,6 +173,30 @@ module Canvas2
       obj.key?(locale) ? obj[locale] : ''
     end
 
+    #The Sanitizer filter for pre-filtering Markdown documents.
+    STRICT_SANITIZE_FILTER =
+    {
+      :elements => ['span', 'div'],
+      :attributes =>
+      {
+        'span' => ['class'],
+        'div' => ['class']
+      },
+      :protocols => {}
+    }
+
+    #The Sanitizer filter for filtering rendered Markdown or other HTML destined
+    # for direct display.
+    RELAXED_SANITIZE_FILTER = STRICT_SANITIZE_FILTER.deep_merge(
+      Sanitize::Config::RELAXED) do |a, b|
+        # Also (non-recursively) merge arrays.
+        if a.is_a?(Array) && b.is_a?(Array)
+          next (a | b)
+        else
+          next b
+        end
+      end
+
   private
     class AppHelper
       include ActionView::Helpers::TagHelper

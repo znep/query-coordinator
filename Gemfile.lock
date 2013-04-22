@@ -106,6 +106,7 @@ GEM
     rake (10.0.3)
     rdoc (3.12.1)
       json (~> 1.4)
+    redcarpet (2.2.2)
     rinku (1.7.2)
     ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
@@ -118,6 +119,9 @@ GEM
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
     rubyzip (0.9.9)
+    sanitize (2.0.3)
+      nokogiri (>= 1.4.4, < 1.6)
+      nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.5)
     sprockets (2.2.2)
       hike (~> 1.2)
@@ -155,8 +159,10 @@ DEPENDENCIES
   rack (~> 1.4.5)
   rack-ssl-enforcer
   rails (~> 3.2.12)
+  redcarpet
   rinku
   ruby-debug19
+  sanitize
   sass (~> 3.2)
   statsd-ruby!
   stomp (= 1.1.6)

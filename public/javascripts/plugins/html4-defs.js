@@ -198,6 +198,7 @@ html4.ATTRIBS_RELAXED = {
   'del::cite': 1,
   'del::datetime': 0,
   'details::open': 0,
+  'div::class': 9,
   'img::align': 0,
   'img::alt': 0,
   'img::height': 0,
@@ -220,6 +221,7 @@ html4.ATTRIBS_RELAXED = {
   'progress::value': 0,
   'q::cite': 1,
   'source::type': 0,
+  'span::class': 9,
   'table::summary': 0,
   'table::width': 0,
   'td::abbr': 0,
@@ -249,9 +251,6 @@ html4.ATTRIBS_RELAXED = {
 
 html4[ 'ATTRIBS_MINIMAL' ] = html4.ATTRIBS_MINIMAL;
 html4[ 'ATTRIBS_RELAXED' ] = html4.ATTRIBS_RELAXED;
-
-// TODO REMOVEME
-html4[ 'ATTRIBS' ] = html4.ATTRIBS_RELAXED;
 
 html4.eflags = {
   'OPTIONAL_ENDTAG': 1,
@@ -593,8 +592,6 @@ html4.ELEMENTS_RELAXED = {
 
 html4[ 'ELEMENTS_MINIMAL' ] = html4.ELEMENTS_MINIMAL;
 html4[ 'ELEMENTS_RELAXED' ] = html4.ELEMENTS_RELAXED;
-// TODO REMOVEME
-html4[ 'ELEMENTS' ] = html4.ELEMENTS_RELAXED;
 
 html4.ELEMENT_DOM_INTERFACES = {
   'a': 'HTMLAnchorElement',

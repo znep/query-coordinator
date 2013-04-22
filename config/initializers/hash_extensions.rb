@@ -2,14 +2,22 @@
 
 class Hash
 
+  # Recursively merges two hashes. When trying to merge two values that are not
+  # both hashes, take the other's value, unless a block is given. If a block is
+  # given, the value is the one given by the block. The block takes the pair of
+  # values we're trying to merge, in (self, other) order.
   def deep_merge(other)
     result = self.dup
 
     other.each_key do |key|
-      if other[key].is_a?(Hash) && result[key].is_a?(Hash)
-        result[key] = result[key].deep_merge(other[key])
+      if (other[key].is_a?(Hash) && result[key].is_a?(Hash))
+        result[key] = result[key].deep_merge(other[key]) {|a, b| yield(a, b) if block_given? }
       else
-        result[key] = other[key]
+        if block_given?
+          result[key] = yield(result[key], other[key])
+        else
+          result[key] = other[key]
+        end
       end
     end
 

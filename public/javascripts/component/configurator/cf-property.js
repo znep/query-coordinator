@@ -317,7 +317,7 @@
             html = html.replace(p, prop.toHtml());
         });
         $node.html(html);
-        $node.children('.cf-property').quickEach(function()
+        $node.find('.cf-property').quickEach(function()
         {
             var $t = $(this);
             var prop = propObjs[$t.attr('data-propId')];
@@ -345,7 +345,7 @@
     {
         $node.editable({ edit: false });
 
-        $node.children('.cf-property, .cf-property-edit').quickEach(function()
+        $node.find('.cf-property, .cf-property-edit').quickEach(function()
         {
             var t = this;
             if (t.hasClass('cf-property-edit')) { t = t.children('.cf-property'); }

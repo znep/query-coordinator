@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Modifications:
+// Giacomo Ferrari 4/18/2013: Plumb attribute flags and element flags through
+//  system instead of using hard-coded references (such as html4.ELEMENTS).
+
 /**
  * @fileoverview
  * An HTML sanitizer that can satisfy a variety of security policies.
@@ -271,7 +275,7 @@ var html = (function(html4) {
    * @return {function(string, Object)} A function that takes a chunk of HTML
    *     and a parameter.  The parameter is passed on to the handler methods.
    */
-  function makeSaxParser(handler) {
+  function makeSaxParser(handler, elementFlags, attribFlags) {
     // Accept quoted or unquoted keys (Closure compat)
     var hcopy = {
       cdata: handler.cdata || handler['cdata'],
@@ -284,7 +288,7 @@ var html = (function(html4) {
       startTag: handler.startTag || handler['startTag']
     };
     return function(htmlText, param) {
-      return parse(htmlText, hcopy, param);
+      return parse(htmlText, hcopy, param, elementFlags, attribFlags);
     };
   }
 
@@ -314,23 +318,23 @@ var html = (function(html4) {
   // TODO(felix8a): "<p<p<p..." is slower on IE[6-8]
 
   var continuationMarker = {};
-  function parse(htmlText, handler, param) {
+  function parse(htmlText, handler, param, elementFlags, attribFlags) {
     var m, p, tagName;
     var parts = htmlSplit(htmlText);
     var state = {
       noMoreGT: false,
       noMoreEndComments: false
     };
-    parseCPS(handler, parts, 0, state, param);
+    parseCPS(handler, parts, 0, state, param, elementFlags, attribFlags);
   }
 
-  function continuationMaker(h, parts, initial, state, param) {
+  function continuationMaker(h, parts, initial, state, param, elementFlags, attribFlags) {
     return function () {
-      parseCPS(h, parts, initial, state, param);
+      parseCPS(h, parts, initial, state, param, elementFlags, attribFlags);
     };
   }
 
-  function parseCPS(h, parts, initial, state, param) {
+  function parseCPS(h, parts, initial, state, param, elementFlags, attribFlags) {
     try {
       if (h.startDoc && initial == 0) { h.startDoc(param); }
       var m, p, tagName;
@@ -342,12 +346,12 @@ var html = (function(html4) {
           if (ENTITY_RE_2.test(next)) {
             if (h.pcdata) {
               h.pcdata('&' + next, param, continuationMarker,
-                continuationMaker(h, parts, pos, state, param));
+                continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
             }
             pos++;
           } else {
             if (h.pcdata) { h.pcdata("&amp;", param, continuationMarker,
-                continuationMaker(h, parts, pos, state, param));
+                continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
             }
           }
           break;
@@ -359,18 +363,18 @@ var html = (function(html4) {
               tagName = m[1].toLowerCase();
               if (h.endTag) {
                 h.endTag(tagName, param, continuationMarker,
-                  continuationMaker(h, parts, pos, state, param));
+                  continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
               }
             } else {
               // slow case, need to parse attributes
               // TODO(felix8a): do we really care about misparsing this?
               pos = parseEndTag(
-                parts, pos, h, param, continuationMarker, state);
+                parts, pos, h, param, continuationMarker, state, elementFlags, attribFlags);
             }
           } else {
             if (h.pcdata) {
               h.pcdata('&lt;/', param, continuationMarker,
-                continuationMaker(h, parts, pos, state, param));
+                continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
             }
           }
           break;
@@ -382,24 +386,24 @@ var html = (function(html4) {
               tagName = m[1].toLowerCase();
               if (h.startTag) {
                 h.startTag(tagName, [], param, continuationMarker,
-                  continuationMaker(h, parts, pos, state, param));
+                  continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
               }
               // tags like <script> and <textarea> have special parsing
-              var eflags = html4.ELEMENTS[tagName];
+              var eflags = elementFlags[tagName];
               if (eflags & EFLAGS_TEXT) {
                 var tag = { name: tagName, next: pos, eflags: eflags };
                 pos = parseText(
-                  parts, tag, h, param, continuationMarker, state);
+                  parts, tag, h, param, continuationMarker, state, elementFlags, attribFlags);
               }
             } else {
               // slow case, need to parse attributes
               pos = parseStartTag(
-                parts, pos, h, param, continuationMarker, state);
+                parts, pos, h, param, continuationMarker, state, elementFlags, attribFlags);
             }
           } else {
             if (h.pcdata) {
               h.pcdata('&lt;', param, continuationMarker,
-                continuationMaker(h, parts, pos, state, param));
+                continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
             }
           }
           break;
@@ -421,7 +425,7 @@ var html = (function(html4) {
                 h.comment(
                   comment.substr(0, comment.length - 2), param,
                   continuationMarker,
-                  continuationMaker(h, parts, p + 1, state, param));
+                  continuationMaker(h, parts, p + 1, state, param, elementFlags, attribFlags));
               }
               pos = p + 1;
             } else {
@@ -431,7 +435,7 @@ var html = (function(html4) {
           if (state.noMoreEndComments) {
             if (h.pcdata) {
               h.pcdata('&lt;!--', param, continuationMarker,
-                continuationMaker(h, parts, pos, state, param));
+                continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
             }
           }
           break;
@@ -439,7 +443,7 @@ var html = (function(html4) {
           if (!/^\w/.test(next)) {
             if (h.pcdata) {
               h.pcdata('&lt;!', param, continuationMarker,
-                continuationMaker(h, parts, pos, state, param));
+                continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
             }
           } else {
             // similar to noMoreEndComment logic
@@ -456,7 +460,7 @@ var html = (function(html4) {
             if (state.noMoreGT) {
               if (h.pcdata) {
                 h.pcdata('&lt;!', param, continuationMarker,
-                  continuationMaker(h, parts, pos, state, param));
+                  continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
               }
             }
           }
@@ -476,14 +480,14 @@ var html = (function(html4) {
           if (state.noMoreGT) {
             if (h.pcdata) {
               h.pcdata('&lt;?', param, continuationMarker,
-                continuationMaker(h, parts, pos, state, param));
+                continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
             }
           }
           break;
         case '>':
           if (h.pcdata) {
             h.pcdata("&gt;", param, continuationMarker,
-              continuationMaker(h, parts, pos, state, param));
+              continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
           }
           break;
         case '':
@@ -491,7 +495,7 @@ var html = (function(html4) {
         default:
           if (h.pcdata) {
             h.pcdata(current, param, continuationMarker,
-              continuationMaker(h, parts, pos, state, param));
+              continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
           }
           break;
         }
@@ -523,28 +527,28 @@ var html = (function(html4) {
     }
   }
 
-  function parseEndTag(parts, pos, h, param, continuationMarker, state) {
-    var tag = parseTagAndAttrs(parts, pos);
+  function parseEndTag(parts, pos, h, param, continuationMarker, state, elementFlags, attribFlags) {
+    var tag = parseTagAndAttrs(parts, pos, elementFlags, attribFlags);
     // drop unclosed tags
     if (!tag) { return parts.length; }
     if (h.endTag) {
       h.endTag(tag.name, param, continuationMarker,
-        continuationMaker(h, parts, pos, state, param));
+        continuationMaker(h, parts, pos, state, param, elementFlags, attribFlags));
     }
     return tag.next;
   }
 
-  function parseStartTag(parts, pos, h, param, continuationMarker, state) {
-    var tag = parseTagAndAttrs(parts, pos);
+  function parseStartTag(parts, pos, h, param, continuationMarker, state, elementFlags, attribFlags) {
+    var tag = parseTagAndAttrs(parts, pos, elementFlags, attribFlags);
     // drop unclosed tags
     if (!tag) { return parts.length; }
     if (h.startTag) {
       h.startTag(tag.name, tag.attrs, param, continuationMarker,
-        continuationMaker(h, parts, tag.next, state, param));
+        continuationMaker(h, parts, tag.next, state, param, elementFlags, attribFlags));
     }
     // tags like <script> and <textarea> have special parsing
     if (tag.eflags & EFLAGS_TEXT) {
-      return parseText(parts, tag, h, param, continuationMarker, state);
+      return parseText(parts, tag, h, param, continuationMarker, state, elementFlags, attribFlags);
     } else {
       return tag.next;
     }
@@ -554,7 +558,7 @@ var html = (function(html4) {
 
   // Tags like <script> and <textarea> are flagged as CDATA or RCDATA,
   // which means everything is text until we see the correct closing tag.
-  function parseText(parts, tag, h, param, continuationMarker, state) {
+  function parseText(parts, tag, h, param, continuationMarker, state, elementFlags, attribFlags) {
     var end = parts.length;
     if (!endTagRe.hasOwnProperty(tag.name)) {
       endTagRe[tag.name] = new RegExp('^' + tag.name + '(?:[\\s\\/]|$)', 'i');
@@ -570,12 +574,12 @@ var html = (function(html4) {
     if (tag.eflags & html4.eflags['CDATA']) {
       if (h.cdata) {
         h.cdata(buf, param, continuationMarker,
-          continuationMaker(h, parts, p, state, param));
+          continuationMaker(h, parts, p, state, param, elementFlags, attribFlags));
       }
     } else if (tag.eflags & html4.eflags['RCDATA']) {
       if (h.rcdata) {
         h.rcdata(normalizeRCData(buf), param, continuationMarker,
-          continuationMaker(h, parts, p, state, param));
+          continuationMaker(h, parts, p, state, param, elementFlags, attribFlags));
       }
     } else {
       throw new Error('bug');
@@ -584,11 +588,11 @@ var html = (function(html4) {
   }
 
   // at this point, parts[pos-1] is either "<" or "<\/".
-  function parseTagAndAttrs(parts, pos) {
+  function parseTagAndAttrs(parts, pos, elementFlags, attribFlags) {
     var m = /^([-\w:]+)/.exec(parts[pos]);
     var tag = {};
     tag.name = m[1].toLowerCase();
-    tag.eflags = html4.ELEMENTS[tag.name];
+    tag.eflags = elementFlags[tag.name];
     var buf = parts[pos].substr(m[0].length);
     // Find the next '>'.  We optimistically assume this '>' is not in a
     // quoted context, and further down we fix things up if it turns out to
@@ -661,7 +665,7 @@ var html = (function(html4) {
    * @return {function(string, Array)} A function that sanitizes a string of
    *     HTML and appends result strings to the second argument, an array.
    */
-  function makeHtmlSanitizer(tagPolicy) {
+  function makeHtmlSanitizer(tagPolicy, elementFlags, attribFlags) {
     var stack;
     var ignoring;
     var emit = function (text, out) {
@@ -674,8 +678,8 @@ var html = (function(html4) {
       },
       'startTag': function(tagNameOrig, attribs, out) {
         if (ignoring) { return; }
-        if (!html4.ELEMENTS.hasOwnProperty(tagNameOrig)) { return; }
-        var eflagsOrig = html4.ELEMENTS[tagNameOrig];
+        if (!elementFlags.hasOwnProperty(tagNameOrig)) { return; }
+        var eflagsOrig = elementFlags[tagNameOrig];
         if (eflagsOrig & html4.eflags['FOLDABLE']) {
           return;
         }
@@ -696,7 +700,7 @@ var html = (function(html4) {
         var tagNameRep;
         if ('tagName' in decision) {
           tagNameRep = decision['tagName'];
-          eflagsRep = html4.ELEMENTS[tagNameRep];
+          eflagsRep = elementFlags[tagNameRep];
         } else {
           tagNameRep = tagNameOrig;
           eflagsRep = eflagsOrig;
@@ -740,15 +744,15 @@ var html = (function(html4) {
           ignoring = false;
           return;
         }
-        if (!html4.ELEMENTS.hasOwnProperty(tagName)) { return; }
-        var eflags = html4.ELEMENTS[tagName];
+        if (!elementFlags.hasOwnProperty(tagName)) { return; }
+        var eflags = elementFlags[tagName];
         if (!(eflags & (html4.eflags['EMPTY'] | html4.eflags['FOLDABLE']))) {
           var index;
           if (eflags & html4.eflags['OPTIONAL_ENDTAG']) {
             for (index = stack.length; --index >= 0;) {
               var stackElOrigTag = stack[index].orig;
               if (stackElOrigTag === tagName) { break; }
-              if (!(html4.ELEMENTS[stackElOrigTag] &
+              if (!(elementFlags[stackElOrigTag] &
                     html4.eflags['OPTIONAL_ENDTAG'])) {
                 // Don't pop non optional end tags looking for a match.
                 return;
@@ -762,7 +766,7 @@ var html = (function(html4) {
           if (index < 0) { return; }  // Not opened.
           for (var i = stack.length; --i > index;) {
             var stackElRepTag = stack[i].rep;
-            if (!(html4.ELEMENTS[stackElRepTag] &
+            if (!(elementFlags[stackElRepTag] &
                   html4.eflags['OPTIONAL_ENDTAG'])) {
               out.push('<\/', stackElRepTag, '>');
             }
@@ -782,10 +786,10 @@ var html = (function(html4) {
           out.push('<\/', stack[stack.length - 1].rep, '>');
         }
       }
-    });
+    }, elementFlags, attribFlags);
   }
 
-  var ALLOWED_URI_SCHEMES = /^(?:https?|mailto)$/i;
+  var ALLOWED_URI_SCHEMES = /^(?:https?|mailto|ftp)$/i;
 
   function safeUri(uri, effect, ltype, hints, naiveUriRewriter) {
     if (!naiveUriRewriter) { return null; }
@@ -840,8 +844,8 @@ var html = (function(html4) {
     }
     return void 0;
   }
-  function getAttributeType(tagName, attribName) {
-    return lookupAttribute(html4.ATTRIBS, tagName, attribName);
+  function getAttributeType(tagName, attribName, attribFlags) {
+    return lookupAttribute(attribFlags, tagName, attribName);
   }
   function getLoaderType(tagName, attribName) {
     return lookupAttribute(html4.LOADERTYPES, tagName, attribName);
@@ -864,7 +868,7 @@ var html = (function(html4) {
    * @return {Array.<?string>} The sanitized attributes as a list of alternating
    *     names and values, where a null value means to omit the attribute.
    */
-  function sanitizeAttribs(tagName, attribs,
+  function sanitizeAttribs(tagName, attribs, attribFlags,
     opt_naiveUriRewriter, opt_nmTokenPolicy, opt_logger) {
     // TODO(felix8a): it's obnoxious that domado duplicates much of this
     // TODO(felix8a): maybe consistently enforce constraints like target=
@@ -874,10 +878,10 @@ var html = (function(html4) {
       var oldValue = value;
       var atype = null, attribKey;
       if ((attribKey = tagName + '::' + attribName,
-           html4.ATTRIBS.hasOwnProperty(attribKey)) ||
+           attribFlags.hasOwnProperty(attribKey)) ||
           (attribKey = '*::' + attribName,
-           html4.ATTRIBS.hasOwnProperty(attribKey))) {
-        atype = html4.ATTRIBS[attribKey];
+           attribFlags.hasOwnProperty(attribKey))) {
+        atype = attribFlags[attribKey];
       }
       if (atype !== null) {
         switch (atype) {
@@ -996,12 +1000,12 @@ var html = (function(html4) {
    * @return {function(string, Array.<?string>)} A tagPolicy suitable for
    *     passing to html.sanitize.
    */
-  function makeTagPolicy(
+  function makeTagPolicy(elementFlags, attribFlags,
     opt_naiveUriRewriter, opt_nmTokenPolicy, opt_logger) {
     return function(tagName, attribs) {
-      if (!(html4.ELEMENTS[tagName] & html4.eflags['UNSAFE'])) {
+      if (!(elementFlags[tagName] & html4.eflags['UNSAFE'])) {
         return {
-          'attribs': sanitizeAttribs(tagName, attribs,
+          'attribs': sanitizeAttribs(tagName, attribs, attribFlags,
             opt_naiveUriRewriter, opt_nmTokenPolicy, opt_logger)
         };
       } else {
@@ -1020,26 +1024,28 @@ var html = (function(html4) {
    *     makeHtmlSanitizer above for details).
    * @return {string} The sanitized HTML.
    */
-  function sanitizeWithPolicy(inputHtml, tagPolicy) {
+  function sanitizeWithPolicy(inputHtml, tagPolicy, elementFlags, attribFlags) {
     var outputArray = [];
-    makeHtmlSanitizer(tagPolicy)(inputHtml, outputArray);
+    makeHtmlSanitizer(tagPolicy, elementFlags, attribFlags)(inputHtml, outputArray);
     return outputArray.join('');
   }
 
   /**
    * Strips unsafe tags and attributes from HTML.
    * @param {string} inputHtml The HTML to sanitize.
+   * @param {elementFlags} The flags to use for elements. See docs in html4-defs.js.
+   * @param {attribFlags} The flags to use for attributes. See docs in html4-defs.js.
    * @param {?function(?string): ?string} opt_naiveUriRewriter A transform to
    *     apply to URI attributes.  If not given, URI attributes are deleted.
    * @param {function(?string): ?string} opt_nmTokenPolicy A transform to apply
    *     to attributes containing HTML names, element IDs, and space-separated
    *     lists of classes.  If not given, such attributes are left unchanged.
    */
-  function sanitize(inputHtml,
+  function sanitize(inputHtml, elementFlags, attribFlags,
     opt_naiveUriRewriter, opt_nmTokenPolicy, opt_logger) {
-    var tagPolicy = makeTagPolicy(
+    var tagPolicy = makeTagPolicy(elementFlags, attribFlags,
       opt_naiveUriRewriter, opt_nmTokenPolicy, opt_logger);
-    return sanitizeWithPolicy(inputHtml, tagPolicy);
+    return sanitizeWithPolicy(inputHtml, tagPolicy, elementFlags, attribFlags);
   }
 
   // Export both quoted and unquoted names for Closure linkage.

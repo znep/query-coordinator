@@ -37,6 +37,60 @@ module Canvas2
     end
   end
 
+  #A component that supports the display of Markdown content.
+  class FormattedText < CanvasWidget
+
+    #The Markdown converter shared between all FormattedText instances.
+    @@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+
+    def render_contents
+      markdown = string_substitute(@properties['markdown'])
+      safe_markdown = strip_html_from_markdown(markdown)
+      unsafe_html_result = convert_markdown_to_html(safe_markdown)
+      safe_html_result = sanitize_html(unsafe_html_result)
+      [safe_html_result, true]
+    end
+
+    #Sanitizes the given HTML using a moderate whitelist, allowing tags and
+    # attributes expected from Markdown rendering.
+    # Keep this in sync with formatted-text.js!
+    def sanitize_html(unsafe_html)
+      Sanitize.clean(unsafe_html, Util::RELAXED_SANITIZE_FILTER)
+    end
+
+    #Removes all HTML from a Markdown document, except spans and divs with
+    # only a class attribute (to allow for extra styling).
+    # Keep this in sync with formatted-text.js!
+    def strip_html_from_markdown(unsafe_html)
+      Sanitize.clean(unsafe_html, Util::STRICT_SANITIZE_FILTER)
+    end
+
+    #Render the given Markdown document into HTML.
+    # Keep this in sync with formatted-text.js!
+    def convert_markdown_to_html(markdown)
+      @@markdown.render(markdown)
+    end
+  end
+
+  #A component that supports the display of sanitized HTML.
+  class SafeHtml < CanvasWidget
+
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+
+    def render_contents
+      substituted = string_substitute(@properties['html'])
+      [Sanitize.clean(substituted, Util::RELAXED_SANITIZE_FILTER), true]
+    end
+  end
+
   class Header < Picture
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true

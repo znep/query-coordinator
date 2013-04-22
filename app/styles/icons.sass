@@ -744,7 +744,7 @@
 // Component type icons
 @mixin component-icons($subselector: '.icon', $namepart: 'icon', $init_hidden: false)
   $icon_slot: 0
-  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button
+  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button
     &.#{$namepart}-#{$name} #{$subselector}
       @include text-hiding
       @include ie6-fix

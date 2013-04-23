@@ -164,6 +164,11 @@
             { mapObj._controls.Overview.configure('customEntries',
                 mapObj._displayFormat.legendDetails.customEntries); }
 
+            if (mapObj._displayFormat.disableGeolocator)
+            { mapObj._controls.GeocodeDialog.deactivate(); }
+            else
+            { mapObj._controls.GeocodeDialog.activate(); }
+
             if (!blist.nextgen.legend
                 && !_.isUndefined(mapObj._displayFormat.distinctLegend))
             { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()

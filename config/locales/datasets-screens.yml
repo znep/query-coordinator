@@ -556,6 +556,7 @@ en:
             subtitle: Select 'Exclusive' if only one base map should display at a time.
             exclusive: Exclusive
             use_legend: Use Legend
+            hide_geolocator: No Geolocator
           legend:
             title: Legend Configuration
             position: Legend

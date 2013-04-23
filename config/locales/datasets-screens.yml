@@ -516,6 +516,7 @@ en:
             region_level_prompt: Select a region level
             region_prompt: Select a region
             base_color: Base Color
+            highlight_color: Hover Color
             point: Point Customization
             point_size: Point Size
             point_color: Point Color

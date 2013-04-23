@@ -362,6 +362,8 @@
         return [
             {text: $.t('screens.ds.grid_sidebar.map.data_layer.base_color'), name: prefix+'color', type: 'color', onlyIf: pointOnly,
                 defaultValue: "#0000ff"},
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.highlight_color'), name: prefix+'highlightColor', type: 'color', onlyIf: pointOnly,
+                defaultValue: "#ddeaf0"},
 
             {type: 'note', value: $.t('screens.ds.grid_sidebar.map.data_layer.point'), onlyIf: pointOnly},
             {text: $.t('screens.ds.grid_sidebar.map.data_layer.point_size'), name: prefix+'plot.sizeValueId', onlyIf: pointOnly,

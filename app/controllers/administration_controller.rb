@@ -433,7 +433,7 @@ class AdministrationController < ApplicationController
     config = ::Configuration.get_or_create('metadata', {'name' => 'Metadata configuration'})
     @metadata = config.properties.fieldsets || []
     @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
-    @locales = request.env['socrata.available_locales']
+    @locales = CurrentDomain.available_locales
   end
 
   def create_metadata_fieldset

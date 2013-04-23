@@ -11,7 +11,11 @@ class Hash
 
     other.each_key do |key|
       if (other[key].is_a?(Hash) && result[key].is_a?(Hash))
-        result[key] = result[key].deep_merge(other[key]) {|a, b| yield(a, b) if block_given? }
+        if block_given?
+          result[key] = result[key].deep_merge(other[key]) {|a, b| yield(a, b) }
+        else
+          result[key] = result[key].deep_merge(other[key])
+        end
       else
         if block_given?
           result[key] = yield(result[key], other[key])

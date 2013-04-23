@@ -1961,6 +1961,10 @@
             else { this._popup.contentDiv.innerHTML = this.buildContents(); }
 
             this._popup.updateSize();
+
+            // Hack for Bug 9280.
+            if (options.atPixel)
+            { this._popup.moveTo(new OpenLayers.Pixel(options.atPixel.x, options.atPixel.y)); }
         },
 
         _open: function(lonlat, options)
@@ -1980,10 +1984,6 @@
 
             control._popup.panMapIfOutOfView = false;
             control.map.addPopup(control._popup);
-
-            // Hack for Bug 9280.
-            if (options.atPixel)
-            { popup.moveTo(new OpenLayers.Pixel(options.atPixel.x, options.atPixel.y)); }
 
             control.fixPopup();
         },

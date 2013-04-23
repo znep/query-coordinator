@@ -441,7 +441,7 @@
             // Ensure there's a base layer to make OpenLayers internals work.
             if (_.isEmpty(mapObj._displayFormat.bkgdLayers))
             {
-                bkgdLayers = [{ layerName: 'World Street Map (ESRI)', opacity: 1.0, hidden: true }];
+                bkgdLayers = [{ layerKey: 'World Street Map (ESRI)', opacity: 1.0, hidden: true }];
                 mapObj.map.setNoBackground(true);
             }
             else
@@ -499,6 +499,10 @@
 
             var config;
 
+            // Legacy support
+            if ($.isBlank(layerOptions.layerKey) && !$.isBlank(layerOptions.layerName))
+            { layerOptions.layerKey = layerOptions.layerName; }
+
             if (layerOptions.custom_url)
             { config = $.extend({}, Dataset.map.backgroundLayer.custom,
                 { custom_url: layerOptions.custom_url }); }
@@ -506,7 +510,7 @@
             { config = layerOptions; }
             else
             { config = _.detect(Dataset.map.backgroundLayers, function(config)
-                { return config.name == layerOptions.layerName; }); }
+                { return config.key == layerOptions.layerKey; }); }
 
             var options = config.options;
             if (!$.isBlank($.trim(layerOptions.alias)))
@@ -519,7 +523,7 @@
             {
                 case 'Google':
                     options = $.extend(options, { type: google.maps.MapTypeId[options.type] });
-                    layer = new OpenLayers.Layer.Google(config.name, options); break;
+                    layer = new OpenLayers.Layer.Google(config.key, options); break;
                 case 'Bing':
                     options = $.extend(options, {
                         key: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
@@ -527,11 +531,11 @@
                     });
                     layer = new OpenLayers.Layer.Bing(options); break;
                 case 'ESRI':
-                    var url = config.name == 'custom' ? config.custom_url
+                    var url = config.key == 'custom' ? config.custom_url
                                 : 'https://server.arcgisonline.com/ArcGIS/rest/services/'
                                 + options.url + '/MapServer';
                     var name;
-                    if (config.name == 'custom')
+                    if (config.key == 'custom')
                     {
                         var name = url.match(/services\/(.*)\/[A-Za-z]+Server/);
                         if (name) { name = name[1]; }
@@ -545,7 +549,7 @@
                                                           20037508.34,  19971868.8804086),
                         transitionEffect: 'resize'
                     });
-                    layer = new OpenLayers.Layer.ArcGISCache(name || config.name, url, options);
+                    layer = new OpenLayers.Layer.ArcGISCache(name || config.key, url, options);
                     break;
             }
 

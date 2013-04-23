@@ -275,12 +275,12 @@
                     { type: 'note', value: $.t('screens.ds.grid_sidebar.map.base_layers.subtitle') },
                     { type: 'repeater', name: 'displayFormat.bkgdLayers', addText: $.t('screens.ds.grid_sidebar.map.base_layers.new_base_map_button'),
                         minimum: 0, field: {type: 'group', options: [
-                        {text: $.t('screens.ds.grid_sidebar.map.base_layers.layer'), type: 'select', name: 'layerName',
+                        {text: $.t('screens.ds.grid_sidebar.map.base_layers.layer'), type: 'select', name: 'layerKey',
                             required: true, prompt: $.t('screens.ds.grid_sidebar.map.base_layers.layer_prompt'),
                             options: mapTypes, defaultValue: 'World Street Map (ESRI)'
                         },
                         {text: $.t('screens.ds.grid_sidebar.map.base_layers.layer_url'), type: 'text', name: 'custom_url',
-                            onlyIf: {field: 'layerName', value: 'custom'}, defaultValue: 'https://',
+                            onlyIf: {field: 'layerKey', value: 'custom'}, defaultValue: 'https://',
                             required: true, data: { 'validlayerurl': 'unverified' },
                             change: normalizeLayerUrl },
                         {text: $.t('screens.ds.grid_sidebar.map.base_layers.alias'), type: 'text', name: 'alias'},

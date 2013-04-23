@@ -373,8 +373,8 @@ var convertLegacy = function(props)
                 if (layer.custom_url)
                 { return { custom_url: layer.custom_url }; }
                 else
-                { return { layerName: (_.detect(Dataset.map.backgroundLayers, function(lConfig)
-                    { return layer.url.indexOf((lConfig.options || {}).url) > -1; }) || {}).name }; }
+                { return { layerKey: (_.detect(Dataset.map.backgroundLayers, function(lConfig)
+                    { return layer.url.indexOf((lConfig.options || {}).url) > -1; }) || {}).key }; }
             });
         }
     }

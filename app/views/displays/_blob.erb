@@ -43,13 +43,6 @@
     <p><%= t('screens.ds.blob.js_required') %></p>
     <p><%= t('screens.ds.blob.js_required_download.prompt_html', click_here: link_to(t('screens.ds.blob.js_required_download.click_here'), blob_location, :target => '_blank')).html_safe %></p>
 </noscript>
-<script type="text/javascript">
-    $(function()
-    {
-        blist.renderTypes = blist.renderTypes || {};
-        blist.renderTypes.blob = { href: "<%= blob_location %>" };
-    });
-</script>
 </div>
 
 <%- else -%>

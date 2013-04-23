@@ -47,15 +47,16 @@
             {
                 var blobObj = this;
                 var $domObj = blobObj.$dom();
+                var ds = blobObj.settings.view;
+                var blob = _.first(ds.blobs());
 
-                if (!$.isBlank(((blist.renderTypes || {}).blob || {}).href))
+                if (!$.isBlank(blob) && _.include(GOOGLE_VIEWER_TYPES, blob.type))
                 {
                     var embedHtml;
-                    if (blobObj.settings.view.blobMimeType.indexOf('application/pdf')
+                    if (blob.type.indexOf('application/pdf')
                         !== -1 && $.browser.msie)
                     {
-                        embedHtml = '<embed src="' +
-                            blist.renderTypes.blob.href +
+                        embedHtml = '<embed src="' + blob.href +
                             '" type="application/pdf" ' +
                             'width="100%" height="99%"></embed>';
                         // Overlays & embeds don't mix
@@ -67,12 +68,17 @@
                     else
                     {
                         embedHtml = '<iframe id="blobIFrame" ' +
-                            'src="http://docs.google.com/gview?url=' +
-                            blist.renderTypes.blob.href +
+                            'src="http://docs.google.com/gview?url=' + ds._generateBaseUrl() + blob.href +
                             '&embedded=true" width="100%" height="99%" ' +
                             'frameborder="0" scrolling="no"></iframe>';
                     }
                     $domObj.find('.displayArea').html(embedHtml);
+                }
+                else if (!$.isBlank(blob) && _.include(IMAGE_VIEWER_TYPES, blob.type) &&
+                        $domObj.find('.displayArea').length < 1)
+                {
+                    $domObj.append($.tag2({ _: 'div', className: ['displayArea', 'image', 'fullHeight'],
+                        contents: { _: 'img', alt: $.htmlEscape(ds.name), src: blob.href } }));
                 }
                 else
                 {
@@ -95,25 +101,26 @@
                 {
                     _.defer(function() { blobObj.reload(); });
                 };
-                blobObj.settings.view.bind('blob_change', handleChange);
+                ds.bind('blob_change', handleChange);
             },
 
             reload: function()
             {
                 var blobObj = this;
 
-                if ($.subKeyDefined(blist, 'renderTypes'))
-                { delete blist.renderTypes.blob; }
                 $.ajax({ url: '/blob/' + blobObj.settings.view.id,
                     success: function(data, status)
                     {
                         blobObj.$dom().html(data);
-                        // Deferred so that blist.renderTypes has a chance to be set.
-                        _.defer(function() { blobObj.ready(); });
+                        blobObj.ready();
                     }
                 });
             }
         }
     });
 
+    var GOOGLE_VIEWER_TYPES = ["application/pdf", "application/vndms-powerpoint", "image/tiff",
+        "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+
+    var IMAGE_VIEWER_TYPES = ["image/jpeg", "image/gif", "image/png"];
 })(jQuery);

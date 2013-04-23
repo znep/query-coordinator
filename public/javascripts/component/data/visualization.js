@@ -46,8 +46,8 @@ $.component.Component.extend('Visualization', 'data', {
 
 var updateProperties = function(lcObj)
 {
-    var renderViz = function() {
-
+    var renderViz = function()
+    {
         if (lcObj.$contents.data('renderTypeManager'))
         { lcObj.$contents.removeData('renderTypeManager'); }
 
@@ -62,7 +62,7 @@ var updateProperties = function(lcObj)
         type = type || 'table'; // Last ditch, even though 'table' doesn't work anyways.
         defaultTypes[type] = true;
 
-        lcObj.$contents.renderTypeManager({
+        lcObj._rtm = lcObj.$contents.renderTypeManager({
             defaultTypes: defaultTypes,
             view: ds,
             width: lcObj._properties.width,

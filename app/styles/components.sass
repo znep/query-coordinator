@@ -344,6 +344,12 @@ body.socrata-page
   img
     max-width: 100%
 
+.component-Visualization
+  .renderTypeNode .displayArea img
+    // Make sure scroll bar isn't shown
+    max-height: 99%
+    max-width: 100%
+
 @media print
   @each $name in Share, InlineFilter, Pager, Print, Search, Geolocator, Sort
     .component-#{$name}

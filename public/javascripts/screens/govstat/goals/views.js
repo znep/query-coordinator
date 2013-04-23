@@ -197,7 +197,7 @@ var GoalEditor = Backbone.View.extend({
                 var datasetProxy = new govstatNS.models.DatasetProxy({ id: dataset.id }, { dataset: dataset });
                 relatedDatasets.add(datasetProxy);
             }, self.model.get('name'),
-            '&limitTo[]=charts&limitTo[]=maps&suppressed_facets[]=type');
+            '&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&suppressed_facets[]=type');
         });
 
         // drop in metrics

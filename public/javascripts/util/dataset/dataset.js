@@ -194,6 +194,11 @@ var Dataset = ServerModel.extend({
         return (this.type == 'blob');
     },
 
+    isHref: function()
+    {
+        return (this.type == 'href');
+    },
+
     isTabular: function()
     {
         return (this.viewType == 'tabular');
@@ -373,6 +378,46 @@ var Dataset = ServerModel.extend({
         { this.hideRenderType(rt); }
         else
         { this.showRenderType(rt); }
+    },
+
+    blobs: function()
+    {
+        var ds = this;
+        if (!$.isBlank(this._blobs))
+        { return this._blobs; }
+
+        if (this.isBlobby())
+        {
+            var b = { type: (this.blobMimeType || '').replace(/;.*/, ''),
+                size: this.blobFileSize, href: '/api/file_data/' + this.blobId +
+                    '?' + $.param({ filename: this.blobFilename }) };
+            if (this.blobFilename != this.name)
+            { b.name = this.blobFilename; }
+            this._blobs = [b];
+        }
+        else if (this.isHref())
+        {
+            this._blobs = [];
+            if ($.subKeyDefined(this, 'metadata.accessPoints'))
+            {
+                _.each(this.metadata.accessPoints, function(v, k)
+                {
+                    if (!k.endsWith('Size'))
+                    {
+                        ds._blobs.push({ href: v, type: k.toUpperCase(),
+                            size: ds.metadata.accessPoints[k + 'Size'] });
+                    }
+                });
+                this._blobs = _.sortBy(this._blobs, 'type');
+            }
+            else if ($.subKeyDefined(this, 'metadata.href'))
+            {
+                this._blobs.push({ href: this.metadata.href, type: 'Link',
+                    size: 'Unknown' });
+            }
+        }
+
+        return this._blobs;
     },
 
     userGrants: function()

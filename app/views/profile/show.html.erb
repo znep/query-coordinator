@@ -72,7 +72,7 @@
     <%- if !@app_tokens.blank? || @user == current_user -%>
       <div class="appTokens content">
         <div class="innerItem">
-          <%= edit_link(@user, 'editAppTokensLink appTokens', t('screens.profile.app_tokens.manage'), 'app_tokens') %>
+          <%= edit_link(@user, 'editAppTokensLink appTokens', t('screens.profile.app_tokens.manage_link'), 'app_tokens') %>
           <h2><%= t('screens.profile.app_tokens.title', user: @user.displayName) %></h2>
           <%# TODO: Add link to SODA docs or something %>
         </div>

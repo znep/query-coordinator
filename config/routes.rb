@@ -169,15 +169,15 @@ Frontend::Application.routes do
       get ':profile_name/:id/delete_friend', :action => 'delete_friend'
       # Profile SEO urls (only add here if the action has a view with it;
       # otherwise just add to the :member key in the profile resource above.)
-      get ':profile_name/:id', :action => 'show'
-      put ':profile_name/:id', :action => 'update'
-      get ':profile_name/:id/edit', :action => 'edit'
-      get ':profile_name/:id/image', :action => 'edit_image'
-      get ':profile_name/:id/app_tokens', :action => 'edit_app_tokens'
-      get ':profile_name/:id/app_tokens/:token_id', :action => 'show_app_token'
+      get ':profile_name/:id', :action => 'show', :as => 'profile'
+      put ':profile_name/:id', :action => 'update', :as => 'profile_update'
+      get ':profile_name/:id/edit', :action => 'edit', :as => 'edit_profile'
+      get ':profile_name/:id/image', :action => 'edit_image', :as => 'image_profile'
+      get ':profile_name/:id/app_tokens', :action => 'edit_app_tokens', :as => 'app_tokens'
+      get ':profile_name/:id/app_tokens/:token_id', :action => 'show_app_token', :as => 'app_token'
       get 'app_tokens', :action => 'edit_app_tokens'
-      match ':profile_name/:id/app_token/:token_id', :action => 'edit_app_token'
-      post ':profile_name/:id/app_token/:token_id/delete', :action => 'delete_app_token'
+      match ':profile_name/:id/app_token/:token_id', :action => 'edit_app_token', :as => 'edit_app_token'
+      post ':profile_name/:id/app_token/:token_id/delete', :action => 'delete_app_token', :as => 'delete_app_token'
       get ':profile_name/:id/account', :action => 'edit_account', :as => 'profile_account'
       get 'account', :action => 'edit_account'
     end

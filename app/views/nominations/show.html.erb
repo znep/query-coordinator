@@ -26,7 +26,7 @@
         </h4>
       </a>
       <%- else -%>
-      <a href="<%= @nom.user.href %>" rel="external">
+      <a href="<%= profile_path(@nom.user) %>" rel="external">
         <img class="authorImage" src="<%= @nom.user.profile_image_path %>"
              alt="<%= @nom.user.displayName %>" />
         <h4>Submitted by

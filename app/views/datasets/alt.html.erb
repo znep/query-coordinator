@@ -243,7 +243,7 @@
         a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
         <li>
         <%- if s.member_id -%>
-        <a href="<%= User.href(s.member_name, s.member_id) %>">
+        <a href="<%= profile_path(profile_name: s.member_name.convert_to_url, id: s.member_id) %>">
           <%= s.member_name %>
         </a>
         <%- else -%>

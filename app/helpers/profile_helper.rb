@@ -17,7 +17,7 @@ module ProfileHelper
   def edit_link(user, extraClass=nil, text='Edit', url='edit')
     if user == current_user
       content_tag :div, :class => 'editLink' do
-        content_tag :a, {:href => "#{user.href}/#{url}",
+        content_tag :a, {:href => "#{profile_path(user)}/#{url}", # i don't like this.
           :class => "editProfileLink iconLink" + (extraClass.nil? ? '' : " #{extraClass}")} do
           content_tag(:span, '', :class => 'icon') + text
         end

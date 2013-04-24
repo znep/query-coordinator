@@ -16,14 +16,14 @@
             <%- viewable = user_list[:list].slice(0..39)
                 hidden   = user_list[:list].slice(40..-1)
                 viewable.each do |user| -%>
-              <a href="<%= user.href %>">
+              <a href="<%= profile_path(user) %>">
                 <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
               </a>
             <%- end -%>
             <%- unless hidden.blank? -%>
               <div class="hiddenContacts">
                 <%- hidden.each do |user| -%>
-                  <a href="<%= user.href %>">
+                  <a href="<%= profile_path(user) %>">
                     <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
                   </a>
                 <%- end -%>

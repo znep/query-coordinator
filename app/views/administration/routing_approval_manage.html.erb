@@ -68,8 +68,8 @@
               <li class="userItem">
               <input type="text"
                 name="template[stages][<%= stage['id'] %>][approverUids][]"
-                value="<%= user.href %>" />
-              <a href="<%= user.href %>"
+                value="<%= profile_path(user) %>" />
+              <a href="<%= profile_path(user) %>"
                 class="userLink"><%= user.displayName %></a>
               </li>
               <%- end -%>

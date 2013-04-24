@@ -116,7 +116,7 @@
                 </td>
               <%- end -%>
               <td class="user" scope="row">
-                <a href="<%= user.href %>">
+                <a href="<%= profile_path(user) %>">
                   <img class="userIcon" src="<%= user.profile_image_path('small')%>"
                     alt="<%= user.displayName %>" />
                   <span class="cellInner">

@@ -1,10 +1,10 @@
 <div class="aboutDataset">
   <div class="aboutHeader clearfix">
-    <a class="aboutAuthorImageLink" href="<%= @view.owner.href %>">
+    <a class="aboutAuthorImageLink" href="<%= profile_path(@view.owner) %>">
       <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
         src="<%= @view.owner.profile_image_path("medium") %>"/>
     </a>
-    <a class="aboutAuthorName" href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a>
+    <a class="aboutAuthorName" href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a>
     <p><em><%= t('screens.about.created') %></em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
     <%- if @view.is_snapshotted? -%>
     <p><em><%= t('screens.about.snapshotted') %></em> <span class="aboutUpdateDate"><%= blist_date(@view.publicationDate) %></span></p>
@@ -86,7 +86,7 @@
       <dd><ul>
         <%- (next_stage['approverUids'] || []).each do |uid| -%>
         <%- u = @users[uid] -%>
-        <li><a href='<%= u.href %>'><%= u.displayName %></a></li>
+        <li><a href='<%= profile_path(u) %>'><%= u.displayName %></a></li>
         <%- end -%>
       </ul></dd>
       <%- end -%>
@@ -121,7 +121,7 @@
         when 'M'
           'Resubmitted'
         end %> by
-        <a href='<%= u.href %>'><%= u.displayName %></a></div>
+        <a href='<%= profile_path(u) %>'><%= u.displayName %></a></div>
       <span class="date">On <%= blist_date(ah['approvalDate']) %></span>
       <%- if !ah['comment'].blank? -%>
       <span class="reason"><%= ah['comment'] %></span>

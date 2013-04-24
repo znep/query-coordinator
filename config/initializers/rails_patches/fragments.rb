@@ -1,16 +1,24 @@
+require 'snappy'
+
 module ActionController
   module Caching
     module Fragments
+
+      def compressed_cache_key(key)
+        key + "-compressed"
+      end
 
       def write_fragment(key, content, options = nil)
         return_value = (content.is_a? Hash) ? content[:layout] : content
         return return_value unless cache_configured?
 
-        key = fragment_cache_key(key)
+        key = compressed_cache_key(fragment_cache_key(key))
 
         instrument_fragment_cache :write_fragment, key do
           content = content.html_safe.to_str if content.respond_to?(:html_safe)
-          cache_store.write(key, content, options)
+          snapped = Snappy.deflate(Marshal.dump(content))
+          success = cache_store.write(key, snapped, options)
+          Rails.logger.info("Error writing fragment; too large? Cache unavailable?") unless success.nil? || success
         end
 
         return_value
@@ -22,7 +30,15 @@ module ActionController
         key = fragment_cache_key(key)
 
         instrument_fragment_cache :read_fragment, key do
-          result = cache_store.read(key, options)
+          # optimistically read the compressed version
+          result = cache_store.read(compressed_cache_key(key), options)
+
+          # Support uncompressed versions: After 24hrs we should be able to reliably kill the following block
+          if result.nil?
+            result = cache_store.read(key, options)
+          else
+            result = Marshal.load(Snappy.inflate(result))
+          end
 
           if result.is_a? Hash
             safe_result = {}

@@ -24,3 +24,4 @@ gem 'timecop'
 gem 'statsd-ruby', :require => 'statsd', :git => 'git@git.socrata.com:statsd-ruby-fork'
 gem "thin", :group => :development
 gem "ruby-debug19", :group => :development
+gem 'snappy'

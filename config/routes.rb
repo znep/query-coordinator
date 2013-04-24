@@ -223,22 +223,22 @@ Frontend::Application.routes do
     scope :controller => 'datasets', :constraints => {:id => UID_REGEXP,
           :view_name => /(\w|-)+/, :category => /(\w|-)+/} do
 
-      get ':category/:view_name/:id', :action => 'show'
+      get ':category/:view_name/:id', :action => 'show', :as => :view
       get ':category/:view_name/:id/:row_id', :action => 'show',
         :constraints => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-          :category => /(\w|-)+/, :row_id => /\d+/}
-      get ':category/:view_name/:id/widget_preview', :action => 'widget_preview'
-      get ':category/:view_name/:id/edit', :action => 'edit'
-      get ':category/:view_name/:id/edit_rr', :action => 'edit_rr'
-      get ':category/:view_name/:id/thumbnail', :action => 'thumbnail'
-      get ':category/:view_name/:id/stats', :action => 'stats'
-      get ':category/:view_name/:id/form_success', :action => 'form_success'
-      get ':category/:view_name/:id/form_error', :action => 'form_error'
-      get ':category/:view_name/:id/about', :action => 'about'
+          :category => /(\w|-)+/, :row_id => /\d+/}, :as => :view_row
+      get ':category/:view_name/:id/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
+      get ':category/:view_name/:id/edit', :action => 'edit', :as => :edit_view
+      get ':category/:view_name/:id/edit_rr', :action => 'edit_rr', :as => :edit_view_rr
+      get ':category/:view_name/:id/thumbnail', :action => 'thumbnail', :as => :view_thumbnail
+      get ':category/:view_name/:id/stats', :action => 'stats', :as => :view_stats
+      get ':category/:view_name/:id/form_success', :action => 'form_success', :as => :view_form_success
+      get ':category/:view_name/:id/form_error', :action => 'form_error', :as => :view_form_error
+      get ':category/:view_name/:id/about', :action => 'about', :as => :about_view
       match ':category/:view_name/:id/alt', :action => 'alt',
-        :via => [:get, :post]
+        :via => [:get, :post], :as => :alt_view
       match ':category/:view_name/:id/edit_metadata', :action => 'edit_metadata',
-        :via => [:get, :post]
+        :via => [:get, :post], :as => :edit_view_metadata
     end
 
     get 'proxy/verify_layer_url' => 'datasets#verify_layer_url'
@@ -253,7 +253,7 @@ Frontend::Application.routes do
       # Short URLs
       get 'blob/:id', :action => 'blob'
       get 'dataset/:id', :action => 'show'
-      get 'd/:id', :action => 'show'
+      get 'd/:id', :action => 'show', :as => :short_view
 
       get 'd/:id/:row_id', :action => 'show',
         :constraints => {:row_id => /\d+/}

@@ -9,14 +9,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
-  <link rel="canonical" href="<%= @view.href %>" />
+  <link rel="canonical" href="<%= view_path(@view) %>" />
 <% end %>
 
 <% content_for :skip_links do %>
-  <%= link_to 'Go to an accessible version of this page', @view.alt_href %>
+  <%= link_to 'Go to an accessible version of this page', alt_view_path(@view) %>
 
   <%- if @view.can_edit? -%>
-    <%= link_to 'Edit the metadata of this dataset', @view.href + '/edit_metadata' %>
+    <%= link_to 'Edit the metadata of this dataset', edit_view_metadata_path(@view) %>
   <%- end -%>
 <% end %>
 
@@ -37,7 +37,7 @@
             </li>
           <%- end -%>
           <li><a class="facebook" rel="external" title="<%= t('screens.ds.bar.share_facebook') %>"
-                href="http://www.facebook.com/share.php?u=<%= CGI::escape("http://#{CurrentDomain.cname}#{@view.href}") %>">
+                href="http://www.facebook.com/share.php?u=<%= CGI::escape(view_url(@view)) %>">
             <span class="icon"><%= t('screens.ds.bar.share_facebook') %></span></a></li>
           <li><a class="twitter" rel="external" title="<%= t('screens.ds.bar.share_twitter') %>"
                 href="http://twitter.com/?status=<%= @view.tweet %>">
@@ -57,7 +57,7 @@
           <%- @view.available_display_types.clone.
             push('template').each do |type| -%>
           <li><a
-            href="<%= @view.href %>?defaultRender=<%= url_types[type] || type %>"
+            href="<%= view_path(@view.route_params.merge( defaultRender: url_types[type] || type )) %>"
             class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
             title="<%= t('screens.ds.bar.view_type', type: t('screens.ds.bar.view_types.' + type)) %>">
             <span class="icon"></span>
@@ -165,7 +165,7 @@
       <%- if @view.is_tabular? && !@view.is_form? && @view.display.data_valid? -%>
         <%# SEO links for individual rows %>
         <%- next_index = !@row_index.nil? ? (@row_index+1) : 0 -%>
-        <a href="<%= @view.href %>?row_index=<%= next_index %>" class="rowLink">
+        <a href="<%= view_path(@view.route_params.merge( row_index: next_index )) %>" class="rowLink">
           <%= next_index == 0 ? 'First' : 'Next' %> row
         </a>
       <%- end -%>
@@ -201,7 +201,7 @@
       <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
           @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
         <li class="edit"><a class="button"
-          href="<%= @view.href %>/edit_rr?defaultRender=richList">
+          href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'richList' )) %>">
           Edit Layout
         </a></li>
         <%- end -%>
@@ -266,7 +266,7 @@
         <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
           @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
         <li class="edit"><a class="button"
-          href="<%= @view.href %>/edit_rr?defaultRender=page">Edit Layout</a></li>
+          href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'page' )) %>">Edit Layout</a></li>
         <%- end -%>
         <li><a href="#start" title="View first row" class="start button">
           <span class="icon"></span>

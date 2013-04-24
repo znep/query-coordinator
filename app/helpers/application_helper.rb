@@ -412,10 +412,9 @@ module ApplicationHelper
     tracking_params = { :cur => ::SecureRandom.base64(9).slice(0..10).gsub(/\//, '-').gsub(/\+/, '_') }
     tracking_params[:from] = from_tracking_id unless from_tracking_id.blank?
 
-    root_path = request.protocol + request.host_with_port
     embed_template =  "<div>"
     if options[:show_title]
-      embed_template += "<p style=\"margin-bottom:3px\"><a href=\"#{h(root_path + view.href)}\" " +
+      embed_template += "<p style=\"margin-bottom:3px\"><a href=\"#{h(view_url(view))}\" " +
                         "target=\"_blank\" style=\"font-size:12px;font-weight:bold;" +
                         "text-decoration:none;color:#333333;font-family:arial;\">" +
                         "#{h(view.name)}</a></p>"
@@ -426,7 +425,7 @@ module ApplicationHelper
                       "/w/#{h view.id}/#{variation.blank? ? 'default' : h(variation)}?" +
                       "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"" +
                       "#{!view.display.can_publish? || view.display.scrolls_inline? ? 'no' : 'auto'}\">" +
-                      "<a href=\"#{h(root_path + view.href)}\" title=\"#{h(view.name)}\" " +
+                      "<a href=\"#{h(view_url(view))}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +

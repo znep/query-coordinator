@@ -143,7 +143,7 @@ module Canvas2
       t += Util.app_helper.create_pagination(
         row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
 
-      t += '<a href="' + ds.alt_href + '" class="altViewLink">Accessibly explore the data</a>'
+      t += '<a href="' + alt_view_path(ds) + '" class="altViewLink">Accessibly explore the data</a>'
       t += '</div></noscript>'
     end
   end
@@ -604,7 +604,7 @@ module Canvas2
           '<a class="facebook" rel="external" title="Share on Facebook" ' +
             'href="http://www.facebook.com/share.php?u=' +
               (@properties['currentPage'] ? CGI::escape(page_url) :
-              CGI::escape("http://#{CurrentDomain.cname}#{ds.href}")) + '">' +
+              CGI::escape(view_url(ds))) + '">' +
             '<span class="icon">Share on Facebook</span></a></li>',
 
       twitter: '<li class="twitter' + (vis_items.include?('twitter') ? '' : ' hide') +

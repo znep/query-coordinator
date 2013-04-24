@@ -87,14 +87,14 @@
                       'externalDomain' : 'external' : (@rel_type || '') -%>
               <%- if @use_federations -%>
               <td class="domainIcon">
-                <a href="<%= v.href(@port) %>" rel="<%= rel_type %>">
+                <a href="<%= view_url(v) %>" rel="<%= rel_type %>">
                   <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
                     'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
                 </a>
               </td>
               <%- end -%>
               <td class="nameDesc">
-                <a href="<%= v.href(@port) %>" class="name alert"
+                <a href="<%= view_url(v) %>" class="name alert"
                   rel="<%= rel_type %>"><span class="icon"
                     title="This dataset has been inactive for more than <%= pluralize(@approval_template.maxInactivityInterval, "day") %>"></span><%= v.name %></a>
                 <div class="description" title="<%= v.description %>">

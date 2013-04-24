@@ -14,11 +14,11 @@
   </div>
 
   <%- if @view.has_rights?('update_view') && !@view.is_api? -%>
-    <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
+    <a href="<%= edit_view_metadata_path(@view) %>" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
   <%- end -%>
 
   <%- unless local_assigns[:full_page] -%>
-    <a href="<%= @view.href %>/about" class="viewFullLink fullButton"><%= t('screens.about.view_full_page') %></a>
+    <a href="<%= about_view_path(@view) %>" class="viewFullLink fullButton"><%= t('screens.about.view_full_page') %></a>
   <%- end -%>
 
   <%- if @view.custom_image.present? -%>
@@ -167,7 +167,7 @@
       <dd><%= @view.contributor_users.length %></dd>
       <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
         <dt class="widenedItem">
-          <%= link_to t('screens.about.view_statistics'), "#{@view.href}/stats" %>
+          <%= link_to t('screens.about.view_statistics'), view_stats_path(@view) %>
         </dt>
         <dd>&nbsp;</dd>
       <%- end -%>
@@ -202,8 +202,7 @@
     </a>
     <dl class="sectionContent">
       <dt><%= t('screens.about.permalink') %></dt>
-      <dd><span class="hardWrap"><%= link_to_url request.protocol +
-        request.host_with_port + @view.href, :rel => 'external' %></span></dd>
+      <dd><span class="hardWrap"><%= link_to_url view_url(@view), :rel => 'external' %></span></dd>
       <dt><%= t('screens.about.short_url') %></dt>
       <dd><span class="hardWrap"><%= link_to_url request.protocol +
         request.host_with_port + @view.short_href,

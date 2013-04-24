@@ -698,44 +698,10 @@ class View < Model
     domain.port
   end
 
-  # argument port is deprecated
-  def href(port = 80)
-    @_href ||= make_href()
-  end
-
-  def make_href()
-    if self.is_api?
-      federated_path("/developers/docs/#{resourceName}")
-    else
-      federated_path("/#{(self.category || 'dataset').convert_to_url}/#{(name || 'dataset').convert_to_url}/#{id}")
-    end
-  end
-
-  def federated_path(path)
-    if federated?
-      absolute_path(path)
-    else
-      path
-    end
-  end
-
-  def absolute_path(path, current_domain = false)
-    protocol = federated_protocol(domainCName)
-    url_port = federated_port(domainCName)
-    domain = current_domain ? CurrentDomain.cname : domainCName
-    "#{protocol}://#{domain}#{url_port}#{path}"
-  end
-
-  def alt_href
-    "#{self.href}/alt"
-  end
-
-  def short_href
-    "/d/#{id}"
-  end
-
-  def about_href
-    self.href + "/about"
+  def route_params
+    { category: (self.category || 'dataset').convert_to_url,
+      view_name: (self.name || 'dataset').convert_to_url,
+      id: self.id }
   end
 
   def rss
@@ -747,7 +713,7 @@ class View < Model
   end
 
   def tweet
-    return "Check out the #{name} dataset on #{CurrentDomain.strings.company}: #{CurrentDomain.cname}#{short_href}"
+    return "Check out the #{name} dataset on #{CurrentDomain.strings.company}: #{short_view_url(self)}"
   end
 
   def blobs

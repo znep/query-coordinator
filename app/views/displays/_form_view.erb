@@ -9,11 +9,9 @@
   enctype="multipart/form-data"
   <%- end -%>
   <%- success_redirect = @view.display.options.successRedirect -%>
-  <%- def_success_redirect = request.protocol + request.host_with_port + @view.href +
-  '/form_success' -%>
+  <%- def_success_redirect = view_form_success_url(@view) -%>
   <%- success_redirect = def_success_redirect if success_redirect.blank? -%>
-  <%- error_redirect = request.protocol + request.host_with_port + @view.href +
-    '/form_error' -%>
+  <%- error_redirect = view_form_error_url(@view) -%>
   data-defaultSuccessRedirect="<%= def_success_redirect %>"
   action="<%= local_assigns[:prefix] || '' %>/views/<%=
     @view.id %>/rows.html?method=createForm&successRedirect=<%= CGI.escape(success_redirect)

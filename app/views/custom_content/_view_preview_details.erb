@@ -8,7 +8,7 @@
         <p>
           <%= raw(auto_link(h(widget.view.description).gsub("\n", '<br/>'), :html => { :rel => 'nofollow external' })) %>
         </p>
-        <%= link_to 'More&hellip;'.html_safe, widget.view.href + '#pane=about', :class => 'moreLink' %>
+        <%= link_to 'More&hellip;'.html_safe, view_path(widget.view) + '#pane=about', :class => 'moreLink' %>
       </div>
     <%- when 'author' -%>
       <%- if field.show_avatar -%>
@@ -16,7 +16,7 @@
           src="<%= widget.view.owner.profile_image_path(field.avatar_size || "medium") %>"/>
       <%- end -%>
       <%- if field.show_name -%>
-        <%= link_to((field.text || h(widget.view.owner.displayName)).html_safe, widget.view.owner.href, :class => 'author') %>
+        <%= link_to((field.text || h(widget.view.owner.displayName)).html_safe, profile_path(widget.view.owner), :class => 'author') %>
       <%- end -%>
     <%- when 'created_at' -%>
       <%= content_tag((field.tagType || 'span'), HumaneDateHelper.humane_date(widget.view.createdAt), :class => 'createdAt') %>
@@ -25,10 +25,10 @@
     <%- when 'link' -%>
       <%- if field.tagType -%>
         <%= content_tag(field.tagType) do %>
-          <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
+          <%= link_to (field.text || h(widget.view.name)).html_safe, view_path(widget.view), :class => 'viewLink' %>
         <%- end -%>
       <%- else -%>
-        <%= link_to (field.text || h(widget.view.name)).html_safe, widget.view.href, :class => 'viewLink' %>
+        <%= link_to (field.text || h(widget.view.name)).html_safe, view_path(widget.view), :class => 'viewLink' %>
       <%- end -%>
     <%- when 'rating' -%>
       <div class="averageRating">
@@ -74,7 +74,7 @@
       <%- end -%>
     <%- when 'parent' -%>
       <%- parent = widget.view.parent_view -%>
-      <%= link_to (field.text || h(parent.name)).html_safe, parent.href, :class => 'parentViewLink' unless parent.nil? %>
+      <%= link_to (field.text || h(parent.name)).html_safe, view_path(parent), :class => 'parentViewLink' unless parent.nil? %>
     <%- when 'tags' -%>
       <div class="tags">
         <%= raw field.text || 'Tags:' %>

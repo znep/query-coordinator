@@ -13,7 +13,7 @@
           <%- widget.properties.metadata.each do |field| -%>
             <%- case field.type -%>
             <%- when 'name' -%>
-              <span class="viewName"><%= link_to view.name, view.href %></span>
+              <span class="viewName"><%= link_to view.name, view_path(view) %></span>
             <%- when 'type' -%>
               <span class="viewType type<%= view.display.type.capitalize %>"><span class="icon"></span></span>
             <%- when 'author' -%>
@@ -23,7 +23,7 @@
                     src="<%= view.owner.profile_image_path(field.avatar_size || "small") %>"/>
                 <%- end -%>
                 <%- if field.show_name -%>
-                  <%= link_to view.owner.displayName, view.owner.href %>
+                  <%= link_to view.owner.displayName, profile_path(view.owner) %>
                 <%- end -%>
               </span>
             <%- when 'view_count' -%>

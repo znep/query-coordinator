@@ -5,7 +5,7 @@
   <%= rendered_stylesheet_tag 'dataset-alt' %>
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
-  <link rel="canonical" href="<%= @view.href %>" />
+  <link rel="canonical" href="<%= view_path(@view) %>" />
 <% end %>
 
 <% content_for :skip_links do %>
@@ -68,12 +68,12 @@
     <%- end -%>
   </ul>
 
-  <a class="interactiveBackButton" href="<%= @view.href %>">Go back to the interactive dataset</a><!-- Back to the future -->
+  <a class="interactiveBackButton" href="<%= view_path(@view) %>">Go back to the interactive dataset</a><!-- Back to the future -->
   <a name="dataGrid" tabindex="-1"></a>
 
   <h2><%= @view.name %></h2>
   <% if @view.parent_dataset && (@view.parent_dataset != @view) %>
-    <p>This is a <%= @view.display.name.downcase %> based on <%= link_to @view.parent_dataset.name, @view.parent_dataset.alt_href %>.</p>
+    <p>This is a <%= @view.display.name.downcase %> based on <%= link_to @view.parent_dataset.name, alt_view_path(@view.parent_dataset) %>.</p>
   <% end %>
 
   <div class="dataGridWrapper">
@@ -87,7 +87,7 @@
   </div>
   <%- if is_grid -%>
   <div id="pagination">
-    <%= create_pagination(@row_count, @per_page, @page, @view.href + '/alt?' + @state_param) %>
+    <%= create_pagination(@row_count, @per_page, @page, view_path(@view) + '/alt?' + @state_param) %>
   </div>
   <%- end -%>
 
@@ -98,7 +98,7 @@
   </div>
 
 <%- if is_grid -%>
-  <%= form_tag @view.alt_href, :method => :get, :id => 'queryForm' do -%>
+  <%= form_tag alt_view_path(@view), :method => :get, :id => 'queryForm' do -%>
     <h2>Filter</h2>
     <ul>
       <%- @viewable_columns.each do |column| -%>
@@ -151,7 +151,7 @@
       <%= submit_tag "Submit" %>
     <% end %>
   <%- else -%>
-    <p><%= link_to "Sign in to save this view.", "#{@view.alt_href}?force_login=true&#{@state_param}" %></p>
+    <p><%= link_to "Sign in to save this view.", "#{alt_view_path(@view)}?force_login=true&#{@state_param}" %></p>
   <%- end -%>
 <%- end -%>
 
@@ -161,7 +161,7 @@
   <% if @view.filters.size > 0 %>
     <% @view.filters.each do |filter| %>
       <ul class="metaDataList">
-        <li><%= link_to filter.name, filter.alt_href %></li>
+        <li><%= link_to filter.name, alt_view_path(filter) %></li>
       </ul>
     <% end %>
   <% else %>
@@ -278,7 +278,7 @@
       {:dimensions => { :width => '500',  :height => '425' }},
       CurrentDomain.default_widget_customization_id)) %>
 
-    <a id="previewWidgetLink" href="<%= @view.href %>/widget_preview?width=500&height=425&variation=<%= CurrentDomain.default_widget_customization_id %>">
+    <a id="previewWidgetLink" href="<%= preview_view_widget_path(@view.route_params.merge( width: 500, height: 425, variation: CurrentDomain.default_widget_customization_id )) %>">
       See Preview
     </a>
     <%- end -%>

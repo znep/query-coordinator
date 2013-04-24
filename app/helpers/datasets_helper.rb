@@ -40,7 +40,7 @@ module DatasetsHelper
   end
 
   def socialize_menu_options(view)
-    seo_path = "#{request.protocol + request.host_with_port + view.href}"
+    seo_path = view_url(view)
 
     [{'text' => 'Facebook',
       'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},

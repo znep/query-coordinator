@@ -5,5 +5,5 @@
 
 <%- parent_dataset = !@view.nil? ? @view.parent_dataset : nil -%>
 <%- if !parent_dataset.nil? && parent_dataset.can_read? -%>
-<a target="_blank" href="<%= parent_dataset.href %>">View all the data submitted so far</a>
+<a target="_blank" href="<%= view_path(parent_dataset) %>">View all the data submitted so far</a>
 <%- end -%>

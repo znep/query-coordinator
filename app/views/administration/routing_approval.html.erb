@@ -90,7 +90,7 @@
           <%- @stuck_results.each do |v| -%>
           <tr>
             <td class="name">
-              <span class="icon"></span><a href="<%= v.href %>"><%= v.name %></a>
+              <span class="icon"></span><a href="<%= view_path(v) %>"><%= v.name %></a>
             </td>
             <td class="stage">
               <%= render :partial => 'datasets/stage_icon',

@@ -7,7 +7,7 @@
   <h2><%= @type.capitalize %> Rows</h2>
 
   <div class="mainContent">
-    <%- redirect = request.protocol + request.host_with_port + @view.alt_href -%>
+    <%- redirect = alt_view_url(@view) -%>
     <%= form_tag("/views/#{@view.id}/rows.txt?redirect=#{CGI.escape(redirect)}" +
     "&method=#{@type}&authenticity_token=#{CGI::escape(form_authenticity_token)}", :id => "appendForm",
     :multipart => true, :class => 'commonForm') do %>
@@ -39,7 +39,7 @@
       <div class="submitButtons clearfix">
         <%= submit_tag('Upload and ' + @type.capitalize,
           :class => 'button default') unless @error_type %>
-        <a class="button" href="<%= @view.alt_href %>">Cancel</a>
+        <a class="button" href="<%= alt_view_path(@view) %>">Cancel</a>
       </div>
     <% end %>
   </div>

@@ -1,5 +1,5 @@
 <h1 class="title center"><strong><%= @view.name -%></strong>: API Management</h1>
-<p class="center">This API is based on <a href="<%= @view.parent_dataset.href %>"><%= @view.parent_dataset.name -%></a></p>
+<p class="center">This API is based on <a href="<%= view_path(@view.parent_dataset) %>"><%= @view.parent_dataset.name -%></a></p>
 <ul id="adminList" class="flowlist">
   <li>
   <a href="<%= @nav_root + "/" + 'permission'  %>" >

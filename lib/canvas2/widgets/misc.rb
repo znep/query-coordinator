@@ -53,7 +53,17 @@ module Canvas2
       safe_markdown = strip_html_from_markdown(markdown)
       unsafe_html_result = convert_markdown_to_html(safe_markdown)
       safe_html_result = sanitize_html(unsafe_html_result)
-      [safe_html_result, true]
+      final_html_result = auto_hyperlink_html(safe_html_result)
+      [final_html_result, true]
+    end
+
+    # Given an HTML document or snippet, auto-links plain text.
+    # Keep this in sync with FormattedText's implementation in formatted-text.js.
+    def auto_hyperlink_html(html)
+      autoLinker = AutoLinker.new
+      parser = Nokogiri::HTML::SAX::Parser.new(autoLinker)
+      parser.parse(html)
+      return autoLinker.output
     end
 
     #Sanitizes the given HTML using a moderate whitelist, allowing tags and

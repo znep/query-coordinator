@@ -688,20 +688,15 @@ class View < Model
     !domainCName.blank?
   end
 
-  def federated_protocol(domainCName)
-    domain = Domain.find(domainCName, true)
-    domain.protocol
-  end
-
-  def federated_port(domainCName)
-    domain = Domain.find(domainCName, true)
-    domain.port
-  end
-
   def route_params
-    { category: (self.category || 'dataset').convert_to_url,
-      view_name: (self.name || 'dataset').convert_to_url,
-      id: self.id }
+    params =
+      { category: (self.category || 'dataset').convert_to_url,
+        view_name: (self.name || 'dataset').convert_to_url,
+        id: self.id }
+
+    params[:host] = self.domainCName if self.federated?
+
+    params
   end
 
   def rss
@@ -709,7 +704,7 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-    absolute_path("/api/views/#{id}/rows.#{ext}", !federated?)
+     "#{root_path(host: self.domainCName)}api/views/#{self.id}/rows.#{ext}"
   end
 
   def tweet

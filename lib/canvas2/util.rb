@@ -137,7 +137,7 @@ module Canvas2
           obj = JSON.parse(obj) if obj.is_a?(String)
         rescue Exception => e
         end
-        return nil if obj[k].blank?
+        return nil if !obj.respond_to?('key') || !obj.key?(k)
         obj = obj[k]
         i += 1
       end

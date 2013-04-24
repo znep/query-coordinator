@@ -22,7 +22,7 @@
         </div>
         <%- @own_reports.each do |report| -%>
           <div class="singleItem">
-            <div class="singleInner">
+            <div class="singleInner" title="<%= report.name %>">
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="secondaryAction">
                 <a href="<%= report.path %>?_edit_mode=true" class="button">
@@ -33,6 +33,7 @@
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
               </div>
+              <div class="secondaryMetadata">last updated: <%= blist_date(report.updated_at) %></div>
             </div>
           </div>
         <%- end -%>
@@ -44,11 +45,12 @@
       <div class="clearfix">
         <%- @other_reports.each do |report| -%>
           <div class="singleItem">
-            <div class="singleInner">
+            <div class="singleInner" title="<%= report.name %>">
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
               </div>
+              <div class="secondaryMetadata">last updated: <%= blist_date(report.updated_at) %></div>
             </div>
           </div>
         <%- end -%>

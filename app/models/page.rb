@@ -55,6 +55,10 @@ class Page < SodaModel
     @update_data['metadata'] || @data['metadata'] || {}
   end
 
+  def updated_at
+    @data[':updated_at']
+  end
+
   def uneditable
     !content.blank? && (content['uneditable'] == true || content['uneditable'] == 'true')
   end

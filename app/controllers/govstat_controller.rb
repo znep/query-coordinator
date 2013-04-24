@@ -132,7 +132,8 @@ protected
   end
 
   def get_reports
-    reports = Page.find('$order' => ':updated_at')
+    reports = Page.find('$order' => ':updated_at desc',
+      '$select' => 'name,path,content,metadata,owner,:updated_at')
     own_reports = []
     other_reports = []
     reports.each do |r|

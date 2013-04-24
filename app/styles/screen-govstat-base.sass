@@ -156,11 +156,23 @@ input.button, a.button
       .secondaryAction
         bottom: 0.5em
         font-size: 1em
+        left: 1em
         z-index: 2
         a
           padding: 0.4em 0.8em
           span
             vertical-align: bottom
+
+      .secondaryMetadata
+        bottom: 0.5em
+        color: #888888
+        font-size: 1.4em
+        left: 1em
+        letter-spacing: -1px
+        position: absolute
+
+      .secondaryAction ~ .secondaryMetadata
+        bottom: 3em
 
       .tileIcon
         bottom: 0

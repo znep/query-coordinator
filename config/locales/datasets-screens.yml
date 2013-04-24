@@ -57,7 +57,7 @@ en:
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         api_unsavable: API views cannot be modified
         working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
-        working_copy_title: [Working Copy]
+        working_copy_title: "[Working Copy]"
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
         snapshot_title: Snapshotted %{date}
         publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.

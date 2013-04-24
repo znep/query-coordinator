@@ -234,7 +234,7 @@
 
             if (blist.nextgen.legend)
             { return data; }
-            else if (layerObj._colorValueCol && layerObj._segments)
+            else if (layerObj._quantityCol && layerObj._range)
             { return _.last(data); }
             else
             { return null; }

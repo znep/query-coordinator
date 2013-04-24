@@ -606,8 +606,8 @@
 
         displayFormatKeyChanges: function()
         {
-            return ['color', 'plot.locationId', 'plot.iconId', 'plot.colorValueId',
-                    'plot.sizeValueId'];
+            return ['color', 'highlightColor',
+                    'plot.locationId', 'plot.iconId', 'plot.colorValueId', 'plot.sizeValueId'];
         },
 
         /* Utility functions */

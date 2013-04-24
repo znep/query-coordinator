@@ -184,7 +184,7 @@ class ProfileController < ApplicationController
   # Note: was AccountsController#edit
   def edit_account
     # redirect from generic to fully-qualified url
-    expected_path = profile_account_path(current_user)
+    expected_path = profile_account_path(current_user.route_params.merge(:locale => nil))
     if request.path != expected_path
       return redirect_to(expected_path, :status => 301)
     end
@@ -281,7 +281,7 @@ class ProfileController < ApplicationController
   def edit_app_tokens
     # redirect from generic to fully-qualified url
     # (for /profile/app_tokens support from dev.socrata.com)
-    expected_path = app_tokens_path(current_user)
+    expected_path = app_tokens_path(current_user.route_params.merge(:locale => nil))
     if request.path != expected_path
       return redirect_to(expected_path, :status => 301)
     end

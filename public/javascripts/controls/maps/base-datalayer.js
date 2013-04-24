@@ -766,7 +766,12 @@
         prepareRowRender: function(row)
         {
             var geometry = this.extractGeometryFromRow(row);
-            if (_.isBoolean(geometry) || _.isString(geometry)) { return null; }
+            if (_.isBoolean(geometry)) { return null; }
+            else if (_.isString(geometry))
+            {
+                this._parent.showError('Some points were invalid. ' + geometry);
+                return null;
+            }
 
             var data = { icon: this.extractIconFromRow(row) };
             if (!data.icon)
@@ -861,10 +866,7 @@
 
             if (_.isUndefined(row.feature) && _.isUndefined(locCol) &&
                 (_.isUndefined(layerObj._latCol) || _.isUndefined(layerObj._longCol)))
-            {
-                layerObj._parent.errorMessage = 'No columns defined';
-                return false;
-            }
+            { return 'No columns defined'; }
 
             var point = {isPoint: true};
 
@@ -888,9 +890,8 @@
             if (lonlat && lonlat.isIncomplete()) { return 'lonlat is incomplete'; }
             if (lonlat.lat <= -90 || lonlat.lat >= 90 || lonlat.lon <= -180 || lonlat.lon >= 180)
             {
-                layerObj._parent.errorMessage = 'Latitude must be between -90 and 90, ' +
+                return 'Latitude must be between -90 and 90, ' +
                     'and longitude must be between -180 and 180';
-                return false;
             }
 
             if (point.isPoint)

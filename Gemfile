@@ -26,3 +26,4 @@ gem "thin", :group => :development
 gem "ruby-debug19", :group => :development
 gem 'redcarpet'
 gem 'sanitize'
+gem 'snappy'

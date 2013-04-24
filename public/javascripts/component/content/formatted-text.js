@@ -155,7 +155,7 @@ $.component.Component.extend('Formatted Text', 'content', {
 
                 cObj.$contents.html(safeHtmlResult);
 
-                $.cf.enhanceProperties(cObj.$contents);
+                $.cf.enhanceProperties(cObj.$contents, true /* Let newlines through in editor*/ );
             }
         }
         else if (wasEditable)

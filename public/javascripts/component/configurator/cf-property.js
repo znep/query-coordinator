@@ -303,9 +303,9 @@
         infoTipHookup(prop);
     };
 
-    $.cf.enhanceProperties = function($node)
+    $.cf.enhanceProperties = function($node, multiLineMode)
     {
-        $node.editable({ edit: true, focusOnEdit: true, singleLineMode: true });
+        $node.editable({ edit: true, focusOnEdit: true, singleLineMode: !multiLineMode });
 
         var html = $node.html();
         var props = html.match(/({[^{}]+})/mg);

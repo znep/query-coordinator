@@ -204,9 +204,7 @@
       <dt><%= t('screens.about.permalink') %></dt>
       <dd><span class="hardWrap"><%= link_to_url view_url(@view), :rel => 'external' %></span></dd>
       <dt><%= t('screens.about.short_url') %></dt>
-      <dd><span class="hardWrap"><%= link_to_url request.protocol +
-        request.host_with_port + @view.short_href,
-        :rel => 'external' %></span></dd>
+      <dd><span class="hardWrap"><%= link_to_url short_view_url(@view), :rel => 'external' %></span></dd>
     </dl>
   </div>
 

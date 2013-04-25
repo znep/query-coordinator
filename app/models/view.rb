@@ -704,7 +704,7 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-     "#{root_path(host: self.domainCName)}api/views/#{self.id}/rows.#{ext}"
+     "#{root_url(host: self.domainCName)}api/views/#{self.id}/rows.#{ext}"
   end
 
   def tweet

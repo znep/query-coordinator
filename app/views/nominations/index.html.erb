@@ -31,7 +31,7 @@
     <%- if !current_user.nil? -%>
       <a href="#Submit dataset" class="button nominateLink hasUser">Suggest a Dataset</a>
     <%- else -%>
-      <a href="/nominate/new" class="button nominateLink">Suggest a Dataset</a>
+      <a href="<%= new_nominate_path %>" class="button nominateLink">Suggest a Dataset</a>
     <%- end -%>
     <div class="moderationNotice flash notice">
       Your suggestion has been received and is in the moderation queue. It will appear on this page once an administrator approves it.

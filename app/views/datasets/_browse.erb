@@ -105,7 +105,7 @@
             <h3><%= t('controls.browse.actions.create_dataset') %></h3>
 
             <div class="buttonContainer">
-                <a class="button next" href="/datasets/new" title="<%= t('controls.browse.actions.create_dataset_short') %>">
+                <a class="button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_short') %>">
                 <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_short') : t('controls.browse.actions.create_dataset_verb') %>
                 <span class="icon"></span>
                 </a>
@@ -188,11 +188,11 @@
             <%- if (!opts[:embedded_browse_iframe_hack]) -%>
                 <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
                         CurrentDomain.module_enabled?(:community_creation)) && !opts[:suppress_dataset_creation] -%>
-                    <a class="button createLink" href="/datasets/new"><%= t('controls.browse.actions.create_dataset_short') %></a>
+                    <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
                 <%- end -%>
             <%- end -%>
             <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
-              <a class="button suggestLink" href="/nominate"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
+              <a class="button suggestLink" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
             <%- end -%>
           </div>
         <%- elsif opts[:view_count] == 0 -%>
@@ -201,11 +201,11 @@
             <%- if (!opts[:embedded_browse_iframe_hack]) -%>
                 <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
                         CurrentDomain.module_enabled?(:community_creation)) && !opts[:suppress_dataset_creation] -%>
-                    <a class="button createLink" href="/datasets/new"><%= t('controls.browse.actions.create_dataset_short') %></a>
+                    <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
                 <%- end -%>
             <%- end -%>
             <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
-              <a class="button suggestLink" href="/nominate"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
+              <a class="button suggestLink" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
             <%- end -%>
           </div>
         <%- else -%>
@@ -445,7 +445,7 @@
     <div class="suggestBox infoBox">
       <h3><%= t('controls.browse.actions.suggest_dataset') %></h3>
       <div class="buttonContainer">
-        <a class="button next" href="/nominate"><%= t('controls.browse.actions.suggest_dataset_verb') %><span class="icon"></span></a>
+        <a class="button next" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_verb') %><span class="icon"></span></a>
       </div>
     </div>
   <%- end -%>

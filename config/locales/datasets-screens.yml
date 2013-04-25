@@ -126,6 +126,14 @@ en:
         validation:
           auth_required: You must be logged in to save a view
           view_name_required: A view name is required
+      email:
+        title_html: Share &quot;<span class="datasetName">%{name}</span>&quot;
+        prompt_html: "Share <span class=\"datasetName\">%{name}</span> with the following email addresses:"
+        success: Your email has been successfully sent.
+        add_email: Add More
+        remove_email: Remove
+        message_prompt: Enter an optional message
+        email_button: Email
       dataset_contact:
         subject: Your dataset "%{dataset_name}" has been flagged %{reason}
         reasons:
@@ -419,7 +427,7 @@ en:
           delete_confirm: Are you sure you want to delete %{name}?
           delete_snapshot_confirm: Are you sure you want to delete %{name} (snapshotted %{date})?
           search: Search views
-          no_results_html: There are no <span class="type">results</span>
+          no_results: There are no results
           item:
             author_html: <span class="date"></span> by <span class="author"></span>
             delete: Delete this view

@@ -109,6 +109,7 @@ en:
         app_tokens:
           title: App Tokens
           title_full: Your Applications
+          title_single: Edit Application Token
           new_app_button: Create New Application
           create_error: "An error occured creating your application token: #{message}"
           create_success: Your application has been created

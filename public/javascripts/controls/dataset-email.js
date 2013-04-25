@@ -55,7 +55,6 @@
         $form.data('dataset', dataset);
 
         $emailDialog.toggleClass('ownerDialog', dataset.hasRight('grant'));
-        $emailDialog.find('.emailDatasetHint').text($emailDialog.hasClass('ownerDialog') ? 'Share' : 'Email');
 
         $form.attr('action', '/api/views/' + dataset.id + '.json?method=sendAsEmail');
         $form.validate().resetForm();

@@ -232,9 +232,9 @@ $(function()
         var $t = $(this);
         var $options = $t.siblings('.moreOptions');
 
-        if ($t.text() == $.t('controls.browse.actions.all_options'))
+        $t.toggleClass('expanded');
+        if ($t.hasClass('expanded'))
         {
-            // grammar nazis: fewer? sounds weird, probably more correct
             $t.text($.t('controls.browse.actions.less_options'));
             $options.hide().removeClass('hide').slideDown();
         }

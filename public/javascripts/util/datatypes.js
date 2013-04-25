@@ -618,7 +618,7 @@ blist.namespace.fetch('blist.datatypes');
 
     // Aggregates
     var aggs = [
-        {text: 'Average', value: 'average', calculate: function(values)
+        {text: $.t('core.aggregates.average'), value: 'average', calculate: function(values)
             {
                 var count = 0;
                 var sum = _.reduce(values,
@@ -631,16 +631,16 @@ blist.namespace.fetch('blist.datatypes');
                 return sum / (count || 1);
             }},
 
-        {text: 'Count', value: 'count', calculate: function(values)
+        {text: $.t('core.aggregates.count'), value: 'count', calculate: function(values)
             { return _.reduce(values, function(memo, v) { return memo + ($.isBlank(v) ? 0 : 1); }, 0); }},
 
-        {text: 'Sum', value: 'sum', calculate: function(values)
+        {text: $.t('core.aggregates.sum'), value: 'sum', calculate: function(values)
             {
                 return _.reduce(values, function(memo, v)
                         { return memo + ($.isBlank(v) ? 0 : parseFloat(v)); }, 0);
             }},
 
-        {text: 'Maximum', value: 'maximum',
+        {text: $.t('core.aggregates.maximum'), value: 'maximum',
             calculate: function(values)
             {
                 return _.reduce(values, function(memo, v)
@@ -650,7 +650,7 @@ blist.namespace.fetch('blist.datatypes');
                         }, null);
             }},
 
-        {text: 'Minimum', value: 'minimum',
+        {text: $.t('core.aggregates.minimum'), value: 'minimum',
             calculate: function(values)
             {
                 return _.reduce(values, function(memo, v)

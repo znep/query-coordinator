@@ -24,7 +24,7 @@ en:
           export: Export
           discuss: Discuss
           embed: Embed
-          about: About
+          about: About This Dataset
       image_upload:
         button: Upload Image
 

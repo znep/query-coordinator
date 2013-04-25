@@ -2,7 +2,7 @@
 {
     $.Control.extend('pane_about', {
         getTitle: function()
-        { return 'About This Dataset'; },
+        { return $.t('controls.common.sidebar.tabs.about'); },
 
         _getSections: function()
         {

@@ -392,7 +392,7 @@
     {
         var bc = basicConfig(Dataset.chart.types.pie, options, Dataset.chart.textualTypes, $.t('screens.ds.grid_sidebar.chart.label'));
         bc.fields.splice(1, 2);
-        bc.fields.push({text: 'Values', name: 'displayFormat.valueColumns.0.fieldName',
+        bc.fields.push({text: $.t('screens.ds.grid_sidebar.chart.values'), name: 'displayFormat.valueColumns.0.fieldName',
             otherNames: 'displayFormat.valueColumns.0.tableColumnId',
             notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});

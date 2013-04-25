@@ -317,7 +317,6 @@
             return [{
                 customContent: {
                     template: 'itemsListBlock',
-                    directive: { '.emptyResult .type': '#{resultType}s' },
                     data: { resultType: 'view' },
                     callback: function($s)
                     {

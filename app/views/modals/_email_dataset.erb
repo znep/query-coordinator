@@ -1,25 +1,23 @@
 <%= modal :class => "emailDatasetDialog#{' ownerDialog' if !@view.nil? && @view.has_rights?('grant')}" do %>
-  <h2><span class="emailDatasetHint">Email</span> "<span class="datasetName"><%= @view.nil? ? '' : @view.name %></span>"
-    <span class="datasetTypeNameUpcase">Dataset</span></h2>
+  <h2><%= t('screens.ds.email.title_html', name: h(@view.nil? ? '' : @view.name)) %></h2>
   <div class="emailSuccess">
     <div class="flash notice">
-      Your email has been successfully sent.
+      <%= t('screens.ds.email.success') %>
     </div>
     <ul class="actions clearfix">
       <li>
-        <a href="#cancel" class="jqmClose button">Close</a>
+        <a href="#cancel" class="jqmClose button"><%= t('core.dialogs.close') %></a>
       </li>
     </ul>
   </div>
   <div class="emailDatasetContent">
     <div class="flash" id="emailDatasetMessage"></div>
-    <p>Share the <span class="datasetName"><%= @view.nil? ? '' : @view.name %></span>
-      <span class="datasetTypeName">dataset</span> with the following email addresses</p>
+    <p><%= t('screens.ds.email.prompt_html', name: h(@view.nil? ? '' : @view.name)) %></p>
     <div class="emailFormContent">
       <form class="commonForm" id="emailDatasetForm"
         action="<%= @view.nil? ? '' : "/views/#{@view.id}.json?method=sendAsEmail" %>" method="post">
         <div class="emailLine">
-          <a href="#remove" title="Remove" class="removeLink delete hiddenLink">
+          <a href="#remove" title="<%= t('screens.ds.email.remove_email') %>" class="removeLink delete hiddenLink">
             <span class="icon"></span>
           </a>
           <input type="hidden" class="recipientUid" />
@@ -34,22 +32,22 @@
         </div>
         <div class="addMoreLine">
           <a class="button addMoreRecipientsButton add" href="#add">
-            <span class="icon"></span>Add More
+            <span class="icon"></span><%= t('screens.ds.email.add_email') %>
           </a>
         </div>
-        <p class="emailMessageHint">Enter an optional message</p>
+        <p class="emailMessageHint"><%= t('screens.ds.email.message_prompt') %></p>
         <textarea id="emailMessage"></textarea>
       </form>
     </div>
     <ul class="actions clearfix">
       <li>
         <a href="#cancel" class="jqmClose button cancel">
-          <span class="icon"></span>Cancel
+          <span class="icon"></span><%= t('core.dialogs.cancel') %>
         </a>
       </li>
       <li>
         <a href="#email" class="button" id="emailSubmitButton">
-          <span class="icon"></span><span class="emailDatasetHint">Email</span>
+          <span class="icon"></span><span class="emailDatasetHint"><%= t('screens.ds.email.email_button') %></span>
         </a>
       </li>
     </ul>

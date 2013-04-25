@@ -59,6 +59,13 @@
         return /^EPSG:\d+$/i.test(value);
     });
 
+    // drop in translated default validation messages
+    var messages = {};
+    _.each($.validator.messages, function(__, key) { messages[key] = $.t('core.validation.' + key); });
+    _.each([ 'maxlength', 'minlength', 'rangelength', 'range', 'max', 'min' ],
+             function(key) { messages[key] = $.validator.format(messages[key]); });
+    $.extend($.validator.messages, messages);
+
     var loggedInCookie = $.cookies.get('logged_in');
     if (loggedInCookie && loggedInCookie == "true")
     {

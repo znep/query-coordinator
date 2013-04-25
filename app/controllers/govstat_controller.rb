@@ -132,8 +132,14 @@ protected
   end
 
   def get_reports
-    reports = Page.find('$order' => ':updated_at desc',
-      '$select' => 'name,path,content,metadata,owner,:updated_at')
+    begin
+      reports = Page.find('$order' => ':updated_at desc',
+        '$select' => 'name,path,content,metadata,owner,:updated_at')
+    rescue Exception => e
+      # In case Pages doesn't have the owner column, fall-back to the safe items
+      reports = Page.find('$order' => ':updated_at desc',
+        '$select' => 'name,path,content,metadata,:updated_at')
+    end
     own_reports = []
     other_reports = []
     reports.each do |r|

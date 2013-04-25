@@ -148,6 +148,8 @@
         discoverDisplayFormatChanges: function()
         {
             return {
+                highlight: { keys: ['highlightColor'], onChange:
+                    function() { this._highlightColor = this._displayFormat.highlightColor; } },
                 opacity: { keys: ['opacity'], onChange: this.reloadOpacity },
                 flyouts: { keys: ['flyoutsNoLabel', 'plot.titleId', 'plot.descriptionColumns'],
                            onChange: this.reloadFlyouts }
@@ -606,8 +608,8 @@
 
         displayFormatKeyChanges: function()
         {
-            return ['color', 'highlightColor',
-                    'plot.locationId', 'plot.iconId', 'plot.colorValueId', 'plot.sizeValueId'];
+            return ['color', 'plot.locationId', 'plot.iconId', 'plot.colorValueId',
+                    'plot.sizeValueId'];
         },
 
         /* Utility functions */

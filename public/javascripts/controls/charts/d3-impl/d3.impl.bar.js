@@ -689,6 +689,7 @@ return; // dataOffset doesn't appear to be necessary; I've disabled it for now i
                             vizObj.$dom().trigger('display_row', [{row: d}]);
                         }
                     });
+
             bars
                     .attr('fill', vizObj._d3_colorizeRow(colDef))
                     .each(function(d)

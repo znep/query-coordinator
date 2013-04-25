@@ -9,15 +9,15 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <a href="#dataGrid" accesskey="d">Skip to data grid</a>
-  <a href="#search" accesskey="s">Skip to search within this dataset</a>
-  <a href="#views" accesskey="v">Skip to other views of this data</a>
+  <a href="#dataGrid">Skip to data grid</a>
+  <a href="#search">Skip to search within this dataset</a>
+  <a href="#views">Skip to other views of this data</a>
   <% if @view.module_enabled? :allow_comments %>
-    <a href="#comments" accesskey="o">Skip to comments</a>
+    <a href="#comments">Skip to comments</a>
   <% end %>
-  <a href="#sharing" accesskey="a">Skip to sharing</a>
+  <a href="#sharing">Skip to sharing</a>
   <%- if @view.display.can_publish? -%>
-  <a href="#publishing" accesskey="p">Skip to publishing</a>
+  <a href="#publishing">Skip to publishing</a>
   <%- end -%>
 
 <% end %>

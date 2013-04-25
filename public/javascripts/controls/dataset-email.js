@@ -75,7 +75,7 @@
         {
             $eLine.append($.tag({ tagName: 'select', 'class': 'recipientRole', name: 'role',
                 contents: _.map(dataset.getShareTypes(), function(t)
-                    { return { tagName: 'option', value: t, contents: t }; })
+                    { return { tagName: 'option', value: t, contents: $.t('core.share_types.' + t) }; })
             }));
             $eLine.find('select').uniform();
         }

@@ -26,7 +26,7 @@
               name="emailRecipient0" />
           </div>
           <%- if !@view.nil? && @view.has_rights?('grant') -%>
-            <%= select_tag 'role', options_for_select(@view.share_types),
+            <%= select_tag 'role', options_for_select(@view.share_types.map{ |type| [ t('core.share_types.' + type), type ] }),
                   :class => 'recipientRole', :id => nil %>
           <%- end -%>
         </div>

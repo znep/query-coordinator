@@ -1,8 +1,8 @@
 class Share
   cattr_accessor :types
-  VIEWER = 'Viewer'
-  CONTRIBUTOR = 'Contributor'
-  OWNER = 'Owner'
+  VIEWER = 'viewer'
+  CONTRIBUTOR = 'contributor'
+  OWNER = 'owner'
 
   attr_accessor :type, :member_id, :member_name, :user_member, :is_user, :is_group
 

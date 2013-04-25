@@ -176,6 +176,10 @@ protected
     # grab configured params
     configured_params = (catalog_config.default_params || {}).to_hash.deep_symbolize_keys
 
+    # deal with default base_url wrt localization (ergghhhh bad hack.)
+    base_url = request.path
+    base_url = '/' + I18n.locale.to_s + base_url if I18n.locale.to_s != CurrentDomain.default_locale
+
     # next deal with options
     default_options = {
       limit: 10,
@@ -184,7 +188,7 @@ protected
       disable: {},
       no_results_text: t('controls.browse.listing.no_results'),
       timeout_text: t('controls.browse.listing.timeout'),
-      base_url: request.path,
+      base_url: base_url,
       view_type: 'table'
     }
 

@@ -511,7 +511,7 @@ private
       type: 'catalog',
       properties: {
         browseOptions: {
-          base_url: '/browse',
+          base_url: browse_path,
           suppress_dataset_creation: true
         }
       }

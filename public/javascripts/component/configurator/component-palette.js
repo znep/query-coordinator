@@ -5,13 +5,15 @@
             this._super.apply(this, arguments);
             if ($('#templates > .componentPaletteContainer').length < 1)
             {
-                $('#templates').append($.tag({ tagName: 'div', 'class': 'componentPaletteContainer',
-                    contents: { tagName: 'ul', contents: { tagName: 'li', 'class': 'componentCreate',
+                $('#templates').append($.tag2({ _: 'div', className: 'componentPaletteContainer',
+                    contents: { _: 'div', className: ['componentBlock', 'clearfix'],
                         contents: [
-                            { tagName: 'span', 'class': 'icon' },
-                            { tagName: 'span', 'class': 'label' }
+                            { _: 'span', className: 'title' },
+                            { _: 'ul', contents: { _: 'li', className: 'componentCreate',
+                                 contents: [ { _: 'span', className: 'icon' },
+                                    { _: 'span', className: 'label' } ] } }
                         ]
-                    } } }));
+                    } }));
             }
         },
 
@@ -20,19 +22,36 @@
 
         _getSections: function()
         {
+            var compBlocks = this.settings.components;
+            // If just an array of components, make it a section obj
+            if (_.isArray(compBlocks) && !$.subKeyDefined(compBlocks[0], 'components'))
+            { compBlocks = { components: compBlocks }; }
+            // If just a section obj, make it an array of sections
+            if ($.subKeyDefined(compBlocks, 'components'))
+            { compBlocks = [compBlocks]; }
+
             return [ {
                 customContent: {
                     template: 'componentPaletteContainer',
                     directive: {
-                        '.componentCreate': {
-                            'entry<-components': {
-                                '.label': 'entry.catalogName!',
-                                '.@data-typename': 'entry.typeName!',
-                                '.@class+': 'icon-#{entry.typeName!}'
+                        '.componentBlock': {
+                            'block<-components': {
+                                '.title': 'block.title!',
+                                '.title@class+': function(a)
+                                    { return $.isBlank(a.item.title) ? 'hide' : '' },
+                                '.componentCreate': {
+                                    'entry<-block.components': {
+                                        '.label': 'entry.catalogName!',
+                                        '.@data-typename': 'entry.typeName!',
+                                        '.@class+': function(a)
+                                        { return 'icon-' + (a.item.icon || a.item.typeName); }
+                                    }
+                                },
+                                '.@class+': 'block.className'
                             }
                         }
                     },
-                    data: { components: this.settings.components },
+                    data: { components: compBlocks },
                     callback: function($newSect, data)
                     {
                         $newSect.find('.componentCreate').quickEach(function()

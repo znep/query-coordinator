@@ -1,6 +1,3 @@
-/**
- * The application "tool bar".
- */
 (function($) {
 
     var $ct;
@@ -18,21 +15,35 @@
 
         if ($.cf.configuration().canAdd)
         {
-            _.each([$.component.catalog.content, $.component.catalog.data, $.component.catalog.actions,
-                $.component.catalog.input], function(section, i)
+            if (blist.configuration.govStat)
             {
-                var comps = section.entries;
-                if (blist.configuration.govStat)
+                // GovStat gets a special sidebar for Report Builder
+                $.cf.edit.addComponentPalette('Report', [
+                        { typeName: 'Header', catalogName: 'Header' },
+                        { typeName: 'Title', catalogName: 'Title' },
+                        { typeName: 'FormattedText', catalogName: 'Formatted Text' },
+                        { typeName: 'Print', catalogName: 'Print' },
+                        { typeName: 'Visualization', catalogName: 'Chart', icon: 'Chart' },
+                        { typeName: 'Visualization', catalogName: 'Map', icon: 'Map' },
+                        { typeName: 'Visualization', catalogName: 'Table', icon: 'Table' }
+                    ]);
+                $.cf.edit.addComponentPalette('Advanced', [
+                        { typeName: 'Map', catalogName: 'Base Map' },
+                        { typeName: 'MapLayer', catalogName: 'Map Layer' }
+                    ].concat(_.select($.component.catalog.data.entries, function(e)
+                            { return e.catalogName.endsWith(' Chart'); }))
+                );
+            }
+            else
+            {
+                // Standard Designer
+                _.each([$.component.catalog.content, $.component.catalog.data, $.component.catalog.actions,
+                        $.component.catalog.input], function(section, i)
                 {
-                    comps = _.filter(comps, function(e)
-                    {
-                        return _.include(['Title', 'Formatted Text', 'Picture', 'Map', 'Map Layer', 'Table', 'Print',
-                            'Visualization', 'Header'],
-                            e.catalogName) || e.catalogName.toLowerCase().endsWith('chart');
-                    });
-                }
-                if (!_.isEmpty(comps)) { $.cf.edit.addComponentPalette(section.name, comps, i+1); }
-            });
+                    var comps = section.entries;
+                    if (!_.isEmpty(comps)) { $.cf.edit.addComponentPalette(section.name, comps, i+1); }
+                });
+            }
         }
 
         sidebar = $ct.gridSidebar({

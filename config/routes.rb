@@ -140,7 +140,7 @@ Frontend::Application.routes do
 
     get '/translations/*locale_parts' => 'translations#get'
 
-    resource :browse, :controller => 'browse' do
+    resource :browse, :controller => 'browse', :except => [ :create ] do
       collection do
         get :embed
         get :select_dataset

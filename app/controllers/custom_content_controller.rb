@@ -3,7 +3,6 @@ require 'digest/md5'
 class CustomContentController < ApplicationController
   include CustomContentHelper
   include GovstatHelper
-  include Rails.application.routes.url_helpers
 
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]
@@ -384,13 +383,6 @@ private
     return page_config
   end
 
-  # generate the default homepage configuration and use it to prepare for render
-  def default_homepage
-    page_config = Hashie::Mash.new(@@default_homepage) # Mash will not modify original hash
-
-    return page_config
-  end
-
   # take a canvas configuration and prepare it for render
   def prepare_config(page_config, prepare = true)
     # turn toplevel contents into objects; rest will transform as needed
@@ -492,32 +484,34 @@ private
     AppHelper.instance
   end
 
-  @@default_homepage = {
-    title: '',
-    default_homepage: true,
-    default_styles: true,
-    contents: [{
-      type: 'data_splash'
-    }, {
-      type: 'stories',
-      properties: {
-        fromDomainConfig: true
-      }
-    }, {
-      type: 'featured_views',
-      properties: {
-        fromDomainConfig: true
-      }
-    }, {
-      type: 'catalog',
-      properties: {
-        browseOptions: {
-          base_url: browse_path,
-          suppress_dataset_creation: true
+  def default_homepage
+    Hashie::Mash.new({
+      title: '',
+      default_homepage: true,
+      default_styles: true,
+      contents: [{
+        type: 'data_splash'
+      }, {
+        type: 'stories',
+        properties: {
+          fromDomainConfig: true
         }
-      }
-    }]
-  }
+      }, {
+        type: 'featured_views',
+        properties: {
+          fromDomainConfig: true
+        }
+      }, {
+        type: 'catalog',
+        properties: {
+          browseOptions: {
+            base_url: browse_path,
+            suppress_dataset_creation: true
+          }
+        }
+      }]
+    })
+  end
 end
 
 class AppHelper

@@ -3,6 +3,7 @@ require 'digest/md5'
 class CustomContentController < ApplicationController
   include CustomContentHelper
   include GovstatHelper
+  include Rails.application.routes.url_helpers
 
   before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet, :page ]

@@ -192,8 +192,8 @@ Frontend::Application.routes do
     scope :controller => 'widgets', :constraints => {:id => UID_REGEXP} do
       get 'widgets/:id/:customization_id', :action => 'show'
       get 'widgets/:id', :action => 'show'
-      get 'w/:id/:customization_id', :action => 'show'
-      get 'w/:id', :action => 'show'
+      get 'w/:id/:customization_id', :action => 'show', :as => 'widget'
+      get 'w/:id', :action => 'show', :as => 'themeless_widget'
     end
 
     resources :datasets, :only => [ :show, :new ] do

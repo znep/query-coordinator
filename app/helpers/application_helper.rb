@@ -412,6 +412,12 @@ module ApplicationHelper
     tracking_params = { :cur => ::SecureRandom.base64(9).slice(0..10).gsub(/\//, '-').gsub(/\+/, '_') }
     tracking_params[:from] = from_tracking_id unless from_tracking_id.blank?
 
+    # set up our route generation for the iframe
+    widget_params = { id: view.id, customization_id: 'default' }
+    widget_params[:customization_id] = variation unless variation.blank?
+    widget_params[:host] = view.domainCName if view.federated?
+    widget_params.merge!(tracking_params)
+
     embed_template =  "<div>"
     if options[:show_title]
       embed_template += "<p style=\"margin-bottom:3px\"><a href=\"#{h(view_url(view))}\" " +
@@ -421,9 +427,8 @@ module ApplicationHelper
     end
     embed_template += "<iframe width=\"#{h options[:dimensions][:width]}px\" " +
                       "title=\"#{h view.name}\" " +
-                      "height=\"#{h options[:dimensions][:height]}px\" src=\"#{h root_path}" +
-                      "/w/#{h view.id}/#{variation.blank? ? 'default' : h(variation)}?" +
-                      "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"" +
+                      "height=\"#{h options[:dimensions][:height]}px\" src=\"" +
+                      "#{h widget_url(widget_params)}\" frameborder=\"0\" scrolling=\"" +
                       "#{!view.display.can_publish? || view.display.scrolls_inline? ? 'no' : 'auto'}\">" +
                       "<a href=\"#{h(view_url(view))}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"

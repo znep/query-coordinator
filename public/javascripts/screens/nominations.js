@@ -83,7 +83,7 @@ $(function()
             '.user img@alt': 'user.displayName!',
             '.user .userName': 'user.displayName!',
             '.details .titleLink@href': function(n)
-               { return ('/nominate/' + n.context.id); },
+               { return $.path('/nominate/' + n.context.id); },
             '.details .title': 'title!',
             '.details .submitTime .fullTime': function(n)
                 { return new Date(n.context.createdAt * 1000).format('F d, Y'); },
@@ -153,7 +153,7 @@ $(function()
                 $commentsSection.append($.tag({
                     tagName: 'a',
                     'class': 'commentsLink comment',
-                    href: '/nominate/' + n.id,
+                    href: $.path('/nominate/' + n.id),
                     contents: [{
                             tagName: 'span',
                             'class': 'icon'

@@ -192,7 +192,7 @@ $(function()
                 $modal.find('iframe').attr('src', '');
             };
 
-            $modal.find('iframe').attr('src', '/datasets/' + viewId + '/thumbnail?strip_chrome=true');
+            $modal.find('iframe').attr('src', $.path('/datasets/' + viewId + '/thumbnail?strip_chrome=true'));
             $modal.jqmShow();
         });
 

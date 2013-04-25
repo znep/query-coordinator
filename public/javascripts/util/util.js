@@ -287,6 +287,16 @@ $.tNull = function(key, data)
     return key.endsWith('_html') ? result : $.htmlStrip(result);
 };
 
+$.rootPath = function()
+{
+    return (blist.locale == blist.defaultLocale) ? '' : ('/' + blist.locale);
+};
+
+$.path = function(path)
+{
+    return $.rootPath() + (path || '');
+};
+
 $.localize = function(obj)
 {
     if (!$.isPlainObject(obj))
@@ -850,7 +860,7 @@ blist.util.doAuthedAction = function(actionText, callback)
     }
     else if (!blist.currentUserId)
     {
-        window.location = '/login';
+        window.location = $.path('/login');
     }
     else
     {

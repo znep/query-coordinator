@@ -38,7 +38,7 @@
                                         $.uniform.update($s);
                                       }
                                       function setApiLink(){
-                                        $(".manageAPI").attr('href', '/api_foundry/manage/' + $s.value());
+                                        $(".manageAPI").attr('href', $.path('/api_foundry/manage/' + encodeURIComponent($s.value())));
                                       }
                                       setApiLink();
                                       $s.change(setApiLink);

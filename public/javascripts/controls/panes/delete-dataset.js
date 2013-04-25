@@ -51,7 +51,7 @@
                 // anyway.
                 var possibleViewObj = cpObj._view._modifyingView || cpObj._view._parent;
                 if (_.isUndefined(possibleViewObj))
-                    window.location.href = '/profile';
+                    window.location.href = $.path('/profile');
                 else
                     possibleViewObj.redirectTo();
             };

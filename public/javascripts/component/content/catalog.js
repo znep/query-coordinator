@@ -42,7 +42,7 @@ $.component.Component.extend('Catalog', 'data', {
         { params.disable = $.arrayToObjKeys(props.disabledItems, true); }
         if (!_.isEmpty(props.disabledSections))
         { params.suppressed_facets = $.arrayToObjKeys(props.disabledSections, true); }
-        this._$iframe.attr('src', '/browse/embed?' + $.param(params));
+        this._$iframe.attr('src', $.path('/browse/embed?' + $.param(params)));
         return true;
     },
 

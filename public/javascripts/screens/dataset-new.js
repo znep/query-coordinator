@@ -51,7 +51,7 @@ $wizard.wizard({
     {
         var redirectToProfile = function()
         {
-            window.location.href = '/profile';
+            window.location.href = $.path('/profile');
         };
 
         if (!_.isUndefined(state.submittedView))

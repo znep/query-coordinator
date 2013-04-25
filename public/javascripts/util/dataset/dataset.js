@@ -2572,17 +2572,17 @@ var Dataset = ServerModel.extend({
         var urlParts;
         if (ds.displayName === 'api-predeploy')
         {
-          urlParts = [base, 'api_foundry/forge', ds.id];
+          urlParts = ['api_foundry/forge', ds.id];
         }
         else if (ds.displayName === 'api')
         {
-          urlParts = [base, 'developers/docs', ds.resourceName];
+          urlParts = ['developers/docs', ds.resourceName];
         }
         else
         {
-          urlParts = [base, $.urlSafe(ds.category || "dataset"), $.urlSafe(ds.name), ds.id];
+          urlParts = [$.urlSafe(ds.category || "dataset"), $.urlSafe(ds.name), ds.id];
         }
-        return urlParts.join('/');
+        return base + $.path('/' + urlParts.join('/'));
     },
 
     _generateShortUrl: function(includeDomain)
@@ -2594,7 +2594,7 @@ var Dataset = ServerModel.extend({
         if (includeDomain || !$.isBlank(ds.domainCName))
         { base = ds._generateBaseUrl(ds.domainCName, true); }
 
-        return base + '/d/' + ds.id;
+        return base + $.path('/d/' + ds.id);
     },
 
     _generateApiUrl: function()

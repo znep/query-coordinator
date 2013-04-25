@@ -46,7 +46,7 @@ $(function()
     var match = 'home';
     for (var pattern in patterns)
     {
-        if (window.location.pathname.indexOf(pattern) == 0)
+        if (window.location.pathname.indexOf(pattern) >= 0)
         {
             match = patterns[pattern];
             break;

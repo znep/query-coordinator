@@ -107,7 +107,7 @@
 
         onCancel: function($pane, state) {
             // TODO: Something more appropriate than this?
-            window.location.href = '/profile';
+            window.location.href = $.path('/profile');
         },
 
         finishText: 'Create'

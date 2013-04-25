@@ -10,4 +10,5 @@
     }
 
     blist.locale = $('body').data('locale');
+    blist.defaultLocale = $('body').data('defaultlocale');
 })();

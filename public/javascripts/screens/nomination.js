@@ -99,7 +99,7 @@ $(function()
         var $t = $(this);
         var status = $t.attr('data-status');
         blist.nominations.remove(nom.id, null, function() {
-            window.location = '/nominate';
+            window.location = $.path('/nominate');
         });
     });
 

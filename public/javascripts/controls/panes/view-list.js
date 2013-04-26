@@ -393,8 +393,7 @@
                     template: 'itemsListBlock',
                     directive: {
                         '.sortMenu@class+': 'hide',
-                        '.showMenu@class+': 'hide',
-                        '.emptyResult .type': '#{resultType}s'
+                        '.showMenu@class+': 'hide'
                     },
                     data: {
                         resultType: 'dataset',

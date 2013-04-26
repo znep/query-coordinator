@@ -331,7 +331,7 @@
                 { saveSettings(); }
             });
 
-            $body.find('.siteOuterWrapper').fullScreen();
+            $body.find('.siteOuterWrapper').fullScreen({ fullHeightSelector: '.notUsedNoConflict'});
 
             // Make sure all dom manipulation is done before starting edit mode
             _.defer(function()

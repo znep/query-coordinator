@@ -185,6 +185,7 @@
          */
         design: function(designing)
         {
+            var cObj = this;
             this._designing = designing;
             this.properties({'__hidden': false});
             if ($.isBlank(this.$dom)) { return; }
@@ -195,6 +196,17 @@
                     dropId: this.id,
                     dropType: 'move',
                     startDisabled: true
+                });
+            }
+
+            if (designing && this.canEdit('resize') && !this.$dom.hasClass('ui-resizable'))
+            {
+                this.$dom.resizable({
+                    handles: 's',
+                    stop: function()
+                    {
+                        cObj._executePropertyUpdate({ height: cObj.$dom.height() });
+                    }
                 });
             }
 
@@ -300,6 +312,9 @@
 
             switch (type)
             {
+                case 'resize':
+                    return !$.isBlank(this.parent);
+                    break;
                 case 'drag':
                 case 'drop':
                 case 'locked':

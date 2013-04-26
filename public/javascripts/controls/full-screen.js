@@ -63,7 +63,7 @@
                     targetHeight -= $t.outerHeight() - $t.height();
                 });
 
-                targetHeight -= siblingsHeight(fsObj.$dom());
+                targetHeight -= siblingsHeight(fsObj.$dom(), fsObj);
 
                 fsObj.$dom().children().height(targetHeight).each(function()
                 {
@@ -87,7 +87,7 @@
                                 multiplier = $fh.index($f) == 0 ? adjFactor :
                                     ($fh.length - adjFactor) / ($fh.length - 1);
                             }
-                            $f.height(Math.floor(($f.parent().innerHeight() - siblingsHeight($f)) *
+                            $f.height(Math.floor(($f.parent().innerHeight() - siblingsHeight($f, fsObj)) *
                                 multiplier / $fh.length));
                         });
                 });
@@ -107,13 +107,13 @@
         }
     });
 
-    var siblingsHeight = function($item)
+    var siblingsHeight = function($item, fsObj)
     {
         var h = 0;
         $item.siblings(':visible').each(function()
         {
             var $t = $(this);
-            if ($t.hasClass('fullHeight')) { return; }
+            if ($t.is(fsObj.settings.fullHeightSelector)) { return; }
             if ($t.css('position') != 'fixed' &&
                 $t.css('position') != 'absolute')
             { h += $t.outerHeight(true); }

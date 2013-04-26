@@ -55,18 +55,19 @@
   @include transition-duration(0.8s)
   .ui-resizable-handle
     background-color: $color_chrome_box_border
-.cfViewTypeWrapper
-  display: inline-block
-  height: 100%
-  width: 100%
-.cfEditingWrapper
-  overflow: auto
-  .editRoot
-    min-height: 100%
-    margin: 0 2em
-    padding:
-      bottom: 4em
-      top: 2em
+    @include box-shadow(0, 1px, 2px, rgba(0, 0, 0, 0.7))
+  .cfViewTypeWrapper
+    display: inline-block
+    height: 100%
+    width: 100%
+  .cfEditingWrapper
+    overflow: auto
+    .socrata-container.editRoot
+      min-height: 100%
+      margin: 0 2em
+      padding:
+        bottom: 4em
+        top: 2em
 .cfMainContainer
   height: 100%
   position: relative

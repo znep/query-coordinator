@@ -168,7 +168,7 @@ class CurrentDomain
 
     # TODO: not sure how to safely per-request cache
     result = self.properties['templates_v' + version]
-    result.merge!(self.properties['templates_v' + version][locale] || {}) unless locale.nil?
+    result = result.merge(self.properties['templates_v' + version][locale] || {}) unless locale.nil?
 
     result
   end

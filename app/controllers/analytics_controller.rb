@@ -70,6 +70,8 @@ module ClientAnalyticsHelper
   ALLOWED_METRICS = %w(domain/js-page-view
                        domain-intern/js-page-load-samples
                        domain-intern/js-page-load-time
+                       domain-intern/js-response-start-time
+                       domain-intern/js-response-read-time
                        domain-intern/js-dom-load-time).freeze
 
   def self.get_valid_increment(entity, metric, input)

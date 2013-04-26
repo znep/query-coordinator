@@ -246,7 +246,7 @@
         if ($.isBlank(frObj.navigation.currentPage()) || frObj.settings.view.totalRows() < 1)
         {
             frObj.$list().append($.tag({tagName: 'div', 'class': 'noResults',
-                contents: 'No rows to display'}));
+                contents: $.t('controls.grid.no_rows')}));
             return;
         }
 

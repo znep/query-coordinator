@@ -132,7 +132,7 @@
                 if (!this._$noResults)
                 {
                     this.$dom().append($.tag({tagName: 'div', 'class': 'noResults',
-                        contents: 'No rows to display'}));
+                        contents: $.t('controls.grid.no_rows')}));
                     this._$noResults = this.$dom().find('.noResults');
                 }
                 return this._$noResults;

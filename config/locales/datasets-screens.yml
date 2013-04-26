@@ -59,7 +59,7 @@ en:
         working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
         working_copy_title: "[Working Copy]"
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title: Snapshotted %{date}
+        snapshot_title_html: Snapshotted %{date}
         publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.
         publish_rights: Only an owner or publisher can publish this dataset
         publish_button: Publish Dataset

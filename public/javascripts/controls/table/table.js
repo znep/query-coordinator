@@ -2129,7 +2129,7 @@
             '<div class="blist-table-scrolls">' +
             '  <div class="blist-table-inside">' +
             '    <div class="blist-table-render">&nbsp;</div>' +
-            '    <div class="blist-table-no-results hide">No rows to display</div>' +
+            '    <div class="blist-table-no-results hide">' + $.t('controls.grid.no_rows') + '</div>' +
             '  </div>' +
             '</div>' +
             '<div class="blist-table-footer-scrolls">' +
@@ -2897,7 +2897,7 @@
                     measureText: Math.max(model.length(), 100),
                     renderer: function(html, index, renderIndex, row)
                     {
-                        row.type == 'blank' ? html.push('new') :
+                        row.type == 'blank' ? html.push($.t('controls.grid.new_row')) :
                             row.noMatch ? html.push('<span title="This row does ',
                              'not match the current filter">X</span>') :
                              html.push('<a href="', model.view.url, '/', row.id, '" ',

@@ -2,7 +2,7 @@
 {
     $.Control.extend('pane_editRedirect', {
         getTitle: function()
-        { return 'Edit'; },
+        { return $.t('controls.common.sidebar.tabs.edit'); },
 
         _getSections: function()
         {

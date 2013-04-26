@@ -1160,7 +1160,7 @@ class View < Model
   # Don't allow granting "Viewer" to forms as that right is useless
   def share_types
     Share.types.reject do |type|
-      is_form? && type == 'viewer'
+      is_form? && type == 'Viewer'
     end
   end
 

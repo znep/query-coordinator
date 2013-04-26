@@ -235,13 +235,13 @@
               widget.lastSelection.setEndAfter(selectionStart);
               window.getSelection().addRange(widget.lastSelection);
             }
-            document.execCommand("unlink", null, "");
+            _this.options.execCommandOverride("unlink", null, "");
           } else {
             if (!(/:\/\//.test(link)) && !(/^mailto:/.test(link))) {
               link = 'http://' + link;
             }
             if (widget.lastSelection.startContainer.parentNode.href === void 0) {
-              document.execCommand("createLink", null, link);
+              _this.options.execCommandOverride("createLink", null, link);
             } else {
               widget.lastSelection.startContainer.parentNode.href = link;
             }
@@ -493,7 +493,7 @@
     },
     _insert_image: function(source) {
       this.options.editable.restoreSelection(this.lastSelection);
-      document.execCommand("insertImage", null, source);
+      this.options.execCommandOverride("insertImage", null, source);
       this.options.editable.element.trigger('change');
       this.options.editable.removeAllSelections();
       return this._closeDialog();
@@ -1050,16 +1050,16 @@
               throw new Error "SelectionNotSet"
             catch error
               widget.options.editable.restoreSelection(widget.lastSelection)
-      
+
             document.execCommand "insertImage", null, jQuery(this).attr('src')
             img = document.getSelection().anchorNode.firstChild
             jQuery(img).attr "alt", jQuery(".caption").value
-      
+
             triggerModified = () ->
               widget.element.trigger "hallomodified"
             window.setTimeout triggerModified, 100
             widget._closeDialog()
-      
+
             addImage = "##{widget.options.uuid}-#{widget.widgetName-addimage"
             @options.dialog.find(".halloimage-activeImage, addImage).click insertImage
       */
@@ -2556,6 +2556,7 @@
         editable: true,
         plugins: {},
         toolbar: 'halloToolbarContextual',
+        execCommandOverride: document.execCommand.bind(document),
         parentElement: 'body',
         buttonCssClass: null,
         toolbarCssClass: null,
@@ -2751,7 +2752,9 @@
         return this.element.html(this.originalContent);
       },
       execute: function(command, value) {
-        if (document.execCommand(command, false, value)) {
+        // 4/26/2013 giacomo.ferrari@socrata.com -- Provide an override hook for
+        // execCommand, in case application-specific logic needs to run.
+        if (this.options.execCommandOverride(command, false, value)) {
           return this.element.trigger("change");
         }
       },
@@ -2934,13 +2937,13 @@
       },
       _forceStructured: function(event) {
         try {
-          return document.execCommand('styleWithCSS', 0, false);
+          return this.options.execCommandOverride('styleWithCSS', 0, false);
         } catch (e) {
           try {
-            return document.execCommand('useCSS', 0, true);
+            return this.options.execCommandOverride('useCSS', 0, true);
           } catch (e) {
             try {
-              return document.execCommand('styleWithCSS', false, false);
+              return this.options.execCommandOverride('styleWithCSS', false, false);
             } catch (e) {
 
             }

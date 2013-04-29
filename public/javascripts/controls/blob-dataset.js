@@ -48,7 +48,8 @@
                 var blobObj = this;
                 var $domObj = blobObj.$dom();
                 var ds = blobObj.settings.view;
-                var blob = _.first(ds.blobs());
+                var blobs = ds.blobs();
+                var blob = _.isEmpty(blobs) ? null : _.first(blobs);
 
                 if (!$.isBlank(blob) && _.include(GOOGLE_VIEWER_TYPES, blob.type))
                 {

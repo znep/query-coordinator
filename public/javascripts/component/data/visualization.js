@@ -41,6 +41,17 @@ $.component.Component.extend('Visualization', 'data', {
 
         if (lcObj._rendered)
         { updateProperties(lcObj, properties); }
+    },
+
+    design: function()
+    {
+        this._super.apply(this, arguments);
+        if ($.isBlank(this.$editOverlay))
+        {
+            this.$editOverlay = $.tag2({ _: 'div', className: 'editOverlay' });
+            this.$dom.append(this.$editOverlay);
+        }
+        this.$editOverlay.toggleClass('hide', !this._designing);
     }
 });
 

@@ -817,10 +817,10 @@
             var $legend;
             if (this._enableLegend)
             { $legend = $.tag({ tagName: 'div', contents: [
-                { tagName: 'h3', 'class': 'label', contents: legendData.name }, contents ]}); }
+                { tagName: 'h3', 'class': 'label', contents: legendData.description }, contents ]}); }
             else
             { $legend = $.tag({ tagName: 'div', 'class': 'layerLegend', contents: [
-                { tagName: 'span', 'class': 'label', contents: legendData.name }, contents ]}); }
+                { tagName: 'span', 'class': 'label', contents: legendData.description }, contents ]}); }
 
             $legend.find('> div span').css('width', numWidth + 'px');
             var $ul = $legend.find('ul');

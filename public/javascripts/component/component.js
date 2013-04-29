@@ -185,7 +185,6 @@
          */
         design: function(designing)
         {
-            var cObj = this;
             this._designing = designing;
             this.properties({'__hidden': false});
             if ($.isBlank(this.$dom)) { return; }
@@ -196,17 +195,6 @@
                     dropId: this.id,
                     dropType: 'move',
                     startDisabled: true
-                });
-            }
-
-            if (designing && this.canEdit('resize') && !this.$dom.hasClass('ui-resizable'))
-            {
-                this.$dom.resizable({
-                    handles: 's',
-                    stop: function()
-                    {
-                        cObj._executePropertyUpdate({ height: cObj.$dom.height() });
-                    }
                 });
             }
 
@@ -275,6 +263,25 @@
             cObj._editing = editing;
 
             cObj._updateRemoveIcon();
+
+            if (cObj.canEdit('resize'))
+            {
+                if (editing)
+                {
+                    if (!cObj.$dom.hasClass('ui-resizable'))
+                    {
+                        cObj.$dom.resizable({
+                            handles: 's',
+                            stop: function()
+                            { cObj._executePropertyUpdate({ height: cObj.$dom.height() }); }
+                        });
+                    }
+                    else
+                    { cObj.$dom.find('.ui-resizable-handle').show(); }
+                }
+                else if (cObj.$dom.hasClass('ui-resizable'))
+                { cObj.$dom.find('.ui-resizable-handle').hide(); }
+            }
 
             if (cObj._supportsCustomEditors() && cObj._properties.editor)
             {

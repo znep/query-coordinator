@@ -839,7 +839,7 @@ return; // dataOffset doesn't appear to be necessary; I've disabled it for now i
         {
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
                     .attr(cc.dataDim.width, cc.barWidth)
-                    .attr(cc.dataDim.yAxis, vizObj._xBarPosition(seriesIndex));
+                    .attr(cc.dataDim.xAxis, vizObj._xBarPosition(seriesIndex));
 
             cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))

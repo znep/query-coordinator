@@ -3961,7 +3961,8 @@ function Chart (options, callback) {
 						isFirst: pos == tickPositions[0],
 						isLast: pos == tickPositions[tickPositions.length - 1],
 						dateTimeLabelFormat: dateTimeLabelFormat,
-						value: (categories && categories[pos] ? categories[pos] : pos)
+                    // jeff.scherpelz@socrata.com: we want blank categories to come through
+						value: (categories ? categories[pos] : pos)
 					});
 				
 				// first call

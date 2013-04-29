@@ -148,7 +148,7 @@ module ApplicationHelper
     else
       return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
              " href=\"/styles/merged/#{stylesheet.to_s}.css?" +
-             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>").html_safe
+             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}\"/>").html_safe
     end
   end
 
@@ -156,7 +156,7 @@ module ApplicationHelper
     sheet_map = {}
     STYLE_PACKAGES.each do |name, sheets|
       sheet_map[name] = Rails.env == 'development' ? sheets.map { |req| "/styles/individual/#{req}.css" } :
-        "/styles/merged/#{name.to_s}.css?#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}"
+        "/styles/merged/#{name.to_s}.css?#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"
     end
     sheet_map
   end

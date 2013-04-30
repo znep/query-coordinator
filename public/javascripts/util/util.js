@@ -278,8 +278,6 @@ $.tNull = function(key, data)
 
     if (!$.subKeyDefined(blist.translations, key))
     {
-        // ie8 console is undefined until the dev pane is open
-        if (window.console) { console.error('Could not find translation for key ' + key); }
         return null;
     }
     var result = $.deepGetStringField(blist.translations, key)

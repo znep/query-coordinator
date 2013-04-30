@@ -21,6 +21,9 @@
     <%= render :partial => 'modals/inline_login' %>
   <% end %>
 <%- end -%>
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds.dataset_contact %>
+<% end %>
 <% content_for :js_footer do %>
   <script type="text/javascript">
     blist.dataset = new Dataset(<%= safe_json(@view) %>);

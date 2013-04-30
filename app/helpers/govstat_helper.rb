@@ -58,6 +58,9 @@ module GovstatHelper
           id: 'govstatHomeRoot',
           htmlClass: 'gridFlowLayoutNew',
           children: [{
+            type: 'Share',
+            currentPage: true
+          }, {
             type: 'Repeater',
             htmlClass: 'categoryList',
             contextId: 'goals',
@@ -112,6 +115,9 @@ module GovstatHelper
           htmlClass: 'listLayout',
           children: [
           {
+            type: 'Share',
+            currentPage: true
+          }, {
             type: 'Container',
             htmlClass: 'filterSection',
             children: [

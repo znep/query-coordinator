@@ -805,6 +805,8 @@
             var value = inputValue(cpObj, $input);
 
             var inputName = $input.attr('name');
+            if ($.isBlank(inputName))
+            { return results; }
 
             results = results || {};
             // Start the parent out as top-level results

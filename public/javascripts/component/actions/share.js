@@ -68,6 +68,15 @@ $.component.Component.extend('Share', 'actions', {
         };
     },
 
+    configurationSchema: function()
+    {
+        return { schema: [{ fields: [
+            { type: 'radioGroup', defaultValue: 'currentPage', name: 'shareType', text: 'Share',
+                options: [ { name: 'currentPage', type: 'static', value: 'This page', isInput: true },
+                $.cf.contextPicker() ] }
+            ] }], view: this._dataset };
+    },
+
     _render: function()
     {
         if (!this._super.apply(this, arguments)) { return false; }
@@ -78,6 +87,10 @@ $.component.Component.extend('Share', 'actions', {
 
     _propWrite: function(properties)
     {
+        // Config sidebar sets currentPage to 'This page'; so fix it
+        if (!_.isBoolean(properties.currentPage) && !$.isBlank(properties.currentPage))
+        { properties.currentPage = true; }
+
         this._super.apply(this, arguments);
 
         if (!this._updateDataSource(properties, renderUpdate))

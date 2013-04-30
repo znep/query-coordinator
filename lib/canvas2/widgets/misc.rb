@@ -54,6 +54,7 @@ module Canvas2
       unsafe_html_result = convert_markdown_to_html(safe_markdown)
       safe_html_result = sanitize_html(unsafe_html_result)
       final_html_result = auto_hyperlink_html(safe_html_result)
+      final_html_result = '' if final_html_result == nil
       [final_html_result, true]
     end
 

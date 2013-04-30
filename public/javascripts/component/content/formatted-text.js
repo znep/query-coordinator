@@ -324,7 +324,14 @@ $.component.Component.extend('Formatted Text', 'content', {
         $.cf.extractProperties(this.$contents);
         var contHtml = this.$contents.html();
         var sanitizedHtml = this._sanitizeDisplayHtml(contHtml);
-        var markdown = HTML2Markdown(sanitizedHtml);
+        var markdown = '';
+
+        if (sanitizedHtml)
+        {
+            // Beware HTML2Markdown will convert the entire document
+            // if its argument is falsy.
+            markdown = HTML2Markdown(sanitizedHtml);
+        }
 
         this._updatePrimaryValue(markdown);
         return true;

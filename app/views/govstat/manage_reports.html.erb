@@ -33,7 +33,7 @@
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
               </div>
-              <div class="secondaryMetadata">last updated: <%= blist_date(report.updated_at) %></div>
+              <div class="secondaryMetadata">updated: <%= blist_date(report.updated_at) %></div>
             </div>
           </div>
         <%- end -%>
@@ -50,7 +50,13 @@
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
               </div>
-              <div class="secondaryMetadata">last updated: <%= blist_date(report.updated_at) %></div>
+              <div class="secondaryMetadata">
+                <%- o = report.owner_user
+                    if !o.nil? -%>
+                <span class="mdLine">owner: <%= o.displayName %></span>
+                <%- end -%>
+                <span class="mdLine">updated: <%= blist_date(report.updated_at) %></span>
+              </div>
             </div>
           </div>
         <%- end -%>

@@ -59,6 +59,12 @@ class Page < SodaModel
     @data[':updated_at']
   end
 
+  def owner_user
+    u_id = owner
+    return nil if u_id.nil? || u_id.blank?
+    User.find(u_id)
+  end
+
   def uneditable
     !content.blank? && (content['uneditable'] == true || content['uneditable'] == 'true')
   end

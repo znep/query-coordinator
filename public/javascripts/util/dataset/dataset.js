@@ -2570,11 +2570,11 @@ var Dataset = ServerModel.extend({
         { base = ds._generateBaseUrl(ds.domainCName); }
 
         var urlParts;
-        if (ds.displayName === 'api-predeploy')
+        if (ds.displayType === 'api-predeploy')
         {
           urlParts = ['api_foundry/forge', ds.id];
         }
-        else if (ds.displayName === 'api')
+        else if (ds.displayType === 'api')
         {
           urlParts = ['developers/docs', ds.resourceName];
         }

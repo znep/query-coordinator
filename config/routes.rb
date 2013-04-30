@@ -341,6 +341,11 @@ Frontend::Application.routes do
       match '*path.*ext', :action => 'page'
       match '*path', :action => 'page'
       root :action => 'page'
+
+      # This goes after the global handler so that it never actual gets
+      # called; we still do want slate to handle these pages but we also
+      # want named routes
+      get '/developers/docs/:resource', :action => 'page', :as => 'developer_docs'
     end
 
   end

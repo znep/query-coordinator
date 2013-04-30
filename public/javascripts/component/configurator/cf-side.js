@@ -22,6 +22,7 @@
                         { typeName: 'Header', catalogName: 'Header' },
                         { typeName: 'Title', catalogName: 'Title' },
                         { typeName: 'FormattedText', catalogName: 'Formatted Text' },
+                        { typeName: 'Picture', catalogName: 'Picture' },
                         { typeName: 'Print', catalogName: 'Print' },
                         { typeName: 'Share', catalogName: 'Share' },
                         { typeName: 'Visualization', catalogName: 'Chart', icon: 'Chart' },

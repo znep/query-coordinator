@@ -580,6 +580,13 @@
         _supportsCustomEditors: function()
         { return false; },
 
+        _setHeight: function(height)
+        {
+            var parsedHeight = parseInt(height);
+            if (!_.isNaN(parsedHeight))
+            { this.$dom.css('height', parsedHeight); }
+        },
+
         /**
          * Render the content for this component
          */
@@ -600,9 +607,7 @@
                 }
             }
 
-            var parsedHeight = parseInt(this._properties.height);
-            if (!_.isNaN(parsedHeight))
-                this.$dom.css('height', parsedHeight);
+            this._setHeight(this._properties.height);
 
             if (this._loadingAssets || this._isHidden || this._delayUntilVisible)
             {
@@ -770,6 +775,8 @@
                     cObj.$dom.addClass('hide');
                     cObj._hidden();
                 }
+                if (!$.isBlank(properties.height))
+                { cObj._setHeight(properties.height); }
             }
 
             _.defer(function() { cObj._updateValidity(); });

@@ -117,6 +117,9 @@ $.Control.registerMixin('d3_impl_bar', {
         // maybe move things around and maybe grab rows every half second when they're scrolling
         var throttledScrollHandler = _.throttle(function()
         {
+            // cache scrollPos so that aggressive scrolling doesn't make our calculations stutter.
+            cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
+
             vizObj._recalculateDataOffset();
             if (vizObj._repositionDrawElement())
             {
@@ -243,8 +246,6 @@ chartObj.resizeHandle();
             xScale = vizObj._currentXScale(),
             rowsPerScreen = Math.ceil(cc.$chartArea[cc.dataDim.width]() / (cc.rowWidth + cc.rowSpacing));
 
-        // cache scrollPos so that aggressive scrolling doesn't make our calculations stutter.
-        cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
         var start = Math.max(Math.floor(xScale(cc.scrollPos)) - vizObj.defaults.rowBuffer, 0);
         var length = rowsPerScreen + (vizObj.defaults.rowBuffer * 2);
 
@@ -518,7 +519,6 @@ chartObj.resizeHandle();
     // accounts for screen scaling
     _recalculateDataOffset: function()
     {
-return; // dataOffset doesn't appear to be necessary; I've disabled it for now in case I made a mistake in my testing.
         var vizObj = this,
             cc = vizObj._chartConfig;
 

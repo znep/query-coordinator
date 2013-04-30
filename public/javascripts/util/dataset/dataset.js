@@ -1794,6 +1794,7 @@ var Dataset = ServerModel.extend({
         this.minorChange = this.minorChange && (minorChange || false);
         if (!this.temporary || oldMinor !== this.minorChange)
         {
+if ((blist.debug || {}).temporary && (console || {}).trace) { console.trace(); }
             this.temporary = true;
             this.trigger('set_temporary');
         }

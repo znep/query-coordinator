@@ -137,6 +137,9 @@
             var layer_id = tmp.pop();
             var export_url = tmp.join('/') + '/export';
 
+            var singleTile = _.isUndefined(layerObj._displayFormat.singleTile)
+                    ? true : layerObj._displayFormat.singleTile;
+
             var layer = layerObj._displayLayer
                 = new blist.openLayers.ExternalESRILayer( layer_url, export_url,
                     { layers: "show:"+layer_id, transparent: true,
@@ -150,7 +153,7 @@
                       }
                     },
                     { opacity: layerObj.extractOpacity(), ratio: 1,
-                      singleTile: layerObj._displayFormat.singleTile, isBaseLayer: false } );
+                      singleTile: singleTile, isBaseLayer: false } );
             layerObj._map.addLayer(layerObj._displayLayer);
             layer.dataObj = this;
 

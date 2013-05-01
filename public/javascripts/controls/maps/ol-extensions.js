@@ -605,6 +605,7 @@
         redraw: function(evtObj)
         {
             var control = this;
+            if (!control.map) { return; }
             if (control._handlingEvent == 'changebaselayer') { return; }
 
             var $dom = $(this.map.div).siblings('.mapLayers');

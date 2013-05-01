@@ -155,6 +155,8 @@
             }
 
             mapObj.initializeBackgroundLayers();
+            if (blist.nextgen.legend)
+            {
             if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.position'))
             { mapObj._controls.Overview.reposition(mapObj._displayFormat.legendDetails.position); }
             if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.showConditional'))
@@ -163,6 +165,7 @@
             if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.customEntries'))
             { mapObj._controls.Overview.configure('customEntries',
                 mapObj._displayFormat.legendDetails.customEntries); }
+            }
 
             if (mapObj._displayFormat.disableGeolocator)
             { mapObj._controls.GeocodeDialog.deactivate(); }

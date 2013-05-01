@@ -1966,10 +1966,10 @@
             this._layers = $.makeArray(this._layers);
             var layerOpen = _.detect(this._layers, function(l) { return layerObj == l.dataObj; });
             if (layerOpen)
-            { layerOpen.contents.push(contents); }
+            { layerOpen.contents = contents; }
             else
-            { this._layers.push({ dataObj: layerObj, contents: [contents] }); }
-            // FIXME: contents as an array doesn't actually make sense...
+            { this._layers.push({ dataObj: layerObj, contents: contents }); }
+            // TODO: Dynamic generation of rows using "custom" renderer.
 
             if (!this._popup) { this._open(lonlat, options); }
             else { this._popup.contentDiv.innerHTML = this.buildContents(); }
@@ -2110,7 +2110,7 @@
             _.each(this._layers, function(l, i)
             {
                 var $layer = $.tag({ tagName: 'div', 'class': 'flyoutLayer' });
-                _.each(l.contents, function(c) { $layer.append(c); });
+                $layer.append(l.contents);
                 $flyout.append($layer);
                 if (i > 0) { $layer.addClass('hide'); }
             });

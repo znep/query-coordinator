@@ -1467,6 +1467,19 @@
         return true;
     };
 
+    // If the map will not zoom and will not move more than a pixel, it is not MUCH different.
+    // map.resolution is (map units)/pixel, so if the distance is smaller, it is less than a pixel.
+    OpenLayers.Bounds.prototype.isMuchDifferentThan = function(bounds, map)
+    {
+        if (this.equals(bounds)) { return false; }
+        if (this.getCenterLonLat().toGeometry()
+                .distanceTo(bounds.getCenterLonLat().toGeometry()) < map.resolution
+            && map.getZoomForExtent(this) == map.getZoomForExtent(bounds))
+        { return false; }
+
+        return true;
+    };
+
     OpenLayers.Bounds.prototype.isPoint = function()
     {
         return this.left == this.right && this.top == this.bottom;
@@ -1746,7 +1759,7 @@
         willMove: function(viewport)
         {
             if (!this.viewport) { return true; }
-            return this.viewport.isDifferentThan(viewport, this.map);
+            return this.viewport.isMuchDifferentThan(viewport, this.map);
         },
 
         crossesDateline: function()

@@ -40,6 +40,15 @@ $.Control.extend('nativeDropTarget', {
                     { dObj.dropContentEditable(e); }
                     else
                     { dObj.dropStandard(e); }
+
+                    _.defer(function()
+                    {
+                        // The Chrome bug we're working around here is triggered
+                        // both at the start and at the end of the drop event,
+                        // so we must deactivate the workaround outside of this
+                        // callstack.
+                        dObj._deactivateNestedContentEditableWorkaround();
+                    });
                 })
                 .on('dragover.nativeDropTarget', function(e) { dObj.dragOver(e); })
                 .on('dragenter.nativeDropTarget', function(e) { dObj.dragEnter(e); })
@@ -113,10 +122,12 @@ $.Control.extend('nativeDropTarget', {
         var dObj = this;
         if (!dObj.canAcceptDrop()) { return; }
 
+        var di = getDropInfo(e);
+
         _.defer(function()
         {
             // Only handles a copy from nativeDraggable
-            if ($.browser.msie)
+            if (!blist.util.enableHtmlDataForDragDrop())
             {
                 dObj.$dom().trigger('content-changed');
                 findNewDropped(dObj);
@@ -126,6 +137,9 @@ $.Control.extend('nativeDropTarget', {
                 dObj.$dom().find('[data-droppedcopy]').quickEach(function()
                 { dObj.addNewDropped(this.attr('data-droppedcopy'), this) });
             }
+
+            dObj.settings.dropContentEditableCallback(di.id, di.type);
+
         });
         dObj._deactivate();
     },
@@ -138,6 +152,8 @@ $.Control.extend('nativeDropTarget', {
 
         if (this._isContentEditable)
         { this.$dom().attr('contentEditable', true); }
+
+        this._activateNestedContentEditableWorkaround();
     },
 
     dragOver: function(e)
@@ -175,6 +191,8 @@ $.Control.extend('nativeDropTarget', {
                         dObj._deactivate();
                     }, 100);
         }
+
+        this._deactivateNestedContentEditableWorkaround();
     },
 
     // Common things to do to hook up a newly-added item
@@ -214,6 +232,46 @@ $.Control.extend('nativeDropTarget', {
         { exclusiveDropTarget = null; }
 
         this.settings.dragLeaveCallback();
+    },
+
+    // This is a workaround for a rather nasty Chrome bug:
+    // http://code.google.com/p/chromium/issues/detail?id=236591
+    // In short, non-content-editable spans inside an editable div get nuked
+    // on drop. So we hack around this by temporarily marking such spans as
+    // editable during a DnD. See the next 3 functions.
+    _nestedContentEditableWorkaroundRequired: function()
+    {
+        return $.browser.webkit == true;
+    },
+
+    // Find any non-contenteditable spans inside editable divs. Mark them as
+    // editable.
+    // No-op if the workaround isn't required.
+    _activateNestedContentEditableWorkaround: function()
+    {
+        if (this._nestedContentEditableWorkaroundRequired())
+        {
+            var $spansRequiringWorkaround = this.$dom().parent().find('[contenteditable="true"] span[contenteditable="false"]');
+            $spansRequiringWorkaround.quickEach(function()
+            {
+                this.addClass('native-drop-target-contenteditable-workaround');
+                this.attr('contenteditable', true);
+            });
+        }
+    },
+
+    // Find any spans that were rendered editable by
+    // _activateNestedContentEditableWorkaround, and restore them to their
+    // previous uneditable state. Note that we pave over if someone goes in and
+    // edits the editability (yo dawg, I heard you like edits).
+    _deactivateNestedContentEditableWorkaround: function()
+    {
+        var $spansWithWorkaround = this.$dom().find('.native-drop-target-contenteditable-workaround');
+        $spansWithWorkaround.quickEach(function()
+        {
+            this.removeClass('native-drop-target-contenteditable-workaround');
+            this.attr('contenteditable', false);
+        });
     }
 
 }, {
@@ -230,7 +288,8 @@ $.Control.extend('nativeDropTarget', {
     replacedCallback: function() {}
 });
 
-// Special IE hack to find the text that was dropped in and replace it with a real item
+// Special IE/Chrome hack to find the text that was dropped in and replace it with a real item.
+// See blist.util.enableHtmlDataForDragDrop.
 var findNewDropped = function(dObj, $curNode)
 {
     $curNode = $curNode || dObj.$dom();
@@ -247,8 +306,34 @@ var findNewDropped = function(dObj, $curNode)
             {
                 var newDropId = t.splitText(tbi);
                 newDropId.splitText(tei - tbi + cpTag.end.length);
-                dObj.addNewDropped(newDropId.nodeValue.slice(cpTag.begin.length,
-                    newDropId.nodeValue.length - cpTag.end.length), $(newDropId));
+                var $dropNode = $(newDropId);
+                var $dropNodeParent = $dropNode.parent();
+                if($dropNodeParent.is('span[style]') && $dropNodeParent[0].attributes.length == 1)
+                {
+                    // Chrome adds &nbsp; on either side.
+                    // Exterminate!
+                    _.each($dropNodeParent[0].childNodes, function($elem)
+                    {
+                       if ($.isBlank($.trim($elem.wholeText)))
+                       {
+                           $elem.remove();
+                       }
+                    });
+
+                    // Chrome likes to drop styled spans around the dropped element,
+                    // as well as just after. If this is the case, unwrap.
+                    var $dropNodeSibling = $dropNodeParent.next('span[style]');
+                    $dropNode.unwrap();
+                    if($dropNodeSibling.length && $dropNodeSibling[0].attributes.length == 1)
+                    {
+                        $dropNodeSibling.replaceWith($dropNodeSibling.contents());
+                    }
+                }
+
+                dObj.addNewDropped(
+                    newDropId.nodeValue.slice(cpTag.begin.length,
+                        newDropId.nodeValue.length - cpTag.end.length),
+                    $dropNode);
             }
             else if (t.nodeType == 1)
             { findNewDropped(dObj, this); }

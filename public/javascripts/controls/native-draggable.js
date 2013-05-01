@@ -2,6 +2,17 @@
 
 if (!rangy.initialized) { rangy.init(); }
 
+// Browsers have various quirks when they're dropping text/html. IE doesn't
+// support it, and Chrome doesn't drop where you'd expect (but it does
+// mangle the element that you'd expect to drop into in wild and wonderful
+// ways, just to taunt you). So, this function controls what browsers get
+// the text/html, which gains us a much more robust system in a cooperative
+// browser.
+blist.util.enableHtmlDataForDragDrop = function()
+{
+    return !($.browser.msie) && !($.browser.webkit);
+};
+
 $.Control.extend('nativeDraggable', {
     _init: function()
     {
@@ -134,11 +145,11 @@ $.Control.extend('nativeDraggable', {
                 break;
         }
 
-        if (!$.browser.msie)
+        if (blist.util.enableHtmlDataForDragDrop())
         { e.originalEvent.dataTransfer.setData('text/html', htmlData); }
-        // IE doesn't support setData('text/html',...), so don't
-        // get a real span dropped in; instead, we get raw text
-        // that is keyed such that it will be replaced by cf.Property
+        // Some browsers (chrome/ie) have issues with text/html.
+        // so we don't get to have a real span dropped in; instead, we get raw
+        // text that is keyed such that it will be replaced by cf.Property
         // This is also used by all browsers for replacing a property
         e.originalEvent.dataTransfer.setData('Text', textData);
 
@@ -165,7 +176,12 @@ $.Control.extend('nativeDraggable', {
         {
             // Handle move within same contentEditable. This assumes the parent
             // node has been normalized, or the rangy selection will break
-            if ($.browser.msie && sel.toString() == 'move:' + dObj._dropId)
+            // BEWARE: Some browsers (FF is the only example I know of) do not
+            // select the dropped text. So if this code needs to be enabled for
+            // such browsers, something needs to be done about that.
+            // The trim() is there because Chrome likes to add &nbsp; around the
+            // dropped text.
+            if (!blist.util.enableHtmlDataForDragDrop() && sel.toString().trim() == 'move:' + dObj._dropId)
             {
                 var moveProp = sel.anchorNode.splitText(sel.anchorOffset);
                 moveProp.splitText(sel.focusOffset - sel.anchorOffset);

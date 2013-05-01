@@ -24,6 +24,8 @@ components:
 configurator:
 - grid-sidebar
 - configurator
+markdown-create:
+- font-awesome
 base-control-third-party:
 - jquery.ui.resizable
 - ui.slider

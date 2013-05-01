@@ -180,6 +180,10 @@ javascripts:
     - public/javascripts/plugins/showdown.js
     - public/javascripts/component/util/markdown-utils.js
   markdown-create:
+    - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-selectionsaverestore.js
+    - public/javascripts/plugins/hallo.js
+    - public/javascripts/controls/hallo-plugins.js
     - public/javascripts/plugins/html2markdown.js
     - public/javascripts/plugins/htmldomparser.js
     - public/javascripts/component/util/markdown-utils.js

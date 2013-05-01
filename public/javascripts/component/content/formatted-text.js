@@ -12,7 +12,8 @@ $.component.Component.extend('Formatted Text', 'content', {
     _getEditAssets: function()
     {
         return {
-            javascripts: [{ assets: 'content-editable' }, { assets: 'markdown-create' }]
+            javascripts: [{ assets: 'content-editable' }, { assets: 'markdown-create' }],
+            stylesheets: [{ assets: 'markdown-create' }]
         };
     },
 
@@ -350,9 +351,10 @@ $.component.Component.extend('Formatted Text', 'content', {
 
         if (cObj._editing)
         {
-            // Install raw template for editing
             if (!wasEditable)
             {
+                // Install raw template for editing.
+
                 var markdown = cObj._properties.markdown;
                 var safeHtmlResult;
 
@@ -364,15 +366,77 @@ $.component.Component.extend('Formatted Text', 'content', {
                 cObj.$contents.html(safeHtmlResult);
 
                 $.cf.enhanceProperties(cObj.$contents, true /* Let newlines through in editor*/ );
+
+                // Set up Hallo editor.
+                cObj.$contents.hallo(
+                    {
+                        editable: true,
+                        toolbar: 'halloToolbarContextual',
+                        forceStructured: true,
+                        execCommandOverride: this._onEditorExecCommand.bind(this),
+                        plugins:
+                        {
+                            halloformat:
+                            {
+                                formatting:
+                                {
+                                    bold: true, italic: true
+                                }
+                            },
+                            halloheadings: {},
+                            halloreundo: {},
+                            hallolists: {},
+                            halloplainpaster: {}
+                        }
+                    });
             }
         }
         else if (wasEditable)
         {
+            // Disable Hallo editor.
+            cObj.$contents.hallo({editable: false});
+
             cObj._render();
         }
 
         var newHeight = cObj.$dom.height();
         cObj.$dom.height(origHeight);
         cObj.$dom.animate({height: newHeight}, 'slow', function() { cObj.$dom.height(''); });
+    },
+
+    _onEditorExecCommand: function(command, useDefaultUi, value)
+    {
+        var retVal = false;
+
+        // Now this is really bad. Chrome (and possibly future browsers)
+        // like to try and preserve styling when executing these commands.
+        // Sadly, it fails badly. For one example among many, it doesn't
+        // understand that em measures stack, so text ends up changing size
+        // unexpectedly. So... we temporarily add this font-style to our
+        // component as a sentinel. Chrome will lap this right up and apply
+        // it as a new span's inline style around whatever it adds. We can
+        // then find this span and nuke it. Just don't tell Chrome, it's
+        // only trying to help. Chrome tries to propagate a small subset of
+        // properties - the font-style one is the most obscure. See:
+        // http://code.google.com/p/chromium/issues/detail?id=149901
+        // Of course this is not guaranteed to avoid stripping out actually-
+        // entered formatting, but since Markdown doesn't support oblique
+        // text, this shouldn't matter too much.
+        this.$dom.css('font-style', 'oblique');
+        try
+        {
+            retVal = document.execCommand(command, useDefaultUi, value);
+            this.$dom.find("span[style*=oblique]:first-child").filter( function()
+            {
+                // If another property is set, Chrome didn't add this.
+                return this.attributes.length == 1;
+            }).contents().unwrap();
+        }
+        finally
+        {
+            this.$dom.css('font-style', '');
+        }
+
+        return retVal;
     }
 });

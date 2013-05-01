@@ -83,7 +83,7 @@
 
         toHtml: function()
         {
-            return $.tag({ tagName: 'div', 'class': ['cf-property', 'nonEditable', 'socrata-cf-mouse'],
+            return $.tag({ tagName: 'span', 'class': ['cf-property', 'nonEditable', 'socrata-cf-mouse'],
                 'data-propId': this.id,
                 contents: [ { tagName: 'span', 'class': 'itemText',
                         contents: $.htmlEscape(this.property.replace(/.*\./, '')) },
@@ -102,7 +102,7 @@
         {
             var prop = this;
             prop._$node = $node;
-            prop._$node.data('cfProperty', prop);
+
             infoTipHookup(prop);
 
             var $remButton = prop._$node.children('.remove');
@@ -162,6 +162,7 @@
             this._$node.socrataTip().destroy();
             this._$node.replaceWith(this.toString());
         }
+
     });
 
     var infoTipHookup = function(prop)
@@ -303,13 +304,17 @@
         infoTipHookup(prop);
     };
 
+    // Given a wrapper node, replace all properties in the text with rich
+    // markup. Already-enhanced properties in the node will be dropped and
+    // recreated.
+    // Also enables editing on the node.
     $.cf.enhanceProperties = function($node, multiLineMode)
     {
         $node.editable({ edit: true, focusOnEdit: true, singleLineMode: !multiLineMode });
 
         var html = $node.html();
         var props = html.match(/({[^{}]+})/mg);
-        var propObjs = {};
+        var propObjs = $node.data('cfProperties') || {};
         _.each(props, function(p)
         {
             var prop = new $.cf.Property(p);
@@ -321,7 +326,14 @@
         {
             var $t = $(this);
             var prop = propObjs[$t.attr('data-propId')];
-            prop.domHookup($t);
+            if (prop)
+            {
+                // The HTML may have been munged by a drop or an edit
+                // (Chrome, go sit in a corner). Always replace it.
+                var $newHtml = $(prop.toHtml());
+                $t.replaceWith($newHtml);
+                prop.domHookup($newHtml);
+            }
         });
 
         if ($node.isControlClass('nativeDropTarget'))
@@ -333,25 +345,103 @@
                 newItemDrop: function(dropId)
                 {
                     var prop = new $.cf.Property({property: dropId, fallback: ''});
+                    var localPropObjs = $node.data('cfProperties') || {};
                     var $newProp = $(prop.toHtml());
-                    _.defer(function() { prop.domHookup($newProp); });
+                    localPropObjs[prop.id] = prop;
+                    $node.data('cfProperties', localPropObjs);
+                    // Let enhanceProperties in the dropContentEditableCallback
+                    // finish the setup for us. We can't do it now because our
+                    // replacement node ($newProp) may become stale. Note that
+                    // we'll replace this HTML in enhanceProperties. $newProp
+                    // is a marker so enhanceProperties can find the correct
+                    // position to insert the markup and hook up the property's
+                    // DOM.
                     return $newProp;
+                },
+                dropContentEditableCallback: function()
+                {
+                    if (blist.util.enableHtmlDataForDragDrop() || !$.browser.webkit)
+                    {
+                        // Calling enhance will finish the setup of the new
+                        // property. However, when we're using full HTML drop we need
+                        // to keep a consistent $dom value on our property object,
+                        // which enhanceProperties would clobber. So we do it after
+                        // the drop event via _.defer.
+                        _.defer(_.bind($.cf.enhanceProperties, $.cf, $node));
+                    }
+                    else
+                    {
+                        // If we are doing a reorder within our own container,
+                        // Chrome likes to clobber then recreate the span the
+                        // user is dragging.
+                        // As such, we never get a DragEnd. Detect this here,
+                        // and process as required.
+                        var sel = rangy.getSelection();
+                        var trimmedSelText = sel.toString().trim();
+                        if (trimmedSelText.indexOf('move:') == 0)
+                        {
+                            var propsInThisEditable = $node.data('cfProperties');
+                            var found = false;
+                            if (propsInThisEditable)
+                            {
+                                _.each(propsInThisEditable, function(value, key)
+                                {
+                                    if (trimmedSelText == 'move:' + key)
+                                    {
+                                        var moveProp = sel.anchorNode.splitText(sel.anchorOffset);
+                                        moveProp.splitText(sel.focusOffset - sel.anchorOffset);
+                                        // Since Chrome nuked the dragged span (the entire
+                                        // reason we're here), we'd like to regen it and move it.
+                                        // Sadly, regenning will cause moveProp to go stale.
+                                        // So, we need to find the impostor span Chrome created,
+                                        // move it, then fix everything by calling enhanceProperties.
+                                        $(moveProp).replaceWith($node.find('[data-propid=' + key + ']'));
+                                        found = true;
+                                    }
+                                });
+                            }
+                            if (!found)
+                            {
+                                sel.removeAllRanges();
+                                sel.refresh();
+                            }
+                        }
+
+                        _.defer(_.bind($.cf.enhanceProperties, $.cf, $node));
+                    }
                 }
             });
         }
+
+        // Store the property instances on the node, for later retreival by
+        // extractProperties. We can't use the property nodes themselves as
+        // they tend to be destroyed and recreated by the browser (Chrome)
+        // on drop or edit (causing all associated data to be lost).
+        $node.data('cfProperties', propObjs);
     };
 
+    // Replaces properties previously enhanced by enhanceProperties with a plain-
+    // text representation.
+    // Also disables editing on the node.
     $.cf.extractProperties = function($node)
     {
         $node.editable({ edit: false });
+
+        var propObjs = $node.data('cfProperties') || {};
 
         $node.find('.cf-property, .cf-property-edit').quickEach(function()
         {
             var t = this;
             if (t.hasClass('cf-property-edit')) { t = t.children('.cf-property'); }
-            var cfProp = t.data('cfProperty');
-            if (!$.isBlank(cfProp)) { cfProp.extract(); }
+            var propId = t.attr('data-propid');
+            cfProp = propObjs[propId];
+            if (!$.isBlank(cfProp))
+            {
+                cfProp.extract();
+                delete propObjs[propId];
+            }
         });
+
         $node.nativeDropTarget().disable();
     };
 

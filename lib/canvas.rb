@@ -422,6 +422,8 @@ module Canvas
   end
 
   class FacebookShare < CanvasWidget
+    include Rails.application.routes.url_helpers
+
     attr_reader :fb_opts
 
     def prepare!
@@ -510,6 +512,8 @@ module Canvas
   end
 
   class FeaturedViews < CanvasWidget
+    include Rails.application.routes.url_helpers
+
     attr_reader :featured_views
 
     def can_render?

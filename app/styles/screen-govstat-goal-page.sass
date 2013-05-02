@@ -301,6 +301,9 @@ $chartHeight: 210px
           right: 100%
           text-rendering: optimizeLegibility
 
+          .ie8 &
+            white-space: nowrap
+
           .tip
             @include triangle(3px, #797979, left)
             margin-right: -6px
@@ -325,6 +328,9 @@ $chartHeight: 210px
           position: absolute
           left: 1.9em
           top: 0
+
+        &:hover
+          z-index: 2
 
       .marker
         @include progress-colors(background-color)
@@ -375,6 +381,7 @@ $chartHeight: 210px
         position: absolute
         @include transition(0.2s, height margin)
         width: 5em
+        z-index: 1
 
         &:hover, &.up
           height: 1.5em

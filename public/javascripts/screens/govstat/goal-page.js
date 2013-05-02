@@ -45,6 +45,7 @@
         var projectionSeries = computedValues.projected_values || [];
 
         if ($.isBlank(dataSeries)) { return false; } // stilllll nothing interesting to show.
+        if (dataSeries.length < 2) { return false; } // single-point paths don't visibly manifest.
 
         // time formats
         var timeParse = d3.time.format('%Y-%m-%dT%H:%M:%S.000').parse;
@@ -306,6 +307,12 @@
             $(this)
                 .toggleClass('down')
                 .toggleClass('up');
+
+            if ($.browser.msie && ($.browser.majorVersion < 9))
+            {
+                // force trigger restyle
+                svg.selectAll('path').classed('toggle' + _.uniqueId(), true);
+            }
         });
 
         return true;

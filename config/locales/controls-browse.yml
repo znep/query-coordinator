@@ -102,8 +102,8 @@ en:
         permissions:
           title: Change the public visibility
           change_button:
-            public_html: Make Public
-            private_html: Make Private
+            public_html: Make Private
+            private_html: Make Public
         delete:
           title: Delete this item
           button: Delete
@@ -216,8 +216,8 @@ it:
         permissions:
           title: "Cambia la visibilità"
           change_button:
-            public_html: Rendi Pubblica
-            private_html: Rendi Privati
+            public_html: Rendi Privati
+            private_html: Rendi Pubblica
         delete:
           title: Cancella questo item
           button: Cancella

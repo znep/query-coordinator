@@ -120,8 +120,10 @@
                 cpObj._expectingCancel = false;
                 $('#selectDataset').jqmHide();
                 cpObj._$selectedField.data('uid', ds.id);
-                cpObj._$selectedField.makeStatic(ds.name, !validDataset(ds));
-                modifySection.call(cpObj, ds, cpObj._$selectedField);
+
+                var valid = validDataset(ds);
+                cpObj._$selectedField.makeStatic(ds.name, !valid);
+                if (valid) { modifySection.call(cpObj, ds, cpObj._$selectedField); }
             };
         }
 
@@ -158,8 +160,9 @@
             $field.data('uid', curValue);
             var handle = function(dataset)
             {
-                $field.makeStatic(dataset.name, !validDataset(dataset), cpObj._view.id == dataset.id);
-                modifySection.call(cpObj, dataset, $field);
+                var valid = validDataset(dataset);
+                $field.makeStatic(dataset.name, !valid, cpObj._view.id == dataset.id);
+                if (valid) { modifySection.call(cpObj, dataset, $field); }
             };
             if (curValue == 'self')
             { handle(cpObj._view); }

@@ -575,6 +575,8 @@ module Canvas2
   end
 
   class Share < CanvasWidget
+    include Rails.application.routes.url_helpers
+
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true
       super(props, parent, resolver_context)

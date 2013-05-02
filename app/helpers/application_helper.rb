@@ -15,7 +15,7 @@ module ApplicationHelper
   def view_url(view)
     if view.is_api?
       # use the view's federation resolution but throw away the rest for the resource name instead.
-      developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName ))
+      developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
     else
       super
     end

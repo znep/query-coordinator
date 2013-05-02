@@ -200,11 +200,10 @@ protected
               htmlClass: 'goalSubtitle',
               html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit ||units}</strong>'
             }, {
-              type: 'HorizontalContainer',
+              type: 'Container',
               htmlClass: 'prevailingMetric',
               children: [ {
                 type: 'Container',
-                weight: 5.5,
                 htmlClass: 'metric currentValue',
                 children: [ {
                   type: 'Text',
@@ -214,66 +213,36 @@ protected
                   type: 'Text',
                   htmlClass: 'metricTime',
                   ifValue: 'goal.metrics.0.computed_values.as_of',
-                  html: 'measured {goal.metrics.0.computed_values.as_of @[%b %Y] ||}'
-                }, progress_indicator('goal.metrics.0') ]
+                  html: '{goal.metrics.0.computed_values.as_of @[%b %Y] ||}'
+                } ]
               }, {
                 type: 'Container',
-                weight: 4.5,
-                htmlClass: 'nonCurrent',
+                htmlClass: 'metric targetValue',
                 children: [ {
-                  type: 'Container',
-                  htmlClass: 'metric baselineValue',
-                  children: [ {
-                    type: 'Text',
-                    customClass: 'metricType',
-                    html: 'Baseline'
-                  }, {
-                    type: 'Text',
-                    htmlClass: 'metricValue',
-                    html: '{goal.metrics.0.computed_values.baseline_value %[,3] ||}'
-                  }, {
-                    type: 'Text',
-                    htmlClass: 'metricUnit',
-                    html: '<strong>{goal.metrics.0.unit ||}</strong>'
-                  }, {
-                    type: 'Text',
-                    htmlClass: 'metricTime',
-                    html: '{goal.start_date @[%B %Y] ||}'
-                  } ]
+                  type: 'Text',
+                  htmlClass: 'rightArrow'
                 }, {
-                  type: 'Container',
-                  htmlClass: 'metric targetValue',
-                  children: [ {
-                    type: 'Text',
-                    customClass: 'metricType',
-                    html: 'Target'
-                  }, {
-                    type: 'Text',
-                    htmlClass: 'metricValue',
-                    html: '{goal.metrics.0.computed_values.target_value %[,3] ||}'
-                  }, {
-                    type: 'Text',
-                    htmlClass: 'metricUnit',
-                    html: '<strong>{goal.metrics.0.unit ||}</strong>'
-                  }, {
-                    type: 'Text',
-                    htmlClass: 'metricTime',
-                    html: '{goal.end_date @[%B %Y] ||}'
-                  } ]
+                  type: 'Text',
+                  htmlClass: 'metricValue',
+                  html: '<span class="value">{goal.metrics.0.computed_values.target_value %[,3] ||}</span><span class="unit">{goal.metrics.0.unit ||}</span>'
+                }, {
+                  type: 'Text',
+                  htmlClass: 'metricTime',
+                  html: '{goal.end_date @[%B %Y] ||} target'
                 } ]
-              } ]
+              }, progress_indicator('goal.metrics.0') ]
             }, {
               type: 'Share',
               currentPage: true
             }, {
               type: 'Text',
-              customClass: 'chartArea',
-              ifValue: '?leafChart',
-              html: '<span class="goalUid">{goal.id}</span>' +
-                    '<div class="constrain"><div class="nowTip"><div class="nowTipFill"></div></div></div>' +
-                    '<div class="dataSeriesLeftBuffer"></div><div class="dataSeriesRightBuffer"></div>' +
+              customClass: 'chartArea collapsed',
+              html: '<div class="goalUid">{goal.id}</div>' +
+                    '<div class="constrain"><div class="border"></div><div class="nowTip"><div class="nowTipFill"></div></div></div>' +
+                    '<div class="dataSeriesLeftBuffer"><div class="border"></div></div><div class="dataSeriesRightBuffer"><div class="border"></div></div>' +
                     '<div class="meter"><div class="rangeTop"></div><div class="rangeBottom"></div></div>' +
-                    '<div class="bubble marker projectionMarker">Projected<div class="tip"></div></div><div class="bubble marker currentMarker">Current<div class="tip"></div></div><div class="bubble marker targetMarker">Target<div class="tip"></div></div>'
+                    '<div class="bubble marker projectionMarker">Projected<div class="tip"></div></div><div class="bubble marker currentMarker">Current<div class="tip"></div></div><div class="bubble marker targetMarker">Target<div class="tip"></div></div><div class="bubble marker baselineMarker">Baseline<div class="tip"></div></div>' +
+                    '<div class="pull down"><div class="icon"></div></div>'
             }]
           } ]
         }, {

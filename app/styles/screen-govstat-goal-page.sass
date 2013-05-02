@@ -8,23 +8,23 @@
     &:after
       margin-left: 0.5em
   .progress-good .good
-    background-color: #09a74f
+    background-color: $govstat_color_good
   .progress-progressing .flat
-    background-color: #fcc806
+    background-color: $govstat_color_flat
   .progress-bad .poor
-    background-color: #e33229
+    background-color: $govstat_color_poor
   .progress-none .none
-    background-color: #888
+    background-color: $govstat_color_none
 
 @mixin progress-colors($prop, $selector: '')
   &.progress-good #{$selector}
-    #{$prop}: #09a74f
+    #{$prop}: $govstat_color_good
   &.progress-progressing #{$selector}
-    #{$prop}: #fcc806
+    #{$prop}: $govstat_color_flat
   &.progress-bad #{$selector}
-    #{$prop}: #e33229
+    #{$prop}: $govstat_color_poor
   &.progress-none #{$selector}
-    #{$prop}: #888
+    #{$prop}: $govstat_color_none
 
 
 .heroImageContainer
@@ -105,75 +105,75 @@
       padding-bottom: 1.5em
 
     .prevailingMetric
-      .currentValue
-        padding-top: 1.5em
+      @include clearfix
+      padding-bottom: 3em
+      position: relative
+      z-index: 10
+
+      .metric
+        float: left
+        padding-top: 1em
 
         .metricValue
           @include progress-colors(color, '.value')
 
           .value
-            font-size: 8em
+            font-size: 7em
             letter-spacing: -2px
           .unit
-            color: #666
-            font-size: 2em
+            color: #999
+            font-size: 2.5em
             letter-spacing: -1px
             padding-left: 0.1em
 
         .metricTime
-          color: #777
+          color: #666
           font-size: 1.6em
           letter-spacing: -1px
 
-        .goalProgress
-          font-size: 1.5em
-          margin-top: 2.5em
+      .metric.currentValue
+        margin-right: 2em
 
-      .nonCurrent
-        border-left: 1px solid #ddd
-        padding-left: 3em
+      .metric.targetValue
+        .rightArrow
+          @include triangle(1em, #ddd, left)
+          margin-bottom: -2.8em
+          margin-top: 4.4em
 
-        .metric
-          padding: 2em 0 1em
-          position: relative
-          text-align: right
+        .metricValue
+          margin-left: 2.5em
 
-          &.baselineValue
-            border-bottom: 1px solid #ddd
-            padding: 1em 0 2em
-
-            .metricType
-              top: 1em
-
-          .metricType
-            font-size: 1.8em
-            left: 0
-            position: absolute
-            top: 1.5em // not actually sure why this looks more right than 2em
-
-          .metricValue
-            color: #000
-            font-size: 4.5em
-            letter-spacing: -1px
-            margin-bottom: -0.15em
-
-          .metricUnit
-            color: #000
-            font-size: 1.8em
+          .value
+            color: #999
+            font-size: 2.5em
             letter-spacing: -1px
 
-          .metricTime
-            font-size: 1.2em
+          .unit
+            color: #bbb
+            font-size: 1.4em
             letter-spacing: -1px
+            margin-left: 0.3em
 
+        .metricTime
+          margin-left: 1.562em
+          margin-top: 0.35em
+
+      .goalProgress
+        float: right
+        font-size: 1.5em
+        margin-top: 3em
+
+$chartHeight: 210px
+.titleContainer
   .chartArea
     background-color: #fbfbfb
     @include prefixer(background, linear-gradient(#f4f4f4, #fbfbfb 15px))
-    border-top: 1px solid #bbb
     font-size: 1em
-    height: 21em
+    height: $chartHeight
     margin: 2em -4.5em -4.5em
+    min-height: 0
     padding: 0
+    @include transition(2s, height)
 
     .goalUid
       display: none
@@ -181,42 +181,69 @@
     .content-wrapper
       position: relative
 
+      // important vomit
+      .r2d3Chart
+        width: 100% !important
+        z-index: 1
+
       svg
-        position: relative
+        bottom: 0
+        position: absolute
         z-index: 1
         // gferrari (4/25/13): Firefox is picky when it comes to calculating
         // intrinsic sizes. See http://www.w3.org/TR/SVG/coords.html#IntrinsicSizing
         // and https://bugzilla.mozilla.org/show_bug.cgi?id=787962
         // This width/height make us work properly in FF.
+        height: $chartHeight
         width: 100%
-        height: 100%
+
+        .ie8 &
+          // raphael gets confused by nonpixel widths
+          width: 0
 
         .dataSeriesArea
           fill: #aaa
           fill-opacity: 0.3
+          @include transition(2s, fill-opacity)
 
         .dataSeriesLine
           fill: none
+          stroke-opacity: 1
           stroke: #666
           stroke-width: 3px
+          @include transition(2s, stroke-opacity)
 
         .projectionLineShadow
           fill: none
+          stroke-opacity: 1
           stroke: #fbfbfb
           stroke-opacity: 0.75
           stroke-width: 7px
+          @include transition(2s, stroke-opacity)
 
         .projectionLine
           @include progress-colors(stroke)
           fill: none
+          stroke-opacity: 1
           stroke-width: 3px
+          @include transition(2s, stroke-opacity)
 
       .dataSeriesLeftBuffer, .dataSeriesRightBuffer
         background-color: #aaa
         bottom: 0
         @include opacity(0.08)
         position: absolute
+        @include transition(2s, opacity)
         z-index: 1
+
+        .border
+          background-color: #000
+          height: 3px
+          @include opacity(0)
+          position: absolute
+          top: -1px
+          @include transition(2s, opacity)
+          width: 100%
 
       .dataSeriesLeftBuffer
         left: 0
@@ -230,13 +257,21 @@
         overflow: hidden
         position: absolute
         right: 0
-        top: -1px
+        top: 0
+
+        .border
+          border-top: 1px solid #bbb
+          height: 0
+          margin-bottom: -1px
+          position: absolute
+          width: 100%
 
         .nowTip
           @include triangle(17px, #bbb, top)
+          bottom: $chartHeight
+          margin-bottom: -34px
           margin-left: -17px
           position: absolute
-          top: 0
           z-index: 3
 
           .nowTipFill
@@ -253,8 +288,10 @@
       .yTick
         border-top: 1px solid #eee
         left: 0
+        @include opacity(1)
         position: absolute
         right: 0
+        @include transition(2s, opacity)
         z-index: 0
 
         .bubble
@@ -276,8 +313,10 @@
         bottom: 0
         margin-bottom: -2.3em
         margin-left: -2.2em
+        @include opacity(1)
         position: absolute
         text-align: center
+        @include transition(2s, opacity)
         width: 4em
 
         .tip
@@ -293,7 +332,7 @@
         background-color: #797979
         left: 100%
         margin-left: 0.8em
-        margin-top: -0.7em
+        margin-bottom: -0.7em
         position: absolute
 
         .tip
@@ -305,10 +344,10 @@
 
       .meter
         bottom: 0
+        height: $chartHeight
         position: absolute
         right: 0
-        top: 0
-        width: 4px
+        width: 6px
         z-index: 2
 
         div
@@ -320,6 +359,73 @@
             top: 0
           &.rangeBottom
             bottom: 0
+
+      // todo: make more prominent somehow
+      .pull
+        background-color: #fff
+        border: 1px solid #bbb
+        border-top: none
+        @include border-radius(0, 0, 0.3em, 0.3em)
+        bottom: 0
+        cursor: pointer
+        height: 1em
+        left: 50%
+        margin-bottom: -1.1em
+        margin-left: -2.5em
+        position: absolute
+        @include transition(0.2s, height margin)
+        width: 5em
+
+        &:hover, &.up
+          height: 1.5em
+          margin-bottom: -1.6em
+
+        &.up:hover
+          height: 1.7em
+          margin-bottom: -1.8em
+
+        .icon
+          left: 50%
+          margin-left: -4px
+          position: absolute
+
+        &.down .icon
+          @include triangle(4px, #777, top)
+          bottom: -1px
+
+        &.up .icon
+          @include triangle(4px, #777, bottom)
+          bottom: 3px
+
+    &.collapsed
+      height: 0
+
+      .content-wrapper
+        .dataSeriesArea
+          fill-opacity: 0.035
+
+        .dataSeriesLine
+          stroke-opacity: 0.1
+
+        .projectionLineShadow, .projectionLine
+          stroke-opacity: 0
+
+        .dataSeriesLeftBuffer, .dataSeriesRightBuffer
+          border-top: 3px solid rgba(0, 0, 0, 0.38)
+          @include opacity(0.025)
+
+          .border
+            @include opacity(0.2)
+
+        .yTick, .xTick.bubble
+          @include opacity(0.3)
+
+        // we could also have them always show softly
+          .xTick.bubble
+            @include opacity(0.35)
+
+        .r2d3Chart
+          top: -$chartHeight !important
 
 .sectionTitle
   font-size: 2em

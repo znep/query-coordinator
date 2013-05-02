@@ -5,7 +5,7 @@ $.component.Component.extend('Safe Html', 'none', {
     _getAssets: function()
     {
         return {
-            javascripts: [{ assets: 'sanitize-html' }]
+            javascripts: [{ assets: 'sanitize-html' }, { assets: 'autolink-html' }]
         };
     },
 
@@ -29,12 +29,21 @@ $.component.Component.extend('Safe Html', 'none', {
             var substitutionTarget = cObj._properties.html;
             var unsafeHtmlResult;
             var safeHtmlResult;
+            var finalHtmlResult = '';
             if (!$.isBlank(substitutionTarget))
             {
                 unsafeHtmlResult = cObj._stringSubstitute(substitutionTarget);
                 safeHtmlResult = cObj._sanitizeDisplayHtml(unsafeHtmlResult);
+                if (cObj._properties.autoLink)
+                {
+                    finalHtmlResult = blist.util.autolinker.autoLinkHtml(safeHtmlResult);
+                }
+                else
+                {
+                    finalHtmlResult = safeHtmlResult;
+                }
             }
-            cObj.$contents.html(safeHtmlResult);
+            cObj.$contents.html(finalHtmlResult);
         }
 
         if (!cObj._updateDataSource(cObj._properties, doRender))

@@ -187,6 +187,8 @@ javascripts:
     - public/javascripts/plugins/html2markdown.js
     - public/javascripts/plugins/htmldomparser.js
     - public/javascripts/component/util/markdown-utils.js
+  autolink-html:
+    - public/javascripts/component/util/autolinker.js
   template-instantiator:
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/template-instantiation.js
@@ -660,3 +662,4 @@ dump:
     - markdown-render
     - markdown-create
     - sanitize-html
+    - autolink-html

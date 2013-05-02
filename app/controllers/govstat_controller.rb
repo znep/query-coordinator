@@ -319,7 +319,7 @@ protected
           text: 'More Information'
         },
         {
-          type: 'Text', htmlClass: 'goalDescription clearfix',
+          type: 'SafeHtml', htmlClass: 'goalDescription clearfix', autoLink: true,
           html: '<p>{goal.metadata.description /\n/<\/p><p>/g ||}</p>'
         },
         {

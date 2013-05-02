@@ -173,6 +173,15 @@ module Canvas2
       obj.key?(locale) ? obj[locale] : ''
     end
 
+    # Given an HTML document or snippet, auto-links plain text.
+    # Keep this in sync with FormattedText's implementation in formatted-text.js.
+    def self.auto_hyperlink_html(html)
+      autoLinker = AutoLinker.new
+      parser = Nokogiri::HTML::SAX::Parser.new(autoLinker)
+      parser.parse(html)
+      return autoLinker.output
+    end
+
     #The Sanitizer filter for pre-filtering Markdown documents.
     STRICT_SANITIZE_FILTER =
     {

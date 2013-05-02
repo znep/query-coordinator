@@ -49,7 +49,6 @@ javascripts:
     - public/javascripts/util/filter.js
     - public/javascripts/util/datatypes.js
     - public/javascripts/controls/modal-dialogs.js
-    - public/javascripts/controls/session-timeout-modal.js
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/controls/socrata-messaging.js
     - public/javascripts/controls/text-prompt.js
@@ -58,6 +57,7 @@ javascripts:
     - public/javascripts/controls/menu.js
     - public/javascripts/util/socrata-analytics.js
     - public/javascripts/screens/all-screens.js
+    - public/javascripts/controls/session-timeout-modal.js
   new-base:
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/backbone.js

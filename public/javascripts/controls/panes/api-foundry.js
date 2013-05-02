@@ -27,7 +27,7 @@
                                 {
                                     cpObj._finishProcessing();
                                     cpObj._viewList = v;
-                                    var apis = _.filter(v, function(view){return view.displayName === "API";});
+                                    var apis = _.filter(v, function(view){return view.displayType === "api";});
                                     if (apis.length > 0){
                                       var $s = $('#selectAPI'), options = [], $ea = $("#existingAPIs");
                                       $s.empty();

@@ -61,7 +61,11 @@
 
     // drop in translated default validation messages
     var messages = {};
-    _.each($.validator.messages, function(__, key) { messages[key] = $.t('core.validation.' + key); });
+    _.each($.validator.messages, function(__, key)
+    {
+        var message = $.tNull('core.validation.' + key);
+        if (message) { messages[key] = message; }
+    });
     _.each([ 'maxlength', 'minlength', 'rangelength', 'range', 'max', 'min' ],
              function(key) { messages[key] = $.validator.format(messages[key]); });
     $.extend($.validator.messages, messages);

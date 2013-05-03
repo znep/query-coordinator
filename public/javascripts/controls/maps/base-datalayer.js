@@ -768,12 +768,7 @@
         prepareRowRender: function(row)
         {
             var geometry = this.extractGeometryFromRow(row);
-            if (_.isBoolean(geometry)) { return null; }
-            else if (_.isString(geometry))
-            {
-                this._parent.showError('Some points were invalid. ' + geometry);
-                return null;
-            }
+            if (_.isBoolean(geometry) || _.isString(geometry)) { return null; }
 
             var data = { icon: this.extractIconFromRow(row) };
             if (!data.icon)

@@ -194,5 +194,10 @@ module Canvas2
         end
       end
     end
+
+  protected
+    def default_url_options
+      { host: CurrentDomain.cname }
+    end
   end
 end

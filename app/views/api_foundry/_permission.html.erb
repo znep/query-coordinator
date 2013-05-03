@@ -19,3 +19,7 @@
   <%= render(:partial => 'datasets/permissions') %>
   <%= render(:partial => 'datasets/sharing') %>
 <% end %>
+
+<%= content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds.grid_sidebar.share %>
+<% end %>

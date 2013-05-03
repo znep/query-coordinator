@@ -281,7 +281,7 @@ $.tNull = function(key, data)
         return null;
     }
     var result = $.deepGetStringField(blist.translations, key)
-                      .replace(/%{[^}]+}/g, function(dataKey) { return data[dataKey.slice(2, -1)]; });
+                      .replace(/%{[^}]+}/g, function(dataKey) { return (data || {})[dataKey.slice(2, -1)] || ''; });
     return key.endsWith('_html') ? result : $.htmlStrip(result);
 };
 

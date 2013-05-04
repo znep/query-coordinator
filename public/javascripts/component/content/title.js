@@ -105,9 +105,9 @@ $.component.Component.extend('Title', 'content', {
         else if (wasEditable)
         { cObj._render(); }
 
-        var newHeight = cObj.$dom.height();
+        var newHeight = cObj._getHeightPropertyValue() || cObj.$dom.height();
         cObj.$dom.height(origHeight);
-        cObj.$dom.animate({height: newHeight}, 'slow', function() { cObj.$dom.height(''); });
+        cObj.$dom.animate({height: newHeight}, 'slow', function() { cObj.$dom.height(cObj._getHeightPropertyValue() || ''); });
     },
 
     asString: function() {

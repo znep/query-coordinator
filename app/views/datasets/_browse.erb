@@ -354,7 +354,7 @@
                       <%- img_url = v.preferred_image(opts[:port]) -%>
                       <%- if !img_url.nil? -%>
                         <img itemprop="image" class="datasetImage datasetIcon <%= v.preferred_image_type %>"
-                          src="<%= img_url %>" />
+                          src="<%= img_url %>" alt="<%= v.name %>" />
                       <%- else -%>
                         <div class="datasetIcon type type<%= v.display.type.capitalize %>"
                           title="<%= v.display.name.capitalize %>"><span class="icon"></span></div>

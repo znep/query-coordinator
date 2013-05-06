@@ -20,7 +20,9 @@ class LocaleMiddleware
 
     # first, try loading from subdomain
     # this is to enable cname-based locale enforcement; eg fr.socrata.com
-    locale = locales.properties[host]
+    #
+    # use raw_properties or else { 'x.y.com': 'en' } becomes { 'x': { 'y': { 'com': 'en' } } }
+    locale = locales.raw_properties[host]
 
     # now grab all the ones that are acceptable
     domain_locales = CurrentDomain.available_locales + [ locale ]

@@ -70,8 +70,8 @@ $.component.Component.extend('Share', 'actions', {
 
     configurationSchema: function()
     {
-        return { schema: [{ fields: [
-            { type: 'radioGroup', defaultValue: 'currentPage', name: 'shareType', text: 'Share',
+        return { schema: [{ name: 'shareComponent_type', fields: [
+         { type: 'radioGroup', defaultValue: 'currentPage', name: 'shareType', text: 'Share',
                 options: [ { name: 'currentPage', type: 'static', value: 'This page', isInput: true },
                 $.cf.contextPicker() ] }
             ] }], view: this._dataset };

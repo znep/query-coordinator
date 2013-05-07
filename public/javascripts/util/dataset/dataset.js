@@ -1796,6 +1796,8 @@ var Dataset = ServerModel.extend({
         {
             this.temporary = true;
             this.trigger('set_temporary');
+            if ((blist.debug || {}).temporary && (console || {}).trace)
+            { console.groupCollapsed('markingTemporary'); console.trace(); console.groupEnd(); }
         }
     },
 

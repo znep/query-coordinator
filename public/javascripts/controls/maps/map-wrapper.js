@@ -101,7 +101,7 @@
 
             mapObj.map.events.register('preaddlayer', mapObj, function(evtObj) {
                 if (mapObj._viewportHandler && blist.openLayers.isBackgroundLayer(evtObj.layer))
-                { mapObj._viewportHandler.expect(); }
+                { mapObj._viewportHandler.expect('preaddlayer event'); }
             });
 
             mapObj._children = [];
@@ -438,7 +438,8 @@
                 || !_.isEqual(mapObj._backgroundLayers, mapObj._displayFormat.bkgdLayers))
             {
                 // This is a new set of background layers. Set a forest fire.
-                if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(); }
+                if (mapObj._viewportHandler)
+                { mapObj.viewportHandler().expect('initializeBackgroundLayers'); }
                 _.each(mapObj.map.backgroundLayers(), function(layer) { layer.destroy(); });
                 mapObj._controls.MapTypeSwitcher.clearMapTypes();
             }
@@ -572,7 +573,8 @@
             if (!mapObj._displayFormat.exclusiveLayers || !mapObj.map.baseLayer
                 || layer instanceof OpenLayers.Layer.Google)
             {
-                if (mapObj._viewportHandler) { mapObj.viewportHandler().expect(); }
+                if (mapObj._viewportHandler)
+                { mapObj.viewportHandler().expect('adding background layer'); }
                 mapObj.map.addLayer(layer);
                 if (layer instanceof OpenLayers.Layer.Google)
                 {
@@ -784,13 +786,13 @@
         {
             var mapObj = this;
 
-            if (mapObj.map) { mapObj.viewportHandler().expect(); }
+            if (mapObj.map) { mapObj.viewportHandler().expect('resizeHandle'); }
             if (mapObj._controls && mapObj._controls.ZoomBar) { mapObj._controls.ZoomBar.redraw(); }
 
             _.defer(function(){
                 if (mapObj.map)
                 {
-                    mapObj.viewportHandler().expect();
+                    mapObj.viewportHandler().expect('about to updateSize');
                     mapObj.map.updateSize();
                 }
 

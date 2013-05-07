@@ -1596,9 +1596,10 @@
             var control = this;
             control.mapObj = mapObj;
             control.mapObj._controls.MapTypeSwitcher.events.register('maptypechange', null,
-                function() { control.expect(); });
+                function() { control.expect('MapTypeSwitcher#maptypechange'); });
 
             control.expecting = false;
+            control.expectReasons = [];
             if (_.isObject(viewport) && viewport.xmin)
             { control.original = OpenLayers.Bounds.fromViewport(viewport); }
             else if (_.isArray(viewport))
@@ -1658,7 +1659,7 @@
                     console.log('handlingEvent:', this.handlingEvent); 
                     console.log('resizeEvent', !this.mapSize.equals(this.map.getSize()));
                     console.log('untouched', this._untouched);
-                    console.log('expecting', this.expecting);
+                    console.log('expecting', this.expecting, this.expectReasons);
                     console.dir(this.viewport); console.groupEnd();
                 console.groupEnd();
             }
@@ -1697,7 +1698,7 @@
         {
             if (this.willMove(this.original))
             {
-                this.expect();
+                this.expect('Viewport#resetToOriginal');
                 this.map.zoomToExtent(this.original);
                 this.saveViewport();
             }
@@ -1723,7 +1724,7 @@
             if (!viewport) { return; }
             if (!this.willMove(viewport)) { return; }
 
-            this.expect();
+            this.expect('Viewport#zoomToPreferred');
             this.map.zoomToExtent(viewport);
             this.saveViewport();
         },
@@ -1734,9 +1735,10 @@
             setTimeout(function() { control.zoomToPreferred(); }, 100);
         },
 
-        expect: function(persist)
+        expect: function(reason, persist)
         {
             this.expecting = true;
+            this.expectReasons.push(reason);
             if (persist) this.expectingMultiple = true;
         },
 
@@ -1745,7 +1747,10 @@
             if (this.expecting)
             {
                 if (!this.expectingMultiple)
-                { this.expecting = false; }
+                {
+                    this.expecting = false;
+                    this.expectReasons = [];
+                }
                 return true;
             }
             return false;
@@ -1754,6 +1759,7 @@
         stopExpecting: function()
         {
             this.expecting = false;
+            this.expectReasons = [];
             delete this.expectingMultiple;
         },
 

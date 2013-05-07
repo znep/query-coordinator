@@ -35,7 +35,12 @@ class Page < SodaModel
   end
 
   def name
-    Canvas2::Util.string_substitute(@update_data['name'] || @data['name'], Canvas2::Util.base_resolver)
+    n = @update_data['name'] || @data['name']
+    begin
+      n = JSON.parse(n) if !n.blank?
+    rescue JSON::ParserError
+    end
+    Canvas2::Util.string_substitute(n, Canvas2::Util.base_resolver)
   end
 
   def content

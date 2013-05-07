@@ -84,6 +84,15 @@ class GovstatController < ApplicationController
 
   def manage_reports
     @own_reports, @other_reports = get_reports
+    # So report names can be localized
+    Canvas2::Util.set_env({
+      domain: CurrentDomain.cname,
+      renderTime: Time.now.to_i,
+      siteTheme: CurrentDomain.theme,
+      currentUser: current_user ? current_user.id : nil,
+      current_locale: I18n.locale,
+      available_locales: request.env['socrata.available_locales']
+    })
   end
 
   def manage_config

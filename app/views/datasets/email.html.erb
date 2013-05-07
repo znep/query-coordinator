@@ -17,7 +17,7 @@
         <% end %>
       </ul>
     <% else %>
-      <%= form_tag("#{email_dataset_path(@view.id)}", :id => "emailForm", :multipart => false) do %>
+      <%= form_tag("#{email_dataset_path(@view)}", :id => "emailForm", :multipart => false) do %>
         <div class="fieldContent clearfix">
           <p class="errorMessage"></p>
           <p class="instructions">

@@ -8,3 +8,9 @@
 <div id="delete" class="managesection">
   <div id="delete-host"></div>
 </div>
+
+<%= content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds.grid_sidebar.base.buttons %>
+  <%= render_translations LocalePart.screens.ds.grid_sidebar.delete %>
+<% end %>
+

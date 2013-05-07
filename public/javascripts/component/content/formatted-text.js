@@ -173,7 +173,7 @@ $.component.Component.extend('Formatted Text', 'content', {
                         editable: true,
                         toolbar: 'halloToolbarContextual',
                         forceStructured: true,
-                        execCommandOverride: this._onEditorExecCommand.bind(this),
+                        execCommandOverride: _.bind(this._onEditorExecCommand, this),
                         plugins:
                         {
                             halloformat:

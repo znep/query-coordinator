@@ -2556,7 +2556,8 @@
         editable: true,
         plugins: {},
         toolbar: 'halloToolbarContextual',
-        execCommandOverride: document.execCommand.bind(document),
+        // Can't use bind as IE thinks execCommand isn't a function.
+        execCommandOverride: function() { document.execCommand.apply(document, arguments); },
         parentElement: 'body',
         buttonCssClass: null,
         toolbarCssClass: null,

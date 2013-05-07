@@ -77,6 +77,15 @@ $.component.Component.extend('Share', 'actions', {
             ] }], view: this._dataset };
     },
 
+    edit: function()
+    {
+        if (!this._super.apply(this, arguments)) { return false; }
+        // Default to sharing page
+        if ($.isBlank(this._properties.contextId) && $.isBlank(this._properties.currentPage))
+        { this.properties({ currentPage: true }); }
+        return true;
+    },
+
     _render: function()
     {
         if (!this._super.apply(this, arguments)) { return false; }

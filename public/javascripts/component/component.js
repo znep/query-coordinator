@@ -915,8 +915,10 @@
                         cObj._addDataContext(dc);
                         finishCallback();
                     },
-                    error: function()
+                    error: function(dcId)
                     {
+                        cObj._nullDataContexts = cObj._nullDataContexts || [];
+                        cObj._nullDataContexts.push(dcId);
                         // We're just going to say we're done; it is up to the component
                         // to detect no dataContext exists
                         finishCallback();
@@ -938,9 +940,9 @@
                 curItem = curItem.parent;
             }
             cIds = cObj._stringSubstitute($.makeArray(cIds));
-            if ((!$.isBlank(cxt) || !_.isEmpty(cIds)) &&
-                    ($.isBlank(cObj._dataContext) || _.any($.makeArray(cObj._dataContext), function(dc)
-                                                           { return !_.include(cIds, dc.id); })))
+            var existIds = _.compact(_.pluck($.makeArray(cObj._dataContext), 'id')
+                    .concat(cObj._nullDataContexts)).sort();
+            if ((!$.isBlank(cxt) || !_.isEmpty(cIds)) && !_.isEqual(cIds.sort(), existIds))
             {
                 cObj.unbind('update_properties', null, cObj);
                 if (!_.isEmpty(cIds))
@@ -948,7 +950,8 @@
                     var finishDC = gotDCGen(cIds.length);
                     _.map(cIds, function(cId)
                         {
-                            if (!$.dataContext.getContext(cId, finishDC.success, finishDC.error))
+                            if (!$.dataContext.getContext(cId, finishDC.success,
+                                    function() { finishDC.error(cId); }))
                             {
                                 if ((cObj._properties.entity || {}).hasOwnProperty(cId))
                                 {
@@ -971,13 +974,13 @@
                                                 _.defer(function() { finishDC.success(dDC); });
                                             }
                                             else
-                                            { _.defer(function() { finishDC.error(); }); }
+                                            { _.defer(function() { finishDC.error(cId); }); }
                                         };
                                         if (!p._updateDataSource(null, findContextItem))
                                         { findContextItem(); }
                                     }
                                     else
-                                    { _.defer(function() { finishDC.error(); }); }
+                                    { _.defer(function() { finishDC.error(cId); }); }
                                 }
                             }
                         });
@@ -1007,7 +1010,8 @@
                         }
                         startDCGet();
                         var finishDC = gotDCGen(1);
-                        $.dataContext.loadContext(id, c, finishDC.success, finishDC.error);
+                        $.dataContext.loadContext(id, c, finishDC.success,
+                            function() { finishDC.error(id); });
                         cObj._inlineContextConfigs[c.id] = c;
                     });
                     if (_.isArray(properties.contextId) && properties.contextId.length == 1)
@@ -1036,6 +1040,7 @@
         _clearDataContext: function()
         {
             delete this._dataContext;
+            delete this._nullDataContexts;
             this._isDirty = true;
             if (this._isActiveEdit)
             { $.cf.side.enableProperties(false); }

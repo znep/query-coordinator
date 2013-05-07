@@ -205,11 +205,12 @@ d3base.seriesGrouping = {
     getRenderRange: function(view)
     {
         var vizObj = this,
-            sg = vizObj._seriesGrouping;
+            sg = vizObj._seriesGrouping,
+            numCols = _.size(sg.virtualColumns);
 
         var virtualRenderRange = vizObj._super(view);
-        return { start: virtualRenderRange.start * sg.virtualColumns.length,
-                 length: virtualRenderRange.length * sg.virtualColumns.length };
+        return { start:  virtualRenderRange.start  * numCols,
+                 length: virtualRenderRange.length * numCols };
     },
 
     renderData: function(data)

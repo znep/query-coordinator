@@ -1,12 +1,24 @@
 var textPromptNS = blist.namespace.fetch('blist.widgets.textPrompt');
 
-$(function ()
+(function($)
 {
-    $.fn.example.defaults.className = 'prompt';
-    $('.textPrompt').example(function ()
+
+    $.fn.blistTextPrompt = function()
+    {
+        this.example(function ()
         {
             return $(this).attr('title');
         });
+
+        return this;
+    };
+    $.fn.example.defaults.className = 'prompt';
+
+})(jQuery);
+
+$(function ()
+{
+    $('.textPrompt').blistTextPrompt();
 
     if (!$.isBlank($.validator))
     {

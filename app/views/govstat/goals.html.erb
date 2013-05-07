@@ -41,5 +41,12 @@
     <a href="#close" class="jqmClose">Close</a>
     <p>Please select a dataset from below.</p>
     <iframe src="<%= url_for :controller => :browse, :action => :select_dataset %>?nofederate=true&amp;suppressed_facets[]=domain" frameBorder="0"></iframe>
+    <p>Or, paste the web address of the dataset you would like to add.</p>
+    <form class="viewUrlForm" action="#">
+      <input type="text" title="Dataset web address" class="viewUrl textPrompt" name="viewUrl"/>
+      <input type="submit" value="Use" class="button"/>
+
+      <div class="viewUrlError flash"></div>
+    </form>
   </div>
 <%- end -%>

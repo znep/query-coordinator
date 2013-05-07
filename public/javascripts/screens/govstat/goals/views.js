@@ -28,6 +28,32 @@ var showDatasetSelect = function(callback, goalName, extraArgs)
         Dataset.createFromViewId(dataset.id, callback);
         $.popModal();
     };
+
+    // wire in our custom field
+    var $input = $modal.find('.viewUrl');
+    $input.blistTextPrompt();
+    $modal.find('form').on('submit', function(event)
+    {
+        event.preventDefault();
+
+        // parse URL using an a tag (<3 this trick)
+        var url = $input.val();
+        var a = document.createElement('a');
+        a.href = url;
+        var uid = /\/(\w{4}-\w{4})$/i.exec(a.pathname);
+
+        if ($.isBlank(uid))
+        {
+            $modal.find('.viewUrlError').addClass('error').text('Could not identify that dataset. Are you sure it is the web address of a dataset?');
+        }
+        else
+        {
+            Dataset.createFromViewId(uid[1], callback);
+            $.popModal();
+        }
+
+        return false; // ie!
+    });
 };
 
 

@@ -76,9 +76,9 @@
             var width = $embedForm.find(config.widthSelector).val();
             var height = $embedForm.find(config.heightSelector).val();
             var variation = $embedForm.find(config.templateSelector).val();
-            var text = template.replace('#width#', width)
-                               .replace('#height#', height)
-                               .replace('#variation#', variation || '');
+            var text = template.replace('_width_', width)
+                               .replace('_height_', height)
+                               .replace('_variation_', variation || '');
             _.defer(function() {
                 $embedForm.find(config.textareaSelector).text(text);
             });

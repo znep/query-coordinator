@@ -201,6 +201,10 @@ module Canvas
     self.style_definition = []
     self.content_definition = []
 
+    def default_url_options
+      { host: CurrentDomain.cname }
+    end
+
   private
     def load_properties(data)
       local_properties = (data.to_hash rescue {}).deep_symbolize_keys

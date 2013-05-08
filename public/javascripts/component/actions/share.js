@@ -82,7 +82,7 @@ $.component.Component.extend('Share', 'actions', {
         if (!this._super.apply(this, arguments)) { return false; }
         // Default to sharing page
         if ($.isBlank(this._properties.contextId) && $.isBlank(this._properties.currentPage))
-        { this.properties({ currentPage: true }); }
+        { this._executePropertyUpdate({ currentPage: true }); }
         return true;
     },
 

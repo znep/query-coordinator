@@ -843,7 +843,7 @@ chartObj.resizeHandle();
 
             cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))
-                    .style(cc.orientation == 'right' ? 'top' : 'left', vizObj._d3_px(vizObj._xBarPosition(seriesIndex)));
+                    .style(cc.dataDim.xAxis, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)));
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());

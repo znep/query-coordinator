@@ -139,6 +139,11 @@
             var mapObj = this;
             if ($.isBlank(mapObj.map)) { mapObj._displayFormat = df; return; } // Ensure validity.
 
+            if (mapObj._initialMapLoad === true)
+            { return; }
+            if (_.isUndefined(mapObj._initialMapLoad))
+            { mapObj._initialMapLoad = true; }
+
             mapObj.closePopup();
             if (mapObj._panning) { delete mapObj._panning; return; }
             mapObj._displayFormat = df;
@@ -417,6 +422,7 @@
                 // but it causes race conditions if temporaryness applies before maploaded is called.
                 //_.each(mapObj._children, function(cv) { cv.clearTemporary(); });
 
+                mapObj._initialMapLoad = false;
                 mapObj._doneLoading = true;
             }
         },

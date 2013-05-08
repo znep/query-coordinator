@@ -16,8 +16,8 @@
     t('controls.embed.form_frame') : t('controls.embed.embed') %></label>
   <div class="embedCodeWrapper">
     <textarea id="embed_code" name="embed_code" class="htmlCode"><%=
-      get_publish_embed_code_for_view(view, {:dimensions => { :width => "#width#",
-                                  :height => "#height#" }}, customization_id || '#variation#', cur)
+      get_publish_embed_code_for_view(view, {:dimensions => { :width => "_width_",
+                                  :height => "_height_" }}, customization_id || '_variation_', cur)
     %></textarea>
   </div>
 

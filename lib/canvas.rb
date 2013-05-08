@@ -328,6 +328,8 @@ module Canvas
 
   # PROBABLY SHOULD HAVEDONE ALL THE VIEWM ETADATA THIS WAY OH WEL TOO LATE
   class BoundLink < CanvasWidget
+    include Rails.application.routes.url_helpers
+
     attr_reader :href, :text
 
     def can_render?

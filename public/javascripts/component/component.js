@@ -940,9 +940,18 @@
                 curItem = curItem.parent;
             }
             cIds = cObj._stringSubstitute($.makeArray(cIds));
-            var existIds = _.compact(_.pluck($.makeArray(cObj._dataContext), 'id')
-                    .concat(cObj._nullDataContexts)).sort();
-            if ((!$.isBlank(cxt) || !_.isEmpty(cIds)) && !_.isEqual(cIds.sort(), existIds))
+            var existIds =
+                _.compact(
+                    _.pluck($.makeArray(cObj._dataContext), 'id')
+                    .concat(cObj._nullDataContexts)
+                    );
+
+            var hasNewInheritedId = !_.isEqual(cIds.sort(), existIds.sort());
+
+            // Process if we have a new inherited context id, or
+            // we have ONLY a non-blank local context (we will look
+            // at the latter in more detail below).
+            if ( (!$.isBlank(cxt) && _.isEmpty(cIds)) || hasNewInheritedId)
             {
                 cObj.unbind('update_properties', null, cObj);
                 if (!_.isEmpty(cIds))
@@ -1002,9 +1011,14 @@
                             // Only set contextId if we got the context at this level
                             if (!$.isBlank(properties.context))
                             {
-                                if (!_.isArray(properties.contextId))
-                                { properties.contextId = []; }
-                                properties.contextId.push(id);
+                                // Maybe this was a failed context?
+                                var hasNewContextId = !cObj._nullDataContexts || !_.include(cObj._nullDataContexts, id);
+                                if (hasNewContextId)
+                                {
+                                    if (!_.isArray(properties.contextId))
+                                    { properties.contextId = []; }
+                                    properties.contextId.push(id);
+                                }
                             }
                             cxt[i].id = id;
                         }

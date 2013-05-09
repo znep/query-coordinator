@@ -262,7 +262,7 @@
                     { type: 'repeater', name: 'displayFormat.viewDefinitions', addText: $.t('screens.ds.grid_sidebar.map.layers.new_data_button'),
                         field: {type: 'group', options: [
                             { text: $.t('screens.ds.grid_sidebar.map.layers.dataset'), type: 'custom', name: 'uid', required: true,
-                              defaultValue: options.view.id, repeaterValue: '',
+                              defaultValue: 'self', repeaterValue: '',
                               editorCallbacks: {
                                 create: datasetCreate,
                                 value: function($field) { return $field.data('uid'); }

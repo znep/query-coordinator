@@ -15,6 +15,10 @@
             {
                 if (isDynamic) { return '#download'; }
                 return args.context.view.downloadUrl(args.item);
+            },
+            '@class+': function(args)
+            {
+                return args.item.toLowerCase() + 'Download';
             }
             // TODO: add download count when supported
         };

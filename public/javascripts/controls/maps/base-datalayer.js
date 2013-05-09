@@ -528,12 +528,7 @@
                 });
             }
 
-            if (blist.nextgen.legend)
-            { return data; }
-            else if (layerObj._colorValueCol && layerObj._segments)
-            { return _.last(data); }
-            else
-            { return null; }
+            return data;
         },
 
         layersToRestack: function()

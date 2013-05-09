@@ -232,12 +232,7 @@
                 });
             }
 
-            if (blist.nextgen.legend)
-            { return data; }
-            else if (layerObj._quantityCol && layerObj._range)
-            { return _.last(data); }
-            else
-            { return null; }
+            return data;
         },
 
         // Make it so that it only highlights one row first in order to speed up highlighting

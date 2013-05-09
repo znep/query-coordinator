@@ -80,10 +80,6 @@
             { mapObj._controls[c] = mapObj.map.getControlsByClass('blist.openLayers.' + c)[0]; });
             mapObj._controls.Navigation = mapObj.map.getControlsByClass('OpenLayers.Control.Navigation')[0];
 
-            if (blist.nextgen.legend)
-            { mapObj._controls.Overview
-                = mapObj.map.getControlsByClass('blist.openLayers.Overview2')[0]; }
-
             mapObj._controls.Overview.events.on({
                 'datalayer_hover_over': mapObj.onHoverDataLayer,
                 'datalayer_hover_out':  mapObj.onHoverDataLayer,
@@ -160,8 +156,6 @@
             }
 
             mapObj.initializeBackgroundLayers();
-            if (blist.nextgen.legend)
-            {
             if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.position'))
             { mapObj._controls.Overview.reposition(mapObj._displayFormat.legendDetails.position); }
             if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.showConditional'))
@@ -170,17 +164,11 @@
             if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.customEntries'))
             { mapObj._controls.Overview.configure('customEntries',
                 mapObj._displayFormat.legendDetails.customEntries); }
-            }
 
             if (mapObj._displayFormat.disableGeolocator)
             { mapObj._controls.GeocodeDialog.deactivate(); }
             else
             { mapObj._controls.GeocodeDialog.activate(); }
-
-            if (!blist.nextgen.legend
-                && !_.isUndefined(mapObj._displayFormat.distinctLegend))
-            { mapObj._displayFormat.distinctLegend ? mapObj._controls.Overview.enableLegend()
-                                                   : mapObj._controls.Overview.disableLegend(); }
 
             var length = (mapObj._displayFormat.viewDefinitions || []).length;
             _.each(mapObj._children.slice(length), function(childView) { childView.destroy(); });

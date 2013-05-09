@@ -298,15 +298,11 @@
                 fields: [
                     { type: 'note', value: $.t('screens.ds.grid_sidebar.map.advanced.subtitle') },
                     { text: $.t('screens.ds.grid_sidebar.map.advanced.exclusive'), name: 'displayFormat.exclusiveLayers', type: 'checkbox' },
-                    { text: $.t('screens.ds.grid_sidebar.map.advanced.hide_geolocator'), name: 'displayFormat.disableGeolocator', type: 'checkbox' },
-                    { text: $.t('screens.ds.grid_sidebar.map.advanced.use_legend'), type: 'checkbox', name: 'displayFormat.distinctLegend',
-                        onlyIf: { func: function() { return !blist.nextgen.legend; } }
-                    }
+                    { text: $.t('screens.ds.grid_sidebar.map.advanced.hide_geolocator'), name: 'displayFormat.disableGeolocator', type: 'checkbox' }
                 ]
             },
             {
                 title: $.t('screens.ds.grid_sidebar.map.legend.title'), type: 'selectable',
-                onlyIf: { func: function() { return blist.nextgen.legend; } },
                 fields: [
                     {text: $.t('screens.ds.grid_sidebar.map.legend.position'), type: 'select', prompt: $.t('screens.ds.grid_sidebar.map.legend.position_prompt'),
                         defaultValue: 'bottom', name: 'displayFormat.legendDetails.position',

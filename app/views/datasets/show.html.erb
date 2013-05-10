@@ -37,7 +37,7 @@
             </li>
           <%- end -%>
           <li><a class="facebook" rel="external" title="<%= t('screens.ds.bar.share_facebook') %>"
-                href="http://www.facebook.com/share.php?u=<%= CGI::escape(view_url(@view)) %>">
+            href="https://www.facebook.com/dialog/feed?app_id=303443389788866&link=<%= CGI::escape(view_url(@view)) %>&name=<%= CGI::escape(@view.name) %>">
             <span class="icon"><%= t('screens.ds.bar.share_facebook') %></span></a></li>
           <li><a class="twitter" rel="external" title="<%= t('screens.ds.bar.share_twitter') %>"
                 href="http://twitter.com/?status=<%= @view.tweet %>">

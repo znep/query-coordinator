@@ -613,9 +613,10 @@ module Canvas2
         facebook: '<li class="facebook' + (vis_items.include?('facebook') ? '' : ' hide') +
           '" data-name="facebook">' +
           '<a class="facebook" rel="external" title="Share on Facebook" ' +
-            'href="http://www.facebook.com/share.php?u=' +
-              (@properties['currentPage'] ? CGI::escape(page_url) :
-              CGI::escape(view_url(ds))) + '">' +
+            'href="https://www.facebook.com/dialog/feed?app_id=303443389788866&' +
+              'link=' + (@properties['currentPage'] ? CGI::escape(page_url) :
+              CGI::escape(view_url(ds))) +
+              '&name=' + CGI::escape(page_name) + '">' +
             '<span class="icon">Share on Facebook</span></a></li>',
 
       twitter: '<li class="twitter' + (vis_items.include?('twitter') ? '' : ' hide') +

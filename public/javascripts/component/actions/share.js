@@ -144,7 +144,9 @@ var renderUpdate = function()
         var pageUrl = window.location;
         var pageName = $.stringSubstitute(blist.configuration.page.name, $.component.rootPropertyResolver);
         cObj.$shareOpts.find('li[data-name=facebook] a').attr('href',
-                'http://www.facebook.com/share.php?u=' + escape(pageUrl));
+                'https://www.facebook.com/dialog/feed?app_id=303443389788866&' +
+                'link=' + escape(pageUrl) + '&' +
+                'name=' + escape(pageName));
 
         cObj.$shareOpts.find('li[data-name=twitter] a').attr('href',
                 'http://twitter.com/?status=' + escape('Check out ' + pageName + ' on ' +

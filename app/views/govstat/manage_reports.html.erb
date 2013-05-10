@@ -50,6 +50,14 @@
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
               </div>
+              <%- if CurrentDomain.user_can?(current_user, 'edit_pages' ) -%>
+              <div class="secondaryAction">
+                <a href="<%= report.path %>?_edit_mode=true" class="button">
+                  <span class="actionDetails ss-write">Edit</span></a>
+                <a href="#delete" class="button delete" data-id="<%= report.path %>">
+                  <span class="actionDetails ss-trash">Delete</span></a>
+              </div>
+              <%- end -%>
               <div class="secondaryMetadata">
                 <%- o = report.owner_user
                     if !o.nil? -%>

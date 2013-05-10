@@ -622,7 +622,7 @@
             }
 
             if (cObj._properties.requiresContext || cObj._properties.ifValue ||
-                    !$.isBlank(cObj._properties.htmlClass) ||
+                    !$.isBlank(cObj._properties.htmlClass) || !_.isEmpty(cObj._properties.htmlAttributes) ||
                     !_.isEmpty(cObj._properties.styles) || !_.isEmpty(cObj._properties.styleDimensions))
             {
                 var finishedDCGet = function()
@@ -642,6 +642,12 @@
 
                     cObj.$dom.css(blist.configs.styles.convertProperties(
                                 cObj._stringSubstitute(cObj._properties)));
+
+                    _.each(cObj._stringSubstitute(cObj._properties.htmlAttributes), function(attr)
+                    {
+                        if (!_.include(['class', 'id', 'style'], attr.key))
+                        { cObj.$dom.attr(attr.key, attr.value); }
+                    });
                 };
                 if (!cObj._updateDataSource(cObj._properties, finishedDCGet))
                 { finishedDCGet(); }

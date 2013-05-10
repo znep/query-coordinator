@@ -117,9 +117,14 @@ module Canvas2
 
       styles = (server_properties['styles'] || {}).merge(string_substitute(@properties['styles'] || {})).
         map { |k, v| k + ':' + v.to_s + ';' }.join('')
-      tag = ''
 
-      tag << %Q(<div class="#{classes.join(' ')}" id="#{self.id}" style="#{styles}">)
+      custom_attrs = string_substitute(@properties['htmlAttributes'] || []).map do |attr|
+        next if ['class', 'id', 'style'].include?(attr['key'])
+        attr['key'] + '="' + CGI::escapeHTML(attr['value']) + '"'
+      end.join(' ')
+
+      tag = ''
+      tag << %Q(<div #{custom_attrs} class="#{classes.join(' ')}" id="#{self.id}" style="#{styles}">)
       tag << '<div class="content-wrapper ' << html_class << '">' if @needs_own_context
       tag << contents
       tag << '</div>' if @needs_own_context

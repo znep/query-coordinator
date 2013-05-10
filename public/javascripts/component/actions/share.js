@@ -70,6 +70,8 @@ $.component.Component.extend('Share', 'actions', {
 
     configurationSchema: function()
     {
+        if (blist.configuration.govStat)
+        { return null; }
         return { schema: [{ name: 'shareComponent_type', fields: [
          { type: 'radioGroup', defaultValue: 'currentPage', name: 'shareType', text: 'Share',
                 options: [ { name: 'currentPage', type: 'static', value: 'This page', isInput: true },

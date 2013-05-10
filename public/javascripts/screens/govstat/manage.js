@@ -1,7 +1,7 @@
 $(function()
 {
     // ----- DATA ------
-    $('#manageDataPage .singleItem .secondaryAction .delete').on('click', function(e)
+    $('#manageDataPage .singleItem .delete').on('click', function(e)
     {
         e.preventDefault();
         var $a = $(this);

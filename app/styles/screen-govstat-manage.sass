@@ -171,45 +171,122 @@
       vertical-align: sub
 
 #manageDataPage
-  .filterSection
-    @include clearfix
-    margin-bottom: 2em
-    .component-Title
-      clear: both
+  .facetSection
+    overflow: hidden
+    padding-bottom: 3em
+
+    .left
       float: left
-      width: 12em
       margin-right: 2em
-      h2
-        font-size: 2.3em
-        font-weight: normal
-    .component-Repeater
+      overflow: hidden
+      position: relative
+      width: 32em
+      z-index: 1
+
       .filterItem
         float: left
-        margin:
-          bottom: 0.6em
-          left: 0.5em
-        a
-          @include list-button
-        .current-true a
-          background: #222 none
-          border-color: #222
-          @include prefixer(box-shadow, none)
-          color: #fff
-          text-shadow: none
-        .item-child
-          margin-left: -0.5em
+
+        .button
+          background-color: #999
+          display: block
+          height: 6em
+          padding: 1em
+          @include transition(0.2s, background-color)
+          width: 6em
+
+          .icon
+            font-size: 3em
+            padding: 0.5em 0 0.4em
+            text-align: center
+
+          .text
+            font-size: 1.1em
+            text-align: center
+
+          &:hover
+            @include prefixer(box-shadow, none)
+
+        .component-Button
+          &:hover, &.current-true
+            &.value__default .button
+              background-color: #666
+            &.valuedatasets .button
+              background-color: $displaytype_table_color
+            &.valuecharts .button
+              background-color: $displaytype_chart_color
+            &.valuemaps .button
+              background-color: $displaytype_map_color
+            &.valuefilters .button
+              background-color: $displaytype_filter_color
+            &.valueblob .button
+              background-color: $displaytype_blob_color
+
     .searchBlock
-      float: left
-      margin-left: 0.5em
-      input[type="text"]
-        height: 1.6em
-        width: 20em
+      padding-left: 29em
+
+      form
+        border-bottom: 3px solid #999
+        padding-top: 2em
+        position: relative
+
+      .searchIcon
+        font-size: 2em
+        left: 0.5em
+        position: absolute
+        top: 1.5em
+
+      .inputWrapper
+        margin-left: 5em
+        margin-right: 8em
+
+        input
+          background: transparent
+          border: none
+          font-size: 2em
+          outline: none
+          padding: 0.4em 0
+          width: 100%
+
       .clearSearch
-        margin:
-          left: -2em
-          right: 1.5em
+        color: #666
+        font-size: 1.3em
+        position: absolute
+        top: 2.5em
+        right: 5em
+
       input.button
-        padding: 0.3em
+        background-color: #999
+        position: absolute
+        right: 0.3em
+        top: 2.1em
+        @include transition(0.2s, background-color)
+
+        &:hover
+          background-color: #666
+          @include prefixer(box-shadow, none)
+
+    .categoryList
+      overflow: hidden
+      padding-top: 4em
+
+      .filterItem
+        float: left
+
+      .current-true
+        .button
+          background-color: $govstat_color_good
+
+          &:hover
+            background-color: lighten($govstat_color_good, 10%)
+
+      .button
+        background-color: #bbb
+        @include transition(0.2s, background-color)
+
+        &:hover
+          background-color: #999
+          @include prefixer(box-shadow, none)
+
   .noDataSection
     text-align: center
     .component-Title
@@ -233,45 +310,6 @@
       input.button
         text-align: center
         width: 5em
-  .categoryItem
-    .singleItem
-      margin:
-        bottom: 0
-        right: 0
-      .tileIcon
-        .type-table
-          color: #0b5e9b
-          &.default-true
-            color: #e76e34
-        .type-map
-          color: #009345
-        .type-chart
-          color: #fcba63
-        .type-api
-          color: #e44044
-        .type-calendar
-          color: #6dc8bf
-        .type-blob
-          color: #57bc7b
-        .type-form
-          color: #b72467
-  .myDatasets
-    .categoryTitle h2
-      color: $govstat_color_data
-    .addBox
-      font-size: 1em
-      .addNewItem
-        height: 18.4em
-        width: auto
-    .datasetItem
-      background-color: $govstat_color_data
-      &.publication-unpublished
-        @include opacity(0.7)
-  .categoryItem.allDatasets
-    .categoryTitle h2
-      color: #002635
-    .singleItem
-      background-color: #002635
 
 #manageReportsPage
   .categoryItem.ownerReports

@@ -354,7 +354,9 @@ protected
     cats.unshift({ value: '', text: 'All', current: params[:category].blank? })
     opts = { nofederate: true, publication_stage: 'published', limit: 20 }
 
-    view_types = view_types_facet[:options].each { |o| o[:current] = (params[:view_type] == o[:value]) }
+    view_types = view_types_facet[:options]
+    view_types.reject!{ |type| %w{ calendars href forms apis }.include?(type[:value]) }
+    view_types.each { |o| o[:current] = (params[:view_type] == o[:value]) }
     view_types.unshift({ value: '', text: 'All', current: params[:view_type].blank? })
 
     if params[:view_type].present?
@@ -401,61 +403,74 @@ protected
         },
         {
           type: 'Container',
-          htmlClass: 'filterSection',
-          children: [
-          { type: 'Title', text: 'Categories' },
-          {
-            type: 'Repeater',
-            context: { type: 'list', list: cats },
-            childProperties: { customClass: 'filterItem' },
-            children: [{
-              type: 'Button', href: '?' + search_params.reject { |k, v| k == :category }.
-                map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&category={value ||}',
-              htmlClass: 'value{value ||__default} current-{current} item-{item ||parent}', text: '{text}'
-            }]
-          },
-          { type: 'Title', text: 'View Types' },
-          {
-            type: 'Repeater',
-            context: { type: 'list', list: view_types },
-            childProperties: { customClass: 'filterItem' },
-            children: [{
-              type: 'Button', href: '?' + search_params.reject { |k, v| k == :view_type }.
-                map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&view_type={value ||}',
-              htmlClass: 'value{value ||__default} current-{current}', text: '{text}'
-            }]
-          },
-          { type: 'Title', text: 'Search' },
-          {
-            type: 'Text', customClass: 'searchBlock',
-            html: '<form action="/manage/data" " method="get">' +
-              search_params.reject { |k, v| k == :q }.map { |k, v|
-                '<input type="hidden" name="' + k.to_s + '" value="' + v.to_s + '" />' }.join('') +
-              '<input type="text" name="q" value="' + (search_params[:q] || '') + '" />' +
-              (search_params[:q].present? ? '<a href="?' + search_params.reject { |k, v| k == :q }.
-                map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '" class="clearSearch ss-delete" ' +
-                'title="Clear Search"></a>' : '') +
-              '<input type="submit" value="Search" class="button" />' +
-              '</form>'
-          }
-          ]
-        },
-        {
+          htmlClass: 'facetSection',
+          children: [{
+            type: 'Container',
+            customClass: 'left',
+            children: [
+              {
+                type: 'Repeater',
+                context: { type: 'list', list: view_types },
+                childProperties: { customClass: 'filterItem' },
+                children: [{
+                  type: 'Button', href: '?' + search_params.reject { |k, v| k == :view_type }.
+                    map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&view_type={value ||}',
+                  htmlClass: 'value{value ||__default} current-{current}',
+                  text: '<div class="icon ss-{value /datasets/form/ /charts/barchart/ /maps/compass/ /filters/list/ /blob/attach/ ||index}"></div>' +
+                    '<div class="text">{text /Filtered.Views/Filters/ /Files.and.Documents/Files/}</div>'
+                }]
+              }
+            ]
+          }, {
+            type: 'Container',
+            customClass: 'right',
+            children: [
+              {
+                type: 'Text', customClass: 'searchBlock',
+                html: '<form action="/manage/data" " method="get">' +
+                  search_params.reject { |k, v| k == :q }.map { |k, v|
+                    '<input type="hidden" name="' + k.to_s + '" value="' + v.to_s + '" />' }.join('') +
+                  '<span class="searchIcon ss-search"></span><div class="inputWrapper">' +
+                  '<input type="text" name="q" title="Search for a Dataset" class="textPrompt" ' +
+                  'value="' + (search_params[:q] || '') + '" />' +
+                  (search_params[:q].present? ? '<a href="?' + search_params.reject { |k, v| k == :q }.
+                    map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '" class="clearSearch ss-delete" ' +
+                    'title="Clear Search"></a>' : '') +
+                  "</div>" +
+                  '<input type="submit" value="Go" class="button" />' +
+                  '</form>'
+              },
+              {
+                type: 'Repeater',
+                context: { type: 'list', list: cats },
+                customClass: 'categoryList',
+                childProperties: { customClass: 'filterItem' },
+                children: [{
+                  type: 'Button', href: '?' + search_params.reject { |k, v| k == :category }.
+                    map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&category={value ||}',
+                  htmlClass: 'value{value ||__default} current-{current} item-{item ||parent}', text: '{text}'
+                }]
+              }
+            ]
+          }]
+        }, {
           type: 'Container',
-          htmlClass: 'gridFlowLayout',
+          htmlClass: 'gridFlowLayoutNew',
           children: [
           {
             type: 'Container',
-            htmlClass: 'myDatasets categoryItem',
+            customClass: 'categoryItem',
+            htmlClass: 'myDatasets',
             contextId: 'myDatasets',
             children: [
             { type: 'Title', text: 'My Data', htmlClass: 'categoryTitle' },
             {
               type: 'Repeater',
               ifValue: (non_default ? '' : 'count'),
-              container: { type: 'GridContainer', cellWidth: 180, cellHeight: 200,
-                cellSpacing: 10, cellVSpacing: 10,
-                # This hack to insert a fixed initial item is pretty awesome
+              htmlClass: 'viewList',
+              childProperties: { customClass: 'singleItemWrapper' },
+              container: { type: 'Container',
+                # This hack to insert a fixed initial item is pretty "awesome"
                 children: (non_default ? [] : [
                 { type: 'Text', customClass: 'addBox', htmlClass: 'singleItem addNewItem',
                   html: '<a class="primaryAction" href="' + new_dataset_path + '">' +
@@ -465,20 +480,20 @@ protected
                 type: 'Title', text: 'No data available'
               }],
               children: [{
-                type: 'Container', htmlClass: 'datasetItem singleItem publication-{dataset.publicationStage}',
-                children: [{
-                  type: 'Container', htmlClass: 'singleInner',
-                  children: [
-                    dataset_icon,
-                    { type: 'Title', customClass: 'datasetTitle title', text: '{dataset.name}' },
-                    { type: 'Text', customClass: 'primaryAction',
-                      html: '<a href="/d/{dataset.id}"><div class="actionDetails ss-right"></div></a>' },
-                    { type: 'Text', customClass: 'secondaryAction',
-                      html: '<a href="#delete" class="delete button" data-dsId="{dataset.id}">' +
-                        '<span class="actionDetails ss-trash">Delete</span></a>' }
-                  ]
-                } ]
-              } ]
+                type: 'Button',
+                notButton: true, # no, seriously, this is hilarious
+                htmlClass: 'viewItem singleItem type-{dataset.displayType}',
+                href: '/d/{dataset.id}',
+                text: '<div class="singleInner">' +
+                    '<h3 class="itemTitle viewName">{dataset.name}</h3>' +
+                    '<div class="viewIcon ss-{dataset.displayType /table/list/ /map/compass/ /chart/barchart/ /blob/attach/}"></div>' +
+                    '<p class="viewMeta">Updated {dataset.rowsUpdatedAt @[%b %d %Y] ||some time ago}</p>' +
+                  '</div>' +
+                  '<div class="singleCaption">' +
+                    '<div class="captionAction delete ss-trash"></div>' +
+                    '<div class="captionText">Open</div><div class="captionIcon ss-icon">next</div>' +
+                  '</div>'
+              }]
             }, (non_default ? nil : {
               type: 'Container',
               ifValue: { negate: true, key: 'count' },
@@ -494,26 +509,27 @@ protected
             }) ]
           }, {
             type: 'Container',
-            htmlClass: 'allDatasets categoryItem',
+            customClass: 'categoryItem',
+            htmlClass: 'allDatasets',
             contextId: 'allDatasets',
             ifValue: 'count',
             children: [
             { type: 'Title', text: 'All Data', htmlClass: 'categoryTitle' },
             {
               type: 'Repeater',
-              container: { type: 'GridContainer', cellWidth: 180, cellHeight: 200,
-                cellSpacing: 10, rowSpacing: 10 },
+              htmlClass: 'viewList',
+              childProperties: { customClass: 'singleItemWrapper' },
               children: [{
-                type: 'Container', htmlClass: 'datasetItem singleItem',
-                children: [{
-                  type: 'Container', htmlClass: 'singleInner',
-                  children: [
-                    dataset_icon,
-                    { type: 'Title', customClass: 'datasetTitle title', text: '{dataset.name}' },
-                    { type: 'Text', customClass: 'primaryAction',
-                      html: '<a href="/d/{dataset.id}"><div class="actionDetails ss-right"></div></a>' }
-                  ]
-                } ]
+                type: 'Button',
+                notButton: true, # no, seriously, this is hilarious
+                htmlClass: 'viewItem singleItem type-{dataset.displayType}',
+                href: '/d/{dataset.id}',
+                text: '<div class="singleInner">' +
+                    '<h3 class="itemTitle viewName">{dataset.name}</h3>' +
+                    '<div class="viewIcon ss-{dataset.displayType /table/list/ /map/compass/ /chart/barchart/ /blob/attach/}"></div>' +
+                    '<p class="viewMeta">Updated {dataset.rowsUpdatedAt @[%b %d %Y] ||some time ago}</p>' +
+                  '</div>' +
+                  '<div class="singleCaption"><div class="captionText">Open</div><div class="captionIcon ss-icon">next</div></div>'
               } ]
             } ]
           } ]

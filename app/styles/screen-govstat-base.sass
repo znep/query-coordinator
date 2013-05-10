@@ -228,7 +228,7 @@ input.button, a.button
     margin-right: 1em
     margin-bottom: 1em
 
-  .goalList
+  .goalList, .viewList
     overflow: hidden
 
   .singleItem
@@ -277,6 +277,17 @@ input.button, a.button
       padding: 1em 0 0.4em
       position: relative
       z-index: 1
+
+      .captionAction
+        color: #fff
+        float: left
+        font-size: 1.3em
+        margin: -0.3em 0.1em 0 0
+        padding: 0.3em 0.4em
+
+        &:hover
+          background-color: rgba(0, 0, 0, 0.3)
+          text-shadow: 0 0 0.2em rgba(255, 255, 255, 0.6)
 
       .captionText
         color: #fff
@@ -362,6 +373,34 @@ input.button, a.button
           padding-left: 1.8em
           position: absolute
           text-transform: lowercase
+
+  .viewItem
+    background-color: #bbb
+
+    &.type-table
+      background-color: $displaytype_table_color
+    &.type-chart
+      background-color: $displaytype_chart_color
+    &.type-map
+      background-color: $displaytype_map_color
+    &.type-blob
+      background-color: $displaytype_blob_color
+
+    .itemTitle.viewName
+      height: 6.2em
+      margin-bottom: 0.7em
+
+    .viewIcon
+      color: #aaa
+      float: left
+      font-size: 2.2em
+
+    .viewMeta
+      color: #888
+      font-size: 1.2em
+      letter-spacing: -1px
+      padding-left: 2.4em
+      padding-top: 0.5em
 
 .listLayout
   .filterSection

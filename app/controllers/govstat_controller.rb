@@ -135,7 +135,7 @@ protected
     if CurrentDomain.member?(current_user)
       return true
     else
-      render_forbidden
+      render :action => 'error_403'
       return false
     end
   end

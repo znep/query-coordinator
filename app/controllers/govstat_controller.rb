@@ -490,7 +490,7 @@ protected
                     '<p class="viewMeta">Updated {dataset.rowsUpdatedAt @[%b %d %Y] ||some time ago}</p>' +
                   '</div>' +
                   '<div class="singleCaption">' +
-                    '<div class="captionAction delete ss-trash"></div>' +
+                    '<div class="captionAction delete ss-trash" data-dsid="{dataset.id}"></div>' +
                     '<div class="captionText">Open</div><div class="captionIcon ss-icon">next</div>' +
                   '</div>'
               }]

@@ -13,7 +13,8 @@ $(function()
                 ds.remove(function()
                 {
                     $.globalIndicator.statusFinished();
-                    $.component($a.closest('.singleItem').parent().attr('id')).remove();
+                    //$.component($a.closest('.singleItem').parent().attr('id')).remove();
+                    $a.closest('.singleItemWrapper').remove();
                 },
                 $.globalIndicator.statusError);
             },

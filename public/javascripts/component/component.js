@@ -952,7 +952,7 @@
                     .concat(cObj._nullDataContexts)
                     );
 
-            var hasNewInheritedId = !_.isEqual(cIds.sort(), existIds.sort());
+            var hasNewInheritedId = (!$.isBlank(cxt) || !_.isEmpty(cIds)) && !_.isEqual(cIds.sort(), existIds.sort());
 
             // Process if we have a new inherited context id, or
             // we have ONLY a non-blank local context (we will look

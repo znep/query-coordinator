@@ -796,6 +796,7 @@ chartObj.resizeHandle();
                             'stroke-width': '3' })
                     .attr('d', vizObj._errorBarPath(oldYScale));
             errorMarkers
+                .attr('transform', vizObj._errorBarTransform())
                 .transition()
                     .duration(1000)
                     .attr('d', vizObj._errorBarPath(newYScale));
@@ -1038,6 +1039,30 @@ chartObj.resizeHandle();
         };
     },
 
+    // Returns a translation along X for an error bar.
+    _errorBarTransform: function()
+    {
+        var cc = this._chartConfig;
+
+        var xPositionStaticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset + ((cc.rowWidth - cc.rowSpacing) / 2);
+
+        return function(d)
+        {
+            if (cc.orientation == 'down')
+            {
+                return 't0,'+xPositionStaticParts;
+            }
+            else (cc.orientation == 'right')
+            {
+                return 't'+xPositionStaticParts+',0';
+            }
+        };
+    },
+
+    // Returns a path representing an error bar. Y position is built-in to the
+    // path, so transitions between scales should work automatically. X position
+    // is not built in, as we don't want to animate that (D3 can't choose what
+    // attributes of a path to animate).
     _errorBarPath: function(yScale)
     {
         var vizObj = this,
@@ -1048,14 +1073,12 @@ chartObj.resizeHandle();
             yAxisPos = vizObj._yAxisPos();
 
 
-        var xPositionStaticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset + ((cc.rowWidth - cc.rowSpacing) / 2);
-
         var capWidth = 8;
 
         if (cc.orientation == 'right')
         { return function(d)
         {
-            var x = Math.floor(xPositionStaticParts + (d.index * cc.rowWidth)) + 0.5;
+            var x = Math.floor(d.index * cc.rowWidth) + 0.5;
             var y = yAxisPos - yScale(Math.max(0, d[highCol.lookup]));
             var height = yScale(d[highCol.lookup]) - yScale(d[lowCol.lookup]);
 
@@ -1067,7 +1090,7 @@ chartObj.resizeHandle();
         else
         { return function(d)
         {
-            var x = Math.floor(xPositionStaticParts + (d.index * cc.rowWidth)) + 0.5;
+            var x = Math.floor(d.index * cc.rowWidth) + 0.5;
             var y = yAxisPos + yScale(Math.max(0, d[lowCol.lookup])) + 1;
             var height = yScale(d[highCol.lookup]) - yScale(d[lowCol.lookup]);
 

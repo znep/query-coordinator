@@ -1047,7 +1047,9 @@ chartObj.resizeHandle();
             highCol = vizObj._primaryView.columnForIdentifier(plot.errorBarHigh),
             yAxisPos = vizObj._yAxisPos();
 
-        var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2);
+
+        var xPositionStaticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset + ((cc.rowWidth - cc.rowSpacing) / 2);
+
         var capWidth = 8;
 
         if (cc.orientation == 'right')

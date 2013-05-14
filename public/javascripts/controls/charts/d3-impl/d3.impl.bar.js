@@ -1117,21 +1117,36 @@ chartObj.resizeHandle();
             col = colDef.column,
             cc = vizObj._chartConfig;
 
-        rObj.tip = $(rObj.node).socrataTip({
+        rObj.tip = $(rObj.node).socrataTip(
+        {
             content: vizObj.renderFlyout(row, col.tableColumnId, view),
             positions: (row[col.lookup] > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
             trigger: 'now'
         });
+
         if (cc.orientation == 'down')
-        { rObj.tip.adjustPosition({
-            left: yScale(row[col.lookup])
-        }); }
+        {
+            rObj.tip.adjustPosition(
+            {
+                left: yScale(row[col.lookup])
+            });
+        }
         else if (cc.orientation == 'right')
-        { rObj.tip.adjustPosition({
-            top: (row[col.lookup] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.lookup])),
-            left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
-        }); }
-if ((blist.debug || {}).flyout) { console.log(yScale(row[col.lookup])); window.footip = rObj.tip; window.fooyscale = yScale; }
+        {
+            rObj.tip.adjustPosition(
+            {
+                top: (row[col.lookup] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.lookup])),
+                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
+            });
+        }
+
+        if ((blist.debug || {}).flyout)
+        {
+            console.log(yScale(row[col.lookup]));
+            window.footip = rObj.tip;
+            window.fooyscale = yScale;
+        }
+
         view.highlightRows(row, null, col);
     },
 
@@ -1141,6 +1156,11 @@ if ((blist.debug || {}).flyout) { console.log(yScale(row[col.lookup])); window.f
             view = vizObj._primaryView;
 
         view.unhighlightRows(row);
+        if (rObj.tip)
+        {
+            rObj.tip.destroy();
+            delete rObj.tip;
+        }
     }
 
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

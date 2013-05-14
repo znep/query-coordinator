@@ -642,18 +642,18 @@ chartObj.resizeHandle();
 
             // render our actual bars
             var seriesClass = 'dataBar_series' + col.lookup;
+
+            // UPDATE
             var bars = cc.chartD3.selectAll('.' + seriesClass)
                 .data(presentData, function(row) { return row.id; });
+
+            // ENTER
             bars
                 .enter().append('rect')
                     .classed('dataBar', true)
                     .classed(seriesClass, true)
                     .attr('stroke', '#fff')
                     .attr(cc.dataDim.width, cc.barWidth)
-                    .attr('fill', function(d) { return d.color || colDef.color; })
-
-                    .attr(cc.dataDim.xAxis, vizObj._xBarPosition(seriesIndex))
-                    .attr(cc.dataDim.yAxis, vizObj._yBarPosition(col.lookup, oldYScale))
                     .attr(cc.dataDim.height, vizObj._yBarHeight(col.lookup, oldYScale))
 
                     .each(function() { this.__dataColumn = col; })
@@ -690,8 +690,17 @@ chartObj.resizeHandle();
                         }
                     });
 
+            // ENTER + UPDATE
             bars
                     .attr('fill', vizObj._d3_colorizeRow(colDef))
+
+                    // D3 won't re-execute these dynamic property values when
+                    // our internal state changes, so we must re-set them here
+                    // (as opposed to on enter only).
+                    .attr(cc.dataDim.xAxis, vizObj._xBarPosition(seriesIndex))
+                    .attr(cc.dataDim.yAxis, vizObj._yBarPosition(col.lookup, oldYScale))
+                    .attr('fill', function(d) { return d.color || colDef.color; })
+
                     .each(function(d)
                     {
                         // kill tip if not highlighted. need to check here because
@@ -707,6 +716,8 @@ chartObj.resizeHandle();
                     .duration(1000)
                     .attr(cc.dataDim.yAxis, vizObj._yBarPosition(col.lookup, newYScale))
                     .attr(cc.dataDim.height, vizObj._yBarHeight(col.lookup, newYScale));
+
+            // EXIT
             bars
                 .exit()
                     .each(function(d)
@@ -734,10 +745,10 @@ chartObj.resizeHandle();
                 .enter().append('div')
                     .classed('nullDataBar', true)
                     .classed(nullSeriesClass, true)
-                    .style(cc.dataDim.position, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)))
                     .style(cc.orientation == 'right' ? 'top' : 'left', position)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth));
             nullBars
+                    .style(cc.dataDim.position, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)))
                     .style(cc.dataDim.height, height);
             nullBars
                 .exit()
@@ -755,11 +766,11 @@ chartObj.resizeHandle();
                 .attr({ x: 0,
                         y: 0,
                         'text-anchor': cc.orientation == 'right' ? 'start' : 'end',
-                        'font-size': 13 })
+                        'font-size': 13 });
+        rowLabels
                 // TODO: make a transform-builder rather than doing this concat
                 // 10 is to bump the text off from the actual axis
-                .attr('transform', vizObj._labelTransform());
-        rowLabels
+                .attr('transform', vizObj._labelTransform())
                 .attr('font-weight', function(d)
                         { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
                 .text(function(d)

@@ -11,8 +11,6 @@
 // * if ie8 support is ever dropped, i had a working prototype with absolutely no svg at all;
 //   just use css rotation for the text labels. you can wrangle divs into being value markers too.
 
-// TODO: Cleanup all the ternary parameterizations by stuffing them into dataDim.
-
 (function($)
 {
 
@@ -61,7 +59,13 @@ $.Control.registerMixin('d3_impl_bar', {
                     'xAxis': 'y',
                     'yAxis': 'x',
                     'height': 'width',
-                    'dir': 1
+                    'dir': 1,
+                    pluckX: function (x, y) { return y; },
+                    pluckY: function (x, y) { return x; },
+                    asScreenCoordinate: function(chartX, chartY)
+                    {
+                        return { x: chartY, y: chartX };
+                    }
                 },
                 'right': {
                     'width': 'width',
@@ -70,7 +74,13 @@ $.Control.registerMixin('d3_impl_bar', {
                     'xAxis': 'x',
                     'yAxis': 'y',
                     'height': 'height',
-                    'dir': -1
+                    'dir': -1,
+                    pluckX: function (x, y) { return x; },
+                    pluckY: function (x, y) { return y; },
+                    asScreenCoordinate: function(chartX, chartY)
+                    {
+                        return { x: chartX, y: chartY };
+                    }
                 }
             }[orientation];
         })(cc.orientation);
@@ -154,10 +164,9 @@ $.Control.registerMixin('d3_impl_bar', {
             containment: 'parent', // TODO: bounded containment on viewport change
             drag: function(event, ui)
             {
-                if (cc.orientation == 'down')
-                { cc.valueLabelBuffer = ui.position.left; }
-                else
-                { cc.valueLabelBuffer = cc.chartHeight - ui.position.top; }
+                cc.valueLabelBuffer = cc.dataDim.pluckY(
+                    ui.position.left,
+                    cc.chartHeight - ui.position.top);
                 throttledResize();
                 // TODO: save off the valueLabelBuffer as a minor change on displayFormat?
             },
@@ -418,36 +427,35 @@ chartObj.resizeHandle();
         cc.sidePadding = sidePaddingBounds[0];
 
         // for col/bar parameterization: swapping width/height so that the correct value goes in
-        var setRaphaelSize = function(width, height)
+        var setRaphaelSize = function(height, width)
         {
-            if (cc.orientation == 'down')
-            { cc.chartRaphael.setSize(width, height); }
-            else if (cc.orientation == 'right')
-            { cc.chartRaphael.setSize(height, width); }
+            var size = cc.dataDim.asScreenCoordinate(width, height);
+            cc.chartRaphael.setSize(size.x, size.y);
         };
 
         var minTotalWidth = calculateTotalWidth();
+        var areas = cc.dataDim.asScreenCoordinate('chartWidth', 'chartHeight');
         if (minTotalWidth > chartArea)
         {
             // we're bigger than we need to be. set the render area size
             // to be what we calculated.
             setRaphaelSize(domArea, Math.min(minTotalWidth, maxRenderWidth));
             cc.$chartRenderArea[cc.dataDim.width](minTotalWidth);
-            cc[cc.orientation == 'right' ? 'chartWidth' : 'chartHeight'] = minTotalWidth;
+            cc[areas.x] = minTotalWidth;
 
             // scrollbar should have appeared. reresize.
-            var renderHeight = cc.$chartContainer[cc.orientation == 'right' ? 'renderHeight'
-                                                                            : 'renderWidth']();
+            var renderHeight = cc.$chartContainer[cc.dataDim.pluckY('renderWidth', 'renderHeight')]();
             setRaphaelSize(renderHeight, Math.min(minTotalWidth, maxRenderWidth));
-            cc[cc.orientation == 'right' ? 'chartHeight' : 'chartWidth'] = renderHeight;
+            cc[areas.y] = renderHeight;
         }
         else
         {
             // set our sizing to equal vis area
             setRaphaelSize(domArea, Math.min(chartArea, maxRenderWidth));
             cc.$chartRenderArea[cc.dataDim.width](chartArea);
-            cc[cc.orientation == 'right' ? 'chartWidth' : 'chartHeight'] = chartArea;
-            cc[cc.orientation == 'right' ? 'chartHeight' : 'chartWidth'] = domArea;
+
+            cc[areas.x] = chartArea;
+            cc[areas.y] = domArea;
 
             // okay, we're smaller than we need to be.
             // calculate maximum possible width instead.
@@ -509,7 +517,7 @@ chartObj.resizeHandle();
         { cc.$chartContainer.css('margin-right', cc.chartWidth * -1); }
 
         // move baseline
-        cc.$baselineContainer.css(cc.orientation == 'right' ? 'top' : 'left', vizObj._yAxisPos());
+        cc.$baselineContainer.css(cc.dataDim.pluckY('left', 'top'), vizObj._yAxisPos());
 
         // return whether our row width has changed, so we know
         // if we'll have to move some things around
@@ -559,15 +567,10 @@ chartObj.resizeHandle();
     _yAxisPos: function()
     {
         var vizObj = this;
-        if (vizObj._chartConfig.orientation == 'down')
-        {
-            return vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer;
-        }
-        else if (vizObj._chartConfig.orientation == 'right')
-        {
-            return vizObj._chartConfig.chartHeight
-                - (vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer);
-        }
+        return vizObj._chartConfig.dataDim.pluckY(
+            vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer,
+            vizObj._chartConfig.chartHeight
+                - (vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer));
     },
 
     // calculates a y scale based on the current set of data
@@ -577,8 +580,8 @@ chartObj.resizeHandle();
             cc = vizObj._chartConfig,
             explicitMin = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'min')),
             explicitMax = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max')),
-            rangeMax = cc.orientation == 'right' ? vizObj._yAxisPos()
-                                                 : cc.chartWidth - vizObj._yAxisPos();
+            rangeMax = cc.dataDim.pluckY(cc.chartWidth - vizObj._yAxisPos(),
+                                         vizObj._yAxisPos());
 
         return d3.scale.linear()
             .domain([ !_.isNaN(explicitMin) ? explicitMin : Math.min(0, cc.minValue),
@@ -737,15 +740,15 @@ chartObj.resizeHandle();
             var nullSeriesClass = 'nullDataBar_series' + col.lookup;
             var nullBars = cc.chartHtmlD3.selectAll('.' + nullSeriesClass)
                 .data(nullData, function(row) { return row.id; });
-            var height = cc.orientation == 'right' ? vizObj._d3_px(yAxisPos)
-                                                   : vizObj._d3_px(cc.chartWidth - yAxisPos);
-            var position = cc.orientation == 'right' ? 0
-                                                     : vizObj._d3_px(yAxisPos);
+            var height = cc.dataDim.pluckY(vizObj._d3_px(cc.chartWidth - yAxisPos),
+                                           vizObj._d3_px(yAxisPos));
+            var position = cc.dataDim.pluckX(0,
+                                             vizObj._d3_px(yAxisPos));
             nullBars
                 .enter().append('div')
                     .classed('nullDataBar', true)
                     .classed(nullSeriesClass, true)
-                    .style(cc.orientation == 'right' ? 'top' : 'left', position)
+                    .style(cc.dataDim.pluckY('left', 'top'), position)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth));
             nullBars
                     .style(cc.dataDim.position, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)))
@@ -869,7 +872,7 @@ chartObj.resizeHandle();
             yAxisPos = vizObj._yAxisPos();
 
         // determine our ticks
-        var idealTickCount = cc[cc.orientation == 'right' ? 'chartHeight' : 'chartWidth'] / 80;
+        var idealTickCount = cc[cc.dataDim.pluckY('chartWidth', 'chartHeight')] / 80;
         var ticks = newYScale.ticks(idealTickCount);
 
         var minValue = d3.min(newYScale.domain());
@@ -932,18 +935,18 @@ chartObj.resizeHandle();
             return;
         }
 
-        var valueMarkerPosition = cc.orientation == 'right'
-            ?  function(yScale)
-            { return function(d) { return (yAxisPos - yScale(parseFloat(d.atValue))) + 'px'; }; }
-            : function(yScale)
-            { return function(d) { return yScale(parseFloat(d.atValue)) + 'px'; }; };
+        var valueMarkerPosition = cc.dataDim.pluckY(
+            function(yScale)
+            { return function(d) { return yScale(parseFloat(d.atValue)) + 'px'; }; },
+            function(yScale)
+            { return function(d) { return (yAxisPos - yScale(parseFloat(d.atValue))) + 'px'; } });
 
         var valueMarkers = cc.chromeD3.selectAll('.valueMarkerContainer')
             .data(vizObj._displayFormat.valueMarker);
         valueMarkers
             .enter().append('div')
                 .classed('valueMarkerContainer', true)
-                .style(cc.orientation == 'right' ? 'top' : 'left', valueMarkerPosition(oldYScale))
+                .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(oldYScale))
                 .each(function(d)
                 {
                     var $this = $(this);
@@ -961,7 +964,7 @@ chartObj.resizeHandle();
         valueMarkers
             .transition()
                 .duration(isAnim ? 1000 : 0)
-                .style(cc.orientation == 'right' ? 'top' : 'left', valueMarkerPosition(newYScale));
+                .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(newYScale));
         valueMarkers
             .exit()
             .transition()
@@ -1007,10 +1010,19 @@ chartObj.resizeHandle();
 
     _yBarPosition: function(colId, yScale)
     {
-        if (this._chartConfig.orientation == 'down') { return this._yAxisPos(); }
         var yAxisPos = this._yAxisPos();
         var isFunction = _.isFunction(colId);
-        return function(d) { return yAxisPos - yScale(Math.max(0, d[isFunction ? colId.call(this) : colId])) + 0.5; };
+
+        return this._chartConfig.dataDim.pluckY(
+            yAxisPos,
+            function(d)
+            {
+                return yAxisPos -
+                       yScale(
+                        Math.max(0, d[isFunction ? colId.call(this) : colId]))
+                       + 0.5;
+            });
+
     },
 
     _yBarHeight: function(colId, yScale)
@@ -1044,18 +1056,15 @@ chartObj.resizeHandle();
     {
         var cc = this._chartConfig;
 
-        var xPositionStaticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset + ((cc.rowWidth - cc.rowSpacing) / 2);
+        var xPosition = cc.sidePadding - 0.5 -
+                        cc.drawElementPosition - cc.dataOffset +
+                        ((cc.rowWidth - cc.rowSpacing) / 2);
+
+        var transform = cc.dataDim.asScreenCoordinate(xPosition, 0);
 
         return function(d)
         {
-            if (cc.orientation == 'down')
-            {
-                return 't0,'+xPositionStaticParts;
-            }
-            else (cc.orientation == 'right')
-            {
-                return 't'+xPositionStaticParts+',0';
-            }
+            return 't' + transform.x + ',' + transform.y;
         };
     },
 

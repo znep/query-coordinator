@@ -11,6 +11,13 @@
                 && !$.subKeyDefined(cpObj._view, 'displayFormat.viewDefinitions'))
             { Dataset.map.convertToVersion2(cpObj._view); }
 
+            if ($.subKeyDefined(cpObj._view, 'displayFormat.bkgdLayers'))
+            { cpObj._view.displayFormat.bkgdLayers = _.map(cpObj._view.displayFormat.bkgdLayers,
+                function(layer) {
+                    if (layer.layerKey) { return layer; }
+                    else { layer.layerKey = layer.layerName; delete layer.layerName; return layer; }
+                }); }
+
             var fullReset = function()
             {
                 cpObj.childPanes = [];

@@ -4,6 +4,7 @@ APP_CONFIG = begin
 end
 
 CORESERVICE_URI = URI.parse(APP_CONFIG['coreservice_uri'])
+ODYSSEUS_URI = URI.parse(APP_CONFIG['odysseus_uri'])
 
 INTERCESSIO_URI = URI.parse(APP_CONFIG['intercessio_uri'] || "http://localhost:1313" )
 

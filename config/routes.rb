@@ -325,6 +325,11 @@ Frontend::Application.routes do
       post '/manage/template', :action => 'manage_template_update'
     end
 
+    # New GovStat pages
+    scope :controller => 'odysseus', :action => 'index' do
+      match '/stat/goals'
+    end
+
     # Custom pages, catalogs, facets
     scope :controller => 'custom_content' do
       # Canvas 1

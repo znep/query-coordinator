@@ -135,7 +135,7 @@ protected
     if CurrentDomain.member?(current_user)
       return true
     else
-      render_forbidden
+      render :action => 'error_403'
       return false
     end
   end
@@ -466,16 +466,16 @@ protected
             { type: 'Title', text: 'My Data', htmlClass: 'categoryTitle' },
             {
               type: 'Repeater',
-              ifValue: (non_default ? '' : 'count'),
               htmlClass: 'viewList',
+              ifValue: 'count',
               childProperties: { customClass: 'singleItemWrapper' },
               container: { type: 'Container',
                 # This hack to insert a fixed initial item is pretty "awesome"
-                children: (non_default ? [] : [
-                { type: 'Text', customClass: 'addBox', htmlClass: 'singleItem addNewItem',
-                  html: '<a class="primaryAction" href="' + new_dataset_path + '">' +
-                  '<span class="actionDetails ss-uploadcloud">Upload New Data</span></a>' }
-              ]) },
+                children: [
+                { type: 'Text', customClass: 'addBox singleItemWrapper', htmlClass: 'singleItem addNewItem',
+                  html: '<a href="' + new_dataset_path + '">' +
+                  '<div class="singleInner ss-uploadcloud"><span class="addNewItemCaption">Upload New Data</span></div></a>' }
+              ] },
               noResultsChildren: [{
                 type: 'Title', text: 'No data available'
               }],
@@ -512,7 +512,6 @@ protected
             customClass: 'categoryItem',
             htmlClass: 'allDatasets',
             contextId: 'allDatasets',
-            ifValue: 'count',
             children: [
             { type: 'Title', text: 'All Data', htmlClass: 'categoryTitle' },
             {

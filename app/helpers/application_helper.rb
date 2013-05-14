@@ -93,16 +93,16 @@ module ApplicationHelper
   end
 
 # js
-  def jquery_include
+  def jquery_include(version = '1.7.1')
     if Rails.env.development?
-      return ('<script src="/javascripts/jquery-1.7.1.js" type="text/javascript" ' +
+      return ("<script src=\"/javascripts/jquery-#{version}.js\" type=\"text/javascript\" " +
         'charset="utf-8"></script>').html_safe
     else
       str = <<-EOS
         <script type="text/javascript">
           document.write([
             "\\<script src='",
-            "//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'",
+            "//ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js'",
             " type='text/javascript'>\\<\\/script>"
           ].join(''));
         </script>

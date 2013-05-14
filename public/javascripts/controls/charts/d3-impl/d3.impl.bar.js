@@ -533,9 +533,14 @@ chartObj.resizeHandle();
         var xScale = vizObj._currentXScale();
 
         cc.dataOffset = 0; // need to first set to zero to remove influence.
-        cc.dataOffset = vizObj._xBarPosition(0)({ index: xScale(cc.scrollPos) }) -
-                        (cc.scrollPos - cc.drawElementPosition) +
-                        (cc.sidePadding * cc.scrollPos / d3.max(xScale.domain()));
+
+        var index = xScale(cc.scrollPos);
+        if (index >= 0)
+        {
+            cc.dataOffset = vizObj._xBarPosition(0)({ index: index }) -
+                            (cc.scrollPos - cc.drawElementPosition) +
+                            (cc.sidePadding * cc.scrollPos / d3.max(xScale.domain()));
+        }
     },
 
     // moves the svg/vml element around to account for it's not big enough

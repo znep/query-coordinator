@@ -225,14 +225,41 @@ input.button, a.button
 
   .singleItemWrapper
     float: left
+    font-size: 1em
     margin-right: 1em
     margin-bottom: 1em
+    padding: 0
 
   .goalList, .viewList
     overflow: hidden
 
   .singleItem
     position: relative
+
+    &.addNewItem
+      background-color: $govstat_color_action
+
+      .singleInner
+        background-color: $govstat_color_action
+        color: #fff
+        height: 19.8em
+        text-align: center
+
+        &:hover:before
+          @include prefixer(transform, translateY(-6px))
+
+        &:before
+          display: block
+          font-size: 5em
+          margin: 0
+          padding-bottom: 0.2em
+          padding-top: 1.2em
+          @include prefixer(transform, translateY(0))
+          @include transition(0.5s, transform)
+
+        .addNewItemCaption
+          font-size: 2em
+          letter-spacing: -1px
 
     a
       display: block
@@ -387,8 +414,8 @@ input.button, a.button
       background-color: $displaytype_blob_color
 
     .itemTitle.viewName
-      height: 6.2em
-      margin-bottom: 0.7em
+      height: 6.6em
+      margin-bottom: 0.3em
 
     .viewIcon
       color: #aaa

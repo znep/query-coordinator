@@ -213,6 +213,10 @@ input.button, a.button
 .gridFlowLayoutNew
   .categoryItem
     margin-bottom: 1em
+  .categoryTitleWrapper
+    font-size: 1em
+    margin: 0
+    padding: 0
   .categoryTitle
     border-bottom: 1px solid #ccc
     font-size: 2em
@@ -222,6 +226,31 @@ input.button, a.button
       font-weight: normal
       padding: 0
         bottom: 0.05em
+
+    .addItem
+      background-color: $govstat_color_action
+      @include border-radius(0.2em)
+      color: #fff
+      display: inline-block
+      font-size: 0.44em
+      line-height: 1.2em
+      margin-left: 4em
+      margin-top: 0.2em
+      padding: 0.8em 1em 0.7em
+      vertical-align: top
+
+      &:before
+        display: inline-block
+        font-size: 1.4em
+        @include prefixer(transform, translateY(1px))
+        @include transition(0.5s, transform)
+
+      &:hover
+        background-color: darken($govstat_color_action, 10%)
+
+        &:before
+          @include prefixer(transform, translateY(-3px))
+
 
   .singleItemWrapper
     float: left

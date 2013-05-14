@@ -463,7 +463,7 @@ protected
             htmlClass: 'myDatasets',
             contextId: 'myDatasets',
             children: [
-            { type: 'Title', text: 'My Data', htmlClass: 'categoryTitle' },
+            { type: 'Text', html: '<h2>My Data <a class="addItem ss-uploadcloud" href="' + new_dataset_path + '">Upload New Data</a></h2>', htmlClass: 'categoryTitle', customClass: 'categoryTitleWrapper' },
             {
               type: 'Repeater',
               htmlClass: 'viewList',
@@ -472,9 +472,10 @@ protected
               container: { type: 'Container',
                 # This hack to insert a fixed initial item is pretty "awesome"
                 children: [
-                { type: 'Text', customClass: 'addBox singleItemWrapper', htmlClass: 'singleItem addNewItem',
-                  html: '<a href="' + new_dataset_path + '">' +
-                  '<div class="singleInner ss-uploadcloud"><span class="addNewItemCaption">Upload New Data</span></div></a>' }
+                # commented out because i dunno why slate shuffles this to the end.
+                #{ type: 'Text', customClass: 'addBox singleItemWrapper', htmlClass: 'singleItem addNewItem',
+                #  html: '<a href="' + new_dataset_path + '">' +
+                #  '<div class="singleInner ss-uploadcloud"><span class="addNewItemCaption">Upload New Data</span></div></a>' }
               ] },
               noResultsChildren: [{
                 type: 'Title', text: 'No data available'

@@ -56,18 +56,18 @@ class DatasetsController < ApplicationController
 
     href = nil
     if @row.nil?
-      href = view_path(@view.route_params.merge( locale: nil ))
+      href = Proc.new{ |params| view_path(@view.route_params.merge(params || {})) }
     else
-      href = view_row_path(@view.route_params.merge( row_id: @row['sid'], locale: nil ))
+      href = Proc.new{ |params| view_row_path(@view.route_params.merge(row_id: @row['sid']).merge(params || {})) }
     end
 
     # See if it matches the authoritative URL; if not, redirect
-    if request.path != href
+    if request.path != href.call( locale: nil )
       # Log redirects in development
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
-      return redirect_to(href + '?' + request.query_string)
+      return redirect_to(href.call + '?' + request.query_string)
     end
 
     # If we're displaying a single dataset, set the meta tags as appropriate.

@@ -21,7 +21,7 @@ $.Control.registerMixin('d3_impl_bar', {
     defaults: {
         barWidthBounds: [ 20, 200 ], // width of the bar, of course
         barSpacingBounds: [ 0, 20 ], // within row (between series) spacing
-        rowSpacingBounds: [ 10, 100 ], // between row spacing
+        rowSpacingBounds: [ 30, 100 ], // between row spacing
         sidePaddingBounds: [ 20, 200 ], // sides of window
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
         valueLabelBuffer: 100, // amount of room to leave for each row' label

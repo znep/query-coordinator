@@ -534,7 +534,7 @@ chartObj.resizeHandle();
 
         cc.dataOffset = 0; // need to first set to zero to remove influence.
 
-        var index = xScale(cc.scrollPos);
+        var index = Math.floor(xScale(cc.scrollPos));
         if (index >= 0)
         {
             cc.dataOffset = vizObj._xBarPosition(0)({ index: index }) -
@@ -557,7 +557,7 @@ chartObj.resizeHandle();
             (scrollPosition > (drawElementPosition + drawElementWidth - chartAreaWidth)))
         {
             cc.drawElementPosition = $.clamp(scrollPosition - Math.floor(drawElementWidth / 2),
-                                             [ 0, Math.ceil(cc.chartWidth - drawElementWidth) ]);
+                                             [ 0, Math.ceil(cc.dataDim.pluckX(cc.chartWidth, cc.chartHeight) - drawElementWidth) ]);
 
             if (cc.drawElementPosition != drawElementPosition)
             {

@@ -156,8 +156,8 @@
             }
 
             mapObj.initializeBackgroundLayers();
-            if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.position'))
-            { mapObj._controls.Overview.reposition(mapObj._displayFormat.legendDetails.position); }
+            mapObj._controls.Overview.reposition(
+                $.deepGet(mapObj._displayFormat, 'legendDetails', 'position') || 'none');
             if ($.subKeyDefined(mapObj._displayFormat, 'legendDetails.showConditional'))
             { mapObj._controls.Overview.configure('describeCF',
                 mapObj._displayFormat.legendDetails.showConditional); }

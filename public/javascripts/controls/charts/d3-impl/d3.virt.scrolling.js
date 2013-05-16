@@ -108,6 +108,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         // for positioning
         $dom.css('position', 'relative');
+        $dom.css('overflow', 'hidden');
 
         // default draw element position and left offset are 0
         cc.drawElementPosition = 0;

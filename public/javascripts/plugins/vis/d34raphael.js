@@ -4708,19 +4708,30 @@ if(typeof Raphael !== "undefined") {
                 var styleSheet = document.styleSheets[i];
                 var ii = 0;
                 var cssRule = false;
-                do {
-                    if (styleSheet.cssRules) {
-                        cssRule = styleSheet.cssRules[ii];
-                    } else {
-                        cssRule = styleSheet.rules[ii];
-                    }
-                    if (cssRule) {
-                        if (cssRule.selectorText.toLowerCase() == ruleName) {
-                            return ruleCache[ruleName] = cssRule;
-                        }
-                    }
-                    ii++;
-                } while (cssRule);
+                try
+                {
+                  do {
+                      if (styleSheet.cssRules) {
+                          cssRule = styleSheet.cssRules[ii];
+                      } else {
+                          cssRule = styleSheet.rules[ii];
+                      }
+                      if (cssRule) {
+                          if (cssRule.selectorText.toLowerCase() == ruleName) {
+                              return ruleCache[ruleName] = cssRule;
+                          }
+                      }
+                      ii++;
+                  } while (cssRule);
+                }
+                catch (err)                 {
+                  // We'll get an exception if the stylesheet is external
+                  // due to cross-site scripting protections. We have no choice
+                  // but to ignore this stylesheet.
+                  if (err.message != "Access is denied.\r\n") {
+                    throw err;
+                  }
+                }
             }
         }
 

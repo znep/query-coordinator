@@ -175,6 +175,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth));
             nullBars
                     .style(cc.dataDim.position, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)))
+                    .style(cc.dataDim.pluckY('left', 'top'), position)
                     .style(cc.dataDim.height, height);
             nullBars
                 .exit()

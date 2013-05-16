@@ -1,31 +1,27 @@
+.chartArea *
+  -moz-box-sizing: border-box
+  -webkit-box-sizing: border-box
+  box-sizing: border-box
+
 .chartArea
   height: 100%
   position: relative
-  z-index: 0
 
-  &.hasYLabelVert
-    margin-left: 4em
+  .chartOuterContainer
+    position: absolute
+    top: 0em
+    left: 0em
+    right: 0em
+    bottom: 0em
 
-  &.hasLeftLegend
-    margin-left: 25em
-
-    &.hasYLabelVert
-      margin-left: 29em
-
-      .legendContainer
-        left: -28em
-
-  &.hasRightLegend
-    margin-right: 25em
-
-  &.hasBottomLegend
-    .xLabelHoriz
-      bottom: 4em
+  &.hasTopLegend .legendContainer
+    position: absolute
 
   .yLabelVert
     font-size: 1.4em
     font-weight: bold
-    left: -26.65em
+    left: -23.65em
+    background: url(/stylesheets/images/content/70percentwhite.png)
     margin-top: -4em
     position: absolute
     @include prefixer(transform, rotate(-90deg))
@@ -49,6 +45,10 @@
     position: absolute
     text-align: center
 
+  &.hasBottomLegend .xLabelHoriz
+    top: 2em
+    bottom: auto
+
   .chartContainer
     height: 100%
     width: 100%
@@ -62,8 +62,8 @@
     background-color: rgba(255, 255, 255, 0.7)
     @include border-radius(0.2em)
     overflow: hidden
-    position: absolute
     text-align: center
+    position: relative
 
     .ie8 &
       background: transparent url(/stylesheets/images/content/70percentwhite.png)
@@ -72,20 +72,21 @@
       left: 20%
       width: 60%
     &.bottom
-      bottom: 1.5em
+      position: absolute
+      bottom: 0
     &.top
       top: 1em
 
     &.left, &.right
-      text-align: left
       top: 50%
+      text-align: left
       width: 23em
       .legendLine
         display: block
     &.left
-      left: -24em
+      float: left
     &.right
-      right: -24em
+      float: right
 
     .legendLine
       display: inline-block
@@ -171,6 +172,44 @@
       text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8)
 
 .chartArea.columnChart, .chartArea.barChart.orientationRight
+
+  &.hasLeftLegend .yLabelVert
+    left: -8em
+
+  .chartOuterContainer
+    top: 0em
+    left: 4em
+    right: 0em
+    bottom: 0em
+
+  &.hasTopLegend
+    .chartOuterContainer
+      top: 5em
+      left: 4em
+      right: 0em
+      bottom: 0em
+
+  &.hasBottomLegend
+    .chartOuterContainer
+      top: 5em
+      left: 4em
+      right: 0em
+      bottom: 0em
+
+  &.hasLeftLegend
+    .chartOuterContainer
+      top: 0em
+      left: 25em
+      right: 0em
+      bottom: 0em
+
+  &.hasRightLegend
+    .chartOuterContainer
+      top: 0em
+      left: 4em
+      right: 25em
+      bottom: 0em
+
   .chartContainer
     overflow-x: auto
     overflow-y: hidden
@@ -225,11 +264,37 @@
       bottom: 1px
 
 .chartArea.barChart.orientationDown
-  &.hasTopLegend
-    margin-top: 4em
 
-    .legendContainer
-      top: -4em
+  &.hasLeftLegend .yLabelVert
+    left: -5em
+
+  &.hasTopLegend
+    .chartOuterContainer
+      top: 5em
+      left: 0em
+      right: 0em
+      bottom: 0em
+
+  &.hasBottomLegend
+    .chartOuterContainer
+      top: 5em
+      left: 0em
+      right: 0em
+      bottom: 0em
+
+  &.hasLeftLegend
+    .chartOuterContainer
+      top: 0em
+      left: 25em
+      right: 0em
+      bottom: 0em
+
+  &.hasRightLegend
+    .chartOuterContainer
+      top: 0em
+      left: 0em
+      right: 25em
+      bottom: 0em
 
   .chartContainer
     overflow-x: hidden

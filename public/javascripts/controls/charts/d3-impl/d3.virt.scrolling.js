@@ -89,20 +89,24 @@ $.Control.registerMixin('d3_virt_scrolling', {
         var $dom = vizObj.$dom();
         $dom.empty().append($.tag(
             { tagName: 'div', 'class': 'chartArea barChart orientation' + $.capitalize(cc.orientation), contents: [
-                { tagName: 'div', 'class': 'chartContainer', contents: [
-                    { tagName: 'div', 'class': 'chartRenderArea',
-                      contents: '&nbsp;' } // if no contents, browser doesn't bother to scroll
-                ] },
-                { tagName: 'div', 'class': 'baselineContainer', contents: [
-                    { tagName: 'div', 'class': 'baselineBg' },
-                    { tagName: 'div', 'class': 'baselineLine' }
-                ] },
+                { tagName: 'div', 'class': 'chartOuterContainer', contents: [
+                    { tagName: 'div', 'class': 'chartContainer', contents: [
+                        { tagName: 'div', 'class': 'chartRenderArea',
+                          contents: '&nbsp;' }, // if no contents, browser doesn't bother to scroll
+                        ] },
+                        { tagName: 'div', 'class': 'tickContainer' },
+                        { tagName: 'div', 'class': 'baselineContainer', contents: [
+                            { tagName: 'div', 'class': 'baselineBg' },
+                            { tagName: 'div', 'class': 'baselineLine' }
+                    ] }] },
                 { tagName: 'div', 'class': 'legendContainer' }
             ] }
         , true));
         cc.$chartArea = $dom.find('.chartArea');
+        cc.$chartOuterContainer = $dom.find('chartOuterContainer');
         cc.$chartContainer = $dom.find('.chartContainer');
         cc.$chartRenderArea = $dom.find('.chartRenderArea');
+        cc.$tickContainer = $dom.find('.tickContainer');
         cc.$baselineContainer = $dom.find('.baselineContainer');
         cc.$legendContainer = $dom.find('.legendContainer');
 
@@ -119,7 +123,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         cc.chartRaphael = new Raphael(cc.$chartContainer.get(0), 10, 10);
         cc.chartD3 = d3.raphael(cc.chartRaphael);
         cc.chartHtmlD3 = d3.select(cc.$chartRenderArea.get(0));
-        cc.chromeD3 = d3.select(cc.$chartArea.get(0));
+        cc.chromeD3 = d3.select(cc.$tickContainer.get(0));
 
         // find and set up the draw elem
         cc.$drawElement = cc.$chartContainer.children(':not(.chartRenderArea)');
@@ -254,7 +258,7 @@ chartObj.resizeHandle();
         var vizObj = this,
             cc = vizObj._chartConfig,
             xScale = vizObj._currentXScale(),
-            rowsPerScreen = Math.ceil(cc.$chartArea[cc.dataDim.width]() / (cc.rowWidth + cc.rowSpacing));
+            rowsPerScreen = Math.ceil(cc.$chartContainer[cc.dataDim.width]() / (cc.rowWidth + cc.rowSpacing));
 
         var start = Math.max(Math.floor(xScale(cc.scrollPos)) - vizObj.defaults.rowBuffer, 0);
         var length = rowsPerScreen + (vizObj.defaults.rowBuffer * 2);
@@ -385,7 +389,7 @@ chartObj.resizeHandle();
             cc = vizObj._chartConfig,
             chartD3 = cc.chartD3,
             totalRows = vizObj.getTotalRows(),
-            chartArea = cc.$chartArea[cc.dataDim.width](),
+            chartArea = cc.$chartContainer[cc.dataDim.width](),
             domArea = vizObj.$dom()[cc.dataDim.height](),
             maxRenderWidth = vizObj._maxRenderWidth(),
             valueColumns = vizObj.getValueColumns(),
@@ -550,7 +554,7 @@ chartObj.resizeHandle();
         var vizObj = this,
             cc = vizObj._chartConfig,
             scrollPosition = cc.scrollPos,
-            chartAreaWidth = cc.$chartArea[cc.dataDim.width](),
+            chartAreaWidth = cc.$chartContainer[cc.dataDim.width](),
             drawElementPosition = parseFloat(cc.$drawElement.position()[cc.dataDim.position]),
             drawElementWidth = vizObj._maxRenderWidth();
 
@@ -602,7 +606,7 @@ chartObj.resizeHandle();
         var vizObj = this,
             cc = vizObj._chartConfig;
 
-        var chartArea = cc.$chartArea[cc.dataDim.width](),
+        var chartArea = cc.$chartContainer[cc.dataDim.width](),
             rowsPerScreen = Math.ceil(chartArea / cc.rowWidth);
 
         return d3.scale.linear()
@@ -684,12 +688,13 @@ chartObj.resizeHandle();
 
         var valueMarkerPosition = cc.dataDim.pluckY(
             function(yScale)
-            { return function(d) { return yScale(parseFloat(d.atValue)) + 'px'; }; },
+            { return function(d) { return (yAxisPos + yScale(parseFloat(d.atValue))) + 'px'; }; },
             function(yScale)
             { return function(d) { return (yAxisPos - yScale(parseFloat(d.atValue))) + 'px'; } });
 
         var valueMarkers = cc.chromeD3.selectAll('.valueMarkerContainer')
             .data(vizObj._displayFormat.valueMarker);
+
         valueMarkers
             .enter().append('div')
                 .classed('valueMarkerContainer', true)

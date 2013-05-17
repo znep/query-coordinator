@@ -130,8 +130,14 @@ $.Control.registerMixin('d3_virt_scrolling', {
         cc.$drawElement.css({ 'position': 'absolute', 'top': '0' });
 
         // maybe move things around and maybe grab rows every half second when they're scrolling
-        var throttledScrollHandler = _.throttle(function()
+        var throttledScrollHandler = _.throttle(_.debounce(function()
         {
+/*
+            var scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
+            if (Math.abs(scrollPos - cc.scrollPos) < cc.rowWidth * vizObj.defaults.rowBuffer / 2)
+            { return; }
+*/
+
             // cache scrollPos so that aggressive scrolling doesn't make our calculations stutter.
             cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
 
@@ -141,12 +147,13 @@ $.Control.registerMixin('d3_virt_scrolling', {
                 vizObj._rerenderPositions();
             }
             vizObj.getDataForAllViews();
-        }, 500);
+        }, 500), 500);
         cc.$chartContainer.scroll(throttledScrollHandler);
+        //cc.$chartContainer.scroll(function() { console.log('scroll:', $(this).scrollLeft()); });
 
         // save off a throttled version of the actual meat of resizeHandle with a proper
         // reference to this/vizObj (is there a better way to do this?)
-        cc.doResizeHandle = _.throttle(function()
+        cc.doResizeHandle = _.throttle(_.debounce(function()
         {
             // maybe recalculate all the sizing
             var needsReposition = vizObj._resizeEverything();
@@ -160,10 +167,10 @@ $.Control.registerMixin('d3_virt_scrolling', {
             if (needsReposition) vizObj._rerenderPositions();
             // maybe fetch some more rows if more are exposed
             vizObj.getDataForAllViews();
-        }, 500);
+        }, 500), 500);
 
         // allow the baseline to be draggable
-        var throttledResize = _.throttle(function() { vizObj.resizeHandle(); }, 500); // TODO: this is more blunt than we need
+        var throttledResize = _.throttle(_.debounce(function() { vizObj.resizeHandle(); }, 500), 500); // TODO: this is more blunt than we need
         cc.$baselineContainer.draggable({
             axis: cc.dataDim.yAxis,
             containment: 'parent', // TODO: bounded containment on viewport change
@@ -258,7 +265,7 @@ chartObj.resizeHandle();
         var vizObj = this,
             cc = vizObj._chartConfig,
             xScale = vizObj._currentXScale(),
-            rowsPerScreen = Math.ceil(cc.$chartContainer[cc.dataDim.width]() / (cc.rowWidth + cc.rowSpacing));
+            rowsPerScreen = Math.ceil(cc.$chartContainer[cc.dataDim.width]() / cc.rowWidth);
 
         var start = Math.max(Math.floor(xScale(cc.scrollPos)) - vizObj.defaults.rowBuffer, 0);
         var length = rowsPerScreen + (vizObj.defaults.rowBuffer * 2);
@@ -415,7 +422,8 @@ chartObj.resizeHandle();
         };
         var calculateTotalWidth = function()
         {
-            return (calculateRowWidth() * totalRows) + (2 * cc.sidePadding);
+            return (calculateRowWidth() * totalRows) + (2 * cc.sidePadding)
+                    - cc.rowSpacing + defaults.dataMaxBuffer;
         };
 
         // if we only have one series, allow all the bars
@@ -539,13 +547,23 @@ chartObj.resizeHandle();
 
         cc.dataOffset = 0; // need to first set to zero to remove influence.
 
-        var index = Math.floor(xScale(cc.scrollPos));
-        if (index >= 0)
+        var index = xScale(cc.scrollPos);
+        // FIXME: This works for counts of at least 100k. I'm calling that Good Enough.
+        if (index >= 0 && cc.drawElementPosition > 0)
         {
             cc.dataOffset = vizObj._xBarPosition(0)({ index: index }) -
                             (cc.scrollPos - cc.drawElementPosition) +
                             (cc.sidePadding * cc.scrollPos / d3.max(xScale.domain()));
         }
+/*
+console.dir({
+    index: index,
+    xBarPos: vizObj._xBarPosition(0)({ index: index }),
+    scrollPos: cc.scrollPos,
+    correctPos: index * 22,
+    dataOffset: cc.dataOffset
+});
+*/
     },
 
     // moves the svg/vml element around to account for it's not big enough
@@ -610,7 +628,7 @@ chartObj.resizeHandle();
             rowsPerScreen = Math.ceil(chartArea / cc.rowWidth);
 
         return d3.scale.linear()
-              .domain([ cc.sidePadding, cc.$chartRenderArea[cc.dataDim.width]() - chartArea ])
+              .domain([ 0, cc.$chartRenderArea[cc.dataDim.width]() - chartArea ])
               .range([ 0, vizObj.getTotalRows() - rowsPerScreen ])
               .clamp(true)
     },

@@ -132,11 +132,6 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // maybe move things around and maybe grab rows every half second when they're scrolling
         var throttledScrollHandler = _.throttle(_.debounce(function()
         {
-/*
-            var scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
-            if (Math.abs(scrollPos - cc.scrollPos) < cc.rowWidth * vizObj.defaults.rowBuffer / 2)
-            { return; }
-*/
 
             // cache scrollPos so that aggressive scrolling doesn't make our calculations stutter.
             cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
@@ -149,7 +144,6 @@ $.Control.registerMixin('d3_virt_scrolling', {
             vizObj.getDataForAllViews();
         }, 500), 500);
         cc.$chartContainer.scroll(throttledScrollHandler);
-        //cc.$chartContainer.scroll(function() { console.log('scroll:', $(this).scrollLeft()); });
 
         // save off a throttled version of the actual meat of resizeHandle with a proper
         // reference to this/vizObj (is there a better way to do this?)
@@ -555,15 +549,6 @@ chartObj.resizeHandle();
                             (cc.scrollPos - cc.drawElementPosition) +
                             (cc.sidePadding * cc.scrollPos / d3.max(xScale.domain()));
         }
-/*
-console.dir({
-    index: index,
-    xBarPos: vizObj._xBarPosition(0)({ index: index }),
-    scrollPos: cc.scrollPos,
-    correctPos: index * 22,
-    dataOffset: cc.dataOffset
-});
-*/
     },
 
     // moves the svg/vml element around to account for it's not big enough

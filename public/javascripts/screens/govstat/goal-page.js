@@ -192,6 +192,13 @@
             return ticks;
         };
 
+        var processYTicks = function(proposed, scale)
+        {
+            // add in our bottommost point always
+            proposed.push(Math.round(scale.invert(0)));
+            return proposed;
+        }
+
         // actual render
         var render = function()
         {
@@ -226,7 +233,7 @@
             }
 
             // y ticks
-            var yTicks = yScale.ticks(height / 50);
+            var yTicks = processYTicks(yScale.ticks(height / 50), yScaleInv);
             container.selectAll('.yTick')
                 .data(yTicks)
                 .enter().append('div')

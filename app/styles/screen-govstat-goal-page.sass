@@ -104,6 +104,16 @@
       letter-spacing: -1px
       padding-bottom: 1.5em
 
+      .dsLink
+        span
+          bottom: 0.15em
+          font-size: 0.7em
+          left: 0
+          position: relative
+          @include transition(0.3s, left)
+        &:hover span
+          left: 0.3em
+
     .prevailingMetric
       @include clearfix
       padding-bottom: 3em
@@ -216,16 +226,15 @@ $chartHeight: 210px
 
         .projectionLineShadow
           fill: none
-          stroke-opacity: 1
           stroke: #fbfbfb
-          stroke-opacity: 0.75
+          stroke-opacity: 0.4
           stroke-width: 7px
           @include transition(2s, stroke-opacity)
 
         .projectionLine
           @include progress-colors(stroke)
           fill: none
-          stroke-opacity: 1
+          stroke-opacity: 0.2
           stroke-width: 3px
           @include transition(2s, stroke-opacity)
 
@@ -251,6 +260,9 @@ $chartHeight: 210px
 
       .dataSeriesRightBuffer
         right: 0
+
+        .border
+          @include opacity(1)
 
       .constrain
         bottom: 0
@@ -348,6 +360,15 @@ $chartHeight: 210px
           position: absolute
           left: 0
           top: 0.4em
+
+        &.currentMarker, &.targetMarker
+          font-size: 1.35em
+          margin-bottom: -0.65em
+          margin-left: 0.6em
+          padding-top: 0.15em
+
+          .tip
+            top: 0.55em
 
       .meter
         bottom: 0

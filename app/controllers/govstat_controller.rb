@@ -207,7 +207,7 @@ protected
             }, {
               type: 'Text',
               htmlClass: 'goalSubtitle',
-              html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit ||units}</strong>'
+              html: 'This goal is measured by tracking <strong>{goal.metrics.0.title ||the Prevailing Metric}</strong> in <strong>{goal.metrics.0.unit ||units}</strong>. <a class="dsLink" href="/d/{goal.metrics.0.current.dataset}">Explore the data <span class="ss-navigateright"></span></a>'
             }, {
               type: 'Container',
               htmlClass: 'prevailingMetric',
@@ -433,7 +433,7 @@ protected
                   '<span class="searchIcon ss-search"></span><div class="inputWrapper">' +
                   '<input type="text" name="q" title="Search for a Dataset" class="textPrompt" ' +
                   'value="' + (search_params[:q] || '') + '" />' +
-                  (search_params[:q].present? ? '<a href="?' + search_params.reject { |k, v| k == :q }.
+                  (true || search_params[:q].present? ? '<a href="?' + search_params.reject { |k, v| k == :q }.
                     map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '" class="clearSearch ss-delete" ' +
                     'title="Clear Search"></a>' : '') +
                   "</div>" +

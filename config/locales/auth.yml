@@ -16,6 +16,7 @@ en:
         sign_up_prompt: Sign up now
         forgot_password: Forgot Password?
         remember_me: Remember me
+        lockout_warning: For security, three failed login attempts in 15 minutes will result in this account being locked out for 30 minutes.
       rpx:
         prompt:
           sign_in: Or… Use one of these accounts to sign in.

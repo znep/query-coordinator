@@ -185,7 +185,6 @@ $.Control.registerMixin('d3_impl_bar', {
         // render our labels per row
         // 3.5 is a somewhat arbitrary number to bring the label's center rather than
         // baseline closer to the row's center
-        $(".rowLabel").remove();
         var rowLabels = cc.chartD3.selectAll('.rowLabel')
             .data(data, function(row) { return row.id; });
         rowLabels

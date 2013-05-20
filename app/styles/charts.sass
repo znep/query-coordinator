@@ -36,7 +36,7 @@
 
   .xLabelHoriz
     background: url(/stylesheets/images/content/70percentwhite.png)
-    bottom: 2em
+    bottom: 1em
     font-size: 1.4em
     font-weight: bold
     left: 50%
@@ -44,10 +44,6 @@
     padding: 0.2em
     position: absolute
     text-align: center
-
-  &.hasBottomLegend .xLabelHoriz
-    top: 2em
-    bottom: auto
 
   .chartContainer
     height: 100%
@@ -173,9 +169,43 @@
 
 .chartArea.columnChart, .chartArea.barChart.orientationRight
 
+  // Label positioning.
+
+  // Anything other than bottom legend, including no legend, gets its X axis
+  // defaults from the above styles.
+
+  // No legend.
+  .xLabelHoriz
+    bottom: 2em
+
+  &.hasBottomLegend
+    .xLabelHoriz
+      bottom: 4em
+
+  &.hasLeftLegend
+    .xLabelHoriz
+      bottom: 2em
+
+  &.hasTopLegend
+    .xLabelHoriz
+      bottom: 2em
+
+  &.hasRightLegend
+    .xLabelHoriz
+      bottom: 2em
+
   &.hasLeftLegend .yLabelVert
     left: -8em
 
+  // Legend positioning.
+
+  &.hasBottomLegend
+    .legendContainer
+      margin-bottom: 2em
+
+  // Chart margins.
+
+  // No legend
   .chartOuterContainer
     top: 0em
     left: 4em
@@ -191,7 +221,7 @@
 
   &.hasBottomLegend
     .chartOuterContainer
-      top: 5em
+      top: 0em
       left: 4em
       right: 0em
       bottom: 0em
@@ -265,33 +295,46 @@
 
 .chartArea.barChart.orientationDown
 
+  // Label positioning.
+
+  // Anything other than top legend, including no legend.
+  .xLabelHoriz
+    top: 0em
+    bottom: auto
+
+  &.hasTopLegend .xLabelHoriz
+    top: 3em
+    bottom: auto
+
   &.hasLeftLegend .yLabelVert
     left: -5em
 
+  // Chart margins.
+
+  // No legend or bottom legend.
+  .chartOuterContainer
+    top: 2em
+    left: 0em
+    right: 0em
+    bottom: 0em
+
   &.hasTopLegend
     .chartOuterContainer
-      top: 5em
-      left: 0em
-      right: 0em
-      bottom: 0em
-
-  &.hasBottomLegend
-    .chartOuterContainer
-      top: 5em
+      top: 6em
       left: 0em
       right: 0em
       bottom: 0em
 
   &.hasLeftLegend
     .chartOuterContainer
-      top: 0em
+      top: 2em
       left: 25em
       right: 0em
       bottom: 0em
 
   &.hasRightLegend
     .chartOuterContainer
-      top: 0em
+      top: 2em
       left: 0em
       right: 25em
       bottom: 0em

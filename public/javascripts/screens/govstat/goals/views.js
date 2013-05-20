@@ -178,6 +178,8 @@ var GoalEditor = Backbone.View.extend({
         'change .mainDetails input.date': 'updateDateAttr',
         'change .additionalDetails select': 'updateFakeBooleanAttr',
         'change .additionalDetails .iconPickerHandle': 'updateParamAttr',
+        'change .additionalDetails input[type=checkbox]': 'updateCheckAttr',
+        'change .relatedDatasets input[type=checkbox]': 'updateCheckAttr',
         'hallomodified .notes': 'updateNotesAttr'
     },
     initialize: function()

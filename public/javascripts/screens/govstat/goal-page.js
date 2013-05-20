@@ -29,6 +29,9 @@
     {
         var $container = $wrapper.children('.content-wrapper'); // todo: ew. clean up.
 
+        // respect chart suppression
+        if ((goal.get('metadata') || {}).suppress_chart === true) { return false; }
+
         // get our data
         var metric = goal.get('metrics').at(idx);
         if ($.isBlank(metric)) { return false; } // we don't have anything to show here

@@ -297,7 +297,7 @@ protected
         },
         {
           type: 'Title',
-          customClass: 'sectionTitle',
+          customClass: 'sectionTitle heroViz-{goal.metadata.hero_viz ||false}',
           text: 'Related Data'
         },
         {
@@ -314,7 +314,7 @@ protected
             },
             children: [
               { type: 'Title', htmlClass: 'chartTitle', text: '{dataset.name}' },
-              { type: 'Visualization', height: 220 },
+              { type: 'Visualization', height: 340 },
               { type: 'Text', htmlClass: 'chartDescription', html: '{dataset.description ||}', ifValue: 'dataset.description' },
               { type: 'Button', htmlClass: 'exploreLink ss-right right', notButton: true,
                 href: '/d/{dataset.id}', text: 'Explore this data' }

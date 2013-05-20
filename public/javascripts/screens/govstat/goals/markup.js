@@ -298,6 +298,24 @@ blist.namespace.fetch('blist.govstat').markup = {
                     _: 'div',
                     className: 'detailLine noteLine',
                     contents: [{
+                        _: 'div',
+                        className: 'suppressChartInput',
+                        contents: [{
+                            _: 'input',
+                            type: 'checkbox',
+                            id: goal.cid + '_suppress_chart',
+                            name: 'suppress_chart',
+                            checked: goal.get('suppress_chart') === true
+                        }, {
+                            _: 'label',
+                            'for': goal.cid + '_suppress_chart',
+                            contents: 'Do not display the prevailing metric chart.'
+                        }]
+                    }]
+                }, {
+                    _: 'div',
+                    className: 'detailLine noteLine',
+                    contents: [{
                         _: 'span',
                         contents: 'Here are some additional details: '
                     }, {
@@ -325,6 +343,24 @@ blist.namespace.fetch('blist.govstat').markup = {
                 contents: [{
                     _: 'h2',
                     contents: 'Related Visualizations'
+                }, {
+                    _: 'div',
+                    className: 'detailLine noteLine',
+                    contents: [{
+                        _: 'div',
+                        className: 'heroVizInput',
+                        contents: [{
+                            _: 'input',
+                            type: 'checkbox',
+                            id: goal.cid + '_hero_viz',
+                            name: 'hero_viz',
+                            checked: goal.get('hero_viz') === true
+                        }, {
+                            _: 'label',
+                            'for': goal.cid + '_hero_viz',
+                            contents: 'First visualization uses hero layout'
+                        }]
+                    }]
                 }, {
                     _: 'div',
                     className: 'datasetListContainer'

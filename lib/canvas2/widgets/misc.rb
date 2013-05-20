@@ -119,14 +119,12 @@ module Canvas2
         }
       params = p['defaults'].merge(params) if p['defaults'].present?
       t = '<iframe frameborder="0" scrolling="auto" title="Catalog" width="800" height="600" ' +
-        'src="/browse/embed?' + params.to_param + '"></iframe>'
+        'src="' + embed_browse_path + '?' + params.to_param + '"></iframe>'
       [t, true]
     end
   end
 
   class DataRenderer < CanvasWidget
-    include Rails.application.routes.url_helpers
-
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true
       super(props, parent, resolver_context)
@@ -571,8 +569,6 @@ module Canvas2
   end
 
   class Share < CanvasWidget
-    include Rails.application.routes.url_helpers
-
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true
       super(props, parent, resolver_context)

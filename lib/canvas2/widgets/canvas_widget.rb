@@ -1,5 +1,7 @@
 module Canvas2
   class CanvasWidget
+    include Rails.application.routes.url_helpers
+
     attr_accessor :id, :parent, :server_properties
     attr_reader :properties, :resolver_context
 
@@ -202,7 +204,10 @@ module Canvas2
 
   protected
     def default_url_options
-      { host: CurrentDomain.cname }
+      options = { host: CurrentDomain.cname }
+      locale = Util.env[:current_locale].to_s
+      options[:locale] = locale if locale != CurrentDomain.default_locale
+      options
     end
   end
 end

@@ -32,6 +32,12 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var vizObj = this;
 
+        // Clone the defaults, as we modify them to account for various situations.
+        // We don't want to propagate the defaults to every instance. Ideally,
+        // we'll replace these defaults with smart getters and setters to avoid
+        // having to do this.
+        vizObj.defaults = $.extend(true, {}, vizObj.defaults);
+
         // if we need to do series grouping stuff, mix that in before anything else
         if (_.isArray(vizObj._displayFormat.seriesColumns) &&
             $.isBlank(vizObj._seriesGroupingSentinel)) // but don't do this if it's already been done
@@ -300,7 +306,10 @@ chartObj.resizeHandle();
 
         vizObj._super();
 
-        // this is messy. what's a better way?
+        // this is messy. what's a better way? Possibly make a getter method
+        // for valueLabelBuffer and dataMaxBuffer. These methods would preferentially
+        // return an explicitly-set value, otherwise fall back to the math we use
+        // below.
         vizObj.defaults.valueLabelBuffer = 100;
         vizObj.defaults.dataMaxBuffer = 30;
         vizObj._chartConfig.$chartArea

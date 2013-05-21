@@ -132,6 +132,7 @@ $num_segments: 6
 
 .mapOverview
   @include border-radius(0.1em)
+  @include opacity(0.85)
   background-color: #ffffff
   border: 1px solid #444444
   padding:
@@ -151,6 +152,20 @@ $num_segments: 6
   &.bottomLeft
     left: 3.7em
     bottom: 4em
+
+  .close_button
+    width: 10px
+    height: 10px
+    position: absolute
+    top: 13px
+    right: 20px
+    cursor: pointer
+
+  .minimized
+    cursor: pointer
+
+    span
+      font-size: 0.8em
 
   .uniform.checker, .uniform.radio
     margin-right: 0.2em

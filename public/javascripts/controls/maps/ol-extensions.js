@@ -580,13 +580,22 @@
             if ($dom.siblings('.mapLayers').length < 1)
             {
                 $dom.before(this.$dom = $.tag2({ _: 'div', contents: [
-                    { _: 'h3', className: 'data', contents: 'Data Layers' },
-                    { _: 'ul', className: 'data' },
-                    { _: 'ul', className: 'feature' },
-                    { _: 'h3', className: 'base', contents: 'Base Layers' },
-                    { _: 'ul', className: 'base' },
-                    { _: 'div', className: 'customEntries' }
+                    { _: 'div', className: 'contentBlock', contents: [
+                        { _: 'h3', className: 'data', contents: 'Data Layers' },
+                        { _: 'ul', className: 'data' },
+                        { _: 'ul', className: 'feature' },
+                        { _: 'h3', className: 'base', contents: 'Base Layers' },
+                        { _: 'ul', className: 'base' },
+                        { _: 'div', className: 'customEntries' }
+                    ]},
+                    { _: 'h3', className: ['minimized', 'hide'], contents: [
+                        'Map Legend',
+                        { _: 'span', contents: ' (show)' }]},
+                    { _: 'div', className: 'close_button' }
                 ], className: ['mapOverview', 'topRight'] }));
+
+                var control = this;
+                this.$dom.find('.minimized, .close_button').click(function() { control.toggle(); });
             }
         },
 
@@ -878,6 +887,12 @@
             $layers.find('.contentBlock').css({
                 'max-height': height-(2 * $layers.find('.toggleLayers').height()),
                 'overflow': 'auto'});
+        },
+
+        // Hiding should result in .minimized visible only.
+        toggle: function()
+        {
+            this.$dom.find('.contentBlock, .minimized, .close_button').toggleClass('hide');
         },
 
         CLASS_NAME: 'blist.openLayers.Overview'
@@ -1582,6 +1597,18 @@
             { this.disabled = true; }
 
             this.mapObj = mapObj;
+        },
+
+        setMap: function()
+        {
+            OpenLayers.Control.prototype.setMap.apply(this, arguments);
+            this.map.events.register('click', this, this.close);
+        },
+
+        destroy: function()
+        {
+            OpenLayers.Control.prototype.destroy.apply(this, arguments);
+            this.map.events.unregister('click', this, this.close);
         },
 
         sayLoading: function(lonlat)

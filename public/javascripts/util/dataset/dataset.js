@@ -278,18 +278,6 @@ var Dataset = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(newDS); }
         };
 
-        if (dsOrig.displayType == 'map' && $.deepGet(dsOrig, 'childViews', '0') == dsOrig.id)
-        {
-            // Creating a map from table. CF needs a hack to be saved correctly from here. Bug 8320
-            if (_.isArray((dsOrig.metadata || {}).conditionalFormatting))
-            {
-                dsOrig.metadata = dsOrig.metadata || {};
-                var cf = dsOrig.metadata.conditionalFormatting.slice();
-                dsOrig.metadata.conditionalFormatting = {};
-                dsOrig.metadata.conditionalFormatting.self = cf;
-            }
-        }
-
         var ds = cleanViewForCreate(this);
 
         // Munge permissions for forms, since those don't get carried over

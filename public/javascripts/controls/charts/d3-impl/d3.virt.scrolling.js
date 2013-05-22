@@ -737,12 +737,9 @@ chartObj.resizeHandle();
 
     _formatYAxisTicks: function(formatter)
     {
-        if ($.isBlank(formatter))
-        {
-            return $.commaify;
-        }
-
-        if (formatter.abbreviate === true)
+        // If the "Y-Axis Formatting" sidebar section isn't open,
+        // formatter.abbreviate = true isn't passed through. Default it to true.
+        if ($.isBlank(formatter) || formatter.abbreviate === true)
         {
             // humane number requires a precision. so, our "auto" really just
             // means 2 in this case.

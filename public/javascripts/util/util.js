@@ -682,6 +682,13 @@ $.commaify = function(value)
     return value;
 };
 
+$.humanify = function(humaneDecimals, fixedDecimals, value)
+{
+    var abs = Math.abs(value);
+    return abs >= 1000 ? blist.util.toHumaneNumber(value, humaneDecimals)
+                       : (abs - Math.floor(abs) > 0 ? value.toFixed(fixedDecimals) : value);
+};
+
 // it's kind of dumb. if you need anything it doesn't do, just explicitly tell it.
 $.pluralize = function(number, word, pluralized)
 {

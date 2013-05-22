@@ -837,12 +837,7 @@
         },
         colorRange: function(datum, $row)
         {
-            var humanify = function(x)
-                {
-                    var abs = Math.abs(x);
-                    return abs >= 1000 ? blist.util.toHumaneNumber(x, 2)
-                                       : (abs - Math.floor(abs) > 0 ? x.toFixed(4) : x);
-                },
+            var humanify = $.humanify.curry(2, 4),
                 min = humanify(datum.minimum),
                 max = humanify(datum.maximum);
 

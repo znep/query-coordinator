@@ -88,6 +88,9 @@ $.Control.registerMixin('d3_base_legend', {
     _renderLegendLine: function(iconOpts, label)
     {
         var htmlIconOpts = {};
+
+        // Trim the label, otherwise browsers like to wrap the line unnecessarily if there's whitespace at the end.
+        var trimmedLabel = label.trim();
         if (iconOpts.color)
         {
             htmlIconOpts['class'] = 'legendIcon legendColor';
@@ -101,7 +104,7 @@ $.Control.registerMixin('d3_base_legend', {
         if (iconOpts.image)
         {
             htmlIconOpts['class'] = 'legendIcon legendImage';
-            htmlIconOpts.contents = { tagName: 'img', src: $.htmlEscape(iconOpts.image), alt: $.htmlEscape(label) };
+            htmlIconOpts.contents = { tagName: 'img', src: $.htmlEscape(iconOpts.image), alt: $.htmlEscape(trimmedLabel) };
         }
 
         return $.tag({
@@ -109,7 +112,7 @@ $.Control.registerMixin('d3_base_legend', {
             'class': 'legendLine',
             contents: [
                 $.extend({ tagName: 'span', 'class': 'legendIcon' }, htmlIconOpts),
-                { tagName: 'span', 'class': 'legendLabel', contents: $.htmlEscape(label) }
+                { tagName: 'span', 'class': 'legendLabel', contents: $.htmlEscape(trimmedLabel) }
             ]
         });
     }

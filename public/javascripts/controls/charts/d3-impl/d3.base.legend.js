@@ -26,7 +26,7 @@ $.Control.registerMixin('d3_base_legend', {
         // first render series if they were asked for
         if (legendDetails.showSeries === true)
         {
-            _.each(vizObj._valueColumns, function(colDef)
+            _.each(vizObj.getValueColumns(), function(colDef)
             {
                 $legendContainer.append(vizObj._renderLegendLine({ color: colDef.color }, colDef.column.name));
             });

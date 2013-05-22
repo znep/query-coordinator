@@ -112,8 +112,11 @@
         {
             var layerObj = this;
 
-            if (layerObj._neverCluster || layerObj._fetchPoints)
+            if (layerObj._fetchPoints)
             { layerObj._super(); return; }
+
+            if (layerObj._neverCluster)
+            { layerObj.fetchPoints(); return; }
 
             var viewport = layerObj._guessedViewport || layerObj.viewportHandler()
                 .toViewport(blist.openLayers.geographicProjection),
@@ -228,7 +231,8 @@
                 { viewport: this.viewportHandler().toQuery(
                     blist.openLayers.geographicProjection, this._locCol.fieldName) });
 
-            if (_.isEqual(this._query, query))
+            if (_.isEqual(this._query, query)
+                && $.subKeyDefined(this._view, 'query.namedFilters.viewport'))
             { this.getData(); }
             else
             { this.setQuery(query, true); }

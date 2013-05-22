@@ -902,9 +902,10 @@ chartObj.resizeHandle();
 
         if (cc.orientation == 'down')
         {
+            var scaled = yScale(row[col.lookup]);
             rObj.tip.adjustPosition(
             {
-                left: yScale(row[col.lookup])
+                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? scaled / 2 : scaled,
             });
         }
         else if (cc.orientation == 'right')

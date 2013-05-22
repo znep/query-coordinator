@@ -91,7 +91,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     {
                         if (d && !cc._isDragging)
                         {
-                            vizObj.handleMouseOver(this, colDef, d, newYScale);
+                            vizObj.handleMouseOver(this, colDef, d, vizObj._currentYScale());
                         }
                     })
                     .on('mouseout', function(d)
@@ -99,7 +99,7 @@ $.Control.registerMixin('d3_impl_bar', {
                         // for perf, only call unhighlight if highlighted.
                         if (d && !cc._isDragging && view.highlights && view.highlights[d.id])
                         {
-                            vizObj.handleMouseOut(this, colDef, d, newYScale);
+                            vizObj.handleMouseOut(this, colDef, d, vizObj._currentYScale());
                         }
                     })
                     .on('click', function(d)

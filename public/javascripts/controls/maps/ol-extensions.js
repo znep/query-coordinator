@@ -875,10 +875,15 @@
             this.map.setBaseLayer(this.map.backgroundLayers()[0])
         },
 
+        // The purpose of this is to make sure the height of the overview does not
+        // cover the attribution or overflow out of the map window.
         correctHeight: function()
         {
             var $div = $(this.map.div);
             var $layers = this.$dom;
+            // Don't run this when minimized.
+            if ($layers.find('.contentBlock').hasClass('hide')) { return; }
+
             var $bottom = $(this.map.getControlsByClass('OpenLayers.Control.Attribution')[0].div);
             var height = ($bottom.filter(':visible').length == 0)
                 ? $div.height() - 20 : $bottom.position().top - 10;

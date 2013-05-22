@@ -739,11 +739,18 @@ chartObj.resizeHandle();
     {
         // If the "Y-Axis Formatting" sidebar section isn't open,
         // formatter.abbreviate = true isn't passed through. Default it to true.
-        if ($.isBlank(formatter) || formatter.abbreviate === true)
+        formatter = formatter || { abbreviate: true };
+
+        if (formatter.abbreviate === true)
         {
             // humane number requires a precision. so, our "auto" really just
             // means 2 in this case.
-            return function(num) { return blist.util.toHumaneNumber(num, formatter.decimalPlaces || 2); };
+            return function(num) {
+                var abs = Math.abs(num),
+                    decPlaces = formatter.decimalPlaces || 2;
+                return abs >= 1000 ? blist.util.toHumaneNumber(num, decPlaces)
+                                   : (abs - Math.floor(abs) > 0 ? num.toFixed(decPlaces) : num);
+            };
         }
         else if (_.isNumber(formatter.decimalPlaces))
         {

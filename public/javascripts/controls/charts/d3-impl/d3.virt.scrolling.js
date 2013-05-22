@@ -746,7 +746,7 @@ chartObj.resizeHandle();
             // humane number requires a precision. so, our "auto" really just
             // means 2 in this case.
             var decimalPlaces = formatter.decimalPlaces || 2;
-            return $humanify.curry(decimalPlaces, decimalPlaces);
+            return $.humanify.curry(decimalPlaces, decimalPlaces);
         }
         else if (_.isNumber(formatter.decimalPlaces))
         {

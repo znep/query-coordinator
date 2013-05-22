@@ -103,6 +103,18 @@
         font-size: 1.3em
         line-height: 1.538em
 
+  &.smallMode
+    .legendLine
+      padding: 0.2em
+
+      .legendIcon
+        height: 1.25em
+        width: 1.25em
+
+      .legendLabel
+        font-size: 1.1em
+        line-height: 1.1em
+
   .baselineContainer
     cursor: move
     position: absolute
@@ -172,7 +184,7 @@
 
   // Anything other than bottom legend, including no legend.
   .xLabelHoriz
-    bottom: 2em
+    bottom: 1.5em
 
   &.hasBottomLegend
     .xLabelHoriz
@@ -204,6 +216,9 @@
       top: 5em
       right: 0em
       bottom: 0em
+  &.smallMode
+    .chartOuterContainer
+      top: 3em
 
   &.hasBottomLegend
     .chartOuterContainer

@@ -25,7 +25,8 @@ $.Control.registerMixin('d3_impl_bar', {
         sidePaddingBounds: [ 20, 200 ], // sides of window
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
         valueLabelBuffer: 100, // amount of room to leave for each row' label
-        dataMaxBuffer: 30 // amount of room to leave in actual chart area past the max bar
+        dataMaxBuffer: 30, // amount of room to leave in actual chart area past the max bar
+        smallModeThreshold: 400 // Height below which small mode is triggered.
     },
 
     // call this if the active set of data has changed

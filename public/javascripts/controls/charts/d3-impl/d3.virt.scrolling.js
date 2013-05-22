@@ -25,7 +25,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         sidePaddingBounds: [ 20, 200 ], // sides of window
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
         valueLabelBuffer: 100, // amount of room to leave for each row' label
-        dataMaxBuffer: 30 // amount of room to leave in actual chart area past the max bar
+        dataMaxBuffer: 30, // amount of room to leave in actual chart area past the max bar
+        smallModeThreshold: 400 // Height below which small mode is triggered.
     },
 
     initializeVisualization: function()
@@ -246,8 +247,8 @@ chartObj.resizeHandle();
                 return col.dataType.matchValue ? col.dataType.matchValue(row[col.lookup]) : row[col.lookup];
             }));
         }, []);
-        vizObj._chartConfig.maxValue = d3.max(allValues); // cache off maxValue for other renders
-        vizObj._chartConfig.minValue = d3.min(allValues); // etc
+        vizObj._chartConfig.maxValue = d3.max(allValues) || 0; // cache off maxValue for other renders
+        vizObj._chartConfig.minValue = d3.min(allValues) || 0; // etc
 
         vizObj._renderData(data);
     },
@@ -302,7 +303,8 @@ chartObj.resizeHandle();
         var vizObj = this,
             cc = vizObj._chartConfig,
             $legendContainer = vizObj.$legendContainer(),
-            legendPosition = vizObj.legendPosition();
+            legendPosition = vizObj.legendPosition(),
+            isSmallMode = vizObj._chartConfig.$chartArea.hasClass('smallMode');
 
         vizObj._super();
 
@@ -310,7 +312,7 @@ chartObj.resizeHandle();
         // for valueLabelBuffer and dataMaxBuffer. These methods would preferentially
         // return an explicitly-set value, otherwise fall back to the math we use
         // below.
-        vizObj.defaults.valueLabelBuffer = 100;
+        vizObj.defaults.valueLabelBuffer = isSmallMode ? 60 : 100;
         vizObj.defaults.dataMaxBuffer = 30;
         vizObj._chartConfig.$chartArea
             .removeClass('hasTopLegend hasRightLegend hasBottomLegend hasLeftLegend')
@@ -320,10 +322,11 @@ chartObj.resizeHandle();
         {
             if (legendPosition == 'bottom')
             {
-                vizObj.defaults.valueLabelBuffer = 100 + $legendContainer.height();
+                vizObj.defaults.valueLabelBuffer = (isSmallMode ? 60 : 100) + $legendContainer.height();
             }
             else if (legendPosition == 'top')
             {
+                vizObj.defaults.valueLabelBuffer = (isSmallMode ? 60 : 100) + $legendContainer.height();
                 vizObj.defaults.dataMaxBuffer = 30 + $legendContainer.height();
             }
             else if ((legendPosition == 'left') || (legendPosition == 'right'))
@@ -412,6 +415,15 @@ chartObj.resizeHandle();
         // for now. we'll be called again later.
         if ($.isBlank(valueColumns) || $.isBlank(totalRows)) { return; }
         var numSeries = valueColumns.length;
+
+        var smallestDimension = Math.min(vizObj.$dom().height(), vizObj.$dom().width());
+        var needsSmallMode = smallestDimension < defaults.smallModeThreshold;
+        var wasSmallMode = cc.$chartArea.hasClass('smallMode');
+        cc.$chartArea.toggleClass('smallMode', needsSmallMode);
+        if (wasSmallMode != needsSmallMode)
+        {
+            vizObj.renderLegend();
+        }
 
         // save off old row width for comparison later (see below)
         var oldRowWidth = cc.rowWidth;

@@ -27,7 +27,8 @@
               <div class="secondaryAction">
                 <a href="<%= report.path %>?_edit_mode=true" class="button">
                   <span class="actionDetails ss-write">Edit</span></a>
-                <a href="#delete" class="button delete" data-id="<%= report.path %>">
+                <a href="#delete" class="button delete" data-id="<%= report.uid %>"
+                  data-oldid="<%= report.path %>">
                   <span class="actionDetails ss-trash">Delete</span></a>
               </div>
               <div class="primaryAction">
@@ -54,7 +55,8 @@
               <div class="secondaryAction">
                 <a href="<%= report.path %>?_edit_mode=true" class="button">
                   <span class="actionDetails ss-write">Edit</span></a>
-                <a href="#delete" class="button delete" data-id="<%= report.path %>">
+                <a href="#delete" class="button delete" data-id="<%= report.uid %>"
+                  data-oldid="<%= report.path %>">
                   <span class="actionDetails ss-trash">Delete</span></a>
               </div>
               <%- end -%>

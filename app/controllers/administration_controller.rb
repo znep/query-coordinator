@@ -77,7 +77,7 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:canvas_pages, :create_canvas_page, :post_canvas_page] {|c| c.check_auth_level('edit_pages')}
   def canvas_pages
-    @pages = Page.find('$order' => 'name')
+    @pages = Page.find('$order' => 'name', 'status' => 'all')
   end
 
   def create_canvas_page
@@ -109,7 +109,10 @@ class AdministrationController < ApplicationController
       flash[:error] = "Path already exists; please choose a different one"
       return redirect_to :action => 'create_canvas_page', :path => url, :title => title
     end
-    res = Page.create({:path => url, :name => title, :owner => current_user.id})
+    # FIXME: default to public for backwards compatibility.
+    # Once the UI supports viewing/changing permission,
+    # probably remove this (default to private)
+    res = Page.create({:path => url, :name => title, :permission => 'public'})
     redirect_to res.path + '?_edit_mode=true'
   end
 

@@ -205,8 +205,8 @@ module Canvas2
         begin
           klass = Canvas2.const_get(config['type'])
           raise ComponentError.new(
-            config, "Component #{config['type']} is not supported in #{@@page.page_type} page") if
-              !klass.page_types.include?(@@page.page_type)
+            config, "Component #{config['type']} is not supported in #{@@page.format} page") if
+              !klass.page_types.include?(@@page.format)
           return klass.new(config, parent, resolver_context)
         rescue NameError => ex
           raise ComponentError.new(config, "There is no component of type #{config['type']}",

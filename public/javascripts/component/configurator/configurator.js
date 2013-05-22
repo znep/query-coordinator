@@ -127,7 +127,6 @@
         var page = blist.configuration.page;
         page.content = $.component.root().properties();
         page.data = $.dataContext.currentContexts();
-        page.locale = $.locale.updated();
         return page;
     };
 
@@ -291,41 +290,43 @@
                     $.cf.save(newPage, function()
                     {
                         $top.find('.editTitle .pageName').text(newPage.name);
+                        $spinner.addClass('hide');
+                        $settingsDialog.jqmHide();
                         if (oldPath != newPage.path)
-                        {
-                            $.socrataServer.makeRequest({ type: 'POST', url: '/id/pages',
-                                data: JSON.stringify([{ ':deleted': true, path: oldPath }]),
-                                complete: function()
-                                { $spinner.addClass('hide'); },
-                                success: function()
-                                { window.location = newPage.path; }
-                            });
-                        }
-                        else
-                        {
-                            $spinner.addClass('hide');
-                            $settingsDialog.jqmHide();
-                        }
+                        { window.location = newPage.path; }
                     });
                 };
 
                 if (oldPath != newPage.path)
                 {
+                    var pathExistsError = function()
+                    {
+                        $spinner.addClass('hide');
+                        $settingsDialog.find('.errorMessage').removeClass('hide').text(newPage.path +
+                            ' already exists; please choose a different path');
+                    };
+
+                    var doSave = _.after(2, saveSettings);
                     // Check if overwrite
-                    $.socrataServer.makeRequest({ type: 'GET', url: '/id/pages', isSODA: true,
+                    $.socrataServer.makeRequest({ type: 'GET', url: '/api/pages.json',
                         params: { path: newPage.path },
                         success: function(resp)
                         {
                             if (_.isEmpty(resp))
-                            { saveSettings(); }
+                            { doSave(); }
                             else
-                            {
-                                $spinner.addClass('hide');
-                                $settingsDialog.find('.errorMessage').removeClass('hide').text(newPage.path +
-                                    ' already exists; please choose a different path');
-                            }
+                            { pathExistsError(); }
                         }
                     });
+                    $.socrataServer.makeRequest({ type: 'GET', url: '/api/id/pages', isSODA: true,
+                    params: { path: newPage.path },
+                    success: function(resp)
+                    {
+                        if (_.isEmpty(resp))
+                        { doSave(); }
+                        else
+                        { pathExistsError(); }
+                    } });
                 }
                 else
                 { saveSettings(); }
@@ -440,18 +441,30 @@
                 spinner.showHide(true);
                 if ($.isBlank(newPage))
                 { newPage = pullConfig(); }
+
+                var type = 'PUT';
+                var url = '/api/pages/' + newPage.uid + '.json';
+                if ($.isBlank(newPage.uid))
+                {
+                    // Creating a new page; converting from Pages dataset
+                    delete newPage.owner;
+                    delete newPage.flags;
+                    newPage.permission = 'public';
+                    type = 'POST';
+                    url = '/api/pages.json';
+                }
+
                 $.socrataServer.makeRequest({
-                    type: 'POST',
-                    url: '/id/pages',
+                    type: type,
+                    url: url,
                     data: JSON.stringify(newPage),
 
                     complete: function()
                     { spinner.showHide(false); },
 
-                    success: function()
+                    success: function(resp)
                     {
-                        blist.configuration.page = newPage;
-                        $.locale.initialize(newPage.locale);
+                        blist.configuration.page = resp;
                         finishCallback();
                     },
 

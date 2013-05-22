@@ -46,10 +46,10 @@
                 <%- if page.private_data? -%>
                   <span class="ss-icon" title="Private data in page">private</span>
                 <%- end -%>
-                <%- if page.page_type == 'export' -%>
+                <%- if page.format == 'export' -%>
                   <span class="ss-icon" title="Download page">download</span>
                 <%- end -%>
-                <a href="<%= page.path %><%= page.page_type == 'export' ? '.csv' : '' %>?_edit_mode=true">
+                <a href="<%= page.path %><%= page.format == 'export' ? '.csv' : '' %>?_edit_mode=true">
                   <span class="cellInner"><%= page.name %></span>
                 </a>
               </td>
@@ -60,7 +60,7 @@
                 <%- if page.path.include?('/:') -%>
                   <%# Can't provide a view link, since we don't know the proper fill-in for params %>
                 <%- else -%>
-                  <%- if page.page_type == 'export' -%>
+                  <%- if page.format == 'export' -%>
                     <a class="button" href="<%= page.path %>.csv">Download as CSV</a>
                   <%- else -%>
                     <a class="button" href="<%= page.path %>">View Page</a>

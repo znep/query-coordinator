@@ -681,14 +681,16 @@ class AdministrationController < ApplicationController
   def save_featured_views
     config = get_configuration
 
-    update_or_create_property(config, 'featured_views', params[:features])
+    # Rails apparently converts [] to nil; so fix it
+    new_features = params[:features] || []
+    update_or_create_property(config, 'featured_views', new_features)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     clear_homepage_cache
 
     respond_to do |format|
       format.html { redirect_to home_administration_path }
-      format.data { render :json => params[:features] }
+      format.data { render :json => new_features }
     end
   end
 

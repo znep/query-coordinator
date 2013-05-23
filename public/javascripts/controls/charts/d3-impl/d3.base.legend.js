@@ -90,7 +90,9 @@ $.Control.registerMixin('d3_base_legend', {
         var htmlIconOpts = {};
 
         // Trim the label, otherwise browsers like to wrap the line unnecessarily if there's whitespace at the end.
-        var trimmedLabel = label.trim();
+        // Also, if the label text is blank, add a non-breaking space to prevent the same issue.
+        var labelText = label.trim();
+        var labelEscapedHtml = $.isBlank(labelText) ? '&nbsp;' : $.htmlEscape(labelText);
         if (iconOpts.color)
         {
             htmlIconOpts['class'] = 'legendIcon legendColor';
@@ -104,7 +106,7 @@ $.Control.registerMixin('d3_base_legend', {
         if (iconOpts.image)
         {
             htmlIconOpts['class'] = 'legendIcon legendImage';
-            htmlIconOpts.contents = { tagName: 'img', src: $.htmlEscape(iconOpts.image), alt: $.htmlEscape(trimmedLabel) };
+            htmlIconOpts.contents = { tagName: 'img', src: $.htmlEscape(iconOpts.image), alt: labelEscapedHtml };
         }
 
         return $.tag({
@@ -112,7 +114,7 @@ $.Control.registerMixin('d3_base_legend', {
             'class': 'legendLine',
             contents: [
                 $.extend({ tagName: 'span', 'class': 'legendIcon' }, htmlIconOpts),
-                { tagName: 'span', 'class': 'legendLabel', contents: $.htmlEscape(trimmedLabel) }
+                { tagName: 'span', 'class': 'legendLabel', contents: labelEscapedHtml }
             ]
         });
     }

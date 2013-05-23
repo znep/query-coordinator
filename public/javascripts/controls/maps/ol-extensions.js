@@ -719,7 +719,7 @@
 
         renderBackgroundLayer: function(layer)
         {
-            var lId = 'mapLayer_' + layer.name.replace(' ', '_'),
+            var lId = 'mapLayer_' + (layer.name || '').replace(' ', '_'),
                 layerName = $.isBlank(layer.alias) ? layer.name : layer.alias;
             var $layerSet = this.$dom.find('ul.base'), $layer;
             var checked = this.exclusiveLayers ? this.map.baseLayer == layer

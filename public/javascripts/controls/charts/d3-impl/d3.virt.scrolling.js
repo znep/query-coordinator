@@ -289,6 +289,12 @@ chartObj.resizeHandle();
         {
             vizObj._chartConfig.doResizeHandle();
         }
+        else
+        {
+            // However, we still want to calculate our sizing just in case
+            // we don't get called back.
+            vizObj._resizeEverything();
+        }
     },
 
     $legendContainer: function()

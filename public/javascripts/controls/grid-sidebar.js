@@ -505,6 +505,8 @@
         sidebarObj.$neighbor().width(parW - sidebarObj.$dom().outerWidth(true) -
             (sidebarObj.$neighbor().outerWidth() - sidebarObj.$neighbor().width()));
 
+        sidebarObj.$neighbor().resize();
+
         // Adjust panes section to correct height, since it is what scrolls
         var $pane = sidebarObj.$currentOuterPane();
         if (!$.isBlank($pane))
@@ -515,15 +517,54 @@
         }
     };
 
+    // We have a potential hard-to-detect layout cycle here because of the defer call below.
+    // When we call setPosition, we need to let our neighbor know we've resized
+    // it. However, this usually triggers another resize on us. We try to break
+    // that cycle by ignoring the resize if the size hasn't changed. As a fallback,
+    // we maintain a maximum number of pending resize calls. If that limit is hit,
+    // stop servicing resizes until all resize calls finish. This will break the
+    // cycle.
+    var _setPositionCount = 0;
+    var _setPositionMaxCount = 50;
+    var _resizeBlocked = false;
+    var _lastWidth = -1;
+    var _lastHeight = -1;
     /* Handle window resizing */
     var handleResize = function(sidebarObj)
     {
+        var $window = $(window);
+        var newWidth = $window.width();
+        var newHeight = $window.height();
+
+        if (newWidth == _lastWidth && newHeight == _lastHeight) { return; }
+
+        _lastWidth = newWidth;
+        _lastHeight = newHeight;
+
+        if (_setPositionCount > _setPositionMaxCount || _resizeBlocked)
+        {
+            console.error('Layout Cycle');
+            _resizeBlocked = true;
+            return;
+        }
+
         if (sidebarObj._inResize) { return; }
+
+        _setPositionCount ++;
         _.defer(function()
         {
-            if (sidebarObj.$dom().is(':hidden')) { return; }
-
-            setPosition(sidebarObj);
+            try
+            {
+                if (!sidebarObj.$dom().is(':hidden'))
+                {
+                    setPosition(sidebarObj);
+                }
+            }
+            finally
+            {
+                _setPositionCount --;
+                if (_setPositionCount == 0) { _resizeBlocked = false; } // Recover from layout cycle.
+            }
         });
     };
 

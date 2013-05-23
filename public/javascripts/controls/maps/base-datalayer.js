@@ -485,7 +485,7 @@
 
         zoomToPreferred: function()
         {
-            if (!this.ready())
+            if (!this.ready() && this._parent._initialMapLoad)
             { this.viewportHandler().zoomToPreferred(); }
         },
 

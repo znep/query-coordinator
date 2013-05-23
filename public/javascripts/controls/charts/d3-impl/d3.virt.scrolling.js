@@ -152,9 +152,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }, 500), 500);
         cc.$chartContainer.scroll(throttledScrollHandler);
 
-        // save off a throttled version of the actual meat of resizeHandle with a proper
-        // reference to this/vizObj (is there a better way to do this?)
-        cc.doResizeHandle = _.throttle(_.debounce(function()
+        cc.doResizeHandle = function()
         {
             // maybe recalculate all the sizing
             var needsReposition = vizObj._resizeEverything();
@@ -168,7 +166,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             if (needsReposition) vizObj._rerenderPositions();
             // maybe fetch some more rows if more are exposed
             vizObj.getDataForAllViews();
-        }, 500, true /*immediate*/), 500);
+        };
 
         // allow the baseline to be draggable
         var throttledResize = _.throttle(_.debounce(function() { vizObj.resizeHandle(); }, 500), 500); // TODO: this is more blunt than we need

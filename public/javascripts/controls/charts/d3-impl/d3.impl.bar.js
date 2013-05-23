@@ -125,7 +125,58 @@ $.Control.registerMixin('d3_impl_bar', {
                     // our internal state changes, so we must re-set them here
                     // (as opposed to on enter only).
                     .attr(cc.dataDim.xAxis, vizObj._xBarPosition(seriesIndex))
-                    .attr(cc.dataDim.yAxis, vizObj._yBarPosition(col.lookup, oldYScale))
+
+                    // We want to see the columns "grow" up or right on scale change.
+                    // This is mostly fine for orientation=down (since our y-axis
+                    // polarity matches what the browser defines, i.e. higher y values
+                    // in the chart mean higher x values in the browser). We just
+                    // need to animate the height.
+                    // This isn't true for orientation=right, since in this instance
+                    // higher y values mean lower y values in the browser.
+                    // We must do some hackery to get the animations to look right!
+                    // In short, we start out  with the bars at their old height
+                    // but on the new baseline, then animate both the position
+                    // (remember it's top-left position) and height at the same
+                    // time. Basically, the animated scale cancels out the
+                    // apparent motion of the bottom or left while it animates
+                    // into position.
+                    .attr(cc.dataDim.height, function(d)
+                    {
+                        var oldHeight = vizObj._yBarHeight(col.lookup, oldYScale)(d);
+                        var newHeight = vizObj._yBarHeight(col.lookup, newYScale)(d);
+
+                        return oldHeight - (oldHeight - newHeight)/2;
+                    })
+                    .attr(cc.dataDim.yAxis, function(d)
+                    {
+                        if (cc.orientation == 'right')
+                        {
+                            var oldHeight = vizObj._yBarHeight(col.lookup, oldYScale)(d);
+                            var newHeight = vizObj._yBarHeight(col.lookup, newYScale)(d);
+
+                            var oldVal = vizObj._yBarPosition(col.lookup, oldYScale);
+                            var newVal = vizObj._yBarPosition(col.lookup, newYScale);
+
+                            if (_.isFunction(oldVal))
+                            {
+                                oldVal = oldVal(d);
+                            }
+
+                            if (_.isFunction(newVal))
+                            {
+                                newVal = newVal(d);
+                            }
+
+                            return oldVal - (oldVal - newVal) - (oldHeight - newHeight)/2;
+                        }
+                        else
+                        {
+                            return vizObj._yBarPosition(col.lookup, oldYScale);
+                        }
+                    })
+                    //.attr(cc.dataDim.yAxis, vizObj._yBarPosition(col.lookup, oldYScale))
+
+
                     .attr('fill', function(d) { return d.color || colDef.color; })
 
                     .each(function(d)

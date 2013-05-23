@@ -168,7 +168,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             if (needsReposition) vizObj._rerenderPositions();
             // maybe fetch some more rows if more are exposed
             vizObj.getDataForAllViews();
-        }, 500), 500);
+        }, 500, true /*immediate*/), 500);
 
         // allow the baseline to be draggable
         var throttledResize = _.throttle(_.debounce(function() { vizObj.resizeHandle(); }, 500), 500); // TODO: this is more blunt than we need

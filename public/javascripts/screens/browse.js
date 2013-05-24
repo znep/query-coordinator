@@ -15,7 +15,22 @@ $(function()
         _.each(window.location.search.slice(1).split('&'), function(p)
         {
             var s = p.split('=');
-            opts[s[0]] = s[1];
+
+            s[0] = unescape(s[0]);
+
+            if (/\[\]$/.test(s[0]))
+            {
+                if ($.isBlank(opts[s[0]]))
+                {
+                    opts[s[0]] = [];
+                }
+
+                opts[s[0]].push(s[1])
+            }
+            else
+            {
+                opts[s[0]] = s[1];
+            }
         });
     }
 
@@ -27,7 +42,18 @@ $(function()
         newOpts.utf8 = '%E2%9C%93';
         // Pull real URL from JS
         window.location = blist.browse.baseURL + '?' +
-            _.map(newOpts, function(v, k) { return k + '=' + v; }).join('&');
+            _.map(newOpts, function(v, k)
+            {
+                if (_.isArray(v))
+                {
+                    return _.map(v, function(subvalue)
+                    {
+                        return k + '=' + subvalue;
+                    }).join('&');
+                }
+
+                return k + '=' + v;
+            }).join('&');
     };
 
     var $browse = $('.browseSection');

@@ -64,22 +64,58 @@ $.Control.registerMixin('d3_base', {
         }
     },
 
+    _d3_getColor: function(colDef, d)
+    {
+        var vizObj = this;
+
+        var color = d ? d.color : undefined;
+
+        if (!color)
+        {
+            var index = -1;
+            var found = _.find(vizObj.getValueColumns(), function(value, i)
+            {
+                if (value.column.id == colDef.column.id)
+                {
+                    index = i;
+                    return true;
+                }
+                return false;
+            });
+
+
+            var colors = vizObj._displayFormat.colors;
+            if (found && !_.isUndefined(colors) && colors.length > index)
+            {
+                color = colors[index];
+            }
+            else
+            {
+                color = colDef.color;
+            }
+        }
+
+        return color;
+    },
+
     _d3_colorizeRow: function(colDef, colIdentFinder)
     {
         var vizObj = this;
         var isFunc = _.isFunction(colIdentFinder);
         return function(d)
         {
+            var color = vizObj._d3_getColor(colDef, d);
+
             if (vizObj._primaryView.highlights && vizObj._primaryView.highlights[d.id] &&
                 (!vizObj._primaryView.highlightsColumn[d.id] ||
                  (vizObj._primaryView.highlightsColumn[d.id] ==
                     (isFunc ? colIdentFinder(colDef) : colDef.column.id))))
             {
-                return '#' + $.rgbToHex($.brighten(d.color || colDef.color, 20)); // why the fuck does brighten darken
+                return '#' + $.rgbToHex($.brighten(color, 20)); // why the fuck does brighten darken
             }
             else
             {
-                return d.color || colDef.color;
+                return color;
             }
         };
     },

@@ -163,10 +163,6 @@ $.Control.registerMixin('d3_impl_bar', {
                             return vizObj._yBarPosition(col.lookup, oldYScale);
                         }
                     })
-                    //.attr(cc.dataDim.yAxis, vizObj._yBarPosition(col.lookup, oldYScale))
-
-
-                    .attr('fill', function(d) { return d.color || colDef.color; })
 
                     .each(function(d)
                     {

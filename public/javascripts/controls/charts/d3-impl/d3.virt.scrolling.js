@@ -371,7 +371,7 @@ chartObj.resizeHandle();
         }
 
         // need to manually fix the label width due to bg image
-        var $label = $('.xLabelHoriz');
+        var $label = cc.$chartArea.find('.xLabelHoriz');
         $label.css('margin-left', -0.5 * $label.width());
     },
 

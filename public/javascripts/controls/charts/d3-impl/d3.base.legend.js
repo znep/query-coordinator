@@ -28,7 +28,7 @@ $.Control.registerMixin('d3_base_legend', {
         {
             _.each(vizObj.getValueColumns(), function(colDef)
             {
-                $legendContainer.append(vizObj._renderLegendLine({ color: colDef.color }, colDef.column.name));
+                $legendContainer.append(vizObj._renderLegendLine({ color: vizObj._d3_getColor(colDef) }, colDef.column.name));
             });
         }
         // next render conditional formats if they were asked for

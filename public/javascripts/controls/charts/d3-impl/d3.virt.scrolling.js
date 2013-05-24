@@ -283,10 +283,15 @@ chartObj.resizeHandle();
             return;
         }
 
-        // if we don't have totalRows yet then the sizing will be taken care
-        // of shortly anyway, so only resize otherwise
-        if (!$.isBlank(vizObj._chartConfig.maxValue))
+        if (vizObj._chartConfig.$chartContainer.filter(':visible').length === 0)
         {
+            // We've been resized to invisibility. Do nothing.
+            return;
+        }
+        else if (!$.isBlank(vizObj._chartConfig.maxValue))
+        {
+            // if we don't have totalRows yet then the sizing will be taken care
+            // of shortly anyway, so only resize otherwise
             vizObj._chartConfig.doResizeHandle();
         }
         else
@@ -909,7 +914,7 @@ chartObj.resizeHandle();
             var scaled = yScale(row[col.lookup]);
             rObj.tip.adjustPosition(
             {
-                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? scaled / 2 : scaled,
+                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? scaled / 2 : scaled
             });
         }
         else if (cc.orientation == 'right')

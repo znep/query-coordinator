@@ -95,6 +95,7 @@ d3base.seriesGrouping = {
         // front, rather than trying to piece things together as we go.
         var seriesGroupedView = sg.seriesGroupedView = sortedView.clone();
         var seriesGroupedColumns = _.without(sortColumns, vizObj._fixedColumns[0]);
+
         seriesGroupedView.update({ query: $.extend({}, sortedView.query, {
             groupBys: _.map(seriesGroupedColumns, function(col)
             {
@@ -333,9 +334,11 @@ d3base.seriesGrouping = {
         if (globalColorIndex[virtualColumnName]) return globalColorIndex[virtualColumnName];
 
         var currentColor = sg.valueColumnColors[lookup];
+
         if (!currentColor)
         {
-            sg.valueColumnColors[lookup] = { seed: valueColumn.color, current: valueColumn.color };
+            var seedColor = valueColumn.color || vizObj._displayFormat.colors[valueColumn.column.position];
+            sg.valueColumnColors[lookup] = { seed: seedColor, current: seedColor };
         }
         else
         {

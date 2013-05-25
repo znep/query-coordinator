@@ -10,7 +10,12 @@ $.Control.registerMixin('d3_base_dynamic', {
     {
         var vizObj = this;
         vizObj.getColumns();
+        vizObj.cleanDisplayFormat();
         vizObj._super();
+    },
+
+    cleanDisplayFormat: function()
+    {
     },
 
     // clear out our flag

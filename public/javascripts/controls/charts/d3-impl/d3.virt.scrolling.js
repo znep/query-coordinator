@@ -40,7 +40,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
         vizObj.defaults = $.extend(true, {}, vizObj.defaults);
 
         // if we need to do series grouping stuff, mix that in before anything else
+        vizObj.getColumns();
         if (_.isArray(vizObj._displayFormat.seriesColumns) &&
+            (vizObj._seriesColumns && vizObj._seriesColumns.length > 0) && // Can be zero length if series columns are invalid (bad string subst, etc).
             $.isBlank(vizObj._seriesGroupingSentinel)) // but don't do this if it's already been done
         {
             vizObj.Class.addProperties(vizObj, d3ns.base.seriesGrouping, $.extend({}, vizObj));
@@ -198,6 +200,30 @@ chartObj.resizeHandle();
         vizObj._decorateChrome();
 
         // super
+        vizObj._super();
+    },
+
+    // Goes through the _displayFormat and enforces some invariants we need.
+    // The purpose of this method is to make us tolerant to mild _displayFormat
+    // abuse, and still render where possible.
+    cleanDisplayFormat: function()
+    {
+        var vizObj = this,
+            df = vizObj._displayFormat,
+            plot = df.plot;
+
+        // Error bars must come in valid pairs.
+        if (plot && (plot.errorBarLow || plot.errorBarHigh))
+        {
+            var lowErrorBarColumn = vizObj._primaryView.columnForIdentifier(plot.errorBarLow);
+            var highErrorBarColumn = vizObj._primaryView.columnForIdentifier(plot.errorBarHigh);
+            if (!(lowErrorBarColumn && highErrorBarColumn))
+            {
+                delete plot.errorBarLow;
+                delete plot.errorBarHigh;
+            }
+        }
+
         vizObj._super();
     },
 
@@ -865,7 +891,6 @@ chartObj.resizeHandle();
             lowCol = vizObj._primaryView.columnForIdentifier(plot.errorBarLow),
             highCol = vizObj._primaryView.columnForIdentifier(plot.errorBarHigh),
             yAxisPos = vizObj._yAxisPos();
-
 
         var capWidth = 8;
 

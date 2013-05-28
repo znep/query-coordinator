@@ -12,9 +12,11 @@ class VersionAuthorityTest < Test::Unit::TestCase
     @complicated_manifest = {
         "search-views-some-stuff-that-does-not-matter" =>(@start - 5.minutes).to_i,
         "ab12-cd34" => @start.to_i,
-        "cd12-ab34" => ( @start - 40.minutes).to_i
+        "cd12-ab34" => ( @start - 40.minutes).to_i,
+        "pageUid-p4g3-srvc" => ( @start - 40.minutes).to_i
     }.sort
     @expect_datasets = ["ab12-cd34", "cd12-ab34"]
+    @expect_page = "p4g3-srvc"
   end
 
   def test_no_manifest_available
@@ -76,7 +78,8 @@ class VersionAuthorityTest < Test::Unit::TestCase
   def test_manifest_dataset_max_age_manifest_override
     test_manifest = {
         "search-views-some-stuff-that-does-not-matter" => @start.to_i ,
-        "ab12-cd34" => (@start - 30.minutes).to_i
+        "ab12-cd34" => (@start - 30.minutes).to_i,
+        "pageUid-p4g3-srvc" => @start.to_i
     }.sort
     set_test_manifest(test_manifest, 60)
     assert(VersionAuthority.validate_manifest?(@path, @user))
@@ -95,18 +98,21 @@ class VersionAuthorityTest < Test::Unit::TestCase
     assert(VersionAuthority.validate_manifest?(@path, @user))
   end
 
-  def the_truth(datasets = [], resources = [])
+  def the_truth(datasets = [], resources = [], page = nil)
     @expect_datasets = @expect_datasets || []
     @expect_resources = @expect_resources || []
+    @expect_page = @expect_page || nil
     assert_equal(@expect_datasets, datasets)
     assert_equal(@expect_resources, resources)
+    assert_equal(@expect_page, page)
     return @truth_manifest || {}
   end
 
   def test_manifest_compare_dataset_to_truth_success
     @truth_manifest = {
         "ab12-cd34" => @start.to_i,
-        "cd12-ab34" => ( @start - 40.minutes).to_i
+        "cd12-ab34" => ( @start - 40.minutes).to_i,
+        "pageUid-p4g3-srvc" => ( @start - 40.minutes).to_i
     }
     set_test_manifest(@complicated_manifest)
     assert(VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
@@ -115,7 +121,8 @@ class VersionAuthorityTest < Test::Unit::TestCase
   def test_manifest_compare_dataset_to_truth_failure
     @truth_manifest = {
         "ab12-cd34" => ( @start - 60.minutes).to_i * 1000,
-        "cd12-ab34" => ( @start - 10.minutes).to_i * 1000
+        "cd12-ab34" => ( @start - 10.minutes).to_i * 1000,
+        "pageUid-p4g3-srvc" => ( @start - 10.minutes).to_i
     }
     set_test_manifest(@complicated_manifest)
     assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
@@ -123,7 +130,7 @@ class VersionAuthorityTest < Test::Unit::TestCase
 
   def test_manifest_different_size_than_truth
     @truth_manifest = {
-        "ab12-cd34" => ( @start - 60.minutes).to_i * 1000,
+        "ab12-cd34" => ( @start - 60.minutes).to_i * 1000
     }
     set_test_manifest(@complicated_manifest)
     assert(!VersionAuthority.validate_manifest?(@path, @user, method(:the_truth)))
@@ -133,7 +140,8 @@ class VersionAuthorityTest < Test::Unit::TestCase
     @truth_manifest = {
         "ab12-cd34" => @start.to_i,
         "pages" => @start.to_i,
-        "some_resource" => @start.to_i
+        "some_resource" => @start.to_i,
+        "pageUid-p4g3-srvc" => @start.to_i
     }.sort
     @expect_datasets = ["ab12-cd34"]
     @expect_resources = ["pages", "some_resource"]
@@ -145,12 +153,14 @@ class VersionAuthorityTest < Test::Unit::TestCase
     resource_test_manifest = {
         "ab12-cd34" => @start.to_i,
         "pages" => ( @start - 60.minutes).to_i,
-        "some_resource" => @start.to_i
+        "some_resource" => @start.to_i,
+        "pageUid-p4g3-srvc" => @start.to_i
     }.sort
     @truth_manifest = {
         "ab12-cd34" => @start.to_i * 1000,
         "pages" => @start.to_i * 1000,
-        "some_resource" => @start.to_i * 1000
+        "some_resource" => @start.to_i * 1000,
+        "pageUid-p4g3-srvc" => @start.to_i
     }
     @expect_datasets = ["ab12-cd34"]
     @expect_resources = ["pages", "some_resource"]

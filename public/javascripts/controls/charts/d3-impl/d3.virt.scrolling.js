@@ -26,7 +26,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
         valueLabelBuffer: 100, // amount of room to leave for each row' label
         dataMaxBuffer: 30, // amount of room to leave in actual chart area past the max bar
-        smallModeThreshold: 400 // Height below which small mode is triggered.
+        smallModeThreshold: 400, // Height below which small mode is triggered (px).
+        minYSizeForLegend: 140 // If the y-axis is less than this (px), we hide the legend to try and display something useful.
+                               // We only hide the legend if we're reserving space for it (as opposed to just overlaying it).
     },
 
     initializeVisualization: function()
@@ -333,26 +335,72 @@ chartObj.resizeHandle();
         return this._chartConfig.$legendContainer;
     },
 
-    renderLegend: function()
+    _updateSizeBasedStyling: function()
     {
         var vizObj = this,
-            cc = vizObj._chartConfig,
+            cc = vizObj._chartConfig;
+
+        var smallestDimension = Math.min(vizObj.$dom().height(), vizObj.$dom().width());
+        var needsSmallMode = smallestDimension < vizObj.defaults.smallModeThreshold;
+        cc.$chartArea.toggleClass('smallMode', needsSmallMode);
+
+        vizObj._updateLegendStyle();
+    },
+
+    _updateLegendStyle: function()
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
             $legendContainer = vizObj.$legendContainer(),
-            legendPosition = vizObj.legendPosition(),
-            isSmallMode = vizObj._chartConfig.$chartArea.hasClass('smallMode');
+            legendPosition = vizObj.legendPosition();
 
-        vizObj._super();
+        var shouldHideLegend = false;
+        var enableLegendHidingLogic = false;
 
+        // We'll hide the legend if it would shrink the graph drawing area.
+        // For cases like orientation=down and legendPosition=top, it's fine to
+        // leave the legend as we just overlay it on the bars instead of
+        // reserving space for it.
+        if (vizObj._chartConfig.orientation == 'right')
+        {
+            enableLegendHidingLogic = (legendPosition == 'bottom') || (legendPosition == 'top');
+        }
+        else
+        {
+            enableLegendHidingLogic = (legendPosition == 'left') || (legendPosition == 'right');
+        }
+
+
+        if (enableLegendHidingLogic)
+        {
+            var yHeight = cc.dataDim.pluckY(vizObj.$dom().width(), vizObj.$dom().height());
+            shouldHideLegend = yHeight < vizObj.defaults.minYSizeForLegend;
+        }
+
+        vizObj.$legendContainer().toggleClass('hide', shouldHideLegend);
+
+        vizObj._chartConfig.$chartArea
+            .removeClass('hasTopLegend hasRightLegend hasBottomLegend hasLeftLegend hasNoLegend');
+
+        if (shouldHideLegend)
+        {
+            // If we've explicitly hidden the legend, style as if we didn't
+            // have a legend at all.
+            vizObj._chartConfig.$chartArea.addClass('hasNoLegend');
+        }
+        else
+        {
+            vizObj._chartConfig.$chartArea.addClass('has' + $.htmlEscape(legendPosition || 'No').capitalize() + 'Legend');
+        }
+
+        // Calculate the new valueLabelBuffer and dataMaxBuffer.
         // this is messy. what's a better way? Possibly make a getter method
         // for valueLabelBuffer and dataMaxBuffer. These methods would preferentially
         // return an explicitly-set value, otherwise fall back to the math we use
         // below.
+        var isSmallMode = vizObj._chartConfig.$chartArea.hasClass('smallMode');
         vizObj.defaults.valueLabelBuffer = isSmallMode ? 60 : 100;
         vizObj.defaults.dataMaxBuffer = 30;
-        vizObj._chartConfig.$chartArea
-            .removeClass('hasTopLegend hasRightLegend hasBottomLegend hasLeftLegend')
-            .addClass('has' + $.htmlEscape(legendPosition || 'No').capitalize() + 'Legend');
-
         if (vizObj._chartConfig.orientation == 'right')
         {
             if (legendPosition == 'bottom')
@@ -364,11 +412,28 @@ chartObj.resizeHandle();
                 vizObj.defaults.valueLabelBuffer = (isSmallMode ? 60 : 100) + $legendContainer.height();
                 vizObj.defaults.dataMaxBuffer = 30 + $legendContainer.height();
             }
-            else if ((legendPosition == 'left') || (legendPosition == 'right'))
-            {
-                $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
-            }
         }
+
+        // Our top legend margin sadly must be determined in code for this set
+        // of configuration options.
+        if (vizObj._chartConfig.orientation == 'right' &&
+            ((legendPosition == 'left') || (legendPosition == 'right')))
+        {
+            $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
+        }
+        else
+        {
+            $legendContainer.css('margin-top', '');
+        }
+    },
+
+    renderLegend: function()
+    {
+        var vizObj = this;;
+
+        vizObj._super();
+
+        vizObj._updateLegendStyle();
     },
 
     _decorateChrome: function()
@@ -451,14 +516,7 @@ chartObj.resizeHandle();
         if ($.isBlank(valueColumns) || $.isBlank(totalRows)) { return; }
         var numSeries = valueColumns.length;
 
-        var smallestDimension = Math.min(vizObj.$dom().height(), vizObj.$dom().width());
-        var needsSmallMode = smallestDimension < defaults.smallModeThreshold;
-        var wasSmallMode = cc.$chartArea.hasClass('smallMode');
-        cc.$chartArea.toggleClass('smallMode', needsSmallMode);
-        if (wasSmallMode != needsSmallMode)
-        {
-            vizObj.renderLegend();
-        }
+        vizObj._updateSizeBasedStyling();
 
         // save off old row width for comparison later (see below)
         var oldRowWidth = cc.rowWidth;
@@ -655,7 +713,7 @@ chartObj.resizeHandle();
         return d3.scale.linear()
             .domain([ !_.isNaN(explicitMin) ? explicitMin : Math.min(0, cc.minValue),
                       !_.isNaN(explicitMax) ? explicitMax : cc.maxValue ])
-            .range([ 0, rangeMax - vizObj.defaults.dataMaxBuffer ])
+            .range([ 0, Math.max(0, rangeMax - vizObj.defaults.dataMaxBuffer) ])
             .clamp(true);
     },
 

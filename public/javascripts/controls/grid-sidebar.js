@@ -511,7 +511,15 @@
         var $pane = sidebarObj.$currentOuterPane();
         if (!$.isBlank($pane))
         {
+            if ($pane.outerHeight() < 1)
+            {
+                // Not really ready to find size yet
+                _resizeNotReady = true;
+                return;
+            }
+            _resizeNotReady = false;
             var $scrollContent = $pane.find('.panes');
+            $scrollContent.css('height', '');
             adjH = $pane.outerHeight() - $scrollContent.height();
             $scrollContent.height(sidebarObj.$dom().height() - adjH);
         }
@@ -529,6 +537,7 @@
     var _resizeBlocked = false;
     var _lastWidth = -1;
     var _lastHeight = -1;
+    var _resizeNotReady = false;
     /* Handle window resizing */
     var handleResize = function(sidebarObj)
     {
@@ -536,7 +545,7 @@
         var newWidth = $window.width();
         var newHeight = $window.height();
 
-        if (newWidth == _lastWidth && newHeight == _lastHeight) { return; }
+        if (newWidth == _lastWidth && newHeight == _lastHeight && !_resizeNotReady) { return; }
 
         _lastWidth = newWidth;
         _lastHeight = newHeight;

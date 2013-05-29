@@ -32,5 +32,28 @@ it:
   controls:
     common:
       share:
-        button_tooltip: Condividi questo set di dati
-
+        button_prompt: Socializza
+        button_tooltip: Condividi questo Dataset
+        share_text: "Estrai %{name}, dataset su %{site}: "
+        networks:
+          facebook: Facebook
+          twitter: Twitter
+          email: Email
+      auth_required: "Devi effettuare l'accesso %{action_phrase}"
+      rate:
+        auth_action_phrase: vota questo dataset
+      stars:
+        tooltip: %{number} stelle
+      sidebar:
+        tabs:
+          edit: Modifica
+          manage: Gestici
+          moreViews: "Più Viste"
+          filter: Filtra
+          visualize: Visualizza
+          export: Esporta
+          discuss: Discussioni
+          embed: Incorpora
+          about: Informazioni
+      image_upload:
+        button: Carica Immagine

@@ -122,7 +122,7 @@ it:
       search: Cerca
       facets:
         view_types_title: Tipi di viste
-        view_types_singular_title: tipi
+        view_types_singular_title: tipo
         view_types:
           datasets: Datasets
           href: Dati esterni
@@ -172,8 +172,8 @@ it:
           facet: %{facet_type} di %{facet_value}
       listing:
         no_results: Nessun risultato
-        timeout: Siamo spiacenti. I risultati non possono essere recuperate da questo momento. Si prega di riprovare più tardi.
-        result_count: %{this} di %{total}
+        timeout: "Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare più tardi."
+        result_count: Mostrati %{this} di %{total}
         federation_source: Federato da %{source}
         # same as above but with a link. no particular reason the wording is different.
         federation_source_html: Fornito da %{source_link}
@@ -184,7 +184,7 @@ it:
           type: Tipo
           rss: RSS
       row_results:
-        title_html: "Mostrando <span class=\"rowResultCountText\"></span> di <span class=\"totalResultCountText\"></span> righe corrispondenti:"
+        title_html: "Mostrate <span class=\"rowResultCountText\"></span> di <span class=\"totalResultCountText\"></span> righe corrispondenti <a href=\"#\" class=\"rowSearchLink\">(vedi risultati)</a>:"
         more_link: Ancora
         less_link: Meno
       actions:
@@ -200,7 +200,7 @@ it:
         # this is shown in lieu of the above as a button in limited space situations:
         create_dataset_short: Crea un nuovo Dataset
         # same logic for these three as create_dataset:
-        suggest_dataset: Non trovi quello che stavi cercando ? Suggerisci un dataset.
+        suggest_dataset: Non trovi quello che stavi cercando? Suggerisci un dataset.
         suggest_dataset_verb: Suggerisci
         suggest_dataset_short: Suggerisci un Dataset
         # subscribe via rss to entire catalog:
@@ -210,14 +210,15 @@ it:
         compact_list: Visualizza come lista compatta
         rich_list: Visualizza come lista espansa
         expand_section: Clicca per espandere
+        share_button: Condividi
         moderation:
           accept: Accetta
           reject: Respingi
         permissions:
           title: "Cambia la visibilità"
           change_button:
-            public_html: Rendi Privati
-            private_html: Rendi Pubblica
+            public_html: Rendi Privato
+            private_html: Rendi Pubblico
         delete:
           title: Cancella questo item
           button: Cancella

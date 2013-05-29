@@ -24,16 +24,19 @@ it:
     grid:
       sort_ascending: Ordinamento crescente
       sort_descending: Ordinamento Discendente
-      clear_sort: Ordina Cancella
+      clear_sort: Elimina ordinamento
       hide_column: Nascondi colonna
       delete_column: Elimina colonna
       edit_column_properties: Modifica delle proprietà della colonna
       filter_this_column: Filtra questa colonna
-      clear_column_filter: filtro di colonna trasparente
-      precedente: Precedente
-      delete_warning_single_column: "Vuoi eliminare la colonna selezionata Tutti i dati in questa colonna verrà rimosso!"
-      delete_warning_multi_column: "Vuoi eliminare le colonne selezionate Tutti i dati in queste colonne saranno rimossi!"
-      view_single_row: Visualizzare Singolo Record
+      clear_column_filter: Elimina filtro
+      previous: Precedente
+      delete_warning_single_column: "Vuoi eliminare la colonna selezionata? Tutti i dati in questa colonna saranno rimossi!"
+      delete_warning_multi_column: "Vuoi eliminare le colonne selezionate? Tutti i dati in queste colonne saranno rimossi!"
+      view_single_row: Visualizza Singolo Record
       delete_row: Elimina Record
       click_for_menu: Clicca per il Menu
       must_enter_name: Devi inserire un nome per questa colonna
+      no_rows: Nessun record da visualizzare
+      new_row: Nuovo
+	  

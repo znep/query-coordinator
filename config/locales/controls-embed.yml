@@ -22,10 +22,10 @@ it:
       form_frame: Incorpora questo Form in un Frame
       form_or: o
       embed: Incorpora questo Dataset
-      private_warning: "Questa vista è attualmente privata. Puoi visualizzarne un'anteprima, ma dovrai renderla pubblica prima che altri possano vederla."
+      private_warning: "Questa vista Ã¨ attualmente privata. Puoi visualizzarne un'anteprima, ma dovrai renderla pubblica prima che altri possano vederla."
       size: Dimensioni
       custom_size: Personalizza Dimensioni
-      minimum_size: "425x425 è la dimensione minima"
+      minimum_size: "425x425 Ã¨ la dimensione minima"
       width: Larghezza
       height: Altezza
       sdp_template: Social Data Player Template

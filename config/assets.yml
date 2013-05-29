@@ -238,6 +238,7 @@ javascripts:
     - public/javascripts/controls/charts/d3-impl/d3.base.legend.js
     - public/javascripts/controls/charts/d3-impl/d3.virt.scrolling.js
     - public/javascripts/controls/charts/d3-impl/d3.impl.bar.js
+    - public/javascripts/controls/charts/d3-impl/d3.impl.line.js
   shared-visualization:
     - public/javascripts/controls/render-type-manager.js
   shared-richRenderers:

@@ -55,13 +55,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         // own object to save temp stuff on
         var cc = vizObj._chartConfig = {};
-
-        // domain orientation - column charts go right; bar charts go down
-        // TODO: This stuff is here for debugging purposes.
-        //cc.orientation = 'down';
-        //cc.orientation = 'right';
-        if (foobar = $.urlParam(window.location.href, 'orientation')) { cc.orientation = foobar; }
-        else { cc.orientation = vizObj._chartType.indexOf('column') > -1 ? 'right' : 'down'; }
+        cc.orientation = vizObj.getOrientation();
 
         cc.dataDim = (function(orientation) {
             return {
@@ -229,6 +223,18 @@ chartObj.resizeHandle();
         }
 
         vizObj._super();
+    },
+
+    getOrientation: function()
+    {
+        var vizObj = this;
+
+        // domain orientation - column charts go right; bar charts go down
+        // TODO: This stuff is here for debugging purposes.
+        //cc.orientation = 'down';
+        //cc.orientation = 'right';
+        if (foobar = $.urlParam(window.location.href, 'orientation')) { return foobar; }
+        else { return vizObj._chartType.indexOf('column') > -1 ? 'right' : 'down'; }
     },
 
     cleanVisualization: function()
@@ -538,7 +544,7 @@ chartObj.resizeHandle();
         };
         var calculateTotalWidth = function()
         {
-            return (calculateRowWidth() * totalRows) + (2 * cc.sidePadding)
+            return (vizObj._calculateRowWidth() * totalRows) + (2 * cc.sidePadding)
                     - cc.rowSpacing + defaults.dataMaxBuffer;
         };
 
@@ -637,7 +643,7 @@ chartObj.resizeHandle();
         }
 
         // for convenience later, precalculate the row width
-        cc.rowWidth = calculateRowWidth();
+        cc.rowWidth = vizObj._calculateRowWidth();
 
         // set margin
         if (cc.orientation == 'right')
@@ -651,6 +657,17 @@ chartObj.resizeHandle();
         // return whether our row width has changed, so we know
         // if we'll have to move some things around
         return ((oldRowWidth != cc.rowWidth) || (oldSidePadding != cc.sidePadding));
+    },
+
+    _calculateRowWidth: function()
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig,
+            valueColumns = vizObj.getValueColumns();
+
+        return (cc.barWidth * valueColumns.length) +
+               (cc.barSpacing * (valueColumns.length - 1)) +
+                cc.rowSpacing;
     },
 
     // accounts for screen scaling
@@ -1027,7 +1044,7 @@ chartObj.resizeHandle();
             rObj.tip.adjustPosition(
             {
                 top: (row[col.lookup] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.lookup])),
-                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2)
+                left: vizObj._xFlyoutPosition()
             });
         }
 
@@ -1039,6 +1056,14 @@ chartObj.resizeHandle();
         }
 
         view.highlightRows(row, null, col);
+    },
+
+    _xFlyoutPosition: function()
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+
+        return ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2);
     },
 
     handleMouseOut: function(rObj, colDef, row, yScale)

@@ -513,6 +513,7 @@
                          flyoutControls(options)]),
                     yAxisFormatting(chart, options),
                     valueMarker(chart, options),
+                    advLegend(chart, options),
                     domainMarker(chart, options));
                 break;
 

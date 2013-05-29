@@ -42,9 +42,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
         vizObj.defaults = $.extend(true, {}, vizObj.defaults);
 
         // if we need to do series grouping stuff, mix that in before anything else
+        // It should be safe to mix this in even without grouping, but this saves
+        // some work (note that we never un-mix if grouping gets disabled on this
+        // chart).
         vizObj.getColumns();
-        if (_.isArray(vizObj._displayFormat.seriesColumns) &&
-            (vizObj._seriesColumns && vizObj._seriesColumns.length > 0) && // Can be zero length if series columns are invalid (bad string subst, etc).
+        if (vizObj.requiresSeriesGrouping() &&
             $.isBlank(vizObj._seriesGroupingSentinel)) // but don't do this if it's already been done
         {
             vizObj.Class.addProperties(vizObj, d3ns.base.seriesGrouping, $.extend({}, vizObj));
@@ -236,6 +238,12 @@ chartObj.resizeHandle();
         delete vizObj._chartConfig;
 
         vizObj._super();
+    },
+
+    requiresSeriesGrouping: function()
+    {
+        return _.isArray(this._displayFormat.seriesColumns) &&
+            (this._seriesColumns && this._seriesColumns.length > 0); // Can be zero length if series columns are invalid (bad string subst, etc).
     },
 
     getValueColumns: function()

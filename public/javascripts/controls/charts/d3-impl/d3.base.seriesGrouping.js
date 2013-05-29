@@ -25,7 +25,14 @@ d3base.seriesGrouping = {
     initializeVisualization: function()
     {
         var vizObj = this;
+
         vizObj.getColumns();
+
+        if (!vizObj.requiresSeriesGrouping())
+        {
+            delete this._seriesGrouping;
+            return vizObj._super.apply(vizObj, arguments);
+        }
 
         var sg = vizObj._seriesGrouping = {
             categoryIndexLookup: {},
@@ -211,6 +218,11 @@ d3base.seriesGrouping = {
         var vizObj = this,
             sg = vizObj._seriesGrouping;
 
+        if (!vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
+
         if (sg.ready !== true)
         {
             sg.wantsData = true;
@@ -222,8 +234,14 @@ d3base.seriesGrouping = {
 
     getRenderRange: function(view)
     {
-        var vizObj = this,
-            sg = vizObj._seriesGrouping,
+        var vizObj = this;
+
+        if (!vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
+
+        var sg = vizObj._seriesGrouping,
             numCols = _.size(sg.virtualColumns);
 
         var virtualRenderRange = vizObj._super(view);
@@ -233,8 +251,14 @@ d3base.seriesGrouping = {
 
     renderData: function(data)
     {
-        var vizObj = this,
-            sg = vizObj._seriesGrouping,
+        var vizObj = this;
+
+        if (!vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
+
+        var sg = vizObj._seriesGrouping,
             fixedColumn = vizObj._fixedColumns[0],
             view = vizObj._primaryView;
 
@@ -303,8 +327,14 @@ d3base.seriesGrouping = {
 
     removeRow: function(row, view)
     {
-        var vizObj = this,
-            sg = vizObj._seriesGrouping,
+        var vizObj = this;
+
+        if (!vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
+
+        var sg = vizObj._seriesGrouping,
             fixedColumn = vizObj._fixedColumns[0],
             category = row[fixedColumn.id],
             vRow = sg.virtualRows[category];
@@ -382,8 +412,14 @@ d3base.seriesGrouping = {
 
     getValueColumns: function()
     {
-        var vizObj = this,
-            sg = vizObj._seriesGrouping;
+        var vizObj = this;
+
+        if (!vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
+
+        var sg = vizObj._seriesGrouping;
 
         // could return null; callers need to handle.
         if (!sg || !sg.ready)
@@ -396,8 +432,14 @@ d3base.seriesGrouping = {
 
     getTotalRows: function()
     {
-        var vizObj = this,
-            sg = vizObj._seriesGrouping;
+        var vizObj = this;
+
+        if (!vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
+
+        var sg = vizObj._seriesGrouping;
 
         // could return null; callers need to handle.
         if (!sg || !sg.ready)
@@ -411,14 +453,30 @@ d3base.seriesGrouping = {
     {
         // swap out virtual col/row references for hard references
         var vizObj = this;
-        vizObj._super(rObj, colDef.column.realValueColumn, row.realRows[colDef.column.id], yScale);
+
+        if (vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super(rObj, colDef.column.realValueColumn, row.realRows[colDef.column.id], yScale);
+        }
+        else
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
     },
 
     handleMouseOut: function(rObj, colDef, row, yScale)
     {
         // swap out virtual col/row references for hard references
         var vizObj = this;
-        vizObj._super(rObj, colDef.column.realValueColumn, row.realRows[colDef.column.id], yScale);
+
+        if (vizObj.requiresSeriesGrouping())
+        {
+            return vizObj._super(rObj, colDef.column.realValueColumn, row.realRows[colDef.column.id], yScale);
+        }
+        else
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
     }
 };
 

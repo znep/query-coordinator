@@ -131,6 +131,7 @@ window.chartDebugger = function()
 {
     window.chartObj = blist.datasetPage.rtManager.$domForType('chart').socrataChart();
     window.cc = chartObj._chartConfig || chartObj._columnChart;
+    window.sg = chartObj._seriesGrouping;
     window.drawLine = function(num, color)
     {
         var $foo = $("<div />").css({ position: 'absolute', top: 0, left: 0,

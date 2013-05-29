@@ -30,6 +30,7 @@ d3base.seriesGrouping = {
         var sg = vizObj._seriesGrouping = {
             categoryIndexLookup: {},
             groupedView: null,
+            hasGroupBys: _.isArray((vizObj._primaryView.query || {}).groupBys),
             physicalRowsRetreived: 0,
             ready: false,
             sortedView: null,
@@ -78,11 +79,15 @@ d3base.seriesGrouping = {
         // piggyback off sortedView so that the categories come back sorted
         var categoryGroupedView = sortedView.clone();
         var fixedColumn = vizObj._fixedColumns[0];
-        categoryGroupedView.update({ query: $.extend({}, sortedView.query, {
-            groupBys: [{
+
+        var categoryGroupBys = (sortedView.query.groupBys || []).concat([
+            {
                 columnId: fixedColumn.id,
                 type: 'column'
-            }]
+            } ]);
+
+        categoryGroupedView.update({ query: $.extend({}, sortedView.query, {
+            groupBys: categoryGroupBys
         }) });
         categoryGroupedView.getAllRows(function(rows)
         {
@@ -96,14 +101,17 @@ d3base.seriesGrouping = {
         var seriesGroupedView = sg.seriesGroupedView = sortedView.clone();
         var seriesGroupedColumns = _.without(sortColumns, vizObj._fixedColumns[0]);
 
-        seriesGroupedView.update({ query: $.extend({}, sortedView.query, {
-            groupBys: _.map(seriesGroupedColumns, function(col)
+        var seriesGroupBys = (seriesGroupedView.query.groupBys || []).concat(
+            _.map(seriesGroupedColumns, function(col)
             {
                 return {
                     columnId: col.id,
                     type: 'column'
                 };
-            })
+            }));
+
+        seriesGroupedView.update({ query: $.extend({}, sortedView.query, {
+            groupBys: seriesGroupBys
         }) });
         seriesGroupedView.getAllRows(function(rows)
         {
@@ -142,7 +150,13 @@ d3base.seriesGrouping = {
         {
             sg.categoryIndexLookup[row[fixedColumn.lookup]] = row.index;
         });
-        sg.totalVirtualRows = sg.categoryGroupedRows.length;
+        sg.totalVirtualRows = _.size(sg.categoryIndexLookup);
+
+        if (sg.hasGroupBys)
+        {
+            _.each(_.keys(sg.categoryIndexLookup), function(category, index)
+            { sg.categoryIndexLookup[category] = index; });
+        }
 
         // figure out our series columns.
         _.each(sg.seriesGroupedRows, function(row)
@@ -158,6 +172,9 @@ d3base.seriesGrouping = {
 
                 if (!_.isUndefined(sg.virtualColumns[virtualColumnName]))
                 {
+                    // FIXME: This error starts spamming on groupBys.
+                    // Need to figure out why and when it's proper to squelch it.
+
                     // something has gone wrong
                     console.log('Error: got a dupe virt col somehow?');
                     return;

@@ -91,7 +91,7 @@ $.Control.registerMixin('d3_base_legend', {
 
         // Trim the label, otherwise browsers like to wrap the line unnecessarily if there's whitespace at the end.
         // Also, if the label text is blank, add a non-breaking space to prevent the same issue.
-        var labelText = label.trim();
+        var labelText = label ? label.trim() : '';
         var labelEscapedHtml = $.isBlank(labelText) ? '&nbsp;' : $.htmlEscape(labelText);
         if (iconOpts.color)
         {

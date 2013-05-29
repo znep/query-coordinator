@@ -712,7 +712,7 @@ chartObj.resizeHandle();
 
         return d3.scale.linear()
             .domain([ !_.isNaN(explicitMin) ? explicitMin : Math.min(0, cc.minValue),
-                      !_.isNaN(explicitMax) ? explicitMax : cc.maxValue ])
+                      !_.isNaN(explicitMax) ? explicitMax : Math.max(0, cc.maxValue) ])
             .range([ 0, Math.max(0, rangeMax - vizObj.defaults.dataMaxBuffer) ])
             .clamp(true);
     },
@@ -883,7 +883,16 @@ chartObj.resizeHandle();
         var isFunction = _.isFunction(colId);
 
         return this._chartConfig.dataDim.pluckY(
-            yAxisPos,
+            function(d)
+            {
+                // I'd love some better math for this. Basically we're stuck
+                // with a bar with its left edge at the baseline, and it's up to
+                // us to move the correct edge to the zero baseline, depending
+                // on the bar's polarity.
+                // Why? Because SVG doesn't like negative rect widths :/
+                var value = d[isFunction ? colId.call(this) : colId];
+                return yAxisPos + ((value < 0) ? yScale(value) : yScale(0));
+            },
             function(d)
             {
                 return yAxisPos -
@@ -898,8 +907,10 @@ chartObj.resizeHandle();
     {
         var yScaleZero = yScale(0);
         var isFunction = _.isFunction(colId);
-        var negative = -this._chartConfig.dataDim.dir;
-        return function(d) { return Math.abs(yScaleZero + negative * yScale(d[isFunction ? colId.call(this) : colId])); };
+        return function(d)
+        {
+            return Math.abs(yScale(d[isFunction ? colId.call(this) : colId]) - yScaleZero);
+        };
     },
 
     _labelTransform: function()

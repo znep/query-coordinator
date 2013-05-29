@@ -138,18 +138,19 @@ $.Control.registerMixin('d3_impl_bar', {
                     })
                     .attr(cc.dataDim.yAxis, function(d)
                     {
+                        var oldVal = vizObj._yBarPosition(col.lookup, oldYScale);
+                        if (_.isFunction(oldVal))
+                        {
+                            oldVal = oldVal(d);
+                        }
+
                         if (cc.orientation == 'right')
                         {
                             var oldHeight = vizObj._yBarHeight(col.lookup, oldYScale)(d);
                             var newHeight = vizObj._yBarHeight(col.lookup, newYScale)(d);
 
-                            var oldVal = vizObj._yBarPosition(col.lookup, oldYScale);
                             var newVal = vizObj._yBarPosition(col.lookup, newYScale);
 
-                            if (_.isFunction(oldVal))
-                            {
-                                oldVal = oldVal(d);
-                            }
 
                             if (_.isFunction(newVal))
                             {
@@ -160,7 +161,7 @@ $.Control.registerMixin('d3_impl_bar', {
                         }
                         else
                         {
-                            return vizObj._yBarPosition(col.lookup, oldYScale);
+                            return oldVal;
                         }
                     })
 

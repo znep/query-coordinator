@@ -30,9 +30,10 @@
     width: 50em
 
     .ie8 &
-      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3)
-      left: -2em
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand') progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/stylesheets/images/content/70percentwhite.png', sizingMethod='scale')
+      margin-left: 25em
       margin-top: -24em
+      background: transparent
 
   .xLabelHoriz
     background: url(/stylesheets/images/content/70percentwhite.png)

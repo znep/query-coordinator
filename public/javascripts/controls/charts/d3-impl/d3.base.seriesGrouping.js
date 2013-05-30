@@ -138,6 +138,9 @@ d3base.seriesGrouping = {
         // initialize the rest of the chain once we're ready here. saves a
         // lot of bad hackery.
         sg.superInit = vizObj._super;
+
+        // We're interested in some events coming from the primary view.
+        vizObj._primaryView.bind('conditionalformatting_change', _.bind(vizObj._handleConditionalFormattingChanged, vizObj), vizObj);
     },
 
     cleanVisualization: function()
@@ -447,6 +450,34 @@ d3base.seriesGrouping = {
             return null
         }
         return sg.totalVirtualRows;
+    },
+
+    _d3_getColor: function(colDef, d)
+    {
+        var vizObj = this;
+
+        if (vizObj.requiresSeriesGrouping() && d && d.realRows && d.realRows[colDef.column.id].color)
+        {
+            return d.realRows[colDef.column.id].color;
+        }
+        else
+        {
+            return vizObj._super.apply(vizObj, arguments);
+        }
+    },
+
+    _handleConditionalFormattingChanged: function()
+    {
+        // Plumb through the conditional formatting to our sorted view, then
+        // refresh the data.
+        var sortedView = this._seriesGrouping.sortedView;
+        var primaryView = this._primaryView;
+
+        var newMd = $.extend(true, {}, sortedView.metadata);
+        newMd.conditionalFormatting = (primaryView.metadata || {}).conditionalFormatting;
+
+        this._seriesGrouping.sortedView.update({metadata: newMd});
+        this.getDataForView(this._seriesGrouping.sortedView);
     },
 
     handleMouseOver: function(rObj, colDef, row, yScale)

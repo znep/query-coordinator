@@ -352,7 +352,7 @@
   <script type="text/javascript">
     $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner({model: blist.dataset}); });
 
-    <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
+    <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self, params['debug_assets']) %>
 
     <%- if !@row.nil? -%>
     blist.initialRowId = "<%= @row['sid'] %>";

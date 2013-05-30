@@ -104,36 +104,42 @@ var RowSet = ServerModel.extend({
             var newRows = _.map(_.select(rs._parent._rows, function(r)
                     { return rs._doesBelong(r); }), function(r) { return $.extend({}, r); });
             rs._totalCount = newRows.length;
-            newRows = _.sortBy(newRows, function(r) { return r.position; });
+
+            var sortVals = _.map(newRows, function(r)
+            {
+                return { sorts: [r.position], row: r };
+            });
+
             _.each((rs._translatedQuery.orderBys || []).slice().reverse(), function(ob)
             {
                 var col = rs._dataset.columnForIdentifier(ob.expression.columnId);
                 if ($.isBlank(col)) { return; }
-                var blankRows = [];
-                var sortVals = _.map(_.reject(newRows, function(r)
+                _.each(sortVals, function(sv)
+                {
+                    var v = sv.row[col.lookup];
+                    if ($.isBlank(v))
+                    { v = null; }
+                    else
                     {
-                        if ($.isBlank(r[col.lookup]))
-                        {
-                            blankRows.push(r);
-                            return true;
-                        }
-                        return false;
-                    }),
-                    function(r)
-                    {
-                        var v = r[col.lookup];
                         if (_.isFunction(col.renderType.matchValue))
                         { v = col.renderType.matchValue(v, col); }
-                        return {sortVal: v, value: r};
-                    });
-                newRows = _.pluck(sortVals.sort(function(l, r)
-                        {
-                            var a = l.sortVal;
-                            var b = r.sortVal;
-                            return (a < b ? -1 : a > b ? 1 : 0) * (ob.ascending ? 1 : -1);
-                        }), 'value');
-                newRows = newRows.concat(blankRows);
+                    }
+                    sv.sorts.unshift(v);
+                });
             });
+
+            var sorts = (rs._translatedQuery.orderBys || []).slice();
+            // Add fake sort for position
+            sorts.push({ ascending: true });
+            newRows = _.pluck(sortVals.sort(function(l, r)
+            {
+                var a = l.sorts;
+                var b = r.sorts;
+                var i = 0;
+                while (i < a.length && a[i] == b[i])
+                { i++; }
+                return (i == a.length ? 0 : ((a[i] < b[i] ? -1 : 1) * (sorts[i].ascending ? 1 : -1)));
+            }), 'row');
             rs._addRows(newRows, 0, true);
         }
 

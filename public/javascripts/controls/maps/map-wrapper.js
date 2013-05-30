@@ -14,22 +14,8 @@
 
         getRequiredJavascripts: function()
         {
-            // This is a terrible hack; but we need to know if Google
-            // has already been loaded, since it has a special callback.
-            // We can't store a normal object var, because the whole
-            // library is being recreated
-            if (blist.util.googleCallbackMap) { return null; }
-
-            blist.util.googleCallback = this._setupLibraries;
-            blist.util.googleCallbackMap = this;
-            return "https://maps.google.com/maps/api/js?sensor=true&libraries=geometry&callback=blist.util.googleCallback";
-        },
-
-        _setupLibraries: function()
-        {
-            // Grab a reference to the current object (this) from a global
-            var mapObj = blist.util.googleCallbackMap;
-            mapObj._librariesLoaded();
+            return { url: 'https://maps.google.com/maps/api/js?sensor=true&libraries=geometry',
+                jsonp: 'callback' };
         },
 
         initializeVisualization: function()

@@ -1,5 +1,6 @@
 ;(function($) {
-var assetNS = blist.namespace.fetch('blist.util.assetLoading');
+var assetNSName = 'blist.util.assetLoading';
+var assetNS = blist.namespace.fetch(assetNSName);
 
 // Keep a hash of which files are in the middle of processing
 var lazyLoadingAssets = {libraries: {}, translations: {}};
@@ -83,8 +84,9 @@ assetNS.loadLibraries = function(scriptQueue, callback)
 
     var found = false; // found keeps track of whether we have pending jobs
     var loadingItems = [];
-    _.each(queue, function(item)
+    _.each(queue, function(qItem)
     {
+        var item = $.isPlainObject(qItem) ? qItem.url : qItem;
         if (lazyLoadingAssets.libraries[item] || lazyLoadedAssets.libraries[item])
         {
             if (lazyLoadingAssets.libraries[item])
@@ -93,11 +95,22 @@ assetNS.loadLibraries = function(scriptQueue, callback)
             return;
         }
 
+        var url = item;
+        var skipCheck = false;
+        if ($.subKeyDefined(qItem, 'jsonp'))
+        {
+            var jpParam = {};
+            var uniqFunc = 'callback_' + _.uniqueId();
+            assetNS[uniqFunc] = function() { checkLoadedLibraries(item); };
+            jpParam[qItem.jsonp] = assetNSName + '.' + uniqFunc;
+            url += (item.indexOf('?') >= 0 ? '&' : '?') + $.param(jpParam);
+            skipCheck = true;
+        }
+
         if (blist.configuration.development)
         {
             // Microsoft seems to hate adding ?_=123 to veapicore.js,
             // so don't add it since we don't need it.
-            var url = item;
             if (item.indexOf('veapicore') < 0)
             {
                 // In dev, make the URL unique so we always reload to pick
@@ -105,12 +118,15 @@ assetNS.loadLibraries = function(scriptQueue, callback)
                 url += (item.indexOf('?') >= 0 ? '&' : '?') +
                     $.param({'_': (new Date()).valueOf().toString().slice(0, 9)});
             }
-            $lazyLoadLab = $lazyLoadLab.script(url).wait(function() { checkLoadedLibraries(item); });
+            $lazyLoadLab = $lazyLoadLab.script(url);
+            if (!skipCheck)
+            { $lazyLoadLab = $lazyLoadLab.wait(function() { checkLoadedLibraries(item); }); }
         }
         else
         {
-            $lazyLoadLab = $lazyLoadLab.script(item);
-            loadingItems.push(item);
+            $lazyLoadLab = $lazyLoadLab.script(url);
+            if (!skipCheck)
+            { loadingItems.push(item); }
         }
         lazyLoadingAssets.libraries[item] = true;
         found = true;
@@ -138,7 +154,8 @@ var checkLoadedLibraries = function(item)
     _.each(lazyLoadingAssetJobs, function(job)
     {
         if (_.all(job.queue, function(queueItem)
-        { return !_.isUndefined(lazyLoadedAssets.libraries[queueItem]); }))
+            { return !_.isUndefined(lazyLoadedAssets.libraries[$.isPlainObject(queueItem) ?
+                queueItem.url : queueItem]); }))
         {
             if (_.isFunction(job.callback)) { job.callback(); }
             finishedJobs.push(job);
@@ -323,10 +340,13 @@ var translateUrls = function(prefix, array, type)
         { return blist.assets[type][item.assets]; }
         else
         {
-          // Preserve false/null/external links
-          if (item && ! item.startsWith('http') && !item.startsWith('/'))
-          { return prefix + item; }
-          return item;
+            var u = $.isPlainObject(item) ? item.url : item;
+            // Preserve false/null/external links
+            if (u && !u.startsWith('http') && !u.startsWith('/'))
+            { u = prefix + u; }
+            if ($.isPlainObject(item)) { item.url = u; }
+            else { item = u; }
+            return item;
         }
     });
 };

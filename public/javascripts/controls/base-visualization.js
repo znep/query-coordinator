@@ -541,17 +541,9 @@
 
             var scripts = vizObj.getRequiredJavascripts();
 
-            // If _setupLibraries is defined, we're assuming that the
-            // function will be called by an external source.
-            // This is used, for example, in google maps, where the
-            // google loader itself async loads other files, and only *it*
-            // knows when it's ready, not LABjs
-            var callback = _.isFunction(vizObj._setupLibraries) &&
-                !$.isBlank(scripts) ? function() {} : vizObj._librariesLoaded;
-
             if (vizObj._dynamicLibrariesLoaded)
             {
-                callback();
+                vizObj._librariesLoaded();
                 return;
             }
 
@@ -559,13 +551,13 @@
             {
                 blist.util.assetLoading.loadLibraries(scripts, function() {
                     vizObj._dynamicLibrariesLoaded = true;
-                    callback();
+                    vizObj._librariesLoaded();
                 });
             }
             else
             {
                 vizObj._dynamicLibrariesLoaded = true;
-                callback();
+                vizObj._librariesLoaded();
             }
         },
 

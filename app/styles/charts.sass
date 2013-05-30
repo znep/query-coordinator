@@ -17,6 +17,10 @@
   &.hasTopLegend .legendContainer
     position: absolute
 
+  &.hasTopLegend .legendContainer, &.hasBottomLegend .legendContainer
+    max-height: 20em
+    overflow-y: auto
+
   .yLabelVert
     font-size: 1.4em
     font-weight: bold
@@ -84,38 +88,6 @@
     &.right
       float: right
 
-    .legendLine
-      display: inline-block
-      padding: 1em
-
-      .legendIcon
-        float: left
-        height: 2em
-        margin-right: 1em
-        width: 2em
-
-        .markerLine
-          display: block
-          height: 2px
-          margin: 0.9em 0
-          width: 2em
-
-      .legendLabel
-        font-size: 1.3em
-        line-height: 1.538em
-
-  &.smallMode
-    .legendLine
-      padding: 0.2em
-
-      .legendIcon
-        height: 1.25em
-        width: 1.25em
-
-      .legendLabel
-        font-size: 1.1em
-        line-height: 1.1em
-
   .baselineContainer
     cursor: move
     position: absolute
@@ -178,6 +150,41 @@
       @include no-pointer-events("/stylesheets/images/content/70percentwhite.png")
       position: absolute
       text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8)
+
+
+
+.chartArea
+  .legendLine
+    display: inline-block
+    padding: 1em
+
+  .legendIcon
+    float: left
+    height: 2em
+    margin-right: 1em
+    width: 2em
+
+    .markerLine
+      display: block
+      height: 2px
+      margin: 0.9em 0
+      width: 2em
+
+  .legendLabel
+    font-size: 1.3em
+    line-height: 1.538em
+
+.smallMode
+  .legendLine
+    padding: 0.2em
+
+  .legendIcon
+    height: 1.25em
+    width: 1.25em
+
+  .legendLabel
+    font-size: 1.1em
+    line-height: 1.1em
 
 .chartArea.columnChart, .chartArea.barChart.orientationRight
 
@@ -398,3 +405,5 @@
     .tickLabel
       top: 1px
       height: 1.2em
+
+

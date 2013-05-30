@@ -27,6 +27,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         valueLabelBuffer: 100, // amount of room to leave for each row' label
         dataMaxBuffer: 30, // amount of room to leave in actual chart area past the max bar
         smallModeThreshold: 400, // Height below which small mode is triggered (px).
+        largeLegendMaxLineThreshold: 15, // If we've got more than this amount of lines in the legend, switch the legend only to small mode.
         minYSizeForLegend: 140 // If the y-axis is less than this (px), we hide the legend to try and display something useful.
                                // We only hide the legend if we're reserving space for it (as opposed to just overlaying it).
     },
@@ -367,6 +368,8 @@ chartObj.resizeHandle();
             cc = vizObj._chartConfig;
             $legendContainer = vizObj.$legendContainer(),
             legendPosition = vizObj.legendPosition();
+
+        $legendContainer.toggleClass('smallMode', $legendContainer.find('.legendLine').length > vizObj.defaults.largeLegendMaxLineThreshold);
 
         var shouldHideLegend = false;
         var enableLegendHidingLogic = false;

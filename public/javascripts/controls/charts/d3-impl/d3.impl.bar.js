@@ -221,7 +221,6 @@ $.Control.registerMixin('d3_impl_bar', {
         });
 
         // render our labels per row
-        // 3.5 is a somewhat arbitrary number to bring the label's center rather than
         // baseline closer to the row's center
         var rowLabels = cc.chartD3.selectAll('.rowLabel')
             .data(data, function(row) { return row.id; });
@@ -234,7 +233,6 @@ $.Control.registerMixin('d3_impl_bar', {
                         'font-size': 13 });
         rowLabels
                 // TODO: make a transform-builder rather than doing this concat
-                // 10 is to bump the text off from the actual axis
                 .attr('transform', vizObj._labelTransform())
                 .attr('font-weight', function(d)
                         { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })

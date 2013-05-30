@@ -689,8 +689,7 @@
                     },
                     // Hack for Bug 9280.
                     atPixel: feature.geometry instanceof OpenLayers.Geometry.Polygon
-                        ? new OpenLayers.Pixel(layerObj._parent._lastClickAt.x,
-                                               layerObj._parent._lastClickAt.y)
+                        ? layerObj._parent._lastClickAt.clone()
                         : false
                 });
             }

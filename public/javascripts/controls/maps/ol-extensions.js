@@ -1192,6 +1192,21 @@
         this.register(type, obj, callback);
     };
 
+    // For some reason, OpenLayers normally converts the pixel to lonlat which
+    // breaks horribly when your baseLayer is hidden.
+    // Related bugs: 9820, 10919.
+    OpenLayers.Popup.FramedCloud.prototype.calculateRelativePosition = function(px)
+    {
+        var size = this.map.getSize(),
+            quadrant = "";
+            center = { x: size.w / 2, y: size.h / 2 };
+
+        quadrant += (px.y < center.y) ? "t" : "b";
+        quadrant += (px.x < center.x) ? "l" : "r";
+
+        return OpenLayers.Bounds.oppositeQuadrant(quadrant);
+    };
+
     blist.openLayers.Polygon = OpenLayers.Class(OpenLayers.Geometry.Polygon, {
         initialize: function()
         {
@@ -1667,7 +1682,7 @@
 
             // Hack for Bug 9280.
             if (options.atPixel)
-            { this._popup.moveTo(new OpenLayers.Pixel(options.atPixel.x, options.atPixel.y)); }
+            { this._popup.moveTo(options.atPixel); }
         },
 
         _open: function(lonlat, options)

@@ -5,9 +5,9 @@
  * @author Jeff Robbins - Lullabot - http://www.lullabot.com
  * @version 0.9.5 release candidate 1  (5/20/2009)
  */
- 
+
 jQuery.bt = {version: '0.9.5-rc1'};
- 
+
 /*
  * @type jQuery
  * @cat Plugins/bt
@@ -17,7 +17,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
  *
- * Encourage development. If you use BeautyTips for anything cool 
+ * Encourage development. If you use BeautyTips for anything cool
  * or on a site that people have heard of, please drop me a note.
  * - jeff ^at lullabot > com
  *
@@ -25,7 +25,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
  *
  */
 
-;(function($) { 
+;(function($) {
   /**
    * @credit Inspired by Karl Swedberg's ClueTip
    *    (http://plugins.learningjquery.com/cluetip/), which in turn was inspired
@@ -73,12 +73,12 @@ jQuery.bt = {version: '0.9.5-rc1'};
    *
    * For more/better documentation and lots of examples, visit the demo page included with the distribution
    *
-   */ 
-  
+   */
+
     var incrId = 0;
 
   jQuery.fn.bt = function(content, options) {
-  
+
     var contentSelect = false;
     if (typeof content != 'string')
     {
@@ -93,29 +93,29 @@ jQuery.bt = {version: '0.9.5-rc1'};
             content = false;
         }
     }
-    
+
     // if hoverIntent is installed, use that as default instead of hover
     if (jQuery.fn.hoverIntent && jQuery.bt.defaults.trigger == 'hover') {
       jQuery.bt.defaults.trigger = 'hoverIntent';
     }
-  
+
     return this.each(function(index) {
-  
+
       var opts = jQuery.extend(false, jQuery.bt.defaults, jQuery.bt.options, options);
 
       // clint.tseng@socrata.com: allow outside access of opts for hacky shit
       this._opts = opts;
 
       this._internalId = 'btId' + incrId++;
-  
+
       // clean up the options
       opts.spikeLength = numb(opts.spikeLength);
       opts.spikeGirth = numb(opts.spikeGirth);
       opts.overlap = numb(opts.overlap);
-      
+
       var ajaxTimeout = false;
-      
-      
+
+
       /**
        *  The BIG TURN ON
        *  Any element that has been initiated
@@ -131,18 +131,18 @@ jQuery.bt = {version: '0.9.5-rc1'};
           // if there's already a popup, remove it before creating a new one.
           this.btOff();
         }
-  
+
         // trigger preBuild function
         // preBuild has no argument since the box hasn't been built yet
         opts.preBuild.apply(this);
-        
+
         // turn off other tips
         $(jQuery.bt.vars.closeWhenOpenStack).btOff();
-        
+
         // add the class to the target element (for hilighting, for example)
         // bt-active is always applied to all, but activeClass can apply another
         $(this).addClass('bt-active ' + opts.activeClass);
-  
+
         if (contentSelect && opts.ajaxPath == null) {
           // bizarre, I know
           if (opts.killTitle) {
@@ -156,7 +156,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
             $(this).attr('title', '');
           }
         }
-        
+
         // ----------------------------------------------
         // All the Ajax(ish) stuff is in this next bit...
         // ----------------------------------------------
@@ -173,7 +173,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
             var selector = url.slice(off, url.length);
             url = url.slice(0, off);
           }
-        
+
           // load any data cached for the given ajax path
           var cacheData = opts.ajaxCache ? $(document.body).data('btCache-' + url.replace(/\./g, '')) : null;
           if (typeof cacheData == 'string') {
@@ -181,7 +181,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
           }
           else {
             var target = this;
-                      
+
             // set up the options
             var ajaxOpts = jQuery.extend(false,
             {
@@ -201,13 +201,13 @@ jQuery.bt = {version: '0.9.5-rc1'};
                       // inject the contents of the document in, removing the scripts
                       // to avoid any 'Permission Denied' errors in IE
                       .append(XMLHttpRequest.responseText.replace(/<script(.|\s)*?\/script>/g, ""))
-        
+
                       // Locate the specified elements
                       .find(selector) :
-        
+
                     // If not, just inject the full result
                     XMLHttpRequest.responseText;
-                   
+
                 }
                 else {
                   if (textStatus == 'timeout') {
@@ -229,23 +229,23 @@ jQuery.bt = {version: '0.9.5-rc1'};
           }
         }
         // </ ajax stuff >
-        
-  
+
+
         // now we start actually figuring out where to place the tip
-        
+
         // figure out how to compensate for the shadow, if present
         var shadowMarginX = 0; // extra added to width to compensate for shadow
         var shadowMarginY = 0; // extra added to height
         var shadowShiftX = 0;  // amount to shift the tip horizontally to allow for shadow
         var shadowShiftY = 0;  // amount to shift vertical
-        
+
         if (opts.shadow && !shadowSupport()) {
           // if browser doesn't support drop shadows, turn them off
           opts.shadow = false;
           // and bring in the noShadows options
           jQuery.extend(opts, opts.noShadowOpts);
         }
-        
+
         if (opts.shadow) {
           // figure out horizontal placement
           if (opts.shadowBlur > Math.abs(opts.shadowOffsetX)) {
@@ -255,7 +255,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
             shadowMarginX = opts.shadowBlur + Math.abs(opts.shadowOffsetX);
           }
           shadowShiftX = (opts.shadowBlur - opts.shadowOffsetX) > 0 ? opts.shadowBlur - opts.shadowOffsetX : 0;
-          
+
           // now vertical
           if (opts.shadowBlur > Math.abs(opts.shadowOffsetY)) {
             shadowMarginY = opts.shadowBlur * 2;
@@ -265,7 +265,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
           }
           shadowShiftY = (opts.shadowBlur - opts.shadowOffsetY) > 0 ? opts.shadowBlur - opts.shadowOffsetY : 0;
         }
-        
+
         if (opts.offsetParent){
           // if offsetParent is defined by user
           var offsetParent = $(opts.offsetParent);
@@ -292,8 +292,8 @@ jQuery.bt = {version: '0.9.5-rc1'};
         }
 
         var width = $(this).btOuterWidth();
-        var height = $(this).outerHeight();
-        
+        var height = $(this).btOuterHeight();
+
         if (typeof content == 'object') {
           // if content is a DOM object (as opposed to text)
           // use a clone, rather than removing the original element
@@ -313,22 +313,22 @@ jQuery.bt = {version: '0.9.5-rc1'};
           // if content is empty, bail out...
           return;
         }
-        
+
         // create the tip content div, populate it, and style it
         var $text = $('<div class="bt-content"></div>').append(content).css({padding: opts.padding, position: 'absolute', width: (opts.shrinkToFit ? 'auto' : opts.width), zIndex: opts.textzIndex, left: shadowShiftX, top: shadowShiftY}).css(opts.cssStyles);
         // create the wrapping box which contains text and canvas
         // put the content in it, style it, and append it to the same offset parent as the target
         var $box = $('<div class="bt-wrapper"></div>').append($text).addClass(opts.cssClass).css({position: 'absolute', width: opts.width, zIndex: opts.wrapperzIndex, visibility:'hidden'}).appendTo(offsetParent);
-        
+
         // use bgiframe to get around z-index problems in IE6
         // http://plugins.jquery.com/project/bgiframe
         if (jQuery.fn.bgiframe) {
           $text.bgiframe();
-          $box.bgiframe();  
+          $box.bgiframe();
         }
-  
+
         $(this).data('bt-box', $box);
-  
+
         // see if the text box will fit in the various positions
         var scrollTop = numb($(document).scrollTop());
         var scrollLeft = numb($(document).scrollLeft());
@@ -347,37 +347,55 @@ jQuery.bt = {version: '0.9.5-rc1'};
         if (opts.positions.constructor == String) {
           opts.positions = opts.positions.replace(/ /, '').split(',');
         }
+
+        // Giacomo Ferrari <giacomo.ferrari@socrata.com> 5/31/2013:
+        // Added base-position and sub-position concept. You can now specify
+        // {bottom, top}-{,left, right} in the position.
+        // {left, right}-{,top, bottom} are not supported at this time.
+
+        var position, splitPosition, basePosition, subPosition;
         if (opts.positions[0] == 'most') {
           // figure out which is the largest
-          var position = 'top'; // prime the pump
+          position = 'top'; // prime the pump
           for (var pig in space) {  //            <-------  pigs in space!
             position = space[pig] > space[position] ? pig : position;
           }
+          basePosition = position;
         }
         else {
           for (var x in opts.positions) {
-            var position = opts.positions[x];
+            position = opts.positions[x];
+            splitPosition = position.split('-');
+            basePosition = splitPosition[0];
+            subPosition = splitPosition[1];
             // @todo: acommodate shadow space in the following lines...
-            if ((position == 'left' || position == 'right') && space[position] > textOutWidth + opts.spikeLength) {
+            if ((basePosition == 'left' || basePosition == 'right') && space[basePosition] > textOutWidth + opts.spikeLength) {
               break;
             }
-            else if ((position == 'top' || position == 'bottom') && space[position] > textOutHeight + opts.spikeLength) {
+            else if ((basePosition == 'top' || basePosition == 'bottom') && space[basePosition] > textOutHeight + opts.spikeLength) {
               break;
             }
           }
         }
-  
         // horizontal (left) offset for the box
         var horiz = left + ((width - textOutWidth) * .5);
+
+        if (subPosition === 'left') {
+          horiz = left - textOutWidth/2;
+        }
+        else if (subPosition === 'right') {
+          horiz = left + ((width - textOutWidth/2));
+        }
+
         // vertical (top) offset for the box
         var vert = top + ((height - textOutHeight) * .5);
         var points = new Array();
         var textTop, textLeft, textRight, textBottom, textTopSpace, textBottomSpace, textLeftSpace, textRightSpace, crossPoint, textCenter, spikePoint;
-  
+
         // Yes, yes, this next bit really could use to be condensed
         // each switch case is basically doing the same thing in slightly different ways
-        switch(position) {
-          
+        switch(basePosition) {
+
           // =================== TOP =======================
           case 'top':
             // spike on bottom
@@ -417,7 +435,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
             points[points.length] = {x: crossPoint.x + (opts.spikeGirth/2), y: textBottom, type: 'join'};
             points[points.length] = spikePoint;
             break;
-            
+
           // =================== LEFT =======================
           case 'left':
             // spike on right
@@ -456,7 +474,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
             points[points.length] = {x: textRight, y: crossPoint.y - opts.spikeGirth/2, type: 'join'};
             points[points.length] = spikePoint;
             break;
-            
+
           // =================== BOTTOM =======================
           case 'bottom':
             // spike on top
@@ -495,7 +513,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
             points[points.length] = {x: crossPoint.x - (opts.spikeGirth/2), y: textTop, type: 'join'};
             points[points.length] = spikePoint;
             break;
-          
+
           // =================== RIGHT =======================
           case 'right':
             // spike on left
@@ -535,16 +553,16 @@ jQuery.bt = {version: '0.9.5-rc1'};
             points[points.length] = spikePoint;
             break;
         } // </ switch >
-        
+
         var canvas = document.createElement('canvas');
         $(canvas).attr('width', (numb($text.btOuterWidth(true)) + opts.strokeWidth*2 + shadowMarginX)).attr('height', (numb($text.outerHeight(true)) + opts.strokeWidth*2 + shadowMarginY)).appendTo($box).css({position: 'absolute', zIndex: opts.boxzIndex});
 
-  
+
         // if excanvas is set up, we need to initialize the new canvas element
         if (typeof G_vmlCanvasManager != 'undefined') {
           canvas = G_vmlCanvasManager.initElement(canvas);
         }
-  
+
         if (opts.cornerRadius > 0) {
           // round the corners!
           var newPoints = new Array();
@@ -570,13 +588,13 @@ jQuery.bt = {version: '0.9.5-rc1'};
           // overwrite points with new version
           points = newPoints;
         }
-        
+
         var ctx = canvas.getContext("2d");
-        
+
         if (opts.shadow && opts.shadowOverlap !== true) {
-          
+
           var shadowOverlap = numb(opts.shadowOverlap);
-          
+
           // keep the shadow (and canvas) from overlapping the target element
           switch (position) {
             case 'top':
@@ -601,7 +619,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
               break;
           }
         }
-  
+
         drawIt.call(ctx, points, opts.strokeWidth);
         ctx.fillStyle = opts.fill;
         if (opts.shadow) {
@@ -621,17 +639,17 @@ jQuery.bt = {version: '0.9.5-rc1'};
           ctx.closePath();
           ctx.stroke();
         }
-          
+
         // trigger preShow function
         // function receives the box element (the balloon wrapper div) as an argument
         opts.preShow.apply(this, [$box[0]]);
-        
+
         // switch from visibility: hidden to display: none so we can run animations
         $box.css({display:'none', visibility: 'visible'});
-  
+
         // Here's where we show the tip
         opts.showTip.apply(this, [$box[0]]);
-          
+
         if (opts.overlay) {
           // EXPERIMENTAL AND FOR TESTING ONLY!!!!
           var overlay = $('<div class="bt-overlay"></div>').css({
@@ -645,42 +663,42 @@ jQuery.bt = {version: '0.9.5-rc1'};
             }).appendTo(offsetParent);
           $(this).data('overlay', overlay);
         }
-        
+
         if ((opts.ajaxPath != null && opts.ajaxCache == false) || ajaxTimeout) {
           // if ajaxCache is not enabled or if there was a server timeout,
           // remove the content variable so it will be loaded again from server
           content = false;
         }
-        
+
         // stick this element into the clickAnywhereToClose stack
         if (opts.clickAnywhereToClose) {
           jQuery.bt.vars.clickAnywhereStack.push(this);
           $(document).mousedown(jQuery.bt.docClick);
         }
-        
+
         // stick this element into the closeWhenOthersOpen stack
         if (opts.closeWhenOthersOpen) {
           jQuery.bt.vars.closeWhenOpenStack.push(this);
         }
-  
+
         // trigger postShow function
         // function receives the box element (the balloon wrapper div) as an argument
         if (_.isFunction(opts.postShow))
         { opts.postShow.apply(this, [$box[0]]); }
-  
-  
+
+
       }; // </ turnOn() >
-  
+
       this.btOff = function() {
-      
+
         var box = $(this).data('bt-box');
-  
+
         // trigger preHide function
         // function receives the box element (the balloon wrapper div) as an argument
         opts.preHide.apply(this, [box]);
-        
+
         var i = this;
-        
+
         // set up the stuff to happen AFTER the tip is hidden
         i.btCleanup = function(){
           var box = $(i).data('bt-box');
@@ -692,30 +710,30 @@ jQuery.bt = {version: '0.9.5-rc1'};
           }
           if (!$.isBlank(contentOrig) && typeof contentOrig == 'object') {
             var clones = $(contentOrig.original).data('bt-clones');
-            $(contentOrig).data('bt-clones', arrayRemove(clones, contentOrig.clone));        
+            $(contentOrig).data('bt-clones', arrayRemove(clones, contentOrig.clone));
           }
           if (!$.isBlank(overlay) && typeof overlay == 'object') {
             $(overlay).remove();
             $(i).removeData('bt-overlay');
           }
-          
+
           // remove this from the stacks
           jQuery.bt.vars.clickAnywhereStack = arrayRemove(jQuery.bt.vars.clickAnywhereStack, i);
           jQuery.bt.vars.closeWhenOpenStack = arrayRemove(jQuery.bt.vars.closeWhenOpenStack, i);
-          
+
           // remove the 'bt-active' and activeClass classes from target
           $(i).removeClass('bt-active ' + opts.activeClass);
-          
+
           // trigger postHide function
           // no box argument since it has been removed from the DOM
           opts.postHide.apply(i);
-          
+
         }
-        
+
         opts.hideTip.apply(this, [box, i.btCleanup]);
 
       }; // </ turnOff() >
-  
+
       var refresh = this.btRefresh = function() {
         this.btOff();
         this.btOn();
@@ -724,12 +742,12 @@ jQuery.bt = {version: '0.9.5-rc1'};
       this.btDestroy = function() {
           $(this).unbind('.' + this._internalId);
       };
-  
+
       /**
        * This is sort of the "starting spot" for the this.each()
        * These are the init functions to handle the .bt() call
        */
-  
+
       if (opts.killTitle) {
         $(this).find('[title]').andSelf().each(function() {
           if (!$(this).attr('bt-xTitle')) {
@@ -737,8 +755,8 @@ jQuery.bt = {version: '0.9.5-rc1'};
             $(this).attr('title', '');
           }
         });
-      }    
-      
+      }
+
       if (typeof opts.trigger == 'string') {
         opts.trigger = [opts.trigger];
       }
@@ -751,7 +769,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
             this.btOff();
           }});
         $(this).hoverIntent(hoverOpts);
-      
+
       }
       else if (opts.trigger[0] == 'hover') {
         var isHover = false;
@@ -804,10 +822,10 @@ jQuery.bt = {version: '0.9.5-rc1'};
           }
         });
       }
-      
+
     }); // </ this.each() >
-  
-  
+
+
     function drawIt(points, strokeWidth) {
       this.moveTo(points[0].x, points[0].y);
       for (i=1;i<points.length;i++) {
@@ -823,7 +841,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
         }
       }
     }; // </ drawIt() >
-  
+
     /**
      * For odd stroke widths, round to the nearest .5 pixel to avoid antialiasing
      * http://developer.mozilla.org/en/Canvas_tutorial/Applying_styles_and_colors
@@ -839,17 +857,17 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
       return ret;
     }; // </ round5() >
-  
+
     /**
      * Ensure that a number is a number... or zero
      */
     function numb(num) {
       return parseInt(num) || 0;
     }; // </ numb() >
-    
+
     /**
      * Remove an element from an array
-     */ 
+     */
     function arrayRemove(arr, elem) {
       var x, newArr = new Array();
       for (x in arr) {
@@ -859,7 +877,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
       return newArr;
     }; // </ arrayRemove() >
-    
+
     /**
      * Does the current browser support canvas?
      * This is a variation of http://code.google.com/p/browser-canvas-support/
@@ -870,21 +888,21 @@ jQuery.bt = {version: '0.9.5-rc1'};
         canvas_compatible = !!(document.createElement('canvas').getContext('2d')); // S60
       } catch(e) {
         canvas_compatible = !!(document.createElement('canvas').getContext); // IE
-      } 
+      }
       return canvas_compatible;
     }
-    
+
     /**
      * Does the current browser support canvas drop shadows?
      */
     function shadowSupport() {
-      
+
       // to test for drop shadow support in the current browser, uncomment the next line
       // return true;
-    
+
       // until a good feature-detect is found, we have to look at user agents
       try {
-        var userAgent = navigator.userAgent.toLowerCase();      
+        var userAgent = navigator.userAgent.toLowerCase();
         if (/webkit/.test(userAgent)) {
           // WebKit.. let's go!
           return true;
@@ -897,11 +915,11 @@ jQuery.bt = {version: '0.9.5-rc1'};
       catch(err) {
         // if there's an error, just keep going, we'll assume that drop shadows are not supported
       }
-            
+
       return false;
-      
+
     } // </ shadowSupport() >
-  
+
     /**
      * Given two points, find a point which is dist pixels from point1 on a line to point2
      */
@@ -919,7 +937,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
         return {x:x, y: point1.y};
       }
     }; // </ betweenPoint() >
-  
+
     function centerPoint(arcStart, corner, arcEnd) {
       var x = corner.x == arcStart.x ? arcEnd.x : arcStart.x;
       var y = corner.y == arcStart.y ? arcEnd.y : arcStart.y;
@@ -950,21 +968,21 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
       return {x: x, y: y, type: 'center', startAngle: startAngle, endAngle: endAngle};
     }; // </ centerPoint() >
-  
+
     /**
      * Find the intersection point of two lines, each defined by two points
      * arguments are x1, y1 and x2, y2 for r1 (line 1) and r2 (line 2)
      * It's like an algebra party!!!
      */
     function findIntersect(r1x1, r1y1, r1x2, r1y2, r2x1, r2y1, r2x2, r2y2) {
-  
+
       if (r2x1 == r2x2) {
         return findIntersectY(r1x1, r1y1, r1x2, r1y2, r2x1);
       }
       if (r2y1 == r2y2) {
         return findIntersectX(r1x1, r1y1, r1x2, r1y2, r2y1);
       }
-  
+
       // m = (y1 - y2) / (x1 - x2)  // <-- how to find the slope
       // y = mx + b                 // the 'classic' linear equation
       // b = y - mx                 // how to find b (the y-intersect)
@@ -973,13 +991,13 @@ jQuery.bt = {version: '0.9.5-rc1'};
       var r1b = r1y1 - (r1m * r1x1);
       var r2m = (r2y1 - r2y2) / (r2x1 - r2x2);
       var r2b = r2y1 - (r2m * r2x1);
-  
+
       var x = (r2b - r1b) / (r1m - r2m);
       var y = r1m * x + r1b;
-  
+
       return {x: x, y: y};
     }; // </ findIntersect() >
-  
+
     /**
      * Find the y intersection point of a line and given x vertical
      */
@@ -989,12 +1007,12 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
       var r1m = (r1y1 - r1y2) / (r1x1 - r1x2);
       var r1b = r1y1 - (r1m * r1x1);
-  
+
       var y = r1m * x + r1b;
-  
+
       return {x: x, y: y};
     }; // </ findIntersectY() >
-  
+
     /**
      * Find the x intersection point of a line and given y horizontal
      */
@@ -1004,17 +1022,17 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
       var r1m = (r1y1 - r1y2) / (r1x1 - r1x2);
       var r1b = r1y1 - (r1m * r1x1);
-  
+
       // y = mx + b     // your old friend, linear equation
       // x = (y - b)/m  // linear equation solved for x
       var x = (y - r1b) / r1m;
-  
+
       return {x: x, y: y};
-  
+
     }; // </ findIntersectX() >
-  
+
   }; // </ jQuery.fn.bt() >
-  
+
   /**
    * jQuery's compat.js (used in Drupal's jQuery upgrade module, overrides the $().position() function
    *  this is a copy of that function to allow the plugin to work when compat.js is present
@@ -1022,61 +1040,83 @@ jQuery.bt = {version: '0.9.5-rc1'};
    *  and .btPosion() can be replaced with .position() above...
    */
   jQuery.fn.btPosition = function() {
-  
+
     function num(elem, prop) {
       return elem[0] && parseInt( jQuery.curCSS(elem[0], prop, true), 10 ) || 0;
     };
-  
+
     var left = 0, top = 0, results;
-  
+
     if ( this[0] ) {
       // Get *real* offsetParent
       var offsetParent = this.offsetParent(),
-  
+
       // Get correct offsets
       offset       = this.offset(),
       parentOffset = /^body|html$/i.test(offsetParent[0].tagName) ? { top: 0, left: 0 } : offsetParent.offset();
-  
+
       // Subtract element margins
       // note: when an element has margin: auto the offsetLeft and marginLeft
       // are the same in Safari causing offset.left to incorrectly be 0
       offset.top  -= num( this, 'marginTop' );
       offset.left -= num( this, 'marginLeft' );
-  
+
       // Add offsetParent borders
       parentOffset.top  += num( offsetParent, 'borderTopWidth' );
       parentOffset.left += num( offsetParent, 'borderLeftWidth' );
-  
+
       // Subtract the two offsets
       results = {
         top:  offset.top  - parentOffset.top,
         left: offset.left - parentOffset.left
       };
     }
-  
+
     return results;
   }; // </ jQuery.fn.btPosition() >
-  
-  
+
+
   /**
   * jQuery's dimensions.js overrides the $().btOuterWidth() function
-  *  this is a copy of original jQuery's outerWidth() function to 
+  *  this is a copy of original jQuery's outerWidth() function to
   *  allow the plugin to work when dimensions.js is present
+  *  Giacomo Ferrari <giacomo.ferrari@socrata.com> 5/31/2013: This doesn't work
+  *  with SVGElements. Patched so that it does.
   */
   jQuery.fn.btOuterWidth = function(margin) {
-  
+
       function num(elem, prop) {
           return elem[0] && parseInt(jQuery.curCSS(elem[0], prop, true), 10) || 0;
       };
-  
-      return this["innerWidth"]()
-      + num(this, "borderLeftWidth")
-      + num(this, "borderRightWidth")
-      + (margin ? num(this, "marginLeft")
-      + num(this, "marginRight") : 0);
-  
+
+      if (window.SVGElement && this[0] instanceof SVGElement) {
+          return this[0].getBoundingClientRect().width;
+      }
+      else {
+          return this["innerWidth"]()
+          + num(this, "borderLeftWidth")
+          + num(this, "borderRightWidth")
+          + (margin ? num(this, "marginLeft")
+          + num(this, "marginRight") : 0);
+      }
+
   }; // </ jQuery.fn.btOuterWidth() >
-  
+
+  /**
+  *  Giacomo Ferrari <giacomo.ferrari@socrata.com> 5/31/2013: Regular outerHeight
+  *  doesn't work with SVG elements. This does.
+  */
+  jQuery.fn.btOuterHeight = function() {
+
+      if (window.SVGElement && this[0] instanceof SVGElement) {
+          return this[0].getBoundingClientRect().height;
+      }
+      else {
+          return this.outerHeight();
+      }
+
+  }; // </ jQuery.fn.btOuterWidth() >
+
   /**
    * A convenience function to run btOn() (if available)
    * for each selected item
@@ -1088,9 +1128,9 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
     });
   }; // </ $().btOn() >
-  
+
   /**
-   * 
+   *
    * A convenience function to run btOff() (if available)
    * for each selected item
    */
@@ -1101,7 +1141,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
       }
     });
   }; // </ $().btOff() >
-  
+
   jQuery.fn.btDestroy = function() {
     return this.each(function(index){
       if (jQuery.isFunction(this.btDestroy)) {
@@ -1111,7 +1151,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
   }; // </ $().btDestroy() >
 
   jQuery.bt.vars = {clickAnywhereStack: [], closeWhenOpenStack: []};
-  
+
   /**
    * This function gets bound to the document's click event
    * It turns off all of the tips in the click-anywhere-to-close stack
@@ -1128,7 +1168,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
       $(document).unbind('click', jQuery.bt.docClick);
     }
   }; // </ docClick() >
-  
+
   /**
    * Defaults for the beauty tips
    *
@@ -1159,20 +1199,20 @@ jQuery.bt = {version: '0.9.5-rc1'};
                                              //   'hoverIntent'     // hover using hoverIntent plugin (settings below)
                                              // note:
                                              //   hoverIntent becomes default if available
-                                             
-    clickAnywhereToClose: true,              // clicking anywhere outside of the tip will close it 
+
+    clickAnywhereToClose: true,              // clicking anywhere outside of the tip will close it
     closeWhenOthersOpen: false,              // tip will be closed before another opens - stop >= 2 tips being on
-                                             
+
     shrinkToFit:      false,                 // should short single-line content get a narrower balloon?
     width:            '200px',               // width of tooltip box
-    
+
     padding:          '10px',                // padding for content (get more fine grained with cssStyles)
     spikeGirth:       10,                    // width of spike
     spikeLength:      15,                    // length of spike
     overlap:          0,                     // spike overlap (px) onto target (can cause problems with 'hover' trigger)
     overlay:          false,                 // display overlay on target (use CSS to style) -- BUGGY!
     killTitle:        true,                  // kill title tags to avoid double tooltips
-  
+
     textzIndex:       9999,                  // z-index for the text
     boxzIndex:        9998,                  // z-index for the "talk" box (should always be less than textzIndex)
     wrapperzIndex:    9997,
@@ -1184,19 +1224,19 @@ jQuery.bt = {version: '0.9.5-rc1'};
                                              // or use 'most' to use the area with the most space
     fill:             "rgb(255, 255, 102)",  // fill color for the tooltip box, you can use any CSS-style color definition method
                                              // http://www.w3.org/TR/css3-color/#numerical - not all methods have been tested
-    
+
     windowMargin:     10,                    // space (px) to leave between text box and browser edge
-  
+
     strokeWidth:      1,                     // width of stroke around box, **set to 0 for no stroke**
     strokeStyle:      "#000",                // color/alpha of stroke
-  
+
     cornerRadius:     5,                     // radius of corners (px), set to 0 for square corners
-    
+
                       // following values are on a scale of 0 to 1 with .5 being centered
-    
+
     centerPointX:     .5,                    // the spike extends from center of the target edge to this point
     centerPointY:     .5,                    // defined by percentage horizontal (x) and vertical (y)
-      
+
     shadow:           false,                 // use drop shadow? (only displays in Safari and FF 3.1) - experimental
     shadowOffsetX:    2,                     // shadow offset x (px)
     shadowOffsetY:    2,                     // shadow offset y (px)
@@ -1205,24 +1245,24 @@ jQuery.bt = {version: '0.9.5-rc1'};
     shadowOverlap:   false,                  // when shadows overlap the target element it can cause problem with hovering
                                              // set this to true to overlap or set to a numeric value to define the amount of overlap
     noShadowOpts:     {strokeStyle: '#999'},  // use this to define 'fall-back' options for browsers which don't support drop shadows
-    
+
     cssClass:         '',                    // CSS class to add to the box wrapper div (of the TIP)
     cssStyles:        {},                    // styles to add the text box
                                              //   example: {fontFamily: 'Georgia, Times, serif', fontWeight: 'bold'}
-                                                 
+
     activeClass:      'bt-active',           // class added to TARGET element when its BeautyTip is active
-  
+
     content: null,                           // option to pass in an object for the content
     contentSelector:  "$(this).attr('title')", // if there is no content argument, use this selector to retrieve the title
                                              // a function which returns the content may also be passed here
-  
+
     ajaxPath:         null,                  // if using ajax request for content, this contains url and (opt) selector
                                              // this will override content and contentSelector
                                              // examples (see jQuery load() function):
                                              //   '/demo.html'
                                              //   '/help/ajax/snip'
                                              //   '/help/existing/full div#content'
-                                             
+
                                              // ajaxPath can also be defined as an array
                                              // in which case, the first value will be parsed as a jQuery selector
                                              // the result of which will be used as the ajaxPath
@@ -1231,7 +1271,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
                                              //    ["$(this).attr('href')", 'div#content']
                                              //    ["$(this).parents('.wrapper').find('.title').attr('href')"]
                                              //    ["$('#some-element').val()"]
-                                             
+
     ajaxError:        '<strong>ERROR:</strong> <em>%error</em>',
                                              // error text, use "%error" to insert error from server
     ajaxLoading:     '<blink>Loading...</blink>',  // yes folks, it's the blink tag!
@@ -1240,28 +1280,28 @@ jQuery.bt = {version: '0.9.5-rc1'};
     ajaxCache:        true,                  // cache ajax results and do not send request to same url multiple times
     ajaxOpts:         {},                    // any other ajax options - timeout, passwords, processing functions, etc...
                                              // see http://docs.jquery.com/Ajax/jQuery.ajax#options
-                                      
+
     preBuild:         function(){},          // function to run before popup is built
     preShow:          function(box){},       // function to run before popup is displayed
     showTip:          function(box){
                         $(box).show();
                       },
     postShow:         function(box){},       // function to run after popup is built and displayed
-    
+
     preHide:          function(box){},       // function to run before popup is removed
     hideTip:          function(box, callback) {
                         $(box).hide();
                         callback();   // you MUST call "callback" at the end of your animations
                       },
     postHide:         function(){},          // function to run after popup is removed
-    
+
     hoverIntentOpts:  {                          // options for hoverIntent (if installed)
                         interval: 300,           // http://cherne.net/brian/resources/jquery.hoverIntent.html
                         timeout: 500
                       }
-                                                 
+
   }; // </ jQuery.bt.defaults >
-  
+
   jQuery.bt.options = {};
 
 })(jQuery);

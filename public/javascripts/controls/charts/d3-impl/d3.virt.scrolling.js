@@ -520,7 +520,7 @@ chartObj.resizeHandle();
             chartD3 = cc.chartD3,
             totalRows = vizObj.getTotalRows(),
             chartArea = cc.$chartContainer[cc.dataDim.width](),
-            domArea = vizObj.$dom()[cc.dataDim.height](),
+            domArea = cc.$chartContainer[cc.dataDim.height](),
             maxRenderWidth = vizObj._maxRenderWidth(),
             valueColumns = vizObj.getValueColumns(),
             barWidthBounds = defaults.barWidthBounds,
@@ -1027,29 +1027,20 @@ chartObj.resizeHandle();
             col = colDef.column,
             cc = vizObj._chartConfig;
 
+        var lessThanZeroPositioning =
+            cc.dataDim.pluckY(['top-left', 'bottom-left'],
+                              ['bottom', 'top']);
+
+        var greaterThanZeroPositioning =
+            cc.dataDim.pluckY(['top-right', 'bottom-right'],
+                              ['top', 'bottom']);
+
         rObj.tip = $(rObj.node).socrataTip(
         {
             content: vizObj.renderFlyout(row, col.tableColumnId, view),
-            positions: (row[col.lookup] > 0) ? [ 'top', 'bottom' ] : [ 'bottom', 'top' ],
+            positions: (row[col.lookup] > 0) ? greaterThanZeroPositioning : lessThanZeroPositioning,
             trigger: 'now'
         });
-
-        if (cc.orientation == 'down')
-        {
-            var scaled = yScale(row[col.lookup]);
-            rObj.tip.adjustPosition(
-            {
-                left: ($.browser.msie && ($.browser.majorVersion < 9)) ? scaled / 2 : scaled
-            });
-        }
-        else if (cc.orientation == 'right')
-        {
-            rObj.tip.adjustPosition(
-            {
-                top: (row[col.lookup] > 0) ? 0 : Math.abs(yScale(0) - yScale(row[col.lookup])),
-                left: vizObj._xFlyoutPosition()
-            });
-        }
 
         if ((blist.debug || {}).flyout)
         {

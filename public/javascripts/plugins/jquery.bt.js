@@ -1115,7 +1115,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
           return this.outerHeight();
       }
 
-  }; // </ jQuery.fn.btOuterWidth() >
+  }; // </ jQuery.fn.btOuterHeight() >
 
   /**
    * A convenience function to run btOn() (if available)
@@ -1219,7 +1219,8 @@ jQuery.bt = {version: '0.9.5-rc1'};
     offsetParent:     null,                  // DOM node to append the tooltip into.
                                              // Must be positioned relative or absolute. Can be selector or object
     positions:        ['most'],              // preference of positions for tip (will use first with available space)
-                                             // possible values 'top', 'bottom', 'left', 'right' as an array in order of
+                                             // possible values 'top', 'bottom', 'left', 'right', 'top-left', 'top-right',
+                                             // 'bottom-left', and 'bottom-right' as an array in order of
                                              // preference. Last value will be used if others don't have enough space.
                                              // or use 'most' to use the area with the most space
     fill:             "rgb(255, 255, 102)",  // fill color for the tooltip box, you can use any CSS-style color definition method

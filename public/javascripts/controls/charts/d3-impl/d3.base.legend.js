@@ -5,9 +5,33 @@ $.Control.registerMixin('d3_base_legend', {
 
     initializeVisualization: function()
     {
+        var vizObj = this;
+
         this._super();
 
         if (this.hasLegend()) this.renderLegend();
+
+        // We're interested in some events coming from the primary view.
+        var handleConditionalFormattingChange = function()
+        {
+            if (vizObj._legendRequiresConditionalFormat())
+            {
+                vizObj.renderLegend();
+            }
+        };
+
+        vizObj._primaryView.bind('conditionalformatting_change', handleConditionalFormattingChange, vizObj);
+    },
+
+    _legendRequiresConditionalFormat: function()
+    {
+        var vizObj = this,
+            legendPosition = vizObj.legendPosition(),
+            legendDetails = vizObj._displayFormat.legendDetails || { showSeries: true },
+            $legendContainer = vizObj.$legendContainer();
+
+        return (legendDetails.showConditional === true) &&
+            _.isArray($.deepGet(vizObj._primaryView, 'metadata', 'conditionalFormatting'));
     },
 
     renderLegend: function()
@@ -32,8 +56,7 @@ $.Control.registerMixin('d3_base_legend', {
             });
         }
         // next render conditional formats if they were asked for
-        if ((legendDetails.showConditional === true) &&
-            _.isArray($.deepGet(vizObj._primaryView, 'metadata', 'conditionalFormatting')))
+        if (vizObj._legendRequiresConditionalFormat())
         {
             _.each(vizObj._primaryView.metadata.conditionalFormatting, function(condition)
             {

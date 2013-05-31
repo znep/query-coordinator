@@ -64,6 +64,7 @@
     overflow: hidden
     text-align: center
     position: relative
+    line-height: normal // Chrome bug - setting this prevents broken scrollbar when we haven't hit max-height.
 
     .ie8 &
       background: transparent url(/stylesheets/images/content/70percentwhite.png)

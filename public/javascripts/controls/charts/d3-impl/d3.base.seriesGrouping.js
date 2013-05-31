@@ -261,6 +261,11 @@ d3base.seriesGrouping = {
             return vizObj._super.apply(vizObj, arguments);
         }
 
+        // Prevent reentrancy. This is an issue because highlighting (done below)
+        // can cause another renderData.
+        if (vizObj._inRenderSeriesGrouping) { return; }
+        vizObj._inRenderSeriesGrouping = true;
+
         var sg = vizObj._seriesGrouping,
             fixedColumn = vizObj._fixedColumns[0],
             view = vizObj._primaryView;
@@ -324,8 +329,11 @@ d3base.seriesGrouping = {
             // TODO: how do we even what
         }
 
+        vizObj._inRenderSeriesGrouping = false;
+
         // render what we've got
         vizObj._super(_.values(sg.virtualRows));
+
     },
 
     removeRow: function(row, view)

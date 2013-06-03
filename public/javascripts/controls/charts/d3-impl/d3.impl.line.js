@@ -224,6 +224,7 @@ $.Control.registerMixin('d3_impl_line', {
                             'stroke-width': '3' })
                     .attr('d', vizObj._errorBarPath(oldYScale));
             errorMarkers
+                .attr('transform', vizObj._errorBarTransform())
                 .transition()
                     .duration(1000)
                     .attr('d', vizObj._errorBarPath(newYScale));
@@ -300,11 +301,12 @@ $.Control.registerMixin('d3_impl_line', {
         var vizObj = this,
             cc = this._chartConfig;
 
-        var staticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset;
+        var staticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset
+                          + (cc.barWidth / 2);
 
         return function(d)
         {
-            return staticParts + (d.index * cc.rowWidth) + (cc.barWidth / 2);
+            return staticParts + (d.index * cc.rowWidth);
         };
     },
 
@@ -313,6 +315,22 @@ $.Control.registerMixin('d3_impl_line', {
         // I don't actually know why this magic number is magical.
         // However, it totally works for different line charts.
         return 5;
+    },
+
+    _errorBarTransform: function()
+    {
+        var cc = this._chartConfig;
+
+        var xPosition = cc.sidePadding - 0.5 -
+                        cc.drawElementPosition - cc.dataOffset +
+                        (cc.barWidth / 2);
+
+        var transform = cc.dataDim.asScreenCoordinate(xPosition, 0);
+
+        return function(d)
+        {
+            return 't' + transform.x + ',' + transform.y;
+        };
     },
 
     // Easter egg foundation.

@@ -272,8 +272,8 @@
                     {
                         cObj.$dom.resizable({
                             handles: 's',
-                            stop: function()
-                            { cObj._executePropertyUpdate({ height: cObj.$dom.height() }); }
+                            start: _.bind(cObj._onUiResizableResizeStart, cObj),
+                            stop: _.bind(cObj._onUiResizableResizeStop, cObj)
                         });
                     }
                     else
@@ -580,17 +580,67 @@
         _supportsCustomEditors: function()
         { return false; },
 
-        _getHeightPropertyValue: function()
+        /* Processes a numerical property.
+         * propName      -  the property name in _properties.
+         * onValidValue  -  Function or value, used when the specified property is
+         *                  defined and is a number. If a function, it is invoked with
+         *                  the parsed numerical value and the property name,
+         *                  and the return value is in turn returned from this function.
+         *                  If a value, it is returned verbatim. If undefined, the
+         *                  parsed value is returned.
+         * onInvalidValue-  Function or value, used when the specified property is
+         *                  either undefined or is not a number. If a function, it is invoked with
+         *                  the original value (possibly undefined) and the property name,
+         *                  and the return value is in turn returned from this function.
+         *                  If a value, it is returned verbatim. If undefined, null
+         *                  is returned.
+         */
+        _getNumericalProperty: function(propName, onValidValue, onInvalidValue)
         {
-            var parsedHeight = parseInt(this._properties.height);
-            return _.isNaN(parsedHeight) ? null : parsedHeight;
+            var value = this._properties[propName];
+            var parsed = parseInt(value);
+            return _.isNaN(parsed) ?
+                (_.isFunction(onInvalidValue) ?
+                    onInvalidValue(value, propName) :
+                        (_.isUndefined(onInvalidValue) ? null : onInvalidValue)) :
+                (_.isFunction(onValidValue) ?
+                    onValidValue(parsed, propName) :
+                        (_.isUndefined(onValidValue) ? parsed : onValidValue));
         },
 
-        _applyHeightProperty: function()
+        // Alias to _getNumericalProperty(propName, undefined, onInvalidValue)
+        _getNumericalPropertyWithFallback: function (propName, onInvalidValue)
         {
-            var height = this._getHeightPropertyValue();
-            if (height)
-            { this.$dom.css('height', height); }
+            this._getNumericalProperty(propName, undefined, onInvalidValue);
+        },
+
+        // Called when someone starts resizing us via the resize handle.
+        _onUiResizableResizeStart: function()
+        {
+            // Nada
+        },
+
+        // Called when someone stops resizing us via the resize handle.
+        _onUiResizableResizeStop: function()
+        {
+            this._executePropertyUpdate({ height: this.$dom.height() });
+        },
+
+        _applyHeightProperties: function()
+        {
+            var cObj = this;
+            var applyFunc = function(value, propName)
+            {
+                cObj.$dom.css(propName, value);
+            }
+            var unApplyFunc = function(value, propName)
+            {
+                applyFunc('', propName);
+            }
+
+            this._getNumericalProperty('height', applyFunc, unApplyFunc);
+            this._getNumericalProperty('minHeight', applyFunc, unApplyFunc);
+            this._getNumericalProperty('maxHeight', applyFunc, unApplyFunc);
         },
 
         /**
@@ -613,7 +663,7 @@
                 }
             }
 
-            this._applyHeightProperty();
+            this._applyHeightProperties();
 
             if (this._loadingAssets || this._isHidden || this._delayUntilVisible)
             {
@@ -787,8 +837,7 @@
                     cObj.$dom.addClass('hide');
                     cObj._hidden();
                 }
-                if (!$.isBlank(properties.height))
-                { cObj._applyHeightProperty(); }
+                cObj._applyHeightProperties();
             }
 
             _.defer(function() { cObj._updateValidity(); });

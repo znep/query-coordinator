@@ -199,9 +199,9 @@ $.component.Component.extend('Formatted Text', 'content', {
             cObj._render();
         }
 
-        var newHeight = cObj._getHeightPropertyValue() || cObj.$dom.height();
+        var newHeight = cObj._getNumericalPropertyWithFallback('height', cObj.$dom.height());
         cObj.$dom.height(origHeight);
-        cObj.$dom.animate({height: newHeight}, 'slow', function() { cObj.$dom.height(cObj._getHeightPropertyValue() || ''); });
+        cObj.$dom.animate({height: newHeight}, 'slow', function() { cObj.$dom.height(cObj._getNumericalPropertyWithFallback('height', '')); });
     },
 
     _onEditorExecCommand: function(command, useDefaultUi, value)
@@ -223,7 +223,7 @@ $.component.Component.extend('Formatted Text', 'content', {
             // confusing commands like bold and italic. See:
             // http://code.google.com/p/chromium/issues/detail?id=149901
             // Of course this is not guaranteed to avoid stripping out actually-
-            // entered formatting, but since Markdown doesn't support oblique
+            // entered formatting, but since Markdown doesn't support lighter
             // text, this shouldn't matter too much.
             this.$dom.css('font-weight', 'lighter');
             try
@@ -247,5 +247,35 @@ $.component.Component.extend('Formatted Text', 'content', {
         }
 
         return retVal;
-    }
+    },
+
+    // Called when someone starts resizing us via the resize handle.
+    _onUiResizableResizeStart: function()
+    {
+        // If we have a min-height, it will interfere with ui-resizable's
+        // use of the height property (in effect making our container enlarge-
+        // only). Kill min-height for now; we'll put it back when resize ends.
+        this.$dom.css('min-height', '');
+    },
+
+    // Called when someone stops resizing us via the resize handle. We override
+    // this because unlike other components, formatted-text sets min-height instead
+    // of height upon resize.
+    _onUiResizableResizeStop: function()
+    {
+        var newPropertyValues =
+        {
+            minHeight: this.$dom.height(),
+            height: undefined
+        };
+
+        this._executePropertyUpdate(newPropertyValues);
+
+        delete this._properties.height;
+
+        // The resizing handle will have set this. We're fine with it during
+        // the resize, but once it is dropped, it's time to take our natural
+        // size.
+        this.$dom.height('');
+    },
 });

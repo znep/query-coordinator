@@ -91,8 +91,8 @@ module Canvas2
       end
       # Tell the DataContext that the contexts used by this widget should be available
       # on the client.
-      if !fully_rendered 
-         @context_ids.each do |cId| 
+      if !fully_rendered
+         @context_ids.each do |cId|
            DataContext.set_context_as_streaming(cId);
          end
       end
@@ -114,6 +114,19 @@ module Canvas2
       if h.is_a?(String) && (@properties['height'] || '').match(/^\d+/) || h.is_a?(Numeric)
         server_properties['styles'] ||= {}
         server_properties['styles']['height'] = @properties['height'].to_i.to_s + 'px'
+      end
+
+
+      h = @properties['minHeight'] || ''
+      if h.is_a?(String) && (@properties['minHeight'] || '').match(/^\d+/) || h.is_a?(Numeric)
+        server_properties['styles'] ||= {}
+        server_properties['styles']['min-height'] = @properties['minHeight'].to_i.to_s + 'px'
+      end
+
+      h = @properties['maxHeight'] || ''
+      if h.is_a?(String) && (@properties['maxHeight'] || '').match(/^\d+/) || h.is_a?(Numeric)
+        server_properties['styles'] ||= {}
+        server_properties['styles']['max-height'] = @properties['maxHeight'].to_i.to_s + 'px'
       end
 
 

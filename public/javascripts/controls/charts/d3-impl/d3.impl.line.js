@@ -18,7 +18,8 @@ $.Control.registerMixin('d3_impl_line', {
             defaults = vizObj.defaults,
             valueColumns = vizObj.getValueColumns(),
             $chartArea = cc.$chartArea,
-            view = vizObj._primaryView;
+            view = vizObj._primaryView,
+            lineType = vizObj._chartType;
 
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
@@ -38,9 +39,19 @@ $.Control.registerMixin('d3_impl_line', {
             // figure out what data we can actually render
             var presentData = _.select(data, notNull) || [];
 
-            var line = d3.svg.line().x(vizObj._xDotPosition(seriesIndex))
-                                    .y(vizObj._yBarPosition(col.lookup, oldYScale))
-                                    .defined(notNull);
+            var oldLine = d3.svg[lineType]().x(vizObj._xDotPosition(seriesIndex))
+                                            .y(vizObj._yBarPosition(col.lookup, oldYScale))
+                                            .defined(notNull);
+            var newLine = d3.svg[lineType]().x(vizObj._xDotPosition(seriesIndex))
+                                            .y(vizObj._yBarPosition(col.lookup, newYScale))
+                                            .defined(notNull);
+            if (lineType == 'area')
+            {
+                var zeroPoint = {}; zeroPoint[col.lookup] = 0;
+                // Subtract 1 to avoid overlap with the zero line.
+                oldLine.y0(vizObj._yBarPosition(col.lookup, oldYScale)(zeroPoint) - 1);
+                newLine.y0(vizObj._yBarPosition(col.lookup, newYScale)(zeroPoint) - 1);
+            }
 
             // Render the line that connects the dots.
             if (!cc.seriesPath)
@@ -51,14 +62,24 @@ $.Control.registerMixin('d3_impl_line', {
                     .classed('dataPath_series' + col.lookup, true);
             }
 
-            line.interpolate(vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear')
+            oldLine.interpolate(vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear')
+                .tension(0.9);
+            newLine.interpolate(vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear')
                 .tension(0.9);
 
             cc.seriesPath[col.lookup]
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
                 .attr('stroke', function() { return colDef.color; })
                 .datum(data)
-                .attr('d', line);
+                .attr('d', oldLine);
+
+            if (lineType == 'area')
+            { cc.seriesPath[col.lookup].attr('fill', colDef.color); }
+
+            cc.seriesPath[col.lookup]
+                .transition()
+                    .duration(1000)
+                    .attr('d', newLine)
 
             // render our actual bars
             var seriesClass = 'dataBar_series' + col.lookup;
@@ -258,9 +279,6 @@ $.Control.registerMixin('d3_impl_line', {
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
 
-        cc.chartHtmlD3.selectAll('.nullDataBar')
-            .style(cc.dataDim.height, vizObj._d3_px(yAxisPos));
-
         vizObj._renderTicks(yScale, yScale, false);
         vizObj._renderValueMarkers(yScale, yScale, false);
     },
@@ -278,9 +296,6 @@ $.Control.registerMixin('d3_impl_line', {
         {
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
                     .attr('cx', vizObj._xDotPosition(seriesIndex));
-
-            cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
-                    .style('cx', vizObj._d3_px(vizObj._xDotPosition(seriesIndex)));
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -308,6 +323,21 @@ $.Control.registerMixin('d3_impl_line', {
         {
             return staticParts + (d.index * cc.rowWidth);
         };
+    },
+
+    // Override to calculate negative positions correctly.
+    _yBarPosition: function(colId, yScale)
+    {
+        var yAxisPos = this._yAxisPos();
+        var isFunction = _.isFunction(colId);
+
+        // Orientation is always right.
+        return function(d)
+            {
+                return yAxisPos -
+                       yScale(d[isFunction ? colId.call(this) : colId])
+                       + 0.5;
+            };
     },
 
     _xFlyoutPosition: function()

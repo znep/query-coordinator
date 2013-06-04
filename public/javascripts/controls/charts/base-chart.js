@@ -20,7 +20,8 @@
         $.extend(chartMapping, {
             'column': 'd3_impl_bar',
             'bar': 'd3_impl_bar',
-            'line': 'd3_impl_line'
+            'line': 'd3_impl_line',
+            'area': 'd3_impl_line'
         });
     }
 

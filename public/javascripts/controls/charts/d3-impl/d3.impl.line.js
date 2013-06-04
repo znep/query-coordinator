@@ -79,7 +79,7 @@ $.Control.registerMixin('d3_impl_line', {
             cc.seriesPath[col.lookup]
                 .transition()
                     .duration(1000)
-                    .attr('d', newLine)
+                    .attrTween('d', newLine)
 
             // render our actual bars
             var seriesClass = 'dataBar_series' + col.lookup;

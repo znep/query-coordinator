@@ -124,7 +124,7 @@ $.Control.registerMixin('d3_base_legend', {
         if (iconOpts.line)
         {
             htmlIconOpts['class'] = 'legendIcon legendMarkerLine';
-            htmlIconOpts.contents = { tagName: 'span', 'class': 'markerLine', style: { 'background-color': iconOpts.line } };
+            htmlIconOpts.contents = { tagName: 'span', 'class': 'markerLine', style: { 'border-color': iconOpts.line } };
         }
         if (iconOpts.image)
         {

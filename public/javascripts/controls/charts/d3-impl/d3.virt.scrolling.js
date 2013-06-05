@@ -863,7 +863,7 @@ chartObj.resizeHandle();
                     // need to jQuery each rather than .html and .on because ie
                     $this.append($.tag([
                         { tagName: 'div', 'class': 'markerBg', style: { 'background-color': d.color } },
-                        { tagName: 'div', 'class': 'markerLine', style: { 'background-color': d.color } }
+                        { tagName: 'div', 'class': 'markerLine', style: { 'border-color': d.color } }
                     ], true));
                     $this.socrataTip({
                         message: $.htmlEscape(d.caption),

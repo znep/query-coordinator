@@ -118,7 +118,24 @@ $(function() {
 		}).render();
 	}
 
-	$("#breadcrumbs").xBreadcrumbs();
+  var morsel = $("#morselmenu");
+  morsel.children('LI').mouseenter(function()
+  {
+    var list = $(this).children('UL');
+    if ($.browser.msie)
+    {
+      var pos = list.parent().position();
+      list.css('left', parseInt(pos['left']));
+    }
+    list.show();
+  });
+
+  morsel.children('LI').mouseleave(function()
+  {
+    var list = $(this).children('UL');
+    list.hide();
+  });
+
 	$(".managesection").each(function(index) {
 		var initFn = init[$(this).attr("id")];
 		if (initFn) initFn();

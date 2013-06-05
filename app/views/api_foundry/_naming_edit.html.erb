@@ -1,4 +1,4 @@
-<% content_for :nav_crumb do %>
+<% content_for :morsel_nav do %>
   <li>
     <a href="<%= @nav_root + "/naming" %>" >Names and Descriptions</a>
     <ul>
@@ -12,7 +12,7 @@
   <div id="names" class="managesection apiFieldPane">
     <div class="flash"></div>
       <% @view.columns.find_all{|col| col.fieldName == params[:column] }.each do |column| %>
-          <% content_for :nav_crumb do %>
+          <% content_for :morsel_nav do %>
             <li>
                 <%= column.name %>
             </li>

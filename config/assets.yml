@@ -618,7 +618,6 @@ javascripts:
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/api-new.js
   api-manage:
-    - public/javascripts/plugins/xbreadcrumbs.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/dataset-email.js
     - public/javascripts/controls/user-picker.js

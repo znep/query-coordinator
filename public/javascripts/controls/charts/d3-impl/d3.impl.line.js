@@ -222,9 +222,11 @@ $.Control.registerMixin('d3_impl_line', {
         rowLabels
                 .attr('font-weight', function(d)
                         { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
-                .text(function(d)
+                .text(function(d, i)
                 {
                     var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
+
+                    if ($.isBlank(fixedColumn)) { return i; } // Not sure if I should use d.index?
                     // render plaintext representation of the data
                     return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
                 });

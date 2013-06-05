@@ -32,6 +32,13 @@ $.Control.registerMixin('d3_virt_scrolling', {
                                // We only hide the legend if we're reserving space for it (as opposed to just overlaying it).
     },
 
+    // These functions are abstract. You must override them.
+    _calculateRowWidth: this.Model.pureVirtual,
+    _xDatumPosition: this.Model.pureVirtual,
+    _yDatumPosition: this.Model.pureVirtual,
+    // Returns a translation along X for an error bar.
+    _errorBarTransform: this.Model.pureVirtual,
+
     initializeVisualization: function()
     {
         var vizObj = this;
@@ -41,6 +48,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // we'll replace these defaults with smart getters and setters to avoid
         // having to do this.
         vizObj.defaults = $.extend(true, {}, vizObj.defaults);
+
+        // own object to save temp stuff on
+        var cc = vizObj._chartConfig = {};
 
         // if we need to do series grouping stuff, mix that in before anything else
         // It should be safe to mix this in even without grouping, but this saves
@@ -54,8 +64,6 @@ $.Control.registerMixin('d3_virt_scrolling', {
             return vizObj.initializeVisualization(); // reset call chain
         }
 
-        // own object to save temp stuff on
-        var cc = vizObj._chartConfig = {};
         cc.orientation = vizObj.getOrientation();
 
         cc.dataDim = (function(orientation) {
@@ -265,10 +273,27 @@ chartObj.resizeHandle();
 
     renderData: function(data)
     {
+        var vizObj = this;
+
+        vizObj._computeMinMaxForEntireChart(data);
+
+        vizObj._renderData(data);
+    },
+
+    _computeYValuesForRow: function(row, relevantColumns)
+    {
+        return _.map(relevantColumns, function(col)
+            {
+                if (row.invalid[col.lookup]) { return null; }
+                // use matchValue to get canonical representation of data
+                return col.dataType.matchValue ? col.dataType.matchValue(row[col.lookup]) : row[col.lookup];
+            });
+    },
+
+    _computeMinMaxForEntireChart: function(data)
+    {
         var vizObj = this,
             valueColumns = vizObj.getValueColumns();
-
-        // precalculate some stuff
 
         // figure out the max value for this slice
         var relevantColumns = _.pluck(valueColumns, 'column');
@@ -281,17 +306,11 @@ chartObj.resizeHandle();
         relevantColumns = _.uniq(relevantColumns);
         var allValues = _.reduce(data, function(values, row)
         {
-            return values.concat(_.map(relevantColumns, function(col)
-            {
-                if (row.invalid[col.lookup]) { return null; }
-                // use matchValue to get canonical representation of data
-                return col.dataType.matchValue ? col.dataType.matchValue(row[col.lookup]) : row[col.lookup];
-            }));
+            return values.concat(vizObj._computeYValuesForRow(row, relevantColumns));
         }, []);
+
         vizObj._chartConfig.maxValue = d3.max(allValues) || 0; // cache off maxValue for other renders
         vizObj._chartConfig.minValue = d3.min(allValues) || 0; // etc
-
-        vizObj._renderData(data);
     },
 
     handleRowCountChange: function()
@@ -319,7 +338,7 @@ chartObj.resizeHandle();
     {
         var vizObj = this;
 
-        if (!vizObj._chartConfig)
+        if (!vizObj._chartConfig || !vizObj._chartConfig.$chartContainer)
         {
             // we haven't loaded yet but are being told to resize. init load
             // will size correctly anyway then so whatev.
@@ -522,16 +541,16 @@ chartObj.resizeHandle();
             chartArea = cc.$chartContainer[cc.dataDim.width](),
             domArea = cc.$chartContainer[cc.dataDim.height](),
             maxRenderWidth = vizObj._maxRenderWidth(),
-            valueColumns = vizObj.getValueColumns(),
             barWidthBounds = defaults.barWidthBounds,
             barSpacingBounds = defaults.barSpacingBounds,
             rowSpacingBounds = defaults.rowSpacingBounds,
             sidePaddingBounds = defaults.sidePaddingBounds;
 
+        var effectiveSeriesCount = vizObj._getDatumCountPerGroup();
+
         // if we don't have value columns or total rows, bail
         // for now. we'll be called again later.
-        if ($.isBlank(valueColumns) || $.isBlank(totalRows)) { return; }
-        var numSeries = valueColumns.length;
+        if (effectiveSeriesCount == 0 || $.isBlank(totalRows)) { return; }
 
         vizObj._updateSizeBasedStyling();
 
@@ -539,12 +558,6 @@ chartObj.resizeHandle();
         var oldRowWidth = cc.rowWidth;
         var oldSidePadding = cc.sidePadding;
 
-        var calculateRowWidth = function()
-        {
-            return (cc.barWidth * valueColumns.length) +
-                   (cc.barSpacing * (valueColumns.length - 1)) +
-                    cc.rowSpacing;
-        };
         var calculateTotalWidth = function()
         {
             return (vizObj._calculateRowWidth() * totalRows) + (2 * cc.sidePadding)
@@ -553,7 +566,7 @@ chartObj.resizeHandle();
 
         // if we only have one series, allow all the bars
         // to collapse together
-        if (numSeries === 1)
+        if (effectiveSeriesCount === 1)
         {
             rowSpacingBounds = [ 2, rowSpacingBounds[1] ];
         }
@@ -619,12 +632,12 @@ chartObj.resizeHandle();
                 // had to relearn algebra to do it... so it's probably all
                 // fucked.
                 var numerator = chartArea +
-                                totalRows * (numSeries * (-barWidthBounds[0] -
+                                totalRows * (effectiveSeriesCount * (-barWidthBounds[0] -
                                                            barSpacingBounds[0]) +
                                              barSpacingBounds[0] -
                                              rowSpacingBounds[0]) -
                                 2 * sidePaddingBounds[0];
-                var denominator = totalRows * (numSeries * (barWidthBounds[1] -
+                var denominator = totalRows * (effectiveSeriesCount * (barWidthBounds[1] -
                                                             barWidthBounds[0] +
                                                             barSpacingBounds[1] -
                                                             barSpacingBounds[0]) -
@@ -662,15 +675,14 @@ chartObj.resizeHandle();
         return ((oldRowWidth != cc.rowWidth) || (oldSidePadding != cc.sidePadding));
     },
 
-    _calculateRowWidth: function()
+    // Lets the sizing algorithm know how many side-by-side data columns we
+    // intend upon having per group.
+    // Sounds confusing, but this is effectively the number of series that
+    // need to be lined up along X. This is usually the number of value columns.
+    // For things like stacked bars, this is 1.
+    _getDatumCountPerGroup: function()
     {
-        var vizObj = this,
-            cc = vizObj._chartConfig,
-            valueColumns = vizObj.getValueColumns();
-
-        return (cc.barWidth * valueColumns.length) +
-               (cc.barSpacing * (valueColumns.length - 1)) +
-                cc.rowSpacing;
+        return (this.getValueColumns() || []).length;
     },
 
     // accounts for screen scaling
@@ -687,7 +699,7 @@ chartObj.resizeHandle();
         // FIXME: This works for counts of at least 100k. I'm calling that Good Enough.
         if (index >= 0 && cc.drawElementPosition > 0)
         {
-            cc.dataOffset = vizObj._xBarPosition(0)({ index: index }) -
+            cc.dataOffset = vizObj._xDatumPosition(0)({ index: index }) -
                             (cc.scrollPos - cc.drawElementPosition) +
                             (cc.sidePadding * cc.scrollPos / d3.max(xScale.domain()));
         }
@@ -894,56 +906,6 @@ chartObj.resizeHandle();
         }
     },
 
-    _xBarPosition: function(seriesIndex)
-    {
-        var vizObj = this,
-            cc = vizObj._chartConfig;
-
-        var staticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset +
-                          (seriesIndex * (cc.barWidth + cc.barSpacing));
-
-        return function(d)
-        {
-            return staticParts + (d.index * cc.rowWidth);
-        };
-    },
-
-    _yBarPosition: function(colId, yScale)
-    {
-        var yAxisPos = this._yAxisPos();
-        var isFunction = _.isFunction(colId);
-
-        return this._chartConfig.dataDim.pluckY(
-            function(d)
-            {
-                // I'd love some better math for this. Basically we're stuck
-                // with a bar with its left edge at the baseline, and it's up to
-                // us to move the correct edge to the zero baseline, depending
-                // on the bar's polarity.
-                // Why? Because SVG doesn't like negative rect widths :/
-                var value = d[isFunction ? colId.call(this) : colId];
-                return yAxisPos + ((value < 0) ? yScale(value) : yScale(0));
-            },
-            function(d)
-            {
-                return yAxisPos -
-                       yScale(
-                        Math.max(0, d[isFunction ? colId.call(this) : colId]))
-                       + 0.5;
-            });
-
-    },
-
-    _yBarHeight: function(colId, yScale)
-    {
-        var yScaleZero = yScale(0);
-        var isFunction = _.isFunction(colId);
-        return function(d)
-        {
-            return Math.abs(yScale(d[isFunction ? colId.call(this) : colId]) - yScaleZero);
-        };
-    },
-
     _labelTransform: function()
     {
         var vizObj = this,
@@ -962,23 +924,6 @@ chartObj.resizeHandle();
         };
     },
 
-    // Returns a translation along X for an error bar.
-    _errorBarTransform: function()
-    {
-        var cc = this._chartConfig;
-
-        var xPosition = cc.sidePadding - 0.5 -
-                        cc.drawElementPosition - cc.dataOffset +
-                        ((cc.rowWidth - cc.rowSpacing) / 2);
-
-        var transform = cc.dataDim.asScreenCoordinate(xPosition, 0);
-
-        return function(d)
-        {
-            return 't' + transform.x + ',' + transform.y;
-        };
-    },
-
     // Returns a path representing an error bar. Y position is built-in to the
     // path, so transitions between scales should work automatically. X position
     // is not built in, as we don't want to animate that (D3 can't choose what
@@ -994,30 +939,40 @@ chartObj.resizeHandle();
 
         var capWidth = 8;
 
-        if (cc.orientation == 'right')
-        { return function(d)
+        return function(d)
         {
-            var x = Math.floor(d.index * cc.rowWidth) + 0.5;
-            var y = yAxisPos - yScale(Math.max(0, d[highCol.lookup]));
-            var height = yScale(d[highCol.lookup]) - yScale(d[lowCol.lookup]);
+            var x = 0;
 
-            // TODO: uuurrrreeeeghhhhhhh
-            return 'M' + (x - capWidth) + ',' + y + 'H' + (x + capWidth) +
-                   'M' + x + ',' + y + 'V' + (y + height) +
-                   'M' + (x - capWidth) + ',' + (y + height) + 'H' + (x + capWidth);
-        }; }
-        else
-        { return function(d)
-        {
-            var x = Math.floor(d.index * cc.rowWidth) + 0.5;
-            var y = yAxisPos + yScale(Math.max(0, d[lowCol.lookup])) + 1;
-            var height = yScale(d[highCol.lookup]) - yScale(d[lowCol.lookup]);
+            // We talk about high and low error bars, but really the two
+            // are interchangeable.
+            var errA = d[highCol.lookup];
+            var errB = d[lowCol.lookup];
+            var high = Math.max(errA, errB);
+            var low = Math.min(errA, errB);
 
-            // TODO: uuurrrreeeeghhhhhhh
-            return 'M' + y + ',' + (x - capWidth)  + 'V' + (x + capWidth) +
-                   'M' + y + ',' + x + 'H' + (y + height) +
-                   'M' + (y + height) + ',' + (x - capWidth) + 'V' + (x + capWidth);
-        }; }
+            if (cc.orientation == 'right')
+            {
+                var x = 0;
+                var y = yAxisPos - yScale(high);
+                var height = yScale(high) - yScale(low);
+
+                // TODO: uuurrrreeeeghhhhhhh
+                return 'M' + (x - capWidth) + ',' + y + 'H' + (x + capWidth) +
+                       'M' + x + ',' + y + 'V' + (y + height) +
+                       'M' + (x - capWidth) + ',' + (y + height) + 'H' + (x + capWidth);
+            }
+            else
+            {
+                var x = 0;
+                var y = yAxisPos + yScale(low) + 1;
+                var height = yScale(high) - yScale(low);
+
+                // TODO: uuurrrreeeeghhhhhhh
+                return 'M' + y + ',' + (x - capWidth)  + 'V' + (x + capWidth) +
+                       'M' + y + ',' + x + 'H' + (y + height) +
+                       'M' + (y + height) + ',' + (x - capWidth) + 'V' + (x + capWidth);
+            }
+        };
     },
 
     handleMouseOver: function(rObj, colDef, row, yScale)
@@ -1050,14 +1005,6 @@ chartObj.resizeHandle();
         }
 
         view.highlightRows(row, null, col);
-    },
-
-    _xFlyoutPosition: function()
-    {
-        var vizObj = this,
-            cc = vizObj._chartConfig;
-
-        return ($.browser.msie && ($.browser.majorVersion < 9)) ? 0 : (cc.barWidth / 2);
     },
 
     handleMouseOut: function(rObj, colDef, row, yScale)

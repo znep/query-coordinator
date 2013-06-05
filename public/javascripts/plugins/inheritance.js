@@ -31,8 +31,10 @@
               var tmp = this._super;
 
               // Add a new ._super() method that is the same method
-              // but on the super-class
-              this._super = _s[name];
+              // but on the super-class. If we have hit a pure virtual,
+              // super is undefined.
+              var _newSuper = _s[name];
+              this._super = (_newSuper == pureVirtual)? undefined : _newSuper;
 
               // The method only need to be bound temporarily, so we
               // remove it when we're done executing
@@ -44,6 +46,13 @@
           })(name, newProps[name]) :
           newProps[name];
       }
+    };
+
+    // Placeholder for a pure-virtual interface entry.
+    var pureVirtual = function()
+    {
+      console.error('Pure virtual call');
+      throw new Error('Pure virtual call');
     };
 
     // Copy the properties over onto the new prototype
@@ -67,6 +76,8 @@
     Class.extend = arguments.callee;
 
     Class.addProperties = addProperties;
+
+    Class.pureVirtual = pureVirtual;
 
     return Class;
   };

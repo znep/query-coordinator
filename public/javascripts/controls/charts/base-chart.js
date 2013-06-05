@@ -21,7 +21,9 @@
             'column': 'd3_impl_bar',
             'bar': 'd3_impl_bar',
             'line': 'd3_impl_line',
-            'area': 'd3_impl_line'
+            'area': 'd3_impl_line',
+            'stackedbar': 'd3_impl_bar',
+            'stackedcolumn': 'd3_impl_bar'
         });
     }
 

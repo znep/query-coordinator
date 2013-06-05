@@ -18,6 +18,252 @@ var d3ns = blist.namespace.fetch('blist.d3');
 
 $.Control.registerMixin('d3_impl_bar', {
 
+    initializeVisualization: function()
+    {
+        this._super();
+
+        var vizObj = this,
+            cc = vizObj._chartConfig,
+            barType = vizObj._chartType;
+
+        if (barType.startsWith('stacked'))
+        {
+            cc.collapseXSeries = true;
+            cc.stackYSeries = true;
+        }
+        else
+        {
+            cc.collapseXSeries = false;
+            cc.stackYSeries = false;
+        }
+    },
+
+    // Computes separate positive and negative sums for a row given a set of columns.
+    // Can optionally provide a column to stop after (relevantColumns is processed
+    // left to right), and an evaluator function (takes (row, column, defaultEvaluator), returns value).
+    // Default evaluator grabs the match value, or the raw value as fallback.
+    // Returns an object of the following structure:
+    // {
+    //    negativeSum: The sum of all negative values.
+    //    positiveSum: The sum of all positive values.
+    //    hitLimitColumn: Whether or not we encountered the limit column (false if there is no limit column).
+    // }
+    _computeYLimitsForRow: function(row, relevantColumns, lastColumn, evaluator)
+    {
+        var defaultEvaluator = function(row, column)
+            {
+                return column.dataType.matchValue ?
+                        column.dataType.matchValue(row[column.lookup]) :
+                        row[column.lookup];
+            };
+
+        evaluator = evaluator || defaultEvaluator;
+        return _.reduce(
+            relevantColumns,
+            function(memo, currentReduceCol, index)
+            {
+                if (!memo.hitLimitColumn)
+                {
+                    var value = evaluator(row, currentReduceCol, defaultEvaluator);
+
+                    if (value > 0)
+                    {
+                        memo.positiveSum += value;
+                    }
+                    else
+                    {
+                        memo.negativeSum += value;
+                    }
+
+                    memo.hitLimitColumn = (currentReduceCol.lookup == lastColumn);
+                }
+
+                return memo;
+
+            }, {negativeSum: 0, positiveSum: 0, hitLimitColumn: false});
+    },
+
+    _computeYValuesForRow: function(row, relevantColumns)
+    {
+        if (this._chartConfig.stackYSeries)
+        {
+            // Each stacked column is actually two columns in one. One column
+            // for the positive values, the other for the negative ones.
+            // Exclude the error bars from the sum; rather include them separately.
+
+            var plot, errorLow, errorHigh, errorBarLowVal, errorBarHighVal;
+            if ($.subKeyDefined(this, '_displayFormat.plot.errorBarLow'))
+            {
+                plot = this._displayFormat.plot;
+                errorHigh = plot.errorBarHigh;
+                errorLow = plot.errorBarLow;
+            }
+
+            var limits = this._computeYLimitsForRow(
+                row,
+                relevantColumns,
+                undefined, /* limit column */
+                function(row, column, defaultEvaluator)
+                {
+                    var value = defaultEvaluator(row, column);
+                    if (plot && column.fieldName == errorLow)
+                    {
+                        errorBarLowVal = value;
+                        return 0;
+                    }
+                    else if (plot && column.fieldName == errorHigh)
+                    {
+                        errorBarHighVal = value;
+                        return 0;
+                    }
+                    else
+                    {
+                        return value;
+                    }
+                }
+                );
+
+            var ret = [ limits.positiveSum, limits.negativeSum ];
+            if (plot) { ret = ret.concat([errorBarLowVal, errorBarHighVal]); }
+            return ret;
+        }
+        else
+        {
+            return this._super.apply(this, arguments);
+        }
+    },
+
+    // This tells the sizing algorithm that we won't be placing any columns
+    // side-by-side at all.
+    _getDatumCountPerGroup: function()
+    {
+        var cc = this._chartConfig,
+            valueColumns = this.getValueColumns();
+        return $.isBlank(valueColumns) ?
+            0 :
+            (cc.collapseXSeries ? 1 : this._super());
+    },
+
+    _calculateRowWidth: function()
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+
+        var effectiveColumnCount = vizObj._getDatumCountPerGroup();
+
+        return (cc.barWidth * effectiveColumnCount) +
+               (cc.barSpacing * (effectiveColumnCount - 1)) +
+                cc.rowSpacing;
+    },
+
+    _xDatumPosition: function(seriesIndex)
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+
+        var staticParts = cc.sidePadding - 0.5 - cc.drawElementPosition - cc.dataOffset;
+
+        if (!cc.collapseXSeries)
+        {
+            staticParts += seriesIndex * (cc.barWidth + cc.barSpacing);
+        }
+
+        return function(d)
+        {
+            return staticParts + (d.index * cc.rowWidth);
+        };
+    },
+
+    _yDatumPosition: function(colId, yScale)
+    {
+        var vizObj = this;
+        var yAxisPos = vizObj._yAxisPos();
+        var isFunction = _.isFunction(colId);
+        var cc = vizObj._chartConfig;
+
+        return function(d)
+        {
+            var columnId = isFunction ? colId.call(this) : colId;
+            var columnValue = d[columnId];
+
+            var thisDatumPosition = vizObj._chartConfig.dataDim.pluckY(
+                function(value)
+                {
+                    // I'd love some better math for this. Basically we're stuck
+                    // with a bar with its left edge at the baseline, and it's up to
+                    // us to move the correct edge to the zero baseline, depending
+                    // on the bar's polarity.
+                    // Why? Because SVG doesn't like negative rect widths :/
+                    return (value < 0) ? yScale(value) : yScale(0);
+                },
+                function(value)
+                {
+                    return -yScale(Math.max(0, value)) + 0.5;
+                });
+
+            if (cc.stackYSeries)
+            {
+                // Now this is fun. If our value is positive and we're in
+                // orientation=right, fine, sum up all the values up to and
+                // including us. However, negative values require summing up
+                // all the values up to and NOT including ourselves. Similar
+                // deal with orientation=down, except the cases and signs are
+                // reversed.
+                var limits = vizObj._computeYLimitsForRow(
+                    d,
+                    _.pluck(vizObj.getValueColumns(), 'column'),
+                    columnId);
+
+                if (vizObj._chartConfig.dataDim.pluckY(columnValue < 0, columnValue >= 0))
+                {
+                    return thisDatumPosition(
+                        vizObj._chartConfig.dataDim.pluckY(limits.negativeSum, limits.positiveSum)) + yAxisPos;
+                }
+                else
+                {
+                    // Hard mode active
+                    return vizObj._chartConfig.dataDim.pluckY(
+                        yAxisPos + yScale(limits.positiveSum - columnValue),
+                        yAxisPos - yScale(limits.negativeSum - columnValue));
+                }
+
+
+            }
+            else
+            {
+                return yAxisPos + thisDatumPosition(columnValue);
+            }
+        }
+    },
+
+    _yBarHeight: function(colId, yScale)
+    {
+        var yScaleZero = yScale(0);
+        var isFunction = _.isFunction(colId);
+        return function(d)
+        {
+            return Math.abs(yScale(d[isFunction ? colId.call(this) : colId]) - yScaleZero);
+        };
+    },
+
+    // Returns a translation along X for an error bar.
+    _errorBarTransform: function()
+    {
+        var cc = this._chartConfig;
+
+        var xPosition = cc.sidePadding - 0.5 -
+                        cc.drawElementPosition - cc.dataOffset +
+                        ((cc.rowWidth - cc.rowSpacing) / 2);
+
+
+        return function(d)
+        {
+            var x = Math.floor(d.index * cc.rowWidth) + 0.5;
+            var transform = cc.dataDim.asScreenCoordinate(xPosition + x, 0);
+            return 't' + transform.x + ',' + transform.y;
+        };
+    },
+
     // call this if the active set of data has changed
     _renderData: function(data)
     {
@@ -113,7 +359,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     // D3 won't re-execute these dynamic property values when
                     // our internal state changes, so we must re-set them here
                     // (as opposed to on enter only).
-                    .attr(cc.dataDim.xAxis, vizObj._xBarPosition(seriesIndex))
+                    .attr(cc.dataDim.xAxis, vizObj._xDatumPosition(seriesIndex))
 
                     // We want to see the columns "grow" up or right on scale change.
                     // This is mostly fine for orientation=down (since our y-axis
@@ -138,7 +384,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     })
                     .attr(cc.dataDim.yAxis, function(d)
                     {
-                        var oldVal = vizObj._yBarPosition(col.lookup, oldYScale);
+                        var oldVal = vizObj._yDatumPosition(col.lookup, oldYScale);
                         if (_.isFunction(oldVal))
                         {
                             oldVal = oldVal(d);
@@ -149,7 +395,7 @@ $.Control.registerMixin('d3_impl_bar', {
                             var oldHeight = vizObj._yBarHeight(col.lookup, oldYScale)(d);
                             var newHeight = vizObj._yBarHeight(col.lookup, newYScale)(d);
 
-                            var newVal = vizObj._yBarPosition(col.lookup, newYScale);
+                            var newVal = vizObj._yDatumPosition(col.lookup, newYScale);
 
 
                             if (_.isFunction(newVal))
@@ -178,7 +424,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     })
                 .transition()
                     .duration(1000)
-                    .attr(cc.dataDim.yAxis, vizObj._yBarPosition(col.lookup, newYScale))
+                    .attr(cc.dataDim.yAxis, vizObj._yDatumPosition(col.lookup, newYScale))
                     .attr(cc.dataDim.height, vizObj._yBarHeight(col.lookup, newYScale));
 
             // EXIT
@@ -212,7 +458,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     .style(cc.dataDim.pluckY('left', 'top'), position)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth));
             nullBars
-                    .style(cc.dataDim.position, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)))
+                    .style(cc.dataDim.position, vizObj._d3_px(vizObj._xDatumPosition(seriesIndex)))
                     .style(cc.dataDim.pluckY('left', 'top'), position)
                     .style(cc.dataDim.height, height);
             nullBars
@@ -288,7 +534,7 @@ $.Control.registerMixin('d3_impl_bar', {
         cc.chartD3.selectAll('.dataBar')
             .transition()
                 .duration(1000)
-                .attr(cc.dataDim.yAxis, vizObj._yBarPosition(function() { return this.__dataColumn.lookup; }, yScale))
+                .attr(cc.dataDim.yAxis, vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale))
                 .attr(cc.dataDim.height, vizObj._yBarHeight(function() { return this.__dataColumn.lookup; }, yScale));
 
         cc.chartD3.selectAll('.rowLabel')
@@ -314,11 +560,11 @@ $.Control.registerMixin('d3_impl_bar', {
         {
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
                     .attr(cc.dataDim.width, cc.barWidth)
-                    .attr(cc.dataDim.xAxis, vizObj._xBarPosition(seriesIndex));
+                    .attr(cc.dataDim.xAxis, vizObj._xDatumPosition(seriesIndex));
 
             cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))
-                    .style(cc.dataDim.xAxis, vizObj._d3_px(vizObj._xBarPosition(seriesIndex)));
+                    .style(cc.dataDim.xAxis, vizObj._d3_px(vizObj._xDatumPosition(seriesIndex)));
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());

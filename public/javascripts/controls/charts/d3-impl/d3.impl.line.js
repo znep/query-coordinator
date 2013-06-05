@@ -39,18 +39,18 @@ $.Control.registerMixin('d3_impl_line', {
             // figure out what data we can actually render
             var presentData = _.select(data, notNull) || [];
 
-            var oldLine = d3.svg[lineType]().x(vizObj._xDotPosition(seriesIndex))
-                                            .y(vizObj._yBarPosition(col.lookup, oldYScale))
+            var oldLine = d3.svg[lineType]().x(vizObj._xDatumPosition(seriesIndex))
+                                            .y(vizObj._yDatumPosition(col.lookup, oldYScale))
                                             .defined(notNull);
-            var newLine = d3.svg[lineType]().x(vizObj._xDotPosition(seriesIndex))
-                                            .y(vizObj._yBarPosition(col.lookup, newYScale))
+            var newLine = d3.svg[lineType]().x(vizObj._xDatumPosition(seriesIndex))
+                                            .y(vizObj._yDatumPosition(col.lookup, newYScale))
                                             .defined(notNull);
             if (lineType == 'area')
             {
                 var zeroPoint = {}; zeroPoint[col.lookup] = 0;
                 // Subtract 1 to avoid overlap with the zero line.
-                oldLine.y0(vizObj._yBarPosition(col.lookup, oldYScale)(zeroPoint) - 1);
-                newLine.y0(vizObj._yBarPosition(col.lookup, newYScale)(zeroPoint) - 1);
+                oldLine.y0(vizObj._yDatumPosition(col.lookup, oldYScale)(zeroPoint) - 1);
+                newLine.y0(vizObj._yDatumPosition(col.lookup, newYScale)(zeroPoint) - 1);
             }
 
             // Render the line that connects the dots.
@@ -93,8 +93,8 @@ $.Control.registerMixin('d3_impl_line', {
                     .attr('stroke', '#fff')
                     .attr('fill', function(d) { return d.color || colDef.color; })
 
-                    .attr('cx', vizObj._xDotPosition(seriesIndex))
-                    .attr('cy', vizObj._yBarPosition(col.lookup, oldYScale))
+                    .attr('cx', vizObj._xDatumPosition(seriesIndex))
+                    .attr('cy', vizObj._yDatumPosition(col.lookup, oldYScale))
                     .attr('r', 5)
 
                     .each(function() { this.__dataColumn = col; })
@@ -146,7 +146,7 @@ $.Control.registerMixin('d3_impl_line', {
                     })
                 .transition()
                     .duration(1000)
-                    .attr('cy', vizObj._yBarPosition(col.lookup, newYScale))
+                    .attr('cy', vizObj._yDatumPosition(col.lookup, newYScale))
             bars
                 .exit()
                     .each(function(d)
@@ -179,10 +179,10 @@ $.Control.registerMixin('d3_impl_line', {
                             return col.renderType.renderer(d[col.lookup], col, true, null, null, true);
                         });
                 dataLabels
-                    .attr('x', vizObj._xDotPosition(seriesIndex))
+                    .attr('x', vizObj._xDatumPosition(seriesIndex))
                     .attr('y', function(d, i)
                     {
-                        var yPos = vizObj._yBarPosition(col.lookup, newYScale)(d),
+                        var yPos = vizObj._yDatumPosition(col.lookup, newYScale)(d),
                             before = (data[i-1] || {})[col.lookup],
                             after = (data[i+1] || {})[col.lookup],
                             datum = d[col.lookup];
@@ -274,7 +274,7 @@ $.Control.registerMixin('d3_impl_line', {
         cc.chartD3.selectAll('.dataBar')
             .transition()
                 .duration(1000)
-                .attr('cy', vizObj._yBarPosition(function() { return this.__dataColumn.lookup; }, yScale))
+                .attr('cy', vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale))
 
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -295,7 +295,7 @@ $.Control.registerMixin('d3_impl_line', {
         _.each(valueColumns, function(colDef, seriesIndex)
         {
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
-                    .attr('cx', vizObj._xDotPosition(seriesIndex));
+                    .attr('cx', vizObj._xDatumPosition(seriesIndex));
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -311,7 +311,7 @@ $.Control.registerMixin('d3_impl_line', {
     },
 
     // Ignore the bar chart staggering since dots can have the same x position.
-    _xDotPosition: function(seriesIndex)
+    _xDatumPosition: function(seriesIndex)
     {
         var vizObj = this,
             cc = this._chartConfig;
@@ -326,7 +326,7 @@ $.Control.registerMixin('d3_impl_line', {
     },
 
     // Override to calculate negative positions correctly.
-    _yBarPosition: function(colId, yScale)
+    _yDatumPosition: function(colId, yScale)
     {
         var yAxisPos = this._yAxisPos();
         var isFunction = _.isFunction(colId);
@@ -338,13 +338,6 @@ $.Control.registerMixin('d3_impl_line', {
                        yScale(d[isFunction ? colId.call(this) : colId])
                        + 0.5;
             };
-    },
-
-    _xFlyoutPosition: function()
-    {
-        // I don't actually know why this magic number is magical.
-        // However, it totally works for different line charts.
-        return 5;
     },
 
     _errorBarTransform: function()
@@ -378,8 +371,8 @@ $.Control.registerMixin('d3_impl_line', {
             // figure out what data we can actually render
             var presentData = _.select(data, notNull) || [];
 
-            var line = d3.svg.line().x(vizObj._xDotPosition(seriesIndex))
-                                    .y(vizObj._yBarPosition(col.lookup, vizObj._currentYScale()))
+            var line = d3.svg.line().x(vizObj._xDatumPosition(seriesIndex))
+                                    .y(vizObj._yDatumPosition(col.lookup, vizObj._currentYScale()))
                                     .defined(notNull);
 
             // Render the line that connects the dots.

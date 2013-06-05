@@ -1224,6 +1224,7 @@ importNS.uploadFilePaneConfig = {
         }
 
         var $uploadThrobber = $pane.find('.uploadThrobber');
+        var $uploadFileErrorHelp = $pane.find('.uploadFileErrorHelp');
         var uploader = blist.fileUploader({
             element: $pane.find('.uploadFileButtonWrapper')[0],
             action: uploadEndpoint,
@@ -1261,6 +1262,7 @@ importNS.uploadFilePaneConfig = {
 
                 $uploadThrobber.slideDown()
                                .find('.text').text('Uploading your file...');
+                $uploadFileErrorHelp.slideUp();
             },
             onProgress: function(id, fileName, loaded, total)
             {
@@ -1276,6 +1278,7 @@ importNS.uploadFilePaneConfig = {
                 if ($.isBlank(response) || _.isEmpty(response) || (response.error == true))
                 {
                     $uploadThrobber.slideUp();
+                    $uploadFileErrorHelp.slideDown();
                     $pane.find('.uploadFileName')
                         .val('There was a problem ' +
                              ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing') +
@@ -1288,6 +1291,7 @@ importNS.uploadFilePaneConfig = {
                 setTimeout(function()
                 {
                     $uploadThrobber.slideUp();
+                    $uploadFileErrorHelp.slideUp();
                     $pane.find('.uploadFileName').val('No file selected yet.');
                     if (state.type == 'blobby')
                     {

@@ -81,6 +81,21 @@
     padding-top: 2.8em
     width: 68em
 
+    .importErrorHelpText
+      display: none
+      font-size: 1.3em
+
+    .error~.importErrorHelpText
+      display: block
+
+    .uploadFileErrorHelp
+      display: none
+      clear: both
+      font-size: 1.1em
+      margin:
+        bottom: 0.5em
+        top: 0.5em
+
     .uploadFileNameWrapper, .crossloadUrlWrapper
       float: left
       padding: 0
@@ -167,6 +182,13 @@
         .icon
           float: left
           margin-right: 0.2em
+
+  .importErrorHelpText
+    display: none
+    font-size: 1.3em
+
+  .error~.importErrorHelpText
+    display: block
 
   .columnsList > li .mainLine
     .columnHandleCell
@@ -464,6 +486,9 @@
 
   .warningsSection
     display: none
+
+    .warningsHelpMessage
+      font-size: 1.3em
 
     .columnWarningsList
       margin: 0.5em 0 1em

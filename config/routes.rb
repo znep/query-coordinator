@@ -12,7 +12,7 @@ Frontend::Application.routes do
   end
 
   # optional locale scope for all routes to teach rails how to make links
-  scope '(:locale)', :locale => /en|it|nyan/ do
+  scope '(:locale)', :locale => /en|it|es|fr|zh|nyan/ do
 
     scope :path => '/api_foundry', :controller => 'api_foundry' do
       get '/forge/:id', :action => 'forge'
@@ -36,6 +36,14 @@ Frontend::Application.routes do
       get '/request/*path.*ext', :action => 'request_async'
       get '/receive/:token', :action => 'request_receive'
       get '/status/:token', :action => 'request_status'
+    end
+
+    # New frontend pages
+    scope :controller => 'odysseus', :action => 'index' do
+      match '/stat/goals'
+      match '/stat/goal/:goal_id'
+      match '/stat/category/:category_id/goal/:goal_id'
+      match '/stat/category/:category_id/goal/:goal_id/edit'
     end
 
     scope :path => '/internal', :controller => 'internal' do
@@ -323,11 +331,6 @@ Frontend::Application.routes do
       match '/manage/site_config', :action => 'manage_config'
       get '/manage/template', :action => 'manage_template'
       post '/manage/template', :action => 'manage_template_update'
-    end
-
-    # New GovStat pages
-    scope :controller => 'odysseus', :action => 'index' do
-      match '/stat/goals'
     end
 
     # Custom pages, catalogs, facets

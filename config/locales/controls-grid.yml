@@ -39,4 +39,68 @@ it:
       must_enter_name: Devi inserire un nome per questa colonna
       no_rows: Nessun record da visualizzare
       new_row: Nuovo
-	  
+
+es:
+  controls:
+    grid:
+      sort_ascending: Orden ascendente
+      sort_descending: Orden descendente
+      clear_sort: Eliminar orden
+      hide_column: Esconder columna
+      delete_column: Borrar columna
+      edit_column_properties: Editar propiedades de la columna
+      filter_this_column: Filtrar esta columna
+      clear_column_filter: Eliminar filtro de la columna
+      previous: Previo
+      delete_warning_single_column: ¿Desea borrar la columna seleccionada? ¡Todos
+        los datos en esta columna se eliminarán!
+      delete_warning_multi_column: ¿Desea borrar la columna seleccionada? ¡Todos los
+        datos en esta columna se eliminarán!
+      view_single_row: Ver datos en una sola fila
+      delete_row: Borrar fila
+      click_for_menu: Hacer clic para ir al menú
+      must_enter_name: Debe colocar un nombre para esta columna
+      no_rows: No hay filas para mostrar
+      new_row: Nuevo
+fr:
+  controls:
+    grid:
+      sort_ascending: Tri par ordre ascendant
+      sort_descending: Tri par ordre descendant
+      clear_sort: Effacer le tri
+      hide_column: Cacher la colonne
+      delete_column: Enlever la colonne
+      edit_column_properties: Modifier les propriétés de la colonne
+      filter_this_column: Filtrer cette colonne
+      clear_column_filter: Effacer le filtre
+      previous: Précédent
+      delete_warning_single_column: Voulez-vous enlever la colonne sélectionnée ?
+        Toutes les données qui y figurent seront supprimées !
+      delete_warning_multi_column: Voulez-vous enlever les colonnes sélectionnées ?
+        Toutes les données qui y figurent seront supprimées !
+      view_single_row: Visualiser les données en une seule rangée
+      delete_row: Enlever la rangée
+      click_for_menu: Cliquer pour afficher Menu
+      must_enter_name: Vous devez inscrire un nom pour cette colonne
+      no_rows: Pas de rangées affichables
+      new_row: Nouvelle
+zh:
+  controls:
+    grid:
+      sort_ascending: 按升序排列
+      sort_descending: 按降序排列
+      clear_sort: 清除排序
+      hide_column: 隐藏列
+      delete_column: 删除列
+      edit_column_properties: 编辑列属性
+      filter_this_column: 对本列进行筛选
+      clear_column_filter: 清除列筛选
+      previous: 上一步
+      delete_warning_single_column: 您想删除选中的列吗？列中的数据将全部删除！
+      delete_warning_multi_column: 您想删除选中的列吗？列中的数据将全部删除！
+      view_single_row: 查看单行的数据
+      delete_row: 删除行
+      click_for_menu: 单击显示菜单
+      must_enter_name: 您必须输入此列的名称
+      no_rows: 无行显示
+      new_row: 新增

@@ -57,3 +57,90 @@ it:
           about: Informazioni
       image_upload:
         button: Carica Immagine
+
+es:
+  controls:
+    common:
+      share:
+        button_prompt: Socializar
+        button_tooltip: Compartir este conjunto de datos
+        share_text: ! 'Ver %{name}, conjunto de datos en %{site}:'
+        networks:
+          facebook: Facebook
+          twitter: Twitter
+          email: Correo electrónico
+      auth_required: Usted tiene que iniciar sesión para %{ action_phrase }
+      rate:
+        auth_action_phrase: califique este conjunto de datos
+      stars:
+        tooltip: ! '%{ number } estrellas'
+      sidebar:
+        tabs:
+          edit: Editar
+          manage: Administrar
+          moreViews: Más vistas
+          filter: Filtrar
+          visualize: Visualizar
+          export: Exportar
+          discuss: Debatir
+          embed: Incrustar
+          about: Acerca de este conjunto de datos
+      image_upload:
+        button: Subir imagenfr/controls/common/share
+fr:
+  controls:
+    common:
+      share:
+        button_tooltip: Partager cette série
+        share_text: ! 'Voyez la série %{name} sur %{site}: '
+        networks:
+          facebook: Facebook
+          twitter: Twitter
+          email: Courrier électronique
+      auth_required: Vous devez être connecté dans %{action_phrase}
+      rate:
+        auth_action_phrase: Noter cette série
+      stars:
+        tooltip: ! '%{number} d’étoiles'
+      sidebar:
+        tabs:
+          edit: Modifier
+          manage: Gérer
+          moreViews: Plus de vues
+          filter: Filtrer
+          visualize: Visualiser
+          export: Exporter
+          discuss: Discussion
+          embed: Intégrez
+          about: À propos de cette série de données
+      image_upload:
+        button: Télécharger l’image
+zh:
+  controls:
+    common:
+      share:
+        button_prompt: 社交
+        button_tooltip: 分享数据集
+        share_text: 到%{site}查看%{name}数据集：
+        networks:
+          facebook: Facebook
+          twitter: Twitter
+          email: 电子邮件
+      auth_required: 您必须登录，才能%{action_phrase}
+      rate:
+        auth_action_phrase: 给数据集评分
+      stars:
+        tooltip: ! '%{number} 颗星'
+      sidebar:
+        tabs:
+          edit: 编辑
+          manage: 管理
+          moreViews: 更多视图
+          filter: 筛选
+          visualize: 可视化
+          export: 导出
+          discuss: 讨论
+          embed: 嵌入
+          about: 关于此数据集
+      image_upload:
+        button: 上传图片

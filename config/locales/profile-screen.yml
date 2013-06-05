@@ -279,3 +279,470 @@ it:
           image_format: Selezionare un formato di immagine valido (PNG, JPG, or GIF)
           user_missing: "Questo utente non può essere trovato, o è stato eliminato."
         success: "Il tuo profilo e stato aggiornato con successo."
+
+es:
+  screens:
+    profile:
+      bar:
+        edit_settings_link: Editar las configuraciones de la cuenta
+        follow_link: Seguir
+        unfollow_link: No seguir
+        message_link: Enviar mensaje
+        join_date: Inscrito(a) el
+        last_seen_date: Última visita el
+      info:
+        title: Información básica
+        no_description: No hay descripción
+        interests: Intereses
+        external_links: Enlaces externos
+        other_ext_link: Otro
+        edit_link: Editar
+        links:
+          my_company: Mi empresa
+          my_site: Mi sitio
+          my_blog: Mi blog
+          twitter: Twitter
+          facebook: Facebook
+          flickr: Flickr
+          other: Otro
+      browse:
+        title: ! 'Conjuntos de datos de %{user} '
+        owned_datasets: De mi propiedad
+        shared_datasets: Compartido conmigo
+      app_tokens:
+        title: ! 'Aplicaciones de %{user} '
+        manage_link: Administrar
+        no_applications: Usted  no ha creado ninguna aplicación aún. Haga clic en
+          “Administrar” a la derecha para comenzar.
+        item:
+          no_thumbnail: No hay miniaturas
+          name: Nombre
+          description: Descripción
+          organization: Organización
+          website: Sitio web
+          app_token: ! 'Autentificador de la aplicación '
+          secret_token: Autentificador secreto
+          show_secret_link: ! 'Mostrar autentificador secreto '
+          edit_token_link: Editar
+      sidebar:
+        edit_image_link: Editar imagen
+        followers: Seguidores
+        following: Seguidos
+        all_contacts_link: Ver todo
+      contact:
+        title: Contactar usuario
+        subject: Asunto
+        subject_prompt: Ingresar un asunto
+        message: Mensaje
+        message_prompt: Ingresar su mensaje
+      edit:
+        back_link: Volver a mi perfil
+        info:
+          title: Información básica
+          title_full: Información básica
+          display_name: Nombre de usuario
+          first_name: Nombre
+          last_name: Apellido
+          organization: Organización
+          user_title: Cargo
+          city: Ciudad
+          state: Estado
+          country: País
+          description:
+            title: Descripción
+            prompt: Ingresar cualquier información que desee compartir
+          interests:
+            title: Intereses
+            prompt: Ingresar sus intereses
+          link_prompt: Ingresar URL
+        image:
+          title: Imagen de perfil
+          upload_image_button: Subir nueva imagen
+          success: Su imagen fue actualizada
+          error: ! 'Hubo un error al subir nueva imagen: #{message}'
+        account:
+          title: Configuraciones de cuenta
+          current_email: Correo electrónico actual
+          new_email: Nuevo correo electrónico
+          confirm_email: Confimar correo electrónico
+          password: Contraseña
+          password_prompt: (Para su seguridad)
+          old_password: Contraseña antigua
+          new_password: Contraseña nueva
+          password_restrictions_html: (Existen restricciones <span class="icon"> </span>)
+          confirm_password: Confirmar contraseña
+          connect_openid: Iniciar sesión con sus credenciales de Facebook, Twitter,
+            Google u otras terceras partes.
+          learn_openid: Saber acerca de OpenID
+          no_openid: Usted  no tiene aún identificadores de OpenID asociados con esta
+            cuenta.
+          add_openid_button: Añadir una OpenID o una cuenta externa
+          email:
+            title: Notificaciones de correo electrónico
+            subtitle: Suscribirse a eventos individuales marcando la casilla correspondiente.
+            interests:
+              privileged_account_created: Un usuario crea su cuenta privilegiada
+              any_view_created: Se creó cualquier vista
+              comment_to_moderate: Se envió un comentario pidiendo moderación
+              account_provisioned: Se proporcionó una cuenta privilegiada para futuro
+                uso
+              nomination_created: Se creó una nueva nominación
+              nomination_moderated: Se moderó cualquier nominación
+              view_made_public: Se hizo pública cualquier vista
+              other: Otro
+              user_affected: Acciones que lo afectan directamente, como respuestas
+                a comentarios y actualizaciones de estados
+            policy: ! '%{site} respeta su privacidad  y nunca le enviará mensajes
+              con publicidad a través de esta lista o dará su dirección de correo
+              electrónico a terceras partes. Los mensajes enviados desde este sitio
+              incluyen notificaciones de cuenta y actualizaciones de los conjuntosde
+              datos que usted ha creado o  está suscrito. '
+        app_tokens:
+          title: Autentificadores de la aplicación
+          title_full: Sus aplicaciones
+          new_app_button: Crear nueva aplicación
+          create_error: ! 'Hubo un error al crear su autentificador de la aplicación
+            #{message}'
+          create_success: Su aplicación fue creada
+          save_success: ! 'Su aplicación fue guardada '
+          delete_error: ! 'Hubo un error al borrar su autentificador de la aplicación
+            #{message}'
+          delete_success: Su aplicación fue borrada
+          application_name: Nombre de la aplicación
+          application_name_prompt: Ingresar un nombre para su aplicación
+          description: Descripción
+          description_prompt: Ingresar una descripción para su aplicación
+          organization: Organización
+          organization_prompt: Ingresar la organización responsable de esta aplicación
+          website: Sitio web
+          website_prompt: Proveer un enlace para esta aplicación o sitio web de la
+            organización
+          callback_prefix: Prefijo “Callback”
+          callback_prefix_prompt: Proveer el prefijo para el  URL  seguro del “callback”
+            (https) cuando use OAuth
+          callback_prefix_help_html: Por ejemplo, si su aplicación llamará de vuelta
+            (“callback”) a <span class="code">https://my-domain.com/socrata-app/oauth/validated</span>
+            y <span class="code">https://my-domain.com/socrata-app/profile</span>,
+            usted debe proveer <span class="code">https://my-domain.com/socrata-app</span>
+            como su prefijo. Tenga en cuenta que debe incluir al menos el nombre completo
+            del dominio.
+          public: ¿Público?
+          thumbnail: Miniatura
+          title_single: ! 'Editar autentificador de laaplicación '
+        validation:
+          no_display_name: ! 'Error: Se requiere un “nombre de usuario” '
+          invalid_links: Hubo un problema al actualizar sus enlaces. %{message}
+          password_mismatch: Nuevas contraseñas no coinciden
+          no_password_no_openid: Usted no puede eliminar todos sus identificadores
+            de OpenID antes de crear una contraseña
+          email_mismatch: Nuevos correos electrónicos no coinciden
+          image_format: Por favor, seleccione un tipo de imagen válida  (PNG, JPEG
+            o GIF)
+          user_missing: Este usuario no se pudo encontrar o fue borrado
+        success: ! 'Su perfil fue actualizado. '
+fr:
+  screens:
+    profile:
+      bar:
+        edit_settings_link: Éditer paramètres de compte
+        follow_link: Suivre
+        unfollow_link: Ne plus suivre
+        message_link: Envoyer message
+        join_date: Membre depuis
+        last_seen_date: Dernière visite
+      info:
+        title: Info de base
+        no_description: Aucune description fournie
+        interests: Centres d’intérêt
+        external_links: Liens externes
+        other_ext_link: Autres
+        edit_link: Modifier
+        links:
+          my_company: Mon entreprise
+          my_site: Mon site
+          my_blog: Mon blog
+          twitter: Twitter
+          facebook: Facebook
+          flickr: Flickr
+          other: Autres
+      browse:
+        title: ! 'Série de données de %{user} '
+        owned_datasets: M’appartenant
+        shared_datasets: Partagées avec moi
+      app_tokens:
+        title: Applications de %{user}
+        manage_link: Gérer
+        no_applications: Vous n’avez pas encore créé d’applications. Cliquez sur Gérer
+          (à droite) pour démarrer
+        item:
+          no_thumbnail: Pas de miniature
+          name: Nom
+          description: Description
+          organization: Organisation
+          website: Site web
+          app_token: App Token
+          secret_token: Secret Token
+          show_secret_link: Montrer Secret Token
+          edit_token_link: Modifier
+      sidebar:
+        edit_image_link: Modifier image
+        followers: Abonnés
+        following: Abonnements
+        all_contacts_link: Voir tous
+      contact:
+        title: Contacter utilisateur
+        subject: Objet
+        subject_prompt: Entrer un objet
+        message: Message
+        message_prompt: Entrez votre message
+      edit:
+        back_link: Retour à Mon profil
+        info:
+          title: Info de base
+          title_full: Information de base
+          display_name: Nom complet
+          first_name: Prénom
+          last_name: Nom de famille
+          organization: Organisation
+          user_title: Titre
+          city: Ville
+          state: État
+          country: Pays
+          description:
+            title: Description
+            prompt: Entrez tous les renseignements dont vous voulez faire part
+          interests:
+            title: Centres d’intérêt
+            prompt: Entrez vos centres d’intérêt
+          link_prompt: Entrer l’URL
+        image:
+          title: Image pour votre profil
+          upload_image_button: Télécharger une nouvelle image
+          success: Votre image a été mise à jour
+          error: ! 'Erreur lors du téléchargement de l’image : #{message}'
+        account:
+          title: Paramètres de compte
+          current_email: Adresse courriel actuelle
+          new_email: Nouvelle adresse courriel
+          confirm_email: Confirmer adresse courriel
+          password: Mot de passe
+          password_prompt: (Pour votre sécurité)
+          old_password: Ancien mot de passe
+          new_password: Nouveau mot de passe
+          password_restrictions_html: (Des restrictions s’appliquent <span class="icon">
+            </span>)
+          confirm_password: Confirmer Mot de passe
+          connect_openid: Ouvrez une session avec vos informations d’identification
+            Facebook, Twitter, Google ou autre tierce partie.
+          learn_openid: Pour en savoir plus sur OpenID
+          no_openid: Vous n’avez pas encore d’identifiants OpenID associés à ce compte.
+          add_openid_button: Ajoutez un compte OpenID ou externe
+          email:
+            title: Notifications par courriel
+            subtitle: Abonnez-vous à tel ou tel événement en cochant la case corresondante
+            interests:
+              privileged_account_created: Création d’un compte privilégié par un utilisateur
+              any_view_created: Création d’une vue quelconque
+              comment_to_moderate: ! 'Soumission d’un commentaire nécessitant un traitement
+                par le modérateur '
+              account_provisioned: Création d’un compte privilégié prévisionnel pour
+                usage futur
+              nomination_created: Création d’une nouvelle nomination
+              nomination_moderated: Nomination en cours de traitement par le modérateur
+              view_made_public: Nouvelle vue rendue publique
+              other: Autres
+              user_affected: Actions vous concernant directement (réponses à commentaires,
+                mise à jour de statut, etc.)
+            policy: ! '%{site} respecte votre vie privée et s’engage à ne jamais vous
+              envoyer de courriels à caractère commercial par le biais de cette liste
+              ou communiquer votre adresse courriel à des tierces parties. Les courriels
+              envoyés depuis ce site comprennent des notifications concernant votre
+              compte et des mises à jour sur des séries de données que vous avez créées
+              ou auxquelles vous êtes abonné.'
+        app_tokens:
+          title: App Tokens
+          title_full: Vos applications
+          new_app_button: Créez une nouvelle application
+          create_error: ! 'Une erreur s’est produite durant le processus de création
+            de vore application token : #{message}'
+          create_success: Votre application a été créée
+          save_success: Votre application a bien été enregistrée
+          delete_error: ! 'Une erreur s’est produite au moment d’enlever vore application
+            token : #{message}'
+          delete_success: Votre application a été enlevée
+          application_name: Nom de l’application
+          application_name_prompt: Entrez un nom pour l’application
+          description: Description
+          description_prompt: Entrez une description pour l’application
+          organization: Organisation
+          organization_prompt: Entrez le nom de l’organisation responsable de cette
+            application
+          website: Site web
+          website_prompt: Fournissez un lien vers cette application ou le site web
+            de cette organisation
+          callback_prefix: Préfixe de rappel
+          callback_prefix_prompt: Fournissez le préfixe de l’URI de rappel sécurisé
+            (https) utilisé avec la fonction OAuth
+          callback_prefix_help_html: À titre d’exemple, si votre application renvoie
+            à  <span class="code">https://my-domain.com/socrata-app/oauth/validated</span>
+            et <span class="code">https://my-domain.com/socrata-app/profile</span>,
+            vous aurez à fournir <span class="code">https://my-domain.com/socrata-app</span>
+            comme préfixe de rappel. À noter que le nom de domaine intégral doit au
+            moins être fourni.
+          public: Public ?
+          thumbnail: Miniature
+          title_single: Modifier Application Token
+        validation:
+          no_display_name: ! 'Erreur : Le nom complet est requis'
+          invalid_links: Un problème a été rencontré dans la mise à jour de vos liens.
+            %{message}
+          password_mismatch: Les nouveaux mots de passe ne correspondent pas
+          no_password_no_openid: Vous ne pouvez pas enlever l’ensemble de vos identifiants
+            OpenID avant d’établir un mot de passe
+          email_mismatch: Les nouvelles adresses courriel ne correspondent pas
+          image_format: Veuillez sélectionner un type d’image valide (PNG, JPG ou
+            GIF)
+          user_missing: Cet utilisateur ne peut être trouvé ou a été enlevé.
+        success: Votre profil a bien été mis à jour.
+zh:
+  screens:
+    profile:
+      bar:
+        edit_settings_link: 编辑账户设置
+        follow_link: 关注
+        unfollow_link: 取消关注
+        message_link: 发送消息
+        join_date: 注册于
+        last_seen_date: 上次登录于
+      info:
+        title: 基本信息
+        no_description: 没有提供内容
+        interests: 兴趣
+        external_links: 外部链接
+        other_ext_link: 其他
+        edit_link: 编辑
+        links:
+          my_company: 我的单位
+          my_site: 我的网址
+          my_blog: 我的博客
+          twitter: Twitter
+          facebook: Facebook
+          flickr: Flickr
+          other: 其他
+      browse:
+        title: ! '%{user}的数据集'
+        owned_datasets: 我是所有者
+        shared_datasets: 我是分享者
+      app_tokens:
+        title: ! '%{user}的应用程序'
+        manage_link: 管理
+        no_applications: 您还未创建应用程序。点击右边的“管理”开始创建。
+        item:
+          no_thumbnail: 无缩略图
+          name: 名称
+          description: 说明
+          organization: 机构
+          website: 网站
+          app_token: 应用程序令牌
+          secret_token: 秘密令牌
+          show_secret_link: 显示秘密令牌
+          edit_token_link: 编辑
+      sidebar:
+        edit_image_link: 编辑头像
+        followers: 关注我的人
+        following: 我关注的人
+        all_contacts_link: 查看所有
+      contact:
+        title: 联系用户
+        subject: 主题
+        subject_prompt: 输入主题
+        message: 留言
+        message_prompt: 输入留言
+      edit:
+        back_link: 返回我的个人资料
+        info:
+          title: 基本信息
+          title_full: 基本信息
+          display_name: 显示姓名
+          first_name: 名
+          last_name: 姓
+          organization: 机构
+          user_title: 职务
+          city: 城市
+          state: 州/省
+          country: 国家
+          description:
+            title: 描述
+            prompt: 写下您想分享的任何内容
+          interests:
+            title: 兴趣
+            prompt: 输入您的兴趣
+          link_prompt: 输入URL
+        image:
+          title: 个人资料头像
+          upload_image_button: 上传新头像
+          success: 您的头像已更新
+          error: 上传新头像出错：#{message}
+        account:
+          title: 账户设置
+          current_email: 当前的电子邮件
+          new_email: 新电子邮件
+          confirm_email: 确认电子邮件
+          password: 密码
+          password_prompt: （安全起见）
+          old_password: 旧密码
+          new_password: 新密码
+          password_restrictions_html: （密码设定要求<span class="icon"> </span>）
+          confirm_password: 确认密码
+          connect_openid: 用Facebook、Twitter、Google或其他第三方认证信息登录。
+          learn_openid: 了解OpenID
+          no_openid: 此账户没有关联的OpenID标识符。
+          add_openid_button: 添加OpenID或外部账户
+          email:
+            title: 电子邮件通知
+            subtitle: 勾选以下选项，即可收到相关的通知。
+            interests:
+              privileged_account_created: 用户创建了特权账户
+              any_view_created: 有人创建了视图
+              comment_to_moderate: 有人提交了评论，需要审核
+              account_provisioned: 提供了特权账户，供以后使用
+              nomination_created: 有人创建了新提名
+              nomination_moderated: 审核所有提名
+              view_made_public: 有视图被公开
+              other: 其他
+              user_affected: 直接对您产生影响的操作，如评论回复和状态更新
+            policy: ! '%{site} 尊重您的隐私权利，不会通过此处列表发送营销邮件，也不会把您的邮件地址提供给第三方。本网站所发邮件的内容涉及账户通知，以及您创建或订阅的数据集的更新。'
+        app_tokens:
+          title: 应用程序令牌
+          title_full: 您的应用程序
+          new_app_button: 创建新应用程序
+          create_error: 创建应用程序令牌时出错：#{message}
+          create_success: 应用程序已创建
+          save_success: 应用程序已成功保存
+          delete_error: 删除应用程序令牌时出错：#{message}
+          delete_success: 应用程序已删除
+          application_name: 应用程序名称
+          application_name_prompt: 输入应用程序的名称
+          description: 说明
+          description_prompt: 应用程序介绍
+          organization: 机构
+          organization_prompt: 输入负责此应用程序的机构
+          website: 网站
+          website_prompt: 提供此应用程序或机构网站的链接
+          callback_prefix: 回调前缀
+          callback_prefix_prompt: 提供在使用OAuth时前往安全(https) 回调 uri的前缀
+          callback_prefix_help_html: 例如，如果您的应用程序将回调到 <span class="code">https://my-domain.com/socrata-app/oauth/validated</span>
+            和 <span class="code">https://my-domain.com/socrata-app/profile</span>，您需提供
+            <span class="code">https://my-domain.com/socrata-app</span> 作为前缀。注意，至少必须包括整个域名。
+          public: 公开？
+          thumbnail: 缩略图
+          title_single: 编辑应用程序令牌
+        validation:
+          no_display_name: 错误：“显示名称”不能空白
+          invalid_links: 更新链接时出现问题。 %{message}
+          password_mismatch: 新密码不匹配
+          no_password_no_openid: 必须先设置密码，才能删除所有OpenID标识符
+          email_mismatch: 新电子邮件不匹配
+          image_format: 请选择有效的图片类型(PNG, JPG或 GIF)
+          user_missing: 用户找不到，或已被删除。
+        success: 您的个人资料已更新。

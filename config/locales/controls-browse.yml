@@ -231,3 +231,325 @@ it:
         manage_api:
           title: Gestisci questa API
           button: Gestisci
+
+es:
+  controls:
+    browse:
+      back_to_dataset: Volver al conjunto de datos
+      search: Búsqueda
+      facets:
+        view_types_title: Ver tipos
+        view_types_singular_title: tipo
+        view_types:
+          datasets: Conjuntos de datos
+          unpublished: Conjuntos de datos no publicados
+          href: Conjuntos de datos externos
+          blob: Archivos y documentos
+          filters: Vistas filtradas
+          charts: Gráficos
+          maps: Mapas
+          calendars: Calendarios
+          forms: Formularios
+          apis: API
+        categories_title: Categorías
+        categories_singular_title: categoría
+        topics_title: Temas
+        topics_singular_title: tema
+        federated_domains_title: Dominios federados
+        federated_domains_singular_title: dominio
+        moderation_status_title: Estado de moderación
+        moderation_status_singular_title: moderación
+        moderation_status:
+          pending: Pendiente
+          accepted: Aceptado
+          rejected: Rechazado
+      sort_title: ! 'Clasificado por '
+      sorts:
+        relevance: Más relevante
+        most_accessed: Más visitado
+        alpha: Alfabético
+        newest: Más nuevo
+        oldest: Más antiguo
+        last_modified: Recientemente actualizado
+        rating: Mejor calificado
+        comments: Más comentado
+      sort_period_title: Periodo de clasificación
+      sort_periods:
+        week: Esta semana
+        month: Este mes
+        year: Este año
+      title:
+        default: Buscar y navegar por los conjuntos de datos y vistas
+        result:
+          main: Resultados %{body}
+          term: para "%{term}"
+          facet_main: coincidencia %{body}
+          facet: ! '%{facet_type} de%{facet_value}'
+      listing:
+        no_results: Sin resultados
+        timeout: Lo sentimos. Los resultados no se pueden  recuperar en este momento.
+          Por favor, trate de nuevo más tarde.
+        result_count: Mostrar %{this} de %{total}
+        federation_source: Federado  de %{source}
+        federation_source_html: Provisto por %{source_link}
+        comment_count: Número de comentarios
+        table_header:
+          name: Nombre
+          popularity: Popularidad
+          type: Tipo
+          rss: ! 'RSS '
+      row_results:
+        title_html: ! 'Mostrar <span class="rowResultCountText"></span> de <span class="totalResultCountText"></span>
+          filas coincidentes <a href="#" class="rowSearchLink">(ver resultados)</a>:'
+        more_link: Más
+        less_link: Menos
+      actions:
+        clear_all: Eliminar todas las opciones
+        clear_facet: (Todas)
+        all_options: Ver todo
+        less_options: Ver menos
+        create_dataset: Crear o subir su propio conjunto de datos
+        create_dataset_verb: Crear
+        create_dataset_short: Crear un nuevo conjunto de datos
+        suggest_dataset: ¿No encontró lo que estaba buscando? Sugiera un conjunto
+          de datos
+        suggest_dataset_verb: Dar sugerencias
+        suggest_dataset_short: Sugerir un conjunto de datos
+        subscribe: Suscripción
+        dataset_subscribe: Suscribirse para ver cambios en esta vista
+        compact_list: Ver como una lista compacta
+        rich_list: Ver como una lista completa
+        expand_section: Hacer clic para agrandar
+        share_button: Compartir
+        moderation:
+          accept: Aceptar
+          reject: Rechazar
+        permissions:
+          title: Cambiar la visibilidad pública
+          change_button:
+            public_html: Público
+            private_html: Privado
+        delete:
+          title: Borrar este elemento
+          button: Borrar
+          confirm: ¿Está seguro que quiere borrar %{dataset}?
+        about:
+          title: Acerca de este conjunto de datos
+          button: Acerca de
+        manage_api:
+          title: Administrar esta API
+          button: Administrar
+fr:
+  controls:
+    browse:
+      back_to_dataset: Retour à la série
+      search: Rechercher
+      facets:
+        view_types_title: Types de vues
+        view_types_singular_title: Type
+        view_types:
+          datasets: Séries de données
+          unpublished: Séries de données non publiées
+          href: Séries de données externes
+          blob: Fichiers et documents
+          filters: Vues filtrées
+          charts: Graphiques
+          maps: Cartes
+          calendars: Calendriers
+          forms: Formulaires
+          apis: API
+        categories_title: Catégories
+        categories_singular_title: Catégorie
+        topics_title: Thèmes
+        topics_singular_title: Thème
+        federated_domains_title: Domaines fédérés
+        federated_domains_singular_title: Domaine
+        moderation_status_title: État de modération
+        moderation_status_singular_title: Modération
+        moderation_status:
+          pending: En attente
+          accepted: Accepté
+          rejected: Rejeté
+      sort_title: Trier par
+      sorts:
+        relevance: Plus pertinent
+        most_accessed: Plus visité
+        alpha: Ordre alphabétique
+        newest: Plus récent
+        oldest: Plus ancien
+        last_modified: Mise à jour récente
+        rating: Mieux noté
+        comments: Plus commenté
+      sort_period_title: Trier période
+      sort_periods:
+        week: Cette semaine
+        month: Ce mois
+        year: Cette année
+      title:
+        default: Recherche & navigation Séries et vues
+        result:
+          main: Résultats %{body}
+          term: pour « %{term} »
+          facet_main: correspondance %{body}
+          facet: ! '%{facet_type} de %{facet_value}'
+      listing:
+        no_results: Pas de résultats
+        timeout: Désolé. L’accès aux résultats est momentanément impossible. Veuillez
+          réessayer ultérieurement.
+        result_count: Affichage de %{this} sur %{total}
+        federation_source: Fédéré à partir de %{source}
+        federation_source_html: Fourni par  %{source_link}
+        comment_count: Nombre de commentaires
+        table_header:
+          name: Nom
+          popularity: Popularité
+          type: Type
+          rss: RSS
+      row_results:
+        title_html: ! 'Affichage <span class="rowResultCountText"></span> de <span
+          class="totalResultCountText"></span> rangées correspondantes <a href="#"
+          class="rowSearchLink">(voir résultats) </a>:'
+        more_link: Plus
+        less_link: Moins
+      actions:
+        clear_all: Effacer toutes les options
+        clear_facet: (Tous)
+        all_options: Voir tous
+        less_options: Voir moins
+        create_dataset: Créez ou téléchargez votre propre série
+        create_dataset_verb: Créer
+        create_dataset_short: Créez une nouvelle série de données
+        suggest_dataset: Vous n’avez pas trouvé ce que vous cherchez ? Suggérez-nous
+          d’autres séries de données.
+        suggest_dataset_verb: Suggestion
+        suggest_dataset_short: Suggérer une série de données
+        subscribe: S’abonner
+        dataset_subscribe: Abonnez-vous aux changements de cette vue
+        compact_list: Visualiser en liste compacte
+        rich_list: Visualiser en liste enrichie
+        expand_section: Cliquer pour développer
+        share_button: Partager
+        moderation:
+          accept: Accepter
+          reject: Rejeter
+        permissions:
+          title: Modifier le niveau de divulgation
+          change_button:
+            public_html: Rendre public
+            private_html: Rendre privé
+        delete:
+          title: Enlever cet élément
+          button: Enlever
+          confirm: Sûr de vouloir enlever %{dataset} ?
+        about:
+          title: À propos de cette série de données
+          button: À propos
+        manage_api:
+          title: Gérez cette API
+          button: Gérer
+zh:
+  controls:
+    browse:
+      back_to_dataset: 返回数据集
+      search: 搜索
+      facets:
+        view_types_title: 视图类型
+        view_types_singular_title: 类型
+        view_types:
+          datasets: 数据集
+          unpublished: 未发布的数据集
+          href: 外部数据集
+          blob: 文件及文档
+          filters: 筛选视图
+          charts: 图表
+          maps: 地图
+          calendars: 日历
+          forms: 表格
+          apis: API
+        categories_title: 类别
+        categories_singular_title: 类别
+        topics_title: 主题
+        topics_singular_title: 主题
+        federated_domains_title: 合作域
+        federated_domains_singular_title: 域
+        moderation_status_title: 审核状态
+        moderation_status_singular_title: 审核
+        moderation_status:
+          pending: 处理中
+          accepted: 已接受
+          rejected: 已拒绝
+      sort_title: 排序方式
+      sorts:
+        relevance: 相关度最高
+        most_accessed: 浏览量最多
+        alpha: 按字母排序
+        newest: 最新
+        oldest: 最早
+        last_modified: 最近更新
+        rating: 评分最高
+        comments: 评论最多
+      sort_period_title: 排序时间
+      sort_periods:
+        week: 本周
+        month: 本月
+        year: 本年
+      title:
+        default: 搜索、浏览数据集和视图
+        result:
+          main: ! '"%{term}" 的'
+          term: 结果 %{body}
+          facet_main: 匹配 %{body}
+          facet: ! '%{facet_value}的%{facet_type} '
+      listing:
+        no_results: 没有结果
+        timeout: 抱歉，本次未能搜索到结果，请稍后再试。
+        result_count: ! '共%{total}个结果，显示 %{this} '
+        federation_source: 来自联合域：%{source}
+        federation_source_html: 来源：%{source_link}
+        comment_count: 评论数量
+        table_header:
+          name: 名称
+          popularity: 关注度
+          type: 类型
+          rss: RSS
+      row_results:
+        title_html: 共<span class="totalResultCountText"></span> 匹配数据行 <a href="#"
+          class="rowSearchLink">（查看结果），</a>显示 <span class="rowResultCountText"></span>
+          ：
+        more_link: 更多
+        less_link: 更少
+      actions:
+        clear_all: 清除所有选项
+        clear_facet: （所有）
+        all_options: 查看所有
+        less_options: 查看少量
+        create_dataset: 创建或上传数据集
+        create_dataset_verb: 创建
+        create_dataset_short: 创建新数据集
+        suggest_dataset: 没有找到您需要的数据集？提出您的数据集建议吧。
+        suggest_dataset_verb: 建议
+        suggest_dataset_short: 数据集建议
+        subscribe: 订阅
+        dataset_subscribe: 订阅本视图的改动
+        compact_list: 简洁列表
+        rich_list: 详情列表
+        expand_section: 点击展开
+        share_button: 分享
+        moderation:
+          accept: 接受
+          reject: 拒绝
+        permissions:
+          title: 改变公共可见性
+          change_button:
+            public_html: 设为公共
+            private_html: 设为私有
+        delete:
+          title: 删除此项
+          button: 删除
+          confirm: 您确定要删除%{dataset}吗？
+        about:
+          title: 关于此数据集
+          button: 关于
+        manage_api:
+          title: 管理此API
+          button: 管理

@@ -372,3 +372,566 @@ it:
     expando:
       prompt: Clicca per espandere
       expand: Espandi
+
+es:
+  support:
+    array:
+      two_words_connector: y
+      last_word_connector: ! ', y'
+    array_or:
+      two_words_connector: o
+      last_word_connector: ! ', o'
+  core:
+    and: y
+    or: o
+    view_types:
+      api: Vista de API
+      blob: ! 'documento o archivo no tabular '
+      calendar: calendario
+      chart: gráfico
+      dataset: conjunto de datos
+      filter: vista filtrada
+      form: formulario
+      group: vista agrupada
+      grouped: vista agrupada
+      href: conjunto de datos externo
+      map: mapa
+      table: tabla
+      working_copy: copia de trabajo
+    view_types_plural:
+      api: API
+      chart: Gráficos
+      map: Mapas
+      calendar: Calendarios
+      filter: Vistas filtradas
+      form: Formularios
+      grouped: Vistas agrupadas
+    data_types:
+      text: Texto simple
+      html: Texto con formato
+      number: Número
+      money: Dinero
+      percent: Porcentaje
+      date: Fecha y hora (con zona horaria)
+      calendar_date: Fecha y hora
+      email: Correo electrónico
+      phone: Teléfono
+      url: URL del sitio web
+      checkbox: Casilla de verificación
+      flag: Bandera
+      stars: Estrella
+      location: Ubicación
+      geospatial: Geoespacial
+      document: Documento
+      photo: Foto (Imagen)
+      drop_down_list: Selección múltiple
+      dataset_link: Enlace a conjunto de datos
+      link: Enlace a columna
+      object: Objeto
+      list: Lista
+      nested_table: Tabla anidada
+    alignment:
+      left: Izquierda
+      center: Centro
+      right: Derecha
+    precision_style:
+      standard: Estándar (1020.4)
+      scientific: Científico (1.0204e+3)
+    aggregates:
+      average: Promedio
+      count: Cuenta
+      sum: Suma
+      minimum: Mínimo
+      maximum: Máximo
+    chart_types:
+      area: Gráfico de áreas
+      bar: Gráfico de barras
+      bubble: Gráfico de burbujas
+      column: Gráfico de columnas
+      donut: Gráfico de rosca
+      line: Gráfico de líneas
+      pie: Gráfico de pastel
+      timeline: Línea de tiempo
+      treemap: Mapa de árbol
+      stackedcolumn: Gráfico  de columnas apiladas
+      stackedbar: Gráfico  de barras apiladas
+    map_layers:
+      roadmap: Mapa de carreteras
+      satellite: Satélite
+      terrain: Terreno
+      aerial: Aéreo
+      esri_world_street_map: Mapa mundial de calles (ESRI)
+      esri_world_street_map_alias: Mapa mundial de calles
+      esri_satellite: Imágenes de satélite (ESRI)
+      esri_us_topo: Mapa topográfico detallado de EE. UU. (ESRI)
+      esri_us_topo_alias: Mapa topográfico de EE. UU.
+      esri_world_topo: Mapa topográfico del mundo  con comentarios (ESRI)
+      esri_world_topo_alias: Mapa topográfico del mundo
+      esri_natural_earth: Mapa natural de la tierra (ESRI)
+      esri_natural_earth_alias: Mapa natural de la tierra
+      google_roadmap: Google Roadmap
+      google_roadmap_alias: Google
+      google_satellite: Google Satellite
+      google_terrain: Google Terrain
+      bing_roadmap: Bing Roadmap
+      bing_roadmap_alias: Bing
+      bing_aerial: Bing Aerial
+    filters:
+      formal:
+        equals: igual
+        not_equals: no es igual
+        starts_with: empieza con
+        contains: contiene
+        not_contains: no contiene
+        less_than: menor que
+        less_than_or_equals: menor que o igual a
+        greater_than: mayor que
+        greater_than_or_equals: mayor que o igual a
+        between: entre
+        is_blank: está vacío
+        is_not_blank: no está vacío
+      informal:
+        equals: es
+        not_equals: no es
+        starts_with: empieza con
+        contains: contiene
+        not_contains: no contiene
+        less_than: es menor que
+        less_than_or_equals: es como máximo
+        greater_than: es mayor que
+        greater_than_or_equals: es al menos
+        between: es entre
+        is_blank: está vacío
+        is_not_blank: no está vacío
+    visibility:
+      public: público
+      private: privado
+    analytics:
+      visit: vista
+      visits: vistas
+    dialogs:
+      apply: Aplicar
+      cancel: Cancelar
+      close: Cerrar
+      continue: Continuar
+      create: Crear
+      delete: Borrar
+      done: Hecho
+      dont_save: No guardar
+      save: Guardar
+      update: Actualizar
+    pagination:
+      first_page: Primera página
+      previous_page: Página anterior
+      next_page: Página siguiente
+      last_page: Última página
+    interstitial:
+      leaving_notice_html: Usted está saliendo de <span class="serverName">%{site_name}</span>
+      leaving_explanation_html: Este <span class=" datasetType ">dataset</span> está
+        alojado en <a href="\#" rel="external" class=" externalDomain ">otro dominio</a>.
+    forms:
+      none: Ninguno
+      required_field: Campo obligatorio
+    share_types:
+      view: Usario
+      contributor: Colaborador
+      owner: Dueño
+      viewer: Usuario
+    features:
+      allow_comments: Comentarios
+      cell_comments: Celda de comentarios
+    expando:
+      prompt: Hacer clic para agrandar
+      expand: Agrandar
+    validation:
+      required: Este campo es obligatorio.
+      remote: Por favor, arregle este campo.
+      email: Por favor, ingrese un correo electrónico válido.
+      url: ! 'Por favor, ingrese un URL válido.  '
+      date: Por favor, ingrese una fecha válida.
+      dateISO: Por favor, ingrese una fecha válida (ISO).
+      number: Por favor, ingrese un número válido.
+      digits: Por favor, ingrese solo digitos.
+      equalTo: Por favor, ingrese el mismo valor otra vez.
+      accept: Por favor, ingrese un valor con una extensión válida.
+      maxlength: Por favor, no ingrese más de {0} caracteres.
+      minlength: Por favor, ingrese al menos  {0} caracteres.
+      rangelength: Por favor, ingrese un valor entre {0} y {1} caracteres como máximo.
+      range: Por favor, ingrese un valor entre {0} y {1}.
+      max: Por favor, ingrese un valor menor que o igual a {0}.
+      min: Por favor, ingrese un valor mayor que o igual a (0}.
+fr:
+  support:
+    array:
+      two_words_connector: ! ' et '
+      last_word_connector: ! ', et '
+    array_or:
+      two_words_connector: ! ' ou '
+      last_word_connector: ! ', ou '
+  core:
+    and: et
+    or: ou
+    view_types:
+      api: Vue API
+      blob: Fichier ou document non tabulaire
+      calendar: Calendrier
+      chart: Graphique
+      dataset: Jeu de données
+      filter: Vue filtrée
+      form: Formulaire
+      group: Vue groupée
+      grouped: Vue groupée
+      href: Série de données externe
+      map: Carte
+      table: Tableau
+      working_copy: Copie de travail
+    view_types_plural:
+      api: API
+      chart: Graphiques
+      map: Cartes
+      calendar: Calendriers
+      filter: Vues filtrées
+      form: Formulaires
+      grouped: Vues groupées
+    data_types:
+      text: Texte brut
+      html: Texte formaté
+      number: Nombre
+      money: Données monétaires
+      percent: Pourcentage
+      date: Date & heure (avec fuseau horaire)
+      calendar_date: Date & heure
+      email: Courriel
+      phone: Téléphone
+      url: URL de site web
+      checkbox: Case à cocher
+      flag: Drapeau
+      stars: Étoile
+      location: Lieu
+      geospatial: Données géospatiales
+      document: Document
+      photo: Photo (image)
+      drop_down_list: Choix multiple
+      dataset_link: Lien vers une série
+      link: Lien
+      object: Objet
+      list: Liste
+      nested_table: Tableau imbriqué
+    alignment:
+      left: Gauche
+      center: Centre
+      right: Droite
+    precision_style:
+      standard: Standard (1020.4)
+      scientific: Scientifique (1.0204e+3)
+    aggregates:
+      average: Moyenne
+      count: Compte
+      sum: Somme
+      minimum: Minimum
+      maximum: Maximum
+    chart_types:
+      area: Graphique en aires
+      bar: Graphique à barres
+      bubble: Graphique à bulles
+      column: Histogramme
+      donut: Graphique en anneaux
+      line: Graphique en courbes
+      pie: Graphique à secteurs
+      timeline: Chronologie
+      treemap: Tree map
+      stackedcolumn: Histogramme empilé
+      stackedbar: Graphique à barres empilées
+    map_layers:
+      roadmap: Roadmap
+      satellite: Satellite
+      terrain: Terrain
+      aerial: Vue aérienne
+      esri_world_street_map: World Street Map (ESRI)
+      esri_world_street_map_alias: World Street Map
+      esri_satellite: Satellite Imagery (ESRI)
+      esri_us_topo: Detailed USA Topographic Map (ESRI)
+      esri_us_topo_alias: USA Topographic Map
+      esri_world_topo: Annotated World Topographic Map (ESRI)
+      esri_world_topo_alias: World Topographic Map
+      esri_natural_earth: Natural Earth Map (ESRI)
+      esri_natural_earth_alias: Natural Earth Map
+      google_roadmap: Google Roadmap
+      google_roadmap_alias: Google
+      google_satellite: Google Satellite
+      google_terrain: Google Terrain
+      bing_roadmap: Bing Roadmap
+      bing_roadmap_alias: Bing
+      bing_aerial: Bing Aerial
+    filters:
+      formal:
+        equals: est égal à
+        not_equals: est différent de
+        starts_with: commence par
+        contains: contient
+        not_contains: ne contient pas
+        less_than: inférieur à
+        less_than_or_equals: inférieur ou égal à
+        greater_than: supérieur à
+        greater_than_or_equals: supérieur ou égal à
+        between: entre
+        is_blank: est vide
+        is_not_blank: n’est pas vide
+      informal:
+        equals: est
+        not_equals: n’est pas
+        starts_with: commence par
+        contains: contient
+        not_contains: ne contient pas
+        less_than: est inférieur à
+        less_than_or_equals: est au plus
+        greater_than: est supérieur à
+        greater_than_or_equals: est au moins
+        between: est entre
+        is_blank: est vide
+        is_not_blank: n’est pas vide
+    visibility:
+      public: public
+      private: privé
+    analytics:
+      visit: vue
+      visits: vues
+    dialogs:
+      apply: Appliquer
+      cancel: Annuler
+      close: Fermer
+      continue: Continuer
+      create: Créer
+      delete: Enlever
+      done: Terminé
+      dont_save: Ne pas enregistrer
+      save: Enregistrer
+      update: Mettre à jour
+    pagination:
+      first_page: Première page
+      previous_page: Page précédente
+      next_page: Page suivante
+      last_page: Dernière page
+    interstitial:
+      leaving_notice_html: Vous quittez <span class="serverName">%{site_name}</span>
+      leaving_explanation_html: Ce jeu <span class="datasetType">dataset</span> est
+        hébergé par <a href="\#" rel="external" class="externalDomain">, un autre
+        domaine</a>.
+    forms:
+      none: Néant
+      required_field: Champ requis
+    share_types:
+      view: Visiteur
+      contributor: Contributeur
+      owner: Propriétaire
+      viewer: Visiteur
+    features:
+      allow_comments: Ajouter commentaire
+      cell_comments: Commentaire
+    expando:
+      prompt: Cliquer pour développer
+      expand: Développer
+    validation:
+      required: Ce champ est requis.
+      remote: Veuillez rectifier ce champ.
+      email: Veuillez entrer une adresse courriel valide.
+      url: Veuillez entrer un URL valide.
+      date: Veuillez entrer une date valide.
+      dateISO: Veuillez entrer une date valide (ISO).
+      number: Veuillez entrer un nombre valide.
+      digits: Veuillez entrer uniquement des chiffres.
+      equalTo: Veuillez entrer à nouveau la même valeur.
+      accept: Veuillez entrer une valeur accompagnée d’une extension valide.
+      maxlength: Veuillez entrer au maximum {0} caractères.
+      minlength: Veuillez entrer au minimum {0} caractères.
+      rangelength: Veuillez entrer une valeur comprenant entre {0} et {1} caractères.
+      range: Veuillez entrer une valeur comprise entre {0} et {1}.
+      max: Veuillez entrer une valeur inférieure ou égale à {0}.
+      min: Veuillez entrer une valeur supérieure ou égale à {0}.
+zh:
+  support:
+    array:
+      two_words_connector: 和
+      last_word_connector: 与
+    array_or:
+      two_words_connector: 或
+      last_word_connector: 或
+  core:
+    and: 和
+    or: 或
+    view_types:
+      api: API视图
+      blob: 非表格文件或文档
+      calendar: 日历
+      chart: 图表
+      dataset: 数据集
+      filter: 筛选视图
+      form: 表格
+      group: 分组视图
+      grouped: 分组视图
+      href: 外部数据集
+      map: 地图
+      table: 表
+      working_copy: 工作副本
+    view_types_plural:
+      api: API
+      chart: 图表
+      map: 地图
+      calendar: 日历
+      filter: 筛选视图
+      form: 表格
+      grouped: 分组视图
+    data_types:
+      text: 纯文本
+      html: 格式化文本
+      number: 数字
+      money: 金额
+      percent: 百分比
+      date: 日期和时间（说明时区）
+      calendar_date: 日期和时间
+      email: 电子邮件
+      phone: 电话
+      url: 网址
+      checkbox: 复选框
+      flag: 旗标
+      stars: 星号
+      location: 地点
+      geospatial: 地理空间
+      document: 文档
+      photo: 照片（图像）
+      drop_down_list: 多项选择
+      dataset_link: 数据集链接
+      link: 链接列
+      object: 对象
+      list: 列表
+      nested_table: 嵌套表
+    alignment:
+      left: 左对齐
+      center: 居中
+      right: 右对齐
+    precision_style:
+      standard: 标准 (1020.4)
+      scientific: 科学 (1.0204e+3)
+    aggregates:
+      average: 平均
+      count: 计数
+      sum: 总计
+      minimum: 最小
+      maximum: 最大
+    chart_types:
+      area: 面积图
+      bar: 条形图
+      bubble: 气泡图
+      column: 柱状图
+      donut: 环状图
+      line: 折线图
+      pie: 饼图
+      timeline: 时间线
+      treemap: 树型图
+      stackedcolumn: 堆叠柱状图
+      stackedbar: 堆叠条形图
+    map_layers:
+      roadmap: 路线图
+      satellite: 卫星
+      terrain: 地形
+      aerial: 航空
+      esri_world_street_map: 世界街道图(ESRI)
+      esri_world_street_map_alias: 世界街道图
+      esri_satellite: 卫星图像(ESRI)
+      esri_us_topo: 美国地形详图(ESRI)
+      esri_us_topo_alias: 美国地形图
+      esri_world_topo: 加注世界地形图(ESRI)
+      esri_world_topo_alias: 世界地形图
+      esri_natural_earth: 自然地球图(ESRI)
+      esri_natural_earth_alias: 自然地球图
+      google_roadmap: Google 路线图
+      google_roadmap_alias: Google
+      google_satellite: Google卫星图
+      google_terrain: Google地形图
+      bing_roadmap: Bing 路线图
+      bing_roadmap_alias: Bing
+      bing_aerial: Bing 航空图
+    filters:
+      formal:
+        equals: 等于
+        not_equals: 不等于
+        starts_with: 始于
+        contains: 包含
+        not_contains: 不含
+        less_than: 小于
+        less_than_or_equals: 小于或等于
+        greater_than: 大于
+        greater_than_or_equals: 大于或等于
+        between: 介于
+        is_blank: 为空
+        is_not_blank: 不为空
+      informal:
+        equals: 是
+        not_equals: 不是
+        starts_with: 始于
+        contains: 包含
+        not_contains: 不含
+        less_than: 小于
+        less_than_or_equals: 最多为
+        greater_than: 大于
+        greater_than_or_equals: 最少为
+        between: 介于
+        is_blank: 为空
+        is_not_blank: 不为空
+    visibility:
+      public: 公共
+      private: 私有
+    analytics:
+      visit: 视图
+      visits: 视图
+    dialogs:
+      apply: 应用
+      cancel: 取消
+      close: 关闭
+      continue: 继续
+      create: 创建
+      delete: 删除
+      done: 完成
+      dont_save: 不保存
+      save: 保存
+      update: 更新
+    pagination:
+      first_page: 第一页
+      previous_page: 上一页
+      next_page: 下一页
+      last_page: 最后一页
+    interstitial:
+      leaving_notice_html: 您正在退出 <span class="serverName">%{site_name}</span>
+      leaving_explanation_html: 该 <span class="datasetType">数据集</span> 存放在 <a href="\#"
+        rel="external" class="externalDomain">另一个域</a>.
+    forms:
+      none: 无
+      required_field: 要求的字段
+    share_types:
+      view: 浏览者
+      contributor: 参与者
+      owner: 所有者
+      viewer: 浏览者
+    features:
+      allow_comments: 评论
+      cell_comments: 添加评论的单元格
+    expando:
+      prompt: 点击展开
+      expand: 展开
+    validation:
+      required: 需要此字段。
+      remote: 请校正此字段。
+      email: 请填入有效的电子邮件地址。
+      url: 请填入有效的URL。
+      date: 请填入有效的日期。
+      dateISO: 请填入有效的日期(ISO)。
+      number: 请填入有效的数字。
+      digits: 请只填数字。
+      equalTo: 请再次输入相同的值。
+      accept: 输入值需要有效的扩展名。
+      maxlength: 请不要超过{0} 个字符。
+      minlength: 请至少输入{0} 个字符。
+      rangelength: 输入值的字符数应介于{0} 和 {1} 之间。
+      range: 输入值应在{0} 和 {1} 之间。
+      max: 请输入小于或等于{0}的值。
+      min: 请输入大于或等于{0}的值。

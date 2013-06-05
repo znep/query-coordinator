@@ -31,3 +31,52 @@ it:
       sdp_template: Social Data Player Template
       template: Template
       create_template_button: Crea un Nuovo Template
+
+es:
+  controls:
+    embed:
+      form_plain: Incruste este formulario como HTML simple
+      form_frame: Incruste este formulario en un marco
+      form_or: o
+      embed: Incruste este conjunto de datos
+      private_warning: Esta vista es actualmente privada. Usted puede previsualizarla,
+        pero deberá hacerla pública para que otras personas puedan verla.
+      size: Tamaño
+      custom_size: Tamaño personalizado
+      minimum_size: 425x425 es el tamaño mínimo
+      width: Anchura
+      height: Altura
+      sdp_template: ! 'Plantillas de Social Data Player '
+      template: Plantilla
+      create_template_button: Crear una nueva plantillafr/controls/embed
+fr:
+  controls:
+    embed:
+      form_frame: Intégrer ce formulaire dans un cadre
+      form_or: ou
+      embed: Intégrer cette série de données
+      private_warning: Cette vue est actuellement privée. Vous pouvez en voir un aperçu,
+        mais vous devrez la rendre publique pour que d’autres puissent la voir.
+      size: Taille
+      custom_size: Taille personnalisée
+      minimum_size: 425x425 est la taille minimum
+      width: Largeur
+      height: Hauteur
+      sdp_template: Modèle de Social Data Player
+      template: Modèle
+      create_template_button: Créer un nouveau modèlezh/controls/embed
+zh:
+  controls:
+    embed:
+      form_frame: 将此表格嵌入框架中
+      form_or: 或者
+      embed: 嵌入此数据集
+      private_warning: 本视图目前为私有属性。您可以预览视图，但需要先修改为公共属性，才能让其他人看到视图。
+      size: 尺寸
+      custom_size: 自定义尺寸
+      minimum_size: 425x425是最小尺寸
+      width: 宽度
+      height: 高度
+      sdp_template: 社交数据播放器模板
+      template: 模板
+      create_template_button: 创建新模板

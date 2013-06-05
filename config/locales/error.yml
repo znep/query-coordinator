@@ -49,3 +49,80 @@ it:
       were_sorry: "Siamo spiacenti, ma c'Ã¨ stato un problema di elaborazione della tua richiesta."
       description_html: "Chiediamo cortesemente di riprovare tra qualche minuto, oppure di <a href=\"http://support.socrata.com\">segnalare
       questo errore</a> con i dettagli dell'operazione che stavi tentando di fare."
+
+es:
+  error:
+    back: ! 'Volver '
+    to_whence_you_came: a donde estaba.
+    permission_denied_403:
+      no_permission: No está autorizado(a) para acceder a este recurso.
+      were_sorry: Lo sentimos, pero aparentemente no está autorizado(a) para acceder
+        a esta página.
+      description_html: Si cree que esto es un error, desconéctese y conéctese como
+        un usuario diferente <a href="/login">aquí</a>.
+    not_found_404:
+      page_not_found: No se encontró la página.
+      were_sorry: Lo sentimos mucho, pero no se encontró la página que usted pidió.
+      description_html: Esta página no existe o fue cambiada de lugar. Lo mejor sería
+        comenzar de nuevo desde la <a href="/">página de inicio</a>. Contáctenos si
+        el problema persiste o si definitivamente no puede encontrar lo que está buscando.
+        Gracias.
+      back_to: ! 'Volver a '
+    not_acceptable_406:
+      page_not_found: No se encontró la página.
+      were_sorry: Lo sentimos mucho, pero la página no está disponible en el formato
+        que usted pidió.
+    error_500:
+      somethings_wrong: ¡Hay un error!
+      were_sorry: Lo sentimos, pero hubo un problema al procesar su pedido.
+      description_html: Por favor, trate de nuevo en unos momentos o <a href="http://support.socrata.com">informe
+        este error</a> especificando lo que usted deseaba hacer.
+fr:
+  error:
+    back: Retour
+    to_whence_you_came: d’où vous venez
+    permission_denied_403:
+      no_permission: Absence d’autorisation pour accéder aux données recherchées.
+      were_sorry: Désolé, vous ne semblez pas avoir l’autorisation voulue pour accéder
+        à cette page.
+      description_html: Si vous pensez qu’il y a erreur, nous vous suggérons de fermer
+        cette session et d’en ouvrir une autre sous un profil différent en cliquant
+        <a href="/login">ici</a>.
+    not_found_404:
+      page_not_found: Page non trouvée.
+      were_sorry: Désolé, la page que vous recherchez ne peut être localisée.
+      description_html: Il est possible qu’elle ait bougé ou qu’elle n’existe tout
+        simplement pas. Nous vous suggérons de recommencer à partir de la <a href="/">page
+        d’accueil</a>. N’hésitez pas à nous contacter si le problème persiste ou si
+        vous ne parvenez vraiment pas à trouver ce que vous cherchez. Merci.
+      back_to: Retour à
+    not_acceptable_406:
+      page_not_found: Page non trouvée.
+      were_sorry: Désolé, la page que vous recherchez n’est pas disponible dans le
+        format demandé.
+    error_500:
+      somethings_wrong: Erreur !
+      were_sorry: Désolé, le traitement de votre demande a rencontré un problème.
+      description_html: Veuillez réessayer dans un petit moment, ou nous <a href="http://support.socrata.com">signaler
+        cette erreur</a> en expliquant de manière détaillée ce qui s’est passé.
+zh:
+  error:
+    back: 返回
+    to_whence_you_came: 上一页面。
+    permission_denied_403:
+      no_permission: 没有访问资源的权限。
+      were_sorry: 很抱歉，您似乎没有访问此页面的权限。
+      description_html: 如果您认为这是个错误，请先登出，然后<a href="/login">在此</a>作为另一用户登录。
+    not_found_404:
+      page_not_found: 未找到页面。
+      were_sorry: 很抱歉，未找到您需要的页面。
+      description_html: 页面不存在或已被移动。建议您最好回到<a href="/">主页</a>重新操作。如果问题依然存在，或者确定找不到所需的信息，请与我们联系。谢谢。
+      back_to: 返回
+    not_acceptable_406:
+      page_not_found: 未找到页面。
+      were_sorry: 很抱歉，但是此页面没有您要求的格式。
+    error_500:
+      somethings_wrong: 出错啦！
+      were_sorry: 很抱歉，处理您的请求时出错了。
+      description_html: ! '请稍后再试，或者 <a href="http://support.socrata.com">报告这一错误</a>
+        ，同时详细说明您进行的操作。 '

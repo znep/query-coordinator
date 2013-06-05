@@ -26,17 +26,26 @@ en:
 
 it:
   error:
-    back: Eseguire
-    to_whence_you_came: da dove sei venuto da.
+    back: Indietro
+    to_whence_you_came: da dove sei venuto.
 
     permission_denied_403:
       no_permission: Nessun permesso di accesso alla risorsa.
       were_sorry: "Siamo spiacenti, ma sembra che non hai il permesso di accedere a questa pagina."
-      description_html: "Se credi che questo sia un errore, provare a scollegarsi ed indietro come <a href=\"/login\">qui</a>."
+      description_html: "Se credi che questo sia un errore, prova a scollegarsi e ricollegarti con un utente diverso <a href=\"/login\">qui</a>."
 
     not_found_404:
-      page_not_found: Pagina non trovata 
-      were_sorry: "Spiacenti, ma la pagina richiesta non è in linea."
-      description_html: "La pagina o non esiste o è stata spostata. Suggeriamo di tornare alla <a href=\"/\">home page</a>. Se il problema persiste chiediamo cortesemente di inviarci una segnalazione. Grazie per la collaborazione."
-      back_to: Tornare alla
+      page_not_found: Pagina non trovata.
+      were_sorry: "Siamo spiacenti, ma la pagina richiesta non Ã¨ in linea."
+      description_html: "La pagina o non esiste o Ã¨ stata spostata. Suggeriamo di tornare alla <a href=\"/\">home page</a>. Se il problema persiste chiediamo cortesemente di inviarci una segnalazione. Grazie per la collaborazione."
+      back_to: Torna a
 
+    not_acceptable_406:
+      page_not_found: Pagina non trovata.
+      were_sorry: "Siamo spiacenti, ma la pagina non Ã¨ disponibile nel formato richiesto."
+
+    error_500:
+      somethings_wrong: "Qualcosa non va!"
+      were_sorry: "Siamo spiacenti, ma c'Ã¨ stato un problema di elaborazione della tua richiesta."
+      description_html: "Chiediamo cortesemente di riprovare tra qualche minuto, oppure di <a href=\"http://support.socrata.com\">segnalare
+      questo errore</a> con i dettagli dell'operazione che stavi tentando di fare."

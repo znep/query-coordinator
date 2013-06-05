@@ -32,16 +32,16 @@ it:
   controls:
     common:
       share:
-        button_prompt: Socializza
+        button_prompt: Condividi
         button_tooltip: Condividi questo Dataset
-        share_text: "Estrai %{name}, dataset su %{site}: "
+        share_text: "Condividi %{name}, dataset con %{site}: "
         networks:
           facebook: Facebook
           twitter: Twitter
           email: Email
-      auth_required: "Devi effettuare l'accesso %{action_phrase}"
+      auth_required: "Devi effettuare l'accesso per %{action_phrase}"
       rate:
-        auth_action_phrase: vota questo dataset
+        auth_action_phrase: votare questo dataset
       stars:
         tooltip: %{number} stelle
       sidebar:
@@ -52,7 +52,7 @@ it:
           filter: Filtra
           visualize: Visualizza
           export: Esporta
-          discuss: Discussioni
+          discuss: Discuti
           embed: Incorpora
           about: Informazioni
       image_upload:

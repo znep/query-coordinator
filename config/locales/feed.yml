@@ -37,3 +37,43 @@ en:
         rate_comment: rate a comment
         post_comment: post a comment
 
+
+it:
+  controls:
+    feed:
+      header:
+        cell_comment_header_html: Commento per record <span class="rowName"></span>, colonna <span class="columnName"></span>
+        feed_filter_label: Mostra
+        add_comment: Aggiungi Commento
+        pending_moderation: "Il tuo commento è stato inviato ed è in attesa di moderazione"
+      types:
+        all items: tutti gli elementi
+        views: visualizzazioni
+        comments: commenti
+      listing:
+        no_results: Non ci sono elementi da visualizzare
+        all_replies: Visualizza tutte le repliche
+        all_replies_with_count: Visualizza tutte le %{count} repliche
+        next_item_page: Visualizza i prossimi %{count} elementi
+        last_item: "Visualizza l'ultimo elemento"
+        user_create_action: "crea un %{thing}:"
+      comment_actions:
+        reply: Replica
+        inappropriate: Inappropriato
+        already_marked_inappropriate: Contrassegnato
+        marked_inappropriate: Contrassegnato!
+        delete: Elimina
+        delete_confirm: "Sei sicuro? Il tuo commento verrà perso."
+        rate_down: Abbassa il voto
+        rate_up: Alza il voto
+      comment_form:
+        header: Nuovo Commento
+        post_button: Aggiungi
+        cancel_button: Cancella
+        empty_body_error: "Il commento non può essere vuoto."
+      authed_actions:
+        flag_comment: contrassegna un commento
+        delete_comment: elimina un commento
+        rate_comment: vota un commento
+        post_comment: aggiungi un commento
+

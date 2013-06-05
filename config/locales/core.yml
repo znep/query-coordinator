@@ -191,19 +191,121 @@ it:
     array:
       two_words_connector: " e "
       last_word_connector: ", e "
+    array_or:
+      two_words_connector: " o "
+      last_word_connector: ", o "
   core:
     and: e
     or: o
+    validation:
+      required: This field is required.
+      remote: Please fix this field.
+      email: Please enter a valid email address.
+      url: Please enter a valid URL.
+      date: Please enter a valid date.
+      dateISO: Please enter a valid date (ISO).
+      number: Please enter a valid number.
+      digits: Please enter only digits.
+      equalTo: Please enter the same value again.
+      accept: Please enter a value with a valid extension.
+      maxlength: Please enter no more than {0} characters.
+      minlength: Please enter at least {0} characters.
+      rangelength: Please enter a value between {0} and {1} characters long.
+      range: Please enter a value between {0} and {1}.
+      max: Please enter a value less than or equal to {0}.
+      min: Please enter a value greater than or equal to {0}.
     view_types:
+      api: visualizzazione API
       blob: file scaricabile
       calendar: calendario
       chart: grafico
+      dataset: dataset
       filter: visualizzazione filtrata
-      form: formare
+      form: modulo
       group: visualizzazione in gruppi
-      href: legame
-      map: mappa
+      grouped: visualizzazione in gruppi
+      href: external dataset
+      map: mapppa
       table: tabella
+      working_copy: working copy
+    view_types_plural:
+      api: API
+      chart: Grafici
+      map: Mappe
+      calendar: Calendari
+      filter: Visualizzazioni Filtrate
+      form: Moduli
+      grouped: Visualizzazioni in Gruppi
+    data_types:
+      text: Testo
+      html: Testo formattato
+      number: Numero
+      money: Denaro
+      percent: Percentuale
+      date: Data & Ora (con fuso orario)
+      calendar_date: Data & Ora
+      email: Email
+      phone: Telefono
+      url: Web URL
+      checkbox: Checkbox
+      flag: Flag
+      stars: Star
+      location: Location
+      geospatial: Geospatial
+      document: Documento
+      photo: Foto (Immagine)
+      drop_down_list: Scelta Multipla
+      dataset_link: Dataset Link
+      link: Link Column
+      object: Oggetto
+      list: Lista
+      nested_table: Tabella Nidificata
+    alignment:
+      left: A sinistra
+      center: Centrato
+      right: A destra
+    precision_style:
+      standard: Standard (1020.4)
+      scientific: Scientifica (1.0204e+3)
+    aggregates:
+      average: Media
+      count: Conteggio
+      sum: Somma
+      minimum: Minimo
+      maximum: Massimo
+    chart_types:
+      area: Grafico ad Area
+      bar: Grafico a Barre
+      bubble: Grafico a Bolle
+      column: Grafico a Colonne
+      donut: Grafico ad Anello
+      line: Grafico a Linea
+      pie: Grafico a Torta
+      timeline: Time Line
+      treemap: Tree Map
+      stackedcolumn: Grafico a Colonne in pila
+      stackedbar: Grafico a Barre in pila
+    map_layers:
+      roadmap: Roadmap
+      satellite: Satellite
+      terrain: Terrain
+      aerial: Aerial
+      esri_world_street_map: World Street Map (ESRI)
+      esri_world_street_map_alias: World Street Map
+      esri_satellite: Satellite Imagery (ESRI)
+      esri_us_topo: Detailed USA Topographic Map (ESRI)
+      esri_us_topo_alias: USA Topographic Map
+      esri_world_topo: Annotated World Topographic Map (ESRI)
+      esri_world_topo_alias: World Topographic Map
+      esri_natural_earth: Natural Earth Map (ESRI)
+      esri_natural_earth_alias: Natural Earth Map
+      google_roadmap: Google Roadmap
+      google_roadmap_alias: Google
+      google_satellite: Google Satellite
+      google_terrain: Google Terrain
+      bing_roadmap: Bing Roadmap
+      bing_roadmap_alias: Bing
+      bing_aerial: Bing Aerial
     filters:
       formal:
         equals: uguale a
@@ -231,13 +333,42 @@ it:
         between: tra
         is_blank: vuoto
         is_not_blank: non vuoto
+    visibility:
+      public: pubblico
+      private: privato
     analytics:
-      visit: visualizzazioni
+      visit: visualizzazione
       visits: visualizzazioni
     dialogs:
-      close: chiudi
-      cancel: cancella
-      continue: continua
+      apply: Applica
+      cancel: Cancella
+      close: Chiudi
+      continue: Continua
+      create: Crea
+      delete: Elimina
+      done: Fatto
+      dont_save: "Non salvare"
+      save: Salva
+      update: Aggiorna
+    pagination:
+      first_page: Prima Pagina
+      previous_page: Pagina Precedente
+      next_page: Pagina Successiva
+      last_page: Ultima Pagina
     interstitial:
-      leaving_notice_html: "Stai lasciando <span class=\"serverName\">%{site_name}</span>"
-      leaving_explanation_html: "Questo  <span class=\"datasetType\">dataset</span> è ospitato da <a href=\"\#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."
+      leaving_notice_html: Stai lasciando <span class="serverName">%{site_name}</span>
+      leaving_explanation_html: "Questo <span class=\"datasetType\">dataset</span> è ospitato da <a href=\"\#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."
+    forms:
+      none: Nessuno
+      required_field: Campo obbligatorio
+    share_types:
+      view: Visitatore
+      viewer: Visitatore
+      contributor: Collaboratore
+      owner: Proprietario
+    features:
+      allow_comments: Permetti commenti
+      cell_comments: Commenti alle celle
+    expando:
+      prompt: Clicca per espandere
+      expand: Espandi

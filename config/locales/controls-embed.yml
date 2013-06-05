@@ -20,9 +20,9 @@ it:
     embed:
       form_plain: Incorpora questo Form come Plain HTML
       form_frame: Incorpora questo Form in un Frame
-      form_or: o
+      form_or: oppure
       embed: Incorpora questo Dataset
-      private_warning: "Questa vista è attualmente privata. Puoi visualizzarne un'anteprima, ma dovrai renderla pubblica prima che altri possano vederla."
+      private_warning: "Questa vista è attualmente privata. Puoi visualizzarne un'anteprima, ma dovrai renderla pubblica affinchè altri possano vederla."
       size: Dimensioni
       custom_size: Personalizza Dimensioni
       minimum_size: "425x425 è la dimensione minima"

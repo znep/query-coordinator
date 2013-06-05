@@ -139,3 +139,143 @@ en:
           user_missing: This user cannot be found, or has been deleted.
         success: Your profile has been successfully updated.
 
+it:
+  screens:
+    profile:
+      bar:
+        edit_settings_link: Modifica Impostazioni Account
+        follow_link: Follow
+        unfollow_link: Unfollow
+        message_link: Invia Messaggio
+        join_date: Registrato
+        last_seen_date: Ultimo Accesso
+      info:
+        title: Informazioni
+        no_description: Nessuna descrizione fornita
+        interests: Interessi
+        external_links: Link Esterni
+        other_ext_link: Altro
+        edit_link: Modifica
+        links:
+          my_company: La mia Azienda
+          my_site: Il mio Sito
+          my_blog: Il mio Blog
+          twitter: Twitter
+          facebook: Facebook
+          flickr: Flickr
+          other: Altro
+      browse:
+        title: "Datasets %{user}"
+        owned_datasets: Posseduti
+        shared_datasets: COndivisi
+      app_tokens:
+        title: "Applicazioni %{user}"
+        manage_link: Gestisci
+        no_applications: Non hai ancora creato alcuna applicazione. Click a destra su 'Gestisci' per iniziare
+        item:
+          no_thumbnail: Nessuna Anteprima
+          name: Nome
+          description: Descrizione
+          organization: Azienda
+          website: Sito Web
+          app_token: App Token
+          secret_token: Secret Token
+          show_secret_link: Mostra Secret Token
+          edit_token_link: Modifica
+      sidebar:
+        edit_image_link: Modifica Immagine
+        followers: Followers
+        following: Following
+        all_contacts_link: Vedi Tutti
+      contact:
+        title: Contatta Utente
+        subject: Soggetto
+        subject_prompt: Inserisci un soggetto
+        message: Messaggio
+        message_prompt: Inserisci il tuo messaggio
+      edit:
+        back_link: Torna al Mio Profilo
+        info:
+          title: Info
+          title_full: Informazioni
+          display_name: Nome Visualizzato
+          first_name: Nome
+          last_name: Cognome
+          organization: Azienda
+          user_title: Ruolo
+          city: "Città"
+          state: Stato
+          country: Nazione
+          description:
+            title: Descrizione
+            prompt: Inserisci le informazioni che desideri condividere
+          interests:
+            title: Interessi
+            prompt: Inserisci i tuoi interessi
+          link_prompt: Inserisci URL
+        image:
+          title: Profilo Immagine
+          upload_image_button: Carica Immagine
+          success: "La tua immagine è stata aggiornata"
+          error: "Errore caricamento immagine: #{message}"
+        account:
+          title: Impostazioni Account
+          current_email: Email attuale
+          new_email: Nuova Email
+          confirm_email: Conferma Email
+          password: Password
+          password_prompt: (Per la tua sicurezza)
+          old_password: Vecchia Password
+          new_password: Nuova Password
+          password_restrictions_html: (Restrizioni <span class="icon">&nbsp;</span>)
+          confirm_password: Conferma Password
+          connect_openid: Accedi con Facebook, Twitter, Google, o altre credenziali di terze parti.
+          learn_openid: Informati su OpenID
+          no_openid: Non hai ancora OpenID associati a questo account.
+          add_openid_button: Aggiungi un OpenID o un Account Esterno
+          email:
+            title: Notifiche Email
+            subtitle: Iscriviti a singoli eventi selezionando la relativa casella.
+            interests:
+              privileged_account_created: Un utente crea il proprio account privilegiato
+              any_view_created: Ogni vista creata
+              comment_to_moderate: Un commento inserito che richiede moderazione
+              account_provisioned: Un account privilegiato viene predisposto per usi futuri
+              nomination_created: "Una nuova nomination è stata creata"
+              nomination_moderated: "Ogni nomination è moderata"
+              view_made_public: Ogni vista resa pubblica
+              other: Altro
+              user_affected: Azioni che ti riguardano direttamente, come repliche a commenti e aggiornamenti di stato
+            policy: "%{site} rispetta la tua privacy, e mai invierà email pubblicitarie, o darà la tua email a terze parti. Le email inviate da questo sito contengono notifiche e aggiornamenti a dataset che hai creato o sottoscritto."
+        app_tokens:
+          title: App Tokens
+          title_full: Le tue Applicazioni
+          title_single: Modifica Application Token
+          new_app_button: Crea una nuova Applicazione
+          create_error: "Si è verificato un errore durante la creazione del tuo application token: #{message}"
+          create_success: La tua applicazione è stata creata
+          save_success: "La tua applicazione è stata salvata con successo"
+          delete_error: "Si è verificato un errore durante l'eliminazione del tuo application token: #{message}"
+          delete_success: "La tua applicazione è stata eliminata"
+          application_name: Nome Applicazione
+          application_name_prompt: Inserisci un nome per la tua applicazione
+          description: Descrizione
+          description_prompt: Inserisci una descrizione per la tua applicazione
+          organization: Azienda
+          organization_prompt: "Inserisci l'azienda responsabile per questa applicazione"
+          website: Sito Web
+          website_prompt: "Inserisci un link a questa applicazione o il sito web dell'azienda"
+          callback_prefix: Callback Prefix
+          callback_prefix_prompt: Provide the prefix to the secure (https) callback uri when using OAuth
+          callback_prefix_help_html: "For instance, if your application will call back to <span class=\"code\">https://my-domain.com/socrata-app/oauth/validated</span> and <span class=\"code\">https://my-domain.com/socrata-app/profile</span>, you'll want to supply <span class=\"code\">https://my-domain.com/socrata-app</span> as your prefix. Note that you must include at least the entire domain name."
+          public: Pubblica?
+          thumbnail: Anteprima
+        validation:
+          no_display_name: "Errore: 'Nome Visualizzato' è obbligatorio"
+          invalid_links: "Si è verificato un problema nell'aggiornamento del tuo link. %{message}"
+          password_mismatch: La password confermata non corrisponde
+          no_password_no_openid: "Non è possibile rimuovere tutti i tuoi OpenID prima di impostare la password"
+          email_mismatch: "L'email confermata non corrisponde"
+          image_format: Selezionare un formato di immagine valido (PNG, JPG, or GIF)
+          user_missing: "Questo utente non può essere trovato, o è stato eliminato."
+        success: "Il tuo profilo e stato aggiornato con successo."

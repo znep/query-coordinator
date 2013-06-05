@@ -65,3 +65,69 @@ en:
       form:
         reset_password_button: Reset Password
 
+it:
+  account:
+    common:
+      inline_auth:
+        sign_in_headline: Accedi usando il tuo Socrata ID
+        sign_up_headline: "Siamo contenti che desideri iscriverti a %{site}!"
+      form:
+        email: Email
+        display_name: Nome visualizzato
+        password: Password
+        password_requirements: "Requisito. La password deve essere compresa tra 8 e 40 caratteri e soddisfare tre dei seguenti criteri: contenere un numero; contenere una lettera minuscola; contenere una lettera maiuscola; contenere un simbolo non-alfanumerico."
+        password_requirements_html: "<p>La password deve essere <b>compresa tra 8 e 40 caratteri</b> e soddisfare <b>tre dei seguenti quattro criteri</b>:</p><p></p><ul><li>&bull; contenere un numero</li><li>&bull; contenere una lettera minuscola</li><li>&bull; contenere una lettera maiuscola</li><li>&bull; contenere un simbolo non-alfanumerico</li></ul>"
+        password_restrictions: Soggetto a restrizioni
+        confirm_password: Conferma Password
+        no_account: "Non hai un account?"
+        sign_up_prompt: Iscriviti adesso
+        forgot_password: Password dimenticata?
+        remember_me: Ricordami
+        lockout_warning: Per questioni di sicurezza, tre tentativi di accesso falliti in 15 minuti causeranno il blocco di questo account per 30 minuti.
+      rpx:
+        prompt:
+          sign_in: Oppure... Utilizza uno di questi account per accedere.
+          sign_up: Oppure... Utilizza uno di questi account per iscriverti.
+        description: "Approfitta di funzionalità aggiuntive che questi account forniscono e accedi con un click."
+        providers:
+          facebook:
+            sign_in_html: <strong>Connettiti</strong> con Facebook
+            sign_up_html: <strong>Connettiti</strong> con Facebook
+          twitter:
+            sign_in_html: <strong>Connettiti</strong> con Twitter
+            sign_up_html: <strong>Connettiti</strong> con Twitter
+          google:
+            sign_in_html: <strong>Accedi</strong> con Google
+            sign_up_html: <strong>Iscriviti</strong> con Google
+          openid:
+            sign_in_html: <strong>Accedi</strong> con OpenID
+            sign_up_html: <strong>Iscriviti</strong> con OpenID
+  screens:
+    sign_in:
+      headline: Accedi
+      tips_html: Utilizza Email e Password per accedere a tutti i siti <strong>realizzati da <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
+      prompt_html: Accedi con il tuo <strong>Socrata ID</strong>
+      form:
+        sign_in_button: Accedi
+    sign_up:
+      headline: "Siamo contenti che desideri iscriverti a %{site}!"
+      terms_html: Cliccando sotto su "Crea il Mio Account", accetti i nostri <a href="http://www.socrata.com/terms-of-service" rel="external">Termini di Servizio</a> e <a href="http://www.socrata.com/privacy" rel="external">Norme sulla Privacy.</a>
+      prompt_html: Crea un nuovo <strong>Socrata ID</strong>
+      third_party: Dopo aver acceduto, le tue credenziali di terze parti saranno associate a questo account.
+      third_party_return: Prima di utilizzare queste credenziali, devi
+      third_party_return_create: creare un account Socrata
+      third_party_return_link: associarlo ad un Socrata ID esistente
+      form:
+        have_account_link: "Ho già un account"
+        create_account_button: Crea il Mio Account
+    forgot_password:
+      title: Recupera la tua Password
+      prompt: "Se hai dimenticato la tua password, possiamo inviarti una email con un link per effettuare il reset della password."
+      already_authenticated: "Impossibile effettuare il reset della password: sei già autenticato."
+      form:
+        reset_password_button: Reset Password
+    reset_password:
+      title: Reset Password
+      prompt: Bentornato! Seleziona una nuova password.
+      form:
+        reset_password_button: Reset Password

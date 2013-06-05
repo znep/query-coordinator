@@ -125,6 +125,7 @@ it:
         view_types_singular_title: tipo
         view_types:
           datasets: Datasets
+          unpublished: Datasets non pubblicati
           href: Dati esterni
           blob: File e Documenti
           filters: Viste filtrate
@@ -132,6 +133,7 @@ it:
           maps: Mappe
           calendars: Calendari
           forms: Moduli
+          apis: API
         categories_title: Categorie
         categories_singular_title: categoria
         topics_title: Argomenti
@@ -148,14 +150,14 @@ it:
           rejected: Respinto
       sort_title: Ordinato per
       sorts:
-        relevance: "Più rilevante"
-        most_accessed: "Più acceduto"
+        relevance: "PiÃ¹ rilevante"
+        most_accessed: "PiÃ¹ acceduto"
         alpha: "Alfabetico"
-        newest: "Più nuovo"
-        oldest: "Più vecchio"
+        newest: "PiÃ¹ nuovo"
+        oldest: "PiÃ¹ vecchio"
         last_modified: "Aggiornato di recente"
-        rating: "Con voto più alto"
-        comments: "Più commentati"
+        rating: "Con voto piÃ¹ alto"
+        comments: "PiÃ¹ commentati"
       sort_period_title: "Periodo dell'ordinamento"
       sort_periods:
         week: Questa settimana
@@ -172,7 +174,7 @@ it:
           facet: %{facet_type} di %{facet_value}
       listing:
         no_results: Nessun risultato
-        timeout: "Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare più tardi."
+        timeout: "Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare piÃ¹ tardi."
         result_count: Mostrati %{this} di %{total}
         federation_source: Federato da %{source}
         # same as above but with a link. no particular reason the wording is different.
@@ -180,7 +182,7 @@ it:
         comment_count: Numero di commenti
         table_header:
           name: Nome
-          popularity: "Popolarità"
+          popularity: "PopolaritÃ "
           type: Tipo
           rss: RSS
       row_results:
@@ -215,14 +217,17 @@ it:
           accept: Accetta
           reject: Respingi
         permissions:
-          title: "Cambia la visibilità"
+          title: "Cambia la visibilitÃ "
           change_button:
             public_html: Rendi Privato
             private_html: Rendi Pubblico
         delete:
           title: Cancella questo item
           button: Cancella
+          confirm: Sei sicuro di voler cancellare %{dataset}?
         about:
           title: Informazioni sul Dataset
           button: Informazioni
-
+        manage_api:
+          title: Gestisci questa API
+          button: Gestisci

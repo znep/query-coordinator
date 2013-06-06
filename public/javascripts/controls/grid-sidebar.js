@@ -68,6 +68,20 @@
             $(window).resize(function() { handleResize(sidebarObj); });
             $domObj.resize(function() { handleResize(sidebarObj); });
 
+            // We have a potential hard-to-detect layout cycle here because of the defer call below.
+            // When we call setPosition, we need to let our neighbor know we've resized
+            // it. However, this usually triggers another resize on us. We try to break
+            // that cycle by ignoring the resize if the size hasn't changed. As a fallback,
+            // we maintain a maximum number of pending resize calls. If that limit is hit,
+            // stop servicing resizes until all resize calls finish. This will break the
+            // cycle.
+            sidebarObj._setPositionCount = 0;
+            sidebarObj._setPositionMaxCount = 50;
+            sidebarObj._resizeBlocked = false;
+            sidebarObj._lastWidth = -1;
+            sidebarObj._lastHeight = -1;
+            sidebarObj._resizeNotReady = false;
+
             sidebarObj._ready = true;
             if (sidebarObj.settings.waitOnDataset && !$.isBlank(sidebarObj.settings.view) &&
                 sidebarObj.settings.view.viewType == 'tabular')
@@ -109,7 +123,6 @@
             $domObj.resizable({
                 handles: sidebarObj.settings.position == 'left' ? 'e' : 'w',
                 maxWidth: $(window).width() * 0.8, minWidth: 300,
-                start: function() { sidebarObj._inResize = true; },
                 stop: function() { resizeDone(sidebarObj); }});
         },
 
@@ -514,10 +527,10 @@
             if ($pane.outerHeight() < 1)
             {
                 // Not really ready to find size yet
-                _resizeNotReady = true;
+                sidebarObj._resizeNotReady = true;
                 return;
             }
-            _resizeNotReady = false;
+            sidebarObj._resizeNotReady = false;
             var $scrollContent = $pane.find('.panes');
             $scrollContent.css('height', '');
             adjH = $pane.outerHeight() - $scrollContent.height();
@@ -525,41 +538,25 @@
         }
     };
 
-    // We have a potential hard-to-detect layout cycle here because of the defer call below.
-    // When we call setPosition, we need to let our neighbor know we've resized
-    // it. However, this usually triggers another resize on us. We try to break
-    // that cycle by ignoring the resize if the size hasn't changed. As a fallback,
-    // we maintain a maximum number of pending resize calls. If that limit is hit,
-    // stop servicing resizes until all resize calls finish. This will break the
-    // cycle.
-    var _setPositionCount = 0;
-    var _setPositionMaxCount = 50;
-    var _resizeBlocked = false;
-    var _lastWidth = -1;
-    var _lastHeight = -1;
-    var _resizeNotReady = false;
     /* Handle window resizing */
     var handleResize = function(sidebarObj)
     {
-        var $window = $(window);
-        var newWidth = $window.width();
-        var newHeight = $window.height();
+        var newWidth = sidebarObj.$dom().width();
+        var newHeight = sidebarObj.$dom().height();
 
-        if (newWidth == _lastWidth && newHeight == _lastHeight && !_resizeNotReady) { return; }
+        if (newWidth == sidebarObj._lastWidth && newHeight == sidebarObj._lastHeight && !sidebarObj._resizeNotReady) { return; }
 
-        _lastWidth = newWidth;
-        _lastHeight = newHeight;
+        sidebarObj._lastWidth = newWidth;
+        sidebarObj._lastHeight = newHeight;
 
-        if (_setPositionCount > _setPositionMaxCount || _resizeBlocked)
+        if (sidebarObj._setPositionCount > sidebarObj._setPositionMaxCount || sidebarObj._resizeBlocked)
         {
             console.error('Layout Cycle');
-            _resizeBlocked = true;
+            sidebarObj._resizeBlocked = true;
             return;
         }
 
-        if (sidebarObj._inResize) { return; }
-
-        _setPositionCount ++;
+        sidebarObj._setPositionCount ++;
         _.defer(function()
         {
             try
@@ -571,8 +568,8 @@
             }
             finally
             {
-                _setPositionCount --;
-                if (_setPositionCount == 0) { _resizeBlocked = false; } // Recover from layout cycle.
+                sidebarObj._setPositionCount --;
+                if (sidebarObj._setPositionCount == 0) { sidebarObj._resizeBlocked = false; } // Recover from layout cycle.
             }
         });
     };
@@ -580,7 +577,6 @@
     /* When user resize is finished */
     var resizeDone = function(sidebarObj)
     {
-        sidebarObj._inResize = false;
         // Unset left, b/c the resizable plugin sets it; but we are
         // right-positioned
         sidebarObj.$dom().css('left', '');

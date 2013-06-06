@@ -651,6 +651,7 @@ en:
             new_data_column_button: Add Data Column
           series_group:
             title: Data Series Grouping
+            row_limit_warning: Data Series Grouping will run extremely slowly with this many rows.
             new_column_button: Add Series Column
             group_by: Group by
           categories: Categories
@@ -1397,6 +1398,7 @@ it:
             new_data_column_button: Aggiungi colonna di dati
           series_group:
             title: Raggruppamento serie di dati
+            row_limit_warning: Raggruppamento serie di dati verrà eseguito molto lentamente con questo molte righe.
             new_column_button: Aggiungi colonna di serie
             group_by: Raggruppa per
           categories: Categorie
@@ -2227,6 +2229,7 @@ es:
             new_data_column_button: Añadir columna de datos
           series_group:
             title: Agrupación de series de datos
+            row_limit_warning: Agrupación de serie de datos se ejecutará muy lentamente con estos registros.
             new_column_button: Añadir columna de series
             group_by: Agrupar por
           categories: Categorías
@@ -3109,6 +3112,7 @@ fr:
             new_data_column_button: Ajouter colonne de données
           series_group:
             title: Regrouper les séries de données
+            row_limit_warning: Groupement des séries de données se déroulera très lentement avec ce nombre de lignes.
             new_column_button: Ajouter colonne de séries
             group_by: Regrouper par
           categories: Catégories
@@ -3902,6 +3906,7 @@ zh:
             new_data_column_button: 添加数据列
           series_group:
             title: 数据系列分组
+            row_limit_warning: 分组数据系列将运行极为缓慢，很多行。
             new_column_button: 添加列（数据系列）
             group_by: 分组方式
           categories: 类别

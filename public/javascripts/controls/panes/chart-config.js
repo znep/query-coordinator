@@ -314,10 +314,13 @@
 
     var seriesData = function(chart, options, colTypes)
     {
+        var tooManyRows = blist.configuration.newChartsEnabled && options.view.totalRows() > 10000;
+
         return {
             title: $.t('screens.ds.grid_sidebar.chart.series_group.title'), type: 'selectable', name: chart.value + 'SeriesData',
             onlyIf: onlyIfForChart(chart, options, false),
             fields: [
+                {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.row_limit_warning'), onlyIf: tooManyRows },
                 {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.series_group.new_column_button'),
                     name: 'displayFormat.seriesColumns',
                     field: {text: $.t('screens.ds.grid_sidebar.chart.series_group.group_by'), type: 'columnSelect',

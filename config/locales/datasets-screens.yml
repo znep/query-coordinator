@@ -1398,7 +1398,7 @@ it:
             new_data_column_button: Aggiungi colonna di dati
           series_group:
             title: Raggruppamento serie di dati
-            row_limit_warning: Raggruppamento serie di dati verrà eseguito molto lentamente con questo molte righe.
+            row_limit_warning: Raggruppamento serie di dati verrà eseguito molto lentamente con questo numero di righe.
             new_column_button: Aggiungi colonna di serie
             group_by: Raggruppa per
           categories: Categorie
@@ -2229,7 +2229,7 @@ es:
             new_data_column_button: Añadir columna de datos
           series_group:
             title: Agrupación de series de datos
-            row_limit_warning: Agrupación de serie de datos se ejecutará muy lentamente con estos registros.
+            row_limit_warning: Agrupación de serie de datos se ejecutará muy lentamente con estos número de filas.
             new_column_button: Añadir columna de series
             group_by: Agrupar por
           categories: Categorías

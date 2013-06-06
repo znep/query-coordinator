@@ -174,12 +174,15 @@ $.Control.registerMixin('d3_impl_bar', {
         };
     },
 
-    _yDatumPosition: function(colId, yScale)
+    _yDatumPosition: function(colId, yScale, forceUnclipped)
     {
         var vizObj = this;
         var yAxisPos = vizObj._yAxisPos();
         var isFunction = _.isFunction(colId);
         var cc = vizObj._chartConfig;
+
+        // For stacked, our y-axis isn't clipped for us. We'll try to clip
+        // ourselves, if forceUnclipped isn't true.
 
         return function(d)
         {
@@ -194,11 +197,33 @@ $.Control.registerMixin('d3_impl_bar', {
                     // us to move the correct edge to the zero baseline, depending
                     // on the bar's polarity.
                     // Why? Because SVG doesn't like negative rect widths :/
-                    return (value < 0) ? yScale(value) : yScale(0);
+
+                    var val = 0;
+                    if (forceUnclipped)
+                    {
+                        val = yScale(value);
+                    }
+                    else
+                    {
+                        var domain = yScale.domain();
+                        val = yScale(Math.min(Math.max(value, domain[0]), domain[1]));
+                    }
+
+                    return (value < 0) ? val : yScale(0);
                 },
                 function(value)
                 {
-                    return -yScale(Math.max(0, value)) + 0.5;
+                    if (!forceUnclipped)
+                    {
+                        var domain = yScale.domain();
+                        value = Math.min(Math.max(Math.max(0, value), domain[0]), domain[1]);
+                    }
+                    else
+                    {
+                        value = Math.max(0, value);
+                    }
+
+                    return -yScale(value) + 0.5;
                 });
 
             if (cc.stackYSeries)
@@ -209,25 +234,34 @@ $.Control.registerMixin('d3_impl_bar', {
                 // all the values up to and NOT including ourselves. Similar
                 // deal with orientation=down, except the cases and signs are
                 // reversed.
+                // Also, don't forget that for stacked, our y-axis isn't clipped
+                // for us.
                 var limits = vizObj._computeYLimitsForRow(
                     d,
                     _.pluck(vizObj.getValueColumns(), 'column'),
                     columnId);
 
+                var retVal;
+
                 if (vizObj._chartConfig.dataDim.pluckY(columnValue < 0, columnValue >= 0))
                 {
-                    return thisDatumPosition(
+                    retVal = thisDatumPosition(
                         vizObj._chartConfig.dataDim.pluckY(limits.negativeSum, limits.positiveSum)) + yAxisPos;
                 }
                 else
                 {
                     // Hard mode active
-                    return vizObj._chartConfig.dataDim.pluckY(
+                    retVal = vizObj._chartConfig.dataDim.pluckY(
                         yAxisPos + yScale(limits.positiveSum - columnValue),
                         yAxisPos - yScale(limits.negativeSum - columnValue));
+
+                    var range = forceUnclipped ? [-Infinity, Infinity ] : yScale.range();
+                    var correction = columnValue >= 0 ? yAxisPos : -yAxisPos;
+                    retVal = Math.max(Math.min(retVal, range[1] + yAxisPos), range[0] + correction);
                 }
 
 
+                return retVal;
             }
             else
             {
@@ -238,12 +272,59 @@ $.Control.registerMixin('d3_impl_bar', {
 
     _yBarHeight: function(colId, yScale)
     {
+        var vizObj = this;
+        var cc = this._chartConfig;
         var yScaleZero = yScale(0);
         var isFunction = _.isFunction(colId);
-        return function(d)
+
+        // Yeah, so...
+        // If we're not stacking, then the yScale is hard clipped to be within
+        // the y-axis min and max. However, if we're stacking, yScale is not
+        // clipped (to allow us to figure out the height of any stacked column).
+        // So, we need to do some extra work in this case.
+        if (cc.stackYSeries)
         {
-            return Math.abs(yScale(d[isFunction ? colId.call(this) : colId]) - yScaleZero);
-        };
+            var cols = vizObj.getValueColumns();
+            return function(row)
+            {
+                var col = isFunction ? colId.call(this) : colId;
+                var normalResult = Math.abs(yScale(row[col]) - yScaleZero);
+
+                // In this case, we need to make sure our bottom/left edge
+                // doesn't go below the x axis or above the top of the chart.
+                // This gets tricky.
+
+                //TODO augh performance
+                var myPosition = vizObj._yDatumPosition(col, yScale)(row);
+                var unclippedPosition = vizObj._yDatumPosition(col, yScale, true /*forceUnclipped*/)(row);
+
+                // Account for _yBarPosition not allowing a bar to go
+                // left of/below the origin.
+                var returnValue = normalResult;;
+                returnValue -= myPosition - unclippedPosition;
+                if (cc.orientation == 'right')
+                {
+                    // Prevent top edge from going past top of chart.
+                    returnValue = Math.min(returnValue, Math.max(0, vizObj._yAxisPos() - myPosition));
+                }
+                else
+                {
+                    // Prevent RH edge from going past the right edge of the chart.
+                    var absoluteMaxWidth = vizObj._yAxisPos() + yScale.range()[1] - myPosition;
+                    returnValue =  Math.min(returnValue, absoluteMaxWidth);
+
+                }
+
+                return returnValue;
+            }
+        }
+        else
+        {
+            return function(d)
+            {
+                return Math.abs(yScale(d[isFunction ? colId.call(this) : colId]) - yScaleZero);
+            };
+        }
     },
 
     // Returns a translation along X for an error bar.
@@ -262,6 +343,25 @@ $.Control.registerMixin('d3_impl_bar', {
             var transform = cc.dataDim.asScreenCoordinate(xPosition + x, 0);
             return 't' + transform.x + ',' + transform.y;
         };
+    },
+
+    _currentYScale: function()
+    {
+        // For stacked arrangements, we can't clamp, otherwise it will freak out
+        // calculations trying to get the canonical height of a bar. So in this case ONLY,
+        // we don't clamp. Given the amount of proven math in the non-stacked case,
+        // we're leaving non-stacked alone and clamped.
+
+        var normalScale = this._super.apply(this, arguments);
+
+        if (this._chartConfig.stackYSeries)
+        {
+            return normalScale.clamp(false);
+        }
+        else
+        {
+            return normalScale;
+        }
     },
 
     // call this if the active set of data has changed

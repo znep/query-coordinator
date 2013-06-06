@@ -231,6 +231,15 @@ chartObj.resizeHandle();
             }
         }
 
+        // Min <= Max
+        var explicitMin = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'min'));
+        var explicitMax = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max'));
+        if (explicitMax < explicitMin)
+        {
+            delete vizObj._displayFormat.yAxis.min;
+            delete vizObj._displayFormat.yAxis.max;
+        }
+
         vizObj._super();
     },
 

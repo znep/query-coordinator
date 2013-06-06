@@ -70,6 +70,7 @@ $.Control.registerMixin('d3_impl_line', {
             cc.seriesPath[col.lookup]
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
                 .attr('stroke', function() { return colDef.color; })
+                .attr('stroke-width', 2)
                 .datum(data)
                 .attr('d', oldLine);
 

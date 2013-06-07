@@ -66,10 +66,15 @@ $.Control.registerMixin('d3_impl_line', {
                     .classed('dataPath_series' + col.lookup, true);
             }
 
-            oldLine.interpolate(vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear')
-                .tension(0.9);
-            newLine.interpolate(vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear')
-                .tension(0.9);
+            // Easter eggs
+            var interpolation = $.urlParam(window.location.href, 'interpolate')
+                                || $.urlParam(window.location.href, 'i')
+                                || (vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear');
+            var tension = $.urlParam(window.location.href, 'tension')
+                          || $.urlParam(window.location.href, 't')
+                          || 0.9;
+            oldLine.interpolate(interpolation).tension(tension);
+            newLine.interpolate(interpolation).tension(tension);
 
             cc.seriesPath[col.lookup]
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
@@ -361,45 +366,6 @@ $.Control.registerMixin('d3_impl_line', {
         {
             return 't' + transform.x + ',' + transform.y;
         };
-    },
-
-    // Easter egg foundation.
-    interpolate: function(interpolation, tension)
-    {
-        var vizObj = this,
-            data = _.values(vizObj._currentRangeData);
-
-        _.each(vizObj.getValueColumns(), function(colDef, seriesIndex)
-        {
-            var col = colDef.column,
-                notNull = function(row)
-                    { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup]); };
-
-            // figure out what data we can actually render
-            var presentData = _.select(data, notNull) || [];
-
-            var line = d3.svg.line().x(vizObj._xDatumPosition(seriesIndex))
-                                    .y(vizObj._yDatumPosition(col.lookup, vizObj._currentYScale()))
-                                    .defined(notNull);
-
-            // Render the line that connects the dots.
-            if (!cc.seriesPath)
-            { cc.seriesPath = {}; }
-            if (!cc.seriesPath[col.lookup])
-            {
-                cc.seriesPath[col.lookup] = cc.chartD3.append('path')
-                    .classed('dataPath_series' + col.lookup, true)
-            }
-
-            line.interpolate(interpolation || 'cardinal')
-                .tension(tension || 0.9);
-
-            cc.seriesPath[col.lookup]
-                .classed('hide', vizObj._displayFormat.lineSize === '0')
-                .attr('stroke', function() { return colDef.color; })
-                .datum(data)
-                .attr('d', line);
-        });
     }
 
 }, null, 'socrataChart', [ 'd3_virt_scrolling', 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

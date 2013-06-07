@@ -956,7 +956,7 @@ var Dataset = ServerModel.extend({
 
     rowToSODA2: function(row)
     {
-        var r = {};
+        var r = { ':index': row.index };
         _.each(this.columns, function(c)
         {
             r[c.fieldName] = row[c.lookup];

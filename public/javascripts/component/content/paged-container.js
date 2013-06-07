@@ -139,6 +139,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         { $existDom.addClass('hide'); }
         child._parCont = this;
         this._pages.push(child);
+        this.trigger('page_added', [{pages: [child]}]);
         return r;
     },
 
@@ -255,7 +256,6 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         else if (!$.isBlank(this.$ct))
         {
             this.$ct.append(child.$dom);
-            this.trigger('page_added', [{pages: [child]}]);
         }
     },
 

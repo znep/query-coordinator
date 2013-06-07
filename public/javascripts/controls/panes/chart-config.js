@@ -314,7 +314,7 @@
 
     var seriesData = function(chart, options, colTypes)
     {
-        var tooManyRows = blist.configuration.newChartsEnabled && options.view.totalRows() > 10000;
+        var tooManyRows = isNextGen && options.view.totalRows() > 10000;
 
         return {
             title: $.t('screens.ds.grid_sidebar.chart.series_group.title'), type: 'selectable', name: chart.value + 'SeriesData',

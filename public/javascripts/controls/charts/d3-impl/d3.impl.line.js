@@ -19,7 +19,9 @@ $.Control.registerMixin('d3_impl_line', {
             valueColumns = vizObj.getValueColumns(),
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView,
-            lineType = vizObj._chartType;
+            lineType = vizObj._chartType,
+            explicitMin = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'min')),
+            explicitMax = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max'));
 
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
@@ -34,7 +36,9 @@ $.Control.registerMixin('d3_impl_line', {
         {
             var col = colDef.column,
                 notNull = function(row)
-                    { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup]); };
+                    { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup])
+                            && (_.isNaN(explicitMin) || row[col.lookup] >= explicitMin)
+                            && (_.isNaN(explicitMax) || row[col.lookup] <= explicitMax); };
 
             // figure out what data we can actually render
             var presentData = _.select(data, notNull) || [];

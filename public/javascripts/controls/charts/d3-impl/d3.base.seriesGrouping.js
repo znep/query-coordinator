@@ -36,6 +36,7 @@ d3base.seriesGrouping = {
 
         var sg = vizObj._seriesGrouping = {
             categoryIndexLookup: {},
+            fixedColumn: null,
             groupedView: null,
             hasGroupBys: _.isArray((vizObj._primaryView.query || {}).groupBys),
             physicalRowsRetreived: 0,
@@ -56,7 +57,10 @@ d3base.seriesGrouping = {
         sortColumns.push(vizObj._fixedColumns[0]);
 
         // then sort by the series groups in order
-        sortColumns = sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column'));
+        sortColumns = _.compact(sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column')));
+
+        // If there isn't a fixedColumn, save off the first seriesColumn in its place.
+        sg.fixedColumn = _.first(sortColumns);
 
         // set up the sort
         sortedView.update({ query: $.extend({}, sortedView.query, {
@@ -85,11 +89,10 @@ d3base.seriesGrouping = {
         // make another copy of the view that we'll use to get the category-relevant rows
         // piggyback off sortedView so that the categories come back sorted
         var categoryGroupedView = sortedView.clone();
-        var fixedColumn = vizObj._fixedColumns[0];
 
         var categoryGroupBys = (sortedView.query.groupBys || []).concat([
             {
-                columnId: fixedColumn.id,
+                columnId: sg.fixedColumn.id,
                 type: 'column'
             } ]);
 
@@ -153,7 +156,7 @@ d3base.seriesGrouping = {
     {
         var vizObj = this,
             sg = vizObj._seriesGrouping,
-            fixedColumn = vizObj._fixedColumns[0];
+            fixedColumn = sg.fixedColumn;
 
         // figure out our categories and make virtual row index lookups for them.
         _.each(sg.categoryGroupedRows, function(row)
@@ -267,7 +270,7 @@ d3base.seriesGrouping = {
         vizObj._inRenderSeriesGrouping = true;
 
         var sg = vizObj._seriesGrouping,
-            fixedColumn = vizObj._fixedColumns[0],
+            fixedColumn = sg.fixedColumn,
             view = vizObj._primaryView;
 
         // drop values where they belong
@@ -285,7 +288,7 @@ d3base.seriesGrouping = {
                     invalid: {},
                     realRows: {}
                 };
-                virtualRow[vizObj._fixedColumns[0].id] = category;
+                virtualRow[sg.fixedColumn.id] = category;
 
                 sg.virtualRows[category] = virtualRow;
             }
@@ -346,7 +349,7 @@ d3base.seriesGrouping = {
         }
 
         var sg = vizObj._seriesGrouping,
-            fixedColumn = vizObj._fixedColumns[0],
+            fixedColumn = sg.fixedColumn,
             category = row[fixedColumn.id],
             vRow = sg.virtualRows[category];
 

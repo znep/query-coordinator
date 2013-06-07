@@ -52,6 +52,14 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // own object to save temp stuff on
         var cc = vizObj._chartConfig = {};
 
+        cc.yAxis = { min: parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'min')),
+                     max: parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max')) };
+
+        // The '|| 0' is safe for _currentYScale. Double check before re-use.
+        var valueMarkers = _.map(_.pluck(vizObj._displayFormat.valueMarker, 'atValue'), parseFloat);
+        cc.valueMarkerLimits = { min: d3.min(valueMarkers) || 0,
+                                 max: d3.max(valueMarkers) || 0 };
+
         // if we need to do series grouping stuff, mix that in before anything else
         // It should be safe to mix this in even without grouping, but this saves
         // some work (note that we never un-mix if grouping gets disabled on this
@@ -754,14 +762,15 @@ chartObj.resizeHandle();
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
-            explicitMin = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'min')),
-            explicitMax = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max')),
+            explicitMin = cc.yAxis.min,
+            explicitMax = cc.yAxis.max,
+            vml = cc.valueMarkerLimits,
             rangeMax = cc.dataDim.pluckY(cc.chartWidth - vizObj._yAxisPos(),
                                          vizObj._yAxisPos());
 
         return d3.scale.linear()
-            .domain([ !_.isNaN(explicitMin) ? explicitMin : Math.min(0, cc.minValue),
-                      !_.isNaN(explicitMax) ? explicitMax : Math.max(0, cc.maxValue) ])
+            .domain([ !_.isNaN(explicitMin) ? explicitMin : Math.min(0, cc.minValue, vml.min),
+                      !_.isNaN(explicitMax) ? explicitMax : Math.max(0, cc.maxValue, vml.max) ])
             .range([ 0, Math.max(0, rangeMax - vizObj.defaults.dataMaxBuffer) ])
             .clamp(true);
     },

@@ -20,8 +20,8 @@ $.Control.registerMixin('d3_impl_line', {
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView,
             lineType = vizObj._chartType,
-            explicitMin = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'min')),
-            explicitMax = parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max'));
+            explicitMin = cc.yAxis.min,
+            explicitMax = cc.yAxis.max;
 
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();

@@ -213,14 +213,14 @@ $.Control.registerMixin('d3_impl_bar', {
                 },
                 function(value)
                 {
-                    if (!forceUnclipped)
+                    if (forceUnclipped)
                     {
-                        var domain = yScale.domain();
-                        value = Math.min(Math.max(Math.max(0, value), domain[0]), domain[1]);
+                        value = Math.max(0, value);
                     }
                     else
                     {
-                        value = Math.max(0, value);
+                        var domain = yScale.domain();
+                        value = Math.min(Math.max(Math.max(0, value), domain[0]), domain[1]);
                     }
 
                     return -yScale(value) + 0.5;
@@ -240,7 +240,6 @@ $.Control.registerMixin('d3_impl_bar', {
                     d,
                     _.pluck(vizObj.getValueColumns(), 'column'),
                     columnId);
-
                 var retVal;
 
                 if (vizObj._chartConfig.dataDim.pluckY(columnValue < 0, columnValue >= 0))
@@ -312,7 +311,6 @@ $.Control.registerMixin('d3_impl_bar', {
                     // Prevent RH edge from going past the right edge of the chart.
                     var absoluteMaxWidth = vizObj._yAxisPos() + yScale.range()[1] - myPosition;
                     returnValue =  Math.min(returnValue, absoluteMaxWidth);
-
                 }
 
                 return returnValue;

@@ -32,6 +32,11 @@
                             _(layer.featureLayer.renderer.infos).chain()
                             .map(function(info) { return [info.symbol.height, info.symbol.width]; })
                             .flatten().compact().value()));
+
+                        // Sometimes there are renderer.infos but no height/widths.
+                        // In such a case, the above evaluates to negative infinity.
+                        if (!isFinite(layer._suggestedTolerance))
+                        { delete layer._suggestedTolerance; }
                     }
 
                     layer.name = layer.featureLayer.name;

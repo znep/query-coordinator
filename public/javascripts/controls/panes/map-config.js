@@ -423,7 +423,7 @@
         return [
             {text: $.t('screens.ds.grid_sidebar.map.data_layer.alias'), type: 'text', name: prefix+'alias',
                 prompt: $.t('screens.ds.grid_sidebar.map.data_layer.alias_prompt') },
-            {text: $.t('screens.ds.grid_sidebar.map.data_layer.title'), name: prefix+'plot.titleId',
+            {text: $.t('screens.ds.grid_sidebar.map.data_layer.flyout.title_column'), name: prefix+'plot.titleId',
                 type: 'columnSelect', isTableColumn: true,
                 columns: {type: ['text', 'location', 'html', 'url',
                     'drop_down_list', 'dataset_link', 'email',

@@ -84,7 +84,10 @@ $.Control.registerMixin('d3_impl_line', {
                 .attr('d', oldLine);
 
             if (lineType == 'area')
-            { cc.seriesPath[col.lookup].attr('fill', colDef.color); }
+            {
+                cc.seriesPath[col.lookup].attr('fill', colDef.color)
+                                         .attr('fill-opacity', 0.8);
+            }
 
             cc.seriesPath[col.lookup]
                 .transition()
@@ -311,6 +314,12 @@ $.Control.registerMixin('d3_impl_line', {
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
+    },
+
+    // Line charts always have series on the same vertical.
+    _getDatumCountPerGroup: function()
+    {
+        return 1;
     },
 
     _calculateRowWidth: function()

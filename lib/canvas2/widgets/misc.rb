@@ -727,6 +727,127 @@ module Canvas2
     end
   end
 
+  class DatasetListFilter < CanvasWidget
+    include BrowseActions
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+
+    def render_contents
+      return ['', true] if context.nil? || context[:type] != 'datasetList'
+
+      search = context[:search] || {}
+      facet = nil
+      cur_val = nil
+      js_data = { catalogConfig: CurrentDomain.configuration('catalog') }
+      case string_substitute(@properties['facet'])
+      when 'viewTypes' then
+        facet = view_types_facet
+        cur_val = if search['publication_stage'] == 'unpublished'
+                    'unpublished'
+                  elsif search['datasetView'] == 'dataset'
+                    'datasets'
+                  elsif search['datasetView'] == 'view'
+                    'filters'
+                  else
+                    search['limitTo']
+                  end
+        facet[:param_list] = ['limitTo', 'datasetView', 'publication_stage']
+        facet[:param_map] = {
+          unpublished: { limitTo: 'tables', datasetView: 'dataset', publication_stage: 'unpublished' },
+          datasets: { limitTo: 'tables', datasetView: 'dataset' },
+          filters: { limitTo: 'tables', datasetView: 'view' }
+        }.with_indifferent_access
+        js_data[:hasApi] = module_available?(:api_foundry)
+      when 'categories' then
+        facet = categories_facet
+        cur_val = (search['category'] || '').titleize_if_necessary
+        js_data[:categories] = View.category_tree.reject { |c, o| c.blank? }.values.sort_by { |o| o[:value] }
+      when 'topics' then
+        facet = topics_facet
+        cur_val = search['tags']
+        js_data[:tags] = Tag.find({:method => "viewsTags"}).map { |t|
+          {:text => t.name, :value => t.name, :count => t.frequency} }
+      when 'federatedDomains' then
+        facet = federated_facet
+        cur_val = search['federation_filter']
+        js_data[:federatedDomains] = Federation.find.
+          select { |f| f.targetDomainCName == CurrentDomain.cname &&
+            f.lensName.empty? && f.acceptedUserId.present? }.
+            sort_by { |f| f.sourceDomainCName }.
+            map { |f| { :text => f.sourceDomainCName, :value => f.sourceDomainId.to_s,
+              :icon => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon" } }
+        js_data[:currentDomain] = { id: CurrentDomain.domain.id, cname: CurrentDomain.cname }
+      end
+      return ['', true] if facet.nil?
+
+      t = '<div class="title">' + facet[:title] + '</div>' +
+        '<ul class="listSection" data-jsdata="' + CGI::escapeHTML(js_data.to_json) + '">'
+      if cur_val.present?
+        params = Util.page_params.deep_dup
+        (facet[:param_list] || [facet[:param]]).each { |p|
+          params['data_context'][context[:id]]['search'].delete(p.to_s) } if
+          params['data_context'].present? &&
+          params['data_context'][context[:id]].present? && params['data_context'][context[:id]]['search']
+        t += '<li><a href="' + Util.page_path + '?' + params.to_param + '" class="clearFacet">'
+        t += '<span class="icon"></span>' if facet[:use_icon]
+        t += t('controls.browse.actions.clear_facet') + '</a></li>'
+      end
+      if facet[:tag_cloud]
+        facet[:extra_options].sort_by { |o| o[:count] }.reverse.each_with_index do |facet_option, i|
+          t += render_facet_item(facet_option, facet, cur_val, i >= facet[:options].length ? 'cutoff' : '')
+        end
+      else
+        facet[:options].each do |facet_option|
+          t += render_facet_item(facet_option, facet, cur_val)
+        end
+        (facet[:extra_options] || []).each do |facet_option|
+          t += render_facet_item(facet_option, facet, cur_val, 'cutoff')
+        end
+      end
+      t += '</ul>'
+      [t, true]
+    end
+
+    def render_facet_item(facet_item, facet, cur_val = nil, extra_class = '')
+      is_active = cur_val == facet_item[:value]
+      child_active = (facet_item[:children] || []).any? { |cc| cc[:value] == cur_val }
+
+      params = Util.page_params.deep_dup
+      params['data_context'] ||= {}
+      params['data_context'][context[:id]] ||= {}
+      params['data_context'][context[:id]]['search'] ||= {}
+      (facet[:param_list] || [facet[:param]]).each { |p|
+        params['data_context'][context[:id]]['search'].delete(p.to_s) }
+      if facet[:param_map].present? && facet[:param_map][facet_item[:value]].present?
+        params['data_context'][context[:id]]['search'].merge!(facet[:param_map][facet_item[:value]])
+      else
+        params['data_context'][context[:id]]['search'][facet[:param].to_s] = facet_item[:value]
+      end
+
+      ret = '<li class="' + extra_class + (is_active || child_active ? ' activeItem' : '') +
+        '"><a href="' + Util.page_path + '?' + params.to_param + '" class="' +
+        (facet_item[:class] || '') + (is_active ? ' active' : '') +
+        '" data-value="' + facet_item[:value] + '"' + (facet_item[:count].present? ?
+                                                       (' rel="' + facet_item[:count].to_s + '"') : '') + '>'
+      if facet[:use_icon]
+        ret += '<span class="icon"></span>'
+      elsif !facet_item[:icon].nil?
+        ret += '<img class="customIcon" src="' + theme_image_url(facet_item[:icon]) + '" alt="icon" />'
+      end
+      ret += CGI::escapeHTML(facet_item[:text])
+      ret += '</a>'
+      if is_active && !(facet_item[:children] || []).empty? || child_active
+        ret += '<ul class="childList">' +
+          facet_item[:children].map { |child|
+            render_facet_item(child, facet, cur_val) }.join('') +
+          '</ul>'
+      end
+      ret += '</li>'
+    end
+  end
+
   class EventConnector < CanvasWidget
     def is_hidden
       true

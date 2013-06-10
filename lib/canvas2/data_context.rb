@@ -10,6 +10,10 @@ module Canvas2
       return @streaming_contexts ||= {}
     end
 
+    def self.extra_config
+      return @extra_config ||= {}
+    end
+
     def self.errors
       return @errors ||= []
     end
@@ -31,6 +35,7 @@ module Canvas2
     def self.reset
       @available_contexts = {}
       @streaming_contexts = {}
+      @extra_config = {}
       @errors = []
       @timings = []
       @manifest = Manifest.new
@@ -53,12 +58,21 @@ module Canvas2
       streaming_contexts[id] = available_contexts[id] if !available_contexts[id].nil?
     end
 
+    def self.add_extra_config(id, conf)
+      extra_config[id] = conf
+    end
+
     def self.load_context(id, config)
       start_time = Time.now
       config = Util.string_substitute(config, Util.base_resolver)
       config[:id] = id
       ret_val = true
       begin
+        extra_opts = Util.context_options(id)
+        if extra_opts.present? && extra_opts.is_a?(Hash)
+          config.merge!(extra_opts)
+          add_extra_config(id, extra_opts)
+        end
         case config['type']
         when 'list'
           l = config['list']
@@ -74,8 +88,8 @@ module Canvas2
             add_query(ds, config['query'])
             config['requireData'] && ds.get_total_rows({}, !Canvas2::Util.is_private) < 1
           end
-          if ds_list.length > 0
-            available_contexts[id] = {id: id, type: config['type'],
+          if ds_list.length > 0 || config['noFail']
+            available_contexts[id] = {id: id, type: config['type'], search: config['search'],
               count: search_response.count - (search_response.results.length - ds_list.length),
               datasetList: ds_list.map do |ds|
                 c = {type: 'dataset', dataset: ds, id: id + '_' + ds.id}

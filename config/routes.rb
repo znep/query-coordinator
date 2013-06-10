@@ -152,6 +152,7 @@ Frontend::Application.routes do
       collection do
         get :embed
         get :select_dataset
+        get :domain_info
       end
     end
 

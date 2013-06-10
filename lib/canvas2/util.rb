@@ -110,6 +110,11 @@ module Canvas2
       c_id == @@page_params['data_component'] ? (@@page_params['data_page'] || '1').to_i : 1
     end
 
+    def self.context_options(c_id)
+      return nil if @@page_params.nil? || @@page_params['data_context'].nil?
+      @@page_params['data_context'][c_id]
+    end
+
     def self.base_resolver
       lambda do |name|
         if name[0] == '?' && defined? @@page_vars

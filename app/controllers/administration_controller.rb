@@ -1026,10 +1026,12 @@ class AdministrationController < ApplicationController
 
   # General accessors for admins
 
+  skip_before_filter :require_user, :only => [:configuration]
   def configuration
     # Proxy configurations, with access checks
     return false unless params[:type] == 'metadata' &&
-      check_auth_levels_any(['edit_site_theme', 'edit_pages'])
+      check_auth_levels_any(['edit_site_theme', 'edit_pages']) ||
+      params[:type] == 'catalog' || params[:type] == 'view_categories'
 
     config = get_configuration(params[:type], params[:merge])
     respond_to do |format|

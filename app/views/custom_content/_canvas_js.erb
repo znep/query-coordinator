@@ -17,12 +17,14 @@
       blist.configuration.pageVariables = <%= safe_json(Canvas2::Util.page_vars) %>;
       blist.configuration.env = <%= safe_json(Canvas2::Util.env) %>;
       blist.configuration.availableContexts = <%= safe_json(Canvas2::DataContext.streaming_contexts) %>;
+      blist.configuration.extraContextConfig = <%= safe_json(Canvas2::DataContext.extra_config) %>;
       blist.configuration.privateData = <%= page.private_data?  || staging_lockdown %>;
 
       blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) == true %>;
       blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
 
-      $.dataContext.load(page.data, blist.configuration.availableContexts);
+      $.dataContext.load(page.data, blist.configuration.availableContexts,
+        blist.configuration.extraContextConfig);
       $.locale.initialize(page.locale);
       $.component.initialize(page.content);
       <%- if template -%>

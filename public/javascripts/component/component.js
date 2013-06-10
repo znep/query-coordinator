@@ -65,6 +65,7 @@
                 {
                     cObj.finishLoading();
                     delete cObj._loadingAssets;
+                    cObj._assetsAvailable();
                     if (cObj._needsRender) { _.defer(function () { cObj._render(); }); }
                     if (cObj._needsEdit) { _.defer(function () { cObj.edit(true); }); }
                 });
@@ -479,6 +480,9 @@
          */
         _getAssets: function()
         { return null; },
+
+        _assetsAvailable: function()
+        { },
 
         /**
          * Javascript and CSS that needs to be loaded to edit the component

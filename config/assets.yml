@@ -135,6 +135,7 @@ javascripts:
     - public/javascripts/component/actions/print.js
     - public/javascripts/component/actions/rate-vote.js
     - public/javascripts/component/actions/share.js
+    - public/javascripts/component/input/dataset-list-filter.js
     - public/javascripts/component/input/geolocator.js
     - public/javascripts/component/input/inline-filter.js
     - public/javascripts/component/input/pager.js
@@ -629,6 +630,8 @@ javascripts:
     - public/javascripts/plugins/jquery.masonry.js
   columnizer:
     - public/javascripts/plugins/jquery.columnizer.js
+  tagcloud:
+    - public/javascripts/plugins/jquery.tagcloud.js
 
 dump:
   javascripts:
@@ -661,3 +664,4 @@ dump:
     - markdown-create
     - sanitize-html
     - autolink-html
+    - tagcloud

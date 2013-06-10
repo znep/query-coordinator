@@ -255,7 +255,7 @@
 
                     var setResult = function(viewsList, count)
                     {
-                        if (count < 1)
+                        if (count < 1 && !dc.config.noFail)
                         {
                             errorCallback(dc.id);
                             return;
@@ -461,14 +461,19 @@
             this.availableContexts[context.id] = context;
         },
 
-        load: function(configHash, existingContexts)
+        load: function(configHash, existingContexts, extraConfig)
         {
             var dc = this;
             if (_.isObject(existingContexts))
             { $.extend(dc._existingContexts, existingContexts); }
             // Initially set up preLoadQueue for each item
             _.each(configHash, function(c, id) { dc._preLoadQueue[id] = dc._preLoadQueue[id] || []; });
-            _.each(configHash, function(c, id) { dc.loadContext(id, c); });
+            _.each(configHash, function(c, id)
+            {
+                if ($.subKeyDefined(extraConfig, id))
+                { $.extend(c, extraConfig[id]); }
+                dc.loadContext(id, c);
+            });
         },
 
         loadContext: function(id, config, successCallback, errorCallback)

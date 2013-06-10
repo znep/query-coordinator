@@ -99,13 +99,25 @@ var renderUpdate = function()
 {
     var cObj = this;
 
-    var dsList = cObj._getDatasetListFromContext(cObj._dataContext);
-    if (!_.isEqual(cObj._dsList, dsList))
+    if (cObj._dataContext.type == 'datasetList' && cObj._properties.isList)
     {
-        _.each(cObj._dsList, function(ds) { ds.unbind(null, null, cObj); });
-        cObj._dsList = dsList;
-        _.each(cObj._dsList, function(ds)
-        { ds.bind('clear_temporary', function() { renderUpdate.apply(cObj); }, cObj); });
+        cObj.$input.focus().val((cObj._dataContext.config.search || {}).q).blur();
+    }
+    else
+    {
+        var dsList = cObj._getDatasetListFromContext(cObj._dataContext);
+        if (!_.isEqual(cObj._dsList, dsList))
+        {
+            _.each(cObj._dsList, function(ds) { ds.unbind(null, null, cObj); });
+            cObj._dsList = dsList;
+            _.each(cObj._dsList, function(ds)
+                    { ds.bind('clear_temporary', function() { renderUpdate.apply(cObj); }, cObj); });
+        }
+
+        // set value only if it agrees  across all datasets
+        var curVal = _.reduce(cObj._dsList, function(memo, ds)
+                { return _.isNull(memo) || ds.searchString == memo ? ds.searchString : ''; }, null);
+        cObj.$input.focus().val(curVal).blur();
     }
 
     // prompts
@@ -113,11 +125,6 @@ var renderUpdate = function()
     cObj.$input.example(cObj._stringSubstitute(cObj._properties.searchPrompt || 'Find'));
     cObj.$searchButton.val(cObj._stringSubstitute(cObj._properties.buttonText || 'Find'));
     cObj.$clearButton.attr('title', cObj._stringSubstitute(cObj._properties.clearPrompt || 'Clear'));
-
-    // set value only if it agrees  across all datasets
-    var curVal = _.reduce(cObj._getDatasetListFromContext(cObj._dataContext), function(memo, ds)
-        { return _.isNull(memo) || ds.searchString == memo ? ds.searchString : ''; }, null);
-    cObj.$input.focus().val(curVal).blur();
 
     // show/hide
     cObj.$searchIcon.toggleClass('hide', !!cObj._properties.hideSearchIcon);
@@ -139,7 +146,16 @@ var handleSearch = function(cObj)
     if (!$.isBlank(q) && cObj._properties.startsWith)
     { q += '*'; }
 
-    _.each(cObj._dsList, function(ds)
-    { ds.update({ searchString: q }); });
+    if (cObj._dataContext.type == 'datasetList' && cObj._properties.isList)
+    {
+        var c = $.extend(true, {}, cObj._dataContext.config);
+        c.search = c.search || {};
+        c.search.q = q;
+        cObj._dataContext.updateConfig(c);
+    }
+    else
+    {
+        _.each(cObj._dsList, function(ds) { ds.update({ searchString: q }); });
+    }
 };
 })(jQuery);

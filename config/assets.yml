@@ -135,13 +135,11 @@ javascripts:
     - public/javascripts/component/actions/print.js
     - public/javascripts/component/actions/rate-vote.js
     - public/javascripts/component/actions/share.js
-    - public/javascripts/component/input/data-search.js
     - public/javascripts/component/input/geolocator.js
     - public/javascripts/component/input/inline-filter.js
     - public/javascripts/component/input/pager.js
     - public/javascripts/component/input/popup-filter.js
     - public/javascripts/component/input/search.js
-    - public/javascripts/component/input/site-search.js
     - public/javascripts/component/input/slide-filter.js
     - public/javascripts/component/input/sort.js
   configurator:

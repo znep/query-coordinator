@@ -639,6 +639,7 @@ module Canvas2
 
   class Sort < CanvasWidget
     def render_contents
+      return ['', true] if context.nil?
       sorts = []
       if context[:type] == 'dataset'
         sorts = context[:dataset].query.orderBys || []
@@ -646,7 +647,7 @@ module Canvas2
         sorts = context[:parent_dataset].query.orderBys || []
       end
 
-      options = ''
+      ds_options = ''
       found_col = false
       sort_desc = false
       ex_f = string_substitute(@properties['excludeFilter'])
@@ -662,14 +663,14 @@ module Canvas2
           end
 
           is_sel = sorts.length > 0 && sorts[0]['expression']['columnId'] == c.id
-          options += '<option value="' + c.fieldName + '"' + (is_sel ? ' selected="selected"' : '') +
+          ds_options += '<option value="' + c.fieldName + '"' + (is_sel ? ' selected="selected"' : '') +
             '>' + c.name + '</option>'
           sort_desc = !sorts[0]['ascending'] if is_sel
           found_col ||= is_sel
         end
       end
-      options = '<option value=""' + (found_col ? '' : ' selected="selected"') +
-        '>(Unsorted)</option>' + options
+      ds_options = '<option value=""' + (found_col ? '' : ' selected="selected"') +
+        '>(Unsorted)</option>' + ds_options
 
       if context[:type] == 'column'
         si = sorts.detect { |s| s['expression']['columnId'] == context[:column].id }
@@ -677,9 +678,40 @@ module Canvas2
         sort_desc = !si['ascending'] if found_col
       end
 
+      ds_list_options = [
+          { value: 'relevance', name: t('controls.browse.sorts.relevance') },
+          { value: 'most_accessed', name: t('controls.browse.sorts.most_accessed') },
+          { value: 'alpha', name: t('controls.browse.sorts.alpha') },
+          { value: 'newest', name: t('controls.browse.sorts.newest') },
+          { value: 'oldest', name: t('controls.browse.sorts.oldest') },
+          { value: 'last_modified', name: t('controls.browse.sorts.last_modified') },
+          { value: 'rating', name: t('controls.browse.sorts.rating') },
+          { value: 'comments', name: t('controls.browse.sorts.comments') }
+        ]
+      ds_list_sort = context[:search]['sortBy'] if context[:type] == 'datasetList' &&
+        context[:search].present?
+      ds_list_period_options = [
+          { value: 'WEEKLY', name: t('controls.browse.sort_periods.week') },
+          { value: 'MONTHLY', name: t('controls.browse.sort_periods.month') },
+          { value: 'YEARLY', name: t('controls.browse.sort_periods.year') }
+        ]
+      ds_list_sort_period = context[:search]['sortPeriod'] if context[:type] == 'datasetList' &&
+        context[:search].present?
+
       t = '<div class="datasetSort' + (context[:type] != 'dataset' ? ' hide' : '') + '">' +
           '<select id="' + id + '-datasetSort" name="datasetSort">' +
-          options +
+          ds_options +
+          '</select>' +
+        '</div>' +
+        '<div class="dsListSort' + (context[:type] != 'datasetList' ? ' hide' : '') + '">' +
+          '<select id="' + id + '-dsListSort" name="dsListSort" class="dsListSort">' +
+          ds_list_options.map { |o| '<option value="' + o[:value] + '"' +
+            (o[:value] == ds_list_sort ? 'selected="selected"' : '' ) + '>' + o[:name] + '</option>' }.join('') +
+          '</select>' +
+          '<select id="' + id + '-dsListSortPeriod" name="dsListSortPeriod" class="sortPeriod' +
+          (ds_list_sort == 'most_accessed' ? '' : ' hide' ) + '">' +
+          ds_list_period_options.map { |o| '<option value="' + o[:value] + '"' +
+            (o[:value] == ds_list_sort_period ? 'selected="selected"' : '' ) + '>' + o[:name] + '</option>' }.join('') +
           '</select>' +
         '</div>' +
         '<div class="sortLinks clearfix ' + context[:type] + '">' +

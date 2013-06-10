@@ -6,6 +6,46 @@ $.component.Component.extend('Sort', 'none', {//'input', {
         var cObj = this;
         this._super.apply(this, arguments);
 
+        if ($.isBlank(cObj.$dsListSection))
+        {
+            cObj.$dsListSection = cObj.$contents.find('.dsListSort');
+            if (cObj.$dsListSection.length < 1)
+            {
+                cObj.$dsListSection = $.tag({ tagName: 'div', 'class': 'dsListSort' });
+                cObj.$contents.append(cObj.$dsListSection);
+            }
+        }
+
+        if ($.isBlank(cObj.$dsListDropdown))
+        {
+            cObj.$dsListDropdown = cObj.$dsListSection.find('select.dsListSort');
+            if (cObj.$dsListDropdown.length < 1)
+            {
+                cObj.$dsListDropdown = $.tag2({ _: 'select', id: cObj.id + '-dsListSort',
+                    name: 'dsListSort', className: 'dsListSort' });
+                cObj.$dsListSection.append(cObj.$dsListDropdown);
+            }
+            if (!$.isBlank($.uniform))
+            { cObj.$dsListDropdown.uniform(); }
+
+            cObj.$dsListDropdown.on('change', function() { _.defer(function() { handleChange(cObj); }); });
+        }
+
+        if ($.isBlank(cObj.$dsListPeriodDropdown))
+        {
+            cObj.$dsListPeriodDropdown = cObj.$dsListSection.find('select.sortPeriod');
+            if (cObj.$dsListPeriodDropdown.length < 1)
+            {
+                cObj.$dsListPeriodDropdown = $.tag2({ _: 'select', id: cObj.id + '-dsListSortPeriod',
+                    name: 'dsListSortPeriod', className: 'sortPeriod' });
+                cObj.$dsListSection.append(cObj.$dsListPeriodDropdown);
+            }
+            if (!$.isBlank($.uniform))
+            { cObj.$dsListPeriodDropdown.uniform(); }
+
+            cObj.$dsListPeriodDropdown.on('change', function() { _.defer(function() { handleChange(cObj); }); });
+        }
+
         if ($.isBlank(cObj.$datasetSection))
         {
             cObj.$datasetSection = this.$contents.find('.datasetSort');
@@ -16,19 +56,19 @@ $.component.Component.extend('Sort', 'none', {//'input', {
             }
         }
 
-        if ($.isBlank(this.$dropdown))
+        if ($.isBlank(this.$dsDropdown))
         {
-            this.$dropdown = cObj.$datasetSection.find('select');
-            if (this.$dropdown.length < 1)
+            this.$dsDropdown = cObj.$datasetSection.find('select');
+            if (this.$dsDropdown.length < 1)
             {
-                this.$dropdown = $.tag({ tagName: 'select', id: this.id + '-datasetSort',
+                this.$dsDropdown = $.tag({ tagName: 'select', id: this.id + '-datasetSort',
                     name: 'datasetSort' });
-                cObj.$datasetSection.append(this.$dropdown);
+                cObj.$datasetSection.append(this.$dsDropdown);
             }
             if (!$.isBlank($.uniform))
-            { this.$dropdown.uniform(); }
+            { this.$dsDropdown.uniform(); }
 
-            this.$dropdown.on('change', function() { _.defer(function() { handleChange(cObj); }); });
+            this.$dsDropdown.on('change', function() { _.defer(function() { handleChange(cObj); }); });
         }
 
         if ($.isBlank(cObj.$sortLinks))
@@ -77,6 +117,11 @@ $.component.Component.extend('Sort', 'none', {//'input', {
         }
     },
 
+    _getAssets: function()
+    {
+        return { translations: ['controls.browse'] };
+    },
+
     _render: function()
     {
         if (!this._super.apply(this, arguments)) { return false; }
@@ -98,6 +143,7 @@ var renderUpdate = function()
     var cObj = this;
     if (!cObj._initialized) { return; }
 
+    cObj.$dsListSection.addClass('hide');
     cObj.$datasetSection.addClass('hide');
     cObj.$sortDir.addClass('hide');
     cObj.$sortClear.addClass('hide');
@@ -116,7 +162,7 @@ var renderUpdate = function()
 
         cObj.$datasetSection.removeClass('hide');
         cObj.$sortLinks.addClass('dataset');
-        cObj.$dropdown.empty();
+        cObj.$dsDropdown.empty();
         var curSort = _.first(ds.query.orderBys || []) || {expression: {}};
         var foundCur = false;
         var selVal = '';
@@ -133,7 +179,7 @@ var renderUpdate = function()
 
             var sel = curSort.expression.columnId == c.id;
             foundCur = foundCur || sel;
-            cObj.$dropdown.append($.tag({ tagName: 'option', value: c.fieldName,
+            cObj.$dsDropdown.append($.tag({ tagName: 'option', value: c.fieldName,
                 selected: sel, contents: $.htmlEscape(c.name) }));
             if (sel)
             {
@@ -143,13 +189,13 @@ var renderUpdate = function()
                 selVal = c.fieldName;
             }
         });
-        cObj.$dropdown.prepend($.tag({ tagName: 'option', value: '', 'class': 'prompt',
+        cObj.$dsDropdown.prepend($.tag({ tagName: 'option', value: '', 'class': 'prompt',
             selected: !foundCur, contents: '(Unsorted)' }));
         // Force the selected value for IE8-
-        cObj.$dropdown.value(selVal);
+        cObj.$dsDropdown.value(selVal);
 
         if ($.subKeyDefined($, 'uniform.update'))
-        { $.uniform.update(cObj.$dropdown); }
+        { $.uniform.update(cObj.$dsDropdown); }
     }
 
     else if (cObj._dataContext.type == 'column')
@@ -173,16 +219,66 @@ var renderUpdate = function()
         cObj.$sortClear.toggleClass('hide', $.isBlank(col.sortAscending))
             .attr('title', 'Clear sort for ' + $.htmlEscape(col.name));
     }
+
+    else if (cObj._dataContext.type == 'datasetList')
+    {
+        // Add these here since we need to make sure translations are loaded first
+        if (cObj.$dsListDropdown.children().length < 1)
+        {
+            cObj.$dsListDropdown.append($.tag2(
+                _.map(['relevance', 'most_accessed', 'alpha',
+                    'newest', 'oldest', 'last_modified', 'rating', 'comments'], function(opt)
+                    {
+                        return { _: 'option', value: opt, contents: $.t('controls.browse.sorts.' + opt) };
+                    })));
+        }
+        if (cObj.$dsListPeriodDropdown.children().length < 1)
+        {
+            cObj.$dsListPeriodDropdown.append($.tag2(
+                _.map(['week', 'month', 'year'], function(opt)
+                    {
+                        return { _: 'option', value: (opt + 'ly').toUpperCase(),
+                            contents: $.t('controls.browse.sort_periods.' + opt) };
+                    })));
+        }
+        cObj.$dsListDropdown.value((cObj._dataContext.config.search || {}).sortBy ||
+                cObj.$dsListDropdown.children(':first').value());
+        cObj.$dsListPeriodDropdown.value((cObj._dataContext.config.search || {}).sortPeriod ||
+                cObj.$dsListPeriodDropdown.children(':first').value());
+        cObj.$dsListPeriodDropdown.closest('.uniform').andSelf()
+            .toggleClass('hide', cObj.$dsListDropdown.value() != 'most_accessed');
+
+        cObj.$dsListSection.removeClass('hide');
+
+        if ($.subKeyDefined($, 'uniform.update'))
+        {
+            $.uniform.update(cObj.$dsListDropdown);
+            $.uniform.update(cObj.$dsListPeriodDropdown);
+        }
+    }
 };
 
 var handleChange = function(cObj)
 {
     if ($.subKeyDefined(cObj, '_dataContext.dataset'))
     {
-        var cfn = cObj.$dropdown.value();
+        var cfn = cObj.$dsDropdown.value();
         cObj._dataContext.dataset.simpleSort(cfn, true);
         cObj.$sortDir.toggleClass('hide', $.isBlank(cfn)).removeClass('sortDesc sortAscLight')
             .addClass('sortAsc');
+    }
+    else if (cObj._dataContext.type == 'datasetList')
+    {
+        var c = $.extend(true, {}, cObj._dataContext.config);
+        c.search = c.search || {};
+        c.search.sortBy = cObj.$dsListDropdown.value();
+        if (c.search.sortBy == 'most_accessed')
+        { c.search.sortPeriod = cObj.$dsListPeriodDropdown.value(); }
+        else
+        { delete c.search.sortPeriod; }
+        cObj._dataContext.updateConfig(c);
+        // Re-render to show/hide the sortPeriod
+        renderUpdate.apply(cObj);
     }
 };
 
@@ -195,7 +291,7 @@ var handleSortDir = function(cObj)
     var ds;
     if ($.subKeyDefined(cObj, '_dataContext.dataset'))
     {
-        cfn = cObj.$dropdown.value();
+        cfn = cObj.$dsDropdown.value();
         ds = cObj._dataContext.dataset;
     }
     else if ($.subKeyDefined(cObj, '_dataContext.column'))

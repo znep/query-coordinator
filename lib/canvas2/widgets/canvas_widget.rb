@@ -1,6 +1,7 @@
 module Canvas2
   class CanvasWidget
     include Rails.application.routes.url_helpers
+    include ActionView::Helpers::TranslationHelper
 
     attr_accessor :id, :parent, :server_properties
     attr_reader :properties, :resolver_context

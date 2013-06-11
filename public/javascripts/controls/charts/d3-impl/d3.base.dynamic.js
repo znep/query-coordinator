@@ -60,7 +60,8 @@ $.Control.registerMixin('d3_base_dynamic', {
 
         vizObj._currentRenderRange = renderRange; // keep track of what row set we care about at the moment
 
-        vizObj._currentRangeData = {}; // aggregate all the callbacks we get for this range into one array
+        vizObj._currentRangeData = vizObj._currentRangeData || [];
+        vizObj._currentRangeData.length = 0; //Clear the array.
 
         view.getRows(renderRange.start, renderRange.length, function(data)
         {
@@ -106,6 +107,33 @@ $.Control.registerMixin('d3_base_dynamic', {
         });
     },
 
+    _sortedSetInsert: function(dest, src)
+    {
+        if (src.length > 0)
+        {
+            var insertIndex = _.sortedIndex(dest, src[0], function(a) { return a.index; });
+            var srcIndex = 0;
+
+            while(srcIndex < src.length)
+            {
+                if (dest.length <= insertIndex || dest[insertIndex].index > src[srcIndex].index)
+                {
+                    dest.splice(insertIndex, 0, src[srcIndex]);
+                    srcIndex ++;
+                }
+                else
+                {
+                    if (dest[insertIndex].index == src[srcIndex].index)
+                    {
+                        srcIndex ++;
+                    }
+                    insertIndex ++;
+                }
+            };
+        }
+        return dest;
+    },
+
     handleRowsLoaded: function(data, view)
     {
         // handleRowsLoaded gets some weird call abuse with random subsections
@@ -113,12 +141,7 @@ $.Control.registerMixin('d3_base_dynamic', {
         // full visible set where appropriate
         var vizObj = this;
 
-        _.each(data, function(row)
-        {
-            vizObj._currentRangeData[row.id] = row;
-        });
-
-        vizObj._super(_.values(vizObj._currentRangeData), view);
+        vizObj._super(vizObj._sortedSetInsert(vizObj._currentRangeData, data), view);
     },
 
     handleRowsRemoved: function(data, view)
@@ -126,26 +149,20 @@ $.Control.registerMixin('d3_base_dynamic', {
         var vizObj = this;
 
         vizObj._super.apply(vizObj, arguments);
-        vizObj.renderData(_.values(vizObj._currentRangeData), view);
+        vizObj.renderData(vizObj._currentRangeData, view);
     },
 
-    getRenderRange: function(view)
-    {
-        // implement me to indicate what the range of rows should be
-        // that's rendered. should call back with { start: #, length: # }.
-        console.error('implement me!');
-    },
+    // implement me to indicate what the range of rows should be
+    // that's rendered. should call back with { start: #, length: # }.
+    getRenderRange: this.Model.pureVirtual,
 
-    renderData: function(data)
-    {
-        // we definitely don't want to use the default renderer because
-        // it doesn't account for batches and such.
-        console.error('implement me!');
-    },
+    // we definitely don't want to use the default renderer because
+    // it doesn't account for batches and such.
+    renderData: this.Model.pureVirtual,
 
     removeRow: function(row, view)
     {
-        delete this._currentRangeData[row.id];
+        this._currentRangeData.splice(row.index, 1);
     },
 
     handleRowCountChange: function()

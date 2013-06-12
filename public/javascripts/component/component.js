@@ -1188,7 +1188,9 @@
         Component: Component,
 
         rootPropertyResolver: function(name) {
-            if (name.charAt(0) == '?')
+            if (name.charAt(0) == '@')
+            { return $.locale(name.substring(1)); }
+            else if (name.charAt(0) == '?')
             {
                 if ($.isBlank(queryParams))
                 {

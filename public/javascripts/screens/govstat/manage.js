@@ -30,34 +30,20 @@ $(function()
         if (confirm('Are you sure you want to remove this report?'))
         {
             $.globalIndicator.statusWorking();
-            var callback = _.after(2, function()
-            {
-                $.globalIndicator.statusFinished();
-                $a.closest('.singleItem').remove();
+            $.socrataServer.makeRequest({
+                type: 'POST', url: '/api/id/pages',
+                data: JSON.stringify([{ path: $a.data('id'), ':deleted': true }]),
+                // If Apache were properly set up, we could use a real delete
+                // At the moment, that doesn't work
+                //type: 'DELETE',
+                //url: '/api/id/pages/' + encodeURIComponent($a.data('id')) + '.json',
+                error: $.globalIndicator.statusError,
+                success: function()
+                {
+                    $.globalIndicator.statusFinished();
+                    $a.closest('.singleItem').remove();
+                }
             });
-
-            // Have to delete from both new and old service :/
-            if (!$.isBlank($a.data('id')))
-            {
-                $.socrataServer.makeRequest({
-                    type: 'DELETE', url: '/api/pages/' + $a.data('id') + '.json',
-                    error: $.globalIndicator.statusError,
-                    success: callback
-                });
-            }
-            else
-            { callback(); }
-            if (!$.isBlank($a.data('oldid')))
-            {
-                $.socrataServer.makeRequest({
-                    type: 'POST', url: '/api/id/pages',
-                    data: JSON.stringify([{ path: $a.data('oldid'), ':deleted': true }]),
-                    error: $.globalIndicator.statusError,
-                    success: callback
-                });
-            }
-            else
-            { callback(); }
         }
     });
 

@@ -82,6 +82,15 @@ class GovstatController < ApplicationController
 
   def manage_reports
     @own_reports, @other_reports = get_reports
+    # So report names can be localized
+    Canvas2::Util.set_env({
+      domain: CurrentDomain.cname,
+      renderTime: Time.now.to_i,
+      siteTheme: CurrentDomain.theme,
+      currentUser: current_user ? current_user.id : nil,
+      current_locale: I18n.locale,
+      available_locales: request.env['socrata.available_locales']
+    })
   end
 
   def manage_config
@@ -130,29 +139,19 @@ protected
   end
 
   def get_reports
-    # So report names can be localized
-    Canvas2::Util.set_env({
-      domain: CurrentDomain.cname,
-      renderTime: Time.now.to_i,
-      siteTheme: CurrentDomain.theme,
-      currentUser: current_user ? current_user.id : nil,
-      current_locale: I18n.locale,
-      available_locales: request.env['socrata.available_locales']
-    })
-
     begin
-      reports = Page.find('$order' => ':updated_at desc', 'status' => 'all',
+      reports = Page.find('$order' => ':updated_at desc',
         '$select' => 'name,path,content,metadata,owner,:updated_at')
     rescue Exception => e
       # In case Pages doesn't have the owner column, fall-back to the safe items
-      reports = Page.find('$order' => ':updated_at desc', 'status' => 'all',
+      reports = Page.find('$order' => ':updated_at desc',
         '$select' => 'name,path,content,metadata,:updated_at')
     end
     own_reports = []
     other_reports = []
     reports.each do |r|
-      next if r.format == 'export' || r.path.include?('/:')
-      if r.owner_id == current_user.id
+      next if r.page_type == 'export' || r.path.include?('/:')
+      if r.owner == current_user.id
         own_reports.push(r)
       else
         other_reports.push(r)

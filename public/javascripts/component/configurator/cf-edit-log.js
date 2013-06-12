@@ -13,7 +13,7 @@
     }
 
     function notifyAll() {
-        $.cf.edit.dirty = !!done.length;
+        $.cf.edit.dirty = !!done.length || ($.locale && $.locale.isDirty());
         _.each(listeners, notifyListener);
     }
 
@@ -163,6 +163,8 @@
         reset: function() {
             done = [];
             undone = [];
+            if ($.locale)
+                $.locale.reset();
             notifyAll();
         },
 

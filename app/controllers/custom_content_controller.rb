@@ -124,6 +124,8 @@ class CustomContentController < ApplicationController
     @edit_mode = params['_edit_mode'] == 'true' && CurrentDomain.user_can?(current_user, :edit_pages)
     @start_time = Time.now
 
+    pages_time = VersionAuthority.resource('pages')
+
     page_ext = (params[:ext] || '').downcase
     path = full_path = '/' + (params[:path] || '')
     if !page_ext.blank?
@@ -135,54 +137,13 @@ class CustomContentController < ApplicationController
       request.format = page_ext.to_sym if !page_ext.blank? && !@debug && !@edit_mode
     end
 
-    ####### FETCH PAGE ########
-    Canvas2::DataContext.reset
-    Canvas2::Util.reset
-    Canvas2::Util.set_params(params)
-    Canvas2::Util.set_debug(@debug || @edit_mode)
-    Canvas2::Util.set_no_cache(false)
-    Canvas2::Util.set_path(full_path)
-    # Set without user before we load pages
-    Canvas2::Util.set_env({
-      domain: CurrentDomain.cname,
-      renderTime: Time.now.to_i,
-      path: full_path,
-      siteTheme: CurrentDomain.theme,
-      current_locale: I18n.locale,
-      available_locales: request.env['socrata.available_locales']
-    })
-    if CurrentDomain.module_available?('canvas2')
-      if @page_override.nil?
-        @page, @vars = Page[path, page_ext]
-      else
-        @page = @page_override
-        @vars = {}
-      end
-
-    end
-
-    unless @page
-      if full_path == '/'
-        if CurrentDomain.module_enabled?(:govStat)
-          govstat_homepage
-        else
-          homepage
-        end
-      else
-        render_404
-      end
-      return true
-    end
-    ######### END #########
-
-    ######## CACHING #########
     domain_id = CurrentDomain.domain.id.to_s
     internal_metric_entity = domain_id + "-intern"
     MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + "-intern", "ds-total", 1)
 
     cache_params = { 'domain' => CurrentDomain.cname,
                      'locale' => I18n.locale,
-                     'page_updated' => VersionAuthority.page_mtime(@page.uid),
+                     'pages_updated' => pages_time,
                      'domain_updated' => CurrentDomain.default_config_updated_at,
                      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
 
@@ -195,7 +156,7 @@ class CustomContentController < ApplicationController
     cache_key_user = app_helper.cache_key("canvas2-page", cache_params.merge({
                    'current_user' => cache_user_id}))
     ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
-
+    #
     # Slate Page Caching
     # Anonymous/Logged Out OR Logged In w/ Shared Data:
     #   read manifest for ANONYMOUS_USER; read global fragment cache; 304s valid
@@ -241,7 +202,6 @@ class CustomContentController < ApplicationController
       render :template => "custom_content/error_page", :layout => 'main', :status => code.to_i
       return true
     end
-    ######### END ############
 
     @minimal_render = params['no_render'] == 'true'
 
@@ -254,9 +214,42 @@ class CustomContentController < ApplicationController
     if @cached_fragment.nil?
       Rails.logger.info("Performing full render")
       MetricQueue.instance.push_metric(internal_metric_entity , "ds-full-render", 1)
+      Canvas2::DataContext.reset
+      Canvas2::Util.reset
+      Canvas2::Util.set_params(params)
+      Canvas2::Util.set_debug(@debug || @edit_mode)
+      Canvas2::Util.set_no_cache(false)
+      Canvas2::Util.set_path(full_path)
+      # Set without user before we load pages
+      Canvas2::Util.set_env({
+        domain: CurrentDomain.cname,
+        renderTime: Time.now.to_i,
+        path: full_path,
+        siteTheme: CurrentDomain.theme,
+        current_locale: I18n.locale,
+        available_locales: request.env['socrata.available_locales']
+      })
+      if CurrentDomain.module_available?('canvas2')
+        if @page_override.nil?
+          @page, @vars = Page[path, page_ext]
+        else
+          @page = @page_override
+          @vars = {}
+        end
 
-      ########### RENDER ########
-      if @page
+      end
+      unless @page
+        @meta = @custom_meta
+        if full_path == '/'
+          if CurrentDomain.module_enabled?(:govStat)
+            govstat_homepage
+          else
+            homepage
+          end
+        else
+          render_404
+        end
+      else
         Canvas2::Util.set_env({
           domain: CurrentDomain.cname,
           renderTime: Time.now.to_i,
@@ -304,7 +297,6 @@ class CustomContentController < ApplicationController
           manifest_user = user_tristate(Canvas2::Util.is_private, @current_user)
           if lookup_manifest.nil?
             manifest.max_age = @page.max_age
-            manifest.add_resource('pageUid-' + @page.uid,Time.now.to_i) if !@page.uid.nil?
             manifest.set_access_level(manifest_user)
             VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
           end
@@ -334,9 +326,6 @@ class CustomContentController < ApplicationController
           end
         end
       end
-      ########## END ########
-
-      ########### RENDER CACHE #########
     else
       # When we're rendering a cached item, force it to use the page action,
       # since we may have manipulated the action name to be homepage, and there
@@ -350,7 +339,6 @@ class CustomContentController < ApplicationController
         format.any { render :action => 'page' }
       end
     end
-    ######### END #######
   end
 
   before_filter :only => [:template] { |c| c.require_right(:create_pages) }

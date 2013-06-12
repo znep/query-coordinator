@@ -1,14 +1,5 @@
 class Page < Model
-  def self.find( options = nil, custom_headers = {}, batch = nil, is_anon = false )
-    if options.nil?
-      options = Hash.new
-    end
-    if options.is_a? String
-      path = "/pages/#{options}.json"
-      page = parse(CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon))
-      return page
-    end
-
+  def self.find( options = {}, custom_headers = {}, batch = nil, is_anon = false )
     # Fetch real service
     base_path = "/pages.json"
     svc_path = base_path
@@ -161,23 +152,7 @@ class Page < Model
     end
 
     ds = pages_data if ds.blank?
-    results = get_item(ds, path, ext)
-    # look up to see if modified
-    page = results[0]
-    return results if page.nil? || page.uid.nil?
-
-    if (VersionAuthority.page_mtime(page.uid).to_i / 1000) > page.updatedAt
-      page = find(page.uid)
-      # Update cache if it exists
-      cache_key = generate_cache_key
-      ds = Rails.cache.read(cache_key)
-      if !ds.nil?
-        add_page(page, ds, true)
-        Rails.cache.write(cache_key, ds)
-      end
-      results[0] = page
-    end
-    results
+    get_item(ds, path, ext)
   end
 
   def self.parse(data)
@@ -204,8 +179,7 @@ class Page < Model
 
 private
   def self.cache_time
-    [(VersionAuthority.paths_mtime.to_i / 1000).to_s || Time.now.to_i.to_s,
-      VersionAuthority.resource('pages') || Time.now.to_i.to_s].max
+    mtime = VersionAuthority.resource('pages') || Time.now.to_i.to_s
   end
 
   def self.pages_data()
@@ -214,15 +188,13 @@ private
 
     if ds.nil?
       ds = {}
-      VersionAuthority.set_paths_mtime((Time.now.to_i * 1000).to_s)
       find(:status => :published).each { |c| add_page(c, ds) }
-      cache_key = generate_cache_key
       Rails.cache.write(cache_key, ds)
     end
     return ds
   end
 
-  def self.add_page(item, cache_obj, is_update = false)
+  def self.add_page(item, cache_obj)
     cur_obj = cache_obj
     item.path.split('/').each do |part|
       part = ':var' if part.starts_with?(':')
@@ -230,7 +202,7 @@ private
       cur_obj = cur_obj[part]
     end
     key = ':' + item.format
-    if cur_obj.has_key?(key) && !is_update
+    if cur_obj.has_key?(key)
       Rails.logger.error "***************** Routing collision! #{item.path}"
       # Shouldn't overload our messaging since it only happens when the
       # paths are regenerated, which shouldn't be too often
@@ -266,7 +238,7 @@ private
     end
     # Currently has an extension iff it is export
     key = ext == 'csv' || ext == 'xlsx' ? ':export' : ':web'
-    [cur_obj[key], vars]
+    return [cur_obj[key], vars]
   end
 
   def self.generate_cache_key

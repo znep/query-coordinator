@@ -159,9 +159,9 @@ d3base.seriesGrouping = {
             fixedColumn = sg.fixedColumn;
 
         // figure out our categories and make virtual row index lookups for them.
-        _.each(sg.categoryGroupedRows, function(row)
+        _.each(_.sortBy(sg.categoryGroupedRows, 'position'), function(row, index)
         {
-            sg.categoryIndexLookup[row[fixedColumn.lookup]] = row.index;
+            sg.categoryIndexLookup[row[fixedColumn.lookup]] = index;
         });
         sg.totalVirtualRows = _.size(sg.categoryIndexLookup);
 

@@ -15,7 +15,8 @@
     };
 
     if (blist.configuration.newChartsEnabled ||
-        $.urlParam(window.location.href, 'charts') == 'nextgen')
+        $.urlParam(window.location.href, 'charts') == 'nextgen' ||
+        $.deepGet(blist.dataset, 'displayFormat', 'nextgen') === true)
     {
         $.extend(chartMapping, {
             'column': 'd3_impl_bar',
@@ -26,6 +27,19 @@
             'stackedcolumn': 'd3_impl_bar'
         });
     }
+
+    var nextgenMapper = {
+        'newBarChart': function() { $.extend(chartMapping, {
+            'column': 'd3_impl_bar',
+            'bar': 'd3_impl_bar'
+            }); },
+        'newLineChart': function() { $.extend(chartMapping, {
+            'line': 'd3_impl_line',
+            'area': 'd3_impl_line'
+            }); }
+    };
+    _.each(blist.configuration.newCharts, function(enabled, chartType)
+    { enabled && nextgenMapper[chartType] && nextgenMapper[chartType](); });
 
     $.Control.extend('socrataChart', {
         _init: function()

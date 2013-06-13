@@ -364,6 +364,11 @@
     blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) == true %>;
     blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
 
+    blist.configuration.newCharts = {};
+    <%- [:newBarChart, :newLineChart].each do |aModule| -%>
+    blist.configuration.newCharts.<%= aModule %> = <%= module_enabled?(aModule) %>
+    <%- end -%>
+
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
 

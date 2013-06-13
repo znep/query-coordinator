@@ -205,6 +205,8 @@
         };
     };
 
+    var labelInBar = { text: $.t('screens.ds.grid_sidebar.chart.labelInBar'), type: 'checkbox', name: 'displayFormat.xAxis.labelInBar' };
+
 
     /*** Helpers ***/
 
@@ -463,7 +465,7 @@
                     advLegend(chart, options),
                     errorBars(chart, options),
                     basicAdv(chart, options,
-                        [legendPos, renderOther, flyoutControls(options)]));
+                        [legendPos, renderOther, labelInBar, flyoutControls(options)]));
                 break;
 
 
@@ -492,7 +494,7 @@
                     domainMarker(chart, options),
                     advLegend(chart, options),
                     basicAdv(chart, options,
-                        [legendPos, renderOther, flyoutControls(options)]));
+                        [legendPos, renderOther, labelInBar, flyoutControls(options)]));
                 break;
 
 

@@ -666,6 +666,7 @@ en:
           annotation: Annotation
           smooth_line: Smooth Line
           details: Details
+          labelInBar: Label in Bar
         api:
           title: API
           subtitle: Access this %{view_type} via SODA
@@ -1413,6 +1414,7 @@ it:
           annotation: Annotazione
           smooth_line: Linea regolare
           details: Dettagli
+          labelInBar: Etichette nella Barra
         api:
           title: API
           subtitle: Accedi questo %{view_type} tramite SODA
@@ -2244,6 +2246,7 @@ es:
           annotation: Nota
           smooth_line: Línea suave
           details: Detalles
+          labelInBar: Marbete en la barra
         api:
           title: API
           subtitle: Acceder a %{view_type} vía SODA
@@ -3127,6 +3130,7 @@ fr:
           annotation: Annotation
           smooth_line: Ligne lissée
           details: Renseignements détaillés
+          labelInBar: Marque en Bâtons
         api:
           title: API
           subtitle: Accéder à cette %{view_type} par le biais de SODA
@@ -3921,6 +3925,7 @@ zh:
           annotation: 注释
           smooth_line: 平滑线
           details: 详情
+          labelInBar: 在酒吧的标签
         api:
           title: API
           subtitle: 通过SODA访问%{view_type}

@@ -924,6 +924,40 @@ chartObj.resizeHandle();
         }
     },
 
+    _renderRowLabels: function(data)
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig,
+            view = vizObj._primaryView;
+
+        // render our labels per row
+        // baseline closer to the row's center
+        var rowLabels = cc.chartD3.selectAll('.rowLabel')
+            .data(data, function(row) { return row.id; });
+        rowLabels
+            .enter().append('text')
+                .classed('rowLabel', true)
+                .attr({ x: 0,
+                        y: 0,
+                        'text-anchor': cc.orientation == 'right' ? 'start' : 'end',
+                        'font-size': 13 });
+        rowLabels
+                // TODO: make a transform-builder rather than doing this concat
+                .attr('transform', vizObj._labelTransform())
+                .attr('font-weight', function(d)
+                        { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
+                .text(function(d)
+                {
+                    var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
+                    // render plaintext representation of the data
+                    return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                });
+        rowLabels
+            .exit()
+            .transition()
+                .remove();
+    },
+
     _labelTransform: function()
     {
         var vizObj = this,

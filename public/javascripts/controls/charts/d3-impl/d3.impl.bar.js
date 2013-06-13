@@ -564,32 +564,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     .remove();
         });
 
-        // render our labels per row
-        // baseline closer to the row's center
-        var rowLabels = cc.chartD3.selectAll('.rowLabel')
-            .data(data, function(row) { return row.id; });
-        rowLabels
-            .enter().append('text')
-                .classed('rowLabel', true)
-                .attr({ x: 0,
-                        y: 0,
-                        'text-anchor': cc.orientation == 'right' ? 'start' : 'end',
-                        'font-size': 13 });
-        rowLabels
-                // TODO: make a transform-builder rather than doing this concat
-                .attr('transform', vizObj._labelTransform())
-                .attr('font-weight', function(d)
-                        { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
-                .text(function(d)
-                {
-                    var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
-                    // render plaintext representation of the data
-                    return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
-                });
-        rowLabels
-            .exit()
-            .transition()
-                .remove();
+        vizObj._renderRowLabels(data);
 
         // render error markers if applicable
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
@@ -617,6 +592,114 @@ $.Control.registerMixin('d3_impl_bar', {
 
         // save off our yScale
         cc.yScale = newYScale;
+    },
+
+    _renderRowLabels: function(data)
+    {
+        if ($.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true)
+        {
+            this._super.apply(this, arguments);
+            return;
+        }
+
+        var vizObj = this,
+            cc = vizObj._chartConfig,
+            valueColumns = vizObj.getValueColumns(),
+            view = vizObj._primaryView;
+
+        _.each(valueColumns, function(colDef, seriesIndex)
+        {
+            // render our labels per row
+            // baseline closer to the row's center
+            var rowLabels = cc.chartHtmlD3.selectAll('.rowLabel')
+                .data(data, function(row) { return row.id; });
+            rowLabels
+                .enter().append('div')
+                    .classed('rowLabel', true)
+            rowLabels
+                    .style('font-weight', function(d)
+                            { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
+                    .text(function(d)
+                    {
+                        var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
+                        // render plaintext representation of the data
+                        return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                    })
+                    .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition(seriesIndex))
+                    .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition())
+                    .style('color', vizObj._rowLabelColor(colDef));
+            rowLabels
+                .exit()
+                .transition()
+                    .remove();
+        });
+    },
+
+    _yAxisPos: function()
+    {
+        if ($.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true)
+        { return this._super.apply(this, arguments); }
+        return this._chartConfig.dataDim.pluckY(0, this._chartConfig.chartHeight);
+    },
+
+    _xRowLabelPosition: function(seriesIndex)
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+
+        var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2) -
+                                   cc.drawElementPosition - cc.dataOffset - 6;
+
+        // Even number of DSGs, so bump it up to the nearest bar.
+        if (this._seriesGrouping && this.getValueColumns().length % 2 == 0)
+        { xPositionStaticParts -= cc.barWidth / 2; }
+
+        return function(d)
+        {
+            if (cc.orientation == 'down')
+            { return xPositionStaticParts + (d.index * cc.rowWidth) + 'px'; }
+            else (cc.orientation == 'right')
+            { return xPositionStaticParts + (d.index * cc.rowWidth) - 12.5 + 'px'; }
+        };
+    },
+
+    _yRowLabelPosition: function()
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+
+        var yAxisPos = vizObj._yAxisPos();
+
+        return function(d)
+        {
+            if (cc.orientation == 'down')
+            { return yAxisPos + 5 + 'px'; }
+            else
+            { return yAxisPos - $(this).width() + 'px'; }
+        };
+    },
+
+    _rowLabelColor: function(colDef)
+    {
+        var barColor,
+            valueColumns = this.getValueColumns();
+
+        // Take the actual color of the background row.
+        if (this._seriesGrouping)
+        {
+            var valueColumns = this.getValueColumns(),
+                numCols = valueColumns.length;
+            colDef = numCols % 2 == 0 ? valueColumns[numCols / 2 - 1]
+                                      : valueColumns[numCols / 2 - 0.5];
+            barColor = this._d3_colorizeRow(colDef);
+        }
+        else
+        { barColor = this._d3_colorizeRow(colDef); }
+
+        return function(d)
+        {
+            return $.rgbToHsv($.hexToRgb(barColor(d))).v < 60 ? '#ccc' : '#333';
+        };
     },
 
     // call this if the yAxisPos has changed

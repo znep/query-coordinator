@@ -192,6 +192,8 @@
 .chartArea.columnChart, .chartArea.barChart.orientationRight
 
   // Label positioning.
+  .rowLabel
+    @include prefixer(transform, rotate(-90deg))
 
   // Anything other than bottom legend, including no legend.
   .xLabelHoriz
@@ -413,4 +415,6 @@
       top: 1px
       height: 1.2em
 
-
+.barChart .rowLabel
+  position: absolute
+  font-size: 13px

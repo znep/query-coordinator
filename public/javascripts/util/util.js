@@ -447,6 +447,9 @@ $.objectify = function(obj, key)
     return obj;
 };
 
+$.numericalSanitize = function(str)
+{ return str.replace(/[^0-9\.\+\-]/, ''); };
+
 $.arrayToObjKeys = function(arr, v)
 {
     var obj = {};

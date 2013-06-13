@@ -56,7 +56,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
                      max: parseFloat($.deepGet(vizObj, '_displayFormat', 'yAxis', 'max')) };
 
         // The '|| 0' is safe for _currentYScale. Double check before re-use.
-        var valueMarkers = _.map(_.pluck(vizObj._displayFormat.valueMarker, 'atValue'), parseFloat);
+        var valueMarkers = _.map(_.map(_.pluck(vizObj._displayFormat.valueMarker, 'atValue'),
+            $.numericalSanitize), parseFloat);
         cc.valueMarkerLimits = { min: d3.min(valueMarkers) || 0,
                                  max: d3.max(valueMarkers) || 0 };
 
@@ -867,8 +868,17 @@ chartObj.resizeHandle();
             function(yScale)
             { return function(d) { return (yAxisPos - yScale(parseFloat(d.atValue))) + 'px'; } });
 
+        var cleanValueMarkers = _.compact(_.map(vizObj._displayFormat.valueMarker, function(marker) {
+            if (_.isNumber(marker.atValue))
+            { return marker; }
+            else if (_.isString(marker.atValue))
+            { return $.extend(marker, { atValue: $.numericalSanitize(marker.atValue) }); }
+            else
+            { return null; }
+        }));
+
         var valueMarkers = cc.chromeD3.selectAll('.valueMarkerContainer')
-            .data(vizObj._displayFormat.valueMarker);
+            .data(cleanValueMarkers);
 
         valueMarkers
             .enter().append('div')

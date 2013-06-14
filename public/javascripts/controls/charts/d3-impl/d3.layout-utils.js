@@ -62,7 +62,10 @@ d3ns.slottedCircleLayout = function($)
             // Calculate pixel values from the layout.
             _.each(this.slotRegistry, function(datum)
             {
-                this._updateDatumPosition(datum, datum.slottedCircleLayout.slotIndex);
+                if (datum)
+                {
+                    this._updateDatumPosition(datum, datum.slottedCircleLayout.slotIndex);
+                }
             }, this);
         }
     };

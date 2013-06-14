@@ -23,24 +23,29 @@ $.Control.registerMixin('d3_base_legend', {
         vizObj._primaryView.bind('conditionalformatting_change', handleConditionalFormattingChange, vizObj);
     },
 
+    _getDefaultLegendDetails: function()
+    {
+        return { showSeries: true };
+    },
+
     _legendRequiresConditionalFormat: function()
     {
         var vizObj = this,
             legendPosition = vizObj.legendPosition(),
-            legendDetails = vizObj._displayFormat.legendDetails || { showSeries: true },
+            legendDetails = vizObj._displayFormat.legendDetails || vizObj._getDefaultLegendDetails(),
             $legendContainer = vizObj.$legendContainer();
 
         return (legendDetails.showConditional === true) &&
             _.isArray($.deepGet(vizObj._primaryView, 'metadata', 'conditionalFormatting'));
     },
 
-    renderLegend: function()
+    renderLegend: function(customValuesCallback)
     {
         if (!this.hasLegend()) return;
 
         var vizObj = this,
             legendPosition = vizObj.legendPosition(),
-            legendDetails = vizObj._displayFormat.legendDetails || { showSeries: true },
+            legendDetails = vizObj._displayFormat.legendDetails || vizObj._getDefaultLegendDetails(),
             $legendContainer = vizObj.$legendContainer();
 
         $legendContainer.empty();
@@ -55,6 +60,16 @@ $.Control.registerMixin('d3_base_legend', {
                 $legendContainer.append(vizObj._renderLegendLine({ color: vizObj._d3_getColor(colDef) }, colDef.column.name));
             });
         }
+
+        // then chart-specific values
+        if (customValuesCallback)
+        {
+            customValuesCallback(legendDetails, function(color, text)
+            {
+                $legendContainer.append(vizObj._renderLegendLine({ color: color }, text));
+            });
+        }
+
         // next render conditional formats if they were asked for
         if (vizObj._legendRequiresConditionalFormat())
         {

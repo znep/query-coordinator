@@ -422,18 +422,12 @@ $.Control.registerMixin('d3_impl_bar', {
                     // check for d because sometimes there's a race condition between unbind and remove
                     .on('mouseover', function(d)
                     {
-                        if (d && !cc._isDragging)
-                        {
-                            vizObj.handleMouseOver(this, colDef, d, vizObj._currentYScale());
-                        }
+                        var configs = vizObj._flyoutConfigurationOptions(d, colDef.column);
+                        vizObj.handleDataMouseOver(this, colDef.column, d, configs, !cc._isDragging);
                     })
                     .on('mouseout', function(d)
                     {
-                        // for perf, only call unhighlight if highlighted.
-                        if (d && !cc._isDragging && view.highlights && view.highlights[d.id])
-                        {
-                            vizObj.handleMouseOut(this, colDef, d, vizObj._currentYScale());
-                        }
+                        vizObj.handleDataMouseOut(this);
                     })
                     .on('click', function(d)
                     {

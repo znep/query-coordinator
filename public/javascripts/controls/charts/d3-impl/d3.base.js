@@ -133,6 +133,93 @@ $.Control.registerMixin('d3_base', {
                 return f.apply(this, arguments) + 'px';
             };
         }
+    },
+
+    _d3_line_path: function (x1, y1, x2, y2)
+    {
+        return 'M '+x1+' '+y1+' L '+x2+' '+y2+' z';
+    },
+
+    // Handles the mouse entering a datum visual (bar, point, etc).
+    // MUST always be called when the mouse enters, as this method
+    // does some internal bookkeeping that must be kept consistent at
+    // all times.
+    // If you want to prevent the main behavior of this method (=showing
+    // the flyout and highlighting rows), pass false for enableProcessing.
+    handleDataMouseOver: function(visual, col, row, flyoutConfigs, enableProcessing)
+    {
+        var vizObj = this,
+            view = vizObj._primaryView;
+
+        if (row && enableProcessing)
+        {
+            var configs = {
+                content: vizObj.renderFlyout(row, col.tableColumnId, view),
+                trigger: 'now'
+            };
+
+            $.extend(configs, flyoutConfigs);
+
+            visual.tip = $(visual.node).socrataTip(configs);
+
+
+            // We have to listen on mouse events for both the tip
+            // and the slice, as the tip isn't actually a child
+            // of the slice (if we didn't, w accidentally close
+            // the tip if the tip shows up under the mouse).
+            var mouseCount = 0;
+            var localMouseIn = function()
+            {
+                mouseCount ++;
+            };
+
+            var localMouseOut = function()
+            {
+                mouseCount --;
+
+                // This delay is here because there might be a
+                // mouse enter about to be raised.
+                _.delay(function()
+                {
+                    if (mouseCount == 0)
+                    {
+                        // for perf, only call unhighlight if highlighted.
+                        if (view.highlights && view.highlights[row.id])
+                        {
+                            view.unhighlightRows(row);
+                        }
+
+                        if (visual.tip)
+                        {
+                            visual.tip.destroy();
+                            delete visual.tip;
+                            delete visual.localMouseOut;
+                        }
+                    }
+                }, 150);
+            };
+
+            visual.localMouseOut = localMouseOut;
+
+            var $btWrapper = $(visual.tip._tipBox);
+
+            localMouseIn();
+            $btWrapper.hover(localMouseIn, localMouseOut);
+
+            view.highlightRows(row, null, col);
+        }
+    },
+
+    // Handles the mouse leaving a datum visual (bar, point, etc).
+    // MUST always be called when the mouse leaves, as this method
+    // does some internal bookkeeping that must be kept consistent at
+    // all times.
+    handleDataMouseOut: function(visual)
+    {
+        if (visual.localMouseOut)
+        {
+            visual.localMouseOut();
+        }
     }
 }, null, 'socrataChart');
 

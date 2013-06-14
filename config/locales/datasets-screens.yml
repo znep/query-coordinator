@@ -603,6 +603,7 @@ en:
               left: Left
               none: None
             series: Describe Series
+            values: Describe Values
             conditional_formats: Describe Conditional Formats
             value_markers: Describe Value Markers
             new_custom_entry_button: Add Custom Legend Entry
@@ -1350,6 +1351,7 @@ it:
               right: A destra
               left: A sinistra
               none: Nessuna
+            values: Descrivi valori
             series: Descrivi le serie
             conditional_formats: Descrivi Formati Condizionali
             value_markers: Descrivi i valori dei marker
@@ -2172,6 +2174,7 @@ es:
               left: Izquierda
               none: Ninguna
             series: Describir series
+            values: Describir valores
             conditional_formats: Describir formatos condicionales
             value_markers: Describir marcadores de valores
             new_custom_entry_button: Añadir leyenda personalizada
@@ -3056,6 +3059,7 @@ fr:
               left: Gauche
               none: Néant
             series: Décrire la série
+            values: Décrire les valeurs
             conditional_formats: Décrire les mises en forme conditionnelles
             value_markers: Décrire les marqueurs de valeurs
             new_custom_entry_button: Ajouter un élément de légende personnalisé
@@ -3858,6 +3862,7 @@ zh:
               left: 左边
               none: 无
             series: 描述数据系列
+            values: 描述值
             conditional_formats: 条件格式的说明
             value_markers: 值标记的说明
             new_custom_entry_button: 添加自定义图例

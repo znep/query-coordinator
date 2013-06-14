@@ -6,7 +6,7 @@
     var isNextGen = blist.configuration.newChartsEnabled ||
         $.urlParam(window.location.href, 'charts') == 'nextgen';
 
-    var nextGenReady = ['bar', 'column'];
+    var nextGenReady = ['bar', 'column', 'pie', 'donut'];
 
     var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
 
@@ -62,22 +62,49 @@
     {
         advLegend = function(chart, options)
         {
-            return  {
-                title: $.t('screens.ds.grid_sidebar.chart.legend.title'),
-                type: 'selectable',
-                name: 'advLegend',
-                onlyIf: onlyIfForChart(chart, options, false),
-                fields: [
-                    $.extend({}, origLegendPos, { text: $.t('screens.ds.grid_sidebar.chart.legend.display') }),
+            var needsSeries = _.contains(['line', 'area', 'stackedbar', 'stackedcolumn', 'bar', 'column'], chart.value);
+            var needsValueMarkers = _.contains(['line', 'area', 'stackedbar', 'stackedcolumn', 'bar', 'column'], chart.value);
+            var needsValues = _.contains(['pie', 'donut'], chart.value);
+            var needsConditional = true;
+            var needsCustom = true;
+
+            var fields = [$.extend({}, origLegendPos, { text: $.t('screens.ds.grid_sidebar.chart.legend.display') })];
+
+            if (needsValues)
+            {
+                fields.push(
+                    { text: $.t('screens.ds.grid_sidebar.chart.legend.values'), type: 'checkbox', inputFirst: true,
+                      name: 'displayFormat.legendDetails.showValues', defaultValue: true,
+                      lineClass: 'advLegendCheck' });
+            }
+
+            if (needsSeries)
+            {
+                fields.push(
                     { text: $.t('screens.ds.grid_sidebar.chart.legend.series'), type: 'checkbox', inputFirst: true,
                       name: 'displayFormat.legendDetails.showSeries', defaultValue: true,
-                      lineClass: 'advLegendCheck' },
+                      lineClass: 'advLegendCheck' });
+            }
+
+            if (needsConditional)
+            {
+                fields.push(
                     { text: $.t('screens.ds.grid_sidebar.chart.legend.conditional_formats'), type: 'checkbox', inputFirst: true,
                       name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
-                      lineClass: 'advLegendCheck' },
+                      lineClass: 'advLegendCheck' });
+            }
+
+            if (needsValueMarkers)
+            {
+                fields.push(
                     { text: $.t('screens.ds.grid_sidebar.chart.legend.value_markers'), type: 'checkbox', inputFirst: true,
                       name: 'displayFormat.legendDetails.showValueMarkers', defaultValue: false,
-                      lineClass: 'advLegendCheck' },
+                      lineClass: 'advLegendCheck' });
+            }
+
+            if (needsCustom)
+            {
+                fields.push(
                     /*{ text: 'Custom Entries', type: 'selectable',
                       name: 'customLegendEntries', defaultValue: false, fields: [*/
                         { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: $.t('screens.ds.grid_sidebar.chart.legend.new_custom_entry_button'),
@@ -90,7 +117,15 @@
                               ]
                         } }
                     //] }
-                ]
+                    );
+            }
+
+            return  {
+                title: $.t('screens.ds.grid_sidebar.chart.legend.title'),
+                type: 'selectable',
+                name: 'advLegend',
+                onlyIf: onlyIfForChart(chart, options, false),
+                fields: fields
             };
         };
     }
@@ -502,6 +537,7 @@
             case 'donut':
                 result.push(
                     configDonut(options),
+                    advLegend(chart, options),
                     basicAdv(chart, options,
                         [legendPos, pieJoinAngle, flyoutControls(options), showPercentages, showActualValues]));
                 break;
@@ -528,6 +564,7 @@
             case 'pie':
                 result.push(
                     configPie(options),
+                    advLegend(chart, options),
                     basicAdv(chart, options,
                         [legendPos, pieJoinAngle, flyoutControls(options), showPercentages, showActualValues]));
                 break;

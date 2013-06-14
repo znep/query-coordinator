@@ -123,6 +123,7 @@
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,
+                        explicitPosition: sTipObj.settings.explicitPosition,
                         overlap: sTipObj.settings.overlap,
                         offsetParent: sTipObj.settings.parent,
                         killTitle: sTipObj.settings.killTitle,

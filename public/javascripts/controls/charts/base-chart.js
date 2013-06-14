@@ -24,7 +24,9 @@
             'line': 'd3_impl_line',
             'area': 'd3_impl_line',
             'stackedbar': 'd3_impl_bar',
-            'stackedcolumn': 'd3_impl_bar'
+            'stackedcolumn': 'd3_impl_bar',
+            'pie': 'd3_impl_pie',
+            'donut': 'd3_impl_pie'
         });
     }
 

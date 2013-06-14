@@ -396,6 +396,47 @@ jQuery.bt = {version: '0.9.5-rc1'};
         // each switch case is basically doing the same thing in slightly different ways
         switch(basePosition) {
 
+          // ================= EXPLICIT ====================
+          case 'explicit':
+            var explicitPos = opts.explicitPosition;
+            // spike on bottom
+            $text.css('margin-bottom', opts.spikeLength + 'px');
+            horiz = left + explicitPos[0] - textOutWidth/2;
+            $box.css({top: (explicitPos[1] + top - $text.outerHeight(true)) + opts.overlap, left: horiz});
+            // move text left/right if extends out of window
+            textRightSpace = (winRight - opts.windowMargin) - ($text.offset().left + $text.btOuterWidth(true));
+            var xShift = shadowShiftX;
+            if (textRightSpace < 0) {
+              // shift it left
+              $box.css('left', (numb($box.css('left')) + textRightSpace) + 'px');
+              xShift -= textRightSpace;
+            }
+            // we test left space second to ensure that left of box is visible
+            textLeftSpace = ($text.offset().left + numb($text.css('margin-left'))) - (scrollLeft + opts.windowMargin);
+            if (textLeftSpace < 0) {
+              // shift it right
+              $box.css('left', (numb($box.css('left')) - textLeftSpace) + 'px');
+              xShift += textLeftSpace;
+            }
+            textTop = $text.btPosition().top + numb($text.css('margin-top'));
+            textLeft = $text.btPosition().left + numb($text.css('margin-left'));
+            textRight = textLeft + $text.btOuterWidth();
+            textBottom = textTop + $text.outerHeight();
+            textCenter = {x: textLeft + ($text.btOuterWidth()*opts.centerPointX), y: textTop + ($text.outerHeight()*opts.centerPointY)};
+            // points[points.length] = {x: x, y: y};
+            points[points.length] = spikePoint = {y: textBottom + opts.spikeLength, x: ((textRight-textLeft) * .5) + xShift, type: 'spike'};
+            crossPoint = findIntersectX(spikePoint.x, spikePoint.y, textCenter.x, textCenter.y, textBottom);
+            // make sure that the crossPoint is not outside of text box boundaries
+            crossPoint.x = crossPoint.x < textLeft + opts.spikeGirth/2 + opts.cornerRadius ? textLeft + opts.spikeGirth/2 + opts.cornerRadius : crossPoint.x;
+            crossPoint.x =  crossPoint.x > (textRight - opts.spikeGirth/2) - opts.cornerRadius ? (textRight - opts.spikeGirth/2) - opts.CornerRadius : crossPoint.x;
+            points[points.length] = {x: crossPoint.x - (opts.spikeGirth/2), y: textBottom, type: 'join'};
+            points[points.length] = {x: textLeft, y: textBottom, type: 'corner'};  // left bottom corner
+            points[points.length] = {x: textLeft, y: textTop, type: 'corner'};     // left top corner
+            points[points.length] = {x: textRight, y: textTop, type: 'corner'};    // right top corner
+            points[points.length] = {x: textRight, y: textBottom, type: 'corner'}; // right bottom corner
+            points[points.length] = {x: crossPoint.x + (opts.spikeGirth/2), y: textBottom, type: 'join'};
+            points[points.length] = spikePoint;
+            break;
           // =================== TOP =======================
           case 'top':
             // spike on bottom

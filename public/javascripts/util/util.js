@@ -26,7 +26,7 @@ String.prototype.format = function()
 };
 
 /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
-String.prototype.visualLength = function(fontSize)
+String.prototype.visualSize = function(fontSize)
 {
     var $ruler = $('#ruler');
     if ($ruler.length < 1)
@@ -37,7 +37,12 @@ String.prototype.visualLength = function(fontSize)
     if (!fontSize) { fontSize = ''; }
     $ruler.css('font-size', fontSize);
     $ruler.text(this + '');
-    return $ruler.width();
+    return {width: $ruler.width(), height: $ruler.height()};
+};
+
+String.prototype.visualLength = function(fontSize)
+{
+    return this.visualSize(fontSize).width;
 };
 
 String.prototype.capitalize = function()
@@ -827,6 +832,17 @@ $.extract = function(obj, prop)
     _.each(obj, function(value, key)
     { result[key] = value[prop]; });
     return result;
+};
+
+$.assertThrowOnFail = true;
+$.assert = function(condition, message)
+{
+    if (!condition)
+    {
+        console.error("Assertion failed: " + message);
+        debugger;
+        if ($.assertThrowOnFail) { throw message; };
+    }
 };
 
 // gives you a faster jquery this on each iter

@@ -1037,13 +1037,9 @@ chartObj.resizeHandle();
         };
     },
 
-    handleMouseOver: function(rObj, colDef, row, yScale)
+    _flyoutConfigurationOptions: function(row, col)
     {
-        var vizObj = this,
-            view = vizObj._primaryView,
-            col = colDef.column,
-            cc = vizObj._chartConfig;
-
+        var cc = this._chartConfig;
         var lessThanZeroPositioning =
             cc.dataDim.pluckY(['top-left', 'bottom-left'],
                               ['bottom', 'top']);
@@ -1051,37 +1047,10 @@ chartObj.resizeHandle();
         var greaterThanZeroPositioning =
             cc.dataDim.pluckY(['top-right', 'bottom-right'],
                               ['top', 'bottom']);
-
-        rObj.tip = $(rObj.node).socrataTip(
-        {
-            content: vizObj.renderFlyout(row, col.tableColumnId, view),
+        return {
             positions: (row[col.lookup] > 0) ? greaterThanZeroPositioning : lessThanZeroPositioning,
-            trigger: 'now'
-        });
-
-        if ((blist.debug || {}).flyout)
-        {
-            console.log(yScale(row[col.lookup]));
-            window.footip = rObj.tip;
-            window.fooyscale = yScale;
-        }
-
-        view.highlightRows(row, null, col);
-    },
-
-    handleMouseOut: function(rObj, colDef, row, yScale)
-    {
-        var vizObj = this,
-            view = vizObj._primaryView;
-
-        view.unhighlightRows(row);
-        if (rObj.tip)
-        {
-            rObj.tip.destroy();
-            delete rObj.tip;
-        }
+        };
     }
-
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);
 
 })(jQuery);

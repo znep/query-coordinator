@@ -16,7 +16,7 @@
 
     if (blist.configuration.newChartsEnabled ||
         $.urlParam(window.location.href, 'charts') == 'nextgen' ||
-        $.deepGet(blist.dataset, 'displayFormat', 'nextgen') === true)
+        $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true)
     {
         $.extend(chartMapping, {
             'column': 'd3_impl_bar',

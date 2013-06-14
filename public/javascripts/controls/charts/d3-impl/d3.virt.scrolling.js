@@ -1048,7 +1048,7 @@ chartObj.resizeHandle();
             cc.dataDim.pluckY(['top-right', 'bottom-right'],
                               ['top', 'bottom']);
         return {
-            positions: (row[col.lookup] > 0) ? greaterThanZeroPositioning : lessThanZeroPositioning,
+            positions: (row[col.lookup] > 0) ? greaterThanZeroPositioning : lessThanZeroPositioning
         };
     }
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

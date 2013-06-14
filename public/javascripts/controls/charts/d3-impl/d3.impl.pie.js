@@ -1090,7 +1090,7 @@ $.Control.registerMixin('d3_impl_pie', {
                     configs =
                     {
                         positions: ['explicit'],
-                        explicitPosition: centroid,
+                        explicitPosition: centroid
                     };
                 }
 
@@ -1337,28 +1337,28 @@ $.Control.registerMixin('d3_impl_pie', {
         cc.$controlContainer.append($.tag({
                 tagName: 'a',
                 href: '#',
-                class: 'rotateCWButton',
+                'class': 'rotateCWButton',
                 contents: "(CW)"
             }));
 
         cc.$controlContainer.append($.tag({
                 tagName: 'a',
                 href: '#',
-                class: 'rotateCCWButton',
+                'class': 'rotateCCWButton',
                 contents: "(CCW)"
             }));
 
         cc.$controlContainer.append($.tag({
                 tagName: 'a',
                 href: '#',
-                class: 'zoomInButton',
+                'class': 'zoomInButton',
                 contents: "(+)"
             }));
 
         cc.$controlContainer.append($.tag({
                 tagName: 'a',
                 href: '#',
-                class: 'zoomOutButton',
+                'class': 'zoomOutButton',
                 contents: "(-)"
             }));
 

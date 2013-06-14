@@ -27,7 +27,7 @@ d3ns.slottedCircleLayout = function($)
         this.datumDesiredPosition = datumDesiredPosition;
 
         // Multiply by 2 because we have slots on either side of the circle.
-        this.slotCount = Math.floor(2 * layoutSize.height / slotHeight);
+        this.slotCount = 2 * Math.floor(layoutSize.height / slotHeight);
 
         this.slotRegistry = [];
 
@@ -56,7 +56,14 @@ d3ns.slottedCircleLayout = function($)
         }
         else
         {
+            // Build the layout.
             _.each(dataArray, this._insertDatum, this);
+
+            // Calculate pixel values from the layout.
+            _.each(this.slotRegistry, function(datum)
+            {
+                this._updateDatumPosition(datum, datum.slottedCircleLayout.slotIndex);
+            }, this);
         }
     };
 
@@ -97,7 +104,7 @@ d3ns.slottedCircleLayout = function($)
     // already there.
     constructor.prototype._placeDatumIntoSlot = function(datum, slot)
     {
-        this._updateDatumPosition(datum, slot);
+        datum.slottedCircleLayout.slotIndex = slot;
         this._setSlotDataForIndex(datum, slot);
     };
 

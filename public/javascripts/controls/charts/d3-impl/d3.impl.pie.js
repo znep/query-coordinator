@@ -192,7 +192,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
         vizObj._super();
 
-        vizObj._loaderIncrement = 5;
+        vizObj._loaderIncrement = 50;
 
         vizObj._startLoading(0);
 
@@ -282,18 +282,10 @@ $.Control.registerMixin('d3_impl_pie', {
         var topSlice = new vizObj.Slice(state.top, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
         var bottomSlice = new vizObj.Slice(state.bottom, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
 
-        // See where the top and bottom slices go.
-        //TODO don't calculate this if we're at the first or last row.
-        var slicesToTop = this._fillInSliceRange(topSlice, anchor);
-        var slicesToBottom = this._fillInSliceRange(bottomSlice, anchor);
-
-        var sliceMetricsTop = this._calculateSliceSetMetrics(slicesToTop, seriesInformation);
-        var sliceMetricsBottom = this._calculateSliceSetMetrics(slicesToBottom, seriesInformation);
-
         var slices = this._fillInSliceRange(cc.chartRenderSnapshot.firstSlice, cc.chartRenderSnapshot.lastSlice);
         var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
 
-        var pieSegments = this._buildPieLayout(slices, sliceMetrics, cc.chartRenderSnapshot.firstSlice, cc.chartRenderSnapshot.lastSlice, anchor, cc.chartRenderSnapshot.fillArea, seriesInformation);
+        var pieSegments = this._buildPieLayout(sliceMetrics, cc.chartRenderSnapshot.firstSlice, cc.chartRenderSnapshot.lastSlice, anchor, seriesInformation);
 
         var topAngle = pieSegments.startAngle();
         var bottomAngle = pieSegments.endAngle();
@@ -652,6 +644,26 @@ $.Control.registerMixin('d3_impl_pie', {
 
         vizObj.debugOut("render");
 
+        vizObj.debugOut("got "+data.length+" data rows");
+
+        if (data.length == 0)
+        {
+            return;
+        }
+
+        //TODO this is dumb look at first and last.
+        var maxIndex = _.last(data).index;
+        var minIndex = data[0].index;
+
+        var state = vizObj._loaderState;
+        if (state.top < minIndex || state.bottom > maxIndex)
+        {
+            vizObj.debugOut("We require more vespe... data.");
+            return;
+        }
+
+        vizObj.debugOut('Have enough data for render.');
+
         var aggs = _.reduce(valueColumns, function(memo, colDef)
         {
             memo[colDef.column.id] = ['sum'];
@@ -665,30 +677,13 @@ $.Control.registerMixin('d3_impl_pie', {
 
             var primaryColumn = vizObj._primaryValueColumn();
 
-            vizObj.debugOut("got "+data.length+" data rows");
-
-            var maxIndex = _.max(data, function(d){return d.index;}).index;
-            var minIndex = _.min(data, function(d){return d.index;}).index;
-
-            var state = vizObj._loaderState;
-            if (state.top < minIndex || state.bottom > maxIndex)
-            {
-                vizObj.debugOut("We require more vespe... data.");
-                return;
-            }
-
             state.top = Math.min(data[0].index, state.top);
             state.bottom = Math.max(data[data.length - 1].index, state.bottom);
 
-            var rowResolver = _.memoize(function(slice)
-                {
-                    var foundRow = _.find(data, function(value, i)
-                    {
-                        return value.index == slice.index;
-                    }, true);
-
-                    return foundRow;
-                }, function(slice) { return slice.index; });
+            var rowResolver = function(slice)
+            {
+                return data[slice.index - data[0].index];
+            };
 
             var valueResolver = function(col)
             {
@@ -711,7 +706,7 @@ $.Control.registerMixin('d3_impl_pie', {
                     }
                     else
                     {
-                        return parseFloat(val);
+                        return _.isUndefined(val) ? 0 : parseFloat(val);
                     }
                 };
             };
@@ -729,9 +724,9 @@ $.Control.registerMixin('d3_impl_pie', {
                 };
             };
 
-            var colorizer = _.memoize(_.bind(vizObj._d3_colorizeRow, vizObj));
             var colorResolver = function(colDef)
             {
+                var colColorizer = vizObj._d3_colorizeRow(colDef);
                 return function ()
                 {
                     if (vizObj.debugEnabled && anchorSlice.same(this))
@@ -741,7 +736,7 @@ $.Control.registerMixin('d3_impl_pie', {
                     }
                     else
                     {
-                        return colorizer(colDef)(data[this.index]);
+                        return colColorizer(data[this.index]);
                     }
                 }
             };
@@ -760,15 +755,16 @@ $.Control.registerMixin('d3_impl_pie', {
                 };
             });
 
-            var primaryValueResolver = seriesInformation[primaryColumn.column.lookup].valueResolver;
-            var primaryNameResolver = seriesInformation[primaryColumn.column.lookup].nameResolver;
-            var primaryColorResolver = seriesInformation[primaryColumn.column.lookup].colorResolver;
+            var primarySeriesInfo = seriesInformation[primaryColumn.column.lookup];
+            var primaryValueResolver = primarySeriesInfo.valueResolver;
+            var primaryNameResolver = primarySeriesInfo.nameResolver;
+            var primaryColorResolver = primarySeriesInfo.colorResolver;
 
             var firstSlice = new vizObj.Slice(data[0].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);
 
             var lastSlice = new vizObj.Slice(data[data.length - 1].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);
 
-            vizObj.debugOut("Smallest angle: "+ lastSlice.getAngleRadians(seriesInformation[primaryColumn.column.lookup]));
+            vizObj.debugOut("Smallest angle: "+ lastSlice.getAngleRadians(primarySeriesInfo));
 
             var anchorSlice;
 
@@ -782,7 +778,7 @@ $.Control.registerMixin('d3_impl_pie', {
             }
             else
             {
-                anchorSlice = firstSlice.asAnchor(firstSlice.getAngleRadians(seriesInformation[primaryColumn.column.lookup]) / 2);
+                anchorSlice = firstSlice.asAnchor(firstSlice.getAngleRadians(primarySeriesInfo) / 2);
             }
 
             cc.chartRenderSnapshot =
@@ -840,7 +836,7 @@ $.Control.registerMixin('d3_impl_pie', {
     },
 
     //TODO just get rid of _renderPie, and start passing around just the layout.
-    _buildPieLayout: function(slices, sliceMetrics,  firstSlice, lastSlice, anchorSlice, fillArea, seriesInformation)
+    _buildPieLayout: function(sliceMetrics, firstSlice, lastSlice, anchorSlice, seriesInformation)
     {
         // Now, we need to figure out what the start and end angles are for
         // the visible chart segment.
@@ -933,7 +929,7 @@ $.Control.registerMixin('d3_impl_pie', {
         var slices = this._fillInSliceRange(firstSlice, lastSlice);
         var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
 
-        var pieSegments = this._buildPieLayout(slices, sliceMetrics, firstSlice, lastSlice, anchorSlice, fillArea, seriesInformation);
+        var pieSegments = this._buildPieLayout(sliceMetrics, firstSlice, lastSlice, anchorSlice, seriesInformation);
 
         var result = pieSegments(slices);
 
@@ -1179,10 +1175,10 @@ $.Control.registerMixin('d3_impl_pie', {
 
         var labelHeight = 'Xg'.visualSize(labelSize).height;
 
-        var labelSizer = function(datum)
+        var labelSizer = _.memoize(function(datum)
         {
             return textFromDatum(datum).visualLength(labelSize);
-        };
+        }, function(datum) { return datum.data.index; });
 
         var labelDesiredPosition = function(datum)
         {

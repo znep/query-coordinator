@@ -39,7 +39,7 @@ class AnalyticsController < ApplicationController
 
     # increment must be a positive integer
     increment = ClientAnalyticsHelper.get_valid_increment(entity, metric, raw_increment)
-    if increment <= 0
+    if increment < 0
       return [false, "Metric Value Invalid"]
     end
 

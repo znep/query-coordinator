@@ -766,6 +766,19 @@ $.Control.registerMixin('d3_impl_pie', {
 
             vizObj.debugOut("Smallest angle: "+ lastSlice.getAngleRadians(primarySeriesInfo));
 
+            //TODO deal with zooming correctly - how do we respect the users' wishes?
+            // Should we abandon the idea of min angle when zooming and expose
+            // a min-pixel-arg-length instead?
+            var lastDisplaySlice;
+            if (vizObj._zoomFactor <= 1.01)
+            {
+                lastDisplaySlice = vizObj._findLastSliceSatisfyingMinAngle(firstSlice, lastSlice, primarySeriesInfo);
+            }
+            else
+            {
+                lastDisplaySlice = lastSlice;
+            }
+
             var anchorSlice;
 
             if (cc.chartRenderSnapshot)
@@ -784,7 +797,7 @@ $.Control.registerMixin('d3_impl_pie', {
             cc.chartRenderSnapshot =
             {
                 firstSlice: firstSlice,
-                lastSlice: lastSlice,
+                lastSlice: lastDisplaySlice,
                 anchorSlice: anchorSlice,
                 fillArea: fillArea,
                 seriesInformation: seriesInformation
@@ -796,6 +809,17 @@ $.Control.registerMixin('d3_impl_pie', {
 
         }, aggs);
 
+    },
+
+    _findLastSliceSatisfyingMinAngle: function(firstSlice, lastSlice, seriesInformation)
+    {
+        var minAngleRadians = (this._displayFormat.pieJoinAngle || 0) * (Math.PI/180);
+        var current = lastSlice;
+        while(!firstSlice.same(current) && current.getAngleRadians(seriesInformation) < minAngleRadians)
+        {
+            current = current.neighbor(false);
+        }
+        return current;
     },
 
     _tooSmallForDisplay: function(slice, seriesInformation)

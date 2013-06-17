@@ -174,6 +174,8 @@
             }
             this._parent.saveQuery(this._view.id,
                 { filterCondition: this._view.cleanFilters(true) });
+            // Update local cache
+            layerObj._query = layerObj._view.query;
             layerObj.clearData();
             layerObj.getData();
         },

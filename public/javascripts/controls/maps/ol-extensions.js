@@ -1678,6 +1678,11 @@
             if (!this._popup) { this._open(lonlat, options); }
             else { this._popup.contentDiv.innerHTML = this.buildContents(); }
 
+            // Fix for Support 2836.
+            // Hidden base layers are Bad News. Need to figure out a better way around them.
+            this._popup.pixel = options.atPixel;
+            this._popup.relativePosition = this._popup.calculateRelativePosition(options.atPixel);
+
             this._popup.updateSize();
 
             // Hack for Bug 9280.

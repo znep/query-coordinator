@@ -59074,7 +59074,9 @@ OpenLayers.Popup = OpenLayers.Class({
             
             var extraX = 0, extraY = 0;
             if (this.keepInMap && !this.panMapIfOutOfView) {
-                var px = this.map.getPixelFromLonLat(this.lonlat);
+                // michael.chui@socrata.com: override with pixel when this conversion is unreliable
+                // due to hidden base layer.
+                var px = this.pixel || this.map.getPixelFromLonLat(this.lonlat);
                 switch (this.relativePosition) {
                     case "tr":
                         extraX = px.x;

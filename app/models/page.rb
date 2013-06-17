@@ -1,4 +1,41 @@
-class Page < SodaModel
+class Page < Model
+  def self.find( options = {}, custom_headers = {}, batch = nil, is_anon = false )
+    # Fetch real service
+    base_path = "/pages.json"
+    svc_path = base_path
+    if options.respond_to?(:to_param) && !options.to_param.blank?
+      svc_options = options.clone.with_indifferent_access
+      svc_options.delete('$select')
+      svc_options.delete('$order')
+      svc_path += "?#{svc_options.to_param}"
+    end
+    result = CoreServer::Base.connection.get_request(svc_path, custom_headers, batch, is_anon)
+    pages = parse(result)
+
+    # Set up index of existing paths to check against
+    svc_paths = {}
+    pages.each { |p| svc_paths[p.index_path + '|' + p.format] = true }
+
+    # Then dataset, and merge
+    ds_path = '/id' + base_path
+    if options.respond_to?(:to_param) && !options.to_param.blank?
+      ds_options = options.clone.with_indifferent_access
+      ds_options.delete('status') if ds_options['status'] == 'all'
+      ds_path += "?#{ds_options.to_param}"
+    end
+    result = CoreServer::Base.connection.get_request(ds_path, custom_headers, batch, is_anon)
+    parse(result).each { |p| pages.push(p) if !svc_paths[p.index_path + '|' + p.format] }
+
+    sort = (options['order'] || options['$order'] || 'name').split(' ')
+    sort[0] = sort[0].slice(1, sort[0].length) if sort[0].start_with?(':')
+    sort[0] = sort[0].to_sym
+    sort[0] = :name if pages.length < 1 || !pages[0].respond_to?(sort[0])
+    pages.sort_by! { |p| p.send(sort[0]) }
+    pages.reverse! if sort.length > 1 && sort[1] == 'desc'
+
+    pages
+  end
+
   def set_context(vars)
     if vars.is_a?(Array)
       var_hash = {}
@@ -34,6 +71,11 @@ class Page < SodaModel
     end.join('')
   end
 
+  def index_path
+    p = @update_data['path'] || @data['path']
+    p.gsub(':[^/]+', ':')
+  end
+
   def name
     n = @update_data['name'] || @data['name']
     begin
@@ -52,22 +94,28 @@ class Page < SodaModel
     @update_data['data'] || @data['data']
   end
 
-  def locale
-    @update_data['locale'] || @data['locale']
-  end
-
   def metadata
     @update_data['metadata'] || @data['metadata'] || {}
   end
 
+  def cache_info
+    @update_data['cacheInfo'] || @data['cacheInfo'] || {}
+  end
+
   def updated_at
-    @data[':updated_at']
+    @data['updatedAt'] || @data[':updated_at']
+  end
+
+  def owner_id
+    @data['owner'] = User.set_up_model(@data['owner']) if @data['owner'].is_a?(Hash)
+    return owner if !owner.is_a?(User)
+    owner.id
   end
 
   def owner_user
-    u_id = owner
-    return nil if u_id.nil? || u_id.blank?
-    User.find(u_id)
+    @data['owner'] = User.set_up_model(@data['owner']) if @data['owner'].is_a?(Hash)
+    return owner if @data['owner'].nil? || @data['owner'].is_a?(User)
+    User.find(owner.to_s)
   end
 
   def uneditable
@@ -75,26 +123,27 @@ class Page < SodaModel
   end
 
   def private_data?
-    !content.blank?  && (content['privateData'] == true || content['privateData'] == 'true')
+    @data.key?('privateData') ? @data['privateData'] :
+      !content.blank? && (content['privateData'] == true || content['privateData'] == 'true')
   end
 
-  def page_type
-    metadata['export'] ? 'export' : 'web'
+  def format
+    @data['format'] || (metadata['export'] ? 'export' : 'web')
   end
 
   def max_age
-    !content.blank? && content['maxAge']
+    cache_info['max_age'] || !content.blank? && content['maxAge']
   end
 
-  def self.[](path, ext, mtime)
-    mtime ||= Time.now.to_i.to_s
+  def self.[](path, ext)
+    mtime = cache_time
     if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)
       @@path_store = {}
       @@path_time = mtime
     end
 
     unless @@path_store[CurrentDomain.cname]
-      ds = pages_data(mtime)
+      ds = pages_data
       @@path_store[CurrentDomain.cname] = copy_paths(ds)
     end
 
@@ -102,20 +151,18 @@ class Page < SodaModel
       return nil
     end
 
-    ds = pages_data(mtime) if ds.blank?
+    ds = pages_data if ds.blank?
     get_item(ds, path, ext)
   end
 
   def self.parse(data)
-    if data.blank?
-      return nil
-    end
-
+    return nil if data.blank?
     return self.set_up_model(JSON.parse(data, {:max_nesting => 35}))
   end
 
   def self.path_exists?(cur_path)
     cur_path = cur_path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
+    # TODO: better way to handle this w/ service?
     find.any? do |p|
       cur_path == p.path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
     end
@@ -123,49 +170,54 @@ class Page < SodaModel
 
   def self.create(attributes, custom_headers = {})
     # Status should eventually start as unpublished
-    attributes = {:status => 'published', :content => { type: 'Container', id: 'pageRoot' }}.
+    attributes = {:content => { type: 'Container', id: 'pageRoot' }}.
       merge(attributes)
-    path = "/id/pages.json"
-    return parse(CoreServer::Base.connection.
+    path = "/pages.json"
+    parse(CoreServer::Base.connection.
                  create_request(path, attributes.to_json, custom_headers))
   end
 
 private
-  def self.pages_data(mtime)
-    cache_key = generate_cache_key(mtime)
+  def self.cache_time
+    mtime = VersionAuthority.resource('pages') || Time.now.to_i.to_s
+  end
+
+  def self.pages_data()
+    cache_key = generate_cache_key
     ds = Rails.cache.read(cache_key)
 
     if ds.nil?
       ds = {}
-      contents = find(:status => :published)
-      contents.each do |c|
-        cur_obj = ds
-        c.path.split('/').each do |part|
-          part = ':var' if part.starts_with?(':')
-          cur_obj[part] ||= {}
-          cur_obj = cur_obj[part]
-        end
-        key = ':' + c.page_type
-        if cur_obj.has_key?(key)
-          Rails.logger.error "***************** Routing collision! #{c.path}"
-          # Shouldn't overload our messaging since it only happens when the
-          # paths are regenerated, which shouldn't be too often
-          Thread.new do
-            # be chivalrous
-            Thread.pass
-
-            Airbrake.notify(:error_class => "Canvas Routing Error on #{CurrentDomain.cname}",
-                            :error_message => "Canvas Routing Error on #{CurrentDomain.cname}: Routing collision, skipping #{c.path}",
-                           :session => {:domain => CurrentDomain.cname},
-                           :parameters => {:duplicate_config => c})
-          end
-        else
-          cur_obj[key] = c
-        end
-      end
+      find(:status => :published).each { |c| add_page(c, ds) }
       Rails.cache.write(cache_key, ds)
     end
     return ds
+  end
+
+  def self.add_page(item, cache_obj)
+    cur_obj = cache_obj
+    item.path.split('/').each do |part|
+      part = ':var' if part.starts_with?(':')
+      cur_obj[part] ||= {}
+      cur_obj = cur_obj[part]
+    end
+    key = ':' + item.format
+    if cur_obj.has_key?(key)
+      Rails.logger.error "***************** Routing collision! #{item.path}"
+      # Shouldn't overload our messaging since it only happens when the
+      # paths are regenerated, which shouldn't be too often
+      Thread.new do
+        # be chivalrous
+        Thread.pass
+
+        Airbrake.notify(:error_class => "Canvas Routing Error on #{CurrentDomain.cname}",
+                        :error_message => "Canvas Routing Error on #{CurrentDomain.cname}: Routing collision, skipping #{item.path}",
+                       :session => {:domain => CurrentDomain.cname},
+                       :parameters => {:duplicate_config => item})
+      end
+    else
+      cur_obj[key] = item
+    end
   end
 
   def self.copy_paths(path_hash)
@@ -189,10 +241,10 @@ private
     return [cur_obj[key], vars]
   end
 
-  def self.generate_cache_key(mtime)
+  def self.generate_cache_key
     app_helper.cache_key("page-dataset-v2", {
       'domain' => CurrentDomain.cname,
-      'updated' => mtime
+      'updated' => cache_time
     })
   end
 

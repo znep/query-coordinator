@@ -220,9 +220,18 @@ class CustomContentController < ApplicationController
       Canvas2::Util.set_debug(@debug || @edit_mode)
       Canvas2::Util.set_no_cache(false)
       Canvas2::Util.set_path(full_path)
+      # Set without user before we load pages
+      Canvas2::Util.set_env({
+        domain: CurrentDomain.cname,
+        renderTime: Time.now.to_i,
+        path: full_path,
+        siteTheme: CurrentDomain.theme,
+        current_locale: I18n.locale,
+        available_locales: request.env['socrata.available_locales']
+      })
       if CurrentDomain.module_available?('canvas2')
         if @page_override.nil?
-          @page, @vars = Page[path, page_ext, pages_time]
+          @page, @vars = Page[path, page_ext]
         else
           @page = @page_override
           @vars = {}
@@ -241,9 +250,6 @@ class CustomContentController < ApplicationController
           render_404
         end
       else
-        # Now we know whether the page is private or not; set the render variables for
-        # cache-key
-        Canvas2::Util.is_private(@page.private_data?)
         Canvas2::Util.set_env({
           domain: CurrentDomain.cname,
           renderTime: Time.now.to_i,
@@ -253,12 +259,15 @@ class CustomContentController < ApplicationController
           current_locale: I18n.locale,
           available_locales: request.env['socrata.available_locales']
         })
+        # Now we know whether the page is private or not; set the render variables for
+        # cache-key
+        Canvas2::Util.is_private(@page.private_data?)
         # If the page has maxAge <= 0; explicitly disable any and all row or search caching
         Canvas2::Util.set_no_cache(@page.max_age <= 0) if @page.max_age
         @cache_key = Canvas2::Util.is_private ? cache_key_user : cache_key_no_user
         self.action_name = 'page'
         begin
-          if @page.page_type == 'export'
+          if @page.format == 'export'
             context_result = @page.set_context(@vars)
             raise Canvas2::NoContentError.new(Canvas2::DataContext::errors[0]) if context_result == false
           end

@@ -25,7 +25,6 @@
 
       $.dataContext.load(page.data, blist.configuration.availableContexts,
         blist.configuration.extraContextConfig);
-      $.locale.initialize(page.locale);
       $.component.initialize(page.content);
       <%- if template -%>
       blist.configuration.template = <%= safe_json(template) %>;

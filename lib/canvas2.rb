@@ -4,4 +4,4 @@ requires.each{ |r| require File.join(Rails.root, 'app/models', r) }
 
 require 'clytemnestra'
 
-%w| util errors data_context widgets |.each { |r| require File.join(Rails.root, 'lib/canvas2', r) }
+%w| auto_linker util errors data_context widgets |.each { |r| require File.join(Rails.root, 'lib/canvas2', r) }

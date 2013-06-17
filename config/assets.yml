@@ -95,7 +95,6 @@ javascripts:
     - public/javascripts/component/util/style-config.js
     - public/javascripts/component/data-context.js
     - public/javascripts/util/string-substitute.js
-    - public/javascripts/component/locale.js
     - public/javascripts/component/component.js
     - public/javascripts/component/comp-container.js
     - public/javascripts/component/configurator-hook.js
@@ -160,7 +159,6 @@ javascripts:
     - public/javascripts/component/configurator/component-palette.js
     - public/javascripts/component/configurator/cf-edit-log.js
     - public/javascripts/component/configurator/cf-side.js
-    - public/javascripts/component/configurator/cf-translate.js
     - public/javascripts/component/configurator/cf-property.js
     - public/javascripts/component/configurator/template.js
     - public/javascripts/component/context-picker.js

@@ -293,7 +293,14 @@
                         $spinner.addClass('hide');
                         $settingsDialog.jqmHide();
                         if (oldPath != newPage.path)
-                        { window.location = newPage.path; }
+                        {
+                            $.socrataServer.makeRequest({
+                                type: 'POST', url: '/api/id/pages',
+                                data: JSON.stringify([{ path: oldPath, ':deleted': true }]),
+                                complete: function()
+                                { window.location = newPage.path; }
+                            });
+                        }
                     });
                 };
 

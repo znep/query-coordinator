@@ -1681,7 +1681,9 @@
             // Fix for Support 2836.
             // Hidden base layers are Bad News. Need to figure out a better way around them.
             this._popup.pixel = options.atPixel;
-            this._popup.relativePosition = this._popup.calculateRelativePosition(options.atPixel);
+            if (options.atPixel)
+            { this._popup.relativePosition
+                = this._popup.calculateRelativePosition(options.atPixel); }
 
             this._popup.updateSize();
 

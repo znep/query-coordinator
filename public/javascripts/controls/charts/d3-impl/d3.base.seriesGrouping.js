@@ -491,14 +491,14 @@ d3base.seriesGrouping = {
         this.getDataForView(this._seriesGrouping.sortedView);
     },
 
-    handleDataMouseOver: function(visual, colDef, row)
+    handleDataMouseOver: function(visual, colDef, row, flyoutConfigs, enableProcessing)
     {
         // swap out virtual col/row references for hard references
         var vizObj = this;
 
         if (vizObj.requiresSeriesGrouping())
         {
-            return vizObj._super(visual, colDef.column.realValueColumn, row.realRows[colDef.column.id]);
+            return vizObj._super(visual, colDef.column.realValueColumn, row.realRows[colDef.column.id], flyoutConfigs, enableProcessing);
         }
         else
         {
@@ -506,19 +506,9 @@ d3base.seriesGrouping = {
         }
     },
 
-    handleDataMouseOut: function(visual, colDef, row)
+    handleDataMouseOut: function(visual)
     {
-        // swap out virtual col/row references for hard references
-        var vizObj = this;
-
-        if (vizObj.requiresSeriesGrouping())
-        {
-            return vizObj._super(visual, colDef.column.realValueColumn, row.realRows[colDef.column.id]);
-        }
-        else
-        {
-            return vizObj._super.apply(vizObj, arguments);
-        }
+        return this._super.apply(this, arguments);
     }
 };
 

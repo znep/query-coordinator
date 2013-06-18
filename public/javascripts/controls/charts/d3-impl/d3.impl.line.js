@@ -117,7 +117,7 @@ $.Control.registerMixin('d3_impl_line', {
                     .on('mouseover', function(d)
                     {
                         var configs = vizObj._flyoutConfigurationOptions(d, colDef.column);
-                        vizObj.handleDataMouseOver(this, colDef.column, d, configs, !cc._isDragging);
+                        vizObj.handleDataMouseOver(this, colDef, d, configs, !cc._isDragging);
                     })
                     .on('mouseout', function(d)
                     {

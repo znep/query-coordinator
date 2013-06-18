@@ -1114,7 +1114,7 @@ $.Control.registerMixin('d3_impl_pie', {
                     };
                 }
 
-                vizObj.handleDataMouseOver(this, seriesInformation.colDef.column, row, configs, datum && !cc._isDragging && !_.isUndefined(row));
+                vizObj.handleDataMouseOver(this, seriesInformation.colDef, row, configs, datum && !cc._isDragging && !_.isUndefined(row));
             })
             .on('mouseout', function(datum)
             {

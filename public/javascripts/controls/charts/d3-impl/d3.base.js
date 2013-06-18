@@ -146,13 +146,14 @@ $.Control.registerMixin('d3_base', {
     // all times.
     // If you want to prevent the main behavior of this method (=showing
     // the flyout and highlighting rows), pass false for enableProcessing.
-    handleDataMouseOver: function(visual, col, row, flyoutConfigs, enableProcessing)
+    handleDataMouseOver: function(visual, colDef, row, flyoutConfigs, enableProcessing)
     {
         var vizObj = this,
             view = vizObj._primaryView;
 
         if (row && enableProcessing)
         {
+            var col = colDef.column;
             var configs = {
                 content: vizObj.renderFlyout(row, col.tableColumnId, view),
                 trigger: 'now'

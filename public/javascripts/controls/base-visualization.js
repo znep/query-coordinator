@@ -438,7 +438,7 @@
         handleRowsLoaded: function(rows, view)
         {
             // Override if you need extra handling before rendering
-            this.renderData(rows, view);
+            this.renderData.apply(this, arguments);
         },
 
         handleClustersLoaded: function(clusters, view)

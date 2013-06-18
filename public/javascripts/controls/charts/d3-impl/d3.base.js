@@ -33,6 +33,8 @@ $.Control.registerMixin('d3_base', {
         }
     },*/
 
+    requiresSeriesGrouping: this.Model.pureVirtual,
+
     getRequiredJavascripts: function()
     {
         // get d3 stuffs
@@ -207,7 +209,8 @@ $.Control.registerMixin('d3_base', {
             localMouseIn();
             $btWrapper.hover(localMouseIn, localMouseOut);
 
-            view.highlightRows(row, null, col);
+            if (!vizObj.requiresSeriesGrouping())
+            { view.highlightRows(row, null, col); }
         }
     },
 

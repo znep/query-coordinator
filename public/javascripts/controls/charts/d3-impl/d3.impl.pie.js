@@ -199,6 +199,11 @@ $.Control.registerMixin('d3_impl_pie', {
         vizObj.getDataForAllViews();
     },
 
+    requiresSeriesGrouping: function()
+    {
+        return false;
+    },
+
     _initZoomInformation: function()
     {
         var vizObj = this;

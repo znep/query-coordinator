@@ -109,6 +109,7 @@ $.Control.registerMixin('d3_base_dynamic', {
 
     _sortedSetInsert: function(dest, src)
     {
+        var didInsertData = false;
         if (src.length > 0)
         {
             var insertIndex = _.sortedIndex(dest, src[0], function(a) { return a.index; });
@@ -120,6 +121,7 @@ $.Control.registerMixin('d3_base_dynamic', {
                 {
                     dest.splice(insertIndex, 0, src[srcIndex]);
                     srcIndex ++;
+                    didInsertData = true;
                 }
                 else
                 {
@@ -131,7 +133,7 @@ $.Control.registerMixin('d3_base_dynamic', {
                 }
             };
         }
-        return dest;
+        return didInsertData;
     },
 
     handleRowsLoaded: function(data, view)
@@ -139,9 +141,10 @@ $.Control.registerMixin('d3_base_dynamic', {
         // handleRowsLoaded gets some weird call abuse with random subsections
         // of the data. so, maintain our current slice and just update into our
         // full visible set where appropriate
-        var vizObj = this;
+        var vizObj = this,
+            didInsertData = vizObj._sortedSetInsert(vizObj._currentRangeData, data);
 
-        vizObj._super(vizObj._sortedSetInsert(vizObj._currentRangeData, data), view);
+        vizObj._super(vizObj._currentRangeData, view, didInsertData);
     },
 
     handleRowsRemoved: function(data, view)

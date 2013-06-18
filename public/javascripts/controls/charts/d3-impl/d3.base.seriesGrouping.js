@@ -255,7 +255,7 @@ d3base.seriesGrouping = {
                  length: virtualRenderRange.length * numCols };
     },
 
-    renderData: function(data)
+    renderData: function(data, view, didInsertData)
     {
         var vizObj = this;
 
@@ -267,6 +267,9 @@ d3base.seriesGrouping = {
         // Prevent reentrancy. This is an issue because highlighting (done below)
         // can cause another renderData.
         if (vizObj._inRenderSeriesGrouping) { return; }
+
+        // If there were no insertions, don't bother re-rendering.
+        if (didInsertData === false) { return; }
         vizObj._inRenderSeriesGrouping = true;
 
         var sg = vizObj._seriesGrouping,
@@ -357,7 +360,9 @@ d3base.seriesGrouping = {
         if (sg.sortedView && sg.sortedView.rowForID(row.id))
         { return; }
 
-        vizObj._super.apply(vizObj, arguments);
+        // Sometimes we get virtual rows here and we shouldn't try to remove those.
+        if (row.id > 0)
+        { vizObj._super.apply(vizObj, arguments); }
 
         if (!$.isBlank(vRow))
         {

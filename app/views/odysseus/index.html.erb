@@ -6,11 +6,15 @@
   <%- end -%>
 <%- end -%>
 
-<%= raw @contents %>
+<div id="janus">
+  <%= raw @contents %>
+</div>
 
 <%- content_for :js_footer do -%>
   <%- @script_packages.each do |pkg| -%>
     <%= include_javascripts pkg %>
   <%- end -%>
+  <script type='text/javascript' src="/socket.io/socket.io.js"></script>
+  <script type='text/javascript' src="/asset/js/client"></script>
 <%- end -%>
 

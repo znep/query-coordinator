@@ -242,6 +242,8 @@
 
     var labelInBar = { text: $.t('screens.ds.grid_sidebar.chart.labelInBar'), type: 'checkbox', name: 'displayFormat.xAxis.labelInBar' };
 
+    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox', name: 'displayFormat.xAxis.valueInBar' };
+
 
     /*** Helpers ***/
 
@@ -500,7 +502,7 @@
                     advLegend(chart, options),
                     errorBars(chart, options),
                     basicAdv(chart, options,
-                        [legendPos, renderOther, labelInBar, flyoutControls(options)]));
+                        [legendPos, renderOther, labelInBar, valueInBar, flyoutControls(options)]));
                 break;
 
 
@@ -529,7 +531,7 @@
                     domainMarker(chart, options),
                     advLegend(chart, options),
                     basicAdv(chart, options,
-                        [legendPos, renderOther, labelInBar, flyoutControls(options)]));
+                        [legendPos, renderOther, labelInBar, valueInBar, flyoutControls(options)]));
                 break;
 
 

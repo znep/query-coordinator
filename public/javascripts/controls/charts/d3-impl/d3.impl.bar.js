@@ -615,9 +615,14 @@ $.Control.registerMixin('d3_impl_bar', {
                             { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
                     .text(function(d)
                     {
-                        var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
+                        var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
+                            text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+
+                        if ($.deepGet(vizObj._displayFormat, 'xAxis', 'valueInBar') === true)
+                        { text = [text, " (", d[colDef.column.lookup], ")"].join(''); }
+
                         // render plaintext representation of the data
-                        return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                        return text;
                     })
                     .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition(seriesIndex))
                     .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition())

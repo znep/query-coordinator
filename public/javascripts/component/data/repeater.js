@@ -74,7 +74,8 @@ $.component.Container.extend('Repeater', 'content', {
         // Unbind anything old
         _.each($.makeArray(cObj._dataContext), function(dc)
         {
-            dc.unbind(null, null, cObj);
+            if (dc instanceof DataContext)
+            { dc.unbind(null, null, cObj); }
             if (!$.isBlank(dc.dataset))
             { dc.dataset.unbind(null, null, cObj); }
         });

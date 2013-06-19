@@ -72,12 +72,8 @@ $.component.Container.extend('Repeater', 'content', {
     {
         var cObj = this;
         // Unbind anything old
-        _.each($.makeArray(cObj._dataContext), function(dc)
-        {
-            dc.unbind(null, null, cObj);
-            if (!$.isBlank(dc.dataset))
-            { dc.dataset.unbind(null, null, cObj); }
-        });
+        if ($.subKeyDefined(cObj, '_dataContext.dataset'))
+        { _.each($.makeArray(cObj._dataContext), function(dc) { dc.dataset.unbind(null, null, cObj); }); }
         cObj._super.apply(cObj, arguments);
     },
 
@@ -89,19 +85,6 @@ $.component.Container.extend('Repeater', 'content', {
         if ($.subKeyDefined(dc, 'dataset') && this._properties.repeaterType != 'column')
         {
             dc.dataset.bind('query_change', function()
-            {
-                cObj._childrenDirty = true;
-                cObj._isDirty = true;
-                if (!$.isBlank(cObj.$dom))
-                { cObj.$dom.removeClass('serverRendered'); }
-                cObj._render();
-            }, this);
-            cObj.$dom.attr('aria-live', 'polite');
-        }
-
-        if (dc.type == 'datasetList')
-        {
-            dc.bind('data_change', function()
             {
                 cObj._childrenDirty = true;
                 cObj._isDirty = true;

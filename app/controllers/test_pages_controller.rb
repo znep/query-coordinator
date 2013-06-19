@@ -42,7 +42,6 @@ class TestPagesController < ApplicationController
     Canvas2::DataContext.reset
     Canvas2::Util.reset
     Canvas2::Util.set_params(params)
-    Canvas2::Util.set_path('/test_page/cf')
     Canvas2::Util.set_debug(true)
     Canvas2::Util.set_no_cache(true)
     Canvas2::Util.set_env({

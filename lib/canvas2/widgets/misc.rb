@@ -397,7 +397,6 @@ module Canvas2
 
   class Search < CanvasWidget
     def render_contents
-      return ['', true] if context.nil?
       cur_val = nil
       if context[:type] == 'dataset'
         cur_val = context[:dataset].searchString

@@ -158,6 +158,8 @@ d3base.seriesGrouping = {
             sg = vizObj._seriesGrouping,
             fixedColumn = sg.fixedColumn;
 
+        vizObj.startLoading();
+
         // figure out our categories and make virtual row index lookups for them.
         _.each(_.sortBy(sg.categoryGroupedRows, 'position'), function(row, index)
         {
@@ -340,6 +342,9 @@ d3base.seriesGrouping = {
         // render what we've got
         vizObj._super(_.values(sg.virtualRows));
 
+        // This actually doesn't fire while the browser is frozen attempting to render
+        // huge quantities of SVG/DOM elements. Shocking!
+        setTimeout(function() { vizObj.finishLoading(); }, 1000);
     },
 
     removeRow: function(row, view)

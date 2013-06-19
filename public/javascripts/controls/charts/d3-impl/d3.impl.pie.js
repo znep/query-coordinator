@@ -1113,8 +1113,8 @@ $.Control.registerMixin('d3_impl_pie', {
         var colCount = vizObj._valueColumnCount();
         var colIndex = seriesInformation.columnIndex;
         var seriesRadius = radius / (colCount + 1);
-        var innerRadius = colCount == 1 ? 0 : (colIndex + 1) * seriesRadius;
-        var outerRadius = colCount == 1 ? radius : (colIndex + 2) * seriesRadius;
+        var innerRadius = cc.donut ? (colIndex + 1) * seriesRadius : 0;
+        var outerRadius = cc.donut ? (colIndex + 2) * seriesRadius : radius;
 
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
 

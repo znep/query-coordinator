@@ -356,6 +356,7 @@
             cpObj._customSections = {};
             cpObj._columnSelects = [];
             cpObj._fieldOnlyIfs = {};
+            cpObj._fieldDisabled = {};
             cpObj._changeHandlers = {};
 
             cpObj._isDirty = true;
@@ -1214,6 +1215,13 @@
             result['data-onlyIf'] = oiUid;
         }
 
+        if ($.isPlainObject(item.disabled))
+        {
+            var dUid = _.uniqueId();
+            cpObj._fieldDisabled[dUid] = item.disabled;
+            result['data-disabled'] = dUid;
+        }
+
         if (_.isFunction(item.change))
         {
             var uid = 'handler_' + _.uniqueId();
@@ -1815,14 +1823,17 @@
         var customField = cpObj._customCallbacks[custId];
         if (!$.isBlank(customField)) { customField = customField.create; }
         var onlyIf = cpObj._fieldOnlyIfs[$field.attr('data-onlyIf')];
+        var disabled = cpObj._fieldDisabled[$field.attr('data-disabled')];
 
         var selOpt = cpObj._selectOptions[$field.attr('data-selectOption')];
-        if (!_.isFunction(selOpt) && !_.isFunction(customField) && !$.isPlainObject(onlyIf))
+        if (!_.isFunction(selOpt) && !_.isFunction(customField) && !$.isPlainObject(onlyIf)
+            && !$.isPlainObject(disabled))
         { return; }
 
 
         var $linkedItems = $();
         var linkedFields = $.makeArray((onlyIf || {}).field || null);
+        linkedFields = linkedFields.concat($.makeArray((disabled || {}).field || null));
         if (!$.isBlank($field.attr('data-linkedField')))
         {
             linkedFields = linkedFields.concat($field.attr('data-linkedField').split(','));
@@ -1846,8 +1857,17 @@
 
             var vals = {};
             $linkedItems.each(function()
-            { vals[$(this).attr('data-origName')] = $(this).val(); });
-            if (_.size(vals) == 1) { vals = _.values(vals)[0] || ''; }
+            {
+                var $this = $(this),
+                    isCheckbox = $this.filter(':checkbox').length > 0;
+                vals[$this.attr('data-origName')]
+                    = isCheckbox ? $this.filter(':checked').length > 0 : $(this).val();
+            });
+            if (_.size(vals) == 1)
+            {
+                vals = _.values(vals)[0];
+                vals = (vals === false) ? false : (vals || '');
+            }
 
             var curVals = $field.data('linkedFieldValues');
             if (!force && _.isEqual(curVals, vals)) { return; }
@@ -1863,6 +1883,15 @@
                 { showField = showField && onlyIf.value == (vals[onlyIf.field] || vals); }
                 if (onlyIf.negate) { showField = !showField; }
                 $l.toggle(showField);
+            }
+            if ($.isPlainObject(disabled))
+            {
+                var isDisabled = true;
+                if (_.isFunction(disabled.func))
+                { isDisabled = isDisabled && disabled.func.call(cpObj, vals); }
+                if (!$.isBlank(disabled.value))
+                { isDisabled = isDisabled && disabled.value == (vals[disabled.field] || vals); }
+                $l.find('input').attr('disabled', isDisabled);
             }
 
             if (_.isFunction(selOpt))
@@ -2121,7 +2150,7 @@
         // Find fields that are linked to another field, either through
         // linkedField or onlyIf.  Hook them up to change or show/hide
         // whenever the associated field is changed
-        $container.find('[data-linkedField], [data-onlyIf]').each(function()
+        $container.find('[data-linkedField], [data-onlyIf], [data-disabled]').each(function()
             { hookUpLinkedField(cpObj, $(this)); });
 
 

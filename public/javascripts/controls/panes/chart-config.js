@@ -160,6 +160,7 @@
     var flyoutControls = function(options)
     {
         return {type: 'repeater', name: 'displayFormat.descriptionColumns',
+            onlyIf: {field: 'displayFormat.pointSize', value: '0', negate: true},
             field: {text: $.t('screens.ds.grid_sidebar.chart.flyout.title'), name: 'fieldName', otherNames: 'tableColumnId',
                    type: 'columnSelect', useFieldName: true, columns: {hidden: options.isEdit}},
             minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.flyout.new_details_button')
@@ -242,7 +243,7 @@
 
     var labelInBar = { text: $.t('screens.ds.grid_sidebar.chart.labelInBar'), type: 'checkbox', name: 'displayFormat.xAxis.labelInBar' };
 
-    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox', name: 'displayFormat.xAxis.valueInBar' };
+    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox', name: 'displayFormat.xAxis.valueInBar', disabled: { field: 'displayFormat.xAxis.labelInBar', value: false } };
 
 
     /*** Helpers ***/

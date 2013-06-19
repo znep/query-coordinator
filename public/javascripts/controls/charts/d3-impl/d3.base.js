@@ -137,9 +137,16 @@ $.Control.registerMixin('d3_base', {
         }
     },
 
-    _d3_line_path: function (x1, y1, x2, y2)
+    // Arguments are expected to be a series of 2-length arrays.
+    _d3_line_path: function ()
     {
-        return 'M '+x1+' '+y1+' L '+x2+' '+y2+' z';
+        var r = '';
+        _.each(arguments, function(p, i)
+        {
+            r += (i==0?'M ':' L ')+p[0]+' '+p[1];
+        });
+
+        return r;
     },
 
     // Handles the mouse entering a datum visual (bar, point, etc).

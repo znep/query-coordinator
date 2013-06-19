@@ -17,7 +17,10 @@ d3ns.slottedCircleLayout = function($)
     //              the width of a specific datum.
     // datumDesiredPosition : Function, taking a datum. Returns an [x,y] pair
     //              array indicating the desired position of the datum.
-    var constructor = function(slotHeight, limitRadius, center, layoutSize, datumWidth, datumDesiredPosition)
+    // pyramidMarginAboveCircle: Number. For left-hand data above the circle,
+    //              we add this margin to the right to avoid stacking things
+    //              right above each other.
+    var constructor = function(slotHeight, limitRadius, center, layoutSize, datumWidth, datumDesiredPosition, pyramidMarginAboveCircle)
     {
         this.slotHeight = slotHeight;
         this.limitRadius = limitRadius;
@@ -25,6 +28,7 @@ d3ns.slottedCircleLayout = function($)
         this.layoutSize = layoutSize;
         this.datumWidth = datumWidth;
         this.datumDesiredPosition = datumDesiredPosition;
+        this.pyramidMarginAboveCircle = pyramidMarginAboveCircle;
 
         // Multiply by 2 because we have slots on either side of the circle.
         this.slotCount = 2 * Math.floor(layoutSize.height / slotHeight);
@@ -56,6 +60,9 @@ d3ns.slottedCircleLayout = function($)
         }
         else
         {
+            // Reset the layout.
+            this.slotRegistry = [];
+
             // Build the layout.
             _.each(dataArray, this._insertDatum, this);
 
@@ -170,24 +177,30 @@ d3ns.slottedCircleLayout = function($)
                     // figure out what to move down.
 
                     // Going backward, find the first slot we can't go above.
-                    var firstWeCanGoAbove = null;
-                    for (var i=slotIndex-1; i>startSlotIndex; i--)
+                    var firstWeCantGoAbove = null;
+                    for (var i=slotIndex-1; i>0; i--)
                     {
                         var occupied = this._slotOccupied(i);
                         if (!occupied || !this._canGoAbove(i, startSlotIndex))
                         {
-                            firstWeCanGoAbove = i+1;
+                            firstWeCantGoAbove = i+1;
                             break;
                         }
                     }
 
-                    for (i=slotIndex; i>firstWeCanGoAbove; i--)
+                    if (firstWeCantGoAbove === null)
+                    {
+                        // We're going to the very top.
+                        firstWeCantGoAbove = 0;
+                    }
+
+                    for (i=slotIndex; i>firstWeCantGoAbove; i--)
                     {
                         var datumToMove = this._getSlotDataForIndex(i-1);
                         this._setSlotDataForIndex(undefined, i-1);
                         this._placeDatumIntoSlot(datumToMove, i);
                     }
-                    return firstWeCanGoAbove;
+                    return firstWeCantGoAbove;
                 }
             }
         }
@@ -346,6 +359,7 @@ d3ns.slottedCircleLayout = function($)
         var cl = datum.slottedCircleLayout;
         var layoutSlot = this._getUnconstrainedLayoutSlot(layoutSlotIndex);
         this._constrainSlotAgainstCircle(layoutSlot);
+        this._applyTopOfChartMargins(layoutSlot, layoutSlotIndex);
         this._calculateLayoutSlotWidthForContent(layoutSlot, cl.size);
 
         //TODO reserve space for line.
@@ -389,6 +403,22 @@ d3ns.slottedCircleLayout = function($)
         return { x: x, y: y, width: width, onRightSide: onRightSide};
     };
 
+    // If we're at the top of the chart above the circle, we don't want to just
+    // stack data vertically. We need to add more right margin.
+    // This won't happen to the bottom or RHS as the slot limits prevent it.
+    constructor.prototype._applyTopOfChartMargins = function(layoutSlot, slotIndex)
+    {
+        var hitTestLineY = layoutSlot.y + this.slotHeight / 2; // Y midpoint of slot.
+
+        // Distance above hit test line from center along Y.
+        var dY = this.center.y - hitTestLineY;
+
+        if (dY > this.limitRadius)
+        {
+            // Didn't hit the circle.
+            layoutSlot.x -= slotIndex * this.pyramidMarginAboveCircle;
+        }
+    };
 
     // Given a layout slot (x, y, width, height), chop out the area that is
     // occupied by the center circle.
@@ -401,11 +431,7 @@ d3ns.slottedCircleLayout = function($)
 
         var r = this.limitRadius;
 
-        if (dY > this.limitRadius)
-        {
-            // Don't even hit the circle. We cool.
-        }
-        else
+        if (dY <= r)
         {
             // Hit or graze the circle.
 
@@ -486,6 +512,57 @@ d3ns.slottedCircleLayout = function($)
         }
     };
 
+    // Do some verifications that are too expensive to do in release mode.
+    constructor.prototype.debugVerifyLayout = function()
+    {
+        // RHS
+        for (var i=0; i<this.slotCount/2 - 1; i++)
+        {
+            var realIdx = -i - 1;
+            var d = this._getSlotDataForIndex(realIdx);
+            if (d)
+            {
+                $.assert(d.slottedCircleLayout.slotIndex == realIdx, 'index mismatch on RHS');
+            }
+        }
+
+        // LHS
+        for (var i=0; i<this.slotCount/2; i++)
+        {
+            var d = this._getSlotDataForIndex(i);
+            if (d)
+            {
+                $.assert(d.slottedCircleLayout.slotIndex == i, 'index mismatch on LHS');
+            }
+        }
+    };
+
     return constructor;
 
 }(jQuery);
+
+d3ns.math = {
+    lineSegIntersectsCircle: function(cx, cy, r, x1, y1, x2, y2)
+    {
+        var vecToCenter = [cx - x1, cy - y1];
+        var segAsVec = [x2 - x1, y2 - y1];
+        var segLength = Math.sqrt(segAsVec[0]*segAsVec[0] + segAsVec[1]*segAsVec[1]);
+        var segUnit = [segAsVec[0]/segLength, segAsVec[1]/segLength];
+        var segDotCenter = (segUnit[0]*vecToCenter[0] + segUnit[1]*vecToCenter[1]);
+        if (segDotCenter < 0)
+        {
+            // First endpoint closest.
+            return Math.sqrt(vecToCenter[0]*vecToCenter[0] + vecToCenter[1]*vecToCenter[1]) <= r;
+        }
+        else if (segDotCenter > segLength)
+        {
+            // Last endpoint closest.
+            var vecToCenter2 = [cx - x2, cy - y2];
+            return Math.sqrt(vecToCenter2[0]*vecToCenter2[0] + vecToCenter2[1]*vecToCenter2[1]) <= r;
+        }
+
+        var closestPt = [x1 + segDotCenter*segUnit[0], y1 + segDotCenter*segUnit[1]];
+        var distFromCtr = Math.sqrt(closestPt[0]*closestPt[0] + closestPt[1]*closestPt[1]);
+        return distFromCtr <= r;
+    }
+};

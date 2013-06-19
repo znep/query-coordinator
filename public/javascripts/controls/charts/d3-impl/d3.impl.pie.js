@@ -9,7 +9,19 @@ $.Control.registerMixin('d3_impl_pie', {
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
         smallModeThreshold: 400, // Size below which small mode is triggered (px).
         largeLegendMaxLineThreshold: 15, // If we've got more than this amount of lines in the legend, switch the legend only to small mode.
-        minSizeForLegend: 200 // If the chart is less than this in any direction (px), we hide the legend to try and display something useful.
+        minSizeForLegend: 200, // If the chart is less than this in any direction (px), we hide the legend to try and display something useful.
+        labelMargin: 40, // Extra distance between labels and slices (it's a radius).
+        endpointLineLength: 5, // Length of that little line segment on either end of the main label line.
+        labelTeeLength: 8, // Length of the tee at the end of the label line.
+        labelLinesMargin: 5, // Size of various margins for labels:
+                             //  - Tee to text
+                             //  - Elbow to closest line
+        hiddenLabelReflowThreshold: 5 // Sometimes we can't show a label even though the slotted layout says we can,
+                                      // simply because we can't find a space for a line connecting the label to the
+                                      // slice, or the label turns out to be blank.
+                                      //  If we hit more than this number of such issues, remove the unshowable
+                                      // labels from the layout and re-run the layout. This avoids having large
+                                      // sections of unused space in very dense pies.
     },
 
     Slice: (function()
@@ -363,12 +375,12 @@ $.Control.registerMixin('d3_impl_pie', {
         return this._primaryView.totalRows();
     },
 
-    renderData: function(data, view)
+    renderData: function(data, view, addedNewData)
     {
         var vizObj = this,
             valueColumns = vizObj.getValueColumns();
 
-        vizObj._renderData(data);
+        vizObj._renderData(data, addedNewData);
     },
 
     handleRowCountChange: function()
@@ -624,14 +636,21 @@ $.Control.registerMixin('d3_impl_pie', {
             width: chartWidth,
             height: chartHeight,
             left: 0,
-            top: 0
+            top: 0,
+            equal: function(other)
+            {
+                return this.width === other.width &&
+                       this.height === other.height &&
+                       this.left === other.left &&
+                       this.top === other.top;
+           }
         };
 
         return fillArea;
     },
 
     // call this if the active set of data has changed
-    _renderData: function(data)
+    _renderData: function(data, addedNewData)
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
@@ -639,6 +658,15 @@ $.Control.registerMixin('d3_impl_pie', {
             valueColumns = vizObj.getValueColumns(),
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView;
+
+        if (!addedNewData && cc.chartRenderSnapshot)
+        {
+            // We probably just had a formatting change like a row highlight.
+            // Just rerender the last snapshot.
+            vizObj.debugOut('snapshot-only render');
+            vizObj._renderSnapshot(cc.chartRenderSnapshot);
+            return;
+        }
 
         data = vizObj._getDataToRender(data);
 
@@ -680,6 +708,7 @@ $.Control.registerMixin('d3_impl_pie', {
             // Basic strategy here is to build up a chart render snapshot
             // per-series, then render the whole thing.
 
+            vizObj.debugOut('Obtained aggregates for row set of length ' + data.length);
             var primaryColumn = vizObj._primaryValueColumn();
 
             state.top = Math.min(data[0].index, state.top);
@@ -820,7 +849,9 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         var minAngleRadians = (this._displayFormat.pieJoinAngle || 0) * (Math.PI/180);
         var current = lastSlice;
-        while(!firstSlice.same(current) && current.getAngleRadians(seriesInformation) < minAngleRadians)
+        while(!firstSlice.same(current) &&
+              current.getAngleRadians(seriesInformation) <= minAngleRadians &&
+              (_.isUndefined(this._chartConfig.chartRenderSnapshot) || this._tooSmallForDisplay(current, seriesInformation)))
         {
             current = current.neighbor(false);
         }
@@ -955,56 +986,80 @@ $.Control.registerMixin('d3_impl_pie', {
         $.assert(lastSlice.index >= anchorSlice.index && anchorSlice.index >= firstSlice.index, "Anchor slice must come between first and last slices.");
         $.assert(anchorSlice.anchorRadians != undefined, "Anchor slice should define an angular position.");
 
-        var slices = this._fillInSliceRange(firstSlice, lastSlice);
-        var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
+        var result = null;
 
-        var pieSegments = this._buildPieLayout(sliceMetrics, firstSlice, lastSlice, anchorSlice, seriesInformation);
+        var canReuseCachedPieces = seriesInformation.cachedPiePieces &&
+            seriesInformation.cachedPiePieces.fillArea.equal(fillArea) &&
+            seriesInformation.cachedPiePieces.firstSlice.same(firstSlice) &&
+            seriesInformation.cachedPiePieces.lastSlice.same(lastSlice) &&
+            seriesInformation.cachedPiePieces.anchorSlice.same(anchorSlice) &&
+            seriesInformation.cachedPiePieces.anchorSlice.anchorRadians == anchorSlice.anchorRadians;
 
-        var result = pieSegments(slices);
+        this.debugOut('Can reuse pieces? '+canReuseCachedPieces);
 
-        var otherPlaceholder =
+        if (canReuseCachedPieces)
         {
-            endAngle: pieSegments.endAngle(),
-            startAngle: pieSegments.startAngle() + Math.PI*2
-        };
-
-        if (Math.abs(otherPlaceholder.endAngle - otherPlaceholder.startAngle) > 0.001)
+            result = seriesInformation.cachedPiePieces;
+        }
+        else
         {
-            // Graft on a placeholder slice.
-            var valueResolver = function(asText)
+            var slices = this._fillInSliceRange(firstSlice, lastSlice);
+            var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
+
+            var pieSegments = this._buildPieLayout(sliceMetrics, firstSlice, lastSlice, anchorSlice, seriesInformation);
+
+            result = pieSegments(slices);
+
+            var otherPlaceholder =
             {
-                var col = seriesInformation.colDef.column;
-                var val = seriesInformation.getDataSum() - sliceMetrics.valueSum;
+                endAngle: pieSegments.endAngle(),
+                startAngle: pieSegments.startAngle() + Math.PI*2
+            };
 
-                if (asText)
+            if (Math.abs(otherPlaceholder.endAngle - otherPlaceholder.startAngle) > 0.001)
+            {
+                // Graft on a placeholder slice.
+                var valueResolver = function(asText)
                 {
-                    if ($.subKeyDefined(col, 'renderType.renderer'))
+                    var col = seriesInformation.colDef.column;
+                    var val = seriesInformation.getDataSum() - sliceMetrics.valueSum;
+
+                    if (asText)
                     {
-                        return col.renderType.renderer(val, col, true, false, true);
+                        if ($.subKeyDefined(col, 'renderType.renderer'))
+                        {
+                            return col.renderType.renderer(val, col, true, false, true);
+                        }
+                        else
+                        {
+                            return val;
+                        }
                     }
                     else
                     {
                         return val;
                     }
-                }
-                else
+                };
+
+                var nameResolver = function()
                 {
-                    return val;
-                }
-            };
+                    return 'Other';
+                };
 
-            var nameResolver = function()
-            {
-                return 'Other';
-            };
+                var colorResolver = function()
+                {
+                    return 'gray';
+                };
 
-            var colorResolver = function()
-            {
-                return 'gray';
-            };
+                otherPlaceholder.data = new this.Slice(undefined, valueResolver, nameResolver, colorResolver);
+                result.push(otherPlaceholder);
+            }
 
-            otherPlaceholder.data = new this.Slice(undefined, valueResolver, nameResolver, colorResolver);
-            result.push(otherPlaceholder);
+            seriesInformation.cachedPiePieces = result;
+            seriesInformation.cachedPiePieces.fillArea = fillArea;
+            seriesInformation.cachedPiePieces.firstSlice = firstSlice;
+            seriesInformation.cachedPiePieces.lastSlice = lastSlice;
+            seriesInformation.cachedPiePieces.anchorSlice = anchorSlice;
         }
 
         this._renderPiecesOfPie(result, seriesInformation, fillArea);
@@ -1024,13 +1079,15 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         var naturalRadius = Math.min(fillArea.width, fillArea.height) * 0.85 / 2;
 
-        return naturalRadius * zoomFactor;
+        return naturalRadius * zoomFactor - this.defaults.labelMargin;
     },
 
     _renderPiecesOfPie: function (pieces, seriesInformation, fillArea)
     {
         var vizObj = this,
             cc = vizObj._chartConfig;
+
+        vizObj.debugOut('Rendering ' +pieces.length + ' pie pieces.');
 
         var radius = vizObj._getRadius(fillArea, vizObj._zoomFactor);
 
@@ -1165,13 +1222,40 @@ $.Control.registerMixin('d3_impl_pie', {
         }
     },
 
-    _renderLabels: function(pieces, seriesInformation, arc, radius, fillArea, translateX, translateY, idFunction)
+    // Get some cached font metrics. In particular, lengthForString will cache
+    // all text lengths across the lifetime of the chart, as getting this info
+    // is quite expensive.
+    _fontMetrics: function()
+    {
+        //NOTE: Currently assumes the font size never changes.
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+        if (!cc.fontMetrics)
+        {
+            var labelSize = 13;
+            var fm =
+            {
+                labelFontSize: labelSize,
+                labelHeight: 'Xg'.visualSize(labelSize).height,
+                lengthForString: _.memoize(function(str)
+                {
+                    return str.visualLength(labelSize);
+                })
+            };
+            cc.fontMetrics = fm;
+        }
+
+        return cc.fontMetrics;
+    },
+
+    _renderLabels: function(pieces, seriesInformation, arc, sliceRadius, fillArea, translateX, translateY, idFunction)
     {
         var vizObj = this,
             cc = vizObj._chartConfig;
         var showPercentages = vizObj._displayFormat.showPercentages;
         var showActualValues = vizObj._displayFormat.showActualValues;
-        var labelSize = 13;
+        var fontMetrics = vizObj._fontMetrics();
+        var radiusForLabels = sliceRadius + vizObj.defaults.labelMargin;
 
         var arcPositionAlongBisector = function(datum, radius)
         {
@@ -1202,33 +1286,82 @@ $.Control.registerMixin('d3_impl_pie', {
             return label;
         };
 
-        var labelHeight = 'Xg'.visualSize(labelSize).height;
-
         var labelSizer = _.memoize(function(datum)
         {
-            return textFromDatum(datum).visualLength(labelSize);
+            return fontMetrics.lengthForString(textFromDatum(datum));
         }, function(datum) { return datum.data.index; });
 
         var labelDesiredPosition = function(datum)
         {
-            return arcPositionAlongBisector(datum, radius);
+            return arcPositionAlongBisector(datum, sliceRadius);
         };
 
-        var labelLayout = new d3ns.slottedCircleLayout(
-            labelHeight,
-            radius+labelHeight,
-            {x: translateX, y: translateY}, //Center of circle.
-            fillArea,
-            labelSizer,
-            labelDesiredPosition
-            );
+        var labelLayout;
+        if (_.isUndefined(pieces[0].slottedCircleLayout))
+        {
+            vizObj.debugOut('Computing slot layout');
+            labelLayout = new d3ns.slottedCircleLayout(
+                fontMetrics.labelHeight,
+                radiusForLabels,
+                {x: translateX, y: translateY}, //Center of circle.
+                fillArea,
+                labelSizer,
+                labelDesiredPosition,
+                vizObj.defaults.labelLinesMargin + vizObj.defaults.endpointLineLength // top pyramid margin.
+                );
 
-        labelLayout.data(pieces);
+            labelLayout.data(pieces);
 
+            if (vizObj.debugEnabled)
+            {
+                labelLayout.debugVerifyLayout();
+            }
+        }
+
+        var effectiveSliceRadius = sliceRadius + vizObj.defaults.endpointLineLength; // Slice radius plus the little extra line sticking out.
+        var lineHitsChart = function(d)
+        {
+            var sliceRadiusGraceArea = 1; // Allow overlap by these many pixels.
+                                          // Necessary as we always have one
+                                          // line endpoint right on the circle.
+            var desired = arcPositionAlongBisector(d, effectiveSliceRadius);
+            var x1 = d.slottedCircleLayout.x;
+            var y1 = d.slottedCircleLayout.y;
+            return d3ns.math.lineSegIntersectsCircle(0, 0, effectiveSliceRadius-sliceRadiusGraceArea, x1 - translateX, y1 - translateY, desired[0], desired[1]);
+        };
+
+        var unshowableLabelsWithSpace = 0;
         var dataWithSuccessfulLabelLayout = _.reject(pieces, function(d)
         {
-           return d.slottedCircleLayout.overflow;
+           if (d.slottedCircleLayout.overflow)
+           {
+               return true;
+           }
+           if (lineHitsChart(d) || $.isBlank(d.data.getName()))
+           {
+               unshowableLabelsWithSpace ++;
+               return true;
+           }
+           return false;
         });
+
+        // If we can't show a bunch of labels due to line placement issues, remove the labels
+        // and re-run layout so it looks better (and maybe makes better use of the available
+        // space. It's not perfect as we really need this to run until things converge,
+        // but that would be too slow.
+        if (unshowableLabelsWithSpace > vizObj.defaults.hiddenLabelReflowThreshold && labelLayout)
+        {
+            labelLayout.data(_.reject(pieces, function(d)
+                {
+                   // Keep ones with overflow.
+                   return (lineHitsChart(d) || $.isBlank(d.data.getName()));
+                }));
+
+            if (vizObj.debugEnabled)
+            {
+                labelLayout.debugVerifyLayout();
+            }
+        }
 
         var labels = cc.chartD3.selectAll('.label')
             .data(dataWithSuccessfulLabelLayout, idFunction);
@@ -1238,7 +1371,7 @@ $.Control.registerMixin('d3_impl_pie', {
                 .append('text')
                 .classed('label', true)
                 .attr({ 'text-anchor': 'start',
-                        'font-size': labelSize });
+                        'font-size': fontMetrics.labelFontSize });
 
         labels
             .attr("x", function(d) { return d.slottedCircleLayout.x; })
@@ -1264,22 +1397,120 @@ $.Control.registerMixin('d3_impl_pie', {
 
 
         lines
-            .attr('d', function(d)
+            .attr('d', function(d, i)
                 {
-                    //TODO elbow.
-                    var desired = labelDesiredPosition(d);
-                    var leftOfCenter = desired[0] < 0;
-                    var margin = 5;
-                    var targetX;
+                    var nextLabel;
+                    if (i < dataWithSuccessfulLabelLayout.length - 1)
+                    {
+                        nextLabel = dataWithSuccessfulLabelLayout[i+1];
+                    }
+
+                    var pointOnSlice = arcPositionAlongBisector(d, sliceRadius); // rel to center
+                    pointOnSlice[0] += translateX;
+                    pointOnSlice[1] += translateY;
+
+                    var pointJustOutsideSlice = arcPositionAlongBisector(d, effectiveSliceRadius); // rel to center
+                    pointJustOutsideSlice[0] += translateX;
+                    pointJustOutsideSlice[1] += translateY;
+
+                    // Okay, this seems complicated, but it's just because good looks
+                    // are never simple ;) We're just trying to connect the line to
+                    // the label text in a way that looks natural and isn't obscuring
+                    // text.
+                    // In the comments below, 'target' refers to the point on the
+                    // slice, and 'source' refers to the point on the label text.
+
+                    var pointOnLabel = []; // rel to chart
+                    var leftOfCenter = pointOnSlice[0] < translateX;
+                    var margin = vizObj.defaults.labelLinesMargin;
+                    var extraElbow = [];
+                    var teeVertical = true;
+
+                    pointOnLabel[1] = d.slottedCircleLayout.y;
                     if (leftOfCenter)
                     {
-                        targetX = d.slottedCircleLayout.x + labelSizer(d) + margin;
+                        // We're on the LHS.
+                        pointOnLabel[0] = d.slottedCircleLayout.x + labelSizer(d) + margin;
+                        // Pretty much just get a straight line with simple elbows.
+                        {
+                            extraElbow[0] = pointOnLabel[0] + vizObj.defaults.endpointLineLength;
+                            extraElbow[1] = pointOnLabel[1];
+                        }
                     }
                     else
                     {
-                        targetX = d.slottedCircleLayout.x - margin;
+                        // We're on the RHS.
+                        pointOnLabel[0] = d.slottedCircleLayout.x;
+                        if (pointJustOutsideSlice[1] > pointOnLabel[1] && // Target point is below us and
+                            pointJustOutsideSlice[0] > pointOnLabel[0])   // to the right (quadrant IV).
+                        {
+                            // Place source point on the bottom of the text,
+                            // centered horizontally.
+                            // Check the next label for collision.
+
+
+                            pointOnLabel[1] += fontMetrics.labelHeight/2;
+                            pointOnLabel[0] = d.slottedCircleLayout.x + d.slottedCircleLayout.size/2;
+
+                            var careAboutNext = nextLabel && nextLabel.slottedCircleLayout.x > translateX; // Only care if next label is on same side.
+                            if (careAboutNext)
+                            {
+                                var rightmostAllowed = nextLabel.slottedCircleLayout.x - margin;
+                                // Worst-case scenario is that this label uses a line coming out of
+                                // its left side. We don't know if it will (because that would require this
+                                // algorithm to be recursive, and frankly the label layout code in general
+                                // is already slow enough), so just account for this worst-case possibility.
+
+                                // Vertical line added to make sure we don't intersect the next label.
+                                // Well, at least the y-coordinate (x is computed in a bit).
+                                extraElbow[1] = pointOnLabel[1] + fontMetrics.labelHeight;
+
+                                // How far to the right must I be for the vertical line I'll draw (below)
+                                // intersect the line drawn from the next label's target to its slotted layout position?
+                                var nextLabelLineStart = labelDesiredPosition(nextLabel);
+                                nextLabelLineStart[0] += translateX;
+                                nextLabelLineStart[1] += translateY;
+                                var nextLabelLineWorstCaseEnd = [nextLabel.slottedCircleLayout.x, nextLabel.slottedCircleLayout.y];
+                                nextLabelLineWorstCaseEnd[0] -= margin + vizObj.defaults.endpointLineLength; //TODO this implementation needs to be common with the other cases.
+                                var slope = (nextLabelLineWorstCaseEnd[1] - nextLabelLineStart[1]) / (nextLabelLineWorstCaseEnd[0] - nextLabelLineStart[0]);
+                                // Point-slope form: y-y1 = m(x-x1)
+                                // y     : extraElbow[1]
+                                // x1, y1: nextLabelLineEnd
+                                // x     : what we're after
+                                var xOfIntercept = ((extraElbow[1] - nextLabelLineStart[1]) + slope*nextLabelLineStart[0]) / slope;
+                                rightmostAllowed = Math.min(xOfIntercept - margin, rightmostAllowed);
+
+                                pointOnLabel[0] = Math.min(rightmostAllowed, pointOnLabel[0]);
+                                extraElbow[0] = pointOnLabel[0];
+                            }
+
+                            teeVertical = false;
+                        }
+                        else // Other quadrants pretty much get a straight line with simple elbows.
+                        {
+                            pointOnLabel[0] -= margin;
+                            extraElbow[0] = pointOnLabel[0] - vizObj.defaults.endpointLineLength;
+                            extraElbow[1] = pointOnLabel[1];
+                        }
                     }
-                    return vizObj._d3_line_path(desired[0] + translateX, desired[1] + translateY, targetX, d.slottedCircleLayout.y);
+
+                    extraElbow = extraElbow || pointOnLabel;
+                    var path = vizObj._d3_line_path(pointOnSlice, pointJustOutsideSlice, extraElbow, pointOnLabel);
+                    var teeLengthSide = vizObj.defaults.labelTeeLength / 2;
+                    if (teeVertical)
+                    {
+                        path += vizObj._d3_line_path(
+                            [pointOnLabel[0], pointOnLabel[1] - teeLengthSide],
+                            [pointOnLabel[0], pointOnLabel[1] + teeLengthSide]);
+                    }
+                    else
+                    {
+                        path += vizObj._d3_line_path(
+                            [pointOnLabel[0] - teeLengthSide, pointOnLabel[1]],
+                            [pointOnLabel[0] + teeLengthSide, pointOnLabel[1]]);
+                    }
+
+                    return path;
                 });
 
         lines.exit().remove();
@@ -1418,16 +1649,16 @@ $.Control.registerMixin('d3_impl_pie', {
         {
             var colors = vizObj._displayFormat.colors;
 
-            //HAX
-            var found = true;
-
             if (d && colors)
             {
-                index = d.index % colors.length;
-
-                if (found && !_.isUndefined(colors) && colors.length > index)
+                if (!_.isUndefined(colors) && colors.length > 0)
                 {
-                    color = colors[index];
+                    var baseColorIndex = d.index % colors.length;
+                    color = colors[baseColorIndex];
+                    var rotateCount = d.index - baseColorIndex;
+                    var newBaseHsv = $.rgbToHsv($.hexToRgb(color));
+                    newBaseHsv.h = (newBaseHsv.h + 8*rotateCount) % 360;
+                    color = '#'+$.rgbToHex($.hsvToRgb(newBaseHsv));
                 }
                 else
                 {
@@ -1436,7 +1667,7 @@ $.Control.registerMixin('d3_impl_pie', {
             }
             else
             {
-                color = colDef.color || '#000'; //TODO chart config default.
+                color = colDef.color;
             }
         }
 

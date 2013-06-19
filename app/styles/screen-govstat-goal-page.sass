@@ -48,6 +48,24 @@
     .ie8 &
       border-bottom: 1px solid #fff
 
+// odysseus styles to match canvas:
+.titleBoxContainer
+  .prevailingMeasure
+    font-size: 1.2em
+
+  .goalSubtitle
+    .text, .dsLink
+      font-size: 1.2em
+
+  .content-wrapper
+    height: 100%
+    width: 100%
+
+  .progressWrapper
+    @include progress-colors(background-color, '.progress')
+    > div
+      display: block
+
 .titleContainer
   background: #fff
   background: rgba(255, 255, 255, 0.9)
@@ -177,286 +195,375 @@
         margin-top: 3em
 
 $chartHeight: 210px
-.titleContainer
-  .chartArea
-    background-color: #fbfbfb
-    @include prefixer(background, linear-gradient(#f4f4f4, #fbfbfb 15px))
-    font-size: 1em
-    height: $chartHeight
-    margin: 2em -4.5em -4.5em
-    min-height: 0
-    padding: 0
-    @include transition(2s, height)
+.chartArea
+  background-color: #fbfbfb
+  @include prefixer(background, linear-gradient(#f4f4f4, #fbfbfb 15px))
+  font-size: 1em
+  height: $chartHeight
+  margin: 2em -4.5em -4.5em
+  min-height: 0
+  padding: 0
+  @include transition(2s, height)
 
-    .goalUid
-      display: none
+  .goalUid
+    display: none
 
-    .content-wrapper
-      position: relative
+  .content-wrapper
+    position: relative
 
-      // important vomit
-      .r2d3Chart
-        width: 100% !important
-        z-index: 1
+    // important vomit
+    .r2d3Chart
+      width: 100% !important
+      z-index: 1
 
-      svg
-        bottom: 0
+    svg
+      bottom: 0
+      position: absolute
+      z-index: 1
+      // gferrari (4/25/13): Firefox is picky when it comes to calculating
+      // intrinsic sizes. See http://www.w3.org/TR/SVG/coords.html#IntrinsicSizing
+      // and https://bugzilla.mozilla.org/show_bug.cgi?id=787962
+      // This width/height make us work properly in FF.
+      height: $chartHeight
+      width: 100%
+
+      .ie8 &
+        // raphael gets confused by nonpixel widths
+        width: 0
+
+      .dataSeriesArea
+        fill: #aaa
+        fill-opacity: 0.3
+        @include transition(2s, fill-opacity)
+
+      .dataSeriesLine
+        fill: none
+        stroke-opacity: 1
+        stroke: #666
+        stroke-width: 3px
+        @include transition(2s, stroke-opacity)
+
+      .projectionLineShadow
+        fill: none
+        stroke: #fbfbfb
+        stroke-opacity: 0.4
+        stroke-width: 7px
+        @include transition(2s, stroke-opacity)
+
+      .projectionLine
+        @include progress-colors(stroke)
+        fill: none
+        stroke-opacity: 0.2
+        stroke: #888
+        stroke-width: 3px
+        @include transition(2s, stroke-opacity)
+
+    .dataSeriesLeftBuffer, .dataSeriesRightBuffer
+      background-color: #aaa
+      bottom: 0
+      @include opacity(0.08)
+      position: absolute
+      @include transition(2s, opacity)
+      z-index: 1
+
+      .border
+        background-color: #000
+        height: 3px
+        @include opacity(0)
         position: absolute
-        z-index: 1
-        // gferrari (4/25/13): Firefox is picky when it comes to calculating
-        // intrinsic sizes. See http://www.w3.org/TR/SVG/coords.html#IntrinsicSizing
-        // and https://bugzilla.mozilla.org/show_bug.cgi?id=787962
-        // This width/height make us work properly in FF.
-        height: $chartHeight
+        top: -1px
+        @include transition(2s, opacity)
         width: 100%
 
-        .ie8 &
-          // raphael gets confused by nonpixel widths
-          width: 0
+    .dataSeriesLeftBuffer
+      left: 0
 
-        .dataSeriesArea
-          fill: #aaa
-          fill-opacity: 0.3
-          @include transition(2s, fill-opacity)
+    .dataSeriesRightBuffer
+      right: 0
 
-        .dataSeriesLine
-          fill: none
-          stroke-opacity: 1
-          stroke: #666
-          stroke-width: 3px
-          @include transition(2s, stroke-opacity)
+      .border
+        @include opacity(1)
 
-        .projectionLineShadow
-          fill: none
-          stroke: #fbfbfb
-          stroke-opacity: 0.4
-          stroke-width: 7px
-          @include transition(2s, stroke-opacity)
+    .constrain
+      bottom: 0
+      left: 0
+      overflow: hidden
+      position: absolute
+      right: 0
+      top: 0
 
-        .projectionLine
-          @include progress-colors(stroke)
-          fill: none
-          stroke-opacity: 0.2
-          stroke-width: 3px
-          @include transition(2s, stroke-opacity)
-
-      .dataSeriesLeftBuffer, .dataSeriesRightBuffer
-        background-color: #aaa
-        bottom: 0
-        @include opacity(0.08)
+      .border
+        border-top: 1px solid #bbb
+        height: 0
+        margin-bottom: -1px
         position: absolute
-        @include transition(2s, opacity)
-        z-index: 1
+        width: 100%
 
-        .border
-          background-color: #000
-          height: 3px
-          @include opacity(0)
-          position: absolute
-          top: -1px
-          @include transition(2s, opacity)
-          width: 100%
-
-      .dataSeriesLeftBuffer
-        left: 0
-
-      .dataSeriesRightBuffer
-        right: 0
-
-        .border
-          @include opacity(1)
-
-      .constrain
-        bottom: 0
-        left: 0
-        overflow: hidden
+      .nowTip
+        @include triangle(17px, #bbb, top)
+        bottom: $chartHeight
+        margin-bottom: -34px
+        margin-left: -17px
         position: absolute
-        right: 0
-        top: 0
+        z-index: 3
 
-        .border
-          border-top: 1px solid #bbb
-          height: 0
-          margin-bottom: -1px
+        .nowTipFill
+          @include triangle(16px, #fff, top)
+          left: -16px
           position: absolute
-          width: 100%
+          top: -17px
 
-        .nowTip
-          @include triangle(17px, #bbb, top)
-          bottom: $chartHeight
-          margin-bottom: -34px
-          margin-left: -17px
-          position: absolute
-          z-index: 3
+    .bubble
+      color: #fff
+      padding: 0.2em
+      position: absolute
 
-          .nowTipFill
-            @include triangle(16px, #fff, top)
-            left: -16px
-            position: absolute
-            top: -17px
+    .yTick
+      border-top: 1px solid #eee
+      left: 0
+      @include opacity(1)
+      position: absolute
+      right: 0
+      @include transition(2s, opacity)
+      z-index: 0
 
       .bubble
-        color: #fff
-        padding: 0.2em
-        position: absolute
-
-      .yTick
-        border-top: 1px solid #eee
-        left: 0
-        @include opacity(1)
-        position: absolute
-        right: 0
-        @include transition(2s, opacity)
-        z-index: 0
-
-        .bubble
-          background-color: #797979
-          margin-right: 0.8em
-          margin-top: -0.8em
-          right: 100%
-          text-rendering: optimizeLegibility
-
-          .ie8 &
-            white-space: nowrap
-
-          .tip
-            @include triangle(3px, #797979, left)
-            margin-right: -6px
-            position: absolute
-            right: 0
-            top: 0.4em
-
-      .xTick.bubble
-        background-color: #ababab
-        bottom: 0
-        margin-bottom: -2.3em
-        margin-left: -2.5em
-        @include opacity(1)
-        position: absolute
-        text-align: center
-        @include transition(2s, opacity)
-        width: 4.6em
-
-        .tip
-          @include triangle(3px, #ababab, bottom)
-          margin-top: -6px
-          position: absolute
-          left: 2.2em
-          top: 0
-
-        &:hover
-          z-index: 2
-
-      .marker
-        @include progress-colors(background-color)
-        @include progress-colors(border-right-color, '.tip')
         background-color: #797979
-        left: 100%
-        margin-left: 0.8em
-        margin-bottom: -0.7em
-        position: absolute
+        margin-right: 0.8em
+        margin-top: -0.8em
+        right: 100%
+        text-rendering: optimizeLegibility
+
+        .ie8 &
+          white-space: nowrap
 
         .tip
-          @include triangle(3px, #797979, right)
-          margin-left: -6px
+          @include triangle(3px, #797979, left)
+          margin-right: -6px
           position: absolute
-          left: 0
+          right: 0
           top: 0.4em
 
-        &.currentMarker, &.targetMarker
-          font-size: 1.35em
-          margin-bottom: -0.65em
-          margin-left: 0.6em
-          padding-top: 0.15em
+    .xTick.bubble
+      background-color: #ababab
+      bottom: 0
+      margin-bottom: -2.3em
+      margin-left: -2.5em
+      @include opacity(1)
+      position: absolute
+      text-align: center
+      @include transition(2s, opacity)
+      width: 4.6em
 
-          .tip
-            top: 0.55em
-
-      .meter
-        bottom: 0
-        height: $chartHeight
+      .tip
+        @include triangle(3px, #ababab, bottom)
+        margin-top: -6px
         position: absolute
-        right: 0
-        width: 6px
+        left: 2.2em
+        top: 0
+
+      &:hover
         z-index: 2
 
-        div
-          @include progress-colors(background-color)
-          position: absolute
-          width: 100%
+    .marker
+      @include progress-colors(background-color)
+      @include progress-colors(border-right-color, '.tip')
+      background-color: #797979
+      left: 100%
+      margin-left: 0.8em
+      margin-bottom: -0.7em
+      position: absolute
 
-          &.rangeTop
-            top: 0
-          &.rangeBottom
-            bottom: 0
-
-      // todo: make more prominent somehow
-      .pull
-        background-color: #fff
-        border: 1px solid #bbb
-        border-top: none
-        @include border-radius(0, 0, 0.3em, 0.3em)
-        bottom: 0
-        cursor: pointer
-        height: 1em
-        left: 50%
-        margin-bottom: -1.1em
-        margin-left: -2.5em
+      .tip
+        @include triangle(3px, #797979, right)
+        margin-left: -6px
         position: absolute
-        @include transition(0.2s, height margin)
-        width: 5em
-        z-index: 1
+        left: 0
+        top: 0.4em
 
-        &:hover, &.up
-          height: 1.5em
-          margin-bottom: -1.6em
+      &.currentMarker, &.targetMarker
+        font-size: 1.35em
+        margin-bottom: -0.65em
+        margin-left: 0.6em
+        padding-top: 0.15em
 
-        &.up:hover
-          height: 1.7em
-          margin-bottom: -1.8em
+        .tip
+          top: 0.55em
 
-        .icon
-          left: 50%
-          margin-left: -4px
-          position: absolute
+    .meter
+      bottom: 0
+      height: $chartHeight
+      position: absolute
+      right: 0
+      width: 6px
+      z-index: 2
 
-        &.down .icon
-          @include triangle(4px, #777, top)
-          bottom: -1px
+      div
+        @include progress-colors(background-color)
+        position: absolute
+        width: 100%
 
-        &.up .icon
-          @include triangle(4px, #777, bottom)
-          bottom: 3px
+        &.rangeTop
+          top: 0
+        &.rangeBottom
+          bottom: 0
 
-    &.collapsed
-      height: 0
+    // todo: make more prominent somehow
+    .pull
+      background-color: #fff
+      border: 1px solid #bbb
+      border-top: none
+      @include border-radius(0, 0, 0.3em, 0.3em)
+      bottom: 0
+      cursor: pointer
+      height: 1em
+      left: 50%
+      margin-bottom: -1.1em
+      margin-left: -2.5em
+      position: absolute
+      @include transition(0.2s, height margin)
+      width: 5em
+      z-index: 1
 
-      .content-wrapper
-        .dataSeriesArea
-          fill-opacity: 0.035
+      &:hover, &.up
+        height: 1.5em
+        margin-bottom: -1.6em
 
-        .dataSeriesLine
-          stroke-opacity: 0.1
+      &.up:hover
+        height: 1.7em
+        margin-bottom: -1.8em
 
-        .projectionLineShadow, .projectionLine
-          stroke-opacity: 0
+      .icon
+        left: 50%
+        margin-left: -4px
+        position: absolute
 
-        .dataSeriesLeftBuffer, .dataSeriesRightBuffer
-          border-top: 3px solid rgba(0, 0, 0, 0.38)
-          @include opacity(0.025)
+      &.down .icon
+        @include triangle(4px, #777, top)
+        bottom: -1px
 
-          .border
-            @include opacity(0.2)
+      &.up .icon
+        @include triangle(4px, #777, bottom)
+        bottom: 3px
 
-        .yTick, .xTick.bubble
-          @include opacity(0.3)
+  &.collapsed
+    height: 0
 
-        // we could also have them always show softly
+    .content-wrapper
+      .dataSeriesArea
+        fill-opacity: 0.035
+
+      .dataSeriesLine
+        stroke-opacity: 0.1
+
+      .projectionLineShadow, .projectionLine
+        stroke-opacity: 0
+
+      .dataSeriesLeftBuffer, .dataSeriesRightBuffer
+        border-top: 3px solid rgba(0, 0, 0, 0.38)
+        @include opacity(0.025)
+
+        .border
+          @include opacity(0.2)
+
+      .yTick, .xTick.bubble
+        @include opacity(0.3)
+
+      // we could also have them always show softly
+        .xTick.bubble
+          @include opacity(0.35)
+
+      .r2d3Chart
+        top: -$chartHeight !important
+
+.relatedMeasure
+  border-bottom: 1px solid $color_chrome_box_border
+  padding: 2em 5em 4em
+  .measureHeader
+    overflow: hidden
+
+    .measureName
+      float: left
+      font-size: 2.6em
+      font-weight: normal
+      margin-right: 0.5em
+
+    .measureHeadline
+      float: left
+      font-size: 1.4em
+      line-height: 3.45em
+
+  .measureBody
+    padding-top: 1em
+    position: relative
+
+    .measureChart
+      margin-right: 40em
+
+      .chartArea
+        background: transparent
+        margin: 0
+
+        .content-wrapper
+          height: 100%
+
+          .xTick.bubble, .yTick .bubble
+            background-color: #fff
+            border: 1px solid #ccc
+            color: #999
+
+          .yTick .bubble
+            .tip
+              border-left-color: #ccc
+
           .xTick.bubble
-            @include opacity(0.35)
+            .tip
+              border-bottom-color: #ccc
 
-        .r2d3Chart
-          top: -$chartHeight !important
+          .constrain .border
+            display: none
+          .nowTip
+            display: none
+
+          .pull
+            display: none
+
+          .meter
+            width: 4px
+
+    .measureValues
+      position: absolute
+      right: 0
+      top: 8em
+      width: 30em
+
+      &.hasTarget
+        top: 4.3em
+
+      .metricValue
+        @include progress-colors('color', '.value')
+
+        .value
+          font-size: 4em
+          letter-spacing: -1px
+          padding-right: 0.1em
+        .unit
+          color: $govstat_color_none
+          font-size: 1.5em
+
+      .metricTime
+        color: #666
+        font-size: 1.5em
+
+      .currentValue
+        padding-bottom: 1em
+
+      .targetValue
+        border-top: 1px solid $color_chrome_box_border
+        padding-top: 1em
+
+        .metricValue .value
+          color: #666
 
 .sectionTitle
   font-size: 2em

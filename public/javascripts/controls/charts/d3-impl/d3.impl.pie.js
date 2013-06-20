@@ -1165,7 +1165,18 @@ $.Control.registerMixin('d3_impl_pie', {
                     var centroid = arc.centroid(datum);
                     var width = $(this.node).btOuterWidth();
                     var height = $(this.node).btOuterHeight();
-                    var position = $(this.node).btPosition();
+
+                    // BUG WORKAROUND: Firefox will not report offset parents for
+                    // SVG elements (the offsetParent property is undefined). This
+                    // causes position() to return a value relative to the document
+                    // root. So if this is the case, hack in the correct offsetParent
+                    // here...
+                    if (_.isUndefined(this.node.offsetParent))
+                    {
+                        this.node.offsetParent = cc.$chartContainer[0];
+                    }
+
+                    var position = $(this.node).position();
                     centroid[0] += -position.left + translateX;
                     centroid[1] += -position.top + translateY;
 

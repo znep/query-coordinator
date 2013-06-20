@@ -358,12 +358,14 @@ jQuery.bt = {version: '0.9.5-rc1'};
           // figure out which is the largest
           position = 'top'; // prime the pump
           for (var pig in space) {  //            <-------  pigs in space!
+            if (!space.hasOwnProperty(pig)) { continue; } // Giacomo Ferrari <giacomo.ferrari@socrata.com> 6/19/2013: IE8 also iterates over array methods; we don't want them.
             position = space[pig] > space[position] ? pig : position;
           }
           basePosition = position;
         }
         else {
           for (var x in opts.positions) {
+            if (!opts.positions.hasOwnProperty(x)) { continue; } // Giacomo Ferrari <giacomo.ferrari@socrata.com> 6/19/2013: IE8 also iterates over array methods; we don't want them.
             position = opts.positions[x];
             splitPosition = position.split('-');
             basePosition = splitPosition[0];

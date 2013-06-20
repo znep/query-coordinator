@@ -367,7 +367,10 @@
                             notequalto: 'valueCol', useFieldName: true,
                             name: 'fieldName', otherNames: 'tableColumnId',
                             columns: {type: colTypes, hidden: options.isEdit}}
-                }
+                },
+                {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
+                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+                initialRepeatCount: 5, lineClass: 'colorArray'}
             ]
         };
     };

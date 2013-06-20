@@ -496,8 +496,8 @@ zh:
       title:
         default: 搜索、浏览数据集和视图
         result:
-          main: ! '"%{term}" 的'
-          term: 结果 %{body}
+          main: 结果 %{body}
+          term: ! '"%{term}" 的'
           facet_main: 匹配 %{body}
           facet: ! '%{facet_value}的%{facet_type} '
       listing:

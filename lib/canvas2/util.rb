@@ -48,6 +48,7 @@ module Canvas2
       @@no_cache = nil
       @@env = nil
       @@is_private = nil
+      @@next_auto_id = 0
     end
 
     def self.set_params(params)

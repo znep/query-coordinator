@@ -462,6 +462,83 @@ body.socrata-page
         vertical-align: middle
         width: 16px
 
+.component-NewCatalog
+  .sidebar
+    margin-right: 2em
+  .component-Sort
+    border-bottom: 1px solid $color_chrome_box_border
+    margin-bottom: 1em
+    padding-bottom: 1em
+  .component-DatasetListFilter
+    border-top: 1px solid $color_chrome_box_border
+    margin-top: 1em
+    padding-top: 1em
+  .header
+    background-color: $color_table_header_inactive
+    padding: 0.25em 1em
+    .component-FormattedText
+      font-weight: bold
+  .noResults
+    font-size: 1.5em
+    height: 20em
+    margin-top: 5em
+    text-align: center
+  .results
+    .item
+      border-bottom: 1px solid $color_chrome_box_border
+      padding: 0.5em
+      &.federated
+        background-color: $federated_background_color
+      .largeImage
+        float: left
+        margin-right: 0.5em
+        padding-right: 0
+        text-align: center
+        width: 50px
+        z-index: 1
+        .datasetIcon
+          margin: 0 auto
+          width: 50px
+        img.datasetImage
+          max-height: 50px
+          max-width: 50px
+          &.thumbnail
+            padding: 12px 0
+            border: 1px solid $color_chrome_box_border
+        .type
+          @include sprite-type-icons-50
+          font-size: 0.8333em
+      .domainIcon
+        float: left
+        margin-right: 0.3em
+        img
+          height: 2em
+          width: 2em
+      .datasetLink
+        font-size: 1.5em
+      .federationSource
+        color: #999999
+        margin-top: 0.5em
+      .description
+        font-size: 1em
+        margin-top: 0.5em
+      .views
+        color: #999999
+        font-size: 1em
+      .rss
+        .subscribe
+          @include sprite-menu-icons
+  .component-Pager
+    margin-top: 1em
+    text-align: center
+    .navigatePaging
+      font-size: 1.2em
+    .navigateLink
+      font-size: 1.4em
+    .disabled
+      display: none
+
+
 @media print
   @each $name in Share, InlineFilter, Pager, Print, Search, Geolocator, Sort
     .component-#{$name}

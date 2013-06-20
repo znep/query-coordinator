@@ -16,25 +16,7 @@ module Canvas2
       @context_ids = []
 
       if @properties.has_key?('context')
-        c_id = 'context-' + self.id
-        con = string_substitute(@properties['context'])
-        if con.is_a?(Array)
-          @context = []
-          con.each_with_index do |c,i|
-            cur_id = c['id'].blank? ? c_id + '-' + i.to_s : c['id']
-            DataContext.load_context(cur_id, c)
-            @context << DataContext.available_contexts[cur_id]
-            # Collect ids for later perusal
-            @context_ids << cur_id
-          end
-          @context.compact!
-        else
-          c_id = con['id'].blank? ? c_id : con['id']
-          DataContext.load_context(c_id, con)
-          @context = DataContext.available_contexts[c_id]
-          # Collect ids for later perusal
-          @context_ids << c_id
-        end
+        set_context(@properties['context'])
       end
     end
 
@@ -61,6 +43,28 @@ module Canvas2
       @context_ids << cId
       DataContext.available_contexts[cId] || (@properties['entity'] || {}).with_indifferent_access[cId] ||
         (!self.parent.blank? && self.parent.respond_to?(:child_context) ? Util.deep_get(self.parent.child_context || {}, cId) : nil)
+    end
+
+    def set_context(cxt_config)
+      c_id = 'context-' + self.id
+      con = string_substitute(cxt_config)
+      if con.is_a?(Array)
+        @context = []
+        con.each_with_index do |c,i|
+          cur_id = c['id'].blank? ? c_id + '-' + i.to_s : c['id']
+          DataContext.load_context(cur_id, c)
+          @context << DataContext.available_contexts[cur_id]
+          # Collect ids for later perusal
+          @context_ids << cur_id
+        end
+        @context.compact!
+      else
+        c_id = con['id'].blank? ? c_id : con['id']
+        DataContext.load_context(c_id, con)
+        @context = DataContext.available_contexts[c_id]
+        # Collect ids for later perusal
+        @context_ids << c_id
+      end
     end
 
     def string_substitute(text, special_resolver = nil)

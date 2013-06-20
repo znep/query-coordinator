@@ -85,7 +85,7 @@ module Canvas2
           # Search results are considered part of the manifest; but are handled differently during validation
           @manifest.add_resource(search_response.id, search_response.check_time)
           ds_list = search_response.results.reject do |ds|
-            add_query(ds, config['query'])
+            got_dataset(ds, config)
             config['requireData'] && ds.get_total_rows({}, !Canvas2::Util.is_private) < 1
           end
           if ds_list.length > 0 || config['noFail']
@@ -361,6 +361,13 @@ module Canvas2
       if ds.sodacan.nil? && config['prefetch']
         ds.prefetch(config['prefetch'])
       end
+
+      # Hack to make some DataSlate subst properties work
+      ds.data['styleClass'] = ds.display.type.capitalize
+      ds.data['displayName'] = ds.display.name
+      ds.data['preferredImage'] = ds.preferred_image
+      ds.data['preferredImageType'] = ds.preferred_image_type
+
       ds.data['totalRows'] = ds.get_total_rows({}, !Canvas2::Util.is_private) if config['getTotal']
     end
 

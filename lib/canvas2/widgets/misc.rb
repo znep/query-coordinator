@@ -124,6 +124,143 @@ module Canvas2
     end
   end
 
+  class NewCatalog < Container
+    def render_contents
+      if context.nil? || context[:type] != 'datasetList'
+        set_context({ type: 'datasetList', noFail: true, search: { limit: 100 } }.with_indifferent_access)
+      end
+      conf = default_config(string_substitute(@properties))
+      @children = CanvasWidget.from_config(conf, self).compact
+      result = super
+      result[0] += '<span class="dataCarrier hide" data-catalogconfig="' +
+        CGI::escapeHTML(conf.to_json) + '"></span>'
+      result
+    end
+
+    def default_config(props)
+      disabled_sections = Util.array_to_obj_keys(props['disabledSections'] || [], true)
+      disabled_items = Util.array_to_obj_keys(props['disabledItems'] || [], true)
+      defaults = props['defaults'] || {}
+
+      [{
+        type: 'HorizontalContainer',
+        children: [
+        {
+          weight: 2,
+          type: 'Container',
+          htmlClass: 'sidebar',
+          children: [
+          (disabled_sections['sort'] ? nil : { type: 'Sort' }),
+          {
+            type: 'Search',
+            isList: true
+          },
+          (disabled_sections[t('controls.browse.facets.view_types_singular_title')] ? nil :
+            {
+              type: 'DatasetListFilter',
+              facet: 'viewTypes'
+            }),
+          (disabled_sections[t('controls.browse.facets.categories_singular_title')] ? nil :
+            {
+              type: 'DatasetListFilter',
+              facet: 'categories'
+            }),
+          (disabled_sections[t('controls.browse.facets.topics_singular_title')] ? nil :
+            {
+              type: 'DatasetListFilter',
+              facet: 'topics'
+            }),
+          (disabled_sections[t('controls.browse.facets.federated_domains_singular_title')] ? nil :
+            {
+              type: 'DatasetListFilter',
+              facet: 'federatedDomains'
+            })
+          ]
+        },
+        {
+          weight: 8,
+          type: 'Container',
+          children: [
+          (disabled_items['table_header'] ? nil : {
+            type: 'HorizontalContainer',
+            htmlClass: 'header',
+            children: [
+              { type: 'FormattedText', markdown: 'Name', weight: 8 },
+              { type: 'FormattedText', markdown: 'Popularity', weight: 1 },
+              { type: 'FormattedText', markdown: 'RSS', weight: 1 }
+            ]
+          }),
+          {
+            type: 'Repeater',
+            htmlClass: 'results',
+            container: {
+              type: 'MultiPagedContainer',
+              id: 'catalogPagedContainer',
+              pageSize: 10
+            },
+            noResultsChildren: [
+              { type: 'Title', customClass: 'noResults', text: (defaults['no_results_text'] ||
+                                                                t('controls.browse.listing.no_results')) }
+            ],
+            children: [
+            {
+              type: 'HorizontalContainer',
+              htmlClass: 'item {dataset.domainCName /.+/federated/ ||}',
+              children: [
+              {
+                type: 'Container',
+                weight: 8,
+                children: [
+                { type: 'Picture', customClass: 'largeImage',
+                  htmlClass: 'datasetImage datasetIcon {dataset.preferredImageType}',
+                  url: '{dataset.preferredImage}', alt: '{dataset.name}',
+                  ifValue: 'dataset.preferredImage' },
+                { type: 'SafeHtml', customClass: 'largeImage',
+                  html: '<div class="datasetIcon type type{dataset.styleClass}" ' +
+                  'title="{dataset.displayName $[u]}"><span class="icon"></span></div>',
+                  ifValue: { key: 'dataset.preferredImage', negate: true } },
+                { type: 'Picture', customClass: 'domainIcon',
+                  url: '/api/domains/{dataset.domainCName}/icons/smallIcon',
+                  alt: t('controls.browse.listing.federation_source',
+                         { source: '{dataset.domainCName}' }), ifValue: 'dataset.domainCName' },
+                 { type: 'Button', notButton: true, customClass: 'datasetLink',
+                   external: props['externalLinks'],
+                   href: '/d/{dataset.id}', text: '{dataset.name ||(unnamed)}' },
+                 { type: 'SafeHtml', customClass: 'federationSource',
+                   html: t('controls.browse.listing.federation_source_html',
+                           { source_link: ('<a href="https://{dataset.domainCName}">' +
+                             '{dataset.domainCName}</a>').html_safe }),
+                   ifValue: 'dataset.domainCName' },
+                 { type: 'FormattedText', customClass: 'description',
+                   markdown: '{dataset.description ||}' }
+                ]
+              },
+              { type: 'FormattedText', weight: 1, customClass: 'views',
+                markdown: '{dataset.viewCount %[,0] || 0} ' + t('core.analytics.visits') },
+              { type: 'SafeHtml', weight: 1, customClass: 'rss',
+                html: '<a href="/api/views/{dataset.id}/rows.rss" title="' +
+                t('controls.browse.actions.dataset_subscribe') + '"><div class="subscribe">' +
+                '<span class="icon"></span></div></a>' }
+              ]
+            }
+            ]
+          },
+          (disabled_items['pagination'] ? nil : {
+            type: 'Pager',
+            pagedContainerId: 'catalogPagedContainer',
+            selectorStyle: 'navigate',
+            navigateStyle: 'paging',
+            navigateWrap: false,
+            showFirstLastPageLink: true,
+            navigateLinksAsButtons: true
+          })
+          ]
+        }
+        ]
+      }.with_indifferent_access]
+    end
+  end
+
   class DataRenderer < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true
@@ -784,16 +921,15 @@ module Canvas2
 
       t = '<div class="title">' + facet[:title] + '</div>' +
         '<ul class="listSection" data-jsdata="' + CGI::escapeHTML(js_data.to_json) + '">'
-      if cur_val.present?
-        params = Util.page_params.deep_dup
-        (facet[:param_list] || [facet[:param]]).each { |p|
-          params['data_context'][context[:id]]['search'].delete(p.to_s) } if
-          params['data_context'].present? &&
-          params['data_context'][context[:id]].present? && params['data_context'][context[:id]]['search']
-        t += '<li><a href="' + Util.page_path + '?' + params.to_param + '" class="clearFacet">'
-        t += '<span class="icon"></span>' if facet[:use_icon]
+      params = Util.page_params.deep_dup
+      (facet[:param_list] || [facet[:param]]).each { |p|
+        params['data_context'][context[:id]]['search'].delete(p.to_s) } if
+        params['data_context'].present? &&
+        params['data_context'][context[:id]].present? && params['data_context'][context[:id]]['search']
+      t += '<li><a href="' + Util.page_path + '?' + params.to_param + '" class="clearFacet' +
+        (cur_val.present? ? '' : ' hide') + '">'
+      t += '<span class="icon"></span>' if facet[:use_icon]
         t += t('controls.browse.actions.clear_facet') + '</a></li>'
-      end
       if facet[:tag_cloud]
         facet[:extra_options].sort_by { |o| o[:count] }.reverse.each_with_index do |facet_option, i|
           t += render_facet_item(facet_option, facet, cur_val, i >= facet[:options].length ? 'cutoff' : '')

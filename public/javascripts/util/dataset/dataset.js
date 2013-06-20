@@ -1748,26 +1748,38 @@ var Dataset = ServerModel.extend({
         return stypes;
     },
 
-	preferredImage: function(size)
-	{
-		var ds = this;
+    preferredImage: function(size)
+    {
+        var ds = this;
 
-		if ($.isBlank(size)) { size = 'thumb'; }
+        if ($.isBlank(size)) { size = 'thumb'; }
 
-		var filename;
-		if (!$.isBlank(ds.iconUrl))
-		{
-			return '/assets/' + escape(ds.iconUrl) + '?s=thumb';
-		}
-		else if (filename = $.deepGet(ds, 'metadata', 'thumbnail', 'page', 'filename'))
-		{
-			var result = '';
-			if (ds.isFederated()) { result += '//' + this.domainCName; }
+        var filename;
+        if (!$.isBlank(ds.iconUrl))
+        {
+            return '/assets/' + escape(ds.iconUrl) + '?s=thumb';
+        }
+        else if (filename = $.deepGet(ds, 'metadata', 'thumbnail', 'page', 'filename'))
+        {
+            var result = '';
+            if (ds.isFederated()) { result += '//' + this.domainCName; }
 
-			result += '/api/views/' + ds.id + '/snapshots/page?size=thumb';
-			return result;
-		}
-	},
+            result += '/api/views/' + ds.id + '/snapshots/page?size=thumb';
+            return result;
+        }
+        return null;
+    },
+
+    preferredImageType: function()
+    {
+        var ds = this;
+
+        if (!$.isBlank(ds.iconUrl))
+        { return 'customImage'; }
+        else if ($.subKeyDefined(ds, 'metadata.thumbnail.page.filename'))
+        { return 'thumbnail'; }
+        return '';
+    },
 
     // Private methods
 

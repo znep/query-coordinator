@@ -16,6 +16,11 @@ $.component.Component.extend('Pager', 'none', {//'input', {
     //   - showFirstLastPageLink: false (default), true. Only for selectorStyle=navigate.
     //   - navigateLinksAsButtons: false (default), true. Only for selectorStyle=navigate.
 
+    _getAssets: function()
+    {
+        return { translations: ['core.pagination'] };
+    },
+
     isValid: function()
     {
         if ($.isBlank(this._context) && !$.isBlank(this._properties.pagedContainerId))
@@ -118,7 +123,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                                 {
                                     tagName: 'span',
                                     'class': ['icon'],
-                                    contents: 'First Page'
+                                    contents: $.t('core.pagination.first_page')
                                 },
                             'class': ['button', 'navigateLink', 'firstLink', 'start']
                         }));
@@ -126,7 +131,9 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                     else
                     {
                         cObj.$contents.append($.tag({tagName: 'a', href: '#First',
-                            'class': ['navigateLink', 'firstLink'], contents: '&laquo; First'}));
+                            'class': ['navigateLink', 'firstLink'],
+                            contents: '&laquo; ' + $.t('core.pagination.first_page')
+                        }));
                     }
                 }
 
@@ -141,7 +148,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                             {
                                 tagName: 'span',
                                 'class': ['icon'],
-                                contents: 'Previous Page'
+                                contents: $.t('core.pagination.previous_page')
                             },
                         'class': ['button', 'navigateLink', 'prevLink', 'previous']
                     }));
@@ -149,7 +156,9 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                 else
                 {
                     cObj.$contents.append($.tag({tagName: 'a', href: '#Previous',
-                        'class': ['navigateLink', 'prevLink'], contents: '&lt; Previous'}));
+                        'class': ['navigateLink', 'prevLink'],
+                        contents: '&lt; ' + $.t('core.pagination.previous_page')
+                    }));
                 }
 
                 // Paging UI containers.
@@ -178,7 +187,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                             {
                                 tagName: 'span',
                                 'class': ['icon'],
-                                contents: 'Next Page'
+                                contents: $.t('core.pagination.next_page')
                             },
                         'class': ['button', 'navigateLink', 'nextLink', 'next']
                     }));
@@ -186,7 +195,9 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                 else
                 {
                     cObj.$contents.append($.tag({tagName: 'a', href: '#Next',
-                        'class': ['navigateLink', 'nextLink'], contents: 'Next &gt;'}));
+                        'class': ['navigateLink', 'nextLink'],
+                        contents: $.t('core.pagination.next_page') + ' &gt;'
+                    }));
                 }
 
 
@@ -199,14 +210,17 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                         {
                             tagName: 'a',
                             href: '#Last',
-                            contents: { tagName: 'span', 'class': ['icon'], contents: 'Last Page'},
+                            contents: { tagName: 'span', 'class': ['icon'],
+                                contents: $.t('core.pagination.last_page') },
                             'class': ['button', 'navigateLink', 'lastLink', 'end']
                         }));
                     }
                     else
                     {
                         cObj.$contents.append($.tag({tagName: 'a', href: '#Last',
-                            'class': ['navigateLink', 'lastLink'], contents: 'Last &raquo;'}));
+                            'class': ['navigateLink', 'lastLink'],
+                            contents: $.t('core.pagination.last_page') + ' &raquo;'
+                        }));
                     }
                 }
             }

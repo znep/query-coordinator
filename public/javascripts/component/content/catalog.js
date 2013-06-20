@@ -53,4 +53,182 @@ $.component.Component.extend('Catalog', 'data', {
     }
 });
 
+$.component.Container.extend('NewCatalog', 'data', {
+    _init: function()
+    {
+        this._delayUntilVisible = true;
+
+        // Normal object setup
+        this._super.apply(this, arguments);
+    },
+
+    _getAssets: function()
+    {
+        return { translations: ['controls.browse', 'core.analytics'] };
+    },
+
+    _render: function()
+    {
+        var cObj = this;
+        if (!cObj._super.apply(cObj, arguments)) { return false; }
+
+        // Only need to do the setup once. However, we don't really handle
+        // changes...
+        if (cObj._setUp) { return; }
+
+        var setDatasetList = function()
+        {
+            if (!$.subKeyDefined(cObj, '_context.datasetList'))
+            { cObj.properties({ context: { id: 'context-' + cObj.id, type: 'datasetList', noFail: true, search: { limit: 100 } } }); }
+            var conf = cObj.$contents.find('.dataCarrier').data('catalogconfig') ||
+                defaultConfig(cObj._stringSubstitute(cObj._properties));
+            cObj.add(conf);
+            cObj._setUp = true;
+        };
+
+        if (!cObj._updateDataSource(null, setDatasetList))
+        { setDatasetList(); }
+
+        return true;
+    }
+});
+
+var defaultConfig = function(props)
+{
+    var disabledSections = {};
+    if (!_.isEmpty(props.disabledSections))
+    { disabledSections = $.arrayToObjKeys(props.disabledSections, true); }
+
+    var disabledItems = {};
+    if (!_.isEmpty(props.disabledItems))
+    { disabledItems = $.arrayToObjKeys(props.disabledItems, true); }
+
+    var defaults = props.defaults || {};
+
+    return {
+        type: 'HorizontalContainer',
+        children: [
+        {
+            weight: 2,
+            type: 'Container',
+            htmlClass: 'sidebar',
+            children: [
+            (disabledItems.sort ? null : { type: 'Sort' }),
+            {
+                type: 'Search',
+                isList: true
+            },
+            (disabledSections[$.t('controls.browse.facets.view_types_singular_title')] ?
+                null :
+                {
+                    type: 'DatasetListFilter',
+                    facet: 'viewTypes'
+                }
+            ),
+            (disabledSections[$.t('controls.browse.facets.categories_singular_title')] ?
+                null :
+                {
+                    type: 'DatasetListFilter',
+                    facet: 'categories'
+                }
+            ),
+            (disabledSections[$.t('controls.browse.facets.topics_singular_title')] ?
+                null :
+                {
+                    type: 'DatasetListFilter',
+                    facet: 'topics'
+                }
+            ),
+            (disabledSections[$.t('controls.browse.facets.federated_domains_singular_title')] ?
+                null :
+                {
+                    type: 'DatasetListFilter',
+                    facet: 'federatedDomains'
+                }
+            )
+            ]
+        },
+        {
+            weight: 8,
+            type: 'Container',
+            children: [
+            (disabledItems.table_header ? null : {
+                type: 'HorizontalContainer',
+                htmlClass: 'header',
+                children: [
+                { type: 'FormattedText', markdown: 'Name', weight: 8 },
+                { type: 'FormattedText', markdown: 'Popularity', weight: 1 },
+                { type: 'FormattedText', markdown: 'RSS', weight: 1 }
+                ]
+            }),
+            {
+                type: 'Repeater',
+                htmlClass: 'results',
+                container: {
+                    type: 'MultiPagedContainer',
+                    id: 'catalogPagedContainer',
+                    pageSize: 10
+                },
+                noResultsChildren: [
+                { type: 'Title', customClass: 'noResults', text: (defaults.no_results_text ||
+                    $.t('controls.browse.listing.no_results')) }
+                ],
+                children: [
+                {
+                    type: 'HorizontalContainer',
+                    htmlClass: 'item {dataset.domainCName /.+/federated/ ||}',
+                    children: [
+                    {
+                        type: 'Container',
+                        weight: 8,
+                        children: [
+                        { type: 'Picture', customClass: 'largeImage',
+                            htmlClass: 'datasetImage datasetIcon {dataset.preferredImageType}',
+                            url: '{dataset.preferredImage}', alt: '{dataset.name}',
+                            ifValue: 'dataset.preferredImage' },
+                        { type: 'SafeHtml', customClass: 'largeImage',
+                            html: '<div class="datasetIcon type type{dataset.styleClass}" ' +
+                            'title="{dataset.displayName $[u]}"><span class="icon"></span></div>',
+                            ifValue: { key: 'dataset.preferredImage', negate: true } },
+                        { type: 'Picture', customClass: 'domainIcon',
+                            url: '/api/domains/{dataset.domainCName}/icons/smallIcon',
+                            alt: $.t('controls.browse.listing.federation_source',
+                                    { source: '{dataset.domainCName}' }), ifValue: 'dataset.domainCName' },
+                        { type: 'Button', notButton: true, customClass: 'datasetLink',
+                            external: props.externalLinks,
+                            href: '/d/{dataset.id}', text: '{dataset.name ||(unnamed)}' },
+                        { type: 'SafeHtml', customClass: 'federationSource',
+                            html: $.t('controls.browse.listing.federation_source_html',
+                                { source_link: '<a href="https://{dataset.domainCName}">' +
+                                    '{dataset.domainCName}</a>' }),
+                            ifValue: 'dataset.domainCName' },
+                        { type: 'FormattedText', customClass: 'description',
+                            markdown: '{dataset.description ||}' }
+                        ]
+                    },
+                    { type: 'FormattedText', weight: 1, customClass: 'views',
+                        markdown: '{dataset.viewCount %[,] || 0} ' + $.t('core.analytics.visits') },
+                    { type: 'SafeHtml', weight: 1, customClass: 'rss',
+                        html: '<a href="/api/views/{dataset.id}/rows.rss" title="' +
+                            $.t('controls.browse.actions.dataset_subscribe') + '"><div class="subscribe">' +
+                            '<span class="icon"></span></div></a>' }
+                    ]
+                }
+                ]
+            },
+            (disabledItems.pagination ? null : {
+                type: 'Pager',
+                pagedContainerId: 'catalogPagedContainer',
+                selectorStyle: 'navigate',
+                navigateStyle: 'paging',
+                navigateWrap: false,
+                showFirstLastPageLink: true,
+                navigateLinksAsButtons: true
+            })
+            ]
+        }
+        ]
+    };
+};
+
 })(jQuery);

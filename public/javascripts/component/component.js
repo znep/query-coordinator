@@ -901,14 +901,15 @@
             var entity = cObj._properties.entity;
             if (entity)
             {
-                return function(name) {
+                return function(name)
+                {
                     var result;
                     if (!_.isEmpty(cObj._dataContext)) { result = dcResolver(name); }
                     if (result !== undefined)
-                        return result;
+                    { return result; }
                     result = $.deepGetStringField(entity, name);
                     if (result !== undefined)
-                        return result;
+                    { return result; }
                     return parentResolver(name);
                 };
             }

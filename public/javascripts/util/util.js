@@ -581,13 +581,17 @@ $.deepGet = function(/* [create], obj, keys* */)
             try { obj = JSON.parse(obj); }
             catch (e) {}
         }
+
         if (obj[key] == null) // null or undefined
             if (!create)
                 return undefined;
             else
                 obj[key] = {};
 
-        obj = obj[key];
+        if (_.isFunction(obj[key]))
+        { obj = obj[key].apply(obj); }
+        else
+        { obj = obj[key]; }
     }
 
     return obj;

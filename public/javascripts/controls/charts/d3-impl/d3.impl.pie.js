@@ -740,7 +740,16 @@ $.Control.registerMixin('d3_impl_pie', {
                     }
                     else
                     {
-                        return _.isUndefined(val) ? 0 : parseFloat(val);
+                        // Undefined or non-number values get treated as zero-value.
+                        if (_.isUndefined(val))
+                        {
+                            return 0;
+                        }
+                        else
+                        {
+                            var asFloat = parseFloat(val);
+                            return _.isNaN(asFloat) ? 0 : asFloat;
+                        }
                     }
                 };
             };

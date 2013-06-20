@@ -937,14 +937,29 @@ var RowSet = ServerModel.extend({
         var agg = _.detect(col.renderType.aggregates, function(a) { return a.value == aggName; });
         if ($.isBlank(agg)) { return null; }
 
-        var values = _.flatten(_.map(rs._rows, function(r)
+        var valuesForRows = function(rows)
         {
-            if (!$.isBlank(parCol))
-            { return _.map(r[parCol.lookup], function(rr) { return rr[col.lookup]; }); }
-            else
-            { return r[col.lookup]; }
-        }));
-        return agg.calculate(values);
+            var processRows = function(memo, row, idx, list)
+            {
+                if (row.invalid[col.lookup] !== true)
+                {
+                                                             // If this is a nested table, recurse,
+                    if (!$.isBlank(parCol) && list === rows) // but don't go more than one level.
+                    {
+                        _.reduce(row[parCol.lookup], processRows, memo);
+                    }
+                    else
+                    {
+                        memo.push(row[col.lookup]);
+                    }
+                }
+                return memo;
+            };
+
+            return _.reduce(rows, processRows, []);
+        };
+
+        return agg.calculate(valuesForRows(rs._rows));
     },
 
     _setRowFormatting: function(row)

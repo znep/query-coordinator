@@ -353,7 +353,9 @@
 
     var seriesData = function(chart, options, colTypes)
     {
-        var tooManyRows = isNextGen && options.view.totalRows() > 10000;
+        // Using column.cachedContents as a hack because totalRows is rarely available at this time.
+        var tooManyRows = isNextGen && _.any(options.view.realColumns,
+            function(col) { return $.deepGet(col, 'cachedContents', 'non_null') > 10000; });
 
         return {
             title: $.t('screens.ds.grid_sidebar.chart.series_group.title'), type: 'selectable', name: chart.value + 'SeriesData',

@@ -3,9 +3,8 @@
 
     /*** Common configuration options ***/
 
-    var isNextGen = blist.configuration.newChartsEnabled ||
-        $.urlParam(window.location.href, 'charts') == 'nextgen';
-
+    var isNextGen = (blist.configuration.newChartsEnabled ||
+        $.urlParam(window.location.href, 'charts') == 'nextgen') && $.urlParam(window.location.href, 'charts') != 'old';
     var nextGenReady = ['bar', 'column', 'pie', 'donut'];
 
     var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];

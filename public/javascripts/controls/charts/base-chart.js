@@ -14,20 +14,26 @@
         'treemap': 'jit'
     };
 
+    // Override to see chart in old style.
+    var forceOldCharts = $.urlParam(window.location.href, 'charts') == 'old';
+
     if (blist.configuration.newChartsEnabled ||
         $.urlParam(window.location.href, 'charts') == 'nextgen' ||
         $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true)
     {
-        $.extend(chartMapping, {
-            'column': 'd3_impl_bar',
-            'bar': 'd3_impl_bar',
-            'line': 'd3_impl_line',
-            'area': 'd3_impl_line',
-            'stackedbar': 'd3_impl_bar',
-            'stackedcolumn': 'd3_impl_bar',
-            'pie': 'd3_impl_pie',
-            'donut': 'd3_impl_pie'
-        });
+        if (!forceOldCharts)
+        {
+            $.extend(chartMapping, {
+                'column': 'd3_impl_bar',
+                'bar': 'd3_impl_bar',
+                'line': 'd3_impl_line',
+                'area': 'd3_impl_line',
+                'stackedbar': 'd3_impl_bar',
+                'stackedcolumn': 'd3_impl_bar',
+                'pie': 'd3_impl_pie',
+                'donut': 'd3_impl_pie'
+            });
+        }
     }
 
     var nextgenMapper = {
@@ -40,8 +46,12 @@
             'area': 'd3_impl_line'
             }); }
     };
-    _.each(blist.configuration.newCharts, function(enabled, chartType)
-    { enabled && nextgenMapper[chartType] && nextgenMapper[chartType](); });
+
+    if (!forceOldCharts)
+    {
+        _.each(blist.configuration.newCharts, function(enabled, chartType)
+        { enabled && nextgenMapper[chartType] && nextgenMapper[chartType](); });
+    }
 
     $.Control.extend('socrataChart', {
         _init: function()

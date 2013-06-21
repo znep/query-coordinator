@@ -477,9 +477,10 @@ d3base.seriesGrouping = {
     {
         var vizObj = this;
 
-        if (vizObj.requiresSeriesGrouping() && d && d.realRows && d.realRows[colDef.column.id].color)
+        var virtColColor = (d && vizObj.requiresSeriesGrouping()) ? $.deepGet(d, 'realRows', colDef.column.id, 'color') : undefined;
+        if (virtColColor)
         {
-            return d.realRows[colDef.column.id].color;
+            return virtColColor;
         }
         else
         {

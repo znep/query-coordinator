@@ -1286,7 +1286,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
         var textFromDatum = function(datum)
         {
-            var label = datum.data.getName();
+            var label = datum.data.getName() || ''; // We should have a default name (Bug 11334).
 
             if (showPercentages)
             {

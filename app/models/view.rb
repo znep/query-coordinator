@@ -1,6 +1,4 @@
 class View < Model
-  include Rails.application.routes.url_helpers
-
   cattr_accessor :licenses, :creative_commons, :merged_licenses,
     :filter_type1s
   attr_accessor :custom_vis_cols, :sodacan
@@ -706,7 +704,7 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-     "#{root_url({host: self.domainCName || CurrentDomain.cname})}api/views/#{self.id}/rows.#{ext}"
+     "#{root_url(host: self.domainCName)}api/views/#{self.id}/rows.#{ext}"
   end
 
   def tweet

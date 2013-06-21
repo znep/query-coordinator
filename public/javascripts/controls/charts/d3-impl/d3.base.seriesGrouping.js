@@ -174,7 +174,52 @@ d3base.seriesGrouping = {
         }
 
         // figure out our series columns.
-        _.each(sg.seriesGroupedRows, function(row)
+        var sortedRows;
+        if (vizObj._displayFormat.sortSeries)
+        {
+            var sortFunctions = _.map(vizObj._seriesColumns, function(sc)
+            {
+                var order = {};
+                _.each((sc.column.metadata || {}).displayOrder, function(item, i)
+                {
+                    order[item.orderItem] = i;
+                });
+
+                return function(r)
+                {
+                    var v = r[sc.column.lookup];
+                    return $.isBlank(order[v]) ? v : order[v];
+                };
+            });
+            sortedRows = sg.seriesGroupedRows;
+
+            // Sort by all columns.
+            sortedRows.sort(function(a, b)
+            {
+                var result = 0;
+                _.find(sortFunctions, function(sortFunc)
+                    {
+                        var vA = sortFunc(a);
+                        var vB = sortFunc(b);
+                        if (vA == vB)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            result = vA < vB ? -1 : 1;
+                            return true;
+                        }
+
+                    });
+                return result;
+            });
+        }
+
+        else
+        { sortedRows = _.sortBy(sg.seriesGroupedRows, 'position'); }
+
+        _.each(sortedRows, function(row, index)
         {
             var groupName = vizObj._groupName(row);
 

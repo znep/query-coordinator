@@ -696,7 +696,7 @@ class View < Model
         view_name: (self.name || 'dataset').convert_to_url,
         id: self.id }
 
-    params[:host] = self.domainCName if self.federated?
+    params[:host] = self.federated? ? self.domainCName : CurrentDomain.cname
 
     params
   end
@@ -706,7 +706,7 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-     "#{root_url({host: self.domainCName || CurrentDomain.cname})}api/views/#{self.id}/rows.#{ext}"
+     "#{root_url(host: self.domainCName || CurrentDomain.cname)}api/views/#{self.id}/rows.#{ext}"
   end
 
   def tweet

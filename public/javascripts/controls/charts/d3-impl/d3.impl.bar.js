@@ -647,7 +647,7 @@ $.Control.registerMixin('d3_impl_bar', {
             cc = vizObj._chartConfig;
 
         var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2) -
-                                   cc.drawElementPosition - cc.dataOffset - 6;
+                                   cc.drawElementPosition - cc.dataOffset;
 
         // Even number of DSGs, so bump it up to the nearest bar.
         if (this._seriesGrouping && this.getValueColumns().length % 2 == 0)
@@ -656,9 +656,9 @@ $.Control.registerMixin('d3_impl_bar', {
         return function(d)
         {
             if (cc.orientation == 'down')
-            { return xPositionStaticParts + (d.index * cc.rowWidth) + 'px'; }
+            { return xPositionStaticParts + (d.index * cc.rowWidth) - ($(this).height() / 2) + 'px'; }
             else (cc.orientation == 'right')
-            { return xPositionStaticParts + (d.index * cc.rowWidth) - 12.5 + 'px'; }
+            { return xPositionStaticParts + (d.index * cc.rowWidth) - ($(this).width() / 2) + 'px'; }
         };
     },
 
@@ -671,10 +671,11 @@ $.Control.registerMixin('d3_impl_bar', {
 
         return function(d)
         {
+            // Magic numbers are for padding from the yAxisPos-edge of the bar.
             if (cc.orientation == 'down')
             { return yAxisPos + 5 + 'px'; }
             else
-            { return yAxisPos - $(this).width() + 'px'; }
+            { return yAxisPos - ($(this).width() / 2) - 10 + 'px'; }
         };
     },
 

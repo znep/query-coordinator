@@ -636,9 +636,33 @@ $.Control.registerMixin('d3_impl_bar', {
 
     _yAxisPos: function()
     {
-        if ($.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true)
+        if (!_.isUndefined(this._chartConfig.valueLabelBuffer)
+            || $.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true)
         { return this._super.apply(this, arguments); }
-        return this._chartConfig.dataDim.pluckY(0, this._chartConfig.chartHeight);
+
+        var yAxisPos;
+        if (this._chartConfig.orientation == 'right')
+        {
+            var vizObj = this,
+                legendPosition = vizObj.legendPosition(),
+                yAxisPos = vizObj._chartConfig.chartHeight;
+
+            if (legendPosition == 'bottom')
+            {
+                var $legendContainer = vizObj.$legendContainer(),
+                    isSmallMode = vizObj._chartConfig.$chartArea.hasClass('smallMode');
+
+                yAxisPos -= (isSmallMode ? 60 : 100) + $legendContainer.height();
+            }
+        }
+        else
+        {
+            yAxisPos = 0;
+            if (!$.isBlank(this._displayFormat.titleX))
+            { yAxisPos += this._displayFormat.titleX.visualHeight()
+                    + $('.yLabelVert').position().left + 10; } // 10 is for padding.
+        }
+        return yAxisPos;
     },
 
     _xRowLabelPosition: function(seriesIndex)

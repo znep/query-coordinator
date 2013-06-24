@@ -459,6 +459,7 @@ chartObj.resizeHandle();
         {
             if (legendPosition == 'bottom')
             {
+                // If you mess with this, also mess with impl.bar#_yAxisPos.
                 vizObj.defaults.valueLabelBuffer = (isSmallMode ? 60 : 100) + $legendContainer.height();
             }
             else if (legendPosition == 'top')

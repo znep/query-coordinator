@@ -40,6 +40,11 @@ String.prototype.visualSize = function(fontSize)
     return {width: $ruler.width(), height: $ruler.height()};
 };
 
+String.prototype.visualHeight = function(fontSize)
+{
+    return this.visualSize(fontSize).height;
+};
+
 String.prototype.visualLength = function(fontSize)
 {
     return this.visualSize(fontSize).width;

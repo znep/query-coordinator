@@ -40,13 +40,37 @@ $.Control.registerMixin('d3_impl_line', {
                             && (_.isNaN(explicitMin) || row[col.lookup] >= explicitMin)
                             && (_.isNaN(explicitMax) || row[col.lookup] <= explicitMax); };
 
-            // figure out what data we can actually render
-            var presentData = _.select(data, notNull) || [];
+            var xDatumPositionForSeries = vizObj._xDatumPosition(seriesIndex);
 
-            var oldLine = d3.svg[lineType]().x(vizObj._xDatumPosition(seriesIndex))
+            var pointInView = function(d)
+            {
+                var xPos = xDatumPositionForSeries(d);
+
+                return vizObj._isXRangeInViewport(xPos, xPos);
+            };
+
+            var lineSegmentInView = function(d, i, list)
+            {
+                var prev = (i > 0) ? list[i-1] : undefined;
+                var next = (i < list.length - 1) ? list[i+1] : undefined;
+
+                var result = pointInView(d);
+
+                // Consider the prev and next points as well. If either are visible, we're visible too.
+                result |= prev && pointInView(prev);
+                result |= next && pointInView(next);
+
+                return result;
+            };
+
+            // figure out what data we can actually render
+            var visibleData = _.select(data, lineSegmentInView);
+            var notNullData = _.select(visibleData, notNull);
+
+            var oldLine = d3.svg[lineType]().x(xDatumPositionForSeries)
                                             .y(vizObj._yDatumPosition(col.lookup, oldYScale))
                                             .defined(notNull);
-            var newLine = d3.svg[lineType]().x(vizObj._xDatumPosition(seriesIndex))
+            var newLine = d3.svg[lineType]().x(xDatumPositionForSeries)
                                             .y(vizObj._yDatumPosition(col.lookup, newYScale))
                                             .defined(notNull);
             if (lineType == 'area')
@@ -80,7 +104,7 @@ $.Control.registerMixin('d3_impl_line', {
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
                 .attr('stroke', function() { return colDef.color; })
                 .attr('stroke-width', 2)
-                .datum(data)
+                .datum(visibleData)
                 .attr('d', oldLine);
 
             if (lineType == 'area')
@@ -94,11 +118,11 @@ $.Control.registerMixin('d3_impl_line', {
                     .duration(1000)
                     .attr('d', newLine)
 
-            // render our actual bars
+            // render our actual lines
             var seriesClass = 'dataBar_series' + col.lookup;
-            var bars = cc.chartD3.selectAll('.' + seriesClass)
-                .data(presentData, function(row) { return row.id; });
-            bars
+            var lines = cc.chartD3.selectAll('.' + seriesClass)
+                .data(notNullData, function(row) { return row.id; });
+            lines
                 .enter().append('circle')
                     .classed('dataBar', true)
                     .classed(seriesClass, true)
@@ -106,7 +130,7 @@ $.Control.registerMixin('d3_impl_line', {
                     .attr('stroke', '#fff')
                     .attr('fill', function(d) { return d.color || colDef.color; })
 
-                    .attr('cx', vizObj._xDatumPosition(seriesIndex))
+                    .attr('cx', xDatumPositionForSeries)
                     .attr('cy', vizObj._yDatumPosition(col.lookup, oldYScale))
                     .attr('r', 5)
 
@@ -138,7 +162,7 @@ $.Control.registerMixin('d3_impl_line', {
                         }
                     });
 
-            bars
+            lines
                     .attr('fill', vizObj._d3_colorizeRow(colDef))
                     .each(function(d)
                     {
@@ -154,7 +178,7 @@ $.Control.registerMixin('d3_impl_line', {
                 .transition()
                     .duration(1000)
                     .attr('cy', vizObj._yDatumPosition(col.lookup, newYScale))
-            bars
+            lines
                 .exit()
                     .each(function(d)
                     {
@@ -172,7 +196,7 @@ $.Control.registerMixin('d3_impl_line', {
             if (vizObj._displayFormat.dataLabels === true)
             {
                 var dataLabels = cc.chartD3.selectAll('.dataLabel')
-                    .data(data, function(row) { return row.id; });
+                    .data(notNullData, function(row) { return row.id; });
                 dataLabels
                     .enter().append('text')
                         .classed('dataLabel', true)
@@ -186,7 +210,7 @@ $.Control.registerMixin('d3_impl_line', {
                             return col.renderType.renderer(d[col.lookup], col, true, null, null, true);
                         });
                 dataLabels
-                    .attr('x', vizObj._xDatumPosition(seriesIndex))
+                    .attr('x', xDatumPositionForSeries)
                     .attr('y', function(d, i)
                     {
                         var yPos = vizObj._yDatumPosition(col.lookup, newYScale)(d),
@@ -211,11 +235,13 @@ $.Control.registerMixin('d3_impl_line', {
 
         });
 
+        var labelTransform = vizObj._labelTransform();
+
         // render our labels per row
         // 3.5 is a somewhat arbitrary number to bring the label's center rather than
         // baseline closer to the row's center
         var rowLabels = cc.chartD3.selectAll('.rowLabel')
-            .data(data, function(row) { return row.id; });
+            .data(_.filter(data, labelTransform.isInView), function(row) { return row.id; });
         rowLabels
             .enter().append('text')
                 .classed('rowLabel', true)
@@ -225,7 +251,7 @@ $.Control.registerMixin('d3_impl_line', {
                         'font-size': 13 })
                 // TODO: make a transform-builder rather than doing this concat
                 // 10 is to bump the text off from the actual axis
-                .attr('transform', vizObj._labelTransform());
+                .attr('transform', labelTransform);
         rowLabels
                 .attr('font-weight', function(d)
                         { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
@@ -245,8 +271,9 @@ $.Control.registerMixin('d3_impl_line', {
         // render error markers if applicable
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
         {
+            var errorTransform = vizObj._errorBarTransform();
             var errorMarkers = cc.chartD3.selectAll('.errorMarker')
-                .data(data, function(row) { return row.id; });
+                .data(_.filter(data, errorTransform.isInView), function(row) { return row.id; });
             errorMarkers
                 .enter().append('path')
                     .classed('errorMarker', true)
@@ -254,7 +281,7 @@ $.Control.registerMixin('d3_impl_line', {
                             'stroke-width': '3' })
                     .attr('d', vizObj._errorBarPath(oldYScale));
             errorMarkers
-                .attr('transform', vizObj._errorBarTransform())
+                .attr('transform', errorTransform)
                 .transition()
                     .duration(1000)
                     .attr('d', vizObj._errorBarPath(newYScale));
@@ -276,7 +303,6 @@ $.Control.registerMixin('d3_impl_line', {
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
-            data = cc.currentData,
             yScale = vizObj._currentYScale(),
             yAxisPos = vizObj._yAxisPos();
 
@@ -357,6 +383,8 @@ $.Control.registerMixin('d3_impl_line', {
 
     _errorBarTransform: function()
     {
+        // NOTE: This is essentially a dummy function. Error bars aren't
+        // implemented for line.
         var cc = this._chartConfig;
 
         var xPosition = cc.sidePadding - 0.5 -
@@ -365,10 +393,13 @@ $.Control.registerMixin('d3_impl_line', {
 
         var transform = cc.dataDim.asScreenCoordinate(xPosition, 0);
 
-        return function(d)
+        var t = function(d)
         {
             return 't' + transform.x + ',' + transform.y;
         };
+
+        t.isInView = function() { return true; };
+        return t;
     }
 
 }, null, 'socrataChart', [ 'd3_virt_scrolling', 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

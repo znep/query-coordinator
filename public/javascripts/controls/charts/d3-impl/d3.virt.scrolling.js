@@ -28,8 +28,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
         dataMaxBuffer: 30, // amount of room to leave in actual chart area past the max bar
         smallModeThreshold: 400, // Height below which small mode is triggered (px).
         largeLegendMaxLineThreshold: 15, // If we've got more than this amount of lines in the legend, switch the legend only to small mode.
-        minYSizeForLegend: 140 // If the y-axis is less than this (px), we hide the legend to try and display something useful.
-                               // We only hide the legend if we're reserving space for it (as opposed to just overlaying it).
+        minYSizeForLegend: 140, // If the y-axis is less than this (px), we hide the legend to try and display something useful.
+                                // We only hide the legend if we're reserving space for it (as opposed to just overlaying it).
+        errorBarCapWidth: 8 // Size of cap on top and bottom of error bars.
     },
 
     // These functions are abstract. You must override them.
@@ -783,13 +784,13 @@ chartObj.resizeHandle();
         var vizObj = this,
             cc = vizObj._chartConfig;
 
-        var chartArea = cc.$chartContainer[cc.dataDim.width](),
-            rowsPerScreen = Math.ceil(chartArea / cc.rowWidth);
+        var chartViewport = cc.$chartContainer[cc.dataDim.width](),
+            rowsPerScreen = chartViewport / cc.rowWidth;
 
         return d3.scale.linear()
-              .domain([ 0, cc.$chartRenderArea[cc.dataDim.width]() - chartArea ])
+              .domain([ 0, cc.rowWidth * vizObj.getTotalRows() - chartViewport ])
               .range([ 0, vizObj.getTotalRows() - rowsPerScreen ])
-              .clamp(true)
+              .clamp(true);
     },
 
     // renders tick lines in general
@@ -941,10 +942,12 @@ chartObj.resizeHandle();
             cc = vizObj._chartConfig,
             view = vizObj._primaryView;
 
+        var labelTransform = vizObj._labelTransform();
+
         // render our labels per row
         // baseline closer to the row's center
         var rowLabels = cc.chartD3.selectAll('.rowLabel')
-            .data(data, function(row) { return row.id; });
+            .data(_.filter(data, labelTransform.isInView), function(row) { return row.id; });
         rowLabels
             .enter().append('text')
                 .classed('rowLabel', true)
@@ -954,7 +957,7 @@ chartObj.resizeHandle();
                         'font-size': 13 });
         rowLabels
                 // TODO: make a transform-builder rather than doing this concat
-                .attr('transform', vizObj._labelTransform())
+                .attr('transform', labelTransform)
                 .attr('font-weight', function(d)
                         { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
                 .text(function(d)
@@ -973,18 +976,39 @@ chartObj.resizeHandle();
     {
         var vizObj = this,
             cc = vizObj._chartConfig;
+        var rotAngleDegrees = 40;
 
         var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2) -
                                    cc.drawElementPosition - cc.dataOffset;
         var yPositionStaticParts = vizObj._yAxisPos();
 
-        return function(d)
+        var offset = cc.dataDim.pluckY(function(d) { return [ yPositionStaticParts - 10, xPositionStaticParts + (d.index * cc.rowWidth)]; },
+                              function(d) { return [xPositionStaticParts + (d.index * cc.rowWidth) - 3.5, yPositionStaticParts + 10 ]; });
+        // So... if the text's anchor is left of the screen, it may still be visible.
+        // Measuring all the text to see if it will peek out is untenably slow. So
+        // we just calculate the worst-case for an infinitely long label (remember
+        // it's slanted, so it will necessarily exit the viewport).
+
+        var maxVisibleWidth = Math.tan(Math.PI * (90 - rotAngleDegrees)/ 180) * (cc.valueLabelBuffer || vizObj.defaults.valueLabelBuffer);
+
+        var isInView = function(d)
         {
-            if (cc.orientation == 'down')
-            { return 'r-40,0,0,T' + (yPositionStaticParts - 10) + ',' + (xPositionStaticParts + (d.index * cc.rowWidth)); }
-            else (cc.orientation == 'right')
-            { return 'r40,0,0,T' + (xPositionStaticParts + (d.index * cc.rowWidth) - 3.5) + ',' + (yPositionStaticParts + 10); }
+            var xPos = cc.dataDim.pluckX.apply(null, offset(d));
+            return vizObj._isXRangeInViewport(xPos - maxVisibleWidth, xPos + maxVisibleWidth);
         };
+
+        var transform = function(d)
+        {
+            var o = offset(d);
+            if (cc.orientation == 'down')
+            { return 'r-' + rotAngleDegrees + ',0,0,T' + o[0] + ',' + o[1]; }
+            else (cc.orientation == 'right')
+            { return 'r' + rotAngleDegrees + ',0,0,T' + o[0] + ',' + o[1]; }
+        };
+
+        transform.isInView = isInView;
+
+        return transform;
     },
 
     // Returns a path representing an error bar. Y position is built-in to the
@@ -1000,7 +1024,7 @@ chartObj.resizeHandle();
             highCol = vizObj._primaryView.columnForIdentifier(plot.errorBarHigh),
             yAxisPos = vizObj._yAxisPos();
 
-        var capWidth = 8;
+        var capWidth = vizObj.defaults.errorBarCapWidth;
 
         return function(d)
         {
@@ -1012,6 +1036,12 @@ chartObj.resizeHandle();
             var errB = d[lowCol.lookup];
             var high = Math.max(errA, errB);
             var low = Math.min(errA, errB);
+
+            if (_.isUndefined(errA) || _.isUndefined(errB))
+            {
+                // We don't have values in this row. No path.
+                return '';
+            }
 
             if (cc.orientation == 'right')
             {
@@ -1051,6 +1081,15 @@ chartObj.resizeHandle();
         return {
             positions: (row[col.lookup] > 0) ? greaterThanZeroPositioning : lessThanZeroPositioning
         };
+    },
+
+    // Is the area between the two given X offsets at least partially visible?
+    _isXRangeInViewport: function(xLeftEdge, xRightEdge)
+    {
+        var cc = this._chartConfig;
+
+        return (cc.scrollPos - cc.drawElementPosition + cc.$chartContainer[cc.dataDim.width]() + this.defaults.sidePaddingBounds[0]/2 >= xLeftEdge) &&
+               (cc.scrollPos - cc.drawElementPosition - this.defaults.sidePaddingBounds[0]/2 <= xRightEdge);
     }
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);
 

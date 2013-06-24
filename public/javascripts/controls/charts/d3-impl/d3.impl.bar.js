@@ -328,19 +328,33 @@ $.Control.registerMixin('d3_impl_bar', {
     // Returns a translation along X for an error bar.
     _errorBarTransform: function()
     {
-        var cc = this._chartConfig;
+        var vizObj = this,
+            cc = this._chartConfig;
 
         var xPosition = cc.sidePadding - 0.5 -
                         cc.drawElementPosition - cc.dataOffset +
                         ((cc.rowWidth - cc.rowSpacing) / 2);
 
-
-        return function(d)
+        var offset = function(d)
         {
-            var x = Math.floor(d.index * cc.rowWidth) + 0.5;
-            var transform = cc.dataDim.asScreenCoordinate(xPosition + x, 0);
+            return xPosition +  Math.floor(d.index * cc.rowWidth) + 0.5;
+        };
+
+        var isInView = function(d)
+        {
+            var xPos = offset(d);
+            return vizObj._isXRangeInViewport(xPos - vizObj.defaults.errorBarCapWidth, xPos);
+        };
+
+        var transform = function(d)
+        {
+            var transform = cc.dataDim.asScreenCoordinate(offset(d), 0);
             return 't' + transform.x + ',' + transform.y;
         };
+
+        transform.isInView = isInView;
+
+        return transform;
     },
 
     _currentYScale: function()
@@ -385,8 +399,17 @@ $.Control.registerMixin('d3_impl_bar', {
         {
             var col = colDef.column;
 
+            var xDatumPositionForSeries = vizObj._xDatumPosition(seriesIndex);
+
+            var barInView = function(d)
+            {
+                var xPos = xDatumPositionForSeries(d);
+                return vizObj._isXRangeInViewport(xPos - cc.barWidth, xPos);
+            };
+
             // figure out what data we can actually render
-            var splitData = _.groupBy(data, function(row)
+            var dataInView = _.filter(data, barInView);
+            var splitData = _.groupBy(dataInView, function(row)
             {
                 if ($.isBlank(row[col.lookup]) ||
                     row.invalid[col.lookup])
@@ -400,9 +423,11 @@ $.Control.registerMixin('d3_impl_bar', {
             });
             var presentData = splitData['present'] || [], nullData = splitData['null'] || [];
 
+
             // render our actual bars
             var seriesClass = 'dataBar_series' + col.lookup;
 
+            presentData = _.filter(presentData, barInView);
             // UPDATE
             var bars = cc.chartD3.selectAll('.' + seriesClass)
                 .data(presentData, function(row) { return row.id; });
@@ -451,7 +476,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     // D3 won't re-execute these dynamic property values when
                     // our internal state changes, so we must re-set them here
                     // (as opposed to on enter only).
-                    .attr(cc.dataDim.xAxis, vizObj._xDatumPosition(seriesIndex))
+                    .attr(cc.dataDim.xAxis, xDatumPositionForSeries)
 
                     // We want to see the columns "grow" up or right on scale change.
                     // This is mostly fine for orientation=down (since our y-axis
@@ -537,12 +562,15 @@ $.Control.registerMixin('d3_impl_bar', {
 
             // render null bars
             var nullSeriesClass = 'nullDataBar_series' + col.lookup;
+            nullData = _.filter(nullData, barInView);
+
             var nullBars = cc.chartHtmlD3.selectAll('.' + nullSeriesClass)
                 .data(nullData, function(row) { return row.id; });
             var height = cc.dataDim.pluckY(vizObj._d3_px(cc.chartWidth - yAxisPos),
                                            vizObj._d3_px(yAxisPos));
             var position = cc.dataDim.pluckX(0,
                                              vizObj._d3_px(yAxisPos));
+
             nullBars
                 .enter().append('div')
                     .classed('nullDataBar', true)
@@ -550,7 +578,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     .style(cc.dataDim.pluckY('left', 'top'), position)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth));
             nullBars
-                    .style(cc.dataDim.position, vizObj._d3_px(vizObj._xDatumPosition(seriesIndex)))
+                    .style(cc.dataDim.position, vizObj._d3_px(xDatumPositionForSeries))
                     .style(cc.dataDim.pluckY('left', 'top'), position)
                     .style(cc.dataDim.height, height);
             nullBars
@@ -563,8 +591,9 @@ $.Control.registerMixin('d3_impl_bar', {
         // render error markers if applicable
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
         {
+            var errorTransform = vizObj._errorBarTransform();
             var errorMarkers = cc.chartD3.selectAll('.errorMarker')
-                .data(data, function(row) { return row.id; });
+                .data(_.filter(data, errorTransform.isInView), function(row) { return row.id; });
             errorMarkers
                 .enter().append('path')
                     .classed('errorMarker', true)
@@ -572,7 +601,7 @@ $.Control.registerMixin('d3_impl_bar', {
                             'stroke-width': '3' })
                     .attr('d', vizObj._errorBarPath(oldYScale));
             errorMarkers
-                .attr('transform', vizObj._errorBarTransform())
+                .attr('transform', errorTransform)
                 .transition()
                     .duration(1000)
                     .attr('d', vizObj._errorBarPath(newYScale));
@@ -738,7 +767,6 @@ $.Control.registerMixin('d3_impl_bar', {
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
-            data = cc.currentData,
             yScale = vizObj._currentYScale(),
             yAxisPos = vizObj._yAxisPos();
 

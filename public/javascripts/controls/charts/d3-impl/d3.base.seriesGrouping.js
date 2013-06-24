@@ -302,6 +302,17 @@ d3base.seriesGrouping = {
                  length: virtualRenderRange.length * numCols };
     },
 
+    getDataForAllViews: function()
+    {
+        if (!this.requiresSeriesGrouping() || !this._seriesGrouping.ready)
+        {
+            return this._super.apply(this, arguments);
+        }
+
+        // With DSG, we already have the data we care about. So just rerender.
+        this.renderData(this._seriesGrouping.virtualRows);
+    },
+
     renderData: function(data, view, didInsertData)
     {
         var vizObj = this;
@@ -309,6 +320,12 @@ d3base.seriesGrouping = {
         if (!vizObj.requiresSeriesGrouping())
         {
             return vizObj._super.apply(vizObj, arguments);
+        }
+
+        if (this._seriesGrouping.virtualRows === data)
+        {
+            // We just want to rerender the current data - no need to recalculate.
+            return vizObj._super(_.values(vizObj._seriesGrouping.virtualRows));
         }
 
         // Prevent reentrancy. This is an issue because highlighting (done below)

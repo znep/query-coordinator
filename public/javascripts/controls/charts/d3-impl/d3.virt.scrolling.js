@@ -183,7 +183,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             // reposition the elems horizonally if necessary
             if (needsReposition) vizObj._rerenderPositions();
             // maybe fetch some more rows if more are exposed
-            vizObj.getDataForAllViews();
+            //vizObj.getDataForAllViews();
         };
 
         // allow the baseline to be draggable

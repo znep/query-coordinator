@@ -724,6 +724,9 @@ $.Control.registerMixin('d3_impl_bar', {
         cc.chartHtmlD3.selectAll('.nullDataBar')
             .style(cc.dataDim.height, vizObj._d3_px(yAxisPos));
 
+        cc.chartHtmlD3.selectAll('.rowLabel')
+            .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition());
+
         vizObj._renderTicks(yScale, yScale, false);
         vizObj._renderValueMarkers(yScale, yScale, false);
     },
@@ -746,6 +749,9 @@ $.Control.registerMixin('d3_impl_bar', {
             cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))
                     .style(cc.dataDim.xAxis, vizObj._d3_px(vizObj._xDatumPosition(seriesIndex)));
+
+            cc.chartHtmlD3.selectAll('.rowLabel')
+                    .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition(seriesIndex));
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());

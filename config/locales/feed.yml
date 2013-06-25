@@ -195,3 +195,82 @@ zh:
         delete_comment: 删除评论
         rate_comment: 给评论打分
         post_comment: 发布评论
+hi:
+  controls:
+    feed:
+      header:
+        cell_comment_header_html: पंक्ति <span class="rowName"></span>, कॉलम <span
+          class="columnName"></span> के लिए टिप्‍पणी
+        feed_filter_label: दिखाएँ
+        add_comment: टिप्‍पणी जोड़ें
+        pending_moderation: आपकी टिप्‍पणी प्रस्‍तुत की गई और मॉडरेशन की प्रतीक्षा
+          में है
+      types:
+        all items: समस्‍त आइटम
+        views: व्‍यू
+        comments: टिप्‍पणी
+      listing:
+        no_results: डिस्‍प्‍ले करने के लिए कोई आइटम नहीं हैं
+        all_replies: सभी उत्तर देखें
+        all_replies_with_count: सभी %{count} उत्तर देखें
+        next_item_page: अगले %{count} आइटम देखें
+        last_item: अंतिम आइटम देखें
+        user_create_action: ! '%{thing}तैयार किया गया:'
+      comment_actions:
+        reply: उत्तर
+        inappropriate: अनुचित
+        already_marked_inappropriate: फ़्लैग किया गया
+        marked_inappropriate: फ़्लैग किया गया!
+        delete: मिटाएँ
+        delete_confirm: क्‍या आप निश्चित हैं? आपकी टिप्‍पणी गुम हो जाएगी।
+        rate_down: इस टिप्‍पणी को कम रेटिंग दें
+        rate_up: इस टिप्‍पणी को अधिक रेटिंग दें
+      comment_form:
+        header: नई टिप्‍पणी
+        post_button: पोस्‍ट करें
+        cancel_button: रद्द करें
+        empty_body_error: टिप्‍पणी स्‍थान खाली नहीं रह सकता।
+      authed_actions:
+        flag_comment: टिप्‍पणी को फ़्लैग करें
+        delete_comment: टिप्‍पणी मिटाएँ
+        rate_comment: टिप्‍पणी को रेटिंग दें
+        post_comment: टिप्‍पणी पोस्‍ट करें
+ru:
+  controls:
+    feed:
+      header:
+        cell_comment_header_html: Замечания по строке <span class="rowName"></span>,
+          столбцу <span class="columnName"></span>
+        feed_filter_label: Показать
+        add_comment: Добавить замечание
+        pending_moderation: Ваше замечание подано и ожидает санкции модератора
+      types:
+        all items: все элементы
+        views: Просмотры
+        comments: Замечания
+      listing:
+        no_results: Нет элементов для показа
+        all_replies: Смотреть все ответы
+        all_replies_with_count: Смотреть все %{count} ответы
+        next_item_page: Смотреть следующие %{count} элементы
+        last_item: Посмотреть последний элемент
+        user_create_action: ! 'создан %{thing}:'
+      comment_actions:
+        reply: Ответить
+        inappropriate: Неприемлемый
+        already_marked_inappropriate: Помечен флажком
+        marked_inappropriate: Помечен флажком!
+        delete: Удалить
+        delete_confirm: Вы уверены? Ваше замечание будет утрачено.
+        rate_down: Понизить оценку этого замечания
+        rate_up: Повысить оценку этого замечания
+      comment_form:
+        header: Новое замечание
+        post_button: Разместить
+        cancel_button: Отмена
+        empty_body_error: Эта графа для замечания не может быть пустой.
+      authed_actions:
+        flag_comment: пометить замечание флажком
+        delete_comment: удалить замечание
+        rate_comment: дать оценку замечанию
+        post_comment: разместить замечание

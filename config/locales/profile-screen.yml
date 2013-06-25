@@ -746,3 +746,323 @@ zh:
           image_format: 请选择有效的图片类型(PNG, JPG或 GIF)
           user_missing: 用户找不到，或已被删除。
         success: 您的个人资料已更新。
+hi:
+  screens:
+    profile:
+      bar:
+        edit_settings_link: खाता सेटिंग संपादित करें
+        follow_link: फॉलो करें
+        unfollow_link: फॉलो न करें
+        message_link: संदेश भेजें
+        join_date: इस तिथि से जुड़े
+        last_seen_date: अंतिम बार लॉगिन
+      info:
+        title: बुनियादी सूचना
+        no_description: ! 'विवरण प्रदान नहीं किया गया '
+        interests: दिलचस्‍पी
+        external_links: बाहरी लिंक
+        other_ext_link: अन्‍य
+        edit_link: संपादित करें
+        links:
+          my_company: मेरी कंपनी
+          my_site: मेरी साइट
+          my_blog: मेरा ब्‍लॉग
+          twitter: Twitter
+          facebook: Facebook
+          flickr: Flickr
+          other: अन्‍य
+      browse:
+        title: ! '%{user}का डेटासेट'
+        owned_datasets: मेरे स्‍वामित्‍व में
+        shared_datasets: मेरे साथ साझा किया गया
+      app_tokens:
+        title: ! '%{user}की एप्‍लीकेशन'
+        manage_link: प्रबंधन करें
+        no_applications: आपने अभी तक कोई एप्‍लीकेश्‍न नहीं बनाई है। शुरू करने के लिए
+          दायीं ओर 'प्रबंधन करें' पर क्लिक करें।
+        item:
+          no_thumbnail: कोई थम्‍बनेल नहीं
+          name: नाम
+          description: विवरण
+          organization: संस्‍था
+          website: वेबसाइट
+          app_token: एप टोकन
+          secret_token: सीक्रेट टोकन
+          show_secret_link: सीक्रेट टोकन दिखाएँ
+          edit_token_link: संपादित करें
+      sidebar:
+        edit_image_link: छवित संपादित करें
+        followers: फॉलोअर्स
+        following: फॉलो कर रहे हैं
+        all_contacts_link: सभी को देखें
+      contact:
+        title: प्रयोक्‍त से संपर्क करें
+        subject: विषय
+        subject_prompt: विषय संपादित करें
+        message: संदेश
+        message_prompt: संदेश संपादित करें
+      edit:
+        back_link: मेरे प्रोफाइल पर वापिस आएँ
+        info:
+          title: बुनियादी सूचना
+          title_full: बुनियादी सूचना
+          display_name: नाम डिस्‍प्‍ले करें
+          first_name: पहला नाम
+          last_name: अंतिम नाम
+          organization: संस्‍था
+          user_title: पदनाम
+          city: शहर
+          state: राज्‍य
+          country: देश
+          description:
+            title: विवरण
+            prompt: कोई भी सूचना दें जिसे आप साझा करना चाहते हैं
+          interests:
+            title: दिलचस्‍पी
+            prompt: अपनी दिलचस्‍पी बताएँ
+          link_prompt: यूआरएल डालें
+        image:
+          title: प्रोफाइल छवि
+          upload_image_button: नई छवि अपलोड करें
+          success: आपकी छवि अद्यतित की गई
+          error: ! 'नई छवि अपलोड करने में त्रुटि: #{message}'
+        account:
+          title: खाता सेटिंग
+          current_email: वर्तमान ईमेल
+          new_email: नई ईमेल
+          confirm_email: ईमेल की पुष्टि करें
+          password: पासवर्ड
+          password_prompt: (आपकी सुरक्षा के लिए)
+          old_password: पुराना पासवर्ड
+          new_password: नया पासवर्ड
+          password_restrictions_html: (प्रतिबंध लागू <span class="icon"> </span>)
+          confirm_password: पासवर्ड की पुष्टि करें
+          connect_openid: अपने Facebook, Twitter, गूगल या अन्‍य तीसरे पक्ष के परिचय
+            के साथ लॉगिन करें।
+          learn_openid: OpenID के बारे में जानें
+          no_openid: इस खाते के साथ जुड़ा आपका OpenID आइडेंटिफायर नहीं है।
+          add_openid_button: OpenID या बाहरी खाता जोड़ें।
+          email:
+            title: ईमेल सूचना
+            subtitle: सहयोगी बॉक्‍स को देखकर पृथक आयोजनों की सदस्‍यता लें।
+            interests:
+              privileged_account_created: प्रयोक्‍ता ने अपना पूर्वाधिकार खाता बनाया
+              any_view_created: कोई व्‍यू बनाया गया
+              comment_to_moderate: टिप्‍पणी प्रस्‍तुत की गई जिसके लिए मॉडरेशन जरूरी
+                है
+              account_provisioned: पूर्वाधिकार खाते का प्रावधान भविष्‍य के उपयोग के
+                लिए किया गया
+              nomination_created: नया नामांकन बनाया गया
+              nomination_moderated: किसी भी नामांकन को मॉडरेट किया गया
+              view_made_public: किसी भी व्‍यू को सार्वजनिक बनाया गया
+              other: अन्‍य
+              user_affected: कार्रवाई सीधे आपको प्रभावित कर रही है जैसे टिप्‍पणी पर
+                उत्‍तर व स्थिति अद्यतन
+            policy: ! '%{site} आपकी निजता का सम्‍मान करती है और इस सूची के जरिए आपको
+              कभी मार्केटिंग ईमेल नहीं भेजेगी, या आपका ईमेल तीसरे पक्ष को नहीं देगी।
+              इस साइट से भेजे गये ईमेल में खाता सूचना व उस डेटासेट के अद्यतन शामिल
+              होते हैं जिसे आपने बनाया है या जिसकी सदस्‍यता ली है।'
+        app_tokens:
+          title: एप टोकन
+          title_full: आपकी एप्‍लीकेशन
+          new_app_button: नई एप्‍लीकेशन बनाएँ
+          create_error: ! 'आपका एप्‍लीकेशन टोकन बनाते समय त्रुटि हुई: #{message}'
+          create_success: आपकी एप्‍लीकेशन बनाई गई
+          save_success: आपकी एप्‍लीकेशन सफलतापूर्वक सहेजी गई
+          delete_error: ! 'आपके एप्‍लीकेशन टोकन को मिटाते समय त्रुटि हुई: #{message}'
+          delete_success: आपकी एप्‍लीकेशन मिटाई गई
+          application_name: एप्‍लीकेशन का नाम
+          application_name_prompt: अपनी एप्‍लीकेशन का नाम डालें
+          description: विवरण
+          description_prompt: अपनी एप्‍लीकेशन का विवरण दें
+          organization: संगठन
+          organization_prompt: इस एप्‍लीकेशन के लिए जिम्‍मेदार संगठन का नाम डालें
+          website: वेबसाइट
+          website_prompt: इस एप्‍लीकेशन या संगठन की वेबसाइट के लिए लिंक दें
+          callback_prefix: ! 'कॉलबैक प्रेफिक्‍स '
+          callback_prefix_prompt: OAuth उपयोग करते समय सुरक्षित (https) कॉलबैक यूआरआई
+            को प्रेफिक्‍स प्रदान करें
+          callback_prefix_help_html: उदाहरण के लिए, यदि आपकी एप्‍लीकेशन <span class="code">https://my-domain.com/socrata-app/oauth/validated</span>
+            और <span class="code">https://my-domain.com/socrata-app/profile</span>पर
+            कॉल बैक होगी तो आप अपने प्रेफिक्‍स के तौर पर <span class="code">https://my-domain.com/socrata-app</span>
+            देना चाहेंगे। ध्‍यान दें कि आपको कम से कम संपूर्ण डोमेन नाम शामिल करना
+            चाहिए।
+          public: सार्वजनिक करें?
+          thumbnail: थम्‍बनेल
+          title_single: एप्‍लीकेशन टोकन संपादित करें
+        validation:
+          no_display_name: ! 'त्रुटि: ''डिस्‍प्‍ले नाम'' जरूरी है'
+          invalid_links: ! 'अपने लिंक को अद्यतित करते समय समस्‍या थी। %{message} '
+          password_mismatch: नया पासवर्ड मेल नहीं खाता है
+          no_password_no_openid: आप पासवर्ड सेट करने से पहले, अपने सभी OpenID आइडेंटिफायर
+            को हटा नहीं सकते हैं
+          email_mismatch: नये ईमेल मेल नहीं खाते हैं
+          image_format: कृपया एक मान्‍य छवि प्रकार चुनें (PNG, JPG, या GIF)
+          user_missing: यह प्रयोक्‍ता खोजा नहीं जा सका, या मिटा दिया गया है।
+        success: आपका प्रोफाइल सफलतापूर्वक अद्यतित किया गया।
+ru:
+  screens:
+    profile:
+      bar:
+        edit_settings_link: Редактировать настройки регистрационной записи
+        follow_link: Добавить в ленту для чтения
+        unfollow_link: Удалить из ленты для чтения
+        message_link: Отправить сообщение
+        join_date: Зарегистрирован (когда)
+        last_seen_date: Дата последнего входа в систему
+      info:
+        title: Основная информация
+        no_description: Никаких описаний не предоставлено
+        interests: Интересы
+        external_links: Внешние ссылки
+        other_ext_link: Прочие
+        edit_link: Редактировать
+        links:
+          my_company: Моя компания
+          my_site: Мой сайт
+          my_blog: Мой блог
+          twitter: Twitter
+          facebook: Facebook
+          flickr: Flickr
+          other: Прочие
+      browse:
+        title: ! 'Массивы данных %{user} '
+        owned_datasets: Принадлежат мне
+        shared_datasets: Предоставлены мне для совместного использования
+      app_tokens:
+        title: Приложения (прикладные программы) %{user}
+        manage_link: Управлять
+        no_applications: Вы еще не создали никаких прикладных программ. Чтобы начать,
+          нажмите кнопку «Управлять» справа
+        item:
+          no_thumbnail: Пиктограммы нет
+          name: Наименование
+          description: Описание
+          organization: Организация
+          website: Сайт
+          app_token: Ключ доступа к ПП (прикладной программе)
+          secret_token: Секретный ключ
+          show_secret_link: Показать секретный ключ
+          edit_token_link: Редактировать
+      sidebar:
+        edit_image_link: Редактировать изображения
+        followers: Читатели
+        following: Лента для чтения
+        all_contacts_link: Смотреть все
+      contact:
+        title: Связаться с абонентом
+        subject: Тема
+        subject_prompt: Ввести тему
+        message: Сообщение
+        message_prompt: Ввести сообщение
+      edit:
+        back_link: Вернуться в Мои анкетные данные
+        info:
+          title: Основная информация
+          title_full: Основная информация
+          display_name: Отображаемое наименование (ФИО)
+          first_name: Имя
+          last_name: Фамилия
+          organization: Организация
+          user_title: Заголовок
+          city: Город
+          state: Штат
+          country: Страна
+          description:
+            title: Описание
+            prompt: Введите любую информацию, которую вы хотите сделать доступной
+              для других
+          interests:
+            title: Интересы
+            prompt: Введите информацию о ваших интересах
+          link_prompt: Введите URL
+        image:
+          title: Ваше фото
+          upload_image_button: Загрузить новое фото
+          success: Обновление фото выполнено
+          error: ! 'Ошибка при загрузке нового фото: #{message}'
+        account:
+          title: Настройки регистрационной записи
+          current_email: Действующий адрес эл. почты
+          new_email: Новый адрес эл. почты
+          confirm_email: Подтвердите адрес эл. почты
+          password: Пароль
+          password_prompt: (Для вашей безопасности)
+          old_password: Старый пароль
+          new_password: Новый пароль
+          password_restrictions_html: (Действуют ограничения <span class="icon"> </span>)
+          confirm_password: Подтвердите пароль
+          connect_openid: Войдите, используя ваши регистрационные данные в системах
+            Facebook, Twitter, Google или иных сторонних системах.
+          learn_openid: Узнать об OpenID
+          no_openid: У вас пока нет идентификаторов OpenID, связанных с этой регистрационной
+            записью.
+          add_openid_button: Добавить регистрационную запись OpenID или сторонней
+            системы
+          email:
+            title: Оправлять уведомления по эл. почте
+            subtitle: Записаться на участие в отдельных мероприятиях (поставить галочки
+              в соответствующих графах).
+            interests:
+              privileged_account_created: Абонент создает регистрационную запись абонента
+                с особыми правами
+              any_view_created: Размещается мнение
+              comment_to_moderate: Размещено замечание, которое должно быть рассмотрено
+                модератором
+              account_provisioned: Регистрационная запись абонента с особыми правами
+                создается для использования в будущем
+              nomination_created: Предложена новая кандидатура
+              nomination_moderated: Любое предложение с выдвижением кандидатуры рассматривается
+                модератором
+              view_made_public: Любое мнение становится общедоступным
+              other: Прочие
+              user_affected: Действия, которые непосредственно касаются вас, например,
+                ответы на замечания, изменения статуса
+            policy: ! '%{site} соблюдает ваши права личности и никогда не будет направлять
+              вам рекламные сообщения через этот перечень или предоставлять ваш адрес
+              эл. почты третьим лицам. С этого сайта направляются уведомления о состоянии
+              регистрационных данных и обновлениях массивов данных, которые созданы
+              вами или на которые вы подписались.'
+        app_tokens:
+          title: Ключи к ПП (прикладной программе)
+          title_full: Ваши прикладные программы
+          new_app_button: Создать новую прикладную программу
+          create_error: ! 'При создании вашего ключа к прикладной программе произошла
+            ошибка: #{message}'
+          create_success: Ваша прикладная программа создана
+          save_success: Ваша прикладная программа успешно сохранена
+          delete_error: ! 'При удалении вашего ключа к прикладной программе произошла
+            ошибка: #{message}'
+          delete_success: Ваша прикладная программа удалена
+          application_name: Наименование прикладной программы
+          application_name_prompt: Введите наименование вашей прикладной программы
+          description: Описание
+          description_prompt: Введите описание вашей прикладной программы
+          organization: Организация
+          organization_prompt: Введите наименование организации, ответственной за
+            эту прикладную программу
+          website: Сайт
+          website_prompt: Укажите ссылку на данную прикладную программу или на сайт
+            организации
+          callback_prefix: Код обратного вызова
+          callback_prefix_prompt: Укажите код защищенного URL (https) для обратного
+            вызова при использовании OAuth
+          callback_prefix_help_html: Например, если ваша прикладная программа осуществляет
+            обратный вызов<span class="code">https://my-domain.com/socrata-app/oauth/validated</span>
+            и <span class="code">https://my-domain.com/socrata-app/profile</span>,
+            нужно указать <span class="code">https://my-domain.com/socrata-app</span>
+            в качестве кода. При этом необходимо указать хотя бы полное наименование
+            домена.
+          public: Общедоступный?
+          thumbnail: Пиктограмма
+          title_single: Редактировать ключ прикладной программы
+        validation:
+          no_display_name: ! 'Ошибка: ''Отображаемое наименование'' должно быть заполнено'
+          invalid_links: При обновлении ваших ссылок возникла проблема. %{message}
+          password_mismatch: Новые пароли не подходят
+          no_password_no_openid: ! 'Нельзя удалить все ваши идентификаторы OpenID,
+            прежде чем вы установите пароль '
+          email_mismatch: Новые адреса эл. почты не подходят
+          image_format: Выберите допустимый формат изображения (PNG, JPG или GIF)
+          user_missing: Абонент не найден, возможно, удален.
+        success: Обновление ваших анкетных данных успешно выполнено.

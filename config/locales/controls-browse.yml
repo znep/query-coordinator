@@ -553,3 +553,217 @@ zh:
         manage_api:
           title: 管理此API
           button: 管理
+hi:
+  controls:
+    browse:
+      back_to_dataset: डेटासेट में वापिस
+      search: खोजें
+      facets:
+        view_types_title: अवलोकन प्रकार
+        view_types_singular_title: प्रकार
+        view_types:
+          datasets: डेटासेट
+          unpublished: अप्रकाशित डेटासेट
+          href: बाहरी डेटासेट
+          blob: फाइल व दस्‍तावेज
+          filters: फिल्‍टर किये गये अवलोकन
+          charts: चार्ट
+          maps: नक्‍शे
+          calendars: कैलेंडर
+          forms: प्रपत्र
+          apis: एपीआई
+        categories_title: श्रेणियाँ
+        categories_singular_title: श्रेणी
+        topics_title: विषय
+        topics_singular_title: विषय
+        federated_domains_title: अधिकृत डोमेन
+        federated_domains_singular_title: डोमेन
+        moderation_status_title: मॉडरेशन स्थिति
+        moderation_status_singular_title: मॉडरेशन
+        moderation_status:
+          pending: लंबित
+          accepted: स्‍वीकृत
+          rejected: अस्‍वीकृत
+      sort_title: इस आधार पर छांटें
+      sorts:
+        relevance: सर्वाधिक उपयोग
+        most_accessed: सर्वाधिक एक्‍सेस किया गया
+        alpha: ! 'वर्णक्रमानुसार '
+        newest: सबसे नया
+        oldest: सबसे पुराना
+        last_modified: हाल में अद्यतित
+        rating: सर्वोच्‍च रेटिंग प्राप्‍त
+        comments: अधिकांश टिप्‍पणी
+      sort_period_title: छांटने की अवधि
+      sort_periods:
+        week: यह सप्‍ताह
+        month: यह महीना
+        year: यह वर्ष
+      title:
+        default: डेटासेट व व्‍यू को खोजें व ब्राउज़ करें
+        result:
+          main: परिणाम %{body}
+          term: ! '"%{term}" के लिए'
+          facet_main: मेल हो रहा है %{body}
+          facet: ! '%{facet_type} का %{facet_value}'
+      listing:
+        no_results: कोई परिणाम नहीं
+        timeout: क्षमा करें। इस समय परिणाम हासिल नहीं किये जा सकते हें। कृपया बाद
+          में फिर से प्रयास करें।
+        result_count: ! '%{total} का %{this} दर्शा रहा है'
+        federation_source: ! '%{source}से अधिकृत'
+        federation_source_html: ! '%{source_link}द्वारा प्रदान किया गया'
+        comment_count: टिप्‍पणियों की संख्‍या
+        table_header:
+          name: नाम
+          popularity: लोकप्रियता
+          type: प्रकार
+          rss: आरएसएस
+      row_results:
+        title_html: ! '<span class="totalResultCountText"></span> की<span class="rowResultCountText"></span>
+          मेल खाने वाली पंक्तियाँ <a href="#" class="rowSearchLink">दिखा रहा है (परिणाम
+          देखें)</a>:'
+        more_link: अधिक
+        less_link: कम
+      actions:
+        clear_all: सभी विकल्‍प हटाएँ
+        clear_facet: (सभी)
+        all_options: सभी को देखें
+        less_options: कम देखें
+        create_dataset: अपना डेटासेट बनाएँ या अपलोड करें
+        create_dataset_verb: बनाएँ
+        create_dataset_short: नया डेटासेट बनाएँ
+        suggest_dataset: क्‍या आप जो खोज रहे हैं वह नहीं मिला? डेटासेट सुझाएँ।
+        suggest_dataset_verb: सुझाएँ
+        suggest_dataset_short: डेटासेट सुझाएँ
+        subscribe: सदस्‍यता लें
+        dataset_subscribe: इस व्‍यू के परिवर्तनों की सदस्‍यता लें
+        compact_list: सघन सूची के तौर पर देखें
+        rich_list: समृद्ध सूची के तौर पर देखें
+        expand_section: विस्‍तार करने के लिए क्लिक करें
+        share_button: साझा करें
+        moderation:
+          accept: स्‍वीकार करें
+          reject: अस्‍वीकार करें
+        permissions:
+          title: सार्वजनिक रूप से दिखना परिवर्तित करें
+          change_button:
+            public_html: सार्वजनिक करें
+            private_html: निजी करें
+        delete:
+          title: इस बिंदु को हटाएँ
+          button: मिटाएँ
+          confirm: क्‍या आप वाकई %{dataset}को मिटाना चाहते हैं?
+        about:
+          title: इस डेटासेट के बारे में
+          button: इसके बारे में
+        manage_api:
+          title: इस एपीआई का प्रबंधन करें
+          button: प्रबंधन करें
+ru:
+  controls:
+    browse:
+      back_to_dataset: Вернуться в массив данных
+      search: Поиск
+      facets:
+        view_types_title: Типы отображения данных
+        view_types_singular_title: Тип
+        view_types:
+          datasets: Массивы данных
+          unpublished: Неопубликованные массивы данных
+          href: Массивы данных из внешних источников
+          blob: Файлы и документы
+          filters: Отображения с установленными фильтрами
+          charts: Графики и диаграммы
+          maps: Карты
+          calendars: Планы-графики
+          forms: Бланки
+          apis: ППИ (прикладные программные интерфейсы)
+        categories_title: Категории
+        categories_singular_title: Категория
+        topics_title: Темы
+        topics_singular_title: Тема
+        federated_domains_title: Интегрированные домены
+        federated_domains_singular_title: Домен
+        moderation_status_title: Состояние модерирования запроса
+        moderation_status_singular_title: Модерирование
+        moderation_status:
+          pending: Идет обработка
+          accepted: Принято
+          rejected: Не принято
+      sort_title: Сортировать по
+      sorts:
+        relevance: по соответствию тематике
+        most_accessed: по популярности
+        alpha: в алфавитном порядке
+        newest: Самые новые
+        oldest: Самые старые
+        last_modified: Недавно обновленные
+        rating: Лучшие по оценкам
+        comments: Больше всего отзывов
+      sort_period_title: Период сортировки
+      sort_periods:
+        week: Эта неделя
+        month: Этот месяц
+        year: Этот год
+      title:
+        default: Поиск и просмотр массивов данных и типов отображения
+        result:
+          main: Результаты %{body}
+          term: для "%{term}"
+          facet_main: сопоставления %{body}
+          facet: ! '%{facet_type} __ %{facet_value}'
+      listing:
+        no_results: Результаты не найдены
+        timeout: Извините. В настоящее время результаты извлечь невозможно. Попробуйте
+          позже.
+        result_count: Показано %{this} из %{total}
+        federation_source: Результаты интегрированного поиска %{source}
+        federation_source_html: Предоставлено %{source_link}
+        comment_count: Количество замечаний
+        table_header:
+          name: Имя
+          popularity: Популярность
+          type: Тип
+          rss: RSS
+      row_results:
+        title_html: ! 'Показано <span class="rowResultCountText"></span> из <span
+          class="totalResultCountText"></span> подходящих строк <a href="#" class="rowSearchLink">(смотреть
+          результаты)</a>:'
+        more_link: Больше
+        less_link: Меньше
+      actions:
+        clear_all: Очистить все дополнительные параметры
+        clear_facet: (Все)
+        all_options: Смотреть все
+        less_options: Смотреть меньше
+        create_dataset: Создать или загрузить ваш собственный массив данных
+        create_dataset_verb: Создать
+        create_dataset_short: Создать новый массив данных
+        suggest_dataset: Не нашли? Укажите массив данных.
+        suggest_dataset_verb: Укажите
+        suggest_dataset_short: Укажите массив данных
+        subscribe: Подписаться
+        dataset_subscribe: Подписаться на изменения в этом режиме просмотра
+        compact_list: В виде краткого списка
+        rich_list: В виде развернутого списка
+        expand_section: Нажмите «мышкой» для увеличения
+        share_button: Передать
+        moderation:
+          accept: Принять
+          reject: Отказать
+        permissions:
+          title: Изменить режим открытого доступа
+          change_button:
+            public_html: Сделать общедоступным
+            private_html: Ограничить доступ
+        delete:
+          title: Удалить эту позицию
+          button: Удалить
+          confirm: Вы действительно хотите удалить %{dataset}?
+        about:
+          title: Об этом массиве данных
+          button: Общие сведения
+        manage_api:
+          title: Работа с этим ППИ
+          button: Работа

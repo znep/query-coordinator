@@ -104,3 +104,47 @@ zh:
       must_enter_name: 您必须输入此列的名称
       no_rows: 无行显示
       new_row: 新增
+hi:
+  controls:
+    grid:
+      sort_ascending: आरोही क्रम में छांटें
+      sort_descending: अवरोही क्रम में छांटें
+      clear_sort: छंटाई को हटाएँ
+      hide_column: कॉलम छिपाएँ
+      delete_column: कॉलम मिटाएँ
+      edit_column_properties: कॉलम प्रॉपर्टी संपादित करें
+      filter_this_column: इस कॉलम को फिल्‍टर करें
+      clear_column_filter: कॉलम फिल्‍टर को हटाएँ
+      previous: पिछला
+      delete_warning_single_column: क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस
+        कॉलम में समस्‍त डेटा हटा दिया जाएगा!
+      delete_warning_multi_column: क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस
+        कॉलम में समस्‍त डेटा हटा दिया जाएगा!
+      view_single_row: एकल पंक्ति डेटा देखें
+      delete_row: पंक्ति मिटाएँ
+      click_for_menu: मेनू के लिए क्लिक करें
+      must_enter_name: आपको इस कॉलम के लिए नाम देना चाहिए
+      no_rows: प्रदर्शन के लिए पंक्तियाँ नहीं
+      new_row: नई
+ru:
+  controls:
+    grid:
+      sort_ascending: Сортировать в порядке возрастания
+      sort_descending: Сортировать в порядке убывания
+      clear_sort: Очистить сортировку
+      hide_column: Скрыть столбец
+      delete_column: Удалить столбец
+      edit_column_properties: Редактировать свойства столбца
+      filter_this_column: Применить фильтр к этому столбцу
+      clear_column_filter: Отключить фильтр столбцов
+      previous: Предыдущий
+      delete_warning_single_column: Вы хотите удалить выделенный столбец? Все данные
+        этого столбца будут удалены!
+      delete_warning_multi_column: Вы хотите удалить выделенные столбцы? Все данные
+        этих столбцов будут удалены!
+      view_single_row: Смотреть данные одной строки
+      delete_row: Удалить строку
+      click_for_menu: Нажать «мышкой» для вызова Меню
+      must_enter_name: Вы должны ввести наименование для этого столбца
+      no_rows: Нет строк для отображения
+      new_row: Новый

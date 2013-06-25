@@ -935,3 +935,379 @@ zh:
       range: 输入值应在{0} 和 {1} 之间。
       max: 请输入小于或等于{0}的值。
       min: 请输入大于或等于{0}的值。
+hi:
+  support:
+    array:
+      two_words_connector: और
+      last_word_connector: ! ', और'
+    array_or:
+      two_words_connector: या
+      last_word_connector: ! ', या'
+  core:
+    and: और
+    or: या
+    view_types:
+      api: एपीआई व्‍यू
+      blob: गैर-तालिका युक्‍त फाइल या दस्‍तावेज
+      calendar: कैलेंडर
+      chart: चार्ट
+      dataset: डेटासेट
+      filter: फिल्‍टर किये गये व्‍यू
+      form: फ़ॉर्म
+      group: समूहबद्ध व्‍यू
+      grouped: समूहबद्ध व्‍यू
+      href: बाहरी डेटासेट
+      map: नक्‍शा
+      table: तालिका
+      working_copy: कामकाजी प्रति
+    view_types_plural:
+      api: एपीआई
+      chart: चार्ट
+      map: नक्‍शे
+      calendar: कैलेंडर
+      filter: फिल्‍टर किये गये व्‍यू
+      form: फ़ॉर्म
+      grouped: समूहबद्ध व्‍यू
+    data_types:
+      text: सादा टैक्‍स्‍ट
+      html: फ़ॉरमेट किया गया टैक्‍स्‍ट
+      number: संख्‍या
+      money: धन
+      percent: प्रतिशत
+      date: तिथि व समय (समय क्षेत्र सहित)
+      calendar_date: तिथि व समय
+      email: ईमेल
+      phone: फोन
+      url: वेबसाइट यूआरएल
+      checkbox: चेकबॉक्‍स
+      flag: फ़्लैग
+      stars: सितारे
+      location: स्‍थान
+      geospatial: जियोस्‍पाटियल
+      document: दस्‍तावेज
+      photo: फ़ोटो (चित्र)
+      drop_down_list: कई विकल्‍प
+      dataset_link: डेटासेट लिंक
+      link: लिंक कॉलम
+      object: वस्‍तु
+      list: सूची
+      nested_table: समाहित तालिका
+    alignment:
+      left: बायें
+      center: मध्‍य
+      right: दांये
+    precision_style:
+      standard: स्‍टैंडर्ड (1020.4)
+      scientific: वैज्ञानिक (1.0204e+3)
+    aggregates:
+      average: औसत
+      count: गणना
+      sum: योग
+      minimum: न्‍यूनतम
+      maximum: अधिकतम
+    chart_types:
+      area: एरिया चार्ट
+      bar: बार चार्ट
+      bubble: बबल चार्ट
+      column: कॉलम चार्ट
+      donut: डोनट चार्ट
+      line: लाइन चार्ट
+      pie: पाई चार्ट
+      timeline: घटनाक्रम
+      treemap: वृक्षाकार नक्‍शा
+      stackedcolumn: समूहबद्ध कॉलम चार्ट
+      stackedbar: समूहबद्ध बार चार्ट
+    map_layers:
+      roadmap: रोडमैप
+      satellite: सैटेलाइट
+      terrain: भू-भाग
+      aerial: आकाशीय
+      esri_world_street_map: वर्ल्‍ड स्‍ट्रीट मैप (ईएसआरआई)
+      esri_world_street_map_alias: वर्ल्‍ड स्‍ट्रीट मैप
+      esri_satellite: सैटेलाइट चित्रांकन (ईएसआरआई)
+      esri_us_topo: विस्‍तृत यूएसए स्‍थलाकृतिक नक्‍शा (ईएसआरआई)
+      esri_us_topo_alias: यूएसए स्‍थलाकृतिक नक्‍शा
+      esri_world_topo: व्‍याख्‍या सहित विश्‍व स्‍थलाकृतिक नक्‍शा (ईएसआरआई)
+      esri_world_topo_alias: विश्‍व स्‍थलाकृतिक नक्‍शा
+      esri_natural_earth: प्राकृतिक पृथ्‍वी नक्‍शा (ईएसआरआई)
+      esri_natural_earth_alias: प्राकृतिक पृथ्‍वी नक्‍शा
+      google_roadmap: गूगल रोडमैप
+      google_roadmap_alias: गूगल
+      google_satellite: गूगल सैटेलाइट
+      google_terrain: गूगल भू-भाग
+      bing_roadmap: बिंग रोडमैप
+      bing_roadmap_alias: बिंग
+      bing_aerial: बिंग आकाशीय
+    filters:
+      formal:
+        equals: बराबर है
+        not_equals: बराबर नहीं है
+        starts_with: इससे शुरू होता है
+        contains: इसमें मौजूद है
+        not_contains: इसमें मौजूद नहीं है
+        less_than: इससे कम
+        less_than_or_equals: इससे कम या समान
+        greater_than: इससे अधिक
+        greater_than_or_equals: इससे अधिक या समान
+        between: इसके बीच
+        is_blank: खाली है
+        is_not_blank: खाली नहीं है
+      informal:
+        equals: है
+        not_equals: नहीं है
+        starts_with: इससे शुरू होता है
+        contains: इसमें मौजूद है
+        not_contains: इसमें मौजूद नहीं है
+        less_than: यह इससे कम है
+        less_than_or_equals: यह सर्वाधिक है
+        greater_than: यह इससे अधिक है
+        greater_than_or_equals: यह सबसे कम है
+        between: यह इनके बीच है
+        is_blank: यह खाली है
+        is_not_blank: यह खाली नहीं है
+    visibility:
+      public: सार्वजनिक
+      private: निजी
+    analytics:
+      visit: व्‍यू
+      visits: व्‍यू
+    dialogs:
+      apply: लागू करें
+      cancel: रद्द करें
+      close: बंद करें
+      continue: जारी रखें
+      create: बनाएँ
+      delete: मिटाएँ
+      done: किया गया
+      dont_save: सहेजें नहीं
+      save: सहेजें
+      update: अद्यतन
+    pagination:
+      first_page: पहला पृष्‍ठ
+      previous_page: पिछला पृष्‍ठ
+      next_page: अगला पृष्‍ठ
+      last_page: अंतिम पृष्‍ठ
+    interstitial:
+      leaving_notice_html: आप <span class="serverName">%{site_name}</span> को छोड़
+        रहे हैं
+      leaving_explanation_html: इसे अन्‍य डोमेन <span class="datasetType">डेटासेट</span>
+        <a href="\#" rel="external" class="externalDomain">द्वारा होस्‍ट</a>किया गया
+        है।
+    forms:
+      none: कोई नहीं
+      required_field: आवश्‍यक स्‍थान
+    share_types:
+      view: अवलोकनकर्ता
+      contributor: योगदानकर्ता
+      owner: स्‍वामी
+      viewer: अवलोकनकर्ता
+    features:
+      allow_comments: कमेंटिंग
+      cell_comments: सेल कमेंटिंग
+    expando:
+      prompt: विस्‍तार करने के लिए क्लिक करें
+      expand: विस्‍तारित करें
+    validation:
+      required: यह स्‍थान भरना आवश्‍यक है।
+      remote: कृपया यह स्‍थान ठीक करें।
+      email: कृपया मान्‍य ईमेल पता डालें।
+      url: कृपया मान्‍य यूआरएल डालें।
+      date: कृपया मान्‍य तिथि डालें।
+      dateISO: कृपया मान्‍य तिथि (आईएसओ) डालें।
+      number: कृपया मान्‍य संख्‍या डालें।
+      digits: कृपया केवल अंक डालें।
+      equalTo: कृपया दोबारा समान मान डालें।
+      accept: कृपया मान्‍य एक्‍सटेंश्न वाला मान डालें।
+      maxlength: कृपया {0}से अधिक अक्षर न डालें।
+      minlength: कृपया कम से कम अक्षर {0} डालें।
+      rangelength: कृपया {0} और {1} अक्षरों की लंबाई के बीच का कोई मान डालें।
+      range: कृपया {0} और {1} के बीच मान डालें।
+      max: कृपया {0} से कम या इसके समान मान डालें।
+      min: कृपया {0} से अधिक या इसके समान मान डालें।
+ru:
+  support:
+    array:
+      two_words_connector: ! ' и '
+      last_word_connector: ! ', и '
+    array_or:
+      two_words_connector: ! ' или '
+      last_word_connector: ! ', или '
+  core:
+    and: и
+    or: или
+    view_types:
+      api: ! 'вид ППИ (API) '
+      blob: нетабличный документ
+      calendar: план-график
+      chart: график
+      dataset: массив данных
+      filter: вид с применением фильтра данных
+      form: страница
+      group: систематизированный по группам вид
+      grouped: систематизированный по группам вид
+      href: внешний массив данных
+      map: карта
+      table: таблица
+      working_copy: рабочая копия
+    view_types_plural:
+      api: ППИ (API)
+      chart: Графики
+      map: Карты
+      calendar: Планы-графики
+      filter: Виды с применением фильтров
+      form: Страницы (формы)
+      grouped: Систематизированные по группам виды
+    data_types:
+      text: Текст в текстовом формате
+      html: Форматированный текст
+      number: Число
+      money: Деньги
+      percent: Проценты
+      date: Дата и время (с указанием часового пояса)
+      calendar_date: Дата и время
+      email: Адрес эл. почты
+      phone: Телефон
+      url: URL сайта
+      checkbox: Окно флажка
+      flag: Флажок
+      stars: Звездочка
+      location: Местоположение
+      geospatial: Геопространственный
+      document: Документ
+      photo: Фото (изображение)
+      drop_down_list: Множественный выбор
+      dataset_link: Ссылка на массив данных
+      link: Ссылка на столбец
+      object: Объект
+      list: Список
+      nested_table: Вложенная таблица
+    alignment:
+      left: Слева
+      center: По центру
+      right: Справа
+    precision_style:
+      standard: Стандартный (1020.4)
+      scientific: Научный (1.0204e+3)
+    aggregates:
+      average: Средний
+      count: Количество
+      sum: Сумма
+      minimum: Минимум
+      maximum: Максимум
+    chart_types:
+      area: Комбинированная гистограмма
+      bar: Столбцовая диаграмма
+      bubble: Пузырьковая диаграмма
+      column: Прямоугольная диаграмма
+      donut: Кольцевая диаграмма
+      line: Линейный график
+      pie: Секторная диаграмма
+      timeline: Временная ось
+      treemap: Древовидная карта
+      stackedcolumn: Многоярусная прямоугольная диаграмма
+      stackedbar: Многоярусная столбцовая диаграмма
+    map_layers:
+      roadmap: Карта автомобильных дорог
+      satellite: Спутниковая карта
+      terrain: Карта рельефа
+      aerial: АФС (аэрофотоснимок)
+      esri_world_street_map: Планы городов мира (ESRI)
+      esri_world_street_map_alias: Планы городов мира
+      esri_satellite: Спутниковая карта (ESRI)
+      esri_us_topo: Подробная топографическая карта США (ESRI)
+      esri_us_topo_alias: Топографическая карта США
+      esri_world_topo: Топографическая карта мира с указателями (ESRI)
+      esri_world_topo_alias: Топографическая карта мира
+      esri_natural_earth: Карта 3-d Natural Earth (ESRI)
+      esri_natural_earth_alias: Карта 3-d Natural Earth
+      google_roadmap: Карта автомобильных дорог Google
+      google_roadmap_alias: Google
+      google_satellite: ! 'Спутниковая карта системы Google '
+      google_terrain: ! 'Карта рельефа системы Google '
+      bing_roadmap: Карта автомобильных дорог системы Bing
+      bing_roadmap_alias: Bing
+      bing_aerial: АФС Bing
+    filters:
+      formal:
+        equals: Равно
+        not_equals: не равно
+        starts_with: ! 'начинается с '
+        contains: содержит
+        not_contains: не содержит
+        less_than: меньше, чем
+        less_than_or_equals: меньше или равно
+        greater_than: больше, чем
+        greater_than_or_equals: больше или равно
+        between: между
+        is_blank: пустой
+        is_not_blank: не пустой
+      informal:
+        equals: является
+        not_equals: не является
+        starts_with: начинается с
+        contains: содержит
+        not_contains: не содержит
+        less_than: меньше, чем
+        less_than_or_equals: не более, чем
+        greater_than: больше, чем
+        greater_than_or_equals: не менее, чем
+        between: находится между
+        is_blank: пустой
+        is_not_blank: не пустой
+    visibility:
+      public: общедоступный
+      private: ограниченного доступа
+    analytics:
+      visit: вид
+      visits: виды
+    dialogs:
+      apply: Применить
+      cancel: Отменить
+      close: Закрыть
+      continue: Продолжить
+      create: Создать
+      delete: Удалить
+      done: Выполнено
+      dont_save: Не сохранять
+      save: Сохранить
+      update: Обновить
+    pagination:
+      first_page: Первая страница
+      previous_page: Предыдущая страница
+      next_page: Следующая страница
+      last_page: Последняя страница
+    interstitial:
+      leaving_notice_html: Вы покидаете <span class="serverName">%{site_name}</span>
+      leaving_explanation_html: Этот <span class="datasetType">массив данных</span>
+        размещен <a href="\#" rel="external" class="externalDomain">на другом домене</a>.
+    forms:
+      none: Нет
+      required_field: Заполнять обязательно
+    share_types:
+      view: Программа просмотра
+      contributor: Автор
+      owner: Владелец
+      viewer: Программа просмотра
+    features:
+      allow_comments: Комментарии
+      cell_comments: Комментарии в ячейках
+    expando:
+      prompt: Нажмите, чтобы увеличить изображение
+      expand: Увеличить
+    validation:
+      required: Заполнять обязательно.
+      remote: Устраните недостаток в этой графе.
+      email: Введите действительный адрес эл. почты.
+      url: Введите действительный URL.
+      date: Введите допустимую дату.
+      dateISO: Введите допустимую дату (ISO).
+      number: Введите достоверное число.
+      digits: Введите только цифры.
+      equalTo: Введите то же значение повторно.
+      accept: Введите значение с действительным расширением.
+      maxlength: Введите не более {0} символов.
+      minlength: Введите не менее (0} символов.
+      rangelength: Введите значение с числом символов от {0} до {1}.
+      range: Введите значение от {0} до {1}.
+      max: Введите значение не больше {0}.
+      min: Введите значение не меньше {0}.

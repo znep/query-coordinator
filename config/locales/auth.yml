@@ -361,3 +361,167 @@ zh:
       prompt: 欢迎回来！请选择新密码。
       form:
         reset_password_button: 重置密码
+hi:
+  account:
+    common:
+      inline_auth:
+        sign_in_headline: अपने सोक्राटा आईडी का उपयोग करते हुए साइन इन करें
+        sign_up_headline: हमें प्रसन्‍नता है कि आप %{site}! से जुड़ना चाहते हैं!
+      form:
+        email: ईमेल पता
+        display_name: नाम दर्शाएँ
+        password: पासवर्ड
+        password_requirements: ! 'आवश्‍यक है। आपका पासवर्ड 8 से 40 अक्षरों के बीच
+          होना चाहिए और इसके द्वारा हमारे चार मानकों से तीन पूरे किये जाने चाहिए:
+          इसमें एक अंक हो; इसमें लोअर केस (अंग्रेजी) अक्षर हो; इसमें अपर केस (अंग्रेजी)
+          अक्षर हो; इसमें कोई अल्‍फ़ान्‍यूमेरिक चिह्न न हो।'
+        password_requirements_html: <p>आपका पासवर्ड<b>8 से 40 अक्षरों के बीच होना
+          चाहिए</b>और<b> द्वारा हमारे चार मानकों से तीन पूरे किये जाने चाहिए </b>:</p><p></p><ul><li>•
+          इसमें एक अंक हो</li><li>• इसमें लोअर केस (अंग्रेजी) अक्षर हो</li><li>• इसमें
+          अपर केस (अंग्रेजी) अक्षर हो</li><li>• इसमें कोई अल्‍फ़ान्‍यूमेरिक चिह्न
+          न हो</li></ul>
+        password_restrictions: पाबंदियाँ लागू हैं
+        confirm_password: पासवर्ड की पुष्टि करें
+        no_account: क्‍या आपका खाता नहीं है?
+        sign_up_prompt: अभी साइन अप करें
+        forgot_password: क्‍या आप पासवर्ड भूल गए हैं?
+        remember_me: मुझे याद रखें
+      rpx:
+        prompt:
+          sign_in: या...साइन इन करने के लिए इनमें से एक खाते का उपयोग करें।
+          sign_up: या...जुड़ने के लिए इनमें से एक खाते का उपयोग करें।
+        description: इन खातों द्वारा प्रदान की जाने वाली अतिरिक्‍त विशेषताओं का लाभ
+          लें और केवल एक क्लिक में साइन इन करें।
+        providers:
+          facebook:
+            sign_in_html: <strong>जुड़ें</strong> Facebook के साथ
+            sign_up_html: <strong>जुड़ें</strong> Facebook के साथ
+          twitter:
+            sign_in_html: <strong>जुड़ें </strong> Twitter के साथ
+            sign_up_html: <strong>जुड़ें</strong> Twitter के साथ
+          google:
+            sign_in_html: <strong>साइन इन करें</strong> Google के साथ
+            sign_up_html: <strong>जुड़ें</strong> Google के साथ
+          openid:
+            sign_in_html: <strong>साइन इन करें</strong> OpenID के साथ
+            sign_up_html: <strong>जुड़ें</strong> OpenID के साथ
+  screens:
+    sign_in:
+      headline: साइन इन करें
+      tips_html: <strong><a href="http://www.socrata.com" rel="external">सोक्राटा</a>
+        द्वारा संचालित</strong> सभी साइटों में साइन इन करने के लिए अपने ईमेल व पासवर्ड
+        का उपयोग करें।
+      prompt_html: ! 'अपनी <strong>सोक्राटा आईडी</strong>से साइन इन करें '
+      form:
+        sign_in_button: साइन इन करें
+    sign_up:
+      headline: हमें प्रसन्‍नता है कि आप %{site}! से जुड़ना चाहते हैं!
+      terms_html: नीचे ''मेरा खाता बनाएँ'' पर क्लिक करके, आप हमारी <a href="http://www.socrata.com/terms-of-service"
+        rel="external">सेवा शर्तों</a> और <a href="http://www.socrata.com/privacy"
+        rel="external">निजता नीति से सहमत हो रहे हैं।</a>
+      prompt_html: नई <strong>सोक्राटा आईडी</strong>बनाएँ
+      third_party: साइन इन करने के बाद, आपके तीसरे पक्ष के परिचय इस खाते से जोड़ दिये
+        जाएंगे।
+      third_party_return: इस परिचय का उपयोग करने से पहले, आपको
+      third_party_return_create: सोक्राटा खाता बनाना चाहिए
+      third_party_return_link: वर्तमान सोक्राटा आईडी से इसे जोड़ें
+      form:
+        have_account_link: मेरा पहले से एक खाता है
+        create_account_button: मेरा खाता बनाएँ
+    forgot_password:
+      title: अपना पासवर्ड फिर से हासिल करें
+      prompt: यदि आप अपना पासवर्ड भूल गए हैं तो हम आपको ईमेल में एक लिंक भेजेंगे जिससे
+        आप अपना पासवर्ड रिसेट कर सकते हैं।
+      already_authenticated: ! 'पासवर्ड रिसेट करने में अक्षम रहे: आप पहले से ही लॉगिन
+        कर चुके हैं।'
+      form:
+        reset_password_button: ! 'पासवर्ड रिसेट करें '
+    reset_password:
+      title: पासवर्ड रिसेट करें
+      prompt: आपका फिर से स्‍वागत है! कृपया नया पासवर्ड चुनें।
+      form:
+        reset_password_button: पासवर्ड रिसेट करें
+ru:
+  account:
+    common:
+      inline_auth:
+        sign_in_headline: Для входа в систему Socrata введите регистрационное имя
+          (ID)
+        sign_up_headline: Мы рады, что вы решили зарегистрироваться  %{site}!
+      form:
+        email: Адрес электронной почты (ЭП)
+        display_name: Отображаемое наименование
+        password: Пароль
+        password_requirements: ! 'Пароль обязателен. Ваш пароль должен включать от
+          8 до 40 символов и удовлетворять трем из четырех критериев, а именно, в
+          нем должны быть: одна цифра, одна буква в нижнем регистре, одна буква в
+          верхнем регистре, один символ, не относящийся к категории буквенно-цифровых
+          символов.'
+        password_requirements_html: <p>Ваш пароль должен включать <b>от 8 до 40 символов</b>
+          и удовлетворять  <b>трем из четырех критериев, а именно, в нем должны быть</b>:</p><p></p><ul><li>•
+          одна цифра</li><li>• одна буква в нижнем регистре</li><li>• одна буква в
+          верхнем регистре</li><li>• один символ, не относящийся к категории буквенно-цифровых
+          символов</li></ul>
+        password_restrictions: Действуют ограничения
+        confirm_password: Подтвердите пароль
+        no_account: У вас нет регистрационной записи?
+        sign_up_prompt: Войти в систему
+        forgot_password: Забыли пароль?
+        remember_me: Запомнить меня
+      rpx:
+        prompt:
+          sign_in: Или... Используйте одну из этих регистрационных записей для входа
+            в систему.
+          sign_up: Или... Используйте одну из этих регистрационных записей для регистрации.
+        description: Воспользуйтесь дополнительными возможностями, которые дают эти
+          регистрационные записи и войдите в систему одним нажатием «мышки».
+        providers:
+          facebook:
+            sign_in_html: <strong>Подключиться </strong> к Facebook
+            sign_up_html: <strong>Подключиться </strong> к Facebook
+          twitter:
+            sign_in_html: <strong> Подключиться</strong> к Twitter
+            sign_up_html: <strong> Подключиться</strong> к Twitter
+          google:
+            sign_in_html: <strong>Войти</strong> через Google
+            sign_up_html: <strong>Зарегистрироваться</strong> через Google
+          openid:
+            sign_in_html: <strong> Войти</strong> через OpenID
+            sign_up_html: <strong> Зарегистрироваться</strong> через OpenID
+  screens:
+    sign_in:
+      headline: Войти в систему
+      tips_html: Используйте ваш адрес эл. почты и пароль для входа на все <strong><a
+        href="http://www.socrata.com" rel="external">сайты</a> системы</strong> Socrata.
+      prompt_html: Войти в систему <strong>, используя регистрационное имя в системе
+        Socrata</strong>
+      form:
+        sign_in_button: Войти в систему
+    sign_up:
+      headline: Мы рады, что вы решили зарегистрироваться %{site}!
+      terms_html: Нажимая кнопку «Создать регистрационную запись» (ниже), вы принимаете
+        наши <a href="http://www.socrata.com/terms-of-service" rel="external">Условия
+        обслуживания</a> и <a href="http://www.socrata.com/privacy" rel="external">Правила
+        защиты данных.</a>
+      prompt_html: Создать новое <strong>регистрационное имя в системе Socrata</strong>
+      third_party: После входа в систему ваши данные (регистрационное имя и пароль)
+        стороннего пользователя будут связаны с данной регистрационной записью.
+      third_party_return: Прежде чем использовать эти данные (имя и пароль), вы должны
+      third_party_return_create: создать регистрационную запись в системе Socrata
+      third_party_return_link: связать ее с действующим регистрационным именем в системе
+        Socrata
+      form:
+        have_account_link: У меня уже есть регистрационная запись
+        create_account_button: Создать регистрационную запись
+    forgot_password:
+      title: Восстановить ваш пароль
+      prompt: Если вы забыли пароль, мы можем направить вам электронное сообщение
+        со ссылкой для восстановления пароля.
+      already_authenticated: Сменить пароль невозможно, вы уже вошли в систему.
+      form:
+        reset_password_button: Сменить пароль
+    reset_password:
+      title: Сменить пароль
+      prompt: Вы снова в системе! Выберите новый пароль.
+      form:
+        reset_password_button: ! 'Сменить пароль '

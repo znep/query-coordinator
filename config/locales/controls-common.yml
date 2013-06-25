@@ -144,3 +144,61 @@ zh:
           about: 关于此数据集
       image_upload:
         button: 上传图片
+hi:
+  controls:
+    common:
+      share:
+        button_prompt: सामाजिक मेलजोल करें
+        button_tooltip: इस डेटासेट को साझा करें
+        share_text: ! '%{site} के डेटासेट, %{name} की जांच करें:'
+        networks:
+          facebook: Facebook
+          twitter: Twitter
+          email: ईमेल
+      auth_required: ! 'आपको %{action_phrase} में लॉगिन होना चाहिए '
+      rate:
+        auth_action_phrase: इस डेटासेट को रेटिंग दें
+      stars:
+        tooltip: ! '%{number} सितारे'
+      sidebar:
+        tabs:
+          edit: संपादित करें
+          manage: प्रबंधन करें
+          moreViews: अधिक अवलोकन
+          filter: फिल्‍टर करें
+          visualize: मानस चित्रित करें
+          export: निर्यात करें
+          discuss: विचार-विमर्श करें
+          embed: जोड़ें
+          about: इस डेटासेट के बारे में
+      image_upload:
+        button: चित्र अपलोड करें
+ru:
+  controls:
+    common:
+      share:
+        button_prompt: Коллективная работа
+        button_tooltip: Передать этот массив данных
+        share_text: ! 'Ознакомьтесь с массивом данных %{name}, на %{site}: '
+        networks:
+          facebook: Facebook
+          twitter: Twitter
+          email: Адрес эл. почты
+      auth_required: Вы должны зарегистрироваться %{action_phrase},
+      rate:
+        auth_action_phrase: чтобы дать оценку этому массиву данных
+      stars:
+        tooltip: ! '%{number} звезд'
+      sidebar:
+        tabs:
+          edit: Редактировать
+          manage: Управлять
+          moreViews: Другие режимы отображения
+          filter: Фильтровать
+          visualize: Визуализация
+          export: Экспортировать
+          discuss: Обсудить
+          embed: Вставить
+          about: Об этом массиве данных
+      image_upload:
+        button: Загрузить изображение

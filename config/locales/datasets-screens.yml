@@ -4023,3 +4023,1752 @@ zh:
         remove_email: 移除
         message_prompt: 输入留言（可选）
         email_button: 电子邮件
+hi:
+  screens:
+    about:
+      created: बनाया गया
+      snapshotted: स्‍नैपशॉट लिया गया
+      updated: अद्यति‍त किया गया
+      edit_metadata: मेटाडेटा संपादित करें
+      view_full_page: पूरा पृष्‍ठ देखें
+      description: विवरण
+      activity: गतिविधि
+      community: सामुदायिक रेटिंग
+      your: आपकी रेटिंग
+      raters: रेटिंग दाता
+      visits: विज़ि‍ट
+      downloads: डाउनलोड
+      comments: टिप्‍पणी
+      contributors: योगदानकर्ता
+      view_statistics: आंकड़ें देखें
+      meta: मेटा
+      category: श्रेणी
+      none: (कोई नहीं)
+      permissions: स्‍वीकृतियाँ
+      public: सार्वजनिक
+      private: निजी
+      tags: टैग्‍स
+      row_count: अपूर्ण गिनती
+      links: लिंक
+      permalink: पर्मालिंक
+      short_url: छोटा यूआरएल
+      attachments: संलग्‍नक
+      licensing: लाइसेंसिंग व गुणारोपण
+      data_provided_by: डेटा प्रदानकर्ता
+      source_link: स्रोत लिंक
+      license: लाइसेंस
+      terms_of_use: उपयोग की शर्तें
+      spatial_extent: आकाशीय विस्‍तार
+      semantics: सेमेंटिक्‍स व आरडीएफ़
+      row_class: रो क्‍लास
+      subject_column: विषय कॉलम
+      permanent_links: परमानेंट लिंक
+      resource_name: संसाधन नाम
+      row_identifier: रो आइडेंटिफ़ायर
+      actions: कार्रवाई
+      flag_dataset: फ़्लैग डेटासेट
+      contact_dataset_owner: डेटासेट स्‍वामी से संपर्क करें
+    ds:
+      bar:
+        save_button: सहेजें
+        save_prompt: वर्तमान व्‍यू सहेजें
+        save_progress: सहेज रहा है...
+        save_as_button: इस प्रकार सहेजें...
+        save_as_prompt: व्‍यू इस प्रकार सहेजें...
+        revert_button: वापिस लाएँ
+        revert_prompt: सहेजे गए व्‍यू पर वापिस लाएँ
+        unsaved_title: बिना सहेजा गया व्‍यू
+        unpublished_unsavable: ! 'नीचे डेटा में परिवर्तन स्‍वत: सहेजे जाते हैं। फिल्‍टर
+          व खोज डेटासेट की कामकाजी प्रति में सहेजा नहीं जा सकता है। कृपया प्रकाशित
+          डेटासेट का व्‍यू बनाएँ।'
+        snapshot_unsavable: स्‍नैपशॉट लिया गया डेटासेट व व्‍यू बनाएँ या संशोधित नहीं
+          किये जा सकते हैं
+        api_unsavable: एपीआई व्‍यू को संशोधित नहीं किया जा सकता है
+        working_copy_notice: यह डेटासेट की प्रति है जिससे आप इसमें परिवर्तन कर सकते
+          हैं। जब आप इसे प्रकाशित नहीं करेंगे यह अन्‍य व्‍यक्तियों को दिखाई नहीं देता
+          है।
+        working_copy_title: ''
+        snapshot_notice: यह डेटासेट का पहले प्रकाशित संस्‍करण है। इसे सुरक्षित कर
+          लिया गया है और संशोधित नहीं किया जा सकता।
+        snapshot_title: स्‍नैपशॉट लिया गया
+        publish_prompt: यह डेटासेट कामकाजी प्रति है और सार्वजनिक रूप से उपलब्‍ध नहीं
+          है। जब आप वांछित परिवर्तन कर लें तो यह डेटासेट सार्वजनिक रूप से उपलब्‍ध
+          कराने के लिए प्रकाशित किया जाना चाहिए।
+        publish_rights: केवल स्‍वामी या प्रकाशक इस डेटासेट को प्रकाशित कर सकता है
+        publish_button: डेटासेट प्रकाशित करें
+        based_on_parent_html: <a class="parentName"></a> पर आधारित
+        based_on_working_copy_html: <a class="revertLink currentViewName" href="#revert">%{name}</a>
+          की कामकाजी प्रति पर आधारित
+        based_on_html: <a class="revertLink currentViewName" href="#revert">%{name}</a>
+          पर आधारित
+        view_published_html: प्रकाशित <span class="publishedName">डेटासेट</span> देखें
+        subscribe_prompt: ईमेल या आरएसएस के जरिए सदस्‍यता लें
+        subscribe: परिवर्तनों के लिए सदस्‍यता लें
+        share_facebook: Facebook पर साझा करें
+        share_twitter: Twitter पर साझा करें
+        share_email: ईमेल के जरिए साझा करें
+        view_type: ! '%{type}के तौर पर देखें'
+        view_types:
+          table: तालिका
+          map: नक्‍शा
+          chart: चार्ट
+          calendar: कैलेंडर
+          page: एकल पंक्ति
+          fatrow: समृद्ध सूची
+        find_prompt: इस डेटासेट में खोजें
+        full_screen: फुल स्‍क्रीन में बदलें
+        format:
+          undo: अनडू करें
+          redo: रिडू करें
+          bold: बोल्‍ड
+          underline: अंडरलाइन
+          italic: इटैलिक
+          strike: स्‍ट्राइकथ्रु
+          bullet: बिंदु युक्‍त सूची
+          number: संख्‍या युक्‍त सूची
+          link: लिंक
+          color: फोंट रंग
+        snapshot_title_html: ! '%{date}का स्‍नैपशॉट लिया गया'
+      subscribe:
+        title_html: ! '"<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">डेटासेट</span>की
+          सदस्‍यता लें'
+        intro_html: ! '<strong>आरएसएस रीडर के जरिए <span class="datasetName">%{name}</span>
+          डेटासेट की सदस्‍यता लेने के लिए</strong>, निम्‍नलिखित एक लिंक का उपयोग करें:'
+        rss: आरएसएस के तौर पर डाउनलोड करें
+        google_reader: गूगल रीडर में जोड़ें
+        rss_program: बाहरी प्रोग्राम में खोलें
+        subscribe_html: <strong>नया डेटा प्रकाशित होने पर ईमेल सूचना पाने के लिए</strong>
+          नीचे सब्‍सक्राइब बॉक्‍स को देखें।
+        subscribed_html: <strong>आपने फिलहाल ईमेल के जरिए इस <span class="datasetTypeName">डेटासेट</span>
+          via email</strong> की सदस्‍यता ली है और नया डेटा प्रकाशित होने पर सूचना
+          मिलेगी।
+        unsubscribe: यदि आप अब सूचना नहीं पाना चाहते हैं तो नीचे सब्‍सक्राइब बॉक्‍स
+          से निशान हटा दें।
+        subscribe_button: ईमेल के जरिए सदस्‍यता
+      blob:
+        download: डाउनलोड
+        data_extraction: यह डेटा प्राप्ति टूल या एप्‍लीकेशन दायीं ओर लिंक के जरिए
+          उपलब्‍ध है।
+        limited_download: यह डेटासेट तालिकाबद्ध डेटा नहीं है और इसमें सीमित इंटरेक्टिव
+          क्षमता है लेकिन यह डाउनलोड के लिए उपलब्‍ध है
+        external_link: बाहरी लिंक
+        js_required: आपके ब्राउज़र के भीतर डाक्‍यूमेंट व्‍यूअर चलाने के लिए जावास्क्रिप्‍ट
+          जरूरी है।
+        js_required_download:
+          prompt_html: यह फाइल डाउनलोड करने के बजाय, %{click_here}।
+          click_here: यहाँ क्लिक करें
+      save_dialog:
+        titles:
+          normal: व्‍यू सहेजें
+          prompt: क्‍या आप अपना व्‍यू सहेजना चाहते हैं?
+        descriptions:
+          leaving: ! 'आपका असुरक्षित डेटा है जो खो जाएगा यदि आप यह पृष्‍ठ छोड़ते हैं।
+            कृपया इसे छोड़ने से पहले चुनें कि क्‍या आप इस व्‍यू को सहेजना चाहते हैं
+            या नहीं; या पृष्‍ठ पर वापिस आने के लिए रद्द करें चुनें। '
+          reload_save: ! 'इस परिवर्तन के लिए पुन: लोड करना आवश्‍यक है। आप अपने परिवर्तनों
+            को देखने के लिए उन्‍हें सहेज सकते हैं, या इस पृष्‍ठ पर रहने के लिए रद्द
+            कर सकते हैं।'
+          reload_update: ! 'इस परिवर्तन के लिए पुन: लोड करना आवश्‍यक है। आप यह व्‍यू
+            अद्यतित कर सकते हैं या अपने परिवर्तन देखने के लिए नया व्‍यू सहेज सकते
+            हैं, या इस पृष्‍ठ पर रहने के लिए रद्द कर सकते हैं।'
+        form:
+          new_name: ! 'अपने नये व्‍यू के लिए नाम डालें:'
+        validation:
+          auth_required: व्‍यू सहेजने के लिए आपको लॉगिन करना चाहिए
+          view_name_required: व्‍यू नाम आवश्यक है
+      dataset_contact:
+        subject: आपके डेटासेट "%{dataset_name}" को फ़्लैग (चिह्नित) कर दिया गया है
+          %{reason}
+        reasons:
+          copyright_violation: कॉपीराइट उल्‍लंघनों के लिए
+          offensive_content: अपमानजनक सामग्री के लिए
+          spam: संभावित स्‍पैम के तौर पर
+          personal_information: व्‍यक्तिगत सूचना रखने के लिए
+        other_subject: एक आगंतुक ने आपके '%{dataset_name}' '%{site}' डेटासेट के बारे
+          में आपको संदेश भेजा है
+        form:
+          purpose: उद्देश्‍य
+          purposes:
+            prompt: — उद्देश्‍य चुनें —
+            copyright_violation: कॉपीराइट उल्‍लंघन
+            offensive_content: अपमानजनक सामग्री
+            spam: स्‍पैम या जंक
+            personal_information: व्‍यक्तिगत सूचना
+            other: अन्‍य
+          subject: विषय
+          message: लघु संदेश
+          email: आपका ईमेल
+          email_prompt: आपका ईमेल इस डेटासेट के स्‍वामी को बताया गया है ताकि वह उत्तर
+            दे सके।
+          send_button: भेजें
+        validation:
+          no_purpose: आपको इस संदेश का उद्देश्‍य चुनना चाहिए।
+          no_subject: आपको इस संदेश का विषय चुनना चाहिए।
+          no_body: संदेश में मूल कथन होना चाहिए।
+          no_email: आपका ईमेल पता आवश्‍यक है।
+        error_message: इस डेटासेट के लिए फीडबैक भेजने में त्रुटि हुई। कृपया बाद में
+          दोबारा कोशिश करें।
+        success_message: डेटासेट स्‍वामी को सूचित किया गया।
+        captcha_failed: गलत उत्तर, कृपया दोबारा कोशिश करें।
+      dataset_status:
+        needs_copy: यह डेटासेट प्रकाशित हो गया है और सीधे संपादित नहीं किया जा सकता।
+          एक कामकाजी प्रति जिससे आप सार्वजनिक रूप से उपलब्‍ध कराने से पहले अपने वांछित
+          परिवर्तन कर सकते हैं।
+        needs_copy_status:
+          available: उपलब्‍ध है
+          can_be_made: बनाया जा सकता है
+        copy_in_progress: कामकाजी प्रति बनाये जाने के दौरान कृपया प्रतीक्षा करें।
+          %{additional}
+        copy_in_progress_additional:
+          queued: ! 'यह कार्रवाई (queued %{time}; %{totalQueued} total in line)किये
+            जाने की प्रतीक्षा पंक्ति में है '
+          processing: इस पर फिलहाल कार्रवाई हो रही है (started %{time})
+        copy_available: कामकाजी प्रति अब उपलब्‍ध है। संपादन डेटासेट बटन से आपको पहुंच
+          प्राप्‍त होगी जब आप संपा‍दन करने के लिए तैयार होते हैं।
+        edit_dataset_button: डेटासेट संपादित करें
+        error_publishing_html: आपके डेटासेट की कामकाजी प्रति बनाते हुए त्रुटिी हुई।
+          कृपया <a href="http://support.socrata.com" rel="external">सोक्राटा सहायता
+          से संपर्क करें</a>।
+      column_tip:
+        aggregate: (%{data_type} पर %{aggregate})
+        original_name: मूल नाम
+      grid_sidebar:
+        tabs:
+          edit: संपादित करें
+          manage: प्रबंधन करें
+          more_views: अधिक व्‍यू
+          filter: फिल्‍टर करें
+          visualize: मानस चित्रित करें
+          export: निर्यात करें
+          discuss: विचार-विमर्श करें
+          embed: जोड़ें
+          about: इसके बारे में
+        base:
+          validation:
+            invalid_view: यह व्‍यू मान्‍य होना चाहिए
+            different_value: अलग मान की जरूरत है।
+            invalid_value: यह मान अमान्‍य है
+            invalid_values: विशेष मान के साथ समस्‍या हुई। कृपया उपरोक्‍त त्रुटि देखें।
+            uid_required: इसके लिए 4x4 व्‍यू यूआईडी की आवश्‍यकता है
+            identifier_format: मान्य एपीआई आइडेंटिफ़ायर कैरेक्‍टर्स लोअर केस वाले
+              अक्षर (अंग्रेजी के), अंक व अंडरस्‍कोर हैं। यह किसी अक्षर से आरंभ होना
+              चाहिए और इसमें एक के बाद दूसरा अंडरस्‍कोर नहीं आ सकता।
+            file_format: ! '%{format}फाइल आवश्‍यक है'
+            verifying_url: यूआएल सत्‍यापित हो रहा है
+            invalid_url: यह यूआरएल मान्‍य नहीं है
+            at_least: मान कम से कम %{value}का होना चाहिए
+            no_greater: मान %{value} से अधिक नहीं होना चाहिए
+            numeric: मान कोई संख्‍या होना चाहिए
+          buttons:
+            create: बनाएँ
+            update: अद्यतित करें
+            apply: लागू करें
+            done: किया गया
+            cancel: रद्द करें
+          column_select:
+            prompt: कॉलम चुनें
+            unselect: कॉलम अचयनित करें
+            from_grid: कॉलम को ग्रिड से चुनें
+          color_select:
+            prompt: रंग चुनें
+          generic_select:
+            prompt: मान चुनें
+        append_replace:
+          title:
+            immutable: प्रतिस्‍थापित करें
+            mutable: संलग्‍न व प्रतिस्‍थापित करें
+          subtitle:
+            immutable: नई डेटा फाइल अपलोड करें जिसकी सामग्री आपके वर्तमान डेटा का
+              स्‍थान लेगी।
+            mutable: नई डेटा फाइल अपलोड करें जिसकी सामग्री आपके वर्तमान डेटा में जोड़े
+              जाएगी या उसका स्‍थान लेगी।
+          wizard_button:
+            immutable: प्रतिस्‍थापन विज़र्ड आरंभ करें
+            mutable: संलग्‍न व प्रतिस्‍थापित करें विज़र्ड आरंभ करें
+        column_common:
+          basic:
+            title: मूल सूचना
+            name: नाम
+            name_prompt: नाम डालें
+            description: विवरण
+            description_prompt: विवरण डालें
+          type:
+            title: कॉलम प्रकार
+            type: डेटा प्रकार
+            type_prompt: डेटा प्रकार चुनें
+            key: कुंजी
+            source: स्रोत
+          linked_dataset:
+            title: लिंक किया गया डेटासेट
+            dataset: डेटासेट
+            dataset_prompt: डेटासेट यूआरएल या 4x4 यूआईडी
+            key: मुख्‍य कॉलम
+            label: लेबल कॉलम
+        add_column:
+          title: कॉलम जोड़ें
+          subtitle: अपने डेटासेट में नया कॉलम जोड़ें
+          success: आपका कॉलम जोड़ा गया
+          validation:
+            view_column: आप देखने के लिए कॉलम जोड़ नहीं सकते हैं
+          multiple_choice:
+            title: बहु विकल्‍प चयन
+            add_option_button: विकल्‍प जोड़ें
+            option: विकल्‍प
+          convert_latlong:
+            title: वर्तमान अक्षांश व देशांतर उपयोग करें
+            latitude: अक्षांश
+            longitude: देशांतर
+          convert_address:
+            title: वर्तमान पते के कॉलम का उपयोग करें
+            street: गली
+            city: शहर
+            city_prompt: शहर का नाम डालें
+            state: राज्‍य
+            state_prompt: राज्‍य का नाम डालें
+            zip_code: पिन कोड
+            zip_code_prompt: पिन कोड डालें
+          nested_table:
+            default_column_name: शीर्षक रहित
+        column_properties:
+          title: कॉलम प्रॉपर्टी
+          subtitle: इस कॉलम में विभिन्‍न प्रॉपर्टी अद्यतित करें
+          validation:
+            unsaved: आप असुरक्षित व्‍यू के लिए कॉलम प्रॉपर्टी संपादित नहीं कर सकते
+              हैं
+            published: कृपया कॉलम प्रॉपर्टी बदलने के लिए इस डेटासेट की कामकाजी प्रति
+              या व्‍यू बनाएँ।
+          link:
+            title: लिंक
+            key: मुख्‍य
+            source: स्रोत
+          formatting:
+            title: फ़ॉरमेटिंग
+            alignment: संरेखण
+            view_style: स्‍टाईल देखें
+          number:
+            title: नंबर फ़ॉरमेटिंग
+            precision: शुद्धता
+            no_precision: कोई नहीं
+            display: ! 'डिस्‍प्‍ले '
+            no_commas: कोई कोमा नहीं
+          number_advanced:
+            title: उन्‍नत फ़ॉरमेटिंग
+            format_mask: फ़ॉरमेट मास्‍क
+            format_mask_prompt: ! 'संख्‍यात्‍मक अंक, व अन्‍य अक्षर का संकेत देने के
+              लिए #s का उपयोग करें जहाँ आप उन्‍हें निरंतरता में दिखाना चाहते हैं;
+              उदाहरण के लिए सामाजिक सुरक्षा संख्‍या होगी ###-##-####'
+            format_mask_warning: यह आपकी उपरोक्‍त कुछ सेटिंग को ओवरराइड सकती है
+          money:
+            title: मनी फ़ॉरमेटिंग
+            precision: शुद्धता
+            no_precision: कोई नहीं
+            currency: मुद्रा
+            abbreviated: संक्षिप्‍त किया गया
+          localization:
+            title: स्‍थानीयकरण
+            decimal: दशमलव
+            thousands: हजार
+          photo:
+            title: फ़ोटो विकल्‍प
+            size: आकार
+            size_prompt: आकार चुनें
+            sizes:
+              tiny: लघु (24x24)
+              thumb: थम्‍बनेल (80x80)
+              medium: मध्‍यम (150x150)
+              featured: फ़ीचर्ड (150x80)
+              large: बड़ा (220x220)
+              original: मूल
+          url:
+            title: यूआरएल विकल्‍प
+            base_url: मूल यूआरएल
+            base_url_prompt: सामान्‍य यूआरएल प्रेफिक्‍स डालें
+          display_order:
+            title: प्रदर्शन क्रम (DataSlate के लिए)
+            new_item_button: बिंदु जोड़ें
+            option: विकल्‍प
+          multiple_choice:
+            title: बहु विकल्‍प चयन
+            new_option_button: विकल्‍प जोड़ें
+            option: विकल्‍प
+          column_totals:
+            title: कॉलम का कुल योग
+            total: कुल
+            total_prompt: कॉलम का कुल योग चुनें
+          advanced:
+            title: उन्‍नत किया गया
+            api_identifier: एपीआई आइडेंटिफ़ायर
+            new_rdf_button: आरडीएफ़ प्रॉपटी जोड़ें
+            semantics: सेमेंटिक्‍स
+            url: कस्‍टम यूआरएल डालें
+          success: आपका कॉलम अद्यतित किया गया
+        ownership:
+          title: स्‍वामित्‍व
+          subtitle: अन्‍य प्रयोक्‍ता को हस्‍तांतरित करने के लिए, ईमेल पता या सोक्राटा
+            आईडी की खाता संख्‍या डालें, फिर ड्रॉपडाउन सूची में से वांछित खाता चुनें।
+            आप प्रयोक्‍ता का प्रोफाइल यूआरएल भी डाल सकते यदि आप यह जानते हैं। केवल
+            वर्तमान खातों के प्रयोक्‍ता ही डेटासेट का स्‍वामित्‍व ले सकते हैं।
+          validation:
+            valid_saved: यह व्‍यू मान्‍य व सहेजा जाना चाहिए
+            no_user: कृपया प्रयोक्‍ता चुनें।
+            invalid_user: प्रयोक्‍ता चिह्नित नहीं हुआ। कृपया नाम, ईमेल या प्रोफाइल
+              यूआरएल द्वारा प्रयोक्‍ता को खोजने की कोशिश करें।
+          transfer_to: स्‍वामित्‍व इन्‍हें हस्‍तांतरित करें
+          me: मुझे
+          success:
+            me: अब आप स्‍वामी हैं
+            user: स्‍वामित्‍व सफलतापूर्वक %{owner}को हस्‍तां‍तरित हुआ
+            other: स्‍वामित्‍व सफलतापूर्वक हस्‍तां‍तरित हुआ
+          error: स्‍वामित्‍व बदलने में समस्‍या थी। कृपया बाद में दोबारा कोशिश करें।
+        delete:
+          title: मिटाएँ
+          subtitle: इसे %{view_type} मिटाएँ
+          warning:
+            published: इस डेटासेट को मिटाने से इससे जुड़े व्‍यू भी मिट जाएंगे।
+            working_copy: आप इस कामकाजी प्रति को मिटा सकते हैं और नई बना सकते हैं
+              ताकि अपने परिवर्तनों को पलट सकें।
+            api: इस एपीआई को मिटाने से ऐसी एप्‍लीकेशन नष्‍ट हो जाएंगी जो इस एपीआई
+              का उपयोग करती हैं।
+            view: इस व्‍यू को मिटाने से केवल ऐसे अन्‍य व्‍यू प्रभावित होंगे जो इस
+              पर आधारित हैं।
+          delete_button: इसे %{view_type} मिटाएँ
+          confirm: इससे %{view_type} स्‍‍थायी रूप से मिटा जाएगा। इसमें कोई अनडू नहीं
+            है। क्‍या आप वाकई आगे बढ़ना चाहते हैं?
+        share:
+          title: साझा करना
+          subtitle: इसे %{view_type} साझा करना
+          validation:
+            valid_saved: यह व्‍यू मान्‍य व सहेजा जाना चाहिए
+          prompt_html: यह <span class="datasetTypeName">डेटासेट</span> <span class="publicOrPrivate">%{visibility}
+            </span> <span class="andSharedHint %{hide}">है और इसे इसके साथ साझा किया
+            जाता है:</span>
+          loading_shares: साझा की गई चीजें लोड हो रही हैं...
+          no_shares_html: आप फिलहाल इसे <span class="datasetTypeName">डेटासेट</span>
+            किसी के साथ साझा नहीं कर रहे हैं
+          share_button_html: इस <span class="datasetTypeNameUpcase">डेटासेट</span>
+            को साझा करें
+          error: आपकी साझा की गई चीजों को संशोधित करने में त्रुटि हुई। कृपया बाद में
+            दोबारा कोशिश करें
+          success: आपकी स्‍वीकृति अद्यतित की गई
+          notify_button: सभी परिवर्तन सूचित करें
+          notify_success: सूचना भेजी गई
+        apis:
+          title: एपीआई
+          subtitle: एपीआई बनाएँ व अनुकूलित करें
+          prompt_new_html: <strong>एपीआई फाउंड्री</strong>से आप इस डेटासेट के लिए
+            एक या अधिक खुले, स्‍टैंडर्ड आधारित एप्‍लीकेशन प्रोग्रामिंग इंटरफेस (एपीआई)
+            बना व कॉन्फ़ि‍गर कर सकते हैं।
+          create_button: एपीआई बनाएँ
+          create_button_prompt: इस डेटा को प्रोग्राम संबंधी पहुंच देने के लिए एप्‍लीकेशन
+            प्रोग्रामिंग इंटरफेस (एपीआई) बनाएँ।
+          prompt_existing_html: <strong>वर्तमान एपीआई</strong> को अनुकूलित कर सकते
+            हैं। आप स्‍वीकृति नियंत्रित, अनुरोध सीमा निर्धारित, उपयोग आंकड़ें देख
+            सकते हैं और दस्‍तावेजीकरण संपादित कर सकते हैं।
+          manage_button: प्रबंधन करें
+          manage_button_prompt: चुने हुए एपीआई का प्रबंधन करें
+        permissions:
+          title: स्‍वीकृति
+          subtitle: इस %{view_type} की स्‍वीकृति का प्रबंधन करें
+          validation:
+            valid_saved: यह व्‍यू मान्‍य व सहेजा जाना चाहिए
+          status_html: यह <span class="datasetTypeName">डेटासेट</span> फिलहाल <span
+            class="datasetPublicText">%{visibility}</span>है
+          features_html: अतिरिक्‍त <span class="datasetTypeName">डेटासेट</span> विशेषताएँ
+          success: आपकी स्‍वीकृति सहेजी गईं
+          error: आपकी डेटासेट स्‍वीकृति संशोधित करते हुए त्रुटि हुई। कृपया बाद में
+            दोबारा कोशिश करें
+        showhide_columns:
+          title: ! '&amp दिखाएँ; कॉलम छिपाएँ'
+          subtitle: समायोजित करें कि कौन सा कॉलम इस व्‍यू में दिखने योग्‍य है
+          columns:
+            title: कॉलम
+        column_order:
+          title: कॉलम क्रम
+          subtitle: अपने कॉलम का क्रम बदलें
+          prompt_html: कॉलम को अपने पसंदीदा क्रम में लाएँ और फिर नया क्रम लागू करने
+            के लिए <strong>लागू करें</strong> को दबाएँ।
+          validation:
+            valid_columns: यह व्‍यू मान्‍य होना चाहिए और इसमें दिखने योग्‍य कॉलम होने
+              चाहिए।
+          columns:
+            title: कॉलम
+        view_list:
+          pagination:
+            last: अंतिम व्‍यू देखें
+            next: अगला %{count} व्‍यू देखें
+          sort_title: इस आधार पर छांटें
+          sort:
+            popularity: लोकप्रियता
+            dateDescending: सबसे हाल का
+            dateAscending: सबसे पुराने से सबसे नये तक
+            alphaAscending: ए-ज़ेड
+          filter_title: केवल दिखाएँ
+          filter:
+            all: समस्‍त व्‍यू
+          delete_confirm: क्‍या आप वाकई %{name} को मिटाना चाहते हैं?
+          delete_snapshot_confirm: क्‍या आप वाकई %{name} (snapshotted %{date})को मिटाना
+            चाहते हैं?
+          search: व्‍यू खोजें
+          no_results_html: यहाँ कोई <span class="type">results</span> नहीं है
+          item:
+            author_html: ! '<span class="author"></span> द्वारा<span class="date"></span> '
+            delete: यह व्‍यू मिटाएँ
+            expand: विस्‍तारित करने के लिए क्लिक करें
+          views:
+            title: व्‍यू
+            subtitle: इस डेटासेट के वर्तमान फिल्‍टर, मैप, चार्ट व अन्‍य व्‍यू देखें
+          snapshots:
+            title: डेटासेट स्‍नैपशॉट
+            subtitle: इस डेटा के पहले प्रकाशित संस्‍करण देखें
+          no_results: कोई परिणाम नहीं हैं
+        sort_rollup:
+          title: ! '&amp छांटें; रोल अप'
+          subtitle: आप पंक्तियों को एकसाथ समूहबद्ध व डेटा को सारांश रूप में प्रस्‍तुत
+            कर सकते हैं; और एक या अधिक कॉलम छांटें
+          validation:
+            no_eligible_columns: इस व्‍यू में रोल अप (एकत्र करने) या छांटने के लिए
+              कोई कॉलम नहीं है
+            no_group_bys: आपको कॉलम रोल अप करने के लिए कम से कम एक कॉलम से समूहबद्ध
+              करना चाहिए
+            no_function: प्रत्‍येक रोल अप कॉलम में प्रकार्य होना चाहिए
+          rollup:
+            title: रोल अप करें &amp; ड्रिल-डाउन
+            add_group_button: समूहबद्ध कॉलम जोड़ें
+            group_by: इस आधार पर समूहबद्ध करें
+            add_rollup_button: रोल अप कॉलम जोड़ें
+            roll_up: रोल अप
+            function: प्रकार्य
+            roll_up_function: प्रकार्य चुनें
+          sort:
+            title: छांटें
+            add_column_button: कॉलम जोड़ें
+            column: कॉलम
+            direction: निर्देश
+            directions:
+              ascending: आरोही
+              descending: अवरोही
+        conditional_formatting:
+          title: कंडिशनल फ़ॉरमेटिंग
+          subtitle: कंडिशनल फ़ॉरमेटिंग से आप अनुकूलन मानदंड के आधार पर पृष्‍ठभूमि
+            रंग बदल सकते हैं। प्रत्‍येक पंक्ति को पहली मेल खाती स्थिति का रंग दिया
+            जाएगा।
+          validation:
+            no_columns: इस व्‍यू में फिल्‍टर करने के लिए कॉलम नहीं है
+            no_icons: आईकन केवल मैप व्‍यू के लिए उपयोगी हैं
+          format_html: <br />यह रंग<br />या यह आईकन उपयोग करें
+          change_icon: बदलें
+          conditions:
+            title: शर्तें
+            new_rule_button: नया नियम जोड़ें
+            description: विवरण
+            description_prompt: इस मेल का वर्णन करें
+            when_title: कब
+            when:
+              all: सभी शर्तें
+              any: कोई शर्तें
+              always: हमेशा
+            new_condition_button: शर्त जोड़ें
+            item:
+              title: शर्त;
+              subcolumn: उप कॉलम चुनें
+              operator: तुलना चुनें
+        calendar:
+          title: कैलेंडर
+          subtitle: मासिक कैलेंडर फ़ॉरमेट में तिथि वाले व्‍यू डिस्‍प्‍ले किये जा सकते
+            हैं
+          validation:
+            viz_limit: एक व्‍यू का केवल एक ही मानस चित्रण हो सकता है
+            invalid_columns: इस व्‍यू का तिथि कॉलम और टैक्‍स्‍ट कॉलम होना चाहिए
+          dates:
+            title: तिथि
+            start: आरंभिक तिथि
+            end: समाप्ति तिथि
+          information:
+            title: आयोजन सूचना
+            event_title: आयोजन शीर्षक
+            details: विवरण
+            new_details_button: विवरण जोड़ें
+        map:
+          title: नक्‍शा
+          subtitle: नक्‍शे पर बिंदुओं के तौर पर स्‍थान वाले व्‍यू डिस्‍प्‍ले किये
+            जा सकते हैं
+          validation:
+            viz_limit: एक व्‍यू का केवल एक ही मानस चित्रण हो सकता है
+            location_column: नक्‍शा बनाने के लिए स्‍थान कॉलम आवश्‍यक है।
+            hidden_location_html: आप <a href="#showLoc" title="Show a location column">छिपे
+              हुए स्‍थान वाला कॉलम दिखा सकते हैं</a>।
+          layers:
+            title: डेटासेट सारांश
+            config: ! '%{name} की कॉन्फिग करें'
+            dataset: डेटासेट
+            advanced: ! '%{name}की उन्‍नत कॉन्फिग '
+            custom: कस्‍टम लेयर
+            edit: संपादित करें
+            new_data_button: डेटा जोड़ें
+          data_layer:
+            alias: उपनाम
+            alias_prompt: डेटासेट का वर्णन करें
+            plot_style: प्‍लॉट स्‍टाईल
+            plot_style_prompt: प्‍लॉट स्‍टाईल चुनें
+            location: स्‍थान
+            region: क्षेत्र
+            region_level_prompt: क्षेत्र स्‍तर चुनें
+            region_prompt: क्षेत्र चुनें
+            base_color: आधार रंग
+            point: प्‍वाइंट अनुकूलन
+            point_size: प्‍वाइंट आकार
+            point_color: प्‍वाइंट रंग
+            icon: आईकन
+            color_low: रंग (कम)
+            color_high: रंग (उच्‍च)
+            quantity: मात्रा
+            opacity: अस्‍पष्‍टता
+            mondara_note: मोंदरा लेयर फिलहाल अधिक अनुकूलन योग्‍य नहीं है।
+            flyout:
+              title: फ्लाईआउट कॉन्फ़ि‍गरेशन
+              title_column: शीर्षक
+              details: फ्लाईआउट विवरण
+              new_details_button: फ्लाईआउट विवरण जोड़ें
+              labels: w/o लेबल?
+              opacity: अस्‍पष्‍टता
+            highlight_color: होवर रंग
+          base_layers:
+            title: बेस मैप
+            subtitle: मैप सर्विस की सूची से चुनें और कान्फ़ि‍गर करें कि यह कैसे दिखाई
+              देगा।
+            new_base_map_button: बेस मैप जोड़ें
+            layer: लेयर
+            layer_prompt: लेयर चुनें
+            layer_url: लेयर यूआरएल
+            alias: उपनाम
+            opacity: अस्‍पष्‍टता
+          regions:
+            countries: देश
+            state: अमेरिकी राज्‍य
+            canada_provinces: कनाडा प्रांत
+            counties: ! 'इनमें अमेरिकी काउंटी '
+          plots:
+            point: प्‍वाइंट मैप
+            heatmap: बाउंड्री मैप
+            rastermap: हीट मैप
+          advanced:
+            title: उन्‍नत कॉन्फ़ि‍गरेशन
+            subtitle: ! '''एक्‍सक्‍लूसिव'' चुनें यदि केवल एक बेस मैप एक समय पर दिखना
+              चाहिए।'
+            exclusive: एक्‍सक्‍लूसिव
+            use_legend: लीजेंड उपयोग करें
+            hide_geolocator: जियोलोकेटर नहीं
+          legend:
+            title: लीजेंड कॉन्फ़ि‍गरेशन
+            position: लीजेंड
+            position_prompt: स्थिति चुनें
+            positions:
+              top_right: शीर्ष बायीं ओर
+              bottom_left: नीचे दायीं ओर
+              none: कोई नहीं
+            conditional_formats: कंडिशनल फ़ॉरमेटिंग का वर्णन करें
+            custom_entry: कस्‍टम लीजेंड एंट्री जोड़ें
+            entry_label: लेबल
+        chart:
+          title: चार्ट
+          subtitle: व्‍यू डेटा कई तरह के चार्ट के साथ डिस्‍प्‍ले किया जा सकता है
+          validation:
+            viz_limit: एक व्‍यू का केवल एक ही मानस चित्रण हो सकता है
+            required_columns: ! '%{chart_type} के लिए %{column_types} कॉलम आवश्‍यक
+              हैं'
+          setup:
+            title: चार्ट सेटअप
+            type: चार्ट प्रकार
+            type_prompt: चार्ट प्रकार चुनें
+          axes:
+            x_axis_title: X-Axis शीर्षक
+            x_axis_title_prompt: x-axis के लिए शीर्षक दें
+            y_axis_title: Y-Axis शीर्षक
+            y_axis_title_prompt: y -axis के लिए शीर्षक दें
+          legend:
+            title: लीजेंड कॉन्फ़ि‍गरेशन
+            display: डिस्‍प्‍ले करें
+            position: लीजेंड
+            position_prompt: स्थिति चुनें
+            positions:
+              bottom: नीचे
+              top: ऊपर
+              right: दायें
+              left: बायें
+              none: कोई नहीं
+            series: सीरीज का वर्णन करें
+            conditional_formats: कंडिशनल फ़ॉरमेटिंग का वर्णन करें
+            value_markers: वैल्‍यू मार्कर का वर्णन करें
+            new_custom_entry_button: कस्‍टम लीजेंड एंट्री जोड़ें
+            custom_entry: कस्‍टम लेबल
+          point_size: प्‍वाइंट साइज
+          point_color: प्‍वाइंट कलर
+          base_color: बेस कलर
+          draw_line: रेखा खींचें
+          data_labels: डेटा लेबल
+          color_override_html: <a href="#Conditional Formatting" class="showConditionalFormatting">
+            कंडिशनल फ़ॉरमेटिंग </a>का उपयोग करके रंगों को ओवरराइड किया जा सकता है।
+            किसी वर्तमान कंडिशनल फ़ॉरमेटिंग के नियमों को हटाने के लिए <a href="#Clear
+            Conditional Formatting" class="clearConditionalFormatting">यहाँ</a> क्लिक
+            करें।
+          treemap_color_html: ये रंग केवल अलग तरह से दिखाई देने के लिए ट्रीमैप पर
+            सांयोगिक तरह से लागू किये गये हैं। उनका स्‍वयं में कोई खास अर्थ नहीं है।
+          group_extra: अतिरिक्‍त मान को समूहबद्ध करें
+          show_lines: रेखाएँ दिखाएँ
+          show_points: प्‍वाइंट दिखाएँ
+          min_angle: न्‍यून. कोण
+          flyout:
+            title: फ्लाईआउट विवरण
+            new_details_button: फ्लाईआउट विवरण जोड़ें
+          y_axis_formatting:
+            title: Y-Axis फ़ॉरमेटिंग
+            axis_min: Axis न्‍यून.
+            axis_max: Axis अधि.
+            axis_prompt: संख्‍या डालें
+            precision: शुद्धता
+            abbreviate: संक्षिप्‍त करें
+            no_decimals: कोई दशमलव नहीं
+            auto: ! 'स्‍वत:'
+          marker:
+            title: ! '%{axis} मार्कर'
+            new_marker_button: मार्कर जोड़ें
+            value: मूल्‍य पर
+            caption: कैप्‍शन
+          show_percent: ! '%s दिखाएँ'
+          show_values: मान दिखाएँ
+          error_bars:
+            title: एरर बार
+            low: निम्‍न
+            high: उच्‍च
+            color: रंग
+          pie_other: ! 'चेतावनी: %{row_limit} के बाद %{chart_type} पृथक मानों (पंक्तियों)
+            को अन्‍य श्रेणी में जोड़ देगा। मान की संख्‍या सीमित करने वाला रोल अप या
+            फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type} बनाएँ।'
+          pie_truncate: ! 'चेतावनी: %{row_limit} से अधिक पृथक मान (पंक्तियों) वाले
+            डेटासेट को %{chart_type} ट्रंकेट (छोटा) कर देगा। मान की संख्‍या सीमित
+            करने वाला रोल अप या फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type}
+            बनाएँ।'
+          configuration: कान्फ़ि‍गरेशन
+          advanced: उन्‍नत कान्फ़ि‍गरेशन
+          data_columns:
+            title: डेटा कॉलम
+            new_data_column_button: डेटा कॉलम जोड़ें
+          series_group:
+            title: डेटा सीरीज समूहबद्ध करना
+            new_column_button: सीरीज कॉलम जोड़ें
+            group_by: इस आधार पर समूहबद्ध करें
+          categories: श्रेणियाँ
+          names: नाम
+          label: लेबल
+          date: तिथि
+          value: मान
+          values: मान
+          groups: समूह
+          colors: रंग
+          point_title: शीर्षक
+          annotation: व्‍याख्‍या
+          smooth_line: ''
+          details: विवरण
+        api:
+          title: एपीआई
+          subtitle: SODA के जरिए इस %{view_type} तक पहुंचे
+          intro_html: ! '<strong>सोक्राटा ओपन डेटा एपीआई</strong> (SODA) सॉफ़्टवेयर
+            डेवलेपर को सोक्राटा डेटा साइट पर प्रोग्राम के तौर पर होस्‍ट किये गये डेटा
+            तक पहुंच प्रदान करता है। चित्रित करने और &ldquo;mash-up&rdquo के लिए SODA
+            APIs का उपयोग करने वाली एप्‍लीकेशन डेवलेपर बना सकते हैं; सोक्राटा डेटासेट
+            नये व दिलचस्‍प तरीके में। एक एप्‍लीकेशन बनाएँ जो आपके क्षेत्र में सरकारी
+            खर्च को चित्रित करे, एक वेब एप्‍लीकेशन जो नागरिकों को उन संभावित सरकारी
+            लाभों के बारे में जानने का मौका दे जिन्‍हें वे नजरंदाज करते हैं, या ऐसी
+            सेवा जो स्‍वत: आपको ईमेल भेजें जब उन बिल में नये ईयरमार्क जोड़े जाते हैं
+            जिनकी आप निगरानी रखना चाहते हैं।'
+          reference_html: इस डेटासेट तक प्रोग्राम के रूप में पहुंच शुरू करने के लिए,
+            नीचे दिये गये एपीआई एंडप्‍वाइंट का उपयोग करें।  सोक्राटा ओपन डेटा एपीआई
+            के उपयोग के तरीकों की अधिक जानकारी व उदाहरण के लिए हमारे <a href="http://dev.socrata.com"
+            rel="external">डेवलेपर दस्‍तावेज</a>देखें।
+          endpoint_title: ! 'एपीआई एक्‍सेस एंडप्‍वाइंट:'
+          column_ids_title: ! 'कॉलम आईडी:'
+        print:
+          title: प्रिंट करें
+          subtitle: इस डेटासेट को प्रिंट करने योग्‍य पी‍डीएफ़ फॉरमेट में निर्यात करें
+          validation:
+            non_tabular: केवल तालिका युक्‍त डेटा को प्रिं‍ट किया जा सकता है
+          print_button: प्रिंट करें
+          paper_size: ! 'काग़ज का आकार:'
+          paper_sizes:
+            letter: लैटर (8.5 x 11 इंच)
+            legal: लीगल (8.5 x 14 इंच)
+            tabloid: टैब्‍लॉएड (11 x 17 इंच)
+            a4: ए3 (210 x 297मिमी)
+            a3: ए4 (297 x 420मिमी)
+            a2: ए2 (420 x 594मिमी)
+            a1: ए1 (594 x 841मिमी)
+            a0: ए0 (841 x 1189मिमी)
+          margins_title: मार्जिन (इंच)
+          margins:
+            top: ! 'ऊपर:'
+            left: ! 'बायें:'
+            bottom: ! 'नीचे:'
+            right: ! 'दायें:'
+          orientation: ! 'पृष्‍ठ अभिविन्‍यास:'
+          orientations:
+            landscape: लैंडस्‍केप
+            portrait: पोर्ट्रेट
+          options_title: ! 'विकल्‍प:'
+          options:
+            fit: एक पृष्‍ठ पर डेटासेट को फिट करने के लिए छोटा करें
+            headers_every_page: प्रत्‍येक पृष्‍ठ पर कॉलम शीर्षक प्रिंट करें
+            header_icons: कॉलम हेडर में आईकन दिखाएँ
+        digital_signing:
+          title: डिजिटल हस्‍ताक्षर
+          subtitle: इस डेटा का ऐसा संस्‍करण निर्यात करें जिसकी सत्‍यता बाद में सत्‍यापित
+            की जा सकती है।
+          validation:
+            non_tabular: केवल तालिका युक्‍त डेटा प्रिंट किया जा सकता है
+          intro_html: ! '<strong>डिजिटल हस्‍ताक्षर युक्‍त डेटासेट </strong>का उपयोग
+            करने पर, क्रिप्‍टोग्राफिक सुरक्षित तरीके का उपयोग करके यह प्रमाणित करना
+            संभव है कि सोक्राटा डेटासेट की खास प्रति के साथ छेड़छाड़ नहीं की गई है।
+            उदाहरण के लिए यह उपयोगी है यदि आप इस डेटा पर आधारित निष्‍कर्षों को प्रकाशित
+            करना चाहते हैं, और आप इसकी सत्‍यता प्रमाणित करने में सक्षम होना चाहते
+            हैं। '
+          consumer: इस डेटासेट का हस्‍ताक्षर युक्‍त संस्‍करण पाने के उद्देश्‍य से,
+            कुंजी (की) निर्मित करने के लिए केवल नीचे दिये गये लिंक पर क्लिक करें और
+            डाउनलोड शुरू करें। कुंजी और डाउनलोड किया गया डेटा इस डेटासेट के वर्तमान
+            संस्‍करण के लिए विशिष्‍ट होता है; यदि स्‍वामी भविष्‍य में डेटासेट को अद्यतित‍
+            करता है तो आपको नया डेटा पाने के लिए इस प्रक्रिया को दोबारा आरंभ करना
+            होगा। आपको प्राप्‍त कुंजी के साथ और डाउनलोड पैकेज में मिले निर्देशों द्वारा
+            डाउनलोड किया गया डेटा प्रकाशित करें, तीसरे पक्ष यह पुष्टि कर सकेंगे कि
+            आपका डेटा वैध है।
+          publisher: ! 'इस डेटासेट का हस्‍ताक्षर युक्‍त संस्‍करण पाने के उद्देश्‍य
+            से, कुंजी (की) निर्मित करने के लिए केवल नीचे दिये गये लिंक पर क्लिक करें।
+            ध्‍यान दें कि यदि आप भविष्‍य में इस डेटासेट को अद्यतित करते हैं तो आपको
+            वापिस आकर कुंजी फिर से निर्मित करनी होगी ताकि उपभोक्‍ता दोबारा इस तक पहुंच
+            सकें। साथ ही ध्‍यान दें कि इस प्रक्रिया में डेटा पर समग्रता में परिचालन
+            शामिल होता है इसलिए यदि आपका डेटासेट बहुत बड़ा है या इसमें बड़े संलग्‍नक
+            हैं तो इसमें कुछ समय लग सकता है। '
+          publisher_generation: केवल डेटासेट स्‍वामी हस्‍ताक्षर युक्‍त कुंजी निर्मित
+            कर सकते हैं।
+          signature_header: हस्‍ताक्षर
+          generate_button: अभी निर्मित व डाउनलोड करें
+        download:
+          title: डाउनलोड करें
+          subtitle: इस डेटासेट की प्रति स्थिर स्‍वरूप में डाउनलोड करें
+          geo_header: जियोस्‍पाटियल (भूआकाशीय) डेटा डाउनलोड करें
+          layers_header: टैब्‍यूलर लेयर डाउनलोड करें
+          download_as: इस प्रकार डाउनलोड करें
+        feed:
+          title: विचार-विमर्श करें
+          subtitle: विचार-विमर्श फ़ीड आपको डेटासेट से जुड़े संरक्षण व गतिविधि दिखाती
+            है
+        form:
+          title: फ़ॉर्म
+          subtitle: फ़ॉर्म से अपनी वेबसाइट से डेटासेट में सीधे डेटा एकत्र कर सकते
+            हैं
+          validation:
+            no_columns: इस व्‍यू में फ़ॉर्म तैयार करने के लिए दिखने योग्‍य कॉलम होने
+              चाहिए
+          information:
+            title: फ़ॉर्म सूचना
+            name: नाम
+            name_prompt: नाम डालें
+            success: सक्‍सेस यूआरएल
+            success_prompt: वेबपेज यूआरएल डालें
+            public: सार्वजनिक करें?
+        sdp:
+          title: सोशल डेटा प्‍लेयर
+          subtitle: सोशल डेटा प्‍लेयर आपको यह डेटासेट इंटरनेट पर व्‍यापक तौर पर प्रकाशित
+            करने में सक्षम करता है
+          validation:
+            valid_saved: यह व्‍यू वैध व सहेजा जाना चाहिए
+            public: इस व्‍यू को प्रकाशित करने से पहले सार्वजनिक करना चाहिए
+          preview: प्रीव्‍यू करें
+      email:
+        title_html: “<span class="datasetName">%{name}</span>” को साझा करें
+        prompt_html: ! 'निम्‍न ईमेल पतों पर <span class="datasetName">%{name}</span>
+          को साझा करें:'
+        success: आपका ईमेल सफलतापूर्वक भेजा गया।
+        add_email: अधिक जोड़ें
+        remove_email: निकालें
+        message_prompt: वैकल्पिक संदेश डालें
+        email_button: ईमेल
+ru:
+  screens:
+    about:
+      created: Создано
+      snapshotted: снимок сделан
+      updated: Обновлено
+      edit_metadata: Редактирование метаданных
+      view_full_page: Вид во всю страницу
+      description: Описание
+      activity: Операция
+      community: Коллективная оценка
+      your: Ваша оценка
+      raters: Количество оценок
+      visits: Количество посещений
+      downloads: Количество загрузок
+      comments: Замечания
+      contributors: Авторы
+      view_statistics: Показать статистику
+      meta: Мета
+      category: Категория
+      none: (нет)
+      permissions: Разрешения
+      public: Общедоступный
+      private: Ограниченной доступности
+      tags: Теги
+      row_count: Количество строк
+      links: Ссылки
+      permalink: Постоянная ссылка
+      short_url: Краткий URL
+      attachments: Приложения
+      licensing: Лицензии и авторство
+      data_provided_by: Данные предоставлены
+      source_link: Ссылка на источник
+      license: Лицензия
+      terms_of_use: Условия использования
+      spatial_extent: Пространственная протяженность
+      semantics: Семантика языка программирования и схема описания ресурсов (RDF)
+      row_class: Класс строки
+      subject_column: Тематический столбец
+      permanent_links: Постоянные ссылки
+      resource_name: Наименование ресурса
+      row_identifier: Идентификатор строки
+      actions: Действия
+      flag_dataset: Массив данных с флажком
+      contact_dataset_owner: Связаться с владельцем массива данных
+    ds:
+      bar:
+        save_button: Сохранить
+        save_prompt: Сохранить текущий вид
+        save_progress: Сохранение...
+        save_as_button: Сохранить как...
+        save_as_prompt: Сохранить вид как...
+        revert_button: Вернуться
+        revert_prompt: Вернуться к сохраненному виду
+        unsaved_title: Несохраненный вид
+        unpublished_unsavable: Изменения, внесенные в расположенные ниже данные, сохраняются
+          автоматически. Фильтры и результаты поисков в рабочей копии массива данных
+          не сохраняются. Создайте вид в опубликованном массиве данных.
+        snapshot_unsavable: Моментальные снимки массивов данных и видов невозможно
+          сохранить или изменить
+        api_unsavable: Виды из ППИ нельзя изменять
+        working_copy_notice: Это копия массива данных, в которую можно вносить изменения.
+          Эта копия недоступна для других абонентов, пока вы ее не опубликуете.
+        working_copy_title: ! '["Working Copy"]'
+        snapshot_notice: Это – ранее опубликованный вариант массива данных. Он в архивном
+          формате, в него невозможно внести изменения.
+        snapshot_title: Снимок сделан %{date}
+        publish_prompt: Этот массив данных – рабочая копия, она недоступна для других
+          абонентов. После внесения изменений вы должны ее опубликовать, тогда она
+          станет доступной для других абонентов.
+        publish_rights: Этот массив данных может быть опубликован только его владельцем
+          или публикующим субъектом
+        publish_button: Опубликовать массив данных
+        based_on_parent_html: На основе <a class="parentName"></a>
+        based_on_working_copy_html: На основе рабочей копии <a class="revertLink currentViewName"
+          href="#revert">%{name}</a>
+        based_on_html: На основе <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        view_published_html: Смотреть опубликованный <span class="publishedName">массив
+          данных</span>
+        subscribe_prompt: Подписаться по эл. почте через удаленную станцию (RSS)
+        subscribe: Подписаться на изменения
+        share_facebook: Распространить в Facebook
+        share_twitter: Распространить в Twitter
+        share_email: Распространить по эл. почте
+        view_type: Смотреть в виде %{type}
+        view_types:
+          table: Таблицы
+          map: Карты
+          chart: Диаграммы
+          calendar: плана-графика
+          page: одной строки
+          fatrow: расширенного списка
+        find_prompt: Найти в этом массиве данных
+        full_screen: Переключить в режим «во весь экран»
+        format:
+          undo: Отменить
+          redo: Повторить
+          bold: Жирный
+          underline: Подчеркивание
+          italic: Курсив
+          strike: Зачеркнутый
+          bullet: Список с метками
+          number: Пронумерованный список
+          link: Ссылка
+          color: Цвет шрифта
+        snapshot_title_html: Моментальный снимок от %{date}
+      subscribe:
+        title_html: Подписаться на  "<span class="datasetName">%{name}</span>" <span
+          class="datasetTypeNameUpcase">Массив данных</span>
+        intro_html: ! '<strong>Чтобы подписаться на <span class="datasetName">%{name}</span>
+          массив данных в режиме считывания RSS,</strong>, используйте одну из следующих
+          ссылок:'
+        rss: Загрузить как RSS
+        google_reader: Добавить в Google Reader
+        rss_program: Открыть в сторонней программе
+        subscribe_html: <strong>Чтобы получать по эл. почте уведомления</strong> о
+          размещении новых данных, поставьте «галочку» в графе «Подписаться».
+        subscribed_html: <strong>Вы подписались на этот <span class="datasetTypeName">массив
+          данных</span> через эл. почту </strong>, вы будете получать уведомления
+          о размещении новых данных.
+        unsubscribe: Если вы не хотите получать уведомления, удалите «галочку» из
+          графы «Подписаться».
+        subscribe_button: Подписаться через эл. почту
+      blob:
+        download: Загрузить
+        data_extraction: Справа – ссылка на это средство или приложение для вывода
+          данных
+        limited_download: Этот массив данных организован не в виде таблиц и степень
+          интерактивности данных может быть ограничена, но вы можете загрузить этот
+          массив данных
+        external_link: Ссылка на внешний источник
+        js_required: Для использования программы просмотра документов внутри вашей
+          программы быстрого просмотра требуется язык Java.
+        js_required_download:
+          prompt_html: Чтобы загрузить этот файл, %{click_here}.
+          click_here: нажать здесь
+      save_dialog:
+        titles:
+          normal: Сохранить изображение
+          prompt: Хотите сохранить это изображение?
+        descriptions:
+          leaving: У вас остались несохраненные данные, они будут потеряны, если вы
+            уйдете с этой страницы. Нажатием кнопки укажите, сохранить или не сохранять
+            данный вид, прежде чем вы уйдете с этой страницы, или нажмите «Отмена»,
+            чтобы вернуться на эту страницу.
+          reload_save: ! 'Данное изменение требует повторной загрузки. Вы можете «Сохранить
+            ваши изменения», чтобы просмотреть их либо выбрать «Отмена» и остаться
+            на этой странице. '
+          reload_update: Данное изменение требует повторной загрузки. Вы можете «Обновить»
+            этот вид или «Сохранить новый вид» для просмотра ваших изменений, либо
+            нажать «Отмена» и остаться на этой странице.
+        form:
+          new_name: ! 'Введите наименование для вашего нового изображения:'
+        validation:
+          auth_required: Чтобы сохранить изображение (страницы), вы должны быть зарегистрированы
+            в системе
+          view_name_required: Необходимо ввести наименование вида (страницы)
+      dataset_contact:
+        subject: Ваш массив данных "%{dataset_name}" помечен флажком %{reason}
+        reasons:
+          copyright_violation: из-за нарушения авторских прав
+          offensive_content: из-за наличия оскорбительного контента
+          spam: как возможный спам
+          personal_information: из-за того, что содержит персональные данные
+        other_subject: Один из посетителей направил вам сообщение о вашем '%{dataset_name}'
+          '%{site}' массиве данных
+        form:
+          purpose: Цель
+          purposes:
+            prompt: -- Выбрать цель --
+            copyright_violation: Нарушение авторских прав
+            offensive_content: Оскорбительный контент
+            spam: Спам или ненужное сообщение
+            personal_information: Персональные данные
+            other: Прочие
+          subject: Тема
+          message: Краткое сообщение
+          email: Ваш адрес эл. почты
+          email_prompt: Ваш адрес эл. почты будет передан владельцу этого массива
+            данных для направления ответа.
+          send_button: Отправить
+        validation:
+          no_purpose: Вы должны выбрать цель сообщения.
+          no_subject: Вы должны выбрать тему сообщения.
+          no_body: В основной части сообщения должен быть текст.
+          no_email: Вы должны указать ваш адрес эл. почты.
+        error_message: При отправке отзыва об этом массиве данных произошла ошибка.
+          Попробуйте позже.
+        success_message: Владелец массива данных уведомлен.
+        captcha_failed: Ответ неверный, попробуйте еще раз.
+      dataset_status:
+        needs_copy: Этот массив данных опубликован, в него нельзя вносить изменения.   %{status}
+          , рабочая копия, в которую вы сможете вносить изменения, а затем сделать
+          их доступными для других абонентов.
+        needs_copy_status:
+          available: Имеется
+          can_be_made: можно сделать
+        copy_in_progress: Подождите, идет изготовление рабочей копии. %{additional}
+        copy_in_progress_additional:
+          queued: Находится в очереди на обработку (queued %{time}; %{totalQueued}
+            total in line)
+          processing: Обрабатывается (started %{time})
+        copy_available: Рабочая копия готова. Когда будете готовы к редактированию,
+          нажмите кнопку «Редактировать массив данных».
+        edit_dataset_button: Редактировать массив данных
+        error_publishing_html: При изготовлении рабочей копии вашего массива данных
+          произошла ошибка. Обратитесь <a href="http://support.socrata.com" rel="external">в
+          службу технической поддержки фирмы «Socrata»</a>.
+      column_tip:
+        aggregate: (%{aggregate} по %{data_type})
+        original_name: Первоначальное наименование
+      grid_sidebar:
+        tabs:
+          edit: Редактировать
+          manage: Управлять
+          more_views: Другие режимы отображения
+          filter: Фильтровать
+          visualize: Визуализация
+          export: Экспортировать
+          discuss: Обсудить
+          embed: Вставить
+          about: Об этом массиве данных
+        base:
+          validation:
+            invalid_view: Этот режим отображения должен быть приемлемым.
+            different_value: Введите другое значение.
+            invalid_value: Это неверное значение.
+            invalid_values: С указанными значениями возникли проблемы. Ошибки указаны
+              выше.
+            uid_required: Для этого требуется универсальный идентификатор
+            identifier_format: ! 'Допустимые символы идентификатора ППИ (API): буквы
+              в нижнем регистре, цифры и подчеркивание. Идентификатор должен начинаться
+              с буквы, два подчеркивания подряд не допускаются.'
+            file_format: ! '%{format} файл обязателен'
+            verifying_url: Проверка URL
+            invalid_url: Этот URL не действителен
+            at_least: Значение должно быть не меньше %{value}
+            no_greater: Значение должны быть не больше %{value}
+            numeric: Значение должно быть числом
+          buttons:
+            create: Создать
+            update: Обновить
+            apply: Применить
+            done: Выполнено
+            cancel: Отмена
+          column_select:
+            prompt: Выбрать столбец
+            unselect: Отменить выбор столбца
+            from_grid: Выбрать столбец из сетки
+          color_select:
+            prompt: Выбрать цвет
+          generic_select:
+            prompt: Выбрать значение
+        append_replace:
+          title:
+            immutable: Заменить
+            mutable: Добавить и заменить
+          subtitle:
+            immutable: Загрузить в систему новый файл данных, содержание которого
+              заменит имеющиеся данные.
+            mutable: Загрузить в систему новый файл данных, содержание которого будет
+              добавлено к имеющимся данным или заменит их.
+          wizard_button:
+            immutable: Включить Мастер замены
+            mutable: Включить Мастер добавления и замены данных
+        column_common:
+          basic:
+            title: Основная информация
+            name: Наименование
+            name_prompt: Введите наименование
+            description: Описание
+            description_prompt: Введите описание
+          type:
+            title: Тип столбца
+            type: Тип данных
+            type_prompt: Выбрать тип данных
+            key: Код-ключ
+            source: Источник
+          linked_dataset:
+            title: Объединенный массив данных
+            dataset: Набор данных
+            dataset_prompt: URL или универсальный идентификатор массива данных
+            key: Столбец с указанием ключа
+            label: Столбец с указанием меток
+        add_column:
+          title: Добавить столбец
+          subtitle: Добавить новый столбец в ваш массив данных
+          success: Ваш столбец добавлен
+          validation:
+            view_column: Невозможно добавить столбец в режиме отображения
+          multiple_choice:
+            title: Варианты для выбора
+            add_option_button: Добавить вариант
+            option: Вариант
+          convert_latlong:
+            title: Использовать текущие координаты широты и долготы
+            latitude: Широта
+            longitude: Долгота
+          convert_address:
+            title: Использовать имеющиеся столбцы с адресами
+            street: Улица
+            city: Город
+            city_prompt: Ввести название города
+            state: Штат
+            state_prompt: Ввести название штата
+            zip_code: Почтовый индекс
+            zip_code_prompt: Ввести почтовый индекс
+          nested_table:
+            default_column_name: Без названия
+        column_properties:
+          title: Свойства столбцов
+          subtitle: Обновить различные свойства данного столбца
+          validation:
+            unsaved: Невозможно редактировать свойства столбцов в несохраненном изображении
+            published: Чтобы изменить свойства столбцов, сделайте рабочую копию или
+              сохраните изображение этого массива данных
+          link:
+            title: Ссылка
+            key: Ключ
+            source: Источник
+          formatting:
+            title: Форматирование
+            alignment: Выравнивание
+            view_style: Стиль изображения
+          number:
+            title: Форматирование чисел
+            precision: Точность
+            no_precision: Нет
+            display: Отображение (Display)
+            no_commas: Без запятых
+          number_advanced:
+            title: Дополнительное форматирование
+            format_mask: Формат вывода данных
+            format_mask_prompt: ! 'Используйте  # для обозначения цифр и других символов
+              для обозначения их расположения; например, личный номер в системе социального
+              страхования обозначается как  ###-##-####'
+            format_mask_warning: В результате могут быть отменены некоторые из указанных
+              выше установок.
+          money:
+            title: Формат отображения денежных сумм
+            precision: Точность
+            no_precision: Нет
+            currency: Валюта
+            abbreviated: Сокращенное наименование
+          localization:
+            title: Локализация
+            decimal: Десятичный знак
+            thousands: Тысячи
+          photo:
+            title: Установки фотокопирования
+            size: Размер
+            size_prompt: Выбрать размер
+            sizes:
+              tiny: Маленький (24x24)
+              thumb: Пиктограмма (этикетка) (80x80)
+              medium: Средний (150x150)
+              featured: Выделенное изображение (150x80)
+              large: Крупный (220x220)
+              original: Первоначальный
+          url:
+            title: Варианты URL
+            base_url: Базовый URL
+            base_url_prompt: Введите общий префикс URL
+          display_order:
+            title: Порядок отображения (для приложения DataSlate)
+            new_item_button: Добавить элемент
+            option: Вариант
+          multiple_choice:
+            title: Варианты для выбора
+            new_option_button: Добавить вариант
+            option: Вариант
+          column_totals:
+            title: Итоги по столбцам
+            total: Итого
+            total_prompt: Выбрать итог одного из столбцов
+          advanced:
+            title: Дополнительно
+            api_identifier: Идентификатор ППИ (API)
+            new_rdf_button: Добавить свойства схемы описания ресурса (формата RDF)
+            semantics: Семантика языка программирования
+            url: Введите индивидуальный URL
+          success: Обновление вашего столбца выполнено
+        ownership:
+          title: Права владения
+          subtitle: ! 'Чтобы передать документ другому абоненту, введите адрес эл.
+            почты или зарегистрированное наименование идентификатора системы Socrata,
+            затем выберите соответствующую регистрационную запись из выпадающего списка.
+            Вы можете ввести URL с параметрами абонента, если знаете его. Только абоненты
+            с действующими регистрационными записями могут стать владельцами массивов
+            данных. '
+          validation:
+            valid_saved: ! 'Это отображение должно быть допустимым и должно быть сохранено. '
+            no_user: Выберите абонента.
+            invalid_user: ! 'Абонент не опознан. Попробуйте найти абонента по наименованию,
+              адресу эл. почты или URL с параметрами абонента. '
+          transfer_to: Передать права владения
+          me: Мне
+          success:
+            me: Вы не являетесь владельцем
+            user: Права владельца успешно переданы %{owner}
+            other: Права владения успешно переданы
+          error: При передаче прав владения возникла проблема. Попробуйте позже.
+        delete:
+          title: Удалить
+          subtitle: Удалить этот %{view_type}
+          warning:
+            published: Если удалить этот массив данных, будут удалены и все относящиеся
+              к нему типы отображения.
+            working_copy: Вы можете удалить эту рабочую копию и создать новую, тогда
+              вы сможете вернуть все внесенные вами изменения.
+            api: Удаление данного ППИ (API) нарушит работу всех приложений, в которых
+              используется данный ППИ (API).
+            view: Удаление данного отображения повлияет только на отображения, которые
+              созданы на его основе.
+          delete_button: Удалить данный  %{view_type}
+          confirm: Данный %{view_type} будет удален навсегда. Отменить удаление невозможно!
+            Уверены, что намерены продолжить?
+        share:
+          title: Передача для совместного использования
+          subtitle: Передать для совместного использования данный %{view_type}
+          validation:
+            valid_saved: Это отображение должно быть допустимым и должно быть сохранено
+          prompt_html: Этот <span class="datasetTypeName">массив данных</span> является
+            <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint
+            %{hide}">и предоставлен для совместного использования:</span>
+          loading_shares: Загрузка совместно используемых ресурсов...
+          no_shares_html: В настоящее время этот <span class="datasetTypeName">массив
+            данных</span> не доступен для других абонентов
+          share_button_html: Предоставить для совместного использования этот <span
+            class="datasetTypeNameUpcase">массив данных</span>
+          error: При внесении изменений в ваши ресурсы для совместного использования
+            произошла ошибка, Попробуйте позже
+          success: Обновление ваших разрешений выполнено
+          notify_button: Сообщить об изменениях всем
+          notify_success: Уведомление направлено
+        apis:
+          title: ППИ (API)
+          subtitle: Создать и изменить ППИ (API)
+          prompt_new_html: <strong>Функция создания и изменения ППИ</strong> позволяет
+            создавать и изменять параметры одного или нескольких открытых, соответствующих
+            стандартам прикладных программных интерфейсов (ППИ) для этого массива
+            данных.
+          create_button: Создать ППИ (API)
+          create_button_prompt: Создать прикладной программный интерфейс (ППИ) для
+            работы с данными в указанной программе.
+          prompt_existing_html: <strong>Параметры действующих ППИ</strong> можно изменить.
+            Вы можете регулировать выдачу разрешений, устанавливать предельное количество
+            запросов, выводить показатели просмотров, редактировать документацию.
+          manage_button: Управлять
+          manage_button_prompt: Управлять выбранным ППИ
+        permissions:
+          title: Разрешения
+          subtitle: Управлять режимом разрешений на данный %{view_type}
+          validation:
+            valid_saved: Этот режим просмотра должен быть допустимым и должен быть
+              сохранен
+          status_html: Этот <span class="datasetTypeName">массив данных</span> в настоящее
+            время является  <span class="datasetPublicText">%{visibility}</span>
+          features_html: Дополнительные <span class="datasetTypeName">возможности</span>
+            массива данных
+          success: Сохранение ваших разрешений выполнено
+          error: При изменении ваших разрешений в отношении массива данных произошла
+            ошибка. Попробуйте позже
+        showhide_columns:
+          title: Показать (Show &amp); скрыть столбцы
+          subtitle: Указать, какие столбцы должны быть показаны в данном режиме просмотра
+          columns:
+            title: Столбцы
+        column_order:
+          title: Порядок столбцов
+          subtitle: Изменить порядок ваших столбцов
+          prompt_html: «Перетащить» столбцы в необходимом вам порядке, затем нажать
+            <strong>применить</strong> для активации новой очередности.
+          validation:
+            valid_columns: Это изображение должно быть допустимым, в нем должны быть
+              видимые столбцы.
+          columns:
+            title: Столбцы
+        view_list:
+          pagination:
+            last: См. предыдущее изображение
+            next: См. следующие %{count}  изображения
+          sort_title: Сортировать
+          sort:
+            popularity: По популярности
+            dateDescending: По времени загрузки, начиная с последних
+            dateAscending: По времени загрузки, начиная с самых давних
+            alphaAscending: По алфавиту
+          filter_title: Показать только
+          filter:
+            all: Все просмотры
+          delete_confirm: Вы действительно намерены удалить %{name}?
+          delete_snapshot_confirm: Вы действительно намерены удалить %{name} (snapshotted
+            %{date})?
+          search: Изображения результатов поисков
+          no_results_html: Нет <span class="type">результатов</span>
+          item:
+            author_html: <span class="date"></span> по <span class="author"></span>
+            delete: Удалить это изображение
+            expand: Для увеличения нажмите «мышкой»
+          views:
+            title: Режимы просмотра
+            subtitle: См. имеющиеся фильтры, карты, графики и другие режимы просмотра
+              по этому массиву данных
+          snapshots:
+            title: Моментальные снимки массива данных
+            subtitle: Смотреть ранее опубликованные варианты этих данных
+          no_results: Результатов нет
+        sort_rollup:
+          title: ! 'Сортировать (Sort &amp); агрегировать '
+          subtitle: ! 'Вы можете сгруппировать строки и суммировать данные при помощи
+            функции «агрегирование»; а также выполнить сортировку одного или нескольких
+            столбцов '
+          validation:
+            no_eligible_columns: В этом изображении нет столбцов для агрегирования
+              и сортировки
+            no_group_bys: Для агрегирования столбца вы должны сгруппировать хотя бы
+              один столбец
+            no_function: Каждый столбец для агрегирования должен иметь функцию
+          rollup:
+            title: Агрегирование (Roll-Ups &amp); Развернутые списки
+            add_group_button: Добавить столбец для группировки
+            group_by: Группировать по
+            add_rollup_button: Добавить столбец агрегирования
+            roll_up: Агрегировать
+            function: Функция
+            roll_up_function: Выбрать функцию
+          sort:
+            title: Сортировать
+            add_column_button: Добавить столбец
+            column: Столбец
+            direction: Направление
+            directions:
+              ascending: По возрастанию
+              descending: По убыванию
+        conditional_formatting:
+          title: Обусловленное форматирование
+          subtitle: Обусловленное форматирование позволяет вам менять цвет фона строк
+            с учетом индивидуальных критериев. Каждой строке будет присвоен тот цвет,
+            который будет соответствовать первому подходящему условию.
+          validation:
+            no_columns: В этом режиме просмотра нет столбцов для отбора при помощи
+              фильтра
+            no_icons: Пиктограммы относятся только к картам
+          format_html: Использовать<br />этот цвет<br />или эту пиктограмму
+          change_icon: изменить
+          conditions:
+            title: Условия
+            new_rule_button: Добавить новое правило
+            description: Описание
+            description_prompt: Описать это соответствие
+            when_title: Когда
+            when:
+              all: Все условия
+              any: Любое условие
+              always: Всегда
+            new_condition_button: Добавить условие
+            item:
+              title: ! 'Условие:'
+              subcolumn: Выбрать подстолбец
+              operator: Выбрать сравнение
+        calendar:
+          title: Календарь
+          subtitle: Изображения с датами можно выводить в помесячном формате
+          validation:
+            viz_limit: На изображении может быть только один элемент визуального представления
+            invalid_columns: Это изображение должно иметь столбец с датой и столбец
+              с текстом
+          dates:
+            title: Даты
+            start: Дата начала
+            end: Дата окончания
+          information:
+            title: Сведения о событии
+            event_title: Наименование события
+            details: Подробности
+            new_details_button: Добавить подробности
+        map:
+          title: Карта
+          subtitle: Изображения определенных участков могут быть представлены в виде
+            точек на карте
+          validation:
+            viz_limit: На изображении может быть только один элемент визуального представления
+            location_column: Для создания карты требуется столбец с координатами.
+            hidden_location_html: Вы можете <a href="#showLoc" title="Show a location
+              column">показать скрытый столбец с координатами</a>.
+          layers:
+            title: Основные положения массива данных
+            config: Настройка конфигурации для %{name}
+            dataset: Массив данных
+            advanced: Дополнительная настройка конфигурации для %{name}
+            custom: Слой, устанавливаемый пользователем
+            edit: редактировать
+            new_data_button: Добавить данные
+          data_layer:
+            alias: Псевдоним
+            alias_prompt: Дать описание массива данных
+            plot_style: Стиль диаграммы
+            plot_style_prompt: Выбрать стиль диаграммы
+            location: Пункт
+            region: Регион
+            region_level_prompt: Выбрать уровень региона
+            region_prompt: Выбрать регион
+            base_color: Фоновый цвет
+            point: Настройка отображения точки
+            point_size: Размер точки
+            point_color: Цвет точки
+            icon: Пиктограмма
+            color_low: Цвет (бледный)
+            color_high: Цвет (насыщенный)
+            quantity: Количество
+            opacity: Яркость слоя
+            mondara_note: Слои карт Mondara в настоящее время не предусматривают возможности
+              внесения дальнейших изменений.
+            flyout:
+              title: Конфигурация «всплывающих» меню
+              title_column: Наименование
+              details: Параметры «всплывающего» меню
+              new_details_button: Добавить параметры «всплывающего» меню
+              labels: без меток?
+              opacity: Яркость слоя
+            highlight_color: Цвет ссылок при наведении на них курсора
+          base_layers:
+            title: Исходные карты
+            subtitle: Выберите из перечня вариант карты и настройте параметры отображения.
+            new_base_map_button: Добавить исходную карту
+            layer: Слой
+            layer_prompt: Выбрать слой
+            layer_url: URL слоя
+            alias: Псевдоним
+            opacity: Яркость слоя
+          regions:
+            countries: Страны
+            state: Штаты США
+            canada_provinces: Провинции Канады
+            counties: Округа США в
+          plots:
+            point: Карта с изображением пунктов
+            heatmap: Карта границ
+            rastermap: Теплокарта
+          advanced:
+            title: Дополнительная настройка конфигурации
+            subtitle: Для отображения только одной исходной карты выбрать 'Исключительно'
+              .
+            exclusive: Исключительно
+            use_legend: Использовать условные обозначения
+            hide_geolocator: Без определителя географических координат
+          legend:
+            title: Конфигурация условных обозначений
+            position: Условные обозначения
+            position_prompt: Выбрать расположение
+            positions:
+              top_right: В правом верхнем углу
+              bottom_left: В левом нижнем углу
+              none: Нет
+            conditional_formats: Описание условных форматов
+            custom_entry: Добавить свое условное обозначение
+            entry_label: Метка
+        chart:
+          title: График
+          subtitle: Данные просмотра могут быть представлены в графиках различных
+            типов
+          validation:
+            viz_limit: На изображении может быть только один элемент визуального представления
+            required_columns: ! '%{chart_type} должно быть %{column_types} столбцов'
+          setup:
+            title: Настройка графика
+            type: Тип графика
+            type_prompt: Выбрать тип графика
+          axes:
+            x_axis_title: Наименование оси X
+            x_axis_title_prompt: Введите наименование оси Х
+            y_axis_title: Наименование оси Y
+            y_axis_title_prompt: ! 'Введите наименование оси Y '
+          legend:
+            title: Настройка условных обозначений
+            display: Отображение
+            position: Условные обозначения
+            position_prompt: Выбрать расположение
+            positions:
+              bottom: Внизу
+              top: Сверху
+              right: Справа
+              left: Слева
+              none: Нет
+            series: Описание рядов данных
+            conditional_formats: Описание условных форматов
+            value_markers: Описание маркеров данных
+            new_custom_entry_button: Добавить свое условное обозначение
+            custom_entry: Индивидуальная метка
+          point_size: Размер точки
+          point_color: Цвет точки
+          base_color: Фоновый цвет
+          draw_line: Провести линию
+          data_labels: Метки данных
+          color_override_html: Цвета можно отменить через <a href="#Conditional Formatting"
+            class="showConditionalFormatting">условное форматирование</a>. Нажать
+            <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">здесь</a>
+            , чтобы отменить любые действующие правила условного форматирования.
+          treemap_color_html: Эти цвета используются в схеме карт произвольно и служат
+            только для визуальных различий. Они не имеют определенных значений.
+          group_extra: Группировать дополнительные значения
+          show_lines: Показать линии
+          show_points: Показать точки
+          min_angle: Минимальный угол
+          flyout:
+            title: Параметры «всплывающего» меню
+            new_details_button: Добавить параметры «всплывающего» меню
+          y_axis_formatting:
+            title: Форматирование оси Y
+            axis_min: Минимальное значение на оси
+            axis_max: Максимальное значение на оси
+            axis_prompt: Введите число
+            precision: Точность
+            abbreviate: Сократить
+            no_decimals: Без десятичных знаков
+            auto: Авто
+          marker:
+            title: ! '%{axis} Маркер'
+            new_marker_button: Добавить маркер
+            value: При значении
+            caption: Надпись
+          show_percent: Показать % доли
+          show_values: Показать значения
+          error_bars:
+            title: Строки ошибки
+            low: Низкий
+            high: Высокий
+            color: Цвет
+          pie_other: ! 'Внимание: %{chart_type} будет агрегировать отдельные значения
+            (строки) свыше установленного предельного количества значений  %{row_limit}в
+            категорию «Прочие». Попробуйте создать функцию «Агрегирование» или фильтр,
+            которые будут ограничивать количество значений и затем создать график
+            %{chart_type} этих значений.'
+          pie_truncate: ! 'Внимание: %{chart_type} будет отсекать массивы данных,
+            в которых более %{row_limit} отдельных значений (строк). Попробуйте создать
+            функцию «Агрегирование» или фильтр, которые будут ограничивать количество
+            значений и затем создать график %{chart_type} этих значений.'
+          configuration: Конфигурация
+          advanced: Дополнительная конфигурация
+          data_columns:
+            title: Столбцы данных
+            new_data_column_button: Добавить столбец данных
+          series_group:
+            title: Группировка рядов данных
+            new_column_button: Добавить столбец с рядами данных
+            group_by: Группировать по
+          categories: Категориям
+          names: Наименованиям
+          label: Метка
+          date: Дата
+          value: Значение
+          values: Значения
+          groups: Группы
+          colors: Цвета
+          point_title: Заголовок
+          annotation: Пояснение
+          smooth_line: Линия с равномерно распределенными параметрами
+          details: Подробности
+        api:
+          title: ППИ (API)
+          subtitle: Осуществить доступ к этому %{view_type} через SODA
+          intro_html: ППИ <strong>для открытых данных фирмы Socrata</strong> (SODA)
+            позволяет разработчикам компьютерных программ осуществлять доступ к данным
+            на сайтах Socrata при помощи программ. Разработчики могут создавать прикладные
+            программы, которые используют ППИ SODA для визуального отображения и &ldquo;
+            комбинирования&rdquo; массивов данных Socrata новыми и увлекательными
+            способами. Создайте прикладную программу для iPhone, которая позволит
+            создавать визуальное отображение данных о расходов государственных органов
+            в вашем районе, интернет-приложение, которое позволит гражданам получать
+            справки о возможных льготах, о которых они не знали, либо подключить услугу,
+            предусматривающую автоматическое уведомление по эл. почте о внесении новых
+            положений в законопроекты, за которыми вы следите.
+          reference_html: Чтобы осуществлять доступ к этому массиву данных через программы,
+            используйте  указанную ниже конечную точку ППИ (API). Более подробная
+            информация и примеры использования Socrata Open Data API – в нашей <a
+            href="http://dev.socrata.com" rel="external">Документации для разработчиков</a>.
+          endpoint_title: ! 'Конечная точка ППИ для доступа:'
+          column_ids_title: ! 'Идентификаторы столбцов:'
+        print:
+          title: Печать
+          subtitle: Экспорт этого массива данных в формат PDF для печати
+          validation:
+            non_tabular: Распечатать можно только табличные данные
+          print_button: Печать
+          paper_size: ! 'Размер бумаги:'
+          paper_sizes:
+            letter: Letter (8.5 x 11 дюймов)
+            legal: Legal (8.5 x 14 дюймов)
+            tabloid: Tabloid (11 x 17 дюймов)
+            a4: A4 (210 x 297 мм)
+            a3: A3 (297 x 420 мм)
+            a2: A2 (420 x 594 мм)
+            a1: A1 (594 x 841 мм)
+            a0: A0 (841 x 1189 мм)
+          margins_title: ! 'Поля (в дюймах):'
+          margins:
+            top: ! 'Верхнее:'
+            left: ! 'Левое:'
+            bottom: ! 'Нижнее:'
+            right: ! 'Правое:'
+          orientation: ! 'Расположение страницы:'
+          orientations:
+            landscape: Альбомное
+            portrait: Книжное
+          options_title: ! 'Дополнительные возможности:'
+          options:
+            fit: Уменьшить и разместить массив данных на одной странице
+            headers_every_page: Печатать заголовки столбцов на каждой странице
+            header_icons: Показывать пиктограммы в заголовке столбца
+        digital_signing:
+          title: Электронная подпись
+          subtitle: Экспорт варианта этих данных для дальнейшей проверки достоверности.
+          validation:
+            non_tabular: Распечатать можно только табличные данные
+          intro_html: Используя <strong>массив данных с электронной подписью</strong>,
+            можно доказать с помощью надежных методов шифрования, что в данную копию
+            массива данных Socrata никакие несанкционированные изменения не вносились.
+            Это нужно, если вы намерены опубликовать выводы на основе этих данных,
+            и вам необходимо доказать их надежность и достоверность.
+          consumer: Чтобы получить копию этого массива данных с электронной подписью,
+            нажмите «мышкой» на ссылку внизу, чтобы создать ключ к шифрованию данных,  и
+            начинайте загрузку. Ключ и загруженные данные относятся только к данному
+            конкретному экземпляру этого массива данных; если владелец массива данных
+            в дальнейшем внесет в него изменения, вам придется еще раз проделать эту
+            процедуру, чтобы получить новые данные. Опубликуйте загруженные данные
+            вместе с полученным ключом, и, следуя загруженным указаниям, сторонние
+            пользователи смогут убедиться в достоверности ваших данных.
+          publisher: ! 'Чтобы создать копию этого массива данных с электронной подписью,
+            нажмите «мышкой» на ссылку внизу, чтобы создать ключ к шифрованию данных.
+            Обращаем ваше внимание: если в дальнейшем вы внесете изменения в этот
+            массив данных, вам придется вернуться на этот сайт и создать новый ключ,
+            чтобы ваши клиенты могли пользоваться этими данными. Заметим также, что
+            эта процедура связана с операцией в отношении всего массива данных, так
+            что она может занять некоторое время, если это массив большого объема
+            или содержит приложения большого объема.  '
+          publisher_generation: ! 'Только владелец массива данных может создавать
+            ключи с электронной подписью. '
+          signature_header: Подпись
+          generate_button: Создать и загрузить прямо сейчас
+        download:
+          title: Загрузить
+          subtitle: ! 'Загрузить копию этого массива данных в статическом формате '
+          geo_header: Загрузить геопространственные данные
+          layers_header: Загрузить табличные слои
+          download_as: Загрузить как
+        feed:
+          title: Обсудить
+          subtitle: На ленте обсуждения демонстрируются данные об обсуждении и другой
+            активности, связанной с этим массивом данных
+        form:
+          title: Формуляр
+          subtitle: Формуляры позволяют вам собирать данные непосредственно с сайта
+            и помещать их в массив данных
+          validation:
+            no_columns: Чтобы создать формуляр, это изображение должно содержать видимые
+              столбцы
+          information:
+            title: Данные в формуляре
+            name: Наименование (фамилия)
+            name_prompt: Введите наименование (фамилию)
+            success: URL страницы успешных операций
+            success_prompt: Введите URL интернет-страницы
+            public: Общедоступность?
+        sdp:
+          title: ! 'Шаблон для отображения социальных данных '
+          subtitle: Шаблон для отображения социальных данных позволяет публиковать
+            этот массив данных в общедоступном интернете
+          validation:
+            valid_saved: Это отображение должно быть допустимым и должно быть сохранено
+            public: Это отображение необходимо сделать общедоступным, прежде чем оно
+              может быть опубликовано
+          preview: Предварительный просмотр
+      email:
+        title_html: Передать “<span class="datasetName">%{name}</span>”
+        prompt_html: ! 'Передать <span class="datasetName">%{name}</span> по следующим
+          адресам эл. почты:'
+        success: Ваше сообщение успешно отправлено.
+        add_email: Добавить еще
+        remove_email: Удалить
+        message_prompt: Ввести другой вариант сообщения
+        email_button: Адрес эл. почты

@@ -195,6 +195,9 @@
   div.rowLabel
     @include prefixer(transform, rotate(-90deg))
 
+    .ie8 &
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand')
+
   // Anything other than bottom legend, including no legend.
   .xLabelHoriz
     bottom: 1.5em

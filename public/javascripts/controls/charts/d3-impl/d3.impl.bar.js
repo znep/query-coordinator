@@ -613,7 +613,7 @@ $.Control.registerMixin('d3_impl_bar', {
             rowLabels
                     .style('font-weight', function(d)
                             { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
-                    .text(function(d)
+                    .html(function(d)
                     {
                         var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
                             text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
@@ -673,8 +673,8 @@ $.Control.registerMixin('d3_impl_bar', {
         var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2) -
                                    cc.drawElementPosition - cc.dataOffset;
 
-        // Even number of DSGs, so bump it up to the nearest bar.
-        if (this._seriesGrouping && this.getValueColumns().length % 2 == 0)
+        // Even number of bars-per-category, so bump it up to the nearest bar.
+        if (this.getValueColumns().length % 2 == 0)
         { xPositionStaticParts -= cc.barWidth / 2; }
 
         return function(d)
@@ -689,9 +689,9 @@ $.Control.registerMixin('d3_impl_bar', {
     _yRowLabelPosition: function()
     {
         var vizObj = this,
-            cc = vizObj._chartConfig;
-
-        var yAxisPos = vizObj._yAxisPos();
+            cc = vizObj._chartConfig,
+            ie8 = $.browser.msie && parseFloat($.browser.version) < 9,
+            yAxisPos = vizObj._yAxisPos();
 
         return function(d)
         {
@@ -699,7 +699,12 @@ $.Control.registerMixin('d3_impl_bar', {
             if (cc.orientation == 'down')
             { return yAxisPos + 5 + 'px'; }
             else
-            { return yAxisPos - ($(this).width() / 2) - 10 + 'px'; }
+            {
+                if (ie8)
+                { return yAxisPos - $(this).height() - 5 + 'px'; }
+                else
+                { return yAxisPos - ($(this).width() / 2) - 10 + 'px'; }
+            }
         };
     },
 

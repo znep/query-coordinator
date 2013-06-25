@@ -919,7 +919,7 @@ chartObj.resizeHandle();
         {
             // humane number requires a precision. so, our "auto" really just
             // means 2 in this case.
-            var decimalPlaces = formatter.decimalPlaces || 2;
+            var decimalPlaces = _.isNumber(formatter.decimalPlaces) ? formatter.decimalPlaces : 2;
             return function(num) {
                 return Math.abs(num) >= 1000 ? blist.util.toHumaneNumber(num, decimalPlaces)
                                              : num.toFixed(decimalPlaces);

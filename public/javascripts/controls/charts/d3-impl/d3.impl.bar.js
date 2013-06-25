@@ -658,9 +658,10 @@ $.Control.registerMixin('d3_impl_bar', {
         else
         {
             yAxisPos = 0;
+            var ie8 = $.browser.msie && parseFloat($.browser.version) < 9;
             if (!$.isBlank(this._displayFormat.titleX))
-            { yAxisPos += this._displayFormat.titleX.visualHeight()
-                    + $('.yLabelVert').position().left + 10; } // 10 is for padding.
+            { yAxisPos += this._displayFormat.titleX[ie8 ? 'visualLength' : 'visualHeight']()
+                    + $('.yLabelVert').offset().left + 5; } // 5 is for padding.
         }
         return yAxisPos;
     },

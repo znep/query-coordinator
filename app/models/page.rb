@@ -220,8 +220,7 @@ class Page < Model
 
   def self.create(attributes, custom_headers = {})
     # Status should eventually start as unpublished
-    attributes = {:content => { type: 'Container', id: 'pageRoot' }}.
-      merge(attributes)
+    attributes = {content: { type: 'Container', id: 'pageRoot' }}.merge(attributes)
     path = "/pages.json"
     parse(CoreServer::Base.connection.
                  create_request(path, attributes.to_json, custom_headers))

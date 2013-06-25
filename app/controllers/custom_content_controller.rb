@@ -161,6 +161,8 @@ class CustomContentController < ApplicationController
 
     end
 
+    # Make sure action name is always changed for homepage, even if cached
+    self.action_name = 'homepage' if full_path == '/'
     unless @page
       if full_path == '/'
         if CurrentDomain.module_enabled?(:govStat)
@@ -249,8 +251,6 @@ class CustomContentController < ApplicationController
     # template, instead of the main layout
     @custom_meta = @meta
     @meta = nil
-    # Make sure action name is always changed for homepage, even if cached
-    self.action_name = 'homepage' if full_path == '/'
     if @cached_fragment.nil?
       Rails.logger.info("Performing full render")
       MetricQueue.instance.push_metric(internal_metric_entity , "ds-full-render", 1)

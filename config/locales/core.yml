@@ -198,22 +198,22 @@ it:
     and: e
     or: o
     validation:
-      required: This field is required.
-      remote: Please fix this field.
-      email: Please enter a valid email address.
-      url: Please enter a valid URL.
-      date: Please enter a valid date.
-      dateISO: Please enter a valid date (ISO).
-      number: Please enter a valid number.
-      digits: Please enter only digits.
-      equalTo: Please enter the same value again.
-      accept: Please enter a value with a valid extension.
-      maxlength: Please enter no more than {0} characters.
-      minlength: Please enter at least {0} characters.
-      rangelength: Please enter a value between {0} and {1} characters long.
-      range: Please enter a value between {0} and {1}.
-      max: Please enter a value less than or equal to {0}.
-      min: Please enter a value greater than or equal to {0}.
+      required: "Questo campo è obbligatorio."
+      remote: Si prega di sistemare questo campo.
+      email: Si prega di inserire un indirizzo email valido.
+      url: Si prega di inserire un URL valido.
+      date: Si prega di inserire una data valida.
+      dateISO: Si prega di inserire una data valida (ISO).
+      number: Si prega di inserire un numero valido.
+      digits: Si prega di inserire solo cifre.
+      equalTo: Si prega di inserire nuovamente lo stesso valore.
+      accept: Si prega di inserire un valore con estensione valida.
+      maxlength: "Si prega di non inserire più di {0} caratteri."
+      minlength: Si prega di inserire almeno {0} caratteri.
+      rangelength: Si prega di inserire un valore di dimensione compresa tra {0} e {1} caratteri.
+      range: Si prega di inserire un valore {0} e {1}.
+      max: Si prega di inserire un valore minore o uguale a {0}.
+      min: Si prega di inserire un valore maggiore o uguale a {0}.
     view_types:
       api: visualizzazione API
       blob: file scaricabile
@@ -225,9 +225,9 @@ it:
       group: visualizzazione in gruppi
       grouped: visualizzazione in gruppi
       href: external dataset
-      map: mapppa
+      map: mappa
       table: tabella
-      working_copy: working copy
+      working_copy: copia di lavoro
     view_types_plural:
       api: API
       chart: Grafici
@@ -357,7 +357,7 @@ it:
       last_page: Ultima Pagina
     interstitial:
       leaving_notice_html: Stai lasciando <span class="serverName">%{site_name}</span>
-      leaving_explanation_html: "Questo <span class=\"datasetType\">dataset</span> è ospitato da <a href=\"\#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."
+      leaving_explanation_html: "Questo <span class=\"datasetType\">dataset</span> è ospitato da <a href=\"#\" rel=\"external\" class=\"externalDomain\">un altro sito</a>."
     forms:
       none: Nessuno
       required_field: Campo obbligatorio

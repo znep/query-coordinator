@@ -53,7 +53,7 @@ it:
           visualize: Visualizza
           export: Esporta
           discuss: Discuti
-          embed: Incorpora
+          embed: Embed
           about: Informazioni
       image_upload:
         button: Carica Immagine

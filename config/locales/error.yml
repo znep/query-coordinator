@@ -36,17 +36,17 @@ it:
 
     not_found_404:
       page_not_found: Pagina non trovata.
-      were_sorry: "Siamo spiacenti, ma la pagina richiesta non Ã¨ in linea."
-      description_html: "La pagina o non esiste o Ã¨ stata spostata. Suggeriamo di tornare alla <a href=\"/\">home page</a>. Se il problema persiste chiediamo cortesemente di inviarci una segnalazione. Grazie per la collaborazione."
+      were_sorry: "Siamo spiacenti, ma la pagina richiesta non è in linea."
+      description_html: "La pagina o non esiste o è stata spostata. Suggeriamo di tornare alla <a href=\"/\">home page</a>. Se il problema persiste chiediamo cortesemente di inviarci una segnalazione. Grazie per la collaborazione."
       back_to: Torna a
 
     not_acceptable_406:
       page_not_found: Pagina non trovata.
-      were_sorry: "Siamo spiacenti, ma la pagina non Ã¨ disponibile nel formato richiesto."
+      were_sorry: "Siamo spiacenti, ma la pagina non è disponibile nel formato richiesto."
 
     error_500:
       somethings_wrong: "Qualcosa non va!"
-      were_sorry: "Siamo spiacenti, ma c'Ã¨ stato un problema di elaborazione della tua richiesta."
+      were_sorry: "Siamo spiacenti, ma c'è stato un problema di elaborazione della tua richiesta."
       description_html: "Chiediamo cortesemente di riprovare tra qualche minuto, oppure di <a href=\"http://support.socrata.com\">segnalare
       questo errore</a> con i dettagli dell'operazione che stavi tentando di fare."
 

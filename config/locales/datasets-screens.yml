@@ -825,7 +825,7 @@ it:
         view_type: Visualizza come %{type}
         view_types:
           table: tabella
-          map: mapppa
+          map: mappa
           chart: grafico
           calendar: calendario
           page: singolo record
@@ -933,7 +933,7 @@ it:
       grid_sidebar:
         tabs:
           edit: Modifica
-          manage: Manage
+          manage: Gestisci
           more_views: "Più Viste"
           filter: Filtra
           visualize: Visualizza
@@ -974,8 +974,8 @@ it:
             immutable: Sostituisci
             mutable: Aggiungi e Sostituisci
           subtitle:
-            immutable: "Carica un nuovo file di dati il cuo contenuto sostituirà quello attuale."
-            mutable: "Carica un nuovo file di dati il cuo contenuto sarà aggiunto o sostituirà quello attuale."
+            immutable: "Carica un nuovo file di dati il cui contenuto sostituirà quello attuale."
+            mutable: "Carica un nuovo file di dati il cui contenuto sarà aggiunto o sostituirà quello attuale."
           wizard_button:
             immutable: Avvia la procedura guidata per la Sostituzione
             mutable: "Avvia la procedura guidata per l'Aggiunta e la Sostituzione"
@@ -1047,8 +1047,8 @@ it:
             title: Formattazione Avanzata
             format_mask: Maschera di Formattazione
             format_mask_prompt: "Utilizzare #s per indicare cifre numeriche, e altri caratteri per indicare dove queste devono essere poste; per esempio un social security number dovrebbe essere ###-##-####"
-            format_mask_warning: "Questo può sovrascrivere alcune impostazioni fatte in sopra."
           money:
+            format_mask_warning: "Questo può sovrascrivere alcune impostazioni fatte sopra."
             title: Formattazione Moneta
             precision: Precisione
             no_precision: Nessuna
@@ -1119,7 +1119,7 @@ it:
           confirm: "Questo eliminerà %{view_type} in modo permanente. Non è possibile annullare l'eliminazione! Sei sicuro di voler procedere?"
         share:
           title: Condivisione
-          subtitle: Condividi questa %{view_type}
+          subtitle: Condividi questo %{view_type}
           validation:
             valid_saved: Questa vista deve essere valida e salvata
           prompt_html: "Questo <span class=\"datasetTypeName\">dataset</span> è <span class=\"publicOrPrivate\">%{visibility} </span> <span class=\"andSharedHint %{hide}\">e condiviso con:</span>"
@@ -1131,7 +1131,7 @@ it:
           notify_button: Notifica tutte le modifiche
           notify_success: Notifiche inviate
         apis:
-          title: APIs
+          title: API
           subtitle: Crea e personalizza una API
           prompt_new_html: "<strong>API Foundry</strong> ti permette di creare e configurare una o più standards-based Application Programming Interfaces (API) open per questo dataset."
           create_button: Crea una API
@@ -1141,7 +1141,7 @@ it:
           manage_button_prompt: Gestisci API selezionata
         permissions:
           title: Permessi
-          subtitle: Gestisci i permessi di questa %{view_type}
+          subtitle: Gestisci i permessi di questo %{view_type}
           validation:
             valid_saved: Questa vista deve essere valida e salvata
           status_html: "Questo <span class=\"datasetTypeName\">dataset</span> è attualmente <span class=\"datasetPublicText\">%{visibility}</span>"
@@ -1199,7 +1199,7 @@ it:
             title: Roll-Ups & Drill-Downs
             add_group_button: Aggiungi raggruppamento colonna
             group_by: Raggruppa per
-            add_rollup_button: Add Roll-Up Column
+            add_rollup_button: Aggiungi colonna di Roll-Up
             roll_up: Roll-Up
             function: Funzione
             roll_up_function: Seleziona una funzione
@@ -1393,8 +1393,8 @@ it:
             low: Basso
             high: Alto
             color: Colore
-          pie_other: "Attenzione: %{chart_type} aggregherà distinti valori (record) oltre il %{row_limit}th in un'altra categoria. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo."
-          pie_truncate: "Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo."
+          pie_other: "Attenzione: %{chart_type} aggregherà distinti valori (record) oltre il %{row_limit}th in un'altra categoria. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset."
+          pie_truncate: "Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset."
           configuration: Configurazioni
           advanced: Configurazione Avanzata
           data_columns:
@@ -1432,7 +1432,7 @@ it:
           validation:
             non_tabular: Solo dati di tipo tabellare possono essere stampati
           print_button: Stampa
-          paper_size: "Dimansione carta:"
+          paper_size: "Dimensione carta:"
           paper_sizes:
             letter: Letter (8.5 x 11 pollici)
             legal: Legal (8.5 x 14 pollici)

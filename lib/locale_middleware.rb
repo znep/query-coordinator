@@ -27,21 +27,29 @@ class LocaleMiddleware
     # now grab all the ones that are acceptable
     domain_locales = CurrentDomain.available_locales + [ locale ]
 
-    if locale.blank?
-      # fall back to checking path lead
-      possible_locale = request.path.match(/^\/([^\/]+)/)[1] rescue nil
-      if possible_locale.present? && (possible_locale == 'nyan' || domain_locales.include?(possible_locale))
-        locale = possible_locale
+    # read our path lead
+    path_lead = request.path.match(/^\/([^\/]+)/)[1] rescue nil
+    lead_is_locale = path_lead.present? && (path_lead == 'nyan' || domain_locales.include?(path_lead))
 
-        # really, all these are legacy vars except PATH_INFO, but set
-        # them just in case.
-        env['PATH_INFO'] = env['REQUEST_PATH'] =
-          env['REQUEST_URI'] = env['PATH_INFO'][(locale.size + 1)..-1]
+    if locale.present?
+      # our cname has already given us a locale; nothing to be done except:
+
+      if lead_is_locale
+        # redirect out of path lead if it's present
+        return [ 301, { Location: env['PATH_INFO'][(locale.size + 1)..-1] }, [] ]
       end
-    end
 
-    if locale.blank?
-      # fall back to domain default
+    elsif lead_is_locale
+      # our cname doesn't have a default locale; check the path lead.
+      locale = path_lead
+
+      # really, all these are legacy vars except PATH_INFO, but set
+      # them just in case.
+      env['PATH_INFO'] = env['REQUEST_PATH'] =
+        env['REQUEST_URI'] = env['PATH_INFO'][(locale.size + 1)..-1]
+
+    else
+      # none of the above worked; fall back to domainwide default.
       locale = locales.properties['*']
     end
 

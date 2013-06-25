@@ -6,6 +6,11 @@ en:
     array_or:
       two_words_connector: " or "
       last_word_connector: ", or "
+  screens:
+    header:
+      links:
+        account_html: "Hello, <span class=\"currentUser\">Unknown User</span>"
+        administration: Administration
   core:
     and: and
     or: or
@@ -162,6 +167,12 @@ en:
       dont_save: "Don't Save"
       save: Save
       update: Update
+      session_timeout:
+        warning:
+          title: Your session is about to expire.
+          body_html: We haven't noticed any activity in a few minutes.  For privacy, we'll log you out in <span id="secondsRemaining"></span> seconds.
+          belay_button: Don't log me out!
+        notice: You have been logged out for your security. Please sign back in to continue.
     pagination:
       first_page: First Page
       previous_page: Previous Page

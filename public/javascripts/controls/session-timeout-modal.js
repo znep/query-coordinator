@@ -14,19 +14,12 @@ $(function(){
         className:'modalDialog',
         id:'sessionTimeoutModal',
         contents:[
-          {_:'h2', contents:'Your session is about to expire'},
-          {
-            _:'p', 
-            contents:[
-              "We haven't noticed any activity in a few minutes.  For privacy, we'll log you out in ",
-              {_:'span', id:'secondsRemaining'},
-              ' seconds'
-            ]
-          },
+          { _:'h2', contents: $.t('core.dialogs.session_timeout.warning.title') },
+          { _:'p', contents: $.t('core.dialogs.session_timeout.warning.body') },
           {
             _:'div', 
             className:'buttonWrapper',
-            contents:[{_:'a', id:'keepSessionButton', className:'button', contents:"Don't log me out!"}]
+            contents:[{_:'a', id:'keepSessionButton', className:'button', contents: $.t('core.dialogs.session_timeout.warning.belay_button')}]
           }
         ]
       })
@@ -56,7 +49,7 @@ $(function(){
         {
           if (response.expired)
           {
-            blist.util.railsFlash("You have been logged out for your security. Please sign back in to continue.");
+            blist.util.railsFlash($.t('core.dialogs.session_timeout.notice'));
             window.document.location = "/login";
           }
           else 

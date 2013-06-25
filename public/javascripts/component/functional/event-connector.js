@@ -33,17 +33,18 @@ $.component.FunctionalComponent.extend('EventConnector', 'functional', {
                 {
                     $.dataContext.getContext(cObj._properties.sourceContextId, function(sc)
                         {
+                            cObj._sourceContext = sc;
                             if (sc.type == 'dataset')
-                            {
-                                cObj._sourceContext = sc;
-                                eventChanged(cObj, cObj._sourceContext.dataset, oldEvent, origTransforms);
-                            }
+                            { eventChanged(cObj, cObj._sourceContext.dataset, oldEvent, origTransforms); }
+                            else
+                            { eventChanged(cObj, cObj._sourceContext, oldEvent, origTransforms); }
                         });
                 }
                 oldEvent = null;
             }
             else if (!$.isBlank(cObj._sourceContext) && oldEvent != cObj._properties.sourceEvent)
-            { eventChanged(cObj, cObj._sourceContext.dataset, oldEvent, origTransforms); }
+            { eventChanged(cObj, (cObj._sourceContext.type == 'dataset' ?
+                        cObj._sourceContext.dataset : cObj._sourceContext), oldEvent, origTransforms); }
 
             if (oldEvent != cObj._properties.sourceEvent && !$.isBlank(cObj._sourceComponent))
             { eventChanged(cObj, cObj._sourceComponent, oldEvent, origTransforms); }
@@ -75,6 +76,7 @@ var eventChanged = function(cObj, sourceItem, oldEvent, origTransforms)
     sourceItem.bind(cObj._properties.sourceEvent,
         function(args)
         {
+            args = args || sourceItem;
             if (!$.isBlank(cObj._destComponent))
             {
                 var p = {};

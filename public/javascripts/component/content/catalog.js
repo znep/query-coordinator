@@ -81,7 +81,8 @@ $.component.Container.extend('NewCatalog', 'data', {
             if (!$.subKeyDefined(cObj, '_context.datasetList'))
             { cObj.properties({ context: { id: 'context-' + cObj.id, type: 'datasetList', noFail: true, search: { limit: 100 } } }); }
             var conf = cObj.$contents.find('.dataCarrier').data('catalogconfig') ||
-                defaultConfig(cObj._stringSubstitute(cObj._properties));
+                defaultConfig(cObj._stringSubstitute(cObj._properties), (cObj._context || {}).id ||
+                        cObj._properties.context.id);
             cObj.add(conf);
             cObj._setUp = true;
         };
@@ -93,7 +94,7 @@ $.component.Container.extend('NewCatalog', 'data', {
     }
 });
 
-var defaultConfig = function(props)
+var defaultConfig = function(props, dcId)
 {
     var disabledSections = {};
     if (!_.isEmpty(props.disabledSections))
@@ -216,8 +217,23 @@ var defaultConfig = function(props)
                 }
                 ]
             },
+            {
+                type: 'EventConnector',
+                sourceContextId: dcId,
+                sourceEvent: 'data_change',
+                destComponentId: 'catalogPager',
+                transformations: [{
+                    sourceKey: 'count',
+                    destProperty: 'hidden',
+                    rules: [
+                    { result: true, operator: 'equals', value: 0 },
+                    { result: false, operator: 'not_equals', value: 0 }
+                    ]
+                }]
+            },
             (disabledItems.pagination ? null : {
                 type: 'Pager',
+                id: 'catalogPager',
                 pagedContainerId: 'catalogPagedContainer',
                 selectorStyle: 'navigate',
                 navigateStyle: 'paging',

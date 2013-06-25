@@ -129,7 +129,7 @@ module Canvas2
       if context.nil? || context[:type] != 'datasetList'
         set_context({ type: 'datasetList', noFail: true, search: { limit: 100 } }.with_indifferent_access)
       end
-      conf = default_config(string_substitute(@properties))
+      conf = default_config(string_substitute(@properties), context[:id])
       @children = CanvasWidget.from_config(conf, self).compact
       result = super
       result[0] += '<span class="dataCarrier hide" data-catalogconfig="' +
@@ -137,7 +137,7 @@ module Canvas2
       result
     end
 
-    def default_config(props)
+    def default_config(props, dc_id)
       disabled_sections = Util.array_to_obj_keys(props['disabledSections'] || [], true)
       disabled_items = Util.array_to_obj_keys(props['disabledItems'] || [], true)
       defaults = props['defaults'] || {}
@@ -245,8 +245,23 @@ module Canvas2
             }
             ]
           },
+          {
+            type: 'EventConnector',
+            sourceContextId: dc_id,
+            sourceEvent: 'data_change',
+            destComponentId: 'catalogPager',
+            transformations: [{
+              sourceKey: 'count',
+              destProperty: 'hidden',
+              rules: [
+                { result: true, operator: 'equals', value: 0 },
+                { result: false, operator: 'not_equals', value: 0 }
+              ]
+            }]
+          },
           (disabled_items['pagination'] ? nil : {
             type: 'Pager',
+            id: 'catalogPager',
             pagedContainerId: 'catalogPagedContainer',
             selectorStyle: 'navigate',
             navigateStyle: 'paging',

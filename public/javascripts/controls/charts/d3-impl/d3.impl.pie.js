@@ -1350,27 +1350,37 @@ $.Control.registerMixin('d3_impl_pie', {
             return d3ns.math.lineSegIntersectsCircle(0, 0, effectiveSliceRadius-sliceRadiusGraceArea, x1 - translateX, y1 - translateY, desired[0], desired[1]);
         };
 
-        var unshowableLabelsWithSpace = 0;
-        var dataWithSuccessfulLabelLayout = _.reject(pieces, function(d)
+        var filterToShowable = function(toFilter)
         {
-           if (d.slottedCircleLayout.overflow)
-           {
-               return true;
-           }
-           if (lineHitsChart(d) || $.isBlank(d.data.getName()))
-           {
-               unshowableLabelsWithSpace ++;
-               return true;
-           }
-           return false;
-        });
+            var unshowableLabelsWithSpace = 0;
+            var filtered = _.reject(toFilter, function(d)
+            {
+               if (d.slottedCircleLayout.overflow)
+               {
+                   return true;
+               }
+               if (lineHitsChart(d) || $.isBlank(d.data.getName()))
+               {
+                   unshowableLabelsWithSpace ++;
+                   return true;
+               }
+               return false;
+            });
 
+            return { unshowableLabelsWithSpace: unshowableLabelsWithSpace,
+                     showable: filtered};
+        };
+
+        var filterResult = filterToShowable(pieces);
+
+        vizObj.debugOut('Unshowable labels:' + filterResult.unshowableLabelsWithSpace);
         // If we can't show a bunch of labels due to line placement issues, remove the labels
         // and re-run layout so it looks better (and maybe makes better use of the available
         // space. It's not perfect as we really need this to run until things converge,
         // but that would be too slow.
-        if (unshowableLabelsWithSpace > vizObj.defaults.hiddenLabelReflowThreshold && labelLayout)
+        if (filterResult.unshowableLabelsWithSpace > vizObj.defaults.hiddenLabelReflowThreshold && labelLayout)
         {
+            vizObj.debugOut('Re-running label layout');
             labelLayout.data(_.reject(pieces, function(d)
                 {
                    // Keep ones with overflow.
@@ -1381,10 +1391,13 @@ $.Control.registerMixin('d3_impl_pie', {
             {
                 labelLayout.debugVerifyLayout();
             }
+
+            filterResult = filterToShowable(pieces);
+            vizObj.debugOut('We still have ' + filterResult.unshowableLabelsWithSpace + ' unshowable labels.');
         }
 
         var labels = cc.chartD3.selectAll('.label')
-            .data(dataWithSuccessfulLabelLayout, idFunction);
+            .data(filterResult.showable, idFunction);
 
         labels
             .enter()
@@ -1406,7 +1419,7 @@ $.Control.registerMixin('d3_impl_pie', {
         // Now label lines.
 
         var lines = cc.chartD3.selectAll('.line')
-            .data(dataWithSuccessfulLabelLayout, idFunction);
+            .data(filterResult.showable, idFunction);
 
         lines
             .enter()
@@ -1420,9 +1433,9 @@ $.Control.registerMixin('d3_impl_pie', {
             .attr('d', function(d, i)
                 {
                     var nextLabel;
-                    if (i < dataWithSuccessfulLabelLayout.length - 1)
+                    if (i < filterResult.showable.length - 1)
                     {
-                        nextLabel = dataWithSuccessfulLabelLayout[i+1];
+                        nextLabel = filterResult.showable[i+1];
                     }
 
                     var pointOnSlice = arcPositionAlongBisector(d, sliceRadius); // rel to center

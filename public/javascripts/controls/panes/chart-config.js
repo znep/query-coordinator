@@ -244,6 +244,11 @@
 
     var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox', name: 'displayFormat.xAxis.valueInBar', disabled: { field: 'displayFormat.xAxis.labelInBar', value: false } };
 
+    if (!isNextGen)
+    {
+        labelInBar = { onlyIf: false };
+        valueInBar = { onlyIf: false };
+    }
 
     /*** Helpers ***/
 

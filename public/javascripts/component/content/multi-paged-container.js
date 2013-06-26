@@ -46,11 +46,19 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
             $existDom.addClass('hide');
         }
 
-        if (this._pages.length < Math.ceil(this._contentChildren.length /
-                    (this._properties.pageSize || DEFAULT_PAGE_SIZE)))
+        var pageSize = this._properties.pageSize || DEFAULT_PAGE_SIZE;
+        if (this._pages.length < Math.ceil(this._contentChildren.length / pageSize))
         {
             this._super($.component.create(this._properties.container || {type: 'Container'},
                         this._componentSet));
+        }
+        // If page already exists, and is not full, then add the child right now
+        if (this._currentPage && this._currentPage.$dom &&
+                this._currentPage.children().length < pageSize)
+        {
+            if (!$.isBlank(child._carouselHidden))
+            { child._carouselHidden.removeClass('hide'); }
+            this._currentPage.add(child);
         }
     },
 

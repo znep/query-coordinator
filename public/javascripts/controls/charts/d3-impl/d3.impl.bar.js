@@ -741,13 +741,12 @@ $.Control.registerMixin('d3_impl_bar', {
     _rowLabelColor: function(colDef)
     {
         var barColor,
-            valueColumns = this.getValueColumns();
+            valueColumns = this.getValueColumns(),
+            numCols = valueColumns.length;
 
         // Take the actual color of the background row.
-        if (this._seriesGrouping)
+        if (numCols > 1)
         {
-            var valueColumns = this.getValueColumns(),
-                numCols = valueColumns.length;
             colDef = numCols % 2 == 0 ? valueColumns[numCols / 2 - 1]
                                       : valueColumns[numCols / 2 - 0.5];
             barColor = this._d3_colorizeRow(colDef);

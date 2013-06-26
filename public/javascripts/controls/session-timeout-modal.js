@@ -15,7 +15,7 @@ $(function(){
         id:'sessionTimeoutModal',
         contents:[
           { _:'h2', contents: $.t('core.dialogs.session_timeout.warning.title') },
-          { _:'p', contents: $.t('core.dialogs.session_timeout.warning.body') },
+          { _:'p', contents: $.t('core.dialogs.session_timeout.warning.body_html') },
           {
             _:'div', 
             className:'buttonWrapper',

@@ -67,7 +67,7 @@ class GovstatController < ApplicationController
             '<div class="button">Configure GovStat <span class="ss-icon">next</span></div>' }
       ]}
     ]})
-    @page = get_page(config, request.path, 'Manage | ' + CurrentDomain.strings.site_title, params)
+    @page = get_page(config, request.path, 'Manage | ' + CurrentDomain.strings.site_title, params, true)
     render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage',
       :custom_javascript => 'screen-govstat-dashboard' }
   end
@@ -75,7 +75,7 @@ class GovstatController < ApplicationController
   protect_from_forgery :except => :manage_data
   def manage_data
     @page = get_page(manage_data_config(params), request.path,
-                     'Manage Data | ' + CurrentDomain.strings.site_title, params)
+                     'Manage Data | ' + CurrentDomain.strings.site_title, params, true)
     render 'custom_content/generic_page', :locals => { :custom_styles => 'screen-govstat-manage',
       :custom_javascript => 'screen-govstat-manage' }
   end
@@ -353,13 +353,14 @@ protected
     cats.unshift({ value: '', text: 'All', current: params[:category].blank? })
     opts = { nofederate: true, publication_stage: 'published', limit: 20 }
 
+    cur_view_type = params[:view_type] || 'datasets'
     view_types = view_types_facet[:options]
     view_types.reject!{ |type| %w{ calendars href forms apis }.include?(type[:value]) }
-    view_types.each { |o| o[:current] = (params[:view_type] == o[:value]) }
-    view_types.unshift({ value: '', text: 'All', current: params[:view_type].blank? })
+    view_types.each { |o| o[:current] = (cur_view_type == o[:value]) }
+    view_types.unshift({ value: 'all', text: 'All', current: cur_view_type == 'all' })
 
-    if params[:view_type].present?
-      case params[:view_type]
+    if cur_view_type.present?
+      case cur_view_type
       when 'unpublished'
         opts[:limitTo] = 'tables'
         opts[:datasetView] = 'dataset'
@@ -370,6 +371,8 @@ protected
       when 'filters'
         opts[:limitTo] = 'tables'
         opts[:datasetView] = 'view'
+      when 'all'
+        # nothing
       else
         opts[:limitTo] = params[:view_type]
       end
@@ -415,7 +418,7 @@ protected
                   type: 'Button', href: '?' + search_params.reject { |k, v| k == :view_type }.
                     map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&view_type={value ||}',
                   htmlClass: 'value{value ||__default} current-{current}',
-                  text: '<div class="icon ss-{value /datasets/form/ /charts/barchart/ /maps/compass/ /filters/list/ /blob/attach/ ||index}"></div>' +
+                  text: '<div class="icon ss-{value /datasets/form/ /charts/barchart/ /maps/compass/ /filters/list/ /blob/attach/ /all/index/ ||index}"></div>' +
                     '<div class="text">{text /Filtered.Views/Filters/ /Files.and.Documents/Files/}</div>'
                 }]
               }

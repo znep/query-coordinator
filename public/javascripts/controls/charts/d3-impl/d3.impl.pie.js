@@ -787,8 +787,10 @@ $.Control.registerMixin('d3_impl_pie', {
             var seriesInformation = {};
             _.each(valueColumns, function(colDef, columnIndex)
             {
+                var colSum = colDef.column.aggregates['sum'];
+                $.assert(colSum >= 0 && !_.isNaN(colSum), 'Expected a real value for column sum');
                 seriesInformation[colDef.column.lookup] = {
-                    getDataSum: function () { return colDef.column.aggregates['sum']; },
+                    getDataSum: function () { return colSum; },
                     colorResolver: colorResolver(colDef),
                     valueResolver: valueResolver(colDef.column),
                     nameResolver: nameResolver(colDef.column),

@@ -262,7 +262,7 @@
                 else if (parseInt($tip.css('margin-left')) > 0) { pos = 'right'; }
 
                 return pos;
-            }
+            } 
         }
     });
 

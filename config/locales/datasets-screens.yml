@@ -180,6 +180,7 @@ en:
       column_tip:
         aggregate: "(%{aggregate} on %{data_type})"
         original_name: Original Name
+        field_name: API field name
       grid_sidebar:
         tabs:
           edit: Edit

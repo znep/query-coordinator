@@ -192,21 +192,90 @@
         var newItems = [];
         _.each(frObj.richRenderer.visibleColumns(), function(c)
         {
-            var $col = $.renderTemplate('fatRowColumn', c, {
+
+            var $columnBox = $.renderTemplate('fatRowColumn', c, {
                 '.column@class+': 'renderTypeName',
                 '.name': 'name!'
             });
-            var $tipItem = $col.find('.info');
-            blist.datasetControls.columnTip(c, $tipItem, frObj._colTips);
+            var $col = $columnBox.find('.info');
+            
+            var tooltipContent = blist.datasetControls.getColumnTip(c);
+
+            var tipsRef = frObj._colTips;
+
+            var cleanTip = function(tip)
+            {
+                if (tip.$dom.isSocrataTip())
+                {
+                    tip.$dom.socrataTip().hide();
+                    tip.$dom.socrataTip().disable();
+                }
+                clearShowTimer(tip);
+            };
+            
+            // Make sure this is bound only once
+            $col.parent().unbind('rerender.columnTip');
+            $col.parent().bind('rerender.columnTip', function()
+            {
+                _.each(tipsRef, function(tip) { cleanTip(tip); });
+            });
+
+            var clearShowTimer = function(item)
+            {
+                clearTimeout(item.timer);
+                delete item.timer;
+            };
+
+
+            if (!$.isBlank(tipsRef[c.id]))
+            {
+                cleanTip(tipsRef[c.id]);
+            }
+            tipsRef[c.id] = {$dom: $col};
+
+            var showTip = function()
+            {
+                 tipsRef[c.id].timer = setTimeout(function()
+                 {
+                     delete tipsRef[c.id].timer;
+                     $col.socrataTip().show();
+                 }, 300);
+            };
+
+
+            // Use mouseover for showing tip to catch when it moves onto
+            // the menuLink.
+            // Use mouseleave for hiding to catch when it leaves the entire header
+            $col.socrataTip({content: tooltipContent, trigger: 'click', parent: 'body'});
+            $col.mouseover(function(e)
+            {
+                if (!$(e.target).hasClass('menuLink'))
+                {
+                    clearShowTimer(tipsRef[c.id]);
+                    showTip();
+                }
+                else
+                {
+                    clearShowTimer(tipsRef[c.id]);
+                    $col.socrataTip().hide();
+                }
+            })
+            .mouseleave(function(e)
+            {
+                clearShowTimer(tipsRef[c.id]);
+                $col.socrataTip().hide();
+            });
+
+
             $col.data('column', c);
 
-            $col.columnMenu({column: c, $tipItem: $tipItem,
+            $col.columnMenu({column: c, $col: $col,
                 columnDeleteEnabled: frObj.settings.columnDeleteEnabled,
                 columnPropertiesEnabled: frObj.settings.columnPropertiesEnabled,
                 editColumnCallback: frObj.settings.editColumnCallback,
                 view: frObj.settings.view});
 
-            newItems.push($col);
+            newItems.push($columnBox);
         });
 
         // Wait until the end to empty out the old items; or else they lose their

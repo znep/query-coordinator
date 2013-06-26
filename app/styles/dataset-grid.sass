@@ -38,6 +38,7 @@ $footer_color: #fef8dc
   overflow: hidden
   padding: 0 0.4em
 
+
 div.blist-th-first
   border-left: none
   padding-left: 0.5em
@@ -47,8 +48,13 @@ div.blist-th-first
   .blist-select-col
     background-color: $col_hover_color
 
+    .name-wrapper
+      background-color: $col_hover_color
+
+
   .hover .indicator-container
     background-color: #cddae0
+
 
 .blist-th
   .info-container
@@ -60,6 +66,8 @@ div.blist-th-first
     position: absolute
     text-overflow: ellipsis
     top: 3px
+    width: auto
+    overflow: hidden
 
   &.narrow .info-container
     left: 10px
@@ -67,8 +75,18 @@ div.blist-th-first
   &.narrower .info-container
     left: 1px
 
+  &.narrow:hover .info-container
+    display: none
+
+  &.narrow:hover .button-wrapper, &.narrow:hover .menuLink
+    display: block
+
+
+
   .name-wrapper
     height: 1.6667em
+    background-color: $header-color
+    padding-right: 5px
 
   .icon-display .name-wrapper
     padding-left: 25px
@@ -119,8 +137,10 @@ div.blist-th-first
     position: absolute
     top: 0
 
-  &.narrow .blist-th-icon
+  &.narrow .blist-th-icon, &.narrow .button-wrapper, &.narrow .menuLink
     display: none
+
+  
 
   .dragHandle
     left: 0
@@ -139,6 +159,7 @@ div.blist-th-first
 
     .ie6 &
       background-image: url(/stylesheets/images/content/table/column_drag_handle.gif)
+
 
 .blist-th-drag
   background-color: $col_hover_color
@@ -184,6 +205,8 @@ div.blist-th-first
       background-position: 0 -12px
     .sort-desc
       background-position: 0 -36px
+    .name-wrapper
+      background-color: $col_hover_color
 
   .filter
     background-position: 0 -50px
@@ -191,29 +214,42 @@ div.blist-th-first
     &.active
       display: block
 
+  .info-button
+    background-image: url(/stylesheets/images/content/table/info_icon.png)
+    padding-right: 4px
+
+  .button-wrapper, .menuLink
+    float: right
+
+  .info-button
+    width: 14px
+    height: 14px
+    background-repeat: no-repeat
+
+  .button-wrapper
+    width: auto
+    height: auto
+
+  .menuLink, .info-button
+    margin: 5px 0
+    opacity: 1.0
+
 .blist-tdh
   position: relative
 
-.blist-th .menuLink,
-.blist-tdh .menuLink
-  background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?2)
-  background-position: 0 -14px
-  background-repeat: no-repeat
-  display: none
+.menuLink
+  display: block
   height: 14px
-  position: absolute
-  right: 1px
-  top: 5px
   width: 14px
+  background-image: url(/stylesheets/images/content/table/menu_icon.png)
+  background-repeat: no-repeat
 
   .ie6 &
     background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.gif)
 
-.blist-th.hasColumnMenu.hover .menuLink,
-.blist-hot-row .blist-tdh.hasColumnMenu .menuLink,
-.blist-th .menuLink.clicked,
-.blist-tdh .menuLink.clicked
-  display: block
+.menuLink:hover, .info-button:hover
+  opacity: 0.5
+  cursor: pointer
 
 .blist-table-header-scrolls
   background: $header_color
@@ -252,9 +288,13 @@ div.blist-th-first
     margin-right: 0.3em
 
   .description
-    border-bottom: 1px solid #999999
     margin-top: 0.5em
     padding-bottom: 0.5em
+    border-bottom: 1px solid #999999
+
+  .api-field
+    border-top: 1px solid #999
+    padding-top: 0.5em
 
 .blist-table .disabled-overlay, .blist-table .select-overlay
   height: 100%
@@ -358,7 +398,7 @@ div.blist-tr-pending
   border-left: solid 1px $col_hover_color
   background-color: $col_hover_color
   height: 100%
-  padding: 0 0.4em
+  padding-left: 0.8em
   position: absolute
   top: 0
   z-index: -1
@@ -438,19 +478,8 @@ div.blist-tr-pending
 
 .blist-tr
   .blist-table-row-handle .menuLink
-    background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?2)
-    background-position: 0 -14px
-    background-repeat: no-repeat
-    display: none
-    height: 14px
-    width: 14px
-
-    .ie6 &
-      background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.gif)
-
-  &.blist-hot-row .blist-table-row-handle .menuLink,
-  .blist-table-row-handle .menuLink.clicked
-    display: block
+    width: 100%
+    height: 100%
 
 .blist-table-locked .blist-hot-row.blist-tr-sub .blist-table-row-handle .menuLink
   display: none

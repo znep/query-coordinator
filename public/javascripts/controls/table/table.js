@@ -2555,7 +2555,8 @@
                     if (options.showRowHandle)
                     {
                         html.push('<div class="', getColumnClass(rowHandleColumn),
-                                ' blist-td blist-tdh blist-table-row-handle"></div>');
+                                ' blist-td blist-tdh blist-table-row-handle">',
+                                '</div>');
                     }
 
                     for (var k = 0; k < children.length; k++)
@@ -3309,6 +3310,9 @@
             begin("renderHeader-assemble");
 
             var html = [];
+
+
+            //Cycle through each column containing data and render
             for (var i = 0; i < columns.length; i++)
             {
                 var col = columns[i];
@@ -3340,7 +3344,10 @@
                             rowOffset + 'px"' : '',
                             '></div>');
                 }
-                html.push('<div class="info-container',
+                html.push(
+                    ' <a class="menuLink action-item" href="#column-menu"></a>',
+                    '<div class="button-wrapper"> <div class="info-button action-item"></div> </div>',
+                    '<span class="info-container',
                     canEdit() ? ' icon-display' : '',
                     '">');
                 if (canEdit())
@@ -3349,7 +3356,7 @@
                     '<div class="name-wrapper"><span class="blist-th-name">',
                     colName,
                     '</span></div>',
-                    '</div>',
+                    '</span>',
                     '<div class="indicator-container">',
                     '<div class="filter" title="Remove filter"',
                     options.generateHeights ? ' style="height: ' +
@@ -3570,11 +3577,12 @@
                 $colHeader.removeClass('narrow narrower');
             }
             var $infoC = $colHeader.find('.info-container');
-            var infoW = $infoC.outerWidth(true);
+            //Account for two additional buttons as content
+            var infoW = $infoC.outerWidth(true) + ($orig.find('.info-button').outerWidth(false) * 2);
             var innerW = $colHeader.width();
             // Make an initial guess & do checks incrementally to shave off ms
             if (infoW + 20 > innerW)
-            {
+            { 
                 infoW += parseInt($infoC.css('left'));
                 if (infoW > innerW)
                 {

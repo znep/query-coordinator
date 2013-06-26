@@ -379,38 +379,12 @@ blist.datasetControls.datasetContact = function($sect)
     });
 };
 
-blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
-{
-    var cleanTip = function(tip)
-    {
-        if (tip.$dom.isSocrataTip())
-        {
-            tip.$dom.socrataTip().hide();
-            tip.$dom.socrataTip().disable();
-        }
-        clearShowTimer(tip);
-    };
-
-    // Make sure this is bound only once
-    $col.parent().unbind('rerender.columnTip');
-    $col.parent().bind('rerender.columnTip', function()
-    {
-        _.each(tipsRef, function(tip) { cleanTip(tip); });
-    });
-
-    var clearShowTimer = function(item)
-    {
-        clearTimeout(item.timer);
-        delete item.timer;
-    };
-
-    if (!$.isBlank(tipsRef[col.id]))
-    {
-        cleanTip(tipsRef[col.id]);
-    }
-    tipsRef[col.id] = {$dom: $col};
-
-    var tooltipContent = '<div class="blist-th-tooltip ' +
+blist.datasetControls.getColumnTip = function(col)
+{     
+  
+    //Generate content for main information tooltip,
+    //Event binding and usage pushed to the caller
+    return '<div class="blist-th-tooltip ' +
         col.renderTypeName + '">' +
         '<p class="name">' +
         $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
@@ -428,43 +402,8 @@ blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
         (col.format.grouping_aggregate !== undefined ?
             ' ' + $.t('screens.ds.column_tip.aggregate', { aggregate: $.t('core.aggregates.' + col.format.grouping_aggregate), data_type: $.t('core.data_types.' + col.dataTypeName) }) : '') +
         '</p>' +
-        '</div>';
-    var contentIsMain = true;
-
-    var showTip = function()
-    {
-        tipsRef[col.id].timer = setTimeout(function()
-        {
-            delete tipsRef[col.id].timer;
-            $col.socrataTip().show();
-        }, 300);
-    };
-    // Use mouseover for showing tip to catch when it moves onto
-    // the menuLink.
-    // Use mouseleave for hiding to catch when it leaves the entire header
-    $col
-        .mouseover(function(e)
-        {
-            if (!$(e.target).hasClass('menuLink'))
-            {
-                clearShowTimer(tipsRef[col.id]);
-                showTip();
-            }
-            else
-            {
-                clearShowTimer(tipsRef[col.id]);
-                $col.socrataTip().hide();
-            }
-        })
-        .mouseleave(function(e)
-        {
-            clearShowTimer(tipsRef[col.id]);
-            $col.socrataTip().hide();
-        });
-
-
-    $col.socrataTip({content: tooltipContent, trigger: 'none', parent: 'body'});
-    if (initialShow) { showTip(); }
+        (col.fieldName !== undefined ? '<br/><p class="api-field">' + $.t('screens.ds.column_tip.field_name') + ': ' + $.htmlEscape(col.fieldName) + '</p>' : '')
+        + '</div>';
 };
 
 blist.datasetControls.raReasonBox = function($reasonBox)

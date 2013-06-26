@@ -329,6 +329,7 @@
 
                 if (_.isEmpty(options) || row.type == 'blank') { return; }
 
+                //Add DOM for menu drop-down options
                 html.push('<a class="menuLink" href="#row-menu_',
                         row.id, colAdjust, '"></a>',
                        '<ul class="menu rowMenu" id="row-menu_', row.id,
@@ -355,6 +356,12 @@
                     { rowMenuHandler(datasetObj, e); },
                 pullToTop: true
             });
+
+            $menuLink = $cell.find('.menuLink');
+
+            //Too many hovers are triggered!
+            /*var tip = $cell.socrataTip(
+                {message: 'Menu', parent: 'body', shrinkToFit : true, trigger: 'hover', isSolo: false});*/
 
             $cell.data('row-menu-applied', true);
         }
@@ -477,9 +484,9 @@
 
     var setupHeader = function(datasetObj, col, $col, tipsRef)
     {
-        var $menuLink = $.tag({tagName: 'a', 'class': ['menuLink', 'action-item'],
-            'href': '#column-menu'});
-        $col.append($menuLink);
+
+        //Configure flyout HTML and events for column menu button
+        var $menuLink = $col.find('.menuLink');   
 
         $col.columnMenu({column: col, $menuTrigger: $menuLink,
             columnDeleteEnabled: datasetObj.settings.columnDeleteEnabled,
@@ -493,15 +500,54 @@
             },
             view: datasetObj._view});
 
-        if (tipsRef)
-        {
-            blist.datasetControls.columnTip(col, $col, tipsRef, true);
-            $col.find('.menuLink').socrataTip({message: $.t('controls.grid.click_for_menu'),
-                    parent: 'body'});
+        
+        var tip = $col.find('.menuLink').socrataTip({message: $.t('controls.grid.menu'),
+                  parent: 'body', shrinkToFit : true, trigger: 'hover', isSolo: false});
+            
+        $menuLink.click(function() { 
+            tip.hide();
+        });
+
+        var $infoButton = $col.find('.info-button');
+        var $infoWrapper = $col.find('.button-wrapper');
+
+        //Hover on info button
+        var hoverTip = $infoButton.socrataTip({message : $.t('controls.grid.column_info'), trigger : 'hover', 
+                                               shrinkToFit: true, parent: 'body'});
+
+        $infoButton.hover(function() {
+            if ($infoWrapper.socrataTip()._visible) {
+                hoverTip.quickHide();
+            }
+        });
+
+        //Hover on header cell
+        if (col.renderType.sortable) {
+            $col.find('.blist-th-name').socrataTip({trigger: 'hover', message: $.t('controls.grid.click_to_sort'), 
+                                                    parent: 'body', isSolo: true});
         }
+
+
+        if (tipsRef) { 
+            var tooltipContent = blist.datasetControls.getColumnTip(col); 
+            //Click functionality for main tip box
+            $infoWrapper.socrataTip({content: tooltipContent, trigger: 'click', parent: 'body', isSolo: true,
+                shownCallback : 
+                    function () {
+                        $($infoWrapper.socrataTip()._tipBox).mouseleave(
+                            function() { $($infoWrapper.socrataTip().hide()); }
+                        );
+                    }
+            });
+        }
+
+        //Prevent hovertip from persisting behind the main info box after an icon click.
+        $infoWrapper.click( function() {
+            $infoButton.socrataTip().quickHide();
+        });
     };
 
-    /* Callback when rendering the grid headers.  Set up column on-object menus */
+    /* Callback when rendering the grid headers. Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
         if (!datasetObj.settings._colTips) { datasetObj.settings._colTips = {}; }

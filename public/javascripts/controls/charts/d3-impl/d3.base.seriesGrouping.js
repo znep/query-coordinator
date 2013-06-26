@@ -41,6 +41,7 @@ d3base.seriesGrouping = {
             hasGroupBys: _.isArray((vizObj._primaryView.query || {}).groupBys),
             physicalRowsRetreived: 0,
             ready: false,
+            sortColumns: null,
             sortedView: null,
             totalVirtualRows: null,
             valueColumnColors: {},
@@ -50,14 +51,15 @@ d3base.seriesGrouping = {
 
         // make a copy of the view that we'll use for querying so that we're
         // fetching everything in the appropriate sort
-        var sortedView = sg.sortedView = vizObj._primaryView.clone();
-        var sortColumns = [];
+        var sortedView = sg.sortedView = vizObj._primaryView.clone(),
+            sortColumns = [];
 
         // first sort by the category
         sortColumns.push(vizObj._fixedColumns[0]);
 
         // then sort by the series groups in order
-        sortColumns = _.compact(sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column')));
+        sortColumns = sg.sortColumns
+            = _.compact(sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column')));
 
         // If there isn't a fixedColumn, save off the first seriesColumn in its place.
         sg.fixedColumn = _.first(sortColumns);
@@ -215,11 +217,16 @@ d3base.seriesGrouping = {
                 return result;
             });
         }
+        // Sort by position iff there isn't another sort in place.
+        else if (!_.any($.deepGet(vizObj._primaryView, 'query', 'orderBys'), function(orderBy)
+                { return _.include(sg.sortColumns,
+                    vizObj._primaryView.columnForIdentifier(orderBy.expression.columnFieldName
+                                                         || orderBy.expression.columnId)); }))
+        {
+            sortedRows = _.sortBy(sg.seriesGroupedRows, 'position');
+        }
 
-        else
-        { sortedRows = _.sortBy(sg.seriesGroupedRows, 'position'); }
-
-        _.each(sortedRows, function(row, index)
+        _.each(sortedRows || sg.seriesGroupedRows, function(row, index)
         {
             var groupName = vizObj._groupName(row);
 

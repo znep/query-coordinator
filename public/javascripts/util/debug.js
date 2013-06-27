@@ -140,6 +140,8 @@ window.chartDebugger = function()
                                       height: '100%' });
         $('body').append($foo);
     }
+
+    delete window.chartDebugger;
 };
 
 window.fetchOrigDF = function(uid)

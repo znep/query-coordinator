@@ -183,13 +183,11 @@ $.Control.registerMixin('d3_base', {
                 mouseCount ++;
             };
 
-            var localMouseOut = function()
+            var localMouseOut = function(delay)
             {
                 mouseCount --;
 
-                // This delay is here because there might be a
-                // mouse enter about to be raised.
-                _.delay(function()
+                var cleanup = function()
                 {
                     if (mouseCount == 0)
                     {
@@ -206,7 +204,9 @@ $.Control.registerMixin('d3_base', {
                             delete visual.localMouseOut;
                         }
                     }
-                }, 150);
+                };
+                if (delay) { _.delay(cleanup, delay); }
+                else { cleanup(); }
             };
 
             visual.localMouseOut = localMouseOut;
@@ -225,11 +225,11 @@ $.Control.registerMixin('d3_base', {
     // MUST always be called when the mouse leaves, as this method
     // does some internal bookkeeping that must be kept consistent at
     // all times.
-    handleDataMouseOut: function(visual)
+    handleDataMouseOut: function(visual, delay)
     {
         if (visual.localMouseOut)
         {
-            visual.localMouseOut();
+            visual.localMouseOut(delay);
         }
     }
 }, null, 'socrataChart');

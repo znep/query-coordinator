@@ -1202,7 +1202,7 @@ $.Control.registerMixin('d3_impl_pie', {
             })
             .on('mouseout', function(datum)
             {
-                vizObj.handleDataMouseOut(this);
+                vizObj.handleDataMouseOut(this, 150);
             })
             .on('click', function(datum)
             {

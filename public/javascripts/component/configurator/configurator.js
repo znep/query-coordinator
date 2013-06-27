@@ -147,7 +147,6 @@
     var $previewCont;
     var $editCont;
 
-    var $permissionsDialog;
     var $settingsDialog;
 
     $.extend($.cf, {
@@ -183,9 +182,6 @@
                         { _: 'a', href: '#redo', className: ['redo', 'button', 'ss-refresh'],
                             contents: 'Redo' } },
                     { _: 'li', className: 'separator', contents:
-                        { _: 'a', href: '#permissions', className: ['permissions', 'button', 'ss-users'],
-                            contents: 'Permissions' } },
-                    { _: 'li', contents:
                         { _: 'a', href: '#settings', className: ['settings', 'button', 'ss-settings'],
                             contents: 'Settings' } },
                     { _: 'li', className: 'separator', contents:
@@ -269,25 +265,6 @@
             $viewsCont.append($editCont);
             $editCont.css('background-color', $body.css('background-color'))
                 .append($.tag2({ _: 'div', id: 'edit_' + editContent.id, className: 'editRoot' }));
-
-            $permissionsDialog = $('.configuratorPermissions');
-            $permissionsDialog.find(':radio').uniform();
-            $permissionsDialog.find('.actions .save').click(function(e)
-            {
-                e.preventDefault();
-
-                var newPage = $.extend(true, {}, blist.configuration.page);
-                newPage.permission = $permissionsDialog.find(':radio:checked').val();
-                $.cf.edit.dirty = true;
-                var $spinner = $permissionsDialog.find('.loadingOverlay');
-                $spinner.removeClass('hide');
-
-                $.cf.save(newPage, function()
-                {
-                    $spinner.addClass('hide');
-                    $permissionsDialog.jqmHide();
-                });
-            });
 
             $settingsDialog = $('.configuratorSettings');
             $settingsDialog.find('form').validate({errorElement: 'span',
@@ -519,16 +496,6 @@
             }
 
             exitEditMode();
-        },
-
-        permissions: function()
-        {
-            var $allRadio = $permissionsDialog.find(':radio');
-            $allRadio.value(false);
-            $allRadio.filter('[value=' +
-                    (blist.configuration.page.permission || 'public') + ']').value(true);
-            $.uniform.update($allRadio);
-            $permissionsDialog.jqmShow();
         },
 
         settings: function()

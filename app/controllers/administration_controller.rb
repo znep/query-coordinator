@@ -109,7 +109,10 @@ class AdministrationController < ApplicationController
       flash[:error] = "Path already exists; please choose a different one"
       return redirect_to :action => 'create_canvas_page', :path => url, :title => title
     end
-    res = Page.create({:path => url, :name => title})
+    # FIXME: default to public for backwards compatibility.
+    # Once the UI supports viewing/changing permission,
+    # probably remove this (default to private)
+    res = Page.create({:path => url, :name => title, :permission => 'public'})
     redirect_to res.path + '?_edit_mode=true'
   end
 

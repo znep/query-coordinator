@@ -16,12 +16,13 @@ $.Control.registerMixin('d3_impl_pie', {
         labelLinesMargin: 5, // Size of various margins for labels:
                              //  - Tee to text
                              //  - Elbow to closest line
-        hiddenLabelReflowThreshold: 5 // Sometimes we can't show a label even though the slotted layout says we can,
+        hiddenLabelReflowThreshold: 5,// Sometimes we can't show a label even though the slotted layout says we can,
                                       // simply because we can't find a space for a line connecting the label to the
                                       // slice, or the label turns out to be blank.
                                       //  If we hit more than this number of such issues, remove the unshowable
                                       // labels from the layout and re-run the layout. This avoids having large
                                       // sections of unused space in very dense pies.
+        minArcLengthPixels: 4 // Minimum arc length of a slice in order to show it.
     },
 
     Slice: (function()
@@ -432,17 +433,25 @@ $.Control.registerMixin('d3_impl_pie', {
 
         cc.chartRaphael.setSize(chartWidth, chartHeight);
 
-        var smallestDimension = Math.min(vizObj.$dom().height(), vizObj.$dom().width());
-        var needsSmallMode = smallestDimension < vizObj.defaults.smallModeThreshold;
-        cc.$chartArea.toggleClass('smallMode', needsSmallMode);
+        vizObj._updateSizeBasedStyling();
 
         var snapshot = this._chartConfig.chartRenderSnapshot;
         if (snapshot)
         {
             var fillArea = vizObj._getChartFillArea();
             snapshot.fillArea = fillArea;
-            this._renderSnapshot(snapshot);
+            this._renderSnapshot(snapshot, true /* enableTransitions */);
         }
+    },
+
+    _updateSizeBasedStyling: function()
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+
+        var smallestDimension = Math.min(vizObj.$dom().height(), vizObj.$dom().width());
+        var needsSmallMode = smallestDimension < vizObj.defaults.smallModeThreshold;
+        cc.$chartArea.toggleClass('smallMode', needsSmallMode);
     },
 
     $legendContainer: function()
@@ -453,7 +462,7 @@ $.Control.registerMixin('d3_impl_pie', {
     _updateLegendStyle: function()
     {
         var vizObj = this,
-            cc = vizObj._chartConfig;
+            cc = vizObj._chartConfig,
             $legendContainer = vizObj.$legendContainer(),
             legendPosition = vizObj.legendPosition();
 
@@ -534,7 +543,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
     renderLegend: function()
     {
-        var vizObj = this;;
+        var vizObj = this;
 
         vizObj._super(function(legendDetails, addLine)
         {
@@ -664,7 +673,7 @@ $.Control.registerMixin('d3_impl_pie', {
             // We probably just had a formatting change like a row highlight.
             // Just rerender the last snapshot.
             vizObj.debugOut('snapshot-only render');
-            vizObj._renderSnapshot(cc.chartRenderSnapshot);
+            vizObj._renderSnapshot(cc.chartRenderSnapshot, true /* enableTransitions */);
             return;
         }
 
@@ -848,7 +857,9 @@ $.Control.registerMixin('d3_impl_pie', {
                 seriesInformation: seriesInformation
             };
 
-            vizObj._renderSnapshot(cc.chartRenderSnapshot);
+            // Render, but don't use transitions (they don't look good as slices are
+            // coming in).
+            vizObj._renderSnapshot(cc.chartRenderSnapshot, false /* enableTransitions */);
 
             vizObj._loadDataIfNeeded();
 
@@ -874,12 +885,13 @@ $.Control.registerMixin('d3_impl_pie', {
         var radius = this._getRadius(this._chartConfig.chartRenderSnapshot.fillArea, this._zoomFactor);
         var angle = slice.getAngleRadians(seriesInformation);
         var arcLength = angle * radius;
-        return arcLength < 10;
+        return arcLength < this.defaults.minArcLengthPixels;
     },
 
-    _renderSnapshot: function(snapshot)
+    _renderSnapshot: function(snapshot, enableTransitions)
     {
         this.renderLegend();
+        this._updateSizeBasedStyling();
 
         // Update the fill area after the legend renders, otherwise we might
         // overlap!.
@@ -891,7 +903,8 @@ $.Control.registerMixin('d3_impl_pie', {
                 snapshot.lastSlice,
                 snapshot.anchorSlice,
                 snapshot.fillArea,
-                snapshot.seriesInformation);
+                snapshot.seriesInformation,
+                enableTransitions);
         }
         else
         {
@@ -902,7 +915,8 @@ $.Control.registerMixin('d3_impl_pie', {
                 snapshot.lastSlice,
                 snapshot.anchorSlice,
                 snapshot.fillArea,
-                seriesInformation);
+                seriesInformation,
+                enableTransitions);
         }
     },
 
@@ -982,7 +996,7 @@ $.Control.registerMixin('d3_impl_pie', {
             var lastSeriesSlice = isPrimaryColumn ? lastSlice : new vizObj.Slice(lastSlice.index, valueResolver, nameResolver, colorResolver);
 
             var seriesAnchor = isPrimaryColumn ? anchorSlice : firstSeriesSlice.asAnchor(firstSeriesSlice.getAngleRadians(seriesInformation) / 2);
-            vizObj._renderPie(firstSeriesSlice, lastSeriesSlice, seriesAnchor, fillArea, seriesInformation);
+            vizObj._renderPie(firstSeriesSlice, lastSeriesSlice, seriesAnchor, fillArea, seriesInformation, enableTransitions);
         });
     },
 
@@ -991,7 +1005,7 @@ $.Control.registerMixin('d3_impl_pie', {
     // positioned so they just fill fillArea. The anchor slice must come between
     // the two end slices. It determines the overall positioning of the resultant
     // arc chart (otherwise known as maybe-partially-visible pie).
-    _renderPie: function(firstSlice, lastSlice, anchorSlice, fillArea, seriesInformation)
+    _renderPie: function(firstSlice, lastSlice, anchorSlice, fillArea, seriesInformation, enableTransitions)
     {
         $.assert(lastSlice.index >= firstSlice.index, "Last slice must come after first slice.");
         $.assert(lastSlice.index >= anchorSlice.index && anchorSlice.index >= firstSlice.index, "Anchor slice must come between first and last slices.");
@@ -1073,7 +1087,7 @@ $.Control.registerMixin('d3_impl_pie', {
             seriesInformation.cachedPiePieces.anchorSlice = anchorSlice;
         }
 
-        this._renderPiecesOfPie(result, seriesInformation, fillArea);
+        this._renderPiecesOfPie(result, seriesInformation, fillArea, enableTransitions);
     },
 
     _pivotOnSlice: function(slice, angle)
@@ -1093,14 +1107,14 @@ $.Control.registerMixin('d3_impl_pie', {
         return naturalRadius * zoomFactor - this.defaults.labelMargin;
     },
 
-    _renderPiecesOfPie: function (pieces, seriesInformation, fillArea)
+    _renderPiecesOfPie: function (pieces, seriesInformation, fillArea, enableTransitions)
     {
         var vizObj = this,
             cc = vizObj._chartConfig;
 
-        vizObj.debugOut('Rendering ' +pieces.length + ' pie pieces.');
-
         var radius = vizObj._getRadius(fillArea, vizObj._zoomFactor);
+
+        vizObj.debugOut('Rendering ' +pieces.length + ' pie pieces, radius ' + radius);
 
         var translateX, translateY, radius;
         var isZoomed = vizObj._zoomFactor > 1.0001;
@@ -1162,7 +1176,7 @@ $.Control.registerMixin('d3_impl_pie', {
                         }
                     });
 
-        slices
+        var updateSlices = slices
             // check for datum because sometimes there's a race condition between unbind and remove
             .on('mouseover', function(datum)
             {
@@ -1226,10 +1240,18 @@ $.Control.registerMixin('d3_impl_pie', {
             {
                 return datum.data.getColor();
             })
-            .attr('transform', 't'+translateX+','+translateY)
-            .transition()
-                .duration(500)
-                .attr('d', arc);
+            .attr('transform', 't'+translateX+','+translateY);
+
+            if (enableTransitions)
+            {
+                updateSlices.transition()
+                    .duration(500)
+                    .attr('d', arc);
+            }
+            else
+            {
+                updateSlices.attr('d', arc);
+            }
 
         slices
             .exit()
@@ -1605,7 +1627,7 @@ $.Control.registerMixin('d3_impl_pie', {
         if (cc.chartRenderSnapshot)
         {
             vizObj._loadDataIfNeeded();
-            vizObj._renderSnapshot(cc.chartRenderSnapshot);
+            vizObj._renderSnapshot(cc.chartRenderSnapshot, true /* enableTransitions */);
         }
     },
 

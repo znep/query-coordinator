@@ -333,8 +333,7 @@
                         { doSave(); }
                         else
                         { pathExistsError(); }
-                    },
-                    error: function() { doSave(); } });
+                    } });
                 }
                 else
                 { saveSettings(); }

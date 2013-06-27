@@ -153,7 +153,7 @@ class CustomContentController < ApplicationController
     })
     if CurrentDomain.module_available?('canvas2')
       if @page_override.nil?
-        @page, @vars = Page[path, page_ext, @current_user]
+        @page, @vars = Page[path, page_ext]
       else
         @page = @page_override
         @vars = {}

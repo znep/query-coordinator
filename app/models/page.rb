@@ -8,12 +8,6 @@ class Page < Model
       page = parse(CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon))
       return page
     end
-    # If fetching by ID with additional args, handle specially
-    if !options[:id].nil?
-      path = "/pages.json?#{options.to_param}"
-      page = parse(CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon))
-      return page
-    end
 
     # Fetch real service
     base_path = "/pages.json"
@@ -35,17 +29,11 @@ class Page < Model
     ds_path = '/id' + base_path
     if options.respond_to?(:to_param) && !options.to_param.blank?
       ds_options = options.clone.with_indifferent_access
-      ds_options.delete('method')
       ds_options.delete('status') if ds_options['status'] == 'all'
       ds_path += "?#{ds_options.to_param}"
     end
-    # For when the Pages dataset doesn't exist
-    begin
-      result = CoreServer::Base.connection.get_request(ds_path, custom_headers, batch, is_anon)
-      parse(result).each { |p| pages.push(p) if !svc_paths[p.index_path + '|' + p.format] }
-    rescue CoreServer::ResourceNotFound
-      # Nothing; we just don't merge
-    end
+    result = CoreServer::Base.connection.get_request(ds_path, custom_headers, batch, is_anon)
+    parse(result).each { |p| pages.push(p) if !svc_paths[p.index_path + '|' + p.format] }
 
     sort = (options['order'] || options['$order'] || 'name').split(' ')
     sort[0] = sort[0].slice(1, sort[0].length) if sort[0].start_with?(':')
@@ -156,7 +144,7 @@ class Page < Model
     cache_info['max_age'] || !content.blank? && content['maxAge']
   end
 
-  def self.[](path, ext, user = nil)
+  def self.[](path, ext)
     mtime = cache_time
     if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)
       @@path_store = {}
@@ -179,7 +167,7 @@ class Page < Model
     return results if page.nil? || page.uid.nil?
 
     if (VersionAuthority.page_mtime(page.uid).to_i / 1000) > page.updatedAt
-      page = find(method: 'getPageRouting', id: page.uid)
+      page = find(page.uid)
       # Update cache if it exists
       cache_key = generate_cache_key
       ds = Rails.cache.read(cache_key)
@@ -189,19 +177,6 @@ class Page < Model
       end
       results[0] = page
     end
-
-    # Now check permissions
-    case page.permission
-    when 'private'
-      return nil if user.nil? ||
-        (user.id != page.owner_id && !user.has_right?('edit_pages'))
-    when 'domain_private'
-      return nil if user.nil? ||
-        (user.id != page.owner_id && !CurrentDomain.member?(user))
-    when 'public'
-      # Yay, they can view it
-    end
-
     results
   end
 
@@ -213,7 +188,7 @@ class Page < Model
   def self.path_exists?(cur_path)
     cur_path = cur_path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
     # TODO: better way to handle this w/ service?
-    find(method: 'getRouting').any? do |p|
+    find.any? do |p|
       cur_path == p.path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
     end
   end
@@ -240,7 +215,7 @@ private
     if ds.nil?
       ds = {}
       VersionAuthority.set_paths_mtime((Time.now.to_i * 1000).to_s)
-      find(status: 'published', method: 'getRouting').each { |c| add_page(c, ds) }
+      find(:status => :published).each { |c| add_page(c, ds) }
       cache_key = generate_cache_key
       Rails.cache.write(cache_key, ds)
     end

@@ -109,7 +109,7 @@ module Canvas2
               threads = @pending_contexts[id].map do |req|
                 Thread.new do
                   begin
-                    ds_new = req[:config]['keepOriginal'] ? ds : ds.deep_clone(::View)
+                    ds_new = req[:config]['keepOriginal'] ? ds : ds.deep_clone(View)
                     ds.set_sodacan(config['useParentPrefetch'] ? context[:dataset].sodacan : nil)
                     got_dataset(ds_new, req[:config])
                     req[:callback].call(ds_new)
@@ -305,7 +305,7 @@ module Canvas2
               return true
             end
           end
-          ds = config['keepOriginal'] ? context[:dataset] : context[:dataset].deep_clone(::View)
+          ds = config['keepOriginal'] ? context[:dataset] : context[:dataset].deep_clone(View)
           ds.set_sodacan(config['useParentPrefetch'] ? context[:dataset].sodacan : nil)
         else
           @pending_contexts ||= {}
@@ -317,7 +317,7 @@ module Canvas2
           # In general caching the metadata is dangerous, because there is always a window
           # in which the metadata columnids may not match truth - when we move to SODA2
           # we may consider it again
-          ds = ::View.find(config['datasetId'], {}, false, !Canvas2::Util.is_private)
+          ds = View.find(config['datasetId'], {}, false, !Canvas2::Util.is_private)
         rescue CoreServer::ResourceNotFound
           errors.push(DataContextError.new(config, "No dataset found for '" +
                                            (config['id'] || config['datasetId']) + "'"))
@@ -329,7 +329,7 @@ module Canvas2
         end
       elsif !config['datasetResourceName'].blank?
         begin
-          ds = ::View.find_by_resource_name(config['datasetResourceName'], !Canvas2::Util.is_private)
+          ds = View.find_by_resource_name(config['datasetResourceName'], !Canvas2::Util.is_private)
         rescue CoreServer::ResourceNotFound
           errors.push(DataContextError.new(config, "No dataset found for '" +
                                            (config['datasetResourceName'] + "'")))

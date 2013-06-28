@@ -6,7 +6,7 @@
 // * kill seriesgrouping and remove its weird timing and oo injection hacks
 // * possible major perf boost out of moving bar rendering back into an html div-based solution.
 //   i tried to do this at one point but ran into z-index issues with error markers. now that
-//   there is the canonical chartRenderArea to render html components in, it should be possible
+//   there is the canonical chartRenderArea and nullRenderArea to place html components in, it should be possible
 //   to try it again.
 // * if ie8 support is ever dropped, i had a working prototype with absolutely no svg at all;
 //   just use css rotation for the text labels. you can wrangle divs into being value markers too.
@@ -148,13 +148,25 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // init our renderers
         cc.chartRaphael = new Raphael(cc.$chartContainer.get(0), 10, 10);
         cc.chartD3 = d3.raphael(cc.chartRaphael);
+
+
+        //Append and cache null bar render area after drawElement binding
+        cc.$chartContainer.prepend( 
+            $.tag({ tagName: 'div', 'class': 'nullRenderArea', contents: '&nbsp;' })
+        );
+        cc.$nullRenderArea = cc.$chartContainer.find('.nullRenderArea');
+
+
+        //continue renderer initialization
         cc.chartHtmlD3 = d3.select(cc.$chartRenderArea.get(0));
+        cc.chartNullD3 = d3.select(cc.$nullRenderArea.get(0));
         cc.chromeD3 = d3.select(cc.$tickContainer.get(0));
 
         // find and set up the draw elem
-        cc.$drawElement = cc.$chartContainer.children(':not(.chartRenderArea)');
+        cc.$drawElement = cc.$chartContainer.children(':not(.chartRenderArea, .nullRenderArea)');
         cc.$drawElement.css({ 'position': 'absolute', 'top': '0' });
 
+        
         // maybe move things around and maybe grab rows every half second when they're scrolling
         var throttledScrollHandler = _.throttle(_.debounce(function()
         {

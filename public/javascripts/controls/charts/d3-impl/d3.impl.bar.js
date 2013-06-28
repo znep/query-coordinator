@@ -564,7 +564,7 @@ $.Control.registerMixin('d3_impl_bar', {
             var nullSeriesClass = 'nullDataBar_series' + col.lookup;
             nullData = _.filter(nullData, barInView);
 
-            var nullBars = cc.chartHtmlD3.selectAll('.' + nullSeriesClass)
+            var nullBars = cc.chartNullD3.selectAll('.' + nullSeriesClass)
                 .data(nullData, function(row) { return row.id; });
             var height = cc.dataDim.pluckY(vizObj._d3_px(cc.chartWidth - yAxisPos),
                                            vizObj._d3_px(yAxisPos));
@@ -812,7 +812,7 @@ $.Control.registerMixin('d3_impl_bar', {
         var nullBarPosition = cc.dataDim.pluckX(0,
                                          vizObj._d3_px(yAxisPos));
 
-        cc.chartHtmlD3.selectAll('.nullDataBar')
+        cc.chartNullD3.selectAll('.nullDataBar')
             .style(cc.dataDim.pluckY('left', 'top'), nullBarPosition)
             .style(cc.dataDim.height, nullBarHeight);
 
@@ -848,7 +848,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     .attr(cc.dataDim.width, cc.barWidth)
                     .attr(cc.dataDim.xAxis, xDatumPositionForSeries);
 
-            cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
+            cc.chartNullD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))
                     .style(cc.dataDim.xAxis, vizObj._d3_px(xDatumPositionForSeries));
 
@@ -856,7 +856,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition(seriesIndex));
 
 
-            var nullBars = cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup);
+            var nullBars = cc.chartNullD3.selectAll('.nullDataBar_series' + colDef.column.lookup);
             var nullBarHeight = cc.dataDim.pluckY(vizObj._d3_px(cc.chartWidth - yAxisPos),
                                            vizObj._d3_px(yAxisPos));
             var nullBarPosition = cc.dataDim.pluckX(0,

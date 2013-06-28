@@ -1,0 +1,27 @@
+<%= modal :class => 'configuratorPermissions loading' do %>
+  <%- name = module_enabled?(:govStat) ? 'Report' : 'Page' -%>
+  <h2><%= name %> Permissions</h2>
+
+  <div class="loadingOverlay hide">
+    <div class="loadingSpinner"></div>
+  </div>
+
+  <form class="commonForm">
+    <div class="line">
+      <input type="radio" id="configuratorPermissions_public" name="permissions" value="public" />
+      <label for="configuratorPermissions_public">Public<span class="info">Viewable by everyone</span></label>
+    </div>
+    <div class="line">
+      <input type="radio" id="configuratorPermissions_domain_private" name="permissions" value="domain_private" />
+      <label for="configuratorPermissions_domain_private">Shared to Site<span class="info">Viewable by all your colleagues, but not the public</span></label>
+    </div>
+    <div class="line">
+      <input type="radio" id="configuratorPermissions_private" name="permissions" value="private" />
+      <label for="configuratorPermissions_private">Private<span class="info">Viewable by only you</span></label>
+    </div>
+  </form>
+  <ul class="actions clearfix">
+    <li><a href="#cancel" class="jqmClose button">Cancel</a></li>
+    <li><a href="#save" class="save button">Save</a></li>
+  </ul>
+<%- end -%>

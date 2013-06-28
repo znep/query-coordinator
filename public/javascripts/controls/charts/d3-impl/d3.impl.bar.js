@@ -807,8 +807,23 @@ $.Control.registerMixin('d3_impl_bar', {
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
 
+        var nullBarHeight = cc.dataDim.pluckY(vizObj._d3_px(cc.chartWidth - yAxisPos),
+                                           vizObj._d3_px(yAxisPos));
+        var nullBarPosition = cc.dataDim.pluckX(0,
+                                         vizObj._d3_px(yAxisPos));
+
         cc.chartHtmlD3.selectAll('.nullDataBar')
-            .style(cc.dataDim.height, vizObj._d3_px(yAxisPos));
+            .style(cc.dataDim.pluckY('left', 'top'), nullBarPosition)
+            .style(cc.dataDim.height, nullBarHeight);
+
+        if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
+        {
+            cc.chartD3.selectAll('.errorMarker')
+                .attr('transform', vizObj._errorBarTransform())
+                .transition()
+                    .duration(1000)
+                    .attr('d', vizObj._errorBarPath(yScale));
+        }
 
         cc.chartHtmlD3.selectAll('.rowLabel')
             .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition());
@@ -828,17 +843,36 @@ $.Control.registerMixin('d3_impl_bar', {
         // render our bars per series
         _.each(valueColumns, function(colDef, seriesIndex)
         {
+            var xDatumPositionForSeries = vizObj._xDatumPosition(seriesIndex);
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
                     .attr(cc.dataDim.width, cc.barWidth)
-                    .attr(cc.dataDim.xAxis, vizObj._xDatumPosition(seriesIndex));
+                    .attr(cc.dataDim.xAxis, xDatumPositionForSeries);
 
             cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup)
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))
-                    .style(cc.dataDim.xAxis, vizObj._d3_px(vizObj._xDatumPosition(seriesIndex)));
+                    .style(cc.dataDim.xAxis, vizObj._d3_px(xDatumPositionForSeries));
 
             cc.chartHtmlD3.selectAll('.rowLabel')
                     .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition(seriesIndex));
+
+
+            var nullBars = cc.chartHtmlD3.selectAll('.nullDataBar_series' + colDef.column.lookup);
+            var nullBarHeight = cc.dataDim.pluckY(vizObj._d3_px(cc.chartWidth - yAxisPos),
+                                           vizObj._d3_px(yAxisPos));
+            var nullBarPosition = cc.dataDim.pluckX(0,
+                                             vizObj._d3_px(yAxisPos));
+
+            nullBars
+                .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))
+                .style(cc.dataDim.position, vizObj._d3_px(xDatumPositionForSeries));
         });
+
+        if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
+        {
+            cc.chartD3.selectAll('.errorMarker')
+                .attr('transform', vizObj._errorBarTransform());
+        }
+
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
     }

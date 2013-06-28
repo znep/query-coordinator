@@ -242,7 +242,7 @@
 
     var labelInBar = { text: $.t('screens.ds.grid_sidebar.chart.labelInBar'), type: 'checkbox', name: 'displayFormat.xAxis.labelInBar' };
 
-    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox', name: 'displayFormat.xAxis.valueInBar', disabled: { field: 'displayFormat.xAxis.labelInBar', value: false } };
+    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox', name: 'displayFormat.xAxis.valueInBar' };
 
     if (!isNextGen)
     {

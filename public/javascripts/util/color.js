@@ -32,7 +32,7 @@ $.rgbToHex = function(rgb)
 	return hex.join('');
 };
 
-// Adapted from http://svn.dojotoolkit.org/low/dojox/trunk/color/_base.js
+// Adapted from http://svn.dojotoolkit.org/src/dojox/trunk/color/_base.js
 $.hsvToRgb = function(hsv){
     //  hue from 0-359 (degrees), saturation and value 0-100.
     var hue=hsv.h, saturation=hsv.s, value=hsv.v;
@@ -61,7 +61,7 @@ $.hsvToRgb = function(hsv){
     return { r:Math.round(r*255), g:Math.round(g*255), b:Math.round(b*255) };
 }
 
-// Adapted from http://svn.dojotoolkit.org/low/dojox/trunk/color/_base.js
+// Adapted from http://svn.dojotoolkit.org/src/dojox/trunk/color/_base.js
 $.rgbToHsv = function(rgb){
     var r=rgb.r/255, g=rgb.g/255, b=rgb.b/255;
     var min = Math.min(r, b, g), max = Math.max(r, g, b);
@@ -81,6 +81,80 @@ $.rgbToHsv = function(rgb){
         if(h<0){ h+=360; }
     }
     return { h:h, s:Math.round(s*100), v:Math.round(max*100) };
+};
+
+// Adapted from http://svn.dojotoolkit.org/src/dojox/trunk/color/_base.js
+$.hslToRgb = function(hsl){
+    var hue=hsl.h, saturation=hsl.s, luminosity=hsl.l;
+    saturation/=100;
+    luminosity/=100;
+
+    while(hue<0){ hue+=360; }
+    while(hue>=360){ hue-=360; }
+
+    var r, g, b;
+    if(hue<120){
+        r=(120-hue)/60, g=hue/60, b=0;
+    } else if (hue<240){
+        r=0, g=(240-hue)/60, b=(hue-120)/60;
+    } else {
+        r=(hue-240)/60, g=0, b=(360-hue)/60;
+    }
+
+    r=2*saturation*Math.min(r, 1)+(1-saturation);
+    g=2*saturation*Math.min(g, 1)+(1-saturation);
+    b=2*saturation*Math.min(b, 1)+(1-saturation);
+    if(luminosity<0.5){
+        r*=luminosity, g*=luminosity, b*=luminosity;
+    }else{
+        r=(1-luminosity)*r+2*luminosity-1;
+        g=(1-luminosity)*g+2*luminosity-1;
+        b=(1-luminosity)*b+2*luminosity-1;
+    }
+    return { r:Math.round(r*255), g:Math.round(g*255), b:Math.round(b*255) };
+};
+
+// Adapted from http://svn.dojotoolkit.org/src/dojox/trunk/color/_base.js
+$.rgbToHsl = function(rgb){
+    var r=rgb.r/255, g=rgb.g/255, b=rgb.b/255;
+    var min = Math.min(r, b, g), max = Math.max(r, g, b);
+    var delta = max-min;
+    var h=0, s=0, l=(min+max)/2;
+    if(l>0 && l<1){
+        s = delta/((l<0.5)?(2*l):(2-2*l));
+    }
+    if(delta>0){
+        if(max==r && max!=g){
+            h+=(g-b)/delta;
+        }
+        if(max==g && max!=b){
+            h+=(2+(b-r)/delta);
+        }
+        if(max==b && max!=r){
+            h+=(4+(r-g)/delta);
+        }
+        h*=60;
+    }
+    return { h:h, s:Math.round(s*100), l:Math.round(l*100) };   //  Object
+};
+
+$.rgbTosRGB = function(rgb){
+    _.each(['r', 'g', 'b'], function(comp)
+    { rgb[comp] = (rgb[comp] <= 0.03928) ? rgb[comp]/12.92
+                                         : Math.pow(((rgb[comp] + 0.055)/1.055), 2.4); });
+    return rgb;
+};
+
+// As defined in WCAG 2.0, §1.4.3, 1.4.6.
+// Level AA >= 4.5; Level AAA >= 7.
+$.colorContrast = function(hex_colors)
+{
+    var sRGB = _.map(_.map(arguments, $.hexToRgb), $.rgbTosRGB);
+    // Relative luminscence: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+    var L = _.map(sRGB,
+        function(sRGB) { return 0.2126 * sRGB.r + 0.7152 * sRGB.g + 0.0722 * sRGB.b; });
+
+    return Math.round((Math.max.apply(null, L) + 0.05)/(Math.min.apply(null, L) + 0.05)*10)/10;
 };
 
 $.addColors = function(a, b)

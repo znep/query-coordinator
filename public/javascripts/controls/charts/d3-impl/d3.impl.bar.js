@@ -619,48 +619,67 @@ $.Control.registerMixin('d3_impl_bar', {
 
     _renderRowLabels: function(data)
     {
-        if ($.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true)
-        {
-            this._super.apply(this, arguments);
-            return;
-        }
+        var labelInBar = $.deepGet(this._displayFormat, 'xAxis', 'labelInBar'),
+            valueInBar = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar');
+
+        if (!labelInBar)
+        { this._super.apply(this, arguments); }
+
+        if (!labelInBar && !valueInBar)
+        { return; }
 
         var vizObj = this,
             cc = vizObj._chartConfig,
             valueColumns = vizObj.getValueColumns(),
             view = vizObj._primaryView;
 
-        _.each(valueColumns, function(colDef, seriesIndex)
-        {
-            // render our labels per row
-            // baseline closer to the row's center
-            var rowLabels = cc.chartHtmlD3.selectAll('.rowLabel')
-                .data(data, function(row) { return row.id; });
-            rowLabels
-                .enter().append('div')
-                    .classed('rowLabel', true)
-            rowLabels
-                    .style('font-weight', function(d)
-                            { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
-                    .html(function(d)
+        var cubedData = _.flatten(_.map(data, function(row)
+            { return _.map(_.range(0, valueColumns.length),
+                function(i) { return $.extend({}, row, { seriesIndex: i }); }); }));
+
+        var rowLabels = cc.chartHtmlD3.selectAll('.rowLabel')
+            .data(cubedData, function(row) { return row.id; });
+        rowLabels
+            .enter().append('div')
+                .classed('rowLabel', true)
+        rowLabels
+                .style('font-weight', function(d)
+                        { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
+                .html(function(d)
+                {
+                    var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
+                        col = valueColumns[d.seriesIndex].column,
+                        text = [];
+
+                    if (labelInBar)
+                    { text.push(fixedColumn.renderType.renderer(d[fixedColumn.lookup],
+                        fixedColumn, true, null, null, true)); }
+
+                    if (valueInBar)
                     {
-                        var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
-                            text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                        var column = col.renderType ? col : col.realValueColumn.column;
+                        var value = column.renderType.renderer(d[col.lookup], column, true, null, null, true);
+                        if (labelInBar)
+                        {
+                            text.push(['(', value, ')'].join(''));
+                            text = text.join(' ');
+                        }
+                        else
+                        { text = value; }
+                    }
+                    else
+                    { text = text[0]; }
 
-                        if ($.deepGet(vizObj._displayFormat, 'xAxis', 'valueInBar') === true)
-                        { text = [text, " (", d[colDef.column.lookup], ")"].join(''); }
-
-                        // render plaintext representation of the data
-                        return text;
-                    })
-                    .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition(seriesIndex))
-                    .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition())
-                    .style('color', vizObj._rowLabelColor(colDef));
-            rowLabels
-                .exit()
-                .transition()
-                    .remove();
-        });
+                    // render plaintext representation of the data
+                    return text;
+                })
+                .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition())
+                .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition())
+                .style('color', vizObj._rowLabelColor());
+        rowLabels
+            .exit()
+            .transition()
+                .remove();
     },
 
     _yAxisPos: function()
@@ -695,24 +714,23 @@ $.Control.registerMixin('d3_impl_bar', {
         return yAxisPos;
     },
 
-    _xRowLabelPosition: function(seriesIndex)
+    _xRowLabelPosition: function()
     {
         var vizObj = this,
-            cc = vizObj._chartConfig;
+            cc = vizObj._chartConfig,
+            numCols = this.getValueColumns().length;
 
         var xPositionStaticParts = cc.sidePadding + ((cc.rowWidth - cc.rowSpacing) / 2) -
                                    cc.drawElementPosition - cc.dataOffset;
 
-        // Even number of bars-per-category, so bump it up to the nearest bar.
-        if (this.getValueColumns().length % 2 == 0)
-        { xPositionStaticParts -= cc.barWidth / 2; }
-
         return function(d)
         {
+            var xPosition = xPositionStaticParts + (d.index * cc.rowWidth);
+            xPosition += cc.barWidth * (d.seriesIndex + (-(numCols - 1) / 2));
             if (cc.orientation == 'down')
-            { return xPositionStaticParts + (d.index * cc.rowWidth) - ($(this).height() / 2) + 'px'; }
+            { return xPosition - ($(this).height() / 2) + 'px'; }
             else (cc.orientation == 'right')
-            { return xPositionStaticParts + (d.index * cc.rowWidth) - ($(this).width() / 2) + 'px'; }
+            { return xPosition - ($(this).width() / 2) + 'px'; }
         };
     },
 
@@ -721,42 +739,53 @@ $.Control.registerMixin('d3_impl_bar', {
         var vizObj = this,
             cc = vizObj._chartConfig,
             ie8 = $.browser.msie && parseFloat($.browser.version) < 9,
-            yAxisPos = vizObj._yAxisPos();
+            yAxisPos = vizObj._yAxisPos(),
+            yScale = vizObj._currentYScale(),
+            valueColumns = vizObj.getValueColumns(),
+            endJustified = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar') === true
+                        && $.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true;
 
         return function(d)
         {
+            var position;
             // Magic numbers are for padding from the yAxisPos-edge of the bar.
             if (cc.orientation == 'down')
-            { return yAxisPos + 5 + 'px'; }
+            {
+                position = yAxisPos + 5;
+                if (endJustified)
+                { position = Math.max(position, yAxisPos
+                    + yScale(d[valueColumns[d.seriesIndex].column.lookup]) - $(this).width() - 5); }
+            }
             else
             {
                 if (ie8)
-                { return yAxisPos - $(this).height() - 5 + 'px'; }
+                {
+                    position = yAxisPos - $(this).height() - 5;
+                    if (endJustified)
+                    { position = Math.min(position, yAxisPos - yScale(d[valueColumns[d.seriesIndex].column.lookup]) + $(this).height() - 5); }
+                }
                 else
-                { return yAxisPos - ($(this).width() / 2) - 10 + 'px'; }
+                {
+                    position = yAxisPos - ($(this).width() / 2) - 10;
+                    if (endJustified)
+                    { position = Math.min(position, yAxisPos - yScale(d[valueColumns[d.seriesIndex].column.lookup]) + ($(this).width() / 2)); }
+                }
             }
+            return position + 'px';
         };
     },
 
-    _rowLabelColor: function(colDef)
+    _rowLabelColor: function()
     {
-        var barColor,
-            valueColumns = this.getValueColumns(),
-            numCols = valueColumns.length;
-
-        // Take the actual color of the background row.
-        if (numCols > 1)
-        {
-            colDef = numCols % 2 == 0 ? valueColumns[numCols / 2 - 1]
-                                      : valueColumns[numCols / 2 - 0.5];
-            barColor = this._d3_colorizeRow(colDef);
-        }
-        else
-        { barColor = this._d3_colorizeRow(colDef); }
+        var vizObj = this;
+            valueColumns = this.getValueColumns();
 
         return function(d)
         {
-            return $.rgbToHsv($.hexToRgb(barColor(d))).v < 60 ? '#ccc' : '#333';
+            var color = vizObj._d3_colorizeRow(valueColumns[d.seriesIndex])(d);
+            var result = $.rgbToHsl($.hexToRgb(color)).l < 50 ? '#ccc' : '#333';
+            //console.log(color, result, $.colorContrast(color, result));
+            return result;
         };
     },
 

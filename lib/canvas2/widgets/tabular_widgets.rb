@@ -523,52 +523,54 @@ module Canvas2
     def add_xl_style(workbook, canonical_style, cell_style, styles_list)
       style_def = {}
 
-      font_def = cell_style["font"]
-      if font_def
-        font_def.each_pair do |key, value|
-          case key
-            when "b"
-              style_def[:b] = value
-            when "i"
-              style_def[:i] = value
-            when "color"
-              style_def[:fg_color] = value
-            when "size"
-              style_def[:sz] = value
-            when "u"
-              style_def[:u] = value
-            when "name"
-              style_def[:font_name] = value
+      if cell_style
+        font_def = cell_style["font"]
+        if font_def
+          font_def.each_pair do |key, value|
+            case key
+              when "b"
+                style_def[:b] = value
+              when "i"
+                style_def[:i] = value
+              when "color"
+                style_def[:fg_color] = value
+              when "size"
+                style_def[:sz] = value
+              when "u"
+                style_def[:u] = value
+              when "name"
+                style_def[:font_name] = value
+            end
           end
         end
-      end
+        borders_def = cell_style["border"]
+        if borders_def
 
-      borders_def = cell_style["border"]
-      if borders_def
+          borders = {}
+          borders_def.each_pair do |key, value|
+            case key
+              when "color"
+                borders[:color] = value
+              when "style"
+                borders[:style] = map_to_xlsx_border_style(value)
+              when "edges"
+                borders[:edges] = value.map do |edge|
 
-        borders = {}
-        borders_def.each_pair do |key, value|
-          case key
-            when "color"
-              borders[:color] = value
-            when "style"
-              borders[:style] = map_to_xlsx_border_style(value)
-            when "edges"
-              borders[:edges] = value.map do |edge|
-
-                case edge
-                  when "left"
-                    :left
-                  when "right"
-                    :right
-                  when "top"
-                    :top
-                  when "bottom"
-                    :bottom
+                  case edge
+                    when "left"
+                      :left
+                    when "right"
+                      :right
+                    when "top"
+                      :top
+                    when "bottom"
+                      :bottom
+                  end
                 end
-              end
+            end
           end
         end
+
         if ! borders[:color]
           borders[:color] = "00000000"
         end
@@ -582,7 +584,7 @@ module Canvas2
         style_def[:border] = borders
       end
 
-      if cell_style["bgcolor"]
+      if cell_style && cell_style["bgcolor"]
         style_def[:bg_color] = cell_style["bgcolor"]
       end
 

@@ -169,7 +169,7 @@ module Canvas2
     end
 
     def self.csv_escape(str)
-      '"' + (str || '').to_s.gsub('"', '\"') + '"'
+      '"' + (str || '').to_s.gsub('"', '""') + '"'
     end
 
     def self.localize(obj)

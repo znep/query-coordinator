@@ -28,7 +28,8 @@ class AnalyticsController < ApplicationController
   private
 
   def add_metric(entity, metric, raw_increment)
-    # metrics and entities must be simple names, optional hyphens
+
+  # metrics and entities must be simple names, optional hyphens
     if (metric =~ /^[a-z-]+$/ ).nil? || (entity =~ /^[a-z-]+$/ ).nil?
       return [false, "Entity/Metric not properly formed"]
     end
@@ -57,6 +58,7 @@ class AnalyticsController < ApplicationController
 
     Rails.logger.info("Pushing client-side metric, #{entity}/#{metric} = #{increment}")
     MetricQueue.instance.push_metric(entity, metric, increment)
+
     [true, nil]
   end
 
@@ -65,14 +67,55 @@ class AnalyticsController < ApplicationController
   end
 end
 
+
+
 module ClientAnalyticsHelper
-  MARK_METRICS = %w(domain/js-page-view domain-intern/js-page-load-samples).freeze
-  ALLOWED_METRICS = %w(domain/js-page-view
-                       domain-intern/js-page-load-samples
-                       domain-intern/js-page-load-time
-                       domain-intern/js-response-start-time
-                       domain-intern/js-response-read-time
-                       domain-intern/js-dom-load-time).freeze
+  FUNCTIONAL_BUCKETS =  %w(homepage dataset dataslate admin profile other).freeze
+  PERFORMANCE_BUCKETS=  %w(awesome good ok poor terrible).freeze
+  DYNAMIC_METRIC_TYPES =  %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze
+
+  DYNAMIC_MARK_METRIC_TYPES  =  %w(js-dom-load-samples js-page-load-samples).freeze
+
+  STATIC_MARK_METRICS = %w(domain/js-page-view
+                           domain-intern/js-page-load-samples
+                           domain-intern/js-dom-load-samples).freeze
+
+
+  STATIC_ALLOWED_METRICS = %w(domain/js-page-view
+                              domain-intern/js-page-load-samples
+                              domain-intern/js-page-load-time
+                              domain-intern/js-response-start-time
+                              domain-intern/js-response-read-time
+                              domain-intern/js-dom-load-time).freeze
+
+
+
+  def self.generateMarkMetrics
+    generatePermutations STATIC_MARK_METRICS, DYNAMIC_MARK_METRIC_TYPES
+  end
+
+  def self.generateMetrics
+    generatePermutations STATIC_ALLOWED_METRICS, DYNAMIC_METRIC_TYPES
+  end
+
+  def self.generatePermutations(static_metrics, base_matrics)
+
+    ret_val = Array.new(static_metrics)
+    PERFORMANCE_BUCKETS.each do |perf_bucket|
+      FUNCTIONAL_BUCKETS.each do |functional_bucket|
+        base_matrics.each do |dynamic_metric|
+          ret_val.push "domain-intern/#{functional_bucket}-#{perf_bucket}-#{dynamic_metric}"
+        end
+      end
+    end
+
+    ret_val.freeze
+  end
+
+
+  MARK_METRICS = self.generateMarkMetrics
+  ALLOWED_METRICS = self.generateMetrics
+
 
   def self.get_valid_increment(entity, metric, input)
     increment = input.to_i
@@ -86,11 +129,15 @@ module ClientAnalyticsHelper
   end
 
   def self.is_mark(entity, metric)
-    MARK_METRICS.include?(entity + '/' + metric)
+    allowed = MARK_METRICS.include?(entity + '/' + metric)
+    puts "#{allowed} => #{entity}/#{metric}"
+    allowed
   end
 
   def self.is_allowed(entity, metric)
-    ALLOWED_METRICS.include?(entity + '/' + metric)
+    allowed = ALLOWED_METRICS.include?(entity + '/' + metric)
+    puts "#{allowed} => #{entity}/#{metric}"
+    allowed
   end
 
 end

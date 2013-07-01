@@ -81,35 +81,35 @@ $.component.Component.extend('Sort', 'none', {//'input', {
             }
         }
 
-        if ($.isBlank(this.$sortDir))
+        if ($.isBlank(cObj.$sortDir))
         {
-            this.$sortDir = cObj.$sortLinks.find('a.sortDir');
-            if (this.$sortDir.length < 1)
+            cObj.$sortDir = cObj.$sortLinks.find('a.sortDir');
+            if (cObj.$sortDir.length < 1)
             {
-                this.$sortDir = $.tag({ tagName: 'a', href: '#sortDir', 'class': 'sortDir',
+                cObj.$sortDir = $.tag({ tagName: 'a', href: '#sortDir', 'class': 'sortDir',
                     contents: { tagName: 'span', 'class': 'icon' } });
-                cObj.$sortLinks.append(this.$sortDir);
+                cObj.$sortLinks.append(cObj.$sortDir);
             }
 
-            this.$sortDir.on('click', function(e)
+            cObj.$sortDir.on('click', function(e)
             {
                 e.preventDefault();
                 handleSortDir(cObj);
             });
         }
 
-        if ($.isBlank(this.$sortClear))
+        if ($.isBlank(cObj.$sortClear))
         {
-            this.$sortClear = cObj.$sortLinks.find('a.sortClear');
-            if (this.$sortClear.length < 1)
+            cObj.$sortClear = cObj.$sortLinks.find('a.sortClear');
+            if (cObj.$sortClear.length < 1)
             {
-                this.$sortClear = $.tag({ tagName: 'a', href: '#sortClear',
+                cObj.$sortClear = $.tag({ tagName: 'a', href: '#sortClear',
                     'class': ['sortClear', 'remove'],
                     contents: { tagName: 'span', 'class': 'icon' } });
-                cObj.$sortLinks.append(this.$sortClear);
+                cObj.$sortLinks.append(cObj.$sortClear);
             }
 
-            this.$sortClear.on('click', function(e)
+            cObj.$sortClear.on('click', function(e)
             {
                 e.preventDefault();
                 handleSortClear(cObj);
@@ -289,15 +289,15 @@ var handleSortDir = function(cObj)
 
     var cfn;
     var ds;
-    if ($.subKeyDefined(cObj, '_dataContext.dataset'))
-    {
-        cfn = cObj.$dsDropdown.value();
-        ds = cObj._dataContext.dataset;
-    }
-    else if ($.subKeyDefined(cObj, '_dataContext.column'))
+    if ($.subKeyDefined(cObj, '_dataContext.column'))
     {
         cfn = cObj._dataContext.column.fieldName;
         ds = cObj._dataContext.column.view;
+    }
+    else if ($.subKeyDefined(cObj, '_dataContext.dataset'))
+    {
+        cfn = cObj.$dsDropdown.value();
+        ds = cObj._dataContext.dataset;
     }
 
     if (!$.isBlank(cfn))

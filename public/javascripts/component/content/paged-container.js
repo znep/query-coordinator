@@ -5,7 +5,8 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
     {
         this._pages = [];
         this._super.apply(this, arguments);
-        this.registerEvent({page_shown: 'newPage', page_added: 'pages', page_removed: 'pages'});
+        this.registerEvent({ page_shown: 'newPage', page_added: 'pages', page_removed: 'pages',
+            page_count_changed: [] });
     },
 
     visibleId: function(newId)
@@ -19,15 +20,24 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
     visibleIndex: function(newIndex)
     {
         var p = this.pages();
-        return _.indexOf(p, this._visiblePage(p[newIndex]))
+        if (!$.isBlank(newIndex))
+        {
+            var cObj = this;
+            cObj._getPage(newIndex, function(page) { cObj._visiblePage(page); });
+        }
+        else
+        { return _.indexOf(p, this._visiblePage()); }
     },
 
     viewNext: function(preventWrap)
     {
         var p = this.pages();
+        var cp = this.countPages();
         var newI = _.indexOf(p, this._visiblePage()) + 1;
-        if (preventWrap && newI >= p.length) { return; }
-        return this._visiblePage(p[newI % p.length]);
+        if (preventWrap && newI >= cp) { return; }
+
+        var cObj = this;
+        cObj._getPage(newI % cp, function(page) { cObj._visiblePage(page); });
     },
 
     viewPrevious: function(preventWrap)
@@ -35,34 +45,55 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         var p = this.pages();
         var newI = _.indexOf(p, this._visiblePage()) - 1;
         if (preventWrap && newI < 0) { return; }
-        return this._visiblePage(p[(newI + p.length) % p.length]);
+
+        var cp = this.countPages();
+        var cObj = this;
+        cObj._getPage((newI + cp) % cp, function(page) { cObj._visiblePage(page); });
     },
 
     viewFirst: function()
     {
-        var p = this.pages();
+        var p = this.countPages();
 
-        if (p.length != 0)
+        if (p != 0)
         {
-            return this._visiblePage(p[0]);
+            var cObj = this;
+            cObj._getPage(0, function(page) { cObj._visiblePage(page); });
         }
     },
 
     viewLast: function()
     {
-        var p = this.pages();
+        var p = this.countPages();
 
-        if (p.length != 0)
+        if (p != 0)
         {
-            return this._visiblePage(p[p.length - 1]);
+            var cObj = this;
+            cObj._getPage(p - 1, function(page) { cObj._visiblePage(page); });
         }
+    },
+
+    pageSize: function()
+    { return 1; },
+
+    count: function()
+    {
+        if (!$.isBlank(this._childCount))
+        { return this._childCount; }
+        return this._super.apply(this, arguments);
+    },
+
+    setCount: function(newCount)
+    {
+        this._childCount = newCount;
+        this.trigger('page_count_changed');
     },
 
     pages: function()
     { return this._pages; },
 
     countPages: function()
-    { return this._pages.length; },
+    { return !$.isBlank(this._childCount) ? this._childCount : this._pages.length; },
 
     eachPage: function(fn, scope)
     {
@@ -138,7 +169,10 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         if ($.isBlank(child.$dom) && ($existDom = this.$contents.children('#' + child.id)).length > 0)
         { $existDom.addClass('hide'); }
         child._parCont = this;
-        this._pages.push(child);
+        if (_.isNumber(position))
+        { this._pages[position] = child; }
+        else
+        { this._pages.push(child); }
         this.trigger('page_added', [{pages: [child]}]);
         return r;
     },
@@ -154,6 +188,23 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         this._pages = [];
         delete this._currentPage;
         this._super();
+    },
+
+    _getPage: function(newIndex, callback)
+    {
+        newIndex = parseInt(newIndex);
+        var cObj = this;
+        var p = cObj.pages();
+        if (!$.isBlank(p[newIndex]))
+        { callback(p[newIndex]); }
+        else if (!$.isBlank(cObj.parent))
+        {
+            cObj.parent.fetchChildren(newIndex, 1, function(items)
+            {
+                _.each(items, function(item) { cObj.add(item.row, item.index); })
+                callback(p[newIndex]);
+            });
+        }
     },
 
     _visiblePage: function(newPage)
@@ -179,6 +230,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         page.properties({height: this._properties.height, hidden: false});
         if (!page._rendered) { page._render(); }
         page.$dom.removeClass('hide');
+        page.each(function(child) { child.$dom.removeClass('hide'); });
         this.trigger('page_shown', [{newPage: page}]);
         page.$contents.trigger('show');
         $.component.sizeRenderRefresh();
@@ -190,6 +242,8 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         var cObj = this;
         if ($.isBlank(cObj._currentPage) && !_.isEmpty(cObj._pages))
         {
+            // Hide any pre-rendered items first
+            cObj.$dom.children().addClass('hide');
             if ($.subKeyDefined(cObj, '_properties.defaultPage'))
             {
                 var defPage = cObj._stringSubstitute(cObj._properties.defaultPage);

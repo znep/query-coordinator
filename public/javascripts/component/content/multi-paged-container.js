@@ -3,6 +3,17 @@
 var DEFAULT_PAGE_SIZE = 5;
 
 $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content', {
+    countPages: function()
+    {
+        return !$.isBlank(this._childCount) ? Math.ceil(this._childCount / this.pageSize()) :
+            this._pages.length;
+    },
+
+    pageSize: function()
+    {
+        return this._properties.pageSize || DEFAULT_PAGE_SIZE;
+    },
+
     /* Actual children added to the container */
     children: function()
     { return this._contentChildren; },
@@ -29,14 +40,14 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
         this._contentChildren = [];
     },
 
-    /* TODO: This currently ignores position, and is append-only. Do we ever care about any other case? */
-    add: function(child)
+    add: function(child, position)
     {
         if (child._parCont == this)
         { return this._super.apply(this, arguments); }
 
         this._contentChildren = this._contentChildren || [];
-        this._contentChildren.push(child);
+        var index = _.isNumber(position) ? position : this._contentChildren.length;
+        this._contentChildren[index] = child;
 
         var $existDom;
         if ($.isBlank(child.$dom) &&
@@ -46,19 +57,23 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
             $existDom.addClass('hide');
         }
 
-        var pageSize = this._properties.pageSize || DEFAULT_PAGE_SIZE;
-        if (this._pages.length < Math.ceil(this._contentChildren.length / pageSize))
+        var pageSize = this.pageSize();
+        var pageIndex = Math.floor(index / pageSize);
+        if ($.isBlank(this._pages[pageIndex]))
         {
             this._super($.component.create(this._properties.container || {type: 'Container'},
-                        this._componentSet));
+                        this._componentSet), pageIndex);
         }
-        // If page already exists, and is not full, then add the child right now
-        if (this._currentPage && this._currentPage.$dom &&
-                this._currentPage.children().length < pageSize)
+        child._indexInPage = (index - pageIndex * pageSize) % pageSize;
+
+        // If the page already exists, add the item at the appropriate position
+        if ($.subKeyDefined(this, '_pages.' + pageIndex + '.$dom'))
         {
             if (!$.isBlank(child._carouselHidden))
             { child._carouselHidden.removeClass('hide'); }
-            this._currentPage.add(child);
+            var p = this._pages[pageIndex];
+            var after = _.detect(p.children(), function(c) { return c._indexInPage > child._indexInPage; });
+            p.add(child, after);
         }
     },
 
@@ -74,7 +89,7 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
         if (!page._initialized)
         {
             var i = _.indexOf(this._pages, page);
-            var numItems = this._properties.pageSize || DEFAULT_PAGE_SIZE;
+            var numItems = this.pageSize();
             var c = this._contentChildren.slice(i * numItems, (i + 1) * numItems);
             _.each(c, function(_c)
             {
@@ -84,6 +99,23 @@ $.component.PagedContainer.extend('Multi-Paged Container', 'none', {//'content',
             page.add(c);
         }
         this._super.apply(this, arguments);
+    },
+
+    _getPage: function(newPage, callback)
+    {
+        newPage = parseInt(newPage);
+        var cObj = this;
+        var p = cObj.pages();
+        if (!$.isBlank(p[newPage]))
+        { callback(p[newPage]); }
+        else if (!$.isBlank(cObj.parent))
+        {
+            cObj.parent.fetchChildren(newPage * cObj.pageSize(), cObj.pageSize(), function(items)
+            {
+                _.each(items, function(item) { cObj.add(item.row, item.index); })
+                callback(p[newPage]);
+            });
+        }
     },
 
     // The Container can pass the real children in here; ignore them if they're

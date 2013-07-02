@@ -87,7 +87,8 @@
                     break;
 
                 case 'datasetList':
-                    dc._loadDatasetList(function() { dc.trigger('data_change'); },
+                    delete dc.datasetList;
+                    dc.getItems(null, null, function() { dc.trigger('data_change'); },
                             function() { dc.trigger('data_change'); });
                     break;
 
@@ -138,7 +139,8 @@
                     break;
 
                 case 'datasetList':
-                    dc._loadDatasetList(function() { callback(dc); }, errorCallback);
+                    delete dc.datasetList;
+                    dc.getItems(null, null, function() { callback(dc); }, errorCallback);
                     break;
 
                 case 'goalList':
@@ -240,29 +242,98 @@
             }
         },
 
-        _registerContext: function()
-        {
-            if ($.subKeyDefined(this, '_parentSet'))
-            { this._parentSet.addContext(this); }
-        },
-
-        _loadDatasetList: function(callback, errorCallback)
+        getItems: function(start, count, callback, errorCallback)
         {
             var dc = this;
-            Dataset.search(dc.config.search, function(results)
+            if (dc.type == 'datasetList')
+            {
+                dc.datasetList = dc.datasetList || [];
+                var baseLimit = (dc.config.search || {}).limit || 50;
+                var baseOffset = (((dc.config.search || {}).page || 1) - 1) * baseLimit;
+                if ($.isBlank(start))
+                { start = baseOffset; }
+                count = count || baseLimit;
+
+                // Figure out what we need to load
+                var batches = [];
+                var curBatch;
+                for (var i = start; i < start + count; i++)
                 {
-                    _.each(results.views, function(ds) { addQuery(ds, dc.config.query); });
-
-                    var setResult = function(viewsList, count)
+                    if ($.isBlank(dc.datasetList[i]))
                     {
-                        if (count < 1 && !dc.config.noFail)
+                        // need to fetch
+                        if ($.isBlank(curBatch))
                         {
-                            errorCallback(dc.id);
-                            return;
+                            curBatch = { start: i, count: 0 };
+                            batches.push(curBatch);
                         }
+                        curBatch.count++;
+                    }
+                    else
+                    {
+                        // end batch
+                        curBatch = null;
+                    }
+                }
 
-                        dc.count = count;
-                        dc.datasetList = _.map(viewsList, function(ds)
+                var gotResults = _.after(batches.length, function()
+                {
+                    callback(dc.datasetList.slice(start, start + count));
+                });
+
+                _.each(batches, function(batch)
+                {
+                    var localCallback = gotResults;
+                    var conf = $.extend(true, {}, dc.config.search);
+                    var serverStart = batch.start + baseOffset;
+                    if (serverStart % batch.count == 0)
+                    {
+                        conf.limit = batch.count;
+                        conf.page = (serverStart / batch.count) + 1;
+                    }
+                    else if (batch.count % serverStart == 0)
+                    {
+                        conf.limit = serverStart;
+                        conf.page = 2;
+                        localCallback = _.after(2, gotResults);
+                        dc.getItems((serverStart * 2) - baseOffset, batch.count - batch.start,
+                            localCallback, errorCallback);
+                    }
+                    else if (serverStart < batch.count)
+                    {
+                        localCallback = _.after(2, gotResults);
+                        dc.getItems(serverStart - baseOffset, serverStart, localCallback, errorCallback);
+                        dc.getItems((serverStart * 2) - baseOffset, batch.count - serverStart, localCallback,
+                                errorCallback);
+                        return;
+                    }
+                    else
+                    {
+                        var adjCount = batch.count - 1;
+                        while (serverStart % adjCount != 0)
+                        { adjCount--; }
+                        localCallback = _.after(2, gotResults);
+                        dc.getItems(serverStart - baseOffset, adjCount, localCallback, errorCallback);
+                        dc.getItems((serverStart + adjCount) - baseOffset, batch.count - adjCount,
+                                localCallback, errorCallback);
+                        return;
+                    }
+
+                    Dataset.search(conf, function(results)
+                    {
+                        _.each(results.views, function(ds) { addQuery(ds, dc.config.query); });
+
+                        var setResult = function(viewsList, count)
+                        {
+                            if (count < 1 && !dc.config.noFail)
+                            {
+                                errorCallback(dc.id);
+                                return;
+                            }
+
+                            var offset = (conf.page - 1) * conf.limit - baseOffset;
+                            dc.count = count;
+                            _.each(viewsList, function(ds, i)
                             {
                                 var childId = dc.id + '_' + ds.id;
                                 var dsDc;
@@ -275,29 +346,37 @@
                                         dataset: ds }, dc._parentSet);
                                     dsDc._registerContext();
                                 }
-                                return dsDc;
+                                dc.datasetList[offset + i] = dsDc;
                             });
 
-                        callback();
-                    };
+                            localCallback();
+                        };
 
-                    if (dc.config.requireData && results.count > 0)
-                    {
-                        var trCallback = _.after(results.views.length, function()
+                        if (dc.config.requireData && results.count > 0)
                         {
-                            var vl = _.reject(results.views, function(ds)
-                                { return ds.totalRows() < 1; });
-                            var c = results.count - (results.views.length - vl.length);
-                            setResult(vl, c);
-                        });
-                        _.each(results.views, function(ds) { ds.getTotalRows(trCallback); });
-                    }
-                    else
-                    { setResult(results.views, results.count); }
-                },
-                function(xhr)
-                { errorCallback(dc.id); },
-                !blist.configuration.privateData);
+                            var trCallback = _.after(results.views.length, function()
+                            {
+                                var vl = _.reject(results.views, function(ds)
+                                    { return ds.totalRows() < 1; });
+                                var c = results.count - (results.views.length - vl.length);
+                                setResult(vl, c);
+                            });
+                            _.each(results.views, function(ds) { ds.getTotalRows(trCallback); });
+                        }
+                        else
+                        { setResult(results.views, results.count); }
+                    },
+                    function(xhr)
+                    { errorCallback(dc.id); },
+                    !blist.configuration.privateData);
+                });
+            }
+        },
+
+        _registerContext: function()
+        {
+            if ($.subKeyDefined(this, '_parentSet'))
+            { this._parentSet.addContext(this); }
         },
 
         _loadDataset: function(callback, errorCallback, keepOriginal)

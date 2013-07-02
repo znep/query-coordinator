@@ -5,15 +5,12 @@
     $.component.Component.extend('Container', 'content', {
         _init: function()
         {
-            this._initializing = true;
             var props = arguments[0];
             this._childrenToLoad = props.children;
             delete props.children;
 
             this._super.apply(this, arguments);
 //            this._childrenLoading = {};
-
-            delete this._initializing;
         },
 
         _initDom: function() {
@@ -238,7 +235,8 @@
         /**
          * Count the children in the container.
          */
-        count: function() {
+        count: function()
+        {
             var count = 0;
             this.each(function() {
                 count++;
@@ -284,6 +282,11 @@
             var origArgs = arguments;
             this._super.apply(this, origArgs);
             this.each(function(c) { c.setVisibility.apply(c, origArgs); });
+        },
+
+        fetchChildren: function(start, count, callback)
+        {
+            // Implement me if you can
         },
 
         // Override render to render children as well

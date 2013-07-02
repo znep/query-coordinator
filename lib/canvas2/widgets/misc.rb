@@ -127,7 +127,7 @@ module Canvas2
   class NewCatalog < Container
     def render_contents
       if context.nil? || context[:type] != 'datasetList'
-        set_context({ type: 'datasetList', noFail: true, search: { limit: 100 } }.with_indifferent_access)
+        set_context({ type: 'datasetList', noFail: true, search: { limit: 20 } }.with_indifferent_access)
       end
       conf = default_config(string_substitute(@properties), context[:id])
       @children = CanvasWidget.from_config(conf, self).compact

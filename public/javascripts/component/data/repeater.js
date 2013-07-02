@@ -31,9 +31,7 @@ $.component.Container.extend('Repeater', 'content', {
         }
         // hook up the real container when rendered by the server
         if ($.isBlank(this._realContainer) && this._properties.container && $.isBlank(this.first))
-        {
-            this._realContainer = this.add(this._properties.container);
-        }
+        { this._setUpRealContainer(); }
     },
 
     _dataReady: function()
@@ -66,6 +64,18 @@ $.component.Container.extend('Repeater', 'content', {
         if ($.subKeyDefined(this, '_delayUntilVisible'))
         { this._delayUntilVisible = !this._designing; }
         this._render();
+    },
+
+    fetchChildren: function(start, count, callback)
+    {
+        var cObj = this;
+        cObj.startLoading();
+        cObj._loadRows(start, count, function(renderedRows)
+        {
+            renderedRows = _.select(renderedRows, function(r) { return $.isPlainObject(r); });
+            callback(renderedRows);
+            cObj.finishLoading();
+        });
     },
 
     _clearDataContext: function()
@@ -114,6 +124,159 @@ $.component.Container.extend('Repeater', 'content', {
         }
     },
 
+    _setUpRealContainer: function()
+    {
+        this._realContainer = this.add(this._properties.container || {type: 'Container'});
+        delete this._containerDirty;
+    },
+
+    _loadRows: function(start, count, callback)
+    {
+        var cObj = this;
+        var renderedRows = [];
+        if ($.isBlank(cObj._dataContext))
+        {
+            callback();
+        }
+        else if (_.isArray(cObj._dataContext.value))
+        {
+            _.each(cObj._dataContext.value.slice(start, start + count), function(di, i)
+            {
+                if (!_.isObject(di))
+                { di = { value: di }; }
+                renderedRows.push(cObj._createRow(di, i, di));
+            });
+            callback(renderedRows);
+        }
+        else if (_.isArray(cObj._dataContext.list))
+        {
+            _.each(cObj._dataContext.list.slice(start, start + count), function(di, i)
+            {
+                if (!_.isObject(di))
+                { di = { value: di }; }
+                renderedRows.push(cObj._createRow(di, i, di));
+            });
+            callback(renderedRows);
+        }
+        else if (_.isArray(cObj._dataContext.goalList))
+        {
+            var goalItems = cObj._dataContext.goalList.slice(start, start + count);
+            if (!$.isBlank(cObj._properties.groupBy))
+            { renderGroupItems(cObj, goalItems, callback); }
+            else
+            {
+                _.each(goalItems, function(di, i)
+                {
+                    if (!_.isObject(di))
+                    { di = { value: di }; }
+                    renderedRows.push(cObj._createRow(di, i, di));
+                });
+                callback(renderedRows);
+            }
+        }
+        else if (_.isArray(cObj._dataContext.categoryList))
+        {
+            var catItems = cObj._dataContext.categoryList.slice(start, start + count);
+            if (!$.isBlank(cObj._properties.groupBy))
+            { renderGroupItems(cObj, catItems, callback); }
+            else
+            {
+                _.each(catItems, function(di, i)
+                {
+                    if (!_.isObject(di))
+                    { di = { value: di }; }
+                    renderedRows.push(cObj._createRow(di, i, di));
+                });
+                callback(renderedRows);
+            }
+        }
+        else if (view = (cObj._dataContext || {}).dataset)
+        {
+            if (cObj._properties.repeaterType == 'column')
+            {
+                var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
+                var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
+                _.each(_.select(cObj._dataContext.dataset.visibleColumns, function(c)
+                {
+                    if (_.all(exF, function(v, k)
+                        { return !_.include($.makeArray(v), $.deepGetStringField(c, k)); }) &&
+                        ($.isBlank(cObj._properties.includeFilter) ? true :
+                                   _.any(incF, function(v, k)
+                                       { return _.include($.makeArray(v), $.deepGetStringField(c, k)); })))
+                    { return true; }
+                    return false;
+                }).slice(start, start + count), function(c, i)
+                    { renderedRows.push(cObj._createRow(cObj._dataContext, i, {column: c})); });
+                callback(renderedRows);
+            }
+            else
+            {
+                view.getRows(start, count, function(rows)
+                {
+                    rows = _.map(rows, function(r) { return view.rowToSODA2(r); });
+                    if (!$.isBlank(cObj._properties.groupBy))
+                    { renderGroupItems(cObj, rows, callback); }
+                    else
+                    {
+                        callback(_.map(rows, function(r)
+                            { return cObj._createRow(r, r[':index'] - start, r); }));
+                    }
+                });
+            }
+        }
+        else if (cObj._dataContext.type == 'datasetList')
+        {
+            cObj._dataContext.getItems(start, count, function(items)
+            {
+                callback(_.map(items, function(ds, i)
+                        { return cObj._createRow(ds, i + start, $.extend({}, ds)); }));
+            });
+        }
+        // Nothing to repeat on for row or column
+    },
+
+    _totalItems: function(callback)
+    {
+        var cObj = this;
+        if ($.isBlank(cObj._dataContext))
+        { callback(0); }
+        else if (_.isArray(cObj._dataContext.value))
+        { callback(cObj._dataContext.value.length); }
+        else if (_.isArray(cObj._dataContext.list))
+        { callback(cObj._dataContext.list.length); }
+        else if (_.isArray(cObj._dataContext.goalList))
+        { callback(cObj._dataContext.goalList.length); }
+        else if (_.isArray(cObj._dataContext.categoryList))
+        { callback(cObj._dataContext.categoryList.length); }
+        else if (view = (cObj._dataContext || {}).dataset)
+        {
+            if (cObj._properties.repeaterType == 'column')
+            {
+                var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
+                var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
+                callback(_.select(cObj._dataContext.dataset.visibleColumns, function(c)
+                {
+                    if (_.all(exF, function(v, k)
+                        { return !_.include($.makeArray(v), $.deepGetStringField(c, k)); }) &&
+                        ($.isBlank(cObj._properties.includeFilter) ? true :
+                                   _.any(incF, function(v, k)
+                                       { return _.include($.makeArray(v), $.deepGetStringField(c, k)); })))
+                    { return true; }
+                    return false;
+                }).length);
+            }
+            else
+            {
+                view.getTotalRows(function()
+                { callback(view.totalRows()); });
+            }
+        }
+        else if (cObj._dataContext.type == 'datasetList')
+        { callback(cObj._dataContext.count); }
+        else
+        { callback(0); }
+    },
+
     _refresh: function()
     {
         var cObj = this;
@@ -141,34 +304,6 @@ $.component.Container.extend('Repeater', 'content', {
             }
         }
 
-        var doneWithRowsCallback = function(count)
-        {
-            return _.after(count, function()
-            {
-                delete cObj._childrenDirty;
-                if (count < 1)
-                {
-                    var clone = new $.component.Repeater.Clone($.extend(true, {},
-                            cObj._noChildrenCloneProperties), cObj._componentSet);
-                    // Insert the clone
-                    cObj._initializing = true;
-                    if ($.isBlank(cObj._realContainer))
-                    {
-                        cObj._realContainer = cObj.add(cObj._properties.container || {type: 'Container'});
-                        delete cObj._containerDirty;
-                    }
-                    cObj._realContainer.add(clone);
-                    delete cObj._initializing;
-                }
-
-                _.defer(function()
-                {
-                    if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
-                    $.component.sizeRenderRefresh();
-                });
-            });
-        };
-
         var view;
         if (cObj._designing)
         {
@@ -192,104 +327,60 @@ $.component.Container.extend('Repeater', 'content', {
             };
             addDesignSub(cObj);
         }
-        else if ($.isBlank(cObj._dataContext))
+        else
         {
-            doneWithRowsCallback(0);
-            return;
-        }
-        else if (_.isArray(cObj._dataContext.value))
-        {
-            var callback = doneWithRowsCallback(cObj._dataContext.value.length);
-            _.each(cObj._dataContext.value, function(di, i)
+            if ($.isBlank(cObj._realContainer))
+            { cObj._setUpRealContainer(); }
+
+            cObj._totalItems(function(totalCount)
             {
-                if (!_.isObject(di))
-                { di = { value: di }; }
-                cObj._setRow(di, i, di, callback);
-            });
-        }
-        else if (_.isArray(cObj._dataContext.list))
-        {
-            var callback = doneWithRowsCallback(cObj._dataContext.count);
-            _.each(cObj._dataContext.list, function(di, i)
-            {
-                if (!_.isObject(di))
-                { di = { value: di }; }
-                cObj._setRow(di, i, di, callback);
-            });
-        }
-        else if (_.isArray(cObj._dataContext.goalList))
-        {
-            var callback = doneWithRowsCallback(cObj._dataContext.goalList.length);
-            if (!$.isBlank(cObj._properties.groupBy))
-            { renderGroupItems(cObj, cObj._dataContext.goalList, doneWithRowsCallback); }
-            else
-            {
-                _.each(cObj._dataContext.goalList, function(di, i)
+                var rowCount = cObj._stringSubstitute(cObj._properties.rowCount);
+                var pageCount = rowCount || 100;
+                var start = (cObj._stringSubstitute(cObj._properties.rowPage || 1) - 1) * pageCount;
+
+                if (!$.isBlank(rowCount))
+                { totalCount = Math.min(totalCount, rowCount); }
+
+                if ($.subKeyDefined(cObj, '_realContainer.setCount'))
+                { cObj._realContainer.setCount(totalCount); }
+
+                var initCount;
+                // Can't page with grouping
+                if ($.subKeyDefined(cObj, '_realContainer.pageSize') && $.isBlank(cObj._properties.groupBy))
+                { initCount = cObj._realContainer.pageSize(); }
+                else
+                { initCount = Math.min(totalCount, pageCount); }
+
+                cObj.startLoading();
+                cObj._loadRows(start, initCount, function(renderedRows)
                 {
-                    if (!_.isObject(di))
-                    { di = { value: di }; }
-                    cObj._setRow(di, i, di, callback);
-                });
-            }
-        }
-        else if (_.isArray(cObj._dataContext.categoryList))
-        {
-            var callback = doneWithRowsCallback(cObj._dataContext.categoryList.length);
-            if (!$.isBlank(cObj._properties.groupBy))
-            { renderGroupItems(cObj, cObj._dataContext.categoryList, doneWithRowsCallback); }
-            else
-            {
-                _.each(cObj._dataContext.categoryList, function(di, i)
-                {
-                    if (!_.isObject(di))
-                    { di = { value: di }; }
-                    cObj._setRow(di, i, di, callback);
-                });
-            }
-        }
-        else if (view = (cObj._dataContext || {}).dataset)
-        {
-            if (cObj._properties.repeaterType == 'column')
-            {
-                var exF = cObj._stringSubstitute(cObj._properties.excludeFilter);
-                var incF = cObj._stringSubstitute(cObj._properties.includeFilter);
-                var callback = doneWithRowsCallback(cObj._dataContext.dataset.visibleColumns.length);
-                _.each(cObj._dataContext.dataset.visibleColumns, function(c, i)
-                {
-                    if (_.all(exF, function(v, k)
-                        { return !_.include($.makeArray(v), $.deepGetStringField(c, k)); }) &&
-                        ($.isBlank(cObj._properties.includeFilter) ? true :
-                                   _.any(incF, function(v, k)
-                                       { return _.include($.makeArray(v), $.deepGetStringField(c, k)); })))
-                    { cObj._setRow(cObj._dataContext, i, {column: c}, callback); }
-                    else { callback(); }
-                });
-            }
-            else
-            {
-                // Render records
-                var length = cObj._stringSubstitute(cObj._properties.rowCount || 100);
-                var start = (cObj._stringSubstitute(cObj._properties.rowPage || 1) - 1) * length;
-                view.getRows(start, length, function(rows)
-                {
-                    rows = _.map(rows, function(r) { return view.rowToSODA2(r); });
-                    if (!$.isBlank(cObj._properties.groupBy))
-                    { renderGroupItems(cObj, rows, doneWithRowsCallback); }
+                    renderedRows = _.compact(renderedRows);
+                    delete cObj._childrenDirty;
+                    if (renderedRows.length < 1)
+                    {
+                        var clone = new $.component.Repeater.Clone($.extend(true, {},
+                                cObj._noChildrenCloneProperties), cObj._componentSet);
+                        // Insert the clone
+                        cObj._realContainer.add(clone);
+                    }
                     else
                     {
-                        var callback = doneWithRowsCallback(rows.length);
-                        _.each(rows, function(r) { cObj._setRow(r, r[':index'] - start, r, callback); });
+                        _.each(renderedRows, function(r)
+                        {
+                            if ($.isPlainObject(r))
+                            { cObj._realContainer.add(r.row, r.index); }
+                        });
                     }
+
+                    cObj.finishLoading();
+                    _.defer(function()
+                    {
+                        if (!$.isBlank(cObj._realContainer)) { cObj._realContainer._render(); }
+                        $.component.sizeRenderRefresh();
+                    });
                 });
-            }
+            });
         }
-        else if ($.subKeyDefined(cObj, '_dataContext.datasetList'))
-        {
-            var callback = doneWithRowsCallback(cObj._dataContext.datasetList.length);
-            _.each(this._dataContext.datasetList, function(ds, i)
-                    { cObj._setRow(ds, i, $.extend({}, ds), callback); });
-        }
-        // Nothing to repeat on for row or column
     },
 
     _render: function()
@@ -313,7 +404,7 @@ $.component.Container.extend('Repeater', 'content', {
         return true;
     },
 
-    _setRow: function(row, index, entity, callback)
+    _createRow: function(row, index, entity)
     {
         entity = entity || {};
 
@@ -349,7 +440,7 @@ $.component.Container.extend('Repeater', 'content', {
         if (this._map[index])
         {
             if (!this._childrenDirty && this._map[index].id == cloneProperties.id)
-            { return; }
+            { return true; }
             this._map[index].remove();
             this._map[index] = undefined;
         }
@@ -374,26 +465,11 @@ $.component.Container.extend('Repeater', 'content', {
             if (!result)
             {
                 clone.destroy();
-                if (_.isFunction(callback)) { callback(); }
-                return;
+                return null;
             }
         }
 
-        // Find position for clone
-        var position;
-        for (var i = index + 1; !position && i < this._map.length; i++)
-            position = this._map[i];
-
-        // Insert the clone
-        this._initializing = true;
-        if ($.isBlank(this._realContainer))
-        {
-            this._realContainer = this.add(this._properties.container || {type: 'Container'});
-            delete this._containerDirty;
-        }
-        this._realContainer.add(clone, position);
-        if (_.isFunction(callback)) { callback(); }
-        delete this._initializing;
+        return { row: clone, index: index };
     },
 
     _readChildren: function()
@@ -491,11 +567,10 @@ var renderGroupItems = function(cObj, items, callback)
         else { addGroupItem(group); }
     });
 
-    var aggCallback = callback(groups.length);
     if (groupConfig.sortAlpha)
     { groups = groups.sort(); }
-    _.each(groups, function(g, i)
-    { cObj._setRow({id: g}, i, {_groupValue: g, _groupItems: groupIndex[g]}, aggCallback); });
+    callback(_.map(groups, function(g, i)
+    { return cObj._createRow({id: g}, i, {_groupValue: g, _groupItems: groupIndex[g]}); }));
 };
 
 var updateContainerPrefix = function(cObj)

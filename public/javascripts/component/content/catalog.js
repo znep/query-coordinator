@@ -79,7 +79,7 @@ $.component.Container.extend('NewCatalog', 'data', {
         var setDatasetList = function()
         {
             if (!$.subKeyDefined(cObj, '_context.datasetList'))
-            { cObj.properties({ context: { id: 'context-' + cObj.id, type: 'datasetList', noFail: true, search: { limit: 100 } } }); }
+            { cObj.properties({ context: { id: 'context-' + cObj.id, type: 'datasetList', search: { limit: 20 }, noFail: true } }); }
             var conf = cObj.$contents.find('.dataCarrier').data('catalogconfig') ||
                 defaultConfig(cObj._stringSubstitute(cObj._properties), (cObj._context || {}).id ||
                         cObj._properties.context.id);

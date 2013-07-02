@@ -363,6 +363,7 @@ var setUpComponent = function(cObj, adjId)
     { adjustIndex(cObj, args.newPage.id); }, cObj);
     cObj._context.bind('page_added', function() { cObj._render(); }, cObj);
     cObj._context.bind('page_removed', function() { cObj._render(); }, cObj);
+    cObj._context.bind('page_count_changed', function() { cObj._render(); }, cObj);
 };
 
 })(jQuery);

@@ -661,7 +661,8 @@ $.Control.registerMixin('d3_impl_bar', {
                         var value = column.renderType.renderer(d[col.lookup], column, true, null, null, true);
                         if (labelInBar)
                         {
-                            text.push(['(', value, ')'].join(''));
+                            if (!$.isBlank(value))
+                            { text.push(['(', value, ')'].join('')); }
                             text = text.join(' ');
                         }
                         else

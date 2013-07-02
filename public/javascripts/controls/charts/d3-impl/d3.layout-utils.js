@@ -366,6 +366,7 @@ d3ns.slottedCircleLayout = function($)
         cl.x = layoutSlot.x;
         cl.y = layoutSlot.y;
         cl.width = layoutSlot.width;
+        cl.naturalWidth = layoutSlot.naturalWidth;
         cl.height = this.slotHeight;
     };
 
@@ -377,6 +378,8 @@ d3ns.slottedCircleLayout = function($)
         {
             layoutSlot.x = (layoutSlot.width + layoutSlot.x) - contentWidth;
         }
+        layoutSlot.naturalWidth = contentWidth;
+        contentWidth = Math.min(contentWidth, layoutSlot.width);
         layoutSlot.width = contentWidth;
     };
 
@@ -413,10 +416,19 @@ d3ns.slottedCircleLayout = function($)
         // Distance above hit test line from center along Y.
         var dY = this.center.y - hitTestLineY;
 
-        if (dY > this.limitRadius)
+        if (Math.abs(dY) > this.limitRadius)
         {
             // Didn't hit the circle.
-            layoutSlot.x -= slotIndex * this.pyramidMarginAboveCircle;
+            var slotsFromClosestEdge = this._slotsFromTop(slotIndex);
+            if (dY < 0)
+            {
+                slotsFromClosestEdge = this.slotCount / 2 - slotsFromClosestEdge;
+            }
+
+            var margin = (1 + slotsFromClosestEdge) * this.pyramidMarginAboveCircle;
+            var onRightSide = slotIndex < 0;
+            layoutSlot.x += onRightSide ? margin : -margin;
+            layoutSlot.width -= margin;
         }
     };
 
@@ -478,13 +490,17 @@ d3ns.slottedCircleLayout = function($)
     constructor.prototype._slotY = function(slotIndex)
     {
         // Compute where our slot is going to be on Y (looking at middle of slot).
-        var slotsFromTop = slotIndex >= 0 ? slotIndex : -slotIndex - 1; // Remember, -1 is topmost slot on right.
-        return slotsFromTop * this.slotHeight + this.slotHeight/2;
+        return this._slotsFromTop(slotIndex) * this.slotHeight + this.slotHeight/2;
+    };
+
+    constructor.prototype._slotsFromTop = function(slotIndex)
+    {
+        return slotIndex >= 0 ? slotIndex : -slotIndex - 1; // Remember, -1 is topmost slot on right.
     };
 
     constructor.prototype._slotIndexToRegistryIndex = function(slotIndex)
     {
-        return slotIndex + this.slotCount/2 + (slotIndex >= 0 ? 0 : -1);
+        return slotIndex + this.slotCount/2 + (slotIndex >= 0 ? 1 : 0);
     };
 
     constructor.prototype._debugPrintStatus = function(showEmpty)

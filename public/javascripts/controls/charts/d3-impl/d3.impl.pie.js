@@ -1308,23 +1308,43 @@ $.Control.registerMixin('d3_impl_pie', {
             return [Math.cos(a) * radius, Math.sin(a) * radius];
         };
 
-        var textFromDatum = function(datum)
+        // Given a datum, returns the text we'd use to display it. Supports
+        // two extra parameters used for text clipping:
+        // baseNameOnly:  Return only the base name, without any additions
+        //                such as percents or values.
+        // baseNameCharLimit:  Only use this many characters from the base name.
+        //                     If the base name exceeds this length, the extra
+        //                     characters are replaced by an ellipsis.
+        //                     Note that this can result in a longer string
+        //                     if the char limit is within 3 chars of the base
+        //                     name length.
+        var textFromDatum = function(datum, baseNameOnly, baseNameCharLimit)
         {
             var label = datum.data.getName() || ''; // We should have a default name (Bug 11334).
-
-            if (showPercentages)
+            if (baseNameCharLimit !== undefined)
             {
-                var percentage = (datum.data.getValue()/seriesInformation.getDataSum())*100;
-                if (percentage < 1)
-                { percentage = '<1'; }
-                else
-                { percentage = Math.floor(percentage); }
-                label += ' ('+ percentage +'%)';
+                if (label.length > baseNameCharLimit)
+                {
+                    label = label.substr(0, baseNameCharLimit) + '...';
+                }
             }
 
-            if (showActualValues)
+            if (!baseNameOnly)
             {
-                label += ' ('+ datum.data.getValueText() +')';
+                if (showPercentages)
+                {
+                    var percentage = (datum.data.getValue()/seriesInformation.getDataSum())*100;
+                    if (percentage < 1)
+                    { percentage = '<1'; }
+                    else
+                    { percentage = Math.floor(percentage); }
+                    label += ' ('+ percentage +'%)';
+                }
+
+                if (showActualValues)
+                {
+                    label += ' ('+ datum.data.getValueText() +')';
+                }
             }
 
             return label;
@@ -1420,6 +1440,56 @@ $.Control.registerMixin('d3_impl_pie', {
             vizObj.debugOut('We still have ' + filterResult.unshowableLabelsWithSpace + ' unshowable labels.');
         }
 
+        // Do auto-ellipsis. Given a datum, analyze its assigned size and chop
+        // chars off the end of its base name until it fits. Will not chop
+        // the value or percentage indicator, it only chops off the base name,
+        // so you get things like "Label Nam... (45%)"
+        var fitText = function(d)
+        {
+            if (d.slottedCircleLayout.naturalWidth !== d.slottedCircleLayout.width)
+            {
+                // We need to clip. Binsearch to find the maximal length string
+                // we can use (keep in mind this will add an ellipsis).
+                var targetSize = d.slottedCircleLayout.width;
+
+                // Start one less than full length; we know we'll need to truncate.
+                // Also starting one from the end guarantees that textFromDatum will add the ellipsis for us, which allows us to avoid all
+                // sorts of metastable nastiness arising from that ellipsis popping in.
+                var curLimRight = textFromDatum(d, true  /*baseNameOnly*/).length - 1;
+                var curLimLeft = 0;
+
+                var len, mid, found;
+                do
+                {
+                    if (curLimRight - curLimLeft <= 1) { found = curLimLeft; break; }
+                    mid = Math.floor((curLimLeft + curLimRight) / 2);
+                    len = fontMetrics.lengthForString(textFromDatum(d, false /*baseNameOnly*/, mid));
+                    if (len == targetSize)
+                    {
+                        found = mid;
+                        break;
+                    }
+                    else if (len > targetSize)
+                    {
+                        curLimRight = mid;
+                    }
+                    else
+                    {
+                        curLimLeft = mid;
+                    }
+
+                } while (true);
+
+                d.fittedText = textFromDatum(d, false /*baseNameOnly*/, found);
+                d.textOverflow = d.slottedCircleLayout.naturalWidth - fontMetrics.lengthForString(d.fittedText);
+            }
+            else
+            {
+                d.textOverflow = 0;
+                d.fittedText = textFromDatum(d);
+            }
+        };
+
         var labels = cc.chartD3.selectAll('.label')
             .data(filterResult.showable, idFunction);
 
@@ -1431,9 +1501,13 @@ $.Control.registerMixin('d3_impl_pie', {
                         'font-size': fontMetrics.labelFontSize });
 
         labels
-            .attr("x", function(d) { return d.slottedCircleLayout.x; })
+            .each(fitText)
+            .attr("x", function(d)
+            {
+                return d.slottedCircleLayout.x + ((d.slottedCircleLayout.x < translateX) ? d.textOverflow : 0);
+            })
             .attr("y", function(d) { return d.slottedCircleLayout.y; })
-            .text(textFromDatum);
+            .text(function(d) { return d.fittedText; });
 
 
         labels

@@ -256,7 +256,7 @@ $.Control.registerMixin('d3_impl_line', {
             errorMarkers
                 .enter().append('path')
                     .classed('errorMarker', true)
-                    .attr({ stroke: vizObj._displayFormat.errorBarColor,
+                    .attr({ stroke: vizObj._displayFormat.errorBarColor || '#ff0000',
                             'stroke-width': '3' })
                     .attr('d', vizObj._errorBarPath(oldYScale));
             errorMarkers
@@ -334,6 +334,15 @@ $.Control.registerMixin('d3_impl_line', {
                     .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
         });
 
+        if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
+        {
+            cc.chartD3.selectAll('.errorMarker')
+                .attr('transform', vizObj._errorBarTransform())
+                .transition()
+                    .duration(1000)
+                    .attr('d', vizObj._errorBarPath(yScale));
+        }
+
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
 
@@ -364,6 +373,13 @@ $.Control.registerMixin('d3_impl_line', {
             { cc.seriesPath[colDef.column.lookup]
                     .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale)); }
         });
+
+        if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
+        {
+            cc.chartD3.selectAll('.errorMarker')
+                .attr('transform', vizObj._errorBarTransform());
+        }
+
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
     },
@@ -415,23 +431,33 @@ $.Control.registerMixin('d3_impl_line', {
 
     _errorBarTransform: function()
     {
-        // NOTE: This is essentially a dummy function. Error bars aren't
-        // implemented for line.
-        var cc = this._chartConfig;
+        var vizObj = this,
+            cc = this._chartConfig;
 
         var xPosition = cc.sidePadding - 0.5 -
                         cc.drawElementPosition - cc.dataOffset +
                         (cc.barWidth / 2);
 
-        var transform = cc.dataDim.asScreenCoordinate(xPosition, 0);
-
-        var t = function(d)
+        var offset = function(d)
         {
+            return xPosition +  Math.floor(d.index * cc.rowWidth) + 0.5;
+        };
+
+        var isInView = function(d)
+        {
+            var xPos = offset(d);
+            return vizObj._isXRangeInViewport(xPos - vizObj.defaults.errorBarCapWidth, xPos);
+        };
+
+        var transform = function(d)
+        {
+            var transform = cc.dataDim.asScreenCoordinate(offset(d), 0);
             return 't' + transform.x + ',' + transform.y;
         };
 
-        t.isInView = function() { return true; };
-        return t;
+        transform.isInView = isInView;
+
+        return transform;
     }
 
 }, null, 'socrataChart', [ 'd3_virt_scrolling', 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

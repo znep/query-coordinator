@@ -597,7 +597,7 @@ $.Control.registerMixin('d3_impl_bar', {
             errorMarkers
                 .enter().append('path')
                     .classed('errorMarker', true)
-                    .attr({ stroke: vizObj._displayFormat.errorBarColor,
+                    .attr({ stroke: vizObj._displayFormat.errorBarColor || '#ff0000',
                             'stroke-width': '3' })
                     .attr('d', vizObj._errorBarPath(oldYScale));
             errorMarkers

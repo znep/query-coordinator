@@ -67,19 +67,8 @@ $.Control.registerMixin('d3_impl_line', {
             var visibleData = _.select(data, lineSegmentInView);
             var notNullData = _.select(visibleData, notNull);
 
-            var oldLine = d3.svg[lineType]().x(xDatumPositionForSeries)
-                                            .y(vizObj._yDatumPosition(col.lookup, oldYScale))
-                                            .defined(notNull);
-            var newLine = d3.svg[lineType]().x(xDatumPositionForSeries)
-                                            .y(vizObj._yDatumPosition(col.lookup, newYScale))
-                                            .defined(notNull);
-            if (lineType == 'area')
-            {
-                var zeroPoint = {}; zeroPoint[col.lookup] = 0;
-                // Subtract 1 to avoid overlap with the zero line.
-                oldLine.y0(vizObj._yDatumPosition(col.lookup, oldYScale)(zeroPoint) - 1);
-                newLine.y0(vizObj._yDatumPosition(col.lookup, newYScale)(zeroPoint) - 1);
-            }
+            var oldLine = vizObj._constructSeriesPath(colDef, seriesIndex, oldYScale);
+            var newLine = vizObj._constructSeriesPath(colDef, seriesIndex, newYScale);
 
             // Render the line that connects the dots.
             if (!cc.seriesPath)
@@ -89,16 +78,6 @@ $.Control.registerMixin('d3_impl_line', {
                 cc.seriesPath[col.lookup] = cc.chartD3.append('path')
                     .classed('dataPath_series' + col.lookup, true);
             }
-
-            // Easter eggs
-            var interpolation = $.urlParam(window.location.href, 'interpolate')
-                                || $.urlParam(window.location.href, 'i')
-                                || (vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear');
-            var tension = $.urlParam(window.location.href, 'tension')
-                          || $.urlParam(window.location.href, 't')
-                          || 0.9;
-            oldLine.interpolate(interpolation).tension(tension);
-            newLine.interpolate(interpolation).tension(tension);
 
             cc.seriesPath[col.lookup]
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
@@ -297,6 +276,42 @@ $.Control.registerMixin('d3_impl_line', {
         cc.yScale = newYScale;
     },
 
+    _constructSeriesPath: function(colDef, seriesIndex, yScale)
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig,
+            lineType = vizObj._chartType,
+            explicitMin = cc.yAxis.min,
+            explicitMax = cc.yAxis.max,
+            col = colDef.column,
+            notNull = function(row)
+                { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup])
+                        && (_.isNaN(explicitMin) || row[col.lookup] >= explicitMin)
+                        && (_.isNaN(explicitMax) || row[col.lookup] <= explicitMax); };
+
+        var line = d3.svg[lineType]().x(vizObj._xDatumPosition(seriesIndex))
+                                     .y(vizObj._yDatumPosition(col.lookup, yScale))
+                                     .defined(notNull);
+
+        if (lineType == 'area')
+        {
+            var zeroPoint = {}; zeroPoint[col.lookup] = 0;
+            // Subtract 1 to avoid overlap with the zero line.
+            line.y0(vizObj._yDatumPosition(col.lookup, yScale)(zeroPoint) - 1);
+        }
+
+        // Easter eggs
+        var interpolation = $.urlParam(window.location.href, 'interpolate')
+                            || $.urlParam(window.location.href, 'i')
+                            || (vizObj._displayFormat.smoothLine ? 'cardinal' : 'linear');
+        var tension = $.urlParam(window.location.href, 'tension')
+                      || $.urlParam(window.location.href, 't')
+                      || 0.9;
+        line.interpolate(interpolation).tension(tension);
+
+        return line;
+    },
+
     // call this if the yAxisPos has changed
     // you'll also need to call _renderData to make the dataBars the correct height
     _rerenderAxis: function()
@@ -311,6 +326,14 @@ $.Control.registerMixin('d3_impl_line', {
                 .duration(1000)
                 .attr('cy', vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale))
 
+        _.each(vizObj.getValueColumns(), function(colDef, seriesIndex)
+        {
+            cc.seriesPath[colDef.column.lookup]
+                .transition()
+                    .duration(1000)
+                    .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
+        });
+
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
 
@@ -324,13 +347,22 @@ $.Control.registerMixin('d3_impl_line', {
         var vizObj = this,
             cc = vizObj._chartConfig,
             valueColumns = vizObj.getValueColumns(),
-            yAxisPos = vizObj._yAxisPos();
+            yAxisPos = vizObj._yAxisPos(),
+            yScale;
+
+        try {
+            yScale = vizObj._currentYScale();
+        } catch(e) {}
 
         // render our bars per series
         _.each(valueColumns, function(colDef, seriesIndex)
         {
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
                     .attr('cx', vizObj._xDatumPosition(seriesIndex));
+
+            if (!_.isUndefined(yScale) && $.subKeyDefined(cc.seriesPath, colDef.column.lookup+''))
+            { cc.seriesPath[colDef.column.lookup]
+                    .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale)); }
         });
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());

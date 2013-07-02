@@ -976,7 +976,7 @@ $.Control.registerMixin('d3_impl_pie', {
     // positioned so they just fill fillArea. The anchor slice must come between
     // the two end slices. NOTE! firstSlice MUST have index zero - we can't calculate
     // the relative positioning between the series if we start at not-zero!
-    _renderDonut: function(firstSlice, lastSlice, anchorSlice, fillArea, seriesInformationAll)
+    _renderDonut: function(firstSlice, lastSlice, anchorSlice, fillArea, seriesInformationAll, enableTransitions)
     {
         $.assert(firstSlice.index == 0, "First slice must be at index 1.");
         $.assert(lastSlice.index >= firstSlice.index, "Last slice must come after first slice.");

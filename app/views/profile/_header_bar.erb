@@ -1,16 +1,4 @@
 <div class="content clearfix headerBar">
-  <% prerendered_cache cache_key('profile-view-summary', @current_state),
-    @view_summary_cached, :expires_in => 5.minutes do %>
-    <div class="summaryStatsContainer">
-      <%- @stat_displays.each do |stat| -%>
-        <%- next if stat.last < 1 -%>
-        <div class="summaryBox">
-          <p class="statHeader"><%= stat.first %></p>
-          <p class="number"><%= stat.last %></p>
-        </div>
-      <%- end -%>
-    </div>
-  <% end %>
   <div class="profileImage">
     <img src="<%= @user.profile_image_path %>" alt="<%= @user.displayName %>" />
   </div>
@@ -54,4 +42,16 @@
       <%- end -%>
     </p>
   </div>
+  <% prerendered_cache cache_key('profile-view-summary', @current_state),
+    @view_summary_cached, :expires_in => 5.minutes do %>
+    <div class="summaryStatsContainer">
+      <%- @stat_displays.each do |stat| -%>
+        <%- next if stat.last < 1 -%>
+        <div class="summaryBox">
+          <p class="statHeader"><%= stat.first %></p>
+          <p class="number"><%= stat.last %></p>
+        </div>
+      <%- end -%>
+    </div>
+  <% end %>
 </div>

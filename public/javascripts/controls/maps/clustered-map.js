@@ -223,13 +223,14 @@
 
         filterWithViewport: function()
         {
-            var query = $.extend(true, {}, this._query);
+            var query = $.extend(true, {}, this._query),
+                locCol = this._locCol || this._geoCol;
 
             if ((query.namedFilters || {}).viewport)
             { delete query.namedFilters.viewport; }
             query.namedFilters = $.extend(true, query.namedFilters || {},
                 { viewport: this.viewportHandler().toQuery(
-                    blist.openLayers.geographicProjection, this._locCol.fieldName) });
+                    blist.openLayers.geographicProjection, locCol.fieldName) });
 
             if (_.isEqual(this._query, query)
                 && $.subKeyDefined(this._view, 'query.namedFilters.viewport'))

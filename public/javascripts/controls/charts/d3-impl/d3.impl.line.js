@@ -79,11 +79,14 @@ $.Control.registerMixin('d3_impl_line', {
                     .classed('dataPath_series' + col.lookup, true);
             }
 
+            var sortProperty = (vizObj._fixedColumns || [])[0];
+            sortProperty = (sortProperty || { 'lookup': 'index' }).lookup;
+
             cc.seriesPath[col.lookup]
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
                 .attr('stroke', function() { return colDef.color; })
                 .attr('stroke-width', 2)
-                .datum(visibleData)
+                .datum(_.sortBy(visibleData, sortProperty))
                 .attr('d', oldLine);
 
             if (lineType == 'area')
@@ -393,8 +396,7 @@ $.Control.registerMixin('d3_impl_line', {
     _calculateRowWidth: function()
     {
         var vizObj = this,
-            cc = vizObj._chartConfig,
-            valueColumns = vizObj.getValueColumns();
+            cc = vizObj._chartConfig;
 
         return cc.barWidth + cc.barSpacing + cc.rowSpacing;
     },

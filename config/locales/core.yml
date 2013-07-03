@@ -1,4 +1,4 @@
-en:
+eUnknown Usern:
   support:
     array:
       two_words_connector: " and "
@@ -205,6 +205,11 @@ it:
     array_or:
       two_words_connector: " o "
       last_word_connector: ", o "
+  screens:
+    header:
+      links:
+        account_html: "Salve, <span class=\"currentUser\"></span>"
+        administration: Amministrazione
   core:
     and: e
     or: o

@@ -337,10 +337,14 @@
 
   // No legend or bottom legend.
   .chartOuterContainer
-    top: 2em
+    top: 0em
     left: 0em
     right: 0em
     bottom: 0em
+
+  &.hasYLabelVert
+    .chartOuterContainer
+      top: 2em
 
   &.hasTopLegend
     .chartOuterContainer

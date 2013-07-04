@@ -62,6 +62,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         cc.valueMarkerLimits = { min: d3.min(valueMarkers) || 0,
                                  max: d3.max(valueMarkers) || 0 };
 
+        cc.valueLabelBuffer = vizObj._displayFormat.valueLabelBuffer;
+
         // if we need to do series grouping stuff, mix that in before anything else
         // It should be safe to mix this in even without grouping, but this saves
         // some work (note that we never un-mix if grouping gets disabled on this
@@ -200,36 +202,57 @@ $.Control.registerMixin('d3_virt_scrolling', {
         };
 
         // allow the baseline to be draggable
-        var throttledResize = _.throttle(_.debounce(function() { vizObj.resizeHandle(); }, 500), 500); // TODO: this is more blunt than we need
+        cc.throttledResize = _.throttle(_.debounce(function() { vizObj.resizeHandle(); }, 500), 500); // TODO: this is more blunt than we need
         cc.$baselineContainer.draggable({
             axis: cc.dataDim.yAxis,
             containment: 'parent', // TODO: bounded containment on viewport change
             drag: function(event, ui)
             {
-                cc.valueLabelBuffer = cc.dataDim.pluckY(
+                vizObj.moveBaseline(cc.dataDim.pluckY(
                     ui.position.left,
-                    cc.chartHeight - ui.position.top);
-                throttledResize();
-                // TODO: save off the valueLabelBuffer as a minor change on displayFormat?
+                    cc.chartHeight - ui.position.top));
             },
             scroll: false,
             start: function() { cc._isDragging = true; },
-            stop: function() { cc._isDragging = false; }
+            stop: function() {
+                cc._isDragging = false;
+                vizObj._primaryView.update({ displayFormat: $.extend(true, {},
+                    vizObj._primaryView.displayFormat, { valueLabelBuffer: cc.valueLabelBuffer }) });
+            }
         });
-
-/*
-How to resize so that all labels are visible:
-
-foo = []; chartObj._chartConfig.chartD3.selectAll('.rowLabel').each(function(e) { var bbox = this.getBBox(); foo.push(bbox.x2-bbox.x); })
-chartObj._chartConfig.valueLabelBuffer = Math.ceil(d3.max(foo))
-chartObj.resizeHandle();
-*/
 
         // set up side stuff
         vizObj._decorateChrome();
 
         // super
         vizObj._super();
+    },
+
+    moveBaseline: function(fromLeftBottom)
+    {
+        var cc = this._chartConfig;
+
+        // Default.
+        if (!fromLeftBottom)
+        {
+            fromLeftBottom = 0;
+            cc.chartD3.selectAll('.rowLabel').each(function()
+            { fromLeftBottom = Math.max(fromLeftBottom, this.visualLength); });
+
+            if (cc.orientation == 'right' && this.legendPosition() == 'bottom')
+            { fromLeftBottom += cc.$legendContainer.height() + 5; }
+
+            fromLeftBottom = Math.max(this.defaults.valueLabelBuffer, fromLeftBottom);
+        }
+
+        // Between 5 and chartHeight/2.
+        fromLeftBottom = Math.max(5,
+            Math.min(fromLeftBottom, cc.dataDim.pluckY(cc.chartWidth, cc.chartHeight) * 0.50)
+        );
+
+        cc.$baselineContainer.css(cc.dataDim.pluckY('left', 'top'), fromLeftBottom + 'px');
+        cc.valueLabelBuffer = fromLeftBottom;
+        cc.throttledResize();
     },
 
     // Goes through the _displayFormat and enforces some invariants we need.
@@ -974,14 +997,32 @@ chartObj.resizeHandle();
                         { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
                 .text(function(d)
                 {
-                    var fixedColumn = vizObj._fixedColumns[0]; // WHY IS THIS AN ARRAY
+                    var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
+                        text;
+
+                    if ($.isBlank(fixedColumn)) { text = d.index; }
                     // render plaintext representation of the data
-                    return fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                    else { text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true); }
+
+                    this.visualLength = text.visualLength(13) * Math.abs(Math.cos(Math.PI * 40/ 180));
+                    return text;
                 });
         rowLabels
             .exit()
             .transition()
                 .remove();
+
+        // We do this *once*.
+        if (!cc.valueLabelBuffer)
+        {
+            // Wait a second for as much to be loaded as possible.
+            if (!cc.moveBaseline)
+            { cc.moveBaseline = _.debounce(function() {
+                vizObj.moveBaseline();
+                delete cc.moveBaseline;
+                }, 1000); }
+            cc.moveBaseline();
+        }
     },
 
     _labelTransform: function()

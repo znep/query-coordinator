@@ -853,6 +853,10 @@ $.Control.registerMixin('d3_virt_scrolling', {
             cc = vizObj._chartConfig,
             yAxisPos = vizObj._yAxisPos();
 
+        var formatter = $.deepGet(vizObj, '_displayFormat', 'yAxis', 'formatter');
+        if ($.subKeyDefined(vizObj, '_displayFormat.yAxis.noDecimals'))
+        { $.extend(formatter, { noDecimals: $.deepGet(vizObj, '_displayFormat', 'yAxis', 'noDecimals') }); }
+
         // determine our ticks
         var idealTickCount = cc[cc.dataDim.pluckY('chartWidth', 'chartHeight')] / 80;
         var ticks = newYScale.ticks(idealTickCount);
@@ -897,8 +901,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
                 .style(position, function(d) { return (yAxisPos + cc.dataDim.dir * newYScale(d)) + 'px'; });
         tickLines
                 .selectAll('.tickLabel')
-                    .each(vizObj._d3_text(vizObj._formatYAxisTicks(
-                        $.deepGet(vizObj, '_displayFormat', 'yAxis', 'formatter'))));
+                    .each(vizObj._d3_text(vizObj._formatYAxisTicks(formatter)));
         tickLines
             .exit()
             .transition()
@@ -968,6 +971,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // If the "Y-Axis Formatting" sidebar section isn't open,
         // formatter.abbreviate = true isn't passed through. Default it to true.
         formatter = formatter || { abbreviate: true };
+
+        if (formatter.noDecimals)
+        { formatter.decimalPlaces = 0; }
 
         if (formatter.abbreviate === true)
         {

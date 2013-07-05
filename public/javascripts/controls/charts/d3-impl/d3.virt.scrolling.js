@@ -1018,7 +1018,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
                     var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
                         text;
 
-                    if ($.isBlank(fixedColumn)) { text = d.index; }
+                    if ($.isBlank(fixedColumn)) { text = d.index + ''; }
                     // render plaintext representation of the data
                     else { text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true); }
 

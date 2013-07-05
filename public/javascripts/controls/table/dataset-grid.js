@@ -511,15 +511,6 @@
         var $infoButton = $col.find('.info-button');
         var $infoWrapper = $col.find('.button-wrapper');
 
-        //Hover on info button
-        var hoverTip = $infoButton.socrataTip({message : $.t('controls.grid.column_info'), trigger : 'hover', 
-                                               shrinkToFit: true, parent: 'body'});
-
-        $infoButton.hover(function() {
-            if ($infoWrapper.socrataTip()._visible) {
-                hoverTip.quickHide();
-            }
-        });
 
         //Hover on header cell
         if (col.renderType.sortable) {
@@ -531,7 +522,7 @@
         if (tipsRef) { 
             var tooltipContent = blist.datasetControls.getColumnTip(col); 
             //Click functionality for main tip box
-            $infoWrapper.socrataTip({content: tooltipContent, trigger: 'click', parent: 'body', isSolo: true,
+            $infoWrapper.socrataTip({content: tooltipContent, trigger: 'mouseenter click', parent: 'body', isSolo: true,
                 shownCallback : 
                     function () {
                         $($infoWrapper.socrataTip()._tipBox).mouseleave(
@@ -539,6 +530,7 @@
                         );
                     }
             });
+
         }
 
         //Prevent hovertip from persisting behind the main info box after an icon click.

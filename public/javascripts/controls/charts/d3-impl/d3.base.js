@@ -35,6 +35,14 @@ $.Control.registerMixin('d3_base', {
 
     requiresSeriesGrouping: this.Model.pureVirtual,
 
+    // Sets a DOM element to overlay the chart.
+    // Takes a single argument, the dom node.
+    _setChartOverlay: this.Model.pureVirtual,
+
+    // Hides or shows the chart render area.
+    // Takes a boolean.
+    _setChartVisible: this.Model.pureVirtual,
+
     getRequiredJavascripts: function()
     {
         // get d3 stuffs

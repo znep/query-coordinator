@@ -20,6 +20,11 @@ var globalColorBasis = [];
 // impl layers to account for series grouping. meant to be mixed in
 // *after* the impl itself, since we need to intercept stuff
 d3base.seriesGrouping = {
+    // Time we'll spend processing before displaying an estimated time.
+    // We don't want to display right away as browsers like Chrome will do their
+    // JIT magic for a few seconds, making our early estimations garbage.
+    _remainingTimeDisplayDelayMillisec: 3000,
+
     _seriesGroupingSentinel: true,
 
     initializeVisualization: function()
@@ -46,7 +51,9 @@ d3base.seriesGrouping = {
             totalVirtualRows: null,
             valueColumnColors: {},
             virtualColumns: {},
-            virtualRows: {}
+            virtualRows: {},
+            queuedRenderRows: [],
+            virtualRowReadyCount: 0
         };
 
         // make a copy of the view that we'll use for querying so that we're
@@ -86,6 +93,10 @@ d3base.seriesGrouping = {
             // Manually trigger this event on the primary view for things like the sidebar
             vizObj._primaryView.trigger('row_count_change');
             sg.superInit.call(vizObj);
+
+            vizObj._setChartVisible(false);
+            vizObj._setLoadingOverlay();
+            vizObj._updateLoadingOverlay('start');
         });
 
         // make another copy of the view that we'll use to get the category-relevant rows
@@ -241,9 +252,11 @@ d3base.seriesGrouping = {
                 {
                     // FIXME: This error starts spamming on groupBys.
                     // Need to figure out why and when it's proper to squelch it.
+                    // Also the amount of console spam causes IE8 to report
+                    // a script error, hence the commented log line.
 
                     // something has gone wrong
-                    console.log('Error: got a dupe virt col somehow?');
+                    //console.log('Error: got a dupe virt col somehow?');
                     return;
                 }
 
@@ -301,12 +314,13 @@ d3base.seriesGrouping = {
             return vizObj._super.apply(vizObj, arguments);
         }
 
-        var sg = vizObj._seriesGrouping,
-            numCols = _.size(sg.virtualColumns);
+        // NOTE: There may be some optimization that can be done here to avoid
+        // fetching _all_ the rows, but we haven't been able to come up with
+        // such a beast.
+        var numRows = vizObj._seriesGrouping.sortedView.totalRows();
 
-        var virtualRenderRange = vizObj._super(view);
-        return { start:  virtualRenderRange.start  * numCols,
-                 length: virtualRenderRange.length * numCols };
+        return { start: 0,
+                 length: numRows };
     },
 
     getDataForAllViews: function()
@@ -343,6 +357,239 @@ d3base.seriesGrouping = {
         if (didInsertData === false) { return; }
         vizObj._inRenderSeriesGrouping = true;
 
+        vizObj._enqueueRows(data);
+
+        // did we not get enough rows to flesh out our viewport? if so
+        // go get more
+        if (false)
+        {
+            // TODO: how do we even what
+        }
+
+        vizObj._inRenderSeriesGrouping = false;
+
+        // This actually doesn't fire while the browser is frozen attempting to render
+        // huge quantities of SVG/DOM elements. Shocking!
+        setTimeout(function() { vizObj.finishLoading(); }, 1000);
+    },
+
+    _setLoadingOverlay: function()
+    {
+        var vizObj = this;
+        var sg = this._seriesGrouping;
+
+        var overlay = $.tag(
+            { tagName: 'div', 'class': 'dsgProgress', contents: [
+                { tagName: 'p', contents: [
+                    { tagName: 'span', 'class': 'dsgOperationText' },
+                    { tagName: 'span', 'class': 'dsgProgressText' }
+                ]},
+                { tagName: 'p', contents: [
+                    { tagName: 'span', 'class': 'dsgPauseExplanationText hide', contents: $.t('controls.charts.series_grouping.pause_button_explanation')},
+                    { tagName: 'a', 'class': 'button dsgProgressPauseButton hide', contents: $.t('controls.charts.series_grouping.pause_rendering') }
+                ]}
+            ] }
+        , true);
+
+        this._setChartOverlay(overlay);
+        sg.$loadingOverlay = this.$dom().find('.dsgProgress');
+        sg.$loadingOverlayOperationText = this.$dom().find('.dsgOperationText');
+        sg.$loadingOverlayProgressText = this.$dom().find('.dsgProgressText');
+        sg.$dsgProgressPauseButton = this.$dom().find('.dsgProgressPauseButton');
+        sg.$dsgPauseExplanationText = this.$dom().find('.dsgPauseExplanationText');
+
+        sg.$dsgProgressPauseButton.on('click', function()
+        {
+            if (sg.rowQueueTimerActive)
+            {
+                vizObj._pauseSeriesProcessing();
+            }
+            else
+            {
+                vizObj._resumeSeriesProcessing();
+            }
+        });
+    },
+
+    _updateLoadingOverlay: function(state)
+    {
+        var vizObj = this;
+        var sg = vizObj._seriesGrouping;
+        var cc = vizObj._chartConfig;
+
+        if (sg && sg.$loadingOverlay)
+        {
+            var remaining = sg.totalVirtualRows - sg.virtualRowReadyCount;
+
+            var operationPhaseMessage = '';
+            var progressMessage = '';
+
+            switch (state)
+            {
+                case 'start':
+                    sg.startLoadingTimeMillisec = Date.now();
+                    delete sg.pauseLoadingTimeMillisec;
+                    break;
+                case 'done':
+                    // We just go straight into the chart, there's no 'completed'
+                    // message.
+                    sg.$dsgProgressPauseButton.addClass('hide');
+                    sg.$dsgPauseExplanationText.addClass('hide');
+                    break;
+                case 'loading':
+                case 'stopped':
+                    if (state === 'stopped')
+                    {
+                        operationPhaseMessage = $.t('controls.charts.series_grouping.rendering_paused');
+                        if (_.isUndefined(sg.pauseLoadingTimeMillisec))
+                        {
+                            sg.pauseLoadingTimeMillisec = Date.now();
+                        }
+                        sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.resume_rendering'));
+                    }
+                    else
+                    {
+                        operationPhaseMessage = $.t('controls.charts.series_grouping.rendering_running');
+                        // If the user resumes, backfill a start time that preserves the amount of elapsed time at pause.
+                        if (!_.isUndefined(sg.pauseLoadingTimeMillisec))
+                        {
+                            sg.startLoadingTimeMillisec = Date.now() - (sg.pauseLoadingTimeMillisec - sg.startLoadingTimeMillisec);
+                            delete sg.pauseLoadingTimeMillisec;
+                        }
+                        sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.pause_rendering'));
+                    }
+
+                    var elapsedTimeMillisec = Date.now() - (sg.startLoadingTimeMillisec || Date.now());
+
+                    if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec)
+                    {
+                        var perRowMillisec = elapsedTimeMillisec/ sg.virtualRowReadyCount;
+                        var remainingMillisec = remaining * perRowMillisec;
+                        var seconds = Math.floor(remainingMillisec/1000);
+                        if (seconds >= 60)
+                        {
+                            var minutes = Math.round(seconds/60);
+                            progressMessage = $.t(minutes == 1 ? 'controls.charts.series_grouping.rendering_progress_minute' : 'controls.charts.series_grouping.rendering_progress_minutes',
+                                {rows_remaining: remaining, time_remaining: minutes});
+                        }
+                        else if (seconds > 2)
+                        {
+                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress_seconds', {rows_remaining: remaining, time_remaining: seconds});
+                        }
+                        else
+                        {
+                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress_almost_done', {rows_remaining: remaining});
+                        }
+
+                    }
+                    else
+                    {
+                        progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining});
+                    }
+
+                    sg.$dsgProgressPauseButton.removeClass('hide');
+                    sg.$dsgPauseExplanationText.removeClass('hide');
+                    break;
+            }
+
+            sg.$loadingOverlayOperationText.text(operationPhaseMessage);
+            sg.$loadingOverlayProgressText.text(progressMessage);
+        }
+    },
+
+    _processRows: function(rows)
+    {
+        var vizObj = this;
+
+        this._updateLoadingOverlay('loading');
+        vizObj._processRealRows(rows);
+    },
+
+    _onRowQueueEmpty: function()
+    {
+        var vizObj = this;
+        var sg = this._seriesGrouping;
+
+        if (!vizObj.requiresSeriesGrouping()) { return; }
+
+        var completed = sg.virtualRowReadyCount == sg.totalVirtualRows;
+
+        if (completed)
+        {
+            // Note that our renderData interprets this argument as meaning
+            // 'call super with the virtual rows'.
+            this._setChartVisible(true);
+            this.renderData(sg.virtualRows);
+            vizObj._setChartOverlay(null);
+        }
+
+        this._updateLoadingOverlay(completed ? 'done' : 'stopped');
+        sg.rowQueueTimerActive = false;
+    },
+
+    _enqueueRows: function(rows)
+    {
+        var vizObj = this;
+        var sg = vizObj._seriesGrouping;
+        var queue = this._seriesGrouping.queuedRenderRows;
+        var dataProcessDelayMillisec = 150;
+
+        if (!vizObj.requiresSeriesGrouping()) { return; }
+
+        queue.push(rows.slice()); // REVISIT: Maybe can store indexes if ordering
+                                  // works out. I don't think it does though.
+
+        if (!sg.rowQueueTimerActive)
+        {
+            sg.rowQueueTimerActive = true;
+
+            var rowQueueTimer = function()
+            {
+                var batchData = vizObj._dequeueRows();
+
+                if (batchData)
+                {
+                    vizObj._processRows(batchData);
+                    _.delay(rowQueueTimer, dataProcessDelayMillisec);
+                }
+                else
+                {
+                    vizObj._onRowQueueEmpty();
+                }
+            };
+
+            _.delay(rowQueueTimer, dataProcessDelayMillisec);
+        }
+    },
+
+    _dequeueRows: function()
+    {
+        return this._seriesGrouping ? this._seriesGrouping.queuedRenderRows.shift() : undefined;
+    },
+
+    _pauseSeriesProcessing: function()
+    {
+        this._seriesGrouping.savedRenderRowQueue = this._seriesGrouping.queuedRenderRows;
+        this._seriesGrouping.queuedRenderRows = []
+    },
+
+    _resumeSeriesProcessing: function()
+    {
+        var vizObj = this;
+        var sg = vizObj._seriesGrouping;
+
+        if (sg.savedRenderRowQueue)
+        {
+            _.each(sg.savedRenderRowQueue, _.bind(vizObj._enqueueRows, vizObj));
+
+            delete sg.savedRenderRowQueue;
+        }
+    },
+
+    _processRealRows: function(data)
+    {
+        var vizObj = this;
+
         var sg = vizObj._seriesGrouping,
             fixedColumn = sg.fixedColumn,
             view = vizObj._primaryView;
@@ -365,6 +612,7 @@ d3base.seriesGrouping = {
                 virtualRow[sg.fixedColumn.id] = category;
 
                 sg.virtualRows[category] = virtualRow;
+                sg.virtualRowReadyCount ++;
             }
             else
             {
@@ -398,22 +646,6 @@ d3base.seriesGrouping = {
                 }
             });
         });
-
-        // did we not get enough rows to flesh out our viewport? if so
-        // go get more
-        if (false)
-        {
-            // TODO: how do we even what
-        }
-
-        vizObj._inRenderSeriesGrouping = false;
-
-        // render what we've got
-        vizObj._super(_.values(sg.virtualRows));
-
-        // This actually doesn't fire while the browser is frozen attempting to render
-        // huge quantities of SVG/DOM elements. Shocking!
-        setTimeout(function() { vizObj.finishLoading(); }, 1000);
     },
 
     removeRow: function(row, view)

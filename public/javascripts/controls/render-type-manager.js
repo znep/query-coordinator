@@ -21,7 +21,8 @@
             stylesheets: ['/stylesheets/chart-screen.css',
                 { assets: 'rich-render-bundle' },
                 { assets: 'display-chart' }],
-            scrollsInline: true
+            scrollsInline: true,
+            translations: [ 'controls.charts' ]
         },
 
         form: {

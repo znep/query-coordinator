@@ -127,9 +127,12 @@ $.Control.registerMixin('d3_virt_scrolling', {
                             { tagName: 'div', 'class': 'baselineBg' },
                             { tagName: 'div', 'class': 'baselineLine' }
                     ] }] },
-                { tagName: 'div', 'class': 'legendContainer' }
+                { tagName: 'div', 'class': 'legendContainer' },
+
+                { tagName: 'div', 'class': 'overlayContainer'}
             ] }
         , true));
+
         cc.$chartArea = $dom.find('.chartArea');
         cc.$chartOuterContainer = $dom.find('chartOuterContainer');
         cc.$chartContainer = $dom.find('.chartContainer');
@@ -137,6 +140,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         cc.$tickContainer = $dom.find('.tickContainer');
         cc.$baselineContainer = $dom.find('.baselineContainer');
         cc.$legendContainer = $dom.find('.legendContainer');
+
+        cc.$overlayContainer = $dom.find('.overlayContainer');
 
         // for positioning
         $dom.css('position', 'relative');
@@ -153,7 +158,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
 
         //Append and cache null bar render area after drawElement binding
-        cc.$chartContainer.prepend( 
+        cc.$chartContainer.prepend(
             $.tag({ tagName: 'div', 'class': 'nullRenderArea', contents: '&nbsp;' })
         );
         cc.$nullRenderArea = cc.$chartContainer.find('.nullRenderArea');
@@ -168,7 +173,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         cc.$drawElement = cc.$chartContainer.children(':not(.chartRenderArea, .nullRenderArea)');
         cc.$drawElement.css({ 'position': 'absolute', 'top': '0' });
 
-        
+
         // maybe move things around and maybe grab rows every half second when they're scrolling
         var throttledScrollHandler = _.throttle(_.debounce(function()
         {
@@ -253,6 +258,19 @@ $.Control.registerMixin('d3_virt_scrolling', {
         cc.$baselineContainer.css(cc.dataDim.pluckY('left', 'top'), fromLeftBottom + 'px');
         cc.valueLabelBuffer = fromLeftBottom;
         cc.throttledResize();
+    },
+
+    // Sets a DOM element to overlay the chart.
+    _setChartOverlay: function($overlayDom)
+    {
+        this._chartConfig.$overlayContainer.empty().append($overlayDom);
+    },
+
+    // Hides or shows the chart render area.
+    _setChartVisible: function(isVisible)
+    {
+        var cc = this._chartConfig;
+        cc.$chartArea.toggleClass('chartHidden', !isVisible);
     },
 
     // Goes through the _displayFormat and enforces some invariants we need.

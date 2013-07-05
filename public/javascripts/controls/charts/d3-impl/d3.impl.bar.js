@@ -633,6 +633,8 @@ $.Control.registerMixin('d3_impl_bar', {
             valueColumns = vizObj.getValueColumns(),
             view = vizObj._primaryView;
 
+        cc.visualData = {};
+
         var cubedData = _.flatten(_.map(data, function(row)
             { return _.map(_.range(0, valueColumns.length),
                 function(i) { return $.extend({}, row, { seriesIndex: i }); }); }));
@@ -641,7 +643,7 @@ $.Control.registerMixin('d3_impl_bar', {
             .data(cubedData, function(row) { return row.id; });
         rowLabels
             .enter().append('div')
-                .classed('rowLabel', true)
+                .classed('rowLabel', true);
         rowLabels
                 .style('font-weight', function(d)
                         { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
@@ -650,6 +652,12 @@ $.Control.registerMixin('d3_impl_bar', {
                     var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
                         col = valueColumns[d.seriesIndex].column,
                         text = [];
+
+                    if (!cc.visualData[d.id])
+                    { cc.visualData[d.id] = {}; }
+                    cc.visualData[d.id][d.seriesIndex] = {};
+
+                    $(this).addClass('rowLabel_row' + d.id);
 
                     if (labelInBar)
                     { text.push(fixedColumn.renderType.renderer(d[fixedColumn.lookup],
@@ -662,8 +670,10 @@ $.Control.registerMixin('d3_impl_bar', {
                         if (labelInBar)
                         {
                             if (!$.isBlank(value))
-                            { text.push(['(', value, ')'].join('')); }
-                            text = text.join(' ');
+                            { text.push(['(', value, ')']); }
+
+                            if ($.isBlank(value) && cc.stackYSeries)
+                            { text = ''; } // Null labels don't go on stacked bars.
                         }
                         else
                         { text = value; }
@@ -671,12 +681,51 @@ $.Control.registerMixin('d3_impl_bar', {
                     else
                     { text = text[0]; }
 
+                    if (_.isArray(text))
+                    {
+                        var tmp = [text[0], text[1].join('')];
+                        cc.visualData[d.id][d.seriesIndex].length = tmp.join(' ').visualLength(13);
+                        text = [text[0],
+                                ['<span class="valueInBar">', tmp[1], '</span>'].join('')].join(' ');
+                    }
+                    else
+                    { cc.visualData[d.id][d.seriesIndex].length = text.visualLength(13); }
+
                     // render plaintext representation of the data
                     return text;
                 })
                 .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition())
                 .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition())
-                .style('color', vizObj._rowLabelColor());
+                .style('color', vizObj._rowLabelColor())
+                .classed('hide', function(d)
+                {
+                    if (!cc.stackYSeries) { return false; }
+
+                    var vData = cc.visualData[d.id],
+                        posCollisions = _.size(vData) - 1,
+                        coll;
+
+                    // Will collide with previous.
+                    coll = posCollisions > 0
+                        && d.seriesIndex > 0
+                        && vData[d.seriesIndex].position
+                            < vData[d.seriesIndex - 1].position + vData[d.seriesIndex - 1].length;
+
+                    $(this).siblings('.rowLabel_row' + d.id)
+                           .find('.valueInBar')
+                           .css('visibility', coll ? 'hidden' : 'visible');
+                    return coll;
+
+                    // Will collide at all in row.
+/*
+                    for (var i = 0; i < posCollisions; i++)
+                    {
+                        if (vData[i].position + vData[i].length > vData[i+1].position)
+                        { return true; }
+                    }
+                    return false;
+*/
+                })
         rowLabels
             .exit()
             .transition()
@@ -727,7 +776,9 @@ $.Control.registerMixin('d3_impl_bar', {
         return function(d)
         {
             var xPosition = xPositionStaticParts + (d.index * cc.rowWidth);
-            xPosition += cc.barWidth * (d.seriesIndex + (-(numCols - 1) / 2));
+            if (!cc.collapseXSeries)
+            { xPosition += cc.barWidth * (d.seriesIndex + (-(numCols - 1) / 2)); }
+
             if (cc.orientation == 'down')
             { return xPosition - ($(this).height() / 2) + 'px'; }
             else (cc.orientation == 'right')
@@ -748,10 +799,15 @@ $.Control.registerMixin('d3_impl_bar', {
 
         return function(d)
         {
-            var position;
+            var position, datumPos = 0;
+
             // Magic numbers are for padding from the yAxisPos-edge of the bar.
             if (cc.orientation == 'down')
             {
+                if (cc.stackYSeries)
+                { datumPos = (vizObj._yDatumPosition(
+                        valueColumns[d.seriesIndex].column.lookup, yScale)(d) || 0) - yAxisPos; }
+
                 position = yAxisPos + 5;
                 if (endJustified)
                 { position = Math.max(position, yAxisPos
@@ -759,6 +815,11 @@ $.Control.registerMixin('d3_impl_bar', {
             }
             else
             {
+                if (cc.stackYSeries && d.seriesIndex > 0)
+                {
+                    datumPos -= vizObj._yBarHeight(valueColumns[d.seriesIndex - 1].column.lookup, yScale)(d) || 0;
+                }
+
                 if (ie8)
                 {
                     position = yAxisPos - $(this).height() - 5;
@@ -772,7 +833,18 @@ $.Control.registerMixin('d3_impl_bar', {
                     { position = Math.min(position, yAxisPos - yScale(d[valueColumns[d.seriesIndex].column.lookup]) + ($(this).width() / 2)); }
                 }
             }
-            return position + 'px';
+
+            if (cc.visualData[d.id][d.seriesIndex])
+            {
+                // Remove nulls from visualData object.
+                if (cc.visualData[d.id][d.seriesIndex].length === 0)
+                { delete cc.visualData[d.id][d.seriesIndex]; }
+                else
+                { cc.visualData[d.id][d.seriesIndex].position = position + datumPos; }
+            }
+
+            // If not stacked, expecting datumPos to be 0.
+            return position + datumPos + 'px';
         };
     },
 

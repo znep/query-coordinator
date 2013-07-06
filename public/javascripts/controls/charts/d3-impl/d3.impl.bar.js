@@ -36,6 +36,8 @@ $.Control.registerMixin('d3_impl_bar', {
             cc.collapseXSeries = false;
             cc.stackYSeries = false;
         }
+
+        cc.lockYAxisAtZero = true;
     },
 
     // Computes separate positive and negative sums for a row given a set of columns.

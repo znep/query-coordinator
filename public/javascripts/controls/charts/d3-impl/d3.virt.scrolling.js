@@ -59,8 +59,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // The '|| 0' is safe for _currentYScale. Double check before re-use.
         var valueMarkers = _.map(_.map(_.pluck(vizObj._displayFormat.valueMarker, 'atValue'),
             $.numericalSanitize), parseFloat);
-        cc.valueMarkerLimits = { min: d3.min(valueMarkers) || 0,
-                                 max: d3.max(valueMarkers) || 0 };
+        cc.valueMarkerLimits = { min: d3.min(valueMarkers),
+                                 max: d3.max(valueMarkers) };
 
         cc.valueLabelBuffer = vizObj._displayFormat.valueLabelBuffer;
 
@@ -824,9 +824,15 @@ $.Control.registerMixin('d3_virt_scrolling', {
             rangeMax = cc.dataDim.pluckY(cc.chartWidth - vizObj._yAxisPos(),
                                          vizObj._yAxisPos());
 
+        var defaultMins = [cc.minValue, vml.min],
+            defaultMaxs = [cc.maxValue, vml.max];
+
+        if (cc.lockYAxisAtZero)
+        { defaultMins.push(0); defaultMaxs.push(0); }
+
         return d3.scale.linear()
-            .domain([ !_.isNaN(explicitMin) ? explicitMin : Math.min(0, cc.minValue, vml.min),
-                      !_.isNaN(explicitMax) ? explicitMax : Math.max(0, cc.maxValue, vml.max) ])
+            .domain([ !_.isNaN(explicitMin) ? explicitMin : d3.min(defaultMins),
+                      !_.isNaN(explicitMax) ? explicitMax : d3.max(defaultMaxs) ])
             .range([ 0, Math.max(0, rangeMax - vizObj.defaults.dataMaxBuffer) ])
             .clamp(true);
     },

@@ -116,7 +116,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // create and cache dom elements
         var $dom = vizObj.$dom();
         $dom.empty().append($.tag(
-            { tagName: 'div', 'class': 'chartArea barChart orientation' + $.capitalize(cc.orientation), contents: [
+            { tagName: 'div', 'class': 'mondrian barChart orientation' + $.capitalize(cc.orientation), contents: [
                 { tagName: 'div', 'class': 'chartOuterContainer', contents: [
                     { tagName: 'div', 'class': 'chartContainer', contents: [
                         { tagName: 'div', 'class': 'chartRenderArea',
@@ -133,7 +133,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             ] }
         , true));
 
-        cc.$chartArea = $dom.find('.chartArea');
+        cc.$chartArea = $dom.find('.mondrian');
         cc.$chartOuterContainer = $dom.find('chartOuterContainer');
         cc.$chartContainer = $dom.find('.chartContainer');
         cc.$chartRenderArea = $dom.find('.chartRenderArea');

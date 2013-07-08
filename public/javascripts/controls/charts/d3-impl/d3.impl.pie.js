@@ -163,7 +163,7 @@ $.Control.registerMixin('d3_impl_pie', {
         // create and cache dom elements
         var $dom = vizObj.$dom();
         $dom.empty().append($.tag(
-            { tagName: 'div', 'class': 'chartArea pieChart orientation' + $.capitalize(cc.orientation), contents: [
+            { tagName: 'div', 'class': 'mondrian pieChart orientation' + $.capitalize(cc.orientation), contents: [
                 { tagName: 'div', 'class': 'chartOuterContainer', contents: [
                     { tagName: 'div', 'class': 'chartContainer', contents: [
                         { tagName: 'div', 'class': 'chartRenderArea',
@@ -173,7 +173,7 @@ $.Control.registerMixin('d3_impl_pie', {
                 { tagName: 'div', 'class': 'controlContainer' }
             ] }
         , true));
-        cc.$chartArea = $dom.find('.chartArea');
+        cc.$chartArea = $dom.find('.mondrian');
         cc.$chartOuterContainer = $dom.find('.chartOuterContainer');
         cc.$chartContainer = $dom.find('.chartContainer');
         cc.$chartRenderArea = $dom.find('.chartRenderArea');

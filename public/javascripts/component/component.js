@@ -762,7 +762,12 @@
          * Lifecycle management -- called when a component is added to a container or its position has moved within
          * its container.
          */
-        _move: function(parent, position) {
+        _move: function(parent, position)
+        {
+            // Base container doesn't support by index
+            if (_.isNumber(position))
+            { position = null; }
+
             // Confirm that position makes sense
             if (position && position.parent != parent)
             { throw new Error("Illegal position -- new following sibling is not parented by new parent"); }

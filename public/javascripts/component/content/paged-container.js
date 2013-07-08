@@ -230,7 +230,8 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         page.properties({height: this._properties.height, hidden: false});
         if (!page._rendered) { page._render(); }
         page.$dom.removeClass('hide');
-        page.each(function(child) { child.$dom.removeClass('hide'); });
+        if (_.isFunction(page.each))
+        { page.each(function(child) { child.$dom.removeClass('hide'); }); }
         this.trigger('page_shown', [{newPage: page}]);
         page.$contents.trigger('show');
         $.component.sizeRenderRefresh();

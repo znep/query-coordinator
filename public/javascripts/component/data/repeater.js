@@ -144,7 +144,7 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 if (!_.isObject(di))
                 { di = { value: di }; }
-                renderedRows.push(cObj._createRow(di, i, di));
+                renderedRows.push(cObj._createRow(di, i + start, di));
             });
             callback(renderedRows);
         }
@@ -154,7 +154,7 @@ $.component.Container.extend('Repeater', 'content', {
             {
                 if (!_.isObject(di))
                 { di = { value: di }; }
-                renderedRows.push(cObj._createRow(di, i, di));
+                renderedRows.push(cObj._createRow(di, i + start, di));
             });
             callback(renderedRows);
         }
@@ -169,7 +169,7 @@ $.component.Container.extend('Repeater', 'content', {
                 {
                     if (!_.isObject(di))
                     { di = { value: di }; }
-                    renderedRows.push(cObj._createRow(di, i, di));
+                    renderedRows.push(cObj._createRow(di, i + start, di));
                 });
                 callback(renderedRows);
             }
@@ -185,7 +185,7 @@ $.component.Container.extend('Repeater', 'content', {
                 {
                     if (!_.isObject(di))
                     { di = { value: di }; }
-                    renderedRows.push(cObj._createRow(di, i, di));
+                    renderedRows.push(cObj._createRow(di, i + start, di));
                 });
                 callback(renderedRows);
             }
@@ -206,7 +206,7 @@ $.component.Container.extend('Repeater', 'content', {
                     { return true; }
                     return false;
                 }).slice(start, start + count), function(c, i)
-                    { renderedRows.push(cObj._createRow(cObj._dataContext, i, {column: c})); });
+                    { renderedRows.push(cObj._createRow(cObj._dataContext, i + start, {column: c})); });
                 callback(renderedRows);
             }
             else
@@ -218,8 +218,8 @@ $.component.Container.extend('Repeater', 'content', {
                     { renderGroupItems(cObj, rows, callback); }
                     else
                     {
-                        callback(_.map(rows, function(r)
-                            { return cObj._createRow(r, r[':index'] - start, r); }));
+                        callback(_.map(rows, function(r, i)
+                            { return cObj._createRow(r, i + start, r); }));
                     }
                 });
             }

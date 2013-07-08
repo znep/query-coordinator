@@ -743,6 +743,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // move baseline
         cc.$baselineContainer.css(cc.dataDim.pluckY('left', 'top'), vizObj._yAxisPos());
 
+        // resize yAxis title. ie8 just fails to word-wrap despite this.
+        $(".yLabelVert").width(cc.chartHeight);
+
         // return whether our row width has changed, so we know
         // if we'll have to move some things around
         return ((oldRowWidth != cc.rowWidth) || (oldSidePadding != cc.sidePadding));

@@ -100,7 +100,9 @@ module Canvas2
         # Enable hack to prepend special item to Repeater
         real_c.children ||= []
         real_c.children.concat(all_c.length > 0 ? all_c :
-          CanvasWidget.from_config(@properties['noResultsChildren'], self))
+           @properties['noResultsChildren'].nil? ? nil :
+           [CanvasWidget.from_config({ type: 'Container', id: self.id + '_noChildren-clone',
+             children: @properties['noResultsChildren'] }.with_indifferent_access, self)])
         r = real_c.render
         t += r[0]
         fully_rendered &&= r[1]

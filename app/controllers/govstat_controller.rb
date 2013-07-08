@@ -471,23 +471,15 @@ protected
               htmlClass: 'viewList',
               ifValue: 'count',
               childProperties: { customClass: 'singleItemWrapper' },
-              container: { type: 'Container',
-                # This hack to insert a fixed initial item is pretty "awesome"
-                children: [
-                # commented out because i dunno why slate shuffles this to the end.
-                #{ type: 'Text', customClass: 'addBox singleItemWrapper', htmlClass: 'singleItem addNewItem',
-                #  html: '<a href="' + new_dataset_path + '">' +
-                #  '<div class="singleInner ss-uploadcloud"><span class="addNewItemCaption">Upload New Data</span></div></a>' }
-              ] },
+              container: { type: 'MultiPagedContainer', pageSize: 20, id: 'myDataPagedContainer' },
               noResultsChildren: [{
                 type: 'Title', text: 'No data available'
               }],
               children: [{
-                type: 'Button',
-                notButton: true, # no, seriously, this is hilarious
-                htmlClass: 'viewItem singleItem type-{dataset.displayType}',
-                href: '/d/{dataset.id}',
-                text: '<div class="singleInner">' +
+                type: 'Text',
+                htmlClass: 'singleItem',
+                html: '<a href="/d/{dataset.id}" class="viewItem type-{dataset.displayType}">' +
+                  '<div class="singleInner">' +
                     '<h3 class="itemTitle viewName">{dataset.name}</h3>' +
                     '<div class="viewIcon ss-{dataset.displayType /table/list/ /map/compass/ /chart/barchart/ /blob/attach/}"></div>' +
                     '<p class="viewMeta">Updated {dataset.rowsUpdatedAt @[%b %d %Y] ||some time ago}</p>' +
@@ -495,9 +487,20 @@ protected
                   '<div class="singleCaption">' +
                     '<div class="captionAction delete ss-trash" data-dsid="{dataset.id}"></div>' +
                     '<div class="captionText">Open</div><div class="captionIcon ss-icon">next</div>' +
-                  '</div>'
+                  '</div></a>'
               }]
-            }, (non_default ? nil : {
+            },
+            {
+              type: 'Pager',
+              ifValue: 'count',
+              pagedContainerId: 'myDataPagedContainer',
+              selectorStyle: 'navigate',
+              navigateStyle: 'paging',
+              navigateWrap: false,
+              showFirstLastPageLink: true,
+              navigateLinksAsButtons: true
+            },
+            (non_default ? nil : {
               type: 'Container',
               ifValue: { negate: true, key: 'count' },
               htmlClass: 'noDataSection',
@@ -519,20 +522,31 @@ protected
             { type: 'Title', text: 'All Data', htmlClass: 'categoryTitle' },
             {
               type: 'Repeater',
+              ifValue: 'count',
               htmlClass: 'viewList',
               childProperties: { customClass: 'singleItemWrapper' },
+              container: { type: 'MultiPagedContainer', pageSize: 20, id: 'allDataPagedContainer' },
               children: [{
-                type: 'Button',
-                notButton: true, # no, seriously, this is hilarious
-                htmlClass: 'viewItem singleItem type-{dataset.displayType}',
-                href: '/d/{dataset.id}',
-                text: '<div class="singleInner">' +
+                type: 'Text',
+                htmlClass: 'singleItem',
+                html: '<a href="/d/{dataset.id}" class="viewItem type-{dataset.displayType}">' +
+                  '<div class="singleInner">' +
                     '<h3 class="itemTitle viewName">{dataset.name}</h3>' +
                     '<div class="viewIcon ss-{dataset.displayType /table/list/ /map/compass/ /chart/barchart/ /blob/attach/}"></div>' +
                     '<p class="viewMeta">Updated {dataset.rowsUpdatedAt @[%b %d %Y] ||some time ago}</p>' +
                   '</div>' +
-                  '<div class="singleCaption"><div class="captionText">Open</div><div class="captionIcon ss-icon">next</div></div>'
+                  '<div class="singleCaption"><div class="captionText">Open</div><div class="captionIcon ss-icon">next</div></div></a>'
               } ]
+            },
+            {
+              type: 'Pager',
+              ifValue: 'count',
+              pagedContainerId: 'allDataPagedContainer',
+              selectorStyle: 'navigate',
+              navigateStyle: 'paging',
+              navigateWrap: false,
+              showFirstLastPageLink: true,
+              navigateLinksAsButtons: true
             } ]
           } ]
         } ]

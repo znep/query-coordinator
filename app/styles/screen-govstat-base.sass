@@ -258,6 +258,8 @@ input.button, a.button
     margin-right: 1em
     margin-bottom: 1em
     padding: 0
+    > .component-Text
+      font-size: 1em
 
   .goalList, .viewList
     overflow: hidden
@@ -457,6 +459,30 @@ input.button, a.button
       letter-spacing: -1px
       padding-left: 2.4em
       padding-top: 0.5em
+
+  .component-Pager
+    margin-top: 1em
+    text-align: center
+    .navigatePaging
+      font-size: 1.2em
+    .navigateLink
+      font-size: 1.4em
+      &.button
+        padding: 0.3em 0.4em 0.1em
+        .icon
+          display: none
+      &.button:before
+        @include pika-icon
+      &.firstLink:before
+        content: '⏪'
+      &.prevLink:before
+        content: '◃'
+      &.nextLink:before
+        content: '▹'
+      &.lastLink:before
+        content: '⏩'
+    .disabled
+      display: none
 
 .listLayout
   .filterSection

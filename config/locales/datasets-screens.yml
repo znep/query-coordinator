@@ -1989,7 +1989,7 @@ es:
           search: Buscar vistas
           no_results_html: No hay <span class="type">results</span>
           item:
-            author_html: <span class="date"></span> por
+            author_html: <span class="date"></span> por <span class="author"></span>
             delete: Borrar esta vista
             expand: Hacer clic para agrandar
           views:

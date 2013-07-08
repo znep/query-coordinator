@@ -102,6 +102,10 @@ $.Control.registerMixin('d3_base', {
             else
             {
                 color = colDef.color;
+
+                // Some legacy case where colDef.color is '#hex,#hex,#hex,#hex,#hex,#hex'.
+                if (color.indexOf(',') > -1)
+                { color = color.split(',')[0]; }
             }
         }
 

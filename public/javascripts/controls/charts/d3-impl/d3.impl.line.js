@@ -19,9 +19,7 @@ $.Control.registerMixin('d3_impl_line', {
             valueColumns = vizObj.getValueColumns(),
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView,
-            lineType = vizObj._chartType,
-            explicitMin = cc.yAxis.min,
-            explicitMax = cc.yAxis.max;
+            lineType = vizObj._chartType;
 
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
@@ -36,9 +34,7 @@ $.Control.registerMixin('d3_impl_line', {
         {
             var col = colDef.column,
                 notNull = function(row)
-                    { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup])
-                            && (_.isNaN(explicitMin) || row[col.lookup] >= explicitMin)
-                            && (_.isNaN(explicitMax) || row[col.lookup] <= explicitMax); };
+                    { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup]); };
 
             var xDatumPositionForSeries = vizObj._xDatumPosition(seriesIndex);
 
@@ -250,13 +246,9 @@ $.Control.registerMixin('d3_impl_line', {
         var vizObj = this,
             cc = vizObj._chartConfig,
             lineType = vizObj._chartType,
-            explicitMin = cc.yAxis.min,
-            explicitMax = cc.yAxis.max,
             col = colDef.column,
             notNull = function(row)
-                { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup])
-                        && (_.isNaN(explicitMin) || row[col.lookup] >= explicitMin)
-                        && (_.isNaN(explicitMax) || row[col.lookup] <= explicitMax); };
+                { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup]); };
 
         var line = d3.svg[lineType]().x(vizObj._xDatumPosition(seriesIndex))
                                      .y(vizObj._yDatumPosition(col.lookup, yScale))
@@ -279,6 +271,12 @@ $.Control.registerMixin('d3_impl_line', {
         line.interpolate(interpolation).tension(tension);
 
         return line;
+    },
+
+    _currentYScale: function()
+    {
+        //return this._super().clamp(false);
+return this._super();
     },
 
     // call this if the yAxisPos has changed

@@ -104,6 +104,7 @@ $.component.PagedContainer.extend('Carousel', 'none', {//'content', {
     {
         this._cancelSwitch();
         this._super();
+        this.$ct.removeClass('hide');
         this._startSwitch();
     }
 });

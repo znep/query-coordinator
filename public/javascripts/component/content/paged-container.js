@@ -190,6 +190,18 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         this._super();
     },
 
+    fetchAll: function()
+    {
+        var cObj = this;
+        if (!$.isBlank(cObj.parent))
+        {
+            cObj.parent.fetchChildren(0, cObj.count(), function(items)
+            {
+                _.each(items, function(item) { cObj.add(item.row, item.index); })
+            });
+        }
+    },
+
     _getPage: function(newIndex, callback)
     {
         newIndex = parseInt(newIndex);

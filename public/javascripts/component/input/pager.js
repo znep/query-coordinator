@@ -229,6 +229,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
                 var $ul = $.tag({tagName: 'ul', 'class': ['clearfix',
                     (cObj._properties.buttonStyle || 'pillButtons')]});
                 cObj.$contents.append($ul);
+                cObj._context.fetchAll();
                 cObj._context.eachPage(function(page)
                 {
                     var icon = (cObj._properties.associatedIcons || {})[page.id] ||
@@ -250,6 +251,7 @@ $.component.Component.extend('Pager', 'none', {//'input', {
             {
                 var inputName = cObj.id + '_pager';
                 var curId = cObj._context.visibleId();
+                cObj._context.fetchAll();
                 cObj._context.eachPage(function(page)
                 {
                     var inputId = inputName + '_' + page.id;

@@ -487,13 +487,14 @@ d3base.seriesGrouping = {
                         }
                         else
                         {
-                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress_almost_done', {rows_remaining: remaining});
+                            // TODO converting to strings as $.t() thinks 0 is the same as undefined. Remove when appropriate (1 more instance below).
+                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress_almost_done', {rows_remaining: remaining+''});
                         }
 
                     }
                     else
                     {
-                        progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining});
+                        progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining+''});
                     }
 
                     sg.$dsgProgressPauseButton.removeClass('hide');
@@ -563,6 +564,20 @@ d3base.seriesGrouping = {
 
             var rowQueueTimer = function()
             {
+                if (sg !== vizObj._seriesGrouping)
+                {
+                    // This condition holds if we've gotten a new initializeVisualization
+                    // on this chart. We want to stop processing the data in this sg
+                    // object here (this works because initializeVisualization creates
+                    // a completely new sg object; this function is likely the only
+                    // thing keeping a reference to the old sg object).
+
+                    // Not strictly required, here for debugging.
+                    sg.defunct = true;
+                    sg.rowQueueTimerActive = false;
+                    return;
+                }
+
                 var batchData = vizObj._dequeueRows();
 
                 if (batchData)

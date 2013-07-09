@@ -9,6 +9,7 @@ $.Control.registerMixin('d3_base_dynamic', {
     initializeVisualization: function()
     {
         var vizObj = this;
+        vizObj._currentRangeData = [];
         vizObj.getColumns();
         vizObj.cleanDisplayFormat();
         vizObj._super();

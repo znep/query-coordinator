@@ -411,7 +411,7 @@ d3base.seriesGrouping = {
 
         sg.$dsgProgressPauseButton.on('click', function()
         {
-            if (sg.rowQueueTimerActive)
+            if (sg.virtualRowReadyCount != sg.totalVirtualRows && _.isEmpty(sg.savedRenderRowQueue))
             {
                 vizObj._pauseSeriesProcessing();
             }
@@ -532,9 +532,14 @@ d3base.seriesGrouping = {
             this._setChartVisible(true);
             this.renderData(sg.virtualRows);
             vizObj._setChartOverlay(null);
+
+            this._updateLoadingOverlay('done');
+        }
+        else
+        {
+            this._updateLoadingOverlay(_.isEmpty(sg.savedRenderRowQueue) ? 'loading' : 'stopped');
         }
 
-        this._updateLoadingOverlay(completed ? 'done' : 'stopped');
         sg.rowQueueTimerActive = false;
     },
 

@@ -378,10 +378,6 @@ d3base.seriesGrouping = {
         }
 
         vizObj._inRenderSeriesGrouping = false;
-
-        // This actually doesn't fire while the browser is frozen attempting to render
-        // huge quantities of SVG/DOM elements. Shocking!
-        setTimeout(function() { vizObj.finishLoading(); }, 1000);
     },
 
     _setLoadingOverlay: function()
@@ -409,7 +405,9 @@ d3base.seriesGrouping = {
         sg.$dsgProgressPauseButton = this.$dom().find('.dsgProgressPauseButton');
         sg.$dsgPauseExplanationText = this.$dom().find('.dsgPauseExplanationText');
 
-        sg.$dsgProgressPauseButton.on('click', function()
+        // Using mousedown instead of click as browsers tend to miss click events
+        // when they're under a heavy processing load. Especially chrome.
+        sg.$dsgProgressPauseButton.mouseup(function()
         {
             if (sg.virtualRowReadyCount != sg.totalVirtualRows && _.isEmpty(sg.savedRenderRowQueue))
             {
@@ -532,6 +530,7 @@ d3base.seriesGrouping = {
             this._setChartVisible(true);
             this.renderData(sg.virtualRows);
             vizObj._setChartOverlay(null);
+            vizObj.finishLoading();
 
             this._updateLoadingOverlay('done');
         }
@@ -548,7 +547,10 @@ d3base.seriesGrouping = {
         var vizObj = this;
         var sg = vizObj._seriesGrouping;
         var queue = this._seriesGrouping.queuedRenderRows;
-        var dataProcessDelayMillisec = 150;
+
+        // Due to IE8's raw speed, we can afford to wait longer between batches.
+        // Oh wait, no, we have to wait longer otherwise IE still chokes.
+        var dataProcessDelayMillisec = ($.browser.msie && parseFloat($.browser.version)) < 9 ? 250 : 10;
 
         if (!vizObj.requiresSeriesGrouping()) { return; }
 
@@ -587,6 +589,11 @@ d3base.seriesGrouping = {
     {
         this._seriesGrouping.savedRenderRowQueue = this._seriesGrouping.queuedRenderRows;
         this._seriesGrouping.queuedRenderRows = []
+        if (!_.isEmpty(this._seriesGrouping.savedRenderRowQueue))
+        {
+            this._updateLoadingOverlay('stopped');
+            this.finishLoading();
+        }
     },
 
     _resumeSeriesProcessing: function()
@@ -594,8 +601,9 @@ d3base.seriesGrouping = {
         var vizObj = this;
         var sg = vizObj._seriesGrouping;
 
-        if (sg.savedRenderRowQueue)
+        if (!_.isEmpty(sg.savedRenderRowQueue))
         {
+            vizObj.startLoading();
             _.each(sg.savedRenderRowQueue, _.bind(vizObj._enqueueRows, vizObj));
 
             delete sg.savedRenderRowQueue;

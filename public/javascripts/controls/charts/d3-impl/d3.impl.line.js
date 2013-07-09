@@ -275,8 +275,7 @@ $.Control.registerMixin('d3_impl_line', {
 
     _currentYScale: function()
     {
-        //return this._super().clamp(false);
-return this._super();
+        return this._super().clamp(false);
     },
 
     // call this if the yAxisPos has changed

@@ -94,7 +94,8 @@ $.Control.registerMixin('d3_base', {
             });
 
 
-            var colors = vizObj._displayFormat.colors;
+            var colors = vizObj._displayFormat.colors
+                || ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
             if (found && !_.isUndefined(colors) && colors.length > index)
             {
                 color = colors[index];

@@ -68,22 +68,28 @@ d3base.seriesGrouping = {
         sortColumns = sg.sortColumns
             = _.compact(sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column')));
 
-        // If there isn't a fixedColumn, save off the first seriesColumn in its place.
-        sg.fixedColumn = _.first(sortColumns);
+        // If there isn't a fixedColumn, pretend the index is a column, and use
+        // that instead.
+        sg.fixedColumn = vizObj._fixedColumns[0] || {
+            lookup: 'index'
+        };
 
-        // set up the sort
-        sortedView.update({ query: $.extend({}, sortedView.query, {
-            orderBys: _.map(sortColumns, function(col)
-            {
-                return {
-                    ascending: true,
-                    expression: {
-                        columnId: col.id,
-                        type: 'column'
-                    }
-                };
-            })
-        }) });
+        // set up the sort, if we have something to sort by.
+        if (vizObj._fixedColumns[0])
+        {
+            sortedView.update({ query: $.extend({}, sortedView.query, {
+                orderBys: _.map(sortColumns, function(col)
+                {
+                    return {
+                        ascending: true,
+                        expression: {
+                            columnId: col.id,
+                            type: 'column'
+                        }
+                    };
+                })
+            }) });
+        }
 
         var maybeDone = _.after(2, function()
         {
@@ -103,15 +109,20 @@ d3base.seriesGrouping = {
         // piggyback off sortedView so that the categories come back sorted
         var categoryGroupedView = sortedView.clone();
 
-        var categoryGroupBys = (sortedView.query.groupBys || []).concat([
-            {
-                columnId: sg.fixedColumn.id,
-                type: 'column'
-            } ]);
 
-        categoryGroupedView.update({ query: $.extend({}, sortedView.query, {
-            groupBys: categoryGroupBys
-        }) });
+        if (vizObj._fixedColumns[0])
+        {
+            var categoryGroupBys = (sortedView.query.groupBys || []).concat([
+                {
+                    columnId: vizObj._fixedColumns[0].id,
+                    type: 'column'
+                } ]);
+
+            categoryGroupedView.update({ query: $.extend({}, sortedView.query, {
+                groupBys: categoryGroupBys
+            }) });
+        }
+
         categoryGroupedView.getAllRows(function(rows)
         {
             sg.categoryGroupedRows = rows;
@@ -461,9 +472,9 @@ d3base.seriesGrouping = {
 
                     var elapsedTimeMillisec = Date.now() - (sg.startLoadingTimeMillisec || Date.now());
 
-                    if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec)
+                    if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec && sg.virtualRowReadyCount > 0)
                     {
-                        var perRowMillisec = elapsedTimeMillisec/ sg.virtualRowReadyCount;
+                        var perRowMillisec = elapsedTimeMillisec / sg.virtualRowReadyCount;
                         var remainingMillisec = remaining * perRowMillisec;
                         var seconds = Math.floor(remainingMillisec/1000);
                         if (seconds >= 60)
@@ -599,7 +610,7 @@ d3base.seriesGrouping = {
         {
             // first get our virtual row, which will simply be the row for whatever
             // category we happen to have. create if it doesn't exist.
-            var category = row[fixedColumn.id];
+            var category = row[fixedColumn.lookup];
             var virtualRow;
             if ($.isBlank(sg.virtualRows[category]))
             {
@@ -609,7 +620,7 @@ d3base.seriesGrouping = {
                     invalid: {},
                     realRows: {}
                 };
-                virtualRow[sg.fixedColumn.id] = category;
+                virtualRow[sg.fixedColumn.lookup] = category;
 
                 sg.virtualRows[category] = virtualRow;
                 sg.virtualRowReadyCount ++;
@@ -659,7 +670,7 @@ d3base.seriesGrouping = {
 
         var sg = vizObj._seriesGrouping,
             fixedColumn = sg.fixedColumn,
-            category = row[fixedColumn.id],
+            category = row[fixedColumn.lookup],
             vRow = sg.virtualRows[category];
 
         // A removed row might in reality be present in the sortedView, and should exist

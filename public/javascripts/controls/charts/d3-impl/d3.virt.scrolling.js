@@ -177,7 +177,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // maybe move things around and maybe grab rows every half second when they're scrolling
         var throttledScrollHandler = _.throttle(_.debounce(function()
         {
-
+            if (!vizObj._chartInitialized) { return; }
             // cache scrollPos so that aggressive scrolling doesn't make our calculations stutter.
             cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
 
@@ -192,6 +192,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         cc.doResizeHandle = function()
         {
+            if (!vizObj._chartInitialized) { return; }
+
             // maybe recalculate all the sizing
             var needsReposition = vizObj._resizeEverything();
             // maybe reposition the svg/vml elem
@@ -213,6 +215,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             containment: 'parent', // TODO: bounded containment on viewport change
             drag: function(event, ui)
             {
+                if (!vizObj._chartInitialized) { return; }
                 vizObj.moveBaseline(cc.dataDim.pluckY(
                     ui.position.left,
                     cc.chartHeight - ui.position.top));
@@ -220,6 +223,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             scroll: false,
             start: function() { cc._isDragging = true; },
             stop: function() {
+                if (!vizObj._chartInitialized) { return; }
                 cc._isDragging = false;
                 vizObj._primaryView.update({ displayFormat: $.extend(true, {},
                     vizObj._primaryView.displayFormat, { valueLabelBuffer: cc.valueLabelBuffer }) });
@@ -1051,7 +1055,13 @@ $.Control.registerMixin('d3_virt_scrolling', {
             // Wait a second for as much to be loaded as possible.
             if (!cc.moveBaseline)
             { cc.moveBaseline = _.debounce(function() {
-                vizObj.moveBaseline();
+                // Check for the initialization of the chart.
+                // If it's not init'd, it means the user changed some part of the
+                // view before we could run this (like by checking filters quickly).
+                if (vizObj._chartInitialized)
+                {
+                    vizObj.moveBaseline();
+                }
                 delete cc.moveBaseline;
                 }, 1000); }
             cc.moveBaseline();

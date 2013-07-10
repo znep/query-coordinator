@@ -449,15 +449,18 @@ $.Control.registerMixin('d3_impl_bar', {
                     // check for d because sometimes there's a race condition between unbind and remove
                     .on('mouseover', function(d)
                     {
+                        if (!vizObj._chartInitialized) { return; }
                         var configs = vizObj._flyoutConfigurationOptions(d, colDef.column);
                         vizObj.handleDataMouseOver(this, colDef, d, configs, !cc._isDragging);
                     })
                     .on('mouseout', function(d)
                     {
+                        if (!vizObj._chartInitialized) { return; }
                         vizObj.handleDataMouseOut(this);
                     })
                     .on('click', function(d)
                     {
+                        if (!vizObj._chartInitialized) { return; }
                         if ($.isBlank(d)) { return; }
                         if ($.subKeyDefined(vizObj._primaryView, 'highlightTypes.select.' + d.id))
                         {

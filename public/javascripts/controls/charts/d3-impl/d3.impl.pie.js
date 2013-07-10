@@ -1180,6 +1180,7 @@ $.Control.registerMixin('d3_impl_pie', {
             // check for datum because sometimes there's a race condition between unbind and remove
             .on('mouseover', function(datum)
             {
+                if (!vizObj._chartInitialized) { return; }
                 var configs = {};
                 var row = null;
                 if (datum && !cc._isDragging)
@@ -1216,10 +1217,12 @@ $.Control.registerMixin('d3_impl_pie', {
             })
             .on('mouseout', function(datum)
             {
+                if (!vizObj._chartInitialized) { return; }
                 vizObj.handleDataMouseOut(this, 150);
             })
             .on('click', function(datum)
             {
+                if (!vizObj._chartInitialized) { return; }
                 if (datum)
                 {
                     var row = seriesInformation.rowResolver(datum.data);

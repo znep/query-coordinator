@@ -13,6 +13,7 @@ $.Control.registerMixin('d3_base_dynamic', {
         vizObj.getColumns();
         vizObj.cleanDisplayFormat();
         vizObj._super();
+        vizObj._chartInitialized = true;
     },
 
     cleanDisplayFormat: function()
@@ -23,6 +24,7 @@ $.Control.registerMixin('d3_base_dynamic', {
     cleanVisualization: function()
     {
         var vizObj = this;
+        delete vizObj._chartInitialized;
         delete vizObj._dynamicSizingCalculated;
         delete vizObj._lastRowCount;
         delete vizObj._currentRenderRange;
@@ -142,8 +144,11 @@ $.Control.registerMixin('d3_base_dynamic', {
         // handleRowsLoaded gets some weird call abuse with random subsections
         // of the data. so, maintain our current slice and just update into our
         // full visible set where appropriate
-        var vizObj = this,
-            didInsertData = vizObj._sortedSetInsert(vizObj._currentRangeData, data);
+        var vizObj = this;
+
+        if (!vizObj._chartInitialized) { return; }
+
+        var didInsertData = vizObj._sortedSetInsert(vizObj._currentRangeData, data);
 
         vizObj._super(vizObj._currentRangeData, view, didInsertData);
     },

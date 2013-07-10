@@ -9,7 +9,7 @@ class AssetMapper
         package_list.each do |package_name|
           @asset_map[type][package_name] = "/#{config['package_path']}/#{package_name}.js?#{Time.now().to_i.to_s}"
           @asset_map['debug_' + type][package_name] = config[type][package_name].map do
-            |item| item.sub(STRIP_PREFIX, '')
+            |item| "#{item.sub(STRIP_PREFIX, '')}?#{Time.now().to_i.to_s}"
           end
         end
       end

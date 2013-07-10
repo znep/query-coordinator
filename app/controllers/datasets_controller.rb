@@ -234,6 +234,15 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def update_rating
+    view = View.find(params[:id])
+    view.update_rating(params[:starsRating].to_i * 20, params[:ratingType])
+
+    respond_to do |format|
+      format.html { redirect_to(view_path(view)) }
+    end
+  end
+
   def email
     @view = View.find(params[:id])
 

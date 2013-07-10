@@ -143,16 +143,11 @@
       <%- (CurrentDomain.properties.rating_types || ["rating"]).each do |rating_type| -%>
         <dt><%= t('screens.about.community') %></dt>
         <dd class="clearfix">
-          <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>">
-            <%= @view.average_rating(rating_type) %>
-          </div>
+          <%= stars_control('datasetAverageRating', @view.average_rating(rating_type)) %>
         </dd>
         <dt><%= t('screens.about.your') %></dt>
         <dd class="clearfix">
-          <div class="starsControl blueStars datasetAverageRating" data-rating-type="<%= rating_type %>"
-            data-rating="<%= @view.user_rating(rating_type) %>">
-            <%= @view.user_rating(rating_type) %>
-          </div>
+          <%= stars_control('datasetAverageRating', @view.user_rating(rating_type), @view, rating_type) %>
         </dd>
       <%- end -%>
       <dt><%= t('screens.about.raters') %></dt>

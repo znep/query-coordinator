@@ -217,6 +217,7 @@ Frontend::Application.routes do
         post :save_filter
         post :modify_permission
         post :post_comment
+        post :update_rating
         match :email, :via => [:get, :post]
         get :append
         get :contact

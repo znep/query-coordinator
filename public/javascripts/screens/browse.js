@@ -135,8 +135,7 @@ $(function()
                     parentContainer: $row.closest('.results')
                 }, true);
 
-        $content.find('.datasetAverageRating')
-            .stars({value: ds.averageRating, enabled: false});
+        $content.find('.datasetAverageRating').stars({ value: ds.averageRating });
 
         $content.find('.button.permissions:not(.hide)').click(function(e)
         {

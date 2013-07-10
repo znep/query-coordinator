@@ -509,7 +509,7 @@
   <div class="comments" title="<%= t('controls.browse.listing.comment_count') %>">
     <span class="icon"></span><span class="value"></span>
   </div>
-  <div class="starsControl datasetAverageRating"></div>
+  <%= stars_control('datasetAverageRating') %>
 </div>
 <%= render :partial => 'browse/row_search_templates' %>
 <% end %>

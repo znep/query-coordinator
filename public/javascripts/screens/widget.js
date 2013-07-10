@@ -316,7 +316,7 @@ $(function()
     widgetNS.$resizeContainer.fullScreen();
 
     // controls
-    $('select, input:checkbox, input:radio, input:file').uniform();
+    $('select, input:checkbox, input:radio:not(.noUniform), input:file').uniform();
 
     // menus
     var menuOptions     = widgetNS.theme['menu']['options'],
@@ -549,11 +549,7 @@ $(function()
         {
             $('.actionInterstitial').jqmShow()
                 .find('.actionPhrase').text('rate this dataset');
-            return false;
-        },
-        starMargin: 1,
-        starWidth: 10,
-        value: blist.dataset.averageRating || 0
+        }
     });
 
     $('.viewError').text(blist.dataset.invalidMessage());

@@ -31,11 +31,7 @@
         <%= link_to (field.text || h(widget.view.name)).html_safe, view_path(widget.view), :class => 'viewLink' %>
       <%- end -%>
     <%- when 'rating' -%>
-      <div class="averageRating">
-        <div class="starsControl" data-rating="<%= widget.view.averageRating %>">
-          <%= widget.view.averageRating %>
-        </div>
-      </div>
+      <div class="averageRating"><%= stars_control('', widget.view.averageRating) %></div>
 
       <%- content_for :js_footer do -%>
         <%- allow_once do -%>
@@ -52,9 +48,7 @@
               Dataset.createFromViewId('<%= widget.view.id %>', function(view)
               {
                   var $this = $(selector + ' .averageRating .starsControl');
-                  $this.stars($.extend({
-                      enabled: false,
-                      value: $this.attr('data-rating'),
+                  $this.stars({
                       onChange: function(value)
                       {
                           blist.util.doAuthedAction('rate this dataset', function(successCallback)
@@ -64,10 +58,8 @@
                                   rating: (value * 20)
                               });
                           });
-
-                          return true;
                       }
-                  }, <%= safe_json(field.controlOptions || {}) %>));
+                  });
               });
           });
         </script>

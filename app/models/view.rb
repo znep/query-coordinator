@@ -1061,6 +1061,12 @@ class View < Model
     datatypes.is_a?(Array) && datatypes.include?(dt) || dt == datatypes
   end
 
+  # Value out of 100
+  def update_rating(value, type)
+    CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}/ratings.json",
+                                               { type: type, rating: value }.to_json)
+  end
+
   def email(email = nil)
     CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}" +
       ".json?method=sendAsEmail", { :message => '', :recipient => email }.to_json)

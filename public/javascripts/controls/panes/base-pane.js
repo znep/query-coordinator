@@ -2209,10 +2209,10 @@
             _.defer(function()
                 {
                     // Doing this as one selector is surprisingly slow
-                    $container.find('select').uniform();
-                    $container.find(':checkbox').uniform();
-                    $container.find(':radio').uniform();
-                    $container.find(':file').uniform();
+                    $container.find('select:not(.noUniform)').uniform();
+                    $container.find(':checkbox:not(.noUniform)').uniform();
+                    $container.find(':radio:not(.noUniform)').uniform();
+                    $container.find(':file:not(.noUniform)').uniform();
                 });
         }
     };

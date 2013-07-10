@@ -119,35 +119,71 @@ div.menu
       clear: both
       display: block
 
-div.starsControl
-  &, & .starsControlInner
-    background: transparent url('/stylesheets/images/icons/stars.png') repeat-x
+.starsControl
+  .accessibleValue
+    @include text-hiding
+    display: inline-block
+
+  input[type=radio]
     height: 16px
     margin: 0
+      right: 1px
+    @include opacity(0)
     padding: 0
-    text-align: left
-    width: 93px
-  &.enabled
-    cursor: pointer
+    vertical-align: bottom
+    width: 16px
+    &:focus + .starsLabel
+      border-bottom: 1px solid #666666
 
-  .starsControlInner
+  .starsLabel
+    @include text-hiding
+    background: transparent url('/stylesheets/images/icons/stars.png') no-repeat
     background-position: 0 -16px
+    display: inline-block
+    height: 16px
+    margin:
+      left: -16px
+      right: 1px
+    padding: 0
+    width: 16px
 
-  &.smallStars
-    &, & .starsControlInner
-      background: transparent url('/stylesheets/images/icons/stars_small.png') repeat-x
-      height: 10px
-      width: 54px
-
-    .starsControlInner
-      background-position: 0 -10px
+  input:checked + .starsLabel ~ .starsLabel
+    background-position: 0 0
+  .ie8 &
+    input[checked="checked"] + .starsLabel ~ .starsLabel
+      background-position: 0 0
+  input[value='0'], input[value='0'] + .starsLabel
+    display: none
 
   &.blueStars
-    &, & .starsControlInner
-      background: transparent url('/stylesheets/images/icons/stars.png') repeat-x
-
-    .starsControlInner
+    input[type=radio]
+      .ie8 &
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"
+    .starsLabel
       background-position: 0 -32px
+      .ie8 &
+        display: none
+
+  &.enabled
+    input
+      cursor: pointer
+    &:hover
+      label.starsLabel
+        background-position: 0 -32px
+      input:hover + .starsLabel ~ .starsLabel
+        background-position: 0 0
+
+  &.jsEnabled input[type=submit]
+    display: none
+
+  &.smallStars
+    input[type=radio], .starsLabel
+      height: 10px
+      width: 10px
+    .starsLabel
+      background: transparent url('/stylesheets/images/icons/stars_small.png') no-repeat
+      background-position: 0 -10px
+      margin-left: -10px
 
 div.wizard
   overflow: hidden

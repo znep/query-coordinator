@@ -202,8 +202,6 @@ blist.datasetControls.datasetRating = function($star, $sect, enabled)
     }
 
     $star.stars({
-        value: $star.attr('data-rating') || 0,
-        enabled: enabled && !$.isBlank($star.data('rating-type')),
         onChange: function(value)
         {
             blist.util.doAuthedAction($.t('controls.common.rate.auth_action_phrase'), function(successCallback)

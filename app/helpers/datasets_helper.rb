@@ -159,6 +159,29 @@ module DatasetsHelper
     ret.html_safe if ret
   end
 
+  def stars_control(extra_class = '', value = nil, view = nil, rating_type = '')
+    @@stars_id ||= 1
+    id = 'stars_' + (@@stars_id += 1).to_s
+    ('<form id="' + id + (view.nil? ? '' : '" method="POST" action="' + update_rating_dataset_path(view)) +
+     '" class="starsControl ' + (rating_type.blank? ? '' : 'blueStars enabled ') + extra_class + '"' +
+      (value.nil? ? '' : ' data-rating="' + value.to_s + '"') +
+      (rating_type.blank? ? '' : ' data-rating-type="' + rating_type + '"') + ' title="' +
+      t('controls.common.stars.tooltip', { number: value }) + '">' +
+      '<span class="accessibleValue">Current value: ' + (value || 0).to_s + ' out of 5</span>' +
+      (rating_type.blank? ? '' : '<input type="hidden" name="ratingType" value="' + rating_type + '" />') +
+      (view.nil? ? '' : '<input type="hidden" name="authenticity_token" value="' +
+        form_authenticity_token + '" />') +
+      (0..5).map do |i|
+        c_id = id + '_' + i.to_s
+        '<input type="radio" class="noUniform" id="' + c_id + '" name="starsRating" value="' + i.to_s + '" ' +
+          (rating_type.blank? ? 'disabled="disabled" ' : '') +
+          (value.to_i == i || (i == 0 && value.nil?) ? 'checked="checked" ' : '') + '/>' +
+        '<label for="' + c_id + '" class="starsLabel">' + i.to_s + '/5</label>'
+      end.join('') +
+      (view.nil? ? '' : '<input type="submit" value="Save" />') +
+      '</form>').html_safe
+  end
+
   # include only url and text column types.
   # In the future, we may allow people to have
   # a namespace attached to a view and the subject column

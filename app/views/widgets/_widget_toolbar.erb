@@ -33,9 +33,7 @@
           <dd><%= @view.tag_display_string %></dd>
         <%- end -%>
         <dt>Rating</dt>
-        <dd><div class="starsControl smallStars datasetAverageRating" data-rating="<%= @view.averageRating %>">
-          <%= @view.averageRating %>
-        </div></dd>
+        <dd><%= stars_control('smallStars datasetAverageRating', @view.averageRating) %></dd>
         <%- if @view.property_or_default(['attribution']) -%>
           <dt>Data Provided By</dt>
           <dd><%= @view.property_or_default(['attribution']) %></dd>

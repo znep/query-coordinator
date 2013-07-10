@@ -89,7 +89,7 @@
             {
                 fields.push(
                     { text: $.t('screens.ds.grid_sidebar.chart.legend.conditional_formats'), type: 'checkbox', inputFirst: true,
-                      name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
+                      name: 'displayFormat.legendDetails.showConditional', defaultValue: true,
                       lineClass: 'advLegendCheck' });
             }
 
@@ -97,7 +97,7 @@
             {
                 fields.push(
                     { text: $.t('screens.ds.grid_sidebar.chart.legend.value_markers'), type: 'checkbox', inputFirst: true,
-                      name: 'displayFormat.legendDetails.showValueMarkers', defaultValue: false,
+                      name: 'displayFormat.legendDetails.showValueMarkers', defaultValue: true,
                       lineClass: 'advLegendCheck' });
             }
 

@@ -75,11 +75,19 @@ $.Control.registerMixin('d3_impl_line', {
                     .classed('dataPath_series' + col.lookup, true);
             }
 
+            var lineData;
+
+            // For legacy DSG lines without categories, connect all the dots.
+            if (_.isEmpty(vizObj._fixedColumns) && vizObj._seriesGrouping)
+            { lineData = _.sortBy(notNullData, 'index'); }
+            else
+            { lineData = _.sortBy(visibleData, 'index'); }
+
             cc.seriesPath[col.lookup]
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
                 .attr('stroke', function() { return colDef.color; })
                 .attr('stroke-width', 2)
-                .datum(_.sortBy(visibleData, 'index'))
+                .datum(lineData)
                 .attr('d', oldLine);
 
             if (lineType == 'area')

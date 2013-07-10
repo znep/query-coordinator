@@ -77,11 +77,21 @@ d3base.seriesGrouping = {
         // set up the sort, if we have something to sort by.
         if (vizObj._fixedColumns[0])
         {
+            var orderBys = $.deepGet(vizObj._primaryView, 'query', 'orderBys');
+
             sortedView.update({ query: $.extend({}, sortedView.query, {
                 orderBys: _.map(sortColumns, function(col)
                 {
+                    var ascending = true;
+                    if (orderBys)
+                    {
+                        ascending = (_.detect(orderBys, function(ob)
+                            { return ob.expression.columnId == col.id; })
+                            || { ascending: true }).ascending;
+                    }
+
                     return {
-                        ascending: true,
+                        ascending: ascending,
                         expression: {
                             columnId: col.id,
                             type: 'column'
@@ -276,6 +286,7 @@ d3base.seriesGrouping = {
                 sg.virtualColumns[virtualColumnName] = {
                     color: vizObj._getColorForColumn(valueCol, virtualColumnName),
                     groupName: groupName,
+                    colIndex: index,
                     column: {
                         id: virtualId,
                         lookup: virtualId,

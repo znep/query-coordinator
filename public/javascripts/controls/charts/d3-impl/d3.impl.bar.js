@@ -172,6 +172,8 @@ $.Control.registerMixin('d3_impl_bar', {
 
         return function(d)
         {
+            if (!vizObj._chartInitialized) { return 0; }
+
             return staticParts + (d.index * cc.rowWidth);
         };
     },
@@ -188,6 +190,8 @@ $.Control.registerMixin('d3_impl_bar', {
 
         return function(d)
         {
+            if (!vizObj._chartInitialized) { return 0; }
+
             var columnId = isFunction ? colId.call(this) : colId;
             var columnValue = d[columnId];
 
@@ -278,6 +282,8 @@ $.Control.registerMixin('d3_impl_bar', {
         var yScaleZero = yScale(0);
         var isFunction = _.isFunction(colId);
 
+        if (!vizObj._chartInitialized) { return 0; }
+
         // Yeah, so...
         // If we're not stacking, then the yScale is hard clipped to be within
         // the y-axis min and max. However, if we're stacking, yScale is not
@@ -333,6 +339,8 @@ $.Control.registerMixin('d3_impl_bar', {
         var vizObj = this,
             cc = this._chartConfig;
 
+        if (!vizObj._chartInitialized) { return 't0,0'; }
+
         var xPosition = cc.sidePadding - 0.5 -
                         cc.drawElementPosition - cc.dataOffset +
                         ((cc.rowWidth - cc.rowSpacing) / 2);
@@ -368,7 +376,7 @@ $.Control.registerMixin('d3_impl_bar', {
 
         var normalScale = this._super.apply(this, arguments);
 
-        if (this._chartConfig.stackYSeries)
+        if (this._chartInitialized && this._chartConfig.stackYSeries)
         {
             return normalScale.clamp(false);
         }
@@ -739,6 +747,8 @@ $.Control.registerMixin('d3_impl_bar', {
 
     _yAxisPos: function()
     {
+        if (!this._chartInitialized) { return 0; }
+
         if (!_.isUndefined(this._chartConfig.valueLabelBuffer)
             || $.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true)
         { return this._super.apply(this, arguments); }
@@ -780,6 +790,8 @@ $.Control.registerMixin('d3_impl_bar', {
 
         return function(d)
         {
+            if (!vizObj._chartInitialized) { return 0; }
+
             var xPosition = xPositionStaticParts + (d.index * cc.rowWidth);
             if (!cc.collapseXSeries)
             { xPosition += cc.barWidth * (d.seriesIndex + (-(numCols - 1) / 2)); }
@@ -804,6 +816,8 @@ $.Control.registerMixin('d3_impl_bar', {
 
         return function(d)
         {
+            if (!vizObj._chartInitialized) { return 0; } // Harden against animations ticking after cleanVisualization.
+
             var position, datumPos = 0;
 
             // Magic numbers are for padding from the yAxisPos-edge of the bar.

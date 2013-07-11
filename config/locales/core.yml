@@ -195,6 +195,50 @@ en:
     expando:
       prompt: Click to expand
       expand: Expand
+    date_time:
+      current_minute_past: just now
+      current_minute_future: just now
+      single_minute_past: 1 minute ago
+      single_minute_future: 1 minute from now
+      minutes_past: %{time} minutes ago
+      minutes_future: %{time} minutes from now
+      current_hour_past: this hour
+      current_hour_future: this hour
+      single_hour_past: 1 hour ago
+      single_hour_future: 1 hour from now
+      hours_past: %{time} hours ago
+      hours_future: %{time} hours from now
+      current_day_past: today
+      current_day_future: today
+      single_day_past: yesterday
+      single_day_future: tomorrow
+      days_past: %{time} days ago
+      days_future: %{time} days from now
+      current_week_past: this week
+      current_week_future: this week
+      single_week_past: last week
+      single_week_future: next week
+      weeks_past: %{time} weeks ago
+      weeks_future: %{time} weeks from now
+      current_month_past: this month
+      current_month_future: this month
+      single_month_past: last month
+      single_month_future: next month
+      months_past: %{time} months ago
+      months_future: %{time} months from now
+      current_year_past: this year
+      current_year_future: this year
+      single_year_past: last year
+      single_year_future: next year
+      years_past: %{time} years ago
+      years_future: %{time} years from now
+      current_century_past: this century
+      current_century_future: this century
+      single_century_past: a century ago
+      single_century_future: a century from now
+      centuries_past: %{time} centuries ago
+      centuries_future: %{time} centuries from now
+      unknown: some time
 
 
 it:

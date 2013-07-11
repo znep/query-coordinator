@@ -41,13 +41,12 @@ blist.util.humaneDate.getFromDate = function (date_obj, granularity)
 
     var dt = new Date();
     var seconds = (dt - date_obj) / 1000;
-    var token = 'ago', list_choice = 1;
+    var isFuture = false;
 
     if (seconds < 0)
     {
         seconds = Math.abs(seconds);
-        token = 'from now';
-        list_choice = 2;
+        isFuture = true;
     }
 
     var i = granularity;
@@ -56,28 +55,13 @@ blist.util.humaneDate.getFromDate = function (date_obj, granularity)
     {
         if (seconds < format[0])
         {
-            if (format.length < 3)
-            {
-                return format[1];
-            }
-            if (typeof format[2] == 'string')
-            {
-                return format[list_choice];
-            }
-            else
-            {
-                return Math.floor(seconds / format[2]) + ' ' + format[1] + ' ' + token;
-            }
+            return $.t('core.date_time.' + format[1] + (isFuture ? '_future' : '_past'),
+                    { time: Math.floor(seconds / (format[2] || 1)) });
         }
         format = humaneUtilNS.timeFormats[i++];
     }
-    // overflow for centuries
-    if (seconds > 5806080000)
-    {
-        return Math.floor(seconds / 2903040000) + ' centuries ' + token;
-    }
 
-    return 'some time ago';
+    return $.t('core.date_time.unknown');
 };
 
 blist.util.humaneDate.getFromISO = function (date_str)
@@ -87,26 +71,27 @@ blist.util.humaneDate.getFromISO = function (date_str)
 };
 
 blist.util.humaneDate.timeFormats = [
-    [60, 'just now'],
-    [120, '1 minute ago', '1 minute from now'], // 60*2
+    [60, 'current_minute'],
+    [120, 'single_minute'], // 60*2
     [3600, 'minutes', 60], // 60*60, 60
-    [3600, 'this hour'], // 60*60, 60
-    [7200, '1 hour ago', '1 hour from now'], // 60*60*2
+    [3600, 'current_hour'], // 60*60, 60
+    [7200, 'single_hour'], // 60*60*2
     [86400, 'hours', 3600], // 60*60*24, 60*60
-    [86400, 'today'], // 60*60*24, 60*60
-    [172800, 'yesterday', 'tomorrow'], // 60*60*24*2
+    [86400, 'current_day'], // 60*60*24, 60*60
+    [172800, 'single_day'], // 60*60*24*2
     [604800, 'days', 86400], // 60*60*24*7, 60*60*24
-    [604800, 'this week'], // 60*60*24*7, 60*60*24
-    [1209600, 'last week', 'next week'], // 60*60*24*7*4*2
+    [604800, 'current_week'], // 60*60*24*7, 60*60*24
+    [1209600, 'single_week'], // 60*60*24*7*4*2
     [2419200, 'weeks', 604800], // 60*60*24*7*4, 60*60*24*7
-    [2419200, 'this month'], // 60*60*24*7*4, 60*60*24*7
-    [4838400, 'last month', 'next month'], // 60*60*24*7*4*2
+    [2419200, 'current_month'], // 60*60*24*7*4, 60*60*24*7
+    [4838400, 'single_month'], // 60*60*24*7*4*2
     [29030400, 'months', 2419200], // 60*60*24*7*4*12, 60*60*24*7*4
-    [29030400, 'this year'], // 60*60*24*7*4*12, 60*60*24*7*4
-    [58060800, 'last year', 'next year'], // 60*60*24*7*4*12*2
+    [29030400, 'current_year'], // 60*60*24*7*4*12, 60*60*24*7*4
+    [58060800, 'single_year'], // 60*60*24*7*4*12*2
     [2903040000, 'years', 29030400], // 60*60*24*7*4*12*100, 60*60*24*7*4*12
-    [2903040000, 'this century'], // 60*60*24*7*4*12*100, 60*60*24*7*4*12
-    [5806080000, 'a century ago', 'a century from now'] // 60*60*24*7*4*12*100*2
+    [2903040000, 'current_century'], // 60*60*24*7*4*12*100, 60*60*24*7*4*12
+    [5806080000, 'single_century'], // 60*60*24*7*4*12*100*2
+    [Number.MAX_VALUE, 'centuries', 2903040000], // ALL THE TIME!!!, 60*60*24*7*4*12*100
 ];
 
 

@@ -103,6 +103,15 @@ d3base.seriesGrouping = {
 
         var maybeDone = _.after(2, function()
         {
+            // If we get re-initialized before the two views below finish their
+            // getAllRows, we'll be paving over fields in vizObj with some stale
+            // data if we call _preprocessSeriesColumns. If this happens,
+            // stop processing here.
+            if (sg !== vizObj._seriesGrouping)
+            {
+                return;
+            }
+
             // this is saved down below. Now that we have everything we need
             // to get ready, process some things and allow everything to init.
             vizObj._preprocessSeriesColumns();
@@ -182,6 +191,11 @@ d3base.seriesGrouping = {
 
     cleanVisualization: function()
     {
+        if (this._seriesGrouping && this._seriesGrouping.queuedRenderRows)
+        {
+            // Clear out any existing queue.
+            this._seriesGrouping.queuedRenderRows.length = 0;
+        }
         delete this._seriesGrouping;
         this._super();
     },

@@ -103,6 +103,15 @@ d3base.seriesGrouping = {
 
         var maybeDone = _.after(2, function()
         {
+            // If we get re-initialized before the two views below finish their
+            // getAllRows, we'll be paving over fields in vizObj with some stale
+            // data if we call _preprocessSeriesColumns. If this happens,
+            // stop processing here.
+            if (sg !== vizObj._seriesGrouping)
+            {
+                return;
+            }
+
             // this is saved down below. Now that we have everything we need
             // to get ready, process some things and allow everything to init.
             vizObj._preprocessSeriesColumns();
@@ -681,10 +690,6 @@ d3base.seriesGrouping = {
                 var virtualColumnName = (vizObj._valueColumns.length > 1) ?
                     valueCol.column.name + ', ' + groupName : groupName;
                 var virtualColumn = sg.virtualColumns[virtualColumnName];
-
-                // Sometimes, when the user is actively filtering, some data will
-                // sneak through from the old filter. Ignore it.
-                if (_.isUndefined(virtualColumn)) { return; }
 
                 virtualRow[virtualColumn.column.id] = row[valueCol.column.id];
                 virtualRow.realRows[virtualColumn.column.id] = row;

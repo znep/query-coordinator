@@ -351,6 +351,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var vizObj = this;
 
+        if (!vizObj._chartInitialized) { return; }
+
         vizObj._computeMinMaxForEntireChart(data);
 
         vizObj._renderData(data);

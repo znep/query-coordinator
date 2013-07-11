@@ -254,7 +254,6 @@ $.Control.registerMixin('d3_impl_line', {
     _constructSeriesPath: function(colDef, seriesIndex, yScale)
     {
         var vizObj = this,
-            cc = vizObj._chartConfig,
             lineType = vizObj._chartType,
             col = colDef.column,
             notNull = function(row)
@@ -385,6 +384,7 @@ $.Control.registerMixin('d3_impl_line', {
 
         return function(d)
         {
+            if (!vizObj._chartInitialized) { return 0; }
             return staticParts + (d.index * cc.rowWidth);
         };
     },
@@ -408,6 +408,8 @@ $.Control.registerMixin('d3_impl_line', {
     {
         var vizObj = this,
             cc = this._chartConfig;
+
+        if (!vizObj._chartInitialized) { return 't0,0'; }
 
         var xPosition = cc.sidePadding - 0.5 -
                         cc.drawElementPosition - cc.dataOffset +

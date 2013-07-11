@@ -182,6 +182,11 @@ d3base.seriesGrouping = {
 
     cleanVisualization: function()
     {
+        if (this._seriesGrouping && this._seriesGrouping.queuedRenderRows)
+        {
+            // Clear out any existing queue.
+            this._seriesGrouping.queuedRenderRows.length = 0;
+        }
         delete this._seriesGrouping;
         this._super();
     },
@@ -676,6 +681,10 @@ d3base.seriesGrouping = {
                 var virtualColumnName = (vizObj._valueColumns.length > 1) ?
                     valueCol.column.name + ', ' + groupName : groupName;
                 var virtualColumn = sg.virtualColumns[virtualColumnName];
+
+                // Sometimes, when the user is actively filtering, some data will
+                // sneak through from the old filter. Ignore it.
+                if (_.isUndefined(virtualColumn)) { return; }
 
                 virtualRow[virtualColumn.column.id] = row[valueCol.column.id];
                 virtualRow.realRows[virtualColumn.column.id] = row;

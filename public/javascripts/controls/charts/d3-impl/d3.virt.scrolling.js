@@ -814,6 +814,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
     _yAxisPos: function()
     {
         var vizObj = this;
+        if (!vizObj._chartInitialized) { return 0; }
+
         return vizObj._chartConfig.dataDim.pluckY(
             vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer,
             vizObj._chartConfig.chartHeight
@@ -830,6 +832,10 @@ $.Control.registerMixin('d3_virt_scrolling', {
             vml = cc.valueMarkerLimits,
             rangeMax = cc.dataDim.pluckY(cc.chartWidth - vizObj._yAxisPos(),
                                          vizObj._yAxisPos());
+
+        if (!vizObj._chartInitialized) { return function() { return 0; }; }
+
+        if (_.isNaN(rangeMax)) { rangeMax = 0; }
 
         var defaultMins = [cc.minValue, vml.min],
             defaultMaxs = [cc.maxValue, vml.max];
@@ -849,6 +855,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var vizObj = this,
             cc = vizObj._chartConfig;
+
+        if (!vizObj._chartInitialized) { return function(){ return 0; }; }
 
         var chartViewport = cc.$chartContainer[cc.dataDim.width](),
             rowsPerScreen = chartViewport / cc.rowWidth;

@@ -177,7 +177,7 @@ div.blist-th-first
 .indicators-inactive .indicator-container
   display: none
 
-.blist-th
+.blist-th, .blist-tdh
   .sort
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1)
     background-position: 0 0
@@ -218,7 +218,7 @@ div.blist-th-first
     background-image: url(/stylesheets/images/content/table/info_icon.png)
     padding-right: 4px
 
-  .button-wrapper, .menuLink
+  .button-wrapper
     float: right
 
   .info-button
@@ -241,6 +241,7 @@ div.blist-th-first
   display: block
   height: 14px
   width: 14px
+  float: right
   background-image: url(/stylesheets/images/content/table/menu_icon.png)
   background-repeat: no-repeat
 
@@ -522,6 +523,11 @@ div.blist-td-highlight
 div.blist-tdh
   color: #999999
 
+.blist-table-locked-scrolls
+  .blist-tr[class*="level"]
+    .menuLink
+      display: none
+
 .blist-tdh .blist-th-icon
   display: none
   float: left
@@ -534,14 +540,32 @@ div.blist-tdh.blist-table-row-handle .blist-th-icon
 .blist-tdh .blist-th-name
   margin-left: 4px
 
+.blist-tdh
+  .menuLink, .button-wrapper
+    display: none
+  .menuLink, .info-button
+    margin: 0px
+
 .blist-tr-open
   .blist-tdh
     background-color: $header_color
     color: #333333
     cursor: inherit
 
-    .blist-th-icon
+    .blist-th-icon, .menuLink, .button-wrapper
       display: block
+      z-index: 2
+
+    .blist-th-name
+      background-color: $header_color
+      z-index: 3
+
+    .menuLink, .button-wrapper, .blist-th-name
+      position: relative
+
+  .blist-tdh:hover
+    .blist-th-name
+      z-index: 0
 
   div.blist-tdh.blist-table-row-handle .blist-th-icon
     display: block

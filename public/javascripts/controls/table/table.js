@@ -2567,9 +2567,13 @@
                                 '" colId="', child.id, '">',
                                 (canEdit() ?
                                  '<div class="blist-th-icon"></div>' : ''),
+                                '<a class="menuLink action-item" href="#column-menu"></a>',
+                                '<div class="button-wrapper"> <div class="info-button action-item"></div> </div>',
+                                '<span class="info-container">',
+                                '<div class="name-wrapper">',
                                 '<span class="blist-th-name">',
                                 htmlEscape(child.name),
-                                '</span></div>');
+                                '</span></div></span></div>');
                     }
 
                     if (options.showAddColumns)

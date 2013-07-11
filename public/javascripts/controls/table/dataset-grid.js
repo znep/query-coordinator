@@ -511,13 +511,12 @@
         _.each(renderedRows, function(r)
         {
             var $row = $(r.row);
-
             if (!$row.is('.blist-tr-open')) { return true; }
             $row.find('.blist-tdh[colId]')
                 .each(function(i, tdh)
                 {
                     var $tdh = $(tdh);
-                    if ($tdh.find('a.menuLink').length > 0) { return true; }
+                    if ($tdh.hasClass('setup')) { return true; }
                     var parColId = $tdh.attr('parentColId');
                     var parCol = datasetObj._view.columnForID(parColId);
                     if (!$.isBlank(parCol))
@@ -532,10 +531,11 @@
     };
 
     var setupHeader = function(datasetObj, col, $col, tipsRef)
-    {
-
+    {       
         //Configure flyout HTML and events for column menu button
-        var $menuLink = $col.find('.menuLink');   
+        var nested = $col.hasClass('blist-tdh');
+
+        var $menuLink = $col.find('.menuLink'); 
 
         $col.columnMenu({column: col, $menuTrigger: $menuLink,
             columnDeleteEnabled: datasetObj.settings.columnDeleteEnabled,
@@ -557,18 +557,19 @@
             tip.hide();
         });
 
+        $col.addClass('setup');
+
         var $infoButton = $col.find('.info-button');
         var $infoWrapper = $col.find('.button-wrapper');
 
 
         //Hover on header cell
-        if (col.renderType.sortable) {
+        if (col.renderType.sortable && !nested) {
             $col.find('.blist-th-name').socrataTip({trigger: 'hover', message: $.t('controls.grid.click_to_sort'), 
                                                     parent: 'body', isSolo: true});
         }
 
-
-        if (tipsRef) { 
+        if (tipsRef || nested) { 
             var tooltipContent = blist.datasetControls.getColumnTip(col); 
             //Click functionality for main tip box
             $infoWrapper.socrataTip({content: tooltipContent, trigger: 'mouseenter click', parent: 'body', isSolo: true,

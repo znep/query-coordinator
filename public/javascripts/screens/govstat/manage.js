@@ -30,35 +30,50 @@ $(function()
         if (confirm('Are you sure you want to remove this report?'))
         {
             $.globalIndicator.statusWorking();
-            var callback = _.after(2, function()
+            Page.deleteById($a.data('id'), $a.data('oldid'), function()
+                {
+                    $.globalIndicator.statusFinished();
+                    $a.closest('.singleItem').remove();
+                }, $.globalIndicator.statusError);
+        }
+    });
+
+    var $settingsDialog = $('.configuratorSettings');
+    $settingsDialog.find('input[name=pageUrl]').closest('.line').addClass('hide');
+    $settingsDialog.find('.errorMessage').addClass('hide');
+    $settingsDialog.find('.actions .save').click(function(e)
+    {
+        e.preventDefault();
+
+        var report = $settingsDialog.data('report');
+        report.update({ name: $settingsDialog.find('[name=pageTitle]').value() ||
+            'Copy of ' + report.name });
+
+        $.globalIndicator.statusWorking();
+        Page.uniquePath(report.name, '/reports/', function(path)
+        {
+            report.saveCopy({ path: path }, function(newReport)
             {
                 $.globalIndicator.statusFinished();
-                $a.closest('.singleItem').remove();
-            });
+                window.location = newReport.path + '?_edit_mode=true';
+            }, $.globalIndicator.statusError);
+        });
+    });
 
-            // Have to delete from both new and old service :/
-            if (!$.isBlank($a.data('id')))
-            {
-                $.socrataServer.makeRequest({
-                    type: 'DELETE', url: '/api/pages/' + $a.data('id') + '.json',
-                    error: $.globalIndicator.statusError,
-                    success: callback
-                });
-            }
-            else
-            { callback(); }
-            if (!$.isBlank($a.data('oldid')))
-            {
-                $.socrataServer.makeRequest({
-                    type: 'POST', url: '/api/id/pages',
-                    data: JSON.stringify([{ path: $a.data('oldid'), ':deleted': true }]),
-                    error: $.globalIndicator.statusError,
-                    success: callback
-                });
-            }
-            else
-            { callback(); }
-        }
+    $('#manageReportsPage .singleItem .secondaryAction .copy').on('click', function(e)
+    {
+        e.preventDefault();
+        var $a = $(this);
+
+        $.globalIndicator.statusWorking();
+        Page.createFromId($a.data('id'), $a.data('oldid'), function(report)
+        {
+            $.globalIndicator.hideStatus();
+            $settingsDialog.find('[name=pageTitle]').value('Copy of ' + report.name);
+            $settingsDialog.data('report', report);
+            $settingsDialog.jqmShow();
+        },
+        $.globalIndicator.statusError);
     });
 
     // ----- TEMPLATE ------

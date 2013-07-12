@@ -161,9 +161,22 @@ input.button, a.button
         left: 1em
         z-index: 2
         a
-          padding: 0.4em 0.8em
+          margin: 0 0.1em
+          padding: 0.4em 0.6em
           span
+            display: inline-block
+            overflow: hidden
+            @include transition(0.5s, width)
             vertical-align: bottom
+            width: 1em
+          &:hover
+            padding: 0.4em 0.8em
+          &.edit:hover span
+            width: 3.333em
+          &.delete:hover span
+            width: 4.417em
+          &.copy:hover span
+            width: 4em
 
       .secondaryMetadata
         bottom: 0.5em

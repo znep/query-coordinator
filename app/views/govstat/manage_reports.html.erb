@@ -25,11 +25,14 @@
             <div class="singleInner" title="<%= report.name %>">
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="secondaryAction">
-                <a href="<%= report.path %>?_edit_mode=true" class="button">
+                <a href="<%= report.path %>?_edit_mode=true" class="button edit">
                   <span class="actionDetails ss-write">Edit</span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
                   <span class="actionDetails ss-trash">Delete</span></a>
+                <a href="#copy" class="button copy" data-id="<%= report.uid %>"
+                  data-oldid="<%= report.path %>">
+                  <span class="actionDetails ss-fork">Copy</span></a>
               </div>
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
@@ -51,15 +54,18 @@
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
               </div>
-              <%- if CurrentDomain.user_can?(current_user, 'edit_pages' ) -%>
               <div class="secondaryAction">
-                <a href="<%= report.path %>?_edit_mode=true" class="button">
+                <%- if CurrentDomain.user_can?(current_user, 'edit_pages' ) -%>
+                <a href="<%= report.path %>?_edit_mode=true" class="button edit">
                   <span class="actionDetails ss-write">Edit</span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
                   <span class="actionDetails ss-trash">Delete</span></a>
+                <%- end -%>
+                <a href="#copy" class="button copy" data-id="<%= report.uid %>"
+                  data-oldid="<%= report.path %>">
+                  <span class="actionDetails ss-fork">Copy</span></a>
               </div>
-              <%- end -%>
               <div class="secondaryMetadata">
                 <%- o = report.owner_user
                     if !o.nil? -%>
@@ -74,6 +80,10 @@
     </div>
   </div>
 </div>
+
+<%- content_for :modals do -%>
+  <%= render :partial => 'modals/configurator_settings' %>
+<%- end -%>
 
 <% content_for :js_footer do %>
   <%= include_javascripts 'screen-govstat-manage' %>

@@ -125,8 +125,8 @@
     var pullConfig = function()
     {
         var page = blist.configuration.page;
-        page.content = $.component.root().properties();
-        page.data = $.dataContext.currentContexts();
+        page.update({ content: $.component.root().properties(),
+            data: $.dataContext.currentContexts() });
         return page;
     };
 
@@ -191,6 +191,9 @@
                     { _: 'li', className: 'separator', contents:
                         { _: 'a', href: '#save', className: ['save', 'button'],
                             contents: 'Save' } },
+                    { _: 'li', contents:
+                        { _: 'a', href: '#saveCopy', className: ['saveCopy', 'button'],
+                            contents: 'Save As' } },
                     { _: 'li', contents:
                         { _: 'a', href: '#revert', className: ['revert', 'button'],
                             contents: 'Revert' } }
@@ -276,8 +279,8 @@
             {
                 e.preventDefault();
 
-                var newPage = $.extend(true, {}, blist.configuration.page);
-                newPage.permission = $permissionsDialog.find(':radio:checked').val();
+                var newPage = blist.configuration.page;
+                newPage.update({ permission: $permissionsDialog.find(':radio:checked').val() });
                 $.cf.edit.dirty = true;
                 var $spinner = $permissionsDialog.find('.loadingOverlay');
                 $spinner.removeClass('hide');
@@ -290,7 +293,7 @@
             });
 
             $settingsDialog = $('.configuratorSettings');
-            $settingsDialog.find('form').validate({errorElement: 'span',
+            $settingsDialog.find('form').validate({errorElement: 'span', ignore: ':hidden',
                     errorPlacement: function($error, $element)
                         { $error.appendTo($element.closest('.line')); }});
             $settingsDialog.find('.actions .save').click(function(e)
@@ -299,68 +302,48 @@
                 if (!$settingsDialog.find('form').valid())
                 { return; }
 
-                var newPage = $.extend(true, {}, blist.configuration.page);
-                newPage.name = $settingsDialog.find('[name=pageTitle]').value();
-                var oldPath = page.path;
-                newPage.path = $settingsDialog.find('[name=pageUrl]').value();
+                var isCopy = $settingsDialog.data('isCopy');
+                var newPage = blist.configuration.page.clone();
+                newPage.update({ name: $settingsDialog.find('[name=pageTitle]').value() });
+
                 $.cf.edit.dirty = true;
                 var $spinner = $settingsDialog.find('.loadingOverlay');
                 $settingsDialog.find('.errorMessage').addClass('hide');
                 $spinner.removeClass('hide');
 
-                var saveSettings = function()
+                if (!isCopy)
                 {
-                    $.cf.save(newPage, function()
+                    newPage.update({ path: $settingsDialog.find('[name=pageUrl]').value() });
+                    $.cf.save(newPage, function(__, flags)
                     {
                         $top.find('.editTitle .pageName').text(newPage.name);
                         $spinner.addClass('hide');
                         $settingsDialog.jqmHide();
-                        if (oldPath != newPage.path)
+                        if ($.subKeyDefined(flags, 'oldPath'))
+                        { window.location = newPage.path + '?_edit_mode=true'; }
+                    }, function(err)
+                    {
+                        if ($.subKeyDefined(err, 'duplicatePath'))
                         {
-                            $.socrataServer.makeRequest({
-                                type: 'POST', url: '/api/id/pages',
-                                data: JSON.stringify([{ path: oldPath, ':deleted': true }]),
-                                complete: function()
-                                { window.location = newPage.path; }
-                            });
+                            $spinner.addClass('hide');
+                            $settingsDialog.find('.errorMessage').removeClass('hide').text(newPage.path +
+                                ' already exists; please choose a different path');
                         }
                     });
-                };
-
-                if (oldPath != newPage.path)
-                {
-                    var pathExistsError = function()
-                    {
-                        $spinner.addClass('hide');
-                        $settingsDialog.find('.errorMessage').removeClass('hide').text(newPage.path +
-                            ' already exists; please choose a different path');
-                    };
-
-                    var doSave = _.after(2, saveSettings);
-                    // Check if overwrite
-                    $.socrataServer.makeRequest({ type: 'GET', url: '/api/pages.json',
-                        params: { path: newPage.path },
-                        success: function(resp)
-                        {
-                            if (_.isEmpty(resp))
-                            { doSave(); }
-                            else
-                            { pathExistsError(); }
-                        }
-                    });
-                    $.socrataServer.makeRequest({ type: 'GET', url: '/api/id/pages', isSODA: true,
-                    params: { path: newPage.path },
-                    success: function(resp)
-                    {
-                        if (_.isEmpty(resp))
-                        { doSave(); }
-                        else
-                        { pathExistsError(); }
-                    },
-                    error: function() { doSave(); } });
                 }
                 else
-                { saveSettings(); }
+                {
+                    Page.uniquePath(newPage.name, blist.configuration.govStat ? '/reports/' : '',
+                    function(path)
+                    {
+                        newPage.saveCopy({ path: path }, function(newReport)
+                        {
+                            $spinner.addClass('hide');
+                            $settingsDialog.jqmHide();
+                            window.location = newReport.path + '?_edit_mode=true';
+                        });
+                    });
+                }
             });
 
             $body.find('.siteOuterWrapper').fullScreen({ fullHeightSelector: '.notUsedNoConflict'});
@@ -461,7 +444,7 @@
             }
         },
 
-        save: function(newPage, finishCallback)
+        save: function(newPage, finishCallback, errorCallback)
         {
             if (!_.isFunction(finishCallback))
             { finishCallback = function() { exitEditMode(); }; }
@@ -473,37 +456,19 @@
                 if ($.isBlank(newPage))
                 { newPage = pullConfig(); }
 
-                var type = 'PUT';
-                var url = '/api/pages/' + newPage.uid + '.json';
-                if ($.isBlank(newPage.uid))
-                {
-                    // Creating a new page; converting from Pages dataset
-                    delete newPage.owner;
-                    delete newPage.flags;
-                    newPage.permission = 'public';
-                    type = 'POST';
-                    url = '/api/pages.json';
-                }
-
-                $.socrataServer.makeRequest({
-                    type: type,
-                    url: url,
-                    data: JSON.stringify(newPage),
-
-                    complete: function()
-                    { spinner.showHide(false); },
-
-                    success: function(resp)
+                newPage.save(function(resp)
                     {
+                        spinner.showHide(false);
                         blist.configuration.page = resp;
-                        finishCallback();
+                        finishCallback.apply(this, arguments);
                     },
-
-                    error: function()
+                    function()
                     {
+                        spinner.showHide(false);
+                        errorCallback.apply(this, arguments);
                         // TODO -- what to do with error?
                     }
-                });
+                );
             }
             else
             { finishCallback(); }
@@ -533,9 +498,21 @@
 
         settings: function()
         {
+            $settingsDialog.removeData('isCopy');
             $settingsDialog.find('[name=pageTitle]').value(blist.configuration.page.name);
             $settingsDialog.find('[name=pageUrl]').value(blist.configuration.page.path);
+            $settingsDialog.find('[name=pageUrl]').closest('.line').removeClass('hide');
             $settingsDialog.find('.errorMessage').addClass('hide');
+            $settingsDialog.jqmShow();
+            // Include access to translate here
+        },
+
+        saveCopy: function()
+        {
+            $settingsDialog.find('[name=pageTitle]').value('Copy of ' + blist.configuration.page.name);
+            $settingsDialog.find('[name=pageUrl]').closest('.line').addClass('hide');
+            $settingsDialog.find('.errorMessage').addClass('hide');
+            $settingsDialog.data('isCopy', true);
             $settingsDialog.jqmShow();
             // Include access to translate here
         },

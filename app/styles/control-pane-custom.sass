@@ -511,6 +511,7 @@
         display: inline-block
 
 
+  
   .formSection
     .line.colorValueGroup
       position: relative
@@ -526,6 +527,132 @@
         .line.colorCollapse
           top: 0
           right: 1.5em
+
+    
+  &.new_chart_create 
+    .formSection
+      @include viz-type-icons-small
+      @include chart-config-icons
+      @include data-selection-icons
+      margin-bottom: 0em
+
+      .radioBlock.option-icons
+        @include viz-type-icons
+        padding-left: 0px
+
+        div.radio, input[type="radio"], .inputWrapper
+          visibility: hidden
+
+        .radioLine
+          width: 40px
+          height: 40px
+          display: inline-block
+
+          background-color: #888
+          margin: 0px 12px 25px 12px
+          text-align: center
+        
+          > label
+            width: 100%
+            height: 100%
+
+      &.flyout, &[class*='ValueSelection']
+        .removeLink.delete
+          padding-left: 5%
+        .removeLink + .inputBlock
+          .line
+            width: 90%
+            margin-left: 10%
+            float: right
+          label
+            display: none
+
+
+      .line.hasIcon 
+        width: 75%
+        display: inline-block
+        vertical-align: top
+
+        & + .lineIcon
+          width: 60px
+          height: 60px
+          background-repeat: no-repeat
+          margin: 3px
+          display: inline-block
+          vertical-align: top
+
+      .line.columnSelect
+        > label
+          display: block
+          position: static
+          margin-left: 0.5em
+
+        .inputWrapper
+          float: none
+          padding-left: 0.5em
+          display: block
+
+        .error
+          margin-left: 0
+
+        .columnSelector
+          display: none
+
+
+
+      &.sectionHeading
+        background-color: gray
+        padding: 0.6em 0.8em 0.4em 0.8em
+        width: 100%
+        margin-left: -0.8em
+        margin-top: 0em
+        
+        .formHeader
+          color: #000000
+          font-size: 1.3em 
+
+        .sectionContent
+          display: none
+
+      &.sectionSubheading
+        @include sprite-accordion-icons('.formHeaderIcon')
+
+        .formHeaderIcon
+          float: left
+          margin-right: 6px
+
+        > .uniform.checker
+          display: none
+
+        .formHeader
+          background-color: #ddd
+          padding: 0.5em 1em 0.5em 0.5em
+          margin-left: -0.8em
+          width: 100%
+
+          .currentSelection
+            float: right
+            display: inline-block
+            .selectionName
+              display: inline-block
+              font-size: 1.0em
+              font-weight: normal
+              color: white
+            .selectionIcon
+              display: inline-block
+              margin-top: -4px
+              margin-bottom: -5px
+              margin-right: 0px
+              margin-left: 3px
+
+        .sectionContent
+          margin-bottom: 8px
+          margin-top: 8px
+          .radioGroup > label.required
+            display: none
+
+
+
 
   &.signedDataset .formSection
     p

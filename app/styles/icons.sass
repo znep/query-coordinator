@@ -180,7 +180,7 @@
 @mixin sprite-accordion-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
-    background-image: url(/stylesheets/images/icons/accordion_icons.png)
+    background-image: url(/stylesheets/images/icons/accordion_icons.png?2)
     height: 13px
     width: 13px
 
@@ -190,6 +190,12 @@
   #{$subselector},
   &.collapsed #{$subselector}
     background-position: 0 -13px
+
+  &.formSection #{$subselector}
+    background-position: 0 -26px
+
+  &.collapsed.formSection #{$subselector}
+    background-position: 0 -39px
 
 // icons/type_icons_30.png
 @mixin sprite-type-icons-30($subselector: '.icon')
@@ -757,6 +763,43 @@
         display: none
     $icon_slot: $icon_slot + 1
 
+// Visualization type icons (New visualize sidebar)
+@mixin viz-type-icons
+  $icon_slot: 0
+  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap
+    .#{$name}-icon
+      @include ie6-fix
+      background-image: url(/stylesheets/images/component/cf-icons.png?2)
+      background-repeat: no-repeat
+      background-position: 0 (-44px * $icon_slot)
+      height: 48px
+      width: 48px
+      margin-left: -4px
+      margin-top: -4px
+      span > span
+        margin-left: -8px
+        padding-top: 47px
+        visibility: visible
+        display: inline-block
+        white-space: normal
+        width: 64px
+        line-height: 1em
+    $icon_slot: $icon_slot + 1
+
+@mixin viz-type-icons-small
+  $icon_slot: 0
+  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap
+    &.#{$name}-icon .currentSelection > .selectionIcon
+      @include ie6-fix
+      background-image: url(/stylesheets/images/component/cf-icons-small.png?2)
+      background-repeat: no-repeat
+      background-position: 0 (-23px * $icon_slot)
+      height: 20px
+      width: 20px
+      margin-left: -4px
+      margin-right: 8px
+    $icon_slot: $icon_slot + 1
+
 // Login icons
 @mixin authentication-icons($subselector: '.icon')
   #{$subselector}
@@ -775,6 +818,35 @@
     background-position: 0 -75px
   &.openid #{$subselector}
     background-position: 0 -100px
+
+//Data selection form icons
+@mixin data-selection-icons
+  $icon_slot: 0
+  @each $name in stackedbar, bar, area, line, column, stackedcolumn, donut, pie, bubble, treemap, timeline
+
+    .#{$name}LabelSelection + .lineIcon
+      background-image: url(/stylesheets/images/icons/data-selection-icons.png?1)
+      background-position: 0 (-60px * $icon_slot)
+
+    .#{$name}ValueSelection + .lineIcon
+      background-image: url(/stylesheets/images/icons/data-selection-icons.png?1)
+      background-position: -60px (-60px * $icon_slot)
+
+    .#{$name}ValueSelection + .lineIcon.hover
+      background-position: -120px (-60px * $icon_slot)
+
+    $icon_slot: $icon_slot + 1
+
+//Other chart configuration form icons
+@mixin chart-config-icons
+  $icon_slot: 0
+  @each $name in labelInBar, valueInBar, valueMarker, flyout, pointColor, pointSize, errorBarsLow, errorBarsHigh
+
+    .#{$name} + .lineIcon
+      background-image: url(/stylesheets/images/icons/chart-config-icons.png?3)
+      background-position: 0 (-60px * $icon_slot)
+
+    $icon_slot: $icon_slot + 1
 
 // Profile edit icons
 @mixin profile-icons($subselector: '.icon')

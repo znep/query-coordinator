@@ -141,13 +141,22 @@
         [
           {
             + title: section title
+            
             + type: optional, 'selectable' makes the field collapseable.
                 By default it will be collapsed; when collapsed, nothing is
                 validated.  'hidden' hides the section completely
+            + initShow: boolean indicating whether a 'selectable' typed section should be 
+                expanded by default
+            + validateCollapsed: boolean indicating whether a 'selectable' typed section 
+                should have form values processed when collapsed
+
             + name: internal name for field; required if it is of type selectable.
                 Used to identify a hidden section to open
             + showIfData: boolean; if set to true, a selectable section will
                 show if data exists, even if it is equivalent to the default data
+            + customClasses: extra class(es) to be applied to the formSection;
+                should be a single string, could have multiple
+                space-separated classes
             + onlyIf: only display the section if these criteria are true.
                 Currently accepts a function, an object, or an array of objects:
             {
@@ -208,6 +217,14 @@
                           + savedField: name of a value that is not editable
                              but is part of the object, and should propagated
                              through edits
+                      - 'radioGroup'
+                          + sectionSelector: A boolean flag that, when set, renders all
+                              options in the group as static inputs that will work with 
+                              section showing and hiding. Options should be passed
+                              with a only a value and text.
+                      - 'static'
+                          + isInput: boolean flag to indicate whether to treat the value
+                              stored in the field as configuration info
                       - 'custom' renders a field using a callback. It takes a
                           special object named 'editorCallbacks',
                           with the following fields:
@@ -261,6 +278,8 @@
                   + extraClass: extra class(es) to be applied to the input;
                       should be a single string, could have multiple
                       space-separated classes
+                  + lineClass: extra class(es) to be applied the the line itelf rather than 
+                      the input. Same format as extraClass, above
                   + onlyIf: only display the field if these criteria are true.
                     Currently accepts a boolean, or an object:
                     {
@@ -428,19 +447,19 @@
                 if ($.isBlank(cpObj._cachedRender) || !$.isBlank(data))
                 { cpObj._cachedRender = {data: data, isTempData: isTempData}; }
                 cpObj._startProcessing();
-                return;
+                return false;
             }
 
             cpObj._finishProcessing();
 
             if (($.isBlank(data) || _.isEqual(data, cpObj._getCurrentData())) && !cpObj._isDirty)
-            { return; }
+            { return false; }
 
             $pane.find('.line.custom').each(function() { cleanLine(cpObj, $(this)); });
             $pane.find('[data-customContent]').each(function() { cleanSection(cpObj, $(this)); });
             $pane.empty();
 
-            if (!cpObj.isAvailable()) { return; }
+            if (!cpObj.isAvailable()) { return false; }
 
             if ($.isBlank(data))
             { data = cpObj._getCurrentData(); }
@@ -473,6 +492,8 @@
                         {
                             curSectId = _.uniqueId();
                             return _.compact([arg.item.type, arg.item.name,
+                            (arg.item.initShow ? 'initShow' : ''),
+                            (arg.item.validateCollapsed ? 'validateCollapsed' : ''),  
                             (!$.isBlank(arg.item.onlyIf) ||
                                 arg.item.type == 'hidden' ? 'hide' : ''),
                             (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ].concat(
@@ -501,7 +522,7 @@
                         },
                         '@name': function(arg)
                         { return (arg.item.name || '') + '_' + curSectId; },
-                        '.formHeader': 'section.title',
+                        '.formHeader+': 'section.title',
                         '.formHeader@for': function(arg)
                         { return (arg.item.name || '') + '_' + curSectId; },
                         '.formHeader@class+': function(arg)
@@ -574,8 +595,12 @@
                         || (isCheckbox
                         && $this.attr('data-dataValue') != $this.attr('data-defaultValue'));
                 });
+
+                hasData = hasData || $s.hasClass('initShow');
+
                 $s.toggleClass('collapsed', !hasData);
                 $s.find('.sectionSelect').value(hasData);
+
             });
 
             if (!cpObj._isReadOnly())
@@ -584,8 +609,11 @@
                 {
                     var $c = $(this);
                     _.defer(function()
-                    { $c.closest('.formSection').toggleClass('collapsed', !$c.value()); });
-                });
+                    { $c.closest('.formSection')
+                        .toggleClass('collapsed', !$c.value())
+                        .removeClass('initShow');
+                    });
+                }); 
             }
 
             hookUpFields(cpObj, $pane);
@@ -655,6 +683,8 @@
 
             cpObj._isDirty = false;
             cpObj._visible = true;
+
+            return true;
         },
 
         reset: function(isSoft)
@@ -902,10 +932,17 @@
             // (these are in a radioGroup, and will be handled by getting
             // the selected radio button in the group and manually getting
             // the associated input)
-            cpObj.$dom().find('form :input, form .colorControl, form .customWrapper')
+            var $validHideSects = cpObj.$dom().find('.formSection:visible').filter('.validateCollapsed');
+            
+            $validHideSects.find('.sectionContent').show();
+
+            var inputs = cpObj.$dom().find('form :input, form .colorControl, form .customWrapper')
                 .filter(':visible:not(:disabled, .prompt, ' +
-                    '.sectionSelect, .radioLine label *, .customWrapper *)')
-                .each(function()
+                    '.sectionSelect, .radioLine label *, .customWrapper *)');
+
+            $validHideSects.find('.sectionContent').hide();
+
+            inputs.each(function()
             {
                 var $input = $(this);
                 var $parents = $input.parents();
@@ -1121,7 +1158,12 @@
                   $input.parents().hasClass('fileChooser'))
         {
             value = $input.closest('.fileChooser').data('ajaxupload');
+        } 
+        else if ($input.hasClass('radioSectionSelector')) 
+        { 
+            value = $input.attr('value'); 
         }
+
         return value;
     };
 
@@ -1455,6 +1497,7 @@
     renderLineItem.radioGroup = function(cpObj, contents, args, curValue, defValue)
     {
         var aMatch = '-templateId';
+
         if (args.item.name.endsWith(aMatch))
         { args.item.name = [args.item.name.slice(0, -aMatch.length), _.uniqueId(), aMatch].join(''); }
         else
@@ -1466,8 +1509,21 @@
         var items = _.map(args.item.options, function(opt, i)
         {
             var id = itemAttrs.id + '-' + i;
-            var subLine = renderLine(cpObj, {context: $.extend({}, args.context,
-                    {noTag: true, inputOnly: true}), item: opt, items: args.item.options, pos: i});
+            var subline;
+
+            if (args.item.sectionSelector) 
+            {
+                subLine = renderLine(cpObj, {context: $.extend({}, args.context,
+                        {noTag: true, inputOnly: true}), item: $.extend({}, opt,
+                        {type: 'static', isInput: true, extraClass: 'radioSectionSelector', 
+                        name: args.item.origName, items: args.item.options, pos: i})
+                    });
+            } 
+            else 
+            {
+                subLine = renderLine(cpObj, {context: $.extend({}, args.context,
+                      {noTag: true, inputOnly: true}), item: opt, items: args.item.options, pos: i});
+            }
             var subLineDisabled = _.all(subLine, function(subline)
             { return _.any($.makeArray(subline.contents), function(c) { return c.disabled; }); });
 
@@ -1481,6 +1537,9 @@
             var checkSubData;
             checkSubData = function(item)
             {
+                if (args.item.sectionSelector) 
+                { return opt.value == curValue }
+
                 if ($.isPlainObject(item))
                 { return (item['data-dataValue'] || {}).onlyIf || checkSubData(item.contents); }
 
@@ -1491,8 +1550,11 @@
             if (checkSubData(subLine))
             { valChecked = radioItem; }
 
+            var optionLabel = {tagName: 'label', 'for': id, contents: subLine}
+            if (args.item.sectionSelector) {optionLabel['class'] = opt.value + '-icon'}
+
             return {tagName: 'div', 'class': ['radioLine', opt.type],
-                contents: [radioItem, {tagName: 'label', 'for': id, contents: subLine}]};
+                contents: [radioItem, optionLabel]};
         });
 
         if (!$.isBlank(valChecked))
@@ -1500,7 +1562,7 @@
         else if (!$.isBlank(defChecked))
         { defChecked.checked = true; }
 
-        contents.push({tagName: 'div', 'class': 'radioBlock', contents: items});
+        contents.push({tagName: 'div', 'class': 'radioBlock' + (args.item.extraClass === undefined ? '' : ' ' + args.item.extraClass), contents: items});
     };
 
     renderLineItem.radioSelect = function(cpObj, contents, args, curValue, defValue)
@@ -1512,7 +1574,6 @@
         var items = _.map(args.item.options, function(opt, i)
         {
             var id = itemAttrs.id + '-' + opt;
-
             return {tagName: 'div', 'class': 'radioLine',
                 contents: [$.extend({}, itemAttrs, {tagName: 'input', type: 'radio', id: id,
                     'data-dataValue': opt, checked: opt === v }),
@@ -1679,8 +1740,9 @@
         {
             if (args.item.isInput)
             {
+                var labelText = ((args.item.extraClass.search('radioSectionSelector') >= 0) ? args.item.text : val);
                 wrapper.contents = [];
-                wrapper.contents.push({tagName: 'span', contents: val});
+                wrapper.contents.push({tagName: 'span', contents: labelText});
                 wrapper.contents.push($.extend(commonAttrs(cpObj, args.item, args.context),
                     {tagName: 'input', type: 'hidden', value: val}));
             }
@@ -2142,7 +2204,7 @@
                 }
             }));
         });
-
+        
 
         //*** Repeater
         $container.find('.line.repeater').each(function()
@@ -2243,6 +2305,7 @@
         // Set up helper function
         var showHideSection = function()
         {
+
             _.defer(function()
             {
                 var isHidden = false;
@@ -2257,12 +2320,17 @@
                 _.each(oif, function(o)
                 {
                     var failed = false;
-                    if (!$.isBlank(o.$field))
-                    {
-                        failed = o.$field.val() != o.value;
+                    if (!$.isBlank(o.$field)) {
 
-                        if ($.isBlank($firstField))
-                        { $firstField = o.$field; }
+                        if (o.inRadioGroup) {
+                            failed = !o.$field.is(':checked');
+                        } else {
+                            failed = o.$field.val() != o.value;
+                        }
+
+                        if ($.isBlank($firstField)) {
+                            $firstField = o.$field;
+                        }
                     }
                     else if (_.isFunction(o.func))
                     { failed = !o.func.call(cpObj, cpObj._curData); }
@@ -2326,12 +2394,41 @@
             if (!isField && !isFunc)
             { throw new Error('Only field-value or func objects supported for section onlyIfs'); }
 
-            if (isField)
-            {
+            if (isField) {
                 // This isn't going to work if there is a section name...
                 o.$field = $inputs.filter('[name="' + cpObj.$dom().attr('id') + ':' + o.field + '"]');
+
+                //For hooking up radioGroups with multiple elements assigning different values to the same name
+                //Done by adding a sectionSelector flag on radioGroup creation.
+                if (o.$field.length > 1) {
+
+                    var $matchedField;
+                    o.$field.each(function() {
+                        if (this.value == o.value) {
+                            $matchedField = $(this);
+                        }
+                    });
+
+                    if (!o.$field.hasClass('radioSectionSelector')) {
+                        return;
+                    }
+
+                    var $matchedRadioButton = $matchedField.closest('.radioLine').find('input[type="radio"]');
+
+                    if (!$matchedRadioButton) {
+                        return;
+                    }
+
+                    o.$field = $matchedRadioButton;
+                    o.inRadioGroup = true;
+                }
+
                 o.$field.change(showHideSection).keypress(showHideSection)
                     .click(showHideSection).attr('data-onlyIfInput', true);
+
+                if (o.inRadioGroup) {
+                    o.$field.closest('.radioGroup').click(showHideSection);
+                }
             }
             else if (isFunc && !$.isBlank(cpObj._view))
             { cpObj._view.bind('columns_changed', showHideSection, cpObj); }

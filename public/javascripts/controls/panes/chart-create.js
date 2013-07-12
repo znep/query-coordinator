@@ -48,6 +48,7 @@
         _getSections: function()
         {
             var cpObj = this;
+            
             var result = [
                 {
                     title: $.t('screens.ds.grid_sidebar.chart.setup.title'),
@@ -58,6 +59,7 @@
                         }
                     ]
                 }
+
             ];
 
             _.each(_.keys(Dataset.chart.types), function(type)
@@ -66,7 +68,6 @@
                     {view: cpObj._view, isEdit: isEdit(cpObj) && !cpObj._view.isGrouped(),
                         useOnlyIf: true}));
             });
-
             return result;
         },
 
@@ -100,7 +101,8 @@
                         }};
                         return orderBy;
                     }) }
-            ); }
+             );}
+           
             if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
                 (view.displayFormat.stacking == true))
             {

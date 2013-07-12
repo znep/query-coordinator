@@ -134,7 +134,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         , true));
 
         cc.$chartArea = $dom.find('.mondrian');
-        cc.$chartOuterContainer = $dom.find('chartOuterContainer');
+        cc.$chartOuterContainer = $dom.find('.chartOuterContainer');
         cc.$chartContainer = $dom.find('.chartContainer');
         cc.$chartRenderArea = $dom.find('.chartRenderArea');
         cc.$tickContainer = $dom.find('.tickContainer');
@@ -230,10 +230,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
             }
         });
 
-        // set up side stuff
-        vizObj._decorateChrome();
+        vizObj._drawAxisLabels();
 
-        // super
         vizObj._super();
     },
 
@@ -456,7 +454,99 @@ $.Control.registerMixin('d3_virt_scrolling', {
         var needsSmallMode = smallestDimension < vizObj.defaults.smallModeThreshold;
         cc.$chartArea.toggleClass('smallMode', needsSmallMode);
 
+        // The ordering of these two is important - legend takes precedence,
+        // labels react to that.
         vizObj._updateLegendStyle();
+        vizObj._updateLabelPositioning();
+    },
+
+    _updateLabelPositioning: function()
+    {
+        var vizObj = this,
+            cc = vizObj._chartConfig;
+
+        var extraYLabelLeftMargin = 2;
+        var extraYLabelTopMargin = -25;
+        var chartLeftMarginForYLabelVert = 5;
+
+        var $yLabelVert = cc.$chartArea.find('.yLabelVert');
+        var $xLabelHorizFloating = cc.$chartArea.find('.xLabelHoriz.floatingAxisLabel');
+
+        // Okay. Here there be dragons. Basically we want our vertical label to
+        // sit against the side of the screen, centered vertically.
+        // So, we apply a 90* rotation to it, but this is only a rendering
+        // transform, not a layout. We've tried lots of magical CSS incantations
+        // to center vertically, but all had problems. So we gave up and are now
+        // using JS.
+        if ($yLabelVert.length > 0)
+        {
+            // Length we want to give the text. In other words, the width
+            // pre-rotation.
+            var textReflowLength = cc.$chartOuterContainer.height();
+
+            // Sometimes we add extra margins here. We need to account for them
+            // (label should be centered about the chart data area, not the
+            // whole chart).
+            var outerMarginTop = cc.$chartOuterContainer.margin().top;
+            var outerLeft = cc.$chartOuterContainer.position().left;
+            var outerTop = cc.$chartOuterContainer.position().top;
+
+            // Make the text wrap.
+            $yLabelVert.width(textReflowLength);
+
+            // Find out the size of the text across the line breaks. In other
+            // words, the height of the text pre-rotation.
+            var textHeight = $yLabelVert.height();
+
+            // Move the text down so it's centered vertically.
+            // The ie8 clause is there because IE transforms about the top-left
+            // of the text, while others go about the center.
+            $yLabelVert.css('top', textReflowLength/2 + outerMarginTop - (vizObj._isIE8() ? textReflowLength/2 : 0) + extraYLabelTopMargin + outerTop);
+
+            // Move the text right so all of it is visible.
+            $yLabelVert.css('left', -textReflowLength/2 + textHeight/2 + outerLeft + extraYLabelLeftMargin);
+        }
+
+        // Yes, height (it's rotated). Well, except for IE. It does it wrong-right.
+        var yLabelVertSizeX = (vizObj._isIE8() ? $yLabelVert.width() : $yLabelVert.height()) || 0;
+
+        // In this case, the legend and the y axis don't share the same container,
+        // so we can't do the fancy legend overlay thingy.
+        if (vizObj._chartConfig.orientation == 'down' && vizObj.legendPosition() != 'top')
+        {
+            cc.$chartOuterContainer.css('margin-top', cc.$chartArea.find('.xLabelHoriz').height() + chartLeftMarginForYLabelVert);
+        }
+
+        if (vizObj._chartConfig.orientation == 'right')
+        {
+            cc.$chartOuterContainer.css('margin-left', yLabelVertSizeX > 0 ? (yLabelVertSizeX + chartLeftMarginForYLabelVert) : 0 );
+        }
+
+        var labelAreaLeftBound = 0;
+        var labelAreaRightBound = 0;
+        var outerMarginLeft = cc.$chartOuterContainer.margin().left;
+        var outerLeft = cc.$chartOuterContainer.position().left;
+        if (cc.orientation == 'down')
+        {
+            labelAreaLeftBound = (cc.valueLabelBuffer || vizObj.defaults.valueLabelBuffer) + outerMarginLeft + outerLeft;
+            labelAreaRightBound = cc.$chartArea.width() - cc.$chartOuterContainer.width() - outerLeft;
+        }
+        else
+        {
+            labelAreaLeftBound = outerMarginLeft + outerLeft + yLabelVertSizeX;
+            labelAreaRightBound = cc.$chartArea.width() - cc.$chartOuterContainer.width() - outerLeft;
+        }
+
+        // Bump the left margin so we're centered.
+        var extraSpace = cc.$chartArea.width() - labelAreaRightBound - labelAreaLeftBound - $xLabelHorizFloating.width();
+        if (extraSpace > 0)
+        {
+            labelAreaLeftBound += extraSpace / 2;
+            labelAreaRightBound -= extraSpace / 2;
+        }
+
+        $xLabelHorizFloating.css('margin-left', labelAreaLeftBound);
+        $xLabelHorizFloating.css('margin-right', labelAreaRightBound);
     },
 
     _updateLegendStyle: function()
@@ -524,7 +614,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             }
             else if (legendPosition == 'top')
             {
-                vizObj.defaults.valueLabelBuffer = (isSmallMode ? 60 : 100) + $legendContainer.height();
+                vizObj.defaults.valueLabelBuffer = (isSmallMode ? 60 : 100);
                 vizObj.defaults.dataMaxBuffer = 30 + $legendContainer.height();
             }
         }
@@ -540,6 +630,17 @@ $.Control.registerMixin('d3_virt_scrolling', {
         {
             $legendContainer.css('margin-top', '');
         }
+
+        // In this case, the legend and the y axis share the same container,
+        // so we can't do the fancy legend overlay thingy.
+        if (vizObj._chartConfig.orientation == 'down' && legendPosition == 'top')
+        {
+            cc.$chartOuterContainer.css('margin-top', $legendContainer.height());
+        }
+        else
+        {
+            cc.$chartOuterContainer.css('margin-top', '');
+        }
     },
 
     renderLegend: function()
@@ -551,7 +652,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         vizObj._updateLegendStyle();
     },
 
-    _decorateChrome: function()
+    _drawAxisLabels: function()
     {
         var vizObj = this,
             cc = vizObj._chartConfig;
@@ -559,13 +660,24 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // render y axis label
         if (!$.isBlank(vizObj._displayFormat.titleY))
         {
+            var inLegend = cc.orientation == 'down' && vizObj.hasLegend() && vizObj.legendPosition() == 'top';
+
             var clsname = cc.orientation == 'right' ? 'yLabelVert' : 'xLabelHoriz';
             cc.$chartArea.addClass('has' + $.capitalize(clsname));
-            cc.$chartArea.append($.tag({
+            var $label = $.tag({
                 tagName: 'div',
-                'class': clsname,
+                'class': clsname + (inLegend ? ' belowLegendLines' : ' floatingAxisLabel'),
                 contents: $.htmlEscape(vizObj._displayFormat.titleY)
-            }));
+            });
+
+            if (inLegend)
+            {
+                cc.$legendContainer.append($label);
+            }
+            else
+            {
+                cc.$chartArea.append($label);
+            }
         }
 
         // render x axis label
@@ -573,17 +685,24 @@ $.Control.registerMixin('d3_virt_scrolling', {
         {
             var clsname = cc.orientation == 'right' ? 'xLabelHoriz' : 'yLabelVert';
             cc.$chartArea.addClass('has' + $.capitalize(clsname));
+
+            var inLegend = cc.orientation == 'right' && vizObj.hasLegend() && vizObj.legendPosition() == 'bottom';
+
             var $label = $.tag({
                 tagName: 'div',
-                'class': clsname,
+                'class': clsname + (inLegend ? ' aboveLegendLines' : ' floatingAxisLabel'),
                 contents: $.htmlEscape(vizObj._displayFormat.titleX)
             });
-            cc.$chartArea.append($label);
-        }
 
-        // need to manually fix the label width due to bg image
-        var $label = cc.$chartArea.find('.xLabelHoriz');
-        $label.css('margin-left', -0.5 * $label.width());
+            if (inLegend)
+            {
+                cc.$legendContainer.prepend($label);
+            }
+            else
+            {
+                cc.$chartArea.append($label);
+            }
+        }
     },
 
     _maxRenderWidth: function()
@@ -600,7 +719,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             return 8300000;
         }
 
-        if ($.browser.msie && $.browser.majorVersion > 8)
+        if (this._isIE8())
         {
             // ie9 seems to have the same cutoff as firefox.
             return 8300000;
@@ -617,8 +736,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
             cc = vizObj._chartConfig,
             chartD3 = cc.chartD3,
             totalRows = vizObj.getTotalRows(),
-            chartArea = cc.$chartContainer[cc.dataDim.width](),
-            domArea = cc.$chartContainer[cc.dataDim.height](),
+            chartArea = cc.$chartOuterContainer[cc.dataDim.width](),
+            domArea = cc.$chartOuterContainer[cc.dataDim.height](),
             maxRenderWidth = vizObj._maxRenderWidth(),
             barWidthBounds = defaults.barWidthBounds,
             barSpacingBounds = defaults.barSpacingBounds,
@@ -748,9 +867,6 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         // move baseline
         cc.$baselineContainer.css(cc.dataDim.pluckY('left', 'top'), vizObj._yAxisPos());
-
-        // resize yAxis title. ie8 just fails to word-wrap despite this.
-        $(".yLabelVert").width(cc.chartHeight);
 
         // return whether our row width has changed, so we know
         // if we'll have to move some things around

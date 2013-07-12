@@ -23,6 +23,16 @@
             });
         },
 
+        _dataPreProcess: function(view) 
+        {
+            view = view.cleanCopy();
+            
+            view.displayFormat.colors = _.map(view.displayFormat.colors, function(c) {
+                return {color: c};
+            });
+            return view;
+        }, 
+
         getTitle: function()
         { return $.t('screens.ds.grid_sidebar.chart.title'); },
 
@@ -80,6 +90,10 @@
 
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
+
+            view.displayFormat.colors = _.map(view.displayFormat.colors, function(c) {
+                return c.color; 
+            });
 
             var addColumn = function(colId)
             {

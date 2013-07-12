@@ -1347,8 +1347,7 @@
     {
         var item = $.extend({}, args.item,
             {defaultValue: $.arrayify(args.item.defaultValue || []), extraClass: 'colorInput'});
-        var defColor = curValue ||
-            item.defaultValue[args.context.repeaterIndex] ||
+        var defColor = curValue || item.defaultValue[args.context.repeaterIndex] ||
             item.defaultValue[0];
         var wrapper = _.last(contents);
         wrapper.contents = [];
@@ -2354,18 +2353,6 @@
                 if (!$.isBlank(a) && a.endsWith(attrMatch))
                 { $elem.attr(aName, a.slice(0, -attrMatch.length) + '-' + i); }
             });
-        });
-
-        $newLine.find('.colorControl').each(function()
-        {
-            var $a = $(this);
-            var $i = $a.siblings(':input');
-            var colors = JSON.parse($i.attr('data-defaultValue') || '""');
-            if (colors.length < 2) { return; }
-
-            var newColor = colors[i % colors.length];
-            $a.css('background-color', newColor);
-            $i.val(newColor);
         });
 
         hookUpFields(cpObj, $newLine);

@@ -961,11 +961,22 @@ $.Control.registerMixin('d3_virt_scrolling', {
         if (cc.lockYAxisAtZero)
         { defaultMins.push(0); defaultMaxs.push(0); }
 
-        return d3.scale.linear()
+        var yScale = d3.scale.linear()
             .domain([ !_.isNaN(explicitMin) ? explicitMin : d3.min(defaultMins),
                       !_.isNaN(explicitMax) ? explicitMax : d3.max(defaultMaxs) ])
             .range([ 0, Math.max(0, rangeMax - vizObj.defaults.dataMaxBuffer) ])
             .clamp(true);
+
+        // Make sure that the last tick is above maxValue;
+        var idealTickCount = cc[cc.dataDim.pluckY('chartWidth', 'chartHeight')] / 80,
+            ticks = yScale.ticks(idealTickCount),
+            tickSize = Math.abs(ticks[0] - ticks[1]), // Assuming we'll have 2+ ticks.
+            domain = yScale.domain();
+
+        yScale.domain([_.first(ticks) > cc.minValue ? _.first(ticks) - tickSize : domain[0],
+                       _.last(ticks)  < cc.maxValue ? _.last(ticks)  + tickSize : domain[1]]);
+
+        return yScale;
     },
 
     // should be a 1:1 mapping unless the browser's render container has truncated

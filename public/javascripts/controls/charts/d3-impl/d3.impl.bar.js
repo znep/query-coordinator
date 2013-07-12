@@ -771,9 +771,8 @@ $.Control.registerMixin('d3_impl_bar', {
         else
         {
             yAxisPos = 0;
-            var ie8 = $.browser.msie && parseFloat($.browser.version) < 9;
             if (!$.isBlank(this._displayFormat.titleX))
-            { yAxisPos += this._displayFormat.titleX[ie8 ? 'visualLength' : 'visualHeight']()
+            { yAxisPos += this._displayFormat.titleX[this._isIE8() ? 'visualLength' : 'visualHeight']()
                     + $('.yLabelVert').offset().left + 5; } // 5 is for padding.
         }
         return yAxisPos;
@@ -807,7 +806,6 @@ $.Control.registerMixin('d3_impl_bar', {
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
-            ie8 = $.browser.msie && parseFloat($.browser.version) < 9,
             yAxisPos = vizObj._yAxisPos(),
             yScale = vizObj._currentYScale(),
             valueColumns = vizObj.getValueColumns(),
@@ -839,7 +837,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     datumPos -= vizObj._yBarHeight(valueColumns[d.seriesIndex - 1].column.lookup, yScale)(d) || 0;
                 }
 
-                if (ie8)
+                if (vizObj._isIE8())
                 {
                     position = yAxisPos - $(this).height() - 5;
                     if (endJustified)

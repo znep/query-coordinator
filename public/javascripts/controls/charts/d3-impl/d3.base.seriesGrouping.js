@@ -576,7 +576,7 @@ d3base.seriesGrouping = {
 
         // Due to IE8's raw speed, we can afford to wait longer between batches.
         // Oh wait, no, we have to wait longer otherwise IE still chokes.
-        var dataProcessDelayMillisec = ($.browser.msie && parseFloat($.browser.version)) < 9 ? 250 : 10;
+        var dataProcessDelayMillisec = vizObj._isIE8() ? 250 : 10;
 
         if (!vizObj.requiresSeriesGrouping()) { return; }
 

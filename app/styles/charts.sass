@@ -35,28 +35,31 @@
   .yLabelVert
     font-size: 1.4em
     font-weight: bold
-    left: -11.65em
+    max-height: 4em
+    overflow: hidden
     background: url(/stylesheets/images/content/70percentwhite.png)
-    margin-top: -0.5em
     position: absolute
     @include prefixer(transform, rotate(-90deg))
     text-align: center
-    top: 50%
+    padding-left: 5px
+    padding-right: 5px
 
     .ie8 &
       filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand') progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/stylesheets/images/content/70percentwhite.png', sizingMethod='scale')
-      margin-left: 13em
-      margin-top: -24em
       background: transparent
 
-  .xLabelHoriz
+  .floatingAxisLabel.xLabelHoriz
     background: url(/stylesheets/images/content/70percentwhite.png)
+    position: absolute
+    padding: 0.2em
     bottom: 1em
+    margin-bottom: 0
+
+  .xLabelHoriz
+    overflow: hidden
+    max-height: 4em
     font-size: 1.4em
     font-weight: bold
-    left: 50%
-    padding: 0.2em
-    position: absolute
     text-align: center
 
   .chartContainer
@@ -190,14 +193,16 @@
 .smallMode
   .legendLine
     padding: 0.2em
+    margin-right: 1.2em
 
   .legendIcon
     height: 1.25em
     width: 1.25em
+    margin-right: 0.5em
 
   .legendLabel
     font-size: 1.1em
-    line-height: 1.1em
+    line-height: 1.2em
 
 .mondrian.columnChart, .mondrian.barChart.orientationRight
 
@@ -235,7 +240,7 @@
     bottom: 0em
 
   &.hasYLabelVert .chartOuterContainer
-    left: 4em
+    left: 1em
 
   &.hasTopLegend
     .chartOuterContainer
@@ -335,6 +340,12 @@
   .xLabelHoriz
     top: 0em
     bottom: auto
+    margin: 0
+    margin-bottom: 2px
+
+  &.hasTopLegend .xLabelHoriz
+    margin-top: 2px
+    margin-bottom: 2px
 
   &.hasTopLegend .xLabelHoriz
     top: 3em
@@ -358,7 +369,7 @@
 
   &.hasTopLegend
     .chartOuterContainer
-      top: 6em
+      top: 1em
       left: 0em
       right: 0em
       bottom: 0em

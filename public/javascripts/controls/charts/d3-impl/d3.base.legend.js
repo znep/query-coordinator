@@ -48,16 +48,35 @@ $.Control.registerMixin('d3_base_legend', {
             legendDetails = vizObj._displayFormat.legendDetails || vizObj._getDefaultLegendDetails(),
             $legendContainer = vizObj.$legendContainer();
 
-        $legendContainer.empty();
+
+        $legendContainer.find('.legendLine').remove();
         $legendContainer.removeClass('top right bottom left');
         $legendContainer.addClass($.htmlEscape(legendPosition));
+
+        // Other code likes to put extra things in here. Preserve their order.
+        var add;
+        var lowerInterloper = $legendContainer.find('.belowLegendLines:first');
+        if (lowerInterloper.length > 0)
+        {
+            add = function(i)
+            {
+                lowerInterloper.before(i);
+            };
+        }
+        else
+        {
+            add = function(i)
+            {
+                $legendContainer.append(i);
+            };
+        }
 
         // first render series if they were asked for
         if (legendDetails.showSeries === true)
         {
             _.each(vizObj.getValueColumns(), function(colDef)
             {
-                $legendContainer.append(vizObj._renderLegendLine({ color: vizObj._d3_getColor(colDef) }, colDef.column.name));
+                add(vizObj._renderLegendLine({ color: vizObj._d3_getColor(colDef) }, colDef.column.name));
             });
         }
 
@@ -66,7 +85,7 @@ $.Control.registerMixin('d3_base_legend', {
         {
             customValuesCallback(legendDetails, function(color, text)
             {
-                $legendContainer.append(vizObj._renderLegendLine({ color: color }, text));
+                add(vizObj._renderLegendLine({ color: color }, text));
             });
         }
 
@@ -78,7 +97,7 @@ $.Control.registerMixin('d3_base_legend', {
                 var label = condition.description;
                 if (!$.isBlank(condition.color))
                 {
-                    $legendContainer.append(vizObj._renderLegendLine({ color: condition.color }, label));
+                    add(vizObj._renderLegendLine({ color: condition.color }, label));
                 }
                 else
                 {
@@ -94,7 +113,7 @@ $.Control.registerMixin('d3_base_legend', {
         {
             _.each(vizObj._displayFormat.valueMarker, function(valueMarker)
             {
-                $legendContainer.append(vizObj._renderLegendLine({ line: valueMarker.color }, valueMarker.caption));
+                add(vizObj._renderLegendLine({ line: valueMarker.color }, valueMarker.caption));
             });
         }
         // last render custom items
@@ -102,7 +121,7 @@ $.Control.registerMixin('d3_base_legend', {
         {
             _.each(legendDetails.customEntries, function(customEntry)
             {
-                $legendContainer.append(vizObj._renderLegendLine({ color: customEntry.color }, customEntry.label));
+                add(vizObj._renderLegendLine({ color: customEntry.color }, customEntry.label));
             });
         }
     },

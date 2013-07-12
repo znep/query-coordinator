@@ -60,7 +60,7 @@ $.Control.registerMixin('d3_base', {
     _d3_text: function(transform)
     {
         var hasTransform = _.isFunction(transform);
-        if ($.browser.msie && ($.browser.majorVersion < 9))
+        if (this._isIE8())
         {
             return function(d, i) {
                 $(this).text(hasTransform ? transform(d) : d);
@@ -244,6 +244,11 @@ $.Control.registerMixin('d3_base', {
         {
             visual.localMouseOut(delay);
         }
+    },
+
+    _isIE8: function()
+    {
+        return $.browser.msie && parseFloat($.browser.version) < 9;
     }
 }, null, 'socrataChart');
 

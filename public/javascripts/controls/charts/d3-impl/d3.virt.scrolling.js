@@ -127,7 +127,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
                             { tagName: 'div', 'class': 'baselineBg' },
                             { tagName: 'div', 'class': 'baselineLine' }
                     ] }] },
-                { tagName: 'div', 'class': 'legendContainer' },
+                { tagName: 'div', 'class': 'legendContainer', contents: [
+                    { tagName: 'div', 'class': 'legendLines' }
+                ]},
 
                 { tagName: 'div', 'class': 'overlayContainer'}
             ] }
@@ -666,7 +668,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             cc.$chartArea.addClass('has' + $.capitalize(clsname));
             var $label = $.tag({
                 tagName: 'div',
-                'class': clsname + (inLegend ? ' belowLegendLines' : ' floatingAxisLabel'),
+                'class': clsname + (inLegend ? '' : ' floatingAxisLabel'),
                 contents: $.htmlEscape(vizObj._displayFormat.titleY)
             });
 
@@ -690,7 +692,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
             var $label = $.tag({
                 tagName: 'div',
-                'class': clsname + (inLegend ? ' aboveLegendLines' : ' floatingAxisLabel'),
+                'class': clsname + (inLegend ? '' : ' floatingAxisLabel'),
                 contents: $.htmlEscape(vizObj._displayFormat.titleX)
             });
 

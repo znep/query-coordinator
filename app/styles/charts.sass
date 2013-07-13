@@ -72,15 +72,10 @@
       position: absolute
 
   .legendContainer
-    background-color: rgba(255, 255, 255, 0.7)
-    @include border-radius(0.2em)
     overflow: hidden
     text-align: center
     position: relative
     line-height: normal // Chrome bug - setting this prevents broken scrollbar when we haven't hit max-height.
-
-    .ie8 &
-      background: transparent url(/stylesheets/images/content/70percentwhite.png)
 
     &.bottom, &.top
       left: 20%
@@ -168,15 +163,33 @@
 
 
 .mondrian
+  .top .legendLines
+    margin-bottom: 3px
+    margin-top: 2px
+
+  .bottom .legendLines
+    margin-top: 3px
+    margin-bottom: 2px
+
+  .legendLines
+    background-color: rgba(255, 255, 255, 0.7)
+    @include border-radius(0.2em)
+    display: inline-block
+    border: 1px solid #aaa
+
+    .ie8 &
+      background: transparent url(/stylesheets/images/content/70percentwhite.png)
+
   .legendLine
     display: inline-block
-    padding: 1em
+    padding: 0.5em
 
   .legendIcon
     float: left
-    height: 2em
+    height: 1.7em
     margin-right: 1em
-    width: 2em
+    @include border-radius(0.2em)
+    width: 1.7em
 
     .markerLine
       display: block
@@ -184,11 +197,11 @@
       border-top: 1px
       border-style: dashed
       margin: 0.9em 0
-      width: 2em
+      width: 1.7em
 
   .legendLabel
     font-size: 1.3em
-    line-height: 1.538em
+    line-height: 1.38em
 
 .smallMode
   .legendLine
@@ -199,6 +212,10 @@
     height: 1.25em
     width: 1.25em
     margin-right: 0.5em
+
+    .markerLine
+      margin: 0.60em 0
+      width: 1.25em
 
   .legendLabel
     font-size: 1.1em
@@ -475,3 +492,6 @@
     font-size: 1.2em
     vertical-align: middle
     padding: 0.25em 0.5em
+
+.mondrian.pieChart .legendContainer.top
+  top: 0

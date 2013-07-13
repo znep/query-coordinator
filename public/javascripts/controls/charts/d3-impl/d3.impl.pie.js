@@ -169,7 +169,9 @@ $.Control.registerMixin('d3_impl_pie', {
                         { tagName: 'div', 'class': 'chartRenderArea',
                           contents: '&nbsp;' }, // if no contents, browser doesn't bother to scroll
                         ] }] },
-                { tagName: 'div', 'class': 'legendContainer' },
+                { tagName: 'div', 'class': 'legendContainer', contents: [
+                    { tagName: 'div', 'class': 'legendLines' }
+                ]},
                 { tagName: 'div', 'class': 'controlContainer' }
             ] }
         , true));

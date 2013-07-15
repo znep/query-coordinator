@@ -5,6 +5,16 @@ var d3ns = blist.namespace.fetch('blist.d3');
 
 $.Control.registerMixin('d3_impl_line', {
 
+    initializeVisualization: function()
+    {
+        this._super();
+
+        if (this._chartType == 'area')
+        {
+            this._chartConfig.lockYAxisAtZero = true;
+        }
+    },
+
     getOrientation: function()
     {
         return 'right';
@@ -45,6 +55,9 @@ $.Control.registerMixin('d3_impl_line', {
                 return vizObj._isXRangeInViewport(xPos, xPos);
             };
 
+            // Critical invariant: This should be true for _one_ contiguous chunk
+            // of data, oterwise the _sortBy on data below will not yield expected
+            // values and you'll get modern art instead of a chart.
             var lineSegmentInView = function(d, i, list)
             {
                 var prev = (i > 0) ? list[i-1] : undefined;
@@ -65,6 +78,26 @@ $.Control.registerMixin('d3_impl_line', {
 
             var oldLine = vizObj._constructSeriesPath(colDef, seriesIndex, oldYScale);
             var newLine = vizObj._constructSeriesPath(colDef, seriesIndex, newYScale);
+
+            // Compute a clipping rect for the chart.
+            var computeClippingRectForScale = function(scale)
+            {
+                var rangeXMagnitude = xDatumPositionForSeries({index: data.length - 1});
+
+                var rangeY = scale.range();
+                var rangeYMagnitude = rangeY[1] - rangeY[0];
+
+                // Account for the extra space we render above the top of the range.
+                // Remember _yDatumPosition returns values in screen space, so
+                // 0 is the top of the chart, and higher values go down.
+                var dummy = {};
+                dummy[col.lookup] = scale.domain()[1];
+                rangeYMagnitude += vizObj._yDatumPosition(col.lookup, scale)(dummy);
+
+                return [ 0, 0, rangeXMagnitude, rangeYMagnitude];
+            };
+
+            var clipRect = computeClippingRectForScale(newYScale);
 
             // Render the line that connects the dots.
             if (!cc.seriesPath)
@@ -87,6 +120,7 @@ $.Control.registerMixin('d3_impl_line', {
                 .classed('hide', vizObj._displayFormat.lineSize === '0')
                 .attr('stroke', vizObj._d3_getColor(colDef))
                 .attr('stroke-width', 2)
+                .attr('clip-rect', clipRect.join(' '))
                 .datum(lineData)
                 .attr('d', oldLine);
 
@@ -101,15 +135,24 @@ $.Control.registerMixin('d3_impl_line', {
                     .duration(1000)
                     .attr('d', newLine)
 
-            // render our actual lines
+            // render our dots
             var seriesClass = 'dataBar_series' + col.lookup;
+
+            var newYPosition = vizObj._yDatumPosition(col.lookup, newYScale);
+
             var lines = cc.chartD3.selectAll('.' + seriesClass)
                 .data(notNullData, function(row) { return row.id; });
+
             lines
                 .enter().append('circle')
                     .classed('dataBar', true)
                     .classed(seriesClass, true)
-                    .classed('hide', vizObj._displayFormat.pointSize === '0')
+                    .classed('hide', function(d)
+                    {
+                        var pos = newYPosition(d);
+                        return pos > clipRect[3] || pos < 0 ||
+                               vizObj._displayFormat.pointSize === '0';
+                    })
                     .attr('stroke', '#fff')
 
                     .attr('cx', xDatumPositionForSeries)
@@ -162,7 +205,8 @@ $.Control.registerMixin('d3_impl_line', {
                     })
                 .transition()
                     .duration(1000)
-                    .attr('cy', vizObj._yDatumPosition(col.lookup, newYScale))
+                    .attr('cy', newYPosition);
+
             lines
                 .exit()
                     .each(function(d)

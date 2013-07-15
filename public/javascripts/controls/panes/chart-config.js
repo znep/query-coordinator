@@ -376,7 +376,7 @@
                 },
                 {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 name: 'displayFormat.colors', field: colorOption,
-                initialRepeatCount: 5, lineClass: 'colorArray'}
+                initialRepeatCount: 5, minimum: 1, lineClass: 'colorArray'}
             ]
         };
     };
@@ -435,7 +435,7 @@
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', name: 'displayFormat.colors', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: colorOption,
-                initialRepeatCount: 5, lineClass: 'colorArray'});
+                initialRepeatCount: 5, minimum: 1, lineClass: 'colorArray'});
 
         return bc;
     };
@@ -450,7 +450,7 @@
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', name: 'displayFormat.colors', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: colorOption,
+                field: colorOption, minimum: 1,
                 initialRepeatCount: 5, lineClass: 'colorArray'});
         return bc;
     };

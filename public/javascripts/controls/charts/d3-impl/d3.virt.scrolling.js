@@ -1012,7 +1012,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // Make sure that the last tick is above maxValue;
         var idealTickCount = cc[cc.dataDim.pluckY('chartWidth', 'chartHeight')] / 80,
             ticks = yScale.ticks(idealTickCount),
-            tickSize = Math.abs(ticks[0] - ticks[1]), // Assuming we'll have 2+ ticks.
+            tickSize = ticks.length > 1 ? Math.abs(ticks[0] - ticks[1]) : 0,
             domain = yScale.domain();
 
         yScale.domain([_.first(ticks) > usedMin ? _.first(ticks) - tickSize : domain[0],

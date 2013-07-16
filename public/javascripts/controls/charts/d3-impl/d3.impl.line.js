@@ -20,6 +20,26 @@ $.Control.registerMixin('d3_impl_line', {
         return 'right';
     },
 
+    _computeClippingRectForColumnAndScale: function(col, scale, xDatumPositionForSeries, lastIndex)
+    {
+        var rangeXMagnitude = xDatumPositionForSeries({index: lastIndex});
+
+        var rangeY = scale.range();
+        var rangeYMagnitude = rangeY[1] - rangeY[0];
+
+        // Account for the extra space we render above the top of the range.
+        // Remember _yDatumPosition returns values in screen space, so
+        // 0 is the top of the chart, and higher values go down.
+        var dummy = {};
+        dummy[col.lookup] = scale.domain()[1];
+        rangeYMagnitude += this._yDatumPosition(col.lookup, scale)(dummy);
+
+        rangeYMagnitude = Math.max(0, rangeYMagnitude);
+        rangeXMagnitude = Math.max(0, rangeXMagnitude);
+
+        return [ 0, 0, rangeXMagnitude, rangeYMagnitude];
+    },
+
     // call this if the active set of data has changed
     _renderData: function(data)
     {
@@ -79,25 +99,8 @@ $.Control.registerMixin('d3_impl_line', {
             var oldLine = vizObj._constructSeriesPath(colDef, seriesIndex, oldYScale);
             var newLine = vizObj._constructSeriesPath(colDef, seriesIndex, newYScale);
 
-            // Compute a clipping rect for the chart.
-            var computeClippingRectForScale = function(scale)
-            {
-                var rangeXMagnitude = xDatumPositionForSeries({index: data.length - 1});
-
-                var rangeY = scale.range();
-                var rangeYMagnitude = rangeY[1] - rangeY[0];
-
-                // Account for the extra space we render above the top of the range.
-                // Remember _yDatumPosition returns values in screen space, so
-                // 0 is the top of the chart, and higher values go down.
-                var dummy = {};
-                dummy[col.lookup] = scale.domain()[1];
-                rangeYMagnitude += vizObj._yDatumPosition(col.lookup, scale)(dummy);
-
-                return [ 0, 0, rangeXMagnitude, rangeYMagnitude];
-            };
-
-            var clipRect = computeClippingRectForScale(newYScale);
+            // Compute a clipping rect for the series.
+            var clipRect = vizObj._computeClippingRectForColumnAndScale(col, newYScale, xDatumPositionForSeries, data.length - 1);
 
             // Render the line that connects the dots.
             if (!cc.seriesPath)
@@ -347,7 +350,10 @@ $.Control.registerMixin('d3_impl_line', {
 
         _.each(vizObj.getValueColumns(), function(colDef, seriesIndex)
         {
+            var clipRect = vizObj._computeClippingRectForColumnAndScale(colDef.column, yScale, vizObj._xDatumPosition(seriesIndex), vizObj._currentRangeData.length - 1);
+
             cc.seriesPath[colDef.column.lookup]
+                .attr('clip-rect', clipRect.join(' '))
                 .transition()
                     .duration(1000)
                     .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
@@ -389,8 +395,13 @@ $.Control.registerMixin('d3_impl_line', {
                     .attr('cx', vizObj._xDatumPosition(seriesIndex));
 
             if (!_.isUndefined(yScale) && $.subKeyDefined(cc.seriesPath, colDef.column.lookup+''))
-            { cc.seriesPath[colDef.column.lookup]
-                    .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale)); }
+            {
+                var clipRect = vizObj._computeClippingRectForColumnAndScale(colDef.column, yScale, vizObj._xDatumPosition(seriesIndex), vizObj._currentRangeData.length - 1);
+
+                cc.seriesPath[colDef.column.lookup]
+                    .attr('clip-rect', clipRect.join(' '))
+                    .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
+            }
         });
 
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))

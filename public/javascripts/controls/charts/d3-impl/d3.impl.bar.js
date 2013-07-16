@@ -753,27 +753,43 @@ $.Control.registerMixin('d3_impl_bar', {
             || $.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true)
         { return this._super.apply(this, arguments); }
 
+        // Special case for when we have to provide a default behavior for label
+        // in bar.
         var yAxisPos;
         if (this._chartConfig.orientation == 'right')
         {
-            var vizObj = this,
-                legendPosition = vizObj.legendPosition(),
-                yAxisPos = vizObj._chartConfig.chartHeight;
+            var legendPosition = this.legendPosition(),
+                yAxisPos = this._chartConfig.chartHeight;
 
             if (legendPosition == 'bottom')
             {
-                var $legendContainer = vizObj.$legendContainer(),
-                    isSmallMode = vizObj._chartConfig.$chartArea.hasClass('smallMode');
-
-                yAxisPos -= (isSmallMode ? 60 : 100) + $legendContainer.height();
+                // Note that the legend container has the x axis label in this case.
+                yAxisPos -= this.$legendContainer().outerHeight(true);
+            }
+            else
+            {
+                // Manually account for the x axis label.
+                var $xLabel = this._$dom.find('.xLabelHoriz.floatingAxisLabel');
+                if (!_.isEmpty($xLabel))
+                {
+                    var bottomOfChart = this._chartConfig.$chartOuterContainer.position().top + this._chartConfig.$chartOuterContainer.height();
+                    var posOfxAxisLabel = $xLabel.position().top;
+                    yAxisPos -= $xLabel.padding().top + (bottomOfChart - posOfxAxisLabel);
+                }
             }
         }
         else
         {
-            yAxisPos = 0;
-            if (!$.isBlank(this._displayFormat.titleX))
-            { yAxisPos += this._displayFormat.titleX[this._isIE8() ? 'visualLength' : 'visualHeight']()
-                    + $('.yLabelVert').offset().left + 5; } // 5 is for padding.
+            var $yLabel = this._$dom.find('.yLabelVert.floatingAxisLabel');
+
+            if (!_.isEmpty($yLabel))
+            {
+                yAxisPos = this._isIE8() ? $yLabel.outerWidth(true) : $yLabel.outerHeight(true);
+            }
+            else
+            {
+                yAxisPos = 0;
+            }
         }
         return yAxisPos;
     },

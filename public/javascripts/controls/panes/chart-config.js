@@ -375,7 +375,7 @@
                             columns: {type: colTypes, hidden: options.isEdit}}
                 },
                 {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                name: 'displayFormat.colors', field: colorOption,
+                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
                 initialRepeatCount: 5, lineClass: 'colorArray'}
             ]
         };
@@ -433,8 +433,8 @@
                 minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button')});
 
         bc.fields.push(conditionalFormattingWarning);
-        bc.fields.push({type: 'repeater', name: 'displayFormat.colors', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: colorOption,
+        bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
+                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
                 initialRepeatCount: 5, lineClass: 'colorArray'});
 
         return bc;
@@ -617,7 +617,7 @@
                     fields: [
                         conditionalFormattingWarning,
                         {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                            name: 'displayFormat.colors', field: colorOption,
+                            field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
                             minimum: 5, lineClass: 'colorArray'},
                         treemapRandomColorWarning
                     ] },

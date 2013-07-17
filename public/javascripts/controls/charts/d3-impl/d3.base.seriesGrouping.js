@@ -633,11 +633,8 @@ d3base.seriesGrouping = {
         this._seriesGrouping.savedRenderRowQueue = this._seriesGrouping.savedRenderRowQueue.concat(this._seriesGrouping.queuedRenderRows);
         this._seriesGrouping.queuedRenderRows.length = 0;
 
-        if (!_.isEmpty(this._seriesGrouping.savedRenderRowQueue))
-        {
-            this._updateLoadingOverlay('stopped');
-            this.finishLoading();
-        }
+        this.finishLoading();
+        this._updateLoadingOverlay('stopped');
     },
 
     _resumeSeriesProcessing: function()

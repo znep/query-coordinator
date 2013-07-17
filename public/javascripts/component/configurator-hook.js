@@ -35,7 +35,7 @@ $(function() {
                     stylesheets: stylesheets,
                     templates: ['grid_sidebar'],
                     newModals: ['configurator_permissions', 'configurator_settings'],
-                    modals: ['select_dataset']},
+                    modals: ['select_dataset?federate=true']},
             function()
             {
                 $('.socrata-page').loadingSpinner().showHide(false);

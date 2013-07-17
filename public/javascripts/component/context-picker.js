@@ -26,8 +26,8 @@ var picker = function(options)
             $modal.jqmShow();
             if (!$.isBlank(options.browseArgs))
             {
-                $modal.find('iframe').attr('src', browseUrl + (options.browseArgs || '') +
-                    '&_cache=' + (new Date()).getTime());
+                $modal.find('iframe').attr('src', browseUrl + '?_cache=' + (new Date()).getTime() +
+                    (options.browseArgs || ''));
             }
         });
         blist.common = blist.common || {};

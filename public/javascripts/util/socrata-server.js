@@ -101,6 +101,8 @@ var ServerModel = Model.extend({
         {
             req.headers = $.extend(req.headers, {'X-Socrata-Auth': 'unauthenticated'});
         }
+        // Always get federated datasets cross-domain
+        req.headers = $.extend(req.headers, {'X-Socrata-Federation': 'Honey Badger'});
 
         if (req.pageCache)
         {
@@ -172,10 +174,29 @@ ServerModel.sendBatch = function(successCallback, errorCallback, completeCallbac
     var serverReqs = [];
     var br = batchRequests;
     batchRequests = [];
+
+    // Need to divide out requests by headers
+    var extraBatch = [];
+    var matchHeaders = br[0].headers || {};
+    br = _.reject(br, function(r)
+    {
+        if (!_.isEqual(matchHeaders, r.headers))
+        {
+            extraBatch.push(r);
+            return true;
+        }
+        return false;
+    });
+
+    var doSuccess = _.after(extraBatch.length > 0 ? 2 : 1, function()
+            { if (_.isFunction(successCallback)) { successCallback(); } });
+    var doComplete = _.after(extraBatch.length > 0 ? 2 : 1, function()
+            { if (_.isFunction(completeCallback)) { completeCallback(); } });
+
     _.each(br, function(r)
         { serverReqs.push({url: r.url, requestType: r.type, body: r.data}); });
 
-    $.ajax({url: '/api/batches', dataType: 'json', contentType: 'application/json',
+    $.ajax({url: '/api/batches', dataType: 'json', contentType: 'application/json', headers: matchHeaders,
             type: 'POST', data: JSON.stringify({requests: serverReqs}),
             success: function(resp)
             {
@@ -199,9 +220,7 @@ ServerModel.sendBatch = function(successCallback, errorCallback, completeCallbac
                     if (_.isFunction(errorCallback)) { errorCallback(); }
                 }
                 else
-                {
-                    if (_.isFunction(successCallback)) { successCallback(); }
-                }
+                { doSuccess(); }
             },
             complete: function()
             {
@@ -210,7 +229,7 @@ ServerModel.sendBatch = function(successCallback, errorCallback, completeCallbac
                     if (_.isFunction(r.complete)) { r.complete(); }
                 });
 
-                if (_.isFunction(completeCallback)) { completeCallback(); }
+                doComplete();
             },
             error: function(xhr)
             {
@@ -222,6 +241,12 @@ ServerModel.sendBatch = function(successCallback, errorCallback, completeCallbac
 
                 if (_.isFunction(errorCallback)) { errorCallback(errBody.message); }
             }});
+
+    if (extraBatch.length > 0)
+    {
+        batchRequests = batchRequests.concat(extraBatch);
+        ServerModel.sendBatch(doSuccess, errorCallback, doComplete);
+    }
 };
 
 if (blist.inBrowser)

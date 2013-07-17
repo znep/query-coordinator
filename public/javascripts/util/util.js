@@ -880,6 +880,11 @@ $.fn.hasChildren = function()
     return (elem != null) && (elem.firstChild != null);
 };
 
+$.fn.exists = function()
+{
+    return this.length !== 0;
+};
+
 // Wrapper around inlineLogin.verifyUser; simply does nothing
 // if auth fails
 blist.util.doAuthedAction = function(actionText, callback)

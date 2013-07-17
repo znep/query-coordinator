@@ -30,7 +30,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         largeLegendMaxLineThreshold: 15, // If we've got more than this amount of lines in the legend, switch the legend only to small mode.
         minYSizeForLegend: 140, // If the y-axis is less than this (px), we hide the legend to try and display something useful.
                                 // We only hide the legend if we're reserving space for it (as opposed to just overlaying it).
-        errorBarCapWidth: 8 // Size of cap on top and bottom of error bars.
+        errorBarCapWidth: 8, // Size of cap on top and bottom of error bars.
+        fallbackForNullRange: 1 // If we have a zero magnitude range, fall back to a range of this magnitude centered about the actual null range.
     },
 
     // These functions are abstract. You must override them.
@@ -127,7 +128,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
                             { tagName: 'div', 'class': 'baselineBg' },
                             { tagName: 'div', 'class': 'baselineLine' }
                     ] }] },
-                { tagName: 'div', 'class': 'legendContainer' },
+                { tagName: 'div', 'class': 'legendContainer', contents: [
+                    { tagName: 'div', 'class': 'legendLines' }
+                ]},
 
                 { tagName: 'div', 'class': 'overlayContainer'}
             ] }
@@ -666,7 +669,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             cc.$chartArea.addClass('has' + $.capitalize(clsname));
             var $label = $.tag({
                 tagName: 'div',
-                'class': clsname + (inLegend ? ' belowLegendLines' : ' floatingAxisLabel'),
+                'class': clsname + (inLegend ? '' : ' floatingAxisLabel'),
                 contents: $.htmlEscape(vizObj._displayFormat.titleY)
             });
 
@@ -690,7 +693,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
             var $label = $.tag({
                 tagName: 'div',
-                'class': clsname + (inLegend ? ' aboveLegendLines' : ' floatingAxisLabel'),
+                'class': clsname + (inLegend ? '' : ' floatingAxisLabel'),
                 contents: $.htmlEscape(vizObj._displayFormat.titleX)
             });
 
@@ -958,23 +961,62 @@ $.Control.registerMixin('d3_virt_scrolling', {
         var defaultMins = [cc.minValue, vml.min],
             defaultMaxs = [cc.maxValue, vml.max];
 
+        // For certain charts, our default range needs to start or end at zero
+        // (for things like bar or area, so the user can visually compare
+        // magnitudes). Otherwise, autofit to the data (leaving a little margin).
         if (cc.lockYAxisAtZero)
-        { defaultMins.push(0); defaultMaxs.push(0); }
+        {
+            defaultMins.push(0);
+            defaultMaxs.push(0);
+        }
+        else
+        {
+            var extraMarginFactor = 0.05;
+            var min = d3.min(defaultMins);
+            var max = d3.max(defaultMaxs);
+
+            var valueRange = max - min;
+
+            // Only add the margin to the min and max if the respective values
+            // are not zero (it's OK to put zero at baseline, but putting other
+            // values at baseline is misleading to the user).
+            if (min !== 0)
+            {
+                defaultMins.push(min - (valueRange * extraMarginFactor));
+            }
+
+            if (max !== 0)
+            {
+                defaultMaxs.push(max + (valueRange * extraMarginFactor));
+            }
+        }
+
+        var defaultMin = d3.min(defaultMins);
+        var defaultMax = d3.max(defaultMaxs);
+
+        var usedMin = !_.isNaN(explicitMin) ? explicitMin : defaultMin;
+        var usedMax = !_.isNaN(explicitMax) ? explicitMax : defaultMax;
+        if (usedMin === usedMax)
+        {
+            var nullRangePaddingAmount = vizObj.defaults.fallbackForNullRange;
+            usedMin -= nullRangePaddingAmount;
+            usedMax += nullRangePaddingAmount;
+        }
 
         var yScale = d3.scale.linear()
-            .domain([ !_.isNaN(explicitMin) ? explicitMin : d3.min(defaultMins),
-                      !_.isNaN(explicitMax) ? explicitMax : d3.max(defaultMaxs) ])
+            .domain([ usedMin,
+                      usedMax ])
             .range([ 0, Math.max(0, rangeMax - vizObj.defaults.dataMaxBuffer) ])
             .clamp(true);
 
         // Make sure that the last tick is above maxValue;
         var idealTickCount = cc[cc.dataDim.pluckY('chartWidth', 'chartHeight')] / 80,
             ticks = yScale.ticks(idealTickCount),
-            tickSize = Math.abs(ticks[0] - ticks[1]), // Assuming we'll have 2+ ticks.
+            tickSize = ticks.length > 1 ? Math.abs(ticks[0] - ticks[1]) : 0,
             domain = yScale.domain();
 
-        yScale.domain([_.first(ticks) > cc.minValue ? _.first(ticks) - tickSize : domain[0],
-                       _.last(ticks)  < cc.maxValue ? _.last(ticks)  + tickSize : domain[1]]);
+        yScale.domain([_.first(ticks) > usedMin ? _.first(ticks) - tickSize : domain[0],
+                       _.last(ticks)  < usedMax ? _.last(ticks)  + tickSize : domain[1]]);
 
         return yScale;
     },

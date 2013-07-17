@@ -46,6 +46,11 @@ class DatasetsController < ApplicationController
       end
     end
 
+    # If a user sticks .json or similar at the end of a URL, redirect them to the API endpoint
+    if !params[:format].nil?
+      return redirect_to('/resource/' + (@view.resourceName || @view.id) + '.' + params[:format])
+    end
+
     if params[:q]
       @view.searchString = params[:q]
     end

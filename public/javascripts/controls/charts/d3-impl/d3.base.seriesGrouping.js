@@ -53,6 +53,8 @@ d3base.seriesGrouping = {
             virtualColumns: {},
             virtualRows: {},
             queuedRenderRows: [],
+            savedRenderRowQueue: [],
+            processingPaused: false,
             virtualRowReadyCount: 0
         };
 
@@ -583,7 +585,7 @@ d3base.seriesGrouping = {
         queue.push(rows.slice()); // REVISIT: Maybe can store indexes if ordering
                                   // works out. I don't think it does though.
 
-        if (!sg.rowQueueTimerActive)
+        if (!sg.rowQueueTimerActive && !vizObj._seriesGrouping.processingPaused)
         {
             sg.rowQueueTimerActive = true;
 
@@ -627,13 +629,12 @@ d3base.seriesGrouping = {
 
     _pauseSeriesProcessing: function()
     {
-        this._seriesGrouping.savedRenderRowQueue = this._seriesGrouping.queuedRenderRows;
-        this._seriesGrouping.queuedRenderRows = []
-        if (!_.isEmpty(this._seriesGrouping.savedRenderRowQueue))
-        {
-            this._updateLoadingOverlay('stopped');
-            this.finishLoading();
-        }
+        this._seriesGrouping.processingPaused = true;
+        this._seriesGrouping.savedRenderRowQueue = this._seriesGrouping.savedRenderRowQueue.concat(this._seriesGrouping.queuedRenderRows);
+        this._seriesGrouping.queuedRenderRows.length = 0;
+
+        this.finishLoading();
+        this._updateLoadingOverlay('stopped');
     },
 
     _resumeSeriesProcessing: function()
@@ -641,12 +642,13 @@ d3base.seriesGrouping = {
         var vizObj = this;
         var sg = vizObj._seriesGrouping;
 
+        vizObj._seriesGrouping.processingPaused = false;
         if (!_.isEmpty(sg.savedRenderRowQueue))
         {
             vizObj.startLoading();
             _.each(sg.savedRenderRowQueue, _.bind(vizObj._enqueueRows, vizObj));
-
-            delete sg.savedRenderRowQueue;
+            sg.savedRenderRowQueue.length = 0;
+            this._updateLoadingOverlay('loading');
         }
     },
 

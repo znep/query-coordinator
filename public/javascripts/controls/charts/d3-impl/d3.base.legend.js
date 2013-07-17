@@ -46,30 +46,18 @@ $.Control.registerMixin('d3_base_legend', {
         var vizObj = this,
             legendPosition = vizObj.legendPosition(),
             legendDetails = vizObj._displayFormat.legendDetails || vizObj._getDefaultLegendDetails(),
-            $legendContainer = vizObj.$legendContainer();
+            $legendContainer = vizObj.$legendContainer(),
+            $legendLines = $legendContainer.find('.legendLines');
 
 
-        $legendContainer.find('.legendLine').remove();
+        $legendLines.empty();
         $legendContainer.removeClass('top right bottom left');
         $legendContainer.addClass($.htmlEscape(legendPosition));
 
-        // Other code likes to put extra things in here. Preserve their order.
-        var add;
-        var lowerInterloper = $legendContainer.find('.belowLegendLines:first');
-        if (lowerInterloper.length > 0)
+        var add = function(i)
         {
-            add = function(i)
-            {
-                lowerInterloper.before(i);
-            };
-        }
-        else
-        {
-            add = function(i)
-            {
-                $legendContainer.append(i);
-            };
-        }
+            $legendLines.append(i);
+        };
 
         // first render series if they were asked for
         if (legendDetails.showSeries === true)

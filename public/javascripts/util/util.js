@@ -407,7 +407,9 @@ $.renderTemplate = function(template, data, directive, keepText)
     }
     else
     {
-        var $templateCopy = $template.clone();
+        // IE10 doesn't properly copy the checked state on radio buttons with jQuery clone
+        // cloneNode handles it correctly, though
+        var $templateCopy = $($template[0].cloneNode(true));
 
         // pure needs a wrapping element
         $templateCopy.appendTo($('<div/>'));

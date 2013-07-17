@@ -375,8 +375,8 @@
                             columns: {type: colTypes, hidden: options.isEdit}}
                 },
                 {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-                initialRepeatCount: 5, lineClass: 'colorArray'}
+                name: 'displayFormat.colors', field: colorOption,
+                initialRepeatCount: 5, minimum: 1, lineClass: 'colorArray'}
             ]
         };
     };
@@ -433,9 +433,9 @@
                 minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button')});
 
         bc.fields.push(conditionalFormattingWarning);
-        bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-                initialRepeatCount: 5, lineClass: 'colorArray'});
+        bc.fields.push({type: 'repeater', name: 'displayFormat.colors', text: $.t('screens.ds.grid_sidebar.chart.colors'),
+                field: colorOption,
+                initialRepeatCount: 5, minimum: 1, lineClass: 'colorArray'});
 
         return bc;
     };
@@ -450,7 +450,7 @@
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', name: 'displayFormat.colors', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: colorOption,
+                field: colorOption, minimum: 1,
                 initialRepeatCount: 5, lineClass: 'colorArray'});
         return bc;
     };
@@ -617,7 +617,7 @@
                     fields: [
                         conditionalFormattingWarning,
                         {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                            field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+                            name: 'displayFormat.colors', field: colorOption,
                             minimum: 5, lineClass: 'colorArray'},
                         treemapRandomColorWarning
                     ] },

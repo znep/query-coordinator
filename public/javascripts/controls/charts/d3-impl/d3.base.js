@@ -74,6 +74,16 @@ $.Control.registerMixin('d3_base', {
         }
     },
 
+    _getDisplayFormatColors: function()
+    {
+        return _.filter(this._displayFormat.colors, _.isString);
+    },
+
+    _getFallbackColors: function()
+    {
+        return ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
+    },
+
     _d3_getColor: function(colDef, d)
     {
         var vizObj = this;
@@ -94,19 +104,33 @@ $.Control.registerMixin('d3_base', {
             });
 
 
-            var colors = vizObj._displayFormat.colors
-                || ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
-            if (found && !_.isUndefined(colors) && colors.length > index)
+            var explicitColors = vizObj._getDisplayFormatColors();
+
+            // Color priority is:
+            // 1) Explicitly provided colors array.
+            // 2) colDef.color.
+            // 3) default colors.
+
+            if (found && !_.isUndefined(explicitColors) && explicitColors.length > index)
             {
-                color = colors[index];
+                color = explicitColors[index];
             }
-            else
+            else if (colDef.color)
             {
                 color = colDef.color;
 
                 // Some legacy case where colDef.color is '#hex,#hex,#hex,#hex,#hex,#hex'.
                 if (color.indexOf(',') > -1)
                 { color = color.split(',')[0]; }
+            }
+            else
+            {
+                // Fallback to default colors.
+                var fallbackColors = vizObj._getFallbackColors();
+                // Even if we didn't find the column, return something.
+                index = found ? index : 0;
+
+                color = fallbackColors[index % fallbackColors.length];
             }
         }
 

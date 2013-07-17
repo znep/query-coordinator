@@ -169,7 +169,9 @@ $.Control.registerMixin('d3_impl_pie', {
                         { tagName: 'div', 'class': 'chartRenderArea',
                           contents: '&nbsp;' }, // if no contents, browser doesn't bother to scroll
                         ] }] },
-                { tagName: 'div', 'class': 'legendContainer' },
+                { tagName: 'div', 'class': 'legendContainer', contents: [
+                    { tagName: 'div', 'class': 'legendLines' }
+                ]},
                 { tagName: 'div', 'class': 'controlContainer' }
             ] }
         , true));
@@ -1773,6 +1775,13 @@ $.Control.registerMixin('d3_impl_pie', {
         });
     },
 
+    _rotateColorBy: function(color, rotateCount)
+    {
+        var newBaseHsv = $.rgbToHsv($.hexToRgb(color));
+        newBaseHsv.h = (newBaseHsv.h + 8*rotateCount) % 360;
+        return '#'+$.rgbToHex($.hsvToRgb(newBaseHsv));
+    },
+
     _d3_getColor: function(colDef, d)
     {
         var vizObj = this;
@@ -1781,18 +1790,14 @@ $.Control.registerMixin('d3_impl_pie', {
 
         if (!color)
         {
-            var colors = vizObj._displayFormat.colors;
+            var colors = vizObj._getDisplayFormatColors();
 
-            if (d && colors)
+            if (d && !_.isEmpty(colors))
             {
                 if (!_.isUndefined(colors) && colors.length > 0)
                 {
                     var baseColorIndex = d.index % colors.length;
-                    color = colors[baseColorIndex];
-                    var rotateCount = d.index - baseColorIndex;
-                    var newBaseHsv = $.rgbToHsv($.hexToRgb(color));
-                    newBaseHsv.h = (newBaseHsv.h + 8*rotateCount) % 360;
-                    color = '#'+$.rgbToHex($.hsvToRgb(newBaseHsv));
+                    color = vizObj._rotateColorBy(colors[baseColorIndex], d.index - baseColorIndex);
                 }
                 else
                 {
@@ -1802,6 +1807,21 @@ $.Control.registerMixin('d3_impl_pie', {
             else
             {
                 color = colDef.color;
+            }
+        }
+
+        // Fallback - no column color, no row color, and no colors array.
+        if (!color)
+        {
+            var fallbackColors = vizObj._getFallbackColors();
+            if (d)
+            {
+                var baseColorIndex = d.index % fallbackColors.length;
+                color = vizObj._rotateColorBy(fallbackColors[baseColorIndex], d.index - baseColorIndex);
+            }
+            else
+            {
+                return fallbackColors[0];
             }
         }
 

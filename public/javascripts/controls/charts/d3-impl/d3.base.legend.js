@@ -3,6 +3,11 @@
 
 $.Control.registerMixin('d3_base_legend', {
 
+    // With DSG enabled, we can get ludicrous amounts of series columns. It doesn't
+    // really make sense to display all of them, especially since doing so can take
+    // a _long_ time. So we render at most this many series lines.
+    _seriesLineLimit: 500,
+
     initializeVisualization: function()
     {
         var vizObj = this;
@@ -47,24 +52,27 @@ $.Control.registerMixin('d3_base_legend', {
             legendPosition = vizObj.legendPosition(),
             legendDetails = vizObj._displayFormat.legendDetails || vizObj._getDefaultLegendDetails(),
             $legendContainer = vizObj.$legendContainer(),
-            $legendLines = $legendContainer.find('.legendLines');
+            $legendLines = $legendContainer.find('.legendLines'),
+            truncatedSeriesCount = 0;
 
 
         $legendLines.empty();
         $legendContainer.removeClass('top right bottom left');
         $legendContainer.addClass($.htmlEscape(legendPosition));
 
-        var add = function(i)
-        {
-            $legendLines.append(i);
-        };
-
         // first render series if they were asked for
         if (legendDetails.showSeries === true)
         {
-            _.each(vizObj.getValueColumns(), function(colDef)
+            var usedColumns = vizObj.getValueColumns();
+            if (usedColumns && usedColumns.length > vizObj._seriesLineLimit)
             {
-                add(vizObj._renderLegendLine({ color: vizObj._d3_getColor(colDef) }, colDef.column.name));
+                truncatedSeriesCount = usedColumns.length - vizObj._seriesLineLimit;
+                usedColumns = usedColumns.slice(0, vizObj._seriesLineLimit);
+            }
+
+            _.each(usedColumns, function(colDef)
+            {
+                $legendLines.append(vizObj._renderLegendLine({ color: vizObj._d3_getColor(colDef) }, colDef.column.name));
             });
         }
 
@@ -73,7 +81,7 @@ $.Control.registerMixin('d3_base_legend', {
         {
             customValuesCallback(legendDetails, function(color, text)
             {
-                add(vizObj._renderLegendLine({ color: color }, text));
+                $legendLines.append(vizObj._renderLegendLine({ color: color }, text));
             });
         }
 
@@ -85,7 +93,7 @@ $.Control.registerMixin('d3_base_legend', {
                 var label = condition.description;
                 if (!$.isBlank(condition.color))
                 {
-                    add(vizObj._renderLegendLine({ color: condition.color }, label));
+                    $legendLines.append(vizObj._renderLegendLine({ color: condition.color }, label));
                 }
                 else
                 {
@@ -101,7 +109,7 @@ $.Control.registerMixin('d3_base_legend', {
         {
             _.each(vizObj._displayFormat.valueMarker, function(valueMarker)
             {
-                add(vizObj._renderLegendLine({ line: valueMarker.color }, valueMarker.caption));
+                $legendLines.append(vizObj._renderLegendLine({ line: valueMarker.color }, valueMarker.caption));
             });
         }
         // last render custom items
@@ -109,8 +117,13 @@ $.Control.registerMixin('d3_base_legend', {
         {
             _.each(legendDetails.customEntries, function(customEntry)
             {
-                add(vizObj._renderLegendLine({ color: customEntry.color }, customEntry.label));
+                $legendLines.append(vizObj._renderLegendLine({ color: customEntry.color }, customEntry.label));
             });
+        }
+
+        if (truncatedSeriesCount > 0)
+        {
+            $legendLines.append('<p> + ' + truncatedSeriesCount + '...</p>');
         }
     },
 

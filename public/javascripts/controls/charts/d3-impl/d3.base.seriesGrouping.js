@@ -116,14 +116,17 @@ d3base.seriesGrouping = {
 
             // this is saved down below. Now that we have everything we need
             // to get ready, process some things and allow everything to init.
-            vizObj._preprocessSeriesColumns();
-            // Manually trigger this event on the primary view for things like the sidebar
-            vizObj._primaryView.trigger('row_count_change');
-            sg.superInit.call(vizObj);
+            vizObj._preprocessSeriesColumns(function()
+            {
+                // Manually trigger this event on the primary view for things like the sidebar
+                vizObj.finishLoading();
+                vizObj._primaryView.trigger('row_count_change');
+                sg.superInit.call(vizObj);
 
-            vizObj._setChartVisible(false);
-            vizObj._setLoadingOverlay();
-            vizObj._updateLoadingOverlay('start');
+                vizObj._setChartVisible(false);
+                vizObj._setLoadingOverlay();
+                vizObj._updateLoadingOverlay('start');
+            });
         });
 
         // make another copy of the view that we'll use to get the category-relevant rows
@@ -189,6 +192,8 @@ d3base.seriesGrouping = {
 
         // We're interested in some events coming from the primary view.
         vizObj._primaryView.bind('conditionalformatting_change', _.bind(vizObj._handleConditionalFormattingChanged, vizObj), vizObj);
+
+        _.defer(function(){vizObj.startLoading();});
     },
 
     cleanVisualization: function()
@@ -202,7 +207,7 @@ d3base.seriesGrouping = {
         this._super();
     },
 
-    _preprocessSeriesColumns: function()
+    _preprocessSeriesColumns: function(continuation)
     {
         var vizObj = this,
             sg = vizObj._seriesGrouping,
@@ -272,7 +277,11 @@ d3base.seriesGrouping = {
             sortedRows = _.sortBy(sg.seriesGroupedRows, 'position');
         }
 
-        _.each(sortedRows || sg.seriesGroupedRows, function(row, index)
+
+        var rowIndex = 0; // Can't use index provided to eachItem as that index
+                          // is relative to the current batch.
+        var virtualColumnCount = 0;
+        var eachItem = function(row)
         {
             var groupName = vizObj._groupName(row);
 
@@ -294,32 +303,49 @@ d3base.seriesGrouping = {
                     //console.log('Error: got a dupe virt col somehow?');
                     return;
                 }
+                else
+                {
+                    // save as obj for quick reference below
+                    var virtualId = -100 - virtualColumnCount; // use negative id space to avoid confusion
+                    sg.virtualColumns[virtualColumnName] = {
+                        color: vizObj._getColorForColumn(valueCol, virtualColumnName),
+                        groupName: groupName,
+                        colIndex: rowIndex,
+                        column: {
+                            id: virtualId,
+                            lookup: virtualId,
+                            name: virtualColumnName,
+                            realValueColumn: valueCol,
+                            dataType: valueCol.column.dataType
+                        }
+                    };
 
-                // save as obj for quick reference below
-                var virtualId = -100 - _.keys(sg.virtualColumns).length; // use negative id space to avoid confusion
-                sg.virtualColumns[virtualColumnName] = {
-                    color: vizObj._getColorForColumn(valueCol, virtualColumnName),
-                    groupName: groupName,
-                    colIndex: index,
-                    column: {
-                        id: virtualId,
-                        lookup: virtualId,
-                        name: virtualColumnName,
-                        realValueColumn: valueCol,
-                        dataType: valueCol.column.dataType
-                    }
-                };
+                    virtualColumnCount++;
+                }
             });
-        });
 
-        // mark that we're ready for business, and if we've already had a customer
-        // fire it off for them now that we're thundercats ho
-        sg.ready = true;
-        if (sg.wantsData === true)
+            rowIndex++
+        };
+
+        var batchProcessComplete = function()
         {
-            vizObj.getDataForView(vizObj._primaryView);
-//            vizObj.handleRowCountChange(); <-- probably not needed
-        }
+            // mark that we're ready for business, and if we've already had a customer
+            // fire it off for them now that we're thundercats ho
+            sg.ready = true;
+            if (sg.wantsData === true)
+            {
+                vizObj.getDataForView(vizObj._primaryView);
+                // vizObj.handleRowCountChange(); <-- probably not needed
+            }
+
+            continuation();
+        };
+
+        $.batchProcess(sortedRows || sg.seriesGroupedRows,
+            250 /* batchSize*/,
+            eachItem,
+            null, /* eachBatch */
+            batchProcessComplete);
     },
 
     getDataForView: function(view)
@@ -421,7 +447,7 @@ d3base.seriesGrouping = {
                 { tagName: 'p', 'class': 'dsgLoadingMsg invisible', contents: [
                     { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation1')},
                     { tagName: 'span', 'class': 'filter dsgFilterIcon', contents:[
-                        { tagName: 'span', 'class': 'icon'},
+                        { tagName: 'span', 'class': 'icon'}
                     ]},
                     { tagName: 'span', 'class': 'dsgPauseExplanationText invisible', contents: $.t('controls.charts.series_grouping.pause_button_explanation2')}
                 ]},
@@ -478,7 +504,7 @@ d3base.seriesGrouping = {
                 case 'done':
                 //Done is when
                 //the caluculations are done and pausing no longer works, but before the charts shows
-                
+
                     operationPhaseMessage = $.t('controls.charts.series_grouping.drawing_running');
                     sg.$dsgProgressPauseButton.addClass('invisible');
                     sg.$dsgLoadingMsg.addClass('invisible');
@@ -487,7 +513,7 @@ d3base.seriesGrouping = {
                     progressMessage = $.t('controls.charts.series_grouping.drawing_progress');
 
                     break;
-                
+
                 case 'loading':
                     sg.$dsgSpinner.removeClass('invisible');
                     operationPhaseMessage = $.t('controls.charts.series_grouping.calculation_running');
@@ -498,7 +524,7 @@ d3base.seriesGrouping = {
                         delete sg.pauseLoadingTimeMillisec;
                     }
                     sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.pause_rendering'));
-                    
+
                     var elapsedTimeMillisec = Date.now() - (sg.startLoadingTimeMillisec || Date.now());
                     if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec && sg.virtualRowReadyCount > 0)
                     {
@@ -537,8 +563,8 @@ d3base.seriesGrouping = {
                         sg.pauseLoadingTimeMillisec = Date.now();
                     }
                     sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.resume_rendering'));
-                
-                    
+
+
                     sg.$dsgProgressPauseButton.removeClass('invisible');
                     sg.$dsgPauseExplanationText.removeClass('invisible');
                     break;
@@ -577,7 +603,7 @@ d3base.seriesGrouping = {
                 vizObj.renderData(sg.virtualRows);
                 _.delay(function()
                 {
-                    vizObj._setChartOverlay(null); 
+                    vizObj._setChartOverlay(null);
                 }, 1200);
             });
         }
@@ -772,9 +798,14 @@ d3base.seriesGrouping = {
         return _.compact(_.map(vizObj._seriesColumns, function(col)
         {
             var t = vizObj._renderCellText(row, col.column);
-            if ($.subKeyDefined(vizObj._displayFormat, 'seriesNames.' + t))
-            { t = vizObj._displayFormat.seriesNames[t]; }
-            return t;
+            if (vizObj._displayFormat && vizObj._displayFormat.seriesNames)
+            {
+                return vizObj._displayFormat.seriesNames[t] || t;
+            }
+            else
+            {
+                return t;
+            }
         })).join(', ');
     },
 
@@ -834,7 +865,12 @@ d3base.seriesGrouping = {
             return null;
         }
 
-        return _.values(sg.virtualColumns);
+        if (!sg.cachedValueColumns)
+        {
+            sg.cachedValueColumns = _.values(sg.virtualColumns);
+        }
+
+        return sg.cachedValueColumns;
     },
 
     getTotalRows: function()

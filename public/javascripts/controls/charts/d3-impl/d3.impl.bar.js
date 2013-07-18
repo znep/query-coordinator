@@ -630,7 +630,29 @@ $.Control.registerMixin('d3_impl_bar', {
         cc.yScale = newYScale;
     },
 
-    _renderRowLabels: function(data)
+    _fontMetricsForRowLabels: function()
+    {
+        var cc = this._chartConfig;
+
+        var $rowLabels = cc.$chartRenderArea.find('div.rowLabel');
+
+        var fontSize;
+        if ($rowLabels.exists())
+        {
+            fontSize = parseFloat($rowLabels.css('font-size'));
+        }
+        else
+        {
+            var $sacrificialLabel = $('<div />');
+            cc.$chartRenderArea.append($sacrificialLabel);
+            $sacrificialLabel.addClass('rowLabel');
+            fontSize = parseFloat($sacrificialLabel.css('font-size'));
+            $sacrificialLabel.remove();
+        }
+        return d3ns.fontMetrics.getFontMetrics(_.isNaN(fontSize) ? 13 : fontSize);
+    },
+
+    _renderRowLabels: function(data /*optional*/)
     {
         var labelInBar = $.deepGet(this._displayFormat, 'xAxis', 'labelInBar'),
             valueInBar = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar');
@@ -643,106 +665,265 @@ $.Control.registerMixin('d3_impl_bar', {
 
         var vizObj = this,
             cc = vizObj._chartConfig,
-            valueColumns = vizObj.getValueColumns(),
-            view = vizObj._primaryView;
+            valueColumns = vizObj.getValueColumns();
+
+        // We can't just use currentRangeData as it's not the data we're looking
+        // for if DSG is active...
+        if (_.isUndefined(data))
+        {
+            data = cc.lastLabelRenderData;
+        }
+        else
+        {
+            cc.lastLabelRenderData = data;
+        }
 
         cc.visualData = {};
 
-        var cubedData = _.flatten(_.map(data, function(row)
-            { return _.map(_.range(0, valueColumns.length),
-                function(i) { return $.extend({}, row, { seriesIndex: i }); }); }));
+        var fontMetrics = vizObj._fontMetricsForRowLabels();
 
-        var rowLabels = cc.chartHtmlD3.selectAll('.rowLabel')
-            .data(cubedData, function(row) { return row.id; });
-        rowLabels
-            .enter().append('div')
-                .classed('rowLabel', true);
-        rowLabels
-                .style('font-weight', function(d)
-                        { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
-                .html(function(d)
+        // Create a virtual row object for each distinct label.
+        // Each virtual row has a real row as a prototype, so it is still
+        // safe to pass to the standard label positioning functions.
+        var cubedData = [];
+
+        var colHeight = {};
+        var yScale = vizObj._currentYScale();
+        var augmentedRow = function(seriesIndex)
+        {
+            this.seriesIndex = seriesIndex;
+            this.column = valueColumns[seriesIndex];
+
+            var heightFunc = colHeight[this.column.column.lookup];
+            if (_.isUndefined(heightFunc))
+            {
+                heightFunc = colHeight[this.column.column.lookup] = vizObj._yBarHeight(this.column.column.lookup, yScale);
+            }
+
+            this.columnHeight = heightFunc(this);
+        };
+
+        var distinctLabelCountPerSeries = (!valueInBar && cc.stackYSeries) ? 1 : valueColumns.length;
+        _.each(data, function(row)
+        {
+            augmentedRow.prototype = row;
+            for (var i=0; i<distinctLabelCountPerSeries; i++)
+            {
+                cubedData.push(new augmentedRow(i));
+            }
+        });
+
+        // Now figure out the text to use, and add that to the augmented row.
+        _.each(cubedData, function(d)
+        {
+            var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
+                col = d.column.column;
+
+            // We have two distinct pieces of text: labelText, which is
+            // the category label, and valueText, which is the stringified
+            // value of the particular bar.
+            var labelText = '',
+                valueText = '';
+
+            if (!cc.visualData[d.id])
+            { cc.visualData[d.id] = {}; }
+            cc.visualData[d.id][d.seriesIndex] = {};
+
+            // Label in bar only affects the first/bottom bar on the stack.
+            var labelInThisBar = labelInBar && (d.seriesIndex === 0 || !cc.stackYSeries) ;
+
+            if (labelInThisBar)
+            {
+                labelText = fixedColumn.renderType.renderer(
+                    d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+            }
+
+            if (valueInBar)
+            {
+                var column = col.renderType ? col : col.realValueColumn.column;
+                valueText = column.renderType.renderer(d[col.lookup], column, true, null, null, true);
+            }
+
+            if (valueInBar && labelInBar)
+            {
+                // If there's a label active for this stack, wrap the value in parens.
+                valueText = '('+valueText+')';
+            }
+
+            d.labelText = labelText;
+            d.valueText = valueText;
+
+            // Now that we've got the text for the two pieces, make
+            // the two pieces look good together (if we even have two
+            // pieces).
+
+            // TODO handle invalid values correctly (11704).
+            d.overallText = (d.labelText + ' ' + d.valueText).trim();
+
+            // Determine the width of the text for layout.
+            d.length = fontMetrics.lengthForString(d.overallText);
+        });
+
+        vizObj._updateInBarLabelPositions(cubedData);
+    },
+
+    _updateInBarLabelPositions: function(newCubedData /* optional */)
+    {
+        var vizObj = this;
+        var cc = vizObj._chartConfig;
+
+        if (_.isEmpty(cc.visualData)) { return; }
+
+        var view = vizObj._primaryView;
+
+        var labelInBar = $.deepGet(this._displayFormat, 'xAxis', 'labelInBar'),
+            valueInBar = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar');
+
+        var fontMetrics = vizObj._fontMetricsForRowLabels();
+
+        var extraPaddingForBarInColumn = (cc.orientation == 'right') ? 10 : 5;
+
+        var maxWidthProperty = vizObj._isIE8() ? 'width' : 'max-width';
+
+        var xPos = vizObj._xRowLabelPosition();
+        var yPos = vizObj._yRowLabelPosition();
+
+        var doLabelLayout = function(d, forceWidthForFirstStackedSeries)
+        {
+            var $this = $(this);
+
+            var maxWidth = '';
+            // Sometimes, we don't the max width.
+            if (valueInBar || labelInBar)
+            {
+                // Stacking:
+                if ((forceWidthForFirstStackedSeries !== true) && cc.stackYSeries && d.seriesIndex === 0 && labelInBar)
                 {
-                    var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
-                        col = valueColumns[d.seriesIndex].column,
-                        text = [];
+                    // First bar has precedence, as it contains the category label.
+                    // So, max width remains empty.
+                }
+                else
+                {
+                    maxWidth = Math.max(0, d.columnHeight - extraPaddingForBarInColumn)+'px';
+                }
+            }
+            $this.css(maxWidthProperty, maxWidth);
 
-                    if (!cc.visualData[d.id])
-                    { cc.visualData[d.id] = {}; }
-                    cc.visualData[d.id][d.seriesIndex] = {};
+            doLabelPosition.call(this, d);
+        };
 
-                    $(this).addClass('rowLabel_row' + d.id);
+        var doLabelPosition = function(d)
+        {
+            var $this = $(this);
 
-                    if (labelInBar)
-                    { text.push(fixedColumn.renderType.renderer(d[fixedColumn.lookup],
-                        fixedColumn, true, null, null, true)); }
+            $this.css(cc.dataDim.pluckX('left', 'top'), xPos.call($this, d));
+            $this.css(cc.dataDim.pluckY('left', 'top'), yPos.call($this, d));
+        };
 
-                    if (valueInBar)
+        var rowLabels = cc.chartHtmlD3.selectAll('.rowLabel');
+
+        var cubedData = newCubedData;
+        if (_.isUndefined(newCubedData))
+        {
+            cubedData = rowLabels.data();
+            if (_.isUndefined(cubedData) || _.isEmpty(cubedData)) { return; }
+        }
+        else
+        {
+            // Got new data to display. Make it so.
+            rowLabels = rowLabels
+                .data(cubedData, function(d) { return d.seriesIndex + '/' + d.id; });
+
+            rowLabels
+                .enter().append('div')
+                    .classed('rowLabel', true);
+        }
+
+        rowLabels
+            .style('font-weight', function(d)
+                    { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
+            //Positioning is handled via this function, as it needs to be re-called in later d3 statements.
+            .each(doLabelLayout)
+            .style('color', vizObj._rowLabelColor())
+            .html(function(d)
+            {
+                return d.overallText;
+            })
+            .classed('hide', function(d, i)
+            {
+                if (!cc.stackYSeries) { return false; }
+
+                var vData = cc.visualData[d.id],
+                    posCollisions = _.size(vData) - 1,
+                    coll = false;
+
+                if (valueInBar && labelInBar && d.seriesIndex == 0 && $(this).width() >= d.columnHeight - extraPaddingForBarInColumn)
+                {
+
+                    var onlyLabelLength = fontMetrics.lengthForString(d.labelText);
+                    if (onlyLabelLength > d.columnHeight)
                     {
-                        var column = col.renderType ? col : col.realValueColumn.column;
-                        var value = column.renderType.renderer(d[col.lookup], column, true, null, null, true);
-                        if (labelInBar)
+                        // Overflow... we have to get rid of the first col's
+                        // value, otherwise it looks like the value of the next col.
+                        // First col is special because it contains the category label
+                        // in this case, which we need to show with highest precedence.
+                        // We can't just leave the value in there, as we can't currently
+                        // tell the browser to only clip the value text but not the label.
+                        $(this).text(d.labelText);
+                        doLabelLayout.call(this, d);
+                    }
+                    else
+                    {
+                        // The label by itself would fit, so just clip the value.
+                        doLabelLayout.call(this, d, true /* force width */);
+                    }
+                }
+
+                // Will collide with previous?
+                if (d.seriesIndex !== 0)
+                {
+                    var prevD = cubedData[i-1];
+
+                    if (cc.orientation == 'right')
+                    {
+                        coll = posCollisions > 0
+                            && vData[d.seriesIndex - 1].position - prevD.length < vData[d.seriesIndex].position;
+                    }
+                    else
+                    {
+                        coll = posCollisions > 0
+                            && vData[d.seriesIndex].position
+                                < vData[d.seriesIndex - 1].position + prevD.length;
+                    }
+
+                    if (coll && d.seriesIndex === 1 && labelInBar && valueInBar)
+                    {
+                        // Second bar. We'll sacrifice the value in the first bar
+                        // if it will let us display. It will be cut off by the max width.
+                        var lenOfPreviousWithoutValue = fontMetrics.lengthForString(prevD.labelText);
+                        if (vData[d.seriesIndex].position
+                            >= vData[0].position + lenOfPreviousWithoutValue)
                         {
-                            if (!$.isBlank(value))
-                            { text.push(['(', value, ')']); }
-
-                            if ($.isBlank(value) && cc.stackYSeries)
-                            { text = ''; } // Null labels don't go on stacked bars.
+                            // Doesn't collide. Re-instate the prev col's max
+                            // width.
+                            doLabelLayout.call(this, d);
+                            coll = false;
                         }
-                        else
-                        { text = value; }
                     }
-                    else
-                    { text = text[0]; }
+                }
 
-                    if (_.isArray(text))
-                    {
-                        var tmp = [text[0], text[1].join('')];
-                        cc.visualData[d.id][d.seriesIndex].length = tmp.join(' ').visualLength(13);
-                        text = [text[0],
-                                ['<span class="valueInBar">', tmp[1], '</span>'].join('')].join(' ');
-                    }
-                    else
-                    { cc.visualData[d.id][d.seriesIndex].length = text.visualLength(13); }
+                return coll;
+            })
+            .each(doLabelPosition);
 
-                    // render plaintext representation of the data
-                    return text;
-                })
-                .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition())
-                .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition())
-                .style('color', vizObj._rowLabelColor())
-                .classed('hide', function(d)
-                {
-                    if (!cc.stackYSeries) { return false; }
 
-                    var vData = cc.visualData[d.id],
-                        posCollisions = _.size(vData) - 1,
-                        coll;
-
-                    // Will collide with previous.
-                    coll = posCollisions > 0
-                        && d.seriesIndex > 0
-                        && vData[d.seriesIndex].position
-                            < vData[d.seriesIndex - 1].position + vData[d.seriesIndex - 1].length;
-
-                    $(this).siblings('.rowLabel_row' + d.id)
-                           .find('.valueInBar')
-                           .css('visibility', coll ? 'hidden' : 'visible');
-                    return coll;
-
-                    // Will collide at all in row.
-/*
-                    for (var i = 0; i < posCollisions; i++)
-                    {
-                        if (vData[i].position + vData[i].length > vData[i+1].position)
-                        { return true; }
-                    }
-                    return false;
-*/
-                })
-        rowLabels
-            .exit()
-            .transition()
-                .remove();
+        if (!_.isUndefined(newCubedData))
+        {
+            rowLabels
+                .exit()
+                .transition()
+                    .remove();
+        }
     },
 
     _yAxisPos: function()
@@ -823,6 +1004,7 @@ $.Control.registerMixin('d3_impl_bar', {
         };
     },
 
+    // Only for label or value in bar.
     _yRowLabelPosition: function()
     {
         var vizObj = this,
@@ -830,11 +1012,14 @@ $.Control.registerMixin('d3_impl_bar', {
             yAxisPos = vizObj._yAxisPos(),
             yScale = vizObj._currentYScale(),
             valueColumns = vizObj.getValueColumns(),
-            endJustified = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar') === true
+            valueInBar = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar') === true,
+            endJustified = valueInBar
                         && $.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true;
 
         return function(d)
         {
+            var localEndJustified = endJustified || (cc.stackYSeries && valueInBar && d.seriesIndex !== 0);
+
             if (!vizObj._chartInitialized) { return 0; } // Harden against animations ticking after cleanVisualization.
 
             var position, datumPos = 0;
@@ -847,28 +1032,34 @@ $.Control.registerMixin('d3_impl_bar', {
                         valueColumns[d.seriesIndex].column.lookup, yScale)(d) || 0) - yAxisPos; }
 
                 position = yAxisPos + 5;
-                if (endJustified)
+                if (localEndJustified)
                 { position = Math.max(position, yAxisPos
                     + yScale(d[valueColumns[d.seriesIndex].column.lookup]) - $(this).width() - 5); }
             }
             else
             {
-                if (cc.stackYSeries && d.seriesIndex > 0)
-                {
-                    datumPos -= vizObj._yBarHeight(valueColumns[d.seriesIndex - 1].column.lookup, yScale)(d) || 0;
-                }
-
                 if (vizObj._isIE8())
                 {
-                    position = yAxisPos - $(this).height() - 5;
-                    if (endJustified)
-                    { position = Math.min(position, yAxisPos - yScale(d[valueColumns[d.seriesIndex].column.lookup]) + $(this).height() - 5); }
+                    position = vizObj._yDatumPosition(valueColumns[d.seriesIndex].column.lookup, yScale, false)(d) + 5;
+                    var actualSize = Math.min(d.length, d.columnHeight - 10);
+                    if (localEndJustified)
+                    {
+                        // Gotta calculate this manually; IE gives us bogus sizes.
+                        position -= d.columnHeight - actualSize - 10;
+                    }
+                    else
+                    {
+                        var overflow = d.length - actualSize;
+                        position -= overflow;
+                    }
                 }
                 else
                 {
-                    position = yAxisPos - ($(this).width() / 2) - 10;
-                    if (endJustified)
-                    { position = Math.min(position, yAxisPos - yScale(d[valueColumns[d.seriesIndex].column.lookup]) + ($(this).width() / 2)); }
+                    position = vizObj._yDatumPosition(valueColumns[d.seriesIndex].column.lookup, yScale, false)(d) + ($(this).width() / 2) - 5;
+                    if (!localEndJustified)
+                    {
+                        position += d.columnHeight - $(this).width() - 10;
+                    }
                 }
             }
 
@@ -878,7 +1069,14 @@ $.Control.registerMixin('d3_impl_bar', {
                 if (cc.visualData[d.id][d.seriesIndex].length === 0)
                 { delete cc.visualData[d.id][d.seriesIndex]; }
                 else
-                { cc.visualData[d.id][d.seriesIndex].position = position + datumPos; }
+                {
+                    cc.visualData[d.id][d.seriesIndex].position = datumPos;
+
+                    if (cc.orientation == 'right')
+                    {
+                        cc.visualData[d.id][d.seriesIndex].position += position;
+                    }
+                }
             }
 
             // If not stacked, expecting datumPos to be 0.
@@ -936,11 +1134,15 @@ $.Control.registerMixin('d3_impl_bar', {
                     .attr('d', vizObj._errorBarPath(yScale));
         }
 
+        // Standard labels.
         cc.chartHtmlD3.selectAll('.rowLabel')
             .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition());
 
         vizObj._renderTicks(yScale, yScale, false);
         vizObj._renderValueMarkers(yScale, yScale, false);
+
+        // Have to re-render labels as bar sizes may have changed.
+        vizObj._renderRowLabels();
     },
 
     // call this if spacings/widths changed
@@ -963,10 +1165,6 @@ $.Control.registerMixin('d3_impl_bar', {
                     .style(cc.dataDim.width, vizObj._d3_px(cc.barWidth))
                     .style(cc.dataDim.xAxis, vizObj._d3_px(xDatumPositionForSeries));
 
-            cc.chartHtmlD3.selectAll('.rowLabel')
-                    .style(cc.dataDim.pluckX('left', 'top'), vizObj._xRowLabelPosition(seriesIndex));
-
-
             var nullBars = cc.chartNullD3.selectAll('.nullDataBar_series' + colDef.column.lookup);
             var nullBarHeight = cc.dataDim.pluckY(vizObj._d3_px(cc.chartWidth - yAxisPos),
                                            vizObj._d3_px(yAxisPos));
@@ -978,12 +1176,15 @@ $.Control.registerMixin('d3_impl_bar', {
                 .style(cc.dataDim.position, vizObj._d3_px(xDatumPositionForSeries));
         });
 
+        vizObj._updateInBarLabelPositions();
+
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
         {
             cc.chartD3.selectAll('.errorMarker')
                 .attr('transform', vizObj._errorBarTransform());
         }
 
+        // Standard labels (note the use of the SVG node vs. HTML node).
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
     }

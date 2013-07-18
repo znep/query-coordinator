@@ -582,3 +582,20 @@ d3ns.math = {
         return distFromCtr <= r;
     }
 };
+
+d3ns.fontMetrics = function($){
+    var fm = {
+
+        getFontMetrics: _.memoize(function(fontSize)
+        {
+            return {
+                lengthForString: _.memoize(function(str)
+                {
+                    return str.visualLength(fontSize);
+                })
+            };
+        })
+    };
+
+    return fm;
+}(jQuery);

@@ -1357,6 +1357,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
         var labelSizer = _.memoize(function(datum)
         {
+            //TODO integrate this into d3.layout-utils' font metrics code.
             return fontMetrics.lengthForString(textFromDatum(datum));
         }, function(datum) { return datum.data.index; });
 

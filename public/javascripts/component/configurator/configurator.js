@@ -147,9 +147,6 @@
     var $previewCont;
     var $editCont;
 
-    var $permissionsDialog;
-    var $settingsDialog;
-
     $.extend($.cf, {
         initialize: function(opts)
         {
@@ -273,11 +270,15 @@
             $editCont.css('background-color', $body.css('background-color'))
                 .append($.tag2({ _: 'div', id: 'edit_' + editContent.id, className: 'editRoot' }));
 
-            $permissionsDialog = $('.configuratorPermissions');
-            $permissionsDialog.find(':radio').uniform();
-            $permissionsDialog.find('.actions .save').click(function(e)
+            $('.socrataModalWrapper').on('submit', function(e)
+            {
+                $('.socrataModalWrapper .actions .save').click();
+            });
+
+            $('.socrataModalWrapper').on('click', '#configuratorPermissions .actions .save', function(e)
             {
                 e.preventDefault();
+                var $permissionsDialog = $(this).closest('#configuratorPermissions');
 
                 var newPage = blist.configuration.page;
                 newPage.update({ permission: $permissionsDialog.find(':radio:checked').val() });
@@ -288,17 +289,14 @@
                 $.cf.save(newPage, function()
                 {
                     $spinner.addClass('hide');
-                    $permissionsDialog.jqmHide();
+                    $.popModal();
                 });
             });
 
-            $settingsDialog = $('.configuratorSettings');
-            $settingsDialog.find('form').validate({errorElement: 'span', ignore: ':hidden',
-                    errorPlacement: function($error, $element)
-                        { $error.appendTo($element.closest('.line')); }});
-            $settingsDialog.find('.actions .save').click(function(e)
+            $('.socrataModalWrapper').on('click', '#configuratorSettings .actions .save', function(e)
             {
                 e.preventDefault();
+                var $settingsDialog = $(this).closest('#configuratorSettings');
                 if (!$settingsDialog.find('form').valid())
                 { return; }
 
@@ -318,7 +316,7 @@
                     {
                         $top.find('.editTitle .pageName').text(newPage.name);
                         $spinner.addClass('hide');
-                        $settingsDialog.jqmHide();
+                        $.popModal();
                         if ($.subKeyDefined(flags, 'oldPath'))
                         { window.location = newPage.path + '?_edit_mode=true'; }
                     }, function(err)
@@ -339,7 +337,7 @@
                         newPage.saveCopy({ path: path }, function(newReport)
                         {
                             $spinner.addClass('hide');
-                            $settingsDialog.jqmHide();
+                            $.popModal();
                             window.location = newReport.path + '?_edit_mode=true';
                         });
                     });
@@ -488,33 +486,36 @@
 
         permissions: function()
         {
+            var $permissionsDialog = $.showModal('configuratorPermissions');
             var $allRadio = $permissionsDialog.find(':radio');
             $allRadio.value(false);
             $allRadio.filter('[value=' +
                     (blist.configuration.page.permission || 'public') + ']').value(true);
-            $.uniform.update($allRadio);
-            $permissionsDialog.jqmShow();
+            $allRadio.uniform();
         },
 
         settings: function()
         {
-            $settingsDialog.removeData('isCopy');
+            var $settingsDialog = $.showModal('configuratorSettings');
+            $settingsDialog.find('form').validate({errorElement: 'span', ignore: ':hidden',
+                    errorPlacement: function($error, $element)
+                        { $error.appendTo($element.closest('.line')); }});
             $settingsDialog.find('[name=pageTitle]').value(blist.configuration.page.name);
             $settingsDialog.find('[name=pageUrl]').value(blist.configuration.page.path);
-            $settingsDialog.find('[name=pageUrl]').closest('.line').removeClass('hide');
             $settingsDialog.find('.errorMessage').addClass('hide');
-            $settingsDialog.jqmShow();
             // Include access to translate here
         },
 
         saveCopy: function()
         {
+            var $settingsDialog = $.showModal('configuratorSettings');
+            $settingsDialog.find('form').validate({errorElement: 'span', ignore: ':hidden',
+                    errorPlacement: function($error, $element)
+                        { $error.appendTo($element.closest('.line')); }});
             $settingsDialog.find('[name=pageTitle]').value('Copy of ' + blist.configuration.page.name);
             $settingsDialog.find('[name=pageUrl]').closest('.line').addClass('hide');
             $settingsDialog.find('.errorMessage').addClass('hide');
             $settingsDialog.data('isCopy', true);
-            $settingsDialog.jqmShow();
-            // Include access to translate here
         },
 
         blur: function(unmask)

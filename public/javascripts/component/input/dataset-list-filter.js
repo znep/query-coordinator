@@ -36,7 +36,7 @@ $.component.Component.extend('DatasetListFilter', 'none', {//'input', {
             var dialogId = 'browseDialog_' + cObj.id;
             cObj.$dialog = $.tag2({ _: 'div', id: dialogId,
                 className: ['socrataDialog', 'listFilterDialog'],
-                contents: [ { _: 'a', href: '#close', className: 'jqmClose', contents: 'Close' },
+                contents: [ { _: 'a', href: '#close', className: ['jqmClose', 'cornerClose'], contents: 'Close' },
                     { _: 'div', className: 'optionsContent' } ] });
             $('#newModals').append(cObj.$dialog);
 

@@ -770,11 +770,16 @@ $.Control.registerMixin('d3_impl_bar', {
             {
                 // Manually account for the x axis label.
                 var $xLabel = this._$dom.find('.xLabelHoriz.floatingAxisLabel');
-                if (!_.isEmpty($xLabel))
+                if ($xLabel.exists())
                 {
                     var bottomOfChart = this._chartConfig.$chartOuterContainer.position().top + this._chartConfig.$chartOuterContainer.height();
                     var posOfxAxisLabel = $xLabel.position().top;
                     yAxisPos -= $xLabel.padding().top + (bottomOfChart - posOfxAxisLabel);
+                }
+                else
+                {
+                    // Add some manual padding.
+                    yAxisPos -= 5;
                 }
             }
         }
@@ -782,7 +787,7 @@ $.Control.registerMixin('d3_impl_bar', {
         {
             var $yLabel = this._$dom.find('.yLabelVert.floatingAxisLabel');
 
-            if (!_.isEmpty($yLabel))
+            if ($yLabel.exists())
             {
                 yAxisPos = this._isIE8() ? $yLabel.outerWidth(true) : $yLabel.outerHeight(true);
             }

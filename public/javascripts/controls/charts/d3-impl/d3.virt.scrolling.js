@@ -481,7 +481,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // transform, not a layout. We've tried lots of magical CSS incantations
         // to center vertically, but all had problems. So we gave up and are now
         // using JS.
-        if ($yLabelVert.length > 0)
+        if ($yLabelVert.exists())
         {
             // Length we want to give the text. In other words, the width
             // pre-rotation.

@@ -47,7 +47,7 @@ $(function()
         report.update({ name: $settingsDialog.find('[name=pageTitle]').value() ||
             'Copy of ' + report.name });
 
-        $.globalIndicator.statusWorking();
+        $.globalIndicator.statusSaving();
         Page.uniquePath(report.name, '/reports/', function(path)
         {
             report.saveCopy({ path: path }, function(newReport)
@@ -84,7 +84,7 @@ $(function()
         var $input = $(e.currentTarget);
         var d = {}
         d[$input.attr('name')] = $input.val();
-        $.globalIndicator.statusWorking();
+        $.globalIndicator.statusSaving();
         $.ajax({ url: $input.closest('form').attr('action'), type: 'POST', data: d,
         error: $.globalIndicator.statusError,
         success: function()

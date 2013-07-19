@@ -16,7 +16,7 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
 {
     if (!$.subKeyDefined(assets, 'stylesheets') && !$.subKeyDefined(assets, 'javascripts') &&
         !$.subKeyDefined(assets, 'templates') && !$.subKeyDefined(assets, 'translations') &&
-        !$.subKeyDefined(assets, 'modals'))
+        !$.subKeyDefined(assets, 'modals') && !$.subKeyDefined(assets, 'newModals'))
     {
         if (_.isFunction(mainCallback)) { mainCallback(); }
         return;
@@ -37,8 +37,9 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
     var loadJS = _.isArray(assets.javascripts) && assets.javascripts.length > 0;
     var loadTemplates = _.isArray(assets.templates) && assets.templates.length > 0;
     var loadModals = _.isArray(assets.modals) && assets.modals.length > 0;
+    var loadNewModals = _.isArray(assets.newModals) && assets.newModals.length > 0;
     var loadTranslations = _.isArray(assets.translations) && assets.translations.length > 0;
-    var finished = _.after(_.compact([loadJS, loadTemplates, loadTranslations, loadModals]).length,
+    var finished = _.after(_.compact([loadJS, loadTemplates, loadTranslations, loadModals, loadNewModals]).length,
             function() { if (_.isFunction(mainCallback)) { mainCallback(); } });
 
     if (loadTemplates)
@@ -51,6 +52,8 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
                 { $newItems.socrataJqm(); }
                 finished();
             }); }
+    if (loadNewModals)
+    { assetNS.loadPartials(translateUrls('/modals/', assets.newModals, 'newModals'), 'newModals', finished); }
     if (loadJS)
     { assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished); }
     if (loadTranslations)

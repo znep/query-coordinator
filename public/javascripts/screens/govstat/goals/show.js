@@ -40,7 +40,7 @@ $(function()
     {
         goal.on('change:category', function()
         {
-            $.globalIndicator.statusWorking();
+            $.globalIndicator.statusSaving();
             goal.save(null, stdCallbacks);
         });
         goal.on('removeFromAll', function()
@@ -82,7 +82,7 @@ $(function()
     {
         category.on('change:name', function()
         {
-            $.globalIndicator.statusWorking();
+            $.globalIndicator.statusSaving();
             category.save(null, stdCallbacks);
         });
         category.on('removeFromAll', function()
@@ -154,7 +154,7 @@ $(function()
     {
         event.preventDefault();
         var goal = $(this).closest('.goalEditor').data('backboneModel');
-        $.globalIndicator.statusWorking();
+        $.globalIndicator.statusSaving();
         goal.save(null, stdCallbacks);
     });
 });

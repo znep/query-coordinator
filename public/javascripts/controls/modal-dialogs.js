@@ -117,7 +117,7 @@
         _.defer(function()
         {
             $contents.addClass('shown');
-            $contents.find('input:first').focus().caretToEnd(); // focus on an input if we can
+            $contents.find(':input:first').focus().filter(':text, textarea').caretToEnd(); // focus on an input if we can
         });
     };
     var popModal = function(hideAll)
@@ -186,6 +186,18 @@
     {
         event.preventDefault();
         popModal();
+    });
+    // Radio/Checkboxes don't get focused on click, so manually hack it
+    $wrapper.on('click', ':radio, :checkbox', function()
+    {
+        $(this).focus();
+    });
+    $wrapper.on('keyup', function(event)
+    {
+        if (event.keyCode === 13)
+        {
+            $wrapper.trigger('submit', event);
+        }
     });
 
 });})(jQuery);

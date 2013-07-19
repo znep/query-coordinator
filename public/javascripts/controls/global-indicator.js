@@ -52,6 +52,8 @@
     $.extend($.globalIndicator, {
         // Convenience functions for common cases
         statusWorking: function()
+        { $.globalIndicator.showStatus('waiting', 'Working...'); },
+        statusSaving: function()
         { $.globalIndicator.showStatus('waiting', 'Saving...'); },
         statusFinished: function()
         { $.globalIndicator.showStatus('good', 'Saved', 4000); },

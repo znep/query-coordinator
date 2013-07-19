@@ -38,18 +38,16 @@ $(function()
         }
     });
 
-    var $settingsDialog = $('.configuratorSettings');
-    $settingsDialog.find('input[name=pageUrl]').closest('.line').addClass('hide');
-    $settingsDialog.find('.errorMessage').addClass('hide');
-    $settingsDialog.find('.actions .save').click(function(e)
+    $('.socrataModalWrapper').on('click', '#configuratorSettings .actions .save', function(e)
     {
         e.preventDefault();
+        var $settingsDialog = $(this).closest('#configuratorSettings');
 
         var report = $settingsDialog.data('report');
         report.update({ name: $settingsDialog.find('[name=pageTitle]').value() ||
             'Copy of ' + report.name });
 
-        $.globalIndicator.statusWorking();
+        $.globalIndicator.statusSaving();
         Page.uniquePath(report.name, '/reports/', function(path)
         {
             report.saveCopy({ path: path }, function(newReport)
@@ -69,9 +67,11 @@ $(function()
         Page.createFromId($a.data('id'), $a.data('oldid'), function(report)
         {
             $.globalIndicator.hideStatus();
+            var $settingsDialog = $.showModal('configuratorSettings');
+            $settingsDialog.find('input[name=pageUrl]').closest('.line').addClass('hide');
             $settingsDialog.find('[name=pageTitle]').value('Copy of ' + report.name);
+            $settingsDialog.find('.errorMessage').addClass('hide');
             $settingsDialog.data('report', report);
-            $settingsDialog.jqmShow();
         },
         $.globalIndicator.statusError);
     });
@@ -84,7 +84,7 @@ $(function()
         var $input = $(e.currentTarget);
         var d = {}
         d[$input.attr('name')] = $input.val();
-        $.globalIndicator.statusWorking();
+        $.globalIndicator.statusSaving();
         $.ajax({ url: $input.closest('form').attr('action'), type: 'POST', data: d,
         error: $.globalIndicator.statusError,
         success: function()

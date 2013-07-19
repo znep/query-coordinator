@@ -1,5 +1,6 @@
-<%= modal :class => 'configuratorSettings loading' do %>
+<div class="socrataDialog loading" id="configuratorSettings">
   <%- name = module_enabled?(:govStat) ? 'Report' : 'Page' -%>
+  <a href="#close" class="jqmClose cornerClose">Close</a>
   <h2><%= name %> Settings</h2>
 
   <div class="loadingOverlay hide">
@@ -21,4 +22,4 @@
     <li><a href="#cancel" class="jqmClose button">Cancel</a></li>
     <li><a href="#save" class="save button">Save</a></li>
   </ul>
-<%- end -%>
+</div>

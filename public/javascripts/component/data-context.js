@@ -47,13 +47,20 @@
             {
                 if (!(dc.column instanceof Column))
                 {
-                    // First find dataset
-                    this._loadDataset(function()
+                    var finishCol = function()
                     {
                         dc.column = dc.dataset.columnForIdentifier(dc.config.columnId);
                         dc._hookColumnAggs();
                         initCallback(dc);
-                    }, function() {}, $.isBlank(dc.config.query));
+                    };
+
+                    if ($.isBlank(this.dataset))
+                    {
+                        // First find dataset
+                        this._loadDataset(finishCol, function() {}, $.isBlank(dc.config.query));
+                    }
+                    else
+                    { finishCol(); }
                 }
                 else
                 {
@@ -384,6 +391,8 @@
             var dc = this;
             if (!$.isBlank(dc.config.keepOriginal))
             { keepOriginal = dc.config.keepOriginal; }
+            if (dc.config.useParentPrefetch)
+            { keepOriginal = true; }
             var gotDS = function(ds)
             {
                 dc.dataset = ds;

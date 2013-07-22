@@ -2085,24 +2085,22 @@ var Dataset = ServerModel.extend({
                         { return oldRTConfig.visible[nd] ||
                             ds.metadata.renderTypeConfig.visible[nd]; }); });
 
+        var newQ = {orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters()};
+        var newKey = RowSet.getQueryKey({orderBys: ds.query.orderBys,
+            filterCondition: Dataset.translateFilterCondition(newQ.filterCondition, ds)});
         if (needQueryChange || (oldSearch != ds.searchString) ||
-                !_.isEqual(oldQuery, ds.query))
+                ds._activeRowSet._key != newKey)
         {
             ds.aggregatesChanged();
-            var filterChanged = needQueryChange ||
-                !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
-                !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters);
+            var filterChanged = needQueryChange || ds._activeRowSet._key != newKey;
             var nonFilterChanged = oldSearch != ds.searchString ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
                 // Group-bys suck, since there may be pre-process filtering
                 // that happens before we have the data. So if they exist, we
                 // always have to talk to the server
                 !_.isEmpty(ds.query.groupBys);
-            if ((filterChanged || !_.isEqual(oldQuery.orderBys, ds.query.orderBys)) && !nonFilterChanged)
+            if (filterChanged && !nonFilterChanged)
             {
-                var newQ = {orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters()};
-                var newKey = RowSet.getQueryKey({orderBys: ds.query.orderBys,
-                    filterCondition: Dataset.translateFilterCondition(newQ.filterCondition, ds)});
                 if (!$.isBlank(ds._availableRowSets[newKey]))
                 { ds._activateRowSet(ds._availableRowSets[newKey]); }
                 else

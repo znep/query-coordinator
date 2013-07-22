@@ -55,7 +55,12 @@ module Canvas2
     end
 
     def self.set_context_as_streaming(id)
-      streaming_contexts[id] = available_contexts[id] if !available_contexts[id].nil?
+      if !available_contexts[id].nil? && !available_contexts[id][:exclude_context]
+        streaming_contexts[id] = available_contexts[id].clone
+        streaming_contexts[id].delete(:exclude_context)
+        streaming_contexts[id].delete(:dataset) if streaming_contexts[id][:exclude_ds]
+        streaming_contexts[id].delete(:exclude_ds)
+      end
     end
 
     def self.add_extra_config(id, conf)
@@ -103,14 +108,16 @@ module Canvas2
 
         when 'dataset'
           ret_val = get_dataset(config, lambda do |ds|
-            available_contexts[id] = {id: id, type: config['type'], dataset: ds}
+            available_contexts[id] = { id: id, type: config['type'], dataset: ds,
+              exclude_context: config['keepOriginal'] || config['useParentPrefetch'] }
             log_timing(start_time, config)
             if (defined? @pending_contexts) && (((@pending_contexts || {})[id]).is_a? Array)
               threads = @pending_contexts[id].map do |req|
                 Thread.new do
                   begin
-                    ds_new = req[:config]['keepOriginal'] ? ds : ds.deep_clone(::View)
-                    ds.set_sodacan(config['useParentPrefetch'] ? context[:dataset].sodacan : nil)
+                    ds_new = req[:config]['keepOriginal'] || req[:config]['useParentPrefetch'] ?
+                      ds : ds.deep_clone(::View)
+                    ds.set_sodacan(req[:config]['useParentPrefetch'] ? context[:dataset].sodacan : nil)
                     got_dataset(ds_new, req[:config])
                     req[:callback].call(ds_new)
                   rescue CoreServer::CoreServerError => e
@@ -126,7 +133,8 @@ module Canvas2
           end)
 
         when 'column'
-          ret_val = get_dataset({'keepOriginal' => config['query'].blank?}.merge(config), lambda do |ds|
+          keep_orig = config['query'].blank?
+          ret_val = get_dataset({ 'keepOriginal' => keep_orig }.merge(config), lambda do |ds|
             col = ds.column_by_id_or_field_name(config['columnId'])
             if col.nil?
               errors.push(DataContextError.new(config, "No column '" + config['columnId'] +
@@ -140,7 +148,8 @@ module Canvas2
               aggs[col.id] = config['aggregate'].is_a?(Array) ? config['aggregate'] : [config['aggregate']]
               ds.get_aggregates(aggs)
             end
-            available_contexts[id] = { id: id, type: config['type'], column: col, parent_dataset: ds }
+            available_contexts[id] = { id: id, type: config['type'], column: col, dataset: ds,
+              exclude_ds: keep_orig }
             log_timing(start_time, config)
             return true
           end)
@@ -305,7 +314,8 @@ module Canvas2
               return true
             end
           end
-          ds = config['keepOriginal'] ? context[:dataset] : context[:dataset].deep_clone(::View)
+          ds = config['keepOriginal'] || config['useParentPrefetch'] ?
+            context[:dataset] : context[:dataset].deep_clone(::View)
           ds.set_sodacan(config['useParentPrefetch'] ? context[:dataset].sodacan : nil)
         else
           @pending_contexts ||= {}

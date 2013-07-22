@@ -658,6 +658,7 @@ en:
             row_limit_warning: Data Series Grouping will run extremely slowly with this many rows.
             new_column_button: Add Series Column
             group_by: Group by
+            alphabetize: Alphabetize Groups
           categories: Categories
           names: Names
           label: Label

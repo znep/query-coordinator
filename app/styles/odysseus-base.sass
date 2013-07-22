@@ -1,0 +1,93 @@
+
+// Not sure on the structural details yet, but here are the starts of styling for a lot of
+// the commont controls that make up Janus-Socrata/Janus-Govstat.
+
+.datasetIcon
+  background-image: url(/stylesheets/images/icons/type_icons_30.png?1)
+  height: 30px
+  width: 30px
+
+  &.type-filter
+    background-position: 0 0
+  &.type-chart
+    background-position: 0 -30px
+  &.type-map
+    background-position: 0 -60px
+  &.type-blist, &.type-table
+    background-position: 0 -90px
+  &.comments
+    background-position: 0 -120px
+  &.type-api, &.embed
+    background-position: 0 -150px
+  &.views
+    background-position: 0 -180px
+  &.downloads
+    background-position: 0 -210px
+  &.print
+    background-position: 0 -240px
+  &.type-form
+    background-position: 0 -270px
+  &.type-calendar
+    background-position: 0 -300px
+  &.type-blob
+    background-position: 0 -330px
+  &.type-grouped
+    background-position: 0 -360px
+  &.api
+    background-position: 0 -390px
+  &.alert, .alertIcon
+    background-position: 0 -420px
+  &.type-href
+    background-position: 0 -450px
+  &.type-unpublished
+    background-position: 0 -480px
+  &.type-snapshotted
+    background-position: 0 -510px
+  &.type-api-predeploy
+    background-position: 0 -540px
+
+.datasetSummary
+  .datasetIcon
+    display: inline-block
+    vertical-align: bottom
+  .datasetName
+    display: inline-block
+    line-height: 30px
+    margin-left: 0.6em
+
+.datasetListItem, .datasetSelectListItem
+  .datasetIcon
+    display: inline-block
+    vertical-align: bottom
+  .datasetName
+    display: inline-block
+    font-size: 1.6em
+    line-height: 30px
+    margin-left: 0.6em
+  .byLine
+    display: inline-block
+    font-size: 1.4em
+    margin-left: 0.8em
+    @include opacity(0.8)
+
+.datasetSelectListItem
+  .actions
+    float: right
+    margin-top: -0.2em
+
+.datasetPicker .catalogList li
+  border-top: 1px solid #ddd
+  padding: 1em 0
+
+  &:first-child
+    border-top: none
+
+.metricSummary
+  .valueColumn, .from, .metricDataset
+    display: inline-block
+    line-height: 30px
+    margin-left: 0.4em
+
+  .function
+    text-transform: lowercase
+

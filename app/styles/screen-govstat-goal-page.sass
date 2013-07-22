@@ -66,6 +66,7 @@
     > div
       display: block
 
+
 .titleContainer
   background: #fff
   background: rgba(255, 255, 255, 0.9)
@@ -205,6 +206,9 @@ $chartHeight: 210px
   padding: 0
   @include transition(2s, height)
 
+  &.socrata-component
+    margin: 2em -4.5em -4.5em
+
   .goalUid
     display: none
 
@@ -328,8 +332,9 @@ $chartHeight: 210px
       z-index: 0
 
       .bubble
-        background-color: #797979
-        margin-right: 0.8em
+        color: #797979
+        font-size: 1.2em
+        margin-right: 1em
         margin-top: -0.8em
         right: 100%
         text-rendering: optimizeLegibility
@@ -339,10 +344,10 @@ $chartHeight: 210px
 
         .tip
           @include triangle(3px, #797979, left)
-          margin-right: -6px
+          margin-right: -8px
           position: absolute
           right: 0
-          top: 0.4em
+          top: 0.5em
 
     .xTick.bubble
       background-color: #ababab

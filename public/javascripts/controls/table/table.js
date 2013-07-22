@@ -115,7 +115,7 @@
         {
             $('.sort.active', $header)
                 .removeClass('sort-asc').addClass('sort-desc')
-                .attr('title', 'Sort ascending')
+                .attr('title', $.t('controls.grid.sort_ascending'))
                 .removeClass('active')
                 .closest('.blist-th').removeClass('sorted');
 
@@ -127,8 +127,7 @@
                     var sortDescending = !col.sortAscending;
                     var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
                     var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
-                    var newTitle = 'Sort ' +
-                        (sortDescending ? 'ascending' : 'descending');
+                    var newTitle = $.t('controls.grid.sort_' + (sortDescending ? 'ascending' : 'descending'));
                     $('.sort', col.dom)
                         .removeClass(oldClass).addClass(newClass)
                         .attr('title', newTitle)

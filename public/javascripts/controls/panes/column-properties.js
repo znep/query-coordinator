@@ -41,7 +41,7 @@
         if ($.isBlank(c) || canConvert(this, c.origColumn)) { return ''; }
         var col = c.origColumn;
 
-        var text = col.renderType.title;
+        var text = $.t('core.data_types.' + col.renderTypeName);
         if (!$.isBlank(col.format.grouping_aggregate))
         { text += ' (' + $.capitalize(col.format.grouping_aggregate) + ' on ' + col.dataType.title + ')'; }
         return text;

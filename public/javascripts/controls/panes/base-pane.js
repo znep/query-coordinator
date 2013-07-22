@@ -1513,7 +1513,7 @@
         { contents.splice(0, contents.length); }
 
         var removeButton = {tagName: 'a', href: '#remove',
-            title: 'Remove', 'class': 'removeLink delete',
+            title: $.t('screens.ds.grid_sidebar.base.buttons.remove'), 'class': 'removeLink delete',
             contents: {tagName: 'span', 'class': 'icon'}};
 
         var populatedLength = 0;

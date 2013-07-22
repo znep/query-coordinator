@@ -1,4 +1,5 @@
 class UserSessionsController < ApplicationController
+  include ActionView::Helpers::TranslationHelper
   include UserSessionsHelper
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
@@ -58,7 +59,7 @@ class UserSessionsController < ApplicationController
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
       end
     else
-      default_response = 'Unable to login with that email and password; please try again'
+      default_response = t('screens.sign_in.failed')
       meter 'login.failure'
       if response.is_a?(Net::HTTPForbidden)
         response_error = JSON.parse(response.body)
@@ -83,7 +84,7 @@ class UserSessionsController < ApplicationController
       current_user_session.destroy
     end
     cookies.delete :remember_token
-    flash[:notice] = "You have been logged out"
+    flash[:notice] = t('core.dialogs.session_timeout.notice')
     redirect_to(login_path)
   end
 end

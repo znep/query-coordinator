@@ -225,7 +225,7 @@
                     href: view.url + '/' + row.id,
                     target: isPrimaryView ? null : '_blank',
                     'class': ['viewRow', 'noInterstitial', 'noRedirPrompt'],
-                    contents: 'View details for this row'}));
+                    contents: $.t('controls.common.visualization.row_details')}));
             }
             return $item;
         },

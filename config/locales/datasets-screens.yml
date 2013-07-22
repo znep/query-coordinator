@@ -66,6 +66,7 @@ en:
         based_on_parent_html: Based on <a class="parentName"></a>
         based_on_working_copy_html: Based on the working copy of <a class="revertLink currentViewName" href="#revert">%{name}</a>
         based_on_html: Based on <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_private_view: a private view.
         view_published_html: View the published <span class="publishedName">dataset</span>
         subscribe_prompt: Subscribe via Email or RSS
         subscribe: Subscribe to Changes
@@ -207,6 +208,7 @@ en:
             no_greater: Value must be no greater than %{value}
             numeric: Value must be a number
           buttons:
+            remove: Remove
             create: Create
             update: Update
             apply: Apply
@@ -817,6 +819,7 @@ it:
         based_on_parent_html: Basato su <a class="parentName"></a>
         based_on_working_copy_html: Basato sulla copia di lavoro di <a class="revertLink currentViewName" href="#revert">%{name}</a>
         based_on_html: Basato su <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_private_view: una vista privata.
         view_published_html: Visualizza il <span class="publishedName">dataset</span> pubblicato
         subscribe_prompt: Sottoscrivi via Email o RSS
         subscribe: Sottoscrivi i cambiamenti
@@ -886,13 +889,13 @@ it:
         message_prompt: Inserisci un messaggio opzionale
         email_button: Email
       dataset_contact:
-        subject: "Il Tuo dataset \"%{dataset_name}\" è stato contrassegnato %{reason}"
+        subject: "Il tuo dataset \"%{dataset_name}\" è stato contrassegnato %{reason}"
         reasons:
           copyright_violation: per violazione del copyright
           offensive_content: per contenuti offensivi
-          spam: acome potenziale spam
+          spam: come potenziale spam
           personal_information: per contenere informazioni personali
-        other_subject: Un visitatore ti ha inviato un messaggio riguardo al tuo '%{dataset_name}' '%{site}' dataset
+        other_subject: Un visitatore ti ha inviato un messaggio riguardo al tuo dataset '%{dataset_name}' '%{site}'
         form:
           purpose: Scopo
           purposes:
@@ -914,7 +917,7 @@ it:
           no_email: "La tua email è obbligatoria."
         error_message: "Si è verificato un errore durante l'invio del feedback per questo dataset. Si prega di riprovare più tardi."
         success_message: "La notifica è stata inviata al proprietario del dataset."
-        captcha_failed: "La risposta non è corretta, Si prega di riprovare più tardi."
+        captcha_failed: "La risposta non è corretta, Si prega di riprovare."
       dataset_status:
         # status is eg 'is available' or 'can be made'
         needs_copy: "Questo dataset è pubblicato e non può essere modificato direttamente. Una copia di lavoro %{status} che ti permette di effettuare le modifiche desiderate prima di renderle pubbliche."
@@ -957,6 +960,7 @@ it:
             no_greater: "Il valore non deve essere più grande di %{value}"
             numeric: Il valore deve essere un numero
           buttons:
+            remove: Rimouvi
             create: Crea
             update: Aggiorna
             apply: Applica
@@ -1191,7 +1195,7 @@ it:
             subtitle: Visualizza la versione precedentemente pubblicata di questo dataset
         sort_rollup:
           title: Sort & Roll-Up
-          subtitle: "Puoi raggruppare le righe and sommare i dati con un roll-up; e ordinare su una o più colonne"
+          subtitle: "Puoi raggruppare le righe e sommare i dati con un roll-up; e ordinare su una o più colonne"
           validation:
             no_eligible_columns: Questa vista non ha colonne per roll-up o sort
             no_group_bys: Devi raggruppare almeno una colonna per fare il roll-up di una colonna
@@ -1213,7 +1217,7 @@ it:
               ascending: Crescente
               descending: Decrescente
         conditional_formatting:
-          title: Formattazine Condizionale
+          title: Formattazione Condizionale
           subtitle: "La Formattazione Condizionale ti permette di modificare il colore di background dei record in base ad un criterio personalizzato. Ad ogni record sarà assegnato il colore della prima condizione soddisfatta."
           validation:
             no_columns: Questa bìvista non ha colonne da filtrare

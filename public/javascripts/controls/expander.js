@@ -61,7 +61,7 @@
                     }
                     $expand.removeClass(config.expanderCollapsedClass)
                            .addClass(config.expanderExpandedClass)
-                           .attr('title', 'Click to collapse');
+                           .attr('title', $.t('controls.common.expander.collapse'));
                 }
                 else
                 {
@@ -88,7 +88,7 @@
                     }
                     $expand.removeClass(config.expanderExpandedClass)
                            .addClass(config.expanderCollapsedClass)
-                           .attr('title', 'Click to expand');
+                           .attr('title', $.t('controls.common.expander.expand'));
                 }
             });
 

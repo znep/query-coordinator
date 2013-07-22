@@ -689,7 +689,7 @@ $(function()
                         .addClass('hasParent')
                         .find('.parentName')
                             .attr('href', null)
-                            .text('a private view.')
+                            .text($.t('screens.ds.bar.based_on_private_view'))
                 }
             });
         }

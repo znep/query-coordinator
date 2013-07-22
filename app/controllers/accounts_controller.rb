@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+  include ActionView::Helpers::TranslationHelper
   include UserSessionsHelper
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
   skip_before_filter :adjust_format, :only => [:update]
@@ -42,10 +43,10 @@ class AccountsController < ApplicationController
     @body_id = 'resetPassword'
     if request.post?
       if User.reset_password(params[:login])
-        flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
+        flash[:notice] = t('screens.forgot_password.success')
         return redirect_to(login_path)
       else
-        flash.now[:warning] = "There was a problem submitting your password reset request. Please try again."
+        flash.now[:warning] = t('screens.forgot_password.failed')
       end
     end
   end
@@ -57,7 +58,7 @@ class AccountsController < ApplicationController
     @body_id = 'resetPassword'
     if request.post?
       if params[:confirm_password] != params[:password]
-        flash[:notice] = 'Passwords do not match; please try again'
+        flash[:notice] = t('screens.sign_in.mismatch')
         return
       end
 
@@ -75,7 +76,7 @@ class AccountsController < ApplicationController
       end
 
       if result.is_a? Net::HTTPSuccess
-        flash[:notice] = 'Password successfully reset'
+        flash[:notice] = t('screens.reset_password.success')
 
         # Awesome; let's log them in.
         user = User.parse(result.body)
@@ -91,7 +92,7 @@ class AccountsController < ApplicationController
       else
         result_hash = JSON.parse(result.body)
         flash[:notice] = result_hash['message'] and return if (result_hash['code'] == 'validation')
-        flash[:warning] = 'There was a problem resetting your password. Please try again.'
+        flash[:warning] = t('screens.reset_password.failed')
         return redirect_to(forgot_password_path)
       end
     end
@@ -99,7 +100,7 @@ class AccountsController < ApplicationController
 
   def add_rpx_token
     OpenIdIdentifier.create(User.current_user.id, params[:token]) if params[:token]
-    flash[:notice] = "Your external account has been linked."
+    flash[:notice] = t('screens.link_account.success')
   rescue CoreServer::CoreServerError => e
     flash[:error] = e.error_message
   ensure

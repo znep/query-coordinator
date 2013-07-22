@@ -17,6 +17,9 @@ en:
         forgot_password: Forgot Password?
         remember_me: Remember me
         lockout_warning: For security, three failed login attempts in 15 minutes will result in this account being locked out for 30 minutes.
+      validation:
+        mismatch: Passwords do not match.
+        terms: You must accept the terms of service and privacy policy.
       rpx:
         prompt:
           sign_in: Or… Use one of these accounts to sign in.
@@ -40,6 +43,8 @@ en:
       headline: Sign In
       tips_html: Use your Email and Password to sign into all <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.
       prompt_html: Sign in with your <strong>Socrata ID</strong>
+      mismatch: Passwords do not match; please try again
+      failed: Unable to login with that email and password; please try again
       form:
         sign_in_button: Sign In
     sign_up:
@@ -57,13 +62,19 @@ en:
       title: Recover Your Password
       prompt: "If you've forgotten your password, we can send you an email with a link to reset your password."
       already_authenticated: "Unable to reset password: you are already logged in."
+      success: Thank you. An email has been sent to the account on file with further information.
+      failed: There was a problem submitting your password reset request. Please try again.
       form:
         reset_password_button: Reset Password
     reset_password:
       title: Reset Password
-      prompt: Welcome back! Please select a new password.
+      prompt: "Welcome back! Please select a new password."
+      success: Password successfully reset
+      failed: There was a problem resetting your password. Please try again.
       form:
         reset_password_button: Reset Password
+    link_account:
+      success: Your external account has been linked.
 
 it:
   account:
@@ -84,6 +95,8 @@ it:
         forgot_password: Password dimenticata?
         remember_me: Ricordami
         lockout_warning: Per questioni di sicurezza, tre tentativi di accesso falliti in 15 minuti causeranno il blocco di questo account per 30 minuti.
+      validation:
+        mismatch: Le password inserite non corrispondono
       rpx:
         prompt:
           sign_in: Oppure... Utilizza uno di questi account per accedere.
@@ -105,8 +118,10 @@ it:
   screens:
     sign_in:
       headline: Accedi
-      tips_html: Utilizza Email e Password per accedere a tutti i siti <strong>realizzati da <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
+      tips_html: Utilizza Emai e Password per accedere a tutti i siti <strong>Powered by <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
       prompt_html: Accedi con il tuo <strong>Socrata ID</strong>
+      mismatch: Passwords do not match; please try again
+      failed: Impossibile accedere con email e password inserite; si prega di riprovare
       form:
         sign_in_button: Accedi
     sign_up:
@@ -124,6 +139,7 @@ it:
       title: Recupera la tua Password
       prompt: "Se hai dimenticato la tua password, possiamo inviarti una email con un link per effettuare il reset della password."
       already_authenticated: "Impossibile effettuare il reset della password: sei già autenticato."
+      failed: Si è verificato un problema durante l’della richiesta di reset della password. Si prega di riprovare.
       form:
         reset_password_button: Reset Password
     reset_password:

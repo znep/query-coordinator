@@ -25,10 +25,10 @@ class SignupPresenter < Presenter
 
   def create
     if password != passwordConfirm
-      @errors << "Passwords do not match."
+      @errors << t('account.common.validation.mismatch')
     end
     if !accept_terms
-      @errors << "You must accept the terms of service and privacy policy."
+      @errors << t('account.common.validation.terms')
     end
     if @errors.empty?
       return (create_user && login!)

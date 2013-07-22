@@ -268,20 +268,19 @@
         <li class="edit"><a class="button"
           href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'page' )) %>">Edit Layout</a></li>
         <%- end -%>
-        <li><a href="#start" title="View first row" class="start button">
+        <li><a href="#start" title="<%= t('controls.grid.view_first_row') %>" class="start button">
           <span class="icon"></span>
         </a></li>
-        <li><a href="#previous" title="View previous row" class="previous button">
+        <li><a href="#previous" title="<%= t('controls.grid.view_previous_row') %>" class="previous button">
           <span class="icon"></span>
         </a></li>
         <li class="info">
-        Viewing row <span class="curPage"></span> of <span
-          class="totalPages"></span>
+          <%= t('controls.grid.viewing_row_html') %>
         </li>
-        <li><a href="#next" title="View next row" class="next button">
+        <li><a href="#next" title="<%= t('controls.grid.view_next_row') %>" class="next button">
           <span class="icon"></span>
         </a></li>
-        <li><a href="#end" title="View last row" class="end button">
+        <li><a href="#end" title="<%= t('controls.grid.view_last_row') %>" class="end button">
           <span class="icon"></span>
         </a></li>
       </ul>

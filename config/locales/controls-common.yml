@@ -27,6 +27,16 @@ en:
           about: About This Dataset
       image_upload:
         button: Upload Image
+      expander:
+        collapse: Click to collapse
+        expand: Click to expand
+      dataset_picker:
+        title: Choose a Dataset to use
+        button: Choose
+      visualization:
+        row_details: View details for this row
+        in_google: View in Google Maps
+        in_bing: View in Bing Maps
     charts:
       series_grouping:
         rendering_running: Rendering.
@@ -69,6 +79,16 @@ it:
           about: Informazioni
       image_upload:
         button: Carica Immagine
+      expander:
+        collapse: Clicca per ridurre
+        expand: Click to expand
+      dataset_picker:
+        title: Scegli un Dataset da utilizzare
+        button: Scegli
+      visualization:
+        row_details: Visualizza il dettaglio per questo record
+        in_google: Visualizza su Google Maps
+        in_bing: Visualizza su Bing Maps
 
 es:
   controls:

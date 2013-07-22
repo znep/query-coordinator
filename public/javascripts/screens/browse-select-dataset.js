@@ -13,7 +13,7 @@ $(function()
     $('.expander').replaceWith($.tag({
         tagName: 'a',
         'class': ['button', 'chooseDatasetButton'],
-        contents: [ 'Choose' ]
+        contents: [ $.t('controls.common.dataset_picker.button') ]
     }, true));
 
     $('.chooseDatasetButton').click(function(event)

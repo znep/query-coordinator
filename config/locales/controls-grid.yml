@@ -13,6 +13,11 @@ en:
       delete_warning_single_column: "Do you want to delete the selected column? All data in this column will be removed!"
       delete_warning_multi_column: "Do you want to delete the selected columns? All data in these columns will be removed!"
       view_single_row: View Single Row Data
+      viewing_row_html: Viewing row <span class="curPage"></span> of <span class="totalPages"></span>
+      view_first_row: View first row
+      view_previous_row: View previous row
+      view_next_row: View next row
+      view_last_row: View last row
       delete_row: Delete Row
       click_for_menu: Click for Menu
       click_to_sort: Click to sort
@@ -37,6 +42,11 @@ it:
       delete_warning_single_column: "Vuoi eliminare la colonna selezionata? Tutti i dati in questa colonna saranno rimossi!"
       delete_warning_multi_column: "Vuoi eliminare le colonne selezionate? Tutti i dati in queste colonne saranno rimossi!"
       view_single_row: Visualizza Singolo Record
+      viewing_row_html: Mostrato <span class="curPage"></span> di <span class="totalPages"></span>
+      view_first_row: Visualizza primo record
+      view_previous_row: Visualizza record precedente
+      view_next_row: Visualizza record successivo
+      view_last_row: Visualizza ultimo record
       delete_row: Elimina Record
       click_for_menu: Clicca per il Menu
       must_enter_name: Devi inserire un nome per questa colonna

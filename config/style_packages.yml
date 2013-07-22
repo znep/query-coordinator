@@ -181,6 +181,8 @@ screen-videos:
 screen-videos-popup:
 - strip-chrome
 - screen-videos-popup
+odysseus-base:
+- odysseus-base
 govstat-base:
 - screen-govstat-base
 govstat-layout:

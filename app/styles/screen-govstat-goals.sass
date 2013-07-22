@@ -80,18 +80,84 @@
           margin: 1em
 
 // styles for newgoaleditor for now
+
+.heroImageContainer
+  position: relative
+
+  .button.editImage
+    position: absolute
+    right: 7.5em
+    top: 5em
+    z-index: 1
+
+    &:after
+      @include triangle(0.7em, $govstat_color_action, right)
+      content: ' '
+      position: absolute
+      left: -2em
+      top: 0.5em
+
+$madlib_header_color: #e33229
+$metric_header_color: #291c73
+$baseline_header_color: #1b87e0
+$headline_header_color: #6fab34
+$summary_header_color: #e07e1b
+$config_header_color: #711e8c
+
+.titleContainer .goalBox.edit, .goalBox.edit
+  > h2
+    border-bottom: 1px solid #666
+    font-size: 1.6em
+    margin-bottom: 1em
+    padding: 2em 0.2em 0.4em
+
+    &.madlibHeader
+      border-color: $madlib_header_color
+      color: $madlib_header_color
+      padding-top: 0.8em
+
+    &.metricHeader
+      border-color: $metric_header_color
+      color: $metric_header_color
+
+    &.baselineHeader
+      border-color: $baseline_header_color
+      color: $baseline_header_color
+
+    &.headlineHeader
+      border-color: $headline_header_color
+      color: $headline_header_color
+
+    &.summaryHeader
+      border-color: $summary_header_color
+      color: $summary_header_color
+
+    &.configHeader
+      border-color: $config_header_color
+      color: $config_header_color
+
+  .goalIntro
+    color: #666
+    font-size: 1.4em
+    padding: 0 0.2em 1em
+
+  .wizardStep
+    margin: 0 -4.5em
+
+
 .madlib
-  line-height: 6em
-  padding: 4em
-    top: 2em
+  line-height: 7em
+  padding: 1em 0
 
   > *
-    margin-right: 5px
+    margin-right: 10px
+    vertical-align: bottom
 
   .inputWrapper
     border-bottom: 2px dotted #333
     display: inline-block
     line-height: 1em
+    margin-bottom: 0.95em
     position: relative
 
     label
@@ -109,6 +175,7 @@
       width: 100%
 
     select
+      font-size: 1.2em
       height: 100%
       left: 0
       @include opacity(0)
@@ -121,32 +188,42 @@
       position: relative
 
     .selectValue
-      background: url(/stylesheets/images/content/dropdown_arrow.png) no-repeat right 0
+      background: url(/stylesheets/images/content/dropdown_arrow.png) no-repeat right 0.7em
       content: ' '
       display: block
-      height: 1.05em
+      height: auto
+      line-height: 1.8em
       @include opacity(1)
       text-align: center
       width: 100%
 
     .squishyDateEdit
+      height: 5em
       margin-top: 2.7em
 
       > *
         float: left
 
       .date
-        width: 13.5em
+        width: 13em
       .month
-        width: 14em
+        width: 15em
       .year
-        width: 10em
+        width: 9.5em
 
       .selectValue
         text-transform: lowercase
 
-      select
-        font-size: 1.2em
+  .custom
+    display: inline-block
+    margin-bottom: -0.6em
+    margin-right: 0
+
+    > div
+      display: inline-block
+
+      > *
+        margin-right: 10px
 
   span
     font-size: 2.8em
@@ -171,6 +248,226 @@
 
     .selectValue
       text-transform: lowercase
+
+.prevailingMeasureMetricSummary
+  float: left
+  padding: 1em 0 2.5em
+
+  .metricSummary
+    font-size: 1.8em
+
+    .nothing
+      line-height: 1.7em
+
+.prevailingMeasureMetricWizardToggle
+  float: right
+  padding-top: 0.8em
+
+$wizard_border_color: #ccc
+.prevailingMeasureMetricWizard
+  clear: both
+  margin-top: 1em
+
+  > ul
+    position: relative
+
+    &:after
+      @include triangle(1.3em, $wizard_border_color, bottom)
+      content: ' '
+      position: absolute
+      top: -2.6em
+      right: 1.9em
+
+.goalHeadline .madlib, .prevailingMeasureSummary, .prevailingMeasureBaselineValue
+  padding: 0
+
+  .inputWrapper
+    display: block
+
+    input
+      font-size: 1.5em
+      padding-bottom: 0.5em
+      text-align: left
+
+.prevailingMeasureBaselineValue
+  margin-right: 10em
+
+  .inputWrapper input
+    font-size: 2.8em
+
+.prevailingMeasureBaselineWizardToggle
+  float: right
+  padding: 1.5em 0
+
+@mixin radioize-button($radius: 0.8em)
+  @include text-hiding
+  background-color: #666
+  @include prefixer(box-shadow, none)
+  display: inline-block
+  height: $radius * 2
+  padding: 0
+  position: relative
+  @include rounded-ends
+  @include vertical-gradient(#666, #888)
+  width: $radius * 2
+
+  &.selected:after
+    background-color: #ddd
+    content: 'f'
+    height: $radius * 1.1
+    left: 0
+    margin: $radius * 0.5
+    position: absolute
+    @include rounded-ends
+    @include text-hiding
+    top: 0
+    @include vertical-gradient(#ddd, #d4d4d4)
+    width: $radius * 1.1
+
+.goalHeadline
+  ul
+    float: left
+    margin-right: 0.8em
+
+  .content
+    .title
+      font-size: 1.6em
+      line-height: 1.8em
+
+    .text
+      clear: left
+      color: #888
+      font-size: 1.8em
+      padding: 0.3em 1.9em
+
+  .toggle .button
+    @include radioize-button
+
+  .madlib
+    padding-left: 3.7em
+    padding-top: 0.5em
+
+.goalPermissions
+  .stateToggle
+    float: right
+    padding: 2em 0
+
+  .stateTitle
+    font-size: 1.6em
+    padding-bottom: 0.3em
+    padding-top: 0.8em
+
+  .stateDescription
+    font-size: 1.4em
+    line-height: 1.3em
+
+.wizardStep
+  .wizardHeader
+    background-color: rgba(0, 0, 0, 0.02)
+    border-top: 1px solid $wizard_border_color
+    cursor: pointer
+    overflow: hidden
+    padding: 1.6em 4.2em
+    @include transition(0.2s, background-color)
+
+    &:hover
+      background-color: rgba(0, 0, 0, 0.05)
+
+    .title
+      float: left
+      font-size: 1.8em
+    .summary
+      float: right
+      font-size: 1.4em
+      line-height: 1.3em
+
+  .wizardBody
+    margin: 0 -9em
+    max-height: 0
+    overflow: hidden
+    padding: 0 9em
+    @include transition(0.6s, max-height)
+
+    .wizardContents
+      padding: 2.5em 4.2em 1.5em
+
+      .intro
+        font-size: 1.4em
+        line-height: 1.2em
+        margin-bottom: 2em
+
+    .wizardControls
+      border-bottom: 1px solid $wizard_border_color
+      overflow: hidden
+      padding: 0 3em 1.7em
+      @include vertical-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05))
+
+      a
+        float: right
+        margin-left: 1em
+
+  &.active
+    .wizardBody
+      max-height: 1000px
+
+  // content stuffs
+  .wizardHeader
+    .datasetSummary
+      margin: -0.4em 0
+
+      .datasetName
+        margin-left: 0.8em
+
+  .selectDataset
+    .selectedDataset
+      float: left
+    .noDataset
+      float: left
+      font-size: 1.8em
+      line-height: 1.7em
+    .datasetPickerToggle
+      float: right
+      padding-bottom: 1.5em
+      padding-top: 0.2em
+    .datasetPicker
+      clear: both
+
+  .selectValueType, .selectAggFunction, .selectValueColumn, .selectDateColumn
+    .listEnum li
+      border-top: 1px solid #ddd
+      padding: 1em 0
+      position: relative
+
+      &:first-child
+        border-top: none
+
+      h2
+        font-size: 1.8em
+      p
+        font-size: 1.4em
+        margin-right: 10em
+
+      .button
+        margin-top: -0.9em
+        position: absolute
+        right: 0
+        top: 50%
+
+  .selectValueColumn, .selectDateColumn
+    .listEnum li
+      .columnName
+        font-size: 1.6em
+        line-height: 1.4em
+
+      .button
+        margin-top: -1.1em
+
+  .preview
+    .measureChart
+      .chartArea
+        margin: 2em -4.2em 2em
+      .pull
+        display: none
 
 
 .goalEditor.socrataDialog

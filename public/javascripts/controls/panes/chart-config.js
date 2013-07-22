@@ -374,6 +374,11 @@
                             name: 'fieldName', otherNames: 'tableColumnId',
                             columns: {type: colTypes, hidden: options.isEdit}}
                 },
+                {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.alphabetize'),
+                    name: 'displayFormat.sortSeries',
+                    inputFirst: true,
+                    lineClass: 'seriesGroupingCheck',
+                    onlyIf: isNextGen},
                 {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
                 initialRepeatCount: 5, lineClass: 'colorArray'}

@@ -657,7 +657,7 @@ $.Control.registerMixin('d3_impl_bar', {
         var labelInBar = $.deepGet(this._displayFormat, 'xAxis', 'labelInBar'),
             valueInBar = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar');
 
-        if (!labelInBar)
+        if (!labelInBar && !_.isUndefined(data))
         { this._super.apply(this, arguments); }
 
         if (!labelInBar && !valueInBar)

@@ -252,7 +252,7 @@ class CurrentDomain
   def self.default_locale
     locale_props = self.configuration(:locales)
 
-    locale_props[cname] || locale_props['*'] || 'en'
+    locale_props.properties[cname] || locale_props.properties['*'] || 'en'
   end
 
   # CurrentDomain['preference name'] returns properties

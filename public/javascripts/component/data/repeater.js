@@ -218,8 +218,8 @@ $.component.Container.extend('Repeater', 'content', {
                     { renderGroupItems(cObj, rows, callback); }
                     else
                     {
-                        callback(_.map(rows, function(r, i)
-                            { return cObj._createRow(r, i + start, r); }));
+                        callback(_.map(rows, function(r)
+                            { return cObj._createRow(r, r[':index'], r); }));
                     }
                 });
             }

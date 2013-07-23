@@ -365,7 +365,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         vizObj._computeMinMaxForEntireChart(data);
 
-        vizObj._renderData(data);
+        vizObj._renderData.apply(vizObj, arguments);
     },
 
     _computeYValuesForRow: function(row, relevantColumns)
@@ -1027,6 +1027,13 @@ $.Control.registerMixin('d3_virt_scrolling', {
         yScale.domain([_.first(ticks) > usedMin ? _.first(ticks) - tickSize : domain[0],
                        _.last(ticks)  < usedMax ? _.last(ticks)  + tickSize : domain[1]]);
 
+        // When a scale is used, it should be committed so animations know where
+        // to start from.
+        yScale.commit = function()
+        {
+            cc.lastUsedYScale = this;
+        };
+
         return yScale;
     },
 
@@ -1045,6 +1052,22 @@ $.Control.registerMixin('d3_virt_scrolling', {
               .domain([ 0, cc.rowWidth * vizObj.getTotalRows() - chartViewport ])
               .range([ 0, vizObj.getTotalRows() - rowsPerScreen ])
               .clamp(true);
+    },
+
+    _axisOffsetDueToScaleChange: function(oldYScale, newYScale)
+    {
+        var extraOffset = 0;
+        if (this._chartConfig.orientation == 'right')
+        {
+            var yAxisPos = this._yAxisPos();
+            var domainMin = d3.min(oldYScale.domain());
+
+            var oldMinPos = yAxisPos + oldYScale(domainMin);
+            var newMinPos = yAxisPos + newYScale(domainMin);
+            extraOffset = oldMinPos - newMinPos;
+        }
+
+        return extraOffset;
     },
 
     // renders tick lines in general
@@ -1081,6 +1104,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         var position = cc.orientation == 'right' ? 'top' : 'left';
 
+        // So, for orientation=right we must keep the bottom of our scale on the
+        // y-axis without animating there, because otherwise the scale grows
+        // from the middle of the screen and that's strange as heck.
+        var extraOffset = vizObj._axisOffsetDueToScaleChange(oldYScale, newYScale);
+
         // render our tick lines and labels
         var tickLines = cc.chromeD3.selectAll('.tick')
             // we use the value rather than the index to make transitions more constant
@@ -1088,8 +1116,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         var tickLinesRootEnter = tickLines
             .enter().append('div')
                 .classed('tick', true)
-                .classed('origin', function(d) { return d === 0; })
-                .style(position, function(d) { return (yAxisPos + cc.dataDim.dir * oldYScale(d)) + 'px'; });
+                .classed('origin', function(d) { return d === 0; });
             tickLinesRootEnter
                 .append('div')
                     .classed('tickLabel', true);
@@ -1097,6 +1124,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
                 .append('div')
                     .classed('tickLine', true);
         tickLines
+            .style(position, function(d) { return (extraOffset + yAxisPos + cc.dataDim.dir * oldYScale(d)) + 'px'; })
             .transition()
                 .duration(isAnim ? 1000 : 0)
                 .style(position, function(d) { return (yAxisPos + cc.dataDim.dir * newYScale(d)) + 'px'; });
@@ -1121,11 +1149,13 @@ $.Control.registerMixin('d3_virt_scrolling', {
             return;
         }
 
+        var extraOffset = vizObj._axisOffsetDueToScaleChange(oldYScale, newYScale);
+
         var valueMarkerPosition = cc.dataDim.pluckY(
-            function(yScale)
-            { return function(d) { return (yAxisPos + yScale(parseFloat(d.atValue))) + 'px'; }; },
-            function(yScale)
-            { return function(d) { return (yAxisPos - yScale(parseFloat(d.atValue))) + 'px'; } });
+            function(yScale, extraOffset)
+            { return function(d) { return (extraOffset + yAxisPos + yScale(parseFloat(d.atValue))) + 'px'; }; },
+            function(yScale, extraOffset)
+            { return function(d) { return (extraOffset + yAxisPos - yScale(parseFloat(d.atValue))) + 'px'; } });
 
         var cleanValueMarkers = _.compact(_.map(vizObj._displayFormat.valueMarker, function(marker) {
             if (_.isNumber(marker.atValue))
@@ -1142,7 +1172,6 @@ $.Control.registerMixin('d3_virt_scrolling', {
         valueMarkers
             .enter().append('div')
                 .classed('valueMarkerContainer', true)
-                .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(oldYScale))
                 .each(function(d)
                 {
                     var $this = $(this);
@@ -1157,10 +1186,12 @@ $.Control.registerMixin('d3_virt_scrolling', {
                         positions: [ 'top', 'bottom' ]
                     });
                 });
+
         valueMarkers
+            .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(oldYScale, extraOffset))
             .transition()
                 .duration(isAnim ? 1000 : 0)
-                .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(newYScale));
+                .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(newYScale, 0));
         valueMarkers
             .exit()
             .transition()
@@ -1374,6 +1405,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         return (cc.scrollPos - cc.drawElementPosition + cc.$chartContainer[cc.dataDim.width]() + this.defaults.sidePaddingBounds[0]/2 >= xLeftEdge) &&
                (cc.scrollPos - cc.drawElementPosition - this.defaults.sidePaddingBounds[0]/2 <= xRightEdge);
+    },
+
+    _lastYScale: function()
+    {
+        return this._chartConfig.lastUsedYScale;
     }
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);
 

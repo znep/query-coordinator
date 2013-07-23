@@ -438,6 +438,7 @@
         handleRowsLoaded: function(rows, view)
         {
             // Override if you need extra handling before rendering
+            // Charts overrides this (and doesn't call super).
             this.renderData.apply(this, arguments);
         },
 

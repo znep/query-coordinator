@@ -40,9 +40,28 @@ $.Control.registerMixin('d3_impl_line', {
         return [ 0, 0, rangeXMagnitude, rangeYMagnitude];
     },
 
+    // FIXME: This trifecta of rendereres (renderAxis, rerenderPositions, and renderData)
+    // have grown into a terrible beast of duplicated code. It needs refactoring, as we have
+    // probably many extant bugs where we forget to update certain attributes in some subset
+    // of renderers, or accidentally use slightly different logic. The first place to start
+    // would be to factor out how we animate between old and new scalings. Then we can worry
+    // about extracting some subset of common rendering without sacrificing performance too
+    // much.
+    // Same goes for the analogs in d3.impl.bar.
+
+
+    // Couple animation errata. If we get a new renderData with real data present
+    // in the middle of an animation, our points will have an irregularity at
+    // the seam between data batches for the duration of the animation. This is
+    // because we don't know what the instantaneous y scale is in the middle
+    // of an animation. I'm not sure how to fix this other than mad crazy hacks
+    // involving doing manual interpolation of yScales. Maybe we can do this later;
+    // for now it's not terrible looking because of the length of the animations.
+
     // call this if the active set of data has changed
-    _renderData: function(data)
+    _renderData: function(data, ignored, didInsertData)
     {
+        console.log('rd');
         var vizObj = this,
             cc = vizObj._chartConfig,
             defaults = vizObj.defaults,
@@ -51,13 +70,17 @@ $.Control.registerMixin('d3_impl_line', {
             view = vizObj._primaryView,
             lineType = vizObj._chartType;
 
+        var doAnimation = (didInsertData === true)
+
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
 
         // set up our scales. oldYScale is used to init bars so they appear
         // in the old spot and transitions are less jarring.
         var newYScale = vizObj._currentYScale();
-        var oldYScale = cc.yScale || newYScale;
+        var oldYScale = vizObj._lastYScale() || newYScale;
+
+        var commitYScale = _.once(function(){ newYScale.commit() });
 
         // render our bars per series
         _.each(valueColumns, function(colDef, seriesIndex)
@@ -96,7 +119,12 @@ $.Control.registerMixin('d3_impl_line', {
             var visibleData = _.select(data, lineSegmentInView);
             var notNullData = _.select(visibleData, notNull);
 
-            var oldLine = vizObj._constructSeriesPath(colDef, seriesIndex, oldYScale);
+            var oldLine;
+            if (doAnimation)
+            {
+                oldLine = vizObj._constructSeriesPath(colDef, seriesIndex, oldYScale);
+            }
+
             var newLine = vizObj._constructSeriesPath(colDef, seriesIndex, newYScale);
 
             // Compute a clipping rect for the series.
@@ -125,7 +153,7 @@ $.Control.registerMixin('d3_impl_line', {
                 .attr('stroke-width', 2)
                 .attr('clip-rect', clipRect.join(' '))
                 .datum(lineData)
-                .attr('d', oldLine);
+                .attr('d', doAnimation ? oldLine : newLine);
 
             if (lineType == 'area')
             {
@@ -133,33 +161,31 @@ $.Control.registerMixin('d3_impl_line', {
                                          .attr('fill-opacity', 0.8);
             }
 
-            cc.seriesPath[col.lookup]
-                .transition()
-                    .duration(1000)
-                    .attr('d', newLine)
+            if (doAnimation)
+            {
+                cc.seriesPath[col.lookup]
+                    .transition()
+                        .duration(vizObj._animationLengthMillisec)
+                        .attr('d', newLine)
+                        .each('end', commitYScale);
+            }
 
             // render our dots
             var seriesClass = 'dataBar_series' + col.lookup;
 
             var newYPosition = vizObj._yDatumPosition(col.lookup, newYScale);
 
-            var lines = cc.chartD3.selectAll('.' + seriesClass)
+            var points = cc.chartD3.selectAll('.' + seriesClass)
                 .data(notNullData, function(row) { return row.id; });
 
-            lines
+            points
                 .enter().append('circle')
                     .classed('dataBar', true)
                     .classed(seriesClass, true)
-                    .classed('hide', function(d)
-                    {
-                        var pos = newYPosition(d);
-                        return pos > clipRect[3] || pos < 0 ||
-                               vizObj._displayFormat.pointSize === '0';
-                    })
                     .attr('stroke', '#fff')
 
                     .attr('cx', xDatumPositionForSeries)
-                    .attr('cy', vizObj._yDatumPosition(col.lookup, oldYScale))
+                    .attr('cy', vizObj._yDatumPosition(col.lookup, doAnimation ? oldYScale : newYScale))
                     .attr('r', 5)
 
                     .each(function() { this.__dataColumn = col; })
@@ -193,8 +219,14 @@ $.Control.registerMixin('d3_impl_line', {
                         }
                     });
 
-            lines
+            points
                     .attr('fill', vizObj._d3_colorizeRow(colDef))
+                    .classed('hide', function(d)
+                    {
+                        var pos = newYPosition(d);
+                        return pos > clipRect[3] || pos < 0 ||
+                               vizObj._displayFormat.pointSize === '0';
+                    })
                     .each(function(d)
                     {
                         // kill tip if not highlighted. need to check here because
@@ -205,12 +237,13 @@ $.Control.registerMixin('d3_impl_line', {
                             this.tip.destroy();
                             delete this.tip;
                         }
-                    })
-                .transition()
-                    .duration(1000)
-                    .attr('cy', newYPosition);
+                    });
 
-            lines
+            (doAnimation ? points.transition().duration(vizObj._animationLengthMillisec) : points)
+                .attr('cx', xDatumPositionForSeries)
+                .attr('cy', newYPosition);
+
+            points
                 .exit()
                     .each(function(d)
                     {
@@ -280,22 +313,25 @@ $.Control.registerMixin('d3_impl_line', {
                     .classed('errorMarker', true)
                     .attr({ stroke: vizObj._displayFormat.errorBarColor || '#ff0000',
                             'stroke-width': '3' })
-                    .attr('d', vizObj._errorBarPath(oldYScale));
+                    .attr('d', vizObj._errorBarPath(doAnimation ? oldYScale : newYScale));
             errorMarkers
                 .attr('transform', errorTransform)
                 .transition()
-                    .duration(1000)
+                    .duration(vizObj._animationLengthMillisec)
                     .attr('d', vizObj._errorBarPath(newYScale));
             errorMarkers
                 .exit()
                     .remove();
         }
 
-        vizObj._renderTicks(oldYScale, newYScale, true);
-        vizObj._renderValueMarkers(oldYScale, newYScale, true);
+        vizObj._renderTicks(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
+        vizObj._renderValueMarkers(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
 
-        // save off our yScale
-        cc.yScale = newYScale;
+        if (!doAnimation)
+        {
+            // In the animation case, we'll commit after the animation ends.
+            commitYScale();
+        }
     },
 
     _constructSeriesPath: function(colDef, seriesIndex, yScale)
@@ -306,8 +342,10 @@ $.Control.registerMixin('d3_impl_line', {
             notNull = function(row)
                 { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup]); };
 
+        var yPosition = vizObj._yDatumPosition(col.lookup, yScale);
+
         var line = d3.svg[lineType]().x(vizObj._xDatumPosition(seriesIndex))
-                                     .y(vizObj._yDatumPosition(col.lookup, yScale))
+                                     .y(yPosition)
                                      .defined(notNull);
 
         if (lineType == 'area')
@@ -338,25 +376,50 @@ $.Control.registerMixin('d3_impl_line', {
     // you'll also need to call _renderData to make the dataBars the correct height
     _rerenderAxis: function()
     {
+        console.log('ra');
         var vizObj = this,
             cc = vizObj._chartConfig,
             yScale = vizObj._currentYScale(),
             yAxisPos = vizObj._yAxisPos();
 
+        // Why can't we just have D3 handle the transition for us? Well, because
+        // of the way our coordinate system works, the animation will be in the
+        // wrong direction.
+        // Think of it this way. Someone shrinks the chart vertically by resizing
+        // the browser.
+        // Since our data points have their origin at the top-left of the chart,
+        // the points will appear to sit still on the screen. Then the transition
+        // kicks in, and they move UP instead of DOWN, which is the opposite of
+        // what you'd expect for a shrinking yScale. So we have to do this horrible
+        // hack of remembering our old yScale. Of course this introduces problems
+        // if many transitions are started (say you're resizing the window over
+        // several seconds). So we need to figure out what the current position
+        // of the points are and account for that...
+        // The same deal of unhappiness happens for the series path.
+        var oldYScale = vizObj._lastYScale() || yScale;
+        var oldYPos = vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, oldYScale);
+        var yPos = vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale);
+
         cc.chartD3.selectAll('.dataBar')
+            .attr('cy', oldYPos)
             .transition()
-                .duration(1000)
-                .attr('cy', vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale))
+                .duration(vizObj._animationLengthMillisec)
+                .attr('cy', yPos)
+                .each('end', _.once(function(){ yScale.commit() }));
 
         _.each(vizObj.getValueColumns(), function(colDef, seriesIndex)
         {
+            var oldClipRect = vizObj._computeClippingRectForColumnAndScale(colDef.column, oldYScale, vizObj._xDatumPosition(seriesIndex), vizObj._currentRangeData.length - 1);
             var clipRect = vizObj._computeClippingRectForColumnAndScale(colDef.column, yScale, vizObj._xDatumPosition(seriesIndex), vizObj._currentRangeData.length - 1);
 
             cc.seriesPath[colDef.column.lookup]
-                .attr('clip-rect', clipRect.join(' '))
+                .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, oldYScale))
+                .attr('clip-rect', oldClipRect.join(' '))
                 .transition()
-                    .duration(1000)
-                    .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
+                    .duration(vizObj._animationLengthMillisec)
+                        .attr('clip-rect', clipRect.join(' '))
+                        .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
+
         });
 
         if ($.subKeyDefined(vizObj, '_displayFormat.plot.errorBarLow'))
@@ -364,20 +427,21 @@ $.Control.registerMixin('d3_impl_line', {
             cc.chartD3.selectAll('.errorMarker')
                 .attr('transform', vizObj._errorBarTransform())
                 .transition()
-                    .duration(1000)
+                    .duration(vizObj._animationLengthMillisec)
                     .attr('d', vizObj._errorBarPath(yScale));
         }
 
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
 
-        vizObj._renderTicks(yScale, yScale, false);
-        vizObj._renderValueMarkers(yScale, yScale, false);
+        vizObj._renderTicks(oldYScale, yScale, true);
+        vizObj._renderValueMarkers(oldYScale, yScale, true);
     },
 
     // call this if spacings/widths changed
     _rerenderPositions: function()
     {
+        console.log('rp');
         var vizObj = this,
             cc = vizObj._chartConfig,
             valueColumns = vizObj.getValueColumns(),
@@ -391,16 +455,37 @@ $.Control.registerMixin('d3_impl_line', {
         // render our bars per series
         _.each(valueColumns, function(colDef, seriesIndex)
         {
+            // Annoyingly, since the series line is pretty much an opaque blob
+            // we can't easily separate out X and y components and animate them
+            // separately. So we choose to animate the Y over the X (notice that
+            // _constructSeriesPath takes a yScale and not an xScale). This means
+            // that we must not transition the data points' x coordinate here.
+            // Bummer. At least not animating X makes the site feel more
+            // responsive when the sidebar pops out.
+
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
-                    .attr('cx', vizObj._xDatumPosition(seriesIndex));
+                //.transition() See comment above for why this is disabled.
+                //    .duration(vizObj._animationLengthMillisec)
+                        .attr('cx', vizObj._xDatumPosition(seriesIndex));
 
-            if (!_.isUndefined(yScale) && $.subKeyDefined(cc.seriesPath, colDef.column.lookup+''))
+            if (!_.isUndefined(yScale))
             {
-                var clipRect = vizObj._computeClippingRectForColumnAndScale(colDef.column, yScale, vizObj._xDatumPosition(seriesIndex), vizObj._currentRangeData.length - 1);
+                dataBars
+                    .transition()
+                    .duration(vizObj._animationLengthMillisec)
+                        .attr('cy', vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale))
+                        .each('end', _.once(function(){ yScale.commit() }));
 
-                cc.seriesPath[colDef.column.lookup]
-                    .attr('clip-rect', clipRect.join(' '))
-                    .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
+                if ($.subKeyDefined(cc.seriesPath, colDef.column.lookup+''))
+                {
+                    var clipRect = vizObj._computeClippingRectForColumnAndScale(colDef.column, yScale, vizObj._xDatumPosition(seriesIndex), vizObj._currentRangeData.length - 1);
+
+                    cc.seriesPath[colDef.column.lookup]
+                        .transition()
+                            .duration(vizObj._animationLengthMillisec)
+                                .attr('clip-rect', clipRect.join(' '))
+                                .attr('d', vizObj._constructSeriesPath(colDef, seriesIndex, yScale));
+                }
             }
         });
 

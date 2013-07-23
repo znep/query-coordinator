@@ -1169,8 +1169,8 @@ $.Control.registerMixin('d3_impl_bar', {
         cc.chartHtmlD3.selectAll('.rowLabel')
             .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition());
 
-        vizObj._renderTicks(yScale, yScale, false);
-        vizObj._renderValueMarkers(yScale, yScale, false);
+        vizObj._renderTicks(yScale, yScale, true);
+        vizObj._renderValueMarkers(yScale, yScale, true);
 
         // Have to re-render labels as bar sizes may have changed.
         vizObj._renderRowLabels();

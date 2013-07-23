@@ -144,13 +144,11 @@ $.Control.registerMixin('d3_base_dynamic', {
         // handleRowsLoaded gets some weird call abuse with random subsections
         // of the data. so, maintain our current slice and just update into our
         // full visible set where appropriate
-        var vizObj = this;
+        if (!this._chartInitialized) { return; }
 
-        if (!vizObj._chartInitialized) { return; }
+        var didInsertData = this._sortedSetInsert(this._currentRangeData, data);
 
-        var didInsertData = vizObj._sortedSetInsert(vizObj._currentRangeData, data);
-
-        vizObj._super(vizObj._currentRangeData, view, didInsertData);
+        this.renderData(this._currentRangeData, view, didInsertData);
     },
 
     handleRowsRemoved: function(data, view)

@@ -49,6 +49,8 @@ $.Control.registerMixin('d3_base', {
         return blist.assets.libraries.d3;
     },
 
+    _animationLengthMillisec: 600,
+
     // Handle rendering values for different column types here
     _renderCellText: function(row, col)
     {

@@ -39,14 +39,17 @@ en:
         in_bing: View in Bing Maps
     charts:
       series_grouping:
-        rendering_running: Rendering.
-        rendering_paused: Rendering paused.
+        calculation_running: Preparing data
+        drawing_running: Drawing chart
+        drawing_progress: This can take a little bit of time...
+        rendering_paused: Data preperation has been paused
         rendering_progress: %{rows_remaining} rows remain.
         rendering_progress_minute: %{rows_remaining} rows remain, about %{time_remaining} minute.
         rendering_progress_minutes: %{rows_remaining} rows remain, about %{time_remaining} minutes.
         rendering_progress_seconds: %{rows_remaining} rows remain, about %{time_remaining} seconds.
         rendering_progress_almost_done: %{rows_remaining} rows remain, just a few seconds.
-        pause_button_explanation: Taking too long?
+        pause_button_explanation1: Tip! Taking too long? Try pausing and create a Filter
+        pause_button_explanation2: to limit the amount of calculations needed.
         resume_rendering: Resume
         pause_rendering: Pause
 

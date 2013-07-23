@@ -176,6 +176,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         cc.$drawElement = cc.$chartContainer.children(':not(.chartRenderArea, .nullRenderArea)');
         cc.$drawElement.css({ 'position': 'absolute', 'top': '0' });
 
+        vizObj._setChartOverlay(null); // Initialize the chart overlay.
 
         // maybe move things around and maybe grab rows every half second when they're scrolling
         var throttledScrollHandler = _.throttle(_.debounce(function()
@@ -268,7 +269,15 @@ $.Control.registerMixin('d3_virt_scrolling', {
     // Sets a DOM element to overlay the chart.
     _setChartOverlay: function($overlayDom)
     {
-        this._chartConfig.$overlayContainer.empty().append($overlayDom);
+        if ($overlayDom)
+        {
+            this._chartConfig.$overlayContainer.css('visibility', 'visible');
+            this._chartConfig.$overlayContainer.empty().append($overlayDom);
+        }
+        else
+        {
+            this._chartConfig.$overlayContainer.css('visibility', 'collapse');
+        }
     },
 
     // Hides or shows the chart render area.

@@ -685,11 +685,11 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(parRowId)) { parRow = this.rowForID(parRowId); }
 
         data = data || {};
-        var newRow = {invalid: {}, error: {}, changed: {}};
+        var newRow = { data: {}, invalid: {}, error: {}, changed: {} };
         _.each(!$.isBlank(parCol) ? parCol.childColumns : ds.columns, function(c)
         {
             if (!$.isBlank(data[c.lookup]))
-            { newRow[c.lookup] = data[c.lookup]; }
+            { newRow.data[c.lookup] = data.data[c.lookup]; }
         });
         newRow.id = 'saving' + _.uniqueId();
         delete newRow.uuid;
@@ -703,10 +703,10 @@ var Dataset = ServerModel.extend({
         }
         else
         {
-            parRow[parCol.lookup] = parRow[parCol.lookup] || [];
+            parRow.data[parCol.lookup] = parRow.data[parCol.lookup] || [];
             if (!$.isBlank(data.index))
-            { parRow[parCol.lookup].splice(data.index, 0, newRow); }
-            else { parRow[parCol.lookup].push(newRow); }
+            { parRow.data[parCol.lookup].splice(data.index, 0, newRow); }
+            else { parRow.data[parCol.lookup].push(newRow); }
             ds._updateRow(parRow);
             ds.trigger('row_change', [[parRow], true]);
         }
@@ -758,7 +758,7 @@ var Dataset = ServerModel.extend({
         if ($.isBlank(row))
         { throw 'Row ' + rowId + ' not found while setting value ' + value; }
 
-        row[col.lookup] = value;
+        row.data[col.lookup] = value;
 
         delete row.error[col.lookup];
 
@@ -834,7 +834,7 @@ var Dataset = ServerModel.extend({
             }
             else
             {
-                parRow[parCol.lookup] = _.reject(parRow[parCol.lookup],
+                parRow.data[parCol.lookup] = _.reject(parRow.data[parCol.lookup],
                     function(cr)
                     {
                         if (cr.id == rId)
@@ -964,7 +964,7 @@ var Dataset = ServerModel.extend({
         var r = { ':index': row.index };
         _.each(this.columns, function(c)
         {
-            r[c.fieldName] = row[c.lookup];
+            r[c.fieldName] = row.data[c.lookup];
             if (c.renderTypeName == 'location' && $.subKeyDefined(r[c.fieldName], 'human_address') &&
                 _.isString(r[c.fieldName].human_address))
             { r[c.fieldName].human_address = JSON.parse(r[c.fieldName].human_address); }
@@ -2293,28 +2293,24 @@ var Dataset = ServerModel.extend({
                 var col = ds.columns[n];
                 if (!col.isLinked()) continue;
                 var uname = col.underscoreName(ds);
-                row[col.id] = newRow[uname];
+                row.data[col.lookup] = newRow[uname];
             }
         }
     },
 
-    _rowData: function(row, savingIds, parCol)
+    _rowData: function(row, savingLookups, parCol)
     {
         var ds = this;
         var data = {};
-        _.each(savingIds, function(cId)
+        _.each(savingLookups, function(cL)
         {
-            var c = !$.isBlank(parCol) ? parCol.childColumnForID(cId) :
-                ds.columnForID(cId);
-            data[c.lookup] = row[c.lookup];
+            data[cL] = row.data[cL];
         });
 
-        var fieldMeta = ":meta";
-        var fieldPosition = ":position";
+        var fieldMeta = ds.metaColumnForName('meta').lookup;
 
         // Copy over desired metadata columns
-        data[fieldPosition] = row.position;
-        data[fieldMeta] = row.meta;
+        data[fieldMeta] = row.metadata.meta;
 
         // Invalid values need to be saved into metadata
         _.each(row.invalid, function(isI, cId)
@@ -2325,12 +2321,12 @@ var Dataset = ServerModel.extend({
                     ds.columnForID(cId);
                 data[fieldMeta] = data[fieldMeta] || {};
                 data[fieldMeta].invalidCells = data[fieldMeta].invalidCells || {};
-                data[fieldMeta].invalidCells[c.tableColumnId] = data[cId];
+                data[fieldMeta].invalidCells[c.fieldName] = data[cId];
                 data[cId] = null;
             }
         });
 
-        // Metadata is a JSON sring
+        // Metadata is a JSON string
         if (!$.isBlank(data[fieldMeta]))
         { data[fieldMeta] = JSON.stringify(data[fieldMeta]); }
 
@@ -2391,7 +2387,7 @@ var Dataset = ServerModel.extend({
                             req.parentColumn.childColumnForID(adjName) :
                             ds.columnForID(adjName);
                         var l = $.isBlank(c) ? adjName : c.lookup;
-                        req.row[l] = v;
+                        req.row.data[l] = v;
                     }
                 });
             }
@@ -2453,7 +2449,7 @@ var Dataset = ServerModel.extend({
         {
             _.each(!$.isBlank(req.parentColumn) ?
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
-                    { req.row.error[c.id] = true; });
+                    { req.row.error[c.lookup] = true; });
             ds._updateRow(req.parentRow || req.row);
             ds.trigger('row_change', [[req.parentRow || req.row]]);
             if (_.isFunction(req.error)) { req.error(); }
@@ -2487,7 +2483,7 @@ var Dataset = ServerModel.extend({
             rd = $.extend(true, {}, rd);
             delete rd[':id'];
         }
-        ds.makeRequest({url: url,
+        ds.makeRequest({url: url, isSODA: blist.useSODA2,
             type: 'POST', data: JSON.stringify(rd), batch: isBatch,
             success: rowCreated, error: rowErrored, complete: rowCompleted});
     },
@@ -2504,16 +2500,16 @@ var Dataset = ServerModel.extend({
                 return;
             }
 
-            _.each(r.columnsSaving, function(cId)
-                { delete r.row.changed[cId]; });
+            _.each(r.columnsSaving, function(cL)
+                { delete r.row.changed[cL]; });
 
             if (!blist.useSODA2)
             {
-                _.each(r.columnsSaving, function(cId)
+                _.each(r.columnsSaving, function(cL)
                 {
                     var col = !$.isBlank(r.parentColumn) ?
-                        r.parentColumn.childColumnForID(cId) :
-                        ds.columnForID(cId);
+                        r.parentColumn.childColumnForIdentifier(cL) :
+                        ds.columnForIdentifier(cL);
                     ds._updateLinkedColumns(col, r.row, result);
                 });
 
@@ -2529,8 +2525,8 @@ var Dataset = ServerModel.extend({
         // On error, mark as such and notify
         var rowErrored = function()
         {
-            _.each(r.columnsSaving, function(cId)
-                { r.row.error[cId] = true; });
+            _.each(r.columnsSaving, function(cL)
+                { r.row.error[cL] = true; });
             ds._updateRow(r.parentRow || r.row);
             ds.trigger('row_change', [[r.parentRow || r.row]]);
             if (_.isFunction(r.error)) { r.error(); }
@@ -2549,14 +2545,14 @@ var Dataset = ServerModel.extend({
         { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows/'; }
         url += (blist.useSODA2 ? r.row.id : r.row.uuid) + '.json';
         ds.makeRequest({url: url, type: 'PUT', data: JSON.stringify(r.rowData),
-            batch: isBatch,
+            isSODA: blist.useSODA2, batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});
 
         ds._aggregatesStale = true;
-        _.each(r.columnsSaving, function(cId)
+        _.each(r.columnsSaving, function(cL)
         {
-            (!$.isBlank(r.parentColumn) ? r.parentColumn.childColumnForID(cId) :
-                ds.columnForID(cId)).invalidateData();
+            (!$.isBlank(r.parentColumn) ? r.parentColumn.childColumnForIdentifier(cL) :
+                ds.columnForIdentifier(cL)).invalidateData();
         });
     },
 
@@ -2570,7 +2566,7 @@ var Dataset = ServerModel.extend({
         { url += parRowId + '/columns/' + parColId + '/subrows/'; }
         if (!blist.useSODA2) { url += rowId + '.json'; }
         ds.makeRequest({batch: isBatch, url: url, type: blist.useSODA2 ? 'POST' : 'DELETE',
-            data: JSON.stringify({':deleted': true, ':id': rowId}),
+            isSODA: blist.useSODA2, data: JSON.stringify({':deleted': true, ':id': rowId}),
             success: rowRemoved});
     },
 

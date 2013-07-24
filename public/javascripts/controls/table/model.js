@@ -308,15 +308,15 @@ blist.namespace.fetch('blist.data');
         var isInvalid = function(row, column)
         {
             if (!$.isBlank(column.parentColumn))
-            { row = row[column.parentColumn.lookup]; }
+            { row = row.data[column.parentColumn.lookup]; }
             return (row.invalid || {})[column.lookup];
         };
 
         var getRawValue = function(row, column)
         {
             if (!$.isBlank(column.parentColumn))
-            { row = row[column.parentColumn.lookup]; }
-            return row[column.lookup];
+            { row = row.data[column.parentColumn.lookup]; }
+            return row.data[column.lookup];
         };
 
         // Get the value in a row for a column
@@ -342,7 +342,7 @@ blist.namespace.fetch('blist.data');
         this.isCellError = function(row, column)
         {
             if (!$.isBlank(column.parentColumn))
-            { row = row[column.parentColumn.lookup]; }
+            { row = row.data[column.parentColumn.lookup]; }
             return row.error[column.lookup];
         };
 
@@ -457,16 +457,16 @@ blist.namespace.fetch('blist.data');
             var undeleteChildren = [];
             _.each(self.view.columnsForType('nested_table', true), function(c)
             {
-                if (row[c.lookup] instanceof Array)
+                if (row.data[c.lookup] instanceof Array)
                 {
                     // keep track of nested rows so we can re-post them along
                     // with the parent row
-                    _.each(row[c.lookup], function(cr, i)
+                    _.each(row.data[c.lookup], function(cr, i)
                     {
                         cr.origPosition = i;
                         undeleteChildren.push({row: cr, parentColumn: c});
                     });
-                    delete row[c.lookup];
+                    delete row.data[c.lookup];
                 }
             });
 
@@ -598,7 +598,7 @@ blist.namespace.fetch('blist.data');
 
         var fakeRowToChild = function(fakeRow, parentColumn)
         {
-            return fakeRow[parentColumn.lookup];
+            return fakeRow.data[parentColumn.lookup];
         };
 
         /**
@@ -799,7 +799,7 @@ blist.namespace.fetch('blist.data');
                 var col = cols[i];
                 if ($.isBlank(col.visibleChildColumns)) { continue; }
 
-                var cell = row[col.lookup];
+                var cell = row.data[col.lookup];
                 if ($.isBlank(cell) && !self.useBlankRows()) { continue; }
                 cell = cell || [];
 
@@ -809,7 +809,7 @@ blist.namespace.fetch('blist.data');
                     var childRow = childRows[j];
                     if (!childRow)
                     {
-                        childRow = childRows[j] = {};
+                        childRow = childRows[j] = { data: {} };
                         childRow.id = "t" + _.uniqueId();
                         childRow.level = childLevel;
                         childRow.parent = row;
@@ -817,12 +817,12 @@ blist.namespace.fetch('blist.data');
                         childRow.index = -1;
                     }
 
-                    childRow[col.lookup] = cell[j];
-                    if (!childRow[col.lookup])
+                    childRow.data[col.lookup] = cell[j];
+                    if (!childRow.data[col.lookup])
                     {
-                        childRow[col.lookup] =
-                            {invalid: {}, changed: {}, error: {}};
-                        childRow[col.lookup].type = 'blank';
+                        childRow.data[col.lookup] =
+                            { data: {}, invalid: {}, changed: {}, error: {} };
+                        childRow.data[col.lookup].type = 'blank';
                     }
                 }
             }

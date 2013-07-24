@@ -179,7 +179,7 @@ blist.namespace.fetch('blist.filter');
 
             return cacheAndReturn(function(row)
             {
-                var rowVal = row[col.lookup];
+                var rowVal = row.data[col.lookup];
                 if ($.isPlainObject(rowVal) && !$.isBlank(subCol))
                 { rowVal = rowVal[subCol]; }
 

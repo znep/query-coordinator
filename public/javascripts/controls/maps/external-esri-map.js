@@ -351,7 +351,7 @@
             {
                 var row = {};
                 _.each(feature.attributes, function(val, attr)
-                { row[layerObj._attrMap[attr]] = val; });
+                { row.data[layerObj._attrMap[attr]] = val; });
                 return row;
             });
 

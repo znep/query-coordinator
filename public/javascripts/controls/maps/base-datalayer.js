@@ -375,7 +375,7 @@
 
             // TODO: Update to use address when geolocating.
             if (!layerObj._locCol) { return $info; }
-            var loc = rows[0][layerObj._locCol.lookup];
+            var loc = rows[0].data[layerObj._locCol.lookup];
 
             var mapLinkQuery;
             if (loc.human_address)
@@ -866,7 +866,7 @@
             var lonlat;
             if (!$.isBlank(locCol))
             {
-                var loc = row[locCol.id];
+                var loc = row.data[locCol.lookup];
                 if ($.isBlank(loc)) { return 'no location'; }
 
                 if (loc.geometry && (loc.geometry.rings || loc.geometry.paths))
@@ -876,8 +876,8 @@
                                                  parseFloat(loc.latitude)); }
             }
             else
-            { lonlat = new OpenLayers.LonLat(parseFloat(row[layerObj._longCol.id]),
-                                             parseFloat(row[layerObj._latCol.id])); }
+            { lonlat = new OpenLayers.LonLat(parseFloat(row.data[layerObj._longCol.lookup]),
+                                             parseFloat(row.data[layerObj._latCol.lookup])); }
 
             // Incomplete points will be safely ignored
             if (lonlat && lonlat.isIncomplete()) { return 'lonlat is incomplete'; }
@@ -902,17 +902,17 @@
         {
             var layerObj = this;
 
-            if ($.subKeyDefined(row, 'meta.mapIcon'))
-            { return row.meta.mapIcon; }
+            if ($.subKeyDefined(row, 'metadata.meta.mapIcon'))
+            { return row.metadata.meta.mapIcon; }
             else if (row.icon)
             { return row.icon; }
-            else if (layerObj._iconCol && row[layerObj._iconCol.id])
+            else if (layerObj._iconCol && row.data[layerObj._iconCol.lookup])
             {
                 if (layerObj._iconCol.dataTypeName == 'url')
-                { return row[layerObj._iconCol.id].url; }
+                { return row.data[layerObj._iconCol.lookup].url; }
                 else
                 {
-                    var url = layerObj._iconCol.baseUrl() + row[layerObj._iconCol.id];
+                    var url = layerObj._iconCol.baseUrl() + row.data[layerObj._iconCol.lookup];
                     if ((layerObj._iconCol.format || {}).size)
                     { url += '?size=' + layerObj._iconCol.format.size; }
                     return url;
@@ -926,8 +926,8 @@
         {
             var layerObj = this;
 
-            if ($.subKeyDefined(row, 'meta.pinColor'))
-            { return row.meta.pinColor; }
+            if ($.subKeyDefined(row, 'metadata.meta.pinColor'))
+            { return row.metadata.meta.pinColor; }
             else if (row.color)
             { return row.color; }
             else if (layerObj._colorValueCol && layerObj._segments
@@ -935,7 +935,7 @@
             {
                 var segment
                     = _.detect(layerObj._segments[layerObj._colorValueCol.id], function(segment)
-                    { return parseFloat(row[layerObj._colorValueCol.id]) <= segment.value; });
+                    { return parseFloat(row.data[layerObj._colorValueCol.lookup]) <= segment.value; });
                 if (segment) { return segment.color; }
             }
             return layerObj._displayFormat.color || '#0000ff';
@@ -945,14 +945,14 @@
         {
             var layerObj = this;
 
-            if ($.subKeyDefined(row, 'meta.pinSize'))
-            { return row.meta.pinSize; }
+            if ($.subKeyDefined(row, 'metadata.meta.pinSize'))
+            { return row.metadata.meta.pinSize; }
             else if (layerObj._sizeValueCol && layerObj._segments
                 && layerObj._segments[layerObj._sizeValueCol.id])
             {
                 var segment
                     = _.detect(layerObj._segments[layerObj._sizeValueCol.id], function(segment)
-                    { return parseFloat(row[layerObj._sizeValueCol.id]) <= segment.value; });
+                    { return parseFloat(row.data[layerObj._sizeValueCol.lookup]) <= segment.value; });
                 if (segment) { return segment.size; }
             }
             return 0;

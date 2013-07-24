@@ -32,8 +32,8 @@ $.Control.registerMixin('d3_impl_line', {
         // Account for the extra space we render above the top of the range.
         // Remember _yDatumPosition returns values in screen space, so
         // 0 is the top of the chart, and higher values go down.
-        var dummy = {};
-        dummy[col.lookup] = scale.domain()[1];
+        var dummy = { data: {} };
+        dummy.data[col.lookup] = scale.domain()[1];
         rangeYMagnitude += this._yDatumPosition(col.lookup, scale)(dummy);
 
         rangeYMagnitude = Math.max(0, rangeYMagnitude);
@@ -88,7 +88,7 @@ $.Control.registerMixin('d3_impl_line', {
         {
             var col = colDef.column,
                 notNull = function(row)
-                    { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup]); };
+                    { return !($.isBlank(row.data[col.lookup]) || row.invalid[col.lookup]); };
 
             var xDatumPositionForSeries = vizObj._xDatumPosition(seriesIndex);
 
@@ -280,16 +280,16 @@ $.Control.registerMixin('d3_impl_line', {
                     .text(function(d)
                     {
                         var column = col.renderType ? col : col.realValueColumn.column;
-                        return column.renderType.renderer(d[col.lookup], column, true, null, null, true);
+                        return column.renderType.renderer(d.data[col.lookup], column, true, null, null, true);
                     })
                     .attr('x', xDatumPositionForSeries)
                     .attr('y', function(d, i)
                     {
                         var yPos = vizObj._yDatumPosition(col.lookup, newYScale)(d),
                             axisDelta = yAxisPos - yPos,
-                            before = (data[i-1] || {})[col.lookup],
-                            after = (data[i+1] || {})[col.lookup],
-                            datum = d[col.lookup];
+                            before = (data[i-1] || {data:{}}).data[col.lookup],
+                            after = (data[i+1] || {data:{}}).data[col.lookup],
+                            datum = d.data[col.lookup];
 
                         var tangent = 0;
                         if (before) { tangent += before < datum ? 1 : -1; }
@@ -349,7 +349,7 @@ $.Control.registerMixin('d3_impl_line', {
             lineType = vizObj._chartType,
             col = colDef.column,
             notNull = function(row)
-                { return !($.isBlank(row[col.lookup]) || row.invalid[col.lookup]); };
+                { return !($.isBlank(row.data[col.lookup]) || row.invalid[col.lookup]); };
 
         var yPosition = vizObj._yDatumPosition(col.lookup, yScale);
 
@@ -359,7 +359,7 @@ $.Control.registerMixin('d3_impl_line', {
 
         if (lineType == 'area')
         {
-            var zeroPoint = {}; zeroPoint[col.lookup] = 0;
+            var zeroPoint = { data: {} }; zeroPoint.data[col.lookup] = 0;
             // Subtract 1 to avoid overlap with the zero line.
             line.y0(vizObj._yDatumPosition(col.lookup, yScale)(zeroPoint) - 1);
         }
@@ -546,7 +546,7 @@ $.Control.registerMixin('d3_impl_line', {
         return function(d)
             {
                 return yAxisPos -
-                       yScale(d[isFunction ? colId.call(this) : colId])
+                       yScale(d.data[isFunction ? colId.call(this) : colId])
                        + 0.5;
             };
     },

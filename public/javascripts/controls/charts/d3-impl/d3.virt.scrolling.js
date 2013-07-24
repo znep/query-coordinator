@@ -421,7 +421,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             {
                 if (row.invalid[col.lookup]) { return null; }
                 // use matchValue to get canonical representation of data
-                return col.renderType.matchValue ? col.renderType.matchValue(row[col.lookup]) : row[col.lookup];
+                return col.renderType.matchValue ? col.renderType.matchValue(row.data[col.lookup]) : row.data[col.lookup];
             });
     },
 
@@ -1393,7 +1393,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
                     if ($.isBlank(fixedColumn)) { text = d.index + ''; }
                     // render plaintext representation of the data
-                    else { text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true); }
+                    else { text = fixedColumn.renderType.renderer(d.data[fixedColumn.lookup], fixedColumn, true, null, null, true); }
 
                     this.visualLength = fontMetrics.lengthForString(text) * 0.766  // cos(40°)
                                       + fontMetrics.heightForString(text) * 0.839; // tan(40°)
@@ -1483,8 +1483,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
             // We talk about high and low error bars, but really the two
             // are interchangeable.
-            var errA = d[highCol.lookup];
-            var errB = d[lowCol.lookup];
+            var errA = d.data[highCol.lookup];
+            var errB = d.data[lowCol.lookup];
             var high = Math.max(errA, errB);
             var low = Math.min(errA, errB);
 
@@ -1530,7 +1530,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             cc.dataDim.pluckY(['top-right', 'bottom-right'],
                               ['top', 'bottom']);
         return {
-            positions: (row[col.lookup] > 0) ? greaterThanZeroPositioning : lessThanZeroPositioning
+            positions: (row.data[col.lookup] > 0) ? greaterThanZeroPositioning : lessThanZeroPositioning
         };
     },
 

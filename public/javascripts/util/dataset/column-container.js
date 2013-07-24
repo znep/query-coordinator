@@ -5,6 +5,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     var _columnIDLookup = {};
     var _columnTCIDLookup = {};
     var _columnFieldNameLookup = {};
+    var _metaColumnLookup = {};
 
     var capName = colName.capitalize();
     var colSet = colName + 's';
@@ -47,6 +48,12 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             (forID(this, ident) || forTCID(this, ident)) : (forField(this, ident) || forID(this, ident));
     };
 
+    // defines: metaColumnForName, metaChildColumnForName
+    props['meta' + capName + 'ForName'] = function(name)
+    {
+        return _metaColumnLookup[name.toString()];
+    };
+
     // defines: clearColumn, clearChildColumn
     // Removes a column from the model without doing anything on the server;
     // use removeColumns or Column.remove for that
@@ -59,6 +66,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         delete _columnIDLookup[col.lookup];
         delete _columnTCIDLookup[col.tableColumnId];
         delete _columnFieldNameLookup[col.fieldName];
+        if (col.isMeta) { delete _metaColumnLookup[col.name]; }
         update(this);
     };
 
@@ -279,6 +287,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         _columnIDLookup = {};
         _columnTCIDLookup = {};
         _columnFieldNameLookup = {};
+        _metaColumnLookup = {};
         this[colSet] = _.map(this[colSet], function(c, i)
             {
                 if (!(c instanceof Column))
@@ -290,6 +299,8 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                 { _columnIDLookup[c.lookup] = c; }
                 _columnTCIDLookup[c.tableColumnId] = c;
                 _columnFieldNameLookup[c.fieldName] = c;
+                if (c.isMeta)
+                { _metaColumnLookup[c.name] = c; }
                 if (!$.isBlank(cont.accessType))
                 { c.setAccessType(cont.accessType); }
                 return c;

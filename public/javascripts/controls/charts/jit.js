@@ -41,7 +41,7 @@
                         exArea = exItem.data.$area;
                     }
 
-                    var area = parseFloat(row[valCol.id]);
+                    var area = parseFloat(row.data[valCol.lookup]);
                     if (_.isNaN(area)) { return; }
 
                     if (!$.isBlank(chartObj._remainder))
@@ -56,7 +56,7 @@
                     var colors = chartObj._displayFormat.colors;
                     var defaultColor = colors[row.id % 5];
 
-                    var rowColor = (row.meta && row.meta.color) ||
+                    var rowColor = (row.metadata.meta && row.metadata.meta.color) ||
                         row.color || defaultColor;
                     var isHighlight = (row.sessionMeta || {}).highlight;
                     if (isHighlight)
@@ -64,7 +64,7 @@
 
                     var item = {
                         id: row.id,
-                        name: xCol.renderType.renderer(row[xCol.id], xCol, true),
+                        name: xCol.renderType.renderer(row.data[xCol.lookup], xCol, true),
                         data: {
                             $area: area,
                             $color: rowColor,
@@ -106,9 +106,9 @@
 
             if (chartObj._remainder > chartObj._totalSum * 0.005)
             {
-                var row = { id: Other, changed: {}, error: {}, invalid: {} };
-                row[chartObj._fixedColumns[0].id] = Other;
-                row[valCol.id] = chartObj._remainder;
+                var row = { id: Other, data: {}, changed: {}, error: {}, invalid: {} };
+                row.data[chartObj._fixedColumns[0].lookup] = Other;
+                row.data[valCol.lookup] = chartObj._remainder;
                 var colors = chartObj._displayFormat.colors;
                 var color = colors[chartObj._primaryView.totalRows() % 5];
                 if ((chartObj._primaryView.highlights || {})[row.id])
@@ -119,7 +119,7 @@
                     data: {
                         $area: chartObj._remainder,
                         $color: color,
-                        row: {id: Other},
+                        row: { id: Other, data: {} },
                         column: valCol,
                         flyoutDetails: chartObj.renderFlyout(row,
                             valCol.tableColumnId, chartObj._primaryView)

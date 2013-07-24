@@ -133,7 +133,7 @@ var getValue = function(trans, args)
         col = args.dataContext.dataset.columnForIdentifier(trans.sourceColumn);
         if (!$.isBlank(col))
         {
-            v = args.row[col.lookup];
+            v = args.row.data[col.lookup];
             if (!$.isBlank(trans.sourceValue))
             {
                 var keys = trans.sourceValue.split('.');

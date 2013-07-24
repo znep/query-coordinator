@@ -48,8 +48,8 @@
             var calObj = this;
 
             var ce = {id: row.id,
-                start: row[calObj._startCol.lookup],
-                title: calObj._titleCol.renderType.renderer(row[calObj._titleCol.lookup],
+                start: row.data[calObj._startCol.lookup],
+                title: calObj._titleCol.renderType.renderer(row.data[calObj._titleCol.lookup],
                         calObj._titleCol, true, false, null, true),
                 color: null,
                 className: null,
@@ -64,7 +64,7 @@
 
             if (!$.isBlank(calObj._endCol))
             {
-                ce.end = row[calObj._endCol.lookup];
+                ce.end = row.data[calObj._endCol.lookup];
                 if ($.isBlank(ce.start)) { ce.start = ce.end; }
             }
 
@@ -400,7 +400,7 @@
         //  was a resize) -- otherwise the date was originally null, so don't
         //  update it.
         if (!$.isBlank(calEvent.start) &&
-            (!$.isBlank(calEvent.row[calObj._startCol.id]) ||
+            (!$.isBlank(calEvent.row.data[calObj._startCol.lookup]) ||
              (!$.isBlank(calEvent.end) &&
                 calEvent.start.valueOf() != calEvent.end.valueOf())))
         {

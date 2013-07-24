@@ -1043,7 +1043,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 {
                     var type = col.renderType || blist.datatypes.text;
                     renderContextVars.row = row;
-                    var value = type.renderer(row[col.lookup], col, true);
+                    var value = type.renderer(row.data[col.lookup], col, true);
                     if (value != undefined)
                     {
                         return value;

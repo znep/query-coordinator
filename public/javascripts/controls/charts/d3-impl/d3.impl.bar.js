@@ -55,8 +55,8 @@ $.Control.registerMixin('d3_impl_bar', {
         var defaultEvaluator = function(row, column)
         {
             return column.renderType.matchValue ?
-                    column.renderType.matchValue(row[column.lookup]) :
-                    row[column.lookup];
+                    column.renderType.matchValue(row.data[column.lookup]) :
+                    row.data[column.lookup];
         };
 
         evaluator = evaluator || defaultEvaluator;
@@ -193,7 +193,7 @@ $.Control.registerMixin('d3_impl_bar', {
             if (!vizObj._chartInitialized) { return 0; }
 
             var columnId = isFunction ? colId.call(this) : colId;
-            var columnValue = d[columnId];
+            var columnValue = d.data[columnId];
 
             var thisDatumPosition = vizObj._chartConfig.dataDim.pluckY(
                 function(value)
@@ -295,7 +295,7 @@ $.Control.registerMixin('d3_impl_bar', {
             return function(row)
             {
                 var col = isFunction ? colId.call(this) : colId;
-                var normalResult = Math.abs(yScale(row[col]) - yScaleZero);
+                var normalResult = Math.abs(yScale(row.data[col]) - yScaleZero);
 
                 // In this case, we need to make sure our bottom/left edge
                 // doesn't go below the x axis or above the top of the chart.
@@ -328,7 +328,7 @@ $.Control.registerMixin('d3_impl_bar', {
         {
             return function(d)
             {
-                return Math.abs(yScale(d[isFunction ? colId.call(this) : colId]) - yScaleZero);
+                return Math.abs(yScale(d.data[isFunction ? colId.call(this) : colId]) - yScaleZero);
             };
         }
     },
@@ -426,7 +426,7 @@ $.Control.registerMixin('d3_impl_bar', {
             var dataInView = _.filter(data, barInView);
             var splitData = _.groupBy(dataInView, function(row)
             {
-                if ($.isBlank(row[col.lookup]) ||
+                if ($.isBlank(row.data[col.lookup]) ||
                     row.invalid[col.lookup])
                 {
                     return 'null';
@@ -733,7 +733,7 @@ $.Control.registerMixin('d3_impl_bar', {
             if (valueInBar)
             {
                 var col = d.column.column;
-                valueInvalid = $.isBlank(d[col.lookup]) ||
+                valueInvalid = $.isBlank(d.data[col.lookup]) ||
                                    d.invalid[col.lookup];
 
                 // Find out if this is the first valid column in this row.
@@ -748,7 +748,7 @@ $.Control.registerMixin('d3_impl_bar', {
                         var prevD = cubedData[i-1];
                         var prevCol = prevD.column.column;
 
-                        d.firstValidColInRow = $.isBlank(prevD[prevCol.lookup]) ||
+                        d.firstValidColInRow = $.isBlank(prevD.data[prevCol.lookup]) ||
                                                prevD.invalid[prevCol.lookup];
                     }
                 }
@@ -783,13 +783,13 @@ $.Control.registerMixin('d3_impl_bar', {
                 if (labelInThisBar)
                 {
                     labelText = fixedColumn.renderType.renderer(
-                        d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                        d.data[fixedColumn.lookup], fixedColumn, true, null, null, true);
                 }
 
                 if (valueInBar)
                 {
                     var column = col.renderType ? col : col.realValueColumn.column;
-                    valueText = column.renderType.renderer(d[col.lookup], column, true, null, null, true);
+                    valueText = column.renderType.renderer(d.data[col.lookup], column, true, null, null, true);
                 }
 
                 if (valueInBar && labelInBar)
@@ -1130,7 +1130,7 @@ $.Control.registerMixin('d3_impl_bar', {
                 position = yAxisPos + 5;
                 if (localEndJustified)
                 { position = Math.max(position, yAxisPos
-                    + yScale(d[valueColumns[d.seriesIndex].column.lookup]) - $(this).width() - 5); }
+                    + yScale(d.data[valueColumns[d.seriesIndex].column.lookup]) - $(this).width() - 5); }
             }
             else
             {

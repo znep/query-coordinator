@@ -319,7 +319,7 @@ var Column = ServerModel.extend({
         this.renderType = blist.datatypes[this.renderTypeName] || {};
         this.isMeta = this.dataTypeName == 'meta_data';
 
-        this.lookup = this.isMeta ? this.name : (blist.useSODA2 ? this.fieldName : this.id);
+        this.lookup = blist.useSODA2 ? this.fieldName : (this.isMeta ? this.name : this.id);
         // The use of id and uuid potentially causes collision with user column field names.
         // We already do in the catalog dataset because it has another id column.
         // Not fixing this yet.  Suggest to use prefix ":" for system columns.

@@ -76,11 +76,8 @@ d3base.seriesGrouping = {
         sortColumns = sg.sortColumns
             = _.compact(sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column')));
 
-        // If there isn't a fixedColumn, pretend the index is a column, and use
-        // that instead.
-        sg.fixedColumn = vizObj._fixedColumns[0] || {
-            lookup: 'index'
-        };
+        // If there isn't a fixedColumn, use the id to sort
+        sg.fixedColumn = vizObj._fixedColumns[0] || vizObj._primaryView.metaColumnForName('id');
 
         // set up the sort, if we have something to sort by.
         if (vizObj._fixedColumns[0])
@@ -236,10 +233,10 @@ d3base.seriesGrouping = {
 
         // figure out our categories and make virtual row index lookups for them.
         var sortedCategories = sg.categorySort == 'alphabetical'
-            ? sg.categoryGroupedRows : _.sortBy(sg.categoryGroupedRows, 'position');
+            ? sg.categoryGroupedRows : _.sortBy(sg.categoryGroupedRows, 'id');
         _.each(sortedCategories, function(row, index)
         {
-            sg.categoryIndexLookup[row[fixedColumn.lookup]] = index;
+            sg.categoryIndexLookup[row.data[fixedColumn.lookup]] = index;
         });
         sg.totalVirtualRows = _.size(sg.categoryIndexLookup);
 
@@ -264,7 +261,7 @@ d3base.seriesGrouping = {
 
                 return function(r)
                 {
-                    var v = r[sc.column.lookup];
+                    var v = r.data[sc.column.lookup];
                     return $.isBlank(order[v]) ? v : order[v];
                 };
             });
@@ -299,7 +296,7 @@ d3base.seriesGrouping = {
                                                          || orderBy.expression.columnId)); }))
         {
             sg.groupSort = 'natural';
-            sortedRows = _.sortBy(sg.seriesGroupedRows, 'position');
+            sortedRows = _.sortBy(sg.seriesGroupedRows, 'id');
         }
         else
         { sg.groupSort = 'alphabetical'; }
@@ -759,17 +756,18 @@ d3base.seriesGrouping = {
         {
             // first get our virtual row, which will simply be the row for whatever
             // category we happen to have. create if it doesn't exist.
-            var category = row[fixedColumn.lookup];
+            var category = row.data[fixedColumn.lookup];
             var virtualRow;
             if ($.isBlank(sg.virtualRows[category]))
             {
                 virtualRow = {
                     id: -100 - sg.categoryIndexLookup[category],
                     index: sg.categoryIndexLookup[category],
+                    data: {},
                     invalid: {},
                     realRows: {}
                 };
-                virtualRow[sg.fixedColumn.lookup] = category;
+                virtualRow.data[sg.fixedColumn.lookup] = category;
 
                 sg.virtualRows[category] = virtualRow;
                 sg.virtualRowReadyCount ++;
@@ -795,7 +793,7 @@ d3base.seriesGrouping = {
                     return;
                 }
 
-                virtualRow[virtualColumn.column.id] = row[valueCol.column.id];
+                virtualRow.data[virtualColumn.column.id] = row.data[valueCol.column.id];
                 virtualRow.realRows[virtualColumn.column.id] = row;
 
                 if (view.highlights && view.highlights[virtualRow.id] &&
@@ -827,7 +825,7 @@ d3base.seriesGrouping = {
 
         var sg = vizObj._seriesGrouping,
             fixedColumn = sg.fixedColumn,
-            category = row[fixedColumn.lookup],
+            category = row.data[fixedColumn.lookup],
             vRow = sg.virtualRows[category];
 
         // A removed row might in reality be present in the sortedView, and should exist
@@ -845,7 +843,7 @@ d3base.seriesGrouping = {
                     { if (rr.id == row.id) { rejectedKeys.push(k); } });
             _.each(rejectedKeys, function(rk)
                     {
-                        delete vRow[rk];
+                        delete vRow.data[rk];
                         delete vRow.realRows[rk];
                     });
         }
@@ -983,7 +981,7 @@ d3base.seriesGrouping = {
     {
         var vizObj = this;
 
-        var virtColColor = (d && vizObj.requiresSeriesGrouping()) ? $.deepGet(d, 'realRows', colDef.column.id, 'color') : undefined;
+        var virtColColor = (d && vizObj.requiresSeriesGrouping()) ? $.deepGet(d, 'realRows', colDef.column.lookup, 'color') : undefined;
         if (virtColColor)
         {
             return virtColColor;
@@ -1015,7 +1013,7 @@ d3base.seriesGrouping = {
 
         if (vizObj.requiresSeriesGrouping())
         {
-            return vizObj._super(visual, colDef.column.realValueColumn, row.realRows[colDef.column.id], flyoutConfigs, enableProcessing);
+            return vizObj._super(visual, colDef.column.realValueColumn, row.realRows[colDef.column.lookup], flyoutConfigs, enableProcessing);
         }
         else
         {

@@ -325,8 +325,8 @@
     {
         $container.empty();
 
-        if (_.isNull(row[column.lookup]) ||
-            (_.isArray(row[column.lookup]) && _.isEmpty(row[column.lookup])))
+        if (_.isNull(row.data[column.lookup]) ||
+            (_.isArray(row.data[column.lookup]) && _.isEmpty(row.data[column.lookup])))
         {
             $container.append(rrObj.settings.defaultItem.replace('#{column.name}',
                 $.htmlEscape(column.name)));
@@ -343,11 +343,11 @@
         if (row.invalid && row.invalid[column.lookup])
         {
             return $('<span class="invalid">' +
-                blist.datatypes.invalid.renderer(row[column.lookup]) +
+                blist.datatypes.invalid.renderer(row.data[column.lookup]) +
                 '</span>');
         }
 
-        var item = (column.renderType.renderer(row[column.lookup],
+        var item = (column.renderType.renderer(row.data[column.lookup],
             column) || '') + '';
 
         // We don't want to replace the url portion
@@ -390,7 +390,7 @@
         });
 
         var $tbody = $table.find('tbody');
-        _.each(row[column.lookup] || [], function(subRow)
+        _.each(row.data[column.lookup] || [], function(subRow)
         {
             var $row = $('<tr></tr>');
             _.each(column.visibleChildColumns, function(cc)
@@ -404,7 +404,7 @@
             $tbody.append($row);
         });
 
-        if ((row[column.lookup] || []).length < 1)
+        if ((row.data[column.lookup] || []).length < 1)
         {
             $tbody.append($.tag({tagName: 'tr', contents: {tagName: 'td',
                 'class': ['invalid', 'noResults'],

@@ -292,7 +292,7 @@
                     feature.attributes.rows[row.id] = row;
                     if (layerObj._config.aggregateMethod == 'sum')
                     { feature.attributes.quantities[row.id]
-                        = parseFloat(row[layerObj._quantityCol.lookup]); }
+                        = parseFloat(row.data[layerObj._quantityCol.lookup]); }
                     else
                     { feature.attributes.quantities[row.id] = 1; }
                 }

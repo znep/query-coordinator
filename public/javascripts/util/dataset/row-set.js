@@ -1,6 +1,6 @@
 (function(){
 
-blist.useSODA2 = false;
+blist.useSODA2 = true;
 
 var RowSet = ServerModel.extend({
     _init: function(ds, query, parRS, initRows)
@@ -71,7 +71,7 @@ var RowSet = ServerModel.extend({
     {
         // Someday an actual lookup for child rows might be good; but these
         // should be rare and small, so don't bother yet
-        var cell = parRow[parCol.lookup];
+        var cell = parRow.data[parCol.lookup];
         return _.detect(cell || {}, function(sr) { return sr.id == id; });
     },
 
@@ -109,7 +109,7 @@ var RowSet = ServerModel.extend({
 
             var sortVals = _.map(newRows, function(r)
             {
-                return { sorts: [r.position], row: r };
+                return { sorts: [r.id], row: r };
             });
 
             _.each((rs._translatedQuery.orderBys || []).slice().reverse(), function(ob)
@@ -118,7 +118,7 @@ var RowSet = ServerModel.extend({
                 if ($.isBlank(col)) { return; }
                 _.each(sortVals, function(sv)
                 {
-                    var v = sv.row[col.lookup];
+                    var v = sv.row.data[col.lookup];
                     if ($.isBlank(v))
                     { v = null; }
                     else
@@ -589,7 +589,9 @@ var RowSet = ServerModel.extend({
         var rs = this;
         if (blist.useSODA2)
         {
+            args.isSODA = true;
             args.params = args.params || {};
+            args.params['$$version'] = '2.0';
             if (!$.isBlank(rs._dataset.searchString))
             { args.params['$q'] = rs._dataset.searchString; }
             if (!_.isEmpty(rs._query.orderBys))
@@ -634,7 +636,7 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
 
-        var params = blist.useSODA2 ? { '$exclude_system_fields': false, '$unwrapped': true } :
+        var params = blist.useSODA2 ? { '$$exclude_system_fields': false } :
             {method: 'getByIds', asHashes: true};
 
         var start;
@@ -666,7 +668,7 @@ var RowSet = ServerModel.extend({
 
         if (fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
             !_.isEqual(reqData, rs._curMetaReqMeta))
-        { params[blist.useSODA2 ? '$meta' : 'meta'] = true; }
+        { params[blist.useSODA2 ? '$$meta' : 'meta'] = true; }
 
         var reqId = _.uniqueId();
         var rowsLoaded = function(result)
@@ -792,7 +794,7 @@ var RowSet = ServerModel.extend({
         { req.url = '/api/id/' + rs._dataset.id + '.json'; }
         else if (fullLoad)
         { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
-        if (params.meta || params['$meta'])
+        if (params.meta || params['$$meta'])
         {
             rs._curMetaReq = reqId;
             rs._curMetaReqMeta = reqData;
@@ -806,88 +808,89 @@ var RowSet = ServerModel.extend({
         var rs = this;
         var translateRow = function(r, parCol)
         {
-            var adjVals = {invalid: {}, changed: {}, error: {}, sessionMeta: {}};
+            var adjVals = { invalid: {}, changed: {}, error: {}, sessionMeta: {}, data: {}, metadata: {} };
             if (_.any(r, function(val, id)
             {
-                var newVal;
+                var newVal = val;
                 // A few columns don't have original lookups
                 var lId = blist.useSODA2 ? id : ({sid: 'id', 'id': 'uuid'}[id] || id);
-                if (lId.startsWith(':')) { lId = lId.slice(1); }
                 var c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(lId) :
                     parCol.childColumnForIdentifier(lId);
 
                 if ($.isBlank(c)) { return true; }
 
-                if (c.isMeta && c.name == 'meta')
-                { newVal = _.isString(val) ? JSON.parse(val || 'null') : val; }
+                if (c.isMeta && c.name == 'meta' && _.isString(newVal))
+                { newVal = JSON.parse(newVal || 'null'); }
 
-                if ($.isPlainObject(val))
+                if ($.isPlainObject(newVal))
                 {
                     // First, convert an empty array into a null
                     // Booleans in the array don't count because location type
                     // has a flag that may be set even if there is no data.  If
                     // some type actually cares about only having a boolean,
                     // this will need to be made more specific
-                    if (_.all(val, function(v)
+                    if (_.all(newVal, function(v)
                         { return $.isBlank(v) || _.isBoolean(v); }))
                     { newVal = null; }
                 }
 
-                if (c.renderTypeName == 'checkbox' && val === false ||
-                        c.renderTypeName == 'stars' && val === 0)
+                if (c.renderTypeName == 'checkbox' && newVal === false ||
+                        c.renderTypeName == 'stars' && newVal === 0)
                 { newVal = null; }
 
-                if (c.renderTypeName == 'geospatial' && r.sid)
-                { newVal = $.extend({}, val, {row_id: r.sid}); }
+                if (c.renderTypeName == 'geospatial' && r[blist.useSODA2 ? ':id' : 'sid'])
+                { newVal = $.extend({}, newVal, {row_id: r[blist.useSODA2 ? ':id' : 'sid']}); }
 
-                if (c.dataTypeName == 'nested_table' && _.isArray(val))
+                if (c.dataTypeName == 'nested_table' && _.isArray(newVal))
                 {
-                    if (!$.isBlank(_.detect(val, function(cr) { return !translateRow(cr, c); })))
+                    newVal = _.map(newVal, function(cr) { return translateRow(cr, c); });
+                    if (_.any(newVal, function(cr) { return _.isNull(cr); }))
                     { return true; }
                 }
 
-                // A few columns have different ids we use than the core server gives us
-                if (id != c.lookup) { newVal = newVal || val; }
-
                 if (!_.isUndefined(newVal))
-                { adjVals[c.lookup] = newVal; }
+                {
+                    adjVals.data[c.lookup] = newVal;
+                    if (c.isMeta)
+                    { adjVals.metadata[c.lookup.startsWith(':') ?  c.lookup.slice(1) : c.lookup] = newVal; }
+                }
 
                 return false;
-            })) { return false; }
+            })) { return null; }
 
-            $.extend(r, adjVals);
+            adjVals.id = adjVals.metadata.id;
 
-            _.each((r.meta || {}).invalidCells || {}, function(v, tcId)
+            _.each((adjVals.metadata.meta || {}).invalidCells || {}, function(v, cId)
             {
                 if (!$.isBlank(v))
                 {
-                    var c = !$.isBlank(parCol) ? parCol.childColumnForTCID(tcId) :
-                        rs._dataset.columnForTCID(tcId);
-                    if (!$.isBlank(c) && $.isBlank(r[c.lookup]))
+                    var c = !$.isBlank(parCol) ? parCol.childColumnForIdentifier(cId) :
+                        rs._dataset.columnForIdentifier(cId);
+                    if (!$.isBlank(c) && $.isBlank(adjVals.data[c.lookup]))
                     {
-                        r.invalid[c.id] = true;
-                        r[c.lookup] = v;
+                        adjVals.invalid[c.lookup] = true;
+                        adjVals.data[c.lookup] = v;
                     }
                 }
             });
-            delete (r.meta || {}).invalidCells;
+            delete (adjVals.metadata.meta || {}).invalidCells;
 
-            _.each((rs._dataset._commentLocations || {})[r.id] || {}, function(v, tcId)
+            _.each((rs._dataset._commentLocations || {})[adjVals.id] || {}, function(v, tcId)
             {
                 var c = rs._dataset.columnForTCID(tcId);
                 if (!$.isBlank(c))
                 {
-                    r.annotations = r.annotations || {};
-                    r.annotations[c.lookup] =  'comments';
+                    adjVals.annotations = adjVals.annotations || {};
+                    adjVals.annotations[c.lookup] =  'comments';
                 }
             });
 
-            rs._setRowFormatting(r);
+            rs._setRowFormatting(adjVals);
 
-            if ($.subKeyDefined(rs._dataset, 'highlights.' + r.id))
-            { rs.markRow('highlight', true, r); }
+            if ($.subKeyDefined(rs._dataset, 'highlights.' + adjVals.id))
+            { rs.markRow('highlight', true, adjVals); }
 
-            return true;
+            return adjVals;
         };
 
         var adjRows = [];
@@ -895,7 +898,7 @@ var RowSet = ServerModel.extend({
         var hasIndex = !$.isBlank(start);
         _.each(newRows, function(r, i)
         {
-            var success = skipTranslate || translateRow(r);
+            var newRow = skipTranslate ? r : translateRow(r);
             var ind;
             if (hasIndex)
             { ind = start + i; }
@@ -903,7 +906,7 @@ var RowSet = ServerModel.extend({
             // If a row already exists at this index, clean it out
             if (hasIndex)
             {
-                if (!$.isBlank(rs._rows[ind]) && (!success || r.id != rs._rows[ind].id))
+                if (!$.isBlank(rs._rows[ind]) && ($.isBlank(newRow) || newRow.id != rs._rows[ind].id))
                 {
                     var oldRow = rs._rows[ind];
                     oldRows.push(oldRow);
@@ -914,7 +917,7 @@ var RowSet = ServerModel.extend({
             }
             else
             {
-                var oldRow = rs._rowIDLookup[r.id];
+                var oldRow = rs._rowIDLookup[newRow.id];
                 if (!$.isBlank(oldRow))
                 {
                     oldRows.push(oldRow);
@@ -923,16 +926,16 @@ var RowSet = ServerModel.extend({
                 }
             }
 
-            if (!success) { return; }
+            if ($.isBlank(newRow)) { return; }
 
             if (hasIndex)
             {
-                r.index = ind;
-                rs._rows[r.index] = r;
+                newRow.index = ind;
+                rs._rows[newRow.index] = newRow;
             }
-            rs._rowIDLookup[r.id] = r;
+            rs._rowIDLookup[newRow.id] = newRow;
             rs._loadedCount++;
-            adjRows.push(r);
+            adjRows.push(newRow);
         });
 
         rs._isComplete = rs._totalCount == rs._loadedCount;
@@ -982,11 +985,11 @@ var RowSet = ServerModel.extend({
                                                              // If this is a nested table, recurse,
                     if (!$.isBlank(parCol) && list === rows) // but don't go more than one level.
                     {
-                        _.reduce(row[parCol.lookup], processRows, memo);
+                        _.reduce(row.data[parCol.lookup], processRows, memo);
                     }
                     else
                     {
-                        memo.push(row[col.lookup]);
+                        memo.push(row.data[col.lookup]);
                     }
                 }
                 return memo;

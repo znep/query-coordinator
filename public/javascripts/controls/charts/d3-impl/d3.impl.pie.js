@@ -887,7 +887,7 @@ $.Control.registerMixin('d3_impl_pie', {
                 {
                     // 'this' is the slice.
                     var foundRow = rowResolver(this);
-                    var val = foundRow[col.lookup];
+                    var val = foundRow.data[col.lookup];
 
                     if (asText)
                     {
@@ -925,7 +925,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
                     var fixedColumn = vizObj._fixedColumns[0];
                     // render plaintext representation of the data
-                    return fixedColumn.renderType.renderer(foundRow[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                    return fixedColumn.renderType.renderer(foundRow.data[fixedColumn.lookup], fixedColumn, true, null, null, true);
                 };
             };
 

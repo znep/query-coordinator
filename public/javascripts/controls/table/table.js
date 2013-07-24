@@ -2547,7 +2547,7 @@
             {
                 var children = col.visibleChildColumns;
                 // If there is data, render nested table headers for the row
-                if (!_.isEmpty(row[col.lookup]) || model.useBlankRows())
+                if (!_.isEmpty(row.data[col.lookup]) || model.useBlankRows())
                 {
                     html.push('<div class="', getColumnClass(col),
                             ' blist-td blist-tdh blist-opener ', openerClass, '"></div>');
@@ -2623,7 +2623,7 @@
                 var children = col.visibleChildColumns;
                 // If there is data, recursively render the row and add
                 // the extra columns on the front and back
-                if (!$.isBlank(row[col.lookup]))
+                if (!$.isBlank(row.data[col.lookup]))
                 {
                     html.push('<div class="blist-td blist-opener-space ', openerClass, '"></div>');
                     if (options.showRowHandle)
@@ -2685,7 +2685,7 @@
 
                 var curRow = row;
                 if (!$.isBlank(col.parentColumn))
-                { curRow = row[col.parentColumn.lookup]; }
+                { curRow = row.data[col.parentColumn.lookup]; }
 
                 var renderType = curRow.invalid[col.lookup] ? blist.datatypes.invalid : type;
 
@@ -2705,7 +2705,7 @@
                 html.push('">');
                 if (col.format.drill_down)
                 {
-                    var v = curRow[col.lookup];
+                    var v = curRow.data[col.lookup];
                     if (!$.isBlank(v) && !_.isString(v))
                     { v = v.toString(); }
                     html.push('<a class="drillDown" cellvalue="',
@@ -2714,7 +2714,7 @@
                         '" href="#drillDown"></a>');
                 }
 
-                html.push(renderType.renderer(curRow[col.lookup], col, false, false, contextVariables));
+                html.push(renderType.renderer(curRow.data[col.lookup], col, false, false, contextVariables));
 
                 if ($.isBlank(col.parentColumn) && !$.isBlank((curRow.annotations || {})[col.lookup]))
                 {

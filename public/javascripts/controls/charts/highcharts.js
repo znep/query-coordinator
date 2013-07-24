@@ -91,7 +91,7 @@
                         _.each((sc.column.cachedContents || {}).top, function(topItem)
                         {
                             r = $.extend({}, r);
-                            r[sc.column.lookup] = topItem.item;
+                            r.data[sc.column.lookup] = topItem.item;
                             newRows.push(r);
                         });
                     });
@@ -102,7 +102,7 @@
                             { order[item.orderItem] = i; });
                         rows = _.sortBy(newRows, function(r)
                         {
-                            var v = r[sc.column.lookup];
+                            var v = r.data[sc.column.lookup];
                             return $.isBlank(order[v]) ? v : order[v];
                         });
                     }
@@ -117,12 +117,12 @@
                             if (sc.column.sortAscending)
                             {
                                sortFunctions.push(function(a, b)
-                                 { return a[sc.column.lookup].toUpperCase().localeCompare(b[sc.column.lookup].toUpperCase()); });
+                                 { return a.data[sc.column.lookup].toUpperCase().localeCompare(b.data[sc.column.lookup].toUpperCase()); });
                             }
                             else
                             {
                                 sortFunctions.push(function(a, b)
-                                { return b[sc.column.lookup].toUpperCase().localeCompare(a[sc.column.lookup].toUpperCase()); });
+                                { return b.data[sc.column.lookup].toUpperCase().localeCompare(a.data[sc.column.lookup].toUpperCase()); });
 
                             }
                         }
@@ -198,7 +198,7 @@
 
             var xCat;
             if (!$.isBlank(chartObj._xColumn))
-            { xCat = row[chartObj._xColumn.lookup]; }
+            { xCat = row.data[chartObj._xColumn.lookup]; }
             if ($.isBlank(xCat))
             { xCat = ''; }
 
@@ -262,7 +262,7 @@
 
             var renderPoint = function(series)
             {
-                var value = parseFloat(row[series.yColumn.data.id]);
+                var value = parseFloat(row.data[series.yColumn.data.lookup]);
                 if (_.isNaN(value)) { value = null; }
 
                 // Render point and cache it
@@ -544,7 +544,7 @@
                     function(sc) { return renderCellText(row, sc.column); }).join('|') || 'default'
         };
         _.each(chartObj._seriesColumns, function(sc)
-                { series.seriesValues[sc.column.lookup] = row[sc.column.lookup]; });
+                { series.seriesValues[sc.column.lookup] = row.data[sc.column.lookup]; });
 
         chartObj._seriesPotentials.push(series);
         chartObj._seriesOrder.push(name);
@@ -908,8 +908,8 @@
                         atValue: chartObj._xCategories ? chartObj._xCategories[datum.x] : datum.x,
                         seriesOffset: datum.barX + (datum.barW / 2) - 2,
                         color: chartObj._displayFormat.errorBarColor,
-                        low: datum.row && datum.row[chartObj._errorBarConfig.low.lookup],
-                        high: datum.row && datum.row[chartObj._errorBarConfig.high.lookup]
+                        low: datum.row && datum.row.data[chartObj._errorBarConfig.low.lookup],
+                        high: datum.row && datum.row.data[chartObj._errorBarConfig.high.lookup]
                     };
                 }); })
                 .flatten()
@@ -961,7 +961,7 @@
                 if (axis.isXAxis && !_.isEmpty(chartObj._xCategories))
                 {
                     // Attempt to look up value
-                    var v = lineAt[chartObj._xColumn.lookup];
+                    var v = lineAt.data[chartObj._xColumn.lookup];
                     var i = _.indexOf(chartObj._xCategories, v);
                     if (i < 0 && v > _.first(chartObj._xCategories) &&
                         v < _.last(chartObj._xCategories))
@@ -1398,8 +1398,8 @@
             chartObj._otherVal = '\u200b' + (_.indexOf(chartObj._xCategories, Other) > -1 ?
                     'Remainder' : Other) + '\u200b';
             // Create fake row for other value
-            var otherRow = { invalid: {}, error: {}, changed: {} };
-            otherRow[chartObj._xColumn.lookup] = chartObj._otherVal;
+            var otherRow = { data: {}, invalid: {}, error: {}, changed: {} };
+            otherRow.data[chartObj._xColumn.lookup] = chartObj._otherVal;
             var cf = _.detect(chartObj._primaryView.metadata.conditionalFormatting,
                 function(cf) { return cf.condition === true; });
             if (cf) { otherRow.color = cf.color; }
@@ -1420,7 +1420,7 @@
             }
             _.each(chartObj._seriesCache, function(series)
             {
-                var seriesRow = $.extend(true, {}, otherRow, series.seriesValues);
+                var seriesRow = $.extend(true, {}, otherRow, { data: series.seriesValues });
                 seriesRow.id = 'Other_' + series.yColumn.data.id + '_' +
                 (_.map(_.keys(series.seriesValues).sort(), function(sk)
                     { return sk + ':' + series.seriesValues[sk]; }).join('_') || 'default');
@@ -1450,7 +1450,7 @@
                         return;
                     }
 
-                    seriesRow[series.yColumn.data.lookup] = sr;
+                    seriesRow.data[series.yColumn.data.lookup] = sr;
                     var point = yPoint(chartObj, seriesRow, sr, series, otherPt);
                     addPoint(chartObj, point, series, true);
                     doChartRedraw(chartObj);
@@ -1520,7 +1520,7 @@
             && _.include(['date', 'calendar_date'], chartObj._xColumn.renderTypeName))
         {
             if (!$.isBlank(row) && ($.isBlank(row.invalid) || !row.invalid[chartObj._xColumn.lookup]))
-            { pt.x = row[chartObj._xColumn.lookup]; }
+            { pt.x = row.data[chartObj._xColumn.lookup]; }
             else { pt.x = ''; }
             if (_.isNumber(pt.x)) { pt.x *= 1000; }
             else if (!$.isBlank(pt.x)) { pt.x = Date.parse(pt.x).valueOf(); }
@@ -1600,7 +1600,7 @@
                 var pCol = chartObj._pointColor;
                 point.label.color = pCol.name;
                 for (var i = 0; i < chartObj._numSegments; i++)
-                { if (parseFloat(row[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
+                { if (parseFloat(row.data[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
                     {
                         point.fillColor = "#"+$.rgbToHex(chartObj._gradient[i]);
                         point.states.select = $.extend(point.states.select,
@@ -1614,7 +1614,7 @@
                 var pCol = chartObj._pointSize;
                 point.label.size = pCol.name;
                 for (var i = 0; i < chartObj._numSegments; i++)
-                { if (parseFloat(row[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
+                { if (parseFloat(row.data[pCol.lookup]) <= chartObj._segments[pCol.lookup][i])
                     {
                         point.radius = 4+(4*i);
                         point.states.select = $.extend(point.states.select,
@@ -1651,7 +1651,7 @@
     {
         var renderer = row.invalid[col.lookup] ? blist.datatypes.invalid.renderer :
             col.renderType.renderer;
-        return renderer(row[col.lookup], col, true, false, {}, true);
+        return renderer(row.data[col.lookup], col, true, false, {}, true);
     };
 
     var isDateTime = function(chartObj)

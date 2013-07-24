@@ -792,7 +792,10 @@ module Canvas2
   class Sort < CanvasWidget
     def render_contents
       return ['', true] if context.nil?
-      sorts = context[:dataset].query.orderBys || []
+      sorts = []
+      if context[:type] == 'dataset' || context[:type] == 'column'
+        sorts = context[:dataset].query.orderBys || []
+      end
 
       ds_options = ''
       found_col = false

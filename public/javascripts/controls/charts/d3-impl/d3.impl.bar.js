@@ -714,7 +714,7 @@ $.Control.registerMixin('d3_impl_bar', {
         });
 
         // Now figure out the text to use, and add that to the augmented row.
-        _.each(cubedData, function(d)
+        _.each(cubedData, function(d, i)
         {
             var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
                 col = d.column.column;
@@ -757,8 +757,39 @@ $.Control.registerMixin('d3_impl_bar', {
             // the two pieces look good together (if we even have two
             // pieces).
 
-            // TODO handle invalid values correctly (11704).
-            d.overallText = (d.labelText + ' ' + d.valueText).trim();
+            if ($.isBlank(d[col.lookup]) ||
+                d.invalid[col.lookup])
+            {
+                // Invalid or blank value.
+                if (!cc.stackYSeries)
+                {
+                    // If we're not stacking, we're done right here- don't render
+                    // anything (even if we have a label, since we're going to render
+                    // a null bar underneath).
+                    d.overallText = '';
+                }
+                else
+                {
+                    // Stacking. If anyone in our stack is valid, render at least the label.
+                    var lastStackIndex = (i-d.seriesIndex) + distinctLabelCountPerSeries;
+                    d.overallText = '';
+
+                    for(var checkIndex = i+1; checkIndex <= lastStackIndex && checkIndex < cubedData.length; checkIndex++)
+                    {
+                        var stackCol = cubedData[checkIndex].column.column;
+                        if (!$.isBlank(d[stackCol.lookup]) &&
+                            !d.invalid[stackCol.lookup])
+                        {
+                            d.overallText = d.labelText;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                d.overallText = (d.labelText + ' ' + d.valueText).trim();
+            }
 
             // Determine the width of the text for layout.
             d.length = fontMetrics.lengthForString(d.overallText);

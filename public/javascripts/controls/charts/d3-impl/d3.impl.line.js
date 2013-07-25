@@ -61,7 +61,6 @@ $.Control.registerMixin('d3_impl_line', {
     // call this if the active set of data has changed
     _renderData: function(data, ignored, didInsertData)
     {
-        console.log('rd');
         var vizObj = this,
             cc = vizObj._chartConfig,
             defaults = vizObj.defaults,
@@ -376,7 +375,6 @@ $.Control.registerMixin('d3_impl_line', {
     // you'll also need to call _renderData to make the dataBars the correct height
     _rerenderAxis: function()
     {
-        console.log('ra');
         var vizObj = this,
             cc = vizObj._chartConfig,
             yScale = vizObj._currentYScale(),
@@ -441,7 +439,6 @@ $.Control.registerMixin('d3_impl_line', {
     // call this if spacings/widths changed
     _rerenderPositions: function()
     {
-        console.log('rp');
         var vizObj = this,
             cc = vizObj._chartConfig,
             valueColumns = vizObj.getValueColumns(),

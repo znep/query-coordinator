@@ -7,7 +7,7 @@
         $.urlParam(window.location.href, 'charts') == 'nextgen') && $.urlParam(window.location.href, 'charts') != 'old';
     var nextGenReady = ['bar', 'column', 'pie', 'donut', 'line', 'area'];
 
-    var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
+    var defaultColors = ['#1B9E77', '#D95F02', '#7570B3', '#E7298A', '#A6761D', '#E6AB02'];
 
     var axisTitles = [
         {text: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title'), name: 'displayFormat.titleX',

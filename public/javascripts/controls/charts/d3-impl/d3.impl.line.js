@@ -259,21 +259,23 @@ $.Control.registerMixin('d3_impl_line', {
 
             if (vizObj._displayFormat.dataLabels === true)
             {
-                var dataLabels = cc.chartD3.selectAll('.dataLabel')
+                var labelSeriesClass = 'dataLabel_series' + col.lookup;
+                var dataLabels = cc.chartD3.selectAll('.'+labelSeriesClass)
                     .data(notNullData, function(row) { return row.id; });
                 dataLabels
                     .enter().append('text')
                         .classed('dataLabel', true)
+                        .classed(labelSeriesClass, true)
                         .attr({ 'font-size': 13,
                                 'text-anchor': 'middle' })
                 dataLabels
-                        .attr('font-weight', function(d)
-                                { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
-                        .text(function(d)
-                        {
-                            return col.renderType.renderer(d[col.lookup], col, true, null, null, true);
-                        });
-                dataLabels
+                    .attr('fill', vizObj._d3_colorizeRow(colDef))
+                    .attr('font-weight', function(d)
+                            { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
+                    .text(function(d)
+                    {
+                        return col.renderType.renderer(d[col.lookup], col, true, null, null, true);
+                    })
                     .attr('x', xDatumPositionForSeries)
                     .attr('y', function(d, i)
                     {

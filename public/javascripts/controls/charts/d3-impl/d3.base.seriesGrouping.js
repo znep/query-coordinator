@@ -418,15 +418,15 @@ d3base.seriesGrouping = {
                 { tagName: 'p', contents: [
                     { tagName: 'span', 'class': 'dsgProgressText' }
                 ]},
-                { tagName: 'p', 'class': 'dsgLoadingMsg', contents: [
-                    { tagName: 'span', 'class': 'dsgPauseExplanationText hide', contents: $.t('controls.charts.series_grouping.pause_button_explanation1')},
+                { tagName: 'p', 'class': 'dsgLoadingMsg invisible', contents: [
+                    { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation1')},
                     { tagName: 'span', 'class': 'filter dsgFilterIcon', contents:[
                         { tagName: 'span', 'class': 'icon'},
                     ]},
-                    { tagName: 'span', 'class': 'dsgPauseExplanationText hide', contents: $.t('controls.charts.series_grouping.pause_button_explanation2')}
+                    { tagName: 'span', 'class': 'dsgPauseExplanationText invisible', contents: $.t('controls.charts.series_grouping.pause_button_explanation2')}
                 ]},
                 { tagName: 'p', contents: [
-                    { tagName: 'a', 'class': 'button dsgProgressPauseButton hide', contents: $.t('controls.charts.series_grouping.pause_rendering') }
+                    { tagName: 'a', 'class': 'button dsgProgressPauseButton invisible', contents: $.t('controls.charts.series_grouping.pause_rendering') }
                 ]},
                 { tagName: 'div', 'class': 'loadingSpinner minimal dsgSpinner'}
             ] }
@@ -478,15 +478,18 @@ d3base.seriesGrouping = {
                 case 'done':
                 //Done is when
                 //the caluculations are done and pausing no longer works, but before the charts shows
+                
                     operationPhaseMessage = $.t('controls.charts.series_grouping.drawing_running');
-                    sg.$dsgProgressPauseButton.addClass('hide');
-                    sg.$dsgLoadingMsg.addClass('hide');
-                    sg.$loadingOverlayProgressText.removeClass('hide');
-                    sg.$dsgSpinner.removeClass('hide');
+                    sg.$dsgProgressPauseButton.addClass('invisible');
+                    sg.$dsgLoadingMsg.addClass('invisible');
+                    sg.$loadingOverlayProgressText.removeClass('invisible');
+                    sg.$dsgSpinner.removeClass('invisible');
                     progressMessage = $.t('controls.charts.series_grouping.drawing_progress');
+
                     break;
+                
                 case 'loading':
-                    sg.$dsgSpinner.removeClass('hide');
+                    sg.$dsgSpinner.removeClass('invisible');
                     operationPhaseMessage = $.t('controls.charts.series_grouping.calculation_running');
                     // If the user resumes, backfill a start time that preserves the amount of elapsed time at pause.
                     if (!_.isUndefined(sg.pauseLoadingTimeMillisec))
@@ -523,11 +526,11 @@ d3base.seriesGrouping = {
                     {
                         progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining+''});
                     }
-                    sg.$dsgProgressPauseButton.removeClass('hide');
-                    sg.$dsgPauseExplanationText.removeClass('hide');
+                    sg.$dsgProgressPauseButton.removeClass('invisible');
+                    sg.$dsgPauseExplanationText.removeClass('invisible');
                     break;
                 case 'stopped':
-                    sg.$dsgSpinner.addClass('hide');
+                    sg.$dsgSpinner.addClass('invisible');
                     operationPhaseMessage = $.t('controls.charts.series_grouping.rendering_paused');
                     if (_.isUndefined(sg.pauseLoadingTimeMillisec))
                     {
@@ -536,8 +539,8 @@ d3base.seriesGrouping = {
                     sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.resume_rendering'));
                 
                     
-                    sg.$dsgProgressPauseButton.removeClass('hide');
-                    sg.$dsgPauseExplanationText.removeClass('hide');
+                    sg.$dsgProgressPauseButton.removeClass('invisible');
+                    sg.$dsgPauseExplanationText.removeClass('invisible');
                     break;
             }
 

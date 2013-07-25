@@ -268,9 +268,12 @@
           background-color: #666
           @include prefixer(box-shadow, none)
 
-    .categoryList
+    .categoryList, .domainList
       overflow: hidden
-      padding-top: 4em
+
+      .component-Text
+        font-size: 1em
+        padding: 0
 
       .filterItem
         float: left
@@ -286,9 +289,18 @@
         background-color: #bbb
         @include transition(0.2s, background-color)
 
+        .icon
+          height: 16px
+          margin-right: 0.5em
+          vertical-align: bottom
+          width: 16px
+
         &:hover
           background-color: #999
           @include prefixer(box-shadow, none)
+
+    .categoryList
+      padding-top: 4em
 
   .noDataSection
     text-align: center

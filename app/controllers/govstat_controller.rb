@@ -351,7 +351,7 @@ protected
     end.flatten.compact.map { |v|
       { value: v[:value], text: v[:text], current: params[:category] == v[:value], item: v[:item] } }
     cats.unshift({ value: '', text: 'All', current: params[:category].blank? })
-    opts = { nofederate: true, publication_stage: 'published', limit: 20 }
+    opts = { publication_stage: 'published', limit: 20 }
 
     cur_view_type = params[:view_type] || 'datasets'
     view_types = view_types_facet[:options]
@@ -378,10 +378,24 @@ protected
       end
     end
 
+    federated_domains = Federation.find.
+      select { |f| f.targetDomainCName == CurrentDomain.cname &&
+        f.lensName.empty? && f.acceptedUserId.present? }.
+        sort_by { |f| f.sourceDomainCName }.
+        map { |f| { text: f.sourceDomainCName, value: f.sourceDomainId.to_s,
+          icon: "/api/domains/#{f.sourceDomainCName}/icons/smallIcon",
+          current: params[:federation_filter] == f.sourceDomainId.to_s } }
+    if federated_domains.length > 0
+      federated_domains.unshift({text: 'This site only', value: CurrentDomain.domain.id.to_s,
+                                icon: "/api/domains/#{CurrentDomain.cname}/icons/smallIcon",
+                                current: params[:federation_filter] == CurrentDomain.domain.id.to_s })
+      federated_domains.unshift({ value: '', text: 'All', current: params[:federation_filter].blank? })
+    end
+
     search_params = {}
-    [:category, :view_type, :q].each { |p| search_params[p] = params[p] if params[p].present? }
+    [:category, :view_type, :q, :federation_filter].each { |p| search_params[p] = params[p] if params[p].present? }
     non_default = !search_params.empty?
-    [:category, :q].each { |p| opts[p] = params[p] unless params[p].blank? }
+    [:category, :q, :federation_filter].each { |p| opts[p] = params[p] unless params[p].blank? }
 
     {
       data: {
@@ -417,7 +431,7 @@ protected
                 children: [{
                   type: 'Button', href: '?' + search_params.reject { |k, v| k == :view_type }.
                     map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&view_type={value ||}',
-                  htmlClass: 'value{value ||__default} current-{current}',
+                  htmlClass: 'value{value ||__default} current-{current ||false}',
                   text: '<div class="icon ss-{value /datasets/form/ /charts/barchart/ /maps/compass/ /filters/list/ /blob/attach/ /all/index/ ||index}"></div>' +
                     '<div class="text">{text /Filtered.Views/Filters/ /Files.and.Documents/Files/}</div>'
                 }]
@@ -450,7 +464,20 @@ protected
                 children: [{
                   type: 'Button', href: '?' + search_params.reject { |k, v| k == :category }.
                     map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&category={value ||}',
-                  htmlClass: 'value{value ||__default} current-{current} item-{item ||parent}', text: '{text}'
+                  htmlClass: 'value{value ||__default} current-{current ||false} item-{item ||parent}', text: '{text}'
+                }]
+              },
+              {
+                type: 'Repeater',
+                context: { type: 'list', list: federated_domains },
+                customClass: 'domainList',
+                childProperties: { customClass: 'filterItem' },
+                children: [{
+                  type: 'Text', htmlClass: 'value{value ||__default} current-{current ||false}',
+                  html: '<a class="button" href="?' +
+                    search_params.reject { |k, v| k == :federation_filter }.
+                    map { |k, v| k.to_s + '=' + v.to_s }.join('&') + '&federation_filter={value ||}">' +
+                    '<img class="{icon /.+/icon/ ||hide}" src="{icon ||}" alt="Domain {text}" />{text}</a>'
                 }]
               }
             ]
@@ -478,9 +505,16 @@ protected
               children: [{
                 type: 'Text',
                 htmlClass: 'singleItem',
-                html: '<a href="/d/{dataset.id}" class="viewItem type-{dataset.displayType}">' +
+                html: '<a href="{dataset.domainCName /^(.+)/https:\/\/$1/ ||}/d/{dataset.id}" class="viewItem type-{dataset.displayType}">' +
                   '<div class="singleInner">' +
-                    '<h3 class="itemTitle viewName">{dataset.name}</h3>' +
+                    '<h3 class="itemTitle viewName">' +
+                    '<img src="{dataset.domainCName /(.+)/\/api\/domains\/$1\/icons\/smallIcon/ ||}" ' +
+                      'class="{dataset.domainCName /.+/titleIcon/ ||hide}" alt="' +
+                      t('controls.browse.listing.federation_source',
+                        { source: '{dataset.domainCName}' }) + '" title="' +
+                      t('controls.browse.listing.federation_source',
+                        { source: '{dataset.domainCName}' }) + '" />' +
+                    '{dataset.name}</h3>' +
                     '<div class="viewIcon ss-{dataset.displayType /table/list/ /map/compass/ /chart/barchart/ /blob/attach/}"></div>' +
                     '<p class="viewMeta">Updated {dataset.rowsUpdatedAt @[%b %d %Y] ||some time ago}</p>' +
                   '</div>' +
@@ -529,9 +563,16 @@ protected
               children: [{
                 type: 'Text',
                 htmlClass: 'singleItem',
-                html: '<a href="/d/{dataset.id}" class="viewItem type-{dataset.displayType}">' +
+                html: '<a href="{dataset.domainCName /^(.+)/https:\/\/$1/ ||}/d/{dataset.id}" class="viewItem type-{dataset.displayType}">' +
                   '<div class="singleInner">' +
-                    '<h3 class="itemTitle viewName">{dataset.name}</h3>' +
+                    '<h3 class="itemTitle viewName">' +
+                    '<img src="{dataset.domainCName /(.+)/\/api\/domains\/$1\/icons\/smallIcon/ ||}" ' +
+                      'class="{dataset.domainCName /.+/titleIcon/ ||hide}" alt="' +
+                      t('controls.browse.listing.federation_source',
+                        { source: '{dataset.domainCName}' }) + '" title="' +
+                      t('controls.browse.listing.federation_source',
+                        { source: '{dataset.domainCName}' }) + '" />' +
+                      '{dataset.name}</h3>' +
                     '<div class="viewIcon ss-{dataset.displayType /table/list/ /map/compass/ /chart/barchart/ /blob/attach/}"></div>' +
                     '<p class="viewMeta">Updated {dataset.rowsUpdatedAt @[%b %d %Y] ||some time ago}</p>' +
                   '</div>' +

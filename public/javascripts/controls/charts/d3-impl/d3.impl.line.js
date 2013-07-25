@@ -22,8 +22,6 @@ $.Control.registerMixin('d3_impl_line', {
 
     _computeClippingRectForColumnAndScale: function(col, scale, xDatumPositionForSeries, lastIndex)
     {
-        var rangeXMagnitude = xDatumPositionForSeries({index: lastIndex});
-
         var rangeY = scale.range();
         var rangeYMagnitude = rangeY[1] - rangeY[0];
 
@@ -35,9 +33,8 @@ $.Control.registerMixin('d3_impl_line', {
         rangeYMagnitude += this._yDatumPosition(col.lookup, scale)(dummy);
 
         rangeYMagnitude = Math.max(0, rangeYMagnitude);
-        rangeXMagnitude = Math.max(0, rangeXMagnitude);
 
-        return [ 0, 0, rangeXMagnitude, rangeYMagnitude];
+        return [ 0, 0, this._maxRenderWidth(), rangeYMagnitude];
     },
 
     // FIXME: This trifecta of rendereres (renderAxis, rerenderPositions, and renderData)

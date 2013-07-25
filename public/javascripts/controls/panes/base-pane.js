@@ -806,7 +806,7 @@
             var value = inputValue(cpObj, $input);
 
             var inputName = $input.attr('name');
-            if ($.isBlank(inputName))
+            if (_.isUndefined(inputName))
             { return results; }
 
             results = results || {};
@@ -872,7 +872,16 @@
             }
 
             if (!$.isBlank(parArray) && !_.isEmpty(parObj))
-            { parArray[parIndex] = parObj; }
+            { 
+                var keys = _.keys(parObj);
+                if (keys.length == 1 && $.isBlank(keys[0])) 
+                {
+                    parObj = parObj[""];
+                }
+                parArray[parIndex] = parObj; 
+            }
+
+
 
             return results;
         },
@@ -1017,7 +1026,7 @@
         var p = name.split(':');
         name = p[p.length - 1];
 
-        if ($.isBlank(name)) { return null; }
+        if (_.isNull(name) || _.isUndefined(name)) { return null; }
 
         // Next pull apart the name into pieces.  For each level,
         // recurse down, creating empty objects if needed.
@@ -1241,13 +1250,20 @@
     var getValue = function(data, names, valIndex)
     {
         var result = null;
-        _.any(_.compact(_.flatten($.makeArray(names))), function(name)
+        _.any(_.reject(_.flatten($.makeArray(names)), function(v) {
+            return _.isNull(v) || _.isUndefined(v);
+        }),
+        function(name)
         {
             var nParts = (name || '').split('.');
             var base = data;
             while (nParts.length > 0 && !$.isBlank(base))
             {
-                base = base[nParts.shift()];
+                var firstShift = nParts.shift();
+                if (!$.isBlank(firstShift)) 
+                {
+                    base = base[firstShift];
+                }
                 if (_.isArray(base) && nParts.length > 0)
                 {
                     if ($.isBlank(nParts[0].match(/^\d+$/)))
@@ -1542,7 +1558,7 @@
         { numItems = _.isNumber(args.item.initialRepeatCount) ? args.item.initialRepeatCount : 1; }
         for (var i = 0; i < numItems; i++)
         {
-            var contextData = curValue[i] || args.context.data;
+            var contextData = curValue[i] || (($.isBlank(args.item.field.name)) ? null : args.context.data);
             var hasRequiredData =
                 checkRequiredData(cpObj, contextData, args.item.field);
 
@@ -1577,7 +1593,7 @@
             var templateLine = renderLine(cpObj, {item: $.extend({}, args.item.field,
                         {lineClass: 'repeaterAdded'}),
                 context: $.extend({}, args.context, {repeaterIndex: 'templateId',
-                    noTag: true, inRepeater: true})
+                    noTag: true, inRepeater: true, data: null})
                 });
             templateLine.contents.unshift(removeButton);
             templateLine = $.htmlEscape($.tag(templateLine, true));
@@ -1739,7 +1755,9 @@
         { defValue = args.item.repeaterValue; }
 
         var curValue;
-        var lookupNames = _.compact(_.flatten([args.item.origName, args.item.otherNames]));
+        var lookupNames = _.reject(_.flatten([args.item.origName, args.item.otherNames]), function(v) {
+            return _.isNull(v) || _.isUndefined(v);
+        });
         if (lookupNames.length > 0)
         {
             curValue = getValue(args.context.data, lookupNames,
@@ -1750,6 +1768,7 @@
 
         var wrapper = {tagName: 'span', 'class': ['inputWrapper']};
         contents.push(wrapper);
+
         renderLineItem[args.item.type](cpObj, contents, args, curValue, defValue);
 
         if (_.isUndefined(wrapper.contents))
@@ -2248,7 +2267,7 @@
                     else if (_.isFunction(o.func))
                     { failed = !o.func.call(cpObj, cpObj._curData); }
 
-                    // If they want the opposite, then flip it
+                    // If they want the opposite, then flip
                     if (o.negate) { failed = !failed; }
 
                     // Something of a hack:

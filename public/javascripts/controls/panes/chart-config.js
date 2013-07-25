@@ -380,7 +380,8 @@
                     lineClass: 'seriesGroupingCheck',
                     onlyIf: isNextGen},
                 {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+                field: $.extend({}, colorOption, {name: ''}),
+                name: 'displayFormat.colors', minimum: 1,
                 initialRepeatCount: 5, lineClass: 'colorArray'}
             ]
         };
@@ -439,7 +440,8 @@
 
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+                field: $.extend({}, colorOption, {name: ''}),
+                name: 'displayFormat.colors', minimum: 1,
                 initialRepeatCount: 5, lineClass: 'colorArray'});
 
         return bc;
@@ -455,7 +457,8 @@
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+                field: $.extend({}, colorOption, {name: ''}),
+                name: 'displayFormat.colors', minimum: 1,
                 initialRepeatCount: 5, lineClass: 'colorArray'});
         return bc;
     };
@@ -622,8 +625,9 @@
                     fields: [
                         conditionalFormattingWarning,
                         {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                            field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
-                            minimum: 5, lineClass: 'colorArray'},
+                            field: $.extend({}, colorOption, {name: ''}),
+                            name: 'displayFormat.colors', minimum: 1,
+                            initialRepeatCount: 5, lineClass: 'colorArray'},
                         treemapRandomColorWarning
                     ] },
                     basicAdv(chart, options, [flyoutControls(options)]));

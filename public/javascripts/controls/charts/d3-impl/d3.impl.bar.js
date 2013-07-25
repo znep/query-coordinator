@@ -387,7 +387,7 @@ $.Control.registerMixin('d3_impl_bar', {
     },
 
     // call this if the active set of data has changed
-    _renderData: function(data)
+    _renderData: function(data, ignored, didInsertData)
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
@@ -396,13 +396,17 @@ $.Control.registerMixin('d3_impl_bar', {
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView;
 
+        var doAnimation = (didInsertData === true);
+
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
 
         // set up our scales. oldYScale is used to init bars so they appear
         // in the old spot and transitions are less jarring.
         var newYScale = vizObj._currentYScale();
-        var oldYScale = cc.yScale || newYScale;
+        var oldYScale = vizObj._lastYScale() || newYScale;
+
+        var commitYScale = _.once(function(){ newYScale.commit() });
 
         // render our bars per series
         _.each(valueColumns, function(colDef, seriesIndex)
@@ -512,35 +516,7 @@ $.Control.registerMixin('d3_impl_bar', {
 
                         return oldHeight - (oldHeight - newHeight)/2;
                     })
-                    .attr(cc.dataDim.yAxis, function(d)
-                    {
-                        var oldVal = vizObj._yDatumPosition(col.lookup, oldYScale);
-                        if (_.isFunction(oldVal))
-                        {
-                            oldVal = oldVal(d);
-                        }
-
-                        if (cc.orientation == 'right')
-                        {
-                            var oldHeight = vizObj._yBarHeight(col.lookup, oldYScale)(d);
-                            var newHeight = vizObj._yBarHeight(col.lookup, newYScale)(d);
-
-                            var newVal = vizObj._yDatumPosition(col.lookup, newYScale);
-
-
-                            if (_.isFunction(newVal))
-                            {
-                                newVal = newVal(d);
-                            }
-
-                            return oldVal - (oldVal - newVal) - (oldHeight - newHeight)/2;
-                        }
-                        else
-                        {
-                            return oldVal;
-                        }
-                    })
-
+                    .attr(cc.dataDim.yAxis, vizObj._yDatumPosition(col.lookup, doAnimation ? oldYScale : newYScale))
                     .each(function(d)
                     {
                         // kill tip if not highlighted. need to check here because
@@ -551,11 +527,27 @@ $.Control.registerMixin('d3_impl_bar', {
                             this.tip.destroy();
                             delete this.tip;
                         }
-                    })
-                .transition()
-                    .duration(1000)
-                    .attr(cc.dataDim.yAxis, vizObj._yDatumPosition(col.lookup, newYScale))
-                    .attr(cc.dataDim.height, vizObj._yBarHeight(col.lookup, newYScale));
+                    });
+
+                if (doAnimation)
+                {
+                    vizObj._barResizeInProgress(true);
+                    bars
+                        .transition()
+                            .duration(vizObj._animationLengthMillisec)
+                            .each('end', function()
+                            {
+                                commitYScale();
+                                vizObj._barResizeInProgress(false);
+                            })
+                            .attr(cc.dataDim.yAxis, vizObj._yDatumPosition(col.lookup, newYScale))
+                            .attr(cc.dataDim.height, vizObj._yBarHeight(col.lookup, newYScale));
+                }
+                else
+                {
+                    bars.attr(cc.dataDim.yAxis, vizObj._yDatumPosition(col.lookup, newYScale))
+                        .attr(cc.dataDim.height, vizObj._yBarHeight(col.lookup, newYScale));
+                }
 
             // EXIT
             bars
@@ -612,22 +604,31 @@ $.Control.registerMixin('d3_impl_bar', {
                     .classed('errorMarker', true)
                     .attr({ stroke: vizObj._displayFormat.errorBarColor || '#ff0000',
                             'stroke-width': '3' })
-                    .attr('d', vizObj._errorBarPath(oldYScale));
+                    .attr('d', vizObj._errorBarPath(doAnimation ? oldYScale : newYScale));
             errorMarkers
-                .attr('transform', errorTransform)
-                .transition()
-                    .duration(1000)
-                    .attr('d', vizObj._errorBarPath(newYScale));
+                .attr('transform', errorTransform);
+
+            if (doAnimation)
+            {
+                errorMarkers
+                    .transition()
+                        .duration(vizObj._animationLengthMillisec)
+                        .attr('d', vizObj._errorBarPath(newYScale));
+            }
+
             errorMarkers
                 .exit()
                     .remove();
         }
 
-        vizObj._renderTicks(oldYScale, newYScale, true);
-        vizObj._renderValueMarkers(oldYScale, newYScale, true);
+        vizObj._renderTicks(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
+        vizObj._renderValueMarkers(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
 
-        // save off our yScale
-        cc.yScale = newYScale;
+        if (!doAnimation)
+        {
+            // In the animation case, we'll commit after the animation ends.
+            commitYScale();
+        }
     },
 
     _fontMetricsForRowLabels: function()
@@ -1138,11 +1139,52 @@ $.Control.registerMixin('d3_impl_bar', {
             yScale = vizObj._currentYScale(),
             yAxisPos = vizObj._yAxisPos();
 
-        cc.chartD3.selectAll('.dataBar')
+        // Special case for orientation=right:
+        // Why can't we just have D3 handle the transition for us? Well, because
+        // of the way our coordinate system works, the animation will be in the
+        // wrong direction.
+        // Think of it this way. Someone shrinks the chart vertically by resizing
+        // the browser.
+        // Since our bars have their origin at the top-left of the chart,
+        // the bars will appear to sit still on the screen. Then the transition
+        // kicks in, and they move UP instead of DOWN, which is the opposite of
+        // what you'd expect for a shrinking yScale. So we have to do this horrible
+        // hack of remembering our old yScale. Of course this introduces problems
+        // if many transitions are started (say you're resizing the window over
+        // several seconds). So we need to figure out what the current position
+        // of the points are and account for that... Instead of doing that,
+        // we just completely reset the animation pretending the chart was just
+        // sitting at the last size.
+        var oldYScale = vizObj._lastYScale() || yScale;
+        var yPos = vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale);
+        var oldYPos = cc.orientation === 'right' ? (vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, oldYScale))
+                                                 : yPos;
+
+        var bars = cc.chartD3.selectAll('.dataBar');
+
+        // As alluded to above, the issue is really the bar heights being incorrect
+        // if we try to continue a past animation. So, fix them if we're currently
+        // animating.
+        var doResetAnimation = cc.orientation === 'right' && vizObj._barResizeInProgress();
+
+        if (doResetAnimation)
+        {
+            bars
+                .attr(cc.dataDim.height, vizObj._yBarHeight(function() { return this.__dataColumn.lookup; }, oldYScale));
+        }
+
+        vizObj._barResizeInProgress(true);
+        bars
+            .attr(cc.dataDim.yAxis, oldYPos)
             .transition()
-                .duration(1000)
-                .attr(cc.dataDim.yAxis, vizObj._yDatumPosition(function() { return this.__dataColumn.lookup; }, yScale))
-                .attr(cc.dataDim.height, vizObj._yBarHeight(function() { return this.__dataColumn.lookup; }, yScale));
+                .duration(vizObj._animationLengthMillisec)
+                .attr(cc.dataDim.yAxis, yPos)
+                .attr(cc.dataDim.height, vizObj._yBarHeight(function() { return this.__dataColumn.lookup; }, yScale))
+                .each('end', _.once(function()
+                {
+                    yScale.commit();
+                    vizObj._barResizeInProgress(false);
+                }));
 
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
@@ -1160,8 +1202,9 @@ $.Control.registerMixin('d3_impl_bar', {
         {
             cc.chartD3.selectAll('.errorMarker')
                 .attr('transform', vizObj._errorBarTransform())
+                .attr('d', vizObj._errorBarPath(oldYScale))
                 .transition()
-                    .duration(1000)
+                    .duration(vizObj._animationLengthMillisec)
                     .attr('d', vizObj._errorBarPath(yScale));
         }
 
@@ -1169,8 +1212,8 @@ $.Control.registerMixin('d3_impl_bar', {
         cc.chartHtmlD3.selectAll('.rowLabel')
             .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition());
 
-        vizObj._renderTicks(yScale, yScale, true);
-        vizObj._renderValueMarkers(yScale, yScale, true);
+        vizObj._renderTicks(oldYScale, yScale, true);
+        vizObj._renderValueMarkers(oldYScale, yScale, true);
 
         // Have to re-render labels as bar sizes may have changed.
         vizObj._renderRowLabels();
@@ -1218,6 +1261,19 @@ $.Control.registerMixin('d3_impl_bar', {
         // Standard labels (note the use of the SVG node vs. HTML node).
         cc.chartD3.selectAll('.rowLabel')
                 .attr('transform', vizObj._labelTransform());
+    },
+
+    // Gets or sets a whether or not a bar resize is in progress. We use this to
+    // tweak further animation if we get a resize during an animation. See the
+    // comment in rerenderAxis to know why.
+    _barResizeInProgress: function(isInProgress)
+    {
+        if (!_.isUndefined(isInProgress))
+        {
+            this._chartConfig.barResizeInProgress = isInProgress;
+        }
+
+        return this._chartConfig.barResizeInProgress;
     }
 
 }, null, 'socrataChart', [ 'd3_virt_scrolling', 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

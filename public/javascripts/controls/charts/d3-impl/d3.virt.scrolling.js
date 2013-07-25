@@ -791,7 +791,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         var setRaphaelSize = function(height, width)
         {
             var size = cc.dataDim.asScreenCoordinate(width, height);
-            cc.chartRaphael.setSize(size.x, size.y);
+            cc.chartRaphael.setSize(Math.max(0, size.x), Math.max(0, size.y));
         };
 
         var minTotalWidth = calculateTotalWidth();
@@ -1126,7 +1126,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         tickLines
             .style(position, function(d) { return (extraOffset + yAxisPos + cc.dataDim.dir * oldYScale(d)) + 'px'; })
             .transition()
-                .duration(isAnim ? 1000 : 0)
+                .duration(isAnim ? vizObj._animationLengthMillisec : 0)
                 .style(position, function(d) { return (yAxisPos + cc.dataDim.dir * newYScale(d)) + 'px'; });
         tickLines
                 .selectAll('.tickLabel')
@@ -1190,7 +1190,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         valueMarkers
             .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(oldYScale, extraOffset))
             .transition()
-                .duration(isAnim ? 1000 : 0)
+                .duration(isAnim ? vizObj._animationLengthMillisec : 0)
                 .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(newYScale, 0));
         valueMarkers
             .exit()
@@ -1411,6 +1411,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         return this._chartConfig.lastUsedYScale;
     }
+
 }, null, 'socrataChart', [ 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);
 
 })(jQuery);

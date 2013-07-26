@@ -1227,6 +1227,29 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }
     },
 
+    _fontMetricsForRowLabels: _.once(
+    function()
+    {
+        var cc = this._chartConfig;
+
+        var $rowLabels = cc.$chartRenderArea.find('div.rowLabel');
+
+        var fontSpec;
+        if ($rowLabels.exists())
+        {
+            fontSpec = d3ns.fontMetrics.getFontSpec($rowLabels);
+        }
+        else
+        {
+            var $sacrificialLabel = $('<div />');
+            cc.$chartRenderArea.append($sacrificialLabel);
+            $sacrificialLabel.addClass('rowLabel');
+            fontSpec = d3ns.fontMetrics.getFontSpec($sacrificialLabel);
+            $sacrificialLabel.remove();
+        }
+        return d3ns.fontMetrics.getFontMetrics(fontSpec);
+    }),
+
     _renderRowLabels: function(data)
     {
         var vizObj = this,
@@ -1234,6 +1257,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             view = vizObj._primaryView;
 
         var labelTransform = vizObj._labelTransform();
+        var fontMetrics = vizObj._fontMetricsForRowLabels();
 
         // render our labels per row
         // baseline closer to the row's center
@@ -1260,7 +1284,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
                     // render plaintext representation of the data
                     else { text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true); }
 
-                    this.visualLength = text.visualLength(13) * Math.abs(Math.cos(Math.PI * 40/ 180));
+                    this.visualLength = fontMetrics.lengthForString(text) * Math.abs(Math.cos(Math.PI * 40/ 180));
                     return text;
                 });
         rowLabels

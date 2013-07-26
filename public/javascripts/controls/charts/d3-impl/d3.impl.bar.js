@@ -631,28 +631,6 @@ $.Control.registerMixin('d3_impl_bar', {
         }
     },
 
-    _fontMetricsForRowLabels: function()
-    {
-        var cc = this._chartConfig;
-
-        var $rowLabels = cc.$chartRenderArea.find('div.rowLabel');
-
-        var fontSize;
-        if ($rowLabels.exists())
-        {
-            fontSize = parseFloat($rowLabels.css('font-size'));
-        }
-        else
-        {
-            var $sacrificialLabel = $('<div />');
-            cc.$chartRenderArea.append($sacrificialLabel);
-            $sacrificialLabel.addClass('rowLabel');
-            fontSize = parseFloat($sacrificialLabel.css('font-size'));
-            $sacrificialLabel.remove();
-        }
-        return d3ns.fontMetrics.getFontMetrics(_.isNaN(fontSize) ? 13 : fontSize);
-    },
-
     _renderRowLabels: function(data /*optional*/)
     {
         var labelInBar = $.deepGet(this._displayFormat, 'xAxis', 'labelInBar'),

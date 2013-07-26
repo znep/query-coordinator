@@ -584,17 +584,65 @@ d3ns.math = {
 };
 
 d3ns.fontMetrics = function($){
+
+    var globalFontMetricId = 1;
     var fm = {
 
-        getFontMetrics: _.memoize(function(fontSize)
+        getFontSpec: function($element)
         {
-            return {
-                lengthForString: _.memoize(function(str)
-                {
-                    return str.visualLength(fontSize);
-                })
+            var family = $element.css('font-family');
+            var size = $element.css('font-size');
+            var style = $element.css('font-style');
+            var variant = $element.css('font-variant');
+            var weight = $element.css('font-weight');
+            var spec = {
+                family: family,
+                size: size,
+                style: style,
+                variant: variant,
+                weight: weight
             };
-        })
+
+            spec.hash = _.map(spec, function(v, k) { return k+':'+v; }).sort().join();
+
+            return spec;
+        },
+
+        /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
+        getFontMetrics: _.memoize(function(fontSpec)
+        {
+            var uniqueId = 'd3Ruler'+globalFontMetricId;
+            globalFontMetricId++;
+
+            var $ruler = $('<span id="'+uniqueId+'"></span>');
+            $('body').append($ruler);
+            _.each(fontSpec, function(value, key)
+            {
+                $ruler.css('font-'+key, value);
+            });
+
+            var sizeForString = _.memoize(function(str)
+            {
+                $ruler.text(str + '');
+                return {width: $ruler.width(), height: $ruler.height()};
+            });
+
+            var lengthForString = function(str)
+            {
+                return sizeForString(str).width;
+            };
+
+            var heightForString = function(str)
+            {
+                return sizeForString(str).height;
+            };
+
+            return {
+                sizeForString: sizeForString,
+                lengthForString: lengthForString,
+                heightForString: heightForString
+            };
+        }, function(fontSpec) { return fontSpec.hash; })
     };
 
     return fm;

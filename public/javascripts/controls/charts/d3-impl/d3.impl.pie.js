@@ -1276,20 +1276,40 @@ $.Control.registerMixin('d3_impl_pie', {
     // is quite expensive.
     _fontMetrics: function()
     {
-        //NOTE: Currently assumes the font size never changes.
         var vizObj = this,
             cc = vizObj._chartConfig;
         if (!cc.fontMetrics)
         {
-            var labelSize = 13;
+            var cc = this._chartConfig;
+
+            var $labels = cc.$drawElement.find('.label');
+
+            var fontSpec;
+            if ($labels.exists())
+            {
+                fontSpec = d3ns.fontMetrics.getFontSpec($labels);
+            }
+            else
+            {
+                var labels = cc.chartD3.selectAll('.label')
+                    .data(['']).enter().append('text').classed('label', true);
+
+                $labels = cc.$drawElement.find('.label');
+                fontSpec = d3ns.fontMetrics.getFontSpec($labels);
+
+                labels.data([]).exit().remove();
+            }
+
+            var globalFm = d3ns.fontMetrics.getFontMetrics(fontSpec);
+
             var fm =
             {
-                labelFontSize: labelSize,
-                labelHeight: 'Xg'.visualSize(labelSize).height,
-                lengthForString: _.memoize(function(str)
+                labelFontSize: fontSpec.size,
+                labelHeight: globalFm.sizeForString('Xg').height,
+                lengthForString: function(str)
                 {
-                    return str.visualLength(labelSize);
-                })
+                    return globalFm.sizeForString(str).width;
+                }
             };
             cc.fontMetrics = fm;
         }

@@ -103,6 +103,7 @@ d3base.seriesGrouping = {
             }) });
         }
 
+        var finishedPreprocessing = false;
         var maybeDone = _.after(2, function()
         {
             // If we get re-initialized before the two views below finish their
@@ -120,6 +121,7 @@ d3base.seriesGrouping = {
             {
                 // Manually trigger this event on the primary view for things like the sidebar
                 vizObj.finishLoading();
+                finishedPreprocessing = true;
                 vizObj._primaryView.trigger('row_count_change');
                 sg.superInit.call(vizObj);
 
@@ -193,7 +195,13 @@ d3base.seriesGrouping = {
         // We're interested in some events coming from the primary view.
         vizObj._primaryView.bind('conditionalformatting_change', _.bind(vizObj._handleConditionalFormattingChanged, vizObj), vizObj);
 
-        _.defer(function(){vizObj.startLoading();});
+        _.defer(function()
+        {
+            if (!finishedPreprocessing)
+            {
+                vizObj.startLoading();
+            }
+        });
     },
 
     cleanVisualization: function()

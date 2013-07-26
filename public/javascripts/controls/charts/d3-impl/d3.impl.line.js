@@ -271,7 +271,8 @@ $.Control.registerMixin('d3_impl_line', {
                             { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
                     .text(function(d)
                     {
-                        return col.renderType.renderer(d[col.lookup], col, true, null, null, true);
+                        var column = col.renderType ? col : col.realValueColumn.column;
+                        return column.renderType.renderer(d[col.lookup], column, true, null, null, true);
                     })
                     .attr('x', xDatumPositionForSeries)
                     .attr('y', function(d, i)

@@ -445,19 +445,19 @@ d3base.seriesGrouping = {
         var sg = this._seriesGrouping;
 
         var overlay = $.tag(
-            { tagName: 'div', 'class': 'dsgProgress flash notice', contents: [
+            { tagName: 'div', 'class': 'dsgProgress flash notice invisible', contents: [
                 { tagName: 'div', contents: [
                     { tagName: 'span', 'class': 'dsgOperationText' }
                 ]},
                 { tagName: 'p', contents: [
                     { tagName: 'span', 'class': 'dsgProgressText' }
                 ]},
-                { tagName: 'p', 'class': 'dsgLoadingMsg invisible', contents: [
+                { tagName: 'p', 'class': 'dsgLoadingMsg', contents: [
                     { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation1')},
                     { tagName: 'span', 'class': 'filter dsgFilterIcon', contents:[
                         { tagName: 'span', 'class': 'icon'}
                     ]},
-                    { tagName: 'span', 'class': 'dsgPauseExplanationText invisible', contents: $.t('controls.charts.series_grouping.pause_button_explanation2')}
+                    { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation2')}
                 ]},
                 { tagName: 'p', contents: [
                     { tagName: 'a', 'class': 'button dsgProgressPauseButton invisible', contents: $.t('controls.charts.series_grouping.pause_rendering') }
@@ -471,7 +471,6 @@ d3base.seriesGrouping = {
         sg.$loadingOverlayOperationText = this.$dom().find('.dsgOperationText');
         sg.$loadingOverlayProgressText = this.$dom().find('.dsgProgressText');
         sg.$dsgProgressPauseButton = this.$dom().find('.dsgProgressPauseButton');
-        sg.$dsgPauseExplanationText = this.$dom().find('.dsgPauseExplanationText');
         sg.$dsgLoadingMsg = this.$dom().find('.dsgLoadingMsg');
         sg.$dsgSpinner = this.$dom().find('.dsgSpinner');
 
@@ -524,6 +523,8 @@ d3base.seriesGrouping = {
 
                 case 'loading':
                     sg.$dsgSpinner.removeClass('invisible');
+                    sg.$loadingOverlay.removeClass('invisible');
+                    sg.$loadingOverlayProgressText.removeClass('invisible');
                     operationPhaseMessage = $.t('controls.charts.series_grouping.calculation_running');
                     // If the user resumes, backfill a start time that preserves the amount of elapsed time at pause.
                     if (!_.isUndefined(sg.pauseLoadingTimeMillisec))
@@ -561,20 +562,19 @@ d3base.seriesGrouping = {
                         progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining+''});
                     }
                     sg.$dsgProgressPauseButton.removeClass('invisible');
-                    sg.$dsgPauseExplanationText.removeClass('invisible');
+                    sg.$dsgLoadingMsg.removeClass('invisible');
                     break;
                 case 'stopped':
                     sg.$dsgSpinner.addClass('invisible');
+                    sg.$loadingOverlayProgressText.addClass('invisible');
                     operationPhaseMessage = $.t('controls.charts.series_grouping.rendering_paused');
                     if (_.isUndefined(sg.pauseLoadingTimeMillisec))
                     {
                         sg.pauseLoadingTimeMillisec = Date.now();
                     }
                     sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.resume_rendering'));
-
-
                     sg.$dsgProgressPauseButton.removeClass('invisible');
-                    sg.$dsgPauseExplanationText.removeClass('invisible');
+                    sg.$dsgLoadingMsg.removeClass('invisible');
                     break;
             }
 

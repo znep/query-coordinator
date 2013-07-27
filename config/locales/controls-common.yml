@@ -42,7 +42,7 @@ en:
         calculation_running: Preparing data
         drawing_running: Drawing chart
         drawing_progress: This can take a little bit of time...
-        rendering_paused: Data preperation has been paused
+        rendering_paused: Data preparation has been paused
         rendering_progress: %{rows_remaining} rows remain.
         rendering_progress_minute: %{rows_remaining} rows remain, about %{time_remaining} minute.
         rendering_progress_minutes: %{rows_remaining} rows remain, about %{time_remaining} minutes.

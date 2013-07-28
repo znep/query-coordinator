@@ -41,9 +41,9 @@ Frontend::Application.routes do
     # New frontend pages
     scope :controller => 'odysseus', :action => 'index' do
       match '/stat/goals'
-      match '/stat/goal/:goal_id'
-      match '/stat/category/:category_id/goal/:goal_id'
-      match '/stat/category/:category_id/goal/:goal_id/edit'
+      match '/stat/goals/:dashboard_id'
+      match '/stat/goals/:dashboard_id/:category_id/:goal_id'
+      match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit'
     end
 
     scope :path => '/internal', :controller => 'internal' do

@@ -605,7 +605,9 @@ var RowSet = ServerModel.extend({
             }
             if (!_.isEmpty(rs._translatedQuery.filterCondition))
             {
-                args.params['$where'] = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition);
+                var soqlWhere = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition);
+                args.params['$where'] = !$.isBlank(args.params['$where']) ?
+                    (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
             }
         }
         else if (args.inline)
@@ -648,8 +650,10 @@ var RowSet = ServerModel.extend({
         }
         else if (_.isArray(startOrIds))
         {
-            // Not supported by SODA2 yet
-            params.ids = startOrIds;
+            if (blist.useSODA2)
+            { params['$where'] = 'any_of(:id,' + startOrIds.join(',') + ')'; }
+            else
+            { params.ids = startOrIds; }
         }
         else
         {

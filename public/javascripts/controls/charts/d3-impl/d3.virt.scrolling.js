@@ -764,6 +764,10 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         vizObj._updateSizeBasedStyling();
 
+        // xLabel on bar charts will push it down. Readjust for this.
+        if (cc.orientation == 'down')
+        { chartArea -= cc.$chartArea.find('.xLabelHoriz.floatingAxisLabel').height(); }
+
         // save off old row width for comparison later (see below)
         var oldRowWidth = cc.rowWidth;
         var oldSidePadding = cc.sidePadding;

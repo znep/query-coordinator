@@ -46,8 +46,15 @@
     padding-left: 5px
     padding-right: 5px
 
+    .socrata-component &
+      background: transparent
+
     .ie8 &
       filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand') progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/stylesheets/images/content/70percentwhite.png', sizingMethod='scale')
+      background: transparent
+
+    .ie8 .socrata-component &
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand')
       background: transparent
 
   .floatingAxisLabel.xLabelHoriz
@@ -56,6 +63,9 @@
     padding: 0.2em
     bottom: 1em
     margin-bottom: 0
+
+    .socrata-component &
+      background: transparent
 
   .xLabelHoriz
     overflow: hidden

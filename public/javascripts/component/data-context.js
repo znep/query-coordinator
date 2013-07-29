@@ -468,7 +468,7 @@
                 Dataset.lookupFromResourceName(dc.config.datasetResourceName,
                     function(dataset) { gotDS(dataset); },
                     function(xhr)
-                    { errorCallback(dc.id); }, !blist.configuration.privateData);
+                    { errorCallback(dc.id); }, false, !blist.configuration.privateData);
             }
             else if ($.subKeyDefined(dc.config, 'search'))
             {

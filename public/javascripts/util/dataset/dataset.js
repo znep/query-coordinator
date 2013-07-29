@@ -42,6 +42,8 @@ var Dataset = ServerModel.extend({
 
         if (!(blist.viewCache[this.id] instanceof Dataset))
         { blist.viewCache[this.id] = this; }
+        if (!$.isBlank(this.resourceName) && !(blist.viewCache[this.resourceName] instanceof Dataset))
+        { blist.viewCache[this.resourceName] = this; }
 
         // This ID really shouldn't be changing; if it does, this URL
         // will be out-of-date...
@@ -323,9 +325,8 @@ var Dataset = ServerModel.extend({
             return;
         }
         ds._aggregatesStale = true;
-        ds._activateRowSet(ds._savedRowSet);
-        if (reloadData) { ds._invalidateAll(); }
-        ds._activeRowSet.reload(successCallback, errorCallback);
+        // We can just restore to the original object
+        ds._update(ds._origObj, true, true, true);
         ds.trigger('reloaded');
     },
 
@@ -2909,31 +2910,17 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
         }, error: errorCallback});
 };
 
-Dataset.lookupFromResourceName = function(resourceName, successCallback, errorCallback, isAnonymous)
-{
-    $.socrataServer.makeRequest({
-        url: '/api/views.json?method=getByResourceName&name=' + resourceName,
-        headers: {'X-Socrata-Federation': 'Honey Badger'},
-        success: function(view)
-        {
-            var ds = new Dataset(view);
-            if (isAnonymous) { ds.isAnonymous(isAnonymous); }
-            successCallback(ds);
-        },
-        batch: false,
-        anonymous: isAnonymous,
-        pageCache: false,
-        error: errorCallback
-    });
-}
+Dataset.lookupFromResourceName = function(resourceName, successCallback, errorCallback, isBatch, isAnonymous)
+{ Dataset._create(false, resourceName, successCallback, errorCallback, isBatch, isAnonymous, true); };
 
+Dataset.createFromResourceName = function(resourceName, successCallback, errorCallback, isBatch, isAnonymous)
+{ Dataset._create(true, resourceName, successCallback, errorCallback, isBatch, isAnonymous, true); };
 
 Dataset.lookupFromViewId = function(id, successCallback, errorCallback, isBatch, isAnonymous)
 { Dataset._create(false, id, successCallback, errorCallback, isBatch, isAnonymous); };
 
 Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch, isAnonymous)
 { Dataset._create(true, id, successCallback, errorCallback, isBatch, isAnonymous); };
-
 
 // method for grabbing the most recently opened datasets by this user on this
 // computer, including anonymous access. in 99% of cases, this should be the
@@ -3014,7 +3001,7 @@ var _cleanedMostRecent = function(mostRecents)
 }
 
 
-Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, isAnonymous)
+Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, isAnonymous, isResourceName)
 {
     var cachedView = blist.viewCache[id];
     isAnonymous = !!isAnonymous;
@@ -3048,17 +3035,20 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, i
     else
     {
         $.socrataServer.makeRequest({
-            url: '/api/views/' + id + '.json',
+            url: blist.useSODA2 || isResourceName ? '/api/views.json' : '/api/views/' + id + '.json',
             headers: {'X-Socrata-Federation': 'Honey Badger'},
+            params: blist.useSODA2 || isResourceName ? { method: 'getByResourceName', name: id } : {},
             success: function(view)
                 {
-                    if (_.isUndefined(blist.viewCache[id]))
-                    { blist.viewCache[id] = new Dataset(view); }
+                    if (_.isUndefined(blist.viewCache[view.id]))
+                    { blist.viewCache[view.id] = new Dataset(view); }
+                    if (!$.isBlank(view.resourceName) && _.isUndefined(blist.viewCache[view.resourceName]))
+                    { blist.viewCache[view.resourceName] = blist.viewCache[view.id]; }
 
                     if (_.isFunction(successCallback))
                     {
-                        var ds = clone || blist.viewCache[id].isAnonymous() != isAnonymous ?
-                            new Dataset(view) : blist.viewCache[id];
+                        var ds = clone || blist.viewCache[view.id].isAnonymous() != isAnonymous ?
+                            new Dataset(view) : blist.viewCache[view.id];
                         if (isAnonymous) { ds.isAnonymous(isAnonymous); }
                         successCallback(ds);
                     }

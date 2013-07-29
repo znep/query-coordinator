@@ -695,12 +695,14 @@ var RowSet = ServerModel.extend({
                 delete rs._curMetaReqMeta;
                 rs._totalCount = result.meta.totalRows;
                 delete rs._columnsInvalid;
+                var metaToUpdate;
                 if (blist.useSODA2)
                 {
-                    result.meta.view.columns = _.reject(result.meta.view.columns, function(c)
-                            { return c.dataTypeName != 'meta_data'; });
+                    metaToUpdate = { columns: result.meta.view.columns };
                 }
-                if (!fullLoad)
+                else
+                { metaToUpdate = result.meta.view; }
+                if (!fullLoad && !blist.useSODA2)
                 {
                     // I would rather get rid of triggering a metadata_update
                     // all the time, since if this isn't a full load, I don't
@@ -710,15 +712,12 @@ var RowSet = ServerModel.extend({
                     // Mitigate race conditions by using the current version of
                     // data on the dataset for items that are known to cause
                     // problems
-                    result.meta.view.query.filterCondition = rs._dataset.query.filterCondition;
+                    metaToUpdate.query.filterCondition = rs._dataset.query.filterCondition;
                     if (!$.isBlank(rs._dataset.query.namedFilters))
-                    {
-                        result.meta.view.query.namedFilters =
-                            rs._dataset.query.namedFilters;
-                    }
-                    result.meta.view.metadata = rs._dataset.metadata;
+                    { metaToUpdate.query.namedFilters = rs._dataset.query.namedFilters; }
+                    metaToUpdate.metadata = rs._dataset.metadata;
                 }
-                rs.trigger('metadata_update', [result.meta.view, true, true, fullLoad]);
+                rs.trigger('metadata_update', [metaToUpdate, !blist.useSODA2, !blist.useSODA2, fullLoad]);
             }
             // If we loaded without meta but don't have meta available, bail
             else if ($.isBlank(rs._totalCount))

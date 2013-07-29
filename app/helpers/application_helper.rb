@@ -125,7 +125,11 @@ module ApplicationHelper
     content_tag :script, :type => 'text/javascript' do
       # no really, the html is safe
       ([ "blist.viewCache = {};".html_safe ] +
-        @view_cache.map{ |uid, view| "blist.viewCache['#{uid}'] = #{(view.is_a? View) ? (safe_json view).html_safe : view};".html_safe}).join("\n").html_safe
+        @view_cache.map do |uid, view|
+          "blist.viewCache['#{uid}'] = #{(view.is_a? View) ? (safe_json view).html_safe : view};\n" +
+          "if (!$.isBlank(blist.viewCache['#{uid}'].resourceName)) " +
+          "{ blist.viewCache[blist.viewCache['#{uid}'].resourceName] = blist.viewCache['#{uid}']; }".html_safe
+        end).join("\n").html_safe
     end
   end
 

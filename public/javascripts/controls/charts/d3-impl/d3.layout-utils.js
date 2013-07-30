@@ -614,7 +614,7 @@ d3ns.fontMetrics = function($){
             var uniqueId = 'd3Ruler'+globalFontMetricId;
             globalFontMetricId++;
 
-            var $ruler = $('<span id="'+uniqueId+'"></span>');
+            var $ruler = $('<span class="ruler" id="'+uniqueId+'"></span>');
             $('body').append($ruler);
             _.each(fontSpec, function(value, key)
             {

@@ -31,7 +31,7 @@ String.prototype.visualSize = function(fontSize)
     var $ruler = $('#ruler');
     if ($ruler.length < 1)
     {
-        $('body').append('<span id="ruler"></span>');
+        $('body').append('<span class="ruler" id="ruler"></span>');
         $ruler = $('#ruler');
     }
     if (!fontSize) { fontSize = ''; }

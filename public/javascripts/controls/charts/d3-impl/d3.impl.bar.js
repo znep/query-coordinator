@@ -1058,7 +1058,8 @@ $.Control.registerMixin('d3_impl_bar', {
                         // Gotta calculate this manually; IE gives us bogus sizes.
                         position -= d.columnHeight - actualSize - 10;
                     }
-                    else
+                    // If we aren't truncating, shift up by the overflow amount.
+                    else if ($(this).attr('style').indexOf('width') < 0)
                     {
                         var overflow = d.length - actualSize;
                         position -= overflow;

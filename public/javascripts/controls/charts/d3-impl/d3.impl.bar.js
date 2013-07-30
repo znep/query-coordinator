@@ -817,7 +817,8 @@ $.Control.registerMixin('d3_impl_bar', {
                     maxWidth = Math.max(0, d.columnHeight - extraPaddingForBarInColumn)+'px';
                 }
             }
-            $this.css(maxWidthProperty, maxWidth);
+            if (cc.stackYSeries || d.colorBrightness)
+            { $this.css(maxWidthProperty, maxWidth); }
 
             doLabelPosition.call(this, d);
         };
@@ -853,8 +854,8 @@ $.Control.registerMixin('d3_impl_bar', {
             .style('font-weight', function(d)
                     { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
             //Positioning is handled via this function, as it needs to be re-called in later d3 statements.
-            .each(doLabelLayout)
             .style('color', vizObj._rowLabelColor())
+            .each(doLabelLayout)
             .html(function(d)
             {
                 return d.overallText;
@@ -1102,7 +1103,8 @@ $.Control.registerMixin('d3_impl_bar', {
         return function(d)
         {
             var color = vizObj._d3_colorizeRow(valueColumns[d.seriesIndex])(d);
-            var result = $.rgbToHsl($.hexToRgb(color)).l < 50 ? '#ccc' : '#333';
+            d.colorBrightness = $.rgbToHsl($.hexToRgb(color)).l < 50;
+            var result = d.colorBrightness ? '#ccc' : '#333';
             //console.log(color, result, $.colorContrast(color, result));
             return result;
         };

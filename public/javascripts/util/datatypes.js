@@ -661,6 +661,23 @@ blist.namespace.fetch('blist.datatypes');
             }}
     ];
 
+    blist.datatypes.soda2Aggregate = function(agg)
+    {
+        return {
+            average: 'avg',
+            minimum: 'min',
+            maximum: 'max'
+        }[agg] || agg;
+    };
+    blist.datatypes.aggregateFromSoda2 = function(agg)
+    {
+        return {
+            avg: 'average',
+            min: 'minimum',
+            max: 'maximum'
+        }[agg] || agg;
+    };
+
     var nonNumericAggs = _.select(aggs, function(a)
     { return 'count' == a.value; });
 

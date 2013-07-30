@@ -427,52 +427,73 @@ var RowSet = ServerModel.extend({
             rs._aggCache = rs._aggCache || {};
             _.each(recAggs, function(agg)
             {
-                rs._aggCache[agg.columnId] = rs._aggCache[agg.columnId] || {};
-                rs._aggCache[agg.columnId][agg.name] = agg.value;
+                rs._aggCache[agg.columnIdent] = rs._aggCache[agg.columnIdent] || {};
+                rs._aggCache[agg.columnIdent][agg.name] = agg.value;
                 aggs.push(agg);
             });
         };
 
         rs._aggCache = rs._aggCache || {};
+
         var args = {params: {method: 'getAggregates'}, inline: true};
         var needReq = false;
+        var soda2Aggs = [];
         if (!$.isBlank(customAggs))
         {
             var ilViews = [];
             _.each(customAggs, function(aggList, cId)
             {
+                var curCol = rs._dataset.columnForIdentifier(cId);
+                if ($.isBlank(curCol)) { return; }
                 _.each($.makeArray(aggList), function(a, i)
                 {
-                    if ($.subKeyDefined(rs._aggCache, cId + '.' + a))
-                    { aggs.push({columnId: cId, name: a, value: rs._aggCache[cId][a]}); }
+                    if ($.subKeyDefined(rs._aggCache, curCol.fieldName + '.' + a))
+                    {
+                        aggs.push({columnIdent: curCol.fieldName, name: a,
+                            value: rs._aggCache[curCol.fieldName][a]});
+                    }
                     else if (rs._isComplete)
-                    { gotAggs([{columnId: cId, name: a, value: rs._calculateAggregate(cId, a)}]); }
+                    {
+                        gotAggs([{columnIdent: curCol.fieldName, name: a,
+                            value: rs._calculateAggregate(curCol.fieldName, a)}]);
+                    }
 
                     else
                     {
-                        needReq = true;
-                        if ($.isBlank(ilViews[i]))
-                        { ilViews[i] = rs._dataset.cleanCopy(); }
-                        var col = _.detect(ilViews[i].columns, function(c)
-                        { return c.id == parseInt(cId); });
-                        col.format.aggregate = a;
+                        if (blist.useSODA2)
+                        {
+                            soda2Aggs.push({ method: blist.datatypes.soda2Aggregate(a),
+                                             column: curCol.fieldName });
+                        }
+                        else
+                        {
+                            needReq = true;
+                            if ($.isBlank(ilViews[i]))
+                            { ilViews[i] = rs._dataset.cleanCopy(); }
+                            var col = _.detect(ilViews[i].columns, function(c)
+                            { return c.fieldName == curCol.fieldName; });
+                            col.format.aggregate = a;
+                        }
                     }
                 });
             });
 
-            if (needReq)
+            if (!blist.useSODA2)
             {
-                args.success = gotAggs;
-                _.each(ilViews, function(v)
+                if (needReq)
                 {
-                    if ($.isBlank(v)) { return; }
-                    var req = $.extend({}, args, {data: v, batch: true});
-                    rs.makeRequest(req);
-                });
-                ServerModel.sendBatch(callResults);
+                    args.success = gotAggs;
+                    _.each(ilViews, function(v)
+                    {
+                        if ($.isBlank(v)) { return; }
+                        var req = $.extend({}, args, {data: v, batch: true});
+                        rs.makeRequest(req);
+                    });
+                    ServerModel.sendBatch(callResults);
+                }
+                else
+                { callResults(); }
             }
-            else
-            { callResults(); }
         }
         else
         {
@@ -480,17 +501,23 @@ var RowSet = ServerModel.extend({
             {
                 if ($.subKeyDefined(c, 'format.aggregate'))
                 {
-                    if ($.subKeyDefined(rs._aggCache, c.id + '.' + c.format.aggregate))
+                    if ($.subKeyDefined(rs._aggCache, c.fieldName + '.' + c.format.aggregate))
                     {
-                        aggs.push({columnId: c.id, name: c.format.aggregate,
-                            value: rs._aggCache[c.id][c.format.aggregate]});
+                        aggs.push({columnIdent: c.fieldName, name: c.format.aggregate,
+                            value: rs._aggCache[c.fieldName][c.format.aggregate]});
                     }
                     else if (rs._isComplete)
                     {
-                        gotAggs([{columnId: c.id, name: c.format.aggregate,
-                            value: rs._calculateAggregate(c.id, c.format.aggregate)}]);
+                        gotAggs([{columnIdent: c.fieldName, name: c.format.aggregate,
+                            value: rs._calculateAggregate(c.fieldName, c.format.aggregate)}]);
                     }
-                    else { needReq = true; }
+                    else if (blist.useSODA2)
+                    {
+                        soda2Aggs.push({ method: blist.datatypes.soda2Aggregate(c.format.aggregate),
+                            column: c.fieldName });
+                    }
+                    else
+                    { needReq = true; }
                 }
             };
 
@@ -500,19 +527,42 @@ var RowSet = ServerModel.extend({
                 _.each(c.realChildColumns, function(cc) { checkAgg(cc); });
             });
 
-            if (needReq)
+            if (!blist.useSODA2)
             {
-                aggs = [];
-                args.success = function(recAggs)
+                if (needReq)
                 {
-                    gotAggs(recAggs);
-                    callResults();
-                };
-                rs.makeRequest(args);
+                    aggs = [];
+                    args.success = function(recAggs)
+                    {
+                        gotAggs(recAggs);
+                        callResults();
+                    };
+                    rs.makeRequest(args);
+                }
+                else
+                { callResults(); }
             }
-            else
-            { callResults(); }
         }
+
+        if (soda2Aggs.length > 0)
+        {
+            var sel = _.map(soda2Aggs, function(a) { return a.method + '(' + a.column + ')'; }).join(',');
+            rs.makeRequest({ url: '/api/id/' + rs._dataset.id + '.json',
+                params: { '$select': sel },
+                success: function(resp)
+                {
+                    gotAggs(_.map(resp[0], function(v, k)
+                    {
+                        var i = k.indexOf('_');
+                        return { columnIdent: k.slice(i+1),
+                            name: blist.datatypes.aggregateFromSoda2(k.slice(0, i)), value: v };
+                    }));
+                    callResults();
+                }
+            });
+        }
+        else if (blist.useSODA2)
+        { callResults(); }
     },
 
     activate: function()

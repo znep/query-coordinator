@@ -984,14 +984,14 @@ var Dataset = ServerModel.extend({
         {
             _.each(aggs, function(a)
             {
-                var c = ds.columnForID(a.columnId);
+                var c = ds.columnForIdentifier(a.columnIdent);
                 // Might be a child column...
                 if ($.isBlank(c))
                 {
                     // Look through each nested table, and find if it has a child
                     // column -- find the first real one
                     _.each(ds.columnsForType('nested_table', true), function(pc)
-                    { c = c || pc.childColumnForID(a.columnId); });
+                    { c = c || pc.childColumnForIdentifier(a.columnIdent); });
                 }
                 if (!$.isBlank(c))
                 { c.aggregates[a.name] = $.isBlank(a.value) ? null : parseFloat(a.value); }

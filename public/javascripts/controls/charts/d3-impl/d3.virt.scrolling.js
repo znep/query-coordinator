@@ -122,11 +122,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
                     { tagName: 'div', 'class': 'chartContainer', contents: [
                         { tagName: 'div', 'class': 'chartRenderArea',
                           contents: '&nbsp;' }, // if no contents, browser doesn't bother to scroll
-                        ] },
-                        { tagName: 'div', 'class': 'tickContainer' },
-                        { tagName: 'div', 'class': 'baselineContainer', contents: [
-                            { tagName: 'div', 'class': 'baselineBg' },
-                            { tagName: 'div', 'class': 'baselineLine' }
+                    ] },
+                    { tagName: 'div', 'class': 'tickContainer' },
+                    { tagName: 'div', 'class': 'baselineContainer', contents: [
+                        { tagName: 'div', 'class': 'baselineBg' },
+                        { tagName: 'div', 'class': 'baselineLine' }
                     ] }] },
                 { tagName: 'div', 'class': 'legendContainer', contents: [
                     { tagName: 'div', 'class': 'legendLines' }
@@ -162,7 +162,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         //Append and cache null bar render area after drawElement binding
         cc.$chartContainer.prepend(
-            $.tag({ tagName: 'div', 'class': 'nullRenderArea', contents: '&nbsp;' })
+            $.tag({ tagName: 'div', 'class': 'nullRenderArea' })
         );
         cc.$nullRenderArea = cc.$chartContainer.find('.nullRenderArea');
 

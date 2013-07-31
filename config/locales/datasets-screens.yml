@@ -618,6 +618,7 @@ en:
           data_labels: Data Labels
           color_override_html: Colors may be overridden using <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
           treemap_color_html: These colors are applied to the treemap randomly only for creating visual distinctions. They do not have a specific meaning by themselves.
+          dsg_color_override_html: 'Note that Data Series Grouping will override colors chosen for your data columns. It will not override your <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>'
           group_extra: Group Extra Values
           show_lines: Show Lines
           show_points: Show Points

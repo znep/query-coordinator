@@ -379,6 +379,7 @@
                     inputFirst: true,
                     lineClass: 'seriesGroupingCheck',
                     onlyIf: isNextGen},
+                {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.dsg_color_override_html')},
                 {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: ''}),
                 name: 'displayFormat.colors', minimum: 1,

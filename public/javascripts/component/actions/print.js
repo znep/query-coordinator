@@ -37,11 +37,11 @@ $.component.Component.extend('Print', 'actions', {
                                 $(window).resize();
                             }
                         };
-                        if ($.browser.webkit)
+                        if ($.browser.webkit || $.browser.mozilla)
                         {
                             // This gets to a reasonable default that fits the page
                             // (at least in Chrome & Safari on OS X)
-                            $wrapper.width('30cm');
+                            $wrapper.width('24cm');
                             $(window).resize();
                             setTimeout(doPrint, 500);
                         }

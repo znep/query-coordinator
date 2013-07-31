@@ -2089,7 +2089,7 @@ var Dataset = ServerModel.extend({
         var newKey = RowSet.getQueryKey({orderBys: ds.query.orderBys,
             filterCondition: Dataset.translateFilterCondition(newQ.filterCondition, ds)});
         if (needQueryChange || (oldSearch != ds.searchString) ||
-                ds._activeRowSet._key != newKey)
+                ($.subKeyDefined(ds, '_activeRowSet._key') && ds._activeRowSet._key != newKey))
         {
             ds.aggregatesChanged();
             var filterChanged = needQueryChange || ds._activeRowSet._key != newKey;

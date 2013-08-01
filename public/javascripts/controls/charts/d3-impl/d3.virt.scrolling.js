@@ -1012,8 +1012,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         if (usedMin === usedMax)
         {
             var nullRangePaddingAmount = vizObj.defaults.fallbackForNullRange;
-            usedMin -= nullRangePaddingAmount;
-            usedMax += nullRangePaddingAmount;
+            if (_.isNaN(explicitMin)) { usedMin -= nullRangePaddingAmount; }
+            if (_.isNaN(explicitMax)) { usedMax += nullRangePaddingAmount; }
         }
 
         var yScale = d3.scale.linear()

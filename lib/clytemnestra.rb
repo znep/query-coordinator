@@ -10,7 +10,7 @@ module Clytemnestra
   def self.search_cached_views(opts, use_batch = false, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_search)
     path = "/search/views.json?#{opts.to_core_param}"
     user = User.current_user.nil? || is_anon ? "none" : User.current_user.id
-    cache_key = "search-views:" + Digest::MD5.hexdigest(path + ":" + user)
+    cache_key = "search-views:" + Digest::MD5.hexdigest(CurrentDomain.cname + ":" + path + ":" + user)
     result = cache.read(cache_key)
     if result.nil?
       result = CoreServer::Base.connection.get_request(path, {}, use_batch, is_anon)

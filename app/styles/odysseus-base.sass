@@ -91,3 +91,189 @@
   .function
     text-transform: lowercase
 
+.colorPicker
+  border: 1px solid #cacaca
+  display: inline-block
+
+  a
+    background: transparent url(/images/colorpicker/select_arrow.png) no-repeat right bottom
+    display: block
+    height: 18px
+    width: 20px
+
+.goalQuickEdit
+  width: 75em
+
+  ul.actions
+    overflow: hidden
+    padding-bottom: 1em
+
+    li
+      float: right
+      margin-left: 0.4em
+
+  .cardTitle
+    border-bottom: 1px solid $color_chrome_box_border
+    padding-bottom: 1em
+
+  .prevailingMadLib
+    font-size: 0.6em
+
+.awesomebubble
+  background-color: #fff
+  @include prefixer(border-radius, 0.2em)
+  @include prefixer(box-shadow, 0 0 0.5em rgba(0, 0, 0, 0.5))
+  padding: 0.8em
+  position: absolute
+  z-index: 1001
+
+  .awesometip
+    position: absolute
+
+  &.top
+    .awesometip
+      @include triangle(0.7em, #fff, top)
+      top: -1.4em
+  &.bottom
+    .awesometip
+      @include triangle(0.7em, #fff, bottom)
+      bottom: -1.4em
+
+// probably a sane default?
+.ui-draggable-dragging
+  z-index: 9999
+
+
+// TEMPHACK: put govstat edit styles here.
+.subnavigation
+  position: relative
+
+  ul.actions
+    position: absolute
+    right: 2em
+    top: 1.3em
+
+    li
+      float: left
+      margin-left: 0.3em
+
+      &.divider
+        border-right: 2px dotted #bbb
+        height: 3.4em
+        margin-left: 1.2em
+        margin-right: 0.8em
+
+.gridFlowLayoutNew
+  .newSingleItem
+    border: 3px dotted #bbb
+    display: block
+    height: 16.6em
+    padding: 3em
+    position: absolute
+    text-align: center
+    @include transition(0.2s, border-color)
+    width: 13.8em
+    z-index: 1
+
+    .icon, .text
+      color: #bbb
+      @include transition(0.2s, color)
+
+    .icon
+      font-size: 5em
+      padding-top: 0.6em
+
+    .text
+      font-size: 2em
+
+    &:hover
+      border-color: $govstat_color_action
+
+      .icon, .text
+        color: $govstat_color_action
+
+.dashboardPage.edit
+  padding-top: 3em
+
+  .categoryList > ul > li
+    position: relative
+
+    > .editHandle
+      background: transparent url(/stylesheets/images/interface/drag_handle.png)
+      cursor: move
+      float: left
+      height: 3.4em
+      margin-right: 1.2em
+      margin-top: 0.4em
+      width: 6px
+
+    > .editRemove
+      color: #999
+      display: block
+      font-size: 2em
+      overflow: hidden
+      position: absolute
+      right: 0.5em
+      top: 0.5em
+      @include transition(0.2s, color)
+      width: 1em
+
+      &:hover
+        color: #bbb
+
+    .categoryItem
+      .categoryTitle
+        h2
+          .text
+            visibility: hidden
+
+          a
+            display: inline-block
+            font-size: 0.7em
+            margin-left: 0.7em
+            overflow: hidden
+            width: 1em
+
+        .edit input
+          background: transparent
+          border: none
+          color: inherit
+          font-family: "myriad pro"
+          font-size: 1.48em
+          left: 0.35em
+          outline: none
+          position: absolute
+          top: 0
+          width: 20em
+
+        .color
+          position: absolute
+          right: 2.2em
+          top: 0.4em
+
+          a
+            height: 20px
+            width: 30px
+
+        &.uncategorized
+          background-color: #f7f7f7
+          position: relative
+          z-index: 2
+
+          h2
+            .text
+              margin-left: -0.6em
+              visibility: visible
+
+            a
+              display: none
+
+          .color, .edit
+            display: none
+
+  .goalList ul
+    min-height: 25em
+
+    > .singleItemWrapper:first-child, > .ui-sortable-helper:first-child + .singleItemWrapper
+      margin-left: 21.4em
+

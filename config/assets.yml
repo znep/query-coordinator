@@ -544,6 +544,16 @@ javascripts:
   screen-govstat-manage:
     - public/javascripts/controls/global-indicator.js
     - public/javascripts/screens/govstat/manage.js
+  odysseus-edit-base:
+    - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-selectionsaverestore.js
+    - public/javascripts/plugins/hallo.js
+    - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/colorpicker.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/icon-picker.js
+    - public/javascripts/plugins/jquery.awesomereorder.js
+    - public/javascripts/plugins/jquery.awesomebubble.js
   unified-filter:
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/base-pane.js

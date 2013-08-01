@@ -81,21 +81,30 @@
 
 // styles for newgoaleditor for now
 
+.siteContentWrapper .subnavigation
+  margin-bottom: 2em
+
 .heroImageContainer
   position: relative
 
-  .button.editImage
-    position: absolute
-    right: 7.5em
-    top: 5em
-    z-index: 1
+.heroImageEdit
+  margin-top: -9em
+  position: absolute
+  right: 10em
+  z-index: 1
+
+  a.button
+    @include prefixer(box-shadow, 0 0 0.4em rgba(0, 0, 0, 0.4))
 
     &:after
       @include triangle(0.7em, $govstat_color_action, right)
       content: ' '
       position: absolute
-      left: -2em
-      top: 0.5em
+      left: -1.7em
+      top: 0.8em
+
+    &:hover:after
+      border-right-color: lighten($govstat_color_action, 6%)
 
 $madlib_header_color: #e33229
 $metric_header_color: #291c73

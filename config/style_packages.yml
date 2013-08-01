@@ -183,6 +183,7 @@ screen-videos-popup:
 - screen-videos-popup
 odysseus-base:
 - odysseus-base
+- colorpicker
 govstat-base:
 - screen-govstat-base
 govstat-layout:

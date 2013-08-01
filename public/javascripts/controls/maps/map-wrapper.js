@@ -515,7 +515,7 @@
                     layer = new OpenLayers.Layer.Google(config.key, options); break;
                 case 'Bing':
                     options = $.extend(options, {
-                        key: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
+                        key: 'ApOZ5wmDJp3UOXVryHpTocVSrsAbi-7FC-JQznJC4ZdAhgG5H7nnyr27wPNxzChd',
                         transitionEffect: 'resize'
                     });
                     layer = new OpenLayers.Layer.Bing(options); break;

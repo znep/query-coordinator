@@ -1061,8 +1061,16 @@ $.Control.registerMixin('d3_impl_bar', {
                     // If we aren't truncating, shift up by the overflow amount.
                     else if ($(this).attr('style').indexOf('width') < 0)
                     {
-                        var overflow = d.length - actualSize;
-                        position -= overflow;
+                        if (d.length < d.columnHeight - 10)
+                        {
+                            var padding = d.columnHeight - 10 - d.length;
+                            position += padding;
+                        }
+                        else
+                        {
+                            var overflow = d.length - actualSize;
+                            position -= overflow;
+                        }
                     }
                 }
                 else

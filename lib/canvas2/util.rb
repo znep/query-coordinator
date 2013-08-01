@@ -172,10 +172,10 @@ module Canvas2
       '"' + (str || '').to_s.gsub('"', '""') + '"'
     end
 
-    def self.localize(obj)
+    def self.localize(obj, force_locale = nil)
       return obj if !obj.is_a?(Hash)
       # I18n.locale doesn't seem to be correct here
-      locale = @@env[:current_locale].to_s
+      locale = force_locale || @@env[:current_locale].to_s
       obj.key?(locale) ? obj[locale] : ''
     end
 

@@ -103,7 +103,10 @@ class Page < Model
       n = JSON.parse(n) if !n.blank?
     rescue JSON::ParserError
     end
-    Canvas2::Util.string_substitute(n, Canvas2::Util.base_resolver)
+    r = Canvas2::Util.string_substitute(n, Canvas2::Util.base_resolver)
+    # Name _must_ be a string, so fall back to en locale if it didn't localize properly
+    r = Canvas2::Util.localize(r, 'en') if r.is_a?(Hash)
+    r
   end
 
   def content

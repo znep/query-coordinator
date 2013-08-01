@@ -106,7 +106,6 @@
 
   ul.actions
     overflow: hidden
-    padding-bottom: 1em
 
     li
       float: right
@@ -114,15 +113,36 @@
 
   .cardTitle
     border-bottom: 1px solid $color_chrome_box_border
-    padding-bottom: 1em
+    padding: 2em
+    padding-top: 0
+
+    .title
+      width: 71em
 
   .prevailingMadLib
+    background: #f7f7f7 url(/stylesheets/images/content/noise.png)
+    @include prefixer(border-radius, 0 0 0.2em 0.2em)
     font-size: 0.6em
+    margin: -0.9em
+      top: 0
+    padding: 1em
+    text-align: center
+
+    .madlib
+      line-height: 5em
+      padding-bottom: 2.5em
+
+      .custom
+        margin-bottom: 0.1em
+
+      .inputWrapper .squishyDateEdit
+        height: 3.5em
+        margin-top: 1.5em
 
 .awesomebubble
   background-color: #fff
   @include prefixer(border-radius, 0.2em)
-  @include prefixer(box-shadow, 0 0 0.5em rgba(0, 0, 0, 0.5))
+  @include prefixer(box-shadow, 0 0 1.2em rgba(0, 0, 0, 0.6))
   padding: 0.8em
   position: absolute
   z-index: 1001

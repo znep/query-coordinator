@@ -3,6 +3,7 @@
     blist.namespace.fetch('blist.openLayers');
 
     Proj4js.defs["EPSG:102100"] = "+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null";
+    Proj4js.defs["EPSG:102698"] = "+proj=tmerc +lat_0=36.16666666666666 +lon_0=-94.5 +k=0.9999411764705882 +x_0=850000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs"; // For KCMO.
 
     blist.openLayers.geographicProjection = new OpenLayers.Projection('EPSG:4326');
     blist.openLayers.backgroundLayerTypes = [

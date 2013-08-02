@@ -278,7 +278,7 @@
             { mapObj.viewportHandler().resetToOriginal(); }
 
             if (_.any(mapObj._invalidChildren,
-                    function(cv) { return cv.error.indexOf('heat map') > -1; }))
+                    function(cv) { return _.isString(cv.error) && cv.error.indexOf('heat map') > -1; }))
             {
                 alert("Raster Heat Maps do not work in your current browser. Please "
                     + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");

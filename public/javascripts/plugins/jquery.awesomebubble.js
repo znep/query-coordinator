@@ -207,7 +207,11 @@ $.fn.awesomebubble = function(options)
     // remove if clicked outside.
     $('body').on('click', function(event)
     {
-      var $parents = $(event.target).parents();
+      var $target = $(event.target);
+      if ($target.get(0) === self)
+        return;
+
+      var $parents = $target.parents();
       for (var i = 0; i < $parents.length; i++)
         if (($parents[i] == $bubble.get(0)) || ($parents[i] == self))
           return;

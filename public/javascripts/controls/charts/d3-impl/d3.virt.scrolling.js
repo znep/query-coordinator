@@ -520,7 +520,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }
 
         // Yes, height (it's rotated). Well, except for IE. It does it wrong-right.
-        var yLabelVertSizeX = (vizObj._isIE8() ? $yLabelVert.width() : $yLabelVert.height()) || 0;
+        var yLabelVertSizeX = (vizObj._isIE8() ? $yLabelVert.width() + $yLabelVert.position().left : $yLabelVert.height()) || 0;
 
         // In this case, the legend and the y axis don't share the same container,
         // so we can't do the fancy legend overlay thingy.

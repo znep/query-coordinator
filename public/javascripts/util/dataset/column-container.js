@@ -15,6 +15,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     var forID = function(item, id) { return item[colName + 'ForID'](id); };
     var forTCID = function(item, id) { return item[colName + 'ForTCID'](id); };
     var forField = function(item, id) { return item[colName + 'ForFieldName'](id); };
+    var forIdentifier = function(item, id) { return item[colName + 'ForIdentifier'](id); };
     var update = function(item, nc, ff, uo)
     { return item['update' + capSet](nc, ff, uo); };
     var realSet = function(item) { return item['real' + capSet]; };
@@ -256,7 +257,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                     // also be at the wrong spot.  So find the column and index
                     // if it already exists
                     var c = nc.dataTypeName != 'meta_data' ?
-                        forField(cont, nc.fieldName) :
+                        forIdentifier(cont, nc.fieldName || nc.id) :
                         _.detect(cont[colSet], function(mc)
                             { return mc.dataTypeName == 'meta_data' &&
                                 mc.name == nc.name; });

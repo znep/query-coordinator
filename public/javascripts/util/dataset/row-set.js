@@ -19,12 +19,15 @@ var RowSet = ServerModel.extend({
         this._parent = parRS;
         this._query = query || {};
         this._translatedQuery =
-            $.extend({}, this._query, {filterCondition: Dataset.translateFilterCondition(
-                    this._query.filterCondition, this._dataset)});
+            $.extend({}, this._query, { filterCondition: Dataset.translateFilterCondition(
+                    this._query.filterCondition, this._dataset),
+                groupBys: Dataset.translateGroupBys(this._query.groupBys, this._dataset,
+                    this._query.groupFuncs ) });
         this._loadedCount = 0;
         this._isComplete = false;
-        this._matchesExpr = blist.filter.matchesExpression(this._translatedQuery.filterCondition,
-                this._dataset);
+        var fc = this._translatedQuery.filterCondition || {};
+        this._matchesExpr = { where: blist.filter.matchesExpression(fc.where, this._dataset),
+            having: blist.filter.matchesExpression(fc.having, this._dataset) };
 
         if (!_.isEmpty(initRows))
         {
@@ -101,7 +104,8 @@ var RowSet = ServerModel.extend({
 
         // If we aren't complete, but can grab data from our iparent, pre-emptively do so
         // Also exclude client side filtering on the catalog dataset because its filtering is somewhat unusual.
-        if (rs._dataset.resourceName !== "datasets" &&   !rs._isComplete && (rs._parent || {})._isComplete)
+        if (rs._dataset.resourceName !== "datasets" && !rs._isComplete && (rs._parent || {})._isComplete &&
+                _.isEmpty(rs._translatedQuery.groupBys) && _.isEmpty(rs._parent._translatedQuery.groupBys))
         {
             var newRows = _.map(_.select(rs._parent._rows, function(r)
                     { return rs._doesBelong(r); }), function(r) { return $.extend({}, r); });
@@ -620,7 +624,7 @@ var RowSet = ServerModel.extend({
             rs._condFmt = _.map(condFmt, function(c)
             {
                 return $.extend({}, c,
-                    {matches: blist.filter.matchesExpression(c.condition, rs._dataset)});
+                    { matches: blist.filter.matchesExpression(c.condition, rs._dataset) });
             });
         }
         _.each(rs._rows, function(r) { rs._setRowFormatting(r); });
@@ -628,8 +632,11 @@ var RowSet = ServerModel.extend({
 
     canDerive: function(otherQ)
     {
-        return canDeriveExpr(this._translatedQuery.filterCondition,
-                Dataset.translateFilterCondition(otherQ.filterCondition, this._dataset));
+        var fc = this._translatedQuery.filterCondition || {};
+        var otherFC = Dataset.translateFilterCondition(otherQ.filterCondition, this._dataset) || {};
+        return canDeriveExpr(fc.where, otherFC.where) && canDeriveExpr(fc.having, otherFC.having) &&
+            _.isEqual(this._translatedQuery.groupBys,
+                    Dataset.translateGroupBys(otherQ.groupBys, this._dataset, otherQ.groupFuncs));
     },
 
     makeRequest: function(args)
@@ -655,9 +662,46 @@ var RowSet = ServerModel.extend({
             }
             if (!_.isEmpty(rs._translatedQuery.filterCondition))
             {
-                var soqlWhere = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition);
+                var soqlWhere = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition.where);
                 args.params['$where'] = !$.isBlank(args.params['$where']) ?
                     (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
+                var soqlHaving = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition.having);
+                args.params['$having'] = !$.isBlank(args.params['$having']) ?
+                    (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
+            }
+            if (!_.isEmpty(rs._translatedQuery.groupBys))
+            {
+                var soqlGroup = [];
+                var groupSelect = [];
+                _.each(rs._translatedQuery.groupBys, function(gb)
+                {
+                    if ($.isBlank(gb.groupFunction))
+                    {
+                        soqlGroup.push(gb.columnFieldName);
+                        groupSelect.push(gb.columnFieldName);
+                    }
+                    else
+                    {
+                        var k = gb.columnFieldName + '__' + gb.groupFunction;
+                        soqlGroup.push(k);
+                        groupSelect.push(gb.groupFunction + '(' + gb.columnFieldName + ') as ' + k);
+                    }
+                });
+                soqlGroup = soqlGroup.join(',');
+                args.params['$group'] = !$.isBlank(args.params['$group']) ?
+                    (args.params['$group'] + ',' + soqlGroup) : soqlGroup;
+                groupSelect = groupSelect.concat(
+                        _.compact(_.map(rs._dataset.realColumns, function(c)
+                            {
+                                if (!$.isBlank(c.format.grouping_aggregate))
+                                {
+                                    return blist.datatypes.soda2Aggregate(c.format.grouping_aggregate)
+                                        + '(' + c.fieldName + ')';
+                                }
+                                return null;
+                            }))).join(',');
+                args.params['$select'] = !$.isBlank(args.params['$select']) ?
+                    (args.params['$select'] + ',' + groupSelect) : groupSelect;
             }
         }
         else if (args.inline)
@@ -671,6 +715,7 @@ var RowSet = ServerModel.extend({
             {
                 d.query = d.query || {};
                 d.query.orderBys = rs._query.orderBys;
+                d.query.groupBys = rs._query.groupBys;
                 d.query.filterCondition = rs._query.filterCondition;
             }
             args.data = JSON.stringify(d);
@@ -717,6 +762,7 @@ var RowSet = ServerModel.extend({
         {
             reqData.query = reqData.query || {};
             reqData.query.orderBys = rs._query.orderBys;
+            reqData.query.groupBys = rs._query.groupBys;
             reqData.query.filterCondition = rs._query.filterCondition;
         }
 
@@ -753,6 +799,25 @@ var RowSet = ServerModel.extend({
                 if (blist.useSODA2)
                 {
                     metaToUpdate = { columns: result.meta.view.columns };
+                    // If we're grouped, then filter out fake columns
+                    if (rs._dataset.isGrouped())
+                    {
+                        metaToUpdate.columns = _.reject(metaToUpdate.columns, function(c)
+                        {
+                            if ($.subKeyDefined(c, 'format.grouping_aggregate'))
+                            { return true; }
+
+                            // Is it a group function column?
+                            var i = c.fieldName.indexOf('__');
+                            var realC;
+                            if (!$.isBlank(realC = rs._dataset.columnForFieldName(
+                                        c.fieldName.slice(0, i))) &&
+                                realC.format.group_function ==
+                                    blist.datatypes.groupFunctionFromSoda2(c.fieldName.slice(i + 2)))
+                            { return true; }
+                            return false;
+                        });
+                    }
                 }
                 else
                 { metaToUpdate = result.meta.view; }
@@ -870,7 +935,33 @@ var RowSet = ServerModel.extend({
                 var c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(lId) :
                     parCol.childColumnForIdentifier(lId);
 
-                if ($.isBlank(c)) { return true; }
+                if ($.isBlank(c))
+                {
+                    if (blist.useSODA2 && rs._dataset.isGrouped())
+                    {
+                        // Maybe a group function?
+                        var i = lId.indexOf('__');
+                        var gf = lId.slice(i + 2);
+                        var mId = lId.slice(0, i);
+                        c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(mId) :
+                            parCol.childColumnForIdentifier(mId);
+                        if ($.isBlank(c) || c.format.group_function !=
+                            blist.datatypes.groupFunctionFromSoda2(gf))
+                        {
+                            // Maybe this is an aggregate column?
+                            i = lId.indexOf('_');
+                            var agg = lId.slice(0, i);
+                            lId = lId.slice(i + 1);
+                            c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(lId) :
+                                parCol.childColumnForIdentifier(lId);
+                            if ($.isBlank(c) || c.format.grouping_aggregate !=
+                                blist.datatypes.aggregateFromSoda2(agg))
+                            { return true; }
+                        }
+                    }
+                    else
+                    { return true; }
+                }
 
                 if (c.isMeta && c.name == 'meta' && _.isString(newVal))
                 { newVal = JSON.parse(newVal || 'null'); }
@@ -1000,7 +1091,10 @@ var RowSet = ServerModel.extend({
 
     _doesBelong: function(row)
     {
-        return this._matchesExpr(row);
+        // If is grouped, assume where matches, since that is processed pre-aggregate.
+        // But always evaluate having
+        return (this._dataset.isGrouped() ? true : this._matchesExpr.where(row)) &&
+            this._matchesExpr.having(row);
     },
 
     _calculateAggregate: function(cId, aggName)
@@ -1123,7 +1217,9 @@ var RowSet = ServerModel.extend({
 
 RowSet.getQueryKey = function(query)
 {
-    return getSortKey(query.orderBys) + '/' + blist.filter.getFilterKey(query.filterCondition);
+    return getSortKey(query.orderBys) + '/' + getGroupKey(query.groupBys) +
+        '/' + blist.filter.getFilterKey((query.filterCondition || {}).where) +
+        '/' + blist.filter.getFilterKey((query.filterCondition || {}).having);
 };
 
 function getSortKey(ob)
@@ -1131,6 +1227,13 @@ function getSortKey(ob)
     if (_.isEmpty(ob)) { return ''; }
     return '(' + _.map(ob, function(o)
                 { return o.expression.columnId + ':' + o.ascending; }).join('|') + ')';
+};
+
+function getGroupKey(gb)
+{
+    if (_.isEmpty(gb)) { return ''; }
+    return '(' + _.map(gb, function(g)
+                { return g.columnFieldName + ': ' + g.groupFunction; }).join('|') + ')';
 };
 
 function canDeriveExpr(baseFC, otherFC)

@@ -65,8 +65,10 @@ var Dataset = ServerModel.extend({
         this.valid = this._checkValidity();
 
         // We need an active row set to start
-        this._savedRowSet = new RowSet(this, {orderBys: (this.query || {}).orderBys,
-            filterCondition: this.cleanFilters()}, null, this.initialRows);
+        this._savedRowSet = new RowSet(this, { orderBys: (this.query || {}).orderBys,
+            filterCondition: this.cleanFilters(), groupBys: (this.query || {}).groupBys,
+            groupFuncs: this._getGroupedFunctions() },
+            null, this.initialRows);
         delete this.initialRows;
         this._activateRowSet(this._savedRowSet);
 
@@ -1999,15 +2001,12 @@ var Dataset = ServerModel.extend({
 
         var oldGroupings = (ds.query || {}).groupBys;
         var oldGroupAggs = {};
-        var oldGroupFuncs = {};
         if ((oldGroupings || []).length > 0)
         {
             _.each(ds.realColumns, function(c)
             {
                 if (!$.isBlank(c.format.grouping_aggregate))
                 { oldGroupAggs[c.id] = c.format.grouping_aggregate; }
-                if (!$.isBlank(c.format.group_function))
-                { oldGroupFuncs[c.id] = c.format.group_function; }
             });
         }
 
@@ -2083,37 +2082,24 @@ var Dataset = ServerModel.extend({
             needsDTChange = true;
         }
 
-        var newGroupFuncs = {};
-        _.each(ds.realColumns, function(c)
-        {
-            if (!$.isBlank(c.format.group_function))
-            { newGroupFuncs[c.id] = c.format.group_function; }
-        });
-
         var needQueryChange = !_.isEqual(oldRTConfig.visible,
                     ds.metadata.renderTypeConfig.visible) &&
                 _.any(ds.query.namedFilters || [], function(nf)
                     { return _.any(nf.displayTypes || [], function(nd)
                         { return oldRTConfig.visible[nd] ||
-                            ds.metadata.renderTypeConfig.visible[nd]; }); }) ||
-                !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
-                !_.isEmpty(ds.query.groupBys) && !_.isEqual(oldGroupFuncs, newGroupFuncs);
+                            ds.metadata.renderTypeConfig.visible[nd]; }); });
 
-        var newQ = {orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters()};
-        var newKey = RowSet.getQueryKey({orderBys: ds.query.orderBys,
-            filterCondition: Dataset.translateFilterCondition(newQ.filterCondition, ds)});
+        var newQ = { orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters(),
+            groupBys: ds.query.groupBys, groupFuncs: this._getGroupedFunctions() };
+        var newKey = RowSet.getQueryKey({ orderBys: ds.query.orderBys,
+            filterCondition: Dataset.translateFilterCondition(newQ.filterCondition, ds),
+            groupBys: Dataset.translateGroupBys(ds.query.groupBys, ds, newQ.groupFuncs) });
         if (needQueryChange || (oldSearch != ds.searchString) ||
                 ($.subKeyDefined(ds, '_activeRowSet._key') && ds._activeRowSet._key != newKey))
         {
             ds.aggregatesChanged();
             var filterChanged = needQueryChange || ds._activeRowSet._key != newKey;
-            var nonFilterChanged = oldSearch != ds.searchString ||
-                !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
-                !_.isEmpty(ds.query.groupBys) && !_.isEqual(oldGroupFuncs, newGroupFuncs) ||
-                // Group-bys suck, since there may be pre-process filtering
-                // that happens before we have the data. So if they exist, we
-                // always have to talk to the server
-                !_.isEmpty(ds.query.groupBys);
+            var nonFilterChanged = oldSearch != ds.searchString;
             if (filterChanged && !nonFilterChanged)
             {
                 if (!$.isBlank(ds._availableRowSets[newKey]))
@@ -2252,6 +2238,17 @@ var Dataset = ServerModel.extend({
         }
     },
 
+    _getGroupedFunctions: function()
+    {
+        var gf = {};
+        _.each(this.realColumns, function(c)
+        {
+            if (!$.isBlank(c.format.group_function))
+            { gf[c.fieldName] = c.format.group_function; }
+        });
+        return gf;
+    },
+
     _adjustVisibleColumns: function(visColIds)
     {
         var ds = this;
@@ -2357,8 +2354,9 @@ var Dataset = ServerModel.extend({
     _invalidateAll: function(rowCountChanged, columnsChanged)
     {
         delete this._availableRowSets;
-        this._activateRowSet(new RowSet(this, {orderBys: (this.query || {}).orderBys,
-            filterCondition: this.cleanFilters()}));
+        this._activateRowSet(new RowSet(this, { orderBys: (this.query || {}).orderBys,
+            filterCondition: this.cleanFilters(), groupBys: (this.query || {}).groupBys,
+            groupFuncs: this._getGroupedFunctions() }));
     },
 
     _serverCreateRow: function(req, isBatch)
@@ -3083,6 +3081,81 @@ Dataset.search = function(params, successCallback, errorCallback, isAnonymous)
 
 Dataset.translateFilterCondition = function(fc, ds)
 {
+    fc = $.extend(true, {}, fc);
+    if (ds.isGrouped())
+    {
+        // Ugh, separate out having from where
+        // We can only separate at an AND: an OR must stay together
+        // We're only going to separate at the top level, b/c it gets complicated below that
+        var splitWhere = fc,
+            splitHaving;
+        if (!$.isBlank(fc) && fc.type == 'operator' && _.isArray(fc.children) && fc.children.length > 0)
+        {
+            var havingCols = _.compact(_.map(ds.query.groupBys, function(gb)
+                        { return ds.columnForIdentifier(gb.columnId); }).
+                    concat(_.select(ds.realColumns,
+                            function(c) { return $.subKeyDefined(c, 'format.grouping_aggregate'); })));
+            var isHaving = function(cond)
+            {
+                if (cond.type == 'column')
+                {
+                    return _.any(havingCols, function(c)
+                            { return c.fieldName == cond.columnFieldName || c.id == cond.columnId; });
+                }
+                else if (!_.isEmpty(cond.children))
+                { return _.all(cond.children, function(cCond) { return isHaving(cCond); }); }
+                else // literals
+                { return true; }
+            };
+
+            if (fc.value == 'AND')
+            {
+                // First simplify all ANDs into a single top level
+                var collapseChildren = function(children)
+                {
+                    var newChildren = [];
+                    _.each(children, function(cond)
+                    {
+                        if (cond.type == 'operator' && cond.value == 'AND')
+                        { newChildren = newChildren.concat(cond.children); }
+                        else
+                        { newChildren.push(cond); }
+                    });
+                    newChildren = _.compact(newChildren);
+                    return _.isEqual(children, newChildren) ? false : newChildren;
+                };
+                var newC = fc.children;
+                var t;
+                while (t = collapseChildren(newC))
+                { newC = t; }
+                fc.children = newC;
+
+                var havingChildren = _.select(fc.children, function(cond)
+                {
+                    // Find trees that only reference post-group columns
+                    return isHaving(cond);
+                });
+                if (!_.isEmpty(havingChildren))
+                {
+                    splitHaving = { type: 'operator', value: 'AND', children: havingChildren };
+                    fc.children = _.difference(fc.children, havingChildren);
+                }
+            }
+            else if (isHaving(fc))
+            {
+                splitHaving = fc;
+                splitWhere = null;
+            }
+        }
+        return { where: translateSubFilter(splitWhere, ds, false),
+            having: translateSubFilter(splitHaving, ds, true) };
+    }
+    else
+    { return { where: translateSubFilter(fc, ds, false) }; }
+};
+
+function translateSubFilter(fc, ds, isHaving)
+{
     if ($.isBlank(fc) || fc.type != 'operator' || !_.isArray(fc.children) ||
             fc.children.length == 0)
     { return null; }
@@ -3093,7 +3166,7 @@ Dataset.translateFilterCondition = function(fc, ds)
     {
         filterQ.children = _.compact(_.map(fc.children, function(c)
         {
-            var fcc = Dataset.translateFilterCondition(c, ds);
+            var fcc = translateSubFilter(c, ds, isHaving);
             if (!$.isBlank(fcc)) { fcc._parent = filterQ; }
             return fcc;
         }));
@@ -3114,14 +3187,20 @@ Dataset.translateFilterCondition = function(fc, ds)
             if (c.type == 'column')
             {
                 if (!$.isBlank(ds))
-                { col = ds.columnForID(c.columnFieldName || c.columnId); }
+                { col = ds.columnForIdentifier(c.columnFieldName || c.columnId); }
 
                 if (!$.isBlank(c.columnFieldName))
                 { filterQ.columnFieldName = c.columnFieldName; }
                 else if (!$.isBlank(col))
                 { filterQ.columnFieldName = col.fieldName; }
+                if (isHaving && $.subKeyDefined(col, 'format.grouping_aggregate'))
+                {
+                    filterQ.columnFieldName = blist.datatypes.soda2Aggregate(
+                        col.format.grouping_aggregate) + '_' + filterQ.columnFieldName;
+                }
 
-                if (!$.isBlank(c.value)) { filterQ.subColumn = c.value; }
+                // Don't put in redundant subcolumns (ie, when no sub-column)
+                if (!$.isBlank(c.value) && c.value != col.dataTypeName) { filterQ.subColumn = c.value; }
             }
             else if (c.type == 'literal')
             {
@@ -3140,6 +3219,21 @@ Dataset.translateFilterCondition = function(fc, ds)
     }
 
     return filterQ;
+};
+
+Dataset.translateGroupBys = function(gb, ds, groupFuncs)
+{
+    if (_.isEmpty(gb))
+    { return null; }
+
+    return _.sortBy(_.compact(_.map(gb, function(g)
+    {
+        var c = ds.columnForIdentifier(g.columnId);
+        if ($.isBlank(c)) { return null; }
+        return { columnFieldName: c.fieldName, groupFunction:
+            blist.datatypes.soda2GroupFunction(($.isBlank(groupFuncs) ?
+                c.format.group_function : groupFuncs[c.fieldName]), c) };
+    })), 'columnFieldName');
 };
 
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',

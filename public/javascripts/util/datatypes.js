@@ -269,9 +269,14 @@ blist.namespace.fetch('blist.datatypes');
 
         var d;
         if (_.isNumber(value)) { d = new Date(value * 1000); }
-        else if (!$.isBlank(type.stringParse))
-        { d = Date.parseExact(value, type.stringParse); }
-        else { d = Date.parse(value); }
+        else
+        {
+            // Can't parse milliseconds
+            value = value.replace(/\.\d{3}Z?/, '');
+            if (!$.isBlank(type.stringParse))
+            { d = Date.parseExact(value, type.stringParse); }
+            else { d = Date.parse(value); }
+        }
         return d ? d.format(format) : '';
     };
 
@@ -787,6 +792,20 @@ blist.namespace.fetch('blist.datatypes');
         { text: $.t('core.group_function.date_month'), value: 'date_ym' },
         { text: $.t('core.group_function.date_year'), value: 'date_y' }
     ];
+    blist.datatypes.soda2GroupFunction = function(gf, col)
+    {
+        if ($.isBlank(gf)) { return gf; }
+        var rf = '';
+        if (gf.startsWith('date_'))
+        { rf += (col.renderTypeName == 'date' ? 'datez' : 'date'); }
+        rf += '_trunc_' + gf.slice(gf.indexOf('_') + 1);
+        return rf;
+    };
+    blist.datatypes.groupFunctionFromSoda2 = function(gf)
+    {
+        if ($.isBlank(gf)) { return gf; }
+        return gf.replace('datez_', 'date_').replace('_trunc_', '_');
+    };
 
     blist.datatypes.interfaceTypes = {
         checkbox: { renderer: renderCheckbox },

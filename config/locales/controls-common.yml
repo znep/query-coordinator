@@ -85,7 +85,7 @@ it:
         button: Carica Immagine
       expander:
         collapse: Clicca per ridurre
-        expand: Click to expand
+        expand: Clicca per espandere
       dataset_picker:
         title: Scegli un Dataset da utilizzare
         button: Scegli

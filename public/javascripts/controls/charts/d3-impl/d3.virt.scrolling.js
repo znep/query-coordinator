@@ -1017,8 +1017,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }
 
         var yScale = d3.scale.linear()
-            .domain([ usedMin,
-                      usedMax ])
+            .domain([ Math.min(usedMin, usedMax),
+                      Math.max(usedMin, usedMax) ])
             .range([ 0, Math.max(0, rangeMax - vizObj.defaults.dataMaxBuffer) ])
             .clamp(true);
 

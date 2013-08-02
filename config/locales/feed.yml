@@ -72,10 +72,10 @@ it:
         cancel_button: Cancella
         empty_body_error: "Il commento non può essere vuoto."
       authed_actions:
-        flag_comment: contrassegna un commento
-        delete_comment: elimina un commento
-        rate_comment: vota un commento
-        post_comment: aggiungi un commento
+        flag_comment: contrassegnare un commento
+        delete_comment: eliminare un commento
+        rate_comment: votare un commento
+        post_comment: aggiungere un commento
 
 es:
   controls:

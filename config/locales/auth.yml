@@ -139,7 +139,7 @@ it:
       title: Recupera la tua Password
       prompt: "Se hai dimenticato la tua password, possiamo inviarti una email con un link per effettuare il reset della password."
       already_authenticated: "Impossibile effettuare il reset della password: sei già autenticato."
-      failed: Si è verificato un problema durante l’della richiesta di reset della password. Si prega di riprovare.
+      failed: Si è verificato un problema durante l’elaborazione della richiesta di reset della password. Si prega di riprovare.
       form:
         reset_password_button: Reset Password
     reset_password:

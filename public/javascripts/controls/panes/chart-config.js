@@ -274,11 +274,18 @@
                 newTypes.push({count: (oldL - copy.length) + 1, types: t});
             }
 
+            var transform = function(title)
+            {
+                if (title === 'Date & Time (with timezone)')
+                { return 'date_time_timezone'; }
+                return title.replace(/\(.*\)/, '').replace(' & ', '_')
+                            .replace(' ', '_').toLowerCase();
+            };
             return $.t('screens.ds.grid_sidebar.chart.validation.required_columns', {
                 chart_type: chartName.capitalize(),
-                column_types: $.arrayToSentence(_.map(newTypes, function(rc) { return rc.count + ' ' +
+                column_types: $.arrayToSentence(_.map(newTypes, function(rc) { return $.t('screens.ds.grid_sidebar.chart.validation.count', { count: rc.count }) + ' ' +
                         $.arrayToSentence(_.map(rc.types, function(t)
-                        { return blist.datatypes[t].title.toLowerCase(); }),
+                        { return $.t('screens.ds.grid_sidebar.base.datatypes.' + transform(blist.datatypes[t].title)); }),
                             $.t('support.array_or.two_words_connector'), ','); }),
                     $.t('support.array.two_words_connector'), ';', true) })
         };

@@ -38,6 +38,7 @@ en:
         in_google: View in Google Maps
         in_bing: View in Bing Maps
     charts:
+      other: Other
       series_grouping:
         calculation_running: Preparing data
         drawing_running: Drawing chart
@@ -92,6 +93,8 @@ it:
         row_details: Visualizza il dettaglio per questo record
         in_google: Visualizza su Google Maps
         in_bing: Visualizza su Bing Maps
+    charts:
+      other: Altro
 
 es:
   controls:

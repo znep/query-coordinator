@@ -3357,7 +3357,7 @@
                     '</span></div>',
                     '</span>',
                     '<div class="indicator-container">',
-                    '<div class="filter" title="Remove filter"',
+                    '<div class="filter" title="'+ $.t('controls.filter.actions.remove_filter') +'"',
                     options.generateHeights ? ' style="height: ' +
                     rowOffset + 'px"' : '',
                     '></div>',

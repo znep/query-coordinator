@@ -1,5 +1,7 @@
 (function($)
 {
+    var Other = $.t('controls.charts.other');
+
     $.Control.registerMixin('jit', {
         initializeVisualization: function()
         {
@@ -104,8 +106,8 @@
 
             if (chartObj._remainder > chartObj._totalSum * 0.005)
             {
-                var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
-                row[chartObj._fixedColumns[0].id] = 'Other';
+                var row = { id: Other, changed: {}, error: {}, invalid: {} };
+                row[chartObj._fixedColumns[0].id] = Other;
                 row[valCol.id] = chartObj._remainder;
                 var colors = chartObj._displayFormat.colors;
                 var color = colors[chartObj._primaryView.totalRows() % 5];
@@ -113,11 +115,11 @@
                 { color = getHighlightColor(color); }
                 var item = {
                     id: -1,
-                    name: 'Other',
+                    name: Other,
                     data: {
                         $area: chartObj._remainder,
                         $color: color,
-                        row: {id: 'Other'},
+                        row: {id: Other},
                         column: valCol,
                         flyoutDetails: chartObj.renderFlyout(row,
                             valCol.tableColumnId, chartObj._primaryView)

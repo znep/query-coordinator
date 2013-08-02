@@ -49,6 +49,7 @@ it:
       view_last_row: Visualizza ultimo record
       delete_row: Elimina Record
       click_for_menu: Clicca per il Menu
+      click_to_sort: Clicca per ordinare
       must_enter_name: Devi inserire un nome per questa colonna
       no_rows: Nessun record da visualizzare
       new_row: Nuovo

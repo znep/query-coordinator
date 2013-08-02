@@ -1,7 +1,7 @@
 (function($)
 {
     var hasSVG = window.SVGAngle || document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1");
-
+    var Other = $.t('controls.charts.other');
 
     $.Control.registerMixin('highcharts', {
         initializeVisualization: function()
@@ -1395,8 +1395,8 @@
         // Check if there are remainders to stick on the end
         if (chartObj._useRemainders && !_.isEmpty(chartObj._seriesRemainders))
         {
-            chartObj._otherVal = '\u200b' + (_.indexOf(chartObj._xCategories, 'Other') > -1 ?
-                    'Remainder' : 'Other') + '\u200b';
+            chartObj._otherVal = '\u200b' + (_.indexOf(chartObj._xCategories, Other) > -1 ?
+                    'Remainder' : Other) + '\u200b';
             // Create fake row for other value
             var otherRow = { invalid: {}, error: {}, changed: {} };
             otherRow[chartObj._xColumn.lookup] = chartObj._otherVal;

@@ -188,8 +188,7 @@
 
     $('.deleteTokenButton').click(function(event)
     {
-        if (!confirm('Are you sure you want to delete this application? ' +
-                     'The corresponding app_token will no longer be valid'))
+        if (!confirm($.t('screens.profile.edit.app_tokens.delete_confirm')))
         {
             event.preventDefault();
         }

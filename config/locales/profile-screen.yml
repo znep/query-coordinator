@@ -116,6 +116,7 @@ en:
           save_success: Your application was successfully saved
           delete_error: "An error occured deleting your application token: %{message}"
           delete_success: Your application has been deleted
+          delete_confirm: Are you sure you want to delete this application? The corresponding app_token will no longer be valid
           application_name: Application Name
           application_name_prompt: Enter a name for your application
           description: Description
@@ -257,6 +258,7 @@ it:
           save_success: "La tua applicazione è stata salvata con successo"
           delete_error: "Si è verificato un errore durante l'eliminazione del tuo application token: #{message}"
           delete_success: "La tua applicazione è stata eliminata"
+          delete_confirm: "Sei sicuro di voler eliminare questa applicazione? Il corrispondente app_token non sarà più valido"
           application_name: Nome Applicazione
           application_name_prompt: Inserisci un nome per la tua applicazione
           description: Descrizione

@@ -194,6 +194,29 @@ en:
           embed: Embed
           about: About
         base:
+          datatypes:
+            plain_text: plain text
+            formatted_text: formatted text
+            number: number
+            money: money
+            percent: percent
+            date_time_timezone: date & time (with timezone)
+            date_time: date & time
+            email: email
+            phone: phone
+            website_url: website URL
+            checkbox: checkbox
+            flag: flag
+            star: star
+            location: location
+            geospatial: geospatial
+            document: document
+            photo: photo (image)
+            multiple_choice: multiple choice
+            dataset_link: dataset link
+            object: object
+            list: list
+            nested_table: nested table
           validation:
             invalid_view: This view must be valid
             different_value: A different value is required.
@@ -585,6 +608,7 @@ en:
           validation:
             viz_limit: A view may only have one visualization on it
             required_columns: %{chart_type} requires %{column_types} columns
+            count: %{count}
           setup:
             title: Chart Setup
             type: Chart Type
@@ -919,7 +943,7 @@ it:
           no_email: "La tua email è obbligatoria."
         error_message: "Si è verificato un errore durante l'invio del feedback per questo dataset. Si prega di riprovare più tardi."
         success_message: "La notifica è stata inviata al proprietario del dataset."
-        captcha_failed: "La risposta non è corretta, Si prega di riprovare."
+        captcha_failed: "La risposta non è corretta, si prega di riprovare."
       dataset_status:
         # status is eg 'is available' or 'can be made'
         needs_copy: "Questo dataset è pubblicato e non può essere modificato direttamente. Una copia di lavoro %{status} che ti permette di effettuare le modifiche desiderate prima di renderle pubbliche."
@@ -936,6 +960,7 @@ it:
       column_tip:
         aggregate: "(%{aggregate} su %{data_type})"
         original_name: Nome Originale
+        field_name: Nome campo API
       grid_sidebar:
         tabs:
           edit: Modifica
@@ -948,6 +973,22 @@ it:
           embed: Embed
           about: Informazioni
         base:
+          datatypes:
+            plain_text: testo
+            formatted_text: testo formattato
+            number: numero
+            money: denaro
+            percent: percentuale
+            date_time_timezone: data & ora (con fuso orario)
+            date_time: data & ora
+            phone: telefono
+            website_url: web url
+            document: documento
+            photo: foto (immagine)
+            multiple_choice: scelta multipla
+            object: oggetto
+            list: lista
+            nested_table: tabella nidificata
           validation:
             invalid_view: Questa vista deve essere valida
             different_value: "E' richiesto un valore differente."
@@ -962,7 +1003,7 @@ it:
             no_greater: "Il valore non deve essere più grande di %{value}"
             numeric: Il valore deve essere un numero
           buttons:
-            remove: Rimouvi
+            remove: Rimuovi
             create: Crea
             update: Aggiorna
             apply: Applica
@@ -1261,7 +1302,7 @@ it:
           subtitle: Viste con localizzazioni possono essere visualizzate come punti su una mappa
           validation:
             viz_limit: "Una vista può avere solo una visualizzazione su di essa"
-            location_column: "E' richiesta una colonna di tipo lacation per creare una mappa."
+            location_column: "E' richiesta una colonna di tipo location per creare una mappa."
             hidden_location_html: "E' possibile <a href="#showLoc" title="Mostrare una colonna location">mostrare una colonna location nascosta</a>.
           layers:
             title: Riepilogo dataset
@@ -1338,7 +1379,8 @@ it:
           subtitle: "Una vista può essere visualizzata tramite una varietà di grafici"
           validation:
             viz_limit: "Una vista può avere solo una visualizzazione su di essa"
-            required_columns: %{chart_type} richiede colonne %{column_types}
+            required_columns: "%{chart_type} richiede %{column_types}"
+            count: %{count} colonna
           setup:
             title: Impostazione Grafico
             type: Tipo di Grafico
@@ -1370,7 +1412,7 @@ it:
           base_color: Colore base
           draw_line: Disegna una linea
           data_labels: Etichette dati
-          color_override_html: I colori possono essere sostituiti utilizzando <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione Condizionale</a>. Clicca <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">qui</a> per ogni attuale regola di formattazione condizionale.
+          color_override_html: I colori possono essere sostituiti utilizzando <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione Condizionale</a>. Clicca <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">qui</a> per cancellare ogni attuale regola di formattazione condizionale.
           treemap_color_html: Questi colori sono applicati in modo casuale sulla mappa solo per creare distinzioni nella visualizzazione. Non hanno uno specifio significato.
           group_extra: Raggruppa valori extra
           show_lines: Mostra linee
@@ -1400,7 +1442,7 @@ it:
             low: Basso
             high: Alto
             color: Colore
-          pie_other: "Attenzione: %{chart_type} aggregherà distinti valori (record) oltre il %{row_limit}th in un'altra categoria. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset."
+          pie_other: "Attenzione: %{chart_type} aggregherà valori distinti (record) oltre il %{row_limit}° nella categoria Altro. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset."
           pie_truncate: "Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset."
           configuration: Configurazioni
           advanced: Configurazione Avanzata

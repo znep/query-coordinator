@@ -64,7 +64,7 @@ it:
       actions:
         first_condition: Clicca qui per aggiungere la tua prima condizione di filtro.
         new_condition_button: Aggiungi un nuovo filtro.
-        remove_filter: Rimuovi il filtro.
+        remove_filter: Rimuovi il filtro
         confirm_modify: Con questa operazione verranno rimossi tutti i valori per il filtro impostato. Sicuro di voler procedere ?
         select_column: "Seleziona la colonna per cui filtrare:"
         select_operation: "Seleziona un criterio per il filtro:"

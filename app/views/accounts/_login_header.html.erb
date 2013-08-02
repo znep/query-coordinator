@@ -1,7 +1,11 @@
 <h1 class="loginHeader modalHeader">
-  <%= t('screens.sign_in.headline') %>
-  <%- unless CurrentDomain.short_name == 'socrata' -%>
-    to <%= CurrentDomain.strings.company %>
+  <%- if CurrentDomain.strings.login_header.present? -%>
+    <%= CurrentDomain.strings.login_header %>
+  <%- else -%>
+    <%= t('screens.sign_in.headline') %>
+    <%- unless CurrentDomain.short_name == 'socrata' -%>
+      to <%= CurrentDomain.strings.company %>
+    <%- end -%>
   <%- end -%>
 </h1>
 <div class="signupHeader modalHeader">

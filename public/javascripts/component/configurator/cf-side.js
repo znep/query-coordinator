@@ -27,7 +27,10 @@
                         { typeName: 'Share', catalogName: 'Share' },
                         { typeName: 'Visualization', catalogName: 'Chart', icon: 'Chart' },
                         { typeName: 'Visualization', catalogName: 'Map', icon: 'Map' },
-                        { typeName: 'Visualization', catalogName: 'Table', icon: 'Table' }
+                        { typeName: 'Visualization', catalogName: 'Table', icon: 'Table' },
+                        { typeName: 'Container', catalogName: 'Vertical Layout', icon: 'Container' },
+                        { typeName: 'HorizontalContainer', catalogName: 'Horizontal Layout',
+                            icon: 'HorizontalContainer' }
                     ]);
                 $.cf.edit.addComponentPalette('Advanced', [
                         { typeName: 'Map', catalogName: 'Base Map' },

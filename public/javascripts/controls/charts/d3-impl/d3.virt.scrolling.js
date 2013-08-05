@@ -374,7 +374,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             {
                 if (row.invalid[col.lookup]) { return null; }
                 // use matchValue to get canonical representation of data
-                return col.dataType.matchValue ? col.dataType.matchValue(row[col.lookup]) : row[col.lookup];
+                return col.renderType.matchValue ? col.renderType.matchValue(row[col.lookup]) : row[col.lookup];
             });
     },
 

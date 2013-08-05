@@ -14,28 +14,13 @@
         'treemap': 'jit'
     };
 
-    // Override to see chart in old style.
-    var forceOldCharts = $.urlParam(window.location.href, 'charts') == 'old';
+    /*
+        Correct behavior as of 2013-08-05, michael.chui@socrata.com:
 
-    if (blist.configuration.newChartsEnabled ||
-        $.urlParam(window.location.href, 'charts') == 'nextgen' ||
-        $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true)
-    {
-        if (!forceOldCharts)
-        {
-            $.extend(chartMapping, {
-                'column': 'd3_impl_bar',
-                'bar': 'd3_impl_bar',
-                'line': 'd3_impl_line',
-                'area': 'd3_impl_line',
-                'stackedbar': 'd3_impl_bar',
-                'stackedcolumn': 'd3_impl_bar',
-                'pie': 'd3_impl_pie',
-                'donut': 'd3_impl_pie'
-            });
-        }
-    }
-
+        If new_charts, new(X)Chart modules are active, switch these on.
+        If old_charts, ?charts=old are on, override above with old charts.
+        If ?charts=nextgen, df.nextgen is on, override above with new charts.
+    */
     var nextgenMapper = {
         'newBarChart': function() { $.extend(chartMapping, {
             'column': 'd3_impl_bar',
@@ -46,6 +31,24 @@
             'area': 'd3_impl_line'
             }); }
     };
+
+    var forceOldCharts = $.urlParam(window.location.href, 'charts') == 'old' || blist.configuration.oldChartsForced;
+
+    var forceNewCharts = $.urlParam(window.location.href, 'charts') == 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
+
+    if (blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts)
+    {
+        $.extend(chartMapping, {
+            'column': 'd3_impl_bar',
+            'bar': 'd3_impl_bar',
+            'line': 'd3_impl_line',
+            'area': 'd3_impl_line',
+            'stackedbar': 'd3_impl_bar',
+            'stackedcolumn': 'd3_impl_bar',
+            'pie': 'd3_impl_pie',
+            'donut': 'd3_impl_pie'
+        });
+    }
 
     if (!forceOldCharts)
     {

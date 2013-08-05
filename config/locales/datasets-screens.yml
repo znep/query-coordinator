@@ -224,7 +224,7 @@ en:
             invalid_values: There were problems with the specified values. Please check the errors above.
             uid_required: This requires a 4x4 view UID
             identifier_format: Valid API identifier characters are lower case letters, digits and underscore.  It must start with a letter and cannot have consecutive underscores.
-            file_format: %{format} file is required
+            file_format: "%{format} file is required"
             verifying_url: Verifying URL
             invalid_url: This URL is not valid
             at_least: Value must be at least %{value}
@@ -607,8 +607,8 @@ en:
           subtitle: View data can be displayed with a variety of charts
           validation:
             viz_limit: A view may only have one visualization on it
-            required_columns: %{chart_type} requires %{column_types} columns
-            count: %{count}
+            required_columns: "%{chart_type} requires %{column_types} columns"
+            count: "%{count}"
           setup:
             title: Chart Setup
             type: Chart Type
@@ -660,7 +660,7 @@ en:
             no_decimals: No Decimals
             auto: Auto
           marker:
-            title: %{axis} Marker
+            title: "%{axis} Marker"
             new_marker_button: Add Marker
             value: At Value
             caption: Caption
@@ -1380,7 +1380,7 @@ it:
           validation:
             viz_limit: "Una vista può avere solo una visualizzazione su di essa"
             required_columns: "%{chart_type} richiede %{column_types}"
-            count: %{count} colonna
+            count: "%{count} colonna"
           setup:
             title: Impostazione Grafico
             type: Tipo di Grafico
@@ -1431,7 +1431,7 @@ it:
             no_decimals: No Decimali
             auto: Auto
           marker:
-            title: %{axis} Marker
+            title: "%{axis} Marker"
             new_marker_button: Aggiungi Marker
             value: Al valore
             caption: Titolo
@@ -5821,3 +5821,19 @@ ru:
         remove_email: Удалить
         message_prompt: Ввести другой вариант сообщения
         email_button: Адрес эл. почты
+
+ro:
+  screens:
+    ds:
+      grid_sidebar:
+        tabs:
+          edit: Redacta
+          manage: Administra
+          more_views: Mai Multe Vizualizări
+          filter: Filtra
+          visualize: Reprezentări
+          export: Exporta
+          discuss: Discuta
+          embed: Distribuiţi
+          about: Despre
+

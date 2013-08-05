@@ -200,9 +200,10 @@ $config_header_color: #711e8c
       background: url(/stylesheets/images/content/dropdown_arrow.png) no-repeat right 0.7em
       content: ' '
       display: block
-      height: auto
+      height: 1.8em
       line-height: 1.8em
       @include opacity(1)
+      overflow: hidden
       text-align: center
       width: 100%
 
@@ -227,12 +228,16 @@ $config_header_color: #711e8c
     display: inline-block
     margin-bottom: -0.6em
     margin-right: 0
+    margin-top: 1.7em
 
     > div
       display: inline-block
 
       > *
         margin-right: 10px
+
+    .absolute, .relative, .wizardToggle
+      display: inline
 
   span
     font-size: 2.8em
@@ -244,10 +249,16 @@ $config_header_color: #711e8c
     width: 47em
   .measureUnit
     width: 28em
-  .measureTarget
+  .measureTarget, .measureBaseline
     width: 23em
   .measureComparison
     width: 12em
+
+    .selectValue
+      text-transform: lowercase
+
+  .measureMaintainType
+    width: 13em
 
     .selectValue
       text-transform: lowercase
@@ -257,6 +268,11 @@ $config_header_color: #711e8c
 
     .selectValue
       text-transform: lowercase
+
+  .wizardToggle
+    bottom: 0.5em
+    margin-left: 0.2em
+    position: relative
 
 .prevailingMeasureMetricSummary
   float: left
@@ -304,9 +320,9 @@ $wizard_border_color: #ccc
   .inputWrapper input
     font-size: 2.8em
 
-.prevailingMeasureBaselineWizardToggle
-  float: right
-  padding: 1.5em 0
+.prevailingMeasureBaselineWizard
+  margin-top: 3em
+
 
 @mixin radioize-button($radius: 0.8em)
   @include text-hiding
@@ -441,7 +457,7 @@ $wizard_border_color: #ccc
     .datasetPicker
       clear: both
 
-  .selectValueType, .selectAggFunction, .selectValueColumn, .selectDateColumn
+  .selectValueType, .selectAggFunction, .selectValueColumn, .selectDateColumn, .calculationType
     .listEnum li
       border-top: 1px solid #ddd
       padding: 1em 0
@@ -462,7 +478,7 @@ $wizard_border_color: #ccc
         right: 0
         top: 50%
 
-  .selectValueColumn, .selectDateColumn
+  .selectValueColumn, .selectValueColumns, .selectDateColumn
     .listEnum li
       .columnName
         font-size: 1.6em
@@ -471,12 +487,46 @@ $wizard_border_color: #ccc
       .button
         margin-top: -1.1em
 
+    .noEligibleColumns
+      font-size: 1.4em
+      padding: 1em 0
+
+  .wizardBody .wizardContents .selectValueColumns
+    .intro
+      margin-bottom: 0
+    .madlib
+      padding-top: 0
+
+      .firstColumn, .secondColumn
+        width: 35em
+
+      .operation
+        width: 20em
+
   .preview
     .measureChart
       .chartArea
         margin: 2em -4.2em 2em
       .pull
         display: none
+
+  .staticValue
+    .madlib .inputWrapper
+      width: 100%
+
+  .wizardBody .wizardContents .dateRange
+    .intro
+      margin-bottom: 0
+    .madlib
+      padding-top: 0
+
+  .baselineApply
+    overflow: hidden
+
+    .baselineValue
+      float: left
+      font-size: 3em
+      margin-right: 1em
 
 
 .goalEditor.socrataDialog

@@ -549,6 +549,7 @@ javascripts:
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/waypoints2.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/icon-picker.js

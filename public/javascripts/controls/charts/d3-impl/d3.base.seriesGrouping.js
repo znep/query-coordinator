@@ -442,145 +442,151 @@ d3base.seriesGrouping = {
 
     _setLoadingOverlay: function()
     {
-        var vizObj = this;
-        var sg = this._seriesGrouping;
-
-        var overlay = $.tag(
-            { tagName: 'div', 'class': 'dsgProgress flash notice invisible', contents: [
-                { tagName: 'div', contents: [
-                    { tagName: 'span', 'class': 'dsgOperationText' }
-                ]},
-                { tagName: 'p', contents: [
-                    { tagName: 'span', 'class': 'dsgProgressText' }
-                ]},
-                { tagName: 'p', 'class': 'dsgLoadingMsg', contents: [
-                    { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation1')},
-                    { tagName: 'span', 'class': 'filter dsgFilterIcon', contents:[
-                        { tagName: 'span', 'class': 'icon'}
-                    ]},
-                    { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation2')}
-                ]},
-                { tagName: 'p', contents: [
-                    { tagName: 'a', 'class': 'button dsgProgressPauseButton invisible', contents: $.t('controls.charts.series_grouping.pause_rendering') }
-                ]},
-                { tagName: 'div', 'class': 'loadingSpinner minimal dsgSpinner'}
-            ] }
-        , true);
-
-        this._setChartOverlay(overlay);
-        sg.$loadingOverlay = this.$dom().find('.dsgProgress');
-        sg.$loadingOverlayOperationText = this.$dom().find('.dsgOperationText');
-        sg.$loadingOverlayProgressText = this.$dom().find('.dsgProgressText');
-        sg.$dsgProgressPauseButton = this.$dom().find('.dsgProgressPauseButton');
-        sg.$dsgLoadingMsg = this.$dom().find('.dsgLoadingMsg');
-        sg.$dsgSpinner = this.$dom().find('.dsgSpinner');
-
-        // Using mousedown instead of click as browsers tend to miss click events
-        // when they're under a heavy processing load. Especially chrome.
-        sg.$dsgProgressPauseButton.mouseup(function()
+        if(!this._displayFormat.hideDsgMsg)
         {
-            if (sg.virtualRowReadyCount != sg.totalVirtualRows && _.isEmpty(sg.savedRenderRowQueue))
+            var vizObj = this;
+            var sg = this._seriesGrouping;
+
+            var overlay = $.tag(
+                { tagName: 'div', 'class': 'dsgProgress flash notice invisible', contents: [
+                    { tagName: 'div', contents: [
+                        { tagName: 'span', 'class': 'dsgOperationText' }
+                    ]},
+                    { tagName: 'p', contents: [
+                        { tagName: 'span', 'class': 'dsgProgressText' }
+                    ]},
+                    { tagName: 'p', 'class': 'dsgLoadingMsg', contents: [
+                        { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation1')},
+                        { tagName: 'span', 'class': 'filter dsgFilterIcon', contents:[
+                            { tagName: 'span', 'class': 'icon'}
+                        ]},
+                        { tagName: 'span', 'class': 'dsgPauseExplanationText', contents: $.t('controls.charts.series_grouping.pause_button_explanation2')}
+                    ]},
+                    { tagName: 'p', contents: [
+                        { tagName: 'a', 'class': 'button dsgProgressPauseButton invisible', contents: $.t('controls.charts.series_grouping.pause_rendering') }
+                    ]},
+                    { tagName: 'div', 'class': 'loadingSpinner minimal dsgSpinner'}
+                ] }
+            , true);
+
+            this._setChartOverlay(overlay);
+            sg.$loadingOverlay = this.$dom().find('.dsgProgress');
+            sg.$loadingOverlayOperationText = this.$dom().find('.dsgOperationText');
+            sg.$loadingOverlayProgressText = this.$dom().find('.dsgProgressText');
+            sg.$dsgProgressPauseButton = this.$dom().find('.dsgProgressPauseButton');
+            sg.$dsgLoadingMsg = this.$dom().find('.dsgLoadingMsg');
+            sg.$dsgSpinner = this.$dom().find('.dsgSpinner');
+
+            // Using mousedown instead of click as browsers tend to miss click events
+            // when they're under a heavy processing load. Especially chrome.
+            sg.$dsgProgressPauseButton.mouseup(function()
             {
-                vizObj._pauseSeriesProcessing();
-            }
-            else
-            {
-                vizObj._resumeSeriesProcessing();
-            }
-        });
+                if (sg.virtualRowReadyCount != sg.totalVirtualRows && _.isEmpty(sg.savedRenderRowQueue))
+                {
+                    vizObj._pauseSeriesProcessing();
+                }
+                else
+                {
+                    vizObj._resumeSeriesProcessing();
+                }
+            });
+        }
     },
 
     _updateLoadingOverlay: function(state)
     {
-        var vizObj = this;
-        var sg = vizObj._seriesGrouping;
-        var cc = vizObj._chartConfig;
-
-        if (sg && sg.$loadingOverlay)
+        if(!this._displayFormat.hideDsgMsg)
         {
-            var remaining = sg.totalVirtualRows - sg.virtualRowReadyCount;
+            var vizObj = this;
+            var sg = vizObj._seriesGrouping;
+            var cc = vizObj._chartConfig;
 
-            var operationPhaseMessage = '';
-            var progressMessage = '';
-
-            switch (state)
+            if (sg && sg.$loadingOverlay)
             {
-                case 'start':
-                    sg.startLoadingTimeMillisec = Date.now();
-                    delete sg.pauseLoadingTimeMillisec;
-                    break;
-                case 'done':
-                //Done is when
-                //the caluculations are done and pausing no longer works, but before the charts shows
+                var remaining = sg.totalVirtualRows - sg.virtualRowReadyCount;
 
-                    operationPhaseMessage = $.t('controls.charts.series_grouping.drawing_running');
-                    sg.$dsgProgressPauseButton.addClass('invisible');
-                    sg.$dsgLoadingMsg.addClass('invisible');
-                    sg.$loadingOverlayProgressText.removeClass('invisible');
-                    sg.$dsgSpinner.removeClass('invisible');
-                    progressMessage = $.t('controls.charts.series_grouping.drawing_progress');
+                var operationPhaseMessage = '';
+                var progressMessage = '';
 
-                    break;
-
-                case 'loading':
-                    sg.$dsgSpinner.removeClass('invisible');
-                    sg.$loadingOverlay.removeClass('invisible');
-                    sg.$loadingOverlayProgressText.removeClass('invisible');
-                    operationPhaseMessage = $.t('controls.charts.series_grouping.calculation_running');
-                    // If the user resumes, backfill a start time that preserves the amount of elapsed time at pause.
-                    if (!_.isUndefined(sg.pauseLoadingTimeMillisec))
-                    {
-                        sg.startLoadingTimeMillisec = Date.now() - (sg.pauseLoadingTimeMillisec - sg.startLoadingTimeMillisec);
+                switch (state)
+                {
+                    case 'start':
+                        sg.startLoadingTimeMillisec = Date.now();
                         delete sg.pauseLoadingTimeMillisec;
-                    }
-                    sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.pause_rendering'));
+                        break;
+                    case 'done':
+                    //Done is when
+                    //the caluculations are done and pausing no longer works, but before the charts shows
 
-                    var elapsedTimeMillisec = Date.now() - (sg.startLoadingTimeMillisec || Date.now());
-                    if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec && sg.virtualRowReadyCount > 0)
-                    {
-                        var perRowMillisec = elapsedTimeMillisec / sg.virtualRowReadyCount;
-                        var remainingMillisec = remaining * perRowMillisec;
-                        var seconds = Math.floor(remainingMillisec/1000);
-                        if (seconds >= 60)
+                        operationPhaseMessage = $.t('controls.charts.series_grouping.drawing_running');
+                        sg.$dsgProgressPauseButton.addClass('invisible');
+                        sg.$dsgLoadingMsg.addClass('invisible');
+                        sg.$loadingOverlayProgressText.removeClass('invisible');
+                        sg.$dsgSpinner.removeClass('invisible');
+                        progressMessage = $.t('controls.charts.series_grouping.drawing_progress');
+
+                        break;
+
+                    case 'loading':
+                        sg.$dsgSpinner.removeClass('invisible');
+                        sg.$loadingOverlay.removeClass('invisible');
+                        sg.$loadingOverlayProgressText.removeClass('invisible');
+                        operationPhaseMessage = $.t('controls.charts.series_grouping.calculation_running');
+                        // If the user resumes, backfill a start time that preserves the amount of elapsed time at pause.
+                        if (!_.isUndefined(sg.pauseLoadingTimeMillisec))
                         {
-                            var minutes = Math.round(seconds/60);
-                            progressMessage = $.t(minutes == 1 ? 'controls.charts.series_grouping.rendering_progress_minute' : 'controls.charts.series_grouping.rendering_progress_minutes',
-                                {rows_remaining: remaining, time_remaining: minutes});
+                            sg.startLoadingTimeMillisec = Date.now() - (sg.pauseLoadingTimeMillisec - sg.startLoadingTimeMillisec);
+                            delete sg.pauseLoadingTimeMillisec;
                         }
-                        else if (seconds > 2)
+                        sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.pause_rendering'));
+
+                        var elapsedTimeMillisec = Date.now() - (sg.startLoadingTimeMillisec || Date.now());
+                        if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec && sg.virtualRowReadyCount > 0)
                         {
-                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress_seconds', {rows_remaining: remaining, time_remaining: seconds});
+                            var perRowMillisec = elapsedTimeMillisec / sg.virtualRowReadyCount;
+                            var remainingMillisec = remaining * perRowMillisec;
+                            var seconds = Math.floor(remainingMillisec/1000);
+                            if (seconds >= 60)
+                            {
+                                var minutes = Math.round(seconds/60);
+                                progressMessage = $.t(minutes == 1 ? 'controls.charts.series_grouping.rendering_progress_minute' : 'controls.charts.series_grouping.rendering_progress_minutes',
+                                    {rows_remaining: remaining, time_remaining: minutes});
+                            }
+                            else if (seconds > 2)
+                            {
+                                progressMessage = $.t('controls.charts.series_grouping.rendering_progress_seconds', {rows_remaining: remaining, time_remaining: seconds});
+                            }
+                            else
+                            {
+                                // TODO converting to strings as $.t() thinks 0 is the same as undefined. Remove when appropriate (1 more instance below).
+                                progressMessage = $.t('controls.charts.series_grouping.rendering_progress_almost_done', {rows_remaining: remaining+''});
+                            }
+
                         }
                         else
                         {
-                            // TODO converting to strings as $.t() thinks 0 is the same as undefined. Remove when appropriate (1 more instance below).
-                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress_almost_done', {rows_remaining: remaining+''});
+                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining+''});
                         }
+                        sg.$dsgProgressPauseButton.removeClass('invisible');
+                        sg.$dsgLoadingMsg.removeClass('invisible');
+                        break;
+                    case 'stopped':
+                        sg.$dsgSpinner.addClass('invisible');
+                        sg.$loadingOverlayProgressText.addClass('invisible');
+                        operationPhaseMessage = $.t('controls.charts.series_grouping.rendering_paused');
+                        if (_.isUndefined(sg.pauseLoadingTimeMillisec))
+                        {
+                            sg.pauseLoadingTimeMillisec = Date.now();
+                        }
+                        sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.resume_rendering'));
+                        sg.$dsgProgressPauseButton.removeClass('invisible');
+                        sg.$dsgLoadingMsg.removeClass('invisible');
+                        break;
+                }
 
-                    }
-                    else
-                    {
-                        progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining+''});
-                    }
-                    sg.$dsgProgressPauseButton.removeClass('invisible');
-                    sg.$dsgLoadingMsg.removeClass('invisible');
-                    break;
-                case 'stopped':
-                    sg.$dsgSpinner.addClass('invisible');
-                    sg.$loadingOverlayProgressText.addClass('invisible');
-                    operationPhaseMessage = $.t('controls.charts.series_grouping.rendering_paused');
-                    if (_.isUndefined(sg.pauseLoadingTimeMillisec))
-                    {
-                        sg.pauseLoadingTimeMillisec = Date.now();
-                    }
-                    sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.resume_rendering'));
-                    sg.$dsgProgressPauseButton.removeClass('invisible');
-                    sg.$dsgLoadingMsg.removeClass('invisible');
-                    break;
+                sg.$loadingOverlayOperationText.text(operationPhaseMessage);
+                sg.$loadingOverlayProgressText.text(progressMessage);
             }
-
-            sg.$loadingOverlayOperationText.text(operationPhaseMessage);
-            sg.$loadingOverlayProgressText.text(progressMessage);
         }
     },
 

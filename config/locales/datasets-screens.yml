@@ -684,6 +684,7 @@ en:
             new_column_button: Add Series Column
             group_by: Group by
             alphabetize: Alphabetize Groups
+            hideLoadingMsg: Hide Loading Message
           categories: Categories
           names: Names
           label: Label

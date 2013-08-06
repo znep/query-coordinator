@@ -324,7 +324,8 @@ d3base.seriesGrouping = {
                             lookup: virtualId,
                             name: virtualColumnName,
                             realValueColumn: valueCol,
-                            dataType: valueCol.column.dataType
+                            dataType: valueCol.column.dataType,
+                            renderType: valueCol.column.renderType
                         }
                     };
 

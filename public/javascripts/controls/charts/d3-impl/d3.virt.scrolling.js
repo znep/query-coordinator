@@ -241,7 +241,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
     moveBaseline: function(fromLeftBottom)
     {
-        var cc = this._chartConfig;
+        var cc = this._chartConfig,
+            ie8 = this._isIE8();
 
         // Default.
         if (!fromLeftBottom)
@@ -1288,7 +1289,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
                     // render plaintext representation of the data
                     else { text = fixedColumn.renderType.renderer(d[fixedColumn.lookup], fixedColumn, true, null, null, true); }
 
-                    this.visualLength = fontMetrics.lengthForString(text) * Math.abs(Math.cos(Math.PI * 40/ 180));
+                    this.visualLength = fontMetrics.lengthForString(text) * 0.766  // cos(40°)
+                                      + fontMetrics.heightForString(text) * 0.839; // tan(40°)
                     return text;
                 });
         rowLabels

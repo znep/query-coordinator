@@ -36,20 +36,36 @@
         return target;
     };
 
-    // We need to notify components that they lost focus
-    // as the browser will jump away on Tab
     var onBodyKeyDown = function(event)
     {
-        if (event.which == 9)
+        switch (event.which)
         {
-            _.defer(function()
-            {
-                var active = document.activeElement;
-                if (active)
-                { focusOnTarget(active); }
-                else
-                { $.cf.blur(true); }
-            });
+            case 9: // Tab
+                // We need to notify components that they lost focus
+                // as the browser will jump away on Tab
+                _.defer(function()
+                {
+                    var active = document.activeElement;
+                    if (active)
+                    { focusOnTarget(active); }
+                    else
+                    { $.cf.blur(true); }
+                });
+                break;
+            case 13: // Enter
+                if (!$.isBlank(focal))
+                { $.cf.focus(focal); }
+                break;
+            case 27: // ESC
+                if (!$.isBlank(focal))
+                {
+                    var curF = focal;
+                    var wasEditing = curF.isEditing();
+                    $.cf.blur(true);
+                    if (wasEditing)
+                    { $.cf.focus(curF); }
+                }
+                break;
         }
     };
 
@@ -526,9 +542,13 @@
                 // re-calls blur later in the call-stack
                 var localFocal = focal;
                 focal = undefined;
-                localFocal.editFocus(false);
-                if (!$.cf.configuration().editOnly)
-                { localFocal.edit(false); }
+                localFocal.select(false);
+                if (localFocal.isEditing())
+                {
+                    localFocal.editFocus(false);
+                    if (!$.cf.configuration().editOnly)
+                    { localFocal.edit(false); }
+                }
                 $body.removeClass('socrata-cf-has-focal');
                 $(localFocal.dom).removeClass('socrata-cf-focal');
             }
@@ -543,25 +563,37 @@
             { enableHoverFocus(); }
         },
 
-        focus: function(component)
+        focus: function(component, directEdit)
         {
             if (focal == component)
-            { return; }
-            $.cf.blur(false);
-            disableHoverFocus();
+            {
+                if (focal.isEditing())
+                { return; }
+
+                // Stay on target...
+                focal.select(false);
+                disableHoverFocus();
+                if (!$.cf.configuration().editOnly)
+                { focal.edit(true); }
+                focal.editFocus(true);
+                if ($.cf.configuration().sidebar)
+                { $.cf.side.properties(component); }
+
+                if (!$mask && $.cf.configuration().mask)
+                {
+                    $mask = $.tag2({ _: 'div', className: 'socrata-cf-mask' });
+                    focal.$dom.closest('.cfEditingWrapper').prepend($mask);
+                }
+
+                return;
+            }
+            $.cf.blur(true);
             focal = component;
             $body.addClass('socrata-cf-has-focal');
             focal.$dom.addClass('socrata-cf-focal');
-            if (!$.cf.configuration().editOnly)
-            { focal.edit(true); }
-            focal.editFocus(true);
-            if ($.cf.configuration().sidebar)
-            { $.cf.side.properties(component); }
-            if (!$mask && $.cf.configuration().mask)
-            {
-                $mask = $('<div class="socrata-cf-mask"></div>');
-                $body.prepend($mask);
-            }
+            focal.select(true);
+            if (directEdit)
+            { $.cf.focus(component); }
         }
 
     });

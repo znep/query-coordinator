@@ -3,7 +3,7 @@
     var controlRegistry = {};
 
     $.fn.isControlClass = function(name)
-    { return _.include(($(this[0]).data('controlClass') || '').split('.'), name); };
+    { return !!($(this[0]).data('controlClass') || {})[name]; };
 
     $.Control =
     {
@@ -22,11 +22,16 @@
                 $.fn[name] = function(options)
                 {
                     // Check if object was already created
-                    var obj = $(this[0]).data(name);
+                    var $t = $(this[0]);
+                    var obj = $t.data(name);
                     if ($.isBlank(obj))
                     {
                         obj = new newModel(options, this[0], controlRegistry[name]);
-                        $(this[0]).data(name, obj).data('controlClass', controlRegistry[name].name);
+                        $t.data(name, obj);
+                        var cc = $t.data('controlClass') || {};
+                        _.each(controlRegistry[name].name.split('.'), function(n)
+                            { cc[n] = true; });
+                        $t.data('controlClass', cc);
                     }
                     return obj;
                 };

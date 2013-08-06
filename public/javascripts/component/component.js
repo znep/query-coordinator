@@ -213,12 +213,45 @@
             { this.$dom.nativeDraggable().disable(); }
         },
 
+        select: function(selected)
+        {
+            var cObj = this;
+            cObj._selected = selected;
+
+            cObj._updateSelectedIcons();
+
+            cObj.$dom.toggleClass('cf-selected', cObj._selected);
+            if (cObj.canEdit('resize'))
+            {
+                if (selected)
+                {
+                    if (!cObj.$dom.hasClass('ui-resizable'))
+                    {
+                        cObj.$dom.resizable({
+                            handles: 's',
+                            start: _.bind(cObj._onUiResizableResizeStart, cObj),
+                            stop: _.bind(cObj._onUiResizableResizeStop, cObj)
+                        });
+                        // This unhides children, so fix them up
+                        cObj.$dom.find('.socrata-component .ui-resizable-handle').hide();
+                    }
+                    else
+                    { cObj.$dom.children('.ui-resizable-handle').show(); }
+                }
+                else if (cObj.$dom.hasClass('ui-resizable'))
+                { cObj.$dom.children('.ui-resizable-handle').hide(); }
+            }
+        },
+
         /**
          * Set active editing state.
          */
         edit: function(editing)
         {
             var cObj = this;
+
+            if (editing == (cObj._editing || false))
+            { return false; }
 
             if (editing && !cObj._disableEditCapture && !cObj._boundEditEvent)
             {
@@ -263,27 +296,6 @@
             delete cObj._needsEdit;
             cObj._editing = editing;
 
-            cObj._updateRemoveIcon();
-
-            if (cObj.canEdit('resize'))
-            {
-                if (editing)
-                {
-                    if (!cObj.$dom.hasClass('ui-resizable'))
-                    {
-                        cObj.$dom.resizable({
-                            handles: 's',
-                            start: _.bind(cObj._onUiResizableResizeStart, cObj),
-                            stop: _.bind(cObj._onUiResizableResizeStop, cObj)
-                        });
-                    }
-                    else
-                    { cObj.$dom.find('.ui-resizable-handle').show(); }
-                }
-                else if (cObj.$dom.hasClass('ui-resizable'))
-                { cObj.$dom.find('.ui-resizable-handle').hide(); }
-            }
-
             if (cObj._supportsCustomEditors() && cObj._properties.editor)
             {
                 if (editing) {
@@ -311,6 +323,9 @@
             }
             return true;
         },
+
+        isEditing: function()
+        { return this._editing; },
 
         canEdit: function(type)
         {
@@ -340,7 +355,12 @@
          */
         editFocus: function(focused)
         {
-            if (focused) return true;
+            if (focused == (this._focused || false))
+            { return false; }
+
+            this._focused = focused;
+            if (focused)
+            { return true; }
 
             // Update properties from custom editor
             if (this._supportsCustomEditors() && this._properties.editor) {
@@ -387,14 +407,27 @@
             this.$contents.empty();
         },
 
-        _updateRemoveIcon: function()
+        _updateSelectedIcons: function()
         {
             var cObj = this;
+
+            if ($.isBlank(cObj._$editIcon))
+            {
+                cObj._$editIcon = $.tag2({ _: 'a', className: ['actionIcon', 'editIcon', 'ss-write'],
+                    href: '#', title: 'Edit this component' });
+                cObj.$dom.append(cObj._$editIcon);
+                cObj._$editIcon.click(function(e)
+                {
+                    e.preventDefault();
+                    $.cf.focus(cObj);
+                });
+            }
+            cObj.$dom.toggleClass('editActive', !$.isBlank(cObj.parent) && cObj._selected);
+
             if ($.isBlank(cObj._$removeIcon))
             {
-                cObj._$removeIcon = $.tag({tagName: 'a', 'class': 'removeIcon', href: '#',
-                    title: 'Remove this component',
-                    contents: {tagName: 'span', 'class': 'icon'}});
+                cObj._$removeIcon = $.tag2({ _: 'a', className: ['actionIcon', 'removeIcon', 'ss-delete'],
+                    href: '#', title: 'Remove this component' });
                 cObj.$dom.append(cObj._$removeIcon);
                 cObj._$removeIcon.click(function(e)
                 {
@@ -407,7 +440,7 @@
                     });
                 });
             }
-            cObj.$dom.toggleClass('removeActive', !$.isBlank(cObj.parent) && cObj._editing);
+            cObj.$dom.toggleClass('removeActive', !$.isBlank(cObj.parent) && cObj._selected);
         },
 
         /**

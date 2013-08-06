@@ -170,24 +170,27 @@ body.configuring
     @include component-colors($designer_components_actions_color, Map, MapLayer, BubbleChart, ColumnChart, LineChart, PieChart)
 
 .socrata-cf-mask
-  z-index: 999
-  background: rgba(255, 255, 255, .5)
-  position: fixed
+  z-index: 2999
+  background: rgba(160, 160, 160, .5)
+  position: absolute
   top: 0
   right: 0
   bottom: 0
   left: 0
   pointer-events: none // TODO - emulate for IE < 9
-  .ie7 &, .ie8 &
+  .ie8 &
     background: url(/stylesheets/images/content/1px-0.5-transparent.png)
 
-.socrata-cf-focal
-  z-index: 1000
+.configuring .cfEditingWrapper .socrata-component.socrata-cf-focal
+  background: #f0f0f0
   @include box-shadow(0, 0, 12px, black)
   position: relative
-  .ie7 &, .ie8 &
+  z-index: 3000
+  .ie8 &
     border: 2px dashed $color_chrome_box_border
 
+  &.cf-selected
+    cursor: move
   .content-wrapper
     line-height: 1.5em
     word-wrap: break-word
@@ -288,17 +291,27 @@ body.configuring
     background-color: #666666
     display: block
 
-  .removeIcon
+  .actionIcon
+    background: #ffffff
     @include box-shadow(0, 0, 6px, black)
     @include rounded-ends
+    color: #333333
     display: none
+    font-size: 1.1em
+    height: 15px
+    line-height: 13px
     position: absolute
-    right: -8px
+    text-align: center
     top: -8px
-    .icon
-      @include close-button
+    width: 15px
 
-  &.removeActive > .removeIcon
+  .editIcon
+    right: 12px
+
+  .removeIcon
+    right: -8px
+
+  &.removeActive > .removeIcon, &.editActive > .editIcon
     display: block
 
 .controlPane .formSection .line

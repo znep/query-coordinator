@@ -371,7 +371,10 @@
                         contentEditable: false,
                         acceptCheck: function($item)
                         {
-                            return $item.data('typename') != 'MapLayer' &&
+                            // Don't allow dropping a Container into itself or a child
+                            return !$item.find(cObj.$dom).exists() &&
+                                $item[0] != cObj.$dom[0] &&
+                                $item.data('typename') != 'MapLayer' &&
                                 ($item.hasClass('socrata-component') ||
                                 $item.hasClass('componentCreate'));
                         },
@@ -380,6 +383,13 @@
                         {
                             if (!$.isBlank(cObj._$dropCursor))
                             { cObj._$dropCursor.addClass('hide'); }
+                            // Don't save positions when moving out; but we want to be sure
+                            // these are around for drop to handle
+                            _.defer(function()
+                            {
+                                delete cObj._dropPosition;
+                                delete cObj._dropChild;
+                            });
                         },
                         dropCallback: function(dropId, dropType)
                         {
@@ -453,6 +463,8 @@
                 if (!$.isBlank(moveChild) && moveChild.parent == this &&
                         (this._dropPosition == moveChild || this._dropPosition == moveChild.next))
                 {
+                    delete this._dropPosition;
+                    delete this._dropChild;
                     if (!$.isBlank(this._$dropCursor)) { this._$dropCursor.addClass('hide'); }
                     return false; // Don't accept drop here
                 }

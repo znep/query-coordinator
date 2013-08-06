@@ -241,8 +241,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
     moveBaseline: function(fromLeftBottom)
     {
-        var cc = this._chartConfig,
-            ie8 = this._isIE8();
+        var cc = this._chartConfig;
 
         // Default.
         if (!fromLeftBottom)

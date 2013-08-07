@@ -586,24 +586,29 @@ d3ns.math = {
 d3ns.fontMetrics = function($){
 
     var globalFontMetricId = 1;
+    var fontAttrs = [ 'family', 'size', 'style', 'variant', 'weight' ];
     var fm = {
-
-        getFontSpec: function($element)
+        getFontSpec: function(element)
         {
-            var family = $element.css('font-family');
-            var size = $element.css('font-size');
-            var style = $element.css('font-style');
-            var variant = $element.css('font-variant');
-            var weight = $element.css('font-weight');
-            var spec = {
-                family: family,
-                size: size,
-                style: style,
-                variant: variant,
-                weight: weight
-            };
+            var attrGetter = _.bind(element.css || element.attr, element);
+
+            var spec = {};
+
+            _.each(fontAttrs, function(a)
+            {
+                spec[a] = attrGetter('font-'+a);
+            });
 
             spec.hash = _.map(spec, function(v, k) { return k+':'+v; }).sort().join();
+
+            spec.applyTo = function(targetElement)
+            {
+                var attrSetter = _.bind(targetElement.css || targetElement.attr, targetElement);
+                _.each(fontAttrs, function(a)
+                {
+                    attrSetter('font-'+a, spec[a]);
+                });
+            };
 
             return spec;
         },
@@ -616,10 +621,7 @@ d3ns.fontMetrics = function($){
 
             var $ruler = $('<span class="ruler" id="'+uniqueId+'"></span>');
             $('body').append($ruler);
-            _.each(fontSpec, function(value, key)
-            {
-                $ruler.css('font-'+key, value);
-            });
+            fontSpec.applyTo($ruler);
 
             var sizeForString = _.memoize(function(str)
             {

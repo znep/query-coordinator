@@ -1282,29 +1282,12 @@ $.Control.registerMixin('d3_impl_pie', {
         {
             var cc = this._chartConfig;
 
-            var $labels = cc.$drawElement.find('.label');
-
-            var fontSpec;
-            if ($labels.exists())
-            {
-                fontSpec = d3ns.fontMetrics.getFontSpec($labels);
-            }
-            else
-            {
-                var labels = cc.chartD3.selectAll('.label')
-                    .data(['']).enter().append('text').classed('label', true);
-
-                $labels = cc.$drawElement.find('.label');
-                fontSpec = d3ns.fontMetrics.getFontSpec($labels);
-
-                labels.data([]).exit().remove();
-            }
-
+            var fontSpec = d3ns.fontMetrics.getFontSpec(cc.$chartContainer);
             var globalFm = d3ns.fontMetrics.getFontMetrics(fontSpec);
 
             var fm =
             {
-                labelFontSize: fontSpec.size,
+                fontSpec: fontSpec,
                 labelHeight: globalFm.sizeForString('Xg').height,
                 lengthForString: function(str)
                 {
@@ -1523,8 +1506,19 @@ $.Control.registerMixin('d3_impl_pie', {
             .enter()
                 .append('text')
                 .classed('label', true)
-                .attr({ 'text-anchor': 'start',
-                        'font-size': fontMetrics.labelFontSize });
+                .attr('text-anchor', 'start')
+                .each(function(elem)
+                {
+                    // Note: We must apply the font spec here because otherwise
+                    // Raphael will fall back to its internal default, which can
+                    // be different from the actual inherited CSS font style.
+                    // Additionally, raphael will set its font (default or not)
+                    // as a direct attr on the text elements, defeating any
+                    // font-related CSS rules targeting the labels. So if one
+                    // wants to change the label font, they must change the font
+                    // no lower than the root of the chart DOM.
+                    fontMetrics.fontSpec.applyTo(this);
+                });
 
         labels
             .each(fitText)

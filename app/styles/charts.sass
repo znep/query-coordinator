@@ -27,6 +27,9 @@
     right: 0em
     bottom: 0em
 
+  &.hasNoneLegend .legendContainer
+    visibility: hidden
+
   &.hasTopLegend .legendContainer
     position: absolute
 
@@ -523,7 +526,7 @@
       @include border-radius(0.35em)
       background-color: #0b5e9b
       display: inline-block
-      width: 23px 
+      width: 23px
       margin-left: 4px
       margin-right: 4px
       margin-bottom: -5px
@@ -536,7 +539,7 @@
       margin-top: 10px
       display: inline-block
       z-index: 9998 //Make it not show up on top of dialogs
-  
+
 .widgetContent
   .dsgLoadingMsg
     display: none

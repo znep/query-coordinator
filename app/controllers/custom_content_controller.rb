@@ -165,7 +165,7 @@ class CustomContentController < ApplicationController
     self.action_name = 'homepage' if full_path == '/'
     unless @page
       if full_path == '/'
-        if CurrentDomain.module_enabled?(:govStat)
+        if CurrentDomain.module_enabled?(:govStat) && !CurrentDomain.feature?(:govstat_15)
           govstat_homepage
         else
           homepage

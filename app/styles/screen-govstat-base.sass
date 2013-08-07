@@ -53,6 +53,8 @@ input.button, a.button
   @include transition(0.2s, background)
   &:hover
     background: lighten($govstat_color_action, 6%)
+    &.disabled
+      background: #fcfcfc
   &.default
     background: $govstat_color_home
     border-color: $govstat_color_action

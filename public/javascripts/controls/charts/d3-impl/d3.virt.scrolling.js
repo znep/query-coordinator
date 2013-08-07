@@ -812,12 +812,18 @@ $.Control.registerMixin('d3_virt_scrolling', {
             var renderHeight = cc.$chartContainer[cc.dataDim.pluckY('renderWidth', 'renderHeight')]();
             setRaphaelSize(renderHeight, Math.min(minTotalWidth, maxRenderWidth));
             cc[areas.y] = renderHeight;
+
+            if (cc.orientation == 'right') // Re Bug 11723
+            { cc.$chartContainer.css('overflow-x', 'auto'); }
         }
         else
         {
             // set our sizing to equal vis area
             setRaphaelSize(domArea, Math.min(chartArea, maxRenderWidth));
             cc.$chartRenderArea[cc.dataDim.width](chartArea);
+
+            if (cc.orientation == 'right') // Re Bug 11723.
+            { cc.$chartContainer.css('overflow-x', 'hidden'); }
 
             cc[areas.x] = chartArea;
             cc[areas.y] = domArea;

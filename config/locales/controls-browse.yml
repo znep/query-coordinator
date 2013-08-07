@@ -54,7 +54,7 @@ en:
           main: Results %{body}
           term: for "%{term}"
           facet_main: matching %{body}
-          facet: %{facet_type} of %{facet_value}
+          facet: "%{facet_type} of %{facet_value}"
       listing:
         no_results: No Results
         timeout: "We're sorry. Results could not be retrieved at this time. Please try again later."
@@ -171,7 +171,7 @@ it:
           main: Risultati %{body}
           term: "per \"%{term}\""
           facet_main: corrispondenze %{body}
-          facet: %{facet_type} di %{facet_value}
+          facet: "%{facet_type} di %{facet_value}"
       listing:
         no_results: Nessun risultato
         timeout: "Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare più tardi."

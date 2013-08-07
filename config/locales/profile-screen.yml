@@ -105,7 +105,7 @@ en:
               view_made_public: Any view is made public
               other: Other
               user_affected: Actions directly affecting you, such as comment replies and status updates
-            policy: %{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to.
+            policy: "%{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to."
         app_tokens:
           title: App Tokens
           title_full: Your Applications

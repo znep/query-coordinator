@@ -63,12 +63,15 @@
       div.button
         background-color: lighten($color, 8%)
 
-
 .subHubSection
   background-color: #e7e7e7
   border-bottom: 2px solid $govstat_color_home
   margin: -2em -4em
   margin-bottom: 2em
+
+  // odysseus:
+  .page.govstatRoot &
+    margin-bottom: 4em
 
   .subHubTitle
     padding: 3em 4em 0
@@ -89,9 +92,25 @@
     text-rendering: optimizeLegibility
     width: auto
 
+    // odysseus:
+    .page.govstatRoot &
+      font-size: 2em
+      padding: 0 2.15em 1.5em
+
   .subHubNavigation
     max-width: 100em
     margin: 0 auto 3em
+
+    // odysseus:
+    .page.govstatRoot &
+      li
+        float: left
+        width: 33.3333%
+
+      li.last
+        float: none
+        overflow: hidden
+        width: auto
 
     .component-wrapper
       > .component-Button

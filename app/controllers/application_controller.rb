@@ -233,13 +233,23 @@ private
   end
 
   def check_lockdown
-    if CurrentDomain.feature? :staging_lockdown
+    if globalsign_user_agent?
+      # Render a skeleton page with just the GlobalSign domain validator value if their bot is hitting us.
+      # Unrelated to the staging lockdown, but this is a convenient place to do this check.
+      # Note that the selection of shared/error here is arbitrary as it won't actually render, 
+      # but Rails requires a valid page to be specified.
+      return render('shared/error', :layout => 'globalsign')
+    elsif CurrentDomain.feature? :staging_lockdown
       if current_user.nil?
         return require_user(true)
       elsif !CurrentDomain.member?(current_user)
         return render_forbidden
       end
     end
+  end
+
+  def globalsign_user_agent?
+    request.env["HTTP_USER_AGENT"] && request.env["HTTP_USER_AGENT"][/(GlobalSign)/]
   end
 
   def store_location

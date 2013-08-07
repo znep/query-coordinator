@@ -40,11 +40,12 @@ Frontend::Application.routes do
 
     # New frontend pages
     scope :controller => 'odysseus', :action => 'index' do
-      match '/stat/goals'
-      match '/stat/goals/:dashboard_id'
-      match '/stat/goals/:dashboard_id/edit'
-      match '/stat/goals/:dashboard_id/:category_id/:goal_id'
-      match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit'
+      match '/stat', :as => 'govstat_root'
+      match '/stat/goals', :as => 'govstat_goals'
+      match '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
+      match '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
+      match '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
+      match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit'
     end
 
     scope :path => '/internal', :controller => 'internal' do

@@ -101,7 +101,7 @@ http://www.socrata.com
         <%- if module_enabled?(:govStat) && !@suppress_govstat -%>
           <%= render_text_template('<div class="clearfix">{{main_logo}}<ul class="siteUserNav">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>') %>
           <ul class="manageActions">
-            <li class="home"><a href="<%= manage_path %>" class="ss-home" title="Home">Home</a></li>
+            <li class="home"><a href="<%= CurrentDomain.feature?(:govstat_15) ? govstat_root_path : manage_path %>" class="ss-home" title="Home">Home</a></li>
             <li class="data"><a href="<%= manage_data_path %>" class="ss-hdd"
               title="Browse and Manage Data">Data</a></li>
             <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"

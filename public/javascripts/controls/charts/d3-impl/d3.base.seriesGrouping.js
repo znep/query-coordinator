@@ -39,10 +39,16 @@ d3base.seriesGrouping = {
             return vizObj._super.apply(vizObj, arguments);
         }
 
+        // Sort types: natural, alphabetical, arbitrary.
+        // natural: the dataset as uploaded.
+        // alphabetical: the relevant column is in query.orderBys.
+        // arbitrary: use metadata.displayOrder.
         var sg = vizObj._seriesGrouping = {
             categoryIndexLookup: {},
+            categorySort: 'natural', // arbitrary sort not supported yet.
             fixedColumn: null,
             groupedView: null,
+            groupSort: 'natural',
             hasGroupBys: _.isArray((vizObj._primaryView.query || {}).groupBys),
             physicalRowsRetreived: 0,
             ready: false,
@@ -80,6 +86,9 @@ d3base.seriesGrouping = {
         if (vizObj._fixedColumns[0])
         {
             var orderBys = $.deepGet(vizObj._primaryView, 'query', 'orderBys');
+            if (_.any(orderBys,
+                function(ob) { return ob.expression.columnId == vizObj._fixedColumns[0].id; }))
+            { sg.categorySort = 'alphabetical'; }
 
             sortedView.update({ query: $.extend({}, sortedView.query, {
                 orderBys: _.map(sortColumns, function(col)
@@ -222,7 +231,9 @@ d3base.seriesGrouping = {
             fixedColumn = sg.fixedColumn;
 
         // figure out our categories and make virtual row index lookups for them.
-        _.each(_.sortBy(sg.categoryGroupedRows, 'position'), function(row, index)
+        var sortedCategories = sg.categorySort == 'alphabetical'
+            ? sg.categoryGroupedRows : _.sortBy(sg.categoryGroupedRows, 'position');
+        _.each(sortedCategories, function(row, index)
         {
             sg.categoryIndexLookup[row[fixedColumn.lookup]] = index;
         });
@@ -238,6 +249,7 @@ d3base.seriesGrouping = {
         var sortedRows;
         if (vizObj._displayFormat.sortSeries)
         {
+            sg.groupSort = 'arbitrary';
             var sortFunctions = _.map(vizObj._seriesColumns, function(sc)
             {
                 var order = {};
@@ -276,14 +288,17 @@ d3base.seriesGrouping = {
                 return result;
             });
         }
-        // Sort by position iff there isn't another sort in place.
+        // Sort by position iff there isn't another sort in place. (i.e. natural sort)
         else if (!_.any($.deepGet(vizObj._primaryView, 'query', 'orderBys'), function(orderBy)
                 { return _.include(sg.sortColumns,
                     vizObj._primaryView.columnForIdentifier(orderBy.expression.columnFieldName
                                                          || orderBy.expression.columnId)); }))
         {
+            sg.groupSort = 'natural';
             sortedRows = _.sortBy(sg.seriesGroupedRows, 'position');
         }
+        else
+        { sg.groupSort = 'alphabetical'; }
 
 
         var rowIndex = 0; // Can't use index provided to eachItem as that index

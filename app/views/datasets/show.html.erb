@@ -360,7 +360,7 @@
     blist.sidebarPosition = "<%= sidebar_position %>";
     blist.defaultPane = "<%= default_pane %>";
 
-    blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) == true %>;
+    blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
     blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
     blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
 

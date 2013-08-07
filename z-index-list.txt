@@ -49,6 +49,7 @@ DATA RENDERING:
 DATASLATE:
 1000 sidebar
 1500 FixedContainer
+1500 editOverlay
 2000 canvas edit bar
 2001 cfViewsContainer
 2999 edit mask

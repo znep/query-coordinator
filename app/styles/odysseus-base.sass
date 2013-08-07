@@ -228,18 +228,19 @@
 
 .gridFlowLayoutNew
   .newSingleItem
-    border: 3px dotted #bbb
+    border: 3px dotted #000
     display: block
     height: 16.6em
+    @include opacity(0.3)
     padding: 3em
     position: absolute
     text-align: center
-    @include transition(0.2s, border-color)
+    @include transition(0.2s, border-color opacity)
     width: 13.8em
     z-index: 1
 
     .icon, .text
-      color: #bbb
+      color: #000
       @include transition(0.2s, color)
 
     .icon
@@ -251,12 +252,139 @@
 
     &:hover
       border-color: $govstat_color_action
+      @include opacity(1)
 
       .icon, .text
         color: $govstat_color_action
 
+.dashboardPage .dashboard
+  .dashboardHeader
+    margin: -2em -4em 2em
+    position: relative
+
+    .dashboardImage
+      height: 25em
+
+      &.full
+        border-bottom: 1px solid #fff
+        overflow: hidden
+        position: absolute
+        width: 100%
+        z-index: 1
+
+      &.blur
+        @include prefixer(filter, blur(1.8em) brightness(1.3))
+        @include opacity(0.35)
+        position: relative
+
+        .fade
+          @include vertical-gradient(rgba(247, 247, 247, 0), rgba(247, 247, 247, 1))
+          bottom: 0
+          height: 15em
+          position: absolute
+          width: 100%
+
+      img
+        width: 100%
+
+    .dashboardTitle
+      bottom: 2em
+      left: 0
+      margin: 0 4em
+      position: absolute
+      z-index: 2
+
+      h2
+        color: #fff
+        font-size: 4em
+        font-weight: normal
+        text-shadow: 0 0 0.15em rgba(0, 0, 0, 1)
+
+  .dashboardDescription, .gridFlowLayoutNew
+    position: relative
+    z-index: 2
+
+  .dashboardDescription p
+    color: #000
+    font-size: 2em
+    line-height: 1.3em
+    padding: 0.5em 0 2em
+    @include opacity(0.7)
+
 .dashboardPage.edit
-  padding-top: 3em
+
+  .dashboardHeader
+    //TODO: duplicative w/ govstat-goals edit image button
+    .dashboardImageEdit
+      bottom: 11em
+      position: absolute
+      right: 3em
+      z-index: 2
+
+      a.button
+        @include prefixer(box-shadow, 0 0 0.4em rgba(0, 0, 0, 0.4))
+
+        &:after
+          @include triangle(0.7em, $govstat_color_action, right)
+          content: ' '
+          position: absolute
+          left: -1.7em
+          top: 0.8em
+
+        &:hover:after
+          border-right-color: lighten($govstat_color_action, 6%)
+
+    .dashboardTitle
+      right: 0
+
+      h2
+        position: absolute
+
+        .text
+          visibility: hidden
+
+        .icon
+          padding-left: 0.5em
+
+      input
+        background: none
+        border: none
+        color: #fff
+        font-family: 'myriad pro'
+        font-size: 4em
+        margin: 0
+        outline: none
+        padding: 0.28em 0
+        position: relative
+        text-shadow: 0 0 0.15em rgba(0, 0, 0, 1)
+        width: 100%
+        z-index: 3
+
+  .dashboardDescription
+    margin: 4em
+      bottom: 5em
+      left: 0
+
+    textarea
+      background: none
+      background-color: rgba(255, 255, 255, 0.5)
+      border: none
+      border: 2px dotted #333
+      font-family: 'myriad pro'
+      font-size: 2em
+      height: 12em
+      outline: none
+      padding: 1em
+      width: 100%
+
+    label
+      display: block
+      font-size: 1.2em
+      letter-spacing: 0.2em
+      @include opacity(0.8)
+      padding: 0.2em 0
+      text-align: center
+      text-transform: uppercase
 
   .categoryList > ul > li
     position: relative

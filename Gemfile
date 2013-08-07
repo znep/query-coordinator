@@ -17,7 +17,6 @@ gem "stomp", "1.1.6"
 gem "airbrake", "~>3.1.6"
 gem "money", "~> 3.7.1"
 gem "graylog2_exceptions"
-gem "rack-ssl-enforcer"
 gem 'memcache-client', '~>1.8.5'
 gem 'rinku', :require => 'rails_rinku'
 gem 'timecop'

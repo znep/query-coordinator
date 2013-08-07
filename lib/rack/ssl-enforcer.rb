@@ -1,40 +1,52 @@
+require 'rack/ssl-enforcer/constraint'
+
 module Rack
+
   class SslEnforcer
+
+    CONSTRAINTS_BY_TYPE = {
+      :hosts        => [:only_hosts, :except_hosts],
+      :path         => [:only, :except],
+      :methods      => [:only_methods, :except_methods],
+      :environments => [:only_environments, :except_environments]
+    }
+
+    # Warning: If you set the option force_secure_cookies to false, make sure that your cookies
+    # are encoded and that you understand the consequences (see documentation)
     def initialize(app, options={})
       default_options = {
-        :redirect_to => nil,
-        :only => nil,
-        :only_hosts => nil,
-        :except => nil,
-        :except_hosts => nil,
-        :strict => false,
-        :mixed => false,
-        :hsts => nil,
-        :http_port => nil,
-        :https_port => nil,
+        :redirect_to          => nil,
+        :redirect_code        => nil,
+        :strict               => false,
+        :mixed                => false,
+        :hsts                 => nil,
+        :http_port            => nil,
+        :https_port           => nil,
         :force_secure_cookies => true
       }
+      CONSTRAINTS_BY_TYPE.values.each do |constraints|
+        constraints.each { |constraint| default_options[constraint] = nil }
+      end
+
       @app, @options = app, default_options.merge(options)
-      $stderr.puts "WARN -- : The option :force_secure_cookies is set to false so make sure your cookies are encoded and that you understand the consequences (see documentation)" if options[:force_secure_cookies]==false
     end
 
     def call(env)
-      @req = Rack::Request.new(env)
-      if enforce_ssl?(env)
-        scheme = 'https' unless ssl_request?(env)
-      elsif ssl_request?(env) && enforcement_non_ssl?(env)
-        scheme = 'http'
+      @request = Rack::Request.new(env)
+
+      return @app.call(env) if ignore?
+
+      @scheme = if enforce_ssl?
+        'https'
+      elsif enforce_non_ssl?
+        'http'
       end
 
-      if scheme
-        location = replace_scheme(@req, scheme).url
-        body     = "<html><body>You are being <a href=\"#{location}\">redirected</a>.</body></html>"
-        [301, { 'Content-Type' => 'text/html', 'Location' => location }, [body]]
-      elsif ssl_request?(env)
+      if redirect_required?
+        modify_location_and_redirect
+      elsif ssl_request?
         status, headers, body = @app.call(env)
-        if @options[:force_secure_cookies] && enforce_ssl?(env)
-          flag_cookies_as_secure!(headers)
-        end
+        flag_cookies_as_secure!(headers) if @options[:force_secure_cookies]
         set_hsts_headers!(headers) if @options[:hsts] && !@options[:strict]
         [status, headers, body]
       else
@@ -44,111 +56,112 @@ module Rack
 
   private
 
-    def enforcement_non_ssl?(env)
-      true if @options[:strict] || @options[:mixed] && !(env['REQUEST_METHOD'] == 'PUT' || env['REQUEST_METHOD'] == 'POST')
+    def redirect_required?
+      scheme_mismatch? || host_mismatch?
     end
 
-    def ssl_request?(env)
-      scheme(env) == 'https'
-    end
-
-    # Fixed in rack >= 1.3
-    def scheme(env)
-      if env['HTTPS'] == 'on'
-        'https'
-      elsif env['HTTP_X_FORWARDED_PROTO']
-        env['HTTP_X_FORWARDED_PROTO'].split(',')[0]
-      else
-        env['rack.url_scheme']
-      end
-    end
-
-    def matches?(key, pattern, req)
-      if pattern.is_a?(Regexp)
-        case key
-        when :only
-          req.path =~ pattern
-        when :except
-          req.path !~ pattern
-        when :only_hosts
-          req.host =~ pattern
-        when :except_hosts
-          req.host !~ pattern
-        end
-      else
-        case key
-        when :only
-          pattern == req.path[0,pattern.length]
-        when :except
-          pattern != req.path[0,pattern.length]
-        when :only_hosts
-          pattern == req.host
-        when :except_hosts
-          pattern != req.host
-        end
-      end
-    end
-
-    def enforce_ssl_for?(keys, req)
-      if keys.any? { |option| @options[option] }
-        keys.any? do |key|
-          rules = [@options[key]].flatten.compact
-          unless rules.empty?
-            rules.send(key == :except_hosts || key == :except ? "all?" : "any?") do |pattern|
-              matches?(key, pattern, req)
-            end
-          end
+    def ignore?
+      if @options[:ignore]
+        rules = [@options[:ignore]].flatten.compact
+        rules.any? do |rule|
+          SslEnforcerConstraint.new(:ignore, rule, @request).matches?
         end
       else
         false
       end
     end
 
-    def enforce_ssl?(env)
-      path_keys = [:only, :except]
-      hosts_keys = [:only_hosts, :except_hosts]
-
-      if env['socrata.httpsEnforced']
-        true
-      elsif @options[:custom_enforce]
-        @options[:custom_enforce].call(req)
-      elsif hosts_keys.any? { |option| @options[option] }
-        if enforce_ssl_for?(hosts_keys, @req)
-          if path_keys.any? { |option| @options[option] }
-            enforce_ssl_for?(path_keys, @req)
-          else
-            true
-          end
-        else
-          false
-        end
-      elsif path_keys.any? { |option| @options[option] }
-        enforce_ssl_for?(path_keys, @req)
-      else
-        true
-      end
+    def scheme_mismatch?
+      @scheme && @scheme != current_scheme
     end
 
-    def replace_scheme(req, scheme)
+    def host_mismatch?
+      destination_host && destination_host != @request.host
+    end
+
+    def modify_location_and_redirect
+      location = "#{current_scheme}://#{@request.host}#{@request.fullpath}"
+      location = replace_scheme(location, @scheme)
+      location = replace_host(location, @options[:redirect_to])
+      redirect_to(location)
+    end
+
+    def redirect_to(location)
+      body = "<html><body>You are being <a href=\"#{location}\">redirected</a>.</body></html>"
+      [@options[:redirect_code] || 301, { 'Content-Type' => 'text/html', 'Location' => location }, [body]]
+    end
+
+    def ssl_request?
+      current_scheme == 'https'
+    end
+
+    def destination_host
       if @options[:redirect_to]
-        uri = URI.split(@options[:redirect_to])
-        uri = uri[2] || uri[5]
-      else
-        uri = nil
+        host_parts = URI.split(@options[:redirect_to])
+        host_parts[2] || host_parts[5]
       end
-      Rack::Request.new(req.env.merge(
-        'rack.url_scheme' => scheme,
-        'HTTP_X_FORWARDED_PROTO' => scheme,
-        'HTTP_X_FORWARDED_PORT' => port_for(scheme).to_s,
-        'SERVER_PORT' => port_for(scheme).to_s
-      ).merge(uri ? {'HTTP_HOST' => uri} : {}))
     end
 
-    def port_for(scheme)
-      if scheme == 'https'
-        @options[:https_port] || 443
+    # Fixed in rack >= 1.3
+    def current_scheme
+      if @request.env['HTTPS'] == 'on' || @request.env['HTTP_X_SSL_REQUEST'] == 'on'
+        'https'
+      elsif @request.env['HTTP_X_FORWARDED_PROTO']
+        @request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0]
       else
-        @options[:http_port] || 80
+        @request.scheme
+      end
+    end
+
+    def enforce_ssl_for?(keys)
+      provided_keys = keys.select { |key| @options[key] }
+      if provided_keys.empty?
+        true
+      else
+        provided_keys.all? do |key|
+          rules = [@options[key]].flatten.compact
+          rules.send([:except_hosts, :except_environments, :except].include?(key) ? :all? : :any?) do |rule|
+            SslEnforcerConstraint.new(key, rule, @request).matches?
+          end
+        end
+      end
+    end
+
+    def enforce_non_ssl?
+      @options[:strict] || @options[:mixed] && !(@request.request_method == 'PUT' || @request.request_method == 'POST')
+    end
+
+    def enforce_ssl?
+      CONSTRAINTS_BY_TYPE.inject(true) do |memo, (type, keys)|
+        memo && enforce_ssl_for?(keys)
+      end
+    end
+
+    def replace_scheme(uri, scheme)
+      return uri if not scheme_mismatch?
+
+      port = adjust_port_to(scheme)
+      uri_parts = URI.split(uri)
+      uri_parts[3] = port unless port.nil?
+      uri_parts[0] = scheme
+      URI::HTTP.new(*uri_parts).to_s
+    end
+
+    def replace_host(uri, host)
+      return uri unless host_mismatch?
+
+      host_parts = URI.split(host)
+      new_host = host_parts[2] || host_parts[5]
+      uri_parts = URI.split(uri)
+      uri_parts[2] = new_host
+      URI::HTTPS.new(*uri_parts).to_s
+    end
+
+    def adjust_port_to(scheme)
+      if scheme == 'https'
+        @options[:https_port] if @options[:https_port] && @options[:https_port] != URI::HTTPS.default_port
+      elsif scheme == 'http'
+        @options[:http_port] if @options[:http_port] && @options[:http_port] != URI::HTTP.default_port
       end
     end
 
@@ -161,7 +174,7 @@ module Rack
         end
 
         headers['Set-Cookie'] = cookies.map do |cookie|
-          cookie !~ / secure;/ ? "#{cookie}; secure" : cookie
+          cookie !~ /(^|;\s)secure($|;)/ ? "#{cookie}; secure" : cookie
         end.join("\n")
       end
     end
@@ -169,10 +182,11 @@ module Rack
     # see http://en.wikipedia.org/wiki/Strict_Transport_Security
     def set_hsts_headers!(headers)
       opts = { :expires => 31536000, :subdomains => true }
-      opts.merge!(@options[:hsts])
+      opts.merge!(@options[:hsts]) if @options[:hsts].is_a? Hash
       value  = "max-age=#{opts[:expires]}"
       value += "; includeSubDomains" if opts[:subdomains]
       headers.merge!({ 'Strict-Transport-Security' => value })
     end
+
   end
 end

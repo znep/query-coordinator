@@ -6,4 +6,5 @@ Rails.application.config.middleware.insert_after CurrentDomainMiddleware, "Local
 Rails.application.config.middleware.insert_after LocaleMiddleware, "LogRefererMiddleware"
 Rails.application.config.middleware.insert_after CurrentDomainMiddleware, Rack::SslEnforcer,
   :https_port => APP_CONFIG['ssl_port'],
-  :http_port => APP_CONFIG['http_port']
+  :http_port => APP_CONFIG['http_port'],
+  :except_agents => /GlobalSign/

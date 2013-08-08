@@ -44,7 +44,7 @@ class Configuration < Model
     locale = I18n.locale unless locale.present? || I18n.locale.to_s == CurrentDomain.default_locale
 
     # TODO: not sure how to safely per-request cache
-    result = properties[:strings]
+    result = properties[:strings] || Hashie::Mash.new
     result.merge!(properties[:strings][locale] || {}) unless locale.nil?
 
     result

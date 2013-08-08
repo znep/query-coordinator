@@ -1006,7 +1006,7 @@ $.Control.registerMixin('d3_impl_bar', {
 
             var xPosition = xPositionStaticParts + (d.index * cc.rowWidth);
             if (!cc.collapseXSeries)
-            { xPosition += cc.barWidth * (d.seriesIndex + (-(numCols - 1) / 2)); }
+            { xPosition += (cc.barWidth + cc.barSpacing) * (d.seriesIndex + (-(numCols - 1) / 2)); }
 
             if (cc.orientation == 'down')
             { return xPosition - ($(this).height() / 2) + 'px'; }

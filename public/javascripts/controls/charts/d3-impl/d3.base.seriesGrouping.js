@@ -340,7 +340,8 @@ d3base.seriesGrouping = {
                             name: virtualColumnName,
                             realValueColumn: valueCol,
                             dataType: valueCol.column.dataType,
-                            renderType: valueCol.column.renderType
+                            renderType: valueCol.column.renderType,
+                            format: valueCol.column.format
                         }
                     };
 

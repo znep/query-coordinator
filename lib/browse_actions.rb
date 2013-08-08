@@ -164,7 +164,11 @@ protected
 
     # grab our catalog configuration first
     catalog_config = CurrentDomain.configuration('catalog')
-    catalog_config = catalog_config ? catalog_config.properties : Hashie::Mash.new
+    if catalog_config
+      catalog_config = catalog_config.properties.merge!(catalog_config.strings)
+    else
+      catalog_config = Hashie::Mash.new
+    end
 
     # grab the user's params unless we're forcing default
     if options[:force_default]

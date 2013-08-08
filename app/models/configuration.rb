@@ -37,6 +37,19 @@ class Configuration < Model
     return props
   end
 
+  # Copied from CurrentDomain.strings.
+  def strings(locale = nil)
+    # i don't like this, but i don't see another option: always try to use the
+    # current locale, unless it's the default one.
+    locale = I18n.locale unless locale.present? || I18n.locale.to_s == CurrentDomain.default_locale
+
+    # TODO: not sure how to safely per-request cache
+    result = properties[:strings]
+    result.merge!(properties[:strings][locale] || {}) unless locale.nil?
+
+    result
+  end
+
   def raw_properties
     props = Hashie::Mash.new
     

@@ -263,6 +263,72 @@
       .icon, .text
         color: $govstat_color_action
 
+.dashboardListPage.page
+  .dashboardsHeader
+    font-size: 4em
+    font-weight: normal
+    letter-spacing: -0.04em
+    padding-bottom: 0.1em
+
+  .dashboardsIntro
+    font-size: 1.8em
+    line-height: 1.4em
+    padding-bottom: 2em
+    padding-left: 0.1em
+
+  .dashboardList
+    padding-bottom: 3em
+
+  .dashboard.listItem
+    margin-bottom: 2em
+
+.dashboard.listItem
+  @include prefixer(border-radius, 0.4em)
+  @include prefixer(box-shadow, 0 0 0.5em rgba(0, 0, 0, 0.35))
+  height: 12em
+  overflow: hidden
+  position: relative
+
+  .dashboardImage img
+    @include transition(0.2s, opacity)
+    width: 100%
+
+  &:hover .dashboardImage img
+    @include opacity(0.8)
+
+  a.dashboardLink
+    display: block
+    height: 100%
+    left: 0
+    position: absolute
+    top: 0
+    width: 100%
+
+    h2.name
+      bottom: 0.6em
+      color: #fff
+      font-size: 3em
+      font-weight: normal
+      letter-spacing: -0.02em
+      margin: 0
+        left: 1em
+        right: 15em
+      position: absolute
+      text-shadow: 0 0 0.25em rgba(0, 0, 0, 1)
+
+  ul.actions
+    bottom: 2.2em
+    overflow: hidden
+    position: absolute
+    right: 3em
+
+    li
+      float: right
+      margin-left: 0.6em
+
+      .button
+        @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.8))
+
 .dashboardPage .dashboard
   .dashboardHeader
     margin: -2em -4em 2em
@@ -280,7 +346,7 @@
 
       &.blur
         @include prefixer(filter, blur(1.8em) brightness(1.3))
-        @include opacity(0.35)
+        @include opacity(0.25)
         position: relative
 
         .fade
@@ -304,6 +370,7 @@
         color: #fff
         font-size: 4em
         font-weight: normal
+        letter-spacing: -0.02em
         text-shadow: 0 0 0.15em rgba(0, 0, 0, 1)
 
   .dashboardDescription, .gridFlowLayoutNew
@@ -317,8 +384,12 @@
     padding: 0.5em 0 2em
     @include opacity(0.7)
 
-.dashboardPage.edit
 
+
+.subnavigation.dashboardEdit.sticky
+  background-color: #e7e7e7 // knock out the alpha for perf reasons
+
+.dashboardPage.edit
   .dashboardHeader
     //TODO: duplicative w/ govstat-goals edit image button
     .dashboardImageEdit
@@ -358,6 +429,7 @@
         color: #fff
         font-family: 'myriad pro'
         font-size: 4em
+        letter-spacing: -0.02em
         margin: 0
         outline: none
         padding: 0.28em 0

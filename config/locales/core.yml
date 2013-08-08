@@ -90,6 +90,10 @@ en:
       sum: Sum
       minimum: Minimum
       maximum: Maximum
+    group_function:
+      date_day: Day
+      date_month: Month
+      date_year: Year
     chart_types:
       area: Area Chart
       bar: Bar Chart

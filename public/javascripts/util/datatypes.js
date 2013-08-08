@@ -695,13 +695,15 @@ blist.namespace.fetch('blist.datatypes');
         'date_monthdy_shorttime': 'F d, Y',
         'date_dmonthy': 'd F Y',
         'date_shortmonthdy_shorttime': 'M d, Y',
+        'date_ymonthd_time': 'Y F d',
         'date_ymonthd': 'Y F d',
         'date_my': 'm/Y',
         'date_ym': 'Y/m',
         'date_shortmonthy': 'M Y',
         'date_yshortmonth': 'Y M',
         'date_monthy': 'F Y',
-        'date_ymonth': 'Y F'
+        'date_ymonth': 'Y F',
+        'date_y': 'Y'
     };
     var dateTimeFormats = {};
     var zDateTimeFormats = {};
@@ -721,28 +723,53 @@ blist.namespace.fetch('blist.datatypes');
         }
     });
 
-    var dateViews = [
-        {value: 'date_time', text: 'month/day/year hour:minute'},
-        {value: 'date', text: 'month/day/year'},
-        {value: 'date_dmy_time', text: 'day/month/year hour:minute'},
-        {value: 'date_dmy', text: 'day/month/year'},
-        {value: 'date_ymd_time', text: 'year/month/day hour:minute'},
-        {value: 'date_ymd', text: 'year/month/day'},
-        {value: 'date_monthdy_shorttime', text: 'month day, year hour:minute'},
-        {value: 'date_monthdy', text: 'month day, year'},
-        {value: 'date_shortmonthdy', text: 'month day, year'},
-        {value: 'date_monthdy_time', text: 'month day, year hour:minute'},
-        {value: 'date_dmonthy', text: 'day month year'},
-        {value: 'date_shortmonthdy_shorttime', text: 'month day, year hour:minute'},
-        {value: 'date_ymonthd', text: 'year month day'},
-        {value: 'date_my', text: 'month/year'},
-        {value: 'date_ym', text: 'year/month'},
-        {value: 'date_shortmonthy', text: 'month year'},
-        {value: 'date_yshortmonth', text: 'year month'},
-        {value: 'date_monthy', text: 'month year'},
-        {value: 'date_ymonth', text: 'year month'}
+    var possibleDateViews = [
+        { value: 'date_time', text: 'month/day/year hour:minute' },
+        { value: 'date', text: 'month/day/year' },
+        { value: 'date_dmy_time', text: 'day/month/year hour:minute' },
+        { value: 'date_dmy', text: 'day/month/year' },
+        { value: 'date_ymd_time', text: 'year/month/day hour:minute' },
+        { value: 'date_ymd', text: 'year/month/day' },
+        { value: 'date_monthdy_shorttime', text: 'month day, year hour:minute' },
+        { value: 'date_monthdy', text: 'month day, year' },
+        { value: 'date_shortmonthdy', text: 'month day, year' },
+        { value: 'date_monthdy_time', text: 'month day, year hour:minute' },
+        { value: 'date_dmonthy', text: 'day month year' },
+        { value: 'date_shortmonthdy_shorttime', text: 'month day, year hour:minute' },
+        { value: 'date_ymonthd', text: 'year month day' },
+        { value: 'date_ymonthd_time', text: 'year month day hour:minute' },
+        { value: 'date_my', text: 'month/year', isMonth: true },
+        { value: 'date_ym', text: 'year/month', isMonth: true },
+        { value: 'date_shortmonthy', text: 'month year', isMonth: true },
+        { value: 'date_yshortmonth', text: 'year month', isMonth: true },
+        { value: 'date_monthy', text: 'month year', isMonth: true },
+        { value: 'date_ymonth', text: 'year month', isMonth: true },
+        { value: 'date_y', text: 'year', isYear: true }
     ];
 
+    var dateViews = function(col, exclusive)
+    {
+        return _.select(possibleDateViews, function(dv)
+        {
+            switch (col.format.group_function)
+            {
+                case 'date_ymd':
+                    return !dv.value.endsWith('time') && (!exclusive || !dv.isMonth && !dv.isYear);
+                case 'date_ym':
+                    return dv.isMonth || !exclusive && dv.isYear;
+                case 'date_y':
+                    return dv.isYear;
+                default:
+                    return !exclusive || dv.value.endsWith('time');
+            }
+        });
+    };
+
+    var dateGroupFunctions = [
+        { text: $.t('core.group_function.date_day'), value: 'date_ymd' },
+        { text: $.t('core.group_function.date_month'), value: 'date_ym' },
+        { text: $.t('core.group_function.date_year'), value: 'date_y' }
+    ];
 
     blist.datatypes.interfaceTypes = {
         checkbox: { renderer: renderCheckbox },
@@ -1058,6 +1085,7 @@ blist.namespace.fetch('blist.datatypes');
             },
             priority: 7,
             rollUpAggregates: nonNumericAggs,
+            groupFunctions: dateGroupFunctions,
             sortable: true,
             viewTypes: dateViews
         },
@@ -1078,6 +1106,7 @@ blist.namespace.fetch('blist.datatypes');
             inlineType: true,
             priority: 6,
             rollUpAggregates: nonNumericAggs,
+            groupFunctions: dateGroupFunctions,
             sortable: true,
             // Giving an exact format to parse is quite a bit faster
             // than a general parse (at least in FF; not as much for IE)

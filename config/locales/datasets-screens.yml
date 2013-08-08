@@ -475,6 +475,8 @@ en:
             title: Roll-Ups &amp; Drill-Downs
             add_group_button: Add Grouping Column
             group_by: Group By
+            group_function_label: Based On
+            group_function_prompt: Select a grouping function
             add_rollup_button: Add Roll-Up Column
             roll_up: Roll-Up
             function: Function

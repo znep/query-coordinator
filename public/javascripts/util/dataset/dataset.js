@@ -1997,12 +1997,15 @@ var Dataset = ServerModel.extend({
 
         var oldGroupings = (ds.query || {}).groupBys;
         var oldGroupAggs = {};
+        var oldGroupFuncs = {};
         if ((oldGroupings || []).length > 0)
         {
             _.each(ds.realColumns, function(c)
             {
                 if (!$.isBlank(c.format.grouping_aggregate))
                 { oldGroupAggs[c.id] = c.format.grouping_aggregate; }
+                if (!$.isBlank(c.format.group_function))
+                { oldGroupFuncs[c.id] = c.format.group_function; }
             });
         }
 
@@ -2078,12 +2081,21 @@ var Dataset = ServerModel.extend({
             needsDTChange = true;
         }
 
+        var newGroupFuncs = {};
+        _.each(ds.realColumns, function(c)
+        {
+            if (!$.isBlank(c.format.group_function))
+            { newGroupFuncs[c.id] = c.format.group_function; }
+        });
+
         var needQueryChange = !_.isEqual(oldRTConfig.visible,
                     ds.metadata.renderTypeConfig.visible) &&
                 _.any(ds.query.namedFilters || [], function(nf)
                     { return _.any(nf.displayTypes || [], function(nd)
                         { return oldRTConfig.visible[nd] ||
-                            ds.metadata.renderTypeConfig.visible[nd]; }); });
+                            ds.metadata.renderTypeConfig.visible[nd]; }); }) ||
+                !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
+                !_.isEqual(oldGroupFuncs, newGroupFuncs);
 
         var newQ = {orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters()};
         var newKey = RowSet.getQueryKey({orderBys: ds.query.orderBys,
@@ -2095,6 +2107,7 @@ var Dataset = ServerModel.extend({
             var filterChanged = needQueryChange || ds._activeRowSet._key != newKey;
             var nonFilterChanged = oldSearch != ds.searchString ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
+                !_.isEqual(oldGroupFuncs, newGroupFuncs) ||
                 // Group-bys suck, since there may be pre-process filtering
                 // that happens before we have the data. So if they exist, we
                 // always have to talk to the server

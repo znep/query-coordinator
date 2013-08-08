@@ -66,6 +66,9 @@
 
         var type = col.renderType;
         var vt = type.viewTypes;
+        if (_.isFunction(vt))
+        { vt = vt(col); }
+
         if (_.include(['date', 'calendar_date'], col.renderTypeName))
         {
             var today = new Date();
@@ -526,10 +529,10 @@
 
             if (!$.isBlank(col.format))
             {
-                // Need to maintain drill_down and grouping_aggregate if present
+                // Need to maintain grouping stuff if present
                 column.format = column.format || {};
-                column.format.drill_down = col.format.drill_down;
-                column.format.grouping_aggregate = col.format.grouping_aggregate;
+                _.each(['drill_down', 'grouping_aggregate', 'group_function'], function(k)
+                        { column.format[k] = col.format[k]; });
 
                 // Make sure default values for separators are not saved
                 if (column.format.decimalSeparator == '.')

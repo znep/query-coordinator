@@ -657,8 +657,6 @@ $.Control.registerMixin('d3_impl_bar', {
             cc.lastLabelRenderData = data;
         }
 
-        cc.visualData = {};
-
         var fontMetrics = vizObj._fontMetricsForRowLabels();
 
         // Create a virtual row object for each distinct label.
@@ -680,98 +678,130 @@ $.Control.registerMixin('d3_impl_bar', {
             }
 
             this.columnHeight = heightFunc(this);
+
+            this.setOverallText = function(text)
+            {
+                this.overallText = text;
+
+                // Determine the width of the text for layout.
+                this.length = fontMetrics.lengthForString(text);
+            };
+
+
+            this.datumPosition = vizObj._yDatumPosition(this.column.column.lookup, yScale, false)(this);
         };
 
         var distinctLabelCountPerSeries = (!valueInBar && cc.stackYSeries) ? 1 : valueColumns.length;
         _.each(data, function(row)
         {
             augmentedRow.prototype = row;
-            for (var i=0; i<distinctLabelCountPerSeries; i++)
+
+            if (valueInBar)
             {
-                cubedData.push(new augmentedRow(i));
+                for (var i=0; i<distinctLabelCountPerSeries; i++)
+                {
+                    cubedData.push(new augmentedRow(i));
+                }
+            }
+            else
+            {
+                // We're not doing anything with values - don't bother adding
+                // the row if there are no valid columns in it at all.
+                var okToAdd = true;
+
+                _.each(valueColumns, function(vc, i)
+                {
+                    if (okToAdd && !$.isBlank(row[vc.column.lookup]) && !row.invalid[vc.column.lookup])
+                    {
+                        cubedData.push(new augmentedRow(i));
+                        okToAdd = !cc.stackYSeries;
+                    }
+                });
             }
         });
 
         // Now figure out the text to use, and add that to the augmented row.
         _.each(cubedData, function(d, i)
         {
-            var fixedColumn = vizObj._fixedColumns[0], // WHY IS THIS AN ARRAY
-                col = d.column.column;
+            var fixedColumn = vizObj._fixedColumns[0];
 
-            // We have two distinct pieces of text: labelText, which is
-            // the category label, and valueText, which is the stringified
-            // value of the particular bar.
-            var labelText = '',
-                valueText = '';
-
-            if (!cc.visualData[d.id])
-            { cc.visualData[d.id] = {}; }
-            cc.visualData[d.id][d.seriesIndex] = {};
-
-            // Label in bar only affects the first/bottom bar on the stack.
-            var labelInThisBar = labelInBar && (d.seriesIndex === 0 || !cc.stackYSeries) ;
-
-            if (labelInThisBar)
-            {
-                labelText = fixedColumn.renderType.renderer(
-                    d[fixedColumn.lookup], fixedColumn, true, null, null, true);
-            }
-
+            var valueInvalid = false; // Label-only is always valid, so start with that.
             if (valueInBar)
             {
-                var column = col.renderType ? col : col.realValueColumn.column;
-                valueText = column.renderType.renderer(d[col.lookup], column, true, null, null, true);
-            }
+                var col = d.column.column;
+                valueInvalid = $.isBlank(d[col.lookup]) ||
+                                   d.invalid[col.lookup];
 
-            if (valueInBar && labelInBar)
-            {
-                // If there's a label active for this stack, wrap the value in parens.
-                valueText = '('+valueText+')';
-            }
-
-            d.labelText = labelText;
-            d.valueText = valueText;
-
-            // Now that we've got the text for the two pieces, make
-            // the two pieces look good together (if we even have two
-            // pieces).
-
-            if ($.isBlank(d[col.lookup]) ||
-                d.invalid[col.lookup])
-            {
-                // Invalid or blank value.
-                if (!cc.stackYSeries)
+                // Find out if this is the first valid column in this row.
+                if (!valueInvalid)
                 {
-                    // If we're not stacking, we're done right here- don't render
-                    // anything (even if we have a label, since we're going to render
-                    // a null bar underneath).
-                    d.overallText = '';
-                }
-                else
-                {
-                    // Stacking. If anyone in our stack is valid, render at least the label.
-                    var lastStackIndex = (i-d.seriesIndex) + distinctLabelCountPerSeries;
-                    d.overallText = '';
-
-                    for(var checkIndex = i+1; checkIndex <= lastStackIndex && checkIndex < cubedData.length; checkIndex++)
+                    if (d.seriesIndex === 0)
                     {
-                        var stackCol = cubedData[checkIndex].column.column;
-                        if (!$.isBlank(d[stackCol.lookup]) &&
-                            !d.invalid[stackCol.lookup])
-                        {
-                            d.overallText = d.labelText;
-                            break;
-                        }
+                        d.firstValidColInRow = true;
+                    }
+                    else
+                    {
+                        var prevD = cubedData[i-1];
+                        var prevCol = prevD.column.column;
+
+                        d.firstValidColInRow = $.isBlank(prevD[prevCol.lookup]) ||
+                                               prevD.invalid[prevCol.lookup];
                     }
                 }
             }
             else
             {
-                d.overallText = (d.labelText + ' ' + d.valueText).trim();
+                // We wouldn't have been added above if we weren't valid.
+                d.firstValidColInRow = true;
             }
 
-            // Determine the width of the text for layout.
-            d.length = fontMetrics.lengthForString(d.overallText);
+            d.isInvalid = valueInvalid;
+            if (valueInvalid)
+            {
+                // We're done right here- don't render
+                // anything (even if we have a label). The other sections in the
+                // bar will take care of any label needed (if there are no other
+                // sections or we're not stacking, the desired behavior is to show
+                // no label anyway).
+                d.setOverallText('');
+            }
+            else
+            {
+                // We have two distinct pieces of text: labelText, which is
+                // the category label, and valueText, which is the stringified
+                // value of the particular bar.
+                var labelText = '',
+                    valueText = '';
+
+                // Label in bar only affects the first/bottom bar on the stack.
+                var labelInThisBar = labelInBar && (d.firstValidColInRow || !cc.stackYSeries) ;
+
+                if (labelInThisBar)
+                {
+                    labelText = fixedColumn.renderType.renderer(
+                        d[fixedColumn.lookup], fixedColumn, true, null, null, true);
+                }
+
+                if (valueInBar)
+                {
+                    var column = col.renderType ? col : col.realValueColumn.column;
+                    valueText = column.renderType.renderer(d[col.lookup], column, true, null, null, true);
+                }
+
+                if (valueInBar && labelInBar)
+                {
+                    // If there's a label active for this stack, wrap the value in parens.
+                    valueText = '('+valueText+')';
+                }
+
+                d.labelText = labelText;
+                d.valueText = valueText;
+
+                // Now that we've got the text for the two pieces, make
+                // the two pieces look good together (if we even have two
+                // pieces).
+                d.setOverallText((d.labelText + ' ' + d.valueText).trim());
+            }
         });
 
         vizObj._updateInBarLabelPositions(cubedData);
@@ -781,8 +811,6 @@ $.Control.registerMixin('d3_impl_bar', {
     {
         var vizObj = this;
         var cc = vizObj._chartConfig;
-
-        if (_.isEmpty(cc.visualData)) { return; }
 
         var view = vizObj._primaryView;
 
@@ -803,18 +831,19 @@ $.Control.registerMixin('d3_impl_bar', {
             var $this = $(this);
 
             var maxWidth = '';
-            // Sometimes, we don't the max width.
+            // Sometimes, we don't need the max width.
             if (valueInBar || labelInBar)
             {
                 // Stacking:
-                if ((forceWidthForFirstStackedSeries !== true) && cc.stackYSeries && d.seriesIndex === 0 && labelInBar)
+                if ((forceWidthForFirstStackedSeries !== true) && cc.stackYSeries && d.firstValidColInRow && labelInBar)
                 {
-                    // First bar has precedence, as it contains the category label.
+                    // First valid bar has precedence, as it contains the category label.
                     // So, max width remains empty.
                 }
                 else
                 {
-                    maxWidth = Math.max(0, d.columnHeight - extraPaddingForBarInColumn)+'px';
+                    d.maxWidth = Math.max(0, d.columnHeight - extraPaddingForBarInColumn);
+                    maxWidth = d.maxWidth+'px';
                 }
             }
             if (cc.stackYSeries || d.colorBrightness)
@@ -855,20 +884,18 @@ $.Control.registerMixin('d3_impl_bar', {
                     { return (view.highlights && view.highlights[d.id]) ? 'bold' : 'normal'; })
             //Positioning is handled via this function, as it needs to be re-called in later d3 statements.
             .style('color', vizObj._rowLabelColor())
-            .each(doLabelLayout)
             .html(function(d)
             {
                 return d.overallText;
             })
-            .classed('hide', function(d, i)
+            .each(doLabelLayout)
+            .style('visibility', function(d, i)
             {
                 if (!cc.stackYSeries) { return false; }
 
-                var vData = cc.visualData[d.id],
-                    posCollisions = _.size(vData) - 1,
-                    coll = false;
+                var coll = false;
 
-                if (valueInBar && labelInBar && d.seriesIndex == 0 && $(this).width() >= d.columnHeight - extraPaddingForBarInColumn)
+                if (valueInBar && labelInBar && d.firstValidColInRow && !d.isInvalid && $(this).width() >= d.columnHeight - extraPaddingForBarInColumn)
                 {
 
                     var onlyLabelLength = fontMetrics.lengthForString(d.labelText);
@@ -880,6 +907,7 @@ $.Control.registerMixin('d3_impl_bar', {
                         // in this case, which we need to show with highest precedence.
                         // We can't just leave the value in there, as we can't currently
                         // tell the browser to only clip the value text but not the label.
+                        d.setOverallText(d.labelText);
                         $(this).text(d.labelText);
                         doLabelLayout.call(this, d);
                     }
@@ -891,41 +919,62 @@ $.Control.registerMixin('d3_impl_bar', {
                 }
 
                 // Will collide with previous?
-                if (d.seriesIndex !== 0)
+                if (!d.firstValidColInRow && !d.isInvalid)
                 {
                     var prevD = cubedData[i-1];
 
+                    var checkCollisionWith = prevD.collidingWith || prevD;
+
+                    var ie8 = vizObj._isIE8();
+                    var widthOfThisText = ie8 ? d.maxWidth || d.length : Math.min(d.maxWidth||Infinity, d.length);
+                    var widthOfPrevText = ie8 ? checkCollisionWith.maxWidth || checkCollisionWith.length : Math.min(checkCollisionWith.maxWidth||Infinity, checkCollisionWith.length);
+
                     if (cc.orientation == 'right')
                     {
-                        coll = posCollisions > 0
-                            && vData[d.seriesIndex - 1].position - prevD.length < vData[d.seriesIndex].position;
+                        var bottomEdgeOfThisBar = d.datumPosition + d.columnHeight;
+                        // always end justified, because only 1st valid col in row has possibility of start justification.
+                        var bottomEdgeOfThisText = bottomEdgeOfThisBar - d.columnHeight + widthOfThisText + 5;
+
+                        if (checkCollisionWith.endJustified)
+                        {
+                            // Easy - just check if we fit in our col.
+                            coll = bottomEdgeOfThisBar < bottomEdgeOfThisText;
+                        }
+                        else
+                        {
+                            // We must check the length of the text of the collision candidate.
+                            var bottomEdgeOfPrev = checkCollisionWith.datumPosition + checkCollisionWith.columnHeight;
+                            var topOfPrevText = bottomEdgeOfPrev - widthOfPrevText - 10;
+
+                            coll = topOfPrevText < bottomEdgeOfThisText;
+                        }
                     }
                     else
                     {
-                        coll = posCollisions > 0
-                            && vData[d.seriesIndex].position
-                                < vData[d.seriesIndex - 1].position + prevD.length;
-                    }
+                        var rightEdgeOfThisBar = d.datumPosition + d.columnHeight;
+                        // always end justified, because only 1st valid col in row has possibility of start justification.
+                        var leftEdgeOfThisText = rightEdgeOfThisBar - widthOfThisText - 5;
 
-                    if (coll && d.seriesIndex === 1 && labelInBar && valueInBar)
-                    {
-                        // Second bar. We'll sacrifice the value in the first bar
-                        // if it will let us display. It will be cut off by the max width.
-                        var lenOfPreviousWithoutValue = fontMetrics.lengthForString(prevD.labelText);
-                        if (vData[d.seriesIndex].position
-                            >= vData[0].position + lenOfPreviousWithoutValue)
+                        if (checkCollisionWith.endJustified)
                         {
-                            // Doesn't collide. Re-instate the prev col's max
-                            // width.
-                            doLabelLayout.call(this, d);
-                            coll = false;
+                            // Easy - just check if we fit in our col.
+                            coll = rightEdgeOfThisBar < leftEdgeOfThisText;
+                        }
+                        else
+                        {
+                            // We must check the length of the text of the collision candidate.
+                            var leftEdgeOfPrev = checkCollisionWith.datumPosition;
+                            var rightOfPrevText = leftEdgeOfPrev + widthOfPrevText + 10;
+
+                            coll = rightOfPrevText > leftEdgeOfThisText;
                         }
                     }
+
+                    d.collidingWith = coll ? checkCollisionWith : undefined;
                 }
 
-                return coll;
-            })
-            .each(doLabelPosition);
+                return coll ? 'hidden' : 'visible';
+            });
 
 
         if (!_.isUndefined(newCubedData))
@@ -1024,12 +1073,12 @@ $.Control.registerMixin('d3_impl_bar', {
             yScale = vizObj._currentYScale(),
             valueColumns = vizObj.getValueColumns(),
             valueInBar = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar') === true,
-            endJustified = valueInBar
+            onlyValueInBar = valueInBar
                         && $.deepGet(this._displayFormat, 'xAxis', 'labelInBar') !== true;
 
         return function(d)
         {
-            var localEndJustified = endJustified || (cc.stackYSeries && valueInBar && d.seriesIndex !== 0);
+            var localEndJustified = onlyValueInBar || (cc.stackYSeries && valueInBar && !d.firstValidColInRow);
 
             if (!vizObj._chartInitialized) { return 0; } // Harden against animations ticking after cleanVisualization.
 
@@ -1083,21 +1132,7 @@ $.Control.registerMixin('d3_impl_bar', {
                 }
             }
 
-            if (cc.visualData[d.id][d.seriesIndex])
-            {
-                // Remove nulls from visualData object.
-                if (cc.visualData[d.id][d.seriesIndex].length === 0)
-                { delete cc.visualData[d.id][d.seriesIndex]; }
-                else
-                {
-                    cc.visualData[d.id][d.seriesIndex].position = datumPos;
-
-                    if (cc.orientation == 'right')
-                    {
-                        cc.visualData[d.id][d.seriesIndex].position += position;
-                    }
-                }
-            }
+            d.endJustified = localEndJustified;
 
             // If not stacked, expecting datumPos to be 0.
             return position + datumPos + 'px';

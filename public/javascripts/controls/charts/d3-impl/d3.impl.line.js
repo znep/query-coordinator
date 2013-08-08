@@ -143,10 +143,19 @@ $.Control.registerMixin('d3_impl_line', {
             else
             { lineData = _.sortBy(visibleData, 'index'); }
 
+            var hideLine = function(type)
+            {
+                var doHide = vizObj._displayFormat.lineSize === '0';
+                if (type == 'class')
+                { return lineType == 'line' && doHide; }
+                else if (type == 'stroke-width')
+                { return (lineType == 'area' && doHide) ? 0 : 2; }
+            }
+
             cc.seriesPath[col.lookup]
-                .classed('hide', vizObj._displayFormat.lineSize === '0')
+                .classed('hide', hideLine('class'))
                 .attr('stroke', vizObj._d3_getColor(colDef))
-                .attr('stroke-width', 2)
+                .attr('stroke-width', hideLine('stroke-width'))
                 .attr('clip-rect', clipRect.join(' '))
                 .datum(lineData)
                 .attr('d', doAnimation ? oldLine : newLine);

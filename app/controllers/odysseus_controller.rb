@@ -12,6 +12,7 @@ class OdysseusController < ApplicationController
     @title = contents['title'] || ''
     @style_packages = contents['styles'] || []
     @script_packages = contents['scripts'] || []
+    @objects = contents['objects']
     @contents = contents['markup']
   end
 end

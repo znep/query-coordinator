@@ -45,7 +45,7 @@ class Configuration < Model
 
     # TODO: not sure how to safely per-request cache
     result = properties[:strings] || Hashie::Mash.new
-    result.merge!(properties[:strings][locale] || {}) unless locale.nil?
+    result.merge!(result[locale] || {}) unless locale.nil?
 
     result
   end

@@ -193,6 +193,7 @@ en:
           discuss: Discuss
           embed: Embed
           about: About
+          more: More
         base:
           datatypes:
             plain_text: plain text
@@ -975,6 +976,7 @@ it:
           discuss: Discussione
           embed: Embed
           about: Informazioni
+          more: Più
         base:
           datatypes:
             plain_text: testo
@@ -1767,6 +1769,7 @@ es:
           discuss: Debatir
           embed: Incrustar
           about: Acerca de
+          more: Más
         base:
           validation:
             invalid_view: Esta vista debe ser válida
@@ -2649,6 +2652,7 @@ fr:
           discuss: Discussion
           embed: Intégrer
           about: À propos
+          more: Plus
         base:
           validation:
             invalid_view: Cette vue doit être valide
@@ -3505,6 +3509,7 @@ zh:
           discuss: 讨论
           embed: 嵌入
           about: 关于
+          more: 更多
         base:
           validation:
             invalid_view: 必须是有效视图
@@ -4295,6 +4300,7 @@ hi:
           discuss: विचार-विमर्श करें
           embed: जोड़ें
           about: इसके बारे में
+          more: अधिक
         base:
           validation:
             invalid_view: यह व्‍यू मान्‍य होना चाहिए
@@ -5164,6 +5170,7 @@ ru:
           discuss: Обсудить
           embed: Вставить
           about: Об этом массиве данных
+          more: больше
         base:
           validation:
             invalid_view: Этот режим отображения должен быть приемлемым.
@@ -5839,4 +5846,5 @@ ro:
           discuss: Discuta
           embed: Distribuiţi
           about: Despre
+          more: Mai Mult
 

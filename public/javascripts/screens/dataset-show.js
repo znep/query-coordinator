@@ -642,6 +642,90 @@ $(function()
         });
     });
 
+    $.fn.shortenActionBar = function(options)
+    {
+        var $this = $(this);
+        var tooLong = function() { return _.uniq($this.find('#sidebarOptions li:visible').map(
+            function() { return $(this).position().top; })).length > 1; };
+
+        var $moreButton = $this.find('a.other').parent(),
+            $dropdown = $('#moreActionBarButtons');
+
+        if (!$dropdown.exists())
+        {
+            $dropdown = $('<ul class="hide" id="moreActionBarButtons">');
+            $this.append($dropdown);
+            $moreButton.click(function(e) { e.preventDefault(); $dropdown.toggleClass('hide'); });
+        }
+
+        var priorityButtons = options.priorityForTruncate.slice(),
+            movedButtons = [];
+
+        var truncateButton = function()
+        {
+            $moreButton.addClass('hide');
+
+            var $target;
+            if (priorityButtons.length > 0)
+            { $target = $this.find('a.' + priorityButtons.shift()).parent(); }
+            else
+            { $target = $this.find('a:visible:last').parent(); }
+
+            movedButtons.push($target.index());
+            $dropdown.append($target);
+            $moreButton.removeClass('hide');
+        };
+
+        var restoreButton = function()
+        {
+            var index = movedButtons.pop(),
+                $target = $dropdown.children(':last'),
+                clsName = $target.find('a').attr('class');
+
+            if (_.include(options.priorityForTruncate, clsName))
+            { priorityButtons.unshift(clsName); }
+            $target.insertBefore($('#sidebarOptions li:eq(' + index + ')'));
+
+            if (!$dropdown.children().exists())
+            { $moreButton.addClass('hide'); $dropdown.addClass('hide'); }
+        };
+
+        var windowWidth = Infinity,
+            resizing = false,
+            offset = $('#description').position().left - $("#sidebarOptions").padding().left;
+        $(window).resize(_.debounce(function()
+        {
+            if (resizing) { return; }
+            resizing = true;
+            var width = $(window).width();
+
+            // Not worth it to run calcs at this point.
+            if (width < $(".siteOuterWrapper").width() - 70)
+            { windowWidth = width; resizing = false; return; }
+
+            var overlapWidth = $('#description .collapsed').width();
+            $(".sidebarOptionsContainer").width(overlapWidth ? width - (overlapWidth + offset)
+                                                             : width * 0.85);
+
+            if (windowWidth < width) // Bigger!
+            {
+                while (!tooLong() && $dropdown.children().exists())
+                { restoreButton(); }
+                if (tooLong())
+                { truncateButton(); }
+            }
+            else if (windowWidth > width)
+            {
+                while (tooLong())
+                { truncateButton(); }
+            }
+
+            windowWidth = width;
+            resizing = false;
+        }, 500));
+    };
+    $('#actionBar').shortenActionBar({ priorityForTruncate: ['feed', 'embed', 'export'] });
+
     // iPad special casing
     if ($.device.ipad)
     {

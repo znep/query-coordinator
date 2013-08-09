@@ -1,6 +1,6 @@
 class Attachment < Model
   def href
-    return "/api/assets/#{blobId}"
+    return "/api/assets/#{blobId}?download=true"
   end
   
   def displayName

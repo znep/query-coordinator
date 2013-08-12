@@ -198,39 +198,13 @@
                 return;
             }
 
-            var fixViewFormat = function(realCol, localCol)
-            {
-                if (localCol.format.group_function != realCol.format.group_function)
-                {
-                    // Fix up view format
-                    var vt = realCol.renderType.viewTypes;
-                    if (_.isFunction(vt)) { vt = vt(localCol, true); }
-                    if (!_.any(vt, function(v) { return v.value == realCol.format.view; }))
-                    {
-                        if ($.isBlank(realCol.format.view))
-                        { return _.first(vt).value; }
-
-                        // None found! Find a reasonable default
-                        // Prefer longest matching substring; otherwise use levenshtein distance
-                        return _.first(_.sortBy(_.map(vt, function(v)
-                            { return { value: v.value,
-                                         distance: v.value.startsWith(realCol.format.view) ?
-                                            1/realCol.format.view.length :
-                                            realCol.format.view.startsWith(v.value) ? 1/v.value.length :
-                                            realCol.format.view.heuristicDistance(v.value) }; }),
-                                'distance')).value;
-                    }
-                }
-                return null;
-            };
-
             // Make new columns have the correct format
             _.each(filterView.columns, function(c)
             {
                 var col = cpObj._view.columnForID(c.id);
                 var mergedFmt = $.extend({}, col.format, c.format);
 
-                var r = fixViewFormat(col, c);
+                var r = Column.closestViewFormat(col, c);
                 if (!$.isBlank(r))
                 { mergedFmt.view = r; }
 
@@ -248,7 +222,7 @@
                     !_.any(filterView.columns, function(fvc) { return fvc.id == c.id; }))
                 {
                     var fmt = $.extend({}, c.format);
-                    var r = fixViewFormat(c, { format: {} });
+                    var r = Column.closestViewFormat(c, { format: {} });
                     if (!$.isBlank(r))
                     { fmt.view = r; }
                     delete fmt.grouping_aggregate;

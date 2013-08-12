@@ -2703,8 +2703,7 @@
                 {
                     html.push('<a class="drillDown" cellvalue="',
                         $.escapeQuotes($.htmlStrip(curRow[col.lookup])),
-                        '" datatype="', col.renderTypeName,
-                        '" column="', col.id,
+                        '" column="', col.fieldName,
                         '" href="#drillDown"></a>');
                 }
 

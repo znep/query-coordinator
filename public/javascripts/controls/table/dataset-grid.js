@@ -150,24 +150,56 @@
             {
                 var datasetObj = this;
 
-                var filterValue = $(drillLink).attr('cellvalue');
-                var filterColumnId = parseInt($(drillLink).attr('column'), 10);
-                var dataTypeName  = $(drillLink).attr('datatype');
+                var $dl = $(drillLink);
+                var filterValue = $dl.attr('cellvalue');
+                var filterColumn = datasetObj._view.columnForIdentifier($dl.attr('column'));
 
-                if ($.isBlank(filterColumnId) || filterValue == '')
+                if ($.isBlank(filterColumn) || filterValue == '')
                 { return false; }
 
                 var view = datasetObj._view.cleanCopy();
 
                 // Now construct our beautiful filter
                 var filter;
-                var columnJson = { columnId: filterColumnId,
-                    type: 'column', value: dataTypeName };
+                var columnJson = { columnFieldName: filterColumn.fieldName,
+                    type: 'column', value: filterColumn.renderTypeName };
 
                 if (filterValue == 'null' || filterValue == 'undefined')
                 {
                     filter = { type: 'operator', value: 'IS_BLANK',
                         children: [ columnJson ] };
+                }
+                // We only know how to handle date groupings for now
+                else if (!$.isBlank(filterColumn.format.group_function) &&
+                        filterColumn.format.group_function.startsWith('date_'))
+                {
+                    var groupFunc = filterColumn.format.group_function;
+                    // Assume these start at midnight, the first day, and first month (as appropriate)
+                    var lowValue = new Date(filterValue);
+                    // Handle timezones in some browsers
+                    if (lowValue.getHours() != 0)
+                    { lowValue.setMinutes(lowValue.getMinutes() + lowValue.getTimezoneOffset()); }
+                    var highValue = lowValue.clone();
+                    lowValue.setSeconds(-1);
+                    if (groupFunc.endsWith('_y'))
+                    { highValue.setYear(highValue.getYear() + 1); }
+                    if (groupFunc.endsWith('_ym'))
+                    { highValue.setMonth(highValue.getMonth() + 1); }
+                    else if (groupFunc.endsWith('_ymd'))
+                    { highValue.setHours(24); }
+                    filter = { type: 'operator', value: 'AND',
+                        children: [
+                        { type: 'operator', value: 'GREATER_THAN',
+                            children: [ columnJson, { type: 'literal',
+                                          value: filterColumn.renderType.filterValue(
+                                                  lowValue.toString(filterColumn.renderType.stringFormat))
+                                      } ] },
+                        { type: 'operator', value: 'LESS_THAN',
+                            children: [ columnJson, { type: 'literal',
+                                          value: filterColumn.renderType.filterValue(
+                                                  highValue.toString(filterColumn.renderType.stringFormat))
+                                      } ] }
+                        ] };
                 }
                 else
                 {
@@ -181,7 +213,7 @@
                 }
 
                 view.query.namedFilters = view.query.namedFilters || {};
-                view.query.namedFilters['drillDown-' + filterColumnId] = filter;
+                view.query.namedFilters['drillDown-' + filterColumn.fieldName] = filter;
 
                 var drillDownCallBack = function(newView)
                 {
@@ -189,19 +221,24 @@
                 };
 
                 var otherGroupBys = _.select(view.query.groupBys || [], function(g)
-                    { return g.columnId != filterColumnId; });
+                    { return g.columnId != filterColumn.id; });
 
                 // We need to hide the drilled col, persist other groupings
                 if (otherGroupBys.length > 0)
                 {
                     _.each(view.columns, function(c)
                     {
-                        if (c.id == filterColumnId)
+                        if (c.fieldName == filterColumn.fieldName)
                         {
                             if (!c.flags) { c.flags = []; }
                             c.flags.push('hidden');
                             delete c.format.grouping_aggregate;
                             delete c.format.drill_down;
+                            if (!$.isBlank(c.format.group_function))
+                            {
+                                delete c.format.group_function
+                                c.format.view = Column.closestViewFormat(filterColumn, c);
+                            }
                         }
                     });
 
@@ -251,6 +288,11 @@
                                 {
                                     delete newCol.format.grouping_aggregate;
                                     delete newCol.format.drill_down;
+                                    if (!$.isBlank(newCol.format.group_function))
+                                    {
+                                        delete newCol.format.group_function
+                                        newCol.format.view = Column.closestViewFormat(filterColumn, newCol);
+                                    }
                                 }
                                 translatedColumns.push(newCol);
                             }

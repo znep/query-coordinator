@@ -441,6 +441,32 @@ Column.sanitizeName = function(colName)
     return sname;
 };
 
+Column.closestViewFormat = function(realCol, localCol)
+{
+    if (localCol.format.group_function != realCol.format.group_function)
+    {
+        // Fix up view format
+        var vt = realCol.renderType.viewTypes;
+        if (_.isFunction(vt)) { vt = vt(localCol, true); }
+        if (!_.any(vt, function(v) { return v.value == realCol.format.view; }))
+        {
+            if ($.isBlank(realCol.format.view))
+            { return _.first(vt).value; }
+
+            // None found! Find a reasonable default
+            // Prefer longest matching substring; otherwise use levenshtein distance
+            return _.first(_.sortBy(_.map(vt, function(v)
+                { return { value: v.value,
+                             distance: v.value.startsWith(realCol.format.view) ?
+                                1/realCol.format.view.length :
+                                realCol.format.view.startsWith(v.value) ? 1/v.value.length :
+                                realCol.format.view.heuristicDistance(v.value) }; }),
+                    'distance')).value;
+        }
+    }
+    return null;
+};
+
 if (blist.inBrowser)
 { this.Column = Column; }
 else

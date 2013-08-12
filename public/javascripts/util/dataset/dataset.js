@@ -2095,7 +2095,7 @@ var Dataset = ServerModel.extend({
                         { return oldRTConfig.visible[nd] ||
                             ds.metadata.renderTypeConfig.visible[nd]; }); }) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
-                !_.isEqual(oldGroupFuncs, newGroupFuncs);
+                !_.isEmpty(ds.query.groupBys) && !_.isEqual(oldGroupFuncs, newGroupFuncs);
 
         var newQ = {orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters()};
         var newKey = RowSet.getQueryKey({orderBys: ds.query.orderBys,
@@ -2107,7 +2107,7 @@ var Dataset = ServerModel.extend({
             var filterChanged = needQueryChange || ds._activeRowSet._key != newKey;
             var nonFilterChanged = oldSearch != ds.searchString ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys) ||
-                !_.isEqual(oldGroupFuncs, newGroupFuncs) ||
+                !_.isEmpty(ds.query.groupBys) && !_.isEqual(oldGroupFuncs, newGroupFuncs) ||
                 // Group-bys suck, since there may be pre-process filtering
                 // that happens before we have the data. So if they exist, we
                 // always have to talk to the server

@@ -9,9 +9,9 @@
             "view[metadata[customRdfClass]]": { url: true }
         },
         messages: {
-            'view[name]': 'The dataset must have a title.',
-            'view[attributionLink]': 'That does not appear to be a valid url.',
-            "view[metadata[customRdfClass]]": 'Custom semantic class must be url.'
+            'view[name]': $.t('screens.edit_metadata.dataset_title_error'),
+            'view[attributionLink]': $.t('screens.edit_metadata.source_link_error'),
+            "view[metadata[customRdfClass]]": $.t('screens.edit_metadata.custom_error')
         },
         errorPlacement:
             function(error, element) {
@@ -51,7 +51,7 @@
     //  generate the new dropdown
     var $newLine = $.tag({
         tagName: 'div', 'class': 'line clearfix', contents: [
-            { tagName: 'label', 'for': 'view_licenseType', contents: 'License Type' },
+            { tagName: 'label', 'for': 'view_licenseType', contents: $.t('screens.edit_metadata.license_type') },
             { tagName: 'select', id: 'view_licenseType', name: 'view[licenseId]' }
         ]
     });
@@ -78,7 +78,7 @@
             $('#view_attribution').siblings('label').addClass('required');
             $("#view_attribution").rules("add", {
                 required: true,
-                messages: { required: " You must specify the data provider (attribution)."}
+                messages: { required: " " + $.t('screens.edit_metadata.data_provider_required') }
             });
 
             $licenseType.attr('name', '');
@@ -99,7 +99,7 @@
     updateCascadingDropdown();
 
     var $uploadLink = $.tag({
-        tagName: 'a', 'href': '#upload', contents: 'Upload New Attachment', 'class': 'button uploadLink'
+        tagName: 'a', 'href': '#upload', contents: $.t('screens.edit_metadata.upload_new_attachment'), 'class': 'button uploadLink'
     });
 
     $('#attachment_new').replaceWith($uploadLink);
@@ -115,7 +115,7 @@
         var val = $form.find('#view_metadata_customRdfClass').val();
         var cboVal = $rdfClass.val();
 
-        if (val != '(none)' && !$.isBlank(val) && val != cboVal)
+        if (val != $.t('screens.edit_metadata.none') && !$.isBlank(val) && val != cboVal)
         {
             $form.find('.comboToggle').click();
         }
@@ -167,7 +167,7 @@
         .hide()
         .after($.tag({
             tagName: 'a', 'class': 'button submitButton',
-            contents: 'Save', title: 'Save changes', href: '#submit'
+            contents: $.t('screens.edit_metadata.save'), title: $.t('screens.edit_metadata.save_changes'), href: '#submit'
         }));
     $('.submitButton').click(function(event)
     {
@@ -189,10 +189,10 @@
 
         if ($cbo.is(':visible'))
         {
-            $(this).find('a').text('List');
+            $(this).find('a').text($.t('screens.edit_metadata.list'));
             $cbo.hide();
             var $txt = $cbo.next('input');
-            if ($txt.val()=='(none)')
+            if ($txt.val()==$.t('screens.edit_metadata.none'))
             {
                 $txt.val('');
             }
@@ -204,7 +204,7 @@
         else
         {
             // custom rdf class is visible
-            $(this).find('a').text('Custom');
+            $(this).find('a').text($.t('screens.edit_metadata.custom'));
             $cbo.show();
             $cbo.next('input').addClass('hide');
             // hide custom rdf error
@@ -233,7 +233,7 @@
         event.preventDefault();
         if ($(this).hasClass('disabled')) { return; }
 
-        if (confirm('Are you sure you want to remove this external dataset?'))
+        if (confirm($.t('screens.edit_dataset.external_confirm')))
         {
             var $line = $(this).closest('.line');
             $line.slideUp(300, function() {

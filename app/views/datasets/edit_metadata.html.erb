@@ -10,75 +10,75 @@
 <div class="contentBox fixedWidth">
   <%= form_tag({}, {:id => "editMetadataForm", :class => 'commonForm', :method => :post, :multipart => true}) do %>
     <h1>Edit Metadata for <%= @view.name %></h1>
-    <a href="<%= view_path(@view) %>" class="returnLink">Return to Dataset</a>
+    <a href="<%= view_path(@view) %>" class="returnLink"><%= t('screens.edit_metadata.return') %></a>
 
     <%= display_standard_flashes %>
 
-    <h2>General Information</h2>
+    <h2><%= t('screens.edit_metadata.general_information') %></h2>
 
     <div class="line clearfix">
-      <label for="view_name" class="required">Dataset Title</label>
-      <%= text_field_tag("view[name]", @view.name, :title => "Enter a title", :class => "textPrompt") %>
+      <label for="view_name" class="required"><%= t('screens.edit_metadata.dataset_title') %></label>
+      <%= text_field_tag("view[name]", @view.name, :title => t('screens.edit_metadata.dataset_title_prompt'), :class => "textPrompt") %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_description">Brief Description</label>
-      <%= text_area_tag("view[description]", @view.description, :title => "Enter a description", :class => "textPrompt") %>
+      <label for="view_description"><%= t('screens.edit_metadata.brief_description') %></label>
+      <%= text_area_tag("view[description]", @view.description, :title => t('screens.edit_metadata.brief_description_prompt'), :class => "textPrompt") %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_category">Category</label>
+      <label for="view_category"><%= t('screens.edit_metadata.category') %></label>
       <%= select_tag("view[category]", category_select_options(@view.category.nil? ? '' : @view.category)) %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_tags">Tags / Keywords</label>
-      <%= text_field_tag("view[tags]", @view.tags.nil? ? '' : @view.tags.join(', '), :title => "Enter keywords", :class => "textPrompt") %>
-      <div class="additionalHelp">Enter one or more keywords separated by commas</div>
+      <label for="view_tags"><%= t('screens.edit_metadata.tags_keywords') %></label>
+      <%= text_field_tag("view[tags]", @view.tags.nil? ? '' : @view.tags.join(', '), :title => t('screens.edit_metadata.tags_prompt'), :class => "textPrompt") %>
+      <div class="additionalHelp"><%= t('screens.edit_metadata.keywords_help') %></div>
     </div>
 
     <%- if @view.is_href? -%>
-      <h2>External Datasets</h2>
+      <h2><%= t('screens.edit_metadata.external_datasets') %></h2>
       <%- if @view.metadata && @view.metadata.accessPoints -%>
         <%- @view.metadata.accessPoints.each do |key, value| -%>
           <%- next if key.end_with?('Size') -%>
           <div class="line clearfix existingExternalSource externalSource">
             <label for="external_sources[][name]" class="required"><%= key.upcase %></label>
             <input type="text" name="external_sources[][name]" value="<%= value %>" class="textPrompt url required"/>
-            <label for="external_sources[][name]" class="fileTypeLabel">File Type</label>
+            <label for="external_sources[][name]" class="fileTypeLabel"><%= t('screens.edit_metadata.file_type') %></label>
             <%= text_field_tag 'external_sources[][extension]', key,
-                  :class => 'extensionField textPrompt', :title => 'Optional'%>
+                  :class => 'extensionField textPrompt', :title => t('screens.edit_metadata.optional') %>
             <%- unless params[:no_js].present? -%>
-              <a href="#remove" class="removeExternalSource button">Remove</a>
+              <a href="#remove" class="removeExternalSource button"><%= t('screens.edit_metadata.remove') %></a>
             <%- end -%>
           </div>
         <%- end -%>
       <%- end -%>
       <div class="line clearfix newExternalSource externalSource">
-        <label>Additional Source</label>
+        <label><%= t('screens.edit_metadata.additional_source') %></label>
         <%= text_field_tag('external_sources[][name]', '', :class => 'textPrompt url',
-                           :title => 'Enter an alternate access point for this dataset') %>
-        <label for="external_sources[][name]" class="fileTypeLabel">File Type</label>
+                           :title => t('screens.edit_metadata.alternative_access_prompt')) %>
+        <label for="external_sources[][name]" class="fileTypeLabel"><%= t('screens.edit_metadata.file_type') %></label>
         <%= text_field_tag 'external_sources[][extension]', '',
-              :class => 'extensionField textPrompt', :title => 'Optional'%>
+              :class => 'extensionField textPrompt', :title => t('screens.edit_metadata.optional') %>
       </div>
     <%- end -%>
-    <h2>Licensing &amp; Attribution</h2>
+    <h2><%= t('screens.edit_metadata.licensing_attr') %></h2>
 
     <div class="line clearfix">
-      <label for="view_licenseId">Licensing</label>
+      <label for="view_licenseId"><%= t('screens.edit_metadata.licensing') %></label>
       <%= select_tag("view[licenseId]", merged_license_select_options(@view.licenseId)) %>
-      <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset.</div>
+      <div class="additionalHelp"><%= t('screens.edit_metadata.license_help') %></div>
     </div>
 
     <div class="line clearfix">
-      <label for="view_attribution">Data Provided By</label>
-      <%= text_field_tag("view[attribution]", @view.attribution, :title => "Individual or Organization", :class => "textPrompt") %>
+      <label for="view_attribution"><%= t('screens.edit_metadata.data_provided_by') %></label>
+      <%= text_field_tag("view[attribution]", @view.attribution, :title => t('screens.edit_metadata.data_provided_prompt'), :class => "textPrompt") %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_attributionLink">Source Link</label>
-      <%= text_field_tag("view[attributionLink]", @view.attributionLink, :title => "Enter Web Address", :class => "textPrompt") %>
+      <label for="view_attributionLink"><%= t('screens.edit_metadata.source_link') %></label>
+      <%= text_field_tag("view[attributionLink]", @view.attributionLink, :title => t('screens.edit_metadata.source_link_prompt'), :class => "textPrompt") %>
     </div>
 
     <%= render :partial => 'metadata', :locals =>
@@ -88,32 +88,32 @@
 
     <h2>Spatial Extent</h2>
      <div class="line clearfix">
-       <label for="view_northWest_lat">Northwest Latitude</label>
+       <label for="view_northWest_lat"><%= t('screens.edit_metadata.northwest_latitude') %></label>
        <%= text_field_tag 'view[northWest[lat]]', (@view.data['northWest'] || {})['lat'],
-           :disabled => true, :title => 'Northwest Latitude', :name=> 'textPrompt'%>
+           :disabled => true, :title => t('screens.edit_metadata.northwest_latitude'), :name=> 'textPrompt'%>
      </div>
      <div class="line clearfix">
-       <label for="view_northWest_long">Northwest Longitude</label>
+       <label for="view_northWest_long"><%= t('screens.edit_metadata.northwest_longitude') %></label>
        <%= text_field_tag 'view[northWest[long]]', (@view.data['northWest'] || {})['long'],
-           :disabled => true, :title => 'Northwest Longitude', :name=> 'textPrompt'%>
+           :disabled => true, :title => t('screens.edit_metadata.northwest_longitude'), :name=> 'textPrompt'%>
      </div>
      <div class="line clearfix">
-       <label for="view_southEast_lat">Southeast Latitude</label>
+       <label for="view_southEast_lat"><%= t('screens.edit_metadata.southeast_latitude') %></label>
        <%= text_field_tag 'view[southEast[lat]]', (@view.data['southEast'] || {})['lat'],
-           :disabled => true, :title => 'Southeast Latitude', :name=> 'textPrompt'%>
+           :disabled => true, :title => t('screens.edit_metadata.southeast_latitude'), :name=> 'textPrompt'%>
      </div>
      <div class="line clearfix">
-       <label for="view_southEast_long">Southeast Longitude</label>
+       <label for="view_southEast_long"><%= t('screens.edit_metadata.southeast_longitude') %></label>
        <%= text_field_tag 'view[southEast[long]]', (@view.data['southEast'] || {})['long'],
-           :disabled => true, :title => 'Southeast Longitude', :name=> 'textPrompt'%>
+           :disabled => true, :title => t('screens.edit_metadata.southeast_longitude'), :name=> 'textPrompt'%>
      </div>
 
     <%- end -%>
 
     <%- if @view.is_tabular? -%>
-    <h2>Semantics &amp; RDF</h2>
+    <h2><%= t('screens.edit_metadata.semantics_rdf') %></h2>
      <div class="line clearfix">
-       <label for="view_metadata_rdfClass">Row Class</label>
+       <label for="view_metadata_rdfClass"><%= t('screens.edit_metadata.row_class') %></label>
          <%= select_tag("view[metadata[rdfClass]]",
                options_for_select(
                  RdfTerm.all_class_options,
@@ -123,11 +123,11 @@
          <%= text_field_tag 'view[metadata[customRdfClass]]', @view.rdf_class, :name=>'view[metadata[customRdfClass]]',
            :class => 'textValue hide combo_button_edit'
          %>
-         <ul class="comboToggle actionButtons"><li><a>Custom</a></li></ul>
+         <ul class="comboToggle actionButtons"><li><a><%= t('screens.edit_metadata.custom') %></li></ul>
      </div>
 
      <div class="line clearfix">
-       <label for="view_metadata_rdfSubject">Subject Column</label>
+       <label for="view_metadata_rdfSubject"><%= t('screens.edit_metadata.subject_column') %></label>
        <%= select_tag("view[metadata[rdfSubject]]",
            rdf_subject_select_options(
            @view.columns,
@@ -135,16 +135,16 @@
        %>
      </div>
 
-    <h2>API Endpoint</h2>
+    <h2><%= t('screens.edit_metadata.api_endpoint') %></h2>
     <%- if module_available?(:api_foundry)-%>
      <div class="line clearfix">
-       <label for="view_resourceName">Resource Name</label>
-       <%= text_field_tag("view[resourceName]", @view.resourceName, :title => "Enter a resource name", :class => "textPrompt") %>
+       <label for="view_resourceName"><%= t('screens.edit_metadata.resource_name') %></label>
+       <%= text_field_tag("view[resourceName]", @view.resourceName, :title => t('screens.edit_metadata.resource_name_prompt'), :class => "textPrompt") %>
      </div>
     <%- end -%>
 
      <div class="line clearfix">
-       <label for="view_metadata_rowIdentifier">Row Identifier</label>
+       <label for="view_metadata_rowIdentifier"><%= t('screens.edit_metadata.row_identifier') %></label>
        <%= select_tag("view[metadata[rowIdentifier]]",
            rdf_subject_select_options(
            @view.columns,
@@ -156,23 +156,23 @@
 
     <%# HACK: The only customer to really use this is Data.gov, so only show it for them %>
     <%- if !Rails.env.production? || CurrentDomain.cname == "explore.data.gov" -%>
-      <h2>External ID</h2>
+      <h2><%= t('screens.edit_metadata.external_id') %></h2>
       <div class="line clearfix">
-        <label for="view_externalId">External Identifier</label>
-        <%= text_field_tag("view[externalId]", @view.externalId, :title => "Enter your external ID", :class => "textPrompt") %>
+        <label for="view_externalId"><%= t('screens.edit_metadata.external_identifier') %></label>
+        <%= text_field_tag("view[externalId]", @view.externalId, :title => t('screens.edit_metadata.external_id_prompt'), :class => "textPrompt") %>
       </div>
     <%- end -%>
 
-    <h2>Thumbnail Image</h2>
+    <h2><%= t('screens.edit_metadata.thumbnail_image') %></h2>
     <div class="customImage">
       <div class="line clearfix">
-        <label>Upload Image</label>
+        <label><%= t('screens.edit_metadata.upload_image') %></label>
         <%= file_field_tag('custom_image', :accept => '(jpe?g|gif|png)',
                            'data-endpoint' => '/assets',
                            :class => 'customDatasetImageSelect') %>
         <span class="uploadIndicator throbber"></span>
-        <div class="additionalHelp">This image will be cropped into a square</div>
-        <span class="imageError flash error">Please select a valid image file</span>
+        <div class="additionalHelp"><%= t('screens.edit_metadata.upload_help') %></div>
+        <span class="imageError flash error"><%= t('screens.edit_metadata.upload_error') %></span>
         <%= hidden_field_tag('view[iconUrl]', @view.iconUrl, :class => 'iconUrlField') %>
       </div>
       <div class="line clearfix<%= ' hide' unless @view.iconUrl %>">
@@ -183,17 +183,17 @@
       </div>
       <%- if @view.iconUrl.present? -%>
         <div class="line clearfix">
-          <label>Remove Image</label>
+          <label><%= t('screens.edit_metadata.remove_image') %></label>
           <%= check_box_tag ('delete_custom_image') %>
         </div>
       <%- end -%>
     </div>
 
-    <h2>Attachments</h2>
+    <h2><%= t('screens.edit_metadata.attachments') %></h2>
 
     <div class="attachments">
       <div class="line clearfix">
-        <label>Existing Attachments</label>
+        <label><%= t('screens.edit_metadata.existing_attachments') %></label>
         <div class="existingAttachments">
           <ul>
             <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
@@ -204,37 +204,37 @@
                   <%= hidden_field_tag("view[metadata[attachments]][][filename]", attachment['filename']) %>
                   <%= text_field_tag(  "view[metadata[attachments]][][name]",     attachmentObj.displayName) %>
                   <span class="deleteLinks">
-                    <label>Delete</label>
+                    <label><%= t('screens.edit_metadata.delete') %></label>
                     <%= check_box_tag("view[metadata[attachments]][][delete]") %>
                   </span>
                 </li>
               <%- end -%>
             <%- else -%>
-              <li class="noAttachmentsItem">(none)</li>
+              <li class="noAttachmentsItem"><%= t('screens.edit_metadata.none') %></li>
             <%- end -%>
           </ul>
         </div>
       </div>
 
       <div class="line clearfix">
-        <label for="attachment_new" class="newAttachmentLabel">New Attachment</label>
+        <label for="attachment_new" class="newAttachmentLabel"><%= t('screens.edit_metadata.new_attachment') %></label>
         <%= file_field_tag("attachment_new") %>
         <span class="uploadAttachmentThrobber throbber"></span>
       </div>
     </div>
 
-    <h2>Contact Information</h2>
+    <h2><%= t('screens.edit_metadata.contact_information') %></h2>
     <div class="line clearfix">
-      <label>Contact Email</label>
+      <label><%= t('screens.edit_metadata.contact_email') %></label>
       <%= text_field_tag('view[privateMetadata][contactEmail]', (@view.data['privateMetadata'] || {})['contactEmail'],
-            :title => 'Email Address', :class => 'textPrompt email') %>
-      <div class="additionalHelp">This address will not be displayed publicly. If left blank, it will default to your address</div>
+            :title => t('screens.edit_metadata.email_address'), :class => 'textPrompt email') %>
+      <div class="additionalHelp"><%= t('screens.edit_metadata.email_help') %></div>
     </div>
 
-    <div class="required">Required Field</div>
+    <div class="required"><%= t('screens.edit_metadata.required_field') %></div>
     <div class="clearfix submitActions">
-      <input class="button submitButton" type="submit" title="Save changes" value="Save" />
-      <a class="button" href="<%= view_path(@view) %>">Cancel</a>
+      <input class="button submitButton" type="submit" title="<%= t('screens.edit_metadata.save_changes') %>" value="Save" />
+      <a class="button" href="<%= view_path(@view) %>"><%= t('screens.edit_metadata.cancel') %></a>
     </div>
   <%- end -%>
 </div>

@@ -780,6 +780,72 @@ en:
             valid_saved: This view must be valid and saved
             public: This view must be public before it can be published
           preview: Preview
+    edit_metadata:
+      return: Return to Dataset
+      general_information: General Information
+      dataset_title: Dataset Title
+      dataset_title_prompt: Enter a title
+      dataset_title_error: The dataset must have a title.
+      brief_description: Brief Description
+      brief_description_prompt: Enter a description
+      category: Category
+      tags_keywords: Tags / Keywords
+      tags_prompt: Enter keywords
+      keywords_help: Enter one or more keywords separated by commas
+      external_dataset: External Datasets
+      file_type: File Type
+      optional: Optional
+      additional_source: Additional Source
+      alternative_access_prompt: Enter an alternate access point for this dataset
+      licensing_attr: Licensing & Attribution
+      licensing: Licensing
+      license_type: License Type
+      license_help: Choose licensing terms for people who wish to use this dataset.
+      data_provided_by: Data Provided By
+      data_provided_prompt: Individual or Organization
+      data_provider_required: You must specify the data provider (attribution).
+      source_link: Source Link
+      source_link_prompt: Enter Web Address
+      source_link_error: That does not appear to be a valid url.
+      metadata_help: This field has been marked private by your organization and is not publicly viewable
+      spatial_extent: Spatial Extent
+      northwest_latitude: Northwest Latitude
+      northwest_longitude: Northwest Longitude
+      southeast_latitude: Southeast Latitude
+      southeast_longitude: Southeast Longitude
+      semantics_rdf: Semantics & RDF
+      row_class: Row Class
+      list: List
+      custom: Custom
+      custom_error: Custom semantic class must be url.
+      subject_column: Subject Column
+      api_endpoint: API Endpoint
+      resource_name: Resource Name
+      resource_name_prompt: Enter a resource name
+      row_identifier: Row Identifier
+      external_id: External ID
+      external_identifier: External Identifier
+      external_id_prompt: Enter your external ID
+      external_confirm: Are you sure you want to remove this external dataset?
+      thumbnail_image: Thumbnail Image
+      upload_image: Upload Image
+      upload_help: This image will be cropped into a square
+      upload_error: Please select a valid image file
+      remove_image: Remove Image
+      attachments: Attachments
+      upload_new_attachment: Upload New Attachment
+      existing_attachments: Existing Attachments
+      delete: Delete
+      none: (none)
+      new_attachment: New Attachment
+      contact_information: Contact Information
+      contact_email: Contact Email
+      email_address: Email Address
+      email_help: This address will not be displayed publicly. If left blank, it will default to your address
+      required_field: Required Field
+      save_changes: Save changes
+      save: Save
+      cancel: Cancel
 
 it:
   screens:
@@ -1551,6 +1617,9 @@ it:
             valid_saved: Questa vista deve essere valida e salvata
             public: Questa vista deve essere pubblica prima che esso possa essere pubblicato
           preview: Anteprima
+    edit_metadata:
+      return: Indietro a Dataset
+      dataset_title: Titolo Dataset
 
 es:
   screens:

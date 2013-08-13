@@ -2701,8 +2701,11 @@
                 html.push('">');
                 if (col.format.drill_down)
                 {
+                    var v = curRow[col.lookup];
+                    if (!$.isBlank(v) && !_.isString(v))
+                    { v = v.toString(); }
                     html.push('<a class="drillDown" cellvalue="',
-                        $.escapeQuotes($.htmlStrip(curRow[col.lookup])),
+                        $.escapeQuotes($.htmlStrip(v)),
                         '" column="', col.fieldName,
                         '" href="#drillDown"></a>');
                 }

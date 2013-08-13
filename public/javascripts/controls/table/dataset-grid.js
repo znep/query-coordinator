@@ -175,7 +175,9 @@
                 {
                     var groupFunc = filterColumn.format.group_function;
                     // Assume these start at midnight, the first day, and first month (as appropriate)
-                    var lowValue = new Date(filterValue);
+                    var lowValue = !$.isBlank(filterColumn.renderType.stringParse) ?
+                        Date.parseExact(filterValue, filterColumn.renderType.stringParse) :
+                        new Date(parseInt(filterValue) * 1000);
                     // Handle timezones in some browsers
                     if (lowValue.getHours() != 0)
                     { lowValue.setMinutes(lowValue.getMinutes() + lowValue.getTimezoneOffset()); }
@@ -187,17 +189,22 @@
                     { highValue.setMonth(highValue.getMonth() + 1); }
                     else if (groupFunc.endsWith('_ymd'))
                     { highValue.setHours(24); }
+
+                    lowValue = !$.isBlank(filterColumn.renderType.stringFormat) ?
+                        lowValue.toString(filterColumn.renderType.stringFormat) :
+                        lowValue.getTime() / 1000;
+                    highValue = !$.isBlank(filterColumn.renderType.stringFormat) ?
+                        highValue.toString(filterColumn.renderType.stringFormat) :
+                        highValue.getTime() / 1000;
                     filter = { type: 'operator', value: 'AND',
                         children: [
                         { type: 'operator', value: 'GREATER_THAN',
                             children: [ columnJson, { type: 'literal',
-                                          value: filterColumn.renderType.filterValue(
-                                                  lowValue.toString(filterColumn.renderType.stringFormat))
+                                          value: filterColumn.renderType.filterValue(lowValue)
                                       } ] },
                         { type: 'operator', value: 'LESS_THAN',
                             children: [ columnJson, { type: 'literal',
-                                          value: filterColumn.renderType.filterValue(
-                                                  highValue.toString(filterColumn.renderType.stringFormat))
+                                          value: filterColumn.renderType.filterValue(highValue)
                                       } ] }
                         ] };
                 }

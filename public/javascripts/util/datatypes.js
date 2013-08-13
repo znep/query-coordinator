@@ -1422,7 +1422,8 @@ blist.namespace.fetch('blist.datatypes');
             aggregates: nonNumericAggs,
             deleteable: true,
             filterConditions: blist.filter.groups.blob,
-            inlineType: true
+            inlineType: true,
+            soda1Only: true
         },
 
         photo: {
@@ -1444,7 +1445,8 @@ blist.namespace.fetch('blist.datatypes');
             aggregates: nonNumericAggs,
             cls: 'photo',
             deleteable: true,
-            filterConditions: blist.filter.groups.blob
+            filterConditions: blist.filter.groups.blob,
+            soda1Only: true
         },
 
 
@@ -1552,7 +1554,8 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             deleteable: true,
             excludeInNestedTable: true,
-            priority: 18
+            priority: 18,
+            soda1Only: true
         }
     });
 

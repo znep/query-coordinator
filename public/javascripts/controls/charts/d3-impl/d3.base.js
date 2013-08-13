@@ -275,7 +275,19 @@ $.Control.registerMixin('d3_base', {
     _isIE8: function()
     {
         return $.browser.msie && parseFloat($.browser.version) < 9;
+    },
+
+    // See Redmine 11915.
+    // In short, .exit().transition().remove()
+    // will often become un-preemptible in IE8, meaning we accidentally
+    // delete some display nodes if we later decide to interrupt the transition
+    // and reuse those nodes (i.e. if we get more data).
+    // The real fix is in the guts of D34Raphael (unknown at this time where specifically).
+    _transitionExitWorkaroundActive: function()
+    {
+        return this._isIE8();
     }
+
 }, null, 'socrataChart');
 
 })(jQuery);

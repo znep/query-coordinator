@@ -121,14 +121,6 @@ $.Control.registerMixin('d3_impl_pie', {
         return Slice;
     })(),
 
-    debugOut: function()
-    {
-        if (this.debugEnabled)
-        {
-            console.log.apply(console, arguments);
-        }
-    },
-
     initializeVisualization: function()
     {
         var vizObj = this;
@@ -138,8 +130,6 @@ $.Control.registerMixin('d3_impl_pie', {
         // we'll replace these defaults with smart getters and setters to avoid
         // having to do this.
         vizObj.defaults = $.extend(true, {}, vizObj.defaults);
-
-        vizObj.debugEnabled = $.urlParam(window.location.href, 'debug') == 'true';
 
         // own object to save temp stuff on
         var cc = vizObj._chartConfig = {};

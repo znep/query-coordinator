@@ -9,11 +9,27 @@ $.Control.registerMixin('d3_base_dynamic', {
     initializeVisualization: function()
     {
         var vizObj = this;
+        vizObj.debugEnabled = $.urlParam(window.location.href, 'debug') == 'true';
         vizObj._currentRangeData = [];
         vizObj.getColumns();
         vizObj.cleanDisplayFormat();
         vizObj._super();
         vizObj._chartInitialized = true;
+    },
+
+    debugOut: function()
+    {
+        if (this.debugEnabled && window.console)
+        {
+            if (console.log.apply)
+            {
+                console.log.apply(console, arguments);
+            }
+            else
+            {
+                console.log(_.flatten(arguments).join('')); //IE8's arguments doesn't have join()...!
+            }
+        }
     },
 
     cleanDisplayFormat: function()
@@ -59,6 +75,11 @@ $.Control.registerMixin('d3_base_dynamic', {
             // its first row fetch and then we'll be able to use that.
             // ask for 50 anyway for good measure
             renderRange = { start: 0, length: 50 };
+        }
+
+        if (vizObj.debugEnabled)
+        {
+            vizObj.debugOut('getData: @'+renderRange.start+' L'+renderRange.length);
         }
 
         vizObj._currentRenderRange = renderRange; // keep track of what row set we care about at the moment
@@ -147,6 +168,25 @@ $.Control.registerMixin('d3_base_dynamic', {
         if (!this._chartInitialized) { return; }
 
         var didInsertData = this._sortedSetInsert(this._currentRangeData, data);
+
+        if (this.debugEnabled)
+        {
+            if (!_.isEmpty(this._currentRangeData))
+            {
+                this.debugOut('rData: idx: ' +
+                              _.first(this._currentRangeData).index +
+                              '-' +
+                              _.last(this._currentRangeData).index +
+                              ', count: ' +
+                              this._currentRangeData.length +
+                              ', insert: ' +
+                              didInsertData);
+            }
+            else
+            {
+                this.debugOut('rData(empty)');
+            }
+        }
 
         this.renderData(this._currentRangeData, view, didInsertData);
     },

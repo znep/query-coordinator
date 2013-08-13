@@ -396,7 +396,8 @@ $.Control.registerMixin('d3_impl_bar', {
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView;
 
-        var doAnimation = (didInsertData === true);
+        var allowTransitions = !vizObj._transitionExitWorkaroundActive();
+        var doAnimation = (didInsertData === true) && allowTransitions;
 
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
@@ -436,6 +437,23 @@ $.Control.registerMixin('d3_impl_bar', {
                 }
             });
             var presentData = splitData['present'] || [], nullData = splitData['null'] || [];
+            if (vizObj.debugEnabled)
+            {
+                if (!_.isEmpty(presentData))
+                {
+                    vizObj.debugOut('presentD idx: ' +
+                                  _.first(presentData).index +
+                                  '-' +
+                                  _.last(presentData).index +
+                                  ', count: ' +
+                                  presentData.length);
+                }
+                else
+                {
+                    vizObj.debugOut('presentD(empty)');
+                }
+                vizObj.debugOut('nullD: ', nullData.length);
+            }
 
 
             // render our actual bars
@@ -494,28 +512,6 @@ $.Control.registerMixin('d3_impl_bar', {
                     // our internal state changes, so we must re-set them here
                     // (as opposed to on enter only).
                     .attr(cc.dataDim.xAxis, xDatumPositionForSeries)
-
-                    // We want to see the columns "grow" up or right on scale change.
-                    // This is mostly fine for orientation=down (since our y-axis
-                    // polarity matches what the browser defines, i.e. higher y values
-                    // in the chart mean higher x values in the browser). We just
-                    // need to animate the height.
-                    // This isn't true for orientation=right, since in this instance
-                    // higher y values mean lower y values in the browser.
-                    // We must do some hackery to get the animations to look right!
-                    // In short, we start out  with the bars at their old height
-                    // but on the new baseline, then animate both the position
-                    // (remember it's top-left position) and height at the same
-                    // time. Basically, the animated scale cancels out the
-                    // apparent motion of the bottom or left while it animates
-                    // into position.
-                    .attr(cc.dataDim.height, function(d)
-                    {
-                        var oldHeight = vizObj._yBarHeight(col.lookup, oldYScale)(d);
-                        var newHeight = vizObj._yBarHeight(col.lookup, newYScale)(d);
-
-                        return oldHeight - (oldHeight - newHeight)/2;
-                    })
                     .attr(cc.dataDim.yAxis, vizObj._yDatumPosition(col.lookup, doAnimation ? oldYScale : newYScale))
                     .each(function(d)
                     {
@@ -559,11 +555,20 @@ $.Control.registerMixin('d3_impl_bar', {
                             this.tip.destroy();
                             delete this.tip;
                         }
-                    })
-                // need to call transition() here as it accounts for the animation ticks;
-                // otherwise you get npe's
-                .transition()
-                    .remove();
+                    });
+
+            if (allowTransitions)
+            {
+                bars.exit()
+                    // need to call transition() here as it accounts for the animation ticks;
+                    // otherwise you get npe's
+                    .transition()
+                        .remove();
+            }
+            else
+            {
+                bars.exit().remove();
+            }
 
             // render null bars
             var nullSeriesClass = 'nullDataBar_series' + col.lookup;
@@ -616,9 +621,19 @@ $.Control.registerMixin('d3_impl_bar', {
                         .attr('d', vizObj._errorBarPath(newYScale));
             }
 
-            errorMarkers
-                .exit()
-                    .remove();
+            if (allowTransitions)
+            {
+                errorMarkers
+                    .exit()
+                        .transition()
+                            .remove();
+            }
+            else
+            {
+                errorMarkers
+                    .exit()
+                        .remove();
+            }
         }
 
         vizObj._renderTicks(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
@@ -817,6 +832,8 @@ $.Control.registerMixin('d3_impl_bar', {
         var labelInBar = $.deepGet(this._displayFormat, 'xAxis', 'labelInBar'),
             valueInBar = $.deepGet(this._displayFormat, 'xAxis', 'valueInBar');
 
+        if (!labelInBar && !valueInBar) { return; }
+
         var fontMetrics = vizObj._fontMetricsForRowLabels();
 
         var extraPaddingForBarInColumn = (cc.orientation == 'right') ? 10 : 5;
@@ -981,7 +998,6 @@ $.Control.registerMixin('d3_impl_bar', {
         {
             rowLabels
                 .exit()
-                .transition()
                     .remove();
         }
     },
@@ -1163,6 +1179,8 @@ $.Control.registerMixin('d3_impl_bar', {
             yScale = vizObj._currentYScale(),
             yAxisPos = vizObj._yAxisPos();
 
+        vizObj.debugOut('rAxis');
+
         // Special case for orientation=right:
         // Why can't we just have D3 handle the transition for us? Well, because
         // of the way our coordinate system works, the animation will be in the
@@ -1232,10 +1250,6 @@ $.Control.registerMixin('d3_impl_bar', {
                     .attr('d', vizObj._errorBarPath(yScale));
         }
 
-        // Standard labels.
-        cc.chartHtmlD3.selectAll('.rowLabel')
-            .style(cc.dataDim.pluckY('left', 'top'), vizObj._yRowLabelPosition());
-
         vizObj._renderTicks(oldYScale, yScale, true);
         vizObj._renderValueMarkers(oldYScale, yScale, true);
 
@@ -1250,6 +1264,8 @@ $.Control.registerMixin('d3_impl_bar', {
             cc = vizObj._chartConfig,
             valueColumns = vizObj.getValueColumns(),
             yAxisPos = vizObj._yAxisPos();
+
+        vizObj.debugOut('rPos');
 
         // render our bars per series
         _.each(valueColumns, function(colDef, seriesIndex)

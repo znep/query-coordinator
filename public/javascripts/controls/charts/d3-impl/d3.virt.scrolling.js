@@ -184,6 +184,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             if (!vizObj._chartInitialized) { return; }
             // cache scrollPos so that aggressive scrolling doesn't make our calculations stutter.
             cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
+            vizObj.debugOut('Scroll: ', cc.scrollPos);
 
             vizObj._recalculateDataOffset();
             if (vizObj._repositionDrawElement())
@@ -1087,6 +1088,12 @@ $.Control.registerMixin('d3_virt_scrolling', {
             cc = vizObj._chartConfig,
             yAxisPos = vizObj._yAxisPos();
 
+        // Note that this is quite separate from isAnim. Even if isAnim is true,
+        // we still use transition(). This variable completely disables trantisions.
+        // This is important as it's dangerous to mix transitions and non-transitions
+        // due to the possibility of someone doing a .remove() while we're transitioning.
+        var allowTransitions = !vizObj._transitionExitWorkaroundActive();
+
         var formatter = $.deepGet(vizObj, '_displayFormat', 'yAxis', 'formatter');
         if ($.subKeyDefined(vizObj, '_displayFormat.yAxis.noDecimals'))
         { $.extend(formatter, { noDecimals: $.deepGet(vizObj, '_displayFormat', 'yAxis', 'noDecimals') }); }
@@ -1112,12 +1119,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             ticks.push(maxValue);
         }
 
-        var position = cc.orientation == 'right' ? 'top' : 'left';
-
-        // So, for orientation=right we must keep the bottom of our scale on the
-        // y-axis without animating there, because otherwise the scale grows
-        // from the middle of the screen and that's strange as heck.
-        var extraOffset = vizObj._axisOffsetDueToScaleChange(oldYScale, newYScale);
+         var position = cc.orientation == 'right' ? 'top' : 'left';
 
         // render our tick lines and labels
         var tickLines = cc.chromeD3.selectAll('.tick')
@@ -1133,18 +1135,45 @@ $.Control.registerMixin('d3_virt_scrolling', {
             tickLinesRootEnter
                 .append('div')
                     .classed('tickLine', true);
+
+        var newLinePos = function(d) { return (yAxisPos + cc.dataDim.dir * newYScale(d)) + 'px'; };
+
+        if (allowTransitions)
+        {
+            // So, for orientation=right we must keep the bottom of our scale on the
+            // y-axis without animating there, because otherwise the scale grows
+            // from the middle of the screen and that's strange as heck.
+            var extraOffset = vizObj._axisOffsetDueToScaleChange(oldYScale, newYScale);
+
+            tickLines
+                .style(position, function(d) { return (extraOffset + yAxisPos + cc.dataDim.dir * oldYScale(d)) + 'px'; })
+                .transition()
+                    .duration(isAnim ? vizObj._animationLengthMillisec : 0)
+                     .style(position, newLinePos);
+        }
+        else
+        {
+            tickLines
+                .style(position, newLinePos);
+        }
+
         tickLines
-            .style(position, function(d) { return (extraOffset + yAxisPos + cc.dataDim.dir * oldYScale(d)) + 'px'; })
-            .transition()
-                .duration(isAnim ? vizObj._animationLengthMillisec : 0)
-                .style(position, function(d) { return (yAxisPos + cc.dataDim.dir * newYScale(d)) + 'px'; });
-        tickLines
-                .selectAll('.tickLabel')
-                    .each(vizObj._d3_text(vizObj._formatYAxisTicks(formatter)));
-        tickLines
-            .exit()
-            .transition()
-                .remove();
+                 .selectAll('.tickLabel')
+                     .each(vizObj._d3_text(vizObj._formatYAxisTicks(formatter)));
+
+        if (allowTransitions)
+        {
+            tickLines
+                .exit()
+                    .transition()
+                        .remove();
+        }
+        else
+        {
+            tickLines
+                .exit()
+                    .remove();
+        }
     },
 
     _renderValueMarkers: function(oldYScale, newYScale, isAnim)
@@ -1204,8 +1233,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
                 .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(newYScale, 0));
         valueMarkers
             .exit()
-            .transition()
-                .remove();
+                .transition()
+                    .remove();
     },
 
     _formatYAxisTicks: function(formatter)
@@ -1273,6 +1302,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // baseline closer to the row's center
         var rowLabels = cc.chartD3.selectAll('.rowLabel')
             .data(_.filter(data, labelTransform.isInView), function(row) { return row.id; });
+
         rowLabels
             .enter().append('text')
                 .classed('rowLabel', true)
@@ -1300,7 +1330,6 @@ $.Control.registerMixin('d3_virt_scrolling', {
                 });
         rowLabels
             .exit()
-            .transition()
                 .remove();
 
         // We do this *once*.

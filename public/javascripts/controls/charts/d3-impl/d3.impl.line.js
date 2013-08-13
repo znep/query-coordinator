@@ -66,7 +66,8 @@ $.Control.registerMixin('d3_impl_line', {
             view = vizObj._primaryView,
             lineType = vizObj._chartType;
 
-        var doAnimation = (didInsertData === true)
+        var allowTransitions = !vizObj._transitionExitWorkaroundActive();
+        var doAnimation = (didInsertData === true) && allowTransitions;
 
         // figure out how far out our value axis line is
         var yAxisPos = vizObj._yAxisPos();
@@ -257,11 +258,17 @@ $.Control.registerMixin('d3_impl_line', {
                             this.tip.destroy();
                             delete this.tip;
                         }
-                    })
-                // need to call transition() here as it accounts for the animation ticks;
-                // otherwise you get npe's
-                .transition()
-                    .remove();
+                    });
+            if (allowTransitions)
+            {
+                points.exit()
+                    .transition()
+                        .remove();
+            }
+            else
+            {
+                points.exit().remove();
+            }
 
             if (vizObj._displayFormat.dataLabels === true)
             {
@@ -302,7 +309,6 @@ $.Control.registerMixin('d3_impl_line', {
                     });
                 dataLabels
                     .exit()
-                    .transition()
                         .remove();
             }
 

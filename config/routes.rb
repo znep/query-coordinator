@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 Frontend::Application.routes do
 
   UID_REGEXP = /\w{4}-\w{4}/
@@ -41,6 +43,8 @@ Frontend::Application.routes do
     # New frontend pages
     scope :controller => 'odysseus', :action => 'index' do
       match '/stat', :as => 'govstat_root'
+      match '/stat/☃', :as => 'govstat_bootstrap'
+      match '/stat/%E2%98%83', :as => 'govstat_bootstrap'
       match '/stat/goals', :as => 'govstat_goals'
       match '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
       match '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'

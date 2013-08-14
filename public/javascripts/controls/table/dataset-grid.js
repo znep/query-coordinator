@@ -184,7 +184,7 @@
                     var highValue = lowValue.clone();
                     lowValue.setSeconds(-1);
                     if (groupFunc.endsWith('_y'))
-                    { highValue.setYear(highValue.getYear() + 1); }
+                    { highValue.setYear(highValue.getFullYear() + 1); }
                     if (groupFunc.endsWith('_ym'))
                     { highValue.setMonth(highValue.getMonth() + 1); }
                     else if (groupFunc.endsWith('_ymd'))

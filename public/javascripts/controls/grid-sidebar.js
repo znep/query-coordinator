@@ -21,7 +21,6 @@
         registerConfig: function(name, controlName, priority, displayTypes)
         {
             if (name == 'new_chart_create' && !blist.configuration.newChartConfig) { return; }
-            if (name.startsWith('visualize') && blist.configuration.newChartConfig) { return; }
 
             if ($.isBlank(name)) { throw 'Sidebar config requires a name'; }
 

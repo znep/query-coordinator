@@ -634,14 +634,25 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         // Our top legend margin sadly must be determined in code for this set
         // of configuration options.
-        if (vizObj._chartConfig.orientation == 'right' &&
-            ((legendPosition == 'left') || (legendPosition == 'right')))
+        if (((legendPosition == 'left') || (legendPosition == 'right')))
         {
             $legendContainer.css('margin-top', -1 * $legendContainer.height() / 2);
         }
         else
         {
             $legendContainer.css('margin-top', '');
+        }
+
+        // ... and in this case, we must set the margins on the outer container
+        // to allow for dynamic legend width.
+        if ((legendPosition == 'left') || (legendPosition == 'right'))
+        {
+            cc.$chartOuterContainer.css(legendPosition, $legendContainer.outerWidth(true));
+        }
+        else
+        {
+            cc.$chartOuterContainer.css('right', '');
+            cc.$chartOuterContainer.css('left', '');
         }
 
         // In this case, the legend and the y axis share the same container,

@@ -1,4 +1,6 @@
 class Page < Model
+  require 'snappy'
+
   def self.find( options = nil, custom_headers = {}, batch = nil, is_anon = false )
     if options.nil?
       options = Hash.new
@@ -185,10 +187,10 @@ class Page < Model
       page = find(method: 'getPageRouting', id: page.uid)
       # Update cache if it exists
       cache_key = generate_cache_key
-      ds = Rails.cache.read(cache_key)
+      ds = get_cached_ds(cache_key)
       if !ds.nil?
         add_page(page, ds, true)
-        Rails.cache.write(cache_key, ds)
+        set_cached_ds(cache_key, ds)
       end
       results[0] = page
     end
@@ -230,6 +232,19 @@ class Page < Model
   end
 
 private
+
+  # The pages dataset can easily exceed the 1MB limit of memcached so we use snappy
+  # to get it down to about a tenth the size
+  def self.get_cached_ds(cache_key)
+    ds_raw = Rails.cache.read(cache_key, :raw => true)
+    Marshal.load(Snappy.inflate(ds_raw)) unless ds_raw.nil?
+  end
+
+  def self.set_cached_ds(cache_key, ds)
+    snapped = Snappy.deflate(Marshal.dump(ds))
+    Rails.cache.write(cache_key, snapped, :expires_in => 24.hours, :raw => true)
+  end
+
   def self.cache_time
     [(VersionAuthority.paths_mtime.to_i / 1000).to_s || Time.now.to_i.to_s,
       VersionAuthority.resource('pages') || Time.now.to_i.to_s].max
@@ -237,14 +252,18 @@ private
 
   def self.pages_data()
     cache_key = generate_cache_key
-    ds = Rails.cache.read(cache_key)
+    ds = get_cached_ds(cache_key)
 
     if ds.nil?
       ds = {}
-      VersionAuthority.set_paths_mtime((Time.now.to_i * 1000).to_s)
+      mtime = Time.now.to_i
+      VersionAuthority.set_paths_mtime((mtime * 1000).to_s)
+      VersionAuthority.set_resource('pages', mtime.to_s)
       find(status: 'published', method: 'getRouting').each { |c| add_page(c, ds) }
-      cache_key = generate_cache_key
-      Rails.cache.write(cache_key, ds)
+      # Beware; there is a minor risk that ds may exceed the 1MB limit of memcached
+      cache_key = generate_cache_key(mtime)
+      Rails.logger.info("Writing pages data to cache key: #{cache_key}")
+      set_cached_ds(cache_key, ds)
     end
     return ds
   end
@@ -296,10 +315,10 @@ private
     [cur_obj[key], vars]
   end
 
-  def self.generate_cache_key
-    app_helper.cache_key("page-dataset-v2", {
+  def self.generate_cache_key(mtime = cache_time)
+    app_helper.cache_key("page-dataset-v2-snappy", {
       'domain' => CurrentDomain.cname,
-      'updated' => cache_time
+      'updated' => mtime
     })
   end
 

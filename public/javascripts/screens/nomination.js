@@ -8,7 +8,7 @@ $(function()
 
     blist.nominations.updateNomination = function()
     {
-        blist.util.railsFlash('Your suggestion has been updated');
+        blist.util.railsFlash($.t('controls.nominate.suggestion_updated'));
         window.location.reload();
     };
 
@@ -68,17 +68,17 @@ $(function()
         $contactDialog.find('.mainError').text('');
         if (!$contactDialog.find('form').valid())
         {
-            $contactDialog.find('.mainError').text('Please correct the errors above');
+            $contactDialog.find('.mainError').text($.t('controls.nominate.form_error'));
             return;
         }
         nom.contactOwner($contactDialog.find('form').serializeObject(),
             function greaterSuccess() {
                 $contactDialog.jqmHide();
-                flash('Your message has been sent to the suggestion author.');
+                flash($.t('controls.nominate.greater_success'));
             },
             function greatSadness() {
                 $contactDialog.jqmHide();
-                flash('Error contacting the suggestion author. Please try again later.', 'error');
+                flash($.t('controls.nominate.great_sadness'), 'error');
             });
     });
 

@@ -1,28 +1,28 @@
 <%= modal :class => 'nominateDialog editNominationDialog' do %>
-  <h2 class="create">Suggest a Dataset</h2>
-  <h2 class="edit">Edit This Suggestion</h2>
+  <h2 class="create"><%= t('controls.nominate.suggest_a_dataset') %></h2>
+  <h2 class="edit"><%= t('controls.nominate.edit_suggestion') %></h2>
   <form class="nominateContent commonForm">
     <div class="line">
-      <label for="nominateTitle" class="required">Title</label>
+      <label for="nominateTitle" class="required"><%= t('controls.nominate.title') %>itle</label>
       <input id="nominateTitle" name="nominate_title" type="text"
-        class="required textPrompt" title="Enter a title" />
+        class="required textPrompt" title="<%= t('controls.nominate.title_prompt') %>" />
     </div>
     <div class="line clearfix">
-      <label for="nominateDescription">Description</label>
+      <label for="nominateDescription"><%= t('controls.nominate.description') %></label>
       <textarea id="nominateDescription" name="nominate_description"
-        class="textPrompt" title="Enter details about your suggestion"></textarea>
+        class="textPrompt" title="<%= t('controls.nominate.description_prompt') %>"></textarea>
     </div>
     <div class="line create">
-      <label for="nominateFile">Attachment</label>
+      <label for="nominateFile"><%= t('controls.nominate.attachment') %></label>
       <input type="text" readonly="readonly" disabled="disabled"
         class="fileReadout" name="file_upload" />
-      <a href="#Browse" class="button fileBrowseButton">Browse</a>
+      <a href="#Browse" class="button fileBrowseButton"><%= t('controls.nominate.browse') %></a>
     </div>
-    <span class="required">Required</span>
+    <span class="required"><%= t('controls.nominate.required') %></span>
   </form>
   <div class="mainError"></div>
   <ul class="actions">
-    <li><a href="#Cancel" class="jqmClose button">Cancel</a></li>
-    <li><a href="#Submit" class="submitAction button">Submit</a></li>
+    <li><a href="#Cancel" class="jqmClose button"><%= t('controls.nominate.cancel') %></a></li>
+    <li><a href="#Submit" class="submitAction button"><%= t('controls.nominate.submit') %></a></li>
   </ul>
 <%- end -%>

@@ -1,19 +1,19 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-nominations' %>
-  <title>Dataset Suggestions | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('controls.nominate.dataset_suggestions') %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div class="nominationsContainer">
   <div class="facets">
-    <span class="title">Filter by Status</span>
-    <%- statuses = [{:text => 'All', :value => nil},
-      {:text => 'Open', :value => 'pending'},
-      {:text => 'Approved', :value => 'approved'},
-      {:text => 'Rejected', :value => 'rejected'}] -%>
+    <span class="title"><%= t('controls.nominate.filter_by_status') %></span>
+    <%- statuses = [{:text => t('controls.nominate.all'), :value => nil},
+      {:text => t('controls.nominate.open'), :value => 'pending'},
+      {:text => t('controls.nominate.approved'), :value => 'approved'},
+      {:text => t('controls.nominate.rejected'), :value => 'rejected'}] -%>
     <%-
     if !current_user.nil? && current_user.has_right?('moderate_comments')
       statuses = statuses.insert(2,
-        {:text => 'Needs Moderation', :value => 'unmoderated'})
+        {:text => t('controls.nominate.needs_moderation'), :value => 'unmoderated'})
     end
     -%>
     <ul>
@@ -27,19 +27,19 @@
   </div>
 
   <div class="nominationsList">
-    <h2>Dataset Suggestions</h2>
+    <h2><%= t('controls.nominate.title') %></h2>
     <%- if !current_user.nil? -%>
-      <a href="#Submit dataset" class="button nominateLink hasUser">Suggest a Dataset</a>
+      <a href="#Submit dataset" class="button nominateLink hasUser"><%= t('controls.nominate.suggest_a_dataset') %></a>
     <%- else -%>
-      <a href="<%= new_nominate_path %>" class="button nominateLink">Suggest a Dataset</a>
+      <a href="<%= new_nominate_path %>" class="button nominateLink"><%= t('controls.nominate.suggest_a_dataset') %></a>
     <%- end -%>
     <div class="moderationNotice flash notice">
-      Your suggestion has been received and is in the moderation queue. It will appear on this page once an administrator approves it.
+      <%= t('controls.nominate.suggestion_received') %>
     </div>
 
     <div class="results">
       <%- if @nominations_count == 0 -%>
-      <div class="noResults">No Results</div>
+      <div class="noResults"><%= t('controls.nominate.no_results') %></div>
 
       <%- else -%>
       <table class="gridList">
@@ -52,11 +52,11 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="user" scope="col">Submitted by</th>
-            <th class="details" scope="col">Details</th>
-            <th class="attachments" scope="col">Files</th>
-            <th class="rating" scope="col">Rating</th>
-            <th class="status" scope="col">Status</th>
+            <th class="user" scope="col"><%= t('controls.nominate.submitted_by') %></th>
+            <th class="details" scope="col"><%= t('controls.nominate.details') %></th>
+            <th class="attachments" scope="col"><%= t('controls.nominate.files') %></th>
+            <th class="rating" scope="col"><%= t('controls.nominate.rating') %></th>
+            <th class="status" scope="col"><%= t('controls.nominate.status') %></th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -82,7 +82,7 @@
       <td class="user" scope="row">
         <%- if !current_user.nil? &&
                 current_user.has_right?('edit_nominations') -%>
-        <a href="#Remove" title="Delete this suggestion" class="delete"></a>
+        <a href="#Remove" title="<%= t('controls.nominate.delete_suggestion') %>" class="delete"></a>
         <%- end -%>
         <a class="userLink"><img /><span class="userName"></span></a>
       </td>
@@ -90,7 +90,7 @@
         <a href="#" class="titleLink"><span class="title"></span></a>
         <%- if !current_user.nil? &&
                 current_user.has_right?('edit_nominations') -%>
-        <a href="#Edit" title="Edit this suggestion" class="edit">(Edit)</a>
+        <a href="#Edit" title="<%= t('controls.nominate.edit_suggestion') %>" class="edit"><%= t('controls.nominate.edit') %></a>
         <%- end -%>
         <div class="submitTime">
           <span class="fullTime"></span>
@@ -103,7 +103,7 @@
         <ul><li>
           <%- if !current_user.nil? &&
                   current_user.has_right?('edit_nominations') -%>
-          <a href="#Remove" title="Delete this attachment" class="delete"></a>
+          <a href="#Remove" title="<%= t('controls.nominate.delete_suggestion') %>" class="delete"></a>
           <%- end -%>
           <a class="fileLink" rel="external"></a>
         </li></ul>
@@ -111,10 +111,10 @@
       <td class="rating nomRating">
         <span class="value"></span>
         <%- if !current_user.nil? -%>
-        <a class="rateLink rateDown" title="I don't like it" href="#Rate down">
+        <a class="rateLink rateDown" title="<%= t('controls.nominate.rate_down') %>" href="#Rate down">
           <span class="icon"></span>
         </a>
-        <a class="rateLink rateUp" title="I like it" href="#Rate up">
+        <a class="rateLink rateUp" title="<%= t('controls.nominate.rate_up') %>" href="#Rate up">
           <span class="icon"></span>
         </a>
         <%- end -%>
@@ -126,6 +126,7 @@
   </tbody>
 </table>
 <% end %>
+<%= render_translations LocalePart.controls.nominate %>
 
 <% content_for :js_footer do %>
   <script type='text/javascript'>

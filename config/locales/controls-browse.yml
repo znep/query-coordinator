@@ -114,6 +114,67 @@ en:
         manage_api:
           title: Manage this API
           button: Manage
+    nominate:
+      dataset_suggestions: Dataset Suggestions
+      filter_by_status: Filter by Status
+      all: All
+      open: Open
+      approved: Approved
+      rejected: Rejected
+      needs_moderation: Needs Moderation
+      suggest_a_dataset: Suggest a Dataset
+      suggestion_received: Your suggestion has been received and is in the moderation queue. It will appear on this page once an administrator approves it.
+      no_result: No Results
+      submitted_by: Submitted by
+      details: Details
+      files: Files
+      rating: Rating
+      status: Status
+      delete_suggestion: Delete this suggestion
+      edit: (Edit)
+      edit_suggestion: Edit this suggestion
+      delete_attachment: Delete this attachment
+      rate_down: "I don't like it"
+      rate_up: I like it
+      back_to_suggestions: Back to Dataset Suggestions
+      contact_author: Contact Suggestion Author
+      user_removed_short: User was removed
+      user_removed: a user who was already removed
+      rating: Rating
+      description: Description
+      attachments: Attachments
+      comments: Comments
+      message: Message
+      message_prompt: Enter your message
+      required: Required
+      submit: Submit
+      cancel: Cancel
+      title: Title
+      title_prompt: Enter a title
+      description_prompt: Enter details about your suggestion
+      attachment: Attachment
+      browse: Browse
+      required: Required
+      moderate: (Moderate)
+      moderate_tip: Accept this suggestion and open it up for voting
+      remove: (Remove)
+      remove_tip: Remove this suggestion
+      approve: (Approve)
+      approve_tip: Approve this suggestion
+      reject: (Reject)
+      reject_tip: Reject this suggestion
+      suggestion_updated: Your suggestion has been updated
+      form_error: Please correct the errors above
+      greater_success: Your message has been sent to the suggestion author.
+      great_sadness: Error contacting the suggestion author. Please try again later.
+      new: New
+      open: Open
+      delete_confirm: Are you sure you want to delete this %{type}?
+      delete_error: Error deleting %{type}
+      delete_attachment: attachment
+      delete_suggestion: suggestion
+      moderate_error: Error changing status
+      rating_error: Error rating suggestion
 
 it:
   controls:

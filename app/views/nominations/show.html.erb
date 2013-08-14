@@ -1,15 +1,15 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-nomination' %>
-  <title><%= @nom.title %> | Dataset Suggestions | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= @nom.title %> | <%= t('controls.nominate.dataset_suggestions') %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div class="nomDetailContainer">
-  <%= link_to(raw('<span class="icon"></span>Back to Dataset Suggestions'),
+  <%= link_to(raw('<span class="icon"></span>' + t('controls.nominate.back_to_suggestions')),
           {:action => 'index'}, {:class => 'button backButton leftArrowNoHover'}) %>
   <%- if current_user && (current_user.has_right?('edit_nominations')) -%>
-    <a href="#edit" class="edit button editNomButton">Edit This Suggestion</a>
+    <a href="#edit" class="edit button editNomButton"><%= t('controls.nominate.edit_suggestion') %></a>
     <%- if !@nom.user.nil? && current_user.id != @nom.user.id -%>
-      <a href="#contact" class="notifyNominatorButton button">Contact Suggestion Author</a>
+      <a href="#contact" class="notifyNominatorButton button"><%= t('controls.nominate.contact_author') %></a>
     <%- end -%>
   <%- end -%>
   <div class="content">
@@ -20,16 +20,16 @@
 
     <div class="submittedBy">
       <%- if @nom.user.nil? -%>
-      <a><img class="authorImage" src="/images/small-profile.png" alt="User was removed" />
-        <h4>Submited by
-          <span class="authorName">a user who was already removed</span>
+      <a><img class="authorImage" src="/images/small-profile.png" alt="<%= t('controls.nominate.user_removed_short') %>" />
+        <h4><%= t('controls.nominate.submitted_by') %>
+          <span class="authorName"><%= t('controls.nominate.user_removed') %></span>
         </h4>
       </a>
       <%- else -%>
       <a href="<%= profile_path(@nom.user) %>" rel="external">
         <img class="authorImage" src="<%= @nom.user.profile_image_path %>"
              alt="<%= @nom.user.displayName %>" />
-        <h4>Submitted by
+        <h4><%= t('controls.nominate.submitted_by') %>
           <span class="authorName">
             <%= @nom.user.displayName %>
           </span>
@@ -41,16 +41,16 @@
 
     <div class="nomActions">
       <div class="nomRatingContainer">
-        Rating:
+        <%= t('controls.nominate.rating') %>:
         <span class="nomRating<%= @nom.netVotes > 0 ? ' positive' :
                                   @nom.netVotes < 0 ? ' negative' : '' %>">
           <span class="value"><%= @nom.netVotes %></span>
           <%- if !current_user.nil? -%>
           <span class="ratingButtons">
-            <a class="rateLink rateUp" title="I like it" href="#Rate up">
+            <a class="rateLink rateUp" title="<%= t('controls.nominate.rate_up') %>" href="#Rate up">
               <span class="icon"></span>
             </a>
-            <a class="rateLink rateDown" title="I don't like it" href="#Rate down">
+            <a class="rateLink rateDown" title="<%= t('controls.nominate.rate_down') %>" href="#Rate down">
               <span class="icon"></span>
             </a>
             <%- end -%>
@@ -64,14 +64,14 @@
 
     <%- if @nom.description.present? -%>
       <div class="nomDescription">
-        <h4>Description</h4>
+        <h4><%= t('controls.nominate.description') %></h4>
         <%= simple_format(@nom.description, :class => 'subPara') %>
       </div>
     <%- end -%>
 
     <%- if @nom.attachments.present? -%>
     <div class="nomAttachments">
-      <h4>Attachments</h4>
+      <h4><%= t('controls.nominate.attachments') %></h4>
       <ul class="attachmentList">
         <%- @nom.attachments.each do |att| -%>
           <li>
@@ -83,10 +83,11 @@
     <%- end -%>
 
     <div class="nomComments">
-      <h4>Comments</h4>
+      <h4><%= t('controls.nominate.comments') %></h4>
     </div>
   </div>
 </div>
+<%= render_translations LocalePart.controls.nominate %>
 
 <%- content_for :modals do -%>
   <%- if current_user && current_user.has_right?('edit_nominations') -%>

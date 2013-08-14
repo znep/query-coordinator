@@ -48,21 +48,21 @@ $(function()
     {
         if (nom.status == 'pending' &&
             (new Date(nom.createdAt * 1000) > Date.parse('7 days ago')))
-        { return 'new'; }
+        { return $.t('controls.nominate.new'); }
         else if (nom.status == 'pending')
-        { return 'open'; }
+        { return $.t('controls.nominate.open'); }
         return nom.status;
     };
 
     blist.nominations.remove = function(id, attachmentId, successCallback)
     {
-        var type = attachmentId ? 'attachment' : 'suggestion';
-        if (confirm('Are you sure you want to delete this ' + type + '?'))
+        var type = $.t('controls.nominate.delete_' + attachmentId ? 'attachment' : 'suggestion');
+        if (confirm($.t('controls.nominate.delete_confirm', { type: type })))
         {
             blist.nominations.map[id].remove(attachmentId, successCallback,
                 function error(xhr)
                 {
-                    alert('Error deleting ' + type + ': ' +
+                    alert($.t('controls.nominate.delete_error', { type: type }) + ': ' +
                         JSON.parse(xhr.responseText).message);
                 }
             );
@@ -85,7 +85,7 @@ $(function()
             },
             function error(xhr)
             {
-                alert('Error changing status: ' +
+                alert($.t('controls.nominate.moderate_error') + ': ' +
                     JSON.parse(xhr.responseText).message);
             }
         );
@@ -111,7 +111,7 @@ $(function()
             },
             function (xhr)
             {
-                alert('Error rating suggestion: ' +
+                alert($.t('controls.nominate.rating_error') + ': ' +
                     JSON.parse(xhr.responseText).message);
             }
         );
@@ -169,7 +169,7 @@ $(function()
             $dialog.find('.prompt').val('');
             if (!$dialog.find('form').valid())
             {
-                $dialog.find('.mainError').text('Please correct the errors above');
+                $dialog.find('.mainError').text($.t('controls.nominate.form_error'));
                 return;
             }
 

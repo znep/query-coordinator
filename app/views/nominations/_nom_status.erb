@@ -2,16 +2,16 @@
 <%- if !current_user.nil? &&
         current_user.has_right?('moderate_comments') -%>
 <a href="#Moderate"
-  title="Accept this suggestion and open it up for voting"
+  title="<%= t('controls.nominate.moderate_tip') %>"
   data-status="pending"
-  class="moderate moderateLink unmoderatedLink">(Moderate)</a>
-<a href="#Remove" title="Remove this suggestion"
-  class="delete unmoderatedLink">(Remove)</a>
+  class="moderate moderateLink unmoderatedLink"><%= t('controls.nominate.moderate') %></a>
+<a href="#Remove" title="<%= t('controls.nominate.remove_tip') %>"
+  class="delete unmoderatedLink"><%= t('controls.nominate.remove') %></a>
 <%- end -%>
 <%- if !current_user.nil? &&
         current_user.has_right?('approve_nominations') -%>
-<a href="#Approve" title="Approve this suggestion" data-status="approved"
-  class="approve moderateLink moderatedLink">(Approve)</a>
-<a href="#Reject" title="Reject this suggestion" data-status="rejected"
-  class="reject moderateLink moderatedLink">(Reject)</a>
+<a href="#Approve" title="<%= t('controls.nominate.approve_tip') %>" data-status="approved"
+  class="approve moderateLink moderatedLink"><%= t('controls.nominate.approve') %></a>
+<a href="#Reject" title="<%= t('controls.nominate.remove_tip') %>" data-status="rejected"
+  class="reject moderateLink moderatedLink"><%= t('controls.nominate.reject') %></a>
 <%- end -%>

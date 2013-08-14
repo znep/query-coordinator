@@ -56,7 +56,7 @@ $(function()
 
     blist.nominations.remove = function(id, attachmentId, successCallback)
     {
-        var type = $.t('controls.nominate.delete_' + attachmentId ? 'attachment' : 'suggestion');
+        var type = $.t('controls.nominate.delete_' + (attachmentId ? 'attachment' : 'suggestion'));
         if (confirm($.t('controls.nominate.delete_confirm', { type: type })))
         {
             blist.nominations.map[id].remove(attachmentId, successCallback,

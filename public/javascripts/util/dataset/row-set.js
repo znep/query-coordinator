@@ -64,6 +64,7 @@ var RowSet = ServerModel.extend({
         else
         {
             var gotID = function(data) { successCallback(data[id]); };
+            // FIXME
             rs.makeRequest({inline: true,
                 params: {method: 'getByIds', indexesOnly: true, ids: id},
                 success: gotID});
@@ -78,19 +79,11 @@ var RowSet = ServerModel.extend({
         return _.detect(cell || {}, function(sr) { return sr.id == id; });
     },
 
-    // arguments: ([first-fetch size], [successCallback, [errorCallback]])
-    getTotalRows: function()
+    getTotalRows: function(successCallback, errorCallback)
     {
-        var args = Array.prototype.slice.call(arguments);
-        var length = 1;
-        if (_.isNumber(args[0]))
-        {
-            length = args.shift();
-        }
-        var successCallback = args[0], errorCallback = args[1];
-
-        if ($.isBlank(this._totalCount))
-        { this.getRows(0, length, successCallback, errorCallback); }
+        var rs = this;
+        if ($.isBlank(rs._totalCount))
+        { rs.getRows(0, 1, successCallback, errorCallback); }
         else if (_.isFunction(successCallback))
         { successCallback(); }
     },
@@ -336,25 +329,17 @@ var RowSet = ServerModel.extend({
     getAllRows: function(successCallback, errorCallback)
     {
         var rs = this;
-        rs.getTotalRows(50, function()
+        rs.getTotalRows(function()
         {
-            if (rs._totalCount < 50)
+            var loadedRows = 0;
+            rs.getRows(0, rs._totalCount, function(rows)
             {
-                // we're done already
-                rs.getRows(0, rs._totalCount, successCallback, errorCallback);
-            }
-            else
-            {
-                var loadedRows = 0;
-                rs.getRows(0, rs._totalCount, function(rows)
+                loadedRows += rows.length;
+                if (loadedRows >= rs._totalCount)
                 {
-                    loadedRows += rows.length;
-                    if (loadedRows >= rs._totalCount)
-                    {
-                        rs.getRows(0, rs._totalCount, successCallback, errorCallback);
-                    }
-                }, errorCallback);
-            }
+                    rs.getRows(0, rs._totalCount, successCallback, errorCallback);
+                }
+            }, errorCallback);
         }, errorCallback);
     },
 
@@ -416,7 +401,15 @@ var RowSet = ServerModel.extend({
 
     reload: function(successCallback, errorCallback)
     {
-        this._loadRows(0, 1, successCallback, errorCallback, true, true);
+        var rs = this;
+        delete rs._totalCount;
+        delete rs._rows;
+        delete rs._rowIDLookup;
+        delete rs._aggCache;
+        if (blist.useSODA2 && !rs._dataset.isGrouped())
+        { rs.getTotalRows(successCallback, errorCallback); }
+        else
+        { rs._loadRows(0, 1, successCallback, errorCallback, true, true); }
     },
 
     getAggregates: function(callback, customAggs)
@@ -766,12 +759,14 @@ var RowSet = ServerModel.extend({
             reqData.query.filterCondition = rs._query.filterCondition;
         }
 
-        if (fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
-            !_.isEqual(reqData, rs._curMetaReqMeta))
-        { params[blist.useSODA2 ? '$$meta' : 'meta'] = true; }
+        if ((fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
+            !_.isEqual(reqData, rs._curMetaReqMeta)) && (!rs._dataset._useSODA2 || rs._dataset.isGrouped()))
+        { params[rs._dataset._useSODA2 ? '$$meta' : 'meta'] = true; }
+        if ($.isBlank(rs._totalCount) && rs._dataset._useSODA2 && !rs._dataset.isGrouped())
+        { params['$$row_count'] = 'approximate'; } // really gives the exact count
 
         var reqId = _.uniqueId();
-        var rowsLoaded = function(result)
+        var rowsLoaded = function(result, ___, xhr)
         {
             if (len && !$.isBlank(start))
             {
@@ -837,6 +832,36 @@ var RowSet = ServerModel.extend({
                     metaToUpdate.metadata = rs._dataset.metadata;
                 }
                 rs.trigger('metadata_update', [metaToUpdate, !blist.useSODA2, !blist.useSODA2, fullLoad]);
+            }
+            // In SODA2 we get basic columns back in the header
+            else if (blist.useSODA2)
+            {
+                var rowCount = JSON.parse(xhr.getResponseHeader('X-SODA2-Row-Count') || 'null');
+                if (_.isNumber(rowCount))
+                { rs._totalCount = rowCount; }
+
+                var fields = JSON.parse(xhr.getResponseHeader('X-SODA2-Fields'));
+                //var types = xhr.getResponseHeader('X-SODA2-Types');
+                var newCols = _.map(fields, function(f)
+                {
+                    var c = rs._findColumnForServerName(f);
+                    if ($.isBlank(c))
+                    {
+                        if (f.startsWith(':'))
+                        {
+                            // metadata column, add it
+                            c = { id: -1, name: f.slice(1), fieldName: f,
+                                dataTypeName: 'meta_data', renderTypeName: 'meta_data' };
+                        }
+                        else
+                        {
+                            // uh-oh, a column we don't know about
+                            $.debug('!!!!!!!!!!!! Unknown column: ' + f);
+                        }
+                    }
+                    return c;
+                });
+                rs.trigger('metadata_update', [ { columns: newCols } ]);
             }
             // If we loaded without meta but don't have meta available, bail
             else if ($.isBlank(rs._totalCount))
@@ -906,8 +931,8 @@ var RowSet = ServerModel.extend({
             { rs._rowsLoading[i + start] = true; }
         }
 
-        var req = {success: rowsLoaded, params: params, inline: !blist.useSODA2 && !fullLoad,
-            type: blist.useSODA2 || fullLoad ? 'GET' : 'POST'};
+        var req = { success: rowsLoaded, params: params, inline: !blist.useSODA2 && !fullLoad,
+            type: blist.useSODA2 || fullLoad ? 'GET' : 'POST' };
         if (blist.useSODA2)
         { req.url = '/api/id/' + rs._dataset.id + '.json'; }
         else if (fullLoad)
@@ -921,6 +946,43 @@ var RowSet = ServerModel.extend({
         rs.makeRequest(req);
     },
 
+    _findColumnForServerName: function(name, parCol)
+    {
+        var rs = this;
+        name = blist.useSODA2 ? name : ({sid: 'id', 'id': 'uuid'}[name] || name);
+        var c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(name) :
+            parCol.childColumnForIdentifier(name);
+
+        if ($.isBlank(c))
+        {
+            if (blist.useSODA2 && rs._dataset.isGrouped())
+            {
+                // Maybe a group function?
+                var i = name.indexOf('__');
+                var gf = name.slice(i + 2);
+                var mId = name.slice(0, i);
+                c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(mId) :
+                    parCol.childColumnForIdentifier(mId);
+                if ($.isBlank(c) || c.format.group_function !=
+                    blist.datatypes.groupFunctionFromSoda2(gf))
+                {
+                    // Maybe this is an aggregate column?
+                    i = name.indexOf('_');
+                    var agg = name.slice(0, i);
+                    name = name.slice(i + 1);
+                    c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(name) :
+                        parCol.childColumnForIdentifier(name);
+                    if ($.isBlank(c) || c.format.grouping_aggregate !=
+                        blist.datatypes.aggregateFromSoda2(agg))
+                    { return null; }
+                }
+            }
+            else
+            { return null; }
+        }
+        return c;
+    },
+
     _addRows: function(newRows, start, skipTranslate)
     {
         var rs = this;
@@ -930,38 +992,10 @@ var RowSet = ServerModel.extend({
             if (_.any(r, function(val, id)
             {
                 var newVal = val;
-                // A few columns don't have original lookups
-                var lId = blist.useSODA2 ? id : ({sid: 'id', 'id': 'uuid'}[id] || id);
-                var c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(lId) :
-                    parCol.childColumnForIdentifier(lId);
+                var c = rs._findColumnForServerName(id, parCol);
 
                 if ($.isBlank(c))
-                {
-                    if (blist.useSODA2 && rs._dataset.isGrouped())
-                    {
-                        // Maybe a group function?
-                        var i = lId.indexOf('__');
-                        var gf = lId.slice(i + 2);
-                        var mId = lId.slice(0, i);
-                        c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(mId) :
-                            parCol.childColumnForIdentifier(mId);
-                        if ($.isBlank(c) || c.format.group_function !=
-                            blist.datatypes.groupFunctionFromSoda2(gf))
-                        {
-                            // Maybe this is an aggregate column?
-                            i = lId.indexOf('_');
-                            var agg = lId.slice(0, i);
-                            lId = lId.slice(i + 1);
-                            c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(lId) :
-                                parCol.childColumnForIdentifier(lId);
-                            if ($.isBlank(c) || c.format.grouping_aggregate !=
-                                blist.datatypes.aggregateFromSoda2(agg))
-                            { return true; }
-                        }
-                    }
-                    else
-                    { return true; }
-                }
+                { return true; }
 
                 if (c.isMeta && c.name == 'meta' && _.isString(newVal))
                 { newVal = JSON.parse(newVal || 'null'); }

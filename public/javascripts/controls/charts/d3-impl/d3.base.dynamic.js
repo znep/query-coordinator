@@ -9,7 +9,7 @@ $.Control.registerMixin('d3_base_dynamic', {
     initializeVisualization: function()
     {
         var vizObj = this;
-        vizObj.debugEnabled = $.urlParam(window.location.href, 'debug') == 'true';
+        vizObj.debugEnabled = $.locationParam('debug') == 'true';
         vizObj._currentRangeData = [];
         vizObj.getColumns();
         vizObj.cleanDisplayFormat();

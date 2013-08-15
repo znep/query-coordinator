@@ -3,8 +3,8 @@
 
     /*** Common configuration options ***/
 
-    var forceOldCharts = $.urlParam(window.location.href, 'charts') === 'old' || blist.configuration.oldChartsForced;
-    var forceNewCharts = $.urlParam(window.location.href, 'charts') === 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
+    var forceOldCharts = $.locationParam('charts') === 'old' || blist.configuration.oldChartsForced;
+    var forceNewCharts = $.locationParam('charts') === 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
 
     var isNextGen = blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts;
     var nextGenReady = ['bar', 'column', 'pie', 'donut', 'line', 'area'];

@@ -304,6 +304,7 @@
 
             sidebarObj.settings.onSidebarShown(nameParts.primary, nameParts.secondary);
             if (!$.isBlank(config.control)) { config.control.shown(); }
+            $('ul#moreActionBarButtons').addClass('hide');
         },
 
         /* Hide the sidebar and all panes */

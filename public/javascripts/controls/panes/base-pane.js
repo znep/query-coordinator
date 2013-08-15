@@ -883,6 +883,9 @@
                     _.include(['tableColumnId', 'id'], $input.attr('data-columnIdField')))
             { value = parseInt(value); }
 
+            if($input.hasClass('ui-spinner-input')){
+              value = parseInt(value);
+            }
             // Now add the value
             addFormValue(inputName, value, parObj, parIndex);
 
@@ -1551,8 +1554,6 @@
             { valChecked = radioItem; }
 
             var optionLabel = {tagName: 'label', 'for': id, contents: subLine}
-            if (args.item.sectionSelector) {optionLabel['class'] = opt.value + '-icon'}
-
             
             return {tagName: 'div', 'class': ['radioLine', opt.type, (opt.lineClass || '')],
                 contents: [radioItem, optionLabel]};
@@ -1771,6 +1772,20 @@
         }
         if (attrs.disabled || attrs.readonly)
         { delete attrs.title; }
+        
+        if (args.item.spinner === true)
+        {
+          wrapper['class'].push('spinner');
+        }
+        if (args.item.minimum != null)
+        {
+          attrs['data-min'] = args.item.minimum;
+        }
+        if (args.item.maximum != null)
+        {
+          attrs['data-max'] = args.item.maximum;
+        }
+        
         wrapper.contents = $.extend(attrs, {tagName: 'input', type: 'text',
             value: $.htmlEscape(curValue || defValue)});
     };
@@ -2045,7 +2060,22 @@
     {
         //*** Text Prompts
         $container.find('.textPrompt').example(function () { return $(this).attr('title'); });
+        
+        $container.find('.spinner input').each(function(){
+          var $this = $(this);
+          var min = parseInt($this.attr('data-min'));
+          var max = parseInt($this.attr('data-max'));
 
+          if (!$.isNumeric(min)){min = undefined}
+          if (!$.isNumeric(max)){max = undefined}  
+          $this.spinner({
+            change:  function( event, ui ){
+              $(this).trigger('change');
+            },
+            min: min,
+            max: max
+          });
+        });
 
         //*** Column Selectors
         $container.delegate('.columnSelector', 'click', function(e)

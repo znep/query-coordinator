@@ -1,4 +1,7 @@
 (function($) {
+
+    var typeOrder = ['column', 'bar', 'stackedcolumn', 'stackedbar', 'pie', 'donut', 'line' , 'area', 'timeline', 'bubble', 'treemap'];
+
     $.Control.extend('pane_new_chart_create', {
         _init: function()
         {
@@ -29,6 +32,10 @@
             if (completeRerender) 
             { 
             //setup DOM 
+                cpObj.$dom().find('.chartTypeSelection .radioLine').each(function(index, node){
+                    $(node).addClass(typeOrder[index])
+                });
+
                 //Push custom icons into sidebar dom
                 cpObj.$dom().find('.chartTypeSelection .formHeader')
                     .append($.tag({ tagName: 'div', 'class': ['currentSelection'],
@@ -51,26 +58,36 @@
                         }
                 );
 
-                //setup eventing
+                //setup eventing    
 
-                //takes in classname <type>-icon
+                //Add flyout to unavailable chart types telling which columns are required
+                var unavailable = cpObj.$dom().find('.unavailable');
+                for(var i=0; i<unavailable.length; i++){
+                    var type = unavailable[i].className.split(' ')[2];
+                    cpObj.$dom().find('.unavailable.'+type).socrataTip({message: Dataset.chart.types[type].prompt});
+                };
+
+                //takes in classname <'radioLine' ('unavailable')? type>
                 var setHeader = function(type){
-                    cpObj.$dom().find('.formSection.chartTypeSelection') 
-                    .removeClass(function(i, oldClasses) {
-                        var matches = oldClasses.match(/\S*-icon/);
-                        return ($.isBlank(matches) ? '' : matches.join(' '));
-                    }) 
-                    .addClass(type)
-                    //Set the text to current icon type
-                    .find('.currentSelection .selectionName')
-                    .text(cpObj.$dom().find('.'+type +' > span > span').text());
-                    //.text(type.split('-')[0]); 
+                    
+                    var current = type.split(' ')[1];
+                    if(current!='unavailable'){
+                        cpObj.$dom().find('.formSection.chartTypeSelection') 
+                        .removeClass(function(i, oldClasses) {
+                            var matches = oldClasses.match(/\S*-icon/);
+                            return ($.isBlank(matches) ? '' : matches.join(' '));
+                        }) 
+                        .addClass(type+'-icon')
+                        //Set the text to current icon type
+                        .find('.currentSelection .selectionName')
+                        .text(Dataset.chart.types[current].text);
+                    };
                 }
                 if (blist.dataset.displayFormat.chartType){
-                    setHeader(blist.dataset.displayFormat.chartType+'-icon');
+                    setHeader('radioLine '+blist.dataset.displayFormat.chartType);
                 }
                 //Bind section classing to chart-type selection
-                cpObj.$dom().find('label[class$="-icon"]').click(function(e) {
+                cpObj.$dom().find('.chartTypeSelection .radioLine').click(function(e) {
                     setHeader($(e.currentTarget).attr('class'));
                 });                    
             }
@@ -83,59 +100,17 @@
         //Append area can be before, after ...
         _getSections: function() {
             var cpObj = this;
-
-            //getting rid of "Chart" at the end of the charttype string
-            var chartTypesCopy = $.extend({}, Dataset.chart.types);
-            for (var type in chartTypesCopy)
-            {
-                chartTypesCopy[type].text = chartTypesCopy[type].text.replace(' Chart','');
-            }
-
-            //Order the chart types in a custom order
-            var typeOrder = ['column', 'bar', 'stackedcolumn', 'stackedbar', 'pie', 'donut', 'line' , 'area', 'timeline', 'bubble', 'treemap'];
-            var chartTypesSorted = {};
-            for (var i=0; i<typeOrder.length; i++)
-            {
-                chartTypesSorted[typeOrder[i]]=chartTypesCopy[typeOrder[i]];
-                
-                //Add custom class for chart types not available with current dataset
-                if(!Dataset.chart.hasRequiredColumns(
-                    cpObj._view.realColumns,
-                    Dataset.chart.types[typeOrder[i]].requiredColumns, 
-                    isEdit(cpObj) && !cpObj._view.isGrouped())){
-
-                    chartTypesSorted[typeOrder[i]].lineClass = 'unAvailable';
-                }
-            }
-
-            var result = [{
-                    title: $.t('screens.ds.grid_sidebar.chart.setup.title'),
-                    type: 'selectable',
-                    initShow: true,
-                    validateCollapsed: true,
-                    customClasses: 'sectionSubheading chartTypeSelection',
-                    fields: [{
-                            text: $.t('screens.ds.grid_sidebar.chart.setup.type'),
-                            name: 'displayFormat.chartType',
-                            type: 'radioGroup',
-                            required: true,
-                            extraClass: 'option-icons',
-                            sectionSelector: true,
-                            defaultValue: '',
-                            prompt: $.t('screens.ds.grid_sidebar.chart.setup.type_prompt'),
-                            options: chartTypesSorted
-                        }
-                    ]
-                }
-
-            ];
-
-            _.each(_.keys(Dataset.chart.types), function(type) {
-                result = result.concat(blist.configs.chart.newConfigForType(type, {
+            
+            var options = {
                     view: cpObj._view,
                     isEdit: isEdit(cpObj) && !cpObj._view.isGrouped(),    
                     useOnlyIf: true
-                }));
+            }
+
+            var result = blist.configs.chart.configChartSelector(options);
+
+            _.each(_.keys(Dataset.chart.types), function(type) {
+                result = result.concat(blist.configs.chart.newConfigForType(type, options));
             });
 
             return result;

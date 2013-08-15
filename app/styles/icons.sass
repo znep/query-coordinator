@@ -767,7 +767,7 @@
 @mixin viz-type-icons
   $icon_slot: 0
   @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap
-    .#{$name}-icon
+    .#{$name} > label
       @include ie6-fix
       background-image: url(/stylesheets/images/component/cf-icons.png?2)
       background-repeat: no-repeat
@@ -840,7 +840,7 @@
 //Other chart configuration form icons
 @mixin chart-config-icons
   $icon_slot: 0
-  @each $name in labelInBar, valueInBar, valueMarker, flyout, pointColor, pointSize, errorBarsLow, errorBarsHigh
+  @each $name in labelInBar, valueInBar, valueMarker, flyout, pointColor, pointSize, errorBarsHigh, errorBarsLow
 
     .#{$name} + .lineIcon
       background-image: url(/stylesheets/images/icons/chart-config-icons.png?3)

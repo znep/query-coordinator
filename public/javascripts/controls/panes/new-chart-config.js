@@ -14,6 +14,8 @@
     else{
         defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];    
     }
+    var typeOrder = ['column', 'bar', 'stackedcolumn', 'stackedbar', 'pie', 'donut', 'line' , 'area', 'timeline', 'bubble', 'treemap'];
+
 
     var axisTitles = [
         {text: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title'), name: 'displayFormat.titleX',
@@ -58,7 +60,7 @@
         type: 'checkbox', trueValue: '3', falseValue: '0', defaultValue: '3'};
 
     var pieJoinAngle = {text: $.t('screens.ds.grid_sidebar.chart.min_angle'), name: 'displayFormat.pieJoinAngle',
-        type: 'slider', minimum: 0, maximum: 10, defaultValue: 1};
+        type: 'text', spinner: true, minimum: 0, maximum: 10, defaultValue: 1};
 
     var smoothLine = {text: $.t('screens.ds.grid_sidebar.chart.smooth_line'), name: 'displayFormat.smoothLine',
         type: 'checkbox', defaultValue: false};
@@ -216,10 +218,8 @@
 
     /*** Helpers ***/
 
-    var getDisabledMessage = function(chartConfig)
+   var getDisabledMessage = function(chartConfig)
     {
-        return function()
-        {
             var chartName = chartConfig.text.toLowerCase();
 
             var newTypes = [];
@@ -232,14 +232,21 @@
                 newTypes.push({count: (oldL - copy.length) + 1, types: t});
             }
 
+            var transform = function(title)
+            {
+                if (title === 'Date & Time (with timezone)')
+                { return 'date_time_timezone'; }
+                return title.replace(/\(.*\)/, '').replace(' & ', '_')
+                            .replace(' ', '_').toLowerCase();
+            };
             return $.t('screens.ds.grid_sidebar.chart.validation.required_columns', {
                 chart_type: chartName.capitalize(),
-                column_types: $.arrayToSentence(_.map(newTypes, function(rc) { return rc.count + ' ' +
+                column_types: $.arrayToSentence(_.map(newTypes, function(rc) { return $.t('screens.ds.grid_sidebar.chart.validation.count', { count: rc.count }) + ' ' +
                         $.arrayToSentence(_.map(rc.types, function(t)
-                        { return blist.datatypes[t].title.toLowerCase(); }),
+                        { return $.t('screens.ds.grid_sidebar.base.datatypes.' + transform(blist.datatypes[t].title)); }),
                             $.t('support.array_or.two_words_connector'), ','); }),
                     $.t('support.array.two_words_connector'), ';', true) })
-        };
+        
     };
 
     var getWarningMessage = function(chartConfig)
@@ -280,7 +287,7 @@
 
         return [{field: 'displayFormat.chartType', value: chart.value},
                {disable: disable, func: function() { return chartTypeAvailable(chart, options); },
-                disabledMessage: getDisabledMessage(chart)},
+                disabledMessage: function(){getDisabledMessage(chart)}},
                {warn: disable, func: function() { return datasetTooLarge(chart, options); },
                 warningMessage: getWarningMessage(chart)}];
     };
@@ -444,9 +451,9 @@
                     { text: 'Decimal Places', type: 'radioGroup', name: 'yAxisDecimalPlaces',
                         defaultValue: 'yAxisDecimalPlacesAuto',
                         options: [ { type: 'static', value: 'Auto', name: 'yAxisDecimalPlacesAuto' },
-                                   { type: 'slider', minimum: 0, maximum: 10, defaultValue: 0,
+                                   { type: 'text', spinner: true, minimum: 0, maximum: 10, defaultValue: 0,
                                      name: 'displayFormat.yAxis.formatter.decimalPlaces' } ] } :
-                    { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.precision'), type: 'slider', minimum: 0, maximum: 10, defaultValue: 2,
+                    { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.precision'), type: 'text', spinner: true, minimum: 0, maximum: 10, defaultValue: 2,
                          name: 'displayFormat.yAxis.formatter.decimalPlaces' },
                 {text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.abbreviate'), type: 'checkbox', defaultValue: false,
                     name: 'displayFormat.yAxis.formatter.abbreviate'}
@@ -517,6 +524,53 @@
 
 
     /*** Main config ***/
+    chartConfigNS.configChartSelector = function(options) {
+        //getting rid of "Chart" at the end of the charttype string
+        var chartTypesCopy = $.extend({}, Dataset.chart.types);
+        for (var type in chartTypesCopy)
+        {
+            chartTypesCopy[type].text = chartTypesCopy[type].text.replace(' Chart','');
+        }
+
+        //Order the chart types in a custom order
+        var chartTypesSorted = {};
+        for (var i=0; i<typeOrder.length; i++)
+        {
+            
+            chartTypesSorted[typeOrder[i]] = chartTypesCopy[typeOrder[i]];
+            var currentType = chartTypesSorted[typeOrder[i]];
+
+            //Disable chart types not available with current dataset
+            if(!chartTypeAvailable(currentType, options)){
+                currentType.lineClass = 'unavailable';
+                currentType.disabled = 'disabled';
+            }
+            //add custom message to the different chart types
+            currentType.prompt = getDisabledMessage(currentType);
+        }
+
+        var result = [{
+                title: $.t('screens.ds.grid_sidebar.chart.setup.title'),
+                type: 'selectable',
+                initShow: true,
+                validateCollapsed: true,
+                customClasses: 'sectionSubheading chartTypeSelection',
+                fields: [{
+                        text: $.t('screens.ds.grid_sidebar.chart.setup.type'),
+                        name: 'displayFormat.chartType',
+                        type: 'radioGroup',
+                        required: true,
+                        extraClass: 'option-icons',
+                        sectionSelector: true,
+                        defaultValue: '',
+                        prompt: $.t('screens.ds.grid_sidebar.chart.setup.type_prompt'),
+                        options: chartTypesSorted
+                    }
+                ]
+            }];
+        return result;
+    }
+
 
     chartConfigNS.newConfigForType = function(type, options)
     {    

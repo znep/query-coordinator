@@ -171,6 +171,7 @@ en:
       dont_save: "Don't Save"
       save: Save
       update: Update
+      logout: You have been logged out.
       session_timeout:
         warning:
           title: Your session is about to expire.

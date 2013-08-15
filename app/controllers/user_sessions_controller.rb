@@ -84,7 +84,7 @@ class UserSessionsController < ApplicationController
       current_user_session.destroy
     end
     cookies.delete :remember_token
-    flash[:notice] = t('core.dialogs.session_timeout.notice')
+    flash[:notice] = t('core.dialogs.logout')
     redirect_to(login_path)
   end
 end

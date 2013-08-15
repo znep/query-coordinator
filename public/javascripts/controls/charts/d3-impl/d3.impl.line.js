@@ -294,6 +294,7 @@ $.Control.registerMixin('d3_impl_line', {
                     .attr('y', function(d, i)
                     {
                         var yPos = vizObj._yDatumPosition(col.lookup, newYScale)(d),
+                            axisDelta = yAxisPos - yPos,
                             before = (data[i-1] || {})[col.lookup],
                             after = (data[i+1] || {})[col.lookup],
                             datum = d[col.lookup];
@@ -301,11 +302,13 @@ $.Control.registerMixin('d3_impl_line', {
                         var tangent = 0;
                         if (before) { tangent += before < datum ? 1 : -1; }
                         if (after) { tangent -= after < datum ? 1 : -1; }
+                        if (axisDelta >= -0.5 && axisDelta < 15) { tangent = -1; }
+                        else if (axisDelta < -0.5 && axisDelta > -15) { tangent = 1; }
 
                         if (tangent === 0)
                         { return yPos + (before < datum ? -13 : 13); }
                         else
-                        { return yPos + (tangent/tangent * 13); }
+                        { return yPos + (Math.abs(tangent)/tangent * 13); }
                     });
                 dataLabels
                     .exit()

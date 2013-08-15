@@ -91,8 +91,7 @@
         if (!dataset.isPublic())
         {
             $flash.addClass('notice')
-                .text('Notice: This ' + displayName + ' is currently private. ' +
-                    'Emailing will grant access to all recipients.');
+                .text($.t('screens.ds.email.private_notice', {displayName: displayName}));
         }
 
         // Fetch friends for auto-complete if logged in

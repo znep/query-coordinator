@@ -510,6 +510,18 @@ $wizard_border_color: #ccc
       .pull
         display: none
 
+      &.hide
+        display: block !important // important wars
+        height: 0
+        visibility: hidden
+
+    .noDataMessage
+      font-size: 1.6em
+
+      .dsLink
+        display: inline-block
+        margin: 0 0.3em
+
   .staticValue
     .madlib .inputWrapper
       width: 100%
@@ -622,6 +634,10 @@ $wizard_border_color: #ccc
 
   .measureMetricWizard
     clear: both
+
+    .measureChart .content-wrapper
+      height: 100%
+      width: 100%
 
   .measureSummary
     line-height: 4em

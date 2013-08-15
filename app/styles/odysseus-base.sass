@@ -112,6 +112,11 @@
 .goalQuickEdit
   width: 75em
 
+  ul.actions .saveGoalMessage
+    color: #888
+    font-size: 1.2em
+    padding: 0.9em
+
   .cardTitle
     border-bottom: 1px solid $color_chrome_box_border
     padding: 2em
@@ -188,6 +193,24 @@
         font-size: 2em
         font-weight: normal
 
+@keyframes spin
+  from
+    @include prefixer(transform, rotateZ(0deg))
+
+  to
+    @include prefixer(transform, rotateZ(360deg))
+
+.smallLoader
+  margin: 0.8em 0
+  text-align: center
+
+  svg
+    @include prefixer(animation-duration, 1.3s)
+    @include prefixer(animation-iteration-count, infinite)
+    @include prefixer(animation-name, spin)
+    @include prefixer(animation-timing-function, linear)
+    height: 25px
+    width: 25px
 
 // probably a sane default?
 .ui-draggable-dragging

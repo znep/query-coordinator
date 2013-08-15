@@ -114,7 +114,8 @@
             {
                   this.$dom.children('.renderContent').empty().removeData().removeClass('blist-table');
             },
-            scrollsInline: true
+            scrollsInline: true,
+            translations: ['controls.grid']
         },
 
         href: {

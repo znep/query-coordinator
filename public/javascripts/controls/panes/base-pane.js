@@ -1553,7 +1553,8 @@
             var optionLabel = {tagName: 'label', 'for': id, contents: subLine}
             if (args.item.sectionSelector) {optionLabel['class'] = opt.value + '-icon'}
 
-            return {tagName: 'div', 'class': ['radioLine', opt.type],
+            
+            return {tagName: 'div', 'class': ['radioLine', opt.type, (opt.lineClass || '')],
                 contents: [radioItem, optionLabel]};
         });
 

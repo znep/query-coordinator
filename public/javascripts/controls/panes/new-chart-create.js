@@ -20,20 +20,6 @@
                 delete metadata.conditionalFormatting;
                 cpObj._view.update({ metadata: metadata });
             });
-
-            //Bind section classing to chart-type selection
-            cpObj.$dom().on('click', 'label[class$="-icon"]', function(e) {
-                var $target = $(e.currentTarget);
-                $target.closest('.formSection')
-                    .removeClass(function(i, oldClasses) {
-                        var matches = oldClasses.match(/\S*-icon/);
-                        return ($.isBlank(matches) ? '' : matches.join(' '));
-                    }) 
-                    .addClass(e.currentTarget.className)
-                    //Set the text to current icon type
-                    .find('.currentSelection .selectionName')
-                    .text($target.find('span > span').text()); 
-            });
         },
 
         render: function() {
@@ -42,7 +28,7 @@
 
             if (completeRerender) 
             { 
-                
+            //setup DOM 
                 //Push custom icons into sidebar dom
                 cpObj.$dom().find('.chartTypeSelection .formHeader')
                     .append($.tag({ tagName: 'div', 'class': ['currentSelection'],
@@ -63,7 +49,30 @@
                         function() { 
                             $(this).parent().siblings().filter('.lineIcon').removeClass('hover');
                         }
-                ); 
+                );
+
+                //setup eventing
+
+                //takes in classname <type>-icon
+                var setHeader = function(type){
+                    cpObj.$dom().find('.formSection.chartTypeSelection') 
+                    .removeClass(function(i, oldClasses) {
+                        var matches = oldClasses.match(/\S*-icon/);
+                        return ($.isBlank(matches) ? '' : matches.join(' '));
+                    }) 
+                    .addClass(type)
+                    //Set the text to current icon type
+                    .find('.currentSelection .selectionName')
+                    .text(cpObj.$dom().find('.'+type +' > span > span').text());
+                    //.text(type.split('-')[0]); 
+                }
+                if (blist.dataset.displayFormat.chartType){
+                    setHeader(blist.dataset.displayFormat.chartType+'-icon');
+                }
+                //Bind section classing to chart-type selection
+                cpObj.$dom().find('label[class$="-icon"]').click(function(e) {
+                    setHeader($(e.currentTarget).attr('class'));
+                });                    
             }
         },
 
@@ -88,6 +97,15 @@
             for (var i=0; i<typeOrder.length; i++)
             {
                 chartTypesSorted[typeOrder[i]]=chartTypesCopy[typeOrder[i]];
+                
+                //Add custom class for chart types not available with current dataset
+                if(!Dataset.chart.hasRequiredColumns(
+                    cpObj._view.realColumns,
+                    Dataset.chart.types[typeOrder[i]].requiredColumns, 
+                    isEdit(cpObj) && !cpObj._view.isGrouped())){
+
+                    chartTypesSorted[typeOrder[i]].lineClass = 'unAvailable';
+                }
             }
 
             var result = [{

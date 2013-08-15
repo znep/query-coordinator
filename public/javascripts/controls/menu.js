@@ -157,7 +157,7 @@
                 $menuDropdown.css('width', $(window).width() -
                     $menuDropdown.offset().left - 10);
             }
-            else
+            else if (!opts.noFlip)
             {
                 $menuDropdown.css('right', 0);
             }

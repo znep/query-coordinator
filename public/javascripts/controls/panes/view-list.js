@@ -152,6 +152,7 @@
         $sortMenu.menu({
             menuButtonContents: $.t('screens.ds.grid_sidebar.view_list.sort_title'),
             menuButtonTitle: $.t('screens.ds.grid_sidebar.view_list.sort_title'),
+            noFlip: true,
             contents: _.map(defaultSorts, function(s)
                 { return {text: s.text, href: '#' + s.name,
                     className: 'none' + (s.name == cpObj._currentSort ? ' checked' : '')}; })

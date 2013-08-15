@@ -233,7 +233,7 @@ $.Control.registerMixin('d3_base', {
                         // for perf, only call unhighlight if highlighted.
                         if (view.highlights && view.highlights[row.id])
                         {
-                            view.unhighlightRows(row);
+                            view.unhighlightRows(row, 'hover');
                         }
 
                         if (visual.tip)
@@ -255,8 +255,14 @@ $.Control.registerMixin('d3_base', {
             localMouseIn();
             $btWrapper.hover(localMouseIn, localMouseOut);
 
+            // Clicking on the flyout is the same as clicking on the slice/bar/whatever.
+            $btWrapper.click(function()
+            {
+                vizObj.handleDataClick(visual, row, colDef);
+            });
+
             if (!vizObj.requiresSeriesGrouping())
-            { view.highlightRows(row, null, col); }
+            { view.highlightRows(row, 'hover', col); }
         }
     },
 
@@ -269,6 +275,34 @@ $.Control.registerMixin('d3_base', {
         if (visual.localMouseOut)
         {
             visual.localMouseOut(delay);
+        }
+    },
+
+    handleDataClick: function(visual, row, colDef)
+    {
+        var vizObj = this;
+
+        if (!vizObj._chartInitialized) { return; }
+
+        var alreadySelected = $.subKeyDefined(vizObj._primaryView, 'highlightTypes.select.' + row.id);
+        var alreadyHovered = $.subKeyDefined(vizObj._primaryView, 'highlightTypes.hover.' + row.id);
+
+        // If we're highlighted via hover and we're about to become selected, unhover ourselves
+        // first so people using event connectors, etc get a notification.
+        if (alreadyHovered && !alreadySelected)
+        {
+            vizObj._primaryView.unhighlightRows(row, 'hover');
+        }
+
+        if (alreadySelected)
+        {
+            vizObj._primaryView.unhighlightRows(row, 'select');
+            vizObj.$dom().trigger('display_row', [{row: null}]);
+        }
+        else
+        {
+            vizObj._primaryView.highlightRows(row, 'select',  colDef.column);
+            vizObj.$dom().trigger('display_row', [{row: row}]);
         }
     },
 

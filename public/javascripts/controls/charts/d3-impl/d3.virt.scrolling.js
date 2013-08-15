@@ -1068,11 +1068,12 @@ $.Control.registerMixin('d3_virt_scrolling', {
         if (!vizObj._chartInitialized) { return function(){ return 0; }; }
 
         var chartViewport = cc.$chartContainer[cc.dataDim.width](),
-            rowsPerScreen = chartViewport / cc.rowWidth;
+            rowsPerScreen = chartViewport / cc.rowWidth,
+            totalRows = vizObj.getTotalRows() || 0;
 
         return d3.scale.linear()
-              .domain([ 0, cc.rowWidth * vizObj.getTotalRows() - chartViewport ])
-              .range([ 0, vizObj.getTotalRows() - rowsPerScreen ])
+              .domain([ 0, cc.rowWidth * totalRows - chartViewport ])
+              .range([ 0, totalRows - rowsPerScreen ])
               .clamp(true);
     },
 

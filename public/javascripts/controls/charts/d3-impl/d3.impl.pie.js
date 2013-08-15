@@ -303,8 +303,10 @@ $.Control.registerMixin('d3_impl_pie', {
         var topDone = vizObj._normalizeAngle(zoom.getRightmostAngle()) > vizObj._normalizeAngle(topAngle);
         var bottomDone = vizObj._normalizeAngle(zoom.getLeftmostAngle()) < vizObj._normalizeAngle(bottomAngle);
 
+        var totalRows = vizObj.getTotalRows() || 0;
+
         topDone |= topSlice.index == 0;
-        bottomDone |= bottomSlice.index == vizObj.getTotalRows()-1;
+        bottomDone |= bottomSlice.index == totalRows - 1;
 
         var bottomAngleTooSmall = this._tooSmallForDisplay(bottomSlice, seriesInformation);
         bottomDone |= bottomAngleTooSmall;
@@ -319,7 +321,7 @@ $.Control.registerMixin('d3_impl_pie', {
         else if (topDone)
         {
             state.phase = vizObj._loaderPhases.growingBottom;
-            state.bottom = Math.min(vizObj.getTotalRows() - 1, state.bottom + vizObj._loaderIncrement);
+            state.bottom = Math.min(totalRows - 1, state.bottom + vizObj._loaderIncrement);
         }
         else if (bottomDone)
         {
@@ -330,7 +332,7 @@ $.Control.registerMixin('d3_impl_pie', {
         {
             state.phase = vizObj._loaderPhases.growingBoth;
             state.top = Math.max(0, state.top - vizObj._loaderIncrement);
-            state.bottom = Math.min(vizObj.getTotalRows() - 1, state.bottom + vizObj._loaderIncrement);
+            state.bottom = Math.min(totalRows - 1, state.bottom + vizObj._loaderIncrement);
         }
 
         if (state.phase != vizObj._loaderPhases.idle)
@@ -415,13 +417,9 @@ $.Control.registerMixin('d3_impl_pie', {
 
         vizObj._updateLegendStyle();
 
-        var defaults = vizObj.defaults,
-            cc = vizObj._chartConfig,
-            chartD3 = cc.chartD3,
-            totalRows = vizObj.getTotalRows(),
+        var cc = vizObj._chartConfig,
             chartWidth = cc.$chartContainer.width(),
             chartHeight = cc.$chartContainer.height();
-
 
         cc.chartRaphael.setSize(chartWidth, chartHeight);
 
@@ -1099,6 +1097,16 @@ $.Control.registerMixin('d3_impl_pie', {
         return naturalRadius * zoomFactor - this.defaults.labelMargin;
     },
 
+    _arcPositionAlongBisector: function(arc)
+    {
+        return function(datum, radius)
+        {
+            var a = (arc.startAngle()(datum)
+                + arc.endAngle()(datum)) / 2  - Math.PI / 2;
+            return [Math.cos(a) * radius, Math.sin(a) * radius];
+        };
+    },
+
     _renderPiecesOfPie: function (pieces, seriesInformation, fillArea, enableTransitions)
     {
         var vizObj = this,
@@ -1133,7 +1141,17 @@ $.Control.registerMixin('d3_impl_pie', {
         var innerRadius = cc.donut ? (colIndex + 1) * seriesRadius : 0;
         var outerRadius = cc.donut ? (colIndex + 2) * seriesRadius : radius;
 
+        var flyoutPositionRadiusPadding = 10;
+        if ((outerRadius - innerRadius) < flyoutPositionRadiusPadding)
+        {
+            flyoutPositionRadiusPadding = (outerRadius - innerRadius)/2;
+        }
+
+        var flyoutPositionRadius = outerRadius - flyoutPositionRadiusPadding;
+
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+
+        var arcPositionAlongBisector = vizObj._arcPositionAlongBisector(arc);
 
         var idFunction = function(datum)
             {
@@ -1179,8 +1197,8 @@ $.Control.registerMixin('d3_impl_pie', {
                 {
                     var this_ = this;
                     row = seriesInformation.rowResolver(datum.data);
-                    // Desired position is the centroid, but the position we must give the flyout is relative to the top-left.
-                    var centroid = arc.centroid(datum);
+                    //he position we must give the flyout is relative to the top-left.
+                    var flyoutPosRelToSlice = arcPositionAlongBisector(datum, flyoutPositionRadius);
                     var width = $(this.node).btOuterWidth();
                     var height = $(this.node).btOuterHeight();
 
@@ -1195,13 +1213,13 @@ $.Control.registerMixin('d3_impl_pie', {
                     }
 
                     var position = $(this.node).position();
-                    centroid[0] += -position.left + translateX;
-                    centroid[1] += -position.top + translateY;
+                    flyoutPosRelToSlice[0] += -position.left + translateX;
+                    flyoutPosRelToSlice[1] += -position.top + translateY;
 
                     configs =
                     {
                         positions: ['explicit'],
-                        explicitPosition: centroid
+                        explicitPosition: flyoutPosRelToSlice
                     };
                 }
 
@@ -1219,16 +1237,8 @@ $.Control.registerMixin('d3_impl_pie', {
                 {
                     var row = seriesInformation.rowResolver(datum.data);
                     if (!row) { return; } // We might not have a row if this is 'other'.
-                    if ($.subKeyDefined(vizObj._primaryView, 'highlightTypes.select.' + row.id))
-                    {
-                        vizObj._primaryView.unhighlightRows(row, 'select');
-                        vizObj.$dom().trigger('display_row', [{row: null}]);
-                    }
-                    else
-                    {
-                        vizObj._primaryView.highlightRows(row, 'select',  seriesInformation.colDef.column);
-                        vizObj.$dom().trigger('display_row', [{row: row}]);
-                    }
+
+                    vizObj.handleDataClick(this, row, seriesInformation.colDef);
                 }
             })
             .attr('fill', function(datum)
@@ -1299,12 +1309,7 @@ $.Control.registerMixin('d3_impl_pie', {
         var fontMetrics = vizObj._fontMetrics();
         var radiusForLabels = sliceRadius + vizObj.defaults.labelMargin;
 
-        var arcPositionAlongBisector = function(datum, radius)
-        {
-            var a = (arc.startAngle()(datum)
-                + arc.endAngle()(datum)) / 2  - Math.PI / 2;
-            return [Math.cos(a) * radius, Math.sin(a) * radius];
-        };
+        var arcPositionAlongBisector = vizObj._arcPositionAlongBisector(arc);
 
         // Given a datum, returns the text we'd use to display it. Supports
         // two extra parameters used for text clipping:

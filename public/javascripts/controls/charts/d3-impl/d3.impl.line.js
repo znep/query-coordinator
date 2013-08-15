@@ -213,16 +213,8 @@ $.Control.registerMixin('d3_impl_line', {
                     {
                         if (!vizObj._chartInitialized) { return; }
                         if ($.isBlank(d)) { return; }
-                        if ($.subKeyDefined(vizObj._primaryView, 'highlightTypes.select.' + d.id))
-                        {
-                            vizObj._primaryView.unhighlightRows(d, 'select');
-                            vizObj.$dom().trigger('display_row', [{row: null}]);
-                        }
-                        else
-                        {
-                            vizObj._primaryView.highlightRows(d, 'select',  col);
-                            vizObj.$dom().trigger('display_row', [{row: d}]);
-                        }
+
+                        vizObj.handleDataClick(this, d, colDef);
                     });
 
             points

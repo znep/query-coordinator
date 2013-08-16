@@ -67,7 +67,8 @@ $.Control.registerMixin('d3_impl_pie', {
         {
             var newIndex = forward ? this.index + 1 : this.index - 1;
 
-            return new Slice(newIndex, this.valueResolver, this.nameResolver, this.colorResolver);
+            if (newIndex < 0) { return undefined; }
+            else { return new Slice(newIndex, this.valueResolver, this.nameResolver, this.colorResolver); }
         }
 
         Slice.prototype.getAngleRadians = function(seriesInformation)
@@ -292,10 +293,10 @@ $.Control.registerMixin('d3_impl_pie', {
         var topSlice = new vizObj.Slice(state.top, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
         var bottomSlice = new vizObj.Slice(state.bottom, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
 
-        var slices = this._fillInSliceRange(cc.chartRenderSnapshot.firstSlice, cc.chartRenderSnapshot.lastSlice);
+        var slices = this._fillInSliceRange(cc.chartRenderSnapshot.firstDataSlice, cc.chartRenderSnapshot.lastDataSlice);
         var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
 
-        var pieSegments = this._buildPieLayout(sliceMetrics, cc.chartRenderSnapshot.firstSlice, cc.chartRenderSnapshot.lastSlice, anchor, seriesInformation);
+        var pieSegments = this._buildPieLayout(sliceMetrics, cc.chartRenderSnapshot.firstDataSlice, cc.chartRenderSnapshot.lastDataSlice, anchor, seriesInformation);
 
         var topAngle = pieSegments.startAngle();
         var bottomAngle = pieSegments.endAngle();
@@ -542,10 +543,13 @@ $.Control.registerMixin('d3_impl_pie', {
                 var firstSlice = vizObj._chartConfig.chartRenderSnapshot.firstSlice;
                 var lastSlice = vizObj._chartConfig.chartRenderSnapshot.lastSlice;
 
-                _.each(vizObj._fillInSliceRange(firstSlice, lastSlice), function(slice)
+                if (firstSlice)
                 {
-                    addLine(slice.getColor(), slice.getName());
-                });
+                    _.each(vizObj._fillInSliceRange(firstSlice, lastSlice), function(slice)
+                    {
+                        addLine(slice.getColor(), slice.getName());
+                    });
+                }
             }
         });
 
@@ -808,7 +812,16 @@ $.Control.registerMixin('d3_impl_pie', {
 
             var lastSlice = new vizObj.Slice(data[data.length - 1].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);
 
-            vizObj.debugOut("Smallest angle: "+ lastSlice.getAngleRadians(primarySeriesInfo));
+            if (vizObj.debugEnabled)
+            {
+                vizObj.debugOut("Smallest angle (deg): "+ lastSlice.getAngleRadians(primarySeriesInfo) * 180/Math.PI);
+                vizObj.debugOut('Slice angles (deg): ');
+                _.each(vizObj._fillInSliceRange(firstSlice, lastSlice), function(slice)
+                {
+                    vizObj.debugOut('\t' + slice.getName(primarySeriesInfo) + ' -> ' +
+                                    slice.getAngleRadians(primarySeriesInfo) * 180/Math.PI);
+                });
+            }
 
             //TODO deal with zooming correctly - how do we respect the users' wishes?
             // Should we abandon the idea of min angle when zooming and expose
@@ -838,10 +851,14 @@ $.Control.registerMixin('d3_impl_pie', {
                 anchorSlice = firstSlice.asAnchor(firstSlice.getAngleRadians(primarySeriesInfo) / 2);
             }
 
+            var nothingToDisplay = _.isUndefined(lastDisplaySlice);
+
             cc.chartRenderSnapshot =
             {
-                firstSlice: firstSlice,
-                lastSlice: lastDisplaySlice,
+                firstSlice: nothingToDisplay ? null : firstSlice,
+                lastSlice: nothingToDisplay ? null : lastDisplaySlice,
+                firstDataSlice: firstSlice,
+                lastDataSlice: lastSlice,
                 anchorSlice: anchorSlice,
                 fillArea: fillArea,
                 seriesInformation: seriesInformation
@@ -861,9 +878,9 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         var minAngleRadians = (this._displayFormat.pieJoinAngle || 0) * (Math.PI/180);
         var current = lastSlice;
-        while(!firstSlice.same(current) &&
-              current.getAngleRadians(seriesInformation) <= minAngleRadians &&
-              (_.isUndefined(this._chartConfig.chartRenderSnapshot) || this._tooSmallForDisplay(current, seriesInformation)))
+        while(!_.isUndefined(current) &&
+              (current.getAngleRadians(seriesInformation) <= minAngleRadians ||
+              (!_.isUndefined(this._chartConfig.chartRenderSnapshot) && this._tooSmallForDisplay(current, seriesInformation))))
         {
             current = current.neighbor(false);
         }
@@ -916,40 +933,49 @@ $.Control.registerMixin('d3_impl_pie', {
         // Now, we need to figure out what the start and end angles are for
         // the visible chart segment.
 
-        // We need to find out where our anchor slice lives within firstSlice
-        // and lastSlice. To do this, we must sum up the angles from the anchor
-        // to either end slices. We choose the closest (by index), for speed.
-        var closestSliceByIndex = anchorSlice.findClosestByIndex(firstSlice, lastSlice);
-        var segmentPartialAngularWidth = _.reduce(
-            this._fillInSliceRange(anchorSlice, closestSliceByIndex),
-            function (memo, slice)
-            {
-                return memo + slice.getAngleRadians(seriesInformation);
-            }, 0);
+        var startAngle = 0,
+            endAngle = 0,
+            leftover = 0;
 
-        // Now, we can calculate the start and end angles based on our anchor.
-        var anchorAngleRadians = anchorSlice.getAngleRadians(seriesInformation);
-        var closestIsAnchor = closestSliceByIndex.same(anchorSlice);
-        var closestAngleRadians = closestIsAnchor ? 0 : closestSliceByIndex.getAngleRadians(seriesInformation);
-        var closestIsFirstSlice = closestSliceByIndex.same(firstSlice);
-        var middleElementsAngularWidth = segmentPartialAngularWidth - closestAngleRadians - anchorAngleRadians;
-        $.assert(middleElementsAngularWidth >= -0.001, "Calculation error");
-
-        var startAngle = 0;
-        var leftover = 0;
-        if (closestIsFirstSlice)
+        if (firstSlice && lastSlice)
         {
-            var angleOfFirstSliceEnd = anchorSlice.anchorRadians - middleElementsAngularWidth - anchorAngleRadians/2;
-            startAngle = angleOfFirstSliceEnd - closestAngleRadians;
+            // We need to find out where our anchor slice lives within firstSlice
+            // and lastSlice. To do this, we must sum up the angles from the anchor
+            // to either end slices. We choose the closest (by index), for speed.
+            var closestSliceByIndex = anchorSlice.findClosestByIndex(firstSlice, lastSlice);
+            var segmentPartialAngularWidth = _.reduce(
+                this._fillInSliceRange(anchorSlice, closestSliceByIndex),
+                function (memo, slice)
+                {
+                    return memo + slice.getAngleRadians(seriesInformation);
+                }, 0);
+
+            // Now, we can calculate the start and end angles based on our anchor.
+            var anchorAngleRadians = anchorSlice.getAngleRadians(seriesInformation);
+            var closestIsAnchor = closestSliceByIndex.same(anchorSlice);
+            var closestAngleRadians = closestIsAnchor ? 0 : closestSliceByIndex.getAngleRadians(seriesInformation);
+            var closestIsFirstSlice = closestSliceByIndex.same(firstSlice);
+            var middleElementsAngularWidth = segmentPartialAngularWidth - closestAngleRadians - anchorAngleRadians;
+            $.assert(middleElementsAngularWidth >= -0.001, "Calculation error");
+
+            if (closestIsFirstSlice)
+            {
+                var angleOfFirstSliceEnd = anchorSlice.anchorRadians - middleElementsAngularWidth - anchorAngleRadians/2;
+                startAngle = angleOfFirstSliceEnd - closestAngleRadians;
+            }
+            else
+            {
+                var angleOfLastSliceStart = anchorSlice.anchorRadians + middleElementsAngularWidth + anchorAngleRadians/2;
+                startAngle = angleOfLastSliceStart + closestAngleRadians;
+
+                leftover = 2*Math.PI - sliceMetrics.angularWidthRadians;
+            }
+            endAngle = startAngle + sliceMetrics.angularWidthRadians;
         }
         else
         {
-            var angleOfLastSliceStart = anchorSlice.anchorRadians + middleElementsAngularWidth + anchorAngleRadians/2;
-            startAngle = angleOfLastSliceStart + closestAngleRadians;
-
-            leftover = 2*Math.PI - sliceMetrics.angularWidthRadians;
+            leftover = 2*Math.PI;
         }
-        var endAngle = startAngle + sliceMetrics.angularWidthRadians;
 
         var pieSegments = d3.layout.pie().startAngle(startAngle + leftover).endAngle(endAngle + leftover)
             .sort(null)
@@ -968,9 +994,9 @@ $.Control.registerMixin('d3_impl_pie', {
     // the relative positioning between the series if we start at not-zero!
     _renderDonut: function(firstSlice, lastSlice, anchorSlice, fillArea, seriesInformationAll, enableTransitions)
     {
-        $.assert(firstSlice.index == 0, "First slice must be at index 1.");
-        $.assert(lastSlice.index >= firstSlice.index, "Last slice must come after first slice.");
-        $.assert(lastSlice.index >= anchorSlice.index && anchorSlice.index >= firstSlice.index, "Anchor slice must come between first and last slices.");
+        $.assert(!lastSlice ||firstSlice.index == 0, "First slice must be at index 1.");
+        $.assert(!lastSlice || lastSlice.index >= firstSlice.index, "Last slice must come after first slice.");
+        $.assert(!lastSlice ||lastSlice.index >= anchorSlice.index && anchorSlice.index >= firstSlice.index, "Anchor slice must come between first and last slices.");
         $.assert(anchorSlice.anchorRadians != undefined, "Anchor slice should define an angular position.");
 
         var vizObj = this;
@@ -982,10 +1008,24 @@ $.Control.registerMixin('d3_impl_pie', {
             var colorResolver = seriesInformationAll[colLookup].colorResolver;
             var isPrimaryColumn = (colLookup == vizObj._primaryValueColumn().column.lookup);
 
-            var firstSeriesSlice = isPrimaryColumn ? firstSlice : new vizObj.Slice(firstSlice.index, valueResolver, nameResolver, colorResolver);
-            var lastSeriesSlice = isPrimaryColumn ? lastSlice : new vizObj.Slice(lastSlice.index, valueResolver, nameResolver, colorResolver);
+            var firstSeriesSlice = null;
+            var lastSeriesSlice = null;
+            var seriesAnchor = null;
 
-            var seriesAnchor = isPrimaryColumn ? anchorSlice : firstSeriesSlice.asAnchor(firstSeriesSlice.getAngleRadians(seriesInformation) / 2);
+            if (firstSlice)
+            {
+                firstSeriesSlice = isPrimaryColumn ? firstSlice : new vizObj.Slice(firstSlice.index, valueResolver, nameResolver, colorResolver);
+                lastSeriesSlice = isPrimaryColumn ? lastSlice : new vizObj.Slice(lastSlice.index, valueResolver, nameResolver, colorResolver);
+
+                seriesAnchor = isPrimaryColumn ? anchorSlice : firstSeriesSlice.asAnchor(firstSeriesSlice.getAngleRadians(seriesInformation) / 2);
+            }
+            else
+            {
+                // No slices to render... we still need an anchor to keep the code simpler.
+                var anchorTranslatedToThisSeries = new vizObj.Slice(anchorSlice.index, valueResolver, nameResolver, colorResolver);
+                seriesAnchor = anchorTranslatedToThisSeries.asAnchor(anchorSlice.anchorRadians);
+            }
+
             vizObj._renderPie(firstSeriesSlice, lastSeriesSlice, seriesAnchor, fillArea, seriesInformation, enableTransitions);
         });
     },
@@ -997,16 +1037,16 @@ $.Control.registerMixin('d3_impl_pie', {
     // arc chart (otherwise known as maybe-partially-visible pie).
     _renderPie: function(firstSlice, lastSlice, anchorSlice, fillArea, seriesInformation, enableTransitions)
     {
-        $.assert(lastSlice.index >= firstSlice.index, "Last slice must come after first slice.");
-        $.assert(lastSlice.index >= anchorSlice.index && anchorSlice.index >= firstSlice.index, "Anchor slice must come between first and last slices.");
+        $.assert(!lastSlice || lastSlice.index >= firstSlice.index, "Last slice must come after first slice.");
+        $.assert(!lastSlice || lastSlice.index >= anchorSlice.index && anchorSlice.index >= firstSlice.index, "Anchor slice must come between first and last slices.");
         $.assert(anchorSlice.anchorRadians != undefined, "Anchor slice should define an angular position.");
 
         var result = null;
 
         var canReuseCachedPieces = seriesInformation.cachedPiePieces &&
             seriesInformation.cachedPiePieces.fillArea.equal(fillArea) &&
-            seriesInformation.cachedPiePieces.firstSlice.same(firstSlice) &&
-            seriesInformation.cachedPiePieces.lastSlice.same(lastSlice) &&
+            (firstSlice === seriesInformation.cachedPiePieces.firstSlice || seriesInformation.cachedPiePieces.firstSlice.same(firstSlice)) &&
+            (lastSlice === seriesInformation.cachedPiePieces.lastSlice || seriesInformation.cachedPiePieces.lastSlice.same(lastSlice)) &&
             seriesInformation.cachedPiePieces.anchorSlice.same(anchorSlice) &&
             seriesInformation.cachedPiePieces.anchorSlice.anchorRadians == anchorSlice.anchorRadians;
 
@@ -1018,7 +1058,7 @@ $.Control.registerMixin('d3_impl_pie', {
         }
         else
         {
-            var slices = this._fillInSliceRange(firstSlice, lastSlice);
+            var slices = firstSlice ? this._fillInSliceRange(firstSlice, lastSlice) : [];
             var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
 
             var pieSegments = this._buildPieLayout(sliceMetrics, firstSlice, lastSlice, anchorSlice, seriesInformation);

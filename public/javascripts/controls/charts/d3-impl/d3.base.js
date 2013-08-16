@@ -202,6 +202,10 @@ $.Control.registerMixin('d3_base', {
         if (row && enableProcessing)
         {
             var col = colDef.column;
+
+            if (!vizObj.requiresSeriesGrouping())
+            { view.highlightRows(row, 'hover', col); }
+
             var configs = {
                 content: vizObj.renderFlyout(row, col.tableColumnId, view),
                 trigger: 'now'
@@ -210,7 +214,6 @@ $.Control.registerMixin('d3_base', {
             $.extend(configs, flyoutConfigs);
 
             visual.tip = $(visual.node).socrataTip(configs);
-
 
             // We have to listen on mouse events for both the tip
             // and the slice, as the tip isn't actually a child
@@ -230,18 +233,26 @@ $.Control.registerMixin('d3_base', {
                 {
                     if (mouseCount == 0)
                     {
-                        // for perf, only call unhighlight if highlighted.
-                        if (view.highlights && view.highlights[row.id])
-                        {
-                            view.unhighlightRows(row, 'hover');
-                        }
-
                         if (visual.tip)
                         {
                             visual.tip.destroy();
                             delete visual.tip;
                             delete visual.localMouseOut;
                         }
+
+                        // Only unhighlight if we're actually the column that caused
+                        // the highlight. This may not be true if the user quickly (within the delay)
+                        // mouses over to another datum from the same row, but a different column.
+                        // The mouse in handler will create the new flyout, then this code will
+                        // run for the old column (because of the _.delay), and cause us to
+                        // unhighlight the row, which should still be highlighted.
+                        // Also, for perf, only call unhighlight if highlighted.
+                        if (view.highlights && view.highlights[row.id] &&
+                            _.contains(view.highlightsColumn, colDef.column.id))
+                        {
+                            view.unhighlightRows(row, 'hover');
+                        }
+
                     }
                 };
                 if (delay) { _.delay(cleanup, delay); }
@@ -260,9 +271,6 @@ $.Control.registerMixin('d3_base', {
             {
                 vizObj.handleDataClick(visual, row, colDef);
             });
-
-            if (!vizObj.requiresSeriesGrouping())
-            { view.highlightRows(row, 'hover', col); }
         }
     },
 

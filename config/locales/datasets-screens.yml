@@ -808,7 +808,7 @@ en:
       source_link: Source Link
       source_link_prompt: Enter Web Address
       source_link_error: That does not appear to be a valid url.
-      metadata_help: This field has been marked private by your organization and is not publicly viewable
+      private_help: This field has been marked private by your organization and is not publicly viewable
       spatial_extent: Spatial Extent
       northwest_latitude: Northwest Latitude
       northwest_longitude: Northwest Longitude

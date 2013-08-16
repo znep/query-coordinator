@@ -16,7 +16,7 @@ en:
 
     not_acceptable_406:
       page_not_found: Page not found.
-      were_sorry: "We're really sorry, but the page you is not available in the requested format."
+      were_sorry: "We're really sorry, but the page you requested is not available in the requested format."
 
     error_500:
       somethings_wrong: "Something's wrong!"

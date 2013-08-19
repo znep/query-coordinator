@@ -115,19 +115,16 @@
             if (needsCustom)
             {
                 fields.push(
-                    /*{ text: 'Custom Entries', type: 'selectable',
-                      name: 'customLegendEntries', defaultValue: false, fields: [*/
-                        { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: $.t('screens.ds.grid_sidebar.chart.legend.new_custom_entry_button'),
-                          name: 'displayFormat.legendDetails.customEntries',
-                          field: {
-                              type: 'group', options: [
-                                  colorOption,
-                                  { text: $.t('screens.ds.grid_sidebar.chart.legend.custom_entry'), type: 'text',
-                                    name: 'label', required: true }
-                              ]
-                        } }
-                    //] }
-                    );
+                    { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: $.t('screens.ds.grid_sidebar.chart.legend.new_custom_entry_button'),
+                      name: 'displayFormat.legendDetails.customEntries',
+                      field: {
+                          type: 'group', options: [
+                              colorOption,
+                              { text: $.t('screens.ds.grid_sidebar.chart.legend.custom_entry'), type: 'text',
+                                name: 'label', required: true }
+                          ]
+                    } }
+                );
             }
 
             return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.legend.title'), fields);
@@ -295,7 +292,6 @@
     var header = function(chart, options, name) 
     {
         return {
-            onlyIf: onlyIfForChart(chart, options, false),
             title: name,
             customClasses: 'sectionHeading'
         }
@@ -303,7 +299,7 @@
 
     var subheading = function(chart, options, sectionTitle, content, show)
     {
-        return { title: sectionTitle, onlyIf: onlyIfForChart(chart, options, false), type: 'selectable',
+        return { title: sectionTitle, type: 'selectable',
             customClasses: 'sectionSubheading', fields: content, validateCollapsed: true, initShow: (show || false)
         }
     } 
@@ -410,14 +406,74 @@
 
     var colors = function(chart, options) 
     {
-        return subheading(chart, options, 'Colors',
-            [
-                {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+        var result = subheading(chart, options, 'Colors', []);
+        if (_.contains(['bubble', 'donut', 'treemap', 'pie'], chart.value)) {
+            
+            result.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
+                field: $.extend({}, colorOption, {name: ''}),
+                name: 'displayFormat.colors', minimum: 1,
                 initialRepeatCount: 5, lineClass: 'colorArray'}
+            );
+        } 
+        else 
+        {
+            result.fields.push({ text: 'Column colors', type: 'custom', required: true, linkedField: ['displayFormat.valueColumns'], name: 'displayFormat.valueColumns',
+              editorCallbacks: {
+                create: function($field, val, curVal) {
+                    
+                    //validate valueColumns that may be passed du\plicates or null values
+                    var fieldNames = {};
+                    val.displayFormat.valueColumns = _.reject(val.displayFormat.valueColumns, function(col) {
+                        if (!fieldNames[col.fieldName] && col.fieldName != null) {
+                            fieldNames[col.fieldName] = true;
+                            return false;
+                        }
+                        return true;
+                    });
 
-            ]
-        );
+                    //MAKE HIDDEN INPUT TO HANDLE CHANGE
+                    
+                    var cols = {tagName: 'div', contents: []};
+
+                    _.each(val.displayFormat.valueColumns, function(col, i) {
+
+                        var valueCols = options.view.displayFormat.valueColumns;
+                        var assignedColor = (valueCols && valueCols[i] ? valueCols[i].color : null) || defaultColors[i] || '#FF0000';
+
+                        var readableName = $.htmlEscape(options.view.columnForFieldName(col.fieldName).name);
+
+                        cols.contents.push({ tagName: 'div', contents: readableName});
+                        cols.contents.push({ tagName: 'div', class: 'columnColorControl', 'data-colorpicker-color': assignedColor});
+                    });
+                    $field.append($.tag(cols));
+
+                    var $pickers = $field.find('.columnColorControl');
+
+                    $pickers.each( function(i, p) {
+                        var $p = $(p);
+                        $p.css('background-color', $p.attr('data-colorpicker-color'));
+                        $p.bind('color_change', function(e, newColor)
+                        {
+                            var $t = $(this);
+                            $t.css('background-color', newColor);
+                            $t.attr('data-colorpicker-color', newColor);
+                        })
+                        .one('mousedown', function() { $p.colorPicker(); });
+                    });
+                    return true;
+                },
+                value: function($field) {  
+                    var result = [];
+                    $field.find('.columnColorControl').each(
+                        function(index, cs) {
+                            result.push({color: $(cs).data('colorpicker-color')});
+                        });
+                    return result; 
+                }
+              }});
+        }
+
+        return result;
     }
 
 
@@ -526,7 +582,6 @@
     var dataSelectionTimeline = function(options) 
     {
         var bc = dataSelection(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.label'));
-        //bc.fields.splice(1, 2);
         bc.fields[1].field = {type: 'group', options: [bc.fields[1].field,
                 {text: $.t('screens.ds.grid_sidebar.chart.point_title'), type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.0',
@@ -602,7 +657,7 @@
         switch(type)
         {
             // Area chart
-            case 'area':
+            case 'area': 
                 result.push(
                     headerDataSelect,
                     dataSelection(chart, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, 'Data Selection'),

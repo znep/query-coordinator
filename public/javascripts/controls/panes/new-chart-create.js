@@ -57,7 +57,7 @@
                             $(this).parent().siblings().filter('.lineIcon').removeClass('hover');
                         }
                 );
-
+                    
                 //setup eventing    
 
                 //Add flyout to unavailable chart types telling which columns are required
@@ -109,9 +109,14 @@
 
             var result = blist.configs.chart.configChartSelector(options);
 
-            _.each(_.keys(Dataset.chart.types), function(type) {
-                result = result.concat(blist.configs.chart.newConfigForType(type, options));
-            });
+            var type = cpObj._view.displayFormat.chartType;
+            if (type) {
+                result = result.concat(blist.configs.chart.newConfigForType(type, {
+                    view: cpObj._view,
+                    isEdit: isEdit(cpObj) && !cpObj._view.isGrouped(),    
+                    useOnlyIf: true
+                }));
+            }
 
             return result;
         },
@@ -137,61 +142,82 @@
                 $.t('screens.ds.grid_sidebar.base.validation.invalid_view') : $.t('screens.ds.grid_sidebar.chart.validation.viz_limit');
         },
 
-        _getFinishButtons: function()
-        { return [$.controlPane.buttons.apply, $.controlPane.buttons.cancel]; },
-
-        _finish: function(data, value, finalCallback)
+        _changeHandler: function($input)
         {
+            
             var cpObj = this;
-            if (!cpObj._super.apply(this, arguments)) { return; }
+            _.defer( function() {
 
-            var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
-                cpObj._getFormValues(), {metadata: cpObj._view.metadata});
+                ///VALIDATE///
+                if (cpObj.$dom().find('.formSection').length <= 1) { 
+                    cpObj._view.update(
+                        $.extend(true, {}, cpObj._getFormValues(), {metadata: cpObj._view.metadata})
+                    );
+                    cpObj.reset(); 
+                    return; 
+                }; 
 
-            var addColumn = function(colId)
-            {
-                var col = cpObj._view.columnForIdentifier(colId);
-                if (_.any(col.renderType.aggregates, function(a) { return a.value == 'sum'; }))
-                col.format.aggregate = 'sum';
-            };
-
-            _.each(view.displayFormat.fixedColumns || [], addColumn);
-
-            if (_.include(['pie', 'donut'], view.displayFormat.chartType))
-            { view.query = $.extend(view.query, cpObj._view.query,
-                { orderBys: _.map(view.displayFormat.valueColumns, function(col)
-                    {
-                        var orderBy = { ascending: false, expression: {
-                            columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
-                            type: 'column'
-                        }};
-                        return orderBy;
-                    }) }
-             );}
-           
-            if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
-                (view.displayFormat.stacking == true))
-            {
-                view.displayFormat.chartType = 'stacked' + view.displayFormat.chartType;
-            }
-            cpObj._view.update(view);
-
-            var didCallback = false;
-            if (isEdit(cpObj))
-            {
-                // We need to show all columns when editing a view so that
-                // any filters/facets work properly
-                var colIds = _.pluck(cpObj._view.realColumns, 'id');
-                if (colIds.length > 0)
-                {
-                    cpObj._view.setVisibleColumns(colIds, finalCallback, true);
-                    didCallback = true;
+                //Need to sync up fields between chart types only if we are switching types.
+                if ($input.data("origname") == "displayFormat.chartType") 
+                { 
+                    var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
+                    cpObj._getFormValues(), {metadata: cpObj._view.metadata});
+                    cpObj._view.update(view);
+                    cpObj.reset();
                 }
-            }
 
-            cpObj._finishProcessing();
-            cpObj.reset();
-            if (!didCallback && _.isFunction(finalCallback)) { finalCallback(); }
+                if (!cpObj._finish()) { return; }
+
+                var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
+                    cpObj._getFormValues(), {metadata: cpObj._view.metadata});
+
+                var addColumn = function(colId)
+                {
+                    var col = cpObj._view.columnForIdentifier(colId);
+                    if (_.any(col.renderType.aggregates, function(a) { return a.value == 'sum'; }))
+                    col.format.aggregate = 'sum';
+                };
+
+                _.each(view.displayFormat.fixedColumns || [], addColumn);
+
+                if (_.include(['pie', 'donut'], view.displayFormat.chartType))
+                { view.query = $.extend(view.query, cpObj._view.query,
+                    { orderBys: _.map(view.displayFormat.valueColumns, function(col)
+                        {
+                            var orderBy = { ascending: false, expression: {
+                                columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
+                                type: 'column'
+                            }};
+                            return orderBy;
+                        }) }
+                 );}
+               
+                if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
+                    (view.displayFormat.stacking == true))
+                {
+                    view.displayFormat.chartType = 'stacked' + view.displayFormat.chartType;
+                }
+                cpObj._view.update(view);
+
+               
+
+                //TEST WITH FILTERS
+
+                var didCallback = false;
+                if (isEdit(cpObj))
+                {
+                    // We need to show all columns when editing a view so that
+                    // any filters/facets work properly
+                    var colIds = _.pluck(cpObj._view.realColumns, 'id');
+                    if (colIds.length > 0)
+                    {
+                        cpObj._view.setVisibleColumns(colIds, null, true);
+                        didCallback = true;
+                    }
+                }
+
+                cpObj._finishProcessing();
+            });
         }
 
     }, {

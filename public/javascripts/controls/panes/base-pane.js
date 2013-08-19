@@ -766,16 +766,15 @@
         _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
-            if (!value)
+            /*if (!value)
             {
                 cpObj._finishProcessing();
                 cpObj._hide();
                 return false;
-            }
+            }*/
 
             // Validate disabled sections
             cpObj.$dom().find('.formSection.disabled:visible').addClass('error');
-
             prepareValidation(cpObj);
 
             // Validate form
@@ -883,9 +882,6 @@
                     _.include(['tableColumnId', 'id'], $input.attr('data-columnIdField')))
             { value = parseInt(value); }
 
-            if($input.hasClass('ui-spinner-input')){
-              value = parseInt(value);
-            }
             // Now add the value
             addFormValue(inputName, value, parObj, parIndex);
 
@@ -935,15 +931,15 @@
             // (these are in a radioGroup, and will be handled by getting
             // the selected radio button in the group and manually getting
             // the associated input)
-            var $validHideSects = cpObj.$dom().find('.formSection:visible').filter('.validateCollapsed');
+            var $validHideSects = cpObj.$dom().find('.formSection.validateCollapsed').find('.sectionContent:hidden');
             
-            $validHideSects.find('.sectionContent').show();
+            $validHideSects.addClass('show');
 
             var inputs = cpObj.$dom().find('form :input, form .colorControl, form .customWrapper')
                 .filter(':visible:not(:disabled, .prompt, ' +
                     '.sectionSelect, .radioLine label *, .customWrapper *)');
 
-            $validHideSects.find('.sectionContent').hide();
+            $validHideSects.removeClass('show');
 
             inputs.each(function()
             {
@@ -1079,7 +1075,7 @@
             parObj = parObj[p[0]];
             p.shift();
         }
-
+        
         var ret;
         if (_.isArray(parObj))
         {
@@ -1105,6 +1101,11 @@
             // element of the key
             if ($.isBlank(parObj[p[0]]))
             { parObj[p[0]] = value; }
+            //Merge values if similarly formed
+            else if (_.isArray(value) && _.isArray(parObj[p[0]]))
+            { 
+              parObj[p[0]] = $.extend(true, parObj[p[0]], value);
+            }
             ret = parObj[p[0]];
         }
         // Return the element, since we may not have pushed it
@@ -1773,10 +1774,6 @@
         if (attrs.disabled || attrs.readonly)
         { delete attrs.title; }
         
-        if (args.item.spinner === true)
-        {
-          wrapper['class'].push('spinner');
-        }
         if (args.item.minimum != null)
         {
           attrs['data-min'] = args.item.minimum;
@@ -1939,17 +1936,19 @@
         {
             linkedFields = linkedFields.concat($field.attr('data-linkedField').split(','));
         }
+
         _.each(linkedFields, function(lf)
         {
-            var ls = ':input[data-origName="' + lf + '"]:first';
+            var ls = '[data-origname="' + lf + '"]:first';
             var $par = $field.closest('.line.group, .formSection');
-            var $li = $par.find(ls);
+            var $li = $par.find(ls).not($field);
             if ($li.length < 1)
             { $li = $field.closest('form').find(ls); }
-            $linkedItems = $linkedItems.add($li);
+            $linkedItems = $linkedItems.add($li).not($field);
         });
         $field.data('linkedGroup', $linkedItems);
 
+        var $parRepeater = $linkedItems.closest('.repeater');
 
         var adjustField = function(curValue, force)
         {
@@ -1961,8 +1960,22 @@
             {
                 var $this = $(this),
                     isCheckbox = $this.filter(':checkbox').length > 0;
-                vals[$this.attr('data-origName')]
-                    = isCheckbox ? $this.filter(':checked').length > 0 : $(this).val();
+
+                //Return an array of all values in the repeater if linked to a repeater's add button
+                if ($this.hasClass('addValue'))
+                {
+                  var inputs = $parRepeater.find('.inputItem');
+                  var inputVals = {};
+                  _.each(inputs, function(i) {
+                    inputVals = $.extend(true, inputVals, cpObj._getInputValue($(i)));
+                  });
+                  vals[$this.attr('data-origName')] = inputVals;
+                }
+                else 
+                {
+                  vals[$this.attr('data-origName')]
+                      = isCheckbox ? $this.filter(':checked').length > 0 : $(this).val();
+                }
             });
             if (_.size(vals) == 1)
             {
@@ -2019,8 +2032,14 @@
         };
         var defAdjField = function() { $field.trigger('resetToDefault'); };
 
+        if ($linkedItems.hasClass('addValue')) {
+          $parRepeater.delegate('.inputItem', 'change', defAdjField);
+        }
+        else 
+        {
         $linkedItems.bind('change.linkedField-' + custId, defAdjField)
             .bind('blur.linkedField-' + custId, defAdjField);
+        }
         $field.bind('resetToDefault', function()
             { adjustField(JSON.parse($field.attr('data-dataValue') || '""'), true); })
             .trigger('resetToDefault');
@@ -2042,6 +2061,7 @@
                         if ($.browser.msie && _.include(['checkbox', 'radio'], $t.attr('type')))
                         { $field.click(handlerProxy); }
                     });
+            $field.delegate('.columnColorControl', 'color_change', deferredHandlerProxy);
             $field.change(handlerProxy);
         }
         if ($field.hasClass('sliderInput'))
@@ -2061,22 +2081,6 @@
     {
         //*** Text Prompts
         $container.find('.textPrompt').example(function () { return $(this).attr('title'); });
-        
-        $container.find('.spinner input').each(function(){
-          var $this = $(this);
-          var min = parseInt($this.attr('data-min'));
-          var max = parseInt($this.attr('data-max'));
-
-          if (!$.isNumeric(min)){min = undefined}
-          if (!$.isNumeric(max)){max = undefined}  
-          $this.spinner({
-            change:  function( event, ui ){
-              $(this).trigger('change');
-            },
-            min: min,
-            max: max
-          });
-        });
 
         //*** Column Selectors
         $container.delegate('.columnSelector', 'click', function(e)

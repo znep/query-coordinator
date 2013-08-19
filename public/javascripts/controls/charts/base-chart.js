@@ -32,9 +32,9 @@
             }); }
     };
 
-    var forceOldCharts = $.locationParam('charts') == 'old' || blist.configuration.oldChartsForced;
+    var forceOldCharts = $.urlParam(window.location.href, 'charts') == 'old' || blist.configuration.oldChartsForced;
 
-    var forceNewCharts = $.locationParam('charts') == 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
+    var forceNewCharts = $.urlParam(window.location.href, 'charts') == 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
 
     if (blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts)
     {

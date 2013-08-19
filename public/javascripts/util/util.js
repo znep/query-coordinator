@@ -184,14 +184,6 @@ $.urlParam = function(url, name, value)
         return 0;
     }
 };
-$.locationParam = (function(urlParam)
-{
-    var onWindow = urlParam.curry(window.location.href),
-        onTop = urlParam.curry(window.top.location.href);
-
-    return function(name, value)
-    { return onWindow(name, value) || onTop(name, value); };
-})($.urlParam);
 
 $.toParam = function(hash)
 {

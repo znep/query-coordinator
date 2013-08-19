@@ -329,7 +329,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         // TODO: This stuff is here for debugging purposes.
         //cc.orientation = 'down';
         //cc.orientation = 'right';
-        if (foobar = $.locationParam('orientation')) { return foobar; }
+        if (foobar = $.urlParam(window.location.href, 'orientation')) { return foobar; }
         else { return vizObj._chartType.indexOf('column') > -1 ? 'right' : 'down'; }
     },
 

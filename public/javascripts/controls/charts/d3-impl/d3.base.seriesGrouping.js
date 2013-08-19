@@ -685,8 +685,10 @@ d3base.seriesGrouping = {
 
                 if (batchData)
                 {
-                    vizObj._processRows(batchData);
+                    // Call delay() before processing. This makes us more resistant
+                    // to exceptions in the processing code.
                     _.delay(rowQueueTimer, dataProcessDelayMillisec);
+                    vizObj._processRows(batchData);
                 }
                 else
                 {
@@ -765,6 +767,14 @@ d3base.seriesGrouping = {
                 var virtualColumnName = (vizObj._valueColumns.length > 1) ?
                     valueCol.column.name + ', ' + groupName : groupName;
                 var virtualColumn = sg.virtualColumns[virtualColumnName];
+
+                if (_.isUndefined(virtualColumn))
+                {
+                    // Value was invalid, so wan't reported to preprocessSeriesColumns.
+                    // So, skip it.
+                    vizObj.debugOut('Invalid virtual column name: ' + virtualColumnName);
+                    return;
+                }
 
                 virtualRow[virtualColumn.column.id] = row[valueCol.column.id];
                 virtualRow.realRows[virtualColumn.column.id] = row;

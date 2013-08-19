@@ -1740,7 +1740,8 @@
         {
             if (args.item.isInput)
             {
-                var labelText = ((args.item.extraClass.search('radioSectionSelector') >= 0) ? args.item.text : val);
+                var labelText = (((args.item.extraClass || '').search('radioSectionSelector') >= 0) ?
+                        args.item.text : val);
                 wrapper.contents = [];
                 wrapper.contents.push({tagName: 'span', contents: labelText});
                 wrapper.contents.push($.extend(commonAttrs(cpObj, args.item, args.context),

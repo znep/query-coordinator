@@ -196,7 +196,7 @@ $(function()
     if (defRen == 'richList') { defRen = 'fatrow'; }
     if (!$.isBlank(blist.initialRowId)) { defRen = 'page'; }
 
-    var openSidebar = true;
+    var openSidebar = false;
     if (blist.dataset.displayFormat.viewDefinitions)
     {
         if (!blist.dataset.childViews)
@@ -343,7 +343,7 @@ $(function()
         ($.subKeyDefined(blist.dataset, 'metadata.filterCondition') &&
              hasConditions(blist.dataset.metadata.filterCondition)))
     {
-        datasetPageNS.sidebar.setDefault('new_chart_create');
+        datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
     }
     // Also, text search for viewDefinitions for the other case.
 

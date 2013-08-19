@@ -19,11 +19,12 @@ blist.metrics.sitewideShared = {
         }
     ],
     detailSections: [
-          {id: 'detailCharts',    displayName: 'Charts',   detail: 'charts-created'},
-          {id: 'detailFilters',   displayName: 'Filters',  detail: 'filters-created'},
-          {id: 'detailMaps',      displayName: 'Maps',     detail: 'maps-created'},
-          {id: 'detailBlobs',     displayName: 'Downloadable Files', detail: 'datasets-created-blobby'},
-          {id: 'detailHref',      displayName: 'External Datasets', detail: 'datasets-created-href'}
+          {id: 'detailCharts',    displayName: 'Charts',   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
+          {id: 'detailFilters',   displayName: 'Filters',  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
+          {id: 'detailMaps',      displayName: 'Maps',     summary: { plus: ['maps-created'], minus: ['maps-deleted'] } },
+          {id: 'detailSnapshots', displayName: 'Snapshots', summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
+          {id: 'detailBlobs',     displayName: 'Downloadable Files', summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
+          {id: 'detailHref',      displayName: 'External Datasets', summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
     ],
     summarySections: [
         {
@@ -34,7 +35,9 @@ blist.metrics.sitewideShared = {
         },
         {
             id: 'summaryDatasets',    displayName: 'Total Datasets',
-            summary: {plus: 'datasets-created', minus: 'datasets-deleted',
+            summary: {
+                plus: ['datasets-created', 'datasets-deleted-snapshot'],
+                minus: ['datasets-deleted', 'datasets-created-snapshot'],
                 verbPhrase: 'datasets created', verbPhraseSingular: 'dataset created'
             }
         },

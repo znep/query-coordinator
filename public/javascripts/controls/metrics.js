@@ -397,8 +397,8 @@
             }
         },
         detailDefaults: {
-            callback: metricsNS.detailSectionCallback,
-            dataKeys: ['detail']
+            callback: metricsNS.summarySectionCallback,
+            dataKeys: ['summary']
         },
         detailSections: [],
         initialSliceDepth: 'Daily',

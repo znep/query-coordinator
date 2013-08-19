@@ -268,11 +268,23 @@ metricsNS.summarySectionCallback = function($context)
         mappedData = {},
         summaryCalculator = function(key, append)
     {
-        mappedData[key] = data[summaries.plus + (append || '')] || 0;
-
+        if (_.isArray(summaries.plus)) {
+            mappedData[key] = 0;
+            for (var i = 0; i < summaries.plus.length; i++) {
+                mappedData[key] += (data[summaries.plus[i] + (append || '')] || 0);
+            }
+        } else {
+            mappedData[key] = data[summaries.plus + (append || '')] || 0;
+        }
         if (!$.isBlank(summaries.minus))
         {
-            mappedData[key] -= (data[summaries.minus + (append || '')] || 0);
+            if (_.isArray(summaries.minus)) {
+                for (var i = 0; i < summaries.minus.length; i++) {
+                    mappedData[key] -= (data[summaries.minus[i] + (append || '')] || 0);
+                }
+            } else {
+                mappedData[key] -= (data[summaries.minus + (append || '')] || 0);
+            }
         }
     },
         summaryToolTip = function(key, region)
@@ -307,18 +319,6 @@ metricsNS.summarySectionCallback = function($context)
 
     metricsNS.renderSummarySection($context, mappedData,
         metricsNS.summaryDataDirective, 'metricsSummaryData');
-};
-
-metricsNS.detailSectionCallback = function($context)
-{
-    var detail = $context.data('data-detail'),
-        data   = $context.data(metricsNS.DATA_KEY),
-        mappedData = {
-            total: Highcharts.numberFormat(data[detail.toLowerCase()] || 0, 0)
-        };
-
-    metricsNS.renderSummarySection($context, mappedData,
-        metricsNS.detailDataDirective, 'metricsDetailData');
 };
 
 metricsNS.renderSummarySection = function($context, data, directive, templateName)
@@ -409,5 +409,6 @@ metricsNS.summaryDataDirective = {
 };
 
 metricsNS.detailDataDirective = {
-    '.totalValue' : 'total'
+    '.totalValue' : 'total',
+    '.deltaBox@class+': 'deltaClass'
 };

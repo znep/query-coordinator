@@ -7,10 +7,7 @@ blist.metrics.sitewideShared = {
             loading: blist.metrics.chartLoading,
             children: [
                 {text: 'Page Views',
-                    series: [{method: 'page-views', label: 'Page Requests', options: { stacking: null }},
-                             {method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null }}]},
-                {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
-                {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
+                    series: [{method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null}}]},
                 {text: 'Rows Loaded',
                  series: [{method: 'rows-loaded-api',     label: 'API'},
                           {method: 'rows-loaded-website', label: 'Website'},

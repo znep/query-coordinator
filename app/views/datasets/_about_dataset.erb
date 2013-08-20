@@ -153,9 +153,9 @@
       <dt><%= t('screens.about.raters') %></dt>
       <dd class="totalTimesRated"><%= @view.totalTimesRated %></dd>
       <dt><%= t('screens.about.visits') %></dt>
-      <dd><%= @view.viewCount %></dd>
+      <dd><%= @view.viewCount || '&nbsp;'.html_safe %></dd>
       <dt><%= t('screens.about.downloads') %></dt>
-      <dd><%= @view.downloadCount %></dd>
+      <dd><%= @view.downloadCount || '&nbsp;'.html_safe %></dd>
       <dt><%= t('screens.about.comments') %></dt>
       <dd class="numberOfComments"><%= @view.numberOfComments %></dd>
       <dt><%= t('screens.about.contributors') %></dt>

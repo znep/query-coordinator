@@ -9,6 +9,7 @@ en:
   screens:
     header:
       links:
+        account_tooltip: Your Home
         account_html: "Hello, <span class=\"currentUser\">Unknown User</span>"
         administration: Administration
   core:

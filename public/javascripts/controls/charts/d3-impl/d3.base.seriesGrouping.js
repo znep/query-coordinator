@@ -137,6 +137,7 @@ d3base.seriesGrouping = {
                 vizObj._setChartVisible(false);
                 vizObj._setLoadingOverlay();
                 vizObj._updateLoadingOverlay('start');
+                vizObj._updateLoadingOverlay('preprocess');
             });
         });
 
@@ -211,6 +212,9 @@ d3base.seriesGrouping = {
                 vizObj.startLoading();
             }
         });
+
+        vizObj._setLoadingOverlay();
+        vizObj._updateLoadingOverlay('preprocess');
     },
 
     cleanVisualization: function()
@@ -543,6 +547,7 @@ d3base.seriesGrouping = {
 
                         break;
 
+                    case 'preprocess':
                     case 'loading':
                         sg.$dsgSpinner.removeClass('invisible');
                         sg.$loadingOverlay.removeClass('invisible');
@@ -556,34 +561,47 @@ d3base.seriesGrouping = {
                         }
                         sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.pause_rendering'));
 
-                        var elapsedTimeMillisec = Date.now() - (sg.startLoadingTimeMillisec || Date.now());
-                        if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec && sg.virtualRowReadyCount > 0)
+                        // Only display progress/pause if we're not preprocessing.
+                        var inPreprocess = state === 'preprocess';
+
+                        if (!inPreprocess)
                         {
-                            var perRowMillisec = elapsedTimeMillisec / sg.virtualRowReadyCount;
-                            var remainingMillisec = remaining * perRowMillisec;
-                            var seconds = Math.floor(remainingMillisec/1000);
-                            if (seconds >= 60)
+                            var elapsedTimeMillisec = Date.now() - (sg.startLoadingTimeMillisec || Date.now());
+                            if (elapsedTimeMillisec > vizObj._remainingTimeDisplayDelayMillisec && sg.virtualRowReadyCount > 0)
                             {
-                                var minutes = Math.round(seconds/60);
-                                progressMessage = $.t(minutes == 1 ? 'controls.charts.series_grouping.rendering_progress_minute' : 'controls.charts.series_grouping.rendering_progress_minutes',
-                                    {rows_remaining: remaining, time_remaining: minutes});
-                            }
-                            else if (seconds > 2)
-                            {
-                                progressMessage = $.t('controls.charts.series_grouping.rendering_progress_seconds', {rows_remaining: remaining, time_remaining: seconds});
+                                var perRowMillisec = elapsedTimeMillisec / sg.virtualRowReadyCount;
+                                var remainingMillisec = remaining * perRowMillisec;
+                                var seconds = Math.floor(remainingMillisec/1000);
+                                if (seconds >= 60)
+                                {
+                                    var minutes = Math.round(seconds/60);
+                                    progressMessage = $.t(minutes == 1 ? 'controls.charts.series_grouping.rendering_progress_minute' : 'controls.charts.series_grouping.rendering_progress_minutes',
+                                        {rows_remaining: remaining, time_remaining: minutes});
+                                }
+                                else if (seconds > 2)
+                                {
+                                    progressMessage = $.t('controls.charts.series_grouping.rendering_progress_seconds', {rows_remaining: remaining, time_remaining: seconds});
+                                }
+                                else
+                                {
+                                    // TODO converting to strings as $.t() thinks 0 is the same as undefined. Remove when appropriate (1 more instance below).
+                                    progressMessage = $.t('controls.charts.series_grouping.rendering_progress_almost_done', {rows_remaining: remaining+''});
+                                }
+
                             }
                             else
                             {
-                                // TODO converting to strings as $.t() thinks 0 is the same as undefined. Remove when appropriate (1 more instance below).
-                                progressMessage = $.t('controls.charts.series_grouping.rendering_progress_almost_done', {rows_remaining: remaining+''});
+                                progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining+''});
                             }
-
                         }
                         else
                         {
-                            progressMessage = $.t('controls.charts.series_grouping.rendering_progress', {rows_remaining: remaining+''});
+                            progressMessage = $.t('controls.charts.series_grouping.calculating_time');
                         }
+
                         sg.$dsgProgressPauseButton.removeClass('invisible');
+                        sg.$dsgProgressPauseButton.toggleClass('disabled', inPreprocess);
+
                         sg.$dsgLoadingMsg.removeClass('invisible');
                         break;
                     case 'stopped':
@@ -596,6 +614,7 @@ d3base.seriesGrouping = {
                         }
                         sg.$dsgProgressPauseButton.text($.t('controls.charts.series_grouping.resume_rendering'));
                         sg.$dsgProgressPauseButton.removeClass('invisible');
+                        sg.$dsgProgressPauseButton.removeClass('disabled');
                         sg.$dsgLoadingMsg.removeClass('invisible');
                         break;
                 }

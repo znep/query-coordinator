@@ -270,14 +270,34 @@ $.Control.registerMixin('d3_virt_scrolling', {
     // Sets a DOM element to overlay the chart.
     _setChartOverlay: function($overlayDom)
     {
-        if ($overlayDom)
+        var hasOverlayContainer = $.subKeyDefined(this, '_chartConfig.$overlayContainer');
+
+        var $targetElement;
+        if (hasOverlayContainer)
         {
-            this._chartConfig.$overlayContainer.css('visibility', 'visible');
-            this._chartConfig.$overlayContainer.empty().append($overlayDom);
+            $targetElement = this._chartConfig.$overlayContainer;
         }
         else
         {
-            this._chartConfig.$overlayContainer.css('visibility', 'collapse');
+            // We were called before we got an initializeVisualization (probably
+            // due to DSG intercepting that call). Temporarily hack in a skeleton
+            // DOM.
+            var $targetElementContainer = $("<div class='mondrian'/>");
+            $targetElement = $("<div class='overlayContainer'/>");
+            $targetElementContainer.append($targetElement);
+            this.$dom().append($targetElementContainer);
+        }
+
+        if ($overlayDom)
+        {
+            $targetElement.css('visibility', 'visible');
+            $targetElement.empty().append($overlayDom);
+        }
+        else
+        {
+            // TODO implement this case if needed later.
+            $.assert(hasOverlayContainer, 'Clearing overlay not supported in this case.');
+            $targetElement.css('visibility', 'collapse');
         }
     },
 

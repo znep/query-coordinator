@@ -1479,7 +1479,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var cc = this._chartConfig;
 
-        return (cc.scrollPos - cc.drawElementPosition + cc.$chartContainer[cc.dataDim.width]() + this.defaults.sidePaddingBounds[0]/2 >= xLeftEdge) &&
+        return (cc.scrollPos - cc.drawElementPosition + cc.chartWidth + this.defaults.sidePaddingBounds[0]/2 >= xLeftEdge) &&
                (cc.scrollPos - cc.drawElementPosition - this.defaults.sidePaddingBounds[0]/2 <= xRightEdge);
     },
 

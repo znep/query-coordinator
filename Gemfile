@@ -26,3 +26,4 @@ gem "ruby-debug19", :group => :development
 gem 'redcarpet'
 gem 'sanitize'
 gem 'snappy'
+gem 'xray', :require => 'xray/thread_dump_signal_handler'

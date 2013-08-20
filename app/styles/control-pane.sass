@@ -113,6 +113,7 @@
         font-size: 1.1em
         font-weight: bold
         left: 0.7em
+        overflow: hidden
         position: absolute
         top: 0.5em
         width: 6.7em
@@ -337,6 +338,8 @@
       &.repeater
         .addValue
           @include sprite-repeater-icons
+          max-width: 80%
+          overflow: hidden
           margin-left: 1em
           &.hide
             display: none

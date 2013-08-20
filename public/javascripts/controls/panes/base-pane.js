@@ -1661,7 +1661,8 @@
             contents.push($.button({text: args.item.addText || 'Add Value',
                 customAttrs: $.extend(commonAttrs(cpObj, args.item, args.context),
                     {'data-template': templateLine, 'data-count': i, 'data-dataValue': null,
-                        'data-minimum': args.item.minimum, 'data-maximum': args.item.maximum}),
+                        'data-minimum': args.item.minimum, 'data-maximum': args.item.maximum,
+                        'title': args.item.addText || 'Add Value'}),
                 className: 'addValue', iconClass: 'add'}, true));
         }
     };
@@ -1808,6 +1809,7 @@
         {
             args.item.uniqueId = _.uniqueId();
             contents.push({tagName: 'label', 'for': args.item.name + '_' + args.item.uniqueId,
+                    title: args.item.text,
                     'class': [{value: 'required', onlyIf: args.item.required &&
                         !args.context.inRepeater}],
                     contents: args.item.text});

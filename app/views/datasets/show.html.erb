@@ -142,7 +142,12 @@
         <li><a href="#Filter" title="<%= t('screens.ds.grid_sidebar.tabs.filter') %>" class="filter"
           data-paneName="filter"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.filter') %>
           <span class="alertIcon"></span></a></li>
-        <li><a href="#New_visualize" title="<%= 'New visualize' %>" class="new_chart_create"
+        <li
+        <%- if !module_enabled?(:new_config) -%>
+          style="display: none;"
+        <%- end -%>
+        >
+        <a href="#New_visualize" title="<%= 'New visualize' %>" class="new_chart_create"
           data-paneName="new_chart_create"><span class="icon"></span><%= 'New visualize' %></a></li>
         <li><a href="#Visualize" title="<%= t('screens.ds.grid_sidebar.tabs.visualize') %>" class="visualize"
           data-paneName="visualize"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.visualize') %></a></li>

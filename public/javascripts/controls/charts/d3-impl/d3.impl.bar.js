@@ -53,11 +53,11 @@ $.Control.registerMixin('d3_impl_bar', {
     _computeYLimitsForRow: function(row, relevantColumns, lastColumn, evaluator)
     {
         var defaultEvaluator = function(row, column)
-            {
-                return column.dataType.matchValue ?
-                        column.dataType.matchValue(row[column.lookup]) :
-                        row[column.lookup];
-            };
+        {
+            return column.renderType.matchValue ?
+                    column.renderType.matchValue(row[column.lookup]) :
+                    row[column.lookup];
+        };
 
         evaluator = evaluator || defaultEvaluator;
         return _.reduce(

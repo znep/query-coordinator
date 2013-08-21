@@ -205,10 +205,10 @@
     };
 
     var labelInBar = { text: $.t('screens.ds.grid_sidebar.chart.labelInBar'), type: 'checkbox', 
-                       name: 'displayFormat.xAxis.labelInBar', lineClass: 'hasIcon labelInBar' };
+                       name: 'displayFormat.xAxis.labelInBar', lineClass: 'hasIcon labelInBar', inputFirst: true };
 
-    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox', 
-                       name: 'displayFormat.xAxis.valueInBar', lineClass: 'hasIcon valueInBar' };
+    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox',  
+                       name: 'displayFormat.xAxis.valueInBar', lineClass: 'hasIcon valueInBar', inputFirst: true };
 
     if (!isNextGen)
     {
@@ -614,7 +614,7 @@
                     
                     headerPresentation,
                     colors(chart, options),
-                    labelsAndValues(chart, options, [valueInBar, labelInBar]),
+                    labelsAndValues(chart, options, [labelInBar, valueInBar]),
                     valueMarker(chart, options),
                     
                     headerDetails,
@@ -653,7 +653,7 @@
                     
                     headerPresentation,
                     colors(chart, options),
-                    labelsAndValues(chart, options, [valueInBar, labelInBar]),
+                    labelsAndValues(chart, options, [labelInBar, valueInBar]),
                     valueMarker(chart, options),
                     
                     headerDetails,

@@ -825,11 +825,11 @@
   @each $name in stackedbar, bar, area, line, column, stackedcolumn, donut, pie, bubble, treemap, timeline
 
     .#{$name}LabelSelection + .lineIcon
-      background-image: url(/stylesheets/images/icons/data-selection-icons.png?1)
+      background-image: url(/stylesheets/images/icons/data-selection-icons-transp.png?1)
       background-position: 0 (-60px * $icon_slot)
 
     .#{$name}ValueSelection + .lineIcon
-      background-image: url(/stylesheets/images/icons/data-selection-icons.png?1)
+      background-image: url(/stylesheets/images/icons/data-selection-icons-transp.png?1)
       background-position: -60px (-60px * $icon_slot)
 
     .#{$name}ValueSelection + .lineIcon.hover
@@ -843,7 +843,7 @@
   @each $name in labelInBar, valueInBar, valueMarker, flyout, pointColor, pointSize, errorBarsHigh, errorBarsLow
 
     .#{$name} + .lineIcon
-      background-image: url(/stylesheets/images/icons/chart-config-icons.png?3)
+      background-image: url(/stylesheets/images/icons/chart-config-icons-transp.png?2)
       background-position: 0 (-60px * $icon_slot)
 
     $icon_slot: $icon_slot + 1

@@ -103,7 +103,7 @@ en:
       donut: Donut Chart
       line: Line Chart
       pie: Pie Chart
-      timeline: Time Line
+      timeline: Timeline
       treemap: Tree Map
       stackedcolumn: Stacked Column Chart
       stackedbar: Stacked Bar Chart
@@ -348,7 +348,7 @@ it:
       donut: Grafico ad Anello
       line: Grafico a Linea
       pie: Grafico a Torta
-      timeline: Time Line
+      timeline: Timeline
       treemap: Tree Map
       stackedcolumn: Grafico a Colonne in pila
       stackedbar: Grafico a Barre in pila

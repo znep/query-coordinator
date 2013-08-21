@@ -13,7 +13,7 @@ javascripts:
     - public/javascripts/plugins/jquery.uniform.js
     - public/javascripts/plugins/jquery.validate.js
     - public/javascripts/plugins/pure.js
-    - public/javascripts/plugins/jquery-ui-1.10.3.custom.js
+    - public/javascripts/plugins/jquery-ui-1.8.23.custom.js
     - public/javascripts/plugins/underscore.js
     - public/javascripts/util/namespace.js
     - public/javascripts/util/compat.js

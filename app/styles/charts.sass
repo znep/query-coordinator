@@ -30,27 +30,6 @@
   &.hasNoneLegend .legendContainer
     visibility: hidden
 
-  &.hasTopLegend .legendContainer
-    position: absolute
-
-  &.hasTopLegend .legendContainer, &.hasBottomLegend .legendContainer
-    max-height: 20em
-    overflow-y: auto
-
-  &.hasRightLegend
-    .legendContainer
-      overflow-y: auto
-      margin-left: 7px
-      margin-right: 5px
-      max-width: 35%
-
-  &.hasLeftLegend
-    .legendContainer
-      overflow-y: auto
-      margin-left: 5px
-      margin-right: 7px
-      max-width: 35%
-
   .yLabelVert
     font-size: 1.4em
     font-weight: bold
@@ -109,22 +88,37 @@
     z-index: 10
 
     &.bottom, &.top
-      left: 20%
-      width: 60%
+      max-height: 20em
+      max-width: 70%
+      width: auto
+      left: 0
+      right: 0
+      margin: auto
+      & .legendLines
+        width: auto
+        max-height: 15em
+        overflow-y: auto
     &.bottom
       position: absolute
       bottom: 0
     &.top
+      position: absolute
       top: 1em
 
     &.left, &.right
-      top: 50%
+      overflow-y: auto // In left and right position, legend container itself scrolls.
+      top: 50%         // However, in the other cases, legendLines scrolls.
+      max-width: 35%
       text-align: left
       .legendLine
         display: block
     &.left
+      margin-left: 5px
+      margin-right: 7px
       float: left
     &.right
+      margin-left: 7px
+      margin-right: 5px
       float: right
 
   .baselineContainer
@@ -201,12 +195,15 @@
     margin-top: 3px
     margin-bottom: 2px
 
+  .left, .right
+    .legendLines
+      width: 100%
+
   .legendLines
     background-color: rgba(255, 255, 255, 0.7)
     @include border-radius(0.2em)
     display: inline-block
     margin-right: 2em // Reserved for the scrollbar in legendContainer
-    width: 100%
     border: 1px solid #aaa
 
     .ie8 &
@@ -274,12 +271,6 @@
 
   &.hasLeftLegend .yLabelVert
     left: -8em
-
-  // Legend positioning.
-
-  &.hasBottomLegend
-    .legendContainer
-      margin-bottom: 2em
 
   // Chart margins.
 
@@ -507,6 +498,8 @@
   overflow: hidden
 
 .mondrian .overlayContainer
+  z-index: 15
+
   .dsgProgress
     @include dataset-sidebar-icons
     width: 40em
@@ -562,5 +555,10 @@
   .dsgLoadingMsg
     display: none
 
-.mondrian.pieChart .legendContainer.top
-  top: 0
+.mondrian.pieChart
+  .legendContainer
+    &.bottom, &.top // .legendLines.max-height is set in js.
+      max-width: 95%
+      max-height: auto
+    &.top
+      top: 0

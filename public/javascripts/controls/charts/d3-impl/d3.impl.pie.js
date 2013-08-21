@@ -9,7 +9,8 @@ $.Control.registerMixin('d3_impl_pie', {
         rowBuffer: 30, // additional rows to fetch on either side of the actual visible area
         smallModeThreshold: 400, // Size below which small mode is triggered (px).
         largeLegendMaxLineThreshold: 15, // If we've got more than this amount of lines in the legend, switch the legend only to small mode.
-        minSizeForLegend: 200, // If the chart is less than this in any direction (px), we hide the legend to try and display something useful.
+        legendMaxHeightPercentage: 20, // If legend is top or bottom, allow at most this percentage of overall height to the legend.
+        minSizeForLegend: 150, // If the chart is less than this in any direction (px), we hide the legend to try and display something useful.
         labelMargin: 40, // Extra distance between labels and slices (it's a radius).
         endpointLineLength: 5, // Length of that little line segment on either end of the main label line.
         labelTeeLength: 8, // Length of the tee at the end of the label line.
@@ -431,7 +432,7 @@ $.Control.registerMixin('d3_impl_pie', {
         {
             var fillArea = vizObj._getChartFillArea();
             snapshot.fillArea = fillArea;
-            this._renderSnapshot(snapshot, true /* enableTransitions */);
+            this._renderSnapshot(snapshot, !vizObj._isIE8() /* enableTransitions */);
         }
     },
 
@@ -459,14 +460,21 @@ $.Control.registerMixin('d3_impl_pie', {
 
         $legendContainer.toggleClass('smallMode', $legendContainer.find('.legendLine').length > vizObj.defaults.largeLegendMaxLineThreshold);
 
-        var shouldHideLegend = false;
-        var minHeight = Math.min(vizObj.$dom().width(), vizObj.$dom().height());
-        shouldHideLegend = minHeight < vizObj.defaults.minSizeForLegend;
+        var domHeight = vizObj.$dom().height();
+        var minHeight = Math.min(vizObj.$dom().width(), domHeight);
+        var shouldHideLegend = minHeight < vizObj.defaults.minSizeForLegend;
 
         vizObj.$legendContainer().toggleClass('hide', shouldHideLegend);
 
         vizObj._chartConfig.$chartArea
             .removeClass('hasTopLegend hasRightLegend hasBottomLegend hasLeftLegend hasNoLegend');
+
+        // So, if our legend is top or bottom, we want to limit its height to 20% of the overall height of the chart.
+        // Sadly our DOM structure won't easily let us specify the legend's height in percent. So, do it here.
+        if ( (legendPosition === 'top') || (legendPosition === 'bottom'))
+        {
+            $legendContainer.find('.legendLines').css('max-height', domHeight * vizObj.defaults.legendMaxHeightPercentage / 100);
+        }
 
         if (shouldHideLegend)
         {
@@ -667,7 +675,7 @@ $.Control.registerMixin('d3_impl_pie', {
             // We probably just had a formatting change like a row highlight.
             // Just rerender the last snapshot.
             vizObj.debugOut('snapshot-only render');
-            vizObj._renderSnapshot(cc.chartRenderSnapshot, true /* enableTransitions */);
+            vizObj._renderSnapshot(cc.chartRenderSnapshot, !vizObj._isIE8() /* enableTransitions */);
             return;
         }
 
@@ -1134,7 +1142,7 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         var naturalRadius = Math.min(fillArea.width, fillArea.height) * 0.85 / 2;
 
-        return naturalRadius * zoomFactor - this.defaults.labelMargin;
+        return Math.max(0, naturalRadius * zoomFactor - this.defaults.labelMargin);
     },
 
     _arcPositionAlongBisector: function(arc)
@@ -1155,6 +1163,7 @@ $.Control.registerMixin('d3_impl_pie', {
         var radius = vizObj._getRadius(fillArea, vizObj._zoomFactor);
 
         vizObj.debugOut('Rendering ' +pieces.length + ' pie pieces, radius ' + radius);
+        vizObj.debugOut('Transitions: '+enableTransitions);
 
         var translateX, translateY, radius;
         var isZoomed = vizObj._zoomFactor > 1.0001;
@@ -1756,7 +1765,7 @@ $.Control.registerMixin('d3_impl_pie', {
         if (cc.chartRenderSnapshot)
         {
             vizObj._loadDataIfNeeded();
-            vizObj._renderSnapshot(cc.chartRenderSnapshot, true /* enableTransitions */);
+            vizObj._renderSnapshot(cc.chartRenderSnapshot, !vizObj._isIE8() /* enableTransitions */);
         }
     },
 

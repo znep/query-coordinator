@@ -23,6 +23,7 @@ en:
         select_subcolumn: "Select the part of %{name} to filter by:"
         disable_filter: Do not filter
       menu:
+        title: Options
         show_suggested: "Show suggested values"
         # the following two determine if the filter allows only single or multiple value selection:
         select_one: Select one
@@ -71,6 +72,7 @@ it:
         select_subcolumn: "Seleziona la parte di %{name} per cui filtrare:"
         disable_filter: Non filtrare.
       menu:
+        title: Opzioni
         show_suggested: Mostra i valori suggeriti.
         select_one: Seleziona uno.
         select_many: Seleziona molti.
@@ -118,6 +120,7 @@ es:
         select_subcolumn: ! 'Seleccionar la parte de %{name} para filtrar por:'
         disable_filter: No filtrar
       menu:
+        title: Opciones
         show_suggested: Mostrar los valores sugeridos
         select_one: Seleccionar uno
         select_many: Seleccionar varios
@@ -179,6 +182,7 @@ fr:
         select_subcolumn: ! 'Sélectionner la partie de %{name} où appliquer le filtre :'
         disable_filter: Désactiver le filtre
       menu:
+        title: Options
         show_suggested: Montrer les valeurs suggérées
         select_one: Sélectionner une
         select_many: Sélectionner plus d’une
@@ -236,6 +240,7 @@ zh:
         select_subcolumn: 选择筛选的%{name}部分：
         disable_filter: 不筛选
       menu:
+        title: 选项
         show_suggested: 显示建议值
         select_one: 选择一个
         select_many: 选择多个
@@ -282,6 +287,7 @@ hi:
         select_subcolumn: ! 'इस आधार पर फिल्‍टर करने के लिए %{name} का हिस्‍सा चुनें:'
         disable_filter: फिल्‍टर न करें
       menu:
+        title: विकल्‍प
         show_suggested: सुझाये गये मूल्‍य दिखाएँ
         select_one: एक चुनें
         select_many: कई चुनें
@@ -337,6 +343,7 @@ ru:
         select_subcolumn: ! 'Выбрать часть %{name} для фильтрации по:'
         disable_filter: Не фильтровать
       menu:
+        options: опции
         show_suggested: Показать предлагаемые значения
         select_one: Выбрать одно
         select_many: Выбрать много

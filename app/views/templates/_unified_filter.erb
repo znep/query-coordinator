@@ -1,9 +1,12 @@
 <div class="filterPane">
   <div class="initialFilterMode">
-    <p><%= t 'controls.filter.main.tutorial_html' %></p>
-    <p class="orText"><%= t "core.or" %></p>
-    <a href="#newCondition" class="addFilterConditionButton">
-      <%= t 'controls.filter.actions.first_condition' %>
+    <div class="tutorialSection">
+      <p><%= t 'controls.filter.main.no_conditions' %></p>
+      <p><%= t 'controls.filter.main.tutorial_html' %></p>
+    </div>
+    <a href="#newCondition" class="addFilterConditionButton button add">
+      <span class="icon"></span>
+      <%= t 'controls.filter.actions.new_condition_button' %>
     </a>
   </div>
   <div class="normalFilterMode">
@@ -64,7 +67,6 @@
       <span class="columnInfo ss-icon hide">information</span>
       <a class="filterLink subcolumnName" href="#change"></a>
       <a class="filterLink operator" href="#change"></a>
-      <a class="filterLink value" href="#change"></a>
     </div>
     <div class="filterValues">
       <a href="#clearAll" class="clearValues hide"><span class="ss-icon">delete</span><span class="text">Clear selections</span></a>
@@ -76,6 +78,7 @@
       </div>
       <a href="#showMoreLess" class="showMoreLess rightArrow hide"><span class="icon"></span>Show <span class="moreLess">More</span></a>
     </div>
+    <div class="filterOptionsLabel"><%= t('controls.filter.menu.title') %></div>
     <div class="menu advanced filterOptionsMenu"></div>
   </div>
 </div>

@@ -17,8 +17,24 @@ module Canvas2
 
     def render_contents
       return ['', true] if !has_children?
-      threads = children.map {|c| Thread.new { c.render }}
-      results = threads.map {|thread| thread.value};
+      # Fake threadpool
+      q = Queue.new
+      children.each { |c| q.push(c) }
+      results = []
+      threads = []
+      3.times do
+        threads.push(Thread.new do
+          r = {}
+          while c = q.pop(true) rescue nil
+            i = children.length - (q.length + 1)
+            r[i] = c.render
+          end
+          r
+        end)
+      end
+      threads.each do |thread|
+        thread.value.each { |k, v| results[k] = v }
+      end
       [results.map {|r| r[0]}.join(''), results.reduce(true) {|memo, r| memo && r[1]},
         results.map {|r| r[2]}]
     end

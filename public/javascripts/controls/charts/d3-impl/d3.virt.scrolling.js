@@ -199,6 +199,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         {
             if (!vizObj._chartInitialized) { return; }
 
+            vizObj.debugOut('doResizeHandle');
             // maybe recalculate all the sizing
             var needsReposition = vizObj._resizeEverything();
             // maybe reposition the svg/vml elem
@@ -208,6 +209,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             // reposition the elems vertically
             vizObj._rerenderAxis();
             // reposition the elems horizonally if necessary
+            vizObj.debugOut('needsRep: '+needsReposition);
             if (needsReposition) vizObj._rerenderPositions();
             // maybe fetch some more rows if more are exposed
             vizObj.getDataForAllViews();
@@ -263,6 +265,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         );
 
         cc.$baselineContainer.css(cc.dataDim.pluckY('left', 'top'), fromLeftBottom + 'px');
+        this.debugOut('Moving baseline: ' + fromLeftBottom);
         cc.valueLabelBuffer = fromLeftBottom;
         cc.throttledResize();
     },
@@ -427,12 +430,16 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var vizObj = this;
 
+        vizObj.debugOut('resizeHandle');
+
         if (!vizObj._chartConfig || !vizObj._chartConfig.$chartContainer)
         {
             // we haven't loaded yet but are being told to resize. init load
             // will size correctly anyway then so whatev.
             return;
         }
+
+        d3.timer.flush();
 
         if (vizObj._chartConfig.$chartContainer.filter(':visible').length === 0)
         {
@@ -1350,6 +1357,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             // Wait a second for as much to be loaded as possible.
             if (!cc.moveBaseline)
             { cc.moveBaseline = _.debounce(function() {
+                vizObj.debugOut('Initial baseline move. chartInitialized: ' + vizObj._chartInitialized);
                 // Check for the initialization of the chart.
                 // If it's not init'd, it means the user changed some part of the
                 // view before we could run this (like by checking filters quickly).

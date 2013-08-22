@@ -645,14 +645,13 @@ module Canvas2
       end_tag = '</' + l_tag + '>'
       return [t + end_tag, true] if !has_children?
 
-      threads = children.map {|c| Thread.new do
+      results = QueueThreadPool.process_list(children) do |c|
         r = c.render
         i_tag = c.string_substitute(@properties['itemTag'])
         i_tag = {'ul' => 'li', 'ol' => 'li', 'dl' => 'dd'}[l_tag] || 'div' if i_tag.blank?
         ['<' + i_tag + ' class="liWrapper ' + c.string_substitute(@properties['itemCustomClass'] || '') +
           '">' + r[0] + '</' + i_tag + '>', r[1]]
-      end}
-      results = threads.map {|thread| thread.value};
+      end
       [t + results.map {|r| r[0]}.join('') + end_tag, results.reduce(true) {|memo, r| memo && r[1]},
         results.map {|r| r[2]}]
     end

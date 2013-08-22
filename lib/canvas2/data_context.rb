@@ -112,22 +112,20 @@ module Canvas2
               exclude_context: config['keepOriginal'] || config['useParentPrefetch'] }
             log_timing(start_time, config)
             if (defined? @pending_contexts) && (((@pending_contexts || {})[id]).is_a? Array)
-              threads = @pending_contexts[id].map do |req|
-                Thread.new do
-                  begin
-                    ds_new = req[:config]['keepOriginal'] || req[:config]['useParentPrefetch'] ?
-                      ds : ds.deep_clone(::View)
-                    ds.set_sodacan(req[:config]['useParentPrefetch'] ? context[:dataset].sodacan : nil)
-                    got_dataset(ds_new, req[:config])
-                    req[:callback].call(ds_new)
-                  rescue CoreServer::CoreServerError => e
-                    raise DataContextError.new(req[:config], "Core server failed: " + e.error_message,
-                                             { path: e.source, payload: JSON.parse(e.payload || '{}') })
-                  end
+              results = QueueThreadPool.process_list(@pending_contexts[id]) do |req|
+                begin
+                  ds_new = req[:config]['keepOriginal'] || req[:config]['useParentPrefetch'] ?
+                    ds : ds.deep_clone(::View)
+                  ds.set_sodacan(req[:config]['useParentPrefetch'] ? context[:dataset].sodacan : nil)
+                  got_dataset(ds_new, req[:config])
+                  req[:callback].call(ds_new)
+                rescue CoreServer::CoreServerError => e
+                  raise DataContextError.new(req[:config], "Core server failed: " + e.error_message,
+                                           { path: e.source, payload: JSON.parse(e.payload || '{}') })
                 end
               end
               @pending_contexts.delete(id)
-              return threads.map { |thread| thread.value }.reduce(true) {|accum, v| accum && v}
+              return results.reduce(true) {|accum, v| accum && v}
             end
             return true
           end)
@@ -242,10 +240,9 @@ module Canvas2
     end
 
     def self.load(config)
-      threads = config.map do |id, config_item|
-        Thread.new { DataContext.load_context(id, config_item) }
-      end
-      threads.map { |thread| thread.value }.reduce(true) {|accum, v| accum && v}
+      QueueThreadPool.process_list(config) do |id, config_item|
+        DataContext.load_context(id, config_item)
+      end.reduce(true) {|accum, v| accum && v}
     end
 
   private

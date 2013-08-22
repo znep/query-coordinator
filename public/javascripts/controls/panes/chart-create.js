@@ -1,5 +1,10 @@
 (function($)
 {
+    var forceOldCharts = $.urlParam(window.location.href, 'charts') === 'old' || blist.configuration.oldChartsForced;
+    var forceNewCharts = $.urlParam(window.location.href, 'charts') === 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
+
+    var isNextGen = blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts;
+
     $.Control.extend('pane_chartCreate', {
         _init: function()
         {
@@ -82,14 +87,17 @@
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
 
-            var addColumn = function(colId)
+            if (!isNextGen)
             {
-                var col = cpObj._view.columnForIdentifier(colId);
-                if (_.any(col.renderType.aggregates, function(a) { return a.value == 'sum'; }))
-                col.format.aggregate = 'sum';
-            };
+                var addColumn = function(colId)
+                {
+                    var col = cpObj._view.columnForIdentifier(colId);
+                    if (_.any(col.renderType.aggregates, function(a) { return a.value == 'sum'; }))
+                    col.format.aggregate = 'sum';
+                };
 
-            _.each(view.displayFormat.fixedColumns || [], addColumn);
+                _.each(view.displayFormat.fixedColumns || [], addColumn);
+            }
 
             if (_.include(['pie', 'donut'], view.displayFormat.chartType))
             { view.query = $.extend(view.query, cpObj._view.query,

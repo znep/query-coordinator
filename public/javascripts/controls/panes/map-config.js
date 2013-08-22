@@ -320,7 +320,7 @@
                       name: 'displayFormat.legendDetails.customEntries',
                       field: {
                           type: 'group', options: [
-                              { type: 'color', name: 'color', defaultValue: '#ffffff',
+                              { type: 'color', name: 'color', defaultValue: ['#003366', '#D95F02', '#1B9E77', '#e6ab02', '#7570b3'],
                                 lineClass: 'colorCollapse' },
                               { text: $.t('screens.ds.grid_sidebar.map.legend.entry_label'), type: 'text',
                                 name: 'label', required: true }

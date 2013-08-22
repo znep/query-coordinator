@@ -1085,7 +1085,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
   jQuery.fn.btPosition = function() {
 
     function num(elem, prop) {
-      return elem[0] && parseInt( jQuery.curCSS(elem[0], prop, true), 10 ) || 0;
+      return elem[0] && parseInt( jQuery.css(elem[0], prop, true), 10 ) || 0;
     };
 
     var left = 0, top = 0, results;
@@ -1129,7 +1129,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
   jQuery.fn.btOuterWidth = function(margin) {
 
       function num(elem, prop) {
-          return elem[0] && parseInt(jQuery.curCSS(elem[0], prop, true), 10) || 0;
+          return elem[0] && parseInt(jQuery.css(elem[0], prop, true), 10) || 0;
       };
 
       if (window.SVGElement && this[0] instanceof SVGElement) {

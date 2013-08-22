@@ -642,7 +642,7 @@ l : window.pageXOffset || (m ? document.documentElement.scrollLeft : document.bo
                 var viewPort = getViewport();
                 var top = pos.top;
                 var left = pos.left;
-                var oldDisplay = $.curCSS(calEl, 'display');
+                var oldDisplay = $.css(calEl, 'display');
                 cal.css({
                     visibility: 'hidden',
                     display: 'block'

@@ -72,12 +72,12 @@
                     
                     var current = type.split(' ')[1];
                     if(current!='unavailable'){
-                        cpObj.$dom().find('.formSection.chartTypeSelection') 
+                        cpObj.$dom().find('.formSection.chartTypeSelection, .paneContent') 
                         .removeClass(function(i, oldClasses) {
-                            var matches = oldClasses.match(/\S*-icon/);
+                            var matches = oldClasses.match(/\S*-selected/);
                             return ($.isBlank(matches) ? '' : matches.join(' '));
                         }) 
-                        .addClass(type+'-icon')
+                        .addClass(type+'-selected')
                         //Set the text to current icon type
                         .find('.currentSelection .selectionName')
                         .text(Dataset.chart.types[current].text);

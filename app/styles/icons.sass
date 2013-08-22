@@ -772,13 +772,13 @@
       background-image: url(/stylesheets/images/component/cf-icons.png?2)
       background-repeat: no-repeat
       background-position: 0 (-44px * $icon_slot)
+      @include border-radius(0.4em)
+      overflow: visible
       height: 48px
       width: 48px
-      margin-left: -4px
-      margin-top: -4px
       span > span
         margin-left: -8px
-        padding-top: 47px
+        padding-top: 51px
         visibility: visible
         display: inline-block
         white-space: normal
@@ -789,7 +789,7 @@
 @mixin viz-type-icons-small
   $icon_slot: 0
   @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap
-    &.#{$name}-icon .currentSelection > .selectionIcon
+    &.#{$name}-selected .currentSelection > .selectionIcon
       @include ie6-fix
       background-image: url(/stylesheets/images/component/cf-icons-small.png?2)
       background-repeat: no-repeat

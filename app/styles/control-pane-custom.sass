@@ -545,17 +545,16 @@
 
         .radioLine
           @include border-radius(0.4em)
-          width: 40px
-          height: 40px
+          width: 48px
+          height: 48px
           display: inline-block
           padding-top: 0px
           background-color: #888
-          margin: 0px 12px 25px 12px
+          margin: 0px 8px 30px 8px
           text-align: center
 
           > label
-            width: 100%
-            height: 100%
+            margin-left: 0px
             
             &:hover
               cursor: pointer
@@ -565,10 +564,11 @@
             @include border-radius(0.4em)
             background-image: none
             visibility: visible
-            background-color: #cccccc
-            box-shadow: 1px 1px
-            width: 40px
-            height: 40px
+            border: 2px solid #ccc
+            margin-top: -2px 
+            margin-left: -2px
+            width: 48px
+            height: 48px
             opacity: 0.6
          
           &.unavailable
@@ -577,6 +577,9 @@
               &:hover
                 cursor: default
                 opacity: 1
+
+      .line > label
+        width: auto
 
       .flyout, [class*='ValueSelection']
         .removeLink.delete

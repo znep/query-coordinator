@@ -703,7 +703,7 @@ $(function()
             if (width < $(".siteOuterWrapper").width() - 70)
             { windowWidth = width; resizing = false; return; }
 
-            var overlapWidth = $('#description .collapsed').width();
+            var overlapWidth = $('#description, #description .collapsed').width();
             $(".sidebarOptionsContainer").width(overlapWidth ? width - (overlapWidth + offset)
                                                              : width * 0.85);
 

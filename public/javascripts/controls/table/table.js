@@ -891,8 +891,9 @@
         {
             if (hotExpander)
             {
-                hotExpander.style.top = '-10000px';
-                hotExpander.style.left = '-10000px';
+                var lalaland = -10000;
+                fastSetPixelProperty(hotExpander.style, 'top', lalaland);
+                fastSetPixelProperty(hotExpander.style, 'left', lalaland);
                 hotExpanderVisible = false;
             }
         };
@@ -2348,7 +2349,7 @@
 
             begin("updateLayout.footer");
             // Move footer up to bottom, or just above the scrollbar
-            var lockedBottom = parseFloat($scrolls.css('border-bottom-width')) + 1;
+            var lockedBottom = parseFloat($scrolls.css('border-bottom-width')) + 1; // TODO these two calls are expensive-ish (~1ms each).
             var footerBottom = parseFloat($scrolls.css('border-bottom-width')) +
                 $footerScrolls.outerHeight();
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
@@ -2394,8 +2395,8 @@
             var horizontalChange = false;
             if (scrollHoriz != headerScrolledTo)
             {
-                $header[0].style.left = -scrollHoriz + 'px';
-                $footer[0].style.left = -scrollHoriz + 'px';
+                fastSetPixelProperty($header[0].style, 'left', -scrollHoriz);
+                fastSetPixelProperty($footer[0].style, 'left', -scrollHoriz);
                 headerScrolledTo = scrollHoriz;
                 horizontalChange = true;
             }
@@ -2465,6 +2466,14 @@
 
         var style = function(name)
         { return blist.styles.getStyle(sheetName, name); };
+
+        // We want to prevent a reflow as much as possible. Setting certain
+        // style props triggers reflow, even if the values are arguably equal.
+        // So don't set if we can get away with it.
+        var fastSetPixelProperty = function(style, key, valueInPx)
+        {
+            $.setIfDifferent(style, key, valueInPx + 'px');
+        };
 
         // Obtain a CSS class for a column
         var getColumnClass = function(column)
@@ -2825,7 +2834,7 @@
                 // heights; can we do this on a single style rather than for
                 // each column style individually?)
                 if (options.generateHeights)
-                { getColumnStyle(mcol).height = rowHeight + 'px'; }
+                { fastSetPixelProperty(getColumnStyle(mcol), 'height', rowHeight); }
             }
         };
 
@@ -2941,7 +2950,7 @@
             // Row positioning information
             rowHeight = measuredInnerDims.height;
             rowOffset = measuredOuterDims.height;
-            style('rowStyle').height = rowOffset + 'px';
+            fastSetPixelProperty(style('rowStyle'), 'height', rowOffset);
 
             // Reset scaling factor, since many things may have changed
             scalingFactor = 1;
@@ -2949,11 +2958,11 @@
             // Set row heights
             if (options.generateHeights && options.showGhostColumn)
             {
-                style('ghostStyle').height = rowHeight + 'px';
+                fastSetPixelProperty(style('ghostStyle'), 'height', rowHeight);
             }
             if (options.generateHeights)
             {
-                style('cellStyle').height = rowHeight + 'px';
+                fastSetPixelProperty(style('cellStyle'), 'height', rowHeight);
             }
             // Update the locked column styles with proper dimensions
             lockedWidth = 0;
@@ -2968,19 +2977,19 @@
                 var colStyle = getColumnStyle(c);
                 if (c.width)
                 {
-                    colStyle.width = c.width + 'px';
+                    fastSetPixelProperty(colStyle, 'width', c.width);
                 }
                 else
                 {
                     // Get the width of the measured column, but make sure it's
                     // an integer instead of a partial pixel
                     var w = Math.floor($measureCol.width());
-                    if (w >= 0) { colStyle.width = w + 'px'; }
+                    if (w >= 0) { fastSetPixelProperty(colStyle,  'width', w); }
                 }
                 lockedWidth += $measureCol.outerWidth();
                 if (options.generateHeights)
                 {
-                    colStyle.height = rowHeight + 'px';
+                    fastSetPixelProperty(colStyle, 'height', rowHeight);
                 }
             });
 
@@ -2998,9 +3007,9 @@
                 handleWidth =
                     parseFloat(getColumnStyle(rowHandleColumn).width) + paddingX;
             }
-            style('openerStyle').width = openerWidth + 'px';
+            fastSetPixelProperty(style('openerStyle'), 'width', openerWidth);
             if (options.generateHeights)
-            { style('openerStyle').height = rowHeight + 'px'; }
+            { fastSetPixelProperty(style('openerStyle'), 'height', rowHeight); }
 
             // These variables are available to the rendering function
             var contextVariables = {
@@ -3089,8 +3098,8 @@
             };
 
             // Configure the left position of grid rows
-            style('groupHeaderStyle').left = lockedWidth + 'px';
-            style('unlockedRowStyle').left = lockedWidth + 'px';
+            fastSetPixelProperty(style('groupHeaderStyle'), 'left', lockedWidth);
+            fastSetPixelProperty(style('unlockedRowStyle'), 'left', lockedWidth)
 
             $headerScrolls.css('margin-left', lockedWidth);
             $footerScrolls.css('margin-left', lockedWidth);
@@ -3118,8 +3127,8 @@
             end("configureWidths.levels");
 
             // Configure grouping header column widths
-            style('groupHeaderStyle').width = Math.max(0,
-                (insideWidth - lockedWidth - paddingX)) + 'px';
+            fastSetPixelProperty(style('groupHeaderStyle'), 'width', Math.max(0,
+                (insideWidth - lockedWidth - paddingX)));
 
             // Set the scrolling area width
             var scrollWidth = $scrolls.width();
@@ -3205,13 +3214,7 @@
                     try { var style = getColumnStyle(mcol); }
                     catch (e) { continue; }
 
-                    var widthStyle = (colWidth - paddingX) + 'px';
-
-                    // This test is incredibly important for perf. on Safari
-                    if (style.width != widthStyle)
-                    {
-                        style.width = widthStyle;
-                    }
+                    fastSetPixelProperty(style, 'width', colWidth - paddingX);
                 }
             }
 
@@ -3228,30 +3231,39 @@
 
         var configureVariableWidths = function(level, levelWidth)
         {
-            if (variableColumns[level] instanceof Array &&
-                variableColumns[level].length > 0)
+            var thisLevel = variableColumns[level];
+            var firstScrolls = $scrolls[0];
+            if (thisLevel instanceof Array &&
+                thisLevel.length > 0)
             {
                 // Start with the total fixed width for this level
                 var pos = levelWidth;
 
                 var varSize = $scrolls.width() - pos;
-                if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+                if (firstScrolls.scrollHeight > firstScrolls.clientHeight)
                 {
                     varSize -= scrollbarWidth;
                 }
                 varSize = Math.max(varSize, 0);
-                for (i = 0; i < variableColumns[level].length; i++)
+                for (i = 0; i < thisLevel.length; i++)
                 {
-                    var c = variableColumns[level][i];
+                    var c = thisLevel[i];
+                    var targetStyle;
+                    var newWidth;
                     if (c.ghostColumn)
                     {
-                        style('ghostStyle').width = (c.minWidth + varSize)  + "px";
+                        targetStyle = style('ghostStyle');
+                        newWidth = (c.minWidth + varSize);
+
                     }
                     else
                     {
-                        getColumnStyle(c).width = ((c.minWidth || 0) +
-                            ((c.percentWidth / varDenom[level]) * varSize)) + 'px';
+                        targetStyle = getColumnStyle(c);
+                        newWidth = (c.minWidth || 0) +
+                            ((c.percentWidth / varDenom[level]) * varSize);
                     }
+
+                    fastSetPixelProperty(targetStyle, 'width', newWidth);
                 }
 
                 // If we're not dealing with just the ghost column,
@@ -3587,7 +3599,7 @@
             var innerW = $colHeader.width();
             // Make an initial guess & do checks incrementally to shave off ms
             if (infoW + 20 > innerW)
-            { 
+            {
                 infoW += parseInt($infoC.css('left'));
                 if (infoW > innerW)
                 {

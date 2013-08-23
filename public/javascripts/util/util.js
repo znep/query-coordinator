@@ -731,14 +731,6 @@ $.addAppToken = function(url)
         'app_token=' + blist.configuration.appToken;
 };
 
-// force an integer to appear as a double through the json transport
-$.jsonIntToFloat = function(integer)
-{
-    if (integer.toString().indexOf('.') < 0)
-    { return parseFloat(integer.toString() + '.000001'); }
-    return integer;
-};
-
 $.clamp = function(number, bounds)
 {
     // use ternary for perf
@@ -755,6 +747,16 @@ $.union = function()
         if (_.all(memo, function(val) { return !_.isEqual(item, val); })) { memo.push(item); }
         return memo;
     }, []);
+};
+
+// Sets a property to a given value, but only if the given value is different
+// from the current value (as determined by !=).
+$.setIfDifferent = function(obj, key, value)
+{
+    if (obj[key] != value)
+    {
+        obj[key] = value;
+    }
 };
 
 $.fn.tagName = function()

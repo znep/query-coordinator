@@ -1,9 +1,6 @@
 <div class="filterPane">
   <div class="initialFilterMode">
-    <div class="tutorialSection">
-      <p><%= t 'controls.filter.main.no_conditions' %></p>
-      <p><%= t 'controls.filter.main.tutorial_html' %></p>
-    </div>
+    <p class="noFilterConditionsText"><%= t 'controls.filter.main.no_conditions' %></p>
     <a href="#newCondition" class="addFilterConditionButton button add">
       <span class="icon"></span>
       <%= t 'controls.filter.actions.new_condition_button' %>
@@ -41,6 +38,10 @@
       <span class="icon"></span>
       <%= t 'controls.filter.actions.new_condition_button' %>
     </a>
+  </div>
+
+  <div class="tutorialSection">
+    <p><%= t 'controls.filter.main.tutorial_html' %></p>
   </div>
 
   <%- if @view.present? && @view.has_rights?('update_view') -%>

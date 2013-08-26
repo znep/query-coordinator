@@ -93,7 +93,7 @@ module ApplicationHelper
   end
 
 # js
-  def jquery_include(version = '1.8.3')
+  def jquery_include(version = '1.7.1')
     if Rails.env.development?
       return ("<script src=\"/javascripts/jquery-#{version}.js\" type=\"text/javascript\" " +
         'charset="utf-8"></script>').html_safe

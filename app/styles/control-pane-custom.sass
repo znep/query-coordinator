@@ -759,13 +759,10 @@
       display: none
       padding: 1em
 
-      .tutorialSection
-        color: #777
-        padding-bottom: 1em
-
       p
         font-size: 1.3em
-        margin-bottom: 1em
+        margin-top: 0
+        text-align: left
 
         &.orText
           text-align: center
@@ -1020,7 +1017,9 @@
         border-bottom: none
         color: #000
         cursor: text
-        font-weight: bold
+
+        &:after
+          display: none
 
     .editMode
       .notAdvancedLine
@@ -1048,6 +1047,16 @@
           display: block
         .normalModeMessage
           display: none
+
+    .tutorialSection
+      border-top: 1px solid #ccc
+      color: #777
+      margin-top: 2em
+      padding: 1.5em 1em
+
+      p
+        font-size: 1.3em
+        margin-bottom: 1em
 
     .filterOptionsLabel
       bottom: 0.55em
@@ -1089,16 +1098,14 @@
       font-style: normal
 
     .editFilterBlock
-      border-top: 1px solid #ddd
-      margin: 3em 1em 1em
-      padding: 1em
+      padding: 0 1em
 
       .editModeMessage
         display: none
 
       p
-        font-size: 1.2em
-        margin-bottom: 0.5em
+        font-size: 1.3em
+        margin-bottom: 1em
 
       .savingEditedFilterSpinner
         @include throbber-icon

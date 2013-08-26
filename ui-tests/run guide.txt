@@ -1,0 +1,4 @@
+cd ui-tests
+npm install
+./run.sh
+

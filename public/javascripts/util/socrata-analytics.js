@@ -60,6 +60,8 @@ jQuery.metrics = {
 
     flush_metrics: function()
     {
+        if ($.metrics.queue.length === 0) { return; }
+
         var metrics_bag = $.metrics.queue;
         $.metrics.queue = [];
         $.socrataServer.makeRequest({

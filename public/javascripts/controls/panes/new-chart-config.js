@@ -338,13 +338,11 @@
                 },
                 {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button'),
                     name: 'displayFormat.valueColumns', lineClass: 'hasIcon ' + chart.value + 'ValueSelection',
-                    field: {type: 'group', options: [
-                        
-                        { required: true, type: 'columnSelect', text: 'Choose data for value axis',
+                    field:{ required: true, type: 'columnSelect', text: 'Choose data for value axis',
                             notequalto: 'valueCol', useFieldName: true,
                             name: 'fieldName', otherNames: 'tableColumnId',
-                            columns: {type: valueColTypes, hidden: options.isEdit}}
-                    ]}
+                            columns: {type: valueColTypes, hidden: options.isEdit}
+                    }
                 }
             ]
         , true);
@@ -361,32 +359,50 @@
         var result = subheading(chart, options, 'Advanced Data Selection',
             [
                 //Data Series Grouping
-                {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.title')},
-                {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.row_limit_warning'), onlyIf: tooManyRows },
-                {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.series_group.new_column_button'),
-                    name: 'displayFormat.seriesColumns',
-                    field: {text: $.t('screens.ds.grid_sidebar.chart.series_group.group_by'), type: 'columnSelect',
-                            notequalto: 'valueCol', useFieldName: true,
-                            name: 'fieldName', otherNames: 'tableColumnId',
-                            columns: {type: colTypes, hidden: options.isEdit}}
-                } 
+                {type: 'group', extraClass: 'subsection dsg', options: [
+                    {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.title')},
+                    {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.row_limit_warning'), onlyIf: tooManyRows },
+                    {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.series_group.new_column_button'),
+                        lineClass: 'dataSeriesGrouping',
+                        name: 'displayFormat.seriesColumns',
+                        field: {text: $.t('screens.ds.grid_sidebar.chart.series_group.group_by'), type: 'columnSelect',
+                                notequalto: 'valueCol', useFieldName: true,
+                                name: 'fieldName', otherNames: 'tableColumnId',
+                                columns: {type: colTypes, hidden: options.isEdit}
+                        },
+                    }, 
+                    {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.alphabetize'),
+                        name: 'displayFormat.sortSeries',
+                        inputFirst: true,
+                        lineClass: 'seriesGroupingCheck'
+                    },
+                    {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.hideLoadingMsg'),
+                        name: 'displayFormat.hideDsgMsg',
+                        inputFirst: true,
+                        lineClass: 'seriesGroupingCheck'
+                    }
+                ]}
             ]
         );
         
         if(chart.value != 'line' && chart.value != 'area')
         {
             //Error Bars
-            result.fields = result.fields.concat([{type: 'note', value: $.t('screens.ds.grid_sidebar.chart.error_bars.title')},
-            {text: $.t('screens.ds.grid_sidebar.chart.error_bars.low'), name: 'displayFormat.plot.errorBarLow',
-                type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
-                columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}, lineClass: 'hasIcon errorBarsLow'
-            },
-            {text: $.t('screens.ds.grid_sidebar.chart.error_bars.high'), name: 'displayFormat.plot.errorBarHigh',
-                type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
-                columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}, lineClass: 'hasIcon errorBarsHigh'
-            },
-            {text: $.t('screens.ds.grid_sidebar.chart.error_bars.color'), name: 'displayFormat.errorBarColor',
-                type: 'color', defaultValue: '#ff0000'}]);
+            result.fields = result.fields.concat(
+                [{type: 'group', extraClass: 'subsection errorBars', options: [
+                    {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.error_bars.title')},
+                    {type: 'color', defaultValue: '#ff0000', name: 'displayFormat.errorBarColor'},
+                    {text: $.t('screens.ds.grid_sidebar.chart.error_bars.low'), name: 'displayFormat.plot.errorBarLow',
+                        type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
+                        columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}, lineClass: 'hasIcon errorBarsLow'
+                    },
+                    {text: $.t('screens.ds.grid_sidebar.chart.error_bars.high'), name: 'displayFormat.plot.errorBarHigh',
+                        type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
+                        columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}, lineClass: 'hasIcon errorBarsHigh'
+                    }
+                    
+                ]}]
+            )
         }
         return result;
     }
@@ -511,14 +527,15 @@
     {
         var bc = dataSelection(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.label'));
         //bc.fields.splice(1, 2);
-        bc.fields[1].field.options.push(
+        bc.fields[1].field = {type: 'group', options: [bc.fields[1].field,
                 {text: $.t('screens.ds.grid_sidebar.chart.point_title'), type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.0',
                     columns: {type: 'text', hidden: options.isEdit}},
                 {text: $.t('screens.ds.grid_sidebar.chart.annotation'), type: 'columnSelect', useFieldName: true,
                     name: 'supplementalColumns.1',
                     columns: {type: 'text', hidden: options.isEdit}}
-        );
+                ]
+        }
         return bc;
     };
 

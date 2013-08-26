@@ -599,14 +599,13 @@
       .line > label
         width: auto
 
-      .flyout, [class*='ValueSelection']
+      .flyout, [class*='ValueSelection'], .dataSeriesGrouping
         .removeLink.delete
-          padding-left: 5%
-        .removeLink + .inputBlock
-          .line
-            width: 90%
-            margin-left: 10%
-            float: right
+          margin-left: -3%  
+        .line.repeaterAdded
+          width: 90%
+          padding-left: 0.8em
+          float: right
           label
             display: none
 
@@ -623,19 +622,21 @@
           display: inline-block
           vertical-align: top
 
-        &.valueInBar, &.labelInBar
-          width: 50%
+        &.valueInBar, &.labelInBar, &.errorBarsLow, &.errorBarsHigh
+          width: 12.5em
           position: absolute
           padding-top: 75px
+          > label, > span
+            padding-left: 0px
           & + .lineIcon
             margin-bottom: 3em
             margin-top: 1em
-        &.valueInBar
+        &.valueInBar, &.errorBarsHigh
           margin-left: 0.4em
           padding-left: 60px
           & + .lineIcon
             margin-left: 60px
-        &.labelInBar
+        &.labelInBar, &.errorBarsLow
           margin-left: 1.2em
           & + .lineIcon
             margin-left: 0.8em
@@ -644,11 +645,12 @@
         > label
           display: block
           position: static
-          margin-left: 0.5em
+          &.required
+            padding-left: 1.1em
 
         .inputWrapper
           float: none
-          padding-left: 0.5em
+          padding-left: 8px
           display: block
 
         .error
@@ -710,6 +712,36 @@
             display: none
           .line.repeater > .line
             border: none
+          .line.note.clearfix
+            font-size: 1.2em
+            font-weight: bold
+            color: #666666
+            display: block
+            margin-bottom: -1em
+            margin-left: -2px
+            margin-top: 0em
+
+          .line.group
+            padding-left: 0px
+          .dsg
+            padding-bottom: 1em
+            .checkbox
+              padding-left: 1em
+          .errorBars
+            padding-bottom: 3em
+            border-top: solid 1px $color_chrome_box_border
+            .line.note.clearfix
+              margin-bottom: 0em
+              padding-left: 30px
+            .color
+              display: block
+              position: absolute
+              top: 0px
+              left: 0px
+              .inputWrapper
+                padding-left: 1em
+
+
 
       &.collapsed > .formHeader > .formHeaderIcon
         @include triangle(5px, #fff, left)

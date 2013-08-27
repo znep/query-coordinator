@@ -8,6 +8,19 @@
             modal: true,
             onShow: function(jqm)
             {
+                jqm.w.find('iframe').each(function()
+                {
+                    var $this = $(this),
+                        urlToLoad = $this.data('urltoload');
+
+                    if (!$.isBlank(urlToLoad))
+                    {
+                        $this.attr('src', urlToLoad);
+                        $this.removeData('urltoload')
+                             .removeAttr('data-urltoload');
+                    }
+                });
+
                 $('.menu').trigger('menu-close');
                 if (!_.isUndefined(blist.events))
                 { $(document).trigger(blist.events.MODAL_SHOWN); }

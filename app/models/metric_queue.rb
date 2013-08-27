@@ -22,7 +22,6 @@ class MetricQueue
       :value => count,
       :type => :aggregate
     })
-    Frontend.statsd.count("#{entityId}.#{metricName}", count) if APP_CONFIG['statsd_enabled']
   end
 
   def push_request(data)
@@ -67,6 +66,12 @@ private
           write_field(metricfile, request[:value].to_s)
           write_field(metricfile, request[:type].to_s)
         end
+      end
+    end
+    if APP_CONFIG['statsd_enabled']
+      current_requests.each do |request|
+        next unless request[:entityId].include? '-intern'
+        Frontend.statsd.count("#{request[:entityId]}.#{request[:name]}", request[:value])
       end
     end
   end

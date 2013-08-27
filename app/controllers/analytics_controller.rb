@@ -119,8 +119,8 @@ module ClientAnalyticsHelper
 
   def self.get_valid_increment(entity, metric, input)
     increment = input.to_i
-    if increment <= 0
-      return 0
+    if increment < 0 || increment > 4294967296 # 2^32
+      return -1
     end
     if is_mark(entity, metric)
       increment = 1
@@ -130,13 +130,11 @@ module ClientAnalyticsHelper
 
   def self.is_mark(entity, metric)
     allowed = MARK_METRICS.include?(entity + '/' + metric)
-    puts "#{allowed} => #{entity}/#{metric}"
     allowed
   end
 
   def self.is_allowed(entity, metric)
     allowed = ALLOWED_METRICS.include?(entity + '/' + metric)
-    puts "#{allowed} => #{entity}/#{metric}"
     allowed
   end
 

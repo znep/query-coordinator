@@ -316,7 +316,10 @@ $federated_background_color: #f0f0f0
   cursor: move
 
 @mixin required-star
-  background: url(/stylesheets/images/common/required.png) no-repeat left 3px
+  &:before
+    content: "* "
+    color: #C4282D
+    font-size: 1.2em
 
 @mixin dl-section-content
   > dt

@@ -22,7 +22,6 @@ class MetricQueue
       :value => count,
       :type => :aggregate
     })
-    Frontend.statsd.count("#{entityId}.#{metricName}", count) if APP_CONFIG['statsd_enabled']
   end
 
   def push_request(data)

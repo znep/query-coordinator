@@ -385,7 +385,7 @@
             ]
         );
         
-        if(chart.value != 'line' && chart.value != 'area')
+        if(chart.value != 'line' && chart.value != 'area' && chart.value != 'timeline')
         {
             //Error Bars
             result.fields = result.fields.concat(

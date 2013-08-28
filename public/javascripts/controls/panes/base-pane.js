@@ -1824,10 +1824,11 @@
         if (!args.context.inputOnly)
         {
             args.item.uniqueId = _.uniqueId();
+            var required = args.item.required && !args.context.inRepeater;
             contents.push({tagName: 'label', 'for': args.item.name + '_' + args.item.uniqueId,
                     title: args.item.text,
-                    'class': [{value: 'required', onlyIf: args.item.required &&
-                        !args.context.inRepeater}],
+                    'class': [{value: 'required', onlyIf: required},
+                              {value: 'requiredBlank', onlyIf: required && $.isBlank(args.item.text)}],
                     contents: args.item.text});
         }
 

@@ -106,7 +106,7 @@ jQuery.metrics = {
             return "dataslate";
         }
 
-        if (path.match("^/dataset")) {
+        if (blist.dataset) {
             return "dataset";
         } else if (path.match("^/admin")) {
             return "admin";
@@ -118,5 +118,4 @@ jQuery.metrics = {
     }
 };
 
-$(window).load($.metrics.collect_page_timings);
-
+$(window).load(function() { _.defer($.metrics.collect_page_timings); });

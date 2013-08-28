@@ -445,7 +445,7 @@ d3base.seriesGrouping = {
         if (vizObj._inRenderSeriesGrouping) { return; }
 
         // If there were no insertions, don't bother re-rendering.
-        if (didInsertData === false) { return; }
+        if (didInsertData === false && vizObj._primaryView.totalRows() !== 0) { return; }
         vizObj._inRenderSeriesGrouping = true;
 
         vizObj._enqueueRows(data);

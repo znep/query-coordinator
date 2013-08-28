@@ -164,7 +164,8 @@ $.Control.registerMixin('d3_impl_pie', {
                 { tagName: 'div', 'class': 'legendContainer', contents: [
                     { tagName: 'div', 'class': 'legendLines' }
                 ]},
-                { tagName: 'div', 'class': 'controlContainer' }
+                { tagName: 'div', 'class': 'controlContainer' },
+                { tagName: 'div', 'class': 'overlayContainer'}
             ] }
         , true));
         cc.$chartArea = $dom.find('.mondrian');
@@ -173,6 +174,7 @@ $.Control.registerMixin('d3_impl_pie', {
         cc.$chartRenderArea = $dom.find('.chartRenderArea');
         cc.$legendContainer = $dom.find('.legendContainer');
         cc.$controlContainer = $dom.find('.controlContainer');
+        cc.$overlayContainer = $dom.find('.overlayContainer');
 
         //hax
         cc.$chartOuterContainer.css('margin-top', '2em');
@@ -189,6 +191,8 @@ $.Control.registerMixin('d3_impl_pie', {
         // find and set up the draw elem
         cc.$drawElement = cc.$chartContainer.children(':not(.chartRenderArea)');
         cc.$drawElement.css({ 'position': 'absolute', 'top': '0' });
+
+        vizObj._setChartOverlay(null); // Initialize the chart overlay.
 
         if (vizObj.debugEnabled)
         {
@@ -664,11 +668,7 @@ $.Control.registerMixin('d3_impl_pie', {
     _renderData: function(data, addedNewData)
     {
         var vizObj = this,
-            cc = vizObj._chartConfig,
-            defaults = vizObj.defaults,
-            valueColumns = vizObj.getValueColumns(),
-            $chartArea = cc.$chartArea,
-            view = vizObj._primaryView;
+            cc = vizObj._chartConfig;
 
         if (!addedNewData && cc.chartRenderSnapshot)
         {
@@ -681,19 +681,97 @@ $.Control.registerMixin('d3_impl_pie', {
 
         data = vizObj._getDataToRender(data);
 
-        var chartWidth = cc.$chartContainer.width();
-        var chartHeight = cc.$chartContainer.height();
-
-        var fillArea = vizObj._getChartFillArea();
-
         vizObj.debugOut("render");
 
         vizObj.debugOut("got "+data.length+" data rows");
 
-        if (data.length == 0)
+        if (data.length === 0)
         {
-            return;
+            vizObj._renderUnusableData(data, 'isEmpty');
         }
+        else
+        {
+            vizObj._renderUsableData(data);
+        }
+    },
+
+    _renderUnusableData: function(data, reason)
+    {
+        var vizObj = this;
+
+        var userMessageKey = 'controls.charts.';
+        if (reason === 'isEmpty')
+        {
+            userMessageKey += 'no_data';
+        }
+        else if (reason === 'allZero')
+        {
+            userMessageKey += 'zero_only_data';
+        }
+        else if (reason === 'negativesPresent')
+        {
+            userMessageKey += 'negatives_in_data';
+        }
+
+        var cc = vizObj._chartConfig;
+
+        var valueResolver = getDataSum = $.thunk(0);
+        var colorResolver = $.thunk('transparent');
+        var nameResolver = $.thunk('');
+        var rowResolver = $.thunk(null);
+
+        var seriesInformation = {};
+        _.each(vizObj.getValueColumns(), function(colDef, columnIndex)
+        {
+            seriesInformation[colDef.column.lookup] = {
+                getDataSum: getDataSum,
+                colorResolver: colorResolver,
+                valueResolver: valueResolver,
+                nameResolver: nameResolver,
+                rowResolver: rowResolver,
+                colDef: colDef,
+                columnIndex: columnIndex
+            };
+        });
+
+        var placeholderSlice = new vizObj.Slice(0, valueResolver, nameResolver, colorResolver);
+
+        cc.chartRenderSnapshot =
+        {
+            firstSlice: null,
+            lastSlice: null,
+            firstDataSlice: placeholderSlice,
+            lastDataSlice: placeholderSlice,
+            anchorSlice: placeholderSlice.asAnchor(0),
+            fillArea: vizObj._getChartFillArea(),
+            seriesInformation: seriesInformation
+        };
+
+        var overlay = $.tag(
+            { tagName: 'div', 'class': 'noDataMessage',
+                contents: $.t(userMessageKey)
+            }, true);
+
+        this._setChartOverlay(overlay);
+
+        var $msg = this.$dom().find('.noDataMessage');
+        $msg.css('margin-left', -$msg.outerWidth(true)/2);
+        $msg.css('margin-top', -$msg.outerHeight(true)/2);
+
+        vizObj._renderSnapshot(cc.chartRenderSnapshot, false /* enableTransitions */);
+    },
+
+    _renderUsableData: function(data)
+    {
+        var vizObj = this;
+
+        var cc = vizObj._chartConfig,
+            valueColumns = vizObj.getValueColumns(),
+            view = vizObj._primaryView;
+
+        vizObj._setChartOverlay(null);
+
+        var fillArea = vizObj._getChartFillArea();
 
         //TODO this is dumb look at first and last.
         var maxIndex = _.last(data).index;
@@ -710,7 +788,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
         var aggs = _.reduce(valueColumns, function(memo, colDef)
         {
-            memo[colDef.column.id] = ['sum'];
+            memo[colDef.column.id] = ['sum', 'minimum'];
             return memo;
         }, {});
 
@@ -796,10 +874,19 @@ $.Control.registerMixin('d3_impl_pie', {
             };
 
             var seriesInformation = {};
+            var maxColSum = 0;
+            var hasNegatives = false;
             _.each(valueColumns, function(colDef, columnIndex)
             {
+                var colMin = colDef.column.aggregates['minimum'];
+                if (!_.isNaN(colMin) && colMin < 0)
+                {
+                    hasNegatives = true;
+                    return;
+                }
                 var colSum = colDef.column.aggregates['sum'];
                 $.assert(colSum >= 0 && !_.isNaN(colSum), 'Expected a real value for column sum');
+                maxColSum = Math.max(colSum, maxColSum);
                 seriesInformation[colDef.column.lookup] = {
                     getDataSum: function () { return colSum; },
                     colorResolver: colorResolver(colDef),
@@ -810,6 +897,18 @@ $.Control.registerMixin('d3_impl_pie', {
                     columnIndex: columnIndex
                 };
             });
+            if (hasNegatives)
+            {
+                vizObj._renderUnusableData(data, 'negativesPresent');
+                return;
+            }
+
+            if (maxColSum === 0)
+            {
+                // No series has any data... pretend as if there's no data.
+                vizObj._renderUnusableData(data, 'allZero');
+                return;
+            }
 
             var primarySeriesInfo = seriesInformation[primaryColumn.column.lookup];
             var primaryValueResolver = primarySeriesInfo.valueResolver;
@@ -879,7 +978,6 @@ $.Control.registerMixin('d3_impl_pie', {
             vizObj._loadDataIfNeeded();
 
         }, aggs);
-
     },
 
     _findLastSliceSatisfyingMinAngle: function(firstSlice, lastSlice, seriesInformation)
@@ -1079,7 +1177,7 @@ $.Control.registerMixin('d3_impl_pie', {
                 startAngle: pieSegments.startAngle() + Math.PI*2
             };
 
-            if (Math.abs(otherPlaceholder.endAngle - otherPlaceholder.startAngle) > 0.001)
+            if (seriesInformation.getDataSum() > 0 && Math.abs(otherPlaceholder.endAngle - otherPlaceholder.startAngle) > 0.001)
             {
                 // Graft on a placeholder slice.
                 var valueResolver = function(asText)
@@ -1414,7 +1512,7 @@ $.Control.registerMixin('d3_impl_pie', {
         };
 
         var labelLayout;
-        if (_.isUndefined(pieces[0].slottedCircleLayout))
+        if (!_.isEmpty(pieces) && _.isUndefined(pieces[0].slottedCircleLayout))
         {
             vizObj.debugOut('Computing slot layout');
             labelLayout = new d3ns.slottedCircleLayout(
@@ -1885,6 +1983,12 @@ $.Control.registerMixin('d3_impl_pie', {
         }
 
         return color;
+    },
+
+    // Sets a DOM element to overlay the chart.
+    _setChartOverlay: function($overlayDom)
+    {
+        this._chartConfig.$overlayContainer.empty().append($overlayDom);
     }
 
 }, null, 'socrataChart', ['d3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

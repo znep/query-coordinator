@@ -39,6 +39,9 @@ en:
         in_bing: View in Bing Maps
     charts:
       other: Other
+      no_data: No data
+      zero_only_data: No values greater than zero
+      negatives_in_data: "Invalid chart: negative values present"
       series_grouping:
         calculation_running: Preparing data
         drawing_running: Drawing chart

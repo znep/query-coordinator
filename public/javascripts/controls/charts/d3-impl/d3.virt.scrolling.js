@@ -797,10 +797,6 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         var effectiveSeriesCount = vizObj._getDatumCountPerGroup();
 
-        // if we don't have value columns or total rows, bail
-        // for now. we'll be called again later.
-        if (effectiveSeriesCount == 0 || $.isBlank(totalRows)) { return; }
-
         vizObj._updateSizeBasedStyling();
 
         // xLabel on bar charts will push it down. Readjust for this.

@@ -885,6 +885,8 @@ $.fn.exists = function()
     return this.length !== 0;
 };
 
+$.thunk = function(val) { return function() { return val; } };
+
 // Wrapper around inlineLogin.verifyUser; simply does nothing
 // if auth fails
 blist.util.doAuthedAction = function(actionText, callback)

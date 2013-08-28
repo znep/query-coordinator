@@ -1,0 +1,1656 @@
+hi:
+  account:
+    common:
+      form:
+        confirm_password: पासवर्ड की पुष्टि करें
+        display_name: नाम दर्शाएँ
+        email: ईमेल पता
+        forgot_password: क्‍या आप पासवर्ड भूल गए हैं?
+        lockout_warning: सुरक्षा के लिहाज से, 15 मिनटों में यदि तीन बार लॉग-इन करने के विफल प्रयास हो जाएँ, तो यह खाता 30 मिनट के लिए लॉक हो जाएगा।
+        no_account: क्‍या आपका खाता नहीं है?
+        password: पासवर्ड
+        password_requirements: ! 'आवश्‍यक है। आपका पासवर्ड 8 से 40 अक्षरों के बीच होना चाहिए और इसके द्वारा हमारे चार मानकों से तीन पूरे किये जाने चाहिए: इसमें एक अंक हो; इसमें लोअर केस (अंग्रेजी) अक्षर हो; इसमें अपर केस (अंग्रेजी) अक्षर हो; इसमें कोई अल्‍फ़ान्‍यूमेरिक चिह्न न हो।'
+        password_requirements_html: <p>आपका पासवर्ड<b>8 से 40 अक्षरों के बीच होना चाहिए</b>और<b> द्वारा हमारे चार मानकों से तीन पूरे किये जाने चाहिए </b>:</p><p></p><ul><li>• इसमें एक अंक हो</li><li>• इसमें लोअर केस (अंग्रेजी) अक्षर हो</li><li>• इसमें अपर केस (अंग्रेजी) अक्षर हो</li><li>• इसमें कोई अल्‍फ़ान्‍यूमेरिक चिह्न न हो</li></ul>
+        password_restrictions: पाबंदियाँ लागू हैं
+        remember_me: मुझे याद रखें
+        sign_up_prompt: अभी साइन अप करें
+      inline_auth:
+        sign_in_headline: अपने सोक्राटा आईडी का उपयोग करते हुए साइन इन करें
+        sign_up_headline: हमें प्रसन्‍नता है कि आप %{site}! से जुड़ना चाहते हैं!
+      rpx:
+        description: इन खातों द्वारा प्रदान की जाने वाली अतिरिक्‍त विशेषताओं का लाभ लें और केवल एक क्लिक में साइन इन करें।
+        prompt:
+          sign_in: या...साइन इन करने के लिए इनमें से एक खाते का उपयोग करें।
+          sign_up: या...जुड़ने के लिए इनमें से एक खाते का उपयोग करें।
+        providers:
+          facebook:
+            sign_in_html: <strong>जुड़ें</strong> Facebook के साथ
+            sign_up_html: <strong>जुड़ें</strong> Facebook के साथ
+          google:
+            sign_in_html: <strong>साइन इन करें</strong> Google के साथ
+            sign_up_html: <strong>जुड़ें</strong> Google के साथ
+          openid:
+            sign_in_html: <strong>साइन इन करें</strong> OpenID के साथ
+            sign_up_html: <strong>जुड़ें</strong> OpenID के साथ
+          twitter:
+            sign_in_html: <strong>जुड़ें </strong> Twitter के साथ
+            sign_up_html: <strong>जुड़ें</strong> Twitter के साथ
+      validation:
+        mismatch: पासवर्ड मेल नहीं खा रहे हैं।
+        terms: आपको सेवा की शर्तों और गोपनीयता नीति को स्वीकार करना होगा।
+  controls:
+    browse:
+      actions:
+        about:
+          button: इसके बारे में
+          title: इस डेटासेट के बारे में
+        all_options: सभी को देखें
+        clear_all: सभी विकल्‍प हटाएँ
+        clear_facet: (सभी)
+        compact_list: सघन सूची के तौर पर देखें
+        create_dataset: अपना डेटासेट बनाएँ या अपलोड करें
+        create_dataset_short: नया डेटासेट बनाएँ
+        create_dataset_verb: बनाएँ
+        dataset_subscribe: इस व्‍यू के परिवर्तनों की सदस्‍यता लें
+        delete:
+          button: मिटाएँ
+          confirm: क्‍या आप वाकई %{dataset}को मिटाना चाहते हैं?
+          title: इस बिंदु को हटाएँ
+        expand_section: विस्‍तार करने के लिए क्लिक करें
+        less_options: कम देखें
+        manage_api:
+          button: प्रबंधन करें
+          title: इस एपीआई का प्रबंधन करें
+        moderation:
+          accept: स्‍वीकार करें
+          reject: अस्‍वीकार करें
+        permissions:
+          change_button:
+            private_html: निजी करें
+            public_html: सार्वजनिक करें
+          title: सार्वजनिक रूप से दिखना परिवर्तित करें
+        rich_list: समृद्ध सूची के तौर पर देखें
+        share_button: साझा करें
+        subscribe: सदस्‍यता लें
+        suggest_dataset: क्‍या आप जो खोज रहे हैं वह नहीं मिला? डेटासेट सुझाएँ।
+        suggest_dataset_short: डेटासेट सुझाएँ
+        suggest_dataset_verb: सुझाएँ
+      back_to_dataset: डेटासेट में वापिस
+      facets:
+        categories_singular_title: श्रेणी
+        categories_title: श्रेणियाँ
+        federated_domains_singular_title: डोमेन
+        federated_domains_title: अधिकृत डोमेन
+        moderation_status:
+          accepted: स्‍वीकृत
+          pending: लंबित
+          rejected: अस्‍वीकृत
+        moderation_status_singular_title: मॉडरेशन
+        moderation_status_title: मॉडरेशन स्थिति
+        topics_singular_title: विषय
+        topics_title: विषय
+        view_types:
+          apis: एपीआई
+          blob: फाइल व दस्‍तावेज
+          calendars: कैलेंडर
+          charts: चार्ट
+          datasets: डेटासेट
+          filters: फिल्‍टर किये गये अवलोकन
+          forms: प्रपत्र
+          href: बाहरी डेटासेट
+          maps: नक्‍शे
+          unpublished: अप्रकाशित डेटासेट
+        view_types_singular_title: प्रकार
+        view_types_title: अवलोकन प्रकार
+      listing:
+        comment_count: टिप्‍पणियों की संख्‍या
+        federation_source: ! '%{source}से अधिकृत'
+        federation_source_html: ! '%{source_link}द्वारा प्रदान किया गया'
+        no_results: कोई परिणाम नहीं
+        result_count: ! '%{total} का %{this} दर्शा रहा है'
+        table_header:
+          name: नाम
+          popularity: लोकप्रियता
+          rss: आरएसएस
+          type: प्रकार
+        timeout: क्षमा करें। इस समय परिणाम हासिल नहीं किये जा सकते हें। कृपया बाद में फिर से प्रयास करें।
+      row_results:
+        less_link: कम
+        more_link: अधिक
+        title_html: ! '<span class="totalResultCountText"></span> की<span class="rowResultCountText"></span> मेल खाने वाली पंक्तियाँ <a href="#" class="rowSearchLink">दिखा रहा है (परिणाम देखें)</a>:'
+      search: खोजें
+      sort_period_title: छांटने की अवधि
+      sort_periods:
+        month: यह महीना
+        week: यह सप्‍ताह
+        year: यह वर्ष
+      sort_title: इस आधार पर छांटें
+      sorts:
+        alpha: ! 'वर्णक्रमानुसार '
+        comments: अधिकांश टिप्‍पणी
+        last_modified: हाल में अद्यतित
+        most_accessed: सर्वाधिक एक्‍सेस किया गया
+        newest: सबसे नया
+        oldest: सबसे पुराना
+        rating: सर्वोच्‍च रेटिंग प्राप्‍त
+        relevance: सर्वाधिक उपयोग
+      title:
+        default: डेटासेट व व्‍यू को खोजें व ब्राउज़ करें
+        result:
+          facet: ! '%{facet_type} का %{facet_value}'
+          facet_main: मेल हो रहा है %{body}
+          main: परिणाम %{body}
+          term: ! '"%{term}" के लिए'
+    charts:
+      series_grouping:
+        calculating_time: बाकी बचे समय का परिकलन कर रहे हैं...
+        calculation_running: डेटा तैयार कर रहे हैं
+        drawing_progress: इसमें थोड़ा वक्त लग सकता है...
+        drawing_running: चार्ट बना रहे हैं
+        pause_button_explanation1: संकेत! बहुत समय लग रहा है? पॉस करके आवश्यक परिकलन को सीमित करने के लिए एक फ़िल्टर
+        pause_button_explanation2: निर्मित करें।
+        pause_rendering: पॉस करें
+        rendering_paused: डेटा प्रचालन को पॉज़ कर दिया गया है
+        rendering_progress: ! '%{rows_remaining} पंक्तियाँ बाकी हैं।'
+        rendering_progress_almost_done: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, बस चंद और सेकंड।'
+        rendering_progress_minute: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, लगभग %{time_remaining} मिनट।'
+        rendering_progress_minutes: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, लगभग %{time_remaining} मिनट।'
+        rendering_progress_seconds: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, लगभग %{time_remaining} सेकंड।'
+        resume_rendering: रेस्यूमे (संक्षिप्त विवरण)
+    common:
+      auth_required: ! 'आपको %{action_phrase} में लॉगिन होना चाहिए '
+      dataset_picker:
+        button: चुनें
+        title: उपयोग करने के लिए एक डेटासेट चुनें
+      expander:
+        collapse: संकुचित करने के लिए क्लिक करें
+        expand: फैलाने के लिए क्लिक करें
+      image_upload:
+        button: चित्र अपलोड करें
+      rate:
+        auth_action_phrase: इस डेटासेट को रेटिंग दें
+      share:
+        button_prompt: सामाजिक मेलजोल करें
+        button_tooltip: इस डेटासेट को साझा करें
+        networks:
+          email: ईमेल
+          facebook: Facebook
+          twitter: Twitter
+        share_text: ! '%{site} के डेटासेट, %{name} की जांच करें:'
+      sidebar:
+        tabs:
+          about: इस डेटासेट के बारे में
+          discuss: विचार-विमर्श करें
+          edit: संपादित करें
+          embed: जोड़ें
+          export: निर्यात करें
+          filter: फिल्‍टर करें
+          manage: प्रबंधन करें
+          moreViews: अधिक अवलोकन
+          visualize: मानस चित्रित करें
+      stars:
+        tooltip: ! '%{number} सितारे'
+      visualization:
+        in_bing: Bing नक्शे में देखें
+        in_google: Google नक्शे में देखें
+        row_details: इस पंक्ति के लिए विवरण देखें
+    embed:
+      create_template_button: नया टेम्‍प्‍लेट बनाएँ
+      custom_size: अनुकूलित आकार
+      embed: इस डेटासेट को जोड़ें
+      form_frame: इस फ़ॉर्म को फ़्रेम में जोड़ें
+      form_or: या
+      form_plain: इस फ़ॉर्म को प्‍लेन HTML के तौर पर जोड़ें
+      height: ऊंचाई
+      minimum_size: न्‍यूनतम आकार है
+      private_warning: यह व्‍यू फिलहाल निजी है। आप इसे प्रीव्‍यू कर सकते हैं लेकिन इससे पहले कि लोग इसे देख सकें, आपको इसे सार्वजनिक करना होगा।
+      sdp_template: सोशल डेटा प्‍लेयर टेम्‍प्‍लेट
+      size: आकार
+      template: टेम्‍प्‍लेट
+      width: चौड़ाई
+    feed:
+      authed_actions:
+        delete_comment: टिप्‍पणी मिटाएँ
+        flag_comment: टिप्‍पणी को फ़्लैग करें
+        post_comment: टिप्‍पणी पोस्‍ट करें
+        rate_comment: टिप्‍पणी को रेटिंग दें
+      comment_actions:
+        already_marked_inappropriate: फ़्लैग किया गया
+        delete: मिटाएँ
+        delete_confirm: क्‍या आप निश्चित हैं? आपकी टिप्‍पणी गुम हो जाएगी।
+        inappropriate: अनुचित
+        marked_inappropriate: फ़्लैग किया गया!
+        rate_down: इस टिप्‍पणी को कम रेटिंग दें
+        rate_up: इस टिप्‍पणी को अधिक रेटिंग दें
+        reply: उत्तर
+      comment_form:
+        cancel_button: रद्द करें
+        empty_body_error: टिप्‍पणी स्‍थान खाली नहीं रह सकता।
+        header: नई टिप्‍पणी
+        post_button: पोस्‍ट करें
+      header:
+        add_comment: टिप्‍पणी जोड़ें
+        cell_comment_header_html: पंक्ति <span class="rowName"></span>, कॉलम <span class="columnName"></span> के लिए टिप्‍पणी
+        feed_filter_label: दिखाएँ
+        pending_moderation: आपकी टिप्‍पणी प्रस्‍तुत की गई और मॉडरेशन की प्रतीक्षा में है
+      listing:
+        all_replies: सभी उत्तर देखें
+        all_replies_with_count: सभी %{count} उत्तर देखें
+        last_item: अंतिम आइटम देखें
+        next_item_page: अगले %{count} आइटम देखें
+        no_results: डिस्‍प्‍ले करने के लिए कोई आइटम नहीं हैं
+        user_create_action: ! '%{thing}तैयार किया गया:'
+      types:
+        all items: समस्‍त आइटम
+        comments: टिप्‍पणी
+        views: व्‍यू
+    filter:
+      actions:
+        confirm_modify: यह करने से आपके फिल्‍टर के सभी मान हट जाएंगे? क्‍या आप वाकई यह करना चाहते हैं?
+        disable_filter: फिल्‍टर न करें
+        first_condition: अपनी पहली फिल्‍टर शर्त जोड़ने के लिए यहाँ क्लिक करें
+        new_condition_button: नई फिल्‍टर शर्त जोड़ें
+        remove_filter: फिल्‍टर हटाएँ
+        select_column: ! 'इस आधार पर फिल्‍टर करने के लिए कॉलम चुनें:'
+        select_operation: ! 'इस आधार पर फिल्‍टर करने के लिए ऑपरेशन चुनें:'
+        select_subcolumn: ! 'इस आधार पर फिल्‍टर करने के लिए %{name} का हिस्‍सा चुनें:'
+      edit_default:
+        advanced_body: इसका मतलब है कि उनके पास फिल्‍टर में उपलब्‍ध विकल्‍पों तक पूरी पहुंच होगी। अधिक परिष्‍कृत अनुभव के लिए, आप सरलीकृत मोड को आजमा सकते हैं।
+        advanced_header: प्रयोक्‍ता उन्‍नत मोड से आरंभ करेंगे।
+        advanced_toggle: डिफ़ाल्‍ट को सरलीकृत में बदलें।
+        auto_suggested: इस ऑपरेटर प्रकार के लिए सुझाये गये मान स्‍वचालित रूप से निश्चित होते हैं।
+        cancel_button: रद्द करें
+        done_button: किया गया (डन)
+        instructions: ! 'फिल्‍टर बनाने के लिए उपरोक्‍त टूल का उपयोग करें, प्रस्‍तुत मान समायोजित करें, स्‍वचालित रूप से सुझाये गये मान की संख्‍या चुनें जिसे फिल्‍टर प्रस्‍तुत करने एवं अन्‍य कार्य की कोशिश करेगा। जब आप प्रस्‍तत विकल्‍पों से संतुष्‍ट हो जाएँ तो इसे सहेजने के लिए नीचे किया गया (डन) पर क्लिक करें:'
+        manual_suggested_html: <select class="autogeneratedCount"></select> तक सुझाये गये मान दिखाएँ
+        mode_button: डिफ़ाल्‍ट फिल्‍टर संपादित करें
+        mode_message: ! 'इस व्‍यू के प्रकाशक के तौर पर, आप फिल्‍टर का डिफ़ाल्‍ट सेट कर सकते हैं जो आगंतुकों को प्रस्‍तुत किये जाएंगे:'
+        save_confirm: यदि आप जारी रखते हैं तो असुरक्षित परिवर्तन गुम हो जाएंगे। कृपया आगे बढ़ने से पहले उन परिवर्तनों को सहेजें जिन्‍हें आप रखना चाहते हैं।
+        simplified_body: इसका मतलब है कि वे नई शर्तें जोड़ने, फिल्‍टर के कॉलम या ऑपरेटर बदलने, या फिल्‍टर में उन्‍नत मेनू तक पहुंचने में अक्षम होंगे।
+        simplified_header: प्रयोक्‍ता सरलीकृत मोड से आरंभ करेंगे।
+        simplified_toggle: डिफ़ाल्‍ट बैक को उन्‍नत में बदलें।
+      main:
+        filter: फिल्‍टर करें
+        filter_based_on_contents: सामग्री के आधार पर इस डेटासेट को फिल्‍टर करें।
+        no_conditions: अभी शर्तें निर्धारित नहीं की गईं।
+        no_suggestions: इस कॉलम व ऑपरेटर के लिए सुझाये गये मान नहीं हैं।
+        or: या
+        simplified_message: आप सरलीकृत मोड में हैं।
+        simplified_toggle: क्‍या अब उन्‍नत होंगे?
+        tutorial_html: क्‍या अपने पहले कभी फिल्‍टर नहीं बनाया? छोटा शैक्षिक वीडियो <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">यहाँ</a>देखें।
+        view_has_no_columns: इस व्‍यू में फिल्‍टर करने के लिए कोई कॉलम नहीं है
+        view_must_be_valid: यह व्‍यू मान्‍य होना चाहिए
+      menu:
+        match_all: सभी शर्तों का मिलान करें
+        match_any: किसी शर्त का मिलान करें
+        select_many: कई चुनें
+        select_one: एक चुनें
+        show_suggested: सुझाये गये मूल्‍य दिखाएँ
+        title: विकल्‍प
+    grid:
+      clear_column_filter: कॉलम फिल्‍टर को हटाएँ
+      clear_sort: छंटाई को हटाएँ
+      click_for_menu: मेनू के लिए क्लिक करें
+      click_to_sort: छाँटने के लिए क्लिक करें
+      column_info: स्तंभ के बारे में जानकारी
+      delete_column: कॉलम मिटाएँ
+      delete_row: पंक्ति मिटाएँ
+      delete_warning_multi_column: क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!
+      delete_warning_single_column: क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!
+      edit_column_properties: कॉलम प्रॉपर्टी संपादित करें
+      filter_this_column: इस कॉलम को फिल्‍टर करें
+      hide_column: कॉलम छिपाएँ
+      menu: मेनू
+      must_enter_name: आपको इस कॉलम के लिए नाम देना चाहिए
+      new_row: नई
+      no_rows: प्रदर्शन के लिए पंक्तियाँ नहीं
+      previous: पिछला
+      sort_ascending: आरोही क्रम में छांटें
+      sort_descending: अवरोही क्रम में छांटें
+      view_first_row: पहली पंक्ति देखें
+      view_last_row: अंतिम पंक्ति देखें
+      view_next_row: अगली पंक्ति देखें
+      view_previous_row: पिछली पंक्ति देखें
+      view_single_row: एकल पंक्ति डेटा देखें
+      viewing_row_html: पंक्ति <span class="curPage"></span> को देख रहे हैं, कुल <span class="totalPages"></span> पंक्तियाँ हैं
+    nominate:
+      all: सब
+      approve: (अनुमोदित करें)
+      approve_tip: इस सुझाव को अनुमोदित करें
+      approved: अनुमोदित
+      attachment: अनुलग्नक
+      attachments: अनुलग्नक
+      back_to_suggestions: डेटासेट सुझावों में वापस
+      browse: ब्राउज़ करें
+      cancel: रद्द करें
+      comments: टिप्पणियाँ
+      contact_author: सुझाव लेखक से संपर्क करें
+      dataset_suggestions: डेटासेट सुझाव
+      delete_attachment: अनुलग्नक
+      delete_confirm: क्या आपको पूरा यकीन है कि आप इस %{type} को हटाना चाहते हैं?
+      delete_error: ! '%{type} को हटाते समय त्रुटि हो गई'
+      delete_suggestion: सुझाव
+      description: वर्णन
+      description_prompt: अपने सुझाव का ब्योरा दर्ज करें
+      details: विवरण
+      edit: (संपादन)
+      edit_suggestion: इस सुझाव को संपादित करें
+      files: फ़ाइलें
+      filter_by_status: स्थिति के अनुसार फ़िल्टर करें
+      form_error: ऊपर की त्रुटियों को सुधारें
+      great_sadness: सुझाव लेखक से संपर्क करते समय त्रुटि। कृपया बाद में फिर से कोशिश करें.
+      greater_success: आपका संदेश सुझाव लेखक को भेज दिया गया है।
+      message: संदेश
+      message_prompt: अपना संदेश दर्ज करें
+      moderate: (मध्यस्थित करें)
+      moderate_error: स्थिति बदलते समय त्रुटि
+      moderate_tip: इस सुझाव को स्वीकारें और उसे मतदान के लिए खोल दें
+      needs_moderation: मध्यस्थता आवश्यक है
+      new: नया
+      no_result: कोई परिणाम नहीं
+      open: खुला
+      rate_down: मुझे पसंद नहीं है
+      rate_up: मुझे पसंद है
+      rating: रेटिंग
+      rating_error: आपका सुझाव मिल गया है और उसे मध्यस्थता कतार में रखा गया है। जब कोई प्रशासक उसे अनुमोदित कर देगा, यह सुझाव इस पृष्ठ पर दिखाई देगा।
+      reject: अस्वीकृत करें
+      reject_tip: आपके सुझाव को अद्यतन किया गया है
+      rejected: अस्वीकृत
+      remove: (हटाएँ)
+      remove_tip: यह सुझाव हटाएँ
+      required: आवश्यक
+      status: स्थिति
+      submit: जमा करें
+      submitted_by: जमा करनेवाला व्यक्ति
+      suggest_a_dataset: एक डेटासेट सुझाएँ
+      suggestion_received: आपका सुझाव मिल गया है और उसे मध्यस्थता कतार में रखा गया है। जब कोई प्रशासक उसे अनुमोदित कर देगा, यह सुझाव इस पृष्ठ पर दिखाई देगा।
+      suggestion_updated: आपके सुझाव को अद्यतन किया गया है
+      title: शीर्षक
+      title_prompt: शीर्षक दर्ज करें
+      user_removed: एक उपयोगकर्ता जिसे पहले ही हटाया जा चुका है
+      user_removed_short: उपयोगकर्ता को हटाया गया
+  core:
+    aggregates:
+      average: औसत
+      count: गणना
+      maximum: अधिकतम
+      minimum: न्‍यूनतम
+      sum: योग
+    alignment:
+      center: मध्‍य
+      left: बायें
+      right: दांये
+    analytics:
+      visit: व्‍यू
+      visits: व्‍यू
+    and: और
+    chart_types:
+      area: एरिया चार्ट
+      bar: बार चार्ट
+      bubble: बबल चार्ट
+      column: कॉलम चार्ट
+      donut: डोनट चार्ट
+      line: लाइन चार्ट
+      pie: पाई चार्ट
+      stackedbar: समूहबद्ध बार चार्ट
+      stackedcolumn: समूहबद्ध कॉलम चार्ट
+      timeline: घटनाक्रम
+      treemap: वृक्षाकार नक्‍शा
+    data_types:
+      calendar_date: तिथि व समय
+      checkbox: चेकबॉक्‍स
+      dataset_link: डेटासेट लिंक
+      date: तिथि व समय (समय क्षेत्र सहित)
+      document: दस्‍तावेज
+      drop_down_list: कई विकल्‍प
+      email: ईमेल
+      flag: फ़्लैग
+      geospatial: जियोस्‍पाटियल
+      html: फ़ॉरमेट किया गया टैक्‍स्‍ट
+      link: लिंक कॉलम
+      list: सूची
+      location: स्‍थान
+      money: धन
+      nested_table: समाहित तालिका
+      number: संख्‍या
+      object: वस्‍तु
+      percent: प्रतिशत
+      phone: फोन
+      photo: फ़ोटो (चित्र)
+      stars: सितारे
+      text: सादा टैक्‍स्‍ट
+      url: वेबसाइट यूआरएल
+    date_time:
+      centuries_future: अब से %{time} शताब्दी में
+      centuries_past: ! ' %{time} शताब्दी पहले'
+      current_century_future: इस शताब्दी
+      current_century_past: इस शताब्दी
+      current_day_future: आज
+      current_day_past: आज
+      current_hour_future: इस घंटे
+      current_hour_past: इस घंटे
+      current_minute_future: अभी-अभी
+      current_minute_past: अभी-अभी
+      current_month_future: इस महीने
+      current_month_past: इस महीने
+      current_week_future: इस सप्ताह
+      current_week_past: इस सप्ताह
+      current_year_future: इस वर्ष
+      current_year_past: इस वर्ष
+      days_future: अब से %{time} दिन में
+      days_past: ! ' %{time} दिन पहले'
+      hours_future: अब से %{time} घंटे में
+      hours_past: ! ' %{time} घंटे पहले'
+      minutes_future: अब से %{time} मिनट में
+      minutes_past: ! ' %{time} मिनट पहले'
+      months_future: अब से %{time} महीने में
+      months_past: ! ' %{time} महीने पहले'
+      single_century_future: अब से एक शताब्दी में
+      single_century_past: एक शताब्दी पहले
+      single_day_future: कल
+      single_day_past: कल
+      single_hour_future: अब से 1 घंटे में
+      single_hour_past: 1 घंटा पहले
+      single_minute_future: अब से 1 मिनट में
+      single_minute_past: 1 मिनट पहले
+      single_month_future: अगले महीने
+      single_month_past: पिछले महीने
+      single_week_future: अगले सप्ताह
+      single_week_past: पिछले सप्ताह
+      single_year_future: पिछले वर्ष
+      single_year_past: पिछले वर्ष
+      unknown: कभी न कभी
+      weeks_future: अब से %{time} सप्ताह में
+      weeks_past: ! ' %{time} सप्ताह पहले'
+      years_future: अब से %{time} वर्ष में
+      years_past: ! ' %{time} वर्ष पहले'
+    dialogs:
+      apply: लागू करें
+      cancel: रद्द करें
+      close: बंद करें
+      continue: जारी रखें
+      create: बनाएँ
+      delete: मिटाएँ
+      done: किया गया
+      dont_save: सहेजें नहीं
+      logout: आपको लॉग-आउट कर दिया गया है।
+      save: सहेजें
+      session_timeout:
+        notice: आपकी सुरक्षा के लिए आपको लॉग आउट कर दिया गया है। आगे बढ़ने के लिए कृपया फिर से साइन इन करें।
+        warning:
+          belay_button: मुझे लॉग आउट नहीं करें!
+          body_html: पिछले कुछ मिनटों में हमें किसी भी सक्रियता का पता नहीं चल पाया है। गोपनीयता के लिहाज से  हम आपको <span id="secondsRemaining"></span> सेकंडों में लॉग आउट कर देंगे।
+          title: आपका सत्र बस समाप्त होनेवाला है।
+      update: अद्यतन
+    expando:
+      expand: विस्‍तारित करें
+      prompt: विस्‍तार करने के लिए क्लिक करें
+    features:
+      allow_comments: कमेंटिंग
+      cell_comments: सेल कमेंटिंग
+    filters:
+      formal:
+        between: इसके बीच
+        contains: इसमें मौजूद है
+        equals: बराबर है
+        greater_than: इससे अधिक
+        greater_than_or_equals: इससे अधिक या समान
+        is_blank: खाली है
+        is_not_blank: खाली नहीं है
+        less_than: इससे कम
+        less_than_or_equals: इससे कम या समान
+        not_contains: इसमें मौजूद नहीं है
+        not_equals: बराबर नहीं है
+        starts_with: इससे शुरू होता है
+      informal:
+        between: यह इनके बीच है
+        contains: इसमें मौजूद है
+        equals: है
+        greater_than: यह इससे अधिक है
+        greater_than_or_equals: यह सबसे कम है
+        is_blank: यह खाली है
+        is_not_blank: यह खाली नहीं है
+        less_than: यह इससे कम है
+        less_than_or_equals: यह सर्वाधिक है
+        not_contains: इसमें मौजूद नहीं है
+        not_equals: नहीं है
+        starts_with: इससे शुरू होता है
+    forms:
+      none: कोई नहीं
+      required_field: आवश्‍यक स्‍थान
+    group_function:
+      date_day: दिवस
+      date_month: महीना
+      date_year: वर्ष
+    interstitial:
+      leaving_explanation_html: इसे अन्‍य डोमेन <span class="datasetType">डेटासेट</span> <a href="\#" rel="external" class="externalDomain">द्वारा होस्‍ट</a>किया गया है।
+      leaving_notice_html: आप <span class="serverName">%{site_name}</span> को छोड़ रहे हैं
+    map_layers:
+      aerial: आकाशीय
+      bing_aerial: बिंग आकाशीय
+      bing_roadmap: बिंग रोडमैप
+      bing_roadmap_alias: बिंग
+      esri_natural_earth: प्राकृतिक पृथ्‍वी नक्‍शा (ईएसआरआई)
+      esri_natural_earth_alias: प्राकृतिक पृथ्‍वी नक्‍शा
+      esri_satellite: सैटेलाइट चित्रांकन (ईएसआरआई)
+      esri_us_topo: विस्‍तृत यूएसए स्‍थलाकृतिक नक्‍शा (ईएसआरआई)
+      esri_us_topo_alias: यूएसए स्‍थलाकृतिक नक्‍शा
+      esri_world_street_map: वर्ल्‍ड स्‍ट्रीट मैप (ईएसआरआई)
+      esri_world_street_map_alias: वर्ल्‍ड स्‍ट्रीट मैप
+      esri_world_topo: व्‍याख्‍या सहित विश्‍व स्‍थलाकृतिक नक्‍शा (ईएसआरआई)
+      esri_world_topo_alias: विश्‍व स्‍थलाकृतिक नक्‍शा
+      google_roadmap: गूगल रोडमैप
+      google_roadmap_alias: गूगल
+      google_satellite: गूगल सैटेलाइट
+      google_terrain: गूगल भू-भाग
+      roadmap: रोडमैप
+      satellite: सैटेलाइट
+      terrain: भू-भाग
+    or: या
+    pagination:
+      first_page: पहला पृष्‍ठ
+      last_page: अंतिम पृष्‍ठ
+      next_page: अगला पृष्‍ठ
+      previous_page: पिछला पृष्‍ठ
+    precision_style:
+      scientific: वैज्ञानिक (1.0204e+3)
+      standard: स्‍टैंडर्ड (1020.4)
+    share_types:
+      contributor: योगदानकर्ता
+      owner: स्‍वामी
+      view: अवलोकनकर्ता
+      viewer: अवलोकनकर्ता
+    validation:
+      accept: कृपया मान्‍य एक्‍सटेंश्न वाला मान डालें।
+      date: कृपया मान्‍य तिथि डालें।
+      dateISO: कृपया मान्‍य तिथि (आईएसओ) डालें।
+      digits: कृपया केवल अंक डालें।
+      email: कृपया मान्‍य ईमेल पता डालें।
+      equalTo: कृपया दोबारा समान मान डालें।
+      max: कृपया {0} से कम या इसके समान मान डालें।
+      maxlength: कृपया {0}से अधिक अक्षर न डालें।
+      min: कृपया {0} से अधिक या इसके समान मान डालें।
+      minlength: कृपया कम से कम अक्षर {0} डालें।
+      number: कृपया मान्‍य संख्‍या डालें।
+      range: कृपया {0} और {1} के बीच मान डालें।
+      rangelength: कृपया {0} और {1} अक्षरों की लंबाई के बीच का कोई मान डालें।
+      remote: कृपया यह स्‍थान ठीक करें।
+      required: यह स्‍थान भरना आवश्‍यक है।
+      url: कृपया मान्‍य यूआरएल डालें।
+    view_types:
+      api: एपीआई व्‍यू
+      blob: गैर-तालिका युक्‍त फाइल या दस्‍तावेज
+      calendar: कैलेंडर
+      chart: चार्ट
+      dataset: डेटासेट
+      filter: फिल्‍टर किये गये व्‍यू
+      form: फ़ॉर्म
+      group: समूहबद्ध व्‍यू
+      grouped: समूहबद्ध व्‍यू
+      href: बाहरी डेटासेट
+      map: नक्‍शा
+      table: तालिका
+      working_copy: कामकाजी प्रति
+    view_types_plural:
+      api: एपीआई
+      calendar: कैलेंडर
+      chart: चार्ट
+      filter: फिल्‍टर किये गये व्‍यू
+      form: फ़ॉर्म
+      grouped: समूहबद्ध व्‍यू
+      map: नक्‍शे
+    visibility:
+      private: निजी
+      public: सार्वजनिक
+  error:
+    back: पीछे जाएँ
+    error_500:
+      description_html: कृपया कुछ क्षण फिर से कोशिश करें, या अपने प्रयासों के विवरणों के साथ <a href="http://support.socrata.com">इस त्रुटि </a> की सूचना दें।
+      somethings_wrong: कुछ गलत है!
+      were_sorry: हमें खेद है लेकिन आपके अनुरोध पर कार्रवाई करने में समस्‍या थी।
+    not_acceptable_406:
+      page_not_found: पृष्‍ठ नहीं मिला।
+      were_sorry: हमें वाकई खेद है लेकिन आपके द्वारा अनुरोध किये गये स्‍वरूप में पृष्‍ठ उपलब्‍ध नहीं है।
+    not_found_404:
+      back_to: पर वापिस जाएँ
+      description_html: पृष्‍ठ मौजूद नहीं है या हटा दिया गया है। हमारे अनुसार सबसे बेहतर होगा कि <a href="/">होम पेज</a>से दोबारा शुरू किया जाए। यदि समस्‍या मौजूद रहती है या यदि आप अपनी वांछित चीज ढूंढ़ पाने में पूरी तरह विफल रहते हैं तो हमसे निस्‍संकोच संपर्क करें। धन्‍यवाद।
+      page_not_found: पृष्‍ठ नहीं मिला।
+      were_sorry: हमें वाकई खेद है लेकिन आपके द्वारा अनुरोध किया गया पृष्‍ठ नहीं मिल सका।
+    permission_denied_403:
+      description_html: यदि आपको यह त्रुटि लगती है तो लॉग आउट होने और अलग प्रयोक्‍ता के तौर पर <a href="/login">यहाँ</a>वापिस आने की कोशिश करें।
+      no_permission: संसाधन तक पहुंचने की स्‍वीकृति नहीं।
+      were_sorry: हमें खेद है लेकिन ऐसा लगता है कि आपके पास इस पृष्‍ठ तक पहुंचने की स्‍वीकृति नहीं।
+    to_whence_you_came: जहाँ से आप आए हैं।
+  screens:
+    about:
+      actions: कार्रवाई
+      activity: गतिविधि
+      attachments: संलग्‍नक
+      category: श्रेणी
+      comments: टिप्‍पणी
+      community: सामुदायिक रेटिंग
+      contact_dataset_owner: डेटासेट स्‍वामी से संपर्क करें
+      contributors: योगदानकर्ता
+      created: बनाया गया
+      data_provided_by: डेटा प्रदानकर्ता
+      description: विवरण
+      downloads: डाउनलोड
+      edit_metadata: मेटाडेटा संपादित करें
+      flag_dataset: फ़्लैग डेटासेट
+      license: लाइसेंस
+      licensing: लाइसेंसिंग व गुणारोपण
+      links: लिंक
+      meta: मेटा
+      none: (कोई नहीं)
+      permalink: पर्मालिंक
+      permanent_links: परमानेंट लिंक
+      permissions: स्‍वीकृतियाँ
+      private: निजी
+      public: सार्वजनिक
+      raters: रेटिंग दाता
+      resource_name: संसाधन नाम
+      row_class: रो क्‍लास
+      row_count: अपूर्ण गिनती
+      row_identifier: रो आइडेंटिफ़ायर
+      semantics: सेमेंटिक्‍स व आरडीएफ़
+      short_url: छोटा यूआरएल
+      snapshotted: स्‍नैपशॉट लिया गया
+      source_link: स्रोत लिंक
+      spatial_extent: आकाशीय विस्‍तार
+      subject_column: विषय कॉलम
+      tags: टैग्‍स
+      terms_of_use: उपयोग की शर्तें
+      updated: अद्यति‍त किया गया
+      view_full_page: पूरा पृष्‍ठ देखें
+      view_statistics: आंकड़ें देखें
+      visits: विज़ि‍ट
+      your: आपकी रेटिंग
+    ds:
+      bar:
+        api_unsavable: एपीआई व्‍यू को संशोधित नहीं किया जा सकता है
+        based_on_html: <a class="revertLink currentViewName" href="#revert">%{name}</a> पर आधारित
+        based_on_parent_html: <a class="parentName"></a> पर आधारित
+        based_on_private_view: निजी दृश्य
+        based_on_working_copy_html: <a class="revertLink currentViewName" href="#revert">%{name}</a> की कामकाजी प्रति पर आधारित
+        find_prompt: इस डेटासेट में खोजें
+        format:
+          bold: बोल्‍ड
+          bullet: बिंदु युक्‍त सूची
+          color: फोंट रंग
+          italic: इटैलिक
+          link: लिंक
+          number: संख्‍या युक्‍त सूची
+          redo: रिडू करें
+          strike: स्‍ट्राइकथ्रु
+          underline: अंडरलाइन
+          undo: अनडू करें
+        full_screen: फुल स्‍क्रीन में बदलें
+        publish_button: डेटासेट प्रकाशित करें
+        publish_prompt: यह डेटासेट कामकाजी प्रति है और सार्वजनिक रूप से उपलब्‍ध नहीं है। जब आप वांछित परिवर्तन कर लें तो यह डेटासेट सार्वजनिक रूप से उपलब्‍ध कराने के लिए प्रकाशित किया जाना चाहिए।
+        publish_rights: केवल स्‍वामी या प्रकाशक इस डेटासेट को प्रकाशित कर सकता है
+        revert_button: वापिस लाएँ
+        revert_prompt: सहेजे गए व्‍यू पर वापिस लाएँ
+        save_as_button: इस प्रकार सहेजें...
+        save_as_prompt: व्‍यू इस प्रकार सहेजें...
+        save_button: सहेजें
+        save_progress: सहेज रहा है...
+        save_prompt: वर्तमान व्‍यू सहेजें
+        share_email: ईमेल के जरिए साझा करें
+        share_facebook: Facebook पर साझा करें
+        share_twitter: Twitter पर साझा करें
+        snapshot_notice: यह डेटासेट का पहले प्रकाशित संस्‍करण है। इसे सुरक्षित कर लिया गया है और संशोधित नहीं किया जा सकता।
+        snapshot_title: स्‍नैपशॉट लिया गया
+        snapshot_title_html: ! '%{date}का स्‍नैपशॉट लिया गया'
+        snapshot_unsavable: स्‍नैपशॉट लिया गया डेटासेट व व्‍यू बनाएँ या संशोधित नहीं किये जा सकते हैं
+        subscribe: परिवर्तनों के लिए सदस्‍यता लें
+        subscribe_prompt: ईमेल या आरएसएस के जरिए सदस्‍यता लें
+        unpublished_unsavable: ! 'नीचे डेटा में परिवर्तन स्‍वत: सहेजे जाते हैं। फिल्‍टर व खोज डेटासेट की कामकाजी प्रति में सहेजा नहीं जा सकता है। कृपया प्रकाशित डेटासेट का व्‍यू बनाएँ।'
+        unsaved_title: बिना सहेजा गया व्‍यू
+        view_published_html: प्रकाशित <span class="publishedName">डेटासेट</span> देखें
+        view_type: ! '%{type}के तौर पर देखें'
+        view_types:
+          calendar: कैलेंडर
+          chart: चार्ट
+          fatrow: समृद्ध सूची
+          map: नक्‍शा
+          page: एकल पंक्ति
+          table: तालिका
+        working_copy_notice: यह डेटासेट की प्रति है जिससे आप इसमें परिवर्तन कर सकते हैं। जब आप इसे प्रकाशित नहीं करेंगे यह अन्‍य व्‍यक्तियों को दिखाई नहीं देता है।
+        working_copy_title: ! '[कामकाजी प्रति]'
+      blob:
+        data_extraction: यह डेटा प्राप्ति टूल या एप्‍लीकेशन दायीं ओर लिंक के जरिए उपलब्‍ध है।
+        download: डाउनलोड
+        external_link: बाहरी लिंक
+        js_required: आपके ब्राउज़र के भीतर डाक्‍यूमेंट व्‍यूअर चलाने के लिए जावास्क्रिप्‍ट जरूरी है।
+        js_required_download:
+          click_here: यहाँ क्लिक करें
+          prompt_html: यह फाइल डाउनलोड करने के बजाय, %{click_here}।
+        limited_download: यह डेटासेट तालिकाबद्ध डेटा नहीं है और इसमें सीमित इंटरेक्टिव क्षमता है लेकिन यह डाउनलोड के लिए उपलब्‍ध है
+      column_tip:
+        aggregate: (%{data_type} पर %{aggregate})
+        field_name: एपीआई फ़ील्ड नाम
+        original_name: मूल नाम
+      dataset_contact:
+        captcha_failed: गलत उत्तर, कृपया दोबारा कोशिश करें।
+        error_message: इस डेटासेट के लिए फीडबैक भेजने में त्रुटि हुई। कृपया बाद में दोबारा कोशिश करें।
+        form:
+          email: आपका ईमेल
+          email_prompt: आपका ईमेल इस डेटासेट के स्‍वामी को बताया गया है ताकि वह उत्तर दे सके।
+          message: लघु संदेश
+          purpose: उद्देश्‍य
+          purposes:
+            copyright_violation: कॉपीराइट उल्‍लंघन
+            offensive_content: अपमानजनक सामग्री
+            personal_information: व्‍यक्तिगत सूचना
+            prompt: — उद्देश्‍य चुनें —
+            spam: स्‍पैम या जंक
+          send_button: भेजें
+          subject: विषय
+        other_subject: एक आगंतुक ने आपके '%{dataset_name}' '%{site}' डेटासेट के बारे में आपको संदेश भेजा है
+        reasons:
+          copyright_violation: कॉपीराइट उल्‍लंघनों के लिए
+          offensive_content: अपमानजनक सामग्री के लिए
+          personal_information: व्‍यक्तिगत सूचना रखने के लिए
+          spam: संभावित स्‍पैम के तौर पर
+        subject: आपके डेटासेट "%{dataset_name}" को फ़्लैग (चिह्नित) कर दिया गया है %{reason}
+        success_message: डेटासेट स्‍वामी को सूचित किया गया।
+        validation:
+          no_body: संदेश में मूल कथन होना चाहिए।
+          no_email: आपका ईमेल पता आवश्‍यक है।
+          no_purpose: आपको इस संदेश का उद्देश्‍य चुनना चाहिए।
+          no_subject: आपको इस संदेश का विषय चुनना चाहिए।
+      dataset_status:
+        copy_available: कामकाजी प्रति अब उपलब्‍ध है। संपादन डेटासेट बटन से आपको पहुंच प्राप्‍त होगी जब आप संपा‍दन करने के लिए तैयार होते हैं।
+        copy_in_progress: कामकाजी प्रति बनाये जाने के दौरान कृपया प्रतीक्षा करें। %{additional}
+        copy_in_progress_additional:
+          processing: इस पर फिलहाल कार्रवाई हो रही है (started %{time})
+          queued: ! 'यह कार्रवाई (queued %{time}; %{totalQueued} total in line)किये जाने की प्रतीक्षा पंक्ति में है '
+        edit_dataset_button: डेटासेट संपादित करें
+        error_publishing_html: आपके डेटासेट की कामकाजी प्रति बनाते हुए त्रुटिी हुई। कृपया <a href="http://support.socrata.com" rel="external">सोक्राटा सहायता से संपर्क करें</a>।
+        needs_copy: यह डेटासेट प्रकाशित हो चुका है और इसे सीधे संपादित नहीं किया जा सकता है। एक कामकाजी प्रति %{status} जो सार्वजनिक करने से पहले आपको सभी वांछित परिवर्तन करने देता है।
+        needs_copy_status:
+          available: उपलब्‍ध है
+          can_be_made: बनाया जा सकता है
+      email:
+        add_email: अधिक जोड़ें
+        email_button: ईमेल
+        message_prompt: वैकल्पिक संदेश डालें
+        private_notice: ! 'नोटिस: यह %{displayName} अभी निजी है। ईमेल करने से सभी प्राप्तकर्ताओं को इस तक पहुंच प्राप्त हो जाएगी।'
+        prompt_html: ! 'निम्‍न ईमेल पतों पर <span class="datasetName">%{name}</span> को साझा करें:'
+        remove_email: निकालें
+        success: आपका ईमेल सफलतापूर्वक भेजा गया।
+        title_html: “<span class="datasetName">%{name}</span>” को साझा करें
+      grid_sidebar:
+        add_column:
+          convert_address:
+            city: शहर
+            city_prompt: शहर का नाम डालें
+            state: राज्‍य
+            state_prompt: राज्‍य का नाम डालें
+            street: गली
+            title: वर्तमान पते के कॉलम का उपयोग करें
+            zip_code: पिन कोड
+            zip_code_prompt: पिन कोड डालें
+          convert_latlong:
+            latitude: अक्षांश
+            longitude: देशांतर
+            title: वर्तमान अक्षांश व देशांतर उपयोग करें
+          multiple_choice:
+            add_option_button: विकल्‍प जोड़ें
+            option: विकल्‍प
+            title: बहु विकल्‍प चयन
+          nested_table:
+            default_column_name: शीर्षक रहित
+          subtitle: अपने डेटासेट में नया कॉलम जोड़ें
+          success: आपका कॉलम जोड़ा गया
+          title: कॉलम जोड़ें
+          validation:
+            view_column: आप देखने के लिए कॉलम जोड़ नहीं सकते हैं
+        api:
+          column_ids_title: ! 'कॉलम आईडी:'
+          endpoint_title: ! 'एपीआई एक्‍सेस एंडप्‍वाइंट:'
+          intro_html: ! '<strong>सोक्राटा ओपन डेटा एपीआई</strong> (SODA) सॉफ़्टवेयर डेवलेपर को सोक्राटा डेटा साइट पर प्रोग्राम के तौर पर होस्‍ट किये गये डेटा तक पहुंच प्रदान करता है। चित्रित करने और &ldquo;mash-up&rdquo के लिए SODA APIs का उपयोग करने वाली एप्‍लीकेशन डेवलेपर बना सकते हैं; सोक्राटा डेटासेट नये व दिलचस्‍प तरीके में। एक एप्‍लीकेशन बनाएँ जो आपके क्षेत्र में सरकारी खर्च को चित्रित करे, एक वेब एप्‍लीकेशन जो नागरिकों को उन संभावित सरकारी लाभों के बारे में जानने का मौका दे जिन्‍हें वे नजरंदाज करते हैं, या ऐसी सेवा जो स्‍वत: आपको ईमेल भेजें जब उन बिल में नये ईयरमार्क जोड़े जाते हैं जिनकी आप निगरानी रखना चाहते हैं।'
+          reference_html: इस डेटासेट तक प्रोग्राम के रूप में पहुंच शुरू करने के लिए, नीचे दिये गये एपीआई एंडप्‍वाइंट का उपयोग करें।  सोक्राटा ओपन डेटा एपीआई के उपयोग के तरीकों की अधिक जानकारी व उदाहरण के लिए हमारे <a href="http://dev.socrata.com" rel="external">डेवलेपर दस्‍तावेज</a>देखें।
+          subtitle: SODA के जरिए इस %{view_type} तक पहुंचे
+          title: एपीआई
+        apis:
+          create_button: एपीआई बनाएँ
+          create_button_prompt: इस डेटा को प्रोग्राम संबंधी पहुंच देने के लिए एप्‍लीकेशन प्रोग्रामिंग इंटरफेस (एपीआई) बनाएँ।
+          manage_button: प्रबंधन करें
+          manage_button_prompt: चुने हुए एपीआई का प्रबंधन करें
+          prompt_existing_html: <strong>वर्तमान एपीआई</strong> को अनुकूलित कर सकते हैं। आप स्‍वीकृति नियंत्रित, अनुरोध सीमा निर्धारित, उपयोग आंकड़ें देख सकते हैं और दस्‍तावेजीकरण संपादित कर सकते हैं।
+          prompt_new_html: <strong>एपीआई फाउंड्री</strong>से आप इस डेटासेट के लिए एक या अधिक खुले, स्‍टैंडर्ड आधारित एप्‍लीकेशन प्रोग्रामिंग इंटरफेस (एपीआई) बना व कॉन्फ़ि‍गर कर सकते हैं।
+          subtitle: एपीआई बनाएँ व अनुकूलित करें
+          title: एपीआई
+        append_replace:
+          subtitle:
+            immutable: नई डेटा फाइल अपलोड करें जिसकी सामग्री आपके वर्तमान डेटा का स्‍थान लेगी।
+            mutable: नई डेटा फाइल अपलोड करें जिसकी सामग्री आपके वर्तमान डेटा में जोड़े जाएगी या उसका स्‍थान लेगी।
+          title:
+            immutable: प्रतिस्‍थापित करें
+            mutable: संलग्‍न व प्रतिस्‍थापित करें
+          wizard_button:
+            immutable: प्रतिस्‍थापन विज़र्ड आरंभ करें
+            mutable: संलग्‍न व प्रतिस्‍थापित करें विज़र्ड आरंभ करें
+        base:
+          buttons:
+            apply: लागू करें
+            cancel: रद्द करें
+            create: बनाएँ
+            done: किया गया
+            remove: हटाएँ
+            update: अद्यतित करें
+          color_select:
+            prompt: रंग चुनें
+          column_select:
+            from_grid: कॉलम को ग्रिड से चुनें
+            prompt: कॉलम चुनें
+            unselect: कॉलम अचयनित करें
+          datatypes:
+            checkbox: चेकबॉक्स
+            dataset_link: डेटासेट लिंक
+            date_time: तिथि और समय
+            date_time_timezone: तिथि और समय (समय क्षेत्र के साथ)
+            document: दस्तावेज़
+            email: ईमेल
+            flag: फ़्लैग
+            formatted_text: फ़ॉर्मेट किया गया पाठ
+            geospatial: भूस्थानिक
+            list: सूची
+            location: स्थान
+            money: पैसा
+            multiple_choice: बहु विकल्प
+            nested_table: नेस्ट की गई तालिका
+            number: संख्या
+            object: वस्तु
+            percent: प्रतिशत
+            phone: फ़ोन
+            photo: फ़ोटो (छवि)
+            plain_text: सादा पाठ
+            star: तारा
+            website_url: वेबसाइट यूआरएल
+          generic_select:
+            prompt: मान चुनें
+          validation:
+            at_least: मान कम से कम %{value}का होना चाहिए
+            different_value: अलग मान की जरूरत है।
+            file_format: ! '%{format}फाइल आवश्‍यक है'
+            identifier_format: मान्य एपीआई आइडेंटिफ़ायर कैरेक्‍टर्स लोअर केस वाले अक्षर (अंग्रेजी के), अंक व अंडरस्‍कोर हैं। यह किसी अक्षर से आरंभ होना चाहिए और इसमें एक के बाद दूसरा अंडरस्‍कोर नहीं आ सकता।
+            invalid_url: यह यूआरएल मान्‍य नहीं है
+            invalid_value: यह मान अमान्‍य है
+            invalid_values: विशेष मान के साथ समस्‍या हुई। कृपया उपरोक्‍त त्रुटि देखें।
+            invalid_view: यह व्‍यू मान्‍य होना चाहिए
+            no_greater: मान %{value} से अधिक नहीं होना चाहिए
+            numeric: मान कोई संख्‍या होना चाहिए
+            uid_required: इसके लिए 4x4 व्‍यू यूआईडी की आवश्‍यकता है
+            verifying_url: यूआएल सत्‍यापित हो रहा है
+        calendar:
+          dates:
+            end: समाप्ति तिथि
+            start: आरंभिक तिथि
+            title: तिथि
+          information:
+            details: विवरण
+            event_title: आयोजन शीर्षक
+            new_details_button: विवरण जोड़ें
+            title: आयोजन सूचना
+          subtitle: मासिक कैलेंडर फ़ॉरमेट में तिथि वाले व्‍यू डिस्‍प्‍ले किये जा सकते हैं
+          title: कैलेंडर
+          validation:
+            invalid_columns: इस व्‍यू का तिथि कॉलम और टैक्‍स्‍ट कॉलम होना चाहिए
+            viz_limit: एक व्‍यू का केवल एक ही मानस चित्रण हो सकता है
+        chart:
+          advanced: उन्‍नत कान्फ़ि‍गरेशन
+          annotation: व्‍याख्‍या
+          axes:
+            x_axis_title: X-Axis शीर्षक
+            x_axis_title_prompt: x-axis के लिए शीर्षक दें
+            y_axis_title: Y-Axis शीर्षक
+            y_axis_title_prompt: y -axis के लिए शीर्षक दें
+          base_color: बेस कलर
+          categories: श्रेणियाँ
+          color_override_html: <a href="#Conditional Formatting" class="showConditionalFormatting"> कंडिशनल फ़ॉरमेटिंग </a>का उपयोग करके रंगों को ओवरराइड किया जा सकता है। किसी वर्तमान कंडिशनल फ़ॉरमेटिंग के नियमों को हटाने के लिए <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">यहाँ</a> क्लिक करें।
+          colors: रंग
+          configuration: कान्फ़ि‍गरेशन
+          data_columns:
+            new_data_column_button: डेटा कॉलम जोड़ें
+            title: डेटा कॉलम
+          data_labels: डेटा लेबल
+          date: तिथि
+          details: विवरण
+          draw_line: रेखा खींचें
+          dsg_color_override_html: ध्यान दें कि डेटा श्रेणी समूहन आपके डेटा स्तंभों के लिए चुने गए रंगों को रद्द कर देगा। वह आपकी <a href="#Conditional Formating" class="showConditionalFormating">सशर्त फ़ॉर्मेटिंग</a> को रद्द नहीं करेगा।
+          error_bars:
+            color: रंग
+            high: उच्‍च
+            low: निम्‍न
+            title: एरर बार
+          flyout:
+            new_details_button: फ्लाईआउट विवरण जोड़ें
+            title: फ्लाईआउट विवरण
+          group_extra: अतिरिक्‍त मान को समूहबद्ध करें
+          groups: समूह
+          label: लेबल
+          labelInBar: पट्टी में लेबल
+          legend:
+            conditional_formats: कंडिशनल फ़ॉरमेटिंग का वर्णन करें
+            custom_entry: कस्‍टम लेबल
+            display: डिस्‍प्‍ले करें
+            new_custom_entry_button: कस्‍टम लीजेंड एंट्री जोड़ें
+            position: लीजेंड
+            position_prompt: स्थिति चुनें
+            positions:
+              bottom: नीचे
+              left: बायें
+              none: कोई नहीं
+              right: दायें
+              top: ऊपर
+            series: सीरीज का वर्णन करें
+            title: लीजेंड कॉन्फ़ि‍गरेशन
+            value_markers: वैल्‍यू मार्कर का वर्णन करें
+            values: मानों का वर्णन करें
+          marker:
+            caption: कैप्‍शन
+            new_marker_button: मार्कर जोड़ें
+            title: ! '%{axis} मार्कर'
+            value: मूल्‍य पर
+          min_angle: न्‍यून. कोण
+          names: नाम
+          pie_other: ! 'चेतावनी: %{row_limit} के बाद %{chart_type} पृथक मानों (पंक्तियों) को अन्‍य श्रेणी में जोड़ देगा। मान की संख्‍या सीमित करने वाला रोल अप या फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type} बनाएँ।'
+          pie_truncate: ! 'चेतावनी: %{row_limit} से अधिक पृथक मान (पंक्तियों) वाले डेटासेट को %{chart_type} ट्रंकेट (छोटा) कर देगा। मान की संख्‍या सीमित करने वाला रोल अप या फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type} बनाएँ।'
+          point_color: प्‍वाइंट कलर
+          point_size: प्‍वाइंट साइज
+          point_title: शीर्षक
+          series_group:
+            alphabetize: समूहों को वर्णक्रम में रखें
+            group_by: इस आधार पर समूहबद्ध करें
+            hideLoadingMsg: लोडिंग संदेशों को छिपाएँ
+            new_column_button: सीरीज कॉलम जोड़ें
+            row_limit_warning: इतनी सारी पंक्तियाँ होने पर डेटा श्रेणी समूहन बहुत ही धीमे चलेगा।
+            title: डेटा सीरीज समूहबद्ध करना
+          setup:
+            title: चार्ट सेटअप
+            type: चार्ट प्रकार
+            type_prompt: चार्ट प्रकार चुनें
+          show_lines: रेखाएँ दिखाएँ
+          show_percent: ! '%s दिखाएँ'
+          show_points: प्‍वाइंट दिखाएँ
+          show_values: मान दिखाएँ
+          smooth_line: निष्कोण (स्मूथ) रेखा
+          subtitle: व्‍यू डेटा कई तरह के चार्ट के साथ डिस्‍प्‍ले किया जा सकता है
+          title: चार्ट
+          treemap_color_html: ये रंग केवल अलग तरह से दिखाई देने के लिए ट्रीमैप पर सांयोगिक तरह से लागू किये गये हैं। उनका स्‍वयं में कोई खास अर्थ नहीं है।
+          validation:
+            count:
+              one: एक
+              other: ! '%{count}'
+            required_columns: ! '%{chart_type} के लिए %{column_types} कॉलम आवश्‍यक हैं'
+            viz_limit: एक व्‍यू का केवल एक ही मानस चित्रण हो सकता है
+          value: मान
+          valueInBar: पट्टी में मान
+          values: मान
+          y_axis_formatting:
+            abbreviate: संक्षिप्‍त करें
+            auto: ! 'स्‍वत:'
+            axis_max: Axis अधि.
+            axis_min: Axis न्‍यून.
+            axis_prompt: संख्‍या डालें
+            no_decimals: कोई दशमलव नहीं
+            precision: शुद्धता
+            title: Y-Axis फ़ॉरमेटिंग
+        column_common:
+          basic:
+            description: विवरण
+            description_prompt: विवरण डालें
+            name: नाम
+            name_prompt: नाम डालें
+            title: मूल सूचना
+          linked_dataset:
+            dataset: डेटासेट
+            dataset_prompt: डेटासेट यूआरएल या 4x4 यूआईडी
+            key: मुख्‍य कॉलम
+            label: लेबल कॉलम
+            title: लिंक किया गया डेटासेट
+          type:
+            key: कुंजी
+            source: स्रोत
+            title: कॉलम प्रकार
+            type: डेटा प्रकार
+            type_prompt: डेटा प्रकार चुनें
+        column_order:
+          columns:
+            title: कॉलम
+          prompt_html: कॉलम को अपने पसंदीदा क्रम में लाएँ और फिर नया क्रम लागू करने के लिए <strong>लागू करें</strong> को दबाएँ।
+          subtitle: अपने कॉलम का क्रम बदलें
+          title: कॉलम क्रम
+          validation:
+            valid_columns: यह व्‍यू मान्‍य होना चाहिए और इसमें दिखने योग्‍य कॉलम होने चाहिए।
+        column_properties:
+          advanced:
+            api_identifier: एपीआई आइडेंटिफ़ायर
+            new_rdf_button: आरडीएफ़ प्रॉपटी जोड़ें
+            semantics: सेमेंटिक्‍स
+            title: उन्‍नत किया गया
+            url: कस्‍टम यूआरएल डालें
+          column_totals:
+            title: कॉलम का कुल योग
+            total: कुल
+            total_prompt: कॉलम का कुल योग चुनें
+          display_order:
+            new_item_button: बिंदु जोड़ें
+            option: विकल्‍प
+            title: प्रदर्शन क्रम (DataSlate के लिए)
+          formatting:
+            alignment: संरेखण
+            title: फ़ॉरमेटिंग
+            view_style: स्‍टाईल देखें
+          link:
+            key: मुख्‍य
+            source: स्रोत
+            title: लिंक
+          localization:
+            decimal: दशमलव
+            thousands: हजार
+            title: स्‍थानीयकरण
+          money:
+            abbreviated: संक्षिप्‍त किया गया
+            currency: मुद्रा
+            format_mask_warning: 
+            no_precision: कोई नहीं
+            precision: शुद्धता
+            title: मनी फ़ॉरमेटिंग
+          multiple_choice:
+            new_option_button: विकल्‍प जोड़ें
+            option: विकल्‍प
+            title: बहु विकल्‍प चयन
+          number:
+            display: ! 'डिस्‍प्‍ले '
+            no_commas: कोई कोमा नहीं
+            no_precision: कोई नहीं
+            precision: शुद्धता
+            title: नंबर फ़ॉरमेटिंग
+          number_advanced:
+            format_mask: फ़ॉरमेट मास्‍क
+            format_mask_prompt: ! 'संख्‍यात्‍मक अंक, व अन्‍य अक्षर का संकेत देने के लिए #s का उपयोग करें जहाँ आप उन्‍हें निरंतरता में दिखाना चाहते हैं; उदाहरण के लिए सामाजिक सुरक्षा संख्‍या होगी ###-##-####'
+            format_mask_warning: यह आपकी उपरोक्‍त कुछ सेटिंग को ओवरराइड सकती है
+            title: उन्‍नत फ़ॉरमेटिंग
+          photo:
+            size: आकार
+            size_prompt: आकार चुनें
+            sizes:
+              featured: फ़ीचर्ड (150x80)
+              large: बड़ा (220x220)
+              medium: मध्‍यम (150x150)
+              original: मूल
+              thumb: थम्‍बनेल (80x80)
+              tiny: लघु (24x24)
+            title: फ़ोटो विकल्‍प
+          subtitle: इस कॉलम में विभिन्‍न प्रॉपर्टी अद्यतित करें
+          success: आपका कॉलम अद्यतित किया गया
+          title: कॉलम प्रॉपर्टी
+          url:
+            base_url: मूल यूआरएल
+            base_url_prompt: सामान्‍य यूआरएल प्रेफिक्‍स डालें
+            title: यूआरएल विकल्‍प
+          validation:
+            published: कृपया कॉलम प्रॉपर्टी बदलने के लिए इस डेटासेट की कामकाजी प्रति या व्‍यू बनाएँ।
+            unsaved: आप असुरक्षित व्‍यू के लिए कॉलम प्रॉपर्टी संपादित नहीं कर सकते हैं
+        conditional_formatting:
+          change_icon: बदलें
+          conditions:
+            description: विवरण
+            description_prompt: इस मेल का वर्णन करें
+            item:
+              operator: तुलना चुनें
+              subcolumn: उप कॉलम चुनें
+              title: शर्त;
+            new_condition_button: शर्त जोड़ें
+            new_rule_button: नया नियम जोड़ें
+            title: शर्तें
+            when:
+              all: सभी शर्तें
+              always: हमेशा
+              any: कोई शर्तें
+            when_title: कब
+          format_html: <br />यह रंग<br />या यह आईकन उपयोग करें
+          subtitle: कंडिशनल फ़ॉरमेटिंग से आप अनुकूलन मानदंड के आधार पर पृष्‍ठभूमि रंग बदल सकते हैं। प्रत्‍येक पंक्ति को पहली मेल खाती स्थिति का रंग दिया जाएगा।
+          title: कंडिशनल फ़ॉरमेटिंग
+          validation:
+            no_columns: इस व्‍यू में फिल्‍टर करने के लिए कॉलम नहीं है
+            no_icons: आईकन केवल मैप व्‍यू के लिए उपयोगी हैं
+        delete:
+          confirm: इससे %{view_type} स्‍‍थायी रूप से मिटा जाएगा। इसमें कोई अनडू नहीं है। क्‍या आप वाकई आगे बढ़ना चाहते हैं?
+          delete_button: इसे %{view_type} मिटाएँ
+          subtitle: इसे %{view_type} मिटाएँ
+          title: मिटाएँ
+          warning:
+            api: इस एपीआई को मिटाने से ऐसी एप्‍लीकेशन नष्‍ट हो जाएंगी जो इस एपीआई का उपयोग करती हैं।
+            published: इस डेटासेट को मिटाने से इससे जुड़े व्‍यू भी मिट जाएंगे।
+            view: इस व्‍यू को मिटाने से केवल ऐसे अन्‍य व्‍यू प्रभावित होंगे जो इस पर आधारित हैं।
+            working_copy: आप इस कामकाजी प्रति को मिटा सकते हैं और नई बना सकते हैं ताकि अपने परिवर्तनों को पलट सकें।
+        digital_signing:
+          consumer: इस डेटासेट का हस्‍ताक्षर युक्‍त संस्‍करण पाने के उद्देश्‍य से, कुंजी (की) निर्मित करने के लिए केवल नीचे दिये गये लिंक पर क्लिक करें और डाउनलोड शुरू करें। कुंजी और डाउनलोड किया गया डेटा इस डेटासेट के वर्तमान संस्‍करण के लिए विशिष्‍ट होता है; यदि स्‍वामी भविष्‍य में डेटासेट को अद्यतित‍ करता है तो आपको नया डेटा पाने के लिए इस प्रक्रिया को दोबारा आरंभ करना होगा। आपको प्राप्‍त कुंजी के साथ और डाउनलोड पैकेज में मिले निर्देशों द्वारा डाउनलोड किया गया डेटा प्रकाशित करें, तीसरे पक्ष यह पुष्टि कर सकेंगे कि आपका डेटा वैध है।
+          generate_button: अभी निर्मित व डाउनलोड करें
+          intro_html: ! '<strong>डिजिटल हस्‍ताक्षर युक्‍त डेटासेट </strong>का उपयोग करने पर, क्रिप्‍टोग्राफिक सुरक्षित तरीके का उपयोग करके यह प्रमाणित करना संभव है कि सोक्राटा डेटासेट की खास प्रति के साथ छेड़छाड़ नहीं की गई है। उदाहरण के लिए यह उपयोगी है यदि आप इस डेटा पर आधारित निष्‍कर्षों को प्रकाशित करना चाहते हैं, और आप इसकी सत्‍यता प्रमाणित करने में सक्षम होना चाहते हैं। '
+          publisher: ! 'इस डेटासेट का हस्‍ताक्षर युक्‍त संस्‍करण पाने के उद्देश्‍य से, कुंजी (की) निर्मित करने के लिए केवल नीचे दिये गये लिंक पर क्लिक करें। ध्‍यान दें कि यदि आप भविष्‍य में इस डेटासेट को अद्यतित करते हैं तो आपको वापिस आकर कुंजी फिर से निर्मित करनी होगी ताकि उपभोक्‍ता दोबारा इस तक पहुंच सकें। साथ ही ध्‍यान दें कि इस प्रक्रिया में डेटा पर समग्रता में परिचालन शामिल होता है इसलिए यदि आपका डेटासेट बहुत बड़ा है या इसमें बड़े संलग्‍नक हैं तो इसमें कुछ समय लग सकता है। '
+          publisher_generation: केवल डेटासेट स्‍वामी हस्‍ताक्षर युक्‍त कुंजी निर्मित कर सकते हैं।
+          signature_header: हस्‍ताक्षर
+          subtitle: इस डेटा का ऐसा संस्‍करण निर्यात करें जिसकी सत्‍यता बाद में सत्‍यापित की जा सकती है।
+          title: डिजिटल हस्‍ताक्षर
+          validation:
+            non_tabular: केवल तालिका युक्‍त डेटा प्रिंट किया जा सकता है
+        download:
+          download_as: इस प्रकार डाउनलोड करें
+          geo_header: जियोस्‍पाटियल (भूआकाशीय) डेटा डाउनलोड करें
+          layers_header: टैब्‍यूलर लेयर डाउनलोड करें
+          subtitle: इस डेटासेट की प्रति स्थिर स्‍वरूप में डाउनलोड करें
+          title: डाउनलोड करें
+        feed:
+          subtitle: विचार-विमर्श फ़ीड आपको डेटासेट से जुड़े संरक्षण व गतिविधि दिखाती है
+          title: विचार-विमर्श करें
+        form:
+          information:
+            name: नाम
+            name_prompt: नाम डालें
+            public: सार्वजनिक करें?
+            success: सक्‍सेस यूआरएल
+            success_prompt: वेबपेज यूआरएल डालें
+            title: फ़ॉर्म सूचना
+          subtitle: फ़ॉर्म से अपनी वेबसाइट से डेटासेट में सीधे डेटा एकत्र कर सकते हैं
+          title: फ़ॉर्म
+          validation:
+            no_columns: इस व्‍यू में फ़ॉर्म तैयार करने के लिए दिखने योग्‍य कॉलम होने चाहिए
+        map:
+          advanced:
+            exclusive: एक्‍सक्‍लूसिव
+            hide_geolocator: जियोलोकेटर नहीं
+            subtitle: ! '''एक्‍सक्‍लूसिव'' चुनें यदि केवल एक बेस मैप एक समय पर दिखना चाहिए।'
+            title: उन्‍नत कॉन्फ़ि‍गरेशन
+            use_legend: लीजेंड उपयोग करें
+          base_layers:
+            alias: उपनाम
+            layer: लेयर
+            layer_prompt: लेयर चुनें
+            layer_url: लेयर यूआरएल
+            new_base_map_button: बेस मैप जोड़ें
+            opacity: अस्‍पष्‍टता
+            subtitle: मैप सर्विस की सूची से चुनें और कान्फ़ि‍गर करें कि यह कैसे दिखाई देगा।
+            title: बेस मैप
+          data_layer:
+            alias: उपनाम
+            alias_prompt: डेटासेट का वर्णन करें
+            base_color: आधार रंग
+            color_high: रंग (उच्‍च)
+            color_low: रंग (कम)
+            flyout:
+              details: फ्लाईआउट विवरण
+              labels: w/o लेबल?
+              new_details_button: फ्लाईआउट विवरण जोड़ें
+              opacity: अस्‍पष्‍टता
+              title: फ्लाईआउट कॉन्फ़ि‍गरेशन
+              title_column: शीर्षक
+            highlight_color: होवर रंग
+            icon: आईकन
+            location: स्‍थान
+            mondara_note: मोंदरा लेयर फिलहाल अधिक अनुकूलन योग्‍य नहीं है।
+            opacity: अस्‍पष्‍टता
+            plot_style: प्‍लॉट स्‍टाईल
+            plot_style_prompt: प्‍लॉट स्‍टाईल चुनें
+            point: प्‍वाइंट अनुकूलन
+            point_color: प्‍वाइंट रंग
+            point_size: प्‍वाइंट आकार
+            quantity: मात्रा
+            region: क्षेत्र
+            region_level_prompt: क्षेत्र स्‍तर चुनें
+            region_prompt: क्षेत्र चुनें
+          layers:
+            advanced: ! '%{name}की उन्‍नत कॉन्फिग '
+            config: ! '%{name} की कॉन्फिग करें'
+            custom: कस्‍टम लेयर
+            dataset: डेटासेट
+            edit: संपादित करें
+            new_data_button: डेटा जोड़ें
+            title: डेटासेट सारांश
+          legend:
+            conditional_formats: कंडिशनल फ़ॉरमेटिंग का वर्णन करें
+            custom_entry: कस्‍टम लीजेंड एंट्री जोड़ें
+            entry_label: लेबल
+            position: लीजेंड
+            position_prompt: स्थिति चुनें
+            positions:
+              bottom_left: नीचे दायीं ओर
+              none: कोई नहीं
+              top_right: शीर्ष बायीं ओर
+            title: लीजेंड कॉन्फ़ि‍गरेशन
+          plots:
+            heatmap: बाउंड्री मैप
+            point: प्‍वाइंट मैप
+            rastermap: हीट मैप
+          regions:
+            canada_provinces: कनाडा प्रांत
+            counties: ! 'इनमें अमेरिकी काउंटी '
+            countries: देश
+            state: अमेरिकी राज्‍य
+          subtitle: नक्‍शे पर बिंदुओं के तौर पर स्‍थान वाले व्‍यू डिस्‍प्‍ले किये जा सकते हैं
+          title: नक्‍शा
+          validation:
+            hidden_location_html: आप <a href="#showLoc" title="Show a location column">छिपे हुए स्‍थान वाला कॉलम दिखा सकते हैं</a>।
+            location_column: नक्‍शा बनाने के लिए स्‍थान कॉलम आवश्‍यक है।
+            viz_limit: एक व्‍यू का केवल एक ही मानस चित्रण हो सकता है
+        ownership:
+          error: स्‍वामित्‍व बदलने में समस्‍या थी। कृपया बाद में दोबारा कोशिश करें।
+          me: मुझे
+          subtitle: अन्‍य प्रयोक्‍ता को हस्‍तांतरित करने के लिए, ईमेल पता या सोक्राटा आईडी की खाता संख्‍या डालें, फिर ड्रॉपडाउन सूची में से वांछित खाता चुनें। आप प्रयोक्‍ता का प्रोफाइल यूआरएल भी डाल सकते यदि आप यह जानते हैं। केवल वर्तमान खातों के प्रयोक्‍ता ही डेटासेट का स्‍वामित्‍व ले सकते हैं।
+          success:
+            me: अब आप स्‍वामी हैं
+            user: स्‍वामित्‍व सफलतापूर्वक %{owner}को हस्‍तां‍तरित हुआ
+          title: स्‍वामित्‍व
+          transfer_to: स्‍वामित्‍व इन्‍हें हस्‍तांतरित करें
+          validation:
+            invalid_user: प्रयोक्‍ता चिह्नित नहीं हुआ। कृपया नाम, ईमेल या प्रोफाइल यूआरएल द्वारा प्रयोक्‍ता को खोजने की कोशिश करें।
+            no_user: कृपया प्रयोक्‍ता चुनें।
+            valid_saved: यह व्‍यू मान्‍य व सहेजा जाना चाहिए
+        permissions:
+          error: आपकी डेटासेट स्‍वीकृति संशोधित करते हुए त्रुटि हुई। कृपया बाद में दोबारा कोशिश करें
+          features_html: अतिरिक्‍त <span class="datasetTypeName">डेटासेट</span> विशेषताएँ
+          status_html: यह <span class="datasetTypeName">डेटासेट</span> फिलहाल <span class="datasetPublicText">%{visibility}</span>है
+          subtitle: इस %{view_type} की स्‍वीकृति का प्रबंधन करें
+          success: आपकी स्‍वीकृति सहेजी गईं
+          title: स्‍वीकृति
+          validation:
+            valid_saved: यह व्‍यू मान्‍य व सहेजा जाना चाहिए
+        print:
+          margins:
+            bottom: ! 'नीचे:'
+            left: ! 'बायें:'
+            right: ! 'दायें:'
+            top: ! 'ऊपर:'
+          margins_title: मार्जिन (इंच)
+          options:
+            fit: एक पृष्‍ठ पर डेटासेट को फिट करने के लिए छोटा करें
+            header_icons: कॉलम हेडर में आईकन दिखाएँ
+            headers_every_page: प्रत्‍येक पृष्‍ठ पर कॉलम शीर्षक प्रिंट करें
+          options_title: ! 'विकल्‍प:'
+          orientation: ! 'पृष्‍ठ अभिविन्‍यास:'
+          orientations:
+            landscape: लैंडस्‍केप
+            portrait: पोर्ट्रेट
+          paper_size: ! 'काग़ज का आकार:'
+          paper_sizes:
+            a0: ए0 (841 x 1189मिमी)
+            a1: ए1 (594 x 841मिमी)
+            a2: ए2 (420 x 594मिमी)
+            a3: ए4 (297 x 420मिमी)
+            a4: ए3 (210 x 297मिमी)
+            legal: लीगल (8.5 x 14 इंच)
+            letter: लैटर (8.5 x 11 इंच)
+            tabloid: टैब्‍लॉएड (11 x 17 इंच)
+          print_button: प्रिंट करें
+          subtitle: इस डेटासेट को प्रिंट करने योग्‍य पी‍डीएफ़ फॉरमेट में निर्यात करें
+          title: प्रिंट करें
+          validation:
+            non_tabular: केवल तालिका युक्‍त डेटा को प्रिं‍ट किया जा सकता है
+        sdp:
+          preview: प्रीव्‍यू करें
+          subtitle: सोशल डेटा प्‍लेयर आपको यह डेटासेट इंटरनेट पर व्‍यापक तौर पर प्रकाशित करने में सक्षम करता है
+          title: सोशल डेटा प्‍लेयर
+          validation:
+            public: इस व्‍यू को प्रकाशित करने से पहले सार्वजनिक करना चाहिए
+            valid_saved: यह व्‍यू वैध व सहेजा जाना चाहिए
+        share:
+          error: आपकी साझा की गई चीजों को संशोधित करने में त्रुटि हुई। कृपया बाद में दोबारा कोशिश करें
+          loading_shares: साझा की गई चीजें लोड हो रही हैं...
+          no_shares_html: आप फिलहाल इसे <span class="datasetTypeName">डेटासेट</span> किसी के साथ साझा नहीं कर रहे हैं
+          notify_button: सभी परिवर्तन सूचित करें
+          notify_success: सूचना भेजी गई
+          prompt_html: यह <span class="datasetTypeName">डेटासेट</span> <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">है और इसे इसके साथ साझा किया जाता है:</span>
+          share_button_html: इस <span class="datasetTypeNameUpcase">डेटासेट</span> को साझा करें
+          subtitle: इसे %{view_type} साझा करना
+          success: आपकी स्‍वीकृति अद्यतित की गई
+          title: साझा करना
+          validation:
+            valid_saved: यह व्‍यू मान्‍य व सहेजा जाना चाहिए
+        showhide_columns:
+          columns:
+            title: कॉलम
+          subtitle: समायोजित करें कि कौन सा कॉलम इस व्‍यू में दिखने योग्‍य है
+          title: ! '&amp दिखाएँ; कॉलम छिपाएँ'
+        sort_rollup:
+          rollup:
+            add_group_button: समूहबद्ध कॉलम जोड़ें
+            add_rollup_button: रोल अप कॉलम जोड़ें
+            function: प्रकार्य
+            group_by: इस आधार पर समूहबद्ध करें
+            group_function_label: इस पर आधारित
+            group_function_prompt: समूहन फलन चुनें
+            roll_up: रोल अप
+            roll_up_function: प्रकार्य चुनें
+            title: रोल अप करें &amp; ड्रिल-डाउन
+          sort:
+            add_column_button: कॉलम जोड़ें
+            column: कॉलम
+            direction: निर्देश
+            directions:
+              ascending: आरोही
+              descending: अवरोही
+            title: छांटें
+          subtitle: आप पंक्तियों को एकसाथ समूहबद्ध व डेटा को सारांश रूप में प्रस्‍तुत कर सकते हैं; और एक या अधिक कॉलम छांटें
+          title: ! '&amp छांटें; रोल अप'
+          validation:
+            no_eligible_columns: इस व्‍यू में रोल अप (एकत्र करने) या छांटने के लिए कोई कॉलम नहीं है
+            no_function: प्रत्‍येक रोल अप कॉलम में प्रकार्य होना चाहिए
+            no_group_bys: आपको कॉलम रोल अप करने के लिए कम से कम एक कॉलम से समूहबद्ध करना चाहिए
+        tabs:
+          about: इसके बारे में
+          discuss: विचार-विमर्श करें
+          edit: संपादित करें
+          embed: जोड़ें
+          export: निर्यात करें
+          filter: फिल्‍टर करें
+          manage: प्रबंधन करें
+          more: अधिक
+          more_views: अधिक व्‍यू
+          visualize: मानस चित्रित करें
+        view_list:
+          delete_confirm: क्‍या आप वाकई %{name} को मिटाना चाहते हैं?
+          delete_snapshot_confirm: क्‍या आप वाकई %{name} (snapshotted %{date})को मिटाना चाहते हैं?
+          filter:
+            all: समस्‍त व्‍यू
+          filter_title: केवल दिखाएँ
+          item:
+            author_html: ! '<span class="author"></span> द्वारा<span class="date"></span> '
+            delete: यह व्‍यू मिटाएँ
+            expand: विस्‍तारित करने के लिए क्लिक करें
+          no_results: कोई परिणाम नहीं हैं
+          no_results_html: यहाँ कोई <span class="type">results</span> नहीं है
+          pagination:
+            last: अंतिम व्‍यू देखें
+            next: अगला %{count} व्‍यू देखें
+          search: व्‍यू खोजें
+          snapshots:
+            subtitle: इस डेटा के पहले प्रकाशित संस्‍करण देखें
+            title: डेटासेट स्‍नैपशॉट
+          sort:
+            alphaAscending: ए-ज़ेड
+            dateAscending: सबसे पुराने से सबसे नये तक
+            dateDescending: सबसे हाल का
+            popularity: लोकप्रियता
+          sort_title: इस आधार पर छांटें
+          views:
+            subtitle: इस डेटासेट के वर्तमान फिल्‍टर, मैप, चार्ट व अन्‍य व्‍यू देखें
+            title: व्‍यू
+      save_dialog:
+        descriptions:
+          leaving: ! 'आपका असुरक्षित डेटा है जो खो जाएगा यदि आप यह पृष्‍ठ छोड़ते हैं। कृपया इसे छोड़ने से पहले चुनें कि क्‍या आप इस व्‍यू को सहेजना चाहते हैं या नहीं; या पृष्‍ठ पर वापिस आने के लिए रद्द करें चुनें। '
+          reload_save: ! 'इस परिवर्तन के लिए पुन: लोड करना आवश्‍यक है। आप अपने परिवर्तनों को देखने के लिए उन्‍हें सहेज सकते हैं, या इस पृष्‍ठ पर रहने के लिए रद्द कर सकते हैं।'
+          reload_update: ! 'इस परिवर्तन के लिए पुन: लोड करना आवश्‍यक है। आप यह व्‍यू अद्यतित कर सकते हैं या अपने परिवर्तन देखने के लिए नया व्‍यू सहेज सकते हैं, या इस पृष्‍ठ पर रहने के लिए रद्द कर सकते हैं।'
+        form:
+          new_name: ! 'अपने नये व्‍यू के लिए नाम डालें:'
+        titles:
+          normal: व्‍यू सहेजें
+          prompt: क्‍या आप अपना व्‍यू सहेजना चाहते हैं?
+        validation:
+          auth_required: व्‍यू सहेजने के लिए आपको लॉगिन करना चाहिए
+          view_name_required: व्‍यू नाम आवश्यक है
+      subscribe:
+        google_reader: गूगल रीडर में जोड़ें
+        intro_html: ! '<strong>आरएसएस रीडर के जरिए <span class="datasetName">%{name}</span> डेटासेट की सदस्‍यता लेने के लिए</strong>, निम्‍नलिखित एक लिंक का उपयोग करें:'
+        rss: आरएसएस के तौर पर डाउनलोड करें
+        rss_program: बाहरी प्रोग्राम में खोलें
+        subscribe_button: ईमेल के जरिए सदस्‍यता
+        subscribe_html: <strong>नया डेटा प्रकाशित होने पर ईमेल सूचना पाने के लिए</strong> नीचे सब्‍सक्राइब बॉक्‍स को देखें।
+        subscribed_html: <strong>आपने फिलहाल ईमेल के जरिए इस <span class="datasetTypeName">डेटासेट</span> via email</strong> की सदस्‍यता ली है और नया डेटा प्रकाशित होने पर सूचना मिलेगी।
+        title_html: ! '"<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">डेटासेट</span>की सदस्‍यता लें'
+        unsubscribe: यदि आप अब सूचना नहीं पाना चाहते हैं तो नीचे सब्‍सक्राइब बॉक्‍स से निशान हटा दें।
+    edit_metadata:
+      additional_source: अतिरिक्त स्रोत
+      alternative_access_prompt: इस डेटासेट के लिए एक वैकल्पिक पहुंच बिंदु दर्ज करें
+      api_endpoint: एपीआई अंतिम बिंदु
+      attachments: अनुलग्नक
+      brief_description: संक्षिप्त विवरण
+      brief_description_prompt: वर्णन दर्ज करें
+      cancel: रद्द करें
+      category: श्रेणी
+      contact_email: संपर्क ईमेल
+      contact_information: संपर्क जानकारी
+      custom: मनचाहा
+      custom_error: कस्टम सेमेंटिक क्लास एक यूआरएल होना चाहिए।
+      data_provided_by: डेटा देनेवाला
+      data_provided_prompt: व्यक्ति या संगठन
+      data_provider_required: आपको डेटा प्रदाता निर्दिष्ट करना होगा (गुणारोपण)।
+      dataset_title: डेटासेट शीर्षक
+      dataset_title_error: डेटासेट का शीर्षक होना चाहिए।
+      dataset_title_prompt: शीर्षक दर्ज करें
+      delete: हटाएँ
+      email_address: ईमेल पता
+      email_help: इस पते को सार्वजनिक रूप से प्रदर्शित नहीं किया जाएगा। यदि इसे खाली छोड़ा जाए, तो यहाँ आपका डिफ़ोल्ट पता रख दिया जाएगा
+      existing_attachments: वर्तमान अनुलग्नक
+      external_confirm: क्या आप सचमुच इस बाह्य डेटासेट को हटाना चाहते हैं?
+      external_dataset: बाह्य डेटासेट
+      external_id: बाह्य आईडी
+      external_id_prompt: अपना बाह्य आईडी दर्ज करें
+      external_identifier: बाह्य पहचानक
+      file_type: फ़ाइल प्रकार
+      general_information: सामान्य जानकारी
+      keywords_help: अल्प विराम से अलगाते हुए एक या अधिक कुंजी शब्द दर्ज करें
+      license_help: इस डेटासेट का उपयोग करने के इच्छुक व्यक्तियों के लिए लाइसेंस की शर्तें चुनें।
+      license_type: लाइसेंस प्रकार
+      licensing: लाइसेंसिंग
+      licensing_attr: लाइसेंसिंग और आरोपण
+      list: सूची
+      metadata_help: इस फ़ील्ड को आपके संगठन ने निजी के रूप में चिह्नित किया है और उसे सार्वजनिक रूप से नहीं देखा जा सकता है
+      new_attachment: नया अनुलग्नक
+      none: (कोई नहीं)
+      northwest_latitude: उत्तरपश्चिम अक्षांश
+      northwest_longitude: उत्तरपश्चिम देशांतर
+      optional: वैकल्पिक
+      private_help: इस फ़ील्ड को आपके संगठन ने निजी के रूप में चिह्नित किया है और उसे सार्वजनिक रूप से नहीं देखा जा सकता है
+      remove_image: छवि हटाएँ
+      required_field: आवश्यक फ़ील्ड
+      resource_name: संसाधन नाम
+      resource_name_prompt: कोई संसाधन नाम दर्ज करें
+      return: डेटासेट में लौटें
+      row_class: पंक्ति श्रेणी
+      row_identifier: पंक्ति पहचानक
+      save: सहेजें
+      save_changes: परिवर्तनों को सहेजें
+      semantics_rdf: अर्थ-विज्ञान और आरडीएफ
+      source_link: स्रोत लिंक
+      source_link_error: यह मान्य यूआरएल नहीं लग रहा है।
+      source_link_prompt: वेब पता दर्ज करें
+      southeast_latitude: दक्षिणपूर्व अक्षांश
+      southeast_longitude: दक्षिणपूर्व देशांतर
+      spatial_extent: स्थानिक विस्तार
+      subject_column: विषय स्तंभ
+      tags_keywords: टैग / कुंजी शब्द
+      tags_prompt: कुंजीशब्द दर्ज करें
+      thumbnail_image: लघु छवि
+      upload_error: कृपया कोई मान्य छवि फ़ाइल चुनें
+      upload_help: इस छवि को काट-छाँटकर वर्गाकार बनाया जाएगा
+      upload_image: छवि अपलोड करें
+      upload_new_attachment: नया अनुलग्नक अपलोड करें
+    forgot_password:
+      already_authenticated: ! 'पासवर्ड रिसेट करने में अक्षम रहे: आप पहले से ही लॉगिन कर चुके हैं।'
+      failed: आपके पासवर्ड रीसेट अनुरोध को जमा करते समय त्रुटि हुई। कृपया फिर से कोशिश करें।
+      form:
+        reset_password_button: ! 'पासवर्ड रिसेट करें '
+      prompt: यदि आप अपना पासवर्ड भूल गए हैं तो हम आपको ईमेल में एक लिंक भेजेंगे जिससे आप अपना पासवर्ड रिसेट कर सकते हैं।
+      success: धन्यवाद। फ़ाइल में जो खाता है, उसे आगे की जानकारी के साथ ईमेल भेज दिया गया है।
+      title: अपना पासवर्ड फिर से हासिल करें
+    header:
+      links:
+        account_html: नमस्ते, <span class="currentUser"></span>
+        account_tooltip: आपका होम
+        administration: प्रशासन
+    link_account:
+      success: आपका बाह्य खाता संबंधित कर दिया गया है।
+    profile:
+      app_tokens:
+        item:
+          app_token: एप टोकन
+          description: विवरण
+          edit_token_link: संपादित करें
+          name: नाम
+          no_thumbnail: कोई थम्‍बनेल नहीं
+          organization: संस्‍था
+          secret_token: सीक्रेट टोकन
+          show_secret_link: सीक्रेट टोकन दिखाएँ
+          website: वेबसाइट
+        manage_link: प्रबंधन करें
+        no_applications: आपने अभी तक कोई एप्‍लीकेश्‍न नहीं बनाई है। शुरू करने के लिए दायीं ओर 'प्रबंधन करें' पर क्लिक करें।
+        title: ! '%{user}की एप्‍लीकेशन'
+      bar:
+        edit_settings_link: खाता सेटिंग संपादित करें
+        follow_link: फॉलो करें
+        join_date: इस तिथि से जुड़े
+        last_seen_date: अंतिम बार लॉगिन
+        message_link: संदेश भेजें
+        unfollow_link: फॉलो न करें
+      browse:
+        owned_datasets: मेरे स्‍वामित्‍व में
+        shared_datasets: मेरे साथ साझा किया गया
+        title: ! '%{user}का डेटासेट'
+      contact:
+        message: संदेश
+        message_prompt: संदेश संपादित करें
+        subject: विषय
+        subject_prompt: विषय संपादित करें
+        title: प्रयोक्‍त से संपर्क करें
+      edit:
+        account:
+          add_openid_button: OpenID या बाहरी खाता जोड़ें।
+          confirm_email: ईमेल की पुष्टि करें
+          confirm_password: पासवर्ड की पुष्टि करें
+          connect_openid: अपने Facebook, Twitter, गूगल या अन्‍य तीसरे पक्ष के परिचय के साथ लॉगिन करें।
+          current_email: वर्तमान ईमेल
+          email:
+            interests:
+              account_provisioned: पूर्वाधिकार खाते का प्रावधान भविष्‍य के उपयोग के लिए किया गया
+              any_view_created: कोई व्‍यू बनाया गया
+              comment_to_moderate: टिप्‍पणी प्रस्‍तुत की गई जिसके लिए मॉडरेशन जरूरी है
+              nomination_created: नया नामांकन बनाया गया
+              nomination_moderated: किसी भी नामांकन को मॉडरेट किया गया
+              privileged_account_created: प्रयोक्‍ता ने अपना पूर्वाधिकार खाता बनाया
+              user_affected: कार्रवाई सीधे आपको प्रभावित कर रही है जैसे टिप्‍पणी पर उत्‍तर व स्थिति अद्यतन
+              view_made_public: किसी भी व्‍यू को सार्वजनिक बनाया गया
+            policy: ! '%{site} आपकी निजता का सम्‍मान करती है और इस सूची के जरिए आपको कभी मार्केटिंग ईमेल नहीं भेजेगी, या आपका ईमेल तीसरे पक्ष को नहीं देगी। इस साइट से भेजे गये ईमेल में खाता सूचना व उस डेटासेट के अद्यतन शामिल होते हैं जिसे आपने बनाया है या जिसकी सदस्‍यता ली है।'
+            subtitle: सहयोगी बॉक्‍स को देखकर पृथक आयोजनों की सदस्‍यता लें।
+            title: ईमेल सूचना
+          learn_openid: OpenID के बारे में जानें
+          new_email: नई ईमेल
+          new_password: नया पासवर्ड
+          no_openid: इस खाते के साथ जुड़ा आपका OpenID आइडेंटिफायर नहीं है।
+          old_password: पुराना पासवर्ड
+          password: पासवर्ड
+          password_prompt: (आपकी सुरक्षा के लिए)
+          password_restrictions_html: (प्रतिबंध लागू <span class="icon"> </span>)
+          title: खाता सेटिंग
+        app_tokens:
+          application_name: एप्‍लीकेशन का नाम
+          application_name_prompt: अपनी एप्‍लीकेशन का नाम डालें
+          callback_prefix: ! 'कॉलबैक प्रेफिक्‍स '
+          callback_prefix_help_html: उदाहरण के लिए, यदि आपकी एप्‍लीकेशन <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> और <span class="code">https://my-domain.com/socrata-app/profile</span>पर कॉल बैक होगी तो आप अपने प्रेफिक्‍स के तौर पर <span class="code">https://my-domain.com/socrata-app</span> देना चाहेंगे। ध्‍यान दें कि आपको कम से कम संपूर्ण डोमेन नाम शामिल करना चाहिए।
+          callback_prefix_prompt: OAuth उपयोग करते समय सुरक्षित (https) कॉलबैक यूआरआई को प्रेफिक्‍स प्रदान करें
+          create_error: ! 'आपका एप्‍लीकेशन टोकन बनाते समय त्रुटि हुई: %{message}'
+          create_success: आपकी एप्‍लीकेशन बनाई गई
+          delete_confirm: क्या सचमुच इस अनुप्रयोग को हटा दें? उसके बाद से संबंधित app_token मान्य नहीं रहेगा
+          delete_error: ! 'आपके एप्‍लीकेशन टोकन को मिटाते समय त्रुटि हुई: %{message}'
+          delete_success: आपकी एप्‍लीकेशन मिटाई गई
+          description: विवरण
+          description_prompt: अपनी एप्‍लीकेशन का विवरण दें
+          new_app_button: नई एप्‍लीकेशन बनाएँ
+          organization: संगठन
+          organization_prompt: इस एप्‍लीकेशन के लिए जिम्‍मेदार संगठन का नाम डालें
+          public: सार्वजनिक करें?
+          save_success: आपकी एप्‍लीकेशन सफलतापूर्वक सहेजी गई
+          thumbnail: थम्‍बनेल
+          title: एप टोकन
+          title_full: आपकी एप्‍लीकेशन
+          title_single: एप्‍लीकेशन टोकन संपादित करें
+          website: वेबसाइट
+          website_prompt: इस एप्‍लीकेशन या संगठन की वेबसाइट के लिए लिंक दें
+        back_link: मेरे प्रोफाइल पर वापिस आएँ
+        image:
+          error: ! 'नई छवि अपलोड करने में त्रुटि: %{message}'
+          success: आपकी छवि अद्यतित की गई
+          title: प्रोफाइल छवि
+          upload_image_button: नई छवि अपलोड करें
+        info:
+          city: शहर
+          country: देश
+          description:
+            prompt: कोई भी सूचना दें जिसे आप साझा करना चाहते हैं
+            title: विवरण
+          display_name: नाम डिस्‍प्‍ले करें
+          first_name: पहला नाम
+          interests:
+            prompt: अपनी दिलचस्‍पी बताएँ
+            title: दिलचस्‍पी
+          last_name: अंतिम नाम
+          link_prompt: यूआरएल डालें
+          organization: संस्‍था
+          state: राज्‍य
+          title: बुनियादी सूचना
+          title_full: बुनियादी सूचना
+          user_title: पदनाम
+        success: आपका प्रोफाइल सफलतापूर्वक अद्यतित किया गया।
+        validation:
+          email_mismatch: नये ईमेल मेल नहीं खाते हैं
+          image_format: कृपया एक मान्‍य छवि प्रकार चुनें (PNG, JPG, या GIF)
+          invalid_links: ! 'अपने लिंक को अद्यतित करते समय समस्‍या थी। %{message} '
+          no_display_name: ! 'त्रुटि: ''डिस्‍प्‍ले नाम'' जरूरी है'
+          no_password_no_openid: आप पासवर्ड सेट करने से पहले, अपने सभी OpenID आइडेंटिफायर को हटा नहीं सकते हैं
+          password_mismatch: नया पासवर्ड मेल नहीं खाता है
+          user_missing: यह प्रयोक्‍ता खोजा नहीं जा सका, या मिटा दिया गया है।
+      info:
+        edit_link: संपादित करें
+        external_links: बाहरी लिंक
+        interests: दिलचस्‍पी
+        links:
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: मेरा ब्‍लॉग
+          my_company: मेरी कंपनी
+          my_site: मेरी साइट
+          twitter: Twitter
+        no_description: ! 'विवरण प्रदान नहीं किया गया '
+        other_ext_link: अन्‍य
+        title: बुनियादी सूचना
+      sidebar:
+        all_contacts_link: सभी को देखें
+        edit_image_link: छवित संपादित करें
+        followers: फॉलोअर्स
+        following: फॉलो कर रहे हैं
+    reset_password:
+      failed: आपके पासवर्ड को रीसेट करते समय समस्या आई। कृपया फिर से कोशिश करें।
+      form:
+        reset_password_button: पासवर्ड रिसेट करें
+      prompt: आपका फिर से स्‍वागत है! कृपया नया पासवर्ड चुनें।
+      success: पासवर्ड सफलतापूर्वक रीसेट किया गया
+      title: पासवर्ड रिसेट करें
+    sign_in:
+      failed: इस ईमेल और पासवर्ड से लृग-इन नहीं कर सके। कृपया फिर से कोशिश करें
+      form:
+        sign_in_button: साइन इन करें
+      headline: साइन इन करें
+      mismatch: पासवर्ड मेल नहीं खा रहे हैं। कृपया फिर से कोशिश करें
+      prompt_html: ! 'अपनी <strong>सोक्राटा आईडी</strong>से साइन इन करें '
+      tips_html: <strong><a href="http://www.socrata.com" rel="external">सोक्राटा</a> द्वारा संचालित</strong> सभी साइटों में साइन इन करने के लिए अपने ईमेल व पासवर्ड का उपयोग करें।
+    sign_up:
+      form:
+        create_account_button: मेरा खाता बनाएँ
+        have_account_link: मेरा पहले से एक खाता है
+      headline: हमें प्रसन्‍नता है कि आप %{site}! से जुड़ना चाहते हैं!
+      prompt_html: नई <strong>सोक्राटा आईडी</strong>बनाएँ
+      terms_html: नीचे ''मेरा खाता बनाएँ'' पर क्लिक करके, आप हमारी <a href="http://www.socrata.com/terms-of-service" rel="external">सेवा शर्तों</a> और <a href="http://www.socrata.com/privacy" rel="external">निजता नीति से सहमत हो रहे हैं।</a>
+      third_party: साइन इन करने के बाद, आपके तीसरे पक्ष के परिचय इस खाते से जोड़ दिये जाएंगे।
+      third_party_return: इस परिचय का उपयोग करने से पहले, आपको
+      third_party_return_create: सोक्राटा खाता बनाना चाहिए
+      third_party_return_link: वर्तमान सोक्राटा आईडी से इसे जोड़ें
+  support:
+    array:
+      last_word_connector: ! ', और'
+      two_words_connector: और
+    array_or:
+      last_word_connector: ! ', या'
+      two_words_connector: या

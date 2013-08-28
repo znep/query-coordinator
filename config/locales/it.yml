@@ -1,0 +1,1654 @@
+it:
+  account:
+    common:
+      form:
+        confirm_password: Conferma password
+        display_name: Nome visualizzato
+        email: E-mail
+        forgot_password: Password dimenticata?
+        lockout_warning: Per questioni di sicurezza, tre tentativi di accesso falliti in 15 minuti causeranno il blocco di questo account per 30 minuti.
+        no_account: Non hai un account?
+        password: Password
+        password_requirements: ! 'Requisito. La password deve essere compresa tra 8 e 40 caratteri e soddisfare tre dei seguenti criteri: contenere un numero; contenere una lettera minuscola; contenere una lettera maiuscola; contenere un simbolo non-alfanumerico.'
+        password_requirements_html: <p>La password deve essere <b>compresa tra 8 e 40 caratteri</b> e soddisfare <b>tre dei seguenti quattro criteri</b>:</p><p></p><ul><li>&bull; contenere un numero</li><li>&bull; contenere una lettera minuscola</li><li>&bull; contenere una lettera maiuscola</li><li>&bull; contenere un simbolo non-alfanumerico</li></ul>
+        password_restrictions: Soggetto a restrizioni
+        remember_me: Ricordami
+        sign_up_prompt: Iscriviti adesso
+      inline_auth:
+        sign_in_headline: Accedi usando il tuo Socrata ID
+        sign_up_headline: Siamo contenti che desideri iscriverti a %{site}!
+      rpx:
+        description: Approfitta di funzionalità aggiuntive che questi account forniscono e accedi con un click.
+        prompt:
+          sign_in: Oppure... Utilizza uno di questi account per accedere.
+          sign_up: Oppure... Utilizza uno di questi account per iscriverti.
+        providers:
+          facebook:
+            sign_in_html: <strong>Connettiti</strong> con Facebook
+            sign_up_html: <strong>Connettiti</strong> con Facebook
+          google:
+            sign_in_html: <strong>Accedi</strong> con Google
+            sign_up_html: <strong>Iscriviti</strong> con Google
+          openid:
+            sign_in_html: <strong>Accedi</strong> con OpenID
+            sign_up_html: <strong>Iscriviti</strong> con OpenID
+          twitter:
+            sign_in_html: <strong>Connettiti</strong> con Twitter
+            sign_up_html: <strong>Connettiti</strong> con Twitter
+      validation:
+        mismatch: Le password inserite non corrispondono
+        terms: È necessario accettare i termini del servizio e l'informativa sulla privacy.
+  controls:
+    browse:
+      actions:
+        about:
+          button: Informazioni
+          title: Informazioni sul Dataset
+        all_options: Vedi Tutti
+        clear_all: Elimina tutte le opzioni
+        clear_facet: (Tutti)
+        compact_list: Visualizza come lista compatta
+        create_dataset: Crea o carica il tuo dataset
+        create_dataset_short: Crea un nuovo Dataset
+        create_dataset_verb: Crea
+        dataset_subscribe: Sottoscrivi le modifiche a questa vista
+        delete:
+          button: Cancella
+          confirm: Sei sicuro di voler cancellare %{dataset}?
+          title: Cancella questo item
+        expand_section: Clicca per espandere
+        less_options: Vedi meno
+        manage_api:
+          button: Gestisci
+          title: Gestisci questa API
+        moderation:
+          accept: Accetta
+          reject: Respingi
+        permissions:
+          change_button:
+            private_html: Rendi pubblico
+            public_html: Rendi privato
+          title: Cambia la visibilità
+        rich_list: Visualizza come lista espansa
+        share_button: Condividi
+        subscribe: Sottoscrivi
+        suggest_dataset: Non trovi quello che stavi cercando? Suggerisci un dataset.
+        suggest_dataset_short: Suggerisci un dataset
+        suggest_dataset_verb: Suggerisci
+      back_to_dataset: Torna al dataset
+      facets:
+        categories_singular_title: categoria
+        categories_title: Categorie
+        federated_domains_singular_title: dominio
+        federated_domains_title: Domini federati
+        moderation_status:
+          accepted: Accettato
+          pending: In attesa
+          rejected: Respinto
+        moderation_status_singular_title: moderazione
+        moderation_status_title: Stato
+        topics_singular_title: argomento
+        topics_title: Argomenti
+        view_types:
+          apis: API
+          blob: File e Documenti
+          calendars: Calendari
+          charts: Grafici
+          datasets: Dataset
+          filters: Viste filtrate
+          forms: Moduli
+          href: Dati esterni
+          maps: Mappe
+          unpublished: Dataset non pubblicati
+        view_types_singular_title: tipo
+        view_types_title: Tipi di viste
+      listing:
+        comment_count: Numero di commenti
+        federation_source: Federato da %{source}
+        federation_source_html: Fornito da %{source_link}
+        no_results: Nessun risultato
+        result_count: Mostrati %{this} di %{total}
+        table_header:
+          name: Nome
+          popularity: Popolarità
+          rss: RSS
+          type: Tipo
+        timeout: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare più tardi.
+      row_results:
+        less_link: Meno
+        more_link: Ancora
+        title_html: ! 'Mostrate <span class="rowResultCountText"></span> di <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
+      search: Cerca
+      sort_period_title: Periodo dell'ordinamento
+      sort_periods:
+        month: Questo mese
+        week: Questa settimana
+        year: Quest'anno
+      sort_title: Ordina per
+      sorts:
+        alpha: Alfabetico
+        comments: Più commentati
+        last_modified: Aggiornato di recente
+        most_accessed: Più acceduto
+        newest: Più nuovo
+        oldest: Più vecchio
+        rating: Con voto più alto
+        relevance: Più rilevante
+      title:
+        default: Cerca e sfoglia dataset e viste
+        result:
+          facet: ! '%{facet_type} di %{facet_value}'
+          facet_main: corrispondenze %{body}
+          main: Risultati %{body}
+          term: per "%{term}"
+    charts:
+      series_grouping:
+        calculating_time: Calcolo del tempo rimanente in corso...
+        calculation_running: Preparazione dati
+        drawing_progress: L’operazione necessita tempo…
+        drawing_running: Preparazione diagramma
+        pause_button_explanation1: Consiglio! Sta impiegando troppo tempo? Prova a mettere in pausa e creare un Filtro
+        pause_button_explanation2: per limitare la quantità di calcoli necessari.
+        pause_rendering: Pausa
+        rendering_paused: La preparazione dei dati è in sospeso.
+        rendering_progress: ! '%{rows_remaining} righe rimanenti.'
+        rendering_progress_almost_done: ! '%{rows_remaining} righe rimanenti, attendi ancora qualche momento.'
+        rendering_progress_minute: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} minuto.'
+        rendering_progress_minutes: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} minuti.'
+        rendering_progress_seconds: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} secondi.'
+        resume_rendering: Riprendi
+    common:
+      auth_required: Devi effettuare l'accesso per %{action_phrase}
+      dataset_picker:
+        button: Scegli
+        title: Scegli un dataset da utilizzare
+      expander:
+        collapse: Clicca per ridurre
+        expand: Clicca per espandere
+      image_upload:
+        button: Carica immagine
+      rate:
+        auth_action_phrase: vota questo dataset
+      share:
+        button_prompt: Condividi
+        button_tooltip: Condividi questo dataset
+        networks:
+          email: E-mail
+          facebook: Facebook
+          twitter: Twitter
+        share_text: ! 'Condividi %{name}, dataset con %{site}: '
+      sidebar:
+        tabs:
+          about: Informazioni
+          discuss: Discuti
+          edit: Modifica
+          embed: Incorpora
+          export: Esporta
+          filter: Filtra
+          manage: Gestisci
+          moreViews: Più viste
+          visualize: Visualizza
+      stars:
+        tooltip: ! '%{number} stelle'
+      visualization:
+        in_bing: Visualizza su Bing Maps
+        in_google: Visualizza su Google Maps
+        row_details: Visualizza il dettaglio per questo record
+    embed:
+      create_template_button: Crea un Nuovo Template
+      custom_size: Personalizza dimensioni
+      embed: Incorpora questo dataset
+      form_frame: Incorpora questo Form in un Frame
+      form_or: oppure
+      form_plain: Incorpora questo Form come Plain HTML
+      height: Altezza
+      minimum_size: 425x425 è la dimensione minima
+      private_warning: Questa vista è attualmente privata. Puoi visualizzarne un'anteprima, ma dovrai renderla pubblica affinchè altri possano vederla.
+      sdp_template: Social Data Player Template
+      size: Dimensioni
+      template: Template
+      width: Larghezza
+    feed:
+      authed_actions:
+        delete_comment: elimina un commento
+        flag_comment: contrassegna un commento
+        post_comment: aggiungi un commento
+        rate_comment: vota un commento
+      comment_actions:
+        already_marked_inappropriate: Contrassegnato
+        delete: Elimina
+        delete_confirm: Sei sicuro? Il tuo commento verrà perso.
+        inappropriate: Inappropriato
+        marked_inappropriate: Contrassegnato!
+        rate_down: Abbassa il voto
+        rate_up: Alza il voto
+        reply: Replica
+      comment_form:
+        cancel_button: Cancella
+        empty_body_error: Il commento non può essere vuoto.
+        header: Nuovo commento
+        post_button: Aggiungi
+      header:
+        add_comment: Aggiungi commento
+        cell_comment_header_html: Commento per record <span class="rowName"></span>, colonna <span class="columnName"></span>
+        feed_filter_label: Mostra
+        pending_moderation: Il tuo commento è stato inviato ed è in attesa di moderazione
+      listing:
+        all_replies: Visualizza tutte le repliche
+        all_replies_with_count: Visualizza tutte le %{count} repliche
+        last_item: Visualizza l'ultimo elemento
+        next_item_page: Visualizza i prossimi %{count} elementi
+        no_results: Non ci sono elementi da visualizzare
+        user_create_action: ! 'creato un %{thing}:'
+      types:
+        all items: tutti gli elementi
+        comments: commenti
+        views: visualizzazioni
+    filter:
+      actions:
+        confirm_modify: Con questa operazione verranno rimossi tutti i valori per il filtro impostato. Sicuro di voler procedere?
+        disable_filter: Non filtrare
+        first_condition: Clicca qui per aggiungere la tua prima condizione di filtro.
+        new_condition_button: Aggiungi un nuovo filtro.
+        remove_filter: Rimuovi il filtro
+        select_column: ! 'Seleziona la colonna per cui filtrare:'
+        select_operation: ! 'Seleziona un criterio per il filtro:'
+        select_subcolumn: ! 'Seleziona la parte di %{name} per cui filtrare:'
+      edit_default:
+        advanced_body: Questo significa che gli utenti avranno accesso completo alle funzioni dei filtri. Per una più approfondita esperienza, prova la modalità semplificata.
+        advanced_header: Gli utenti inizieranno in modalità avanzata.
+        advanced_toggle: Cambia il predefinito a semplificato.
+        auto_suggested: I valori suggeriti sono determinati automaticamente per questo criterio.
+        cancel_button: Cancella
+        done_button: Fatto
+        instructions: ! 'Usa gli strumenti sotto per creare filtri, modificare i valori proposti, selezionare il numero dei valori che il filtro proverà a proporre automaticamente, e così via. Quando sarai soddisfatto delle opzioni presentate, click su Fatto qui sotto per salvare:'
+        manual_suggested_html: Mostra fino a <select class="autogeneratedCount"></select> valori suggeriti.
+        mode_button: Modifica il filtro predefinito.
+        mode_message: ! 'Come redattore di questa vista, puoi definire i filtri base che verranno proposti agli utenti:'
+        save_confirm: Se continui, verranno perse tutte le modifiche non salvate. Salvare ogni modifica da mantenere prima di continuare.
+        simplified_body: Questo significa che gli utenti non avranno la possibilità di aggiungere nuove condizioni, cambiare le colonne o i criteri per i filtri, o accedere ai menù avanzati dei filtri.
+        simplified_header: Gli utenti inizieranno in modalità semplificata.
+        simplified_toggle: Cambia il predefinito sull'avanzato.
+      main:
+        filter: Filtra
+        filter_based_on_contents: Filtra questo set di dati in base al contenuto
+        no_conditions: Nessuna condizione ancora definita.
+        no_suggestions: Nessun valore suggerito per questa colonna e per questo criterio.
+        or: o
+        simplified_message: Modalità semplificata.
+        simplified_toggle: Accedi alla modalità avanzata?
+        tutorial_html: Mai creato un filtro prima? Guarda una breve video guida <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">qui</a>.
+        view_has_no_columns: Questo dataset non ha colonne per cui filtrare
+        view_must_be_valid: Questo dataset deve essere valido
+      menu:
+        match_all: Soddisfa tutte le condizioni.
+        match_any: Soddisfa qualunque condizione.
+        select_many: Seleziona molti.
+        select_one: Seleziona uno.
+        show_suggested: Mostra i valori suggeriti.
+        title: Opzioni
+    grid:
+      clear_column_filter: Elimina filtro
+      clear_sort: Elimina ordinamento
+      click_for_menu: Clicca per il Menu
+      click_to_sort: Clicca per ordinare
+      column_info: Informazioni sulla colonna
+      delete_column: Elimina colonna
+      delete_row: Elimina Record
+      delete_warning_multi_column: Vuoi eliminare le colonne selezionate? Tutti i dati in queste colonne saranno rimossi!
+      delete_warning_single_column: Vuoi eliminare la colonna selezionata? Tutti i dati in questa colonna saranno rimossi!
+      edit_column_properties: Modifica delle proprietà della colonna
+      filter_this_column: Filtra questa colonna
+      hide_column: Nascondi colonna
+      menu: Menu
+      must_enter_name: Devi inserire un nome per questa colonna
+      new_row: Nuovo
+      no_rows: Nessun record da visualizzare
+      previous: Precedente
+      sort_ascending: Ordinamento crescente
+      sort_descending: Ordinamento Discendente
+      view_first_row: Visualizza primo record
+      view_last_row: Visualizza ultimo record
+      view_next_row: Visualizza record successivo
+      view_previous_row: Visualizza record precedente
+      view_single_row: Visualizza Singolo Record
+      viewing_row_html: Mostrato <span class="curPage"></span> di <span class="totalPages"></span>
+    nominate:
+      all: Tutti
+      approve: (Approva)
+      approve_tip: Approva questo suggerimento
+      approved: Approvati
+      attachment: Allegato
+      attachments: Allegati
+      back_to_suggestions: Torna ai suggerimenti dataset
+      browse: Sfoglia
+      cancel: Annulla
+      comments: Commenti
+      contact_author: Contatta l'autore dei suggerimenti
+      dataset_suggestions: Suggerimenti dataset
+      delete_attachment: allegato
+      delete_confirm: Sei sicuro di voler cancellare questo %{type}?
+      delete_error: Errore nel cancellare %{type}
+      delete_suggestion: suggerimento
+      description: Descrizione
+      description_prompt: Inserisci i dettagli sul tuo suggerimento
+      details: Dettagli
+      edit: (Modifica)
+      edit_suggestion: Modifica questo suggerimento
+      files: File
+      filter_by_status: Filtra per stato
+      form_error: Correggi gli errori soprastanti
+      great_sadness: Errore nel contattare l'autore del suggerimento. Riprova più tardi.
+      greater_success: Il tuo messaggio è stato inviato all'autore del suggerimento.
+      message: Messaggio
+      message_prompt: Inserisci il tuo messaggio
+      moderate: (Modera)
+      moderate_error: Errore nel modificare lo stato
+      moderate_tip: Accetta il suggerimento e aprilo alle valutazioni
+      needs_moderation: Necessita di essere moderato
+      new: Nuovo
+      no_result: Nessun risultato
+      open: Apri
+      rate_down: Non mi piace
+      rate_up: Mi piace
+      rating: Valutazione
+      rating_error: Errore nella valutazione del suggerimento
+      reject: (Respingi)
+      reject_tip: Respingi questo suggerimento
+      rejected: Respinto
+      remove: (Elimina)
+      remove_tip: Elimina questo suggerimento
+      required: Obbligatorio
+      status: Stato
+      submit: Invia
+      submitted_by: Inviato da
+      suggest_a_dataset: Suggerisci un dataset
+      suggestion_received: Il tuo suggerimento è stato ricevuto e si trova nella coda di moderazione. Apparirà su questa pagina non appena un amministratore l'avrà approvato.
+      suggestion_updated: Il tuo suggerimento è stato aggiornato
+      title: Titolo
+      title_prompt: Inserisci un titolo
+      user_removed: un utente che era già stato rimosso
+      user_removed_short: L'utente è stato rimosso
+  core:
+    aggregates:
+      average: Media
+      count: Conteggio
+      maximum: Massimo
+      minimum: Minimo
+      sum: Somma
+    alignment:
+      center: Centrato
+      left: A sinistra
+      right: A destra
+    analytics:
+      visit: visualizzazione
+      visits: visualizzazioni
+    and: e
+    chart_types:
+      area: Grafico ad area
+      bar: Grafico a barre
+      bubble: Grafico a bolle
+      column: Grafico a colonne
+      donut: Grafico ad anello
+      line: Grafico a linea
+      pie: Grafico a torta
+      stackedbar: Grafico a barre in pila
+      stackedcolumn: Grafico a colonne in pila
+      timeline: Time Line
+      treemap: Tree Map
+    data_types:
+      calendar_date: Data e ora
+      checkbox: Checkbox
+      dataset_link: Dataset Link
+      date: Data e ora (con fuso orario)
+      document: Documento
+      drop_down_list: Scelta multipla
+      email: E-mail
+      flag: Contrassegno
+      geospatial: Geospaziale
+      html: Testo formattato
+      link: Link Column
+      list: Lista
+      location: Location
+      money: Denaro
+      nested_table: Tabella nidificata
+      number: Numero
+      object: Oggetto
+      percent: Percentuale
+      phone: Telefono
+      photo: Foto (Immagine)
+      stars: Star
+      text: Testo normale
+      url: Web URL
+    date_time:
+      centuries_future: ! '%{time} secoli da oggi'
+      centuries_past: ! '%{time} secoli fa'
+      current_century_future: questo secolo
+      current_century_past: questo secolo
+      current_day_future: oggi
+      current_day_past: oggi
+      current_hour_future: quest'ora
+      current_hour_past: quest'ora
+      current_minute_future: adesso
+      current_minute_past: adesso
+      current_month_future: questo mese
+      current_month_past: questo mese
+      current_week_future: questa settimana
+      current_week_past: questa settimana
+      current_year_future: questo anno
+      current_year_past: questo anno
+      days_future: ! '%{time} giorni da ora'
+      days_past: ! '%{time} giorni fa'
+      hours_future: ! '%{time} ore da oggi'
+      hours_past: ! '%{time} ore fa'
+      minutes_future: ! '%{time} minuti da oggi'
+      minutes_past: ! '%{time} minuti fa'
+      months_future: ! '%{time} mesi da oggi'
+      months_past: ! '%{time} mesi fa'
+      single_century_future: un secolo da oggi
+      single_century_past: un secolo fa
+      single_day_future: domani
+      single_day_past: 1 giorno fa
+      single_hour_future: 1 ora da oggi
+      single_hour_past: 1 ora fa
+      single_minute_future: 1 minuto da oggi
+      single_minute_past: 1 minuto fa
+      single_month_future: mese prossimo
+      single_month_past: mese scorso
+      single_week_future: la prossima settimana
+      single_week_past: la settimana scorsa
+      single_year_future: anno prossimo
+      single_year_past: anno scorso
+      unknown: un giorno
+      weeks_future: ! '%{time} settimane da oggi'
+      weeks_past: ! '%{time} settimane fa'
+      years_future: ! '%{time} anni da oggi'
+      years_past: ! '%{time} anni fa'
+    dialogs:
+      apply: Applica
+      cancel: Cancella
+      close: Chiudi
+      continue: Continua
+      create: Crea
+      delete: Elimina
+      done: Fatto
+      dont_save: Non salvare
+      logout: Sei stato disconnesso.
+      save: Salva
+      session_timeout:
+        notice: Per motivi di sicurezza sei stato disconnesso. Per continuare, riaccedi.
+        warning:
+          belay_button: Non disconnettermi!
+          body_html: Non abbiamo rilevato alcuna attività negli ultimi minuti. Per ragioni di privacy, verrai disconnesso fra <span id="secondsRemaining"></span> secondi.
+          title: La sessione sta per scadere.
+      update: Aggiorna
+    expando:
+      expand: Espandi
+      prompt: Clicca per espandere
+    features:
+      allow_comments: Permetti commenti
+      cell_comments: Commenti alle celle
+    filters:
+      formal:
+        between: tra
+        contains: contiene
+        equals: uguale a
+        greater_than: maggiore di
+        greater_than_or_equals: maggiore di o uguale a
+        is_blank: vuoto
+        is_not_blank: non vuoto
+        less_than: minore di
+        less_than_or_equals: minore di o uguale a
+        not_contains: non contiene
+        not_equals: diverso da
+        starts_with: inizia con
+      informal:
+        between: tra
+        contains: contiene
+        equals: uguale a
+        greater_than: maggiore di
+        greater_than_or_equals: almeno
+        is_blank: vuoto
+        is_not_blank: non vuoto
+        less_than: minore di
+        less_than_or_equals: al massimo
+        not_contains: non contiene
+        not_equals: diverso da
+        starts_with: inizia con
+    forms:
+      none: Nessuno
+      required_field: Campo obbligatorio
+    group_function:
+      date_day: Giorno
+      date_month: Mese
+      date_year: Anno
+    interstitial:
+      leaving_explanation_html: Questo <span class="datasetType">dataset</span> è ospitato da <a href="#" rel="external" class="externalDomain">un altro sito</a>.
+      leaving_notice_html: Stai lasciando <span class="serverName">%{site_name}</span>
+    map_layers:
+      aerial: Aerial
+      bing_aerial: Bing Aerial
+      bing_roadmap: Bing Roadmap
+      bing_roadmap_alias: Bing
+      esri_natural_earth: Natural Earth Map (ESRI)
+      esri_natural_earth_alias: Natural Earth Map
+      esri_satellite: Satellite Imagery (ESRI)
+      esri_us_topo: Detailed USA Topographic Map (ESRI)
+      esri_us_topo_alias: USA Topographic Map
+      esri_world_street_map: World Street Map (ESRI)
+      esri_world_street_map_alias: World Street Map
+      esri_world_topo: Annotated World Topographic Map (ESRI)
+      esri_world_topo_alias: World Topographic Map
+      google_roadmap: Google Roadmap
+      google_roadmap_alias: Google
+      google_satellite: Google Satellite
+      google_terrain: Google Terrain
+      roadmap: Roadmap
+      satellite: Satellite
+      terrain: Terrain
+    or: o
+    pagination:
+      first_page: Prima Pagina
+      last_page: Ultima Pagina
+      next_page: Pagina Successiva
+      previous_page: Pagina Precedente
+    precision_style:
+      scientific: Scientifica (1.0204e+3)
+      standard: Standard (1020.4)
+    share_types:
+      contributor: Collaboratore
+      owner: Proprietario
+      view: Visitatore
+      viewer: Visitatore
+    validation:
+      accept: Si prega di inserire un valore con estensione valida.
+      date: Si prega di inserire una data valida.
+      dateISO: Si prega di inserire una data valida (ISO).
+      digits: Si prega di inserire solo cifre.
+      email: Si prega di inserire un indirizzo email valido.
+      equalTo: Si prega di inserire nuovamente lo stesso valore.
+      max: Si prega di inserire un valore minore o uguale a {0}.
+      maxlength: Si prega di non inserire più di {0} caratteri.
+      min: Si prega di inserire un valore maggiore o uguale a {0}.
+      minlength: Si prega di inserire almeno {0} caratteri.
+      number: Si prega di inserire un numero valido.
+      range: Si prega di inserire un valore tra {0} e {1}.
+      rangelength: Si prega di inserire un valore di dimensione compresa tra {0} e {1} caratteri.
+      remote: Si prega di sistemare questo campo.
+      required: Questo campo è obbligatorio.
+      url: Si prega di inserire un URL valido.
+    view_types:
+      api: visualizzazione API
+      blob: file scaricabile
+      calendar: calendario
+      chart: grafico
+      dataset: dataset
+      filter: visualizzazione filtrata
+      form: modulo
+      group: visualizzazione in gruppi
+      grouped: visualizzazione in gruppi
+      href: external dataset
+      map: mappa
+      table: tabella
+      working_copy: copia di lavoro
+    view_types_plural:
+      api: API
+      calendar: Calendari
+      chart: Grafici
+      filter: Visualizzazioni filtrate
+      form: Moduli
+      grouped: Visualizzazioni in gruppi
+      map: Mappe
+    visibility:
+      private: privato
+      public: pubblico
+  error:
+    back: Indietro
+    error_500:
+      description_html: Chiediamo cortesemente di riprovare tra qualche minuto, oppure di <a href="http://support.socrata.com">segnalare questo errore</a> con i dettagli dell'operazione che stavi tentando di fare.
+      somethings_wrong: Qualcosa non va!
+      were_sorry: Siamo spiacenti, ma c'è stato un problema di elaborazione della tua richiesta.
+    not_acceptable_406:
+      page_not_found: Pagina non trovata.
+      were_sorry: Siamo spiacenti, ma la pagina non è disponibile nel formato richiesto.
+    not_found_404:
+      back_to: Torna a
+      description_html: La pagina o non esiste o è stata spostata. Suggeriamo di tornare alla <a href="/">home page</a>. Se il problema persiste chiediamo cortesemente di inviarci una segnalazione. Grazie per la collaborazione.
+      page_not_found: Pagina non trovata.
+      were_sorry: Siamo spiacenti, ma la pagina richiesta non è in linea.
+    permission_denied_403:
+      description_html: Se credi che questo sia un errore, prova a scollegarsi e ricollegarti con un utente diverso <a href="/login">qui</a>.
+      no_permission: Nessun permesso di accesso alla risorsa.
+      were_sorry: Siamo spiacenti, ma sembra che non hai il permesso di accedere a questa pagina.
+    to_whence_you_came: da dove sei venuto.
+  screens:
+    about:
+      actions: Azione
+      activity: Attività
+      attachments: Allegati
+      category: Categoria
+      comments: Commenti
+      community: Comunità
+      contact_dataset_owner: Contatti
+      contributors: Collaboratori
+      created: creato
+      data_provided_by: Dati forniti da
+      description: Descrizione
+      downloads: Download
+      edit_metadata: Modificare i metadati
+      flag_dataset: Contrassegna dataset
+      license: Licenza
+      licensing: Proprietà e licenza
+      links: Link
+      meta: Meta
+      none: (nessuno)
+      permalink: Permalink
+      permanent_links: Link permanenti
+      permissions: Visibilità
+      private: Privata
+      public: Pubblica
+      raters: Votanti
+      resource_name: Nome della sorgente
+      row_class: Classe del record
+      row_count: Numero di righe
+      row_identifier: Identificativo record
+      semantics: Semantica e RDF
+      short_url: URL breve
+      snapshotted: eseguito il backup
+      source_link: Origine dato
+      spatial_extent: Regione
+      subject_column: Soggetto Colonna
+      tags: Tags
+      terms_of_use: Termini di utilizzo
+      updated: aggiornato
+      view_full_page: Visualizza la Pagina Completa
+      view_statistics: Visualizza le statistiche
+      visits: Visite
+      your: La tua valutazione
+    ds:
+      bar:
+        api_unsavable: Le viste API non possono essere modificate
+        based_on_html: Basato su <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_parent_html: Basato su <a class="parentName"></a>
+        based_on_private_view: una vista privata.
+        based_on_working_copy_html: Basato sulla copia di lavoro di <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        find_prompt: Trova in questo Dataset
+        format:
+          bold: Grassetto
+          bullet: Elenco puntato
+          color: Colore carattere
+          italic: Italic
+          link: Link
+          number: Elenco numerato
+          redo: Ripristina
+          strike: Barrato
+          underline: Sottolineato
+          undo: Annulla
+        full_screen: Visualizza a schermo intero
+        publish_button: Pubblica Dataset
+        publish_prompt: Questo dataset è una copia di lavoro e non è pubblico. Una volta terminate le modifiche, è necessario pubblicare il dataset per renderlo pubblico.
+        publish_rights: Solo un proprietario o editore può pubblicare questo dataset
+        revert_button: Ripristina
+        revert_prompt: Ripristina vista salvata
+        save_as_button: Salva come...
+        save_as_prompt: Salva vista come...
+        save_button: Salva
+        save_progress: Salvataggio in corso...
+        save_prompt: Salva vista corrente
+        share_email: Condividi via e-mail
+        share_facebook: Condividi su Facebook
+        share_twitter: Condividi su Twitter
+        snapshot_notice: Questa è una versione del dataset precedentemente pubblicata. E'archiviata e non può essere modificata.
+        snapshot_title: 
+        snapshot_title_html: Eseguito backup %{date}
+        snapshot_unsavable: Backup di dataset e viste non possono essere creati o modificati
+        subscribe: Sottoscrivi i cambiamenti
+        subscribe_prompt: Sottoscrivi via e-mail o RSS
+        unpublished_unsavable: Modifiche ai dati sottostanti sono salvate automaticamente. Filtri e ricerche non possono essere salvati in una copia di lavoro del dataset. Si prega di creare una vista su un dataset pubblicato.
+        unsaved_title: Vista non salvata
+        view_published_html: Visualizza il <span class="publishedName">dataset</span> pubblicato
+        view_type: Visualizza come %{type}
+        view_types:
+          calendar: calendario
+          chart: grafico
+          fatrow: elenco
+          map: mappa
+          page: singolo record
+          table: tabella
+        working_copy_notice: Questa è una copia del dataset che permette di fare delle modifiche. Non è visibile ad altri finchè non verrà pubblicata.
+        working_copy_title: ! '[Copia di lavoro]'
+      blob:
+        data_extraction: Questo strumento di estrazione dei dati o l'applicazione è disponibile tramite il link a destra
+        download: Scarica
+        external_link: Link esterno
+        js_required: E' richiesto Javascript per avviare il visualizzatore di documenti all'interno del tuo browser.
+        js_required_download:
+          click_here: clicca qui
+          prompt_html: Se invece vuoi scaricare questo file, %{click_here}.
+        limited_download: Questo dataset non è in formato tabulare, e può avere interattività limitata, ma è disponibile per il download
+      column_tip:
+        aggregate: (%{aggregate} su %{data_type})
+        field_name: Nome campo API
+        original_name: Nome originale
+      dataset_contact:
+        captcha_failed: La risposta non è corretta, si prega di riprovare.
+        error_message: Si è verificato un errore durante l'invio del feedback per questo dataset. Si prega di riprovare più tardi.
+        form:
+          email: Tua Email
+          email_prompt: Il tuo indirizzo e-mail sarà condiviso con il proprietario di questo dataset così che possa replicare.
+          message: Breve messaggio
+          purpose: Scopo
+          purposes:
+            copyright_violation: Violazione Copyright
+            offensive_content: Contenuti Offensivi
+            personal_information: Informazioni Personali
+            prompt: -- Seleziona Scopo --
+            spam: Spam o Indesiderato
+          send_button: Invia
+          subject: Oggetto
+        other_subject: Un visitatore ti ha inviato un messaggio riguardo al tuo dataset '%{dataset_name}' '%{site}'
+        reasons:
+          copyright_violation: per violazione del copyright
+          offensive_content: per contenuti offensivi
+          personal_information: per contenere informazioni personali
+          spam: come potenziale spam
+        subject: Il tuo dataset "%{dataset_name}" è stato contrassegnato %{reason}
+        success_message: La notifica è stata inviata al proprietario del dataset.
+        validation:
+          no_body: Il messaggio deve avere un corpo.
+          no_email: La tua e-mail è obbligatoria.
+          no_purpose: Devi selezionare uno scopo per questo messaggio.
+          no_subject: Devi selezionare un soggetto per questo messaggio.
+      dataset_status:
+        copy_available: La copia di lavoro è ora disponibile. Il bottone Modifica Dataset ti darà l'accesso quando sei pronto per modificare.
+        copy_in_progress: Si prega di attendere mentre viene creata una copia di lavoro. %{additional}
+        copy_in_progress_additional:
+          processing: In fase di elaborazione (avviata %{time})
+          queued: In attesa di essere elaborata (in coda %{time}; %{totalQueued} totali in coda)
+        edit_dataset_button: Modifica Dataset
+        error_publishing_html: Si è verificato un errore durante la creazione della copia di lavoro del tuo dataset. Si prega di <a href="http://support.socrata.com" rel="external">contattare il supporto Socrata</a>.
+        needs_copy: Questo dataset è pubblicato e non può essere modificato direttamente. Una copia di lavoro %{status} che ti permette di effettuare le modifiche desiderate prima di renderle pubbliche.
+        needs_copy_status:
+          available: è disponibile
+          can_be_made: può essere creata
+      email:
+        add_email: Aggiungi
+        email_button: E-mail
+        message_prompt: Inserisci un messaggio opzionale
+        private_notice: ! 'Nota: questo %{displayName} è attualmente privato. L''invio di e-mail consentirà l''accesso a tutti i destinatari.'
+        prompt_html: ! 'Condividi <span class="datasetName">%{name}</span> con i seguenti indirizzi e-mail:'
+        remove_email: Rimuovi
+        success: La tua e-mail è stata inviata con successo.
+        title_html: Condividi "<span class="datasetName">%{name}</span>"
+      grid_sidebar:
+        add_column:
+          convert_address:
+            city: Città
+            city_prompt: Inserisci una città
+            state: Stato
+            state_prompt: Inserisci uno stato
+            street: Via
+            title: Utilizza Colonne Indirizzi esistenti
+            zip_code: Codice Postale
+            zip_code_prompt: Inserisci un Codice Postale
+          convert_latlong:
+            latitude: Latitudine
+            longitude: Longitudine
+            title: Utilizza Latitudine e Longitudine esistenti
+          multiple_choice:
+            add_option_button: Aggiungi Opzione
+            option: Opzione
+            title: Opzioni Scelta Multipla
+          nested_table:
+            default_column_name: Senza Titolo
+          subtitle: Aggiungi una nuova colonna al tuo dataset
+          success: La tua colonna è stata aggiunta
+          title: Aggiungi Colonna
+          validation:
+            view_column: Non puoi aggiungere una colonna ad una vista
+        api:
+          column_ids_title: ! 'ID Colonna:'
+          endpoint_title: ! 'Accesso Endpoint API:'
+          intro_html: Le <strong>API Open Data Socrata</strong> (SODA) permettono agli sviluppatori software di accedere in programmazione ai dati ospitati nei siti Socrata. Gli sviluppatori software possono creare applicazioni che utilizzano le API SODA per visualizzare e rimaneggiare dataset Socrata in un modo nuovo e creativo. Creare un'applicazione iPhone che visualizza la spesa del governo nel tuo paese, un'applicazione web che permette ai cittadini di conoscere potenziali benefici di governo che avevano trascurato, o un servizio che ti invia automaticamente una email quando viene pubblicato un nuovo dato che vuoi tracciare.
+          reference_html: Per accedere a questo dataset in programmazione, utilizzare l'endpoint API fornito sotto. Per maggiori informazioni ed esempi su come utilizzare API OpenData di Socrata, fare riferimento alla nostra <a href="http://dev.socrata.com" rel="external">Documentazione per Sviluppatori</a>.
+          subtitle: Accedi questo %{view_type} tramite SODA
+          title: API
+        apis:
+          create_button: Crea una API
+          create_button_prompt: Crea una Application Programming Interface (API) per concedere accesso programmatico a questi dati.
+          manage_button: Gestisci
+          manage_button_prompt: Gestisci API selezionata
+          prompt_existing_html: <strong>API esistenti</strong> possono essere personalizzate. Puoi controllare permessi, impostare limiti di richieste, visualizzare utilizzi, e modificare documentazione.
+          prompt_new_html: <strong>API Foundry</strong> ti permette di creare e configurare una o più standards-based Application Programming Interfaces (API) open per questo dataset.
+          subtitle: Crea e personalizza una API
+          title: API
+        append_replace:
+          subtitle:
+            immutable: Carica un nuovo file di dati il cui contenuto sostituirà quello attuale.
+            mutable: Carica un nuovo file di dati il cui contenuto sarà aggiunto o sostituirà quello attuale.
+          title:
+            immutable: Sostituisci
+            mutable: Aggiungi e Sostituisci
+          wizard_button:
+            immutable: Avvia la procedura guidata per la Sostituzione
+            mutable: Avvia la procedura guidata per l'Aggiunta e la Sostituzione
+        base:
+          buttons:
+            apply: Applica
+            cancel: Cancella
+            create: Crea
+            done: Fatto
+            remove: Rimuovi
+            update: Aggiorna
+          color_select:
+            prompt: Scegli un colore
+          column_select:
+            from_grid: Seleziona una colonna dalla griglia
+            prompt: Seleziona una colonna
+            unselect: Deseleziona una colonna
+          datatypes:
+            checkbox: casella di spunta
+            dataset_link: link al dataset
+            date_time: data e ora
+            date_time_timezone: data e ora (con fuso orario)
+            document: documento
+            email: e-mail
+            flag: contrassegno
+            formatted_text: testo formattato
+            geospatial: geospaziale
+            list: lista
+            location: posizione
+            money: denaro
+            multiple_choice: scelta multipla
+            nested_table: tabella nidificata
+            number: numero
+            object: oggetto
+            percent: percentuale
+            phone: telefono
+            photo: foto (immagine)
+            plain_text: testo
+            star: stella
+            website_url: web url
+          generic_select:
+            prompt: Seleziona un valore
+          validation:
+            at_least: Il valore deve essere almeno %{value}
+            different_value: E' richiesto un valore differente.
+            file_format: E' richiesto %{format} file
+            identifier_format: Caratteri validi per identificativi API sono lettere minuscole, numeri e underscore. Devono iniziare con una lettera e non possono avere underscore consecutivi.
+            invalid_url: Questo URL non è valido
+            invalid_value: Questo valore non è valido
+            invalid_values: Si è verificato un problema con il valore specificato. Si prega di controllare gli errori riportati sopra.
+            invalid_view: Questa vista deve essere valida
+            no_greater: Il valore non deve essere più grande di %{value}
+            numeric: Il valore deve essere un numero
+            uid_required: Richiede un 4x4 view UID
+            verifying_url: Verifica URL
+        calendar:
+          dates:
+            end: Data di fine
+            start: Data di inizio
+            title: Date
+          information:
+            details: Dettagli
+            event_title: Titolo evento
+            new_details_button: Aggiungi dettagli
+            title: Informazione evento
+          subtitle: Viste con date possono essere visualizzate in un formato di tipo calendario mensile
+          title: Calendario
+          validation:
+            invalid_columns: Questa vista deve avere una colonna di tipo data e una di tipo testo
+            viz_limit: Una vista può avere solo una visualizzazione su di essa
+        chart:
+          advanced: Configurazione Avanzata
+          annotation: Annotazione
+          axes:
+            x_axis_title: Titolo Asse X
+            x_axis_title_prompt: Inserisci un titolo per l'asse x
+            y_axis_title: Titolo Asse Y
+            y_axis_title_prompt: Inserisci un titolo per l'asse y
+          base_color: Colore base
+          categories: Categorie
+          color_override_html: I colori possono essere sostituiti utilizzando <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione Condizionale</a>. Clicca <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">qui</a> per cancellare ogni attuale regola di formattazione condizionale.
+          colors: Colori
+          configuration: Configurazioni
+          data_columns:
+            new_data_column_button: Aggiungi colonna di dati
+            title: Colonne di dati
+          data_labels: Etichette dati
+          date: Data
+          details: Dettagli
+          draw_line: Disegna una linea
+          dsg_color_override_html: Si prega di notare che il Raggruppamento delle serie di dati avrà la precedenza sui colori scelti per le colonne dei dati. Non ignorerà la <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione condizionale</a>
+          error_bars:
+            color: Colore
+            high: Alto
+            low: Basso
+            title: Barre di errore
+          flyout:
+            new_details_button: Aggiungi Dettagli Flyout
+            title: Dettagli Flyout
+          group_extra: Raggruppa valori extra
+          groups: Raggruppamenti
+          label: Etichetta
+          labelInBar: Etichette nella Barra
+          legend:
+            conditional_formats: Descrivi Formati Condizionali
+            custom_entry: Etichetta personalizzata
+            display: Visualizza
+            new_custom_entry_button: Aggiungi una voce di didascalia
+            position: Didascalia
+            position_prompt: Scegli una posizione
+            positions:
+              bottom: In basso
+              left: A sinistra
+              none: Nessuna
+              right: A destra
+              top: In alto
+            series: Descrivi le serie
+            title: Configurazione didascalia
+            value_markers: Descrivi i valori dei marker
+            values: Descrivi valori
+          marker:
+            caption: Titolo
+            new_marker_button: Aggiungi Marker
+            title: ! '%{axis} Marker'
+            value: Al valore
+          min_angle: Angolo minimo
+          names: Nomi
+          pie_other: ! 'Attenzione: %{chart_type} aggregherà valori distinti (record) oltre il %{row_limit}° nella categoria Altro. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
+          pie_truncate: ! 'Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
+          point_color: Colore Punto
+          point_size: Dimensione Punto
+          point_title: Titolo
+          series_group:
+            alphabetize: Alfabetizza gruppi
+            group_by: Raggruppa per
+            hideLoadingMsg: Nascondi il messaggio in caricamento
+            new_column_button: Aggiungi colonna di serie
+            row_limit_warning: Raggruppamento serie di dati verrà eseguito molto lentamente con questo numero di righe.
+            title: Raggruppamento serie di dati
+          setup:
+            title: Impostazione Grafico
+            type: Tipo di Grafico
+            type_prompt: Seleziona un tipo di grafico
+          show_lines: Mostra linee
+          show_percent: Mostra %s
+          show_points: Mostra punti
+          show_values: Mostra valori
+          smooth_line: Linea regolare
+          subtitle: Una vista può essere visualizzata tramite una varietà di grafici
+          title: Grafico
+          treemap_color_html: Questi colori sono applicati in modo casuale sulla mappa solo per creare distinzioni nella visualizzazione. Non hanno uno specifio significato.
+          validation:
+            count: ! '%{count} colonna'
+            required_columns: ! '%{chart_type} richiede %{column_types}'
+            viz_limit: Una vista può avere solo una visualizzazione su di essa
+          value: Valore
+          valueInBar: Valore nella barra
+          values: Valori
+          y_axis_formatting:
+            abbreviate: Abbreviato
+            auto: Auto
+            axis_max: Massimo
+            axis_min: Minimo
+            axis_prompt: Inserisci un numero
+            no_decimals: No Decimali
+            precision: Precisione
+            title: Formattazione Asse Y
+        column_common:
+          basic:
+            description: Descrizione
+            description_prompt: Inserisci una Descrizione
+            name: Nome
+            name_prompt: Inserisci un Nome
+            title: Informazioni di base
+          linked_dataset:
+            dataset: Dataset
+            dataset_prompt: Dataset URL o UID 4x4
+            key: Chiave Colonna
+            label: Etichetta Colonna
+            title: Linked Dataset
+          type:
+            key: Chiave
+            source: Origine
+            title: Tipo di Colonna
+            type: Tipo di Dato
+            type_prompt: Seleziona un tipo di dato
+        column_order:
+          columns:
+            title: Colonne
+          prompt_html: Trascina le colonne nell'ordine desiderato, e poi premi su <strong>applica</strong> per applicare il nuovo ordine.
+          subtitle: Modifica l'ordine delle tue colonne
+          title: Ordine colonne
+          validation:
+            valid_columns: Questa vista deve essere valida e deve avere colonne visibili.
+        column_properties:
+          advanced:
+            api_identifier: Identificativo API
+            new_rdf_button: Aggiungi Proprietà RDF
+            semantics: Semantica
+            title: Avanzate
+            url: Inserisci un URL personalizzato
+          column_totals:
+            title: Totale Colonna
+            total: Totale
+            total_prompt: Seleziona un totale colonna
+          display_order:
+            new_item_button: Aggiungi Elemento
+            option: Opzione
+            title: Visualizza Ordine (per DataSlate)
+          formatting:
+            alignment: Allineamento
+            title: Formattazione
+            view_style: Stile di visualizzazione
+          link:
+            key: Chiave
+            source: Origine
+            title: Link
+          localization:
+            decimal: Decimale
+            thousands: Migliaia
+            title: Localizzazione
+          money:
+            abbreviated: Abbreviata
+            currency: Valuta
+            format_mask_warning: Questo può sovrascrivere alcune impostazioni fatte sopra.
+            no_precision: Nessuna
+            precision: Precisione
+            title: Formattazione Moneta
+          multiple_choice:
+            new_option_button: Aggiungi Opzione
+            option: Opzione
+            title: Opzioni Scelta Multipla
+          number:
+            display: Visualizzazione
+            no_commas: Nessuna virgola
+            no_precision: Nessuna
+            precision: Precisione
+            title: Formattazione numero
+          number_advanced:
+            format_mask: Maschera di Formattazione
+            format_mask_prompt: ! 'Utilizzare #s per indicare cifre numeriche, e altri caratteri per indicare dove queste devono essere poste; per esempio un social security number dovrebbe essere ###-##-####'
+            format_mask_warning: Ciò potrebbe annullare alcune delle impostazioni di cui sopra.
+            title: Formattazione Avanzata
+          photo:
+            size: Dimensione
+            size_prompt: Scegli una dimensione
+            sizes:
+              featured: Featured (150x80)
+              large: Grande (220x220)
+              medium: Media (150x150)
+              original: Originale
+              thumb: Antemprima (80x80)
+              tiny: Piccola (24x24)
+            title: Opzioni Foto
+          subtitle: Aggiorna diverse proprietà su questa colonna
+          success: La tua colonna è stata aggiornata
+          title: Proprietà Colonna
+          url:
+            base_url: Base URL
+            base_url_prompt: Inserisci il prefisso URL comune
+            title: Opzioni URL
+          validation:
+            published: Si prega di creare una copia di lavoro o una vista del dataset per modificare le proprietà delle colonne
+            unsaved: Nono puoi modificare le proprietà di una colonna per una vista non salvata
+        conditional_formatting:
+          change_icon: modifica
+          conditions:
+            description: Descrizione
+            description_prompt: Descrivi questo criterio
+            item:
+              operator: Seleziona un confronto
+              subcolumn: Seleziona una sotto colonna
+              title: ! 'Condizione:'
+            new_condition_button: Aggiungi Condizione
+            new_rule_button: Aggiungi una Nuova Regola
+            title: Condizioni
+            when:
+              all: Tutte le Condizioni
+              always: Sempre
+              any: Qualsiasi Condizione
+            when_title: Quando
+          format_html: Usa <br />questo colore<br />o questa icona
+          subtitle: La Formattazione Condizionale ti permette di modificare il colore di background dei record in base ad un criterio personalizzato. Ad ogni record sarà assegnato il colore della prima condizione soddisfatta.
+          title: Formattazione condizionale
+          validation:
+            no_columns: Questa bìvista non ha colonne da filtrare
+            no_icons: Le icone sono significative solo per le mappe
+        delete:
+          confirm: Questo eliminerà %{view_type} in modo permanente. Non è possibile annullare l'eliminazione! Sei sicuro di voler procedere?
+          delete_button: Elimina vista %{view_type}
+          subtitle: Elimina questo %{view_type}
+          title: Elimina
+          warning:
+            api: L'eliminazione di questa API interromperà tutte la applicazioni che la usano.
+            published: L'eliminazione di questo dataset eliminerà anche le viste ad esso accociate.
+            view: L'eliminazione di questa vista coinvolgerà solo le altre viste basate su di essa.
+            working_copy: Puoi eliminare questa copia di lavoro e crearne una nuova in modo da ripristinare ogni modifica fatta.
+        digital_signing:
+          consumer: Per ottenere una versione firmata di questo dataset, clicca semplicemente sul link sotto per generare una chiave ed iniziare il download. La chiave e i dati scaricati sono specifici per la versione corrente di questo dataset; se il proprietario aggiorna il dataset in futuro, sarà necessario ripetere l'operazione per recepire i nuovi dati. Pubblicare il dati scaricati insieme con la chiave ricevuta, e utilizzando le istruzioni trovate all'interno del package scaricato, le terze parti saranno in grado di confermare che i tui dati sono legittimi.
+          generate_button: Genera e Scarica adesso
+          intro_html: Utilizzando un <strong>dataset firmato digitalmente</strong>, è possibile verificare tramite metodi crittograficamente sicuri che una particolare copia del dataset Socrata non è stata manomessa. Questo è utile se, per esempio, stai cercando di pubblicare risultati basati su questi dati, e vuoi essere in grado di verificarne l'integrità.
+          publisher: Per generare una versione firmata di questo dataset, clicca semplicemente sul link sotto per generare una chiave. Notare che se aggiorni questo dataset in futuro, dovrai rigenerare la chiave in modo che gli utilizzatori abbiano ancora l'accesso. Notare inoltre che questo processo include operazioni sulla totalità dei dati, quindi questo può richiedere un certo tempo se il tuo dataset è molto grande, o contiene grandi allegati.
+          publisher_generation: Solo i proprietari dei dataset possono generare chiavi firmate.
+          signature_header: Firma
+          subtitle: Esporta una versione dei dati la cui integrità possa successivamente essere verificata.
+          title: Firma digitale
+          validation:
+            non_tabular: Solo i dati in formato tabellare possono essere stampati
+        download:
+          download_as: Scarica come
+          geo_header: Scarica dati Geospaziali
+          layers_header: Scarica Layer Tabular
+          subtitle: Scarica una copia di questo dataset in formato statico
+          title: Scarica
+        feed:
+          subtitle: Il feed discussione mostra conversazioni e attività riguardanti un dataset
+          title: Discuti
+        form:
+          information:
+            name: Nome
+            name_prompt: Inserisci un nome
+            public: Pubblico?
+            success: URL
+            success_prompt: Inserisci un URL
+            title: Informazioni Form
+          subtitle: I Form ti permettono di raccogliere dati, all'interno di un dataset, direttamente dal tuo sito
+          title: Form
+          validation:
+            no_columns: Questa vista deve avere colonne visibili per creare un form
+        map:
+          advanced:
+            exclusive: Esclusivo
+            hide_geolocator: Nessun Geolocator
+            subtitle: Seleziona 'Esclusivo' solo se deve essere visualizzata una mappa di base alla volta.
+            title: Configurazioni avanzate
+            use_legend: Utilizza didascalia
+          base_layers:
+            alias: Alias
+            layer: Layer
+            layer_prompt: Seleziona un layer
+            layer_url: Layer URL
+            new_base_map_button: Aggiungi mappa di base
+            opacity: Opacità
+            subtitle: Seleziona da una lista di servizi di mappa e configura come deve apparire.
+            title: Mappe di base
+          data_layer:
+            alias: Alias
+            alias_prompt: Descrivi il dataset
+            base_color: Colore base
+            color_high: Colore (Alto)
+            color_low: Colore (Basso)
+            flyout:
+              details: Dettagli Flyout
+              labels: Senza etichette?
+              new_details_button: Aggiungi dettagli Flyout
+              opacity: Opacità
+              title: Configurazione Flyout
+              title_column: Titolo
+            highlight_color: Colore hover
+            icon: Icona
+            location: Location
+            mondara_note: I layer Mondara non sono ulteriormente personalizzabili.
+            opacity: Opacità
+            plot_style: Plot Style
+            plot_style_prompt: Seleziona un plot style
+            point: Personalizzazione Punto
+            point_color: Colore Punto
+            point_size: Dimensione Punto
+            quantity: Quantità
+            region: Regione
+            region_level_prompt: Seleziona il livello regione
+            region_prompt: Seleziona una regione
+          layers:
+            advanced: Configurazione avanzata per %{name}
+            config: Configurazione per %{name}
+            custom: Personalizza Layer
+            dataset: Dataset
+            edit: modifica
+            new_data_button: Aggiungi Dati
+            title: Riepilogo dataset
+          legend:
+            conditional_formats: Descrivi Formati Condizionali
+            custom_entry: Aggiungi una voce di didascalia
+            entry_label: Etichetta
+            position: Didascalia
+            position_prompt: Scegli una posizione
+            positions:
+              bottom_left: In basso a sinistra
+              none: Nessuna
+              top_right: In alto a destra
+            title: Configurazione didascalia
+          plots:
+            heatmap: Boundary Map
+            point: Point Map
+            rastermap: Heat Map
+          regions:
+            canada_provinces: Canada Provinces
+            counties: US Counties in
+            countries: Nazioni
+            state: US States
+          subtitle: Viste con localizzazioni possono essere visualizzate come punti su una mappa
+          title: Mappa
+          validation:
+            hidden_location_html: E' possibile <a href=
+            location_column: E' richiesta una colonna di tipo location per creare una mappa.
+            viz_limit: Una vista può avere solo una visualizzazione su di essa
+        ownership:
+          error: Si è verificato un problema durante il cambio di proprietà. Si prega di riprovare più tardi.
+          me: Me
+          subtitle: Per trasferire ad un altro utente, inserisci l'email o il nome account del Socrata ID, poi seleziona l'account desiderato dal menù a tendina. Se lo conosci, puoi anche inserire il profilo URL di un utente. Solo utenti con un account esistente posso avere la proprietà di un datasets.
+          success:
+            me: Non sei il proprietario
+            user: Proprietà trasferita con successo a %{owner}
+          title: Proprietà
+          transfer_to: Trasferisci la proprietà a
+          validation:
+            invalid_user: Utente sconosciuto. Si prega di effettuare la ricerca utente per nome, email, or profilo URL.
+            no_user: Seleziona un utente.
+            valid_saved: Questa vista deve essere valida e salvata
+        permissions:
+          error: Si è verificato un problema durante la modifica dei permessi del tuo dataset. Si prega di riprovare più tardi
+          features_html: Caratteristiche aggiuntive <span class="datasetTypeName">dataset</span>
+          status_html: Questo <span class="datasetTypeName">dataset</span> è attualmente <span class="datasetPublicText">%{visibility}</span>
+          subtitle: Gestisci i permessi di questo %{view_type}
+          success: I tuoi permessi sono stati salvati
+          title: Permessi
+          validation:
+            valid_saved: Questa vista deve essere valida e salvata
+        print:
+          margins:
+            bottom: ! 'In basso:'
+            left: ! 'A sinistra:'
+            right: ! 'A destra:'
+            top: ! 'In alto:'
+          margins_title: ! 'Margini (pollici):'
+          options:
+            fit: Riduci e adatta il dataset su una pagina
+            header_icons: Visualizza le icone nell'intestazione di colonna
+            headers_every_page: Stampa i titoli delle colonne su ogni pagina
+          options_title: ! 'Opzioni:'
+          orientation: ! 'Orientamento:'
+          orientations:
+            landscape: Orizzontale
+            portrait: Verticale
+          paper_size: ! 'Dimensione carta:'
+          paper_sizes:
+            a0: A0 (841 x 1189mm)
+            a1: A1 (594 x 841mm)
+            a2: A2 (420 x 594mm)
+            a3: A3 (297 x 420mm)
+            a4: A4 (210 x 297mm)
+            legal: Legal (8.5 x 14 pollici)
+            letter: Letter (8.5 x 11 pollici)
+            tabloid: Tabloid (11 x 17 pollici)
+          print_button: Stampa
+          subtitle: Esporta questo dataset in un formato PDF stampabile
+          title: Stampa
+          validation:
+            non_tabular: Solo dati di tipo tabellare possono essere stampati
+        sdp:
+          preview: Anteprima
+          subtitle: Social Data Player ti consente in generale di pubblicare questo dataset su Internet
+          title: Social Data Player
+          validation:
+            public: Questa vista deve essere pubblica prima che esso possa essere pubblicato
+            valid_saved: Questa vista deve essere valida e salvata
+        share:
+          error: Si è verificato un problema durante la condivisione. Si prega di riprovare più tardi
+          loading_shares: Caricamento Condivisioni...
+          no_shares_html: Non stai condividendo questo <span class="datasetTypeName">dataset</span>
+          notify_button: Notifica tutte le modifiche
+          notify_success: Notifiche inviate
+          prompt_html: Questo <span class="datasetTypeName">dataset</span> è <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">e condiviso con:</span>
+          share_button_html: Condividi questo <span class="datasetTypeNameUpcase">Dataset</span>
+          subtitle: Condividi questo %{view_type}
+          success: I tuoi permessi sono stati aggiornati
+          title: Condivisione
+          validation:
+            valid_saved: Questa vista deve essere valida e salvata
+        showhide_columns:
+          columns:
+            title: Colonne
+          subtitle: Imposta quali colonne saranno visibili in questa vista
+          title: Mostra Colonne Nascoste
+        sort_rollup:
+          rollup:
+            add_group_button: Aggiungi raggruppamento colonna
+            add_rollup_button: Aggiungi colonna di Roll-Up
+            function: Funzione
+            group_by: Raggruppa per
+            group_function_label: Basato su
+            group_function_prompt: Seleziona una funzione di raggruppamento
+            roll_up: Roll-Up
+            roll_up_function: Seleziona una funzione
+            title: Roll-Ups & Drill-Downs
+          sort:
+            add_column_button: Aggiungi Colonna
+            column: Colonna
+            direction: Direzione
+            directions:
+              ascending: Crescente
+              descending: Decrescente
+            title: Ordina
+          subtitle: Puoi raggruppare le righe e sommare i dati con un roll-up; e ordinare su una o più colonne
+          title: Sort & Roll-Up
+          validation:
+            no_eligible_columns: Questa vista non ha colonne per roll-up o sort
+            no_function: Ogni colonna di roll-up deve avere una funzione
+            no_group_bys: Devi raggruppare almeno una colonna per fare il roll-up di una colonna
+        tabs:
+          about: Informazioni
+          discuss: Discussione
+          edit: Modifica
+          embed: Incorpora
+          export: Esporta
+          filter: Filtra
+          manage: Gestisci
+          more: Altro
+          more_views: Più viste
+          visualize: Visualizza
+        view_list:
+          delete_confirm: Sei sicuro di voler eliminare %{name}?
+          delete_snapshot_confirm: Sei sicuro di voler eliminare %{name} (eseguito backup %{date})?
+          filter:
+            all: Tutte le viste
+          filter_title: Mostra solo
+          item:
+            author_html: <span class="date"></span> da <span class="author"></span>
+            delete: Elimina questa vista
+            expand: Clicca per espandere
+          no_results: Nessun risultato
+          no_results_html: 
+          pagination:
+            last: Vedi l'ultima vista
+            next: Vedi le prossime %{count} viste
+          search: Cerca viste
+          snapshots:
+            subtitle: Visualizza la versione precedentemente pubblicata di questo dataset
+            title: Dataset Backup
+          sort:
+            alphaAscending: A-Z
+            dateAscending: Dal più vecchio al più nuovo
+            dateDescending: Più recente
+            popularity: Popolarità
+          sort_title: Ordina per
+          views:
+            subtitle: Vedi filtri, mappe, grafici e altre viste esistenti su questo dataset
+            title: Viste
+      save_dialog:
+        descriptions:
+          leaving: Non hai salvato i dati, che andranno persi se abbandoni questa pagina. Ti preghiamo sia che lo desideri o no di salvare questa vista prima di abbandonare la pagina; oppure scegli Cancella per ritornare alla pagina.
+          reload_save: Questa modifica richiede un reload. Puoi Salvare le tue modifiche per visualizzarle, oppure Cancellare per rimanere in questa pagina.
+          reload_update: Questa modifica richiede un reload. Puoi Aggiornare questa vista oppure Salvare una nuova vista per visualizzare le tue modifiche, oppure Cancellare per rimanere in questa pagina.
+        form:
+          new_name: ! 'Inserisci un nome per la nuova vista:'
+        titles:
+          normal: Salva vista
+          prompt: Vuoi salvare la tua vista?
+        validation:
+          auth_required: Devi effettuare l'accesso per salvare una vista
+          view_name_required: E' richiesto un nome per la vista
+      subscribe:
+        google_reader: Aggiungi a Google Reader
+        intro_html: ! '<strong>Per abbonarti a <span class="datasetName">%{name}</span> dataset tramite un reader RSS</strong>, utilizza uno dei seguenti link:'
+        rss: Scarica come RSS
+        rss_program: Apri in un Programma Esterno
+        subscribe_button: Iscriviti tramite e-mail
+        subscribe_html: <strong>Per ricevere una email di notifica</strong> quando nuovi dati saranno pubblicati, seleziona la casella Iscriviti qui sotto.
+        subscribed_html: <strong>Sei attualmente iscritto a questo <span class="datasetTypeName">dataset</span> tramite email</strong>, e riceverai una notifica quando nuovo dati saranno pubblicati.
+        title_html: Abbonati a "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Dataset</span>
+        unsubscribe: Se non desideri più notifiche, deseleziona la casella Iscriviti qui sotto.
+    edit_metadata:
+      additional_source: Sorgente aggiuntiva
+      alternative_access_prompt: Inserisci un punto di accesso alternativo per questo dataset
+      api_endpoint: Endpoint API
+      attachments: Allegati
+      brief_description: Breve descrizione
+      brief_description_prompt: Inserisci una descrizione
+      cancel: Annulla
+      category: Categoria
+      contact_email: E-mail di contatto
+      contact_information: Informazioni di contatto
+      custom: Personalizza
+      custom_error: La classe semantica personalizzata deve essere espressa come URL.
+      data_provided_by: Dati forniti da
+      data_provided_prompt: Individuo od organizzazione
+      data_provider_required: Devi specificare il fornitore dei dati (attribuzione).
+      dataset_title: Titolo del dataset
+      dataset_title_error: Il dataset deve avere un titolo.
+      dataset_title_prompt: Inserisci un titolo
+      delete: Elimina
+      email_address: Indirizzo e-mail
+      email_help: L'indirizzo non verrà visualizzato al pubblico. Se il campo viene lasciato vuoto, sarà inserito il tuo indirizzo
+      existing_attachments: Allegati esistenti
+      external_confirm: Sei sicuro di voler rimuovere il dataset esterno?
+      external_dataset: Dataset esterni
+      external_id: ID esterno
+      external_id_prompt: Inserisci il tuo ID esterno
+      external_identifier: Identificatore esterno
+      file_type: Tipo di file
+      general_information: Informazioni generali
+      keywords_help: Inserisci una o più parole chiave separate da una virgola
+      license_help: Scegli i termini della licenza per le persone che desiderano utilizzare questo dataset.
+      license_type: Tipo di licenza
+      licensing: Licenza
+      licensing_attr: Proprietà e licenza
+      list: Elenco
+      metadata_help: Questo campo è stato contrassegnato come privato dalla tua organizzazione e non è visibile al pubblico
+      new_attachment: Nuovo allegato
+      none: (nessuno)
+      northwest_latitude: Latitudine nord-ovest
+      northwest_longitude: Longitudine nord-ovest
+      optional: Facoltativo
+      private_help: Questo campo è stato contrassegnato come privato dalla tua organizzazione e non è visibile al pubblico
+      remove_image: Rimuovi immagine
+      required_field: Campo obbligatorio
+      resource_name: Nome della sorgente
+      resource_name_prompt: Inserisci il nome della sorgente
+      return: Ritorna al dataset
+      row_class: Classe del record
+      row_identifier: Identificatore del record
+      save: Salva
+      save_changes: Salva le modifiche
+      semantics_rdf: Semantica e RDF
+      source_link: Link della sorgente
+      source_link_error: Non sembra essere un URL valido.
+      source_link_prompt: Inserisci l'indirizzo web
+      southeast_latitude: Latitudine sud-est
+      southeast_longitude: Longitudine sud-est
+      spatial_extent: Regione
+      subject_column: Colonna dell'oggetto
+      tags_keywords: Tag/Parole chiave
+      tags_prompt: Inserisci parole chiave
+      thumbnail_image: Immagine di anteprima
+      upload_error: Seleziona un file di immagine valido
+      upload_help: L'immagine verrà ritagliata in forma quadrata
+      upload_image: Carica immagine
+      upload_new_attachment: Carica nuovo allegato
+    forgot_password:
+      already_authenticated: ! 'Impossibile effettuare il reset della password: sei già autenticato.'
+      failed: Si è verificato un problema durante l’elaborazione della richiesta di reset della password. Si prega di riprovare.
+      form:
+        reset_password_button: Reimposta la password
+      prompt: Se hai dimenticato la tua password, possiamo inviarti una e-mail con un link per effettuare il reset della password.
+      success: Grazie. È stata inviata un'e-mail contenente ulteriori informazioni all'account registrato.
+      title: Recupera la tua password
+    header:
+      links:
+        account_html: Salve, <span class="currentUser"></span>
+        account_tooltip: La tua Pagina iniziale
+        administration: Amministrazione
+    link_account:
+      success: Il tuo account esterno è stato collegato.
+    profile:
+      app_tokens:
+        item:
+          app_token: App Token
+          description: Descrizione
+          edit_token_link: Modifica
+          name: Nome
+          no_thumbnail: Nessuna anteprima
+          organization: Azienda
+          secret_token: Secret Token
+          show_secret_link: Mostra Secret Token
+          website: Sito Web
+        manage_link: Gestisci
+        no_applications: Non hai ancora creato alcuna applicazione. Click a destra su 'Gestisci' per iniziare
+        title: Applicazioni %{user}
+      bar:
+        edit_settings_link: Modifica Impostazioni Account
+        follow_link: Follow
+        join_date: Registrato
+        last_seen_date: Ultimo accesso
+        message_link: Invia messaggio
+        unfollow_link: Unfollow
+      browse:
+        owned_datasets: Posseduti
+        shared_datasets: Condivisi
+        title: Datasets %{user}
+      contact:
+        message: Messaggio
+        message_prompt: Inserisci il tuo messaggio
+        subject: Oggetto
+        subject_prompt: Inserisci un oggetto
+        title: Contatta Utente
+      edit:
+        account:
+          add_openid_button: Aggiungi un OpenID o un Account Esterno
+          confirm_email: Conferma e-mail
+          confirm_password: Conferma password
+          connect_openid: Accedi con Facebook, Twitter, Google, o altre credenziali di terze parti.
+          current_email: E-mail attuale
+          email:
+            interests:
+              account_provisioned: Un account privilegiato viene predisposto per usi futuri
+              any_view_created: Ogni vista creata
+              comment_to_moderate: Un commento inserito che richiede moderazione
+              nomination_created: Una nuova nomination è stata creata
+              nomination_moderated: Ogni nomination è moderata
+              privileged_account_created: Un utente crea il proprio account privilegiato
+              user_affected: Azioni che ti riguardano direttamente, come repliche a commenti e aggiornamenti di stato
+              view_made_public: Ogni vista resa pubblica
+            policy: ! '%{site} rispetta la tua privacy, e mai invierà email pubblicitarie, o darà la tua email a terze parti. Le email inviate da questo sito contengono notifiche e aggiornamenti a dataset che hai creato o sottoscritto.'
+            subtitle: Iscriviti a singoli eventi selezionando la relativa casella.
+            title: Notifiche e-mail
+          learn_openid: Informati su OpenID
+          new_email: Nuova e-mail
+          new_password: Nuova password
+          no_openid: Non hai ancora OpenID associati a questo account.
+          old_password: Vecchia password
+          password: Password
+          password_prompt: (Per la tua sicurezza)
+          password_restrictions_html: (Restrizioni <span class="icon">&nbsp;</span>)
+          title: Impostazioni Account
+        app_tokens:
+          application_name: Nome Applicazione
+          application_name_prompt: Inserisci un nome per la tua applicazione
+          callback_prefix: Callback Prefix
+          callback_prefix_help_html: For instance, if your application will call back to <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> and <span class="code">https://my-domain.com/socrata-app/profile</span>, you'll want to supply <span class="code">https://my-domain.com/socrata-app</span> as your prefix. Note that you must include at least the entire domain name.
+          callback_prefix_prompt: Provide the prefix to the secure (https) callback uri when using OAuth
+          create_error: ! 'È avvenuto un errore durante la creazione del tuo application token: %{message}'
+          create_success: La tua applicazione è stata creata
+          delete_confirm: Sei sicuro di voler eliminare questa applicazione? Il corrispondente app_token non sarà più valido
+          delete_error: ! 'È avvenuto un errore durante la cancellazione del tuo application token: %{message}'
+          delete_success: La tua applicazione è stata eliminata
+          description: Descrizione
+          description_prompt: Inserisci una descrizione per la tua applicazione
+          new_app_button: Crea una nuova applicazione
+          organization: Azienda
+          organization_prompt: Inserisci l'azienda responsabile per questa applicazione
+          public: Pubblica?
+          save_success: La tua applicazione è stata salvata con successo
+          thumbnail: Anteprima
+          title: App Tokens
+          title_full: Le tue Applicazioni
+          title_single: Modifica Application Token
+          website: Sito Web
+          website_prompt: Inserisci un link a questa applicazione o il sito web dell'azienda
+        back_link: Torna al mio profilo
+        image:
+          error: ! 'Errore durante il caricamento della nuova immagine: %{message}'
+          success: La tua immagine è stata aggiornata
+          title: Profilo Immagine
+          upload_image_button: Carica Immagine
+        info:
+          city: Città
+          country: Nazione
+          description:
+            prompt: Inserisci le informazioni che desideri condividere
+            title: Descrizione
+          display_name: Nome Visualizzato
+          first_name: Nome
+          interests:
+            prompt: Inserisci i tuoi interessi
+            title: Interessi
+          last_name: Cognome
+          link_prompt: Inserisci URL
+          organization: Azienda
+          state: Stato
+          title: Info
+          title_full: Informazioni
+          user_title: Ruolo
+        success: Il tuo profilo e stato aggiornato con successo.
+        validation:
+          email_mismatch: L'e-mail confermata non corrisponde
+          image_format: Selezionare un formato di immagine valido (PNG, JPG, or GIF)
+          invalid_links: Si è verificato un problema durante l'aggiornamento del tuo link. %{message}
+          no_display_name: ! 'Errore: ''Nome Visualizzato'' è obbligatorio'
+          no_password_no_openid: Non è possibile rimuovere tutti i tuoi OpenID prima di impostare la password
+          password_mismatch: La password confermata non corrisponde
+          user_missing: Questo utente non può essere trovato, o è stato eliminato.
+      info:
+        edit_link: Modifica
+        external_links: Link esterni
+        interests: Interessi
+        links:
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: Il mio Blog
+          my_company: La mia Azienda
+          my_site: Il mio Sito
+          twitter: Twitter
+        no_description: Nessuna descrizione fornita
+        other_ext_link: Altro
+        title: Informazioni
+      sidebar:
+        all_contacts_link: Vedi Tutti
+        edit_image_link: Modifica Immagine
+        followers: Followers
+        following: Following
+    reset_password:
+      failed: Si è verificato un problema durante la reimpostazione della password. Riprova più tardi.
+      form:
+        reset_password_button: Reset Password
+      prompt: Bentornato! Seleziona una nuova password.
+      success: Password reimpostata con successo
+      title: Reset Password
+    sign_in:
+      failed: Impossibile accedere con e-mail e password inserite; si prega di riprovare
+      form:
+        sign_in_button: Accedi
+      headline: Accedi
+      mismatch: Le password non corrispondono; si prega di riprovare
+      prompt_html: Accedi con il tuo <strong>Socrata ID</strong>
+      tips_html: Utilizza e-mai e password per accedere a tutti i siti <strong>Powered by <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
+    sign_up:
+      form:
+        create_account_button: Crea il Mio Account
+        have_account_link: Ho già un account
+      headline: Siamo contenti che desideri iscriverti a %{site}!
+      prompt_html: Crea un nuovo <strong>Socrata ID</strong>
+      terms_html: Cliccando sotto su "Crea il Mio Account", accetti i nostri <a href="http://www.socrata.com/terms-of-service" rel="external">Termini di Servizio</a> e <a href="http://www.socrata.com/privacy" rel="external">Norme sulla Privacy.</a>
+      third_party: Dopo aver acceduto, le tue credenziali di terze parti saranno associate a questo account.
+      third_party_return: Prima di utilizzare queste credenziali, devi
+      third_party_return_create: creare un account Socrata
+      third_party_return_link: associarlo ad un Socrata ID esistente
+  support:
+    array:
+      last_word_connector: ! ', e '
+      two_words_connector: ! ' e '
+    array_or:
+      last_word_connector: ! ', o '
+      two_words_connector: ! ' o '

@@ -1,0 +1,1654 @@
+ru:
+  account:
+    common:
+      form:
+        confirm_password: Подтвердите пароль
+        display_name: Отображаемое наименование
+        email: Адрес электронной почты (ЭП)
+        forgot_password: Забыли пароль?
+        lockout_warning: В целях безопасности предусмотрено, что три неудачных попытки входа в систему за 15 минут приводят к блокировке учетной записи на 30 минут.
+        no_account: У вас нет регистрационной записи?
+        password: Пароль
+        password_requirements: ! 'Пароль обязателен. Ваш пароль должен включать от 8 до 40 символов и удовлетворять трем из четырех критериев, а именно, в нем должны быть: одна цифра, одна буква в нижнем регистре, одна буква в верхнем регистре, один символ, не относящийся к категории буквенно-цифровых символов.'
+        password_requirements_html: <p>Ваш пароль должен включать <b>от 8 до 40 символов</b> и удовлетворять  <b>трем из четырех критериев, а именно, в нем должны быть</b>:</p><p></p><ul><li>• одна цифра</li><li>• одна буква в нижнем регистре</li><li>• одна буква в верхнем регистре</li><li>• один символ, не относящийся к категории буквенно-цифровых символов</li></ul>
+        password_restrictions: Действуют ограничения
+        remember_me: Запомнить меня
+        sign_up_prompt: Войти в систему
+      inline_auth:
+        sign_in_headline: Для входа в систему Socrata введите регистрационное имя (ID)
+        sign_up_headline: Мы рады, что вы решили зарегистрироваться  %{site}!
+      rpx:
+        description: Воспользуйтесь дополнительными возможностями, которые дают эти регистрационные записи и войдите в систему одним нажатием «мышки».
+        prompt:
+          sign_in: Или... Используйте одну из этих регистрационных записей для входа в систему.
+          sign_up: Или... Используйте одну из этих регистрационных записей для регистрации.
+        providers:
+          facebook:
+            sign_in_html: <strong>Подключиться </strong> к Facebook
+            sign_up_html: <strong>Подключиться </strong> к Facebook
+          google:
+            sign_in_html: <strong>Войти</strong> через Google
+            sign_up_html: <strong>Зарегистрироваться</strong> через Google
+          openid:
+            sign_in_html: <strong> Войти</strong> через OpenID
+            sign_up_html: <strong> Зарегистрироваться</strong> через OpenID
+          twitter:
+            sign_in_html: <strong> Подключиться</strong> к Twitter
+            sign_up_html: <strong> Подключиться</strong> к Twitter
+      validation:
+        mismatch: Пароли не совпадают
+        terms: Необходимо принять условия предоставления услуг и политику конфиденциальности
+  controls:
+    browse:
+      actions:
+        about:
+          button: Общие сведения
+          title: Об этом массиве данных
+        all_options: Смотреть все
+        clear_all: Очистить все дополнительные параметры
+        clear_facet: (Все)
+        compact_list: В виде краткого списка
+        create_dataset: Создать или загрузить ваш собственный массив данных
+        create_dataset_short: Создать новый массив данных
+        create_dataset_verb: Создать
+        dataset_subscribe: Подписаться на изменения в этом режиме просмотра
+        delete:
+          button: Удалить
+          confirm: Вы действительно хотите удалить %{dataset}?
+          title: Удалить эту позицию
+        expand_section: Нажмите «мышкой» для увеличения
+        less_options: Смотреть меньше
+        manage_api:
+          button: Работа
+          title: Работа с этим ППИ
+        moderation:
+          accept: Принять
+          reject: Отказать
+        permissions:
+          change_button:
+            private_html: Ограничить доступ
+            public_html: Сделать общедоступным
+          title: Изменить режим открытого доступа
+        rich_list: В виде развернутого списка
+        share_button: Передать
+        subscribe: Подписаться
+        suggest_dataset: Не нашли? Укажите массив данных.
+        suggest_dataset_short: Укажите массив данных
+        suggest_dataset_verb: Укажите
+      back_to_dataset: Вернуться в массив данных
+      facets:
+        categories_singular_title: Категория
+        categories_title: Категории
+        federated_domains_singular_title: Домен
+        federated_domains_title: Интегрированные домены
+        moderation_status:
+          accepted: Принято
+          pending: Идет обработка
+          rejected: Не принято
+        moderation_status_singular_title: Модерирование
+        moderation_status_title: Состояние модерирования запроса
+        topics_singular_title: Тема
+        topics_title: Темы
+        view_types:
+          apis: ППИ (прикладные программные интерфейсы)
+          blob: Файлы и документы
+          calendars: Планы-графики
+          charts: Графики и диаграммы
+          datasets: Массивы данных
+          filters: Отображения с установленными фильтрами
+          forms: Бланки
+          href: Массивы данных из внешних источников
+          maps: Карты
+          unpublished: Неопубликованные массивы данных
+        view_types_singular_title: Тип
+        view_types_title: Типы отображения данных
+      listing:
+        comment_count: Количество замечаний
+        federation_source: Результаты интегрированного поиска %{source}
+        federation_source_html: Предоставлено %{source_link}
+        no_results: Результаты не найдены
+        result_count: Показано %{this} из %{total}
+        table_header:
+          name: Имя
+          popularity: Популярность
+          rss: RSS
+          type: Тип
+        timeout: Извините. В настоящее время результаты извлечь невозможно. Попробуйте позже.
+      row_results:
+        less_link: Меньше
+        more_link: Больше
+        title_html: ! 'Показано <span class="rowResultCountText"></span> из <span class="totalResultCountText"></span> подходящих строк <a href="#" class="rowSearchLink">(смотреть результаты)</a>:'
+      search: Поиск
+      sort_period_title: Период сортировки
+      sort_periods:
+        month: Этот месяц
+        week: Эта неделя
+        year: Этот год
+      sort_title: Сортировать по
+      sorts:
+        alpha: в алфавитном порядке
+        comments: Больше всего отзывов
+        last_modified: Недавно обновленные
+        most_accessed: по популярности
+        newest: Самые новые
+        oldest: Самые старые
+        rating: Лучшие по оценкам
+        relevance: по соответствию тематике
+      title:
+        default: Поиск и просмотр массивов данных и типов отображения
+        result:
+          facet: ! '%{facet_type} __ %{facet_value}'
+          facet_main: сопоставления %{body}
+          main: Результаты %{body}
+          term: для "%{term}"
+    charts:
+      series_grouping:
+        calculating_time: Расчет оставшегося времени...
+        calculation_running: Подготовка данных
+        drawing_progress: Это может занять некоторое время…
+        drawing_running: Рисование диаграммы
+        pause_button_explanation1: Совет Занимает слишком много времени? Сделайте паузу и создайте Фильтр
+        pause_button_explanation2: ! ', чтобы ограничить количество необходимых вычислений.'
+        pause_rendering: Переры́в
+        rendering_paused: Подготовка данных приостановлена
+        rendering_progress: ! '%{rows_remaining} строк осталось.'
+        rendering_progress_almost_done: ! '%{rows_remaining} строк осталось, еще пару секунд'
+        rendering_progress_minute: ! '%{rows_remaining} строк осталось, еще приблизительно %{time_remaining} мин.'
+        rendering_progress_minutes: ! '%{rows_remaining} строк осталось, еще приблизительно %{time_remaining} мин.'
+        rendering_progress_seconds: ! '%{rows_remaining} строк осталось, еще приблизительно %{time_remaining} сек.'
+        resume_rendering: Возобновить
+    common:
+      auth_required: Вы должны зарегистрироваться %{action_phrase},
+      dataset_picker:
+        button: Выберите
+        title: Выберите набор данных для использования
+      expander:
+        collapse: Щелкните, чтобы свернуть
+        expand: Щелкните, чтобы развернуть
+      image_upload:
+        button: Загрузить изображение
+      rate:
+        auth_action_phrase: чтобы дать оценку этому массиву данных
+      share:
+        button_prompt: Коллективная работа
+        button_tooltip: Передать этот массив данных
+        networks:
+          email: Адрес эл. почты
+          facebook: Facebook
+          twitter: Twitter
+        share_text: ! 'Ознакомьтесь с массивом данных %{name}, на %{site}: '
+      sidebar:
+        tabs:
+          about: Об этом массиве данных
+          discuss: Обсудить
+          edit: Редактировать
+          embed: Вставить
+          export: Экспортировать
+          filter: Фильтровать
+          manage: Управлять
+          moreViews: Другие режимы отображения
+          visualize: Визуализация
+      stars:
+        tooltip: ! '%{number} звезд'
+      visualization:
+        in_bing: Просмотреть в Bing Maps
+        in_google: Просмотреть в Google Maps
+        row_details: Подробные сведения об этой строке
+    embed:
+      create_template_button: Создать новый шаблон
+      custom_size: Настройка размера
+      embed: Вставить этот массив данных
+      form_frame: Вставить этот формуляр в Рамке
+      form_or: Или
+      form_plain: Вставить этот формуляр в формате Plain HTML
+      height: Высота
+      minimum_size: 425x425 – минимальный размер
+      private_warning: Этот элемент отображения в настоящее время находится в ограниченном доступе. Вы можете открыть его в режиме предварительного просмотра, но для того, чтобы его могли увидеть другие, вы должны сделать его общедоступным.
+      sdp_template: Шаблон для отображения социальных данных
+      size: Размер
+      template: Шаблон
+      width: Ширина
+    feed:
+      authed_actions:
+        delete_comment: удалить замечание
+        flag_comment: пометить замечание флажком
+        post_comment: разместить замечание
+        rate_comment: дать оценку замечанию
+      comment_actions:
+        already_marked_inappropriate: Помечен флажком
+        delete: Удалить
+        delete_confirm: Вы уверены? Ваше замечание будет утрачено.
+        inappropriate: Неприемлемый
+        marked_inappropriate: Помечен флажком!
+        rate_down: Понизить оценку этого замечания
+        rate_up: Повысить оценку этого замечания
+        reply: Ответить
+      comment_form:
+        cancel_button: Отмена
+        empty_body_error: Эта графа для замечания не может быть пустой.
+        header: Новое замечание
+        post_button: Разместить
+      header:
+        add_comment: Добавить замечание
+        cell_comment_header_html: Замечания по строке <span class="rowName"></span>, столбцу <span class="columnName"></span>
+        feed_filter_label: Показать
+        pending_moderation: Ваше замечание подано и ожидает санкции модератора
+      listing:
+        all_replies: Смотреть все ответы
+        all_replies_with_count: Смотреть все %{count} ответы
+        last_item: Посмотреть последний элемент
+        next_item_page: Смотреть следующие %{count} элементы
+        no_results: Нет элементов для показа
+        user_create_action: ! 'создан %{thing}:'
+      types:
+        all items: все элементы
+        comments: Замечания
+        views: Просмотры
+    filter:
+      actions:
+        confirm_modify: Это действие приведет к удалению всех значений из вашего фильтра! Вы уверены в необходимости выполнить это действие?
+        disable_filter: Не фильтровать
+        first_condition: Нажать здесь для ввода вашего первого критерия фильтрации
+        new_condition_button: Добавить новый критерий фильтрации
+        remove_filter: Удалить фильтр
+        select_column: ! 'Выбрать столбец для фильтрации по:'
+        select_operation: ! 'Выбрать операцию для фильтрации по:'
+        select_subcolumn: ! 'Выбрать часть %{name} для фильтрации по:'
+      edit_default:
+        advanced_body: Это означает, что у них будет полный доступ к вариантам настройки фильтра. Для обеспечения большего контроля попробуйте работать в упрощенном режиме.
+        advanced_header: Абоненты будут начинать работу с расширенного режима.
+        advanced_toggle: Изменить стандартную установку на упрощенный режим.
+        auto_suggested: Предлагаемые значения  в этом режиме управления определяются автоматически.
+        cancel_button: Отмена
+        done_button: Выполнено
+        instructions: ! 'Для создания фильтров используйте инструменты в верхней части окна, скорректируйте представленные значения, выберите количество предлагаемых фильтром значений и т.д. Когда вас устраивают все необходимые варианты настройки, нажмите «Выполнено» в нижней части для сохранения этих вариантов:'
+        manual_suggested_html: Показать до <select class="autogeneratedCount"></select> предлагаемых значений
+        mode_button: Редактировать стандартный фильтр
+        mode_message: ! 'Как субъект, публикующий это изображение, вы можете определить стандартный массив фильтров, который будет предъявляться всем посетителям:'
+        save_confirm: Если вы продолжите, все несохраненные изменения будут утрачены. Прежде чем продолжать, необходимо сохранить все нужные изменения.
+        simplified_body: Это означает, что они не смогут добавлять новые критерии, изменять столбцы и команды фильтров, осуществлять доступ к расширенным меню фильтров.
+        simplified_header: Абоненты будут начинать работу с упрощенного режима.
+        simplified_toggle: Изменить стандартную установку снова на расширенный режим.
+      main:
+        filter: Фильтр
+        filter_based_on_contents: Фильтровать этот массив данных по содержанию.
+        no_conditions: Критерии еще не определены.
+        no_suggestions: Нет предлагаемых значений для этого столбца и знака операции.
+        or: или
+        simplified_message: Вы работаете в упрощенном режиме.
+        simplified_toggle: Перейти в расширенный режим?
+        tutorial_html: Не умеете создавать фильтры? Посмотрите краткий видеоинструктаж <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">здесь</a>.
+        view_has_no_columns: В этом отображении нет столбцов для фильтрации
+        view_must_be_valid: Это отображение должно быть допустимым
+      menu:
+        match_all: Соответствие всем критериям
+        match_any: Соответствие любому критерию
+        select_many: Выбрать много
+        select_one: Выбрать одно
+        show_suggested: Показать предлагаемые значения
+        title: опции
+    grid:
+      clear_column_filter: Отключить фильтр столбцов
+      clear_sort: Очистить сортировку
+      click_for_menu: Нажать «мышкой» для вызова Меню
+      click_to_sort: Щелкните, чтобы отсортировать
+      column_info: Сведения о столбце
+      delete_column: Удалить столбец
+      delete_row: Удалить строку
+      delete_warning_multi_column: Вы хотите удалить выделенные столбцы? Все данные этих столбцов будут удалены!
+      delete_warning_single_column: Вы хотите удалить выделенный столбец? Все данные этого столбца будут удалены!
+      edit_column_properties: Редактировать свойства столбца
+      filter_this_column: Применить фильтр к этому столбцу
+      hide_column: Скрыть столбец
+      menu: Меню
+      must_enter_name: Вы должны ввести наименование для этого столбца
+      new_row: Новый
+      no_rows: Нет строк для отображения
+      previous: Предыдущий
+      sort_ascending: Сортировать в порядке возрастания
+      sort_descending: Сортировать в порядке убывания
+      view_first_row: Просмотреть первую строку
+      view_last_row: Просмотреть последнюю строку
+      view_next_row: просмотреть следующую строку
+      view_previous_row: Просмотреть предыдущую строку
+      view_single_row: Смотреть данные одной строки
+      viewing_row_html: Обзор строки <span class=”curPage”></span> из <span class=”totalPages”></span>
+    nominate:
+      all: Все
+      approve: (Одобрить)
+      approve_tip: Утвердите этот вариант
+      approved: Одобренные
+      attachment: Вложение
+      attachments: Приложения
+      back_to_suggestions: Вернуться к вариантам наборов данных
+      browse: Обзор
+      cancel: Отменить
+      comments: Комментарии
+      contact_author: Связаться с автором варианта
+      dataset_suggestions: Предложения для массивов данных
+      delete_attachment: вложение
+      delete_confirm: Действительно удалить это %{type}?
+      delete_error: Ошибка при удалении %{type}
+      delete_suggestion: предложение
+      description: Описание
+      description_prompt: Введите сведения о вашем предложении
+      details: Подробности
+      edit: (Изменить)
+      edit_suggestion: Изменить это предложение
+      files: Файлы
+      filter_by_status: Фильтровать по статусу
+      form_error: Исправьте указанные выше ошибки
+      great_sadness: Ошибка при связи с автором предложения. Повторите попытку позже.
+      greater_success: Ваше сообщение отправлено автору предложения.
+      message: Сообщение
+      message_prompt: Введите свое сообщение
+      moderate: (Модерировать)
+      moderate_error: Ошибка при изменении статуса
+      moderate_tip: Принять это предложение и выставить его на голосование
+      needs_moderation: Требует модерации
+      new: Новые
+      no_result: Нет результатов
+      open: Открытые
+      rate_down: Мне не нравится
+      rate_up: Мне нравится
+      rating: Рейтинг
+      rating_error: Ошибка при оценка предложения
+      reject: Отклонить
+      reject_tip: Отклонить это предложение
+      rejected: Отклоненные
+      remove: (Удалить)
+      remove_tip: Удалить это предложение
+      required: Обязательно
+      status: Статус
+      submit: Отправить
+      submitted_by: Отправитель
+      suggest_a_dataset: Предложить набор данных
+      suggestion_received: Ваше предложение получено и находится в очереди на утверждение. Оно появится на этой странице, как только его одобрит  администратор.
+      suggestion_updated: Ваше предложение обновлено.
+      title: Заголовок
+      title_prompt: Введите заголовок
+      user_removed: пользователь, который был уже удален
+      user_removed_short: Пользователь был удален
+  core:
+    aggregates:
+      average: Средний
+      count: Количество
+      maximum: Максимум
+      minimum: Минимум
+      sum: Сумма
+    alignment:
+      center: По центру
+      left: Слева
+      right: Справа
+    analytics:
+      visit: вид
+      visits: виды
+    and: и
+    chart_types:
+      area: Комбинированная гистограмма
+      bar: Столбцовая диаграмма
+      bubble: Пузырьковая диаграмма
+      column: Прямоугольная диаграмма
+      donut: Кольцевая диаграмма
+      line: Линейный график
+      pie: Секторная диаграмма
+      stackedbar: Многоярусная столбцовая диаграмма
+      stackedcolumn: Многоярусная прямоугольная диаграмма
+      timeline: Временная ось
+      treemap: Древовидная карта
+    data_types:
+      calendar_date: Дата и время
+      checkbox: Окно флажка
+      dataset_link: Ссылка на массив данных
+      date: Дата и время (с указанием часового пояса)
+      document: Документ
+      drop_down_list: Множественный выбор
+      email: Адрес эл. почты
+      flag: Флажок
+      geospatial: Геопространственный
+      html: Форматированный текст
+      link: Ссылка на столбец
+      list: Список
+      location: Местоположение
+      money: Деньги
+      nested_table: Вложенная таблица
+      number: Число
+      object: Объект
+      percent: Проценты
+      phone: Телефон
+      photo: Фото (изображение)
+      stars: Звездочка
+      text: Текст в текстовом формате
+      url: URL сайта
+    date_time:
+      centuries_future: ! '%{time} через в.'
+      centuries_past: ! '%{time} в. назад'
+      current_century_future: в нашем веке
+      current_century_past: в нашем веке
+      current_day_future: сегодня
+      current_day_past: сегодня
+      current_hour_future: в течение часа
+      current_hour_past: в течение часа
+      current_minute_future: прямо сейчас
+      current_minute_past: прямо сейчас
+      current_month_future: в текущем месяце
+      current_month_past: в текущем месяце
+      current_week_future: на этой неделе
+      current_week_past: на этой неделе
+      current_year_future: в этом году
+      current_year_past: в этом году
+      days_future: ! '%{time} через д.'
+      days_past: ! '%{time} д. назад'
+      hours_future: ! '%{time} через ч.'
+      hours_past: ! '%{time} ч. назад'
+      minutes_future: ! '%{time} через мин.'
+      minutes_past: ! ' %{time} мин. назад'
+      months_future: ! '%{time} через мес.'
+      months_past: ! '%{time} мес. назад'
+      single_century_future: в следующем веке
+      single_century_past: в прошлом веке
+      single_day_future: завтра
+      single_day_past: вчера
+      single_hour_future: Через 1 час
+      single_hour_past: 1 час назад
+      single_minute_future: Через 1 минуту
+      single_minute_past: 1 минуту назад
+      single_month_future: в следующем месяце
+      single_month_past: прошлый месяц
+      single_week_future: на следующей неделе
+      single_week_past: прошлая неделя
+      single_year_future: в следующем году
+      single_year_past: прошлый год
+      unknown: некоторое время
+      weeks_future: ! '%{time} через нед.'
+      weeks_past: ! '%{time} нед. назад'
+      years_future: ! '%{time} через лет (года)'
+      years_past: ! '%{time} лет (года) назад'
+    dialogs:
+      apply: Применить
+      cancel: Отменить
+      close: Закрыть
+      continue: Продолжить
+      create: Создать
+      delete: Удалить
+      done: Выполнено
+      dont_save: Не сохранять
+      logout: Вы вышли из системы.
+      save: Сохранить
+      session_timeout:
+        notice: Ваш сеанс завершен в интересах вашей безопасности. Пожалуйста, войдите снова, чтобы продолжить.
+        warning:
+          belay_button: Не завершайте мой сеанс!
+          body_html: Мы не обнаружили какую-либо активность в течение нескольких минут. Для обеспечения конфиденциальности мы завершим ваш сеанс через <span id="secondsRemaining"></span> сек.
+          title: Ваш сеанс заканчивается.
+      update: Обновить
+    expando:
+      expand: Увеличить
+      prompt: Нажмите, чтобы увеличить изображение
+    features:
+      allow_comments: Комментарии
+      cell_comments: Комментарии в ячейках
+    filters:
+      formal:
+        between: между
+        contains: содержит
+        equals: Равно
+        greater_than: больше, чем
+        greater_than_or_equals: больше или равно
+        is_blank: пустой
+        is_not_blank: не пустой
+        less_than: меньше, чем
+        less_than_or_equals: меньше или равно
+        not_contains: не содержит
+        not_equals: не равно
+        starts_with: ! 'начинается с '
+      informal:
+        between: находится между
+        contains: содержит
+        equals: является
+        greater_than: больше, чем
+        greater_than_or_equals: не менее, чем
+        is_blank: пустой
+        is_not_blank: не пустой
+        less_than: меньше, чем
+        less_than_or_equals: не более, чем
+        not_contains: не содержит
+        not_equals: не является
+        starts_with: начинается с
+    forms:
+      none: Нет
+      required_field: Заполнять обязательно
+    group_function:
+      date_day: День
+      date_month: Месяц
+      date_year: Год
+    interstitial:
+      leaving_explanation_html: Этот <span class="datasetType">массив данных</span> размещен <a href="\#" rel="external" class="externalDomain">на другом домене</a>.
+      leaving_notice_html: Вы покидаете <span class="serverName">%{site_name}</span>
+    map_layers:
+      aerial: АФС (аэрофотоснимок)
+      bing_aerial: АФС Bing
+      bing_roadmap: Карта автомобильных дорог системы Bing
+      bing_roadmap_alias: Bing
+      esri_natural_earth: Карта 3-d Natural Earth (ESRI)
+      esri_natural_earth_alias: Карта 3-d Natural Earth
+      esri_satellite: Спутниковая карта (ESRI)
+      esri_us_topo: Подробная топографическая карта США (ESRI)
+      esri_us_topo_alias: Топографическая карта США
+      esri_world_street_map: Планы городов мира (ESRI)
+      esri_world_street_map_alias: Планы городов мира
+      esri_world_topo: Топографическая карта мира с указателями (ESRI)
+      esri_world_topo_alias: Топографическая карта мира
+      google_roadmap: Карта автомобильных дорог Google
+      google_roadmap_alias: Google
+      google_satellite: ! 'Спутниковая карта системы Google '
+      google_terrain: ! 'Карта рельефа системы Google '
+      roadmap: Карта автомобильных дорог
+      satellite: Спутниковая карта
+      terrain: Карта рельефа
+    or: или
+    pagination:
+      first_page: Первая страница
+      last_page: Последняя страница
+      next_page: Следующая страница
+      previous_page: Предыдущая страница
+    precision_style:
+      scientific: Научный (1.0204e+3)
+      standard: Стандартный (1020.4)
+    share_types:
+      contributor: Автор
+      owner: Владелец
+      view: Программа просмотра
+      viewer: Программа просмотра
+    validation:
+      accept: Введите значение с действительным расширением.
+      date: Введите допустимую дату.
+      dateISO: Введите допустимую дату (ISO).
+      digits: Введите только цифры.
+      email: Введите действительный адрес эл. почты.
+      equalTo: Введите то же значение повторно.
+      max: Введите значение не больше {0}.
+      maxlength: Введите не более {0} символов.
+      min: Введите значение не меньше {0}.
+      minlength: Введите не менее (0} символов.
+      number: Введите достоверное число.
+      range: Введите значение от {0} до {1}.
+      rangelength: Введите значение с числом символов от {0} до {1}.
+      remote: Устраните недостаток в этой графе.
+      required: Заполнять обязательно.
+      url: Введите действительный URL.
+    view_types:
+      api: ! 'вид ППИ (API) '
+      blob: нетабличный документ
+      calendar: план-график
+      chart: график
+      dataset: массив данных
+      filter: вид с применением фильтра данных
+      form: страница
+      group: систематизированный по группам вид
+      grouped: систематизированный по группам вид
+      href: внешний массив данных
+      map: карта
+      table: таблица
+      working_copy: рабочая копия
+    view_types_plural:
+      api: ППИ (API)
+      calendar: Планы-графики
+      chart: Графики
+      filter: Виды с применением фильтров
+      form: Страницы (формы)
+      grouped: Систематизированные по группам виды
+      map: Карты
+    visibility:
+      private: ограниченного доступа
+      public: общедоступный
+  error:
+    back: Вернуться
+    error_500:
+      description_html: ! 'Попробуйте еще раз через несколько минут или <a href="http://support.socrata.com">направьте сообщение об этой ошибке</a> , с описанием ваших действий. '
+      somethings_wrong: Не получается!
+      were_sorry: Извините, при обработке вашего запроса возникла проблема.
+    not_acceptable_406:
+      page_not_found: Страница не найдена.
+      were_sorry: Извините, запрашиваемая страница не доступна в запрашиваемом формате.
+    not_found_404:
+      back_to: Вернуться
+      description_html: Эта страница не существует или перемещена. Лучше всего начать процедуру снова <a href="/">с главной страницы</a>. Если проблема повторится или вы не сможете найти то, что ищете, обращайтесь к нам. Спасибо.
+      page_not_found: Страница не найдена.
+      were_sorry: Извините, запрашиваемая страница не найдена.
+    permission_denied_403:
+      description_html: Если вы считаете, что это ошибка, попробуйте выйти из системы и вновь войти в качестве другого абонента <a href="/login">нажать здесь</a>.
+      no_permission: Нет разрешения на доступ к ресурсу.
+      were_sorry: Извините, видимо, у вас нет разрешения на доступ к этой странице.
+    to_whence_you_came: на предыдущую страницу.
+  screens:
+    about:
+      actions: Действия
+      activity: Операция
+      attachments: Приложения
+      category: Категория
+      comments: Замечания
+      community: Коллективная оценка
+      contact_dataset_owner: Связаться с владельцем массива данных
+      contributors: Авторы
+      created: Создано
+      data_provided_by: Данные предоставлены
+      description: Описание
+      downloads: Количество загрузок
+      edit_metadata: Редактирование метаданных
+      flag_dataset: Массив данных с флажком
+      license: Лицензия
+      licensing: Лицензии и авторство
+      links: Ссылки
+      meta: Мета
+      none: (нет)
+      permalink: Постоянная ссылка
+      permanent_links: Постоянные ссылки
+      permissions: Разрешения
+      private: Ограниченной доступности
+      public: Общедоступный
+      raters: Количество оценок
+      resource_name: Наименование ресурса
+      row_class: Класс строки
+      row_count: Количество строк
+      row_identifier: Идентификатор строки
+      semantics: Семантика языка программирования и схема описания ресурсов (RDF)
+      short_url: Краткий URL
+      snapshotted: снимок сделан
+      source_link: Ссылка на источник
+      spatial_extent: Пространственная протяженность
+      subject_column: Тематический столбец
+      tags: Теги
+      terms_of_use: Условия использования
+      updated: Обновлено
+      view_full_page: Вид во всю страницу
+      view_statistics: Показать статистику
+      visits: Количество посещений
+      your: Ваша оценка
+    ds:
+      bar:
+        api_unsavable: Виды из ППИ нельзя изменять
+        based_on_html: На основе <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_parent_html: На основе <a class="parentName"></a>
+        based_on_private_view: закрытый просмотр
+        based_on_working_copy_html: На основе рабочей копии <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        find_prompt: Найти в этом массиве данных
+        format:
+          bold: Жирный
+          bullet: Список с метками
+          color: Цвет шрифта
+          italic: Курсив
+          link: Ссылка
+          number: Пронумерованный список
+          redo: Повторить
+          strike: Зачеркнутый
+          underline: Подчеркивание
+          undo: Отменить
+        full_screen: Переключить в режим «во весь экран»
+        publish_button: Опубликовать массив данных
+        publish_prompt: Этот массив данных – рабочая копия, она недоступна для других абонентов. После внесения изменений вы должны ее опубликовать, тогда она станет доступной для других абонентов.
+        publish_rights: Этот массив данных может быть опубликован только его владельцем или публикующим субъектом
+        revert_button: Вернуться
+        revert_prompt: Вернуться к сохраненному виду
+        save_as_button: Сохранить как...
+        save_as_prompt: Сохранить вид как...
+        save_button: Сохранить
+        save_progress: Сохранение...
+        save_prompt: Сохранить текущий вид
+        share_email: Распространить по эл. почте
+        share_facebook: Распространить в Facebook
+        share_twitter: Распространить в Twitter
+        snapshot_notice: Это – ранее опубликованный вариант массива данных. Он в архивном формате, в него невозможно внести изменения.
+        snapshot_title: Снимок сделан %{date}
+        snapshot_title_html: Моментальный снимок от %{date}
+        snapshot_unsavable: Моментальные снимки массивов данных и видов невозможно сохранить или изменить
+        subscribe: Подписаться на изменения
+        subscribe_prompt: Подписаться по эл. почте через удаленную станцию (RSS)
+        unpublished_unsavable: Изменения, внесенные в расположенные ниже данные, сохраняются автоматически. Фильтры и результаты поисков в рабочей копии массива данных не сохраняются. Создайте вид в опубликованном массиве данных.
+        unsaved_title: Несохраненный вид
+        view_published_html: Смотреть опубликованный <span class="publishedName">массив данных</span>
+        view_type: Смотреть в виде %{type}
+        view_types:
+          calendar: плана-графика
+          chart: Диаграммы
+          fatrow: расширенного списка
+          map: Карты
+          page: одной строки
+          table: Таблицы
+        working_copy_notice: Это копия массива данных, в которую можно вносить изменения. Эта копия недоступна для других абонентов, пока вы ее не опубликуете.
+        working_copy_title: ! '["Working Copy"]'
+      blob:
+        data_extraction: Справа – ссылка на это средство или приложение для вывода данных
+        download: Загрузить
+        external_link: Ссылка на внешний источник
+        js_required: Для использования программы просмотра документов внутри вашей программы быстрого просмотра требуется язык Java.
+        js_required_download:
+          click_here: нажать здесь
+          prompt_html: Чтобы загрузить этот файл, %{click_here}.
+        limited_download: Этот массив данных организован не в виде таблиц и степень интерактивности данных может быть ограничена, но вы можете загрузить этот массив данных
+      column_tip:
+        aggregate: (%{aggregate} по %{data_type})
+        field_name: Имя поля API
+        original_name: Первоначальное наименование
+      dataset_contact:
+        captcha_failed: Ответ неверный, попробуйте еще раз.
+        error_message: При отправке отзыва об этом массиве данных произошла ошибка. Попробуйте позже.
+        form:
+          email: Ваш адрес эл. почты
+          email_prompt: Ваш адрес эл. почты будет передан владельцу этого массива данных для направления ответа.
+          message: Краткое сообщение
+          purpose: Цель
+          purposes:
+            copyright_violation: Нарушение авторских прав
+            offensive_content: Оскорбительный контент
+            personal_information: Персональные данные
+            prompt: -- Выбрать цель --
+            spam: Спам или ненужное сообщение
+          send_button: Отправить
+          subject: Тема
+        other_subject: Один из посетителей направил вам сообщение о вашем '%{dataset_name}' '%{site}' массиве данных
+        reasons:
+          copyright_violation: из-за нарушения авторских прав
+          offensive_content: из-за наличия оскорбительного контента
+          personal_information: из-за того, что содержит персональные данные
+          spam: как возможный спам
+        subject: Ваш массив данных "%{dataset_name}" помечен флажком %{reason}
+        success_message: Владелец массива данных уведомлен.
+        validation:
+          no_body: В основной части сообщения должен быть текст.
+          no_email: Вы должны указать ваш адрес эл. почты.
+          no_purpose: Вы должны выбрать цель сообщения.
+          no_subject: Вы должны выбрать тему сообщения.
+      dataset_status:
+        copy_available: Рабочая копия готова. Когда будете готовы к редактированию, нажмите кнопку «Редактировать массив данных».
+        copy_in_progress: Подождите, идет изготовление рабочей копии. %{additional}
+        copy_in_progress_additional:
+          processing: Обрабатывается (started %{time})
+          queued: Находится в очереди на обработку (queued %{time}; %{totalQueued} total in line)
+        edit_dataset_button: Редактировать массив данных
+        error_publishing_html: При изготовлении рабочей копии вашего массива данных произошла ошибка. Обратитесь <a href="http://support.socrata.com" rel="external">в службу технической поддержки фирмы «Socrata»</a>.
+        needs_copy: Этот массив данных опубликован, в него нельзя вносить изменения.   %{status} , рабочая копия, в которую вы сможете вносить изменения, а затем сделать их доступными для других абонентов.
+        needs_copy_status:
+          available: Имеется
+          can_be_made: можно сделать
+      email:
+        add_email: Добавить еще
+        email_button: Адрес эл. почты
+        message_prompt: Ввести другой вариант сообщения
+        private_notice: ! 'Уведомление: %{displayName} сейчас в частном режиме просмотра. Отправка по электронной почте предоставит доступ всем получателям.'
+        prompt_html: ! 'Передать <span class="datasetName">%{name}</span> по следующим адресам эл. почты:'
+        remove_email: Удалить
+        success: Ваше сообщение успешно отправлено.
+        title_html: Передать “<span class="datasetName">%{name}</span>”
+      grid_sidebar:
+        add_column:
+          convert_address:
+            city: Город
+            city_prompt: Ввести название города
+            state: Штат
+            state_prompt: Ввести название штата
+            street: Улица
+            title: Использовать имеющиеся столбцы с адресами
+            zip_code: Почтовый индекс
+            zip_code_prompt: Ввести почтовый индекс
+          convert_latlong:
+            latitude: Широта
+            longitude: Долгота
+            title: Использовать текущие координаты широты и долготы
+          multiple_choice:
+            add_option_button: Добавить вариант
+            option: Вариант
+            title: Варианты для выбора
+          nested_table:
+            default_column_name: Без названия
+          subtitle: Добавить новый столбец в ваш массив данных
+          success: Ваш столбец добавлен
+          title: Добавить столбец
+          validation:
+            view_column: Невозможно добавить столбец в режиме отображения
+        api:
+          column_ids_title: ! 'Идентификаторы столбцов:'
+          endpoint_title: ! 'Конечная точка ППИ для доступа:'
+          intro_html: ППИ <strong>для открытых данных фирмы Socrata</strong> (SODA) позволяет разработчикам компьютерных программ осуществлять доступ к данным на сайтах Socrata при помощи программ. Разработчики могут создавать прикладные программы, которые используют ППИ SODA для визуального отображения и &ldquo; комбинирования&rdquo; массивов данных Socrata новыми и увлекательными способами. Создайте прикладную программу для iPhone, которая позволит создавать визуальное отображение данных о расходов государственных органов в вашем районе, интернет-приложение, которое позволит гражданам получать справки о возможных льготах, о которых они не знали, либо подключить услугу, предусматривающую автоматическое уведомление по эл. почте о внесении новых положений в законопроекты, за которыми вы следите.
+          reference_html: Чтобы осуществлять доступ к этому массиву данных через программы, используйте  указанную ниже конечную точку ППИ (API). Более подробная информация и примеры использования Socrata Open Data API – в нашей <a href="http://dev.socrata.com" rel="external">Документации для разработчиков</a>.
+          subtitle: Осуществить доступ к этому %{view_type} через SODA
+          title: ППИ (API)
+        apis:
+          create_button: Создать ППИ (API)
+          create_button_prompt: Создать прикладной программный интерфейс (ППИ) для работы с данными в указанной программе.
+          manage_button: Управлять
+          manage_button_prompt: Управлять выбранным ППИ
+          prompt_existing_html: <strong>Параметры действующих ППИ</strong> можно изменить. Вы можете регулировать выдачу разрешений, устанавливать предельное количество запросов, выводить показатели просмотров, редактировать документацию.
+          prompt_new_html: <strong>Функция создания и изменения ППИ</strong> позволяет создавать и изменять параметры одного или нескольких открытых, соответствующих стандартам прикладных программных интерфейсов (ППИ) для этого массива данных.
+          subtitle: Создать и изменить ППИ (API)
+          title: ППИ (API)
+        append_replace:
+          subtitle:
+            immutable: Загрузить в систему новый файл данных, содержание которого заменит имеющиеся данные.
+            mutable: Загрузить в систему новый файл данных, содержание которого будет добавлено к имеющимся данным или заменит их.
+          title:
+            immutable: Заменить
+            mutable: Добавить и заменить
+          wizard_button:
+            immutable: Включить Мастер замены
+            mutable: Включить Мастер добавления и замены данных
+        base:
+          buttons:
+            apply: Применить
+            cancel: Отмена
+            create: Создать
+            done: Выполнено
+            remove: Удалить
+            update: Обновить
+          color_select:
+            prompt: Выбрать цвет
+          column_select:
+            from_grid: Выбрать столбец из сетки
+            prompt: Выбрать столбец
+            unselect: Отменить выбор столбца
+          datatypes:
+            checkbox: флажок
+            dataset_link: ссылка на набор данных
+            date_time: Дата и время
+            date_time_timezone: Дата и время (с часовым поясом)
+            document: Документ
+            email: эл. почта
+            flag: флаг
+            formatted_text: Форматированный тест
+            geospatial: геопространственное
+            list: Список
+            location: расположение
+            money: Деньги
+            multiple_choice: Несколько вариантов
+            nested_table: Вложенная таблица
+            number: Номер
+            object: Объект
+            percent: Процент
+            phone: Телефон
+            photo: Фотография (изображение)
+            plain_text: Обычный текст
+            star: звезда
+            website_url: URL-адрес веб-узла
+          generic_select:
+            prompt: Выбрать значение
+          validation:
+            at_least: Значение должно быть не меньше %{value}
+            different_value: Введите другое значение.
+            file_format: ! '%{format} файл обязателен'
+            identifier_format: ! 'Допустимые символы идентификатора ППИ (API): буквы в нижнем регистре, цифры и подчеркивание. Идентификатор должен начинаться с буквы, два подчеркивания подряд не допускаются.'
+            invalid_url: Этот URL не действителен
+            invalid_value: Это неверное значение.
+            invalid_values: С указанными значениями возникли проблемы. Ошибки указаны выше.
+            invalid_view: Этот режим отображения должен быть приемлемым.
+            no_greater: Значение должны быть не больше %{value}
+            numeric: Значение должно быть числом
+            uid_required: Для этого требуется универсальный идентификатор
+            verifying_url: Проверка URL
+        calendar:
+          dates:
+            end: Дата окончания
+            start: Дата начала
+            title: Даты
+          information:
+            details: Подробности
+            event_title: Наименование события
+            new_details_button: Добавить подробности
+            title: Сведения о событии
+          subtitle: Изображения с датами можно выводить в помесячном формате
+          title: Календарь
+          validation:
+            invalid_columns: Это изображение должно иметь столбец с датой и столбец с текстом
+            viz_limit: На изображении может быть только один элемент визуального представления
+        chart:
+          advanced: Дополнительная конфигурация
+          annotation: Пояснение
+          axes:
+            x_axis_title: Наименование оси X
+            x_axis_title_prompt: Введите наименование оси Х
+            y_axis_title: Наименование оси Y
+            y_axis_title_prompt: ! 'Введите наименование оси Y '
+          base_color: Фоновый цвет
+          categories: Категориям
+          color_override_html: Цвета можно отменить через <a href="#Conditional Formatting" class="showConditionalFormatting">условное форматирование</a>. Нажать <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">здесь</a> , чтобы отменить любые действующие правила условного форматирования.
+          colors: Цвета
+          configuration: Конфигурация
+          data_columns:
+            new_data_column_button: Добавить столбец данных
+            title: Столбцы данных
+          data_labels: Метки данных
+          date: Дата
+          details: Подробности
+          draw_line: Провести линию
+          dsg_color_override_html: ! 'Внимание: группирование ряда данных отменит цвета, выбранные для ваших столбцов данных. Это отменит ваш <a href=”#Conditional Formatting” class=”showConditionalFormatting”>Conditional Formatting</a>'
+          error_bars:
+            color: Цвет
+            high: Высокий
+            low: Низкий
+            title: Строки ошибки
+          flyout:
+            new_details_button: Добавить параметры «всплывающего» меню
+            title: Параметры «всплывающего» меню
+          group_extra: Группировать дополнительные значения
+          groups: Группы
+          label: Метка
+          labelInBar: Метка на панели
+          legend:
+            conditional_formats: Описание условных форматов
+            custom_entry: Индивидуальная метка
+            display: Отображение
+            new_custom_entry_button: Добавить свое условное обозначение
+            position: Условные обозначения
+            position_prompt: Выбрать расположение
+            positions:
+              bottom: Внизу
+              left: Слева
+              none: Нет
+              right: Справа
+              top: Сверху
+            series: Описание рядов данных
+            title: Настройка условных обозначений
+            value_markers: Описание маркеров данных
+            values: Опишите значения
+          marker:
+            caption: Надпись
+            new_marker_button: Добавить маркер
+            title: ! '%{axis} Маркер'
+            value: При значении
+          min_angle: Минимальный угол
+          names: Наименованиям
+          pie_other: ! 'Внимание: %{chart_type} будет агрегировать отдельные значения (строки) свыше установленного предельного количества значений  %{row_limit}в категорию «Прочие». Попробуйте создать функцию «Агрегирование» или фильтр, которые будут ограничивать количество значений и затем создать график %{chart_type} этих значений.'
+          pie_truncate: ! 'Внимание: %{chart_type} будет отсекать массивы данных, в которых более %{row_limit} отдельных значений (строк). Попробуйте создать функцию «Агрегирование» или фильтр, которые будут ограничивать количество значений и затем создать график %{chart_type} этих значений.'
+          point_color: Цвет точки
+          point_size: Размер точки
+          point_title: Заголовок
+          series_group:
+            alphabetize: Сортировать группы по алфавиту
+            group_by: Группировать по
+            hideLoadingMsg: Скрыть сообщение о загрузке
+            new_column_button: Добавить столбец с рядами данных
+            row_limit_warning: С таким количеством строк группирование ряда данных будет выполняться крайне медленно.
+            title: Группировка рядов данных
+          setup:
+            title: Настройка графика
+            type: Тип графика
+            type_prompt: Выбрать тип графика
+          show_lines: Показать линии
+          show_percent: Показать % доли
+          show_points: Показать точки
+          show_values: Показать значения
+          smooth_line: Линия с равномерно распределенными параметрами
+          subtitle: Данные просмотра могут быть представлены в графиках различных типов
+          title: График
+          treemap_color_html: Эти цвета используются в схеме карт произвольно и служат только для визуальных различий. Они не имеют определенных значений.
+          validation:
+            count: 
+            required_columns: ! '%{chart_type} должно быть %{column_types} столбцов'
+            viz_limit: На изображении может быть только один элемент визуального представления
+          value: Значение
+          valueInBar: Значение на панели
+          values: Значения
+          y_axis_formatting:
+            abbreviate: Сократить
+            auto: Авто
+            axis_max: Максимальное значение на оси
+            axis_min: Минимальное значение на оси
+            axis_prompt: Введите число
+            no_decimals: Без десятичных знаков
+            precision: Точность
+            title: Форматирование оси Y
+        column_common:
+          basic:
+            description: Описание
+            description_prompt: Введите описание
+            name: Наименование
+            name_prompt: Введите наименование
+            title: Основная информация
+          linked_dataset:
+            dataset: Набор данных
+            dataset_prompt: URL или универсальный идентификатор массива данных
+            key: Столбец с указанием ключа
+            label: Столбец с указанием меток
+            title: Объединенный массив данных
+          type:
+            key: Код-ключ
+            source: Источник
+            title: Тип столбца
+            type: Тип данных
+            type_prompt: Выбрать тип данных
+        column_order:
+          columns:
+            title: Столбцы
+          prompt_html: «Перетащить» столбцы в необходимом вам порядке, затем нажать <strong>применить</strong> для активации новой очередности.
+          subtitle: Изменить порядок ваших столбцов
+          title: Порядок столбцов
+          validation:
+            valid_columns: Это изображение должно быть допустимым, в нем должны быть видимые столбцы.
+        column_properties:
+          advanced:
+            api_identifier: Идентификатор ППИ (API)
+            new_rdf_button: Добавить свойства схемы описания ресурса (формата RDF)
+            semantics: Семантика языка программирования
+            title: Дополнительно
+            url: Введите индивидуальный URL
+          column_totals:
+            title: Итоги по столбцам
+            total: Итого
+            total_prompt: Выбрать итог одного из столбцов
+          display_order:
+            new_item_button: Добавить элемент
+            option: Вариант
+            title: Порядок отображения (для приложения DataSlate)
+          formatting:
+            alignment: Выравнивание
+            title: Форматирование
+            view_style: Стиль изображения
+          link:
+            key: Ключ
+            source: Источник
+            title: Ссылка
+          localization:
+            decimal: Десятичный знак
+            thousands: Тысячи
+            title: Локализация
+          money:
+            abbreviated: Сокращенное наименование
+            currency: Валюта
+            format_mask_warning: 
+            no_precision: Нет
+            precision: Точность
+            title: Формат отображения денежных сумм
+          multiple_choice:
+            new_option_button: Добавить вариант
+            option: Вариант
+            title: Варианты для выбора
+          number:
+            display: Отображение (Display)
+            no_commas: Без запятых
+            no_precision: Нет
+            precision: Точность
+            title: Форматирование чисел
+          number_advanced:
+            format_mask: Формат вывода данных
+            format_mask_prompt: ! 'Используйте  # для обозначения цифр и других символов для обозначения их расположения; например, личный номер в системе социального страхования обозначается как  ###-##-####'
+            format_mask_warning: В результате могут быть отменены некоторые из указанных выше установок.
+            title: Дополнительное форматирование
+          photo:
+            size: Размер
+            size_prompt: Выбрать размер
+            sizes:
+              featured: Выделенное изображение (150x80)
+              large: Крупный (220x220)
+              medium: Средний (150x150)
+              original: Первоначальный
+              thumb: Пиктограмма (этикетка) (80x80)
+              tiny: Маленький (24x24)
+            title: Установки фотокопирования
+          subtitle: Обновить различные свойства данного столбца
+          success: Обновление вашего столбца выполнено
+          title: Свойства столбцов
+          url:
+            base_url: Базовый URL
+            base_url_prompt: Введите общий префикс URL
+            title: Варианты URL
+          validation:
+            published: Чтобы изменить свойства столбцов, сделайте рабочую копию или сохраните изображение этого массива данных
+            unsaved: Невозможно редактировать свойства столбцов в несохраненном изображении
+        conditional_formatting:
+          change_icon: изменить
+          conditions:
+            description: Описание
+            description_prompt: Описать это соответствие
+            item:
+              operator: Выбрать сравнение
+              subcolumn: Выбрать подстолбец
+              title: ! 'Условие:'
+            new_condition_button: Добавить условие
+            new_rule_button: Добавить новое правило
+            title: Условия
+            when:
+              all: Все условия
+              always: Всегда
+              any: Любое условие
+            when_title: Когда
+          format_html: Использовать<br />этот цвет<br />или эту пиктограмму
+          subtitle: Обусловленное форматирование позволяет вам менять цвет фона строк с учетом индивидуальных критериев. Каждой строке будет присвоен тот цвет, который будет соответствовать первому подходящему условию.
+          title: Обусловленное форматирование
+          validation:
+            no_columns: В этом режиме просмотра нет столбцов для отбора при помощи фильтра
+            no_icons: Пиктограммы относятся только к картам
+        delete:
+          confirm: Данный %{view_type} будет удален навсегда. Отменить удаление невозможно! Уверены, что намерены продолжить?
+          delete_button: Удалить данный  %{view_type}
+          subtitle: Удалить этот %{view_type}
+          title: Удалить
+          warning:
+            api: Удаление данного ППИ (API) нарушит работу всех приложений, в которых используется данный ППИ (API).
+            published: Если удалить этот массив данных, будут удалены и все относящиеся к нему типы отображения.
+            view: Удаление данного отображения повлияет только на отображения, которые созданы на его основе.
+            working_copy: Вы можете удалить эту рабочую копию и создать новую, тогда вы сможете вернуть все внесенные вами изменения.
+        digital_signing:
+          consumer: Чтобы получить копию этого массива данных с электронной подписью, нажмите «мышкой» на ссылку внизу, чтобы создать ключ к шифрованию данных,  и начинайте загрузку. Ключ и загруженные данные относятся только к данному конкретному экземпляру этого массива данных; если владелец массива данных в дальнейшем внесет в него изменения, вам придется еще раз проделать эту процедуру, чтобы получить новые данные. Опубликуйте загруженные данные вместе с полученным ключом, и, следуя загруженным указаниям, сторонние пользователи смогут убедиться в достоверности ваших данных.
+          generate_button: Создать и загрузить прямо сейчас
+          intro_html: Используя <strong>массив данных с электронной подписью</strong>, можно доказать с помощью надежных методов шифрования, что в данную копию массива данных Socrata никакие несанкционированные изменения не вносились. Это нужно, если вы намерены опубликовать выводы на основе этих данных, и вам необходимо доказать их надежность и достоверность.
+          publisher: ! 'Чтобы создать копию этого массива данных с электронной подписью, нажмите «мышкой» на ссылку внизу, чтобы создать ключ к шифрованию данных. Обращаем ваше внимание: если в дальнейшем вы внесете изменения в этот массив данных, вам придется вернуться на этот сайт и создать новый ключ, чтобы ваши клиенты могли пользоваться этими данными. Заметим также, что эта процедура связана с операцией в отношении всего массива данных, так что она может занять некоторое время, если это массив большого объема или содержит приложения большого объема.  '
+          publisher_generation: ! 'Только владелец массива данных может создавать ключи с электронной подписью. '
+          signature_header: Подпись
+          subtitle: Экспорт варианта этих данных для дальнейшей проверки достоверности.
+          title: Электронная подпись
+          validation:
+            non_tabular: Распечатать можно только табличные данные
+        download:
+          download_as: Загрузить как
+          geo_header: Загрузить геопространственные данные
+          layers_header: Загрузить табличные слои
+          subtitle: ! 'Загрузить копию этого массива данных в статическом формате '
+          title: Загрузить
+        feed:
+          subtitle: На ленте обсуждения демонстрируются данные об обсуждении и другой активности, связанной с этим массивом данных
+          title: Обсудить
+        form:
+          information:
+            name: Наименование (фамилия)
+            name_prompt: Введите наименование (фамилию)
+            public: Общедоступность?
+            success: URL страницы успешных операций
+            success_prompt: Введите URL интернет-страницы
+            title: Данные в формуляре
+          subtitle: Формуляры позволяют вам собирать данные непосредственно с сайта и помещать их в массив данных
+          title: Формуляр
+          validation:
+            no_columns: Чтобы создать формуляр, это изображение должно содержать видимые столбцы
+        map:
+          advanced:
+            exclusive: Исключительно
+            hide_geolocator: Без определителя географических координат
+            subtitle: Для отображения только одной исходной карты выбрать 'Исключительно' .
+            title: Дополнительная настройка конфигурации
+            use_legend: Использовать условные обозначения
+          base_layers:
+            alias: Псевдоним
+            layer: Слой
+            layer_prompt: Выбрать слой
+            layer_url: URL слоя
+            new_base_map_button: Добавить исходную карту
+            opacity: Яркость слоя
+            subtitle: Выберите из перечня вариант карты и настройте параметры отображения.
+            title: Исходные карты
+          data_layer:
+            alias: Псевдоним
+            alias_prompt: Дать описание массива данных
+            base_color: Фоновый цвет
+            color_high: Цвет (насыщенный)
+            color_low: Цвет (бледный)
+            flyout:
+              details: Параметры «всплывающего» меню
+              labels: без меток?
+              new_details_button: Добавить параметры «всплывающего» меню
+              opacity: Яркость слоя
+              title: Конфигурация «всплывающих» меню
+              title_column: Наименование
+            highlight_color: Цвет ссылок при наведении на них курсора
+            icon: Пиктограмма
+            location: Пункт
+            mondara_note: Слои карт Mondara в настоящее время не предусматривают возможности внесения дальнейших изменений.
+            opacity: Яркость слоя
+            plot_style: Стиль диаграммы
+            plot_style_prompt: Выбрать стиль диаграммы
+            point: Настройка отображения точки
+            point_color: Цвет точки
+            point_size: Размер точки
+            quantity: Количество
+            region: Регион
+            region_level_prompt: Выбрать уровень региона
+            region_prompt: Выбрать регион
+          layers:
+            advanced: Дополнительная настройка конфигурации для %{name}
+            config: Настройка конфигурации для %{name}
+            custom: Слой, устанавливаемый пользователем
+            dataset: Массив данных
+            edit: редактировать
+            new_data_button: Добавить данные
+            title: Основные положения массива данных
+          legend:
+            conditional_formats: Описание условных форматов
+            custom_entry: Добавить свое условное обозначение
+            entry_label: Метка
+            position: Условные обозначения
+            position_prompt: Выбрать расположение
+            positions:
+              bottom_left: В левом нижнем углу
+              none: Нет
+              top_right: В правом верхнем углу
+            title: Конфигурация условных обозначений
+          plots:
+            heatmap: Карта границ
+            point: Карта с изображением пунктов
+            rastermap: Теплокарта
+          regions:
+            canada_provinces: Провинции Канады
+            counties: Округа США в
+            countries: Страны
+            state: Штаты США
+          subtitle: Изображения определенных участков могут быть представлены в виде точек на карте
+          title: Карта
+          validation:
+            hidden_location_html: Вы можете <a href="#showLoc" title="Show a location column">показать скрытый столбец с координатами</a>.
+            location_column: Для создания карты требуется столбец с координатами.
+            viz_limit: На изображении может быть только один элемент визуального представления
+        ownership:
+          error: При передаче прав владения возникла проблема. Попробуйте позже.
+          me: Мне
+          subtitle: ! 'Чтобы передать документ другому абоненту, введите адрес эл. почты или зарегистрированное наименование идентификатора системы Socrata, затем выберите соответствующую регистрационную запись из выпадающего списка. Вы можете ввести URL с параметрами абонента, если знаете его. Только абоненты с действующими регистрационными записями могут стать владельцами массивов данных. '
+          success:
+            me: Вы не являетесь владельцем
+            user: Права владельца успешно переданы %{owner}
+          title: Права владения
+          transfer_to: Передать права владения
+          validation:
+            invalid_user: ! 'Абонент не опознан. Попробуйте найти абонента по наименованию, адресу эл. почты или URL с параметрами абонента. '
+            no_user: Выберите абонента.
+            valid_saved: ! 'Это отображение должно быть допустимым и должно быть сохранено. '
+        permissions:
+          error: При изменении ваших разрешений в отношении массива данных произошла ошибка. Попробуйте позже
+          features_html: Дополнительные <span class="datasetTypeName">возможности</span> массива данных
+          status_html: Этот <span class="datasetTypeName">массив данных</span> в настоящее время является  <span class="datasetPublicText">%{visibility}</span>
+          subtitle: Управлять режимом разрешений на данный %{view_type}
+          success: Сохранение ваших разрешений выполнено
+          title: Разрешения
+          validation:
+            valid_saved: Этот режим просмотра должен быть допустимым и должен быть сохранен
+        print:
+          margins:
+            bottom: ! 'Нижнее:'
+            left: ! 'Левое:'
+            right: ! 'Правое:'
+            top: ! 'Верхнее:'
+          margins_title: ! 'Поля (в дюймах):'
+          options:
+            fit: Уменьшить и разместить массив данных на одной странице
+            header_icons: Показывать пиктограммы в заголовке столбца
+            headers_every_page: Печатать заголовки столбцов на каждой странице
+          options_title: ! 'Дополнительные возможности:'
+          orientation: ! 'Расположение страницы:'
+          orientations:
+            landscape: Альбомное
+            portrait: Книжное
+          paper_size: ! 'Размер бумаги:'
+          paper_sizes:
+            a0: A0 (841 x 1189 мм)
+            a1: A1 (594 x 841 мм)
+            a2: A2 (420 x 594 мм)
+            a3: A3 (297 x 420 мм)
+            a4: A4 (210 x 297 мм)
+            legal: Legal (8.5 x 14 дюймов)
+            letter: Letter (8.5 x 11 дюймов)
+            tabloid: Tabloid (11 x 17 дюймов)
+          print_button: Печать
+          subtitle: Экспорт этого массива данных в формат PDF для печати
+          title: Печать
+          validation:
+            non_tabular: Распечатать можно только табличные данные
+        sdp:
+          preview: Предварительный просмотр
+          subtitle: Шаблон для отображения социальных данных позволяет публиковать этот массив данных в общедоступном интернете
+          title: ! 'Шаблон для отображения социальных данных '
+          validation:
+            public: Это отображение необходимо сделать общедоступным, прежде чем оно может быть опубликовано
+            valid_saved: Это отображение должно быть допустимым и должно быть сохранено
+        share:
+          error: При внесении изменений в ваши ресурсы для совместного использования произошла ошибка, Попробуйте позже
+          loading_shares: Загрузка совместно используемых ресурсов...
+          no_shares_html: В настоящее время этот <span class="datasetTypeName">массив данных</span> не доступен для других абонентов
+          notify_button: Сообщить об изменениях всем
+          notify_success: Уведомление направлено
+          prompt_html: Этот <span class="datasetTypeName">массив данных</span> является <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">и предоставлен для совместного использования:</span>
+          share_button_html: Предоставить для совместного использования этот <span class="datasetTypeNameUpcase">массив данных</span>
+          subtitle: Передать для совместного использования данный %{view_type}
+          success: Обновление ваших разрешений выполнено
+          title: Передача для совместного использования
+          validation:
+            valid_saved: Это отображение должно быть допустимым и должно быть сохранено
+        showhide_columns:
+          columns:
+            title: Столбцы
+          subtitle: Указать, какие столбцы должны быть показаны в данном режиме просмотра
+          title: Показать (Show &amp); скрыть столбцы
+        sort_rollup:
+          rollup:
+            add_group_button: Добавить столбец для группировки
+            add_rollup_button: Добавить столбец агрегирования
+            function: Функция
+            group_by: Группировать по
+            group_function_label: На основе
+            group_function_prompt: Выберите функцию группирования
+            roll_up: Агрегировать
+            roll_up_function: Выбрать функцию
+            title: Агрегирование (Roll-Ups &amp); Развернутые списки
+          sort:
+            add_column_button: Добавить столбец
+            column: Столбец
+            direction: Направление
+            directions:
+              ascending: По возрастанию
+              descending: По убыванию
+            title: Сортировать
+          subtitle: ! 'Вы можете сгруппировать строки и суммировать данные при помощи функции «агрегирование»; а также выполнить сортировку одного или нескольких столбцов '
+          title: ! 'Сортировать (Sort &amp); агрегировать '
+          validation:
+            no_eligible_columns: В этом изображении нет столбцов для агрегирования и сортировки
+            no_function: Каждый столбец для агрегирования должен иметь функцию
+            no_group_bys: Для агрегирования столбца вы должны сгруппировать хотя бы один столбец
+        tabs:
+          about: Об этом массиве данных
+          discuss: Обсудить
+          edit: Редактировать
+          embed: Вставить
+          export: Экспортировать
+          filter: Фильтровать
+          manage: Управлять
+          more: Больше
+          more_views: Другие режимы отображения
+          visualize: Визуализация
+        view_list:
+          delete_confirm: Вы действительно намерены удалить %{name}?
+          delete_snapshot_confirm: Вы действительно намерены удалить %{name} (snapshotted %{date})?
+          filter:
+            all: Все просмотры
+          filter_title: Показать только
+          item:
+            author_html: <span class="date"></span> по <span class="author"></span>
+            delete: Удалить это изображение
+            expand: Для увеличения нажмите «мышкой»
+          no_results: Результатов нет
+          no_results_html: Нет <span class="type">результатов</span>
+          pagination:
+            last: См. предыдущее изображение
+            next: См. следующие %{count}  изображения
+          search: Изображения результатов поисков
+          snapshots:
+            subtitle: Смотреть ранее опубликованные варианты этих данных
+            title: Моментальные снимки массива данных
+          sort:
+            alphaAscending: По алфавиту
+            dateAscending: По времени загрузки, начиная с самых давних
+            dateDescending: По времени загрузки, начиная с последних
+            popularity: По популярности
+          sort_title: Сортировать
+          views:
+            subtitle: См. имеющиеся фильтры, карты, графики и другие режимы просмотра по этому массиву данных
+            title: Режимы просмотра
+      save_dialog:
+        descriptions:
+          leaving: У вас остались несохраненные данные, они будут потеряны, если вы уйдете с этой страницы. Нажатием кнопки укажите, сохранить или не сохранять данный вид, прежде чем вы уйдете с этой страницы, или нажмите «Отмена», чтобы вернуться на эту страницу.
+          reload_save: ! 'Данное изменение требует повторной загрузки. Вы можете «Сохранить ваши изменения», чтобы просмотреть их либо выбрать «Отмена» и остаться на этой странице. '
+          reload_update: Данное изменение требует повторной загрузки. Вы можете «Обновить» этот вид или «Сохранить новый вид» для просмотра ваших изменений, либо нажать «Отмена» и остаться на этой странице.
+        form:
+          new_name: ! 'Введите наименование для вашего нового изображения:'
+        titles:
+          normal: Сохранить изображение
+          prompt: Хотите сохранить это изображение?
+        validation:
+          auth_required: Чтобы сохранить изображение (страницы), вы должны быть зарегистрированы в системе
+          view_name_required: Необходимо ввести наименование вида (страницы)
+      subscribe:
+        google_reader: Добавить в Google Reader
+        intro_html: ! '<strong>Чтобы подписаться на <span class="datasetName">%{name}</span> массив данных в режиме считывания RSS,</strong>, используйте одну из следующих ссылок:'
+        rss: Загрузить как RSS
+        rss_program: Открыть в сторонней программе
+        subscribe_button: Подписаться через эл. почту
+        subscribe_html: <strong>Чтобы получать по эл. почте уведомления</strong> о размещении новых данных, поставьте «галочку» в графе «Подписаться».
+        subscribed_html: <strong>Вы подписались на этот <span class="datasetTypeName">массив данных</span> через эл. почту </strong>, вы будете получать уведомления о размещении новых данных.
+        title_html: Подписаться на  "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Массив данных</span>
+        unsubscribe: Если вы не хотите получать уведомления, удалите «галочку» из графы «Подписаться».
+    edit_metadata:
+      additional_source: Дополнительный источник
+      alternative_access_prompt: Введите альтернативную точку доступа для этого набора данных
+      api_endpoint: Конечная точка API
+      attachments: Приложения
+      brief_description: Краткое описание
+      brief_description_prompt: Введите описание
+      cancel: Отменить
+      category: Категория
+      contact_email: Контактный адрес эл. почты
+      contact_information: Контактная информация
+      custom: Заказной
+      custom_error: Пользовательский семантический класс должен быть URL-адресом.
+      data_provided_by: ! 'Лицо, предоставившее данные:'
+      data_provided_prompt: Отдельное лицо или организация
+      data_provider_required: Необходимо указать поставщика данных (определение).
+      dataset_title: Имя массива данных
+      dataset_title_error: У набора данных должно быть название.
+      dataset_title_prompt: Ввести название
+      delete: Удалить
+      email_address: Адрес эл. почты
+      email_help: Данный адрес не будет отображаться публично. Если это поле не заполняется, по умолчанию будет введен ваш адрес.
+      existing_attachments: Существующие приложения
+      external_confirm: Вы действительно хотите удалить этот внешний набор данных?
+      external_dataset: Внешние наборы данных
+      external_id: Внешний идентификатор
+      external_id_prompt: Введите свой внешний идентификатор
+      external_identifier: Внешний идентификатор
+      file_type: Тип файла
+      general_information: Общая информация
+      keywords_help: Ввести одно ключевое слово или несколько разделенных запятыми
+      license_help: Выберите условия лицензирования для тех, кто захочет использовать этот набор данных.
+      license_type: Тип лицензии
+      licensing: Лицензирование
+      licensing_attr: Лицензирование и атрибуция
+      list: Список
+      metadata_help: Это поле помечено вашей организацией как частное, и оно недоступно для просмотра всем пользователям.
+      new_attachment: Новое вложение
+      none: (нет)
+      northwest_latitude: Широта, северо-запад
+      northwest_longitude: Долгота, северо-запад
+      optional: Необязательно
+      private_help: Это поле помечено вашей организацией как частное, и оно недоступно для просмотра всем пользователям.
+      remove_image: Удалить изображение
+      required_field: Поле, подлежащее заполнению
+      resource_name: Имя ресурса
+      resource_name_prompt: Введите имя ресурса
+      return: Вернуться к массиву данных
+      row_class: Класс строк
+      row_identifier: Идентификатор столбца
+      save: Сохранить
+      save_changes: Сохранить изменения
+      semantics_rdf: Семантика и система описания ресурсов
+      source_link: Ссылка на источник
+      source_link_error: Это не является допустимым URL-адресом.
+      source_link_prompt: Введите веб-адрес
+      southeast_latitude: Широта, юго-восток
+      southeast_longitude: Долгота, юго-восток
+      spatial_extent: Пространственная протяженность
+      subject_column: Столбец темы
+      tags_keywords: Тэги / ключевые слова
+      tags_prompt: Введите ключевые слова
+      thumbnail_image: Миниатюра
+      upload_error: Выберите допустимый файл изображения
+      upload_help: Это изображение будет обрезано до квадрата.
+      upload_image: Загрузить изображение
+      upload_new_attachment: Загрузить новое приложение
+    forgot_password:
+      already_authenticated: Сменить пароль невозможно, вы уже вошли в систему.
+      failed: При отправке вашего запроса на сброс пароля возникла проблема. Повторите попытку.
+      form:
+        reset_password_button: Сменить пароль
+      prompt: Если вы забыли пароль, мы можем направить вам электронное сообщение со ссылкой для восстановления пароля.
+      success: Спасибо. Сообщение с подробной информацией отправлено на учетную запись в файле.
+      title: Восстановить ваш пароль
+    header:
+      links:
+        account_html: Здравствуйте, <span class="currentUser"></span>
+        account_tooltip: Домашняя Страница
+        administration: Администрация
+    link_account:
+      success: Ваша внешняя учетная запись подключена.
+    profile:
+      app_tokens:
+        item:
+          app_token: Ключ доступа к ПП (прикладной программе)
+          description: Описание
+          edit_token_link: Редактировать
+          name: Наименование
+          no_thumbnail: Пиктограммы нет
+          organization: Организация
+          secret_token: Секретный ключ
+          show_secret_link: Показать секретный ключ
+          website: Сайт
+        manage_link: Управлять
+        no_applications: Вы еще не создали никаких прикладных программ. Чтобы начать, нажмите кнопку «Управлять» справа
+        title: Приложения (прикладные программы) %{user}
+      bar:
+        edit_settings_link: Редактировать настройки регистрационной записи
+        follow_link: Добавить в ленту для чтения
+        join_date: Зарегистрирован (когда)
+        last_seen_date: Дата последнего входа в систему
+        message_link: Отправить сообщение
+        unfollow_link: Удалить из ленты для чтения
+      browse:
+        owned_datasets: Принадлежат мне
+        shared_datasets: Предоставлены мне для совместного использования
+        title: ! 'Массивы данных %{user} '
+      contact:
+        message: Сообщение
+        message_prompt: Ввести сообщение
+        subject: Тема
+        subject_prompt: Ввести тему
+        title: Связаться с абонентом
+      edit:
+        account:
+          add_openid_button: Добавить регистрационную запись OpenID или сторонней системы
+          confirm_email: Подтвердите адрес эл. почты
+          confirm_password: Подтвердите пароль
+          connect_openid: Войдите, используя ваши регистрационные данные в системах Facebook, Twitter, Google или иных сторонних системах.
+          current_email: Действующий адрес эл. почты
+          email:
+            interests:
+              account_provisioned: Регистрационная запись абонента с особыми правами создается для использования в будущем
+              any_view_created: Размещается мнение
+              comment_to_moderate: Размещено замечание, которое должно быть рассмотрено модератором
+              nomination_created: Предложена новая кандидатура
+              nomination_moderated: Любое предложение с выдвижением кандидатуры рассматривается модератором
+              privileged_account_created: Абонент создает регистрационную запись абонента с особыми правами
+              user_affected: Действия, которые непосредственно касаются вас, например, ответы на замечания, изменения статуса
+              view_made_public: Любое мнение становится общедоступным
+            policy: ! '%{site} соблюдает ваши права личности и никогда не будет направлять вам рекламные сообщения через этот перечень или предоставлять ваш адрес эл. почты третьим лицам. С этого сайта направляются уведомления о состоянии регистрационных данных и обновлениях массивов данных, которые созданы вами или на которые вы подписались.'
+            subtitle: Записаться на участие в отдельных мероприятиях (поставить галочки в соответствующих графах).
+            title: Оправлять уведомления по эл. почте
+          learn_openid: Узнать об OpenID
+          new_email: Новый адрес эл. почты
+          new_password: Новый пароль
+          no_openid: У вас пока нет идентификаторов OpenID, связанных с этой регистрационной записью.
+          old_password: Старый пароль
+          password: Пароль
+          password_prompt: (Для вашей безопасности)
+          password_restrictions_html: (Действуют ограничения <span class="icon"> </span>)
+          title: Настройки регистрационной записи
+        app_tokens:
+          application_name: Наименование прикладной программы
+          application_name_prompt: Введите наименование вашей прикладной программы
+          callback_prefix: Код обратного вызова
+          callback_prefix_help_html: Например, если ваша прикладная программа осуществляет обратный вызов<span class="code">https://my-domain.com/socrata-app/oauth/validated</span> и <span class="code">https://my-domain.com/socrata-app/profile</span>, нужно указать <span class="code">https://my-domain.com/socrata-app</span> в качестве кода. При этом необходимо указать хотя бы полное наименование домена.
+          callback_prefix_prompt: Укажите код защищенного URL (https) для обратного вызова при использовании OAuth
+          create_error: ! 'При создании вашего ключа к прикладной программе произошла ошибка: %{message}'
+          create_success: Ваша прикладная программа создана
+          delete_confirm: Вы действительно хотите удалить это приложение? Соответствующий app_token перестанет быть действительным.
+          delete_error: ! 'При удалении вашего ключа к прикладной программе произошла ошибка: %{message}'
+          delete_success: Ваша прикладная программа удалена
+          description: Описание
+          description_prompt: Введите описание вашей прикладной программы
+          new_app_button: Создать новую прикладную программу
+          organization: Организация
+          organization_prompt: Введите наименование организации, ответственной за эту прикладную программу
+          public: Общедоступный?
+          save_success: Ваша прикладная программа успешно сохранена
+          thumbnail: Пиктограмма
+          title: Ключи к ПП (прикладной программе)
+          title_full: Ваши прикладные программы
+          title_single: Редактировать ключ прикладной программы
+          website: Сайт
+          website_prompt: Укажите ссылку на данную прикладную программу или на сайт организации
+        back_link: Вернуться в Мои анкетные данные
+        image:
+          error: ! 'Ошибка при загрузке нового фото: %{message}'
+          success: Обновление фото выполнено
+          title: Ваше фото
+          upload_image_button: Загрузить новое фото
+        info:
+          city: Город
+          country: Страна
+          description:
+            prompt: Введите любую информацию, которую вы хотите сделать доступной для других
+            title: Описание
+          display_name: Отображаемое наименование (ФИО)
+          first_name: Имя
+          interests:
+            prompt: Введите информацию о ваших интересах
+            title: Интересы
+          last_name: Фамилия
+          link_prompt: Введите URL
+          organization: Организация
+          state: Штат
+          title: Основная информация
+          title_full: Основная информация
+          user_title: Заголовок
+        success: Обновление ваших анкетных данных успешно выполнено.
+        validation:
+          email_mismatch: Новые адреса эл. почты не подходят
+          image_format: Выберите допустимый формат изображения (PNG, JPG или GIF)
+          invalid_links: При обновлении ваших ссылок возникла проблема. %{message}
+          no_display_name: ! 'Ошибка: ''Отображаемое наименование'' должно быть заполнено'
+          no_password_no_openid: ! 'Нельзя удалить все ваши идентификаторы OpenID, прежде чем вы установите пароль '
+          password_mismatch: Новые пароли не подходят
+          user_missing: Абонент не найден, возможно, удален.
+      info:
+        edit_link: Редактировать
+        external_links: Внешние ссылки
+        interests: Интересы
+        links:
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: Мой блог
+          my_company: Моя компания
+          my_site: Мой сайт
+          twitter: Twitter
+        no_description: Никаких описаний не предоставлено
+        other_ext_link: Прочие
+        title: Основная информация
+      sidebar:
+        all_contacts_link: Смотреть все
+        edit_image_link: Редактировать изображения
+        followers: Читатели
+        following: Лента для чтения
+    reset_password:
+      failed: Не удалось сменить ваш пароль. Повторите попытку.
+      form:
+        reset_password_button: ! 'Сменить пароль '
+      prompt: Вы снова в системе! Выберите новый пароль.
+      success: Пароль успешно изменен.
+      title: Сменить пароль
+    sign_in:
+      failed: Не удалось войти в систему c этим адресом электронной почты и паролем; повторите попытку
+      form:
+        sign_in_button: Войти в систему
+      headline: Войти в систему
+      mismatch: Пароли не сходятся; повторите попытку
+      prompt_html: Войти в систему <strong>, используя регистрационное имя в системе Socrata</strong>
+      tips_html: Используйте ваш адрес эл. почты и пароль для входа на все <strong><a href="http://www.socrata.com" rel="external">сайты</a> системы</strong> Socrata.
+    sign_up:
+      form:
+        create_account_button: Создать регистрационную запись
+        have_account_link: У меня уже есть регистрационная запись
+      headline: Мы рады, что вы решили зарегистрироваться %{site}!
+      prompt_html: Создать новое <strong>регистрационное имя в системе Socrata</strong>
+      terms_html: Нажимая кнопку «Создать регистрационную запись» (ниже), вы принимаете наши <a href="http://www.socrata.com/terms-of-service" rel="external">Условия обслуживания</a> и <a href="http://www.socrata.com/privacy" rel="external">Правила защиты данных.</a>
+      third_party: После входа в систему ваши данные (регистрационное имя и пароль) стороннего пользователя будут связаны с данной регистрационной записью.
+      third_party_return: Прежде чем использовать эти данные (имя и пароль), вы должны
+      third_party_return_create: создать регистрационную запись в системе Socrata
+      third_party_return_link: связать ее с действующим регистрационным именем в системе Socrata
+  support:
+    array:
+      last_word_connector: ! ', и '
+      two_words_connector: ! ' и '
+    array_or:
+      last_word_connector: ! ', или '
+      two_words_connector: ! ' или '

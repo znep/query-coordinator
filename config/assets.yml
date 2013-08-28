@@ -458,7 +458,6 @@ javascripts:
     - public/javascripts/controls/panes/share-dataset.js
     - public/javascripts/controls/panes/show-hide.js
     - public/javascripts/controls/panes/sort-rollUp.js
-    - public/javascripts/controls/panes/signed-dataset.js
     - public/javascripts/controls/panes/unified-filter.js
     - public/javascripts/controls/panes/unified-filter-sidebar.js
     - public/javascripts/controls/panes/view-list.js

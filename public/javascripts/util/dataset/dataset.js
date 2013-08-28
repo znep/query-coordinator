@@ -1351,14 +1351,6 @@ var Dataset = ServerModel.extend({
         window.location = this.url + qs;
     },
 
-    getSignature: function(successCallback, errorCallback)
-    {
-        // If not already signed, then we need to create it first
-        this.makeRequest({url: '/views/' + this.id + '/signatures.json',
-            type: (this.signed === true) ? 'GET' : 'POST',
-            success: successCallback, error: errorCallback});
-    },
-
     _cachedLinkedColumnOptions: {},
 
     getLinkedColumnOptions: function(keyCol, notUsed, $field, curVal)

@@ -7,11 +7,12 @@ jQuery.metrics = {
     {
         // validate params
         if ((entity === undefined) || (metric === undefined))
-            return false;
+        { return false; }
 
         // bail if we did not load socrata server
         if ($.socrataServer === undefined)
-            return false;
+        { return false; }
+
         $.metrics.queue.push({entity: entity, metric: metric, increment: increment});
         if ($.metrics.queue.length >= 10)
         {
@@ -35,11 +36,11 @@ jQuery.metrics = {
         anonymous: true,
         isSODA: true,
         headers: {'Content-Type': 'application/text'},
-        success: function (data) {
+        success: function (/* data */) {
             // noop
         },
-        error: function (request) {
-            //noop
+        error: function (/* request */) {
+            // noop
         }
     });
     },

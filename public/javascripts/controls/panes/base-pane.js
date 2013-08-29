@@ -2268,7 +2268,10 @@
                 $line.remove();
             }
             else { $line.addClass('hide'); }
-
+            
+            var $addButton = $repeater.find('.addValue');
+            var count = $addButton.data('count');
+            $addButton.attr('data-count',  count - 1);
             checkRepeaterMaxMin(cpObj, $repeater);
         });
 

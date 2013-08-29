@@ -194,7 +194,7 @@
                 },
                 {text: $.t('screens.ds.grid_sidebar.chart.error_bars.high'), name: 'displayFormat.plot.errorBarHigh', required: true,
                     type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
-                    columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit},
+                    columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                 },
                 {text: $.t('screens.ds.grid_sidebar.chart.error_bars.color'), name: 'displayFormat.errorBarColor',
                     type: 'color', defaultValue: '#ff0000'}]
@@ -365,7 +365,7 @@
                                 notequalto: 'valueCol', useFieldName: true,
                                 name: 'fieldName', otherNames: 'tableColumnId',
                                 columns: {type: colTypes, hidden: options.isEdit}
-                        },
+                        }
                     }, 
                     {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.alphabetize'),
                         name: 'displayFormat.sortSeries',
@@ -443,7 +443,7 @@
                         var readableName = $.htmlEscape(options.view.columnForFieldName(col.fieldName).name);
 
                         cols.contents.push({ tagName: 'div', contents: readableName});
-                        cols.contents.push({ tagName: 'div', class: 'columnColorControl', 'data-colorpicker-color': assignedColor});
+                        cols.contents.push({ tagName: 'div', 'class': 'columnColorControl', 'data-colorpicker-color': assignedColor});
                     });
                     $field.append($.tag(cols));
 

@@ -22,6 +22,7 @@
         {
             minimal: false,
             model: null,
+            metric: null,
             overlay: false,
             showInitially: false
         },
@@ -32,6 +33,7 @@
             {
                 var spObj = this;
                 spObj.$dom().data("loadingSpinner", spObj);
+                spObj.setMetric(spObj.settings.metric);
                 spObj.showHide(spObj.settings.showInitially);
 
                 spObj.setModel(spObj.settings.model);
@@ -86,6 +88,11 @@
                 return this._$content;
             },
 
+            setMetric: function(metric)
+            {
+                this.metric = metric;
+            },
+
             showHide: function(doShow)
             {
                 this.$content().toggleClass('hide', !doShow);
@@ -94,6 +101,9 @@
                     this.$content().find('.loadingMessage, .loadingCountdown').addClass('hide');
                     clearCountdown(this);
                 }
+                if (!$.isBlank(this.metric))
+                { $.metrics.stopwatch('domain-intern', 'js-spinner-' + this.metric + '-time',
+                    doShow ? 'start' : 'end'); }
             },
 
             setMessage: function(message, countdown)

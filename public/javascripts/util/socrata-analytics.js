@@ -3,6 +3,11 @@ jQuery.metrics = {
     pageLoadBucketNames: ["awesome", "good", "ok", "poor", "terrible"],
     pageLoadBuckets: [500, 1000, 2000, 4000],
     domLoadBuckets:  [500, 1000, 2000, 4000],
+    stopwatches: {},
+    stopwatchFunction: (window.performance !== undefined && _.isFunction(performance.now))
+        ? function() { return performance.now(); }
+        : function() { return new Date().getTime(); },
+
     increment: function(entity, metric, increment)
     {
         // validate params
@@ -22,6 +27,31 @@ jQuery.metrics = {
     measure: (window.performance !== undefined && _.isFunction(performance.now))
         ? function(entity, metric) { $.metrics.increment(entity, metric, performance.now()); }
         : function() {},
+
+    stopwatch: function(entity, metric, action)
+    {
+        if (_.isFunction($.metrics['stopwatch' + $.capitalize(action)]))
+        { $.metrics['stopwatch' + $.capitalize(action)](entity, metric); }
+    },
+    stopwatchStart: function(entity, metric)
+    {
+        delete $.metrics.stopwatches[entity + '/' + metric];
+        $.metrics.stopwatches[entity + '/' + metric] = $.metrics.stopwatchFunction();
+    },
+    stopwatchPulse: function(entity, metric)
+    {
+        var key = entity + '/' + metric;
+        if ($.metrics.stopwatches[key])
+        {
+            $.metrics.increment(entity, metric,
+                $.metrics.stopwatchFunction() - $.metrics.stopwatches[key]);
+        }
+    },
+    stopwatchEnd: function(entity, metric)
+    {
+        $.metrics.stopwatchPulse(entity, metric);
+        delete $.metrics.stopwatches[entity + '/' + metric];
+    },
 
     mark: function(entity, metric)
     {

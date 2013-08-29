@@ -19,11 +19,9 @@ jQuery.metrics = {
             $.metrics.flush_metrics();
         }
     },
-    measure: function(entity, metric)
-    {
-        if (window.performance !== undefined && _.isFunction(performance.now))
-        { $.metrics.increment(entity, metric, performance.now()); }
-    },
+    measure: (window.performance !== undefined && _.isFunction(performance.now))
+        ? function(entity, metric) { $.metrics.increment(entity, metric, performance.now()); }
+        : function() {},
 
     mark: function(entity, metric)
     {

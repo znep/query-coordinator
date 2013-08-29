@@ -1935,7 +1935,7 @@ $.Control.registerMixin('d3_impl_pie', {
     _rotateColorBy: function(color, rotateCount)
     {
         var newBaseHsv = $.rgbToHsv($.hexToRgb(color));
-        newBaseHsv.h = (newBaseHsv.h + 8*rotateCount) % 360;
+        newBaseHsv.h = (newBaseHsv.h + 8*rotateCount + 360) % 360;
         return '#'+$.rgbToHex($.hsvToRgb(newBaseHsv));
     },
 
@@ -1953,8 +1953,10 @@ $.Control.registerMixin('d3_impl_pie', {
             {
                 if (!_.isUndefined(colors) && colors.length > 0)
                 {
-                    var baseColorIndex = d.index % colors.length;
-                    color = vizObj._rotateColorBy(colors[baseColorIndex], d.index - baseColorIndex);
+                    var repGroup = Math.floor(d.index / colors.length);
+                    var baseIndex = d.index - (repGroup * colors.length);
+
+                    color = vizObj._rotateColorBy(colors[baseIndex], -repGroup*3);
                 }
                 else
                 {
@@ -1988,7 +1990,9 @@ $.Control.registerMixin('d3_impl_pie', {
     // Sets a DOM element to overlay the chart.
     _setChartOverlay: function($overlayDom)
     {
-        this._chartConfig.$overlayContainer.empty().append($overlayDom);
+        var $targetElement = this._chartConfig.$overlayContainer;
+        $targetElement.empty().append($overlayDom);
+        $targetElement.css('visibility', $overlayDom ? 'visible' : 'collapse');
     }
 
 }, null, 'socrataChart', ['d3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

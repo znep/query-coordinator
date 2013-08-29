@@ -321,7 +321,7 @@ $.Control.registerMixin('d3_impl_bar', {
                     returnValue =  Math.min(returnValue, absoluteMaxWidth);
                 }
 
-                return returnValue;
+                return Math.max(0, returnValue);
             }
         }
         else
@@ -818,7 +818,8 @@ $.Control.registerMixin('d3_impl_bar', {
     _updateInBarLabelPositions: function(newCubedData /* optional */)
     {
         var vizObj = this;
-        var cc = vizObj._chartConfig;
+        var cc = vizObj._chartConfig,
+            valueColumns = vizObj.getValueColumns();
 
         var view = vizObj._primaryView;
 
@@ -849,6 +850,24 @@ $.Control.registerMixin('d3_impl_bar', {
                 {
                     // First valid bar has precedence, as it contains the category label.
                     // So, max width remains empty.
+                }
+                else if ((d.seriesIndex === valueColumns.length - 1) &&
+                         vizObj._rowLabelShouldBeDark(valueColumns[d.seriesIndex], d))
+                {
+                    // Allow the top label of the stack (or just the label if not stacking)
+                    // to overflow.
+                    // We should really be doing double rendering to change the text color
+                    // when it goes over the chart BG, but for now we just allow overflow
+                    // for black text (white text on an off-white BG looks like we're
+                    // broken).
+
+                    // Sadly this means that our positioning code must now be made
+                    // aware of this so it can place to bottom of the label on the
+                    // bottom of the bar. This isn't an issue with the first clause
+                    // of the if() since that will by necessity be at the bottom of
+                    // the stack.
+
+                    d.isTopBarIgnoringOverflow = (d.columnHeight - extraPaddingForBarInColumn) < d.length ;
                 }
                 else
                 {
@@ -898,6 +917,7 @@ $.Control.registerMixin('d3_impl_bar', {
             {
                 return d.overallText;
             })
+            .attr('title', function(d) { return d.overallText; })
             .each(doLabelLayout)
             .style('visibility', function(d, i)
             {
@@ -929,15 +949,14 @@ $.Control.registerMixin('d3_impl_bar', {
                 }
 
                 // Will collide with previous?
-                if (!d.firstValidColInRow && !d.isInvalid)
+                if (!d.isTopBarIgnoringOverflow && !d.firstValidColInRow && !d.isInvalid)
                 {
                     var prevD = cubedData[i-1];
 
                     var checkCollisionWith = prevD.collidingWith || prevD;
 
-                    var ie8 = vizObj._isIE8();
-                    var widthOfThisText = ie8 ? d.maxWidth || d.length : Math.min(d.maxWidth||Infinity, d.length);
-                    var widthOfPrevText = ie8 ? checkCollisionWith.maxWidth || checkCollisionWith.length : Math.min(checkCollisionWith.maxWidth||Infinity, checkCollisionWith.length);
+                    var widthOfThisText = Math.min(d.maxWidth||Infinity, d.length);
+                    var widthOfPrevText = Math.min(checkCollisionWith.maxWidth||Infinity, checkCollisionWith.length);
 
                     if (cc.orientation == 'right')
                     {
@@ -984,8 +1003,20 @@ $.Control.registerMixin('d3_impl_bar', {
                 }
 
                 return coll ? 'hidden' : 'visible';
+            })
+            .each(function(d)
+            {
+                if(d.isTopBarIgnoringOverflow)
+                {
+                    var $this = $(this);
+                    // Shove the bar up by the overflow.
+                    if (cc.orientation === 'right' && d.endJustified)
+                    {
+                        var overflow = d.length - (d.columnHeight - extraPaddingForBarInColumn);
+                        $this.css('top', parseFloat(yPos.call($this, d)) - overflow);
+                    }
+                }
             });
-
 
         if (!_.isUndefined(newCubedData))
         {
@@ -1148,6 +1179,12 @@ $.Control.registerMixin('d3_impl_bar', {
         };
     },
 
+    _rowLabelShouldBeDark: function(col, row)
+    {
+        var rowColor = this._d3_colorizeRow(col)(row);
+        return $.rgbToHsl($.hexToRgb(rowColor)).l >= 50;
+    },
+
     _rowLabelColor: function()
     {
         var vizObj = this;
@@ -1155,11 +1192,7 @@ $.Control.registerMixin('d3_impl_bar', {
 
         return function(d)
         {
-            var color = vizObj._d3_colorizeRow(valueColumns[d.seriesIndex])(d);
-            d.colorBrightness = $.rgbToHsl($.hexToRgb(color)).l < 50;
-            var result = d.colorBrightness ? '#ccc' : '#333';
-            //console.log(color, result, $.colorContrast(color, result));
-            return result;
+            return vizObj._rowLabelShouldBeDark(valueColumns[d.seriesIndex], d) ? '#333' : '#ccc';
         };
     },
 

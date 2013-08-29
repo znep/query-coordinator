@@ -360,6 +360,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var vizObj = this;
 
+        vizObj.renderData([]);
+
+        var oldYScale = vizObj._lastYScale() || newYScale;
+        vizObj._renderValueMarkers([], oldYScale, oldYScale, false);
+
         delete vizObj._chartConfig;
 
         vizObj._super();
@@ -1211,17 +1216,29 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }
     },
 
-    _renderValueMarkers: function(oldYScale, newYScale, isAnim)
+    _computeValueMarkers: function()
+    {
+        // if we ever to nukeless df updates, need to also remove lines
+        if (!_.isArray(this._displayFormat.valueMarker))
+        {
+            return [];
+        }
+
+        return _.compact(_.map(this._displayFormat.valueMarker, function(marker) {
+            if (_.isNumber(marker.atValue))
+            { return marker; }
+            else if (_.isString(marker.atValue))
+            { return $.extend(marker, { atValue: $.numericalSanitize(marker.atValue) }); }
+            else
+            { return null; }
+        }));
+    },
+
+    _renderValueMarkers: function(valueMarkers, oldYScale, newYScale, isAnim)
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
             yAxisPos = vizObj._yAxisPos();
-
-        // if we ever to nukeless df updates, need to also remove lines
-        if (!_.isArray(vizObj._displayFormat.valueMarker))
-        {
-            return;
-        }
 
         var extraOffset = vizObj._axisOffsetDueToScaleChange(oldYScale, newYScale);
 
@@ -1231,17 +1248,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
             function(yScale, extraOffset)
             { return function(d) { return (extraOffset + yAxisPos - yScale(parseFloat(d.atValue))) + 'px'; } });
 
-        var cleanValueMarkers = _.compact(_.map(vizObj._displayFormat.valueMarker, function(marker) {
-            if (_.isNumber(marker.atValue))
-            { return marker; }
-            else if (_.isString(marker.atValue))
-            { return $.extend(marker, { atValue: $.numericalSanitize(marker.atValue) }); }
-            else
-            { return null; }
-        }));
-
         var valueMarkers = cc.chromeD3.selectAll('.valueMarkerContainer')
-            .data(cleanValueMarkers);
+            .data(valueMarkers);
 
         valueMarkers
             .enter().append('div')
@@ -1255,7 +1263,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
                         { tagName: 'div', 'class': 'markerBg', style: { 'background-color': d.color } },
                         { tagName: 'div', 'class': 'markerLine', style: { 'border-color': d.color } }
                     ], true));
-                    $this.socrataTip({
+                    this.tip = $this.socrataTip({
                         message: $.htmlEscape(d.caption),
                         positions: [ 'top', 'bottom' ]
                     });
@@ -1268,6 +1276,14 @@ $.Control.registerMixin('d3_virt_scrolling', {
                 .style(cc.dataDim.pluckY('left', 'top'), valueMarkerPosition(newYScale, 0));
         valueMarkers
             .exit()
+                .each(function(d)
+                {
+                    if (this.tip)
+                    {
+                        this.tip.destroy();
+                        delete this.tip;
+                    }
+                })
                 .transition()
                     .remove();
     },

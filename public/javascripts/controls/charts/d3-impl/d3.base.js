@@ -220,6 +220,34 @@ $.Control.registerMixin('d3_base', {
             // of the slice (if we didn't, w accidentally close
             // the tip if the tip shows up under the mouse).
             var mouseCount = 0;
+
+            var mouseCleanup = function(forceCleanup)
+            {
+                if (forceCleanup === true || mouseCount == 0)
+                {
+                    if (visual.tip)
+                    {
+                        visual.tip.destroy();
+                        delete visual.tip;
+                        delete visual.localMouseOut;
+                    }
+
+                    // Only unhighlight if we're actually the column that caused
+                    // the highlight. This may not be true if the user quickly (within the delay)
+                    // mouses over to another datum from the same row, but a different column.
+                    // The mouse in handler will create the new flyout, then this code will
+                    // run for the old column (because of the _.delay), and cause us to
+                    // unhighlight the row, which should still be highlighted.
+                    // Also, for perf, only call unhighlight if highlighted.
+                    if (view.highlights && view.highlights[row.id] &&
+                        _.contains(view.highlightsColumn, colDef.column.id))
+                    {
+                        view.unhighlightRows(row, 'hover');
+                    }
+
+                }
+            };
+
             var localMouseIn = function()
             {
                 mouseCount ++;
@@ -229,37 +257,12 @@ $.Control.registerMixin('d3_base', {
             {
                 mouseCount --;
 
-                var cleanup = function()
-                {
-                    if (mouseCount == 0)
-                    {
-                        if (visual.tip)
-                        {
-                            visual.tip.destroy();
-                            delete visual.tip;
-                            delete visual.localMouseOut;
-                        }
-
-                        // Only unhighlight if we're actually the column that caused
-                        // the highlight. This may not be true if the user quickly (within the delay)
-                        // mouses over to another datum from the same row, but a different column.
-                        // The mouse in handler will create the new flyout, then this code will
-                        // run for the old column (because of the _.delay), and cause us to
-                        // unhighlight the row, which should still be highlighted.
-                        // Also, for perf, only call unhighlight if highlighted.
-                        if (view.highlights && view.highlights[row.id] &&
-                            _.contains(view.highlightsColumn, colDef.column.id))
-                        {
-                            view.unhighlightRows(row, 'hover');
-                        }
-
-                    }
-                };
-                if (delay) { _.delay(cleanup, delay); }
-                else { cleanup(); }
+                if (delay) { _.delay(mouseCleanup, delay); }
+                else { mouseCleanup(); }
             };
 
             visual.localMouseOut = localMouseOut;
+            visual.mouseCleanup = mouseCleanup;
 
             var $btWrapper = $(visual.tip._tipBox);
 
@@ -283,6 +286,15 @@ $.Control.registerMixin('d3_base', {
         if (visual.localMouseOut)
         {
             visual.localMouseOut(delay);
+        }
+    },
+
+    // Called when a data visual leaves the DOM.
+    handleDataLeaveDOM: function(visual)
+    {
+        if (visual.mouseCleanup)
+        {
+            visual.mouseCleanup(true /* forceCleanup*/);
         }
     },
 

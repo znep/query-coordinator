@@ -243,13 +243,9 @@ $.Control.registerMixin('d3_impl_line', {
 
             points
                 .exit()
-                    .each(function(d)
+                    .each(function()
                     {
-                        if (this.tip)
-                        {
-                            this.tip.destroy();
-                            delete this.tip;
-                        }
+                        vizObj.handleDataLeaveDOM(this);
                     });
             if (allowTransitions)
             {
@@ -334,7 +330,7 @@ $.Control.registerMixin('d3_impl_line', {
         }
 
         vizObj._renderTicks(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
-        vizObj._renderValueMarkers(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
+        vizObj._renderValueMarkers(vizObj._computeValueMarkers(), doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
 
         if (!doAnimation)
         {
@@ -443,7 +439,7 @@ $.Control.registerMixin('d3_impl_line', {
                 .attr('transform', vizObj._labelTransform());
 
         vizObj._renderTicks(oldYScale, yScale, true);
-        vizObj._renderValueMarkers(oldYScale, yScale, true);
+        vizObj._renderValueMarkers(vizObj._computeValueMarkers(), oldYScale, yScale, true);
     },
 
     // call this if spacings/widths changed

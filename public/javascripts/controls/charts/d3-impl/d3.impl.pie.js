@@ -23,7 +23,7 @@ $.Control.registerMixin('d3_impl_pie', {
                                       //  If we hit more than this number of such issues, remove the unshowable
                                       // labels from the layout and re-run the layout. This avoids having large
                                       // sections of unused space in very dense pies.
-        minArcLengthPixels: 4 // Minimum arc length of a slice in order to show it.
+        minArcLengthPixels: 3 // Minimum arc length of a slice in order to show it.
     },
 
     Slice: (function()
@@ -295,8 +295,21 @@ $.Control.registerMixin('d3_impl_pie', {
         var anchor = cc.chartRenderSnapshot.anchorSlice;
         var seriesInformation = cc.chartRenderSnapshot.seriesInformation[primaryValueColumn.column.lookup];
 
-        var topSlice = new vizObj.Slice(state.top, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
-        var bottomSlice = new vizObj.Slice(state.bottom, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
+        var minIndex = state.top;
+        var maxIndex = state.bottom;
+        if (vizObj._currentRangeData.length > 0)
+        {
+            minIndex = Math.max(state.top, vizObj._currentRangeData[0].index);
+            maxIndex = Math.min(state.bottom, _.last(vizObj._currentRangeData).index);
+        }
+        else
+        {
+            minIndex = 0;
+            maxIndex = 0;
+        }
+
+        var topSlice = new vizObj.Slice(minIndex, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
+        var bottomSlice = new vizObj.Slice(maxIndex, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
 
         var slices = this._fillInSliceRange(cc.chartRenderSnapshot.firstDataSlice, cc.chartRenderSnapshot.lastDataSlice);
         var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
@@ -326,20 +339,22 @@ $.Control.registerMixin('d3_impl_pie', {
         }
         else if (topDone)
         {
-            state.phase = vizObj._loaderPhases.growingBottom;
-            state.bottom = Math.min(totalRows - 1, state.bottom + vizObj._loaderIncrement);
+            state.phase = vizObj._loaderPhases.growingDown;
+            state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
         }
         else if (bottomDone)
         {
-            state.phase = vizObj._loaderPhases.growingTop;
-            state.top = Math.max(0, state.top - vizObj._loaderIncrement);
+            state.phase = vizObj._loaderPhases.growingUp;
+            state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
         }
         else
         {
             state.phase = vizObj._loaderPhases.growingBoth;
-            state.top = Math.max(0, state.top - vizObj._loaderIncrement);
-            state.bottom = Math.min(totalRows - 1, state.bottom + vizObj._loaderIncrement);
+            state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
+            state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
         }
+
+        vizObj.debugOut('New phase:' + state.phase);
 
         if (state.phase != vizObj._loaderPhases.idle)
         {
@@ -360,6 +375,8 @@ $.Control.registerMixin('d3_impl_pie', {
     cleanVisualization: function()
     {
         var vizObj = this;
+
+        vizObj._renderUnusableData([], 'isEmpty');
 
         delete vizObj._chartConfig;
 
@@ -575,11 +592,11 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         if (data.length <= 1)
         {
-            return data;
+            return data.slice(0);
         }
         else if ((_.last(data).index - _.first(data).index) == (data.length - 1))
         {
-            return data;
+            return data.slice(0);
         }
         else
         {
@@ -763,6 +780,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
     _renderUsableData: function(data)
     {
+        $.assert(data.length > 0, 'Expected data');
         var vizObj = this;
 
         var cc = vizObj._chartConfig,
@@ -1407,6 +1425,10 @@ $.Control.registerMixin('d3_impl_pie', {
 
         slices
             .exit()
+                .each(function()
+                {
+                    vizObj.handleDataLeaveDOM(this);
+                })
                 .remove();
 
 

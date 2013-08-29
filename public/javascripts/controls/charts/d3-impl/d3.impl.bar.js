@@ -541,13 +541,9 @@ $.Control.registerMixin('d3_impl_bar', {
             // EXIT
             bars
                 .exit()
-                    .each(function(d)
+                    .each(function()
                     {
-                        if (this.tip)
-                        {
-                            this.tip.destroy();
-                            delete this.tip;
-                        }
+                        vizObj.handleDataLeaveDOM(this);
                     });
 
             if (allowTransitions)
@@ -630,7 +626,7 @@ $.Control.registerMixin('d3_impl_bar', {
         }
 
         vizObj._renderTicks(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
-        vizObj._renderValueMarkers(doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
+        vizObj._renderValueMarkers(vizObj._computeValueMarkers(), doAnimation ? oldYScale : newYScale, newYScale, doAnimation);
 
         if (!doAnimation)
         {
@@ -1277,7 +1273,7 @@ $.Control.registerMixin('d3_impl_bar', {
         }
 
         vizObj._renderTicks(oldYScale, yScale, true);
-        vizObj._renderValueMarkers(oldYScale, yScale, true);
+        vizObj._renderValueMarkers(vizObj._computeValueMarkers(), oldYScale, yScale, true);
 
         // Have to re-render labels as bar sizes may have changed.
         vizObj._renderRowLabels();

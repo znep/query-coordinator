@@ -121,7 +121,7 @@ class CustomContentController < ApplicationController
   def page
     # FIXME: should probably make sure you're a Socrata admin before allowing debugging
     @debug = params['debug'] == 'true'
-    @edit_mode = params['_edit_mode'] == 'true' && CurrentDomain.user_can?(current_user, :edit_pages)
+    @edit_mode = params['_edit_mode'] == 'true'
     @start_time = Time.now
 
     page_ext = (params[:ext] || '').downcase

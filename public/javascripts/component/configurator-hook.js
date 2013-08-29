@@ -57,7 +57,9 @@ $(function() {
 
     blist.configuration.onCurrentUser(function(user)
     {
-        if (!$.isBlank(user) && user.hasRight('edit_pages') && blist.configuration.designerAvailable)
+        if (!$.isBlank(user) && (user.hasRight('edit_pages') || user.id == blist.configuration.page.owner ||
+                user.id == (blist.configuration.page.owner || {}).id) &&
+            blist.configuration.designerAvailable)
         {
             $(document.body).addClass('socrata-page');
             $.cf.top();

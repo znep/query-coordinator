@@ -166,7 +166,7 @@
                     cpObj.reset();
                 }
 
-                if (!cpObj._finish()) { return; }
+                if (!cpObj.validateForm()) { return; }
 
                 var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                     cpObj._getFormValues(), {metadata: cpObj._view.metadata});

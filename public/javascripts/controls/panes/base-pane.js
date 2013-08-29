@@ -766,32 +766,39 @@
         _finish: function(data, value, finalCallback)
         {
             var cpObj = this;
-            /*if (!value)
+            if (!value)
             {
                 cpObj._finishProcessing();
                 cpObj._hide();
                 return false;
-            }*/
-
-            // Validate disabled sections
-            cpObj.$dom().find('.formSection.disabled:visible').addClass('error');
-            prepareValidation(cpObj);
-
-            // Validate form
-            if (!cpObj.$dom().find('form').valid())
-            {
-                cpObj._finishProcessing();
-                // Undo our hidden lines before returning
-                resetValidation(cpObj);
-                cpObj.$dom().find('.mainError')
-                    .text($.t('screens.ds.grid_sidebar.base.validation.invalid_values'));
-                return false;
             }
 
-            // Undo our hidden lines before returning
-            resetValidation(cpObj);
-            cpObj.$dom().find('.mainError').text('');
-            return true;
+            return cpObj.validateForm();
+        },
+
+        validateForm: function() 
+        {
+          var cpObj = this;
+
+          // Validate disabled sections
+          cpObj.$dom().find('.formSection.disabled:visible').addClass('error');
+          prepareValidation(cpObj);
+
+          // Validate form
+          if (!cpObj.$dom().find('form').valid())
+          {
+              cpObj._finishProcessing();
+              // Undo our hidden lines before returning
+              resetValidation(cpObj);
+              cpObj.$dom().find('.mainError')
+                  .text($.t('screens.ds.grid_sidebar.base.validation.invalid_values'));
+              return false;
+          }
+
+          // Undo our hidden lines before returning
+          resetValidation(cpObj);
+          cpObj.$dom().find('.mainError').text('');
+          return true;
         },
 
         _isValid: function($input)

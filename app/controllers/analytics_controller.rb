@@ -86,7 +86,9 @@ module ClientAnalyticsHelper
                               domain-intern/js-page-load-time
                               domain-intern/js-response-start-time
                               domain-intern/js-response-read-time
-                              domain-intern/js-dom-load-time).freeze
+                              domain-intern/js-dom-load-time
+                              domain-intern/js-map-one-page-load-time
+                              domain-intern/js-map-many-page-load-time).freeze
 
 
 

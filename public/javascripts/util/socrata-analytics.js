@@ -19,6 +19,11 @@ jQuery.metrics = {
             $.metrics.flush_metrics();
         }
     },
+    measure: function(entity, metric)
+    {
+        if (window.performance !== undefined && _.isFunction(performance.now))
+        { $.metrics.increment(entity, metric, performance.now()); }
+    },
 
     mark: function(entity, metric)
     {
@@ -120,3 +125,4 @@ jQuery.metrics = {
 };
 
 $(window).load(function() { _.defer($.metrics.collect_page_timings); });
+$(window).unload(function() { $.metrics.flush_metrics(); });

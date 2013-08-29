@@ -398,6 +398,8 @@
 
                 mapObj._initialMapLoad = false;
                 mapObj._doneLoading = true;
+                $.metrics.measure('domain-intern',
+                    'js-map-' + (mapObj._children.length == 1 ? 'one' : 'many') + '-page-load-time');
             }
         },
 

@@ -75,11 +75,12 @@ class AdministrationController < ApplicationController
   def analytics
   end
 
-  before_filter :only => [:canvas_pages, :create_canvas_page, :post_canvas_page] {|c| c.check_auth_level('edit_pages')}
+  before_filter :only => [:canvas_pages] {|c| c.check_auth_level('edit_pages')}
   def canvas_pages
     @pages = Page.find('$order' => 'name', 'status' => 'all')
   end
 
+  before_filter :only => [:create_canvas_page, :post_canvas_page] {|c| c.check_auth_level('create_pages')}
   def create_canvas_page
     @cur_path = params[:path]
     @cur_title = params[:title]

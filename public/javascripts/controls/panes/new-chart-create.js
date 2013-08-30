@@ -1,6 +1,6 @@
 (function($) {
 
-    var typeOrder = ['column', 'bar', 'stackedcolumn', 'stackedbar', 'pie', 'donut', 'line' , 'area', 'timeline', 'bubble', 'treemap'];
+    var typeOrder = ['column', 'stackedcolumn', 'bar', 'stackedbar', 'pie', 'donut', 'line' , 'area', 'timeline', 'bubble', 'treemap'];
 
     $.Control.extend('pane_new_chart_create', {
         _init: function()

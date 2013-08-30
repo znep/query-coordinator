@@ -1,6 +1,7 @@
 @mixin vis-type-colors
   $names: column, bar, stackedcolumn, stackedbar, pie, donut, line, area, timeline, bubble, treemap
-  $colors: "#00793c", "#006b3e", "#008651", "#009e5f", "#007b58", "#006b53", "#006846", "#00795e", "#007b66", "#00826f", "#007b66"
+  // bars/cols, pie/donut, line/area/timeline, bubble, treemap
+  $colors: "#00793c","#00793c","#00793c","#00793c", "#0AAA30","#0AAA30", "#079C74","#079C74","#079C74", "#2d5a12", "#005F45"
   $color-pairs: zip($names, $colors)
   @each $pair in $color-pairs
     $name: nth($pair, 1)

@@ -1,7 +1,10 @@
 (function($)
 {
     var uniformEnabled = function() { return !$.browser.msie || $.browser.majorVersion > 7; };
-
+    
+    //Flag for new visualize tab
+    var isNewVisualize = (blist.configuration.newChartConfig);
+    
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
         if (this.optional(element)) { return true; }
@@ -1202,10 +1205,15 @@
     {
         if ($.isBlank(cpObj._view)) { return []; }
 
+        //cols - save columns allowed for the chart type
         columnIdField = columnIdField || 'id';
         var cols = cpObj._view.columnsForType((columnsObj || {}).type,
             (columnsObj || {}).hidden);
 
+        //invalidCols - save not allowed columns too
+        var invalidCols = _.reject(cpObj._view.visibleColumns, function(col){
+            return _.contains(cols, col);
+        }); 
         if ($.isBlank(curVal) && _.isArray((columnsObj || {}).defaultNames))
         {
             // If we have a set of names to check for, look through them in
@@ -1223,19 +1231,35 @@
 
         var options = [{tagName: 'option', value: '',
             contents: $.isBlank(curVal) ? $.t('screens.ds.grid_sidebar.base.column_select.prompt') : $.t('screens.ds.grid_sidebar.base.column_select.unselect')}];
+       
         _.each(cols, function(c)
-        {
+        {   
             // Handle id/tcId/fieldName
             var cId = c.id;
             var tcId = c.tableColumnId;
             var fName = c.fieldName;
             options.push({tagName: 'option', value: c[columnIdField],
-                selected: curVal == fName || curVal == tcId || curVal == cId ||
+                selected: curVal == fName || curVal == tcId || curVal == cId || 
                     (cols.length == 1 && !columnsObj.noDefault && $.isBlank(curVal)),
                 contents: $.htmlEscape(c.name)});
         });
+        
+        var invalidOptions = [];
+        _.each(invalidCols, function(c)
+         {
+            invalidOptions.push({tagName: 'option', value: c[columnIdField],
+                contents: $.htmlEscape(c.name), disabled: 'disabled'});
+         });
 
-        return options;
+        //wrap selectables in a group so you can see both allowed and not allowed columns
+        if (isNewVisualize){
+          return [{tagName: 'optgroup', label: 'Valid Columns', contents: options}, 
+                  {tagName: 'optgroup', label: 'Non Valid Columns', contents: invalidOptions}];
+        }
+        else{
+          return options;
+        }
+
     };
 
     /* Get the common attributes from an item for use with $.tag */
@@ -1917,6 +1941,7 @@
                 $sel.attr('data-columnIdField'),
                 $sel.val());
             $sel.find('option').remove();
+            $sel.find('optGroup').remove();
             _.each(newOpts, function(o) { $sel.append($.tag(o)); });
             uniformUpdate($sel);
         });

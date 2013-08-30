@@ -129,7 +129,7 @@ Enjoy!
             spanTag.text($selected.text());
 
             elem.change(function() {
-                spanTag.text(elem.children(":selected").text());
+                spanTag.text(elem.find(":selected").text());
             })
             .focus(function() {
                 divTag.addClass(options.focusClass);
@@ -152,7 +152,7 @@ Enjoy!
                 divTag.removeClass(options.hoverClass);
             })
             .keypress(function(){
-              spanTag.text(elem.children(":selected").text());
+              spanTag.text(elem.find(":selected").text());
             });
 
             //handle disabled state
@@ -439,7 +439,7 @@ Enjoy!
                 divTag.removeClass(options.hoverClass+" "+options.focusClass+" "+options.activeClass);
 
                 //reset current selected text
-                spanTag.html($.htmlEscape($e.children(":selected").text()));
+                spanTag.html($.htmlEscape($e.find(":selected").text()));
 
                 if($e.is(":disabled")){
                     divTag.addClass(options.disabledClass);

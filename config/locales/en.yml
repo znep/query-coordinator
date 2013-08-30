@@ -142,6 +142,10 @@ en:
           main: Results %{body}
           term: for "%{term}"
     charts:
+      other: Other
+      no_data: No data
+      zero_only_data: No values greater than zero
+      negatives_in_data: "Invalid chart: negative values present"
       series_grouping:
         calculating_time: Calculating remaining time...
         calculation_running: Preparing data

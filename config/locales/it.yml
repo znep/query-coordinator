@@ -142,6 +142,7 @@ it:
           main: Risultati %{body}
           term: per "%{term}"
     charts:
+      other: Altro
       series_grouping:
         calculating_time: Calcolo del tempo rimanente in corso...
         calculation_running: Preparazione dati

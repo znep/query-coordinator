@@ -1111,7 +1111,7 @@
             //Merge values if similarly formed
             else if (_.isArray(value) && _.isArray(parObj[p[0]]))
             { 
-              parObj[p[0]] = $.extend(true, parObj[p[0]], value);
+              parObj[p[0]] = $.extend(true, _.compact(parObj[p[0]]), _.compact(value));
             }
             ret = parObj[p[0]];
         }
@@ -2040,7 +2040,8 @@
         var defAdjField = function() { $field.trigger('resetToDefault'); };
 
         if ($linkedItems.hasClass('addValue')) {
-          $parRepeater.delegate('.inputItem', 'change', defAdjField);
+          $parRepeater.delegate('.inputItem', 'change', defAdjField)
+                      .delegate('.removeLink', 'click', defAdjField);
         }
         else 
         {

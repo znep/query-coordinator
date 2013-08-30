@@ -89,7 +89,11 @@
                 //Bind section classing to chart-type selection
                 cpObj.$dom().find('.chartTypeSelection .radioLine').click(function(e) {
                     setHeader($(e.currentTarget).attr('class'));
-                });                    
+                });
+
+                cpObj.$dom().find('.repeater')
+                        .delegate('.removeLink', 'click', function(e) { cpObj._changeHandler($(e.currentTarget)); });
+
             }
         },
 
@@ -144,7 +148,6 @@
 
         _changeHandler: function($input)
         {
-            
             var cpObj = this;
             _.defer( function() {
 
@@ -155,7 +158,16 @@
                     );
                     cpObj.reset(); 
                     return; 
-                }; 
+                };
+
+                if (!cpObj.validateForm()) { return; }
+
+                //Clean-up sparse inputs in value column repeater so colors sync and merge correctly.
+                cpObj.$dom().find("[class*='ValueSelection'] .line").each( function (i, el) {
+                    var $line = $(el);
+                    if ($.isBlank($line.find('.columnSelectControl').val())) 
+                    { $line.remove(); }
+                });
 
                 //Need to sync up fields between chart types only if we are switching types.
                 if ($input.data("origname") == "displayFormat.chartType") 

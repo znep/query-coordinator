@@ -164,6 +164,21 @@
       input
         text-align: left
 
+.awesomebubble .createGoalForm
+  width: 50em
+
+  .madlib
+    line-height: 5em
+    padding: 1em
+      top: 0
+
+    .name
+      width: 48em
+
+      input
+        font-size: 1.6em
+        text-align: left
+
 .awesomebubble
   background-color: #fff
   @include prefixer(border-radius, 0.2em)
@@ -196,8 +211,9 @@
       margin-left: 0.6em
 
       h2
-        font-size: 2em
+        font-size: 1.3em
         font-weight: normal
+        padding: 0.4em 0.85em
 
 @keyframes spin
   from
@@ -217,6 +233,98 @@
     @include prefixer(animation-timing-function, linear)
     height: 25px
     width: 25px
+
+
+.janusConsole
+  bottom: 0
+  position: fixed
+  z-index: 9999
+  width: 100%
+
+  &.shown
+    .scrollback
+      bottom: 8em
+      @include opacity(1)
+      top: auto
+    .prompt
+      top: -8em
+
+  .scrollback
+    background-color: rgba(0, 0, 0, 0.85)
+    @include prefixer(border-radius, 0.2em)
+    @include prefixer(box-shadow, 0 0 0.7em rgba(0, 0, 0, 0.7))
+    color: #fff
+    left: 0
+    margin: 1em 3em
+    @include opacity(0)
+    padding: 0.6em 0
+    position: absolute
+    right: 0
+    top: 0
+    @include transition(0.8s, opacity)
+
+    &.hide
+      @include opacity(0)
+
+    li.commandOutput
+      border-top: 1px dotted rgba(255, 255, 255, 0.6)
+      margin: 0 1.5em
+      overflow: hidden
+      padding: 1.5em
+      position: relative
+
+      &:first-child
+        border-top: none
+
+      .commandNumber, .commandText, .resultNumber
+        font-family: Monaco, monospace
+        font-size: 1.4em
+        text-shadow: 0 0 0.2em rgba(0, 0, 0, 0.4)
+
+      .commandNumber
+        float: left
+        padding-bottom: 0.7em
+        margin-right: 0.7em
+        @include opacity(0.7)
+
+      .resultNumber
+        clear: left
+        float: left
+        @include opacity(0.7)
+
+      .resultBody
+        margin-left: 8em
+
+  .prompt
+    background-color: rgba(255, 255, 255, 0.92)
+    @include prefixer(border-radius, 0.2em)
+    @include prefixer(box-shadow, 0 0 0.7em rgba(0, 0, 0, 0.7))
+    left: 0
+    margin: 1em 3em
+    padding: 1em 2em
+    position: absolute
+    right: 0
+    top: 0
+    @include transition(0.6s, top)
+
+    .caret
+      color: #777
+      float: left
+      font-family: Monaco, monospace
+      font-size: 1.8em
+      line-height: 1.25em
+      margin-right: 0.5em
+
+    .consolePrompt input
+      background: none
+      border: none
+      font-family: Monaco, monospace
+      font-size: 1.8em
+      margin: 0
+        right: -3em
+      outline: none
+      padding: 0
+      width: 100%
 
 // probably a sane default?
 .ui-draggable-dragging
@@ -572,4 +680,83 @@
 
     > .singleItemWrapper:first-child, > .ui-sortable-helper:first-child + .singleItemWrapper
       margin-left: 21.4em
+
+.userGoals
+  h2.userGoalsHeader
+    font-size: 4em
+    font-weight: normal
+    letter-spacing: -0.04em
+    padding-bottom: 0.1em
+
+  p.userGoalsIntro
+    font-size: 1.8em
+    line-height: 1.4em
+    padding-left: 0.1em
+
+  .categoryItem
+    padding-top: 2em
+
+  .newGoal.active + .goalList.personalGoals ul
+    > .singleItemWrapper:first-child, > .ui-sortable-helper:first-child + .singleItemWrapper
+      margin-left: 21.4em
+
+
+$requestBubbleColor: rgba(0, 0, 0, 0.7)
+#requestStatus
+  bottom: -2em
+  position: fixed
+  right: -2em
+  z-index: 10001
+
+  .networkStatus
+    @include opacity(0)
+    @include transition(0.4s, opacity)
+
+    &.active
+      @include opacity(1)
+
+    .bubble
+      background-color: #333
+      background-color: $requestBubbleColor
+      @include prefixer(border-radius, 0.2em)
+      bottom: 12em
+      color: #fff
+      max-width: 30em
+      min-width: 25em
+      right: 3em
+      @include prefixer(box-shadow, 0 0 0.4em rgba(0, 0, 0, 0.3))
+      padding: 2em
+      position: absolute
+
+      &:after
+        @include triangle(1em, $requestBubbleColor, top)
+        bottom: -2em
+        content: ''
+        right: 1em
+        position: absolute
+
+      .socketStatus, .requestStatus
+        font-size: 1.4em
+        line-height: 1.2em
+        max-height: 0
+        overflow: hidden
+        @include transition(0.3s, color max-height padding)
+
+        &.active
+          max-height: 2.4em
+
+      .requestStatus
+        padding: 0
+
+        &.active
+          padding-bottom: 0.5em
+
+          &:last-child
+            padding-bottom: 0
+
+      .socketStatus, .notOkay
+        color: #ffb2b2
+
+      .okay
+        color: #b6e685
 

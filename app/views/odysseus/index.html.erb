@@ -10,6 +10,9 @@
   <%= raw @contents %>
 </div>
 
+<div id="requestStatus">
+</div>
+
 <div id="objectCache">
   <%- @objects.each do |obj| -%>
     <div id="<%= obj['key'] %>"><%= obj['value'] %></div>

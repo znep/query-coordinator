@@ -125,8 +125,8 @@ var tryDirection = function(direction, $elem, $bubble, options, force)
   var $body = $('body');
   var screenTop = $body.scrollTop();
   var screenBottom = screenTop + $window.height();
-  var screenLeft = $body.scrollLeft();
-  var screenRight = screenLeft + $window.width();
+  var screenLeft = $body.scrollLeft() + options.screenMargin;
+  var screenRight = screenLeft + $window.width() - 20 - options.screenMargin; // 20 for scrollbar
 
   // see if we violate bounds.
   if ((direction == 'top') && (fixation.y - bubbleHeight < screenTop))
@@ -227,7 +227,8 @@ $.fn.awesomebubble = function(options)
 
 $.fn.awesomebubble.defaults = {
   pin: false,
-  prefer: [ 'bottom', 'top' ]
+  prefer: [ 'bottom', 'top' ],
+  screenMargin: 10
 };
 
 })(jQuery);

@@ -11,10 +11,10 @@
 
     var defaultColors;
     if (isNextGen){
-        defaultColors = ['#003366', '#D95F02', '#1B9E77', '#e6ab02', '#7570b3'];    
+        defaultColors = ['#003366', '#D95F02', '#1B9E77', '#e6ab02', '#7570b3'];
     }
     else{
-        defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];    
+        defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
     }
 
     var axisTitles = [
@@ -392,12 +392,12 @@
                 {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.alphabetize'),
                     name: 'displayFormat.sortSeries',
                     inputFirst: true,
-                    lineClass: 'seriesGroupingCheck',
+                    lineClass: 'indentedFormSection',
                     onlyIf: isNextGen},
                 {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.hideLoadingMsg'),
                     name: 'displayFormat.hideDsgMsg',
                     inputFirst: true,
-                    lineClass: 'seriesGroupingCheck',
+                    lineClass: 'indentedFormSection',
                     onlyIf: isNextGen},
                 {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.dsg_color_override_html')},
                 {type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
@@ -449,6 +449,38 @@
         return bc;
     };
 
+    // We automatically apply a default OrderBy to pie-like charts (descending on first value column).
+    // However, there are cases where users want to set a custom sort. In order to allow them to preserve
+    // such a sort when they update the chart config, we provide this checkmark to disable the auto-sort
+    // feature.
+    var autoSortCheckbox = function(options)
+    {
+        // In absence of a set value for this option, provide a sensible default.
+        var defaultValue = true;
+        if ($.subKeyDefined(options.view, 'query.orderBys'))
+        {
+            // To handle charts that were created before this checkmark existed:
+            // If the sort looks like it was added by us, default the checkmark to true.
+            // Otherwise, default to false.
+            var orderBys =  options.view.query.orderBys;
+            var hasDefaultSort =  orderBys.length == 1 &&
+                                  orderBys[0].ascending === false &&
+                                  $.subKeyDefined(orderBys[0], 'expression.columnId') &&
+                                  $.subKeyDefined(options.view, 'displayFormat.valueColumns') &&
+                                  options.view.displayFormat.valueColumns.length > 0 &&
+                                  options.view.columnForIdentifier(options.view.displayFormat.valueColumns[0].fieldName || options.view.displayFormat.valueColumns[0].tableColumnId).id === orderBys[0].expression.columnId;
+
+            defaultValue = hasDefaultSort;
+        }
+
+        return { type: 'checkbox',  text: $.t('screens.ds.grid_sidebar.chart.auto_update_sort'),
+                                    name: 'displayFormat.autoUpdateSort',
+                                    inputFirst: true,
+                                    defaultValue: defaultValue,
+                                    lineClass: 'indentedFormSection',
+                                    onlyIf: isNextGen };
+    };
+
     var configDonut = function(options)
     {
         var bc = basicConfig(Dataset.chart.types.donut, options, Dataset.chart.textualTypes, $.t('screens.ds.grid_sidebar.chart.label'));
@@ -459,6 +491,7 @@
                 columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}},
                 minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button')});
 
+        bc.fields.push(autoSortCheckbox(options));
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: ''}),
@@ -476,6 +509,8 @@
             otherNames: 'displayFormat.valueColumns.0.tableColumnId',
             notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
+
+        bc.fields.push(autoSortCheckbox(options));
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: ''}),

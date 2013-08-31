@@ -192,17 +192,25 @@
 
                 _.each(view.displayFormat.fixedColumns || [], addColumn);
 
-                if (_.include(['pie', 'donut'], view.displayFormat.chartType))
-                { view.query = $.extend(view.query, cpObj._view.query,
-                    { orderBys: _.map(view.displayFormat.valueColumns, function(col)
+                if (view.displayFormat.autoUpdateSort === true && _.include(['pie', 'donut'], view.displayFormat.chartType))
+                {
+                    view.query = $.extend(view.query, cpObj._view.query,
+                    {
+                        orderBys: _.map(view.displayFormat.valueColumns, function(col)
                         {
-                            var orderBy = { ascending: false, expression: {
-                                columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
-                                type: 'column'
-                            }};
+                            var orderBy =
+                            {
+                                ascending: false,
+                                expression:
+                                {
+                                    columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
+                                    type: 'column'
+                                }
+                            };
                             return orderBy;
-                        }) }
-                 );}
+                        })
+                    })
+                }
                
                 if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
                     (view.displayFormat.stacking == true))

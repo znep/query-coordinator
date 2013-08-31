@@ -528,7 +528,7 @@
         display: inline-block
 
 
-  
+
   .formSection
     .line.colorValueGroup
       position: relative
@@ -545,7 +545,7 @@
           top: 0
           right: 1.5em
 
-    
+
   &.new_chart_create
     margin-top: -1em
     @include vis-type-colors
@@ -553,7 +553,10 @@
       @include viz-type-icons-small
       @include chart-config-icons
       @include data-selection-icons
-      margin-bottom: 0em  
+      margin-bottom: 0em
+
+      .indentedFormSection.inputFirst
+        padding-left: 1em
 
       .radioBlock.option-icons
         @include viz-type-icons
@@ -569,15 +572,15 @@
           padding-top: 0px
           margin: 0px 8px 30px 8px
           text-align: center
-          
+
           > label
             margin-left: 0px
-            
+
             &:hover
               cursor: pointer
               opacity: 0.8
               z-index: 1
-     
+
           span.checked
             @include border-radius(0.8em)
             height: 48px
@@ -587,7 +590,7 @@
             background-image: none
             margin-top: -2px
             margin-left: -2px
-         
+
           &.unavailable
             opacity: 0.3
             > label
@@ -609,7 +612,7 @@
 
       .flyout, [class*='ValueSelection'], .dataSeriesGrouping
         .removeLink.delete
-          margin-left: -3%  
+          margin-left: -3%
         .line.repeaterAdded
           width: 90%
           padding-left: 0.8em
@@ -617,7 +620,7 @@
           label
             display: none
 
-      .line.hasIcon 
+      .line.hasIcon
         width: 75%
         display: inline-block
         vertical-align: top
@@ -673,10 +676,10 @@
         width: 100%
         margin-left: -0.8em
         margin-top: 0em
-        
+
         .formHeader
           color: #ffffff
-          font-size: 1.3em 
+          font-size: 1.3em
 
         .sectionContent
           display: none
@@ -1170,7 +1173,7 @@
         padding-left: 12.7em
 
 
-  .formSection .seriesGroupingCheck.inputFirst
+  .formSection .indentedFormSection.inputFirst
     padding-left: 2em
 
     label

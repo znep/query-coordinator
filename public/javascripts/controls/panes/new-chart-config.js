@@ -9,10 +9,10 @@
 
     var defaultColors;
     if (isNextGen){
-        defaultColors = ['#003366', '#D95F02', '#1B9E77', '#e6ab02', '#7570b3'];    
+        defaultColors = ['#003366', '#D95F02', '#1B9E77', '#e6ab02', '#7570b3'];
     }
     else{
-        defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];    
+        defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];
     }
     var typeOrder = ['column', 'bar', 'stackedcolumn', 'stackedbar', 'pie', 'donut', 'line' , 'area', 'timeline', 'bubble', 'treemap'];
 
@@ -162,7 +162,7 @@
     {
         return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.marker.title', { axis: $.capitalize(which) }),
             [
-                {type: 'repeater', name: 'displayFormat.' + which + 'Marker', addText: $.t('screens.ds.grid_sidebar.chart.marker.new_marker_button'), 
+                {type: 'repeater', name: 'displayFormat.' + which + 'Marker', addText: $.t('screens.ds.grid_sidebar.chart.marker.new_marker_button'),
                  minimum: 0, lineClass: 'hasIcon valueMarker',
                     field: {type: 'group', options: [
                         {type: 'group', options: [
@@ -201,10 +201,10 @@
         };
     };
 
-    var labelInBar = { text: $.t('screens.ds.grid_sidebar.chart.labelInBar'), type: 'checkbox', 
+    var labelInBar = { text: $.t('screens.ds.grid_sidebar.chart.labelInBar'), type: 'checkbox',
                        name: 'displayFormat.xAxis.labelInBar', lineClass: 'hasIcon labelInBar', inputFirst: true };
 
-    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox',  
+    var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox',
                        name: 'displayFormat.xAxis.valueInBar', lineClass: 'hasIcon valueInBar', inputFirst: true };
 
     if (!isNextGen)
@@ -243,7 +243,7 @@
                         { return $.t('screens.ds.grid_sidebar.base.datatypes.' + transform(blist.datatypes[t].title)); }),
                             $.t('support.array_or.two_words_connector'), ','); }),
                     $.t('support.array.two_words_connector'), ';', true) })
-        
+
     };
 
     var getWarningMessage = function(chartConfig)
@@ -289,7 +289,7 @@
                 warningMessage: getWarningMessage(chart)}];
     };
 
-    var header = function(chart, options, name) 
+    var header = function(chart, options, name)
     {
         return {
             title: name,
@@ -302,7 +302,7 @@
         return { title: sectionTitle, type: 'selectable',
             customClasses: 'sectionSubheading', fields: content, validateCollapsed: true, initShow: (show || false)
         }
-    } 
+    }
 
 
 
@@ -346,7 +346,7 @@
     };
 
 
-    var advancedDataSelection = function(chart, options, colTypes) 
+    var advancedDataSelection = function(chart, options, colTypes)
     {
         // Using column.cachedContents as a hack because totalRows is rarely available at this time.
         var tooManyRows = isNextGen && _.any(options.view.realColumns,
@@ -366,21 +366,21 @@
                                 name: 'fieldName', otherNames: 'tableColumnId',
                                 columns: {type: colTypes, hidden: options.isEdit}
                         }
-                    }, 
+                    },
                     {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.alphabetize'),
                         name: 'displayFormat.sortSeries',
                         inputFirst: true,
-                        lineClass: 'seriesGroupingCheck'
+                        lineClass: 'indentedFormSection'
                     },
                     {type: 'checkbox', text: $.t('screens.ds.grid_sidebar.chart.series_group.hideLoadingMsg'),
                         name: 'displayFormat.hideDsgMsg',
                         inputFirst: true,
-                        lineClass: 'seriesGroupingCheck'
+                        lineClass: 'indentedFormSection'
                     }
                 ]}
             ]
         );
-        
+
         if(chart.value != 'line' && chart.value != 'area' && chart.value != 'timeline')
         {
             //Error Bars
@@ -396,7 +396,7 @@
                         type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
                         columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}, lineClass: 'hasIcon errorBarsHigh'
                     }
-                    
+
                 ]}]
             )
         }
@@ -404,23 +404,23 @@
     }
 
 
-    var colors = function(chart, options) 
+    var colors = function(chart, options)
     {
         var result = subheading(chart, options, 'Colors', []);
         if (_.contains(['bubble', 'donut', 'treemap', 'pie'], chart.value)) {
-            
+
             result.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: ''}),
                 name: 'displayFormat.colors', minimum: 1,
                 initialRepeatCount: 5, lineClass: 'colorArray'}
             );
-        } 
-        else 
+        }
+        else
         {
             result.fields.push({ text: 'Column colors', type: 'custom', required: true, linkedField: ['displayFormat.valueColumns'], name: 'displayFormat.valueColumns',
               editorCallbacks: {
                 create: function($field, val, curVal) {
-                    
+
                     //validate valueColumns that may be passed du\plicates or null values
                     var fieldNames = {};
                     val.displayFormat.valueColumns = _.reject(val.displayFormat.valueColumns, function(col) {
@@ -432,7 +432,7 @@
                     });
 
                     //MAKE HIDDEN INPUT TO HANDLE CHANGE
-                    
+
                     var cols = {tagName: 'div', contents: []};
 
                     _.each(val.displayFormat.valueColumns, function(col, i) {
@@ -462,13 +462,13 @@
                     });
                     return true;
                 },
-                value: function($field) {  
+                value: function($field) {
                     var result = [];
                     $field.find('.columnColorControl').each(
                         function(index, cs) {
                             result.push({color: $(cs).data('colorpicker-color')});
                         });
-                    return result; 
+                    return result;
                 }
               }});
         }
@@ -477,7 +477,7 @@
     }
 
 
-    var labelsAndValues = function(chart, options, extraFields) 
+    var labelsAndValues = function(chart, options, extraFields)
     {
          return subheading(chart, options, 'Labels and Values', extraFields);
     }
@@ -488,7 +488,7 @@
     //Legend Configuration
 
 
-    var flyoutConfig = function(chart, options) 
+    var flyoutConfig = function(chart, options)
     {
         return subheading(chart, options, 'Flyouts',
             [
@@ -497,7 +497,7 @@
                     field: {type: 'group', options: [{text: $.t('screens.ds.grid_sidebar.chart.flyout.title'), name: 'fieldName', otherNames: 'tableColumnId',
                            type: 'columnSelect', useFieldName: true, columns: {hidden: options.isEdit}}]},
                     minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.flyout.new_details_button')
-                } 
+                }
             ]
         );
     }
@@ -505,7 +505,7 @@
 
     var axisOptions = function(chart, options)
     {
-        var result = subheading(chart, options, 'Axis Options', 
+        var result = subheading(chart, options, 'Axis Options',
             [
                 {text: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title'), name: 'displayFormat.titleX',
                     type: 'text', prompt: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title_prompt')},
@@ -531,8 +531,8 @@
                     name: 'displayFormat.yAxis.formatter.abbreviate'}
             ]
         );
-        
-        if (chart.value == 'timeline') 
+
+        if (chart.value == 'timeline')
         { result.fields.splice(0, 1); }
 
         return result;
@@ -554,8 +554,8 @@
                         name: 'displayFormat.valueColumns.0.fieldName',
                         otherNames: 'displayFormat.valueColumns.0.tableColumnId',
                         columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
-                    }, 
-                    pointSize(options), 
+                    },
+                    pointSize(options),
                     pointColor(options)
                 ]
         , true);
@@ -568,6 +568,38 @@
         return bc;
     };
 
+    // We automatically apply a default OrderBy to pie-like charts (descending on first value column).
+    // However, there are cases where users want to set a custom sort. In order to allow them to preserve
+    // such a sort when they update the chart config, we provide this checkmark to disable the auto-sort
+    // feature.
+    var autoSortCheckbox = function(options)
+    {
+        // In absence of a set value for this option, provide a sensible default.
+        var defaultValue = true;
+        if ($.subKeyDefined(options.view, 'query.orderBys'))
+        {
+            // To handle charts that were created before this checkmark existed:
+            // If the sort looks like it was added by us, default the checkmark to true.
+            // Otherwise, default to false.
+            var orderBys =  options.view.query.orderBys;
+            var hasDefaultSort =  orderBys.length == 1 &&
+                                  orderBys[0].ascending === false &&
+                                  $.subKeyDefined(orderBys[0], 'expression.columnId') &&
+                                  $.subKeyDefined(options.view, 'displayFormat.valueColumns') &&
+                                  options.view.displayFormat.valueColumns.length > 0 &&
+                                  options.view.columnForIdentifier(options.view.displayFormat.valueColumns[0].fieldName || options.view.displayFormat.valueColumns[0].tableColumnId).id === orderBys[0].expression.columnId;
+
+            defaultValue = hasDefaultSort;
+        }
+
+        return { type: 'checkbox',  text: $.t('screens.ds.grid_sidebar.chart.auto_update_sort'),
+                                    name: 'displayFormat.autoUpdateSort',
+                                    inputFirst: true,
+                                    defaultValue: defaultValue,
+                                    lineClass: 'indentedFormSection',
+                                    onlyIf: isNextGen };
+    };
+
     var dataSelectionPie = function(options)
     {
         var bc = dataSelection(Dataset.chart.types.pie, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.label'));
@@ -576,10 +608,18 @@
             otherNames: 'displayFormat.valueColumns.0.tableColumnId', lineClass: 'hasIcon pieValueSelection',
             notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
+        bc.fields.push(autoSortCheckbox(options));
         return bc;
     };
 
-    var dataSelectionTimeline = function(options) 
+    var dataSelectionDonut = function(options)
+    {
+        var bc = dataSelection(Dataset.chart.types.donut, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection');
+        bc.fields.push(autoSortCheckbox(options));
+        return bc;
+    };
+
+    var dataSelectionTimeline = function(options)
     {
         var bc = dataSelection(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.label'));
         bc.fields[1].field = {type: 'group', options: [bc.fields[1].field,
@@ -608,7 +648,7 @@
         var chartTypesSorted = {};
         for (var i=0; i<typeOrder.length; i++)
         {
-            
+
             chartTypesSorted[typeOrder[i]] = chartTypesCopy[typeOrder[i]];
             var currentType = chartTypesSorted[typeOrder[i]];
 
@@ -645,10 +685,10 @@
 
 
     chartConfigNS.newConfigForType = function(type, options)
-    {    
+    {
         options = $.extend({isEdit: false, useOnlyIf: false}, options);
         var chart = Dataset.chart.types[type];
-        
+
         var headerDataSelect = header(chart, options, 'Data Selection'),
             headerPresentation = header(chart, options, 'Data Presentation'),
             headerDetails = header(chart, options, 'Chart Details');
@@ -657,17 +697,17 @@
         switch(type)
         {
             // Area chart
-            case 'area': 
+            case 'area':
                 result.push(
                     headerDataSelect,
                     dataSelection(chart, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, 'Data Selection'),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
-                    
+
                     headerPresentation,
                     colors(chart, options),
                     labelsAndValues(chart, options, [showLines, showPoints]),
                     valueMarker(chart, options),
-                    
+
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
@@ -683,12 +723,12 @@
                     headerDataSelect,
                     dataSelection(chart, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection'),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
-                    
+
                     headerPresentation,
                     colors(chart, options),
                     labelsAndValues(chart, options, [labelInBar, valueInBar]),
                     valueMarker(chart, options),
-                    
+
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
@@ -703,12 +743,12 @@
                     headerDataSelect,
                     dataSelectionBubble(chart, options),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
-                    
+
                     headerPresentation,
                     colors(chart, options),
                     labelsAndValues(chart, options, [showLine]),
                     valueMarker(chart, options),
-                    
+
                     headerDetails,
                     flyoutConfig(chart, options),
                     axisOptions(chart, options),
@@ -722,12 +762,12 @@
                     headerDataSelect,
                     dataSelection(chart, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection'),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
-                    
+
                     headerPresentation,
                     colors(chart, options),
                     labelsAndValues(chart, options, [labelInBar, valueInBar]),
                     valueMarker(chart, options),
-                    
+
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
@@ -740,8 +780,8 @@
             case 'donut':
                 result.push(
                     headerDataSelect,
-                    dataSelection(chart, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection'),
-                    
+                    dataSelectionDonut(options),
+
                     headerPresentation,
                     colors(chart, options),
                     labelsAndValues(chart, options, [showPercentages, showActualValues, pieJoinAngle]),
@@ -758,12 +798,12 @@
                     headerDataSelect,
                     dataSelectionLine(options),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
-                    
+
                     headerPresentation,
                     colors(chart, options),
                     labelsAndValues(chart, options, [showLines, showPoints, dataLabels, smoothLine]),
                     valueMarker(chart, options),
-                    
+
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
@@ -777,7 +817,7 @@
                 result.push(
                     headerDataSelect,
                     dataSelectionPie(options),
-                    
+
                     headerPresentation,
                     colors(chart, options),
                     labelsAndValues(chart, options, [showPercentages, showActualValues, pieJoinAngle]),
@@ -811,7 +851,7 @@
                 treemapColors.fields.push(treemapRandomColorWarning);
 
                 result.push(
-                    
+
                     headerDataSelect,
                     subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.configuration'),
                     [

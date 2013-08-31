@@ -43,9 +43,9 @@ Frontend::Application.routes do
     # New frontend pages
     scope :controller => 'odysseus', :action => 'index' do
       match '/stat', :as => 'govstat_root'
-      match '/stat/☃', :as => 'govstat_bootstrap'
-      match '/stat/%E2%98%83', :as => 'govstat_bootstrap'
       match '/stat/goals', :as => 'govstat_goals'
+      match '/stat/my/goals', :as => 'govstat_my_goals'
+      match '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
       match '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
       match '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
       match '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'

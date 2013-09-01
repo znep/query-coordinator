@@ -106,7 +106,11 @@ http://www.socrata.com
               title="Browse and Manage Data">Data</a></li>
             <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"
               title="View and Create Reports">Reports</a></li>
-            <li class="goals"><a href="<%= manage_site_config_path %>" class="ss-wrench"
+            <%- if CurrentDomain.feature?(:govstat_15) -%>
+              <li class="goals"><a href="<%= govstat_goals_path %>" class="ss-checkclipboard"
+                title="Create and Track Goals">Goals</a></li>
+            <%- end -%>
+            <li class="config"><a href="<%= manage_site_config_path %>" class="ss-wrench"
               title="Manage GovStat configuration">Configuration</a></li>
           </ul>
         <%- else -%>

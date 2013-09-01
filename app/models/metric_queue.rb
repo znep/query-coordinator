@@ -70,8 +70,8 @@ private
     end
     if APP_CONFIG['statsd_enabled']
       current_requests.each do |request|
-        next unless AGGREGATE_METRICS.include? request[:name]
-        Frontend.statsd.count("browser.#{request[:name]}", request[:value])
+        next unless request[:name].start_with? "js-" and request[:name].end_with? "-time"
+        Frontend.statsd.timing("browser.#{request[:name]}", request[:value])
       end
     end
   end
@@ -92,6 +92,4 @@ private
   START_OF_RECORD = [255].pack("C").force_encoding("iso-8859-1")
   END_OF_FIELD = [254].pack("C").force_encoding("iso-8859-1")
   BATCH_REQUESTS_BY = Rails.env.development? ? 1 : 100
-  AGGREGATE_METRICS = %w(js-map-one-page-load-time
-                         js-map-many-page-load-time).freeze
 end

@@ -180,6 +180,7 @@ Frontend::Application.routes do
 
     scope :controller => 'profile', :path => '/profile',
           :constraints => {:id => UID_REGEXP, :profile_name => /(\w|-)+/} do
+      get 'account', :action => 'generic_account', :as => 'generic_account'
       get ':profile_name/:id/create_friend', :action => 'create_friend'
       get ':profile_name/:id/delete_friend', :action => 'delete_friend'
       # Profile SEO urls (only add here if the action has a view with it;

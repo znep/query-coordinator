@@ -625,6 +625,14 @@ en:
       no_permission: No permission to access resource.
       were_sorry: We're sorry, but it appears that you do not have permission to access this page.
     to_whence_you_came: to where you came from.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: Account
+          account_tooltip: View and make changes to your user account.
+          my_goals: My Goals
+          my_goals_tooltip: See the goals I've created.
   screens:
     about:
       actions: Actions

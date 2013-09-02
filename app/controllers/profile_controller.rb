@@ -8,6 +8,10 @@ class ProfileController < ApplicationController
     redirect_to profile_path(current_user)
   end
 
+  def generic_account
+    redirect_to profile_account_path(current_user)
+  end
+
   def show
     begin
       @port = request.port

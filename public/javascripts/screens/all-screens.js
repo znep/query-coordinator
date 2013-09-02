@@ -209,6 +209,7 @@
       {
          $('.accountLink .text .currentUser').html(user.displayName);
          $('.accountLink').removeClass('hide');
+         $('.accountLikeLink').removeClass('hide');
          $('.signOutLink').removeClass('hide');
          $('.signInLink').addClass('hide');
          $('.signUpLink').addClass('hide');

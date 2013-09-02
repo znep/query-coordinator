@@ -99,7 +99,24 @@ http://www.socrata.com
       <%- if !@suppress_chrome -%>
       <div id="siteHeader" class="clearfix">
         <%- if module_enabled?(:govStat) && !@suppress_govstat -%>
-          <%= render_text_template('<div class="clearfix">{{main_logo}}<ul class="siteUserNav">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>') %>
+          <div class="clearfix">
+            <%= render_text_template('{{main_logo}}') %>
+            <ul class="siteUserNav">
+              <li class="accountLink hide">
+                <a href="<%= generic_account_path %>" title="<%= t('govstat.chrome.header.links.account_tooltip') %>">
+                  <span class="text"><%= t('govstat.chrome.header.links.account') %></span>
+                </a>
+              </li>
+              <%- if CurrentDomain.feature?(:govstat_15) -%>
+                <li class="accountLikeLink hide">
+                  <a href="<%= govstat_my_goals_path %>" title="<%= t('govstat.chrome.header.links.my_goals_tooltip') %>">
+                    <span class="text"><%= t('govstat.chrome.header.links.my_goals') %></span>
+                  </a>
+                </li>
+              <%- end -%>
+              <%= render_text_template('{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}') %>
+            </ul>
+          </div>
           <ul class="manageActions">
             <li class="home"><a href="<%= CurrentDomain.feature?(:govstat_15) ? govstat_root_path : manage_path %>" class="ss-home" title="Home">Home</a></li>
             <li class="data"><a href="<%= manage_data_path %>" class="ss-hdd"
@@ -211,8 +228,8 @@ http://www.socrata.com
         $siteLinks = $.tag2({_: 'div', className: ['siteUserNav', 'menu']});
         $('#siteHeader').append($siteLinks);
         var menu_style = user === undefined ? 'user' : 'list';
-        $siteLinks.menu({ menuButtonClass: 'accountButton ss-' + menu_style,
-          menuButtonContents: 'Menu',
+        $siteLinks.menu({ menuButtonClass: 'accountButton ss-user',
+          menuButtonContents: user === undefined ? 'Account' : user.displayName,
           menuButtonTitle: 'Account Options', contents: contents });
       <%- else -%>
         if (! $('#siteHeader .siteUserNav .accountLink').hasClass('hide'))

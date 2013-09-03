@@ -257,8 +257,19 @@ private
     if ds.nil?
       ds = {}
       mtime = Time.now.to_i
-      VersionAuthority.set_paths_mtime((mtime * 1000).to_s)
-      VersionAuthority.set_resource('pages', mtime.to_s)
+      #
+      # Cache the modification times of the pages dataset for a week; so that
+      # the pages mtime can be used for long-lived cache entires.
+      #
+      # Invalidation:
+      #   If the pages dataset gets updated; the generic pages resource mtime
+      #   will change from the core server. On the next call to generate_cache_key
+      #   the cache_time method will be called and the new maximum age will be
+      #   selected as the mtime; invalidating any existing ds object entries.
+      #
+      #
+      VersionAuthority.set_paths_mtime((mtime * 1000).to_s, 10080)
+      VersionAuthority.set_resource('pages', mtime.to_s, 10080)
       find(status: 'published', method: 'getRouting').each { |c| add_page(c, ds) }
       # Beware; there is a minor risk that ds may exceed the 1MB limit of memcached
       cache_key = generate_cache_key(mtime)

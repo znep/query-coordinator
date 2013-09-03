@@ -182,6 +182,10 @@ class CustomContentController < ApplicationController
     internal_metric_entity = domain_id + "-intern"
     MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + "-intern", "ds-total", 1)
 
+    # Notes on page_updated:
+    #  pages_mtime must be a long-lived cache key for this to work; it must also be invalidated
+    #  explicitly by the core server on a pages update.
+    #
     cache_params = { 'domain' => CurrentDomain.cname,
                      'locale' => I18n.locale,
                      'page_updated' => VersionAuthority.page_mtime(@page.uid),

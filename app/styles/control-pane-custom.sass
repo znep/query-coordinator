@@ -612,14 +612,14 @@
         width: 20px
 
       .flyout, [class*='ValueSelection'], .dataSeriesGrouping
-        .removeLink.delete
-          margin-left: -3%
-        .line.repeaterAdded
+        .line + .line
           width: 90%
           padding-left: 0.8em
           float: right
           label
             display: none
+        .removeLink.delete
+          margin-left: -3% 
 
       .line.hasIcon
         width: 75%
@@ -733,9 +733,30 @@
             margin-left: -2px
             margin-top: 0em
 
-          .line.group
-            padding-left: 0px
+          .colors
+            > label
+              position: relative
+              width: 100%
+              padding-bottom: 0.8em
+              padding-left: 0.6em
+              margin-top: -0.8em
+            .inputWrapper
+              padding-left: 0px
+            .colorGroup
+              display: block
+              margin-bottom: 0.3em
+              & > div
+                display: inline-block
+                font-size: 1.2em
+                margin-left: 13px
+                vertical-align: top
+                padding-top: 0.2em
+
+            .columnColorControl
+              display: inline-block
+            
           .dsg
+            margin-left: -0.8em
             padding-bottom: 1em
             .checkbox
               padding-left: 1em

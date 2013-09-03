@@ -417,7 +417,8 @@
         }
         else
         {
-            result.fields.push({ text: 'Column colors', type: 'custom', required: true, linkedField: ['displayFormat.valueColumns'], name: 'displayFormat.valueColumns',
+            result.fields.push({ text: 'Column colors', type: 'custom',linkedField: ['displayFormat.valueColumns'], 
+                                 name: 'displayFormat.valueColumns', lineClass: 'colors',
               editorCallbacks: {
                 create: function($field, val, curVal) {
 
@@ -442,8 +443,10 @@
 
                         var readableName = $.htmlEscape(options.view.columnForFieldName(col.fieldName).name);
 
-                        cols.contents.push({ tagName: 'div', contents: readableName});
-                        cols.contents.push({ tagName: 'div', 'class': 'columnColorControl', 'data-colorpicker-color': assignedColor});
+                        var colorGroup = {tagName: 'div', 'class': 'colorGroup', contents: []};
+                        colorGroup.contents.push({ tagName: 'div', class: 'columnColorControl', 'data-colorpicker-color': assignedColor},
+                                                 { tagName: 'div', contents: readableName})
+                        cols.contents.push(colorGroup);
                     });
                     $field.append($.tag(cols));
 

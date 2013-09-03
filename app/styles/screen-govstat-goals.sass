@@ -236,6 +236,10 @@ $config_header_color: #711e8c
       > *
         margin-right: 10px
 
+      > .inputWrapper
+        margin-bottom: 1.5em
+        vertical-align: bottom
+
     .absolute, .relative, .wizardToggle
       display: inline
 
@@ -472,11 +476,13 @@ $wizard_border_color: #ccc
         font-size: 1.4em
         margin-right: 10em
 
-      .button
+      .selectControls
+        float: none
         margin-top: -0.9em
         position: absolute
         right: 0
         top: 50%
+        z-index: 1
 
   .selectValueColumn, .selectValueColumns, .selectDateColumn
     .listEnum li

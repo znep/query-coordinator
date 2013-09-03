@@ -1547,6 +1547,8 @@ en:
             policy: ! '%{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to.'
             subtitle: Subscribe to individual events by checking the associated box.
             title: Email Notifications
+            send_success: Your message has been sent
+            send_error: There was a problem sending your email. Please try again later.
           learn_openid: Learn about OpenID
           new_email: New Email
           new_password: New Password
@@ -1629,6 +1631,7 @@ en:
         title: Basic Info
       sidebar:
         all_contacts_link: View All
+        hide_contacts_link: Hide
         edit_image_link: Edit Image
         followers: Followers
         following: Following

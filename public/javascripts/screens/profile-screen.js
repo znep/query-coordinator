@@ -36,12 +36,12 @@
     {
         event.preventDefault();
         var $link = $(event.target).closest('a'),
-            newText = 'Follow',
+            newText = $.t('screens.profile.bar.follow_link'),
             origHref = $link.attr('href'),
             isCreate = false;
 
         if ($link.is('.add'))
-        { newText = 'Unfollow'; isCreate = true; }
+        { newText = $.t('screens.profile.bar.unfollow_link'); isCreate = true; }
 
         $.ajax({
             url: origHref,
@@ -66,8 +66,9 @@
     {
         event.preventDefault();
         var $link    = $(event.target),
-            expanded = $link.text() == 'View All',
-            newText  = (expanded ? 'Hide' : 'View All');
+            expanded = $link.text() == $.t('screens.profile.sidebar.all_contacts_link'),
+            newText  = $.t('screens.profile.sidebar.'
+                + (expanded ? 'hide' : 'all') + '_contacts_link');
 
         $link
             .text(newText)
@@ -98,11 +99,11 @@
             data: JSON.stringify($contactForm.serializeObject()),
             success: function() {
                 $contactDialog.jqmHide();
-                $mainFlash.text('Your message has been sent').addClass('notice');
+                $mainFlash.text($.t('screens.profile.edit.account.email.send_success')).addClass('notice');
                 setTimeout(function() { $mainFlash.fadeOut(); }, 5000);
             }, error: function() {
                 $contactError
-                    .text('There was a problem sending your email. Please try again later.')
+                    .text($.t('screens.profile.edit.account.email.send_error'))
                     .addClass('error');
             }
         });

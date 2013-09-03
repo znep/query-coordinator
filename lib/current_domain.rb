@@ -288,6 +288,10 @@ class CurrentDomain
     end
   end
 
+  def self.truthy?(key)
+    self.properties[key.to_s].to_s == 'true' # TrueClass.to_s => 'true'
+  end
+
 
 private
   def self.current_theme

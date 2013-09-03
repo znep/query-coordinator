@@ -360,12 +360,15 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var vizObj = this;
 
-        vizObj.renderData([]);
+        if (this._chartInitialized)
+        {
+            vizObj.renderData([]);
 
-        var oldYScale = vizObj._lastYScale() || newYScale;
-        vizObj._renderValueMarkers([], oldYScale, oldYScale, false);
+            var oldYScale = vizObj._lastYScale() || newYScale;
+            vizObj._renderValueMarkers([], oldYScale, oldYScale, false);
 
-        delete vizObj._chartConfig;
+            delete vizObj._chartConfig;
+        }
 
         vizObj._super();
     },

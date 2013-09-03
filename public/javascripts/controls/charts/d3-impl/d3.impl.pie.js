@@ -376,9 +376,12 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         var vizObj = this;
 
-        vizObj._renderUnusableData([], 'isEmpty');
+        if (vizObj._chartInitialized)
+        {
+            vizObj._renderUnusableData([], 'isEmpty');
 
-        delete vizObj._chartConfig;
+            delete vizObj._chartConfig;
+        }
 
         vizObj._super();
     },

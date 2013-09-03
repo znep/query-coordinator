@@ -444,7 +444,7 @@
                         var readableName = $.htmlEscape(options.view.columnForFieldName(col.fieldName).name);
 
                         var colorGroup = {tagName: 'div', 'class': 'colorGroup', contents: []};
-                        colorGroup.contents.push({ tagName: 'div', class: 'columnColorControl', 'data-colorpicker-color': assignedColor},
+                        colorGroup.contents.push({ tagName: 'div', 'class': 'columnColorControl', 'data-colorpicker-color': assignedColor},
                                                  { tagName: 'div', contents: readableName})
                         cols.contents.push(colorGroup);
                     });

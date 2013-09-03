@@ -250,7 +250,7 @@
     };
 
     if (!blist.sidebarHidden.new_chart_create) {
-        $.gridSidebar.registerConfig('new_chart_create', 'pane_new_chart_create');
+        $.gridSidebar.registerConfig('new_visualize.new_chart_create', 'pane_new_chart_create', 0);
     }
 
 })(jQuery);

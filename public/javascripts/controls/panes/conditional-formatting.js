@@ -339,4 +339,8 @@
         !blist.sidebarHidden.visualize.conditionalFormatting)
     { $.gridSidebar.registerConfig('visualize.conditionalFormatting', 'pane_conditionalFormatting', 10); }
 
+    if (($.isBlank(blist.sidebarHidden.new_visualize) ||
+        !blist.sidebarHidden.new_visualize.conditionalFormatting) && blist.configuration.newChartConfig)
+    { $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
+
 })(jQuery);

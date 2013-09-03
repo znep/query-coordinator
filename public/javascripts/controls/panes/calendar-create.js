@@ -115,4 +115,7 @@
     if ($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.calendarCreate)
     { $.gridSidebar.registerConfig('visualize.calendarCreate', 'pane_calendarCreate', 5, 'calendar'); }
 
+    if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.new_visualize.calendarCreate) && blist.configuration.newChartConfig)
+    { $.gridSidebar.registerConfig('new_visualize.calendarCreate', 'pane_calendarCreate', 5, 'calendar'); }
+
 })(jQuery);

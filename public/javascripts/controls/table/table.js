@@ -4213,8 +4213,11 @@
                 if (!$.isBlank(curView))
                 { curView.unbind(null, null, table); }
                 curView = model.view;
+
                 // Request comment indicators
-                model.view.getCommentLocations();
+                // This will only be false if the cell comment module is enabled.
+                if ($.deepGet(blist.sidebarHidden, 'feed', 'cellFeed') === false)
+                { model.view.getCommentLocations(); }
 
                 model.view.bind('row_change', function(rows)
                         { updateRows(rows); }, table)

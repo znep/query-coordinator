@@ -1253,6 +1253,12 @@
 
         //wrap selectables in a group so you can see both allowed and not allowed columns
         if (isNewVisualize){
+          if(_.isEmpty(invalidOptions)){
+              invalidOptions.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
+            }
+          if(_.isEmpty(options)){
+            options.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
+          }
           return [{tagName: 'optgroup', label: 'Valid Columns', contents: options}, 
                   {tagName: 'optgroup', label: 'Non Valid Columns', contents: invalidOptions}];
         }

@@ -70,7 +70,7 @@ private
     end
     if APP_CONFIG['statsd_enabled']
       current_requests.each do |request|
-        next unless request[:name].start_with? "js-" and request[:name].end_with? "-time"
+        next unless request[:name].end_with? "-time"
         Frontend.statsd.timing("browser.#{request[:name]}", request[:value])
       end
     end

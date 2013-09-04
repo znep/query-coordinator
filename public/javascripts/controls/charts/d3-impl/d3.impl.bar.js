@@ -917,7 +917,7 @@ $.Control.registerMixin('d3_impl_bar', {
             .each(doLabelLayout)
             .style('visibility', function(d, i)
             {
-                if (!cc.stackYSeries) { return false; }
+                if (!cc.stackYSeries) { return 'visible'; }
 
                 var coll = false;
 

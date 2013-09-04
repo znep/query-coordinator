@@ -554,7 +554,7 @@ $.Control.registerMixin('d3_impl_pie', {
         }
         else
         {
-            $legendContainer.css('margin-top', '');
+            $legendContainer.css('margin-top', '0');
         }
     },
 

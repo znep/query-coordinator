@@ -224,8 +224,8 @@ d3base.seriesGrouping = {
             // Clear out any existing queue.
             this._seriesGrouping.queuedRenderRows.length = 0;
         }
-        delete this._seriesGrouping;
         this._super();
+        delete this._seriesGrouping;
     },
 
     _preprocessSeriesColumns: function(continuation)
@@ -434,7 +434,7 @@ d3base.seriesGrouping = {
             return vizObj._super.apply(vizObj, arguments);
         }
 
-        if (this._seriesGrouping.virtualRows === data)
+        if (this._seriesGrouping && this._seriesGrouping.virtualRows === data)
         {
             // We just want to rerender the current data - no need to recalculate.
             return vizObj._super(_.values(vizObj._seriesGrouping.virtualRows));

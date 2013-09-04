@@ -675,7 +675,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }
         else
         {
-            $legendContainer.css('margin-top', '');
+            $legendContainer.css('margin-top', '0');
         }
 
         // ... and in this case, we must set the margins on the outer container

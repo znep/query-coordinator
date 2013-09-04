@@ -158,6 +158,15 @@
                 $.t('screens.ds.grid_sidebar.base.validation.invalid_view') : $.t('screens.ds.grid_sidebar.chart.validation.viz_limit');
         },
 
+        validateForm: function() {
+          var valid = this._super();
+          //If creating from a dataset don't spit warning messages immediately.
+          console.log(this._view);
+          if (!this._view.displayFormat.valueColumns || _.isEmpty(this._view.displayFormat.fixedColumns)) 
+          { this.$dom().find('span.error').text(''); };
+          return valid;
+        },
+
         _changeHandler: function($input)
         {
             var cpObj = this;
@@ -166,13 +175,16 @@
                 var initSidebarScroll = cpObj.$dom().closest('.panes').scrollTop();
 
                 ///VALIDATE///
-                if (cpObj.$dom().find('.formSection').length <= 1) { 
-                    cpObj._view.update(
-                        $.extend(true, {}, cpObj._getFormValues(), {metadata: cpObj._view.metadata})
-                    );
+
+                if ($input.data("origname") == "displayFormat.chartType") 
+                {
+                    //if (cpObj.validateForm()) {
+                        cpObj._view.update(
+                            $.extend(true, {}, cpObj._getFormValues(), {metadata: cpObj._view.metadata})
+                        );
+                    //}
                     cpObj.reset(); 
-                    return; 
-                };
+                }
 
                 if (!cpObj.validateForm()) { return; }
 
@@ -182,17 +194,6 @@
                     if ($.isBlank($line.find('.columnSelectControl').val())) 
                     { $line.remove(); }
                 });
-
-                //Need to sync up fields between chart types only if we are switching types.
-                if ($input.data("origname") == "displayFormat.chartType") 
-                { 
-                    var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
-                    cpObj._getFormValues(), {metadata: cpObj._view.metadata});
-                    cpObj._view.update(view);
-                    cpObj.reset();
-                }
-
-                if (!cpObj.validateForm()) { return; }
 
                 var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                     cpObj._getFormValues(), {metadata: cpObj._view.metadata});

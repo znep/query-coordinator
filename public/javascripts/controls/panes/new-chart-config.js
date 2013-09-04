@@ -421,12 +421,11 @@
                                  name: 'displayFormat.valueColumns', lineClass: 'colors',
               editorCallbacks: {
                 create: function($field, val, curVal) {
-
                     //validate valueColumns that may be passed du\plicates or null values
                     var fieldNames = {};
-                    val.displayFormat.valueColumns = _.reject(val.displayFormat.valueColumns, function(col) {
-                        if (!fieldNames[col.fieldName] && col.fieldName != null) {
-                            fieldNames[col.fieldName] = true;
+                    val = _.reject(val, function(col) {
+                        if (!fieldNames[col] && col != null) {
+                            fieldNames[col] = true;
                             return false;
                         }
                         return true;
@@ -436,12 +435,12 @@
 
                     var cols = {tagName: 'div', contents: []};
 
-                    _.each(val.displayFormat.valueColumns, function(col, i) {
+                    _.each(val, function(col, i) {
 
                         var valueCols = options.view.displayFormat.valueColumns;
                         var assignedColor = (valueCols && valueCols[i] ? valueCols[i].color : null) || defaultColors[i] || '#FF0000';
 
-                        var readableName = $.htmlEscape(options.view.columnForFieldName(col.fieldName).name);
+                        var readableName = $.htmlEscape(options.view.columnForFieldName(col).name);
 
                         var colorGroup = {tagName: 'div', 'class': 'colorGroup', contents: []};
                         colorGroup.contents.push({ tagName: 'div', 'class': 'columnColorControl', 'data-colorpicker-color': assignedColor},

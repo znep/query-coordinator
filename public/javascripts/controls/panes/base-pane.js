@@ -1998,10 +1998,10 @@
                 //Return an array of all values in the repeater if linked to a repeater's add button
                 if ($this.hasClass('addValue'))
                 {
-                  var inputs = $parRepeater.find('.inputItem');
-                  var inputVals = {};
+                  var inputs = $parRepeater.find('.line:not(.hide) .inputItem');
+                  var inputVals = [];
                   _.each(inputs, function(i) {
-                    inputVals = $.extend(true, inputVals, cpObj._getInputValue($(i)));
+                    inputVals.push(inputValue(cpObj, $(i)));
                   });
                   vals[$this.attr('data-origName')] = inputVals;
                 }
@@ -2067,8 +2067,8 @@
         var defAdjField = function() { $field.trigger('resetToDefault'); };
 
         if ($linkedItems.hasClass('addValue')) {
-          $parRepeater.delegate('.inputItem', 'change', defAdjField)
-                      .delegate('.removeLink', 'click', defAdjField);
+          $parRepeater.delegate('.inputItem', 'change', defAdjField )
+                      .delegate('.removeLink', 'click', function() { _.defer(defAdjField) } );
         }
         else 
         {

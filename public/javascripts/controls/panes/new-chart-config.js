@@ -625,15 +625,6 @@
     var dataSelectionTimeline = function(options)
     {
         var bc = dataSelection(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.label'));
-        bc.fields[1].field = {type: 'group', options: [bc.fields[1].field,
-                {text: $.t('screens.ds.grid_sidebar.chart.point_title'), type: 'columnSelect', useFieldName: true,
-                    name: 'supplementalColumns.0',
-                    columns: {type: 'text', hidden: options.isEdit}},
-                {text: $.t('screens.ds.grid_sidebar.chart.annotation'), type: 'columnSelect', useFieldName: true,
-                    name: 'supplementalColumns.1',
-                    columns: {type: 'text', hidden: options.isEdit}}
-                ]
-        }
         return bc;
     };
 

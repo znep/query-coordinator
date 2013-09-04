@@ -1500,11 +1500,11 @@ it:
         title: Applicazioni %{user}
       bar:
         edit_settings_link: Modifica Impostazioni Account
-        follow_link: Follow
+        follow_link: Segui
         join_date: Registrato
         last_seen_date: Ultimo accesso
         message_link: Invia messaggio
-        unfollow_link: Unfollow
+        unfollow_link: Smetti di seguire
       browse:
         owned_datasets: Posseduti
         shared_datasets: Condivisi

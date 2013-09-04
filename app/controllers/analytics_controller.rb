@@ -121,7 +121,9 @@ module ClientAnalyticsHelper
 
   def self.get_valid_increment(entity, metric, input)
     increment = input.to_i
-    if increment < 0 || increment > 4294967296 # 2^32
+    # ten minute upper bound; to exclude things like 
+    # a user shutting thier laptop during a page load
+    if increment < 0 || increment > 600000 
       return -1
     end
     if is_mark(entity, metric)

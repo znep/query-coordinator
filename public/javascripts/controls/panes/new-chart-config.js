@@ -407,19 +407,27 @@
     var colors = function(chart, options)
     {
         var result = subheading(chart, options, 'Colors', []);
-        if (_.contains(['bubble', 'donut', 'treemap', 'pie'], chart.value)) {
 
-            result.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
-                field: $.extend({}, colorOption, {name: ''}),
-                name: 'displayFormat.colors', minimum: 1,
-                initialRepeatCount: 5, lineClass: 'colorArray'}
-            );
-        }
-        else
+        result.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
+            field: $.extend({}, colorOption, {name: ''}),
+            name: 'displayFormat.colors', minimum: 1,
+            initialRepeatCount: 5, lineClass: 'colorArray'
+        });
+
+        if (!_.contains(['bubble', 'donut', 'treemap', 'pie'], chart.value)) 
         {
+
+            result.fields[0].onlyIf =
+                { field: 'displayFormat.seriesColumns',
+                    func: function(val) { 
+                        return _.compact(val).length > 0;
+
+                    }
+                }; 
+
             result.fields.push({ text: 'Column colors', type: 'custom',linkedField: ['displayFormat.valueColumns'], 
                                  name: 'displayFormat.valueColumns', lineClass: 'colors',
-              editorCallbacks: {
+            editorCallbacks: {
                 create: function($field, val, curVal) {
                     //validate valueColumns that may be passed du\plicates or null values
                     var fieldNames = {};
@@ -434,7 +442,6 @@
                     //MAKE HIDDEN INPUT TO HANDLE CHANGE
 
                     var cols = {tagName: 'div', contents: []};
-
                     _.each(val, function(col, i) {
 
                         var valueCols = options.view.displayFormat.valueColumns;

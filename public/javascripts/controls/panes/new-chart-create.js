@@ -161,8 +161,7 @@
         validateForm: function() {
           var valid = this._super();
           //If creating from a dataset don't spit warning messages immediately.
-          console.log(this._view);
-          if (!this._view.displayFormat.valueColumns || _.isEmpty(this._view.displayFormat.fixedColumns)) 
+          if (!this._view.displayFormat.valueColumns) 
           { this.$dom().find('span.error').text(''); };
           return valid;
         },
@@ -178,11 +177,11 @@
 
                 if ($input.data("origname") == "displayFormat.chartType") 
                 {
-                    //if (cpObj.validateForm()) {
+                    if (cpObj.validateForm()) {
                         cpObj._view.update(
                             $.extend(true, {}, cpObj._getFormValues(), {metadata: cpObj._view.metadata})
                         );
-                    //}
+                    }
                     cpObj.reset(); 
                 }
 
@@ -194,6 +193,16 @@
                     if ($.isBlank($line.find('.columnSelectControl').val())) 
                     { $line.remove(); }
                 });
+
+                //TODO: clean this up a bit, custom content with linkedFields + onlyIfs behave strangely
+                //Show the correct color selection method with dsg enabled
+                var $dsgColors = cpObj.$dom().find('.colorArray');
+                var $colColors = cpObj.$dom().find('.colors');
+                //If manually hidden through onlyIf
+                if ($dsgColors.css('display') == "none" && $colColors)
+                { $colColors.show(); }
+                else 
+                { $colColors.hide(); }
 
                 var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                     cpObj._getFormValues(), {metadata: cpObj._view.metadata});

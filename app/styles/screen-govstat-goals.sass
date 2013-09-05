@@ -160,14 +160,14 @@ $config_header_color: #711e8c
 
   > *
     margin-right: 10px
-    vertical-align: bottom
 
   .inputWrapper
     border-bottom: 2px dotted #333
     display: inline-block
     line-height: 1em
-    margin-bottom: 0.95em
+    margin-bottom: 1.4em
     position: relative
+    vertical-align: bottom
 
     label
       @include lower-label
@@ -225,20 +225,13 @@ $config_header_color: #711e8c
         text-transform: lowercase
 
   .custom
-    display: inline-block
-    margin-bottom: -0.6em
-    margin-right: 0
-    margin-top: 1.7em
+    display: inline
 
     > div
-      display: inline-block
+      display: inline
 
       > *
         margin-right: 10px
-
-      > .inputWrapper
-        margin-bottom: 1.5em
-        vertical-align: bottom
 
     .absolute, .relative, .wizardToggle
       display: inline
@@ -251,10 +244,10 @@ $config_header_color: #711e8c
     width: 15em
   .measureThing
     width: 47em
-  .measureUnit
-    width: 28em
+  .measureUnit, .measureAbsoluteUnit, .measureRelativeUnit
+    width: 22em
   .measureTarget, .measureBaseline
-    width: 23em
+    width: 18em
   .measureComparison
     width: 12em
 
@@ -272,6 +265,9 @@ $config_header_color: #711e8c
 
     .selectValue
       text-transform: lowercase
+
+  .measurePercent
+    width: 22em
 
   .wizardToggle
     bottom: 0.5em

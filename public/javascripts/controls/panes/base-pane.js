@@ -611,11 +611,7 @@
                 $pane.find('.formSection.selectable .sectionSelect').bind('click', function(e)
                 {
                     var $c = $(this);
-                    _.defer(function()
-                    { $c.closest('.formSection')
-                        .toggleClass('collapsed', !$c.value())
-                        .removeClass('initShow');
-                    });
+                    $c.closest('.formSection').toggleClass('collapsed', !$c.value());
                 }); 
             }
 
@@ -943,13 +939,13 @@
             // the associated input)
             var $validHideSects = cpObj.$dom().find('.formSection.validateCollapsed').find('.sectionContent:hidden');
             
-            $validHideSects.addClass('show');
+            $validHideSects.show();
 
             var inputs = cpObj.$dom().find('form :input, form .colorControl, form .customWrapper')
                 .filter(':visible:not(:disabled, .prompt, ' +
                     '.sectionSelect, .radioLine label *, .customWrapper *)');
 
-            $validHideSects.removeClass('show');
+            $validHideSects.hide();
 
             inputs.each(function()
             {

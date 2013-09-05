@@ -86,13 +86,27 @@
                 if (blist.dataset.displayFormat.chartType){
                     setHeader('radioLine '+blist.dataset.displayFormat.chartType);
                 }
+
                 //Bind section classing to chart-type selection
                 cpObj.$dom().find('.chartTypeSelection .radioLine').click(function(e) {
                     setHeader($(e.currentTarget).attr('class'));
                 });
 
+                //Clicking minus button repeater triggers rerender
                 cpObj.$dom().find('.repeater')
-                        .delegate('.removeLink', 'click', function(e) { cpObj._changeHandler($(e.currentTarget)); });
+                        .delegate('.removeLink', 'click', function(e) { cpObj._changeHandler($(e.currentTarget)); 
+                });
+
+                //Section hiding animations
+                cpObj.$dom().find('.formSection.selectable .sectionSelect').click( function(e) { 
+                    var $sect = $(e.currentTarget).closest('.formSection');
+
+                    //shown/hidden by base-pane eventing so needs to be shown and then reset to for animation to run
+                    if ($sect.hasClass('collapsed')) 
+                    { $sect.find('.sectionContent').show().slideUp({duration: 100, easing: 'linear'}); }
+                    else 
+                    { $sect.find('.sectionContent').hide().slideDown({duration: 100, easing: 'linear'}); }
+                });
 
             }
         },
@@ -138,8 +152,6 @@
                     !this._view.isAltView());
         },
 
-
-
         getDisabledSubtitle: function()
         {
             return !this._view.valid && !isEdit(this) ?
@@ -150,6 +162,8 @@
         {
             var cpObj = this;
             _.defer( function() {
+
+                var initSidebarScroll = cpObj.$dom().closest('.panes').scrollTop();
 
                 ///VALIDATE///
                 if (cpObj.$dom().find('.formSection').length <= 1) { 
@@ -235,6 +249,8 @@
                         didCallback = true;
                     }
                 }
+
+                cpObj.$dom().closest('.panes').scrollTop(initSidebarScroll);
 
                 cpObj._finishProcessing();
             });

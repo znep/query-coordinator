@@ -150,6 +150,35 @@
                     dc.getItems(null, null, function() { callback(dc); }, errorCallback);
                     break;
 
+                case 'goalDashboard':
+                    if (!$.subKeyDefined(blist, 'require'))
+                    {
+                        blist.util.assetLoading.loadAssets({ javascripts:
+                            ['/socket.io/socket.io.js', '/asset/js/client-bridge'] },
+                            function() { dc.load(callback, errorCallback); });
+                        break;
+                    }
+
+                    var govstat = blist.require('govstat');
+                    var dr = new govstat.models.dashboard.request.Fetch(
+                            { dashboardId: dc.config.dashboardId });
+                    var janusApp = blist.require('app');
+                    janusApp.getStore(dr).handle();
+                    var dv = dr.map(function(state)
+                            { return !$.isBlank(state) ? state.successOrElse(null) : null; });
+                    if ($.subKeyDefined(dv, 'extract'))
+                    {
+                        dv.extract(function(d)
+                        {
+                            dc.dashboard = d;
+                            callback(dc);
+                        }, { app: janusApp });
+                        break;
+                    }
+                    else
+                    { errorCallback(dc.id); }
+                    break;
+
                 case 'goalList':
                     if (!$.subKeyDefined(blist, 'govstat.collections.Goals'))
                     {
@@ -183,6 +212,10 @@
                     break;
 
                 case 'goal':
+                    if (dc._loadGoal(function() { callback(dc); }, errorCallback))
+                    { break; }
+
+                    // Else try the old method
                     if (!$.subKeyDefined(blist, 'govstat.models.Goal'))
                     {
                         errorCallback(dc.id);
@@ -522,8 +555,36 @@
                     dc.column.view.getAggregates(null, aggs);
                 });
             });
-        }
+        },
 
+        _loadGoal: function(callback, errorCallback)
+        {
+            var dc = this;
+            if (!$.subKeyDefined(blist, 'require'))
+            {
+                blist.util.assetLoading.loadAssets({ javascripts:
+                    ['/socket.io/socket.io.js', '/asset/js/client-bridge'] },
+                    function() { dc.load(callback, errorCallback); });
+                return true;
+            }
+
+            var govstat = blist.require('govstat');
+            var gr = new govstat.models.goal.request.Fetch({ goalId: dc.config.goalId });
+            var janusApp = blist.require('app');
+            janusApp.getStore(gr).handle();
+            var gv = gr.map(function(state)
+                    { return !$.isBlank(state) ? state.successOrElse(null) : null; });
+            if ($.subKeyDefined(gv, 'extract'))
+            {
+                gv.extract(function(g)
+                {
+                    dc.goal = g;
+                    callback(dc);
+                }, { app: janusApp });
+                return true;
+            }
+            return false;
+        }
     });
 
     DataContext.loadFromConfig = function(id, config, parSet)

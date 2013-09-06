@@ -64,7 +64,7 @@
                 var unavailable = cpObj.$dom().find('.unavailable');
                 for(var i=0; i<unavailable.length; i++){
                     var type = unavailable[i].className.split(' ')[2];
-                    cpObj.$dom().find('.unavailable.'+type).socrataTip({message: Dataset.chart.types[type].prompt});
+                    cpObj.$dom().find('.unavailable.'+type).socrataTip({content: Dataset.chart.types[type].prompt});
                 };
 
                 //takes in classname <'radioLine' ('unavailable')? type>

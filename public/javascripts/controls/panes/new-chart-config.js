@@ -236,13 +236,34 @@
                 return title.replace(/\(.*\)/, '').replace(' & ', '_')
                             .replace(' ', '_').toLowerCase();
             };
-            return $.t('screens.ds.grid_sidebar.chart.validation.required_columns', {
-                chart_type: chartName.capitalize(),
-                column_types: $.arrayToSentence(_.map(newTypes, function(rc) { return $.t('screens.ds.grid_sidebar.chart.validation.count', { count: rc.count }) + ' ' +
-                        $.arrayToSentence(_.map(rc.types, function(t)
-                        { return $.t('screens.ds.grid_sidebar.base.datatypes.' + transform(blist.datatypes[t].title)); }),
-                            $.t('support.array_or.two_words_connector'), ','); }),
-                    $.t('support.array.two_words_connector'), ';', true) })
+
+            var result = [];
+            _.each(newTypes, function(rc) { 
+                var count = rc.count
+                var and;
+                if(rc==newTypes[0]){
+                    and='';
+                    result.push({tagName: 'span', 'class': 'title', contents:
+                        $.t('screens.ds.grid_sidebar.chart.validation.chart_requires', {chart_type : chartName.capitalize()})+
+                        $.t('screens.ds.grid_sidebar.chart.validation.chart_requires2', {and: and, count: count})
+                    });
+                }
+                else{
+                    and = 'and';
+                    result.push({tagName: 'span', 'class': 'title', contents:
+                        $.t('screens.ds.grid_sidebar.chart.validation.chart_requires2', {and: and, count: count})
+                    });
+                }
+                _.each(rc.types, function(t){
+                    result.push({tagName: 'div', 'class': blist.datatypes[t].name+' flyoutIcon',
+                       contents: [{tagName: 'span', 'class': 'blist-th-icon'}, 
+                                  {tagName: 'span', contents: $.t('screens.ds.grid_sidebar.base.datatypes.' 
+                                    + transform(blist.datatypes[t].title).toLowerCase()).capitalize()} ] 
+                    });                    
+                })
+            })
+            
+            return $.tag(result);
 
     };
 

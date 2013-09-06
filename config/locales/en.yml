@@ -996,6 +996,8 @@ en:
           validation:
             count: ! '%{count}'
             required_columns: ! '%{chart_type} requires %{column_types} columns'
+            chart_requires: ! '%{chart_type} needs at least'
+            chart_requires2: ! '%{and} %{count} of the following column types:'
             viz_limit: A view may only have one visualization on it
           value: Value
           valueInBar: Value in Bar

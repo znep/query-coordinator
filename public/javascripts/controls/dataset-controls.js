@@ -91,7 +91,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         }, 1000);
     };
 
-    $dialog.loadingSpinner({overlay: true});
+    $dialog.loadingSpinner({metric: 'save', overlay: true});
 
     dialogObj._saveCallback = saveCallback;
     dialogObj._dontSaveCallback = dontSaveCallback;

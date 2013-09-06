@@ -89,7 +89,15 @@ module ClientAnalyticsHelper
                               domain-intern/js-dom-load-time
                               domain-intern/js-map-one-page-load-time
                               domain-intern/js-map-many-page-load-time
-                              domain-intern/js-spinner-main-time).freeze
+                              domain-intern/js-spinner-main-time
+                              domain-intern/js-spinner-save-time
+                              domain-intern/js-spinner-upload-time
+                              domain-intern/js-spinner-thumbnail-time
+                              domain-intern/js-spinner-nomination-time
+                              domain-intern/js-spinner-routing-time
+                              domain-intern/js-spinner-dataslate-configurator-time
+                              domain-intern/js-spinner-dataslate-global-time
+                              domain-intern/js-spinner-dataslate-component-time).freeze
 
 
 

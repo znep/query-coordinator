@@ -70,7 +70,7 @@
                         '</ul>';
 
                     $domObj.append(content);
-                    $domObj.loadingSpinner({overlay: true});
+                    $domObj.loadingSpinner({metric: 'upload', overlay: true});
                     $domObj.jqm({trigger: false, modal: true,
                         onHide: function(hash)
                         {

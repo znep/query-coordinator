@@ -51,7 +51,7 @@
 
     var tn = blist.dataset.metadata.thumbnail[snapshotName];
 
-    $imgContainer.loadingSpinner();
+    $imgContainer.loadingSpinner({ metric: 'thumbnail' });
 
     var imgSelectUpdated = function(selection, initialLoad)
     {

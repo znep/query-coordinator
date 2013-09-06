@@ -186,6 +186,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
             cc.scrollPos = cc.$chartContainer[cc.dataDim.scroll]();
             vizObj.debugOut('Scroll: ', cc.scrollPos);
 
+            if (blist.mainSpinner)
+            { blist.mainSpinner.setMetric(null); }
+
             vizObj._recalculateDataOffset();
             if (vizObj._repositionDrawElement())
             {
@@ -369,6 +372,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
             delete vizObj._chartConfig;
         }
+
+        if (blist.mainSpinner)
+        { blist.mainSpinner.setMetric('main'); }
 
         vizObj._super();
     },

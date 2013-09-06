@@ -336,6 +336,8 @@ $.Control.registerMixin('d3_impl_pie', {
         if (topDone && bottomDone)
         {
             state.phase = vizObj._loaderPhases.idle;
+            if (blist.mainSpinner)
+            { blist.mainSpinner.setMetric(null); }
         }
         else if (topDone)
         {
@@ -382,6 +384,9 @@ $.Control.registerMixin('d3_impl_pie', {
 
             delete vizObj._chartConfig;
         }
+
+        if (blist.mainSpinner)
+        { blist.mainSpinner.setMetric('main'); }
 
         vizObj._super();
     },

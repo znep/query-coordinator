@@ -174,6 +174,22 @@ $.component.Container.extend('Repeater', 'content', {
                 callback(renderedRows);
             }
         }
+        else if (cObj._dataContext.type == 'goalDashboard')
+        {
+            var catItems = cObj._dataContext.dashboard.categories.slice(start, start + count);
+            if (!$.isBlank(cObj._properties.groupBy))
+            { renderGroupItems(cObj, catItems, callback); }
+            else
+            {
+                _.each(catItems, function(di, i)
+                {
+                    if (!_.isObject(di))
+                    { di = { value: di }; }
+                    renderedRows.push(cObj._createRow(di, i + start, di));
+                });
+                callback(renderedRows);
+            }
+        }
         else if (_.isArray(cObj._dataContext.categoryList))
         {
             var catItems = cObj._dataContext.categoryList.slice(start, start + count);
@@ -244,6 +260,8 @@ $.component.Container.extend('Repeater', 'content', {
         { callback(cObj._dataContext.value.length); }
         else if (_.isArray(cObj._dataContext.list))
         { callback(cObj._dataContext.list.length); }
+        else if (cObj._dataContext.type == 'goalDashboard')
+        { callback(cObj._dataContext.dashboard.categories.length); }
         else if (_.isArray(cObj._dataContext.goalList))
         { callback(cObj._dataContext.goalList.length); }
         else if (_.isArray(cObj._dataContext.categoryList))

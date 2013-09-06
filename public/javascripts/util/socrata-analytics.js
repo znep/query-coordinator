@@ -129,28 +129,16 @@ jQuery.metrics = {
                 // subsequent interactive states will not be captured here
                 $.metrics.increment("domain-intern", "js-dom-load-time", js_dom_load_time);
 
-                var page_load_bucket = $.metrics.bucket_timing(js_page_load_time, $.metrics.pageLoadBucketNames, $.metrics.pageLoadBuckets);
-                var dom_load_bucket = $.metrics.bucket_timing(js_dom_load_time, $.metrics.pageLoadBucketNames, $.metrics.domLoadBuckets);
                 var page_type = $.metrics.determine_page_type();
 
-                $.metrics.increment("domain-intern", page_type + "-" + page_load_bucket + "-js-page-load-time", js_page_load_time);
-                $.metrics.mark("domain-intern", page_type + "-" + page_load_bucket + "-js-page-load-samples");
+                $.metrics.increment("domain-intern", page_type + "-js-dom-load-time", js_dom_load_time);
+                $.metrics.mark("domain-intern", page_type + "-js-dom-load-samples");
 
-                $.metrics.increment("domain-intern", page_type + "-" + dom_load_bucket + "-js-dom-load-time", js_dom_load_time);
-                $.metrics.mark("domain-intern", page_type + "-" + dom_load_bucket + "-js-dom-load-samples");
+                $.metrics.increment("domain-intern", page_type + "-js-page-load-time", js_page_load_time);
+                $.metrics.mark("domain-intern", page_type + "-js-page-load-samples");
             }
         }
         $.metrics.flush_metrics();
-    },
-    bucket_timing: function(timing, names, time_buckets) {
-        var i=0;
-        while (i<time_buckets.length) {
-            if (timing < time_buckets[i]) {
-                break;
-            }
-            i++;
-        }
-        return names[i];
     },
     determine_page_type: function() {
 

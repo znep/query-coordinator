@@ -71,6 +71,8 @@ end
 
 module ClientAnalyticsHelper
   FUNCTIONAL_BUCKETS =  %w(homepage dataset dataslate admin profile other).freeze
+
+  # deprecated
   PERFORMANCE_BUCKETS=  %w(awesome good ok poor terrible).freeze
   DYNAMIC_METRIC_TYPES =  %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze
 
@@ -109,14 +111,17 @@ module ClientAnalyticsHelper
     generatePermutations STATIC_ALLOWED_METRICS, DYNAMIC_METRIC_TYPES
   end
 
-  def self.generatePermutations(static_metrics, base_matrics)
+  def self.generatePermutations(static_metrics, base_metrics)
 
     ret_val = Array.new(static_metrics)
-    PERFORMANCE_BUCKETS.each do |perf_bucket|
-      FUNCTIONAL_BUCKETS.each do |functional_bucket|
-        base_matrics.each do |dynamic_metric|
+    FUNCTIONAL_BUCKETS.each do |functional_bucket|
+      base_metrics.each do |dynamic_metric|
+        # Performance buckets are deprecated; and can be removed after a few days (there still may)
+        # be some browsers sending us these metrics.
+        PERFORMANCE_BUCKETS.each do |perf_bucket|
           ret_val.push "domain-intern/#{functional_bucket}-#{perf_bucket}-#{dynamic_metric}"
         end
+        ret_val.push "domain-intern/#{functional_bucket}-#{dynamic_metric}"
       end
     end
 

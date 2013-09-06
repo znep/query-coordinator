@@ -1508,6 +1508,7 @@
             if (chartObj._primaryView.snapshotting)
             { chartObj._primaryView.takeSnapshot(); }
             chartObj.$dom().trigger('render_finished');
+            $.metrics.measure('domain-intern', 'js-chart-' + chartObj._chartType + '-page-load-time');
         }, 1000);
     };
 

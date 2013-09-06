@@ -49,6 +49,12 @@ $.Control.registerMixin('d3_base', {
         return blist.assets.libraries.d3;
     },
 
+    initialRenderDone: _.once(function()
+    {
+        $.metrics.measure('domain-intern', 'js-chart-' + this._chartType + '-page-load-time');
+        this.takeSnapshot();
+    }),
+
     takeSnapshot: _.once(function()
     {
         if (this._primaryView.snapshotting)

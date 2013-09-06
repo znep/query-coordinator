@@ -408,7 +408,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         if (vizObj.requiresSeriesGrouping()
             ||_.size(vizObj._primaryView.loadedRows())
                 >= Math.min(vizObj._primaryView.totalRows(), vizObj.getRenderRange().length))
-        { vizObj.takeSnapshot(); }
+        { vizObj.initialRenderDone(); }
     },
 
     _computeYValuesForRow: function(row, relevantColumns)

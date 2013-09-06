@@ -338,7 +338,7 @@ $.Control.registerMixin('d3_impl_pie', {
             state.phase = vizObj._loaderPhases.idle;
             if (blist.mainSpinner)
             { blist.mainSpinner.setMetric(null); }
-            vizObj.takeSnapshot();
+            vizObj.initialRenderDone();
         }
         else if (topDone)
         {

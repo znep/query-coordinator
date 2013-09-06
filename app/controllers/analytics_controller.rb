@@ -91,6 +91,16 @@ module ClientAnalyticsHelper
                               domain-intern/js-dom-load-time
                               domain-intern/js-map-one-page-load-time
                               domain-intern/js-map-many-page-load-time
+                              domain-intern/js-chart-bar-page-load-time
+                              domain-intern/js-chart-column-page-load-time
+                              domain-intern/js-chart-stackedbar-page-load-time
+                              domain-intern/js-chart-stackedcolumn-page-load-time
+                              domain-intern/js-chart-line-page-load-time
+                              domain-intern/js-chart-area-page-load-time
+                              domain-intern/js-chart-pie-page-load-time
+                              domain-intern/js-chart-donut-page-load-time
+                              domain-intern/js-chart-timeline-page-load-time
+                              domain-intern/js-chart-bubble-page-load-time
                               domain-intern/js-spinner-main-time
                               domain-intern/js-spinner-save-time
                               domain-intern/js-spinner-upload-time

@@ -41,6 +41,13 @@ module Canvas2
             context[:goalList].each_with_index {|g, i| all_c << add_row(g, i, g.clone) }
           end
 
+        elsif context[:type] == 'goalDashboard'
+          if !@properties['groupBy'].blank?
+            all_c = render_group_items(context[:dashboard]['categories'])
+          else
+            context[:dashboard]['categories'].each_with_index {|c, i| all_c << add_row(c, i, c.clone) }
+          end
+
         elsif context[:type] == 'govstatCategoryList'
           if !@properties['groupBy'].blank?
             all_c = render_group_items(context[:categoryList])

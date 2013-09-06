@@ -404,6 +404,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
         vizObj._computeMinMaxForEntireChart(data);
 
         vizObj._renderData.apply(vizObj, arguments);
+
+        if (vizObj.requiresSeriesGrouping()
+            ||_.size(vizObj._primaryView.loadedRows())
+                >= Math.min(vizObj._primaryView.totalRows(), vizObj.getRenderRange().length))
+        { vizObj.takeSnapshot(); }
     },
 
     _computeYValuesForRow: function(row, relevantColumns)

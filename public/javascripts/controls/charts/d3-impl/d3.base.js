@@ -49,6 +49,12 @@ $.Control.registerMixin('d3_base', {
         return blist.assets.libraries.d3;
     },
 
+    takeSnapshot: _.once(function()
+    {
+        if (this._primaryView.snapshotting)
+        { setTimeout(function() { this._primaryView.takeSnapshot(); }, 1000); }
+    }),
+
     _animationLengthMillisec: 600,
 
     // Handle rendering values for different column types here

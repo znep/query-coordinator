@@ -15,20 +15,58 @@ blist.metrics.sitewideShared = {
             ]
         }
     ],
-    detailSections: [
-          {id: 'detailCharts',    displayName: 'Charts',   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
-          {id: 'detailFilters',   displayName: 'Filters',  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
-          {id: 'detailMaps',      displayName: 'Maps',     summary: { plus: ['maps-created'], minus: ['maps-deleted'] } },
-          {id: 'detailSnapshots', displayName: 'Snapshots', summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
-          {id: 'detailBlobs',     displayName: 'Downloadable Files', summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
-          {id: 'detailHref',      displayName: 'External Datasets', summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
-    ],
-    summarySections: [
+    detailSections: _.filter([
+        {id: 'detailPublicGoals',      displayName: 'Public Goals',
+            summary: {plus: ['govstat-goal-isPublic-true'],
+                verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
+            },
+            enabled: blist.configuration.govStatMetricsEnabled
+        },
+        {id: 'detailPrivateGoals',      displayName: 'Private Goals',
+            summary: {plus: 'govstat-goal-isPublic-false',
+                verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
+            },
+            enabled: blist.configuration.govStatMetricsEnabled
+        },
+        {id: 'detailWithRelatedMeasures',  displayName: 'Goals With Related Measures',
+            summary: {plus: 'govstat-goal-hasRelatedMeasures-true',
+                verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
+            },
+            enabled: blist.configuration.govStatMetricsEnabled
+        },
+        {id: 'detailWithoutRelatedMeasures',  displayName: 'Goals Without Related Measures',
+            summary: {plus: 'govstat-goal-hasRelatedMeasures-false',
+                verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
+            },
+            enabled: blist.configuration.govStatMetricsEnabled
+        },
+        {id: 'detailCharts',    displayName: 'Charts',   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
+        {id: 'detailFilters',   displayName: 'Filters',  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
+        {id: 'detailMaps',      displayName: 'Maps',     summary: { plus: ['maps-created'], minus: ['maps-deleted'] } },
+        {id: 'detailSnapshots', displayName: 'Snapshots', summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
+        {id: 'detailBlobs',     displayName: 'Downloadable Files', summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
+        {id: 'detailHref',      displayName: 'External Datasets', summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
+    ], function(section) { return section.enabled !== false; }),
+    summarySections: _.filter([
         {
             id: 'summaryVisits',      displayName: 'Page Views',
             summary: {plus: 'page-views', verbPhrase: 'pages viewed',
                 verbPhraseSingular: 'page viewed'
             }
+        },
+        {
+            id: 'summaryDash',        displayName: 'Total Dashboards',
+            summary: {plus: 'govstat-dash-posts', minus: 'govstat-dash-deletes',
+                verbPhrase: 'dashboards created', verbPhraseSingular: 'dashboards created'
+            },
+            enabled: blist.configuration.govStatMetricsEnabled
+        },
+        {
+            id: 'summaryGoals',        displayName: 'Total Goals',
+            summary: {plus: 'govstat-goal-posts', minus: 'govstat-goal-deletes',
+                verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
+            },
+            enabled: blist.configuration.govStatMetricsEnabled
         },
         {
             id: 'summaryDatasets',    displayName: 'Total Datasets',
@@ -50,7 +88,7 @@ blist.metrics.sitewideShared = {
                 verbPhraseSingular: 'embed'
             }
         }
-    ],
+    ], function(section) { return section.enabled !== false; }),
     topListSections: [
         {
             id: 'topDatasets', displayName: 'Top Datasets',

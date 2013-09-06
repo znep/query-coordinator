@@ -45,6 +45,7 @@
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
     <script type="text/javascript">
+      blist.configuration.govStatMetricsEnabled = <%= module_enabled?(:govStat) == true %>;
       blist.namespace.fetch('blist.metrics');
       blist.metrics.viewID = '<%= @view.id %>';
       <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>

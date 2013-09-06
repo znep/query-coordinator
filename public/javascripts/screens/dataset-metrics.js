@@ -20,14 +20,15 @@ $(function()
         charts = [
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
-                children: [
+                children: _.filter([
                     {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
                     {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
+                    {text: 'GovStat Hits',    series: [{method: 'govstat-total-computes'}], enabled: blist.configuration.govStatMetricsEnabled},
                     {text: 'Rows Loaded',
                      series: [{method: 'rows-loaded-api',     label: 'API'},
                               {method: 'rows-loaded-website', label: 'Website'},
                               {method: 'rows-loaded-widget',  label: 'SDP'}]}
-                ]
+                ], function(section) { return section.enabled !== false; })
             }
         ];
         summaries = [
@@ -37,10 +38,37 @@ $(function()
              plus: 'embeds', verbPhrase: 'embeds', verbPhraseSingular: 'embed' }}
         ];
         details = [
-            {id: 'detailFilters',   displayName: 'Filters',  detail: 'filters-created'},
-            {id: 'detailCharts',    displayName: 'Charts',   detail: 'charts-created'},
-            {id: 'detailMaps',      displayName: 'Maps',     detail: 'maps-created'},
-            {id: 'detailComments',  displayName: 'Comments', detail: 'comments-created'}
+            {id: 'detailMetricsUsing',   displayName: 'Dependent Metrics',  summary: {
+                plus: 'govstat-metrics-using',
+                verbPhrase: 'metrics backed',
+                verbPhraseSingular: 'metric backed'
+                },
+                enabled: blist.configuration.govStatMetricsEnabled },
+            {id: 'detailTotalComputes',   displayName: 'Total GovStat Hits',  summary: {
+                plus: 'govstat-total-computes',
+                verbPhrase: 'hits served',
+                verbPhraseSingular: 'hit served'
+                },
+                enabled: blist.configuration.govStatMetricsEnabled },
+            {id: 'detailFilters',   displayName: 'Filters',  summary: {
+                 plus: 'filters-created',
+                 minus: 'filters-deleted',
+                 verbPhrase: 'filters created',
+                 verbPhraseSingular: 'filter created' }},
+            {id: 'detailCharts',    displayName: 'Charts',   summary: {
+                plus: 'charts-created',
+                minus:'charts-deleted',
+                verbPhrase:'charts created',
+                verbPhraseSingular:'chart created'}},
+            {id: 'detailMaps',      displayName: 'Maps',     summary: {
+                plus: 'maps-created',
+                minus:'maps-deleted',
+                verbPhrase:'maps created',
+                verbPhraseSingular:'map created'}},
+            {id: 'detailComments',  displayName: 'Comments', summary: {
+                plus: 'comments-created',
+                verbPhrase:'comments created',
+                verbPhraseSingular:'comment created'}}
         ];
     }
     else
@@ -60,8 +88,8 @@ $(function()
     var screen = $('#analyticsDataContainer').metricsScreen($.extend({
         urlBase: '/api/views/' + blist.metrics.viewID +  '/metrics.json',
         chartSections:  charts,
-        detailSections: details,
-        summarySections: summaries,
+        detailSections: _.filter(details, function(section) { return section.enabled !== false; }),
+        summarySections: _.filter(summaries, function(section) { return section.enabled !== false; }),
         topListSections: [
             {
                 id: 'topViews', displayName: 'Top Embeds',

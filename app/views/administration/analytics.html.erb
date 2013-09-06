@@ -51,6 +51,9 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
+    <script type="text/javascript">
+        blist.configuration.govStatMetricsEnabled = <%= module_enabled?(:govStat) == true %>;
+    </script>
     <%= include_javascripts 'shared-metrics' %>
     <%= include_javascripts 'admin-metrics' %>
   <%- end -%>

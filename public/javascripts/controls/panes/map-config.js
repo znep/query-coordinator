@@ -113,19 +113,16 @@
     {
         var cpObj = this;
 
-        if (!blist.common.selectedDataset)
+        blist.common.selectedDataset = function(ds)
         {
-            blist.common.selectedDataset = function(ds)
-            {
-                cpObj._expectingCancel = false;
-                $('#selectDataset').jqmHide();
-                cpObj._$selectedField.data('uid', ds.id);
+            cpObj._expectingCancel = false;
+            $('#selectDataset').jqmHide();
+            cpObj._$selectedField.data('uid', ds.id);
 
-                var valid = validDataset(ds);
-                cpObj._$selectedField.makeStatic(ds.name, !valid);
-                if (valid) { modifySection.call(cpObj, ds, cpObj._$selectedField); }
-            };
-        }
+            var valid = validDataset(ds);
+            cpObj._$selectedField.makeStatic(ds.name, !valid);
+            if (valid) { modifySection.call(cpObj, ds, cpObj._$selectedField); }
+        };
 
         var openSelectDataset = function(e)
         {

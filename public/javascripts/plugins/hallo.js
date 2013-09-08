@@ -759,6 +759,7 @@
         editable: null,
         uuid: '',
         formatBlocks: ["p", "h1", "h2", "h3"],
+        formatDisplay: { p: 'Body', h1: 'Heading', h2: 'Subheading' },
         buttonCssClass: null
       },
       populateToolbar: function(toolbar) {
@@ -802,7 +803,7 @@
               }
             }
           });
-          buttonHolder.find('button .ui-button-text').text(format.toUpperCase());
+          buttonHolder.find('button .ui-button-text').text(_this.options.formatDisplay[format] || format.toUpperCase());
           return buttonset.append(buttonHolder);
         };
         _ref = this.options.formatBlocks;

@@ -350,27 +350,19 @@ $wizard_border_color: #ccc
     width: $radius * 1.1
 
 .goalHeadline
-  ul
-    float: left
-    margin-right: 0.8em
-
-  .content
-    .title
-      font-size: 1.6em
-      line-height: 1.8em
-
-    .text
-      clear: left
-      color: #888
-      font-size: 1.8em
-      padding: 0.3em 1.9em
-
-  .toggle .button
-    @include radioize-button
+  .button.revertHeadline
+    float: right
+    margin-left: 1.5em
+    right: 0.5em
+    position: relative
+    z-index: 1
 
   .madlib
-    padding-left: 3.7em
     padding-top: 0.5em
+
+    input
+      margin-right: -10.5em
+      padding-right: 10.5em
 
 .goalPermissions
   .stateToggle

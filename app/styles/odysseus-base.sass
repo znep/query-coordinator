@@ -343,7 +343,7 @@
       position: absolute
       right: 0
       top: 0
-      z-index: 1
+      z-index: 999 + 1 // bing + 1
 
       .addItem
         font-size: 1em
@@ -372,6 +372,9 @@
             width: 5.5em
 
       &.active
+        .narrativeTypes
+          z-index: 999 + 2 // bing + 2
+
         .twoColumn
           left: 3em
           top: -10em
@@ -439,6 +442,12 @@
       position: relative
       width: 50%
 
+      &:first-child .narrative
+        margin-right: 1.5em
+
+      &:last-child .narrative
+        margin-left: 1.5em
+
     > .list > ul > .narratives
       float: left
       position: relative
@@ -481,6 +490,13 @@
             left: -5.5em
             right: auto
 
+
+        .narrative
+          margin-right: 1.5em
+
+      &:last-child .narrative
+        margin-left: 1.5em
+
     .clear
       clear: both
 
@@ -489,8 +505,15 @@
       font-weight: normal
       letter-spacing: -1px
 
+    h1
+      font-size: 1.8em
+
+    p
+      line-height: 1.3em
+      padding-bottom: 1em
+
     .content
-      font-size: 1.6em
+      font-size: 1.5em
       padding: 0.5em 1em
 
   .narrative.text.edit

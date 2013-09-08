@@ -538,18 +538,20 @@ $wizard_border_color: #ccc
       margin-right: 1em
 
 .goal.edit
-  .measuresTitle
+  .measuresTitle, .narrativeTitle
     font-size: 3em
     font-weight: normal
+
+  .narrativeTitle
+    margin-top: 1.5em
 
   .contentContainer
     margin: 1em 6em
 
-  .measuresIntro
+  .measuresIntro, .narrativeIntro
     font-size: 1.4em
     line-height: 1.4em
-    padding: 1em 0
-      left: 0.15em
+    padding: 1em 0 1.5em 0.15em
 
   .measuresContainer > ul > li
     background-color: #e7e7e7
@@ -648,6 +650,21 @@ $wizard_border_color: #ccc
   .addMeasure.button
     margin-bottom: 2em
     margin-top: 1em
+
+
+.hallotoolbar
+  .halloheadings
+    button
+      position: relative
+      top: 1px
+
+      span
+        display: block
+        font-size: 1.2em
+        padding: 0.2em 0.3em
+
+    > span + span ~ span
+      display: none
 
 
 .goalEditor.socrataDialog

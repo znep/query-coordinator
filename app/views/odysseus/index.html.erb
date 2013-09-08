@@ -25,5 +25,11 @@
   <%- end -%>
   <script type='text/javascript' src="/socket.io/socket.io.js"></script>
   <script type='text/javascript' src="/asset/js/client"></script>
+
+  <%# TEMPORARY for using RTM %>
+  <script type="text/javascript">
+    blist.assets = blist.assets ||
+      {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
+  </script>
 <%- end -%>
 

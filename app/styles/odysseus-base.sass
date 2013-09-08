@@ -71,6 +71,9 @@
     @include opacity(0.8)
 
 .datasetSelectListItem
+  max-height: 3em
+  overflow: hidden
+
   .actions
     float: right
     margin-top: -0.1em
@@ -248,6 +251,353 @@
       .inputWrapper .squishyDateEdit
         height: 3.5em
         margin-top: 1.5em
+
+.narratives
+  .addNarrative
+    padding-bottom: 5em
+    padding-top: 3em
+    text-align: center
+
+    .button.add
+      font-size: 3em
+
+      + .arrow
+        font-size: 3em
+
+    .button
+      @include rounded-ends
+      font-size: 2em
+      height: 2.2em
+      line-height: 1.94em
+      margin: 0
+      padding: 0
+      position: relative
+      text-align: center
+      width: 2.2em
+      z-index: 1
+
+    .arrow
+      @include triangle(1em, darken($govstat_color_action, 20%), bottom)
+      content: ''
+      font-size: 2em
+      left: 50%
+      margin-left: -1em
+      margin-top: -3.58em
+      position: absolute
+      z-index: 0
+
+    .narrativeTypes
+      left: 50%
+      position: absolute
+      text-align: left
+
+      > div
+        left: 0
+        margin-left: -2.2em
+        @include opacity(0)
+        position: absolute
+        top: -4em
+        @include transition(0.3s, left top opacity)
+
+        .label
+          font-size: 1.3em
+          margin-left: -2.3em
+          margin-top: 0.5em
+          text-align: center
+          text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.9)
+          width: 8em
+
+      .text
+        @include prefixer(transition-delay, 0.04s)
+      .image
+        @include prefixer(transition-delay, 0.08s)
+      .viz
+        @include prefixer(transition-delay, 0.12s)
+
+      .layout .button
+        background-color: desaturate(darken($govstat_color_action, 10%), 40%)
+
+    &.active
+      .narrativeTypes
+        > div
+          @include opacity(1)
+          top: 2em
+
+        .twoColumn
+          left: -12em
+          top: -2em
+        .text
+          left: -4em
+        .image
+          left: 4em
+        .viz
+          left: 12em
+          top: -2em
+
+  .narrativeEditWrapper
+    margin-bottom: 1em
+    position: relative
+
+    > .addNarrative
+      padding: 0
+      position: absolute
+      right: 0
+      top: 0
+      z-index: 1
+
+      .addItem
+        font-size: 1em
+        left: 4em
+        top: -1em
+
+      .arrow
+        @include triangle(0.4em, darken($govstat_color_action, 20%), right)
+        left: 1.35em
+        margin: 0
+        top: -0.34em
+
+      .narrativeTypes
+        > div
+          left: 5.1em
+          top: -3.1em
+          z-index: 0
+
+          .button
+            font-size: 1em
+
+          .label
+            margin-left: 2.1em
+            margin-top: -1.4em
+            text-align: left
+            width: 5.5em
+
+      &.active
+        .twoColumn
+          left: 3em
+          top: -10em
+        .text
+          left: 1.5em
+          top: -6em
+        .image
+          left: 1.5em
+          top: 0
+        .viz
+          left: 3em
+          top: 4em
+
+      &:hover ~ .editItem
+        border-top-color: #ccc
+
+    > .editRemove
+      @include rounded-ends
+      font-size: 1em
+      height: 2.2em
+      line-height: 1.9em
+      padding: 0
+      position: absolute
+      right: -7.5em
+      text-align: center
+      top: -1.3em
+      width: 2.2em
+      z-index: 2
+
+      &:hover ~ .editItem > .narrative
+        background: rgba(255, 0, 0, 0.05) url(/images/hatchpattern.png)
+        @include opacity(0.8)
+
+        > *
+          @include opacity(0.6)
+
+    > .line
+      border-top: 1px solid #ccc
+      height: 0
+      right: -5.5em
+      position: absolute
+      top: 1px
+      width: 2em
+
+    > .editItem
+      border-top: 2px dotted transparent
+      padding-top: 1em
+      @include transition(0.2s, border-color background-color)
+
+  .narrative
+    border-color: transparent
+    min-height: 8em
+    @include transition(0.2s, border-color opacity)
+
+    &.uninitialized
+      border: 1px solid #ccc
+      @include prefixer(border-radius, 0.2em)
+
+  .narrative.twoCol
+    min-height: auto
+    padding-top: 2em
+
+    > .list > ul > ul
+      float: left
+      position: relative
+      width: 50%
+
+    > .list > ul > .narratives
+      float: left
+      position: relative
+      width: 50%
+
+      .noChildrenContent
+        border: 1px solid #ccc
+        @include prefixer(border-radius, 0.2em)
+        height: 3em
+        margin: 1.2em
+          bottom: 0
+
+      .addNarrative
+        padding-bottom: 0
+
+        .narrativeTypes
+          .twoColumn
+            display: none
+
+      &:first-child
+        .editRemove
+          left: -7.5em
+          right: auto
+
+        .narrativeEditWrapper
+          .addNarrative
+            left: 0
+            right: auto
+
+            .button.addItem
+              left: auto
+              right: 4em
+
+            .arrow
+              @include triangle(0.4em, darken($govstat_color_action, 20%), left)
+              left: auto
+              right: 1.4em
+
+          .line
+            left: -5.5em
+            right: auto
+
+    .clear
+      clear: both
+
+  .narrative.text
+    h1, h2, h3
+      font-weight: normal
+      letter-spacing: -1px
+
+    .content
+      font-size: 1.6em
+      padding: 0.5em 1em
+
+  .narrative.text.edit
+    .textbox .richEdit
+      background-color: #e5e5e5
+      @include prefixer(border-radius, 0.15em)
+      font-size: 1.6em
+      padding: 1em 1.5em
+
+  .narrative.image
+    overflow: hidden
+    text-align: center
+
+  .narrative.image.edit
+    .imageEdit
+      margin-right: -7em
+      margin-top: -1.5em
+      position: absolute
+      right: 9em
+      top: 50%
+      @include transition(0.5s, right)
+
+      &:after
+        @include triangle(0.7em, $govstat_color_action, right)
+        content: ''
+        left: -1em
+        position: absolute
+        top: 1em
+        @include transition(0.5s, left)
+
+    &.uninitialized .imageEdit
+      right: 50%
+
+      &:after
+        left: -0.3em
+
+  .narrative.viz
+    position: relative
+    @include transition(0.4s, min-height)
+
+    .vizContainer
+      height: 35em
+
+      .fullHeight
+        height: 100%
+
+  .narrative.viz.edit
+    .pickerToggle
+      margin-right: -8em
+      margin-top: -1.5em
+      @include opacity(1)
+      position: absolute
+      right: 10em
+      top: 50%
+      @include transition(0.2s, opacity right)
+      z-index: 999 // fuck you bing!
+
+      &:after
+        @include triangle(0.7em, $govstat_color_action, right)
+        content: ''
+        left: -1em
+        position: absolute
+        top: 1em
+        @include transition(0.5s, left)
+
+      .button
+        @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.8))
+
+    .vizContainer
+      @include transition(0.3s, filter)
+
+    &.uninitialized
+      .vizContainer
+        height: 0
+
+      .pickerToggle
+        right: 50%
+
+        &:after
+          left: -0.3em
+
+        .button
+          @include prefixer(box-shadow, none)
+
+    &.active
+      min-height: 65em
+
+      .vizContainer
+        @include prefixer(filter, blur(0.4em))
+
+      .pickerToggle
+        @include opacity(0)
+
+    .datasetPickerWrapper
+      background: rgba(247, 247, 247, 0.85)
+      bottom: 0
+      left: 0
+      padding: 1.5em 3em
+      position: absolute
+      right: 0
+      top: 0
+      z-index: 21 // fuck you highcharts!
+
+      .inPickerToggle
+        bottom: 1.5em
+        position: absolute
+        right: 3em
 
 .awesomebubble .createDashboardForm
   width: 60em

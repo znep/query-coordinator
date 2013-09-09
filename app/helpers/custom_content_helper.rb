@@ -33,6 +33,7 @@ module CustomContentHelper
     Canvas2::DataContext.reset
     Canvas2::Util.reset
     Canvas2::Util.set_params(params)
+    Canvas2::Util.set_request(request)
     Canvas2::Util.set_debug(false)
     Canvas2::Util.is_private(is_private)
     Canvas2::Util.set_no_cache(true)

@@ -53,6 +53,11 @@ Frontend::Application.routes do
       match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit'
     end
 
+    # TEMPORARY HACK for edmonton
+    scope :controller => 'odysseus', :action => 'index' do
+      match '/edmonton-dash'
+    end
+
     scope :path => '/internal', :controller => 'internal' do
       match '/', :action => 'index'
       match '/analytics', :action => 'analytics'

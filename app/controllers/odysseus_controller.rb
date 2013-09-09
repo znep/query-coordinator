@@ -9,6 +9,9 @@ class OdysseusController < ApplicationController
     res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
     contents = JSON.parse(res.body)
 
+    # TEMPORARY HACK for edmonton
+    @suppress_govstat = true if request.path =~ /edmonton-dash$/
+
     @title = contents['title'] || ''
     @style_packages = contents['styles'] || []
     @script_packages = contents['scripts'] || []

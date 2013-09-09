@@ -359,6 +359,9 @@ class CustomContentController < ApplicationController
       end
     end
     ######### END #######
+
+    ######### PERFORMANCE LOGGING ######
+    Rails.logger.info("#{Canvas2::DataContext::timings.length} contexts loaded.")
   end
 
   before_filter :only => [:template] { |c| c.require_right(:create_pages) }

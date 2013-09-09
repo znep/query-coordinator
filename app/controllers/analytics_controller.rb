@@ -30,7 +30,7 @@ class AnalyticsController < ApplicationController
   def add_metric(entity, metric, raw_increment)
 
   # metrics and entities must be simple names, optional hyphens
-    if (metric =~ /^[a-z-]+$/ ).nil? || (entity =~ /^[a-z-]+$/ ).nil?
+    if (metric =~ /^[a-z0-9-]+$/ ).nil? || (entity =~ /^[a-z-]+$/ ).nil?
       return [false, "Entity/Metric not properly formed"]
     end
 
@@ -109,7 +109,15 @@ module ClientAnalyticsHelper
                               domain-intern/js-spinner-routing-time
                               domain-intern/js-spinner-dataslate-configurator-time
                               domain-intern/js-spinner-dataslate-global-time
-                              domain-intern/js-spinner-dataslate-component-time).freeze
+                              domain-intern/js-spinner-dataslate-component-time
+                              domain-intern/js-dataslate-lte-1-contexts-page-load-time
+                              domain-intern/js-dataslate-lte-2-contexts-page-load-time
+                              domain-intern/js-dataslate-lte-4-contexts-page-load-time
+                              domain-intern/js-dataslate-lte-8-contexts-page-load-time
+                              domain-intern/js-dataslate-lte-16-contexts-page-load-time
+                              domain-intern/js-dataslate-lte-32-contexts-page-load-time
+                              domain-intern/js-dataslate-lte-64-contexts-page-load-time
+                              domain-intern/js-dataslate-lte-128-contexts-page-load-time).freeze
 
 
 

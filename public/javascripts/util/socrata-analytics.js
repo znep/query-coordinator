@@ -136,6 +136,15 @@ jQuery.metrics = {
 
                 $.metrics.increment("domain-intern", page_type + "-js-page-load-time", js_page_load_time);
                 $.metrics.mark("domain-intern", page_type + "-js-page-load-samples");
+
+                if (page_type == 'dataslate')
+                {
+                    var num_contexts = _.size($.dataContext.availableContexts),
+                        bucket = _.detect([1, 2, 4, 8, 16, 32, 64, 128],
+                            function(b) { return num_contexts < b; });
+                    $.metrics.increment('domain-intern',
+                        'js-dataslate-lte-' + bucket + '-contexts-page-load-time', js_page_load_time);
+                }
             }
         }
         $.metrics.flush_metrics();

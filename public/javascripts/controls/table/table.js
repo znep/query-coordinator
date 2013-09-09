@@ -4216,7 +4216,7 @@
 
                 // Request comment indicators
                 // This will only be false if the cell comment module is enabled.
-                if ($.deepGet(blist.sidebarHidden, 'feed', 'cellFeed') === false)
+                if ($.deepGet(blist, 'sidebarHidden', 'feed', 'cellFeed') === false)
                 { model.view.getCommentLocations(); }
 
                 model.view.bind('row_change', function(rows)

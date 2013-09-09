@@ -6,6 +6,7 @@
     var isNextGen = (blist.configuration.newChartsEnabled ||
         $.urlParam(window.location.href, 'charts') == 'nextgen') && $.urlParam(window.location.href, 'charts') != 'old';
     var nextGenReady = ['bar', 'column', 'pie', 'donut', 'line', 'area'];
+    var isNewVisulize =  (blist.configuration.newChartConfig || $.urlParam(window.location.href, 'visualize') == 'nextgen');
 
     var defaultColors;
     if (isNextGen){

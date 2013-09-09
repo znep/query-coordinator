@@ -3,7 +3,7 @@
     var uniformEnabled = function() { return !$.browser.msie || $.browser.majorVersion > 7; };
     
     //Flag for new visualize tab
-    var isNewVisualize = (blist.configuration.newChartConfig);
+    var isNewVisualize = (blist.configuration.newChartConfig || $.urlParam(window.location.href, 'visualize') == 'nextgen');
     
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {

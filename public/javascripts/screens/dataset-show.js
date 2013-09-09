@@ -747,6 +747,10 @@ $(function()
     };
     konami.load();
 
+    if($.urlParam(window.location.href, 'visualize') == 'nextgen'){
+       $('a.new_visualize').closest('li').show();
+    }
+
     // Data calls
     _.defer(function()
     {

@@ -20,7 +20,8 @@
     {
         registerConfig: function(name, controlName, priority, displayTypes)
         {
-            if (name == 'new_chart_create' && !blist.configuration.newChartConfig) { return; }
+            var isNewVisualize = ($.urlParam(window.location.href, 'visualize') == 'nextgen'|| blist.configuration.newChartConfig);
+            if (name == 'new_chart_create' && !isNewVisualize) { return; }
 
             if ($.isBlank(name)) { throw 'Sidebar config requires a name'; }
 

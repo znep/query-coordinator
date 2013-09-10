@@ -13,6 +13,7 @@ def subscribe_to_events
       :measurement => "#{key}.core_time", :value => event.payload[:core_runtime]
     ActiveSupport::Notifications.instrument :performance, :action => :timing,
       :measurement => "#{key}.view_time", :value => event.payload[:view_runtime]
+    ActiveSupport::Notifications.instrument :meter, :measurement => "#{key}.requests"
     # ActiveSupport::Notifications.instrument :performance, :action => :increment,
     #   :measurement => "#{key}.core_requests", :value => event.payload[:core_requests].reduce(0){ |s, p| s + p.last }
   end

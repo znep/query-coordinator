@@ -54,6 +54,7 @@ DATASLATE:
 2001 cfViewsContainer
 2999 edit mask
 3000 focal item
+3001 resize handle
 20000 IE drag image
 
 

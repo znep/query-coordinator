@@ -230,7 +230,8 @@
                         cObj.$dom.resizable({
                             handles: 's',
                             start: _.bind(cObj._onUiResizableResizeStart, cObj),
-                            stop: _.bind(cObj._onUiResizableResizeStop, cObj)
+                            stop: _.bind(cObj._onUiResizableResizeStop, cObj),
+                            zIndex: 3001
                         });
                         // This unhides children, so fix them up
                         cObj.$dom.find('.socrata-component .ui-resizable-handle').hide();

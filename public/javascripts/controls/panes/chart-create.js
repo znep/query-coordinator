@@ -53,7 +53,7 @@
         _getSections: function()
         {
             var cpObj = this;
-            
+
             var result = [
                 {
                     title: $.t('screens.ds.grid_sidebar.chart.setup.title'),
@@ -99,26 +99,14 @@
                 _.each(view.displayFormat.fixedColumns || [], addColumn);
             }
 
-            if (view.displayFormat.autoUpdateSort === true && _.include(['pie', 'donut'], view.displayFormat.chartType))
+            if (_.include(['pie', 'donut'], view.displayFormat.chartType) && !$.subKeyDefined(cpObj, '_view.query.orderBys'))
             {
                 view.query = $.extend(view.query, cpObj._view.query,
                 {
-                    orderBys: _.map(view.displayFormat.valueColumns, function(col)
-                    {
-                        var orderBy =
-                        {
-                            ascending: false,
-                            expression:
-                            {
-                                columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
-                                type: 'column'
-                            }
-                        };
-                        return orderBy;
-                    })
-                })
+                    orderBys: cpObj._getPieDefaultOrderBy()
+                });
             }
-           
+
             if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
                 (view.displayFormat.stacking == true))
             {
@@ -142,6 +130,23 @@
             cpObj._finishProcessing();
             cpObj.reset();
             if (!didCallback && _.isFunction(finalCallback)) { finalCallback(); }
+        },
+
+        // NOTE: Keep this in sync with the one in d3.impl.pie.js!
+        _getPieDefaultOrderBy: function()
+        {
+            var cpObj = this,
+                view = cpObj._view;
+            return _.map(view.displayFormat.valueColumns, function(col)
+                {
+                    return {
+                        ascending: false,
+                        expression: {
+                            columnId: view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
+                            type: 'column'
+                        }
+                    };
+                });
         }
     }, {name: 'chartCreate'}, 'controlPane');
 

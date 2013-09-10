@@ -973,7 +973,9 @@ en:
           point_color: Point Color
           point_size: Point Size
           point_title: Title
-          auto_update_sort: Automatically update sort order
+          auto_update_sort_button: Apply this now
+          auto_update_sort_info_pie: ! "Pie charts work best when sorted in descending clockwise order."
+          auto_update_sort_info_donut: ! "Donut charts work best when sorted in descending clockwise order, inside to outside."
           series_group:
             alphabetize: Alphabetize Groups
             group_by: Group by

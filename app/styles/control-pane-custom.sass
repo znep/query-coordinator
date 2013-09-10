@@ -527,8 +527,6 @@
       &.hasChoices .selector.uniform
         display: inline-block
 
-
-
   .formSection
     .line.colorValueGroup
       position: relative
@@ -544,7 +542,20 @@
         .line.colorCollapse
           top: 0
           right: 1.5em
-
+    &.pieBasic,&.donutBasic
+      .autoSortInfo
+        color: #666
+        font-size: 1em
+        font-weight: normal
+        line-height: 1em
+        margin: 1em
+        padding: 0 0 4.2em 0
+        .inputWrapper
+          padding: 0.8em 1em 0.8em 1em
+      .autoSortButton
+        margin: -5.8em 0 2em 1em
+        .inputWrapper
+          padding-left: 1em
 
   &.new_chart_create
     margin-top: -1em
@@ -624,7 +635,7 @@
           label
             display: none
         .removeLink.delete
-          margin-left: -3% 
+          margin-left: -3%
 
       .line.hasIcon
         width: 74%
@@ -754,12 +765,12 @@
                 display: inline-block
                 font-size: 1.2em
                 margin-left: 13px
-                vertical-align: top
                 padding-top: 0.2em
+                vertical-align: top
 
             .columnColorControl
               display: inline-block
-            
+
           .dsg
             margin-left: -0.8em
             padding-bottom: 1em
@@ -778,8 +789,18 @@
               left: 0px
               .inputWrapper
                 padding-left: 1em
-
-
+          .autoSortButton
+            margin: -5.8em 0 2em 1.2em
+            .inputWrapper
+              padding-left: 1em
+          .line.note.autoSortInfo
+            font-weight: normal
+            line-height: 1em
+            margin: 1em
+            padding: 0 0 3.2em 0
+            .inputWrapper
+              font-size: 1em
+              padding: 0.8em 1em
 
       &.collapsed > .formHeader > .formHeaderIcon
         @include triangle(5px, #fff, left)
@@ -787,7 +808,6 @@
         margin-right: 5px
         margin-top: 0px
         margin-bottom: 0px
-
 
   &.signedDataset .formSection
     p

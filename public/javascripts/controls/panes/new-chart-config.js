@@ -239,7 +239,7 @@
             };
 
             var result = [];
-            _.each(newTypes, function(rc) { 
+            _.each(newTypes, function(rc) {
                 var count = rc.count
                 var and;
                 if(rc==newTypes[0]){
@@ -257,13 +257,13 @@
                 }
                 _.each(rc.types, function(t){
                     result.push({tagName: 'div', 'class': blist.datatypes[t].name+' flyoutIcon',
-                       contents: [{tagName: 'span', 'class': 'blist-th-icon'}, 
-                                  {tagName: 'span', contents: $.t('screens.ds.grid_sidebar.base.datatypes.' 
-                                    + transform(blist.datatypes[t].title).toLowerCase()).capitalize()} ] 
-                    });                    
+                       contents: [{tagName: 'span', 'class': 'blist-th-icon'},
+                                  {tagName: 'span', contents: $.t('screens.ds.grid_sidebar.base.datatypes.'
+                                    + transform(blist.datatypes[t].title).toLowerCase()).capitalize()} ]
+                    });
                 })
             })
-            
+
             return $.tag(result);
 
     };
@@ -436,18 +436,18 @@
             initialRepeatCount: 5, lineClass: 'colorArray'
         });
 
-        if (!_.contains(['bubble', 'donut', 'treemap', 'pie'], chart.value)) 
+        if (!_.contains(['bubble', 'donut', 'treemap', 'pie'], chart.value))
         {
 
             result.fields[0].onlyIf =
                 { field: 'displayFormat.seriesColumns',
-                    func: function(val) { 
+                    func: function(val) {
                         return _.compact(val).length > 0;
 
                     }
-                }; 
+                };
 
-            result.fields.push({ text: 'Column colors', type: 'custom',linkedField: ['displayFormat.valueColumns'], 
+            result.fields.push({ text: 'Column colors', type: 'custom',linkedField: ['displayFormat.valueColumns'],
                                  name: 'displayFormat.valueColumns', lineClass: 'colors',
             editorCallbacks: {
                 create: function($field, val, curVal) {
@@ -569,7 +569,6 @@
         return result;
     };
 
-
     /*** Tweaks and overrides for specific types ***/
 
     var dataSelectionBubble = function(chart, options)
@@ -599,36 +598,99 @@
         return bc;
     };
 
-    // We automatically apply a default OrderBy to pie-like charts (descending on first value column).
-    // However, there are cases where users want to set a custom sort. In order to allow them to preserve
-    // such a sort when they update the chart config, we provide this checkmark to disable the auto-sort
-    // feature.
-    var autoSortCheckbox = function(options)
+    var getPieDefaultOrderBy = function(options)
     {
-        // In absence of a set value for this option, provide a sensible default.
-        var defaultValue = true;
+        var view = options.view;
+        return _.map(view.displayFormat.valueColumns, function(col)
+            {
+                return {
+                    ascending: false,
+                    expression: {
+                        columnId: view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
+                        type: 'column'
+                    }
+                };
+            });
+    };
+
+    var hasDefaultPieSort = function(options)
+    {
         if ($.subKeyDefined(options.view, 'query.orderBys'))
         {
-            // To handle charts that were created before this checkmark existed:
-            // If the sort looks like it was added by us, default the checkmark to true.
-            // Otherwise, default to false.
-            var orderBys =  options.view.query.orderBys;
-            var hasDefaultSort =  orderBys.length == 1 &&
-                                  orderBys[0].ascending === false &&
-                                  $.subKeyDefined(orderBys[0], 'expression.columnId') &&
-                                  $.subKeyDefined(options.view, 'displayFormat.valueColumns') &&
-                                  options.view.displayFormat.valueColumns.length > 0 &&
-                                  options.view.columnForIdentifier(options.view.displayFormat.valueColumns[0].fieldName || options.view.displayFormat.valueColumns[0].tableColumnId).id === orderBys[0].expression.columnId;
-
-            defaultValue = hasDefaultSort;
+            var defaultOrderBy = getPieDefaultOrderBy(options);
+            return _.isEqual(defaultOrderBy, options.view.query.orderBys);
         }
+        return false;
+    };
 
-        return { type: 'checkbox',  text: $.t('screens.ds.grid_sidebar.chart.auto_update_sort'),
-                                    name: 'displayFormat.autoUpdateSort',
-                                    inputFirst: true,
-                                    defaultValue: defaultValue,
-                                    lineClass: 'indentedFormSection',
-                                    onlyIf: isNextGen };
+    var shouldEnableAutoPieSortButton = function(options)
+    {
+        return isNextGen && !hasDefaultPieSort(options);
+    };
+
+    // We automatically apply a default OrderBy to pie-like charts (descending on first value column),
+    // but only on the first apply, and only if there isn't a sort already.
+    var autoSortButton = function(options)
+    {
+        var autoPieSortCurrentlyVisible = false;
+
+        var createButton = function($dom)
+        {
+            var cpObj = this;
+
+            var buttonText = $.t('screens.ds.grid_sidebar.chart.auto_update_sort_button');
+            var $button = $("<a href='#' class='button applyDefaultPieSort'>" + buttonText + '</a>');
+            $dom.append($button);
+
+            var monitor = false;
+            options.view.bind('query_change', function()
+            {
+                if (!monitor)
+                {
+                    monitor = true;
+                    if (shouldEnableAutoPieSortButton(options) != autoPieSortCurrentlyVisible)
+                    {
+                        cpObj.reset();
+                    }
+                    monitor = false;
+                }
+            });
+
+            $button.on('click', function()
+            {
+                var query = $.extend({}, options.view.query,
+                {
+                    orderBys: getPieDefaultOrderBy(options)
+                });
+
+                options.view.update({ query: query }, false, true);
+            });
+
+            autoPieSortCurrentlyVisible = shouldEnableAutoPieSortButton(options);
+            return autoPieSortCurrentlyVisible;
+        };
+
+        return {
+            type: 'custom',
+            lineClass: 'autoSortButton',
+            editorCallbacks:
+            {
+                create: createButton
+            }
+        };
+    };
+
+    var autoSortButtonInfo = function(options, chartType)
+    {
+        return {
+            type: 'note',
+            onlyIf:
+            {
+                func: function() { return shouldEnableAutoPieSortButton(options); }
+            },
+            lineClass: 'autoSortInfo flash notice',
+            value: $.t('screens.ds.grid_sidebar.chart.auto_update_sort_info_'+chartType)
+        };
     };
 
     var dataSelectionPie = function(options)
@@ -639,14 +701,16 @@
             otherNames: 'displayFormat.valueColumns.0.tableColumnId', lineClass: 'hasIcon pieValueSelection',
             notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
-        bc.fields.push(autoSortCheckbox(options));
+        bc.fields.push(autoSortButtonInfo(options, 'pie'));
+        bc.fields.push(autoSortButton(options));
         return bc;
     };
 
     var dataSelectionDonut = function(options)
     {
         var bc = dataSelection(Dataset.chart.types.donut, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection');
-        bc.fields.push(autoSortCheckbox(options));
+        bc.fields.push(autoSortButtonInfo(options, 'donut'));
+        bc.fields.push(autoSortButton(options));
         return bc;
     };
 

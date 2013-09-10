@@ -23,7 +23,21 @@ $.Control.registerMixin('d3_impl_pie', {
                                       //  If we hit more than this number of such issues, remove the unshowable
                                       // labels from the layout and re-run the layout. This avoids having large
                                       // sections of unused space in very dense pies.
-        minArcLengthPixels: 3 // Minimum arc length of a slice in order to show it.
+        minArcLengthPixels: 3, // Minimum arc length of a slice in order to show it.
+        nonSortedRowLoadCount: 360  // If we're not descending, we can't easily be clever about
+                                    // which rows we load. So we just load up to this many rows.
+                                    // The real solution is to do something like:
+                                    // 1) Clone the primary view.
+                                    // 2) Apply a sort on the cloned view: descending on our value column.
+                                    // 3) Base our chart on the cloned view. Loading algorithm then knows
+                                    //    when to stop based on value size, just like now.
+                                    // 4) On render, sort the slices according to what the original view
+                                    //    wants.
+                                    // Of course, (4) is hard because we essentially have to duplicate what
+                                    // the core server would do.
+                                    // The current approach falls down rather hard if the dataset has tons
+                                    // of tiny-valued slices and you sort ascending. This means we'll probably
+                                    // show only an 'other' slice.
     },
 
     Slice: (function()
@@ -287,14 +301,8 @@ $.Control.registerMixin('d3_impl_pie', {
             state = vizObj._loaderState,
             zoom = vizObj._zoomInfo,
             cc = vizObj._chartConfig;
-        // Two stop conditions.
-        // 1) Hits edge of viewport.
-        // 2) Hits min angle. TODO: Min pixel width.
 
-        var primaryValueColumn = vizObj._primaryValueColumn();
-        var anchor = cc.chartRenderSnapshot.anchorSlice;
-        var seriesInformation = cc.chartRenderSnapshot.seriesInformation[primaryValueColumn.column.lookup];
-
+        var totalRows = vizObj.getTotalRows() || 0;
         var minIndex = state.top;
         var maxIndex = state.bottom;
         if (vizObj._currentRangeData.length > 0)
@@ -308,53 +316,94 @@ $.Control.registerMixin('d3_impl_pie', {
             maxIndex = 0;
         }
 
-        var topSlice = new vizObj.Slice(minIndex, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
-        var bottomSlice = new vizObj.Slice(maxIndex, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
-
-        var slices = this._fillInSliceRange(cc.chartRenderSnapshot.firstDataSlice, cc.chartRenderSnapshot.lastDataSlice);
-        var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
-
-        var pieSegments = this._buildPieLayout(sliceMetrics, cc.chartRenderSnapshot.firstDataSlice, cc.chartRenderSnapshot.lastDataSlice, anchor, seriesInformation);
-
-        var topAngle = pieSegments.startAngle();
-        var bottomAngle = pieSegments.endAngle();
-
-        var topDone = vizObj._normalizeAngle(zoom.getRightmostAngle()) > vizObj._normalizeAngle(topAngle);
-        var bottomDone = vizObj._normalizeAngle(zoom.getLeftmostAngle()) < vizObj._normalizeAngle(bottomAngle);
-
-        var totalRows = vizObj.getTotalRows() || 0;
-
-        topDone |= topSlice.index == 0;
-        bottomDone |= bottomSlice.index == totalRows - 1;
-
-        var bottomAngleTooSmall = this._tooSmallForDisplay(bottomSlice, seriesInformation);
-        bottomDone |= bottomAngleTooSmall;
-
-
-        vizObj.debugOut('Checking range. BottomDone: '+bottomDone+' TopDone: '+topDone);
-
-        if (topDone && bottomDone)
+        if (vizObj._isSortedBigToSmall())
         {
-            state.phase = vizObj._loaderPhases.idle;
-            if (blist.mainSpinner)
-            { blist.mainSpinner.setMetric(null); }
-            vizObj.initialRenderDone();
-        }
-        else if (topDone)
-        {
-            state.phase = vizObj._loaderPhases.growingDown;
-            state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
-        }
-        else if (bottomDone)
-        {
-            state.phase = vizObj._loaderPhases.growingUp;
-            state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
+            // Two stop conditions.
+            // 1) Hits edge of viewport.
+            // 2) Hits min angle. TODO: Min pixel width.
+
+            var primaryValueColumn = vizObj._primaryValueColumn();
+            var anchor = cc.chartRenderSnapshot.anchorSlice;
+            var seriesInformation = cc.chartRenderSnapshot.seriesInformation[primaryValueColumn.column.lookup];
+
+            var topSlice = new vizObj.Slice(minIndex, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
+            var bottomSlice = new vizObj.Slice(maxIndex, seriesInformation.valueResolver, seriesInformation.nameResolver, seriesInformation.colorResolver);
+
+            var slices = this._fillInSliceRange(cc.chartRenderSnapshot.firstDataSlice, cc.chartRenderSnapshot.lastDataSlice);
+            var sliceMetrics = this._calculateSliceSetMetrics(slices, seriesInformation);
+
+            var pieSegments = this._buildPieLayout(sliceMetrics, cc.chartRenderSnapshot.firstDataSlice, cc.chartRenderSnapshot.lastDataSlice, anchor, seriesInformation);
+
+            var topAngle = pieSegments.startAngle();
+            var bottomAngle = pieSegments.endAngle();
+
+            var topDone = vizObj._normalizeAngle(zoom.getRightmostAngle()) > vizObj._normalizeAngle(topAngle);
+            var bottomDone = vizObj._normalizeAngle(zoom.getLeftmostAngle()) < vizObj._normalizeAngle(bottomAngle);
+
+            topDone |= topSlice.index == 0;
+            bottomDone |= bottomSlice.index == totalRows - 1;
+
+            var bottomAngleTooSmall = this._tooSmallForDisplay(bottomSlice, seriesInformation);
+            bottomDone |= bottomAngleTooSmall;
+
+            vizObj.debugOut('Checking range. BottomDone: '+bottomDone+' TopDone: '+topDone);
+
+            if (topDone && bottomDone)
+            {
+                state.phase = vizObj._loaderPhases.idle;
+                if (blist.mainSpinner)
+                { blist.mainSpinner.setMetric(null); }
+                vizObj.initialRenderDone();
+            }
+            else if (topDone)
+            {
+                state.phase = vizObj._loaderPhases.growingDown;
+                state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
+            }
+            else if (bottomDone)
+            {
+                state.phase = vizObj._loaderPhases.growingUp;
+                state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
+            }
+            else
+            {
+                state.phase = vizObj._loaderPhases.growingBoth;
+                state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
+                state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
+            }
         }
         else
         {
-            state.phase = vizObj._loaderPhases.growingBoth;
-            state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
-            state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
+            // Best we can do is get a default range...
+            state.phase = vizObj._loaderPhases.idle;
+
+            var staticMaxIndex = Math.min(totalRows-1 , vizObj.defaults.nonSortedRowLoadCount);
+            var topDone = (state.top == minIndex);
+            var bottomDone = (state.bottom == staticMaxIndex);
+
+            if (topDone && bottomDone)
+            {
+                state.phase = vizObj._loaderPhases.idle;
+                if (blist.mainSpinner)
+                { blist.mainSpinner.setMetric(null); }
+                vizObj.initialRenderDone();
+            }
+            else if (topDone)
+            {
+                state.phase = vizObj._loaderPhases.growingDown;
+                state.bottom = staticMaxIndex;
+            }
+            else if (bottomDone)
+            {
+                state.phase = vizObj._loaderPhases.growingUp;
+                state.top = minIndex;
+            }
+            else
+            {
+                state.phase = vizObj._loaderPhases.growingBoth;
+                state.top = minIndex;
+                state.bottom = staticMaxIndex;
+            }
         }
 
         vizObj.debugOut('New phase:' + state.phase);
@@ -367,12 +416,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
     _requestMoreData: function()
     {
-        var vizObj = this,
-            state = vizObj._loaderState,
-            zoom = vizObj._zoomInfo,
-            cc = vizObj._chartConfig;
-
-        vizObj.getDataForView(vizObj._primaryView);
+        this.getDataForView(this._primaryView);
     },
 
     cleanVisualization: function()
@@ -425,10 +469,6 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         var vizObj = this,
             state = vizObj._loaderState;
-
-        var start = 0;
-        var length = view.totalRows();
-
 
         var ret = { start: state.top, length: 1+(state.bottom - state.top) };
         vizObj.debugOut("Furnished range: start "+ret.start + " len "+ret.length);
@@ -585,7 +625,13 @@ $.Control.registerMixin('d3_impl_pie', {
                 {
                     _.each(vizObj._fillInSliceRange(firstSlice, lastSlice), function(slice)
                     {
-                        addLine(slice.getColor(), slice.getName());
+                        if (_.any(vizObj._chartConfig.chartRenderSnapshot.seriesInformation, function(series)
+                            {
+                                return !vizObj._tooSmallForDisplay(slice, series);
+                            }))
+                        {
+                            addLine(slice.getColor(), slice.getName());
+                        }
                     });
                 }
             }
@@ -963,7 +1009,9 @@ $.Control.registerMixin('d3_impl_pie', {
             var lastDisplaySlice;
             if (vizObj._zoomFactor <= 1.01)
             {
-                lastDisplaySlice = vizObj._findLastSliceSatisfyingMinAngle(firstSlice, lastSlice, primarySeriesInfo);
+                lastDisplaySlice = vizObj._isSortedBigToSmall() ?
+                    vizObj._findLastSliceSatisfyingMinAngle(firstSlice, lastSlice, primarySeriesInfo) :
+                    lastSlice;
             }
             else
             {
@@ -1026,6 +1074,33 @@ $.Control.registerMixin('d3_impl_pie', {
         var angle = slice.getAngleRadians(seriesInformation);
         var arcLength = angle * radius;
         return arcLength < this.defaults.minArcLengthPixels;
+    },
+
+    // We work best when our slices sorted big to small. If we aren't, we can't
+    // make informed decisions about when to stop loading rows.
+    _isSortedBigToSmall: function()
+    {
+        var view = this._primaryView;
+        if ($.subKeyDefined(view, 'query.orderBys'))
+        {
+            // NOTE: Keep this in sync with the one in (new-)chart-create.js!
+            var defaultOrderBy = _.map(view.displayFormat.valueColumns, function(col)
+            {
+                return {
+                    ascending: false,
+                    expression: {
+                        columnId: view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
+                        type: 'column'
+                    }
+                };
+            });
+
+            return _.isEqual(defaultOrderBy, view.query.orderBys);
+        }
+        else
+        {
+            return false;
+        }
     },
 
     _renderSnapshot: function(snapshot, enableTransitions)
@@ -1174,6 +1249,7 @@ $.Control.registerMixin('d3_impl_pie', {
         $.assert(!lastSlice || lastSlice.index >= anchorSlice.index && anchorSlice.index >= firstSlice.index, "Anchor slice must come between first and last slices.");
         $.assert(anchorSlice.anchorRadians != undefined, "Anchor slice should define an angular position.");
 
+        var vizObj = this;
         var result = null;
 
         var canReuseCachedPieces = seriesInformation.cachedPiePieces &&
@@ -1198,9 +1274,43 @@ $.Control.registerMixin('d3_impl_pie', {
 
             result = pieSegments(slices);
 
+            // Now filter out anything that's too small.
+            var removedSliceValueSum = 0;
+            var removedSliceAngleSum = 0;
+            var segmentsToRender = _.filter(result,
+                function(d)
+                {
+                    d.startAngle -= removedSliceAngleSum;
+                    d.endAngle -= removedSliceAngleSum;
+                    var tooSmall = vizObj._tooSmallForDisplay(d.data, seriesInformation);
+                    if (tooSmall)
+                    {
+                        removedSliceValueSum += d.data.getValue();
+                        removedSliceAngleSum += d.data.getAngleRadians(seriesInformation);
+                    }
+                    return !tooSmall;
+                });
+
+            if (segmentsToRender.length == 0)
+            {
+                var empty = _.isEmpty(result);
+                if (empty)
+                {
+                    segmentsToRender = [];
+                    removedSliceValueSum = 0;
+                    removedSliceAngleSum = 0;
+                }
+                else
+                {
+                    segmentsToRender = [result[0]];
+                    removedSliceValueSum = sliceMetrics.valueSum - result[0].data.getValue();
+                    removedSliceAngleSum = sliceMetrics.angularWidthRadians - result[0].data.getAngleRadians(seriesInformation);
+                }
+            }
+
             var otherPlaceholder =
             {
-                endAngle: pieSegments.endAngle(),
+                endAngle: pieSegments.endAngle() - removedSliceAngleSum,
                 startAngle: pieSegments.startAngle() + Math.PI*2
             };
 
@@ -1210,7 +1320,7 @@ $.Control.registerMixin('d3_impl_pie', {
                 var valueResolver = function(asText)
                 {
                     var col = seriesInformation.colDef.column;
-                    var val = seriesInformation.getDataSum() - sliceMetrics.valueSum;
+                    var val = seriesInformation.getDataSum() - (sliceMetrics.valueSum - removedSliceValueSum);
 
                     if (asText)
                     {
@@ -1240,7 +1350,8 @@ $.Control.registerMixin('d3_impl_pie', {
                 };
 
                 otherPlaceholder.data = new this.Slice(undefined, valueResolver, nameResolver, colorResolver);
-                result.push(otherPlaceholder);
+                segmentsToRender.push(otherPlaceholder);
+                result = segmentsToRender;
             }
 
             seriesInformation.cachedPiePieces = result;
@@ -1966,7 +2077,9 @@ $.Control.registerMixin('d3_impl_pie', {
     _rotateColorBy: function(color, rotateCount)
     {
         var newBaseHsv = $.rgbToHsv($.hexToRgb(color));
-        newBaseHsv.h = (newBaseHsv.h + 8*rotateCount + 360) % 360;
+        var h = newBaseHsv.h + 8*rotateCount;
+        h += Math.ceil(-h/360) * 360;
+        newBaseHsv.h = h%360;
         return '#'+$.rgbToHex($.hsvToRgb(newBaseHsv));
     },
 

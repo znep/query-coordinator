@@ -2036,7 +2036,7 @@
                 if (!$.isBlank(onlyIf.value))
                 { showField = showField && onlyIf.value == (vals[onlyIf.field] || vals); }
                 if (onlyIf.negate) { showField = !showField; }
-                $l.toggle(showField);
+                $l[showField !== false? 'show' : 'hide']();
             }
             if ($.isPlainObject(disabled))
             {
@@ -2066,7 +2066,7 @@
                 cleanLine(cpObj, $l);
                 $field.empty();
                 var showLine = customField.call(cpObj, $field, vals, curValue);
-                $l.toggle(showLine);
+                $l[showLine !== false? 'show' : 'hide']();
             }
             _.defer(function() { uniformUpdate($field); });
         };

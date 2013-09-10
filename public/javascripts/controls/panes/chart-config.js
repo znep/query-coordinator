@@ -449,36 +449,99 @@
         return bc;
     };
 
-    // We automatically apply a default OrderBy to pie-like charts (descending on first value column).
-    // However, there are cases where users want to set a custom sort. In order to allow them to preserve
-    // such a sort when they update the chart config, we provide this checkmark to disable the auto-sort
-    // feature.
-    var autoSortCheckbox = function(options)
+    var getPieDefaultOrderBy = function(options)
     {
-        // In absence of a set value for this option, provide a sensible default.
-        var defaultValue = true;
+        var view = options.view;
+        return _.map(view.displayFormat.valueColumns, function(col)
+            {
+                return {
+                    ascending: false,
+                    expression: {
+                        columnId: view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
+                        type: 'column'
+                    }
+                };
+            });
+    };
+
+    var hasDefaultPieSort = function(options)
+    {
         if ($.subKeyDefined(options.view, 'query.orderBys'))
         {
-            // To handle charts that were created before this checkmark existed:
-            // If the sort looks like it was added by us, default the checkmark to true.
-            // Otherwise, default to false.
-            var orderBys =  options.view.query.orderBys;
-            var hasDefaultSort =  orderBys.length == 1 &&
-                                  orderBys[0].ascending === false &&
-                                  $.subKeyDefined(orderBys[0], 'expression.columnId') &&
-                                  $.subKeyDefined(options.view, 'displayFormat.valueColumns') &&
-                                  options.view.displayFormat.valueColumns.length > 0 &&
-                                  options.view.columnForIdentifier(options.view.displayFormat.valueColumns[0].fieldName || options.view.displayFormat.valueColumns[0].tableColumnId).id === orderBys[0].expression.columnId;
-
-            defaultValue = hasDefaultSort;
+            var defaultOrderBy = getPieDefaultOrderBy(options);
+            return _.isEqual(defaultOrderBy, options.view.query.orderBys);
         }
+        return false;
+    };
 
-        return { type: 'checkbox',  text: $.t('screens.ds.grid_sidebar.chart.auto_update_sort'),
-                                    name: 'displayFormat.autoUpdateSort',
-                                    inputFirst: true,
-                                    defaultValue: defaultValue,
-                                    lineClass: 'indentedFormSection',
-                                    onlyIf: isNextGen };
+    var shouldEnableAutoPieSortButton = function(options)
+    {
+        return isNextGen && !hasDefaultPieSort(options);
+    };
+
+    // We automatically apply a default OrderBy to pie-like charts (descending on first value column),
+    // but only on the first apply, and only if there isn't a sort already.
+    var autoSortButton = function(options)
+    {
+        var autoPieSortCurrentlyVisible = false;
+
+        var createButton = function($dom)
+        {
+            var cpObj = this;
+
+            var buttonText = $.t('screens.ds.grid_sidebar.chart.auto_update_sort_button');
+            var $button = $("<a href='#' class='button applyDefaultPieSort'>" + buttonText + '</a>');
+            $dom.append($button);
+
+            var monitor = false;
+            options.view.bind('query_change', function()
+            {
+                if (!monitor)
+                {
+                    monitor = true;
+                    if (shouldEnableAutoPieSortButton(options) != autoPieSortCurrentlyVisible)
+                    {
+                        cpObj.reset();
+                    }
+                    monitor = false;
+                }
+            });
+
+            $button.on('click', function()
+            {
+                var query = $.extend({}, options.view.query,
+                {
+                    orderBys: getPieDefaultOrderBy(options)
+                });
+
+                options.view.update({ query: query }, false, true);
+            });
+
+            autoPieSortCurrentlyVisible = shouldEnableAutoPieSortButton(options);
+            return autoPieSortCurrentlyVisible;
+        };
+
+        return {
+            type: 'custom',
+            lineClass: 'autoSortButton',
+            editorCallbacks:
+            {
+                create: createButton
+            }
+        };
+    };
+
+    var autoSortButtonInfo = function(options, chartType)
+    {
+        return {
+            type: 'note',
+            onlyIf:
+            {
+                func: function() { return shouldEnableAutoPieSortButton(options); }
+            },
+            lineClass: 'autoSortInfo flash notice',
+            value: $.t('screens.ds.grid_sidebar.chart.auto_update_sort_info_'+chartType)
+        };
     };
 
     var configDonut = function(options)
@@ -491,7 +554,8 @@
                 columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}},
                 minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button')});
 
-        bc.fields.push(autoSortCheckbox(options));
+        bc.fields.push(autoSortButtonInfo(options, 'donut'));
+        bc.fields.push(autoSortButton(options));
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: ''}),
@@ -510,7 +574,8 @@
             notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
 
-        bc.fields.push(autoSortCheckbox(options));
+        bc.fields.push(autoSortButtonInfo(options, 'pie'));
+        bc.fields.push(autoSortButton(options));
         bc.fields.push(conditionalFormattingWarning);
         bc.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
                 field: $.extend({}, colorOption, {name: ''}),

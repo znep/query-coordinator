@@ -147,7 +147,7 @@
         </dd>
         <dt><%= t('screens.about.your') %></dt>
         <dd class="clearfix">
-          <%= stars_control('datasetAverageRating', @view.user_rating(rating_type), @view, rating_type) %>
+          <%= stars_control_interactive(rating_type, @view.user_rating(rating_type), @view, 'datasetAverageRating') %>
         </dd>
       <%- end -%>
       <dt><%= t('screens.about.raters') %></dt>

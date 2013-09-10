@@ -141,18 +141,22 @@ div.menu
     background-position: 0 -16px
     display: inline-block
     height: 16px
-    margin:
-      left: -16px
-      right: 1px
+    margin: 0 1px
     padding: 0
     width: 16px
 
-  input:checked + .starsLabel ~ .starsLabel
+  &.enabled .starsLabel
+    margin:
+      left: -16px
+      right: 1px
+
+  input:checked + .starsLabel ~ .starsLabel,
+  .currentValue ~ .starsLabel
     background-position: 0 0
   .ie8 &
     input[checked="checked"] + .starsLabel ~ .starsLabel
       background-position: 0 0
-  input[value='0'], input[value='0'] + .starsLabel
+  input[value='0'], input[value='0'] + .starsLabel, .value-0
     display: none
 
   &.blueStars
@@ -183,6 +187,7 @@ div.menu
     .starsLabel
       background: transparent url('/stylesheets/images/icons/stars_small.png') no-repeat
       background-position: 0 -10px
+    &.enabled .starsLabel
       margin-left: -10px
 
 div.wizard

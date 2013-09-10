@@ -159,27 +159,35 @@ module DatasetsHelper
     ret.html_safe if ret
   end
 
-  def stars_control(extra_class = '', value = nil, view = nil, rating_type = '')
+  def stars_control(extra_class = '', value = nil)
+    ('<div class="starsControl ' + extra_class + '" title="' +
+      t('controls.common.stars.tooltip', { number: (value || 0) }) + '">' +
+      '<span class="accessibleValue">Current value: ' + (value || 0).to_s + ' out of 5</span>' +
+      (0..5).map do |i|
+      '<span class="starsLabel value-' + i.to_s + (value.to_i == i || (i == 0 && value.nil?) ? ' currentValue' : '') + '">' + i.to_s + '/5</span>'
+      end.join('') +
+    '</div>').html_safe
+  end
+
+  def stars_control_interactive(rating_type, value, view, extra_class = '')
     @@stars_id ||= 1
     id = 'stars_' + (@@stars_id += 1).to_s
-    ('<form id="' + id + (view.nil? ? '' : '" method="POST" action="' + update_rating_dataset_path(view)) +
-     '" class="starsControl ' + (rating_type.blank? ? '' : 'blueStars enabled ') + extra_class + '"' +
-      (value.nil? ? '' : ' data-rating="' + value.to_s + '"') +
-      (rating_type.blank? ? '' : ' data-rating-type="' + rating_type + '"') + ' title="' +
-      t('controls.common.stars.tooltip', { number: value }) + '">' +
+    ('<form id="' + id + '" method="POST" action="' + update_rating_dataset_path(view) +
+     '" class="starsControl blueStars enabled ' + extra_class +
+     '" data-rating="' + (value || 0).to_s +
+     '" data-rating-type="' + rating_type +
+     '" title="' + t('controls.common.stars.tooltip', { number: (value || 0) }) + '">' +
       '<span class="accessibleValue">Current value: ' + (value || 0).to_s + ' out of 5</span>' +
-      (rating_type.blank? ? '' : '<input type="hidden" name="ratingType" value="' + rating_type + '" />') +
-      (view.nil? ? '' : '<input type="hidden" name="authenticity_token" value="' +
-        form_authenticity_token + '" />') +
+      '<input type="hidden" name="ratingType" value="' + rating_type + '" />' +
+      '<input type="hidden" name="authenticity_token" value="' +
+        form_authenticity_token + '" />' +
       (0..5).map do |i|
         c_id = id + '_' + i.to_s
         '<input type="radio" class="noUniform" id="' + c_id + '" name="starsRating" value="' + i.to_s + '" ' +
-          (rating_type.blank? ? 'disabled="disabled" ' : '') +
           (value.to_i == i || (i == 0 && value.nil?) ? 'checked="checked" ' : '') + '/>' +
         '<label for="' + c_id + '" class="starsLabel">' + i.to_s + '/5</label>'
       end.join('') +
-      (view.nil? ? '' : '<input type="submit" value="Save" />') +
-      '</form>').html_safe
+      '<input type="submit" value="Save" /></form>').html_safe
   end
 
   # include only url and text column types.

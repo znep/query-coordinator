@@ -1234,9 +1234,15 @@
             var cId = c.id;
             var tcId = c.tableColumnId;
             var fName = c.fieldName;
+            var selected;
+            //in new Visualize do not autopopulate coloumns with only one valid column 
+            if(isNewVisualize){selected = curVal == fName || curVal == tcId || curVal == cId}
+            else{selected = curVal == fName || curVal == tcId || curVal == cId || 
+                    (cols.length == 1 && !columnsObj.noDefault && $.isBlank(curVal))
+            };
+
             options.push({tagName: 'option', value: c[columnIdField],
-                selected: curVal == fName || curVal == tcId || curVal == cId || 
-                    (cols.length == 1 && !columnsObj.noDefault && $.isBlank(curVal)),
+                selected: selected,
                 contents: $.htmlEscape(c.name)});
         });
         

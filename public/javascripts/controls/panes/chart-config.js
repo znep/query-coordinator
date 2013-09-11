@@ -476,7 +476,7 @@
 
     var shouldEnableAutoPieSortButton = function(options)
     {
-        return isNextGen && !hasDefaultPieSort(options);
+        return isNextGen && $.subKeyDefined(options.view, 'displayFormat.valueColumns') && !_.isEmpty(options.view.displayFormat.valueColumns) && !hasDefaultPieSort(options);
     };
 
     // We automatically apply a default OrderBy to pie-like charts (descending on first value column),
@@ -494,7 +494,7 @@
             $dom.append($button);
 
             var monitor = false;
-            options.view.bind('query_change', function()
+            var refreshVisibility = function()
             {
                 if (!monitor)
                 {
@@ -505,7 +505,10 @@
                     }
                     monitor = false;
                 }
-            });
+            };
+
+            options.view.bind('query_change', refreshVisibility);
+            options.view.bind('displayformat_change', refreshVisibility);
 
             $button.on('click', function()
             {

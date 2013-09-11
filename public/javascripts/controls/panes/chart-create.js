@@ -84,6 +84,8 @@
             var cpObj = this;
             if (!cpObj._super.apply(this, arguments)) { return; }
 
+            var originalChartType = $.subKeyDefined(cpObj._view, 'displayFormat.chartType') ? cpObj._view.displayFormat.chartType : undefined;
+
             var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
                 cpObj._getFormValues(), {metadata: cpObj._view.metadata});
 
@@ -99,11 +101,17 @@
                 _.each(view.displayFormat.fixedColumns || [], addColumn);
             }
 
-            if (_.include(['pie', 'donut'], view.displayFormat.chartType) && !$.subKeyDefined(cpObj, '_view.query.orderBys'))
+            // Conditionally apply a default pie/donut sort.
+            var pieStyleCharts = ['pie', 'donut'];
+
+            var isPieStyleChart = _.include(['pie', 'donut'], view.displayFormat.chartType)
+            var isBrandNewChart = _.isEmpty(originalChartType);
+            var isSameChartType = !isBrandNewChart && originalChartType == view.displayFormat.chartType;
+            if ( (isBrandNewChart || isSameChartType) && isPieStyleChart && !$.subKeyDefined(cpObj, '_view.query.orderBys'))
             {
                 view.query = $.extend(view.query, cpObj._view.query,
                 {
-                    orderBys: cpObj._getPieDefaultOrderBy()
+                    orderBys: cpObj._getPieDefaultOrderBy(view.displayFormat.valueColumns)
                 });
             }
 
@@ -133,16 +141,15 @@
         },
 
         // NOTE: Keep this in sync with the one in d3.impl.pie.js!
-        _getPieDefaultOrderBy: function()
+        _getPieDefaultOrderBy: function(valueColumns)
         {
-            var cpObj = this,
-                view = cpObj._view;
-            return _.map(view.displayFormat.valueColumns, function(col)
+            var cpObj = this;
+            return _.map(valueColumns, function(col)
                 {
                     return {
                         ascending: false,
                         expression: {
-                            columnId: view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
+                            columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
                             type: 'column'
                         }
                     };

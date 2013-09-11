@@ -29,6 +29,11 @@ blist.datasetControls.unsavedViewPrompt = function()
         // We only care about temp views
         if (!blist.dataset.temporary || blist.dataset.minorChange) { return; }
 
+        // Usually browsers (correctly) won't call onClick if the user wants to
+        // open in a new tab. However browsers will still call the handler on
+        // ctrl/meta-click, so ignore the click in these cases.
+        if (e.ctrlKey || e.metaKey) { return; }
+
         var a = e.currentTarget;
         // Skip links that open a new window
         if (a.rel.indexOf('external') > -1) { return; }
@@ -44,6 +49,8 @@ blist.datasetControls.unsavedViewPrompt = function()
         var href = origHref;
         // Need to tweak window.location.href, since it may have a hash
         var adjLoc = window.location.href;
+        if (adjLoc.endsWith('#'))
+        { adjLoc = adjLoc.slice(0, -1); }
         if (window.location.hash.length > 0)
         { adjLoc = adjLoc.slice(0, -window.location.hash.length); }
         if (origHref.startsWith(adjLoc))
@@ -378,8 +385,8 @@ blist.datasetControls.datasetContact = function($sect)
 };
 
 blist.datasetControls.getColumnTip = function(col)
-{     
-  
+{
+
     //Generate content for main information tooltip,
     //Event binding and usage pushed to the caller
     return '<div class="blist-th-tooltip ' +

@@ -236,6 +236,16 @@ $config_header_color: #711e8c
     .absolute, .relative, .wizardToggle
       display: inline
 
+    .baselineWizardToggle
+      position: relative
+
+      &:after
+        @include triangle(0.7em, $govstat_color_action, right)
+        content: ''
+        left: -2em
+        position: absolute
+        top: 0.4em
+
   span
     font-size: 2.8em
     @include opacity(0.9)
@@ -349,8 +359,8 @@ $wizard_border_color: #ccc
     @include vertical-gradient(#ddd, #d4d4d4)
     width: $radius * 1.1
 
-.goalHeadline
-  .button.revertHeadline
+.goalHeadline, .prevailingMeasureSummary
+  .button
     float: right
     margin-left: 1.5em
     right: 0.5em
@@ -498,18 +508,32 @@ $wizard_border_color: #ccc
         width: 20em
 
   .preview
+    .measureValues
+      font-size: 1.8em
+      margin-top: -0.7em
+      padding-bottom: 0.6em
+
+      .value, .unit
+        font-size: 1.4em
+
     .measureChart
       .chartArea
         margin: 2em -4.2em 2em
       .pull
         display: none
 
-    .noDataMessage
+    .noDataMessage, .noChartMessage
       font-size: 1.6em
 
       .dsLink
         display: inline-block
         margin: 0 0.3em
+
+    // never show both messages.
+    .noDataMessage + .noChartMessage
+      display: none
+    .noDataMessage.hide + .noChartMessage
+      display: block
 
   .staticValue
     .madlib .inputWrapper

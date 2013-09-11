@@ -23,7 +23,7 @@ $(function()
                 children: _.filter([
                     {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
                     {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
-                    {text: 'GovStat Hits',    series: [{method: 'govstat-total-computes'}], enabled: blist.configuration.govStatMetricsEnabled},
+                    {text: 'GovStat Hits',    series: [{method: 'govstat-total-computes'}], enabled: blist.configuration.govStatMetricsEnabled  || false},
                     {text: 'Rows Loaded',
                      series: [{method: 'rows-loaded-api',     label: 'API'},
                               {method: 'rows-loaded-website', label: 'Website'},
@@ -43,13 +43,13 @@ $(function()
                 verbPhrase: 'metrics backed',
                 verbPhraseSingular: 'metric backed'
                 },
-                enabled: blist.configuration.govStatMetricsEnabled },
+                enabled: blist.configuration.govStatMetricsEnabled || false},
             {id: 'detailTotalComputes',   displayName: 'Total GovStat Hits',  summary: {
                 plus: 'govstat-total-computes',
                 verbPhrase: 'hits served',
                 verbPhraseSingular: 'hit served'
                 },
-                enabled: blist.configuration.govStatMetricsEnabled },
+                enabled: blist.configuration.govStatMetricsEnabled || false},
             {id: 'detailFilters',   displayName: 'Filters',  summary: {
                  plus: 'filters-created',
                  minus: 'filters-deleted',

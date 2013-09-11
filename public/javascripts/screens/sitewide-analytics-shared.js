@@ -20,25 +20,25 @@ blist.metrics.sitewideShared = {
             summary: {plus: ['govstat-goal-isPublic-true'],
                 verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
             },
-            enabled: blist.configuration.govStatMetricsEnabled
+            enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailPrivateGoals',      displayName: 'Private Goals',
             summary: {plus: 'govstat-goal-isPublic-false',
                 verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
             },
-            enabled: blist.configuration.govStatMetricsEnabled
+            enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailWithRelatedMeasures',  displayName: 'Goals With Related Measures',
             summary: {plus: 'govstat-goal-hasRelatedMeasures-true',
                 verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
             },
-            enabled: blist.configuration.govStatMetricsEnabled
+            enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailWithoutRelatedMeasures',  displayName: 'Goals Without Related Measures',
             summary: {plus: 'govstat-goal-hasRelatedMeasures-false',
                 verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
             },
-            enabled: blist.configuration.govStatMetricsEnabled
+            enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailCharts',    displayName: 'Charts',   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
         {id: 'detailFilters',   displayName: 'Filters',  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
@@ -59,14 +59,14 @@ blist.metrics.sitewideShared = {
             summary: {plus: 'govstat-dash-posts', minus: 'govstat-dash-deletes',
                 verbPhrase: 'dashboards created', verbPhraseSingular: 'dashboards created'
             },
-            enabled: blist.configuration.govStatMetricsEnabled
+            enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
             id: 'summaryGoals',        displayName: 'Total Goals',
             summary: {plus: 'govstat-goal-posts', minus: 'govstat-goal-deletes',
                 verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
             },
-            enabled: blist.configuration.govStatMetricsEnabled
+            enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
             id: 'summaryDatasets',    displayName: 'Total Datasets',

@@ -15,6 +15,8 @@
     background-color: $govstat_color_poor
   .progress-none .none
     background-color: $govstat_color_none
+  .progress-needs_more_data .progress
+    background-color: $govstat_color_none
 
 @mixin progress-colors($prop, $selector: '')
   &.progress-good #{$selector}
@@ -24,6 +26,8 @@
   &.progress-bad #{$selector}
     #{$prop}: $govstat_color_poor
   &.progress-none #{$selector}
+    #{$prop}: $govstat_color_none
+  &.progress-needs_more_data #{$selector}
     #{$prop}: $govstat_color_none
 
 

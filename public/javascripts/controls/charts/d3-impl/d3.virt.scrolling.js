@@ -367,7 +367,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         {
             vizObj.renderData([]);
 
-            var oldYScale = vizObj._lastYScale() || newYScale;
+            var oldYScale = vizObj._lastYScale();
             vizObj._renderValueMarkers([], oldYScale, oldYScale, false);
 
             delete vizObj._chartConfig;
@@ -1010,10 +1010,12 @@ $.Control.registerMixin('d3_virt_scrolling', {
         var vizObj = this;
         if (!vizObj._chartInitialized) { return 0; }
 
-        return vizObj._chartConfig.dataDim.pluckY(
-            vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer,
-            vizObj._chartConfig.chartHeight
-                - (vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer));
+        return (
+            vizObj._chartConfig.dataDim.pluckY(
+                vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer,
+                vizObj._chartConfig.chartHeight
+                    - (vizObj._chartConfig.valueLabelBuffer || vizObj.defaults.valueLabelBuffer))
+            ) || 0;
     },
 
     // calculates a y scale based on the current set of data
@@ -1114,8 +1116,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
             totalRows = vizObj.getTotalRows() || 0;
 
         return d3.scale.linear()
-              .domain([ 0, cc.rowWidth * totalRows - chartViewport ])
-              .range([ 0, totalRows - rowsPerScreen ])
+              .domain([ 0, (cc.rowWidth * totalRows - chartViewport) || 0 ])
+              .range([ 0, (totalRows - rowsPerScreen) || 0])
               .clamp(true);
     },
 

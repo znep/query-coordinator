@@ -340,8 +340,7 @@
     { $.gridSidebar.registerConfig('visualize.conditionalFormatting', 'pane_conditionalFormatting', 10); }
 
     var isNewVisualize = ($.urlParam(window.location.href, 'visualize') == 'nextgen'|| blist.configuration.newChartConfig);
-    if (($.isBlank(blist.sidebarHidden.new_visualize) ||
-        !blist.sidebarHidden.new_visualize.conditionalFormatting) && isNewVisualize)
+    if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.filter.conditionalFormatting) && isNewVisualize)
     { $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
 
 })(jQuery);

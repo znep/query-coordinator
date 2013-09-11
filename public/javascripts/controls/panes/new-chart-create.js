@@ -280,7 +280,8 @@
         return _.include(cpObj._view.metadata.availableDisplayTypes, 'chart');
     };
 
-    if (!blist.sidebarHidden.new_chart_create) {
+    var isNewVisualize = ($.urlParam(window.location.href, 'visualize') == 'nextgen'|| blist.configuration.newChartConfig);
+    if (!blist.sidebarHidden.new_visualize.new_chart_create && isNewVisualize) {
         $.gridSidebar.registerConfig('new_visualize.new_chart_create', 'pane_new_chart_create', 0);
     }
 

@@ -6,7 +6,7 @@
     <%= rendered_stylesheet_tag 'dataset-show' %>
     <%= rendered_stylesheet_tag 'dataset-bare' %>
   </head>
-  <body>
+  <body data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
     <div class="outerContainer">
       <div id="renderTypeContainer">
         <div id="staticRenderType" class="fullHeight renderTypeNode hide">

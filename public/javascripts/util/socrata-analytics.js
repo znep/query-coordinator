@@ -170,6 +170,8 @@ jQuery.metrics = {
             return "admin";
         } else if (path.match("^/profile")) {
             return "profile";
+        } else if (path.match("^/browse")) {
+            return "browse";
         }
 
         return "other";

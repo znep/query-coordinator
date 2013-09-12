@@ -963,6 +963,7 @@ en:
           label: Label
           labelInBar: Label in Bar
           legend:
+            annotations: Describe Annotations
             conditional_formats: Describe Conditional Formats
             custom_entry: Custom Label
             display: Display

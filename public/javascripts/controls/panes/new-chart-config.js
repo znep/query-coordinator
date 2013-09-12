@@ -61,7 +61,7 @@
         type: 'checkbox', trueValue: '3', falseValue: '0', defaultValue: '3'};
 
     var pieJoinAngle = {text: $.t('screens.ds.grid_sidebar.chart.min_angle'), name: 'displayFormat.pieJoinAngle',
-        type: 'text', spinner: true, minimum: 0, maximum: 10, defaultValue: 1};
+        type: 'slider', minimum: 0, maximum: 10, defaultValue: 1};
 
     var smoothLine = {text: $.t('screens.ds.grid_sidebar.chart.smooth_line'), name: 'displayFormat.smoothLine',
         type: 'checkbox', defaultValue: false};
@@ -74,13 +74,11 @@
         advLegend = function(chart, options)
         {
             var needsSeries = _.contains(['line', 'area', 'stackedbar', 'stackedcolumn', 'bar', 'column'], chart.value);
-            var needsValueMarkers = _.contains(['line', 'area', 'stackedbar', 'stackedcolumn', 'bar', 'column'], chart.value);
+            var needsValueMarkers = _.contains(['line', 'area', 'stackedbar', 'stackedcolumn', 'bar', 'column'], chart.value)
             var needsValues = _.contains(['pie', 'donut'], chart.value);
-            var needsConditional = true;
+            var needsConditional = !_.isUndefined(options.view.metadata.conditionalFormatting);
             var needsCustom = true;
-
             var fields = [$.extend({}, origLegendPos, { text: $.t('screens.ds.grid_sidebar.chart.legend.display') })];
-
             if (needsValues)
             {
                 fields.push(
@@ -101,16 +99,15 @@
             {
                 fields.push(
                     { text: $.t('screens.ds.grid_sidebar.chart.legend.conditional_formats'), type: 'checkbox', inputFirst: true,
-                      name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
+                      name: 'displayFormat.legendDetails.showConditional', defaultValue: true,
                       lineClass: 'advLegendCheck' });
             }
 
             if (needsValueMarkers)
             {
                 fields.push(
-                    { text: $.t('screens.ds.grid_sidebar.chart.legend.value_markers'), type: 'checkbox', inputFirst: true,
-                      name: 'displayFormat.legendDetails.showValueMarkers', defaultValue: false,
-                      lineClass: 'advLegendCheck' });
+                    { text: $.t('screens.ds.grid_sidebar.chart.legend.annotations'), type: 'checkbox', inputFirst: true,
+                      name: 'displayFormat.legendDetails.showValueMarkers', defaultValue: true, lineClass: 'advLegendCheck' });
             }
 
             if (needsCustom)
@@ -128,7 +125,7 @@
                 );
             }
 
-            return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.legend.title'), fields);
+            return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.legend.title_short'), fields);
         };
     }
 
@@ -159,11 +156,11 @@
     var treemapRandomColorWarning = {type: 'note',
         value: $.t('screens.ds.grid_sidebar.chart.treemap_color_html') };
 
-    var _marker = function(which, chart, options)
+    var valueMarker = function(chart, options)
     {
-        return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.marker.title', { axis: $.capitalize(which) }),
+        return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.marker.title'),
             [
-                {type: 'repeater', name: 'displayFormat.' + which + 'Marker', addText: $.t('screens.ds.grid_sidebar.chart.marker.new_marker_button'),
+                {type: 'repeater', name: 'displayFormat.valueMarker', addText: $.t('screens.ds.grid_sidebar.chart.marker.add_button'),
                  minimum: 0, lineClass: 'hasIcon valueMarker',
                     field: {type: 'group', options: [
                         {type: 'group', options: [
@@ -177,12 +174,10 @@
         );
     };
 
-    var valueMarker =  _marker.curry('value');
-    var domainMarker = function() { return { onlyIf: { func: function() { return false; } } }; };
-    // var domainMarker = _marker.curry('domain');
-
-    var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: $.t('screens.ds.grid_sidebar.chart.show_percent') };
-    var showActualValues = { type: 'checkbox', name: 'displayFormat.showActualValues', text: $.t('screens.ds.grid_sidebar.chart.show_values') };
+    var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: $.t('screens.ds.grid_sidebar.chart.show_percent'), 
+                            inputFirst: true, lineClass: 'indentedFormSection'};
+    var showActualValues = { type: 'checkbox', name: 'displayFormat.showActualValues', text: $.t('screens.ds.grid_sidebar.chart.show_values'), 
+                            inputFirst: true, lineClass: 'indentedFormSection'};
 
     var errorBars = function(chart, options)
     {
@@ -505,6 +500,8 @@
                 }
               }});
         }
+    
+        result.fields.push({type: 'note', value: $.t('screens.ds.grid_sidebar.chart.cdlfmtg_color_override_html'), lineClass: 'conditionalFormattingWarning notice flash'});
 
         return result;
     }
@@ -553,10 +550,10 @@
                                { type: 'text', name: 'displayFormat.yAxis.max', prompt: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.axis_prompt'),
                                     extraClass: 'number' }] },
                 isNextGen ?
-                    { text: 'Decimal Places', type: 'radioGroup', name: 'yAxisDecimalPlaces',
+                    { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.decimals'), type: 'radioGroup', name: 'yAxisDecimalPlaces',
                         defaultValue: 'yAxisDecimalPlacesAuto',
                         options: [ { type: 'static', value: 'Auto', name: 'yAxisDecimalPlacesAuto' },
-                                   { type: 'text', spinner: true, minimum: 0, maximum: 10, defaultValue: 0,
+                                   { type: 'slider', minimum: 0, maximum: 10, defaultValue: 0,
                                      name: 'displayFormat.yAxis.formatter.decimalPlaces' } ] } :
                     { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.precision'), type: 'text', spinner: true, minimum: 0, maximum: 10, defaultValue: 2,
                          name: 'displayFormat.yAxis.formatter.decimalPlaces' },
@@ -804,8 +801,7 @@
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
-                    axisOptions(chart, options),
-                    domainMarker(chart, options));
+                    axisOptions(chart, options));
                 break;
 
 
@@ -825,8 +821,7 @@
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
-                    axisOptions(chart, options),
-                    domainMarker(chart, options));
+                    axisOptions(chart, options));
                 break;
 
 
@@ -844,8 +839,7 @@
 
                     headerDetails,
                     flyoutConfig(chart, options),
-                    axisOptions(chart, options),
-                    domainMarker(chart, options));
+                    axisOptions(chart, options));
                 break;
 
             // Column chart
@@ -864,8 +858,7 @@
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
-                    axisOptions(chart, options),
-                    domainMarker(chart, options));
+                    axisOptions(chart, options));
                 break;
 
 
@@ -900,8 +893,7 @@
                     headerDetails,
                     advLegend(chart, options),
                     flyoutConfig(chart, options),
-                    axisOptions(chart, options),
-                    domainMarker(chart, options));
+                    axisOptions(chart, options));
                 break;
 
 

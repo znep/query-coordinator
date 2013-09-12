@@ -13,7 +13,7 @@
             {
                 e.preventDefault();
                 if ($.subKeyDefined(blist, 'datasetPage.sidebar'))
-                { blist.datasetPage.sidebar.show('visualize.conditionalFormatting'); }
+                { blist.datasetPage.sidebar.show('filter.conditionalFormatting'); }
             });
 
             cpObj.$dom().delegate('.clearConditionalFormatting', 'click', function(e)
@@ -58,7 +58,11 @@
                         }
                 );
 
-                //setup eventing
+                if(!cpObj._view.metadata.conditionalFormatting){
+                    cpObj.$dom().find('.conditionalFormattingWarning').hide();
+                };
+                    
+                //setup eventing    
 
                 //Add flyout to unavailable chart types telling which columns are required
                 var unavailable = cpObj.$dom().find('.unavailable');

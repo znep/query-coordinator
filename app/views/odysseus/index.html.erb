@@ -26,6 +26,12 @@
   <script type='text/javascript' src="/socket.io/socket.io.js"></script>
   <script type='text/javascript' src="/asset/js/client"></script>
 
+  <script type="text/javascript">
+    blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
+    blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
+    blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
+  </script>
+
   <%# TEMPORARY for using RTM %>
   <script type="text/javascript">
     blist.assets = blist.assets ||

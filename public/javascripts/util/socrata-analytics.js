@@ -171,7 +171,7 @@ jQuery.metrics = {
         } else if (path.match("^/profile")) {
             return "profile";
         } else if (path.match("^/browse")) {
-            return "browse";
+            return "browse" + (window.location.href.indexOf('q=') > -1 ? '-search' : '');
         }
 
         return "other";

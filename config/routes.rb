@@ -11,6 +11,7 @@ Frontend::Application.routes do
     get '/merged/:stylesheet.css', :action => 'merged'
     get '/widget/:customization_id.css', :action => 'widget'
     get '/current_site.css', :action => 'current_site'
+    get '/govstat_site.css', :action => 'govstat_site'
   end
 
   # optional locale scope for all routes to teach rails how to make links

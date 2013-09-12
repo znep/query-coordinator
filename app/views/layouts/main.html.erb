@@ -60,6 +60,10 @@ http://www.socrata.com
     <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css?<%="#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"%>"/>
   <%- end -%>
 
+  <%- if !CurrentDomain.properties.govstat_css.blank? && module_enabled?(:govStat) -%>
+    <link type="text/css" media="all" rel="stylesheet" href="/styles/govstat_site.css?<%="#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"%>"/>
+  <%- end -%>
+
   <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
 
   <% unless CurrentDomain.google_analytics_id.blank? %>

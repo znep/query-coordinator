@@ -181,6 +181,9 @@ class CustomContentController < ApplicationController
     end
     ######### END #########
 
+    # get bodyClass before caching so it can be applied to the main layout
+    @body_class = @page.body_class
+
     ######## CACHING #########
     domain_id = CurrentDomain.domain.id.to_s
     internal_metric_entity = domain_id + "-intern"

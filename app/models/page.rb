@@ -161,6 +161,10 @@ class Page < Model
     cache_info['max_age'] || !content.blank? && content['maxAge']
   end
 
+  def body_class
+    content['bodyClass'] || ''
+  end
+
   def self.[](path, ext, user = nil)
     mtime = cache_time
     if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)

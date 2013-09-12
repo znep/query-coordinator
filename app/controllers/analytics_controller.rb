@@ -70,7 +70,11 @@ end
 
 
 module ClientAnalyticsHelper
-  FUNCTIONAL_BUCKETS =  %w(homepage dataset dataslate admin profile browse browse-search other).freeze
+  FUNCTIONAL_BUCKETS =  %w(homepage
+                           dataset dataset-sort dataset-filter dataset-grouped dataset-complex
+                           dataslate admin profile
+                           browse browse-search
+                           other).freeze
 
   # deprecated
   PERFORMANCE_BUCKETS=  %w(awesome good ok poor terrible).freeze

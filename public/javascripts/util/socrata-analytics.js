@@ -165,7 +165,19 @@ jQuery.metrics = {
         }
 
         if (blist.dataset) {
-            return "dataset";
+            var extra = _.compact(_.map({
+                    'sort': 'orderBys',
+                    'grouped': 'groupBys',
+                    'filter': 'filterCondition' }, function(qPart, name)
+                { return !_.isEmpty($.deepGet(blist.dataset, 'query', qPart)) ? name : null; }));
+
+            if (extra.length > 1)
+            { return 'dataset-complex'; }
+            else if (extra.length == 1)
+            { return 'dataset-' + extra[0]; }
+            else
+            { return 'dataset'; }
+
         } else if (path.match("^/admin")) {
             return "admin";
         } else if (path.match("^/profile")) {

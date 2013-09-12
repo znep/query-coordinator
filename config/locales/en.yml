@@ -858,6 +858,9 @@ en:
             from_grid: Select a column from the grid
             prompt: Select a column
             unselect: Deselect column
+            none_selected: No column selected
+            selectable: Valid Columns
+            nonselectable: Not Valid Columns
           datatypes:
             checkbox: checkbox
             dataset_link: dataset link

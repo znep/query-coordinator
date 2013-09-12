@@ -1225,8 +1225,7 @@
             { curVal = foundCol[columnIdField]; }
         }
 
-        var options = [{tagName: 'option', value: '',
-            contents: $.isBlank(curVal) ? $.t('screens.ds.grid_sidebar.base.column_select.prompt') : $.t('screens.ds.grid_sidebar.base.column_select.unselect')}];
+        var options = [];
        
         _.each(cols, function(c)
         {   
@@ -1254,19 +1253,17 @@
          });
 
         //wrap selectables in a group so you can see both allowed and not allowed columns
-        if (isNewVisualize){
-          if(_.isEmpty(invalidOptions)){
-              invalidOptions.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
-            }
-          if(_.isEmpty(options)){
-            options.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
+      
+        if(_.isEmpty(invalidOptions)){
+            invalidOptions.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
           }
-          return [{tagName: 'optgroup', label: 'Valid Columns', contents: options}, 
-                  {tagName: 'optgroup', label: 'Non Valid Columns', contents: invalidOptions}];
+        if(_.isEmpty(options)){
+          options.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
         }
-        else{
-          return options;
-        }
+        return [{tagName: 'option', value: '', contents: $.t('screens.ds.grid_sidebar.base.column_select.none_selected')},
+                {tagName: 'optgroup', label: $.t('screens.ds.grid_sidebar.base.column_select.selectable'), contents: options}, 
+                {tagName: 'optgroup', label: $.t('screens.ds.grid_sidebar.base.column_select.nonselectable'), contents: invalidOptions}];
+        
 
     };
 

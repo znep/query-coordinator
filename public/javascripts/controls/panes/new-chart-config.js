@@ -348,15 +348,16 @@
 
     var dataSelection = function(chart, options, categoryColTypes, valueColTypes, axisName)
     {
-        var selectionConfig = subheading(chart, options, 'Chart Definition',
+        var selectionConfig = subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.title'),
             [
-                {text: 'Choose data for label axis', name: 'displayFormat.fixedColumns.0', lineClass: 'hasIcon ' + chart.value + 'LabelSelection',
+                {text: axisName, 
+                    name: 'displayFormat.fixedColumns.0', lineClass: 'hasIcon ' + chart.value + 'LabelSelection',
                     type: 'columnSelect', required: true, useFieldName: true, notequalto: 'valueCol',
                     columns: {type: categoryColTypes, hidden: options.isEdit}
                 },
                 {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.data_columns.new_data_column_button'),
                     name: 'displayFormat.valueColumns', lineClass: 'hasIcon ' + chart.value + 'ValueSelection',
-                    field:{ required: true, type: 'columnSelect', text: 'Choose data for value axis',
+                    field:{ required: true, type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.value_title'),
                             notequalto: 'valueCol', useFieldName: true,
                             name: 'fieldName', otherNames: 'tableColumnId',
                             columns: {type: valueColTypes, hidden: options.isEdit}
@@ -374,7 +375,7 @@
         var tooManyRows = isNextGen && _.any(options.view.realColumns,
             function(col) { return $.deepGet(col, 'cachedContents', 'non_null') > 10000; });
 
-        var result = subheading(chart, options, 'Advanced Data Selection',
+        var result = subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.data_selection.advanced_data_selection.title'),
             [
                 //Data Series Grouping
                 {type: 'group', extraClass: 'subsection dsg', options: [
@@ -428,7 +429,7 @@
 
     var colors = function(chart, options)
     {
-        var result = subheading(chart, options, 'Colors', []);
+        var result = subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.colors'), []);
 
         result.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
             field: $.extend({}, colorOption, {name: ''}),
@@ -447,7 +448,8 @@
                     }
                 };
 
-            result.fields.push({ text: 'Column colors', type: 'custom',linkedField: ['displayFormat.valueColumns'],
+            result.fields.push({ text: $.t('screens.ds.grid_sidebar.chart.color_options.column_colors'), 
+                                 type: 'custom',linkedField: ['displayFormat.valueColumns'],
                                  name: 'displayFormat.valueColumns', lineClass: 'colors',
             editorCallbacks: {
                 create: function($field, val, curVal) {
@@ -510,7 +512,7 @@
 
     var labelsAndValues = function(chart, options, extraFields)
     {
-         return subheading(chart, options, 'Labels and Values', extraFields);
+         return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.labels_and_values'), extraFields);
     }
 
 
@@ -521,11 +523,11 @@
 
     var flyoutConfig = function(chart, options)
     {
-        return subheading(chart, options, 'Flyouts',
+        return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.flyout.title'),
             [
                 {type: 'repeater', name: 'displayFormat.descriptionColumns', lineClass: 'hasIcon flyout',
                     onlyIf: {field: 'displayFormat.pointSize', value: '0', negate: true},
-                    field: {type: 'group', options: [{text: $.t('screens.ds.grid_sidebar.chart.flyout.title'), name: 'fieldName', otherNames: 'tableColumnId',
+                    field: {type: 'group', options: [{text: $.t('screens.ds.grid_sidebar.chart.flyout.value'), name: 'fieldName', otherNames: 'tableColumnId',
                            type: 'columnSelect', useFieldName: true, columns: {hidden: options.isEdit}}]},
                     minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.flyout.new_details_button')
                 }
@@ -536,7 +538,7 @@
 
     var axisOptions = function(chart, options)
     {
-        var result = subheading(chart, options, 'Axis Options',
+        var result = subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.axes.title'),
             [
                 {text: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title'), name: 'displayFormat.titleX',
                     type: 'text', prompt: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title_prompt')},
@@ -575,11 +577,13 @@
     {
         return subheading(chart, options, 'Data Columns',
                 [
-                    {text: 'Categories', name: 'displayFormat.fixedColumns.0', lineClass: 'hasIcon bubbleLabelSelection',
+                    {text: $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'),
+                        name: 'displayFormat.fixedColumns.0', lineClass: 'hasIcon bubbleLabelSelection',
                         type: 'columnSelect', required: false, useFieldName: true, notequalto: 'valueCol',
                         columns: {type: Dataset.chart.textualTypes, hidden: options.isEdit}
                     },
-                    {text: 'Value', required: true, type: 'columnSelect',
+                    {text: $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.value_title'),
+                        required: true, type: 'columnSelect',
                         useFieldName: true, notequalto: 'valueCol', lineClass: 'hasIcon bubbleValueSelection',
                         name: 'displayFormat.valueColumns.0.fieldName',
                         otherNames: 'displayFormat.valueColumns.0.tableColumnId',
@@ -593,7 +597,7 @@
 
     var dataSelectionLine = function(options)
     {
-        var bc = dataSelection(Dataset.chart.types.line, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.categories'));
+        var bc = dataSelection(Dataset.chart.types.line, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'));
         bc.fields[0].required = false;
         return bc;
     };
@@ -698,9 +702,9 @@
 
     var dataSelectionPie = function(options)
     {
-        var bc = dataSelection(Dataset.chart.types.pie, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.label'));
+        var bc = dataSelection(Dataset.chart.types.pie, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'));
         bc.fields.splice(1, 2);
-        bc.fields.push({text: 'Value Data', name: 'displayFormat.valueColumns.0.fieldName',
+        bc.fields.push({text: $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.value_title'), name: 'displayFormat.valueColumns.0.fieldName',
             otherNames: 'displayFormat.valueColumns.0.tableColumnId', lineClass: 'hasIcon pieValueSelection',
             notequalto: 'valueCol', type: 'columnSelect', required: true, useFieldName: true,
             columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}});
@@ -711,7 +715,7 @@
 
     var dataSelectionDonut = function(options)
     {
-        var bc = dataSelection(Dataset.chart.types.donut, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection');
+        var bc = dataSelection(Dataset.chart.types.donut, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'));
         bc.fields.push(autoSortButtonInfo(options, 'donut'));
         bc.fields.push(autoSortButton(options));
         return bc;
@@ -719,7 +723,7 @@
 
     var dataSelectionTimeline = function(options)
     {
-        var bc = dataSelection(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.label'));
+        var bc = dataSelection(Dataset.chart.types.timeline, options, Dataset.chart.dateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'));
         return bc;
     };
 
@@ -751,7 +755,7 @@
         }
 
         var result = [{
-                title: $.t('screens.ds.grid_sidebar.chart.setup.title'),
+                title: $.t('screens.ds.grid_sidebar.visualize.choose_type'),
                 type: 'selectable',
                 initShow: true,
                 validateCollapsed: true,
@@ -789,7 +793,7 @@
             case 'area':
                 result.push(
                     headerDataSelect,
-                    dataSelection(chart, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, 'Data Selection'),
+                    dataSelection(chart, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title')),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
 
                     headerPresentation,
@@ -810,7 +814,7 @@
             case 'bar':
                 result.push(
                     headerDataSelect,
-                    dataSelection(chart, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection'),
+                    dataSelection(chart, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title')),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
 
                     headerPresentation,
@@ -849,7 +853,7 @@
             case 'column':
                 result.push(
                     headerDataSelect,
-                    dataSelection(chart, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, 'Data Selection'),
+                    dataSelection(chart, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title')),
                     advancedDataSelection(chart, options, Dataset.chart.textualTypes),
 
                     headerPresentation,
@@ -944,11 +948,11 @@
                     headerDataSelect,
                     subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.configuration'),
                     [
-                        {text: $.t('screens.ds.grid_sidebar.chart.names'), name: 'displayFormat.fixedColumns.0', notequalto: 'valueCol',
+                        {text: $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'), name: 'displayFormat.fixedColumns.0', notequalto: 'valueCol',
                             type: 'columnSelect', required: true, useFieldName: true, lineClass: 'hasIcon treemapLabelSelection',
                             columns: {type: Dataset.chart.textualTypes, hidden: options.isEdit}
                         },
-                        {text: $.t('screens.ds.grid_sidebar.chart.values'), name: 'displayFormat.valueColumns.0.fieldName',
+                        {text: $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.value_title'), name: 'displayFormat.valueColumns.0.fieldName',
                             otherNames: 'displayFormat.valueColumns.0.tableColumnId', lineClass: 'hasIcon treemapValueSelection',
                             notequalto: 'valueCol', type: 'columnSelect', required: true,
                             useFieldName: true,

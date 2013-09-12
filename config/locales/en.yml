@@ -398,7 +398,7 @@ en:
       pie: Pie Chart
       stackedbar: Stacked Bar Chart
       stackedcolumn: Stacked Column Chart
-      timeline: Time Line
+      timeline: Timeline
       treemap: Tree Map
     data_types:
       calendar_date: Date & Time
@@ -888,7 +888,7 @@ en:
             prompt: Select a value
           validation:
             at_least: Value must be at least %{value}
-            different_value: A different value is required.
+            different_value: You may not use this column twice
             file_format: ! '%{format} file is required'
             identifier_format: Valid API identifier characters are lower case letters, digits and underscore.  It must start with a letter and cannot have consecutive underscores.
             invalid_url: This URL is not valid
@@ -914,10 +914,20 @@ en:
           validation:
             invalid_columns: This view must have a date column and a text column
             viz_limit: A view may only have one visualization on it
+        visualize:
+          choose_type: Visualization Type 
         chart:
+          data_selection:
+            chart_definition:
+              title: Chart Definition
+              label_title: Choose label data
+              value_title: Choose value data
+            advanced_data_selection:
+              title: Advanced Data Selection
           advanced: Advanced Configuration
           annotation: Annotation
           axes:
+            title: Axis Options
             x_axis_title: X-Axis Title
             x_axis_title_prompt: Enter a title for the x-axis
             y_axis_title: Y-Axis Title
@@ -925,7 +935,10 @@ en:
           base_color: Base Color
           categories: Categories
           color_override_html: Colors may be overridden using <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
+          cdlfmtg_color_override_html: Colors are being overridden by <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
           colors: Colors
+          color_options:
+            column_colors: Column colors
           configuration: Configuration
           data_columns:
             new_data_column_button: Add Data Column
@@ -943,8 +956,10 @@ en:
           flyout:
             new_details_button: Add Flyout Details
             title: Flyout Details
+            value: Flyout Values
           group_extra: Group Extra Values
           groups: Groups
+          labels_and_values: Labels and Values
           label: Label
           labelInBar: Label in Bar
           legend:
@@ -962,12 +977,14 @@ en:
               top: Top
             series: Describe Series
             title: Legend Configuration
+            title_short: Legend
             value_markers: Describe Value Markers
             values: Describe Values
           marker:
             caption: Caption
             new_marker_button: Add Marker
-            title: ! '%{axis} Marker'
+            add_button: Add Annotation  
+            title: Annotations
             value: At Value
           min_angle: Min. Angle
           names: Names
@@ -991,7 +1008,7 @@ en:
             type: Chart Type
             type_prompt: Select a chart type
           show_lines: Show Lines
-          show_percent: Show %s
+          show_percent: Show percentages (%)
           show_points: Show Points
           show_values: Show values
           smooth_line: Smooth Line
@@ -1015,6 +1032,7 @@ en:
             axis_prompt: Enter a number
             no_decimals: No Decimals
             precision: Precision
+            decimals: Decimal Places
             title: Y-Axis Formatting
         column_common:
           basic:

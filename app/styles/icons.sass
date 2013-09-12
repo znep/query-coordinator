@@ -750,11 +750,11 @@
 // Component type icons
 @mixin component-icons($subselector: '.icon', $namepart: 'icon', $init_hidden: false)
   $icon_slot: 0
-  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button
+  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, VerticalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap, HorizontalContainer
     &.#{$namepart}-#{$name} #{$subselector}
       @include text-hiding
       @include ie6-fix
-      background-image: url(/stylesheets/images/component/cf-icons.png?2)
+      background-image: url(/stylesheets/images/component/cf-icons.png?3)
       background-repeat: no-repeat
       background-position: 0 (-44px * $icon_slot)
       height: 48px

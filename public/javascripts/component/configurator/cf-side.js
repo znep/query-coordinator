@@ -27,12 +27,12 @@
                         { typeName: 'Share', catalogName: 'Share' },
                         { typeName: 'Visualization', catalogName: 'Chart', icon: 'Chart' },
                         { typeName: 'Visualization', catalogName: 'Map', icon: 'Map' },
-                        { typeName: 'Visualization', catalogName: 'Table', icon: 'Table' },
-                        { typeName: 'Container', catalogName: 'Vertical Layout', icon: 'Container' },
-                        { typeName: 'HorizontalContainer', catalogName: 'Horizontal Layout',
-                            icon: 'HorizontalContainer' }
+                        { typeName: 'Visualization', catalogName: 'Table', icon: 'Table' }
                     ]);
                 $.cf.edit.addComponentPalette('Advanced', [
+                        { typeName: 'Container', catalogName: 'Vertical Layout', icon: 'VerticalContainer' },
+                        { typeName: 'HorizontalContainer', catalogName: 'Horizontal Layout',
+                            icon: 'HorizontalContainer' },
                         { typeName: 'Map', catalogName: 'Base Map' },
                         { typeName: 'MapLayer', catalogName: 'Map Layer' }
                     ].concat(_.select($.component.catalog.data.entries, function(e)

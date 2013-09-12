@@ -159,7 +159,7 @@ body.configuring
     background-color: #333333
 
   .sectionContent .componentCreate
-    @include component-colors($designer_components_content_color, Container, HorizontalContainer, Comments, FloatGridContainer, GridContainer, Picture, FormattedText, Title, Repeater)
+    @include component-colors($designer_components_content_color, Container, HorizontalContainer, VerticalContainer, Comments, FloatGridContainer, GridContainer, Picture, FormattedText, Title, Repeater)
     @include component-colors($designer_components_data_color, Catalog, Chart, BubbleChart, ColumnChart, LineChart, PieChart, TimeLine, TreeMap, Map, MapLayer, SimpleTable, Table, Visualization)
     @include component-colors($designer_components_actions_color, Button, Download, Print, Share)
     @include component-colors($designer_components_input_color, InlineFilter)
@@ -167,7 +167,7 @@ body.configuring
   .componentPaletteReport .sectionContent .componentCreate
     @include component-colors($designer_components_content_color, Header, Title, FormattedText, Picture, Print, Share, Chart, Map, Table)
   .componentPaletteAdvanced .sectionContent .componentCreate
-    @include component-colors($designer_components_actions_color, Map, MapLayer, BubbleChart, ColumnChart, LineChart, PieChart)
+    @include component-colors($designer_components_actions_color, HorizontalContainer, VerticalContainer, Map, MapLayer, BubbleChart, ColumnChart, LineChart, PieChart)
 
 .socrata-cf-mask
   z-index: 2999

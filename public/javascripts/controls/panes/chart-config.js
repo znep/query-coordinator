@@ -227,8 +227,10 @@
     var domainMarker = function() { return { onlyIf: { func: function() { return false; } } }; };
     // var domainMarker = _marker.curry('domain');
 
-    var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: $.t('screens.ds.grid_sidebar.chart.show_percent') };
-    var showActualValues = { type: 'checkbox', name: 'displayFormat.showActualValues', text: $.t('screens.ds.grid_sidebar.chart.show_values') };
+    var showPercentages = { type: 'checkbox', name: 'displayFormat.showPercentages', text: $.t('screens.ds.grid_sidebar.chart.show_percent'), 
+                            inputFirst: true, lineClass: 'indentedFormSection' };
+    var showActualValues = { type: 'checkbox', name: 'displayFormat.showActualValues', text: $.t('screens.ds.grid_sidebar.chart.show_values'),
+                            inputFirst: true, lineClass: 'indentedFormSection' };
 
     var errorBars = function(chart, options)
     {

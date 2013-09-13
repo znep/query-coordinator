@@ -212,24 +212,7 @@
                     break;
 
                 case 'goal':
-                    if (dc._loadGoal(function() { callback(dc); }, errorCallback))
-                    { break; }
-
-                    // Else try the old method
-                    if (!$.subKeyDefined(blist, 'govstat.models.Goal'))
-                    {
-                        errorCallback(dc.id);
-                        break;
-                    }
-
-                    var goal = new blist.govstat.models.Goal({id: dc.config.goalId});
-                    goal.fetch({ success: function()
-                    {
-                        dc.goal = goal.toJSON();
-                        callback(dc);
-                    },
-                    error: function()
-                    { errorCallback(dc.id); } });
+                    dc._loadGoal(function() { callback(dc); }, errorCallback);
                     break;
 
                 case 'govstatCategoryList':
@@ -565,7 +548,7 @@
                 blist.util.assetLoading.loadAssets({ javascripts:
                     ['/socket.io/socket.io.js', '/asset/js/client-bridge'] },
                     function() { dc.load(callback, errorCallback); });
-                return true;
+                return;
             }
 
             var govstat = blist.require('govstat');
@@ -573,7 +556,13 @@
             var janusApp = blist.require('app');
             janusApp.getStore(gr).handle();
             var gv = gr.map(function(state)
-                    { return !$.isBlank(state) ? state.successOrElse(null) : null; });
+                    {
+                        return !$.isBlank(state) ? state.successOrElse(function(result)
+                        {
+                            if ($.subKeyDefined(result, 'error'))
+                            { dc._loadOldGoal(callback, errorCallback); }
+                        }) : null;
+                    });
             if ($.subKeyDefined(gv, 'extract'))
             {
                 gv.extract(function(g)
@@ -581,9 +570,29 @@
                     dc.goal = g;
                     callback(dc);
                 }, { app: janusApp });
-                return true;
             }
-            return false;
+            else
+            { dc._loadOldGoal(callback, errorCallback); }
+        },
+
+        _loadOldGoal: function(callback, errorCallback)
+        {
+            var dc = this;
+            // Else try the old method
+            if (!$.subKeyDefined(blist, 'govstat.models.Goal'))
+            {
+                errorCallback(dc.id);
+                return;
+            }
+
+            var goal = new blist.govstat.models.Goal({id: dc.config.goalId});
+            goal.fetch({ success: function()
+            {
+                dc.goal = goal.toJSON();
+                callback(dc);
+            },
+            error: function()
+            { errorCallback(dc.id); } });
         }
     });
 

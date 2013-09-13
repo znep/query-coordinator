@@ -348,29 +348,19 @@ $.Control.registerMixin('d3_impl_pie', {
 
             vizObj.debugOut('Checking range. BottomDone: '+bottomDone+' TopDone: '+topDone);
 
-            if (topDone && bottomDone)
-            {
-                state.phase = vizObj._loaderPhases.idle;
-                if (blist.mainSpinner)
-                { blist.mainSpinner.setMetric(null); }
-                vizObj.initialRenderDone();
-            }
-            else if (topDone)
-            {
-                state.phase = vizObj._loaderPhases.growingDown;
-                state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
-            }
-            else if (bottomDone)
-            {
-                state.phase = vizObj._loaderPhases.growingUp;
-                state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
-            }
-            else
-            {
-                state.phase = vizObj._loaderPhases.growingBoth;
-                state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
-                state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
-            }
+        if (topDone && bottomDone)
+        {
+            state.phase = vizObj._loaderPhases.idle;
+        }
+        else if (topDone)
+        {
+            state.phase = vizObj._loaderPhases.growingDown;
+            state.bottom = Math.min(totalRows - 1, maxIndex + vizObj._loaderIncrement);
+        }
+        else if (bottomDone)
+        {
+            state.phase = vizObj._loaderPhases.growingUp;
+            state.top = Math.max(0, minIndex - vizObj._loaderIncrement);
         }
         else
         {
@@ -429,9 +419,6 @@ $.Control.registerMixin('d3_impl_pie', {
 
             delete vizObj._chartConfig;
         }
-
-        if (blist.mainSpinner)
-        { blist.mainSpinner.setMetric('main'); }
 
         vizObj._super();
     },

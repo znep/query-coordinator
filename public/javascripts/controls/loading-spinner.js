@@ -90,9 +90,6 @@
 
             setMetric: function(metric)
             {
-                if (this.metric && !metric)
-                { $.metrics.stopwatch('domain-intern', 'js-spinner-' + this.metric + '-time',
-                    'clear'); }
                 this.metric = metric;
             },
 

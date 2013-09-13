@@ -400,8 +400,6 @@
                 mapObj._doneLoading = true;
                 $.metrics.measure('domain-intern',
                     'js-map-' + (mapObj._children.length == 1 ? 'one' : 'many') + '-page-load-time');
-                if (blist.mainSpinner)
-                { blist.mainSpinner.setMetric(null); }
             }
         },
 
@@ -746,9 +744,6 @@
 
             mapObj._super();
             mapObj.closePopup();
-
-            if (blist.mainSpinner)
-            { blist.mainSpinner.setMetric('main'); }
         },
 
         reloadVisualization: function()

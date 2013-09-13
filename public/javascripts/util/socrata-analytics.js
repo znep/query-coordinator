@@ -30,52 +30,27 @@ jQuery.metrics = {
 
     stopwatch: function(entity, metric, action)
     {
-        if ($.metrics.stopwatches[entity + '/' + metric])
+        if (_.isFunction($.metrics['stopwatch' + $.capitalize(action)]))
+        { $.metrics['stopwatch' + $.capitalize(action)](entity, metric); }
+    },
+    stopwatchStart: function(entity, metric)
+    {
+        delete $.metrics.stopwatches[entity + '/' + metric];
+        $.metrics.stopwatches[entity + '/' + metric] = $.metrics.stopwatchFunction();
+    },
+    stopwatchPulse: function(entity, metric)
+    {
+        var key = entity + '/' + metric;
+        if ($.metrics.stopwatches[key])
         {
-            if (action == 'clear')
-            { delete $.metrics.stopwatches[entity + '/' + metric]; }
-            else
-            { $.metrics.stopwatches[entity + '/' + metric][action](); }
+            $.metrics.increment(entity, metric,
+                $.metrics.stopwatchFunction() - $.metrics.stopwatches[key]);
         }
-        else
-        {
-            $.metrics.stopwatches[entity + '/' + metric] = {
-                entity: entity,
-                metric: metric,
-                pulses: [],
-
-                start: function()
-                {
-                    this.pulses.push({ type: 'start', timestamp: $.metrics.stopwatchFunction() });
-                    this.flush(); // Reset debounce timer.
-                },
-                pulse: function()
-                {
-                    this.pulses.push({ type: 'pulse', timestamp: $.metrics.stopwatchFunction() });
-                    this.flush(); // Reset debounce timer.
-                },
-                end: function()
-                {
-                    this.done = true;
-                    this.pulse();
-                },
-                flush: _.debounce(function()
-                {
-                    if (!this.done) { return; }
-
-                    var start = _.detect(this.pulses,
-                            function(pulse) { return pulse.type == 'start'; }),
-                        lastPulse = _.detect(this.pulses.slice().reverse(),
-                            function(pulse) { return pulse.type == 'pulse'; });
-
-                    if (start && lastPulse)
-                    { $.metrics.increment(entity, metric, lastPulse.timestamp - start.timestamp); }
-
-                    this.pulses = [];
-                    this.done = false;
-                }, 1000)
-            };
-        }
+    },
+    stopwatchEnd: function(entity, metric)
+    {
+        $.metrics.stopwatchPulse(entity, metric);
+        delete $.metrics.stopwatches[entity + '/' + metric];
     },
 
     mark: function(entity, metric)

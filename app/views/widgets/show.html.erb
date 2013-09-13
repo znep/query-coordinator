@@ -205,7 +205,7 @@
   <script type="text/javascript">
     $(function()
     {
-        blist.mainSpinner = $('.widgetWrapper .widgetContent').loadingSpinner({metric: 'main', model: blist.dataset});
+        blist.mainSpinner = $('.widgetWrapper .widgetContent').loadingSpinner({model: blist.dataset});
     });
 
     <%= raw @display.render_inline_setup_js('renderTypeContainer', self) %>

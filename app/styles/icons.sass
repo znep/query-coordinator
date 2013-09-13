@@ -840,7 +840,7 @@
 //Other chart configuration form icons
 @mixin chart-config-icons
   $icon_slot: 0
-  @each $name in labelInBar, valueInBar, valueMarker, flyout, pointColor, pointSize, errorBarsHigh, errorBarsLow
+  @each $name in labelInBar, valueInBar, valueMarker, flyout, pointColor, pointSize, errorBar
 
     .#{$name} + .lineIcon
       background-image: url(/stylesheets/images/icons/chart-config-icons-transp.png?2)

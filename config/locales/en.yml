@@ -950,6 +950,8 @@ en:
           dsg_color_override_html: Note that Data Series Grouping will override colors chosen for your data columns. It will not override your <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>
           error_bars:
             color: Color
+            data_high: Choose higher bound column 
+            data_low: Choose lower bound column
             high: High
             low: Low
             title: Error Bars

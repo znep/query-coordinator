@@ -405,16 +405,16 @@
             result.fields = result.fields.concat(
                 [{type: 'group', extraClass: 'subsection errorBars', options: [
                     {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.error_bars.title')},
-                    {type: 'color', defaultValue: '#ff0000', name: 'displayFormat.errorBarColor'},
-                    {text: $.t('screens.ds.grid_sidebar.chart.error_bars.low'), name: 'displayFormat.plot.errorBarLow',
+                    {text: $.t('screens.ds.grid_sidebar.chart.error_bars.color'), name: 'displayFormat.errorBarColor',
+                        type: 'color', defaultValue: '#ff0000', lineClass: 'hasIcon errorBar'},
+                    {text: $.t('screens.ds.grid_sidebar.chart.error_bars.data_low'), name: 'displayFormat.plot.errorBarLow',
                         type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
-                        columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}, lineClass: 'hasIcon errorBarsLow'
+                        columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                     },
-                    {text: $.t('screens.ds.grid_sidebar.chart.error_bars.high'), name: 'displayFormat.plot.errorBarHigh',
+                    {text: $.t('screens.ds.grid_sidebar.chart.error_bars.data_high'), name: 'displayFormat.plot.errorBarHigh',
                         type: 'columnSelect', useFieldName: true, notequalto: 'errorBar',
-                        columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}, lineClass: 'hasIcon errorBarsHigh'
+                        columns: {type: Dataset.chart.numericTypes, hidden: options.isEdit}
                     }
-
                 ]}]
             )
         }

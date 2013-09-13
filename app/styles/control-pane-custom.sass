@@ -650,7 +650,7 @@
           display: inline-block
           vertical-align: top
 
-        &.valueInBar, &.labelInBar, &.errorBarsLow, &.errorBarsHigh
+        &.valueInBar, &.labelInBar
           width: 12.5em
           position: absolute
           padding-top: 75px
@@ -659,12 +659,12 @@
           & + .lineIcon
             margin-bottom: 3em
             margin-top: 1em
-        &.valueInBar, &.errorBarsHigh
+        &.valueInBar
           margin-left: 0.4em
           padding-left: 60px
           & + .lineIcon
             margin-left: 60px
-        &.labelInBar, &.errorBarsLow
+        &.labelInBar
           margin-left: 1.2em
           & + .lineIcon
             margin-left: 0.8em
@@ -783,18 +783,18 @@
             .checkbox
               padding-left: 1em
           .errorBars
-            padding-bottom: 3em
             border-top: solid 1px $color_chrome_box_border
-            .line.note.clearfix
-              margin-bottom: 0em
-              padding-left: 30px
-            .color
-              display: block
-              position: absolute
-              top: 0px
-              left: 0px
+            .inputWrapper
+              margin-left: -0.8em
+            .errorBar
+              vertical-align: bottom
+              label
+                padding-left: 2em
               .inputWrapper
                 padding-left: 1em
+            .columnSelect
+              label
+                margin-left: -0.8em
           .autoSortButton
             margin: -5.8em 0 2em 1.2em
             .inputWrapper

@@ -196,7 +196,10 @@
                     cpObj.reset();
                 }
 
-                if (!cpObj.validateForm()) { return; }
+                if (!cpObj.validateForm()) { 
+                    cpObj.$dom().closest('.panes').scrollTop(initSidebarScroll);
+                    return; 
+                }
 
                 //Clean-up sparse inputs in value column repeater so colors sync and merge correctly.
                 cpObj.$dom().find("[class*='ValueSelection'] .line").each( function (i, el) {

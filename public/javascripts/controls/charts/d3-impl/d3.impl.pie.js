@@ -347,6 +347,7 @@ $.Control.registerMixin('d3_impl_pie', {
             bottomDone |= bottomAngleTooSmall;
 
             vizObj.debugOut('Checking range. BottomDone: '+bottomDone+' TopDone: '+topDone);
+        }
 
         if (topDone && bottomDone)
         {

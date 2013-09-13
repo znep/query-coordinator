@@ -142,13 +142,6 @@
         <li><a href="#Filter" title="<%= t('screens.ds.grid_sidebar.tabs.filter') %>" class="filter"
           data-paneName="filter"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.filter') %>
           <span class="alertIcon"></span></a></li>
-        <li
-        <%- if !module_enabled?(:new_config) -%>
-          style="display: none;"
-        <%- end -%>
-        >
-        <a href="#New_visualize" title="<%= 'New visualize' %>" class="new_visualize"
-          data-paneName="new_visualize"><span class="icon"></span><%= 'New visualize' %></a></li>
         <li><a href="#Visualize" title="<%= t('screens.ds.grid_sidebar.tabs.visualize') %>" class="visualize"
           data-paneName="visualize"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.visualize') %></a></li>
         <li><a href="#Export" title="<%= t('screens.ds.grid_sidebar.tabs.export') %>" class="export"
@@ -432,18 +425,6 @@
       @view.is_alt_view? && !@view.available_display_types.include?('map') ||
       @view.is_grouped? || !module_available?(:map_publish) %>;
     blist.sidebarHidden.visualize.conditionalFormatting = <%= @view.is_unpublished? ||
-      !@view.is_tabular? || @view.is_form? || @view.is_api? %>;
-
-    <%# New Visualize pane %>
-    blist.sidebarHidden.new_visualize = blist.sidebarHidden.new_visualize || {};
-    blist.sidebarHidden.new_visualize.calendarCreate = <%= @view.is_unpublished? ||
-      @view.is_alt_view? && !@view.available_display_types.include?('calendar') %>;
-    blist.sidebarHidden.new_visualize.new_chart_create = <%= @view.is_unpublished? ||
-      @view.is_alt_view? && !@view.available_display_types.include?('chart') %>;
-    blist.sidebarHidden.new_visualize.mapCreate = <%= @view.is_unpublished? ||
-      @view.is_alt_view? && !@view.available_display_types.include?('map') ||
-      @view.is_grouped? || !module_available?(:map_publish) %>;
-    blist.sidebarHidden.filter.conditionalFormatting = <%= @view.is_unpublished? ||
       !@view.is_tabular? || @view.is_form? || @view.is_api? %>;
 
     <%# Embed pane %>

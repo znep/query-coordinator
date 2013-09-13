@@ -186,10 +186,6 @@
 
     if ($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.mapCreate)
     { $.gridSidebar.registerConfig('visualize.mapCreate', 'pane_mapCreate', 2, 'map'); }
-    
-    var isNewVisualize = ($.urlParam(window.location.href, 'visualize') == 'nextgen'|| blist.configuration.newChartConfig);    
-    if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.new_visualize.mapCreate) && isNewVisualize)
-    { $.gridSidebar.registerConfig('new_visualize.mapCreate', 'pane_mapCreate', 2, 'map'); }
 
     $.Control.extend('pane_mapDataLayerCreate', {
         _init: function()

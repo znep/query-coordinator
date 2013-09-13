@@ -160,7 +160,9 @@
     var isEdit = function(cpObj)
     { return _.include(cpObj._view.metadata.availableDisplayTypes, 'chart'); };
 
-    if ($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.chartCreate)
+    var isNewVisualize = ($.urlParam(window.location.href, 'visualize') == 'nextgen'|| blist.configuration.newChartConfig);
+
+    if (($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.chartCreate) && !isNewVisualize)
     { $.gridSidebar.registerConfig('visualize.chartCreate', 'pane_chartCreate', 1, 'chart'); }
 
 })(jQuery);

@@ -335,12 +335,18 @@
 
     }, {name: 'conditionalFormatting'}, 'controlPane');
 
-    if ($.isBlank(blist.sidebarHidden.visualize) ||
-        !blist.sidebarHidden.visualize.conditionalFormatting)
-    { $.gridSidebar.registerConfig('visualize.conditionalFormatting', 'pane_conditionalFormatting', 10); }
 
     var isNewVisualize = ($.urlParam(window.location.href, 'visualize') == 'nextgen'|| blist.configuration.newChartConfig);
-    if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.filter.conditionalFormatting) && isNewVisualize)
-    { $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
+    if (!isNewVisualize)
+    { 
+        if ($.isBlank(blist.sidebarHidden.visualize) ||
+            !blist.sidebarHidden.visualize.conditionalFormatting)
+        { $.gridSidebar.registerConfig('visualize.conditionalFormatting', 'pane_conditionalFormatting', 10); }
+    } 
+    else 
+    {
+        if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.filter.conditionalFormatting) && isNewVisualize)
+        { $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
+    }
 
 })(jQuery);

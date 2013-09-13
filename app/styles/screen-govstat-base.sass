@@ -28,15 +28,15 @@
 
 @mixin progress-colors($prop)
   &.progress-good
-    #{$prop}: #09a74f
+    #{$prop}: $govstat_color_good
   &.progress-progressing
-    #{$prop}: #fcc806
+    #{$prop}: $govstat_color_flat
   &.progress-bad
-    #{$prop}: #e33229
+    #{$prop}: $govstat_color_poor
   &.progress-none
-    #{$prop}: #888
+    #{$prop}: $govstat_color_none
   &.progress-needs_more_data
-    #{$prop}: #888
+    #{$prop}: $govstat_color_needs_more_data
 
 body
   color: #333

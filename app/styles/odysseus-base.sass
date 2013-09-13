@@ -338,6 +338,15 @@
     margin-bottom: 1em
     position: relative
 
+    .editHandle
+      background: transparent url(/stylesheets/images/interface/drag_handle.png)
+      bottom: 0
+      cursor: move
+      left: -1em
+      position: absolute
+      top: 1.2em
+      width: 0.8em
+
     > .addNarrative
       padding: 0
       position: absolute
@@ -437,6 +446,9 @@
     min-height: auto
     padding-top: 2em
 
+    &.edit .narratives.edit:first-child > ul
+      padding-left: 1em
+
     > .list > ul > ul
       float: left
       position: relative
@@ -494,8 +506,12 @@
         .narrative
           margin-right: 1.5em
 
-      &:last-child .narrative
-        margin-left: 1.5em
+      &:last-child
+        .editHandle
+          left: 0
+
+        .narrative
+          margin-left: 1.5em
 
     .clear
       clear: both
@@ -533,6 +549,7 @@
       background-color: #e5e5e5
       @include prefixer(border-radius, 0.15em)
       font-size: 1.6em
+      min-height: 45px !important // weird hallo thing
       padding: 1em 1.5em
 
       span

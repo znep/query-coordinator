@@ -7,7 +7,7 @@ $(function()
     var apprTmpl = blist.routingApproval.approvalTemplate;
 
     $dashboard.find('.report.loading.hide').each(function()
-        { $(this).loadingSpinner({metric: 'routing', showInitially: true}); }).removeClass('hide');
+        { $(this).loadingSpinner({showInitially: true}); }).removeClass('hide');
 
     var getStageIcon = function(stage)
     {

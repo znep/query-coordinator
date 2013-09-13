@@ -131,7 +131,7 @@ $(function()
         $dialog.jqmShow();
     };
 
-    $dialog.loadingSpinner({metric: 'nomination', overlay: true});
+    $dialog.loadingSpinner({overlay: true});
 
     $dialog.find('form').validate({errorElement: 'span'});
     var $uploadButton = $dialog.find('.fileBrowseButton');

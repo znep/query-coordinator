@@ -465,7 +465,7 @@
 
             if ($.cf.edit.dirty)
             {
-                var spinner = $('.socrata-page').loadingSpinner({ metric: 'dataslate-configurator' });
+                var spinner = $('.socrata-page').loadingSpinner();
                 spinner.showHide(true);
                 if ($.isBlank(newPage))
                 { newPage = pullConfig(); }

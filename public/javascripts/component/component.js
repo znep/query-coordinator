@@ -10,7 +10,7 @@
 
     var roots = {};
 
-    var winSpin = $('body').loadingSpinner({ metric: 'dataslate-global' });
+    var winSpin = $('body').loadingSpinner();
     var wsCounter = 0;
     function startGlobalLoading()
     {
@@ -103,7 +103,7 @@
             {
                 if (!this._lsInit)
                 {
-                    this.$dom.loadingSpinner({ metric: 'dataslate-component', showInitially: true, minimal: true });
+                    this.$dom.loadingSpinner({ showInitially: true, minimal: true });
                     this._lsInit = true;
                 }
                 else { this.$dom.loadingSpinner().showHide(true); }
@@ -135,7 +135,7 @@
                 { this.$dom.loadingSpinner().showHide(!doSuspend); }
                 else if (!doSuspend)
                 {
-                    this.$dom.loadingSpinner({metric: 'dataslate-component', showInitially: true});
+                    this.$dom.loadingSpinner({showInitially: true});
                     this._lsInit = true;
                 }
             }

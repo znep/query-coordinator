@@ -61,7 +61,11 @@
                 if(!cpObj._view.metadata.conditionalFormatting){
                     cpObj.$dom().find('.conditionalFormattingWarning').hide();
                 };
-                    
+                //hide *Required text, people get it
+                cpObj.$dom().find('.mainError+.required').hide();
+
+
+
                 //setup eventing    
 
                 //Add flyout to unavailable chart types telling which columns are required
@@ -167,6 +171,8 @@
           //If creating from a dataset don't spit warning messages immediately.
           if (!this._view.displayFormat.valueColumns)
           { this.$dom().find('span.error').text(''); };
+          //Hide the error message shown on the bottom, it doesn't make sense with no apply button
+          this.$dom().find('.mainError').text('');
           return valid;
         },
 

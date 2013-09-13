@@ -16,7 +16,7 @@
   .progress-none .none
     background-color: $govstat_color_none
   .progress-needs_more_data .progress
-    background-color: $govstat_color_none
+    background-color: $govstat_color_needs_more_data
 
 @mixin progress-colors($prop, $selector: '')
   &.progress-good #{$selector}
@@ -28,7 +28,7 @@
   &.progress-none #{$selector}
     #{$prop}: $govstat_color_none
   &.progress-needs_more_data #{$selector}
-    #{$prop}: $govstat_color_none
+    #{$prop}: $govstat_color_needs_more_data
 
 
 .heroImageContainer
@@ -69,6 +69,9 @@
     @include progress-colors(background-color, '.progress')
     > div
       display: block
+
+    &.progress-none
+      display: none
 
 
 .titleContainer

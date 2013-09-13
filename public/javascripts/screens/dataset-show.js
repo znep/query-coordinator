@@ -703,9 +703,14 @@ $(function()
             if (width < $(".siteOuterWrapper").width() - 70)
             { windowWidth = width; resizing = false; return; }
 
-            var overlapWidth = $('#description, #description .collapsed').width();
-            $(".sidebarOptionsContainer").width(overlapWidth ? width - (overlapWidth + offset)
-                                                             : width * 0.85);
+            var optionsWidth = function()
+            {
+                if (blist.sidebarPosition == 'left') { return width * 0.9; }
+                var overlapWidth = $('#description, #description .collapsed').width();
+                if (overlapWidth) { return width - (overlapWidth + offset); }
+                else { return width * 0.85; }
+            }
+            $(".sidebarOptionsContainer").width(optionsWidth());
 
             if (windowWidth < width) // Bigger!
             {

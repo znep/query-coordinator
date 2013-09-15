@@ -4,7 +4,8 @@ class GovstatController < ApplicationController
   include GovstatHelper
   include CustomContentHelper
   include BrowseActions
-  before_filter :check_govstat_enabled, :check_domain_member
+  before_filter :check_govstat_enabled
+  before_filter :check_domain_member, :except => :goal_page
 
   def goals
   end

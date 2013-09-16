@@ -965,6 +965,8 @@ en:
           label: Label
           labelInBar: Label in Bar
           legend:
+            add_text: Additional text
+            add_text_button: Add Additional Text
             annotations: Describe Annotations
             conditional_formats: Describe Conditional Formats
             custom_entry: Custom Label

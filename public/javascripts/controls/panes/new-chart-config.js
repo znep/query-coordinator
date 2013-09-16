@@ -113,12 +113,12 @@
             if (needsCustom)
             {
                 fields.push(
-                    { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: $.t('screens.ds.grid_sidebar.chart.legend.new_custom_entry_button'),
-                      name: 'displayFormat.legendDetails.customEntries',
+                    { type: 'repeater', minimum: 0, initialRepeatCount: 0, addText: $.t('screens.ds.grid_sidebar.chart.legend.add_text_button'),
+                      name: 'displayFormat.legendDetails.customEntries', prompt: $.t('screens.ds.grid_sidebar.chart.axes.x_axis_title_prompt'),
                       field: {
                           type: 'group', options: [
-                              colorOption,
-                              { text: $.t('screens.ds.grid_sidebar.chart.legend.custom_entry'), type: 'text',
+                              {type: 'color', name: 'color', defaultValue: '#fff', lineClass: 'hide'},
+                              { text: $.t('screens.ds.grid_sidebar.chart.legend.add_text'), type: 'text',
                                 name: 'label', required: true }
                           ]
                     } }

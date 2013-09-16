@@ -770,6 +770,8 @@
         ie = navigator.appName === 'Microsoft Internet Explorer';
         command = (ie ? "FormatBlock" : "formatBlock");
         buttonize = function(format) {
+          // clint.tseng@socrata.com 08 sept 2013
+          // made the button names optionally friendlier.
           var buttonHolder;
           buttonHolder = jQuery('<span></span>');
           buttonHolder.hallobutton({

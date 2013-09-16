@@ -445,9 +445,9 @@ module Canvas2
         end
 
         if transf[:format].include?('?')
-          v = URI.escape(v)
+          v = ERB::Util.url_encode(v)
         elsif transf[:format].include?('!') || transf[:format].include?('¿')
-          v = URI.unescape(v)
+          v = CGI::unescape(v)
         end
 
         v

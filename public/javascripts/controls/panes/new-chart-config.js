@@ -161,7 +161,7 @@
         return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.marker.title'),
             [
                 {type: 'repeater', name: 'displayFormat.valueMarker', addText: $.t('screens.ds.grid_sidebar.chart.marker.add_button'),
-                 minimum: 0, lineClass: 'hasIcon valueMarker',
+                 minimum: 0, initialRepeatCount: 0, lineClass: 'hasIcon valueMarker',
                     field: {type: 'group', options: [
                         {type: 'group', options: [
                             {type: 'color', name: 'color',

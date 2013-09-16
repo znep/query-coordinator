@@ -176,18 +176,6 @@ module Canvas2
             return true
           end)
 
-        when 'goalDashboard'
-          begin
-            dashboard = odysseus_request('/stat/objects/dashboard/' + config['dashboardId'])
-          rescue CoreServer::ResourceNotFound
-            errors.push(DataContextError.new(config, "No dashboard found for '" + id + "'"))
-            log_timing(start_time, config)
-            return !config['required']
-          end
-
-          available_contexts[id] = { id: id, type: config['type'], dashboard: dashboard }
-          log_timing(start_time, config)
-
         when 'goalList'
           goals = Goal.find(config['search'])
           if goals.length > 0
@@ -206,20 +194,15 @@ module Canvas2
           log_timing(start_time, config)
 
         when 'goal'
-          begin
-            goal = odysseus_request('/stat/objects/goal/' + config['goalId'])
-          rescue CoreServer::ResourceNotFound
-            # Fall back to old goal
-            goal = Goal.find(config['goalId'])
-            if goal.nil?
-              errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
-              log_timing(start_time, config)
-              return !config['required']
-            end
+          goal = Goal.find(config['goalId'])
+          if goal.nil?
+            errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
+            log_timing(start_time, config)
+            ret_val = !config['required']
+          else
+            available_contexts[id] = { id: id, type: config['type'], goal: goal }
+            log_timing(start_time, config)
           end
-
-          available_contexts[id] = { id: id, type: config['type'], goal: goal }
-          log_timing(start_time, config)
 
         when 'govstatCategoryList'
           categories = GovstatCategory.find
@@ -397,25 +380,6 @@ module Canvas2
 
     def self.log_timing(start_time, config)
       timings.push("#{config[:id]} took #{(Time.now - start_time) * 1000} ms")
-    end
-
-    def self.odysseus_request(path)
-      uri = URI::HTTP.build({ host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port, path: path })
-      req = Net::HTTP::Get.new(uri.request_uri)
-
-      req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
-      req['Cookie'] = Canvas2::Util.request.headers['Cookie']
-
-      res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
-      raise CoreServer::ResourceNotFound.new(res) if res.is_a?(Net::HTTPNotFound)
-      if !res.is_a?(Net::HTTPSuccess)
-        raise CoreServer::CoreServerError.new(
-          uri.to_s,
-          res.code,
-          res.body
-        )
-      end
-      JSON.parse(res.body)
     end
   end
 end

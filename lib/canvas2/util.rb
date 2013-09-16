@@ -43,7 +43,6 @@ module Canvas2
     def self.reset
       @@page_params = {}
       @@page_vars = {}
-      @@request = nil
       @@page_path = nil
       @@debug = nil
       @@no_cache = nil
@@ -59,14 +58,6 @@ module Canvas2
 
     def self.page_params
       @@page_params
-    end
-
-    def self.set_request(req)
-      @@request = req
-    end
-
-    def self.request
-      @@request
     end
 
     def self.set_debug(debug)

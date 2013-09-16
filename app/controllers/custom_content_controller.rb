@@ -139,7 +139,6 @@ class CustomContentController < ApplicationController
     Canvas2::DataContext.reset
     Canvas2::Util.reset
     Canvas2::Util.set_params(params)
-    Canvas2::Util.set_request(request)
     Canvas2::Util.set_debug(@debug || @edit_mode)
     Canvas2::Util.set_no_cache(false)
     Canvas2::Util.set_path(full_path)

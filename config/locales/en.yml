@@ -987,6 +987,7 @@ en:
             caption: Caption
             new_marker_button: Add Marker
             add_button: Add Annotation  
+            marker_title: Value Marker
             title: Annotations
             value: At Value
           min_angle: Min. Angle

@@ -207,7 +207,7 @@
     var _marker = function(which, chart, options)
     {
         return {
-            title: $.t('screens.ds.grid_sidebar.chart.marker.title', { axis: $.capitalize(which) }), onlyIf: onlyIfForChart(chart, options, false),
+            title: $.t('screens.ds.grid_sidebar.chart.marker.marker_title', { axis: $.capitalize(which) }), onlyIf: onlyIfForChart(chart, options, false),
             type: 'selectable', name: which + 'Marker',
             fields: [
                 {type: 'repeater', name: 'displayFormat.' + which + 'Marker', addText: $.t('screens.ds.grid_sidebar.chart.marker.new_marker_button'), minimum: 0,

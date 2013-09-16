@@ -17,12 +17,16 @@ class CustomContentController < ApplicationController
   def homepage
     Canvas::Environment.context = :homepage
 
-    @page_config = get_config('homepage', 'homepage')
-    @page_config = default_homepage if @page_config.nil? || @page_config.default_homepage
-    prepare_config(@page_config)
+    @cache_key = app_helper.cache_key("homepage", cache_hash(params))
+    @cached_fragment = read_fragment(@cache_key)
+    if @cached_fragment.nil?
+      @page_config = get_config('homepage', 'homepage')
+      @page_config = default_homepage if @page_config.nil? || @page_config.default_homepage
+      prepare_config(@page_config)
 
-    @page_title = @page_config.title
-    @stylesheet = 'homepage/homepage'
+      @page_title = @page_config.title
+      @stylesheet = 'homepage/homepage'
+    end
 
     render :action => 'show'
   end
@@ -31,7 +35,11 @@ class CustomContentController < ApplicationController
     # this is a public-facing page, so always suppress govstat here.
     @suppress_govstat = true
 
-    @page = get_page(govstat_homepage_config(), '/', CurrentDomain.strings.site_title, params)
+    @cache_key = app_helper.cache_key("govstat-homepage", cache_hash(params))
+    @cached_fragment = read_fragment(@cache_key)
+    if @cached_fragment.nil?
+      @page = get_page(govstat_homepage_config(), '/', CurrentDomain.strings.site_title, params)
+    end
 
     render 'generic_page', :locals => { :custom_styles => 'screen-govstat-homepage',
       :custom_javascript => 'screen-govstat-dashboard' }
@@ -193,11 +201,7 @@ class CustomContentController < ApplicationController
     #  pages_mtime must be a long-lived cache key for this to work; it must also be invalidated
     #  explicitly by the core server on a pages update.
     #
-    cache_params = { 'domain' => CurrentDomain.cname,
-                     'locale' => I18n.locale,
-                     'page_updated' => VersionAuthority.page_mtime(@page.uid),
-                     'domain_updated' => CurrentDomain.default_config_updated_at,
-                     'params' => Digest::MD5.hexdigest(params.sort.to_json) }
+    cache_params = cache_hash(params).merge({ 'page_updated' => VersionAuthority.page_mtime(@page.uid) })
 
 
     # We do not yet know whether the page can be cached globally, so we need to check both
@@ -391,12 +395,16 @@ private
     end
   end
 
+  def cache_hash(params)
+    { 'domain' => CurrentDomain.cname,
+      'locale' => I18n.locale,
+      'domain_updated' => CurrentDomain.default_config_updated_at,
+      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
+  end
+
   # around_filter for caching
   def cache_wrapper
-    cache_params = { 'domain' => CurrentDomain.cname,
-                     'domain_updated' => CurrentDomain.default_config_updated_at,
-                     'locale' => I18n.locale,
-                     'params' => Digest::MD5.hexdigest(params.sort.to_json) }
+    cache_params = cache_hash(params)
     @cache_key = app_helper.cache_key("canvas-#{params[:action]}", cache_params)
     @cached_fragment = read_fragment(@cache_key)
 

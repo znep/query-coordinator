@@ -1,3 +1,5 @@
+<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => Rails.application.config.cache_ttl_fragment do -%>
+
 <% content_for :head do %>
 <title><%= @page.name %></title>
 <%= rendered_stylesheet_tag 'components' %>
@@ -19,3 +21,6 @@
   <%= include_javascripts custom_javascript %>
   <%- end -%>
 <%- end -%>
+
+<%- end -%>
+<%# prerendered_cache %>

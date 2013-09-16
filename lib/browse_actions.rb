@@ -302,6 +302,9 @@ protected
     # insert utf8 snowman thing
     browse_options[:user_params][:utf8] = '✓'
 
+    # Don't get rows in search, just in JS
+    browse_options[:row_count] = browse_options[:search_options].delete(:row_count)
+
     if browse_options[:view_results].nil?
       begin
         view_results = Clytemnestra.search_views(browse_options[:search_options])

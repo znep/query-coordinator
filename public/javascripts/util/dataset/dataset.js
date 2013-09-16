@@ -2964,6 +2964,9 @@ Dataset.search = function(params, successCallback, errorCallback, isAnonymous)
                 successCallback({count: results.count, views: _.map(results.results, function(v)
                     {
                         var ds = new Dataset(v.view);
+                        // Put row results in a special safe key
+                        ds.rowResults = v.rows;
+                        ds.rowResultCount = v.totalRows;
                         if (isAnonymous) { ds.isAnonymous(isAnonymous); }
                         return ds;
                     })});

@@ -275,7 +275,7 @@
         dateFormat: function(v, transf)
         {
             var d = parseDate(v);
-            if ($.isBlank(d) || _.isNaN(d.valueOf())) { return v; }
+            if ($.isBlank(d)) { return v; }
 
             // Make format conform to what DateJS can handle from standard Unix strftime(3)
             var fmt = transf.format.replace('%z', 'O').replace('%s', 'U');

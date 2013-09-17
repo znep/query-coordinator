@@ -410,10 +410,12 @@ $wizard_border_color: #ccc
 
   .wizardBody
     margin: 0 -9em
-    max-height: 0
     overflow: hidden
     padding: 0 9em
-    @include transition(0.6s, max-height)
+
+    .pusher
+      margin-top: -100%
+      @include transition(0.8s, margin-top)
 
     .wizardContents
       padding: 2.5em 4.2em 1.5em
@@ -434,8 +436,8 @@ $wizard_border_color: #ccc
         margin-left: 1em
 
   &.active
-    .wizardBody
-      max-height: 1000px
+    .wizardBody .pusher
+      margin-top: 0
 
   // content stuffs
   .wizardHeader

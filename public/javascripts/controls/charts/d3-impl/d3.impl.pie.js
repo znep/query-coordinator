@@ -2081,15 +2081,6 @@ $.Control.registerMixin('d3_impl_pie', {
         });
     },
 
-    _rotateColorBy: function(color, rotateCount)
-    {
-        var newBaseHsv = $.rgbToHsv($.hexToRgb(color));
-        var h = newBaseHsv.h + 8*rotateCount;
-        h += Math.ceil(-h/360) * 360;
-        newBaseHsv.h = h%360;
-        return '#'+$.rgbToHex($.hsvToRgb(newBaseHsv));
-    },
-
     _d3_getColor: function(colDef, d)
     {
         var vizObj = this;
@@ -2107,7 +2098,7 @@ $.Control.registerMixin('d3_impl_pie', {
                     var repGroup = Math.floor(d.index / colors.length);
                     var baseIndex = d.index - (repGroup * colors.length);
 
-                    color = vizObj._rotateColorBy(colors[baseIndex], -repGroup*3);
+                    color = vizObj._rotateHueDegrees(colors[baseIndex], -repGroup*24);
                 }
                 else
                 {
@@ -2127,7 +2118,7 @@ $.Control.registerMixin('d3_impl_pie', {
             if (d)
             {
                 var baseColorIndex = d.index % fallbackColors.length;
-                color = vizObj._rotateColorBy(fallbackColors[baseColorIndex], d.index - baseColorIndex);
+                color = vizObj._rotateHueDegrees(fallbackColors[baseColorIndex], 8*(d.index - baseColorIndex));
             }
             else
             {

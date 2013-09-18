@@ -879,10 +879,26 @@ d3base.seriesGrouping = {
         if (globalColorIndex[virtualColumnName]) return globalColorIndex[virtualColumnName];
 
         var currentColor = sg.valueColumnColors[lookup];
+        var colorRotateAmount = -190;
 
         if (!currentColor)
         {
-            var seedColor = valueColumn.color || vizObj._displayFormat.colors[valueColumn.column.position];
+            var seedColor;
+            if (valueColumn.color)
+            {
+                seedColor = valueColumn.color;
+            }
+            else
+            {
+                var displayFormatColors = vizObj._displayFormat.colors || ['#003366'];
+
+                var colIndex = valueColumn.column.position;
+                var repGroup = Math.floor(colIndex / displayFormatColors.length);
+                var baseIndex = colIndex - (repGroup * displayFormatColors.length);
+
+                seedColor = vizObj._rotateHueDegrees(displayFormatColors[baseIndex], repGroup*colorRotateAmount);
+            }
+
             sg.valueColumnColors[lookup] = { seed: seedColor, current: seedColor };
         }
         else
@@ -892,7 +908,7 @@ d3base.seriesGrouping = {
             {
                 // rotate seed around hsv wheel by a bit and start over
                 var newSeedHsb = $.rgbToHsv($.hexToRgb(currentColor.seed));
-                newSeedHsb.h = (newSeedHsb.h + 20) % 360;
+                newSeedHsb.h = (newSeedHsb.h + 20 + 360) % 360;
                 var newSeed = $.rgbToHex($.hsvToRgb(newSeedHsb));
                 sg.valueColumnColors[lookup] = { seed: '#' + newSeed, current: '#' + newSeed };
             }

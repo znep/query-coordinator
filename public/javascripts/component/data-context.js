@@ -212,6 +212,10 @@
                     break;
 
                 case 'goal':
+                    dc._loadOldGoal(function() { callback(dc); }, errorCallback);
+                    break;
+
+                case 'goal2':
                     dc._loadGoal(function() { callback(dc); }, errorCallback);
                     break;
 
@@ -560,7 +564,7 @@
                         return !$.isBlank(state) ? state.successOrElse(function(result)
                         {
                             if ($.subKeyDefined(result, 'error'))
-                            { dc._loadOldGoal(callback, errorCallback); }
+                            { errorCallback(dc.id); }
                         }) : null;
                     });
             if ($.subKeyDefined(gv, 'extract'))
@@ -572,7 +576,7 @@
                 }, { app: janusApp });
             }
             else
-            { dc._loadOldGoal(callback, errorCallback); }
+            { errorCallback(dc.id); }
         },
 
         _loadOldGoal: function(callback, errorCallback)

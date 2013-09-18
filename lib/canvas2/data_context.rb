@@ -206,16 +206,22 @@ module Canvas2
           log_timing(start_time, config)
 
         when 'goal'
-          begin
-            goal = odysseus_request('/stat/objects/goal/' + config['goalId'])
-          rescue CoreServer::ResourceNotFound
-            # Fall back to old goal
-            goal = Goal.find(config['goalId'])
-            if goal.nil?
-              errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
-              log_timing(start_time, config)
-              return !config['required']
-            end
+          goal = Goal.find(config['goalId'])
+          if goal.nil?
+            errors.push(DataContextError.new(config, "No goal found for '" + id + "'"))
+            log_timing(start_time, config)
+            return !config['required']
+          end
+
+          available_contexts[id] = { id: id, type: config['type'], goal: goal }
+          log_timing(start_time, config)
+
+        when 'goal2'
+          goal = odysseus_request('/stat/objects/goal/' + config['goalId'])
+          if goal.nil?
+            errors.push(DataContextError.new(config, "No goal 2.0 found for '" + id + "'"))
+            log_timing(start_time, config)
+            return !config['required']
           end
 
           available_contexts[id] = { id: id, type: config['type'], goal: goal }

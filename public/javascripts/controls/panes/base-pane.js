@@ -2111,7 +2111,13 @@
         else if ($field.is('input[type=checkbox],input[type=radio]'))
         {
             $field.change(handlerProxy)
-            if ($.browser.msie) { $field.click(handlerProxy); }
+            if ($.browser.msie)
+            {
+                if ($field.hasClass('option-icons'))
+                { $field.parents('.radioLine:first').find('label')
+                    .click(function() { $field.click(); }); }
+                $field.click(handlerProxy);
+            }
         }
     };
 

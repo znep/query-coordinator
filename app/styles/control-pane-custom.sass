@@ -12,8 +12,6 @@
       .lineIcon, .formSection.sectionSubheading .formHeader, .formSection.sectionHeading
         background-color: unquote($color)
       .formSection.sectionSubheading .formHeader
-        opacity: 0.4
-      .formSection.sectionSubheading.collapsed .formHeader
         opacity: 0.6
 
 .controlPane
@@ -565,6 +563,7 @@
       @include chart-config-icons
       @include data-selection-icons
       margin-bottom: 0em
+      margin-top: -0.1em
 
       .sectionSelect
         display: none
@@ -675,6 +674,21 @@
           .colorCollapse + .text
             margin-left: -0.6em
 
+        &.minAngle
+          label
+            left: 0em
+          .inputWrapper
+            margin-top: 24px
+            padding-left: 0em
+          .sliderInput
+            float: left
+            width: 13.5em
+          .sliderControl
+            margin-top: 2.3em
+            margin-left: 1em
+            margin-right: 5em
+
+
       .line.columnSelect
         > label
           display: block
@@ -718,11 +732,12 @@
         .formHeader
           color: #ffffff
           background-color: #00793c
-          opacity: 0.4
+          opacity: 0.6
           padding: 0.5em 1em 0.5em 0.5em
           margin-left: -0.8em
           width: 100%
           cursor: pointer
+          font-weight: normal
 
           .currentSelection
             float: right

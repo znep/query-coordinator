@@ -993,6 +993,7 @@ en:
             title: Annotations
             value: At Value
           min_angle: Min. Angle
+          min_angle_html: Smallest angle displayed (&ordm;)
           names: Names
           pie_other: ! 'Warning: %{chart_type} will aggregate distinct values (rows) past the %{row_limit}th into an Other category. Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'
           pie_truncate: ! 'Warning: %{chart_type} will truncate datasets with more than %{row_limit} distinct values (rows). Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'

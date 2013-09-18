@@ -60,8 +60,8 @@
     var showPoints = {text: $.t('screens.ds.grid_sidebar.chart.show_points'), name: 'displayFormat.pointSize',
         type: 'checkbox', trueValue: '3', falseValue: '0', defaultValue: '3'};
 
-    var pieJoinAngle = {text: $.t('screens.ds.grid_sidebar.chart.min_angle'), name: 'displayFormat.pieJoinAngle',
-        type: 'slider', minimum: 0, maximum: 10, defaultValue: 1};
+    var pieJoinAngle = {text: $.t('screens.ds.grid_sidebar.chart.min_angle_html'), name: 'displayFormat.pieJoinAngle',
+        type: 'slider', minimum: 0, maximum: 15, defaultValue: 1, lineClass: 'hasIcon minAngle'};
 
     var smoothLine = {text: $.t('screens.ds.grid_sidebar.chart.smooth_line'), name: 'displayFormat.smoothLine',
         type: 'checkbox', defaultValue: false};

@@ -890,7 +890,7 @@ d3base.seriesGrouping = {
             }
             else
             {
-                var displayFormatColors = vizObj._displayFormat.colors || ['#003366'];
+                var displayFormatColors = vizObj._displayFormat.colors || blist.defaultColors;
 
                 var colIndex = valueColumn.column.position;
                 var repGroup = Math.floor(colIndex / displayFormatColors.length);

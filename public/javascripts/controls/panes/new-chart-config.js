@@ -10,7 +10,7 @@
 
     var defaultColors;
     if (isNextGen){
-        defaultColors = ['#003366', '#D95F02', '#1B9E77', '#e6ab02', '#7570b3'];
+        defaultColors = blist.defaultColors;
     }
     else{
         defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7', '#495969', '#bbc3c9'];

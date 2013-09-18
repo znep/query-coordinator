@@ -1,5 +1,7 @@
 (function($) {
 
+blist.defaultColors = ['#003366', '#D95F02', '#1B9E77', '#e6ab02', '#7570b3'];
+
 // Colors and imagebuilder
 
 $.colorToObj = function(rgb)

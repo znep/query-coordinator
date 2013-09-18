@@ -77,7 +77,6 @@
 
                 //takes in classname <'radioLine' ('unavailable')? type>
                 var setHeader = function(type){
-
                     var current = type.split(' ')[1];
                     if(current!='unavailable'){
                         cpObj.$dom().find('.formSection.chartTypeSelection, .paneContent')
@@ -180,17 +179,21 @@
         {
             var cpObj = this;
             _.defer( function() {
-
                 var initSidebarScroll = cpObj.$dom().closest('.panes').scrollTop();
                 var originalChartType = $.subKeyDefined(cpObj._view, 'displayFormat.chartType') ? cpObj._view.displayFormat.chartType : undefined;
+                var isBrandNewChart = _.isEmpty(originalChartType);
 
                 ///VALIDATE///
 
                 if ($input.data("origname") == "displayFormat.chartType")
                 {
-                    if (cpObj.validateForm()) {
+                    var newValues = cpObj._getFormValues();
+                    var isSameChart = !isBrandNewChart && originalChartType == newValues.displayFormat.chartType;
+                    if (cpObj.validateForm() || !isSameChart) {
+                        // For a new chart type selection, push the change through even if we don't validate.
+                        // The reset will take care of sanitization itself.
                         cpObj._view.update(
-                            $.extend(true, {}, cpObj._getFormValues(), {metadata: cpObj._view.metadata})
+                            $.extend(true, {}, newValues, {metadata: cpObj._view.metadata})
                         );
                     }
                     cpObj.reset();
@@ -234,7 +237,6 @@
                 var pieStyleCharts = ['pie', 'donut'];
 
                 var isPieStyleChart = _.include(['pie', 'donut'], view.displayFormat.chartType)
-                var isBrandNewChart = _.isEmpty(originalChartType);
                 var isSameChartType = !isBrandNewChart && originalChartType == view.displayFormat.chartType;
                 if ( (isBrandNewChart || isSameChartType) && isPieStyleChart && !$.subKeyDefined(cpObj, '_view.query.orderBys'))
                 {

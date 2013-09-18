@@ -1080,6 +1080,7 @@ $.Control.registerMixin('d3_impl_pie', {
     // make informed decisions about when to stop loading rows.
     _isSortedBigToSmall: function()
     {
+        var retval = false;
         var view = this._primaryView;
         if ($.subKeyDefined(view, 'query.orderBys'))
         {
@@ -1095,12 +1096,11 @@ $.Control.registerMixin('d3_impl_pie', {
                 };
             });
 
-            return _.isEqual(defaultOrderBy, view.query.orderBys);
+            retval = _.isEqual(defaultOrderBy, view.query.orderBys);
         }
-        else
-        {
-            return false;
-        }
+
+        this.debugOut('sortedBigToSmall:' + retval);
+        return retval;
     },
 
     _renderSnapshot: function(snapshot, enableTransitions)
@@ -1272,7 +1272,14 @@ $.Control.registerMixin('d3_impl_pie', {
 
             var pieSegments = this._buildPieLayout(sliceMetrics, firstSlice, lastSlice, anchorSlice, seriesInformation);
 
-            result = pieSegments(slices);
+            if (sliceMetrics.valueSum > 0)
+            {
+                result = pieSegments(slices);
+            }
+            else
+            {
+                result = [];
+            }
 
             // Now filter out anything that's too small.
             var removedSliceValueSum = 0;

@@ -996,6 +996,22 @@ module Canvas2
     end
   end
 
+  class GovStat < CanvasWidget
+    def initialize(props, parent = nil, resolver_context = nil)
+      @needs_own_context = true
+      super(props, parent, resolver_context)
+    end
+  end
+
+  class GovStatGoal < GovStat
+  end
+
+  class GovStatDashboard < GovStat
+  end
+
+  class GovStatCategory < GovStat
+  end
+
   class EventConnector < CanvasWidget
     def is_hidden
       true

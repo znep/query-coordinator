@@ -119,6 +119,7 @@ javascripts:
     - public/javascripts/component/content/title.js
     - public/javascripts/component/data/calendar.js
     - public/javascripts/component/data/charts.js
+    - public/javascripts/component/data/govstat.js
     - public/javascripts/component/data/map.js
     - public/javascripts/component/data/map-layer.js
     - public/javascripts/component/data/repeater.js

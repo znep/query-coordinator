@@ -30,7 +30,14 @@ jQuery.metrics = {
 
     stopwatch: function(entity, metric, action)
     {
-        if (!$.metrics.stopwatches[entity + '/' + metric])
+        if ($.metrics.stopwatches[entity + '/' + metric])
+        {
+            if (action == 'clear')
+            { delete $.metrics.stopwatches[entity + '/' + metric]; }
+            else
+            { $.metrics.stopwatches[entity + '/' + metric][action](); }
+        }
+        else
         {
             $.metrics.stopwatches[entity + '/' + metric] = {
                 entity: entity,
@@ -69,10 +76,6 @@ jQuery.metrics = {
                 }, 1000)
             };
         }
-        if (action == 'clear')
-        { delete $.metrics.stopwatches[entity + '/' + metric]; }
-        else
-        { $.metrics.stopwatches[entity + '/' + metric][action](); }
     },
 
     mark: function(entity, metric)

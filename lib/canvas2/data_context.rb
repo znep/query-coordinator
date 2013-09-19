@@ -178,7 +178,7 @@ module Canvas2
 
         when 'goalDashboard'
           begin
-            dashboard = odysseus_request('/stat/objects/dashboard/' + config['dashboardId'])
+            dashboard = Canvas2::Util.odysseus_request('/stat/objects/dashboard/' + config['dashboardId'])
           rescue CoreServer::ResourceNotFound
             errors.push(DataContextError.new(config, "No dashboard found for '" + id + "'"))
             log_timing(start_time, config)
@@ -217,7 +217,7 @@ module Canvas2
           log_timing(start_time, config)
 
         when 'goal2'
-          goal = odysseus_request('/stat/objects/goal/' + config['goalId'])
+          goal = Canvas2::Util.odysseus_request('/stat/objects/goal/' + config['goalId'])
           if goal.nil?
             errors.push(DataContextError.new(config, "No goal 2.0 found for '" + id + "'"))
             log_timing(start_time, config)
@@ -403,25 +403,6 @@ module Canvas2
 
     def self.log_timing(start_time, config)
       timings.push("#{config[:id]} took #{(Time.now - start_time) * 1000} ms")
-    end
-
-    def self.odysseus_request(path)
-      uri = URI::HTTP.build({ host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port, path: path })
-      req = Net::HTTP::Get.new(uri.request_uri)
-
-      req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
-      req['Cookie'] = Canvas2::Util.request.headers['Cookie']
-
-      res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
-      raise CoreServer::ResourceNotFound.new(res) if res.is_a?(Net::HTTPNotFound)
-      if !res.is_a?(Net::HTTPSuccess)
-        raise CoreServer::CoreServerError.new(
-          uri.to_s,
-          res.code,
-          res.body
-        )
-      end
-      JSON.parse(res.body)
     end
   end
 end

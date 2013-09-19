@@ -1001,15 +1001,41 @@ module Canvas2
       @needs_own_context = true
       super(props, parent, resolver_context)
     end
+
+    def render_contents
+      begin
+        path, context = get_args
+        res = Canvas2::Util.odysseus_request(path,
+                                             { context: context,
+                                               attributes: string_substitute(@properties['attributes']),
+                                               constructorOpts: string_substitute(@properties['constructorOpts'])
+        })
+      rescue CoreServer::ResourceNotFound
+        return ['', true]
+      end
+      [res['markup'], false]
+    end
   end
 
   class GovStatGoal < GovStat
+    def get_args
+      context = string_substitute(@properties['viewType'])
+      context = 'card' if context != 'card' && context != 'detail'
+      ['/stat/views/goal/' + string_substitute(@properties['goalId']), context]
+    end
   end
 
   class GovStatDashboard < GovStat
+    def get_args
+      ['/stat/views/dashboard/' + string_substitute(@properties['dashboardId']), 'default']
+    end
   end
 
   class GovStatCategory < GovStat
+    def get_args
+      ['/stat/views/category/' + string_substitute(@properties['dashboardId']) + '/' +
+        string_substitute(@properties['categoryId']), 'default']
+    end
   end
 
   class EventConnector < CanvasWidget

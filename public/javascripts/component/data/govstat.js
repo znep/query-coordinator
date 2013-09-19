@@ -32,6 +32,7 @@ $.component.Component.extend('GovStat', 'none', {
         {
             if (result instanceof blist.require('janus').store.Request.state.type.Success)
             {
+                cObj.$contents.empty();
                 var obj = result.result;
                 var view = app.getView(obj,
                     $.extend({ attributes: cObj._stringSubstitute(cObj._properties.attributes),
@@ -41,6 +42,8 @@ $.component.Component.extend('GovStat', 'none', {
                 if (!$.isBlank(view))
                 { cObj.$contents.append(view.artifact()); }
             }
+            else if (result instanceof blist.require('janus').store.Request.state.type.Error)
+            { cObj.$contents.empty(); }
         });
         app.getStore(objReq).handle();
     },

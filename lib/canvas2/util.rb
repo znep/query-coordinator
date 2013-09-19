@@ -221,6 +221,27 @@ module Canvas2
         end
       end
 
+
+    def self.odysseus_request(path, opts = {})
+      uri = URI::HTTP.build({ host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port,
+                            path: path, query: opts.to_param })
+      req = Net::HTTP::Get.new(uri.request_uri)
+
+      req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
+      req['Cookie'] = Canvas2::Util.request.headers['Cookie']
+
+      res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
+      raise CoreServer::ResourceNotFound.new(res) if res.is_a?(Net::HTTPNotFound)
+      if !res.is_a?(Net::HTTPSuccess)
+        raise CoreServer::CoreServerError.new(
+          uri.to_s,
+          res.code,
+          res.body
+        )
+      end
+      JSON.parse(res.body)
+    end
+
   private
     class AppHelper
       include ActionView::Helpers::TagHelper

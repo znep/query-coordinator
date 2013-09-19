@@ -101,7 +101,7 @@
     if (!$.isBlank(csrfToken))
     {
         // for core server support
-        $.cookies.set('socrata-csrf-token', csrfToken);
+        $.cookies.set('socrata-csrf-token', csrfToken, { secure: true });
     }
 
     blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0';

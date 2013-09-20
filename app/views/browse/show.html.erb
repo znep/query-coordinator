@@ -2,4 +2,10 @@
   <title>Search &amp; Browse | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() { blist.mainSpinner = $('.browseSection').loadingSpinner({ metric: 'main', showInitially: true }); });
+  </script>
+<% end -%>
+
 <%= render_browse(@processed_browse) %>

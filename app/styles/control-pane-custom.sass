@@ -12,7 +12,7 @@
       .lineIcon, .formSection.sectionSubheading .formHeader, .formSection.sectionHeading
         background-color: unquote($color)
       .formSection.sectionSubheading .formHeader
-        opacity: 0.6
+        @include opacity(0.6)
 
 .controlPane
 
@@ -566,7 +566,8 @@
       margin-top: -0.1em
 
       .sectionSelect
-        display: none
+        position: absolute  // IE8 fix - hidden checkmarks don't get events.
+        clip: rect(0 0 0 0) // Would use display: none otherwise and no position.
 
       .indentedFormSection.inputFirst
         padding-left: 1em
@@ -727,12 +728,13 @@
           float: left
           margin: 3px 5px -1px 6px
         > .uniform.checker
-          display: none
+          position: absolute  // IE8 fix - hidden checkmarks don't get events.
+          clip: rect(0 0 0 0) // Would use display: none otherwise and no position.
 
         .formHeader
           color: #ffffff
           background-color: #00793c
-          opacity: 0.6
+          @include opacity(0.6)
           padding: 0.5em 1em 0.5em 0.5em
           margin-left: -0.8em
           width: 100%

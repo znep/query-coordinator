@@ -1,5 +1,8 @@
 $(function()
 {
+    var $browse = $('.browseSection');
+    var spinner = blist.mainSpinner || $browse.loadingSpinner({ showInitially: true });
+
     // alias this method so external scripts can get at it
     var getDS = blist.browse.getDS = function($item)
     {
@@ -56,7 +59,6 @@ $(function()
             }).join('&');
     };
 
-    var $browse = $('.browseSection');
     $browse.find('select').uniform();
     $browse.find('select.hide').each(function()
     {
@@ -182,47 +184,73 @@ $(function()
         expanderExpandedClass: 'expanded'
     });
 
-    // Sad hack: we don't have the stemmed version,
-    // so just highlight the words they typed
-    var searchRegex = blist.browse.query ?
-        new RegExp(blist.browse.query.trim().replace(' ', '|'), 'gi') : '';
-    // Render row search results, if any
-    $browse.find('table tbody tr.withRows .rowSearchResults')
-        .each(function()
+    var renderRows = function()
     {
-        var $results = $(this);
-        var ds = getDS($results);
-        $results.rowSearchRenderType({ highlight: searchRegex,
-            rows: ds.rowResults, view: ds,
-            query: blist.browse.query,
-            totalRowResults: ds.rowResultCount });
-
-        var $display = $results.find('.rowSearchRenderType');
-        $display.removeClass('hide').css('opacity', 0);
-
-        // Is it too tall?
-        if ($results.height() > 220)
+        // Sad hack: we don't have the stemmed version,
+        // so just highlight the words they typed
+        var searchRegex = blist.browse.searchOptions.q ?
+            new RegExp(blist.browse.searchOptions.q.trim().replace(' ', '|'), 'gi') : '';
+        // Render row search results, if any
+        $browse.find('table tbody tr.withRows .rowSearchResults')
+            .each(function()
         {
-            var $rows = $display.find('.rowList');
-            $rows.data('origheight', $rows.height());
-            $results.addClass('collapsed overheight');
-            $results.find('.expandRowResults').click(function(event)
-            {
-                event.preventDefault();
-                var expanding = $results.hasClass('collapsed'),
-                    newHeight = expanding ? $rows.data('origheight') : 200;
-                $rows.animate({'max-height': newHeight}, 300,
-                    function() { $results.toggleClass('collapsed'); });
-                $display.find('.expandHint')
-                    .toggleClass('upArrow downArrow').end()
-                    .find('.fader')[expanding ? 'fadeOut' : 'fadeIn'](300);
-            });
-        }
+            var $results = $(this);
+            var ds = getDS($results);
+            $results.rowSearchRenderType({ highlight: searchRegex,
+                rows: ds.rowResults, view: ds,
+                query: blist.browse.searchOptions.q,
+                totalRowResults: ds.rowResultCount });
 
-        $display.animate({ opacity: 1 }, 300, function() {
-            $display.css('opacity', '');
+            var $display = $results.find('.rowSearchRenderType');
+            $display.removeClass('hide').css('opacity', 0);
+
+            // Is it too tall?
+            if ($results.height() > 220)
+            {
+                var $rows = $display.find('.rowList');
+                $rows.data('origheight', $rows.height());
+                $results.addClass('collapsed overheight');
+                $results.find('.expandRowResults').click(function(event)
+                {
+                    event.preventDefault();
+                    var expanding = $results.hasClass('collapsed'),
+                        newHeight = expanding ? $rows.data('origheight') : 200;
+                    $rows.animate({'max-height': newHeight}, 300,
+                        function() { $results.toggleClass('collapsed'); });
+                    $display.find('.expandHint')
+                        .toggleClass('upArrow downArrow').end()
+                        .find('.fader')[expanding ? 'fadeOut' : 'fadeIn'](300);
+                });
+            }
+
+            $display.animate({ opacity: 1 }, 300, function() {
+                $display.css('opacity', '');
+            });
         });
-    });
+        spinner.showHide(false);
+    };
+
+    // Need to load rows related to the search
+    if (!$.isBlank(blist.browse.rowCount))
+    {
+        Dataset.search($.extend({}, blist.browse.searchOptions, { row_count: blist.browse.rowCount }),
+            function(results)
+            {
+                _.each(results.views, function(ds)
+                {
+                    if (ds.rowResultCount > 0)
+                    {
+                        blist.browse.datasets[ds.id] = blist.browse.datasets[ds.id] || {};
+                        blist.browse.datasets[ds.id].rowResults = ds.rowResults;
+                        blist.browse.datasets[ds.id].rowResultCount = ds.rowResultCount;
+                        $browse.find('table tbody tr[data-viewid="' + ds.id + '"]').addClass('withRows');
+                    }
+                });
+                renderRows();
+            });
+    }
+    else
+    { spinner.showHide(false); }
 
     // Handle sidebar facets
     var $searchSect = $browse.find('.searchSection');

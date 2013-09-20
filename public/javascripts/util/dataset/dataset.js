@@ -241,6 +241,11 @@ var Dataset = ServerModel.extend({
         return this.message || 'Columns required for this view are missing';
     },
 
+    clean: function()
+    {
+        return cleanViewForSave(this);
+    },
+
     save: function(successCallback, errorCallback, allowedKeys)
     {
         var ds = this;
@@ -1048,9 +1053,13 @@ var Dataset = ServerModel.extend({
 
     registerOpening: function(referrer)
     {
+        // make network request.
         var params = {method: 'opening'};
         if (!$.isBlank(referrer)) { params.referrer = referrer; }
         this.makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
+
+        // store in local storage.
+        Dataset.saveRecentDataset(this);
     },
 
     downloadUrl: function(type)
@@ -2897,6 +2906,86 @@ Dataset.lookupFromViewId = function(id, successCallback, errorCallback, isBatch,
 
 Dataset.createFromViewId = function(id, successCallback, errorCallback, isBatch, isAnonymous)
 { Dataset._create(true, id, successCallback, errorCallback, isBatch, isAnonymous); };
+
+
+// method for grabbing the most recently opened datasets by this user on this
+// computer, including anonymous access. in 99% of cases, this should be the
+// correct behaviour. in 1%, it will probably confuse the user and cause some
+// support burden. can't win it all.
+Dataset.getRecentDatasets = function(fetchResources, successCallback, errorCallback)
+{
+    if (typeof localStorage === 'undefined') { successCallback([]); }
+
+    // get all recent datasets, and anonymous access sets.
+    var allRecents = _getRecentsFromStorage();
+    var ourRecents = allRecents['anon-mous'] || [];
+
+    // merge in logged-in user's sets if they are logged in.
+    if (!$.isBlank(blist.currentUserId))
+    { ourRecents = ourRecents.concat(allRecents[blist.currentUserId] || []); }
+
+    // massage recents, grab ids.
+    var ids = _.pluck(_cleanedMostRecent(ourRecents), 'id')
+
+    // get the actual datasets if requested, otherwise just return.
+    if (fetchResources === true)
+    {
+        var results = [];
+        ServerModel.startBatch();
+        _.each(ids, function(id)
+        {
+            Dataset.createFromViewId(
+              id,
+              function(ds) { results[ids.indexOf(id)] = ds; },
+              null, // it's okay if we fail; probably an auth issue.
+              true
+            )
+        });
+
+        ServerModel.sendBatch(function() { successCallback(_.compact(results)) }, errorCallback);
+    }
+    else
+    {
+        successCallback(ids);
+    }
+};
+
+// method for saving the above.
+Dataset.saveRecentDataset = function(ds)
+{
+    if (typeof localStorage === 'undefined') { return; }
+
+    // grab the bucket we're qualified under.
+    var allRecents = _getRecentsFromStorage();
+    var userId = blist.currentUserId || 'anon-mous';
+    var ourBucket = allRecents[userId] || [];
+
+    // insert ourselves; do some house cleaning.
+    ourBucket.push({ id: ds.id, at: (new Date()).getTime() });
+    ourBucket = _cleanedMostRecent(ourBucket);
+
+    // saveback.
+    allRecents[userId] = ourBucket;
+    localStorage.setItem('socrataRecentDS', JSON.stringify(allRecents));
+};
+
+// util method for fetching the recents obj from localstorage.
+var _getRecentsFromStorage = function()
+{
+    return JSON.parse(localStorage.getItem('socrataRecentDS') || '{}');
+};
+
+// util method for getting the top relevant most recent ds from an array.
+var _cleanedMostRecent = function(mostRecents)
+{
+    // sort, dedupe, prune, pluck ids.
+    // we sort THEN dedupe so that we keep the most recent time always.
+    var sorted = _.sortBy(mostRecents, function(x) { return x.at * -1; });
+    var unique = _.uniq(sorted, true, function(x) { return x.id; });
+    var pruned = unique.slice(0, 10);
+    return pruned;
+}
+
 
 Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, isAnonymous)
 {

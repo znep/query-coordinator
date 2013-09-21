@@ -855,12 +855,13 @@ en:
           color_select:
             prompt: Choose color
           column_select:
+            auto: Auto
             from_grid: Select a column from the grid
-            prompt: Select a column
-            unselect: Deselect column
             none_selected: No column selected
-            selectable: Valid Columns
             nonselectable: Not Valid Columns
+            prompt: Select a column
+            selectable: Valid Columns
+            unselect: Deselect column
           datatypes:
             checkbox: checkbox
             dataset_link: dataset link
@@ -957,8 +958,10 @@ en:
             title: Error Bars
           flyout:
             new_details_button: Add Flyout Details
+            new_values_button: Add Values
             title: Flyout Details
             value: Flyout Values
+            title_column: Flyout Title
           group_extra: Group Extra Values
           groups: Groups
           labels_and_values: Labels and Values

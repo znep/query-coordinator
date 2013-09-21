@@ -1197,7 +1197,7 @@
         return item;
     };
 
-    var renderColumnSelectOptions = function(cpObj, columnsObj, columnIdField, curVal)
+    var renderColumnSelectOptions = function(cpObj, columnsObj, columnIdField, curVal, args)
     {
         if ($.isBlank(cpObj._view)) { return []; }
 
@@ -1260,7 +1260,12 @@
         if(_.isEmpty(options)){
           options.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
         }
-        return [{tagName: 'option', value: '', contents: $.t('screens.ds.grid_sidebar.base.column_select.none_selected')},
+        //Flyout Title should have option "Auto"
+        var t = $.t('screens.ds.grid_sidebar.base.column_select.none_selected');
+        if($.subKeyDefined(args, 'item.origName')){
+          if(args.item.origName == 'displayFormat.titleFlyout'){ t = $.t('screens.ds.grid_sidebar.base.column_select.auto');}}
+        
+        return [{tagName: 'option', value: '', contents: t},
                 {tagName: 'optgroup', label: $.t('screens.ds.grid_sidebar.base.column_select.selectable'), contents: options}, 
                 {tagName: 'optgroup', label: $.t('screens.ds.grid_sidebar.base.column_select.nonselectable'), contents: invalidOptions}];
         
@@ -1474,7 +1479,7 @@
             contents: $.t('screens.ds.grid_sidebar.base.column_select.from_grid')});
 
         var options = renderColumnSelectOptions(cpObj, args.item.columns,
-                colIdField, curValue || defValue);
+                colIdField, curValue || defValue, args);
 
         wrapper.contents = $.extend(commonAttrs(cpObj, $.extend({}, args.item,
             {extraClass: 'columnSelectControl'}), args.context),

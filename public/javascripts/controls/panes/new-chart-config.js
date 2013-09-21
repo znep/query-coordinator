@@ -521,12 +521,20 @@
     var flyoutConfig = function(chart, options)
     {
         return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.flyout.title'),
-            [
-                {type: 'repeater', name: 'displayFormat.descriptionColumns', lineClass: 'hasIcon flyout',
+            [           
+                {text: $.t('screens.ds.grid_sidebar.chart.flyout.title_column'), 
+                name: 'displayFormat.titleFlyout', otherNames: 'tableColumnId',
+                onlyIf: {field: 'displayFormat.pointSize', value: '0', negate: true},
+                type: 'columnSelect', useFieldName: true,
+                columns: { hidden: options.isEdit}},
+
+                {type: 'repeater', name: 'displayFormat.descriptionColumns',
+                    lineClass: 'hasIcon flyout',
                     onlyIf: {field: 'displayFormat.pointSize', value: '0', negate: true},
-                    field: {type: 'group', options: [{text: $.t('screens.ds.grid_sidebar.chart.flyout.value'), name: 'fieldName', otherNames: 'tableColumnId',
-                           type: 'columnSelect', useFieldName: true, columns: {hidden: options.isEdit}}]},
-                    minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.flyout.new_details_button')
+                    field: {type: 'group', options: [{text: $.t('screens.ds.grid_sidebar.chart.flyout.value'), 
+                    name: 'fieldName', otherNames: 'tableColumnId', type: 'columnSelect', 
+                    useFieldName: true, columns: {hidden: options.isEdit}}]},
+                    minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.flyout.new_values_button')
                 }
             ]
         );

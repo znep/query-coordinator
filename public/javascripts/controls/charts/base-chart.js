@@ -256,9 +256,11 @@
 
         generateFlyoutLayout: function(columns, valueColumn)
         {
-            var fCols = this._displayFormat.fixedColumns;
+            var fCols = _.isUndefined(this._displayFormat.titleFlyout) ? 
+                this._displayFormat.fixedColumns : [this._displayFormat.titleFlyout];
+
             var titleId = fCols ? fCols[0] : null;
-            columns = _.compact((this._displayFormat.seriesColumns || [])
+            columns =_.compact((this._displayFormat.seriesColumns || [])
                     .concat([valueColumn]).concat(columns));
 
             // Override if you want a different layout
@@ -266,7 +268,6 @@
 
             var layout = this._super(columns);
             var col = layout.columns[0];
-
             // Title row
             if (!$.isBlank(titleId))
             {
@@ -294,7 +295,6 @@
             //{ $item.empty(); }
             if (chartObj.hasFlyout(tcolId))
             { chartObj._flyoutConfig[tcolId].richRenderer.renderRow($item, row, true); }
-
             return $item;
         }
     }, null, 'socrataVisualization');

@@ -202,7 +202,10 @@ $.fn.awesomebubble = function(options)
     }
 
     // hook to remove ourself if the content is going away.
-    options.content.on('destroying', function() { remove(); });
+    options.content.on('destroying', function(event)
+    {
+        if (event.target === options.content.get(0)) { remove(); }
+    });
 
     // remove if clicked outside.
     $('body').on('click', function(event)

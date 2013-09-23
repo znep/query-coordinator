@@ -255,23 +255,44 @@ $chartHeight: 210px
         fill: none
         stroke-opacity: 1
         stroke: #666
+        stroke-width: 2px
+        @include transition(2s, stroke-opacity)
+
+      .burndownLineLowShadow, .burndownLineHighShadow, .projectionLineShadow
+        fill: none
+        stroke: #fbfbfb
+        stroke-opacity: 0.6
+        stroke-width: 3px
+        @include transition(2s, stroke-opacity)
+
+      .burndownLineLowShadow
+        stroke-opacity: 0.17
+        @include prefixer(transform, translateY(2px))
+
+      .burndownLineHighShadow
+        stroke-opacity: 0.17
+        @include prefixer(transform, translateY(-2px))
+
+      .burndownLineLowShadow, .burndownLineHighShadow
+        @include progress-colors(stroke)
+
+      .burndownLine
+        fill: none
+        stroke-opacity: 1
+        stroke: #888
         stroke-width: 3px
         @include transition(2s, stroke-opacity)
 
       .projectionLineShadow
-        fill: none
-        stroke: #fbfbfb
-        stroke-opacity: 0.4
-        stroke-width: 7px
-        @include transition(2s, stroke-opacity)
+        stroke-opacity: 0.2
+        stroke-width: 5px
 
       .projectionLine
-        @include progress-colors(stroke)
         fill: none
-        stroke-opacity: 0.2
+        stroke-opacity: 0.3
         stroke: #888
-        stroke-width: 3px
-        @include transition(2s, stroke-opacity)
+        stroke-dasharray: 20, 10, 5, 5, 5, 10
+        stroke-width: 2px
 
     .dataSeriesLeftBuffer, .dataSeriesRightBuffer
       background-color: #aaa
@@ -472,7 +493,7 @@ $chartHeight: 210px
       .dataSeriesLine
         stroke-opacity: 0.1
 
-      .projectionLineShadow, .projectionLine
+      .burndownLineLowShadow, .burndownLineHighShadow, .burndownLine, .projectionLineShadow, .projectionLine
         stroke-opacity: 0
 
       .dataSeriesLeftBuffer, .dataSeriesRightBuffer

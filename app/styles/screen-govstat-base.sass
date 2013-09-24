@@ -467,6 +467,33 @@ input.button, a.button
           position: absolute
           text-transform: lowercase
 
+      .goalHealth
+        bottom: 1em
+        position: absolute
+        right: 1em
+        z-index: 3
+
+        .ss-medicalcross
+          @include rounded-ends
+          background-color: $govstat_color_poor
+          color: #fff
+          font-size: 1.5em
+          height: 1.8em
+          line-height: 1.6em
+          text-align: center
+          @include transition(0.2s, background-color)
+          width: 1.8em
+
+        &:hover .ss-medicalcross
+          background-color: lighten($govstat_color_poor, 10%)
+
+        .ss-alert
+          bottom: 0.1em
+          color: $govstat_color_flat
+          position: absolute
+          right: 0.1em
+          text-shadow: -1px 0 0 #444, 0 -1px 0 #444, 1px 0 0 #444, 0 1px 0 #444
+
   .viewItem
     background-color: #bbb
 

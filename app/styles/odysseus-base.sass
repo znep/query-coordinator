@@ -224,6 +224,61 @@
     height: 0
     visibility: hidden
 
+.progressQuality
+  padding: 1.5em
+
+  &.needsAttention-true
+    .indicatorStatus
+      background-color: $govstat_color_poor
+    .indicatorName
+      color: $govstat_color_poor
+
+  .indicatorStatus
+    @include rounded-ends
+    background-color: $govstat_color_good
+    color: #fff
+    display: block
+    float: left
+    font-size: 1.6em
+    height: 1.5em
+    line-height: 1.3em
+    text-align: center
+    width: 1.5em
+
+  .indicatorName
+    color: $govstat_color_good
+    font-size: 2em
+    padding: 0.1em 1.5em
+
+  .indicatorValue
+    clear: left
+    padding: 1.4em 0
+
+    .value
+      font-size: 2.2em
+      padding-bottom: 0.15em
+
+    .unit
+      color: #777
+      font-size: 1.4em
+
+  .indicatorDescription
+    font-size: 1.3em
+    line-height: 1.2em
+
+  .awesomebubble &
+    padding-right: 20em
+    position: relative
+
+    .indicatorValue
+      position: absolute
+      right: 1em
+      text-align: right
+      top: -0.6em
+
+    .indicatorDescription
+      display: none
+
 .goalQuickEdit
   width: 75em
 

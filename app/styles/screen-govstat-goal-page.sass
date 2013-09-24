@@ -513,6 +513,41 @@ $chartHeight: 210px
       .r2d3Chart
         top: -$chartHeight !important
 
+.healthContainer
+  border-top: 1px solid #cecece
+  margin: 0 7em
+  padding: 2em 0
+
+  h2
+    font-size: 2.6em
+    font-weight: normal
+
+  .healthList
+    overflow: hidden
+    padding-top: 1em
+
+    .progressQuality
+      border-right: 1px solid #cecece
+      border-top: 1px solid #cecece
+      float: left
+      width: 31%
+
+      &:nth-child(1), &:nth-child(2), &:nth-child(3)
+        border-top: none
+
+      &:nth-child(3n)
+        border-right: none
+        float: none
+        overflow: hidden
+        width: auto
+
+.measuresContainer
+  padding: 0 7em
+
+  .relatedMeasure
+    padding: 2em 0 4em
+
+$related_measure_height: 60px
 .relatedMeasure
   border-bottom: 1px solid $color_chrome_box_border
   padding: 2em 5em 4em
@@ -531,18 +566,25 @@ $chartHeight: 210px
       line-height: 3.45em
 
   .measureBody
+    margin-top: -3em
     padding-top: 1em
     position: relative
 
     .measureChart
+      display: none
       margin-right: 40em
+      @include opacity(0.8)
 
       .chartArea
         background: transparent
+        height: $related_measure_height
         margin: 0
 
         .content-wrapper
           height: 100%
+
+          svg
+            height: $related_measure_height
 
           .xTick.bubble
             background-color: #fff
@@ -561,31 +603,29 @@ $chartHeight: 210px
             display: none
 
           .meter
+            height: $related_measure_height
             width: 4px
 
     .measureValues
       position: absolute
       right: 0
-      top: 8em
+      top: -1.6em
       width: 30em
-
-      &.hasTarget
-        top: 4.3em
 
       .metricValue
         @include progress-colors('color', '.value')
 
         .value
-          font-size: 4em
+          font-size: 2.5em
           letter-spacing: -1px
           padding-right: 0.1em
         .unit
-          color: $govstat_color_none
-          font-size: 1.5em
+          color: $govstat_color_needs_more_data
+          font-size: 1.2em
 
       .metricTime
         color: #666
-        font-size: 1.5em
+        font-size: 1.2em
 
       .currentValue
         padding-bottom: 1em
@@ -596,6 +636,35 @@ $chartHeight: 210px
 
         .metricValue .value
           color: #666
+
+  &.hasTarget
+    .measureHeader
+      margin-bottom: -1em
+      padding-top: 2em
+
+    .measureBody
+      margin-top: 0
+
+    .measureValues
+      top: -6.1em
+
+  &.hasChart
+    .measureHeader
+      margin: 0
+      padding: 0
+
+    .measureBody
+      margin-top: 0
+
+    .measureChart
+      display: block
+
+    .measureValues
+      top: 0
+
+  &.hasChart.hasTarget
+    .measureValues
+      top: -3.3em
 
 .sectionTitle
   font-size: 2em
@@ -721,5 +790,5 @@ $chartHeight: 210px
     font-size: 1em !important
 
 .narrativeContainer
-  padding: 2em 7em
+  padding: 2em 6em
 

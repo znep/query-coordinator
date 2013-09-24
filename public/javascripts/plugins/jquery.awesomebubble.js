@@ -63,7 +63,7 @@ var tryDirection = function(direction, $elem, $bubble, options, force)
 {
 // first determine our fixation point:
   // start with the naive answer.
-  var fixation = centroid($elem, invert(direction));
+  var fixation = centroid($elem, direction);
 
   // check our offsets and and adjust the fixation if necessary. also track
   // boundedness.
@@ -129,9 +129,9 @@ var tryDirection = function(direction, $elem, $bubble, options, force)
   var screenRight = screenLeft + $window.width() - 20 - options.screenMargin; // 20 for scrollbar
 
   // see if we violate bounds.
-  if ((direction == 'top') && (fixation.y - bubbleHeight < screenTop))
+  if ((direction == 'top') && (fixation.y - tipHeight - bubbleHeight < screenTop + options.screenMargin))
     return false;
-  if ((direction == 'bottom') && (fixation.y + bubbleHeight > screenBottom))
+  if ((direction == 'bottom') && (fixation.y + tipHeight + bubbleHeight > screenBottom - options.screenMargin))
     return false;
 
   // see if we need to shift sideways.
@@ -154,12 +154,13 @@ var tryDirection = function(direction, $elem, $bubble, options, force)
     $bubble.css('top', fixation.y - bubbleHeight - tipHeight + shift.y);
     $bubble.css('left', fixation.x - (bubbleWidth / 2) + shift.x);
 
+    $tip.css('top', 'auto');
     $tip.css('bottom', -tipHeight * 2);
     $tip.css('left', (bubbleWidth / 2) - (tipWidth / 2) - shift.x);
   }
   if (direction == 'bottom')
   {
-    $bubble.css('top', fixation.y + $elem.outerHeight() + tipHeight + shift.y);
+    $bubble.css('top', fixation.y + tipHeight + shift.y);
     $bubble.css('left', fixation.x - (bubbleWidth / 2) + shift.x);
 
     $tip.css('top', -tipHeight * 2);

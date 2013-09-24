@@ -445,7 +445,7 @@ blist.namespace.fetch('blist.datatypes');
         var pieces = [];
         if (!$.isBlank(v.human_address) && view.startsWith('address'))
         {
-            var a = JSON.parse(v.human_address);
+            var a = _.isString(v.human_address) ? JSON.parse(v.human_address) : v.human_address;
             if (!$.isBlank(a.address) && a.address !== '')
             { pieces.push(a.address); }
             pieces.push(_.compact([_.compact([a.city, a.state]).join(', '), a.zip]).join(' '));

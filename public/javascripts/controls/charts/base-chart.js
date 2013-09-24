@@ -189,7 +189,6 @@
             var chartObj = this;
             $(chartObj.currentDom).removeData('socrataChart');
             chartObj.$dom().empty();
-            chartObj._obsolete = true;
             return $(chartObj.currentDom).socrataChart($.extend({}, chartObj.settings,
                         { view: chartObj._primaryView }));
         },

@@ -6,10 +6,50 @@ var Model = Class.extend({
         var that = this;
         var listeners = {};
         var modelEvents = [];
+        var namespaces = {};
         that._events = {};
 
         var verifyEvent = function(evName)
         { if (!that._events[evName]) { throw 'Event ' + evName + ' not registered'; } };
+
+        // Obtains an event namespace on the current model.
+        // Given:
+        //  nsName: string name of the namespace.
+        // Returns an object with the API:
+        // {
+        //   bind(evName, func, model): Same as bind() on the model.
+        //   unbind(evName, func, model): Same as unbind() on the model.
+        //   unbindAll(): Unbinds all events in the namespace.
+        // }
+        this.getEventNamespace = function(nsName)
+        {
+            if (_.isUndefined(namespaces[nsName]))
+            {
+                var nsEvents = [];
+                var ns = {
+                    bind: function(evName, func, model)
+                    {
+                        nsEvents.push(_.toArray(arguments));
+                        return that.bind.apply(that, arguments);
+                    },
+                    unbind: function(evName, func, model)
+                    {
+                        return that.unbind.apply(that, arguments);
+                    },
+                    unbindAll: function()
+                    {
+                        _.each(nsEvents, function(args)
+                        {
+                            ns.unbind.apply(that, args);
+                        });
+                    }
+                };
+
+                namespaces[nsName] = ns;
+            }
+
+            return namespaces[nsName];
+        };
 
         this.bind = function (evName, func, model)
         {

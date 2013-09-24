@@ -16,7 +16,6 @@
                 .bind('hide', function() { currentObj._hidden = true; })
                 .bind('show', function()
                 {
-                    if (currentObj._obsolete) { return; }
                     delete currentObj._hidden;
                     if (currentObj._needsReload)
                     { currentObj.reload(); }
@@ -266,29 +265,18 @@
         ready: function()
         {
             var vizObj = this;
-
             if (!vizObj._boundViewEvents)
             {
                 var handleChange = function(forceRowReload)
                 {
-                    if (vizObj._obsolete || vizObj._doingReload || vizObj._ignoreViewChanges) { return; }
+                    if (vizObj._doingReload || vizObj._ignoreViewChanges) { return; }
                     if (forceRowReload === true)
                     { vizObj._requireRowReload = true; }
-                    if (!vizObj._initialLoad)
-                    {
-                        // Skip another changes this same render cycle
-                        vizObj._doingReload = true;
-                        _.defer(function()
-                        {
-                            delete vizObj._doingReload;
-                            vizObj.reload();
-                        });
-                    }
+                    vizObj._maybeDoInitialLoad();
                 };
                 var handleRowChange = function(rows, fullReset)
                 {
                     var ds = this;
-                    if (vizObj._obsolete) { return; }
                     if (fullReset) { handleChange(true); }
                     else if (!vizObj._hidden)
                     {
@@ -313,15 +301,92 @@
                     handleChange(true);
                 };
 
-                _.each(vizObj._dataViews, function(view)
-                { view
-                    .bind('query_change', handleQueryChange, vizObj)
-                    .bind('row_change', handleRowChange, vizObj)
-                    .bind('displayformat_change', handleChange, vizObj);
-                });
-
-                vizObj._boundViewEvents = true;
+                vizObj._boundViewEvents =
+                    vizObj._bindEventsToViews(
+                    'viewChangedEvents',
+                    vizObj._dataViews,
+                    {
+                        'query_change': handleQueryChange,
+                        'row_change': handleRowChange,
+                        'displayformat_change': handleChange
+                    }, vizObj);
             }
+
+            if (vizObj._validEvent)
+            {
+                vizObj._validEvent.unbindAll();
+            }
+
+            vizObj._validEvent =
+                vizObj._bindEventsToViews(
+                'viewReadyEvents',
+                vizObj._dataViews,
+                {
+                    'valid': _.bind(vizObj._onMakeValid, vizObj)
+                }, vizObj);
+        },
+
+        _onMakeValid: function()
+        {
+            var vizObj = this;
+            vizObj.ready();
+            vizObj._maybeDoInitialLoad();
+        },
+
+        _maybeDoInitialLoad: function()
+        {
+            var vizObj = this;
+            if (!vizObj._initialLoad)
+            {
+                // Skip another changes this same render cycle
+                vizObj._doingReload = true;
+                _.defer(function()
+                {
+                    if (vizObj._doingReload)
+                    {
+                        delete vizObj._doingReload;
+                        vizObj.reload();
+                    }
+                });
+            }
+        },
+
+        // Binds all events given in the hash to each view.
+        // Given:
+        //  nsLeafName: namespace name, will be made unique to base-visualization.
+        //  views: Array of views.
+        //  events: Hash of event names to handler functions.
+        //  model: Model to register under.
+        // Returns:
+        // An object that has the given api:
+        // {
+        //   unbindAll(): Unbinds all events bound by this call to _bindEventsToViews()
+        // }
+        _bindEventsToViews: function(nsLeafName, views, events, model)
+        {
+            var vizObj = this;
+            var baseVizEventNamespace = 'controls.base-visualization.' + nsLeafName;
+            var namespaces = [];
+            _.each(views, function(view)
+            {
+                var ns = view.getEventNamespace(baseVizEventNamespace);
+                namespaces.push(ns);
+                ns.unbindAll();
+                _.each(events, function(handler, eventName)
+                {
+                    ns.bind(eventName, handler, model);
+                });
+            });
+
+            return {
+                unbindAll: function()
+                {
+                    _.each(namespaces, function(ns)
+                    {
+                        ns.unbindAll();
+                    });
+                }
+            };
         },
 
         setView: function(newView)
@@ -340,7 +405,11 @@
             }
 
             vizObj._primaryView = newView;
-            vizObj._boundViewEvents = false;
+            if (vizObj._boundViewEvents)
+            {
+                vizObj._boundViewEvents.unbindAll();
+                delete vizObj._boundViewEvents;
+            }
             if (!$.isBlank(vizObj._primaryView))
             {
                 vizObj._dataViews.unshift(vizObj._primaryView);
@@ -356,7 +425,6 @@
         reload: function(newDF)
         {
             var vizObj = this;
-            if (vizObj._obsolete) { return; }
             if (!$.isBlank(newDF)) { vizObj._savedDF = newDF; }
 
             if (vizObj._hidden)
@@ -408,6 +476,11 @@
             delete vizObj._requireRowReload;
             delete vizObj._flyoutLayout;
             vizObj._renderedRows = 0;
+            if (vizObj._boundViewEvents)
+            {
+                vizObj._boundViewEvents.unbindAll();
+                delete vizObj._boundViewEvents;
+            }
         },
 
         reloadVisualization: function()

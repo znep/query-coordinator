@@ -275,6 +275,7 @@ $chartHeight: 210px
 
       .burndownLineLowShadow, .burndownLineHighShadow
         @include progress-colors(stroke)
+        @include transition(2s, stroke-opacity)
 
       .burndownLine
         fill: none
@@ -286,6 +287,7 @@ $chartHeight: 210px
       .projectionLineShadow
         stroke-opacity: 0.2
         stroke-width: 5px
+        @include transition(2s, stroke-opacity)
 
       .projectionLine
         fill: none
@@ -293,6 +295,7 @@ $chartHeight: 210px
         stroke: #888
         stroke-dasharray: 20, 10, 5, 5, 5, 10
         stroke-width: 2px
+        @include transition(2s, stroke-opacity)
 
     .dataSeriesLeftBuffer, .dataSeriesRightBuffer
       background-color: #aaa
@@ -542,129 +545,176 @@ $chartHeight: 210px
         width: auto
 
 .measuresContainer
+  overflow: hidden
   padding: 0 7em
 
+  &.count-1 .relatedMeasure
+    border: none
+    float: none
+    width: auto
+
+  &.count-2 .relatedMeasure
+    width: 50%
+
+    &:last-child
+      border-right: none
+      margin-right: -20px
+
   .relatedMeasure
-    padding: 2em 0 4em
+    border-top: 1px solid #cecece
+    border-right: 1px solid #cecece
+    float: left
+    margin-bottom: 3em
+    @include transition(2s, margin-bottom)
+    width: 33.333%
 
-$related_measure_height: 60px
-.relatedMeasure
-  border-bottom: 1px solid $color_chrome_box_border
-  padding: 2em 5em 4em
-  .measureHeader
-    overflow: hidden
+    &:nth-child(1), &:nth-child(2), &:nth-child(3)
+      border-top: none
 
-    .measureName
-      float: left
-      font-size: 2.6em
-      font-weight: normal
-      margin-right: 0.5em
+    &:nth-child(3n+1)
+      clear: left
 
-    .measureHeadline
-      float: left
-      font-size: 1.4em
-      line-height: 3.45em
+    &:nth-child(3n)
+      border-right: none
+      margin-right: -20px
 
-  .measureBody
-    margin-top: -3em
-    padding-top: 1em
-    position: relative
+    .wrapper
+      height: 30em
+      padding: 1.5em
+      @include transition(2s, height)
 
     .measureChart
+      bottom: 0
       display: none
-      margin-right: 40em
-      @include opacity(0.8)
-
-      .chartArea
-        background: transparent
-        height: $related_measure_height
-        margin: 0
-
-        .content-wrapper
-          height: 100%
-
-          svg
-            height: $related_measure_height
-
-          .xTick.bubble
-            background-color: #fff
-            border: 1px solid #ccc
-            color: #999
-
-            .tip
-              border-bottom-color: #ccc
-
-          .constrain .border
-            display: none
-          .nowTip
-            display: none
-
-          .pull
-            display: none
-
-          .meter
-            height: $related_measure_height
-            width: 4px
-
-    .measureValues
+      left: 0
       position: absolute
       right: 0
-      top: -1.6em
-      width: 30em
+      z-index: 0
 
-      .metricValue
-        @include progress-colors('color', '.value')
+      .chartArea
+        background: none
+        margin: 0
 
-        .value
-          font-size: 2.5em
-          letter-spacing: -1px
-          padding-right: 0.1em
-        .unit
-          color: $govstat_color_needs_more_data
-          font-size: 1.2em
+      .constrain, .pull
+        display: none
 
-      .metricTime
-        color: #666
-        font-size: 1.2em
+      .chartArea, .content-wrapper, svg, .meter
+        height: 160px
 
-      .currentValue
-        padding-bottom: 1em
+      .meter
+        width: 2px
 
-      .targetValue
-        border-top: 1px solid $color_chrome_box_border
-        padding-top: 1em
+      .marker
+        @include transition(2s, opacity)
 
-        .metricValue .value
-          color: #666
+    &.hasChart
+      .measurePull, .measureChart
+        display: block
 
-  &.hasTarget
-    .measureHeader
-      margin-bottom: -1em
-      padding-top: 2em
+    &.collapsed
+      margin-bottom: 0
 
-    .measureBody
-      margin-top: 0
+      .wrapper
+        height: 13em
 
-    .measureValues
-      top: -6.1em
+      .marker, .yTick, .xTick
+        @include opacity(0)
 
-  &.hasChart
-    .measureHeader
-      margin: 0
-      padding: 0
+      .projectionLineShadow, .projectionLine, .burndownLineLowShadow, .burndownLineHighShadow, .burndownLine
+        stroke-opacity: 0
 
-    .measureBody
-      margin-top: 0
+      .dataSeriesArea
+        fill-opacity: 0.1
 
-    .measureChart
+      .dataSeriesLine
+        stroke-opacity: 0.25
+
+      .dataSeriesLeftBuffer, .dataSeriesRightBuffer
+        @include opacity(0.05)
+
+
+.relatedMeasure
+  position: relative
+
+  @include progress-colors('background-color', '.measureProgress')
+  @include progress-colors('color', '.measureName')
+
+  *
+    position: relative
+    z-index: 1
+
+  .measureProgress
+    @include rounded-ends
+    background-color: #888
+    color: #fff
+    display: block
+    float: left
+    font-size: 1.6em
+    height: 1.5em
+    line-height: 1.3em
+    margin-top: 0.2em
+    text-align: center
+    width: 1.5em
+
+  .measureName
+    font-size: 2em
+    font-weight: normal
+    padding: 0 1.5em
+    text-shadow: 1px 1px 0 #f7f7f7
+
+  .measureValuesContainer
+    padding: 1.4em 0
+    text-shadow: 1px 1px 0 #f7f7f7
+
+    .value
       display: block
+      font-size: 2.2em
+      padding-bottom: 0.15em
 
-    .measureValues
-      top: 0
+    .unit
+      color: #777
+      font-size: 1.4em
 
-  &.hasChart.hasTarget
-    .measureValues
-      top: -3.3em
+    .targetValue, .metricTime
+      display: none
+
+  .measureHeadline
+    font-size: 1.3em
+    line-height: 1.2em
+    margin-right: 2em
+    text-shadow: 1px 1px 0 #f7f7f7
+
+  .measurePull
+    @include rounded-ends
+    background-color: #fff
+    bottom: 1em
+    @include prefixer(box-shadow, 0 0 0.5em rgba(0, 0, 0, 0.15))
+    cursor: pointer
+    display: none
+    height: 2em
+    line-height: 4em
+    position: absolute
+    right: 1em
+    text-align: center
+    width: 2em
+
+    &:hover
+      @include prefixer(box-shadow, 0 0 0.5em rgba(0, 0, 0, 0.3))
+
+    &.down
+      &:after
+        @include triangle(0.4em, #777, top)
+        content: ''
+      &:hover:after
+        border-top-color: #444
+
+    &.up
+      line-height: 0.4em
+      &:after
+        @include triangle(0.4em, #777, bottom)
+        content: ''
+      &:hover:after
+        border-bottom-color: #444
 
 .sectionTitle
   font-size: 2em

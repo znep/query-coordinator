@@ -178,7 +178,8 @@ module Canvas2
 
         when 'goalDashboard'
           begin
-            dashboard = Canvas2::Util.odysseus_request('/stat/objects/dashboard/' + config['dashboardId'])
+            dashboard = Canvas2::Util.odysseus_request('/stat/objects/dashboard/' + config['dashboardId'],
+                                                       {}, !Canvas2::Util.is_private)
           rescue CoreServer::ResourceNotFound
             errors.push(DataContextError.new(config, "No dashboard found for '" + id + "'"))
             log_timing(start_time, config)
@@ -217,7 +218,8 @@ module Canvas2
           log_timing(start_time, config)
 
         when 'goal2'
-          goal = Canvas2::Util.odysseus_request('/stat/objects/goal/' + config['goalId'])
+          goal = Canvas2::Util.odysseus_request('/stat/objects/goal/' + config['goalId'], {},
+                                               !Canvas2::Util.is_private)
           if goal.nil?
             errors.push(DataContextError.new(config, "No goal 2.0 found for '" + id + "'"))
             log_timing(start_time, config)

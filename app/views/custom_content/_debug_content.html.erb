@@ -1,6 +1,13 @@
+  <h1 style="margin-top:1em;">Errors</h1>
+
 <%- if !Canvas2::DataContext::errors.empty? -%>
-  <h2>Errors</h2>
+  <h2>Data contexts</h2>
   <pre style="font-size:1.2em;"><%= Canvas2::DataContext::errors.map {|e| e.to_s} %></pre>
+<%- end -%>
+
+<%- if !Canvas2::Util::errors.empty? -%>
+  <h2>Components</h2>
+  <pre style="font-size:1.2em;"><%= Canvas2::Util::errors.map {|e| e.to_s} %></pre>
 <%- end -%>
 
   <h1 style="margin-top:1em;">Timings</h1>

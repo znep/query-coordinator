@@ -41,6 +41,7 @@ module Canvas2
     end
 
     def self.reset
+      @@errors = []
       @@page_params = {}
       @@page_vars = {}
       @@request = nil
@@ -50,6 +51,10 @@ module Canvas2
       @@env = nil
       @@is_private = nil
       @@next_auto_id = 0
+    end
+
+    def self.errors
+      @@errors
     end
 
     def self.set_params(params)
@@ -222,13 +227,13 @@ module Canvas2
       end
 
 
-    def self.odysseus_request(path, opts = {})
+    def self.odysseus_request(path, opts = {}, is_anon = false)
       uri = URI::HTTP.build({ host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port,
                             path: path, query: opts.to_param })
       req = Net::HTTP::Get.new(uri.request_uri)
 
       req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
-      req['Cookie'] = Canvas2::Util.request.headers['Cookie']
+      req['Cookie'] = Canvas2::Util.request.headers['Cookie'] if !is_anon
 
       res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
       raise CoreServer::ResourceNotFound.new(res) if res.is_a?(Net::HTTPNotFound)

@@ -1009,9 +1009,16 @@ module Canvas2
                                              { context: context,
                                                attributes: string_substitute(@properties['attributes']),
                                                constructorOpts: string_substitute(@properties['constructorOpts'])
-        })
+        }, !Canvas2::Util.is_private)
       rescue CoreServer::ResourceNotFound
+        Canvas2::Util.errors.push(ComponentError.new(self, "GovStat item not found for #{id}: #{error_details }"))
         return ['', true]
+      rescue CoreServer::CoreServerError => e
+        if e.error_code.to_i == 401 || e.error_code.to_i == 403
+          Canvas2::Util.errors.push(ComponentError.new(self, "GovStat item permission denied for #{id}: #{error_details }"))
+          return ['', true]
+        end
+        raise e
       end
       [res['markup'], false]
     end
@@ -1023,11 +1030,19 @@ module Canvas2
       context = 'card' if context != 'card' && context != 'detail'
       ['/stat/views/goal/' + string_substitute(@properties['goalId']), context]
     end
+
+    def error_details
+      "Goal #{string_substitute(@properties['goalId'])}"
+    end
   end
 
   class GovStatDashboard < GovStat
     def get_args
       ['/stat/views/dashboard/' + string_substitute(@properties['dashboardId']), 'default']
+    end
+
+    def error_details
+      "Dashboard #{string_substitute(@properties['dashboardId'])}"
     end
   end
 
@@ -1035,6 +1050,10 @@ module Canvas2
     def get_args
       ['/stat/views/category/' + string_substitute(@properties['dashboardId']) + '/' +
         string_substitute(@properties['categoryId']), 'default']
+    end
+
+    def error_details
+      "Category #{string_substitute(@properties['categoryId'])} in dashboard #{string_substitute(@properties['dashboardId'])}"
     end
   end
 

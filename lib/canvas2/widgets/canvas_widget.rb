@@ -91,8 +91,8 @@ module Canvas2
       begin
         contents, fully_rendered, child_timings = render_contents
       rescue CoreServer::CoreServerError => e
-        raise ComponentError.new(self, "Data context '#{context[:id]}' failed: " + e.error_message,
-                                 { path: e.source, payload: JSON.parse(e.payload) })
+        raise ComponentError.new(self, "Data context '#{(context || {})[:id]}' failed: " + e.error_message,
+                                 { path: e.source, payload: JSON.parse(e.payload || '{}') })
       end
       # Tell the DataContext that the contexts used by this widget should be available
       # on the client.

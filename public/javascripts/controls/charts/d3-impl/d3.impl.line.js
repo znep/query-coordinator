@@ -25,6 +25,10 @@ $.Control.registerMixin('d3_impl_line', {
         var rangeY = scale.range();
         var rangeYMagnitude = rangeY[1] - rangeY[0];
 
+        var cc = this._chartConfig;
+        var chartContainerWidth = cc.$chartOuterContainer.width();
+        var leftEdge = Math.max(0, cc.scrollPos - cc.drawElementPosition - this.defaults.sidePaddingBounds[0]/2 - chartContainerWidth);
+
         // Account for the extra space we render above the top of the range.
         // Remember _yDatumPosition returns values in screen space, so
         // 0 is the top of the chart, and higher values go down.
@@ -34,7 +38,7 @@ $.Control.registerMixin('d3_impl_line', {
 
         rangeYMagnitude = Math.max(0, rangeYMagnitude);
 
-        return [ 0, 0, this._maxRenderWidth(), rangeYMagnitude];
+        return [ leftEdge, 0, leftEdge + chartContainerWidth * 2, rangeYMagnitude];
     },
 
     // FIXME: This trifecta of rendereres (renderAxis, rerenderPositions, and renderData)

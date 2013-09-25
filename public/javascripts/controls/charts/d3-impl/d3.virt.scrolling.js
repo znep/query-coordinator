@@ -789,7 +789,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
             return 8300000;
         }
 
-        if (this._isIE8())
+        if (!this._isIE8())
         {
             // ie9 seems to have the same cutoff as firefox.
             return 8300000;

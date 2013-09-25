@@ -440,6 +440,10 @@ input.button, a.button
             left: 2.8em
             z-index: 2
 
+      .loading .smallLoader
+        margin-top: 3em
+        @include opacity(0.6)
+
       .goalProgress
         @include clearfix
         bottom: 1em
@@ -466,6 +470,7 @@ input.button, a.button
           padding-left: 1.8em
           position: absolute
           text-transform: lowercase
+          width: 8em
 
       .goalHealth
         bottom: 1em
@@ -473,7 +478,7 @@ input.button, a.button
         right: 1em
         z-index: 3
 
-        .ss-medicalcross
+        .ss-flag
           @include rounded-ends
           background-color: $govstat_color_poor
           color: #fff
@@ -484,15 +489,8 @@ input.button, a.button
           @include transition(0.2s, background-color)
           width: 1.8em
 
-        &:hover .ss-medicalcross
+        &:hover .ss-flag
           background-color: lighten($govstat_color_poor, 10%)
-
-        .ss-alert
-          bottom: 0.1em
-          color: $govstat_color_flat
-          font-size: 1.1em
-          position: absolute
-          right: 0.1em
 
   .viewItem
     background-color: #bbb

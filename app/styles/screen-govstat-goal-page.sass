@@ -517,7 +517,6 @@ $chartHeight: 210px
         top: -$chartHeight !important
 
 .healthContainer
-  border-top: 1px solid #cecece
   margin: 0 7em
   padding: 2em 0
 
@@ -582,6 +581,11 @@ $chartHeight: 210px
       height: 30em
       padding: 1.5em
       @include transition(2s, height)
+
+    .loading
+      @include opacity(0.6)
+      position: absolute
+      width: 100%
 
     .measureChart
       bottom: 0

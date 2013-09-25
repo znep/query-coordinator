@@ -106,7 +106,14 @@
             $dom: function()
             {
                 if (!this._$dom)
-                { this._$dom = $(this.currentDom); }
+                {
+                    this._$dom = $(this.currentDom);
+                    if (this._$dom.children().length < 1)
+                    {
+                        this._$dom.append($.renderTemplate('fatRowRenderType'));
+                        this._$dom.addClass('fatRowRenderType navRenderType');
+                    }
+                }
                 return this._$dom;
             },
 
@@ -133,8 +140,11 @@
             frObj.$dom().find('.columnHeaders').outerHeight(true));
         frObj.richRenderer.adjustLayout();
         var $headers = frObj.$dom().find('.columnHeaders');
-        $headers.find('.scrollBox').toggleClass('hide',
-            $headers[0].scrollHeight <= $headers.height());
+        if ($headers.length > 0)
+        {
+            $headers.find('.scrollBox').toggleClass('hide',
+                    $headers[0].scrollHeight <= $headers.height());
+        }
     };
 
     var hookUpHeaders = function(frObj)
@@ -198,7 +208,7 @@
                 '.name': 'name!'
             });
             var $col = $columnBox.find('.info');
-            
+
             var tooltipContent = blist.datasetControls.getColumnTip(c);
 
             var tipsRef = frObj._colTips;
@@ -212,7 +222,7 @@
                 }
                 clearShowTimer(tip);
             };
-            
+
             // Make sure this is bound only once
             $col.parent().unbind('rerender.columnTip');
             $col.parent().bind('rerender.columnTip', function()

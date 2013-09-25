@@ -190,103 +190,14 @@
       <%- end -%>
     </div>
 
-    <div id="staticRenderType" class="fullHeight renderTypeNode">
+    <div class="staticRenderType fullHeight renderTypeNode">
       <%= render(:partial => @view.display.render_partial) if @view.display.render_partial %>
     </div>
 
     <%- if ( @view.is_tabular? || @view.is_geo? ) && !@view.is_form? -%>
-    <div id="fatRowRenderType" data-renderType="fatrow"
-      class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
-      <div class="columnHeaders"></div>
-      <div class="rowList"></div>
-      <ul class="navigation">
-      <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
-          @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
-        <li class="edit"><a class="button"
-          href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'richList' )) %>">
-          Edit Layout
-        </a></li>
-        <%- end -%>
-        <li><a href="#start" title="View first page" class="start button">
-          <span class="icon"></span>
-        </a></li>
-        <li><a href="#previous" title="View previous page" class="previous button">
-          <span class="icon"></span>
-        </a></li>
-        <li class="page"><a href="#page">0</a></li>
-        <li><a href="#next" title="View next page" class="next button">
-          <span class="icon"></span>
-        </a></li>
-        <li><a href="#end" title="View last page" class="end button">
-          <span class="icon"></span>
-        </a></li>
-      </ul>
-      <div class="templateRow row clearfix">
-      </div>
-    </div>
+    <%= render :partial => 'templates/fatrow' %>
 
-    <div id="pageRenderType" data-renderType="page"
-      class="pageRenderType navRenderType renderTypeNode fullHeight hide">
-      <div class="content">
-        <%- if !@row.nil? -%>
-        <div class="pageColumn">
-          <%- @view.visible_columns.each do |c| -%>
-          <div class="pageLine <%= c.renderTypeName %>">
-            <span class="pageLabel"><%= c.name %></span>
-
-            <div class="pageItem">
-              <%- cell = @row[c.id.to_s] -%>
-              <%- if c.renderTypeName == 'nested_table' -%>
-              <table>
-                <thead>
-                  <tr>
-                    <%- c.viewable_children.each do |cc| -%>
-                    <th scope="col"><%= cc.name %></th>
-                    <%- end -%>
-                  </tr>
-                </thead>
-                <tbody>
-                  <%- (cell || []).each do |cr| -%>
-                  <tr>
-                    <%- c.viewable_children.each_with_index do |cc, i| -%>
-                    <td<%= ' scope="row"' if i == 0 %>><%= seo_render(cr[cc.id], cc) %></td>
-                    <%- end -%>
-                  </tr>
-                  <%- end -%>
-                </tbody>
-              </table>
-              <%- else -%>
-              <%= seo_render(cell, c) %>
-              <%- end -%>
-            </div>
-          </div>
-          <%- end -%>
-        </div>
-        <%- end -%>
-      </div>
-      <ul class="navigation">
-        <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
-          @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
-        <li class="edit"><a class="button"
-          href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'page' )) %>">Edit Layout</a></li>
-        <%- end -%>
-        <li><a href="#start" title="<%= t('controls.grid.view_first_row') %>" class="start button">
-          <span class="icon"></span>
-        </a></li>
-        <li><a href="#previous" title="<%= t('controls.grid.view_previous_row') %>" class="previous button">
-          <span class="icon"></span>
-        </a></li>
-        <li class="info">
-          <%= t('controls.grid.viewing_row_html') %>
-        </li>
-        <li><a href="#next" title="<%= t('controls.grid.view_next_row') %>" class="next button">
-          <span class="icon"></span>
-        </a></li>
-        <li><a href="#end" title="<%= t('controls.grid.view_last_row') %>" class="end button">
-          <span class="icon"></span>
-        </a></li>
-      </ul>
-    </div>
+    <%= render :partial => 'templates/page_render_type' %>
     <%- end -%>
   </div>
 
@@ -314,7 +225,7 @@
 <%= render :partial => 'api_access' %>
 <%= render :partial => 'api_foundry' %>
 <%= render :partial => 'signed_dataset' %>
-<%= render :partial => 'fatrow_header_template' %>
+<%= render :partial => 'templates/fatrow_header' %>
 <div class="editAlertTemplate">
   <div class="editAlert">
     <p class="editMessage"><%= t('screens.ds.dataset_status.needs_copy') %></p>

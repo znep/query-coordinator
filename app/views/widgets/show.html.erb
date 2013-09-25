@@ -29,7 +29,7 @@
     <div class="widgetContentSection widgetContentGrid">
       <div id="renderTypeContainer" class="gridContainer fullHeight">
           <%- if @view.is_tabular? -%>
-          <div id="gridRenderType" data-renderType="table" class="fullHeight renderTypeNode">
+          <div data-renderType="table" class="gridRenderType fullHeight renderTypeNode">
             <noscript>
               <h3><a href="<%= view_path(@view) %>"><%= @view.name %></a></h3>
 
@@ -40,58 +40,15 @@
           </div>
           <%- end -%>
 
-          <div id="staticRenderType" class="fullHeight renderTypeNode">
+          <div class="staticRenderType fullHeight renderTypeNode">
             <%- if @display.can_publish? -%>
               <%= render(:partial => @display.render_partial) if @display.render_partial %>
             <%- end -%>
           </div>
 
-          <div id="fatRowRenderType" data-renderType="fatrow"
-            class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
-            <div class="columnHeaders"></div>
-            <div class="rowList"></div>
-            <ul class="navigation">
-              <li><a href="#start" title="View first page" class="start button">
-                <span class="icon"></span>
-              </a></li>
-              <li><a href="#previous" title="View previous page"
-                class="previous button">
-                <span class="icon"></span>
-              </a></li>
-              <li class="page"><a href="#page">0</a></li>
-              <li><a href="#next" title="View next page" class="next button">
-                <span class="icon"></span>
-              </a></li>
-              <li><a href="#end" title="View last page" class="end button">
-                <span class="icon"></span>
-              </a></li>
-            </ul>
-            <div class="templateRow row clearfix">
-            </div>
-          </div>
+          <%= render :partial => 'templates/fatrow' %>
 
-          <div id="pageRenderType" data-renderType="page"
-            class="pageRenderType navRenderType fullHeight renderTypeNode hide">
-            <div class="content"></div>
-            <ul class="navigation">
-              <li><a href="#start" title="View first row" class="start button">
-                <span class="icon"></span>
-              </a></li>
-              <li><a href="#previous" title="View previous row"
-                class="previous button">
-                <span class="icon"></span>
-              </a></li>
-              <li class="info">
-                <%= t('controls.grid.viewing_row_html') %>
-              </li>
-              <li><a href="#next" title="View next row" class="next button">
-                <span class="icon"></span>
-              </a></li>
-              <li><a href="#end" title="View last row" class="end button">
-                <span class="icon"></span>
-              </a></li>
-            </ul>
-          </div>
+          <%= render :partial => 'templates/page_render_type' %>
 
           <div class="viewErrorContainer content">
             <%- if current_user && (current_user.id == @view.owner.id) -%>
@@ -196,7 +153,7 @@
 <% content_for :templates do %>
   <%= render :partial => 'filters_table_template' %>
   <%= render :partial => 'datasets/downloads_table_template' %>
-  <%= render :partial => 'datasets/fatrow_header_template' %>
+  <%= render :partial => 'templates/fatrow_header' %>
   <%= render :partial => 'templates/feed', :locals => { :allow_comments => true } %>
   <%= render :partial => 'datasets/flag_message' %>
 <% end %>

@@ -17,13 +17,6 @@ html, body
 .headerBar
   height: 4em
 
-  .ie7 &,
-  .ie6 &
-    // ie6, 7 keep nested relatives in independent z-indexes;
-       this was making the menu appear below the grid.
-    position: relative
-    z-index: 51
-
   h1.logo
     @include text-hiding
     background-image: $logo_image
@@ -107,8 +100,6 @@ html, body
                 left: 4em
                 right: 1em
               position: relative
-              .ie6 &
-                width: 13em
 
               .icon
                 left: 1em
@@ -135,8 +126,6 @@ html, body
                 font-size: 1.1em
                 font-weight: normal
                 padding: 1em
-                .ie6 &
-                  width: 17em
 
                 .icon
                   display: none
@@ -148,13 +137,6 @@ html, body
   background-color: $color_toolbar_color
   margin: 0 $frame_padding
   padding: 0.2em
-
-  .ie7 &,
-  .ie6 &
-    // ie6, 7 keep nested relatives in independent z-indexes;
-       this was making the menu appear below the grid.
-    position: relative
-    z-index: 50
 
   li.subHeaderAction
     @include sprite-menu-icons
@@ -174,11 +156,6 @@ html, body
 
     .ie &.datasetName
       margin: 0.2em
-    .ie6 &
-      height: 13px
-      width: 13px
-      &.datasetName
-        width: auto
 
     &.datasetName
       padding: 0.4em 0.2em
@@ -237,9 +214,6 @@ html, body
       border: none
       padding: 0.2em 0.4em
       width: 100%
-      .ie6 &
-        font-size: 1.1em
-        width: 98% /* when IE tries 100%, it calculates it wrong */
 
   .toolbarAboutBox
     margin-right: 2em
@@ -292,10 +266,6 @@ html, body
     overflow-y: auto
     overflow-x: hidden
 
-    // fix IE6/7 scrolling bug
-    .ie6 &, .ie7 &
-      position: relative
-
   .widgetContentGrid
     display: block
     overflow-y: hidden
@@ -304,20 +274,11 @@ html, body
       // make layers box position properly
       position: relative
 
-      #mapRenderType
+      .mapRenderType
         // make bing maps position properly
         position: relative
 
-      #calendarRenderType
-        // make IE7 display and scroll the calendar properly
-        .ie7 &.fc
-          height: auto !important
-          margin-right: 20px
-          position: relative
-          .fc-header, .fc-content
-            position: relative
-
-      #pageRenderType > .divider
+      .pageRenderType > .divider
         display: block
 
     .viewErrorContainer
@@ -331,8 +292,6 @@ html, body
         padding: 3em 0 1em
       .invalidActions li
         display: inline-block
-        .ie7 &
-          display: inline
 
   .widgetContent_views,
   .widgetContent_downloads
@@ -402,10 +361,6 @@ html, body
       margin-left: 6em
     #page_size
       width: 18em
-      .ie6 &
-        margin-bottom: 1em
-        left: 6em
-        position: relative
 
     .margins .line label
       width: 4em

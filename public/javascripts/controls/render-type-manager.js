@@ -60,6 +60,8 @@
                         settings.fatrow));
             },
             javascripts: [{assets: 'shared-richRenderers'}],
+            templates: ['fatrow', 'fatrow_header'],
+            translations: ['screens.ds.column_tip', 'controls.grid'],
             reset: function()
             {
                 this.$dom.children('.renderContent').removeData()
@@ -76,6 +78,7 @@
             domId: 'pageRenderType',
             initFunction: 'pageRenderType',
             javascripts: [{assets: 'shared-richRenderers'}],
+            templates: ['page_render_type'],
             reset: function()
             {
                 this.$dom.children('.renderContent').removeData()
@@ -350,7 +353,7 @@
         var $dom = typeInfo.$dom;
         if ($.isBlank($dom))
         {
-            $dom = rtmObj.$dom().find('#' + typeInfo.domId);
+            $dom = rtmObj.$dom().find('.' + typeInfo.domId);
             if ($dom.length < 1)
             {
                 // We want to create the DOM nodes in the order they appear in
@@ -368,14 +371,15 @@
                     if ($r.length > 0) { $beforeItem = $r; }
                 }
 
-                var $newNode = $.tag({tagName: 'div', id: typeInfo.domId,
-                    'class': ['fullHeight', 'renderTypeNode', 'hide'], 'data-renderType': type});
+                var $newNode = $.tag2({ _: 'div',
+                    className: ['fullHeight', 'renderTypeNode', 'hide', typeInfo.domId],
+                    'data-renderType': type });
                 if ($.isBlank($beforeItem) || $beforeItem.length < 1)
                 { rtmObj.$dom().append($newNode); }
                 else
                 { $beforeItem.before($newNode); }
 
-                $dom = rtmObj.$dom().find('#' + typeInfo.domId);
+                $dom = rtmObj.$dom().find('.' + typeInfo.domId);
             }
 
             if ($dom.children('.renderContent').length < 1)

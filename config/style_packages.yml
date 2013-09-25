@@ -105,6 +105,8 @@ browse-control:
 - screen-browse
 - rich-render-types
 rich-render-bundle:
+- table-core
+- dataset-grid
 - rich-render-types
 render-images-bundle:
 - render-type-images

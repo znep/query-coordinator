@@ -1,0 +1,29 @@
+<div data-renderType="fatrow" class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
+  <div class="columnHeaders"></div>
+  <div class="rowList"></div>
+  <ul class="navigation">
+  <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
+        !@view.nil? && @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
+    <li class="edit"><a class="button"
+      href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'richList' )) %>">
+      Edit Layout
+    </a></li>
+    <%- end -%>
+    <li><a href="#start" title="View first page" class="start button">
+      <span class="icon"></span>
+    </a></li>
+    <li><a href="#previous" title="View previous page" class="previous button">
+      <span class="icon"></span>
+    </a></li>
+    <li class="page"><a href="#page">0</a></li>
+    <li><a href="#next" title="View next page" class="next button">
+      <span class="icon"></span>
+    </a></li>
+    <li><a href="#end" title="View last page" class="end button">
+      <span class="icon"></span>
+    </a></li>
+  </ul>
+  <div class="templateRow row clearfix">
+  </div>
+</div>
+

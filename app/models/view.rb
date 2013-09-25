@@ -977,10 +977,15 @@ class View < Model
 
     # If we have a display attempt to load the implementing class
     if dt
-      begin
-        display_class = Displays.const_get(dt.camelize)
-      rescue NameError
-        Rails.logger.info "Ignoring invalid display type #{dt}"
+      # Hack around Page being a different top-level class
+      if dt.camelize == 'Page'
+        display_class = Displays::Page
+      else
+        begin
+          display_class = Displays.const_get(dt.camelize)
+        rescue NameError
+          Rails.logger.info "Ignoring invalid display type #{dt}"
+        end
       end
     end
 

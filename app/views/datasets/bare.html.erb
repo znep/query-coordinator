@@ -9,29 +9,20 @@
   <body data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
     <div class="outerContainer">
       <div id="renderTypeContainer">
-        <div id="staticRenderType" class="fullHeight renderTypeNode hide">
+        <div class="staticRenderType fullHeight renderTypeNode hide">
           <%= render(:partial => @view.display.render_partial) if @view.display.render_partial %>
         </div>
 
         <%- if @view.is_tabular? && !@view.is_form? -%>
-        <div id="fatRowRenderType" data-renderType="fatrow"
-          class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
-          <div class="columnHeaders"></div>
-          <div class="rowList"></div>
-          <div class="templateRow row clearfix">
-          </div>
-        </div>
+        <%= render :partial => 'templates/fatrow' %>
 
-        <div id="pageRenderType" data-renderType="page"
-          class="pageRenderType navRenderType renderTypeNode fullHeight hide">
-          <div class="content"></div>
-        </div>
+        <%= render :partial => 'templates/page_render_type' %>
         <%- end -%>
       </div>
     </div>
 
     <div id="templates">
-      <%= render :partial => 'fatrow_header_template' %>
+      <%= render :partial => 'templates/fatrow_header' %>
     </div>
     <%= render_translations %>
 

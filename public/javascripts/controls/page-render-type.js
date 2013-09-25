@@ -116,7 +116,14 @@
             $dom: function()
             {
                 if (!this._$dom)
-                { this._$dom = $(this.currentDom); }
+                {
+                    this._$dom = $(this.currentDom);
+                    if (this._$dom.children().length < 1)
+                    {
+                        this._$dom.append($.renderTemplate('pageRenderType'));
+                        this._$dom.addClass('pageRenderType navRenderType');
+                    }
+                }
                 return this._$dom;
             },
 

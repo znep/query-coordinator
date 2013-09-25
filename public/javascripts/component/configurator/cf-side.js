@@ -33,6 +33,7 @@
                         { typeName: 'Container', catalogName: 'Vertical Layout', icon: 'VerticalContainer' },
                         { typeName: 'HorizontalContainer', catalogName: 'Horizontal Layout',
                             icon: 'HorizontalContainer' },
+                        { typeName: 'Visualization', catalogName: 'Visualize', icon: 'Visualization' },
                         { typeName: 'Map', catalogName: 'Base Map' },
                         { typeName: 'MapLayer', catalogName: 'Map Layer' }
                     ].concat(_.select($.component.catalog.data.entries, function(e)

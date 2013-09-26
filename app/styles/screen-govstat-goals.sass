@@ -684,12 +684,23 @@ $wizard_border_color: #ccc
 
   .measureSummary
     line-height: 4em
+    position: relative
+
+    .revertSummary
+      position: absolute
+      right: 1em
+      top: 1em
+      z-index: 1
 
     .inputWrapper
       display: block
 
+    .summary
+      margin-right: 14em
+
     input
       font-size: 2em
+      text-align: left
 
   .addMeasure.button
     margin-bottom: 2em

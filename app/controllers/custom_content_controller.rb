@@ -170,8 +170,15 @@ class CustomContentController < ApplicationController
 
     end
 
-    # suppress govstat chrome on homepage for 1.5
-    @suppress_govstat = true if CurrentDomain.feature?(:govstat_15) and full_path == '/'
+    if CurrentDomain.feature?(:govstat_15)
+      # suppress govstat chrome on homepage for 1.5
+      @suppress_govstat = true if full_path == '/'
+
+      # suppress govstat chrome for selected urls
+      config = CurrentDomain.configuration('gov_stat')
+      suppress_govstat = config.nil? ? nil : config.properties.suppress_govstat
+      @suppress_govstat = true if !suppress_govstat.nil? && suppress_govstat.respond_to?(:any?) && suppress_govstat.any?{ |route| request.path =~ Regexp.new(route) }
+    end
 
     # Make sure action name is always changed for homepage, even if cached
     self.action_name = 'homepage' if full_path == '/'

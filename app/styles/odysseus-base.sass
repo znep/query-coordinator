@@ -167,6 +167,9 @@
       width: 100%
 
   .facetTypes
+    float: left
+    margin-right: 1em
+
     ul
       overflow: hidden
       width: 40.4em
@@ -206,6 +209,40 @@
 
     .type-calendars, .type-href, .type-forms
       display: none
+
+  .facetCategories
+    float: left
+    margin-top: 0.4em
+
+    .selectWrapper
+      background-color: #999
+      @include prefixer(border-radius, 0.2em)
+      min-width: 17em
+      position: relative
+
+      .selectValue
+        color: #fff
+        font-size: 1.5em
+        height: 2.05em
+        line-height: 2em
+        padding-left: 1em
+        padding-right: 2.4em
+
+      &:after
+        @include triangle(0.5em, #fff, top)
+        content: ''
+        position: absolute
+        right: 0.8em
+        top: 1.3em
+
+      select
+        @include opacity(0)
+        height: 100%
+        left: 0
+        position: absolute
+        top: 0
+        width: 100%
+        z-index: 99
 
   .noResultsMessage
     font-size: 1.4em
@@ -724,7 +761,7 @@
           @include prefixer(box-shadow, none)
 
     &.active
-      min-height: 65em
+      min-height: 68em
 
       .vizContainer
         @include prefixer(filter, blur(0.4em))

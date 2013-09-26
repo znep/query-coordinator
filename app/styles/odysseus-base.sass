@@ -1148,7 +1148,7 @@
         text-shadow: 0 0 0.15em rgba(0, 0, 0, 1)
         width: 100%
 
-  .dashboardDescription, .gridFlowLayoutNew
+  .dashboardDescription, .dashboardPermissions, .gridFlowLayoutNew
     position: relative
     z-index: 2
 
@@ -1213,16 +1213,31 @@
         width: 100%
         z-index: 3
 
+  .dashboardEditHeader
+    border-bottom: 1px solid #777
+    color: #777
+    font-size: 1.6em
+    font-weight: normal
+    margin-bottom: 0.7em
+    padding: 0.3em 0
+
   .dashboardDescription
+    .dashboardEditHeader
+      margin-right: -2.5em
+
+    .dashboardEditText
+      font-size: 1.4em
+      padding-bottom: 2em
+
     margin: 4em
-      bottom: 5em
+      bottom: 2em
       left: 0
 
     textarea
       background: none
-      background-color: rgba(255, 255, 255, 0.5)
+      background-color: #ccc
       border: none
-      border: 2px dotted #333
+      @include border-radius(0.15em)
       font-family: 'myriad pro'
       font-size: 2em
       height: 12em
@@ -1238,6 +1253,22 @@
       padding: 0.2em 0
       text-align: center
       text-transform: uppercase
+
+  .dashboardPermissions
+    overflow: hidden
+    padding: 0.5em 0 3em
+
+    .stateToggle
+      float: right
+      padding: 1em 0
+
+    .stateTitle
+      color: #000
+      font-size: 1.6em
+      padding: 0.5em 0
+
+    .stateDescription
+      font-size: 1.4em
 
   .categoryList > ul > li
     position: relative

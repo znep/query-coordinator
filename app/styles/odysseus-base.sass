@@ -136,16 +136,17 @@
 
 .catalog
   .catalogFacets
+    overflow: hidden
     padding-bottom: 1em
     position: relative
 
   .facetQuery
     background-color: #999
     @include prefixer(border-radius, 0.2em)
-    left: 42em
-    position: absolute
-    right: 0
-    top: 1.9em
+    float: left
+    margin-right: 1em
+    margin-top: 0.4em
+    width: 33em
 
     &:before
       color: #fff
@@ -968,6 +969,12 @@
   .defaultDashboard .dashboard
     .dashboardHeader, .dashboardDescription
       display: none
+
+.siteContentWrapper .subnavigationWrapper
+  margin: -2em -4em 2em
+
+  .subnavigation
+    margin: 0
 
 .subnavigation
   position: relative

@@ -151,6 +151,7 @@ protected
       reports = Page.find('$order' => ':updated_at desc', 'status' => 'all',
         '$select' => 'name,path,content,metadata,:updated_at')
     end
+    reports.select! { |r| r.path.start_with?('/reports/') }
     own_reports = []
     other_reports = []
     reports.each do |r|

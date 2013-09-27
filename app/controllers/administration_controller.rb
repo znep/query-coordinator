@@ -110,7 +110,9 @@ class AdministrationController < ApplicationController
       flash[:error] = "Path already exists; please choose a different one"
       return redirect_to :action => 'create_canvas_page', :path => url, :title => title
     end
-    res = Page.create({:path => url, :name => title})
+    args = { :path => url, :name => title }
+    args[:grouping] = 'report' if CurrentDomain.module_enabled?(:govStat)
+    res = Page.create(args)
     redirect_to res.path + '?_edit_mode=true'
   end
 

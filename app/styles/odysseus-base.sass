@@ -340,32 +340,61 @@
     .title
       width: 71em
 
-  .prevailingMadLib
+  .cardDetails
     background: #f7f7f7 url(/stylesheets/images/content/noise.png)
     @include prefixer(border-radius, 0 0 0.2em 0.2em)
-    font-size: 0.6em
     margin: -0.9em
       top: 0
-    padding: 1em
-    text-align: center
+    overflow: hidden
 
-    .madlib
-      line-height: 5em
-      padding-bottom: 2.5em
+    .detailSection
+      float: left
+      width: 50%
 
-      .custom
-        margin-bottom: 0.1em
+      .wrapper
+        padding: 2em
 
-      select
-        font-size: 2em
+      .detailHeader
+        font-size: 1.5em
+        padding-bottom: 0.5em
 
-      .inputWrapper label
-        bottom: -1.4em
-        font-size: 1.8em
+      .iconSelect
+        height: 15em
+        overflow-y: auto
 
-      .inputWrapper .squishyDateEdit
-        height: 3.5em
-        margin-top: 1.5em
+    .detailSection.icon
+      border-right: 1px solid $color_chrome_box_border
+      margin-right: -1px
+
+    .detailSection.privacy
+      .stateDescription
+        padding: 0.7em 0
+
+      .stateToggle
+        float: none
+        padding: 0.5em 0
+
+        .button
+          margin: 0
+
+.iconSelect
+  .listEnum
+    overflow: hidden
+    .iconWrapper
+      float: left
+
+      .icon
+        cursor: pointer
+        font-size: 1.5em
+        padding: 0.25em
+
+        &.ss-
+          height: 1.2em
+          width: 1em
+
+        &.selected, &:hover
+          background-color: $govstat_color_none
+          color: #fff
 
 .narratives
   .addNarrative

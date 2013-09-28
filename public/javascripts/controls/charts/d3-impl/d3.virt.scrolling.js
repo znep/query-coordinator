@@ -302,7 +302,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
         else
         {
             // TODO implement this case if needed later.
-            $.assert(hasOverlayContainer, 'Clearing overlay not supported in this case.');
+            if(!hasOverlayContainer)
+            {
+                this.debugOut('Clearing overlay not supported in this case.');
+                return;
+            }
             $targetElement.css('visibility', 'collapse');
         }
     },

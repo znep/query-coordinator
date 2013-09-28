@@ -891,8 +891,19 @@ d3base.seriesGrouping = {
             else
             {
                 var displayFormatColors = vizObj._displayFormat.colors || blist.defaultColors;
-
                 var colIndex = valueColumn.column.position;
+
+                _.find(vizObj._displayFormat.valueColumns, function(c, i)
+                {
+                    if ((!_.isUndefined(c.fieldName) && c.fieldName === valueColumn.fieldName) ||
+                        (!_.isUndefined(c.lookup) && c.lookup === valueColumn.lookup))
+                    {
+                        colIndex = i;
+                        return true;
+                    }
+                    return false;
+                });
+
                 var repGroup = Math.floor(colIndex / displayFormatColors.length);
                 var baseIndex = colIndex - (repGroup * displayFormatColors.length);
 

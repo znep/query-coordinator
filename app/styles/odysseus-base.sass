@@ -1455,7 +1455,6 @@
       margin-left: 21.4em
 
 
-$requestBubbleColor: rgba(0, 0, 0, 0.7)
 #requestStatus
   bottom: -2em
   position: fixed
@@ -1471,46 +1470,125 @@ $requestBubbleColor: rgba(0, 0, 0, 0.7)
 
     .bubble
       background-color: #333
-      background-color: $requestBubbleColor
+      background-color: rgba(247, 247, 247, 0.9)
       @include prefixer(border-radius, 0.2em)
       bottom: 12em
-      color: #fff
+      color: $govstat_color_needs_more_data
       max-width: 30em
+      min-height: 5em
       min-width: 25em
       right: 3em
-      @include prefixer(box-shadow, 0 0 0.4em rgba(0, 0, 0, 0.3))
-      padding: 2em
+      @include prefixer(box-shadow, 0 0 0.4em rgba(0, 0, 0, 0.6))
       position: absolute
 
       &:after
-        @include triangle(1em, $requestBubbleColor, top)
+        @include triangle(1em, #f7f7f7, top)
         bottom: -2em
         content: ''
         right: 1em
         position: absolute
+        z-index: 10003
 
-      .socketStatus, .requestStatus
-        font-size: 1.4em
-        line-height: 1.2em
+      &:before
+        @include triangle(1.1em, rgba(0, 0, 0, 0.3), top)
+        bottom: -2.2em
+        content: ''
+        right: 0.9em
+        position: absolute
+        z-index: 10002
+
+      .token
+        font-size: 2.5em
+        left: 50%
+        margin-left: -0.7em
+        @include opacity(0)
+        position: absolute
+        top: 0.35em
+        @include transition(0.1s, opacity)
+
+        &.active
+          @include opacity(0.2)
+
+      .status, .additional, .socketStatus
         max-height: 0
         overflow: hidden
-        @include transition(0.3s, color max-height padding)
+        @include transition(0.5s, max-height)
+
+      .active .status, .socketStatus.active, .additional.active
+        max-height: 6em
+
+      .requestStatus, .socketStatus
+        padding: 0 1.3em
+        @include transition(0.3s, color padding border-color)
 
         &.active
-          max-height: 2.4em
+          padding: 1em 1.3em
 
       .requestStatus
-        padding: 0
+        border-top: 1px solid #f7f7f7
+        overflow: hidden
+
+        &:first-child
+          border-top: none
 
         &.active
-          padding-bottom: 0.5em
+          border-top-color: #cecece
 
-          &:last-child
-            padding-bottom: 0
+      .text
+        font-size: 1.3em
+        padding-top: 0.4em
 
-      .socketStatus, .notOkay
-        color: #ffb2b2
+      .icon
+        float: left
+        font-size: 2em
+        height: 1.1em
+        margin-right: 0.4em
+        overflow: hidden
+        width: 1em
 
-      .okay
-        color: #b6e685
+        > *
+          height: 1em
+          padding-bottom: 0.3em
+          width: 1em
+
+        .ss-check, .ss-wifi
+          @include transition(0.3s, margin-top)
+
+        .ss-check
+          margin-top: -1.3em
+        .ss-wifi
+          margin-top: 0
+
+      .additional
+        .button.dismiss
+          float: right
+          font-size: 1em
+          margin: 0
+            left: 0.8em
+
+        .failedRequest
+          font-size: 1.1em
+          padding: 0.3em 0
+
+          .code
+            font-size: 0.8em
+            margin-top: 0.4em
+            overflow-x: auto
+            overflow-y: hidden
+
+      .okay .icon .ss-wifi
+        margin-top: -1.3em
+      .okay .icon .ss-check
+        margin-top: 0
+      .notOkay .icon .ss-check
+        margin-top: -2.6em
+
+      .socketStatus, .notOkay, .ss-delete, .ss-wifi
+        color: $govstat_color_poor
+
+      .ss-loading
+        color: $govstat_color_needs_more_data
+
+      .okay, .ss-check, .ss-flash
+        color: $govstat_color_good
 

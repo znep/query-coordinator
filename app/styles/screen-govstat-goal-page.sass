@@ -578,9 +578,10 @@ $chartHeight: 210px
       margin-right: -20px
 
     .wrapper
-      height: 30em
+      min-height: 13em
       padding: 1.5em
-      @include transition(2s, height)
+        bottom: 16.5em
+      @include transition(2s, padding-bottom)
 
     .loading
       @include opacity(0.6)
@@ -619,7 +620,7 @@ $chartHeight: 210px
       margin-bottom: 0
 
       .wrapper
-        height: 13em
+        padding-bottom: 1.5em
 
       .marker, .yTick, .xTick
         @include opacity(0)

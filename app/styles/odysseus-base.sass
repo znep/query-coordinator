@@ -739,6 +739,16 @@
       .fullHeight
         height: 100%
 
+      &.multipleRenderers
+        > .renderTypeNode
+          display: none
+
+          &:first-child
+            display: block
+
+            > .divider
+              display: none
+
     .exploreLink
       padding: 0.4em 0
       text-align: right

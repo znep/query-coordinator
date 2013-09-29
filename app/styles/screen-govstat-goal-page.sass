@@ -521,12 +521,22 @@ $chartHeight: 210px
   padding: 2em 0
 
   h2
+    float: left
     font-size: 2.6em
     font-weight: normal
+    margin-right: 0.5em
+
+  p
+    font-size: 1.4em
+    padding-top: 1.2em
 
   .healthList
+    clear: both
     overflow: hidden
     padding-top: 1em
+
+    &.governance
+      padding-bottom: 1.5em
 
     .progressQuality
       border-right: 1px solid #cecece
@@ -542,6 +552,31 @@ $chartHeight: 210px
         float: none
         overflow: hidden
         width: auto
+
+    &.count-1
+      .progressQuality
+        border: none
+        float: none
+        width: auto
+
+    &.count-2, &.count-4
+      .progressQuality
+        width: 49%
+
+        &:nth-child(3)
+          border-top: 1px solid #cecece
+
+        &:nth-child(3n)
+          border-right: 1px solid #cecece
+          float: left
+          overflow: visible
+          width: 49%
+
+        &:nth-child(2n)
+          border-right: none
+          float: none
+          overflow: hidden
+          width: auto
 
 .measuresContainer
   overflow: hidden

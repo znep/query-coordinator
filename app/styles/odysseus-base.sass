@@ -671,6 +671,7 @@
     p
       line-height: 1.5em
       padding-bottom: 1em
+      word-break: break-all
 
     ul
       list-style-type: circle
@@ -887,13 +888,19 @@
         font-size: 1.6em
         text-align: left
 
+.awesomebubble .confirmDialog
+  .message
+    font-size: 1.4em
+    max-width: 25em
+    padding: 0.8em 1em
+
 .awesomebubble
   background-color: #fff
   @include prefixer(border-radius, 0.2em)
   @include prefixer(box-shadow, 0 0 1.2em rgba(0, 0, 0, 0.6))
   padding: 0.8em
   position: absolute
-  z-index: 1001
+  z-index: 5001
 
   .awesometip
     position: absolute
@@ -1059,7 +1066,7 @@
   position: relative
 
   &.sticky
-    @include prefixer(background-color, rgba(231, 231, 231, 0.95))
+    background-color: rgba(231, 231, 231, 0.95)
     @include prefixer(box-shadow, 0 0 0.6em rgba(0, 0, 0, 0.4))
     left: 0
     margin: 0
@@ -1067,6 +1074,9 @@
     top: 0
     right: 0
     z-index: 2000
+
+    &.edited
+      background-color: rgba(231, 226, 196, 0.95)
 
     + *
       margin-top: 4em
@@ -1252,6 +1262,8 @@
 
 .subnavigation.dashboardEdit.sticky
   background-color: #e7e7e7 // knock out the alpha for perf reasons
+  &.edited
+    background-color: #e7e2c4
 
 .dashboardPage.edit
   .dashboardHeader
@@ -1462,7 +1474,7 @@
 
   .newGoal.active + .goalList.personalGoals ul
     > .singleItemWrapper:first-child, > .ui-sortable-helper:first-child + .singleItemWrapper
-      margin-left: 21.4em
+      margin-left: 21.4em // there is a chrome browser bug here.
 
 
 #requestStatus

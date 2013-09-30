@@ -3,6 +3,13 @@
   border-bottom: 2px solid
   margin: -2em -4em 4em
   padding: 2em
+  @include transition(0.3s, background-color)
+
+  &.edited
+    background-color: #e7e2c4
+
+    .breadcrumb li.edited
+      display: block
 
   .breadcrumb
     @include clearfix
@@ -38,6 +45,12 @@
           color: #b9b9b9
           font-size: 2em
           line-height: 1.3em
+
+      &.edited
+        color: #615712
+        display: none
+        font-size: 1.6em
+        padding-top: 0.2em
 
 .canvas_nav
   font-size: 1em

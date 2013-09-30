@@ -90,6 +90,38 @@ body.configuring
     height: 100%
     overflow: auto
 
+.componentCreate
+  @include component-icons
+  float: left
+  height: 80px
+  margin: 4px 0
+  @include opacity(.8)
+  width: 80px
+  &:hover
+    @include opacity(1)
+  .icon
+    @include border-radius(2px)
+    @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
+    height: 48px
+    margin: 0 16px 6px 16px
+    width: 48px
+  .label
+    color: #333333
+    cursor: move
+    display: block
+    font-size: 1.1em
+    margin-top: 0.2em
+    text-align: center
+  .icon, .label
+    cursor: move
+  &.ieDrag
+    height: auto
+    list-style: none
+    width: auto
+    .icon
+      background-color: #333333
+      margin: 0 0 6px
+
 #gridSidebar.socrata-cf-side
   background-color: #ffffff
   border: none
@@ -128,31 +160,6 @@ body.configuring
         left: 0.75em
         right: 2.5em
       padding-bottom: 0.5em
-
-  .componentCreate
-    @include component-icons
-    float: left
-    height: 80px
-    margin: 4px 0
-    @include opacity(.8)
-    width: 80px
-    &:hover
-      @include opacity(1)
-    .icon
-      @include border-radius(2px)
-      @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
-      height: 48px
-      margin: 0 16px 6px 16px
-      width: 48px
-    .label
-      color: #333333
-      cursor: move
-      display: block
-      font-size: 1.1em
-      margin-top: 0.2em
-      text-align: center
-    .icon, .label
-      cursor: move
 
   // Different select to make sure bkg color is overridden
   .sectionContent .componentCreate .icon

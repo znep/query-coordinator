@@ -246,8 +246,9 @@ var startIEDrag = function($node)
     $('body').append($ieDragImage);
     $('body').on('drag.ieDragImage', function(e)
     {
+        // Slight offset in position so it isn't dragging onto itself
         if (!$.isBlank($ieDragImage))
-        { $ieDragImage.css({'left': e.originalEvent.pageX, 'top': e.originalEvent.pageY}); }
+        { $ieDragImage.css({'left': e.originalEvent.pageX + 1, 'top': e.originalEvent.pageY + 1}); }
     });
 };
 

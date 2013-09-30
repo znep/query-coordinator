@@ -10747,7 +10747,9 @@ d3 = function() {
     node.removeRaphaelNode(true);
     this.domNode.removeChild(node.domNode);
     if (!this.domNode) {
-      alert("oh shit");
+      // gferrari 9/30/2013: So uh apparently r2d3 swears to its user sometimes.
+      // As awesome as this is we probably shouldn't risk it. Damn.
+      //alert("oh shit");
     }
     return node;
   };

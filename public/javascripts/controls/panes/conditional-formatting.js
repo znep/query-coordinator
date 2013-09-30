@@ -336,7 +336,8 @@
     }, {name: 'conditionalFormatting'}, 'controlPane');
 
 
-    var isNewVisualize = ($.urlParam(window.location.href, 'visualize') == 'nextgen'|| blist.configuration.newChartConfig);
+    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
+    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
     if (!isNewVisualize)
     { 
         if ($.isBlank(blist.sidebarHidden.visualize) ||

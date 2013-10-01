@@ -142,7 +142,8 @@ it:
           main: Risultati %{body}
           term: per "%{term}"
     charts:
-      other: Altro
+      negatives_in_data: 
+      no_data: 
       series_grouping:
         calculating_time: Calcolo del tempo rimanente in corso...
         calculation_running: Preparazione dati
@@ -158,6 +159,7 @@ it:
         rendering_progress_minutes: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} minuti.'
         rendering_progress_seconds: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} secondi.'
         resume_rendering: Riprendi
+      zero_only_data: 
     common:
       auth_required: Devi effettuare l'accesso per %{action_phrase}
       dataset_picker:
@@ -622,6 +624,14 @@ it:
       no_permission: Nessun permesso di accesso alla risorsa.
       were_sorry: Siamo spiacenti, ma sembra che non hai il permesso di accedere a questa pagina.
     to_whence_you_came: da dove sei venuto.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: 
+          account_tooltip: 
+          my_goals: 
+          my_goals_tooltip: 
   screens:
     about:
       actions: Azione
@@ -845,7 +855,10 @@ it:
             prompt: Scegli un colore
           column_select:
             from_grid: Seleziona una colonna dalla griglia
+            none_selected: 
+            nonselectable: 
             prompt: Seleziona una colonna
+            selectable: 
             unselect: Deseleziona una colonna
           datatypes:
             checkbox: casella di spunta
@@ -903,13 +916,21 @@ it:
         chart:
           advanced: Configurazione Avanzata
           annotation: Annotazione
+          auto_update_sort: 
+          auto_update_sort_button: 
+          auto_update_sort_info_donut: 
+          auto_update_sort_info_pie: 
           axes:
+            title: 
             x_axis_title: Titolo Asse X
             x_axis_title_prompt: Inserisci un titolo per l'asse x
             y_axis_title: Titolo Asse Y
             y_axis_title_prompt: Inserisci un titolo per l'asse y
           base_color: Colore base
           categories: Categorie
+          cdlfmtg_color_override_html: 
+          color_options:
+            column_colors: 
           color_override_html: I colori possono essere sostituiti utilizzando <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione Condizionale</a>. Clicca <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">qui</a> per cancellare ogni attuale regola di formattazione condizionale.
           colors: Colori
           configuration: Configurazioni
@@ -917,23 +938,35 @@ it:
             new_data_column_button: Aggiungi colonna di dati
             title: Colonne di dati
           data_labels: Etichette dati
+          data_selection:
+            advanced_data_selection:
+              title: 
+            chart_definition:
+              label_title: 
+              title: 
+              value_title: 
           date: Data
           details: Dettagli
           draw_line: Disegna una linea
           dsg_color_override_html: Si prega di notare che il Raggruppamento delle serie di dati avrà la precedenza sui colori scelti per le colonne dei dati. Non ignorerà la <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione condizionale</a>
           error_bars:
             color: Colore
+            data_high: 
+            data_low: 
             high: Alto
             low: Basso
             title: Barre di errore
           flyout:
             new_details_button: Aggiungi Dettagli Flyout
             title: Dettagli Flyout
+            value: 
           group_extra: Raggruppa valori extra
           groups: Raggruppamenti
           label: Etichetta
           labelInBar: Etichette nella Barra
+          labels_and_values: 
           legend:
+            annotations: 
             conditional_formats: Descrivi Formati Condizionali
             custom_entry: Etichetta personalizzata
             display: Visualizza
@@ -948,9 +981,11 @@ it:
               top: In alto
             series: Descrivi le serie
             title: Configurazione didascalia
+            title_short: 
             value_markers: Descrivi i valori dei marker
             values: Descrivi valori
           marker:
+            add_button: 
             caption: Titolo
             new_marker_button: Aggiungi Marker
             title: ! '%{axis} Marker'
@@ -982,6 +1017,8 @@ it:
           title: Grafico
           treemap_color_html: Questi colori sono applicati in modo casuale sulla mappa solo per creare distinzioni nella visualizzazione. Non hanno uno specifio significato.
           validation:
+            chart_requires: 
+            chart_requires2: 
             count: ! '%{count} colonna'
             required_columns: ! '%{chart_type} richiede %{column_types}'
             viz_limit: Una vista può avere solo una visualizzazione su di essa
@@ -994,6 +1031,7 @@ it:
             axis_max: Massimo
             axis_min: Minimo
             axis_prompt: Inserisci un numero
+            decimals: 
             no_decimals: No Decimali
             precision: Precisione
             title: Formattazione Asse Y
@@ -1378,6 +1416,8 @@ it:
           views:
             subtitle: Vedi filtri, mappe, grafici e altre viste esistenti su questo dataset
             title: Viste
+        visualize:
+          choose_type: 
       save_dialog:
         descriptions:
           leaving: Non hai salvato i dati, che andranno persi se abbandoni questa pagina. Ti preghiamo sia che lo desideri o no di salvare questa vista prima di abbandonare la pagina; oppure scegli Cancella per ritornare alla pagina.
@@ -1533,6 +1573,8 @@ it:
               user_affected: Azioni che ti riguardano direttamente, come repliche a commenti e aggiornamenti di stato
               view_made_public: Ogni vista resa pubblica
             policy: ! '%{site} rispetta la tua privacy, e mai invierà email pubblicitarie, o darà la tua email a terze parti. Le email inviate da questo sito contengono notifiche e aggiornamenti a dataset che hai creato o sottoscritto.'
+            send_error: 
+            send_success: 
             subtitle: Iscriviti a singoli eventi selezionando la relativa casella.
             title: Notifiche e-mail
           learn_openid: Informati su OpenID
@@ -1620,6 +1662,7 @@ it:
         edit_image_link: Modifica Immagine
         followers: Followers
         following: Following
+        hide_contacts_link: 
     reset_password:
       failed: Si è verificato un problema durante la reimpostazione della password. Riprova più tardi.
       form:

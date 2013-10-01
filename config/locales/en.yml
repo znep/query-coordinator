@@ -142,10 +142,8 @@ en:
           main: Results %{body}
           term: for "%{term}"
     charts:
-      other: Other
+      negatives_in_data: ! 'Invalid chart: negative values present'
       no_data: No data
-      zero_only_data: No values greater than zero
-      negatives_in_data: "Invalid chart: negative values present"
       series_grouping:
         calculating_time: Calculating remaining time...
         calculation_running: Preparing data
@@ -161,6 +159,7 @@ en:
         rendering_progress_minutes: ! '%{rows_remaining} rows remain, about %{time_remaining} minutes.'
         rendering_progress_seconds: ! '%{rows_remaining} rows remain, about %{time_remaining} seconds.'
         resume_rendering: Resume
+      zero_only_data: No values greater than zero
     common:
       auth_required: You must be logged in to %{action_phrase}
       dataset_picker:
@@ -855,7 +854,6 @@ en:
           color_select:
             prompt: Choose color
           column_select:
-            auto: Auto
             from_grid: Select a column from the grid
             none_selected: No column selected
             nonselectable: Not Valid Columns
@@ -915,18 +913,13 @@ en:
           validation:
             invalid_columns: This view must have a date column and a text column
             viz_limit: A view may only have one visualization on it
-        visualize:
-          choose_type: Visualization Type 
         chart:
-          data_selection:
-            chart_definition:
-              title: Chart Definition
-              label_title: Choose label data
-              value_title: Choose value data
-            advanced_data_selection:
-              title: Advanced Data Selection
           advanced: Advanced Configuration
           annotation: Annotation
+          auto_update_sort: Automatically update sort order
+          auto_update_sort_button: Apply this now
+          auto_update_sort_info_donut: Donut charts work best when sorted in descending clockwise order, inside to outside.
+          auto_update_sort_info_pie: Pie charts work best when sorted in descending clockwise order.
           axes:
             title: Axis Options
             x_axis_title: X-Axis Title
@@ -935,41 +928,44 @@ en:
             y_axis_title_prompt: Enter a title for the y-axis
           base_color: Base Color
           categories: Categories
-          color_override_html: Colors may be overridden using <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
           cdlfmtg_color_override_html: Colors are being overridden by <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
-          colors: Colors
           color_options:
             column_colors: Column colors
+          color_override_html: Colors may be overridden using <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
+          colors: Colors
           configuration: Configuration
           data_columns:
             new_data_column_button: Add Data Column
             title: Data Columns
           data_labels: Data Labels
+          data_selection:
+            advanced_data_selection:
+              title: Advanced Data Selection
+            chart_definition:
+              label_title: Choose label data
+              title: Chart Definition
+              value_title: Choose value data
           date: Date
           details: Details
           draw_line: Draw a Line
           dsg_color_override_html: Note that Data Series Grouping will override colors chosen for your data columns. It will not override your <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>
           error_bars:
             color: Color
-            data_high: Choose higher bound column 
+            data_high: Choose higher bound column
             data_low: Choose lower bound column
             high: High
             low: Low
             title: Error Bars
           flyout:
             new_details_button: Add Flyout Details
-            new_values_button: Add Values
             title: Flyout Details
             value: Flyout Values
-            title_column: Flyout Title
           group_extra: Group Extra Values
           groups: Groups
-          labels_and_values: Labels and Values
           label: Label
           labelInBar: Label in Bar
+          labels_and_values: Labels and Values
           legend:
-            add_text: Additional text
-            add_text_button: Add Additional Text
             annotations: Describe Annotations
             conditional_formats: Describe Conditional Formats
             custom_entry: Custom Label
@@ -989,23 +985,18 @@ en:
             value_markers: Describe Value Markers
             values: Describe Values
           marker:
+            add_button: Add Annotation
             caption: Caption
             new_marker_button: Add Marker
-            add_button: Add Annotation  
-            marker_title: Value Marker
             title: Annotations
             value: At Value
           min_angle: Min. Angle
-          min_angle_html: Smallest angle displayed (&ordm;)
           names: Names
           pie_other: ! 'Warning: %{chart_type} will aggregate distinct values (rows) past the %{row_limit}th into an Other category. Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'
           pie_truncate: ! 'Warning: %{chart_type} will truncate datasets with more than %{row_limit} distinct values (rows). Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'
           point_color: Point Color
           point_size: Point Size
           point_title: Title
-          auto_update_sort_button: Apply this now
-          auto_update_sort_info_pie: ! "Pie charts work best when sorted in descending clockwise order."
-          auto_update_sort_info_donut: ! "Donut charts work best when sorted in descending clockwise order, inside to outside."
           series_group:
             alphabetize: Alphabetize Groups
             group_by: Group by
@@ -1026,10 +1017,10 @@ en:
           title: Chart
           treemap_color_html: These colors are applied to the treemap randomly only for creating visual distinctions. They do not have a specific meaning by themselves.
           validation:
-            count: ! '%{count}'
-            required_columns: ! '%{chart_type} requires %{column_types} columns'
             chart_requires: ! '%{chart_type} needs at least'
             chart_requires2: ! '%{and} %{count} of the following column types:'
+            count: ! '%{count}'
+            required_columns: ! '%{chart_type} requires %{column_types} columns'
             viz_limit: A view may only have one visualization on it
           value: Value
           valueInBar: Value in Bar
@@ -1040,9 +1031,9 @@ en:
             axis_max: Axis Max.
             axis_min: Axis Min.
             axis_prompt: Enter a number
+            decimals: Decimal Places
             no_decimals: No Decimals
             precision: Precision
-            decimals: Decimal Places
             title: Y-Axis Formatting
         column_common:
           basic:
@@ -1425,6 +1416,8 @@ en:
           views:
             subtitle: See existing filters, maps, charts and other views on this dataset
             title: Views
+        visualize:
+          choose_type: Visualization Type
       save_dialog:
         descriptions:
           leaving: You have unsaved data that will be lost if you leave this page. Please choose whether or not you wish to save this view before you leave; or choose Cancel to return to the page.
@@ -1580,10 +1573,10 @@ en:
               user_affected: Actions directly affecting you, such as comment replies and status updates
               view_made_public: Any view is made public
             policy: ! '%{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to.'
+            send_error: There was a problem sending your email. Please try again later.
+            send_success: Your message has been sent
             subtitle: Subscribe to individual events by checking the associated box.
             title: Email Notifications
-            send_success: Your message has been sent
-            send_error: There was a problem sending your email. Please try again later.
           learn_openid: Learn about OpenID
           new_email: New Email
           new_password: New Password
@@ -1666,10 +1659,10 @@ en:
         title: Basic Info
       sidebar:
         all_contacts_link: View All
-        hide_contacts_link: Hide
         edit_image_link: Edit Image
         followers: Followers
         following: Following
+        hide_contacts_link: Hide
     reset_password:
       failed: There was a problem resetting your password. Please try again.
       form:

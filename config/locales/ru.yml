@@ -45,7 +45,7 @@ ru:
           button: Общие сведения
           title: Об этом массиве данных
         all_options: Смотреть все
-        clear_all: Очистить все дополнительные параметры
+        clear_all: Сбросить настройки фильтра
         clear_facet: (Все)
         compact_list: В виде краткого списка
         create_dataset: Создать или загрузить ваш собственный массив данных
@@ -92,7 +92,7 @@ ru:
         view_types:
           apis: ППИ (прикладные программные интерфейсы)
           blob: Файлы и документы
-          calendars: Планы-графики
+          calendars: Календари
           charts: Графики и диаграммы
           datasets: Массивы данных
           filters: Отображения с установленными фильтрами
@@ -101,7 +101,7 @@ ru:
           maps: Карты
           unpublished: Неопубликованные массивы данных
         view_types_singular_title: Тип
-        view_types_title: Типы отображения данных
+        view_types_title: Тип данных
       listing:
         comment_count: Количество замечаний
         federation_source: Результаты интегрированного поиска %{source}
@@ -109,7 +109,7 @@ ru:
         no_results: Результаты не найдены
         result_count: Показано %{this} из %{total}
         table_header:
-          name: Имя
+          name: Название
           popularity: Популярность
           rss: RSS
           type: Тип
@@ -142,6 +142,8 @@ ru:
           main: Результаты %{body}
           term: для "%{term}"
     charts:
+      negatives_in_data: 
+      no_data: 
       series_grouping:
         calculating_time: Расчет оставшегося времени...
         calculation_running: Подготовка данных
@@ -157,6 +159,7 @@ ru:
         rendering_progress_minutes: ! '%{rows_remaining} строк осталось, еще приблизительно %{time_remaining} мин.'
         rendering_progress_seconds: ! '%{rows_remaining} строк осталось, еще приблизительно %{time_remaining} сек.'
         resume_rendering: Возобновить
+      zero_only_data: 
     common:
       auth_required: Вы должны зарегистрироваться %{action_phrase},
       dataset_picker:
@@ -381,8 +384,8 @@ ru:
       left: Слева
       right: Справа
     analytics:
-      visit: вид
-      visits: виды
+      visit: просмотр
+      visits: просмотров
     and: и
     chart_types:
       area: Комбинированная гистограмма
@@ -593,7 +596,7 @@ ru:
       working_copy: рабочая копия
     view_types_plural:
       api: ППИ (API)
-      calendar: Планы-графики
+      calendar: Календари
       chart: Графики
       filter: Виды с применением фильтров
       form: Страницы (формы)
@@ -621,6 +624,14 @@ ru:
       no_permission: Нет разрешения на доступ к ресурсу.
       were_sorry: Извините, видимо, у вас нет разрешения на доступ к этой странице.
     to_whence_you_came: на предыдущую страницу.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: 
+          account_tooltip: 
+          my_goals: 
+          my_goals_tooltip: 
   screens:
     about:
       actions: Действия
@@ -844,7 +855,10 @@ ru:
             prompt: Выбрать цвет
           column_select:
             from_grid: Выбрать столбец из сетки
+            none_selected: 
+            nonselectable: 
             prompt: Выбрать столбец
+            selectable: 
             unselect: Отменить выбор столбца
           datatypes:
             checkbox: флажок
@@ -902,13 +916,21 @@ ru:
         chart:
           advanced: Дополнительная конфигурация
           annotation: Пояснение
+          auto_update_sort: 
+          auto_update_sort_button: 
+          auto_update_sort_info_donut: 
+          auto_update_sort_info_pie: 
           axes:
+            title: 
             x_axis_title: Наименование оси X
             x_axis_title_prompt: Введите наименование оси Х
             y_axis_title: Наименование оси Y
             y_axis_title_prompt: ! 'Введите наименование оси Y '
           base_color: Фоновый цвет
           categories: Категориям
+          cdlfmtg_color_override_html: 
+          color_options:
+            column_colors: 
           color_override_html: Цвета можно отменить через <a href="#Conditional Formatting" class="showConditionalFormatting">условное форматирование</a>. Нажать <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">здесь</a> , чтобы отменить любые действующие правила условного форматирования.
           colors: Цвета
           configuration: Конфигурация
@@ -916,23 +938,35 @@ ru:
             new_data_column_button: Добавить столбец данных
             title: Столбцы данных
           data_labels: Метки данных
+          data_selection:
+            advanced_data_selection:
+              title: 
+            chart_definition:
+              label_title: 
+              title: 
+              value_title: 
           date: Дата
           details: Подробности
           draw_line: Провести линию
           dsg_color_override_html: ! 'Внимание: группирование ряда данных отменит цвета, выбранные для ваших столбцов данных. Это отменит ваш <a href=”#Conditional Formatting” class=”showConditionalFormatting”>Conditional Formatting</a>'
           error_bars:
             color: Цвет
+            data_high: 
+            data_low: 
             high: Высокий
             low: Низкий
             title: Строки ошибки
           flyout:
             new_details_button: Добавить параметры «всплывающего» меню
             title: Параметры «всплывающего» меню
+            value: 
           group_extra: Группировать дополнительные значения
           groups: Группы
           label: Метка
           labelInBar: Метка на панели
+          labels_and_values: 
           legend:
+            annotations: 
             conditional_formats: Описание условных форматов
             custom_entry: Индивидуальная метка
             display: Отображение
@@ -947,9 +981,11 @@ ru:
               top: Сверху
             series: Описание рядов данных
             title: Настройка условных обозначений
+            title_short: 
             value_markers: Описание маркеров данных
             values: Опишите значения
           marker:
+            add_button: 
             caption: Надпись
             new_marker_button: Добавить маркер
             title: ! '%{axis} Маркер'
@@ -981,6 +1017,8 @@ ru:
           title: График
           treemap_color_html: Эти цвета используются в схеме карт произвольно и служат только для визуальных различий. Они не имеют определенных значений.
           validation:
+            chart_requires: 
+            chart_requires2: 
             count: 
             required_columns: ! '%{chart_type} должно быть %{column_types} столбцов'
             viz_limit: На изображении может быть только один элемент визуального представления
@@ -993,6 +1031,7 @@ ru:
             axis_max: Максимальное значение на оси
             axis_min: Минимальное значение на оси
             axis_prompt: Введите число
+            decimals: 
             no_decimals: Без десятичных знаков
             precision: Точность
             title: Форматирование оси Y
@@ -1377,6 +1416,8 @@ ru:
           views:
             subtitle: См. имеющиеся фильтры, карты, графики и другие режимы просмотра по этому массиву данных
             title: Режимы просмотра
+        visualize:
+          choose_type: 
       save_dialog:
         descriptions:
           leaving: У вас остались несохраненные данные, они будут потеряны, если вы уйдете с этой страницы. Нажатием кнопки укажите, сохранить или не сохранять данный вид, прежде чем вы уйдете с этой страницы, или нажмите «Отмена», чтобы вернуться на эту страницу.
@@ -1479,7 +1520,7 @@ ru:
       links:
         account_html: Здравствуйте, <span class="currentUser"></span>
         account_tooltip: Домашняя Страница
-        administration: Администрация
+        administration: Администрирование
     link_account:
       success: Ваша внешняя учетная запись подключена.
     profile:
@@ -1532,6 +1573,8 @@ ru:
               user_affected: Действия, которые непосредственно касаются вас, например, ответы на замечания, изменения статуса
               view_made_public: Любое мнение становится общедоступным
             policy: ! '%{site} соблюдает ваши права личности и никогда не будет направлять вам рекламные сообщения через этот перечень или предоставлять ваш адрес эл. почты третьим лицам. С этого сайта направляются уведомления о состоянии регистрационных данных и обновлениях массивов данных, которые созданы вами или на которые вы подписались.'
+            send_error: 
+            send_success: 
             subtitle: Записаться на участие в отдельных мероприятиях (поставить галочки в соответствующих графах).
             title: Оправлять уведомления по эл. почте
           learn_openid: Узнать об OpenID
@@ -1619,6 +1662,7 @@ ru:
         edit_image_link: Редактировать изображения
         followers: Читатели
         following: Лента для чтения
+        hide_contacts_link: 
     reset_password:
       failed: Не удалось сменить ваш пароль. Повторите попытку.
       form:

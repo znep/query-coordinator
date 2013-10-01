@@ -142,6 +142,8 @@ zh:
           main: 结果 %{body}
           term: ! '"%{term}" 的'
     charts:
+      negatives_in_data: 
+      no_data: 
       series_grouping:
         calculating_time: 计算剩余时间...
         calculation_running: 准备数据
@@ -157,6 +159,7 @@ zh:
         rendering_progress_minutes: 还剩%{rows_remaining} 行，大约需要%{time_remaining} 分钟。
         rendering_progress_seconds: 还剩%{rows_remaining} 行，大约需要%{time_remaining} 秒。
         resume_rendering: 恢复
+      zero_only_data: 
     common:
       auth_required: 您必须登录，才能%{action_phrase}
       dataset_picker:
@@ -621,6 +624,14 @@ zh:
       no_permission: 没有访问资源的权限。
       were_sorry: 很抱歉，您似乎没有访问此页面的权限。
     to_whence_you_came: 上一页面。
+  govstat:
+    chrome:
+      header:
+        links:
+          account: 
+          account_tooltip: 
+          my_goals: 
+          my_goals_tooltip: 
   screens:
     about:
       actions: 操作
@@ -844,7 +855,10 @@ zh:
             prompt: 选择颜色
           column_select:
             from_grid: 从表格中选择列
+            none_selected: 
+            nonselectable: 
             prompt: 选择列
+            selectable: 
             unselect: 取消选择列
           datatypes:
             checkbox: 复选框
@@ -902,13 +916,21 @@ zh:
         chart:
           advanced: 高级配置
           annotation: 注释
+          auto_update_sort: 
+          auto_update_sort_button: 
+          auto_update_sort_info_donut: 
+          auto_update_sort_info_pie: 
           axes:
+            title: 
             x_axis_title: X轴名称
             x_axis_title_prompt: 输入X轴的名称
             y_axis_title: y轴名称
             y_axis_title_prompt: 输入y轴的名称
           base_color: 底色
           categories: 类别
+          cdlfmtg_color_override_html: 
+          color_options:
+            column_colors: 
           color_override_html: ! '使用 <a href="#Conditional Formatting" class="showConditionalFormatting">条件格式化</a>可以覆盖颜色设置。单击 <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">此处</a> ，清除当前的条件格式化规定。 '
           colors: 颜色
           configuration: 配置
@@ -916,23 +938,35 @@ zh:
             new_data_column_button: 添加数据列
             title: 数据列
           data_labels: 数据标签
+          data_selection:
+            advanced_data_selection:
+              title: 
+            chart_definition:
+              label_title: 
+              title: 
+              value_title: 
           date: 日期
           details: 详情
           draw_line: 画线
           dsg_color_override_html: 请注意，数据系列分组将覆盖为您的数据列选择的颜色。它将不会覆盖您的<a href="#Conditional Formatting" class="showConditionalFormatting">条件格式</a>
           error_bars:
             color: 颜色
+            data_high: 
+            data_low: 
             high: 高
             low: 低
             title: 误差线
           flyout:
             new_details_button: 添加弹出视窗详情
             title: 弹出视窗详情
+            value: 
           group_extra: 组合额外的值
           groups: 组
           label: 标签
           labelInBar: 在酒吧的标签
+          labels_and_values: 
           legend:
+            annotations: 
             conditional_formats: 条件格式的说明
             custom_entry: 自定义标签
             display: 显示
@@ -947,9 +981,11 @@ zh:
               top: 顶部
             series: 描述数据系列
             title: 配置图例
+            title_short: 
             value_markers: 值标记的说明
             values: 描述值
           marker:
+            add_button: 
             caption: 标题
             new_marker_button: 添加标记
             title: ! '%{axis} 标记'
@@ -981,6 +1017,8 @@ zh:
           title: 图表
           treemap_color_html: 随机应用的树型图颜色仅为加强视觉效果，没有任何特殊含义。
           validation:
+            chart_requires: 
+            chart_requires2: 
             count: ! '%{count}'
             required_columns: ! '%{chart_type} 需要 %{column_types} 列'
             viz_limit: 一个视图只能加载一种可视化操作
@@ -993,6 +1031,7 @@ zh:
             axis_max: 轴最大值
             axis_min: 轴最小值
             axis_prompt: 输入数字
+            decimals: 
             no_decimals: 不用小数
             precision: 精确度
             title: Y轴格式
@@ -1377,6 +1416,8 @@ zh:
           views:
             subtitle: 查看此数据集现有的筛选视图、地图、图表和其他视图
             title: 视图
+        visualize:
+          choose_type: 
       save_dialog:
         descriptions:
           leaving: 如果离开此页面，您未保存的数据将丢失。在离开前选择是否保存视图；或者选择“取消”返回页面。
@@ -1532,6 +1573,8 @@ zh:
               user_affected: 直接对您产生影响的操作，如评论回复和状态更新
               view_made_public: 有视图被公开
             policy: ! '%{site} 尊重您的隐私权利，不会通过此处列表发送营销邮件，也不会把您的邮件地址提供给第三方。本网站所发邮件的内容涉及账户通知，以及您创建或订阅的数据集的更新。'
+            send_error: 
+            send_success: 
             subtitle: 勾选以下选项，即可收到相关的通知。
             title: 电子邮件通知
           learn_openid: 了解OpenID
@@ -1619,6 +1662,7 @@ zh:
         edit_image_link: 编辑头像
         followers: 关注我的人
         following: 我关注的人
+        hide_contacts_link: 
     reset_password:
       failed: 重置密码时出现问题。请重试。
       form:

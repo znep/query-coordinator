@@ -142,6 +142,8 @@ hi:
           main: परिणाम %{body}
           term: ! '"%{term}" के लिए'
     charts:
+      negatives_in_data: 
+      no_data: 
       series_grouping:
         calculating_time: बाकी बचे समय का परिकलन कर रहे हैं...
         calculation_running: डेटा तैयार कर रहे हैं
@@ -157,6 +159,7 @@ hi:
         rendering_progress_minutes: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, लगभग %{time_remaining} मिनट।'
         rendering_progress_seconds: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, लगभग %{time_remaining} सेकंड।'
         resume_rendering: रेस्यूमे (संक्षिप्त विवरण)
+      zero_only_data: 
     common:
       auth_required: ! 'आपको %{action_phrase} में लॉगिन होना चाहिए '
       dataset_picker:
@@ -621,6 +624,14 @@ hi:
       no_permission: संसाधन तक पहुंचने की स्‍वीकृति नहीं।
       were_sorry: हमें खेद है लेकिन ऐसा लगता है कि आपके पास इस पृष्‍ठ तक पहुंचने की स्‍वीकृति नहीं।
     to_whence_you_came: जहाँ से आप आए हैं।
+  govstat:
+    chrome:
+      header:
+        links:
+          account: 
+          account_tooltip: 
+          my_goals: 
+          my_goals_tooltip: 
   screens:
     about:
       actions: कार्रवाई
@@ -844,7 +855,10 @@ hi:
             prompt: रंग चुनें
           column_select:
             from_grid: कॉलम को ग्रिड से चुनें
+            none_selected: 
+            nonselectable: 
             prompt: कॉलम चुनें
+            selectable: 
             unselect: कॉलम अचयनित करें
           datatypes:
             checkbox: चेकबॉक्स
@@ -902,13 +916,21 @@ hi:
         chart:
           advanced: उन्‍नत कान्फ़ि‍गरेशन
           annotation: व्‍याख्‍या
+          auto_update_sort: 
+          auto_update_sort_button: 
+          auto_update_sort_info_donut: 
+          auto_update_sort_info_pie: 
           axes:
+            title: 
             x_axis_title: X-Axis शीर्षक
             x_axis_title_prompt: x-axis के लिए शीर्षक दें
             y_axis_title: Y-Axis शीर्षक
             y_axis_title_prompt: y -axis के लिए शीर्षक दें
           base_color: बेस कलर
           categories: श्रेणियाँ
+          cdlfmtg_color_override_html: 
+          color_options:
+            column_colors: 
           color_override_html: <a href="#Conditional Formatting" class="showConditionalFormatting"> कंडिशनल फ़ॉरमेटिंग </a>का उपयोग करके रंगों को ओवरराइड किया जा सकता है। किसी वर्तमान कंडिशनल फ़ॉरमेटिंग के नियमों को हटाने के लिए <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">यहाँ</a> क्लिक करें।
           colors: रंग
           configuration: कान्फ़ि‍गरेशन
@@ -916,23 +938,35 @@ hi:
             new_data_column_button: डेटा कॉलम जोड़ें
             title: डेटा कॉलम
           data_labels: डेटा लेबल
+          data_selection:
+            advanced_data_selection:
+              title: 
+            chart_definition:
+              label_title: 
+              title: 
+              value_title: 
           date: तिथि
           details: विवरण
           draw_line: रेखा खींचें
           dsg_color_override_html: ध्यान दें कि डेटा श्रेणी समूहन आपके डेटा स्तंभों के लिए चुने गए रंगों को रद्द कर देगा। वह आपकी <a href="#Conditional Formating" class="showConditionalFormating">सशर्त फ़ॉर्मेटिंग</a> को रद्द नहीं करेगा।
           error_bars:
             color: रंग
+            data_high: 
+            data_low: 
             high: उच्‍च
             low: निम्‍न
             title: एरर बार
           flyout:
             new_details_button: फ्लाईआउट विवरण जोड़ें
             title: फ्लाईआउट विवरण
+            value: 
           group_extra: अतिरिक्‍त मान को समूहबद्ध करें
           groups: समूह
           label: लेबल
           labelInBar: पट्टी में लेबल
+          labels_and_values: 
           legend:
+            annotations: 
             conditional_formats: कंडिशनल फ़ॉरमेटिंग का वर्णन करें
             custom_entry: कस्‍टम लेबल
             display: डिस्‍प्‍ले करें
@@ -947,9 +981,11 @@ hi:
               top: ऊपर
             series: सीरीज का वर्णन करें
             title: लीजेंड कॉन्फ़ि‍गरेशन
+            title_short: 
             value_markers: वैल्‍यू मार्कर का वर्णन करें
             values: मानों का वर्णन करें
           marker:
+            add_button: 
             caption: कैप्‍शन
             new_marker_button: मार्कर जोड़ें
             title: ! '%{axis} मार्कर'
@@ -981,6 +1017,8 @@ hi:
           title: चार्ट
           treemap_color_html: ये रंग केवल अलग तरह से दिखाई देने के लिए ट्रीमैप पर सांयोगिक तरह से लागू किये गये हैं। उनका स्‍वयं में कोई खास अर्थ नहीं है।
           validation:
+            chart_requires: 
+            chart_requires2: 
             count:
               one: एक
               other: ! '%{count}'
@@ -995,6 +1033,7 @@ hi:
             axis_max: Axis अधि.
             axis_min: Axis न्‍यून.
             axis_prompt: संख्‍या डालें
+            decimals: 
             no_decimals: कोई दशमलव नहीं
             precision: शुद्धता
             title: Y-Axis फ़ॉरमेटिंग
@@ -1379,6 +1418,8 @@ hi:
           views:
             subtitle: इस डेटासेट के वर्तमान फिल्‍टर, मैप, चार्ट व अन्‍य व्‍यू देखें
             title: व्‍यू
+        visualize:
+          choose_type: 
       save_dialog:
         descriptions:
           leaving: ! 'आपका असुरक्षित डेटा है जो खो जाएगा यदि आप यह पृष्‍ठ छोड़ते हैं। कृपया इसे छोड़ने से पहले चुनें कि क्‍या आप इस व्‍यू को सहेजना चाहते हैं या नहीं; या पृष्‍ठ पर वापिस आने के लिए रद्द करें चुनें। '
@@ -1534,6 +1575,8 @@ hi:
               user_affected: कार्रवाई सीधे आपको प्रभावित कर रही है जैसे टिप्‍पणी पर उत्‍तर व स्थिति अद्यतन
               view_made_public: किसी भी व्‍यू को सार्वजनिक बनाया गया
             policy: ! '%{site} आपकी निजता का सम्‍मान करती है और इस सूची के जरिए आपको कभी मार्केटिंग ईमेल नहीं भेजेगी, या आपका ईमेल तीसरे पक्ष को नहीं देगी। इस साइट से भेजे गये ईमेल में खाता सूचना व उस डेटासेट के अद्यतन शामिल होते हैं जिसे आपने बनाया है या जिसकी सदस्‍यता ली है।'
+            send_error: 
+            send_success: 
             subtitle: सहयोगी बॉक्‍स को देखकर पृथक आयोजनों की सदस्‍यता लें।
             title: ईमेल सूचना
           learn_openid: OpenID के बारे में जानें
@@ -1621,6 +1664,7 @@ hi:
         edit_image_link: छवित संपादित करें
         followers: फॉलोअर्स
         following: फॉलो कर रहे हैं
+        hide_contacts_link: 
     reset_password:
       failed: आपके पासवर्ड को रीसेट करते समय समस्या आई। कृपया फिर से कोशिश करें।
       form:

@@ -142,6 +142,8 @@ fr:
           main: Résultats %{body}
           term: pour « %{term} »
     charts:
+      negatives_in_data: 
+      no_data: 
       series_grouping:
         calculating_time: Calcul du temps restant…
         calculation_running: Préparation des données
@@ -157,6 +159,7 @@ fr:
         rendering_progress_minutes: Il reste %{rows_remaining}, environ %{time_remaining} minutes.
         rendering_progress_seconds: Il reste %{rows_remaining}, environ %{time_remaining} secondes.
         resume_rendering: Reprendre
+      zero_only_data: 
     common:
       auth_required: Vous devez être connecté dans %{action_phrase}
       dataset_picker:
@@ -621,6 +624,14 @@ fr:
       no_permission: Absence d’autorisation pour accéder aux données recherchées.
       were_sorry: Désolé, vous ne semblez pas avoir l’autorisation voulue pour accéder à cette page.
     to_whence_you_came: d’où vous venez
+  govstat:
+    chrome:
+      header:
+        links:
+          account: 
+          account_tooltip: 
+          my_goals: 
+          my_goals_tooltip: 
   screens:
     about:
       actions: Actions
@@ -844,7 +855,10 @@ fr:
             prompt: Choisir une couleur
           column_select:
             from_grid: Sélectionner une colonne de la grille
+            none_selected: 
+            nonselectable: 
             prompt: Sélectionner une colonne
+            selectable: 
             unselect: Désélectionner une colonne
           datatypes:
             checkbox: Case à cocher
@@ -902,13 +916,21 @@ fr:
         chart:
           advanced: Configuration avancée
           annotation: Annotation
+          auto_update_sort: 
+          auto_update_sort_button: 
+          auto_update_sort_info_donut: 
+          auto_update_sort_info_pie: 
           axes:
+            title: 
             x_axis_title: Titre de l’axe X
             x_axis_title_prompt: Entrer un titre pour l’axe X
             y_axis_title: Titre de l’axe Y
             y_axis_title_prompt: Entrer un titre pour l’axe Y
           base_color: Couleur de base
           categories: Catégories
+          cdlfmtg_color_override_html: 
+          color_options:
+            column_colors: 
           color_override_html: Les couleurs peuvent être remplacées au moyen de la mise en forme conditionnelle <a href="#Conditional Formatting" class="showConditionalFormatting"></a>. Cliquez <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">ici</a> pour effacer les éventuelles règles de mise en forme conditionnelle existantes.
           colors: Couleurs
           configuration: Configuration
@@ -916,23 +938,35 @@ fr:
             new_data_column_button: Ajouter colonne de données
             title: Colonnes de données
           data_labels: Étiquettes des données
+          data_selection:
+            advanced_data_selection:
+              title: 
+            chart_definition:
+              label_title: 
+              title: 
+              value_title: 
           date: Date
           details: Renseignements détaillés
           draw_line: Dessiner une ligne
           dsg_color_override_html: Notez que le groupement de séries de données modifie les couleurs choisies pour vos colonnes de données. Il ne modifie pas votre <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>
           error_bars:
             color: Couleur
+            data_high: 
+            data_low: 
             high: Haut
             low: Bas
             title: Barres d’erreur
           flyout:
             new_details_button: Ajouter les éléments
             title: Éléments du menu volant
+            value: 
           group_extra: Grouper les valeurs additionnelles
           groups: Groupes
           label: Étiquette
           labelInBar: Marque en Bâtons
+          labels_and_values: 
           legend:
+            annotations: 
             conditional_formats: Décrire les mises en forme conditionnelles
             custom_entry: Étiquette personnalisée
             display: Affichage
@@ -947,9 +981,11 @@ fr:
               top: Haut
             series: Décrire la série
             title: Configuration de la légende
+            title_short: 
             value_markers: Décrire les marqueurs de valeurs
             values: Décrire les valeurs
           marker:
+            add_button: 
             caption: Légende
             new_marker_button: Ajouter marqueur
             title: ! 'Marqueur %{axis} '
@@ -981,6 +1017,8 @@ fr:
           title: Graphique
           treemap_color_html: Ces couleurs sont appliquées sur le tree map au hasard pour en distinguer visuellement les éléments. Elles n’ont pas de signification intrinsèque.
           validation:
+            chart_requires: 
+            chart_requires2: 
             count: ! '%{count}'
             required_columns: ! '%{chart_type} nécessite %{column_types} colonnes'
             viz_limit: Une vue ne peut avoir qu’une visualisation correspondante
@@ -993,6 +1031,7 @@ fr:
             axis_max: Max. pour l’axe
             axis_min: Min. pour l’axe
             axis_prompt: Entrer un chiffre
+            decimals: 
             no_decimals: Pas de décimales
             precision: Précision
             title: Formatage de l’axe Y
@@ -1377,6 +1416,8 @@ fr:
           views:
             subtitle: Voir les filtres, cartes, graphiques et autres vues existantes sur cette série de données
             title: Vues
+        visualize:
+          choose_type: 
       save_dialog:
         descriptions:
           leaving: Vous avez des données non sauvegardées qui seront perdues si vous sortez de cette page. Veuillez sauvegarder ou non cette vue avant de sortir, ou utiliser l’option Annuler pour revenir à la page.
@@ -1532,6 +1573,8 @@ fr:
               user_affected: Actions vous concernant directement (réponses à commentaires, mise à jour de statut, etc.)
               view_made_public: Nouvelle vue rendue publique
             policy: ! '%{site} respecte votre vie privée et s’engage à ne jamais vous envoyer de courriels à caractère commercial par le biais de cette liste ou communiquer votre adresse courriel à des tierces parties. Les courriels envoyés depuis ce site comprennent des notifications concernant votre compte et des mises à jour sur des séries de données que vous avez créées ou auxquelles vous êtes abonné.'
+            send_error: 
+            send_success: 
             subtitle: Abonnez-vous à tel ou tel événement en cochant la case corresondante
             title: Notifications par courriel
           learn_openid: Pour en savoir plus sur OpenID
@@ -1619,6 +1662,7 @@ fr:
         edit_image_link: Modifier image
         followers: Abonnés
         following: Abonnements
+        hide_contacts_link: 
     reset_password:
       failed: Problème lors de la réinitialisation de votre mot de passe. Veuillez réessayer.
       form:

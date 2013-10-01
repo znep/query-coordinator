@@ -308,7 +308,7 @@ $(function()
 
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
-    widgetNS.isNonTabular = (blist.dataset.viewType !== 'tabular');
+    widgetNS.isTabular = _.include(['tabular', 'geo'], blist.dataset.viewType);
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
@@ -330,10 +330,10 @@ $(function()
             contents: [
                 { text: 'More Views', className: 'views', targetPane: 'views',
                     subtext: 'Filters, Charts, and Maps', href: '#views',
-                    iconColor: '#57b6dd', onlyIf: !widgetNS.isNonTabular && menuOptions['more_views'] },
+                    iconColor: '#57b6dd', onlyIf: widgetNS.isTabular && menuOptions['more_views'] },
                 { text: 'Download', className: 'downloads', targetPane: 'downloads',
                     subtext: 'Download in various formats', href: '#downloads',
-                    iconColor: '#959595', onlyIf: !widgetNS.isNonTabular && menuOptions['downloads'] },
+                    iconColor: '#959595', onlyIf: widgetNS.isTabular && menuOptions['downloads'] },
                 { text: 'Discuss', className: 'comments', targetPane: 'feed',
                     subtext: 'Discuss this Dataset', href: '#comments',
                     iconColor: '#bed62b', onlyIf: menuOptions['comments'] && enabledModules['allow_comments'] == true },
@@ -342,7 +342,7 @@ $(function()
                     iconColor: '#e44044', onlyIf: menuOptions['embed'] },
                 { text: 'API', className: 'api', targetPane: 'api',
                     subtext: 'Access this Dataset via SODA', href: '#api',
-                    iconColor: '#f93f06', onlyIf: !widgetNS.isNonTabular && menuOptions['api'] },
+                    iconColor: '#f93f06', onlyIf: widgetNS.isTabular && menuOptions['api'] },
                 { text: 'Print', className: 'print', targetPane: 'print',
                     subtext: 'Print this dataset', href: '#print',
                     iconColor: '#a460c4', onlyIf: blist.dataset.isTabular() && menuOptions['print'] },

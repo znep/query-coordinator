@@ -68,7 +68,7 @@
                     cObj._assetsAvailable();
                     if (cObj._needsRender) { _.defer(function () { cObj._render(); }); }
                     if (cObj._needsEdit) { _.defer(function () { cObj.edit(true); }); }
-                });
+                }, function() { cObj._stylesLoaded() });
             }
 
             // Allow configuring static properties via dynamic code
@@ -381,6 +381,14 @@
         {
             this._visibility = isVisible;
             this._propWrite({});
+        },
+
+        /**
+         * Called when we know styles have been loaded. This is not accurate in IE
+         */
+        _stylesLoaded: function()
+        {
+            // Implement me
         },
 
         _updatePrimaryValue: function(value)

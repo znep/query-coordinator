@@ -42,6 +42,13 @@ $.component.Component.extend('Table', 'data', {
         };
     },
 
+    _stylesLoaded: function()
+    {
+        this._super.apply(this, arguments);
+        if (!$.isBlank(this.$contents))
+        { this.$contents.trigger('show'); }
+    },
+
     _shown: function()
     {
         this._super();

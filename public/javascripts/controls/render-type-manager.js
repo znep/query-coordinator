@@ -442,7 +442,12 @@
         else
         {
             blist.util.assetLoading.loadAssets(typeInfo, finishCallback,
-                function() { $(window).trigger('resize', [null, true]); });
+                function()
+                {
+                    // Some display types (grid) need more prodding than resize
+                    $content.trigger('show');
+                    $(window).trigger('resize', [null, true]);
+                });
         }
 
         typeInfo._initialized = true;

@@ -1674,7 +1674,7 @@ zh:
       failed: 无法通过该电子邮件和密码登录；请重试
       form:
         sign_in_button: 登录
-      headline: 登录
+      headline: 登录%{site}
       mismatch: 密码不匹配；请重试
       prompt_html: 使用 <strong>Socrata 用户名</strong>登录
       tips_html: 使用您的电子邮件和密码登录所有使用<strong><a href="http://www.socrata.com" rel="external">Socrata</a> 技术</strong> 的网站。

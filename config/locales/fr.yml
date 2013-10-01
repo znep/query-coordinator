@@ -1674,7 +1674,7 @@ fr:
       failed: Ouverture de session impossible avec cet e-mail et ce mot de passe, veuillez réessayer
       form:
         sign_in_button: Connexion
-      headline: S’inscrire
+      headline: S’inscrire à %{site}
       mismatch: Les mots de passe ne correspondent pas. Veuillez réessayer
       prompt_html: Connexion avec votre <strong>ID Socrata</strong>
       tips_html: Utilisez votre adresse e-mail et mot de passe pour vous connecter sur tous les sites fonctionnant sous  <strong><a href="http://www.socrata.com" rel="external">Socrata</a> </strong>.

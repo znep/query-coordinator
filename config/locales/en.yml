@@ -1674,7 +1674,7 @@ en:
       failed: Unable to login with that email and password; please try again
       form:
         sign_in_button: Sign In
-      headline: Sign In
+      headline: Sign In to %{site}
       mismatch: Passwords do not match; please try again
       prompt_html: Sign in with your <strong>Socrata ID</strong>
       tips_html: Use your Email and Password to sign into all <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.

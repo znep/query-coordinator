@@ -142,6 +142,8 @@ ro:
           main: 
           term: 
     charts:
+      negatives_in_data: 
+      no_data: 
       series_grouping:
         calculating_time: 
         calculation_running: 
@@ -157,6 +159,7 @@ ro:
         rendering_progress_minutes: 
         rendering_progress_seconds: 
         resume_rendering: 
+      zero_only_data: 
     common:
       auth_required: 
       dataset_picker:
@@ -621,6 +624,14 @@ ro:
       no_permission: 
       were_sorry: 
     to_whence_you_came: 
+  govstat:
+    chrome:
+      header:
+        links:
+          account: 
+          account_tooltip: 
+          my_goals: 
+          my_goals_tooltip: 
   screens:
     about:
       actions: 
@@ -844,7 +855,10 @@ ro:
             prompt: 
           column_select:
             from_grid: 
+            none_selected: 
+            nonselectable: 
             prompt: 
+            selectable: 
             unselect: 
           datatypes:
             checkbox: 
@@ -902,13 +916,21 @@ ro:
         chart:
           advanced: 
           annotation: 
+          auto_update_sort: 
+          auto_update_sort_button: 
+          auto_update_sort_info_donut: 
+          auto_update_sort_info_pie: 
           axes:
+            title: 
             x_axis_title: 
             x_axis_title_prompt: 
             y_axis_title: 
             y_axis_title_prompt: 
           base_color: 
           categories: 
+          cdlfmtg_color_override_html: 
+          color_options:
+            column_colors: 
           color_override_html: 
           colors: 
           configuration: 
@@ -916,23 +938,35 @@ ro:
             new_data_column_button: 
             title: 
           data_labels: 
+          data_selection:
+            advanced_data_selection:
+              title: 
+            chart_definition:
+              label_title: 
+              title: 
+              value_title: 
           date: 
           details: 
           draw_line: 
           dsg_color_override_html: 
           error_bars:
             color: 
+            data_high: 
+            data_low: 
             high: 
             low: 
             title: 
           flyout:
             new_details_button: 
             title: 
+            value: 
           group_extra: 
           groups: 
           label: 
           labelInBar: 
+          labels_and_values: 
           legend:
+            annotations: 
             conditional_formats: 
             custom_entry: 
             display: 
@@ -947,9 +981,11 @@ ro:
               top: 
             series: 
             title: 
+            title_short: 
             value_markers: 
             values: 
           marker:
+            add_button: 
             caption: 
             new_marker_button: 
             title: 
@@ -981,6 +1017,8 @@ ro:
           title: 
           treemap_color_html: 
           validation:
+            chart_requires: 
+            chart_requires2: 
             count: 
             required_columns: 
             viz_limit: 
@@ -993,6 +1031,7 @@ ro:
             axis_max: 
             axis_min: 
             axis_prompt: 
+            decimals: 
             no_decimals: 
             precision: 
             title: 
@@ -1377,6 +1416,8 @@ ro:
           views:
             subtitle: 
             title: 
+        visualize:
+          choose_type: 
       save_dialog:
         descriptions:
           leaving: 
@@ -1532,6 +1573,8 @@ ro:
               user_affected: 
               view_made_public: 
             policy: 
+            send_error: 
+            send_success: 
             subtitle: 
             title: 
           learn_openid: 
@@ -1619,6 +1662,7 @@ ro:
         edit_image_link: 
         followers: 
         following: 
+        hide_contacts_link: 
     reset_password:
       failed: 
       form:

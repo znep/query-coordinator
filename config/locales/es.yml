@@ -44,7 +44,7 @@ es:
         about:
           button: Acerca de
           title: Acerca de este conjunto de datos
-        all_options: Ver todo
+        all_options: Ver todas
         clear_all: Eliminar todas las opciones
         clear_facet: (Todas)
         compact_list: Ver como una lista compacta
@@ -88,7 +88,7 @@ es:
         moderation_status_singular_title: moderación
         moderation_status_title: Estado de moderación
         topics_singular_title: tema
-        topics_title: Temas
+        topics_title: Palabras clave
         view_types:
           apis: API
           blob: Archivos y documentos
@@ -142,6 +142,8 @@ es:
           main: Resultados %{body}
           term: para "%{term}"
     charts:
+      negatives_in_data: 
+      no_data: 
       series_grouping:
         calculating_time: Calculando tiempo restante...
         calculation_running: Preparando datos
@@ -157,6 +159,7 @@ es:
         rendering_progress_minutes: Quedan %{rows_remaining} filas, sobre %{time_remaining} minutos.
         rendering_progress_seconds: Quedan %{rows_remaining} filas, sobre %{time_remaining} segundos.
         resume_rendering: Reanudar
+      zero_only_data: 
     common:
       auth_required: Debe haber iniciado sesión para %{action_phrase}
       dataset_picker:
@@ -629,6 +632,14 @@ es:
       no_permission: No está autorizado(a) para acceder a este recurso.
       were_sorry: Lo sentimos, pero aparentemente no está autorizado(a) para acceder a esta página.
     to_whence_you_came: a donde estaba.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: 
+          account_tooltip: 
+          my_goals: 
+          my_goals_tooltip: 
   screens:
     about:
       actions: Acciones
@@ -852,7 +863,10 @@ es:
             prompt: Elegir color
           column_select:
             from_grid: Seleccionar una columna de la cuadrícula
+            none_selected: 
+            nonselectable: 
             prompt: Seleccionar una columna
+            selectable: 
             unselect: Deseleccionar columna
           datatypes:
             checkbox: casilla de verificación
@@ -910,13 +924,21 @@ es:
         chart:
           advanced: Configuración avanzada
           annotation: Nota
+          auto_update_sort: 
+          auto_update_sort_button: 
+          auto_update_sort_info_donut: 
+          auto_update_sort_info_pie: 
           axes:
+            title: 
             x_axis_title: Título  del eje X
             x_axis_title_prompt: Ingresar un título para el  eje x
             y_axis_title: Título del eje Y
             y_axis_title_prompt: Ingresar un título para el eje y
           base_color: Color base
           categories: Categorías
+          cdlfmtg_color_override_html: 
+          color_options:
+            column_colors: 
           color_override_html: Los colores  pueden ser anulados mediante el<a href="#Conditional Formatting" class="showConditionalFormatting"> formato condicional </a>. Hacer clic <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">aquí</a> para borrar cualquier regla actual de formato condicional.
           colors: Colores
           configuration: Configuración
@@ -924,23 +946,35 @@ es:
             new_data_column_button: Añadir columna de datos
             title: Columnas de datos
           data_labels: Etiquetas de datos
+          data_selection:
+            advanced_data_selection:
+              title: 
+            chart_definition:
+              label_title: 
+              title: 
+              value_title: 
           date: Fecha
           details: Detalles
           draw_line: Trazar una línea
           dsg_color_override_html: Atención, Data Series Grouping reemplazará  los colores elegidos para su columna de datos. No reemplazará su <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>
           error_bars:
             color: Color
+            data_high: 
+            data_low: 
             high: Alto
             low: Bajo
             title: Barras de error
           flyout:
             new_details_button: Añadir detalles del menú flotante 
             title: Detalles del menú flotante
+            value: 
           group_extra: ! 'Agrupar valores adicionales '
           groups: Grupos
           label: Etiqueta
           labelInBar: Marbete en la barra
+          labels_and_values: 
           legend:
+            annotations: 
             conditional_formats: Describir formatos condicionales
             custom_entry: Etiqueta personalizada
             display: Mostrar
@@ -955,9 +989,11 @@ es:
               top: Arriba
             series: Describir series
             title: Configuración de leyenda
+            title_short: 
             value_markers: Describir marcadores de valores
             values: Describir valores
           marker:
+            add_button: 
             caption: ! 'Pie '
             new_marker_button: Añadir marcador
             title: ! 'Marcador %{axis} '
@@ -989,6 +1025,8 @@ es:
           title: Gráfico
           treemap_color_html: Estos colores están aplicados al azar al mapa de árbol  solo para crear distinciones visuales. No tienen un significado específico propio.
           validation:
+            chart_requires: 
+            chart_requires2: 
             count: ! '%{count}'
             required_columns: ! '%{chart_type} requiere  columnas %{column_types} '
             viz_limit: Una vista solo puede tener una visualización en ella
@@ -1001,6 +1039,7 @@ es:
             axis_max: Máximo del eje
             axis_min: Mínimo del eje
             axis_prompt: Ingresar un número
+            decimals: 
             no_decimals: No decimales
             precision: Precisión
             title: ! 'Formato del eje Y '
@@ -1385,6 +1424,8 @@ es:
           views:
             subtitle: Ver filtros, mapas, gráficos y otras vistas existentes en este conjunto de datos
             title: Vistas
+        visualize:
+          choose_type: 
       save_dialog:
         descriptions:
           leaving: ! 'Tiene datos sin guardar que se perderán si sale de esta página. Por favor, elija guardar o no está vista antes de dejar la página; o seleccione “Cancelar” para regresar a la página. '
@@ -1540,6 +1581,8 @@ es:
               user_affected: Acciones que lo afectan directamente, como respuestas a comentarios y actualizaciones de estados
               view_made_public: Se hizo pública cualquier vista
             policy: ! '%{site} respeta su privacidad  y nunca le enviará mensajes con publicidad a través de esta lista o dará su dirección de correo electrónico a terceras partes. Los mensajes enviados desde este sitio incluyen notificaciones de cuenta y actualizaciones de los conjuntosde datos que usted ha creado o  está suscrito. '
+            send_error: 
+            send_success: 
             subtitle: Suscribirse a eventos individuales marcando la casilla correspondiente.
             title: Notificaciones de correo electrónico
           learn_openid: Saber acerca de OpenID
@@ -1627,6 +1670,7 @@ es:
         edit_image_link: Editar imagen
         followers: Seguidores
         following: Seguidos
+        hide_contacts_link: 
     reset_password:
       failed: ! 'Hubo un problema al restablecer su contraseña. Por favor inténtelo de nuevo. '
       form:

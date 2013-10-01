@@ -1674,7 +1674,7 @@ ru:
       failed: Не удалось войти в систему c этим адресом электронной почты и паролем; повторите попытку
       form:
         sign_in_button: Войти в систему
-      headline: Войти в систему
+      headline: Войти в систему в %{site}
       mismatch: Пароли не сходятся; повторите попытку
       prompt_html: Войти в систему <strong>, используя регистрационное имя в системе Socrata</strong>
       tips_html: Используйте ваш адрес эл. почты и пароль для входа на все <strong><a href="http://www.socrata.com" rel="external">сайты</a> системы</strong> Socrata.

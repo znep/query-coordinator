@@ -1676,7 +1676,7 @@ hi:
       failed: इस ईमेल और पासवर्ड से लृग-इन नहीं कर सके। कृपया फिर से कोशिश करें
       form:
         sign_in_button: साइन इन करें
-      headline: साइन इन करें
+      headline: साइन इन करें से %{site}
       mismatch: पासवर्ड मेल नहीं खा रहे हैं। कृपया फिर से कोशिश करें
       prompt_html: ! 'अपनी <strong>सोक्राटा आईडी</strong>से साइन इन करें '
       tips_html: <strong><a href="http://www.socrata.com" rel="external">सोक्राटा</a> द्वारा संचालित</strong> सभी साइटों में साइन इन करने के लिए अपने ईमेल व पासवर्ड का उपयोग करें।

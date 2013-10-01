@@ -1682,7 +1682,7 @@ es:
       failed: No ha podido iniciar sesión con esta dirección de correo electrónico y contraseña; inténtelo de nuevo
       form:
         sign_in_button: Iniciar sesión
-      headline: Iniciar sesión
+      headline: Iniciar sesión a %{site}
       mismatch: Las contraseñas no coinciden; por favor inténtelo de nuevo
       prompt_html: Inicie sesión con su <strong>identificación de Socrata </strong>
       tips_html: Use su correo electrónico y contraseña para iniciar sesión en todos los <strong><a href="http://www.socrata.com" rel="external">sitios</a> administrados</strong> por Socrata.

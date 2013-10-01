@@ -1674,7 +1674,7 @@ it:
       failed: Impossibile accedere con e-mail e password inserite; si prega di riprovare
       form:
         sign_in_button: Accedi
-      headline: Accedi
+      headline: Accedi a %{site}
       mismatch: Le password non corrispondono; si prega di riprovare
       prompt_html: Accedi con il tuo <strong>Socrata ID</strong>
       tips_html: Utilizza e-mai e password per accedere a tutti i siti <strong>Powered by <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.

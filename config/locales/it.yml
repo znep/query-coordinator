@@ -116,7 +116,9 @@ it:
         timeout: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare più tardi.
       row_results:
         less_link: Meno
+        matching_rows: Cercante righe corrispondenti
         more_link: Ancora
+        no_matching_rows: No righe corrispondenti.
         title_html: ! 'Mostrate <span class="rowResultCountText"></span> di <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
       search: Cerca
       sort_period_title: Periodo dell'ordinamento

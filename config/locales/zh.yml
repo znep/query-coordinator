@@ -116,7 +116,9 @@ zh:
         timeout: 抱歉，本次未能搜索到结果，请稍后再试。
       row_results:
         less_link: 更少
+        matching_rows: 匹配的行
         more_link: 更多
+        no_matching_rows: 没有匹配行
         title_html: 共<span class="totalResultCountText"></span> 匹配数据行 <a href="#" class="rowSearchLink">（查看结果），</a>显示 <span class="rowResultCountText"></span> ：
       search: 搜索
       sort_period_title: 排序时间

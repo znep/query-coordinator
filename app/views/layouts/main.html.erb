@@ -239,15 +239,6 @@ http://www.socrata.com
         $siteLinks.menu({ menuButtonClass: 'accountButton ss-user',
           menuButtonContents: user === undefined ? 'Account' : user.displayName,
           menuButtonTitle: 'Account Options', contents: contents });
-      <%- else -%>
-        if (! $('#siteHeader .siteUserNav .accountLink').hasClass('hide'))
-        {
-          $('#siteHeader .siteUserNav .accountLink').after($.tag2({ _: 'li',
-            className: 'govstatManageLink',
-            contents: { _: 'a', href: '<%= manage_path %>',
-            contents: 'Manage GovStat' }
-          }));
-        }
       <%- end -%>
       };
       // We can generally count that main js is evaled before all-screens, but

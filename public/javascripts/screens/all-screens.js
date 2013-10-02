@@ -113,7 +113,9 @@
         }
     });
 
-
+    //Timestamp for mixpanel loggning
+    blist.pageOpened = Math.round(new Date().getTime() / 1000)
+    
     // Fix dates for local timezone
     $('.dateReplace').each(function()
     {

@@ -161,6 +161,49 @@ String.prototype.linkify = function(extra)
 
 (function($) {
 
+
+$.mixpanelMeta = function()
+{
+    var userId = 'n/a',
+        isSocrata = 'n/a',
+        userRoleName = 'n/a',
+        datasetOwner = 'n/a',
+        viewType = 'n/a', 
+        viewId = 'n/a';
+    
+    //things that can be undefined if user is not logged in
+    if(!_.isUndefined(blist.currentUser)){
+        userId = blist.currentUserId;
+        isSocrata = _.any(blist.currentUser.flags, function(flag){return flag == 'admin'});
+        datasetOwner = blist.dataset.owner.id;
+        if(!_.isUndefined(blist.currentUser.roleName))
+        {
+            userRoleName = blist.currentUser.roleName;
+        }
+    }
+
+    //things that can be undefined if we're loging things outside of a dataset
+    if(!_.isUndefined(blist.dataset)){
+        viewType = blist.dataset.displayName;
+        viewId = blist.dataset.id;
+    }
+    
+    var domain = window.location.hostname;
+    
+    var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
+    
+     mixpanel.register({
+        'User Id': userId,
+        'Socrata Employee': isSocrata,
+        'User Role Name': userRoleName,
+        'Dataset Owner': datasetOwner,
+        'View Id': viewId,
+        'View Type': viewType,
+        'Domain': domain,
+        'Time Since Page Opened (sec)': time
+    });
+}
+
 $.hashHref = function(href)
 {
     // IE sticks the entire page URL on, so we can't just strip off the hash;

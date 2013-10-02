@@ -252,6 +252,23 @@
                 sidebarObj._currentPane = config;
                 sidebarObj.$currentOuterPane().find('.headerLink[data-paneName="' +
                     nameParts.secondary + '"]').addClass('selected');
+                
+                //mixpanel logging
+                var outerPaneName = config.name;
+                var paneName = 'None'; 
+                
+                if(!_.isUndefined(config.parent)){
+                    paneName = config.name;
+                    outerPaneName = config.parent.name
+                };
+                
+                $.mixpanelMeta();
+                mixpanel.track(
+                'Opened pane',
+                    { 'Outer Pane': outerPaneName,
+                      'Pane': paneName
+                    }
+                );
 
                 _.defer(function()
                 {

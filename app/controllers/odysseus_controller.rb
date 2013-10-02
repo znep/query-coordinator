@@ -10,6 +10,8 @@ class OdysseusController < ApplicationController
 
     res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
 
+    @suppress_govstat = true if current_user.nil? || current_user.roleName.nil?
+
     if res.code == '400'
       render_error(400)
     elsif res.code == '401'

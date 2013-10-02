@@ -53,8 +53,9 @@ var adjust = function($elem, $bubble, options)
       return;
   }
 
-  // assumption failed; hide.
-  $bubble.hide();
+  // we failed to get preferred direction. force-feed option one.
+  $bubble.removeClass('top right bottom left');
+  tryDirection(options.prefer[0], $elem, $bubble, options, true);
 };
 
 // the workhorse; called with a direction to attempt to position the bubble on
@@ -106,7 +107,7 @@ var tryDirection = function(direction, $elem, $bubble, options, force)
 
   // actually, we could also render against the edge of the visible part of
   // the elem.
-  if ((withinBounds === false) && (options.pin !== true))
+  if ((withinBounds === false) && (options.pin !== true) && (force !== true))
     return false;
 
   // add class for measurement w/ styling.
@@ -129,9 +130,9 @@ var tryDirection = function(direction, $elem, $bubble, options, force)
   var screenRight = screenLeft + $window.width() - 20 - options.screenMargin; // 20 for scrollbar
 
   // see if we violate bounds.
-  if ((direction == 'top') && (fixation.y - tipHeight - bubbleHeight < screenTop + options.screenMargin))
+  if ((direction == 'top') && (fixation.y - tipHeight - bubbleHeight < screenTop + options.screenMargin) && (force !== true))
     return false;
-  if ((direction == 'bottom') && (fixation.y + tipHeight + bubbleHeight > screenBottom - options.screenMargin))
+  if ((direction == 'bottom') && (fixation.y + tipHeight + bubbleHeight > screenBottom - options.screenMargin) && (force !== true))
     return false;
 
   // see if we need to shift sideways.

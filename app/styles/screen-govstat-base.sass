@@ -400,7 +400,7 @@ input.button, a.button
           vertical-align: baseline
 
   .goalItem
-    &.public-false
+    &.public-false, &.private
       a:before
         background-color: #bbb
         @include opacity(0.4)
@@ -408,6 +408,16 @@ input.button, a.button
       a:hover:before
         background-color: #888
         @include opacity(0.7)
+
+      .privateFlag
+        display: block
+
+    .privateFlag
+      color: #fff
+      display: none
+      float: left
+      font-size: 1.1em
+      padding-top: 0.2em
 
     .singleInner
       .goalValue

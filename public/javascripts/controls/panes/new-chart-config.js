@@ -5,7 +5,6 @@
 
     var isNextGen = (blist.configuration.newChartsEnabled ||
         $.urlParam(window.location.href, 'charts') == 'nextgen') && $.urlParam(window.location.href, 'charts') != 'old';
-    var nextGenReady = ['bar', 'column', 'pie', 'donut', 'line', 'area'];
     var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
     var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
 
@@ -264,21 +263,6 @@
 
     };
 
-    var getWarningMessage = function(chartConfig)
-    {
-        return function()
-        {
-            if (isNextGen && _.include(nextGenReady, chartConfig.value)) { return ''; }
-            var chartName = chartConfig.text.toLowerCase();
-            // This is the same as _maxRows in base-visualization.js
-            var rowLimit = (chartConfig.displayLimit || {}).points || 500;
-            if (chartConfig.renderOther)
-            { return $.t('screens.ds.grid_sidebar.chart.pie_other', { chart_type: chartName.capitalize(), row_limit: rowLimit }) }
-            else
-            { return $.t('screens.ds.grid_sidebar.chart.pie_truncate', { chart_type: chartName.capitalize(), row_limit: rowLimit }); }
-        };
-    };
-
     var chartTypeAvailable = function(chartConfig, options)
     {
         return $.isBlank(options.view) ? false : Dataset.chart.hasRequiredColumns(options.view.realColumns,
@@ -303,8 +287,7 @@
         return [{field: 'displayFormat.chartType', value: chart.value},
                {disable: disable, func: function() { return chartTypeAvailable(chart, options); },
                 disabledMessage: function(){getDisabledMessage(chart)}},
-               {warn: disable, func: function() { return datasetTooLarge(chart, options); },
-                warningMessage: getWarningMessage(chart)}];
+               {warn: disable, func: function() { return datasetTooLarge(chart, options); }}];
     };
 
     var header = function(chart, options, name)

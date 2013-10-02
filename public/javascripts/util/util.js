@@ -169,13 +169,13 @@ $.mixpanelMeta = function()
         userRoleName = 'n/a',
         datasetOwner = 'n/a',
         viewType = 'n/a', 
-        viewId = 'n/a';
+        viewId = 'n/a',
+        userOwnsDataset = 'n/a';
     
     //things that can be undefined if user is not logged in
     if(!_.isUndefined(blist.currentUser)){
         userId = blist.currentUserId;
         isSocrata = _.any(blist.currentUser.flags, function(flag){return flag == 'admin'});
-        datasetOwner = blist.dataset.owner.id;
         if(!_.isUndefined(blist.currentUser.roleName))
         {
             userRoleName = blist.currentUser.roleName;
@@ -186,6 +186,10 @@ $.mixpanelMeta = function()
     if(!_.isUndefined(blist.dataset)){
         viewType = blist.dataset.displayName;
         viewId = blist.dataset.id;
+        datasetOwner = blist.dataset.owner.id;
+        if(!_.isUndefined(blist.currentUser)){
+            userOwnsDataset = blist.dataset.owner.id == blist.currentUserId;
+        }
     }
     
     var domain = window.location.hostname;
@@ -197,6 +201,7 @@ $.mixpanelMeta = function()
         'Socrata Employee': isSocrata,
         'User Role Name': userRoleName,
         'Dataset Owner': datasetOwner,
+        'User Owns Dataset': userOwnsDataset,
         'View Id': viewId,
         'View Type': viewType,
         'Domain': domain,

@@ -4,8 +4,10 @@
 
 <%- cur_sort = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] } -%>
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
+<%- in_search = opts[:user_params][:q] -%>
 
 <div class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
+  <%= in_search ? 'inSearch' : 'notInSearch' %>
   <%= opts[:custom_class] || '' %>
   <%= opts[:browse_in_container] ? 'inContainer' : '' %> <%= opts[:disable][:sort] ? 'noSort' : '' %>">
   <%- if opts[:facets].length > 0 -%>
@@ -344,8 +346,11 @@
                         </div>
                         <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
                           <div class="infoContent"></div>
+                          <%- unless in_search -%>
+                          <a class="close" href="#Close"><span class="icon"></span></a>
+                          <%- end -%>
                         </div>
-                        <div class="rowSearchResults"><span><%= t('controls.browse.row_results.matching_rows') %></span></div>
+                        <div class="rowSearchResults"><span class="matching_rows"></span></div>
                       </div>
                     </td>
                   <%- end -%>
@@ -380,12 +385,14 @@
                       <% end %>
                       <div class="expandBlock matching">
                         <div class="description">
+                          <%- if in_search -%>
                           <a href="#expand" class="expander rightArrow" title="<%= t('core.expando.prompt') %>">
                             <span class="icon"><%= t('core.expando.expand') %></span>
                           </a>
+                          <%- end -%>
                           <p><%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %></p>
                         </div>
-                        <div class="rowSearchResults"><span></span></div>
+                        <div class="rowSearchResults"><span class="matching_rows"></span></div>
                       </div>
                     </td>
                   <%- end -%>

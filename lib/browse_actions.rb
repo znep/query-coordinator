@@ -307,7 +307,7 @@ protected
 
     if browse_options[:view_results].nil?
       begin
-        view_results = Clytemnestra.search_views(browse_options[:search_options])
+        view_results = Clytemnestra::ViewSearchResult.from_result(File.open(Dir.home + '/code/frontend/lib/foo') { |f| f.read }) #Clytemnestra.search_views(browse_options[:search_options])
         browse_options[:view_count] = view_results.count
         browse_options[:view_results] = view_results.results
       rescue CoreServer::TimeoutError

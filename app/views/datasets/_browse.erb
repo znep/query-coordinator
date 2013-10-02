@@ -288,9 +288,6 @@
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
                     <td class="index" scope="row">
-                      <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
-                        <span class="icon"></span>
-                      </a>
                       <span class="value"><%= start_index + i %>.</span>
                     </td>
                   <%- end -%>
@@ -338,13 +335,17 @@
                         </div>
                       <% end %>
 
-                      <div class="expandBlock clearfix collapsed">
-                        <div class="description"><%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %></div>
-                        <div class="rowSearchResults"></div>
+                      <div class="expandBlock clearfix matching">
+                        <div class="description">
+                          <a href="#expand" class="expander rightArrow" title="<%= t('core.expando.prompt') %>">
+                            <span class="icon"><%= t('core.expando.expand') %></span>
+                          </a>
+                          <p><%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %></p>
+                        </div>
                         <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
                           <div class="infoContent"></div>
-                          <a class="close" href="#Close"><span class="icon"></span></a>
                         </div>
+                        <div class="rowSearchResults"><span><%= t('controls.browse.row_results.matching_rows') %></span></div>
                       </div>
                     </td>
                   <%- end -%>
@@ -377,13 +378,15 @@
                                 :source_link => link_to(v.domainCName, "//#{v.domainCName}")) %>
                         </div>
                       <% end %>
-                      <div class="expandBlock">
-                        <div class="description collapsed"><%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %></div>
-                        <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
-                          <span class="icon"></span>
-                        </a>
+                      <div class="expandBlock matching">
+                        <div class="description">
+                          <a href="#expand" class="expander rightArrow" title="<%= t('core.expando.prompt') %>">
+                            <span class="icon"><%= t('core.expando.expand') %></span>
+                          </a>
+                          <p><%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %></p>
+                        </div>
+                        <div class="rowSearchResults"><span></span></div>
                       </div>
-                      <div class="rowSearchResults"></div>
                     </td>
                   <%- end -%>
 

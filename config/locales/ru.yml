@@ -116,7 +116,9 @@ ru:
         timeout: Извините. В настоящее время результаты извлечь невозможно. Попробуйте позже.
       row_results:
         less_link: Меньше
+        matching_rows: соответствующие строки
         more_link: Больше
+        no_matching_rows: Нет соответствующих строк.
         title_html: ! 'Показано <span class="rowResultCountText"></span> из <span class="totalResultCountText"></span> подходящих строк <a href="#" class="rowSearchLink">(смотреть результаты)</a>:'
       search: Поиск
       sort_period_title: Период сортировки

@@ -116,7 +116,9 @@ de:
         timeout: 
       row_results:
         less_link: 
+        matching_rows:
         more_link: 
+        no_matching_rows:
         title_html: 
       search: 
       sort_period_title: 

@@ -927,8 +927,14 @@
       text-align: center
       text-shadow: 1px 1px 0 #fff
 
-    .filterConditions
+    .filterConditions, .baseFilterConditions
       margin-bottom: 0.5em
+
+      .conditionJoin
+        display: block
+        font-size: 1.3em
+        margin: 0.3em 0
+        text-align: center
 
       .filterCondition
         margin-top: 0.5em
@@ -1143,6 +1149,43 @@
             margin:
               right: 0.3em
               top: -2px
+
+    .baseFilterConditions
+      border-top: 1px solid #cccccc
+      margin-top: 1em
+      padding-top: 1em
+      .explanatoryText
+        color: #666666
+        font-size: 1.3em
+        margin-bottom: 0.8em
+        .info
+          margin-left: 0.2em
+      .filterCondition
+        .filterHeadline, .filterValues
+          display: inline
+        .filterHeadline
+          padding-right: 0
+        input, .uniform
+          display: none
+        .filterLink
+          border: none
+          &:hover
+            border: none
+          &:after
+            display: none
+          &.operator
+            margin-right: 0
+        .remove
+          display: none
+        .line
+          display: inline
+          padding-left: 0
+          &:after
+            display: none
+          .lineValue
+            color: #333333
+            font-size: 1.4em
+            margin: 0
 
     .notAdvanced
       .notAdvancedLine

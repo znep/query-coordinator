@@ -274,6 +274,8 @@ en:
         simplified_header: Users will start in simplified mode.
         simplified_toggle: Change the default back to advanced.
       main:
+        base_explanation: With the following base filters
+        base_info: These filters are always applied, along with any extra filters entered above. These filters cannot be edited, either because you do not have permissions to edit the current view, or because they come from the parent view or dataset.
         filter: Filter
         filter_based_on_contents: Filter this dataset based on contents.
         no_conditions: No conditions defined yet.

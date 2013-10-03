@@ -95,7 +95,7 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
 
-        // If we aren't complete, but can grab data from our iparent, pre-emptively do so
+        // If we aren't complete, but can grab data from our parent, pre-emptively do so
         // Also exclude client side filtering on the catalog dataset because its filtering is somewhat unusual.
         if (rs._dataset.resourceName !== "datasets" && !rs._isComplete && (rs._parent || {})._isComplete &&
                 _.isEmpty(rs._translatedQuery.groupBys) && _.isEmpty(rs._parent._translatedQuery.groupBys))
@@ -544,8 +544,7 @@ var RowSet = ServerModel.extend({
         if (soda2Aggs.length > 0)
         {
             var sel = _.map(soda2Aggs, function(a) { return a.method + '(' + a.column + ')'; }).join(',');
-            rs.makeRequest({ url: '/api/id/' + rs._dataset.id + '.json',
-                params: { '$select': sel },
+            rs.makeRequest({ params: { '$select': sel },
                 success: function(resp)
                 {
                     gotAggs(_.map(resp[0], function(v, k)
@@ -639,65 +638,11 @@ var RowSet = ServerModel.extend({
         var rs = this;
         if (blist.useSODA2)
         {
-            args.isSODA = true;
-            args.params = args.params || {};
-            args.params['$$version'] = '2.0';
-            if (!$.isBlank(rs._dataset.searchString))
-            { args.params['$q'] = rs._dataset.searchString; }
-            if (!_.isEmpty(rs._query.orderBys))
-            {
-                args.params['$order'] = _.compact(_.map(rs._query.orderBys, function(ob)
-                {
-                    var c = rs._dataset.columnForIdentifier(ob.expression.columnId);
-                    if ($.isBlank(c)) { return null; }
-                    return c.fieldName + (c.ascending ? '' : ' desc');
-                })).join(',');
-            }
-            if (!_.isEmpty(rs._translatedQuery.filterCondition))
-            {
-                var soqlWhere = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition.where);
-                args.params['$where'] = !$.isBlank(args.params['$where']) ?
-                    (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
-                var soqlHaving = blist.filter.generateSOQLWhere(rs._translatedQuery.filterCondition.having);
-                args.params['$having'] = !$.isBlank(args.params['$having']) ?
-                    (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
-            }
-            if (!_.isEmpty(rs._translatedQuery.groupBys))
-            {
-                var soqlGroup = [];
-                var groupSelect = [];
-                _.each(rs._translatedQuery.groupBys, function(gb)
-                {
-                    if ($.isBlank(gb.groupFunction))
-                    {
-                        soqlGroup.push(gb.columnFieldName);
-                        groupSelect.push(gb.columnFieldName);
-                    }
-                    else
-                    {
-                        var k = gb.columnFieldName + '__' + gb.groupFunction;
-                        soqlGroup.push(k);
-                        groupSelect.push(gb.groupFunction + '(' + gb.columnFieldName + ') as ' + k);
-                    }
-                });
-                soqlGroup = soqlGroup.join(',');
-                args.params['$group'] = !$.isBlank(args.params['$group']) ?
-                    (args.params['$group'] + ',' + soqlGroup) : soqlGroup;
-                groupSelect = groupSelect.concat(
-                        _.compact(_.map(rs._dataset.realColumns, function(c)
-                            {
-                                if (!$.isBlank(c.format.grouping_aggregate))
-                                {
-                                    return blist.datatypes.soda2Aggregate(c.format.grouping_aggregate)
-                                        + '(' + c.fieldName + ')';
-                                }
-                                return null;
-                            }))).join(',');
-                args.params['$select'] = !$.isBlank(args.params['$select']) ?
-                    (args.params['$select'] + ',' + groupSelect) : groupSelect;
-            }
+            rs._makeSODA2Request(args);
+            return;
         }
-        else if (args.inline)
+
+        if (args.inline)
         {
             var d;
             if (!$.isBlank(args.data))
@@ -712,6 +657,104 @@ var RowSet = ServerModel.extend({
                 d.query.filterCondition = rs._query.filterCondition;
             }
             args.data = JSON.stringify(d);
+        }
+        rs._dataset.makeRequest(args);
+    },
+
+    _makeSODA2Request: function(args)
+    {
+        var rs = this;
+        if ($.isBlank(rs._dataset._queryBase))
+        {
+            rs._dataset.getQueryBase(function() { rs._makeSODA2Request(args); });
+            return;
+        }
+
+        args.isSODA = true;
+        args.url = args.url || '/api/id/' + rs._dataset._queryBase.id + '.json';
+        args.params = args.params || {};
+        args.params['$$version'] = '2.0';
+
+        // Need to take the difference from queryBase, and adjust columns if necessary
+        var adjSearchString = rs._dataset.searchString == rs._dataset._queryBase.searchString ?
+            '' : rs._dataset.searchString;
+        if (!$.isBlank(adjSearchString))
+        { args.params['$q'] = adjSearchString; }
+
+        if (!_.isEmpty(rs._query.orderBys))
+        {
+            // Just apply all orderBys, because they can safely be applied on top without harm
+            args.params['$order'] = _.compact(_.map(rs._query.orderBys, function(ob)
+            {
+                var c = rs._dataset.columnForIdentifier(ob.expression.columnId);
+                if ($.isBlank(c)) { return null; }
+                var qbC = Dataset.translateColumnToQueryBase(c, rs._dataset);
+                if ($.isBlank(qbC)) { return null; }
+                return qbC.fieldName + (c.ascending ? '' : ' desc');
+            })).join(',');
+            if ($.isBlank(args.params['$order']))
+            { delete args.params['$order']; }
+        }
+
+        if (!_.isEmpty(rs._translatedQuery.filterCondition))
+        {
+            var baseFilter = Dataset.translateFilterCondition(rs._dataset._queryBase.cleanFilters(), rs._dataset._queryBase);
+            // Can't apply a where on top of a group by
+            if (_.isEmpty(rs._dataset._queryBase.query.groupBys))
+            {
+                var soqlWhere = blist.filter.generateSOQLWhere(
+                        blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
+                                rs._translatedQuery.filterCondition.where, rs._dataset),
+                            baseFilter.where));
+                args.params['$where'] = !$.isBlank(args.params['$where']) ?
+                    (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
+            }
+            var soqlHaving = blist.filter.generateSOQLWhere(
+                    blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
+                            rs._translatedQuery.filterCondition.having, rs._dataset),
+                        baseFilter.having));
+            args.params['$having'] = !$.isBlank(args.params['$having']) ?
+                (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
+        }
+
+        // If queryBase has any group bys, we can't add more
+        if (!_.isEmpty(rs._translatedQuery.groupBys) && _.isEmpty(rs._dataset._queryBase.query.groupBys))
+        {
+            var soqlGroup = [];
+            var groupSelect = [];
+            _.each(rs._translatedQuery.groupBys, function(gb)
+            {
+                var qbCF = Dataset.translateColumnToQueryBase(gb.columnFieldName, rs._dataset);
+                if ($.isBlank(qbCF)) { return; }
+                if ($.isBlank(gb.groupFunction))
+                {
+                    soqlGroup.push(qbCF);
+                    groupSelect.push(qbCF);
+                }
+                else
+                {
+                    var k = qbCF + '__' + gb.groupFunction;
+                    soqlGroup.push(k);
+                    groupSelect.push(gb.groupFunction + '(' + qbCF + ') as ' + k);
+                }
+            });
+            soqlGroup = soqlGroup.join(',');
+            args.params['$group'] = !$.isBlank(args.params['$group']) ?
+                (args.params['$group'] + ',' + soqlGroup) : soqlGroup;
+            groupSelect = groupSelect.concat(
+                    _.compact(_.map(rs._dataset.realColumns, function(c)
+                        {
+                            if (!$.isBlank(c.format.grouping_aggregate))
+                            {
+                                var qbCF = Dataset.translateColumnToQueryBase(c.fieldName, rs._dataset);
+                                if ($.isBlank(qbCF)) { return null; }
+                                return blist.datatypes.soda2Aggregate(c.format.grouping_aggregate)
+                                    + '(' + qbCF + ')';
+                            }
+                            return null;
+                        }))).join(',');
+            args.params['$select'] = !$.isBlank(args.params['$select']) ?
+                (args.params['$select'] + ',' + groupSelect) : groupSelect;
         }
         rs._dataset.makeRequest(args);
     },
@@ -933,9 +976,7 @@ var RowSet = ServerModel.extend({
 
         var req = { success: rowsLoaded, params: params, inline: !blist.useSODA2 && !fullLoad,
             type: blist.useSODA2 || fullLoad ? 'GET' : 'POST' };
-        if (blist.useSODA2)
-        { req.url = '/api/id/' + rs._dataset.id + '.json'; }
-        else if (fullLoad)
+        if (!blist.useSODA2 && fullLoad)
         { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
         if (params.meta || params['$$meta'])
         {

@@ -33,17 +33,18 @@ var Dataset = ServerModel.extend({
             'row_count_change', 'column_resized', 'displayformat_change',
             'displaytype_change', 'column_totals_changed', 'removed',
             'permissions_changed', 'new_comment', 'reloaded',
-            'conditionalformatting_change']);
+            'conditionalformatting_change', 'saved']);
 
-        var cObj = this;
+        var ds = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)
         _.each(v, function(curVal, key)
-            { if (!_.isFunction(cObj[key])) { cObj[key] = curVal; } });
+            { if (!_.isFunction(ds[key])) { ds[key] = curVal; } });
 
-        if (!(blist.viewCache[this.id] instanceof Dataset))
-        { blist.viewCache[this.id] = this; }
-        if (!$.isBlank(this.resourceName) && !(blist.viewCache[this.resourceName] instanceof Dataset))
-        { blist.viewCache[this.resourceName] = this; }
+        if (!(blist.sharedDatasetCache[this.id] instanceof Dataset))
+        { blist.sharedDatasetCache[this.id] = this; }
+        if (!$.isBlank(this.resourceName) &&
+            !(blist.sharedDatasetCache[this.resourceName] instanceof Dataset))
+        { blist.sharedDatasetCache[this.resourceName] = this; }
 
         // This ID really shouldn't be changing; if it does, this URL
         // will be out-of-date...
@@ -65,12 +66,12 @@ var Dataset = ServerModel.extend({
         this.valid = this._checkValidity();
 
         // We need an active row set to start
-        this._savedRowSet = new RowSet(this, { orderBys: (this.query || {}).orderBys,
-            filterCondition: this.cleanFilters(), groupBys: (this.query || {}).groupBys,
-            groupFuncs: this._getGroupedFunctions() },
-            null, this.initialRows);
-        delete this.initialRows;
-        this._activateRowSet(this._savedRowSet);
+        ds._savedRowSet = new RowSet(ds, { orderBys: (ds.query || {}).orderBys,
+            filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
+            groupFuncs: ds._getGroupedFunctions() },
+            null, ds.initialRows);
+        delete ds.initialRows;
+        ds._activateRowSet(ds._savedRowSet);
 
         this._pendingRowEdits = {};
         this._pendingRowDeletes = {};
@@ -265,6 +266,7 @@ var Dataset = ServerModel.extend({
                 !_.isEqual(vizIds, _.pluck(ds.visibleColumns, 'id')))
             { ds.setVisibleColumns(vizIds); }
             if (_.isFunction(successCallback)) { successCallback(ds); }
+            ds.trigger('saved');
         };
 
         this.makeRequest({url: '/views/' + this.id + '.json',
@@ -1332,6 +1334,50 @@ var Dataset = ServerModel.extend({
         this._getChildView(typeDisplay.id, callback);
     },
 
+    getQueryBase: function(callback)
+    {
+        var ds = this;
+        if (!$.isBlank(ds._queryBase))
+        {
+            if (_.isFunction(callback)) { callback(); }
+            return;
+        }
+
+        ds.bind('saved', function()
+        {
+            // This might not actually be a real case, because if you can modify the current
+            // view, query access ought to be based on the parent. But logically this is
+            // a good thing to do.
+            if (!$.isBlank(ds._queryBase) && ds._queryBase.id == ds.id)
+            { ds._queryBase.reload(); }
+        }, ds);
+
+        var selfForBase = function()
+        {
+            Dataset.createFromViewId(ds.id, function(qb)
+            {
+                ds._queryBase = qb;
+                if (_.isFunction(callback)) { callback(); }
+            });
+        };
+
+        if (ds.hasRight('update_view') && !ds.isDefault())
+        {
+            ds.getParentView(function(par)
+            {
+                if (!$.isBlank(par))
+                {
+                    ds._queryBase = par;
+                    if (_.isFunction(callback)) { callback(); }
+                }
+                else
+                { selfForBase(); }
+            });
+        }
+        else
+        { selfForBase(); }
+    },
+
     getChildOptionsForType: function(type, callback)
     {
         var ds = this;
@@ -2130,7 +2176,7 @@ var Dataset = ServerModel.extend({
                 _.each(ds._availableRowSets, function(rs) { rs.formattingChanged(); });
                 ds.trigger('row_change', [_.values(ds._activeRowSet._rows)]);
             }
-            
+
             ds.trigger('conditionalformatting_change');
         }
 
@@ -2353,10 +2399,11 @@ var Dataset = ServerModel.extend({
 
     _invalidateAll: function(rowCountChanged, columnsChanged)
     {
-        delete this._availableRowSets;
-        this._activateRowSet(new RowSet(this, { orderBys: (this.query || {}).orderBys,
-            filterCondition: this.cleanFilters(), groupBys: (this.query || {}).groupBys,
-            groupFuncs: this._getGroupedFunctions() }));
+        var ds = this;
+        delete ds._availableRowSets;
+        ds._activateRowSet(new RowSet(ds, { orderBys: (ds.query || {}).orderBys,
+            filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
+            groupFuncs: ds._getGroupedFunctions() }));
     },
 
     _serverCreateRow: function(req, isBatch)
@@ -3001,7 +3048,7 @@ var _cleanedMostRecent = function(mostRecents)
 
 Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, isAnonymous, isResourceName)
 {
-    var cachedView = blist.viewCache[id];
+    var cachedView = clone ? blist.viewCache[id] : (blist.sharedDatasetCache[id] || blist.viewCache[id]);
     isAnonymous = !!isAnonymous;
 
     if (!_.isUndefined(cachedView))
@@ -3018,14 +3065,14 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, i
         else if ((cachedView !== false) && _.isFunction(successCallback))
         {
             var ds;
-            if (blist.viewCache[id] instanceof Dataset)
+            if (cachedView instanceof Dataset)
             {
-                if (clone || blist.viewCache[id].isAnonymous() != isAnonymous)
-                { ds = blist.viewCache[id].clone(); }
-                else { ds = blist.viewCache[id]; }
+                if (clone || cachedView.isAnonymous() != isAnonymous)
+                { ds = cachedView.clone(); }
+                else { ds = cachedView; }
             }
             else
-            { ds = new Dataset(blist.viewCache[id]); }
+            { ds = new Dataset(cachedView); }
             if (isAnonymous) { ds.isAnonymous(isAnonymous); }
             successCallback(ds);
         }
@@ -3039,14 +3086,19 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, i
             success: function(view)
                 {
                     if (_.isUndefined(blist.viewCache[view.id]))
-                    { blist.viewCache[view.id] = new Dataset(view); }
+                    { blist.viewCache[view.id] = view; }
+                    if (_.isUndefined(blist.sharedDatasetCache[view.id]))
+                    { blist.sharedDatasetCache[view.id] = new Dataset(view); }
                     if (!$.isBlank(view.resourceName) && _.isUndefined(blist.viewCache[view.resourceName]))
                     { blist.viewCache[view.resourceName] = blist.viewCache[view.id]; }
+                    if (!$.isBlank(view.resourceName) &&
+                        _.isUndefined(blist.sharedDatasetCache[view.resourceName]))
+                    { blist.sharedDatasetCache[view.resourceName] = blist.sharedDatasetCache[view.id]; }
 
                     if (_.isFunction(successCallback))
                     {
-                        var ds = clone || blist.viewCache[view.id].isAnonymous() != isAnonymous ?
-                            new Dataset(view) : blist.viewCache[view.id];
+                        var ds = clone || blist.sharedDatasetCache[view.id].isAnonymous() != isAnonymous ?
+                            new Dataset(view) : blist.sharedDatasetCache[view.id];
                         if (isAnonymous) { ds.isAnonymous(isAnonymous); }
                         successCallback(ds);
                     }
@@ -3079,8 +3131,9 @@ Dataset.search = function(params, successCallback, errorCallback, isAnonymous)
         }, error: errorCallback});
 };
 
-Dataset.translateFilterCondition = function(fc, ds)
+Dataset.translateFilterCondition = function(fc, ds, simplify)
 {
+    if ($.isBlank(simplify)) { simplify = true; }
     fc = $.extend(true, {}, fc);
     if (ds.isGrouped())
     {
@@ -3108,28 +3161,9 @@ Dataset.translateFilterCondition = function(fc, ds)
                 { return true; }
             };
 
+            fc = blist.filter.collapseChildren(fc);
             if (fc.value == 'AND')
             {
-                // First simplify all ANDs into a single top level
-                var collapseChildren = function(children)
-                {
-                    var newChildren = [];
-                    _.each(children, function(cond)
-                    {
-                        if (cond.type == 'operator' && cond.value == 'AND')
-                        { newChildren = newChildren.concat(cond.children); }
-                        else
-                        { newChildren.push(cond); }
-                    });
-                    newChildren = _.compact(newChildren);
-                    return _.isEqual(children, newChildren) ? false : newChildren;
-                };
-                var newC = fc.children;
-                var t;
-                while (t = collapseChildren(newC))
-                { newC = t; }
-                fc.children = newC;
-
                 var havingChildren = _.select(fc.children, function(cond)
                 {
                     // Find trees that only reference post-group columns
@@ -3147,36 +3181,42 @@ Dataset.translateFilterCondition = function(fc, ds)
                 splitWhere = null;
             }
         }
-        return { where: translateSubFilter(splitWhere, ds, false),
-            having: translateSubFilter(splitHaving, ds, true) };
+        return { where: translateSubFilter(splitWhere, ds, simplify, false),
+            having: translateSubFilter(splitHaving, ds, simplify, true) };
     }
     else
-    { return { where: translateSubFilter(fc, ds, false) }; }
+    { return { where: translateSubFilter(fc, ds, simplify, false) }; }
 };
 
-function translateSubFilter(fc, ds, isHaving)
+function translateSubFilter(fc, ds, simplify, isHaving)
 {
-    if ($.isBlank(fc) || fc.type != 'operator' || !_.isArray(fc.children) ||
-            fc.children.length == 0)
+    if (simplify && ($.isBlank(fc) || fc.type != 'operator' || !_.isArray(fc.children) ||
+            fc.children.length == 0))
     { return null; }
 
     var filterQ = { operator: fc.value };
+    if (!$.isBlank(fc.metadata))
+    { filterQ.metadata = fc.metadata; }
 
     if (filterQ.operator == 'AND' || filterQ.operator == 'OR')
     {
         filterQ.children = _.compact(_.map(fc.children, function(c)
         {
-            var fcc = translateSubFilter(c, ds, isHaving);
+            var fcc = translateSubFilter(c, ds, simplify, isHaving);
             if (!$.isBlank(fcc)) { fcc._parent = filterQ; }
             return fcc;
         }));
-        if (filterQ.children.length == 0)
-        { return null; }
-        else if (filterQ.children.length == 1)
+        if (simplify)
         {
-            var cf = filterQ.children[0];
-            cf._parent = filterQ._parent;
-            filterQ = cf;
+            if (filterQ.children.length == 0)
+            { return null; }
+            else if (filterQ.children.length == 1)
+            {
+                var cf = filterQ.children[0];
+                cf._parent = filterQ._parent;
+                cf.metadata = $.extend(filterQ.metadata, cf.metadata);
+                filterQ = cf;
+            }
         }
     }
     else
@@ -3234,6 +3274,34 @@ Dataset.translateGroupBys = function(gb, ds, groupFuncs)
             blist.datatypes.soda2GroupFunction(($.isBlank(groupFuncs) ?
                 c.format.group_function : groupFuncs[c.fieldName]), c) };
     })), 'columnFieldName');
+};
+
+Dataset.translateColumnToQueryBase = function(c, dataset)
+{
+    var isStr = _.isString(c);
+    if (isStr) { c = dataset.columnForIdentifier(c); }
+    if ($.isBlank(c)) { return null; }
+    var qbc = dataset._queryBase.columnForIdentifier(c.fieldName) ||
+        dataset._queryBase.columnForIdentifier(c.tableColumnId);
+    if ($.isBlank(qbc)) { return null; }
+    return isStr ? qbc.fieldName : qbc;
+};
+
+Dataset.translateFilterColumnsToBase = function(filter, dataset)
+{
+    var newF = $.extend({}, filter);
+    if (!_.isEmpty(newF.children))
+    {
+        newF.children = _.compact(_.map(newF.children, function(fc)
+            { return Dataset.translateFilterColumnsToBase(fc, dataset); }));
+        if (_.isEmpty(newF.children)) { return null; }
+    }
+    if (!$.isBlank(newF.columnFieldName))
+    {
+        newF.columnFieldName = Dataset.translateColumnToQueryBase(newF.columnFieldName, dataset);
+        if ($.isBlank(newF.columnFieldName)) { return null; }
+    }
+    return newF;
 };
 
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',

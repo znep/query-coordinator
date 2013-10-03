@@ -225,4 +225,96 @@ blist.namespace.fetch('blist.filter');
                     (!$.isBlank(fc.subColumn) ? '.' + fc.subColumn : ''), v) + ')';
     };
 
+    blist.filter.generateSODA1 = function(fc)
+    {
+        var result = {};
+        if (_.isEmpty(fc)) { return result; }
+        if (!$.isBlank(fc.metadata))
+        { result.metadata = fc.metadata; }
+        var op = fc.operator.toUpperCase();
+        result.type = 'operator';
+        result.value = op;
+        if (op == 'AND' || op == 'OR')
+        {
+            result.children = _.map(fc.children, function(c) { return blist.filter.generateSODA1(c); });
+        }
+        else
+        {
+            result.children = [ { type: 'column', columnFieldName: fc.columnFieldName },
+                { type: 'literal', value: fc.value } ];
+            if (!$.isBlank(fc.subColumn))
+            { result.children[0].value = fc.subColumn; }
+        }
+        return result;
+    };
+
+    blist.filter.collapseChildren = function(fc)
+    {
+        fc = $.extend({}, fc);
+        if ($.isBlank(fc.children)) { return fc; }
+        var collapseChildren = function(children)
+        {
+            var newChildren = [];
+            _.each(children, function(cond)
+            {
+                if (cond.type == 'operator' && cond.value == 'AND' ||
+                    !$.isBlank(cond.operator) && cond.operator.toUpperCase() == 'AND')
+                { newChildren = newChildren.concat(cond.children); }
+                else
+                { newChildren.push(cond); }
+            });
+            newChildren = _.compact(newChildren);
+            return _.isEqual(children, newChildren) ? false : newChildren;
+        };
+        var t;
+        var newC = fc.children;
+        while (t = collapseChildren(newC))
+        { newC = t; }
+        fc.children = newC;
+        return fc;
+    };
+
+    var isFCEqual = function(a, b)
+    {
+        if ($.isBlank(a))
+        { return $.isBlank(b); }
+        else if ($.isBlank(b))
+        { return false; }
+
+        if ($.isBlank(a.children))
+        {
+            return $.isBlank(b.children) && a.columnFieldName == b.columnFieldName &&
+                a.operator == b.operator && a.value == b.value && a.subColumn == b.subColumn;
+        }
+        else if ($.isBlank(b.children) || a.operator != b.operator ||
+                a.children.length != b.children.length)
+        { return false; }
+
+        return _.all(a.children, function(ac)
+                { return _.any(b.children, function(bc) { return isFCEqual(ac, bc); }); });
+    };
+
+    blist.filter.subtractQueries = function(fc, baseFC)
+    {
+        fc = blist.filter.collapseChildren(fc);
+        baseFC = blist.filter.collapseChildren(baseFC);
+        if (!$.isBlank(fc.children) && fc.operator.toUpperCase() == 'AND')
+        {
+            if ($.isBlank(baseFC.children))
+            { fc.children = _.reject(fc.children, function(c) { return isFCEqual(c, baseFC); }); }
+            else if (baseFC.operator.toUpperCase() == 'AND')
+            {
+                fc.children = _.reject(fc.children, function(c)
+                        { return _.any(baseFC.children, function(bc) { return isFCEqual(c, bc); }); });
+            }
+            return fc;
+        }
+        // They are the same; full subtraction!
+        else if (isFCEqual(fc, baseFC))
+        { return null; }
+        // Nothing to subtract
+        else
+        { return fc; }
+    };
+
 })(jQuery);

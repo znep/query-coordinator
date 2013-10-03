@@ -24,15 +24,15 @@
 
     // cleans out filters down to a "minimal effective" state: essentially strips out
     // everything that is a NOOP on the actual filter operation.
-    var cleanFilter = function(rootCondition)
+    var cleanFilter = function(localRootCondition)
     {
-        if (!cleanFilter_recurse(rootCondition))
+        if (!cleanFilter_recurse(localRootCondition))
         {
             return {};
         }
         else
         {
-            return rootCondition;
+            return localRootCondition;
         }
     };
     var cleanFilter_recurse = function(condition)
@@ -302,8 +302,10 @@
         var datasets = _.map(options.datasets, function(ds)
                 { return {dataset: ds, ufID: ds.id + '_' + _.uniqueId()}; });
         var dataset = datasets[0].dataset; // grab the first one; eg fsckLegacy only makes sense for one anyway
+
         var filterableColumns = options.filterableColumns; // this will change so save it off
         var rootCondition = $.extend(true, {}, options.rootCondition); // note: this may be null/undef
+        var baseRootCondition;
 
         // Use a consistent ID to keep track of our particular query in each dataset
         var queryId = 'unifiedFilter' + _.uniqueId();
@@ -313,24 +315,24 @@
     // DATASET-SPECIFIC UTIL
 
         // check to make sure we can render the thing; make minor corrections if possible
-        var fsckLegacy_v1 = function(rootCondition)
+        var fsckLegacy_v1 = function(localRootCondition)
         {
             var compatible = true;
 
-            if (rootCondition.type != 'operator' || !_.include(['AND', 'OR'], rootCondition.value))
+            if (localRootCondition.type != 'operator' || !_.include(['AND', 'OR'], localRootCondition.value))
             {
                 // we're something not a conjunction; we should be able to nest this
                 // and everything will be okay
-                rootCondition.children = [ $.extend({}, rootCondition) ];
-                rootCondition.type = 'operator';
-                rootCondition.value = 'OR';
+                localRootCondition.children = [ $.extend({}, localRootCondition) ];
+                localRootCondition.type = 'operator';
+                localRootCondition.value = 'OR';
             }
 
             // make sure we have children before _.each'ing it
-            rootCondition.children = rootCondition.children || [];
+            localRootCondition.children = localRootCondition.children || [];
 
             // we can handle anything at the top level (AND or OR)
-            _.each(rootCondition.children, function(condition, i)
+            _.each(localRootCondition.children, function(condition, i)
             {
                 if ((condition.type == 'operator') && _.include(['AND', 'OR'], condition.value))
                 {
@@ -374,7 +376,7 @@
                 {
                     // we're something not a conjunction; we should be able to nest this
                     // and everything will be okay
-                    rootCondition.children[i] = {
+                    localRootCondition.children[i] = {
                         type: 'operator',
                         value: 'OR',
                         children: [ condition ]
@@ -383,14 +385,14 @@
             });
 
             // ensure root node and all direct subchildren have accurate metadata objects
-            if (_.isUndefined(rootCondition.metadata))
+            if (_.isUndefined(localRootCondition.metadata))
             {
-                rootCondition.metadata = {
+                localRootCondition.metadata = {
                     advanced: true,
                     unifiedVersion: 1
                 };
             }
-            _.each(rootCondition.children, function(child)
+            _.each(localRootCondition.children, function(child)
             {
                 if (_.isUndefined(child.metadata))
                 {
@@ -413,7 +415,7 @@
                 }
             });
 
-            fsckLegacy_v2(rootCondition);
+            fsckLegacy_v2(localRootCondition);
 
             return compatible;
         };
@@ -451,7 +453,7 @@
             return true;
         };
 
-        var fsckLegacy_v2 = function(rootCondition)
+        var fsckLegacy_v2 = function(localRootCondition)
         {
             // assumes that we are already v1 compliant
 
@@ -460,16 +462,78 @@
             // at any given time. this means that it has to be given a tableColumnId
             // per view-uid, which means that the tableColumnId field is now an obj
 
-            _.each(rootCondition.children, function(condition)
+            _.each(localRootCondition.children, function(condition)
             {
                 var newTCIDObj = {};
                 newTCIDObj[dataset.publicationGroup] = condition.metadata.tableColumnId;
                 condition.metadata.tableColumnId = newTCIDObj;
             });
 
-            rootCondition.metadata.unifiedVersion = 2;
+            localRootCondition.metadata.unifiedVersion = 2;
 
             return true;
+        };
+
+        var setUpRoot = function(localRootCondition, localDataset)
+        {
+            if (!_.isEmpty(localRootCondition))
+            {
+                // great, we have a real filter to work with.
+
+                // Handle the case when a namedFilter was stuck under an AND
+                if (_.isEmpty(localRootCondition.metadata))
+                {
+                    var found = _.detect(localRootCondition.children, function(c)
+                            { return _.isNumber((c.metadata || {}).unifiedVersion); });
+                    if (!$.isBlank(found)) { localRootCondition = found; }
+                }
+
+                // if we have something completely nonsensical, check v1 (which also checks v2)
+                // otherwise, check v2
+                if (((_.isUndefined(localRootCondition.metadata) ||
+                                _.isNaN(localRootCondition.metadata.unifiedVersion)) &&
+                            !fsckLegacy_v1(localRootCondition)) ||
+                    ((localRootCondition.metadata.unifiedVersion < 2) && !fsckLegacy_v2(localRootCondition)))
+                {
+                    // this is some legacy or custom format that we're not capable of dealing with
+                    throw "Error: We're not currently capable of dealing with this filter."
+                }
+            }
+            else if ($.subKeyDefined(localDataset, 'metadata.filterCondition'))
+            {
+                // we might be looking at a default view with a filterCondition.
+                localRootCondition = $.extend(true, {}, localDataset.metadata.filterCondition);
+
+                // this must be at least a v1 unified filter. verify v2ness
+                if (localRootCondition.metadata.unifiedVersion < 2)
+                {
+                    fsckLegacy_v2(localRootCondition);
+                }
+            }
+            else
+            {
+                // we seriously can't find anything. init a new root.
+                localRootCondition = {
+                    type: 'operator',
+                    value: 'AND',
+                    children: [],
+                    metadata: {
+                        advanced: true,
+                        unifiedVersion: 2
+                    }
+                };
+            }
+
+            // the core server has a nasty habit of stripping empty []'s.
+            localRootCondition.children = localRootCondition.children || [];
+
+            // if there are no conditions at all, force to advanced
+            if (localRootCondition.children.length == 0)
+            {
+                localRootCondition.metadata.advanced = true;
+            }
+
+            return localRootCondition;
         };
 
     /////////////////////////////////////
@@ -486,7 +550,7 @@
             }
 
             // update filters and remove ones that no longer apply
-            $pane.find('.filterLink.columnName').each(function()
+            $pane.find('.filterConditions .filterLink.columnName').each(function()
             {
                 var $this = $(this);
                 if (!_.include(filterableColumns, $this.popupSelect_selectedItems()[0]))
@@ -514,6 +578,7 @@
                 .find('.noFilterConditionsText').show()
                 .siblings().remove();
             rootCondition = $.extend(true, {}, options.rootCondition);
+            baseRootCondition = null;
             filterableColumns = options.filterableColumns;
             renderQueryFilters();
         });
@@ -535,6 +600,7 @@
                 ufDS.dataset.update({ query: query });
             });
             rootCondition = $.extend(true, {}, options.rootCondition);
+            baseRootCondition = null;
             filterableColumns = options.filterableColumns;
         });
 
@@ -544,6 +610,7 @@
         // check and render all the filters that are saved on the view
         var renderQueryFilters = function()
         {
+            $pane.find('.baseFilterConditions').find('.filterCondition').remove();
             $pane.find('.filterConditions').empty();
 
             if (_.isEmpty(rootCondition) && $.subKeyDefined(dataset, 'query.filterCondition'))
@@ -553,61 +620,19 @@
                 queryOwned = true;
             }
 
-            if (!_.isEmpty(rootCondition))
+            // Consciously not handling namedFilters here, since we like to hide things there
+            if ($.subKeyDefined(dataset, '_queryBase.query.filterCondition'))
             {
-                // great, we have a real filter to work with.
-
-                // Handle the case when a namedFilter was stuck under an AND
-                if (_.isEmpty(rootCondition.metadata))
-                {
-                    var found = _.detect(rootCondition.children, function(c)
-                            { return _.isNumber((c.metadata || {}).unifiedVersion); });
-                    if (!$.isBlank(found)) { rootCondition = found; }
-                }
-
-                // if we have something completely nonsensical, check v1 (which also checks v2)
-                // otherwise, check v2
-                if (((_.isUndefined(rootCondition.metadata) || _.isNaN(rootCondition.metadata.unifiedVersion)) &&
-                        !fsckLegacy_v1(rootCondition)) ||
-                    ((rootCondition.metadata.unifiedVersion < 2) && !fsckLegacy_v2(rootCondition)))
-                {
-                    // this is some legacy or custom format that we're not capable of dealing with
-                    throw "Error: We're not currently capable of dealing with this filter."
-                }
-            }
-            else if ($.subKeyDefined(dataset, 'metadata.filterCondition'))
-            {
-                // we might be looking at a default view with a filterCondition.
-                rootCondition = $.extend(true, {}, dataset.metadata.filterCondition);
-
-                // this must be at least a v1 unified filter. verify v2ness
-                if (rootCondition.metadata.unifiedVersion < 2)
-                {
-                    fsckLegacy_v2(rootCondition);
-                }
-            }
-            else
-            {
-                // we seriously can't find anything. init a new root.
-                rootCondition = {
-                    type: 'operator',
-                    value: 'AND',
-                    children: [],
-                    metadata: {
-                        advanced: true,
-                        unifiedVersion: 2
-                    }
-                };
+                baseRootCondition = $.extend(true, {}, dataset._queryBase.query.filterCondition);
+                rootCondition = blist.filter.generateSODA1(blist.filter.subtractQueries(
+                            Dataset.translateFilterColumnsToBase(
+                                Dataset.translateFilterCondition(rootCondition, dataset, false), dataset).where,
+                            Dataset.translateFilterCondition(baseRootCondition, dataset._queryBase, false).where,
+                            dataset._queryBase) || {});
             }
 
-            // the core server has a nasty habit of stripping empty []'s.
-            rootCondition.children = rootCondition.children || [];
-
-            // if there are no conditions at all, force to advanced
-            if (rootCondition.children.length == 0)
-            {
-                rootCondition.metadata.advanced = true;
-            }
+            rootCondition = setUpRoot(rootCondition, dataset);
+            baseRootCondition = setUpRoot(baseRootCondition, dataset._queryBase);
 
             // are we advanced?
             $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
@@ -621,6 +646,22 @@
                 .filter(':has(>a[data-actionTarget=' + rootCondition.value + '])').addClass('checked');
 
             // now render each filter
+            if (rootCondition.metadata.hideBase || _.isEmpty(baseRootCondition) ||
+                    _.isEmpty(baseRootCondition.children))
+            {
+                $pane.find('.baseFilterConditions').addClass('hide');
+            }
+            else
+            {
+                $pane.find('.baseFilterConditions').removeClass('hide');
+                _.each(baseRootCondition.children, renderBaseCondition);
+                $pane.find('.baseFilterConditions .filterCondition:gt(0)').each(function()
+                {
+                    $(this).before($.tag2({ _: 'span', className: 'conditionJoin',
+                        contents: $.t('core.' + baseRootCondition.value.toLowerCase()) }));
+                });
+            }
+
             _.each(rootCondition.children, renderCondition);
 
             // if we have nothing, show the beginner's message
@@ -642,6 +683,88 @@
                     $pane.find('.normalFilterMode').show();
                 });
             }
+        };
+
+        var renderBaseCondition = function(condition)
+        {
+            var metadata = condition.metadata || {};
+            // If we don't have metadata, then something we can't handle slipped in among
+            // our valid items. Ignore it for now...
+            if (_.isEmpty(metadata)) { return; }
+
+            var column = dataset._queryBase.columnForTCID(
+                    metadata.tableColumnId[dataset._queryBase.publicationGroup]);
+
+            if (_.isUndefined(column))
+            {
+                // someone must have changed the type on this or something. abort mission.
+                return;
+            }
+
+            // render the main bits
+            var $filter = $.renderTemplate('filterConditionStatic', { metadata: metadata, column: column },
+            {
+                '.columnName': 'column.name!',
+                '.columnInfo@title': 'column.description!',
+                '.subcolumnName': function() { return (((column.renderType.subColumns || {})
+                        [metadata.subcolumn] || {}).title || '').toLowerCase(); },
+                '.subcolumnName@class+': function()
+                    {
+                        return (!$.isBlank(column.renderType.subColumns) &&
+                            column.renderType.subColumns.length > 0) ? '' : 'hide';
+                    },
+                '.operator': function()
+                    { return getOperatorName(column, metadata.subcolumn, metadata.operator); }
+            });
+            var filterUniqueId = 'filter_' + _.uniqueId();
+
+            // hook up info tip
+            var $info = $filter.find('.columnInfo');
+            $info.toggleClass('hide', $.isBlank($info.attr('title')) || !metadata.showInfo);
+            $info.socrataTip({ message: ($info.attr('title') || '').clean(), killTitle: true });
+
+            if (metadata.operator == 'blank?')
+            {
+                // special case these since they have no actual values
+                if (_.any(condition.children || [], function(child)
+                            { return child.value == 'IS_BLANK'; }))
+                {
+                    addFilterLine({ item: renderType.filterConditions.details.IS_BLANK
+                        .text.replace(/^is\s/, ''), data: 'IS_BLANK' }, column, condition, $filter,
+                        filterUniqueId, { textOnly: true, selected: true });
+                }
+                else if (_.any(condition.children || [], function(child)
+                            { return child.value == 'IS_NOT_BLANK'; }))
+                {
+                    addFilterLine({ item: renderType.filterConditions.details.IS_NOT_BLANK
+                        .text.replace(/^is\s/, ''), data: 'IS_NOT_BLANK' }, column, condition, $filter,
+                        filterUniqueId, { textOnly: true, selected: true });
+                }
+            }
+            else
+            {
+                // selected values
+                _.each(condition.children || [], function(child, i)
+                {
+                    var value = findConditionComponent(condition, 'value', i);
+
+                    var childMetadata = child.metadata || {};
+                    addFilterLine({ item: value }, column, condition, $filter, filterUniqueId,
+                        { selected: true });
+                });
+            }
+            var $lines = $filter.find('.line');
+            if ($lines.length > 1)
+            {
+                if ($lines.length > 2)
+                { $lines.slice(0, $lines.length - 1).find('.lineValue').append(','); }
+                $lines.eq($lines.length - 2).find('.lineValue').append(
+                        ' ' + $.t('core.' + condition.value.toLowerCase()));
+            }
+            $filter.find('input').attr('disabled', true);
+
+            $pane.find('.baseFilterConditions').append($filter);
+            $filter.slideDown();
         };
 
         // initial render and setup of filter condition
@@ -2134,7 +2257,7 @@
         var parseFilters = function()
         {
             if ($pane.parents('body').length < 1) { return; }
-            var $filterConditions = $pane.find('.filterCondition');
+            var $filterConditions = $pane.find('.filterConditions .filterCondition');
             $filterConditions.removeClass('countInvalid');
 
             var datasetConditions = {};
@@ -2341,7 +2464,10 @@
     /////////////////////////////////////
     // GEARS IN MOTION
 
-        hookUpSidebarActions();
-        renderQueryFilters();
+        dataset.getQueryBase(function()
+        {
+            hookUpSidebarActions();
+            renderQueryFilters();
+        });
     };
 })(jQuery);

@@ -40,6 +40,11 @@
     </a>
   </div>
 
+  <div class="baseFilterConditions">
+    <div class="explanatoryText"><%= t 'controls.filter.main.base_explanation' %>
+      <span class="info ss-info" title="<%= t 'controls.filter.main.base_info' %>"></span></div>
+  </div>
+
   <div class="tutorialSection">
     <p><%= t 'controls.filter.main.tutorial_html' %></p>
   </div>
@@ -81,6 +86,19 @@
     </div>
     <div class="advanced filterOptionsLabel"><%= t('controls.filter.menu.title') %></div>
     <div class="menu advanced filterOptionsMenu"></div>
+  </div>
+</div>
+
+<div class="filterConditionStatic">
+  <div class="filterCondition sectionContent">
+    <div class="filterHeadline">
+      <span class="filterLink columnName"></span>
+      <span class="columnInfo ss-icon hide">information</span>
+      <span class="filterLink subcolumnName"></span>
+      <span class="filterLink operator"></span>
+    </div>
+    <div class="filterValues">
+    </div>
   </div>
 </div>
 

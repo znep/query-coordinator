@@ -13,6 +13,8 @@
     background-color: $govstat_color_flat
   .progress-bad .poor
     background-color: $govstat_color_poor
+  .progress-no_judgement .no_judgement
+    background-color: $govstat_color_none
   .progress-none .none
     background-color: $govstat_color_none
   .progress-needs_more_data .progress
@@ -25,6 +27,8 @@
     #{$prop}: $govstat_color_flat
   &.progress-bad #{$selector}
     #{$prop}: $govstat_color_poor
+  &.progress-no_judgement #{$selector}
+    #{$prop}: $govstat_color_none
   &.progress-none #{$selector}
     #{$prop}: $govstat_color_none
   &.progress-needs_more_data #{$selector}
@@ -524,6 +528,7 @@ $chartHeight: 210px
     float: left
     font-size: 2.6em
     font-weight: normal
+    letter-spacing: -1px
     margin-right: 0.5em
 
   p

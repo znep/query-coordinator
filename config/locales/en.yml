@@ -854,9 +854,10 @@ en:
           color_select:
             prompt: Choose color
           column_select:
+            auto: Auto
             from_grid: Select a column from the grid
             none_selected: No column selected
-            nonselectable: Not Valid Columns
+            nonselectable: Invalid Columns
             prompt: Select a column
             selectable: Valid Columns
             unselect: Deselect column
@@ -958,7 +959,9 @@ en:
             title: Error Bars
           flyout:
             new_details_button: Add Flyout Details
+            new_values_button: Add Values
             title: Flyout Details
+            title_column: Flyout Title
             value: Flyout Values
           group_extra: Group Extra Values
           groups: Groups
@@ -966,6 +969,8 @@ en:
           labelInBar: Label in Bar
           labels_and_values: Labels and Values
           legend:
+            add_text: Additional text
+            add_text_button: Add Additional Text
             annotations: Describe Annotations
             conditional_formats: Describe Conditional Formats
             custom_entry: Custom Label

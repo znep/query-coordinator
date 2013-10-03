@@ -221,7 +221,12 @@ var Column = ServerModel.extend({
 
         var colItem = { type: 'column', columnId: col.id };
         if (!$.isBlank(subColumnType) && _.isString(subColumnType))
-        { colItem.value = subColumnType.toUpperCase(); };
+        {
+            if (blist.useSODA2)
+            { colItem.value = subColumnType.toLowerCase(); }
+            else
+            { colItem.value = subColumnType.toUpperCase(); }
+        }
 
         // Special handling for human_address in location
         if (col.renderTypeName == 'location' && !$.isBlank(subColumnType) && $.isPlainObject(value))

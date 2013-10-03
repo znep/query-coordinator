@@ -4233,7 +4233,8 @@
             {
                 var doLoad;
                 doLoad = function()
-                { model.loadRows(0, 50, function() { isReady(); }, doLoad); };
+                { model.loadRows(0, 50, function() { isReady(); }, function(arg)
+                        { if ((arg || {}).cancelled) { doLoad(); } }); };
                 doLoad();
             }
             else { isReady(); }

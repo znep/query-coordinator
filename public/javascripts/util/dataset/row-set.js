@@ -705,14 +705,14 @@ var RowSet = ServerModel.extend({
                 var soqlWhere = blist.filter.generateSOQLWhere(
                         blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
                                 rs._translatedQuery.filterCondition.where, rs._dataset),
-                            baseFilter.where));
+                            baseFilter.where), rs._dataset._queryBase);
                 args.params['$where'] = !$.isBlank(args.params['$where']) ?
                     (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
             }
             var soqlHaving = blist.filter.generateSOQLWhere(
                     blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
                             rs._translatedQuery.filterCondition.having, rs._dataset),
-                        baseFilter.having));
+                        baseFilter.having), rs._dataset._queryBase);
             args.params['$having'] = !$.isBlank(args.params['$having']) ?
                 (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
         }

@@ -3,7 +3,7 @@ blist.namespace.fetch('blist.filter');
 (function($) {
 
     var soqlInfix = function(c, op, v) { return c + op + v; };
-    var soqlFunc = function(c, op, v) { return op + '(' + c + ',' + v + ')'; };
+    var soqlFunc = function(c, op, v) { return op + '(' + c + (v === undefined ? '' : (',' + v)) + ')'; };
 
     // Filtering
     // NOTE: New filter types also need an analogue template in
@@ -49,10 +49,10 @@ blist.namespace.fetch('blist.filter');
             } },
 
         'IS_BLANK': { text: $.t('core.filters.informal.is_blank'), editorCount: 0,
-            soql: function(c, v) { return soqlFunc(c, 'is_blank', v); },
+            soql: function(c, v) { return soqlFunc(c, 'is_blank'); },
             opMatches: function(v) { return $.isBlank(v); } },
         'IS_NOT_BLANK': { text: $.t('core.filters.informal.is_not_blank'), editorCount: 0,
-            soql: function(c, v) { return soqlFunc(c, 'is_not_blank', v); },
+            soql: function(c, v) { return soqlFunc(c, 'is_not_blank'); },
             opMatches: function(v) { return !$.isBlank(v); } }
     };
 
@@ -210,17 +210,28 @@ blist.namespace.fetch('blist.filter');
             '|' + op + '|' + fc.value + ')';
     };
 
-    blist.filter.generateSOQLWhere = function(fc)
+    blist.filter.generateSOQLWhere = function(fc, dataset)
     {
         if (_.isEmpty(fc)) { return ''; }
         var op = fc.operator.toUpperCase();
         if (op == 'AND' || op == 'OR')
         {
-            var childKeys = _.map(fc.children, function(c) { return blist.filter.generateSOQLWhere(c); });
+            var childKeys = _.map(fc.children, function(c) { return blist.filter.generateSOQLWhere(c, dataset); });
             return childKeys.length < 2 ? (childKeys[0] || '') : '(' + childKeys.join(' ' + op + ' ') + ')';
         }
+
+        var c = dataset.columnForIdentifier(fc.columnFieldName);
         var v = fc.value;
-        if (_.isString(v)) { v = "'" + v + "'"; }
+        if ($.subKeyDefined(c, 'renderType.soqlFilterValue'))
+        {
+            if (_.isArray(v))
+            { v = _.map(v, function(vv) { return c.renderType.soqlFilterValue(vv); }); }
+            else
+            { v = c.renderType.soqlFilterValue(v); }
+        }
+        else if (_.isArray(v))
+        { v = _.map(v, function(vv) { return _.isString(vv) ? "'" + vv + "'" : vv; }); }
+        else if (_.isString(v)) { v = "'" + v + "'"; }
         return '(' + filterOperators[op].soql(fc.columnFieldName +
                     (!$.isBlank(fc.subColumn) ? '.' + fc.subColumn : ''), v) + ')';
     };

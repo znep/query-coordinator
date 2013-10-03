@@ -1052,6 +1052,8 @@ blist.namespace.fetch('blist.datatypes');
             },
             deleteable: true,
             filterConditions: blist.filter.groups.numeric,
+            soqlFilterValue: function(v)
+            { return 'to_usd(' + v + ')'; },
             inlineType: true,
             matchValue: function(v)
             {

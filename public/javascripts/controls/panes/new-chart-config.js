@@ -359,7 +359,7 @@
                 //Data Series Grouping
                 {type: 'group', extraClass: 'subsection dsg', options: [
                     {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.title')},
-                    {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.row_limit_warning'), onlyIf: tooManyRows },
+                    {type: 'note', value: $.t('screens.ds.grid_sidebar.chart.series_group.row_limit_warning'), onlyIf: tooManyRows, lineClass: 'flash notice'},
                     {type: 'repeater', minimum: 1, addText: $.t('screens.ds.grid_sidebar.chart.series_group.new_column_button'),
                         lineClass: 'dataSeriesGrouping',
                         name: 'displayFormat.seriesColumns',

@@ -64,10 +64,17 @@ var RowSet = ServerModel.extend({
         else
         {
             var gotID = function(data) { successCallback(data[id]); };
-            // FIXME
-            rs.makeRequest({inline: true,
-                params: {method: 'getByIds', indexesOnly: true, ids: id},
-                success: gotID});
+            if (blist.useSODA2)
+            {
+                // FIXME: Doesn't work for SODA2
+                successCallback(0);
+            }
+            else
+            {
+                rs.makeRequest({inline: true,
+                    params: {method: 'getByIds', indexesOnly: true, ids: id},
+                    success: gotID});
+            }
         }
     },
 
@@ -639,26 +646,27 @@ var RowSet = ServerModel.extend({
         if (blist.useSODA2)
         {
             rs._makeSODA2Request(args);
-            return;
         }
-
-        if (args.inline)
+        else
         {
-            var d;
-            if (!$.isBlank(args.data))
-            { d = _.isString(args.data) ? JSON.parse(args.data) : args.data; }
-            else
-            { d = rs._dataset.cleanCopy(); }
-            if (!_.isEmpty(rs._query))
+            if (args.inline)
             {
-                d.query = d.query || {};
-                d.query.orderBys = rs._query.orderBys;
-                d.query.groupBys = rs._query.groupBys;
-                d.query.filterCondition = rs._query.filterCondition;
+                var d;
+                if (!$.isBlank(args.data))
+                { d = _.isString(args.data) ? JSON.parse(args.data) : args.data; }
+                else
+                { d = rs._dataset.cleanCopy(); }
+                if (!_.isEmpty(rs._query))
+                {
+                    d.query = d.query || {};
+                    d.query.orderBys = rs._query.orderBys;
+                    d.query.groupBys = rs._query.groupBys;
+                    d.query.filterCondition = rs._query.filterCondition;
+                }
+                args.data = JSON.stringify(d);
             }
-            args.data = JSON.stringify(d);
+            rs._dataset.makeRequest(args);
         }
-        rs._dataset.makeRequest(args);
     },
 
     _makeSODA2Request: function(args)

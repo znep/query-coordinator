@@ -690,7 +690,7 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(parRowId)) { parRow = this.rowForID(parRowId); }
 
         data = data || {};
-        var newRow = { data: {}, invalid: {}, error: {}, changed: {} };
+        var newRow = { data: {}, metadata: {}, invalid: {}, error: {}, changed: {} };
         _.each(!$.isBlank(parCol) ? parCol.childColumns : ds.columns, function(c)
         {
             if (!$.isBlank(data[c.lookup]))
@@ -2411,12 +2411,6 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var rowCreated = function(rr)
         {
-            if (blist.useSODA2 && rr.Errors > 0)
-            {
-                rowErrored();
-                return;
-            }
-
             var oldID = req.row.id;
             if (!blist.useSODA2)
             {
@@ -2437,6 +2431,18 @@ var Dataset = ServerModel.extend({
                     }
                 });
             }
+            else
+            {
+                _.each(rr, function(v, k)
+                {
+                    if (k.startsWith(':'))
+                    {
+                        req.row.data[k] = v;
+                        req.row.metadata[k.slice(1)] = v;
+                    }
+                });
+                req.row.id = req.row.metadata.id;
+            }
 
             if (req.row.underlying)
             {
@@ -2455,6 +2461,14 @@ var Dataset = ServerModel.extend({
             delete ds._pendingRowEdits[oldKey];
             ds._pendingRowDeletes[newKey] = ds._pendingRowDeletes[oldKey];
             delete ds._pendingRowDeletes[oldKey];
+
+            if (blist.useSODA2)
+            {
+                _.each(ds._pendingRowEdits[newKey], function(pre)
+                { pre.rowData[':id'] = req.row.id; });
+                _.each(ds._pendingRowDeletes[newKey], function(pre)
+                { pre.rowId = req.row.id; });
+            }
 
             // We can have old IDs embedded in child row keys; so messy cleanup...
             if ($.isBlank(req.parentRow))
@@ -2540,27 +2554,18 @@ var Dataset = ServerModel.extend({
         // On save, unmark each item, and fire an event
         var rowSaved = function(result)
         {
-            if (blist.useSODA2 && result.Errors > 0)
-            {
-                rowErrored();
-                return;
-            }
-
             _.each(r.columnsSaving, function(cL)
                 { delete r.row.changed[cL]; });
 
-            if (!blist.useSODA2)
+            _.each(r.columnsSaving, function(cL)
             {
-                _.each(r.columnsSaving, function(cL)
-                {
-                    var col = !$.isBlank(r.parentColumn) ?
-                        r.parentColumn.childColumnForIdentifier(cL) :
-                        ds.columnForIdentifier(cL);
-                    ds._updateLinkedColumns(col, r.row, result);
-                });
+                var col = !$.isBlank(r.parentColumn) ?
+                    r.parentColumn.childColumnForIdentifier(cL) :
+                    ds.columnForIdentifier(cL);
+                ds._updateLinkedColumns(col, r.row, result);
+            });
 
-                if (!result._underlying) { r.row.noMatch = null; }
-            }
+            if (!result._underlying) { r.row.noMatch = null; }
 
             ds._updateRow(r.parentRow || r.row);
             ds.trigger('row_change', [[r.parentRow || r.row]]);
@@ -2586,11 +2591,11 @@ var Dataset = ServerModel.extend({
         };
 
 
-        var url = blist.useSODA2 ? '/api/id/' + ds.id + '/' : '/views/' + ds.id + '/rows/';
+        var url = blist.useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
         if (!$.isBlank(r.parentRow))
-        { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows/'; }
-        url += (blist.useSODA2 ? r.row.id : r.row.uuid) + '.json';
-        ds.makeRequest({url: url, type: 'PUT', data: JSON.stringify(r.rowData),
+        { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows'; }
+        url += (blist.useSODA2 ? '' : '/' + r.row.uuid) + '.json';
+        ds.makeRequest({url: url, type: blist.useSODA2 ? 'POST' : 'PUT', data: JSON.stringify(r.rowData),
             isSODA: blist.useSODA2, batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});
 

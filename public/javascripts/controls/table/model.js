@@ -896,7 +896,7 @@ blist.namespace.fetch('blist.data');
             // Add in blank row at the end
             if (self.useBlankRows())
             {
-                var blankRow = {invalid: {}, changed: {}, error: {}};
+                var blankRow = {invalid: {}, changed: {}, error: {}, data: {}, metadata: {}};
                 blankRow.type = 'blank';
                 blankRow.id = 'blank';
                 blankRow.index = self.length();

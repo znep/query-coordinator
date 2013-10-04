@@ -170,10 +170,7 @@
           //If creating from a dataset don't spit warning messages immediately.
           var hideInlineErrors = _.isEmpty(this._view.displayFormat.valueColumns) ||
                                  _.find(this._view.displayFormat.valueColumns, _.isEmpty);
-          if (hideInlineErrors)
-          { this.$dom().find('span.error').text(''); };
-          //Hide the error message shown on the bottom, it doesn't make sense with no apply button
-          this.$dom().find('.mainError').text('');
+          this.$dom().toggleClass('inlineErrorsHidden', hideInlineErrors || false);
           return valid;
         },
 

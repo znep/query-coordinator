@@ -558,6 +558,16 @@
   &.new_chart_create
     margin-top: -1em
     @include vis-type-colors
+    // Hide the error message shown on the bottom, it doesn't make sense with no apply button
+    .mainError
+      display: none
+    // We don't want to immediately show errors. This class controls their visibility.
+    // jQuery.validate likes to set inline display: block so we can't use display:none.
+    &.inlineErrorsHidden span.error
+      width: 0
+      height: 0
+      overflow: hidden
+      visibility: hidden
     .formSection
       @include viz-type-icons-small
       @include chart-config-icons

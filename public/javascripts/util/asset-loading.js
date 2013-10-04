@@ -178,6 +178,8 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
         })
         .flatten()
         .reject(function(item) { return lazyLoadedAssets.stylesheets[item.sheet]; }).value();
+    // We don't care about currently loading sheets, because Tache will properly handle
+    // de-duping those; and this way we get the proper callbacks.
 
     var loadedCount = 0;
     var reqCount = sheets.length;
@@ -222,8 +224,12 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
             $.socrataServer.makeRequest({url: url, contentType: 'text/css', pageCache: true,
                 dataType: 'text', success: function(resp)
                 {
-                    sheetPieces += resp;
                     loadedCount++;
+                    if (!lazyLoadedAssets.stylesheets[sheet.sheet])
+                    {
+                        sheetPieces += resp;
+                        lazyLoadedAssets.stylesheets[sheet.sheet] = true;
+                    }
                     if (loadedCount == reqCount)
                     {
                         $('head').append('<' + 'style type="text/css">' + sheetPieces + '</style>\n');
@@ -231,8 +237,6 @@ assetNS.loadStylesheets = function(sheetQueue, callback)
                     }
                 }});
         }
-
-        lazyLoadedAssets.stylesheets[sheet.sheet] = true;
     });
 };
 

@@ -1526,7 +1526,7 @@
             // + 2 for "-r"/"-l" suffix prior to row ID
             var $nhr = $(over).closest('.blist-tr');
             var newHotID = $nhr.length > 0 ?
-                $nhr.attr('id').substring(id.length + 2) : null;
+                ($nhr.attr('id') || '').substring(id.length + 2) : null;
             if (!isDisabled && newHotID != hotRowID)
             {
                 if (hotRowID)

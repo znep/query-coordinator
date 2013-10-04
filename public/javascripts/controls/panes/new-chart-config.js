@@ -99,7 +99,7 @@
             {
                 fields.push(
                     { text: $.t('screens.ds.grid_sidebar.chart.legend.conditional_formats'), type: 'checkbox', inputFirst: true,
-                      name: 'displayFormat.legendDetails.showConditional', defaultValue: true,
+                      name: 'displayFormat.legendDetails.showConditional', defaultValue: false,
                       lineClass: 'advLegendCheck' });
             }
 

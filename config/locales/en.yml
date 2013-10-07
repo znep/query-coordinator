@@ -146,7 +146,7 @@ en:
     charts:
       negatives_in_data: ! 'Invalid chart: negative values present'
       no_data: No data
-      other: Other
+      other_slice_label: Other
       series_grouping:
         calculating_time: Calculating remaining time...
         calculation_running: Preparing data
@@ -962,7 +962,7 @@ en:
             title: Error Bars
           flyout:
             new_details_button: Add Flyout Details
-            new_values_button: Add Values
+            new_values_button: ! ' Add Values'
             title: Flyout Details
             title_column: Flyout Title
             value: Flyout Values
@@ -972,8 +972,12 @@ en:
           labelInBar: Label in Bar
           labels_and_values: Labels and Values
           legend:
-            add_text: Additional text
-            add_text_button: Add Additional Text
+            add_text: ! 'Additional text
+
+'
+            add_text_button: ! 'Add Additional Text
+
+'
             annotations: Describe Annotations
             conditional_formats: Describe Conditional Formats
             custom_entry: Custom Label

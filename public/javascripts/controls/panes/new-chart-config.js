@@ -595,16 +595,24 @@
     var getPieDefaultOrderBy = function(options)
     {
         var view = options.view;
-        return _.map(view.displayFormat.valueColumns, function(col)
+        return _.compact(_.map(view.displayFormat.valueColumns, function(col)
             {
-                return {
-                    ascending: false,
-                    expression: {
-                        columnId: view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
-                        type: 'column'
-                    }
-                };
-            });
+                var col = view.columnForIdentifier(col.fieldName || col.tableColumnId);
+                if (col && !_.isUndefined(col.id))
+                {
+                    return {
+                        ascending: false,
+                        expression: {
+                            columnId: col.id,
+                            type: 'column'
+                        }
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }));
     };
 
     var hasDefaultPieSort = function(options)

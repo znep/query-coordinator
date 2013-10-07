@@ -169,7 +169,7 @@
           var valid = this._super();
           //If creating from a dataset don't spit warning messages immediately.
           var hideInlineErrors = _.isEmpty(this._view.displayFormat.valueColumns) ||
-                                 _.find(this._view.displayFormat.valueColumns, _.isEmpty);
+                                 _.some(this._view.displayFormat.valueColumns, _.isEmpty);
           this.$dom().toggleClass('inlineErrorsHidden', hideInlineErrors || false);
           return valid;
         },

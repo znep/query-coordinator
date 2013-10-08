@@ -146,6 +146,7 @@ hi:
     charts:
       negatives_in_data: 
       no_data: 
+      other_slice_label: अन्य
       series_grouping:
         calculating_time: बाकी बचे समय का परिकलन कर रहे हैं...
         calculation_running: डेटा तैयार कर रहे हैं
@@ -856,6 +857,7 @@ hi:
           color_select:
             prompt: रंग चुनें
           column_select:
+            auto: 
             from_grid: कॉलम को ग्रिड से चुनें
             none_selected: 
             nonselectable: 
@@ -960,7 +962,9 @@ hi:
             title: एरर बार
           flyout:
             new_details_button: फ्लाईआउट विवरण जोड़ें
+            new_values_button: 
             title: फ्लाईआउट विवरण
+            title_column: 
             value: 
           group_extra: अतिरिक्‍त मान को समूहबद्ध करें
           groups: समूह
@@ -968,6 +972,8 @@ hi:
           labelInBar: पट्टी में लेबल
           labels_and_values: 
           legend:
+            add_text: 
+            add_text_button: 
             annotations: 
             conditional_formats: कंडिशनल फ़ॉरमेटिंग का वर्णन करें
             custom_entry: कस्‍टम लेबल
@@ -993,6 +999,7 @@ hi:
             title: ! '%{axis} मार्कर'
             value: मूल्‍य पर
           min_angle: न्‍यून. कोण
+          min_angle_html: 
           names: नाम
           pie_other: ! 'चेतावनी: %{row_limit} के बाद %{chart_type} पृथक मानों (पंक्तियों) को अन्‍य श्रेणी में जोड़ देगा। मान की संख्‍या सीमित करने वाला रोल अप या फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type} बनाएँ।'
           pie_truncate: ! 'चेतावनी: %{row_limit} से अधिक पृथक मान (पंक्तियों) वाले डेटासेट को %{chart_type} ट्रंकेट (छोटा) कर देगा। मान की संख्‍या सीमित करने वाला रोल अप या फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type} बनाएँ।'

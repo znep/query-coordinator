@@ -146,6 +146,7 @@ ru:
     charts:
       negatives_in_data: 
       no_data: 
+      other_slice_label: Другое
       series_grouping:
         calculating_time: Расчет оставшегося времени...
         calculation_running: Подготовка данных
@@ -856,6 +857,7 @@ ru:
           color_select:
             prompt: Выбрать цвет
           column_select:
+            auto: 
             from_grid: Выбрать столбец из сетки
             none_selected: 
             nonselectable: 
@@ -960,7 +962,9 @@ ru:
             title: Строки ошибки
           flyout:
             new_details_button: Добавить параметры «всплывающего» меню
+            new_values_button: 
             title: Параметры «всплывающего» меню
+            title_column: 
             value: 
           group_extra: Группировать дополнительные значения
           groups: Группы
@@ -968,6 +972,8 @@ ru:
           labelInBar: Метка на панели
           labels_and_values: 
           legend:
+            add_text: 
+            add_text_button: 
             annotations: 
             conditional_formats: Описание условных форматов
             custom_entry: Индивидуальная метка
@@ -993,6 +999,7 @@ ru:
             title: ! '%{axis} Маркер'
             value: При значении
           min_angle: Минимальный угол
+          min_angle_html: 
           names: Наименованиям
           pie_other: ! 'Внимание: %{chart_type} будет агрегировать отдельные значения (строки) свыше установленного предельного количества значений  %{row_limit}в категорию «Прочие». Попробуйте создать функцию «Агрегирование» или фильтр, которые будут ограничивать количество значений и затем создать график %{chart_type} этих значений.'
           pie_truncate: ! 'Внимание: %{chart_type} будет отсекать массивы данных, в которых более %{row_limit} отдельных значений (строк). Попробуйте создать функцию «Агрегирование» или фильтр, которые будут ограничивать количество значений и затем создать график %{chart_type} этих значений.'

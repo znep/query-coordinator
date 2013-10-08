@@ -146,6 +146,7 @@ fr:
     charts:
       negatives_in_data: 
       no_data: 
+      other_slice_label: Autres
       series_grouping:
         calculating_time: Calcul du temps restant…
         calculation_running: Préparation des données
@@ -856,6 +857,7 @@ fr:
           color_select:
             prompt: Choisir une couleur
           column_select:
+            auto: 
             from_grid: Sélectionner une colonne de la grille
             none_selected: 
             nonselectable: 
@@ -960,7 +962,9 @@ fr:
             title: Barres d’erreur
           flyout:
             new_details_button: Ajouter les éléments
+            new_values_button: 
             title: Éléments du menu volant
+            title_column: 
             value: 
           group_extra: Grouper les valeurs additionnelles
           groups: Groupes
@@ -968,6 +972,8 @@ fr:
           labelInBar: Marque en Bâtons
           labels_and_values: 
           legend:
+            add_text: 
+            add_text_button: 
             annotations: 
             conditional_formats: Décrire les mises en forme conditionnelles
             custom_entry: Étiquette personnalisée
@@ -993,6 +999,7 @@ fr:
             title: ! 'Marqueur %{axis} '
             value: À valeur
           min_angle: Angle min.
+          min_angle_html: 
           names: Noms
           pie_other: ! 'Avertissement : Ce %{chart_type} regroupera les valeurs distinctes (rangées) au-delà de la %{row_limit}e dans une catégorie Autres. Essayez de créer un report ou un filtre pour limiter le nombre de valeurs, et d’en tirer un autre %{chart_type} à part.'
           pie_truncate: ! 'Avertissement : Ce %{chart_type} tronquera les séries de données comprenant plus de %{row_limit} valeurs distinctes (rangées). Essayez de créer un report ou un filtre pour limiter le nombre de valeurs, et d’en tirer un autre %{chart_type} à part.'

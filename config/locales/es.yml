@@ -146,6 +146,7 @@ es:
     charts:
       negatives_in_data: 
       no_data: 
+      other_slice_label: Otros
       series_grouping:
         calculating_time: Calculando tiempo restante...
         calculation_running: Preparando datos
@@ -864,6 +865,7 @@ es:
           color_select:
             prompt: Elegir color
           column_select:
+            auto: 
             from_grid: Seleccionar una columna de la cuadrícula
             none_selected: 
             nonselectable: 
@@ -968,7 +970,9 @@ es:
             title: Barras de error
           flyout:
             new_details_button: Añadir detalles del menú flotante 
+            new_values_button: 
             title: Detalles del menú flotante
+            title_column: 
             value: 
           group_extra: ! 'Agrupar valores adicionales '
           groups: Grupos
@@ -976,6 +980,8 @@ es:
           labelInBar: Marbete en la barra
           labels_and_values: 
           legend:
+            add_text: 
+            add_text_button: 
             annotations: 
             conditional_formats: Describir formatos condicionales
             custom_entry: Etiqueta personalizada
@@ -1001,6 +1007,7 @@ es:
             title: ! 'Marcador %{axis} '
             value: A un valor
           min_angle: Ángulo mínimo
+          min_angle_html: 
           names: Nombres
           pie_other: ! 'Advertencia: %{chart_type} agregará en Otra categoría valores distintos (filas) al sobrepasar %{row_limit}. Intente crear un Resumen o un filtro que limite el número de valores y  cree entonces un %{chart_type} de eso.'
           pie_truncate: ! 'Advertencia: %{chart_type} truncará los conjuntos de datos con más de %{row_limit} de valores diferentes (filas).  Intente crear un Resumen o un filtro que limite el número de valores y cree entonces un %{chart_type} de eso.'

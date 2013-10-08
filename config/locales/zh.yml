@@ -146,6 +146,7 @@ zh:
     charts:
       negatives_in_data: 
       no_data: 
+      other_slice_label: 其他
       series_grouping:
         calculating_time: 计算剩余时间...
         calculation_running: 准备数据
@@ -856,6 +857,7 @@ zh:
           color_select:
             prompt: 选择颜色
           column_select:
+            auto: 
             from_grid: 从表格中选择列
             none_selected: 
             nonselectable: 
@@ -960,7 +962,9 @@ zh:
             title: 误差线
           flyout:
             new_details_button: 添加弹出视窗详情
+            new_values_button: 
             title: 弹出视窗详情
+            title_column: 
             value: 
           group_extra: 组合额外的值
           groups: 组
@@ -968,6 +972,8 @@ zh:
           labelInBar: 在酒吧的标签
           labels_and_values: 
           legend:
+            add_text: 
+            add_text_button: 
             annotations: 
             conditional_formats: 条件格式的说明
             custom_entry: 自定义标签
@@ -993,6 +999,7 @@ zh:
             title: ! '%{axis} 标记'
             value: 当值等于
           min_angle: 最小角度
+          min_angle_html: 
           names: 名称
           pie_other: 警告： %{chart_type} 将把超过%{row_limit}的值（行）加总为“其他”类别。您可以进行加总或筛选操作，限制值的个数，然后为其创建%{chart_type} 。
           pie_truncate: 警告： %{chart_type} 将分解包含超过%{row_limit}值（行）的数据集。您可以进行加总或筛选操作，限制值的个数，然后为其创建%{chart_type} 。

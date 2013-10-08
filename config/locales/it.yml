@@ -146,6 +146,7 @@ it:
     charts:
       negatives_in_data: 
       no_data: 
+      other_slice_label: 
       series_grouping:
         calculating_time: Calcolo del tempo rimanente in corso...
         calculation_running: Preparazione dati
@@ -856,6 +857,7 @@ it:
           color_select:
             prompt: Scegli un colore
           column_select:
+            auto: 
             from_grid: Seleziona una colonna dalla griglia
             none_selected: 
             nonselectable: 
@@ -960,7 +962,9 @@ it:
             title: Barre di errore
           flyout:
             new_details_button: Aggiungi Dettagli Flyout
+            new_values_button: 
             title: Dettagli Flyout
+            title_column: 
             value: 
           group_extra: Raggruppa valori extra
           groups: Raggruppamenti
@@ -968,6 +972,8 @@ it:
           labelInBar: Etichette nella Barra
           labels_and_values: 
           legend:
+            add_text: 
+            add_text_button: 
             annotations: 
             conditional_formats: Descrivi Formati Condizionali
             custom_entry: Etichetta personalizzata
@@ -993,6 +999,7 @@ it:
             title: ! '%{axis} Marker'
             value: Al valore
           min_angle: Angolo minimo
+          min_angle_html: 
           names: Nomi
           pie_other: ! 'Attenzione: %{chart_type} aggregherà valori distinti (record) oltre il %{row_limit}° nella categoria Altro. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
           pie_truncate: ! 'Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'

@@ -116,9 +116,9 @@ de:
         timeout: 
       row_results:
         less_link: 
-        matching_rows:
+        matching_rows: 
         more_link: 
-        no_matching_rows:
+        no_matching_rows: 
         title_html: 
       search: 
       sort_period_title: 
@@ -146,6 +146,7 @@ de:
     charts:
       negatives_in_data: 
       no_data: 
+      other_slice_label: 
       series_grouping:
         calculating_time: 
         calculation_running: 
@@ -856,6 +857,7 @@ de:
           color_select:
             prompt: 
           column_select:
+            auto: 
             from_grid: 
             none_selected: 
             nonselectable: 
@@ -960,7 +962,9 @@ de:
             title: 
           flyout:
             new_details_button: 
+            new_values_button: 
             title: 
+            title_column: 
             value: 
           group_extra: 
           groups: 
@@ -968,6 +972,8 @@ de:
           labelInBar: 
           labels_and_values: 
           legend:
+            add_text: 
+            add_text_button: 
             annotations: 
             conditional_formats: 
             custom_entry: 
@@ -993,6 +999,7 @@ de:
             title: 
             value: 
           min_angle: 
+          min_angle_html: 
           names: 
           pie_other: 
           pie_truncate: 

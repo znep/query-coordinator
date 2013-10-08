@@ -1348,7 +1348,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
                 var nameResolver = function()
                 {
-                    return $.t('controls.charts.other');
+                    return $.t('controls.charts.other_slice_label');
                 };
 
                 var colorResolver = function()

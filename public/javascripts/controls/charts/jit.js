@@ -1,6 +1,6 @@
 (function($)
 {
-    var Other = $.t('controls.charts.other');
+    var Other = $.t('controls.charts.other_slice_label');
 
     $.Control.registerMixin('jit', {
         initializeVisualization: function()

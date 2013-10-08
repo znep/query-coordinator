@@ -1,7 +1,7 @@
 (function($)
 {
     var hasSVG = window.SVGAngle || document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1");
-    var Other = $.t('controls.charts.other');
+    var Other = $.t('controls.charts.other_slice_label');
 
     $.Control.registerMixin('highcharts', {
         initializeVisualization: function()

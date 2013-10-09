@@ -145,6 +145,7 @@ en:
       negatives_in_data: ! 'Invalid chart: negative values present'
       no_data: No data
       other: Other
+      other_slice_label: Other
       series_grouping:
         calculating_time: Calculating remaining time...
         calculation_running: Preparing data

@@ -1,7 +1,5 @@
 (function(){
 
-blist.useSODA2 = true;
-
 var RowSet = ServerModel.extend({
     _init: function(ds, query, parRS, initRows)
     {
@@ -64,7 +62,7 @@ var RowSet = ServerModel.extend({
         else
         {
             var gotID = function(data) { successCallback(data[id]); };
-            if (blist.useSODA2)
+            if (rs._dataset._useSODA2)
             {
                 // FIXME: Doesn't work for SODA2
                 successCallback(0);
@@ -413,7 +411,7 @@ var RowSet = ServerModel.extend({
         delete rs._rows;
         delete rs._rowIDLookup;
         delete rs._aggCache;
-        if (blist.useSODA2 && !rs._dataset.isGrouped())
+        if (rs._dataset._useSODA2 && !rs._dataset.isGrouped())
         { rs.getTotalRows(successCallback, errorCallback); }
         else
         { rs._loadRows(0, 1, successCallback, errorCallback, true, true); }
@@ -464,7 +462,7 @@ var RowSet = ServerModel.extend({
 
                     else
                     {
-                        if (blist.useSODA2)
+                        if (rs._dataset._useSODA2)
                         {
                             soda2Aggs.push({ method: blist.datatypes.soda2Aggregate(a),
                                              column: curCol.fieldName });
@@ -482,7 +480,7 @@ var RowSet = ServerModel.extend({
                 });
             });
 
-            if (!blist.useSODA2)
+            if (!rs._dataset._useSODA2)
             {
                 if (needReq)
                 {
@@ -515,7 +513,7 @@ var RowSet = ServerModel.extend({
                         gotAggs([{columnIdent: c.fieldName, name: c.format.aggregate,
                             value: rs._calculateAggregate(c.fieldName, c.format.aggregate)}]);
                     }
-                    else if (blist.useSODA2)
+                    else if (rs._dataset._useSODA2)
                     {
                         soda2Aggs.push({ method: blist.datatypes.soda2Aggregate(c.format.aggregate),
                             column: c.fieldName });
@@ -531,7 +529,7 @@ var RowSet = ServerModel.extend({
                 _.each(c.realChildColumns, function(cc) { checkAgg(cc); });
             });
 
-            if (!blist.useSODA2)
+            if (!rs._dataset._useSODA2)
             {
                 if (needReq)
                 {
@@ -564,7 +562,7 @@ var RowSet = ServerModel.extend({
                 }
             });
         }
-        else if (blist.useSODA2)
+        else if (rs._dataset._useSODA2)
         { callResults(); }
     },
 
@@ -643,7 +641,7 @@ var RowSet = ServerModel.extend({
         // Always get federated datasets cross-domain
         args.headers = $.extend(args.headers, {'X-Socrata-Federation': 'Honey Badger'});
         var rs = this;
-        if (blist.useSODA2)
+        if (rs._dataset._useSODA2)
         {
             rs._makeSODA2Request(args);
         }
@@ -777,19 +775,19 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
 
-        var params = blist.useSODA2 ? { '$$exclude_system_fields': false } :
+        var params = rs._dataset._useSODA2 ? { '$$exclude_system_fields': false } :
             {method: 'getByIds', asHashes: true};
 
         var start;
         if (_.isNumber(startOrIds) && _.isNumber(len))
         {
             start = startOrIds;
-            $.extend(params, blist.useSODA2 ? { '$offset': start, '$limit': len } :
+            $.extend(params, rs._dataset._useSODA2 ? { '$offset': start, '$limit': len } :
                     { start: start, length: len });
         }
         else if (_.isArray(startOrIds))
         {
-            if (blist.useSODA2)
+            if (rs._dataset._useSODA2)
             { params['$where'] = 'any_of(:id,' + startOrIds.join(',') + ')'; }
             else
             { params.ids = startOrIds; }
@@ -842,7 +840,7 @@ var RowSet = ServerModel.extend({
                 rs._totalCount = result.meta.totalRows;
                 delete rs._columnsInvalid;
                 var metaToUpdate;
-                if (blist.useSODA2)
+                if (rs._dataset._useSODA2)
                 {
                     metaToUpdate = { columns: result.meta.view.columns };
                     // If we're grouped, then filter out fake columns
@@ -867,7 +865,7 @@ var RowSet = ServerModel.extend({
                 }
                 else
                 { metaToUpdate = result.meta.view; }
-                if (!fullLoad && !blist.useSODA2)
+                if (!fullLoad && !rs._dataset._useSODA2)
                 {
                     // I would rather get rid of triggering a metadata_update
                     // all the time, since if this isn't a full load, I don't
@@ -882,10 +880,11 @@ var RowSet = ServerModel.extend({
                     { metaToUpdate.query.namedFilters = rs._dataset.query.namedFilters; }
                     metaToUpdate.metadata = rs._dataset.metadata;
                 }
-                rs.trigger('metadata_update', [metaToUpdate, !blist.useSODA2, !blist.useSODA2, fullLoad]);
+                rs.trigger('metadata_update', [metaToUpdate, !rs._dataset._useSODA2,
+                        !rs._dataset._useSODA2, fullLoad]);
             }
             // In SODA2 we get basic columns back in the header
-            else if (blist.useSODA2)
+            else if (rs._dataset._useSODA2)
             {
                 var rowCount = JSON.parse(xhr.getResponseHeader('X-SODA2-Row-Count') || 'null');
                 if (_.isNumber(rowCount))
@@ -982,9 +981,9 @@ var RowSet = ServerModel.extend({
             { rs._rowsLoading[i + start] = true; }
         }
 
-        var req = { success: rowsLoaded, params: params, inline: !blist.useSODA2 && !fullLoad,
-            type: blist.useSODA2 || fullLoad ? 'GET' : 'POST' };
-        if (!blist.useSODA2 && fullLoad)
+        var req = { success: rowsLoaded, params: params, inline: !rs._dataset._useSODA2 && !fullLoad,
+            type: rs._dataset._useSODA2 || fullLoad ? 'GET' : 'POST' };
+        if (!rs._dataset._useSODA2 && fullLoad)
         { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
         if (params.meta || params['$$meta'])
         {
@@ -998,13 +997,13 @@ var RowSet = ServerModel.extend({
     _findColumnForServerName: function(name, parCol)
     {
         var rs = this;
-        name = blist.useSODA2 ? name : ({sid: 'id', 'id': 'uuid'}[name] || name);
+        name = rs._dataset._useSODA2 ? name : ({sid: 'id', 'id': 'uuid'}[name] || name);
         var c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(name) :
             parCol.childColumnForIdentifier(name);
 
         if ($.isBlank(c))
         {
-            if (blist.useSODA2 && rs._dataset.isGrouped())
+            if (rs._dataset._useSODA2 && rs._dataset.isGrouped())
             {
                 // Maybe a group function?
                 var i = name.indexOf('__');
@@ -1065,8 +1064,8 @@ var RowSet = ServerModel.extend({
                         c.renderTypeName == 'stars' && newVal === 0)
                 { newVal = null; }
 
-                if (c.renderTypeName == 'geospatial' && r[blist.useSODA2 ? ':id' : 'sid'])
-                { newVal = $.extend({}, newVal, {row_id: r[blist.useSODA2 ? ':id' : 'sid']}); }
+                if (c.renderTypeName == 'geospatial' && r[rs._dataset._useSODA2 ? ':id' : 'sid'])
+                { newVal = $.extend({}, newVal, {row_id: r[rs._dataset._useSODA2 ? ':id' : 'sid']}); }
 
                 if (c.dataTypeName == 'nested_table' && _.isArray(newVal))
                 {

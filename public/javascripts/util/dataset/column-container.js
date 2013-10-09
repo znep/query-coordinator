@@ -314,7 +314,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             .value();
 
         if (_.any(this[colSet], function(c) { return c.renderType.soda1Only; }))
-        { blist.useSODA2 = false; }
+        { cont.view._useSODA2 = false; }
 
         _.defer(function() { (cont.view || cont).trigger('columns_changed'); });
     };

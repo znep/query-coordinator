@@ -355,28 +355,6 @@
         if (rrObj.settings.highlight && (column.renderTypeName != 'url') &&
             (column.renderTypeName != 'html'))
         {
-            if (rrObj.settings.clipByHighlight && item.length > 50)
-            {
-                var magicNumber = 20,
-                    splitItem = item.split(rrObj.settings.highlight),
-                    toJoin = [],
-                    lastItem = _.last(splitItem);
-
-                if (splitItem[0].length > magicNumber)
-                { toJoin.push('...' + splitItem[0].substring(splitItem[0].length-magicNumber)); }
-                else
-                { toJoin.push(splitItem[0]); }
-
-                toJoin = toJoin.concat(splitItem.slice(1, splitItem.length-1));
-
-                if (lastItem.length > magicNumber)
-                { toJoin.push(_.last(splitItem).substring(0, magicNumber) + '...'); }
-                else
-                { toJoin.push(lastItem); }
-
-                item = toJoin.join('');
-            }
-
             // $('<span>blah</span> word') == <span>blah</span>
             // so wrap the whole thing in a span
             item = '<span>' + item.replace(rrObj.settings.highlight,

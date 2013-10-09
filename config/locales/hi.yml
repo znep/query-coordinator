@@ -116,9 +116,7 @@ hi:
         timeout: क्षमा करें। इस समय परिणाम हासिल नहीं किये जा सकते हें। कृपया बाद में फिर से प्रयास करें।
       row_results:
         less_link: कम
-        matching_rows: मिलान पंक्तियाँ
         more_link: अधिक
-        no_matching_rows: कोई मिलान पंक्तियाँ
         title_html: ! '<span class="totalResultCountText"></span> की<span class="rowResultCountText"></span> मेल खाने वाली पंक्तियाँ <a href="#" class="rowSearchLink">दिखा रहा है (परिणाम देखें)</a>:'
       search: खोजें
       sort_period_title: छांटने की अवधि

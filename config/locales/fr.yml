@@ -116,9 +116,7 @@ fr:
         timeout: Désolé. L’accès aux résultats est momentanément impossible. Veuillez réessayer ultérieurement.
       row_results:
         less_link: Moins
-        matching_rows: Trouve rangées correspondantes
         more_link: Plus
-        no_matching_rows: Pas de rangées correspondantes.
         title_html: ! 'Affichage <span class="rowResultCountText"></span> de <span class="totalResultCountText"></span> rangées correspondantes <a href="#" class="rowSearchLink">(voir résultats) </a>:'
       search: Rechercher
       sort_period_title: Trier période

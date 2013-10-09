@@ -5,37 +5,6 @@ $browse_background_color: #ffffff
   .action_browse_show &
     padding-top: 0
 
-  &.inSearch .extraInfo
-    margin-bottom: -0.5em
-    max-height: 2em
-  &.inSearch .expandBlock
-    min-height: 10em
-    &.matching
-      height: 10em
-      .description
-        max-height: 8.1em
-        overflow: hidden
-
-  &.notInSearch .extraInfo
-    background-color: #fafafa
-    border: 1px solid $color_table_header_inactive
-    @include border-radius(5px)
-    margin-left: -6.7em
-
-    .close
-      @include sprite-menu-icons
-      position: absolute
-      right: 5px
-      top: 5px
-
-    .infoContent
-      min-height: 1em
-      margin-right: -22.5em
-      padding: 0.5em 1em
-
-  &.notInSearch .rowSearchResults
-    display: none
-
   .searchSection
     border: 1px solid #cacaca
     margin-bottom: 1em
@@ -274,12 +243,6 @@ $browse_background_color: #ffffff
                   //oh, well
                   background: none
 
-        .highlight
-          background-color: $search_highlight_color
-          padding:
-            left: 0.3em
-            right: 0.3em
-
         .nameDesc
           padding:
             bottom: 0
@@ -301,12 +264,9 @@ $browse_background_color: #ffffff
           .description
             line-height: 1.2em
             margin-bottom: 0.6em
-            &.needsCollapse
-              overflow: hidden
+            min-height: 1.2em
+            overflow: hidden
 
-          .expander
-            @include sprite-menu-icons
-            float: left
 
           .rowSearchResults
             margin-right: -15.2em
@@ -314,13 +274,25 @@ $browse_background_color: #ffffff
               margin-right: -12.5em
 
           .extraInfo
+            background-color: #fafafa
+            border: 1px solid $color_table_header_inactive
+            @include border-radius(5px)
+            margin-left: -6.7em
             padding-right: 22.5em
             position: relative
             width: 100%
             .ie7 &
               z-index: 0
+            .close
+              @include sprite-menu-icons
+              position: absolute
+              right: 5px
+              top: 5px
 
             .infoContent
+              min-height: 1em
+              margin-right: -22.5em
+              padding: 0.5em 1em
 
               .actions
                 display: inline-block
@@ -393,8 +365,6 @@ $browse_background_color: #ffffff
 
               .starsControl
                 display: inline-block
-                position: relative
-                top: -0.4em
                 .ie7 &
                   display: inline
 
@@ -404,13 +374,22 @@ $browse_background_color: #ffffff
               .infoContent
                 margin-right: -19em
 
-          .expandBlock
-            &.collapsed
-              .description
-                height: 1.2em
-                overflow: hidden
-              .extraInfo
-                display: none
+            &.federated
+              margin-left: -8.95em
+              padding-right: 24.75em
+              .infoContent
+                margin-right: -24.75em
+              .ie7 &
+                margin-left: -7.75em
+                padding-right: 22.75em
+                .infoContent
+                  margin-right: -22.75em
+
+          .expandBlock.collapsed
+            .description
+              height: 1.2em
+            .extraInfo
+              display: none
 
         .popularity
           text-align: right
@@ -466,13 +445,15 @@ $browse_background_color: #ffffff
             font-size: 0.9167em
             line-height: 1.1em
             margin-top: 0.4em
-
-            &.needsCollapse
+            &.collapsed
+              max-height: 8.727em
               overflow: hidden
 
           .expander
             @include sprite-menu-icons
-            float: left
+            bottom: 0
+            position: absolute
+            right: 0
 
           .rowSearchResults
             margin-right: -19.5em
@@ -487,27 +468,14 @@ $browse_background_color: #ffffff
             float: right
 
       .rowSearchResults
-        margin-top: 0.6em
+        margin-bottom: 0.6em
         position: relative
-        > span
-          display: inline-block
-          height: 1.2em
-          margin-top: 0.5em
-          &.matching_rows
-            font-weight: bold
-          &.no_matching_rows
-            font-style: italic
-        .richColumn
-          width: 31%
-          padding:
-            left: 1%
-            right: 1%
-        .richLabel
-          display: block
-          float: none
         .rowResultCountDisplay
           font-weight: bold
           padding: 0.5em 0
+        .highlight
+          background-color: $search_highlight_color
+          padding: 0.3em
         .rowList
           overflow: hidden
           .row
@@ -517,24 +485,30 @@ $browse_background_color: #ffffff
         .expandHint, .fader
           display: none
         .expandHint
-          float: left
           .expandText
             display: none
           .icon
             float: left
+            margin:
+              right: 0.5em
+              top: 0.2em
 
         &.overheight
           .expandHint
             @include sprite-menu-icons
             display: block
+            height: 1.5em
+            line-height: 1.5em
+            margin: 0 auto
+            width: 100px
             .collapseText
               display: inline
           .fader
             display: block
             @include vertical-gradient(transparentize($browse_background_color,1), $browse_background_color)
-            bottom: 0
+            bottom: 1.5em
             left: 0
-            height: 40px
+            height: 100px
             position: absolute
             width: 100%
             .noLinearGradient &
@@ -542,7 +516,7 @@ $browse_background_color: #ffffff
 
         &.overheight.collapsed
           .rowList
-            max-height: 6em
+            max-height: 200px
           .expandHint
             .expandText
               display: inline

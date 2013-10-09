@@ -116,9 +116,7 @@ es:
         timeout: Lo sentimos. Los resultados no se pueden  recuperar en este momento. Por favor, trate de nuevo más tarde.
       row_results:
         less_link: Menos
-        matching_rows: Buscando para filas coincidentes
         more_link: Más
-        no_matching_rows: No filas coincidentes.
         title_html: ! 'Mostrar <span class="rowResultCountText"></span> de <span class="totalResultCountText"></span> filas coincidentes <a href="#" class="rowSearchLink">(ver resultados)</a>:'
       search: Búsqueda
       sort_period_title: Periodo de clasificación

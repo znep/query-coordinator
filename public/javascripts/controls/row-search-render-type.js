@@ -22,7 +22,6 @@
     {
         defaults:
         {
-            columnCount: 3,
             highlight: null,
             rows: null,
             view: null,
@@ -45,9 +44,10 @@
                 }
 
                 rsObj.richRenderer = rsObj.$template().richRenderer({
-                    balanceNaively: true, columnCount: rsObj.settings.columnCount,
-                    highlight: rsObj.settings.highlight, clipByHighlight: true,
-                    config: getConfig(rsObj),
+                    balanceNaively: true, columnCount: 3,
+                    highlight: rsObj.settings.highlight,
+                    config: ((rsObj.settings.view.metadata || {})
+                        .richRendererConfigs || {}).fatRow,
                     view: rsObj.settings.view
                 });
 
@@ -78,41 +78,6 @@
             }
         }
     });
-
-    var getConfig = function(rsObj)
-    {
-        var config = ((rsObj.settings.view.metadata || {})
-                        .richRendererConfigs || {}).fatRow;
-
-        var cols = _(rsObj.settings.rows).chain()
-            .reduce(function(memo, row)
-        {
-            // Grab the ones with a highlight.
-            return memo.concat(_.select(rsObj.settings.view.visibleColumns,
-                function(rcol)
-                { return rsObj.settings.highlight.test(row[rcol.lookup]); }));
-        }, [])
-            .uniq().value();
-
-        // Fill up any more slots with remaining columns if available.
-        if (cols.length < rsObj.settings.columnCount)
-        {
-            cols = cols.concat(
-                _.difference(rsObj.settings.view.visibleColumns, cols)
-                    .slice(0, rsObj.settings.columnCount - cols.length));
-        }
-
-        // Convert into richRenderer readable format.
-        cols = _.map(cols, function(col)
-        {
-            return { rows: [{ fields: [
-                        { type: 'columnLabel', fieldName: col.fieldName },
-                        { type: 'columnData',  fieldName: col.fieldName }]
-                   }]};
-        });
-
-        return $.extend({}, config, { columns: cols });
-    };
 
     var renderNewRow = function(rsObj, r)
     {

@@ -116,9 +116,7 @@ en:
         timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
       row_results:
         less_link: Less
-        matching_rows: Matching rows
         more_link: More
-        no_matching_rows: No matching rows.
         title_html: ! 'Showing <span class="rowResultCountText"></span> of <span class="totalResultCountText"></span> matching rows <a href="#" class="rowSearchLink">(view results)</a>:'
       search: Search
       sort_period_title: Sort Period

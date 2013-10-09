@@ -1,6 +1,7 @@
 $(function()
 {
     var $browse = $('.browseSection');
+    var spinner = blist.mainSpinner || $browse.loadingSpinner({ showInitially: true });
 
     // alias this method so external scripts can get at it
     var getDS = blist.browse.getDS = function($item)
@@ -27,7 +28,7 @@ $(function()
                     opts[s[0]] = [];
                 }
 
-                opts[s[0]].push(s[1]);
+                opts[s[0]].push(s[1])
             }
             else
             {
@@ -96,7 +97,7 @@ $(function()
 
     var doExpansion = function($row)
     {
-        var $content = $row.find('.extraInfo .infoContent:empty');
+        var $content = $row.find('.nameDesc .extraInfo .infoContent:empty');
         if ($content.length < 1) { return; }
 
         var ds = getDS($row);
@@ -105,7 +106,7 @@ $(function()
                 '.manageApi.button@href': function(v) { return '/api_foundry/manage/' + v.context.id; },
                 '.manageApi.button@class+': function(v)
                     { return v.context.isAPI() && v.context.hasRight('update_view') &&
-                        !v.context.isFederated() ? '' : 'hide'; },
+                        !v.context.isFederated() ? '' : 'hide' },
                 '.permissions.button': function(v)
                     { return $.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html'); },
                 '.permissions.button@class+': function(v)
@@ -164,137 +165,38 @@ $(function()
           .attr('rel', ds.isFederated() ? 'external' : '');
     };
 
-    if ($.subKeyDefined(blist, 'browse.searchOptions.q'))
-    {
-        $browse.find('table tbody tr').each(function()
-        {
-            var $tr = $(this),
-                fontSize = parseFloat($tr.css('font-size'));
+    // Hook up expansion for list view
+    $browse.find('table tbody tr').expander({
+        animate: false,
+        contentSelector: '.nameDesc .expandBlock',
+        expandSelector: '.index .expander, .nameDesc .extraInfo .close',
+        expanderCollapsedClass: 'collapsed',
+        expanderExpandedClass: 'expanded',
+        forceExpander: true,
+        preExpandCallback: doExpansion
+    });
 
-            $tr.find('.expandBlock').removeClass('matching');
-            var descHeight = $tr.find('.description').data('fontSize', fontSize).height();
-            $tr.find('.expandBlock').addClass('matching');
-            // Description too long
-            if (descHeight > 10 * fontSize)
-            {
-                $tr.find('.extraInfo').hide();
-                $tr.find('.description').height('10em')
-                   .addClass('needsCollapse').data('collapseHeight', '10em');
-                $tr.find('.rowSearchResults span').css('margin-top', 0);
-            }
-            else if (descHeight > 8 * fontSize)
-            {
-                $tr.find('.description').height('8em')
-                   .addClass('needsCollapse').data('collapseHeight', '10em');
-                $tr.find('.rowSearchResults span').css('margin-top', 0);
-            }
-            else
-            {
-                $tr.find('.expander').hide();
-                doExpansion($tr.find('.expandBlock'));
-            }
-
-            $tr.find('.expander').click(function(evt)
-            {
-                evt.preventDefault();
-                var expanding = $(this).hasClass('rightArrow'),
-                    collapsedHeight = $tr.find('.description').data('collapseHeight');
-
-                if (collapsedHeight)
-                { $tr.find('.description').height(expanding ? descHeight : collapsedHeight); }
-                $tr.find('.expander').toggleClass('rightArrow downArrow');
-                $tr.find('.extraInfo')[expanding ? 'show' : 'hide']();
-
-                if (expanding)
-                { doExpansion($tr.find('.expandBlock')); }
-            });
-        });
-
-        // Sad hack: we don't have the stemmed version,
-        // so just highlight the words they typed
-        var searchRegex = blist.browse.searchOptions.q ?
-            new RegExp('(' + blist.browse.searchOptions.q.trim().replace(' ', '|') + ')', 'gi') : '';
-
-        // Assuming that dataset names do not have any html inside them.
-        // Assuming that dataset descriptions only have A tags inside them.
-        $("table tbody tr").find("a.name, span.name, div.description p").each(function() {
-            var $this = $(this),
-                a_links = $this.children().map(function()
-                    {
-                        var $child = $(this);
-                        $child.html($child.html()
-                            .replace(searchRegex, '<span class="highlight">$&</span>'));
-                        return $child[0].outerHTML;
-                    }),
-                text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
-                    { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
-            $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
-        });
-    }
-    else
-    {
-        // Hook up expansion for list view
-        $browse.find('table tbody tr').expander({
-            animate: false,
-            contentSelector: '.nameDesc .expandBlock',
-            expandSelector: '.nameDesc .expander, .nameDesc .extraInfo .close',
-            expanderCollapsedClass: 'rightArrow',
-            expanderExpandedClass: 'downArrow',
-            forceExpander: true,
-            preExpandCallback: doExpansion
-        });
-
-        // Hook up expansion for rich view
-        $browse.find('table tbody tr').expander({
-            contentSelector: '.richSection .description',
-            expandSelector: '.richSection .expander',
-            expanderCollapsedClass: 'collapsed',
-            expanderExpandedClass: 'expanded'
-        });
-    }
+    // Hook up expansion for rich view
+    $browse.find('table tbody tr').expander({
+        contentSelector: '.richSection .description',
+        expandSelector: '.richSection .expander',
+        expanderCollapsedClass: 'collapsed',
+        expanderExpandedClass: 'expanded'
+    });
 
     var renderRows = function()
     {
+        // Sad hack: we don't have the stemmed version,
+        // so just highlight the words they typed
+        var searchRegex = blist.browse.searchOptions.q ?
+            new RegExp(blist.browse.searchOptions.q.trim().replace(' ', '|'), 'gi') : '';
         // Render row search results, if any
-        $browse.find('table tbody tr .rowSearchResults')
+        $browse.find('table tbody tr.withRows .rowSearchResults')
             .each(function()
         {
             var $results = $(this);
-            $results.empty();
-
-            if (!$results.parents('tr.withRows').exists())
-            {
-                doExpansion($results.parent()); // is .expandBlock
-                $results.html('<span class="no_matching_rows">'
-                        + $.t('controls.browse.row_results.no_matching_rows') + '</span>')
-                        .find('span').css('margin-top', '1.1em');
-                return;
-            }
-
-            var $description = $results.parent().find('.description');
-            if ($description.height() > 0)
-            {
-                $results.parent().find('.expander').show().end()
-                                 .find('.extraInfo').hide();
-            }
-
-            var fontSize = $description.data('fontSize');
-            if ($description.hasClass('needsCollapse'))
-            {
-                if ($description.height() > 1.2 * fontSize)
-                { $description.data('collapseHeight', '1.2em').height('1.2em'); }
-                else
-                { $results.find('.rowList').height(
-                    (10 * fontSize)
-                    - $description.outerHeight()
-                    - $results.find('.rowResultCountDisplay').height()
-                    );
-                }
-            }
-
             var ds = getDS($results);
             $results.rowSearchRenderType({ highlight: searchRegex,
-                columnCount: 3,
                 rows: ds.rowResults, view: ds,
                 query: blist.browse.searchOptions.q,
                 totalRowResults: ds.rowResultCount });
@@ -303,21 +205,20 @@ $(function()
             $display.removeClass('hide').css('opacity', 0);
 
             // Is it too tall?
-            fontSize = parseFloat($results.css('font-size'));
-            if ($results.height() > (6 * fontSize))
+            if ($results.height() > 220)
             {
                 var $rows = $display.find('.rowList');
-                $rows.data('origheight', ($rows.height() / fontSize)+'em');
+                $rows.data('origheight', $rows.height());
                 $results.addClass('collapsed overheight');
-                $results.find('.expandHint').click(function(event)
+                $results.find('.expandRowResults').click(function(event)
                 {
                     event.preventDefault();
                     var expanding = $results.hasClass('collapsed'),
-                        newHeight = expanding ? $rows.data('origheight') : 6 * fontSize;
+                        newHeight = expanding ? $rows.data('origheight') : 200;
                     $rows.animate({'max-height': newHeight}, 300,
                         function() { $results.toggleClass('collapsed'); });
                     $display.find('.expandHint')
-                        .toggleClass('rightArrow downArrow').end()
+                        .toggleClass('upArrow downArrow').end()
                         .find('.fader')[expanding ? 'fadeOut' : 'fadeIn'](300);
                 });
             }
@@ -326,19 +227,12 @@ $(function()
                 $display.css('opacity', '');
             });
         });
+        spinner.showHide(false);
     };
 
     // Need to load rows related to the search
-    if ($.subKeyDefined(blist, 'browse.searchOptions.q') && !$.isBlank(blist.browse.rowCount))
+    if (!$.isBlank(blist.browse.rowCount))
     {
-        var ellipsis = '',
-            ellipsisInterval = setInterval(function()
-            {
-                ellipsis = ellipsis.length >= 3 ? '' : ellipsis + '.';
-                $('.rowSearchResults span')
-                    .text($.t('controls.browse.row_results.matching_rows') + ellipsis);
-            }, 700);
-
         Dataset.search($.extend({}, blist.browse.searchOptions, { row_count: blist.browse.rowCount }),
             function(results)
             {
@@ -352,11 +246,11 @@ $(function()
                         $browse.find('table tbody tr[data-viewid="' + ds.id + '"]').addClass('withRows');
                     }
                 });
-                $(".expandBlock").removeClass('matching');
-                clearInterval(ellipsisInterval);
                 renderRows();
             });
     }
+    else
+    { spinner.showHide(false); }
 
     // Handle sidebar facets
     var $searchSect = $browse.find('.searchSection');

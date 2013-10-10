@@ -1464,12 +1464,29 @@ blist.namespace.fetch('blist.datatypes');
             filterConditions: blist.filter.groups.numeric,
             matchValue: function(v, col)
             {
+                if (col.view._useSODA2)
+                { return v; }
+
                 // This is a numeric comparison, so use indices
                 _.any(col.dropDownList.values, function(ddv, i)
                 {
                     if (ddv.id == v)
                     {
                         v = i;
+                        return true;
+                    }
+                    return false;
+                });
+                return v;
+            },
+            fromSoQLValue: function(v, col)
+            {
+                // Might be description, might be id
+                _.any(col.dropDownList.values, function(ddv, i)
+                {
+                    if (ddv.id == v || ddv.description == v)
+                    {
+                        v = ddv.id;
                         return true;
                     }
                     return false;

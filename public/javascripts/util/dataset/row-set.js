@@ -1060,6 +1060,9 @@ var RowSet = ServerModel.extend({
                     { newVal = null; }
                 }
 
+                if (rs._dataset._useSODA2 && $.subKeyDefined(c, 'renderType.fromSoQLValue'))
+                { newVal = c.renderType.fromSoQLValue(newVal, c); }
+
                 if (c.renderTypeName == 'checkbox' && newVal === false ||
                         c.renderTypeName == 'stars' && newVal === 0)
                 { newVal = null; }

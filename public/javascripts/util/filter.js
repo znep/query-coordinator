@@ -49,10 +49,10 @@ blist.namespace.fetch('blist.filter');
             } },
 
         'IS_BLANK': { text: $.t('core.filters.informal.is_blank'), editorCount: 0,
-            soql: function(c, v) { return soqlFunc(c, 'is_blank'); },
+            soql: function(c, v) { return soqlInfix(c, ' is ', 'null'); },
             opMatches: function(v) { return $.isBlank(v); } },
         'IS_NOT_BLANK': { text: $.t('core.filters.informal.is_not_blank'), editorCount: 0,
-            soql: function(c, v) { return soqlFunc(c, 'is_not_blank'); },
+            soql: function(c, v) { return soqlInfix(c, ' is not ', 'null'); },
             opMatches: function(v) { return !$.isBlank(v); } }
     };
 

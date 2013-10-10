@@ -320,7 +320,7 @@ var Dataset = ServerModel.extend({
         { this._markTemporary(minorUpdate); }
     },
 
-    reload: function(reloadData, successCallback, errorCallback)
+    reload: function(reloadFromServer, successCallback, errorCallback)
     {
         var ds = this;
         if (ds.isBlobby())
@@ -329,9 +329,21 @@ var Dataset = ServerModel.extend({
             return;
         }
         ds._aggregatesStale = true;
-        // We can just restore to the original object
-        ds._update(ds._origObj, true, true, true);
-        ds.trigger('reloaded');
+        if (reloadFromServer)
+        {
+            ds.makeRequest({ url: '/api/views/' + ds.id + '.json', type: 'GET',
+                success: function(newDS)
+                {
+                    ds._update(newDS, true, true, true);
+                    ds.trigger('reloaded');
+                } });
+        }
+        else
+        {
+            // We can just restore to the original object
+            ds._update(ds._origObj, true, true, true);
+            ds.trigger('reloaded');
+        }
     },
 
     simpleSort: function(colId, ascending)
@@ -1343,14 +1355,16 @@ var Dataset = ServerModel.extend({
             return;
         }
 
-        ds.bind('saved', function()
+        var updateSelf = function()
         {
             // This might not actually be a real case, because if you can modify the current
             // view, query access ought to be based on the parent. But logically this is
             // a good thing to do.
             if (!$.isBlank(ds._queryBase) && ds._queryBase.id == ds.id)
-            { ds._queryBase.reload(); }
-        }, ds);
+            { ds._queryBase.reload(true); }
+        };
+        ds.bind('saved', updateSelf, ds);
+        ds.bind('columns_changed', updateSelf, ds);
 
         var selfForBase = function()
         {

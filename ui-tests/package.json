@@ -9,6 +9,7 @@
 	"expect.js" : "0.2.x",
 	"optimist": "0.6.x",
 	"underscore": "1.5.x",
-	"selenium-webdriver": "2.35.x"
+	"selenium-webdriver": "2.35.x",
+	"soda-js": "0.2.x"
     }
 }

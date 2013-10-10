@@ -81,10 +81,10 @@ done
 echo "Selenium is good."
 
 echo "Is site sane?"
-if mocha -t $TEST_TIMEOUT_MILLISEC suites/e2e/sanity.js $*
+if node_modules/mocha/bin/mocha -t $TEST_TIMEOUT_MILLISEC suites/e2e/sanity.js $*
 then
     echo "Site is sane. Running real tests."
-    mocha --recursive -t $TEST_TIMEOUT_MILLISEC suites $*
+    node_modules/mocha/bin/mocha --recursive -t $TEST_TIMEOUT_MILLISEC suites $*
 else
     tput setaf 1
     echo "Site is insane. Maybe your config is wrong, check your hostname/un/pw?"

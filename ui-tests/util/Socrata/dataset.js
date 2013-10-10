@@ -222,28 +222,26 @@ DatasetProxy.prototype.erase = function()
             throw new Error("BIG WARNING: TEST TRIED TO DELETE A DATASET THAT WASN'T CREATED BY THIS TEST RUN! This is a possibly dangerous test bug!");
         }
 
-        proxy._client.getLoginCookies().then(function(cookies)
+        var reqOpts = url.parse(config.server.url.resolve('/api/views/'+proxy.id+'.json'));
+
+        reqOpts.method="DELETE";
+        reqOpts.headers = {
+            'Authorization': config.server.authHeader,
+            'X-App-Token': config.server.token
+        };
+
+        var req = https.request(reqOpts, function(res)
         {
-            var reqOpts = url.parse(config.server.url.resolve('/api/views/'+proxy.id+'.json'));
-
-            reqOpts.method="DELETE";
-            reqOpts.headers = {
-                'Cookie': cookies.CookieHeader
-            };
-
-            var req = https.request(reqOpts, function(res)
-            {
-                expect(res.statusCode).to.be(200);
-                if (config.datasets.auditDatasetLifetime) { console.log("DATASET DELETED: "+proxy.id) };
-                d.fulfill();
-            }).
-            on('error', function(e)
-            {
-                d.fulfill(e);
-            });
-
-            req.end();
+            expect(res.statusCode).to.be(200);
+            if (config.datasets.auditDatasetLifetime) { console.log("DATASET DELETED @ " + new Date().toISOString() + ": "+proxy.id); };
+            d.fulfill();
+        }).
+        on('error', function(e)
+        {
+            d.fulfill(e);
         });
+
+        req.end();
 
         return d;
     });
@@ -368,44 +366,42 @@ DatasetProxy.prototype._create = function(name, desc)
         proxy._client.isLoggedIn().then(function(loggedIn)
         {
             expect(loggedIn).to.be.ok();
-            proxy._client.getLoginCookies().then(function(cookies)
+            var reqOpts = url.parse(config.server.url.resolve('/views.json?accessType=WEBSITE'));
+
+            reqOpts.method="POST";
+            reqOpts.headers = {
+                'Authorization': config.server.authHeader,
+                'X-App-Token': config.server.token
+            };
+
+            var payload = buildCreateRequest(name, desc);
+
+            var req = https.request(reqOpts, function(res)
             {
-                var reqOpts = url.parse(config.server.url.resolve('/views.json?accessType=WEBSITE'));
-
-                reqOpts.method="POST";
-                reqOpts.headers = {
-                    'Cookie': cookies.CookieHeader
-                };
-
-                var payload = buildCreateRequest(name, desc);
-
-                var req = https.request(reqOpts, function(res)
+                expect(res.statusCode).to.be(200);
+                var resData = '';
+                res.on('data', function(d)
                 {
-                    expect(res.statusCode).to.be(200);
-                    var resData = '';
-                    res.on('data', function(d)
-                    {
-                        resData += d;
-                    });
-                    res.on('end', function()
-                    {
-                        var resultantDataset = JSON.parse(resData);
-                        proxy.id = resultantDataset.id;
-                        if (config.datasets.auditDatasetLifetime)
-                        {
-                            console.log("DATASET CREATED: "+proxy.id);
-                        }
-                        d.fulfill(proxy.id);
-                    });
-                }).
-                on('error', function(e)
-                {
-                    d.fulfill(null);
+                    resData += d;
                 });
-
-                req.write(JSON.stringify(payload));
-                req.end();
+                res.on('end', function()
+                {
+                    var resultantDataset = JSON.parse(resData);
+                    proxy.id = resultantDataset.id;
+                    if (config.datasets.auditDatasetLifetime)
+                    {
+                        console.log("DATASET CREATED @ " + new Date().toISOString() + ": "+proxy.id);
+                    }
+                    d.fulfill(proxy.id);
+                });
+            }).
+            on('error', function(e)
+            {
+                d.fulfill(null);
             });
+
+            req.write(JSON.stringify(payload));
+            req.end();
         });
 
         return d;
@@ -424,42 +420,40 @@ DatasetProxy.prototype._addColumn = function(name, type)
 
         var d = webdriver.promise.defer();
 
-        proxy._client.getLoginCookies().then(function(cookies)
+        var reqOpts = url.parse(config.server.url.resolve('/views/'+proxy.id+'/columns.json'));
+
+        reqOpts.method="POST";
+        reqOpts.headers = {
+            'Authorization': config.server.authHeader,
+            'X-App-Token': config.server.token
+        };
+
+        var payload = buildColumnAddRequest(name, type);
+
+        var req = https.request(reqOpts, function(res)
         {
-            var reqOpts = url.parse(config.server.url.resolve('/views/'+proxy.id+'/columns.json'));
-
-            reqOpts.method="POST";
-            reqOpts.headers = {
-                'Cookie': cookies.CookieHeader
-            };
-
-            var payload = buildColumnAddRequest(name, type);
-
-            var req = https.request(reqOpts, function(res)
+            expect(res.statusCode).to.be(200);
+            var resData = '';
+            res.on('data', function(d)
             {
-                expect(res.statusCode).to.be(200);
-                var resData = '';
-                res.on('data', function(d)
-                {
-                    resData += d;
-                });
-                res.on('end', function()
-                {
-                    var resultantColumn = JSON.parse(resData);
-                    expect(resultantColumn.renderTypeName).to.be(type);
-                    expect(resultantColumn.name).to.be(name);
-                    //TODO assert column is actually added to full column list.
-                    d.fulfill(resultantColumn.id);
-                });
-            }).
-            on('error', function(e)
-            {
-                d.fulfill(null);
+                resData += d;
             });
-
-            req.write(JSON.stringify(payload));
-            req.end();
+            res.on('end', function()
+            {
+                var resultantColumn = JSON.parse(resData);
+                expect(resultantColumn.renderTypeName).to.be(type);
+                expect(resultantColumn.name).to.be(name);
+                //TODO assert column is actually added to full column list.
+                d.fulfill(resultantColumn.id);
+            });
+        }).
+        on('error', function(e)
+        {
+            d.fulfill(null);
         });
+
+        req.write(JSON.stringify(payload));
+        req.end();
 
         return d;
     });
@@ -475,27 +469,25 @@ DatasetProxy.prototype._publish = function()
         expect(proxy.id).to.not.be(undefined);
         var d = webdriver.promise.defer();
 
-        proxy._client.getLoginCookies().then(function(cookies)
+        var reqOpts = url.parse(config.server.url.resolve('/api/views/'+proxy.id+'/publication.json'));
+
+        reqOpts.method="POST";
+        reqOpts.headers = {
+            'Authorization': config.server.authHeader,
+            'X-App-Token': config.server.token
+        };
+
+        var req = https.request(reqOpts, function(res)
         {
-            var reqOpts = url.parse(config.server.url.resolve('/api/views/'+proxy.id+'/publication.json'));
-
-            reqOpts.method="POST";
-            reqOpts.headers = {
-                'Cookie': cookies.CookieHeader
-            };
-
-            var req = https.request(reqOpts, function(res)
-            {
-                expect(res.statusCode).to.be(200);
-                d.fulfill();
-            }).
-            on('error', function(e)
-            {
-                d.fulfill(e);
-            });
-
-            req.end();
+            expect(res.statusCode).to.be(200);
+            d.fulfill();
+        }).
+        on('error', function(e)
+        {
+            d.fulfill(e);
         });
+
+        req.end();
 
         return d;
     });

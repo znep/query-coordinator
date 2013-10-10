@@ -69,45 +69,6 @@ var SocrataClient = function(driver)
 
         return def;
     };
-
-    this.getLoginCookies = function()
-    {
-        // Cookies are _not_ a sometimes food, Sesame Street!
-        var def = webdriver.promise.defer();
-
-        this.getCurrentUserEmail().then(function (email)
-        {
-            driver.manage().getCookies().then(function(cookies)
-            {
-                var loginCookies = [
-                    '_core_session_id',
-                    '_socrata_session_id',
-                    'logged_in',
-                    'socrata-csrf-token'];
-
-                filtered = _.filter(cookies, function(cookie)
-                {
-                    return _.contains(loginCookies, cookie.name);
-                });
-
-                var ret = {};
-
-                _.each(filtered, function(cookie)
-                {
-                    ret[cookie.name] = cookie.value;
-                });
-
-                ret.CookieHeader = _.map(ret, function(v, k)
-                {
-                    return k + '=' + v;
-                }).join('; ');
-
-                def.fulfill(ret);
-            });
-        });
-
-        return def;
-    }
 };
 
 exports.SocrataClient = SocrataClient;

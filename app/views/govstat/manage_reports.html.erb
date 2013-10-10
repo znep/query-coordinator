@@ -6,7 +6,7 @@
 <div id="manageReportsPage">
   <div class="subnavigation">
     <ul class="breadcrumb">
-      <li class="root"><a class="ss-icon" href="/manage">Home</a></li>
+      <li class="root"><a class="ss-icon" href="/<%= CurrentDomain.feature?(:govstat_15) ? 'stat' : 'manage' %>">Home</a></li>
       <li><span class="ss-icon">navigateright</span></li>
       <li class="main"><a href="/manage/reports">Reports</a></li>
     </ul>

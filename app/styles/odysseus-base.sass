@@ -852,6 +852,83 @@
   .actions
     display: none
 
+.validation
+  display: none
+
+  &.active
+    display: block // TODO: someday with the fancy fade?
+
+  &.severity-error
+    .validationMarker, .validationBubble
+      background-color: $govstat_color_poor
+    .ss-alert
+      display: none
+  &.severity-warning
+    .validationMarker, .validationBubble
+      background-color: $govstat_color_flat
+    .ss-delete
+      display: none
+
+  .validationMarker
+    @include rounded-ends
+    display: block
+    font-size: 1.2em
+    overflow: hidden
+    padding: 0.25em
+
+    .validationIcon
+      color: #fff
+      height: 1em
+      text-shadow: 0 0 1px rgba(0, 0, 0, 0.3)
+      width: 1em
+
+    .count
+      color: #fff
+      margin-top: -1em
+      min-height: 1em
+
+  .validationBubble
+    @include prefixer(border-radius, 0.2em)
+    @include prefixer(box-shadow, 0 0 0.4em rgba(0, 0, 0, 0.2))
+    color: #fff
+    left: -10em
+    @include opacity(0.95)
+    padding: 1em
+    position: absolute
+    top: 2.5em
+    width: 20em
+
+    &:before
+      @include triangle(0.5em, $govstat_color_poor, bottom)
+      content: ''
+      left: 50%
+      margin-left: -0.6em
+      margin-top: -1em
+      position: absolute
+      top: 0
+
+.issueMessage
+  font-size: 1.2em
+
+  &.active .icon .ss-check
+    margin-top: -1em
+
+  .icon
+    height: 1em
+    float: left
+    margin-right: 0.3em
+    overflow: hidden
+    width: 1em
+
+    .ss-check
+      margin-top: 0em
+      @include transition(0.3s, margin)
+
+  .message
+    line-height: 1.2em
+    margin-left: 1.5em
+
+
 .awesomebubble .saveAsForm
   width: 65em
 

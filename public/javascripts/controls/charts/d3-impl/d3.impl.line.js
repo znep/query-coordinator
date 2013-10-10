@@ -211,7 +211,7 @@ $.Control.registerMixin('d3_impl_line', {
                     .on('mouseout', function(d)
                     {
                         if (!vizObj._chartInitialized) { return; }
-                        vizObj.handleDataMouseOut(this);
+                        vizObj.handleDataMouseOut(this, 10);
                     })
                     .on('click', function(d)
                     {

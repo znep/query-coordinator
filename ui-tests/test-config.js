@@ -46,6 +46,7 @@ if (verify(webdriver.Capabilities[desiredBrowser], "Invalid browser: " + desired
 var baseURL = argv.against || 'https://localhost:9443';
 var parsedURL = url.parse(baseURL);
 verify(parsedURL.protocol === 'https:', "Protocol of target site must be https.");
+verify(parsedURL.hostname.indexOf('.socrata.com') == -1, "Testing against prod is not advisable yet!");
 
 // --user, --password, --token
 var username = argv.username || process.env.SOCRATA_TEST_UN;

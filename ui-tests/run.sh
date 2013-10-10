@@ -14,6 +14,9 @@ function on_exit()
 
 trap on_exit EXIT
 
+echo "Making sure node packages are there."
+npm --loglevel error install
+
 if node prerun.js $*
 then
     tput sgr0
@@ -57,9 +60,6 @@ else
     echo "You have the configured selenium-server JAR";
     tput sgr0
 fi
-
-echo "Making sure node packages are there."
-npm --loglevel error install
 
 if ! nc -z localhost $SELENIUM_SERVER_PORT
 then
